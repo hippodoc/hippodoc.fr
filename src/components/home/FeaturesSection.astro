@@ -1,0 +1,51 @@
+---
+/**
+ * Fonctionnalités — porté de src/components/landing/RadialOrbitalTimeline.tsx.
+ * Le diagramme orbital interactif (rotation requestAnimationFrame, nœuds cliquables)
+ * est remplacé par une grille statique des mêmes 12 fonctionnalités : contenu identique,
+ * présentation adaptée au zéro-JS.
+ */
+import SectionBadge from './SectionBadge.astro';
+
+const FEATURES = [
+  { title: 'URSSAF', description: 'Calcul automatique des cotisations sociales avec estimation précise en temps réel' },
+  { title: 'CARMF', description: 'Gestion automatique de la retraite et prévoyance des médecins libéraux' },
+  { title: 'Impôts', description: "Estimation de l'impôt sur le revenu en temps réel selon ta situation" },
+  { title: 'Rétrocessions', description: 'Calcul automatique de tes rétrocessions et redevances de collaboration' },
+  { title: 'Comptabilité', description: 'Export CSV/PDF prêt pour ton expert-comptable' },
+  { title: 'Contrats', description: 'Génération automatique et signature électronique de tes contrats' },
+  { title: 'Factures', description: "Création simplifiée de factures d'honoraires avec IBAN" },
+  { title: 'Statistiques', description: 'Analyse détaillée de tes revenus et rentabilité par médecin' },
+  { title: 'Planning', description: 'Calendrier intelligent pour planifier ton activité' },
+  { title: 'RSPM', description: 'Optimisation automatique entre Micro-BNC et frais réels' },
+  { title: 'Micro-BNC', description: "Suivi de l'abattement forfaitaire de 34% en temps réel" },
+  { title: 'Frais réels', description: 'Calcul et optimisation de tes déductions fiscales' },
+];
+---
+
+<section id="timeline" class="relative z-10 w-full overflow-hidden bg-gradient-to-b from-white via-hippo-50/30 to-white py-16 md:py-24">
+  <div class="container mx-auto px-4">
+    <SectionBadge title="Fonctionnalités" subtitle="Tout-en-un">
+      <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    </SectionBadge>
+
+    <div class="mb-10 text-center">
+      <h2 class="mb-4 text-3xl font-bold text-hippo-800 md:text-4xl">
+        Gestion <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">automatisée complète</span>
+      </h2>
+      <p class="mx-auto max-w-2xl text-xl text-muted-foreground">Le système nerveux de ton organisation.</p>
+    </div>
+
+    <div class="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
+      {FEATURES.map((feature) => (
+        <div class="group flex flex-col items-center gap-2 rounded-2xl border border-hippo-100 bg-white/70 p-4 text-center shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-hippo-300 hover:shadow-lg">
+          <div class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-hippo-400 via-hippo-500 to-hippo-600 text-white shadow-md shadow-hippo-500/20">
+            <span class="text-sm font-bold">{feature.title.slice(0, 2)}</span>
+          </div>
+          <h3 class="text-sm font-bold text-hippo-900">{feature.title}</h3>
+          <p class="text-xs leading-snug text-slate-600">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

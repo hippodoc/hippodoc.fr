@@ -1,0 +1,80 @@
+---
+/**
+ * Témoignages — porté de src/components/landing/TestimonialsSection.tsx + TestimonialCarousel.tsx.
+ * Le carrousel Embla (autoplay, nav boutons) devient un défilement CSS "animate-marquee"
+ * (déjà utilisé pour le bandeau partenaires du Hero) — zéro JS, se met en pause au survol.
+ */
+import SectionBadge from './SectionBadge.astro';
+
+const testimonials = [
+  { content: "Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais. Là j'ai enfin un suivi clair entre activité, encaissements et provisions.", author: 'Dr Émilien C.', role: 'Médecin généraliste', initials: 'EC', color: 'from-purple-500 to-purple-600' },
+  { content: "Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision. Là tout est au même endroit et je comprends mon 'vrai super-net'.", author: 'Dr Sarah M.', role: 'Urgentiste (activité mixte)', initials: 'SM', color: 'from-pink-500 to-pink-600' },
+  { content: "Interne : je voulais juste un truc simple pour suivre mes revenus de rempla, sans me prendre la tête. Ça me permet surtout d'anticiper les charges au lieu de les subir.", author: 'Dr Camille T.', role: 'Interne', initials: 'CT', color: 'from-blue-500 to-blue-600' },
+  { content: "Je fais pas mal de PDSA : entre les jours exonérés, le plafond, la part imposable… j'avais peur de me planter. Là c'est suivi automatiquement, c'est hyper rassurant.", author: 'Dr Marine D.', role: 'Interne en médecine générale', initials: 'MD', color: 'from-teal-500 to-teal-600' },
+  { content: "Micro vs réel : je procrastinais chaque année. Le fait de pouvoir comparer et comprendre l'impact, ça m'a aidé à prendre une décision sans stress.", author: 'Dr Antoine L.', role: 'Anesthésiste-réanimateur', initials: 'AL', color: 'from-orange-500 to-orange-600' },
+  { content: "Je bosse en cabinet, en centre, et parfois en clinique : les rétro, les taux différents, la compta… c'était un bazar. Hippodoc m'a remis une logique.", author: 'Dr Julie P.', role: 'Gynécologue médicale', initials: 'JP', color: 'from-rose-500 to-rose-600' },
+  { content: "J'avais déjà un comptable, mais moi je voulais piloter au quotidien. Là je sais ce que je peux me verser sans me faire rattraper par l'URSSAF.", author: 'Dr Romain E.', role: 'Ophtalmologue', initials: 'RE', color: 'from-emerald-500 to-emerald-600' },
+  { content: "La déclaration, c'était mon cauchemar : des cases, des mots obscurs, et la peur de faire une bêtise. Là c'est guidé et surtout compréhensible.", author: 'Dr Inès B.', role: 'Médecin généraliste', initials: 'IB', color: 'from-violet-500 to-violet-600' },
+  { content: "Je fais de la psy en libéral + un mi-temps salarié : le mélange des statuts est vite flou. Là je sépare proprement, et je vois clair.", author: 'Dr Léa S.', role: 'Psychiatre (libéral + salariat)', initials: 'LS', color: 'from-indigo-500 to-indigo-600' },
+  { content: "J'ai importé 2 ans d'Excel pas très propre… et j'ai pu tout remettre au carré sans y passer un week-end. Rien que ça, énorme.", author: 'Dr Mehdi A.', role: 'Radiologue', initials: 'MA', color: 'from-amber-500 to-amber-600' },
+  { content: "Le support, c'est pas juste 'technique'. On sent que c'est fait par quelqu'un qui connaît le terrain : rétro, PDSA, centres… On m'a répondu vite et bien.", author: 'Dr Thomas G.', role: 'Pédiatre', initials: 'TG', color: 'from-cyan-500 to-cyan-600' },
+  { content: "Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire.", author: 'Dr Anaïs V.', role: 'Interne', initials: 'AV', color: 'from-sky-500 to-sky-600' },
+  { content: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", author: 'Dr Sofiane B.', role: 'Médecin (SOS Médecins + cabinet)', initials: 'SB', color: 'from-lime-500 to-lime-600' },
+  { content: "Avant, fin du mois = je regardais mon compte et je 'devinais' si j'étais bien. Maintenant je pilote : charges, impôts, reste dispo. Ça change la vie.", author: 'Dr Nicolas F.', role: 'Médecin généraliste', initials: 'NF', color: 'from-slate-500 to-slate-600' },
+  { content: "Je notais mes gardes sur un carnet et mes premiers remplas sur un Excel. Là tout est centralisé et je vois déjà mon Super-Net projeté quand je serai thésée.", author: 'Dr Camille R.', role: 'Interne MG (8ème semestre, SASPAS)', initials: 'CR', color: 'from-fuchsia-500 to-fuchsia-600' },
+];
+---
+
+<section id="testimonials" class="relative overflow-hidden py-20">
+  <div class="absolute inset-0 bg-gradient-to-br from-hippo-50 via-white to-hippo-100/60"></div>
+
+  <div class="container relative z-10">
+    <div class="mx-auto mb-16 max-w-3xl text-center">
+      <SectionBadge title="Témoignages" subtitle="La communauté">
+        <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      </SectionBadge>
+
+      <h2 class="mb-4 text-3xl font-bold leading-tight text-hippo-800 md:text-4xl">
+        Ce qu'en disent <span class="bg-gradient-to-r from-hippo-500 via-hippo-600 to-hippo-700 bg-clip-text text-transparent">nos utilisateurs</span>
+      </h2>
+      <p class="text-lg leading-relaxed text-muted-foreground md:text-xl">
+        Découvre pourquoi plus de 900 médecins font confiance à Hippodoc
+      </p>
+    </div>
+
+    <div class="relative mx-auto max-w-[100rem] overflow-hidden">
+      <div class="pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-10 bg-gradient-to-r from-hippo-50 to-transparent md:w-24"></div>
+      <div class="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-10 bg-gradient-to-l from-hippo-100/60 to-transparent md:w-24"></div>
+
+      <div class="flex w-fit animate-marquee gap-6 py-2 hover:[animation-play-state:paused] motion-reduce:animate-none" style={{ animationDuration: '90s' }}>
+        {[...testimonials, ...testimonials].map((t) => (
+          <div class="group relative flex h-64 w-[85vw] max-w-sm flex-none flex-col overflow-hidden rounded-2xl bg-white/80 p-5 shadow-xl ring-1 ring-gray-200/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl sm:w-80">
+            <div class={`absolute right-0 top-0 h-32 w-32 rounded-full bg-gradient-to-br opacity-5 blur-2xl ${t.color}`}></div>
+
+            <div class="relative z-10 flex h-full flex-col">
+              <div class="mb-3 flex items-center gap-1 md:mb-4">
+                {Array.from({ length: 5 }).map(() => (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" class="text-amber-400" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                ))}
+              </div>
+
+              <blockquote class="mb-4 line-clamp-4 flex-1 text-sm leading-relaxed text-gray-700 md:mb-6 md:text-base">
+                "{t.content}"
+              </blockquote>
+
+              <div class="mt-auto flex items-center gap-3">
+                <div class={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-sm font-bold text-white shadow-lg ring-2 ring-white ${t.color}`}>
+                  {t.initials}
+                </div>
+                <div class="min-w-0">
+                  <h3 class="truncate text-sm font-semibold text-gray-900">{t.author}</h3>
+                  <p class="text-xs text-gray-600">{t.role}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

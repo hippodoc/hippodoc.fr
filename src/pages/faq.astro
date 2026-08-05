@@ -1,0 +1,499 @@
+---
+/**
+ * /faq — porté verbatim depuis src/pages/faq.tsx (SPA source).
+ * Accordéons natifs <details>/<summary> (zéro JS). Les 32 questions
+ * alimentent la FAQPage JSON-LD en intégralité (texte visible = schéma).
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Icon from '@/components/pages/Icon.astro';
+import { SITE_URL } from '@/lib/site';
+
+type Question = { q: string; aHtml: string; aPlain: string };
+type Section = { id: string; icon: string; title: string; questions: Question[] };
+
+const faqSections: Section[] = [
+  {
+    id: 'activite',
+    icon: '📅',
+    title: 'Mon activité',
+    questions: [
+      {
+        q: "Comment j'enregistre mes journées d'activité ?",
+        aHtml: `En <strong>moins de 30 secondes</strong>. Tu renseignes :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li>📅 La date (ou la période)</li>
+            <li>🏥 Le lieu d'exercice (cabinet, centre médical, structure…)</li>
+            <li>💰 Le <strong>montant encaissé</strong> (la rétrocession se calcule automatiquement selon le taux défini)</li>
+          </ul>
+          <p class="mt-2">Et c'est tout. Hippodoc fait le reste : <strong>calculs, classement, statistiques</strong>.</p>`,
+        aPlain:
+          "En moins de 30 secondes. Tu renseignes : la date (ou la période), le lieu d'exercice (cabinet, centre médical, structure…), le montant encaissé (la rétrocession se calcule automatiquement selon le taux défini). Et c'est tout. Hippodoc fait le reste : calculs, classement, statistiques.",
+      },
+      {
+        q: 'Je travaille dans plusieurs structures, c\'est gérable ?',
+        aHtml: `<strong>Totalement</strong>. Tu peux enregistrer autant de lieux d'exercice que tu veux : cabinets de remplacement, centres médicaux, ton propre cabinet…
+          Tout reste <strong>organisé et lisible</strong>, avec des statistiques par structure.`,
+        aPlain:
+          "Totalement. Tu peux enregistrer autant de lieux d'exercice que tu veux : cabinets de remplacement, centres médicaux, ton propre cabinet… Tout reste organisé et lisible, avec des statistiques par structure.",
+      },
+      {
+        q: 'Je peux gérer un cabinet propre en plus de mes remplacements ?',
+        aHtml: `Oui. Hippodoc gère les <strong>3 types de structures</strong> :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>Remplacement chez un titulaire</strong> — rétrocession classique (70% par défaut)</li>
+            <li><strong>Vacation en centre médical</strong> — honoraires reversés par la structure</li>
+            <li><strong>Cabinet propre</strong> — 100% de tes recettes, paiement direct patients</li>
+          </ul>
+          <p class="mt-2">Chaque structure a ses propres règles de calcul, <strong>tout est automatique</strong>.</p>`,
+        aPlain:
+          "Oui. Hippodoc gère les 3 types de structures : remplacement chez un titulaire — rétrocession classique (70% par défaut) ; vacation en centre médical — honoraires reversés par la structure ; cabinet propre — 100% de tes recettes, paiement direct patients. Chaque structure a ses propres règles de calcul, tout est automatique.",
+      },
+      {
+        q: 'Et si je fais plusieurs journées au même endroit ?',
+        aHtml: `<strong>Aucun souci</strong>. Tu peux ajouter plusieurs journées par jour si besoin, ou créer des <strong>récurrences</strong> (ex : "tous les mercredis au centre médical").`,
+        aPlain:
+          'Aucun souci. Tu peux ajouter plusieurs journées par jour si besoin, ou créer des récurrences (ex : "tous les mercredis au centre médical").',
+      },
+    ],
+  },
+  {
+    id: 'revenus',
+    icon: '💰',
+    title: 'Mes revenus',
+    questions: [
+      {
+        q: "Hippodoc gère-t-il l'activité mixte libéral et salariat ?",
+        aHtml: `Oui. Tu peux suivre tes revenus <strong>libéraux</strong> (remplacements, cabinet propre, vacations) et <strong>salariés</strong> (hôpital, gardes, urgences, centres de santé) dans un seul outil.
+          Le <strong>Super-Net</strong> prend tout en compte pour te donner ton vrai revenu après charges et impôts.`,
+        aPlain:
+          "Oui. Tu peux suivre tes revenus libéraux (remplacements, cabinet propre, vacations) et salariés (hôpital, gardes, urgences, centres de santé) dans un seul outil. Le Super-Net prend tout en compte pour te donner ton vrai revenu après charges et impôts.",
+      },
+      {
+        q: "Comment j'enregistre mes revenus salariés ?",
+        aHtml: `Dans l'onglet <strong>Revenus salariés</strong>. Tu renseignes :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li>Le type (gardes, urgences, centre de santé…)</li>
+            <li>Le <strong>montant net imposable</strong></li>
+            <li>La période concernée</li>
+          </ul>
+          <p class="mt-2">Tu choisis ensuite entre <strong>abattement 10%</strong> ou <strong>frais réels</strong> pour optimiser ta fiscalité.</p>`,
+        aPlain:
+          "Dans l'onglet Revenus salariés. Tu renseignes : le type (gardes, urgences, centre de santé…), le montant net imposable, la période concernée. Tu choisis ensuite entre abattement 10% ou frais réels pour optimiser ta fiscalité.",
+      },
+      {
+        q: "C'est quoi les revenus PDSA / exonérés ?",
+        aHtml: `Les revenus de <strong>Permanence Des Soins Ambulatoires</strong> (PDSA) bénéficient d'une exonération d'impôt sur le revenu (article 151 ter du CGI) pour les majorations et forfaits.
+          Hippodoc distingue automatiquement la <strong>part exonérée</strong> (non imposable) et la <strong>part imposable</strong> (actes réalisés pendant la garde).`,
+        aPlain:
+          "Les revenus de Permanence Des Soins Ambulatoires (PDSA) bénéficient d'une exonération d'impôt sur le revenu (article 151 ter du CGI) pour les majorations et forfaits. Hippodoc distingue automatiquement la part exonérée (non imposable) et la part imposable (actes réalisés pendant la garde).",
+      },
+      {
+        q: 'Qu\'est-ce que les rétrocessions versées ?',
+        aHtml: `Si tu es <strong>titulaire installé</strong> et que tu accueilles des remplaçants, tu encaisses leurs honoraires puis tu leur reverses leur part : c'est la <strong>rétrocession versée</strong>.
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li>La rétrocession versée est une <strong>charge déductible</strong> de ton BNC</li>
+            <li>La <strong>part gardée</strong> (recette totale − rétrocédé) est ton revenu imposable</li>
+          </ul>
+          <p class="mt-2">Hippodoc calcule tout automatiquement et l'intègre dans ton <strong>Super-Net</strong>.</p>`,
+        aPlain:
+          "Si tu es titulaire installé et que tu accueilles des remplaçants, tu encaisses leurs honoraires puis tu leur reverses leur part : c'est la rétrocession versée. La rétrocession versée est une charge déductible de ton BNC. La part gardée (recette totale − rétrocédé) est ton revenu imposable. Hippodoc calcule tout automatiquement et l'intègre dans ton Super-Net.",
+      },
+    ],
+  },
+  {
+    id: 'planification',
+    icon: '🗓️',
+    title: 'Planifier et organiser',
+    questions: [
+      {
+        q: 'Je peux planifier mes journées à l\'avance ?',
+        aHtml: `Oui. Tu peux <strong>bloquer des dates dans ton calendrier</strong>, même si le paiement n'est pas encore tombé.
+          Pratique pour <strong>visualiser ton mois</strong>, anticiper ta charge de travail, et t'organiser.`,
+        aPlain:
+          "Oui. Tu peux bloquer des dates dans ton calendrier, même si le paiement n'est pas encore tombé. Pratique pour visualiser ton mois, anticiper ta charge de travail, et t'organiser.",
+      },
+      {
+        q: 'Le calendrier, il affiche quoi exactement ?',
+        aHtml: `Tout ce dont tu as besoin en un coup d'œil :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li>🟢 <strong>Vert</strong> : journées payées</li>
+            <li>🟠 <strong>Orange</strong> : en attente de paiement</li>
+            <li>🔵 <strong>Bleu</strong> : planifiées (pas encore effectuées)</li>
+            <li>⚫ <strong>Gris</strong> : indisponibilités (congés, formation…)</li>
+          </ul>
+          <p class="mt-2">Tu peux aussi créer des <strong>récurrences</strong> (ex : "tous les mercredis au centre médical").</p>`,
+        aPlain:
+          'Tout ce dont tu as besoin en un coup d\'œil : vert = journées payées, orange = en attente de paiement, bleu = planifiées (pas encore effectuées), gris = indisponibilités (congés, formation…). Tu peux aussi créer des récurrences (ex : "tous les mercredis au centre médical").',
+      },
+    ],
+  },
+  {
+    id: 'paiements',
+    icon: '💸',
+    title: 'Suivi des paiements',
+    questions: [
+      {
+        q: "Comment je sais qui m'a payé et qui me doit encore de l'argent ?",
+        aHtml: `Tu coches <strong>"payé"</strong> quand tu reçois le virement.
+          Sinon, la journée reste marquée en <strong>"attente"</strong> dans ton tableau de bord et ton calendrier.
+          Fini les post-it, les fichiers Excel perdus, ou les "mince, il m'a toujours pas payé".`,
+        aPlain:
+          'Tu coches "payé" quand tu reçois le virement. Sinon, la journée reste marquée en "attente" dans ton tableau de bord et ton calendrier. Fini les post-it, les fichiers Excel perdus, ou les "mince, il m\'a toujours pas payé".',
+      },
+      {
+        q: "Je peux relancer un médecin qui ne m'a pas payé ?",
+        aHtml: `Oui. Hippodoc te <strong>génère un texte de relance pro et poli</strong> que tu peux copier-coller par mail ou SMS.
+          Avec les dates, montants, et tout ce qu'il faut.
+          Pas besoin de chercher tes mots : c'est <strong>clair, ferme, mais respectueux</strong>.`,
+        aPlain:
+          "Oui. Hippodoc te génère un texte de relance pro et poli que tu peux copier-coller par mail ou SMS. Avec les dates, montants, et tout ce qu'il faut. Pas besoin de chercher tes mots : c'est clair, ferme, mais respectueux.",
+      },
+      {
+        q: 'Comment suivre les rétrocessions que je verse à mes remplaçants ?',
+        aHtml: `Dans l'onglet <strong>Rétrocessions versées</strong>. Tu enregistres chaque rétrocession avec le remplaçant, le montant et le statut (versé / à rétrocéder).
+          Hippodoc calcule automatiquement ta <strong>part gardée</strong> et l'intègre dans tes revenus BNC imposables.`,
+        aPlain:
+          "Dans l'onglet Rétrocessions versées. Tu enregistres chaque rétrocession avec le remplaçant, le montant et le statut (versé / à rétrocéder). Hippodoc calcule automatiquement ta part gardée et l'intègre dans tes revenus BNC imposables.",
+      },
+    ],
+  },
+  {
+    id: 'cotisations',
+    icon: '🧮',
+    title: 'Cotisations & fiscalité',
+    questions: [
+      {
+        q: 'Comment calculer mes cotisations URSSAF en tant que médecin libéral ?',
+        aHtml: `Hippodoc calcule <strong>automatiquement</strong> tes cotisations sociales grâce à une connexion directe aux <strong>serveurs officiels de l'URSSAF</strong>.
+          Selon ton régime :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>RSPM</strong> (revenus &lt; 38 000 €) — cotisations simplifiées à 13,5% ou 21,2%</li>
+            <li><strong>PAMC</strong> (revenus ≥ 38 000 €) — barème complet avec toutes les cotisations détaillées</li>
+          </ul>
+          <p class="mt-2">La CARMF est aussi intégrée dans le calcul.</p>`,
+        aPlain:
+          "Hippodoc calcule automatiquement tes cotisations sociales grâce à une connexion directe aux serveurs officiels de l'URSSAF. Selon ton régime : RSPM (revenus < 38 000 €) — cotisations simplifiées à 13,5% ou 21,2% ; PAMC (revenus ≥ 38 000 €) — barème complet avec toutes les cotisations détaillées. La CARMF est aussi intégrée dans le calcul.",
+      },
+      {
+        q: 'Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ?',
+        aHtml: `Hippodoc intègre un <strong>simulateur fiscal</strong> qui compare les deux régimes avec tes données réelles :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>Micro-BNC</strong> — abattement forfaitaire de 34%, pas de charges déductibles</li>
+            <li><strong>Régime réel</strong> — tu déduis tes charges professionnelles réelles</li>
+          </ul>
+          <p class="mt-2">En général, le Micro-BNC est avantageux si tes charges sont <strong>inférieures à 34%</strong> de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes.</p>`,
+        aPlain:
+          "Hippodoc intègre un simulateur fiscal qui compare les deux régimes avec tes données réelles : Micro-BNC — abattement forfaitaire de 34%, pas de charges déductibles ; régime réel — tu déduis tes charges professionnelles réelles. En général, le Micro-BNC est avantageux si tes charges sont inférieures à 34% de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes.",
+      },
+      {
+        q: "C'est quoi le Super-Net ?",
+        aHtml: `Le <strong>Super-Net</strong>, c'est ton <strong>vrai revenu disponible</strong> après :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li>Cotisations sociales (URSSAF + CARMF)</li>
+            <li>Impôt sur le revenu (barème progressif, quotient familial)</li>
+            <li>Charges professionnelles (si régime réel)</li>
+          </ul>
+          <p class="mt-2">Il prend en compte <strong>tous tes revenus</strong> : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment.</p>`,
+        aPlain:
+          "Le Super-Net, c'est ton vrai revenu disponible après : cotisations sociales (URSSAF + CARMF), impôt sur le revenu (barème progressif, quotient familial), charges professionnelles (si régime réel). Il prend en compte tous tes revenus : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment.",
+      },
+      {
+        q: 'Je peux anticiper mes charges et prévoir mon budget ?',
+        aHtml: `Oui. Hippodoc propose un <strong>budget prévisionnel</strong> qui projette tes revenus et charges sur l'année en cours.
+          Tu vois en temps réel combien il te reste <strong>après cotisations, impôts et dépenses pro</strong>.
+          Pratique pour savoir si tu peux investir, épargner, ou si tu dois accélérer.`,
+        aPlain:
+          "Oui. Hippodoc propose un budget prévisionnel qui projette tes revenus et charges sur l'année en cours. Tu vois en temps réel combien il te reste après cotisations, impôts et dépenses pro. Pratique pour savoir si tu peux investir, épargner, ou si tu dois accélérer.",
+      },
+    ],
+  },
+  {
+    id: 'documents',
+    icon: '🧾',
+    title: 'Documents & compta',
+    questions: [
+      {
+        q: "J'exporte facilement mes données pour ma compta ?",
+        aHtml: `Oui. En <strong>CSV, Excel ou PDF</strong>, avec :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li>Tes journées avec dates et lieux d'exercice</li>
+            <li>Les <strong>montants bruts et nets</strong> encaissés</li>
+            <li>Le détail des rétrocessions (reçues et versées)</li>
+            <li>Tes revenus salariés et exonérés</li>
+            <li>Le statut de paiement (payé / en attente)</li>
+          </ul>
+          <p class="mt-2">Parfait pour ton <strong>comptable, ton AGA ou ta déclaration URSSAF</strong>.</p>`,
+        aPlain:
+          "Oui. En CSV, Excel ou PDF, avec : tes journées avec dates et lieux d'exercice, les montants bruts et nets encaissés, le détail des rétrocessions (reçues et versées), tes revenus salariés et exonérés, le statut de paiement (payé / en attente). Parfait pour ton comptable, ton AGA ou ta déclaration URSSAF.",
+      },
+      {
+        q: 'Je peux générer des factures et des contrats ?',
+        aHtml: `Oui. Hippodoc te génère :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li><strong>Factures d'honoraires</strong> en PDF, prêtes à envoyer (avec RPPS, IBAN, détail des journées)</li>
+            <li><strong>Contrats de remplacement</strong> conformes au CNOM, avec signature électronique intégrée</li>
+          </ul>`,
+        aPlain:
+          "Oui. Hippodoc te génère : factures d'honoraires en PDF, prêtes à envoyer (avec RPPS, IBAN, détail des journées) ; contrats de remplacement conformes au CNOM, avec signature électronique intégrée.",
+      },
+      {
+        q: 'Je peux stocker mes documents administratifs ?',
+        aHtml: `Oui. Tu peux uploader :
+          <ul class="list-disc ml-6 mt-2 space-y-1">
+            <li>Ta <strong>licence de remplacement</strong></li>
+            <li>Tes <strong>contrats signés</strong></li>
+            <li>Tes <strong>attestations d'assurance (RCP)</strong></li>
+            <li>Ton diplôme, justificatifs divers, etc.</li>
+          </ul>
+          <p class="mt-2">Tout est <strong>centralisé, sécurisé</strong>, et accessible en 2 clics.</p>`,
+        aPlain:
+          "Oui. Tu peux uploader : ta licence de remplacement, tes contrats signés, tes attestations d'assurance (RCP), ton diplôme, justificatifs divers, etc. Tout est centralisé, sécurisé, et accessible en 2 clics.",
+      },
+    ],
+  },
+  {
+    id: 'mobile',
+    icon: '📱',
+    title: 'Mobile & accessibilité',
+    questions: [
+      {
+        q: 'Ça marche sur téléphone ?',
+        aHtml: `Oui, l'app est <strong>100% responsive</strong>.
+          Tu peux enregistrer tes journées, suivre tes paiements, consulter ton calendrier et exporter tes données depuis ton mobile.
+          Pratique entre deux consultations ou en déplacement.`,
+        aPlain:
+          "Oui, l'app est 100% responsive. Tu peux enregistrer tes journées, suivre tes paiements, consulter ton calendrier et exporter tes données depuis ton mobile. Pratique entre deux consultations ou en déplacement.",
+      },
+      {
+        q: 'Je peux y accéder de plusieurs appareils ?',
+        aHtml: `Oui. Tes données sont <strong>synchronisées automatiquement</strong>.
+          Tu commences sur ton ordi le matin, tu continues sur ton tel l'après-midi : tout est à jour.`,
+        aPlain:
+          "Oui. Tes données sont synchronisées automatiquement. Tu commences sur ton ordi le matin, tu continues sur ton tel l'après-midi : tout est à jour.",
+      },
+    ],
+  },
+  {
+    id: 'securite',
+    icon: '🔒',
+    title: 'Sécurité & confidentialité',
+    questions: [
+      {
+        q: 'Mes données sont sécurisées ?',
+        aHtml: `Oui. Tes données sont hébergées dans l'<strong>Union européenne</strong>, sur des serveurs sécurisés et chiffrés.
+          Tu es le seul à y accéder.
+          Hippodoc est conforme <strong>RGPD</strong>, et <strong>on ne revend rien à personne</strong>.`,
+        aPlain:
+          "Oui. Tes données sont hébergées dans l'Union européenne, sur des serveurs sécurisés et chiffrés. Tu es le seul à y accéder. Hippodoc est conforme RGPD, et on ne revend rien à personne.",
+      },
+      {
+        q: 'Je peux noter des infos sur mes patients ?',
+        aHtml: `Non. Et c'est fait exprès.
+          Hippodoc n'est <strong>pas un logiciel médical</strong> ni un hébergeur de données de santé.
+          L'app est là pour <strong>gérer ton activité administrative</strong> (revenus, planning, docs admin), pas pour suivre tes consultations.`,
+        aPlain:
+          "Non. Et c'est fait exprès. Hippodoc n'est pas un logiciel médical ni un hébergeur de données de santé. L'app est là pour gérer ton activité administrative (revenus, planning, docs admin), pas pour suivre tes consultations.",
+      },
+      {
+        q: 'Vous utilisez mes données pour entraîner des IA ?',
+        aHtml: `<strong>Non. Jamais.</strong>
+          Tes données sont <strong>privées</strong> et ne servent qu'à toi. On ne les exploite pas, on ne les vend pas, on ne les partage pas.`,
+        aPlain:
+          "Non. Jamais. Tes données sont privées et ne servent qu'à toi. On ne les exploite pas, on ne les vend pas, on ne les partage pas.",
+      },
+    ],
+  },
+  {
+    id: 'tarifs',
+    icon: '💳',
+    title: 'Tarifs & essai',
+    questions: [
+      {
+        q: 'Combien ça coûte ?',
+        aHtml: `<strong>29 €/mois</strong> sans engagement, ou <strong>19 €/mois</strong> avec l'abonnement annuel (228 €/an).
+          Tu peux <strong>résilier quand tu veux</strong>, en 2 clics.`,
+        aPlain:
+          "29 €/mois sans engagement, ou 19 €/mois avec l'abonnement annuel (228 €/an). Tu peux résilier quand tu veux, en 2 clics.",
+      },
+      {
+        q: 'Y a un essai gratuit ?',
+        aHtml: `Oui : <strong>30 jours offerts</strong> pour tester toutes les fonctionnalités.
+          On te demande ta CB (mais <strong>aucun prélèvement avant la fin de l'essai</strong>).
+          Tu testes tranquille. Si ça t'aide, tu restes. Sinon, tu pars sans frais.`,
+        aPlain:
+          "Oui : 30 jours offerts pour tester toutes les fonctionnalités. On te demande ta CB (mais aucun prélèvement avant la fin de l'essai). Tu testes tranquille. Si ça t'aide, tu restes. Sinon, tu pars sans frais.",
+      },
+      {
+        q: 'Il y a des tarifs pour les internes ?',
+        aHtml: `Oui. Les internes bénéficient d'un <strong>essai prolongé</strong> grâce à des codes promo dédiés.
+          Hippodoc est pensé pour accompagner les médecins <strong>dès le début de leur activité</strong>, sans pré-requis comptable.`,
+        aPlain:
+          "Oui. Les internes bénéficient d'un essai prolongé grâce à des codes promo dédiés. Hippodoc est pensé pour accompagner les médecins dès le début de leur activité, sans pré-requis comptable.",
+      },
+      {
+        q: 'Comment je résilie si ça me convient pas ?',
+        aHtml: `Directement depuis ton espace personnel, en <strong>2 clics</strong>.
+          Pas de mail à envoyer, pas de "appel au service client", pas de rétention.
+          Tu cliques, c'est résilié. Point.`,
+        aPlain:
+          'Directement depuis ton espace personnel, en 2 clics. Pas de mail à envoyer, pas de "appel au service client", pas de rétention. Tu cliques, c\'est résilié. Point.',
+      },
+      {
+        q: 'Je peux payer par virement ou chèque ?',
+        aHtml: `Non, uniquement par <strong>carte bancaire</strong> via notre système de paiement sécurisé (Stripe).
+          C'est plus simple pour toi et pour nous.`,
+        aPlain:
+          "Non, uniquement par carte bancaire via notre système de paiement sécurisé (Stripe). C'est plus simple pour toi et pour nous.",
+      },
+    ],
+  },
+  {
+    id: 'contact',
+    icon: '👋',
+    title: "Besoin d'aide ?",
+    questions: [
+      {
+        q: 'Il y a une communauté de médecins sur Hippodoc ?',
+        aHtml: `Oui ! Le <strong>Forum Hippodoc</strong> te permet d'échanger avec d'autres médecins sur l'administratif, le fiscal, l'installation…
+          Tu peux poser tes questions, partager ton expérience, et bénéficier des <strong>retours terrain</strong> de confrères.`,
+        aPlain:
+          "Oui ! Le Forum Hippodoc te permet d'échanger avec d'autres médecins sur l'administratif, le fiscal, l'installation… Tu peux poser tes questions, partager ton expérience, et bénéficier des retours terrain de confrères.",
+      },
+      {
+        q: 'Comment te contacter ?',
+        aHtml: `<div class="flex flex-col gap-3">
+            <p>Une question, un bug, une suggestion ? Écris-nous, on te répond vite :</p>
+            <a
+              href="mailto:contact@hippodoc.fr"
+              class="inline-flex items-center gap-2 w-fit bg-gradient-to-r from-hippo-500 to-hippo-600 text-white py-2.5 px-5 rounded-xl font-semibold shadow-lg shadow-hippo-500/25 hover:shadow-xl hover:shadow-hippo-500/30 hover:scale-[1.02] transition-all duration-300"
+            >contact@hippodoc.fr</a>
+            <p class="text-sm">On est une petite équipe. On lit <strong>tous les messages</strong>, et on fait évoluer l'app avec <strong>vos retours terrain</strong>.</p>
+          </div>`,
+        aPlain:
+          "Une question, un bug, une suggestion ? Écris-nous, on te répond vite : contact@hippodoc.fr. On est une petite équipe. On lit tous les messages, et on fait évoluer l'app avec vos retours terrain.",
+      },
+    ],
+  },
+];
+
+let globalQuestionIndex = 0;
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqSections.flatMap((section) =>
+    section.questions.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.aPlain },
+    }))
+  ),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'FAQ', item: `${SITE_URL}/faq` },
+  ],
+};
+
+const title = 'FAQ Hippodoc - Questions fréquentes pour médecins';
+const description =
+  'Toutes les réponses sur Hippodoc : activité libérale et salariée, cotisations URSSAF, Super-Net, fiscalité, paiements et export comptable.';
+---
+
+<BaseLayout title={title} description={description} path="/faq" jsonLd={[breadcrumbSchema, faqSchema]}>
+  <Header />
+
+  <div class="min-h-screen relative overflow-hidden">
+    <!-- Fond dégradé -->
+    <div class="absolute inset-0 bg-gradient-to-b from-hippo-50/80 via-white to-cyan-50/30" aria-hidden="true"></div>
+
+    <div class="relative z-10 container max-w-4xl pt-28 pb-12 px-4">
+      <nav aria-label="Fil d'Ariane" class="mb-6 text-sm text-muted-foreground">
+        <ol class="flex flex-wrap items-center gap-1">
+          <li><a href="/" class="hover:text-hippo-600">Accueil</a></li>
+          <li aria-hidden="true">›</li>
+          <li class="text-foreground" aria-current="page">FAQ</li>
+        </ol>
+      </nav>
+
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-hippo-100/80 backdrop-blur-sm border border-hippo-200/50 shadow-sm mb-6">
+          <Icon name="help-circle" class="w-4 h-4 text-hippo-600" />
+          <span class="text-sm font-semibold text-hippo-700">FAQ</span>
+        </div>
+
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Toutes tes questions sur{' '}
+          <span class="bg-gradient-to-r from-hippo-600 via-cyan-500 to-hippo-500 bg-clip-text text-transparent">Hippodoc</span>
+        </h1>
+        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+          L'app qui simplifie la gestion administrative de <strong class="text-hippo-700">tous les médecins</strong>
+        </p>
+      </div>
+
+      <!-- FAQ Sections -->
+      <div class="space-y-6">
+        {faqSections.map((section) => (
+          <section id={section.id} class="bg-white/70 backdrop-blur-xl rounded-2xl border border-white/60 shadow-lg shadow-hippo-100/20 overflow-hidden">
+            <div class="px-6 py-4 border-b border-hippo-100/50 bg-gradient-to-r from-hippo-50/50 to-cyan-50/30">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl" aria-hidden="true">{section.icon}</span>
+                <h2 class="text-xl font-bold text-gray-900">{section.title}</h2>
+              </div>
+            </div>
+
+            <div class="px-2">
+              {section.questions.map((item) => {
+                globalQuestionIndex++;
+                const questionNumber = globalQuestionIndex;
+                return (
+                  <details class="group border-b border-hippo-100/30 last:border-0">
+                    <summary class="py-4 px-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center gap-3 text-left">
+                      <span class="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-hippo-500 to-cyan-500 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                        {questionNumber}
+                      </span>
+                      <span class="text-base font-medium text-gray-800 group-open:text-hippo-700 transition-colors flex-1">
+                        {item.q}
+                      </span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-hippo-400 transition-transform group-open:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    </summary>
+                    <div class="pb-5 pl-14 pr-4 text-muted-foreground leading-relaxed [&_strong]:text-hippo-700 [&_strong]:font-semibold" set:html={item.aHtml} />
+                  </details>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="mt-12 text-center">
+        <p class="text-muted-foreground mb-4">Tu n'as pas trouvé ta réponse ?</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a
+            href="/#pricing"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-hippo-500 to-hippo-600 text-white font-semibold rounded-xl shadow-lg shadow-hippo-500/25 hover:shadow-xl hover:shadow-hippo-500/30 hover:scale-[1.02] transition-all duration-300"
+          >
+            Découvrir Hippodoc
+          </a>
+          <a
+            href="mailto:contact@hippodoc.fr"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm border border-hippo-200/60 text-hippo-700 font-semibold rounded-xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300"
+          >
+            <Icon name="mail" class="w-4 h-4" />
+            Nous contacter
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>

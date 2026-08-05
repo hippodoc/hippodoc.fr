@@ -1,0 +1,352 @@
+---
+/**
+ * Tarifs — porté de src/components/landing/PricingSection.tsx + PricingCard.tsx +
+ * PricingComparisonTable.tsx + SpecialOffersCard.tsx (+ SpecialOffersModal.tsx).
+ * Toggle mobile / drag / Stripe Checkout JS → 2 cartes statiques, CTA vers /auth?tab=signup&plan=.
+ * Le tableau comparatif et les offres spéciales (ex-modale) deviennent des <details> natifs.
+ * Promo Instagram 10K : dormante dans la source (isInstagram10kActive() === false) → non reprise.
+ */
+import { APP_URL } from '@/lib/site';
+
+const includedFeatures = [
+  'Dashboard clair et intuitif',
+  'Super-Net calculé en temps réel',
+  'Calcul URSSAF, CARMF et impôts en temps réel',
+  'Déclarations fiscales guidées',
+  'Micro-BNC et régime réel intégrés',
+  'RSPM et PAMC pris en charge',
+  'Gestion activité mixte libéral et salariat',
+  'PDSA et revenus exonérés intégrés',
+  'Suivi des charges et amortissements',
+  'Planning centralisé avec synchro Google',
+  'Génération rapide de contrats',
+  'Génération rapide de factures avec notes',
+  'Statistiques et exports comptables instantanés',
+  "Forum privé d'entraide entre médecins",
+  'Support réactif et humain',
+  'Données sécurisées et hébergées en France',
+  'Abonnement 100 % déductible',
+];
+---
+
+<section id="pricing" class="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-hippo-50 via-white to-hippo-50/30 py-6 md:scroll-mt-28">
+  <div class="container relative z-10 mx-auto max-w-7xl">
+    <div class="mx-auto mb-5 max-w-2xl text-center">
+      <div class="mb-6 flex justify-center">
+        <div class="relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-hippo-200/50 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:gap-3 md:px-4 md:py-2">
+          <div class="rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 p-1 md:p-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>
+          </div>
+          <span class="text-xs font-medium text-hippo-700 md:text-sm">Nos offres</span>
+          <div class="h-3 w-px bg-hippo-200 md:h-4"></div>
+          <span class="text-xs font-medium text-hippo-500 md:text-sm">Sans engagement</span>
+        </div>
+      </div>
+
+      <h2 class="mb-2 text-3xl font-bold text-hippo-800">
+        Exercer, c'est bien. <br />
+        <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">
+          Savoir ce que ça te rapporte,<br />
+          c'est mieux.
+        </span>
+      </h2>
+      <p class="text-lg text-muted-foreground">Un outil pro, à un prix humain.</p>
+    </div>
+
+    <!-- Badge essai gratuit -->
+    <div class="mb-10 flex justify-center px-4">
+      <div class="relative flex max-w-[95vw] flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-full border border-emerald-300/50 bg-gradient-to-r from-emerald-100/90 to-teal-100/90 px-4 py-2.5 shadow-lg backdrop-blur-sm md:max-w-none md:px-6 md:py-3">
+        <div class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-700" aria-hidden="true"><polyline points="20 12 20 22 4 22 4 12"/><rect width="20" height="5" x="2" y="7"/><line x1="12" x2="12" y1="22" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+          <span class="whitespace-nowrap text-sm font-bold text-emerald-900 md:text-base">30 jours gratuits</span>
+        </div>
+        <span class="hidden text-sm text-emerald-600 md:inline">•</span>
+        <div class="flex w-full items-center justify-center gap-2 md:w-auto">
+          <span class="whitespace-nowrap text-xs font-medium text-emerald-800 md:text-sm">Sans engagement</span>
+          <span class="text-xs text-emerald-600 md:text-sm">•</span>
+          <span class="whitespace-nowrap text-xs font-medium text-emerald-800 md:text-sm">Résiliable à tout moment</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="mb-4 text-center text-xs text-muted-foreground">Tous nos prix sont TTC · Sans frais cachés</p>
+
+    <!-- Cartes tarifs -->
+    <div class="mb-6 grid max-w-3xl grid-cols-1 gap-6 px-4 sm:grid-cols-2 mx-auto">
+      <!-- Mensuel -->
+      <div class="relative flex h-full flex-col rounded-3xl border border-gray-200/50 bg-white/80 px-6 pb-4 pt-6 shadow-lg backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-hippo-400/50 hover:shadow-2xl">
+        <span class="absolute right-4 top-4 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 px-2.5 py-0.5 text-[9px] font-bold text-white">FLEXIBLE</span>
+
+        <h3 class="mb-2 mt-8 text-center text-2xl font-extrabold tracking-tight text-hippo-800">Mensuel</h3>
+
+        <div class="mb-3 text-center">
+          <div class="flex items-baseline justify-center gap-2">
+            <span class="text-4xl font-black tracking-tight text-hippo-700">29€</span>
+            <span class="text-2xl font-semibold text-muted-foreground">/mois</span>
+          </div>
+        </div>
+
+        <p class="mb-3 text-center text-sm font-medium text-muted-foreground">29€ facturés chaque mois</p>
+
+        <hr class="mb-3 border-border" />
+
+        <div class="flex-grow"></div>
+
+        <div class="mb-3 flex flex-col items-center space-y-1.5">
+          <div class="flex items-center gap-2 text-sm text-hippo-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="font-semibold">30 jours d'essai gratuit</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-hippo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-hippo-500" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Sans engagement</span>
+          </div>
+        </div>
+
+        <a
+          href={`${APP_URL}/auth?tab=signup&plan=monthly`}
+          data-track="cta_signup_pricing"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-hippo-600 via-hippo-700 to-hippo-600 px-6 py-4 text-base font-bold text-white shadow-2xl shadow-hippo-500/50 transition-all hover:from-hippo-700 hover:via-hippo-800 hover:to-hippo-700"
+        >
+          Commencer 30 jours gratuits
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Annuel — recommandé -->
+      <div
+        class="relative flex h-full flex-col overflow-hidden rounded-3xl border-2 border-blue-400/60 px-6 pb-4 pt-6 shadow-2xl shadow-blue-500/25 md:scale-105"
+        style="background: linear-gradient(145deg, hsl(214, 100%, 97%) 0%, hsl(220, 100%, 99%) 40%, hsl(250, 100%, 97%) 100%);"
+      >
+        <div class="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500"></div>
+        <span class="absolute right-4 top-4 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 px-2.5 py-0.5 text-[9px] font-bold text-white">POPULAIRE</span>
+
+        <h3 class="mb-2 mt-8 bg-gradient-to-br from-hippo-700 via-hippo-800 to-hippo-900 bg-clip-text text-center text-2xl font-extrabold tracking-tight text-transparent">Annuel</h3>
+
+        <div class="mb-3 text-center">
+          <div class="flex items-baseline justify-center gap-2">
+            <span class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-4xl font-black tracking-tight text-transparent">19€</span>
+            <span class="text-2xl font-semibold text-muted-foreground">/mois</span>
+          </div>
+        </div>
+
+        <div class="mb-3 flex items-center justify-center">
+          <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-2.5 py-1 text-[10px] font-bold text-white shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
+            Économisez 120€/an (-34%)
+          </span>
+        </div>
+
+        <p class="mb-3 text-center text-sm font-medium text-muted-foreground">228€ facturés une fois par an</p>
+
+        <hr class="mb-3 border-border" />
+
+        <div class="flex-grow"></div>
+
+        <div class="mb-3 flex flex-col items-center space-y-1.5">
+          <div class="flex items-center gap-2 text-sm text-hippo-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span class="font-semibold">30 jours d'essai gratuit</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-hippo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-hippo-500" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Facturation annuelle</span>
+          </div>
+        </div>
+
+        <a
+          href={`${APP_URL}/auth?tab=signup&plan=yearly`}
+          data-track="cta_signup_pricing"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 px-6 py-4 text-base font-bold text-white shadow-2xl shadow-blue-500/50 transition-all hover:from-blue-700 hover:via-purple-700 hover:to-blue-700"
+        >
+          Commencer 30 jours gratuits
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <p class="mb-10 text-center text-sm">
+      <a href="/tarifs" class="text-hippo-600 underline decoration-hippo-300 underline-offset-4 hover:text-hippo-800">Voir le détail des tarifs</a>
+    </p>
+
+    <!-- Offres spéciales -->
+    <div class="mb-10 flex justify-center px-4">
+      <div class="relative w-full max-w-3xl">
+        <div class="relative mb-2 flex justify-center">
+          <span class="rounded-full bg-hippo-100/80 px-2.5 py-0.5 text-[11px] font-semibold text-hippo-600">Offres spéciales</span>
+        </div>
+
+        <div class="overflow-hidden rounded-xl border border-hippo-200/80 bg-gradient-to-br from-white via-hippo-50/60 to-purple-50/60 shadow-lg">
+          <div class="grid grid-cols-1 divide-y divide-hippo-200/50 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+            <details class="group/offer">
+              <summary class="flex cursor-pointer list-none items-start gap-2.5 p-3 text-left transition-colors hover:bg-hippo-50/50">
+                <span class="shrink-0 rounded-full bg-gradient-to-br from-hippo-500 to-hippo-600 p-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg>
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="mb-0.5 block text-sm font-bold text-hippo-800">Jeune Médecin</span>
+                  <span class="mb-1 block text-xs text-muted-foreground">Fin d'internat &lt; 6 mois</span>
+                  <span class="flex items-center gap-1.5 text-xs">
+                    <span class="font-semibold text-hippo-600">19€/mois</span>
+                    <span class="text-xs text-muted-foreground line-through">29€</span>
+                    <span class="rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-medium text-green-700">+30j gratuit</span>
+                  </span>
+                </span>
+              </summary>
+              <div class="border-t border-hippo-200/50 bg-white/70 p-4 text-sm">
+                <p class="mb-2 text-muted-foreground">Vous avez terminé votre internat il y a moins de 6 mois ? Profitez d'un tarif préférentiel pour bien démarrer votre activité.</p>
+                <p class="mb-2 font-semibold text-hippo-800">Avantage : 19€/mois au lieu de 29€ + 30 jours d'essai gratuit</p>
+                <p class="mb-3 text-xs text-muted-foreground">Pendant 12 mois après validation</p>
+                <p class="mb-1 text-xs font-semibold text-hippo-700">Justificatifs acceptés :</p>
+                <ul class="mb-3 list-inside list-disc text-xs text-muted-foreground">
+                  <li>Attestation de fin d'internat</li>
+                  <li>Diplôme d'État de Docteur en Médecine (DES validé)</li>
+                  <li>Tout document prouvant la fin récente de votre internat</li>
+                </ul>
+                <p class="text-xs text-muted-foreground">Comment en bénéficier ? Écris-nous à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a> — réponse sous 24h avec ton code promo personnalisé !</p>
+              </div>
+            </details>
+
+            <details class="group/offer">
+              <summary class="flex cursor-pointer list-none items-start gap-2.5 p-3 text-left transition-colors hover:bg-purple-50/50">
+                <span class="shrink-0 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 p-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="mb-0.5 block text-sm font-bold text-purple-800">Interne</span>
+                  <span class="mb-1 block text-xs text-muted-foreground">Encore en formation</span>
+                  <span class="flex items-center gap-1.5 text-xs">
+                    <span class="font-semibold text-purple-600">10€/mois</span>
+                    <span class="text-xs text-muted-foreground line-through">29€</span>
+                    <span class="rounded-full bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700">+30j gratuit</span>
+                  </span>
+                </span>
+              </summary>
+              <div class="border-t border-purple-200/50 bg-white/70 p-4 text-sm">
+                <p class="mb-2 text-muted-foreground">Vous êtes encore en internat ? On sait que c'est pas facile financièrement. Hippodoc vous accompagne avec un tarif adapté.</p>
+                <p class="mb-2 font-semibold text-purple-800">Avantage : 10€/mois au lieu de 29€ + 30 jours d'essai gratuit</p>
+                <p class="mb-3 text-xs text-muted-foreground">Pendant toute la durée de votre internat</p>
+                <p class="mb-1 text-xs font-semibold text-purple-700">Justificatifs acceptés :</p>
+                <ul class="mb-3 list-inside list-disc text-xs text-muted-foreground">
+                  <li>Carte d'étudiant en cours de validité</li>
+                  <li>Attestation d'inscription en internat</li>
+                  <li>Certificat de scolarité</li>
+                </ul>
+                <p class="text-xs text-muted-foreground">Comment en bénéficier ? Écris-nous à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a> — réponse sous 24h avec ton code promo personnalisé !</p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparatif détaillé -->
+    <div class="mx-auto mb-6 max-w-4xl">
+      <details class="group/compare mx-auto text-center">
+        <summary class="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold text-hippo-700 hover:text-hippo-800">
+          📊 Comparer les formules en détail
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-open/compare:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </summary>
+
+        <div class="mt-5 text-left">
+          <div class="mb-4 rounded-xl border-2 border-blue-200/50 bg-gradient-to-r from-blue-50/95 via-indigo-50/95 to-blue-50/95 px-4 py-3 text-center backdrop-blur-sm">
+            <p class="flex items-center justify-center gap-2 text-sm font-bold text-blue-700">
+              <span class="text-lg">💎</span>
+              <span>Meilleure offre : 19€/mois au lieu de 29€ (-34%)</span>
+              <span class="text-lg">💎</span>
+            </p>
+            <p class="mt-1 text-xs text-blue-600/80">Économisez 120€/an avec la facturation annuelle</p>
+          </div>
+
+          <div class="hidden overflow-x-auto rounded-2xl shadow-2xl shadow-hippo-500/10 md:block">
+            <table class="w-full border-collapse bg-white/90">
+              <thead>
+                <tr class="bg-gradient-to-r from-hippo-50/80 via-blue-50/80 to-hippo-50/80">
+                  <th class="border-b-2 border-hippo-200/50 px-6 py-3 text-left text-sm font-semibold text-hippo-800">Caractéristiques</th>
+                  <th class="border-b-2 border-hippo-200/50 px-6 py-3 text-center text-sm font-semibold text-hippo-800">Mensuel</th>
+                  <th class="border-b-2 border-hippo-200/50 bg-hippo-50/60 px-6 py-3 text-center text-sm font-semibold text-hippo-800">Annuel 💎</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-gray-100/50">
+                  <td class="px-6 py-3 text-sm font-medium text-hippo-700">Prix par mois</td>
+                  <td class="px-6 py-3 text-center text-sm font-semibold text-hippo-700">29€</td>
+                  <td class="bg-hippo-50/30 px-6 py-3 text-center text-sm font-bold text-hippo-700">19€</td>
+                </tr>
+                <tr class="border-b border-gray-100/50 bg-gray-50/50">
+                  <td class="px-6 py-3 text-sm font-medium text-hippo-700">Facturation</td>
+                  <td class="px-6 py-3 text-center text-sm text-muted-foreground">Mensuelle</td>
+                  <td class="bg-hippo-50/30 px-6 py-3 text-center text-sm text-muted-foreground">228€ une fois par an</td>
+                </tr>
+                <tr class="border-b border-gray-100/50">
+                  <td class="px-6 py-3 text-sm font-medium text-hippo-700">Économie</td>
+                  <td class="px-6 py-3 text-center text-sm text-muted-foreground">—</td>
+                  <td class="bg-hippo-50/30 px-6 py-3 text-center text-sm font-bold text-green-700">−34% (120€/an)</td>
+                </tr>
+                <tr class="border-b border-gray-100/50 bg-gray-50/50">
+                  <td class="px-6 py-3 text-sm font-medium text-hippo-700">Engagement</td>
+                  <td class="px-6 py-3 text-center text-sm text-muted-foreground">Aucun</td>
+                  <td class="bg-hippo-50/30 px-6 py-3 text-center text-sm text-muted-foreground">12 mois</td>
+                </tr>
+                <tr class="border-b border-gray-100/50">
+                  <td class="px-6 py-3 text-sm font-medium text-hippo-700">Essai gratuit</td>
+                  <td class="px-6 py-3 text-center text-green-600">✓</td>
+                  <td class="bg-hippo-50/30 px-6 py-3 text-center text-green-600">✓</td>
+                </tr>
+                <tr class="bg-gray-50/50">
+                  <td class="px-6 py-3 text-sm font-medium text-hippo-700">Toutes les fonctionnalités</td>
+                  <td class="px-6 py-3 text-center text-green-600">✓</td>
+                  <td class="bg-hippo-50/30 px-6 py-3 text-center text-green-600">✓</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Version mobile -->
+          <div class="space-y-4 md:hidden">
+            <div class="rounded-2xl border border-hippo-100 bg-white/80 p-4">
+              <h4 class="mb-3 text-lg font-bold text-hippo-700">Mensuel</h4>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-muted-foreground">Prix par mois</span><span class="font-semibold text-hippo-700">29€</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Facturation</span><span>Mensuelle</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Économie</span><span class="text-muted-foreground">—</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Engagement</span><span>Aucun</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Essai gratuit</span><span class="text-green-600">✓</span></div>
+              </div>
+            </div>
+            <div class="rounded-2xl border border-hippo-200 bg-white/80 p-4">
+              <div class="mb-3 flex items-center gap-2">
+                <h4 class="text-lg font-bold text-hippo-700">Annuel</h4>
+                <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">💎 Meilleure offre</span>
+              </div>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-muted-foreground">Prix par mois</span><span class="font-bold text-hippo-700">19€</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Facturation</span><span>228€ une fois par an</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Économie</span><span class="font-bold text-green-700">−34% (120€/an)</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Engagement</span><span>12 mois</span></div>
+                <div class="flex justify-between"><span class="text-muted-foreground">Essai gratuit</span><span class="text-green-600">✓</span></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-6 text-center text-xs text-muted-foreground">✓ Prix TTC · Sans frais cachés</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- Inclus dans toutes les offres -->
+    <div class="mx-auto mb-12 max-w-5xl rounded-2xl border border-slate-200/50 bg-white/60 p-6 backdrop-blur-lg">
+      <h3 class="mb-5 text-center text-lg font-semibold text-slate-900">Inclus dans toutes les offres</h3>
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {includedFeatures.map((text, i) => (
+          <div class:list={['flex items-center gap-3', i === includedFeatures.length - 1 ? 'col-span-1 justify-self-center sm:col-span-2 md:col-span-3 lg:col-span-4' : '']}>
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-hippo-500 to-hippo-600 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <span class="text-sm font-semibold text-slate-700">{text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,134 @@
+---
+/**
+ * Bandeau CTA — porté de src/components/landing/CTABanner.tsx.
+ * Layout desktop/mobile fusionné via classes responsives (au lieu du useIsMobile JS).
+ * Le CTA Calendly ("Réserve une démo") devient un lien mailto — widget déposé.
+ * Le PremiumTooltip RSPM devient un <details>/<summary> natif.
+ */
+import { APP_URL, CONTACT_EMAIL } from '@/lib/site';
+
+const guarantees = [
+  "Essai gratuit de 30 jours, sans prélèvement.",
+  "Sans engagement, annulable en un clic.",
+  "Données chiffrées : personne n'y a accès, pas même nous.",
+  "Pensé par un médecin, pour les médecins les plus exigeants.",
+];
+---
+
+<section class="relative overflow-hidden py-24">
+  <div class="container mx-auto max-w-6xl px-4">
+    <div class="relative overflow-hidden rounded-2xl border-2 border-hippo-200/50 bg-white/90 p-6 shadow-2xl shadow-hippo-500/10 backdrop-blur-xl md:p-10">
+      <div class="pointer-events-none absolute -left-20 -top-10 h-40 w-40 rounded-full bg-gradient-to-br from-green-300/20 to-hippo-400/10 blur-3xl"></div>
+      <div class="pointer-events-none absolute -bottom-10 -right-20 h-48 w-48 rounded-full bg-gradient-to-br from-hippo-400/10 to-hippo-500/20 blur-3xl"></div>
+
+      <div class="relative z-10">
+        <div class="mb-5 flex justify-center">
+          <span class="inline-flex items-center rounded-full border border-green-300/60 bg-gradient-to-r from-green-100 to-hippo-100 px-4 py-1.5 text-sm font-medium text-hippo-800">
+            <span class="mr-2">🎉</span>
+            Déjà 900+ médecins nous font confiance
+          </span>
+        </div>
+
+        <div class="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-start md:gap-10">
+          <!-- Texte + garanties -->
+          <div class="flex-[3] space-y-6 md:space-y-8">
+            <h2 class="text-2xl font-bold leading-tight text-gray-800 md:text-3xl lg:text-4xl">
+              On soigne mieux quand on <span class="bg-gradient-to-r from-hippo-500/90 to-hippo-600/90 bg-clip-text text-transparent">comprend ce qu'on gagne</span>
+            </h2>
+
+            <p class="text-base leading-relaxed text-gray-600 md:text-lg">
+              Des centaines de médecins ont retrouvé <strong class="font-bold text-gray-900">le pouvoir de décider</strong>, grâce à Hippodoc. <strong class="font-bold text-gray-900">Une vision claire</strong>, <strong class="font-bold text-gray-900">des finances maîtrisées</strong>, et <strong class="font-bold text-gray-900">la liberté</strong> d'investir, de voyager, ou d'épargner <strong class="font-bold text-gray-900">en toute confiance</strong>.
+            </p>
+
+            <div class="space-y-3 pt-2">
+              {guarantees.map((g) => (
+                <div class="flex items-center gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-green-600" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                  <span class="text-gray-700">{g}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Image + CTAs -->
+          <div class="flex-[2] space-y-6">
+            <div class="relative">
+              <img
+                src="/lovable-uploads/super-net-card-salaire.png"
+                alt="Dashboard médecin - Calcul Super-Net | Hippodoc"
+                class="relative rounded-2xl border-2 border-hippo-200/50 bg-white shadow-xl ring-2 ring-hippo-500/10 ring-offset-2"
+                loading="lazy"
+                decoding="async"
+                width="400"
+                height="300"
+              />
+
+              <details class="group/rspm mt-3">
+                <summary class="flex cursor-pointer list-none items-center justify-center gap-2 text-xs text-gray-600 transition-colors hover:text-hippo-600">
+                  <span class="relative flex h-2 w-2">
+                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                  </span>
+                  <span class="font-medium">Compatible RSPM</span>
+                  <span class="text-gray-500" aria-hidden="true">·</span>
+                  <span class="underline decoration-dotted underline-offset-2">En savoir plus</span>
+                </summary>
+                <div class="mt-3 space-y-2.5 rounded-xl border border-hippo-100 bg-slate-900 p-4 text-left shadow-lg">
+                  <div class="flex items-center gap-2">
+                    <div class="rounded-full bg-green-100 p-1.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-700" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    </div>
+                    <h4 class="text-sm font-semibold text-white">Mode RSPM Intégré</h4>
+                  </div>
+                  <p class="text-xs leading-relaxed text-gray-200">
+                    Le RSPM (Régime Simplifié des Professions Médicales) propose des cotisations sociales réduites et une gestion administrative simplifiée, avec des taux progressifs :
+                  </p>
+                  <ul class="space-y-1.5 text-xs">
+                    <li class="flex items-center gap-2">
+                      <span class="whitespace-nowrap rounded-md bg-green-500/20 px-2 py-0.5 font-medium text-green-300">&lt; 19 000€/an</span>
+                      <span class="text-gray-200">→ 13,5%</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <span class="whitespace-nowrap rounded-md bg-orange-500/20 px-2 py-0.5 font-medium text-orange-300">19-38k€/an</span>
+                      <span class="text-gray-200">→ 21,2%</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                      <span class="whitespace-nowrap rounded-md bg-blue-500/20 px-2 py-0.5 font-medium text-blue-300">&gt; 38 000€/an</span>
+                      <span class="text-gray-200">→ PAMC (régime classique)</span>
+                    </li>
+                  </ul>
+                  <p class="border-t border-gray-600/30 pt-2 text-xs italic text-gray-300">
+                    Idéal si tu débutes ou en début d'activité libérale
+                  </p>
+                </div>
+              </details>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <a
+                href={`${APP_URL}/auth?tab=signup`}
+                data-track="cta_signup_cta_banner"
+                class="inline-flex h-14 items-center justify-center rounded-lg bg-gradient-to-r from-hippo-500 to-hippo-600 text-base font-semibold text-white shadow-lg shadow-hippo-500/30 transition-all hover:from-hippo-600 hover:to-hippo-700 hover:shadow-xl"
+              >
+                Essai gratuit 30 jours
+              </a>
+
+              <a
+                href={`mailto:${CONTACT_EMAIL}?subject=Demande%20de%20d%C3%A9mo%20Hippodoc`}
+                data-track="cta_demo_calendly"
+                class="flex h-11 items-center justify-center gap-2 text-sm font-normal text-hippo-600 transition-colors hover:text-hippo-700 hover:underline"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                Demander une démo (par email)
+              </a>
+
+              <p class="mt-1 text-center text-xs text-muted-foreground">
+                <span class="font-medium text-hippo-700">Démo personnalisée</span> avec le fondateur (médecin)
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

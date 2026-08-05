@@ -1,0 +1,255 @@
+---
+/**
+ * Hero — porté de src/components/landing/HeroSection.tsx (+ RevenueHighlight.tsx).
+ * Zéro JS : lightbox et animations d'entrée framer-motion supprimées, remplacées
+ * par des transitions CSS pures (hover) et une apparition en fondu au chargement.
+ * Image "Dashboard" = LCP : chargement eager + fetchpriority="high" + srcset AVIF/WebP.
+ */
+import { APP_URL, PRODUCT_DEFINITION } from '@/lib/site';
+
+const profiles = [
+  { label: 'Interne' },
+  { label: 'Remplaçant' },
+  { label: 'Cabinet propre' },
+  { label: 'Collaborateur' },
+  { label: 'Vacations' },
+  { label: 'Salarié' },
+  { label: 'Activité mixte' },
+];
+
+const partners = [
+  { name: 'BPI France', logo: '/lovable-uploads/16d4c030-1924-4039-8f00-20e4071c67c2.png', alt: 'BPI France' },
+  { name: 'La French Care', logo: '/lovable-uploads/43467e81-ab44-4074-a25b-78e24545eb5b.png', alt: 'La French Care' },
+  { name: 'Région IDF', logo: '/lovable-uploads/logo-region-idf.png', alt: 'Région Île-de-France' },
+  { name: 'Doctripper', logo: '/lovable-uploads/doctripper-logo.png', alt: 'Doctripper' },
+  { name: 'AIMGL', logo: '/lovable-uploads/aimgl-logo.png', alt: 'AIMGL' },
+  { name: 'SILR', logo: '/lovable-uploads/silr-logo.jpg', alt: 'SILR — Syndicat des Internes du Languedoc-Roussillon' },
+  { name: 'CRP IMG', logo: '/lovable-uploads/crp-img-logo.png', alt: 'CRP IMG - Internes de Médecine Générale de Poitiers' },
+  { name: 'SIOI', logo: '/lovable-uploads/sioi-logo.jpg', alt: "SIOI - Syndicat des Internes de l'Océan Indien" },
+];
+---
+
+<section id="hero" class="relative overflow-hidden py-16 md:py-20">
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-hippo-50/60 via-white/80 to-hippo-100/40"></div>
+  <div class="pointer-events-none absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-hippo-200/60 to-hippo-300/40 opacity-50 blur-3xl"></div>
+  <div class="pointer-events-none absolute left-0 top-0 h-1/2 w-1/2 translate-x-1/4 -translate-y-1/4 rounded-full bg-gradient-to-br from-hippo-100/40 to-hippo-200/30 opacity-30 blur-3xl"></div>
+
+  <div class="container relative z-10">
+    <div class="flex flex-col items-center gap-12 md:grid md:grid-cols-2">
+      <!-- Colonne texte -->
+      <div class="order-1 animate-fade-in space-y-6 md:order-1 md:space-y-8">
+        <div class="relative inline-flex items-center">
+          <div class="absolute inset-0 rounded-full bg-gradient-to-r from-hippo-400/20 to-hippo-500/20 blur-lg"></div>
+          <span class="relative inline-flex items-center rounded-full border border-hippo-300/50 bg-gradient-to-r from-hippo-50 to-hippo-100/80 px-4 py-2 text-sm font-semibold text-hippo-700 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-hippo-600" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Plus de 900 médecins nous font confiance
+          </span>
+        </div>
+
+        <h1 class="text-4xl font-bold leading-tight tracking-tight text-hippo-800 md:text-5xl">
+          Ton activité médicale, <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">sous contrôle.</span>
+        </h1>
+
+        <p class="text-lg leading-relaxed text-muted-foreground md:text-xl">
+          Le cockpit financier des médecins qui calcule tout pour toi.
+        </p>
+
+        <!-- GEO : définition produit reprise mot pour mot (site.ts) -->
+        <p class="max-w-xl text-sm leading-relaxed text-muted-foreground/80">
+          {PRODUCT_DEFINITION}
+        </p>
+
+        <div class="space-y-2">
+          <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Quel que soit ton mode d'exercice
+          </p>
+          <div class="flex flex-wrap gap-2">
+            {profiles.map((profile) => (
+              <span class="inline-flex items-center rounded-full border border-hippo-200/50 bg-gradient-to-r from-hippo-50/90 to-hippo-100/90 px-2.5 py-1.5 shadow-sm backdrop-blur-sm sm:px-3">
+                <span class="text-xs font-medium text-hippo-700">{profile.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <a
+            href={`${APP_URL}/auth?tab=signup`}
+            data-track="cta_signup_hero"
+            class="group inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-hippo-500 to-hippo-600 px-6 py-3.5 text-lg font-semibold text-white shadow-lg shadow-hippo-500/30 transition-all hover:-translate-y-0.5 hover:from-hippo-600 hover:to-hippo-700 hover:shadow-xl hover:shadow-hippo-500/40 sm:w-auto"
+          >
+            Commencer l'essai gratuit
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+
+          <a
+            href="/simulateur"
+            data-track="cta_simulator"
+            class="group inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-hippo-600 transition-colors hover:text-hippo-700"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+            Simuler mes revenus gratuitement
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+
+          <div class="flex flex-wrap justify-center gap-2 sm:justify-start">
+            <span class="inline-flex items-center rounded-full border border-green-200/50 bg-gradient-to-r from-green-50/90 to-emerald-50/90 px-2.5 py-1.5 shadow-sm backdrop-blur-sm sm:px-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5 shrink-0 text-green-600" aria-hidden="true"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-xs font-medium text-green-700">
+                <span class="sm:hidden">Gratuit 30j</span>
+                <span class="hidden sm:inline">Essai gratuit 30j</span>
+              </span>
+            </span>
+            <span class="inline-flex items-center rounded-full border border-green-200/50 bg-gradient-to-r from-green-50/90 to-emerald-50/90 px-2.5 py-1.5 shadow-sm backdrop-blur-sm sm:px-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5 shrink-0 text-green-600" aria-hidden="true"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-xs font-medium text-green-700">Toutes les fonctionnalités</span>
+            </span>
+            <span class="inline-flex items-center rounded-full border border-green-200/50 bg-gradient-to-r from-green-50/90 to-emerald-50/90 px-2.5 py-1.5 shadow-sm backdrop-blur-sm sm:px-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5 shrink-0 text-green-600" aria-hidden="true"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-xs font-medium text-green-700">Annulable à tout moment</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne images -->
+      <div class="relative order-2 mt-16 mr-8 md:order-2 md:mr-16 md:mt-0 min-[400px]:mr-12 xl:mr-24">
+        <div class="absolute inset-0 rotate-6 scale-105 rounded-lg bg-gradient-to-r from-hippo-500 to-hippo-400 opacity-30 blur-xl"></div>
+        <div class="absolute inset-0 -rotate-3 scale-95 rounded-lg bg-gradient-to-br from-hippo-100 to-white opacity-80 blur"></div>
+
+        <!-- Dashboard — image LCP -->
+        <div class="group relative z-50 overflow-hidden rounded-xl border border-border/50 bg-white shadow-2xl transition-transform duration-300 hover:-translate-y-2 hover:scale-[1.08]">
+          <picture>
+            <source
+              type="image/avif"
+              srcset="/lovable-uploads/hero-dashboard-4-640.avif 640w, /lovable-uploads/hero-dashboard-4-960.avif 960w, /lovable-uploads/hero-dashboard-4.avif 1920w"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            <source
+              type="image/webp"
+              srcset="/lovable-uploads/hero-dashboard-4-640.webp 640w, /lovable-uploads/hero-dashboard-4-960.webp 960w, /lovable-uploads/hero-dashboard-4.webp 1920w"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            <img
+              src="/lovable-uploads/hero-dashboard-4.png"
+              alt="Tableau de bord gestion activité médicale - Hippodoc"
+              class="h-auto w-full"
+              width="1920"
+              height="957"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
+          <span class="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold text-hippo-700 shadow backdrop-blur-sm">Dashboard</span>
+        </div>
+
+        <!-- Calendrier -->
+        <div class="group absolute -top-8 -right-8 z-40 w-[90%] overflow-hidden rounded-xl border border-border/50 bg-white shadow-2xl transition-transform duration-300 hover:-translate-y-2 hover:scale-[1.08]">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="/lovable-uploads/hero-calendar-960.webp 960w, /lovable-uploads/hero-calendar.webp 1920w"
+              sizes="(max-width: 768px) 90vw, 45vw"
+            />
+            <img src="/lovable-uploads/hero-calendar.png" alt="Calendrier planification activité médicale - Hippodoc" class="h-auto w-full" width="1920" height="972" loading="eager" decoding="async" />
+          </picture>
+          <span class="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold text-hippo-700 shadow backdrop-blur-sm">Calendrier</span>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="group absolute -top-16 -right-16 z-30 w-[85%] overflow-hidden rounded-xl border border-border/50 bg-white shadow-2xl transition-transform duration-300 hover:-translate-y-2 hover:scale-[1.08]">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="/lovable-uploads/hero-statistics-960.webp 960w, /lovable-uploads/hero-statistics.webp 1920w"
+              sizes="(max-width: 768px) 85vw, 42vw"
+            />
+            <img src="/lovable-uploads/hero-statistics.png" alt="Statistiques revenus activité médicale - Hippodoc" class="h-auto w-full" width="1920" height="973" loading="lazy" decoding="async" />
+          </picture>
+          <span class="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold text-hippo-700 shadow backdrop-blur-sm">Statistiques</span>
+        </div>
+
+        <!-- Par médecin -->
+        <div class="group absolute -top-24 -right-24 z-20 w-[75%] overflow-hidden rounded-xl border border-border/50 bg-white shadow-2xl transition-transform duration-300 hover:-translate-y-2 hover:scale-[1.08]">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="/lovable-uploads/hero-par-medecin-960.webp 960w, /lovable-uploads/hero-par-medecin.webp 1920w"
+              sizes="(max-width: 768px) 75vw, 38vw"
+            />
+            <img src="/lovable-uploads/hero-par-medecin.png" alt="Suivi par lieu d'exercice - gestion activité médicale" class="h-auto w-full" width="1920" height="970" loading="lazy" decoding="async" />
+          </picture>
+          <span class="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold text-hippo-700 shadow backdrop-blur-sm">Par médecin</span>
+        </div>
+
+        <!-- Communauté -->
+        <div class="group absolute -top-32 -right-32 z-10 w-[70%] overflow-hidden rounded-xl border border-border/50 bg-white shadow-2xl transition-transform duration-300 hover:-translate-y-2 hover:scale-[1.08]">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="/lovable-uploads/hero-communaute-960.webp 960w, /lovable-uploads/hero-communaute.webp 1920w"
+              sizes="(max-width: 768px) 70vw, 35vw"
+            />
+            <img src="/lovable-uploads/hero-communaute.png" alt="Forum communauté médecins - Hippodoc" class="h-auto w-full" width="1920" height="971" loading="lazy" decoding="async" />
+          </picture>
+          <span class="absolute bottom-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold text-hippo-700 shadow backdrop-blur-sm">Communauté</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bandeau partenaires -->
+    <div class="mt-12 md:mt-16">
+      <div class="mb-4 flex items-center justify-center gap-3">
+        <div class="h-px w-12 bg-gradient-to-r from-transparent to-hippo-200"></div>
+        <span class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Soutenu par</span>
+        <div class="h-px w-12 bg-gradient-to-l from-transparent to-hippo-200"></div>
+      </div>
+
+      <div class="relative mx-auto max-w-4xl overflow-hidden">
+        <div class="pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-16 bg-gradient-to-r from-white to-transparent"></div>
+        <div class="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-16 bg-gradient-to-l from-white to-transparent"></div>
+
+        <div class="flex w-fit animate-marquee gap-12 hover:[animation-play-state:paused] motion-reduce:animate-none md:gap-16">
+          {[...partners, ...partners].map((partner) => (
+            <img
+              src={partner.logo}
+              alt={partner.alt}
+              class="h-8 w-auto shrink-0 grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100 sm:h-10 md:h-12"
+              loading="lazy"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue Highlight -->
+    <div class="mt-12 flex justify-center md:mt-16">
+      <div class="relative mx-auto w-full max-w-2xl px-4 py-8">
+        <div class="absolute inset-0" aria-hidden="true">
+          <svg width="100%" height="100%" viewBox="0 0 600 200" class="h-full w-full">
+            <path
+              d="M 550 100 C 550 30, 450 20, 300 20 C 150 20, 50 30, 50 100 C 50 170, 150 180, 300 180 C 450 180, 550 170, 550 100"
+              fill="none"
+              stroke-width="5"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-hippo-400/60"
+            />
+          </svg>
+        </div>
+        <div class="relative z-10 flex flex-col items-center">
+          <h2 class="mb-3 text-lg font-semibold text-hippo-800 md:text-xl">Votre vrai revenu</h2>
+          <div class="flex items-center gap-3 text-base font-semibold md:text-lg">
+            <span class="text-hippo-600">clair</span>
+            <span class="text-hippo-400">·</span>
+            <span class="text-hippo-600">super-net</span>
+            <span class="text-hippo-400">·</span>
+            <span class="text-hippo-600">précis</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

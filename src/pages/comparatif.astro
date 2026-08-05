@@ -1,0 +1,773 @@
+---
+/**
+ * /comparatif — porté verbatim depuis src/pages/comparatif.tsx (SPA source).
+ * Tableau desktop/mobile unifié en un seul <table> réel + overflow-x-auto
+ * (spec migration : pas de Tabs JS mobile). Tooltips → attribut title natif.
+ * Accordéon FAQ → <details>/<summary> natif. Zéro JS.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Icon, { type IconName } from '@/components/pages/Icon.astro';
+import { SITE_URL, APP_URL, LOGO_URL, DEFAULT_OG_IMAGE } from '@/lib/site';
+
+const LAST_UPDATED_LABEL = 'juin 2026';
+const LAST_UPDATED_ISO = '2026-06-24';
+
+type ToolKey = 'indy' | 'pennylane' | 'hiway' | 'hippodoc';
+
+type Tool = {
+  key: ToolKey;
+  name: string;
+  wordmark: string;
+  color: string;
+  tagline: string;
+  pitch: string;
+  bullets: string[];
+  cible: string;
+  icon: IconName;
+  url: string;
+};
+
+const TOOLS: Tool[] = [
+  {
+    key: 'indy',
+    name: 'Indy',
+    wordmark: 'Indy',
+    color: '#E72E77',
+    tagline: 'Comptabilité auto pour indépendants',
+    pitch:
+      "Logiciel de comptabilité en ligne basé à Lyon, lancé en 2016 (ex-Georges.tech). Indy revendique plus de 300 000 indépendants utilisateurs et 30 000 professionnels de santé clients.",
+    bullets: [
+      'Synchronisation bancaire + catégorisation automatique',
+      'Liasse 2035 et DSFU (URSSAF + retraite) télétransmises',
+      'Page santé dédiée : médecins, infirmiers, kinés…',
+    ],
+    cible: 'Indépendants BNC, dont médecins',
+    icon: 'calculator',
+    url: 'https://www.indy.fr/sante/',
+  },
+  {
+    key: 'pennylane',
+    name: 'Pennylane',
+    wordmark: 'Pennylane',
+    color: '#6366F1',
+    tagline: 'Compta + pilotage financier TPE/PME',
+    pitch:
+      "Plateforme française lancée en 2020, orientée TPE/PME et cabinets d'expertise comptable. Pennylane revendique plus d'1 million d'utilisateurs et 6 000 cabinets partenaires.",
+    bullets: [
+      'Pilotage trésorerie + facturation électronique (conforme 1er sept. 2026)',
+      'Pensé pour travailler avec un expert-comptable (binôme)',
+      'Multi-statuts : BNC, BIC, SAS, SARL, SCI…',
+    ],
+    cible: 'TPE / PME, cabinets comptables',
+    icon: 'briefcase',
+    url: 'https://www.pennylane.com/fr/tarifs',
+  },
+  {
+    key: 'hiway',
+    name: 'Hiway Care',
+    wordmark: 'Hiway Care',
+    color: '#F43F5E',
+    tagline: 'Offre tout-en-un médecins libéraux',
+    pitch:
+      "Lancé fin 2024 par le Dr Franck Ehooman (anesthésiste). Hiway Care réunit installation, comptabilité, optimisation du statut et investissement patrimonial pour les médecins libéraux.",
+    bullets: [
+      'Accompagnement humain : gestionnaire dédié inclus',
+      "Aide à l'installation + choix du statut juridique",
+      'Optimisation patrimoniale et investissement intégrés',
+    ],
+    cible: 'Médecins libéraux installés',
+    icon: 'shield-check',
+    url: 'https://hiway.fr/care',
+  },
+  {
+    key: 'hippodoc',
+    name: 'Hippodoc',
+    wordmark: 'Hippodoc',
+    color: '#1A8CFF',
+    tagline: 'Le cockpit financier des médecins',
+    pitch:
+      "Créé en 2024 par un médecin pour les médecins. Hippodoc pilote ton revenu net (Super-Net), tes URSSAF, ta CARMF, tes acomptes IR et tes déclarations, du remplaçant à l'installé.",
+    bullets: [
+      'Calcul URSSAF temps réel (RSPM < 38 k€ vs PAMC)',
+      'Super-Net mensuel + simulateur fiscal',
+      'PDSA Art. 151 ter + aide DSFU PAMC + 2035 + 2042',
+    ],
+    cible: 'Médecins uniquement (tous profils)',
+    icon: 'stethoscope',
+    url: 'https://hippodoc.fr',
+  },
+];
+
+const VERDICTS: { key: ToolKey; label: string; line: string }[] = [
+  { key: 'indy', label: 'Le mieux pour tenir ta compta seul', line: "Si tu veux automatiser ta 2035 et tes télétransmissions sans expert-comptable." },
+  { key: 'pennylane', label: 'Le mieux avec un expert-comptable', line: "Si tu travailles déjà avec un cabinet comptable et veux une plateforme partagée." },
+  { key: 'hiway', label: "Le mieux pour t'installer accompagné", line: "Si tu démarres en libéral et veux un gestionnaire dédié + protection sociale." },
+  { key: 'hippodoc', label: 'Le mieux pour piloter ton Super-Net', line: "Si tu veux savoir ce qu'il te reste vraiment après URSSAF, CARMF et impôts." },
+];
+
+type Cell = boolean | 'partial' | string;
+type Row = { label: string; help?: string; values: Record<ToolKey, Cell> };
+type Group = { title: string; icon: IconName; rows: Row[] };
+
+const GROUPS: Group[] = [
+  {
+    title: 'Comptabilité & déclarations',
+    icon: 'calculator',
+    rows: [
+      {
+        label: 'Tenue de comptabilité BNC',
+        help: 'Saisie automatique des écritures via synchronisation bancaire.',
+        values: { indy: true, pennylane: true, hiway: true, hippodoc: false },
+      },
+      {
+        label: 'Liasse fiscale 2035 télétransmise',
+        values: { indy: true, pennylane: true, hiway: true, hippodoc: 'Aide' },
+      },
+      {
+        label: 'Aide à la déclaration 2042 / 2042 C-PRO',
+        values: { indy: 'partial', pennylane: 'partial', hiway: true, hippodoc: true },
+      },
+      {
+        label: 'DSFU PAMC (volet social URSSAF + retraite)',
+        help: 'Déclaration sociale unifiée des indépendants, propre aux PAMC.',
+        values: { indy: true, pennylane: 'partial', hiway: true, hippodoc: true },
+      },
+    ],
+  },
+  {
+    title: 'URSSAF, CARMF & pilotage',
+    icon: 'wallet',
+    rows: [
+      {
+        label: 'Calcul URSSAF temps réel (RSPM < 38 k€ vs PAMC)',
+        help: 'Distingue le régime simplifié des remplaçants (RSPM) du régime PAMC complet, automatiquement.',
+        values: { indy: 'partial', pennylane: false, hiway: 'partial', hippodoc: true },
+      },
+      {
+        label: 'Estimation IR + Super-Net (revenu net après impôts)',
+        help: "Ce qu'il te reste après URSSAF, CARMF et impôt sur le revenu.",
+        values: { indy: 'partial', pennylane: 'partial', hiway: 'partial', hippodoc: true },
+      },
+      {
+        label: 'Acomptes IR mensualisés (prélèvement à la source)',
+        values: { indy: 'partial', pennylane: 'partial', hiway: true, hippodoc: true },
+      },
+      {
+        label: 'Suivi CARMF (RID, ASV, retraite complémentaire)',
+        values: { indy: 'partial', pennylane: false, hiway: true, hippodoc: true },
+      },
+    ],
+  },
+  {
+    title: 'Spécifique métier médecin',
+    icon: 'stethoscope',
+    rows: [
+      {
+        label: 'PDSA Art. 151 ter (majorations exonérées + actes imposables)',
+        help: "Permanence des soins ambulatoires : seules les majorations de garde régulée sont exonérées d'IR.",
+        values: { indy: false, pennylane: false, hiway: false, hippodoc: true },
+      },
+      {
+        label: 'Gestion des rétrocessions versées / perçues',
+        values: { indy: 'partial', pennylane: 'partial', hiway: true, hippodoc: true },
+      },
+      {
+        label: 'Contrats de remplacement + fiches de passation',
+        values: { indy: false, pennylane: false, hiway: 'partial', hippodoc: true },
+      },
+      {
+        label: 'Salarié hospitalier + activité libérale mixte',
+        values: { indy: 'partial', pennylane: 'partial', hiway: 'partial', hippodoc: true },
+      },
+      {
+        label: 'Collaboration libérale (redevance L16/BG)',
+        values: { indy: 'partial', pennylane: 'partial', hiway: 'partial', hippodoc: true },
+      },
+    ],
+  },
+  {
+    title: 'Accompagnement & autres services',
+    icon: 'heart',
+    rows: [
+      {
+        label: 'Expert-comptable / gestionnaire dédié inclus',
+        values: { indy: 'Option', pennylane: 'Cabinet partenaire', hiway: true, hippodoc: false },
+      },
+      {
+        label: "Aide à l'installation (statut, CDOM, URSSAF)",
+        values: { indy: 'partial', pennylane: false, hiway: true, hippodoc: 'partial' },
+      },
+      {
+        label: 'Protection sociale / prévoyance intégrée',
+        values: { indy: false, pennylane: false, hiway: true, hippodoc: false },
+      },
+      {
+        label: 'Compte pro bancaire intégré',
+        values: { indy: true, pennylane: true, hiway: 'partial', hippodoc: false },
+      },
+    ],
+  },
+  {
+    title: 'Tarification (juin 2026)',
+    icon: 'sparkles',
+    rows: [
+      {
+        label: 'Offre gratuite',
+        values: { indy: 'Oui (Essentiel)', pennylane: false, hiway: false, hippodoc: false },
+      },
+      {
+        label: "Prix d'entrée payant",
+        values: { indy: 'Dès 9 € HT/mois', pennylane: 'Dès 14 € HT/mois', hiway: 'Sur devis', hippodoc: '19 €/mois (annuel)' },
+      },
+      {
+        label: 'Offre couvrant la 2035 télétransmise',
+        values: { indy: 'Dès 22 € HT/mois', pennylane: 'Sur devis', hiway: 'Inclus', hippodoc: '—' },
+      },
+      {
+        label: 'Essai / garantie',
+        values: { indy: '30 j satisfait·remboursé', pennylane: 'Démo', hiway: 'Démo', hippodoc: '30 j essai' },
+      },
+    ],
+  },
+];
+
+const PERSONAS: { name: string; subtitle: string; icon: IconName; need: string; reco: string }[] = [
+  {
+    name: 'Sarah, remplaçante depuis 6 mois',
+    subtitle: 'Régime micro-BNC, 2-3 cabinets',
+    icon: 'graduation-cap',
+    need: 'Elle veut savoir combien lui restera après URSSAF + CARMF, suivre ses rétrocessions et préparer sa première 2042.',
+    reco: 'Hippodoc en cockpit principal. Indy si elle veut aussi tenir sa 2035 (utile dès le passage au réel).',
+  },
+  {
+    name: 'Thomas, installé en cabinet propre',
+    subtitle: 'BNC réel, secteur 1, 2 salariés',
+    icon: 'building-2',
+    need: 'Liasse 2035, DAS2, gestion des charges, suivi de trésorerie, déclarations sociales, et un vrai pilotage de revenu net.',
+    reco: 'Indy ou Pennylane pour la tenue compta (selon préférence cabinet/autonome). Hippodoc pour piloter Super-Net + URSSAF + acomptes IR.',
+  },
+  {
+    name: 'Léa, collaboratrice libérale',
+    subtitle: 'Encaissement direct + redevance L16/BG',
+    icon: 'heart',
+    need: 'Gérer sa redevance versée au titulaire, ses encaissements directs, ses cotisations PAMC dès le 1er euro.',
+    reco: 'Hippodoc gère nativement la collaboration libérale (redevance L16/BG). Compléter avec Indy si besoin de la 2035 télétransmise.',
+  },
+  {
+    name: 'Karim, hospitalier qui démarre des gardes',
+    subtitle: 'Salarié + PDSA régulé exonéré',
+    icon: 'stethoscope',
+    need: 'Distinguer ses majorations PDSA exonérées Art. 151 ter de ses actes imposables, anticiper le seuil RSPM 38 k€.',
+    reco: 'Hippodoc : seule plateforme avec un moteur PDSA Art. 151 ter et auto-switch RSPM → PAMC.',
+  },
+];
+
+const PRICING: { key: ToolKey; entry: string; popular: string; engagement: string; trial: string; note: string }[] = [
+  { key: 'indy', entry: '0 € (Essentiel)', popular: "Dès 22 € HT/mois (Premium EI à l'IR)", engagement: 'Sans engagement', trial: '30 j satisfait·remboursé', note: 'Plan Plus dès 9 € HT/mois (sans déclarations fiscales). Tarifs publics constatés en juin 2026.' },
+  { key: 'pennylane', entry: 'Dès 14 € HT/mois', popular: 'Sur devis selon besoin', engagement: 'Sans engagement', trial: 'Démo commerciale', note: "Tarif d'entrée constaté juin 2026 (source tiers). Tarifs détaillés non publics, communiqués sur devis." },
+  { key: 'hiway', entry: 'Sur devis', popular: 'Accompagnement humain inclus', engagement: 'Sans engagement', trial: 'Démo commerciale', note: 'Tarifs non publics sur hiway.fr/care en juin 2026. À demander à un conseiller.' },
+  { key: 'hippodoc', entry: '19 €/mois (annuel)', popular: '29 €/mois (mensuel)', engagement: 'Sans engagement', trial: "30 jours d'essai", note: 'Carte requise. Aucun engagement, résiliable en 1 clic.' },
+];
+
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: 'Hippodoc remplace-t-il Indy ou Pennylane ?',
+    a: "Non. Hippodoc ne tient pas ta comptabilité 2035 à ta place. Il est complémentaire : il pilote ton revenu net, tes cotisations URSSAF/CARMF et tes déclarations, là où Indy ou Pennylane gèrent ta comptabilité brute.",
+  },
+  {
+    q: 'Puis-je utiliser Hippodoc en plus de mon expert-comptable ?',
+    a: "Oui, c'est même un usage très fréquent. Ton expert-comptable produit la 2035, Hippodoc t'aide à anticiper ton Super-Net, tes URSSAF et tes acomptes IR au mois le mois.",
+  },
+  {
+    q: 'Hippodoc est-il agréé OGA / AGA ?',
+    a: "Hippodoc n'est pas un organisme de gestion agréé (OGA/AGA). L'adhésion à une AGA est une démarche distincte. Hippodoc s'intègre dans ton flux mais ne remplace ni l'AGA, ni la liasse 2035 produite par toi-même ou ton comptable.",
+  },
+  {
+    q: 'Hippodoc fait-il la télétransmission FSE / SESAM-Vitale ?',
+    a: "Non. La télétransmission des feuilles de soins est gérée par les logiciels métier (Doctolib, Weda, MediStory, Maiia, Crossway, AlmaPro…). Hippodoc se concentre sur le pilotage financier en aval de l'encaissement.",
+  },
+  {
+    q: 'Quelle est la différence entre Hippodoc et Hiway Care ?',
+    a: "Hiway Care est une offre globale incluant l'installation, le statut juridique, la protection sociale et un gestionnaire humain dédié. Hippodoc est centré sur le pilotage fiscal et financier (URSSAF, Super-Net, déclarations, PDSA), sans accompagnement humain personnalisé. Les deux peuvent coexister.",
+  },
+  {
+    q: 'Hippodoc gère-t-il la TVA ?',
+    a: "Non, et c'est volontaire : les actes médicaux pratiqués par les médecins sont exonérés de TVA en application de l'article 261-4-1° du Code général des impôts. Hippodoc ne calcule donc pas la TVA pour les profils médecins.",
+  },
+  {
+    q: 'Puis-je migrer mes données depuis Indy ou Pennylane vers Hippodoc ?',
+    a: "Hippodoc ne reprend pas la tenue comptable. Tu peux donc continuer d'utiliser Indy ou Pennylane en parallèle. Côté Hippodoc, l'import d'historique se fait via un fichier Excel structuré (modèle fourni) — utile si tu veux retrouver ton Super-Net mois par mois sur plusieurs années.",
+  },
+  {
+    q: 'Hippodoc gère-t-il les médecins installés et pas seulement les remplaçants ?',
+    a: "Oui. Hippodoc couvre les remplaçants, les installés en cabinet propre, les collaborateurs libéraux, les activités mixtes (libéral + salarié) et les médecins hospitaliers ou en centres de santé. Le moteur fiscal s'adapte automatiquement au profil.",
+  },
+];
+
+const canonicalUrl = `${SITE_URL}/comparatif`;
+const title = 'Comparatif Indy, Pennylane, Hiway Care vs Hippodoc — Médecin libéral 2026';
+const description =
+  'Comparatif factuel des outils de gestion pour médecin libéral en 2026 : Indy, Pennylane, Hiway Care, Hippodoc. Fonctions, tarifs, profils — qui fait quoi.';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Comparatif', item: canonicalUrl },
+  ],
+};
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: LAST_UPDATED_ISO,
+  dateModified: LAST_UPDATED_ISO,
+  mainEntityOfPage: canonicalUrl,
+  author: { '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Hippodoc', url: SITE_URL },
+  publisher: {
+    '@type': 'Organization',
+    '@id': `${SITE_URL}/#organization`,
+    name: 'Hippodoc',
+    logo: { '@type': 'ImageObject', url: LOGO_URL },
+  },
+  image: DEFAULT_OG_IMAGE,
+};
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Outils de gestion pour médecins libéraux comparés',
+  itemListElement: TOOLS.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'SoftwareApplication',
+      name: t.name,
+      applicationCategory: 'BusinessApplication',
+      description: t.tagline,
+      url: t.url,
+    },
+  })),
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/comparatif"
+  ogType="article"
+  ogImageAlt="Comparatif Indy, Pennylane, Hiway Care et Hippodoc pour médecin libéral"
+  jsonLd={[breadcrumbSchema, articleSchema, itemListSchema, faqSchema]}
+>
+  <Fragment slot="head">
+    <meta property="article:published_time" content={LAST_UPDATED_ISO} />
+    <meta property="article:modified_time" content={LAST_UPDATED_ISO} />
+  </Fragment>
+
+  <Header />
+
+  <main>
+    <!-- ═════════════════ HERO ═════════════════ -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-hippo-50/60 via-white to-white pb-16 pt-28 md:pb-24 md:pt-36">
+      <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div class="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-hippo-200/40 blur-3xl"></div>
+        <div class="absolute -right-20 top-40 h-72 w-72 rounded-full bg-indigo-200/30 blur-3xl"></div>
+      </div>
+
+      <div class="container relative max-w-6xl">
+        <div class="mx-auto max-w-4xl text-center">
+          <nav aria-label="Fil d'Ariane" class="mb-5 text-sm text-slate-500">
+            <ol class="flex flex-wrap items-center justify-center gap-1">
+              <li><a href="/" class="hover:text-hippo-700">Accueil</a></li>
+              <li aria-hidden="true">›</li>
+              <li class="text-slate-700" aria-current="page">Comparatif</li>
+            </ol>
+          </nav>
+
+          <span class="mb-5 inline-flex items-center rounded-full border border-hippo-200 bg-white/70 px-3 py-1 text-xs font-semibold text-hippo-700 backdrop-blur">
+            <Icon name="sparkles" class="mr-1.5 h-3 w-3" />
+            Comparatif indépendant · mis à jour {LAST_UPDATED_LABEL}
+          </span>
+
+          <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-hippo-900 md:text-6xl">
+            <span class="font-bold tracking-tight" style={`color:${TOOLS[0].color}`}>{TOOLS[0].wordmark}</span>,{' '}
+            <span class="font-bold tracking-tight" style={`color:${TOOLS[1].color}`}>{TOOLS[1].wordmark}</span>,{' '}
+            <span class="font-bold tracking-tight" style={`color:${TOOLS[2].color}`}>{TOOLS[2].wordmark}</span>{' '}
+            ou <span class="font-bold tracking-tight" style={`color:${TOOLS[3].color}`}>{TOOLS[3].wordmark}</span> ?
+            <span class="mt-4 block text-2xl font-medium text-slate-700 md:text-3xl">
+              Quel outil de gestion choisir quand on est médecin libéral en 2026 ?
+            </span>
+          </h1>
+          <p class="mx-auto mb-8 max-w-3xl text-lg text-slate-600">
+            Tu hésites entre plusieurs solutions pour gérer ta comptabilité, tes cotisations et tes déclarations ?
+            Voici un comparatif <strong>100 % factuel</strong>, sourcé sur les sites officiels des éditeurs — pas un commercial déguisé.
+          </p>
+
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-slate-500">
+            <a href="#en-bref" class="transition-colors hover:text-hippo-700">En 30 secondes</a>
+            <span aria-hidden="true">·</span>
+            <a href="#tableau" class="transition-colors hover:text-hippo-700">Tableau comparatif</a>
+            <span aria-hidden="true">·</span>
+            <a href="#profils" class="transition-colors hover:text-hippo-700">Par profil</a>
+            <span aria-hidden="true">·</span>
+            <a href="#tarifs" class="transition-colors hover:text-hippo-700">Tarifs</a>
+            <span aria-hidden="true">·</span>
+            <a href="#faq" class="transition-colors hover:text-hippo-700">FAQ</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════ TL;DR ═════════════════ -->
+    <section id="en-bref" class="bg-white py-16 md:py-20">
+      <div class="container max-w-6xl">
+        <div class="mb-12 text-center">
+          <span class="mb-3 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">En 30 secondes</span>
+          <h2 class="text-3xl font-bold text-hippo-900 md:text-4xl">À chaque besoin son outil</h2>
+          <p class="mx-auto mt-3 max-w-2xl text-slate-600">
+            Aucune solution n'est universellement meilleure. Voici ce que chacune fait <em>vraiment</em> bien.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {VERDICTS.map((v) => {
+            const tool = TOOLS.find((t) => t.key === v.key)!;
+            const isHippodoc = v.key === 'hippodoc';
+            return (
+              <div class={`h-full rounded-2xl border p-6 ${isHippodoc ? 'border-hippo-300 bg-gradient-to-br from-hippo-50/80 to-white shadow-md shadow-hippo-100/50' : 'border-slate-200 transition-colors hover:border-slate-300'}`}>
+                <span class="font-bold tracking-tight text-base" style={`color:${tool.color}`}>{tool.wordmark}</span>
+                <h3 class={`mt-3 text-base font-bold ${isHippodoc ? 'text-hippo-900' : 'text-slate-900'}`}>{v.label}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-slate-600">{v.line}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════ MARCHÉ EN BREF ═════════════════ -->
+    <section id="marche" class="bg-gradient-to-b from-slate-50/50 to-white py-16 md:py-24">
+      <div class="container max-w-6xl">
+        <div class="mb-12 text-center">
+          <span class="mb-3 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Le marché en bref</span>
+          <h2 class="text-3xl font-bold text-hippo-900 md:text-4xl">Les quatre solutions, en détail</h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {TOOLS.map((tool) => {
+            const isHippodoc = tool.key === 'hippodoc';
+            return (
+              <div class={`h-full overflow-hidden rounded-2xl border ${isHippodoc ? 'border-hippo-300 bg-gradient-to-br from-hippo-50/60 to-white shadow-lg shadow-hippo-100/40' : 'border-slate-200 bg-white'}`}>
+                <div class="h-1" style={`background-color:${tool.color}`} aria-hidden="true"></div>
+                <div class="p-6">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <span class="font-bold tracking-tight text-2xl md:text-3xl" style={`color:${tool.color}`}>{tool.wordmark}</span>
+                      <p class="mt-2 text-sm text-slate-600">{tool.tagline}</p>
+                    </div>
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl" style={`background-color:${tool.color}15; color:${tool.color}`}>
+                      <Icon name={tool.icon} class="h-5 w-5" />
+                    </span>
+                  </div>
+                  <p class="mb-4 mt-4 text-sm leading-relaxed text-slate-700">{tool.pitch}</p>
+                  <ul class="space-y-2">
+                    {tool.bullets.map((b) => (
+                      <li class="flex items-start gap-2 text-sm text-slate-700">
+                        <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div class="mt-5 border-t border-slate-100 pt-4">
+                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-normal text-slate-700">
+                      Cible : {tool.cible}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════ TABLEAU COMPARATIF ═════════════════ -->
+    <section id="tableau" class="bg-white py-16 md:py-24">
+      <div class="container max-w-6xl">
+        <div class="mb-12 text-center">
+          <span class="mb-3 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Tableau comparatif</span>
+          <h2 class="text-3xl font-bold text-hippo-900 md:text-4xl">Qui fait quoi, fonctionnalité par fonctionnalité</h2>
+          <p class="mx-auto mt-3 max-w-2xl text-slate-600">
+            Survole les <Icon name="info" class="inline h-3.5 w-3.5 text-slate-400" /> pour des précisions. Cellules « Partiel » : la fonction existe mais n'est pas le cœur de l'offre.
+          </p>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <table class="w-full min-w-[760px] border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 bg-white">
+                <th scope="col" class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Fonctionnalité</th>
+                {TOOLS.map((t) => (
+                  <th scope="col" class={`px-3 py-4 text-center ${t.key === 'hippodoc' ? 'bg-hippo-50/60' : ''}`}>
+                    <span class="font-bold tracking-tight text-base" style={`color:${t.color}`}>{t.wordmark}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {GROUPS.map((group, gi) => (
+              <tbody class={gi < GROUPS.length - 1 ? 'border-b border-slate-200' : ''}>
+                <tr class="bg-slate-50/80">
+                  <th scope="colgroup" colspan={TOOLS.length + 1} class="px-5 py-3 text-left text-sm font-semibold text-hippo-900">
+                    <span class="inline-flex items-center gap-2">
+                      <Icon name={group.icon} class="h-4 w-4 text-hippo-600" />
+                      {group.title}
+                    </span>
+                  </th>
+                </tr>
+                {group.rows.map((row, ri) => (
+                  <tr class={`border-b border-slate-100 last:border-0 ${ri % 2 === 1 ? 'bg-slate-50/40' : ''}`}>
+                    <th scope="row" class="px-5 py-3 text-left text-sm font-normal text-slate-800">
+                      {row.label}
+                      {row.help && (
+                        <span class="ml-1 inline-flex align-middle" title={row.help} tabindex="0">
+                          <Icon name="info" class="h-3.5 w-3.5 text-slate-400" />
+                          <span class="sr-only"> — {row.help}</span>
+                        </span>
+                      )}
+                    </th>
+                    {TOOLS.map((t) => {
+                      const cell = row.values[t.key];
+                      const isHippodoc = t.key === 'hippodoc';
+                      return (
+                        <td class={`px-3 py-3 text-center ${isHippodoc ? 'bg-hippo-50/40' : ''}`}>
+                          {cell === true ? (
+                            <Icon name="check" class="inline h-5 w-5 text-emerald-600" />
+                          ) : cell === false ? (
+                            <Icon name="minus" class="inline h-5 w-5 text-slate-300" />
+                          ) : cell === 'partial' ? (
+                            <span class="inline-flex items-center gap-1 text-xs font-medium text-amber-700">
+                              <span class="h-2 w-2 rounded-full bg-amber-500" aria-hidden="true"></span>
+                              Partiel
+                            </span>
+                          ) : (
+                            <span class={`text-xs leading-snug ${isHippodoc ? 'font-semibold text-hippo-700' : 'text-slate-700'}`}>{cell}</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+          </table>
+        </div>
+
+        <p class="mx-auto mt-4 max-w-3xl text-center text-xs text-slate-500">
+          <Icon name="check" class="inline h-3 w-3 text-emerald-600" /> Couvert · <span class="text-amber-700">●</span> Partiel · <Icon name="minus" class="inline h-3 w-3 text-slate-300" /> Non couvert.
+          Texte court = précision factuelle. Sources : sites officiels des éditeurs ({LAST_UPDATED_LABEL}).
+        </p>
+      </div>
+    </section>
+
+    <!-- ═════════════════ PERSONAS ═════════════════ -->
+    <section id="profils" class="bg-gradient-to-b from-slate-50/50 to-white py-16 md:py-24">
+      <div class="container max-w-6xl">
+        <div class="mb-12 text-center">
+          <span class="mb-3 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">À chaque profil son outil</span>
+          <h2 class="text-3xl font-bold text-hippo-900 md:text-4xl">Quatre médecins, quatre besoins</h2>
+          <p class="mx-auto mt-3 max-w-2xl text-slate-600">
+            Hippodoc est souvent <strong>complémentaire</strong> d'un outil de comptabilité — pas un substitut.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {PERSONAS.map((p) => (
+            <div class="h-full rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-hippo-200">
+              <div class="flex items-center gap-3">
+                <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-hippo-100 text-hippo-700">
+                  <Icon name={p.icon} class="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 class="text-lg font-bold text-hippo-900">{p.name}</h3>
+                  <p class="mt-0.5 text-xs text-slate-500">{p.subtitle}</p>
+                </div>
+              </div>
+              <div class="mt-4 space-y-3">
+                <p class="text-sm leading-relaxed text-slate-700">
+                  <span class="font-semibold text-hippo-800">Son besoin : </span>{p.need}
+                </p>
+                <div class="rounded-lg border border-hippo-100 bg-hippo-50/60 p-3">
+                  <p class="text-sm leading-relaxed text-hippo-900">
+                    <span class="font-semibold">Notre lecture : </span>{p.reco}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════ TARIFS ═════════════════ -->
+    <section id="tarifs" class="bg-white py-16 md:py-24">
+      <div class="container max-w-6xl">
+        <div class="mb-12 text-center">
+          <span class="mb-3 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Tarifs {LAST_UPDATED_LABEL}</span>
+          <h2 class="text-3xl font-bold text-hippo-900 md:text-4xl">Combien ça coûte vraiment ?</h2>
+          <p class="mx-auto mt-3 max-w-2xl text-slate-600">
+            Tarifs constatés sur les sites officiels en {LAST_UPDATED_LABEL}, susceptibles d'évoluer.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {PRICING.map((p) => {
+            const tool = TOOLS.find((t) => t.key === p.key)!;
+            const isHippodoc = p.key === 'hippodoc';
+            return (
+              <div class={`h-full rounded-2xl border p-6 ${isHippodoc ? 'border-hippo-300 bg-gradient-to-br from-hippo-50/60 to-white shadow-lg shadow-hippo-100/40 md:scale-[1.02]' : 'border-slate-200'}`}>
+                <span class="font-bold tracking-tight text-base" style={`color:${tool.color}`}>{tool.wordmark}</span>
+                <div class="mt-3">
+                  <p class="mb-1 text-xs uppercase tracking-wider text-slate-500">Prix d'entrée</p>
+                  <p class={`text-2xl font-bold ${isHippodoc ? 'text-hippo-700' : 'text-slate-900'}`}>{p.entry}</p>
+                </div>
+                <div class="mt-3 space-y-3 text-sm">
+                  <div>
+                    <p class="text-xs uppercase tracking-wider text-slate-500">Offre populaire</p>
+                    <p class="font-medium text-slate-800">{p.popular}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase tracking-wider text-slate-500">Engagement</p>
+                    <p class="text-slate-800">{p.engagement}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs uppercase tracking-wider text-slate-500">Essai</p>
+                    <p class="text-slate-800">{p.trial}</p>
+                  </div>
+                  <p class="border-t border-slate-100 pt-2 text-xs italic text-slate-500">{p.note}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════ FAQ ═════════════════ -->
+    <section id="faq" class="bg-gradient-to-b from-slate-50/50 to-white py-16 md:py-24">
+      <div class="container max-w-3xl">
+        <div class="mb-12 text-center">
+          <span class="mb-3 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">FAQ</span>
+          <h2 class="text-3xl font-bold text-hippo-900 md:text-4xl">Les questions qu'on nous pose</h2>
+        </div>
+
+        <div class="divide-y divide-slate-200 border-t border-slate-200">
+          {FAQ.map((f) => (
+            <details class="group py-2">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-left text-base font-semibold text-hippo-900 [&::-webkit-details-marker]:hidden hover:text-hippo-700">
+                {f.q}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-hippo-400 transition-transform group-open:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </summary>
+              <p class="pb-4 text-sm leading-relaxed text-slate-700">{f.a}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="mt-10 text-center text-sm text-slate-600">
+          D'autres questions ?{' '}
+          <a href="/faq" class="text-hippo-600 underline underline-offset-4 hover:text-hippo-800">Consulte notre FAQ complète</a>{' '}
+          ou écris-nous à{' '}
+          <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline underline-offset-4 hover:text-hippo-800">contact@hippodoc.fr</a>.
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════ CTA FINAL ═════════════════ -->
+    <section class="bg-white py-16 md:py-24">
+      <div class="container max-w-5xl">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-hippo-600 via-hippo-700 to-hippo-800 p-10 text-center shadow-2xl shadow-hippo-700/20 md:p-14">
+          <div class="absolute inset-0 opacity-20" aria-hidden="true">
+            <div class="absolute -right-10 -top-10 h-60 w-60 rounded-full bg-white/20 blur-3xl"></div>
+            <div class="absolute -bottom-10 -left-10 h-60 w-60 rounded-full bg-hippo-300/40 blur-3xl"></div>
+          </div>
+          <div class="relative">
+            <span class="mb-5 inline-flex items-center rounded-full border border-white/30 bg-white/20 px-2.5 py-0.5 text-xs font-semibold text-white backdrop-blur">
+              Essai 30 jours · Sans engagement
+            </span>
+            <h2 class="mb-4 text-3xl font-bold text-white md:text-4xl">Tester Hippodoc dans ton vrai quotidien</h2>
+            <p class="mx-auto mb-8 max-w-2xl text-lg text-hippo-50">
+              Connecte tes données en 5 minutes et vois ton Super-Net mois par mois — comme si tu l'utilisais depuis 6 mois.
+            </p>
+            <div class="flex flex-col justify-center gap-3 sm:flex-row">
+              <a
+                href={`${APP_URL}/auth`}
+                data-track="cta_signup_comparatif"
+                class="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-white px-6 font-semibold text-hippo-700 transition-colors hover:bg-hippo-50"
+              >
+                Démarrer mon essai 30 jours <Icon name="arrow-right" class="h-4 w-4" />
+              </a>
+              <a
+                href="/simulateur"
+                class="inline-flex h-12 items-center justify-center rounded-md border border-white/40 bg-transparent px-6 font-semibold text-white transition-colors hover:bg-white/10"
+              >
+                Tester le simulateur gratuit
+              </a>
+            </div>
+            <p class="mt-6 text-sm text-hippo-100">
+              Pas encore convaincu ? Découvre{' '}
+              <a href="/qui-sommes-nous" class="underline underline-offset-4 hover:text-white">qui nous sommes</a>{' '}
+              ou notre{' '}
+              <a href="/blog/regime-fiscal-micro-bnc-vs-reel" class="underline underline-offset-4 hover:text-white">guide Micro-BNC vs Réel</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════ FOOTER MICRO-COPY ═════════════════ -->
+    <section class="bg-white pb-16">
+      <div class="container max-w-4xl">
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-5 text-xs leading-relaxed text-slate-600">
+          <p class="mb-2 font-semibold text-slate-700">À propos de ce comparatif</p>
+          <p class="mb-2">
+            Comparatif rédigé par l'équipe Hippodoc, basé sur les informations publiques de chaque éditeur consultées en {LAST_UPDATED_LABEL}.
+            Indy®, Pennylane® et Hiway Care® sont des marques déposées par leurs éditeurs respectifs, mentionnées ici à des fins de comparaison
+            factuelle (article L713-3 du Code de la propriété intellectuelle — exception comparative).
+          </p>
+          <p>
+            Une information vous semble inexacte ou obsolète ? Écrivez-nous à{' '}
+            <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline underline-offset-2 hover:text-hippo-800">contact@hippodoc.fr</a>
+            {' '}— nous corrigeons sous 48 h ouvrées.
+          </p>
+          <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-slate-500">
+            <a href="https://www.indy.fr/prix/" target="_blank" rel="noopener noreferrer nofollow" class="inline-flex items-center gap-1 hover:text-hippo-700">
+              Source Indy <Icon name="chevron-right" class="h-3 w-3" />
+            </a>
+            <a href="https://www.pennylane.com/fr/tarifs" target="_blank" rel="noopener noreferrer nofollow" class="inline-flex items-center gap-1 hover:text-hippo-700">
+              Source Pennylane <Icon name="chevron-right" class="h-3 w-3" />
+            </a>
+            <a href="https://hiway.fr/care" target="_blank" rel="noopener noreferrer nofollow" class="inline-flex items-center gap-1 hover:text-hippo-700">
+              Source Hiway Care <Icon name="chevron-right" class="h-3 w-3" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

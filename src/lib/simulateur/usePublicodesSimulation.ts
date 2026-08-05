@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeCalculateUrssaf } from '@/lib/supabase-public';
 import type { SimulateurFormData } from '@/components/simulateur/simulateurSchema';
-import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/types/simulation';
-import { calculateRspmBreakdown } from '@/hooks/useRspmCalculation';
+import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/lib/simulation-types';
+import { calculateRspmBreakdown } from '@/lib/simulateur/useRspmCalculation';
 import { buildRspmChargesArgs } from '@/lib/rspmHelpers';
-import { calculateFiscalParts } from '@/utils/fiscalParts';
-import { getDomTomInfo } from '@/config/dom-tom';
-import { getMicroBncCeiling } from '@/config/baremes-ir';
+import { calculateFiscalParts } from '@/lib/fiscalParts';
+import { getDomTomInfo } from '@/lib/dom-tom';
+import { getMicroBncCeiling } from '@/lib/baremes-ir';
 import { normalizeCarmfStatus } from '@/lib/carmfStatus';
 
 // Seuil RSPM 2025-2026 (inchangé) : en dessous de 38 000€, cotisations simplifiées (13,5% puis 21,2%)
@@ -223,9 +223,7 @@ export function usePublicodesSimulation() {
             ? (formData.revenusExoneresPdsa || 0) * 12
             : (formData.revenusExoneresPdsa || 0);
 
-          const { data, error } = await supabase.functions.invoke('calculate-urssaf', {
-            body: { formData: formDataForRegime, regimeFiscal, liberalExonere },
-          });
+          const { data, error } = await invokeCalculateUrssaf({ formData: formDataForRegime, regimeFiscal, liberalExonere });
 
           if (error || !data) {
             console.error(`Erreur fallback PAMC ${regimeFiscal}:`, error);
@@ -244,12 +242,10 @@ export function usePublicodesSimulation() {
         ? (formData.revenusExoneresPdsa || 0) * 12
         : (formData.revenusExoneresPdsa || 0);
 
-      const { data, error } = await supabase.functions.invoke('calculate-urssaf', {
-        body: {
-          formData: formDataForRegime,
-          regimeFiscal,
-          liberalExonere,
-        },
+      const { data, error } = await invokeCalculateUrssaf({
+        formData: formDataForRegime,
+        regimeFiscal,
+        liberalExonere,
       });
 
       if (error) {
@@ -262,7 +258,7 @@ export function usePublicodesSimulation() {
       }
 
       // ✅ Détecter le mode fallback (API URSSAF down, pas de cache)
-      if (data.fallbackMode) {
+      if ((data as { fallbackMode?: boolean }).fallbackMode) {
         console.warn(`[Simulateur] API URSSAF en fallback pour ${regimeFiscal}`);
         throw new Error('Le service de calcul URSSAF est temporairement indisponible. Réessaie dans quelques minutes.');
       }
@@ -347,70 +343,9 @@ export function usePublicodesSimulation() {
         lieuExercice: formData.lieuExercice,
         isRSPMUsed: useRspm,  // ✅ Indique si RSPM a été utilisé
       });
-      
-      // Sauvegarder dans l'historique avec titre auto-généré intelligent
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          // Générer un titre intelligent
-          const montantFormate = new Intl.NumberFormat('fr-FR', { 
-            style: 'currency', 
-            currency: 'EUR',
-            maximumFractionDigits: 0 
-          }).format(formData.recettesBrutes);
-          
-          const regimeTexte = recommande === 'micro-bnc' ? 'Micro-BNC' : 'Réel';
-          const periodeTexte = formData.periode === 'mensuel' ? '/mois' : '/an';
-          
-          // Format: "65K€/an → Micro-BNC (économie 11K€)"
-          const titreAuto = economie > 500
-            ? `${montantFormate}${periodeTexte} → ${regimeTexte} (économie ${new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(economie)}€)`
-            : `${montantFormate}${periodeTexte} → ${regimeTexte}`;
-
-          await supabase.from('simulateur_history').insert({
-            user_id: user.id,
-            titre: titreAuto,
-            periode: formData.periode,
-            annee: formData.annee,
-            recettes_brutes: formData.recettesBrutes,
-            charges_hors_cotisations: formData.chargesHorsCotisations,
-            revenus_salaries: formData.revenusSalaries,
-            situation_familiale: formData.situationFamiliale,
-            enfants: formData.enfants,
-            secteur_conventionnel: formData.secteurConventionnel,
-            regime_recommande: recommande,
-            economie,
-            super_net_micro_bnc: resultMicroBnc?.superNet || null,
-            super_net_reel: resultReel.superNet,
-            // Phase 3 — Sauvegarde complète du formulaire (Bug #6)
-            revenus_conjoint: formData.revenusConjoint || 0,
-            type_revenu_conjoint: formData.typeRevenuConjoint || 'salarie',
-            revenus_exoneres_pdsa: formData.revenusExoneresPdsa || 0,
-            lieu_exercice: formData.lieuExercice || 'metropole',
-            regime_social: formData.regimeSocial || 'auto',
-            taux_rid: formData.tauxRid || '25%',
-            situation_carmf: normalizeCarmfStatus(formData.situationCarmf), // 🎯 V11 garde-fou DB
-            ratio_non_conventionne: formData.ratioNonConventionne || 0,
-            forfait_2pct: formData.forfait2pct ?? true,
-            cotisations_volontaires: formData.cotisationsVolontaires || 0,
-            type_cotisations_volontaires: formData.typeCotisationsVolontaires || 'per',
-            zone_exoneree: formData.zoneExoneree || 'aucune',
-            annee_installation_zone: formData.anneeInstallationZone ?? null,
-            regime_foncier: formData.regimeFoncier || 'aucun',
-            revenus_fonciers_bruts: formData.revenusFonciersBruts || 0,
-            revenu_foncier_net: formData.revenuFoncierNet || 0,
-            credit_formation_dirigeant: formData.creditFormationDirigeant || false,
-            heures_formation: formData.heuresFormation || 0,
-            credit_impot_autre: formData.creditImpotAutre || 0,
-            frais_emploi_domicile: formData.fraisEmploiDomicile || 0,
-            frais_garde_enfants: formData.fraisGardeEnfants || 0,
-            nombre_enfants_garde: formData.nombreEnfantsGarde || 0,
-            cheques_vacances: formData.chequesVacances || 0,
-          });
-        }
-      } catch (historyError) {
-        console.error('Erreur sauvegarde historique:', historyError);
-      }
+      // Note : pas de sauvegarde d'historique ici — le site public est anonyme-only
+      // (pas de session Supabase). Le funnel analytics anonyme est géré côté
+      // SimulateurApp.tsx via insertPublicEvent('simulateur_public_events', ...).
     } catch (err) {
       console.error('Erreur simulation:', err);
       

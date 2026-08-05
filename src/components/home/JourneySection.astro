@@ -1,0 +1,258 @@
+---
+/**
+ * Parcours par mode d'exercice — porté de src/components/landing/ReplacementJourneySection.tsx.
+ * Le sélecteur de profil (state React + ?parcours= dans l'URL) devient un jeu de
+ * 5 radios cachées + labels + panneaux, entièrement piloté en CSS (zéro JS).
+ */
+import { APP_URL } from '@/lib/site';
+
+const BETA_NOTE = "Module en bêta — déjà utilisable, on l'affine avec les premiers utilisateurs.";
+
+const ACCENT = {
+  blue: { tile: 'bg-hippo-50', glyph: 'text-hippo-600', anchor: 'border-hippo-500', pill: 'bg-hippo-50/70 text-hippo-700' },
+  emerald: { tile: 'bg-emerald-50', glyph: 'text-emerald-600', anchor: 'border-emerald-500', pill: 'bg-emerald-50/70 text-emerald-700' },
+  amber: { tile: 'bg-amber-50', glyph: 'text-amber-600', anchor: 'border-amber-500', pill: 'bg-amber-50/80 text-amber-700' },
+} as const;
+
+const PROFILES = [
+  {
+    id: 'remplacant',
+    label: 'Remplaçant',
+    hint: '',
+    beta: false,
+    steps: [
+      { title: 'Tu centralises tes journées', pitch: 'Tous tes cabinets dans un calendrier, synchronisé avec Google Agenda.', detail: 'Codes d’accès, consignes et taux notés par lieu, fiche de passation prête.', accent: 'blue' },
+      { title: 'Tu suis tes rétrocessions au centime', pitch: 'Payée, en attente, planifiée : plus jamais un virement oublié.', detail: 'Vacations en centre de santé et PDSA suivies de la même façon.', accent: 'blue' },
+      { title: 'Tes factures et tes contrats, prêts en 2 clics', pitch: 'Honoraires conformes, IBAN pré-rempli, contrat de remplacement généré.', detail: 'Archivage horodaté, envoi par email, suivi CDOM — depuis ton téléphone.', accent: 'blue' },
+      { title: 'Tes charges déductibles ne se perdent plus', pitch: 'Kilomètres, matériel, formation, RCP : catégorisés et prêts pour la déclaration.', detail: 'Justificatifs stockés, barème kilométrique officiel intégré.', accent: 'emerald' },
+      { title: 'URSSAF et CARMF anticipées', pitch: 'Cotisations calculées via le serveur officiel URSSAF, échéancier à jour après chaque journée.', detail: 'Le montant à mettre de côté chaque mois, et les échéances rappelées à temps.', accent: 'emerald' },
+      { title: 'Ta déclaration, case par case', pitch: '2035 ou 2042-C PRO pré-remplies avec tes chiffres, aide DSFU URSSAF incluse.', detail: 'Exports Excel / PDF à transmettre à ton comptable si tu en as un.', accent: 'emerald' },
+      { title: 'Ton Super-Net, le seul chiffre qui compte', pitch: 'Brut → cotisations → impôt → ce qui te reste vraiment dans la poche.', detail: 'Objectif annuel, stats N vs N-1 et simulateur « et si… » inclus.', accent: 'amber' },
+    ],
+  },
+  {
+    id: 'interne',
+    label: 'Interne',
+    hint: 'hôpital + remplacements',
+    beta: false,
+    steps: [
+      { title: 'Hôpital et remplacements dans un seul calendrier', pitch: 'Gardes, stages et journées en cabinet, distingués d’un coup d’œil.', detail: 'Export ICS, couleurs libéral / salarié, saisie depuis ton téléphone.', accent: 'blue' },
+      { title: 'Tes deux revenus au même endroit', pitch: 'Salaires hospitaliers et rétrocessions réunis, statuts de paiement suivis.', detail: 'PDSA et majorations exonérées gérées automatiquement.', accent: 'blue' },
+      { title: 'Tes premières factures et ton premier contrat', pitch: 'Note d’honoraires conforme et contrat de remplacement générés pour toi.', detail: 'Modèles adaptés aux étudiants avec licence de remplacement.', accent: 'blue' },
+      { title: 'Tu comprends enfin tes cotisations', pitch: 'RSPM, seuils, dispense CARMF : ce qui s’applique vraiment à toi, expliqué simplement.', detail: 'Le montant à mettre de côté chaque mois, dès ta 1re journée.', accent: 'emerald' },
+      { title: 'Ta 1re déclaration sans panique', pitch: 'Quelles cases remplir, dans quel ordre, avec tes chiffres déjà dedans.', detail: 'Salaires + libéral réunis, échéances rappelées, rien à deviner.', accent: 'emerald' },
+      { title: 'Ton Super-Net hôpital + libéral', pitch: 'Ce qu’il te reste vraiment quand tu additionnes tes deux activités.', detail: 'Charges déductibles suivies dès maintenant, projections incluses.', accent: 'amber' },
+    ],
+  },
+  {
+    id: 'mixte',
+    label: 'Mixte',
+    hint: 'libéral + salariat',
+    beta: false,
+    steps: [
+      { title: 'Un calendrier pour tes deux mondes', pitch: 'Journées libérales et vacations salariées côte à côte, clairement distinguées.', detail: 'Gardes, PDSA et remplacements inclus.', accent: 'blue' },
+      { title: 'Tes deux sources de revenus réunies', pitch: 'Libéral, salaires, PDSA : un seul tableau de bord, plus de calculs croisés.', detail: 'Factures libérales et contrats générés au même endroit.', accent: 'blue' },
+      { title: 'Tes charges des deux côtés', pitch: 'Charges libérales déductibles et frais réels salariés traités séparément, sans mélange.', detail: 'Comparaison frais réels vs abattement 10 % chiffrée pour toi.', accent: 'emerald' },
+      { title: "Cotisations et impôt sur l'ensemble", pitch: 'Abattement salarié et bénéfice BNC combinés dans un seul calcul d’IR.', detail: 'Quotient familial pris en compte, échéancier URSSAF / CARMF à jour.', accent: 'emerald' },
+      { title: 'Une seule déclaration pour deux activités', pitch: '2042 et 2042-C PRO (ou 2035) pré-remplies, salaires et BNC à la bonne case.', detail: 'Aide DSFU URSSAF, échéances rappelées, exports pour ton comptable.', accent: 'emerald' },
+      { title: 'Ton Super-Net global', pitch: 'Ce qu’il te reste après cotisations et impôt, toutes activités confondues.', detail: 'Répartition transparente libéral / salarié, stats et projections.', accent: 'amber' },
+    ],
+  },
+  {
+    id: 'collaborateur',
+    label: 'Collaborateur',
+    hint: '',
+    beta: true,
+    steps: [
+      { title: 'Ton planning au cabinet, centralisé', pitch: 'Journées, vacations et PDSA réunis dans une vue unique.', detail: 'Multi-structures, synchronisation Google Agenda, saisie mobile.', accent: 'blue' },
+      { title: 'Tes honoraires encaissés en direct', pitch: 'Encaissements suivis avec ventilation CB, chèques, virements, tiers payant.', detail: 'Factures, contrat de collaboration et documents générés et archivés.', accent: 'blue' },
+      { title: 'Ta redevance de collaboration suivie', pitch: 'Chaque redevance versée au titulaire tracée et déduite au bon endroit.', detail: 'Ligne L16/BG de la 2035, sans risque de double déduction.', accent: 'blue' },
+      { title: 'Charges et amortissements maîtrisés', pitch: 'Loyer, matériel, formation, amortissements pro-rata temporis automatiques.', detail: 'Justificatifs stockés, barème kilométrique intégré.', accent: 'emerald' },
+      { title: 'URSSAF, CARMF et échéances anticipées', pitch: 'Cotisations en direct du serveur officiel URSSAF, échéancier toujours à jour.', detail: 'Zones aidées (ZFU, ZFRR) et DOM prises en compte si tu es concerné.', accent: 'emerald' },
+      { title: '2035, 2042 et DSFU pré-remplies', pitch: 'Ta déclaration remplie case par case depuis tes données réelles.', detail: 'Exports Excel / PDF prêts pour ton comptable si tu en as un.', accent: 'emerald' },
+      { title: 'Ton Super-Net réel', pitch: 'Honoraires − redevance − charges − cotisations − impôt : ce qui te reste vraiment.', detail: 'Objectif annuel, stats N vs N-1 et simulateur pour arbitrer ton année.', accent: 'amber' },
+    ],
+  },
+  {
+    id: 'installe',
+    label: 'Installé',
+    hint: '',
+    beta: true,
+    steps: [
+      { title: 'Toute ton activité centralisée', pitch: 'Cabinet, vacations, PDSA : une vue unique de ton exercice, où que tu sois.', detail: 'Planning multi-structures synchronisé Google Agenda.', accent: 'blue' },
+      { title: 'Tes honoraires et tes encaissements', pitch: 'Paiements directs tracés, avec ventilation de tous les moyens de paiement.', detail: 'Factures et documents générés à la demande.', accent: 'blue' },
+      { title: 'Tu pilotes tes remplaçants', pitch: 'Fiches, contrats et rétrocessions versées suivis en un coup d’œil.', detail: 'Cycle complet : envoi, signature, CDOM, fin de contrat.', accent: 'blue' },
+      { title: 'Charges et amortissements maîtrisés', pitch: 'Chaque dépense déductible catégorisée, amortissements pro-rata temporis automatiques.', detail: 'Barème kilométrique et justificatifs intégrés.', accent: 'emerald' },
+      { title: 'URSSAF, CARMF et impôt anticipés', pitch: 'Échéancier à jour, estimation d’impôt, échéances fiscales rappelées.', detail: 'Secteur 1 ou 2, zones aidées et DOM pris en compte.', accent: 'emerald' },
+      { title: '2035, 2042 et DSFU pré-remplies', pitch: 'Ta déclaration case par case, rétrocessions versées à la bonne ligne.', detail: 'Exports Excel / PDF prêts pour ton comptable.', accent: 'emerald' },
+      { title: 'Ton Super-Net et ton pilotage', pitch: 'Ce qu’il te reste vraiment après charges, cotisations et impôt.', detail: 'Stats N vs N-1, par lieu, par remplaçant, budget et simulateur prévisionnel.', accent: 'amber' },
+    ],
+  },
+] as const;
+---
+
+<section id="parcours" class="relative scroll-mt-28 overflow-hidden bg-gradient-to-b from-white to-hippo-50/40 py-20 md:scroll-mt-32 md:py-28">
+  <div class="container relative">
+    <div class="mx-auto mb-9 max-w-3xl text-center md:mb-12">
+      <div class="mb-6 flex justify-center">
+        <div class="relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-hippo-200/50 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:gap-3 md:px-4 md:py-2">
+          <div class="rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 p-1 md:p-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+          </div>
+          <span class="text-xs font-medium text-hippo-700 md:text-sm">Parcours</span>
+          <div class="h-3 w-px bg-hippo-200 md:h-4"></div>
+          <span class="text-xs font-medium text-hippo-500 md:text-sm">5 profils</span>
+        </div>
+      </div>
+
+      <h2 class="mb-4 text-3xl font-bold tracking-tight text-hippo-900 md:text-[2.6rem] md:leading-[1.15]">
+        Quel que soit ton mode d'exercice, <span class="text-hippo-500">Hippodoc te suit.</span>
+      </h2>
+      <p class="text-lg text-slate-500 md:text-xl">
+        Choisis ton mode d'exercice : tu verras exactement ce qu'Hippodoc fait pour toi.
+      </p>
+
+      <p class="mt-5 inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[13px] leading-snug text-slate-500 md:text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-hippo-500" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span class="font-semibold text-hippo-800">
+          Micro-BNC ou frais réels, RSPM ou PAMC, secteur 1 ou 2, métropole, DOM ou zone aidée
+        </span>
+        <span>— Hippodoc applique le bon régime, tout seul.</span>
+      </p>
+    </div>
+
+    <div class="journey-tabs mx-auto max-w-3xl">
+      <!-- Radios cachés pilotant l'affichage des panneaux — zéro JS -->
+      <input type="radio" name="parcours" id="parcours-remplacant" class="sr-only" checked />
+      <input type="radio" name="parcours" id="parcours-interne" class="sr-only" />
+      <input type="radio" name="parcours" id="parcours-mixte" class="sr-only" />
+      <input type="radio" name="parcours" id="parcours-collaborateur" class="sr-only" />
+      <input type="radio" name="parcours" id="parcours-installe" class="sr-only" />
+
+      <!-- Sélecteur de profil -->
+      <div class="tabs mx-auto mb-12 max-w-5xl md:mb-14">
+        <div role="tablist" aria-label="Choisis ton mode d'exercice" class="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:justify-center md:gap-2.5">
+          {PROFILES.map((profile, i) => (
+            <label
+              for={`parcours-${profile.id}`}
+              data-profile={profile.id}
+              class:list={[
+                'tab-label flex min-h-[44px] min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-600 transition-all duration-300 hover:border-hippo-300 hover:text-hippo-700 sm:px-4 sm:text-sm md:flex-shrink-0 md:justify-start md:whitespace-nowrap',
+                i === PROFILES.length - 1 && PROFILES.length % 2 === 1 ? 'max-md:col-span-2' : '',
+              ]}
+            >
+              <span>{profile.label}</span>
+              {profile.hint && <span class="hidden text-[12px] font-medium text-slate-400 lg:inline">{profile.hint}</span>}
+              {profile.beta && <span class="flex-shrink-0 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">Bêta</span>}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <!-- Panneaux -->
+      <div class="panels">
+        {PROFILES.map((profile) => (
+          <div class="panel" data-panel={profile.id}>
+            {profile.beta && (
+              <div class="mb-7 flex items-start gap-2.5 pl-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0 text-amber-600" aria-hidden="true"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.58 16.5h12.85"/></svg>
+                <p class="text-[13px] leading-snug text-amber-700 md:text-sm">{BETA_NOTE}</p>
+              </div>
+            )}
+
+            <div class="ml-2 border-l-2 border-slate-200/80 md:ml-6">
+              {profile.steps.map((step) => {
+                const accent = ACCENT[step.accent];
+                return (
+                  <div class="group relative pb-8 pl-5 last:pb-0 md:pb-11 md:pl-10">
+                    <span class={`absolute -left-[9px] top-[13px] h-[18px] w-[18px] rounded-full border-4 bg-white transition-transform duration-300 group-hover:scale-125 ${accent.anchor}`} aria-hidden="true"></span>
+                    <div class="flex items-start gap-3 md:gap-4">
+                      <div class={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl md:h-12 md:w-12 md:rounded-2xl ${accent.tile}`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class={accent.glyph} aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                      </div>
+                      <div class="min-w-0 flex-1 pt-0.5">
+                        <h3 class="text-[17px] font-bold leading-snug text-hippo-900 md:text-xl">{step.title}</h3>
+                        <p class="mt-1.5 text-[14px] leading-relaxed text-slate-600 md:text-[15px]">{step.pitch}</p>
+                        <p class={`mt-3 w-full rounded-lg px-3 py-1.5 text-[12.5px] font-medium leading-snug md:w-fit md:text-[13px] ${accent.pill}`}>{step.detail}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Conversion — identique pour tous les profils -->
+      <div class="relative ml-2 md:ml-6">
+        <span class="absolute -left-[2px] top-0 h-10 w-0.5 bg-gradient-to-b from-slate-200/80 to-transparent" aria-hidden="true"></span>
+
+        <div class="relative mt-10 overflow-hidden rounded-3xl bg-slate-900 px-6 py-9 text-center md:px-12 md:py-11">
+          <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-hippo-500/20 blur-3xl"></div>
+          <div class="pointer-events-none absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl"></div>
+
+          <h3 class="relative z-10 text-xl font-bold text-white md:text-[26px]">Prêt·e à voir ton Super-Net&nbsp;?</h3>
+          <p class="relative z-10 mx-auto mt-3 max-w-md text-[14px] leading-relaxed text-slate-300 md:text-[15px]">
+            Crée ton compte et retrouve ce parcours appliqué à tes propres chiffres.
+          </p>
+
+          <a
+            href={`${APP_URL}/auth?tab=signup`}
+            data-track="cta_signup_journey_section"
+            class="relative z-10 mt-7 inline-flex h-auto max-w-full items-center justify-center whitespace-normal rounded-2xl bg-hippo-500 px-6 py-4 text-[15px] font-bold leading-snug text-white shadow-xl shadow-hippo-500/20 transition-all hover:bg-hippo-600 md:px-8 md:text-base"
+          >
+            Essayer 30 jours gratuitement
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+
+          <p class="relative z-10 mt-5 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+            Sans engagement · Déjà 900+ médecins
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] text-slate-500 md:text-[13px]">
+        <span class="inline-flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-hippo-500" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Forum modéré par des médecins
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-hippo-500" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Blog fiscal mis à jour chaque mois
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-hippo-500" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" x2="9.17" y1="4.93" y2="9.17"/><line x1="14.83" x2="19.07" y1="14.83" y2="19.07"/><line x1="14.83" x2="19.07" y1="9.17" y2="4.93"/><line x1="4.93" x2="9.17" y1="19.07" y2="14.83"/></svg>
+          Support réactif
+        </span>
+      </div>
+
+      <p class="mt-5 text-center text-[13px] text-slate-500">
+        Pensé par un médecin, pour tous les médecins — de l'internat à la retraite.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Onglets pilotés en CSS pur (radios cachés), même convention que src/pages/blog/index.astro */
+  .panel { display: none; }
+  #parcours-remplacant:checked ~ .panels [data-panel='remplacant'],
+  #parcours-interne:checked ~ .panels [data-panel='interne'],
+  #parcours-mixte:checked ~ .panels [data-panel='mixte'],
+  #parcours-collaborateur:checked ~ .panels [data-panel='collaborateur'],
+  #parcours-installe:checked ~ .panels [data-panel='installe'] {
+    display: block;
+  }
+
+  #parcours-remplacant:checked ~ .tabs label[data-profile='remplacant'],
+  #parcours-interne:checked ~ .tabs label[data-profile='interne'],
+  #parcours-mixte:checked ~ .tabs label[data-profile='mixte'],
+  #parcours-collaborateur:checked ~ .tabs label[data-profile='collaborateur'],
+  #parcours-installe:checked ~ .tabs label[data-profile='installe'] {
+    border-color: transparent;
+    background-color: theme('colors.hippo.500');
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(26, 140, 255, 0.2);
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+/**
+ * Badge d'en-tête de section — porté de src/components/landing/SectionBadge.tsx.
+ * L'icône est passée via le slot "icon" (SVG brut, cf. convention Header/Footer.astro).
+ * Zéro JS : le shimmer utilise l'animation CSS déjà définie dans global.css.
+ */
+interface Props {
+  title: string;
+  subtitle?: string;
+  showLive?: boolean;
+}
+
+const { title, subtitle, showLive = false } = Astro.props;
+---
+
+<div class="mb-6 flex justify-center">
+  <div class="relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-hippo-200/50 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:gap-3 md:px-4 md:py-2">
+    <div class="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent motion-reduce:animate-none"></div>
+
+    <div class="relative rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 p-1 md:p-1.5">
+      <slot name="icon" />
+    </div>
+
+    <span class="relative text-xs font-medium text-hippo-700 md:text-sm">{title}</span>
+
+    {(subtitle || showLive) && (
+      <>
+        <div class="relative h-3 w-px bg-hippo-200 md:h-4"></div>
+        {showLive ? (
+          <div class="relative flex items-center gap-1 md:gap-1.5">
+            <span class="relative flex h-1.5 w-1.5 md:h-2 md:w-2">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75 motion-reduce:animate-none"></span>
+              <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500 md:h-2 md:w-2"></span>
+            </span>
+            <span class="text-[10px] font-medium text-green-600 md:text-xs">Live</span>
+          </div>
+        ) : (
+          <span class="relative text-xs font-medium text-hippo-500 md:text-sm">{subtitle}</span>
+        )}
+      </>
+    )}
+  </div>
+</div>
