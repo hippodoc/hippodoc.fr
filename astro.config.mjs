@@ -27,6 +27,8 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
     sitemap({
+      // /essai est noindex (page campagne Instagram) : hors sitemap
+      filter: (page) => !page.includes('/essai'),
       serialize(item) {
         const path = new URL(item.url).pathname.replace(/\/$/, '') || '/';
         const lastmod = BLOG_LASTMOD.get(path);
