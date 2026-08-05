@@ -1,0 +1,279 @@
+---
+/**
+ * HippoCalc — calculette fiscale & sociale du médecin libéral (2042-C PRO + DSFU).
+ * Portage de src/pages/guide-declarations/calculette.tsx (SPA source) :
+ * chrome (Header/Footer/Hero/FAQ/Disclaimer/CTA) rendu en HTML statique ici,
+ * formulaire + résultats interactifs délégués à l'îlot React CalculetteApp
+ * (src/components/calculette/CalculetteApp.tsx), 100 % client-side, zéro réseau.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import CalculetteApp from '@/components/calculette/CalculetteApp.tsx';
+import { SITE_URL, APP_URL } from '@/lib/site';
+
+const title = 'HippoCalc 2026 — Calculette fiscale médecin libéral | Hippodoc';
+const description =
+  "HippoCalc — la calculette fiscale & sociale du médecin libéral. Reporte tes cases 2035, on remplit ta 2042-C PRO et ta DSFU. Gratuit, instantané, confidentiel.";
+const path = '/guide-declarations/calculette';
+const signupUrl = `${APP_URL}/auth?tab=signup`;
+
+/* FAQ — verbatim depuis le tableau `FAQ` de la page source (7 Q/A). */
+const FAQ = [
+  {
+    q: 'Quelle différence entre 5QC et 5QI ?',
+    a: "5QC concerne les médecins en BNC réel adhérents à une AGA/OGA ou recourant à un expert-comptable conventionné. 5QI concerne les non-adhérents — leur bénéfice est majoré de 25 % avant calcul de l'impôt. Cette calculette suppose 5QC.",
+  },
+  {
+    q: 'Quels sont les plafonds des chèques-vacances ANCV ?',
+    a: "Deux plafonds indépendants s'appliquent en même temps. Plafond FISCAL (= 1 SMIC mensuel brut) : 1 766 € en 2024 · 1 802 € en 2025 · 1 823 € en 2026 — c'est le maximum déductible du bénéfice (5QC en réel, minoration 5HQ × 1,515 en micro-BNC). Plafond SOCIAL (= 30 % du SMIC mensuel) : 530 € · 541 € · 547 € — c'est la limite d'exo cotisations URSSAF + CARMF, la CSG-CRDS reste due. La case DSCN reçoit le montant TOTAL commandé. Voir RO-005 pour le détail.",
+  },
+  {
+    q: 'Pourquoi mon RBS est-il négatif ?',
+    a: 'Le Revenu Brut Social peut être négatif quand tes insuffisances (CN) dépassent largement ton excédent (CE). Dans ce cas rare, le moteur le route automatiquement vers la case DSDG (valeur absolue) et laisse DSDE à 0.',
+  },
+  {
+    q: "C'est quoi le cadre 8 (DE / DB) ?",
+    a: 'Nouveau cadre obligatoire pour les revenus 2025+ (réforme LFSS 2024). DE = sommes à réintégrer au RBS (intéressement, plus-values CT exonérées…). DB = sommes à déduire (IJ déjà comptées en gains divers, pour éviter une double imposition sociale).',
+  },
+  {
+    q: 'Cette calculette remplace-t-elle mon expert-comptable ?',
+    a: 'Non. C\'est un outil d\'estimation pédagogique qui automatise les 13 formules officielles 2042-C PRO et DSFU (ex DS-PAMC). Vérifie toujours auprès de ton AGA, ton expert-comptable, ou des notices officielles 2041 DRI PAMC et 2035-NOT. Pour aller plus loin, consulte le Guide Déclarations complet : /guide-declarations',
+  },
+  {
+    q: 'Quand dois-je passer du RSPM au PAMC ?',
+    a: "Le RSPM (Régime Simplifié des Professions Médicales) est une option déclarative auprès de l'URSSAF, réservée aux remplaçants. La bascule en PAMC devient obligatoire dans deux cas : recettes > 19 000 € pendant 2 années consécutives, OU recettes > 38 000 € sur une seule année (CSS Art. L646-1). Dans les deux cas, tu RESTES en RSPM jusqu'au 31 décembre de l'année du dépassement ; la bascule en PAMC s'applique au 1er janvier de l'année suivante (déclaration à faire auprès de l'URSSAF). Le toggle de la calculette est 100 % manuel : aucune bascule automatique côté logiciel.",
+  },
+  {
+    q: 'Mon profil n\'est pas exactement dans la liste (collaborateur libéral, salarié exclusif, interne) — que faire ?',
+    a: 'Cette calculette couvre les 4 cas les plus fréquents. Pour les profils plus spécifiques (collaborateur libéral en SELARL, interne en remplacement, salarié exclusif…), consulte les fiches détaillées du Guide Déclarations qui couvrent 12 profils types avec leurs particularités fiscales : /guide-declarations#fiches',
+  },
+];
+
+/* JSON-LD — repris des 3 scripts <Helmet> de la page source. */
+const webAppSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'HippoCalc',
+  description,
+  url: `${SITE_URL}${path}`,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  inLanguage: 'fr',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guide Déclarations', item: `${SITE_URL}/guide-declarations` },
+    { '@type': 'ListItem', position: 3, name: 'HippoCalc', item: `${SITE_URL}${path}` },
+  ],
+};
+
+const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
+---
+
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
+  <Header />
+  <main class="relative overflow-hidden bg-[#fafbfc] pb-20 pt-20 sm:pt-28">
+    <!-- Halo accent discret en haut, palette Cloud White (porté verbatim du hero source) -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[radial-gradient(ellipse_at_top,_hsl(var(--hippo-500)/0.05),_transparent_65%)]"
+    ></div>
+
+    <!-- Hero premium — bichromie Hippo / Calc + preview desktop -->
+    <section class="mx-auto mb-14 max-w-6xl px-4">
+      <a
+        href="/guide-declarations"
+        class="mb-8 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
+      >
+        ← Guide Déclarations
+      </a>
+      <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div>
+          <div class="mb-6 flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-hippo-600">
+              <span class="h-1 w-1 rounded-full bg-hippo-500"></span>
+              Outil gratuit · Millésime 2026
+            </span>
+            <span class="inline-flex items-center gap-1 rounded-sm bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-700">
+              Bêta · En travaux
+            </span>
+          </div>
+          <h1 class="mb-6 text-4xl font-semibold leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+            <span class="text-foreground">Hippo</span><span class="text-hippo-500">Calc</span>
+          </h1>
+          <p class="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            Ta 2042-C PRO et ta DSFU pré-remplies en 2 minutes, depuis ta 2035 ou tes recettes Micro-BNC.
+          </p>
+          <p class="mt-5 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            Tout reste dans ton navigateur. Rien n'est envoyé.
+          </p>
+          <p class="mt-6 text-sm text-muted-foreground">
+            Pas sûr d'une case ?{' '}
+            <a href="/guide-declarations#glossaire" class="text-hippo-600 underline-offset-4 hover:underline">
+              Consulte le glossaire 2035
+            </a>
+            <span class="mx-2 text-border">·</span>
+            <a href="/guide-declarations#fiches" class="text-hippo-600 underline-offset-4 hover:underline">
+              Trouve ta fiche profil
+            </a>
+          </p>
+        </div>
+
+        <!-- Preview card — éditorial, décoratif (chiffres d'illustration repris verbatim du hero source) -->
+        <div aria-hidden="true" class="relative hidden lg:block">
+          <div class="space-y-5 rounded-2xl border border-[#e8ecf1] bg-white p-6 shadow-xl shadow-slate-200/50">
+            <div class="flex items-center justify-between text-[10px] uppercase tracking-[0.16em]">
+              <span class="font-semibold text-hippo-600">2042-C PRO · 2026</span>
+              <span class="inline-flex items-center gap-1 text-muted-foreground">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                Pré-rempli
+              </span>
+            </div>
+            <div class="space-y-2 font-mono text-xs">
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-muted-foreground">5QC</span>
+                <span class="font-semibold tabular-nums text-foreground">52 800 €</span>
+              </div>
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-muted-foreground">1AS</span>
+                <span class="font-semibold tabular-nums text-foreground">14 200 €</span>
+              </div>
+              <div class="flex items-center justify-between gap-3">
+                <span class="text-muted-foreground">1AJ</span>
+                <span class="font-semibold tabular-nums text-foreground">0 €</span>
+              </div>
+            </div>
+            <div class="border-t border-[#e8ecf1] pt-4">
+              <div class="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-hippo-600">
+                DSFU · URSSAF
+              </div>
+              <div class="space-y-2 font-mono text-xs">
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-muted-foreground">DSCS</span>
+                  <span class="font-semibold tabular-nums text-foreground">52 800 €</span>
+                </div>
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-muted-foreground">DSCN</span>
+                  <span class="font-semibold tabular-nums text-foreground">11 244 €</span>
+                </div>
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-muted-foreground">DSAU</span>
+                  <span class="font-semibold tabular-nums text-foreground">1,0000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Îlot React — formulaire + résultats, 100 % client-side -->
+    <CalculetteApp client:visible />
+
+    <!-- CTA premium -->
+    <section class="mx-auto mt-20 max-w-6xl px-4">
+      <div class="relative overflow-hidden rounded-2xl border border-hippo-200/50 bg-gradient-to-br from-hippo-50/60 via-white to-[#fafbfc] p-6 sm:p-10">
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,_hsl(var(--hippo-500)/0.15),_transparent_70%)]"
+        ></div>
+        <div class="relative grid items-center gap-6 sm:grid-cols-[1fr_auto]">
+          <div>
+            <span class="mb-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-hippo-600 to-hippo-500 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+              Hippodoc
+            </span>
+            <h2 class="mb-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Et si tout ça se faisait tout seul ?
+            </h2>
+            <p class="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Hippodoc pré-remplit ta 2042-C PRO et ta DSFU à partir de tes encaissements, et garde ton Super-Net à jour en temps réel.
+            </p>
+          </div>
+          <div class="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
+            <a
+              id="calculette-cta-signup"
+              href={signupUrl}
+              data-track="calculette_2042_dspamc_cta_click"
+              class="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-gradient-to-br from-hippo-600 to-hippo-500 px-6 font-semibold text-white shadow-md shadow-hippo-500/15 transition-all hover:shadow-lg hover:shadow-hippo-500/25 sm:w-auto"
+            >
+              Essayer Hippodoc →
+            </a>
+            <p class="text-center text-[11px] text-muted-foreground sm:text-right">
+              30 jours offerts · Sans engagement
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ — SEO, natif details/summary (pas de Radix : le contenu doit être présent dans le HTML) -->
+    <section class="mx-auto mt-24 max-w-3xl px-4" aria-labelledby="faq-title">
+      <div class="mb-8">
+        <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-hippo-600">FAQ</p>
+        <h2 id="faq-title" class="mb-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          Questions fréquentes
+        </h2>
+        <p class="text-sm text-muted-foreground">
+          Les {FAQ.length} questions qu'on nous pose le plus souvent.
+        </p>
+      </div>
+      <div class="divide-y divide-border/60 border-y border-border/60">
+        {FAQ.map((f) => (
+          <details class="group py-1">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+              <span class="flex-1 pr-4">{f.q}</span>
+              <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+            </summary>
+            <p class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="mt-6 text-sm text-muted-foreground">
+        Une autre question ?{' '}
+        <a href="/guide-declarations#glossaire" class="font-medium text-hippo-600 hover:underline">
+          Consulte le glossaire complet →
+        </a>
+      </p>
+    </section>
+
+    <!-- Disclaimer minimaliste -->
+    <section class="mx-auto mt-16 max-w-3xl px-4">
+      <div class="border-t border-border/60 pt-6 text-center text-xs leading-relaxed text-muted-foreground">
+        <p>
+          <strong class="font-medium text-foreground">Outil d'estimation.</strong>{' '}
+          HippoCalc automatise les formules officielles 2042-C PRO et DSFU mais ne remplace ni ton expert-comptable, ni ton AGA, ni les notices officielles (2041 DRI PAMC, 2035-NOT).
+          <span class="mx-2 text-border">•</span>
+          <strong class="font-medium text-foreground">100 % local.</strong>{' '}
+          Tes saisies sont sauvegardées uniquement dans ton navigateur. Aucune donnée n'est envoyée à Hippodoc.
+        </p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+
+  <script>
+    // Analytics du CTA marketing statique (hors îlot React) — même événement que
+    // la SPA source (calculette_2042_dspamc_cta_click, context 'public').
+    import { trackEvent } from '@/lib/analytics';
+
+    document.getElementById('calculette-cta-signup')?.addEventListener('click', () => {
+      trackEvent('calculette_2042_dspamc_cta_click', { context: 'public' });
+    });
+  </script>
+</BaseLayout>

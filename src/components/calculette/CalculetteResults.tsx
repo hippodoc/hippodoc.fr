@@ -1234,17 +1234,17 @@ export function CalculetteResultsView({
           remplacée par un raccourci direct vers Aide DSFU. */}
       <div className="text-[11px] text-muted-foreground px-2 pt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
         <span>Pas sûr d'une case ?</span>
-        <Link to="/guide-declarations#glossaire" className="text-hippo-600 hover:underline">Glossaire complet (2042 + DSFU)</Link>
+        <a href="/guide-declarations#glossaire" className="text-hippo-600 hover:underline">Glossaire complet (2042 + DSFU)</a>
         <span aria-hidden className="text-muted-foreground/50">|</span>
         {connectedMode ? (
           <span>
             Tout est déjà pré-rempli sur{' '}
-            <Link to="/depenses/aide-pamc" className="text-hippo-600 hover:underline">Aide DSFU</Link>.
+            <a href={`${APP_URL}/depenses/aide-pamc`} className="text-hippo-600 hover:underline">Aide DSFU</a>.
           </span>
         ) : (
           <span>
             Utilisateur Hippodoc ? Tout est pré-rempli sur{' '}
-            <Link to="/depenses/aide-pamc" className="text-hippo-600 hover:underline">Aide DSFU</Link>.
+            <a href={`${APP_URL}/depenses/aide-pamc`} className="text-hippo-600 hover:underline">Aide DSFU</a>.
           </span>
         )}
       </div>
