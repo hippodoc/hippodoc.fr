@@ -143,6 +143,11 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
       au fondateur médecin (Ryan Goburdhun) dans le schéma Article — non fait, pour ne pas
       inventer d'attribution.
 - [ ] TODO(owner) : « Dr. Sophie Martin » (1 article) — auteur à confirmer/rattacher à une bio.
+- [ ] TODO(owner) : la **vidéo de présentation** (26 Mo) n'existe que dans le stockage Lovable
+      (`/__l5e/assets-v1/...`). Le site pointe temporairement vers
+      `https://app.hippodoc.fr/__l5e/assets-v1/.../hippodoc-presentation-st.mp4` (valide tant
+      que l'app reste sur Lovable). À terme : héberger la vidéo proprement (Vercel Blob,
+      Cloudflare R2, YouTube/Vimeo) et mettre à jour PresentationVideoSection + VideoObject.
 - (liste complétée en fin de migration)
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
