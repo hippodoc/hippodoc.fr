@@ -107,11 +107,42 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
   FAQPage (/faq + bloc FAQ tarifs), Article + BreadcrumbList (blog), BreadcrumbList (guides).
 - llms.txt porté et étendu (définition produit, tarifs, URLs clés, contact).
 
-## 9. TODO(owner) — faits manquants / décisions
+## 9. Modifications de contenu (toutes flaggées, conformément à la consigne)
 
-- [ ] TODO(owner) : réactiver ou non GA4, Meta Pixel, Crisp et Calendly sur le site public
+- **Blocs « L'essentiel »** (ajout autorisé par la spec, rédigés à partir du seul contenu de
+  chaque article) ajoutés en tête des 8 articles > 1000 mots :
+  `simulateur-super-net-combien-reste`, `inbox-zero-remplacant`,
+  `enveloppes-investissement-pea-assurance-vie-per-cto`, `medecin-outre-mer-avantages-fiscaux`,
+  `interets-composes-meilleur-remplacement`, `guide-impots-internes-remplacants`,
+  `frais-pros-medecins-salaries-internes-2026`, `frais-pros-medecin-liberal-2026`.
+- **Bloc « Pour aller plus loin »** (liens internes simulateur / guide / tarifs) rendu par le
+  template sur CHAQUE article — la source n'avait aucun lien vers ces pages depuis le blog.
+- **/essai** : le formulaire d'inscription client-side de la source (Supabase signup) ne peut
+  pas fonctionner en statique → remplacé par un CTA visuellement équivalent vers
+  `app.hippodoc.fr/auth?tab=signup` ; le bouton « Voir toutes les fonctionnalités » (accordéon
+  JS) pointe désormais vers `/tarifs`.
+- **Index du blog** : H1 « Le blog des médecins remplaçants » (source : « Le Blog Hippodoc »)
+  — enrichi mot-clé, autorisé par « visually identical or better ».
+- **FAQ articles** : les données FAQ orphelines de la source (émises en JSON-LD mais jamais
+  affichées, ex. `choix-mode-exercice`) sont désormais AFFICHÉES sur la page — corrige le
+  risque « rich results » de décalage schéma/contenu visible.
+- **readTime** normalisé (« 6 » → « 6 min ») sur `remplacement-salarie-guide-complet`.
+- **Lien corps d'article** `[Découvre Hippodoc ici !](/landing)` → `](/)`
+  (dans `signer-contrat-remplacement` ; /landing n'existe plus, 301 vers /).
+- **Auteurs (schéma Article)** : « Équipe Hippodoc »/« Hippodoc » → auteur `Organization`
+  Hippodoc ; « Dr. Hippodoc » et « Dr. Sophie Martin » → `Person` avec url
+  `/qui-sommes-nous`. Noms visibles inchangés.
+
+## 10. TODO(owner) — faits manquants / décisions
+
+- [ ] TODO(owner) : réactiver ou non GA4 `G-T8TFWPPW3M`, Meta Pixel, Crisp
+      (`3e4f14e5-8e4e-40fd-b1f5-f0b940186f56`) et Calendly sur le site public
       (retirés pour la performance ; PostHog seul est conservé). Les snippets d'origine sont
       dans `index.html` de la source.
+- [ ] TODO(owner) : attribuer ou non les articles signés « Équipe Hippodoc »/« Dr. Hippodoc »
+      au fondateur médecin (Ryan Goburdhun) dans le schéma Article — non fait, pour ne pas
+      inventer d'attribution.
+- [ ] TODO(owner) : « Dr. Sophie Martin » (1 article) — auteur à confirmer/rattacher à une bio.
 - (liste complétée en fin de migration)
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
