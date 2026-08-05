@@ -1,0 +1,227 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+const title = "Conformité RGPD - Protection des Données Personnelles | Hippodoc";
+const description = "Découvrez notre charte de conformité RGPD. Hippodoc garantit la protection de vos données personnelles : registre des traitements, sécurité, droits des utilisateurs.";
+const path = "/rgpd";
+---
+
+<BaseLayout {title} {description} {path}>
+  <Header />
+
+  <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white pt-24 pb-12">
+    <div class="container max-w-3xl">
+      <article class="space-y-8">
+        <div>
+          <h1 class="text-3xl font-bold mb-1 text-hippo-700">Charte de Conformité RGPD – Hippodoc</h1>
+          <div class="text-sm text-gray-500 mb-8">Dernière mise à jour : 21 avril 2025</div>
+        </div>
+
+        <section class="space-y-4">
+          <p>
+            La présente charte (ci-après la « Charte ») formalise la manière dont HIPPODOC (ci-après « nous » ou « Hippodoc ») garantit sa conformité au Règlement (UE) 2016/679 du 27 avril 2016 (Règlement Général sur la Protection des Données, « RGPD »). Elle est distincte de la Politique de Confidentialité accessible sur la plateforme Hippodoc (ci-après la « Plateforme »), laquelle détaille les droits des utilisateurs et les traitements de données réalisés.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">1. Principes Généraux de Conformité</h2>
+          <h3 class="font-medium">Licéité, loyauté, transparence</h3>
+          <p>
+            Nous ne collectons et ne traitons des données personnelles que sur la base d'une base légale valide : exécution d'un contrat, consentement, obligation légale ou intérêt légitime.<br />
+            Nous informons clairement les personnes concernées des objectifs, de la nature et de la durée de conservation de leurs données.
+          </p>
+
+          <h3 class="font-medium">Limitation des finalités</h3>
+          <p>
+            Les données collectées sont traitées pour des finalités clairement définies : gestion du compte utilisateur, facturation, fourniture des Services Hippodoc, etc.<br />
+            Aucune utilisation ultérieure incompatible avec les finalités initiales n'est réalisée sans nouvelle information ou, le cas échéant, consentement.
+          </p>
+
+          <h3 class="font-medium">Minimisation des données</h3>
+          <p>
+            Nous veillons à ne collecter que les données strictement nécessaires au regard des finalités poursuivies (principe de « privacy by default »).<br />
+            Les champs marqués comme obligatoires dans les formulaires sont limités à ce qui est réellement indispensable.
+          </p>
+
+          <h3 class="font-medium">Exactitude des données</h3>
+          <p>
+            Nous mettons en place des mécanismes pour maintenir à jour et exactes les données personnelles stockées (ex. possibilité pour l'utilisateur de modifier son profil).<br />
+            Nous encourageons également les utilisateurs à nous signaler toute erreur ou changement pertinent.
+          </p>
+
+          <h3 class="font-medium">Limitation de la conservation</h3>
+          <p>
+            Chaque catégorie de données est conservée pour une durée proportionnée à sa finalité (conformément aux obligations légales ou contractuelles).<br />
+            Une fois la durée échue, les données sont supprimées ou rendues anonymes (voir notre Politique de Confidentialité pour plus de détails).
+          </p>
+
+          <h3 class="font-medium">Intégrité et confidentialité</h3>
+          <p>
+            Nous sécurisons les données par des mesures techniques (chiffrement, pare-feu, accès restreints) et organisationnelles (procédures internes, sensibilisation du personnel) afin d'éviter tout accès non autorisé, altération ou perte.
+          </p>
+
+          <h3 class="font-medium">Responsabilité (accountability)</h3>
+          <p>
+            Hippodoc s'engage à maintenir à jour sa documentation de conformité, à réaliser des analyses régulières et à être en mesure de prouver à tout moment qu'elle respecte le RGPD (ex. registres de traitement, politiques internes).
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">2. Registre des Activités de Traitement</h2>
+          <p>
+            Nous tenons à jour un Registre des Activités de Traitement, conformément à l'article 30 du RGPD. Celui-ci inclut notamment :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Les finalités du traitement,</li>
+            <li>Les catégories de données personnelles et de personnes concernées,</li>
+            <li>Les catégories de destinataires,</li>
+            <li>Les durées de conservation,</li>
+            <li>Les transferts de données en dehors de l'Union européenne (le cas échéant),</li>
+            <li>Les mesures de sécurité appliquées.</li>
+          </ul>
+          <p>
+            Ce registre nous permet de cartographier précisément tous les flux de données et de vérifier en continu notre conformité.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">3. Sécurité et Confidentialité</h2>
+          <h3 class="font-medium">Mesures techniques</h3>
+          <ul class="list-disc list-inside ml-4">
+            <li>Utilisation de protocoles de sécurisation des échanges (ex. HTTPS/TLS).</li>
+            <li>Sauvegardes régulières et systèmes de récupération pour éviter la perte ou la corruption de données.</li>
+            <li>Accès restreint aux bases de données (droits et habilitations strictement définis).</li>
+          </ul>
+
+          <h3 class="font-medium">Mesures organisationnelles</h3>
+          <ul class="list-disc list-inside ml-4">
+            <li>Sensibilisation et formation du personnel aux enjeux de la protection des données.</li>
+            <li>Procédures internes pour gérer les violations de données (data breach) : notification à la CNIL et aux personnes concernées dans les délais légaux (72 heures).</li>
+            <li>Clauses de confidentialité dans les contrats de travail et de sous-traitance.</li>
+          </ul>
+
+          <h3 class="font-medium">Hébergement (Supabase)</h3>
+          <p>
+            Les données sont hébergées au sein de l'Union européenne, sur des serveurs qui appliquent les standards de sécurité reconnus.<br />
+            Les transferts hors UE potentiels sont encadrés par des garanties appropriées (Clauses Contractuelles Types, etc.).
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">4. Sous-Traitance et Prestataires</h2>
+          <p>
+            Conformément à l'article 28 du RGPD, nous vérifions que nos sous-traitants (par exemple pour l'hébergement, le paiement, l'envoi d'emails) présentent des garanties suffisantes pour mettre en œuvre des mesures techniques et organisationnelles appropriées.
+          </p>
+          <p>
+            Nous passons avec eux des contrats ou avenants de sous-traitance (Data Processing Agreements – DPA), garantissant :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>L'usage exclusif des données conformément à nos instructions,</li>
+            <li>La confidentialité et la sécurité,</li>
+            <li>Le respect des sous-traitants ultérieurs (chaîne de sous-traitance),</li>
+            <li>La coopération en cas de demande d'exercice de droits des personnes concernées ou d'audit.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">5. Gestion des Droits des Personnes</h2>
+          <p>
+            Nous avons mis en place des procédures pour faciliter l'exercice des droits (accès, rectification, effacement, limitation, opposition, portabilité) reconnus par le RGPD.
+          </p>
+          <p><strong>Canaux de contact :</strong></p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Adresse email : contact@hippodoc.fr</li>
+            <li>Adresse postale : 4 square de l'avenue du Bois, 75116 Paris, France</li>
+            <li>Délais de réponse : en principe 1 mois à compter de la réception de la demande, prolongeable de 2 mois pour des demandes complexes ou multiples.</li>
+            <li>Justificatif d'identité : nous pouvons demander un document pour confirmer l'identité du demandeur, afin d'éviter toute divulgation abusive de données.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">6. Privacy by Design / Privacy by Default</h2>
+          <p>
+            Dans le cadre de nouveaux projets ou de mises à jour majeures, Hippodoc applique les principes de « Privacy by Design » et « Privacy by Default » :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Privacy by Design : nous intégrons la protection de la vie privée dès la conception de nos outils et fonctionnalités (analyse d'impact, configurations sécurisées par défaut, minimisation des données).</li>
+            <li>Privacy by Default : les paramètres par défaut de la Plateforme sont configurés de manière à respecter la vie privée (collecte réduite de données, activation optionnelle de fonctionnalités non indispensables, etc.).</li>
+          </ul>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">7. Violations de Données (Data Breach)</h2>
+          <p>
+            En cas de violation de données personnelles (accès non autorisé, divulgation, perte), nous avons établi :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Un procès-verbal interne décrivant la nature de la violation, la catégorie de données affectées, le nombre approximatif de personnes concernées, etc.</li>
+            <li>Une notification auprès de la CNIL dans les 72 heures suivant la découverte de la violation, lorsque celle-ci est susceptible de présenter un risque pour les droits et libertés des personnes concernées.</li>
+            <li>Une communication aux personnes concernées, lorsque la violation est susceptible d'engendrer un risque élevé pour leurs droits et libertés (article 34 RGPD).</li>
+          </ul>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">8. Formation et Sensibilisation</h2>
+          <p>
+            L'ensemble du personnel d'Hippodoc (salariés, collaborateurs, sous-traitants directs) est formé et sensibilisé aux bonnes pratiques de la protection des données :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Formation initiale lors de l'arrivée d'un nouveau collaborateur.</li>
+            <li>Mises à jour régulières lorsque la réglementation ou nos processus internes évoluent.</li>
+            <li>Documentation interne sur les mesures de sécurité, les procédures de gestion des demandes, etc.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">9. Coordonnées et Autorité de Contrôle</h2>
+          <h3 class="font-medium">9.1. Délégué à la Protection des Données (DPO)</h3>
+          <p>
+            Nous n'avons pas nommé de Délégué à la Protection des Données, mais vous pouvez nous contacter pour toute question à contact@hippodoc.fr.
+          </p>
+
+          <h3 class="font-medium">9.2. CNIL</h3>
+          <p>
+            En France, l'autorité de contrôle compétente est la CNIL (Commission Nationale de l'Informatique et des Libertés).
+          </p>
+          <p>
+            Adresse postale : 3 Place de Fontenoy – TSA 80715 – 75334 PARIS CEDEX 07<br />
+            Téléphone : +33 (0)1 53 73 22 22<br />
+            Site web : <a href="https://www.cnil.fr/" target="_blank" rel="noopener noreferrer" class="text-hippo-600 underline">https://www.cnil.fr/</a>
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">10. Mise à Jour de la Charte</h2>
+          <p>
+            La présente Charte est susceptible d'être mise à jour pour tenir compte de l'évolution de la réglementation ou de nos pratiques internes. Toute version modifiée sera mise à disposition sur la Plateforme Hippodoc (et, le cas échéant, notifiée aux personnes concernées).
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">11. Contact</h2>
+          <p>
+            Pour plus d'informations sur la mise en œuvre du RGPD par Hippodoc, vous pouvez :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Consulter notre Politique de Confidentialité,</li>
+            <li>Nous écrire à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>,</li>
+            <li>Ou envoyer un courrier à : Hippodoc – 60 rue François Ier, 75008 Paris, France.</li>
+          </ul>
+          <p>
+            En publiant cette Charte RGPD, Hippodoc réaffirme son engagement à respecter la confidentialité et la sécurité des données personnelles, conformément à la législation applicable et aux attentes légitimes de ses utilisateurs et partenaires.
+          </p>
+        </section>
+
+        <hr class="my-8" />
+
+        <p class="text-xs text-muted-foreground">
+          En utilisant Hippodoc, vous reconnaissez avoir pris connaissance de la présente Charte RGPD.
+        </p>
+      </article>
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,211 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+const title = "Mentions Légales | Hippodoc";
+const description = "Mentions légales d'Hippodoc : éditeur SASU au capital de 1€, directeur de publication Ryan Goburdhun, hébergeur, propriété intellectuelle et informations RGPD.";
+const path = "/mentions-legales";
+---
+
+<BaseLayout {title} {description} {path}>
+  <Header />
+
+  <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white pt-24 pb-12 px-4">
+    <div class="container max-w-4xl mx-auto">
+      <article class="space-y-8">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold text-hippo-800 mb-8">
+            Mentions Légales
+          </h1>
+
+          <p class="text-muted-foreground mb-8">
+            Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique (LCEN),
+            il est porté à la connaissance des utilisateurs du site <strong>www.hippodoc.fr</strong> les présentes mentions légales.
+          </p>
+        </div>
+
+        {/* Section 1 - Éditeur */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">1. Éditeur du site</h2>
+          <div class="space-y-2 text-muted-foreground">
+            <p><strong>Raison sociale :</strong> HIPPODOC</p>
+            <p><strong>Forme juridique :</strong> Société par Actions Simplifiée Unipersonnelle (SASU)</p>
+            <p><strong>Capital social :</strong> 1 €</p>
+            <p><strong>Siège social :</strong> 60 rue François Ier, 75008 Paris, France</p>
+            <p><strong>Numéro RCS :</strong> Paris (en cours d'immatriculation)</p>
+            <p><strong>Email :</strong> <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 hover:underline">contact@hippodoc.fr</a></p>
+            <p><strong>Téléphone :</strong> <a href="tel:+33756898961" class="text-hippo-600 hover:underline">+33 7 56 89 89 61</a></p>
+          </div>
+        </section>
+
+        {/* Section 2 - Directeur de publication */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">2. Directeur de la publication</h2>
+          <div class="space-y-2 text-muted-foreground">
+            <p>Le directeur de la publication est <strong>Ryan Goburdhun</strong>, en qualité de Président de la société HIPPODOC.</p>
+            <p>Contact : <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 hover:underline">contact@hippodoc.fr</a></p>
+          </div>
+        </section>
+
+        {/* Section 3 - Hébergement */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">3. Hébergement</h2>
+          <div class="space-y-2 text-muted-foreground">
+            <p>La plateforme Hippodoc est hébergée par :</p>
+            <div class="mt-2 p-4 bg-gray-50 rounded-lg">
+              <p><strong>Supabase, Inc.</strong></p>
+              <p>970 Toa Payoh North, #07-04</p>
+              <p>Singapore 318992</p>
+              <p>Site web : <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" class="text-hippo-600 hover:underline">https://supabase.com</a></p>
+            </div>
+            <p class="mt-4">
+              Les données sont stockées sur des serveurs situés au sein de l'<strong>Union Européenne</strong>,
+              conformément aux exigences du Règlement Général sur la Protection des Données (RGPD).
+            </p>
+            <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <p class="font-medium text-amber-800 mb-2">⚠️ Absence de certification HDS</p>
+              <p class="text-amber-700 text-sm">
+                Hippodoc n'est pas un hébergeur de données de santé (HDS) au sens de l'article L.1111-8 du Code de la santé publique.
+                La plateforme est conçue pour la gestion administrative des remplacements (calendrier, facturation, revenus) et{' '}
+                <strong>ne doit pas être utilisée pour stocker des données de santé identifiables de patients</strong>.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4 - Propriété intellectuelle */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">4. Propriété intellectuelle</h2>
+          <div class="space-y-3 text-muted-foreground">
+            <p>
+              L'ensemble du contenu du site Hippodoc (textes, images, graphismes, logo, icônes, logiciels, base de données)
+              est la propriété exclusive de HIPPODOC ou de ses partenaires et est protégé par les lois françaises et
+              internationales relatives à la propriété intellectuelle.
+            </p>
+            <p>
+              Toute reproduction, représentation, modification, publication, transmission, ou exploitation de tout ou partie
+              du contenu du site, quel que soit le moyen ou le procédé utilisé, est interdite sans l'autorisation écrite
+              préalable de HIPPODOC.
+            </p>
+            <p>
+              La marque <strong>Hippodoc</strong> et son logo sont des marques déposées. Toute utilisation non autorisée
+              constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la Propriété Intellectuelle.
+            </p>
+          </div>
+        </section>
+
+        {/* Section 5 - Protection des données */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">5. Protection des données personnelles</h2>
+          <div class="space-y-3 text-muted-foreground">
+            <p>
+              HIPPODOC s'engage à protéger la vie privée des utilisateurs de son site et à traiter leurs données
+              personnelles conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi
+              Informatique et Libertés.
+            </p>
+            <p>
+              Pour toute question relative à la protection de vos données personnelles, vous pouvez nous contacter
+              à l'adresse : <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 hover:underline">contact@hippodoc.fr</a>
+            </p>
+            <div class="mt-4 p-4 bg-hippo-50 rounded-lg border border-hippo-100">
+              <p class="font-medium text-hippo-800 mb-2">Pour plus d'informations :</p>
+              <ul class="space-y-1">
+                <li>
+                  <a href="/rgpd" class="text-hippo-600 hover:underline">→ Charte RGPD</a>
+                </li>
+                <li>
+                  <a href="/politique-confidentialite" class="text-hippo-600 hover:underline">→ Politique de Confidentialité</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 6 - Crédits */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">6. Crédits</h2>
+          <div class="space-y-3 text-muted-foreground">
+            <p><strong>Conception et développement :</strong> HIPPODOC</p>
+            <p><strong>Technologies utilisées :</strong></p>
+            <ul class="list-disc list-inside pl-4 space-y-1">
+              <li>React & TypeScript (interface utilisateur)</li>
+              <li>Supabase (base de données et authentification)</li>
+              <li>Stripe (paiements sécurisés)</li>
+              <li>Tailwind CSS (design)</li>
+            </ul>
+            <p class="mt-2"><strong>Icônes :</strong> Lucide Icons (MIT License)</p>
+          </div>
+        </section>
+
+        {/* Section 7 - Cookies */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">7. Cookies</h2>
+          <div class="space-y-3 text-muted-foreground">
+            <p>
+              Le site Hippodoc utilise des cookies pour améliorer l'expérience utilisateur et analyser le trafic.
+              Lors de votre première visite, un bandeau vous informe de l'utilisation des cookies et vous permet
+              d'accepter ou de refuser leur utilisation.
+            </p>
+            <p>
+              Vous pouvez à tout moment modifier vos préférences en matière de cookies via les paramètres de votre navigateur.
+            </p>
+            <p>
+              Pour plus d'informations, consultez notre{' '}
+              <a href="/politique-confidentialite" class="text-hippo-600 hover:underline">
+                Politique de Confidentialité
+              </a>.
+            </p>
+          </div>
+        </section>
+
+        {/* Section 8 - Loi applicable */}
+        <section class="mb-8">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">8. Loi applicable et juridiction compétente</h2>
+          <div class="space-y-3 text-muted-foreground">
+            <p>
+              Les présentes mentions légales sont régies par le droit français.
+            </p>
+            <p>
+              En cas de litige relatif à l'interprétation ou à l'exécution des présentes, et à défaut de résolution amiable,
+              les tribunaux de <strong>Paris</strong> seront seuls compétents.
+            </p>
+          </div>
+        </section>
+
+        {/* Section 9 - Limites des estimations */}
+        <section class="mb-4">
+          <h2 class="text-xl font-semibold text-hippo-800 mb-4">9. Limites des estimations fiscales et sociales</h2>
+          <div class="space-y-3 text-muted-foreground">
+            <p>
+              La plateforme Hippodoc propose des outils d'estimation des cotisations sociales (URSSAF, CARMF)
+              et de l'impôt sur le revenu (« Super-Net », simulateur Micro-BNC/Réel).
+            </p>
+            <p>
+              <strong>Ces estimations sont fournies à titre purement informatif et indicatif.</strong> Elles ne constituent
+              en aucun cas un conseil fiscal, comptable ou juridique, ni une garantie des montants réellement dus.
+            </p>
+            <p>
+              Les calculs reposent sur les informations déclarées par l'utilisateur et sur des barèmes officiels susceptibles d'évoluer.
+              HIPPODOC décline toute responsabilité en cas d'écart entre les estimations affichées et les montants
+              effectivement appelés par l'URSSAF, la CARMF ou l'administration fiscale.
+            </p>
+            <div class="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+              <p class="text-blue-800 text-sm">
+                💡 <strong>Recommandation :</strong> Pour toute décision relative à votre situation fiscale ou sociale,
+                nous vous conseillons de consulter un expert-comptable ou un conseiller fiscal.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Date de mise à jour */}
+        <div class="mt-12 pt-6 border-t text-center text-sm text-muted-foreground">
+          <p>Dernière mise à jour : 24 décembre 2025</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>

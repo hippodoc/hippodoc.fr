@@ -1,0 +1,267 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import hippodocLogo from '@/assets/hippodoc-logo.png';
+import { APP_URL } from '@/lib/site';
+
+const title = "Hippodoc - Essai gratuit | Gestion remplacements médicaux";
+const description = "Rejoins +900 médecins remplaçants. Calcul Super-Net, factures, planning. Essai gratuit 30 jours.";
+const path = "/essai";
+const noindex = true;
+---
+
+<BaseLayout {title} {description} {path} {noindex}>
+  <div class="min-h-screen bg-gradient-to-b from-hippo-100/70 via-background to-hippo-50/50 relative overflow-hidden">
+    <!-- Animated background orbs (static visual, no animation) -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-20 -right-20 w-80 h-80 bg-hippo-300/30 rounded-full blur-3xl" />
+      <div class="absolute bottom-40 -left-20 w-60 h-60 bg-hippo-200/25 rounded-full blur-3xl" />
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 bg-hippo-100/20 rounded-full blur-3xl" />
+    </div>
+
+    <div class="container max-w-lg mx-auto px-4 py-6 flex flex-col gap-5 relative z-10">
+      <!-- Hero Section: Logo + Title -->
+      <div class="text-center space-y-3 sm:space-y-4 pt-4 sm:pt-6">
+        <!-- Logo with glow effect -->
+        <div class="flex justify-center">
+          <div class="relative">
+            <div class="absolute inset-0 bg-hippo-400/20 blur-xl rounded-full scale-150" />
+            <Image
+              src={hippodocLogo}
+              alt="Hippodoc"
+              class="h-12 w-auto relative z-10 drop-shadow-lg"
+            />
+          </div>
+        </div>
+
+        <!-- Main title -->
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-snug">
+          <span class="text-hippo-800">Remplacer, c'est bien.</span>
+          <br />
+          <span class="text-hippo-800">Savoir ce que ça te rapporte </span>
+          <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">
+            vraiment
+          </span>
+          <span class="text-hippo-800">, c'est mieux.</span>
+        </h1>
+
+        <!-- Subtitle with badge -->
+        <div class="flex flex-col items-center gap-2.5 sm:gap-3">
+          <p class="text-gray-500 text-sm sm:text-base font-medium">
+            Le cockpit financier des médecins remplaçants
+          </p>
+          <span class="inline-flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+            <span class="text-xs font-medium">
+              🎁 30 jours gratuits
+            </span>
+            <span class="text-[10px] opacity-80">Sans engagement • Résiliable à tout moment</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Main 3 Benefits -->
+      <div class="space-y-3">
+        <div class="grid grid-cols-3 gap-3">
+          <!-- Super-Net Badge -->
+          <div class="flex flex-col items-center gap-2 p-3 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-shadow">
+            <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <div class="absolute inset-0 rounded-xl bg-emerald-400/20 blur-md -z-10 scale-110" />
+            </div>
+            <div class="text-center">
+              <p class="text-xs font-semibold text-foreground">Super-Net</p>
+              <p class="text-[10px] text-muted-foreground">Ton vrai revenu</p>
+            </div>
+          </div>
+
+          <!-- Statistiques Badge -->
+          <div class="flex flex-col items-center gap-2 p-3 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-shadow">
+            <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              <div class="absolute inset-0 rounded-xl bg-amber-400/20 blur-md -z-10 scale-110" />
+            </div>
+            <div class="text-center">
+              <p class="text-xs font-semibold text-foreground">Statistiques</p>
+              <p class="text-[10px] text-muted-foreground">Suivi complet</p>
+            </div>
+          </div>
+
+          <!-- Planning Badge -->
+          <div class="flex flex-col items-center gap-2 p-3 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-shadow">
+            <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-hippo-400 to-hippo-600 flex items-center justify-center shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <div class="absolute inset-0 rounded-xl bg-hippo-400/20 blur-md -z-10 scale-110" />
+            </div>
+            <div class="text-center">
+              <p class="text-xs font-semibold text-foreground">Planning</p>
+              <p class="text-[10px] text-muted-foreground">Tout centralisé</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lien vers la liste complète des fonctionnalités (remplace l'accordéon JS de la source) -->
+        <a href="/tarifs" class="flex items-center justify-center gap-2 w-full py-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <span>Voir toutes les fonctionnalités</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+      </div>
+
+      <!-- Social Proof Card -->
+      <div class="relative">
+        <div class="flex items-center justify-center gap-3 py-3 px-4 rounded-2xl bg-gradient-to-r from-hippo-50/80 to-hippo-100/60 border border-hippo-200/50">
+          <!-- Avatar stack simulation -->
+          <div class="flex -space-x-2">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-hippo-400 to-hippo-600 flex items-center justify-center border-2 border-background">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center border-2 border-background">
+              <span class="text-[10px] font-bold text-white">+</span>
+            </div>
+          </div>
+
+          <!-- Text content -->
+          <div class="flex flex-col">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-bold text-foreground">+900</span>
+              <span class="text-sm text-muted-foreground">médecins nous font confiance</span>
+            </div>
+
+            <!-- Stars rating -->
+            <div class="flex items-center gap-0.5">
+              {[...Array(5)].map(() => (
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" class="fill-amber-400 text-amber-400"><polygon points="12 2 15.09 10.26 24 10.27 17.18 16.7 19.34 25.07 12 19.54 4.66 25.07 6.82 16.7 0 10.27 8.91 10.26 12 2"></polygon></svg>
+              ))}
+              <span class="text-[10px] text-muted-foreground ml-1">4.9/5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signup Form - Simplified Static Form -->
+      <div class="relative">
+        <div class="absolute -inset-[1px] bg-gradient-to-r from-hippo-400 via-hippo-500 to-hippo-400 rounded-3xl opacity-50 blur-[2px]" />
+
+        <div class="relative bg-card/95 backdrop-blur-xl rounded-3xl p-5 shadow-xl border border-border/30">
+          <!-- Header -->
+          <div class="flex items-center justify-center gap-2 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-hippo-500"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+            <h2 class="text-lg font-semibold text-foreground">
+              Crée ton compte gratuit
+            </h2>
+          </div>
+
+          <!-- CTA vers l'inscription app (le formulaire de création de compte vit sur app.hippodoc.fr) -->
+          <div class="space-y-4">
+            <p class="text-center text-sm text-muted-foreground">
+              Crée ton compte en 2 minutes sur app.hippodoc.fr — essai gratuit de 30 jours, toutes les fonctionnalités incluses.
+            </p>
+
+            <!-- Submit Button -->
+            <a
+              href={`${APP_URL}/auth?tab=signup`}
+              data-track="cta_signup_essai"
+              class="flex w-full h-12 items-center justify-center text-base font-semibold bg-gradient-to-r from-hippo-500 to-hippo-600 hover:from-hippo-600 hover:to-hippo-700 text-white shadow-lg shadow-hippo-500/25 rounded-lg transition-colors"
+            >
+              Essai gratuit 30 jours →
+            </a>
+
+            <!-- Reassurance text -->
+            <p class="text-center text-[10px] text-muted-foreground">
+              Sans engagement • Résiliable à tout moment
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="text-center pb-8 px-4">
+        <!-- Séparateur décoratif gradient -->
+        <div class="w-20 h-px bg-gradient-to-r from-transparent via-hippo-400 to-transparent mx-auto mb-8" />
+
+        <!-- Branding Hippodoc -->
+        <div class="mb-8">
+          <div class="flex items-center justify-center gap-2.5 mb-2">
+            <Image
+              src={hippodocLogo}
+              alt="Hippodoc"
+              class="h-9 w-9"
+            />
+            <span class="text-xl font-bold tracking-tight">
+              Hippo<span class="text-transparent bg-clip-text bg-gradient-to-r from-hippo-500 to-hippo-600">doc</span>
+            </span>
+          </div>
+          <p class="text-sm text-muted-foreground">
+            Le cockpit du médecin remplaçant
+          </p>
+        </div>
+
+        <!-- CTA Principal -->
+        <div class="mb-4">
+          <p class="text-sm text-muted-foreground mb-3">
+            Tu veux en savoir plus ?
+          </p>
+          <a
+            href="/"
+            class="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 hover:from-hippo-600 hover:to-hippo-700 px-8 font-medium text-white shadow-lg transition-colors"
+          >
+            Découvrir Hippodoc
+          </a>
+        </div>
+
+        <!-- Lien connexion -->
+        <p class="text-sm text-muted-foreground mb-8">
+          Déjà inscrit ?{' '}
+          <a
+            href={`${APP_URL}/auth`}
+            class="text-hippo-500 font-medium hover:text-hippo-600 hover:underline underline-offset-2 transition-colors"
+          >
+            Se connecter
+          </a>
+        </p>
+
+        <!-- Contact & Instagram inline -->
+        <div class="flex items-center justify-center gap-3 text-xs text-muted-foreground/80 mb-5">
+          <a
+            href="mailto:contact@hippodoc.fr"
+            class="hover:text-hippo-500 transition-colors"
+          >
+            contact@hippodoc.fr
+          </a>
+          <span class="text-border">·</span>
+          <a
+            href="https://www.instagram.com/hippodoc.fr/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Suivez Hippodoc sur Instagram"
+            class="hover:text-hippo-500 transition-colors"
+          >
+            @hippodoc.fr
+          </a>
+        </div>
+
+        <!-- Liens légaux -->
+        <div class="flex flex-wrap items-center justify-center gap-2 text-[11px] text-muted-foreground/60">
+          <a href="/qui-sommes-nous" class="hover:text-foreground transition-colors">
+            Qui sommes-nous
+          </a>
+          <span class="text-border">·</span>
+          <a href="/conditions-utilisations" class="hover:text-foreground transition-colors">
+            CGU
+          </a>
+          <span class="text-border">·</span>
+          <a href="/politique-confidentialite" class="hover:text-foreground transition-colors">
+            Confidentialité
+          </a>
+          <span class="text-border">·</span>
+          <a href="/faq" class="hover:text-foreground transition-colors">
+            FAQ
+          </a>
+          <span class="text-border">·</span>
+          <a href="/mentions-legales" class="hover:text-foreground transition-colors">
+            Mentions légales
+          </a>
+        </div>
+      </footer>
+    </div>
+  </div>
+</BaseLayout>
