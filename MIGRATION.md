@@ -10,21 +10,21 @@ Toutes conservées à l'IDENTIQUE (aucun changement d'URL).
 
 | Route | Composant source | Statut migration |
 |---|---|---|
-| `/` | `src/pages/landing/` (LandingPage + `src/components/landing/*`) | à migrer |
-| `/blog` | `src/pages/blog/` (index) | à migrer |
-| `/blog/<slug>` ×38 | `src/pages/blog/*.tsx` (une page par article) | à migrer |
-| `/faq` | `src/pages/faq.tsx` | à migrer |
-| `/simulateur` | `src/pages/simulateur-public.tsx` | à migrer (île React) |
-| `/guide-declarations` | `src/pages/guide-declarations/` | à migrer (île React) |
-| `/guide-declarations/calculette` | `src/pages/guide-declarations/` | à migrer (île React) |
-| `/comparatif` | `src/pages/comparatif.tsx` | à migrer |
-| `/qui-sommes-nous` | `src/pages/qui-sommes-nous.tsx` | à migrer |
-| `/conditions-utilisations` | `src/pages/conditions-utilisations.tsx` | à migrer |
-| `/politique-confidentialite` | `src/pages/politique-confidentialite.tsx` | à migrer |
-| `/rgpd` | `src/pages/rgpd.tsx` | à migrer |
-| `/mentions-legales` | `src/pages/mentions-legales.tsx` | à migrer |
-| `/tarifs` | — (NOUVELLE page, n'existe pas dans la source) | à créer |
-| `/essai` | `src/pages/instagram/` (landing link-in-bio Instagram) | à migrer, `noindex` (comme l'ancien robots.txt le voulait) |
+| `/` | `src/pages/landing/` (LandingPage + `src/components/landing/*`) | ✅ migré |
+| `/blog` | `src/pages/blog/` (index) | ✅ migré |
+| `/blog/<slug>` ×38 | `src/pages/blog/*.tsx` (une page par article) | ✅ migré |
+| `/faq` | `src/pages/faq.tsx` | ✅ migré |
+| `/simulateur` | `src/pages/simulateur-public.tsx` | ✅ migré (île React) |
+| `/guide-declarations` | `src/pages/guide-declarations/` | ✅ migré (île React) |
+| `/guide-declarations/calculette` | `src/pages/guide-declarations/` | ✅ migré (île React) |
+| `/comparatif` | `src/pages/comparatif.tsx` | ✅ migré |
+| `/qui-sommes-nous` | `src/pages/qui-sommes-nous.tsx` | ✅ migré |
+| `/conditions-utilisations` | `src/pages/conditions-utilisations.tsx` | ✅ migré |
+| `/politique-confidentialite` | `src/pages/politique-confidentialite.tsx` | ✅ migré |
+| `/rgpd` | `src/pages/rgpd.tsx` | ✅ migré |
+| `/mentions-legales` | `src/pages/mentions-legales.tsx` | ✅ migré |
+| `/tarifs` | — (NOUVELLE page, n'existe pas dans la source) | ✅ créé |
+| `/essai` | `src/pages/instagram/` (landing link-in-bio Instagram) | ✅ migré, `noindex` |
 | `/transmissions` | `public/transmissions.html` (page newsletter autonome, noindex) | ✅ portée verbatim (`public/transmissions/index.html`) |
 
 Remarques :
@@ -36,9 +36,50 @@ Remarques :
 
 - Aucune donnée en base : `blog_posts` (Supabase) ne contient qu'1 ligne de test. Tout le contenu
   est codé en dur, un composant TSX par article (`src/pages/blog/*.tsx`).
-- Cible : content collection Astro (`src/content/blog/*.mdx`), frontmatter
+- Cible : content collection Astro (`src/content/blog/*.md`), frontmatter
   `title, description, slug, pubDate, updatedDate, author, tags` — dates d'origine conservées.
-- (Tableau slug → fichier → date complété en fin de migration.)
+- Les 38 articles, avec leurs dates d'origine :
+
+| URL (inchangée) | Fichier | Publication |
+|---|---|---|
+| `/blog/obtenir-sa-licence-de-remplacement` | `src/content/blog/obtenir-sa-licence-de-remplacement.md` | 2025-10-06 |
+| `/blog/trouver-facilement-tes-remplacements-medicaux` | `src/content/blog/trouver-facilement-tes-remplacements-medicaux.md` | 2025-10-06 |
+| `/blog/checklist-administrative-medecin-remplacant` | `src/content/blog/checklist-administrative-medecin-remplacant.md` | 2025-10-06 |
+| `/blog/checklist-premier-jour-remplacement` | `src/content/blog/checklist-premier-jour-remplacement.md` | 2025-10-06 |
+| `/blog/signer-contrat-remplacement` | `src/content/blog/signer-contrat-remplacement.md` | 2025-10-06 |
+| `/blog/maitrise-ton-logiciel-metier-en-30-min` | `src/content/blog/maitrise-ton-logiciel-metier-en-30-min.md` | 2025-10-06 |
+| `/blog/outils-numeriques-indispensables-cabinet` | `src/content/blog/outils-numeriques-indispensables-cabinet.md` | 2025-10-06 |
+| `/blog/checklist-ultime-medecin-remplacant` | `src/content/blog/checklist-ultime-medecin-remplacant.md` | 2025-10-06 |
+| `/blog/choix-mode-exercice` | `src/content/blog/choix-mode-exercice.md` | 2025-10-21 |
+| `/blog/regime-fiscal-micro-bnc-vs-reel` | `src/content/blog/regime-fiscal-micro-bnc-vs-reel.md` | 2025-10-21 |
+| `/blog/cotisations-sociales-vs-impots` | `src/content/blog/cotisations-sociales-vs-impots.md` | 2025-10-21 |
+| `/blog/tout-comprendre-urssaf` | `src/content/blog/tout-comprendre-urssaf.md` | 2025-10-21 |
+| `/blog/tout-comprendre-carmf` | `src/content/blog/tout-comprendre-carmf.md` | 2025-10-21 |
+| `/blog/frais-professionnels-deductibles` | `src/content/blog/frais-professionnels-deductibles.md` | 2025-10-21 |
+| `/blog/remplir-declaration-2035` | `src/content/blog/remplir-declaration-2035.md` | 2025-10-21 |
+| `/blog/calendrier-fiscal-remplacant` | `src/content/blog/calendrier-fiscal-remplacant.md` | 2025-10-21 |
+| `/blog/generer-facture-remplacement` | `src/content/blog/generer-facture-remplacement.md` | 2025-11-28 |
+| `/blog/salariat-vs-liberal` | `src/content/blog/salariat-vs-liberal.md` | 2025-11-28 |
+| `/blog/remplacement-salarie-guide-complet` | `src/content/blog/remplacement-salarie-guide-complet.md` | 2025-11-28 |
+| `/blog/realites-remplacement-medical` | `src/content/blog/realites-remplacement-medical.md` | 2025-11-28 |
+| `/blog/syndrome-imposteur-5-astuces` | `src/content/blog/syndrome-imposteur-5-astuces.md` | 2025-11-28 |
+| `/blog/micro-bnc-exemples-concrets` | `src/content/blog/micro-bnc-exemples-concrets.md` | 2025-11-28 |
+| `/blog/rspm-exemples-concrets` | `src/content/blog/rspm-exemples-concrets.md` | 2025-11-28 |
+| `/blog/salaires-medecins-remplacants` | `src/content/blog/salaires-medecins-remplacants.md` | 2025-11-28 |
+| `/blog/salariat-10-pourcent-ou-frais-reels` | `src/content/blog/salariat-10-pourcent-ou-frais-reels.md` | 2025-12-25 |
+| `/blog/pieges-debut-carriere-remplacant` | `src/content/blog/pieges-debut-carriere-remplacant.md` | 2025-12-25 |
+| `/blog/base-financiere-rempla` | `src/content/blog/base-financiere-rempla.md` | 2025-12-25 |
+| `/blog/pdsa-exoneration-gardes-regulees` | `src/content/blog/pdsa-exoneration-gardes-regulees.md` | 2026-01-28 |
+| `/blog/super-net-budget` | `src/content/blog/super-net-budget.md` | 2026-01-31 |
+| `/blog/conge-maternite-paternite` | `src/content/blog/conge-maternite-paternite.md` | 2026-02-11 |
+| `/blog/simulateur-super-net-combien-reste` | `src/content/blog/simulateur-super-net-combien-reste.md` | 2026-03-18 |
+| `/blog/inbox-zero-remplacant` | `src/content/blog/inbox-zero-remplacant.md` | 2026-03-18 |
+| `/blog/enveloppes-investissement-pea-assurance-vie-per-cto` | `src/content/blog/enveloppes-investissement-pea-assurance-vie-per-cto.md` | 2026-03-18 |
+| `/blog/medecin-outre-mer-avantages-fiscaux` | `src/content/blog/medecin-outre-mer-avantages-fiscaux.md` | 2026-04-18 (maj 2026-04-21) |
+| `/blog/interets-composes-meilleur-remplacement` | `src/content/blog/interets-composes-meilleur-remplacement.md` | 2026-04-21 |
+| `/blog/guide-impots-internes-remplacants` | `src/content/blog/guide-impots-internes-remplacants.md` | 2026-05-01 |
+| `/blog/frais-pros-medecins-salaries-internes-2026` | `src/content/blog/frais-pros-medecins-salaries-internes-2026.md` | 2026-05-09 |
+| `/blog/frais-pros-medecin-liberal-2026` | `src/content/blog/frais-pros-medecin-liberal-2026.md` | 2026-05-24 |
 
 ## 3. Routes privées (NON migrées — servent uniquement à la table de redirections)
 
@@ -173,3 +214,29 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
    l'inspection d'URL.
 5. **Surveillance 2 semaines** : trafic PostHog (dip attendu court), couverture GSC,
    erreurs 404/redirections dans les logs Vercel.
+
+## 11. Résultats de vérification (build final)
+
+- `astro build` : **52 pages**, zéro erreur.
+- Crawl du sitemap (`scripts/verify-site.mjs`) : **51 URLs** (52 pages − `/essai` noindex) —
+  titres uniques, descriptions uniques, exactement un `<h1>`, canonique exacte sans slash
+  final, `lang="fr"`, texte réel dans le HTML brut sans exécution JS (≥150 mots), tous les
+  blocs JSON-LD parsables, aucun lorem/placeholder. 1 avertissement : titre `/comparatif`
+  à 73 caractères (titre source conservé volontairement).
+- Diff d'inventaire : chaque route publique de la source existe à l'IDENTIQUE dans le build
+  (`/`, `/blog` + 38 articles, `/faq`, `/simulateur`, `/guide-declarations`(+`/calculette`),
+  `/comparatif`, `/qui-sommes-nous`, 4 pages légales, `/essai`, `/transmissions`) + `/tarifs`.
+- Tests navigateur (Playwright/Chromium, zéro erreur console/page sur les 5 pages testées) :
+  le simulateur s'hydrate et AFFICHE un résultat Super-Net (branche RSPM, calcul local) ;
+  la calculette s'hydrate (23 champs) ; la boussole s'hydrate (wizard interactif) ;
+  la page guide expose ~285 000 caractères de contenu statique dans le HTML.
+- Lighthouse (build servi localement, headless) :
+
+| Page | Perf | A11y | Best Practices | SEO |
+|---|---|---|---|---|
+| `/` | 100 | 96 | 96 | 100 |
+| `/simulateur` | 99 | 100 | 96 | 100 |
+| `/blog/tout-comprendre-urssaf` | 99 | 95 | 96 | 100 |
+
+- JS client : uniquement PostHog (module différé) + les îlots des 3 outils + le carrousel
+  des 4 articles à slides. Pages marketing/blog/légales : zéro JS applicatif.

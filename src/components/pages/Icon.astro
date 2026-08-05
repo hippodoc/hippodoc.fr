@@ -4,17 +4,9 @@
  * /faq, /comparatif et /qui-sommes-nous. Zéro dépendance JS — SVG pur,
  * pour rester cohérent avec Header.astro / Footer.astro (mêmes conventions).
  */
-export type IconName =
-  | 'help-circle' | 'mail' | 'sparkles' | 'check' | 'minus' | 'info'
-  | 'calculator' | 'wallet' | 'shield-check' | 'heart' | 'stethoscope'
-  | 'briefcase' | 'building-2' | 'graduation-cap' | 'arrow-right'
-  | 'chevron-right' | 'crown' | 'rocket' | 'code' | 'external-link'
-  | 'linkedin' | 'users' | 'file-check' | 'calendar-check' | 'star'
-  | 'award' | 'quote' | 'check-circle' | 'shield' | 'headphones'
-  | 'lightbulb';
-
 export interface Props {
-  name: IconName;
+  /** Nom d'icône : une des clés de `paths` ci-dessous. */
+  name: string;
   class?: string;
 }
 
