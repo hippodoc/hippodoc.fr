@@ -1,0 +1,56 @@
+# ============================================
+# HIPPODOC — robots.txt
+# https://hippodoc.fr — site public (marketing, blog, guides)
+# L'application privée vit sur app.hippodoc.fr (robots.txt séparé).
+# Tous les crawlers, y compris les agents IA, sont les bienvenus.
+# ============================================
+
+User-agent: *
+Allow: /
+
+# ========== MOTEURS DE RECHERCHE ==========
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# ========== AGENTS IA (explicitement autorisés) ==========
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# ========== SITEMAP ==========
+Sitemap: https://hippodoc.fr/sitemap-index.xml

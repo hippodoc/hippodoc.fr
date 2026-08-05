@@ -1,0 +1,23 @@
+---
+/**
+ * PostHog — même projet que la SPA source (continuité analytics).
+ * Chargé en module différé : ne bloque jamais le rendu.
+ * Mode cookieless (persistence: memory) : aucun traceur persistant sans
+ * consentement → pas de bannière nécessaire côté site public (CNIL).
+ */
+---
+<script>
+  import posthog from 'posthog-js';
+
+  posthog.init('phc_x3JYWa7EjhuuwVVBLyks74ud58ZmUppaC666QkmTUXox', {
+    api_host: 'https://t.hippodoc.fr',
+    ui_host: 'https://eu.posthog.com',
+    autocapture: true,
+    capture_pageview: true,
+    capture_pageleave: true,
+    person_profiles: 'identified_only',
+    cross_subdomain_cookie: true,
+    persistence: 'memory',
+    disable_session_recording: true,
+  });
+</script>

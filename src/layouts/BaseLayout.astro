@@ -1,0 +1,93 @@
+---
+import '@/styles/global.css';
+import PostHog from '@/components/PostHog.astro';
+import { SITE_URL, DEFAULT_OG_IMAGE, ORGANIZATION_SCHEMA } from '@/lib/site';
+
+interface Props {
+  /** Titre unique < 60 caractères, mot-clé d'abord, marque à la fin. */
+  title: string;
+  /** Meta description unique ~150 caractères, en français. */
+  description: string;
+  /** Chemin canonique SANS slash final (ex. "/simulateur"). "" = accueil. */
+  path: string;
+  /** Image OG absolue ou chemin ; défaut : og-image de marque. */
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  /** Blocs JSON-LD additionnels (Organization est injecté partout). */
+  jsonLd?: object[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  path,
+  ogImage = DEFAULT_OG_IMAGE,
+  ogImageAlt = 'Hippodoc - Le cockpit financier des médecins',
+  ogType = 'website',
+  jsonLd = [],
+  noindex = false,
+} = Astro.props;
+
+const canonical = `${SITE_URL}${path}`;
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}`;
+const allJsonLd = [ORGANIZATION_SCHEMA, ...jsonLd];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Hippodoc" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="fr" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="5jk-XYDlgOh2l9tE_lWx3TSdQ0uBUrh4iXHyxvKYe9s" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:site_name" content="Hippodoc" />
+    <meta property="og:locale" content="fr_FR" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@hippodoc_app" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/lovable-uploads/1a136973-2c47-426b-a1ce-70d29cdabb35.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/lovable-uploads/1a136973-2c47-426b-a1ce-70d29cdabb35.png" sizes="180x180" />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {allJsonLd.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
+
+    <slot name="head" />
+  </head>
+
+  <body>
+    <slot />
+    <PostHog />
+  </body>
+</html>

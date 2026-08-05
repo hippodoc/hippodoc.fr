@@ -1,0 +1,50 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.hippodoc.fr" }],
+      "destination": "https://hippodoc.fr/:path*",
+      "permanent": true
+    },
+
+    { "source": "/landing", "destination": "/", "permanent": true },
+    { "source": "/hippo-wall-street", "destination": "/transmissions", "permanent": true },
+    { "source": "/instagram", "destination": "/essai", "permanent": true },
+    { "source": "/i", "destination": "/essai", "permanent": true },
+    { "source": "/remplacements", "destination": "/", "permanent": true },
+
+    { "source": "/dashboard", "destination": "https://app.hippodoc.fr/dashboard", "permanent": true },
+    { "source": "/auth", "destination": "https://app.hippodoc.fr/auth", "permanent": true },
+    { "source": "/auth/:path+", "destination": "https://app.hippodoc.fr/auth/:path+", "permanent": true },
+    { "source": "/reset-password", "destination": "https://app.hippodoc.fr/auth/reset-password", "permanent": true },
+    { "source": "/subscription-required", "destination": "https://app.hippodoc.fr/subscription-required", "permanent": true },
+    { "source": "/payment-success", "destination": "https://app.hippodoc.fr/payment-success", "permanent": true },
+    { "source": "/montants-en-attente", "destination": "https://app.hippodoc.fr/montants-en-attente", "permanent": true },
+    { "source": "/previsionnel", "destination": "https://app.hippodoc.fr/previsionnel", "permanent": true },
+
+    { "source": "/activite/:path+", "destination": "https://app.hippodoc.fr/activite/:path+", "permanent": true },
+    { "source": "/revenus/:path+", "destination": "https://app.hippodoc.fr/revenus/:path+", "permanent": true },
+    { "source": "/depenses/:path+", "destination": "https://app.hippodoc.fr/depenses/:path+", "permanent": true },
+    { "source": "/analyses/:path+", "destination": "https://app.hippodoc.fr/analyses/:path+", "permanent": true },
+    { "source": "/compte/:path+", "destination": "https://app.hippodoc.fr/compte/:path+", "permanent": true },
+    { "source": "/calendrier", "destination": "https://app.hippodoc.fr/calendrier", "permanent": true },
+    { "source": "/calendrier/:path+", "destination": "https://app.hippodoc.fr/calendrier/:path+", "permanent": true },
+    { "source": "/remplacements/:path+", "destination": "https://app.hippodoc.fr/remplacements/:path+", "permanent": true },
+    { "source": "/statistiques", "destination": "https://app.hippodoc.fr/statistiques", "permanent": true },
+    { "source": "/statistiques/:path+", "destination": "https://app.hippodoc.fr/statistiques/:path+", "permanent": true },
+    { "source": "/mon-espace", "destination": "https://app.hippodoc.fr/mon-espace", "permanent": true },
+    { "source": "/mon-espace/:path+", "destination": "https://app.hippodoc.fr/mon-espace/:path+", "permanent": true },
+    { "source": "/documents", "destination": "https://app.hippodoc.fr/documents", "permanent": true },
+    { "source": "/documents/:path+", "destination": "https://app.hippodoc.fr/documents/:path+", "permanent": true },
+    { "source": "/paiements/:path+", "destination": "https://app.hippodoc.fr/paiements/:path+", "permanent": true },
+    { "source": "/forum", "destination": "https://app.hippodoc.fr/forum", "permanent": true },
+    { "source": "/forum/:path+", "destination": "https://app.hippodoc.fr/forum/:path+", "permanent": true },
+    { "source": "/ressources/:path+", "destination": "https://app.hippodoc.fr/ressources/:path+", "permanent": true },
+    { "source": "/dashboard-blog", "destination": "https://app.hippodoc.fr/dashboard-blog", "permanent": true },
+    { "source": "/dashboard-blog/:path+", "destination": "https://app.hippodoc.fr/dashboard-blog/:path+", "permanent": true },
+    { "source": "/admin", "destination": "https://app.hippodoc.fr/admin", "permanent": true },
+    { "source": "/admin/:path+", "destination": "https://app.hippodoc.fr/admin/:path+", "permanent": true }
+  ]
+}
