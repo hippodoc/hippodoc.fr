@@ -132,6 +132,14 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
 - **Auteurs (schéma Article)** : « Équipe Hippodoc »/« Hippodoc » → auteur `Organization`
   Hippodoc ; « Dr. Hippodoc » et « Dr. Sophie Martin » → `Person` avec url
   `/qui-sommes-nous`. Noms visibles inchangés.
+- **/simulateur** (rédigé, exigence spec « section explicative SSR ») : bloc de définitions
+  « Trois mots à connaître » (Rétrocession / URSSAF / Super-Net) et « Exemple chiffré »
+  30 000 € de recettes — chiffres dérivés exclusivement des constantes du moteur porté
+  (seuil RSPM 38 000 €, tranches 13,5 %/21,2 % à 19 000 €, abattement micro-BNC 34 %).
+- **/qui-sommes-nous** : phrase PRODUCT_DEFINITION ajoutée sous l'intro (verbatim site.ts).
+- **Accueil** : PRODUCT_DEFINITION sous le sous-titre du héros ; démo Calendly → lien
+  mailto:contact@hippodoc.fr ; libellés techniques mineurs (« La vidéo s'ouvre dans un
+  nouvel onglet »).
 
 ## 10. TODO(owner) — faits manquants / décisions
 
