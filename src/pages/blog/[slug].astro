@@ -1,0 +1,254 @@
+---
+import { getCollection, render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import BlogSlides from '@/components/BlogSlides.tsx';
+import { SITE_URL, APP_URL, LOGO_URL } from '@/lib/site';
+import { blogSeries } from '@/lib/blog-series';
+import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const posts = await getCollection('blog');
+
+const {
+  title, description, pubDate, updatedDate, author, category, categoryNumber,
+  seriesId, episodeNumber, readTime, cover, cta, faq, relatedArticles, slides,
+} = post.data;
+
+const slug = post.id;
+const path = `/blog/${slug}`;
+const series = blogSeries.find((s) => s.id === seriesId);
+
+/* Images : covers + slides optimisées via astro:assets (les originaux
+   viennent de public/blog/ de la SPA source, copiés dans src/assets/blog). */
+const blogImages = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/blog/**/*.{png,jpg,jpeg,webp}',
+  { eager: true }
+);
+
+async function resolveBlogImage(publicPath: string, width: number) {
+  const assetPath = publicPath.replace(/^\/blog\//, '/src/assets/blog/');
+  const mod = blogImages[assetPath];
+  if (!mod) return null;
+  return await getImage({ src: mod.default, width, format: 'webp' });
+}
+
+const coverImage = await resolveBlogImage(cover, 1200);
+const coverForOg = coverImage ? `${SITE_URL}${coverImage.src}` : undefined;
+
+const resolvedSlides = slides
+  ? (
+      await Promise.all(
+        slides.map(async (s) => {
+          const img = await resolveBlogImage(s.src, 900);
+          return img
+            ? { src: img.src, alt: s.alt, width: img.attributes.width, height: img.attributes.height }
+            : { src: s.src, alt: s.alt };
+        })
+      )
+    )
+  : null;
+
+/* Articles connexes */
+const related = (relatedArticles ?? [])
+  .map((rslug) => posts.find((p) => p.id === rslug))
+  .filter((p) => p !== undefined)
+  .slice(0, 6);
+
+const relatedCovers = new Map<string, string>();
+for (const r of related) {
+  const img = await resolveBlogImage(r.data.cover, 480);
+  if (img) relatedCovers.set(r.id, img.src);
+}
+
+/* Dates */
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+/* JSON-LD */
+const isOrgAuthor = author === 'Équipe Hippodoc' || author === 'Hippodoc';
+const authorSchema = isOrgAuthor
+  ? { '@type': 'Organization', name: 'Hippodoc', url: SITE_URL, '@id': `${SITE_URL}/#organization` }
+  : { '@type': 'Person', name: author, url: `${SITE_URL}/qui-sommes-nous` };
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${SITE_URL}${path}#article`,
+  headline: title,
+  description,
+  image: coverForOg ?? `${SITE_URL}/lovable-uploads/og-image.png`,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  inLanguage: 'fr-FR',
+  articleSection: category,
+  author: authorSchema,
+  publisher: {
+    '@type': 'Organization',
+    '@id': `${SITE_URL}/#organization`,
+    name: 'Hippodoc',
+    logo: { '@type': 'ImageObject', url: LOGO_URL },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}${path}` },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+    { '@type': 'ListItem', position: 3, name: title, item: `${SITE_URL}${path}` },
+  ],
+};
+
+const faqSchema = faq && faq.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((item) => ({
+        '@type': 'Question',
+        name: stripMiniMarkdown(item.question),
+        acceptedAnswer: { '@type': 'Answer', text: stripMiniMarkdown(item.answer) },
+      })),
+    }
+  : null;
+
+const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])];
+---
+
+<BaseLayout
+  title={`${title} | Blog Hippodoc`}
+  description={description}
+  path={path}
+  ogImage={coverForOg}
+  ogImageAlt={title}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main class="container max-w-4xl px-4 py-8">
+    <nav aria-label="Fil d'Ariane" class="mb-4 text-sm text-muted-foreground">
+      <ol class="flex flex-wrap items-center gap-1">
+        <li><a href="/" class="hover:text-hippo-600">Accueil</a></li>
+        <li aria-hidden="true">›</li>
+        <li><a href="/blog" class="hover:text-hippo-600">Blog</a></li>
+        <li aria-hidden="true">›</li>
+        <li class="text-foreground" aria-current="page">{title}</li>
+      </ol>
+    </nav>
+
+    <a href="/blog" class="mb-6 inline-flex items-center text-sm font-medium text-hippo-600 hover:text-hippo-800">← Retour au blog</a>
+
+    <article>
+      <header class="mb-8">
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          {series && (
+            <span class={`series-badge bg-gradient-to-r ${series.color}`}>
+              {category}{categoryNumber ? ` ${categoryNumber}` : ''}
+            </span>
+          )}
+          {episodeNumber !== undefined && seriesId !== 'divers' && (
+            <span class="text-sm text-muted-foreground">Épisode {episodeNumber}</span>
+          )}
+        </div>
+        <h1 class="blog-title text-3xl font-bold leading-tight text-foreground md:text-4xl">{title}</h1>
+        <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+          <span>{author}</span>
+          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+          {updatedDate && (
+            <span>Mis à jour le <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>
+          )}
+          <span>{readTime} de lecture</span>
+        </div>
+      </header>
+
+      {coverImage && (
+        <img
+          src={coverImage.src}
+          {...coverImage.attributes}
+          alt={title}
+          class="mb-8 w-full rounded-2xl shadow-lg"
+          fetchpriority="high"
+        />
+      )}
+
+      {resolvedSlides && (
+        <div class="mb-8">
+          <BlogSlides slides={resolvedSlides} client:visible />
+        </div>
+      )}
+
+      <div class="prose prose-slate blog-content max-w-none prose-headings:text-foreground prose-a:text-hippo-600">
+        <Content />
+      </div>
+
+      {faq && faq.length > 0 && (
+        <section class="mt-12" aria-labelledby="faq-title">
+          <h2 id="faq-title" class="mb-4 text-2xl font-bold text-foreground">Questions fréquentes</h2>
+          <div class="space-y-3">
+            {faq.map((item) => (
+              <details class="group rounded-xl border border-hippo-100 bg-white p-4 shadow-sm">
+                <summary class="cursor-pointer list-none font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+                  <span set:html={miniMarkdownToHtml(item.question)} />
+                </summary>
+                <div class="mt-3 text-muted-foreground" set:html={miniMarkdownToHtml(item.answer)} />
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <aside class="mt-12 rounded-2xl border border-hippo-100 bg-hippo-50/50 p-6" aria-label="Pour aller plus loin">
+        <h2 class="mb-3 text-lg font-bold text-hippo-800">Pour aller plus loin</h2>
+        <ul class="space-y-2 text-hippo-700">
+          <li><a href="/simulateur" class="font-medium underline-offset-2 hover:underline">→ Simule ton Super-Net (revenu net après cotisations et impôts)</a></li>
+          <li><a href="/guide-declarations" class="font-medium underline-offset-2 hover:underline">→ Guide des déclarations 2035, 2042 et DSFU du médecin</a></li>
+          <li><a href="/tarifs" class="font-medium underline-offset-2 hover:underline">→ Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel, essai 30 jours</a></li>
+        </ul>
+      </aside>
+
+      {related.length > 0 && (
+        <section class="mt-12" aria-labelledby="related-title">
+          <h2 id="related-title" class="mb-4 text-2xl font-bold text-foreground">Articles connexes</h2>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((r) => (
+              <a href={`/blog/${r.id}`} class="blog-card-hover block overflow-hidden rounded-xl border border-hippo-100 bg-white shadow-sm">
+                {relatedCovers.get(r.id) && (
+                  <img src={relatedCovers.get(r.id)} alt="" class="h-32 w-full object-cover" loading="lazy" width="480" height="128" />
+                )}
+                <div class="p-4">
+                  <p class="font-semibold leading-snug text-foreground">{r.data.title}</p>
+                  <p class="mt-1 text-xs text-muted-foreground">{r.data.readTime} de lecture</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {cta && (
+        <div class="mt-12 rounded-2xl bg-gradient-to-r from-hippo-500 to-hippo-600 p-8 text-center text-white">
+          <h3 class="text-xl font-bold" set:html={miniMarkdownToHtml(cta)} />
+          <a
+            href={`${APP_URL}/auth?tab=signup`}
+            data-track="cta_signup_blog"
+            class="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-white px-6 font-semibold text-hippo-700 shadow-lg transition-transform hover:scale-105"
+          >
+            Commencer gratuitement
+          </a>
+          <p class="mt-2 text-sm text-white/80">Essai gratuit 30 jours · Sans engagement</p>
+        </div>
+      )}
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
