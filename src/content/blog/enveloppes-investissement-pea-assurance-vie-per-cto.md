@@ -28,6 +28,16 @@ relatedArticles:
   - "regime-fiscal-micro-bnc-vs-reel"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- Le **PEA** est plafonné à **150 000 €** de versements ; après **5 ans** (comptés dès le premier versement), les gains sont exonérés d'impôt sur le revenu (hors prélèvements sociaux).
+- L'**assurance-vie** offre, après **8 ans**, un abattement annuel de **4 600 €** seul ou **9 200 €** en couple, puis une taxation à **7,5 %** (jusqu'à 150 000 € de primes) ou **12,8 %** au-delà, plus **17,2 %** de prélèvements sociaux.
+- Pour la transmission en assurance-vie, l'abattement est de **152 500 € par bénéficiaire avant 70 ans**, contre **30 500 € global** après 70 ans.
+- Le **PER** déduit tes versements du revenu imposable mais fiscalise la sortie : il ne vaut le coup que si ta tranche d'imposition baisse à la retraite ; le transfert est gratuit après **5 ans**, sinon plafonné à **1 %** de l'épargne.
+- Le **CTO** n'a pas de plafond mais applique un prélèvement forfaitaire unique de **31,4 %** (12,8 % d'IR + 18,6 % de prélèvements sociaux).
+:::
+
 Quand on commence à investir, on pense souvent tout de suite au contenu : ETF, actions, fonds en euros, obligations, SCPI… En réalité, la première vraie question est souvent ailleurs : **dans quelle enveloppe fiscale vas-tu loger ce placement ?** Car tu peux viser des expositions parfois proches, mais avec une fiscalité, une disponibilité de l'argent et un intérêt patrimonial très différents selon que tu passes par un PEA, une assurance-vie, un PER ou un CTO.
 
 En clair : **l'enveloppe, c'est le contenant fiscal. Le placement, c'est le contenu.** Et le bon contenant peut faire une vraie différence sur 10, 20 ou 30 ans. Voilà pourquoi il faut arrêter de penser seulement "qu'est-ce que j'achète ?" et commencer par "où est-ce que je l'achète ?".

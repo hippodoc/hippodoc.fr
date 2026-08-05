@@ -4,7 +4,7 @@
 
 Hippodoc est un logiciel français créé par un médecin pour les médecins remplaçants : il centralise revenus, rétrocessions, planning, contrats, cotisations URSSAF et CARMF, et prépare les déclarations (2035, 2042, DSFU/PAMC) avec un calcul automatique du Super-Net (ce qu'il reste vraiment après cotisations et impôts). Estimations conservatrices, conformes au CGI 2026.
 
-Tarifs : 29 €/mois en mensuel ou 19 €/mois en facturation annuelle. Essai gratuit de 30 jours, sans carte bancaire. Inscription : https://app.hippodoc.fr
+Tarifs : 29 €/mois en mensuel ou 19 €/mois en facturation annuelle (228 €/an). Essai gratuit de 30 jours. Inscription : https://app.hippodoc.fr
 
 Contact : contact@hippodoc.fr
 

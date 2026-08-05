@@ -28,6 +28,16 @@ relatedArticles:
   - "cotisations-sociales-vs-impots"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- Ton revenu réel n'est pas ton CA : c'est ton **super-net**, ce qu'il te reste après cotisations sociales et impôt.
+- Le **micro-BNC** reste accessible en 2026 sous **83 600 €** de recettes, avec un abattement forfaitaire de **34 %** ; la **déclaration contrôlée** déduit tes charges réelles via la 2035.
+- Depuis le **1er septembre 2025**, le taux individualisé est le mode par défaut pour les couples mariés ou pacsés : il ne change pas l'impôt total du couple, seulement sa répartition.
+- En DOM, l'abattement d'impôt va de **30 % (plafonné à 2 450 €)** en Guadeloupe/Martinique/Réunion à **40 % (plafonné à 4 050 €)** en Guyane et Mayotte.
+- Le RSPM plafonne à **19 000 € d'honoraires par année civile** pour les remplaçants sans autre activité libérale.
+:::
+
 Tu connais ton chiffre d'affaires. Tu sais ce que tu as encaissé. Mais sais-tu vraiment ce qu'il te reste ? Pas "à peu près". Pas "en gros". Pas après une estimation rapide. Le vrai sujet, ce n'est pas ton CA. Le vrai sujet, c'est ton **revenu disponible**. Celui qui reste une fois passés les cotisations, la retraite, l'impôt, les acomptes, la CFE, et les effets très concrets de ta situation familiale.
 
 ## 🔍 Le revenu n'est pas un chiffre, c'est un système

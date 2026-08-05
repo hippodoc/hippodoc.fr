@@ -1,0 +1,284 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+const title = "Politique de Confidentialité - Protection des Données | Hippodoc";
+const description = "Découvrez comment Hippodoc protège vos données personnelles. Politique RGPD conforme, hébergement sécurisé en Europe, droits d'accès et de suppression.";
+const path = "/politique-confidentialite";
+---
+
+<BaseLayout {title} {description} {path}>
+  <Header />
+
+  <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white pt-24 pb-12">
+    <div class="container max-w-3xl">
+      <article class="space-y-8">
+        <div>
+          <h1 class="text-3xl font-bold mb-1 text-hippo-700">Politique de Confidentialité – Hippodoc</h1>
+          <div class="text-sm text-gray-500 mb-8">Dernière mise à jour : 21 avril 2025</div>
+        </div>
+
+        <section class="space-y-4">
+          <p>
+            La présente Politique de Confidentialité (ci-après la « Politique ») décrit les engagements pris par HIPPODOC, Société par Actions Simplifiée Unipersonnelle (SASU) dont le siège social est situé 60 rue François Ier, 75008 Paris, France, immatriculée au RCS de Paris, pour protéger les données à caractère personnel des utilisateurs (ci-après « Vous » ou « l'Utilisateur ») de la plateforme Hippodoc (ci-après la « Plateforme »).
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">1. Identité du Responsable de Traitement</h2>
+          <p>
+            <strong>Dénomination sociale :</strong> HIPPODOC<br />
+            <strong>Forme juridique :</strong> SASU<br />
+            <strong>Adresse :</strong> 60 rue François Ier, 75008 Paris France<br />
+            <strong>E-mail :</strong> contact@hippodoc.fr<br />
+            <strong>Téléphone :</strong> +33 7 56 89 89 61<br />
+            (ci-après « HIPPODOC » ou « nous »).
+          </p>
+          <p>
+            Nous sommes responsables du traitement des données personnelles collectées via la Plateforme et agissons en tant que Responsable de traitement au sens du Règlement (UE) 2016/679 (Règlement Général sur la Protection des Données, dit « RGPD »).
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">2. Données Collectées</h2>
+          <h3 class="font-medium">2.1. Données fournies directement</h3>
+          <ul class="list-disc list-inside ml-4">
+            <li>Informations d'identification : nom, prénom, adresse email, mot de passe, numéro de téléphone (le cas échéant).</li>
+            <li>Informations professionnelles : numéro RPPS (ou justificatif équivalent), spécialité médicale.</li>
+            <li>Données de paiement : traitées par notre prestataire (Stripe). Nous n'y avons pas directement accès.</li>
+            <li>Contenus : textes que vous saisissez (commentaires, retours, témoignages, messages envoyés au support).</li>
+          </ul>
+
+          <h3 class="font-medium">2.2. Données collectées automatiquement</h3>
+          <ul class="list-disc list-inside ml-4">
+            <li>Informations techniques : adresse IP, type de navigateur, système d'exploitation, date/heure de connexion, pages visitées, etc.</li>
+            <li>Cookies et autres traceurs : déposés sur votre terminal (ordinateur, smartphone, tablette) lors de votre navigation sur la Plateforme (voir article 8).</li>
+          </ul>
+
+          <h3 class="font-medium">2.3. Données relatives à la santé</h3>
+          <p>
+            Nous ne sommes pas certifiés Hébergeur de Données de Santé (HDS). Conformément à nos Conditions Générales, vous vous engagez à ne pas saisir ou transmettre des données de santé patient sur la Plateforme. Toute information médicale que vous enregistrez doit être anonymisée et dépourvue de tout élément permettant d'identifier un patient.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">3. Bases Légales et Finalités du Traitement</h2>
+          <table class="table-auto w-full text-sm border mb-4">
+            <thead>
+              <tr>
+                <th class="border px-2 py-1 text-left">Finalité</th>
+                <th class="border px-2 py-1 text-left">Base Légale</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border px-2 py-1">Gestion du compte Utilisateur et fourniture des Services (accès, fonctionnalités, facturation, etc.)</td>
+                <td class="border px-2 py-1">Exécution du contrat (art. 6(1)(b) RGPD)</td>
+              </tr>
+              <tr>
+                <td class="border px-2 py-1">Vérification du statut de professionnel de santé (RPPS, etc.)</td>
+                <td class="border px-2 py-1">Intérêt légitime (art. 6(1)(f)) et/ou Exécution du contrat (art. 6(1)(b))</td>
+              </tr>
+              <tr>
+                <td class="border px-2 py-1">Envoi de communications relatives au Service, actualités ou offres</td>
+                <td class="border px-2 py-1">Intérêt légitime (art. 6(1)(f)) ou Consentement (art. 6(1)(a)) pour la prospection</td>
+              </tr>
+              <tr>
+                <td class="border px-2 py-1">Statistiques, amélioration et sécurité de la Plateforme</td>
+                <td class="border px-2 py-1">Intérêt légitime (art. 6(1)(f))</td>
+              </tr>
+              <tr>
+                <td class="border px-2 py-1">Gestion des demandes de contact / support</td>
+                <td class="border px-2 py-1">Exécution du contrat (art. 6(1)(b)) et/ou Intérêt légitime (art. 6(1)(f))</td>
+              </tr>
+              <tr>
+                <td class="border px-2 py-1">Respect des obligations légales (comptables, fiscales, etc.)</td>
+                <td class="border px-2 py-1">Obligation légale (art. 6(1)(c))</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 class="font-semibold text-lg mt-4 mb-1">4. Durées de Conservation</h2>
+          <p>
+            Nous conservons vos données personnelles pour des durées strictement nécessaires aux finalités décrites ci-dessus, sauf obligations légales contraires.
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li><strong>Compte Utilisateur</strong> : Tant que le compte est actif. En cas d'inactivité totale pendant 24 mois, nous pouvons supprimer le compte et ses données, sauf obligation légale nous imposant un délai plus long (ex. conservation comptable).</li>
+            <li><strong>Données de facturation</strong> : 10 ans à compter de la clôture de l'exercice concerné, en conformité avec les obligations légales et fiscales.</li>
+            <li><strong>Logs de connexion</strong> : 12 mois maximum, à des fins de sécurité et d'audit.</li>
+            <li><strong>Cookies et traceurs</strong> : Voir article 8 : durée variable selon le type de cookie ; par exemple, 6 mois pour les cookies analytiques avant suppression ou anonymisation.</li>
+            <li><strong>Historique d'échanges (messages, support)</strong> : Conserver le temps nécessaire pour le suivi de la relation client (3 ans après la dernière interaction), sauf obligation légale ou litige en cours.</li>
+          </ul>
+          <p>Lorsque les données ne sont plus nécessaires, elles sont soit supprimées, soit anonymisées (rendant impossible toute réidentification).</p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">5. Hébergement et Transferts de Données</h2>
+          <h3 class="font-medium">5.1. Hébergement dans l'Union Européenne</h3>
+          <p>
+            Nous utilisons Supabase pour stocker et gérer certaines données (ex. base de données) ; Supabase dispose de serveurs situés au sein de l'Union Européenne. Vos données sont donc hébergées sur le territoire de l'UE.
+          </p>
+
+          <h3 class="font-medium">5.2. Garanties en cas de transferts hors UE</h3>
+          <p>
+            En principe, nous évitons tout transfert de données hors de l'UE. Toutefois, si certains de nos prestataires (Stripe, par exemple) ou leurs sous-traitants devaient transférer des données en dehors de l'UE, ces transferts seraient encadrés par :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>L'adoption des Clauses Contractuelles Types de la Commission européenne, ou</li>
+            <li>Toute autre garantie reconnue par la réglementation (ex. Règles d'Entreprise Contraignantes).</li>
+          </ul>
+          <p>
+            Nous vérifions régulièrement la conformité de nos prestataires à ces exigences.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">6. Destinataires des Données</h2>
+          <h3 class="font-medium">6.1. Équipe interne</h3>
+          <p>
+            Seuls les membres habilités de l'équipe HIPPODOC (technique, marketing, comptabilité, etc.) peuvent accéder à vos données, dans la stricte limite de leurs attributions.
+          </p>
+
+          <h3 class="font-medium">6.2. Sous-traitants et prestataires</h3>
+          <p>
+            Nous faisons appel à des prestataires pour :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Paiement : Stripe (traitement de vos transactions bancaires).</li>
+            <li>Hébergement / Base de données : Supabase.</li>
+            <li>Analyse d'audience et mesure de performance produit : PostHog (serveurs EU, Royaume-Uni). Pour des raisons techniques (contournement des bloqueurs de publicité), le trafic PostHog est acheminé via notre sous-domaine <code>t.hippodoc.fr</code> (proxy first-party). Les données restent hébergées sur les serveurs PostHog EU et aucun cookie tiers cross-domain n'est déposé. PostHog nous aide à comprendre l'utilisation de la Plateforme pour l'améliorer. Aucune donnée médicale, fiscale ou de paiement n'est transmise à PostHog.</li>
+            <li>Mesure d'audience web : Google Analytics 4 (Google Ireland Limited).</li>
+            <li>Suivi des erreurs applicatives : Sentry (serveurs EU).</li>
+            <li>Maintenance et support technique : Éventuellement d'autres entreprises avec lesquelles nous concluons des accords de sous-traitance.</li>
+          </ul>
+          <p>
+            Ces prestataires agissent conformément à nos instructions et signent des contrats garantissant la confidentialité et la sécurité de vos données.
+          </p>
+
+          <h3 class="font-medium">6.3. Autorités compétentes</h3>
+          <p>
+            Le cas échéant, nous pouvons être amenés à divulguer certaines informations aux autorités administratives ou judiciaires (ex. en cas d'obligation légale ou pour défendre nos droits).
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">7. Vos Droits</h2>
+          <h3 class="font-medium">7.1. Droits reconnus par le RGPD</h3>
+          <ul class="list-disc list-inside ml-4">
+            <li>Droit d'accès : Obtenir la confirmation que des données vous concernant sont traitées, et en recevoir une copie.</li>
+            <li>Droit de rectification : Faire rectifier des données inexactes ou incomplètes.</li>
+            <li>Droit à l'effacement : Demander la suppression de vos données dans certains cas (ex. données non nécessaires, retrait du consentement).</li>
+            <li>Droit à la limitation : Restreindre temporairement le traitement de vos données dans certaines situations.</li>
+            <li>Droit d'opposition : Vous opposer à tout moment au traitement de vos données à des fins de prospection ou pour des motifs tenant à votre situation particulière.</li>
+            <li>Droit à la portabilité : Recevoir vos données dans un format structuré, couramment utilisé et lisible par machine, ou demander à ce qu'elles soient transférées à un autre responsable de traitement.</li>
+          </ul>
+
+          <h3 class="font-medium">7.2. Modalités d'exercice</h3>
+          <p>
+            Pour exercer vos droits, vous pouvez nous contacter par :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>
+              E-mail : <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>
+            </li>
+            <li>
+              Courrier postal : 4 square de l'avenue du Bois, 75116 Paris, France
+            </li>
+          </ul>
+          <p>
+            Nous pourrons vous demander de justifier de votre identité (ex. copie de pièce d'identité) afin de vérifier que vous êtes bien le titulaire des données concernées. Nous nous engageons à répondre dans un délai d'un (1) mois, prolongeable de deux (2) mois compte tenu de la complexité de la demande ou du nombre de demandes reçues.
+          </p>
+
+          <h3 class="font-medium">7.3. Droit d'opposition à la prospection</h3>
+          <p>
+            Vous pouvez à tout moment vous opposer à la réception de communications commerciales (newsletters, offres, etc.) en :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Cliquant sur le lien de désinscription présent dans nos emails, ou</li>
+            <li>Nous adressant un email à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">8. Cookies et Traceurs</h2>
+          <h3 class="font-medium">8.1. Définition</h3>
+          <p>
+            Les cookies sont des fichiers texte enregistrés sur votre terminal, permettant de stocker et de récupérer des informations relatives à votre navigation.
+          </p>
+
+          <h3 class="font-medium">8.2. Types de cookies utilisés</h3>
+          <ul class="list-disc list-inside ml-4">
+            <li>Cookies strictement nécessaires : indispensables au fonctionnement de la Plateforme.</li>
+            <li>Cookies analytiques : destinés à mesurer l'audience, analyser le trafic et améliorer nos services (durée de vie : 6 mois). Nous utilisons Google Analytics 4 et PostHog (serveurs EU). Ces cookies ne sont déposés qu'après votre consentement explicite.</li>
+            <li>Cookies fonctionnels : permettent de mémoriser vos préférences et de personnaliser votre expérience.</li>
+          </ul>
+
+          <h3 class="font-medium">8.3. Paramétrage</h3>
+          <p>
+            Lors de votre première visite, un bandeau vous informe de l'utilisation de cookies. Vous pouvez gérer vos préférences à tout moment via :
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Les paramètres de votre navigateur, ou</li>
+            <li>Un outil de gestion des cookies, le cas échéant, disponible sur la Plateforme.</li>
+          </ul>
+
+          <h3 class="font-medium">8.4. Mesure d'usage interne dans votre espace connecté</h3>
+          <p>
+            Lorsque vous êtes connecté à votre compte, nous mesurons l'utilisation du service (pages consultées, fonctionnalités utilisées) rattachée à votre compte, pour un besoin exclusivement interne d'amélioration du produit et de support. Cette mesure repose sur notre intérêt légitime et relève de la mesure d'audience exemptée de consentement au sens des lignes directrices de la CNIL : elle est limitée à la statistique interne, n'est pas recoupée avec d'autres traitements et n'est jamais transmise à des tiers publicitaires.
+          </p>
+          <p>
+            Si vous avez refusé les cookies analytiques, cette mesure s'effectue <strong>sans aucun cookie ni traceur enregistré sur votre terminal</strong>, sans enregistrement de session (session replay) et sans transmission à Google Analytics. Vous pouvez vous opposer à tout moment à cette mesure en écrivant à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">9. Sécurité des Données</h2>
+          <p>
+            Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles (chiffrement, protocoles HTTPS, pare-feu, contrôle d'accès, etc.) pour protéger vos données contre les accès non autorisés, la perte, l'altération ou la divulgation. En cas d'incident de sécurité impactant vos données personnelles, nous vous en informerons dans les meilleurs délais et prendrons les mesures nécessaires pour y remédier, conformément à la réglementation applicable.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">10. Autorité de Contrôle</h2>
+          <p>
+            Si vous estimez que nous ne respectons pas la réglementation sur la protection des données, vous pouvez à tout moment introduire une réclamation auprès de l'autorité de contrôle compétente.
+          </p>
+          <p>
+            En France, il s'agit de la CNIL (Commission Nationale de l'Informatique et des Libertés) :
+            <br />
+            Adresse postale : 3 Place de Fontenoy – TSA 80715 – 75334 PARIS CEDEX 07.<br />
+            Téléphone : +33 1 53 73 22 22.<br />
+            Site internet : <a class="text-hippo-600 underline" href="https://www.cnil.fr/" rel="noopener noreferrer" target="_blank">https://www.cnil.fr/</a>
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">11. Mises à Jour de la Politique</h2>
+          <p>
+            Nous pouvons modifier la présente Politique pour tenir compte des évolutions légales, réglementaires ou fonctionnelles. En cas de modification importante, vous en serez informé(e) par tout moyen approprié (notification, email, etc.). Nous vous invitons à consulter régulièrement cette page pour rester informé(e) de la version la plus récente de notre Politique.
+          </p>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="font-semibold text-lg mt-4 mb-1">12. Contact</h2>
+          <p>
+            Pour toute question ou demande liée à la présente Politique de Confidentialité, vous pouvez nous écrire à :
+            <br />
+            <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>
+            <br />
+            Ou à l'adresse postale : 60 rue François Ier, 75008 Paris, France.
+          </p>
+        </section>
+
+        <hr class="my-8" />
+
+        <p class="text-xs text-muted-foreground">
+          En utilisant Hippodoc, vous reconnaissez avoir pris connaissance de la présente Politique de Confidentialité.
+        </p>
+      </article>
+    </div>
+  </div>
+
+  <Footer />
+</BaseLayout>

@@ -28,6 +28,16 @@ relatedArticles:
   - "realites-remplacement-medical"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- L'inbox zéro ne veut pas dire tout traiter tout de suite : chaque élément doit finir la journée **fait, daté, transmis ou escaladé**.
+- Utilise la règle des **3Q** (Quoi, Qui, Quand) pour trier chaque résultat, message ou appel.
+- Applique le tri **rouge / jaune / vert** : le jaune se traite en moins de **90 secondes**, sinon il devient une tâche datée.
+- Prévois deux créneaux fixes : **10 minutes** à midi pour sécuriser les rouges, **15 à 30 minutes** le soir pour tout basculer dans un état propre.
+- Pour les données de santé, privilégie une messagerie sécurisée comme **MSSanté**, recommandée par le CNOM, et ne mets jamais de données patient dans un outil d'IA grand public.
+:::
+
 En cabinet, les résultats tombent, les messages s'empilent, les appels coupent les consultations et la journée se remplit plus vite que prévu. Le vrai problème, ce n'est pas seulement le volume. Le vrai risque, c'est le flou : un résultat vu mais non traité, un message lu mais sans suite, un rappel "à faire plus tard", une décision gardée dans la tête au lieu d'être tracée. Or en médecine, le dossier doit contenir les éléments actualisés utiles aux décisions diagnostiques et thérapeutiques, et la continuité des soins doit être assurée. En remplacement, cette discipline n'est pas du perfectionnisme : c'est de la sécurité.
 
 ## Inbox zéro ne veut pas dire "tout faire tout de suite"

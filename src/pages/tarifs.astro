@@ -1,0 +1,194 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { SITE_URL, APP_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
+
+/**
+ * NOUVELLE page (n'existe pas dans la SPA source) — cible « hippodoc prix »,
+ * « tarif logiciel médecin remplaçant ». Faits repris de src/config/pricing.ts
+ * et FeaturesListModal.tsx de la source (aucun chiffre inventé).
+ */
+
+const title = 'Tarif logiciel médecin remplaçant : 29 €/mois | Hippodoc';
+const description =
+  "Hippodoc coûte 29 €/mois sans engagement, ou 19 €/mois en facturation annuelle (228 €/an, −34 %). Essai gratuit 30 jours, toutes les fonctionnalités incluses.";
+
+const signupUrl = `${APP_URL}/auth?tab=signup`;
+
+/* Fonctionnalités : liste verbatim de FeaturesListModal.tsx (« Inclus dans toutes les offres ») */
+const features = [
+  'Dashboard clair et intuitif',
+  'Super-Net calculé en temps réel',
+  'Calcul URSSAF, CARMF et impôts en temps réel',
+  'Déclarations fiscales guidées',
+  'Micro-BNC et régime réel intégrés',
+  'RSPM et PAMC pris en charge',
+  'Gestion activité mixte libéral et salariat',
+  'PDSA et revenus exonérés intégrés',
+  'Suivi des charges et amortissements',
+  'Planning centralisé avec synchro Google',
+  'Génération rapide de contrats',
+  'Génération rapide de factures avec notes',
+  'Statistiques et exports comptables instantanés',
+  "Forum privé d'entraide entre médecins",
+  'Support réactif et humain',
+  'Données sécurisées et hébergées en France',
+  'Abonnement 100 % déductible',
+];
+
+const faqTarifs = [
+  {
+    question: 'Combien coûte Hippodoc ?',
+    answer:
+      "Hippodoc coûte 29 € par mois sans engagement, ou 19 € par mois en facturation annuelle (228 € facturés une fois par an, soit 34 % d'économie). Les deux offres commencent par un essai gratuit de 30 jours.",
+  },
+  {
+    question: 'Puis-je résilier à tout moment ?',
+    answer:
+      "Oui. L'offre mensuelle est sans engagement : tu peux résilier à tout moment depuis ton espace « Abonnement », la résiliation prend effet à la fin de la période en cours. L'offre annuelle est facturée en une fois pour 12 mois.",
+  },
+  {
+    question: "L'abonnement Hippodoc est-il déductible en frais professionnels ?",
+    answer:
+      "Oui. Au régime réel (déclaration 2035), ton abonnement Hippodoc est un frais professionnel déductible à 100 %. En Micro-BNC, tu ne déduis pas tes frais individuellement : l'abattement forfaitaire de 34 % les couvre.",
+  },
+  {
+    question: "Comment fonctionne l'essai gratuit de 30 jours ?",
+    answer:
+      "Tu crées ton compte sur app.hippodoc.fr et tu profites de 30 jours d'essai gratuit avec toutes les fonctionnalités. À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour continuer.",
+  },
+  {
+    question: "Y a-t-il des fonctionnalités payantes en plus ?",
+    answer:
+      "Non. Toutes les fonctionnalités sont incluses dans toutes les offres : Super-Net, URSSAF, CARMF, déclarations guidées, contrats, factures, planning, statistiques et support. Seule la période de facturation change entre les deux offres.",
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqTarifs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Tarifs', item: `${SITE_URL}/tarifs` },
+  ],
+};
+
+const jsonLd = [SOFTWARE_APPLICATION_SCHEMA, faqSchema, breadcrumbSchema];
+---
+
+<BaseLayout title={title} description={description} path="/tarifs" jsonLd={jsonLd}>
+  <Header />
+  <main class="container px-4 py-12">
+    <header class="mx-auto max-w-3xl text-center">
+      <h1 class="text-3xl font-bold text-foreground md:text-4xl">
+        Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel
+      </h1>
+      <p class="mt-4 text-lg text-muted-foreground">
+        Hippodoc coûte <strong class="text-foreground">29 € par mois sans engagement</strong>, ou
+        <strong class="text-foreground">19 € par mois en facturation annuelle</strong> (228 € par an, soit 34 % d'économie).
+        Chaque offre commence par un essai gratuit de 30 jours, avec toutes les fonctionnalités incluses.
+      </p>
+    </header>
+
+    <div class="mx-auto mt-12 grid max-w-3xl gap-6 md:grid-cols-2">
+      <!-- Offre mensuelle -->
+      <div class="flex flex-col rounded-2xl border border-hippo-100 bg-white p-8 shadow-md">
+        <div class="mb-2 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-hippo-800">Mensuel</h2>
+          <span class="rounded-full bg-hippo-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-hippo-600">Flexible</span>
+        </div>
+        <p class="mt-2"><span class="text-4xl font-extrabold text-foreground">29 €</span><span class="text-muted-foreground"> / mois</span></p>
+        <p class="mt-1 text-sm text-muted-foreground">29 € facturés chaque mois · Sans engagement</p>
+        <ul class="mt-6 space-y-2 text-sm text-foreground">
+          <li>✓ Essai gratuit 30 jours</li>
+          <li>✓ Toutes les fonctionnalités incluses</li>
+          <li>✓ Résiliable à tout moment</li>
+        </ul>
+        <a
+          href={signupUrl}
+          data-track="cta_signup_tarifs_mensuel"
+          class="mt-8 inline-flex h-11 items-center justify-center rounded-full border border-hippo-200 px-6 font-semibold text-hippo-700 transition-colors hover:bg-hippo-50"
+        >
+          Commencer l'essai gratuit
+        </a>
+      </div>
+
+      <!-- Offre annuelle -->
+      <div class="relative flex flex-col rounded-2xl border-2 border-hippo-500 bg-white p-8 shadow-lg">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 px-4 py-1 text-xs font-bold uppercase tracking-wide text-white shadow">Populaire</span>
+        <div class="mb-2 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-hippo-800">Annuel</h2>
+          <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600">−34 %</span>
+        </div>
+        <p class="mt-2"><span class="text-4xl font-extrabold text-foreground">19 €</span><span class="text-muted-foreground"> / mois</span></p>
+        <p class="mt-1 text-sm text-muted-foreground">228 € facturés une fois par an</p>
+        <ul class="mt-6 space-y-2 text-sm text-foreground">
+          <li>✓ Essai gratuit 30 jours</li>
+          <li>✓ Toutes les fonctionnalités incluses</li>
+          <li>✓ 10 € d'économie par mois vs mensuel</li>
+        </ul>
+        <a
+          href={signupUrl}
+          data-track="cta_signup_tarifs_annuel"
+          class="mt-8 inline-flex h-11 items-center justify-center rounded-full bg-hippo-600 px-6 font-semibold text-primary-foreground shadow-lg shadow-hippo-500/20 transition-colors hover:bg-hippo-700"
+        >
+          Commencer l'essai gratuit
+        </a>
+      </div>
+    </div>
+
+    <section class="mx-auto mt-16 max-w-4xl" aria-labelledby="inclus-title">
+      <h2 id="inclus-title" class="text-center text-2xl font-bold text-foreground">Inclus dans toutes les offres</h2>
+      <ul class="mt-8 grid gap-x-8 gap-y-3 text-[15px] text-foreground sm:grid-cols-2">
+        {features.map((f) => (
+          <li class="flex items-start gap-2">
+            <span class="mt-0.5 text-hippo-500" aria-hidden="true">✓</span>
+            {f}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="mx-auto mt-16 max-w-3xl" aria-labelledby="faq-tarifs-title">
+      <h2 id="faq-tarifs-title" class="text-center text-2xl font-bold text-foreground">Questions fréquentes sur les tarifs</h2>
+      <div class="mt-8 space-y-3">
+        {faqTarifs.map((item) => (
+          <details class="group rounded-xl border border-hippo-100 bg-white p-4 shadow-sm">
+            <summary class="cursor-pointer list-none font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+              {item.question}
+            </summary>
+            <p class="mt-3 text-muted-foreground">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <section class="mx-auto mt-16 max-w-2xl rounded-2xl bg-gradient-to-r from-hippo-500 to-hippo-600 p-8 text-center text-white">
+      <h2 class="text-2xl font-bold">Essaie Hippodoc gratuitement pendant 30 jours</h2>
+      <p class="mt-2 text-white/90">Le cockpit financier des médecins remplaçants qui calcule tout pour vous.</p>
+      <a
+        href={signupUrl}
+        data-track="cta_signup_tarifs_bottom"
+        class="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-white px-8 font-semibold text-hippo-700 shadow-lg transition-transform hover:scale-105"
+      >
+        Créer mon compte
+      </a>
+      <p class="mt-3 text-sm text-white/80">
+        Une question ? <a href="/faq" class="underline">Consulte la FAQ</a> ou
+        <a href="mailto:contact@hippodoc.fr" class="underline">écris-nous</a>.
+      </p>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
