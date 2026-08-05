@@ -87,9 +87,9 @@ export function GlossaireSection() {
                   <details
                     key={term.id}
                     id={`glossaire-term-${term.id}`}
-                    className={`group w-full rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-4 scroll-mt-24 ${term.longDef ? '' : 'pointer-events-none'}`}
+                    className="group w-full rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-4 scroll-mt-24"
                   >
-                    <summary className={`w-full text-left ${term.longDef ? 'cursor-pointer' : 'cursor-default pointer-events-auto'} list-none`}>
+                    <summary className={`w-full text-left ${term.longDef ? 'cursor-pointer' : 'cursor-default'} list-none`}>
                       <div className="flex items-start gap-3">
                         <div className={`mt-0.5 p-1.5 rounded-lg ${cat.bgColor} shrink-0`}>
                           <Icon className={`h-3.5 w-3.5 ${cat.color}`} />

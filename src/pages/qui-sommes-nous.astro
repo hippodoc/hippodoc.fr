@@ -1,0 +1,430 @@
+---
+/**
+ * /qui-sommes-nous — porté verbatim depuis src/pages/qui-sommes-nous.tsx (SPA source).
+ * CalendlyWidget (script tiers) volontairement omis : contrainte migration
+ * "zéro JS client" sur cette page (voir rapport de migration).
+ * GEO : la phrase PRODUCT_DEFINITION (site.ts) est ajoutée sous l'intro —
+ * le texte source n'a pas d'équivalent aussi dense en un seul énoncé.
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Icon from '@/components/pages/Icon.astro';
+import { SITE_URL, APP_URL, PRODUCT_DEFINITION } from '@/lib/site';
+import ryanPhoto from '@/assets/founders/ryan-goburdhun.jpeg';
+import thomasPhoto from '@/assets/founders/thomas-payet.jpeg';
+
+const title = "L'équipe Hippodoc — Le cockpit financier des médecins";
+const description =
+  'Ryan et Thomas ont créé Hippodoc pour simplifier la gestion administrative de tous les médecins : libéraux, salariés, activité mixte.';
+
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: "À propos d'Hippodoc",
+  description: 'Hippodoc simplifie la gestion administrative de tous les médecins : libéraux, salariés, activité mixte.',
+  url: `${SITE_URL}/qui-sommes-nous`,
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Qui sommes-nous', item: `${SITE_URL}/qui-sommes-nous` },
+  ],
+};
+
+const milestones = [
+  { year: '2023', title: "L'idée", desc: "Ryan, en plein exercice, code les premières briques d'un outil pour suivre ses revenus." },
+  { year: '2024', title: 'Lancement', desc: "Hippodoc est lancé auprès des premiers médecins remplaçants. Thomas rejoint l'aventure." },
+  { year: '2025', title: 'Expansion', desc: 'Ouverture aux médecins installés, salariés et en activité mixte. Soutien de BPI France et La French Care.' },
+  { year: '2026', title: "Aujourd'hui", desc: '900+ médecins utilisent Hippodoc au quotidien. La plateforme évolue avec eux.' },
+];
+
+const stats = [
+  { icon: 'users' as const, value: '900+', label: 'Médecins inscrits' },
+  { icon: 'file-check' as const, value: '350+', label: 'Documents générés' },
+  { icon: 'calendar-check' as const, value: '17 000+', label: 'Journées enregistrées' },
+  { icon: 'star' as const, value: '4.9/5', label: 'Satisfaction' },
+];
+
+const partners = [
+  { src: '/lovable-uploads/43467e81-ab44-4074-a25b-78e24545eb5b.png', alt: 'La French Care', height: 'h-16 md:h-20', w: 160, h: 80 },
+  { src: '/lovable-uploads/16d4c030-1924-4039-8f00-20e4071c67c2.png', alt: 'BPI France', height: 'h-12 md:h-16', w: 112, h: 56 },
+  { src: '/lovable-uploads/logo-region-idf.png', alt: 'Région Île-de-France', height: 'h-12 md:h-16', w: 112, h: 56 },
+];
+
+const testimonials = [
+  { name: 'Dr. Sophie M.', specialty: 'Généraliste remplaçante', quote: "Je sais enfin exactement combien il me reste après cotisations. C'est bluffant de simplicité." },
+  { name: 'Dr. Julien R.', specialty: 'Médecin installé', quote: "Je gère mes rétrocessions versées et mes charges en un clin d'œil. Excel, c'est terminé." },
+  { name: 'Dr. Amina K.', specialty: 'Activité mixte', quote: "Libéral + gardes à l'hôpital : Hippodoc centralise tout. Je recommande les yeux fermés." },
+];
+---
+
+<BaseLayout title={title} description={description} path="/qui-sommes-nous" jsonLd={[breadcrumbSchema, aboutSchema]}>
+  <Header />
+
+  <div class="flex min-h-screen flex-col bg-gradient-to-br from-white via-hippo-50/30 to-hippo-100/50 pt-20">
+    <div class="container mx-auto max-w-6xl px-4 pt-4">
+      <nav aria-label="Fil d'Ariane" class="mb-6 text-sm text-muted-foreground">
+        <ol class="flex flex-wrap items-center gap-1">
+          <li><a href="/" class="hover:text-hippo-600">Accueil</a></li>
+          <li aria-hidden="true">›</li>
+          <li class="text-foreground" aria-current="page">Qui sommes-nous</li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- Hero -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-hippo-600 via-hippo-700 to-hippo-800 py-20 text-white">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
+      <div class="absolute left-10 top-10 h-32 w-32 rounded-full bg-hippo-400/20 blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 h-40 w-40 rounded-full bg-hippo-300/20 blur-3xl"></div>
+
+      <div class="container relative z-10">
+        <div class="mb-8 text-center">
+          <span class="mb-6 inline-flex items-center rounded-full border border-white/60 bg-white/90 px-4 py-2 text-hippo-700 shadow-lg backdrop-blur-sm">
+            <Icon name="stethoscope" class="mr-2 h-4 w-4" />
+            Made with ❤️ by doctors
+          </span>
+        </div>
+
+        <h1 class="mb-6 bg-gradient-to-r from-white to-hippo-100 bg-clip-text text-center text-4xl font-bold text-transparent md:text-6xl">
+          Les créateurs d'Hippodoc
+        </h1>
+        <p class="mx-auto max-w-3xl text-center text-xl font-medium leading-relaxed text-hippo-100 md:text-2xl">
+          Créé par un médecin, amélioré chaque jour par ceux qui l'utilisent.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="flex-1">
+      <div class="container mx-auto max-w-6xl px-4 py-16">
+        <!-- Introduction -->
+        <div class="mb-6 text-center">
+          <h2 class="mb-6 bg-gradient-to-r from-hippo-700 via-hippo-600 to-hippo-500 bg-clip-text pb-1 text-3xl font-bold text-transparent md:text-5xl">
+            Le cockpit financier des médecins.
+          </h2>
+          <p class="mx-auto max-w-3xl text-xl font-medium leading-relaxed text-muted-foreground md:text-2xl">
+            Tout ce que tu gagnes, tout ce qui arrive, tout ce que tu dois prévoir.
+          </p>
+        </div>
+
+        <!-- GEO : définition produit verbatim (site.ts) -->
+        <p class="mx-auto mb-16 max-w-2xl text-center text-base leading-relaxed text-muted-foreground">
+          {PRODUCT_DEFINITION}
+        </p>
+
+        <!-- Team profiles -->
+        <div class="mb-20 grid gap-8 lg:grid-cols-2 lg:gap-12">
+          <!-- Ryan's profile -->
+          <div id="ryan-goburdhun" class="group relative scroll-mt-24">
+            <div class="relative flex h-full flex-col overflow-hidden rounded-2xl border border-hippo-100/50 bg-card/80 p-6 shadow-xl backdrop-blur-xl md:p-8">
+              <div class="relative mb-6 flex items-start gap-4">
+                <div class="relative shrink-0">
+                  <div class="relative h-16 w-16 rounded-full shadow-xl ring-4 ring-background md:h-20 md:w-20">
+                    <Image src={ryanPhoto} alt="Ryan Goburdhun" width={160} height={160} class="h-full w-full rounded-full object-cover object-center" />
+                    <div class="absolute inset-0 rounded-full ring-2 ring-hippo-400/30"></div>
+                  </div>
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <h3 class="mb-2 bg-gradient-to-r from-hippo-700 to-hippo-900 bg-clip-text text-xl font-bold text-transparent md:text-2xl">
+                    Ryan Goburdhun
+                  </h3>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center rounded-full border-transparent bg-hippo-600 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
+                      <Icon name="stethoscope" class="mr-1.5 h-3 w-3" />
+                      Médecin généraliste
+                    </span>
+                    <span class="inline-flex items-center rounded-full border-transparent bg-amber-500 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
+                      <Icon name="crown" class="mr-1.5 h-3 w-3" />
+                      Fondateur
+                    </span>
+                    <a href="https://www.linkedin.com/in/ryangbd/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Ryan Goburdhun" class="ml-1 text-hippo-500 transition-colors hover:text-hippo-700">
+                      <Icon name="linkedin" class="h-5 w-5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="relative mb-6 flex-1 space-y-5">
+                <div class="flex gap-3">
+                  <div class="mt-1 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-hippo-100 to-hippo-200/60">
+                      <Icon name="stethoscope" class="h-4 w-4 text-hippo-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 text-sm font-semibold text-hippo-700">Le constat</h4>
+                    <p class="text-sm leading-relaxed text-muted-foreground">
+                      <strong class="text-foreground">J'adore mon métier.</strong> Mais en commençant à exercer, j'ai vite compris que le plus compliqué, ce n'était pas la médecine — c'était de savoir <strong class="text-foreground">où j'en étais financièrement</strong>. Chaque structure a son taux de rétro, ses délais, ses habitudes. L'URSSAF tombe sans prévenir, la CARMF est à anticiper, le choix Micro-BNC ou Réel à trancher…
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="mt-1 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-amber-200/60">
+                      <Icon name="lightbulb" class="h-4 w-4 text-amber-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 text-sm font-semibold text-hippo-700">La question universelle</h4>
+                    <p class="text-sm leading-relaxed text-muted-foreground">
+                      Impossible de répondre à une question simple : <strong class="font-semibold text-hippo-600">"Combien je gagne vraiment ?"</strong> Et en échangeant avec des confrères installés, en activité mixte ou salariés à l'hôpital, j'ai compris que le problème était <strong class="text-foreground">universel</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="mt-1 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200/60">
+                      <Icon name="rocket" class="h-4 w-4 text-emerald-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 text-sm font-semibold text-hippo-700">Hippodoc est né</h4>
+                    <p class="text-sm leading-relaxed text-muted-foreground">
+                      Alors j'ai créé <strong class="text-foreground">Hippodoc</strong> : le cockpit financier qu'on aurait tous voulu avoir dès le début — quel que soit son mode d'exercice.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Thomas's profile -->
+          <div id="thomas-payet" class="group relative scroll-mt-24">
+            <div class="relative flex h-full flex-col overflow-hidden rounded-2xl border border-hippo-100/50 bg-card/80 p-6 shadow-xl backdrop-blur-xl md:p-8">
+              <div class="relative mb-6 flex items-start gap-4">
+                <div class="relative shrink-0">
+                  <div class="relative h-16 w-16 rounded-full shadow-xl ring-4 ring-background md:h-20 md:w-20">
+                    <Image src={thomasPhoto} alt="Thomas Payet" width={160} height={160} class="h-full w-full rounded-full object-cover object-center" />
+                    <div class="absolute inset-0 rounded-full ring-2 ring-amber-400/30"></div>
+                  </div>
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <h3 class="mb-2 bg-gradient-to-r from-hippo-700 to-hippo-900 bg-clip-text text-xl font-bold text-transparent md:text-2xl">
+                    Thomas Payet
+                  </h3>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center rounded-full border-transparent bg-hippo-600 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
+                      <Icon name="rocket" class="mr-1.5 h-3 w-3" />
+                      COO Meilisearch
+                    </span>
+                    <span class="inline-flex items-center rounded-full border-transparent bg-emerald-600 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
+                      <Icon name="code" class="mr-1.5 h-3 w-3" />
+                      Expert Tech
+                    </span>
+                    <a href="https://www.linkedin.com/in/tpayet/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Thomas Payet" class="ml-1 text-hippo-500 transition-colors hover:text-hippo-700">
+                      <Icon name="linkedin" class="h-5 w-5" />
+                    </a>
+                  </div>
+                  <a href="https://www.meilisearch.com/" target="_blank" rel="noopener noreferrer" class="mt-2 inline-block">
+                    <span class="inline-flex cursor-pointer items-center rounded-full border-transparent bg-fuchsia-500 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
+                      <Icon name="external-link" class="mr-1.5 h-3 w-3" />
+                      Découvrir Meilisearch
+                    </span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="relative mb-6 flex-1 space-y-5">
+                <div class="flex gap-3">
+                  <div class="mt-1 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-100 to-fuchsia-200/60">
+                      <Icon name="code" class="h-4 w-4 text-fuchsia-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 text-sm font-semibold text-hippo-700">L'expertise tech</h4>
+                    <p class="text-sm leading-relaxed text-muted-foreground">
+                      Je travaille dans la <strong class="text-foreground">tech</strong> depuis des années. Chez <strong class="text-foreground">Meilisearch</strong>, on construit des outils utilisés par des <strong class="text-foreground">millions de personnes</strong> — et on a levé <strong class="text-foreground">22M€</strong> pour aller encore plus loin.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="mt-1 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-hippo-100 to-hippo-200/60">
+                      <Icon name="lightbulb" class="h-4 w-4 text-hippo-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 text-sm font-semibold text-hippo-700">Le déclic</h4>
+                    <p class="text-sm leading-relaxed text-muted-foreground">
+                      Quand Ryan m'a montré comment un médecin gère ses finances — qu'il soit remplaçant, installé ou salarié — j'ai été surpris : aucune vision en temps réel, aucune estimation fiable des cotisations, <strong class="text-foreground">zéro automatisation</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <div class="mt-1 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200/60">
+                      <Icon name="rocket" class="h-4 w-4 text-emerald-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4 class="mb-1 text-sm font-semibold text-hippo-700">La mission</h4>
+                    <p class="text-sm leading-relaxed text-muted-foreground">
+                      J'ai rejoint Hippodoc pour apporter une <strong class="text-foreground">tech solide, précise et simple</strong> à utiliser. Trois objectifs clairs :
+                    </p>
+                    <ul class="mt-2 space-y-1.5">
+                      {['Où tu en es', 'Ce qui arrive', 'Ce que tu dois prévoir'].map((item) => (
+                        <li class="flex items-center gap-2 text-sm font-medium text-hippo-700">
+                          <Icon name="chevron-right" class="h-3.5 w-3.5 text-hippo-500" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline — Notre parcours -->
+        <div class="mb-20">
+          <h3 class="mb-10 text-center text-2xl font-bold text-hippo-800 md:text-3xl">Notre parcours</h3>
+          <div class="relative mx-auto max-w-3xl">
+            <div class="absolute bottom-0 left-4 top-0 w-0.5 bg-gradient-to-b from-hippo-300 via-hippo-400 to-hippo-500 md:left-1/2 md:-translate-x-px"></div>
+
+            {milestones.map((milestone, index) => (
+              <div class={`relative mb-8 flex items-start gap-4 pl-12 last:mb-0 md:pl-0 ${index % 2 === 0 ? 'md:pr-[calc(50%+2rem)] md:text-right' : 'md:pl-[calc(50%+2rem)]'}`}>
+                <div class="absolute left-2.5 top-1 h-3.5 w-3.5 rounded-full bg-hippo-500 shadow-md ring-4 ring-background md:left-1/2 md:-translate-x-1/2"></div>
+
+                <div class="w-full rounded-xl border border-hippo-100/50 bg-card/80 p-4 shadow-sm backdrop-blur-sm">
+                  <span class="text-xs font-bold uppercase tracking-wider text-hippo-500">{milestone.year}</span>
+                  <h4 class="mt-1 font-semibold text-foreground">{milestone.title}</h4>
+                  <p class="mt-1 text-sm leading-relaxed text-muted-foreground">{milestone.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Hippodoc en chiffres -->
+        <div class="mb-20">
+          <h3 class="mb-10 text-center text-2xl font-bold text-hippo-800 md:text-3xl">Hippodoc en chiffres</h3>
+          <div class="mx-auto grid max-w-4xl grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+            {stats.map((stat) => (
+              <div class="rounded-xl border border-hippo-100/50 bg-card/80 p-5 text-center shadow-sm backdrop-blur-sm">
+                <div class="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-hippo-500 to-hippo-600 shadow-md">
+                  <Icon name={stat.icon} class="h-5 w-5 text-white" />
+                </div>
+                <div class="mb-1 text-2xl font-bold text-hippo-800 md:text-3xl">{stat.value}</div>
+                <div class="text-xs font-medium text-muted-foreground md:text-sm">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Soutiens institutionnels -->
+        <div class="mb-16 text-center">
+          <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-hippo-200/50 bg-hippo-50 px-4 py-2">
+            <Icon name="award" class="h-4 w-4 text-hippo-600" />
+            <span class="text-sm font-medium text-hippo-700">Soutenu par des acteurs de référence</span>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-10 md:gap-14">
+            {partners.map((partner) => (
+              <img
+                src={partner.src}
+                alt={partner.alt}
+                class={`${partner.height} w-auto opacity-70 transition-opacity duration-300 hover:opacity-100`}
+                loading="lazy"
+                width={partner.w}
+                height={partner.h}
+              />
+            ))}
+          </div>
+        </div>
+
+        <!-- Témoignages -->
+        <div class="mb-16">
+          <h3 class="mb-8 text-center text-2xl font-bold text-hippo-800 md:text-3xl">Ce qu'en disent les médecins</h3>
+          <div class="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
+            {testimonials.map((testimonial) => (
+              <div class="relative rounded-xl border border-hippo-100/50 bg-card/80 p-5 shadow-sm backdrop-blur-sm">
+                <Icon name="quote" class="mb-3 h-5 w-5 text-hippo-300" />
+                <p class="mb-4 text-sm italic leading-relaxed text-muted-foreground">"{testimonial.quote}"</p>
+                <div class="flex items-center gap-2">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-hippo-400 to-hippo-600">
+                    <span class="text-xs font-bold text-white">{testimonial.name.charAt(4)}</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-semibold text-foreground">{testimonial.name}</div>
+                    <div class="text-xs text-muted-foreground">{testimonial.specialty}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- CTA Premium -->
+        <div class="relative overflow-hidden rounded-3xl shadow-2xl">
+          <div class="absolute inset-0 bg-gradient-to-br from-hippo-600 via-hippo-700 to-hippo-900"></div>
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(56,189,248,0.15),transparent_50%)]"></div>
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(168,85,247,0.15),transparent_50%)]"></div>
+          <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
+          <div class="relative z-10 p-8 text-center md:p-14">
+            <div class="mb-8">
+              <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white shadow-lg backdrop-blur-sm">
+                <Icon name="users" class="h-4 w-4 text-cyan-300" />
+                <span class="bg-gradient-to-r from-white via-cyan-100 to-white bg-clip-text text-transparent">
+                  Rejoint par 900+ médecins
+                </span>
+                <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              </span>
+            </div>
+
+            <h3 class="mb-6 text-3xl font-bold text-white md:text-5xl">
+              Prêt à simplifier{' '}
+              <span class="bg-gradient-to-r from-cyan-300 via-white to-purple-300 bg-clip-text text-transparent">ta gestion ?</span>
+            </h3>
+
+            <p class="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-hippo-100/90 md:text-xl">
+              Rejoins les médecins qui pilotent leur activité sereinement.
+            </p>
+
+            <div class="mb-10">
+              <a
+                href={`${APP_URL}/auth?tab=signup`}
+                data-track="cta_signup_qui_sommes_nous"
+                class="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl bg-white px-10 py-5 text-lg font-bold text-hippo-700 shadow-[0_0_40px_rgba(255,255,255,0.3)] transition-all duration-300 hover:scale-105 hover:text-hippo-800 hover:shadow-[0_0_60px_rgba(255,255,255,0.5)]"
+              >
+                <span class="relative z-10">Commencer gratuitement</span>
+                <Icon name="arrow-right" class="relative z-10 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </a>
+              <p class="mt-4 text-sm font-medium text-hippo-200/80">
+                30 jours gratuits • Annulable à tout moment
+              </p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+              {[
+                { icon: 'check-circle' as const, text: '30 jours gratuits' },
+                { icon: 'shield' as const, text: 'Sans engagement' },
+                { icon: 'headphones' as const, text: 'Support réactif' },
+              ].map((guarantee) => (
+                <div class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-sm transition-colors hover:bg-white/10">
+                  <Icon name={guarantee.icon} class="h-4 w-4 text-emerald-400" />
+                  {guarantee.text}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+  </div>
+</BaseLayout>

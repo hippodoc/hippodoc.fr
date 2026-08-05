@@ -1,0 +1,80 @@
+---
+/**
+ * Portage statique de SeasonalBanner.tsx (SPA source). Déviation : la
+ * source recalculait `new Date().getMonth()` à chaque rendu client (page
+ * React) ; ici le mois est figé au moment du build Astro statique (output:
+ * 'static') — le bandeau reflète donc la date du dernier déploiement, pas
+ * la date de visite. Comportement identique à `CalendrierSection.astro`
+ * (même contrainte de build statique). Bouton `onClick={scrollTo}` → ancre
+ * `<a href="#profils">`.
+ */
+import { Clock, AlertTriangle, Gift } from 'lucide-react';
+
+const month = new Date().getMonth();
+
+type SeasonalMsg = {
+  Icon: typeof Clock;
+  text: string;
+  linkText?: string;
+  linkTarget?: string;
+  textAfter?: string;
+  bgClass: string;
+  badge?: string;
+};
+
+function getSeasonalMessage(): SeasonalMsg | null {
+  if (month >= 3 && month <= 5) {
+    return {
+      Icon: Clock,
+      text: 'Choisis ton ',
+      linkText: 'profil ci-dessous',
+      linkTarget: 'profils',
+      textAfter: ' pour savoir quelles cases remplir.',
+      bgClass: 'bg-gradient-to-r from-hippo-600 via-hippo-500 to-blue-500 text-white',
+      badge: 'Période de déclaration',
+    };
+  }
+  if (month === 10) {
+    return {
+      Icon: AlertTriangle,
+      text: "L'avis de CFE est disponible. Paiement avant le 15 décembre.",
+      bgClass: 'bg-gradient-to-r from-red-600 to-red-500 text-white',
+      badge: 'Échéance CFE',
+    };
+  }
+  if (month === 11) {
+    return {
+      Icon: Gift,
+      text: "Dernière chance pour optimiser ton année : Chèques Vacances ANCV, Madelin, achats de matériel.",
+      bgClass: 'bg-gradient-to-r from-blue-600 to-indigo-500 text-white',
+      badge: "Fin d'année fiscale",
+    };
+  }
+  return null;
+}
+
+const msg = getSeasonalMessage();
+---
+
+{msg && (
+  <div class={msg.bgClass}>
+    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-1.5 sm:py-2.5 flex items-center justify-center gap-2 sm:gap-2.5 text-xs sm:text-sm">
+      {msg.badge && (
+        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-semibold whitespace-nowrap shrink-0">
+          <msg.Icon className="h-4 w-4" />
+          {msg.badge}
+        </span>
+      )}
+      <span class="sm:hidden shrink-0"><msg.Icon className="h-4 w-4" /></span>
+      <span class="font-medium">
+        {msg.text}
+        {msg.linkText && msg.linkTarget && (
+          <a href={`#${msg.linkTarget}`} class="underline font-bold hover:opacity-80 transition-opacity">
+            {msg.linkText}
+          </a>
+        )}
+        {msg.textAfter && <span class="hidden sm:inline">{msg.textAfter}</span>}
+      </span>
+    </div>
+  </div>
+)}

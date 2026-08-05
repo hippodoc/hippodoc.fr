@@ -1,0 +1,42 @@
+---
+/**
+ * Portage verbatim (markup + classes) de SectionDivider.tsx (SPA source).
+ * Séparateur de zone : pastille numérotée + titre + hint. 4 zones :
+ * 1·Commence ici · 2·Référence rapide · 3·Pour aller plus loin · 4·Outils pratiques.
+ */
+interface Props {
+  step: 1 | 2 | 3 | 4;
+  label: string;
+  hint?: string;
+  /** Réduit l'espacement vertical (utile pour le 1er divider sous une recherche sticky). */
+  compact?: boolean;
+}
+
+const { step, label, hint, compact } = Astro.props;
+---
+
+<div class={`max-w-5xl mx-auto px-4 mb-2 ${compact ? 'mt-12' : 'mt-20'}`}>
+  <div class="flex items-end gap-3 pb-3 border-b-2 border-hippo-100 dark:border-hippo-900/60">
+    <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-hippo-500 to-hippo-600 text-white text-sm font-bold shadow-md shadow-hippo-400/30 shrink-0">
+      {step}
+    </span>
+    <div class="flex-1 min-w-0">
+      <p class="text-[10px] font-semibold uppercase tracking-widest text-hippo-500 dark:text-hippo-400">
+        Étape {step} / 4
+      </p>
+      <h2 class="text-lg sm:text-xl font-bold text-foreground leading-tight">
+        {label}
+      </h2>
+      {hint && (
+        <p class="sm:hidden mt-0.5 text-[11px] text-muted-foreground">
+          {hint}
+        </p>
+      )}
+    </div>
+    {hint && (
+      <span class="hidden sm:inline text-[11px] text-muted-foreground pb-1">
+        {hint}
+      </span>
+    )}
+  </div>
+</div>

@@ -1,0 +1,108 @@
+---
+/**
+ * Portage statique de HeroSection.tsx (SPA source). Déviations volontaires
+ * (page 100 % statique, zéro JS hors îlots) :
+ *  - `motion.div` (framer-motion) → markup brut, mêmes classes.
+ *  - Boutons `onClick={scrollTo(...)}` → ancres `<a href="#profils">`
+ *    (scroll natif, `scroll-behavior: smooth` déjà globale — voir global.css).
+ *  - Bouton "Contribuer" (ouvre le chat Crisp) : Crisp n'est pas repris sur
+ *    le site public (cf. MIGRATION.md §6, contrainte "zéro JS hors
+ *    îlots + PostHog") → retiré, noté comme omission dans le rapport.
+ *  - `ShareButton` (Web Share API / presse-papiers, JS) : retiré (même
+ *    contrainte) — le lien reste partageable via l'URL de la page.
+ *  - "Sources officielles" (toggle JS) → `<details>/<summary>` natif.
+ */
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { Compass, ShieldCheck, Calculator, ChevronDown, ExternalLink, BookOpen } from 'lucide-react';
+import { GUIDE_DECLARATIONS_LAST_UPDATED as LAST_UPDATED } from '@/lib/guide/lastUpdated';
+
+const SOURCES_OFFICIELLES = [
+  {
+    label: 'Brochure IR 2026',
+    url: 'https://www.impots.gouv.fr/www2/fichiers/documentation/brochure/ir_2026/accueil.htm',
+  },
+  {
+    label: 'Notice 2035',
+    url: 'https://www.impots.gouv.fr/sites/default/files/formulaires/2035-sd/2026/2035-sd_5385.pdf',
+  },
+  {
+    label: 'Guide déclaration PAMC 2026',
+    url: 'https://www.impots.gouv.fr/sites/default/files/media/1_metier/1_particulier/EV/1_declarer/190_travailleur_independant/pamc/pam_guide-declaration-revenus_v1.0-du-09-04-2026.pdf',
+  },
+];
+
+const updatedLabel = format(LAST_UPDATED, 'd MMMM yyyy', { locale: fr });
+---
+
+<section class="relative overflow-hidden py-12 md:py-20">
+  <div class="absolute inset-0 bg-gradient-to-br from-hippo-50 via-white to-cyan-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-hippo-950/30" />
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-hippo-400/10 rounded-full blur-[120px]" />
+
+  <div class="relative max-w-5xl mx-auto px-4 text-center">
+    <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100/60 border border-emerald-200/40 text-emerald-700 text-sm font-medium dark:bg-emerald-900/30 dark:border-emerald-700/30 dark:text-emerald-300">
+        <span class="relative flex h-2 w-2" aria-hidden="true">
+          <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+          <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        </span>
+        Mis à jour le {updatedLabel}
+      </div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-hippo-100/60 border border-hippo-200/40 text-hippo-700 text-sm font-medium dark:bg-hippo-900/30 dark:border-hippo-700/30 dark:text-hippo-300">
+        <ShieldCheck className="h-4 w-4" />
+        Terrain + sources officielles
+      </div>
+    </div>
+
+    <h1 class="text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
+      Tes déclarations fiscales et sociales,
+      <span class="bg-gradient-to-r from-hippo-600 to-cyan-500 bg-clip-text text-transparent">
+        enfin claires
+      </span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+      2042-C-PRO, 2035, DSFU (ex DS-PAMC) : chaque case expliquée, chaque piège signalé.
+      Guide pratique créé par des médecins, pour des médecins.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a
+        href="#profils"
+        class="inline-flex items-center justify-center gap-2 h-11 rounded-md px-8 text-base font-normal bg-gradient-to-r from-hippo-500 to-hippo-600 hover:from-hippo-600 hover:to-hippo-700 text-white shadow-lg shadow-hippo-400/20 no-underline transition-colors"
+      >
+        <Compass className="h-4 w-4" />
+        Trouver ma situation
+      </a>
+      <a
+        href="/guide-declarations/calculette"
+        class="inline-flex items-center justify-center gap-2 h-11 rounded-md px-8 text-base font-normal border border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800 dark:border-emerald-800 dark:text-emerald-300 dark:hover:bg-emerald-950/40 no-underline transition-colors"
+      >
+        <Calculator className="h-4 w-4" />
+        Calculette
+      </a>
+    </div>
+    <details class="mt-4 text-xs text-muted-foreground group">
+      <summary class="inline-flex items-center gap-1 cursor-pointer hover:text-hippo-600 dark:hover:text-hippo-400 transition-colors list-none">
+        <BookOpen className="h-3 w-3" />
+        Sources officielles
+        <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-180" />
+      </summary>
+      <div class="mt-2 flex flex-wrap items-center justify-center gap-1">
+        {SOURCES_OFFICIELLES.map((source, i) => (
+          <span class="inline-flex items-center">
+            {i > 0 && <span class="mx-1">·</span>}
+            <a
+              href={source.url}
+              target="_blank" rel="noopener noreferrer"
+              class="underline underline-offset-2 hover:text-hippo-600 dark:hover:text-hippo-400 transition-colors inline-flex items-center gap-0.5"
+            >
+              {source.label}
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </span>
+        ))}
+      </div>
+    </details>
+  </div>
+</section>
