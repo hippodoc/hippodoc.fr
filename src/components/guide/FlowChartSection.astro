@@ -124,7 +124,7 @@ const selNodes = [
             <a
               href={`#case-${n.code}`}
               title={n.deprecated ? 'Case supprimée pour les revenus 2026 — réintégrée via le RBS (DSDE/DSDG).' : undefined}
-              class={`${nodeClass} ${n.deprecated ? 'line-through opacity-60' : ''}`}
+              class={`${nodeClassFull} ${n.deprecated ? 'line-through opacity-60' : ''}`}
             >
               <span class="font-mono font-bold">{n.code}</span> — {n.label}
             </a>
@@ -135,7 +135,7 @@ const selNodes = [
               <Building2 className="h-3 w-3" /> SELARL / SELAS
             </p>
             {selNodes.map(n => (
-              <a href={`#case-${n.code}`} class={`${nodeClass} mb-1`}>
+              <a href={`#case-${n.code}`} class={`${nodeClassFull} mb-1`}>
                 <span class="font-mono font-bold">{n.code}</span> — {n.label}
               </a>
             ))}

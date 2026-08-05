@@ -54,18 +54,21 @@ function getSeasonalMessage(): SeasonalMsg | null {
 }
 
 const msg = getSeasonalMessage();
+// Composant dynamique : Astro exige une variable capitalisée pour un tag
+// composant — on l'extrait plutôt que d'utiliser `msg.Icon` en notation pointée.
+const Icon = msg?.Icon ?? null;
 ---
 
-{msg && (
+{msg && Icon && (
   <div class={msg.bgClass}>
     <div class="max-w-5xl mx-auto px-3 sm:px-4 py-1.5 sm:py-2.5 flex items-center justify-center gap-2 sm:gap-2.5 text-xs sm:text-sm">
       {msg.badge && (
         <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-semibold whitespace-nowrap shrink-0">
-          <msg.Icon className="h-4 w-4" />
+          <Icon className="h-4 w-4" />
           {msg.badge}
         </span>
       )}
-      <span class="sm:hidden shrink-0"><msg.Icon className="h-4 w-4" /></span>
+      <span class="sm:hidden shrink-0"><Icon className="h-4 w-4" /></span>
       <span class="font-medium">
         {msg.text}
         {msg.linkText && msg.linkTarget && (

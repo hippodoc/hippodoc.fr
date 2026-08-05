@@ -1,0 +1,376 @@
+---
+/**
+ * Simulateur Super-Net — portage de src/pages/simulateur-public.tsx (SPA source).
+ * Chrome (Header/Footer/Hero/Guide explicatif/Disclaimer/CTA) rendu en HTML
+ * statique ici ; formulaire + résultats interactifs délégués à l'îlot React
+ * SimulateurApp (src/components/simulateur/SimulateurApp.tsx). La branche
+ * PAMC (CA ≥ 38 000 €) appelle l'Edge Function calculate-urssaf via
+ * invokeCalculateUrssaf() (src/lib/supabase-public.ts) ; la branche RSPM
+ * (< 38 000 €) est calculée 100 % côté client (useRspmCalculation.ts).
+ *
+ * Pas de JSON-LD sur cette page (parité avec la SPA source — contrairement
+ * à /guide-declarations/calculette et /guide-declarations qui en ont).
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SimulateurApp from '@/components/simulateur/SimulateurApp.tsx';
+import { APP_URL } from '@/lib/site';
+import { getDeclarationParams } from '@/lib/declarationParams';
+
+const title = 'Simulateur revenus médecin gratuit | Hippodoc';
+const description =
+  "Simule gratuitement ton revenu net de médecin. Compare Micro-BNC et Régime Réel, calcule tes cotisations URSSAF et ton Super-Net en quelques clics.";
+const path = '/simulateur';
+const signupUrl = `${APP_URL}/auth?tab=signup`;
+
+/* Plafonds chèques-vacances ANCV — mêmes valeurs que SimulateurGuide.tsx (SPA source),
+   lues dynamiquement depuis la source unique de vérité (déclarationParams.ts). */
+const cvPlafond2024 = getDeclarationParams(2024).plafondChequesVacances;
+const cvPlafond2025 = getDeclarationParams(2025).plafondChequesVacances;
+const cvPlafond2026 = getDeclarationParams(2026).plafondChequesVacances;
+
+const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Calcul instantané'];
+---
+
+<BaseLayout title={title} description={description} path={path} ogImage="/lovable-uploads/Hero-simulateur.png">
+  <Header />
+
+  <main class="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white pb-20">
+    <div class="container max-w-6xl mx-auto py-8 sm:py-12 px-4 space-y-8">
+      <!-- Hero compact (statique — pas d'animation d'entrée) -->
+      <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/80 via-gray-50/60 to-emerald-50/30 border border-white/40 shadow-xl">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+          <div class="absolute -top-16 -right-16 w-40 h-40 bg-gradient-to-br from-emerald-400/25 to-teal-500/15 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-gradient-to-tr from-blue-400/20 to-emerald-400/15 rounded-full blur-2xl"></div>
+        </div>
+
+        <div class="relative p-6 sm:p-8 text-center">
+          <div class="inline-flex h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 items-center justify-center shadow-lg shadow-emerald-500/25 mb-5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+          </div>
+
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent mb-3">
+            Simulateur Super-Net Hippodoc
+          </h1>
+
+          <p class="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-4">
+            Renseigne ta situation en 2 min, découvre <strong class="text-foreground">ce qu'il te reste vraiment</strong> après charges et impôts, et laisse le simulateur te montrer <strong class="text-foreground">le régime le plus rentable</strong> entre Micro-BNC et Réel.
+          </p>
+
+          <div class="flex flex-wrap gap-2 md:gap-3 justify-center">
+            {trustBadges.map((label) => (
+              <div class="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm px-3 py-2 rounded-full border border-white/30">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600 flex-shrink-0" aria-hidden="true"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                <span class="text-xs font-medium">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Îlot React — formulaire + résultats, hydraté à la vue (form + résultats sous la ligne de flottaison) -->
+      <SimulateurApp client:visible />
+    </div>
+
+    <!-- Section explicative statique (SEO) — contenu de SimulateurGuide.tsx (SPA source),
+         porté en <details>/<summary> natif : un accordéon Radix fermé ne livre pas son
+         texte au HTML statique, ce qui casserait l'indexation. -->
+    <section class="mx-auto mt-4 max-w-3xl px-4" aria-labelledby="guide-title">
+      <div class="mb-8 text-center">
+        <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-hippo-600">Mode d'emploi</p>
+        <h2 id="guide-title" class="mb-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Comment utiliser le simulateur
+        </h2>
+        <p class="text-sm text-muted-foreground">
+          8 points pour comprendre chaque champ et chaque résultat.
+        </p>
+      </div>
+
+      <div class="divide-y divide-border/60 border-y border-border/60">
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">1. C'est quoi le Super-Net ?</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              Ce simulateur compare <strong class="text-foreground">Micro-BNC</strong> et <strong class="text-foreground">Régime Réel</strong> pour calculer ton <strong class="text-foreground">Super-Net</strong> : ce qu'il te reste vraiment après cotisations sociales ET impôt sur le revenu. En 2 minutes, tu sais quel régime te laisse le plus en poche.
+            </p>
+          </div>
+        </details>
+
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">2. Tes revenus — les champs essentiels</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
+            <ul class="space-y-2.5 list-disc pl-5">
+              <li>
+                <strong class="text-foreground">Tes revenus libéraux</strong> — Total <em>annuel</em> de tous tes honoraires encaissés (consultations, actes techniques, dépassements, PDSA). Retrouve-le sur ton relevé SNIR ou ta comptabilité.
+              </li>
+              <li>
+                <strong class="text-foreground">Tes charges réelles</strong> — Dépenses professionnelles déductibles : loyer, matériel, RCP, comptable, véhicule, formations. <strong class="text-foreground">Hors cotisations sociales</strong> (URSSAF et CARMF sont calculées automatiquement). Utilisé en Régime Réel uniquement — en Micro-BNC, un abattement forfaitaire de 34% les remplace.
+              </li>
+              <li>
+                <strong class="text-foreground">Revenus complémentaires</strong> (dépliable) :
+                <ul class="mt-1.5 ml-4 space-y-1.5 list-disc">
+                  <li><em>Revenus salariés</em> — Net imposable annuel si tu cumules hôpital ou gardes salariées. L'abattement de 10% est appliqué automatiquement.</li>
+                  <li><em>Revenus PDSA</em> — Gardes de nuit et week-end régulées par l'ARS. Exonérés d'impôt sur le revenu (art. 151 ter CGI), mais restent soumis aux cotisations sociales.</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">3. Ta situation fiscale</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
+            <ul class="space-y-2.5 list-disc pl-5">
+              <li><strong class="text-foreground">Situation familiale</strong> — Célibataire, marié/pacsé, veuf ou parent isolé. Détermine ton nombre de parts fiscales et donc ton quotient familial.</li>
+              <li><strong class="text-foreground">Enfants à charge</strong> — Chaque enfant augmente ton quotient familial. Demi-parts possibles (ex : garde alternée = 0.5 part).</li>
+              <li><strong class="text-foreground">Revenus du conjoint</strong> (apparaît si marié/pacsé) — Net imposable annuel + type de revenu (salarié, libéral micro, libéral réel, autre). Impact direct sur le taux marginal d'imposition du foyer.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">4. Paramètres de calcul</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
+            <ul class="space-y-2.5 list-disc pl-5">
+              <li><strong class="text-foreground">Année</strong> — Détermine les barèmes IR appliqués (2025 ou 2026).</li>
+              <li><strong class="text-foreground">Lieu d'exercice</strong> — Métropole ou DOM-TOM. Les territoires ultramarins bénéficient d'un abattement automatique sur l'IR (30% Guadeloupe/Martinique/Réunion, 40% Guyane/Mayotte).</li>
+              <li><strong class="text-foreground">Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu, déductions supplémentaires : 2% + 3% + Groupe III) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
+              <li><strong class="text-foreground">Régime social</strong> — Auto (recommandé, le simulateur choisit selon ton CA), RSPM (simplifié, &lt; 38 000 €) ou PAMC (classique).</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">5. Options avancées — pour affiner</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl space-y-4 pb-5 text-sm leading-relaxed text-muted-foreground">
+            <div>
+              <p class="mb-1.5 font-medium text-foreground">Retraite &amp; CARMF</p>
+              <ul class="space-y-2 list-disc pl-5">
+                <li><strong class="text-foreground">Affilié (régime normal)</strong> — C'est le cas le plus courant. Tu paies l'ensemble des cotisations CARMF : retraite de base, retraite complémentaire, ASV (allocations supplémentaires vieillesse) et invalidité-décès (RID).</li>
+                <li><strong class="text-foreground">Affilié &lt; 2 ans, &lt; 40 ans</strong> — Si tu viens de t'installer et que tu as moins de 40 ans, tu es <em>exonéré de la cotisation complémentaire</em> pendant tes 2 premières années. Tes cotisations sont donc réduites (montants forfaitaires). C'est un vrai coup de pouce au démarrage.</li>
+                <li><strong class="text-foreground">Dispensé</strong> — Sur demande à la CARMF, généralement pour des revenus faibles (démarche non automatique, à effectuer auprès de la caisse).</li>
+                <li><strong class="text-foreground">Taux RID</strong> — L'invalidité-décès peut être cotisée à 25% (couverture minimale) ou 100% (couverture complète). Par défaut, le simulateur utilise 100%.</li>
+              </ul>
+            </div>
+            <div>
+              <p class="mb-1.5 font-medium text-foreground">Déductions Secteur 1</p>
+              <ul class="space-y-2 list-disc pl-5">
+                <li><strong class="text-foreground">Forfait 2%</strong> — Frais de représentation, réception et prospection déduits automatiquement de tes honoraires, sans justificatif. <em>Secteur 1 uniquement.</em></li>
+                <li><strong class="text-foreground">Déduction 3% conventionnelle</strong> — Un abattement supplémentaire sur tes honoraires conventionnés, plafonné par la Sécu. <em>Secteur 1 uniquement.</em></li>
+                <li><strong class="text-foreground">Barème Groupe III</strong> — Une déduction fixe calculée selon ta tranche de revenus (de 770 € à 3 050 €), en plus des 2% et 3%. <em>Secteur 1 uniquement.</em></li>
+                <li><strong class="text-foreground">Ratio honoraires non conventionnés</strong> — Si une partie de tes honoraires est hors convention, les déductions S1 sont réduites proportionnellement.</li>
+              </ul>
+            </div>
+            <div>
+              <p class="mb-1.5 font-medium text-foreground">Cotisations volontaires</p>
+              <ul class="space-y-2 list-disc pl-5">
+                <li><strong class="text-foreground">PER (Plan d'Épargne Retraite)</strong> — Tes versements sont déductibles de ton revenu imposable. Fonctionne en <em>Micro-BNC et en Réel</em>.</li>
+                <li><strong class="text-foreground">Madelin (prévoyance/retraite)</strong> — Cotisations complémentaires déductibles de ton bénéfice. <em>Régime Réel uniquement.</em></li>
+                <li><strong class="text-foreground">Chèques-vacances ANCV</strong> — Déductibles de ton BNC dans la limite d'1 SMIC mensuel par an : <strong class="text-foreground">{cvPlafond2024.toLocaleString('fr-FR')} € en 2024</strong>, <strong class="text-foreground">{cvPlafond2025.toLocaleString('fr-FR')} € officiel en 2025</strong>, <strong class="text-foreground">{cvPlafond2026.toLocaleString('fr-FR')} € projeté en 2026</strong> (à confirmer après publication du SMIC 2026). <em>Régime Réel uniquement</em> (sans effet en Micro-BNC).</li>
+              </ul>
+            </div>
+            <div>
+              <p class="mb-1.5 font-medium text-foreground">Fiscalité immobilière &amp; zones</p>
+              <ul class="space-y-2 list-disc pl-5">
+                <li><strong class="text-foreground">Zones exonérées (ZFU-TE / ZFRR)</strong> — Si tu exerces dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur 8 ans (100 % les 5 premières années). Dégressivité différente selon la zone : <strong class="text-foreground">ZFU-TE</strong> → 60 % / 40 % / 20 % (clos au 31.12.2025) ; <strong class="text-foreground">ZFRR</strong> → 75 % / 50 % / 25 %. Plafond commun : 50 000 € de bénéfice exonéré/an.</li>
+                <li><strong class="text-foreground">Revenus fonciers</strong> — Si tu as des revenus locatifs : micro-foncier (abattement 30%) ou régime réel (avec possibilité de déduire un déficit foncier jusqu'à −10 700 €/an de ton revenu global).</li>
+              </ul>
+            </div>
+            <div>
+              <p class="mb-1.5 font-medium text-foreground">Crédits d'impôt</p>
+              <ul class="space-y-2 list-disc pl-5">
+                <li><strong class="text-foreground">Formation dirigeant</strong> — Heures de formation × SMIC horaire, plafonné à 40h (soit environ 475 €). Réduit directement ton impôt.</li>
+                <li><strong class="text-foreground">Emploi à domicile</strong> — 50% des dépenses (ménage, garde, jardinage…), plafond de 12 000 à 15 000 €.</li>
+                <li><strong class="text-foreground">Garde d'enfant &lt; 6 ans (hors domicile)</strong> — 50% des frais de crèche ou assistante maternelle, plafond de 3 500 € par enfant.</li>
+                <li><strong class="text-foreground">Autres crédits</strong> — Un champ libre pour tout autre crédit d'impôt dont tu bénéficies.</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">6. Comprendre les résultats</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
+            <ul class="space-y-2.5 list-disc pl-5">
+              <li><strong class="text-foreground">Les 2 cartes</strong> — Micro-BNC (abattement 34%) vs Régime Réel (charges réelles + optimisations). Chacune affiche un mini-donut et ton Super-Net mensuel et annuel.</li>
+              <li><strong class="text-foreground">Le badge « Recommandé »</strong> — Indique le régime qui te laisse le plus en poche.</li>
+              <li><strong class="text-foreground">Le Super-Net</strong> — Le montant final après TOUT : charges, cotisations, impôt. C'est LE chiffre qui compte.</li>
+              <li><strong class="text-foreground">« Approfondir »</strong> — Détails ligne par ligne : donut de répartition, comparaison des deux régimes, modalités de prélèvement (source, acomptes, régularisation).</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">7. Comment est calculé ton Super-Net ?</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl space-y-3 pb-5 text-sm leading-relaxed text-muted-foreground">
+            <p>Le Super-Net, c'est ce qu'il te reste <strong class="text-foreground">vraiment</strong> en poche après tout. Voici le calcul, étape par étape :</p>
+            <ol class="space-y-2.5 list-decimal pl-5">
+              <li><strong class="text-foreground">Tes revenus libéraux</strong> — Le total de tout ce que tu as encaissé dans l'année (honoraires, actes, dépassements).</li>
+              <li><strong class="text-foreground">− Tes charges</strong> — En <em>Régime Réel</em>, on soustrait tes dépenses professionnelles réelles (loyer, matériel, véhicule…). En <em>Micro-BNC</em>, l'État applique un abattement forfaitaire de 34%. → Ça donne ton <strong class="text-foreground">bénéfice</strong>.</li>
+              <li><strong class="text-foreground">− Cotisations sociales</strong> — URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) + CARMF (retraite complémentaire, invalidité-décès, ASV). Le simulateur les calcule automatiquement selon tes revenus et ta situation CARMF (voir point 5).</li>
+              <li><strong class="text-foreground">− Déductions fiscales</strong> — Si tu es en Secteur 1 : forfait 2%, déduction 3%, barème Groupe III. Puis PER, Madelin, chèques-vacances, zones exonérées… → Ça donne ton <strong class="text-foreground">revenu imposable libéral</strong>.</li>
+              <li><strong class="text-foreground">+ Autres revenus du foyer</strong> — On ajoute les salaires (après abattement 10%), les revenus du conjoint, les revenus fonciers. → Ça donne le <strong class="text-foreground">revenu fiscal du foyer</strong>.</li>
+              <li><strong class="text-foreground">÷ Parts fiscales</strong> — On divise par ton nombre de parts (selon ta situation familiale et tes enfants) pour obtenir le quotient familial, puis on applique le barème progressif (11%, 30%, 41%, 45%).</li>
+              <li><strong class="text-foreground">− Crédits d'impôt</strong> — Formation dirigeant, emploi à domicile, garde d'enfant… Ils viennent réduire directement ton impôt. → Ça donne ton <strong class="text-foreground">impôt final</strong>.</li>
+              <li><strong class="text-foreground">= Super-Net</strong> — Revenus − Charges − Cotisations − Impôt = <strong class="text-foreground">ce qu'il te reste vraiment</strong>.</li>
+            </ol>
+            <div class="mt-3 rounded-lg border border-border/30 bg-muted/50 p-3 text-xs">
+              <strong class="text-foreground">Micro vs Réel en bref :</strong> En Micro-BNC, tes charges sont remplacées par un abattement de 34% — c'est plus simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil. Le simulateur compare les deux pour toi.
+            </div>
+          </div>
+        </details>
+
+        <details class="group py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+            <span class="flex-1 pr-4">8. Conseils personnalisés &amp; profils types</span>
+            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
+            <ul class="space-y-2.5 list-disc pl-5">
+              <li><strong class="text-foreground">4 piliers</strong> — Budget, Sécurité, Investissement, Optimisation : des recommandations concrètes basées sur TON Super-Net.</li>
+              <li><strong class="text-foreground">La règle 50/30/20</strong> — Appliquée à ta situation : combien consacrer aux besoins, aux envies et à l'épargne.</li>
+              <li><strong class="text-foreground">Estimation charges sociales</strong> — Cotisations URSSAF, CARMF et CFE détaillées pour anticiper ta trésorerie.</li>
+              <li><strong class="text-foreground">Profils types</strong> — Pas envie de tout remplir ? Clique sur un profil type pour pré-remplir le formulaire avec des données réalistes (interne, remplaçant, installé, spécialiste…). Tu peux ensuite ajuster les chiffres avant de lancer la simulation.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <p class="mt-6 text-center text-xs text-muted-foreground">
+        Ce simulateur fournit des estimations basées sur les barèmes en vigueur. Il ne remplace pas l'avis d'un expert-comptable.
+      </p>
+    </section>
+
+    <!-- Définitions rapides + exemple chiffré (contenu rédigé pour cette page,
+         factuellement cohérent avec le guide ci-dessus — sourcé uniquement sur
+         les constantes du moteur de calcul porté : SEUIL_RSPM=38000€,
+         abattement micro-BNC 34%, taux RSPM 13,5%/21,2%, tranche RSPM 19 000€). -->
+    <section class="mx-auto mt-16 max-w-3xl px-4" aria-labelledby="definitions-title">
+      <h2 id="definitions-title" class="mb-6 text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        Trois mots à connaître
+      </h2>
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="rounded-xl border border-border/60 bg-white p-4 shadow-sm">
+          <h3 class="mb-1.5 text-sm font-semibold text-hippo-700">Rétrocession</h3>
+          <p class="text-sm leading-relaxed text-muted-foreground">
+            La part des honoraires qu'un médecin remplaçant perçoit du titulaire du cabinet (ou de la structure) qu'il remplace, en échange des actes réalisés. C'est la base de tes "revenus libéraux" dans le simulateur.
+          </p>
+        </div>
+        <div class="rounded-xl border border-border/60 bg-white p-4 shadow-sm">
+          <h3 class="mb-1.5 text-sm font-semibold text-hippo-700">URSSAF</h3>
+          <p class="text-sm leading-relaxed text-muted-foreground">
+            L'organisme qui collecte tes cotisations sociales de travailleur indépendant : maladie-maternité, allocations familiales, retraite de base, CSG-CRDS et formation professionnelle. Le simulateur les calcule automatiquement, en RSPM (taux simplifiés) ou en PAMC (barème classique).
+          </p>
+        </div>
+        <div class="rounded-xl border border-border/60 bg-white p-4 shadow-sm">
+          <h3 class="mb-1.5 text-sm font-semibold text-hippo-700">Super-Net</h3>
+          <p class="text-sm leading-relaxed text-muted-foreground">
+            Ce qu'il te reste vraiment en poche : tes revenus, moins tes charges professionnelles, moins tes cotisations sociales (URSSAF/CARMF), moins ton impôt sur le revenu. C'est le chiffre affiché en tête de chaque carte de résultat.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-xl border border-hippo-100 bg-hippo-50/40 p-5">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-hippo-700">Exemple chiffré (illustration simplifiée)</p>
+        <p class="text-sm leading-relaxed text-muted-foreground">
+          Un médecin remplaçant facture <strong class="text-foreground">30 000 €</strong> de rétrocessions sur l'année, sans autre revenu. Comme ce montant est sous le seuil RSPM de <strong class="text-foreground">38 000 €</strong>, ses cotisations sociales suivent le barème simplifié à deux tranches : <strong class="text-foreground">13,5 %</strong> sur les 19 000 premiers euros (2 565 €), puis <strong class="text-foreground">21,2 %</strong> sur les 11 000 € restants (2 332 €) — soit environ <strong class="text-foreground">4 897 €</strong> de cotisations URSSAF, plus la RID CARMF (157 € ou 626 € selon le taux choisi). Côté fiscal, en Micro-BNC, l'abattement forfaitaire de <strong class="text-foreground">34 %</strong> ramène directement son bénéfice imposable à <strong class="text-foreground">19 800 €</strong> (66 % de 30 000 €), avant application du barème de l'impôt sur le revenu. Le simulateur calcule ensuite l'IR précis selon la situation familiale, puis affiche le Super-Net final — et fait le même calcul en Régime Réel pour comparer.
+        </p>
+      </div>
+    </section>
+
+    <!-- Disclaimer verbatim (identique à celui affiché dans les résultats de l'îlot,
+         dupliqué ici en statique pour rester visible sans avoir lancé de simulation). -->
+    <section class="mx-auto mt-16 max-w-3xl px-4">
+      <div class="rounded-2xl overflow-hidden bg-white/80 backdrop-blur-xl border border-slate-200/50 shadow-lg">
+        <div class="h-1.5 w-full bg-gradient-to-r from-slate-400 to-slate-500"></div>
+        <div class="p-4 sm:p-6 space-y-3">
+          <h4 class="font-semibold text-slate-700">Limites de cette simulation</h4>
+          <p class="text-sm text-slate-600">
+            Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte tes spécificités fiscales individuelles, les évolutions réglementaires, ou les optimisations spécifiques à ta situation.
+          </p>
+          <p class="text-sm font-medium text-slate-700">Pour une analyse personnalisée, consulte :</p>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">Expert-comptable</span>
+            <span class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">Avocat fiscaliste</span>
+            <span class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">CGP indépendant</span>
+            <a href="https://mon-entreprise.urssaf.fr" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors">
+              Simulateur URSSAF ↗
+            </a>
+          </div>
+          <p class="text-xs text-muted-foreground italic pt-1">
+            💡 Hippodoc t'aide à y voir plus clair, mais seul un professionnel pourra te conseiller de manière définitive.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bandeau CTA (statique) -->
+    <section class="mx-auto mt-16 max-w-4xl px-4">
+      <div class="relative overflow-hidden rounded-2xl bg-white/90 backdrop-blur-xl border border-white/40 shadow-2xl p-8 sm:p-12 text-center">
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+          <div class="absolute -top-20 -left-20 w-56 h-56 bg-gradient-to-br from-hippo-300/30 to-hippo-500/15 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-tr from-emerald-300/25 to-teal-400/15 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative space-y-6">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold">
+            Prêt à <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">piloter ton activité</span><br class="hidden sm:block" /> de médecin ?
+          </h2>
+
+          <div class="flex flex-col items-center gap-3 pt-2">
+            <a
+              id="simulateur-cta-signup"
+              href={signupUrl}
+              data-track="cta_signup_simulateur_bottom"
+              class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 px-8 py-4 text-base sm:text-lg font-semibold text-white shadow-lg shadow-hippo-500/25 transition-all hover:from-hippo-600 hover:to-hippo-700 hover:shadow-xl"
+            >
+              Commencer gratuitement
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a
+              href="/tarifs"
+              data-track="cta_pricing_simulateur_bottom"
+              class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-hippo-600 transition-colors"
+            >
+              Voir les tarifs
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script>
+    // Analytics du CTA marketing statique (hors îlot React) — même événement que
+    // la SPA source (public_simulator_cta_clicked, cta_type: 'signup').
+    import { trackEvent } from '@/lib/analytics';
+
+    document.getElementById('simulateur-cta-signup')?.addEventListener('click', () => {
+      trackEvent('public_simulator_cta_clicked', { cta_type: 'signup' });
+    });
+  </script>
+</BaseLayout>

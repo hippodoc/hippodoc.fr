@@ -1,0 +1,131 @@
+---
+/**
+ * Portage statique de PremiumCtaSection.tsx (SPA source). Déviations
+ * volontaires :
+ *  - Copie personnalisée par profil sélectionné (`PROFIL_COPY`) : le
+ *    profil n'est plus connu côté page statique (îlot boussole autonome)
+ *    → on affiche systématiquement `FALLBACK_COPY` (copie générique de
+ *    la source, mot pour mot).
+ *  - Lien CTA principal "Démarrer mon essai gratuit 30 jours" : la source
+ *    pointait vers `/essai` (interne SPA) → changé vers
+ *    `${APP_URL}/auth?tab=signup` (consigne de portage).
+ *  - `trackEvent(...)` sur clic → attributs `data-track` (PostHog
+ *    autocapture, cf. Header.astro), pas de handler JS.
+ *  - `motion.div` (framer-motion, whileInView) → markup brut.
+ */
+import { ArrowRight, Wand2, Calculator, Check, TrendingUp } from 'lucide-react';
+import { APP_URL } from '@/lib/site';
+
+const badge = "Quel que soit ton mode d'exercice";
+const subtitle = 'URSSAF, CARMF et impôts consolidés à chaque encaissement.';
+
+const BENEFICES = [
+  'Charges & amortissements suivis',
+  '2035, 2042-C-PRO & DSFU pré-remplies',
+  'Factures, contrats, statistiques & prévisionnel intégrés',
+];
+---
+
+<section id="cta-premium" class="py-12 md:py-16 scroll-mt-20" aria-labelledby="cta-premium-title">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-hippo-600 via-hippo-700 to-blue-900 p-px shadow-2xl shadow-hippo-900/30">
+      <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/25 via-transparent to-cyan-300/15 opacity-70 pointer-events-none" />
+
+      <div class="relative rounded-[calc(1.5rem-1px)] bg-gradient-to-br from-hippo-600 via-hippo-700 to-blue-900 px-5 py-10 sm:px-8 md:px-12 md:py-14 overflow-hidden">
+        <div class="absolute -top-32 -right-24 w-[28rem] h-[28rem] bg-cyan-300/20 rounded-full blur-[120px] pointer-events-none" />
+        <div class="absolute -bottom-32 -left-24 w-80 h-80 bg-hippo-400/25 rounded-full blur-[100px] pointer-events-none" />
+
+        <div class="relative space-y-7 md:space-y-9">
+          <div class="flex items-center justify-center">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-[11px] font-semibold text-white uppercase tracking-wider ring-1 ring-white/25">
+              <Wand2 className="h-3 w-3" />
+              {badge}
+            </div>
+          </div>
+
+          <div class="text-center space-y-3 max-w-3xl mx-auto">
+            <h2 id="cta-premium-title" class="text-[26px] leading-[1.15] sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
+              Ton Super-Net,<br class="sm:hidden" /> calculé en temps réel.
+            </h2>
+            <p class="text-sm sm:text-base md:text-lg text-white/85 leading-relaxed max-w-xl mx-auto">
+              {subtitle}
+            </p>
+          </div>
+
+          {/* Mockup statique du Super-Net — preuve visuelle, pas de données user */}
+          <div class="relative max-w-md mx-auto w-full">
+            <div class="absolute -inset-px rounded-2xl bg-gradient-to-br from-cyan-200/30 via-white/10 to-transparent blur-sm pointer-events-none" />
+            <div class="relative rounded-2xl bg-white/[0.08] backdrop-blur-md ring-1 ring-white/20 p-5 sm:p-6 shadow-2xl shadow-black/20">
+              <div class="flex items-center justify-between mb-4">
+                <div class="text-[11px] font-semibold uppercase tracking-wider text-white/70">
+                  Super-Net 2026
+                </div>
+                <div class="inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-200">
+                  <span class="relative flex h-1.5 w-1.5">
+                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+                    <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                  </span>
+                  Mis à jour à l'instant
+                </div>
+              </div>
+
+              <div class="space-y-1.5 font-mono text-[13px] sm:text-sm">
+                <div class="flex items-baseline justify-between gap-3"><span class="text-white/85">Recettes</span><span class="tabular-nums text-white">82 400 €</span></div>
+                <div class="flex items-baseline justify-between gap-3"><span class="text-white/65">− URSSAF</span><span class="tabular-nums text-white/75">−12 100 €</span></div>
+                <div class="flex items-baseline justify-between gap-3"><span class="text-white/65">− CARMF</span><span class="tabular-nums text-white/75">−8 600 €</span></div>
+                <div class="flex items-baseline justify-between gap-3"><span class="text-white/65">− Impôts</span><span class="tabular-nums text-white/75">−14 200 €</span></div>
+              </div>
+
+              <div class="my-3 h-px bg-white/15" />
+
+              <div class="flex items-baseline justify-between">
+                <span class="text-sm sm:text-base font-semibold text-white">Super-Net</span>
+                <span class="font-mono text-xl sm:text-2xl font-bold text-cyan-200 tabular-nums">
+                  47 500 €
+                </span>
+              </div>
+              <div class="mt-1 flex items-center justify-end gap-1 text-[11px] text-emerald-200">
+                <TrendingUp className="h-3 w-3" />
+                +1 240 € ce mois
+              </div>
+            </div>
+          </div>
+
+          <ul class="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center sm:justify-center gap-2 sm:gap-x-5 sm:gap-y-2 max-w-3xl mx-auto">
+            {BENEFICES.map((b) => (
+              <li class="flex items-center gap-2 text-[13px] sm:text-sm text-white/90">
+                <Check className="h-4 w-4 text-cyan-200 shrink-0" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+            <a
+              href={`${APP_URL}/auth?tab=signup`}
+              data-track="guide_declarations_cta_essai"
+              aria-label="Démarrer mon essai gratuit Hippodoc 30 jours"
+              class="group inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-4 text-[15px] sm:text-base font-semibold text-hippo-700 bg-white hover:bg-white rounded-xl transition-all shadow-xl shadow-black/25 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.99] min-h-[52px] w-full sm:w-auto no-underline"
+            >
+              Démarrer mon essai gratuit 30 jours
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </a>
+            <a
+              href="/simulateur"
+              data-track="guide_declarations_cta_simulateur"
+              aria-label="Tester le simulateur public sans inscription"
+              class="inline-flex items-center justify-center gap-2 px-6 py-4 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-xl transition-all ring-1 ring-white/30 hover:ring-white/50 backdrop-blur-sm min-h-[52px] w-full sm:w-auto no-underline"
+            >
+              <Calculator className="h-4 w-4" />
+              Tester le simulateur
+            </a>
+          </div>
+
+          <p class="text-center text-[11px] sm:text-xs text-white/70">
+            30 jours offerts · Sans engagement · Données hébergées en France
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
