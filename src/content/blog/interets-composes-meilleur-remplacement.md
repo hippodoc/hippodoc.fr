@@ -48,6 +48,16 @@ slides:
     alt: "En résumé : commence tôt, reste constant, choisis le bon support"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- Sur **300 €/mois pendant 30 ans** (108 000 € versés), le résultat va de **70 k€** en compte courant à **366 k€** en ETF Monde en PEA (~7 %/an) : seul le support change.
+- Commencer à **25 ans** plutôt qu'à **35 ans** transforme 144 k€ versés en **788 k€** à 65 ans au lieu de 366 k€ pour 108 k€ versés : **10 ans d'attente coûtent ~422 k€**.
+- Pour viser **1 million d'euros à 65 ans**, il faut verser **380 €/mois à 25 ans** contre **3 150 €/mois à 50 ans**, soit un effort multiplié par **8**.
+- Avec la règle des 72, ton capital double en **10 ans** sur un ETF Monde (~7 %) contre **30 ans** sur un Livret A (2,4 % en 2026) : un résultat **×4** sur 30 ans.
+- Un ETF Monde comme le MSCI World regroupe environ **1 500 entreprises** dans **23 pays**, avec des frais très faibles (~**0,20 %/an**) mais un capital non garanti — à n'investir que si tu peux le laisser dormir **10 ans minimum**.
+:::
+
 Tu es interne, remplaçant, ou jeune thésé. Tu enchaînes les gardes à 300 € la nuit, les remplas à 600 € la journée. Et quelque part dans ta tête, une voix te dit : « *il faudrait que je mette de l'argent de côté un jour.* »
 
 Ce jour, c'est aujourd'hui.

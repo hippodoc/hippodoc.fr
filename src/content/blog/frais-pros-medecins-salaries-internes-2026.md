@@ -69,6 +69,16 @@ slides:
     alt: "Tout ça, Hippodoc le fait pour toi — l'outil qui suit tes frais pros"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- Passer aux frais réels peut te faire économiser **≈ 1 500 € d'impôt par an**, l'équivalent de près de trois semaines de salaire net — et **90 % des internes l'ignorent**.
+- Le forfait automatique de 10 % est encadré par un **plancher de 509 €** et un **plafond de 14 555 €** pour la déclaration 2026 ; les frais réels ne valent le coup que si tes dépenses justifiées dépassent ce forfait.
+- Exemple de Léa (interne, 30 000 € de salaire, 30 km du CHU, 12 000 km/an en 5 CV) : ses frais réels totalisent **7 784 €**, pour un gain d'impôt d'environ **1 435 €** à TMI 30 %.
+- Le barème kilométrique 2026 pour une 5 CV thermique au-delà de 5 000 km est **(km × 0,357) + 1 395 €**, et au-delà de **40 km aller** sans motif, seuls les 40 premiers km sont retenus.
+- Tu peux faire une déclaration corrective sur **3 ans** (revenus 2022, 2023, 2024) si tu as coché 10 % par défaut à tort : plusieurs médecins ont récupéré **1 000 à 2 000 €** rétroactivement.
+:::
+
 ≈ **1 500 € d'impôt en moins par an**. Près de **trois semaines de salaire net**. Et **90 % des internes l'ignorent**.
 
 Si tu es interne au CHU, docteur junior, assistant, praticien hospitalier (PH), contractuel ou médecin salarié dans un centre de santé, tu coches probablement le forfait de 10 % sur ta déclaration de revenus chaque année par défaut. Et c'est souvent une erreur.

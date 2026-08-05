@@ -38,6 +38,16 @@ relatedArticles:
   - "pdsa-exoneration-gardes-regulees"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un abattement forfaitaire de **34 %** ; si tes charges réelles dépassent ce seuil de **34 %** des recettes, le réel (2035) devient généralement plus avantageux.
+- Le barème kilométrique 2026 pour une 5 CV donne **5 679 € déductibles** pour 12 000 km pros, sans conserver le moindre ticket essence.
+- Un repas se déduit à hauteur de **(prix payé, plafonné à 21,40 €) − 5,50 €**, soit une déduction maximale de **15,90 €** pour les revenus 2026 (21,10 € / 5,45 € / 15,65 € pour la déclaration en cours).
+- Le médecin secteur 1 peut cumuler trois déductions au réel : le **forfait 2 %**, la **déduction Groupe III**, et la **déduction complémentaire de 3 %**.
+- Le PER se déduit du **revenu global** (2042), pas du résultat BNC, dans la limite d'un disponible calculé sur le **PASS 2026 fixé à 48 060 €** ; le chèque-vacances ANCV est plafonné fiscalement à environ **1 823 €** et socialement à environ **547 €** en 2026.
+:::
+
 À l'hôpital, on faisait tout pour toi. La paie tombait, les charges étaient payées, le matériel était fourni, le repas au self était subventionné. Tu cochais « salarié » dans tous les formulaires de la vie courante et c'était fini.
 
 En libéral, c'est toi qui décides ce que tu déduis. Et c'est précisément là que se joue, chaque année, **plusieurs milliers d'euros** entre le médecin qui s'y prend bien et celui qui passe tout au pifomètre.

@@ -64,6 +64,16 @@ slides:
     alt: "Un co-interne se lance en rempla ? Partage-lui ce guide — Hippodoc"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- En micro-BNC, tu déclares le **brut encaissé** en case **5HQ** (ou 5IQ) : l'administration applique automatiquement un abattement de **34 %**, sans retirer URSSAF, CARMF ou frais.
+- Le micro-BNC s'applique si tes recettes 2023 ou 2024 n'ont pas dépassé **77 700 €**.
+- Le **RSPM** taxe tes cotisations sociales à **13,5 %** jusqu'à **19 000 €** d'honoraires, puis **21,2 %** sur la fraction entre 19 000 € et 38 000 € — calculées sur le brut, pas sur le revenu après abattement fiscal.
+- La PDSA peut être partiellement exonérée d'impôt (article 151 ter du CGI), dans la limite de **60 jours par an**, mais seulement pour les rémunérations forfaitaires d'astreinte et les majorations spécifiques régulées — jamais pour les actes de base.
+- Exemple donné : un interne célibataire avec **28 000 €** de salaire CHU et **12 000 €** de rétrocessions atteint un revenu imposable d'environ **33 120 €** pour un impôt brut estimé autour de **3 040 €**.
+:::
+
 Tu es interne en CHU.\
 En 2025, tu as fait des remplacements libéraux pendant tes vacances, tes week-ends, tes gardes ou tes périodes off.
 

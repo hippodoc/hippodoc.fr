@@ -41,6 +41,16 @@ slides:
     alt: "Récap selon ton profil — Tout se cumule, d'où l'écart avec la métropole"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- L'abattement d'IR DOM est de **30 % (plafonné à 2 450 €)** en Guadeloupe/Martinique/Réunion, et de **40 % (plafonné à 4 050 €)** en Guyane et à Mayotte — une réduction d'impôt, pas une exonération du bénéfice du cabinet.
+- Le régime social ultramarin exonère les indépendants à **100 %** pendant **24 mois** (sous ~**52 866 €** de revenu annualisé en 2026), puis **75 %** jusqu'à fin de 3ᵉ année, puis **50 %** à partir de la 4ᵉ ; la **CARMF complémentaire reste due**.
+- La **LODEOM** exonère totalement les charges patronales jusqu'à **1,3 SMIC annuel**, avec extinction à **2,2 SMIC**.
+- La **ZFANG** exclut les activités libérales et BNC dans les DROM historiques — c'est un faux ami pour un cabinet médical classique.
+- Depuis la loi du **11 août 2025**, **Mayotte** bénéficie d'une zone franche globale avec **abattement de 100 % sur les bénéfices pendant 5 ans** (2025-2029), plafonnée à **300 000 €** par 12 mois, ce qui en fait le territoire fiscal le plus favorable de France pour un médecin libéral.
+:::
+
 Tu as sans doute déjà entendu la phrase magique : « *Installe-toi en Guadeloupe ou à La Réunion, t'auras zéro impôt pendant 5 ans !* » Désolé de casser le mythe : **c'est faux**. Il y a bien de vrais avantages DROM pour un médecin, mais ils ne fonctionnent pas comme tu crois, et surtout ils dépendent massivement de ton mode d'exercice : libéral BNC, SEL, remplaçant, salarié, ou cabinet avec des salariés.
 
 Cette fiche fait le tri, à jour pour 2026, avec un focus particulier sur **Mayotte** qui a changé complètement de dimension depuis la loi de finances 2025.
