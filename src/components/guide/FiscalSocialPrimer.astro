@@ -1,0 +1,128 @@
+---
+/**
+ * Portage statique de FiscalSocialPrimer.tsx (SPA source, variante non
+ * compacte — celle utilisée dans Zone 1 de GuideDeclarationsBody).
+ * Déviations volontaires :
+ *  - Toggle ouvert/fermé persisté en `localStorage` (JS) → `<details>`
+ *    natif, **ouvert par défaut** (meilleur pour le SEO : le contenu
+ *    pédagogique est visible d'emblée dans le HTML plutôt que masqué tant
+ *    que le visiteur n'a pas cliqué).
+ *  - Bouton "Voir la fiche dédiée" (`onClick` → ouvre la fiche RO-014 en
+ *    aval) → ancre `<a href="#regle-RO-014">`.
+ *  - `motion.section` (framer-motion) → `<section>` brute.
+ */
+import { Landmark, Stethoscope, ArrowRight, ChevronDown } from 'lucide-react';
+---
+
+<section class="py-3" aria-label="Rappel pédagogique : régime fiscal et régime social">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="rounded-2xl bg-white/90 dark:bg-slate-800/80 backdrop-blur border border-slate-200/60 dark:border-slate-700/60 shadow-sm overflow-hidden">
+      <details class="group" open>
+        <summary class="w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-3 hover:bg-slate-50/60 dark:hover:bg-slate-700/40 transition-colors text-left cursor-pointer list-none">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="flex items-center -space-x-1.5 flex-shrink-0">
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-hippo-500 text-white ring-2 ring-white dark:ring-slate-800">
+                <Landmark className="h-3 w-3" />
+              </span>
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white ring-2 ring-white dark:ring-slate-800">
+                <Stethoscope className="h-3 w-3" />
+              </span>
+            </div>
+            <h2 class="text-sm sm:text-base font-semibold text-foreground truncate">
+              Fiscal ≠ social : 2 mondes, 2 déclarations
+            </h2>
+          </div>
+          <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 transition-transform group-open:rotate-180" />
+        </summary>
+
+        <div class="border-t border-slate-200/60 dark:border-slate-700/60">
+          <p class="px-4 sm:px-5 pt-3 pb-1 text-xs text-muted-foreground leading-relaxed">
+            Une déclaration calcule <strong class="text-foreground">combien tu dois aux impôts</strong>,
+            l'autre calcule <strong class="text-foreground">combien tu dois à la Sécu et à la CARMF</strong>.
+            Deux administrations, deux formulaires, deux dates.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 sm:p-4">
+            <div class="rounded-xl border border-hippo-200/60 dark:border-hippo-800/50 bg-hippo-50/60 dark:bg-hippo-950/30 p-3 sm:p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-hippo-500 text-white shrink-0">
+                  <Landmark className="h-4 w-4" />
+                </div>
+                <div class="flex-1 min-w-0 text-[11px] uppercase tracking-wide font-semibold text-hippo-700 dark:text-hippo-300">
+                  Côté impôts
+                </div>
+                <span class="shrink-0 rounded-full border border-hippo-200 bg-hippo-50 px-1.5 py-0.5 text-[10px] uppercase tracking-wide font-semibold text-hippo-700 dark:border-hippo-800 dark:bg-hippo-950/50 dark:text-hippo-300">
+                  Fiscal
+                </span>
+              </div>
+              <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-xs text-foreground leading-relaxed">
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-hippo-700/70 dark:text-hippo-300/70">Qui ?</dt>
+                <dd><strong>DGFiP</strong> · impots.gouv.fr</dd>
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-hippo-700/70 dark:text-hippo-300/70">Régime ?</dt>
+                <dd>Micro-BNC <span class="text-muted-foreground">ou</span> BNC réel</dd>
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-hippo-700/70 dark:text-hippo-300/70">Tu remplis ?</dt>
+                <dd>
+                  <ul class="space-y-0.5 list-disc ml-3.5 marker:text-hippo-400">
+                    <li><strong>2042</strong> — déclaration principale</li>
+                    <li><strong>2042 C-PRO</strong> — case <strong>5HQ</strong> (micro) ou <strong>5QC</strong> (réel)</li>
+                    <li><strong>2035</strong> — liasse détaillée (réel uniquement)</li>
+                  </ul>
+                </dd>
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-hippo-700/70 dark:text-hippo-300/70">Pour ?</dt>
+                <dd>Calculer ton <strong>impôt sur le revenu</strong></dd>
+              </dl>
+            </div>
+
+            <div class="rounded-xl border border-emerald-200/60 dark:border-emerald-800/50 bg-emerald-50/60 dark:bg-emerald-950/30 p-3 sm:p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500 text-white shrink-0">
+                  <Stethoscope className="h-4 w-4" />
+                </div>
+                <div class="flex-1 min-w-0 text-[11px] uppercase tracking-wide font-semibold text-emerald-700 dark:text-emerald-300">
+                  Côté URSSAF + CARMF
+                </div>
+                <span class="shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] uppercase tracking-wide font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
+                  Social
+                </span>
+              </div>
+              <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-xs text-foreground leading-relaxed">
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-emerald-700/70 dark:text-emerald-300/70">Qui ?</dt>
+                <dd><strong>URSSAF</strong> + <strong>CARMF</strong></dd>
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-emerald-700/70 dark:text-emerald-300/70">Régime ?</dt>
+                <dd>
+                  PAMC <span class="text-muted-foreground">(≥ 38 k€)</span> <span class="text-muted-foreground">ou</span> RSPM{' '}
+                  <span class="text-muted-foreground">(&lt; 38 k€, remplaçants)</span>
+                </dd>
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-emerald-700/70 dark:text-emerald-300/70">Tu remplis ?</dt>
+                <dd>
+                  <strong>DSFU</strong> sur urssaf.fr<br />
+                  <span class="text-muted-foreground">cases <strong class="text-foreground">DSCS</strong>, <strong class="text-foreground">DSAV</strong>, <strong class="text-foreground">DSDE</strong>…</span>
+                </dd>
+                <dt class="text-[10px] uppercase tracking-wider font-semibold pt-0.5 text-emerald-700/70 dark:text-emerald-300/70">Pour ?</dt>
+                <dd>
+                  Calculer tes <strong>cotisations sociales</strong>
+                  <br />
+                  <span class="text-muted-foreground">(maladie, retraite CARMF, allocations…)</span>
+                </dd>
+              </dl>
+            </div>
+          </div>
+
+          <div class="px-4 sm:px-5 pb-3 -mt-1">
+            <p class="text-[11px] text-muted-foreground leading-relaxed">
+              Ces deux régimes sont{' '}
+              <strong class="text-foreground">indépendants</strong> : être en
+              micro-BNC ne te dispense pas de la DSFU si tu es au PAMC.{' '}
+              <a
+                href="#regle-RO-014"
+                class="inline-flex items-center gap-0.5 underline underline-offset-2 hover:text-slate-700 dark:hover:text-slate-200 font-medium"
+              >
+                Voir la fiche dédiée <ArrowRight className="h-3 w-3" />
+              </a>
+            </p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>

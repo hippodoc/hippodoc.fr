@@ -150,6 +150,19 @@ const videoSchema = {
   ogImageAlt="Hippodoc — Le cockpit financier des médecins"
   jsonLd={[SOFTWARE_APPLICATION_SCHEMA, websiteSchema, faqPageSchema, videoSchema]}
 >
+  <Fragment slot="head">
+    <!-- Préchargement de l'image LCP du Hero (AVIF) — mirroré depuis index.html de la source. -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      href="/lovable-uploads/hero-dashboard-4-960.avif"
+      imagesrcset="/lovable-uploads/hero-dashboard-4-640.avif 640w, /lovable-uploads/hero-dashboard-4-960.avif 960w, /lovable-uploads/hero-dashboard-4.avif 1920w"
+      imagesizes="(max-width: 768px) 100vw, 50vw"
+      fetchpriority="high"
+    />
+  </Fragment>
+
   <a
     href="#contenu-principal"
     class="fixed left-3 top-3 z-[100] -translate-y-24 rounded-md bg-background px-4 py-3 font-semibold text-foreground shadow-lg transition-transform focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-ring"

@@ -1,0 +1,147 @@
+---
+/**
+ * Portage statique de FlowChartSection.tsx (SPA source). Déviations
+ * volontaires (page 100 % statique, zéro JS hors îlot boussole) :
+ *  - Surlignage des cases selon le profil sélectionné / les codes calculés
+ *    par le wizard (`selectedProfil`, `wizardCaseCodes`) : supprimé — le
+ *    diagramme affiche toujours toutes les cases au même niveau visuel
+ *    (l'îlot boussole est autonome, il ne peut plus synchroniser cette
+ *    section statique).
+ *  - `onClick={() => scrollToCase(code)}` → ancre `<a href="#case-CODE">`.
+ */
+import { Banknote, FileText, HeartPulse, Building2, Map } from 'lucide-react';
+
+// Équivalent de `nodeStyle()` (source) : chaque case était un <button> — les boutons
+// sont `inline-block` par défaut, on le rend explicite pour l'ancre `<a>`.
+const nodeClass = 'inline-block px-3 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all bg-white border border-slate-200 shadow-sm hover:border-hippo-300 hover:shadow-md text-foreground dark:bg-slate-800 dark:border-slate-600 no-underline';
+// Variante pleine largeur utilisée par la colonne Social + les cases SEL (source : `w-full text-left ${nodeStyle(code)}`).
+const nodeClassFull = `block w-full text-left ${nodeClass}`;
+
+const socialNodes: Array<{ code: string; label: string; deprecated?: boolean }> = [
+  { code: 'DSCS', label: 'CA brut (pour le ratio)' },
+  { code: 'DSAV', label: 'Part conventionnée' },
+  { code: 'DSAU', label: 'Déclenche la PCC (S1)' },
+  { code: 'DSAW', label: 'Dépassements' },
+  { code: 'DSAT', label: 'EHPAD/HAD/SSIAD' },
+  { code: 'DSDE', label: 'RBS positif' },
+  { code: 'DSDG', label: 'RBS négatif (rare)' },
+  { code: 'DSCN', label: 'Chèques Vacances' },
+  { code: 'DSDX', label: 'IJ CPAM' },
+  { code: 'DSCZ', label: 'IJ Madelin reçues + AJPA' },
+  { code: 'DSEM', label: 'Épargne salariale (IS)' },
+  { code: 'DSCO', label: 'Supprimée 2026 (→ RBS)', deprecated: true },
+  { code: 'DSFA', label: 'PDSA exonérée (micro-BNC)' },
+];
+
+const selNodes = [
+  { code: 'DSDI', label: 'Gérant société IS' },
+  { code: 'DSEC', label: 'Rémunération brute' },
+  { code: 'DSSC', label: 'Dividendes > 10%' },
+];
+---
+
+<section id="flux" class="py-12 md:py-16 scroll-mt-20">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="mb-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
+        <Map className="h-7 w-7 text-hippo-500" /> Le parcours de ta déclaration
+      </h2>
+      <p class="text-muted-foreground mt-1">De tes recettes jusqu'aux cotisations sociales</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      {/* Column 1: Recettes */}
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center dark:bg-blue-900/40 dark:text-blue-300">
+            <Banknote className="h-4 w-4" />
+          </div>
+          <h3 class="font-semibold text-sm text-foreground">Recettes</h3>
+        </div>
+        <div class="p-4 rounded-xl bg-blue-50/50 border border-blue-200/40 space-y-2 dark:bg-blue-950/20 dark:border-blue-800/30">
+          <div class="text-sm font-medium text-blue-700 dark:text-blue-300">CA Brut total</div>
+          <div class="text-xs text-blue-600/70 dark:text-blue-400/70">− Rétrocessions versées <span class="opacity-70">(réel L21/BG · micro pré-déduit)</span></div>
+          <div class="text-xs text-blue-600/70 dark:text-blue-400/70">− Redevance collaboration <span class="opacity-70">(réel L16/BG · micro pré-déduit)</span></div>
+          <div class="text-xs text-blue-600/70 dark:text-blue-400/70">− Revenus exonérés (ZFU + PDSA)</div>
+          <div class="border-t border-blue-200/40 pt-1.5 text-sm font-semibold text-blue-800 dark:text-blue-200 dark:border-blue-700/40">
+            = CA Net déclarable
+          </div>
+        </div>
+        <div class="text-center text-slate-300 dark:text-muted-foreground">↓</div>
+      </div>
+
+      {/* Column 2: Fiscal */}
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center dark:bg-emerald-900/40 dark:text-emerald-300">
+            <FileText className="h-4 w-4" />
+          </div>
+          <h3 class="font-semibold text-sm text-foreground">Fiscal (IR)</h3>
+        </div>
+        <div class="space-y-2">
+          <div class="p-3 rounded-lg bg-emerald-50/50 border border-emerald-200/40 dark:bg-emerald-950/20 dark:border-emerald-800/30">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-600 dark:text-emerald-400 mb-1.5">Micro-BNC</p>
+            <a href="#case-5HQ" class={nodeClass}><span class="font-mono font-bold">5HQ</span> — CA déclarable</a>
+          </div>
+          <div class="p-3 rounded-lg bg-emerald-50/50 border border-emerald-200/40 dark:bg-emerald-950/20 dark:border-emerald-800/30">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-600 dark:text-emerald-400 mb-1.5">Réel BNC</p>
+            <div class="space-y-1.5">
+              <a href="#case-2035" class={nodeClass}><span class="font-mono font-bold">2035</span> — Liasse fiscale</a>
+              <a href="#case-CI" class={nodeClass}><span class="font-mono font-bold">CI</span> — Divers à déduire (PDSA)</a>
+              <a href="#case-5QC" class={nodeClass}><span class="font-mono font-bold">5QC</span> — Bénéfice net</a>
+            </div>
+          </div>
+          <div class="p-3 rounded-lg bg-emerald-50/50 border border-emerald-200/40 dark:bg-emerald-950/20 dark:border-emerald-800/30">
+            <p class="text-[10px] uppercase tracking-wide text-emerald-600 dark:text-emerald-400 mb-1.5">Cases 2035-A déductibles</p>
+            <div class="space-y-1.5">
+              <a href="#case-BT" class={nodeClass}><span class="font-mono font-bold">BT</span> — Cot. IJ CPAM (0,30 %)</a>
+              <a href="#case-BU" class={nodeClass}><span class="font-mono font-bold">BU</span> — Cot. PER/Madelin</a>
+            </div>
+          </div>
+          <a href="#case-5HP" class={nodeClass}><span class="font-mono font-bold">5HP</span> — Exonéré ZFU/ZRR/JEI (net)</a>
+          <div class="pt-1 space-y-1.5">
+            <p class="text-[10px] uppercase tracking-wide text-muted-foreground">Autres cases 2042</p>
+            <a href="#case-1AS" class={nodeClass}><span class="font-mono font-bold">1AS</span> — IJ CARMF retraite</a>
+            <a href="#case-1AZ" class={nodeClass}><span class="font-mono font-bold">1AZ</span> — IJ CARMF invalidité</a>
+            <a href="#case-1AJ" class={nodeClass}><span class="font-mono font-bold">1AJ</span> — Salaires (gardes hospitalières)</a>
+            <a href="#case-6QS" class={nodeClass}><span class="font-mono font-bold">6QS</span> — Info plafond PER</a>
+            <a href="#case-8UZ" class={nodeClass}><span class="font-mono font-bold">8UZ</span> — CESU pré-financés</a>
+            <a href="#case-4BE" class={nodeClass}><span class="font-mono font-bold">4BE</span> — Loyer pro domicile</a>
+          </div>
+        </div>
+      </div>
+
+      {/* Column 3: Social */}
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center dark:bg-amber-900/40 dark:text-amber-300">
+            <HeartPulse className="h-4 w-4" />
+          </div>
+          <h3 class="font-semibold text-sm text-foreground">Social (DSFU)</h3>
+        </div>
+        <div class="space-y-1.5">
+          {socialNodes.map(n => (
+            <a
+              href={`#case-${n.code}`}
+              title={n.deprecated ? 'Case supprimée pour les revenus 2026 — réintégrée via le RBS (DSDE/DSDG).' : undefined}
+              class={`${nodeClass} ${n.deprecated ? 'line-through opacity-60' : ''}`}
+            >
+              <span class="font-mono font-bold">{n.code}</span> — {n.label}
+            </a>
+          ))}
+          {/* SEL-specific cases */}
+          <div class="pt-2">
+            <p class="text-[10px] uppercase tracking-wide text-muted-foreground mb-1.5 flex items-center gap-1">
+              <Building2 className="h-3 w-3" /> SELARL / SELAS
+            </p>
+            {selNodes.map(n => (
+              <a href={`#case-${n.code}`} class={`${nodeClass} mb-1`}>
+                <span class="font-mono font-bold">{n.code}</span> — {n.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
