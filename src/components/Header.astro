@@ -8,13 +8,13 @@ import { APP_URL } from '@/lib/site';
  */
 
 const navItems = [
-  { href: '/', label: 'Accueil' },
-  { href: '/simulateur', label: 'Simulateur' },
-  { href: '/guide-declarations', label: 'Guide déclarations' },
-  { href: '/comparatif', label: 'Comparatif' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/tarifs', label: 'Tarifs' },
+  { href: '/', label: 'Accueil', ph: 'landing_nav_accueil' },
+  { href: '/simulateur', label: 'Simulateur', ph: 'landing_resource_simulateur' },
+  { href: '/guide-declarations', label: 'Guide déclarations', ph: 'landing_resource_guide-declarations' },
+  { href: '/comparatif', label: 'Comparatif', ph: 'landing_resource_comparatif' },
+  { href: '/blog', label: 'Blog', ph: 'landing_resource_blog' },
+  { href: '/faq', label: 'FAQ', ph: 'landing_resource_faq' },
+  { href: '/tarifs', label: 'Tarifs', ph: 'landing_nav_pricing' },
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -37,6 +37,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
       {navItems.map((item) => (
         <a
           href={item.href}
+          data-ph={item.ph}
           aria-current={currentPath === item.href ? 'page' : undefined}
           class:list={[
             'inline-flex min-h-11 items-center text-[15px] font-medium transition-colors hover:text-hippo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
@@ -52,6 +53,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
       <div class="hidden items-center gap-2 lg:flex">
         <a
           href={`${APP_URL}/auth`}
+          data-ph="landing_login_header"
           class="inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-[15px] font-semibold text-hippo-800 transition-colors hover:bg-hippo-50 hover:text-hippo-600"
         >
           Connexion
@@ -69,6 +71,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
       <input type="checkbox" id="mobile-menu-toggle" class="peer sr-only" />
       <label
         for="mobile-menu-toggle"
+        data-ph="landing_mobile_menu_open"
         class="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-hippo-800 transition-colors hover:bg-hippo-50 hover:text-hippo-600 lg:hidden"
         aria-label="Ouvrir le menu"
       >
@@ -93,6 +96,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
               {navItems.map((item) => (
                 <a
                   href={item.href}
+                  data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`}
                   class="flex min-h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold text-hippo-800 transition-colors hover:bg-hippo-50 hover:text-hippo-600"
                 >
                   {item.label}

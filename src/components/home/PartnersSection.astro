@@ -70,6 +70,7 @@ const ecosystem = [
       {ecosystem.map((partner, index) => (
         <a
           href={partner.url}
+          data-ph={`landing_partner_${partner.name.toLowerCase().replace(/\s+/g, '_')}`}
           target="_blank"
           rel="noopener noreferrer"
           class:list={[

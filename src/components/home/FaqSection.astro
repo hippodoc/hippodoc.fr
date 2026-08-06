@@ -86,8 +86,8 @@ const faqItems = [
       <div class="space-y-4">
         {faqItems.map((item, index) => (
           <details class="group rounded-2xl border border-white/60 bg-white/70 px-6 shadow-lg shadow-hippo-100/10 backdrop-blur-xl transition-all duration-300 open:border-hippo-200/60 open:bg-white/90 open:shadow-xl">
-            <summary class="flex cursor-pointer list-none items-center gap-4 py-5 font-semibold text-hippo-800">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-hippo-100 to-hippo-50 text-sm font-bold text-hippo-600 shadow-sm group-open:from-hippo-500 group-open:to-hippo-600 group-open:text-white">
+            <summary data-ph={`landing_faq_${index + 1}`} class="flex cursor-pointer list-none items-center gap-4 py-5 font-semibold text-hippo-800">
+              <span aria-hidden="true" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-hippo-100 to-hippo-50 text-sm font-bold text-hippo-600 shadow-sm group-open:from-hippo-500 group-open:to-hippo-600 group-open:text-white">
                 {index + 1}
               </span>
               <span class="flex-1 text-base md:text-lg">{item.question}</span>
@@ -101,6 +101,7 @@ const faqItems = [
       <div class="mt-12 text-center">
         <a
           href="/faq"
+          data-ph="landing_faq_all"
           class="inline-flex min-h-11 items-center gap-3 rounded-full border border-hippo-200/60 bg-white/80 px-6 py-3.5 font-semibold text-hippo-700 shadow-lg shadow-hippo-100/20 backdrop-blur-sm transition-all hover:shadow-xl"
         >
           <span>Voir toutes les questions</span>

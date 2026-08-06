@@ -215,7 +215,25 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
 5. **Surveillance 2 semaines** : trafic PostHog (dip attendu court), couverture GSC,
    erreurs 404/redirections dans les logs Vercel.
 
-## 11. Résultats de vérification (build final)
+## 11. Synchronisation post-migration (source mise à jour)
+
+La source a reçu 33 commits après la migration initiale (snapshot `e024235` → `600f3c1`,
+« Corrigé tracking & responsive »). Analyse du diff marketing :
+
+- **Portés ici** : les attributs d'instrumentation PostHog `data-ph` / `data-track-plan|period|promo`
+  (header, footer, FAQ accueil, tarifs accueil, offres spéciales, toggle comparatif, profils
+  parcours, partenaires) + 2 retouches a11y (`aria-hidden` badge FAQ). Convention de nommage
+  source conservée (`landing_nav_*`, `landing_resource_*`, `landing_footer_*`, `landing_faq_*`…).
+- **Sans objet en statique** (non portés) : LandingSectionBoundary (error boundaries React),
+  refactors Suspense/lazy + wrappers `data-landing-section`, garde `reduceMotion` framer-motion
+  (aucune animation JS ici), timeout de buffering vidéo (pas de lecteur vidéo ici),
+  try/catch du check parrainage Supabase (pas d'appel Supabase sur l'accueil statique),
+  retouches CookieConsent (site public cookieless sans bannière).
+- **Non instrumentables en statique** : `landing_testimonial_next/previous` (le carrousel est
+  un défilement CSS sans boutons) et `landing_pricing_period_*` (les deux offres sont
+  affichées côte à côte, sans toggle).
+
+## 12. Résultats de vérification (build final)
 
 - `astro build` : **52 pages**, zéro erreur.
 - Crawl du sitemap (`scripts/verify-site.mjs`) : **51 URLs** (52 pages − `/essai` noindex) —

@@ -136,6 +136,7 @@ const PROFILES = [
             <label
               for={`parcours-${profile.id}`}
               data-profile={profile.id}
+              data-ph={`landing_journey_profile_${profile.id}`}
               class:list={[
                 'tab-label flex min-h-[44px] min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-600 transition-all duration-300 hover:border-hippo-300 hover:text-hippo-700 sm:px-4 sm:text-sm md:flex-shrink-0 md:justify-start md:whitespace-nowrap',
                 i === PROFILES.length - 1 && PROFILES.length % 2 === 1 ? 'max-md:col-span-2' : '',
