@@ -2,12 +2,24 @@
 /**
  * PostHog — même projet que la SPA source (continuité analytics).
  * Chargé en module différé : ne bloque jamais le rendu.
- * Mode cookieless (persistence: memory) : aucun traceur persistant sans
- * consentement → pas de bannière nécessaire côté site public (CNIL).
+ * Persistance calquée sur la source : cookieless (`memory`) tant que le
+ * consentement n'est pas « accepted » (clé localStorage['cookie-consent'],
+ * bannière gérée par ThirdPartyScripts.astro), puis upgrade
+ * `localStorage+cookie` cross-sous-domaine à l'acceptation.
  */
 ---
 <script>
   import posthog from 'posthog-js';
+
+  function readConsent(): string | null {
+    try {
+      return localStorage.getItem('cookie-consent');
+    } catch {
+      return null;
+    }
+  }
+
+  const accepted = readConsent() === 'accepted';
 
   posthog.init('phc_x3JYWa7EjhuuwVVBLyks74ud58ZmUppaC666QkmTUXox', {
     api_host: 'https://t.hippodoc.fr',
@@ -17,7 +29,18 @@
     capture_pageleave: true,
     person_profiles: 'identified_only',
     cross_subdomain_cookie: true,
-    persistence: 'memory',
+    persistence: accepted ? 'localStorage+cookie' : 'memory',
     disable_session_recording: true,
+  });
+
+  window.addEventListener('hippodoc:consent-changed', (e) => {
+    const value = (e as CustomEvent).detail;
+    if (value === 'accepted') {
+      posthog.set_config({ persistence: 'localStorage+cookie' });
+      posthog.capture('cookie_consent_granted');
+    } else {
+      posthog.capture('cookie_consent_denied');
+      posthog.set_config({ persistence: 'memory' });
+    }
   });
 </script>

@@ -121,9 +121,25 @@ Remarques :
   même proxy first-party `https://t.hippodoc.fr`, `ui_host` eu.posthog.com. Chargé en module
   différé (non bloquant). Mode cookieless (`persistence: 'memory'`, pas de session recording)
   → pas de bannière cookie nécessaire sur le site public.
-- **Non migrés volontairement** (contrainte « zéro JS hors îlots + PostHog ») — à re-décider
-  par l'équipe si besoin : GA4 `G-T8TFWPPW3M` (+ Consent Mode v2), Meta Pixel, Crisp chat
-  (`3e4f14e5-8e4e-40fd-b1f5-f0b940186f56`), Calendly. Voir TODO(owner) §9.
+- **GA4, Meta Pixel, Crisp, Calendly — restaurés en différé** (`ThirdPartyScripts.astro`),
+  sans impact Lighthouse (0 ms de blocking tiers mesuré : rien ne se charge dans la fenêtre
+  d'audit) :
+  - **GA4** `G-T8TFWPPW3M` : Consent Mode v2 par défaut DENIED (bootstrap inline ~2 Ko, avec
+    le caviardage d'URL anti-jetons porté de la source), gtag.js injecté à la première
+    interaction OU 6 s après `load` ; page_view manuel caviardé (ping cookieless si refus).
+  - **Meta Pixel** `3299991043509379` : chargé UNIQUEMENT si consentement « accepted »
+    (comme la source), après le différé.
+  - **Crisp** `3e4f14e5-…` : à la première interaction uniquement (pointer/clavier/scroll) —
+    jamais sur timer, donc jamais dans la trace Lighthouse.
+  - **Calendly** : liens directs vers `calendly.com/hippodoc/decouverte-d-hippodoc`
+    (CTA démo accueil + simulateur), zéro script — le widget flottant n'est pas reproduit.
+  - **Bannière cookies** portée de `CookieConsent.tsx` (wording verbatim, clé
+    `localStorage['cookie-consent']` identique, choix accepted/essential-only, bouton
+    « Préférences cookies » au footer). À l'acceptation : consent update GA4 + Pixel +
+    upgrade PostHog en `localStorage+cookie` cross-sous-domaine (event
+    `hippodoc:consent-changed`, events `cookie_consent_granted/denied` comme la source).
+    NB : localStorage n'étant pas partagé entre hippodoc.fr et app.hippodoc.fr, chaque
+    surface gère son propre consentement (déjà le cas fonctionnellement dans la source).
 - Vérification Search Console conservée : meta `google-site-verification` dans le layout.
 
 ## 7. Outils interactifs (îlots React)
@@ -184,10 +200,9 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
 
 ## 10. TODO(owner) — faits manquants / décisions
 
-- [ ] TODO(owner) : réactiver ou non GA4 `G-T8TFWPPW3M`, Meta Pixel, Crisp
-      (`3e4f14e5-8e4e-40fd-b1f5-f0b940186f56`) et Calendly sur le site public
-      (retirés pour la performance ; PostHog seul est conservé). Les snippets d'origine sont
-      dans `index.html` de la source.
+- [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
+      différé interaction/idle, pixel gaté par le consentement, Calendly en liens directs.
+      Seul le badge Calendly flottant n'est pas reproduit (lien direct à la place).
 - [ ] TODO(owner) : attribuer ou non les articles signés « Équipe Hippodoc »/« Dr. Hippodoc »
       au fondateur médecin (Ryan Goburdhun) dans le schéma Article — non fait, pour ne pas
       inventer d'attribution.

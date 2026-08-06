@@ -1,6 +1,7 @@
 ---
 import '@/styles/global.css';
 import PostHog from '@/components/PostHog.astro';
+import ThirdPartyScripts from '@/components/ThirdPartyScripts.astro';
 import { SITE_URL, DEFAULT_OG_IMAGE, ORGANIZATION_SCHEMA } from '@/lib/site';
 
 interface Props {
@@ -89,5 +90,6 @@ const allJsonLd = [ORGANIZATION_SCHEMA, ...jsonLd];
   <body>
     <slot />
     <PostHog />
+    <ThirdPartyScripts />
   </body>
 </html>
