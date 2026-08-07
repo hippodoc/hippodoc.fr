@@ -3,19 +3,27 @@ import { APP_URL } from '@/lib/site';
 
 /**
  * Header global — style « glass » porté de src/components/landing/Header.tsx.
- * Navigation à plat (spec migration) : Accueil, Simulateur, Guide déclarations,
- * Comparatif, Blog, FAQ, Tarifs + CTA. Menu mobile 100 % CSS (checkbox), zéro JS.
+ * Structure de la source restaurée : liens principaux + dropdown « Plus »,
+ * mais 100 % CSS (hover/focus-within) : les liens du dropdown sont toujours
+ * dans le HTML statique (contrairement à Radix), zéro JS. Menu mobile à plat
+ * 100 % CSS (checkbox).
  */
 
-const navItems = [
+const mainItems = [
   { href: '/', label: 'Accueil', ph: 'landing_nav_accueil' },
   { href: '/simulateur', label: 'Simulateur', ph: 'landing_resource_simulateur' },
   { href: '/guide-declarations', label: 'Guide déclarations', ph: 'landing_resource_guide-declarations' },
-  { href: '/comparatif', label: 'Comparatif', ph: 'landing_resource_comparatif' },
   { href: '/blog', label: 'Blog', ph: 'landing_resource_blog' },
-  { href: '/faq', label: 'FAQ', ph: 'landing_resource_faq' },
   { href: '/tarifs', label: 'Tarifs', ph: 'landing_nav_pricing' },
 ];
+
+const plusItems = [
+  { href: '/comparatif', label: 'Comparatif', ph: 'landing_resource_comparatif' },
+  { href: '/faq', label: 'FAQ', ph: 'landing_resource_faq' },
+  { href: '/qui-sommes-nous', label: 'Qui sommes-nous', ph: 'landing_resource_qui-sommes-nous' },
+];
+
+const navItems = [...mainItems, ...plusItems];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
@@ -34,7 +42,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     </a>
 
     <nav class="hidden items-center gap-5 xl:gap-6 lg:flex" aria-label="Navigation principale">
-      {navItems.map((item) => (
+      {mainItems.map((item) => (
         <a
           href={item.href}
           data-ph={item.ph}
@@ -47,6 +55,37 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
           {item.label}
         </a>
       ))}
+
+      <!-- Dropdown « Plus » 100 % CSS (hover + focus-within) ; liens toujours dans le HTML -->
+      <div class="group relative">
+        <button
+          type="button"
+          class:list={[
+            'inline-flex min-h-11 cursor-pointer items-center gap-1 text-[15px] font-medium transition-colors group-hover:text-hippo-600 group-focus-within:text-hippo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            plusItems.some((item) => item.href === currentPath) ? 'text-hippo-600' : 'text-hippo-800',
+          ]}
+        >
+          Plus
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="invisible absolute right-0 top-full z-50 pt-2 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <div class="w-52 rounded-xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass)/0.92)] p-1.5 shadow-[var(--shadow-landing-glass-scrolled)] backdrop-blur-xl backdrop-saturate-150">
+            {plusItems.map((item) => (
+              <a
+                href={item.href}
+                data-ph={item.ph}
+                aria-current={currentPath === item.href ? 'page' : undefined}
+                class:list={[
+                  'flex min-h-11 items-center rounded-lg px-3 text-[15px] font-medium transition-colors hover:bg-hippo-50 hover:text-hippo-600',
+                  currentPath === item.href ? 'text-hippo-600' : 'text-hippo-800',
+                ]}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
     </nav>
 
     <div class="flex shrink-0 items-center gap-2">
