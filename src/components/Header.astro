@@ -158,14 +158,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
           <div class="mt-4 grid grid-cols-2 gap-2 border-t border-hippo-100 pt-4">
             <a
               href={`${APP_URL}/auth`}
-              class="inline-flex h-11 items-center justify-center rounded-md border border-hippo-200 px-3 text-sm font-semibold text-hippo-700 transition-colors hover:bg-hippo-50"
+              class="inline-flex h-11 items-center justify-center rounded-full border border-hippo-200 px-3 text-sm font-semibold text-hippo-700 transition-colors hover:bg-hippo-50 hover:text-hippo-600"
             >
               Connexion
             </a>
             <a
               href={`${APP_URL}/auth?tab=signup`}
               data-track="cta_signup_header_mobile"
-              class="inline-flex h-11 items-center justify-center rounded-md bg-hippo-600 px-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-hippo-700"
+              class="inline-flex h-11 items-center justify-center rounded-full bg-hippo-600 px-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-hippo-500/20 transition-colors hover:bg-hippo-700"
             >
               Essai gratuit 30j
             </a>

@@ -77,11 +77,11 @@ const blogSchema = {
 
       <div class="mb-8 flex flex-wrap justify-center gap-2">
         <label for="filter-tous" class="filter-btn cursor-pointer rounded-full border border-hippo-200 px-4 py-2 text-sm font-medium text-hippo-700 transition-colors hover:bg-hippo-50">
-          Tous les articles <span class="text-hippo-400">({posts.length})</span>
+          Tous les articles <span class="text-hippo-600">({posts.length})</span>
         </label>
         {blogSeries.map((s) => (
           <label for={`filter-${s.id}`} class="filter-btn cursor-pointer rounded-full border border-hippo-200 px-4 py-2 text-sm font-medium text-hippo-700 transition-colors hover:bg-hippo-50">
-            {s.name} <span class="text-hippo-400">({seriesCounts.get(s.id)}{s.totalEpisodes ? `/${s.totalEpisodes}` : ''})</span>
+            {s.name} <span class="text-hippo-600">({seriesCounts.get(s.id)}{s.totalEpisodes ? `/${s.totalEpisodes}` : ''})</span>
           </label>
         ))}
       </div>
