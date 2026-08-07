@@ -68,11 +68,6 @@ export default {
 					800: '#003C80',
 					900: '#001E40',
 				},
-				medical: {
-					light: '#E3F2FD',
-					DEFAULT: '#2196F3',
-					dark: '#1565C0',
-				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

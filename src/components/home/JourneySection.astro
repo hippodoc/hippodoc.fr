@@ -5,6 +5,7 @@
  * 5 radios cachées + labels + panneaux, entièrement piloté en CSS (zéro JS).
  */
 import { APP_URL } from '@/lib/site';
+import SectionBadge from './SectionBadge.astro';
 
 const BETA_NOTE = "Module en bêta — déjà utilisable, on l'affine avec les premiers utilisateurs.";
 
@@ -91,22 +92,15 @@ const PROFILES = [
 ] as const;
 ---
 
-<section id="parcours" class="relative scroll-mt-28 overflow-hidden bg-gradient-to-b from-white to-hippo-50/40 py-20 md:scroll-mt-32 md:py-28">
+<section id="parcours" class="relative scroll-mt-28 overflow-hidden bg-gradient-to-b from-white to-hippo-50/40 py-16 md:scroll-mt-32 md:py-24">
   <div class="container relative">
     <div class="mx-auto mb-9 max-w-3xl text-center md:mb-12">
-      <div class="mb-6 flex justify-center">
-        <div class="relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-hippo-200/50 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:gap-3 md:px-4 md:py-2">
-          <div class="rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 p-1 md:p-1.5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
-          </div>
-          <span class="text-xs font-medium text-hippo-700 md:text-sm">Parcours</span>
-          <div class="h-3 w-px bg-hippo-200 md:h-4"></div>
-          <span class="text-xs font-medium text-hippo-500 md:text-sm">5 profils</span>
-        </div>
-      </div>
+      <SectionBadge title="Parcours" subtitle="5 profils">
+        <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+      </SectionBadge>
 
-      <h2 class="mb-4 text-3xl font-bold tracking-tight text-hippo-900 md:text-[2.6rem] md:leading-[1.15]">
-        Quel que soit ton mode d'exercice, <span class="text-hippo-500">Hippodoc te suit.</span>
+      <h2 class="mb-4 text-3xl font-bold tracking-tight text-hippo-800 md:text-4xl">
+        Quel que soit ton mode d'exercice, <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">Hippodoc te suit.</span>
       </h2>
       <p class="text-lg text-slate-500 md:text-xl">
         Choisis ton mode d'exercice : tu verras exactement ce qu'Hippodoc fait pour toi.
@@ -201,7 +195,7 @@ const PROFILES = [
           <a
             href={`${APP_URL}/auth?tab=signup`}
             data-track="cta_signup_journey_section"
-            class="relative z-10 mt-7 inline-flex h-auto max-w-full items-center justify-center whitespace-normal rounded-2xl bg-hippo-500 px-6 py-4 text-[15px] font-bold leading-snug text-white shadow-xl shadow-hippo-500/20 transition-all hover:bg-hippo-600 md:px-8 md:text-base"
+            class="relative z-10 mt-7 inline-flex h-auto max-w-full items-center justify-center whitespace-normal rounded-lg bg-gradient-to-r from-hippo-500 to-hippo-600 px-6 py-4 text-[15px] font-semibold leading-snug text-white shadow-lg shadow-hippo-500/30 transition-all hover:shadow-xl hover:shadow-hippo-500/40 md:px-8 md:text-base"
           >
             Essayer 30 jours gratuitement
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
