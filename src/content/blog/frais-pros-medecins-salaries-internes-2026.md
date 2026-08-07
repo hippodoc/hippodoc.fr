@@ -2,8 +2,8 @@
 title: "Frais pros du médecin salarié 2026"
 description: "≈ 1 500 € d'impôt en moins par an, soit 3 semaines de salaire net. Guide 2026 des frais réels vs forfait 10 % pour salariés."
 pubDate: "2026-05-09"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 7

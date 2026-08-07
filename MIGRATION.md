@@ -189,6 +189,12 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
 - **Auteurs (schéma Article)** : « Équipe Hippodoc »/« Hippodoc » → auteur `Organization`
   Hippodoc ; « Dr. Hippodoc » et « Dr. Sophie Martin » → `Person` avec url
   `/qui-sommes-nous`. Noms visibles inchangés.
+- **Auteurs — attribution réelle** (août 2026, décision owner) : les 38 articles sont
+  désormais signés « Dr. Ryan Goburdhun » (`authorRole` unifié « Médecin remplaçant &
+  fondateur d'Hippodoc ») — remplace les placeholders « Équipe Hippodoc », « Hippodoc »,
+  « Dr. Hippodoc » et « Dr. Sophie Martin ». Schéma Article : `Person` → `/qui-sommes-nous`
+  partout (branche `Organization` supprimée de `[slug].astro`). Mention « écrites par
+  l'équipe Hippodoc » de `/blog` mise à jour en conséquence.
 - **/simulateur** (rédigé, exigence spec « section explicative SSR ») : bloc de définitions
   « Trois mots à connaître » (Rétrocession / URSSAF / Super-Net) et « Exemple chiffré »
   30 000 € de recettes — chiffres dérivés exclusivement des constantes du moteur porté
@@ -208,10 +214,11 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
       différé interaction/idle, pixel gaté par le consentement, Calendly en liens directs.
       Seul le badge Calendly flottant n'est pas reproduit (lien direct à la place).
-- [ ] TODO(owner) : attribuer ou non les articles signés « Équipe Hippodoc »/« Dr. Hippodoc »
-      au fondateur médecin (Ryan Goburdhun) dans le schéma Article — non fait, pour ne pas
-      inventer d'attribution.
-- [ ] TODO(owner) : « Dr. Sophie Martin » (1 article) — auteur à confirmer/rattacher à une bio.
+- [x] ~~Attribuer ou non les articles signés « Équipe Hippodoc »/« Dr. Hippodoc » au
+      fondateur médecin~~ — fait (août 2026) : les 38 articles signés Dr. Ryan Goburdhun
+      (voir §9).
+- [x] ~~« Dr. Sophie Martin » (1 article) — auteur à confirmer~~ — fait (août 2026) :
+      placeholder remplacé par Dr. Ryan Goburdhun (voir §9).
 - [x] ~~Héberger la **vidéo de présentation** proprement~~ — fait (août 2026) : mp4 (26,7 Mo)
       uploadé sur Supabase Storage (bucket public `public-assets`), lecteur natif inline
       restauré, VideoObject mis à jour (voir §9). L'URL `app.hippodoc.fr/__l5e/...`

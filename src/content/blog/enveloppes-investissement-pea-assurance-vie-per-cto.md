@@ -2,8 +2,8 @@
 title: "Les 4 enveloppes d'investissement"
 description: "PEA, assurance-vie, PER, CTO : les 4 enveloppes fiscales pour investir au bon endroit selon ta situation de médecin libéral."
 pubDate: "2026-03-18"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 12

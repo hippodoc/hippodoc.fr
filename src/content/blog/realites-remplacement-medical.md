@@ -2,7 +2,7 @@
 title: "Ce qu'on ne te dit pas sur le rempla"
 description: "Liberté, flexibilité… mais sur le terrain, le remplacement c'est aussi des réalités concrètes qu'on découvre en commençant."
 pubDate: "2025-11-28"
-author: "Dr. Hippodoc"
+author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"

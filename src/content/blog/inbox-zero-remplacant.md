@@ -2,8 +2,8 @@
 title: "Inbox zéro du remplaçant"
 description: "Résultats, messages, rappels en suspens… Le vrai risque, c'est le flou. La méthode inbox zéro adaptée au médecin remplaçant."
 pubDate: "2026-03-18"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 11

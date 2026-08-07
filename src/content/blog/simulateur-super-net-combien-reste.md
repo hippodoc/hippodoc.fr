@@ -2,8 +2,8 @@
 title: "Médecin libéral : ce qu'il te reste vraiment"
 description: "Tu connais ton CA. Mais sais-tu ce qu'il te reste après URSSAF, CARMF, impôt et acomptes ? Le revenu est un système, pas un chiffre."
 pubDate: "2026-03-18"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 10

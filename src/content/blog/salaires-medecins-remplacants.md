@@ -2,7 +2,7 @@
 title: "Salaires des médecins remplaçants 2025"
 description: "Fourchettes de rémunération en intérim, libéral et salariat selon les spécialités. Données indicatives pour bien te projeter."
 pubDate: "2025-11-28T12:00:00"
-author: "Dr. Hippodoc"
+author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"

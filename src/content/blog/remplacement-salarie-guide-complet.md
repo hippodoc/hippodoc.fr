@@ -2,8 +2,8 @@
 title: "Remplacement salarié : guide complet"
 description: "Remplacer sans URSSAF, CARMF ni comptabilité : le statut salarié est peut-être fait pour toi. Tout ce qu'il faut savoir."
 pubDate: "2025-11-28"
-author: "Dr. Sophie Martin"
-authorRole: "Médecin remplaçant"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 2
