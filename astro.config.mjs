@@ -15,7 +15,7 @@ const BLOG_LASTMOD = new Map(
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://hippodoc.fr',
+  site: 'https://www.hippodoc.fr',
   // Politique d'URL : pas de slash final (canonique unique par page).
   trailingSlash: 'never',
   output: 'static',
