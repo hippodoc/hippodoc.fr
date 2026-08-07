@@ -2,8 +2,8 @@
 title: "Rempla : ce qui te reste vraiment"
 description: "Le problème en remplacement, ce n'est pas de gagner. C'est de savoir ce qu'il te reste vraiment dans la poche, après tout."
 pubDate: "2025-12-25"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 7

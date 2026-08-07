@@ -74,10 +74,7 @@ const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
 /* JSON-LD */
-const isOrgAuthor = author === 'Équipe Hippodoc' || author === 'Hippodoc';
-const authorSchema = isOrgAuthor
-  ? { '@type': 'Organization', name: 'Hippodoc', url: SITE_URL, '@id': `${SITE_URL}/#organization` }
-  : { '@type': 'Person', name: author, url: `${SITE_URL}/qui-sommes-nous` };
+const authorSchema = { '@type': 'Person', name: author, url: `${SITE_URL}/qui-sommes-nous` };
 
 const articleSchema = {
   '@context': 'https://schema.org',

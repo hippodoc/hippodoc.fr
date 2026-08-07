@@ -2,8 +2,8 @@
 title: "T'as remplacé, t'as facturé"
 description: "Génère tes factures de remplacement en quelques clics. Simple, rapide, et zéro prise de tête avec Hippodoc."
 pubDate: "2025-11-28"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 3

@@ -2,7 +2,7 @@
 title: "5 astuces contre le syndrome d'imposteur"
 description: "Thèse ou licence en poche, mais une voix doute encore ? 5 clés concrètes pour apprivoiser le syndrome d'imposteur et avancer."
 pubDate: "2025-11-28"
-author: "Dr. Hippodoc"
+author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"

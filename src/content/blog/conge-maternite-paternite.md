@@ -2,8 +2,8 @@
 title: "Maternité & paternité du remplaçant"
 description: "Durées, montants 2026, fiscalité, pièges : tout sur le congé maternité et paternité du médecin remplaçant libéral."
 pubDate: "2026-02-11"
-author: "Hippodoc"
-authorRole: "L'assistant des remplaçants"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 9

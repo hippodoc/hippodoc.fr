@@ -2,8 +2,8 @@
 title: "Salariat : 10 % ou frais réels ?"
 description: "En salariat aussi, tu peux déduire tes frais pro. Comment choisir entre abattement 10 % et frais réels pour payer moins d'impôt."
 pubDate: "2025-12-25"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 5

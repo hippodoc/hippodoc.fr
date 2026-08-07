@@ -2,8 +2,8 @@
 title: "Du Super-Net au budget : pilote ta vie"
 description: "Hippodoc te donne ton Super-Net pro. Pousse la logique jusqu'au bout avec ton budget perso et pilote vraiment ta vie financière."
 pubDate: "2026-01-31"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 8

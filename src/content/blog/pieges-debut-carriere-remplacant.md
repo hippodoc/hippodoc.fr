@@ -2,8 +2,8 @@
 title: "Les 7 pièges du début en remplacement"
 description: "Le remplacement, c'est la liberté. Mais sans cadre, ça devient un piège. Les erreurs que trop de rempla découvrent trop tard."
 pubDate: "2025-12-25"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 6

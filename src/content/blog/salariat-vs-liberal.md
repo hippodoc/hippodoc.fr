@@ -2,8 +2,8 @@
 title: "Salariat vs Libéral"
 description: "T'es indécis entre le salariat et le libéral ? Voici la vraie différence entre les deux statuts, sans promesses en l'air. À toi de choisir ce qui TE correspond."
 pubDate: "2025-11-28"
-author: "Équipe Hippodoc"
-authorRole: "Experts en gestion de remplacements médicaux"
+author: "Dr. Ryan Goburdhun"
+authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 4
