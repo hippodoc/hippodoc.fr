@@ -195,8 +195,13 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
   (seuil RSPM 38 000 €, tranches 13,5 %/21,2 % à 19 000 €, abattement micro-BNC 34 %).
 - **/qui-sommes-nous** : phrase PRODUCT_DEFINITION ajoutée sous l'intro (verbatim site.ts).
 - **Accueil** : PRODUCT_DEFINITION sous le sous-titre du héros ; démo Calendly → lien
-  mailto:contact@hippodoc.fr ; libellés techniques mineurs (« La vidéo s'ouvre dans un
-  nouvel onglet »).
+  mailto:contact@hippodoc.fr.
+- **Accueil / film de présentation** (août 2026) : la vignette-lien temporaire (vidéo dans
+  un nouvel onglet) est remplacée par un lecteur natif `<video controls preload="none">`
+  inline, comme la source. Vidéo auto-hébergée sur Supabase Storage (bucket public
+  `public-assets` du projet `zlqlijendlquvwnodeqq`), poster de la source rapatrié dans
+  `public/`. Le tracking JS `useVideoAnalytics` de la source (play/progress/erreurs)
+  n'est pas reproduit (invariant zéro JS).
 
 ## 10. TODO(owner) — faits manquants / décisions
 
@@ -207,11 +212,10 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
       au fondateur médecin (Ryan Goburdhun) dans le schéma Article — non fait, pour ne pas
       inventer d'attribution.
 - [ ] TODO(owner) : « Dr. Sophie Martin » (1 article) — auteur à confirmer/rattacher à une bio.
-- [ ] TODO(owner) : la **vidéo de présentation** (26 Mo) n'existe que dans le stockage Lovable
-      (`/__l5e/assets-v1/...`). Le site pointe temporairement vers
-      `https://app.hippodoc.fr/__l5e/assets-v1/.../hippodoc-presentation-st.mp4` (valide tant
-      que l'app reste sur Lovable). À terme : héberger la vidéo proprement (Vercel Blob,
-      Cloudflare R2, YouTube/Vimeo) et mettre à jour PresentationVideoSection + VideoObject.
+- [x] ~~Héberger la **vidéo de présentation** proprement~~ — fait (août 2026) : mp4 (26,7 Mo)
+      uploadé sur Supabase Storage (bucket public `public-assets`), lecteur natif inline
+      restauré, VideoObject mis à jour (voir §9). L'URL `app.hippodoc.fr/__l5e/...`
+      précédente ne résolvait pas en DNS.
 - (liste complétée en fin de migration)
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
