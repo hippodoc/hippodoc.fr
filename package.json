@@ -10,9 +10,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^4.4.0",
-    "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/vercel": "^8.2.0",
+    "@astrojs/markdown-remark": "^7.2.2",
+    "@astrojs/react": "^6.0.2",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/vercel": "^11.0.5",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-alert-dialog": "^1.1.23",
@@ -29,7 +30,7 @@
     "@radix-ui/react-slot": "^1.3.3",
     "@radix-ui/react-switch": "^1.3.7",
     "@radix-ui/react-tooltip": "^1.2.16",
-    "astro": "^5.14.0",
+    "astro": "^7.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -48,10 +49,10 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@astrojs/tailwind": "^6.0.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.5.4",
     "tailwindcss": "^3.4.11",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3"
