@@ -2,15 +2,14 @@
 /**
  * Film de présentation — porté de src/components/landing/PresentationVideoSection.tsx.
  *
- * La source pointe vers un asset Lovable hashé (src/assets/hippodoc-presentation-st.mp4.asset.json,
- * non présent dans ce dépôt). Plutôt qu'un <video> cassé, on affiche une vignette statique
- * (image dashboard déjà utilisée comme OG image) avec une superposition "lecture" qui ouvre
- * la vidéo dans un nouvel onglet — lien natif, zéro JS. Le VideoObject JSON-LD (page d'accueil)
- * pointe vers la même URL que la source déclarait.
+ * Vidéo auto-hébergée sur Supabase Storage (bucket public `public-assets`) depuis août 2026 :
+ * l'asset Lovable d'origine n'était résolu que par le pipeline de build Lovable, et
+ * app.hippodoc.fr ne résolvait pas en DNS. Lecteur natif <video controls preload="none">,
+ * comme la source (poster + rien ne se télécharge avant le clic) — zéro JS, Lighthouse
+ * intact. Poster : même image que la source, servie depuis public/.
  */
-import { SITE_URL } from '@/lib/site';
-
-const VIDEO_URL = 'https://app.hippodoc.fr/__l5e/assets-v1/4cf79149-a5fa-405a-af43-eb2dcd648009/hippodoc-presentation-st.mp4';
+const VIDEO_URL =
+  'https://zlqlijendlquvwnodeqq.supabase.co/storage/v1/object/public/public-assets/hippodoc-presentation-st.mp4';
 ---
 
 <section id="film-presentation" class="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-white to-hippo-50/40 py-16 md:scroll-mt-28 md:py-24" aria-labelledby="presentation-video-title">
@@ -37,35 +36,19 @@ const VIDEO_URL = 'https://app.hippodoc.fr/__l5e/assets-v1/4cf79149-a5fa-405a-af
     </div>
 
     <div class="mx-auto max-w-5xl">
-      <a
-        href={VIDEO_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Lancer le film · 1 min 33 — présentation sous-titrée d'Hippodoc (nouvel onglet)"
-        class="group relative block overflow-hidden rounded-2xl border-2 border-hippo-200/50 bg-slate-900 shadow-2xl"
-      >
+      <div class="relative overflow-hidden rounded-2xl border-2 border-hippo-200/50 bg-slate-900 shadow-2xl">
         <div class="relative aspect-video w-full">
-          <img
-            src="/lovable-uploads/og-image.png"
-            alt=""
-            width="1200"
-            height="630"
-            loading="lazy"
-            decoding="async"
-            class="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"
-          />
-          <span class="absolute inset-0 bg-slate-950/30 transition-colors duration-300 group-hover:bg-slate-950/15"></span>
-          <span class="absolute inset-0 flex flex-col items-center justify-center gap-4">
-            <span class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 shadow-xl transition-transform duration-300 group-hover:scale-110 md:h-20 md:w-20">
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-            </span>
-            <span class="text-sm font-medium text-white drop-shadow md:text-base">Lancer le film · 1 min 33</span>
-          </span>
+          <video
+            src={VIDEO_URL}
+            poster="/hippodoc-presentation-st-poster.jpg"
+            preload="none"
+            controls
+            playsinline
+            title="Hippodoc en 90 secondes — film de présentation (sous-titré)"
+            class="absolute inset-0 h-full w-full object-cover"
+          ></video>
         </div>
-      </a>
-      <p class="mt-3 text-center text-xs text-muted-foreground">
-        La vidéo s'ouvre dans un nouvel onglet.
-      </p>
+      </div>
     </div>
   </div>
 </section>

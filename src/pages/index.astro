@@ -126,18 +126,20 @@ const faqPageSchema = {
   ],
 };
 
-// VideoObject — mêmes valeurs que la source (src/pages/landing/index.tsx),
-// contentUrl/thumbnailUrl réécrits en absolu sur hippodoc.fr.
+// VideoObject — mêmes valeurs que la source (src/pages/landing/index.tsx) ;
+// contentUrl = vidéo auto-hébergée Supabase Storage (cf. PresentationVideoSection.astro),
+// thumbnailUrl = poster de la source servi depuis public/.
 const videoSchema = {
   '@context': 'https://schema.org',
   '@type': 'VideoObject',
   name: 'Hippodoc en 90 secondes',
   description:
     "Film de présentation sous-titré d'Hippodoc : tu factures, Hippodoc calcule le reste — URSSAF, CARMF, impôts et Super-Net pour les médecins remplaçants, installés, collaborateurs ou salariés.",
-  thumbnailUrl: [`${SITE_URL}/lovable-uploads/og-image.png`],
+  thumbnailUrl: [`${SITE_URL}/hippodoc-presentation-st-poster.jpg`],
   uploadDate: '2026-08-04',
   duration: 'PT1M33S',
-  contentUrl: 'https://app.hippodoc.fr/__l5e/assets-v1/4cf79149-a5fa-405a-af43-eb2dcd648009/hippodoc-presentation-st.mp4',
+  contentUrl:
+    'https://zlqlijendlquvwnodeqq.supabase.co/storage/v1/object/public/public-assets/hippodoc-presentation-st.mp4',
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 ---
