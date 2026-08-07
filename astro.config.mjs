@@ -2,8 +2,8 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
-import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel';
+import { unified } from '@astrojs/markdown-remark';
 import remarkDirective from 'remark-directive';
 import { remarkCallouts } from './src/lib/remark-callouts.mjs';
 import blogMeta from './src/generated/blog-meta.json' with { type: 'json' };
@@ -22,10 +22,6 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [
     react(),
-    tailwind({
-      // Les styles de base sont portés depuis la SPA source dans src/styles/global.css
-      applyBaseStyles: false,
-    }),
     sitemap({
       // /essai est noindex (page campagne Instagram) : hors sitemap
       filter: (page) => !page.includes('/essai'),
@@ -40,7 +36,9 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkDirective, remarkCallouts],
+    // Astro 7 : le processeur unified (remark) n'est plus celui par défaut ;
+    // requis ici pour remark-directive + callouts (:::warning etc.).
+    processor: unified({ remarkPlugins: [remarkDirective, remarkCallouts] }),
   },
   build: {
     inlineStylesheets: 'auto',
