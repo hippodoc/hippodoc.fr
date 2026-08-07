@@ -53,4 +53,4 @@ User-agent: meta-externalagent
 Allow: /
 
 # ========== SITEMAP ==========
-Sitemap: https://hippodoc.fr/sitemap-index.xml
+Sitemap: https://www.hippodoc.fr/sitemap-index.xml
