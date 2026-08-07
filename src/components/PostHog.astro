@@ -12,6 +12,8 @@
   import posthog from 'posthog-js';
 
   function readConsent(): string | null {
+    const m = document.cookie.match(/(?:^|; )cookie-consent=([^;]+)/);
+    if (m) return m[1];
     try {
       return localStorage.getItem('cookie-consent');
     } catch {

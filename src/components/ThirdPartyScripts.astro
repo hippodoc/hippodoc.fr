@@ -7,7 +7,9 @@
  * gtag.js et Crisp ne sont injectés qu'après `load` + idle (~4 s) OU à la
  * première interaction (pointerdown/keydown/touchstart), au premier des deux.
  * Le Meta Pixel n'est chargé qu'avec le consentement « accepted » (comme la source).
- * Clé de consentement identique à la source : localStorage['cookie-consent'].
+ * Consentement : cookie `cookie-consent` Domain=.hippodoc.fr (partagé avec
+ * app.hippodoc.fr) + miroir localStorage['cookie-consent'] (clé de la source,
+ * fallback pour les choix historiques et le dev en localhost).
  * Calendly : simples liens HTML (zéro script) — pas de widget flottant.
  */
 ---
@@ -66,7 +68,11 @@
     }
     window.hippodocScrubLocation = scrub;
 
+    /* Cookie Domain=.hippodoc.fr d'abord (partagé avec app.hippodoc.fr),
+       localStorage en fallback (choix historiques + dev localhost). */
     function consent() {
+      var m = document.cookie.match(/(?:^|; )cookie-consent=([^;]+)/);
+      if (m) return m[1];
       try { return localStorage.getItem('cookie-consent'); } catch (e) { return null; }
     }
 
@@ -156,6 +162,8 @@
     /* Bannière */
     var banner = document.getElementById('cookie-banner');
     function choose(value) {
+      /* Max-Age 6 mois (recommandation CNIL) ; Domain ignoré en localhost → fallback localStorage */
+      document.cookie = 'cookie-consent=' + value + '; Domain=.hippodoc.fr; Path=/; Max-Age=15552000; SameSite=Lax; Secure';
       try { localStorage.setItem('cookie-consent', value); } catch (e) {}
       if (banner) banner.hidden = true;
       if (value === 'accepted') {
