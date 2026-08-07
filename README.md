@@ -1,44 +1,44 @@
 # hippodoc.fr
 
-Site marketing public d'[Hippodoc](https://hippodoc.fr), le SaaS français de gestion administrative pour médecins remplaçants. Site **statique Astro** (52 pages) déployé sur Vercel. L'application privée vit sur app.hippodoc.fr (dépôt séparé).
+Public marketing site for [Hippodoc](https://hippodoc.fr), a French SaaS that handles admin work for locum doctors (médecins remplaçants). **Static Astro** site (52 pages) deployed on Vercel. The private app lives on app.hippodoc.fr (separate repo).
 
-## Démarrage
+## Getting started
 
 ```bash
 npm install
 npm run dev        # http://localhost:4321
 ```
 
-## Commandes
+## Commands
 
-| Commande | Description |
+| Command | Description |
 |---|---|
-| `npm run dev` | Serveur de développement |
-| `npm run build` | Build statique → `dist/` |
-| `npm run preview` | Sert le build localement |
-| `node scripts/verify-site.mjs` | Après build : crawl du sitemap + assertions SEO par page |
+| `npm run dev` | Dev server |
+| `npm run build` | Static build → `dist/` |
+| `npm run preview` | Serve the build locally |
+| `node scripts/verify-site.mjs` | After build: crawls the sitemap, asserts SEO invariants per page |
 
-Avant tout push qui touche aux pages : `npm run build` puis `node scripts/verify-site.mjs`.
+Before pushing anything that touches pages: `npm run build` then `node scripts/verify-site.mjs`.
 
 ## Structure
 
 ```
 src/
-├── pages/            # Routes (Astro) — URLs publiques figées, jamais renommer
-├── layouts/          # BaseLayout.astro : contrat SEO (title, description, canonique, JSON-LD)
-├── content/blog/     # 38 articles Markdown — source de vérité du blog
-├── components/       # Composants Astro + îlots React (simulateur, calculette, boussole)
-├── lib/              # Constantes site, moteurs de calcul, plugin remark
-└── data/             # Données statiques (boussole, etc.)
-scripts/              # verify-site.mjs, generate-blog-content.mjs (migration, ne pas relancer)
-vercel.json           # Redirections 301 (actives uniquement sur Vercel)
+├── pages/            # Routes (Astro) — public URLs are frozen, never rename
+├── layouts/          # BaseLayout.astro: SEO contract (title, description, canonical, JSON-LD)
+├── content/blog/     # 38 Markdown articles — source of truth for the blog
+├── components/       # Astro components + React islands (simulator, calculator, wizard)
+├── lib/              # Site constants, calculation engines, remark plugin
+└── data/             # Static data (wizard content, etc.)
+scripts/              # verify-site.mjs, generate-blog-content.mjs (one-time migration, do not re-run)
+vercel.json           # 301 redirects (only active on Vercel)
 ```
 
-## Principes clés
+## Key principles
 
-- **Statique d'abord** : zéro JS client hors îlots des outils (`client:visible`), PostHog et scripts tiers. Interactions des pages statiques en CSS pur ou HTML natif (`<details>`).
-- **SEO verrouillé** : URLs sans slash final, canoniques exactes, contenu français verbatim, Lighthouse ≥ 95. `verify-site.mjs` fait respecter le contrat.
-- **Outils** : `/simulateur` (calcul URSSAF, branche PAMC via Edge Function Supabase), `/guide-declarations/calculette` (100 % local), `/guide-declarations` (boussole).
-- **Analytics** : PostHog en proxy first-party, GA4/Meta/Crisp chargés hors fenêtre Lighthouse, gatés par le consentement cookies.
+- **Static first**: zero client-side JS except the tool islands (`client:visible`), PostHog and third-party scripts. Static page interactions are CSS-only or native HTML (`<details>`).
+- **SEO locked down**: no trailing slashes, exact canonicals, French content kept verbatim, Lighthouse ≥ 95. `verify-site.mjs` enforces the contract.
+- **Tools**: `/simulateur` (URSSAF simulator; PAMC branch calls a public Supabase Edge Function), `/guide-declarations/calculette` (fully local), `/guide-declarations` (declaration wizard).
+- **Analytics**: PostHog behind a first-party proxy; GA4/Meta/Crisp loaded outside the Lighthouse window and gated by cookie consent.
 
-Détails complets, invariants et historique de migration : [CLAUDE.md](CLAUDE.md) et [MIGRATION.md](MIGRATION.md).
+Full details, invariants and migration history: [CLAUDE.md](CLAUDE.md) and [MIGRATION.md](MIGRATION.md).
