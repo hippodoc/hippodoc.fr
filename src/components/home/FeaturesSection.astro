@@ -1,25 +1,26 @@
 ---
 /**
  * Fonctionnalités — porté de src/components/landing/RadialOrbitalTimeline.tsx.
- * Le diagramme orbital interactif (rotation requestAnimationFrame, nœuds cliquables)
- * est remplacé par une grille statique des mêmes 12 fonctionnalités : contenu identique,
- * présentation adaptée au zéro-JS.
+ * Desktop (lg+) : diagramme orbital animé 100 % CSS (rotation + contre-rotation,
+ * pause au survol, descriptions dans des tooltips présents dans le HTML statique).
+ * Mobile/tablette : grille statique des mêmes 12 fonctionnalités, descriptions
+ * visibles (contenu SEO servi au mobile-first indexing).
  */
 import SectionBadge from './SectionBadge.astro';
 
 const FEATURES = [
-  { title: 'URSSAF', description: 'Calcul automatique des cotisations sociales avec estimation précise en temps réel' },
-  { title: 'CARMF', description: 'Gestion automatique de la retraite et prévoyance des médecins libéraux' },
-  { title: 'Impôts', description: "Estimation de l'impôt sur le revenu en temps réel selon ta situation" },
-  { title: 'Rétrocessions', description: 'Calcul automatique de tes rétrocessions et redevances de collaboration' },
-  { title: 'Comptabilité', description: 'Export CSV/PDF prêt pour ton expert-comptable' },
-  { title: 'Contrats', description: 'Génération automatique et signature électronique de tes contrats' },
-  { title: 'Factures', description: "Création simplifiée de factures d'honoraires avec IBAN" },
-  { title: 'Statistiques', description: 'Analyse détaillée de tes revenus et rentabilité par médecin' },
-  { title: 'Planning', description: 'Calendrier intelligent pour planifier ton activité' },
-  { title: 'RSPM', description: 'Optimisation automatique entre Micro-BNC et frais réels' },
-  { title: 'Micro-BNC', description: "Suivi de l'abattement forfaitaire de 34% en temps réel" },
-  { title: 'Frais réels', description: 'Calcul et optimisation de tes déductions fiscales' },
+  { title: 'URSSAF', description: 'Calcul automatique des cotisations sociales avec estimation précise en temps réel', icon: '<rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>' },
+  { title: 'CARMF', description: 'Gestion automatique de la retraite et prévoyance des médecins libéraux', icon: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>' },
+  { title: 'Impôts', description: "Estimation de l'impôt sur le revenu en temps réel selon ta situation", icon: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>' },
+  { title: 'Rétrocessions', description: 'Calcul automatique de tes rétrocessions et redevances de collaboration', icon: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>' },
+  { title: 'Comptabilité', description: 'Export CSV/PDF prêt pour ton expert-comptable', icon: '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>' },
+  { title: 'Contrats', description: 'Génération automatique et signature électronique de tes contrats', icon: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>' },
+  { title: 'Factures', description: "Création simplifiée de factures d'honoraires avec IBAN", icon: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/>' },
+  { title: 'Statistiques', description: 'Analyse détaillée de tes revenus et rentabilité par médecin', icon: '<path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>' },
+  { title: 'Planning', description: 'Calendrier intelligent pour planifier ton activité', icon: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>' },
+  { title: 'RSPM', description: 'Optimisation automatique entre Micro-BNC et frais réels', icon: '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>' },
+  { title: 'Micro-BNC', description: "Suivi de l'abattement forfaitaire de 34% en temps réel", icon: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>' },
+  { title: 'Frais réels', description: 'Calcul et optimisation de tes déductions fiscales', icon: '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>' },
 ];
 ---
 
@@ -36,11 +37,46 @@ const FEATURES = [
       <p class="mx-auto max-w-2xl text-xl text-muted-foreground">Le système nerveux de ton organisation.</p>
     </div>
 
-    <div class="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
+    <div class="orbit-scene relative mx-auto hidden h-[480px] max-w-3xl items-center justify-center lg:flex">
+      <div class="absolute h-[360px] w-[360px] rounded-full border border-hippo-300/40"></div>
+      <div class="absolute h-[400px] w-[400px] rounded-full border border-hippo-300/20"></div>
+
+      <div class="absolute z-20 flex items-center justify-center">
+        <div class="absolute h-24 w-24 animate-pulse rounded-full bg-hippo-400 opacity-25 blur-2xl"></div>
+        <img
+          src="/lovable-uploads/6ddc3383-e82d-4c1f-a9e7-f1828b14d350.png"
+          alt=""
+          width="96"
+          height="96"
+          loading="lazy"
+          decoding="async"
+          class="relative h-24 w-24"
+          style="filter: drop-shadow(0 0 20px rgba(125, 211, 252, 0.6))"
+        />
+      </div>
+
+      <div class="orbit-spin absolute inset-0">
+        {FEATURES.map((feature, index) => (
+          <div class="orbit-node group absolute left-1/2 top-1/2 -ml-7 -mt-7 h-14 w-14 hover:z-40 focus-within:z-40" style={`--a: ${index * 30}deg`} tabindex="0">
+            <div class="orbit-node-inner h-full w-full">
+              <div class="flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/40 bg-gradient-to-br from-hippo-400 via-hippo-500 to-hippo-600 text-white shadow-md shadow-hippo-500/20 transition-transform duration-300 group-hover:scale-110 group-hover:border-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={feature.icon} />
+              </div>
+              <div class="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-xs font-semibold text-hippo-900 drop-shadow-lg">{feature.title}</div>
+              <div class="pointer-events-none absolute left-1/2 top-[calc(100%+2.25rem)] w-56 -translate-x-1/2 rounded-xl border border-hippo-100 bg-white p-3 text-xs leading-snug text-slate-600 opacity-0 shadow-xl transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
+                {feature.description}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:hidden">
       {FEATURES.map((feature) => (
         <div class="group flex flex-col items-center gap-2 rounded-2xl border border-hippo-100 bg-white/70 p-4 text-center shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-hippo-300 hover:shadow-lg">
           <div class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-hippo-400 via-hippo-500 to-hippo-600 text-white shadow-md shadow-hippo-500/20">
-            <span class="text-sm font-bold">{feature.title.slice(0, 2)}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={feature.icon} />
           </div>
           <h3 class="text-sm font-bold text-hippo-900">{feature.title}</h3>
           <p class="text-xs leading-snug text-slate-600">{feature.description}</p>
@@ -49,3 +85,43 @@ const FEATURES = [
     </div>
   </div>
 </section>
+
+<style>
+  .orbit-node {
+    transform: rotate(var(--a)) translateY(-180px);
+  }
+  .orbit-node-inner {
+    transform: rotate(calc(-1 * var(--a)));
+  }
+  .orbit-spin {
+    animation: orbit 90s linear infinite;
+  }
+  .orbit-node-inner {
+    animation: orbit-counter 90s linear infinite;
+  }
+  .orbit-scene:hover .orbit-spin,
+  .orbit-scene:hover .orbit-node-inner,
+  .orbit-scene:focus-within .orbit-spin,
+  .orbit-scene:focus-within .orbit-node-inner {
+    animation-play-state: paused;
+  }
+  @keyframes orbit {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  @keyframes orbit-counter {
+    from {
+      transform: rotate(calc(-1 * var(--a)));
+    }
+    to {
+      transform: rotate(calc(-1turn - var(--a)));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .orbit-spin,
+    .orbit-node-inner {
+      animation: none;
+    }
+  }
+</style>
