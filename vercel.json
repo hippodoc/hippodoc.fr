@@ -4,8 +4,8 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.hippodoc.fr" }],
-      "destination": "https://hippodoc.fr/:path*",
+      "has": [{ "type": "host", "value": "hippodoc.fr" }],
+      "destination": "https://www.hippodoc.fr/:path*",
       "permanent": true
     },
 

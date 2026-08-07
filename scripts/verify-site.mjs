@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(root, 'dist');
-const SITE = 'https://hippodoc.fr';
+const SITE = 'https://www.hippodoc.fr';
 
 const errors = [];
 const warnings = [];
@@ -125,7 +125,7 @@ for (const f of ['robots.txt', 'llms.txt']) {
 }
 const robots = readFileSync(resolve(dist, 'robots.txt'), 'utf8');
 if (/Disallow: \//.test(robots)) fail('robots.txt contient un Disallow');
-if (!robots.includes('Sitemap: https://hippodoc.fr/sitemap-index.xml')) fail('robots.txt : référence sitemap manquante');
+if (!robots.includes('Sitemap: https://www.hippodoc.fr/sitemap-index.xml')) fail('robots.txt : référence sitemap manquante');
 
 /* Rapport */
 if (warnings.length) {

@@ -4,7 +4,7 @@
  * Valeurs reprises de la SPA source (index.html, footer, mentions légales).
  */
 
-export const SITE_URL = 'https://hippodoc.fr';
+export const SITE_URL = 'https://www.hippodoc.fr';
 export const APP_URL = 'https://app.hippodoc.fr';
 export const SITE_NAME = 'Hippodoc';
 

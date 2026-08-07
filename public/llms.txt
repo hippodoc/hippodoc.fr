@@ -10,19 +10,19 @@ Contact : contact@hippodoc.fr
 
 ## Pages
 
-- [Accueil](https://hippodoc.fr/): Présentation du cockpit financier des médecins remplaçants et essai gratuit 30 jours.
-- [Simulateur Super-Net](https://hippodoc.fr/simulateur): Estime le revenu net après impôts et cotisations selon ton profil (remplaçant, installé, mixte).
-- [Guide des déclarations](https://hippodoc.fr/guide-declarations): Boussole interactive pour la déclaration 2035, 2042 et DSFU (volet PAMC), 12 profils médecins.
-- [Calculette PAMC](https://hippodoc.fr/guide-declarations/calculette): Calculette publique des cases sociales DSFU (DSCS, DSAV, DSFA, DSDE, DSCN…).
-- [Tarifs](https://hippodoc.fr/tarifs): Mensuel 29 €/mois ou annuel 19 €/mois, essai gratuit 30 jours, résiliation à tout moment.
-- [Blog](https://hippodoc.fr/blog): Fiches pratiques fiscalité, cotisations, contrats et conseils pour médecins remplaçants.
-- [FAQ](https://hippodoc.fr/faq): Questions fréquentes sur l'usage d'Hippodoc.
-- [Comparatif](https://hippodoc.fr/comparatif): Hippodoc face aux autres solutions de gestion pour médecins remplaçants.
-- [Qui sommes-nous](https://hippodoc.fr/qui-sommes-nous): L'équipe et la mission.
+- [Accueil](https://www.hippodoc.fr/): Présentation du cockpit financier des médecins remplaçants et essai gratuit 30 jours.
+- [Simulateur Super-Net](https://www.hippodoc.fr/simulateur): Estime le revenu net après impôts et cotisations selon ton profil (remplaçant, installé, mixte).
+- [Guide des déclarations](https://www.hippodoc.fr/guide-declarations): Boussole interactive pour la déclaration 2035, 2042 et DSFU (volet PAMC), 12 profils médecins.
+- [Calculette PAMC](https://www.hippodoc.fr/guide-declarations/calculette): Calculette publique des cases sociales DSFU (DSCS, DSAV, DSFA, DSDE, DSCN…).
+- [Tarifs](https://www.hippodoc.fr/tarifs): Mensuel 29 €/mois ou annuel 19 €/mois, essai gratuit 30 jours, résiliation à tout moment.
+- [Blog](https://www.hippodoc.fr/blog): Fiches pratiques fiscalité, cotisations, contrats et conseils pour médecins remplaçants.
+- [FAQ](https://www.hippodoc.fr/faq): Questions fréquentes sur l'usage d'Hippodoc.
+- [Comparatif](https://www.hippodoc.fr/comparatif): Hippodoc face aux autres solutions de gestion pour médecins remplaçants.
+- [Qui sommes-nous](https://www.hippodoc.fr/qui-sommes-nous): L'équipe et la mission.
 
 ## Optional
 
-- [Mentions légales](https://hippodoc.fr/mentions-legales)
-- [Politique de confidentialité](https://hippodoc.fr/politique-confidentialite)
-- [RGPD](https://hippodoc.fr/rgpd)
-- [Conditions d'utilisation](https://hippodoc.fr/conditions-utilisations)
+- [Mentions légales](https://www.hippodoc.fr/mentions-legales)
+- [Politique de confidentialité](https://www.hippodoc.fr/politique-confidentialite)
+- [RGPD](https://www.hippodoc.fr/rgpd)
+- [Conditions d'utilisation](https://www.hippodoc.fr/conditions-utilisations)
