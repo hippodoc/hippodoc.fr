@@ -208,6 +208,10 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
   `public-assets` du projet `zlqlijendlquvwnodeqq`), poster de la source rapatrié dans
   `public/`. Le tracking JS `useVideoAnalytics` de la source (play/progress/erreurs)
   n'est pas reproduit (invariant zéro JS).
+- **Accueil / VideoObject** (août 2026) : `uploadDate` passé de la date seule `2026-08-04`
+  au format ISO 8601 complet `2026-08-04T09:00:00+02:00` (heure de Paris) — corrige les
+  deux avertissements Search Console « Il manque le fuseau horaire » / « Valeur de date et
+  heure incorrecte » sur les données structurées Vidéos.
 
 ## 10. TODO(owner) — faits manquants / décisions
 
