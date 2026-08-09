@@ -164,10 +164,6 @@ const includedFeatures = [
       </div>
     </div>
 
-    <p class="mb-10 text-center text-sm">
-      <a href="/tarifs" class="text-hippo-600 underline decoration-hippo-300 underline-offset-4 hover:text-hippo-800">Voir le détail des tarifs</a>
-    </p>
-
     <!-- Offres spéciales -->
     <div class="mb-10 flex justify-center px-4">
       <div class="relative w-full max-w-3xl">
@@ -239,11 +235,12 @@ const includedFeatures = [
       </div>
     </div>
 
-    <!-- Comparatif détaillé -->
+    <!-- Comparatif détaillé — s'ouvre inline dans la landing (<details> natif),
+         sans renvoyer vers une autre page. La page SEO /tarifs reste liée plus bas. -->
     <div class="mx-auto mb-6 max-w-4xl">
       <details class="group/compare mx-auto text-center">
         <summary data-ph="landing_pricing_comparison_toggle" class="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold text-hippo-700 hover:text-hippo-800">
-          📊 Comparer les formules en détail
+          📊 Détail des offres
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-open/compare:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </summary>
 
@@ -329,6 +326,10 @@ const includedFeatures = [
           </div>
 
           <p class="mt-6 text-center text-xs text-muted-foreground">✓ Prix TTC · Sans frais cachés</p>
+
+          <p class="mt-2 text-center text-sm">
+            <a href="/tarifs" class="text-hippo-600 underline decoration-hippo-300 underline-offset-4 hover:text-hippo-800">Voir la page tarifs complète</a>
+          </p>
         </div>
       </details>
     </div>

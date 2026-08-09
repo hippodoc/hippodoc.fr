@@ -28,8 +28,9 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 - **Contenu français verbatim** — le wording produit/articles ne se « réécrit » pas.
   Tout ajout/modification de contenu doit être flaggé dans MIGRATION.md §9.
 - **Zéro JS client hors** : îlots des outils (simulateur, calculette, boussole, carrousel
-  blog), PostHog, et `ThirdPartyScripts.astro`. Les interactions des pages statiques sont
-  CSS-only (radios/checkbox) ou natives (`<details>/<summary>`).
+  blog), PostHog, `ThirdPartyScripts.astro`, et le micro-script inline de `Header.astro`
+  (fermeture du tiroir mobile au clic d'une ancre — voir MIGRATION.md §9). Les interactions
+  des pages statiques sont CSS-only (radios/checkbox) ou natives (`<details>/<summary>`).
 - **Radix ne SSR pas le contenu fermé** — un Accordion/Collapsible Radix fermé ne livre
   PAS son texte dans le HTML statique. Pour tout contenu porteur de SEO : `<details>` natif.
 - **Lighthouse ≥ 95** (perf/SEO/a11y/BP) sur `/`, `/simulateur` et un article. Contraste :
