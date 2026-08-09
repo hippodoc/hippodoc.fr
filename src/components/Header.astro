@@ -3,27 +3,28 @@ import { APP_URL } from '@/lib/site';
 
 /**
  * Header global — style « glass » porté de src/components/landing/Header.tsx.
- * Structure de la source restaurée : liens principaux + dropdown « Plus »,
- * mais 100 % CSS (hover/focus-within) : les liens du dropdown sont toujours
- * dans le HTML statique (contrairement à Radix), zéro JS. Menu mobile à plat
- * 100 % CSS (checkbox).
+ * Nav minimaliste (passe de simplification août 2026) : 3 ancres vers les
+ * sections clés de la landing (« Découvrir », « Pour qui », « Tarifs ») + un
+ * seul dropdown « Ressources ». Dropdown 100 % CSS (hover/focus-within) : les
+ * liens restent dans le HTML statique (contrairement à Radix). Menu mobile à
+ * plat 100 % CSS (checkbox) ; seul un micro-script inline referme le tiroir
+ * quand on clique une ancre de la même page (aucune navigation ne se produit,
+ * le CSS seul ne peut pas décocher la checkbox).
  */
 
-const mainItems = [
-  { href: '/', label: 'Accueil', ph: 'landing_nav_accueil' },
+const anchorItems = [
+  { href: '/#film-presentation', label: 'Découvrir', ph: 'landing_nav_decouvrir' },
+  { href: '/#parcours', label: 'Pour qui', ph: 'landing_nav_pour_qui' },
+  { href: '/#pricing', label: 'Tarifs', ph: 'landing_nav_pricing' },
+];
+
+const resourceItems = [
   { href: '/simulateur', label: 'Simulateur', ph: 'landing_resource_simulateur' },
   { href: '/guide-declarations', label: 'Guide déclarations', ph: 'landing_resource_guide-declarations' },
   { href: '/blog', label: 'Blog', ph: 'landing_resource_blog' },
-  { href: '/tarifs', label: 'Tarifs', ph: 'landing_nav_pricing' },
-];
-
-const plusItems = [
-  { href: '/comparatif', label: 'Comparatif', ph: 'landing_resource_comparatif' },
   { href: '/faq', label: 'FAQ', ph: 'landing_resource_faq' },
-  { href: '/qui-sommes-nous', label: 'Qui sommes-nous', ph: 'landing_resource_qui-sommes-nous' },
+  { href: '/qui-sommes-nous', label: 'Qui sommes-nous ?', ph: 'landing_resource_qui-sommes-nous' },
 ];
-
-const navItems = [...mainItems, ...plusItems];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
@@ -46,35 +47,31 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     </a>
 
     <nav class="hidden items-center gap-5 xl:gap-6 lg:flex" aria-label="Navigation principale">
-      {mainItems.map((item) => (
+      {anchorItems.map((item) => (
         <a
           href={item.href}
           data-ph={item.ph}
-          aria-current={currentPath === item.href ? 'page' : undefined}
-          class:list={[
-            'inline-flex min-h-11 items-center text-[15px] font-medium transition-colors hover:text-hippo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            currentPath === item.href ? 'text-hippo-600' : 'text-hippo-800',
-          ]}
+          class="inline-flex min-h-11 items-center text-[15px] font-medium text-hippo-800 transition-colors hover:text-hippo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {item.label}
         </a>
       ))}
 
-      <!-- Dropdown « Plus » 100 % CSS (hover + focus-within) ; liens toujours dans le HTML -->
+      <!-- Dropdown « Ressources » 100 % CSS (hover + focus-within) ; liens toujours dans le HTML -->
       <div class="group relative">
         <button
           type="button"
           class:list={[
             'inline-flex min-h-11 cursor-pointer items-center gap-1 text-[15px] font-medium transition-colors group-hover:text-hippo-600 group-focus-within:text-hippo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            plusItems.some((item) => item.href === currentPath) ? 'text-hippo-600' : 'text-hippo-800',
+            resourceItems.some((item) => item.href === currentPath) ? 'text-hippo-600' : 'text-hippo-800',
           ]}
         >
-          Plus
+          Ressources
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="invisible absolute right-0 top-full z-50 pt-2 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-          <div class="w-52 rounded-xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass)/0.92)] p-1.5 shadow-[var(--shadow-landing-glass-scrolled)] backdrop-blur-xl backdrop-saturate-150">
-            {plusItems.map((item) => (
+          <div class="w-56 rounded-xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass)/0.92)] p-1.5 shadow-[var(--shadow-landing-glass-scrolled)] backdrop-blur-xl backdrop-saturate-150">
+            {resourceItems.map((item) => (
               <a
                 href={item.href}
                 data-ph={item.ph}
@@ -130,6 +127,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
   ></label>
 
   <div
+    id="mobile-menu-drawer"
     class="invisible fixed bottom-3 right-3 top-3 z-50 w-[calc(100%-1.5rem)] max-w-[360px] translate-x-[110%] overflow-hidden rounded-2xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass)/0.92)] shadow-[var(--shadow-landing-glass-scrolled)] backdrop-blur-xl backdrop-saturate-150 transition-[transform,visibility] duration-300 peer-checked:visible peer-checked:translate-x-0 motion-reduce:transition-none lg:hidden"
   >
         <div class="flex h-full flex-col px-5 pb-4 pt-5">
@@ -144,7 +142,19 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
           </div>
           <nav class="mt-5 flex min-h-0 flex-1 flex-col overflow-y-auto" aria-label="Navigation mobile">
             <div class="space-y-1">
-              {navItems.map((item) => (
+              {anchorItems.map((item) => (
+                <a
+                  href={item.href}
+                  data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`}
+                  class="flex min-h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold text-hippo-800 transition-colors hover:bg-hippo-50 hover:text-hippo-600"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+            <p class="mb-1 mt-5 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ressources</p>
+            <div class="space-y-1">
+              {resourceItems.map((item) => (
                 <a
                   href={item.href}
                   data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`}
@@ -172,4 +182,12 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
           </div>
         </div>
   </div>
+
+  <!-- Cliquer une ancre de la page courante ne déclenche aucune navigation :
+       la checkbox doit être décochée explicitement, sinon le tiroir reste ouvert. -->
+  <script is:inline>
+    document.getElementById('mobile-menu-drawer').addEventListener('click', function (e) {
+      if (e.target.closest('a')) document.getElementById('mobile-menu-toggle').checked = false;
+    });
+  </script>
 </header>

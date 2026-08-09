@@ -212,6 +212,40 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
   au format ISO 8601 complet `2026-08-04T09:00:00+02:00` (heure de Paris) — corrige les
   deux avertissements Search Console « Il manque le fuseau horaire » / « Valeur de date et
   heure incorrecte » sur les données structurées Vidéos.
+- **Passe de simplification landing** (août 2026, demande owner) :
+  - **Hero allégé** : la phrase PRODUCT_DEFINITION est retirée du Hero et déplacée
+    verbatim (site.ts, contrat GEO intact) dans la section « film de présentation » ;
+    le bloc « Quel que soit ton mode d'exercice » + 7 chips profils est supprimé du
+    Hero (contenu redondant avec la section #parcours, conservée telle quelle).
+    CTA principal restylé : dégradé → aplat `hippo-600` arrondi plein (cohérent avec
+    le CTA header), libellé et tracking `cta_signup_hero` inchangés.
+  - **Section « En chiffres »** : 3 → 6 tuiles. Ajouts : « 900+ Médecins inscrits »
+    (chiffre déjà annoncé Hero/CtaBanner/Parcours), « 38 Articles pédagogiques au
+    blog » (nombre réel d'articles migrés), « 100 % Données hébergées en France »
+    (fait repris de la liste « Inclus dans toutes les offres »). Aucun chiffre inventé.
+  - **Header simplifié** : nav desktop réduite à 3 ancres (« Découvrir » → /#film-presentation,
+    « Pour qui » → /#parcours, « Tarifs » → /#pricing) + dropdown « Ressources »
+    (Simulateur, Guide déclarations, Blog, FAQ, Qui sommes-nous). Les liens restent
+    dans le HTML statique (dropdown CSS). `/comparatif` sort du header mais reste lié
+    au footer (« Comparatif outils ») — route et indexation intactes. Le lien direct
+    header vers `/tarifs` devient une ancre ; `/tarifs` reste liée depuis le footer,
+    le tableau « Détail des offres » et le blog. Menu mobile aligné sur la même
+    structure. Événements PostHog `landing_resource_*` et `cta_signup_header*`
+    conservés ; nouveaux : `landing_nav_decouvrir`, `landing_nav_pour_qui`
+    (`landing_nav_pricing` conservé, désormais sur l'ancre).
+  - **Exception zéro-JS (assumée)** : micro-script inline (~4 lignes, aucun asset)
+    dans Header.astro pour décocher la checkbox du tiroir mobile au clic sur un lien —
+    indispensable car une ancre de la même page ne déclenche aucune navigation et le
+    CSS seul ne peut pas refermer le tiroir. Aucun impact Lighthouse.
+  - **Partenaires / écosystème** : badge « Partenaires · Écosystème » → « Syndicats
+    d'internes · Écosystème médical » ; h3 « Ils font confiance à Hippodoc » →
+    « Syndicats d'internes & partenaires de l'écosystème médical » ; sous-titre
+    mentionne explicitement les syndicats d'internes.
+  - **« Détail des offres »** : le lien isolé « Voir le détail des tarifs » (→ /tarifs)
+    sous les cartes est supprimé ; le `<details>` inline est renommé « 📊 Détail des
+    offres » et contient désormais le lien « Voir la page tarifs complète » (→ /tarifs).
+    La page SEO /tarifs n'est PAS supprimée (invariant URLs figées) et garde des liens
+    internes (footer, blog, tableau).
 
 ## 10. TODO(owner) — faits manquants / décisions
 
