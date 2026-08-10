@@ -661,6 +661,30 @@ touchée par la refonte, relevée par le balayage final) :
     commande vocale de cibler le bouton en prononçant ce qu'il lit. `aria-label`
     retiré — le texte visible suffit comme nom accessible.
 
+**⚠️ `/guide-declarations` reste à 97 en accessibilité — 20 nœuds non corrigés.**
+Dix instances ont été corrigées (`text-emerald-700/70` ×4, `text-blue-600/70` ×3,
+`text-emerald-500/60` ×3), mais le diagnostic final montre que le problème est
+**systématique sur cette page** et suit six motifs :
+
+| motif | nœuds | ratio | correction |
+|---|---|---|---|
+| `opacity-60` sur gris | 6 | 2,37 | retirer l'opacité |
+| `text-red-600` sur `bg-red-50` | 7 | 4,41 | `text-red-700` |
+| `text-emerald-600` sur vert pâle | 3 | 3,67 | `text-emerald-700` |
+| `opacity-70` sur bleu | 2 | 2,94 | retirer l'opacité |
+| blanc sur `bg-hippo-500` | 1 | 3,36 | `bg-hippo-600` |
+| `text-hippo-600` sur `bg-hippo-100` | 1 | 4,40 | `text-hippo-700` |
+
+Dispersés dans au moins cinq composants (`CaseopediaSection`, `CrossLinks`,
+`FlowChartSection`, `FiscalSocialPrimer`, `BoussoleWizard`). C'est une **passe
+dédiée à cette page**, hors du périmètre de la refonte du blog, qui demande une
+vérification visuelle de chaque composant touché — non engagée ici pour ne pas
+restyler à moitié une page non demandée.
+
+La racine est identique à celle des contrastes de §9.h : la nuance passe par
+l'**opacité** ou par une couleur **mi-ton** au lieu d'une couleur assez foncée.
+À traiter comme une règle de design, pas comme des cas isolés.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
