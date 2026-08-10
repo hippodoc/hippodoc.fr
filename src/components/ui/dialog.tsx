@@ -4,7 +4,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { ScreenTracker } from "@/components/tracking/ScreenTracker"
+// `ScreenTracker` était un composant d'analytics de la SPA source, absent de ce
+// dépôt. Cet import mort faisait échouer le scan de dépendances de Vite, donc le
+// pré-bundling, donc toute page à îlot React en dev (500 sur /simulateur).
 
 const Dialog = DialogPrimitive.Root
 
@@ -51,7 +53,6 @@ const DialogContent = React.forwardRef<
         props.onEscapeKeyDown?.(e);
       }}
     >
-      <ScreenTracker kind="dialog" screen={(props as { "data-ph"?: string })["data-ph"]} />
       {children}
       {!hideCloseButton && (
         <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
