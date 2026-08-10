@@ -538,6 +538,48 @@ Rendus via `set:html` — HTML de confiance écrit à la main, aucune saisie
 utilisateur. Les `<strong>` y sont volontairement en encre neutre et non en bleu :
 en bleu foncé ils imitaient des liens sans en être.
 
+### 9.j Serveur de dev et hydratation de /simulateur (août 2026)
+
+**Le serveur de dev renvoyait 500 sur toute page à îlot React**, ce qui rendait
+tout diagnostic impossible — et masquait le point suivant. Chaîne complète :
+
+```
+ui/dialog.tsx importe @/components/tracking/ScreenTracker  (absent du dépôt)
+   → le scan de dépendances Vite échoue
+   → le pré-bundling est désactivé
+   → react est servi en CommonJS brut
+   → PremiumTooltip.tsx : import { ReactNode } from "react"  (ReactNode est un TYPE)
+   → 500
+```
+
+Le **build de production tolérait les deux** (esbuild élimine l'import de type,
+`dialog.tsx` n'est importé par personne) : défaut invisible en CI. Correctifs :
+`import type` d'un côté, retrait de l'import mort de l'autre. `dialog.tsx` est
+conservé — c'est l'un des **23 composants `ui/*` orphelins** hérités de la SPA,
+dont le nettoyage d'ensemble reste à faire.
+
+**Échec d'hydratation de `/simulateur`** — « Hydration failed because the initial
+UI does not match what was rendered on the server », suivi de « the entire root
+will switch to client rendering » : React jetait le HTML serveur et re-rendait
+l'îlot entier, sur la page de conversion, sur **tout téléphone**. Défaut
+antérieur à la refonte du blog (vérifié en rebâtissant le commit `1d1be89`).
+
+⚠️ Cause : `useIsMobile()` lisait `window.innerWidth` **pendant le rendu** tant
+que son état valait `undefined`. Serveur → `false` ; premier rendu client sur
+mobile → `true`. `PremiumTooltip` branche là-dessus et ajoute un `<div>`
+d'enrobage en variante mobile : React attendait un `<div>` dans un `<label>`
+absent du HTML serveur. **Le premier rendu client doit toujours être identique
+au rendu serveur** — l'état part désormais de `false`, la vraie valeur arrivant
+après montage.
+
+Hypothèses écartées en chemin, à ne pas reprendre : formatage `Intl.NumberFormat`
+(aucun nombre formaté n'est rendu côté serveur) et imbrication HTML invalide
+(0 cas dans l'îlot SSR).
+
+Résultat : 0 `pageerror` à 320, 390 et 1440 px ; accessibilité, bonnes pratiques
+et SEO à 100. La performance reste à 88-89 (LCP 3,8 s) — c'est le bundle
+`SimulateurApp.js` de **552 Ko**, pas l'hydratation.
+
 Reste à faire : les arbitrages éditoriaux signalés en §9.d et §9.e.
 
 ## 10. TODO(owner) — faits manquants / décisions
