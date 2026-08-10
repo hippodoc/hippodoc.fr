@@ -648,6 +648,19 @@ surtout dans les outils (calculette, simulateur, guide) : c'est une convention d
 design établie, et aucun critère WCAG n'impose de taille minimale. Les modifier
 serait une décision de design, pas une finition.
 
+**Deux derniers défauts d'accessibilité sur `/guide-declarations`** (page non
+touchée par la refonte, relevée par le balayage final) :
+  - `FiscalSocialPrimer.astro` — 4 `<dt>` en `text-hippo-700/70` : l'opacité
+    ramenait le contraste à **3,50:1** sur fond `#f6faff`, à 10 px. Opacité
+    retirée (**6,4:1**). Même racine que les six contrastes de §9.h : la nuance
+    passait par l'opacité au lieu de la couleur.
+  - `PremiumCtaSection.astro` — le bouton portait `aria-label="Démarrer mon essai
+    gratuit **Hippodoc** 30 jours"` alors que son texte visible est « Démarrer mon
+    essai gratuit 30 jours ». Le nom accessible ne **contenait** donc pas le texte
+    visible : échec **WCAG 2.5.3 (Label in Name)**, qui empêche un utilisateur de
+    commande vocale de cibler le bouton en prononçant ce qu'il lit. `aria-label`
+    retiré — le texte visible suffit comme nom accessible.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
