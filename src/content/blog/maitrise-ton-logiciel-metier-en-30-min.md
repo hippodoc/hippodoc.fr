@@ -25,7 +25,7 @@ relatedArticles:
   - "checklist-ultime-medecin-remplacant"
 ---
 
-Tu t'apprêtes à débuter ton premier remplacement médical, et l'idée d'utiliser un nouveau logiciel te fait un peu stresser ? Pas de panique ! Que ce soit Doctolib, Weda, MediStory, Axisanté, Crossway, Almapro, ou autre, cette checklist ultra-simple t'aidera à devenir rapidement opérationnel(le). Prends 30 minutes, un café, et c'est parti ! 🔥💻
+Tu t'apprêtes à débuter ton [premier remplacement](/blog/realites-remplacement-medical) médical, et l'idée d'utiliser un nouveau logiciel te fait un peu stresser ? Pas de panique ! Que ce soit Doctolib, Weda, MediStory, Axisanté, Crossway, Almapro, ou autre, cette checklist ultra-simple t'aidera à devenir rapidement opérationnel(le). Prends 30 minutes, un café, et c'est parti ! 🔥💻
 
 ## 🔐 Connexion rapide et efficace
 

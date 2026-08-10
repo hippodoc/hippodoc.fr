@@ -80,7 +80,7 @@ Pour bénéficier de l'exonération :
 :::warning
 ✅ **Exonéré d'impôt sur le revenu**
 
-❌ **Pas exonéré de cotisations sociales** (URSSAF / CARMF / CSG-CRDS)
+❌ **Pas exonéré de cotisations sociales** ([URSSAF](/blog/tout-comprendre-urssaf) / [CARMF](/blog/tout-comprendre-carmf) / CSG-CRDS)
 
 ⚠️ En clair : le forfait d'astreinte et les majorations PDSA peuvent être exonérés d'IR, mais ils restent **pleinement soumis aux cotisations sociales**.
 :::
@@ -92,9 +92,9 @@ Tu ajoutes tes gardes en quelques secondes, et **Hippodoc fait le tri automatiqu
 ce qui est exonéré d'IR d'un côté, ce qui reste imposable de l'autre.
 
 **Résultat :**\
-→ un **super-net fiable** en temps réel, intégrant impôt et cotisations,\
+→ un **[super-net](/blog/simulateur-super-net-combien-reste) fiable** en temps réel, intégrant impôt et cotisations,\
 → un **compteur des 60 jours** à jour,\
 → un **récapitulatif propre**, prêt pour ta déclaration.
 
-Le tout centralisé au même endroit, que tu fasses du libéral, du salariat ou un mix des deux.
+Le tout centralisé au même endroit, que tu fasses du libéral, du [salariat](/blog/salariat-vs-liberal) ou un mix des deux.
 :::

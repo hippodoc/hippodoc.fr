@@ -146,7 +146,7 @@ Pas besoin d'être trader. **Un virement automatique le 5 du mois, c'est tout.**
 ## 🎓 Par où commencer concrètement
 
 :::tip
-**Épargne de précaution** : 3 à 6 mois de dépenses sur Livret A + LEP (si tu es éligible, souvent le cas en internat).\
+**Épargne de précaution** : 3 à 6 mois de dépenses sur Livret A + LEP (si tu es éligible, souvent le cas en [internat](/blog/guide-impots-internes-remplacants)).\
 **Long terme (>8 ans)** : ouvre un **PEA** (plafond 150 000 €, fiscalité allégée après 5 ans), et place sur un **ETF Monde**.\
 **Optimisation** : ouvre une **assurance-vie dès aujourd'hui**, même avec 100 €, juste pour lancer le compteur des 8 ans (abattement fiscal).\
 **Automatise** : virement le 5 du mois, **avant de voir passer l'argent**.\
@@ -165,6 +165,6 @@ Tu as deux superpowers que la plupart des profils n'ont pas : **des revenus stab
 
 ## 🚀 Et Hippodoc dans tout ça ?
 
-Pour investir, encore faut-il **savoir ce qu'il te reste vraiment à la fin du mois**. Entre les remplas, l'URSSAF, les impôts, les charges variables, le remplaçant pilote ses finances au feeling. C'est précisément ce qu'Hippodoc corrige.
+Pour investir, encore faut-il **savoir ce qu'il te reste vraiment à la fin du mois**. Entre les remplas, l'[URSSAF](/blog/tout-comprendre-urssaf), les impôts, les charges variables, le remplaçant pilote ses finances au feeling. C'est précisément ce qu'Hippodoc corrige.
 
 👉 **hippodoc.fr** — ce qu'il te reste vraiment chaque mois, en clair. Tu sais précisément ce que tu peux investir ou dépenser, sans stress.

@@ -36,8 +36,8 @@ Sans ce chiffre, tu navigues à l'instinct : tu dépenses, puis les charges tomb
 C'est exactement ce que te permet **Hippodoc.fr** :
 
 ✅ suivre ton activité à 360°\
-✅ anticiper tes charges (URSSAF, CARMF, etc.)\
-✅ visualiser en temps réel ton **super net** (ce qu'il te reste vraiment)
+✅ anticiper tes charges ([URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf), etc.)\
+✅ visualiser en temps réel ton **[super net](/blog/simulateur-super-net-combien-reste)** (ce qu'il te reste vraiment)
 
 👉 Une fois que tu connais ce chiffre, tu peux enfin appliquer une méthode simple.
 

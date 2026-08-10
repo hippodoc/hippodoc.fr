@@ -30,7 +30,7 @@ relatedArticles:
   - "tout-comprendre-carmf"
 ---
 
-Quand tu démarres ton activité de médecin remplaçant en libéral, la première surprise est souvent que ce que tu encaisses n'est pas entièrement ce que tu gardes. Entre URSSAF, CARMF et impôts, il est facile de s'y perdre. Voici un guide clair pour comprendre facilement ces différences.
+Quand tu démarres ton activité de médecin remplaçant en libéral, la première surprise est souvent que ce que tu encaisses n'est pas entièrement ce que tu gardes. Entre [URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf) et impôts, il est facile de s'y perdre. Voici un guide clair pour comprendre facilement ces différences.
 
 ## ⚖️ Impôts sur le revenu (IR)
 
@@ -52,7 +52,7 @@ Ils sont basés sur ton **bénéfice net** (revenus moins dépenses professionne
 
 Elles assurent ta protection sociale personnelle, notamment :
 
-**Assurance maladie-maternité** (URSSAF)\
+**Assurance maladie-[maternité](/blog/conge-maternite-paternite)** (URSSAF)\
 **Retraite** (CARMF)\
 **Allocations familiales**\
 **Indemnités journalières**\
@@ -78,7 +78,7 @@ Les paiements sont généralement **trimestriels**, mais peuvent être adaptés 
 Pour chaque tranche de **1 000 € encaissée** :\
 💸 **350 à 450 €** partent en cotisations sociales\
 💸 **50 à 150 €** sont prélevés au titre de l'impôt sur le revenu, selon ta situation familiale et fiscale\
-✅ Il te reste donc entre **450 et 600 €** (revenu réel ou « super-net »).
+✅ Il te reste donc entre **450 et 600 €** (revenu réel ou « [super-net](/blog/simulateur-super-net-combien-reste) »).
 :::
 
 ## 💡 Bon à savoir : exonérations possibles

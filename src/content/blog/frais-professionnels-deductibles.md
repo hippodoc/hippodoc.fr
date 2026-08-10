@@ -52,7 +52,7 @@ Idéal si tes frais dépassent **34 %** de tes recettes.
 
 ## 🚗 Déplacements professionnels
 
-**Barème kilométrique** (€/km selon véhicule).\
+**[Barème kilométrique](/blog/frais-pros-medecin-liberal-2026)** (€/km selon véhicule).\
 **Frais réels** : essence, assurance, entretien, péages, parking.
 
 ## 🚆 Transports & hébergements
@@ -87,7 +87,7 @@ Responsabilité civile professionnelle, prévoyance, autres assurances liées à
 
 ## 💼 Cotisations sociales
 
-URSSAF et CARMF déductibles *(sauf CRDS et part non déductible de la CSG)*.
+[URSSAF](/blog/tout-comprendre-urssaf) et [CARMF](/blog/tout-comprendre-carmf) déductibles *(sauf CRDS et part non déductible de la CSG)*.
 
 ## 📊 Comptabilité & AGA
 

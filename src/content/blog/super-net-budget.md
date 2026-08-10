@@ -31,7 +31,7 @@ La nouvelle génération de médecins, c'est celle qui pilote.\
 Pas pour "faire des économies".\
 Pour vivre mieux, investir mieux, et décider sans se raconter d'histoires.
 
-Hippodoc te donne ton Super-Net pro (après charges + impôts).\
+Hippodoc te donne ton [Super-Net](/blog/simulateur-super-net-combien-reste) pro (après charges + impôts).\
 Et maintenant, on pousse la logique jusqu'au bout : ton budget perso.
 
 ## 🎁 Nouveau sur Hippodoc : le Simulateur Budget
@@ -44,7 +44,7 @@ revenus / dépenses / investissements → et tu récupères un budget clair, lis
 ## 📊 Concrètement, tu vois :
 
 📊 la répartition de ton mois : Investissements / Dépenses / Disponible (ce qui reste vraiment)\
-🧾 le détail de tes revenus (ex : rempla, salariat, etc.)\
+🧾 le détail de tes revenus (ex : rempla, [salariat](/blog/salariat-vs-liberal), etc.)\
 📌 tes postes de dépenses par catégorie (logement, vie quotidienne, loisirs…)\
 📈 tes investissements (Livret A, PEA, AV, PER…) + leur poids dans ton budget\
 🧠 une petite analyse automatique : taux d'investissement, marge restante, plus gros poste, points d'attention (ex : épargne de sécurité)\

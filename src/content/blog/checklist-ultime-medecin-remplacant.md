@@ -23,7 +23,7 @@ relatedArticles:
   - "checklist-administrative-medecin-remplacant"
 ---
 
-✨ Premier remplacement médical à l'horizon ? Pas de stress, tu vas assurer ! Voici LA checklist complète et détaillée qui t'aidera à gérer ton remplacement comme un vrai pro dès le premier jour. Prépare-toi à impressionner tes patients et ton équipe dès ton arrivée ! Let's go ! 🔥
+✨ [Premier remplacement](/blog/realites-remplacement-medical) médical à l'horizon ? Pas de stress, tu vas assurer ! Voici LA checklist complète et détaillée qui t'aidera à gérer ton remplacement comme un vrai pro dès le premier jour. Prépare-toi à impressionner tes patients et ton équipe dès ton arrivée ! Let's go ! 🔥
 
 ## 📌 Avant ton premier patient
 
@@ -45,7 +45,7 @@ relatedArticles:
 ## 📋 Après ton remplacement
 
 ✅ **Compte-rendu détaillé** : Prépare un document clair pour transmettre les informations importantes (cas complexes, examens à suivre, urgences traitées).\
-✅ **Clôture administrative impeccable** : Note rigoureusement les revenus quotidiens (espèces, CB, chèques, virements). Cela facilitera ta rétrocession et préviendra tout litige éventuel. Utilise Hippodoc pour simplifier ces démarches administratives !\
+✅ **Clôture administrative impeccable** : Note rigoureusement les revenus quotidiens (espèces, CB, chèques, virements). Cela facilitera ta [rétrocession](/blog/salaires-medecins-remplacants) et préviendra tout litige éventuel. Utilise Hippodoc pour simplifier ces [démarches administratives](/blog/checklist-administrative-medecin-remplacant) !\
 ✅ **Échange chaleureux de fin** : Prends le temps d'un bref entretien avec le titulaire à la fin de ton remplacement pour renforcer votre relation professionnelle et envisager sereinement de futures collaborations.
 
 ## ❌ Erreurs à absolument éviter

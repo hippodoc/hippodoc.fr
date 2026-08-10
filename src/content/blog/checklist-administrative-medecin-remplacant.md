@@ -32,14 +32,14 @@ Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse bla
 
 ## ✅ Responsabilité Civile Professionnelle (RCP)
 
-📅 **Quand ?** Obligatoire AVANT ton premier remplacement.\
+📅 **Quand ?** Obligatoire AVANT ton [premier remplacement](/blog/realites-remplacement-medical).\
 🧐 **Pourquoi ?** Elle te protège contre les risques professionnels comme les erreurs médicales ou incidents imprévus pouvant survenir pendant ta pratique.\
 📌 **Astuce :** N'hésite pas à comparer les différentes offres proposées par les assureurs spécialisés (MACSF, GPM, La Médicale…). Certaines assurances sont même incluses gratuitement via les syndicats d'internes, alors renseigne-toi bien avant de souscrire !
 
 ## ✅ Inscription à l'Ordre des Médecins
 
 📅 **Quand ?** Obligatoire AVANT ton premier remplacement.\
-🧐 **Pourquoi ?** L'inscription au tableau de l'Ordre est une obligation légale pour exercer en France. Elle officialise ton droit à pratiquer et te permet de facturer tes actes.\
+🧐 **Pourquoi ?** L'inscription au tableau de l'Ordre est une obligation légale pour exercer en France. Elle officialise ton droit à pratiquer et te permet de [facturer](/blog/generer-facture-remplacement) tes actes.\
 📌 **Astuce :** Anticipe cette démarche car les délais peuvent varier selon les départements. Prévois plusieurs semaines d'avance pour éviter tout retard dans le début de ton activité.
 
 ## ✅ Inscription à la CPAM
@@ -52,7 +52,7 @@ Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse bla
 
 📅 **Quand ?** Dans les 8 jours suivant le début effectif de ton activité libérale.\
 🧐 **Pourquoi ?** Cela te permet de déclarer officiellement ton activité professionnelle indépendante, et tu recevras ainsi ton numéro SIRET, indispensable pour la facturation.\
-📌 **Astuce :** Profite de l'espace simplifié RSPM pour déclarer en ligne tes revenus et payer tes cotisations facilement (URSSAF et CARMF).
+📌 **Astuce :** Profite de l'espace simplifié [RSPM](/blog/rspm-exemples-concrets) pour déclarer en ligne tes revenus et payer tes cotisations facilement ([URSSAF](/blog/tout-comprendre-urssaf) et [CARMF](/blog/tout-comprendre-carmf)).
 
 ## ✅ Inscription à la CARMF
 

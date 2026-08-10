@@ -42,7 +42,7 @@ En cabinet, les résultats tombent, les messages s'empilent, les appels coupent 
 
 ## Inbox zéro ne veut pas dire "tout faire tout de suite"
 
-L'objectif n'est pas de quitter le cabinet avec une boîte de réception vide au sens littéral. L'objectif, c'est qu'il ne reste aucun élément sans statut, sans responsable ou sans échéance.
+L'objectif n'est pas de quitter le cabinet avec une boîte de réception vide au sens littéral. L'objectif, c'est qu'il ne reste aucun élément sans statut, sans responsable ou sans [échéance](/blog/calendrier-fiscal-remplacant).
 
 Autrement dit, en fin de journée, chaque résultat, chaque message, chaque appel doit être dans une de ces cases : **fait, daté, transmis ou escaladé.**
 

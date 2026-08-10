@@ -61,7 +61,7 @@ Si tu remplaces plus de 90 jours le même médecin, il peut y avoir une clause t
 ## 🚫 Pièges fréquents à éviter absolument
 
 ❌ Ne signe jamais un contrat oral. Tout doit être écrit !\
-🚫 Refuse les clauses financières floues comme « rétrocession à définir ultérieurement ».\
+🚫 Refuse les clauses financières floues comme « [rétrocession](/blog/salaires-medecins-remplacants) à définir ultérieurement ».\
 ⚠️ Évite les renouvellements automatiques prolongés.\
 ❗ Vérifie qu'il n'y ait aucune clause abusive limitant tes congés ou exigeant des obligations disproportionnées sur l'activité du remplacé.
 

@@ -75,7 +75,7 @@ Ton agenda n'est plus un simple planning : **c'est ton équilibre**.
 
 ## 💸 6. Tu deviens… une mini-entreprise
 
-Rétro, paiements, charges, déclarations, URSSAF, CARMF, fiscalité.
+Rétro, paiements, charges, déclarations, [URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf), fiscalité.
 
 👉 Ce n'est pas intuitif, mais tu prends vite le rythme.
 
@@ -84,7 +84,7 @@ Rétro, paiements, charges, déclarations, URSSAF, CARMF, fiscalité.
 48h ici, fin de mois là, "après le point compta" ailleurs…\
 Et parfois, il faut relancer.
 
-👉 Prévoir ses charges ou lisser son budget, au début, c'est compliqué.
+👉 Prévoir ses charges ou lisser son [budget](/blog/super-net-budget), au début, c'est compliqué.
 
 ## 💙 Personne ne te l'avait dit… maintenant si
 
@@ -97,9 +97,9 @@ Parce qu'on connaît bien ces réalités, on t'aide à garder le cap sur l'essen
 
 📅 **un agenda clair et professionnel**
 
-💶 **ton Super-Net en temps réel** (ce qu'il te reste vraiment)
+💶 **ton [Super-Net](/blog/simulateur-super-net-combien-reste) en temps réel** (ce qu'il te reste vraiment)
 
-📊 **un suivi propre de tes paiements & rétrocessions**
+📊 **un suivi propre de tes paiements & [rétrocessions](/blog/salaires-medecins-remplacants)**
 
 📂 **tes documents, contrats, charges & fiscalité au même endroit**
 :::

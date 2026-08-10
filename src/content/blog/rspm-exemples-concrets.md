@@ -27,13 +27,13 @@ relatedArticles:
   - "cotisations-sociales-vs-impots"
 ---
 
-🎯 **Objectif** : savoir ce qu'il reste **vraiment** après charges et impôt → le **"super net"**
+🎯 **Objectif** : savoir ce qu'il reste **vraiment** après charges et impôt → le **"[super net](/blog/simulateur-super-net-combien-reste)"**
 
 ## ⚡ RSPM en 30 secondes (rappel)
 
-**Cotisations sociales tout-inclus** (URSSAF, CARMF,…) : **13,5 %** jusqu'à 19 000 €, **21,2 %** sur la part > 19 000 € (jusqu'à 38 000 €)\
+**Cotisations sociales tout-inclus** ([URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf),…) : **13,5 %** jusqu'à 19 000 €, **21,2 %** sur la part > 19 000 € (jusqu'à 38 000 €)\
 **+ RID** (invalidité-décès) forfaitaire : **157 €** (25 %) ou **626 €** (100 %) — barème CARMF 2026\
-**Impôt** : micro-BNC → abattement de **34 %** (imposé sur 66 % du CA)\
+**Impôt** : [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel) → abattement de **34 %** (imposé sur 66 % du CA)\
 **Hypothèses de cette fiche** : 1 part fiscale, pas d'autres revenus, barème 2026, RID = 25 % (157 €)
 
 ## 🧪 EXEMPLE 1 — CA 19 000 €
