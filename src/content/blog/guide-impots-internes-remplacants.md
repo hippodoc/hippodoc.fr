@@ -80,12 +80,12 @@ En 2025, tu as fait des remplacements libéraux pendant tes vacances, tes week-e
 En 2026, tu ne vas donc pas déclarer uniquement ton salaire d'interne. Tu vas déclarer **deux types de revenus** sur la même déclaration :
 
 • ton salaire CHU, en **traitements et salaires** ;\
-• tes rétrocessions de remplacement, en **BNC**.
+• tes [rétrocessions](/blog/salaires-medecins-remplacants) de remplacement, en **BNC**.
 
 Personne ne t'apprend vraiment ça en cours de DES. Pourtant, si ta situation est simple, la logique tient en quelques étapes.
 
 **Le vrai piège, ce n'est pas la case 5HQ.**\
-**C'est surtout de ne pas confondre impôt, URSSAF et CARMF.**
+**C'est surtout de ne pas confondre impôt, URSSAF et [CARMF](/blog/tout-comprendre-carmf).**
 
 ## Le concept à comprendre d'abord : fiscal ≠ social
 
@@ -100,7 +100,7 @@ Le **régime social** sert à payer tes **cotisations** liées à ton activité 
 Pour un interne qui remplace, ça donne souvent :
 
 • Salaire CHU → traitements et salaires ;\
-• Remplas libéraux → BNC, souvent en micro-BNC ;\
+• Remplas libéraux → BNC, souvent en [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel) ;\
 • Cotisations sociales → via le dispositif simplifié des médecins remplaçants, si ta situation y ouvre droit.
 
 Ce sont **deux démarches séparées**.
@@ -120,7 +120,7 @@ Tu dois simplement vérifier que le montant correspond bien à ton cumul annuel 
 
 L'administration applique automatiquement une **déduction forfaitaire de 10 %** pour frais professionnels. Pour les revenus 2025, cette déduction est au minimum de **509 €** et au maximum de **14 555 €** par personne.
 
-## Frais réels : quand ça vaut le coup ?
+### Frais réels : quand ça vaut le coup ?
 
 Tu peux choisir les **frais réels** si tes dépenses professionnelles dépassent l'abattement automatique de 10 %.
 
@@ -155,7 +155,7 @@ Cela ouvre la déclaration complémentaire **2042-C-PRO**.
 
 C'est là que tu vas déclarer tes rétrocessions de remplacement.
 
-## Le micro-BNC : le cas le plus fréquent pour les premiers remplas
+### Le micro-BNC : le cas le plus fréquent pour les premiers remplas
 
 Pour la déclaration 2026 des revenus 2025, le micro-BNC s'applique en principe si tes recettes 2023 ou 2024 n'ont pas dépassé **77 700 €**, avec des règles particulières en cas de début d'activité. Pour un interne qui commence les remplacements en 2025, cette condition est généralement remplie.
 
@@ -179,7 +179,7 @@ Tu as encaissé 12 000 € de rétrocessions en 2025.\
 Tu déclares 12 000 € en 5HQ.\
 L'administration retient fiscalement 66 %, soit **7 920 € de revenu imposable BNC**.
 
-## Et si tu n'es pas au micro-BNC ?
+### Et si tu n'es pas au micro-BNC ?
 
 Si tu n'es pas au micro-BNC, ou si tu choisis volontairement le **régime réel**, tu passes en **déclaration contrôlée**.
 
@@ -203,10 +203,10 @@ Pour ton activité libérale de remplacement, tu dois aussi déclarer ton **déb
 
 En pratique, le début d'activité se déclare via le **guichet unique**. L'URSSAF indique qu'un praticien ou auxiliaire médical doit déclarer son activité dans les **8 jours** suivant le début d'activité.
 
-Ensuite, si ta situation y ouvre droit, tu peux relever du **RSPM**, le régime simplifié des médecins remplaçants, via le portail dédié aux médecins remplaçants.
+Ensuite, si ta situation y ouvre droit, tu peux relever du **[RSPM](/blog/rspm-exemples-concrets)**, le régime simplifié des médecins remplaçants, via le portail dédié aux médecins remplaçants.
 :::
 
-## Le RSPM : le régime simplifié des médecins remplaçants
+### Le RSPM : le régime simplifié des médecins remplaçants
 
 Le RSPM permet de déclarer tes honoraires et de payer tes cotisations sociales via un dispositif simplifié.
 
@@ -223,7 +223,7 @@ En RSPM, tes cotisations sociales sont calculées sur 15 000 €, pas sur le mon
 
 **C'est exactement pour ça qu'il faut distinguer fiscal et social.**
 
-## Le RID CARMF
+### Le RID CARMF
 
 En RSPM, tu choisis aussi ton niveau de couverture **invalidité-décès CARMF** :
 
@@ -232,7 +232,7 @@ En RSPM, tu choisis aussi ton niveau de couverture **invalidité-décès CARMF**
 
 La CARMF précise que ces montants correspondent à la cotisation invalidité-décès dans le cadre de l'offre simplifiée des médecins remplaçants au 1er janvier 2026.
 
-## ⚠️ Impôt et URSSAF : pas le même calcul
+### ⚠️ Impôt et URSSAF : pas le même calcul
 
 :::warning
 C'est l'un des pièges les plus importants.
@@ -260,7 +260,7 @@ Deux administrations différentes.
 
 ## Étape 4 — L'exonération PDSA en zone sous-dotée
 
-Si tu fais de la PDSA — permanence des soins ambulatoires — dans une zone éligible, une partie de ta rémunération peut être **exonérée d'impôt sur le revenu**.
+Si tu fais de la [PDSA](/blog/pdsa-exoneration-gardes-regulees) — permanence des soins ambulatoires — dans une zone éligible, une partie de ta rémunération peut être **exonérée d'impôt sur le revenu**.
 
 Le cadre vient de l'**article 151 ter du CGI** : l'exonération concerne les rémunérations perçues au titre de la permanence des soins par les médecins ou leurs remplaçants, dans les zones caractérisées par une offre de soins insuffisante, dans la **limite de 60 jours** de permanence par an.
 
@@ -273,7 +273,7 @@ L'exonération vise surtout :
 
 Les actes de base, les actes techniques, les majorations non régulées et les indemnités kilométriques **restent imposables**.
 
-## Comment savoir si ta garde est éligible ?
+### Comment savoir si ta garde est éligible ?
 
 Le critère n'est pas juste « le cabinet est en ZIP » au sens vague.
 
@@ -288,7 +288,7 @@ Pour un interne remplaçant, il faut surtout pouvoir prouver :
 • que les rémunérations isolées correspondent bien à l'astreinte ou aux majorations spécifiques régulées ;\
 • que tu restes dans la limite des **60 jours**.
 
-## Comment appliquer la PDSA en micro-BNC ?
+### Comment appliquer la PDSA en micro-BNC ?
 
 Si tu es en micro-BNC et que tu as une part de PDSA réellement exonérable, tu **ne déclares pas cette part** dans le montant imposable de la 5HQ.
 
@@ -302,7 +302,7 @@ Si tu es en micro-BNC et que tu as une part de PDSA réellement exonérable, tu 
 
 Si tu es au RSPM, l'URSSAF raisonne sur tes honoraires bruts déclarés au social. La part exonérée fiscalement ne disparaît pas forcément de l'assiette sociale. C'est donc normal d'avoir un montant fiscal différent du montant social.
 
-## Quel impôt prévoir concrètement ?
+### Quel impôt prévoir concrètement ?
 
 L'impôt dépend de ton foyer fiscal, de ton nombre de parts, de ton salaire, de ton taux marginal, de tes crédits d'impôt et du prélèvement à la source déjà payé.
 
@@ -316,7 +316,7 @@ Sur 12 000 € de recettes en micro-BNC, l'impact fiscal peut rester autour de *
 
 L'effet fiscal dépend fortement du **revenu total**, pas seulement du montant des rétrocessions.
 
-## Exemple 1 — Interne sans PDSA (Marie)
+### Exemple 1 — Interne sans PDSA (Marie)
 
 Marie est interne, célibataire, 1 part.\
 En 2025, elle a perçu :
@@ -340,7 +340,7 @@ Son impôt brut estimé est d'environ **3 040 €**, avant crédits d'impôt, r�
 
 **Le point important** : elle n'aura pas forcément 3 040 € à payer en septembre, car une partie de l'impôt a déjà été prélevée sur son salaire CHU.
 
-## Exemple 2 — Interne avec PDSA exonérable (Tom)
+### Exemple 2 — Interne avec PDSA exonérable (Tom)
 
 Tom est interne, célibataire, 1 part.\
 En 2025, il a perçu :
@@ -372,7 +372,7 @@ Mais elle doit être correctement justifiée.
 **En ligne — départements 20 à 54** : 28 mai 2026\
 **En ligne — départements 55 à 974/976** : 4 juin 2026
 
-## Comment tu paies la première année
+### Comment tu paies la première année
 
 Si c'est ta première année de remplacement, il n'y a souvent pas encore eu d'acompte de prélèvement à la source sur ton activité libérale.
 

@@ -70,13 +70,13 @@ Le compte-titres ordinaire, c'est l'enveloppe **sans plafond** et sans vraies ba
 
 En contrepartie, la fiscalité y est moins douce. Pour les produits du capital relevant du régime de droit commun, la documentation publique 2026 affiche un **prélèvement forfaitaire unique de 31,4 %** (12,8 % d'impôt sur le revenu et 18,6 % de prélèvements sociaux), avec possibilité d'opter pour le barème progressif. Mais attention : cette option pour le barème n'est pas "à la carte". **Elle vaut globalement pour l'ensemble des revenus et gains mobiliers** qui entrent normalement dans le champ du PFU. Le CTO est donc une très bonne enveloppe de liberté, mais rarement la première à privilégier quand une enveloppe plus efficace fiscalement existe pour le même objectif.
 
-## Alors, on commence par quoi ?
+### Alors, on commence par quoi ?
 
 :::tip
 Dans la vraie vie, l'ordre le plus simple ressemble souvent à ça : **d'abord ton épargne de sécurité et tes provisions**, ensuite l'ouverture rapide d'un PEA et d'une assurance-vie pour prendre date, puis l'utilisation du **PEA pour la bourse long terme**, de l'**assurance-vie pour la souplesse et la transmission**, du **PER seulement après un vrai calcul fiscal**, et enfin du **CTO quand tu as besoin d'un univers d'investissement plus large** que ce que les autres enveloppes permettent. Cet ordre n'est pas une règle absolue, mais c'est une base saine pour éviter les erreurs classiques.
 :::
 
-## Les erreurs les plus fréquentes
+### Les erreurs les plus fréquentes
 
 **Confondre enveloppe fiscale et placement.** Un ETF n'est pas "bon" ou "mauvais" en soi : tout dépend aussi de l'endroit où tu le loges.\
 **Croire que l'assurance-vie est toujours sécurisée.** Seuls les fonds en euros offrent une garantie en capital, pas les unités de compte.\
@@ -84,10 +84,10 @@ Dans la vraie vie, l'ordre le plus simple ressemble souvent à ça : **d'abord t
 **Signer un PER pour "payer moins d'impôt"** sans réfléchir à la fiscalité de sortie.\
 **Ignorer les frais.** Sur 10, 20 ou 30 ans, un point de frais annuel peut rogner une part énorme du résultat final.
 
-## En résumé
+### En résumé
 
 Le bon réflexe n'est pas de chercher tout de suite "le meilleur ETF" ou "le meilleur placement". Le bon réflexe, c'est d'abord de **choisir la bonne enveloppe pour le bon objectif.** Le PEA pour les actions long terme. L'assurance-vie pour la polyvalence. Le PER si le calcul fiscal est réellement favorable. Le CTO pour la liberté, quand les autres enveloppes ont déjà fait le travail.
 
-Et avant tout ça : **connaître ton super-net**, pour investir ce que tu peux réellement placer sans fragiliser ta trésorerie.
+Et avant tout ça : **connaître ton [super-net](/blog/simulateur-super-net-combien-reste)**, pour investir ce que tu peux réellement placer sans fragiliser ta trésorerie.
 
 *Contenu éducatif, pas un conseil en investissement personnalisé.*
