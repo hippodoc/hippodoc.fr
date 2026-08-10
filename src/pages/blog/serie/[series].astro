@@ -17,7 +17,7 @@ import Footer from '@/components/Footer.astro';
 import BlogCard from '@/components/BlogCard.astro';
 import { SITE_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
-import { SERIES_SLUGS, seriesPath } from '@/lib/blog-series-slugs';
+import { SERIES_SLUGS, SERIES_INTROS, seriesPath } from '@/lib/blog-series-slugs';
 import { resolveCovers } from '@/lib/blog-covers';
 
 export async function getStaticPaths() {
@@ -96,6 +96,19 @@ const breadcrumbSchema = {
         {posts.length} article{posts.length > 1 ? 's' : ''}{series.totalEpisodes ? ` sur ${series.totalEpisodes} prévus` : ''}
       </p>
     </header>
+
+    {/* Texte propre à la page : sans lui, une page de série n'avait qu'une seule
+        phrase à elle pour ~280 mots au total — le reste étant les cartes et la
+        navigation, communes à toutes. Voir SERIES_INTROS. */}
+    {SERIES_INTROS[series.id] && (
+      <div
+        {/* Les <strong> restent en encre neutre : en bleu foncé ils imitaient les
+            liens sans en être, ce qui invite au tap dans le vide. Le bleu est
+            réservé aux vrais liens. */}
+        class="mx-auto mb-10 max-w-3xl text-[15px] leading-relaxed text-muted-foreground [&_a]:font-medium [&_a]:text-hippo-600 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-hippo-800 [&_strong]:font-semibold [&_strong]:text-foreground"
+        set:html={SERIES_INTROS[series.id]}
+      />
+    )}
 
     <!-- Navigation entre séries : chaque page reste à un clic des autres -->
     <nav aria-label="Séries du blog" class="mb-8 flex flex-wrap justify-center gap-2">

@@ -514,6 +514,30 @@ performance 92-100.
   - Textes à **11 px** sur `/` et `/guide-declarations` (mentions secondaires). Pas
     un échec WCAG, mais peu lisible sur mobile.
 
+### 9.i Pages de série — texte propre à chaque page (août 2026)
+
+Créées en §9.c, les trois pages `/blog/serie/*` n'avaient qu'**une seule phrase**
+à elles (la `description` de la série) pour ~280 mots au total : tout le reste —
+cartes, navigation, en-tête — est commun aux trois. C'est le profil type de la
+page « mince » que Google traite comme à faible valeur. C'était la dernière
+faiblesse SEO connue du blog, et elle avait été introduite par cette refonte.
+
+Chaque page reçoit une introduction décrivant le **contenu réel** de sa série
+(sujets, formats, durées de lecture) et renvoyant vers les deux autres. Celle
+des Fiches Pratiques ajoute un ordre de lecture calé sur l'ordre des démarches.
+
+| page | mots avant | après | liens internes distincts |
+|---|---|---|---|
+| `fiches-pratiques` | 280 | **411** | 11 |
+| `fiches-fiscalite` | 341 | **445** | 12 |
+| `guides-conseils` | 788 | **891** | 24 |
+
+Les textes vivent dans `src/lib/blog-series-slugs.ts`, **pas** dans
+`blog-series.ts` qui est généré et porte la mention « ne pas éditer à la main ».
+Rendus via `set:html` — HTML de confiance écrit à la main, aucune saisie
+utilisateur. Les `<strong>` y sont volontairement en encre neutre et non en bleu :
+en bleu foncé ils imitaient des liens sans en être.
+
 Reste à faire : les arbitrages éditoriaux signalés en §9.d et §9.e.
 
 ## 10. TODO(owner) — faits manquants / décisions
