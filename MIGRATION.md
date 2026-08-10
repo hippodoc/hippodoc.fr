@@ -616,7 +616,41 @@ fonctionnalités désactivées plutôt qu'à des résidus :
 `simulateur/SimulateurGuide.tsx`, `simulateur/CotisationsDetailChart.tsx`,
 `lib/calc/declaration2035Inputs.ts`. À trancher éditorialement.
 
-Reste à faire : les arbitrages éditoriaux signalés en §9.d et §9.e.
+### 9.l Finitions (août 2026)
+
+**Tiroir mobile — zone de fermeture.** Le tiroir occupait presque tout l'écran
+(296 px sur 320, 360 sur 390), ne laissant que **12 à 18 px d'overlay** : le geste
+« toucher à côté pour fermer » était hors de portée, très en dessous des 44 px
+usuels. Largeur ramenée à `w-[calc(100%-4.5rem)] max-w-[340px]`, ce qui garantit
+**au moins 60 px** de 320 à 430 px. Vérifié aux quatre largeurs : fermeture par
+l'overlay fonctionnelle, 10 liens, aucun débordement, CTA lisibles, 0 erreur.
+
+**Maillage — 6 ancres retirées sur 113 (reste 107).** Relecture des 24 ancres
+d'un seul mot signalées en §9.d. Six étaient trompeuses ou hors-sujet :
+  - « Assurance **Maladie-Maternité** » ×3 (`cotisations-sociales-vs-impots`,
+    `simulateur-super-net-combien-reste`, `tout-comprendre-urssaf`) — c'est le nom
+    d'une **branche de cotisation**, pas le congé maternité vers lequel le lien
+    pointait. L'occurrence conservée dans `remplir-declaration-2035` est d'une
+    autre nature : elle désigne les **indemnités journalières** maternité, que
+    l'article cible traite bien.
+  - « **internat** » ×2 — dans un contexte de Livret A (`interets-composes`) et
+    d'éligibilité à la licence (`obtenir-sa-licence`), pointant vers un article
+    d'impôts. Rapprochement trop lâche.
+  - « **échéance** » ×1 (`inbox-zero-remplacant`) — il s'agit de gestion de
+    tâches, pas d'échéances fiscales.
+
+Les 18 autres sont conservées : « 2035 », « rétrocession(s) », « salariat »,
+« Urssaf », « facturer », « budget » sont chacune le sujet même de leur cible.
+
+**Textes à 11 px — volontairement NON modifiés.** L'audit mobile les signalait sur
+2 pages, mais `text-[11px]` compte **plus de 60 occurrences** dans le dépôt,
+surtout dans les outils (calculette, simulateur, guide) : c'est une convention de
+design établie, et aucun critère WCAG n'impose de taille minimale. Les modifier
+serait une décision de design, pas une finition.
+
+Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
+`frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
+ouvert, car il suppose d'inventer des intitulés de section.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

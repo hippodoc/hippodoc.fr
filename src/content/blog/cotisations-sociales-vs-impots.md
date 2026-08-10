@@ -52,7 +52,7 @@ Ils sont basés sur ton **bénéfice net** (revenus moins dépenses professionne
 
 Elles assurent ta protection sociale personnelle, notamment :
 
-**Assurance maladie-[maternité](/blog/conge-maternite-paternite)** (URSSAF)\
+**Assurance maladie-maternité** (URSSAF)\
 **Retraite** (CARMF)\
 **Allocations familiales**\
 **Indemnités journalières**\

@@ -42,7 +42,7 @@ Tu connais ton chiffre d'affaires. Tu sais ce que tu as encaissé. Mais sais-tu 
 
 ## 🔍 Le revenu n'est pas un chiffre, c'est un système
 
-Pour un professionnel libéral réglementé, les prélèvements sociaux ne se résument pas à une seule ligne : maladie-[maternité](/blog/conge-maternite-paternite), retraite de base et complémentaire, invalidité-décès, allocations familiales, CFP, CSG et CRDS s'additionnent. Côté médecins, la [CARMF](/blog/tout-comprendre-carmf) publie en 2026 des cotisations réparties entre base, complémentaire, ASV et invalidité-décès.
+Pour un professionnel libéral réglementé, les prélèvements sociaux ne se résument pas à une seule ligne : maladie-maternité, retraite de base et complémentaire, invalidité-décès, allocations familiales, CFP, CSG et CRDS s'additionnent. Côté médecins, la [CARMF](/blog/tout-comprendre-carmf) publie en 2026 des cotisations réparties entre base, complémentaire, ASV et invalidité-décès.
 
 C'est exactement pour ça que le revenu n'est pas un chiffre. C'est un système.
 

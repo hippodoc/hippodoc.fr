@@ -34,7 +34,7 @@ Tu viens de démarrer tes remplacements médicaux, et l'URSSAF reste encore un m
 
 ## 🔹 Qu'est-ce que l'URSSAF ?
 
-L'**URSSAF** (Union de Recouvrement des Cotisations de Sécurité Sociale et d'Allocations Familiales) est l'organisme chargé de collecter tes cotisations sociales obligatoires. Ces cotisations financent ta protection sociale, notamment : 🩺 **Assurance Maladie-[Maternité](/blog/conge-maternite-paternite)**, 👶 **Allocations Familiales**, 🧓 **Retraite** (régime général), 💸 **CSG-CRDS** (Contribution au remboursement de la dette sociale), 🛡 **Autres cotisations** (Invalidité-Décès, Formation professionnelle, etc.).
+L'**URSSAF** (Union de Recouvrement des Cotisations de Sécurité Sociale et d'Allocations Familiales) est l'organisme chargé de collecter tes cotisations sociales obligatoires. Ces cotisations financent ta protection sociale, notamment : 🩺 **Assurance Maladie-Maternité**, 👶 **Allocations Familiales**, 🧓 **Retraite** (régime général), 💸 **CSG-CRDS** (Contribution au remboursement de la dette sociale), 🛡 **Autres cotisations** (Invalidité-Décès, Formation professionnelle, etc.).
 
 ## 📅 Quand s'inscrire ?
 

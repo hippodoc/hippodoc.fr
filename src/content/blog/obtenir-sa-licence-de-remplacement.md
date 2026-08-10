@@ -32,7 +32,7 @@ Tu es interne en médecine et tu souhaites commencer à effectuer des remplaceme
 ## 1. Conditions préalables à respecter
 
 Avoir validé intégralement le deuxième cycle des études médicales en France.\
-Être inscrit en troisième cycle ([internat](/blog/guide-impots-internes-remplacants)) et avoir validé un certain nombre de semestres, selon ta spécialité.
+Être inscrit en troisième cycle (internat) et avoir validé un certain nombre de semestres, selon ta spécialité.
 
 ## 2. Documents à préparer pour ton dossier
 
