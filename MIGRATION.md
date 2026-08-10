@@ -554,9 +554,11 @@ ui/dialog.tsx importe @/components/tracking/ScreenTracker  (absent du dépôt)
 
 Le **build de production tolérait les deux** (esbuild élimine l'import de type,
 `dialog.tsx` n'est importé par personne) : défaut invisible en CI. Correctifs :
-`import type` d'un côté, retrait de l'import mort de l'autre. `dialog.tsx` est
-conservé — c'est l'un des **23 composants `ui/*` orphelins** hérités de la SPA,
-dont le nettoyage d'ensemble reste à faire.
+`import type` d'un côté, retrait de l'import mort de l'autre. `dialog.tsx` a depuis été
+supprimé (§9.k). ⚠️ Un premier comptage annonçait « 23 composants `ui/*`
+orphelins » : il était **faux**, la recherche excluant `ui/` de son propre champ,
+si bien qu'un composant utilisé uniquement par un autre composant `ui/` paraissait
+mort. Le chiffre réel est **3** (§9.k).
 
 **Échec d'hydratation de `/simulateur`** — « Hydration failed because the initial
 UI does not match what was rendered on the server », suivi de « the entire root
@@ -579,6 +581,40 @@ Hypothèses écartées en chemin, à ne pas reprendre : formatage `Intl.NumberFo
 Résultat : 0 `pageerror` à 320, 390 et 1440 px ; accessibilité, bonnes pratiques
 et SEO à 100. La performance reste à 88-89 (LCP 3,8 s) — c'est le bundle
 `SimulateurApp.js` de **552 Ko**, pas l'hydratation.
+
+### 9.k Poids du bundle et code réellement mort (août 2026)
+
+**recharts sorti du chemin critique.** `/simulateur` chargeait un bundle de
+**552 Ko** dont ~388 Ko de recharts — utilisé à un **seul** endroit du site, pour
+un camembert de 100×100 px à trois parts, affiché **uniquement après soumission**
+du formulaire. `RegimeComparisonCards` passe donc en `React.lazy` + `Suspense`.
+
+Sans risque au rendu serveur : à ce moment `results.recommande` est faux, donc
+`SimulateurResults` n'est pas rendu et le `lazy` n'est jamais évalué.
+
+| | avant | après |
+|---|---|---|
+| chunk `SimulateurApp.js` | 552 Ko | **135 Ko** |
+| JS transféré au chargement | — | **290 Ko** |
+| performance mobile | 88-89 | **89-94** (médiane 93) |
+| LCP | 3,8 s | **3,0 s** |
+
+Vérifié fonctionnellement à 390 et 1440 px : recharts absent au chargement,
+chargé à la soumission, camembert rendu avec ses parts, 0 erreur. Un premier test
+avait échoué à soumettre le formulaire — cela ne prouvait rien, il fallait piloter
+les champs réels (`recettesBrutes`, `chargesHorsCotisations`).
+
+**Code mort — le chiffre réel est 3, pas 23.** Une analyse d'atteignabilité depuis
+les pages Astro (parcours du graphe d'imports) montre que **20 des 23 composants
+`ui/*` sont bien atteints**, souvent via un autre composant `ui/`. Seuls
+`dialog`, `popover` et `scroll-area` sont inatteignables : supprimés, avec leurs
+trois dépendances `@radix-ui/react-{dialog,popover,scroll-area}` — les seules du
+`package.json` qui n'étaient importées par rien.
+
+Restent inatteignables mais **conservés délibérément**, car ils ressemblent à des
+fonctionnalités désactivées plutôt qu'à des résidus :
+`simulateur/SimulateurGuide.tsx`, `simulateur/CotisationsDetailChart.tsx`,
+`lib/calc/declaration2035Inputs.ts`. À trancher éditorialement.
 
 Reste à faire : les arbitrages éditoriaux signalés en §9.d et §9.e.
 

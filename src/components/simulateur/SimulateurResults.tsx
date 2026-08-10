@@ -1,5 +1,4 @@
-import { RegimeComparisonCards } from "./RegimeComparisonCards";
-
+import { lazy, Suspense } from "react";
 import { BreakEvenAnalysis } from "./BreakEvenAnalysis";
 import { ConclusionCard } from "./ConclusionCard";
 import { PaymentExplanation } from "./PaymentExplanation";
@@ -11,6 +10,21 @@ import { cn } from "@/lib/utils";
 import { APP_URL } from "@/lib/site";
 import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
+
+/**
+ * Chargement différé — `RegimeComparisonCards` est le SEUL consommateur de
+ * recharts (5,2 Mo installés) dans tout le site, pour un unique camembert de
+ * 100x100 px à trois parts. Importé statiquement, il pesait sur le chunk initial
+ * de /simulateur (552 Ko) alors que ce bloc n'apparaît qu'APRÈS soumission du
+ * formulaire.
+ *
+ * Sans risque au rendu serveur : à ce moment `results.recommande` est faux, donc
+ * SimulateurResults n'est pas rendu et le `lazy` n'est jamais évalué.
+ */
+const RegimeComparisonCards = lazy(() =>
+  import("./RegimeComparisonCards").then((m) => ({ default: m.RegimeComparisonCards }))
+);
+
 
 export interface SimulateurResultsProps {
   comparison: RegimeComparison;
@@ -48,6 +62,7 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
       </div>
 
       {/* Cartes de comparaison */}
+      <Suspense fallback={<div className="min-h-[220px]" aria-hidden="true" />}>
       <RegimeComparisonCards
         reel={reel}
         microBnc={microBnc}
@@ -64,6 +79,7 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
         situationFamiliale={formData.situationFamiliale}
         annee={formData.annee}
       />
+      </Suspense>
 
 
       {/* ✅ CONCLUSION — En premier, toujours visible */}
