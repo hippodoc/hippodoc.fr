@@ -188,6 +188,23 @@ for (const r of vercelJson.redirects ?? []) {
   if (!r.permanent) warn(`Redirection non permanente (302) : ${src}`);
 }
 
+/* 4 bis. Page 404 — l'adaptateur Vercel génère la route
+   {"src":"^/.*$","dest":"/404.html","status":404} quoi qu'il arrive. Si le
+   fichier n'existe pas, Vercel sert sa page brute (79 octets, sans <title> ni
+   lien de retour) : le visiteur arrivé par un lien mort est dans une impasse.
+   C'était le cas jusqu'en août 2026. */
+const page404 = resolve(dist, '404.html');
+if (!existsSync(page404)) {
+  fail('404.html absent de dist/ — Vercel servira sa page d’erreur brute (src/pages/404.astro)');
+} else {
+  const html404 = readFileSync(page404, 'utf8');
+  // servie sous des URL arbitraires : indexable, elle dupliquerait le site
+  if (!/<meta name="robots"[^>]+noindex/.test(html404)) {
+    fail('404.html : doit être en noindex (elle est servie sous n’importe quelle URL)');
+  }
+  if (!/href="\/"/.test(html404)) fail('404.html : aucun lien de retour vers l’accueil');
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

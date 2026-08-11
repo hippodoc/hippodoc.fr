@@ -1,0 +1,121 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+/**
+ * Page 404 globale.
+ *
+ * L'adaptateur Vercel génère déjà la route `{"src":"^/.*$","dest":"/404.html",
+ * "status":404}` : il suffit que ce fichier existe pour qu'elle aboutisse.
+ * Sans lui, Vercel servait sa propre page brute (79 octets, sans <title>, sans
+ * lien de retour) — un cul-de-sac pour tout visiteur arrivant par un lien mort.
+ *
+ * `noindex` est indispensable : cette page est servie sous des URL arbitraires,
+ * et une 404 indexable créerait autant de pages dupliquées que d'URL erronées.
+ * Le code HTTP reste bien 404 (porté par la route, pas par le document), ce qui
+ * évite le « soft 404 » que Google pénalise.
+ *
+ * Zéro JS, conformément à l'invariant du site : ni recherche, ni suggestion
+ * dynamique — seulement des liens statiques vers les destinations réelles.
+ */
+
+const title = 'Page introuvable (404) | Hippodoc';
+const description =
+  "Cette page n'existe pas ou plus. Retrouvez le simulateur de revenus, le guide des déclarations et le blog des médecins remplaçants.";
+
+/** Les quatre destinations qui couvrent l'essentiel des intentions d'arrivée. */
+const destinations = [
+  {
+    href: '/',
+    titre: "Retour à l'accueil",
+    texte: 'Le cockpit financier des médecins remplaçants.',
+  },
+  {
+    href: '/simulateur',
+    titre: 'Simulateur de revenus',
+    texte: 'Estimez votre super-net après cotisations et impôts.',
+  },
+  {
+    href: '/blog',
+    titre: 'Le blog',
+    texte: '38 fiches pratiques : URSSAF, CARMF, fiscalité, contrats.',
+  },
+  {
+    href: '/guide-declarations',
+    titre: 'Guide des déclarations',
+    texte: 'Chaque case, chaque échéance, expliquée pas à pas.',
+  },
+];
+---
+
+<BaseLayout {title} {description} path="/404" noindex>
+  <Header />
+
+  <main class="min-h-screen bg-gradient-to-b from-hippo-50 to-white pb-20 pt-12">
+    <div class="container max-w-3xl">
+      <p class="text-sm font-semibold uppercase tracking-wide text-hippo-600">
+        Erreur 404
+      </p>
+
+      {/* Même traitement que le H1 du blog : le dégradé ne porte que sur une
+          partie du titre, à une taille qui passe le seuil AA « grand texte ». */}
+      {/* Le fragment doit rester sur UNE ligne : un retour à la ligne avant le
+          <span> est absorbé à la compilation et colle les deux mots
+          (« estintrouvable »). Même contrainte que le H1 de blog/index.astro. */}
+      {/* `break-words` : « introuvable » est un mot de onze lettres insécable.
+          À 200 % de zoom sur 320 px, il débordait la page de 63 px (103 px sur
+          un Galaxy Fold) et imposait un défilement horizontal — échec WCAG
+          1.4.10 « Reflow ».
+          Surtout PAS `hyphens-auto` ici : la césure automatique optimise le
+          remplissage des lignes même quand rien ne déborde, et coupait
+          « intro-uvable » à taille normale. `break-words` ne se déclenche que
+          lorsque le mot ne tient réellement pas. */}
+      <h1 class="mt-2 break-words text-4xl font-bold leading-tight tracking-tight text-hippo-800 md:text-5xl">
+        Cette page est <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">introuvable</span>
+      </h1>
+
+      <p class="mt-4 text-lg text-muted-foreground">
+        L'adresse demandée n'existe pas, ou plus. Elle a peut-être été renommée,
+        ou le lien qui vous a amené ici est incomplet.
+      </p>
+
+      {/* Ce <h2> n'est pas décoratif : le footer partagé ouvre sur des <h3>
+          (« Contactez-nous », « Informations »). Sans lui, la page enchaînait
+          h1 → h3, un saut de niveau signalé par Lighthouse (heading-order) et
+          désorientant à la navigation par titres d'un lecteur d'écran. */}
+      <h2 class="mt-10 text-lg font-semibold text-hippo-800">Où aller maintenant ?</h2>
+
+      {/* `min-w-0` sur les cartes : un élément de grille a `min-width:auto` et
+          refuse donc de rétrécir sous la largeur de son mot le plus long. À 200 %
+          de zoom sur 280 px, les quatre cartes débordaient de 14 px. */}
+      <nav aria-label="Destinations principales" class="mt-4 grid gap-4 sm:grid-cols-2">
+        {
+          destinations.map((d) => (
+            <a
+              href={d.href}
+              class="group min-w-0 break-words rounded-2xl border border-hippo-100 bg-white p-5 shadow-sm transition hover:border-hippo-300 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-600"
+            >
+              <span class="block font-semibold text-hippo-800 group-hover:text-hippo-700">
+                {d.titre}
+              </span>
+              <span class="mt-1 block text-sm text-muted-foreground">{d.texte}</span>
+            </a>
+          ))
+        }
+      </nav>
+
+      <p class="mt-10 text-sm text-muted-foreground">
+        Vous pensez qu'il s'agit d'une erreur de notre côté ?{' '}
+        <a
+          href="mailto:contact@hippodoc.fr?subject=Lien%20cass%C3%A9%20sur%20hippodoc.fr"
+          class="inline-flex min-h-6 items-center font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-700"
+        >
+          Signalez-nous le lien cassé
+        </a>.
+      </p>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
