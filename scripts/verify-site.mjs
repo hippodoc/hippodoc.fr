@@ -75,8 +75,14 @@ for (const url of urls) {
     descriptions.set(desc, url);
   }
 
+  // Les commentaires HTML sont émis tels quels dans la page : un commentaire qui
+  // cite « <h3> » serait compté comme un vrai titre. Cas rencontré pour de bon
+  // sur /guide-declarations/calculette, où un commentaire expliquant un correctif
+  // de hiérarchie créait lui-même un faux saut de niveau.
+  const sansCommentaires = html.replace(/<!--[\s\S]*?-->/g, ' ');
+
   // exactement un H1
-  const h1Count = (html.match(/<h1[\s>]/g) ?? []).length;
+  const h1Count = (sansCommentaires.match(/<h1[\s>]/g) ?? []).length;
   if (h1Count !== 1) fail(`${url} : ${h1Count} balises <h1> (attendu : 1)`);
 
   // canonique exacte
@@ -107,6 +113,17 @@ for (const url of urls) {
       if (!t) fail(`${url} : JSON-LD sans @type`);
     } catch (e) {
       fail(`${url} : JSON-LD invalide (${e.message})`);
+    }
+  }
+
+  // hiérarchie des titres : un saut (h1 → h3) casse la navigation par titres
+  // des lecteurs d'écran. En avertissement, car le footer partagé ouvre sur des
+  // <h3> et rend le défaut facile à réintroduire sur une page peu structurée.
+  const niveaux = [...sansCommentaires.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
+  for (let i = 1; i < niveaux.length; i++) {
+    if (niveaux[i] > niveaux[i - 1] + 1) {
+      warn(`${url} : saut de niveau de titre h${niveaux[i - 1]} → h${niveaux[i]}`);
+      break;
     }
   }
 
@@ -186,6 +203,57 @@ for (const r of vercelJson.redirects ?? []) {
   const exact = publicPaths.find((p) => p === src);
   if (exact) fail(`Redirection ${src} entre en collision avec une page publique construite`);
   if (!r.permanent) warn(`Redirection non permanente (302) : ${src}`);
+}
+
+/* 4 bis. Page 404 — l'adaptateur Vercel génère la route
+   {"src":"^/.*$","dest":"/404.html","status":404} quoi qu'il arrive. Si le
+   fichier n'existe pas, Vercel sert sa page brute (79 octets, sans <title> ni
+   lien de retour) : le visiteur arrivé par un lien mort est dans une impasse.
+   C'était le cas jusqu'en août 2026. */
+const page404 = resolve(dist, '404.html');
+if (!existsSync(page404)) {
+  fail('404.html absent de dist/ — Vercel servira sa page d’erreur brute (src/pages/404.astro)');
+} else {
+  const html404 = readFileSync(page404, 'utf8');
+  // servie sous des URL arbitraires : indexable, elle dupliquerait le site
+  if (!/<meta name="robots"[^>]+noindex/.test(html404)) {
+    fail('404.html : doit être en noindex (elle est servie sous n’importe quelle URL)');
+  }
+  if (!/href="\/"/.test(html404)) fail('404.html : aucun lien de retour vers l’accueil');
+}
+
+/* 4 ter. En-têtes de cache : l'invariant qui les rend sûrs.
+   « immutable » promet au navigateur que le fichier ne changera JAMAIS sous
+   cette URL. Ce n'est vrai que parce que Vite préfixe chaque fichier de /_astro/
+   d'une empreinte de son contenu. Le jour où un fichier à nom stable y atterrit,
+   la promesse devient fausse et le fichier est gelé un an chez tous les
+   visiteurs — sans le moindre signal. D'où ce contrôle. */
+const regleImmutable = (vercelJson.headers ?? []).find(
+  (h) => h.source?.startsWith('/_astro/') &&
+    h.headers?.some((k) => /immutable/.test(k.value ?? ''))
+);
+if (!regleImmutable) {
+  warn('vercel.json : aucune règle « immutable » sur /_astro/ — les assets hachés sont revalidés à chaque visite');
+} else {
+  const nonHaches = readdirSync(resolve(dist, '_astro'), { withFileTypes: true })
+    .filter((d) => d.isFile() && !/\.[A-Za-z0-9_-]{8,}\.[a-z0-9]+$/.test(d.name))
+    .map((d) => d.name);
+  if (nonHaches.length) {
+    fail(
+      `/_astro/ contient ${nonHaches.length} fichier(s) SANS empreinte (${nonHaches.slice(0, 3).join(', ')}` +
+      `${nonHaches.length > 3 ? '…' : ''}) alors que vercel.json les sert en « immutable » : ` +
+      `ils seraient figés un an chez les visiteurs`
+    );
+  }
+}
+// Aucune règle de cache ne doit attraper du HTML : une page mise en cache
+// rendrait un déploiement invisible pour les visiteurs déjà venus.
+for (const h of vercelJson.headers ?? []) {
+  const cache = h.headers?.find((k) => k.key?.toLowerCase() === 'cache-control')?.value ?? '';
+  const duree = Number(cache.match(/max-age=(\d+)/)?.[1] ?? 0);
+  if (duree > 0 && /\.html|^\/\(\.\*\)|^\/:path|^\/\(\.\+\)/.test(h.source ?? '')) {
+    fail(`vercel.json : la règle de cache "${h.source}" peut viser du HTML — un déploiement resterait invisible`);
+  }
 }
 
 /* 5. robots.txt & llms.txt présents dans dist */

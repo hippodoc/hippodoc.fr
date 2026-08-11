@@ -730,6 +730,123 @@ dans le build : chacun se déclenche, aucun n'est décoratif.
 les ~940 cibles tactiles de `/guide-declarations`, réparties sur deux composants
 répétés : même chantier dédié que ses 20 contrastes (§9.l).
 
+### 9.n Page 404 et en-têtes de cache (août 2026)
+
+Deux défauts trouvés par un audit de la **production** (et non du build) après
+la mise en ligne. Aucun des deux n'était une régression : ils préexistaient.
+
+**a. Aucune page 404.** L'adaptateur Vercel génère systématiquement la route
+`{"src":"^/.*$","dest":"/404.html","status":404}`, mais `src/pages/404.astro`
+n'existait pas. Vercel servait donc sa page brute : **79 octets, sans `<title>`,
+sans logo, sans lien de retour**. Tout visiteur arrivant par un lien mort — vieux
+partage, faute de frappe, URL tronquée — se retrouvait dans une impasse.
+Créer la page a suffi : la route existait déjà.
+Elle est en **`noindex`** (elle est servie sous des URL arbitraires ; indexable,
+elle dupliquerait le site autant de fois qu'il existe d'URL erronées) et le code
+HTTP reste **404**, porté par la route et non par le document — ce qui évite le
+« soft 404 » que Google pénalise.
+
+⚠️ Piège rencontré à l'écriture : un retour à la ligne entre du texte et un
+`<span>` est absorbé à la compilation. `Cette page est\n<span>introuvable</span>`
+rendait littéralement « estintrouvable ». Le fragment doit rester sur **une seule
+ligne** (c'est pourquoi le H1 de `blog/index.astro` est écrit ainsi), ou utiliser
+`{' '}`. Défaut invisible à la relecture du source, visible à l'écran.
+
+**b. Aucun cache sur les assets.** Tout partait en
+`public, max-age=0, must-revalidate`, y compris les fichiers de `/_astro/` dont le
+nom **contient déjà l'empreinte de leur contenu**. Cause exacte : l'adaptateur
+écrit bien une règle `immutable`, mais **après** `{"handle":"filesystem"}` —
+or tout ce qui suit cette étape ne s'exécute que si aucun fichier n'a été trouvé.
+Pour un fichier qui existe, la règle n'est jamais atteinte.
+
+Le correctif passe par `vercel.json`, dont les `headers` s'appliquent **avant**
+l'étape `filesystem`. Vérifié au préalable que `vercel.json` est bien honoré à
+côté du Build Output API de l'adaptateur (les 36 redirections répondent en 308).
+
+| Cible | Cache | Pourquoi |
+|---|---|---|
+| `/_astro/(.*)` | `max-age=31536000, immutable` | 188/188 fichiers hachés — vérifié |
+| `/lovable-uploads/(.*)` | `max-age=86400` | noms **stables** : jamais `immutable` |
+| 4 icônes racine | `max-age=86400` | noms stables également |
+| HTML, `robots.txt`, sitemaps | *inchangé* | un déploiement doit être visible **immédiatement** |
+
+Coût évité : 20 allers-retours réseau sur `/`, 17 sur `/blog`, à chaque visite.
+Les réponses étaient déjà des **304** (l'ETag fonctionnait) : ce qui était perdu
+n'était donc pas de la bande passante mais **une latence par ressource**, payée
+surtout en mobile.
+
+⚠️ Contrepartie assumée sur `/lovable-uploads/` : remplacer une image **sans
+changer son nom** la laisse périmée jusqu'à 24 h chez les visiteurs déjà venus.
+**Renommer le fichier** lors d'un remplacement contourne entièrement le problème.
+C'est aussi pourquoi `immutable` y est exclu.
+
+**Trois contrôles ajoutés à `verify-site.mjs`**, tous validés par injection du
+défaut correspondant :
+  1. `404.html` présent, en `noindex`, avec un lien vers l'accueil ;
+  2. **aucun fichier sans empreinte dans `/_astro/`** tant que `vercel.json` le
+     sert en `immutable` — c'est l'invariant qui rend la promesse vraie. Le jour
+     où un nom stable y atterrit, il serait figé un an chez tous les visiteurs,
+     sans le moindre signal ;
+  3. aucune règle de cache ne vise du HTML — sinon un déploiement resterait
+     invisible pour les visiteurs déjà venus.
+
+⚠️ Non corrigé (hors de notre code) : l'ordre des routes de `@astrojs/vercel`
+v11.0.5, qui place sa règle de cache après `handle: filesystem` et la rend donc
+inopérante. Contourné par `vercel.json`.
+
+### 9.o Audit mobile de bout en bout avant mise en production (août 2026)
+
+Audit de la 404 et des en-têtes sur **7 largeurs** (280 → 844 px, paysage inclus)
+croisées avec le **zoom texte 200 %**, plus une simulation des règles de cache.
+
+**Les règles de cache, prouvées et non supposées.** Les motifs de `vercel.json`
+ont été compilés avec `path-to-regexp` — la bibliothèque qu'utilise Vercel — puis
+appliqués aux **356 URL** du build : 243 assets couverts, **0 page HTML attrapée**,
+aucun chevauchement entre règles. Les 113 pages restent en revalidation immédiate,
+ce qui garantit qu'un déploiement est visible tout de suite ; `robots.txt`,
+`llms.txt` et les deux sitemaps restent volontairement hors règle.
+
+**Débordement horizontal à 200 % de zoom (WCAG 1.4.10 « Reflow »).** « introuvable »
+est un mot de onze lettres insécable : à 200 % sur 320 px il débordait la page de
+63 px, **103 px sur un Galaxy Fold (280 px)**. Corrigé par `break-words` sur le H1
+et `min-w-0 break-words` sur les cartes — un élément de grille a `min-width:auto`
+et refuse de rétrécir sous son mot le plus long.
+
+⚠️ `hyphens-auto` a été essayé puis **retiré** : la césure automatique optimise le
+remplissage des lignes même quand rien ne déborde, et coupait « intro-uvable » à
+taille normale. `break-words` ne se déclenche que si le mot ne tient réellement pas.
+
+⚠️ **Défaut systémique NON corrigé** — à 200 % de zoom sur ≤ 360 px, *toutes* les
+pages débordent encore, indépendamment de la 404 : le tiroir de menu et son voile
+(`fixed`, `max-w-[340px]`) et le logo du footer (5 px) dépassent. Mesuré : 219 px
+sur un article, 179 px sur `/qui-sommes-nous`, 160 px sur `/tarifs`. Préexistant,
+partagé par tout le site, à traiter dans une passe dédiée sur `Header`/`Footer`.
+
+**Hiérarchie des titres.** Le footer partagé ouvre sur des `<h3>` : toute page peu
+structurée enchaîne donc h1 → h3. Trois corrections, aucune visuelle :
+  - 404 : ajout du `<h2>` « Où aller maintenant ? » (visible, utile à la lecture) ;
+  - `CtaBanner.astro` : `<h4>` → `<h3>` (saut h2 → h4 sur l'**accueil**) ;
+  - `calculette.astro` : `<h2 class="sr-only">` avant l'îlot. `CardTitle` rend un
+    `<h3>` et sert partout — on ne touche pas au composant, on rétablit le niveau
+    manquant sur la page. `sr-only` est en position absolue : mise en page intacte.
+
+⚠️ Piège découvert à cette occasion : **les commentaires HTML sont émis dans la
+page**. Le commentaire qui expliquait ce correctif citait « `<h3>` » et était
+compté comme un vrai titre — il créait lui-même le saut qu'il documentait.
+D'où deux changements : commentaire Astro `{/* */}` (non émis) sur les pages, et
+`verify-site.mjs` qui **retire les commentaires avant toute analyse de titres**.
+
+**Deux contrôles ajoutés à `verify-site.mjs`** : saut de niveau de titre
+(avertissement — le défaut est facile à réintroduire) et exclusion des
+commentaires du comptage des `<h1>`. Le contrôle a immédiatement révélé les deux
+défauts préexistants ci-dessus, invisibles jusque-là.
+
+**Résultats** : 404 en Lighthouse mobile **accessibilité 100/100**, aucun audit
+échoué ; 0 débordement de 280 à 844 px, à 100 % comme à 200 % ; contrastes de
+5,06:1 à 10,72:1 (seuil 4,5) ; focus visible sur les 5 liens ; tiroir mobile
+fonctionnel ; 9 formes d'URL testées (chemin profond, accents encodés, query,
+majuscules, 200 caractères, `%2e%2e`) rendent toutes la page complète.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
