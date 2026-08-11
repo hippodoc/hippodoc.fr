@@ -151,7 +151,9 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
   const periodeSuffix = periode === 'mensuel' ? '/mois' : '/an';
   const PLAFOND_MICRO_BNC = 83600;
-  const depassePlafond = recettesAnnuelles && recettesAnnuelles > PLAFOND_MICRO_BNC;
+  // `recettesAnnuelles && ...` vaut 0 (et non false) quand les recettes sont
+  // nulles : JSX afficherait alors littéralement « 0 » à la place du bloc.
+  const depassePlafond = Boolean(recettesAnnuelles && recettesAnnuelles > PLAFOND_MICRO_BNC);
   
   // ✅ Détection revenus mixtes et conjoint
   const hasRevenusSalaries = revenusSalariesAnnuels > 0;
