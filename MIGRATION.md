@@ -247,6 +247,448 @@ Chaque page outil sert aussi une section explicative complète rendue côté ser
     La page SEO /tarifs n'est PAS supprimée (invariant URLs figées) et garde des liens
     internes (footer, blog, tableau).
 
+### 9.c Refonte du blog — phases 1 à 4 (août 2026)
+
+Audit préalable, mesuré sur les 38 articles : 0 H3, 0 tableau, 0 image dans le corps,
+**1 seul lien markdown au total** (vers `/`), ligne de texte à 88 caractères, article
+le plus long à 47 H2 / 31 127 px en mobile. **Aucun texte d'article n'a été modifié
+dans ces quatre phases** — elles ne touchent que les gabarits.
+
+  - **Largeur de lecture** (`blog/[slug].astro`) : le corps passe à `max-w-[68ch]`,
+    soit **88 → 70 caractères par ligne** (37 en mobile).
+  - **`white-space: pre-wrap` CONSERVÉ** dans `global.css`. Ce n'est pas un vestige
+    de la SPA : **29 des 38 articles** contiennent des paragraphes à sauts de ligne
+    volontaires, que sa suppression aplatirait. À ne pas « nettoyer ».
+  - **Sommaire conditionnel** (`blog/[slug].astro`). ⚠️ Le seuil décrit ici
+    (« à partir de 8 sections », 21 articles sur 38) s'est révélé **faux** et a été
+    corrigé — voir **§9.g**.
+    Colonne `sticky` au-delà de 1280 px, replié en dessous. Un seul `<nav>` dans le
+    DOM, donc aucune duplication d'ancres. Zéro JS : les `id` des H2 sont générés au
+    build. **Pas de surlignage de la section courante** — un scrollspy imposerait du JS.
+    ⚠️ Le repli est piloté par une **checkbox**, pas par un `<details>` : Chrome
+    applique `content-visibility: hidden` au contenu d'un `<details>` fermé, si bien
+    qu'un `display: block` en media query ne le remet plus en flux (la colonne sticky
+    restait vide, hauteur 0). Même motif que le tiroir mobile du Header.
+  - **Focus clavier** (`blog/index.astro` — depuis remplacé — et
+    `home/JourneySection.astro`) : les labels pilotés par des radios `sr-only`
+    n'avaient aucun style de focus. Le focus atterrissait sur un élément invisible,
+    sans retour visuel : **échec WCAG 2.4.7**. Règles `:focus-visible` ajoutées.
+  - **Pages de série** (nouveau `blog/serie/[series].astro`) : le filtre 100 % CSS de
+    `/blog` ne laissait aucune trace dans l'URL — impossible à partager, à mettre en
+    favori, à retrouver au bouton Retour, et **aucune page indexable par catégorie**.
+    Trois URLs **ajoutées** (aucune renommée) : `/blog/serie/fiches-pratiques`,
+    `/blog/serie/fiches-fiscalite`, `/blog/serie/guides-conseils`. Deux segments →
+    aucune collision avec `/blog/[slug]`. JSON-LD `CollectionPage` + `BreadcrumbList`.
+    Les pastilles de `/blog` deviennent de vrais liens : les radios `sr-only`
+    disparaissent, et avec elles le défaut de focus.
+    Slugs d'URL dans `src/lib/blog-series-slugs.ts` — **pas** dans `blog-series.ts`,
+    qui est généré et porte la mention « ne pas éditer à la main ».
+  - **Factorisation** : `src/components/BlogCard.astro` et `src/lib/blog-covers.ts`
+    extraits de `blog/index.astro` pour être partagés avec les pages de série.
+  - **Ajouts de contenu** (les seuls de ces phases) :
+    - *Bloc auteur* en fin d'article (E-E-A-T) : nom et rôle proviennent du
+      frontmatter existant ; une phrase de présentation est ajoutée —
+      « Il partage ici ce qu'il applique au quotidien : fiscalité, cotisations et
+      gestion de l'activité libérale. » + lien vers `/qui-sommes-nous`.
+    - *Partage* : liens WhatsApp / LinkedIn / e-mail (URLs simples, aucun script tiers).
+    - *« Retour en haut »* : lien d'ancre `#top`. ⚠️ Toujours visible et non
+      déclenché par le scroll — l'apparition au défilement exigerait du JS.
+    - *« À la une »* sur `/blog` : le dernier article passe en carte pleine largeur.
+      ⚠️ **Piège de performance** : servie en 1200 px, chargée en `eager` +
+      `fetchpriority="high"` et placée avant le texte, sa cover devenait l'élément
+      **LCP** du viewport mobile et faisait tomber la page de **97 à 87**
+      (LCP 4,1 s). Correctif : `srcset` 640/1024 px + `sizes`, `loading="lazy"`,
+      et surtout **l'image passe après le texte dans le DOM** (elle reprend la
+      colonne de gauche en desktop via `md:order-first`). Le titre redevient le
+      LCP → **96, LCP 2,7 s**. Ne pas remettre cette image en tête du DOM.
+
+  - **Corrections d'accessibilité globales** (déclenchées par Lighthouse sur le blog,
+    mais qui bénéficient à tout le site) :
+    - `--muted-foreground` : `215 16% 47%` → **45%**. À 47 % le ratio tombait à
+      **4,48:1** sur le fond `--background` (#f7fafc), sous le seuil AA de 4,5:1 —
+      fils d'Ariane, dates, durées de lecture. À 45 % : 4,82:1 (5,06:1 sur blanc),
+      assombrissement imperceptible.
+    - `Header.astro` : `aria-label` retiré des deux `<label>` du menu mobile
+      (**attribut ARIA interdit** sur un label sans rôle — signalé sur *toutes* les
+      pages). Le nom accessible porte désormais sur la checkbox `#mobile-menu-toggle`,
+      qui est le vrai contrôle focusable ; son état coché traduit l'ouverture.
+      Règle `:focus-visible` ajoutée (les labels ne sont pas frères de l'input, donc
+      `peer-*` de Tailwind ne pouvait pas les cibler).
+    - Résultat : accessibilité **93 → 100** sur un article, 96 sur `/blog`, 97 sur `/`.
+
+### 9.d Maillage interne du blog — phase 5 (août 2026)
+
+**Seule modification de contenu des articles à ce jour.** Le blog comptait
+**1 seul lien markdown pour 38 articles** (vers `/`) : 38 culs-de-sac, aucune
+transmission d'autorité, aucun rebond pour le lecteur.
+
+  - **113 liens contextuels ajoutés**, dans **36 des 38 articles** (moyenne 3,0).
+    Chaque ancre est une **expression déjà présente dans le texte** : aucune phrase
+    n'a été réécrite, aucun mot ajouté ou retiré. Seuls des `[...](...)` entourent
+    des expressions existantes.
+  - **Structure moyeu-rayons.** Liens entrants : `tout-comprendre-urssaf` 20,
+    `tout-comprendre-carmf` 18, `simulateur-super-net-combien-reste` 16,
+    `salaires-medecins-remplacants` et `regime-fiscal-micro-bnc-vs-reel` 7 chacun,
+    puis 19 autres cibles de 1 à 6. 24 articles cibles au total.
+  - **Règles appliquées** (script `carte.py`, sélection unique partagée entre le
+    rapport et l'application, pour qu'ils ne puissent pas diverger) : ancres exclues
+    du frontmatter, des titres, des encadrés `:::`, des listes, des blocs de code et
+    des liens existants ; jamais d'auto-lien ; **aucun chevauchement d'ancres sur une
+    même ligne** ; **aucune ancre ne coupe un `**gras**`** ; plafond de 5 par article
+    (20 opportunités écartées de ce fait).
+  - **24 ancres d'un seul mot** (`rétrocession`, `2035`, `salariat`, `internat`…)
+    ont été posées sur décision explicite. Quelques rapprochements restent ténus —
+    par exemple `internat` dans une phrase sur le Livret A pointant vers les impôts
+    des internes : à réexaminer à l'occasion.
+  - **2 articles sans lien sortant** : `conge-maternite-paternite` et
+    `generer-facture-remplacement`. Leur vocabulaire ne croise aucune cible ; un
+    lien forcé aurait desservi le texte.
+  - **3 cibles sans lien entrant** : `medecin-outre-mer-avantages-fiscaux`,
+    `trouver-facilement-tes-remplacements-medicaux`,
+    `frais-pros-medecins-salaries-internes-2026`. Elles resteront isolées tant
+    qu'aucun article n'emploiera leur vocabulaire — cela relève de l'écriture.
+
+**Correctif de contraste induit** : `.prose a` utilisait `--primary`, c'est-à-dire
+**hippo-500 (#1A8CFF) → 3,37:1 sur blanc**, sous le seuil AA de 4,5:1 — exactement le
+cas interdit par CLAUDE.md, et cette règle l'emportait sur le `prose-a:text-hippo-600`
+du gabarit. Le problème préexistait mais **les 113 nouveaux liens l'auraient multiplié
+d'autant**. Passé à **hippo-600 (5,15:1)**, survol en hippo-800 (assombrit au lieu
+d'éclaircir).
+
+### 9.e Hiérarchie et tableaux des longs guides — phase 6 (août 2026)
+
+Les 38 articles n'utilisaient **aucun H3** : toute la structure était aplatie en H2
+(jusqu'à **47 H2 de même niveau** dans un seul guide, ce qui rendait le sommaire de
+la phase 2 illisible).
+
+**6a — Hiérarchie (aucun texte modifié).** Sur les 5 plus longs guides,
+`##` → `###` sur les sous-parties : **119 titres → 71 H2 + 48 H3**. Le *texte* des
+titres est resté **strictement identique** (vérifié par empreinte md5 des titres
+triés, avant/après, sur les 5 fichiers) : seul le nombre de `#` change.
+
+Règle volontairement **conservatrice** (script `titres2.py`), limitée aux deux cas
+certains : titre d'aparté (`⚠️ 💡 ⛔ 📌 ➕ 💎`) n'ouvrant pas l'article, et titre
+purement descriptif (ni numéro, ni « Étape/Poste N », ni emoji) suivant une section
+déjà identifiée. **Tout titre marqué d'un autre emoji reste H2** : distinguer un
+emoji de section (`🎯 La règle-mère`) d'un emoji de sous-partie (`🚲 Vélo`, sous
+« déplacements ») est un arbitrage éditorial, pas une règle mécanique. Un premier
+jet plus agressif enfouissait à tort `🎯 La règle-mère` et `📋 La méthode en 6 étapes`
+sous « Pour qui ce guide ? ».
+
+⚠️ **Limite connue** : dans `frais-pros-medecin-liberal-2026`, les sections `4.x`,
+`5.x` et `7.x` n'ont **pas de parent** `4.`, `5.`, `7.` dans le texte. Les passer en
+H3 créerait des H3 orphelins ; leur donner un parent supposerait d'**inventer des
+intitulés de section**. Elles restent donc H2. À trancher éditorialement.
+
+**Sommaire mis à jour** : il liste désormais H2 **et** H3, les H3 en retrait avec un
+filet à gauche. Le seuil de déclenchement porte sur les **sections de 1er niveau**
+(≥ 8), pour qu'un guide très subdivisé mais court ne l'active pas : toujours
+21 articles sur 38.
+
+**6b — Tableaux.** Deux blocs déjà tabulaires, écrits en prose, sont devenus des
+tableaux markdown dans `frais-pros-medecin-liberal-2026` :
+le **barème kilométrique 2026** (5 puissances × 3 tranches) et les **exemples de
+déduction repas**. Les valeurs ont été **extraites du texte par script**, jamais
+ressaisies — contrôle : **287 nombres avant, 287 après, aucun perdu ni ajouté**.
+Seuls ajouts de texte : les en-têtes de colonnes (`Puissance fiscale`, `Ticket`,
+`Calcul`, `Déduction`), un tableau markdown exigeant une ligne d'en-tête.
+
+Aucun autre bloc du même type n'existe dans les 5 guides ; les tableaux restants
+(seuils micro-BNC, taux RSPM, plafonds mission FPH) demanderaient une réécriture
+éditoriale et n'ont **pas** été engagés.
+
+**Correctif induit** : `.prose table` comprimé dans 358 px cassait les montants en
+deux (« 1 065 » sur deux lignes, « Au-delà » césuré) — inacceptable sur des chiffres
+fiscaux. Les tableaux d'articles défilent désormais **horizontalement dans leur
+propre conteneur** (`display:block; overflow-x:auto`, cellules en `white-space:nowrap`,
+chiffres en `tabular-nums`) : vérifié, le corps de page ne défile jamais latéralement.
+
+### 9.f Fraîcheur : `lastmod` du sitemap — phase 6 bis (août 2026)
+
+`updatedDate` alimente **deux choses indépendantes**, qui n'appellent pas la même
+réponse :
+  - le **`lastmod` du sitemap**, via `src/generated/blog-meta.json` (cf. `astro.config.mjs`) ;
+  - la mention **« Mis à jour le… » affichée au lecteur**, via le frontmatter de l'article.
+
+Après les phases 5 et 6, **36 des 38 articles ont réellement changé** (liens internes,
+hiérarchie, tableaux) alors que leur `lastmod` restait figé à leur date de publication,
+parfois dix mois plus tôt.
+
+**Ce qui a été fait** — `blog-meta.json` : `updatedDate` porté à **2026-08-10** pour
+ces 36 articles. Le sitemap déclare désormais une date de dernière modification
+**exacte**. Les 2 articles non modifiés (`conge-maternite-paternite`,
+`generer-facture-remplacement`) conservent la leur.
+
+**Ce qui n'a délibérément PAS été fait** — le frontmatter n'a pas été touché : seuls
+3 articles affichent toujours « Mis à jour le ». Sur un blog fiscal, écrire « Mis à
+jour le 10 août 2026 » sur un article CARMF dont **seuls des liens** ont été ajoutés
+laisserait croire au lecteur que les chiffres ont été revérifiés. Le signal technique
+(lastmod) doit être exact ; la promesse faite au lecteur doit rester réservée aux
+vraies remises à jour de contenu.
+
+⚠️ **Conséquence à connaître** : pour 33 articles, `blog-meta.json` et le frontmatter
+divergent volontairement. Relancer `scripts/generate-blog-content.mjs` régénérerait
+`blog-meta.json` depuis le frontmatter et **effacerait ces lastmod** (le script est
+de toute façon déconseillé, cf. avertissement de CLAUDE.md sur l'écrasement des
+éditions). En cas d'édition manuelle du frontmatter, tenir les deux cohérents.
+
+### 9.g Correction du seuil de sommaire — audit (août 2026)
+
+Le seuil de la phase 2 (« ≥ 8 sections ») mesurait la **structure** et non la
+**longueur**. Or le style rédactionnel du blog découpe même les articles courts en
+nombreuses micro-sections : **14 des 21 sommaires déclenchés couvraient des articles
+de moins de 900 mots**. Cas extrême : `frais-professionnels-deductibles`, **367 mots
+pour 19 entrées** — soit 19 mots par section, et un sommaire occupant **25 % de la
+hauteur de l'article**. Médiane du corpus : 59 mots par entrée de sommaire.
+
+**Correction** : seuil porté à **≥ 1 200 mots ET ≥ 8 sections de 1er niveau**
+(`post.body` fournit le compte). Le corpus présente une rupture nette entre 1 245 et
+536 mots, ce qui rend le seuil peu sensible à sa valeur exacte (900 et 1 200 donnent
+le même résultat). **21 → 7 articles.** Le sommaire retombe à 7-12 % de la hauteur
+de l'article là où il subsiste, contre 25 % dans le pire cas.
+
+**Sur la valeur SEO d'un sommaire** — elle est quasi nulle, et c'était une erreur de
+la présenter autrement : les liens d'ancre d'une page vers elle-même ne transmettent
+pas d'autorité, et les `id` des titres — seuls nécessaires pour que Google propose
+des liens de saut — existent de toute façon dans le HTML, sommaire ou pas. Le
+sommaire est un **outil de lecture**, pas un levier de référencement. Il se justifie
+uniquement quand l'article dépasse largement la hauteur d'écran.
+
+⚠️ **Point résiduel non traité** : la colonne sticky précède l'`<article>` dans le
+DOM. Sur le plus long guide, un utilisateur au clavier traverse **72 liens avant
+d'atteindre le contenu** (46 sur le suivant). Le repère ARIA `<nav aria-label="Sommaire
+de l'article">` permet aux lecteurs d'écran de sauter le bloc, mais pas à la
+navigation clavier seule. Inverser l'ordre DOM réglerait le desktop et casserait le
+mobile (le sommaire se retrouverait après l'article). Solution possible : un lien
+« aller au contenu » en tête du sommaire, visible au clavier uniquement.
+
+### 9.h Audit mobile d'avant-production (août 2026)
+
+Audit mené **sur le build** (`npx serve dist`) et non sur le serveur de dev, dont les
+dépendances Vite périmées produisaient des 504/500 trompeurs.
+
+**Couverture** : 54 URLs à 320 px ; 10 pages représentatives sur 6 viewports
+(320 / 360 / 390 / 430 / 768 px + téléphone en paysage 844×390) ; états interactifs
+au toucher ; zoom texte 200 % ; `prefers-reduced-motion` ; images indisponibles.
+
+**Résultats sans défaut** : aucun défilement horizontal réel nulle part (vérifié via
+`window.scrollX` après tentative de défilement, et non via `scrollWidth` qui produit
+des faux positifs) ; CLS 0 partout ; 0 image sans `width`/`height` ; zoom 200 % sans
+perte de contenu ; animations et défilement doux correctement désactivés en
+`reduced-motion` ; mise en page tenue sans images ; tiroir mobile, sommaire,
+accordéons, onglets et défilement de tableau tous fonctionnels au toucher.
+
+**Défauts corrigés** :
+  - **Cibles tactiles des fils d'Ariane** : 17 px de haut, sous le minimum de 24 px
+    (WCAG 2.5.8) et non couverts par l'exception « lien en pleine phrase ». Corrigés
+    sur `blog/[slug]`, `blog/serie/[series]`, `faq`, `qui-sommes-nous`, `comparatif`.
+  - **Contrastes sous AA** — tous de même racine (blanc ou blanc translucide sur
+    `hippo-500`/`emerald-500`, trop clairs) :
+    - compteur `text-white/80` de la pastille active de `/blog` : 3,85 → **5,15**
+      (blanc plein ; la nuance passe par la graisse, pas l'opacité) ;
+    - bloc CTA de fin d'article, sur **30 articles** : dégradé `hippo-500→600` où
+      même du blanc plein ne donnait que 3,37 → passé à `hippo-600→700` (**5,15
+      à 6,82**), sous-titre en blanc plein ;
+    - badges FLEXIBLE (2,54) et POPULAIRE (3,37) de `PricingSection` → **5,48** et
+      **5,15** ;
+    - onglet actif du « Parcours » : blanc sur `hippo-500` à 13 px, 3,36 → **5,15** ;
+    - pastille « −34 % » de `/tarifs` : `emerald-600` sur `emerald-50`, 3,58 → **5,21**.
+
+**Résultat Lighthouse mobile** : **accessibilité 100** sur `/`, `/blog`, les pages de
+série, les articles, `/tarifs` et `/faq` ; SEO 100 et Best Practices 100 partout ;
+performance 92-100.
+
+**Signalés, non corrigés (décisions à prendre)** :
+  - `/comparatif` — accessibilité 97 : trois noms de marque concurrents affichés dans
+    leur couleur propre (#E72E77, #6366F1, #F43F5E), entre 3,67 et 4,46. **WCAG 1.4.3
+    exempte explicitement les noms de marque** ; les assombrir trahirait l'identité
+    des marques citées. Faux positif d'axe, laissé tel quel.
+  - **Overlay du tiroir mobile** : le tiroir occupe 360 px sur 390, ne laissant
+    qu'une bande de **18 px** pour « toucher à côté pour fermer ». Le bouton × du
+    tiroir fonctionne, donc rien n'est bloqué, mais le geste attendu est hors de
+    portée. Réduire la largeur du tiroir le réglerait.
+  - **`/simulateur` : erreurs React #418 et #423** (échec d'hydratation) dans le
+    build. **Vérifié comme antérieur à ces travaux** — présent à l'identique au
+    commit `1d1be89`. Non investigué ici, mais à traiter : c'est la page outil la
+    plus stratégique du site.
+  - Textes à **11 px** sur `/` et `/guide-declarations` (mentions secondaires). Pas
+    un échec WCAG, mais peu lisible sur mobile.
+
+### 9.i Pages de série — texte propre à chaque page (août 2026)
+
+Créées en §9.c, les trois pages `/blog/serie/*` n'avaient qu'**une seule phrase**
+à elles (la `description` de la série) pour ~280 mots au total : tout le reste —
+cartes, navigation, en-tête — est commun aux trois. C'est le profil type de la
+page « mince » que Google traite comme à faible valeur. C'était la dernière
+faiblesse SEO connue du blog, et elle avait été introduite par cette refonte.
+
+Chaque page reçoit une introduction décrivant le **contenu réel** de sa série
+(sujets, formats, durées de lecture) et renvoyant vers les deux autres. Celle
+des Fiches Pratiques ajoute un ordre de lecture calé sur l'ordre des démarches.
+
+| page | mots avant | après | liens internes distincts |
+|---|---|---|---|
+| `fiches-pratiques` | 280 | **411** | 11 |
+| `fiches-fiscalite` | 341 | **445** | 12 |
+| `guides-conseils` | 788 | **891** | 24 |
+
+Les textes vivent dans `src/lib/blog-series-slugs.ts`, **pas** dans
+`blog-series.ts` qui est généré et porte la mention « ne pas éditer à la main ».
+Rendus via `set:html` — HTML de confiance écrit à la main, aucune saisie
+utilisateur. Les `<strong>` y sont volontairement en encre neutre et non en bleu :
+en bleu foncé ils imitaient des liens sans en être.
+
+### 9.j Serveur de dev et hydratation de /simulateur (août 2026)
+
+**Le serveur de dev renvoyait 500 sur toute page à îlot React**, ce qui rendait
+tout diagnostic impossible — et masquait le point suivant. Chaîne complète :
+
+```
+ui/dialog.tsx importe @/components/tracking/ScreenTracker  (absent du dépôt)
+   → le scan de dépendances Vite échoue
+   → le pré-bundling est désactivé
+   → react est servi en CommonJS brut
+   → PremiumTooltip.tsx : import { ReactNode } from "react"  (ReactNode est un TYPE)
+   → 500
+```
+
+Le **build de production tolérait les deux** (esbuild élimine l'import de type,
+`dialog.tsx` n'est importé par personne) : défaut invisible en CI. Correctifs :
+`import type` d'un côté, retrait de l'import mort de l'autre. `dialog.tsx` a depuis été
+supprimé (§9.k). ⚠️ Un premier comptage annonçait « 23 composants `ui/*`
+orphelins » : il était **faux**, la recherche excluant `ui/` de son propre champ,
+si bien qu'un composant utilisé uniquement par un autre composant `ui/` paraissait
+mort. Le chiffre réel est **3** (§9.k).
+
+**Échec d'hydratation de `/simulateur`** — « Hydration failed because the initial
+UI does not match what was rendered on the server », suivi de « the entire root
+will switch to client rendering » : React jetait le HTML serveur et re-rendait
+l'îlot entier, sur la page de conversion, sur **tout téléphone**. Défaut
+antérieur à la refonte du blog (vérifié en rebâtissant le commit `1d1be89`).
+
+⚠️ Cause : `useIsMobile()` lisait `window.innerWidth` **pendant le rendu** tant
+que son état valait `undefined`. Serveur → `false` ; premier rendu client sur
+mobile → `true`. `PremiumTooltip` branche là-dessus et ajoute un `<div>`
+d'enrobage en variante mobile : React attendait un `<div>` dans un `<label>`
+absent du HTML serveur. **Le premier rendu client doit toujours être identique
+au rendu serveur** — l'état part désormais de `false`, la vraie valeur arrivant
+après montage.
+
+Hypothèses écartées en chemin, à ne pas reprendre : formatage `Intl.NumberFormat`
+(aucun nombre formaté n'est rendu côté serveur) et imbrication HTML invalide
+(0 cas dans l'îlot SSR).
+
+Résultat : 0 `pageerror` à 320, 390 et 1440 px ; accessibilité, bonnes pratiques
+et SEO à 100. La performance reste à 88-89 (LCP 3,8 s) — c'est le bundle
+`SimulateurApp.js` de **552 Ko**, pas l'hydratation.
+
+### 9.k Poids du bundle et code réellement mort (août 2026)
+
+**recharts sorti du chemin critique.** `/simulateur` chargeait un bundle de
+**552 Ko** dont ~388 Ko de recharts — utilisé à un **seul** endroit du site, pour
+un camembert de 100×100 px à trois parts, affiché **uniquement après soumission**
+du formulaire. `RegimeComparisonCards` passe donc en `React.lazy` + `Suspense`.
+
+Sans risque au rendu serveur : à ce moment `results.recommande` est faux, donc
+`SimulateurResults` n'est pas rendu et le `lazy` n'est jamais évalué.
+
+| | avant | après |
+|---|---|---|
+| chunk `SimulateurApp.js` | 552 Ko | **135 Ko** |
+| JS transféré au chargement | — | **290 Ko** |
+| performance mobile | 88-89 | **89-94** (médiane 93) |
+| LCP | 3,8 s | **3,0 s** |
+
+Vérifié fonctionnellement à 390 et 1440 px : recharts absent au chargement,
+chargé à la soumission, camembert rendu avec ses parts, 0 erreur. Un premier test
+avait échoué à soumettre le formulaire — cela ne prouvait rien, il fallait piloter
+les champs réels (`recettesBrutes`, `chargesHorsCotisations`).
+
+**Code mort — le chiffre réel est 3, pas 23.** Une analyse d'atteignabilité depuis
+les pages Astro (parcours du graphe d'imports) montre que **20 des 23 composants
+`ui/*` sont bien atteints**, souvent via un autre composant `ui/`. Seuls
+`dialog`, `popover` et `scroll-area` sont inatteignables : supprimés, avec leurs
+trois dépendances `@radix-ui/react-{dialog,popover,scroll-area}` — les seules du
+`package.json` qui n'étaient importées par rien.
+
+Restent inatteignables mais **conservés délibérément**, car ils ressemblent à des
+fonctionnalités désactivées plutôt qu'à des résidus :
+`simulateur/SimulateurGuide.tsx`, `simulateur/CotisationsDetailChart.tsx`,
+`lib/calc/declaration2035Inputs.ts`. À trancher éditorialement.
+
+### 9.l Finitions (août 2026)
+
+**Tiroir mobile — zone de fermeture.** Le tiroir occupait presque tout l'écran
+(296 px sur 320, 360 sur 390), ne laissant que **12 à 18 px d'overlay** : le geste
+« toucher à côté pour fermer » était hors de portée, très en dessous des 44 px
+usuels. Largeur ramenée à `w-[calc(100%-4.5rem)] max-w-[340px]`, ce qui garantit
+**au moins 60 px** de 320 à 430 px. Vérifié aux quatre largeurs : fermeture par
+l'overlay fonctionnelle, 10 liens, aucun débordement, CTA lisibles, 0 erreur.
+
+**Maillage — 6 ancres retirées sur 113 (reste 107).** Relecture des 24 ancres
+d'un seul mot signalées en §9.d. Six étaient trompeuses ou hors-sujet :
+  - « Assurance **Maladie-Maternité** » ×3 (`cotisations-sociales-vs-impots`,
+    `simulateur-super-net-combien-reste`, `tout-comprendre-urssaf`) — c'est le nom
+    d'une **branche de cotisation**, pas le congé maternité vers lequel le lien
+    pointait. L'occurrence conservée dans `remplir-declaration-2035` est d'une
+    autre nature : elle désigne les **indemnités journalières** maternité, que
+    l'article cible traite bien.
+  - « **internat** » ×2 — dans un contexte de Livret A (`interets-composes`) et
+    d'éligibilité à la licence (`obtenir-sa-licence`), pointant vers un article
+    d'impôts. Rapprochement trop lâche.
+  - « **échéance** » ×1 (`inbox-zero-remplacant`) — il s'agit de gestion de
+    tâches, pas d'échéances fiscales.
+
+Les 18 autres sont conservées : « 2035 », « rétrocession(s) », « salariat »,
+« Urssaf », « facturer », « budget » sont chacune le sujet même de leur cible.
+
+**Textes à 11 px — volontairement NON modifiés.** L'audit mobile les signalait sur
+2 pages, mais `text-[11px]` compte **plus de 60 occurrences** dans le dépôt,
+surtout dans les outils (calculette, simulateur, guide) : c'est une convention de
+design établie, et aucun critère WCAG n'impose de taille minimale. Les modifier
+serait une décision de design, pas une finition.
+
+**Deux derniers défauts d'accessibilité sur `/guide-declarations`** (page non
+touchée par la refonte, relevée par le balayage final) :
+  - `FiscalSocialPrimer.astro` — 4 `<dt>` en `text-hippo-700/70` : l'opacité
+    ramenait le contraste à **3,50:1** sur fond `#f6faff`, à 10 px. Opacité
+    retirée (**6,4:1**). Même racine que les six contrastes de §9.h : la nuance
+    passait par l'opacité au lieu de la couleur.
+  - `PremiumCtaSection.astro` — le bouton portait `aria-label="Démarrer mon essai
+    gratuit **Hippodoc** 30 jours"` alors que son texte visible est « Démarrer mon
+    essai gratuit 30 jours ». Le nom accessible ne **contenait** donc pas le texte
+    visible : échec **WCAG 2.5.3 (Label in Name)**, qui empêche un utilisateur de
+    commande vocale de cibler le bouton en prononçant ce qu'il lit. `aria-label`
+    retiré — le texte visible suffit comme nom accessible.
+
+**⚠️ `/guide-declarations` reste à 97 en accessibilité — 20 nœuds non corrigés.**
+Dix instances ont été corrigées (`text-emerald-700/70` ×4, `text-blue-600/70` ×3,
+`text-emerald-500/60` ×3), mais le diagnostic final montre que le problème est
+**systématique sur cette page** et suit six motifs :
+
+| motif | nœuds | ratio | correction |
+|---|---|---|---|
+| `opacity-60` sur gris | 6 | 2,37 | retirer l'opacité |
+| `text-red-600` sur `bg-red-50` | 7 | 4,41 | `text-red-700` |
+| `text-emerald-600` sur vert pâle | 3 | 3,67 | `text-emerald-700` |
+| `opacity-70` sur bleu | 2 | 2,94 | retirer l'opacité |
+| blanc sur `bg-hippo-500` | 1 | 3,36 | `bg-hippo-600` |
+| `text-hippo-600` sur `bg-hippo-100` | 1 | 4,40 | `text-hippo-700` |
+
+Dispersés dans au moins cinq composants (`CaseopediaSection`, `CrossLinks`,
+`FlowChartSection`, `FiscalSocialPrimer`, `BoussoleWizard`). C'est une **passe
+dédiée à cette page**, hors du périmètre de la refonte du blog, qui demande une
+vérification visuelle de chaque composant touché — non engagée ici pour ne pas
+restyler à moitié une page non demandée.
+
+La racine est identique à celle des contrastes de §9.h : la nuance passe par
+l'**opacité** ou par une couleur **mi-ton** au lieu d'une couleur assez foncée.
+À traiter comme une règle de design, pas comme des cas isolés.
+
+Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
+`frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
+ouvert, car il suppose d'inventer des intitulés de section.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

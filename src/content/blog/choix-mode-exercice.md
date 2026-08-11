@@ -32,7 +32,7 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 
 • **Statut** : Libéral (BNC)\
 • **Rémunération** : 60-80 % des honoraires\
-• **Fiscalité** : Micro-BNC ou réel, URSSAF, CARMF
+• **Fiscalité** : [Micro-BNC ou réel](/blog/regime-fiscal-micro-bnc-vs-reel), [URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf)
 
 ✅ **+** : Flexible, formateur, bien payé, sans gestion de cabinet\
 ⚠️ **-** : Revenus irréguliers
@@ -96,7 +96,7 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 :::tip
 Quel que soit ton statut, Hippodoc t'aide à :
 
-✅ Suivre tes revenus super-net en temps réel
+✅ Suivre tes revenus [super-net](/blog/simulateur-super-net-combien-reste) en temps réel
 
 ✅ Comparer tes différentes activités
 

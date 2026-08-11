@@ -79,7 +79,7 @@ On avance, on enchaîne… jusqu'à la fatigue.\
 Sans vision financière claire, même les pauses deviennent stressantes.
 
 ✅ **Le réflexe pro :**\
-Raisonne en année : rythme, semaines off, super-net lissé.
+Raisonne en année : rythme, semaines off, [super-net](/blog/simulateur-super-net-combien-reste) lissé.
 
 👉 La vision financière protège aussi ta santé mentale.
 

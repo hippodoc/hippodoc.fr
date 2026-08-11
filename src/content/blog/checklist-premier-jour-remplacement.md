@@ -28,7 +28,7 @@ relatedArticles:
   - "signer-contrat-remplacement"
 ---
 
-Ça y est, ton premier remplacement approche à grands pas ! Un mélange d'excitation et de stress ? C'est totalement normal ! Respire, voici LA checklist complète et facile à suivre pour être parfaitement prêt(e) le jour J.
+Ça y est, ton [premier remplacement](/blog/realites-remplacement-medical) approche à grands pas ! Un mélange d'excitation et de stress ? C'est totalement normal ! Respire, voici LA checklist complète et facile à suivre pour être parfaitement prêt(e) le jour J.
 
 ## 🔑 Accès & confort
 

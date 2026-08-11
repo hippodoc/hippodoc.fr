@@ -27,7 +27,7 @@ relatedArticles:
   - "salaires-medecins-remplacants"
 ---
 
-Bravo, tu as ta licence de remplacement en poche, c'est parti pour tes premières expériences ! 🚀 Voici ta checklist pour trouver rapidement le remplacement de tes rêves.
+Bravo, tu as ta [licence de remplacement](/blog/obtenir-sa-licence-de-remplacement) en poche, c'est parti pour tes premières expériences ! 🚀 Voici ta checklist pour trouver rapidement le remplacement de tes rêves.
 
 ## Étape 1 : Choisis les bonnes plateformes !
 
@@ -39,7 +39,7 @@ Bravo, tu as ta licence de remplacement en poche, c'est parti pour tes première
 
 📍 **Lieu & Trajet** : Privilégie un accès facile, du stationnement et des services pratiques à proximité (pause-café oblige ! ☕).\
 💼 **Type d'exercice** : Cabinet libéral, maison de santé, centre médical ou clinique privée ? Astuce : Profite de tes premiers remplacements pour tester différents environnements afin de mieux cerner celui qui colle à ta personnalité et à tes préférences !\
-💶 **Rétrocession** : En moyenne, compte environ 70-80% pour la médecine générale et 60-70% pour les autres spécialités. À négocier selon ton expérience et les spécificités du poste.\
+💶 **[Rétrocession](/blog/salaires-medecins-remplacants)** : En moyenne, compte environ 70-80% pour la médecine générale et 60-70% pour les autres spécialités. À négocier selon ton expérience et les spécificités du poste.\
 ⏰ **Horaires & rythme** : Précise dès le départ les horaires exacts, les consultations prévues, les visites à domicile éventuelles ou les gardes.\
 🤝 **Feeling & ambiance** : Fais confiance à ton intuition dès le premier échange téléphonique ou lors de la première visite. Une bonne ambiance, ça change tout ! ✨
 
@@ -48,7 +48,7 @@ Bravo, tu as ta licence de remplacement en poche, c'est parti pour tes première
 :::tip
 📅 Calendrier intuitif pour mieux gérer ton planning de remplaçant\
 📑 Contrats numériques en toute simplicité\
-🧮 Simulateur URSSAF et "Super-Net" pour anticiper précisément tes revenus nets et pas tout claquer trop vite à Ibiza\
+🧮 Simulateur [URSSAF](/blog/tout-comprendre-urssaf) et "[Super-Net](/blog/simulateur-super-net-combien-reste)" pour anticiper précisément tes revenus nets et pas tout claquer trop vite à Ibiza\
 💳 Suivi ultra simple de tes paiements
 :::
 

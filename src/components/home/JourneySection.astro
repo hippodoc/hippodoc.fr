@@ -240,13 +240,26 @@ const PROFILES = [
     display: block;
   }
 
+  /* Focus clavier : mêmes radios `sr-only` que le filtre du blog — sans cette
+     règle, le focus est invisible (WCAG 2.4.7). */
+  #parcours-remplacant:focus-visible ~ .tabs label[data-profile='remplacant'],
+  #parcours-interne:focus-visible ~ .tabs label[data-profile='interne'],
+  #parcours-mixte:focus-visible ~ .tabs label[data-profile='mixte'],
+  #parcours-collaborateur:focus-visible ~ .tabs label[data-profile='collaborateur'],
+  #parcours-installe:focus-visible ~ .tabs label[data-profile='installe'] {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
   #parcours-remplacant:checked ~ .tabs label[data-profile='remplacant'],
   #parcours-interne:checked ~ .tabs label[data-profile='interne'],
   #parcours-mixte:checked ~ .tabs label[data-profile='mixte'],
   #parcours-collaborateur:checked ~ .tabs label[data-profile='collaborateur'],
   #parcours-installe:checked ~ .tabs label[data-profile='installe'] {
     border-color: transparent;
-    background-color: theme('colors.hippo.500');
+    /* hippo-500 donnait 3,36:1 avec du blanc à 13px — sous le seuil AA de 4,5:1.
+       hippo-600 monte à 5,15:1. Même racine que les badges de PricingSection. */
+    background-color: theme('colors.hippo.600');
     color: white;
     box-shadow: 0 10px 15px -3px rgba(26, 140, 255, 0.2);
   }

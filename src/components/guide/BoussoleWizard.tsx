@@ -541,19 +541,19 @@ export function BoussoleWizard() {
                     <span className="px-1.5 py-0.5 rounded bg-white/80 dark:bg-slate-900/60 border border-emerald-200/70 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-medium">
                       {a.label}
                     </span>
-                    {i < autoFilled.length - 1 && <span className="text-emerald-500/60">·</span>}
+                    {i < autoFilled.length - 1 && <span className="text-emerald-700">·</span>}
                   </span>
                 ))}
                 {situationLabels.length > 0 && (
                   <>
-                    {autoFilled.length > 0 && <span className="text-emerald-500/60">·</span>}
+                    {autoFilled.length > 0 && <span className="text-emerald-700">·</span>}
                     <span className="text-emerald-700 dark:text-emerald-300 font-medium">Situations :</span>
                     {situationLabels.map((lbl, i) => (
                       <span key={`sit-${i}`} className="flex items-center gap-1">
                         <span className="px-1.5 py-0.5 rounded bg-white/80 dark:bg-slate-900/60 border border-emerald-200/70 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-medium">
                           {lbl}
                         </span>
-                        {i < situationLabels.length - 1 && <span className="text-emerald-500/60">·</span>}
+                        {i < situationLabels.length - 1 && <span className="text-emerald-700">·</span>}
                       </span>
                     ))}
                     <button

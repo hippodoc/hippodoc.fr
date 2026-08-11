@@ -12,7 +12,11 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
-import { ReactNode, useState } from "react";
+// `ReactNode` est un TYPE : l'importer comme une valeur casse le serveur de dev
+// dès que Vite n'a pas pré-bundlé React (react est alors servi en CommonJS, qui
+// n'expose pas cet export nommé). Le build de production le tolérait, pas le dev.
+import { useState } from "react";
+import type { ReactNode } from "react";
 import { X } from "lucide-react";
 import { useIsMobile } from "@/lib/use-mobile";
 

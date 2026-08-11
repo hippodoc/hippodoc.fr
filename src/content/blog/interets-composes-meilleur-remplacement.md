@@ -165,6 +165,6 @@ Tu as deux superpowers que la plupart des profils n'ont pas : **des revenus stab
 
 ## 🚀 Et Hippodoc dans tout ça ?
 
-Pour investir, encore faut-il **savoir ce qu'il te reste vraiment à la fin du mois**. Entre les remplas, l'URSSAF, les impôts, les charges variables, le remplaçant pilote ses finances au feeling. C'est précisément ce qu'Hippodoc corrige.
+Pour investir, encore faut-il **savoir ce qu'il te reste vraiment à la fin du mois**. Entre les remplas, l'[URSSAF](/blog/tout-comprendre-urssaf), les impôts, les charges variables, le remplaçant pilote ses finances au feeling. C'est précisément ce qu'Hippodoc corrige.
 
 👉 **hippodoc.fr** — ce qu'il te reste vraiment chaque mois, en clair. Tu sais précisément ce que tu peux investir ou dépenser, sans stress.

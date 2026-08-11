@@ -15,11 +15,27 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const posts = await getCollection('blog');
 
+/* Sommaire — CONDITIONNEL. Les ancres existent déjà (tous les titres reçoivent un
+   `id` au build), donc c'est une simple liste de liens — zéro JS. Pas de surlignage
+   de la section courante : un scrollspy imposerait du JS.
+
+   Le seuil porte sur la LONGUEUR, pas sur le nombre de sections. Un seuil « ≥ 8
+   sections » avait été essayé et s'est révélé faux : le style maison découpe même
+   les articles courts en nombreuses micro-sections, si bien que 14 articles de
+   moins de 900 mots déclenchaient un sommaire. Le pire cas — 367 mots pour
+   19 entrées — produisait un sommaire occupant 25 % de la hauteur de l'article,
+   soit 19 mots par section. Un sommaire n'a de sens que si l'article ne tient pas
+   à l'écran : au-dessous de ~1 200 mots, il coûte plus qu'il ne rapporte.
+   La mesure montre une rupture nette dans le corpus entre 1 245 et 536 mots. */
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const nbMots = post.body?.split(/\s+/).length ?? 0;
+const showToc = nbMots >= 1200 && toc.filter((h) => h.depth === 2).length >= 8;
+
 const {
-  title, description, pubDate, updatedDate, author, category, categoryNumber,
+  title, description, pubDate, updatedDate, author, authorRole, category, categoryNumber,
   seriesId, episodeNumber, readTime, cover, cta, faq, relatedArticles, slides,
 } = post.data;
 
@@ -132,18 +148,69 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
   jsonLd={jsonLd}
 >
   <Header />
-  <main class="container max-w-4xl px-4 py-8">
+  <main id="top" class:list={['container px-4 py-8', showToc ? 'max-w-6xl' : 'max-w-4xl']}>
     <nav aria-label="Fil d'Ariane" class="mb-4 text-sm text-muted-foreground">
       <ol class="flex flex-wrap items-center gap-1">
-        <li><a href="/" class="hover:text-hippo-600">Accueil</a></li>
+        <li><a href="/" class="inline-flex min-h-6 items-center hover:text-hippo-600">Accueil</a></li>
         <li aria-hidden="true">›</li>
-        <li><a href="/blog" class="hover:text-hippo-600">Blog</a></li>
+        <li><a href="/blog" class="inline-flex min-h-6 items-center hover:text-hippo-600">Blog</a></li>
         <li aria-hidden="true">›</li>
         <li class="text-foreground" aria-current="page">{title}</li>
       </ol>
     </nav>
 
     <a href="/blog" class="mb-6 inline-flex items-center text-sm font-medium text-hippo-600 hover:text-hippo-800">← Retour au blog</a>
+
+    {/* Sommaire : repli piloté par une checkbox, et non par un <details>. Chrome
+         applique `content-visibility: hidden` au contenu d'un <details> fermé, si
+         bien qu'un `display: block` en media query ne suffit plus à le remettre en
+         flux (l'élément gardait une hauteur de 0 et la colonne sticky restait vide).
+         C'est aussi le motif zéro-JS déjà employé pour le tiroir mobile du Header
+         et les onglets du Parcours. Un seul <nav> dans le DOM : aucune duplication
+         des ancres entre mobile et desktop. */}
+    <div class:list={[showToc ? 'xl:grid xl:grid-cols-[15rem_minmax(0,1fr)] xl:items-start xl:gap-12' : '']}>
+      {showToc && (
+        <div class="toc mb-8 rounded-2xl border border-hippo-100 bg-hippo-50/40 px-4 xl:sticky xl:top-24 xl:mb-0 xl:max-h-[calc(100vh-8rem)] xl:overflow-y-auto xl:rounded-none xl:border-0 xl:border-l xl:bg-transparent xl:px-0 xl:pl-4">
+          <input type="checkbox" id="toc-toggle" class="peer sr-only" />
+          <label
+            for="toc-toggle"
+            class="flex min-h-11 cursor-pointer items-center justify-between gap-2 py-3 font-semibold text-hippo-800 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[hsl(var(--ring))] xl:hidden"
+          >
+            Sommaire
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-hippo-500 transition-transform peer-checked:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </label>
+
+          <nav aria-label="Sommaire de l'article" class="hidden pb-4 peer-checked:block xl:block xl:pb-0">
+            <p class="mb-3 hidden text-xs font-semibold uppercase tracking-wider text-muted-foreground xl:block">Sommaire</p>
+            <ol class="space-y-1 text-sm">
+              {toc.map((h) => (
+                <li>
+                  <a
+                    href={`#${h.slug}`}
+                    class:list={[
+                      'block rounded-md py-1.5 leading-snug transition-colors hover:text-hippo-700 xl:py-1',
+                      h.depth === 3
+                        ? 'border-l border-hippo-100 pl-3 text-[0.8125rem] text-muted-foreground/85'
+                        : 'font-medium text-hippo-800',
+                    ]}
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+            {/* Retour en haut. N'apparaît pas « au scroll » : ce comportement
+                 exigerait du JS (invariant zéro-JS), il est donc permanent. */}
+            <a
+              href="#top"
+              class="mt-4 hidden items-center gap-1.5 text-xs font-medium text-hippo-600 transition-colors hover:text-hippo-800 xl:inline-flex"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+              Retour en haut
+            </a>
+          </nav>
+        </div>
+      )}
 
     <article>
       <header class="mb-8">
@@ -184,7 +251,12 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         </div>
       )}
 
-      <div class="prose prose-slate blog-content max-w-none prose-headings:text-foreground prose-a:text-hippo-600">
+      {/* Largeur de lecture : le corps de texte est ramené à ~68 caractères par
+           ligne (il en faisait 88, bien au-delà de l'optimum 60-75). L'en-tête,
+           la cover et les blocs de fin restent en pleine largeur du conteneur.
+           Note : `.prose p { white-space: pre-wrap }` (global.css) est conservé —
+           29 des 38 articles contiennent des sauts de ligne volontaires. */}
+      <div class="prose prose-slate blog-content mx-auto max-w-[68ch] prose-headings:text-foreground prose-a:text-hippo-600">
         <Content />
       </div>
 
@@ -203,6 +275,52 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
           </div>
         </section>
       )}
+
+      {/* Bloc auteur — signal E-E-A-T : sur des sujets « argent/santé », Google
+           valorise l'expertise identifiable de l'auteur. L'information existait
+           déjà (frontmatter `author`/`authorRole`) mais n'apparaissait que dans
+           une ligne de métadonnées grise sous le titre. */}
+      <aside class="mt-12 flex flex-col gap-4 rounded-2xl border border-hippo-100 bg-white p-6 sm:flex-row sm:items-start" aria-label="À propos de l'auteur">
+        <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-hippo-500 to-hippo-600 text-lg font-bold text-white">
+          {author.replace(/^Dr\.?\s*/i, '').split(/\s+/).map((n) => n[0]).slice(0, 2).join('')}
+        </span>
+        <div class="min-w-0">
+          <p class="font-semibold text-foreground">{author}</p>
+          {authorRole && <p class="text-sm text-muted-foreground">{authorRole}</p>}
+          <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Il partage ici ce qu'il applique au quotidien : fiscalité, cotisations et gestion de l'activité libérale.
+            <a href="/qui-sommes-nous" class="ml-1 font-medium text-hippo-600 underline-offset-2 hover:underline">En savoir plus</a>
+          </p>
+        </div>
+      </aside>
+
+      {/* Partage : liens simples, aucun script tiers (un guide fiscal se
+           transfère surtout entre confrères par messagerie). */}
+      <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        <span class="font-medium text-muted-foreground">Partager cet article</span>
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent(`${title} — ${SITE_URL}${path}`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
+        >
+          WhatsApp
+        </a>
+        <a
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${SITE_URL}${path}`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
+        >
+          LinkedIn
+        </a>
+        <a
+          href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${description}\n\n${SITE_URL}${path}`)}`}
+          class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
+        >
+          E-mail
+        </a>
+      </div>
 
       <aside class="mt-12 rounded-2xl border border-hippo-100 bg-hippo-50/50 p-6" aria-label="Pour aller plus loin">
         <h2 class="mb-3 text-lg font-bold text-hippo-800">Pour aller plus loin</h2>
@@ -232,8 +350,13 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         </section>
       )}
 
+      {/* Dégradé assombri de hippo-500→600 vers hippo-600→700 : sur hippo-500 même
+          du blanc PLEIN ne donne que 3,37:1, sous le seuil AA — tout ce bloc échouait
+          sur sa moitié gauche, et ce sur 30 articles. hippo-600 donne 5,15:1 et
+          hippo-700 6,82:1. Le sous-titre passe de `text-white/80` (3,85:1) à blanc
+          plein : la nuance vient de la taille, pas de l'opacité. */}
       {cta && (
-        <div class="mt-12 rounded-2xl bg-gradient-to-r from-hippo-500 to-hippo-600 p-8 text-center text-white">
+        <div class="mt-12 rounded-2xl bg-gradient-to-r from-hippo-600 to-hippo-700 p-8 text-center text-white">
           <h3 class="text-xl font-bold" set:html={miniMarkdownToHtml(cta)} />
           <a
             href={`${APP_URL}/auth?tab=signup`}
@@ -242,10 +365,23 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
           >
             Commencer gratuitement
           </a>
-          <p class="mt-2 text-sm text-white/80">Essai gratuit 30 jours · Sans engagement</p>
+          <p class="mt-2 text-sm text-white">Essai gratuit 30 jours · Sans engagement</p>
         </div>
       )}
     </article>
+    </div>
+
+    {/* Pendant mobile/tablette du lien du sommaire sticky (et seul lien de
+         remontée sur les articles courts, qui n'ont pas de sommaire). */}
+    <div class:list={['mt-12 text-center', showToc ? 'xl:hidden' : '']}>
+      <a
+        href="#top"
+        class="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-hippo-600 transition-colors hover:text-hippo-800"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+        Retour en haut
+      </a>
+    </div>
   </main>
   <Footer />
 </BaseLayout>

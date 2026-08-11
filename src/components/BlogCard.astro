@@ -1,0 +1,63 @@
+---
+/**
+ * Carte d'article — extraite de src/pages/blog/index.astro (phase 3 de la refonte
+ * blog) pour être partagée avec les pages de série `/blog/serie/*`.
+ * Balisage et classes repris à l'identique : aucun changement visuel.
+ *
+ * La classe `blog-card s-<seriesId>` est conservée : elle sert de crochet aux
+ * styles existants et reste utile pour cibler une série en CSS.
+ */
+import { blogSeries } from '@/lib/blog-series';
+
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  readTime: string;
+  seriesId: string;
+  episodeNumber?: number;
+  cover?: { src: string; width: number; height: number };
+  /** Charge la cover en priorité (première carte de la grille) plutôt qu'en lazy. */
+  eager?: boolean;
+}
+
+const {
+  slug, title, description, pubDate, readTime, seriesId, episodeNumber, cover, eager = false,
+} = Astro.props;
+
+const series = blogSeries.find((s) => s.id === seriesId);
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<article class={`blog-card s-${seriesId} blog-card-hover overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm`}>
+  <a href={`/blog/${slug}`} class="block">
+    {cover && (
+      <img
+        src={cover.src}
+        alt=""
+        width={cover.width}
+        height={cover.height}
+        class="aspect-[16/9] w-full object-cover"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : undefined}
+      />
+    )}
+    <div class="p-5">
+      <div class="mb-2 flex items-center gap-2">
+        {series && <span class={`series-badge bg-gradient-to-r ${series.color}`}>{series.name}</span>}
+        {episodeNumber !== undefined && seriesId !== 'divers' && (
+          <span class="text-xs text-muted-foreground">#{episodeNumber}</span>
+        )}
+      </div>
+      <h2 class="text-lg font-bold leading-snug text-foreground">{title}</h2>
+      <p class="mt-2 line-clamp-3 text-sm text-muted-foreground">{description}</p>
+      <div class="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        <span>{readTime}</span>
+      </div>
+    </div>
+  </a>
+</article>

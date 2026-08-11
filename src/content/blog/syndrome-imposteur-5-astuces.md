@@ -27,7 +27,7 @@ relatedArticles:
   - "maitrise-ton-logiciel-metier-en-30-min"
 ---
 
-Tu viens tout juste de décrocher ta **thèse** ou ta **licence de remplacement** ?
+Tu viens tout juste de décrocher ta **thèse** ou ta **[licence de remplacement](/blog/obtenir-sa-licence-de-remplacement)** ?
 
 Entre excitation et trac, une petite voix te chuchote parfois : **"Et si je n'étais pas vraiment prêt·e ?"**
 

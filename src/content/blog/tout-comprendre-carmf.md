@@ -30,7 +30,7 @@ relatedArticles:
   - "frais-professionnels-deductibles"
 ---
 
-Après avoir découvert l'URSSAF, fais connaissance avec sa cousine un peu mystérieuse : la CARMF. Elle s'occupe de ton avenir (et de ton portefeuille dès aujourd'hui). 🎴🔮
+Après avoir découvert l'[URSSAF](/blog/tout-comprendre-urssaf), fais connaissance avec sa cousine un peu mystérieuse : la CARMF. Elle s'occupe de ton avenir (et de ton portefeuille dès aujourd'hui). 🎴🔮
 
 ## ❓ Qu'est-ce que la CARMF ?
 
@@ -42,7 +42,7 @@ La CARMF (Caisse Autonome de Retraite des Médecins de France) gère : **Ta retr
 
 ## 📝 Comment s'affilier ?
 
-Tu as **1 mois** à partir de ton premier remplacement pour t'inscrire sur **www.carmf.fr**.
+Tu as **1 mois** à partir de ton [premier remplacement](/blog/realites-remplacement-medical) pour t'inscrire sur **www.carmf.fr**.
 
 :::warning
 En cas d'oubli, affiliation automatique avec possibles pénalités.
@@ -95,12 +95,12 @@ Paiement en **deux étapes** : **Janvier** : 1er acompte, **Mai à juillet** : s
 ## 🎁 Tips & astuces indispensables
 
 ✅ **Dispense d'affiliation possible** si revenus inférieurs au seuil CARMF (~12 800 € en 2026, indexé sur le PASS) — ⚠ sur demande, non automatique et non rétroactive.\
-✅ **RSPM** : cotisations sociales réduites (~13,5% tout compris) – Voir fiche fiscalité #3.\
+✅ **[RSPM](/blog/rspm-exemples-concrets)** : cotisations sociales réduites (~13,5% tout compris) – Voir fiche fiscalité #3.\
 ✅ **ACRE** : réduction de charges la 1ʳᵉ année si c'est ta première activité libérale et que tes revenus sont < 47 100 €.\
 ✅ **Cotisations CARMF déductibles** de tes impôts : n'oublie pas de les déclarer !
 
 ## 🚀 Le Tips Hippodoc : simplifie ta gestion financière !
 
 :::tip
-Avec **Hippodoc**, suis facilement ton revenu **"super-net"** (après cotisations sociales et impôts) en temps réel. Tu peux enregistrer tes cotisations CARMF comme charges professionnelles et importer tous tes documents importants directement dans l'application.
+Avec **Hippodoc**, suis facilement ton revenu **"[super-net](/blog/simulateur-super-net-combien-reste)"** (après [cotisations sociales et impôt](/blog/cotisations-sociales-vs-impots)s) en temps réel. Tu peux enregistrer tes cotisations CARMF comme charges professionnelles et importer tous tes documents importants directement dans l'application.
 :::

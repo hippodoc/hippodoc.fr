@@ -39,8 +39,8 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 ## 📅 JANVIER – C'est parti ! 🚀
 
-📬 **CARMF** : Réception acompte retraite (paiement sous 30 jours)\
-💡 Vérifie tes échéanciers URSSAF et CARMF en ligne
+📬 **[CARMF](/blog/tout-comprendre-carmf)** : Réception acompte retraite (paiement sous 30 jours)\
+💡 Vérifie tes échéanciers [URSSAF](/blog/tout-comprendre-urssaf) et CARMF en ligne
 
 ## 📅 FÉVRIER – Respire et anticipe 🍃
 
@@ -59,7 +59,7 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 💸 **URSSAF** : Paiement du T1\
 💸 **IMPÔT** : 2ᵉ acompte trimestriel\
-📤 Dépôt de la 2035\
+📤 Dépôt de la [2035](/blog/remplir-declaration-2035)\
 📤 Finalisation de ta déclaration de revenus
 
 ## 📅 JUIN – Vigilance 👀
