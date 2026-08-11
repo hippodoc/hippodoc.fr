@@ -184,6 +184,15 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
     </section>
 
     <!-- Îlot React — formulaire + résultats, 100 % client-side -->
+    {/* Titre réservé aux lecteurs d'écran : les cartes de l'îlot ouvrent sur des
+        titres de niveau 3 (CardTitle), d'où un saut h1 → h3 dans la hiérarchie.
+        CardTitle est partagé par tout le site : on ne touche pas au composant,
+        on rétablit le niveau manquant ici. `sr-only` est en position absolue et
+        ne modifie donc pas la mise en page.
+        Commentaire Astro `{…}` et non `<!-- -->` : un commentaire HTML est émis
+        dans la page, et celui-ci citait « h3 » — il était compté comme un vrai
+        titre par les outils d'analyse. */}
+    <h2 class="sr-only">La calculette</h2>
     <CalculetteApp client:visible />
 
     <!-- CTA premium -->

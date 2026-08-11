@@ -78,7 +78,10 @@ const guarantees = [
                     <div class="rounded-full bg-green-100 p-1.5">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-700" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                     </div>
-                    <h4 class="text-sm font-semibold text-white">Mode RSPM Intégré</h4>
+                    {/* h3 et non h4 : ce panneau est imbriqué sous le <h2> de la
+                        section, et un saut h2 → h4 casse la navigation par titres
+                        des lecteurs d'écran. Le style est porté par les classes. */}
+                    <h3 class="text-sm font-semibold text-white">Mode RSPM Intégré</h3>
                   </div>
                   <p class="text-xs leading-relaxed text-gray-200">
                     Le RSPM (Régime Simplifié des Professions Médicales) propose des cotisations sociales réduites et une gestion administrative simplifiée, avec des taux progressifs :

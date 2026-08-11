@@ -75,8 +75,14 @@ for (const url of urls) {
     descriptions.set(desc, url);
   }
 
+  // Les commentaires HTML sont émis tels quels dans la page : un commentaire qui
+  // cite « <h3> » serait compté comme un vrai titre. Cas rencontré pour de bon
+  // sur /guide-declarations/calculette, où un commentaire expliquant un correctif
+  // de hiérarchie créait lui-même un faux saut de niveau.
+  const sansCommentaires = html.replace(/<!--[\s\S]*?-->/g, ' ');
+
   // exactement un H1
-  const h1Count = (html.match(/<h1[\s>]/g) ?? []).length;
+  const h1Count = (sansCommentaires.match(/<h1[\s>]/g) ?? []).length;
   if (h1Count !== 1) fail(`${url} : ${h1Count} balises <h1> (attendu : 1)`);
 
   // canonique exacte
@@ -107,6 +113,17 @@ for (const url of urls) {
       if (!t) fail(`${url} : JSON-LD sans @type`);
     } catch (e) {
       fail(`${url} : JSON-LD invalide (${e.message})`);
+    }
+  }
+
+  // hiérarchie des titres : un saut (h1 → h3) casse la navigation par titres
+  // des lecteurs d'écran. En avertissement, car le footer partagé ouvre sur des
+  // <h3> et rend le défaut facile à réintroduire sur une page peu structurée.
+  const niveaux = [...sansCommentaires.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
+  for (let i = 1; i < niveaux.length; i++) {
+    if (niveaux[i] > niveaux[i - 1] + 1) {
+      warn(`${url} : saut de niveau de titre h${niveaux[i - 1]} → h${niveaux[i]}`);
+      break;
     }
   }
 
