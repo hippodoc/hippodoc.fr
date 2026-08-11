@@ -730,6 +730,70 @@ dans le build : chacun se déclenche, aucun n'est décoratif.
 les ~940 cibles tactiles de `/guide-declarations`, réparties sur deux composants
 répétés : même chantier dédié que ses 20 contrastes (§9.l).
 
+### 9.n Page 404 et en-têtes de cache (août 2026)
+
+Deux défauts trouvés par un audit de la **production** (et non du build) après
+la mise en ligne. Aucun des deux n'était une régression : ils préexistaient.
+
+**a. Aucune page 404.** L'adaptateur Vercel génère systématiquement la route
+`{"src":"^/.*$","dest":"/404.html","status":404}`, mais `src/pages/404.astro`
+n'existait pas. Vercel servait donc sa page brute : **79 octets, sans `<title>`,
+sans logo, sans lien de retour**. Tout visiteur arrivant par un lien mort — vieux
+partage, faute de frappe, URL tronquée — se retrouvait dans une impasse.
+Créer la page a suffi : la route existait déjà.
+Elle est en **`noindex`** (elle est servie sous des URL arbitraires ; indexable,
+elle dupliquerait le site autant de fois qu'il existe d'URL erronées) et le code
+HTTP reste **404**, porté par la route et non par le document — ce qui évite le
+« soft 404 » que Google pénalise.
+
+⚠️ Piège rencontré à l'écriture : un retour à la ligne entre du texte et un
+`<span>` est absorbé à la compilation. `Cette page est\n<span>introuvable</span>`
+rendait littéralement « estintrouvable ». Le fragment doit rester sur **une seule
+ligne** (c'est pourquoi le H1 de `blog/index.astro` est écrit ainsi), ou utiliser
+`{' '}`. Défaut invisible à la relecture du source, visible à l'écran.
+
+**b. Aucun cache sur les assets.** Tout partait en
+`public, max-age=0, must-revalidate`, y compris les fichiers de `/_astro/` dont le
+nom **contient déjà l'empreinte de leur contenu**. Cause exacte : l'adaptateur
+écrit bien une règle `immutable`, mais **après** `{"handle":"filesystem"}` —
+or tout ce qui suit cette étape ne s'exécute que si aucun fichier n'a été trouvé.
+Pour un fichier qui existe, la règle n'est jamais atteinte.
+
+Le correctif passe par `vercel.json`, dont les `headers` s'appliquent **avant**
+l'étape `filesystem`. Vérifié au préalable que `vercel.json` est bien honoré à
+côté du Build Output API de l'adaptateur (les 36 redirections répondent en 308).
+
+| Cible | Cache | Pourquoi |
+|---|---|---|
+| `/_astro/(.*)` | `max-age=31536000, immutable` | 188/188 fichiers hachés — vérifié |
+| `/lovable-uploads/(.*)` | `max-age=86400` | noms **stables** : jamais `immutable` |
+| 4 icônes racine | `max-age=86400` | noms stables également |
+| HTML, `robots.txt`, sitemaps | *inchangé* | un déploiement doit être visible **immédiatement** |
+
+Coût évité : 20 allers-retours réseau sur `/`, 17 sur `/blog`, à chaque visite.
+Les réponses étaient déjà des **304** (l'ETag fonctionnait) : ce qui était perdu
+n'était donc pas de la bande passante mais **une latence par ressource**, payée
+surtout en mobile.
+
+⚠️ Contrepartie assumée sur `/lovable-uploads/` : remplacer une image **sans
+changer son nom** la laisse périmée jusqu'à 24 h chez les visiteurs déjà venus.
+**Renommer le fichier** lors d'un remplacement contourne entièrement le problème.
+C'est aussi pourquoi `immutable` y est exclu.
+
+**Trois contrôles ajoutés à `verify-site.mjs`**, tous validés par injection du
+défaut correspondant :
+  1. `404.html` présent, en `noindex`, avec un lien vers l'accueil ;
+  2. **aucun fichier sans empreinte dans `/_astro/`** tant que `vercel.json` le
+     sert en `immutable` — c'est l'invariant qui rend la promesse vraie. Le jour
+     où un nom stable y atterrit, il serait figé un an chez tous les visiteurs,
+     sans le moindre signal ;
+  3. aucune règle de cache ne vise du HTML — sinon un déploiement resterait
+     invisible pour les visiteurs déjà venus.
+
+⚠️ Non corrigé (hors de notre code) : l'ordre des routes de `@astrojs/vercel`
+v11.0.5, qui place sa règle de cache après `handle: filesystem` et la rend donc
+inopérante. Contourné par `vercel.json`.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

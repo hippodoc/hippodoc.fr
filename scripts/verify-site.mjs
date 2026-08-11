@@ -205,6 +205,40 @@ if (!existsSync(page404)) {
   if (!/href="\/"/.test(html404)) fail('404.html : aucun lien de retour vers l’accueil');
 }
 
+/* 4 ter. En-têtes de cache : l'invariant qui les rend sûrs.
+   « immutable » promet au navigateur que le fichier ne changera JAMAIS sous
+   cette URL. Ce n'est vrai que parce que Vite préfixe chaque fichier de /_astro/
+   d'une empreinte de son contenu. Le jour où un fichier à nom stable y atterrit,
+   la promesse devient fausse et le fichier est gelé un an chez tous les
+   visiteurs — sans le moindre signal. D'où ce contrôle. */
+const regleImmutable = (vercelJson.headers ?? []).find(
+  (h) => h.source?.startsWith('/_astro/') &&
+    h.headers?.some((k) => /immutable/.test(k.value ?? ''))
+);
+if (!regleImmutable) {
+  warn('vercel.json : aucune règle « immutable » sur /_astro/ — les assets hachés sont revalidés à chaque visite');
+} else {
+  const nonHaches = readdirSync(resolve(dist, '_astro'), { withFileTypes: true })
+    .filter((d) => d.isFile() && !/\.[A-Za-z0-9_-]{8,}\.[a-z0-9]+$/.test(d.name))
+    .map((d) => d.name);
+  if (nonHaches.length) {
+    fail(
+      `/_astro/ contient ${nonHaches.length} fichier(s) SANS empreinte (${nonHaches.slice(0, 3).join(', ')}` +
+      `${nonHaches.length > 3 ? '…' : ''}) alors que vercel.json les sert en « immutable » : ` +
+      `ils seraient figés un an chez les visiteurs`
+    );
+  }
+}
+// Aucune règle de cache ne doit attraper du HTML : une page mise en cache
+// rendrait un déploiement invisible pour les visiteurs déjà venus.
+for (const h of vercelJson.headers ?? []) {
+  const cache = h.headers?.find((k) => k.key?.toLowerCase() === 'cache-control')?.value ?? '';
+  const duree = Number(cache.match(/max-age=(\d+)/)?.[1] ?? 0);
+  if (duree > 0 && /\.html|^\/\(\.\*\)|^\/:path|^\/\(\.\+\)/.test(h.source ?? '')) {
+    fail(`vercel.json : la règle de cache "${h.source}" peut viser du HTML — un déploiement resterait invisible`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);
