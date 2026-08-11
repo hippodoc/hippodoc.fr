@@ -685,6 +685,51 @@ La racine est identique à celle des contrastes de §9.h : la nuance passe par
 l'**opacité** ou par une couleur **mi-ton** au lieu d'une couleur assez foncée.
 À traiter comme une règle de design, pas comme des cas isolés.
 
+### 9.m Audit de code et extension de verify-site.mjs (août 2026)
+
+**28 erreurs de typage éliminées** (`npx tsc --noEmit` en signalait 28, désormais 0),
+analysées une par une plutôt que corrigées en bloc :
+  - 17 dans du code de calcul fiscal (`forfaitsSecteur1.ts`, `dsPamc.ts`) —
+    **les calculs étaient justes** : `Number.isFinite(undefined)` vaut `false`, la
+    garde `safe()` renvoyait bien 0. Seule la signature était trop stricte, et ce
+    bruit masquait de vrais problèmes. Élargie à `number | undefined`.
+  - 8 sur les profils types du simulateur — un profil ne renseigne qu'une douzaine
+    de champs sur vingt-six, mais était typé comme complet. Surtout, `form.reset()`
+    REMPLACE tout l'état : les champs absents devenaient `undefined`. Les valeurs
+    par défaut sont extraites en `SIMULATEUR_DEFAULTS` et réinjectées au reset.
+    ⚠️ Mon diagnostic initial annonçait « deux listes déroulantes restent vides » :
+    **c'était faux** — la sonde lisait les `<select>` natifs cachés que Radix garde
+    pour l'accessibilité. Le défaut était latent, sans impact visible.
+  - 1 sur `RegimeComparisonCards` — `recettes && recettes > X` vaut `0` et non
+    `false` quand les recettes sont nulles : JSX aurait affiché littéralement
+    « 0 ». Encadré dans `Boolean()`.
+  - 2 sur `SimulateurGuide.tsx` — fichier mort rendu non compilable par la
+    suppression de `ui/dialog` en §9.k. Supprimé (son contenu vit en statique dans
+    `simulateur.astro`).
+
+**Cibles tactiles** — 8 éléments sous le minimum de 24 px (WCAG 2.5.8) agrandis :
+« ← Retour au blog » (38 pages), 5 ancres et 3 liens « Source » de `/comparatif`,
+lien `/tarifs` de la landing, « Voir les tarifs » du simulateur, `<summary>` RSPM.
+Les liens **en pleine phrase** sont exemptés par le critère et laissés tels quels.
+
+**`verify-site.mjs` étendu** — l'audit manuel avait trouvé en une passe trois
+défauts que le script ne voyait pas. Ils sont désormais automatiques :
+  1. **liens internes morts** — 3 332 liens vérifiés à chaque build ;
+  2. **balises sociales** (`og:title/description/image/url`, `twitter:card`) sur
+     chaque page du sitemap ;
+  3. **pages construites hors sitemap** — erreur si indexable, avertissement si
+     `noindex`, et erreur si elle n'a pas d'`og:title` (une page en noindex reste
+     partageable).
+
+Les trois contrôles ont été **validés en injectant volontairement chaque défaut**
+dans le build : chacun se déclenche, aucun n'est décoratif.
+
+⚠️ Non traité, délibérément : les 3 vulnérabilités `npm audit` (chaîne
+`path-to-regexp` → `@astrojs/vercel`, active **au build seulement**, sur les
+36 routes de `vercel.json` — `npm audit fix --force` casserait l'adaptateur), et
+les ~940 cibles tactiles de `/guide-declarations`, réparties sur deux composants
+répétés : même chantier dédié que ses 20 contrastes (§9.l).
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

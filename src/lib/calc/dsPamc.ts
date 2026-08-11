@@ -151,7 +151,10 @@ export interface Resultat2042CPRO {
 // Helpers
 // =============================================================================
 
-const safe = (n: number): number => (Number.isFinite(n) ? n : 0);
+// La garde renvoie déjà 0 pour une valeur absente : la signature doit donc
+// accepter `undefined`, sinon chaque appelant produit une erreur de typage
+// (17 au total) qui masque de vrais problèmes dans le bruit.
+const safe = (n: number | undefined): number => (Number.isFinite(n) ? (n as number) : 0);
 const round2 = (n: number): number => Math.round(n * 100) / 100;
 
 // =============================================================================

@@ -3,11 +3,18 @@
  * pour CHAQUE URL du sitemap — fichier présent (équivalent HTTP 200),
  * <title> unique, meta description unique, exactement un <h1>, canonique
  * exacte sans slash final, texte présent dans le HTML brut (sans JS),
- * blocs JSON-LD parsables. Sort avec un code d'erreur si un point échoue.
+ * blocs JSON-LD parsables, balises sociales complètes.
+ *
+ * Puis, sur l'ensemble du build : aucun lien interne mort, et aucune page
+ * construite hors sitemap qui serait indexable ou sans aperçu de partage.
+ * Ces trois derniers contrôles ont été ajoutés après un audit manuel qui a
+ * trouvé, en une passe, ce que ce script ne voyait pas : des liens morts, des
+ * balises Open Graph absentes, et une page entière déposée dans public/ qui
+ * échappait au pipeline Astro. Sort avec un code d'erreur si un point échoue.
  *
  * Usage : node scripts/verify-site.mjs   (après astro build)
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -106,9 +113,71 @@ for (const url of urls) {
   // lorem / placeholder
   if (/lorem ipsum/i.test(text)) fail(`${url} : texte placeholder « lorem ipsum » détecté`);
   if (/TODO\(owner\)/.test(text)) warn(`${url} : TODO(owner) visible dans la page`);
+
+  // balises sociales — une page indexable est une page partageable : sans elles,
+  // aucun aperçu n'apparaît en messagerie ou sur les réseaux.
+  for (const tag of ['og:title', 'og:description', 'og:image', 'og:url']) {
+    if (!html.includes(`property="${tag}"`)) fail(`${url} : balise ${tag} absente`);
+  }
+  if (!html.includes('name="twitter:card"')) fail(`${url} : balise twitter:card absente`);
 }
 
-/* 2. vercel.json : parse + collisions avec les routes publiques */
+/* 1 bis. Inventaire réel de dist/ — sert aux deux contrôles suivants.
+   Un audit manuel avait révélé trois angles morts que ce script ne voyait pas :
+   des liens internes cassés, des balises sociales manquantes, et une page
+   entièrement hors du pipeline Astro. Ces contrôles les rendent automatiques. */
+const fichiersDist = readdirSync(dist, { recursive: true, withFileTypes: true })
+  .filter((d) => d.isFile())
+  .map((d) => resolve(d.parentPath ?? d.path, d.name).replace(dist, '').replace(/\\/g, '/'));
+
+/** Chemins d'URL réellement servis : /a/b pour dist/a/b/index.html. */
+const cheminsServis = new Set(
+  fichiersDist
+    .filter((f) => f.endsWith('/index.html'))
+    .map((f) => f.replace(/\/index\.html$/, '') || '/')
+);
+/** Fichiers atteignables tels quels (assets, sitemap, robots…). */
+const fichiersServis = new Set(fichiersDist);
+
+/* 2. Liens internes : chaque href interne doit aboutir quelque part.
+   Un lien mort ne casse pas le build et passe donc totalement inaperçu. */
+let liensAnalyses = 0;
+const liensCasses = new Map(); // cible -> pages qui la référencent
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  const source = f.replace(/\/index\.html$/, '') || '/';
+  for (const [, href] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
+    const cible = href.split('#')[0].split('?')[0].replace(/\/$/, '') || '/';
+    if (cible.startsWith('//')) continue; // protocole-relatif : externe
+    liensAnalyses++;
+    if (cheminsServis.has(cible) || fichiersServis.has(cible)) continue;
+    if (!liensCasses.has(cible)) liensCasses.set(cible, new Set());
+    liensCasses.get(cible).add(source);
+  }
+}
+for (const [cible, sources] of liensCasses) {
+  const ou = [...sources].slice(0, 3).join(', ');
+  fail(`Lien interne mort : ${cible} (référencé par ${sources.size} page(s) : ${ou}${sources.size > 3 ? '…' : ''})`);
+}
+
+/* 3. Pages hors sitemap — typiquement du HTML déposé dans public/, qui échappe
+   au pipeline Astro et donc à tous les contrôles ci-dessus. Volontaire ou non,
+   il faut au moins le SAVOIR. */
+const cheminsSitemap = new Set(urls.map((u) => u.replace(SITE, '').replace(/\/$/, '') || '/'));
+for (const chemin of [...cheminsServis].sort()) {
+  if (cheminsSitemap.has(chemin)) continue;
+  const html = readFileSync(resolve(dist, chemin === '/' ? 'index.html' : `${chemin.replace(/^\//, '')}/index.html`), 'utf8');
+  const noindex = /<meta name="robots"[^>]+noindex/.test(html);
+  if (!noindex) {
+    fail(`${chemin} : page construite absente du sitemap ET indexable (ajoute-la au sitemap ou mets-la en noindex)`);
+  } else {
+    warn(`${chemin} : hors sitemap (noindex) — non couverte par les contrôles ci-dessus`);
+    // en noindex mais partageable : l'aperçu en messagerie compte quand même
+    if (!html.includes('property="og:title"')) fail(`${chemin} : hors sitemap et sans og:title (aucun aperçu au partage)`);
+  }
+}
+
+/* 4. vercel.json : parse + collisions avec les routes publiques */
 const vercelJson = JSON.parse(readFileSync(resolve(root, 'vercel.json'), 'utf8'));
 const publicPaths = urls.map((u) => u.replace(SITE, '') || '/');
 for (const r of vercelJson.redirects ?? []) {
@@ -119,7 +188,7 @@ for (const r of vercelJson.redirects ?? []) {
   if (!r.permanent) warn(`Redirection non permanente (302) : ${src}`);
 }
 
-/* 3. robots.txt & llms.txt présents dans dist */
+/* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);
 }
@@ -137,4 +206,6 @@ if (errors.length) {
   for (const e of errors) console.log('  - ' + e);
   process.exit(1);
 }
-console.log(`\n✓ ${urls.length} pages vérifiées : titres/descriptions uniques, 1 H1, canoniques, contenu SSR, JSON-LD valide.`);
+console.log(`\n✓ ${urls.length} pages vérifiées : titres/descriptions uniques, 1 H1, canoniques,`);
+console.log(`  contenu SSR, JSON-LD valide, balises sociales complètes.`);
+console.log(`✓ ${liensAnalyses} liens internes vérifiés, aucun mort.`);

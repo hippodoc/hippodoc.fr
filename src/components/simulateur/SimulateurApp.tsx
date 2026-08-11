@@ -87,7 +87,7 @@ export default function SimulateurApp() {
   };
 
   const handleSelectProfil = useCallback(
-    (profilData: Omit<SimulateurFormData, "regimeFiscal">, profilId?: string) => {
+    (profilData: Partial<Omit<SimulateurFormData, "regimeFiscal">>, profilId?: string) => {
       selectedProfilIdRef.current = profilId || null;
       if (formRef.current) {
         formRef.current.reset({ ...profilData, forfait2pct: true });
