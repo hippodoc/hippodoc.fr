@@ -33,6 +33,21 @@
     disable_session_recording: true,
   });
 
+  /**
+   * Analytics de la landing. Chargé ICI, après `init()`, pour deux raisons :
+   * l'ordre d'exécution est garanti (un second <script> ne l'aurait pas été) et
+   * l'instance `posthog` est la même (le module est un singleton).
+   * Import dynamique : ce code ne pèse sur aucune autre page du site et reste
+   * hors du chemin critique de rendu de l'accueil.
+   */
+  if (window.location.pathname === '/' || window.location.pathname === '') {
+    import('@/lib/landing-analytics')
+      .then((m) => m.initLandingAnalytics(posthog))
+      .catch(() => {
+        /* la mesure peut échouer, jamais la page */
+      });
+  }
+
   window.addEventListener('hippodoc:consent-changed', (e) => {
     const value = (e as CustomEvent).detail;
     if (value === 'accepted') {
