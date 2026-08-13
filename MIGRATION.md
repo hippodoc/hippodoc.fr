@@ -847,6 +847,83 @@ défauts préexistants ci-dessus, invisibles jusque-là.
 fonctionnel ; 9 formes d'URL testées (chemin profond, accents encodés, query,
 majuscules, 200 caractères, `%2e%2e`) rendent toutes la page complète.
 
+### 9.p Rétablissement des événements `landing_*` (août 2026)
+
+**Le diagnostic d'abord, parce qu'il était contre-intuitif.** Depuis la bascule du
+07/08/2026, PostHog ne recevait plus aucun `landing_viewed`, `landing_scroll_depth`
+ni `landing_section_viewed`. Un rapport externe attribuait cela à un crash de la
+landing en WebView Instagram (`crypto.randomUUID()` levant une exception, gate
+Supabase bloquant le montage). **Ce diagnostic ne s'applique pas à ce dépôt** :
+`crypto.randomUUID` n'apparaît que dans `SimulateurApp.tsx`, aucun `supabase.auth`
+n'existe sur le site public, et la landing est en Astro pur — il n'y a pas de
+composant React à faire tomber.
+
+La cause réelle, vérifiée en base : le trafic est passé de `hippodoc.fr` (ancienne
+SPA Lovable) à `www.hippodoc.fr` (ce dépôt) **le jour même du lancement de la
+campagne Meta**. L'ancien site émettait 15 à 59 `landing_viewed` par jour ; le
+nouveau, zéro, parce que §6 et §11 avaient porté les *attributs* d'instrumentation
+sans l'émission d'événements, écartée au nom du zéro JS. Ce n'était pas un oubli,
+c'était une décision — mais **31 insights sauvegardés**, créés le 05/08, sont
+restés vides pendant cinq semaines.
+
+**Ce qui marchait déjà et n'a PAS été retouché.** Les clics sont captés depuis le
+début via `$autocapture` : les `data-ph` (28 sur l'accueil) et les `data-track`
+des CTA apparaissent dans `elements_chain`. Mesuré sur 7 jours : 736 événements
+portant `data-ph`, dont **28 clics sur `cta_signup*`**. Aucun balisage n'a donc été
+ajouté ; `landing_cta_clicked` est reconstruit à partir des `data-track` existants.
+
+**Ce qui a été ajouté** — uniquement ce qu'aucune capture automatique ne peut
+déduire : `src/lib/landing-analytics.ts` (4,4 Ko bruts, **1,9 Ko gzip**), chargé en
+import dynamique depuis `PostHog.astro` **après** `init()` (ordre garanti, instance
+unique), et seulement sur `/`.
+
+⚠️ **Exception zéro-JS assumée**, au même titre que le micro-script du tiroir mobile.
+Justification : sans elle, la profondeur de lecture, le parcours des sections et
+l'engagement vidéo sont structurellement immesurables.
+
+**Fidélité à l'historique.** Noms, propriétés et valeurs sont repris tels quels d'un
+relevé PostHog sur 45 jours, pour que les données d'avant et d'après vivent dans les
+mêmes insights : `depth` ∈ {25,50,75,100} ; les 11 sections dans leur ordre exact
+(`hero` → `footer`) ; `profile` ∈ {remplacant, interne, mixte, collaborateur,
+installe} ; contexte commun `device_type` / `referrer_source` / `deployment_env` /
+`app_version` / `session_pageview_count` / `initial_*` / `utm_*`.
+
+⚠️ Deux pièges rencontrés, tous deux invisibles à la relecture :
+  - les radios du sélecteur « Pour qui » n'ont pas d'attribut `value` : `radio.value`
+    renvoie `"on"` pour toutes. Le profil est lu depuis `data-profile` (déjà présent).
+  - `remplacant` étant coché par défaut, écouter `change` ne l'aurait **jamais**
+    émis — alors que c'est le profil le plus fréquent de l'historique (62 sur 108).
+    On écoute donc le clic sur les libellés.
+
+**Aucun identifiant fabriqué.** `crypto.randomUUID()` n'est pas utilisé : PostHog
+fournit déjà `$session_id`. La classe de panne décrite par le rapport externe est
+donc écartée par construction, sans `safeUuid()` ni repli.
+
+**Robustesse WebView** (97 % du trafic payant) : tout accès à une API du navigateur
+passe par `safe()`. Vérifié en simulant un contexte hostile — `sessionStorage`
+levant une exception, `crypto.randomUUID` supprimé, `IntersectionObserver` absent :
+`landing_viewed` part quand même, aucune erreur de page.
+
+**Bilan de poids** : `disable_surveys: true` supprime **98 Ko** de `surveys.js`
+chargés sur chaque page alors qu'aucune enquête n'est configurée (table `surveys`
+vide). Net sur tout le site : **−96 Ko**. TBT mesuré à 0 sur les 20 exécutions
+Lighthouse, quelle que soit la configuration.
+⚠️ `dead-clicks-autocapture.js` (17 Ko) continue d'être chargé : il suit la
+configuration distante (`heatmaps: true`), pas une option client — `capture_dead_clicks`
+a été essayé sans effet, et retiré plutôt que de laisser un commentaire faux.
+⚠️ Le LCP local n'a pas permis de conclure (dispersion 6,0–7,0 s sur un serveur de
+test sans compression) ; à confirmer sur les web vitals de production.
+
+**Trois garde-fous dans `verify-site.mjs`**, validés par injection : les 10 sections
+doivent porter leur `data-landing-section`, aucun identifiant inconnu ne doit
+apparaître (sinon son `section_order` serait faux), et tout lien vers
+`auth?tab=signup` doit garder son `data-track`.
+
+⚠️ Piège de mesure à retenir : `posthog-js` **filtre les navigateurs automatisés**
+(`navigator.webdriver`, UA « HeadlessChrome »). Toute vérification via Playwright
+observe donc zéro événement, y compris en production. Le module se teste en lui
+injectant un faux `posthog` — pas en écoutant le réseau.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

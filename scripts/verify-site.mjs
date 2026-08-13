@@ -256,6 +256,35 @@ for (const h of vercelJson.headers ?? []) {
   }
 }
 
+/* 4 quater. Instrumentation de la landing.
+   Les événements `landing_*` sont reconstruits à partir du DOM : les sections par
+   `data-landing-section`, les conversions par les `data-track` déjà en place. Un
+   composant renommé ou un CTA ajouté sans attribut casserait la mesure en silence
+   — et ce silence a déjà coûté cinq semaines de données après la bascule du
+   07/08/2026. On le rend bruyant. */
+const SECTIONS_LANDING = [
+  'hero', 'social-proof', 'presentation-video', 'features', 'mid-page-cta',
+  'practice-journeys', 'testimonials', 'partners', 'pricing', 'faq',
+];
+const accueil = readFileSync(resolve(dist, 'index.html'), 'utf8');
+const sectionsVues = [...accueil.matchAll(/data-landing-section="([^"]+)"/g)].map((m) => m[1]);
+for (const attendue of SECTIONS_LANDING) {
+  if (!sectionsVues.includes(attendue)) {
+    fail(`accueil : section « ${attendue} » sans data-landing-section — landing_section_viewed ne partira plus pour elle`);
+  }
+}
+for (const vue of sectionsVues) {
+  if (!SECTIONS_LANDING.includes(vue)) {
+    fail(`accueil : data-landing-section="${vue}" inconnu — ajoute-le ici ET dans src/lib/landing-analytics.ts, sinon son section_order sera faux`);
+  }
+}
+// Tout lien d'inscription doit rester instrumenté : c'est la conversion elle-même.
+for (const [balise] of accueil.matchAll(/<a\b[^>]*auth\?tab=signup[^>]*>/g)) {
+  if (!/data-track="/.test(balise)) {
+    fail(`accueil : un CTA d'inscription sans data-track — le clic ne sera pas attribué (${balise.slice(0, 80)})`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);
