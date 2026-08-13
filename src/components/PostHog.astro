@@ -31,6 +31,12 @@
     cross_subdomain_cookie: true,
     persistence: accepted ? 'localStorage+cookie' : 'memory',
     disable_session_recording: true,
+    // PostHog chargeait `surveys.js` — 98 Ko — sur CHAQUE page du site alors
+    // qu'aucune enquête n'est configurée sur le projet (table `surveys` vide).
+    // NB : `dead-clicks-autocapture.js` (17 Ko) continue d'être chargé ; il suit
+    // la configuration distante (`heatmaps: true`) et non une option client —
+    // `capture_dead_clicks: false` a été essayé, sans effet.
+    disable_surveys: true,
   });
 
   /**
