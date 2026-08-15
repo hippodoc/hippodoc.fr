@@ -31,7 +31,28 @@
     cross_subdomain_cookie: true,
     persistence: accepted ? 'localStorage+cookie' : 'memory',
     disable_session_recording: true,
+    // PostHog chargeait `surveys.js` — 98 Ko — sur CHAQUE page du site alors
+    // qu'aucune enquête n'est configurée sur le projet (table `surveys` vide).
+    // NB : `dead-clicks-autocapture.js` (17 Ko) continue d'être chargé ; il suit
+    // la configuration distante (`heatmaps: true`) et non une option client —
+    // `capture_dead_clicks: false` a été essayé, sans effet.
+    disable_surveys: true,
   });
+
+  /**
+   * Analytics de la landing. Chargé ICI, après `init()`, pour deux raisons :
+   * l'ordre d'exécution est garanti (un second <script> ne l'aurait pas été) et
+   * l'instance `posthog` est la même (le module est un singleton).
+   * Import dynamique : ce code ne pèse sur aucune autre page du site et reste
+   * hors du chemin critique de rendu de l'accueil.
+   */
+  if (window.location.pathname === '/' || window.location.pathname === '') {
+    import('@/lib/landing-analytics')
+      .then((m) => m.initLandingAnalytics(posthog))
+      .catch(() => {
+        /* la mesure peut échouer, jamais la page */
+      });
+  }
 
   window.addEventListener('hippodoc:consent-changed', (e) => {
     const value = (e as CustomEvent).detail;

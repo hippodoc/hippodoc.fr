@@ -7,6 +7,7 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkDirective from 'remark-directive';
 import { remarkCallouts } from './src/lib/remark-callouts.mjs';
 import blogMeta from './src/generated/blog-meta.json' with { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 /** lastmod par URL : articles = date réelle (pubDate/updatedDate). */
 const BLOG_LASTMOD = new Map(
@@ -42,5 +43,14 @@ export default defineConfig({
   },
   build: {
     inlineStylesheets: 'auto',
+  },
+  vite: {
+    define: {
+      // Injecté au build et joint à chaque événement `landing_*` (propriété
+      // `app_version` de l'historique PostHog). Passe par `define` plutôt qu'un
+      // import de package.json : seule la chaîne de version entre dans le bundle
+      // client, pas la liste des dépendances.
+      __APP_VERSION__: JSON.stringify(pkg.version),
+    },
   },
 });
