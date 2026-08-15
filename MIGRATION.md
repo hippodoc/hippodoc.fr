@@ -1402,6 +1402,52 @@ tiers peut suivre. Mesuré : les nommer dans le bandeau ajoutait une troisième 
 et **remasquait le CTA sur les écrans de 640 px** (94 visiteurs). Le vouvoiement est
 conservé, comme l'ancien titre « Nous respectons votre vie privée ».
 
+### 9.y Consentement : lecture unique et retrait effectif (août 2026)
+
+Contrôle demandé après §9.x — « Tout refuser » n'a-t-il pas cassé la mesure ?
+**Non** : le libellé seul a changé. « Essentiels uniquement » et « Tout refuser »
+portent le même `data-cookie-action="essential"` et écrivent la même valeur
+`essential-only`. Mesuré, en refus : **16 événements PostHog envoyés**, dont les
+cinq `landing_*`, `$pageview`, `$autocapture`, `$$heatmap` et `$web_vitals` —
+autant qu'en acceptation. Seule différence : pas de cookie `ph_…`, donc pas
+d'identité persistée d'une page à l'autre. C'est le comportement voulu.
+
+La vérification a en revanche exposé **trois défauts réels**, dont deux
+antérieurs.
+
+**1. Deux lecteurs du consentement en désaccord** (introduit par §9.x).
+`ThirdPartyScripts` lisait le cookie ; `PostHog.astro` lisait le seul
+`localStorage`. Un visiteur ayant accepté sur `app.hippodoc.fr` arrivait donc ici
+sans bannière (cookie lu), GA4 et le Pixel actifs — mais PostHog en mode mémoire,
+`localStorage` étant vide côté www. Consentement donné, identité jamais persistée,
+chaque page comptée comme un nouveau visiteur, et **aucun moyen de le rattraper**
+puisque la bannière ne réapparaissait plus.
+⚠️ Le défaut était invisible à la lecture : les deux fichiers étaient corrects
+séparément, c'est leur DÉSACCORD qui cassait la mesure. `ThirdPartyScripts` expose
+désormais `window.hippodocConsent`, seule fonction de lecture (l'ordre est garanti :
+il est `is:inline`, PostHog est un module donc différé). Garde-fou `verify-site`
+§4 undecies, validé par injection du défaut.
+
+**2. Le retrait du consentement ne retirait rien** (antérieur).
+Après « Tout accepter » puis retour arrière via « Préférences cookies », `_ga`,
+`_ga_<ID>` et `_fbp` survivaient au choix ET au rechargement : l'identifiant
+publicitaire Meta restait sur l'appareil pour trois mois. Un consentement qu'on ne
+peut pas retirer dans les faits n'en est pas un. Les cookies sont maintenant
+effacés au retrait.
+⚠️ **Révoquer AVANT d'effacer.** `consent update` n'était envoyé que vers
+« granted » : GA4 restait autorisé dans la page en cours et réécrivait `_ga_<ID>`
+juste après l'effacement — le cookie semblait parti, puis réapparaissait au
+rechargement. Vérifié à côté : sous `essential-only`, GA4 ne pose spontanément
+aucun cookie, même après 15 s. Seule la mesure a montré cet aller-retour.
+⚠️ Un cookie ne s'efface qu'en rejouant **exactement** son couple domaine/chemin ;
+GA4 posant `_ga` sur le domaine parent, l'effacement boucle sur les variantes.
+
+**3. Crisp pose un cookie sans consentement** (antérieur, NON corrigé).
+`crisp-client/session/<id>` est écrit dès la première interaction — défilement
+compris — quel que soit le choix, y compris avant tout choix. Le widget se charge
+donc sans avoir été demandé. Décision produit en attente : le charger seulement au
+clic sur la bulle le rendrait conforme mais retarderait l'ouverture du chat.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

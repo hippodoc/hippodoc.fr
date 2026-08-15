@@ -436,6 +436,28 @@ for (const [, cible, rendu] of accueilChiffres.matchAll(/data-compteur="(\d+)"[^
   }
 }
 
+/* 4 undecies. Le consentement se lit au MÊME endroit partout.
+   Deux lecteurs coexistent : la bannière (ThirdPartyScripts) et PostHog. Quand
+   seul le second lisait `localStorage`, un visiteur ayant accepté sur
+   app.hippodoc.fr revenait ici avec le cookie de domaine parent : la bannière ne
+   s'affichait plus, GA4 et le Pixel s'activaient, mais PostHog restait en mode
+   mémoire — consentement donné, identité jamais persistée, chaque page comptée
+   comme un nouveau visiteur, et plus aucune bannière pour rattraper le coup.
+   Le défaut était invisible à la lecture : les deux fichiers étaient corrects
+   séparément, c'est leur DÉSACCORD qui cassait la mesure. On vérifie donc que
+   tout lecteur du consentement interroge bien le cookie. */
+const LECTEURS_CONSENTEMENT = [
+  'src/components/ThirdPartyScripts.astro',
+  'src/components/PostHog.astro',
+];
+for (const f of LECTEURS_CONSENTEMENT) {
+  const src = readFileSync(resolve(root, f), 'utf8');
+  if (!/cookie-consent/.test(src) && !/hippodoc-consent/.test(src)) continue; // ne lit pas le consentement
+  if (!/hippodoc-consent/.test(src)) {
+    fail(`${f} : lit le consentement sans consulter le cookie « hippodoc-consent » — un choix fait sur app.hippodoc.fr y serait ignoré`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

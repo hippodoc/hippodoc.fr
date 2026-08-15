@@ -11,7 +11,37 @@
 <script>
   import posthog from 'posthog-js';
 
+  /**
+   * ⚠️ Le consentement se lit d'ABORD dans le cookie `hippodoc-consent` (domaine
+   * parent), et seulement ensuite dans `localStorage`.
+   *
+   * Lire le seul `localStorage` était un défaut mesuré : un visiteur ayant accepté
+   * sur `app.hippodoc.fr` arrivait ici avec le cookie « accepted » — la bannière ne
+   * s'affichait donc pas, GA4 et le Pixel s'activaient — mais `localStorage` étant
+   * cloisonné par origine, il était vide côté www et PostHog restait en `memory`.
+   * Résultat : consentement donné, aucune identité persistée, chaque page comptée
+   * comme un nouveau visiteur anonyme, et aucun moyen de le corriger puisque la
+   * bannière ne réapparaissait plus.
+   *
+   * `window.hippodocConsent` vient de ThirdPartyScripts.astro, qui est `is:inline`
+   * et s'exécute donc avant ce module. Le repli couvre le cas où ce composant
+   * serait rendu sans lui.
+   */
   function readConsent(): string | null {
+    const partage = (window as unknown as { hippodocConsent?: () => string | null }).hippodocConsent;
+    if (typeof partage === 'function') {
+      try {
+        return partage();
+      } catch {
+        /* on retombe sur la lecture locale */
+      }
+    }
+    try {
+      const m = document.cookie.match(/(?:^|;\s*)hippodoc-consent=([^;]+)/);
+      if (m) return decodeURIComponent(m[1]);
+    } catch {
+      /* cookies inaccessibles */
+    }
     try {
       return localStorage.getItem('cookie-consent');
     } catch {

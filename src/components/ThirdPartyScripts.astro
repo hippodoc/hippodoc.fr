@@ -103,6 +103,15 @@
       } catch (e) {}
       try { return localStorage.getItem('cookie-consent'); } catch (e) { return null; }
     }
+    /* Exposé pour PostHog.astro, qui doit lire EXACTEMENT la même chose.
+       Il l'a un temps lu depuis le seul `localStorage` : un visiteur ayant accepté
+       sur app.hippodoc.fr revenait ici sans bannière (le cookie est lu) mais avec
+       PostHog en mémoire (le localStorage, lui, est vide côté www) — consentement
+       donné, mesure dégradée, et aucun moyen de le corriger puisque la bannière ne
+       revient plus. Une seule fonction de lecture, donc.
+       L'ordre est garanti : ce script est `is:inline` et s'exécute pendant l'analyse
+       du document, tandis que celui de PostHog.astro est un module, donc différé. */
+    window.hippodocConsent = consent;
 
     /* Consent Mode v2 — défaut DENIED (RGPD), AVANT tout chargement gtag.js */
     window.dataLayer = window.dataLayer || [];
@@ -127,6 +136,7 @@
       page_referrer: scrub(document.referrer || ''),
     });
     var GRANTED = { ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted' };
+    var DENIED = { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied' };
     if (consent() === 'accepted') gtag('consent', 'update', GRANTED);
 
     function inject(src, cb) {
@@ -187,6 +197,34 @@
     if (document.readyState === 'complete') { armDeferred(); }
     else { addEventListener('load', armDeferred); }
 
+    /* Retrait du consentement : les cookies DÉJÀ posés doivent partir.
+       Mesuré : après « Tout accepter » puis retour en arrière via « Préférences
+       cookies », `_ga`, `_ga_<ID>` et `_fbp` survivaient au choix ET au
+       rechargement. Le visiteur retirait son consentement et l'identifiant
+       publicitaire Meta restait sur son appareil pour trois mois — un
+       consentement qu'on ne peut pas retirer dans les faits n'en est pas un.
+       PostHog, lui, nettoie déjà son cookie via set_config({persistence:'memory'}).
+       ⚠️ Un cookie ne s'efface qu'en rejouant EXACTEMENT son couple domaine/chemin :
+       GA4 pose `_ga` sur le domaine parent, d'où la boucle sur les variantes. */
+    function effacerTraceurs() {
+      try {
+        var noms = ['_ga', '_gid', '_gat', '_fbp', '_fbc'];
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var nom = cookies[i].split('=')[0].trim();
+          var vise = nom.indexOf('_ga_') === 0 || nom.indexOf('_gat_') === 0 || noms.indexOf(nom) !== -1;
+          if (!vise) continue;
+          var hote = location.hostname;
+          var domaines = ['', ';domain=' + hote, ';domain=.' + hote];
+          var parties = hote.split('.');
+          if (parties.length > 2) domaines.push(';domain=.' + parties.slice(-2).join('.'));
+          for (var d = 0; d < domaines.length; d++) {
+            document.cookie = nom + '=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT' + domaines[d];
+          }
+        }
+      } catch (e) {}
+    }
+
     /* Bannière */
     var banner = document.getElementById('cookie-banner');
     function choose(value) {
@@ -210,6 +248,18 @@
           ';samesite=lax' + (location.protocol === 'https:' ? ';secure' : '');
       } catch (e) {}
       if (banner) banner.hidden = true;
+      if (value !== 'accepted') {
+        /* ⚠️ RÉVOQUER AVANT D'EFFACER. `consent update` n'était envoyé que vers
+           « granted » : après un retrait, GA4 restait autorisé dans la page en
+           cours et RÉÉCRIVAIT `_ga_<ID>` juste après son effacement. Le cookie
+           semblait parti, puis réapparaissait au rechargement — un aller-retour
+           qu'aucune relecture du code ne montrait, seule la mesure l'a exposé.
+           Meta expose `fbq('consent','revoke')` : le pixel déjà chargé cesse
+           alors d'émettre, faute de pouvoir le décharger. */
+        gtag('consent', 'update', DENIED);
+        try { if (window.fbq) window.fbq('consent', 'revoke'); } catch (e) {}
+        effacerTraceurs();
+      }
       if (value === 'accepted') {
         gtag('consent', 'update', GRANTED);
         gtag('event', 'page_view', {
