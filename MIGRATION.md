@@ -1037,8 +1037,17 @@ bouton.
 
 **Le message a changé de nature.** Il ne s'agit pas de montrer un produit mais
 d'ouvrir le compte d'un confrère : « Ryan est médecin remplaçant […] en 15 minutes,
-il t'ouvre son propre compte — ses rétrocessions, sa 2035, ce qu'il lui reste
-vraiment à la fin du mois ». Le bouton dit « Prendre 15 min avec Ryan » : on ne
+il t'ouvre son propre compte — son planning, ses contrats, ce qu'il lui reste
+vraiment à la fin du mois ».
+
+⚠️ Les exemples cités ont été choisis pour ne PAS exclure. Une première version
+parlait de « rétrocessions » et de « 2035 » : un interne ne remplit pas de 2035
+— il est salarié — et c'est précisément lui qui hésite le plus (« Hippodoc est-il
+adapté aux internes ? » figure parmi les questions les plus ouvertes de la FAQ,
+avec deux formulations quasi identiques). Le jargon fiscal disait « ce n'est pas
+pour toi » à la personne même que la carte doit rassurer. Planning, contrats et
+« ce qu'il lui reste à la fin du mois » couvrent l'interne comme l'installé, et
+relèvent de trois registres différents : le quotidien, l'administratif, l'argent. Le bouton dit « Prendre 15 min avec Ryan » : on ne
 réserve pas une démo à un confrère. Mention « en visio, ou il t'appelle » —
 **la moitié des rendez-vous passés se sont faits par appel sortant**, pas en visio.
 
