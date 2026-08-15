@@ -118,8 +118,13 @@ const VIDEO_URL =
     });
 
     // `playing` et non `play` : on ne masque l'invitation qu'une fois l'image lancée.
+    // ⚠️ On masque par STYLE EN LIGNE et non par l'attribut `hidden` : le bouton porte
+    // la classe Tailwind `flex`, dont le `display: flex` vient de la feuille de
+    // l'auteur et l'emporte donc sur le `display: none` que le navigateur applique à
+    // `[hidden]`. Avec `hidden`, la propriété passait bien à true… et le spinner
+    // restait à l'écran par-dessus la vidéo en train de jouer.
     video.addEventListener('playing', function () {
-      bouton.hidden = true;
+      bouton.style.display = 'none';
       video.setAttribute('controls', '');
     });
     video.addEventListener('error', rendreLeBouton);

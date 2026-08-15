@@ -1172,6 +1172,17 @@ aucun sélecteur CSS ne permet de savoir qu'une vidéo joue, donc « clic sur le
 → lecture » est impossible sans script. Aucune dépendance, aucun asset, script
 inline sous le kilooctet.
 
+⚠️ **Deux pièges de la même famille, et le second est passé en production.**
+`hidden` ne masque rien quand une classe déclare `display`. Le bouton porte la
+classe Tailwind `flex` : son `display: flex` vient de la feuille de l'AUTEUR et
+l'emporte sur le `display: none` que le navigateur applique à `[hidden]`. La
+propriété passait bien à `true`, et le spinner restait à l'écran par-dessus la
+vidéo en train de jouer. On masque donc par **style en ligne**, qui l'emporte sur
+la classe.
+Le test disait « invitation masquée : true » — il lisait la PROPRIÉTÉ, pas le
+pixel. Les contrôles visuels vérifient désormais `getComputedStyle().display` et
+la boîte englobante.
+
 ⚠️ Piège rencontré : **`hidden` est une propriété de `HTMLElement`, pas de
 `SVGElement`**. Écrire `svg.hidden = false` crée une propriété fantôme sans retirer
 l'attribut, et l'icône reste masquée par `[hidden] { display: none }`. On passe par
