@@ -107,7 +107,7 @@ const path = "/politique-confidentialite";
             <li><strong>Compte Utilisateur</strong> : Tant que le compte est actif. En cas d'inactivité totale pendant 24 mois, nous pouvons supprimer le compte et ses données, sauf obligation légale nous imposant un délai plus long (ex. conservation comptable).</li>
             <li><strong>Données de facturation</strong> : 10 ans à compter de la clôture de l'exercice concerné, en conformité avec les obligations légales et fiscales.</li>
             <li><strong>Logs de connexion</strong> : 12 mois maximum, à des fins de sécurité et d'audit.</li>
-            <li><strong>Cookies et traceurs</strong> : Voir article 8 : durée variable selon le type de cookie ; par exemple, 6 mois pour les cookies analytiques avant suppression ou anonymisation.</li>
+            <li><strong>Cookies et traceurs</strong> : Voir article 8 : durée variable selon le type de cookie. Le cookie de mesure d'audience est plafonné à 13 mois, et les statistiques qui en découlent sont conservées 25 mois au maximum, conformément aux lignes directrices de la CNIL.</li>
             <li><strong>Historique d'échanges (messages, support)</strong> : Conserver le temps nécessaire pour le suivi de la relation client (3 ans après la dernière interaction), sauf obligation légale ou litige en cours.</li>
           </ul>
           <p>Lorsque les données ne sont plus nécessaires, elles sont soit supprimées, soit anonymisées (rendant impossible toute réidentification).</p>
@@ -209,19 +209,31 @@ const path = "/politique-confidentialite";
 
           <h3 class="font-medium">8.2. Types de cookies utilisés</h3>
           <ul class="list-disc list-inside ml-4">
-            <li>Cookies strictement nécessaires : indispensables au fonctionnement de la Plateforme.</li>
-            <li>Cookies analytiques : destinés à mesurer l'audience, analyser le trafic et améliorer nos services (durée de vie : 6 mois). Nous utilisons Google Analytics 4 et PostHog (serveurs EU). Ces cookies ne sont déposés qu'après votre consentement explicite.</li>
-            <li>Cookies fonctionnels : permettent de mémoriser vos préférences et de personnaliser votre expérience.</li>
+            <li><strong>Cookies strictement nécessaires</strong> : indispensables au fonctionnement de la Plateforme, ainsi que le cookie qui mémorise votre choix en matière de cookies. Aucun consentement n'est requis pour ces derniers, puisqu'ils servent précisément à respecter le vôtre.</li>
+            <li><strong>Mesure d'audience exemptée de consentement</strong> : nous utilisons <strong>PostHog</strong> (hébergement Union européenne), servi depuis notre propre domaine, pour produire des statistiques de fréquentation. Conformément aux lignes directrices de la CNIL, cette mesure est <strong>dispensée de consentement</strong> car elle est strictement limitée à la statistique interne : pas de suivi d'un site à l'autre, pas de recoupement avec d'autres traitements, aucune transmission à des tiers publicitaires, pas d'enregistrement de votre écran (session replay), pas de carte de chaleur, et votre adresse IP n'est pas conservée. Durée de vie : 13 mois au maximum. Vous pouvez vous y opposer à tout moment, en un clic, au paragraphe 8.3.</li>
+            <li><strong>Cookies publicitaires</strong> : <strong>Google Analytics 4</strong> et le <strong>pixel Meta (Facebook, Instagram)</strong>, destinés à mesurer l'efficacité de nos campagnes. Ceux-là ne sont <strong>jamais déposés sans votre consentement explicite</strong> : c'est l'objet du bandeau affiché à votre première visite. Si vous refusez, ils ne sont pas chargés, et ceux qui auraient déjà été déposés sont supprimés.</li>
           </ul>
 
-          <h3 class="font-medium">8.3. Paramétrage</h3>
+          <h3 class="font-medium">8.3. Vous opposer à la mesure d'audience</h3>
           <p>
-            Lors de votre première visite, un bandeau vous informe de l'utilisation de cookies. Vous pouvez gérer vos préférences à tout moment via :
+            La mesure d'audience décrite ci-dessus ne nécessite pas votre consentement, mais vous avez le droit de vous y opposer. Ce choix prend effet immédiatement, vaut également sur <span class="whitespace-nowrap">app.hippodoc.fr</span>, et reste mémorisé sur cet appareil.
           </p>
-          <ul class="list-disc list-inside ml-4">
-            <li>Les paramètres de votre navigateur, ou</li>
-            <li>Un outil de gestion des cookies, le cas échéant, disponible sur la Plateforme.</li>
-          </ul>
+          <div class="not-prose my-3 rounded-lg border border-border bg-hippo-50/60 p-4">
+            <p id="mesure-etat" class="mb-3 text-sm text-muted-foreground">
+              La mesure d'audience est active. Elle produit des statistiques anonymes de fréquentation.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" data-mesure="refuser" class="min-h-11 rounded-md border border-input bg-white px-4 text-sm font-medium text-foreground hover:bg-hippo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-600">
+                M'opposer à la mesure d'audience
+              </button>
+              <button type="button" data-mesure="accepter" class="min-h-11 rounded-md border border-input bg-white px-4 text-sm font-medium text-foreground hover:bg-hippo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-600">
+                Réactiver la mesure d'audience
+              </button>
+            </div>
+          </div>
+          <p>
+            Pour les <strong>cookies publicitaires</strong>, votre choix se règle depuis le bandeau : le bouton « Préférences cookies » en pied de page le rouvre à tout moment. Vous pouvez également agir depuis les paramètres de votre navigateur.
+          </p>
 
           <h3 class="font-medium">8.4. Mesure d'usage interne dans votre espace connecté</h3>
           <p>

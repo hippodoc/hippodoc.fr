@@ -474,6 +474,31 @@ if (!/creerEmetteur/.test(srcPostHog)) {
   fail('PostHog.astro : les événements de consentement n\'utilisent plus l\'émetteur commun — ils repartiraient sans contexte');
 }
 
+/* 4 quaterdecies. La mesure d'audience ne dépend PAS du bandeau publicitaire.
+   Elle en dépendait : 42 % des visiteurs acceptaient, donc 58 % tournaient en
+   `memory`, où chaque page rechargée crée une nouvelle personne anonyme — ni
+   tunnel multi-pages, ni visiteur récurrent, ni conversion rattachable à sa
+   campagne. L'article 82 dispense de consentement la mesure d'audience : PostHog
+   persiste donc pour tout le monde, GA4 et le Pixel restent seuls sous le bandeau.
+   Recâbler la persistance sur le consentement reperdrait 58 % de la mesure sans
+   qu'aucun test de page ne s'en aperçoive. L'exemption exige en contrepartie un
+   droit d'opposition : sans lui, elle tombe et tout le dispositif avec. */
+if (/persistence:\s*accepted\s*\?/.test(srcPostHog) || /persistence:\s*\w*[Cc]onsent/.test(srcPostHog)) {
+  fail('PostHog.astro : la persistance est de nouveau conditionnée au consentement publicitaire — 58 % des visiteurs reperdraient toute identité');
+}
+for (const [motif, message] of [
+  [/opt_out_capturing_by_default/, "l'opposition à la mesure n'est plus prise en compte au démarrage"],
+  [/cookie_expiration/, 'la durée de vie du cookie n\'est plus plafonnée (13 mois exigés)'],
+  [/capture_heatmaps:\s*false/, 'les heatmaps ne sont plus coupées — hors mesure d\'audience, elles fragilisent l\'exemption'],
+  [/data-mesure/, "le droit d'opposition a disparu — sans lui l'exemption tombe"],
+]) {
+  if (!motif.test(srcPostHog)) fail(`PostHog.astro : ${message}`);
+}
+const politique = readFileSync(resolve(dist, 'politique-confidentialite/index.html'), 'utf8');
+if (!politique.includes('data-mesure="refuser"') || !politique.includes('mesure-etat')) {
+  fail("politique-confidentialite : le bouton d'opposition à la mesure d'audience est absent de la page rendue — l'exemption CNIL exige qu'il soit accessible");
+}
+
 /* 4 duodecies. Crisp ne se charge qu'au clic.
    Il était autrefois injecté au premier geste du visiteur — `scroll` compris — et
    posait donc son cookie de session avant tout choix de cookies, et même après un

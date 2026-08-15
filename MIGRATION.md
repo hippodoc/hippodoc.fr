@@ -1522,6 +1522,56 @@ Reste à faire : liens de texte à 16–21 px de haut sur `/essai` (7, pied de p
 calculette. Antérieurs, hors landing, et corriger le guide reviendrait à changer
 son interlignage — décision de design non prise.
 
+### 9.aa Mesure d'audience sous exemption CNIL (août 2026)
+
+**Le manque, chiffré.** PostHog n'était persisté qu'après acceptation du bandeau.
+Mesuré sur 14 jours de production : **42 % acceptent**. Les 58 % restants
+tournaient donc en `memory`, où chaque page rechargée crée une nouvelle personne
+anonyme — ni tunnel multi-pages, ni visiteur récurrent, ni conversion rattachable
+à sa campagne au-delà de la première page. Sur 7 jours : 31 « personnes » pour
+35 sessions, des identités en miettes.
+
+**La réponse est légale, et plus large que le problème.** L'article 82 de la loi
+Informatique et Libertés dispense de consentement les traceurs de MESURE
+D'AUDIENCE, à conditions strictes. PostHog les remplit :
+
+| Condition CNIL | État |
+|---|---|
+| Finalité limitée à la mesure d'audience | ✓ jamais utilisée pour la publicité |
+| Pas de suivi inter-sites | ✓ first-party via `t.hippodoc.fr` |
+| Aucune transmission à un tiers | ✓ PostHog sous-traitant, hébergement UE |
+| Pas d'enregistrement de session | ✓ client ET projet |
+| Pas de heatmap ni dead-click | ✓ client ET projet |
+| IP non conservée | ✓ `anonymize_ips` (réglage projet) |
+| Cookie ≤ 13 mois | ✓ `cookie_expiration: 395` |
+| Information et droit d'opposition | ✓ `/politique-confidentialite` §8.3 |
+
+⚠️ **Les réglages PROJET l'emportent sur la configuration client.** Régler
+`capture_heatmaps` et `capture_dead_clicks` dans `posthog.init()` ne suffit pas —
+c'était déjà noté pour `capture_dead_clicks`, « essayé, sans effet ». Il faut
+couper `heatmaps_opt_in` et `capture_dead_clicks` côté projet. Idem pour
+`session_recording_opt_in`, qui était **encore activé** : seul le drapeau client
+l'empêchait, un oubli en aurait suffi à relancer l'enregistrement d'écran.
+
+⚠️ **Le bandeau ne gouverne plus que la publicité** (GA4, Meta Pixel), qu'aucune
+exemption ne couvre. Texte adapté en conséquence : « En acceptant, vous autorisez
+des cookies publicitaires (Google, Meta). » — 115 px, CTA dégagé de 360 à 390 px.
+Ne JAMAIS refaire dépendre la mesure du choix publicitaire : c'est exactement ce
+qui coûtait 58 % de la mesure. Garde-fou `verify-site` §4 quaterdecies.
+
+⚠️ **`opt_out_capturing_by_default` ne suffit pas à l'opposition.** Vérifié : il
+empêche bien tout envoi (0 événement sur contexte vierge), mais posthog-js écrit
+QUAND MÊME son cookie d'identité. La page aurait annoncé « plus aucune donnée
+collectée » en laissant un identifiant persistant sur l'appareil. D'où
+`persistence: 'memory'` en cas d'opposition, plus un effacement explicite du
+cookie `ph_<clé>_posthog` — dont le nom dépend de la clé projet, et qui est posé
+sur le domaine parent : il faut rejouer ce domaine pour l'effacer.
+
+Reste à faire : `event_retention_months` vaut **84** (7 ans) sur le projet. Les
+lignes directrices CNIL plafonnent à 25 mois les statistiques issues de la mesure
+d'audience exemptée. Non modifié — abaisser la rétention SUPPRIME des données de
+façon irréversible, ce n'est pas une décision à prendre sans arbitrage explicite.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
