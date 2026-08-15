@@ -458,6 +458,43 @@ for (const f of LECTEURS_CONSENTEMENT) {
   }
 }
 
+/* 4 duodecies. Crisp ne se charge qu'au clic.
+   Il était autrefois injecté au premier geste du visiteur — `scroll` compris — et
+   posait donc son cookie de session avant tout choix de cookies, et même après un
+   refus (mesuré dans les deux cas). Aucun consentement ne le couvrait, aucune
+   exemption non plus : le visiteur n'avait rien demandé. Déclenché par un clic sur
+   notre propre bulle, le chat devient un service explicitement demandé, que la CNIL
+   dispense de consentement. Recâbler le chargement sur un événement passif
+   réintroduirait la fuite sans qu'aucun test de page ne s'en aperçoive. */
+const srcTiers = readFileSync(resolve(root, 'src/components/ThirdPartyScripts.astro'), 'utf8');
+const declencheurPassif = srcTiers.match(/^.*(?:scroll|touchstart|pointerdown|keydown|DOMContentLoaded)[^\n]*loadCrisp[^\n]*$/m)
+  || srcTiers.match(/^.*loadCrisp[^\n]*(?:scroll|touchstart|DOMContentLoaded)[^\n]*$/m);
+if (declencheurPassif) {
+  fail(`ThirdPartyScripts : Crisp est de nouveau chargé sur un événement passif — son cookie repartirait sans consentement (${declencheurPassif[0].trim().slice(0, 80)})`);
+}
+if (!/id="crisp-launcher"/.test(srcTiers)) {
+  fail('ThirdPartyScripts : la bulle de chat a disparu — plus aucun moyen d\'ouvrir le support');
+}
+/* ⚠️ L'attribut `hidden` ne masque PAS un élément portant une classe `display`
+   de Tailwind : `.flex` vient de la feuille d'auteur et bat le `[hidden] {
+   display: none }` du navigateur. Sans la règle d'ID, un visiteur sans JavaScript
+   voit une bulle bien visible et totalement morte. Ce piège a déjà atteint la
+   production sur le bouton de lecture du film — d'où ce contrôle. */
+if (/id="crisp-launcher"[^>]*\bhidden\b/.test(srcTiers) && !/#crisp-launcher\[hidden\]/.test(srcTiers)) {
+  fail("ThirdPartyScripts : #crisp-launcher est masqué par le seul attribut `hidden`, que la classe Tailwind `.flex` annule — bulle morte sans JavaScript");
+}
+for (const f of ['index.html', 'tarifs/index.html', 'blog/index.html']) {
+  const html = readFileSync(resolve(dist, f), 'utf8');
+  if (!html.includes('id="crisp-launcher"')) fail(`/${f.replace(/\/?index\.html$/, '') || ''} : bulle de chat absente du HTML rendu`);
+  /* ⚠️ Chercher l'URL de Crisp tout court donnait un FAUX POSITIF sur du code sain :
+     elle figure forcément dans le script en ligne, c'est par là qu'on l'injecte au
+     clic. Ce qu'on interdit, c'est une BALISE `<script src>` — le seul cas où le
+     navigateur irait la chercher tout seul, sans clic ni consentement. */
+  if (/<script[^>]+src=["'][^"']*crisp\.chat/.test(html)) {
+    fail(`/${f.replace(/\/?index\.html$/, '') || ''} : Crisp chargé par une balise <script src> — il partirait dès l'ouverture de la page`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

@@ -59,6 +59,25 @@
     </div>
   </div>
 
+<!-- Lanceur du chat — bulle STATIQUE, aucun script tiers tant qu'on ne clique pas.
+     Crisp se chargeait auparavant au premier geste du visiteur, défilement compris,
+     et posait `crisp-client/session/<id>` AVANT tout choix de cookies et malgré un
+     refus — mesuré. Un widget qu'on n'a pas demandé ne relève d'aucune exemption.
+     En le chargeant au clic, le chat devient un « service explicitement demandé par
+     l'utilisateur », que la CNIL dispense de consentement : le cookie n'arrive plus
+     qu'à ceux qui veulent effectivement parler à quelqu'un.
+     Effet de bord bienvenu avant la campagne payante : `l.js` (~200 Ko) ne part plus
+     pour la quasi-totalité des visiteurs. -->
+<button
+  type="button"
+  id="crisp-launcher"
+  hidden
+  aria-label="Ouvrir le chat"
+  class="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700 motion-reduce:transition-none"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+</button>
+
 <style is:global>
   /* Le bandeau s'efface quand le tiroir de menu mobile est ouvert.
      Sans cette règle, les deux sont en z-50 et le bandeau recouvre le bas du menu :
@@ -70,6 +89,28 @@
      Sur un navigateur sans `:has()`, la règle est simplement ignorée et le
      comportement reste celui d'avant — dégradation propre. */
   body:has(#mobile-menu-toggle:checked) #cookie-banner {
+    display: none;
+  }
+
+  /* ⚠️ `hidden` seul NE SUFFIT PAS à masquer le lanceur : sa classe utilitaire
+     `.flex` vient de la feuille d'auteur et l'emporte sur la règle `[hidden] {
+     display: none }` du navigateur. Sans cette règle, un visiteur sans JavaScript
+     voyait une bulle de chat parfaitement visible et parfaitement morte — le clic
+     n'aurait rien fait, faute du script qui charge Crisp.
+     Le sélecteur d'ID (1,1,0) l'emporte sur `.flex` (0,1,0) ; aucun `!important`
+     n'est requis. Exactement le piège déjà rencontré sur le bouton de lecture du
+     film, où il avait atteint la production. */
+  #crisp-launcher[hidden] {
+    display: none;
+  }
+
+  /* Le lanceur du chat s'efface tant que la bannière cookies est là.
+     Sur 390 px la bannière occupe 366 px de large : la bulle, calée en bas à
+     droite, se posait dessus. On ne demande pas deux choses à la fois — et le
+     lanceur revient dès que le visiteur a répondu.
+     Même effacement quand le tiroir de menu est ouvert, pour la même raison. */
+  body:has(#cookie-banner:not([hidden])) #crisp-launcher,
+  body:has(#mobile-menu-toggle:checked) #crisp-launcher {
     display: none;
   }
 </style>
@@ -174,20 +215,39 @@
       loadPixel();
     }
 
+    /* Crisp — chargé au CLIC seulement, jamais avant.
+       ⚠️ Il se chargeait auparavant au premier geste (`pointerdown`, `keydown`,
+       `touchstart`, `scroll`) et posait donc son cookie de session avant tout choix
+       de cookies, et même après un refus — mesuré, dans les deux cas. Aucun
+       consentement ne le couvrait et aucune exemption non plus, le visiteur n'ayant
+       rien demandé. Déclenché par un clic sur notre propre bulle, le chat devient un
+       service explicitement demandé : la CNIL le dispense alors de consentement.
+       Notre bulle disparaît à l'ouverture, Crisp affichant ensuite la sienne. */
     var crispDone = false;
     function loadCrisp() {
       if (crispDone) return;
       crispDone = true;
       window.$crisp = window.$crisp || [];
       window.CRISP_WEBSITE_ID = CRISP_ID;
+      /* La file est rejouée au chargement de `l.js` : on peut demander l'ouverture
+         dès maintenant, sans attendre. Sans cela, le premier clic ne ferait
+         qu'afficher la bulle de Crisp et il en faudrait un second pour ouvrir. */
+      window.$crisp.push(['do', 'chat:open']);
       inject('https://client.crisp.chat/l.js');
     }
 
-    /* Crisp UNIQUEMENT à la première interaction : jamais dans la fenêtre Lighthouse,
-       et la bulle apparaît dès le premier geste d'un visiteur réel. */
-    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (evt) {
-      addEventListener(evt, loadCrisp, { once: true, passive: true });
-    });
+    var lanceur = document.getElementById('crisp-launcher');
+    if (lanceur) {
+      lanceur.hidden = false;
+      lanceur.addEventListener('click', function () {
+        /* `display` en ligne, et pas l'attribut `hidden` : la classe utilitaire
+           `.flex` de Tailwind vient de la feuille d'auteur et l'emporte sur la règle
+           `[hidden] { display: none }` du navigateur. Déjà rencontré sur le bouton
+           de lecture du film, où le bouton restait visible en production. */
+        lanceur.style.display = 'none';
+        loadCrisp();
+      });
+    }
 
     /* GA4 + Pixel : première interaction OU 6 s après `load` (hors trace Lighthouse) */
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {

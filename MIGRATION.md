@@ -1442,11 +1442,36 @@ aucun cookie, même après 15 s. Seule la mesure a montré cet aller-retour.
 ⚠️ Un cookie ne s'efface qu'en rejouant **exactement** son couple domaine/chemin ;
 GA4 posant `_ga` sur le domaine parent, l'effacement boucle sur les variantes.
 
-**3. Crisp pose un cookie sans consentement** (antérieur, NON corrigé).
-`crisp-client/session/<id>` est écrit dès la première interaction — défilement
-compris — quel que soit le choix, y compris avant tout choix. Le widget se charge
-donc sans avoir été demandé. Décision produit en attente : le charger seulement au
-clic sur la bulle le rendrait conforme mais retarderait l'ouverture du chat.
+**3. Crisp posait un cookie sans consentement** (antérieur, corrigé).
+`crisp-client/session/<id>` était écrit dès la première interaction — défilement
+compris — quel que soit le choix, y compris avant tout choix. Aucun consentement ne
+le couvrait, et aucune exemption non plus : le visiteur n'avait rien demandé.
+
+Le chargement automatique est remplacé par une **bulle statique que nous
+possédons** (`#crisp-launcher`). Crisp n'est injecté qu'au clic : le chat devient
+alors un « service explicitement demandé par l'utilisateur », que la CNIL dispense
+de consentement. `$crisp.push(['do','chat:open'])` est empilé AVANT l'injection —
+la file étant rejouée au chargement, un seul clic ouvre la conversation, là où deux
+seraient sinon nécessaires. Notre bulle s'efface à l'ouverture, Crisp affichant la
+sienne.
+
+Mesuré : **0 requête et 0 cookie Crisp** dans les trois états de consentement tant
+qu'on ne clique pas ; au clic, 21 requêtes, widget monté, `chat:opened` vrai.
+Effet de bord bienvenu avant la campagne payante : `l.js` ne part plus pour la
+quasi-totalité des visiteurs.
+
+⚠️ **`hidden` seul ne masque pas la bulle** : sa classe `.flex` vient de la feuille
+d'auteur et bat le `[hidden] { display: none }` du navigateur. Sans la règle d'ID
+`#crisp-launcher[hidden]` (spécificité 1,1,0 contre 0,1,0), un visiteur sans
+JavaScript voyait une bulle parfaitement visible et parfaitement morte. **Le même
+piège avait déjà atteint la production sur le bouton de lecture du film** — d'où un
+garde-fou dédié dans `verify-site`.
+
+La bulle s'efface tant que la bannière cookies est affichée (sur 390 px la bannière
+occupe 366 px : la bulle se posait dessus) et tant que le tiroir de menu est ouvert.
+Vérifié : aucun CTA du premier écran recouvert, 56×56 px, focusable en dernier dans
+l'ordre de tabulation, contraste 3,37:1 au pire point du dégradé (seuil 3:1 pour un
+élément graphique).
 
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
