@@ -1197,6 +1197,17 @@ iframe YouTube ou Vimeo — les événements disparaîtraient.
 **Budget** : LCP 6 179 ms, TBT 0, CLS 0, perf 67 — dans la fourchette des mesures
 précédentes sur le même serveur de test, aucune régression.
 
+**Pause au toucher.** Taper la vidéo ne la mettait pas en pause sur mobile — le
+navigateur se contente d'y afficher la barre de contrôle (vérifié sur iPhone 14 et
+Pixel 7). ⚠️ Un gestionnaire de clic naïf aurait cassé le desktop : le navigateur
+y bascule DÉJÀ lecture/pause au clic sur l'image, si bien qu'un second
+basculement l'aurait annulé. On ne prend donc en charge que les pointeurs
+tactiles (`pointerup` avec `pointerType !== 'mouse'`), et le bas de l'image est
+exclu — c'est là que vit la barre de contrôle, et un tap sur « pause » y aurait
+été annulé par notre propre bascule.
+Vérifié : tap → pause → tap → reprise sur les deux mobiles, un seul basculement à
+la souris, aucun double effet sur la barre de contrôle.
+
 **Garde-fou** : `preload="none"` sur le film de l'accueil, validé par injection.
 La référence à battre est **9,4 %** (`landing_video_play` ÷
 `landing_video_section_viewed`).

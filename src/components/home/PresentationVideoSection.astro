@@ -128,5 +128,21 @@ const VIDEO_URL =
       video.setAttribute('controls', '');
     });
     video.addEventListener('error', rendreLeBouton);
+
+    /* Pause au toucher.
+       Sur ordinateur, le navigateur bascule DÉJÀ lecture/pause au clic sur l'image :
+       ajouter un gestionnaire y provoquerait un double basculement, et le clic ne
+       ferait plus rien. Sur mobile en revanche, taper la vidéo ne fait qu'afficher
+       la barre de contrôle — vérifié sur iPhone et Android. On ne prend donc en
+       charge que les pointeurs tactiles.
+       Le bas de l'image est exclu : c'est là que vit la barre de contrôle native, et
+       un tap sur « pause » y serait annulé par notre propre basculement. */
+    video.addEventListener('pointerup', function (e) {
+      if (e.pointerType === 'mouse') return;
+      var boite = video.getBoundingClientRect();
+      var zoneControles = Math.max(48, boite.height * 0.2);
+      if (e.clientY > boite.bottom - zoneControles) return;
+      if (video.paused) video.play(); else video.pause();
+    });
   })();
 </script>
