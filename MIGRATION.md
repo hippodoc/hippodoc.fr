@@ -1047,7 +1047,17 @@ adapté aux internes ? » figure parmi les questions les plus ouvertes de la FAQ
 avec deux formulations quasi identiques). Le jargon fiscal disait « ce n'est pas
 pour toi » à la personne même que la carte doit rassurer. Planning, contrats et
 « ce qu'il lui reste à la fin du mois » couvrent l'interne comme l'installé, et
-relèvent de trois registres différents : le quotidien, l'administratif, l'argent. Le bouton dit « Prendre 15 min avec Ryan » : on ne
+relèvent de trois registres différents : le quotidien, l'administratif, l'argent.
+
+⚠️ Même logique pour la fin du message. Une version intermédiaire disait « puis il
+regarde ta situation avec toi » — incohérence structurelle : la première moitié
+promet de regarder par-dessus l'épaule d'un confrère (passif, sans enjeu), la
+seconde demandait d'exposer la sienne (examiné, jugé). Pour un médecin en retard
+sur ses déclarations, « ta situation » sonne comme un contrôle, et sous-entend
+qu'il faut préparer un dossier avant un appel de 15 minutes. Remplacé par « et tu
+lui poses tes questions. Rien à préparer. » : le visiteur redevient l'acteur.
+La carte du simulateur portait le même défaut, en pire — la personne vient d'y
+saisir ses vrais chiffres. Le bouton dit « Prendre 15 min avec Ryan » : on ne
 réserve pas une démo à un confrère. Mention « en visio, ou il t'appelle » —
 **la moitié des rendez-vous passés se sont faits par appel sortant**, pas en visio.
 
