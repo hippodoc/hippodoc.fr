@@ -924,6 +924,84 @@ apparaître (sinon son `section_order` serait faux), et tout lien vers
 observe donc zéro événement, y compris en production. Le module se teste en lui
 injectant un faux `posthog` — pas en écoutant le réseau.
 
+### 9.q Instrumentation complète des pages marketing (août 2026)
+
+Suite de §9.p. La landing rétablie, restait à savoir ce que « complet » veut dire.
+La seule définition objective : **les 31 insights sauvegardés affichent-ils des
+données ?** Les événements qu'ils réclament ont donc été extraits, puis confrontés
+à ce qui existe réellement.
+
+**Rétablis ici** — tous existaient avant le 07/08/2026, tous à zéro depuis :
+
+| Événement | Volume historique | Propriétés |
+|---|---|---|
+| `pricing_viewed` | 133 | `instagram_10k_active` (toujours `false`) |
+| `blog_scroll_depth` | 58 | `slug`, `category`, `series_id`, `episode_number`, `depth` |
+| `guide_declarations_section_viewed` | 53 | `section` (8 valeurs) |
+| `guide_declarations_viewed` | 38 | `context: 'public'` |
+| `faq_question_opened` | 36 | `section_id`, `question_key` (`<rubrique>-<index>`) |
+| `blog_article_viewed` | 27 | métadonnées d'article |
+| `blog_index_viewed` | 26 | `total_articles` |
+| `blog_read_completed` | 14 | métadonnées d'article |
+| `faq_viewed` | 9 | — |
+| `comparatif_viewed` | 1 | — |
+
+Ajoutés aussi : `landing_video_error` (3 insights l'attendaient) et
+`landing_journey_cta_clicked` (2 insights) — ceux-là n'avaient **jamais** été émis,
+même par l'ancienne SPA.
+
+**Fidélité.** Les métadonnées d'article (`slug`, `category`, `series_id`,
+`episode_number`) sont injectées au build depuis le frontmatter sur `<article>` :
+aucun calcul côté client, et les valeurs sont exactement celles de l'historique
+(`Fiche Fiscalité` / `fiche-fiscalite`…). Les clés de FAQ reproduisent le format
+`<rubrique>-<index>` : les 10 rubriques de `/faq` portent déjà les identifiants
+attendus (`tarifs`, `paiements`, `revenus`…), et les clés émises en test
+(`tarifs-4`, `paiements-2`, `securite-2`…) figurent telles quelles dans les
+données d'avant la bascule.
+
+⚠️ **Piège corrigé — `IntersectionObserver` et les sections hautes.** Le seuil
+proportionnel (`threshold: 0.3`) exige qu'une fraction de l'ÉLÉMENT soit visible.
+Sur `/guide-declarations`, la section « glossaire » fait **12 658 px** : en exiger
+30 % réclamerait 3 797 px dans une fenêtre de 844 — **5 sections sur 8 ne se
+déclenchaient jamais**. Remplacé par une bande de déclenchement
+(`threshold: 0, rootMargin: '0px 0px -25% 0px'`), indépendante de la hauteur.
+La landing, dont les sections sont plus courtes, ne montrait pas le défaut :
+l'ordre de ses 11 sections a été revérifié après le changement.
+
+⚠️ **`blog_read_completed` ne suit pas le bas de page** mais un repère
+`data-blog-fin` placé après le texte : le partage, le bloc auteur et le pied de
+page viennent ensuite. C'est ce qui explique qu'historiquement il soit plus
+fréquent que `depth: 100`.
+
+**Un seul chunk, une seule requête.** Le code commun était d'abord extrait dans un
+module partagé, ce qui faisait DEUX requêtes par page mesurée. Tout passe désormais
+par `analytics-init.ts`. Coût mesuré sur un article (5 exécutions stables) :
+**+47 ms de LCP, score Lighthouse identique (83), TBT nul**. ~2,6 Ko gzip, contre
+98 Ko économisés en §9.p sur toutes les pages.
+
+⚠️ **Erreur commise et corrigée** : `src/lib/analytics.ts` (le shim `trackEvent()`
+des îlots React) a été écrasé par mégarde en créant le point d'entrée. Restauré
+depuis git ; le nouveau module s'appelle `analytics-init.ts` précisément pour que
+la confusion ne se reproduise pas.
+
+**Cinq garde-fous ajoutés à `verify-site.mjs`**, tous validés par injection : les
+8 sections du guide, les 10 rubriques de FAQ, `data-blog-total` sur l'index, et
+sur **chacun des 38 articles** les métadonnées et le repère de fin. Le contrôle a
+d'ailleurs attrapé son propre défaut à l'écriture — il comptait `/blog/index.html`
+parmi les articles.
+
+⚠️ **Non implémentés, délibérément** :
+  - `landing_calendly_scheduled` (1 insight) — le widget Calendly a été retiré à la
+    migration. Décision produit en attente : l'événement viendra avec le widget.
+  - `landing_video_fallback_opened` (1 insight) — suppose une UI de repli qui
+    n'existe pas ; la vidéo est un lecteur natif. Fabriquer l'événement sans le
+    produit n'aurait aucun sens.
+
+⚠️ `/guide-declarations/calculette` et `/blog/serie/*` téléchargent le module sans
+rien émettre : le filtre de chargement est volontairement plus large que la liste
+des pages mesurées, pour ne pas dupliquer la logique d'aiguillage à deux endroits.
+2,6 Ko en cache immuable.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

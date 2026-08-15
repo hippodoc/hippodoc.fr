@@ -60,7 +60,7 @@ const blogSchema = {
 
 <BaseLayout title={title} description={description} path="/blog" jsonLd={[blogSchema]}>
   <Header />
-  <main class="container px-4 py-10">
+  <main class="container px-4 py-10" data-blog-total={posts.length}>
     {/* En-tête resserré : la version centrée occupait 492 px avant la première
          carte en mobile, soit un écran entier de texte. Alignée à gauche, phrase
          courte. La signature « écrites par le Dr. Ryan Goburdhun » a été retirée

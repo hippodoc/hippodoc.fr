@@ -285,6 +285,45 @@ for (const [balise] of accueil.matchAll(/<a\b[^>]*auth\?tab=signup[^>]*>/g)) {
   }
 }
 
+/* 4 quinquies. Instrumentation des autres pages marketing.
+   Même logique que la landing : les événements sont reconstruits depuis le DOM.
+   Une rubrique de FAQ renommée, une section de guide disparue ou un article sans
+   métadonnées casserait la mesure sans casser le build. */
+const SECTIONS_GUIDE = ['profils', 'flux', 'cases', 'fiches', 'questions', 'glossaire', 'calendrier', 'problemes'];
+const SECTIONS_FAQ = ['tarifs', 'paiements', 'revenus', 'cotisations', 'documents',
+  'contact', 'planification', 'securite', 'mobile', 'activite'];
+
+const guide = readFileSync(resolve(dist, 'guide-declarations/index.html'), 'utf8');
+for (const s of SECTIONS_GUIDE) {
+  if (!guide.includes(`id="${s}"`)) fail(`/guide-declarations : section « ${s} » absente — guide_declarations_section_viewed ne partira plus pour elle`);
+}
+const faq = readFileSync(resolve(dist, 'faq/index.html'), 'utf8');
+for (const s of SECTIONS_FAQ) {
+  if (!faq.includes(`id="${s}"`)) fail(`/faq : rubrique « ${s} » absente — faq_question_opened perdrait cette section`);
+}
+if (!readFileSync(resolve(dist, 'blog/index.html'), 'utf8').includes('data-blog-total=')) {
+  fail('/blog : data-blog-total absent — blog_index_viewed perdrait total_articles');
+}
+
+// Chaque article doit porter ses métadonnées ET son repère de fin de texte.
+const articles = fichiersDist.filter(
+  (f) =>
+    f.startsWith('/blog/') &&
+    f.endsWith('/index.html') &&
+    f !== '/blog/index.html' &&            // l'index du blog n'est pas un article
+    !f.startsWith('/blog/serie/')          // ni les pages de série
+);
+let articlesSansMeta = 0, articlesSansFin = 0;
+for (const f of articles) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  const complet = ['data-blog-slug', 'data-blog-category', 'data-blog-series', 'data-blog-episode']
+    .every((a) => html.includes(a));
+  if (!complet) { articlesSansMeta++; if (articlesSansMeta <= 2) fail(`${f.replace('/index.html', '')} : métadonnées d'article incomplètes (blog_article_viewed / blog_scroll_depth)`); }
+  if (!html.includes('data-blog-fin')) { articlesSansFin++; if (articlesSansFin <= 2) fail(`${f.replace('/index.html', '')} : repère data-blog-fin absent — blog_read_completed ne partira pas`); }
+}
+if (articlesSansMeta > 2) fail(`… et ${articlesSansMeta - 2} autre(s) article(s) sans métadonnées`);
+if (articlesSansFin > 2) fail(`… et ${articlesSansFin - 2} autre(s) article(s) sans repère de fin`);
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);
