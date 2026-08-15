@@ -69,9 +69,17 @@ const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Calcul instantané']
         </div>
       </section>
 
-      <!-- Îlot React — formulaire + résultats, hydraté à la vue (form + résultats sous la ligne de flottaison) -->
-      <h2 class="sr-only">Ta simulation Super-Net</h2>
-      <SimulateurApp client:visible />
+      {/* Îlot React — formulaire + résultats, hydraté à la vue.
+          ⚠️ Le <div> enveloppant n'est pas décoratif : le parent espace ses enfants
+          avec `space-y-8`, qui pose une marge haute sur chacun sauf le premier. Or
+          ni le <h2 sr-only> (position absolue, hors flux) ni l'<astro-island>
+          (display: contents, donc sans boîte) ne peuvent porter cette marge —
+          l'espacement tombait dans le vide et le sélecteur de profil collait à la
+          carte du titre. Ce <div> est un enfant normal : il reçoit la marge. */}
+      <div>
+        <h2 class="sr-only">Ta simulation Super-Net</h2>
+        <SimulateurApp client:visible />
+      </div>
     </div>
 
     {/* Prise de rendez-vous — juste après le résultat, l'endroit de plus forte
