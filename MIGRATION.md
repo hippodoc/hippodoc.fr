@@ -1283,6 +1283,47 @@ est un îlot perdra cet espacement en silence. Vérifié sur les autres pages à
 aucune n'a d'îlot en enfant direct d'un conteneur `space-y-*`, le défaut était
 isolé.
 
+### 9.w Bandeau cookies compacté (août 2026)
+
+**Le défaut, mesuré.** Sur un iPhone 14, l'ancien bandeau faisait **266 px de haut,
+soit 40 % du premier écran**, et **recouvrait le CTA principal du hero** — le bouton
+« Commencer l'essai gratuit » était physiquement masqué, et l'élément le plus
+visible de tout le premier écran était « Accepter tous ». Sur du trafic payant, la
+première action demandée était donc un choix de cookies posé par-dessus l'offre.
+
+**Trois décisions pour compacter sans rien perdre :**
+  - texte ramené de **40 à 12 mots**, les FINALITÉS restant nommées (mesure
+    d'audience, publicité Google/Meta) comme l'exige la CNIL — et **ajout d'un lien
+    vers la politique de confidentialité, qui n'existait pas** ;
+  - les deux boutons passent **côte à côte** au lieu d'être empilés ;
+  - **la croix de fermeture est retirée** : elle portait déjà
+    `data-cookie-action="essential"`, donc elle faisait exactement la même chose que
+    « Tout refuser », en moins explicite, et coûtait une ligne entière.
+
+Libellés passés à « Tout refuser » / « Tout accepter » — symétriques, sans
+ambiguïté. **Refuser reste aussi simple qu'accepter** : mêmes dimensions mesurées
+(168×44 px), même forme, un seul appui.
+
+**Résultat : 266 → 115 px** (40 % → 14-17 % de l'écran).
+
+⚠️ **Validé contre les largeurs RÉELLEMENT observées** chez les visiteurs, et non
+contre des tailles théoriques : 402 (174 personnes), 393 (136), 390 (122), 360 (94),
+430 (68), 384 et 375 (52 chacune). **Le CTA principal est dégagé sur les sept.**
+Aucun visiteur en 320 px sur 60 jours — inutile d'y sacrifier le design.
+
+⚠️ Sur le seul écran de 640 px de haut (360×640, 94 personnes), le **lien secondaire**
+vers le simulateur reste couvert de 59 px. Le hero y est simplement plus haut que
+l'espace disponible ; aucun bandeau bas ne peut le dégager sans disparaître. Le CTA
+principal, lui, est visible.
+
+⚠️ Piège rencontré **pour la troisième fois** dans ce chantier : un retour à la ligne
+entre du texte et une balise est absorbé à la compilation. « fonctionne sans.En
+savoir plus » — corrigé par `{' '}`. Vu à l'écran, pas à la relecture.
+
+Mécanique de consentement inchangée et revérifiée : l'événement
+`hippodoc:consent-changed` part avec la bonne valeur, `localStorage` est écrit, le
+bandeau se masque, et le choix est mémorisé d'une page à l'autre.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
