@@ -424,6 +424,18 @@ else if (!/preload="none"/.test(balise[0])) {
   fail(`accueil : le film n'est plus en preload="none" — la vidéo se téléchargerait avant le clic (${balise[0].slice(0, 90)})`);
 }
 
+/* 4 decies. Compteurs animés : la valeur rendue et la cible doivent concorder.
+   Le nombre FINAL est écrit dans le HTML (pour les robots qui n'exécutent pas le
+   JS), et `data-compteur` porte la cible de l'animation. Si les deux divergent,
+   le compteur monte vers un nombre puis saute brutalement sur un autre. */
+const accueilChiffres = readFileSync(resolve(dist, 'index.html'), 'utf8');
+for (const [, cible, rendu] of accueilChiffres.matchAll(/data-compteur="(\d+)"[^>]*>([^<]+)</g)) {
+  const chiffresRendus = rendu.replace(/[^0-9]/g, '');
+  if (chiffresRendus !== cible) {
+    fail(`accueil : compteur incohérent — le HTML affiche « ${rendu.trim()} » mais l'animation vise ${cible}`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);
