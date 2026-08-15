@@ -1260,6 +1260,29 @@ déjà dans le HTML. Budget : TBT 0, CLS 0, perf 69, accessibilité 100.
 chiffres, sinon le compteur monte vers un nombre puis saute sur un autre. Validé
 par injection.
 
+### 9.v Espacement perdu autour d'un îlot Astro (août 2026)
+
+Sur `/simulateur`, le sélecteur « Partir d'un profil type » **collait à la carte du
+titre** — 0 px d'écart, mesuré sur desktop comme sur mobile.
+
+**La cause n'est pas une marge oubliée, mais une marge qui tombe dans le vide.** Le
+conteneur espace ses enfants avec `space-y-8`, qui pose une `margin-top` sur chacun
+sauf le premier. Or ses deux enfants suivants ne peuvent pas la porter :
+  - le `<h2 class="sr-only">` est en **position absolue** — hors du flux ;
+  - l'`<astro-island>` est en **`display: contents`** — il n'a aucune boîte, donc
+    aucune marge n'est rendue.
+
+L'espacement était bien déclaré ; il n'avait simplement aucun support. Corrigé en
+enveloppant le titre et l'îlot dans un `<div>` — un enfant normal, qui reçoit la
+marge et la restitue. 0 → **32 px**, conforme au rythme de la page.
+
+⚠️ Piège à retenir : **un îlot Astro ne peut pas recevoir d'espacement de son
+parent**. Tout `space-y-*` / `gap` appliqué à un conteneur dont un enfant direct
+est un îlot perdra cet espacement en silence. Vérifié sur les autres pages à
+îlots (`/guide-declarations`, `/guide-declarations/calculette`, articles de blog) :
+aucune n'a d'îlot en enfant direct d'un conteneur `space-y-*`, le défaut était
+isolé.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
