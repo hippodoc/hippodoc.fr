@@ -121,6 +121,61 @@
   });
 
   /**
+   * ATTRIBUTION DE PREMIER CONTACT, durable et cross-sous-domaine.
+   *
+   * Le problème, mesuré : sur 164 personnes identifiées, **zéro** portait sa
+   * campagne d'origine. Avec `person_profiles: 'identified_only'`, PostHog ne
+   * crée le profil qu'à l'inscription et y écrit les `$initial_*` de CE
+   * moment-là — c'est-à-dire ceux de `app.hippodoc.fr`. La campagne Meta qui a
+   * amené la personne était perdue entre la landing et la création de compte.
+   * On ne pouvait donc pas répondre à « quelle publicité a produit ce client ».
+   *
+   * `register_once` écrit des propriétés SUPER : elles sont stockées dans la
+   * persistance de PostHog — donc, avec `cross_subdomain_cookie`, sur
+   * `.hippodoc.fr` — et rattachées à TOUS les événements suivants, y compris
+   * ceux émis par l'app après l'inscription. « Once » signifie qu'un second
+   * passage ne les écrase pas : le PREMIER contact gagne, ce qui est bien la
+   * définition de l'attribution d'acquisition.
+   *
+   * ⚠️ Préfixe `hd_` volontaire, pour ne jamais entrer en collision avec les
+   * `$initial_*` que PostHog gère lui-même — deux sources de vérité portant le
+   * même nom seraient pires que pas de donnée du tout.
+   *
+   * ⚠️ Ne vaut que pour les visiteurs mesurés : en cas d'opposition, la
+   * persistance est en mémoire et rien n'est écrit sur l'appareil.
+   */
+  function enregistrerPremierContact(): void {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const lire = (cle: string): string | undefined => params.get(cle) || undefined;
+      const referent = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+      // Un référent interne n'est pas une acquisition : c'est une navigation.
+      const externe = referent && !referent.includes('hippodoc') ? referent : '';
+
+      const source =
+        lire('utm_source') ||
+        (params.get('fbclid') ? 'meta' : undefined) ||
+        (params.get('gclid') ? 'google' : undefined) ||
+        (externe || undefined) ||
+        'direct';
+
+      posthog.register_once({
+        hd_premiere_source: source,
+        hd_premiere_campagne: lire('utm_campaign') ?? null,
+        hd_premier_contenu: lire('utm_content') ?? null,
+        hd_premier_support: lire('utm_medium') ?? null,
+        hd_premier_terme: lire('utm_term') ?? null,
+        hd_premiere_page: window.location.pathname,
+        hd_premier_referent: externe || '$direct',
+        hd_premier_appareil: window.innerWidth < 768 ? 'mobile' : 'desktop',
+      });
+    } catch {
+      /* la mesure peut échouer, jamais la page */
+    }
+  }
+  enregistrerPremierContact();
+
+  /**
    * Droit d'opposition, exercé depuis `/politique-confidentialite`.
    * Écrit sur le domaine parent pour valoir aussi sur `app.hippodoc.fr`, selon le
    * même principe que `hippodoc-consent` (cf. MIGRATION.md §9.x) — et le domaine

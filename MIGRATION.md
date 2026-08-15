@@ -1572,6 +1572,57 @@ lignes directrices CNIL plafonnent à 25 mois les statistiques issues de la mesu
 d'audience exemptée. Non modifié — abaisser la rétention SUPPRIME des données de
 façon irréversible, ce n'est pas une décision à prendre sans arbitrage explicite.
 
+### 9.ab Attribution de premier contact (août 2026)
+
+**Le trou, mesuré.** Sur 164 personnes identifiées, **zéro** portait sa campagne
+d'origine (`$initial_utm_source` vide pour toutes). Impossible de répondre à
+« quelle publicité a produit ce client ».
+
+Cause : avec `person_profiles: 'identified_only'`, PostHog ne crée le profil qu'à
+l'inscription et y écrit les `$initial_*` de CE moment-là — donc ceux de
+`app.hippodoc.fr`. La campagne Meta se perdait entre la landing et la création de
+compte. Le recollage anonyme → client fonctionnait pourtant : 22 personnes
+identifiées ont `app.hippodoc.fr` en première page avec `www.hippodoc.fr` en
+référent. C'est l'ORIGINE de l'acquisition qui manquait, pas le lien.
+
+**Correctif** : `register_once` au chargement, sur toutes les pages publiques.
+Les propriétés super sont stockées dans la persistance de PostHog — donc, avec
+`cross_subdomain_cookie`, sur `.hippodoc.fr` — et rattachées à tous les
+événements suivants, **y compris ceux émis par l'app après l'inscription**.
+
+| Propriété | Contenu |
+|---|---|
+| `hd_premiere_source` | `utm_source`, sinon `meta` si `fbclid`, `google` si `gclid`, sinon le référent externe, sinon `direct` |
+| `hd_premiere_campagne` / `_contenu` / `_support` / `_terme` | les `utm_*` correspondants |
+| `hd_premiere_page`, `hd_premier_referent`, `hd_premier_appareil` | contexte d'arrivée |
+
+⚠️ Préfixe `hd_` volontaire : ne JAMAIS réutiliser les noms `$initial_*` que
+PostHog gère lui-même — deux sources de vérité homonymes seraient pires que pas
+de donnée.
+
+⚠️ `register_once` et non `register` : un second passage ne doit pas écraser le
+premier contact, c'est la définition même de l'attribution d'acquisition.
+Vérifié : arrivée via Meta, puis `/tarifs` sans UTM, puis retour via
+`google/AUTRE` → la source reste `meta / HIPPODOC-PROSPECTION`.
+
+⚠️ Un référent interne (`hippodoc.fr`) est une navigation, pas une acquisition :
+il est écarté, sans quoi tout le monde finirait attribué à son propre site.
+
+⚠️ Sans effet en cas d'opposition à la mesure : la persistance est alors en
+mémoire et rien n'est écrit sur l'appareil. C'est voulu.
+
+### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
+
+`app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En
+coupant `session_recording_opt_in` au niveau projet « par précaution », le session
+replay de l'APP a été désactivé — alors qu'il enregistrait activement (5 replays
+le jour même, sur `/dashboard`, `/depenses/cotisations`). Le site public, lui,
+n'a JAMAIS enregistré de replay : son drapeau client `disable_session_recording`
+suffisait déjà. Le changement projet n'apportait donc rien et cassait l'app.
+
+**Règle** : ce qui concerne le site public se règle dans SON `posthog.init()`.
+Les réglages projet ne se touchent qu'en sachant ce que l'app en fait.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
