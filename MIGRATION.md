@@ -1283,6 +1283,74 @@ est un îlot perdra cet espacement en silence. Vérifié sur les autres pages à
 aucune n'a d'îlot en enfant direct d'un conteneur `space-y-*`, le défaut était
 isolé.
 
+### 9.w Bandeau cookies compacté (août 2026)
+
+**Le défaut, mesuré.** Sur un iPhone 14, l'ancien bandeau faisait **266 px de haut,
+soit 40 % du premier écran**, et **recouvrait le CTA principal du hero** — le bouton
+« Commencer l'essai gratuit » était physiquement masqué, et l'élément le plus
+visible de tout le premier écran était « Accepter tous ». Sur du trafic payant, la
+première action demandée était donc un choix de cookies posé par-dessus l'offre.
+
+**Trois décisions pour compacter sans rien perdre :**
+  - texte ramené de **40 à 12 mots**, les FINALITÉS restant nommées (mesure
+    d'audience, publicité Google/Meta) comme l'exige la CNIL — et **ajout d'un lien
+    vers la politique de confidentialité, qui n'existait pas** ;
+  - les deux boutons passent **côte à côte** au lieu d'être empilés ;
+  - **la croix de fermeture est retirée** : elle portait déjà
+    `data-cookie-action="essential"`, donc elle faisait exactement la même chose que
+    « Tout refuser », en moins explicite, et coûtait une ligne entière.
+
+Libellés passés à « Tout refuser » / « Tout accepter » — symétriques, sans
+ambiguïté. **Refuser reste aussi simple qu'accepter** : mêmes dimensions mesurées
+(168×44 px), même forme, un seul appui.
+
+**Résultat : 266 → 115 px** (40 % → 14-17 % de l'écran).
+
+⚠️ **Validé contre les largeurs RÉELLEMENT observées** chez les visiteurs, et non
+contre des tailles théoriques : 402 (174 personnes), 393 (136), 390 (122), 360 (94),
+430 (68), 384 et 375 (52 chacune). **Le CTA principal est dégagé sur les sept.**
+Aucun visiteur en 320 px sur 60 jours — inutile d'y sacrifier le design.
+
+⚠️ Sur le seul écran de 640 px de haut (360×640, 94 personnes), le **lien secondaire**
+vers le simulateur reste couvert de 59 px. Le hero y est simplement plus haut que
+l'espace disponible ; aucun bandeau bas ne peut le dégager sans disparaître. Le CTA
+principal, lui, est visible.
+
+⚠️ Piège rencontré **pour la troisième fois** dans ce chantier : un retour à la ligne
+entre du texte et une balise est absorbé à la compilation. « fonctionne sans.En
+savoir plus » — corrigé par `{' '}`. Vu à l'écran, pas à la relecture.
+
+⚠️ **Conflit avec le tiroir de menu mobile, corrigé au passage.** Les deux sont en
+`z-50` : le bandeau recouvrait le bas du menu ouvert — « Qui sommes-nous ? »,
+« Connexion » et « Essai gratuit » disparaissaient derrière. Défaut préexistant, et
+pire avant (l'ancien bandeau faisait 266 px). Le bandeau s'efface désormais tant que
+le tiroir est ouvert : quelqu'un qui ouvre le menu navigue, il ne décide pas de ses
+cookies. `:has()` est nécessaire car la case du tiroir vit dans le `<header>` et le
+bandeau plus loin dans le `<body>` — aucun sélecteur de voisinage ne les relie. Sur
+un navigateur sans `:has()`, la règle est ignorée et le comportement reste celui
+d'avant : dégradation propre.
+
+Mécanique de consentement inchangée et revérifiée : l'événement
+`hippodoc:consent-changed` part avec la bonne valeur, `localStorage` est écrit, le
+bandeau se masque, et le choix est mémorisé d'une page à l'autre.
+
+**Audit mobile de bout en bout** — situations éprouvées, toutes mesurées :
+  - **paysage** (844×390, 667×375, 640×360) : bandeau 93 px, aucun débordement ;
+  - **zoom texte 200 %** : aucun débordement, aucun texte tronqué, boutons à 88 px ;
+  - **`localStorage` bloqué** (navigation privée, WebView verrouillée) : le bandeau
+    s'affiche, le refus fonctionne, **aucune erreur de page** ;
+  - **clavier** : 3 éléments atteignables dans l'ordre logique, `aria-modal="false"`
+    donc pas de piège au focus ;
+  - **contrastes** : texte 5,06:1 · lien 5,15:1 · bouton refuser 17,87:1 (seuil 4,5) ;
+  - **autres pages** : `/simulateur`, `/tarifs` et les articles restent dégagés ;
+    sur `/faq` la première question est recouverte de 27 px sur 80 — le libellé
+    reste lisible, et un bandeau bas recouvre par nature les 115 derniers pixels ;
+  - **parcours complet de la landing** : 0 débordement à toutes les hauteurs,
+    10 sections, compteurs corrects, vidéo et liens Calendly intacts, aucune erreur.
+
+⚠️ **En paysage sur les écrans courts** (375 et 360 de haut), le CTA reste masqué :
+le hero y occupe toute la hauteur disponible. Non corrigeable par le bandeau.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
