@@ -116,7 +116,19 @@ function contexteSession(utm: Props): Props {
  */
 export type Emetteur = (nom: string, props?: Props) => void;
 
+/**
+ * ⚠️ MÉMOÏSÉ, et ce n'est pas une optimisation : `contexteSession()` INCRÉMENTE
+ * `session_pageview_count` à chaque appel. Deux appels dans la même page
+ * compteraient deux pages vues pour une seule. Depuis que les événements de
+ * consentement passent eux aussi par cet émetteur (voir PostHog.astro), il y a
+ * deux appelants possibles par page et l'ordre entre eux n'est pas garanti : la
+ * mémoïsation est ce qui rend le compteur juste quel que soit celui qui arrive
+ * en premier.
+ */
+let emetteurMemo: { emettre: Emetteur; contexte: Props } | null = null;
+
 export function creerEmetteur(posthog: PostHogLike): { emettre: Emetteur; contexte: Props } {
+  if (emetteurMemo) return emetteurMemo;
   const utm = parametresUtm();
   const commun: Props = {
     device_type: deviceType(),
@@ -128,7 +140,8 @@ export function creerEmetteur(posthog: PostHogLike): { emettre: Emetteur; contex
   };
   const emettre: Emetteur = (nom, props) =>
     safe(() => posthog.capture(nom, { ...commun, ...props }), undefined);
-  return { emettre, contexte: commun };
+  emetteurMemo = { emettre, contexte: commun };
+  return emetteurMemo;
 }
 
 /**

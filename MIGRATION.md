@@ -1473,6 +1473,55 @@ Vérifié : aucun CTA du premier écran recouvert, 56×56 px, focusable en derni
 l'ordre de tabulation, contraste 3,37:1 au pire point du dégradé (seuil 3:1 pour un
 élément graphique).
 
+### 9.z Contexte des événements de consentement, et cibles tactiles (août 2026)
+
+**Contexte manquant, mesuré en production.** Les `cookie_consent_granted` /
+`cookie_consent_denied` arrivaient depuis `www` **sans aucune propriété de
+contexte** — 188 événements vérifiés ligne à ligne : ni `deployment_env`, ni
+`device_type`, ni `app_version`, ni `utm_*`. Cause : ils étaient émis par
+`posthog.capture()` en direct, hors de `creerEmetteur`. Régression née à la
+migration — l'ancienne SPA posait ce contexte en propriétés globales, le portage
+l'a rattaché à chaque événement, et ces deux-là sont passés à travers.
+
+Deux conséquences concrètes, l'une et l'autre vérifiées : le trafic de test local
+ne pouvait pas en être écarté (c'est `deployment_env` qui sert à cela), et le taux
+de refus n'était comparable ni par appareil ni par campagne — or il **borne tout ce
+que l'on mesure en aval**. Le défaut a été trouvé pendant que la campagne Meta
+tournait déjà.
+
+⚠️ `creerEmetteur` est désormais **mémoïsé**, et ce n'est pas une optimisation :
+`contexteSession()` INCRÉMENTE `session_pageview_count` à chaque appel. Avec deux
+appelants par page (PostHog.astro et analytics-init) et aucun ordre garanti entre
+eux, sans mémoïsation une seule page en aurait compté deux. Vérifié : le compteur
+vaut 1 sur tous les événements, y compris sur les pages non mesurées.
+Garde-fou `verify-site` §4 terdecies.
+
+**Audit mobile.** 56 pages × 4 largeurs réellement observées (360/375/390/430) :
+**0 débordement horizontal, 0 erreur console**. Toutes les pages mesurées émettent
+leurs événements sur iPhone, y compris en WebView Instagram, sur Android, à 360 px,
+**stockage bloqué (navigation privée)** et avec les UTM de campagne. Sans
+`IntersectionObserver`, la mesure se dégrade proprement : `landing_viewed` et
+`landing_scroll_depth` continuent, les événements de section sont perdus, aucune
+erreur.
+
+⚠️ Deux pièges de méthode rencontrés, notés parce qu'ils font conclure à l'envers :
+posthog-js poste `{api_key, batch:[…]}` — un parseur qui ne descend pas dans
+`batch` retombe sur une regex, rend des propriétés VIDES, et fait passer chaque
+page pour cassée ; et le contrôle de contexte ne vaut que pour NOS événements,
+`$pageview` / `$autocapture` / `$$heatmap` / `$web_vitals` étant produits par
+posthog-js lui-même et n'ayant jamais porté ce contexte.
+
+**Cibles tactiles (WCAG 2.5.8).** Les déclencheurs d'aide de la calculette (14×14)
+et les icônes LinkedIn (20×20) passent à ≥24 px via `p-1.5 -m-1.5` : la marge
+négative compense exactement le rembourrage, donc **aucun déplacement**.
+Les cases `sr-only` qui pilotent le tiroir et les radios ne sont PAS des cibles —
+le label l'est ; les compter noyait le signal sur 50 pages.
+
+Reste à faire : liens de texte à 16–21 px de haut sur `/essai` (7, pied de page),
+`/guide-declarations` (~995, glossaire et FAQ) et le lien de retour de la
+calculette. Antérieurs, hors landing, et corriger le guide reviendrait à changer
+son interlignage — décision de design non prise.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

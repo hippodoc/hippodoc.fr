@@ -10,6 +10,7 @@
 ---
 <script>
   import posthog from 'posthog-js';
+  import { creerEmetteur } from '@/lib/analytics-commun';
 
   /**
    * ⚠️ Le consentement se lit d'ABORD dans le cookie `hippodoc-consent` (domaine
@@ -85,13 +86,35 @@
       });
   }
 
+  /**
+   * ⚠️ Les événements de consentement passent par `creerEmetteur`, PAS par
+   * `posthog.capture()` en direct.
+   *
+   * Mesuré en production : les 188 `cookie_consent_*` reçus depuis le passage sur
+   * `www` n'avaient AUCUNE propriété de contexte — ni `deployment_env`, ni
+   * `device_type`, ni `utm_*`. Deux conséquences concrètes. D'abord le trafic de
+   * test local ne pouvait pas en être exclu, puisque c'est `deployment_env` qui
+   * sert à le filtrer : les chiffres de consentement mélangeaient visiteurs réels
+   * et vérifications automatisées. Ensuite, et surtout pendant une campagne
+   * payante, le taux de refus n'était comparable ni par appareil ni par campagne —
+   * or c'est lui qui borne tout ce que l'on peut mesurer en aval.
+   *
+   * La régression datait de la migration : l'ancienne SPA enregistrait ce contexte
+   * en propriétés globales, le portage l'a rattaché à chaque événement — et ces
+   * deux-là, émis hors du module d'analytics, sont passés à travers.
+   *
+   * `creerEmetteur` est mémoïsé : l'appeler ici comme dans `analytics-init` ne
+   * compte qu'une seule page vue.
+   */
   window.addEventListener('hippodoc:consent-changed', (e) => {
     const value = (e as CustomEvent).detail;
+    const { emettre } = creerEmetteur(posthog);
     if (value === 'accepted') {
       posthog.set_config({ persistence: 'localStorage+cookie' });
-      posthog.capture('cookie_consent_granted');
+      emettre('cookie_consent_granted');
     } else {
-      posthog.capture('cookie_consent_denied');
+      // Émis AVANT de repasser en mémoire, comme auparavant.
+      emettre('cookie_consent_denied');
       posthog.set_config({ persistence: 'memory' });
     }
   });

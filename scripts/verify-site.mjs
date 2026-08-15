@@ -458,6 +458,22 @@ for (const f of LECTEURS_CONSENTEMENT) {
   }
 }
 
+/* 4 terdecies. Les événements de consentement passent par l'émetteur commun.
+   Mesuré en production : 188 `cookie_consent_*` reçus sans AUCUNE propriété de
+   contexte, parce qu'ils étaient émis via `posthog.capture()` en direct au lieu de
+   `creerEmetteur`. Sans `deployment_env` on ne peut pas écarter le trafic de test ;
+   sans `device_type` ni `utm_*` le taux de refus n'est comparable ni par appareil
+   ni par campagne — or il borne tout ce qu'on mesure en aval. Régression née à la
+   migration : l'ancienne SPA posait ce contexte en propriétés globales. */
+const srcPostHog = readFileSync(resolve(root, 'src/components/PostHog.astro'), 'utf8');
+const captureDirecte = srcPostHog.match(/posthog\.capture\(\s*['"]cookie_consent_[a-z]+['"]/);
+if (captureDirecte) {
+  fail(`PostHog.astro : ${captureDirecte[0]}…) émis en direct — l'événement partirait sans contexte (env, device, utm). Passer par creerEmetteur.`);
+}
+if (!/creerEmetteur/.test(srcPostHog)) {
+  fail('PostHog.astro : les événements de consentement n\'utilisent plus l\'émetteur commun — ils repartiraient sans contexte');
+}
+
 /* 4 duodecies. Crisp ne se charge qu'au clic.
    Il était autrefois injecté au premier geste du visiteur — `scroll` compris — et
    posait donc son cookie de session avant tout choix de cookies, et même après un

@@ -117,7 +117,7 @@ function FieldRow({ field }: { field: FieldConfig }) {
         </Label>
         <TooltipProvider delayDuration={150}>
           <Tooltip>
-            <TooltipTrigger type="button" aria-label={`Aide pour ${field.label}`}>
+            <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label={`Aide pour ${field.label}`}>
               <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
             </TooltipTrigger>
             <TooltipContent className="max-w-xs text-xs">{field.hint}</TooltipContent>
@@ -396,7 +396,7 @@ export function CalculetteForm() {
               <Label className="text-sm font-medium">Profil d'exercice</Label>
               <TooltipProvider delayDuration={150}>
                 <Tooltip>
-                  <TooltipTrigger type="button" aria-label="Aide profil">
+                  <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide profil">
                     <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-sm text-xs space-y-1.5">
@@ -487,7 +487,7 @@ export function CalculetteForm() {
               <Label className="text-sm font-medium">Tu remplis pour</Label>
               <TooltipProvider delayDuration={150}>
                 <Tooltip>
-                  <TooltipTrigger type="button" aria-label="Aide déclarant">
+                  <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide déclarant">
                     <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs text-xs space-y-1">
@@ -527,7 +527,7 @@ export function CalculetteForm() {
               <Label className="text-sm font-medium">Régime social URSSAF</Label>
               <TooltipProvider delayDuration={150}>
                 <Tooltip>
-                  <TooltipTrigger type="button" aria-label="Aide régime social">
+                  <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide régime social">
                     <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-sm text-xs space-y-1.5">
@@ -591,7 +591,7 @@ export function CalculetteForm() {
         <TooltipProvider delayDuration={150}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button type="button" className="ml-1 inline-flex align-middle text-blue-700/70 dark:text-blue-300/70 hover:text-blue-700 dark:hover:text-blue-300" aria-label="Détail cumul salarié">
+              <button type="button" className="-my-1.5 ml-0 inline-flex p-1.5 align-middle text-blue-700/70 dark:text-blue-300/70 hover:text-blue-700 dark:hover:text-blue-300" aria-label="Détail cumul salarié">
                 <HelpCircle className="h-3.5 w-3.5" />
               </button>
             </TooltipTrigger>
@@ -903,7 +903,7 @@ function ZoneExoMicroBlock() {
           <h4 className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">Exonération zonée — ZFU-TE / ZFRR</h4>
           <TooltipProvider delayDuration={150}>
             <Tooltip>
-              <TooltipTrigger type="button" aria-label="Aide ZFU/ZFRR">
+              <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide ZFU/ZFRR">
                 <HelpCircle className="h-3.5 w-3.5 text-emerald-700/70 dark:text-emerald-300/70 hover:text-emerald-900 dark:hover:text-emerald-100 transition" />
               </TooltipTrigger>
               <TooltipContent className="max-w-sm text-xs space-y-1.5">
@@ -993,7 +993,7 @@ function ZoneExoMicroBlock() {
               <Label className="text-sm font-medium">Mois d'installation <span className="text-muted-foreground font-normal">(optionnel — année 1)</span></Label>
               <TooltipProvider delayDuration={150}>
                 <Tooltip>
-                  <TooltipTrigger type="button" aria-label="Aide mois d'installation">
+                  <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide mois d'installation">
                     <HelpCircle className="h-3.5 w-3.5 text-emerald-700/70 dark:text-emerald-300/70" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-sm text-xs space-y-1.5">
@@ -1112,7 +1112,7 @@ function NestedFieldRow({ name, label, hint }: SousPosteConfig) {
         <Label className="text-sm font-medium">{label}</Label>
         <TooltipProvider delayDuration={150}>
           <Tooltip>
-            <TooltipTrigger type="button" aria-label={`Aide pour ${label}`}>
+            <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label={`Aide pour ${label}`}>
               <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
             </TooltipTrigger>
             <TooltipContent className="max-w-xs text-xs">{hint}</TooltipContent>
