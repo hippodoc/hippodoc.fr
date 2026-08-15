@@ -1351,6 +1351,57 @@ bandeau se masque, et le choix est mémorisé d'une page à l'autre.
 ⚠️ **En paysage sur les écrans courts** (375 et 360 de haut), le CTA reste masqué :
 le hero y occupe toute la hauteur disponible. Non corrigeable par le bandeau.
 
+### 9.x Consentement partagé entre www et app (août 2026)
+
+**Le défaut, structurel.** Le choix n'était écrit que dans
+`localStorage['cookie-consent']`, or **`localStorage` est cloisonné par origine** :
+`app.hippodoc.fr` ne pouvait pas le lire. Depuis la séparation des domaines, un
+visiteur qui acceptait sur le site public revoyait donc la bannière de l'app.
+Aucun réglage ne corrige cela — c'est une propriété du stockage.
+
+Ironie révélatrice, mesurée : **PostHog posait déjà son cookie sur `.hippodoc.fr`**
+(`cross_subdomain_cookie: true`), partagé entre les deux sous-domaines. Le traceur
+était partagé, la permission qui le gouverne ne l'était pas.
+
+**Correctif** — le choix est désormais aussi écrit dans un cookie sur le domaine
+parent, seul support lisible des deux côtés :
+
+| | |
+|---|---|
+| Nom | `hippodoc-consent` |
+| Domaine | `.hippodoc.fr` |
+| Valeurs | `accepted` \| `essential-only` |
+| Durée | 182 jours (~6 mois) |
+| Attributs | `path=/`, `SameSite=Lax`, `Secure` en HTTPS |
+
+À la lecture, **le cookie fait foi** ; `localStorage` reste en repli pour les
+visiteurs ayant choisi avant cette version. Ce cookie n'exige pas de consentement :
+il sert précisément à respecter celui de l'utilisateur.
+
+⚠️ **Le domaine est DÉRIVÉ de l'hôte, jamais codé en dur.** Première version avec
+`domain=.hippodoc.fr` en dur : le navigateur **rejette** un cookie dont le domaine
+ne correspond pas à l'hôte courant, si bien qu'aucun cookie n'était posé en local
+NI sur les previews Vercel — le choix n'y était jamais mémorisé. Sur `hippodoc.fr`
+on vise le domaine parent ; ailleurs, cookie d'hôte.
+
+⚠️ **Le site public ne peut faire que la moitié du chemin.** Pour que la bannière
+de l'app disparaisse, il faut que `app.hippodoc.fr` lise ce cookie au démarrage et
+court-circuite sa propre bannière — et, idéalement, l'écrive aussi pour que le
+partage fonctionne dans les deux sens. Ce partage n'est légitime que si les
+FINALITÉS sont identiques des deux côtés ; si l'app dépose des cookies pour
+d'autres usages, sa bannière doit continuer à les demander.
+
+**Texte du bandeau.** Repris sur la formulation attendue par les utilisateurs
+(« En acceptant, vous autorisez… ») plutôt que sur l'étiquette technique
+précédente. ⚠️ « améliorer la navigation sur le site » a été écarté : cela décrit
+des cookies fonctionnels, or il n'y a ici que de la mesure et du marketing —
+annoncer une finalité inexistante est précisément ce que la CNIL sanctionne.
+Les noms des régies (Google, Meta) descendent au second niveau, dans la politique
+de confidentialité : la CNIL exige les finalités en premier niveau, l'identité des
+tiers peut suivre. Mesuré : les nommer dans le bandeau ajoutait une troisième ligne
+et **remasquait le CTA sur les écrans de 640 px** (94 visiteurs). Le vouvoiement est
+conservé, comme l'ancien titre « Nous respectons votre vie privée ».
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

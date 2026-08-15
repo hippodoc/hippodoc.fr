@@ -43,7 +43,7 @@
       <p class="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground sm:flex-1">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0 text-hippo-600" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
         <span>
-          Mesure d'audience et publicité (Google, Meta). Le site fonctionne sans.{' '}
+          En acceptant, vous autorisez des cookies de mesure d'audience et de publicité.{' '}
           <a href="/politique-confidentialite" class="font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-700">En savoir plus</a>
         </span>
       </p>
@@ -93,6 +93,14 @@
     window.hippodocScrubLocation = scrub;
 
     function consent() {
+      /* Le cookie de domaine parent fait FOI : c'est le seul support lisible depuis
+         app.hippodoc.fr. `localStorage` est cloisonné par origine — un choix fait ici
+         y était donc invisible, et l'app réaffichait sa propre bannière. Le
+         localStorage reste en repli pour les visiteurs ayant choisi avant. */
+      try {
+        var m = document.cookie.match(/(?:^|;\s*)hippodoc-consent=([^;]+)/);
+        if (m) return decodeURIComponent(m[1]);
+      } catch (e) {}
       try { return localStorage.getItem('cookie-consent'); } catch (e) { return null; }
     }
 
@@ -183,6 +191,24 @@
     var banner = document.getElementById('cookie-banner');
     function choose(value) {
       try { localStorage.setItem('cookie-consent', value); } catch (e) {}
+      /* Cookie sur le domaine PARENT : c'est ce qui permet à app.hippodoc.fr de
+         connaître le choix. Le point initial du domaine est essentiel — sans lui le
+         cookie reste cantonné à www. Six mois, la CNIL demandant que le
+         consentement soit redemandé à intervalle raisonnable.
+         Ce cookie-ci n'exige pas de consentement : il sert précisément à respecter
+         celui de l'utilisateur. */
+      try {
+        /* ⚠️ Le domaine est DÉRIVÉ de l'hôte, jamais codé en dur : un navigateur
+           rejette purement et simplement un cookie dont le domaine ne correspond pas
+           à l'hôte courant. Écrire « .hippodoc.fr » en dur revenait à n'avoir aucun
+           cookie en local NI sur les previews Vercel — le choix n'y était donc jamais
+           mémorisé. Sur hippodoc.fr on vise le domaine parent (partage avec
+           app.hippodoc.fr) ; ailleurs, cookie d'hôte, qui suffit. */
+        var partage = /(^|\.)hippodoc\.fr$/.test(location.hostname) ? ';domain=.hippodoc.fr' : '';
+        document.cookie = 'hippodoc-consent=' + encodeURIComponent(value) + partage +
+          ';path=/;max-age=' + (60 * 60 * 24 * 182) +
+          ';samesite=lax' + (location.protocol === 'https:' ? ';secure' : '');
+      } catch (e) {}
       if (banner) banner.hidden = true;
       if (value === 'accepted') {
         gtag('consent', 'update', GRANTED);
