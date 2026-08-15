@@ -40,15 +40,16 @@
   });
 
   /**
-   * Analytics de la landing. Chargé ICI, après `init()`, pour deux raisons :
-   * l'ordre d'exécution est garanti (un second <script> ne l'aurait pas été) et
-   * l'instance `posthog` est la même (le module est un singleton).
-   * Import dynamique : ce code ne pèse sur aucune autre page du site et reste
-   * hors du chemin critique de rendu de l'accueil.
+   * Analytics de page. Chargées ICI, après `init()`, pour deux raisons : l'ordre
+   * d'exécution est garanti (un second <script> ne l'aurait pas été) et l'instance
+   * `posthog` est la même (le module est un singleton).
+   * Import dynamique et aiguillé par chemin : une page non mesurée ne télécharge
+   * rien, et le code reste hors du chemin critique de rendu.
    */
-  if (window.location.pathname === '/' || window.location.pathname === '') {
-    import('@/lib/landing-analytics')
-      .then((m) => m.initLandingAnalytics(posthog))
+  const cheminMesure = window.location.pathname.replace(/\/$/, '') || '/';
+  if (cheminMesure === '/' || /^\/(tarifs|faq|comparatif|guide-declarations|blog)(\/|$)/.test(cheminMesure)) {
+    import('@/lib/analytics-init')
+      .then((m) => m.initAnalytics(posthog))
       .catch(() => {
         /* la mesure peut échouer, jamais la page */
       });

@@ -212,7 +212,16 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         </div>
       )}
 
-    <article>
+    {/* Métadonnées d'instrumentation, injectées au build : `page-analytics.ts` les
+       lit pour blog_article_viewed / blog_scroll_depth / blog_read_completed. Les
+       valeurs viennent du frontmatter, donc identiques à l'historique PostHog
+       (category « Fiche Fiscalité », series_id « fiche-fiscalite »…). */}
+  <article
+    data-blog-slug={slug}
+    data-blog-category={category}
+    data-blog-series={seriesId}
+    data-blog-episode={episodeNumber ?? 0}
+  >
       <header class="mb-8">
         <div class="mb-3 flex flex-wrap items-center gap-2">
           {series && (
@@ -258,6 +267,11 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
            29 des 38 articles contiennent des sauts de ligne volontaires. */}
       <div class="prose prose-slate blog-content mx-auto max-w-[68ch] prose-headings:text-foreground prose-a:text-hippo-600">
         <Content />
+        {/* Fin réelle du TEXTE — et non le bas de la page : le partage, le bloc
+            auteur et le pied de page viennent après. C'est ce repère qui déclenche
+            blog_read_completed, ce qui explique qu'il soit historiquement plus
+            fréquent que `depth: 100`. */}
+        <span data-blog-fin aria-hidden="true"></span>
       </div>
 
       {faq && faq.length > 0 && (
