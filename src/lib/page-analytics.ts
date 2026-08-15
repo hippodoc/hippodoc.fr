@@ -13,11 +13,10 @@
  */
 
 import {
-  creerEmetteur,
   observerDefilement,
   observerElements,
   safe,
-  type PostHogLike,
+  type Emetteur,
   type Props,
 } from './analytics-commun';
 
@@ -38,9 +37,7 @@ const SEUILS_BLOG = [25, 50, 75, 100] as const;
  * Aiguille la page courante vers sa mesure. Ne fait rien — sans lever — sur une
  * page non instrumentée : l'appelant peut donc rester simple.
  */
-export function initPageAnalytics(posthog: PostHogLike): void {
-  const chemin = safe(() => window.location.pathname.replace(/\/$/, '') || '/', '/');
-  const emettre = creerEmetteur(posthog);
+export function initPageAnalytics(emettre: Emetteur, chemin: string): void {
 
   if (chemin === '/tarifs') return mesurerTarifs(emettre);
   if (chemin === '/faq') return mesurerFaq(emettre);
@@ -53,8 +50,6 @@ export function initPageAnalytics(posthog: PostHogLike): void {
     return mesurerArticle(emettre);
   }
 }
-
-type Emetteur = (nom: string, props?: Props) => void;
 
 function mesurerTarifs(emettre: Emetteur): void {
   // `instagram_10k_active` : la promo Instagram 10K était déjà dormante dans la

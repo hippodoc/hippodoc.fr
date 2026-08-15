@@ -13,6 +13,14 @@ export const PRODUCT_DEFINITION =
   "Hippodoc est un logiciel français créé par un médecin pour les médecins remplaçants : il centralise revenus, rétrocessions, planning, contrats, cotisations URSSAF et CARMF, et prépare les déclarations (2035, 2042, DSFU/PAMC) avec un calcul automatique du Super-Net.";
 
 export const CONTACT_EMAIL = 'contact@hippodoc.fr';
+
+/**
+ * Rendez-vous « Découverte d'Hippodoc » (15 min, visio ou appel sortant).
+ * Lien simple et non widget embarqué : l'embed Calendly pèse ~100 Ko de JS tiers,
+ * ce qui annulerait une bonne part des 98 Ko regagnés en coupant les enquêtes
+ * PostHog, et casserait l'invariant zéro JS du site.
+ */
+export const CALENDLY_URL = 'https://calendly.com/hippodoc/decouverte-d-hippodoc';
 export const CONTACT_PHONE = '+33756898961';
 
 export const SOCIALS = {

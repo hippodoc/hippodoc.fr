@@ -15,7 +15,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import SimulateurApp from '@/components/simulateur/SimulateurApp.tsx';
-import { APP_URL } from '@/lib/site';
+import { APP_URL, CALENDLY_URL } from '@/lib/site';
 import { getDeclarationParams } from '@/lib/declarationParams';
 
 const title = 'Simulateur revenus médecin gratuit | Hippodoc';
@@ -73,6 +73,35 @@ const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Calcul instantané']
       <h2 class="sr-only">Ta simulation Super-Net</h2>
       <SimulateurApp client:visible />
     </div>
+
+    {/* Prise de rendez-vous — juste après le résultat, l'endroit de plus forte
+        intention du site : `cta_simulator` est le lien le plus cliqué de la
+        landing (20 clics contre 17 pour l'inscription), et le simulateur tourne
+        (92 utilisations en 21 jours). Quelqu'un qui vient de voir son super-net a
+        un chiffre concret et une question précise sur SA situation. */}
+    <section class="mx-auto mt-10 max-w-3xl px-4">
+      <div class="rounded-2xl border border-hippo-200/60 bg-white p-6 text-center shadow-sm sm:p-8">
+        {/* Formulation valable AVANT comme APRÈS la simulation : le bloc est placé
+            sous l'îlot, donc visible dès le chargement, avant qu'aucun chiffre
+            n'existe. « Ce chiffre te surprend ? » n'aurait alors eu aucun sens. */}
+        <p class="text-lg font-semibold text-hippo-800">Un doute sur ton chiffre ?</p>
+        <p class="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          Ton super-net dépend de ton régime, de tes charges et de ton mode d'exercice.
+          En 15 minutes, Ryan — médecin remplaçant — reprend ta situation avec toi et te
+          montre comment il suit ses propres chiffres au quotidien. En visio, ou il t'appelle.
+        </p>
+        <a
+          href={CALENDLY_URL}
+          data-calendly="simulateur_resultat"
+          target="_blank"
+          rel="noopener"
+          class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-hippo-600 px-6 py-3 font-semibold text-white shadow-lg shadow-hippo-600/20 transition-all hover:bg-hippo-700 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18"/><rect width="18" height="18" x="3" y="4" rx="2"/></svg>
+          <span>Prendre 15 min avec Ryan</span>
+        </a>
+      </div>
+    </section>
 
     <!-- Section explicative statique (SEO) — contenu de SimulateurGuide.tsx (SPA source),
          porté en <details>/<summary> natif : un accordéon Radix fermé ne livre pas son
@@ -357,15 +386,9 @@ const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Calcul instantané']
             >
               Voir les tarifs
             </a>
-          <a
-            href="https://calendly.com/hippodoc/decouverte-d-hippodoc"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track="cta_demo_calendly"
-            class="inline-flex min-h-11 items-center justify-center text-sm font-medium text-hippo-600 underline-offset-4 hover:underline"
-          >
-            Réserve une démo (10 min)
-          </a>
+          {/* Le lien Calendly de bas de page a été remonté sous le résultat de la
+              simulation : c'est là que naît le doute sur le chiffre, pas après le
+              mode d'emploi et les tarifs. */}
           </div>
         </div>
       </div>

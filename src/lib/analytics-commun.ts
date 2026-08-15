@@ -114,7 +114,9 @@ function contexteSession(utm: Props): Props {
  * Fabrique la fonction d'émission d'une page : le contexte commun est calculé une
  * seule fois puis joint à chaque événement, comme le faisait la SPA d'origine.
  */
-export function creerEmetteur(posthog: PostHogLike): (nom: string, props?: Props) => void {
+export type Emetteur = (nom: string, props?: Props) => void;
+
+export function creerEmetteur(posthog: PostHogLike): { emettre: Emetteur; contexte: Props } {
   const utm = parametresUtm();
   const commun: Props = {
     device_type: deviceType(),
@@ -124,7 +126,9 @@ export function creerEmetteur(posthog: PostHogLike): (nom: string, props?: Props
     ...utm,
     ...contexteSession(utm),
   };
-  return (nom, props) => safe(() => posthog.capture(nom, { ...commun, ...props }), undefined);
+  const emettre: Emetteur = (nom, props) =>
+    safe(() => posthog.capture(nom, { ...commun, ...props }), undefined);
+  return { emettre, contexte: commun };
 }
 
 /**
