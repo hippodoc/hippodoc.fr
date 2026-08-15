@@ -412,6 +412,18 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   }
 }
 
+/* 4 nonies. Le film de présentation ne doit rien télécharger avant le clic.
+   `preload="none"` est ce qui garantit qu'aucun octet du mp4 (hébergé chez
+   Supabase) ne part au chargement de la page — vérifié : 0 requête mp4 avant
+   interaction. Le passer à `metadata` ou `auto` déplacerait ce coût sur le LCP
+   de la landing, qui est la page de la campagne payante. */
+const accueilVideo = readFileSync(resolve(dist, 'index.html'), 'utf8');
+const balise = accueilVideo.match(/<video\b[^>]*>/);
+if (!balise) fail("accueil : le film de présentation a disparu de la page");
+else if (!/preload="none"/.test(balise[0])) {
+  fail(`accueil : le film n'est plus en preload="none" — la vidéo se téléchargerait avant le clic (${balise[0].slice(0, 90)})`);
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

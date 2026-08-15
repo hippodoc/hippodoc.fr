@@ -1144,6 +1144,52 @@ espace coupe les mots contenant du balisage interne, ensuite parce qu'Astro éch
 l'apostrophe en `&#x27;` (hexadécimal) et non `&#39;`. J'avais conclu à tort à une
 violation Google sur cette page : **les 49 questions y sont bien toutes rendues**.
 
+### 9.t Invitation à lire le film de présentation (août 2026)
+
+**Le constat.** Sur 120 jours : **96 personnes voient la section vidéo, 9 lancent la
+lecture — 9,4 %**, et 3 vont au bout. Ce n'est pas un problème de promesse : la
+section annonce déjà « Hippodoc en 90 secondes », « Tu factures, Hippodoc calcule le
+reste », et liste URSSAF/CARMF/impôts/Super-Net. Ce qui manquait, c'est
+l'**invitation** : le lecteur natif dessine un bouton discret — un petit cercle gris
+sur Safari mobile, majoritaire dans le trafic payant.
+
+**Ajouté** : un vrai `<button>` de 80 px en dégradé hippo par-dessus le poster, avec
+un badge **« 90 s »**. La durée figurait dans le titre mais pas là où la décision se
+prend.
+
+⚠️ **`preload="none"` est conservé** : aucun octet du mp4 (hébergé chez Supabase) ne
+part avant le clic — vérifié, 0 requête. La contrepartie est un délai au démarrage,
+d'où l'**état de chargement** : sans lui, le visiteur clique, ne voit rien, et croit
+que c'est cassé. C'est peut-être là le vrai gain, plus que dans l'esthétique.
+
+⚠️ **Les contrôles natifs sont retirés tant que l'invitation est affichée**, sinon
+deux boutons de lecture coexistent et la barre de contrôle passe sous le badge. Ils
+sont dans le HTML (le lecteur reste pleinement utilisable sans script) et rendus dès
+que la lecture démarre — ou si elle échoue, pour ne laisser personne sans solution.
+
+**Exception zéro-JS assumée**, au même titre que le micro-script du tiroir mobile :
+aucun sélecteur CSS ne permet de savoir qu'une vidéo joue, donc « clic sur le bouton
+→ lecture » est impossible sans script. Aucune dépendance, aucun asset, script
+inline sous le kilooctet.
+
+⚠️ Piège rencontré : **`hidden` est une propriété de `HTMLElement`, pas de
+`SVGElement`**. Écrire `svg.hidden = false` crée une propriété fantôme sans retirer
+l'attribut, et l'icône reste masquée par `[hidden] { display: none }`. On passe par
+`setAttribute`/`removeAttribute`, qui fonctionnent sur les deux.
+
+**Mesure inchangée** : l'instrumentation écoute les événements de l'élément `<video>`
+(`play`, `pause`, `timeupdate`, `ended`, `error`), qui se déclenchent quelle que soit
+la façon dont la lecture démarre. Vérifié : `landing_video_play` part bien via le
+bouton maison. ⚠️ Ce qui casserait tout serait de remplacer le `<video>` par une
+iframe YouTube ou Vimeo — les événements disparaîtraient.
+
+**Budget** : LCP 6 179 ms, TBT 0, CLS 0, perf 67 — dans la fourchette des mesures
+précédentes sur le même serveur de test, aucune régression.
+
+**Garde-fou** : `preload="none"` sur le film de l'accueil, validé par injection.
+La référence à battre est **9,4 %** (`landing_video_play` ÷
+`landing_video_section_viewed`).
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
