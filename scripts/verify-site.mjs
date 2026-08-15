@@ -398,6 +398,20 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   }
 }
 
+/* 4 octies. Aucun code promo affiché sur le site public.
+   Décision de l'owner (août 2026). Le site annonçait « INTERNE2026 : 90 jours
+   offerts » dans une réponse de FAQ, alors que la section tarifs de la MÊME page
+   annonce un tarif interne réduit assorti de 30 jours d'essai : deux promesses
+   différentes au même public, à quelques centimètres l'une de l'autre. Les offres
+   passent par la section tarifs, pas par des codes disséminés dans le contenu. */
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  const code = html.match(/\b(INTERNE|PROMO|WELCOME|BIENVENUE)[0-9]{2,4}\b/);
+  if (code) {
+    fail(`${f.replace(/\/index\.html$/, '') || '/'} : code promo « ${code[0]} » affiché sur le site public — les offres passent par la section tarifs`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

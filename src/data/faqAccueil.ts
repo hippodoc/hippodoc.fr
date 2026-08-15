@@ -52,7 +52,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'internes',
     question: 'Je suis interne : à quoi Hippodoc me sert avant mes premiers remplacements ?',
-    answerHtml: `Dès ton <strong>premier semestre</strong>. Tu suis tes <strong>gardes hospitalières</strong>, ton <strong>salaire d'interne</strong> et tes <strong>frais réels</strong> (logement de stage, déplacements CHU, congrès, livres médicaux) — ceux-là mêmes que tu déduiras de ta déclaration. Et tu prépares ton passage en <strong>remplacement libéral</strong> sans découvrir l'administratif le jour J. Code promo <strong>INTERNE2026</strong> : <strong>90 jours offerts</strong>. Pour la partie impôts : <a href="/blog/guide-impots-internes-remplacants">le guide des impôts pour internes et remplaçants</a>.`,
+    answerHtml: `Dès ton <strong>premier semestre</strong>. Tu suis tes <strong>gardes hospitalières</strong>, ton <strong>salaire d'interne</strong> et tes <strong>frais réels</strong> (logement de stage, déplacements CHU, congrès, livres médicaux) — ceux-là mêmes que tu déduiras de ta déclaration. Et tu prépares ton passage en <strong>remplacement libéral</strong> sans découvrir l'administratif le jour J. Un <strong>tarif réduit</strong> s'applique pendant toute ta formation (<a href="/#pricing">voir les tarifs</a>). Pour la partie impôts : <a href="/blog/guide-impots-internes-remplacants">le guide des impôts pour internes et remplaçants</a>.`,
   },
   {
     id: 'debutants',

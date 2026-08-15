@@ -1128,6 +1128,14 @@ La valeur restante est ailleurs — contenu de page, maillage interne, et moteur
 réponse (le `robots.txt` accueille explicitement GPTBot, ClaudeBot et
 PerplexityBot, et le site publie un `llms.txt`).
 
+⚠️ **Aucun code promo n'est affiché sur le site public** (décision owner, août
+2026). La réponse « internes » annonçait « INTERNE2026 : 90 jours offerts » alors
+que la section tarifs de la MÊME page annonce un tarif interne réduit assorti de
+30 jours d'essai : deux promesses différentes au même public, à quelques
+centimètres l'une de l'autre. Le code est retiré ; la réponse renvoie désormais à
+la section tarifs sans répéter le montant, qui n'y vit qu'à un seul endroit.
+Un contrôle empêche qu'un code réapparaisse dans le contenu.
+
 **Garde-fou ajouté** : toute question déclarée dans un `FAQPage` doit exister dans
 le texte visible de la page.
 ⚠️ Ce contrôle a produit **16 faux positifs** sur `/guide-declarations` avant
