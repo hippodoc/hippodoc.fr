@@ -1081,6 +1081,61 @@ complète en position 0. Déstructurer `[balise, texte]` au lieu de `[, balise,
 texte]` donnait à `texte` les attributs du lien — le contrôle de durée était muet
 alors que les deux autres passaient par accident.
 
+### 9.s Audit et refonte de la FAQ d'accueil (août 2026)
+
+**Source unique.** Les questions vivaient en DOUBLE : une copie dans
+`FaqSection.astro` pour l'affichage, une autre recopiée à la main dans
+`index.astro` pour le JSON-LD `FAQPage`. Rien ne garantissait qu'elles restent
+identiques — or Google exige que le schéma corresponde au texte visible. Les deux
+dérivent désormais de `src/data/faqAccueil.ts`.
+
+**Doublon interne, et une offre commerciale enterrée.** Deux questions se lisaient
+presque pareil (« adapté aux internes et aux médecins qui débutent ? » / « adapté
+aux internes en médecine ? ») alors que leurs réponses étaient *différentes* : la
+première parlait RSPM et tarif, la seconde de gardes hospitalières, de frais réels
+de stage — et se terminait par **le code promo INTERNE2026, 90 jours offerts**. Les
+mesures montrent que les visiteurs ouvraient les deux (6 et 7 fois) : ils
+cherchaient la même chose et lisaient deux fois. Les libellés ont été différenciés
+pour que chacun annonce ce qu'il contient.
+
+**Ordre revu selon la demande réelle.** La position pèse lourd sur le taux
+d'ouverture (les trois premières récoltent 10, 8 et 8 ouvertures) ; or la question
+« internes » était en 9ᵉ position alors qu'elle est la 4ᵉ la plus ouverte — les
+gens descendaient la chercher. Elle passe en 4ᵉ.
+
+**Question tarifs ajoutée.** Sur `/faq`, « tarifs » est la rubrique la plus ouverte
+(7 fois). La FAQ d'accueil n'avait aucune question sur le prix.
+
+**Maillage interne : 0 → 11 liens.** Dix réponses parlaient d'URSSAF, de CARMF, de
+régime fiscal, de 2035, de RSPM, sans un seul lien vers les 38 articles du blog qui
+traitent exactement ces sujets. C'était le principal gisement SEO de la page.
+
+**Doublons avec `/faq` supprimés.** Deux questions y étaient reprises mot pour mot,
+chaque page portant son `FAQPage`. Réécrites côté `/faq` dans le registre parlé qui
+est le sien (« Je cumule libéral et salariat, Hippodoc suit les deux ? ») — la
+formulation en langage de requête reste sur l'accueil, qui est la page de capture.
+
+⚠️ **Identifiants d'instrumentation.** `data-ph` passe de `landing_faq_<n>` à
+`landing_faq_<slug>`. La numérotation positionnelle rendait tout réordonnancement
+destructeur : `landing_faq_9` aurait silencieusement changé de sens. Les événements
+historiques gardent leur signification, la comparaison avant/après est rompue par
+construction.
+
+⚠️ **Sur la valeur SEO du schéma, une précision.** Google a supprimé les résultats
+enrichis FAQ en août 2023, sauf pour les sites gouvernementaux et de santé faisant
+autorité : le `FAQPage` ne produit donc probablement plus d'affichage enrichi ici.
+La valeur restante est ailleurs — contenu de page, maillage interne, et moteurs de
+réponse (le `robots.txt` accueille explicitement GPTBot, ClaudeBot et
+PerplexityBot, et le site publie un `llms.txt`).
+
+**Garde-fou ajouté** : toute question déclarée dans un `FAQPage` doit exister dans
+le texte visible de la page.
+⚠️ Ce contrôle a produit **16 faux positifs** sur `/guide-declarations` avant
+d'être juste, en deux temps : d'abord parce que remplacer les balises par une
+espace coupe les mots contenant du balisage interne, ensuite parce qu'Astro échappe
+l'apostrophe en `&#x27;` (hexadécimal) et non `&#39;`. J'avais conclu à tort à une
+violation Google sur cette page : **les 49 questions y sont bien toutes rendues**.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

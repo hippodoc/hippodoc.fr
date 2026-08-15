@@ -357,6 +357,47 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   }
 }
 
+/* 4 septies. Le schéma FAQPage doit refléter le texte VISIBLE.
+   Google l'exige, et le défaut est silencieux : la page d'accueil portait deux
+   copies manuscrites des mêmes questions — une pour l'affichage, une pour le
+   JSON-LD — que rien ne forçait à rester identiques. Elles sont désormais dérivées
+   d'une source unique ; ce contrôle empêche qu'on recommence. */
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  if (!html.includes('"FAQPage"') && !html.includes("'FAQPage'")) continue;
+  const page = f.replace(/\/index\.html$/, '') || '/';
+  // Texte rendu, entités décodées. On retire TOUTE espace des deux côtés avant de
+  // comparer : une question peut contenir du balisage interne (mise en gras via
+  // FormattedText), et remplacer une balise par une espace couperait un mot en deux.
+  // Première version de ce contrôle : 16 faux positifs sur /guide-declarations.
+  // ⚠️ Décoder les entités NUMÉRIQUES aussi : Astro échappe l'apostrophe en
+  // `&#x27;` (hexadécimal) et non `&#39;`. Deux versions de ce contrôle ont produit
+  // 16 faux positifs sur /guide-declarations avant que ce soit vu.
+  const compacter = (s) =>
+    s
+      .replace(/&#x27;|&#39;|&rsquo;/gi, "'")
+      .replace(/&#x22;|&#34;|&quot;/gi, '"')
+      .replace(/&#x26;|&#38;|&amp;/gi, '&')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&#x([0-9a-f]+);/gi, (_, c) => String.fromCodePoint(parseInt(c, 16)))
+      .replace(/&#(\d+);/g, (_, c) => String.fromCodePoint(Number(c)))
+      .replace(/\s+/g, '');
+  const visible = compacter(
+    html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ')
+  );
+  for (const [, bloc] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    let parsed;
+    try { parsed = JSON.parse(bloc); } catch { continue; }
+    if (parsed['@type'] !== 'FAQPage') continue;
+    for (const q of parsed.mainEntity ?? []) {
+      const question = String(q.name ?? '').trim();
+      if (question && !visible.includes(compacter(question))) {
+        fail(`${page} : la question « ${question.slice(0, 60)}… » est dans le JSON-LD FAQPage mais absente du texte visible`);
+      }
+    }
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

@@ -12,6 +12,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
+import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
 import HeroSection from '@/components/home/HeroSection.astro';
 import SocialProofSection from '@/components/home/SocialProofSection.astro';
@@ -42,88 +43,13 @@ const websiteSchema = {
 const faqPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: "Hippodoc gère-t-il l'activité mixte libéral et salariat ?",
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Oui, Hippodoc est conçu pour les médecins qui combinent plusieurs types d'activité. Tu peux suivre tes revenus libéraux (remplacements, cabinet propre, vacations, collaborations libérales) et salariés (hôpital, gardes, centres de santé) dans un seul outil, avec un Super-Net global qui prend tout en compte.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Comment calculer mes cotisations URSSAF en tant que médecin libéral ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Hippodoc calcule automatiquement tes cotisations sociales grâce à une connexion directe aux serveurs officiels de l'URSSAF. Selon ton régime (RSPM ou PAMC), tu obtiens une estimation précise de tes cotisations URSSAF et CARMF, mise à jour à chaque nouvelle journée enregistrée.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Quel est le meilleur régime fiscal pour un médecin libéral ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Le choix entre Micro-BNC et régime réel dépend de tes charges réelles. Hippodoc intègre un simulateur fiscal qui compare les deux régimes avec tes données réelles. En général, le Micro-BNC est avantageux si tes charges sont inférieures à 34% de ton chiffre d'affaires.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Comment gérer mes revenus de médecin remplaçant ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Hippodoc centralise toute ton activité en un seul endroit. Tu enregistres chaque journée avec le lieu d'exercice, le montant encaissé et la rétrocession. Le tableau de bord affiche en temps réel tes revenus encaissés, en attente, et ton Super-Net estimé après cotisations et impôts.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Comment suivre mes paiements en attente de rétrocession ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Hippodoc distingue automatiquement les journées payées de celles en attente. Tu visualises d'un coup d'œil les montants à percevoir, avec des alertes pour les paiements tardifs. Tu peux même envoyer des relances directement depuis l'application.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Comment estimer mon revenu net après impôts en tant que médecin ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Avec le Super-Net d'Hippodoc, tu vois ton vrai revenu après URSSAF, CARMF et impôts. Tout est calculé selon ta situation réelle (régime fiscal, famille, revenus salariés) pour une estimation claire, fiable et sans mauvaise surprise.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Peut-on générer des contrats de remplacement médical ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Oui, Hippodoc permet de générer des contrats de remplacement conformes aux exigences de l'Ordre des médecins. Tu renseignes les informations (dates, lieu d'exercice, conditions) et le contrat PDF est généré avec signature électronique intégrée.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Hippodoc est-il adapté aux internes et aux médecins qui débutent ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Absolument ! Hippodoc a été pensé pour accompagner les médecins dès le début de leur activité. Aucune connaissance comptable n'est requise : l'application te guide pas à pas. Tu bénéficies automatiquement du régime RSPM (cotisations réduites pour les revenus inférieurs à 38 000 €), et un tarif préférentiel est proposé aux internes. Le blog pédagogique intégré répond à toutes tes questions sur l'administratif et le fiscal.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Hippodoc est-il adapté aux internes en médecine ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Oui, Hippodoc accompagne les internes dès leur premier semestre. Tu suis tes gardes hospitalières, ton salaire d'interne, tes frais réels (logement de stage, déplacements CHU, congrès, livres médicaux) et tu prépares ton passage en remplacement libéral. Bonus : code promo INTERNE2026 = 90 jours offerts.",
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Comment fonctionne la collaboration libérale sur Hippodoc ?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: "Hippodoc gère nativement la collaboration libérale. Tu enregistres ton lieu d'exercice avec ton taux de redevance, et chaque mois la redevance due est calculée automatiquement à partir de tes recettes encaissées. Le suivi payé/à verser est intégré, et la redevance est ventilée en ligne L16/BG de ta déclaration 2035, déductible de ton bénéfice imposable.",
-      },
-    },
-  ],
+  // Dérivé de la source unique : le schéma ne peut plus diverger du texte visible,
+  // ce que Google exige. Auparavant les 10 questions étaient recopiées à la main ici.
+  mainEntity: FAQ_ACCUEIL.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: reponseTexte(item) },
+  })),
 };
 
 // VideoObject — mêmes valeurs que la source (src/pages/landing/index.tsx) ;
