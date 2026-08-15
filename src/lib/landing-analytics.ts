@@ -17,12 +17,11 @@
  */
 
 import {
-  creerEmetteur,
   deviceType,
   observerDefilement,
   observerElements,
   safe,
-  type PostHogLike,
+  type Emetteur,
   type Props,
 } from './analytics-commun';
 
@@ -55,9 +54,7 @@ const JALONS_VIDEO = [25, 50, 75] as const;
  * Initialise la mesure de la landing. Appelé par PostHog.astro APRÈS `posthog.init()`,
  * ce qui garantit à la fois l'ordre d'exécution et l'unicité de l'instance.
  */
-export function initLandingAnalytics(posthog: PostHogLike): void {
-  const emettre = creerEmetteur(posthog);
-
+export function initLandingAnalytics(emettre: Emetteur): void {
   // Vue de page émise en PREMIER : si l'une des mesures ci-dessous échouait sur un
   // navigateur exotique, celle-ci est déjà partie.
   emettre('landing_viewed');

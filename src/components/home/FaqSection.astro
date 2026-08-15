@@ -5,59 +5,11 @@
  * verbatim (identiques à celles utilisées dans le JSON-LD FAQPage de la page).
  */
 import SectionBadge from './SectionBadge.astro';
+import { FAQ_ACCUEIL } from '@/data/faqAccueil';
+import { CALENDLY_URL } from '@/lib/site';
 
-const faqItems = [
-  {
-    question: "Hippodoc gère-t-il l'activité mixte libéral et salariat ?",
-    answerHtml:
-      "Oui, Hippodoc est conçu pour les médecins qui combinent <strong>plusieurs types d'activité</strong>. Tu peux suivre tes revenus <strong>libéraux</strong> (remplacements, cabinet propre, vacations, <strong>collaborations libérales</strong>) et <strong>salariés</strong> (hôpital, gardes, centres de santé) dans un seul outil, avec un <strong>Super-Net global</strong> qui prend tout en compte.",
-  },
-  {
-    question: 'Comment calculer mes cotisations URSSAF en tant que médecin libéral ?',
-    answerHtml:
-      "Hippodoc calcule <strong>automatiquement</strong> tes cotisations sociales grâce à une connexion directe aux <strong>serveurs officiels de l'URSSAF</strong>. Selon ton régime (<strong>RSPM</strong> ou <strong>PAMC</strong>), tu obtiens une estimation <strong>précise</strong> de tes cotisations <strong>URSSAF</strong> et <strong>CARMF</strong>, mise à jour à chaque nouvelle journée enregistrée.",
-  },
-  {
-    question: 'Quel est le meilleur régime fiscal pour un médecin libéral ?',
-    answerHtml:
-      "Le choix entre <strong>Micro-BNC</strong> et <strong>régime réel</strong> dépend de tes charges réelles. Hippodoc intègre un <strong>simulateur fiscal</strong> qui compare les deux régimes avec tes données réelles. En général, le Micro-BNC est avantageux si tes charges sont <strong>inférieures à 34%</strong> de ton chiffre d'affaires.",
-  },
-  {
-    question: 'Comment gérer mes revenus de médecin remplaçant ?',
-    answerHtml:
-      "Hippodoc <strong>centralise</strong> toute ton activité en un seul endroit. Tu enregistres chaque journée avec le lieu d'exercice, le montant encaissé et la rétrocession. Le tableau de bord affiche <strong>en temps réel</strong> tes revenus <strong>encaissés</strong>, <strong>en attente</strong>, et ton <strong>Super-Net</strong> estimé après cotisations et impôts.",
-  },
-  {
-    question: 'Comment suivre mes paiements en attente de rétrocession ?',
-    answerHtml:
-      "Hippodoc distingue automatiquement les journées <strong>payées</strong> de celles <strong>en attente</strong>. Tu visualises d'un coup d'œil les montants à percevoir, avec des <strong>alertes</strong> pour les <strong>paiements tardifs</strong>. Tu peux même envoyer des <strong>relances</strong> directement depuis l'application.",
-  },
-  {
-    question: 'Comment estimer mon revenu net après impôts en tant que médecin ?',
-    answerHtml:
-      "Avec le <strong>Super-Net</strong> d'Hippodoc, tu vois ton <strong>vrai revenu</strong> après <strong>URSSAF</strong>, <strong>CARMF</strong> et <strong>impôts</strong>. Tout est calculé selon ta situation réelle (<strong>régime fiscal</strong>, <strong>famille</strong>, <strong>revenus salariés</strong>) pour une estimation <strong>claire</strong>, <strong>fiable</strong> et <strong>sans mauvaise surprise</strong>.",
-  },
-  {
-    question: 'Peut-on générer des contrats de remplacement médical ?',
-    answerHtml:
-      "Oui, Hippodoc permet de générer des <strong>contrats de remplacement</strong> conformes aux exigences de l'<strong>Ordre des médecins</strong>. Tu renseignes les informations (dates, lieu d'exercice, conditions) et le <strong>contrat PDF</strong> est généré avec <strong>signature électronique</strong> intégrée.",
-  },
-  {
-    question: 'Hippodoc est-il adapté aux internes et aux médecins qui débutent ?',
-    answerHtml:
-      "<strong>Absolument</strong> ! Hippodoc a été pensé pour accompagner les médecins dès le début de leur activité. Aucune connaissance comptable n'est requise : l'application te guide <strong>pas à pas</strong>. Tu bénéficies automatiquement du <strong>régime RSPM</strong> (cotisations réduites pour les revenus inférieurs à 38 000 €), et un <strong>tarif préférentiel</strong> est proposé aux internes. Le <strong>blog pédagogique</strong> intégré répond à toutes tes questions sur l'administratif et le fiscal.",
-  },
-  {
-    question: 'Hippodoc est-il adapté aux internes en médecine ?',
-    answerHtml:
-      "Oui, Hippodoc accompagne les <strong>internes dès leur premier semestre</strong>. Tu suis tes <strong>gardes hospitalières</strong>, ton <strong>salaire d'interne</strong>, tes <strong>frais réels</strong> (logement de stage, déplacements CHU, congrès, livres médicaux) et tu prépares ton passage en <strong>remplacement libéral</strong>. Bonus : code promo <strong>INTERNE2026</strong> = <strong>90 jours offerts</strong>.",
-  },
-  {
-    question: 'Comment fonctionne la collaboration libérale sur Hippodoc ?',
-    answerHtml:
-      "Hippodoc gère nativement la <strong>collaboration libérale</strong>. Tu enregistres ton lieu d'exercice avec ton <strong>taux de redevance</strong>, et chaque mois la redevance due est <strong>calculée automatiquement</strong> à partir de tes recettes encaissées. Le suivi <strong>payé/à verser</strong> est intégré, et la redevance est ventilée en <strong>ligne L16/BG</strong> de ta déclaration 2035, <strong>déductible</strong> de ton bénéfice imposable.",
-  },
-];
+// Source unique, partagée avec le JSON-LD FAQPage de index.astro (cf. src/data/faqAccueil.ts).
+
 ---
 
 <section data-landing-section="faq" class="relative overflow-hidden py-16 md:py-24">
@@ -79,9 +31,9 @@ const faqItems = [
       </div>
 
       <div class="space-y-4">
-        {faqItems.map((item, index) => (
+        {FAQ_ACCUEIL.map((item, index) => (
           <details class="group rounded-2xl border border-white/60 bg-white/70 px-6 shadow-lg shadow-hippo-100/10 backdrop-blur-xl transition-all duration-300 open:border-hippo-200/60 open:bg-white/90 open:shadow-xl">
-            <summary data-ph={`landing_faq_${index + 1}`} class="flex cursor-pointer list-none items-center gap-4 py-5 font-semibold text-hippo-800">
+            <summary data-ph={`landing_faq_${item.id}`} class="flex cursor-pointer list-none items-center gap-4 py-5 font-semibold text-hippo-800">
               <span aria-hidden="true" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-hippo-100 to-hippo-50 text-sm font-bold text-hippo-600 shadow-sm group-open:from-hippo-500 group-open:to-hippo-600 group-open:text-white">
                 {index + 1}
               </span>
@@ -103,6 +55,35 @@ const faqItems = [
           <span class="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-hippo-500 to-hippo-600">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
           </span>
+        </a>
+      </div>
+
+      {/* Prise de rendez-vous — placée ICI et pas dans le bandeau CTA milieu de
+          page : sur 126 visiteurs, ce bandeau n'a récolté qu'UN clic, contre 20
+          pour le simulateur. La FAQ est en revanche la vraie zone d'objection
+          (une soixantaine d'ouvertures), et les questions les plus consultées
+          portent toutes sur « est-ce adapté à MA situation ? » — internes,
+          débutants, exercice mixte. C'est exactement ce qu'un appel résout.
+          Lien simple, pas de widget : l'embed Calendly pèse ~100 Ko de JS tiers. */}
+      <div class="mx-auto mt-10 max-w-2xl rounded-2xl border border-hippo-200/60 bg-white/80 p-6 text-center shadow-lg shadow-hippo-100/20 backdrop-blur-sm sm:p-8">
+        <p class="text-lg font-semibold text-hippo-800">
+          Tu veux voir ce que ça donne au quotidien ?
+        </p>
+        <p class="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          Ryan est médecin remplaçant. Il a construit Hippodoc parce qu'il en avait besoin,
+          et il s'en sert tous les jours. En 15 minutes, il t'ouvre son propre compte —
+          son planning, ses contrats, ce qu'il lui reste vraiment à la fin du mois — et tu
+          lui poses tes questions. Rien à préparer. En visio, ou il t'appelle.
+        </p>
+        <a
+          href={CALENDLY_URL}
+          data-calendly="faq_accueil"
+          target="_blank"
+          rel="noopener"
+          class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-hippo-600 px-6 py-3 font-semibold text-white shadow-lg shadow-hippo-600/20 transition-all hover:bg-hippo-700 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18"/><rect width="18" height="18" x="3" y="4" rx="2"/></svg>
+          <span>Prendre 15 min avec Ryan</span>
         </a>
       </div>
     </div>

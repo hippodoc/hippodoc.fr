@@ -47,7 +47,7 @@
    * rien, et le code reste hors du chemin critique de rendu.
    */
   const cheminMesure = window.location.pathname.replace(/\/$/, '') || '/';
-  if (cheminMesure === '/' || /^\/(tarifs|faq|comparatif|guide-declarations|blog)(\/|$)/.test(cheminMesure)) {
+  if (cheminMesure === '/' || /^\/(tarifs|faq|comparatif|guide-declarations|blog|simulateur)(\/|$)/.test(cheminMesure)) {
     import('@/lib/analytics-init')
       .then((m) => m.initAnalytics(posthog))
       .catch(() => {

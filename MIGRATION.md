@@ -1002,6 +1002,148 @@ rien émettre : le filtre de chargement est volontairement plus large que la lis
 des pages mesurées, pour ne pas dupliquer la logique d'aiguillage à deux endroits.
 2,6 Ko en cache immuable.
 
+### 9.r Prise de rendez-vous : replacée là où le doute naît (août 2026)
+
+⚠️ **Contrairement à ce que laissait entendre §9.p, Calendly n'avait jamais été
+retiré.** Seul le *badge flottant* de la SPA source l'avait été. Deux liens
+existaient toujours : dans `CtaBanner` (sous le bouton d'inscription du bandeau
+milieu de page) et en bas de `/simulateur`, tous deux libellés « Réserve une démo
+(10 min) ». Résultat mesuré : **`cta_demo_calendly`, zéro clic en 150 jours** — il
+n'apparaît même pas dans la liste des CTA cliqués.
+
+**Diagnostic.** Trois causes, aucune liée au produit :
+  - **Position de repli.** Les deux liens étaient sous un bouton principal, à
+    l'endroit que l'œil saute une fois le choix fait. Celui du bandeau était en
+    plus dans la section la moins performante de la page (`cta_signup_cta_banner` :
+    1 clic sur 126 visiteurs, contre 20 pour `cta_simulator`).
+  - **Vocabulaire.** « Démo » appartient au langage éditeur. Les questions de FAQ
+    les plus ouvertes ne demandent pas comment le produit marche mais s'il est
+    *adapté à leur situation* (« adapté aux internes ? », 7 et 6 ouvertures).
+  - **Promesse fausse.** Les liens annonçaient 10 minutes ; l'événement Calendly
+    en dure **15**.
+
+**Principe retenu** : une proposition d'appel s'affiche là où une question naît et
+reste sans réponse — pas à côté d'un bouton d'achat. Le tunnel en désigne trois :
+
+| Emplacement | Forme | La question |
+|---|---|---|
+| `pour_qui` (JourneySection) | une **ligne**, pas un bouton | « je ne suis dans aucun des 5 profils » |
+| `simulateur_resultat` | carte, sous le résultat | « ce chiffre est-il juste pour moi ? » |
+| `faq_accueil` | carte, fin de FAQ | « concrètement, ça donne quoi ? » |
+
+La prominence suit le rôle : une phrase là où le doute naît, une vraie carte là où
+le lecteur a épuisé l'auto-service. La section « Pour qui » garde donc **un seul**
+bouton.
+
+**Le message a changé de nature.** Il ne s'agit pas de montrer un produit mais
+d'ouvrir le compte d'un confrère : « Ryan est médecin remplaçant […] en 15 minutes,
+il t'ouvre son propre compte — son planning, ses contrats, ce qu'il lui reste
+vraiment à la fin du mois ».
+
+⚠️ Les exemples cités ont été choisis pour ne PAS exclure. Une première version
+parlait de « rétrocessions » et de « 2035 » : un interne ne remplit pas de 2035
+— il est salarié — et c'est précisément lui qui hésite le plus (« Hippodoc est-il
+adapté aux internes ? » figure parmi les questions les plus ouvertes de la FAQ,
+avec deux formulations quasi identiques). Le jargon fiscal disait « ce n'est pas
+pour toi » à la personne même que la carte doit rassurer. Planning, contrats et
+« ce qu'il lui reste à la fin du mois » couvrent l'interne comme l'installé, et
+relèvent de trois registres différents : le quotidien, l'administratif, l'argent.
+
+⚠️ Même logique pour la fin du message. Une version intermédiaire disait « puis il
+regarde ta situation avec toi » — incohérence structurelle : la première moitié
+promet de regarder par-dessus l'épaule d'un confrère (passif, sans enjeu), la
+seconde demandait d'exposer la sienne (examiné, jugé). Pour un médecin en retard
+sur ses déclarations, « ta situation » sonne comme un contrôle, et sous-entend
+qu'il faut préparer un dossier avant un appel de 15 minutes. Remplacé par « et tu
+lui poses tes questions. Rien à préparer. » : le visiteur redevient l'acteur.
+La carte du simulateur portait le même défaut, en pire — la personne vient d'y
+saisir ses vrais chiffres. Le bouton dit « Prendre 15 min avec Ryan » : on ne
+réserve pas une démo à un confrère. Mention « en visio, ou il t'appelle » —
+**la moitié des rendez-vous passés se sont faits par appel sortant**, pas en visio.
+
+**Attribution.** Tous les liens portent `data-calendly="<emplacement>"`, ce qui leur
+donne automatiquement la propagation des `utm_*` de la PREMIÈRE page vue de la
+session (un rendez-vous pris par un visiteur venu de Meta reste rattaché à sa
+campagne après plusieurs navigations) et l'émission de `calendly_clicked`.
+`utm_content` porte l'emplacement : les trois seront comparables entre eux.
+
+⚠️ `calendly_clicked` mesure l'**intention**, pas la réservation : celle-ci a lieu
+sur calendly.com. Elle se réconcilie via l'API Calendly ou un webhook.
+
+**Trois garde-fous** dans `verify-site.mjs`, validés par injection : tout lien
+Calendly doit porter `data-calendly` (sans quoi il est muet), aucune durée annoncée
+ne doit contredire l'événement réel, et un emplacement ne peut pas apparaître deux
+fois sur une page — un doublon a bel et bien été introduit sur `/simulateur`
+pendant ce chantier.
+
+⚠️ Bug corrigé dans le contrôle lui-même : `matchAll` rend la correspondance
+complète en position 0. Déstructurer `[balise, texte]` au lieu de `[, balise,
+texte]` donnait à `texte` les attributs du lien — le contrôle de durée était muet
+alors que les deux autres passaient par accident.
+
+### 9.s Audit et refonte de la FAQ d'accueil (août 2026)
+
+**Source unique.** Les questions vivaient en DOUBLE : une copie dans
+`FaqSection.astro` pour l'affichage, une autre recopiée à la main dans
+`index.astro` pour le JSON-LD `FAQPage`. Rien ne garantissait qu'elles restent
+identiques — or Google exige que le schéma corresponde au texte visible. Les deux
+dérivent désormais de `src/data/faqAccueil.ts`.
+
+**Doublon interne, et une offre commerciale enterrée.** Deux questions se lisaient
+presque pareil (« adapté aux internes et aux médecins qui débutent ? » / « adapté
+aux internes en médecine ? ») alors que leurs réponses étaient *différentes* : la
+première parlait RSPM et tarif, la seconde de gardes hospitalières, de frais réels
+de stage — et se terminait par **le code promo INTERNE2026, 90 jours offerts**. Les
+mesures montrent que les visiteurs ouvraient les deux (6 et 7 fois) : ils
+cherchaient la même chose et lisaient deux fois. Les libellés ont été différenciés
+pour que chacun annonce ce qu'il contient.
+
+**Ordre revu selon la demande réelle.** La position pèse lourd sur le taux
+d'ouverture (les trois premières récoltent 10, 8 et 8 ouvertures) ; or la question
+« internes » était en 9ᵉ position alors qu'elle est la 4ᵉ la plus ouverte — les
+gens descendaient la chercher. Elle passe en 4ᵉ.
+
+**Question tarifs ajoutée.** Sur `/faq`, « tarifs » est la rubrique la plus ouverte
+(7 fois). La FAQ d'accueil n'avait aucune question sur le prix.
+
+**Maillage interne : 0 → 11 liens.** Dix réponses parlaient d'URSSAF, de CARMF, de
+régime fiscal, de 2035, de RSPM, sans un seul lien vers les 38 articles du blog qui
+traitent exactement ces sujets. C'était le principal gisement SEO de la page.
+
+**Doublons avec `/faq` supprimés.** Deux questions y étaient reprises mot pour mot,
+chaque page portant son `FAQPage`. Réécrites côté `/faq` dans le registre parlé qui
+est le sien (« Je cumule libéral et salariat, Hippodoc suit les deux ? ») — la
+formulation en langage de requête reste sur l'accueil, qui est la page de capture.
+
+⚠️ **Identifiants d'instrumentation.** `data-ph` passe de `landing_faq_<n>` à
+`landing_faq_<slug>`. La numérotation positionnelle rendait tout réordonnancement
+destructeur : `landing_faq_9` aurait silencieusement changé de sens. Les événements
+historiques gardent leur signification, la comparaison avant/après est rompue par
+construction.
+
+⚠️ **Sur la valeur SEO du schéma, une précision.** Google a supprimé les résultats
+enrichis FAQ en août 2023, sauf pour les sites gouvernementaux et de santé faisant
+autorité : le `FAQPage` ne produit donc probablement plus d'affichage enrichi ici.
+La valeur restante est ailleurs — contenu de page, maillage interne, et moteurs de
+réponse (le `robots.txt` accueille explicitement GPTBot, ClaudeBot et
+PerplexityBot, et le site publie un `llms.txt`).
+
+⚠️ **Aucun code promo n'est affiché sur le site public** (décision owner, août
+2026). La réponse « internes » annonçait « INTERNE2026 : 90 jours offerts » alors
+que la section tarifs de la MÊME page annonce un tarif interne réduit assorti de
+30 jours d'essai : deux promesses différentes au même public, à quelques
+centimètres l'une de l'autre. Le code est retiré ; la réponse renvoie désormais à
+la section tarifs sans répéter le montant, qui n'y vit qu'à un seul endroit.
+Un contrôle empêche qu'un code réapparaisse dans le contenu.
+
+**Garde-fou ajouté** : toute question déclarée dans un `FAQPage` doit exister dans
+le texte visible de la page.
+⚠️ Ce contrôle a produit **16 faux positifs** sur `/guide-declarations` avant
+d'être juste, en deux temps : d'abord parce que remplacer les balises par une
+espace coupe les mots contenant du balisage interne, ensuite parce qu'Astro échappe
+l'apostrophe en `&#x27;` (hexadécimal) et non `&#39;`. J'avais conclu à tort à une
+violation Google sur cette page : **les 49 questions y sont bien toutes rendues**.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

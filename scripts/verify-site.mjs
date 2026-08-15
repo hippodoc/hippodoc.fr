@@ -324,6 +324,94 @@ for (const f of articles) {
 if (articlesSansMeta > 2) fail(`… et ${articlesSansMeta - 2} autre(s) article(s) sans métadonnées`);
 if (articlesSansFin > 2) fail(`… et ${articlesSansFin - 2} autre(s) article(s) sans repère de fin`);
 
+/* 4 sexies. Liens de prise de rendez-vous.
+   Trois exigences, chacune apprise d'un défaut réel :
+     - `data-calendly` conditionne À LA FOIS la propagation des UTM (donc
+       l'attribution d'un rendez-vous à sa campagne) et la mesure du clic. Un lien
+       ajouté sans cet attribut serait muet, sans que rien ne le signale.
+     - la durée annoncée doit correspondre à l'événement Calendly réel (15 min).
+       Le site a annoncé « 10 min » pendant des mois : une promesse fausse dès le
+       premier contact.
+     - un emplacement ne doit pas apparaître deux fois sur une même page (un
+       doublon a bel et bien été introduit sur /simulateur pendant ce chantier). */
+const DUREE_RDV = 15;
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  if (!html.includes('calendly.com')) continue;
+  const page = f.replace(/\/index\.html$/, '') || '/';
+  const vus = new Set();
+  // `matchAll` rend la correspondance complète en position 0 : sans la virgule
+  // initiale, `texte` recevrait les attributs et le contrôle de durée serait muet.
+  for (const [, balise, texte] of html.matchAll(/<a\b([^>]*calendly\.com[^>]*)>([\s\S]*?)<\/a>/g)) {
+    const emplacement = balise.match(/data-calendly="([^"]+)"/)?.[1];
+    if (!emplacement) {
+      fail(`${page} : lien Calendly sans data-calendly — ni attribution UTM ni mesure du clic`);
+      continue;
+    }
+    if (vus.has(emplacement)) fail(`${page} : deux liens Calendly « ${emplacement} » sur la même page`);
+    vus.add(emplacement);
+    const minutes = texte.replace(/<[^>]*>/g, ' ').match(/(\d+)\s*min/);
+    if (minutes && Number(minutes[1]) !== DUREE_RDV) {
+      fail(`${page} : le lien Calendly « ${emplacement} » annonce ${minutes[1]} min alors que l'événement en dure ${DUREE_RDV}`);
+    }
+  }
+}
+
+/* 4 septies. Le schéma FAQPage doit refléter le texte VISIBLE.
+   Google l'exige, et le défaut est silencieux : la page d'accueil portait deux
+   copies manuscrites des mêmes questions — une pour l'affichage, une pour le
+   JSON-LD — que rien ne forçait à rester identiques. Elles sont désormais dérivées
+   d'une source unique ; ce contrôle empêche qu'on recommence. */
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  if (!html.includes('"FAQPage"') && !html.includes("'FAQPage'")) continue;
+  const page = f.replace(/\/index\.html$/, '') || '/';
+  // Texte rendu, entités décodées. On retire TOUTE espace des deux côtés avant de
+  // comparer : une question peut contenir du balisage interne (mise en gras via
+  // FormattedText), et remplacer une balise par une espace couperait un mot en deux.
+  // Première version de ce contrôle : 16 faux positifs sur /guide-declarations.
+  // ⚠️ Décoder les entités NUMÉRIQUES aussi : Astro échappe l'apostrophe en
+  // `&#x27;` (hexadécimal) et non `&#39;`. Deux versions de ce contrôle ont produit
+  // 16 faux positifs sur /guide-declarations avant que ce soit vu.
+  const compacter = (s) =>
+    s
+      .replace(/&#x27;|&#39;|&rsquo;/gi, "'")
+      .replace(/&#x22;|&#34;|&quot;/gi, '"')
+      .replace(/&#x26;|&#38;|&amp;/gi, '&')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&#x([0-9a-f]+);/gi, (_, c) => String.fromCodePoint(parseInt(c, 16)))
+      .replace(/&#(\d+);/g, (_, c) => String.fromCodePoint(Number(c)))
+      .replace(/\s+/g, '');
+  const visible = compacter(
+    html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ')
+  );
+  for (const [, bloc] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    let parsed;
+    try { parsed = JSON.parse(bloc); } catch { continue; }
+    if (parsed['@type'] !== 'FAQPage') continue;
+    for (const q of parsed.mainEntity ?? []) {
+      const question = String(q.name ?? '').trim();
+      if (question && !visible.includes(compacter(question))) {
+        fail(`${page} : la question « ${question.slice(0, 60)}… » est dans le JSON-LD FAQPage mais absente du texte visible`);
+      }
+    }
+  }
+}
+
+/* 4 octies. Aucun code promo affiché sur le site public.
+   Décision de l'owner (août 2026). Le site annonçait « INTERNE2026 : 90 jours
+   offerts » dans une réponse de FAQ, alors que la section tarifs de la MÊME page
+   annonce un tarif interne réduit assorti de 30 jours d'essai : deux promesses
+   différentes au même public, à quelques centimètres l'une de l'autre. Les offres
+   passent par la section tarifs, pas par des codes disséminés dans le contenu. */
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  const code = html.match(/\b(INTERNE|PROMO|WELCOME|BIENVENUE)[0-9]{2,4}\b/);
+  if (code) {
+    fail(`${f.replace(/\/index\.html$/, '') || '/'} : code promo « ${code[0]} » affiché sur le site public — les offres passent par la section tarifs`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);
