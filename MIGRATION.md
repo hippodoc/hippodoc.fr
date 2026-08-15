@@ -1320,9 +1320,36 @@ principal, lui, est visible.
 entre du texte et une balise est absorbé à la compilation. « fonctionne sans.En
 savoir plus » — corrigé par `{' '}`. Vu à l'écran, pas à la relecture.
 
+⚠️ **Conflit avec le tiroir de menu mobile, corrigé au passage.** Les deux sont en
+`z-50` : le bandeau recouvrait le bas du menu ouvert — « Qui sommes-nous ? »,
+« Connexion » et « Essai gratuit » disparaissaient derrière. Défaut préexistant, et
+pire avant (l'ancien bandeau faisait 266 px). Le bandeau s'efface désormais tant que
+le tiroir est ouvert : quelqu'un qui ouvre le menu navigue, il ne décide pas de ses
+cookies. `:has()` est nécessaire car la case du tiroir vit dans le `<header>` et le
+bandeau plus loin dans le `<body>` — aucun sélecteur de voisinage ne les relie. Sur
+un navigateur sans `:has()`, la règle est ignorée et le comportement reste celui
+d'avant : dégradation propre.
+
 Mécanique de consentement inchangée et revérifiée : l'événement
 `hippodoc:consent-changed` part avec la bonne valeur, `localStorage` est écrit, le
 bandeau se masque, et le choix est mémorisé d'une page à l'autre.
+
+**Audit mobile de bout en bout** — situations éprouvées, toutes mesurées :
+  - **paysage** (844×390, 667×375, 640×360) : bandeau 93 px, aucun débordement ;
+  - **zoom texte 200 %** : aucun débordement, aucun texte tronqué, boutons à 88 px ;
+  - **`localStorage` bloqué** (navigation privée, WebView verrouillée) : le bandeau
+    s'affiche, le refus fonctionne, **aucune erreur de page** ;
+  - **clavier** : 3 éléments atteignables dans l'ordre logique, `aria-modal="false"`
+    donc pas de piège au focus ;
+  - **contrastes** : texte 5,06:1 · lien 5,15:1 · bouton refuser 17,87:1 (seuil 4,5) ;
+  - **autres pages** : `/simulateur`, `/tarifs` et les articles restent dégagés ;
+    sur `/faq` la première question est recouverte de 27 px sur 80 — le libellé
+    reste lisible, et un bandeau bas recouvre par nature les 115 derniers pixels ;
+  - **parcours complet de la landing** : 0 débordement à toutes les hauteurs,
+    10 sections, compteurs corrects, vidéo et liens Calendly intacts, aucune erreur.
+
+⚠️ **En paysage sur les écrans courts** (375 et 360 de haut), le CTA reste masqué :
+le hero y occupe toute la hauteur disponible. Non corrigeable par le bandeau.
 
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore

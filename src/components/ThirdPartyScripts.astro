@@ -59,6 +59,21 @@
     </div>
   </div>
 
+<style is:global>
+  /* Le bandeau s'efface quand le tiroir de menu mobile est ouvert.
+     Sans cette règle, les deux sont en z-50 et le bandeau recouvre le bas du menu :
+     « Qui sommes-nous ? », « Connexion » et « Essai gratuit » disparaissaient
+     derrière lui. Quelqu'un qui ouvre le menu navigue — il ne décide pas de ses
+     cookies ; le bandeau revient à la fermeture.
+     `:has()` est nécessaire car la case du tiroir vit dans le <header> et le
+     bandeau plus loin dans le <body> : aucun sélecteur de voisinage ne les relie.
+     Sur un navigateur sans `:has()`, la règle est simplement ignorée et le
+     comportement reste celui d'avant — dégradation propre. */
+  body:has(#mobile-menu-toggle:checked) #cookie-banner {
+    display: none;
+  }
+</style>
+
 <script is:inline>
   /* Bootstrap analytics — porté de index.html + CookieConsent.tsx de la SPA source. */
   (function () {
