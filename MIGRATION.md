@@ -1002,6 +1002,66 @@ rien émettre : le filtre de chargement est volontairement plus large que la lis
 des pages mesurées, pour ne pas dupliquer la logique d'aiguillage à deux endroits.
 2,6 Ko en cache immuable.
 
+### 9.r Prise de rendez-vous : replacée là où le doute naît (août 2026)
+
+⚠️ **Contrairement à ce que laissait entendre §9.p, Calendly n'avait jamais été
+retiré.** Seul le *badge flottant* de la SPA source l'avait été. Deux liens
+existaient toujours : dans `CtaBanner` (sous le bouton d'inscription du bandeau
+milieu de page) et en bas de `/simulateur`, tous deux libellés « Réserve une démo
+(10 min) ». Résultat mesuré : **`cta_demo_calendly`, zéro clic en 150 jours** — il
+n'apparaît même pas dans la liste des CTA cliqués.
+
+**Diagnostic.** Trois causes, aucune liée au produit :
+  - **Position de repli.** Les deux liens étaient sous un bouton principal, à
+    l'endroit que l'œil saute une fois le choix fait. Celui du bandeau était en
+    plus dans la section la moins performante de la page (`cta_signup_cta_banner` :
+    1 clic sur 126 visiteurs, contre 20 pour `cta_simulator`).
+  - **Vocabulaire.** « Démo » appartient au langage éditeur. Les questions de FAQ
+    les plus ouvertes ne demandent pas comment le produit marche mais s'il est
+    *adapté à leur situation* (« adapté aux internes ? », 7 et 6 ouvertures).
+  - **Promesse fausse.** Les liens annonçaient 10 minutes ; l'événement Calendly
+    en dure **15**.
+
+**Principe retenu** : une proposition d'appel s'affiche là où une question naît et
+reste sans réponse — pas à côté d'un bouton d'achat. Le tunnel en désigne trois :
+
+| Emplacement | Forme | La question |
+|---|---|---|
+| `pour_qui` (JourneySection) | une **ligne**, pas un bouton | « je ne suis dans aucun des 5 profils » |
+| `simulateur_resultat` | carte, sous le résultat | « ce chiffre est-il juste pour moi ? » |
+| `faq_accueil` | carte, fin de FAQ | « concrètement, ça donne quoi ? » |
+
+La prominence suit le rôle : une phrase là où le doute naît, une vraie carte là où
+le lecteur a épuisé l'auto-service. La section « Pour qui » garde donc **un seul**
+bouton.
+
+**Le message a changé de nature.** Il ne s'agit pas de montrer un produit mais
+d'ouvrir le compte d'un confrère : « Ryan est médecin remplaçant […] en 15 minutes,
+il t'ouvre son propre compte — ses rétrocessions, sa 2035, ce qu'il lui reste
+vraiment à la fin du mois ». Le bouton dit « Prendre 15 min avec Ryan » : on ne
+réserve pas une démo à un confrère. Mention « en visio, ou il t'appelle » —
+**la moitié des rendez-vous passés se sont faits par appel sortant**, pas en visio.
+
+**Attribution.** Tous les liens portent `data-calendly="<emplacement>"`, ce qui leur
+donne automatiquement la propagation des `utm_*` de la PREMIÈRE page vue de la
+session (un rendez-vous pris par un visiteur venu de Meta reste rattaché à sa
+campagne après plusieurs navigations) et l'émission de `calendly_clicked`.
+`utm_content` porte l'emplacement : les trois seront comparables entre eux.
+
+⚠️ `calendly_clicked` mesure l'**intention**, pas la réservation : celle-ci a lieu
+sur calendly.com. Elle se réconcilie via l'API Calendly ou un webhook.
+
+**Trois garde-fous** dans `verify-site.mjs`, validés par injection : tout lien
+Calendly doit porter `data-calendly` (sans quoi il est muet), aucune durée annoncée
+ne doit contredire l'événement réel, et un emplacement ne peut pas apparaître deux
+fois sur une page — un doublon a bel et bien été introduit sur `/simulateur`
+pendant ce chantier.
+
+⚠️ Bug corrigé dans le contrôle lui-même : `matchAll` rend la correspondance
+complète en position 0. Déstructurer `[balise, texte]` au lieu de `[, balise,
+texte]` donnait à `texte` les attributs du lien — le contrôle de durée était muet
+alors que les deux autres passaient par accident.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

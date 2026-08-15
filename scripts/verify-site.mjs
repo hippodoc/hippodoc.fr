@@ -324,6 +324,39 @@ for (const f of articles) {
 if (articlesSansMeta > 2) fail(`… et ${articlesSansMeta - 2} autre(s) article(s) sans métadonnées`);
 if (articlesSansFin > 2) fail(`… et ${articlesSansFin - 2} autre(s) article(s) sans repère de fin`);
 
+/* 4 sexies. Liens de prise de rendez-vous.
+   Trois exigences, chacune apprise d'un défaut réel :
+     - `data-calendly` conditionne À LA FOIS la propagation des UTM (donc
+       l'attribution d'un rendez-vous à sa campagne) et la mesure du clic. Un lien
+       ajouté sans cet attribut serait muet, sans que rien ne le signale.
+     - la durée annoncée doit correspondre à l'événement Calendly réel (15 min).
+       Le site a annoncé « 10 min » pendant des mois : une promesse fausse dès le
+       premier contact.
+     - un emplacement ne doit pas apparaître deux fois sur une même page (un
+       doublon a bel et bien été introduit sur /simulateur pendant ce chantier). */
+const DUREE_RDV = 15;
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
+  if (!html.includes('calendly.com')) continue;
+  const page = f.replace(/\/index\.html$/, '') || '/';
+  const vus = new Set();
+  // `matchAll` rend la correspondance complète en position 0 : sans la virgule
+  // initiale, `texte` recevrait les attributs et le contrôle de durée serait muet.
+  for (const [, balise, texte] of html.matchAll(/<a\b([^>]*calendly\.com[^>]*)>([\s\S]*?)<\/a>/g)) {
+    const emplacement = balise.match(/data-calendly="([^"]+)"/)?.[1];
+    if (!emplacement) {
+      fail(`${page} : lien Calendly sans data-calendly — ni attribution UTM ni mesure du clic`);
+      continue;
+    }
+    if (vus.has(emplacement)) fail(`${page} : deux liens Calendly « ${emplacement} » sur la même page`);
+    vus.add(emplacement);
+    const minutes = texte.replace(/<[^>]*>/g, ' ').match(/(\d+)\s*min/);
+    if (minutes && Number(minutes[1]) !== DUREE_RDV) {
+      fail(`${page} : le lien Calendly « ${emplacement} » annonce ${minutes[1]} min alors que l'événement en dure ${DUREE_RDV}`);
+    }
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);
