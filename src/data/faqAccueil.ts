@@ -62,7 +62,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'tarifs',
     question: 'Combien coûte Hippodoc ?',
-    answerHtml: `<strong>29 € par mois</strong>, ou <strong>19 € par mois</strong> en facturation annuelle. Tout est inclus : aucune option payante, aucune limite au nombre de journées ou de lieux d'exercice. L'<strong>essai est gratuit pendant 30 jours</strong>, sans carte bancaire, et un <strong>tarif préférentiel</strong> existe pour les internes. Le détail offre par offre est sur la page <a href="/tarifs">tarifs</a>.`,
+    answerHtml: `<strong>29 € par mois</strong>, ou <strong>19 € par mois</strong> en facturation annuelle. Tout est inclus : aucune option payante, aucune limite au nombre de journées ou de lieux d'exercice. L'<strong>essai est gratuit pendant 30 jours</strong>, sans carte bancaire. Des <strong>tarifs réduits</strong> existent pour les internes et les médecins en fin d'internat : le détail est dans la <a href="/#pricing">section tarifs</a> juste au-dessus. Le comparatif complet est sur la page <a href="/tarifs">tarifs</a>.`,
   },
   {
     id: 'revenus-remplacant',
