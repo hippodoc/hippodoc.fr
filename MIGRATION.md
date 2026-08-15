@@ -1212,6 +1212,54 @@ la souris, aucun double effet sur la barre de contrôle.
 La référence à battre est **9,4 %** (`landing_video_play` ÷
 `landing_video_section_viewed`).
 
+### 9.u Chiffres rafraîchis depuis la base et compteur animé (août 2026)
+
+**Les chiffres viennent désormais de la base**, pas d'une reprise d'affichages
+existants. Relevé le 15/08/2026 sur le projet Supabase « Hippodoc - SAAS FINANCE »
+(`count(*)`, donc reproductible) :
+
+| Tuile | Affiché | Réel | Table |
+|---|---|---|---|
+| Journées enregistrées | 17 756 | **19 400** | `remplacements` |
+| Lieux d'exercice référencés | 1 437 | **2 379** | `medecins_remplaces` |
+| Documents générés | 352 | **623** | `documents` + `factures` + `contrats` |
+
+Soit **+9 %, +66 % et +77 %** — l'activité réelle dépassait largement ce qui était
+affiché. Aucun chiffre n'est inventé : chacun se revérifie d'un `count(*)`.
+
+⚠️ **« 900+ médecins inscrits » reste au-dessus du réel** (789 profils). Ce chiffre
+est repris tel quel du Hero et du CtaBanner ; le corriger demande une décision de
+l'owner, qui ne l'a pas tranchée. C'est le seul écart connu de cette section.
+
+⚠️ **« 100 % · Données hébergées en France »** — vérification faite, les trois
+projets Supabase sont en `eu-west-3` (**Paris**), sauf `hippobi` en `eu-west-1`
+(Irlande) ; PostHog annonce des serveurs UE et Royaume-Uni dans la politique de
+confidentialité. La mention est donc juste pour les données opérationnelles, mais
+le « 100 % » ne l'est pas. Les pages `/rgpd` et `/politique-confidentialite`
+disent d'ailleurs « Union européenne », pas « France » : les pages marketing les
+contredisent en quatre endroits. Non tranché, signalé à l'owner.
+
+**Compteur animé.** ⚠️ Le nombre FINAL est écrit dans le HTML ; le script ne fait
+qu'animer l'affichage puis **restaure la chaîne exacte** rendue au build. Une
+implémentation partant de zéro dans le HTML aurait fait lire « 0 » à tous les
+robots qui n'exécutent pas le JS — GPTBot, ClaudeBot et PerplexityBot, que le
+`robots.txt` accueille explicitement.
+
+Trois précautions, mesurées et non supposées :
+  - `prefers-reduced-motion` : aucune animation, valeurs finales d'emblée ;
+  - `tabular-nums` + grille à colonnes fixes : **CLS 0,0016**, largeurs de tuiles
+    identiques pendant toute l'animation ;
+  - `IntersectionObserver` : l'animation ne part qu'à l'entrée dans l'écran.
+
+**Exception zéro-JS assumée — la troisième, et la seule DÉCORATIVE.** Les deux
+autres (tiroir mobile, bouton de lecture) réglaient un problème mesuré. Celle-ci
+est esthétique, et le rendu sans JS reste correct puisque les valeurs finales sont
+déjà dans le HTML. Budget : TBT 0, CLS 0, perf 69, accessibilité 100.
+
+**Garde-fou** : la valeur rendue et `data-compteur` doivent porter les mêmes
+chiffres, sinon le compteur monte vers un nombre puis saute sur un autre. Validé
+par injection.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.

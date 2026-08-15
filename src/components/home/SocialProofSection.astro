@@ -1,21 +1,29 @@
 ---
 /**
  * Preuve sociale — porté de src/components/landing/SocialProofSection.tsx.
- * Compteurs animés (count-up + fetch live) remplacés par les valeurs de repli
- * statiques (FALLBACK_STATS de la source), zéro JS.
- * Étendu à 6 tuiles (août 2026) — uniquement des chiffres déjà publiés ailleurs
- * sur le site : 900+ médecins (Hero/CtaBanner), 38 articles (blog), hébergement
- * France (liste « Inclus dans toutes les offres »). Aucun chiffre inventé.
+ * Étendu à 6 tuiles (août 2026), puis chiffres RAFRAÎCHIS DEPUIS LA BASE
+ * (15/08/2026, projet Supabase « Hippodoc - SAAS FINANCE ») :
+ *   journées   17 756 → 19 400  (table `remplacements`)
+ *   lieux       1 437 →  2 379  (table `medecins_remplaces`)
+ *   documents     352 →    623  (`documents` + `factures` + `contrats`)
+ * Aucun chiffre inventé : chacun est vérifiable par un `count(*)`.
+ * ⚠️ « 900+ médecins » est le seul qui reste au-dessus du réel (789 profils) —
+ * repris tel quel du Hero et du CtaBanner, non tranché par l'owner.
+ *
+ * Compteur animé : le nombre FINAL est dans le HTML (`{stat.value}`), le script
+ * ne fait qu'animer l'affichage. Sans ça, les robots qui n'exécutent pas le JS —
+ * GPTBot, ClaudeBot, PerplexityBot, tous accueillis par le robots.txt — liraient
+ * « 0 ». Le script restaure la chaîne exacte du HTML en fin d'animation.
  */
 import SectionBadge from './SectionBadge.astro';
 
 const stats = [
-  { value: '900+', label: 'Médecins inscrits' },
-  { value: '17 756', label: 'Journées enregistrées' },
-  { value: '1 437', label: "Lieux d'exercice référencés" },
-  { value: '352', label: 'Documents générés' },
-  { value: '38', label: 'Articles pédagogiques au blog' },
-  { value: '100 %', label: 'Données hébergées en France' },
+  { value: '900+', nombre: 900, suffixe: '+', label: 'Médecins inscrits' },
+  { value: '19 400', nombre: 19400, suffixe: '', label: 'Journées enregistrées' },
+  { value: '2 379', nombre: 2379, suffixe: '', label: "Lieux d'exercice référencés" },
+  { value: '623', nombre: 623, suffixe: '', label: 'Documents générés' },
+  { value: '38', nombre: 38, suffixe: '', label: 'Articles pédagogiques au blog' },
+  { value: '100 %', nombre: 100, suffixe: ' %', label: 'Données hébergées en France' },
 ];
 ---
 
@@ -50,10 +58,63 @@ const stats = [
             {i === 4 && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>}
             {i === 5 && <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>}
           </div>
-          <div class="mb-2 text-2xl font-bold tracking-tight text-hippo-800 md:text-4xl">{stat.value}</div>
+          <div
+              class="mb-2 text-2xl font-bold tabular-nums tracking-tight text-hippo-800 md:text-4xl"
+              data-compteur={stat.nombre}
+              data-suffixe={stat.suffixe}
+            >{stat.value}</div>
           <span class="text-xs font-medium text-hippo-600/80 md:text-sm">{stat.label}</span>
         </div>
       ))}
     </div>
   </div>
 </section>
+
+{/* Exception zéro-JS assumée — la troisième, et la seule DÉCORATIVE (les deux
+    autres, tiroir mobile et bouton vidéo, réglaient un problème mesuré).
+    Aucune dépendance, aucun asset, et le rendu sans JS reste le bon : les valeurs
+    finales sont déjà dans le HTML. */}
+<script is:inline>
+  (function () {
+    var cibles = document.querySelectorAll('[data-compteur]');
+    if (!cibles.length || typeof IntersectionObserver === 'undefined') return;
+
+    // Mouvement réduit demandé : on ne touche à rien, les valeurs finales sont déjà
+    // affichées. C'est une exigence d'accessibilité, pas une option.
+    var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq && mq.matches) return;
+
+    var obs = new IntersectionObserver(function (entrees) {
+      for (var i = 0; i < entrees.length; i++) {
+        if (!entrees[i].isIntersecting) continue;
+        obs.unobserve(entrees[i].target);
+        animer(entrees[i].target);
+      }
+    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+
+    for (var i = 0; i < cibles.length; i++) obs.observe(cibles[i]);
+
+    function animer(el) {
+      var exact = el.textContent;                       // chaîne rendue au build
+      var cible = Number(el.getAttribute('data-compteur'));
+      var suffixe = el.getAttribute('data-suffixe') || '';
+      if (!cible) return;
+      var t0 = null, duree = 1100;
+
+      function trame(t) {
+        if (t0 === null) t0 = t;
+        var p = Math.min(1, (t - t0) / duree);
+        if (p < 1) {
+          var douce = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(cible * douce).toLocaleString('fr-FR') + suffixe;
+          requestAnimationFrame(trame);
+        } else {
+          // On restaure la chaîne EXACTE du HTML : le rendu final est identique au
+          // SSR, quelle que soit la locale du navigateur.
+          el.textContent = exact;
+        }
+      }
+      requestAnimationFrame(trame);
+    }
+  })();
+</script>
