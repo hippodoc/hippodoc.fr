@@ -436,6 +436,106 @@ for (const [, cible, rendu] of accueilChiffres.matchAll(/data-compteur="(\d+)"[^
   }
 }
 
+/* 4 undecies. Le consentement se lit au MÊME endroit partout.
+   Deux lecteurs coexistent : la bannière (ThirdPartyScripts) et PostHog. Quand
+   seul le second lisait `localStorage`, un visiteur ayant accepté sur
+   app.hippodoc.fr revenait ici avec le cookie de domaine parent : la bannière ne
+   s'affichait plus, GA4 et le Pixel s'activaient, mais PostHog restait en mode
+   mémoire — consentement donné, identité jamais persistée, chaque page comptée
+   comme un nouveau visiteur, et plus aucune bannière pour rattraper le coup.
+   Le défaut était invisible à la lecture : les deux fichiers étaient corrects
+   séparément, c'est leur DÉSACCORD qui cassait la mesure. On vérifie donc que
+   tout lecteur du consentement interroge bien le cookie. */
+const LECTEURS_CONSENTEMENT = [
+  'src/components/ThirdPartyScripts.astro',
+  'src/components/PostHog.astro',
+];
+for (const f of LECTEURS_CONSENTEMENT) {
+  const src = readFileSync(resolve(root, f), 'utf8');
+  if (!/cookie-consent/.test(src) && !/hippodoc-consent/.test(src)) continue; // ne lit pas le consentement
+  if (!/hippodoc-consent/.test(src)) {
+    fail(`${f} : lit le consentement sans consulter le cookie « hippodoc-consent » — un choix fait sur app.hippodoc.fr y serait ignoré`);
+  }
+}
+
+/* 4 terdecies. Les événements de consentement passent par l'émetteur commun.
+   Mesuré en production : 188 `cookie_consent_*` reçus sans AUCUNE propriété de
+   contexte, parce qu'ils étaient émis via `posthog.capture()` en direct au lieu de
+   `creerEmetteur`. Sans `deployment_env` on ne peut pas écarter le trafic de test ;
+   sans `device_type` ni `utm_*` le taux de refus n'est comparable ni par appareil
+   ni par campagne — or il borne tout ce qu'on mesure en aval. Régression née à la
+   migration : l'ancienne SPA posait ce contexte en propriétés globales. */
+const srcPostHog = readFileSync(resolve(root, 'src/components/PostHog.astro'), 'utf8');
+const captureDirecte = srcPostHog.match(/posthog\.capture\(\s*['"]cookie_consent_[a-z]+['"]/);
+if (captureDirecte) {
+  fail(`PostHog.astro : ${captureDirecte[0]}…) émis en direct — l'événement partirait sans contexte (env, device, utm). Passer par creerEmetteur.`);
+}
+if (!/creerEmetteur/.test(srcPostHog)) {
+  fail('PostHog.astro : les événements de consentement n\'utilisent plus l\'émetteur commun — ils repartiraient sans contexte');
+}
+
+/* 4 quaterdecies. La mesure d'audience ne dépend PAS du bandeau publicitaire.
+   Elle en dépendait : 42 % des visiteurs acceptaient, donc 58 % tournaient en
+   `memory`, où chaque page rechargée crée une nouvelle personne anonyme — ni
+   tunnel multi-pages, ni visiteur récurrent, ni conversion rattachable à sa
+   campagne. L'article 82 dispense de consentement la mesure d'audience : PostHog
+   persiste donc pour tout le monde, GA4 et le Pixel restent seuls sous le bandeau.
+   Recâbler la persistance sur le consentement reperdrait 58 % de la mesure sans
+   qu'aucun test de page ne s'en aperçoive. L'exemption exige en contrepartie un
+   droit d'opposition : sans lui, elle tombe et tout le dispositif avec. */
+if (/persistence:\s*accepted\s*\?/.test(srcPostHog) || /persistence:\s*\w*[Cc]onsent/.test(srcPostHog)) {
+  fail('PostHog.astro : la persistance est de nouveau conditionnée au consentement publicitaire — 58 % des visiteurs reperdraient toute identité');
+}
+for (const [motif, message] of [
+  [/opt_out_capturing_by_default/, "l'opposition à la mesure n'est plus prise en compte au démarrage"],
+  [/cookie_expiration/, 'la durée de vie du cookie n\'est plus plafonnée (13 mois exigés)'],
+  [/capture_heatmaps:\s*false/, 'les heatmaps ne sont plus coupées — hors mesure d\'audience, elles fragilisent l\'exemption'],
+  [/data-mesure/, "le droit d'opposition a disparu — sans lui l'exemption tombe"],
+]) {
+  if (!motif.test(srcPostHog)) fail(`PostHog.astro : ${message}`);
+}
+const politique = readFileSync(resolve(dist, 'politique-confidentialite/index.html'), 'utf8');
+if (!politique.includes('data-mesure="refuser"') || !politique.includes('mesure-etat')) {
+  fail("politique-confidentialite : le bouton d'opposition à la mesure d'audience est absent de la page rendue — l'exemption CNIL exige qu'il soit accessible");
+}
+
+/* 4 duodecies. Crisp ne se charge qu'au clic.
+   Il était autrefois injecté au premier geste du visiteur — `scroll` compris — et
+   posait donc son cookie de session avant tout choix de cookies, et même après un
+   refus (mesuré dans les deux cas). Aucun consentement ne le couvrait, aucune
+   exemption non plus : le visiteur n'avait rien demandé. Déclenché par un clic sur
+   notre propre bulle, le chat devient un service explicitement demandé, que la CNIL
+   dispense de consentement. Recâbler le chargement sur un événement passif
+   réintroduirait la fuite sans qu'aucun test de page ne s'en aperçoive. */
+const srcTiers = readFileSync(resolve(root, 'src/components/ThirdPartyScripts.astro'), 'utf8');
+const declencheurPassif = srcTiers.match(/^.*(?:scroll|touchstart|pointerdown|keydown|DOMContentLoaded)[^\n]*loadCrisp[^\n]*$/m)
+  || srcTiers.match(/^.*loadCrisp[^\n]*(?:scroll|touchstart|DOMContentLoaded)[^\n]*$/m);
+if (declencheurPassif) {
+  fail(`ThirdPartyScripts : Crisp est de nouveau chargé sur un événement passif — son cookie repartirait sans consentement (${declencheurPassif[0].trim().slice(0, 80)})`);
+}
+if (!/id="crisp-launcher"/.test(srcTiers)) {
+  fail('ThirdPartyScripts : la bulle de chat a disparu — plus aucun moyen d\'ouvrir le support');
+}
+/* ⚠️ L'attribut `hidden` ne masque PAS un élément portant une classe `display`
+   de Tailwind : `.flex` vient de la feuille d'auteur et bat le `[hidden] {
+   display: none }` du navigateur. Sans la règle d'ID, un visiteur sans JavaScript
+   voit une bulle bien visible et totalement morte. Ce piège a déjà atteint la
+   production sur le bouton de lecture du film — d'où ce contrôle. */
+if (/id="crisp-launcher"[^>]*\bhidden\b/.test(srcTiers) && !/#crisp-launcher\[hidden\]/.test(srcTiers)) {
+  fail("ThirdPartyScripts : #crisp-launcher est masqué par le seul attribut `hidden`, que la classe Tailwind `.flex` annule — bulle morte sans JavaScript");
+}
+for (const f of ['index.html', 'tarifs/index.html', 'blog/index.html']) {
+  const html = readFileSync(resolve(dist, f), 'utf8');
+  if (!html.includes('id="crisp-launcher"')) fail(`/${f.replace(/\/?index\.html$/, '') || ''} : bulle de chat absente du HTML rendu`);
+  /* ⚠️ Chercher l'URL de Crisp tout court donnait un FAUX POSITIF sur du code sain :
+     elle figure forcément dans le script en ligne, c'est par là qu'on l'injecte au
+     clic. Ce qu'on interdit, c'est une BALISE `<script src>` — le seul cas où le
+     navigateur irait la chercher tout seul, sans clic ni consentement. */
+  if (/<script[^>]+src=["'][^"']*crisp\.chat/.test(html)) {
+    fail(`/${f.replace(/\/?index\.html$/, '') || ''} : Crisp chargé par une balise <script src> — il partirait dès l'ouverture de la page`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

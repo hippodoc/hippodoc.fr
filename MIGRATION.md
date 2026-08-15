@@ -1402,6 +1402,227 @@ tiers peut suivre. Mesuré : les nommer dans le bandeau ajoutait une troisième 
 et **remasquait le CTA sur les écrans de 640 px** (94 visiteurs). Le vouvoiement est
 conservé, comme l'ancien titre « Nous respectons votre vie privée ».
 
+### 9.y Consentement : lecture unique et retrait effectif (août 2026)
+
+Contrôle demandé après §9.x — « Tout refuser » n'a-t-il pas cassé la mesure ?
+**Non** : le libellé seul a changé. « Essentiels uniquement » et « Tout refuser »
+portent le même `data-cookie-action="essential"` et écrivent la même valeur
+`essential-only`. Mesuré, en refus : **16 événements PostHog envoyés**, dont les
+cinq `landing_*`, `$pageview`, `$autocapture`, `$$heatmap` et `$web_vitals` —
+autant qu'en acceptation. Seule différence : pas de cookie `ph_…`, donc pas
+d'identité persistée d'une page à l'autre. C'est le comportement voulu.
+
+La vérification a en revanche exposé **trois défauts réels**, dont deux
+antérieurs.
+
+**1. Deux lecteurs du consentement en désaccord** (introduit par §9.x).
+`ThirdPartyScripts` lisait le cookie ; `PostHog.astro` lisait le seul
+`localStorage`. Un visiteur ayant accepté sur `app.hippodoc.fr` arrivait donc ici
+sans bannière (cookie lu), GA4 et le Pixel actifs — mais PostHog en mode mémoire,
+`localStorage` étant vide côté www. Consentement donné, identité jamais persistée,
+chaque page comptée comme un nouveau visiteur, et **aucun moyen de le rattraper**
+puisque la bannière ne réapparaissait plus.
+⚠️ Le défaut était invisible à la lecture : les deux fichiers étaient corrects
+séparément, c'est leur DÉSACCORD qui cassait la mesure. `ThirdPartyScripts` expose
+désormais `window.hippodocConsent`, seule fonction de lecture (l'ordre est garanti :
+il est `is:inline`, PostHog est un module donc différé). Garde-fou `verify-site`
+§4 undecies, validé par injection du défaut.
+
+**2. Le retrait du consentement ne retirait rien** (antérieur).
+Après « Tout accepter » puis retour arrière via « Préférences cookies », `_ga`,
+`_ga_<ID>` et `_fbp` survivaient au choix ET au rechargement : l'identifiant
+publicitaire Meta restait sur l'appareil pour trois mois. Un consentement qu'on ne
+peut pas retirer dans les faits n'en est pas un. Les cookies sont maintenant
+effacés au retrait.
+⚠️ **Révoquer AVANT d'effacer.** `consent update` n'était envoyé que vers
+« granted » : GA4 restait autorisé dans la page en cours et réécrivait `_ga_<ID>`
+juste après l'effacement — le cookie semblait parti, puis réapparaissait au
+rechargement. Vérifié à côté : sous `essential-only`, GA4 ne pose spontanément
+aucun cookie, même après 15 s. Seule la mesure a montré cet aller-retour.
+⚠️ Un cookie ne s'efface qu'en rejouant **exactement** son couple domaine/chemin ;
+GA4 posant `_ga` sur le domaine parent, l'effacement boucle sur les variantes.
+
+**3. Crisp posait un cookie sans consentement** (antérieur, corrigé).
+`crisp-client/session/<id>` était écrit dès la première interaction — défilement
+compris — quel que soit le choix, y compris avant tout choix. Aucun consentement ne
+le couvrait, et aucune exemption non plus : le visiteur n'avait rien demandé.
+
+Le chargement automatique est remplacé par une **bulle statique que nous
+possédons** (`#crisp-launcher`). Crisp n'est injecté qu'au clic : le chat devient
+alors un « service explicitement demandé par l'utilisateur », que la CNIL dispense
+de consentement. `$crisp.push(['do','chat:open'])` est empilé AVANT l'injection —
+la file étant rejouée au chargement, un seul clic ouvre la conversation, là où deux
+seraient sinon nécessaires. Notre bulle s'efface à l'ouverture, Crisp affichant la
+sienne.
+
+Mesuré : **0 requête et 0 cookie Crisp** dans les trois états de consentement tant
+qu'on ne clique pas ; au clic, 21 requêtes, widget monté, `chat:opened` vrai.
+Effet de bord bienvenu avant la campagne payante : `l.js` ne part plus pour la
+quasi-totalité des visiteurs.
+
+⚠️ **`hidden` seul ne masque pas la bulle** : sa classe `.flex` vient de la feuille
+d'auteur et bat le `[hidden] { display: none }` du navigateur. Sans la règle d'ID
+`#crisp-launcher[hidden]` (spécificité 1,1,0 contre 0,1,0), un visiteur sans
+JavaScript voyait une bulle parfaitement visible et parfaitement morte. **Le même
+piège avait déjà atteint la production sur le bouton de lecture du film** — d'où un
+garde-fou dédié dans `verify-site`.
+
+La bulle s'efface tant que la bannière cookies est affichée (sur 390 px la bannière
+occupe 366 px : la bulle se posait dessus) et tant que le tiroir de menu est ouvert.
+Vérifié : aucun CTA du premier écran recouvert, 56×56 px, focusable en dernier dans
+l'ordre de tabulation, contraste 3,37:1 au pire point du dégradé (seuil 3:1 pour un
+élément graphique).
+
+### 9.z Contexte des événements de consentement, et cibles tactiles (août 2026)
+
+**Contexte manquant, mesuré en production.** Les `cookie_consent_granted` /
+`cookie_consent_denied` arrivaient depuis `www` **sans aucune propriété de
+contexte** — 188 événements vérifiés ligne à ligne : ni `deployment_env`, ni
+`device_type`, ni `app_version`, ni `utm_*`. Cause : ils étaient émis par
+`posthog.capture()` en direct, hors de `creerEmetteur`. Régression née à la
+migration — l'ancienne SPA posait ce contexte en propriétés globales, le portage
+l'a rattaché à chaque événement, et ces deux-là sont passés à travers.
+
+Deux conséquences concrètes, l'une et l'autre vérifiées : le trafic de test local
+ne pouvait pas en être écarté (c'est `deployment_env` qui sert à cela), et le taux
+de refus n'était comparable ni par appareil ni par campagne — or il **borne tout ce
+que l'on mesure en aval**. Le défaut a été trouvé pendant que la campagne Meta
+tournait déjà.
+
+⚠️ `creerEmetteur` est désormais **mémoïsé**, et ce n'est pas une optimisation :
+`contexteSession()` INCRÉMENTE `session_pageview_count` à chaque appel. Avec deux
+appelants par page (PostHog.astro et analytics-init) et aucun ordre garanti entre
+eux, sans mémoïsation une seule page en aurait compté deux. Vérifié : le compteur
+vaut 1 sur tous les événements, y compris sur les pages non mesurées.
+Garde-fou `verify-site` §4 terdecies.
+
+**Audit mobile.** 56 pages × 4 largeurs réellement observées (360/375/390/430) :
+**0 débordement horizontal, 0 erreur console**. Toutes les pages mesurées émettent
+leurs événements sur iPhone, y compris en WebView Instagram, sur Android, à 360 px,
+**stockage bloqué (navigation privée)** et avec les UTM de campagne. Sans
+`IntersectionObserver`, la mesure se dégrade proprement : `landing_viewed` et
+`landing_scroll_depth` continuent, les événements de section sont perdus, aucune
+erreur.
+
+⚠️ Deux pièges de méthode rencontrés, notés parce qu'ils font conclure à l'envers :
+posthog-js poste `{api_key, batch:[…]}` — un parseur qui ne descend pas dans
+`batch` retombe sur une regex, rend des propriétés VIDES, et fait passer chaque
+page pour cassée ; et le contrôle de contexte ne vaut que pour NOS événements,
+`$pageview` / `$autocapture` / `$$heatmap` / `$web_vitals` étant produits par
+posthog-js lui-même et n'ayant jamais porté ce contexte.
+
+**Cibles tactiles (WCAG 2.5.8).** Les déclencheurs d'aide de la calculette (14×14)
+et les icônes LinkedIn (20×20) passent à ≥24 px via `p-1.5 -m-1.5` : la marge
+négative compense exactement le rembourrage, donc **aucun déplacement**.
+Les cases `sr-only` qui pilotent le tiroir et les radios ne sont PAS des cibles —
+le label l'est ; les compter noyait le signal sur 50 pages.
+
+Reste à faire : liens de texte à 16–21 px de haut sur `/essai` (7, pied de page),
+`/guide-declarations` (~995, glossaire et FAQ) et le lien de retour de la
+calculette. Antérieurs, hors landing, et corriger le guide reviendrait à changer
+son interlignage — décision de design non prise.
+
+### 9.aa Mesure d'audience sous exemption CNIL (août 2026)
+
+**Le manque, chiffré.** PostHog n'était persisté qu'après acceptation du bandeau.
+Mesuré sur 14 jours de production : **42 % acceptent**. Les 58 % restants
+tournaient donc en `memory`, où chaque page rechargée crée une nouvelle personne
+anonyme — ni tunnel multi-pages, ni visiteur récurrent, ni conversion rattachable
+à sa campagne au-delà de la première page. Sur 7 jours : 31 « personnes » pour
+35 sessions, des identités en miettes.
+
+**La réponse est légale, et plus large que le problème.** L'article 82 de la loi
+Informatique et Libertés dispense de consentement les traceurs de MESURE
+D'AUDIENCE, à conditions strictes. PostHog les remplit :
+
+| Condition CNIL | État |
+|---|---|
+| Finalité limitée à la mesure d'audience | ✓ jamais utilisée pour la publicité |
+| Pas de suivi inter-sites | ✓ first-party via `t.hippodoc.fr` |
+| Aucune transmission à un tiers | ✓ PostHog sous-traitant, hébergement UE |
+| Pas d'enregistrement de session | ✓ client ET projet |
+| Pas de heatmap ni dead-click | ✓ client ET projet |
+| IP non conservée | ✓ `anonymize_ips` (réglage projet) |
+| Cookie ≤ 13 mois | ✓ `cookie_expiration: 395` |
+| Information et droit d'opposition | ✓ `/politique-confidentialite` §8.3 |
+
+⚠️ **Les réglages PROJET l'emportent sur la configuration client.** Régler
+`capture_heatmaps` et `capture_dead_clicks` dans `posthog.init()` ne suffit pas —
+c'était déjà noté pour `capture_dead_clicks`, « essayé, sans effet ». Il faut
+couper `heatmaps_opt_in` et `capture_dead_clicks` côté projet. Idem pour
+`session_recording_opt_in`, qui était **encore activé** : seul le drapeau client
+l'empêchait, un oubli en aurait suffi à relancer l'enregistrement d'écran.
+
+⚠️ **Le bandeau ne gouverne plus que la publicité** (GA4, Meta Pixel), qu'aucune
+exemption ne couvre. Texte adapté en conséquence : « En acceptant, vous autorisez
+des cookies publicitaires (Google, Meta). » — 115 px, CTA dégagé de 360 à 390 px.
+Ne JAMAIS refaire dépendre la mesure du choix publicitaire : c'est exactement ce
+qui coûtait 58 % de la mesure. Garde-fou `verify-site` §4 quaterdecies.
+
+⚠️ **`opt_out_capturing_by_default` ne suffit pas à l'opposition.** Vérifié : il
+empêche bien tout envoi (0 événement sur contexte vierge), mais posthog-js écrit
+QUAND MÊME son cookie d'identité. La page aurait annoncé « plus aucune donnée
+collectée » en laissant un identifiant persistant sur l'appareil. D'où
+`persistence: 'memory'` en cas d'opposition, plus un effacement explicite du
+cookie `ph_<clé>_posthog` — dont le nom dépend de la clé projet, et qui est posé
+sur le domaine parent : il faut rejouer ce domaine pour l'effacer.
+
+Reste à faire : `event_retention_months` vaut **84** (7 ans) sur le projet. Les
+lignes directrices CNIL plafonnent à 25 mois les statistiques issues de la mesure
+d'audience exemptée. Non modifié — abaisser la rétention SUPPRIME des données de
+façon irréversible, ce n'est pas une décision à prendre sans arbitrage explicite.
+
+### 9.ab Attribution de premier contact (août 2026)
+
+**Le trou, mesuré.** Sur 164 personnes identifiées, **zéro** portait sa campagne
+d'origine (`$initial_utm_source` vide pour toutes). Impossible de répondre à
+« quelle publicité a produit ce client ».
+
+Cause : avec `person_profiles: 'identified_only'`, PostHog ne crée le profil qu'à
+l'inscription et y écrit les `$initial_*` de CE moment-là — donc ceux de
+`app.hippodoc.fr`. La campagne Meta se perdait entre la landing et la création de
+compte. Le recollage anonyme → client fonctionnait pourtant : 22 personnes
+identifiées ont `app.hippodoc.fr` en première page avec `www.hippodoc.fr` en
+référent. C'est l'ORIGINE de l'acquisition qui manquait, pas le lien.
+
+**Correctif** : `register_once` au chargement, sur toutes les pages publiques.
+Les propriétés super sont stockées dans la persistance de PostHog — donc, avec
+`cross_subdomain_cookie`, sur `.hippodoc.fr` — et rattachées à tous les
+événements suivants, **y compris ceux émis par l'app après l'inscription**.
+
+| Propriété | Contenu |
+|---|---|
+| `hd_premiere_source` | `utm_source`, sinon `meta` si `fbclid`, `google` si `gclid`, sinon le référent externe, sinon `direct` |
+| `hd_premiere_campagne` / `_contenu` / `_support` / `_terme` | les `utm_*` correspondants |
+| `hd_premiere_page`, `hd_premier_referent`, `hd_premier_appareil` | contexte d'arrivée |
+
+⚠️ Préfixe `hd_` volontaire : ne JAMAIS réutiliser les noms `$initial_*` que
+PostHog gère lui-même — deux sources de vérité homonymes seraient pires que pas
+de donnée.
+
+⚠️ `register_once` et non `register` : un second passage ne doit pas écraser le
+premier contact, c'est la définition même de l'attribution d'acquisition.
+Vérifié : arrivée via Meta, puis `/tarifs` sans UTM, puis retour via
+`google/AUTRE` → la source reste `meta / HIPPODOC-PROSPECTION`.
+
+⚠️ Un référent interne (`hippodoc.fr`) est une navigation, pas une acquisition :
+il est écarté, sans quoi tout le monde finirait attribué à son propre site.
+
+⚠️ Sans effet en cas d'opposition à la mesure : la persistance est alors en
+mémoire et rien n'est écrit sur l'appareil. C'est voulu.
+
+### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
+
+`app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En
+coupant `session_recording_opt_in` au niveau projet « par précaution », le session
+replay de l'APP a été désactivé — alors qu'il enregistrait activement (5 replays
+le jour même, sur `/dashboard`, `/depenses/cotisations`). Le site public, lui,
+n'a JAMAIS enregistré de replay : son drapeau client `disable_session_recording`
+suffisait déjà. Le changement projet n'apportait donc rien et cassait l'app.
+
+**Règle** : ce qui concerne le site public se règle dans SON `posthog.init()`.
+Les réglages projet ne se touchent qu'en sachant ce que l'app en fait.
+
 Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
