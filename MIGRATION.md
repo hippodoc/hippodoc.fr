@@ -1172,6 +1172,17 @@ aucun sélecteur CSS ne permet de savoir qu'une vidéo joue, donc « clic sur le
 → lecture » est impossible sans script. Aucune dépendance, aucun asset, script
 inline sous le kilooctet.
 
+⚠️ **Deux pièges de la même famille, et le second est passé en production.**
+`hidden` ne masque rien quand une classe déclare `display`. Le bouton porte la
+classe Tailwind `flex` : son `display: flex` vient de la feuille de l'AUTEUR et
+l'emporte sur le `display: none` que le navigateur applique à `[hidden]`. La
+propriété passait bien à `true`, et le spinner restait à l'écran par-dessus la
+vidéo en train de jouer. On masque donc par **style en ligne**, qui l'emporte sur
+la classe.
+Le test disait « invitation masquée : true » — il lisait la PROPRIÉTÉ, pas le
+pixel. Les contrôles visuels vérifient désormais `getComputedStyle().display` et
+la boîte englobante.
+
 ⚠️ Piège rencontré : **`hidden` est une propriété de `HTMLElement`, pas de
 `SVGElement`**. Écrire `svg.hidden = false` crée une propriété fantôme sans retirer
 l'attribut, et l'icône reste masquée par `[hidden] { display: none }`. On passe par
@@ -1185,6 +1196,17 @@ iframe YouTube ou Vimeo — les événements disparaîtraient.
 
 **Budget** : LCP 6 179 ms, TBT 0, CLS 0, perf 67 — dans la fourchette des mesures
 précédentes sur le même serveur de test, aucune régression.
+
+**Pause au toucher.** Taper la vidéo ne la mettait pas en pause sur mobile — le
+navigateur se contente d'y afficher la barre de contrôle (vérifié sur iPhone 14 et
+Pixel 7). ⚠️ Un gestionnaire de clic naïf aurait cassé le desktop : le navigateur
+y bascule DÉJÀ lecture/pause au clic sur l'image, si bien qu'un second
+basculement l'aurait annulé. On ne prend donc en charge que les pointeurs
+tactiles (`pointerup` avec `pointerType !== 'mouse'`), et le bas de l'image est
+exclu — c'est là que vit la barre de contrôle, et un tap sur « pause » y aurait
+été annulé par notre propre bascule.
+Vérifié : tap → pause → tap → reprise sur les deux mobiles, un seul basculement à
+la souris, aucun double effet sur la barre de contrôle.
 
 **Garde-fou** : `preload="none"` sur le film de l'accueil, validé par injection.
 La référence à battre est **9,4 %** (`landing_video_play` ÷
