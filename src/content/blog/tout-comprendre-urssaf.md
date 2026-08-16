@@ -39,18 +39,18 @@ L'**URSSAF** (Union de Recouvrement des Cotisations de Sécurité Sociale et d'A
 ## 📅 Quand s'inscrire ?
 
 :::warning
-Dès ton premier remplacement, dans les **8 jours** suivant le début de ton activité.
+Dès ton [premier remplacement](/blog/realites-remplacement-medical), dans les **8 jours** suivant le début de ton activité.
 :::
 
 ## 🔖 Les deux régimes sociaux
 
-Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime Simplifié des Professions Médicales (RSPM)** et le **Régime Classique PAMC** (Praticien et Auxiliaire Médical Conventionné). **Important** : à ne pas confondre avec les régimes fiscaux (Micro-BNC et Régime Réel) !
+Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime Simplifié des Professions Médicales ([RSPM](/blog/rspm-exemples-concrets))** et le **Régime Classique PAMC** (Praticien et Auxiliaire Médical Conventionné). **Important** : à ne pas confondre avec les régimes fiscaux ([Micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel) et Régime Réel) !
 
 ## 1. Régime Simplifié des Professions Médicales (RSPM)
 
 👉 **Pour qui ?** Médecins remplaçants ayant un chiffre d'affaires (CA) annuel **inférieur à 38 000 €**.\
 📈 **Cotisations** : **13,5%** pour un CA jusqu'à 19 000 € par an, et **21,2%** pour la tranche de CA entre 19 000 € et 38 000 €.\
-🛡 **Invalidité-Décès** : **157 €/an** pour une couverture à 25% ou **626 €/an** pour une couverture à 100% (barème CARMF 2026).\
+🛡 **Invalidité-Décès** : **157 €/an** pour une couverture à 25% ou **626 €/an** pour une couverture à 100% (barème [CARMF](/blog/tout-comprendre-carmf) 2026).\
 🌐 **Déclaration simplifiée** sur le portail RSPM.\
 📌 **Exemples pratiques** :\
 • CA annuel de **18 000 €** ➡ Cotisations ≈ **2 430 €/an** (18 000 € x 13,5%).\

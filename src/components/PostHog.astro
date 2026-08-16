@@ -1,19 +1,65 @@
 ---
 /**
- * PostHog — même projet que la SPA source (continuité analytics).
+ * PostHog — mesure d'audience sous EXEMPTION DE CONSENTEMENT (CNIL).
  * Chargé en module différé : ne bloque jamais le rendu.
- * Persistance calquée sur la source : cookieless (`memory`) tant que le
- * consentement n'est pas « accepted » (clé localStorage['cookie-consent'],
- * bannière gérée par ThirdPartyScripts.astro), puis upgrade
- * `localStorage+cookie` cross-sous-domaine à l'acceptation.
+ *
+ * ⚠️ Changement d'architecture, août 2026. PostHog n'était persisté qu'après
+ * acceptation du bandeau. Mesuré sur 14 jours : 42 % acceptent — les 58 % qui
+ * refusaient tournaient donc en `memory`, où chaque page rechargée crée une
+ * nouvelle personne anonyme. Aucun tunnel multi-pages, aucun visiteur récurrent,
+ * aucune conversion rattachable à sa campagne au-delà de la première page.
+ *
+ * L'article 82 de la loi Informatique et Libertés dispense de consentement les
+ * traceurs de MESURE D'AUDIENCE, à conditions strictes. Elles sont réunies ici :
+ *   - finalité limitée à la mesure d'audience, jamais à la publicité ;
+ *   - first-party via le proxy `t.hippodoc.fr`, aucun suivi inter-sites ;
+ *   - aucune transmission à un tiers (PostHog est sous-traitant, hébergement UE) ;
+ *   - ni enregistrement de session, ni heatmap, ni dead-click ;
+ *   - cookie plafonné à 13 mois ;
+ *   - IP non conservée (réglage projet `anonymize_ips`) ;
+ *   - information et DROIT D'OPPOSITION en un clic (`/politique-confidentialite`).
+ *
+ * ⚠️ Ce qui reste soumis au bandeau : GA4 et le Meta Pixel. Ce sont des traceurs
+ * PUBLICITAIRES, qu'aucune exemption ne couvre — voir ThirdPartyScripts.astro.
+ * Ne jamais faire dépendre la mesure d'audience de ce choix-là : c'est exactement
+ * ce qui coûtait 58 % de la mesure.
  */
 ---
 <script>
   import posthog from 'posthog-js';
+  import { creerEmetteur } from '@/lib/analytics-commun';
 
+  /**
+   * ⚠️ Le consentement se lit d'ABORD dans le cookie `hippodoc-consent` (domaine
+   * parent), et seulement ensuite dans `localStorage`.
+   *
+   * Lire le seul `localStorage` était un défaut mesuré : un visiteur ayant accepté
+   * sur `app.hippodoc.fr` arrivait ici avec le cookie « accepted » — la bannière ne
+   * s'affichait donc pas, GA4 et le Pixel s'activaient — mais `localStorage` étant
+   * cloisonné par origine, il était vide côté www et PostHog restait en `memory`.
+   * Résultat : consentement donné, aucune identité persistée, chaque page comptée
+   * comme un nouveau visiteur anonyme, et aucun moyen de le corriger puisque la
+   * bannière ne réapparaissait plus.
+   *
+   * `window.hippodocConsent` vient de ThirdPartyScripts.astro, qui est `is:inline`
+   * et s'exécute donc avant ce module. Le repli couvre le cas où ce composant
+   * serait rendu sans lui.
+   */
   function readConsent(): string | null {
-    const m = document.cookie.match(/(?:^|; )cookie-consent=([^;]+)/);
-    if (m) return m[1];
+    const partage = (window as unknown as { hippodocConsent?: () => string | null }).hippodocConsent;
+    if (typeof partage === 'function') {
+      try {
+        return partage();
+      } catch {
+        /* on retombe sur la lecture locale */
+      }
+    }
+    try {
+      const m = document.cookie.match(/(?:^|;\s*)hippodoc-consent=([^;]+)/);
+      if (m) return decodeURIComponent(m[1]);
+    } catch {
+      /* cookies inaccessibles */
+    }
     try {
       return localStorage.getItem('cookie-consent');
     } catch {
@@ -21,7 +67,24 @@
     }
   }
 
-  const accepted = readConsent() === 'accepted';
+  /**
+   * Opposition à la MESURE D'AUDIENCE — à ne pas confondre avec le consentement
+   * publicitaire du bandeau. L'exemption CNIL n'est acquise que si le visiteur
+   * peut s'y opposer ; le bouton vit dans `/politique-confidentialite`.
+   * Cookie de domaine parent, pour que l'opposition vaille aussi sur l'app.
+   */
+  function mesureRefusee(): boolean {
+    try {
+      if (/(?:^|;\s*)hippodoc-mesure=refusee/.test(document.cookie)) return true;
+    } catch {
+      /* cookies inaccessibles */
+    }
+    try {
+      return localStorage.getItem('hippodoc-mesure') === 'refusee';
+    } catch {
+      return false;
+    }
+  }
 
   posthog.init('phc_x3JYWa7EjhuuwVVBLyks74ud58ZmUppaC666QkmTUXox', {
     api_host: 'https://t.hippodoc.fr',
@@ -31,18 +94,214 @@
     capture_pageleave: true,
     person_profiles: 'identified_only',
     cross_subdomain_cookie: true,
-    persistence: accepted ? 'localStorage+cookie' : 'memory',
+    // Exemption CNIL : la persistance n'est plus conditionnée au bandeau.
+    // Elle l'était, et 58 % des visiteurs (ceux qui refusaient) tournaient donc
+    // en `memory` — chaque page rechargée créait une nouvelle personne anonyme.
+    // ⚠️ Sauf opposition : `opt_out_capturing_by_default` suffit à ne RIEN
+    // envoyer (vérifié), mais posthog-js écrit tout de même son cookie
+    // d'identité — la page aurait alors annoncé « plus aucune donnée collectée »
+    // en laissant un identifiant persistant sur l'appareil. `memory` l'évite.
+    persistence: mesureRefusee() ? 'memory' : 'localStorage+cookie',
+    // 13 mois : plafond que la CNIL fixe aux traceurs de mesure d'audience.
+    cookie_expiration: 395,
+    secure_cookie: window.location.protocol === 'https:',
+    // Le visiteur qui s'est opposé n'est pas mesuré du tout.
+    opt_out_capturing_by_default: mesureRefusee(),
     disable_session_recording: true,
+    // PostHog chargeait `surveys.js` — 98 Ko — sur CHAQUE page du site alors
+    // qu'aucune enquête n'est configurée sur le projet (table `surveys` vide).
+    disable_surveys: true,
+    // ⚠️ Heatmaps et dead-clicks relèvent de l'analyse comportementale, pas de la
+    // mesure d'audience : les garder sans consentement fragiliserait l'exemption
+    // qui couvre TOUT le reste. Coupés ici ET côté projet — la configuration
+    // distante l'emporte sur la config client, ce qui explique pourquoi régler
+    // `capture_dead_clicks` ici seul était resté sans effet.
+    capture_heatmaps: false,
+    capture_dead_clicks: false,
   });
 
+  /**
+   * ATTRIBUTION DE PREMIER CONTACT, durable et cross-sous-domaine.
+   *
+   * Le problème, mesuré : sur 164 personnes identifiées, **zéro** portait sa
+   * campagne d'origine. Avec `person_profiles: 'identified_only'`, PostHog ne
+   * crée le profil qu'à l'inscription et y écrit les `$initial_*` de CE
+   * moment-là — c'est-à-dire ceux de `app.hippodoc.fr`. La campagne Meta qui a
+   * amené la personne était perdue entre la landing et la création de compte.
+   * On ne pouvait donc pas répondre à « quelle publicité a produit ce client ».
+   *
+   * `register_once` écrit des propriétés SUPER : elles sont stockées dans la
+   * persistance de PostHog — donc, avec `cross_subdomain_cookie`, sur
+   * `.hippodoc.fr` — et rattachées à TOUS les événements suivants, y compris
+   * ceux émis par l'app après l'inscription. « Once » signifie qu'un second
+   * passage ne les écrase pas : le PREMIER contact gagne, ce qui est bien la
+   * définition de l'attribution d'acquisition.
+   *
+   * ⚠️ Préfixe `hd_` volontaire, pour ne jamais entrer en collision avec les
+   * `$initial_*` que PostHog gère lui-même — deux sources de vérité portant le
+   * même nom seraient pires que pas de donnée du tout.
+   *
+   * ⚠️ Ne vaut que pour les visiteurs mesurés : en cas d'opposition, la
+   * persistance est en mémoire et rien n'est écrit sur l'appareil.
+   */
+  function enregistrerPremierContact(): void {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const lire = (cle: string): string | undefined => params.get(cle) || undefined;
+      const referent = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : '';
+      // Un référent interne n'est pas une acquisition : c'est une navigation.
+      const externe = referent && !referent.includes('hippodoc') ? referent : '';
+
+      const source =
+        lire('utm_source') ||
+        (params.get('fbclid') ? 'meta' : undefined) ||
+        (params.get('gclid') ? 'google' : undefined) ||
+        (externe || undefined) ||
+        'direct';
+
+      posthog.register_once({
+        hd_premiere_source: source,
+        hd_premiere_campagne: lire('utm_campaign') ?? null,
+        hd_premier_contenu: lire('utm_content') ?? null,
+        hd_premier_support: lire('utm_medium') ?? null,
+        hd_premier_terme: lire('utm_term') ?? null,
+        hd_premiere_page: window.location.pathname,
+        hd_premier_referent: externe || '$direct',
+        hd_premier_appareil: window.innerWidth < 768 ? 'mobile' : 'desktop',
+      });
+    } catch {
+      /* la mesure peut échouer, jamais la page */
+    }
+  }
+  enregistrerPremierContact();
+
+  /**
+   * Droit d'opposition, exercé depuis `/politique-confidentialite`.
+   * Écrit sur le domaine parent pour valoir aussi sur `app.hippodoc.fr`, selon le
+   * même principe que `hippodoc-consent` (cf. MIGRATION.md §9.x) — et le domaine
+   * est DÉRIVÉ de l'hôte, un navigateur rejetant un cookie dont le domaine ne
+   * correspond pas à l'hôte courant.
+   */
+  function memoriserOpposition(refusee: boolean): void {
+    const valeur = refusee ? 'refusee' : 'acceptee';
+    try {
+      localStorage.setItem('hippodoc-mesure', valeur);
+    } catch {
+      /* stockage indisponible : le cookie suffit */
+    }
+    try {
+      const partage = /(^|\.)hippodoc\.fr$/.test(window.location.hostname) ? ';domain=.hippodoc.fr' : '';
+      document.cookie =
+        `hippodoc-mesure=${valeur}${partage};path=/;max-age=${60 * 60 * 24 * 395};samesite=lax` +
+        (window.location.protocol === 'https:' ? ';secure' : '');
+    } catch {
+      /* cookies indisponibles */
+    }
+  }
+
+  /** Le texte est rendu au build pour l'état « active » : on le corrige si le
+   *  visiteur s'est déjà opposé, sinon la page affirmerait le contraire de la
+   *  réalité à quelqu'un qui revient vérifier son choix. */
+  function afficherEtat(refusee: boolean): void {
+    const etat = document.getElementById('mesure-etat');
+    if (!etat) return;
+    etat.textContent = refusee
+      ? 'Vous êtes opposé à la mesure d’audience. Plus aucune donnée de navigation n’est collectée.'
+      : 'La mesure d’audience est active. Elle produit des statistiques anonymes de fréquentation.';
+  }
+  afficherEtat(mesureRefusee());
+
+  document.addEventListener('click', (ev) => {
+    const cible = (ev.target as HTMLElement | null)?.closest<HTMLElement>('[data-mesure]');
+    if (!cible) return;
+    ev.preventDefault();
+    const refuser = cible.dataset.mesure === 'refuser';
+    memoriserOpposition(refuser);
+    if (refuser) {
+      posthog.opt_out_capturing();
+      // Repasser en mémoire ET effacer ce qui a déjà été écrit : s'opposer doit
+      // retirer l'identifiant, pas seulement arrêter l'envoi.
+      posthog.set_config({ persistence: 'memory' });
+      try {
+        posthog.reset(true);
+      } catch {
+        /* reset indisponible : l'effacement du cookie ci-dessous suffit */
+      }
+      effacerIdentifiant();
+    } else {
+      posthog.set_config({ persistence: 'localStorage+cookie' });
+      posthog.opt_in_capturing();
+    }
+    afficherEtat(refuser);
+  });
+
+  /** Efface le cookie d'identité de PostHog, dont le nom dépend de la clé projet
+   *  (`ph_<clé>_posthog`) — d'où la recherche par motif plutôt qu'en dur.
+   *  ⚠️ Il est posé sur le domaine parent (`cross_subdomain_cookie`) : il faut
+   *  rejouer ce domaine pour l'effacer, sinon la suppression ne prend pas. */
+  function effacerIdentifiant(): void {
+    try {
+      const hote = window.location.hostname;
+      const domaines = ['', `;domain=${hote}`, `;domain=.${hote}`];
+      const parties = hote.split('.');
+      if (parties.length > 2) domaines.push(`;domain=.${parties.slice(-2).join('.')}`);
+      for (const brut of document.cookie.split(';')) {
+        const nom = brut.split('=')[0].trim();
+        if (!/^ph_.*_posthog$/.test(nom)) continue;
+        for (const d of domaines) {
+          document.cookie = `${nom}=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT${d}`;
+        }
+      }
+      localStorage.removeItem(`ph_phc_x3JYWa7EjhuuwVVBLyks74ud58ZmUppaC666QkmTUXox_posthog`);
+    } catch {
+      /* stockage indisponible */
+    }
+  }
+
+  /**
+   * Analytics de page. Chargées ICI, après `init()`, pour deux raisons : l'ordre
+   * d'exécution est garanti (un second <script> ne l'aurait pas été) et l'instance
+   * `posthog` est la même (le module est un singleton).
+   * Import dynamique et aiguillé par chemin : une page non mesurée ne télécharge
+   * rien, et le code reste hors du chemin critique de rendu.
+   */
+  const cheminMesure = window.location.pathname.replace(/\/$/, '') || '/';
+  if (cheminMesure === '/' || /^\/(tarifs|faq|comparatif|guide-declarations|blog|simulateur)(\/|$)/.test(cheminMesure)) {
+    import('@/lib/analytics-init')
+      .then((m) => m.initAnalytics(posthog))
+      .catch(() => {
+        /* la mesure peut échouer, jamais la page */
+      });
+  }
+
+  /**
+   * ⚠️ Les événements de consentement passent par `creerEmetteur`, PAS par
+   * `posthog.capture()` en direct.
+   *
+   * Mesuré en production : les 188 `cookie_consent_*` reçus depuis le passage sur
+   * `www` n'avaient AUCUNE propriété de contexte — ni `deployment_env`, ni
+   * `device_type`, ni `utm_*`. Deux conséquences concrètes. D'abord le trafic de
+   * test local ne pouvait pas en être exclu, puisque c'est `deployment_env` qui
+   * sert à le filtrer : les chiffres de consentement mélangeaient visiteurs réels
+   * et vérifications automatisées. Ensuite, et surtout pendant une campagne
+   * payante, le taux de refus n'était comparable ni par appareil ni par campagne —
+   * or c'est lui qui borne tout ce que l'on peut mesurer en aval.
+   *
+   * La régression datait de la migration : l'ancienne SPA enregistrait ce contexte
+   * en propriétés globales, le portage l'a rattaché à chaque événement — et ces
+   * deux-là, émis hors du module d'analytics, sont passés à travers.
+   *
+   * `creerEmetteur` est mémoïsé : l'appeler ici comme dans `analytics-init` ne
+   * compte qu'une seule page vue.
+   */
   window.addEventListener('hippodoc:consent-changed', (e) => {
     const value = (e as CustomEvent).detail;
-    if (value === 'accepted') {
-      posthog.set_config({ persistence: 'localStorage+cookie' });
-      posthog.capture('cookie_consent_granted');
-    } else {
-      posthog.capture('cookie_consent_denied');
-      posthog.set_config({ persistence: 'memory' });
-    }
+    const { emettre } = creerEmetteur(posthog);
+    // ⚠️ La persistance ne bouge PLUS ici. Le bandeau ne gouverne désormais que
+    // les traceurs publicitaires (GA4, Meta Pixel) ; la mesure d'audience relève
+    // de l'exemption CNIL et vaut pour tout le monde, l'opposition se faisant
+    // depuis la politique de confidentialité. Refuser la publicité ne doit donc
+    // plus dégrader la mesure — c'était le cas pour 58 % des visiteurs.
+    emettre(value === 'accepted' ? 'cookie_consent_granted' : 'cookie_consent_denied');
   });
 </script>

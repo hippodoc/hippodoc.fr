@@ -44,7 +44,7 @@ La déclaration 2035 concerne les professionnels libéraux au **régime réel**.
 
 ## 2️⃣ Déclare tes recettes professionnelles
 
-**Ligne 1** : Honoraires perçus + Indemnités journalières maladie/maternité\
+**Ligne 1** : Honoraires perçus + Indemnités journalières maladie/[maternité](/blog/conge-maternite-paternite)\
 **Ligne 4** : Recettes nettes (ligne 1 moins lignes 2 et 3)\
 **Lignes 5-6** : Intérêts professionnels, remboursements exceptionnels\
 **Ligne 7** : Total des recettes (ligne 4 + lignes 5 et 6)
@@ -60,7 +60,7 @@ La déclaration 2035 concerne les professionnels libéraux au **régime réel**.
 **Ligne 22** : Assurances RCP, prévoyance, mutuelle\
 **Ligne 23** : Frais kilométriques (+ remplir annexe B)\
 **Ligne 24** : Déplacements, hébergement, repas professionnels\
-**Ligne 25** : Cotisations URSSAF, CARMF, URPS (hors CSG ligne 14)\
+**Ligne 25** : [Cotisations URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf), URPS (hors CSG ligne 14)\
 **Ligne 26** : Formations et congrès\
 **Ligne 27** : Téléphone, internet, fournitures\
 **Ligne 29** : Cotisations ordre, AGA, syndicats\

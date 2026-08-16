@@ -1,34 +1,34 @@
 ---
 import { getCollection } from 'astro:content';
-import { getImage } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import BlogCard from '@/components/BlogCard.astro';
 import { SITE_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
+import { seriesPath } from '@/lib/blog-series-slugs';
+import { resolveCover, resolveCovers } from '@/lib/blog-covers';
 
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
 
-const blogImages = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/blog/**/*.{png,jpg,jpeg,webp}',
-  { eager: true }
-);
+const covers = await resolveCovers(posts);
 
-const covers = new Map<string, { src: string; width: number; height: number }>();
-for (const post of posts) {
-  const assetPath = post.data.cover.replace(/^\/blog\//, '/src/assets/blog/');
-  const mod = blogImages[assetPath];
-  if (mod) {
-    const img = await getImage({ src: mod.default, width: 640, format: 'webp' });
-    covers.set(post.id, {
-      src: img.src,
-      width: Number(img.attributes.width),
-      height: Number(img.attributes.height),
-    });
-  }
-}
+/* Mise en avant du dernier article : sans hiérarchie éditoriale, le guide le plus
+   stratégique avait exactement le même poids visuel que le plus anecdotique. */
+const [featured, ...rest] = posts;
+/* Seuls les 9 suivants passent en cartes : les 38 empilées faisaient 19 000 px de
+   haut en mobile. Les 38 restent tous accessibles via l'index en bas de page. */
+const recents = rest.slice(0, 9);
+const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
+
+/* La cover « à la une » devient l'élément LCP de la page. Servie en 1200 px fixes,
+   elle faisait chuter le LCP à 4,1 s (perf 97 → 87). Elle s'affiche au plus sur la
+   moitié d'un conteneur de 1152 px : deux largeurs en srcset suffisent, l'une pour
+   le mobile, l'autre pour le desktop en densité 2x. */
+const featuredCover = await resolveCover(featured.data.cover, 1024);
+const featuredCoverSmall = await resolveCover(featured.data.cover, 640);
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -60,88 +60,146 @@ const blogSchema = {
 
 <BaseLayout title={title} description={description} path="/blog" jsonLd={[blogSchema]}>
   <Header />
-  <main class="container px-4 py-10">
-    <header class="mx-auto mb-10 max-w-2xl text-center">
-      <h1 class="text-3xl font-bold text-foreground md:text-4xl">Le blog des médecins remplaçants</h1>
-      <p class="mt-3 text-lg text-muted-foreground">
-        {posts.length} fiches pratiques sur la fiscalité, les cotisations URSSAF et CARMF, les contrats et la vie du remplaçant — écrites par le Dr. Ryan Goburdhun, médecin et fondateur d'Hippodoc.
+  <main class="container px-4 py-10" data-blog-total={posts.length}>
+    {/* En-tête resserré : la version centrée occupait 492 px avant la première
+         carte en mobile, soit un écran entier de texte. Alignée à gauche, phrase
+         courte. La signature « écrites par le Dr. Ryan Goburdhun » a été retirée
+         d'ici : elle reste sur chaque article (bloc auteur + JSON-LD `Article`),
+         où elle porte un signal E-E-A-T réel et vérifiable article par article. */}
+    <header class="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-hippo-100 pb-6">
+      <div>
+        {/* Même traitement que le H1 de la landing (HeroSection) : base hippo-800,
+            dégradé hippo-500→600 sur le membre de phrase accentué. Le dégradé reste
+            réservé aux très grands titres — à cette taille il passe le seuil AA
+            « grand texte » (3:1), ce qui ne serait pas le cas en petit corps. */}
+        <h1 class="text-4xl font-bold leading-tight tracking-tight text-hippo-800 md:text-5xl">
+          Le blog des <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">médecins remplaçants</span>
+        </h1>
+        <p class="mt-2 text-lg text-muted-foreground">
+          Fiscalité, cotisations URSSAF et CARMF, contrats et vie du remplaçant.
+        </p>
+      </div>
+      <p class="text-sm text-muted-foreground">
+        <span class="font-semibold text-hippo-700">{posts.length}</span> fiches pratiques
       </p>
     </header>
 
-    <!-- Filtre par série, 100 % CSS (radios + sélecteurs) -->
-    <div class="blog-filter">
-      <input type="radio" name="series-filter" id="filter-tous" class="sr-only" checked />
-      <input type="radio" name="series-filter" id="filter-fiche-pratique" class="sr-only" />
-      <input type="radio" name="series-filter" id="filter-fiche-fiscalite" class="sr-only" />
-      <input type="radio" name="series-filter" id="filter-divers" class="sr-only" />
+    {/* Navigation par série. Anciennement un filtre 100 % CSS (radios + `display:none`)
+         qui ne laissait aucune trace dans l'URL : impossible à partager, à mettre en
+         favori ou à retrouver avec le bouton Retour, et invisible pour l'indexation.
+         Ce sont désormais de vrais liens vers /blog/serie/*, avec le focus clavier
+         natif (les radios `sr-only` posaient un problème WCAG 2.4.7). */}
+    <nav aria-label="Séries du blog" class="mb-8 flex flex-wrap justify-center gap-2">
+      <a
+        href="/blog"
+        aria-current="page"
+        class="rounded-full border border-hippo-600 bg-hippo-600 px-4 py-2 text-sm font-medium text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {/* Le compteur était en `text-white/80` : 3,85:1 sur hippo-600, sous le seuil
+            AA (même /90 ne donne que 4,47). La nuance passe donc par la graisse et
+            non par l'opacité — blanc plein = 5,15:1. */}
+        Tous les articles <span class="font-normal text-white">({posts.length})</span>
+      </a>
+      {blogSeries.map((s) => (
+        <a
+          href={seriesPath(s.id)}
+          class="rounded-full border border-hippo-200 px-4 py-2 text-sm font-medium text-hippo-700 transition-colors hover:bg-hippo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {s.name} <span class="text-hippo-600">({seriesCounts.get(s.id)})</span>
+        </a>
+      ))}
+    </nav>
 
-      <div class="mb-8 flex flex-wrap justify-center gap-2">
-        <label for="filter-tous" class="filter-btn cursor-pointer rounded-full border border-hippo-200 px-4 py-2 text-sm font-medium text-hippo-700 transition-colors hover:bg-hippo-50">
-          Tous les articles <span class="text-hippo-600">({posts.length})</span>
-        </label>
+    {/* Article mis en avant : pleine largeur, cover en priorité (c'est le LCP
+         de la page), pour donner une hiérarchie de lecture dès le premier écran. */}
+    <a
+      href={`/blog/${featured.id}`}
+      class="blog-card-hover mb-10 grid overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm md:grid-cols-2"
+    >
+      <div class="flex flex-col justify-center p-6 md:p-8">
+        <div class="mb-3 flex items-center gap-2">
+          <span class="rounded-full bg-hippo-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-hippo-700">À la une</span>
+          {featuredSeries && <span class={`series-badge bg-gradient-to-r ${featuredSeries.color}`}>{featuredSeries.name}</span>}
+        </div>
+        <h2 class="text-2xl font-bold leading-snug text-foreground md:text-3xl">{featured.data.title}</h2>
+        <p class="mt-3 text-muted-foreground">{featured.data.description}</p>
+        <div class="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
+          <time datetime={featured.data.pubDate.toISOString()}>{formatDate(featured.data.pubDate)}</time>
+          <span>{featured.data.readTime}</span>
+        </div>
+      </div>
+
+      {/* L'image vient APRÈS le texte dans le DOM, et reprend la colonne de gauche
+           en desktop via `order`. En mobile elle sortait sinon du premier écran et
+           devenait l'élément LCP : chargée en priorité, elle faisait tomber la perf
+           de 97 à 87 (LCP 4,1 s). Le titre redevient le LCP, et l'image se charge
+           en différé sans bloquer le rendu. */}
+      {featuredCover && (
+        <img
+          src={featuredCover.src}
+          srcset={featuredCoverSmall ? `${featuredCoverSmall.src} 640w, ${featuredCover.src} 1024w` : undefined}
+          sizes="(min-width: 768px) 50vw, 100vw"
+          alt=""
+          width={featuredCover.width}
+          height={featuredCover.height}
+          class="aspect-[16/9] w-full object-cover md:order-first md:h-full"
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+    </a>
+
+    <h2 class="mb-5 text-xl font-bold text-foreground">Derniers articles</h2>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {recents.map((post) => (
+        <BlogCard
+          slug={post.id}
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          readTime={post.data.readTime}
+          seriesId={post.data.seriesId}
+          episodeNumber={post.data.episodeNumber}
+          cover={covers.get(post.id)}
+        />
+      ))}
+    </div>
+
+    {/* Index complet. Les 38 cartes empilées faisaient 19 000 px de haut en mobile
+         et n'offraient aucun moyen de repérer un sujet précis : on ne pouvait que
+         faire défiler. Cette liste donne les 38 titres d'un coup d'œil, groupés par
+         série. Toujours visible (pas de <details>) pour rester scannable et
+         indexable, en trois colonnes sur grand écran. */}
+    <section class="mt-16 border-t border-hippo-100 pt-10" aria-labelledby="index-titre">
+      <h2 id="index-titre" class="text-xl font-bold text-foreground">Tous les articles</h2>
+      <p class="mt-1 text-sm text-muted-foreground">Les {posts.length} fiches, classées par série.</p>
+
+      <div class="mt-8 grid gap-x-10 gap-y-9 lg:grid-cols-3">
         {blogSeries.map((s) => (
-          <label for={`filter-${s.id}`} class="filter-btn cursor-pointer rounded-full border border-hippo-200 px-4 py-2 text-sm font-medium text-hippo-700 transition-colors hover:bg-hippo-50">
-            {s.name} <span class="text-hippo-600">({seriesCounts.get(s.id)}{s.totalEpisodes ? `/${s.totalEpisodes}` : ''})</span>
-          </label>
+          <div>
+            <h3 class="flex items-baseline gap-2 border-b border-hippo-100 pb-2">
+              <a href={seriesPath(s.id)} class="font-semibold text-hippo-700 hover:text-hippo-800">{s.name}</a>
+              <span class="text-xs font-normal text-muted-foreground">{seriesCounts.get(s.id)}</span>
+            </h3>
+            <ul class="mt-3 space-y-1">
+              {posts
+                .filter((p) => p.data.seriesId === s.id)
+                .map((p) => (
+                  <li>
+                    <a
+                      href={`/blog/${p.id}`}
+                      class="flex items-baseline justify-between gap-3 rounded-md py-1.5 text-sm leading-snug text-foreground transition-colors hover:text-hippo-700"
+                    >
+                      <span>{p.data.title}</span>
+                      <span class="shrink-0 text-xs tabular-nums text-muted-foreground">{p.data.readTime}</span>
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </div>
         ))}
       </div>
-
-      <div class="blog-grid grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => {
-          const series = blogSeries.find((s) => s.id === post.data.seriesId);
-          const cover = covers.get(post.id);
-          return (
-            <article class={`blog-card s-${post.data.seriesId} blog-card-hover overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm`}>
-              <a href={`/blog/${post.id}`} class="block">
-                {cover && (
-                  <img
-                    src={cover.src}
-                    alt=""
-                    width={cover.width}
-                    height={cover.height}
-                    class="aspect-[16/9] w-full object-cover"
-                    loading="lazy"
-                  />
-                )}
-                <div class="p-5">
-                  <div class="mb-2 flex items-center gap-2">
-                    {series && (
-                      <span class={`series-badge bg-gradient-to-r ${series.color}`}>{series.name}</span>
-                    )}
-                    {post.data.episodeNumber !== undefined && post.data.seriesId !== 'divers' && (
-                      <span class="text-xs text-muted-foreground">#{post.data.episodeNumber}</span>
-                    )}
-                  </div>
-                  <h2 class="text-lg font-bold leading-snug text-foreground">{post.data.title}</h2>
-                  <p class="mt-2 line-clamp-3 text-sm text-muted-foreground">{post.data.description}</p>
-                  <div class="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-                    <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-                    <span>{post.data.readTime}</span>
-                  </div>
-                </div>
-              </a>
-            </article>
-          );
-        })}
-      </div>
-    </div>
+    </section>
   </main>
   <Footer />
 </BaseLayout>
-
-<style>
-  /* État actif des boutons + filtrage par série, sans JavaScript */
-  #filter-tous:checked ~ div label[for='filter-tous'],
-  #filter-fiche-pratique:checked ~ div label[for='filter-fiche-pratique'],
-  #filter-fiche-fiscalite:checked ~ div label[for='filter-fiche-fiscalite'],
-  #filter-divers:checked ~ div label[for='filter-divers'] {
-    background-color: theme('colors.hippo.600');
-    border-color: theme('colors.hippo.600');
-    color: white;
-  }
-  #filter-fiche-pratique:checked ~ .blog-grid .blog-card:not(.s-fiche-pratique),
-  #filter-fiche-fiscalite:checked ~ .blog-grid .blog-card:not(.s-fiche-fiscalite),
-  #filter-divers:checked ~ .blog-grid .blog-card:not(.s-divers) {
-    display: none;
-  }
-</style>

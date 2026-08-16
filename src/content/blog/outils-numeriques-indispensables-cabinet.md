@@ -56,7 +56,7 @@ C'est enfin l'heure de démarrer ton remplacement en médecine générale ? Fél
 
 :::tip
 **Hippodoc.fr** optimise entièrement ton quotidien de remplaçant avec :\
-✅ Suivi simplifié des paiements et estimation instantanée de ton revenu net (« Super-Net »)\
+✅ Suivi simplifié des paiements et estimation instantanée de ton revenu net (« [Super-Net](/blog/simulateur-super-net-combien-reste) »)\
 ✅ Statistiques détaillées sur tes revenus\
 ✅ Calendrier intelligent et intuitif\
 ✅ Ajout facile des charges et amortissements\

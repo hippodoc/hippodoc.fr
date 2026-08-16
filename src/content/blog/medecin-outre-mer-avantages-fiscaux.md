@@ -51,7 +51,7 @@ slides:
 - Depuis la loi du **11 août 2025**, **Mayotte** bénéficie d'une zone franche globale avec **abattement de 100 % sur les bénéfices pendant 5 ans** (2025-2029), plafonnée à **300 000 €** par 12 mois, ce qui en fait le territoire fiscal le plus favorable de France pour un médecin libéral.
 :::
 
-Tu as sans doute déjà entendu la phrase magique : « *Installe-toi en Guadeloupe ou à La Réunion, t'auras zéro impôt pendant 5 ans !* » Désolé de casser le mythe : **c'est faux**. Il y a bien de vrais avantages DROM pour un médecin, mais ils ne fonctionnent pas comme tu crois, et surtout ils dépendent massivement de ton mode d'exercice : libéral BNC, SEL, remplaçant, salarié, ou cabinet avec des salariés.
+Tu as sans doute déjà entendu la phrase magique : « *Installe-toi en Guadeloupe ou à La Réunion, t'auras zéro impôt pendant 5 ans !* » Désolé de casser le mythe : **c'est faux**. Il y a bien de vrais avantages DROM pour un médecin, mais ils ne fonctionnent pas comme tu crois, et surtout ils dépendent massivement de ton [mode d'exercice](/blog/choix-mode-exercice) : libéral BNC, SEL, remplaçant, salarié, ou cabinet avec des salariés.
 
 Cette fiche fait le tri, à jour pour 2026, avec un focus particulier sur **Mayotte** qui a changé complètement de dimension depuis la loi de finances 2025.
 
@@ -68,7 +68,7 @@ Si tu es fiscalement domicilié dans un DROM, tu bénéficies chaque année d'un
 **30 %**, plafonné à **2 450 €**, en Guadeloupe, Martinique et La Réunion\
 **40 %**, plafonné à **4 050 €**, en Guyane et à Mayotte
 
-## Exemple concret
+### Exemple concret
 
 :::tip
 Important : ce n'est **pas une exonération du bénéfice de ton cabinet**. C'est une réduction de l'impôt personnel que tu dois payer au final. Concrètement, un médecin qui doit **12 000 € d'impôt sur le revenu** en Martinique paiera au maximum **9 550 €**. L'avantage s'applique tant que ton domicile fiscal reste dans le DROM.
@@ -83,10 +83,10 @@ C'est le levier **le plus mal connu et le plus puissant en début d'activité**.
 **À partir de la 4ᵉ année** : exonération de **50 %**, sous seuils.\
 **À Mayotte**, le dispositif n'est pas le même : c'est l'article 28-8 de l'ordonnance du 20 décembre 1996 qui s'applique, avec **24 mois d'exonération** à la création.
 
-## Attention : ce n'est pas « zéro charges »
+### Attention : ce n'est pas « zéro charges »
 
 :::warning
-Ce n'est **pas « zéro charges sociales »** au sens absolu. Les **cotisations de retraite complémentaire CARMF**, ainsi que certaines cotisations professionnelles, restent à ta charge. Si tu veux simuler ton vrai « super-net », il faut intégrer ça dès le départ.
+Ce n'est **pas « zéro [charges sociales](/blog/cotisations-sociales-vs-impots) »** au sens absolu. Les **cotisations de retraite complémentaire [CARMF](/blog/tout-comprendre-carmf)**, ainsi que certaines cotisations professionnelles, restent à ta charge. Si tu veux simuler ton vrai « [super-net](/blog/simulateur-super-net-combien-reste) », il faut intégrer ça dès le départ.
 :::
 
 ## 👥 3. LODEOM : le levier oublié pour les cabinets qui emploient
@@ -101,7 +101,7 @@ Dans le barème de base :
 
 Pour certains secteurs prioritaires, il existe un **barème renforcé**. Sur une secrétaire médicale à temps plein rémunérée autour du SMIC, le gain annuel en charges patronales se chiffre facilement en **milliers d'euros**.
 
-## ⚠️ 4. Le gros faux ami : la ZFANG
+### ⚠️ 4. Le gros faux ami : la ZFANG
 
 :::warning
 La **ZFANG** (zone franche d'activités nouvelle génération) est souvent vendue comme l'eldorado fiscal des DROM. Problème : **les activités libérales et BNC en sont exclues** dans les DROM historiques. Le BOFiP est très clair sur ce point. Comme l'abattement de CFE ZFANG renvoie aux mêmes conditions, la réponse est aussi « non » côté CFE.
@@ -122,7 +122,7 @@ La **loi du 11 août 2025** de programmation pour la refondation de Mayotte a cr
 **Plafond** : 300 000 € par période de 12 mois\
 **Conditions** : moins de 250 salariés et moins de 50 M€ de CA
 
-## Mayotte = territoire le plus favorable de France
+### Mayotte = territoire le plus favorable de France
 
 :::tip
 Couplé au **régime social local** (24 mois d'exonération à la création) et au **régime employeur transitoire 2026** (CICE mahorais + nouveaux allègements, pleinement appliqués au 1er juillet 2026), **Mayotte est objectivement le territoire le plus favorable en France pour un médecin qui s'installe en libéral aujourd'hui**.
@@ -155,5 +155,5 @@ Sur **hippodoc.fr**, tu peux simuler ton **vrai revenu net** selon ton mode d'ex
 ## ⚖️ Mention légale
 
 :::warning
-Fiche informative à jour au **18 avril 2026**. Les dispositifs cités reposent sur des textes officiels (Code de la sécurité sociale, BOFiP, loi de finances 2025, conventions Assurance Maladie). Cette fiche ne remplace pas un conseil personnalisé : **valide systématiquement ta situation avec un expert-comptable, un avocat fiscaliste ou ton Urssaf locale** avant toute décision d'installation.
+Fiche informative à jour au **18 avril 2026**. Les dispositifs cités reposent sur des textes officiels (Code de la sécurité sociale, BOFiP, loi de finances 2025, conventions Assurance Maladie). Cette fiche ne remplace pas un conseil personnalisé : **valide systématiquement ta situation avec un expert-comptable, un avocat fiscaliste ou ton [Urssaf](/blog/tout-comprendre-urssaf) locale** avant toute décision d'installation.
 :::

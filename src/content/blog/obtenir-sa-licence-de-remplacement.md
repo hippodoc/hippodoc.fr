@@ -63,11 +63,11 @@ La licence de remplacement est valable pour une durée d'un an, jusqu'au 15 nove
 :::warning
 La licence de remplacement atteste uniquement que tu remplis les conditions légales pour effectuer des remplacements.\
 Elle ne constitue PAS une autorisation directe pour remplacer.\
-Tu devras obligatoirement établir un contrat de remplacement, une démarche indispensable que nous détaillerons très prochainement dans une autre fiche pratique.
+Tu devras obligatoirement établir un [contrat de remplacement](/blog/signer-contrat-remplacement), une démarche indispensable que nous détaillerons très prochainement dans une autre fiche pratique.
 :::
 
 ## Astuce pratique pour simplifier ta vie d'interne
 
 :::tip
-L'application Hippodoc est un outil précieux qui te permet de gérer tes remplacements de façon intuitive et efficace : calendrier intelligent, gestion des contrats numériques, simulateur "Super-Net" et suivi simplifié de tes paiements. Une aide précieuse pour débuter en toute sérénité !
+L'application Hippodoc est un outil précieux qui te permet de gérer tes remplacements de façon intuitive et efficace : calendrier intelligent, gestion des contrats numériques, simulateur "[Super-Net](/blog/simulateur-super-net-combien-reste)" et suivi simplifié de tes paiements. Une aide précieuse pour débuter en toute sérénité !
 :::

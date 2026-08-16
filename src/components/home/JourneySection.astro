@@ -4,7 +4,7 @@
  * Le sélecteur de profil (state React + ?parcours= dans l'URL) devient un jeu de
  * 5 radios cachées + labels + panneaux, entièrement piloté en CSS (zéro JS).
  */
-import { APP_URL } from '@/lib/site';
+import { APP_URL, CALENDLY_URL } from '@/lib/site';
 import SectionBadge from './SectionBadge.astro';
 
 const BETA_NOTE = "Module en bêta — déjà utilisable, on l'affine avec les premiers utilisateurs.";
@@ -92,7 +92,7 @@ const PROFILES = [
 ] as const;
 ---
 
-<section id="parcours" class="relative scroll-mt-28 overflow-hidden bg-gradient-to-b from-white to-hippo-50/40 py-16 md:scroll-mt-32 md:py-24">
+<section data-landing-section="practice-journeys" id="parcours" class="relative scroll-mt-28 overflow-hidden bg-gradient-to-b from-white to-hippo-50/40 py-16 md:scroll-mt-32 md:py-24">
   <div class="container relative">
     <div class="mx-auto mb-9 max-w-3xl text-center md:mb-12">
       <SectionBadge title="Parcours" subtitle="5 profils">
@@ -225,6 +225,23 @@ const PROFILES = [
       <p class="mt-5 text-center text-[13px] text-slate-500">
         Pensé par un médecin, pour tous les médecins — de l'internat à la retraite.
       </p>
+
+      {/* Une LIGNE, pas un bouton. C'est la seule section de la page qui demande
+          « qui es-tu ? » : celui qui ne se reconnaît dans aucun des cinq profils n'a
+          aujourd'hui aucune porte de sortie hormis s'inscrire. La prominence suit le
+          rôle — une phrase là où le doute naît, une vraie carte en fin de FAQ où le
+          lecteur a épuisé l'auto-service. La section garde donc UN seul bouton. */}
+      <p class="mx-auto mt-3 max-w-xl text-center text-[13px] leading-relaxed text-slate-500">
+        Ton cas n'est pas listé — interne en fin de cursus, exercice mixte, installation en cours ?{' '}
+        <a
+          href={CALENDLY_URL}
+          data-calendly="pour_qui"
+          target="_blank"
+          rel="noopener"
+          class="inline-flex min-h-6 items-center font-semibold text-hippo-600 underline underline-offset-2 hover:text-hippo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-600"
+        >Prends 15 min avec Ryan</a>, médecin remplaçant : il te dira franchement si Hippodoc
+        t'apporte quelque chose.
+      </p>
     </div>
   </div>
 </section>
@@ -240,13 +257,26 @@ const PROFILES = [
     display: block;
   }
 
+  /* Focus clavier : mêmes radios `sr-only` que le filtre du blog — sans cette
+     règle, le focus est invisible (WCAG 2.4.7). */
+  #parcours-remplacant:focus-visible ~ .tabs label[data-profile='remplacant'],
+  #parcours-interne:focus-visible ~ .tabs label[data-profile='interne'],
+  #parcours-mixte:focus-visible ~ .tabs label[data-profile='mixte'],
+  #parcours-collaborateur:focus-visible ~ .tabs label[data-profile='collaborateur'],
+  #parcours-installe:focus-visible ~ .tabs label[data-profile='installe'] {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
   #parcours-remplacant:checked ~ .tabs label[data-profile='remplacant'],
   #parcours-interne:checked ~ .tabs label[data-profile='interne'],
   #parcours-mixte:checked ~ .tabs label[data-profile='mixte'],
   #parcours-collaborateur:checked ~ .tabs label[data-profile='collaborateur'],
   #parcours-installe:checked ~ .tabs label[data-profile='installe'] {
     border-color: transparent;
-    background-color: theme('colors.hippo.500');
+    /* hippo-500 donnait 3,36:1 avec du blanc à 13px — sous le seuil AA de 4,5:1.
+       hippo-600 monte à 5,15:1. Même racine que les badges de PricingSection. */
+    background-color: theme('colors.hippo.600');
     color: white;
     box-shadow: 0 10px 15px -3px rgba(26, 140, 255, 0.2);
   }

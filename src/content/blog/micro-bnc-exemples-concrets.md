@@ -31,17 +31,17 @@ Entre ton **chiffre d'affaires (CA)** et ce qui arrive vraiment dans ta poche, d
 
 ## 1️⃣ Les cotisations sociales : via le régime PAMC (> 38k€)
 
-**URSSAF** = ta santé + contributions obligatoires\
-**CARMF** = ta retraite + ta prévoyance
+**[URSSAF](/blog/tout-comprendre-urssaf)** = ta santé + contributions obligatoires\
+**[CARMF](/blog/tout-comprendre-carmf)** = ta retraite + ta prévoyance
 
-💡 **< 38k€ de CA** → tu es au **régime simplifié RSPM** (cf. fiche précédente)
+💡 **< 38k€ de CA** → tu es au **régime simplifié [RSPM](/blog/rspm-exemples-concrets)** (cf. fiche précédente)
 
 ## 2️⃣ L'impôt sur le revenu : via le micro-BNC (< 83,6k€)
 
 **Abattement automatique de 34 %** (comme si tu avais 34 % de frais pro non imposables sans justificatifs)\
 Tu es imposé uniquement sur les **66 %** restants
 
-✅ Ce qui reste après tout ça = ton **super net** 💶
+✅ Ce qui reste après tout ça = ton **[super net](/blog/simulateur-super-net-combien-reste)** 💶
 
 ## 🧪 EXEMPLE 1 : CA 50 000 €
 
@@ -104,7 +104,7 @@ Tu es imposé uniquement sur les **66 %** restants
 ## ⚠️ Attention
 
 :::warning
-**Si tu dépasses 83 600 € de CA sur 2 années consécutives** → sortie du micro-BNC, passage au **régime réel** (cf. prochaine fiche)
+**Si tu dépasses 83 600 € de CA sur 2 années consécutives** → sortie du [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel), passage au **régime réel** (cf. prochaine fiche)
 :::
 
 ## 🚀 Le Tips Hippodoc

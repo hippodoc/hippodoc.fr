@@ -39,7 +39,7 @@ En France, tu as le choix entre **deux régimes fiscaux principaux** pour décla
 ## ✅ Le régime Micro-BNC : simplicité idéale pour débuter
 
 ✅ **Déclaration simplifiée** : Tu déclares uniquement ton revenu annuel total, **sans détailler tes charges**.\
-✅ **Abattement forfaitaire de 34%** : L'administration fiscale applique automatiquement un abattement de 34% sur tes revenus pour couvrir tes frais professionnels, **sans justificatifs à fournir**.\
+✅ **[Abattement forfaitaire de 34](/blog/micro-bnc-exemples-concrets)%** : L'administration fiscale applique automatiquement un abattement de 34% sur tes revenus pour couvrir tes [frais professionnels](/blog/frais-professionnels-deductibles), **sans justificatifs à fournir**.\
 ✅ **Plafond de revenus** : Ce régime est accessible tant que tes revenus annuels ne dépassent pas **83 600 € par an**.
 
 ## Attention au dépassement du plafond de 83 600 €
@@ -64,5 +64,5 @@ Si tu dépasses **83 600 € pendant 2 années consécutives** : tu **sors autom
 ## 🔥 Astuce Hippodoc : simplifie ta gestion fiscale !
 
 :::tip
-Avec Hippodoc, enregistre facilement toutes tes **charges quotidiennes** (déplacements, matériel, formations, etc.) et utilise notre **simulateur intégré** pour estimer automatiquement tes **cotisations sociales** et ton revenu **"Super-Net"** après impôts. Optimise ta fiscalité en toute sérénité et fais les bons choix pour ton avenir ! 📊✨
+Avec Hippodoc, enregistre facilement toutes tes **charges quotidiennes** (déplacements, matériel, formations, etc.) et utilise notre **simulateur intégré** pour estimer automatiquement tes **cotisations sociales** et ton revenu **"[Super-Net](/blog/simulateur-super-net-combien-reste)"** après impôts. Optimise ta fiscalité en toute sérénité et fais les bons choix pour ton avenir ! 📊✨
 :::

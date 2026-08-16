@@ -94,10 +94,10 @@ On va suivre **Léa, interne en 3e année de médecine générale**. Salaire imp
 **Médecins de prévention** ou du travail\
 **Étudiants hospitaliers** de 2e cycle (annexe)
 
-## ⚠️ Tu exerces uniquement en libéral ?
+### ⚠️ Tu exerces uniquement en libéral ?
 
 :::warning
-Si tu exerces **uniquement en libéral** (BNC, secteur 1), ce guide n'est pas pour toi : tes frais relèvent de la déclaration **2035** ou du **micro-BNC**. Si tu fais les deux (salariat + remplacements libéraux), une section dédiée plus bas explique comment ne pas tout mélanger.
+Si tu exerces **uniquement en libéral** (BNC, secteur 1), ce guide n'est pas pour toi : tes frais relèvent de la déclaration **[2035](/blog/remplir-declaration-2035)** ou du **[micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel)**. Si tu fais les deux ([salariat](/blog/salariat-vs-liberal) + remplacements libéraux), une section dédiée plus bas explique comment ne pas tout mélanger.
 :::
 
 ## 🎯 La règle-mère : forfait 10 % ou frais réels ?
@@ -106,7 +106,7 @@ Quand tu déclares tes salaires, l'administration applique automatiquement une *
 
 Tu peux la remplacer par le **régime des frais réels** si le total de tes dépenses pros justifiées dépasse ce forfait. Le choix se fait **personne par personne** dans le foyer fiscal et **sur la totalité des salaires de l'année** — pas de panachage entre 10 % et frais réels.
 
-## 💡 Règle d'or
+### 💡 Règle d'or
 
 :::tip
 Une déduction réduit le **revenu imposable**, pas l'impôt euro pour euro. À 30 % de tranche marginale, **1 000 € de frais réels = environ 300 € d'impôt en moins**.
@@ -129,7 +129,7 @@ Pour un **interne en stage éloigné**, un **PH multi-sites** ou tout médecin a
 **Compare** : si le total dépasse le forfait, l'option frais réels est gagnante.\
 **Garde** uniquement les dépenses avec preuve solide et lien pro clair.
 
-## 💎 Pépite peu connue : la déclaration corrective sur 3 ans
+### 💎 Pépite peu connue : la déclaration corrective sur 3 ans
 
 :::tip
 Tu peux faire une **déclaration corrective sur 3 ans** (revenus 2022, 2023, 2024) si tu as coché 10 % par défaut alors que tu aurais dû passer aux frais réels. Plusieurs médecins ont ainsi récupéré **1 000 à 2 000 € rétroactivement**.
@@ -139,17 +139,17 @@ Tu peux faire une **déclaration corrective sur 3 ans** (revenus 2022, 2023, 202
 
 Léa habite à **30 km du CHU** et fait **200 jours de stage** avec sa Clio (5 CV thermique, la voiture la plus courante en France).
 
-Avec le **barème kilométrique 2026** : (12 000 × 0,357) + 1 395 = **5 679 € déductibles**.
+Avec le **[barème kilométrique](/blog/frais-pros-medecin-liberal-2026) 2026** : (12 000 × 0,357) + 1 395 = **5 679 € déductibles**.
 
 Le barème couvre **dépréciation, entretien, pneus, carburant et assurance**. Pour un véhicule **électrique : majoration de 20 %**. Pour une **moto 1-2 CV thermique : 0,395 €/km**.
 
-## ⚠️ La règle des 40 km
+### ⚠️ La règle des 40 km
 
 :::warning
 Au-delà de **40 km aller**, tu dois justifier d'un motif (activité du conjoint ou partenaire, mutation, scolarité des enfants, santé documentée, rareté du logement proche). **Sans motif, l'administration ne retient que les 40 premiers km**.
 :::
 
-## ➕ Ce qui s'ajoute / ❌ ce qui est déjà inclus
+### ➕ Ce qui s'ajoute / ❌ ce qui est déjà inclus
 
 **S'ajoute au barème** : parking hôpital nominatif, péages avec relevé télépéage, intérêts d'emprunt du véhicule au prorata pro.\
 **Déjà inclus dans le barème** : carburant, assurance, entretien, dépréciation, pneus.
@@ -175,10 +175,10 @@ Trois cas qui passent crème :\
 • Stages éloignés sans cantine accessible\
 • Repas pris à la cantine à un tarif supérieur à 5,45 €
 
-## ⚠️ Pas de double déduction repas
+### ⚠️ Pas de double déduction repas
 
 :::warning
-Si l'employeur t'indemnise (titre-restaurant, indemnité repas), **pas de double déduction**. Plafonds URSSAF 2026 pour les indemnités repas employeur : **7,50 €** au lieu de travail, **10,40 €** collation hors entreprise, **21,40 €** restaurant en déplacement professionnel.
+Si l'employeur t'indemnise (titre-restaurant, indemnité repas), **pas de double déduction**. Plafonds [URSSAF](/blog/tout-comprendre-urssaf) 2026 pour les indemnités repas employeur : **7,50 €** au lieu de travail, **10,40 €** collation hors entreprise, **21,40 €** restaurant en déplacement professionnel.
 :::
 
 ## 🎓 Poste 3 — Formation, DPC, DU/DIU, congrès
@@ -244,7 +244,7 @@ Avant de penser frais réels, **demande au CHU les indemnités auxquelles tu as 
 
 **Déménagement pour mutation ou affectation** : transport des meubles, déménageur, location utilitaire, frais de voyage liés. **Pas l'achat de meubles, ni le dépôt de garantie, ni les frais d'agence immobilière.**
 
-## ⚠️ Exercice mixte salarié + libéral : 2 déclarations distinctes
+### ⚠️ Exercice mixte salarié + libéral : 2 déclarations distinctes
 
 :::warning
 Si tu fais des remplacements libéraux en parallèle de ton activité salariée (cas fréquent chez les internes en fin de cursus et chez les PH), tu dois faire **deux déclarations séparées** :

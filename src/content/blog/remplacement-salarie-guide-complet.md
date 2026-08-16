@@ -26,7 +26,7 @@ relatedArticles:
   - "cotisations-sociales-vs-impots"
 ---
 
-Tu veux remplacer sans te noyer dans l'URSSAF, la CARMF ou la comptabilité ? 👉 Le statut salarié est peut-être fait pour toi.
+Tu veux remplacer sans te noyer dans l'[URSSAF](/blog/tout-comprendre-urssaf), la [CARMF](/blog/tout-comprendre-carmf) ou la comptabilité ? 👉 Le statut salarié est peut-être fait pour toi.
 
 ## 1️⃣ C'est quoi ?
 
@@ -53,7 +53,7 @@ Tu cotises automatiquement au **régime général**.\
 
 💼 Revenu déclaré comme **« traitements & salaires »**\
 → Prélèvement à la source automatique\
-❌ Aucune déclaration BNC, aucun formulaire 2035
+❌ Aucune déclaration BNC, aucun formulaire [2035](/blog/remplir-declaration-2035)
 
 ## 5️⃣ Frais pros déductibles ?
 
@@ -68,7 +68,7 @@ Tu as 2 options :\
 ✔ Zéro comptabilité\
 ✔ Pas d'avance de trésorerie\
 ✔ Congés payés & RTT\
-✔ IJ maladie / congé maternité et parternité\
+✔ IJ maladie / [congé maternité](/blog/conge-maternite-paternite) et parternité\
 ✔ Droits chômage\
 ✔ Mutuelle + RCP souvent incluses\
 ✔ Formation via CPF / DPC salarié\

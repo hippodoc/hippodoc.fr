@@ -7,48 +7,113 @@
  * gtag.js et Crisp ne sont injectés qu'après `load` + idle (~4 s) OU à la
  * première interaction (pointerdown/keydown/touchstart), au premier des deux.
  * Le Meta Pixel n'est chargé qu'avec le consentement « accepted » (comme la source).
- * Consentement : cookie `cookie-consent` Domain=.hippodoc.fr (partagé avec
- * app.hippodoc.fr) + miroir localStorage['cookie-consent'] (clé de la source,
- * fallback pour les choix historiques et le dev en localhost).
+ * Clé de consentement identique à la source : localStorage['cookie-consent'].
  * Calendly : simples liens HTML (zéro script) — pas de widget flottant.
  */
 ---
 
-<!-- Bannière cookies (masquée par défaut ; affichée par le script si aucun choix stocké) -->
-<div
-  id="cookie-banner"
-  hidden
-  class="fixed inset-x-0 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-50 mx-auto w-[calc(100%-1.5rem)] max-w-md overflow-y-auto rounded-lg border border-border bg-white/95 p-3 shadow-xl backdrop-blur-sm sm:bottom-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-4"
-  role="dialog"
-  aria-modal="false"
-  aria-labelledby="cookie-banner-title"
->
-  <div class="flex flex-col items-center text-center">
-    <div class="mb-2 flex w-full items-center justify-between">
-      <div class="flex items-center gap-2 text-hippo-600">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-        <h3 id="cookie-banner-title" class="text-sm font-medium text-foreground">Nous respectons votre vie privée</h3>
+<!-- Bannière cookies (masquée par défaut ; affichée par le script si aucun choix stocké).
+     ⚠️ Version compacte (août 2026). L'ancienne faisait 266 px de haut sur un iPhone,
+     soit 40 % du premier écran, et RECOUVRAIT le CTA principal du hero — mesuré : le
+     bouton « Commencer l'essai gratuit » était masqué par la bannière, et l'élément
+     le plus visible du premier écran était « Accepter tous ». Sur du trafic payant,
+     la première action demandée ne peut pas être un choix de cookies posé par-dessus
+     l'offre.
+     Trois décisions pour compacter sans rien perdre :
+       - texte ramené de 40 à 12 mots, les FINALITÉS restant nommées (mesure
+         d'audience, publicité Google/Meta) comme l'exige la CNIL, plus un lien vers
+         la politique de confidentialité qui n'existait pas auparavant ;
+       - les deux boutons passent côte à côte au lieu d'être empilés ;
+       - la croix de fermeture est retirée : elle portait déjà
+         data-cookie-action="essential", donc elle faisait exactement la même chose
+         que « Tout refuser », en moins explicite, et coûtait une ligne entière.
+     Refuser reste aussi simple qu'accepter — même taille, même forme, un seul
+     appui — ce que la CNIL exige. -->
+  <div
+    id="cookie-banner"
+    hidden
+    class="fixed inset-x-0 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-50 mx-auto w-[calc(100%-1.5rem)] max-w-lg rounded-xl border border-border bg-white/95 p-2.5 shadow-xl backdrop-blur-sm sm:bottom-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-4"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="cookie-banner-title"
+  >
+    <h3 id="cookie-banner-title" class="sr-only">Nous respectons votre vie privée</h3>
+
+    <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-4">
+      <p class="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground sm:flex-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0 text-hippo-600" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span>
+          En acceptant, vous autorisez des cookies publicitaires (Google, Meta).{' '}
+          <a href="/politique-confidentialite" class="font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-700">En savoir plus</a>
+        </span>
+      </p>
+
+      <div class="grid shrink-0 grid-cols-2 gap-2 sm:flex">
+        <button type="button" data-cookie-action="essential" class="min-h-11 rounded-md border border-input bg-white px-4 text-xs font-medium text-foreground hover:bg-hippo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-600">
+          Tout refuser
+        </button>
+        <button type="button" data-cookie-action="accept" class="min-h-11 rounded-md bg-gradient-to-r from-hippo-500 to-hippo-600 px-4 text-xs font-medium text-white hover:from-hippo-600 hover:to-hippo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700">
+          Tout accepter
+        </button>
       </div>
-      <button type="button" data-cookie-action="essential" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-hippo-50" aria-label="Fermer">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-      </button>
-    </div>
-    <p class="mb-3 text-xs text-muted-foreground">
-      Avec ton accord, nous utilisons des cookies pour mesurer l'audience et les
-      conversions, améliorer Hippodoc et évaluer nos campagnes publicitaires
-      (Google et Meta). Tu peux tout accepter ou conserver uniquement les cookies
-      essentiels.
-    </p>
-    <div class="flex w-full flex-col justify-center gap-2 sm:flex-row sm:gap-3">
-      <button type="button" data-cookie-action="essential" class="min-h-11 rounded-md border border-input bg-white px-4 py-2 text-xs font-medium text-foreground hover:bg-hippo-50">
-        Essentiels uniquement
-      </button>
-      <button type="button" data-cookie-action="accept" class="min-h-11 rounded-md bg-gradient-to-r from-hippo-500 to-hippo-600 px-4 py-2 text-xs font-medium text-white hover:from-hippo-600 hover:to-hippo-700">
-        Accepter tous
-      </button>
     </div>
   </div>
-</div>
+
+<!-- Lanceur du chat — bulle STATIQUE, aucun script tiers tant qu'on ne clique pas.
+     Crisp se chargeait auparavant au premier geste du visiteur, défilement compris,
+     et posait `crisp-client/session/<id>` AVANT tout choix de cookies et malgré un
+     refus — mesuré. Un widget qu'on n'a pas demandé ne relève d'aucune exemption.
+     En le chargeant au clic, le chat devient un « service explicitement demandé par
+     l'utilisateur », que la CNIL dispense de consentement : le cookie n'arrive plus
+     qu'à ceux qui veulent effectivement parler à quelqu'un.
+     Effet de bord bienvenu avant la campagne payante : `l.js` (~200 Ko) ne part plus
+     pour la quasi-totalité des visiteurs. -->
+<button
+  type="button"
+  id="crisp-launcher"
+  hidden
+  aria-label="Ouvrir le chat"
+  class="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700 motion-reduce:transition-none"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+</button>
+
+<style is:global>
+  /* Le bandeau s'efface quand le tiroir de menu mobile est ouvert.
+     Sans cette règle, les deux sont en z-50 et le bandeau recouvre le bas du menu :
+     « Qui sommes-nous ? », « Connexion » et « Essai gratuit » disparaissaient
+     derrière lui. Quelqu'un qui ouvre le menu navigue — il ne décide pas de ses
+     cookies ; le bandeau revient à la fermeture.
+     `:has()` est nécessaire car la case du tiroir vit dans le <header> et le
+     bandeau plus loin dans le <body> : aucun sélecteur de voisinage ne les relie.
+     Sur un navigateur sans `:has()`, la règle est simplement ignorée et le
+     comportement reste celui d'avant — dégradation propre. */
+  body:has(#mobile-menu-toggle:checked) #cookie-banner {
+    display: none;
+  }
+
+  /* ⚠️ `hidden` seul NE SUFFIT PAS à masquer le lanceur : sa classe utilitaire
+     `.flex` vient de la feuille d'auteur et l'emporte sur la règle `[hidden] {
+     display: none }` du navigateur. Sans cette règle, un visiteur sans JavaScript
+     voyait une bulle de chat parfaitement visible et parfaitement morte — le clic
+     n'aurait rien fait, faute du script qui charge Crisp.
+     Le sélecteur d'ID (1,1,0) l'emporte sur `.flex` (0,1,0) ; aucun `!important`
+     n'est requis. Exactement le piège déjà rencontré sur le bouton de lecture du
+     film, où il avait atteint la production. */
+  #crisp-launcher[hidden] {
+    display: none;
+  }
+
+  /* Le lanceur du chat s'efface tant que la bannière cookies est là.
+     Sur 390 px la bannière occupe 366 px de large : la bulle, calée en bas à
+     droite, se posait dessus. On ne demande pas deux choses à la fois — et le
+     lanceur revient dès que le visiteur a répondu.
+     Même effacement quand le tiroir de menu est ouvert, pour la même raison. */
+  body:has(#cookie-banner:not([hidden])) #crisp-launcher,
+  body:has(#mobile-menu-toggle:checked) #crisp-launcher {
+    display: none;
+  }
+</style>
 
 <script is:inline>
   /* Bootstrap analytics — porté de index.html + CookieConsent.tsx de la SPA source. */
@@ -68,13 +133,26 @@
     }
     window.hippodocScrubLocation = scrub;
 
-    /* Cookie Domain=.hippodoc.fr d'abord (partagé avec app.hippodoc.fr),
-       localStorage en fallback (choix historiques + dev localhost). */
     function consent() {
-      var m = document.cookie.match(/(?:^|; )cookie-consent=([^;]+)/);
-      if (m) return m[1];
+      /* Le cookie de domaine parent fait FOI : c'est le seul support lisible depuis
+         app.hippodoc.fr. `localStorage` est cloisonné par origine — un choix fait ici
+         y était donc invisible, et l'app réaffichait sa propre bannière. Le
+         localStorage reste en repli pour les visiteurs ayant choisi avant. */
+      try {
+        var m = document.cookie.match(/(?:^|;\s*)hippodoc-consent=([^;]+)/);
+        if (m) return decodeURIComponent(m[1]);
+      } catch (e) {}
       try { return localStorage.getItem('cookie-consent'); } catch (e) { return null; }
     }
+    /* Exposé pour PostHog.astro, qui doit lire EXACTEMENT la même chose.
+       Il l'a un temps lu depuis le seul `localStorage` : un visiteur ayant accepté
+       sur app.hippodoc.fr revenait ici sans bannière (le cookie est lu) mais avec
+       PostHog en mémoire (le localStorage, lui, est vide côté www) — consentement
+       donné, mesure dégradée, et aucun moyen de le corriger puisque la bannière ne
+       revient plus. Une seule fonction de lecture, donc.
+       L'ordre est garanti : ce script est `is:inline` et s'exécute pendant l'analyse
+       du document, tandis que celui de PostHog.astro est un module, donc différé. */
+    window.hippodocConsent = consent;
 
     /* Consent Mode v2 — défaut DENIED (RGPD), AVANT tout chargement gtag.js */
     window.dataLayer = window.dataLayer || [];
@@ -99,6 +177,7 @@
       page_referrer: scrub(document.referrer || ''),
     });
     var GRANTED = { ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted', analytics_storage: 'granted' };
+    var DENIED = { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied' };
     if (consent() === 'accepted') gtag('consent', 'update', GRANTED);
 
     function inject(src, cb) {
@@ -136,20 +215,39 @@
       loadPixel();
     }
 
+    /* Crisp — chargé au CLIC seulement, jamais avant.
+       ⚠️ Il se chargeait auparavant au premier geste (`pointerdown`, `keydown`,
+       `touchstart`, `scroll`) et posait donc son cookie de session avant tout choix
+       de cookies, et même après un refus — mesuré, dans les deux cas. Aucun
+       consentement ne le couvrait et aucune exemption non plus, le visiteur n'ayant
+       rien demandé. Déclenché par un clic sur notre propre bulle, le chat devient un
+       service explicitement demandé : la CNIL le dispense alors de consentement.
+       Notre bulle disparaît à l'ouverture, Crisp affichant ensuite la sienne. */
     var crispDone = false;
     function loadCrisp() {
       if (crispDone) return;
       crispDone = true;
       window.$crisp = window.$crisp || [];
       window.CRISP_WEBSITE_ID = CRISP_ID;
+      /* La file est rejouée au chargement de `l.js` : on peut demander l'ouverture
+         dès maintenant, sans attendre. Sans cela, le premier clic ne ferait
+         qu'afficher la bulle de Crisp et il en faudrait un second pour ouvrir. */
+      window.$crisp.push(['do', 'chat:open']);
       inject('https://client.crisp.chat/l.js');
     }
 
-    /* Crisp UNIQUEMENT à la première interaction : jamais dans la fenêtre Lighthouse,
-       et la bulle apparaît dès le premier geste d'un visiteur réel. */
-    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (evt) {
-      addEventListener(evt, loadCrisp, { once: true, passive: true });
-    });
+    var lanceur = document.getElementById('crisp-launcher');
+    if (lanceur) {
+      lanceur.hidden = false;
+      lanceur.addEventListener('click', function () {
+        /* `display` en ligne, et pas l'attribut `hidden` : la classe utilitaire
+           `.flex` de Tailwind vient de la feuille d'auteur et l'emporte sur la règle
+           `[hidden] { display: none }` du navigateur. Déjà rencontré sur le bouton
+           de lecture du film, où le bouton restait visible en production. */
+        lanceur.style.display = 'none';
+        loadCrisp();
+      });
+    }
 
     /* GA4 + Pixel : première interaction OU 6 s après `load` (hors trace Lighthouse) */
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {
@@ -159,13 +257,69 @@
     if (document.readyState === 'complete') { armDeferred(); }
     else { addEventListener('load', armDeferred); }
 
+    /* Retrait du consentement : les cookies DÉJÀ posés doivent partir.
+       Mesuré : après « Tout accepter » puis retour en arrière via « Préférences
+       cookies », `_ga`, `_ga_<ID>` et `_fbp` survivaient au choix ET au
+       rechargement. Le visiteur retirait son consentement et l'identifiant
+       publicitaire Meta restait sur son appareil pour trois mois — un
+       consentement qu'on ne peut pas retirer dans les faits n'en est pas un.
+       PostHog, lui, nettoie déjà son cookie via set_config({persistence:'memory'}).
+       ⚠️ Un cookie ne s'efface qu'en rejouant EXACTEMENT son couple domaine/chemin :
+       GA4 pose `_ga` sur le domaine parent, d'où la boucle sur les variantes. */
+    function effacerTraceurs() {
+      try {
+        var noms = ['_ga', '_gid', '_gat', '_fbp', '_fbc'];
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var nom = cookies[i].split('=')[0].trim();
+          var vise = nom.indexOf('_ga_') === 0 || nom.indexOf('_gat_') === 0 || noms.indexOf(nom) !== -1;
+          if (!vise) continue;
+          var hote = location.hostname;
+          var domaines = ['', ';domain=' + hote, ';domain=.' + hote];
+          var parties = hote.split('.');
+          if (parties.length > 2) domaines.push(';domain=.' + parties.slice(-2).join('.'));
+          for (var d = 0; d < domaines.length; d++) {
+            document.cookie = nom + '=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT' + domaines[d];
+          }
+        }
+      } catch (e) {}
+    }
+
     /* Bannière */
     var banner = document.getElementById('cookie-banner');
     function choose(value) {
-      /* Max-Age 6 mois (recommandation CNIL) ; Domain ignoré en localhost → fallback localStorage */
-      document.cookie = 'cookie-consent=' + value + '; Domain=.hippodoc.fr; Path=/; Max-Age=15552000; SameSite=Lax; Secure';
       try { localStorage.setItem('cookie-consent', value); } catch (e) {}
+      /* Cookie sur le domaine PARENT : c'est ce qui permet à app.hippodoc.fr de
+         connaître le choix. Le point initial du domaine est essentiel — sans lui le
+         cookie reste cantonné à www. Six mois, la CNIL demandant que le
+         consentement soit redemandé à intervalle raisonnable.
+         Ce cookie-ci n'exige pas de consentement : il sert précisément à respecter
+         celui de l'utilisateur. */
+      try {
+        /* ⚠️ Le domaine est DÉRIVÉ de l'hôte, jamais codé en dur : un navigateur
+           rejette purement et simplement un cookie dont le domaine ne correspond pas
+           à l'hôte courant. Écrire « .hippodoc.fr » en dur revenait à n'avoir aucun
+           cookie en local NI sur les previews Vercel — le choix n'y était donc jamais
+           mémorisé. Sur hippodoc.fr on vise le domaine parent (partage avec
+           app.hippodoc.fr) ; ailleurs, cookie d'hôte, qui suffit. */
+        var partage = /(^|\.)hippodoc\.fr$/.test(location.hostname) ? ';domain=.hippodoc.fr' : '';
+        document.cookie = 'hippodoc-consent=' + encodeURIComponent(value) + partage +
+          ';path=/;max-age=' + (60 * 60 * 24 * 182) +
+          ';samesite=lax' + (location.protocol === 'https:' ? ';secure' : '');
+      } catch (e) {}
       if (banner) banner.hidden = true;
+      if (value !== 'accepted') {
+        /* ⚠️ RÉVOQUER AVANT D'EFFACER. `consent update` n'était envoyé que vers
+           « granted » : après un retrait, GA4 restait autorisé dans la page en
+           cours et RÉÉCRIVAIT `_ga_<ID>` juste après son effacement. Le cookie
+           semblait parti, puis réapparaissait au rechargement — un aller-retour
+           qu'aucune relecture du code ne montrait, seule la mesure l'a exposé.
+           Meta expose `fbq('consent','revoke')` : le pixel déjà chargé cesse
+           alors d'émettre, faute de pouvoir le décharger. */
+        gtag('consent', 'update', DENIED);
+        try { if (window.fbq) window.fbq('consent', 'revoke'); } catch (e) {}
+        effacerTraceurs();
+      }
       if (value === 'accepted') {
         gtag('consent', 'update', GRANTED);
         gtag('event', 'page_view', {

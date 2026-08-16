@@ -4,18 +4,10 @@
  * Zéro JS : lightbox et animations d'entrée framer-motion supprimées, remplacées
  * par des transitions CSS pures (hover) et une apparition en fondu au chargement.
  * Image "Dashboard" = LCP : chargement eager + fetchpriority="high" + srcset AVIF/WebP.
+ * Allégé (août 2026) : PRODUCT_DEFINITION déplacée dans la section film de
+ * présentation, chips « modes d'exercice » retirées (redites de #parcours).
  */
-import { APP_URL, PRODUCT_DEFINITION } from '@/lib/site';
-
-const profiles = [
-  { label: 'Interne' },
-  { label: 'Remplaçant' },
-  { label: 'Cabinet propre' },
-  { label: 'Collaborateur' },
-  { label: 'Vacations' },
-  { label: 'Salarié' },
-  { label: 'Activité mixte' },
-];
+import { APP_URL } from '@/lib/site';
 
 const partners = [
   { name: 'BPI France', logo: '/lovable-uploads/bpi-112.webp', alt: 'BPI France' },
@@ -29,7 +21,7 @@ const partners = [
 ];
 ---
 
-<section id="hero" class="relative overflow-hidden py-16 md:py-20">
+<section data-landing-section="hero" id="hero" class="relative overflow-hidden py-16 md:py-20">
   <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-hippo-50/60 via-white/80 to-hippo-100/40"></div>
   <div class="pointer-events-none absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-hippo-200/60 to-hippo-300/40 opacity-50 blur-3xl"></div>
   <div class="pointer-events-none absolute left-0 top-0 h-1/2 w-1/2 translate-x-1/4 -translate-y-1/4 rounded-full bg-gradient-to-br from-hippo-100/40 to-hippo-200/30 opacity-30 blur-3xl"></div>
@@ -54,29 +46,11 @@ const partners = [
           Le cockpit financier des médecins qui calcule tout pour toi.
         </p>
 
-        <!-- GEO : définition produit reprise mot pour mot (site.ts) -->
-        <p class="max-w-xl text-sm leading-relaxed text-muted-foreground/80">
-          {PRODUCT_DEFINITION}
-        </p>
-
-        <div class="space-y-2">
-          <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Quel que soit ton mode d'exercice
-          </p>
-          <div class="flex flex-wrap gap-2">
-            {profiles.map((profile) => (
-              <span class="inline-flex items-center rounded-full border border-hippo-200/50 bg-gradient-to-r from-hippo-50/90 to-hippo-100/90 px-2.5 py-1.5 shadow-sm backdrop-blur-sm sm:px-3">
-                <span class="text-xs font-medium text-hippo-700">{profile.label}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-
         <div class="flex flex-col gap-4">
           <a
             href={`${APP_URL}/auth?tab=signup`}
             data-track="cta_signup_hero"
-            class="group inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-hippo-500 to-hippo-600 px-6 py-3.5 text-lg font-semibold text-white shadow-lg shadow-hippo-500/30 transition-all hover:-translate-y-0.5 hover:from-hippo-600 hover:to-hippo-700 hover:shadow-xl hover:shadow-hippo-500/40 sm:w-auto"
+            class="group inline-flex w-full items-center justify-center rounded-full bg-hippo-600 px-8 py-3.5 text-lg font-semibold text-white shadow-lg shadow-hippo-500/25 transition-all hover:-translate-y-0.5 hover:bg-hippo-700 hover:shadow-xl hover:shadow-hippo-500/30 sm:w-auto sm:self-start"
           >
             Commencer l'essai gratuit
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>

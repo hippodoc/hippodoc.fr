@@ -42,7 +42,7 @@ Tu connais ton chiffre d'affaires. Tu sais ce que tu as encaissé. Mais sais-tu 
 
 ## 🔍 Le revenu n'est pas un chiffre, c'est un système
 
-Pour un professionnel libéral réglementé, les prélèvements sociaux ne se résument pas à une seule ligne : maladie-maternité, retraite de base et complémentaire, invalidité-décès, allocations familiales, CFP, CSG et CRDS s'additionnent. Côté médecins, la CARMF publie en 2026 des cotisations réparties entre base, complémentaire, ASV et invalidité-décès.
+Pour un professionnel libéral réglementé, les prélèvements sociaux ne se résument pas à une seule ligne : maladie-maternité, retraite de base et complémentaire, invalidité-décès, allocations familiales, CFP, CSG et CRDS s'additionnent. Côté médecins, la [CARMF](/blog/tout-comprendre-carmf) publie en 2026 des cotisations réparties entre base, complémentaire, ASV et invalidité-décès.
 
 C'est exactement pour ça que le revenu n'est pas un chiffre. C'est un système.
 
@@ -58,7 +58,7 @@ Le piège classique, c'est de croire que la question se résume à : micro ou r�
 
 En réalité, ce n'est qu'une partie du problème.
 
-À date, pour une activité libérale, le **micro-BNC reste accessible en 2026** si les recettes de 2024 et 2025 n'ont pas dépassé **83 600 €**. Dans ce régime, l'administration applique un **abattement forfaitaire de 34 %**, avec un minimum de 305 €. À l'inverse, en **déclaration contrôlée**, tu déclares un bénéfice net qui tient compte de tes recettes et des charges réellement payées, via la 2035.
+À date, pour une activité libérale, le **micro-BNC reste accessible en 2026** si les recettes de 2024 et 2025 n'ont pas dépassé **83 600 €**. Dans ce régime, l'administration applique un **[abattement forfaitaire de 34](/blog/micro-bnc-exemples-concrets) %**, avec un minimum de 305 €. À l'inverse, en **[déclaration contrôlée](/blog/remplir-declaration-2035)**, tu déclares un bénéfice net qui tient compte de tes recettes et des charges réellement payées, via la 2035.
 
 Donc non : le "bon" régime ne se résume pas à une phrase simple du type "le micro est plus facile" ou "le réel est mieux quand on a beaucoup de frais". Il faut regarder l'ensemble de la mécanique.
 
@@ -88,7 +88,7 @@ La **CFE**, par exemple, est due par toute personne exerçant une activité prof
 
 En DOM, des abattements spécifiques d'impôt existent : **30 % plafonnés à 2 450 €** pour la Guadeloupe, la Martinique et La Réunion, et **40 % plafonnés à 4 050 €** pour la Guyane et Mayotte, sous les conditions prévues par l'administration fiscale.
 
-Pour certains remplaçants, le **RSPM** existe aussi : l'Urssaf devient alors l'interlocuteur unique pour déclarer l'activité, les honoraires et payer les cotisations ; ce dispositif est réservé aux remplacements sans autre activité libérale, avec un **plafond de 19 000 € d'honoraires par année civile**.
+Pour certains remplaçants, le **RSPM** existe aussi : l'[Urssaf](/blog/tout-comprendre-urssaf) devient alors l'interlocuteur unique pour déclarer l'activité, les honoraires et payer les cotisations ; ce dispositif est réservé aux remplacements sans autre activité libérale, avec un **plafond de 19 000 € d'honoraires par année civile**.
 
 ## 📋 Ce qu'un médecin devrait voir noir sur blanc
 

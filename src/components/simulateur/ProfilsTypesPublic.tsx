@@ -11,11 +11,16 @@ interface PublicProfil {
   description: string;
   icon: typeof Stethoscope;
   populaire?: boolean;
-  data: Omit<SimulateurFormData, 'regimeFiscal'> & {
+  /**
+   * Un profil type ne renseigne QUE les champs qui le caractérisent (une douzaine
+   * sur vingt-six) : le type doit donc être partiel. Les champs absents sont
+   * complétés par SIMULATEUR_DEFAULTS au moment du `reset()` — voir
+   * SimulateurForm.tsx. Le typer comme complet produisait 8 erreurs et laissait
+   * croire, à tort, que le profil remplissait tout le formulaire.
+   */
+  data: Partial<Omit<SimulateurFormData, 'regimeFiscal'>> & {
     regimeSocial?: 'auto' | 'rspm' | 'pamc';
     lieuExercice?: LieuExercice;
-    revenusExoneresPdsa?: number;
-    revenusConjoint?: number;
   };
 }
 
@@ -139,11 +144,11 @@ function PublicProfilBadges({ profil }: { profil: PublicProfil }) {
     );
   }
 
-  if (profil.data.enfants > 0) {
+  if ((profil.data.enfants ?? 0) > 0) {
     badges.push(
       <Badge key="enfants" variant="secondary" className="text-[10px] px-1.5 py-0 h-4 gap-0.5">
         <Baby className="h-2.5 w-2.5" />
-        {profil.data.enfants} enfant{profil.data.enfants > 1 ? 's' : ''}
+        {profil.data.enfants} enfant{(profil.data.enfants ?? 0) > 1 ? 's' : ''}
       </Badge>
     );
   }
@@ -167,7 +172,7 @@ function PublicProfilBadges({ profil }: { profil: PublicProfil }) {
 }
 
 interface ProfilsTypesPublicProps {
-  onSelectProfil: (data: Omit<SimulateurFormData, 'regimeFiscal'>, profilId?: string) => void;
+  onSelectProfil: (data: Partial<Omit<SimulateurFormData, 'regimeFiscal'>>, profilId?: string) => void;
 }
 
 export function ProfilsTypesPublic({ onSelectProfil }: ProfilsTypesPublicProps) {

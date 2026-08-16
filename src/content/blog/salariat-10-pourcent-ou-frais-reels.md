@@ -28,11 +28,11 @@ relatedArticles:
   - "frais-professionnels-deductibles"
 ---
 
-Oui : **en salariat aussi, tu peux déduire tes frais pro.** Voici tout ce que tu dois savoir pour faire le bon choix fiscal.
+Oui : **en [salariat](/blog/salariat-vs-liberal) aussi, tu peux déduire tes frais pro.** Voici tout ce que tu dois savoir pour faire le bon choix fiscal.
 
 ## 1️⃣ Le principe
 
-En salariat (interne, centre de santé, clinique, intérim…), ton impôt est calculé sur un **revenu imposable**.
+[En salariat](/blog/remplacement-salarie-guide-complet) (interne, centre de santé, clinique, intérim…), ton impôt est calculé sur un **revenu imposable**.
 
 Deux choix pour le réduire :
 

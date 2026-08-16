@@ -43,6 +43,49 @@ const TipBox = ({ children, variant = "tip" }: { children: React.ReactNode; vari
   );
 };
 
+/**
+ * Valeurs par défaut COMPLÈTES du formulaire.
+ *
+ * Extraites du `useForm` pour être réutilisables par `reset()`. Un profil type ne
+ * renseigne qu'une douzaine de champs sur vingt-six, or `form.reset()` REMPLACE
+ * tout l'état : les champs absents devenaient `undefined`, laissant des listes
+ * déroulantes vides après le choix d'un profil.
+ */
+export const SIMULATEUR_DEFAULTS = {
+    periode: 'annuel',
+    annee: 2026,
+    recettesBrutes: 0,
+    chargesHorsCotisations: 0,
+    revenusSalaries: 0,
+    revenusConjoint: 0,
+    typeRevenuConjoint: 'salarie',
+    revenusExoneresPdsa: 0,
+    lieuExercice: 'metropole',
+    situationFamiliale: 'celibataire',
+    enfants: 0,
+    secteurConventionnel: 'secteur_1',
+    regimeSocial: 'auto',
+    forfait2pct: true,
+    cotisationsVolontaires: 0,
+    typeCotisationsVolontaires: 'per',
+    // Phase 2
+    zoneExoneree: 'aucune',
+    regimeFoncier: 'aucun',
+    revenusFonciersBruts: 0,
+    revenuFoncierNet: 0,
+    creditFormationDirigeant: false,
+    heuresFormation: 0,
+    creditImpotAutre: 0,
+    fraisEmploiDomicile: 0,
+    fraisGardeEnfants: 0,
+    nombreEnfantsGarde: 0,
+    chequesVacances: 0,
+    // Phase 3
+    tauxRid: '25%',
+    situationCarmf: 'affilie_3ans_plus' as const,
+    ratioNonConventionne: 0,
+} satisfies Partial<SimulateurFormData>;
+
 // Composant réutilisable pour les en-têtes de section
 const SectionHeader = ({ 
   icon: Icon, 
@@ -70,40 +113,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     
     const form = useForm<SimulateurFormData>({
       resolver: zodResolver(simulateurSchema),
-      defaultValues: defaultValues || {
-        periode: 'annuel',
-        annee: 2026,
-        recettesBrutes: 0,
-        chargesHorsCotisations: 0,
-        revenusSalaries: 0,
-        revenusConjoint: 0,
-        typeRevenuConjoint: 'salarie',
-        revenusExoneresPdsa: 0,
-        lieuExercice: 'metropole',
-        situationFamiliale: 'celibataire',
-        enfants: 0,
-        secteurConventionnel: 'secteur_1',
-        regimeSocial: 'auto',
-        forfait2pct: true,
-        cotisationsVolontaires: 0,
-        typeCotisationsVolontaires: 'per',
-        // Phase 2
-        zoneExoneree: 'aucune',
-        regimeFoncier: 'aucun',
-        revenusFonciersBruts: 0,
-        revenuFoncierNet: 0,
-        creditFormationDirigeant: false,
-        heuresFormation: 0,
-        creditImpotAutre: 0,
-        fraisEmploiDomicile: 0,
-        fraisGardeEnfants: 0,
-        nombreEnfantsGarde: 0,
-        chequesVacances: 0,
-        // Phase 3
-        tauxRid: '25%',
-        situationCarmf: 'affilie_3ans_plus' as const,
-        ratioNonConventionne: 0,
-      },
+      defaultValues: defaultValues || SIMULATEUR_DEFAULTS,
     });
 
     // Watch lieu d'exercice pour affichage DOM-TOM
@@ -172,7 +182,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         }
         
         // Fusionner : profil type + champs personnels préservés
-        const mergedValues = {
+        // On repart des défauts COMPLETS : sans cela, tout champ absent du profil
+      // type restait `undefined` après le reset (listes déroulantes vides).
+      const mergedValues = {
+          ...SIMULATEUR_DEFAULTS,
           ...values,
           ...preservedPersonalFields,
         };

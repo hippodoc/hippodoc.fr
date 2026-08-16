@@ -30,7 +30,7 @@ const includedFeatures = [
 ];
 ---
 
-<section id="pricing" class="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-hippo-50 via-white to-hippo-50/30 py-16 md:scroll-mt-28 md:py-24">
+<section data-landing-section="pricing" id="pricing" class="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-hippo-50 via-white to-hippo-50/30 py-16 md:scroll-mt-28 md:py-24">
   <div class="container relative z-10 mx-auto max-w-7xl">
     <div class="mx-auto mb-5 max-w-2xl text-center">
       <SectionBadge title="Nos offres" subtitle="Sans engagement">
@@ -69,7 +69,7 @@ const includedFeatures = [
     <div class="mb-6 grid max-w-3xl grid-cols-1 gap-6 px-4 sm:grid-cols-2 mx-auto">
       <!-- Mensuel -->
       <div class="relative flex h-full flex-col rounded-3xl border border-gray-200/50 bg-white/80 px-6 pb-4 pt-6 shadow-lg backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-hippo-400/50 hover:shadow-2xl">
-        <span class="absolute right-4 top-4 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 px-2.5 py-0.5 text-[9px] font-bold text-white">FLEXIBLE</span>
+        <span class="absolute right-4 top-4 rounded-full bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-700 px-2.5 py-0.5 text-[9px] font-bold text-white">FLEXIBLE</span>
 
         <h3 class="mb-2 mt-8 text-center text-2xl font-extrabold tracking-tight text-hippo-800">Mensuel</h3>
 
@@ -115,7 +115,7 @@ const includedFeatures = [
         class="relative flex h-full flex-col overflow-hidden rounded-3xl border-2 border-hippo-400/60 bg-gradient-to-br from-hippo-50 via-white to-hippo-100/60 px-6 pb-4 pt-6 shadow-2xl shadow-hippo-500/25 md:scale-105"
       >
         <div class="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-hippo-500 via-hippo-600 to-hippo-500"></div>
-        <span class="absolute right-4 top-4 rounded-full bg-gradient-to-r from-hippo-500 via-hippo-600 to-hippo-500 px-2.5 py-0.5 text-[9px] font-bold text-white">POPULAIRE</span>
+        <span class="absolute right-4 top-4 rounded-full bg-gradient-to-r from-hippo-600 via-hippo-700 to-hippo-600 px-2.5 py-0.5 text-[9px] font-bold text-white">POPULAIRE</span>
 
         <h3 class="mb-2 mt-8 bg-gradient-to-br from-hippo-700 via-hippo-800 to-hippo-900 bg-clip-text text-center text-2xl font-extrabold tracking-tight text-transparent">Annuel</h3>
 
@@ -163,10 +163,6 @@ const includedFeatures = [
         </a>
       </div>
     </div>
-
-    <p class="mb-10 text-center text-sm">
-      <a href="/tarifs" class="text-hippo-600 underline decoration-hippo-300 underline-offset-4 hover:text-hippo-800">Voir le détail des tarifs</a>
-    </p>
 
     <!-- Offres spéciales -->
     <div class="mb-10 flex justify-center px-4">
@@ -239,11 +235,12 @@ const includedFeatures = [
       </div>
     </div>
 
-    <!-- Comparatif détaillé -->
+    <!-- Comparatif détaillé — s'ouvre inline dans la landing (<details> natif),
+         sans renvoyer vers une autre page. La page SEO /tarifs reste liée plus bas. -->
     <div class="mx-auto mb-6 max-w-4xl">
       <details class="group/compare mx-auto text-center">
         <summary data-ph="landing_pricing_comparison_toggle" class="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold text-hippo-700 hover:text-hippo-800">
-          📊 Comparer les formules en détail
+          📊 Détail des offres
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-open/compare:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </summary>
 
@@ -329,6 +326,10 @@ const includedFeatures = [
           </div>
 
           <p class="mt-6 text-center text-xs text-muted-foreground">✓ Prix TTC · Sans frais cachés</p>
+
+          <p class="mt-2 text-center text-sm">
+            <a href="/tarifs" class="inline-flex min-h-6 items-center text-hippo-600 underline decoration-hippo-300 underline-offset-4 hover:text-hippo-800">Voir la page tarifs complète</a>
+          </p>
         </div>
       </details>
     </div>

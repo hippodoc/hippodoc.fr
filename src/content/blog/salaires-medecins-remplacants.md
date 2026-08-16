@@ -27,7 +27,7 @@ relatedArticles:
   - "micro-bnc-exemples-concrets"
 ---
 
-📍 **France métropolitaine** (annonces d'intérim, DREES/URSSAF, retours terrain). Varie beaucoup selon zone, rythme et secteurs 1/2/3 public/privé.
+📍 **France métropolitaine** (annonces d'intérim, DREES/[URSSAF](/blog/tout-comprendre-urssaf), retours terrain). Varie beaucoup selon zone, rythme et secteurs 1/2/3 public/privé.
 
 💬 **Ce contenu est partagé à titre indicatif**, pour donner une idée des ordres de grandeur en 2025. Il ne prétend pas refléter toutes les situations individuelles et ne remplace pas les informations officielles.
 

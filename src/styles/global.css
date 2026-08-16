@@ -22,7 +22,11 @@
     --secondary-foreground: 222 47% 11%;
 
     --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    /* 47% donnait 4,48:1 sur le fond --background (#f7fafc) : sous le seuil AA de
+       4,5:1, signalé par Lighthouse sur les fils d'Ariane, dates et durées de
+       lecture. 45% remonte à 4,82:1 (5,06:1 sur blanc) pour un assombrissement
+       imperceptible. */
+    --muted-foreground: 215 16% 45%;
 
     --accent: 210 40% 96%;
     --accent-foreground: 222 47% 11%;
@@ -142,11 +146,31 @@
   }
 
   .prose a {
-    @apply text-primary underline hover:text-primary/80 transition-colors;
+    /* `--primary` vaut hippo-500 (#1A8CFF) : 3,37:1 sur blanc, sous le seuil AA de
+       4,5:1 — précisément le cas interdit par CLAUDE.md (« text-hippo-500 interdit
+       sur fond blanc en petit texte »). Cette règle l'emportait sur le
+       `prose-a:text-hippo-600` du gabarit d'article. hippo-600 donne 5,15:1, et
+       hippo-800 au survol assombrit au lieu d'éclaircir. */
+    @apply text-hippo-600 underline hover:text-hippo-800 transition-colors;
   }
 
   .prose ul, .prose ol {
     @apply my-2 ml-4;
+  }
+
+  /* Tableaux d'articles. Comprimés dans 358 px en mobile, les cellules cassaient
+     les montants en deux (« 1 065 » sur deux lignes, « Au-delà » césuré) : sur des
+     chiffres fiscaux c'est inacceptable. Le tableau défile donc horizontalement
+     dans son propre conteneur — le corps de page ne défile jamais latéralement. */
+  .prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    font-variant-numeric: tabular-nums;
+  }
+  .prose table th,
+  .prose table td {
+    white-space: nowrap;
   }
 
   .prose li {
