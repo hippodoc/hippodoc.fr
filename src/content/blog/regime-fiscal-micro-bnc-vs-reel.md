@@ -2,6 +2,7 @@
 title: "Micro-BNC ou réel : le choix du remplaçant"
 description: "Abattement de 34 %, plafond du micro-BNC, bascule après deux années de dépassement, déduction des frais réels : comment trancher selon tes charges."
 pubDate: "2025-10-21"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -16,8 +17,8 @@ cta: "Prêt à simplifier ta gestion fiscale ?"
 faq:
   - question: "Quelle est la différence entre Micro-BNC et Régime Réel ?"
     answer: "Le **Micro-BNC** offre un abattement forfaitaire de 34% sans justificatifs, idéal si tes charges sont faibles. Le **Régime Réel** permet de déduire tes charges réelles, avantageux si elles dépassent 34% de ton CA."
-  - question: "Quel est le plafond du Micro-BNC en 2025 ?"
-    answer: "Le plafond du Micro-BNC est de **83 600 € de chiffre d'affaires annuel**. Un dépassement ponctuel est toléré, mais deux années consécutives au-dessus entraînent le passage automatique au Régime Réel."
+  - question: "Quel est le plafond du Micro-BNC en 2026 ?"
+    answer: "Le plafond est de **83 600 € de recettes annuelles**, seuil revalorisé par la loi de finances pour 2026 et applicable aux revenus 2026, 2027 et 2028. Un dépassement ponctuel est toléré, mais deux années consécutives au-dessus entraînent le passage au Régime Réel au 1er janvier suivant."
   - question: "Quand faut-il passer du Micro-BNC au Régime Réel ?"
     answer: "Passe au Régime Réel dès que tes **charges professionnelles dépassent 34%** de tes revenus (déplacements, matériel, formations, assurances). Utilise le simulateur Hippodoc pour comparer les deux régimes."
   - question: "Comment déclarer mes revenus en Micro-BNC ?"
@@ -40,7 +41,7 @@ En France, tu as le choix entre **deux régimes fiscaux principaux** pour décla
 
 ✅ **Déclaration simplifiée** : Tu déclares uniquement ton revenu annuel total, **sans détailler tes charges**.\
 ✅ **[Abattement forfaitaire de 34](/blog/micro-bnc-exemples-concrets)%** : L'administration fiscale applique automatiquement un abattement de 34% sur tes revenus pour couvrir tes [frais professionnels](/blog/frais-professionnels-deductibles), **sans justificatifs à fournir**.\
-✅ **Plafond de revenus** : Ce régime est accessible tant que tes revenus annuels ne dépassent pas **83 600 € par an**.
+✅ **Plafond de revenus** : Ce régime est accessible tant que tes recettes annuelles ne dépassent pas **[83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits/F32105)**. Ce seuil, revalorisé par la loi de finances pour 2026, s'applique aux revenus 2026, 2027 et 2028 : tu relèves du micro-BNC en 2026 si tes recettes 2025 ou 2024 n'ont pas dépassé ce montant.
 
 ## Attention au dépassement du plafond de 83 600 €
 
