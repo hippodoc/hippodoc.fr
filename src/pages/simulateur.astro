@@ -8,14 +8,17 @@
  * invokeCalculateUrssaf() (src/lib/supabase-public.ts) ; la branche RSPM
  * (< 38 000 €) est calculée 100 % côté client (useRspmCalculation.ts).
  *
- * Pas de JSON-LD sur cette page (parité avec la SPA source — contrairement
- * à /guide-declarations/calculette et /guide-declarations qui en ont).
+ * JSON-LD ajouté en août 2026 (voir MIGRATION.md § 9.ae) : la page n'en avait
+ * pas, par parité avec la SPA source. Écart assumé — l'outil jumeau
+ * /guide-declarations/calculette porte WebApplication + FAQPage + BreadcrumbList
+ * depuis l'origine, et /simulateur reçoit 41 liens internes pour zéro impression
+ * de recherche. La parité de migration ne justifiait plus de s'en priver.
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import SimulateurApp from '@/components/simulateur/SimulateurApp.tsx';
-import { APP_URL, CALENDLY_URL } from '@/lib/site';
+import { APP_URL, CALENDLY_URL, SITE_URL } from '@/lib/site';
 import { getDeclarationParams } from '@/lib/declarationParams';
 
 const title = 'Simulateur revenus médecin gratuit | Hippodoc';
@@ -31,9 +34,70 @@ const cvPlafond2025 = getDeclarationParams(2025).plafondChequesVacances;
 const cvPlafond2026 = getDeclarationParams(2026).plafondChequesVacances;
 
 const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Calcul instantané'];
+
+/* FAQ — chaque réponse reformule un contenu DÉJÀ présent sur cette page
+   (glossaire « Trois mots à connaître », guide d'utilisation, disclaimer).
+   Un FAQPage dont les questions ne sont pas visibles enfreint les consignes
+   Google : elles sont donc rendues plus bas en <details> natifs, comme sur
+   /guide-declarations/calculette. */
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: "C'est quoi le Super-Net ?",
+    a: "Ce qu'il te reste vraiment en poche : tes revenus, moins tes charges professionnelles, moins tes cotisations sociales (URSSAF et CARMF), moins ton impôt sur le revenu. C'est le chiffre affiché en tête de chaque carte de résultat.",
+  },
+  {
+    q: 'Le simulateur prend-il en compte la CARMF ?',
+    a: "Oui. L'URSSAF et la CARMF sont calculées automatiquement, tu n'as pas à les saisir dans tes charges. Les options avancées permettent de préciser ta situation d'affiliation : régime normal (retraite de base, complémentaire et ASV) ou dispense.",
+  },
+  {
+    q: 'Que se passe-t-il au-delà de 38 000 € de recettes ?',
+    a: "Le régime social change : le RSPM (taux simplifiés) s'applique en dessous de 38 000 €, le PAMC (barème classique) au-delà. En mode Auto, recommandé, le simulateur choisit lui-même selon ton chiffre d'affaires ; tu peux aussi forcer l'un ou l'autre.",
+  },
+  {
+    q: 'Compare-t-il le Micro-BNC et le Régime Réel ?',
+    a: "Oui, le calcul est fait dans les deux régimes pour que tu puisses les comparer. En Micro-BNC, un abattement forfaitaire de 34 % remplace tes charges réelles ; au Régime Réel, ce sont tes dépenses professionnelles déductibles qui sont prises en compte.",
+  },
+  {
+    q: 'Le simulateur remplace-t-il un expert-comptable ?',
+    a: "Non. Cette simulation est fournie à titre indicatif et repose sur les barèmes en vigueur. Elle ne prend en compte ni tes spécificités fiscales individuelles, ni les évolutions réglementaires, ni les optimisations propres à ta situation. Pour une analyse personnalisée, consulte un expert-comptable, un avocat fiscaliste ou un CGP indépendant.",
+  },
+];
+
+const webAppSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Simulateur Super-Net',
+  description,
+  url: `${SITE_URL}${path}`,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  inLanguage: 'fr',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${SITE_URL}/` },
+    { '@type': 'ListItem', position: 2, name: 'Simulateur', item: `${SITE_URL}${path}` },
+  ],
+};
+
+const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
 ---
 
-<BaseLayout title={title} description={description} path={path} ogImage="/lovable-uploads/Hero-simulateur.png">
+<BaseLayout title={title} description={description} path={path} ogImage="/lovable-uploads/Hero-simulateur.png" jsonLd={jsonLd}>
   <Header />
 
   <main class="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white pb-20">
@@ -51,7 +115,7 @@ const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Calcul instantané']
           </div>
 
           <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent mb-3">
-            Simulateur Super-Net Hippodoc
+            Simulateur Super-Net : ton revenu net de médecin
           </h1>
 
           <p class="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-4">
@@ -361,6 +425,32 @@ const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Calcul instantané']
             💡 Hippodoc t'aide à y voir plus clair, mais seul un professionnel pourra te conseiller de manière définitive.
           </p>
         </div>
+      </div>
+    </section>
+
+    <!-- FAQ — SEO, natif details/summary (pas de Radix : le contenu doit être
+         présent dans le HTML). Les questions doublent le FAQPage JSON-LD ;
+         un balisage sans contenu visible enfreindrait les consignes Google. -->
+    <section class="mx-auto mt-24 max-w-3xl px-4" aria-labelledby="faq-title">
+      <div class="mb-8">
+        <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-hippo-600">FAQ</p>
+        <h2 id="faq-title" class="mb-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          Questions fréquentes
+        </h2>
+        <p class="text-sm text-muted-foreground">
+          Les {FAQ.length} questions qu'on nous pose le plus souvent sur le simulateur.
+        </p>
+      </div>
+      <div class="divide-y divide-border/60 border-y border-border/60">
+        {FAQ.map((f) => (
+          <details class="group py-1">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+              <span class="flex-1 pr-4">{f.q}</span>
+              <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+            </summary>
+            <p class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
+          </details>
+        ))}
       </div>
     </section>
 
