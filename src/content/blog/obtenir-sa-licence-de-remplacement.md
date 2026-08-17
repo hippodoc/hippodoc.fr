@@ -2,6 +2,7 @@
 title: "Licence de remplacement pour interne"
 description: "Conditions, pièces du dossier, envoi au CDOM, délai de 2 à 4 semaines et validité jusqu'au 15 novembre : la démarche complète, étape par étape."
 pubDate: "2025-10-06"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -32,7 +33,7 @@ Tu es interne en médecine et tu souhaites commencer à effectuer des remplaceme
 ## 1. Conditions préalables à respecter
 
 Avoir validé intégralement le deuxième cycle des études médicales en France.\
-Être inscrit en troisième cycle (internat) et avoir validé un certain nombre de semestres, selon ta spécialité.
+Être inscrit en troisième cycle (internat) et avoir validé un certain nombre de semestres, selon ta spécialité. Ce nombre est [fixé par arrêté et varie d'un DES à l'autre](https://www.conseil-national.medecin.fr/etudiant-interne-docteur-junior/linterne-docteur-junior-remplacant) : vérifie celui qui s'applique au tien avant de monter ton dossier.
 
 ## 2. Documents à préparer pour ton dossier
 
@@ -63,7 +64,8 @@ La licence de remplacement est valable pour une durée d'un an, jusqu'au 15 nove
 :::warning
 La licence de remplacement atteste uniquement que tu remplis les conditions légales pour effectuer des remplacements.\
 Elle ne constitue PAS une autorisation directe pour remplacer.\
-Tu devras obligatoirement établir un [contrat de remplacement](/blog/signer-contrat-remplacement), une démarche indispensable que nous détaillerons très prochainement dans une autre fiche pratique.
+Le médecin que tu remplaces doit de son côté [demander l'autorisation à son propre conseil départemental](https://www.conseil-national.medecin.fr/etudiant-interne-docteur-junior/linterne-docteur-junior-remplacant) d'être remplacé par un étudiant.\
+Tu devras aussi obligatoirement établir un [contrat de remplacement](/blog/signer-contrat-remplacement).
 :::
 
 ## Astuce pratique pour simplifier ta vie d'interne

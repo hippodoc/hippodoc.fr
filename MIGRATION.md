@@ -1779,6 +1779,74 @@ zéro. **Aucune régression introduite ici.** En revanche la production mesure
 cette passe. Le facteur limitant est le LCP, pas le poids du HTML. À traiter
 séparément.
 
+### 9.af Sourçage des pages à impressions — et deux erreurs factuelles corrigées (août 2026)
+
+Suite de l'audit § 9.ac à § 9.ae. 37 articles sur 38 ne citaient aucune source
+externe dans leur corps ; sur de la fiscalité appliquée à des professionnels de
+santé — du YMYL au sens strict — c'est l'absence de tout point d'ancrage
+vérifiable. Cette passe traite les pages qui reçoivent déjà des impressions,
+là où le signal sera lu.
+
+⚠️ **La vérification a trouvé deux affirmations fausses, pas seulement des liens
+manquants.** C'était le risque identifié en amont, et il s'est matérialisé.
+
+**Erreur 1 — seuil de dispense CARMF.** Le site annonçait « ~12 800 € en 2026,
+indexé sur le PASS ». Le seuil réel est **15 000 € de revenu net d'activité
+indépendante**, il n'est **pas indexé sur le PASS** (48 060 € en 2026), et il
+s'accompagne d'une seconde condition qui n'était mentionnée nulle part : le
+**non-assujettissement à la CET**. Source : page d'affiliation de la CARMF.
+Le ~12 800 € semble venir d'une confusion avec l'équivalent net des 19 000 €
+bruts du RSPM, qui est un tout autre dispositif.
+
+**Erreur 2 — déclenchement de l'affiliation CARMF.** Le site indiquait
+« dès que tu dépasses 30 jours par an de remplacement ». Il n'existe pas de
+durée minimale : l'affiliation est obligatoire pour tout médecin rémunéré à
+l'honoraire, remplacements compris. Les « 30 jours » de la CARMF sont le délai
+pour lui signaler un changement de situation, pas un seuil d'assujettissement.
+
+Ces deux erreurs vivaient en **cinq endroits** : corps et `faq` de
+`checklist-administrative-medecin-remplacant`, corps et `faq` de
+`tout-comprendre-carmf`, et — introduite par la passe § 9.ac — la `description`
+de la checklist, qui reprenait « CARMF au-delà de 30 jours ». Toutes corrigées ;
+`grep` de contrôle sur `src/` ne trouve plus aucune trace de `12 800`,
+`30 jours/an` ni `indexé sur le PASS`.
+
+⚠️ **Leçon de méthode** : la passe § 9.ac a recopié dans une balise un chiffre
+faux du corps de l'article. Vérifier que la description reflète la page ne suffit
+pas — encore faut-il que la page soit exacte.
+
+**Vérifié et confirmé exact** (aucune modification nécessaire) :
+
+| Affirmation | Source |
+| --- | --- |
+| Plafond micro-BNC 83 600 € | service-public — revalorisé par la LF 2026, applicable aux revenus 2026-2028 |
+| Abattement micro-BNC 34 % | idem |
+| Sortie du micro-BNC après 2 années consécutives de dépassement | idem |
+| Déclaration URSSAF sous 8 jours | service-public F36740, PAMC, remplaçants compris |
+| RSPM plafonné à 19 000 € d'honoraires rétrocédés | service-public R63763 |
+| Licence : 2ᵉ cycle validé, semestres selon spécialité, CDOM, 1 an, formation + 3 ans | Conseil national de l'Ordre |
+| PASS 2026 à 48 060 € | CARMF |
+
+Corrigé au passage : la FAQ de `regime-fiscal-micro-bnc-vs-reel` demandait
+« Quel est le plafond du Micro-BNC en **2025** ? » en répondant 83 600 €, qui est
+le seuil **2026**. Question redatée et réponse précisée.
+
+⚠️ **Toutes les URL de source ont été vérifiées** : chacune répond 200 et son
+contenu a été lu pour confirmer qu'elle dit bien ce qu'on lui fait dire. Les
+URL `urssaf.fr` bloquent les requêtes automatisées ; les pages
+`entreprendre.service-public.gouv.fr` équivalentes, vérifiables, leur ont été
+préférées.
+
+`updatedDate` renseigné au 2026-08-18 sur les 4 articles modifiés, et
+`src/generated/blog-meta.json` mis à jour à la main en conséquence — c'est lui qui
+alimente le `lastmod` du sitemap, et il n'est pas régénéré automatiquement.
+
+Vérifié : build 56 pages, `verify-site.mjs` OK, 3 453 liens internes sans lien mort.
+
+**À valider par un médecin.** Ces corrections reposent sur les sources officielles
+citées, pas sur une expertise métier. Le seuil de 15 000 € et l'absence de durée
+minimale d'affiliation méritent une relecture par quelqu'un qui pratique.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

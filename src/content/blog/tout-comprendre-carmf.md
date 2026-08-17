@@ -2,6 +2,7 @@
 title: "Tout comprendre sur la CARMF"
 description: "La CARMF, ta caisse de retraite obligatoire : affiliation, cotisations et astuces pour optimiser dès tes premiers remplacements."
 pubDate: "2025-10-21"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -23,7 +24,7 @@ faq:
   - question: "Quelle différence entre secteur 1 et secteur 2 pour la CARMF ?"
     answer: "En **secteur 1**, l'ASV coûte ~1 850 € + 1,27% des revenus. En **secteur 2**, c'est ~5 550 € + 3,80%. Les médecins conventionnés secteur 1 paient donc moins de cotisations ASV."
   - question: "Puis-je être dispensé de cotisations CARMF ?"
-    answer: "Une **dispense d'affiliation** est possible si tes revenus sont inférieurs au seuil CARMF (~12 800 € en 2026, indexé sur le PASS et révisé chaque année). Attention : cette dispense n'est **pas automatique**, elle s'obtient sur **demande explicite** auprès de la CARMF et n'est pas rétroactive."
+    answer: "Une **dispense totale d'affiliation** est possible si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. Attention : elle n'est **pas automatique**, s'obtient sur **demande explicite** auprès de la CARMF et n'est pas rétroactive. La période dispensée ne compte pas pour tes droits à la retraite."
 relatedArticles:
   - "tout-comprendre-urssaf"
   - "cotisations-sociales-vs-impots"
@@ -94,7 +95,7 @@ Paiement en **deux étapes** : **Janvier** : 1er acompte, **Mai à juillet** : s
 
 ## 🎁 Tips & astuces indispensables
 
-✅ **Dispense d'affiliation possible** si revenus inférieurs au seuil CARMF (~12 800 € en 2026, indexé sur le PASS) — ⚠ sur demande, non automatique et non rétroactive.\
+✅ **Dispense d'affiliation possible** si ton revenu net d'activité indépendante reste inférieur à **15 000 €** et que tu n'es pas assujetti à la CET — ⚠ [sur demande](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm), non automatique et non rétroactive. En contrepartie, tu perds la couverture invalidité-décès et ces périodes ne compteront pas pour ta retraite.\
 ✅ **[RSPM](/blog/rspm-exemples-concrets)** : cotisations sociales réduites (~13,5% tout compris) – Voir fiche fiscalité #3.\
 ✅ **ACRE** : réduction de charges la 1ʳᵉ année si c'est ta première activité libérale et que tes revenus sont < 47 100 €.\
 ✅ **Cotisations CARMF déductibles** de tes impôts : n'oublie pas de les déclarer !

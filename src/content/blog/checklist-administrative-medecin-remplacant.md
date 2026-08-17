@@ -1,7 +1,8 @@
 ---
 title: "Checklist administrative du remplaçant"
-description: "RCP, Ordre, CPAM, URSSAF sous 8 jours, CARMF au-delà de 30 jours, prévoyance : quand faire chaque démarche et dans quel ordre, sans rien oublier."
+description: "RCP, Ordre, CPAM, URSSAF sous 8 jours, CARMF dès le premier remplacement, prévoyance : quand faire chaque démarche et dans quel ordre, sans rien oublier."
 pubDate: "2025-10-06"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -19,7 +20,7 @@ faq:
   - question: "Quand dois-je m'inscrire à l'URSSAF ?"
     answer: "Tu dois t'inscrire à l'URSSAF dans les **8 jours** suivant le début de ton activité libérale. Tu recevras ton numéro SIRET, indispensable pour la facturation."
   - question: "Puis-je bénéficier d'une dispense CARMF ?"
-    answer: "Oui, si tu anticipes des revenus inférieurs au seuil CARMF (~12 800 €/an en 2026, indexé sur le PASS), tu peux faire une **demande explicite de dispense d'affiliation** auprès de la CARMF (démarche non automatique, non rétroactive). L'inscription devient obligatoire si tu dépasses 30 jours/an de remplacement en libéral."
+    answer: "Oui, si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. La démarche n'est **pas automatique** : la dispense doit être demandée. Attention, la période dispensée ne compte pas pour tes droits à la retraite et te laisse sans couverture invalidité-décès."
   - question: "Une prévoyance est-elle nécessaire pour un jeune remplaçant ?"
     answer: "Fortement recommandée ! La prévoyance garantit ton **maintien de revenu** en cas d'arrêt maladie/accident. Souscrire jeune te permet de bénéficier de conditions avantageuses."
 relatedArticles:
@@ -50,15 +51,19 @@ Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse bla
 
 ## ✅ Inscription à l'URSSAF
 
-📅 **Quand ?** Dans les 8 jours suivant le début effectif de ton activité libérale.\
+📅 **Quand ?** Dans les 8 jours suivant le début effectif de ton activité libérale — [le délai officiel](https://entreprendre.service-public.gouv.fr/vosdroits/F36740) pour t'immatriculer au guichet des formalités des entreprises, remplacements compris.\
 🧐 **Pourquoi ?** Cela te permet de déclarer officiellement ton activité professionnelle indépendante, et tu recevras ainsi ton numéro SIRET, indispensable pour la facturation.\
-📌 **Astuce :** Profite de l'espace simplifié [RSPM](/blog/rspm-exemples-concrets) pour déclarer en ligne tes revenus et payer tes cotisations facilement ([URSSAF](/blog/tout-comprendre-urssaf) et [CARMF](/blog/tout-comprendre-carmf)).
+📌 **Astuce :** Profite de l'espace simplifié [RSPM](/blog/rspm-exemples-concrets) pour déclarer en ligne tes revenus et payer tes cotisations facilement ([URSSAF](/blog/tout-comprendre-urssaf) et [CARMF](/blog/tout-comprendre-carmf)). Il est réservé aux remplacements exclusifs, dans la limite de [19 000 € d'honoraires rétrocédés par année civile](https://entreprendre.service-public.gouv.fr/vosdroits/R63763).
 
 ## ✅ Inscription à la CARMF
 
-📅 **Quand ?** Dès que tu dépasses 30 jours par an de remplacement en activité libérale.\
+📅 **Quand ?** Dès le début de ton activité libérale. L'affiliation est obligatoire pour tout médecin rémunéré à l'honoraire, remplacements compris — il n'y a pas de durée minimale d'activité en dessous de laquelle tu en serais exempté.\
 🧐 **Pourquoi ?** La Caisse Autonome de Retraite des Médecins de France (CARMF) gère ta retraite complémentaire obligatoire et d'autres couvertures spécifiques.\
-📌 **Astuce :** Si tu anticipes des revenus inférieurs au seuil CARMF (~12 800 € en 2026, indexé sur le PASS), tu peux faire une **demande explicite de dispense d'affiliation** auprès de la CARMF (démarche non automatique). Cela réduira tes charges.
+📌 **Astuce :** Tu peux demander une **dispense totale d'affiliation** si ton revenu net d'activité indépendante reste inférieur à **15 000 €** et que tu n'es pas assujetti à la contribution économique territoriale (CET). [Cette dispense n'est pas automatique](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm) : elle doit être demandée.
+
+:::warning
+La dispense réduit tes charges, mais elle a un prix : pendant la période dispensée, tu n'es plus couvert contre le risque invalidité-décès, et ces périodes ne compteront jamais dans le calcul de tes droits à la retraite. À arbitrer en connaissance de cause, pas par défaut.
+:::
 
 ## ✅ Prévoyance
 
