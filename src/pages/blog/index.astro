@@ -38,7 +38,10 @@ const seriesCounts = new Map<string, number>(
 );
 
 const title = 'Blog Hippodoc — Conseils pour médecins remplaçants';
-const description = `${posts.length} articles pratiques pour médecins remplaçants : fiscalité, cotisations, guides et conseils d'experts.`;
+/* Description portée de 103 à ~155 caractères : sous ~120, Google complète
+   l'aperçu avec un extrait de page choisi par lui. Les thèmes cités sont ceux
+   réellement couverts par les 38 articles. */
+const description = `${posts.length} articles pour médecins remplaçants : statuts et modes d'exercice, cotisations URSSAF et CARMF, déclarations 2035 et 2042, contrats, licence de remplacement.`;
 
 const blogSchema = {
   '@context': 'https://schema.org',

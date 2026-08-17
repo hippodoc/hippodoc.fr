@@ -1,6 +1,6 @@
 ---
-title: "Le kit numérique du cabinet médical"
-description: "Tu démarres en médecine générale ? La sélection d'outils numériques préférés chez Hippodoc pour exercer avec confiance."
+title: "15 outils numériques du médecin généraliste"
+description: "Ordonnances, antibiothérapie, interactions, pédiatrie, grossesse, télé-expertise : la sélection d'outils préférée chez Hippodoc, gratuits et payants signalés."
 pubDate: "2025-10-06"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"

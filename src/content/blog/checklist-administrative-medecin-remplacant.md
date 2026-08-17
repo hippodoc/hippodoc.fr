@@ -1,6 +1,6 @@
 ---
-title: "Checklist Administrative du médecin remplaçant"
-description: "Tu as enfin trouvé ton remplacement idéal ! Découvre la checklist administrative complète pour démarrer sereinement ton activité de médecin remplaçant."
+title: "Checklist administrative du remplaçant"
+description: "RCP, Ordre, CPAM, URSSAF sous 8 jours, CARMF au-delà de 30 jours, prévoyance : quand faire chaque démarche et dans quel ordre, sans rien oublier."
 pubDate: "2025-10-06"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"

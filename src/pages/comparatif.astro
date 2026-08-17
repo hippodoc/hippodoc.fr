@@ -307,7 +307,10 @@ const FAQ: { q: string; a: string }[] = [
 ];
 
 const canonicalUrl = `${SITE_URL}/comparatif`;
-const title = 'Comparatif Indy, Pennylane, Hiway Care vs Hippodoc — Médecin libéral 2026';
+/* Titre ramené de 73 à 51 caractères : au-delà de ~60, Google tronque et la fin
+   du titre — ici « Médecin libéral 2026 », qui porte la requête — disparaît de
+   l'aperçu. Hiway Care sort du titre mais reste dans la description et la page. */
+const title = 'Comparatif Indy, Pennylane, Hippodoc — médecin 2026';
 const description =
   'Comparatif factuel des outils de gestion pour médecin libéral en 2026 : Indy, Pennylane, Hiway Care, Hippodoc. Fonctions, tarifs, profils — qui fait quoi.';
 

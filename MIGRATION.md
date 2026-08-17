@@ -1611,6 +1611,90 @@ il est écarté, sans quoi tout le monde finirait attribué à son propre site.
 ⚠️ Sans effet en cas d'opposition à la mesure : la persistance est alors en
 mémoire et rien n'est écrit sur l'appareil. C'est voulu.
 
+### 9.ac Balises de recherche des pages qui reçoivent des impressions (août 2026)
+
+Audit croisé de l'export Search Console « Performances » (3 mois : 1 034 clics,
+9 068 impressions) et du build. Constat : **96 % des clics viennent de requêtes
+de marque** ; les articles cumulent 3 171 impressions pour 59 clics, soit un CTR
+de **1,9 %** là où 5 à 8 % serait banal aux positions occupées. Le site est vu et
+n'est pas cliqué.
+
+Diagnostic du mécanisme, par comparaison interne : les titres qui convertissent
+contiennent le terme exact recherché et annoncent un livrable
+(`remplir-declaration-2035` → 9,9 % de CTR ; `medecin-outre-mer-avantages-fiscaux`,
+dont la description énumère LODEOM, ZFANG, abattement IR → 15,4 %). Ceux qui ne
+convertissent pas sont écrits comme de la communication de marque, au tutoiement
+promotionnel, sans le terme recherché.
+
+⚠️ **Seuls `title` et `description` changent. Aucune ligne du corps des articles
+n'est touchée.** Les descriptions ci-dessous ne promettent que du contenu déjà
+présent dans la page — chaque article a été relu avant rédaction, une description
+qui sur-promet dégraderait le rebond puis le classement.
+
+⚠️ **Budget de 44 caractères pour un `title` d'article**, et non 60 :
+`src/pages/blog/[slug].astro` construit `<title>` avec `${title} | Blog Hippodoc`,
+soit 16 caractères de suffixe. Le `title` du frontmatter sert aussi de `h1`, donc
+il doit se lire comme un intertitre autant que comme un résultat de recherche.
+
+| Page | Avant | Après | Mesure d'origine |
+| --- | --- | --- | --- |
+| `obtenir-sa-licence-de-remplacement` | Obtenir ta licence de remplacement | Licence de remplacement pour interne | 850 impr, 6 clics, 0,7 %, pos. 6,5 |
+| `regime-fiscal-micro-bnc-vs-reel` | Le Régime Fiscal : Micro-BNC vs Régime Réel | Micro-BNC ou réel : le choix du remplaçant | 490 impr, 2 clics, 0,4 % |
+| `outils-numeriques-indispensables-cabinet` | Le kit numérique du cabinet médical | 15 outils numériques du médecin généraliste | 458 impr, 3 clics, 0,7 % |
+| `checklist-administrative-medecin-remplacant` | Checklist Administrative du médecin remplaçant | Checklist administrative du remplaçant | 433 impr, 5 clics, 1,2 % |
+
+Descriptions d'origine, pour révocation éventuelle :
+
+- licence : « Interne en médecine ? Toutes les infos indispensables pour obtenir
+  facilement ta licence de remplacement et te lancer. »
+- micro-BNC : « Découvre comment choisir facilement le régime fiscal qui convient
+  à ta situation de médecin remplaçant : Micro-BNC simplifié ou Régime Réel optimisé. »
+- outils : « Tu démarres en médecine générale ? La sélection d'outils numériques
+  préférés chez Hippodoc pour exercer avec confiance. »
+- checklist : « Tu as enfin trouvé ton remplacement idéal ! Découvre la checklist
+  administrative complète pour démarrer sereinement ton activité de médecin remplaçant. »
+
+⚠️ « interne » entre dans le titre de la fiche licence parce que c'est la
+variante de requête qui porte le plus d'impressions — *licence de remplacement
+interne*, 72 impressions en position 12,1 et **zéro clic**. Le mot n'était présent
+ni dans le titre ni dans le `h1`. La grappe complète (4 variantes, 146 impressions,
+0 clic) est couverte par ce seul ajout.
+
+⚠️ « 15 outils » est un décompte vérifié dans l'article (hors Hippodoc), pas une
+approximation : un chiffre faux dans un titre est une promesse non tenue. Les 15
+sont Notaview, Ordotype, Medg, KitMédical, RecoMédicales, Antibioclic, Posos,
+Synapse Medicine, BioMG, ThyroCheck, Psychiaclic, Sporticlic, Pap-Pediatrie,
+Lecrat, Omnidoc.
+
+⚠️ **Défaut trouvé à la relecture, corrigé avant publication.** La première
+version de cette description annonçait « 15 outils *testés en consultation* ».
+L'article ne revendique nulle part un test : il parle de « la sélection
+incontournable des outils numériques *préférés chez Hippodoc* ». Le mot « testés »
+n'existait que dans ma description. Corrigé en « la sélection d'outils préférée
+chez Hippodoc ». C'est exactement le sur-engagement que cette passe s'interdit :
+une description qui promet plus que la page dégrade le rebond, donc le classement.
+
+Deux ajustements annexes, même passe :
+
+- `/comparatif` — titre ramené de **73 à 51 caractères**. Au-delà de ~60, Google
+  tronque et « Médecin libéral 2026 », qui porte la requête, disparaissait de
+  l'aperçu. Hiway Care sort du titre, reste dans la description et dans la page.
+  Supprime le dernier avertissement de `verify-site.mjs`.
+- `/blog` — description portée de **103 à 159 caractères**. Sous ~120, Google
+  complète l'aperçu par un extrait de son choix. Les thèmes cités correspondent à
+  la couverture réelle des 38 articles.
+
+Vérifié : `npm run build` (56 pages) puis `node scripts/verify-site.mjs` — titres
+et descriptions uniques, 1 `h1` par page, 3 449 liens internes sans lien mort, plus
+aucun avertissement de titre long. Aucune référence en dur aux anciens titres
+ailleurs dans le dépôt.
+
+**À mesurer** : CTR de ces pages dans Search Console à 3 et 6 semaines. C'est la
+seule façon de savoir si l'hypothèse tient. Un changement de titre peut faire
+osciller le classement deux à trois semaines ; sur des pages à 0,4-1,2 % de CTR,
+il n'y a presque rien à perdre. Réversible par `git revert`, valeurs d'origine
+ci-dessus.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

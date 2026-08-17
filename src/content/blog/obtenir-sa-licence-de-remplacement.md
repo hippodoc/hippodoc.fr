@@ -1,6 +1,6 @@
 ---
-title: "Obtenir ta licence de remplacement"
-description: "Interne en médecine ? Toutes les infos indispensables pour obtenir facilement ta licence de remplacement et te lancer."
+title: "Licence de remplacement pour interne"
+description: "Conditions, pièces du dossier, envoi au CDOM, délai de 2 à 4 semaines et validité jusqu'au 15 novembre : la démarche complète, étape par étape."
 pubDate: "2025-10-06"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
