@@ -1,6 +1,6 @@
 ---
-title: "Le Régime Fiscal : Micro-BNC vs Régime Réel"
-description: "Découvre comment choisir facilement le régime fiscal qui convient à ta situation de médecin remplaçant : Micro-BNC simplifié ou Régime Réel optimisé."
+title: "Micro-BNC ou réel : le choix du remplaçant"
+description: "Abattement de 34 %, plafond du micro-BNC, bascule après deux années de dépassement, déduction des frais réels : comment trancher selon tes charges."
 pubDate: "2025-10-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
