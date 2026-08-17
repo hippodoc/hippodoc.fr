@@ -2,6 +2,7 @@
 title: "Tout comprendre sur l'URSSAF"
 description: "L'URSSAF reste un mystère ? Fiche claire et pratique pour comprendre et gérer tes cotisations dès tes premiers remplacements."
 pubDate: "2025-10-21"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -51,11 +52,11 @@ Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime S
 👉 **Pour qui ?** Médecins remplaçants ayant un chiffre d'affaires (CA) annuel **inférieur à 38 000 €**.\
 📈 **Cotisations** : **13,5%** pour un CA jusqu'à 19 000 € par an, et **21,2%** pour la tranche de CA entre 19 000 € et 38 000 €.\
 🛡 **Invalidité-Décès** : **157 €/an** pour une couverture à 25% ou **626 €/an** pour une couverture à 100% (barème [CARMF](/blog/tout-comprendre-carmf) 2026).\
-🌐 **Déclaration simplifiée** sur le portail RSPM.\
+🌐 **Déclaration simplifiée** sur le [portail RSPM](https://entreprendre.service-public.gouv.fr/vosdroits/R63763) — réservé aux remplacements exclusifs.\
 📌 **Exemples pratiques** :\
 • CA annuel de **18 000 €** ➡ Cotisations ≈ **2 430 €/an** (18 000 € x 13,5%).\
 • CA annuel de **35 000 €** ➡ Cotisations ≈ **5 957 €/an** (19 000 € x 13,5% + 16 000 € x 21,2% = 2 565 € + 3 392 €).\
-⚠ **Important** : Un dépassement ponctuel de 19 000 € est toléré. Mais après **2 années consécutives de dépassement** ou un CA supérieur à **38 000 €**, tu passes automatiquement au régime classique (PAMC).
+⚠ **Important** : Un dépassement ponctuel de 19 000 € est toléré. Mais après **2 années consécutives de dépassement** ou un CA supérieur à **38 000 €** sur une seule année, tu bascules au régime classique (PAMC). Dans les deux cas la bascule prend effet au **1er janvier de l'année suivante** : tu restes en RSPM jusqu'au 31 décembre de l'année du dépassement.
 
 ## 2. Régime Classique PAMC (Praticien et Auxiliaire Médical Conventionné)
 

@@ -2,6 +2,7 @@
 title: "2 exemples concrets de revenus en micro-BNC"
 description: "Du CA au Super-Net : découvre ce qu'il te reste vraiment après cotisations et impôts avec des exemples à 50 000 € et 75 000 € de chiffre d'affaires."
 pubDate: "2025-11-28T10:00:00"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -14,7 +15,7 @@ tags:
 cta: "Prêt(e) à piloter ton activité comme un pro ?"
 faq:
   - question: "Combien me reste-t-il avec 50 000 € de CA en micro-BNC ?"
-    answer: "Avec 50 000 € en micro-BNC : cotisations ~13 207 € (26,5%), impôt ~3 065 € (6,1%), **Super-Net ~33 728 €** soit 67,5% de ton CA. C'est ce qui arrive vraiment dans ta poche !"
+    answer: "Avec 50 000 € en micro-BNC : cotisations ~13 207 € (26,5%), impôt 3 004 € (6,0 %), **Super-Net 33 789 €** soit 67,6 % de ton CA. C'est ce qui arrive vraiment dans ta poche !"
   - question: "Quelle est la différence entre RSPM et micro-BNC classique ?"
     answer: "Le **RSPM** concerne les cotisations sociales (< 38k€). Le **micro-BNC** concerne la fiscalité (< 83,6k€). Tu peux être en micro-BNC fiscal tout en étant au régime PAMC pour les cotisations sociales (si CA > 38k€)."
   - question: "Que se passe-t-il si je dépasse 83 600 € de CA ?"
@@ -39,7 +40,8 @@ Entre ton **chiffre d'affaires (CA)** et ce qui arrive vraiment dans ta poche, d
 ## 2️⃣ L'impôt sur le revenu : via le micro-BNC (< 83,6k€)
 
 **Abattement automatique de 34 %** (comme si tu avais 34 % de frais pro non imposables sans justificatifs)\
-Tu es imposé uniquement sur les **66 %** restants
+Tu es imposé uniquement sur les **66 %** restants\
+Le [plafond de 83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits/F32105) a été revalorisé par la loi de finances pour 2026 et vaut pour les revenus 2026 à 2028.
 
 ✅ Ce qui reste après tout ça = ton **[super net](/blog/simulateur-super-net-combien-reste)** 💶
 
@@ -55,21 +57,21 @@ Tu es imposé uniquement sur les **66 %** restants
 
 **3. Impôt**\
 • Base imposable = 50 000 × 66 % = **33 000 €**\
-• Barème 2025 (1 part) :\
-  - 0 % jusqu'à 11 497 € → **0 €**\
-  - 11 % sur 17 818 € → **1 960 €**\
-  - 30 % sur 3 684 € → **1 105 €**\
-• → **Total IR ≈ 3 065 €**
+• Barème 2026, applicable aux revenus 2025 (1 part) :\
+  - 0 % jusqu'à 11 600 € → **0 €**\
+  - 11 % sur 17 979 € → **1 978 €**\
+  - 30 % sur 3 421 € → **1 026 €**\
+• → **Total IR ≈ 3 004 €**
 
-✅ **Super net : 36 793 − 3 065 = 33 728 €** (67,5 % du CA)
+✅ **Super net : 36 793 − 3 004 = 33 789 €** (67,6 % du CA)
 
 ## 📊 Répartition du CA (Exemple 1)
 
 :::tip
-**Super net : 67,5 %** 🎯\
+**Super net : 67,6 %** 🎯\
 **URSSAF : 8,7 %**\
 **CARMF : 17,8 %**\
-**Impôt : 6,1 %**
+**Impôt : 6,0 %**
 :::
 
 ## 🧪 EXEMPLE 2 : CA 75 000 €
@@ -84,13 +86,13 @@ Tu es imposé uniquement sur les **66 %** restants
 
 **3. Impôt**\
 • Base imposable = 75 000 × 66 % = **49 500 €**\
-• Barème 2025 (1 part) :\
-  - 0 % jusqu'à 11 497 € → **0 €**\
-  - 11 % sur 17 818 € → **1 960 €**\
-  - 30 % sur 20 184 € → **6 055 €**\
-• → **Total IR ≈ 8 015 €**
+• Barème 2026, applicable aux revenus 2025 (1 part) :\
+  - 0 % jusqu'à 11 600 € → **0 €**\
+  - 11 % sur 17 979 € → **1 978 €**\
+  - 30 % sur 19 921 € → **5 976 €**\
+• → **Total IR ≈ 7 954 €**
 
-✅ **Super net : 56 813 − 8 015 = 48 798 €** (65,1 % du CA)
+✅ **Super net : 56 813 − 7 954 = 48 859 €** (65,1 % du CA)
 
 ## 📊 Répartition du CA (Exemple 2)
 
@@ -98,7 +100,7 @@ Tu es imposé uniquement sur les **66 %** restants
 **Super net : 65,1 %** 💰\
 **URSSAF : 8,4 %**\
 **CARMF : 15,9 %**\
-**Impôt : 10,7 %**
+**Impôt : 10,6 %**
 :::
 
 ## ⚠️ Attention

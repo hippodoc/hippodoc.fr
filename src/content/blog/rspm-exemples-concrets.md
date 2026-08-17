@@ -2,6 +2,7 @@
 title: "RSPM : 2 exemples concrets - Du CA au Super-Net"
 description: "Découvre ce qu'il te reste vraiment après cotisations et impôts avec le régime RSPM. Exemples chiffrés à 19 000 € et 38 000 € de CA."
 pubDate: "2025-11-28T11:00:00"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -16,7 +17,7 @@ faq:
   - question: "C'est quoi le RSPM pour les médecins remplaçants ?"
     answer: "Le **RSPM** (Régime Simplifié des Professions Médicales) est un régime social simplifié pour les médecins avec CA < 38 000 €. Cotisations réduites : **13,5%** jusqu'à 19 000 €, **21,2%** entre 19 000 € et 38 000 €."
   - question: "Combien me reste-t-il avec le RSPM à 19 000 € de CA ?"
-    answer: "Avec 19 000 € de CA en RSPM : cotisations ~2 723 € (14,3%), impôt ~0 € (décote), **Super-Net ~16 277 €** soit 85,7% de ton CA. Un des meilleurs taux de conservation !"
+    answer: "Avec 19 000 € de CA en RSPM : cotisations 2 722 € (14,3 %), impôt 0 € grâce à la décote, **Super-Net 16 278 €** soit 85,7 % de ton CA. Un des meilleurs taux de conservation !"
   - question: "Que se passe-t-il si je dépasse 38 000 € de CA en RSPM ?"
     answer: "Si tu dépasses 38 000 € une seule année, tu passes automatiquement au **régime PAMC** (classique). Les cotisations seront alors calculées sur ton bénéfice réel, avec CARMF en plus."
   - question: "Le RSPM est-il plus avantageux que le régime classique ?"
@@ -48,9 +49,9 @@ relatedArticles:
 
 **3. Impôt sur le revenu**\
 • Base imposable micro-BNC = 19 000 × 66 % = **12 540 €**\
-• Barème 2026 (1 part) :\
-  - 0 % jusqu'à 11 497 € → 0 €\
-  - 11 % sur la part 11 498 → 12 540 (= 1 043 €) → 114,73 €\
+• Barème 2026, applicable aux revenus 2025 (1 part) :\
+  - 0 % jusqu'à 11 600 € → 0 €\
+  - 11 % sur la part 11 601 → 12 540 (= 940 €) → 103,40 €\
 • Application de la décote → **IR net = 0 €**
 
 ✅ **Super net = 16 278 €**
@@ -76,20 +77,20 @@ relatedArticles:
 
 **3. Impôt sur le revenu**\
 • Base imposable micro-BNC = 38 000 × 66 % = **25 080 €**\
-• Barème 2026 (1 part) :\
-  - 0 % jusqu'à 11 497 € → 0 €\
-  - 11 % sur la part 11 498 → 25 080 (= 13 583 €) → 1 494,13 €\
-• Décote = 212,91 €\
-• → **IR net ≈ 1 281 €**
+• Barème 2026, applicable aux revenus 2025 (1 part) :\
+  - 0 % jusqu'à 11 600 € → 0 €\
+  - 11 % sur la part 11 601 → 25 080 (= 13 480 €) → 1 482,80 €\
+• Décote = 226,03 €\
+• → **IR net ≈ 1 257 €**
 
-✅ **Super net ≈ 29 969 €**
+✅ **Super net ≈ 29 993 €**
 
 ## 📊 Répartition du CA (Exemple 2)
 
 :::tip
 **Net : 78,9 %** 🎯\
 **Cotisations : 17,8 %**\
-**IR : 3,4 %**
+**IR : 3,3 %**
 :::
 
 ## ⚠️ Attention

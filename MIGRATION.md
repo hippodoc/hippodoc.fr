@@ -1847,6 +1847,61 @@ Vérifié : build 56 pages, `verify-site.mjs` OK, 3 453 liens internes sans lien
 citées, pas sur une expertise métier. Le seuil de 15 000 € et l'absence de durée
 minimale d'affiliation méritent une relecture par quelqu'un qui pratique.
 
+### 9.ag Sourçage fiscal, passe 2 — barèmes IR remis à l'année courante (août 2026)
+
+Seconde passe de § 9.af, sur les articles fiscaux restants. Puisque la première
+avait trouvé deux erreurs sur quatre articles, supposer les autres indemnes aurait
+été imprudent.
+
+**Vérifié exact, aucune modification** : taux RSPM 13,5 % jusqu'à 19 000 € puis
+21,2 % entre 19 000 et 38 000 € ; seuil de sortie à 38 000 € sur une année OU
+19 000 € sur deux années consécutives ; déclaration URSSAF sous 8 jours ;
+abattement micro-BNC de 34 % ; plafond 83 600 €.
+
+⚠️ **Défaut trouvé : barème IR mal étiqueté.** `rspm-exemples-concrets` annonçait
+« Barème 2026 » en calculant avec les valeurs du barème **LF 2025** (première
+tranche à 11 497 € au lieu de 11 600 €). Les montants publiés correspondaient
+exactement au barème applicable aux revenus 2024 — soit une année de retard.
+`micro-bnc-exemples-concrets` était dans le même cas, mais avec une étiquette
+honnête (« Barème 2025 ») tout en citant par ailleurs le plafond micro-BNC 2026.
+
+Les quatre exemples ont été **recalculés avec `BAREME_2026`**, en lisant les
+tranches et les paramètres de décote directement dans `src/lib/baremes-ir.ts`,
+seule source de vérité du dépôt — pas en refaisant l'arithmétique à la main.
+
+| Exemple | IR avant | IR après | Super-Net avant | Super-Net après |
+| --- | --- | --- | --- | --- |
+| RSPM 19 000 € | 0 € | 0 € | 16 278 € | 16 278 € |
+| RSPM 38 000 € | 1 281 € | **1 257 €** | 29 969 € | **29 993 €** |
+| micro-BNC 50 000 € | 3 065 € | **3 004 €** | 33 728 € | **33 789 €** |
+| micro-BNC 75 000 € | 8 015 € | **7 954 €** | 48 798 € | **48 859 €** |
+
+Les pourcentages de répartition et les réponses de `faq` qui reprenaient ces
+montants ont été mis à jour en conséquence. Deux dérives d'un euro entre le corps
+et la `faq` de `rspm-exemples-concrets` (2 723 vs 2 722, 16 277 vs 16 278) ont été
+alignées au passage.
+
+⚠️ Le bloc de répartition de l'exemple micro-BNC 1 somme à 100,1 % : artefact
+d'arrondi à 0,1 près, déjà présent avant cette passe. Les valeurs exactes somment
+à 100,0 — fausser un arrondi correct pour faire tomber la colonne juste serait pire.
+
+Précision ajoutée à `tout-comprendre-urssaf` : la bascule RSPM → PAMC prend effet
+au **1er janvier de l'année suivante**, on reste en RSPM jusqu'au 31 décembre de
+l'année du dépassement. C'était déjà correctement énoncé dans la FAQ de
+`calculette.astro`, mais pas dans l'article.
+
+⚠️ **À vérifier hors de cette passe — concerne le simulateur, pas le blog.**
+`src/lib/baremes-ir.ts` documente lui-même ses valeurs de décote 2026 comme une
+estimation : `{ plafondSeul: 897 } // LF 2026 (estimation +1%)`, avec le
+commentaire « valeurs reconduites pour 2026 dans l'attente de la publication
+officielle des valeurs LF 2026 finales ». Tant que ce n'est pas confirmé, chaque
+simulation servie aux utilisateurs porte cette approximation — et désormais deux
+articles aussi. À rapprocher du texte publié de la LF 2026.
+
+`updatedDate` au 2026-08-18 sur les 3 articles, `blog-meta.json` synchronisé.
+Vérifié : build 56 pages, `verify-site.mjs` OK, cohérence arithmétique de chaque
+exemple recontrôlée ligne à ligne.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En
