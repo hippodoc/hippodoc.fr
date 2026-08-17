@@ -61,6 +61,8 @@ Si tu dépasses **83 600 € pendant 2 années consécutives** : tu **sors autom
 💡 Commence avec le **Micro-BNC** si tu débutes et que tu as **peu de frais professionnels**. C'est simple, rapide, et parfaitement adapté pour te lancer sereinement !\
 💡 Passe au **Régime Réel** dès que tes charges deviennent **significatives** (supérieures à 34% de tes revenus). Tu pourras ainsi **optimiser ta fiscalité** et maximiser tes économies. N'hésite pas à te faire accompagner par un **expert-comptable** pour garantir une gestion optimale.
 
+💡 Au réel, l'outil qui tient tes écritures compte autant que le comptable qui les relit : le [comparatif Indy, Pennylane et Hippodoc](/comparatif) détaille ce que chacun prend en charge.
+
 ## 🔥 Astuce Hippodoc : simplifie ta gestion fiscale !
 
 :::tip

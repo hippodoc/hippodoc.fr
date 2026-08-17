@@ -86,6 +86,10 @@ Tu t'apprêtes à débuter ton [premier remplacement](/blog/realites-remplacemen
 ✅ Demande une rapide démonstration à un collègue expérimenté pour booster ta prise en main.\
 ✅ Note les raccourcis clavier essentiels et les procédures clés sur un post-it visible près de ton écran !
 
+## 💼 Attention, deux logiciels différents
+
+Celui du cabinet gère les patients. Il ne gère pas ton activité de remplaçant : rétrocessions, cotisations, déclarations. Pour cette partie-là, tu auras ton propre outil — le [comparatif des outils de gestion](/comparatif) fait le tri entre les principaux.
+
 ## 🔥 Le tips Hippodoc
 
 :::tip

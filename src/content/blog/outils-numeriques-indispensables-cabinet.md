@@ -52,6 +52,10 @@ C'est enfin l'heure de démarrer ton remplacement en médecine générale ? Fél
 
 **Omnidoc.fr** : Obtiens facilement et rapidement un avis d'experts spécialistes grâce à cette plateforme de télé-expertise intuitive.
 
+## 💼 Et côté gestion ?
+
+Tous les outils ci-dessus t'aident à soigner. Aucun ne t'aide à suivre tes rétrocessions, tes cotisations ou ta déclaration : c'est un autre marché, avec ses propres acteurs. Le [comparatif des outils de gestion pour médecin libéral](/comparatif) situe les principaux, Hippodoc compris.
+
 ## 🚀 La solution complète pour gérer ta vie professionnelle
 
 :::tip
