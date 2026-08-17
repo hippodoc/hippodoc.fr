@@ -1695,6 +1695,44 @@ osciller le classement deux à trois semaines ; sur des pages à 0,4-1,2 % de CT
 il n'y a presque rien à perdre. Réversible par `git revert`, valeurs d'origine
 ci-dessus.
 
+### 9.ad Maillage contextuel vers /comparatif (août 2026)
+
+Suite de l'audit § 9.ac. `/comparatif` était la seule page indexable du site à
+n'avoir **aucun lien contextuel entrant** — atteignable uniquement par la
+navigation, que Google pondère nettement moins qu'un lien dans le corps d'un
+texte — et **zéro impression sur trois mois**, alors que c'est la page la plus
+proche de l'achat. Pour comparaison : `/simulateur` et `/tarifs` reçoivent
+41 liens éditoriaux entrants chacune.
+
+Quatre liens ajoutés, un par article, placés là où la question se pose vraiment
+et non en fin de texte :
+
+| Article hôte | Ancrage | Ancre |
+| --- | --- | --- |
+| `outils-numeriques-indispensables-cabinet` | après la dernière section clinique : l'article couvre les outils de soin, aucun de gestion | comparatif des outils de gestion pour médecin libéral |
+| `maitrise-ton-logiciel-metier-en-30-min` | l'article traite du logiciel **du cabinet**, pas de l'outil du remplaçant — la distinction méritait d'être faite | comparatif des outils de gestion |
+| `choix-mode-exercice` | le passage sur l'exercice mixte, où deux sources se déclarent | comparatif des outils de gestion pour médecin libéral |
+| `regime-fiscal-micro-bnc-vs-reel` | la section conseils, qui recommande déjà l'expert-comptable | comparatif Indy, Pennylane et Hippodoc |
+
+⚠️ **Ancres volontairement variées** : quatre liens portant exactement la même
+ancre vers une page commerciale est un motif de sur-optimisation. Chaque ancre
+reste descriptive, aucune n'est un « cliquez ici ».
+
+⚠️ **Une seule occurrence par article.** Le maillage général était déjà sain
+(médiane de 6 liens entrants par article, aucun lien mort sur 3 449). Multiplier
+les liens aurait dilué le signal au lieu de le renforcer.
+
+⚠️ Chaque insertion crée un `h2`. Vérifié que cela ne déclenche aucun sommaire :
+le seuil de `[slug].astro` est `nbMots >= 1200 && h2 >= 8`, et les quatre articles
+plafonnent à 576 mots après ajout. Aucun changement de mise en page.
+
+Vérifié : build 56 pages ; `verify-site.mjs` — 3 453 liens internes (contre 3 449),
+aucun mort ; `/comparatif` sort de la liste des orphelines éditoriales, où ne
+restent que `/mentions-legales` et `/conditions-utilisations`, ce qui est normal.
+
+**À mesurer** : apparition de `/comparatif` dans les impressions Search Console.
+Elle est aujourd'hui à zéro ; tout ce qui dépasse zéro valide le geste.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

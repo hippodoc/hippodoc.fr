@@ -91,6 +91,10 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 ✅ **+** : Ultra flexible, pas de local nécessaire\
 ⚠️ **-** : Isolement, routine, réservé aux thésés
 
+## 🧰 Et l'outil qui va avec ?
+
+Dès que le statut est libéral, il faut suivre revenus et cotisations quelque part — et davantage encore en exercice mixte, où deux sources se déclarent. Le [comparatif des outils de gestion pour médecin libéral](/comparatif) montre qui fait quoi, et pour quel profil.
+
 ## 🔥 TIPS HIPPODOC.FR
 
 :::tip
