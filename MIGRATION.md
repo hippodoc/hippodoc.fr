@@ -1733,6 +1733,52 @@ restent que `/mentions-legales` et `/conditions-utilisations`, ce qui est normal
 **À mesurer** : apparition de `/comparatif` dans les impressions Search Console.
 Elle est aujourd'hui à zéro ; tout ce qui dépasse zéro valide le geste.
 
+### 9.ae Données structurées de /simulateur (août 2026)
+
+Suite de l'audit § 9.ac / § 9.ad. `/simulateur` reçoit **41 liens internes** — à
+égalité avec `/tarifs` pour la page la mieux maillée du site — et **zéro
+impression de recherche sur trois mois**. Elle ne déclarait que le schéma
+`Organization` injecté globalement par `BaseLayout`, alors que l'outil jumeau
+`/guide-declarations/calculette` porte `WebApplication + FAQPage + BreadcrumbList`.
+
+⚠️ **Écart assumé à la parité de migration.** L'en-tête du fichier documentait le
+choix inverse : « Pas de JSON-LD sur cette page (parité avec la SPA source) ».
+Ce n'était donc pas un oubli. L'audit l'avait d'abord qualifié d'incohérence, à
+tort. La parité avec une SPA qui ne se référençait pas ne justifie plus de priver
+la page de balisage ; le commentaire d'en-tête est mis à jour en conséquence.
+
+Ajoutés : `WebApplication` (catégorie `FinanceApplication`, offre à 0 €),
+`FAQPage` (5 questions) et `BreadcrumbList` (Accueil → Simulateur).
+
+⚠️ **Un `FAQPage` dont les questions ne sont pas visibles enfreint les consignes
+Google.** Les 5 questions sont donc rendues sur la page, en `<details>/<summary>`
+natifs — jamais Radix, qui ne livre pas le contenu fermé au HTML statique. Motif
+et classes repris à l'identique de `calculette.astro`, dont la conformité a été
+vérifiée au préalable (7 questions balisées, 7 visibles).
+
+⚠️ **Aucune réponse n'invente de contenu.** Les 5 réponses reformulent du texte
+déjà présent sur la page : le glossaire « Trois mots à connaître » pour le
+Super-Net, le guide d'utilisation pour la CARMF, le seuil RSPM/PAMC à 38 000 € et
+l'abattement Micro-BNC de 34 %, le disclaimer verbatim pour l'expert-comptable.
+
+`h1` : « Simulateur Super-Net Hippodoc » → « Simulateur Super-Net : ton revenu net
+de médecin ». Le terme de marque « Super-Net » est conservé en tête — c'est un
+concept produit employé 18 fois sur la page et porteur d'un article dédié — mais
+il est désormais suivi des mots réellement recherchés. Le `<title>` était déjà
+correct et n'a pas bougé.
+
+Vérifié : build 56 pages ; `verify-site.mjs` OK ; JSON-LD parsable et complet
+(`Organization + WebApplication + FAQPage + BreadcrumbList`) ; les 5 questions ET
+les 5 réponses présentes dans le HTML servi.
+
+⚠️ **Lighthouse : l'invariant ≥ 95 n'est PAS tenu sur cette page, avant comme
+après.** Mesures locales (`serve dist`, 3 runs chacune) : référence 92/92/92,
+avec les modifications 92/94/91 — même médiane, LCP 3,1 s inchangé, TBT et CLS à
+zéro. **Aucune régression introduite ici.** En revanche la production mesure
+**86** (LCP 3,4 s) : l'invariant de `CLAUDE.md` est déjà violé indépendamment de
+cette passe. Le facteur limitant est le LCP, pas le poids du HTML. À traiter
+séparément.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En
