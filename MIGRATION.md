@@ -2164,6 +2164,52 @@ arrive de recherche.
 
 Vérifié : build 56 pages, `verify-site.mjs` OK, 3 466 liens internes sans lien mort.
 
+### 9.an Guide : sources officielles élargies au social (août 2026)
+
+Plan 05 de l'audit `/guide-declarations`. **Le plan a été revu en cours de route,
+après mesure — je le note parce que la version initiale était fondée sur un
+constat inexact.**
+
+⚠️ **Rectification.** L'audit annonçait « une seule source officielle citée dans
+49 395 mots ». C'était vrai des **hyperliens**, pas des **références** : la page
+cite en texte **17 références légales distinctes, 69 occurrences** — CGI Art. 102
+ter (12×), Art. 151 ter (25×), BOI-BNC-SECT-40 (7×), BOI-BIC-CHAMP-80-10-20-20,
+CGI Art. 1417, CGI Art. 49 K annexe III… Le contenu était donc déjà sourcé ; ce
+qui manquait, c'est qu'on puisse cliquer.
+
+⚠️ **Et transformer ces 69 occurrences en liens n'est pas faisable proprement.**
+Testé : le BOFiP n'expose pas d'URL stable par identifiant. `bofip.impots.gouv.fr/bofip/lien?identifiant=BOI-…`,
+`/bofip/BOI-…`, `/bofip/recherche?q=…` renvoient tous **404**. Seule fonctionne la
+forme complète `…/2495-PGP.html/identifiant=BOI-IR-LIQ-20-20-30-20260407`, qui
+embarque un identifiant numérique **et une date de publication** propres au
+document — donc appelés à changer à chaque republication. Sur une page fiscale,
+69 liens voués à pourrir valent moins que zéro.
+
+**Ce qui a été fait à la place** : la liste « Sources officielles » du hero, qui
+existait déjà, passe de **3 à 8 entrées**. Les trois d'origine ne couvraient que le
+fiscal (brochure IR, notice 2035, guide PAMC), alors que le guide traite autant de
+social sans qu'aucune source ne soit atteignable.
+
+Ajoutées, toutes vérifiées 200 avant insertion :
+
+| Source | Couvre |
+| --- | --- |
+| service-public F32105 | régime micro-BNC et son plafond |
+| service-public F36740 | déclarations du PAMC, délai de 8 jours |
+| service-public R63763 | dispositif simplifié remplaçants (RSPM) |
+| carmf.fr — affiliation | affiliation et conditions de dispense |
+| impots.gouv.fr | déduction forfaitaire de 10 % |
+
+⚠️ Choix assumé : des **pages de référence durables** plutôt que des permaliens
+BOFiP. Une page service-public ou CARMF survit aux republications ; un permalien
+BOFiP non.
+
+Vérifié : build 56 pages, `verify-site.mjs` OK, 8 liens officiels servis sur la page.
+
+**Reste ouvert** : la vérification ligne à ligne des 35 cases contre leur
+référence citée. Elle demande une relecture métier, pas un script — et sort du
+périmètre d'un audit SEO.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

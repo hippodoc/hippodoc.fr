@@ -30,6 +30,34 @@ const SOURCES_OFFICIELLES = [
     label: 'Guide déclaration PAMC 2026',
     url: 'https://www.impots.gouv.fr/sites/default/files/media/1_metier/1_particulier/EV/1_declarer/190_travailleur_independant/pamc/pam_guide-declaration-revenus_v1.0-du-09-04-2026.pdf',
   },
+  /* Ajouts août 2026 (MIGRATION.md § 9.an) : les trois premières sources ne
+     couvraient que le fiscal. Le guide traite pourtant autant de social — DSFU,
+     RSPM, affiliation CARMF — sans qu'aucune source ne soit atteignable d'un clic.
+     Chaque URL ci-dessous a été vérifiée (200) avant d'être ajoutée.
+     ⚠️ Volontairement des pages de référence durables, pas des permaliens BOFiP :
+     ces derniers embarquent un identifiant numérique et une date de publication
+     (…/2495-PGP.html/identifiant=BOI-…-20260407) qui changent à chaque
+     republication. Sur une page fiscale, un lien mort est pire que pas de lien. */
+  {
+    label: 'Régime micro-BNC',
+    url: 'https://entreprendre.service-public.gouv.fr/vosdroits/F32105',
+  },
+  {
+    label: 'Déclarations du PAMC',
+    url: 'https://entreprendre.service-public.gouv.fr/vosdroits/F36740',
+  },
+  {
+    label: 'Dispositif simplifié remplaçants (RSPM)',
+    url: 'https://entreprendre.service-public.gouv.fr/vosdroits/R63763',
+  },
+  {
+    label: 'Affiliation et dispense CARMF',
+    url: 'https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm',
+  },
+  {
+    label: 'Déduction forfaitaire de 10 %',
+    url: 'https://www.impots.gouv.fr/particulier/questions/comment-puis-je-beneficier-de-la-deduction-forfaitaire-de-10',
+  },
 ];
 
 const updatedLabel = format(LAST_UPDATED, 'd MMMM yyyy', { locale: fr });
