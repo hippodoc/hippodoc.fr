@@ -1902,6 +1902,54 @@ articles aussi. À rapprocher du texte publié de la LF 2026.
 Vérifié : build 56 pages, `verify-site.mjs` OK, cohérence arithmétique de chaque
 exemple recontrôlée ligne à ligne.
 
+### 9.ah Barème IR 2026 : cinq seuils faux dans le moteur de calcul (août 2026)
+
+Découvert en sourçant les articles fiscaux (§ 9.ag) : `src/lib/baremes-ir.ts`
+documentait ses valeurs 2026 comme provisoires — `// LF 2026 (estimation +1%)`,
+« en attente de la publication officielle ». La LF 2026 étant promulguée depuis le
+**19 février 2026** (loi n° 2026-103), ces valeurs ont été confrontées au BOFiP.
+
+⚠️ **Seules les tranches avaient été mises à jour pour 2026.** Les quatre seuils
+associés avaient été recopiés du barème 2025 avec la mention « inchangé », qui
+était fausse : le BOFiP les indexe comme les tranches (+0,9 % au titre des revenus
+2025, LF 2026 art. 4).
+
+| Paramètre | Codé | Réel (revenus 2025) | Source |
+| --- | ---: | ---: | --- |
+| `plafondQfParDemiPart` | 1 791 € | **1 807 €** | BOI-IR-LIQ-20-20-20 |
+| `plafondQfCaseT` (parent isolé) | 4 149 € | **4 262 €** | BOI-IR-LIQ-20-20-20 |
+| `plafondAbattement10Salaire` | 14 426 € | **14 555 €** | brochure IR 2026 |
+| `plancherAbattement10Salaire` | 504 € | **509 €** | brochure IR 2026 |
+| décote `plafondCouple` | 1 486 € | **1 483 €** | BOI-IR-LIQ-20-20-30 |
+
+**Vérifié exact, non modifié** : les cinq tranches (11 600 / 29 579 / 84 577 /
+181 917), la décote individuelle (897 €) et son taux (45,25 %), le PASS 2026
+(48 060 €), les plafonds micro-BNC (77 700 € jusqu'aux revenus 2025, 83 600 € à
+partir de 2026). L'estimation « +1 % » était donc juste pour la décote
+individuelle, et fausse partout ailleurs.
+
+Portée : aucune de ces constantes n'est dupliquée dans le dépôt — tous les
+consommateurs lisent `baremes-ir.ts`. La correction se propage donc d'un coup au
+simulateur (branche RSPM), à la calculette et à `individualizedTax.ts`.
+
+Ordre de grandeur de l'écart corrigé, par simulation :
+
+- couple avec 2 enfants au plafonnement du QF : **32 € d'impôt en trop** annoncés
+- salarié au plafond de l'abattement de 10 % : **38 à 58 € en trop** selon la TMI
+- couple dans la zone de décote : **jusqu'à 3 € en moins** — le code surestimait
+  la décote, donc sous-estimait l'impôt
+
+⚠️ Les exemples chiffrés du blog (§ 9.ag) ne changent pas : ils portent sur 1 part
+fiscale sans revenu salarié, donc ni le plafonnement du QF ni l'abattement de 10 %
+ne s'y appliquent, et la décote individuelle était déjà juste.
+
+⚠️ **Reste à vérifier hors de ce dépôt.** La branche PAMC du simulateur (CA ≥
+38 000 €) appelle l'Edge Function Supabase `calculate-urssaf`. Si elle embarque sa
+propre copie de ces seuils, elle porte encore les valeurs fausses — ce dépôt ne
+peut pas le savoir. À contrôler côté Supabase.
+
+Vérifié : build 56 pages, `verify-site.mjs` OK.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

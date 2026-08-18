@@ -50,10 +50,14 @@ const BAREME_2026: BaremeIR = {
     { limite: 181917, taux: 0.41, label: '41%' },
     { limite: Infinity, taux: 0.45, label: '45%' },
   ],
-  plafondQfParDemiPart: 1791,       // Inchangé pour 2026
-  plafondQfCaseT: 4149,             // Plafond majoré case T parent isolé — inchangé pour 2026
-  plafondAbattement10Salaire: 14426, // Confirmé LF 2026 (inchangé)
-  plancherAbattement10Salaire: 504,  // Confirmé LF 2026 (inchangé)
+  /* Ces quatre seuils suivent l'indexation du barème (+0,9 % au titre des revenus
+     2025, LF 2026 art. 4). Ils avaient été recopiés du barème 2025 avec la mention
+     « inchangé », ce qui était faux : le BOFiP les revalorise comme les tranches.
+     Sources : BOI-IR-LIQ-20-20-20 (quotient familial) et brochure IR 2026. */
+  plafondQfParDemiPart: 1807,        // BOI-IR-LIQ-20-20-20 : « 1 807 € par demi-part supplémentaire »
+  plafondQfCaseT: 4262,              // BOI-IR-LIQ-20-20-20 : « 4 262 € » — part supplémentaire du parent isolé
+  plafondAbattement10Salaire: 14555, // Déduction forfaitaire de 10 % plafonnée à 14 555 € pour les revenus 2025
+  plancherAbattement10Salaire: 509,  // Minimum de 509 € par salarié
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -197,8 +201,10 @@ export function calculateTaxWithPlafonnement(
 // Plafond célibataire/divorcé/veuf : 1 part de base
 // Plafond couple marié/pacsé : 2 parts de base
 //
-// Source : LF 2025 (revenus 2024) — valeurs reconduites pour 2026 dans l'attente
-// de la publication officielle des valeurs LF 2026 finales.
+// Sources : BOI-IR-LIQ-20-20-30 (décote, CGI art. 197-I-4) pour les revenus 2025,
+// et LF 2025 pour les revenus 2024. Les valeurs 2026 ne sont plus une estimation :
+// le BOFiP fixe la somme forfaitaire à 897 € (imposition individuelle) et 1 483 €
+// (imposition commune), le taux restant à 45,25 % de l'impôt brut.
 
 export interface DecoteParams {
   plafondSeul: number;
@@ -208,12 +214,12 @@ export interface DecoteParams {
 
 const DECOTE_BY_YEAR: Record<number, DecoteParams> = {
   2024: { plafondSeul: 889, plafondCouple: 1471, taux: 0.4525 },
-  2025: { plafondSeul: 897, plafondCouple: 1486, taux: 0.4525 }, // LF 2026 (estimation +1%)
-  2026: { plafondSeul: 897, plafondCouple: 1486, taux: 0.4525 },
-  2027: { plafondSeul: 897, plafondCouple: 1486, taux: 0.4525 },
-  2028: { plafondSeul: 897, plafondCouple: 1486, taux: 0.4525 },
-  2029: { plafondSeul: 897, plafondCouple: 1486, taux: 0.4525 },
-  2030: { plafondSeul: 897, plafondCouple: 1486, taux: 0.4525 },
+  2025: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 }, // BOFiP, revenus 2025
+  2026: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 },
+  2027: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 },
+  2028: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 },
+  2029: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 },
+  2030: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 },
 };
 
 export function getDecoteParams(annee: number = 2026): DecoteParams {
