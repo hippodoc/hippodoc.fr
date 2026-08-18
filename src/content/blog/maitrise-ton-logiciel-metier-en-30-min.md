@@ -2,6 +2,7 @@
 title: "Maîtrise ton logiciel médical en 30 min"
 description: "Premier remplacement et nouveau logiciel à apprivoiser ? La checklist ultra-simple pour devenir rapidement opérationnel(le)."
 pubDate: "2025-10-06"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
