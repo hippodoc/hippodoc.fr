@@ -64,6 +64,10 @@ Si tu dépasses **83 600 € pendant 2 années consécutives** : tu **sors autom
 
 💡 Au réel, l'outil qui tient tes écritures compte autant que le comptable qui les relit : le [comparatif Indy, Pennylane et Hippodoc](/comparatif) détaille ce que chacun prend en charge.
 
+## 📝 Et concrètement, dans quelle case ?
+
+En micro-BNC, tout se joue sur une seule ligne du 2042-C-PRO : [la case 5HQ, détaillée dans le guide](/guide-declarations#case-5HQ), où se reporte le montant brut de tes recettes.
+
 ## 🔥 Astuce Hippodoc : simplifie ta gestion fiscale !
 
 :::tip

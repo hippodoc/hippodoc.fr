@@ -35,7 +35,7 @@ import { getMicroBncCeiling } from '@/lib/baremes-ir';
 import { trackEvent } from '@/lib/analytics';
 import { toast } from 'sonner';
 import type { CalculetteFormValues, ProfilCalculette } from './calculetteSchema';
-import { PROFIL_LABELS, PROFILS_VISIBLES, PROFIL_FICHE_ANCRE, resolveEffectiveProfil } from './calculetteSchema';
+import { PROFIL_LABELS, PROFILS_VISIBLES, resolveEffectiveProfil } from './calculetteSchema';
 import { getCode } from '@/lib/declarantMapping';
 
 interface FieldConfig {
@@ -573,12 +573,17 @@ export function CalculetteForm() {
             )}
           </div>
           {/* V9 — F5 : lien + auto-expand fiches via cross-links Phase 5 */}
+          {/* Pointait vers `#PM-002`, `#PM-001`… : ces ancres n'ont jamais été rendues.
+              Les fiches du guide portent des id `regle-RO-xxx`, pas les codes profil de
+              la SPA source — le lien retombait donc en haut de page. Corrigé vers
+              `#profils`, la boussole qui identifie justement le profil. Détecté par le
+              contrôle d'ancres de verify-site.mjs (MIGRATION.md § 9.al). */}
           <a
-            href={`/guide-declarations#${PROFIL_FICHE_ANCRE[effectiveProfil]}`}
+            href="/guide-declarations#profils"
             className="sm:col-span-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             <BookOpen className="h-3 w-3" />
-            Voir la fiche {PROFIL_FICHE_ANCRE[effectiveProfil]} — {PROFIL_LABELS[effectiveProfil]}
+            Voir ton profil dans le guide — {PROFIL_LABELS[effectiveProfil]}
           </a>
         </CardContent>
       </Card>

@@ -536,6 +536,30 @@ for (const f of ['index.html', 'tarifs/index.html', 'blog/index.html']) {
   }
 }
 
+/* 4 quindecies. Les liens vers une ancre pointent vers un `id` qui existe.
+   Le maillage vers /guide-declarations vise des ancres précises (#case-5HQ,
+   #glossaire-term-asv…) plutôt que la page entière : une ancre renommée casserait
+   le lien en silence, sans qu'aucun contrôle d'URL ne le voie. Voir § 9.al. */
+let ancresVerifiees = 0;
+const pagesHtml = fichiersDist.filter((f) => f.endsWith('.html'));
+const idsParPage = new Map();
+for (const f of pagesHtml) {
+  const html = readFileSync(resolve(dist, f.slice(1)), 'utf8');
+  const chemin = f.replace(/\/index\.html$/, '').replace(/\.html$/, '') || '/';
+  idsParPage.set(chemin, new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1])));
+}
+for (const f of pagesHtml) {
+  const html = readFileSync(resolve(dist, f.slice(1)), 'utf8');
+  const source = f.replace(/\/index\.html$/, '').replace(/\.html$/, '') || '/';
+  for (const [, cible, frag] of html.matchAll(/href="(\/[^"?#]*)#([^"]+)"/g)) {
+    const page = cible.replace(/\/$/, '') || '/';
+    const ids = idsParPage.get(page);
+    if (!ids) continue; // page hors dist (redirection Vercel) : déjà couvert plus haut
+    ancresVerifiees++;
+    if (!ids.has(frag)) fail(`${source} : lien vers ${page}#${frag} — cette ancre n'existe pas`);
+  }
+}
+
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
   if (!existsSync(resolve(dist, f))) fail(`${f} absent de dist/`);

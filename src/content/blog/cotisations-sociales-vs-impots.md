@@ -91,6 +91,10 @@ Certaines cotisations sociales peuvent être **temporairement exonérées** en d
 Mets systématiquement **de côté 40 % de tes revenus** pour anticiper le paiement de tes impôts et cotisations. Ainsi, tu seras toujours serein(e) au moment de payer.
 :::
 
+## 🔀 Voir le chemin complet
+
+De tes recettes brutes jusqu'aux cotisations, [le parcours déclaratif du guide](/guide-declarations#flux) déroule chaque étape dans l'ordre — utile pour situer où l'impôt s'arrête et où le social commence.
+
 ## 🚀 Le conseil Hippodoc
 
 :::tip
