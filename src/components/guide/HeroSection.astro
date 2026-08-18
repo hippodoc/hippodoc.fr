@@ -54,8 +54,10 @@ const updatedLabel = format(LAST_UPDATED, 'd MMMM yyyy', { locale: fr });
       </div>
     </div>
 
+    {/* L'espace entre la virgule et le <span> est supprimé au build : sans le
+        `{' '}` explicite, le h1 se lit « sociales,enfin claires ». */}
     <h1 class="text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-      Tes déclarations fiscales et sociales,
+      Tes déclarations fiscales et sociales,{' '}
       <span class="bg-gradient-to-r from-hippo-600 to-cyan-500 bg-clip-text text-transparent">
         enfin claires
       </span>
@@ -64,6 +66,15 @@ const updatedLabel = format(LAST_UPDATED, 'd MMMM yyyy', { locale: fr });
     <p class="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
       2042-C-PRO, 2035, DSFU (ex DS-PAMC) : chaque case expliquée, chaque piège signalé.
       Guide pratique créé par des médecins, pour des médecins.
+    </p>
+
+    {/* Signature visible : le pendant à l'écran du `author` JSON-LD. Une page
+        fiscale anonyme n'inspire pas confiance, à un lecteur comme à un moteur. */}
+    <p class="text-sm text-muted-foreground mb-8">
+      Écrit et tenu à jour par{' '}
+      <a href="/qui-sommes-nous" class="font-medium text-hippo-600 underline-offset-2 hover:underline dark:text-hippo-300">
+        Dr. Ryan Goburdhun
+      </a>, médecin remplaçant et fondateur d'Hippodoc · Révisé le {updatedLabel}
     </p>
 
     <div class="flex flex-col sm:flex-row gap-3 justify-center">

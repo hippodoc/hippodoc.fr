@@ -1991,6 +1991,54 @@ Rappel : `blog-meta.json` n'est PAS régénéré au build. Toute édition manuel
 d'une date de frontmatter doit y être répercutée — c'est précisément ce que le
 nouveau contrôle rend impossible à oublier.
 
+### 9.aj Guide des déclarations : exactitude et signature (août 2026)
+
+Plan 01 de l'audit dédié à `/guide-declarations`, page qui n'a reçu **aucune
+impression de recherche en trois mois**. Deux défauts se cumulaient sur une page
+YMYL : des chiffres périmés, et aucun auteur.
+
+**a. Trois chiffres du glossaire.** `src/data/glossaireDeclarationsData.ts`
+servait, sous l'étiquette « Barème 2026 (revenus 2025) », les valeurs du barème
+applicable aux **revenus 2024** :
+
+| Entrée | Avant | Après |
+| --- | --- | --- |
+| IR — tranches | 11 497 · 29 315 · 83 823 · 180 294 | **11 600 · 29 579 · 84 577 · 181 917** |
+| Quotient familial | 1 791 €/demi-part | **1 807 €** |
+| Quotient familial — case T | 4 149 € | **4 262 €** |
+| Frais réels salarié | plancher 504 € / plafond 14 426 € | **509 € / 14 555 €** |
+
+Mêmes valeurs que celles déjà corrigées dans `baremes-ir.ts` (§ 9.ah) et dans deux
+articles (§ 9.ag) : le glossaire était le dernier endroit du site où elles
+survivaient. La page affichait par ailleurs correctement le PASS 2026 à 48 060 €,
+donc elle se contredisait elle-même.
+
+**b. Aucun auteur déclaré — le manque le plus lourd.** Le JSON-LD se limitait à
+`WebPage`, sans `author` ni `datePublished`, et l'écran annonçait « Guide pratique
+créé par des médecins, pour des médecins » : anonyme. Chaque article de blog
+déclare pourtant `Person: Dr. Ryan Goburdhun` avec un lien vers
+`/qui-sommes-nous`. Sur un contenu fiscal destiné à des professionnels de santé,
+« qui répond de ce qui est écrit » est le signal E-E-A-T le plus directement
+lisible — et c'était la seule page experte du site à ne pas le dire.
+
+Ajoutés : `author`, `reviewedBy` et `lastReviewed` — les propriétés que
+schema.org prévoit exactement pour une page relue par un professionnel — plus une
+signature visible sous le sous-titre, pendant à l'écran du balisage.
+
+⚠️ `@type` reste `WebPage` et ne passe pas à `Article` : la page est un hub, pas
+un article, et deux schémas concurrents sur une même URL se nuiraient.
+
+**c. Espace manquant dans le `h1`.** Le saut de ligne entre `sociales,` et le
+`<span>` était supprimé au build : le titre principal se lisait
+« sociales,enfin claires ». Corrigé par un `{' '}` explicite.
+
+Vérifié : build 56 pages, `verify-site.mjs` OK, 3 454 liens internes sans lien
+mort. Contrôle en sortie : plus aucune occurrence de `11 497`, `1 791`, `4 149`
+ni `14 426` dans `src/data/`.
+
+⚠️ Rappel de périmètre : seul le contenu éditorial est touché. Aucun moteur de
+calcul, aucune Edge Function.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En
