@@ -32,6 +32,22 @@ export function TopQuestionsSection() {
             <span className="text-base font-normal text-muted-foreground">({questionsFAQ.length})</span>
           </h2>
           <p className="text-muted-foreground mt-1">Les réponses aux questions les plus posées par les médecins libéraux</p>
+          {/* Introduction visible — cf. Caseopedia, même raison (MIGRATION.md § 9.am). */}
+          <div className="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              Ce sont des questions réellement posées, pas des questions inventées pour faire
+              nombre : première déclaration d'un interne qui cumule salaire hospitalier et
+              remplacements, écart entre le SNIR reçu et le chiffre d'affaires encaissé, cases
+              à remplir quand on passe du RSPM au régime PAMC en cours d'année, sort fiscal et
+              social des indemnités journalières.
+            </p>
+            <p>
+              Chaque réponse indique son degré de certitude : établie quand le texte est clair,
+              consensuelle quand la pratique converge, débattue quand la doctrine n'a pas
+              tranché. Sur un sujet où beaucoup affirment sans nuancer, cette distinction fait
+              partie de la réponse.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-8">
