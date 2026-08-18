@@ -79,12 +79,28 @@ const breadcrumbSchema = {
   ],
 };
 
+/* Auteur nommé : la page n'en déclarait aucun, alors que chaque article de blog
+   porte `Person: Dr. Ryan Goburdhun`. Sur un contenu fiscal destiné à des
+   professionnels de santé (YMYL), « qui répond de ce qui est écrit » est le
+   signal E-E-A-T le plus directement lisible — et c'était la seule page experte
+   du site à ne pas le dire. `reviewedBy` / `lastReviewed` sont les propriétés
+   que schema.org prévoit exactement pour ce cas. Voir MIGRATION.md § 9.aj. */
+const authorSchema = {
+  '@type': 'Person',
+  name: 'Dr. Ryan Goburdhun',
+  jobTitle: "Médecin remplaçant & fondateur d'Hippodoc",
+  url: `${SITE_URL}/qui-sommes-nous`,
+};
+
 const webPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: 'Guide des déclarations fiscales et sociales du médecin',
   description,
   url: `${SITE_URL}/guide-declarations`,
+  author: authorSchema,
+  reviewedBy: authorSchema,
+  lastReviewed: GUIDE_DECLARATIONS_LAST_UPDATED_ISO,
   publisher: { '@id': `${SITE_URL}/#organization` },
   inLanguage: 'fr',
   isPartOf: { '@type': 'WebSite', url: SITE_URL },
