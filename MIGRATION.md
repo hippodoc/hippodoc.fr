@@ -2039,6 +2039,38 @@ ni `14 426` dans `src/data/`.
 ⚠️ Rappel de périmètre : seul le contenu éditorial est touché. Aucun moteur de
 calcul, aucune Edge Function.
 
+### 9.ak `lastmod` des pages statiques (août 2026)
+
+Plan 02 de l'audit `/guide-declarations`. La table de fraîcheur du sitemap ne
+couvrait que les articles : **aucune page statique ne déclarait de `lastmod`**,
+alors que `/guide-declarations` affiche « Mis à jour le 31 mai 2026 » et porte
+`dateModified` dans son JSON-LD. La page la plus vivante du site — révisée à
+chaque loi de finances — était la seule à taire sa fraîcheur.
+
+Nouvelle source unique : `src/lib/pages-lastmod.ts`, lue **à la fois** par les
+pages (affichage + JSON-LD) et par `astro.config.mjs` (sitemap). Deux entrées
+aujourd'hui : `/guide-declarations` (31 mai 2026, importée de
+`guide/lastUpdated.ts` pour ne pas créer une troisième copie) et `/comparatif`
+(24 juin 2026). `comparatif.astro` lit désormais sa date depuis cette table au
+lieu de la déclarer en dur.
+
+⚠️ Les pages sans date de revue éditoriale — `/simulateur`, `/tarifs`, les pages
+légales — restent **volontairement sans `lastmod`**. Mieux vaut pas de signal
+qu'un signal inventé : c'est la leçon de § 9.ai, où 29 URL annonçaient une date de
+build.
+
+⚠️ L'import d'un module TypeScript depuis `astro.config.mjs` fonctionne (Vite le
+transforme) : vérifié au build, pas supposé.
+
+Garde-fou étendu au contrôle 6 de `verify-site.mjs` : chaque page listée dans
+`pages-lastmod.ts` doit porter ce `lastmod` exact dans le sitemap, et son absence
+est une erreur. Testé en faussant le sitemap après build — le contrôle échoue en
+nommant la page et les deux dates. Le premier essai, qui modifiait la source, ne
+prouvait rien : la régénération alignait les deux côtés.
+
+Vérifié : build 56 pages, `verify-site.mjs` OK, `/guide-declarations` → 2026-05-31
+et `/comparatif` → 2026-06-24 dans le sitemap servi.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

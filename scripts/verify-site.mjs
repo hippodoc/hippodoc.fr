@@ -571,6 +571,29 @@ for (const [, loc, lastmod] of entrees) {
     fail(`sitemap : lastmod ${lastmod} pour /blog/${slug} alors que le frontmatter dit ${attendu} — src/generated/blog-meta.json est désynchronisé`);
   }
 }
+/* Pages statiques datées : même exigence de véracité que pour le blog. La table
+   est dans src/lib/pages-lastmod.ts ; elle est lue ici par expression régulière
+   plutôt qu'importée, pour que ce script reste sans dépendance de compilation. */
+const srcLastmod = readFileSync(resolve(root, 'src/lib/pages-lastmod.ts'), 'utf8');
+const statiquesAttendues = new Map(
+  [...srcLastmod.matchAll(/'(\/[a-z-]+)':\s*([A-Z_]+|'[\d-]{10}')/g)].map(([, chemin, val]) => {
+    const litteral = val.match(/'([\d-]{10})'/);
+    if (litteral) return [chemin, litteral[1]];
+    const constante = srcLastmod.match(new RegExp(`${val}\\s*=\\s*'([\\d-]{10})'`))
+      ?? readFileSync(resolve(root, 'src/lib/guide/lastUpdated.ts'), 'utf8').match(new RegExp(`${val}\\s*=\\s*'([\\d-]{10})'`));
+    return [chemin, constante ? constante[1] : null];
+  })
+);
+for (const [chemin, attendu] of statiquesAttendues) {
+  if (!attendu) { fail(`pages-lastmod.ts : date illisible pour ${chemin}`); continue; }
+  const entree = entrees.find(([, loc]) => loc.endsWith(chemin));
+  if (!entree) { fail(`sitemap : ${chemin} devrait porter un lastmod (${attendu}) et n'en a pas`); continue; }
+  lastmodVerifies++;
+  if (entree[2] !== attendu) {
+    fail(`sitemap : lastmod ${entree[2]} pour ${chemin} alors que pages-lastmod.ts dit ${attendu}`);
+  }
+}
+
 const parDate = new Map();
 for (const [, , lastmod] of entrees) parDate.set(lastmod, (parDate.get(lastmod) ?? 0) + 1);
 for (const [date, n] of parDate) {
