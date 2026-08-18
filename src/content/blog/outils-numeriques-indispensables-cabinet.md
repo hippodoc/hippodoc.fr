@@ -2,6 +2,7 @@
 title: "15 outils numériques du médecin généraliste"
 description: "Ordonnances, antibiothérapie, interactions, pédiatrie, grossesse, télé-expertise : la sélection d'outils préférée chez Hippodoc, gratuits et payants signalés."
 pubDate: "2025-10-06"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"

@@ -544,6 +544,39 @@ const robots = readFileSync(resolve(dist, 'robots.txt'), 'utf8');
 if (/Disallow: \//.test(robots)) fail('robots.txt contient un Disallow');
 if (!robots.includes('Sitemap: https://www.hippodoc.fr/sitemap-index.xml')) fail('robots.txt : référence sitemap manquante');
 
+/* 6. Les `lastmod` du sitemap disent la vérité.
+   Google ignore le signal `lastmod` d'un site entier s'il le juge peu fiable.
+   L'import initial depuis la SPA avait posé un `updatedAt` de build identique
+   sur 29 articles : le sitemap annonçait la même date pour les trois quarts du
+   blog, dont des textes inchangés depuis octobre 2025. Ce contrôle vérifie que
+   chaque `lastmod` correspond à l'`updatedDate` du frontmatter, ou à défaut à sa
+   `pubDate` — jamais à une date de génération. Voir MIGRATION.md § 9.ai. */
+const blogFiles = readdirSync(resolve(root, 'src/content/blog')).filter((f) => f.endsWith('.md'));
+const datesAttendues = new Map();
+for (const f of blogFiles) {
+  const fm = readFileSync(resolve(root, 'src/content/blog', f), 'utf8').split('---')[1] ?? '';
+  const pub = fm.match(/^pubDate:\s*"?([\d-]{10})/m);
+  const upd = fm.match(/^updatedDate:\s*"?([\d-]{10})/m);
+  if (pub) datesAttendues.set(f.replace(/\.md$/, ''), (upd ?? pub)[1]);
+}
+const sitemapXml = readFileSync(resolve(dist, 'sitemap-0.xml'), 'utf8');
+const entrees = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([\d-]{10})/g)];
+let lastmodVerifies = 0;
+for (const [, loc, lastmod] of entrees) {
+  const slug = loc.split('/blog/')[1];
+  if (!slug || !datesAttendues.has(slug)) continue;
+  lastmodVerifies++;
+  const attendu = datesAttendues.get(slug);
+  if (lastmod !== attendu) {
+    fail(`sitemap : lastmod ${lastmod} pour /blog/${slug} alors que le frontmatter dit ${attendu} — src/generated/blog-meta.json est désynchronisé`);
+  }
+}
+const parDate = new Map();
+for (const [, , lastmod] of entrees) parDate.set(lastmod, (parDate.get(lastmod) ?? 0) + 1);
+for (const [date, n] of parDate) {
+  if (n > 12) warn(`sitemap : ${n} URLs partagent le lastmod ${date} — vérifier qu'il ne s'agit pas d'une date de génération`);
+}
+
 /* Rapport */
 if (warnings.length) {
   console.log(`\n⚠ ${warnings.length} avertissement(s) :`);

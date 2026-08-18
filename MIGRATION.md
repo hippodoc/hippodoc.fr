@@ -1950,6 +1950,47 @@ peut pas le savoir. À contrôler côté Supabase.
 
 Vérifié : build 56 pages, `verify-site.mjs` OK.
 
+### 9.ai Fraîcheur : des `lastmod` qui disent la vérité (août 2026)
+
+Plan 05 de l'audit SEO. En l'ouvrant, deux constats ont renversé ce qui était prévu.
+
+**Ce qui était déjà fait** : `[slug].astro` affiche déjà « Mis à jour le … » quand
+`updatedDate` existe (ligne 240) et alimente déjà `dateModified` du JSON-LD
+`Article` (ligne 103). Le plan prévoyait de les ajouter : c'était inutile.
+
+⚠️ **Le vrai défaut était ailleurs, et il jouait contre nous.** Le sitemap
+annonçait `lastmod: 2026-08-10` pour **29 URL sur 54** — dont des articles
+inchangés depuis octobre 2025. Origine : l'import initial depuis `blogArticles.ts`
+de la SPA avait posé un `updatedAt` de build identique sur tout le lot, et la
+ligne 157 de `generate-blog-content.mjs` (`updatedAt ?? publishedAt`, logique
+pourtant saine) l'a fidèlement recopié dans `blog-meta.json`.
+
+C'est contre-productif : Google ignore le signal `lastmod` d'un site entier dès
+qu'il le juge peu fiable, et 29 articles datés du même jour en est l'archétype.
+Le site ne se contentait pas de manquer de fraîcheur, il détruisait sa crédibilité
+sur ce signal.
+
+**Corrigé** : 29 `lastmod` ramenés à la date réelle — l'`updatedDate` du
+frontmatter, ou à défaut la `pubDate`. Le sitemap présente désormais **13 dates
+distinctes** au lieu de 4 dont une à 29 URL.
+
+⚠️ **Aucune date n'a été inventée.** Seuls trois articles ont reçu une
+`updatedDate` : `choix-mode-exercice`, `maitrise-ton-logiciel-metier-en-30-min` et
+`outils-numeriques-indispensables-cabinet`, qui ont réellement été modifiés par
+les passes § 9.ac et § 9.ad sans avoir été datés. Les 25 autres retrouvent leur
+`pubDate`. Antidater une révision qui n'a pas eu lieu se recoupe avec le contenu
+servi et ruinerait le signal une seconde fois.
+
+**Garde-fou ajouté à `verify-site.mjs`** (contrôle 6) : chaque `lastmod` du
+sitemap doit correspondre à l'`updatedDate` du frontmatter, ou à défaut à sa
+`pubDate` ; et un avertissement se déclenche si plus de 12 URL partagent la même
+date, motif typique d'une date de génération. Testé en désynchronisant volontairement
+`blog-meta.json` : le contrôle échoue avec le nom de l'article et les deux dates.
+
+Rappel : `blog-meta.json` n'est PAS régénéré au build. Toute édition manuelle
+d'une date de frontmatter doit y être répercutée — c'est précisément ce que le
+nouveau contrôle rend impossible à oublier.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

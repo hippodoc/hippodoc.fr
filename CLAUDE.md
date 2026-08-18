@@ -57,7 +57,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 - Frontmatter `faq`/`relatedArticles`/`slides`/`cta` rendus par `src/pages/blog/[slug].astro`
   (FAQ visible + FAQPage JSON-LD ; slides = îlot embla `BlogSlides.tsx`).
 - Dates : `pubDate`/`updatedDate` alimentent le `lastmod` du sitemap via
-  `src/generated/blog-meta.json` (régénéré par le script ; à tenir à jour si édition manuelle).
+  `src/generated/blog-meta.json` (régénéré par le script ; à tenir à jour si édition
+  manuelle — `verify-site.mjs` échoue désormais si une date y diverge du frontmatter).
+  Ne jamais y mettre une date de build : un `lastmod` faux fait ignorer le signal
+  sur tout le site (voir MIGRATION.md § 9.ai).
 - Covers : chemins `/blog/...` du frontmatter résolus vers `src/assets/blog/` et optimisés
   (webp) via `import.meta.glob` + `getImage` dans les templates blog.
 

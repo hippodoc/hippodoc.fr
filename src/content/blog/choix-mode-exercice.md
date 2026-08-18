@@ -2,6 +2,7 @@
 title: "Médecin remplaçant : les 8 statuts clés"
 description: "Libéral, salariat, collaboration, mixte… découvre les 8 modes d'exercice pour bien débuter et choisir celui qui te correspond."
 pubDate: "2025-10-21"
+updatedDate: "2026-08-18"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
