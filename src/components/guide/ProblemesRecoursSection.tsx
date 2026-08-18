@@ -34,6 +34,22 @@ export function ProblemesRecoursSection() {
             <Bug className="h-7 w-7 text-hippo-500" /> Problèmes connus & recours
           </h2>
           <p className="text-muted-foreground mt-1">Bugs signalés sur le terrain + modèles de courrier prêts à envoyer</p>
+          {/* Introduction visible — cf. Caseopedia, même raison (MIGRATION.md § 9.am). */}
+          <div className="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              Certaines anomalies ne viennent pas de toi. Forfait structure affiché à zéro en
+              première année d'installation, accès au compte URSSAF ou CARMF bloqué après une
+              bascule de régime, indemnités journalières de la CPAM pré-remplies avec un montant
+              qui ne correspond à rien, case réservée aux gérants de société qui se remplit
+              toute seule pour une entreprise individuelle.
+            </p>
+            <p>
+              Chaque cas décrit les symptômes, ce qu'on en sait de la cause, et la marche à
+              suivre. Les modèles de courrier qui suivent sont prêts à copier : demande de
+              retrait de majorations de retard, réclamation sur le forfait structure, demande de
+              confirmation écrite avant de déclarer, signalement d'un blocage d'accès.
+            </p>
+          </div>
         </div>
 
         <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">

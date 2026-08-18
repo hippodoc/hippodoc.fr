@@ -112,6 +112,22 @@ export function FichesPratiquesSection() {
             <span className="text-base font-normal text-muted-foreground">({allFiches.length})</span>
           </h2>
           <p className="text-muted-foreground mt-1">Règles essentielles, astuces d'optimisation et sujets débattus — tout en un seul endroit</p>
+          {/* Introduction visible — cf. Caseopedia, même raison (MIGRATION.md § 9.am). */}
+          <div className="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              Trois natures de fiches, signalées par leur badge. Les <strong>règles</strong> sont
+              les points sur lesquels l'administration ne transige pas : priorité du chiffre
+              d'affaires réel sur le SNIR, déclaration sociale due même en micro-BNC, traitement
+              des rétrocessions versées et reçues.
+            </p>
+            <p>
+              Les <strong>pépites</strong> rassemblent ce qui se perd faute d'être connu —
+              exonérations de permanence des soins, dispositifs zonés, plafonds d'épargne
+              retraite reportables. Les <strong>zones grises</strong> assument l'incertitude :
+              sujets où la doctrine hésite, où les caisses répondent différemment d'un
+              département à l'autre, et où mieux vaut demander un écrit avant de trancher.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-10">

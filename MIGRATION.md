@@ -2124,6 +2124,46 @@ règle de calcul. Aucun moteur n'est touché.
 Vérifié : build 56 pages, `verify-site.mjs` OK, 3 466 liens internes sans lien
 mort, 12 ancres visées et 0 morte.
 
+### 9.am Guide : du texte ouvert sous les quatre sections d'index (août 2026)
+
+Plan 04 de l'audit `/guide-declarations`.
+
+⚠️ **Le plan reposait sur une mesure fausse, corrigée avant d'agir.** J'avais
+annoncé « 13 `h2` sur 15 sans aucun texte d'introduction ». Une regex qui
+décrochait : plusieurs sections en ont beaucoup — « Fiscal ≠ social » 142 mots,
+« Trouve ta situation » 121, « Le parcours de ta déclaration » 193, le calendrier
+707. Et les sections à 6-10 mots sont les **séparateurs de zone**, dont c'est le
+rôle : ce sont des étiquettes, pas des chapitres.
+
+Le vrai défaut, une fois mesuré correctement, est plus précis : **les quatre
+sections qui portent l'essentiel du contenu étaient introduites par une seule
+ligne**.
+
+| Section | Contenu | Intro avant | Après |
+| --- | --- | ---: | ---: |
+| Caseopedia | 35 cases | 17 mots | **125** |
+| Fiches pratiques | 39 fiches | 17 mots | **109** |
+| Questions fréquentes | 49 questions | 15 mots | **111** |
+| Problèmes connus & recours | 7 bugs + 6 courriers | 17 mots | **125** |
+
+Texte visible de la page : 1 760 → **1 974 mots**. Le contenu replié (47 635 mots)
+n'a pas bougé d'une ligne.
+
+⚠️ **Aucune règle fiscale nouvelle n'a été écrite.** Ces introductions résument ce
+que la section contient déjà, en nommant les formulaires et les situations avec le
+vocabulaire que les gens tapent : 2042-C-PRO, 2035, DSFU, micro-BNC, SNIR,
+forfait structure, indemnités journalières, RSPM vers PAMC. Le fond reste celui de
+la bible ; seule la porte d'entrée change.
+
+⚠️ Rappel, pour ne pas reprendre un réflexe SEO daté : le contenu des
+`<details>` est indexé normalement depuis l'indexation mobile-first, et
+`<details>` natif reste le bon élément — c'est ce qu'impose `CLAUDE.md`. On
+n'ouvre rien de force. Ce qui change, c'est que le sujet de chaque section est
+désormais lisible sans interaction, pour un moteur comme pour un lecteur qui
+arrive de recherche.
+
+Vérifié : build 56 pages, `verify-site.mjs` OK, 3 466 liens internes sans lien mort.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

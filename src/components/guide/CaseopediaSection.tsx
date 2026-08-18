@@ -44,6 +44,28 @@ export function CaseopediaSection() {
             <BookOpen className="h-7 w-7 text-hippo-500" /> Caseopedia <span className="text-base font-normal text-muted-foreground">({caseopedia.length} cases)</span>
           </h2>
           <p className="text-muted-foreground mt-1">Chaque case décryptée : à quoi elle sert, qui la remplit, piège fréquent</p>
+          {/* Introduction visible : cette section porte 35 cases, toutes repliées dans
+              des <details>. Sans texte ouvert, le sujet réel de la section n'apparaît
+              nulle part pour un lecteur qui arrive de recherche. Résumé de ce qui est
+              déjà là — aucune règle fiscale nouvelle n'est avancée ici.
+              Voir MIGRATION.md § 9.am. */}
+          <div className="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              Deux formulaires, deux logiques. Côté fiscal, la <strong>2042-C-PRO</strong> et
+              la <strong>2035</strong> décident de ton impôt sur le revenu : recettes en
+              micro-BNC, bénéfice net au réel, revenus exonérés en zone, plus-values,
+              cotisations déductibles. Côté social, la <strong>DSFU</strong> — l'ancienne
+              DS-PAMC — sert de base au calcul de tes cotisations URSSAF et CARMF : recettes
+              brutes non salariées, indemnités journalières de la CPAM, revenus de gérance,
+              épargne salariale.
+            </p>
+            <p>
+              Chaque fiche ci-dessous indique le formulaire concerné, ce que l'administration
+              attend exactement dans la case, qui doit la remplir selon son statut, et
+              l'erreur qu'on y voit le plus souvent — y compris les pré-remplissages
+              automatiques à corriger à la main.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-10">
