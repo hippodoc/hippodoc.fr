@@ -106,6 +106,8 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 ✔ Ajuste tes taux si ton activité change\
 ✔ Utilise Hippodoc.fr pour suivre tes recettes, charges, statistiques, docs pro à tout moment !
 
+Pour les échéances mois par mois, avec le détail de ce qu'il faut déposer à chaque date, le [calendrier annuel du médecin libéral](/guide-declarations#calendrier) va plus loin que cette fiche.
+
 Un peu de rigueur aujourd'hui = beaucoup de tranquillité demain 😌
 
 **Maintenant tu sais. Et ça change tout.**

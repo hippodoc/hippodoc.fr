@@ -93,6 +93,10 @@ Montant **forfaitaire** (indépendant des revenus) — choix personnel du médec
 
 Paiement en **deux étapes** : **Janvier** : 1er acompte, **Mai à juillet** : solde après déclaration annuelle.
 
+## 🔎 L'ASV en détail
+
+C'est la cotisation la plus mal comprise des trois, parce qu'elle dépend de ton secteur de conventionnement : [sa définition complète dans le guide](/guide-declarations#glossaire-term-asv) précise ce qu'elle couvre et qui la paie.
+
 ## 🎁 Tips & astuces indispensables
 
 ✅ **Dispense d'affiliation possible** si ton revenu net d'activité indépendante reste inférieur à **15 000 €** et que tu n'es pas assujetti à la CET — ⚠ [sur demande](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm), non automatique et non rétroactive. En contrepartie, tu perds la couverture invalidité-décès et ces périodes ne compteront pas pour ta retraite.\

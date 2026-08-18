@@ -75,6 +75,10 @@ La déclaration 2035 concerne les professionnels libéraux au **régime réel**.
 **Ligne 41** : Total des amortissements de l'année (annexe 2035-B)\
 **Ligne 46** : Bénéfice net à reporter sur la déclaration 2042 C-PRO
 
+## 📎 La 2035, case par case
+
+Cette fiche donne la logique d'ensemble. Si tu bloques sur une ligne précise, le [détail de la 2035 dans le guide des déclarations](/guide-declarations#case-2035) reprend la liasse rubrique par rubrique.
+
 ## 📤 Quand et comment déclarer ?
 
 📅 **Avant début mai** chaque année\

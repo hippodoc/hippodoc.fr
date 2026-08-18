@@ -2071,6 +2071,59 @@ prouvait rien : la régénération alignait les deux côtés.
 Vérifié : build 56 pages, `verify-site.mjs` OK, `/guide-declarations` → 2026-05-31
 et `/comparatif` → 2026-06-24 dans le sitemap servi.
 
+### 9.al Maillage éditorial du guide, vers les ancres (août 2026)
+
+Plan 03 de l'audit `/guide-declarations`, et la cause la plus directe de ses zéro
+impression : la page ne recevait **qu'un seul lien éditorial**. Les 38 autres
+venaient du bloc « Pour aller plus loin » du gabarit d'article — même ancre
+répétée 38 fois, donc de la navigation, que Google pondère très peu.
+
+**1 → 13 liens éditoriaux.** Douze insertions contextuelles, placées à l'endroit
+où la question se pose, et pointant chacune vers une **ancre précise** plutôt que
+vers la page entière. La page compte 258 `id` : autant s'en servir.
+
+| Article | Ancre visée | Contenu réel de l'ancre |
+| --- | --- | --- |
+| `remplir-declaration-2035` | `#case-2035` | Liasse fiscale 2035 |
+| `regime-fiscal-micro-bnc-vs-reel` | `#case-5HQ` | Revenus imposables micro-BNC (2042-C-PRO) |
+| `frais-professionnels-deductibles` | `#case-5QC` | Bénéfice net BNC |
+| `tout-comprendre-urssaf` | `#case-DSCS` | Total recettes brutes non salariées (DSFU) |
+| `rspm-exemples-concrets` | `#cases` | Caseopedia, 35 cases |
+| `cotisations-sociales-vs-impots` | `#flux` | Parcours déclaratif complet |
+| `calendrier-fiscal-remplacant` | `#calendrier` | Calendrier annuel |
+| `conge-maternite-paternite` | `#case-DSDX` | IJ versées par la CPAM |
+| `pdsa-exoneration-gardes-regulees` | `#glossaire-term-pdsa` | Définition PDSA |
+| `guide-impots-internes-remplacants` | `#profils` | Boussole des profils |
+| `salariat-10-pourcent-ou-frais-reels` | `#glossaire-term-frais-reels` | Frais réels salarié |
+| `tout-comprendre-carmf` | `#glossaire-term-asv` | ASV |
+
+⚠️ **Le contenu de chaque ancre a été lu avant d'écrire le lien.** Un lien qui
+pointe à côté est pire que pas de lien : `#case-5HQ` est bien le micro-BNC,
+`#case-5QC` bien le bénéfice net au réel, `#case-DSDX` bien les IJ CPAM.
+
+⚠️ **Douze ancres distinctes, douze ancres textuelles distinctes.** Répéter la même
+formule douze fois vers une page commerciale est un motif de sur-optimisation —
+c'est déjà le défaut du bloc de gabarit, inutile de le reproduire.
+
+**Nouveau contrôle dans `verify-site.mjs` (4 quindecies)** : tout lien vers
+`/page#ancre` doit viser un `id` existant. Le maillage repose désormais sur des
+ancres ; une ancre renommée casserait le lien en silence, aucun contrôle d'URL ne
+le verrait.
+
+⚠️ **Le contrôle a trouvé une ancre morte préexistante dès son premier passage.**
+`CalculetteForm.tsx` construisait `/guide-declarations#PM-001`, `#PM-002`… à partir
+de `PROFIL_FICHE_ANCRE`. Ces ancres n'ont **jamais** été rendues : les fiches du
+guide portent des `id` de type `regle-RO-001`, pas les codes profil de la SPA
+source. Les quatre profils de la calculette renvoyaient donc en haut de page.
+Corrigé vers `#profils` — la boussole, qui identifie précisément le profil — et
+le libellé ne cite plus un code inexistant.
+
+⚠️ Périmètre : cette correction porte sur un `href` et son libellé, pas sur une
+règle de calcul. Aucun moteur n'est touché.
+
+Vérifié : build 56 pages, `verify-site.mjs` OK, 3 466 liens internes sans lien
+mort, 12 ancres visées et 0 morte.
+
 ### ⚠️ Erreur à ne pas refaire : les réglages PROJET valent pour l'APP aussi
 
 `app.hippodoc.fr` partage le projet PostHog `164270` avec le site public. En

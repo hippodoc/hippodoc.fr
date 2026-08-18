@@ -100,6 +100,10 @@ relatedArticles:
 **MAIS** : si dépassement > 2 ans consécutifs ou CA > 38 000 € une seule année → passage au **régime classique PAMC** (cf. prochaine fiche)
 :::
 
+## 🗂 Les autres cases de la DSFU
+
+Ces exemples ne montrent que le calcul global. Si tu remplis ta déclaration ligne à ligne, [la Caseopedia du guide](/guide-declarations#cases) détaille les 35 cases fiscales et sociales, avec les pièges de chacune.
+
 ## 🚀 Le Tips Hippodoc
 
 :::tip

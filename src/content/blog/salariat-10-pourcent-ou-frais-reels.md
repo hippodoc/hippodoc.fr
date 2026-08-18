@@ -121,6 +121,10 @@ Tu déduis le **montant exact** de tes dépenses professionnelles.
 
 👉 **Tu peux modifier ton choix chaque année.**
 
+## 📚 Les plafonds à jour
+
+L'abattement de 10 % est encadré par un plancher et un plafond revalorisés chaque année : [l'entrée « frais réels » du glossaire](/guide-declarations#glossaire-term-frais-reels) porte les montants applicables aux revenus 2025.
+
 ## 6️⃣ Le + Hippodoc 💙
 
 :::tip

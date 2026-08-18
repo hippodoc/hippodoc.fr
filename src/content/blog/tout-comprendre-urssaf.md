@@ -75,6 +75,10 @@ Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime S
 • 📧 **offre.medecin.remplacant@urssaf.fr**
 :::
 
+## 📄 Ce que tu reportes sur la DSFU
+
+Les cotisations calculées ici partent d'un montant que tu déclares toi-même : [la case DSCS, expliquée dans le guide](/guide-declarations#case-DSCS), qui totalise tes recettes brutes non salariées.
+
 ## 💡 Astuce indispensable
 
 :::tip

@@ -110,6 +110,10 @@ Impôt sur le revenu.\
 CRDS et la part non déductible de la CSG.\
 Amendes et dépenses excessives.
 
+## 🧾 Où ça atterrit dans ta déclaration
+
+Une fois tes charges déduites, c'est ton bénéfice net qui part au fisc : [la case 5QC, expliquée dans le guide](/guide-declarations#case-5QC), montre ce qu'on y reporte exactement.
+
 ## 📋 Conseils pratiques pour une organisation parfaite
 
 **Garde précieusement** chaque justificatif : factures, tickets, relevés bancaires.\

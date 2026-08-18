@@ -83,6 +83,10 @@ Allocation + IJ = **imposables**\
 CSG/CRDS précomptées + PAS\
 Conserver **tous les décomptes CPAM**
 
+## 📥 Où déclarer tes IJ
+
+Les indemnités versées par la CPAM ont leur propre ligne sur la DSFU : [la case DSDX, détaillée dans le guide](/guide-declarations#case-DSDX), avec le piège du pré-remplissage erroné signalé cette année.
+
 ## 🔮 À venir (LFSS 2026)
 
 :::tip

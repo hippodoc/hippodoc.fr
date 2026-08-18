@@ -390,6 +390,10 @@ S'il est **supérieur à 300 €**, il est automatiquement étalé en **quatre p
 
 Si tu fais beaucoup moins ou beaucoup plus de remplas en 2026 qu'en 2025, **pense à ajuster ton prélèvement à la source** dans ton espace impots.gouv.fr.
 
+## 🧭 Trouver ta situation exacte
+
+Ce guide couvre le cas de l'interne qui remplace. Si tu cumules plusieurs statuts, [la boussole des profils](/guide-declarations#profils) construit ta liste de cases à partir de ta situation réelle.
+
 ## 🚫 Les erreurs classiques à éviter
 
 **Penser que la 5HQ règle aussi l'URSSAF.** Non. La 5HQ sert à l'impôt. L'URSSAF sert aux cotisations sociales. Ce sont deux démarches différentes.\

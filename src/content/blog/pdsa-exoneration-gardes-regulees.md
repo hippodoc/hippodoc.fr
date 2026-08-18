@@ -85,6 +85,10 @@ Pour bénéficier de l'exonération :
 ⚠️ En clair : le forfait d'astreinte et les majorations PDSA peuvent être exonérés d'IR, mais ils restent **pleinement soumis aux cotisations sociales**.
 :::
 
+## 📖 La PDSA en une définition
+
+Si tu veux le cadre juridique exact plutôt que le mode d'emploi, [l'entrée PDSA du glossaire fiscal](/guide-declarations#glossaire-term-pdsa) donne la référence de l'article et son périmètre.
+
 ## 💙 Le + Hippodoc
 
 :::tip
