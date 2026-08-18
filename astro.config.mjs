@@ -7,12 +7,18 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkDirective from 'remark-directive';
 import { remarkCallouts } from './src/lib/remark-callouts.mjs';
 import blogMeta from './src/generated/blog-meta.json' with { type: 'json' };
+import { STATIC_LASTMOD } from './src/lib/pages-lastmod.ts';
 import pkg from './package.json' with { type: 'json' };
 
 /** lastmod par URL : articles = date réelle (pubDate/updatedDate). */
 const BLOG_LASTMOD = new Map(
   Object.entries(blogMeta).map(([slug, m]) => [`/blog/${slug}`, m.updatedDate])
 );
+
+/* Pages statiques : elles n'avaient aucun `lastmod`, alors que /guide-declarations
+   affiche « Mis à jour le … » et porte `dateModified`. Table dans
+   src/lib/pages-lastmod.ts, partagée avec les pages elles-mêmes. */
+const LASTMOD = new Map([...BLOG_LASTMOD, ...Object.entries(STATIC_LASTMOD)]);
 
 // https://astro.build/config
 export default defineConfig({
@@ -28,7 +34,7 @@ export default defineConfig({
       filter: (page) => !page.includes('/essai'),
       serialize(item) {
         const path = new URL(item.url).pathname.replace(/\/$/, '') || '/';
-        const lastmod = BLOG_LASTMOD.get(path);
+        const lastmod = LASTMOD.get(path);
         if (lastmod) {
           item.lastmod = new Date(lastmod).toISOString();
         }

@@ -11,8 +11,11 @@ import Footer from '@/components/Footer.astro';
 import Icon, { type IconName } from '@/components/pages/Icon.astro';
 import { SITE_URL, APP_URL, LOGO_URL, DEFAULT_OG_IMAGE } from '@/lib/site';
 
+import { COMPARATIF_LAST_UPDATED_ISO } from '@/lib/pages-lastmod';
+
 const LAST_UPDATED_LABEL = 'juin 2026';
-const LAST_UPDATED_ISO = '2026-06-24';
+/* Date lue depuis la source unique partagée avec le sitemap (pages-lastmod.ts). */
+const LAST_UPDATED_ISO = COMPARATIF_LAST_UPDATED_ISO;
 
 type ToolKey = 'indy' | 'pennylane' | 'hiway' | 'hippodoc';
 
