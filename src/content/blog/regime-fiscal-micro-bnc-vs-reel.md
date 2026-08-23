@@ -2,14 +2,14 @@
 title: "Micro-BNC ou réel : le choix du remplaçant"
 description: "Abattement de 34 %, plafond du micro-BNC, bascule après deux années de dépassement, déduction des frais réels : comment trancher selon tes charges."
 pubDate: "2025-10-21"
-updatedDate: "2026-08-18"
+updatedDate: "2026-08-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#1"
 seriesId: "fiche-fiscalite"
 episodeNumber: 1
-readTime: "4 min"
+readTime: "6 min"
 cover: "/blog/regime-fiscal-cover.png"
 tags:
   - "Fiche Fiscalité"
@@ -25,6 +25,8 @@ faq:
     answer: "En Micro-BNC, tu déclares uniquement ton **chiffre d'affaires total** sur le formulaire 2042-C-PRO. L'administration applique automatiquement l'abattement de 34%. Pas de déclaration 2035 nécessaire."
   - question: "Puis-je changer de régime fiscal en cours d'année ?"
     answer: "Le changement de régime fiscal s'effectue généralement **au 1er janvier**. Tu dois opter pour le Régime Réel avant le 1er février de l'année concernée, ou être basculé automatiquement en cas de dépassement du plafond pendant 2 ans."
+  - question: "Puis-je rester en Micro-BNC les deux premières années même au-dessus du seuil ?"
+    answer: "**Oui.** En cas de création d'activité, le micro-BNC s'applique **de plein droit** l'année de création (N) et l'année suivante (N+1), même si tes recettes dépassent le seuil dès la première année (art. 102 ter du CGI ; BOFiP BOI-BNC-DECLA-20-10, § 134). Le régime réel ne devient obligatoire qu'à partir de N+2, après deux années consécutives de dépassement. Attention : pour apprécier le seuil des années suivantes, les recettes de l'année de création sont **annualisées au prorata** de tes jours d'activité."
 relatedArticles:
   - "cotisations-sociales-vs-impots"
   - "tout-comprendre-urssaf"
@@ -50,6 +52,22 @@ Si tu dépasses **83 600 € une seule année** puis redescends en dessous l'ann
 Si tu dépasses **83 600 € pendant 2 années consécutives** : tu **sors automatiquement** du Micro-BNC au 1er janvier de l'année N+2. Passage obligatoire au régime réel.\
 **💡 Conseil Hippodoc** : Surveille tes revenus annuels dans ton Dashboard pour anticiper ce basculement et t'organiser sereinement avec un comptable si nécessaire.
 :::
+
+## 🚀 Création d'activité : le micro-BNC est garanti les deux premières années
+
+C'est un point sur lequel même l'administration se trompe parfois au guichet : **en début d'activité, tu as droit au micro-BNC quelles que soient tes recettes**.
+
+La règle vient de l'article 102 ter du CGI : le micro-BNC s'applique si tes recettes de **l'année précédente (N-1) ou de l'avant-dernière année (N-2)** n'ont pas dépassé le seuil. Or, l'année où tu débutes, tes recettes N-1 et N-2 sont **nulles** — la condition est donc remplie d'office :
+
+📌 **Année de création (N)** : micro-BNC **de plein droit**, même si tu encaisses plus de 83 600 € dès la première année.📌 **Année suivante (N+1)** : micro-BNC encore garanti — même en cas de dépassement en N, tes recettes N-2 (nulles) satisfont la condition.📌 **Année N+2** : c'est là que tout se joue. Si tes recettes ont dépassé le seuil en N **et** en N+1, tu bascules au régime réel.
+
+C'est écrit noir sur blanc dans la doctrine fiscale : le BOFiP (BOI-BNC-DECLA-20-10, § 134) précise que pour les entreprises nouvelles, le régime micro est applicable **de plein droit au titre de l'année de création et de l'année suivante**, même en cas de dépassement. Si on te répond l'inverse à un guichet, demande une réponse écrite en citant cette référence.
+
+:::warning
+**Le piège du prorata.** Pour apprécier le seuil des années suivantes, les recettes de ton année de création sont **ajustées prorata temporis** (BOFiP, § 132) : si tu as commencé un 1er juillet avec 45 000 € encaissés en six mois, l'administration retient 45 000 € × 365/184 ≈ **89 000 €** — au-dessus du seuil. Deux « demi-années » chargées peuvent donc te faire sortir du micro en N+2 alors qu'aucune année civile n'a réellement dépassé 83 600 €.
+:::
+
+Rappel utile : rester en micro-BNC n'est pas toujours la bonne affaire. Si tes charges réelles dépassent 34 % de tes recettes, [le régime réel te fait payer moins d'impôt](/blog/frais-professionnels-deductibles) — l'option reste possible même quand le micro t'est acquis.
 
 ## ✅ Le Régime Réel : pour optimiser efficacement tes impôts
 

@@ -25,7 +25,7 @@
   },
   "regime-fiscal-micro-bnc-vs-reel": {
     "pubDate": "2025-10-21",
-    "updatedDate": "2026-08-18"
+    "updatedDate": "2026-08-23"
   },
   "cotisations-sociales-vs-impots": {
     "pubDate": "2025-10-21",
@@ -33,7 +33,7 @@
   },
   "tout-comprendre-urssaf": {
     "pubDate": "2025-10-21",
-    "updatedDate": "2026-08-18"
+    "updatedDate": "2026-08-23"
   },
   "tout-comprendre-carmf": {
     "pubDate": "2025-10-21",
@@ -150,5 +150,13 @@
   "frais-pros-medecin-liberal-2026": {
     "pubDate": "2026-05-24",
     "updatedDate": "2026-05-24"
+  },
+  "facturation-electronique-medecin-remplacant": {
+    "pubDate": "2026-08-23",
+    "updatedDate": "2026-08-23"
+  },
+  "remplacement-regulier-requalification": {
+    "pubDate": "2026-08-23",
+    "updatedDate": "2026-08-23"
   }
 }

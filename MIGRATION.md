@@ -2394,6 +2394,81 @@ semaines. Si le signal est bon, dérouler les 12 autres profils. Si le hub perd
 des impressions au profit des filles sans gain net, revoir l'architecture avant
 d'en créer d'autres.
 
+### 9.aq Croisement recherche d'audience × site : corrections et quatre contenus (23 août 2026)
+
+Première action éditoriale issue du croisement entre la carte de la demande
+(`hippodoc-corpus/`, voir CLAUDE.md — corpus utilisé comme boussole, jamais comme
+source de texte) et l'inventaire des 59 pages du site. Chaque affirmation ajoutée
+a été vérifiée sur source primaire (BOFiP, Légifrance, impots.gouv.fr,
+service-public, jurisprudence citée) avant écriture.
+
+#### Corrections factuelles — `src/data/boussoleData.ts` (3 entrées)
+
+Le site portait une contradiction interne sur la facturation électronique, sur le
+sujet à l'échéance la plus proche (1er septembre 2026) :
+
+- **Calendrier, item de septembre** : citait le « Portail Public de Facturation
+  (PPF) de l'État » comme solution gratuite. Faux depuis le **15 octobre 2024**
+  (communiqué DGFiP) : le PPF n'est plus une plateforme d'échange, il ne reste
+  que l'annuaire central et le concentrateur de données. Réécrit : plateformes
+  agréées (PA, ex-PDP), liste officielle impots.gouv.fr, offres de réception
+  gratuites existantes.
+- **QT-015** (« la réforme concerne-t-elle les factures aux particuliers ? ») :
+  la réponse « ne s'applique pas aux particuliers » occultait le cadre réel.
+  Réécrite : e-invoicing = B2B domestique uniquement ; actes de soins exonérés
+  (art. 261, 4-1° CGI) **totalement hors champ, e-reporting compris**
+  (impots.gouv.fr) ; l'obligation réelle du médecin = réception dès le
+  1er septembre 2026 ; activité accessoire taxable = émission TPE au
+  1er septembre 2027.
+- **PC-009** (négocier les plateformes) : même clarification de cadrage, conseil
+  de négociation conservé tel quel.
+
+#### Deux nouveaux articles de blog
+
+- **`facturation-electronique-medecin-remplacant`** (Fiche Fiscalité #10) —
+  réponse dans les 100 premiers mots (soins hors champ, seule la réception est
+  obligatoire), calendrier officiel, cas du remplaçant, abandon du PPF, achats
+  compte perso/pro, activité taxable accessoire, sanctions LF 2026 (50 €/facture,
+  500 €/transmission, plafonds 15 000 €/an, art. 1737 et 1788 D CGI). Tranche la
+  « règle des 150 € » qui circule : le seul 150 € des textes est la dispense de
+  certaines mentions (n° TVA) sur factures ≤ 150 € HT (art. 242 nonies A,
+  ann. II CGI) — ni dispense de facture, ni seuil de la réforme.
+- **`remplacement-regulier-requalification`** (Guide et Conseil) — sujet n°1 de
+  la demande, sans concurrence sérieuse. Cadre déontologique (R.4127-65,
+  R.4127-89), les 4 scénarios de requalification, jurisprudence (CA Paris
+  27/09/2012 n° 11/14734 ; CA Versailles 18/05/2020 n° 18/08007 confirmé
+  Cass. 20/10/2021 n° 20-18.261 ; Cass. soc. 29/01/2014 n° 12-26.940 pour la
+  subordination), le vrai risque TVA chez le remplacé (rescrit
+  BOI-RES-TVA-000056 : part conservée = redevance taxable sauf remplacement
+  occasionnel), franchise 2026 (37 500 €/41 250 €, seuil 25 000 € abrogé par la
+  loi 2025-1044), appréciation **par assujetti** et non par remplaçant, passage
+  en collaboration, checklist anti-requalification.
+- ⚠️ **Covers réutilisées** en attendant des visuels dédiés :
+  `facture-generation-cover.png` et `signer-contrat-remplacement-cover.png`
+  (TODO(owner) ci-dessous).
+
+#### Deux articles enrichis (sections additives, texte existant intact)
+
+- **`tout-comprendre-urssaf`** : + « CA ou bénéfice : sur quoi cotises-tu
+  vraiment ? » (démenti explicite de l'erreur répandue « URSSAF/CARMF sur le
+  CA » ; nuance RSPM = forfait sur CA, micro-BNC = 66 % des recettes),
+  + « La réforme de l'assiette 2026 » (LFSS 2024 art. 18 : assiette unique dès
+  revenus 2025 régularisés en 2026, formule, abattement 26 % plancher 1,76 %
+  PASS / plafond 130 % PASS, pas de 26 % en micro), + « Moduler tes cotisations
+  provisionnelles » (revenu estimé **avant** abattement — l'Urssaf applique le
+  26 % elle-même ; suppression de la majoration pour sous-estimation vérifiée
+  sur la version en vigueur de l'art. L131-6-2 CSS, Légifrance). + 2 FAQ.
+  readTime 5 → 8 min.
+- **`regime-fiscal-micro-bnc-vs-reel`** : + « Création d'activité : le micro-BNC
+  est garanti les deux premières années » (art. 102 ter CGI ; BOFiP
+  BOI-BNC-DECLA-20-10 § 100/134 : micro **de plein droit** en N et N+1 même en
+  cas de dépassement — l'inverse est parfois affirmé à tort par
+  l'administration elle-même), piège du prorata temporis (§ 132) avec exemple
+  chiffré. + 1 FAQ. readTime 4 → 6 min.
+
+`src/generated/blog-meta.json` mis à jour à la main pour les 4 slugs (le script
+de génération n'a pas été relancé, conformément à la consigne).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
@@ -2408,6 +2483,10 @@ d'en créer d'autres.
       uploadé sur Supabase Storage (bucket public `public-assets`), lecteur natif inline
       restauré, VideoObject mis à jour (voir §9). L'URL `app.hippodoc.fr/__l5e/...`
       précédente ne résolvait pas en DNS.
+- [ ] Créer des covers dédiées pour `facturation-electronique-medecin-remplacant`
+      (actuellement `facture-generation-cover.png`) et
+      `remplacement-regulier-requalification` (actuellement
+      `signer-contrat-remplacement-cover.png`) — voir §9.aq.
 - (liste complétée en fin de migration)
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
