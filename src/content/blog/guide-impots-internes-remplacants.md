@@ -75,7 +75,7 @@ slides:
 :::
 
 Tu es interne en CHU.\
-En 2025, tu as fait des remplacements libéraux pendant tes vacances, tes week-ends, tes gardes ou tes périodes off.
+En 2025, tu as fait des remplacements libéraux pendant tes vacances, tes week-ends, tes gardes ou tes périodes off — sous couvert de ta [licence de remplacement](/blog/obtenir-sa-licence-de-remplacement).
 
 En 2026, tu ne vas donc pas déclarer uniquement ton salaire d'interne. Tu vas déclarer **deux types de revenus** sur la même déclaration :
 

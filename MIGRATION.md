@@ -2226,6 +2226,71 @@ Reste à faire : les sections `4.x`, `5.x`, `7.x` sans parent dans
 `frais-pros-medecin-liberal-2026` (§9.e) — le seul arbitrage éditorial encore
 ouvert, car il suppose d'inventer des intitulés de section.
 
+### 9.ao Licence de remplacement — travail de position (23 août 2026)
+
+Première action issue de l'audit Search Console du 23 août. La famille de
+requêtes « licence de remplacement » cumule **≈ 165 impressions en positions
+8,5 à 12,6 pour zéro clic** ; la page qui les capte
+(`/blog/obtenir-sa-licence-de-remplacement`) était à 519 impressions, 4 clics,
+position moyenne 6,8. Contenu modifié en conséquence — d'où ce flag.
+
+**Fichier `src/content/blog/obtenir-sa-licence-de-remplacement.md`**
+
+| Élément | Avant | Après |
+|---|---|---|
+| `title` | Licence de remplacement pour interne | Licence de remplacement interne : dossier et délais |
+| `updatedDate` | 2026-08-18 | 2026-08-23 |
+| `readTime` | 5 min | 6 min |
+| Mots rendus | 993 | 1 583 |
+| Questions FAQ | 4 | 7 |
+
+- **Titres de section passés en voix de requête.** Les H2 numérotés
+  (« 1. Conditions préalables à respecter ») sont devenus les questions
+  réellement tapées (« Qui peut demander une licence de remplacement ? »,
+  « Où envoyer ta demande de licence de remplacement ? »…). L'expression exacte
+  « licence de remplacement interne » — 76 impressions à elle seule — n'était
+  dans aucune balise ; elle est désormais dans le `title` et le H1.
+- **Ajouts** : un bloc `:::essentiel` en tête (convention de §9.c), deux sections
+  neuves — « Comment renouveler ta licence de remplacement ? » et « Et une fois
+  ta thèse soutenue ? » — et trois précisions courtes (seuil de semestres
+  variable selon le DES, délai d'obtention de l'attestation universitaire, les
+  trois pièces à réunir avant le premier jour).
+- **Aucune phrase existante n'a été réécrite** : le corps d'origine est conservé
+  mot pour mot, seuls les intitulés de section ont changé.
+- **Prudence factuelle assumée** : rien n'a été ajouté sur le coût de la demande
+  ni sur la liste des pièces de renouvellement — ces points varient par CDOM et
+  n'étaient pas sourcés. Le renouvellement renvoie donc au conseil départemental
+  plutôt que d'énoncer une procédure inventée.
+
+**Maillage interne entrant** — la page n'avait que 2 liens contextuels :
+
+| Fichier | Ancrage ajouté |
+|---|---|
+| `guide-impots-internes-remplacants.md` | « sous couvert de ta licence de remplacement » |
+| `checklist-administrative-medecin-remplacant.md` | ligne « Si tu es encore interne » sous Inscription à l'Ordre |
+
+`guide-impots-internes-remplacants` ajouté aux `relatedArticles` ; deux liens
+sortants contextuels posés vers `signer-contrat-remplacement` et
+`checklist-administrative-medecin-remplacant`.
+
+Mesuré sur le build : **6 → 7 pages** liant vers l'article. Le gain paraît
+faible parce que `checklist-administrative` le référençait déjà via ses
+`relatedArticles` — elle porte désormais en plus un lien *dans le corps du
+texte*, qui est le seul à transmettre un vrai signal. Liens contextuels en
+corps de texte : **2 → 4**.
+
+⚠️ `src/generated/blog-meta.json` mis à jour en même temps que le frontmatter
+(`updatedDate` 2026-08-23) — `verify-site.mjs` échoue si les deux divergent
+(cf. §9.ai).
+
+Vérifié : build 56 pages, `verify-site.mjs` OK (54 URLs, 3 473 liens internes,
+aucun mort), 2 avertissements préexistants (`/essai` et `/transmissions`,
+noindex hors sitemap). `lastmod` du sitemap = 2026-08-23 pour cette seule URL.
+
+**À mesurer** : les positions des 7 requêtes du bloc « licence » dans Search
+Console d'ici 4 à 6 semaines. C'est le test de la méthode avant de l'appliquer
+aux 37 autres articles.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
