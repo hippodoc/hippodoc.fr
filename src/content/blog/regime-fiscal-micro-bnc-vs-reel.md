@@ -59,7 +59,7 @@ C'est un point sur lequel même l'administration se trompe parfois au guichet : 
 
 La règle vient de l'article 102 ter du CGI : le micro-BNC s'applique si tes recettes de **l'année précédente (N-1) ou de l'avant-dernière année (N-2)** n'ont pas dépassé le seuil. Or, l'année où tu débutes, tes recettes N-1 et N-2 sont **nulles** — la condition est donc remplie d'office :
 
-📌 **Année de création (N)** : micro-BNC **de plein droit**, même si tu encaisses plus de 83 600 € dès la première année.📌 **Année suivante (N+1)** : micro-BNC encore garanti — même en cas de dépassement en N, tes recettes N-2 (nulles) satisfont la condition.📌 **Année N+2** : c'est là que tout se joue. Si tes recettes ont dépassé le seuil en N **et** en N+1, tu bascules au régime réel.
+📌 **Année de création (N)** : micro-BNC **de plein droit** (c'est-à-dire automatiquement, sans rien demander), même si tu encaisses plus de 83 600 € dès la première année.📌 **Année suivante (N+1)** : micro-BNC encore garanti — même en cas de dépassement en N, tes recettes N-2 (nulles) satisfont la condition.📌 **Année N+2** : c'est là que tout se joue. Si tes recettes ont dépassé le seuil en N **et** en N+1, tu bascules au régime réel.
 
 C'est écrit noir sur blanc dans la doctrine fiscale : le BOFiP (BOI-BNC-DECLA-20-10, § 134) précise que pour les entreprises nouvelles, le régime micro est applicable **de plein droit au titre de l'année de création et de l'année suivante**, même en cas de dépassement. Si on te répond l'inverse à un guichet, demande une réponse écrite en citant cette référence.
 

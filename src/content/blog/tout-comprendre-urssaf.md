@@ -79,10 +79,10 @@ Au PAMC en régime réel, la base est ton bénéfice **recalculé sans déduire 
 
 ## 🆕 La réforme de l'assiette 2026 (revenus 2025)
 
-La loi de financement de la sécurité sociale pour 2024 (art. 18) a créé une **assiette unique** pour toutes les cotisations et contributions des indépendants. Elle s'applique **à partir des revenus 2025** — donc concrètement lors de la **régularisation effectuée en 2026**, après ta déclaration de revenus.\
+La loi de financement de la sécurité sociale pour 2024 (art. 18) a créé une **assiette unique** pour toutes les cotisations et contributions des indépendants — l'assiette, c'est simplement le montant sur lequel on applique les taux. Elle s'applique **à partir des revenus 2025** — donc concrètement lors de la **régularisation effectuée en 2026**, après ta déclaration de revenus.\
 📐 **La nouvelle formule** (régime réel) :\
 1. On part de ton **revenu professionnel** : recettes moins charges déductibles, **sans déduire** tes cotisations sociales ni la CSG déductible (les IJ de prévoyance facultative s'y ajoutent).\
-2. On applique un **abattement forfaitaire de 26 %** — encadré par un plancher (1,76 % du PASS, soit 828,96 € pour 2025) et un plafond (130 % du PASS, soit 61 230 €).\
+2. On applique un **abattement forfaitaire de 26 %** — encadré par un plancher (1,76 % du plafond annuel de la Sécurité sociale, soit 828,96 € pour 2025) et un plafond (130 % de ce même plafond annuel, soit 61 230 €).\
 3. Le résultat (74 % de ton revenu professionnel) est l'assiette de **toutes** tes cotisations et de la CSG-CRDS.\
 En **micro-BNC**, rien ne change dans la mécanique : l'assiette reste tes recettes après l'abattement fiscal de 34 % — l'abattement de 26 % ne s'y applique pas.\
 Les **taux ont été réajustés** pour viser une neutralité d'ensemble : les cotisations créatrices de droits (retraite notamment) augmentent, la CSG diminue.
