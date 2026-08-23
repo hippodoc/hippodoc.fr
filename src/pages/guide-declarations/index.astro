@@ -38,6 +38,7 @@ import { questionsFAQ } from '@/data/boussoleData';
 import { GUIDE_DECLARATIONS_LAST_UPDATED_ISO } from '@/lib/guide/lastUpdated';
 
 import HeroSection from '@/components/guide/HeroSection.astro';
+import SousPagesNav from '@/components/guide/SousPagesNav.astro';
 import SeasonalBanner from '@/components/guide/SeasonalBanner.astro';
 import SectionDivider from '@/components/guide/SectionDivider.astro';
 import FiscalSocialPrimer from '@/components/guide/FiscalSocialPrimer.astro';
@@ -122,6 +123,7 @@ const webPageSchema = {
     <main class="pb-20">
       <HeroSection />
       <BoussoleSearchIsland client:visible />
+      <SousPagesNav />
 
       {/* Zone 1 : Commence ici */}
       <SectionDivider step={1} label="Commence ici" hint="Comprends · identifie-toi · checklist" compact />

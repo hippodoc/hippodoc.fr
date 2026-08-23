@@ -2,6 +2,13 @@ import React from 'react';
 import { Zap, Gem, Scale, HelpCircle, FileText, BookA, ArrowUpRight, ShieldCheck, Lightbulb, AlertTriangle } from 'lucide-react';
 import { reglesOr, pepitesCachees, zonesGrises, questionsFAQ, caseopedia } from '@/data/boussoleData';
 import { GLOSSAIRE_DECLARATIONS } from '@/data/glossaireDeclarationsData';
+import {
+  useAnchorResolver,
+  ficheAnchor,
+  questionAnchor,
+  caseAnchor,
+  termAnchor,
+} from '@/lib/guide/anchors';
 
 // =====================================================================
 // Portage statique de src/pages/guide-declarations/components/CrossLinks.tsx
@@ -55,10 +62,12 @@ export const TERMS_INDEX: Record<string, TermRef> = (() => {
 })();
 
 // Résout un id/code métier vers l'ancre DOM statique correspondante.
-export const ficheHref = (ficheId: string) => `#${ficheId}`;
-export const questionHref = (questionId: string) => `#question-${questionId}`;
-export const caseHref = (code: string) => `#case-${code}`;
-export const termHref = (termId: string) => `#glossaire-term-${termId}`;
+/** @deprecated Conservés pour compatibilité : préférer `useAnchorResolver()`
+ *  + les fabriques d'ancres, qui savent viser le hub depuis une page fille. */
+export const ficheHref = (ficheId: string) => `#${ficheAnchor(ficheId)}`;
+export const questionHref = (questionId: string) => `#${questionAnchor(questionId)}`;
+export const caseHref = (code: string) => `#${caseAnchor(code)}`;
+export const termHref = (termId: string) => `#${termAnchor(termId)}`;
 
 // =====================================================================
 // Styles de badges (cohérents avec GlossaireSection / TopQuestionsSection)
@@ -102,6 +111,7 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
   const terms = Array.from(new Set(relatedTerms || [])).map(id => TERMS_INDEX[id]).filter(Boolean);
 
   const hasAny = fiches.length > 0 || questions.length > 0 || cases.length > 0 || terms.length > 0;
+  const resolve = useAnchorResolver();
   if (!hasAny) return null;
 
   const Row: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) =>
@@ -131,7 +141,7 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
             return (
               <a
                 key={f.id}
-                href={ficheHref(f.id)}
+                href={resolve(ficheAnchor(f.id))}
                 title={`${style.label} — ${f.titre}`}
                 className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${style.className}`}
               >
@@ -148,7 +158,7 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
           {questions.map(q => (
             <a
               key={q.id}
-              href={questionHref(q.id)}
+              href={resolve(questionAnchor(q.id))}
               title={q.question}
               className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${QUESTION_BADGE_CLASS}`}
             >
@@ -164,7 +174,7 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
           {cases.map(c => (
             <a
               key={c.code}
-              href={caseHref(c.code)}
+              href={resolve(caseAnchor(c.code))}
               title={`${c.code} — ${c.nom} (${c.formulaire})`}
               className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${CASE_BADGE_CLASS}`}
             >
@@ -181,7 +191,7 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
           {terms.map(t => (
             <a
               key={t.id}
-              href={termHref(t.id)}
+              href={resolve(termAnchor(t.id))}
               title={`Définition : ${t.term}`}
               className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${TERM_BADGE_CLASS}`}
             >
@@ -227,6 +237,7 @@ const REF_TYPE_META = {
 } as const;
 
 export const InlineRef: React.FC<{ token: string }> = ({ token }) => {
+  const resolve = useAnchorResolver();
   let kind: keyof typeof REF_TYPE_META | null = null;
   let shortLabel = '';
   let fullTitle = '';
@@ -234,19 +245,19 @@ export const InlineRef: React.FC<{ token: string }> = ({ token }) => {
 
   if (/^RO-\d{3}$/.test(token)) {
     const f = FICHES_INDEX[`regle-${token}`];
-    if (f) { kind = 'regle'; shortLabel = shortenRefLabel(f.titre); fullTitle = f.titre; href = ficheHref(f.id); }
+    if (f) { kind = 'regle'; shortLabel = shortenRefLabel(f.titre); fullTitle = f.titre; href = resolve(ficheAnchor(f.id)); }
   } else if (/^PC-\d{3}$/.test(token)) {
     const f = FICHES_INDEX[`pepite-${token}`];
-    if (f) { kind = 'pepite'; shortLabel = shortenRefLabel(f.titre); fullTitle = f.titre; href = ficheHref(f.id); }
+    if (f) { kind = 'pepite'; shortLabel = shortenRefLabel(f.titre); fullTitle = f.titre; href = resolve(ficheAnchor(f.id)); }
   } else if (/^ZG-\d{3}$/.test(token)) {
     const f = FICHES_INDEX[`zone-${token}`];
-    if (f) { kind = 'zone'; shortLabel = shortenRefLabel(f.titre); fullTitle = f.titre; href = ficheHref(f.id); }
+    if (f) { kind = 'zone'; shortLabel = shortenRefLabel(f.titre); fullTitle = f.titre; href = resolve(ficheAnchor(f.id)); }
   } else if (/^QT-\d{3}$/.test(token)) {
     const q = QUESTIONS_INDEX[token];
-    if (q) { kind = 'question'; shortLabel = shortenRefLabel(q.question); fullTitle = q.question; href = questionHref(q.id); }
+    if (q) { kind = 'question'; shortLabel = shortenRefLabel(q.question); fullTitle = q.question; href = resolve(questionAnchor(q.id)); }
   } else if (/^CASE-\d{3}$/.test(token)) {
     const c = CASES_BY_ID[token];
-    if (c) { kind = 'case'; shortLabel = c.code; fullTitle = `${c.code} — ${c.nom} (${c.formulaire})`; href = caseHref(c.code); }
+    if (c) { kind = 'case'; shortLabel = c.code; fullTitle = `${c.code} — ${c.nom} (${c.formulaire})`; href = resolve(caseAnchor(c.code)); }
   }
 
   if (!kind) {

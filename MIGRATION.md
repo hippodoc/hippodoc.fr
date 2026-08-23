@@ -2291,6 +2291,109 @@ noindex hors sitemap). `lastmod` du sitemap = 2026-08-23 pour cette seule URL.
 Console d'ici 4 à 6 semaines. C'est le test de la méthode avant de l'appliquer
 aux 37 autres articles.
 
+### 9.ap Guide des déclarations : trois pages filles additives (23 août 2026)
+
+Deuxième action de l'audit Search Console. `/guide-declarations` porte **49 845
+mots et 122 titres H2/H3 sur une seule URL** (2,3 Mo de HTML, 245 Ko transférés,
+15 × un article de blog) et ne capte que 4 visiteurs organiques en 14 jours : une
+URL ne peut pas être simultanément la meilleure réponse à trente requêtes.
+
+#### L'axe de découpe, et pourquoi ce n'est pas le sujet
+
+Découper le guide **par sujet** aurait créé neuf doublons frontaux avec le blog —
+2035, micro-BNC/réel, URSSAF, CARMF, PDSA, frais pros, calendrier fiscal, RSPM,
+IJ/maternité — dont plusieurs se positionnent déjà (`remplir-declaration-2035` en
+position 11,4 ; `tout-comprendre-carmf` sur « carmf » en 12,4 ;
+`rspm-exemples-concrets` sur « rspm » en 19,2). Deux pages faibles à la place
+d'une correcte.
+
+Les deux axes retenus n'entrent en concurrence avec aucun article :
+
+- **par formulaire administratif** — `/dsfu-pamc` (15 cases, contenu le plus
+  singulier du site), `/2042-c-pro` (5 cases) ;
+- **par profil** — `/medecin-remplacant` (profil PM-002), premier des 13.
+
+La 2035 est **volontairement laissée au blog** : c'est écrit en tête de
+`2042-c-pro.astro` pour que personne ne « corrige » l'omission plus tard.
+
+#### Le hub n'a rien perdu — et c'est vérifié
+
+Décision d'architecture : les pages filles sont **additives**. Rien n'est retiré
+de `/guide-declarations`, les 18 liens entrants vers ses ancres (§ 9.al)
+continuent de fonctionner à l'identique.
+
+Vérification par empreinte, à chaque étape du chantier :
+
+| Étape | HTML du hub |
+|---|---|
+| Extraction de `CaseCard` et `QuestionCard` | identique à l'octet près |
+| Branchement du résolveur d'ancres | identique à l'octet près |
+| Ajout de `SousPagesNav` | **0 ligne supprimée**, 30 ajoutées |
+
+(Comparaison après neutralisation des empreintes d'assets : les bundles changent
+forcément puisque `CrossLinks` importe désormais le module de contexte.)
+
+#### Le piège technique : les ancres nues
+
+`CrossLinks` et `InlineRef` rendaient `href="#case-DSCS"`. Correct sur une page
+unique, **mort dès qu'on en sort**. `InlineRef` étant appelé au fond de
+`FormattedText`, lui-même au fond des cartes, passer la résolution en prop aurait
+supposé de la faire descendre sur toute la chaîne : d'où
+`src/lib/guide/anchors.ts`, un contexte React dont **la valeur par défaut est le
+comportement historique**. Le hub ne change donc pas ; les pages filles
+fournissent `hubResolver()` — ancre locale si l'item est sur la page, sinon lien
+vers le hub.
+
+Résultat mesuré sur le build : **71 ancres locales, 337 liens vers le hub, zéro
+ancre morte** sur les trois pages.
+
+#### Recouvrement de contenu — le point à surveiller
+
+C'est le revers assumé de l'option additive. Mesuré en 8-grammes :
+
+| Page | Mots | Contenu inédit vs hub |
+|---|---|---|
+| `/dsfu-pamc` | 7 374 | 10 % |
+| `/2042-c-pro` | 3 844 | 16 % |
+| `/medecin-remplacant` | 4 723 | 17 % |
+
+Les blocs de référence (cases, questions) sont partagés **par construction** : ils
+sont la matière. Chaque page porte en plus 600 à 800 mots de prose qui n'existent
+nulle part ailleurs — ordre de remplissage de la DSFU, les trois confusions qui
+coûtent le plus, l'erreur PDSA en 5HP, les trois chiffres du remplaçant — écrits
+à partir des `erreurFrequente` déjà documentées, sans avancer de règle nouvelle.
+
+⚠️ **Si Search Console montre que Google retient le hub et filtre les filles**,
+le levier suivant est l'option écartée ici : hub réduit à un index + extraits, le
+contenu long ne vivant plus que sur les filles. Elle n'a pas été prise d'emblée
+parce qu'elle déplace 50 000 mots et réécrit 18 liens d'ancre — à ne faire que sur
+preuve, pas par précaution.
+
+#### Fichiers
+
+| Fichier | Rôle |
+|---|---|
+| `src/lib/guide/anchors.ts` | contexte + fabriques d'ancres (nouveau) |
+| `src/components/guide/CaseCard.tsx` | carte de case extraite (nouveau) |
+| `src/components/guide/QuestionCard.tsx` | carte de question extraite (nouveau) |
+| `src/components/guide/GuideSubset.tsx` | rendu d'un sous-ensemble + Provider (nouveau) |
+| `src/components/guide/SousPagesNav.astro` | aiguillage depuis le hub (nouveau) |
+| `src/layouts/GuideSousPage.astro` | gabarit commun, fil d'Ariane, JSON-LD (nouveau) |
+| `CrossLinks.tsx`, `GlossaireSection.tsx`, `CaseopediaSection.tsx`, `TopQuestionsSection.tsx` | branchés sur le résolveur / cartes extraites |
+| `src/lib/pages-lastmod.ts` | `lastmod` des 3 pages |
+
+Zéro `client:` sur les pages filles : **0 îlot hydraté**, rendu au build comme le
+hub. Poids : 369 / 215 / 273 Ko contre 2 380 Ko pour le hub.
+
+Vérifié : build 59 pages, `verify-site.mjs` OK (57 URLs, 3 975 liens internes,
+aucun mort), 2 avertissements préexistants. JSON-LD par page : BreadcrumbList +
+WebPage + FAQPage, fil d'Ariane visible doublé du balisage.
+
+**À mesurer** : indexation des 3 URL et évolution des impressions du hub d'ici 6
+semaines. Si le signal est bon, dérouler les 12 autres profils. Si le hub perd
+des impressions au profit des filles sans gain net, revoir l'architecture avant
+d'en créer d'autres.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

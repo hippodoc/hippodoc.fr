@@ -1,0 +1,56 @@
+---
+/**
+ * Aiguillage vers les pages filles du guide.
+ *
+ * Ajout du 23 août 2026 (MIGRATION.md § 9.ap) : sans ce bloc, les pages filles
+ * ne seraient atteignables que par le sitemap. Une page qu'aucun lien interne
+ * ne désigne est explorée tard et mal — c'est le motif « Détectée, actuellement
+ * non indexée » qui touchait déjà 48 URL du domaine.
+ *
+ * Bloc purement additif : aucune section existante du hub n'est modifiée.
+ */
+const PAGES = [
+  {
+    href: '/guide-declarations/dsfu-pamc',
+    titre: 'DSFU (ex DS-PAMC)',
+    detail: 'Les 15 cases du volet social, une par une',
+  },
+  {
+    href: '/guide-declarations/2042-c-pro',
+    titre: '2042-C-PRO',
+    detail: '5HQ, 5QC et les cases d’exonération',
+  },
+  {
+    href: '/guide-declarations/medecin-remplacant',
+    titre: 'Médecin remplaçant',
+    detail: 'Les cases et les pièges de ce statut',
+  },
+  {
+    href: '/guide-declarations/calculette',
+    titre: 'HippoCalc',
+    detail: 'Calculette 2035 · 2042 · DSFU',
+  },
+];
+---
+
+<nav aria-label="Pages détaillées du guide" class="max-w-5xl mx-auto px-4 mt-10">
+  <h2 class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+    Aller droit au but
+  </h2>
+  <p class="mt-1 text-sm text-muted-foreground">
+    Cette page réunit tout. Ces quatre-là traitent un point précis, en détail.
+  </p>
+  <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    {PAGES.map((p) => (
+      <li>
+        <a
+          href={p.href}
+          class="flex h-full flex-col rounded-xl border border-slate-200/70 bg-white/80 p-4 no-underline transition-colors hover:border-hippo-300 hover:bg-hippo-50/50 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:border-hippo-700 dark:hover:bg-hippo-950/30"
+        >
+          <span class="font-semibold text-foreground">{p.titre}</span>
+          <span class="mt-1 text-sm text-muted-foreground">{p.detail}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
