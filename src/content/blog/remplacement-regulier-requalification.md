@@ -15,9 +15,9 @@ faq:
   - question: "Un remplacement régulier peut-il être requalifié en collaboration ?"
     answer: "C'est juridiquement possible, mais la jurisprudence est plutôt rassurante : des remplacements réguliers de **7 ans** (CA Paris, 27 sept. 2012) et de **8 ans et demi** (CA Versailles, 18 mai 2020, confirmé par la Cour de cassation le 20 oct. 2021) n'ont **pas** été requalifiés. Ce qui compte, ce n'est pas la régularité seule : c'est le respect réel du cadre du remplacement — titulaire effectivement absent, indépendance, rétrocession classique."
   - question: "Quels sont les risques si mon remplacement est requalifié ?"
-    answer: "Selon le scénario : **collaboration libérale** (redevances, TVA chez le titulaire), **contrat de travail** si un lien de subordination est établi (cotisations salariales rétroactives), **société créée de fait** (partage des dettes), ou sanction **ordinale** pour gérance de cabinet prohibée (art. R.4127-89 du Code de la santé publique). En pratique, le risque le plus fréquent est fiscal et pèse sur le médecin remplacé : la **TVA** sur les sommes qu'il conserve."
+    answer: "Selon le scénario : **collaboration libérale** (la part conservée par le titulaire devient un loyer soumis à TVA), **contrat de travail** si un lien de subordination est établi (cotisations salariales rétroactives), **société créée de fait** (chacun devient responsable des dettes de l'autre), ou sanction **ordinale** pour gérance de cabinet interdite (art. R.4127-89 du Code de la santé publique). En pratique, le risque le plus fréquent est fiscal et pèse sur le médecin remplacé : la **TVA** sur les sommes qu'il conserve."
   - question: "Le seuil de TVA de 37 500 € sur les rétrocessions s'apprécie-t-il par remplaçant ou cumulé ?"
-    answer: "Ni l'un ni l'autre côté remplaçant : **tes rétrocessions perçues sont exonérées de TVA** (prestations de soins, art. 261, 4-1° du CGI). Le sujet TVA concerne le **remplacé** : la part d'honoraires qu'il conserve est une redevance taxable si le remplacement n'est pas occasionnel. Et la franchise en base (37 500 € en 2026, seuil majoré 41 250 €) s'apprécie **chez lui, toutes recettes taxables confondues** — tous remplaçants et collaborateurs cumulés, pas contrat par contrat."
+    answer: "Ni l'un ni l'autre côté remplaçant : **tes rétrocessions sont exonérées de TVA** (ce sont des soins, art. 261, 4-1° du CGI) — tu n'as aucun seuil à surveiller. Le sujet TVA concerne le **remplacé** : la part d'honoraires qu'il garde paie l'usage de son cabinet, et devient taxable si le remplacement n'est plus occasionnel. Le seuil de 37 500 € (montant 2026 en dessous duquel on ne facture pas de TVA) se calcule alors **chez lui, tout cumulé** — tous ses remplaçants et collaborateurs ensemble, pas contrat par contrat."
   - question: "Combien de temps peut-on remplacer le même médecin ?"
     answer: "Aucun texte ne fixe de durée maximale pour un médecin thésé inscrit à l'Ordre. Le Code de la santé publique exige seulement que le remplacement reste **temporaire** (art. R.4127-65) : le titulaire doit être réellement absent pendant tes jours de remplacement. Les juges ont validé des remplacements réguliers de plusieurs années quand ce cadre était respecté — et sanctionné des situations où il ne l'était plus."
   - question: "Quand faut-il passer du remplacement à la collaboration libérale ?"
@@ -42,9 +42,9 @@ Le Code de la santé publique pose le principe : un médecin ne peut se faire re
 
 Quatre scénarios existent, avec des conséquences très différentes :
 
-1. **Collaboration libérale** — le juge considère que la relation relève du statut créé par la loi du 2 août 2005 : redevance versée au titulaire, clientèle propre possible. Conséquences surtout fiscales (TVA sur les redevances, voir plus bas).
+1. **Collaboration libérale** — le juge considère que la relation relève du statut créé par la loi du 2 août 2005 : tu verses au titulaire une redevance (un loyer pour l'usage de son cabinet) et tu peux te faire une clientèle propre. Conséquences surtout fiscales (TVA sur ce loyer, voir plus bas).
 2. **Contrat de travail** — si un **lien de subordination** est établi (horaires imposés, directives, intégration à un service organisé), la relation devient salariale, avec cotisations rétroactives à la clé. La Cour de cassation l'a admis dans un cas où la subordination était caractérisée (Cass. soc., 29 janvier 2014, n° 12-26.940).
-3. **Société créée de fait** — si vous partagez bénéfices **et** charges comme de vrais associés, avec les conséquences d'une association jamais formalisée.
+3. **Société créée de fait** — si vous partagez bénéfices **et** charges comme de vrais associés, le juge peut considérer que vous étiez associés sans le savoir : chacun devient alors responsable des dettes de l'autre, comme dans une vraie société.
 4. **Sanction ordinale** — pour gérance de cabinet prohibée, indépendamment de toute requalification civile ou fiscale.
 
 ## 👨‍⚖️ Ce que disent réellement les juges
@@ -67,15 +67,15 @@ Les critères que les juges examinent, dans les deux sens :
 
 ## 💸 Le vrai risque fiscal : la TVA… du remplacé
 
-C'est le point que presque personne n'explique, et il est écrit noir sur blanc dans la doctrine fiscale (rescrit BOI-RES-TVA-000056 et BOI-TVA-CHAMP-30-10-20-10) :
+C'est le point que presque personne n'explique, et il est pourtant écrit noir sur blanc dans une réponse officielle de l'administration fiscale (un « rescrit », référencé BOI-RES-TVA-000056) :
 
 • Les sommes **rétrocédées au remplaçant** rémunèrent des prestations de soins : **exonérées de TVA** (art. 261, 4-1° du CGI), quelle que soit la durée du remplacement.\
-• La part que le **remplacé conserve** (les 10, 20 ou 30 % de retenue) rémunère la **mise à disposition du cabinet** — locaux, équipement, patientèle. Ce n'est pas un soin : c'est une **redevance**, soumise à la TVA… **sauf si le remplacement revêt un caractère occasionnel**.
+• La part que le **remplacé conserve** (les 10, 20 ou 30 % de retenue) paie autre chose : l'usage de son cabinet — locaux, équipement, patientèle. Ce n'est pas un soin, c'est une sorte de loyer (une « redevance », dans le vocabulaire fiscal). Et un loyer, ça supporte la TVA… **sauf si le remplacement reste occasionnel**.
 
 Le « caractère occasionnel » n'est pas défini par un seuil chiffré : l'administration et les juges regardent la **fréquence**, le **caractère systématique** et les **montants** en jeu. Un remplacement toutes les semaines, toute l'année, année après année, a peu de chances d'être regardé comme occasionnel.
 
 :::warning
-**Le seuil de 37 500 € s'apprécie chez le remplacé, tout cumulé.** Si les retenues deviennent taxables, le remplacé bénéficie de la franchise en base de TVA : **37 500 €** de recettes taxables par an (seuil majoré 41 250 €) — montants 2026, le projet de seuil unique à 25 000 € ayant été abrogé (loi n° 2025-1044 du 3 novembre 2025). Mais ce seuil se calcule **par assujetti** : toutes ses recettes taxables s'additionnent — retenues sur tous ses remplaçants, redevances de collaboration, etc. Ce n'est **pas** un seuil « par remplaçant » ni « par contrat ».
+**Le seuil de 37 500 € se calcule chez le remplacé, tout cumulé.** Même quand les retenues deviennent taxables, le remplacé ne facture pas de TVA tant qu'elles restent sous la « franchise en base » : **37 500 €** de recettes taxables par an (avec une tolérance jusqu'à 41 250 €) — montants 2026, le projet de seuil unique à 25 000 € ayant été abrogé (loi n° 2025-1044 du 3 novembre 2025). Mais attention : ce seuil se calcule **par professionnel, toutes recettes taxables additionnées** — les retenues sur tous ses remplaçants, ses éventuelles redevances de collaboration, etc. Ce n'est **pas** un seuil « par remplaçant » ni « par contrat ».
 :::
 
 Côté remplaçant, respire : **tes rétrocessions perçues ne sont pas concernées**. Tu n'as pas de seuil de TVA à surveiller sur tes rétros de remplacement.
@@ -88,7 +88,7 @@ Trois signes qu'il est temps de changer de cadre :
 2. La régularité est installée **sans lien avec de vraies absences** (le « remplacement » est devenu un jour de travail supplémentaire du cabinet).
 3. Tu veux développer une **clientèle propre** et t'ancrer dans le cabinet.
 
-La **collaboration libérale** (loi n° 2005-882 du 2 août 2005, art. 18) est le statut prévu pour cette situation : tu exerces en ton nom, tu peux te constituer une patientèle personnelle, et tu verses au titulaire une redevance pour l'usage du cabinet. Un **contrat type** est disponible auprès du Conseil national de l'Ordre des médecins, et le contrat doit être communiqué à ton conseil départemental. À savoir : la redevance de collaboration est, elle, **soumise à la TVA** chez le titulaire (franchise en base possible dans les mêmes conditions que ci-dessus) — c'est cohérent avec ce qu'on vient de voir, et c'est un point à chiffrer ensemble avant de signer.
+La **collaboration libérale** (loi n° 2005-882 du 2 août 2005, art. 18) est le statut prévu pour cette situation : tu exerces en ton nom, tu peux te constituer une patientèle personnelle, et tu verses au titulaire une redevance pour l'usage du cabinet. Un **contrat type** est disponible auprès du Conseil national de l'Ordre des médecins, et le contrat doit être communiqué à ton conseil départemental. À savoir : la redevance de collaboration est, elle, **soumise à la TVA** chez le titulaire (avec la même dispense sous 37 500 € que ci-dessus) — c'est cohérent avec ce qu'on vient de voir, et c'est un point à chiffrer ensemble avant de signer.
 
 Pour comparer l'ensemble des statuts possibles, voir [les 8 modes d'exercice du médecin remplaçant](/blog/choix-mode-exercice).
 

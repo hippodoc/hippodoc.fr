@@ -2469,6 +2469,21 @@ sujet à l'échéance la plus proche (1er septembre 2026) :
 `src/generated/blog-meta.json` mis à jour à la main pour les 4 slugs (le script
 de génération n'a pas été relancé, conformément à la consigne).
 
+#### Passe « niveau jeune remplaçant » (même jour, retour du fondateur)
+
+Premier jet retoqué : trop de vocabulaire de la réforme (B2B/B2C, assujetti,
+e-invoicing, redevance, franchise en base, de plein droit, PASS) illisible pour
+un interne qui débute, et la question n°1 du remplaçant — « ma facture de
+rétrocession doit-elle passer par une plateforme ? » — traitée en une ligne au
+lieu d'être un bloc à part entière. Corrigé sur les quatre contenus : chaque
+terme de jargon est remplacé ou expliqué en français courant à la première
+occurrence (gardé une fois entre guillemets pour la reconnaissance/SEO), et
+l'article facturation gagne une section « Et ta facture de rétrocession, alors ? »
+— hors réforme car les rétrocessions rémunèrent des soins exonérés (art. 261,
+4-1° CGI), l'envoi par mail de la facture générée avec Hippodoc reste la bonne
+façon de faire — plus une FAQ dédiée. Règle éditoriale à retenir pour tous les
+contenus futurs : partir du geste concret du lecteur, zéro jargon non expliqué.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

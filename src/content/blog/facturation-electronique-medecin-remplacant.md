@@ -1,6 +1,6 @@
 ---
 title: "Facturation électronique médecin : es-tu concerné ?"
-description: "Réception obligatoire dès le 1er septembre 2026, actes de soins hors champ, la vraie règle des 150 € : ce que la facturation électronique change pour toi."
+description: "Réception obligatoire dès le 1er septembre 2026, tes rétrocessions non concernées, la vraie règle des 150 € : ce que la réforme change (ou pas) pour toi."
 pubDate: "2026-08-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
@@ -15,100 +15,110 @@ tags:
 cta: "Prêt à simplifier ta gestion financière ?"
 faq:
   - question: "Un médecin remplaçant est-il concerné par la facturation électronique du 1er septembre 2026 ?"
-    answer: "Oui, mais uniquement pour la **réception**. Comme tout professionnel avec un SIRET, tu dois être raccordé à une **plateforme agréée** pour recevoir les factures de tes fournisseurs (RCP, logiciel, banque…). En revanche, tes rétrocessions et tes actes de soins, exonérés de TVA, sont **hors du champ** de la réforme : tu n'as rien à émettre ni à télédéclarer."
+    answer: "Oui, mais pour une seule chose : la **réception**. Comme tout professionnel avec un SIRET, tu dois être raccordé à une **plateforme agréée** pour recevoir les factures de tes fournisseurs (RCP, logiciel, banque…). En revanche, tes rétrocessions et tes actes de soins sont **hors de la réforme** : tu n'as rien à émettre ni à télédéclarer."
+  - question: "Dois-je envoyer mes factures de rétrocession par une plateforme électronique ?"
+    answer: "**Non, rien ne change.** Ta facture d'honoraires de remplacement rémunère des soins, exonérés de TVA (art. 261, 4-1° du CGI) — et ces opérations sont **exclues de la réforme**. Tu continues à l'envoyer comme avant, par mail ou en main propre. La générer en quelques clics avec Hippodoc reste donc parfaitement valable, aucune plateforme n'est nécessaire."
   - question: "Les factures aux patients passent-elles par la facturation électronique ?"
-    answer: "Non. La facturation électronique (e-invoicing) ne concerne que les factures **entre entreprises françaises assujetties à la TVA** (B2B). Les notes d'honoraires remises aux patients ne sont pas concernées, et les actes de soins exonérés de TVA (art. 261, 4-1° du CGI) sont exclus de la réforme, e-reporting compris."
+    answer: "Non. La réforme ne concerne que les factures **entre professionnels** (ce qu'elle appelle le « B2B »). Les notes d'honoraires remises aux patients ne sont pas concernées, et les actes de soins, exonérés de TVA, sont de toute façon **exclus de la réforme**, télédéclaration comprise."
   - question: "La règle des 150 € (ticket de caisse suffisant) est-elle vraie ?"
-    answer: "Non, pas telle qu'elle circule. Le seul seuil de 150 € dans les textes concerne des **mentions allégées** : une facture ≤ 150 € HT peut omettre le numéro de TVA du vendeur (art. 242 nonies A, annexe II du CGI). Ce n'est **ni une dispense de facture, ni un seuil de la réforme**. Pour déduire une charge en BNC, un justificatif probant reste exigé — demande une facture à ton nom."
+    answer: "Non, pas telle qu'elle circule. Le seul seuil de 150 € dans les textes concerne des **mentions allégées** : une facture de 150 € HT ou moins peut omettre le numéro de TVA du vendeur (art. 242 nonies A, annexe II du CGI). Ce n'est **ni une dispense de facture, ni un seuil de la réforme**. Pour déduire une charge en BNC, il te faut toujours un justificatif solide — demande une facture à ton nom."
   - question: "Le Portail Public de Facturation (PPF) est-il gratuit pour recevoir mes factures ?"
-    answer: "Non. Depuis le **15 octobre 2024**, l'État a abandonné le portail public d'échange gratuit. Le PPF ne subsiste que comme **annuaire central et concentrateur de données** pour la DGFiP. Tu dois passer par une **plateforme agréée privée** — certaines proposent la réception gratuitement (logiciels de comptabilité, banques pro)."
+    answer: "Non. Depuis le **15 octobre 2024**, l'État a abandonné son portail d'échange gratuit. Le PPF ne sert plus qu'à tenir l'**annuaire des entreprises** et à transmettre les données au fisc. Tu dois passer par une **plateforme agréée privée** — certaines proposent la réception gratuitement (logiciels de comptabilité, banques pro)."
   - question: "Quelles sanctions si je ne respecte pas la facturation électronique ?"
-    answer: "Pour l'**émission** non conforme : 50 € par facture, plafonné à 15 000 € par an. Pour l'**e-reporting** manquant : 500 € par transmission, même plafond (art. 1737 et 1788 D du CGI, loi de finances pour 2026). Il n'existe pas d'amende dédiée au défaut de réception — mais tes fournisseurs ne pourront plus te transmettre leurs factures correctement."
+    answer: "Pour une facture qui aurait dû être émise au format électronique : **50 € par facture**, plafonné à 15 000 € par an. Pour une télédéclaration (e-reporting) manquante : **500 € par transmission**, même plafond (art. 1737 et 1788 D du CGI, loi de finances pour 2026). Il n'y a pas d'amende pour défaut de réception — mais tes fournisseurs ne pourront plus te transmettre leurs factures correctement."
 relatedArticles:
+  - "generer-facture-remplacement"
   - "calendrier-fiscal-remplacant"
   - "frais-pros-medecin-liberal-2026"
-  - "generer-facture-remplacement"
   - "remplir-declaration-2035"
 ---
 
-Tu es médecin libéral ou remplaçant, tu n'émets aucune facture à des entreprises, et tout le monde te parle de l'échéance du **1er septembre 2026**. Voici la réponse courte : tes actes de soins sont **hors du champ** de la réforme — tu n'as **rien à émettre, rien à télédéclarer**. Ta seule obligation est de pouvoir **recevoir** les factures de tes fournisseurs via une **plateforme agréée**, dès le 1er septembre 2026. C'est tout, et ça se règle en un quart d'heure. Le détail — et la vérité sur la fameuse « règle des 150 € » — ci-dessous. 🧾
+Tu es médecin libéral ou remplaçant, et tout le monde te parle de l'échéance du **1er septembre 2026** sur la « facturation électronique ». Voici la réponse courte : tes actes de soins et tes rétrocessions sont **en dehors de la réforme** — tu n'as **rien à émettre, rien à télédéclarer**, et ta facture d'honoraires de remplacement continue de partir par mail comme avant. Ta seule obligation : pouvoir **recevoir** les factures de tes fournisseurs via une **plateforme agréée**, dès le 1er septembre 2026. C'est tout, et ça se règle en un quart d'heure. On t'explique tout en français courant. 🧾
 
-## 🔹 La réforme en 30 secondes
+## 🔹 La réforme, expliquée simplement
 
-La réforme repose sur deux mécanismes distincts :
+L'État veut que les factures **entre professionnels** circulent par des canaux informatiques contrôlés, au lieu de partir par mail en PDF. Deux mécanismes, deux mots de jargon que tu croiseras partout :
 
-**L'e-invoicing** (facturation électronique proprement dite) : les factures entre **entreprises françaises assujetties à la TVA** (B2B domestique) doivent transiter par des **plateformes agréées** (PA, anciennement « PDP »), dans un format structuré.\
-**L'e-reporting** : la transmission à l'administration des données de transactions **hors e-invoicing** (ventes aux particuliers, clients étrangers) — uniquement pour les opérations **soumises à la TVA**.
+**La « facturation électronique » (e-invoicing)** : quand une entreprise française facture **une autre entreprise française**, la facture devra passer par une **plateforme agréée** — un intermédiaire privé certifié par l'administration fiscale — dans un format que les machines savent lire. C'est ce que la réforme appelle le « B2B » : de professionnel à professionnel. Toi, quand tu achètes ton logiciel métier ou payes ta RCP, tu es le professionnel qui **reçoit** ce type de facture.\
+**Le « e-reporting »** : pour les ventes qui ne passent pas par ce circuit (clients particuliers, clients étrangers), les entreprises concernées devront **télédéclarer** leurs recettes au fisc. Spoiler : tes consultations n'y sont pas soumises, on y vient.
 
 📅 **Le calendrier officiel** :\
-• **1er septembre 2026** : toutes les entreprises doivent être en mesure de **recevoir** des factures électroniques. Les grandes entreprises et ETI doivent aussi commencer à **émettre** via plateforme.\
-• **1er septembre 2027** : l'obligation d'**émission** (et l'e-reporting) s'étend aux PME, TPE et micro-entreprises — donc à un cabinet médical s'il a des opérations dans le champ.
+• **1er septembre 2026** : tout le monde doit pouvoir **recevoir** des factures électroniques. Les très grosses entreprises commencent aussi à **émettre** par plateforme.\
+• **1er septembre 2027** : l'obligation d'émettre (et de télédéclarer) s'étend à toutes les autres — y compris un cabinet individuel, **s'il a des recettes concernées**.
 
 ## 🩺 Médecin : ce qui te concerne, et ce qui ne te concerne pas
 
-En tant que médecin, tu es **assujetti à la TVA** au sens fiscal — même si tu n'en factures jamais. Mais tes prestations de soins sont **exonérées** par l'article 261, 4-1° du CGI. Et l'administration est claire : les opérations exonérées par les articles 261 à 261 E du CGI sont **exclues de la réforme** — ni facturation électronique, ni e-reporting (source : impots.gouv.fr).
+Aux yeux du fisc, tu es une entreprise comme une autre — même si tu ne factures jamais de TVA. Mais tes prestations de soins sont **exonérées de TVA** par l'article 261, 4-1° du CGI, et l'administration est claire : les opérations exonérées par les articles 261 à 261 E **sont exclues de la réforme** — ni facturation électronique, ni télédéclaration (source : impots.gouv.fr).
 
 :::essentiel
 **Ce que ça veut dire concrètement :**\
-❌ Tes consultations, visites et actes → **hors champ**. Rien ne change.\
-❌ Tes notes d'honoraires aux patients → **hors champ** (le B2C n'est de toute façon pas dans l'e-invoicing).\
-❌ E-reporting de tes recettes de soins → **hors champ** (opérations exonérées).\
-✅ Les factures que t'envoient **tes fournisseurs** (RCP, logiciel métier, comptable, matériel, loyer professionnel…) → elles arriveront par plateforme agréée. **Tu dois pouvoir les recevoir dès le 1er septembre 2026.**
+❌ Tes consultations, visites et actes → **rien ne change**.\
+❌ Tes notes d'honoraires aux patients → **rien ne change**.\
+❌ Tes rétrocessions de remplacement → **rien ne change** (voir juste en dessous).\
+✅ Les factures que t'envoient **tes fournisseurs** — RCP, logiciel métier, comptable, matériel, loyer professionnel — arriveront par plateforme agréée. **Tu dois pouvoir les recevoir dès le 1er septembre 2026.** C'est ta seule vraie action.
 :::
 
-## 🔄 Remplaçant : « je n'émets aucune facture, suis-je quand même concerné ? »
+## 🔄 Et ta facture de rétrocession, alors ?
 
-Oui — exactement au même titre qu'un installé, et uniquement pour la **réception**. Tu as un SIRET, tu es assujetti (même exonéré), donc tes fournisseurs (RCP, [logiciel de facturation](/blog/generer-facture-remplacement), banque pro, comptable) te factureront via plateforme.
+C'est LA question du remplaçant, alors disons-le clairement : **ta facture d'honoraires de remplacement n'est pas concernée**.
 
-Tes **rétrocessions d'honoraires**, elles, rémunèrent des prestations de soins : exonérées de TVA, elles restent **hors du champ** de la réforme. Aucune « facture électronique de rétrocession » à produire.
+Les sommes que le médecin remplacé te reverse rémunèrent des **prestations de soins** — exonérées de TVA, donc **hors de la réforme**. Ta facture d'honoraires en fin de remplacement reste un document classique : tu continues de l'envoyer **par mail ou en main propre**, comme aujourd'hui, sans plateforme, sans format spécial, sans rien de nouveau au 1er septembre.
+
+:::tip
+Autrement dit : [générer ta facture de rétrocession avec Hippodoc](/blog/generer-facture-remplacement) et l'envoyer par mail au remplacé reste **exactement la bonne façon de faire** — avant comme après la réforme. Propre, datée, archivée, et zéro obligation électronique là-dessus. 🚀
+:::
+
+En revanche, comme tout professionnel avec un SIRET, tu restes concerné par la **réception** : ta RCP, ton logiciel, ta banque pro te factureront par plateforme.
 
 :::warning
-**Plusieurs structures = plusieurs raccordements.** Chaque entité juridique a son propre SIREN : ton entreprise individuelle, une SCM, une SCI… Chacune doit être en mesure de recevoir **ses** factures. Vérifie le raccordement de chaque structure, pas seulement de ton activité principale.
+**Plusieurs structures = plusieurs raccordements.** Chaque entité a son propre SIREN : ton activité en nom propre, une SCM, une SCI… Chacune doit pouvoir recevoir **ses** factures. Vérifie le raccordement de chaque structure, pas seulement de ton activité principale.
 :::
 
 ## ✅ Concrètement : que faire avant le 1er septembre
 
-1. **Choisis une plateforme agréée.** La liste officielle des plateformes immatriculées par la DGFiP est publiée sur impots.gouv.fr. En pratique, commence par vérifier si **ton logiciel de comptabilité ou ta banque pro** en propose une : beaucoup incluent la **réception gratuitement**.
-2. **Ne cherche pas le portail public gratuit : il n'existe plus.** Depuis le **15 octobre 2024**, l'État a abandonné le Portail Public de Facturation comme plateforme d'échange. Le PPF ne subsiste que comme **annuaire central** des entreprises et **concentrateur de données** vers la DGFiP. Le passage par une plateforme agréée privée est donc incontournable.
-3. **C'est ta plateforme qui t'inscrit à l'annuaire.** Une fois raccordé, tes fournisseurs te trouvent automatiquement via ton SIREN.
+1. **Choisis une plateforme agréée.** La liste officielle est publiée sur impots.gouv.fr. Le plus simple : vérifie si **ton logiciel de comptabilité ou ta banque pro** en propose une — beaucoup incluent la **réception gratuitement**.
+2. **Ne cherche pas le portail public gratuit : il n'existe plus.** Depuis le **15 octobre 2024**, l'État a abandonné son projet de plateforme d'échange gratuite (le « Portail Public de Facturation »). Il n'en reste que l'annuaire des entreprises et la transmission des données au fisc. Passer par une plateforme agréée privée est donc incontournable.
+3. **C'est ta plateforme qui t'inscrit à l'annuaire.** Une fois raccordé, tes fournisseurs te trouvent automatiquement via ton SIREN. Tu n'as rien d'autre à faire.
 
 ## 💶 La « règle des 150 € » : vraie ou fausse ?
 
 Tu as peut-être lu qu'« en dessous de 150 €, un ticket de caisse suffit ». **Ce n'est pas ce que disent les textes.**
 
-Le seul seuil de 150 € qui existe concerne les **mentions** : une facture dont le montant HT est inférieur ou égal à 150 € peut omettre certaines mentions, comme le numéro d'identification à la TVA du vendeur (art. 242 nonies A, annexe II du CGI — rappelé par service-public.fr). C'est une facture **simplifiée**, pas une **absence** de facture.
+Le seul seuil de 150 € qui existe concerne les **mentions sur la facture** : une facture de 150 € HT ou moins peut omettre certaines informations, comme le numéro de TVA du vendeur (art. 242 nonies A, annexe II du CGI — rappelé par service-public.fr). C'est une facture **allégée**, pas une **absence** de facture.
 
 :::warning
-**Aucun texte de la réforme ne prévoit de seuil de 150 €.** En B2B, une facture est obligatoire **quel que soit le montant** (art. 289 du CGI), et elle transitera par plateforme selon le calendrier ci-dessus. Et pour déduire une charge en BNC, l'administration exige un **justificatif probant** : un ticket de caisse sans nom d'acheteur est fragile en cas de contrôle. Le bon réflexe reste une **facture à ton nom** (ou à ton SIREN).
+**Aucun texte de la réforme ne prévoit de seuil de 150 €.** Entre professionnels, une facture est obligatoire **quel que soit le montant** (art. 289 du CGI). Et pour déduire une charge de ton revenu imposable, l'administration exige un **justificatif solide** : un ticket de caisse sans nom d'acheteur est fragile en cas de contrôle. Le bon réflexe reste une **facture à ton nom** (ou à ton SIREN).
 :::
 
 ## 🛒 Tes achats en ligne : compte perso ou compte pro ?
 
-C'est la question classique du matériel acheté sur une marketplace avec un compte personnel. Le critère est simple : **en quelle qualité achètes-tu ?**
+C'est la question classique du matériel acheté sur une grande boutique en ligne avec son compte personnel. Le critère est simple : **en quelle qualité achètes-tu ?**
 
-• **Compte personnel** → le vendeur traite la vente comme du **B2C** : aucune facture électronique ne circulera. Tu peux toujours déduire la charge en BNC, à condition d'avoir une **facture classique à ton nom** — la plupart des sites en génèrent une sur demande.\
-• **Compte professionnel** (tu renseignes ton SIREN) → la vente devient du **B2B** : la facture arrivera sur ta plateforme agréée, proprement archivée. C'est la voie la plus solide pour ton dossier de [frais professionnels](/blog/frais-pros-medecin-liberal-2026).
+• **Compte personnel** → pour le vendeur, tu es un particulier : aucune facture électronique ne circulera. Tu peux toujours déduire la charge, à condition d'avoir une **facture classique à ton nom** — la plupart des sites en génèrent une sur demande.\
+• **Compte professionnel** (tu renseignes ton SIREN) → tu achètes en tant qu'entreprise : la facture arrivera sur ta plateforme agréée, proprement archivée. C'est la voie la plus solide pour ton dossier de [frais professionnels](/blog/frais-pros-medecin-liberal-2026).
 
-Pas besoin de dupliquer tes abonnements : il s'agit simplement de séparer ce qui est professionnel (compte pro, SIREN, facture) de ce qui est personnel.
+Pas besoin de payer deux fois le même abonnement : il s'agit simplement de séparer ce qui est professionnel (compte pro, SIREN, facture) de ce qui est personnel.
 
-## ⚕️ Cas particulier : une activité soumise à TVA
+## ⚕️ Cas particulier : une activité qui facture de la TVA
 
-Si tu as une activité **hors soins** — expertises pour des assureurs ou des employeurs, actes d'esthétique sans finalité thérapeutique — ces opérations sont **dans le champ** de la réforme, même si tu bénéficies de la franchise en base de TVA :
+Si tu as une activité **hors soins** — expertises pour des assureurs ou des employeurs, actes d'esthétique sans but thérapeutique — ces recettes-là sont **dans la réforme**, même si tu ne factures pas de TVA grâce à la franchise en base (le régime qui t'en dispense sous 37 500 € de recettes taxables par an) :
 
-• facturées à une **entreprise** (assureur, employeur…) → **e-invoicing** : émission via plateforme agréée obligatoire au **1er septembre 2027** pour une TPE ;\
-• facturées à un **particulier** → **e-reporting** de ces recettes taxables, selon le même calendrier.
+• facturées à une **entreprise** (assureur, employeur…) → émission par plateforme agréée obligatoire au **1er septembre 2027** pour un cabinet individuel ;\
+• facturées à un **particulier** → **télédéclaration** de ces recettes au fisc, selon le même calendrier.
+
+Si tu ne fais que du soin et du remplacement : ce paragraphe ne te concerne pas.
 
 ## ⚖️ Les sanctions
 
 Fixées par la loi de finances pour 2026 (art. 1737 et 1788 D du CGI) :\
-• **Émission** non conforme : **50 € par facture**, plafonné à 15 000 € par an.\
-• **E-reporting** manquant : **500 € par transmission**, même plafond annuel.\
+• Facture qui aurait dû être émise au format électronique : **50 € par facture**, plafonné à 15 000 € par an.\
+• Télédéclaration (e-reporting) manquante : **500 € par transmission**, même plafond annuel.\
 • **Réception** : pas d'amende dédiée — mais sans raccordement, tes fournisseurs ne peuvent plus te délivrer leurs factures normalement, et ton dossier de charges déductibles se fragilise.
 
 ## 🦛 Le Tips Hippodoc
 
 :::tip
-L'échéance du 1er septembre est surtout une bonne occasion de **mettre de l'ordre dans tes justificatifs**. Avec **Hippodoc**, tu centralises tes rétrocessions, tes charges et tes documents importants au même endroit — et le jour où l'administration demande une pièce, elle est déjà classée. 🚀
+L'échéance du 1er septembre est surtout une bonne occasion de **mettre de l'ordre dans tes justificatifs**. Avec **Hippodoc**, tu génères tes factures de rétrocession, tu centralises tes charges et tes documents importants au même endroit — et le jour où l'administration demande une pièce, elle est déjà classée. 🚀
 :::
 
 ## 📚 Sources (vérifiées au 23 août 2026)
