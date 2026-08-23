@@ -41,7 +41,8 @@ Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse bla
 
 📅 **Quand ?** Obligatoire AVANT ton premier remplacement.\
 🧐 **Pourquoi ?** L'inscription au tableau de l'Ordre est une obligation légale pour exercer en France. Elle officialise ton droit à pratiquer et te permet de [facturer](/blog/generer-facture-remplacement) tes actes.\
-📌 **Astuce :** Anticipe cette démarche car les délais peuvent varier selon les départements. Prévois plusieurs semaines d'avance pour éviter tout retard dans le début de ton activité.
+📌 **Astuce :** Anticipe cette démarche car les délais peuvent varier selon les départements. Prévois plusieurs semaines d'avance pour éviter tout retard dans le début de ton activité.\
+🎓 **Si tu es encore interne :** ce n'est pas l'inscription au tableau qu'il te faut, mais la [licence de remplacement](/blog/obtenir-sa-licence-de-remplacement) — même principe, mêmes délais à anticiper.
 
 ## ✅ Inscription à la CPAM
 
