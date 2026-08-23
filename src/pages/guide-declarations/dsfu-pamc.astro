@@ -1,0 +1,171 @@
+---
+/**
+ * /guide-declarations/dsfu-pamc — page fille du guide, axe « formulaire ».
+ *
+ * Pourquoi cette page : les 15 cases DSFU sont le contenu le plus singulier du
+ * site (aucun article de blog ne les couvre, et la documentation publique est
+ * quasi inexistante hors des notices URSSAF). Sur le hub elles sont noyées
+ * parmi 35 cases, elles-mêmes noyées dans 50 000 mots.
+ *
+ * Le hub garde tout : cette page est additive (MIGRATION.md § 9.ap).
+ */
+import GuideSousPage from '@/layouts/GuideSousPage.astro';
+import { GuideCaseGrid, GuideQuestionList } from '@/components/guide/GuideSubset';
+import { questionsFAQ } from '@/data/boussoleData';
+
+/* Ordre de lecture voulu : on part des recettes, on arrive au revenu brut
+   social, puis les cas particuliers. Ce n'est pas l'ordre du formulaire, c'est
+   l'ordre dans lequel on remplit sans se tromper. */
+const RECETTES = ['DSCS', 'DSAV', 'DSAW', 'DSAU', 'DSAT'];
+const REVENU_BRUT = ['DSDE', 'DSDG'];
+const REMPLACEMENT = ['DSDX', 'DSCZ'];
+const PARTICULIERS = ['DSFA', 'DSEC', 'DSSC', 'DSCN', 'DSEM', 'DSCO'];
+
+const CASE_CODES = [...RECETTES, ...REVENU_BRUT, ...REMPLACEMENT, ...PARTICULIERS];
+
+/* Questions choisies pour leur spécificité DSFU : pré-remplissages à corriger,
+   SNIR, ventilation SELARL, DSFA vide au réel. Les questions de régime fiscal
+   vivent sur /2042-c-pro, celles du remplaçant sur sa page — pour que les trois
+   pages ne se recopient pas. */
+const QUESTION_IDS = ['QT-046', 'QT-044', 'QT-048', 'QT-047', 'QT-045'];
+
+const SUBSET = { caseCodes: CASE_CODES, questionIds: QUESTION_IDS };
+
+const faq = QUESTION_IDS
+  .map((id) => questionsFAQ.find((q) => q.id === id))
+  .filter((q): q is NonNullable<typeof q> => Boolean(q));
+---
+
+<GuideSousPage
+  title="DSFU (ex DS-PAMC) : les 15 cases du médecin | Hippodoc"
+  description="DSCS, DSAV, DSDE, DSDX, DSFA… les 15 cases de la DSFU expliquées une par une : ce que l'URSSAF attend, qui remplit, et le pré-remplissage à corriger."
+  path="/guide-declarations/dsfu-pamc"
+  h1="DSFU (ex DS-PAMC) : les 15 cases décryptées"
+  breadcrumb="DSFU (ex DS-PAMC)"
+  faq={faq.map((q) => ({ question: q.question, reponse: q.reponse }))}
+>
+  <div slot="chapo" class="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
+    <p>
+      La <strong>DSFU</strong> — Déclaration Sociale et Fiscale Unifiée, qui a remplacé
+      la DS-PAMC — n'est pas ta déclaration d'impôt. Elle sert à calculer tes
+      <strong>cotisations URSSAF et CARMF</strong>, et elle obéit à une logique différente :
+      là où le fisc regarde ton <em>bénéfice</em>, l'URSSAF part de tes
+      <strong>recettes brutes</strong>, avant toute déduction.
+    </p>
+    <p>
+      C'est de cet écart que naissent la plupart des erreurs. Un même euro encaissé n'entre
+      pas au même endroit ni pour le même montant dans les deux déclarations, et plusieurs
+      cases arrivent <strong>pré-remplies avec des valeurs qu'il faut corriger à la main</strong>.
+      Les 15 cases ci-dessous sont reprises dans l'ordre où on les remplit sans se tromper :
+      les recettes d'abord, le revenu brut social ensuite, les cas particuliers à la fin.
+    </p>
+  </div>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Dans quel ordre remplir la DSFU</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Chaque étape conditionne la suivante. Prise dans le désordre, la déclaration se
+      contredit elle-même.
+    </p>
+    <ol class="max-w-3xl space-y-3 text-[15px] leading-relaxed text-muted-foreground">
+      <li class="rounded-xl border border-slate-200/70 bg-white/70 p-4 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <strong class="text-foreground">1. Pose ton chiffre d'affaires brut.</strong> Tout ce que
+        tu as encaissé sur l'année, honoraires comme gains divers — DPC, ROSP, forfait médecin
+        traitant. C'est la case <strong>DSCS</strong>, et c'est elle qui commande le reste.
+      </li>
+      <li class="rounded-xl border border-slate-200/70 bg-white/70 p-4 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <strong class="text-foreground">2. Ventile entre conventionné et dépassements.</strong>
+        <strong>DSAV</strong> pour les actes conventionnés, <strong>DSAW</strong> pour ce qui
+        dépasse. Le ratio <strong>DSAU</strong> en découle : il détermine la part de tes
+        cotisations prise en charge par l'Assurance maladie.
+      </li>
+      <li class="rounded-xl border border-slate-200/70 bg-white/70 p-4 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <strong class="text-foreground">3. Déclare ton revenu brut social.</strong> Au réel, il
+        se reconstitue depuis la 2035 et part en <strong>DSDE</strong>. En micro-BNC, cette case
+        ne te concerne pas.
+      </li>
+      <li class="rounded-xl border border-slate-200/70 bg-white/70 p-4 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <strong class="text-foreground">4. Ajoute ce qui n'est pas de l'honoraire.</strong>
+        Indemnités journalières de la CPAM, prévoyance, chèques vacances, épargne salariale.
+        Ce sont les cases les plus souvent pré-remplies — et les plus souvent fausses.
+      </li>
+      <li class="rounded-xl border border-slate-200/70 bg-white/70 p-4 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <strong class="text-foreground">5. Relis les pré-remplissages.</strong> Aucune case
+        pré-remplie n'est réputée juste. Le SNIR, en particulier, est fréquemment inférieur au
+        chiffre d'affaires réel.
+      </li>
+    </ol>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Les trois confusions qui coûtent le plus</h2>
+    <div class="mt-5 grid gap-4 md:grid-cols-3">
+      <div class="rounded-xl border border-red-200/70 bg-red-50/50 p-4 dark:border-red-900/50 dark:bg-red-950/20">
+        <p class="font-semibold text-foreground">Recettes ≠ bénéfice</p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          La DSFU part du <strong>brut encaissé</strong>, jamais du bénéfice imposable. Reporter
+          en DSCS le chiffre de ta 2042-C-PRO revient à sous-déclarer ton assiette sociale.
+        </p>
+      </div>
+      <div class="rounded-xl border border-red-200/70 bg-red-50/50 p-4 dark:border-red-900/50 dark:bg-red-950/20">
+        <p class="font-semibold text-foreground">SNIR ≠ chiffre d'affaires</p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          Le pré-remplissage issu du SNIR est souvent inférieur à ce que tu as réellement
+          encaissé. C'est ton CA réel qui fait foi : il faut corriger, pas accepter.
+        </p>
+      </div>
+      <div class="rounded-xl border border-red-200/70 bg-red-50/50 p-4 dark:border-red-900/50 dark:bg-red-950/20">
+        <p class="font-semibold text-foreground">DSFA ≠ 5HP</p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          La PDSA exonérée se déclare en <strong>DSFA</strong>, jamais en 5HP — qui est réservée
+          aux régimes zonés. La confondre déclenche un double-comptage URSSAF.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Tes recettes</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Le socle : ce que tu as réellement encaissé, et sa ventilation entre actes
+      conventionnés, dépassements et structures.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={RECETTES} />
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Ton revenu brut social</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      L'assiette sur laquelle URSSAF et CARMF calculent. Elle se déduit de la 2035
+      pour qui est au réel — et peut être négative.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={REVENU_BRUT} />
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Indemnités et revenus de remplacement</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      IJ de la CPAM, prévoyance Madelin, AJPA. Ce sont les cases les plus souvent
+      pré-remplies de travers.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={REMPLACEMENT} />
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Cas particuliers</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      PDSA exonérée, gérance de SEL, dividendes, chèques vacances, épargne salariale —
+      et une case supprimée qu'on voit encore circuler.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={PARTICULIERS} />
+  </section>
+
+  <section id="questions" class="max-w-5xl mx-auto px-4 mt-16 scroll-mt-20">
+    <h2 class="text-2xl font-bold text-foreground">Questions fréquentes sur la DSFU</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Les cinq situations qui reviennent le plus souvent, toutes liées à un
+      pré-remplissage ou à une ventilation.
+    </p>
+    <GuideQuestionList subset={SUBSET} ids={QUESTION_IDS} />
+  </section>
+</GuideSousPage>

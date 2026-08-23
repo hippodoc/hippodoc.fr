@@ -3,7 +3,8 @@ import { BookA, ChevronDown, Landmark, HeartPulse, Building2, Calculator } from 
 import { Badge } from '@/components/ui/badge';
 import { GLOSSAIRE_DECLARATIONS, GLOSSAIRE_CATEGORIES, type GlossaireCategory } from '@/data/glossaireDeclarationsData';
 import { FormattedText } from './FormattedText';
-import { CrossLinks, termHref } from './CrossLinks';
+import { CrossLinks } from './CrossLinks';
+import { useAnchorResolver, termAnchor } from '@/lib/guide/anchors';
 
 /**
  * Portage statique de GlossaireSection.tsx (SPA source). Déviations
@@ -26,6 +27,7 @@ const CATEGORY_ICONS: Record<GlossaireCategory, React.ElementType> = {
 };
 
 export function GlossaireSection() {
+  const resolve = useAnchorResolver();
   const letters = Array.from(new Set(GLOSSAIRE_DECLARATIONS.map(t => t.term[0].toUpperCase()))).sort();
   const groupedByLetter: Record<string, typeof GLOSSAIRE_DECLARATIONS> = {};
   for (const t of GLOSSAIRE_DECLARATIONS) {
@@ -122,7 +124,7 @@ export function GlossaireSection() {
                               return related ? (
                                 <a
                                   key={rt}
-                                  href={termHref(rt)}
+                                  href={resolve(termAnchor(rt))}
                                   className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors no-underline"
                                 >
                                   {related.term}

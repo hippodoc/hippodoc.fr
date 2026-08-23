@@ -1,0 +1,139 @@
+---
+/**
+ * /guide-declarations/2042-c-pro — page fille du guide, axe « formulaire ».
+ *
+ * Volontairement centrée sur la 2042-C-PRO et PAS sur la 2035 : l'article
+ * /blog/remplir-declaration-2035 occupe déjà ce terrain et s'y positionne
+ * (position ~11 au 23 août 2026). Créer ici une seconde page 2035 aurait fait
+ * deux pages faibles là où il y en a une correcte — le contraire du but.
+ *
+ * Le hub garde tout : cette page est additive (MIGRATION.md § 9.ap).
+ */
+import GuideSousPage from '@/layouts/GuideSousPage.astro';
+import { GuideCaseGrid, GuideQuestionList } from '@/components/guide/GuideSubset';
+import { questionsFAQ } from '@/data/boussoleData';
+
+/* Deux cases décident de l'impôt (le régime), trois portent les exonérations. */
+const REGIME = ['5HQ', '5QC'];
+const EXONERATIONS = ['5HP', '5QB', '5HY'];
+
+const CASE_CODES = [...REGIME, ...EXONERATIONS];
+
+/* Questions choisies pour leur lien direct avec le choix de régime et les
+   exonérations zonées — les questions DSFU vivent sur /dsfu-pamc. */
+const QUESTION_IDS = ['QT-013', 'QT-020', 'QT-027', 'QT-049', 'QT-028'];
+
+const SUBSET = { caseCodes: CASE_CODES, questionIds: QUESTION_IDS };
+
+const faq = QUESTION_IDS
+  .map((id) => questionsFAQ.find((q) => q.id === id))
+  .filter((q): q is NonNullable<typeof q> => Boolean(q));
+---
+
+<GuideSousPage
+  title="2042-C-PRO médecin : 5HQ, 5QC et exonérations | Hippodoc"
+  description="Les 5 cases de la 2042-C-PRO du médecin libéral : 5HQ en micro-BNC, 5QC au réel, et les cases d'exonération ZFU-TE, FRR et JEI. Ce que chacune attend."
+  path="/guide-declarations/2042-c-pro"
+  h1="2042-C-PRO du médecin : les 5 cases qui comptent"
+  breadcrumb="2042-C-PRO"
+  faq={faq.map((q) => ({ question: q.question, reponse: q.reponse }))}
+>
+  <div slot="chapo" class="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
+    <p>
+      La <strong>2042-C-PRO</strong> est l'annexe professionnelle de ta déclaration de
+      revenus : c'est elle qui porte ton activité libérale devant le fisc. Pour un médecin,
+      presque tout se joue dans <strong>deux cases</strong> — et savoir laquelle te concerne
+      dépend d'une seule question : es-tu au <strong>micro-BNC</strong> ou au
+      <strong>réel</strong> ?
+    </p>
+    <p>
+      En micro-BNC, tu portes tes recettes brutes en <strong>5HQ</strong> et
+      l'administration applique elle-même l'abattement de 34 % : ne le déduis jamais
+      toi-même. Au réel, c'est le <strong>bénéfice net</strong> issu de ta 2035 qui part en
+      <strong>5QC</strong>. Trois autres cases servent aux exonérations zonées — et se
+      trompent de ligne coûte cher, parce que l'exonération ne se rattrape pas.
+    </p>
+    <p class="text-sm">
+      Cette page traite la 2042-C-PRO. Pour remplir la 2035 elle-même, va voir
+      <a href="/blog/remplir-declaration-2035" class="text-hippo-600 hover:underline dark:text-hippo-400">la
+      déclaration 2035 du médecin remplaçant</a> ; pour le volet social, la
+      <a href="/guide-declarations/dsfu-pamc" class="text-hippo-600 hover:underline dark:text-hippo-400">DSFU</a>.
+    </p>
+  </div>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">La seule question à trancher</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Tout le reste en découle. Deux régimes, deux cases, deux façons de compter.
+    </p>
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <p class="font-semibold text-foreground">Tu es au micro-BNC</p>
+        <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">
+          Tu portes tes <strong>recettes brutes encaissées</strong> en <strong>5HQ</strong>.
+          L'abattement forfaitaire de 34 % est appliqué par l'administration : si tu le déduis
+          toi-même, tu es imposé deux fois moins que tu ne devrais — et le redressement suivra.
+        </p>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+          Ce qui reste à faire : pré-déduire les rétrocessions que <em>tu</em> verses, et
+          sortir les revenus exonérés de ce montant.
+        </p>
+      </div>
+      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <p class="font-semibold text-foreground">Tu es au réel</p>
+        <p class="mt-2 text-[15px] leading-relaxed text-muted-foreground">
+          Tu portes le <strong>bénéfice net</strong> de ta 2035 en <strong>5QC</strong>. Le
+          chiffre doit concorder à l'euro près avec la liasse : c'est le premier point que
+          l'administration rapproche.
+        </p>
+        <p class="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+          Les oublis classiques se situent en amont, dans la 2035 : chèques vacances ANCV non
+          déduits, réintégrations manquantes.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">L'erreur n°1 : la PDSA en 5HP</h2>
+    <div class="mt-4 max-w-3xl rounded-xl border border-red-200/70 bg-red-50/50 p-5 dark:border-red-900/50 dark:bg-red-950/20">
+      <p class="text-[15px] leading-relaxed text-muted-foreground">
+        Les cases <strong>5HP</strong> et <strong>5QB</strong> sont réservées aux
+        <strong>régimes zonés</strong> — ZFU-TE, France Rurale Revitalisée, jeune entreprise
+        innovante. La permanence des soins ambulatoires n'en fait pas partie : son exonération
+        passe par une réduction de 5HQ côté fiscal et par la case DSFA côté social.
+      </p>
+      <p class="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+        Y porter la PDSA provoque un <strong>double-comptage URSSAF</strong> — le revenu net
+        social additionne alors 5HQ, DSFA <em>et</em> 5HP — et fait mécaniquement gonfler tes
+        cotisations. C'est l'erreur la plus fréquente et la plus chère de cette déclaration.
+      </p>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Micro-BNC ou réel : les deux cases de base</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Tu remplis l'une ou l'autre, jamais les deux. C'est ton régime fiscal qui tranche.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={REGIME} />
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Les cases d'exonération</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Zone franche urbaine, France Rurale Revitalisée, jeune entreprise innovante : là
+      encore, la case dépend du régime. Et l'exonération PDSA ne passe par aucune d'elles.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={EXONERATIONS} />
+  </section>
+
+  <section id="questions" class="max-w-5xl mx-auto px-4 mt-16 scroll-mt-20">
+    <h2 class="text-2xl font-bold text-foreground">Questions fréquentes sur la 2042-C-PRO</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Changement de régime, zonage, proratisation la première année : les cas qui
+      reviennent chaque printemps.
+    </p>
+    <GuideQuestionList subset={SUBSET} ids={QUESTION_IDS} />
+  </section>
+</GuideSousPage>

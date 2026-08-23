@@ -1,0 +1,159 @@
+---
+/**
+ * /guide-declarations/medecin-remplacant — page fille du guide, axe « profil ».
+ *
+ * Premier des 13 profils portés en page dédiée. L'axe « profil » est le seul
+ * qui n'entre en concurrence avec aucun article du blog : le blog traite les
+ * sujets (2035, URSSAF, CARMF, micro-BNC…), le guide traite les situations.
+ *
+ * Le contenu vient du profil PM-002 de `boussoleData` : sa description, ses
+ * conseils clés, ses cases prioritaires et ses questions pertinentes. Rien
+ * n'est recopié à la main — si les données changent, la page suit.
+ *
+ * Le hub garde tout : cette page est additive (MIGRATION.md § 9.ap).
+ */
+import GuideSousPage from '@/layouts/GuideSousPage.astro';
+import { GuideCaseGrid, GuideQuestionList, GuideConseils } from '@/components/guide/GuideSubset';
+import { profils, questionsFAQ } from '@/data/boussoleData';
+
+const profil = profils.find((p) => p.id === 'PM-002');
+if (!profil) {
+  throw new Error(
+    "Profil PM-002 (médecin remplaçant) introuvable dans boussoleData : " +
+      "la page /guide-declarations/medecin-remplacant en dépend."
+  );
+}
+
+/* Cases prioritaires du profil, réordonnées fiscal puis social pour suivre le
+   fil de lecture de la page. */
+const CASES_FISCAL = ['5HQ', '5QC', '2035', 'BT'];
+const CASES_SOCIAL = ['DSCS', 'DSAV'];
+const CASE_CODES = [...CASES_FISCAL, ...CASES_SOCIAL];
+
+/* Les 8 questions du profil, moins QT-013 qui porte la page /2042-c-pro : deux
+   pages filles ne doivent pas se recopier. */
+const QUESTION_IDS = profil.faqPertinentes.filter((id) => id !== 'QT-013');
+
+const SUBSET = { caseCodes: CASE_CODES, questionIds: QUESTION_IDS };
+
+const faq = QUESTION_IDS
+  .map((id) => questionsFAQ.find((q) => q.id === id))
+  .filter((q): q is NonNullable<typeof q> => Boolean(q));
+
+/* Garde-fou : si un code de case ou un id de question disparaissait des
+   données, la page se construirait silencieusement amputée. On préfère casser
+   le build. */
+const manquants = [
+  ...CASE_CODES.filter((c) => !profil.casePrioritaires.includes(c) && !['2035', 'BT'].includes(c)),
+  ...QUESTION_IDS.filter((id) => !questionsFAQ.some((q) => q.id === id)),
+];
+if (manquants.length) {
+  throw new Error(`/guide-declarations/medecin-remplacant : références introuvables — ${manquants.join(', ')}`);
+}
+---
+
+<GuideSousPage
+  title="Déclaration médecin remplaçant : cases et pièges | Hippodoc"
+  description="Micro-BNC ou réel, 5HQ ou 5QC, DSCS et DSAV côté URSSAF : les cases que remplit un médecin remplaçant, et les erreurs qui reviennent chaque année."
+  path="/guide-declarations/medecin-remplacant"
+  h1="Déclarations du médecin remplaçant"
+  breadcrumb="Médecin remplaçant"
+  faq={faq.map((q) => ({ question: q.question, reponse: q.reponse }))}
+>
+  <div slot="chapo" class="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
+    <p>{profil.description}</p>
+    <p>
+      Un remplaçant remplit <strong>deux déclarations qui ne se ressemblent pas</strong> :
+      l'une pour l'impôt, l'autre pour les cotisations. Le fisc veut ton bénéfice,
+      l'URSSAF veut tes recettes brutes. Le même euro de rétrocession n'apparaît donc ni au
+      même endroit, ni pour le même montant — et c'est de là que viennent presque toutes
+      les erreurs de première déclaration.
+    </p>
+    <p>
+      Cette page réunit les <strong>{CASE_CODES.length} cases</strong> qui te concernent et
+      les <strong>{QUESTION_IDS.length} questions</strong> qu'on nous pose le plus souvent
+      sur ce statut. Si tu ne sais pas encore si tu relèves du RSPM ou du PAMC, commence par
+      la <a href="/guide-declarations" class="text-hippo-600 hover:underline dark:text-hippo-400">boussole du guide</a>,
+      qui te situe en trois questions.
+    </p>
+  </div>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Les trois chiffres à ne pas confondre</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Un remplaçant manipule trois montants différents pour la même année d'activité. Les
+      intervertir est l'erreur de première déclaration par excellence.
+    </p>
+    <div class="grid gap-4 md:grid-cols-3">
+      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <p class="font-mono text-xs font-bold uppercase tracking-wide text-hippo-600 dark:text-hippo-400">1 · Le brut</p>
+        <p class="mt-2 font-semibold text-foreground">Ce que tu as encaissé</p>
+        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+          La somme des rétrocessions reçues des titulaires. C'est ce chiffre que veut
+          l'URSSAF, en DSCS et DSAV — et c'est lui, pas ton bénéfice, qui sert d'assiette
+          à tes cotisations.
+        </p>
+      </div>
+      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <p class="font-mono text-xs font-bold uppercase tracking-wide text-hippo-600 dark:text-hippo-400">2 · Le bénéfice</p>
+        <p class="mt-2 font-semibold text-foreground">Ce que retient le fisc</p>
+        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+          En micro-BNC, il n'existe pas : tu déclares le brut en 5HQ et l'abattement de 34 %
+          est appliqué pour toi. Au réel, c'est le résultat de ta 2035, reporté en 5QC.
+        </p>
+      </div>
+      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
+        <p class="font-mono text-xs font-bold uppercase tracking-wide text-hippo-600 dark:text-hippo-400">3 · Le net</p>
+        <p class="mt-2 font-semibold text-foreground">Ce qui te reste</p>
+        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+          Une fois cotisations et impôt payés. Aucune case ne le demande, mais c'est le seul
+          qui compte pour toi. Le
+          <a href="/simulateur" class="text-hippo-600 hover:underline dark:text-hippo-400">simulateur</a>
+          le calcule à partir du premier.
+        </p>
+      </div>
+    </div>
+    <p class="mt-5 max-w-3xl text-[15px] leading-relaxed text-muted-foreground">
+      La conséquence pratique : un remplaçant qui déclare son bénéfice là où l'URSSAF attend
+      son brut sous-déclare son assiette sociale, et s'expose à une régularisation l'année
+      suivante — au moment précis où il paie déjà les cotisations de l'année en cours.
+    </p>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Ce qu'il faut retenir</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Les points qui décident du reste. Chaque référence renvoie à la fiche
+      correspondante du guide.
+    </p>
+    <GuideConseils subset={SUBSET} conseils={profil.conseilsCles} />
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Côté impôts</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Micro-BNC ou réel : tu remplis 5HQ ou 5QC, jamais les deux. Au réel s'ajoutent
+      la 2035 et la cotisation IJ à ne pas oublier.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={CASES_FISCAL} />
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 mt-12">
+    <h2 class="text-2xl font-bold text-foreground">Côté cotisations</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Sur la DSFU, on repart du chiffre d'affaires brut — pas du bénéfice. Le détail
+      des 15 cases est sur la
+      <a href="/guide-declarations/dsfu-pamc" class="text-hippo-600 hover:underline dark:text-hippo-400">page DSFU</a>.
+    </p>
+    <GuideCaseGrid subset={SUBSET} codes={CASES_SOCIAL} />
+  </section>
+
+  <section id="questions" class="max-w-5xl mx-auto px-4 mt-16 scroll-mt-20">
+    <h2 class="text-2xl font-bold text-foreground">Questions fréquentes des remplaçants</h2>
+    <p class="mt-1 mb-5 text-sm text-muted-foreground">
+      Régime fiscal, passage RSPM → PAMC, première déclaration mixte interne + remplaçant,
+      IJ pré-remplies de travers.
+    </p>
+    <GuideQuestionList subset={SUBSET} ids={QUESTION_IDS} />
+  </section>
+</GuideSousPage>

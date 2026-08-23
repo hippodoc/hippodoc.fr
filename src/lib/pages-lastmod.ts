@@ -20,7 +20,15 @@ import { GUIDE_DECLARATIONS_LAST_UPDATED_ISO } from './guide/lastUpdated';
 export const COMPARATIF_LAST_UPDATED_ISO = '2026-06-24';
 
 /** Chemin de page (sans slash final) → date ISO de dernière revue. */
+/** Pages filles du guide, créées le 23 août 2026 (MIGRATION.md § 9.ap). Leur
+ *  contenu provient des mêmes données que le hub : elles suivent donc sa date
+ *  de revue éditoriale, et non leur date de création. */
+export const GUIDE_SOUS_PAGES_LAST_UPDATED_ISO = '2026-08-23';
+
 export const STATIC_LASTMOD: Record<string, string> = {
   '/guide-declarations': GUIDE_DECLARATIONS_LAST_UPDATED_ISO,
+  '/guide-declarations/dsfu-pamc': GUIDE_SOUS_PAGES_LAST_UPDATED_ISO,
+  '/guide-declarations/2042-c-pro': GUIDE_SOUS_PAGES_LAST_UPDATED_ISO,
+  '/guide-declarations/medecin-remplacant': GUIDE_SOUS_PAGES_LAST_UPDATED_ISO,
   '/comparatif': COMPARATIF_LAST_UPDATED_ISO,
 };
