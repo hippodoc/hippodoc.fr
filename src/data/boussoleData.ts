@@ -1230,7 +1230,7 @@ export const questionsFAQ: QuestionReformule[] = [
   {
     id: "QT-015",
     question: "La réforme de la facture électronique concerne-t-elle les factures aux particuliers ?",
-    reponse: "Non, la réforme concerne principalement la facturation entre entreprises (B2B). Les factures aux particuliers ne sont pas obligatoirement soumises à ce système. Certains logiciels comptables proposeront des solutions.",
+    reponse: "Non. La facturation électronique (e-invoicing) ne vise que les factures entre entreprises françaises assujetties à la TVA (B2B domestique) : les notes d'honoraires remises aux patients ne sont pas concernées. Mieux : les actes de soins exonérés de TVA (art. 261, 4-1° du CGI) sont totalement hors du champ de la réforme — ni facturation électronique, ni e-reporting (source : impots.gouv.fr). La seule obligation du médecin porte sur la **réception** : dès le 1er septembre 2026, être raccordé à une plateforme agréée pour recevoir les factures de ses fournisseurs. Seule une activité accessoire soumise à TVA (expertises, esthétique hors soins) fait entrer dans le champ de l'émission (au 1er septembre 2027 pour les TPE/PME) et de l'e-reporting.",
     certitude: "confirmed",
     tags: ["Facture électronique", "Particuliers", "Logiciel", "Réforme"],
     theme: "cotations",
@@ -1688,7 +1688,7 @@ export const pepitesCachees: PepiteCachee[] = [
   {
     id: "PC-009",
     titre: "Négocier des plateformes de facturation électronique, même en HN",
-    description: "La réforme de la facturation électronique ne s'applique pas aux particuliers. Si ton cabinet te facture une solution coûteuse pour des actes HN, sache que des banques et logiciels comptables proposent des solutions gratuites ou moins chères, et que les prix sont souvent négociables car la marge peut être importante.",
+    description: "La facturation électronique (e-invoicing) ne s'applique pas aux factures remises aux particuliers, et les actes de soins exonérés de TVA sont hors du champ de la réforme. Ton seul besoin réel est la réception des factures fournisseurs via une plateforme agréée. Si on te propose une solution coûteuse pour des actes HN, sache que des banques et logiciels comptables proposent des offres gratuites ou moins chères, et que les prix sont souvent négociables car la marge peut être importante.",
     impact: "moyen",
     risque: "faible",
     certitude: "confirmed",
@@ -2111,7 +2111,7 @@ export const calendrierAnnuel: CalendrierMois[] = [
     mois: "Septembre",
     numero: 9,
     demarches: [
-      { titre: "Facturation électronique obligatoire (réception)", description: "À partir du 1er septembre 2026, tous les médecins avec un SIRET doivent disposer d'une plateforme agréée pour recevoir les factures électroniques de leurs fournisseurs (loyer pro, logiciels, RCP, internet). L'émission vers les patients n'est pas concernée. Solutions gratuites disponibles : Portail Public de Facturation (PPF) de l'État, Indy, certaines banques pro. Les Plateformes de Dématérialisation Partenaires (PDP) privées proposent des offres payantes (souvent 5–15 €/mois selon le volume).", urgent: true },
+      { titre: "Facturation électronique obligatoire (réception)", description: "À partir du 1er septembre 2026, tous les médecins avec un SIRET doivent être raccordés à une plateforme agréée (PA, ex-PDP) pour recevoir les factures électroniques de leurs fournisseurs (loyer pro, logiciels, RCP, internet). L'émission vers les patients n'est pas concernée. ⚠️ Depuis le 15 octobre 2024, le Portail Public de Facturation (PPF) de l'État n'est plus une plateforme d'échange gratuite : il ne reste que l'annuaire central et le concentrateur de données de la DGFiP. Il faut donc choisir une plateforme agréée privée (liste officielle sur impots.gouv.fr) ; certaines offres de réception sont gratuites (Indy, certaines banques pro, certains logiciels), les offres payantes coûtent souvent 5–15 €/mois selon le volume.", urgent: true },
       { titre: "Paiement Impôt sur le Revenu", description: "Première échéance de paiement si l'impôt est élevé et n'est pas entièrement couvert par le prélèvement à la source.", urgent: false },
       { titre: "Rapprochement avec Prévisionnels N+1", description: "Comparer les revenus N et N-1 avec les prévisionnels N+1 pour la prévoyance, cotisations... ", urgent: false }
     ]

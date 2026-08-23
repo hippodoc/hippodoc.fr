@@ -2,14 +2,14 @@
 title: "Tout comprendre sur l'URSSAF"
 description: "L'URSSAF reste un mystère ? Fiche claire et pratique pour comprendre et gérer tes cotisations dès tes premiers remplacements."
 pubDate: "2025-10-21"
-updatedDate: "2026-08-18"
+updatedDate: "2026-08-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#3"
 seriesId: "fiche-fiscalite"
 episodeNumber: 3
-readTime: "5 min"
+readTime: "8 min"
 cover: "/blog/urssaf-comprendre-cover.png"
 tags:
   - "Fiche Fiscalité"
@@ -25,6 +25,10 @@ faq:
     answer: "En **RSPM** : 13,5% jusqu'à 19 000 € de CA, puis 21,2% entre 19 000 € et 38 000 €. En **PAMC** : cotisations variables calculées selon ton bénéfice net réel."
   - question: "Puis-je déduire mes cotisations URSSAF de mes impôts ?"
     answer: "Oui ! Tes cotisations URSSAF sont **déductibles de ton revenu imposable** (sauf CRDS et part non déductible de la CSG). C'est essentiel pour réduire ta base d'imposition."
+  - question: "Mes cotisations URSSAF se calculent-elles sur mon chiffre d'affaires ?"
+    answer: "Au **PAMC, non** : l'URSSAF et la CARMF se calculent sur ton **revenu professionnel** (ton bénéfice, recalculé sans déduire tes cotisations sociales, puis diminué d'un abattement de 26 %) — jamais sur ton chiffre d'affaires. La confusion vient du **RSPM**, qui est un forfait libératoire appliqué au CA, et du **micro-BNC**, où le revenu est estimé à 66 % des recettes."
+  - question: "Puis-je moduler mes cotisations provisionnelles en cours d'année ?"
+    answer: "Oui, à tout moment, depuis ton espace urssaf.fr (« Moduler mes cotisations provisionnelles ») en déclarant ton **revenu estimé** de l'année : tes échéances sont recalculées immédiatement. Et depuis la version en vigueur de l'article L131-6-2 du Code de la sécurité sociale, **aucune majoration** n'est appliquée si ton estimation s'avère trop basse — il n'y a qu'une régularisation classique l'année suivante."
 relatedArticles:
   - "cotisations-sociales-vs-impots"
   - "tout-comprendre-carmf"
@@ -64,6 +68,38 @@ Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime S
 💰 **Cotisations** : Variables, calculées selon ton bénéfice réel.\
 🧓 **Retraite** : Gérée via la **CARMF**.\
 🌐 **Inscription et déclaration** sur urssaf.fr.
+
+## ⚠️ CA ou bénéfice : sur quoi cotises-tu vraiment ?
+
+Mettons fin à une confusion très répandue : au **PAMC, l'URSSAF et la CARMF ne se calculent pas sur ton chiffre d'affaires**. Elles se calculent sur ton **revenu professionnel** — ton bénéfice, pas tes encaissements.\
+Pourquoi tant de médecins croient le contraire ? Parce que deux régimes brouillent les pistes :\
+• au **RSPM**, les taux (13,5 % / 21,2 %) s'appliquent bien au **CA** — mais c'est un forfait libératoire propre à ce régime simplifié ;\
+• en **micro-BNC**, l'assiette sociale est estimée à **66 % des recettes** (l'abattement fiscal de 34 % tient lieu de frais) — le point de départ est le CA, mais l'assiette reste un revenu.\
+Au PAMC en régime réel, la base est ton bénéfice **recalculé sans déduire tes cotisations sociales ni la CSG déductible**, puis diminué d'un abattement de 26 % (voir ci-dessous). Deux médecins au même CA mais avec des charges différentes ne paieront donc **pas** les mêmes cotisations.
+
+## 🆕 La réforme de l'assiette 2026 (revenus 2025)
+
+La loi de financement de la sécurité sociale pour 2024 (art. 18) a créé une **assiette unique** pour toutes les cotisations et contributions des indépendants. Elle s'applique **à partir des revenus 2025** — donc concrètement lors de la **régularisation effectuée en 2026**, après ta déclaration de revenus.\
+📐 **La nouvelle formule** (régime réel) :\
+1. On part de ton **revenu professionnel** : recettes moins charges déductibles, **sans déduire** tes cotisations sociales ni la CSG déductible (les IJ de prévoyance facultative s'y ajoutent).\
+2. On applique un **abattement forfaitaire de 26 %** — encadré par un plancher (1,76 % du PASS, soit 828,96 € pour 2025) et un plafond (130 % du PASS, soit 61 230 €).\
+3. Le résultat (74 % de ton revenu professionnel) est l'assiette de **toutes** tes cotisations et de la CSG-CRDS.\
+En **micro-BNC**, rien ne change dans la mécanique : l'assiette reste tes recettes après l'abattement fiscal de 34 % — l'abattement de 26 % ne s'y applique pas.\
+Les **taux ont été réajustés** pour viser une neutralité d'ensemble : les cotisations créatrices de droits (retraite notamment) augmentent, la CSG diminue.
+
+:::warning
+**« Ma régularisation 2026 est énorme, est-ce une erreur ? »** Pas forcément. Tes provisionnelles 2025 ont été calculées avec l'**ancien** système, et la régularisation 2026 applique le **nouveau** : l'écart entre les deux peut être important, dans un sens comme dans l'autre, même à bénéfice stable. Avant de contester, compare l'assiette de ton échéancier avec la formule ci-dessus — et en cas de vraie anomalie (double compte, case mal remplie), passe par la **messagerie écrite** de ton espace urssaf.fr : seul un écrit fait foi.
+:::
+
+## 🎛️ Moduler tes cotisations provisionnelles
+
+Tes cotisations provisionnelles sont calculées sur ton revenu d'il y a deux ans, puis recalculées quand ton revenu N-1 est connu. Si ton activité baisse ou explose cette année, tu n'es pas obligé(e) d'attendre : tu peux **déclarer un revenu estimé** pour l'année en cours depuis ton espace urssaf.fr (rubrique « Moduler mes cotisations provisionnelles »). Tes échéances sont recalculées immédiatement.\
+✅ **Sans risque de pénalité** : la majoration qui sanctionnait autrefois une sous-estimation a disparu du texte en vigueur (art. L131-6-2 du Code de la sécurité sociale). Si ton estimation est trop basse, tu paieras simplement la différence à la régularisation suivante — comme d'habitude.\
+🎯 **Quel montant déclarer ?** Ton **revenu professionnel avant l'abattement de 26 %** — c'est l'URSSAF qui applique l'abattement, avec son plancher et son plafond, jamais toi. Concrètement : en régime réel, ton bénéfice attendu **sans déduire tes cotisations sociales** ; en micro-BNC, tes recettes attendues moins l'abattement de 34 %. Ne déclare jamais un montant auquel tu aurais toi-même retiré les 26 % : l'abattement serait appliqué deux fois et tes provisionnelles seraient trop basses, avec une régularisation salée à la clé.
+
+:::tip
+En cas de doute sur le montant à saisir pour **ta** situation, pose la question par la **messagerie de ton espace urssaf.fr** plutôt que par téléphone : tu obtiens une réponse écrite, opposable, adaptée à ta situation et à ton dossier.
+:::
 
 ## 💳 Paiement et régularisation
 
