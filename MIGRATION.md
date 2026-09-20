@@ -2593,6 +2593,53 @@ de 1 120 € et 1 338 €, soit l'impôt brut **sans décote** (attendu : 730 �
 1 046 €, plafond 897 € − 45,25 %). Les chiffres de l'article sur ces paliers
 intègrent la décote, calculée à la main avec `src/lib/baremes-ir.ts`.
 
+### 9.au Nouvel article : zones FRR (20 septembre 2026)
+
+`src/content/blog/zones-frr-exoneration-impot-medecin.md` — texte du fondateur
+repris tel quel et mis au format maison. Rangé en **Fiche Fiscalité #11**
+(`episodeNumber: 11`, à la suite de la facturation électronique #10). Cover 4:5 :
+`src/assets/blog/zones-frr-cover.jpg`.
+
+**Tout le fond a été confirmé sur source primaire — aucun chiffre corrigé :**
+
+- Durée et taux (5 ans à 100 %, puis 75 / 50 / 25 %), fenêtre 1er juillet 2024 →
+  31 décembre 2029, régime réel (micro exclu du socle, admis en FRR+), moins de
+  11 salariés, règle des 25 % et prorata, de minimis 300 000 € sur trois
+  exercices, option dans les six mois et irrévocable, exclusion après un autre
+  régime zoné dans les cinq ans : fiche entreprendre.service-public.gouv.fr
+  (vérifiée le 21 février 2026) et BOFiP, série BOI-BIC-CHAMP-80-10-75.
+- ~17 800 communes, 13 départements entièrement zonés (communes de moins de
+  30 000 habitants) ; les six départements cités en font bien partie
+  (collectivites-locales.gouv.fr, juillet 2025).
+- Montants d'impôt recalculés au barème 2026 : 11 104 / 24 801 / 45 301 /
+  89 024 € ; 5 ans = 55 520 → 445 120 € ; 3 exercices à 250 000 € = 267 072 €.
+- Aides ameli au 1er janvier 2026 (10 000 / 5 000 / 3 000 €) et les six
+  spécialités exclues du cabinet secondaire : ameli.fr (17 mars 2026).
+- Fin des ZFU-TE au 31 décembre 2025, régime QPV 2026-2030 : LF 2026.
+
+**Écarts par rapport au texte fourni (précisions, pas corrections) :**
+
+- Le rescrit « remplaçant → collaborateur » (BOI-RES-BIC-000030) a été rendu pour
+  les **ZRR** (art. 44 quindecies). Le BOFiP FRR ne le reprend pas nommément ; une
+  phrase entre parenthèses le dit dans l'article, et la section Sources aussi.
+  C'est le seul point où la doctrine citée n'est pas strictement « FRR ».
+- Condition 2 : « reprise dans le cercle familial » précisée par « (hors première
+  transmission) », conformément à la fiche service-public.
+- « à jour en août 2026 » → « à jour en septembre 2026 ».
+- Les quatre montants du paragraphe chiffré sont aussi présentés en tableau (avec
+  le total sur cinq ans) ; le paragraphe d'origine est conservé.
+- La check-list « Avant de signer » passe d'une phrase à quatre puces ☑️ (mêmes mots).
+- Le passage sur le Super-Net et celui sur le non-cumul sont mis en encadré `:::warning`.
+- **Ajouts** : bloc « L'essentiel », 7 FAQ (reprennent l'article, aucun fait
+  nouveau), section Sources, 8 liens internes, lien final vers `/simulateur`
+  (qui gère déjà l'option ZFRR).
+
+**Maillage entrant** : lien ajouté sur la ligne ZFRR de
+`frais-pros-medecin-liberal-2026` (`updatedDate` au 20 septembre 2026, répercutée
+dans `blog-meta.json`).
+
+Lighthouse mobile local : perf 97-98, a11y / BP / SEO 100, CLS 0.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

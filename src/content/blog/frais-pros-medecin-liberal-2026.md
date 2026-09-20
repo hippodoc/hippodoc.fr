@@ -2,7 +2,7 @@
 title: "Frais pros du médecin libéral 2026"
 description: "Plusieurs milliers d'euros par an entre déduire juste et passer au pifomètre. Guide complet 2026 : micro-BNC vs 2035, leviers secteur 1, ACRE, zones aidées, dossier anti-contrôle."
 pubDate: "2026-05-24"
-updatedDate: "2026-05-24"
+updatedDate: "2026-09-20"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -289,7 +289,7 @@ Demande à déposer auprès de l'Urssaf dans les **60 jours** suivant le début 
 
 Avant de t'engager sur un local ou un cabinet, vérifie le zonage. Plusieurs dispositifs peuvent réduire significativement ta fiscalité — mais ils dépendent du lieu d'implantation et ne sont pas rattrapables après installation.
 
-**ZFRR / ZFRR+** (France ruralités revitalisation) : création ou reprise d'activité dans une commune éligible. Vérifier le zonage officiel et les délibérations locales.\
+**ZFRR / ZFRR+** (France ruralités revitalisation) : création ou reprise d'activité dans une commune éligible. Vérifier le zonage officiel et les délibérations locales — le détail dans [zones FRR : 8 ans d'impôts allégés](/blog/zones-frr-exoneration-impot-medecin).\
 **QPV santé** : à partir de 2026, certaines professions de santé implantées en quartier prioritaire de la ville peuvent bénéficier d'une exonération d'impôt sur les bénéfices, sous conditions. Régime nouveau, à vérifier précisément.\
 **ZFU-TE** (Zones Franches Urbaines – Territoires Entrepreneurs) : **fermée aux nouvelles installations depuis 2026**. Les situations antérieures peuvent continuer dans le cadre du régime transitoire.\
 **PDSA en zone déficitaire** : astreintes et rémunérations dans le cadre de la permanence des soins ambulatoires bénéficient d'une exonération d'impôt sur le revenu **jusqu'à 60 jours par an**, selon zone et conditions.
