@@ -2792,6 +2792,80 @@ l'arrêté du 27 mars 2023 : c'est aussi celui de la déclaration 2026 des reven
 Lighthouse mobile local : perf 97-98 (3 passages), a11y / BP / SEO 100, CLS 0.
 Mobile 375 px : les trois tableaux tiennent dans l'écran.
 
+### 9.ay Requalification : nouveau texte FUSIONNÉ dans l'article existant (20 septembre 2026)
+
+Le fondateur a fourni un nouveau texte, « Remplacements réguliers : le risque de
+requalification en collaboration ». **Pas de nouvelle URL** : le sujet avait déjà sa
+page (`remplacement-regulier-requalification`, 23 août 2026, § 9.aq), au titre
+quasi identique. Deux pages sur la même requête se seraient concurrencées, et
+l'ancienne contredisait la nouvelle. Décision du fondateur : **fusion dans l'URL
+existante**, `updatedDate` au 20 septembre 2026 (répercutée dans `blog-meta.json`).
+Titre inchangé. Nouvelle cover 4:5 : `src/assets/blog/requalification-remplacement-cover.jpg`
+(l'article empruntait jusque-là celle de `signer-contrat-remplacement`).
+
+**Ce qui vient de l'ancien article et reste** : la jurisprudence (CA Paris 2012, CA
+Versailles 2020, Cass. 2021, Cass. soc. 2014), les quatre scénarios de
+requalification, l'encadré sur le seuil de TVA cumulé chez le remplacé, la section
+« passer en collaboration », la checklist.
+
+**Ce qui vient du nouveau texte** : les trois conditions de l'Ordre et le critère
+propre au fisc (caractère occasionnel) ; « le remplacement régulier n'est pas
+interdit » et les quatre signaux ; **le volet remplaçant en micro-BNC** (redevance
+non déductible → imposé sur 100 % des honoraires) ; la simulation ; les trois
+gestes ; « si le courrier arrive » ; le résumé. 3 FAQ ajoutées (8 au total).
+
+**Corrigé dans l'ancien article** : il disait au remplaçant « respire : tes
+rétrocessions perçues ne sont pas concernées » et présentait le risque fiscal comme
+pesant sur le seul remplacé. C'est vrai pour la **TVA**, faux pour **l'impôt** en
+micro-BNC. Intro, FAQ n° 1 et n° 2 et ce passage sont réécrits en conséquence ;
+l'ancien encadré « L'essentiel » (« la régularité seule ne requalifie pas »)
+devient un encadré « côté juge civil », avec un nouveau « L'essentiel » en tête.
+
+**Écarts par rapport au texte fourni :**
+
+- ⚠️ **Le témoignage d'ouverture est devenu un cas-type reconstruit, annoncé comme
+  tel.** Le texte le présentait comme un message reçu d'un confrère (« histoire
+  vraie, anonymisée »), citation entre guillemets à l'appui. Il recoupe la
+  publication n° 10 du corpus (contrôle du cabinet d'abord, fréquence invoquée,
+  rétrocession à 75 %, micro-BNC, proposition de rectification, conseil de l'Ordre
+  pris de court), avec des détails modifiés (jours, durée, montant). Les règles de
+  `hippodoc-corpus/CLAUDE.md` interdisent de citer un membre même anonymement et
+  imposent qu'un redressement reconnaissable soit un cas-type explicitement
+  présenté comme tel. Retirés : la citation, « histoire vraie », « un confrère nous
+  l'a envoyé », « le cas du DM », « 156 mardis », la réaction du conseil de l'Ordre,
+  « les montants dépassaient les virements reçus » (devenu un conseil général :
+  vérifier que les montants retenus correspondent aux virements).
+- **Simulation, généraliste** : « un jour par semaine » → « deux jours fixes par
+  semaine ». 70 000 € d'honoraires sur un seul jour hebdomadaire = ~50 actes par
+  jour ; sur deux jours c'est crédible. Le calcul est inchangé et juste : 17 500 €
+  de redevance, 11 550 € imposables en plus, 3 465 €/an à 30 % → 10 395 € sur trois
+  ans, 11 435 € avec la majoration de 10 %, ≈ 12 000 € avec les intérêts de retard.
+- **Simulation, spécialiste** : ≈ 43 000 € sur trois ans → **≈ 30 000 € sur deux
+  ans**. Avec 120 000 € d'honoraires requalifiés, le plafond du micro-BNC (83 600 €)
+  est dépassé deux années de suite : la troisième année relève d'office du réel, où
+  la redevance se déduit. 12 989 €/an à 41 % → 25 978 € sur deux ans, 28 575 € avec
+  majoration, ≈ 30 000 € avec intérêts. Une phrase l'explique dans l'article.
+- La mention d'en-tête de la simulation devient « majoration de 10 % **et intérêts
+  de retard** inclus », pour que les arrondis soient exacts.
+- Repère des demi-journées : le texte disait « certains conseils ont retenu environ
+  trois demi-journées au-delà desquelles ils ne parlent plus de remplacement ».
+  Reformulé d'après les sources : des contrats types plafonnent à deux
+  demi-journées par semaine ; le conseil de Loire-Atlantique rappelait les articles
+  65 et 89 au-delà de trois demi-journées fixes (page du 28 mai 2025).
+- « Le CNOM admet des remplacements réguliers » → formulation neutre (« sont
+  admis », « des conseils départementaux diffusent un contrat type ») : seuls des
+  contrats types départementaux ont été retrouvés.
+- Piste du régime réel rétroactif : ajout d'une phrase de prudence (l'option se
+  prend normalement dans les délais de déclaration).
+
+⚠️ `verify-site.mjs` émet désormais un avertissement : **13 URL partagent le
+`lastmod` 2026-09-20**. Ce n'est pas une date de génération : ce sont les six
+nouveaux articles du jour et les sept articles réellement modifiés (maillage,
+corrections, cette fusion). Avertissement attendu, sans action.
+
+Lighthouse mobile local : perf 97 (3 passages), a11y / BP / SEO 100, CLS 0.
+Mobile 375 px : pas de débordement, le tableau tient dans l'écran.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
