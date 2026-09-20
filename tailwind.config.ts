@@ -7,6 +7,11 @@ export default {
 	content: [
 		"./src/**/*.{astro,ts,tsx,md,mdx}",
 	],
+	/* Encadrés d'articles : les classes `callout callout-<type>` sont posées par
+	   `src/lib/remark-callouts.mjs` via une chaîne interpolée, dans un .mjs hors du
+	   glob ci-dessus. Tailwind ne les voyait donc nulle part et purgeait les règles
+	   `.callout*` de global.css : les encadrés sortaient sans fond ni bordure. */
+	safelist: ["callout", "callout-warning", "callout-tip", "callout-essentiel"],
 	prefix: "",
 	theme: {
 		container: {
