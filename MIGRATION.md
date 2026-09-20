@@ -2503,6 +2503,47 @@ des « Articles connexes » faisait pire. Aucun contenu modifié, mise en page s
   le titre reste le LCP (voir le commentaire dans `index.astro`).
 - `[slug].astro`, « Articles connexes » : cartes horizontales, vignette 4:5 de 96 px.
 
+### 9.as Nouvel article : négocier sa rétrocession (20 septembre 2026)
+
+`src/content/blog/retrocession-honoraires-medecin-remplacant.md` — texte fourni par
+le fondateur, repris tel quel et mis au format maison (H2 à emoji, leviers en H3,
+tableau pour l'exemple chiffré, encadrés `:::essentiel` / `:::warning` / `:::tip`).
+Cover 4:5 : `src/assets/blog/retrocession-honoraires-cover.jpg`.
+
+**Écarts par rapport au texte fourni (à connaître) :**
+
+- ⚠️ **Correction factuelle** : le texte donnait la consultation de psychiatre ou
+  de neurologue à 50 €. Tarif en vigueur au 1er janvier 2026 : **57 €** en
+  consultation coordonnée (CNP 52 € + MCS 5 €, ameli.fr, page du 17 mars 2026).
+  L'exemple « 15 consultations à 50 € » devient « environ 13 consultations à
+  57 € » (741 € ≈ la journée à 750 € de l'exemple). G à 30 € et APC à 60 € : exacts.
+- Titre raccourci pour la balise `<title>` (« Rétrocession d'honoraires : 70, 80 ou
+  90 % ? ») ; le titre long d'origine dépassait 100 caractères.
+- Le lien final vers hippodoc.fr pointe sur `/simulateur` (c'est de lui qu'on parle).
+- **Ajouts** : bloc « L'essentiel » (reprend le « En résumé », mot pour mot), 6 FAQ
+  (chaque réponse reprend des phrases de l'article, aucun fait nouveau), section
+  Sources, 9 liens internes. Aucune autre phrase ajoutée ou réécrite.
+- Non sourcé sur texte officiel, et présenté comme tel dans l'article : les
+  fourchettes (70-90 %, 60-70 %, 100 % en garde) sont des **usages**.
+
+**Maillage entrant** : un lien ajouté dans `signer-contrat-remplacement` et dans
+`trouver-facilement-tes-remplacements-medicaux` ; les deux reçoivent une
+`updatedDate` au 20 septembre 2026 (modification réelle, cf. § 9.ai), répercutée
+dans `blog-meta.json` avec l'entrée du nouvel article.
+
+**Deux défauts préexistants trouvés en contrôlant le rendu, corrigés au passage :**
+
+- 🐛 **Encadrés sans style sur tout le blog.** Les classes `callout callout-<type>`
+  ne sont écrites que dans `remark-callouts.mjs` (chaîne interpolée, fichier hors du
+  glob `content` de Tailwind) : Tailwind purgeait les règles `.callout*` de
+  `global.css`. Ni fond ni bordure, en local comme en prod, depuis la migration.
+  Corrigé par une `safelist` dans `tailwind.config.ts`.
+- ⚡ **Cover d'en-tête des articles** : servie en 1200 px uniques et en `lazy`
+  (défaut de `getImage`, que `fetchpriority="high"` ne compensait pas) alors que
+  c'est l'élément LCP. Ajout d'un `srcset` 800w/1200w + `sizes`, et `loading="eager"`
+  (en retirant `loading` des attributs étalés : Astro ne dédoublonne pas).
+  Lighthouse mobile local : nouvel article 90-93 → **96** ; a11y/BP/SEO 100.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

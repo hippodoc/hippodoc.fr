@@ -2,6 +2,7 @@
 title: "Trouver facilement tes remplacements"
 description: "Licence en poche ? Voici ta checklist pratique pour trouver rapidement le remplacement médical qui te correspond vraiment."
 pubDate: "2025-10-06"
+updatedDate: "2026-09-20"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -39,7 +40,7 @@ Bravo, tu as ta [licence de remplacement](/blog/obtenir-sa-licence-de-remplaceme
 
 📍 **Lieu & Trajet** : Privilégie un accès facile, du stationnement et des services pratiques à proximité (pause-café oblige ! ☕).\
 💼 **Type d'exercice** : Cabinet libéral, maison de santé, centre médical ou clinique privée ? Astuce : Profite de tes premiers remplacements pour tester différents environnements afin de mieux cerner celui qui colle à ta personnalité et à tes préférences !\
-💶 **[Rétrocession](/blog/salaires-medecins-remplacants)** : En moyenne, compte environ 70-80% pour la médecine générale et 60-70% pour les autres spécialités. À négocier selon ton expérience et les spécificités du poste.\
+💶 **[Rétrocession](/blog/salaires-medecins-remplacants)** : En moyenne, compte environ 70-80% pour la médecine générale et 60-70% pour les autres spécialités. [À négocier](/blog/retrocession-honoraires-medecin-remplacant) selon ton expérience et les spécificités du poste.\
 ⏰ **Horaires & rythme** : Précise dès le départ les horaires exacts, les consultations prévues, les visites à domicile éventuelles ou les gardes.\
 🤝 **Feeling & ambiance** : Fais confiance à ton intuition dès le premier échange téléphonique ou lors de la première visite. Une bonne ambiance, ça change tout ! ✨
 
