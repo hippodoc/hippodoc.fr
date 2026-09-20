@@ -149,7 +149,7 @@
   },
   "frais-pros-medecin-liberal-2026": {
     "pubDate": "2026-05-24",
-    "updatedDate": "2026-05-24"
+    "updatedDate": "2026-09-20"
   },
   "facturation-electronique-medecin-remplacant": {
     "pubDate": "2026-08-23",
@@ -164,6 +164,10 @@
     "updatedDate": "2026-09-20"
   },
   "medecin-remplacant-travailler-6-mois-par-an": {
+    "pubDate": "2026-09-20",
+    "updatedDate": "2026-09-20"
+  },
+  "zones-frr-exoneration-impot-medecin": {
     "pubDate": "2026-09-20",
     "updatedDate": "2026-09-20"
   }
