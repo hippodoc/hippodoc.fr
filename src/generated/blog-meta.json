@@ -61,7 +61,7 @@
   },
   "trouver-facilement-tes-remplacements-medicaux": {
     "pubDate": "2025-10-06",
-    "updatedDate": "2025-10-06"
+    "updatedDate": "2026-09-20"
   },
   "checklist-administrative-medecin-remplacant": {
     "pubDate": "2025-10-06",
@@ -73,7 +73,7 @@
   },
   "signer-contrat-remplacement": {
     "pubDate": "2025-10-06",
-    "updatedDate": "2025-10-06"
+    "updatedDate": "2026-09-20"
   },
   "maitrise-ton-logiciel-metier-en-30-min": {
     "pubDate": "2025-10-06",
@@ -158,5 +158,9 @@
   "remplacement-regulier-requalification": {
     "pubDate": "2026-08-23",
     "updatedDate": "2026-08-23"
+  },
+  "retrocession-honoraires-medecin-remplacant": {
+    "pubDate": "2026-09-20",
+    "updatedDate": "2026-09-20"
   }
 }

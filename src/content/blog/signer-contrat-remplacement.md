@@ -2,6 +2,7 @@
 title: "Contrat de remplacement : checklist"
 description: "Avant d'enfiler la blouse blanche, sécurise ton remplacement avec un contrat clair. La checklist indispensable avant signature."
 pubDate: "2025-10-06"
+updatedDate: "2026-09-20"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -38,7 +39,7 @@ Tu as enfin décroché le remplacement médical de tes rêves ? Génial ! Mais a
 
 ## 💰 La rétrocession financière
 
-✅ **Pourcentage clair :** Généralement entre 70% et 90% selon la spécialité et les conditions du remplacement.\
+✅ **Pourcentage clair :** Généralement entre 70% et 90% selon la spécialité et les conditions du remplacement — voir [comment négocier ta rétrocession](/blog/retrocession-honoraires-medecin-remplacant).\
 ✅ **Modalités précises de paiement :** Date et moyen (par exemple, virement bancaire en fin de mois) clairement spécifiés. 💸\
 ✅ **Indemnisation des frais éventuels :** Transport, logement, précisés pour éviter toute surprise !
 
