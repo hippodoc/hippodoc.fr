@@ -33,7 +33,7 @@
   },
   "tout-comprendre-urssaf": {
     "pubDate": "2025-10-21",
-    "updatedDate": "2026-08-23"
+    "updatedDate": "2026-09-20"
   },
   "tout-comprendre-carmf": {
     "pubDate": "2025-10-21",
@@ -172,6 +172,10 @@
     "updatedDate": "2026-09-20"
   },
   "cfe-medecin-remplacant": {
+    "pubDate": "2026-09-20",
+    "updatedDate": "2026-09-20"
+  },
+  "effet-ciseaux-regularisation-urssaf-medecin": {
     "pubDate": "2026-09-20",
     "updatedDate": "2026-09-20"
   }
