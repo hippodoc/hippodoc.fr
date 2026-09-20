@@ -18,17 +18,19 @@ const covers = await resolveCovers(posts);
 /* Mise en avant du dernier article : sans hiérarchie éditoriale, le guide le plus
    stratégique avait exactement le même poids visuel que le plus anecdotique. */
 const [featured, ...rest] = posts;
-/* Seuls les 9 suivants passent en cartes : les 38 empilées faisaient 19 000 px de
-   haut en mobile. Les 38 restent tous accessibles via l'index en bas de page. */
-const recents = rest.slice(0, 9);
+/* Seuls les 8 suivants passent en cartes : les 38 empilées faisaient 19 000 px de
+   haut en mobile. Les 38 restent tous accessibles via l'index en bas de page.
+   8 et non 9 : la grille est en 2 puis 4 colonnes (cartes portrait), 8 remplit
+   les deux sans carte orpheline. */
+const recents = rest.slice(0, 8);
 const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
 
 /* La cover « à la une » devient l'élément LCP de la page. Servie en 1200 px fixes,
-   elle faisait chuter le LCP à 4,1 s (perf 97 → 87). Elle s'affiche au plus sur la
-   moitié d'un conteneur de 1152 px : deux largeurs en srcset suffisent, l'une pour
-   le mobile, l'autre pour le desktop en densité 2x. */
-const featuredCover = await resolveCover(featured.data.cover, 1024);
-const featuredCoverSmall = await resolveCover(featured.data.cover, 640);
+   elle faisait chuter le LCP à 4,1 s (perf 97 → 87). Affichée en portrait 4:5 sur
+   une colonne de 340 px en desktop, pleine largeur en mobile : deux largeurs en
+   srcset suffisent (340 px × densité 2 ≈ 720). */
+const featuredCover = await resolveCover(featured.data.cover, 720);
+const featuredCoverSmall = await resolveCover(featured.data.cover, 480);
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -117,7 +119,7 @@ const blogSchema = {
          de la page), pour donner une hiérarchie de lecture dès le premier écran. */}
     <a
       href={`/blog/${featured.id}`}
-      class="blog-card-hover mb-10 grid overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm md:grid-cols-2"
+      class="blog-card-hover mb-10 grid overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm md:grid-cols-[340px_1fr]"
     >
       <div class="flex flex-col justify-center p-6 md:p-8">
         <div class="mb-3 flex items-center gap-2">
@@ -140,12 +142,12 @@ const blogSchema = {
       {featuredCover && (
         <img
           src={featuredCover.src}
-          srcset={featuredCoverSmall ? `${featuredCoverSmall.src} 640w, ${featuredCover.src} 1024w` : undefined}
-          sizes="(min-width: 768px) 50vw, 100vw"
+          srcset={featuredCoverSmall ? `${featuredCoverSmall.src} 480w, ${featuredCover.src} 720w` : undefined}
+          sizes="(min-width: 768px) 340px, 100vw"
           alt=""
           width={featuredCover.width}
           height={featuredCover.height}
-          class="aspect-[16/9] w-full object-cover md:order-first md:h-full"
+          class="aspect-[4/5] w-full object-cover object-top md:order-first"
           loading="lazy"
           decoding="async"
         />
@@ -153,7 +155,7 @@ const blogSchema = {
     </a>
 
     <h2 class="mb-5 text-xl font-bold text-foreground">Derniers articles</h2>
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
       {recents.map((post) => (
         <BlogCard
           slug={post.id}

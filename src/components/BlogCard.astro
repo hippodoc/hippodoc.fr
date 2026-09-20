@@ -6,6 +6,13 @@
  *
  * La classe `blog-card s-<seriesId>` est conservée : elle sert de crochet aux
  * styles existants et reste utile pour cibler une série en CSS.
+ *
+ * Format des covers : les 38 illustrations sont en PORTRAIT (2:3, 3:4 ou 4:5),
+ * titre dessiné en haut. L'ancien cadre 16:9 n'en montrait que ~40 % et coupait
+ * ce titre. Le cadre est donc 4:5 (format cible des nouvelles fiches), ancré sur
+ * le haut (`object-top`) : une 4:5 s'affiche entière, une 2:3 ne perd que le bas.
+ * En mobile, la carte passe à l'horizontale (vignette à gauche) : une cover 4:5
+ * pleine largeur ferait ~430 px de haut par carte.
  */
 import { blogSeries } from '@/lib/blog-series';
 
@@ -17,7 +24,7 @@ interface Props {
   readTime: string;
   seriesId: string;
   episodeNumber?: number;
-  cover?: { src: string; width: number; height: number };
+  cover?: { src: string; width: number; height: number; srcSmall?: string };
   /** Charge la cover en priorité (première carte de la grille) plutôt qu'en lazy. */
   eager?: boolean;
 }
@@ -33,27 +40,31 @@ const formatDate = (d: Date) =>
 ---
 
 <article class={`blog-card s-${seriesId} blog-card-hover overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm`}>
-  <a href={`/blog/${slug}`} class="block">
+  <a href={`/blog/${slug}`} class="flex h-full sm:block">
     {cover && (
-      <img
-        src={cover.src}
-        alt=""
-        width={cover.width}
-        height={cover.height}
-        class="aspect-[16/9] w-full object-cover"
-        loading={eager ? 'eager' : 'lazy'}
-        fetchpriority={eager ? 'high' : undefined}
-      />
+      <div class="relative m-3 mr-0 aspect-[4/5] w-28 shrink-0 self-start overflow-hidden rounded-xl sm:m-0 sm:w-full sm:rounded-none">
+        <img
+          src={cover.src}
+          srcset={cover.srcSmall ? `${cover.srcSmall} 320w, ${cover.src} ${cover.width}w` : undefined}
+          sizes={cover.srcSmall ? '(min-width: 1024px) 270px, (min-width: 640px) 45vw, 112px' : undefined}
+          alt=""
+          width={cover.width}
+          height={cover.height}
+          class="absolute inset-0 h-full w-full object-cover object-top"
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : undefined}
+        />
+      </div>
     )}
-    <div class="p-5">
-      <div class="mb-2 flex items-center gap-2">
+    <div class="min-w-0 p-4 sm:p-5">
+      <div class="mb-2 flex flex-wrap items-center gap-2">
         {series && <span class={`series-badge bg-gradient-to-r ${series.color}`}>{series.name}</span>}
         {episodeNumber !== undefined && seriesId !== 'divers' && (
           <span class="text-xs text-muted-foreground">#{episodeNumber}</span>
         )}
       </div>
-      <h2 class="text-lg font-bold leading-snug text-foreground">{title}</h2>
-      <p class="mt-2 line-clamp-3 text-sm text-muted-foreground">{description}</p>
+      <h2 class="text-base font-bold leading-snug text-foreground sm:text-lg">{title}</h2>
+      <p class="mt-2 line-clamp-2 text-sm text-muted-foreground sm:line-clamp-3">{description}</p>
       <div class="mt-4 flex items-center justify-between text-xs text-muted-foreground">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
         <span>{readTime}</span>

@@ -18,7 +18,12 @@ export interface ResolvedCover {
   src: string;
   width: number;
   height: number;
+  /** Variante étroite pour le `srcset` des cartes (vignette mobile de 112 px). */
+  srcSmall?: string;
 }
+
+/** Largeur de la variante étroite des cartes : 112 px affichés × densité 3. */
+const CARD_SMALL_WIDTH = 320;
 
 /** Renvoie la cover optimisée, ou null si l'asset est introuvable. */
 export async function resolveCover(
@@ -43,7 +48,9 @@ export async function resolveCovers(
   const map = new Map<string, ResolvedCover>();
   for (const post of posts) {
     const cover = await resolveCover(post.data.cover, width);
-    if (cover) map.set(post.id, cover);
+    if (!cover) continue;
+    const small = await resolveCover(post.data.cover, CARD_SMALL_WIDTH);
+    map.set(post.id, { ...cover, srcSmall: small?.src });
   }
   return map;
 }

@@ -2484,6 +2484,25 @@ l'article facturation gagne une section « Et ta facture de rétrocession, alors
 façon de faire — plus une FAQ dédiée. Règle éditoriale à retenir pour tous les
 contenus futurs : partir du geste concret du lecteur, zéro jargon non expliqué.
 
+### 9.ar Blog : covers affichées en portrait 4:5 (20 septembre 2026)
+
+Constat : les 38 covers sont toutes en portrait (29 en 2:3, 4 en 3:4, 5 en 4:5 —
+le format cible des nouvelles fiches, 1080×1350), titre dessiné en haut. Le cadre
+16:9 des cartes n'en montrait que ~40 % et coupait ce titre ; le bandeau de 128 px
+des « Articles connexes » faisait pire. Aucun contenu modifié, mise en page seule :
+
+- `BlogCard.astro` : cadre `aspect-[4/5]` + `object-top` (une 4:5 s'affiche
+  entière, une 2:3 ne perd que les ~17 % du bas). En mobile la carte passe à
+  l'horizontale (vignette 112 px à gauche) — une cover 4:5 pleine largeur aurait
+  fait ~430 px par carte. `srcset` 320w/640w ajouté (`resolveCovers`).
+- `/blog` et `/blog/serie/*` : grille 2 → 4 colonnes (cartes portrait plus
+  étroites) ; 8 « derniers articles » au lieu de 9 pour remplir 2 et 4 colonnes.
+  Les 38 restent dans l'index de bas de page.
+- « À la une » : image portrait 4:5 sur une colonne de 340 px (srcset 480w/720w
+  au lieu de 640w/1024w). Toujours après le texte dans le DOM et en `lazy` :
+  le titre reste le LCP (voir le commentaire dans `index.astro`).
+- `[slug].astro`, « Articles connexes » : cartes horizontales, vignette 4:5 de 96 px.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
