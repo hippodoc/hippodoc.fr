@@ -2,6 +2,7 @@
 title: "Salaires des médecins remplaçants 2025"
 description: "Fourchettes de rémunération en intérim, libéral et salariat selon les spécialités. Données indicatives pour bien te projeter."
 pubDate: "2025-11-28T12:00:00"
+updatedDate: "2026-09-20"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -40,7 +41,7 @@ relatedArticles:
 
 ## 🏥 LIBÉRAL — Cabinet / Clinique (nets mensuels)
 
-Les rémunérations en libéral varient fortement selon le volume d'activité, la patientèle, et les actes réalisés. Voici les fourchettes observées pour un exercice à temps plein ou quasi temps plein.
+Les rémunérations en libéral varient fortement selon le volume d'activité, la patientèle, et les actes réalisés. Voici les fourchettes observées pour un exercice à temps plein ou quasi temps plein. Et si tu veux lever le pied, voir [ce que rapportent 6 mois de remplacement par an](/blog/medecin-remplacant-travailler-6-mois-par-an).
 
 **Consultations générales** : **5 000–8 500+ €/mois**
 

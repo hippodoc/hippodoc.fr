@@ -2544,6 +2544,55 @@ dans `blog-meta.json` avec l'entrée du nouvel article.
   (en retirant `loading` des attributs étalés : Astro ne dédoublonne pas).
   Lighthouse mobile local : nouvel article 90-93 → **96** ; a11y/BP/SEO 100.
 
+### 9.at Nouvel article : bosser 6 mois, vivre 12 (20 septembre 2026)
+
+`src/content/blog/medecin-remplacant-travailler-6-mois-par-an.md` — texte du
+fondateur repris tel quel et mis au format maison (H2 à emoji, deux tableaux,
+encadrés). Cover 4:5 : `src/assets/blog/bosser-6-mois-vivre-12-cover.jpg`.
+
+**Méthode de vérification des chiffres** : tous les cas-types ont été recalculés
+avec le moteur du simulateur du site (Edge Function `calculate-urssaf`, mêmes
+valeurs par défaut que le formulaire : célibataire, secteur 1, métropole, affilié
+CARMF 3 ans et plus, aucune charge), pour que l'article et l'outil disent la même
+chose. Résultats : 72 000 € micro-BNC → cotisations 18 124 €, IR 7 360 €, net
+46 516 € ; 144 000 € réel → cotisations 34 927 €, IR 24 318 €, net 84 755 €.
+
+**Écarts par rapport au texte fourni :**
+
+- ⚠️ **Second semestre : ~38 000 € et non ~31 000 €.** 84 755 − 46 516 = 38 239 €.
+  La chute « un tiers de moins » devient « près d'un cinquième de moins » (−18 %).
+  Le raisonnement tient, l'ampleur était surestimée.
+- Cas central réaligné sur le moteur et rendu cohérent : cotisations « environ
+  18 100 € » (au lieu de 18 500), impôt « autour de 7 400 € » (au lieu de 7 500),
+  net « ≈ 46 500 € » (au lieu de 46 000 — qui donnait 3 833 €/mois, pas 3 900).
+  Le « ≈ 3 900 € par mois » du texte était juste ; c'est lui qui est conservé.
+- Tableau des jours : 2 000 €/mois → **~60 jours** (55 dans le texte : en régime
+  classique les cotisations pèsent ~30 % des recettes à ce niveau, pas 25 %) ;
+  5 000 €/mois → **~165 jours** (175 dans le texte). 90 et 120 jours : confirmés.
+  La phrase sur la courbe est ajustée en conséquence.
+- Salaire net médian du privé : **2 190 €** (INSEE Première n° 2079, données 2024)
+  au lieu de 2 180 €.
+- Barème : « 30 % à partir de 29 580 € » / « 41 % à partir de 84 578 € » au lieu de
+  « au-delà de » (la tranche commence à ce montant).
+- Source du tarif de consultation : ameli.fr plutôt que FMF / info.gouv.fr.
+- **Ajouts** : bloc « L'essentiel », 6 FAQ (reprennent l'article, aucun fait
+  nouveau hormis le seuil de ~140 jours = 83 600 € / 600 €), section Sources,
+  hypothèses complétées dans la mention finale, 8 liens internes, et un encadré de
+  deux phrases sur le RSPM (sous 38 000 € d'honoraires, l'objectif de 2 000 €/mois
+  descend vers 50 jours — calcul local 13,5 % / 21,2 % + décote).
+- La mention « (et tu sors du micro-BNC) » sort du tableau et passe dans la phrase
+  qui suit : la cellule faisait déborder le tableau à 659 px en mobile.
+
+**Maillage entrant** : une phrase avec lien ajoutée dans
+`salaires-medecins-remplacants` (`updatedDate` au 20 septembre 2026, répercutée
+dans `blog-meta.json`).
+
+⚠️ **À regarder côté app (dépôt de l'Edge Function, hors de ce dépôt)** : pour
+33 000 € et 36 000 € de recettes en micro-BNC, `calculate-urssaf` renvoie un impôt
+de 1 120 € et 1 338 €, soit l'impôt brut **sans décote** (attendu : 730 € et
+1 046 €, plafond 897 € − 45,25 %). Les chiffres de l'article sur ces paliers
+intègrent la décote, calculée à la main avec `src/lib/baremes-ir.ts`.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
