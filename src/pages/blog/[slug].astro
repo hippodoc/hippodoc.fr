@@ -58,6 +58,14 @@ async function resolveBlogImage(publicPath: string, width: number) {
 }
 
 const coverImage = await resolveBlogImage(cover, 1200);
+/* Variante étroite pour le mobile : la cover d'en-tête est l'élément LCP de
+   l'article. Servie en 1200 px uniques et en `lazy` (défaut de getImage), elle
+   tenait les articles à 90-93 en perf mobile. 800 px couvrent un écran de
+   412 px en densité 1,75 (profil Lighthouse) ; le 1200 reste l'image OG. */
+const coverImageSmall = await resolveBlogImage(cover, 800);
+/* `loading="lazy"` retiré des attributs de getImage : Astro ne dédoublonne pas un
+   attribut étalé puis redéfini, et le navigateur garde le premier (lazy). */
+const { loading: _lazy, ...coverAttrs } = coverImage?.attributes ?? {};
 const coverForOg = coverImage ? `${SITE_URL}${coverImage.src}` : undefined;
 
 const resolvedSlides = slides
@@ -247,7 +255,10 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
       {coverImage && (
         <img
           src={coverImage.src}
-          {...coverImage.attributes}
+          {...coverAttrs}
+          loading="eager"
+          srcset={coverImageSmall ? `${coverImageSmall.src} 800w, ${coverImage.src} 1200w` : undefined}
+          sizes="(min-width: 900px) 832px, 100vw"
           alt={title}
           class="mb-8 w-full rounded-2xl shadow-lg"
           fetchpriority="high"
