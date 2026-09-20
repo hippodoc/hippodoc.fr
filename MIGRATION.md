@@ -2743,6 +2743,55 @@ de ≈ 3 900). Non corrigé dans l'article tant que ce n'est pas tranché.
 
 Lighthouse mobile local : perf 98 (3 passages), a11y / BP / SEO 100, CLS 0.
 
+### 9.ax Nouvel article : voiture, barème kilométrique ou frais réels (20 septembre 2026)
+
+`src/content/blog/voiture-bareme-kilometrique-ou-frais-reels-medecin.md` — texte du
+fondateur repris tel quel et mis au format maison. **Fiche Fiscalité #14**.
+Cover 4:5 : `src/assets/blog/voiture-bareme-frais-reels-cover.jpg`.
+
+**Confirmé sur source primaire — aucun chiffre ni règle corrigé :**
+
+- Barème kilométrique 5 CV (0,636 / 0,357 + 1 395 / 0,427), non revalorisé depuis
+  l'arrêté du 27 mars 2023 ; majoration de 20 % pour l'électrique ; péages,
+  stationnement et intérêts d'emprunt en sus (service-public.gouv.fr, 15 avril 2026).
+- BOFiP BOI-BNC-BASE-40-60-40-20 : option a priori au 1er janvier, annuelle, pour
+  l'ensemble des véhicules (§ 130-160) ; barème admis pour un véhicule conservé
+  dans le patrimoine privé (§ 410) ; intérêts d'emprunt déductibles seulement si le
+  véhicule est inscrit au registre des immobilisations (§ 510).
+- Plafonds de l'art. 39-4 : 30 000 / 20 300 / 18 300 / 9 900 € aux seuils de 20,
+  50 et 160 g/km.
+- Art. 151 septies (90 000 / 126 000 €, cinq ans) et réintégration sociale des
+  plus-values à court terme exonérées (CSS, art. L131-6).
+- Micro-BNC : 83 600 €, 34 %, option pour le réel par simple dépôt de la 2035.
+- Les deux cas chiffrés sont arithmétiquement justes (5 679 / 5 745 € ; 3 816 /
+  5 850 € ; écarts de 66 € et 2 034 €), ainsi que la plus-value de 6 000 €.
+
+**Écarts par rapport au texte fourni (mise en forme uniquement) :**
+
+- Apostrophes typographiques (’) → droites ('), convention du reste du site.
+- Titre : « Médecin libéral : barème kilométrique ou frais réels ? » (requête
+  d'abord ; 70 caractères avec le suffixe, au ras du seuil d'avertissement).
+- Les trois formules du barème et les quatre plafonds d'amortissement passent en
+  tableau ; la précision « (électrique) » / « (la plupart des thermiques) », qui
+  faisait déborder le tableau en mobile, est reprise dans la phrase qui suit.
+- Un tableau récapitulatif des deux cas (barème / réel / écart) est ajouté sous
+  le match ; les calculs détaillés d'origine sont conservés.
+- La « subtilité » (actif + barème) et la « réserve de taille » (exonération
+  purement fiscale) sont mises en encadré `:::warning`.
+- **Ajouts** : bloc « L'essentiel », 7 FAQ (reprennent l'article, aucun fait
+  nouveau), section Sources, 9 liens internes.
+
+**Corrigé au passage dans `frais-pros-medecin-liberal-2026`** (déjà daté du jour) :
+la note sous le barème disait que « le barème 2025 — légèrement différent —
+s'applique » à la déclaration 2026 des revenus 2025. C'est faux : le barème n'a
+pas été revalorisé depuis 2023. Remplacé par « Ce barème est inchangé depuis
+l'arrêté du 27 mars 2023 : c'est aussi celui de la déclaration 2026 des revenus
+2025. » Un lien vers le nouvel article est ajouté en fin de paragraphe
+« Option 2 — Frais réels ».
+
+Lighthouse mobile local : perf 97-98 (3 passages), a11y / BP / SEO 100, CLS 0.
+Mobile 375 px : les trois tableaux tiennent dans l'écran.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
