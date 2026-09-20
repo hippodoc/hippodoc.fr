@@ -182,13 +182,13 @@ C'est l'un des postes les plus lourds pour un médecin libéral, en particulier 
 | **6 CV** | d × 0,665 | d × 0,374 + 1 457 | d × 0,447 |
 | **7 CV et plus** | d × 0,697 | d × 0,394 + 1 515 | d × 0,470 |
 
-*d = kilomètres pros parcourus dans l'année. Véhicule 100 % électrique : résultat majoré de 20 %. Pour la déclaration en cours (revenus 2025 déclarés en 2026), le barème 2025 — légèrement différent — s'applique.*
+*d = kilomètres pros parcourus dans l'année. Véhicule 100 % électrique : résultat majoré de 20 %. Ce barème est inchangé depuis l'arrêté du 27 mars 2023 : c'est aussi celui de la déclaration 2026 des revenus 2025.*
 
 Exemple concret : 12 000 km pros en 5 CV → (12 000 × 0,357) + 1 395 = **5 679 € déductibles**, sans avoir à conserver le moindre ticket essence. Le barème couvre **déjà** : amortissement, assurance, carburant ou électricité, entretien, pneumatiques. Tu ne les redéduis pas séparément. En revanche, **péages et stationnements professionnels** peuvent s'ajouter, justificatifs à l'appui.
 
 ### Option 2 — Frais réels
 
-Plus lourd à tenir, parfois plus rentable. Tu déduis au prorata pro : carburant, assurance, entretien, pneus, amortissement ou loyers (LOA/LLD), intérêts d'emprunt. Tu conserves toutes les factures et tu tiens un journal des kilomètres pour calculer le ratio pro / total.
+Plus lourd à tenir, parfois plus rentable. Tu déduis au prorata pro : carburant, assurance, entretien, pneus, amortissement ou loyers (LOA/LLD), intérêts d'emprunt. Tu conserves toutes les factures et tu tiens un journal des kilomètres pour calculer le ratio pro / total. Deux cas chiffrés, et le piège de la plus-value à la revente : [barème kilométrique ou frais réels ?](/blog/voiture-bareme-kilometrique-ou-frais-reels-medecin)
 
 Pour les trajets domicile-cabinet, ils sont acceptables s'ils sont professionnels et normaux. Au-delà de **40 km** par trajet, il faut pouvoir expliquer la cohérence : pénurie médicale dans le secteur, contraintes familiales, exercice multi-sites.
 
