@@ -81,7 +81,7 @@ const related = (relatedArticles ?? [])
 
 const relatedCovers = new Map<string, string>();
 for (const r of related) {
-  const img = await resolveBlogImage(r.data.cover, 480);
+  const img = await resolveBlogImage(r.data.cover, 288);
   if (img) relatedCovers.set(r.id, img.src);
 }
 
@@ -348,13 +348,16 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
       {related.length > 0 && (
         <section class="mt-12" aria-labelledby="related-title">
           <h2 id="related-title" class="mb-4 text-2xl font-bold text-foreground">Articles connexes</h2>
+          {/* Vignette portrait 4:5 ancrée en haut : les covers sont toutes en
+              portrait avec le titre dessiné en haut, l'ancien bandeau de 128 px
+              de haut n'en montrait qu'une tranche coupée au milieu du titre. */}
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((r) => (
-              <a href={`/blog/${r.id}`} class="blog-card-hover block overflow-hidden rounded-xl border border-hippo-100 bg-white shadow-sm">
+              <a href={`/blog/${r.id}`} class="blog-card-hover flex overflow-hidden rounded-xl border border-hippo-100 bg-white shadow-sm">
                 {relatedCovers.get(r.id) && (
-                  <img src={relatedCovers.get(r.id)} alt="" class="h-32 w-full object-cover" loading="lazy" width="480" height="128" />
+                  <img src={relatedCovers.get(r.id)} alt="" class="aspect-[4/5] w-24 shrink-0 self-start object-cover object-top" loading="lazy" width="96" height="120" />
                 )}
-                <div class="p-4">
+                <div class="min-w-0 self-center p-4">
                   <p class="font-semibold leading-snug text-foreground">{r.data.title}</p>
                   <p class="mt-1 text-xs text-muted-foreground">{r.data.readTime} de lecture</p>
                 </div>
