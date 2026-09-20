@@ -2640,6 +2640,56 @@ dans `blog-meta.json`).
 
 Lighthouse mobile local : perf 97-98, a11y / BP / SEO 100, CLS 0.
 
+### 9.av Nouvel article : la CFE du médecin remplaçant (20 septembre 2026)
+
+`src/content/blog/cfe-medecin-remplacant.md` — texte du fondateur repris tel quel
+et mis au format maison. **Fiche Fiscalité #12**. Cover 4:5 :
+`src/assets/blog/cfe-medecin-remplacant-cover.jpg`.
+
+**Confirmé sur source primaire, sans changement :** redevabilité sans local ;
+exonération l'année de création, base réduite de moitié l'année suivante, seuil
+de 5 000 € ; barème 2026 de la base minimum (250-597 / 250-1 194 / 250-2 509 /
+250-4 183 €) ; recettes N-2 ramenées à douze mois ; 1447-C avant le 31 décembre ;
+avis uniquement en ligne, 15 décembre, paiement dématérialisé, acompte de 50 % ;
+majoration de 5 % ; lieu d'imposition au cabinet prépondérant (CE 24 nov. 2017
+n° 412505, BOFiP BOI-IF-CFE-20-40-20 du 24 août 2022) ; dégrèvement prorata
+temporis en cas de cessation ; taux de Paris (16,52 %) et de Saint-Denis (38,49 %).
+Sources : entreprendre.service-public.gouv.fr (vérifiée le 2 avril 2026), BOFiP, CGI.
+
+**Écarts par rapport au texte fourni :**
+
+- ⚠️ **Le « dégrèvement pour diminution des bases » (art. 1647 bis) ne s'applique
+  pas utilement au remplaçant.** Le texte le présentait comme un levier à demander
+  quand les recettes baissent. Or (1) les « bases » visées sont la valeur locative
+  foncière (BOI-IF-CFE-40-30-20-20), qu'un remplaçant sans local n'a pas ; (2) le
+  dégrèvement ne peut pas ramener la CFE sous la cotisation minimum de l'art.
+  1647 D (BOI-IF-CFE-40-30-20-30, § 230) — qui est précisément ce que paie le
+  remplaçant. Le paragraphe est réécrit : la base minimum suit d'elle-même les
+  recettes N-2 (on redescend de tranche sans rien demander), et le 1647 bis est
+  présenté comme ne concernant pas le remplaçant sans local. Le titre de section
+  passe de « Les deux dégrèvements que presque personne ne demande » à « Activité
+  en baisse, arrêt du libéral : ce que tu peux récupérer ». La phrase « Personne ne
+  te le proposera : c'est une réclamation… » est déplacée sur le dégrèvement de
+  cessation, le seul des deux qui se demande.
+- Check-list, exonération rurale : « zone de revitalisation rurale » → « zone
+  France ruralités revitalisation (FRR, ex-ZRR) » (l'art. 1464 D vise désormais les
+  FRR), avec lien vers la fiche #11. Une phrase ajoutée : le texte vise les
+  praticiens qui **s'établissent** dans la commune ; en remplacement pur, cas à
+  faire confirmer par le SIE.
+- **Ajouts** : bloc « L'essentiel », tableau du barème 2026 de la base minimum,
+  7 FAQ (reprennent l'article ; seul fait nouveau : les bornes 2026 du barème),
+  section Sources au format maison (celles du texte, complétées), 8 liens internes.
+- Titre raccourci pour la balise `<title>` : « CFE médecin remplaçant : la taxe de
+  décembre ».
+
+**Maillage entrant** : lien sur la ligne CFE de décembre dans
+`calendrier-fiscal-remplacant` (`updatedDate` au 20 septembre 2026, répercutée dans
+`blog-meta.json`) et une phrase avec lien dans `frais-pros-medecin-liberal-2026`
+(déjà daté du jour).
+
+Lighthouse mobile local : perf 98, a11y / SEO 100, CLS 0 ; bonnes pratiques 100
+sur deux passages, 96 sur un (non reproduit).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

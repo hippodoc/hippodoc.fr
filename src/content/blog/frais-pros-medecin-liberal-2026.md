@@ -315,7 +315,7 @@ Le remplaçant a une fiscalité souvent plus simple que celle d'un installé, ma
 
 **CARMF :** l'affiliation est normalement obligatoire en activité libérale. Une **exemption** est possible pour certains remplaçants ou régulateurs sous conditions et sur demande — mais sans acquisition de droits à la retraite.
 
-**CFE :** elle est due dès lors que ton activité est habituelle, professionnelle et non salariée, et que tes recettes dépassent 5 000 €. Pas de CFE l'année de création.
+**CFE :** elle est due dès lors que ton activité est habituelle, professionnelle et non salariée, et que tes recettes dépassent 5 000 €. Pas de CFE l'année de création. Le détail pour les remplaçants : [la CFE, la taxe de décembre](/blog/cfe-medecin-remplacant).
 
 ## 7.1 Chèques-vacances ANCV
 

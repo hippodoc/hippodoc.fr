@@ -2,6 +2,7 @@
 title: "Calendrier fiscal du remplaçant"
 description: "Ton calendrier fiscal complet, mois par mois, pour gérer tes obligations et anticiper chaque échéance sans être pris de court."
 pubDate: "2025-10-21"
+updatedDate: "2026-09-20"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -97,7 +98,7 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 ## 📅 DÉCEMBRE – Clap de fin 🎬
 
-💸 **CFE** : À régler avant le 15 décembre
+💸 **[CFE](/blog/cfe-medecin-remplacant)** : À régler avant le 15 décembre
 
 ## 🔥 Tips Hippodoc
 
