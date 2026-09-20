@@ -2690,6 +2690,59 @@ Sources : entreprendre.service-public.gouv.fr (vérifiée le 2 avril 2026), BOFi
 Lighthouse mobile local : perf 98, a11y / SEO 100, CLS 0 ; bonnes pratiques 100
 sur deux passages, 96 sur un (non reproduit).
 
+### 9.aw Nouvel article : l'effet ciseaux (20 septembre 2026)
+
+`src/content/blog/effet-ciseaux-regularisation-urssaf-medecin.md` — texte du
+fondateur repris tel quel et mis au format maison. **Fiche Fiscalité #13**.
+Cover 4:5 : `src/assets/blog/effet-ciseaux-cover.jpg`.
+
+**Confirmé sur source primaire — aucun chiffre ni mécanisme corrigé :**
+
+- Provisionnel sur N−2 puis N−1, régularisation à la déclaration, modulation sur
+  revenu estimé, délais de paiement : urssaf.fr, CSS art. L131-6-2 (cohérent avec
+  `tout-comprendre-urssaf`, § 9.aq).
+- CARMF (carmf.fr, cotisations 2026) : complémentaire à 11,80 % sur les revenus
+  2024 « sans régularisation ultérieure » ; ASV (part forfaitaire + ajustement sur
+  les revenus 2024, deux tiers pris en charge en secteur 1) ; régime de base
+  provisionnel puis régularisé (8,73 % / 1,87 %). Le taux complémentaire est bien
+  en hausse (10,2 % → 11,8 %), ce qui fonde « les taux CARMF ont augmenté ».
+- Réforme d'assiette : abattement de 26 %, plancher 1,76 % × 48 060 = 845,86 €
+  (« environ 846 € »), plafond 130 % × 48 060 = 62 478 € ; PASS 2026 = 48 060 €.
+- « De l'ordre de 10 % du bénéfice » côté URSSAF en secteur 1 : cohérent avec le
+  détail (CSG-CRDS 9,7 % sur l'assiette abattue ≈ 8,8 % du bénéfice, + CURPS, CFP,
+  maladie et AF résiduelles après prise en charge). Les trois exemples
+  (3 000 / 3 000 / 5 000 €) sont arithmétiquement justes.
+- « Les mensualités peuvent quasiment doubler » : vérifié sur l'exemple 3
+  (750 → ~1 580 €/mois avec six échéances restantes, soit × 2,1) ; sur l'exemple 1
+  la hausse est plutôt de 60 à 70 %. Formulation conservée (« peuvent »).
+
+**Écarts par rapport au texte fourni :**
+
+- Graphie « Urssaf » → « URSSAF », convention du reste du site.
+- Titre raccourci et centré sur la requête : « Régularisation URSSAF : l'effet
+  ciseaux expliqué » (le titre d'origine faisait 72 caractères).
+- **Ajouts** : bloc « L'essentiel », 7 FAQ (reprennent l'article, aucun fait
+  nouveau), section Sources au format maison (taux CARMF 2026 inclus), 8 liens
+  internes, et un encadré de deux phrases sur le **RSPM** : seul cas qui échappe
+  aux ciseaux, puisqu'on y cotise directement sur les honoraires déclarés
+  (13,5 % / 21,2 %), sans provisionnel.
+- Les trois temps de « l'onde de trois ans » passent en liste à puces (mêmes mots).
+
+**Maillage entrant** : parenthèse avec lien dans la section « Moduler » de
+`tout-comprendre-urssaf` (`updatedDate` 23 août → 20 septembre 2026, répercutée
+dans `blog-meta.json`).
+
+⚠️ **À regarder côté app (Edge Function `calculate-urssaf`, hors de ce dépôt)**,
+en plus de la décote signalée au § 9.at : en micro-BNC, la CSG-CRDS renvoyée pour
+72 000 € de recettes est 5 773 €, soit 9,7 % de 59 515 € (= 47 520 € + cotisations
+obligatoires, l'ancienne assiette). Or `tout-comprendre-urssaf` (sourcé) dit qu'en
+micro-BNC l'assiette reste les recettes après abattement de 34 %, soit 47 520 € →
+4 609 €. Écart d'environ 1 160 € à confirmer ; s'il est avéré, les cotisations du
+cas-type de § 9.at passeraient de ~18 100 à ~17 000 € (net ≈ 3 970 €/mois au lieu
+de ≈ 3 900). Non corrigé dans l'article tant que ce n'est pas tranché.
+
+Lighthouse mobile local : perf 98 (3 passages), a11y / BP / SEO 100, CLS 0.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

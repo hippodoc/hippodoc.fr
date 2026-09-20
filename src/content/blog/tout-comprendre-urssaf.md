@@ -2,7 +2,7 @@
 title: "Tout comprendre sur l'URSSAF"
 description: "L'URSSAF reste un mystère ? Fiche claire et pratique pour comprendre et gérer tes cotisations dès tes premiers remplacements."
 pubDate: "2025-10-21"
-updatedDate: "2026-08-23"
+updatedDate: "2026-09-20"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -93,7 +93,7 @@ Les **taux ont été réajustés** pour viser une neutralité d'ensemble : les c
 
 ## 🎛️ Moduler tes cotisations provisionnelles
 
-Tes cotisations provisionnelles sont calculées sur ton revenu d'il y a deux ans, puis recalculées quand ton revenu N-1 est connu. Si ton activité baisse ou explose cette année, tu n'es pas obligé(e) d'attendre : tu peux **déclarer un revenu estimé** pour l'année en cours depuis ton espace urssaf.fr (rubrique « Moduler mes cotisations provisionnelles »). Tes échéances sont recalculées immédiatement.\
+Tes cotisations provisionnelles sont calculées sur ton revenu d'il y a deux ans, puis recalculées quand ton revenu N-1 est connu. Si ton activité baisse ou explose cette année, tu n'es pas obligé(e) d'attendre ([l'effet ciseaux](/blog/effet-ciseaux-regularisation-urssaf-medecin) te tomberait dessus à la déclaration suivante) : tu peux **déclarer un revenu estimé** pour l'année en cours depuis ton espace urssaf.fr (rubrique « Moduler mes cotisations provisionnelles »). Tes échéances sont recalculées immédiatement.\
 ✅ **Sans risque de pénalité** : la majoration qui sanctionnait autrefois une sous-estimation a disparu du texte en vigueur (art. L131-6-2 du Code de la sécurité sociale). Si ton estimation est trop basse, tu paieras simplement la différence à la régularisation suivante — comme d'habitude.\
 🎯 **Quel montant déclarer ?** Ton **revenu professionnel avant l'abattement de 26 %** — c'est l'URSSAF qui applique l'abattement, avec son plancher et son plafond, jamais toi. Concrètement : en régime réel, ton bénéfice attendu **sans déduire tes cotisations sociales** ; en micro-BNC, tes recettes attendues moins l'abattement de 34 %. Ne déclare jamais un montant auquel tu aurais toi-même retiré les 26 % : l'abattement serait appliqué deux fois et tes provisionnelles seraient trop basses, avec une régularisation salée à la clé.
 
