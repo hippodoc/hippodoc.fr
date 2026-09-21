@@ -47,7 +47,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Blog
 
-- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (38 articles), schéma dans
+- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (46 articles au 21 septembre 2026), schéma dans
   `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL).
 - ⚠️ `scripts/generate-blog-content.mjs` a servi à la migration initiale depuis
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
@@ -94,8 +94,15 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (52 pages attendues) puis `node scripts/verify-site.mjs`.
+1. `npm run build` (67 pages au 21 septembre 2026 : une de plus par nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).
 3. Lighthouse local si perf touchée : `npx serve dist -l 4321` +
    `npx lighthouse http://localhost:4321/ --chrome-flags="--headless --no-sandbox"`.
+
+## Recherche d'audience
+
+Le dossier `hippodoc-corpus/` contient la demande réelle des médecins libéraux
+(94 questions, 958 réponses). Lire `hippodoc-corpus/carte-de-la-demande.md` avant
+toute décision éditoriale, et respecter `hippodoc-corpus/CLAUDE.md` — le corpus est
+une boussole, jamais une source de texte.
