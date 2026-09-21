@@ -2,6 +2,7 @@
 title: "CFE médecin remplaçant : la taxe de décembre"
 description: "Sans cabinet, tu paies quand même la CFE : 0 € l'année de création, moitié prix l'année 2, plein tarif l'année 3. Montants 2026, 15 décembre, check-list."
 pubDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -25,7 +26,7 @@ faq:
   - question: "Où le médecin remplaçant est-il imposé à la CFE ?"
     answer: "À l'adresse du **cabinet où il a exercé de façon prépondérante** dans l'année — pas forcément à son domicile, même si c'est l'adresse de sa déclaration (Conseil d'État, 24 novembre 2017, repris par la doctrine fiscale en 2022). Sans cabinet dominant, c'est le domicile qui reste retenu. C'est le taux de cette commune qui s'applique."
   - question: "Un interne qui remplace ponctuellement paie-t-il la CFE ?"
-    answer: "Le caractère « habituel » se juge au cas par cas : nombre d'actes, durée des remplacements, importance des recettes. Et si tes recettes de référence ne dépassent pas **5 000 €**, tu es **exonéré de la cotisation minimum** : c'est le cas typique de l'interne qui remplace ponctuellement."
+    answer: "Le caractère « habituel » se juge au cas par cas : nombre d'actes, durée des remplacements, importance des recettes. Et si tes recettes de référence ne dépassent pas **5 000 €** (ramenées à douze mois si tu as démarré en cours d'année), tu es **exonéré de la cotisation minimum** : c'est le cas typique de l'interne qui remplace ponctuellement."
   - question: "Qu'est-ce que la déclaration 1447-C ?"
     answer: "C'est la **déclaration initiale de CFE**, à déposer **avant le 31 décembre** de ton année de début d'activité. Elle permet à l'administration de calculer tes CFE futures — et surtout de t'accorder les exonérations. L'oublier, c'est risquer de les perdre."
 relatedArticles:
@@ -67,13 +68,13 @@ Avant de parler du montant, trois mécanismes jouent en ta faveur.
 
 ✅ **L'année de création est totalement exonérée.** Tu commences en 2026 ? Rien à payer au titre de 2026, automatiquement.\
 ✅ **La première année d'imposition, la base est réduite de moitié.**\
-✅ **Recettes de référence ≤ 5 000 € ? Exonéré de la cotisation minimum.** Le cas typique de l'interne qui remplace ponctuellement.
+✅ **Recettes de référence ≤ 5 000 € ? Exonéré de la cotisation minimum.** Le cas typique de l'interne qui remplace ponctuellement. Attention, ce seuil se calcule sur douze mois : 3 000 € encaissés en novembre-décembre comptent pour 18 000 €.
 
 ## 💶 3. Combien ça coûte vraiment
 
 Beaucoup de confrères confondent deux chiffres : **la base** et **la cotisation**. Ce n'est pas la même chose.
 
-Sans local professionnel qui t'appartient, tu n'es pas imposé sur une valeur locative : tu es imposé sur une **base minimum**, fixée par la commune à l'intérieur d'une fourchette légale, en fonction de tes recettes d'il y a deux ans. Pour la plupart des remplaçants, cette base se situe entre 250 € et 1 200 € — et peut monter vers 2 500 € dans les tranches hautes de recettes, selon ce que la commune a voté. Les montants du barème sont revalorisés chaque année.
+Sans local professionnel qui t'appartient, tu n'es pas imposé sur une valeur locative : tu es imposé sur une **base minimum**, fixée par la commune à l'intérieur d'une fourchette légale, en fonction de tes recettes d'il y a deux ans (pour tes deux premières CFE, années 2 et 3 : celles de ton année de création, ramenées à douze mois — voir le piège plus bas). Pour la plupart des remplaçants, cette base se situe entre 250 € et 1 200 € — et peut monter vers 2 500 € dans les tranches hautes de recettes, selon ce que la commune a voté. Les montants du barème sont revalorisés chaque année.
 
 | Recettes de référence | Base minimum 2026 |
 |---|---|

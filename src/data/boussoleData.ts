@@ -2079,8 +2079,8 @@ export const calendrierAnnuel: CalendrierMois[] = [
     mois: "Mai",
     numero: 5,
     demarches: [
-      { titre: "Date limite déclaration — départements 01-19", description: "Échéance 2026 : vendredi 22 mai. Déclaration en ligne 2042 + 2042-C-PRO + DSFU. Ne pas oublier de remplir la DSFU en même temps que la 2042 !", urgent: true },
-      { titre: "Date limite déclaration — départements 20-54", description: "Échéance 2026 : vendredi 29 mai (non-résidents inclus).", urgent: true },
+      { titre: "Date limite déclaration — départements 01-19", description: "Échéance 2026 : jeudi 21 mai (non-résidents inclus). Déclaration en ligne 2042 + 2042-C-PRO + DSFU. Ne pas oublier de remplir la DSFU en même temps que la 2042 !", urgent: true },
+      { titre: "Date limite déclaration — départements 20-54", description: "Échéance 2026 : jeudi 28 mai.", urgent: true },
       { titre: "Paiement Cotisations URSSAF", description: "Échéance de paiement des cotisations URSSAF (généralement le 5 mai). Anticiper les éventuels bugs informatiques.", urgent: true }
     ]
   },
@@ -2088,7 +2088,7 @@ export const calendrierAnnuel: CalendrierMois[] = [
     mois: "Juin",
     numero: 6,
     demarches: [
-      { titre: "Date limite déclaration — départements 55+", description: "Échéance 2026 : vendredi 5 juin. Dernière date pour la télédéclaration en ligne.", urgent: true },
+      { titre: "Date limite déclaration — départements 55+", description: "Échéance 2026 : jeudi 4 juin. Dernière date pour la télédéclaration en ligne.", urgent: true },
       { titre: "Paiement Cotisations CARMF", description: "Échéance de paiement des cotisations CARMF.", urgent: true },
       { titre: "Simulation Régime Fiscal et Social", description: "Faire des simulations pour les années futures (passage Micro-BNC/Réel, impact de nouveaux zonages) avant la fin de l'année.", urgent: false }
     ]

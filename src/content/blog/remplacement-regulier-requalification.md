@@ -2,7 +2,7 @@
 title: "Remplacement régulier : le risque de requalification"
 description: "Remplacer le même médecin chaque semaine peut être requalifié en collaboration. Ce que disent les juges, la TVA du remplacé, ton impôt en micro-BNC, et les parades."
 pubDate: "2026-08-23"
-updatedDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -74,7 +74,7 @@ Il manque une des trois ? Tu n'es plus dans un remplacement, mais dans une colla
 
 ## 📅 Le remplacement régulier n'est pas interdit
 
-La régularité n'est pas illégale en soi : les remplacements réguliers de courte durée sont admis dès lors qu'ils reposent sur un motif précis d'absence (fonctions électives, formation, activité hospitalière…), et des conseils départementaux diffusent un contrat type dédié. Ce que l'Ordre surveille, c'est le basculement vers une gérance de fait ; certains conseils départementaux restreignent d'ailleurs les remplacements réguliers, avec des repères qui varient d'un département à l'autre.
+La régularité n'est pas illégale en soi : les remplacements réguliers de courte durée sont admis dès lors qu'ils reposent sur un motif précis d'absence (fonctions électives, formation, congés, temps partiel choisi…), et des conseils départementaux diffusent un contrat type dédié. Attention : depuis le **30 juillet 2026** (décret n° 2026-691), le remplacé doit cesser **toute** activité médicale pendant que tu le remplaces — y compris une activité hospitalière ou salariée, et plus seulement son activité libérale. « Il est à l'hôpital ce jour-là » n'est donc plus un motif valable, sauf dérogation du conseil départemental. Ce que l'Ordre surveille, c'est le basculement vers une gérance de fait ; certains conseils départementaux restreignent d'ailleurs les remplacements réguliers, avec des repères qui varient d'un département à l'autre.
 
 Soyons honnêtes sur la probabilité. La grande majorité des remplacements réguliers ne seront jamais inquiétés. Le risque monte dans deux circonstances : quand **le cabinet remplacé est contrôlé** (c'est par ricochet que le fisc remonte jusqu'au remplaçant), et quand **la régularité dure des années**. Il n'existe aucun seuil officiel : selon les départements, les contrats types plafonnent à deux demi-journées par semaine, ou le conseil a longtemps rappelé les articles 65 et 89 au-delà de trois demi-journées fixes.
 
@@ -151,11 +151,11 @@ C'est exactement ce qui arrive au remplaçant du cas-type : rétrocession à 75 
 | Rétrocession | 75 % | 60 % |
 | Redevance / an | 17 500 € | 48 000 € |
 | Imposable en plus | ≈ 11 500 € | ≈ 31 700 € |
-| **Rappel** | **≈ 12 000 €** | **≈ 30 000 €** |
+| **Rappel** | **≈ 12 000 €** | **≈ 22 000 €** |
 
 **Généraliste**, deux jours fixes par semaine, 70 000 € d'honoraires par an dans ce cabinet, rétrocession à 75 % : 17 500 € par an requalifiés en redevance, soit 11 500 € de bénéfice imposable ajouté chaque année — ≈ 12 000 € de rappel sur les trois années contrôlées, à une tranche de 30 %.
 
-**Spécialiste sur plateau technique**, deux demi-journées par semaine, 120 000 € d'honoraires, rétrocession à 60 % : 48 000 € par an requalifiés — ≈ 30 000 € de rappel à 41 %, et le cabinet franchit le seuil de TVA. Pourquoi deux ans et pas trois : avec 120 000 € d'honoraires requalifiés, tu dépasses le plafond du micro-BNC (83 600 €) deux années de suite, donc la troisième année tu bascules d'office au régime réel — où la redevance, elle, se déduit.
+**Spécialiste sur plateau technique**, deux demi-journées par semaine, 120 000 € d'honoraires, rétrocession à 60 % : 48 000 € par an requalifiés, soit 31 700 € de bénéfice imposable ajouté chaque année — ≈ 22 000 € de rappel sur deux années, à une tranche de 30 %, et le cabinet franchit le seuil de TVA. Pourquoi deux ans et pas trois : avec 120 000 € d'honoraires requalifiés, tu dépasses le plafond du micro-BNC (83 600 €) deux années de suite, donc la troisième année tu bascules d'office au régime réel — où la redevance, elle, se déduit.
 
 Dans les deux cas, les cotisations sociales peuvent suivre.
 
@@ -163,7 +163,7 @@ Dans les deux cas, les cotisations sociales peuvent suivre.
 
 **1. Casse la régularité.** Le fisc regarde le nombre et la fréquence : un jour fixe chaque semaine, année après année, pèse plus lourd que dix contrats bien remplis. Alterner, espacer, documenter les vraies absences.
 
-**2. Le motif de l'absence, écrit noir sur blanc.** Des conseils départementaux diffusent un contrat type « remplacement régulier et de courte durée », avec un champ pour le motif : formation, fonction élective, activité hospitalière, temps partiel choisi. Remplis-le. C'est nécessaire — le cas-type montre que ce n'est pas suffisant.
+**2. Le motif de l'absence, écrit noir sur blanc.** Des conseils départementaux diffusent un contrat type « remplacement régulier et de courte durée », avec un champ pour le motif : formation, fonction élective, congés, temps partiel choisi. Remplis-le. C'est nécessaire — le cas-type montre que ce n'est pas suffisant.
 
 **3. Si c'est structurel, change de statut.** Un jour par semaine dans le même cabinet, à l'année, c'est le format d'une collaboration libérale ou d'un assistanat, pas d'un remplacement. Prendre le bon contrat coûte moins cher qu'une requalification — à condition de faire le calcul micro-BNC / déclaration contrôlée **avant** : en collaboration, la redevance ne se déduit qu'au réel.
 
@@ -174,7 +174,7 @@ Dans les deux cas, les cotisations sociales peuvent suivre.
 ### La checklist du remplacement régulier
 
 ☑️ **Un contrat écrit par période de remplacement**, transmis au conseil départemental de l'Ordre — pas de remplacement « sur parole ».\
-☑️ **Une absence réelle et documentable du titulaire** pour chaque jour remplacé : congés, formation, activité extérieure. En cas de contrôle, c'est la première chose regardée.\
+☑️ **Une absence réelle et documentable du titulaire** pour chaque jour remplacé : congés, formation, fonction élective — pas une autre activité médicale, que le remplacé doit cesser depuis le 30 juillet 2026. En cas de contrôle, c'est la première chose regardée.\
 ☑️ **Une rétrocession classique** (pourcentage des honoraires), sans participation aux charges fixes ni aux bénéfices du cabinet.\
 ☑️ **Ton indépendance d'organisation** : tes horaires dans le cadre de l'absence, tes prescriptions, ta responsabilité (RCP à jour).\
 ☑️ **Tes justificatifs conservés** : contrats, attestations de remplacement avec dates et lieux, relevés de rétrocessions, agenda corroborant les périodes. Ce dossier sert aussi pour tes [frais professionnels](/blog/frais-pros-medecin-liberal-2026).\
@@ -214,7 +214,7 @@ Ce genre de dossier se joue sur des pièces datées. Avec **Hippodoc**, chaque r
 
 ## 📚 Sources (vérifiées au 20 septembre 2026)
 
-• Code de la santé publique, art. R.4127-65 (remplacement) et R.4127-89 (interdiction de gérance) — Légifrance, CNOM.\
+• Code de la santé publique, art. R.4127-65 (remplacement) et R.4127-89 (interdiction de gérance), dans leur rédaction issue du décret n° 2026-691 du 27 juillet 2026 (en vigueur le 30 juillet 2026) : le remplacé cesse « toute activité médicale », et non plus sa seule activité libérale — Légifrance, CNOM.\
 • Loi n° 2005-882 du 2 août 2005, art. 18 (collaboration libérale) ; contrats types du CNOM (conseil-national.medecin.fr) ; contrats types de remplacement régulier et position sur les remplacements fixes publiés par des conseils départementaux de l'Ordre (notamment Loire-Atlantique, 28 mai 2025).\
 • CA Paris, 27 septembre 2012, n° 11/14734 ; CA Versailles, 18 mai 2020, n° 18/08007 ; Cass., 20 octobre 2021, n° 20-18.261 ; Cass. soc., 29 janvier 2014, n° 12-26.940.\
 • BOFiP : rescrit BOI-RES-TVA-000056 (TVA des rétrocessions en remplacement, caractère occasionnel) et BOI-TVA-CHAMP-30-10-20-10 (professions médicales).\
