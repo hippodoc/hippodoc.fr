@@ -2,7 +2,7 @@
 title: "Frais pros du médecin libéral 2026"
 description: "Plusieurs milliers d'euros par an entre déduire juste et passer au pifomètre. Guide complet 2026 : micro-BNC vs 2035, leviers secteur 1, ACRE, zones aidées, dossier anti-contrôle."
 pubDate: "2026-05-24"
-updatedDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -23,7 +23,7 @@ faq:
   - question: "Peut-on déduire un bureau à domicile en libéral ?"
     answer: "Oui, sous conditions. Tu dois utiliser une pièce identifiable et de manière régulière pour ton activité (comptabilité, télétransmission, archivage, téléconsultation). La méthode : **surface pro ÷ surface totale × coefficient d'usage**. Documente avec un plan, des photos et une note annuelle. Tu appliques cette quote-part au loyer, charges, électricité, internet, assurance."
   - question: "Le PER se déduit-il du résultat BNC ?"
-    answer: "Non. Le PER individuel se déduit du **revenu global** (déclaré sur la 2042), pas du résultat BNC (déclaré sur la 2035). Cette nuance est importante pour ne pas se tromper de rubrique. Les versements sont déductibles dans la limite du disponible fiscal, calculé à partir du **PASS 2026 fixé à 48 060 €**."
+    answer: "Tu as le choix entre deux voies. Soit tu déduis tes versements de ton **bénéfice BNC** (sur la 2035, en cotisations facultatives, dans le plafond dit « Madelin » — art. 154 bis du CGI), soit tu les déduis de ton **revenu global** (sur la 2042 — art. 163 quatervicies). Un même versement ne se déduit qu'une fois : ne te trompe pas de rubrique. Les versements sont déductibles dans la limite du disponible fiscal, calculé à partir du **PASS 2026 fixé à 48 060 €**."
   - question: "Quel est le plafond ANCV pour un médecin libéral en 2026 ?"
     answer: "Le **plafond d'exonération sociale** est de 30 % du SMIC mensuel brut, soit environ **547 € en 2026**. Le **plafond fiscal** correspond à 1 SMIC mensuel brut (≈ 1 823 €). Le dispositif n'est pas une « ligne vacances » libre : il se déclare en DSCN ou DSDN, et la part exonérée socialement reste soumise à CSG-CRDS."
   - question: "Qu'est-ce que la déduction Groupe III ?"
@@ -45,7 +45,7 @@ relatedArticles:
 - Le barème kilométrique 2026 pour une 5 CV donne **5 679 € déductibles** pour 12 000 km pros, sans conserver le moindre ticket essence.
 - Un repas se déduit à hauteur de **(prix payé, plafonné à 21,40 €) − 5,50 €**, soit une déduction maximale de **15,90 €** pour les revenus 2026 (21,10 € / 5,45 € / 15,65 € pour la déclaration en cours).
 - Le médecin secteur 1 peut cumuler trois déductions au réel : le **forfait 2 %**, la **déduction Groupe III**, et la **déduction complémentaire de 3 %**.
-- Le PER se déduit du **revenu global** (2042), pas du résultat BNC, dans la limite d'un disponible calculé sur le **PASS 2026 fixé à 48 060 €** ; le chèque-vacances ANCV est plafonné fiscalement à environ **1 823 €** et socialement à environ **547 €** en 2026.
+- Le PER se déduit au choix de ton **bénéfice BNC** (2035) ou de ton **revenu global** (2042), jamais des deux, dans la limite d'un disponible calculé sur le **PASS 2026 fixé à 48 060 €** ; le chèque-vacances ANCV est plafonné fiscalement à environ **1 823 €** et socialement à environ **547 €** en 2026.
 :::
 
 À l'hôpital, on faisait tout pour toi. La paie tombait, les charges étaient payées, le matériel était fourni, le repas au self était subventionné. Tu cochais « salarié » dans tous les formulaires de la vie courante et c'était fini.
@@ -247,10 +247,10 @@ Le **crédit d'impôt formation dirigeant** est **supprimé** pour toutes les fo
 **Retraite Madelin / PER TNS** : 10 % du revenu pro dans la limite de 8 PASS + 15 % de la fraction de revenu entre 1 et 8 PASS, minimum 10 % du PASS.\
 **Prévoyance/santé Madelin** : 3,75 % du revenu pro + 7 % du PASS, plafonné à 3 % de 8 PASS.
 
-### 📌 Le PER se déduit du revenu global
+### 📌 PER : bénéfice BNC ou revenu global, à toi de choisir
 
 :::tip
-Le PER se déduit du **revenu global**, pas du résultat BNC. Tu ne le passes pas dans tes charges 2035, tu le déclares dans la rubrique correspondante de ta 2042. Il réduit ton revenu imposable global, pas ton bénéfice BNC. C'est l'**attestation fiscale annuelle** de ton assureur qui doit piloter la déduction — pas la simple facture commerciale.
+Deux voies au choix pour tes versements PER. **Voie 1** : tu les déduis de ton bénéfice BNC, sur la 2035, en cotisations facultatives (art. 154 bis du CGI, plafond dit « Madelin »). **Voie 2** : tu les déduis de ton **revenu global**, sur la 2042 (art. 163 quatervicies). Un même versement ne se déduit qu'une seule fois — fais chiffrer les deux par ton comptable. C'est l'**attestation fiscale annuelle** de ton assureur qui doit piloter la déduction — pas la simple facture commerciale.
 :::
 
 **CSG/CRDS :** seule la fraction de CSG déductible (calculée par le logiciel comptable ou figurant sur ton tableau URSSAF) est déductible. La CRDS et la fraction non déductible de la CSG ne le sont pas. Les **majorations URSSAF/CARMF** (pour retard de paiement) sont des sanctions, jamais déductibles.
@@ -275,9 +275,9 @@ Si tu es médecin conventionné secteur 1 (tarifs Sécu, sans dépassement), tu 
 Si tu choisis le forfait 2 %, tu ne peux pas en plus déduire au réel les frais qu'il couvre (blanchissage, cadeaux pros, petits déplacements, réception). C'est l'un ou l'autre, à arbitrer chaque année. Pour un omnipraticien secteur 1 avec un volume d'activité significatif, c'est souvent **le levier à plus fort retour sur investissement**.
 :::
 
-## 5.2 ACRE : exonération partielle en 1ère année
+## 5.2 ACRE : une exonération désormais réservée à certains profils
 
-L'**ACRE** (Aide aux Créateurs et Repreneurs d'Entreprise) ouvre droit à une **exonération partielle de cotisations URSSAF** pendant les 12 premiers mois d'activité libérale. Pour les médecins relevant de la PAMC, l'exonération porte sur une fraction des cotisations sociales.
+Depuis le **1er janvier 2026** (loi de financement de la Sécurité sociale pour 2026), l'**ACRE** (Aide aux Créateurs et Repreneurs d'Entreprise) n'est plus ouverte à tous. Cette **exonération partielle de cotisations URSSAF** pendant les 12 premiers mois est réservée à certains profils : demandeur d'emploi, bénéficiaire du RSA ou de l'ASS, moins de 26 ans, installation en quartier prioritaire ou en zone FRR… Elle est plafonnée à **25 %** et devient dégressive quand tes revenus approchent le plafond de la Sécurité sociale. Un médecin qui s'installe sans relever d'un de ces cas n'y a plus droit.
 
 ## 📅 Délai 60 jours
 

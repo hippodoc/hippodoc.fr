@@ -2,6 +2,7 @@
 title: "Frais pros du médecin salarié 2026"
 description: "≈ 1 500 € d'impôt en moins par an, soit 3 semaines de salaire net. Guide 2026 des frais réels vs forfait 10 % pour salariés."
 pubDate: "2026-05-09"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -22,7 +23,7 @@ faq:
   - question: "C'est quoi la règle des 40 km pour le trajet domicile-travail ?"
     answer: "Au-delà de **40 km aller**, tu dois justifier d'un motif (activité du conjoint, mutation, scolarité des enfants, santé documentée, rareté du logement proche). Sans motif valable, l'administration ne retient que les **40 premiers km**. C'est l'une des zones les plus contrôlées : conserve tes preuves."
   - question: "Peut-on rattraper les années passées si on a coché 10 % par défaut ?"
-    answer: "Oui ! Tu peux faire une **déclaration corrective sur 3 ans** (revenus 2022, 2023, 2024) si tu aurais dû passer aux frais réels. Plusieurs médecins ont récupéré **1 000 à 2 000 € rétroactivement**. La démarche se fait en ligne sur impots.gouv.fr ou via courrier au service des impôts."
+    answer: "Oui ! Tu peux encore déposer une **réclamation** depuis la messagerie de ton espace impots.gouv.fr, jusqu'au 31 décembre de la 2e année qui suit l'avis d'imposition : revenus 2023 jusqu'au 31 décembre 2026, revenus 2024 jusqu'au 31 décembre 2027 (les revenus 2022 ne sont plus rattrapables). Plusieurs médecins ont récupéré **1 000 à 2 000 € rétroactivement**. La démarche se fait en ligne sur impots.gouv.fr ou via courrier au service des impôts."
 relatedArticles:
   - "salariat-10-pourcent-ou-frais-reels"
   - "guide-impots-internes-remplacants"
@@ -76,7 +77,7 @@ slides:
 - Le forfait automatique de 10 % est encadré par un **plancher de 509 €** et un **plafond de 14 555 €** pour la déclaration 2026 ; les frais réels ne valent le coup que si tes dépenses justifiées dépassent ce forfait.
 - Exemple de Léa (interne, 30 000 € de salaire, 30 km du CHU, 12 000 km/an en 5 CV) : ses frais réels totalisent **7 784 €**, pour un gain d'impôt d'environ **1 435 €** à TMI 30 %.
 - Le barème kilométrique 2026 pour une 5 CV thermique au-delà de 5 000 km est **(km × 0,357) + 1 395 €**, et au-delà de **40 km aller** sans motif, seuls les 40 premiers km sont retenus.
-- Tu peux faire une déclaration corrective sur **3 ans** (revenus 2022, 2023, 2024) si tu as coché 10 % par défaut à tort : plusieurs médecins ont récupéré **1 000 à 2 000 €** rétroactivement.
+- Tu peux encore déposer une **réclamation** pour tes revenus 2023 (jusqu'au 31 décembre 2026) et 2024 (jusqu'au 31 décembre 2027) si tu as coché 10 % par défaut à tort : plusieurs médecins ont récupéré **1 000 à 2 000 €** rétroactivement.
 :::
 
 ≈ **1 500 € d'impôt en moins par an**. Près de **trois semaines de salaire net**. Et **90 % des internes l'ignorent**.
@@ -129,10 +130,10 @@ Pour un **interne en stage éloigné**, un **PH multi-sites** ou tout médecin a
 **Compare** : si le total dépasse le forfait, l'option frais réels est gagnante.\
 **Garde** uniquement les dépenses avec preuve solide et lien pro clair.
 
-### 💎 Pépite peu connue : la déclaration corrective sur 3 ans
+### 💎 Pépite peu connue : la réclamation sur les années passées
 
 :::tip
-Tu peux faire une **déclaration corrective sur 3 ans** (revenus 2022, 2023, 2024) si tu as coché 10 % par défaut alors que tu aurais dû passer aux frais réels. Plusieurs médecins ont ainsi récupéré **1 000 à 2 000 € rétroactivement**.
+Tu peux déposer une **réclamation** si tu as coché 10 % par défaut alors que tu aurais dû passer aux frais réels : revenus 2023 jusqu'au 31 décembre 2026, revenus 2024 jusqu'au 31 décembre 2027 (pour 2022, le délai a expiré fin 2025). Pour les revenus 2025, la correction en ligne suffit tant qu'elle est ouverte. Plusieurs médecins ont ainsi récupéré **1 000 à 2 000 € rétroactivement**.
 :::
 
 ## 🚗 Poste 1 — Les déplacements : souvent le n°1
@@ -211,7 +212,7 @@ La **blanchisserie des tenues** est déductible : factures de pressing si possib
 
 ## 💻 Poste 5 — Numérique et télétravail
 
-**Ordinateur, tablette, écran** : uniquement la **quote-part professionnelle**. Étalement recommandé sur **2-3 ans** pour les biens supérieurs à 500 €.
+**Ordinateur, tablette, écran** : uniquement la **quote-part professionnelle**. Jusqu'à 500 € HT, tu déduis tout l'année de l'achat ; au-delà, l'étalement est **obligatoire** : un tiers par an pendant **3 ans** pour du matériel informatique.
 
 **Smartphone et forfait** : prorata obligatoire — **jamais 100 % sur un mobile polyvalent perso**.
 

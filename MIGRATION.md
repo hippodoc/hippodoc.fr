@@ -2982,6 +2982,44 @@ amortissement — slides à refaire), `interets-composes…` (Livret A, LEP — 
 `micro-bnc-exemples-concrets` (recalcul 2026), `remplir-declaration-2035`,
 `remplacement-salarie-guide-complet`, `choix-mode-exercice` (intérim).
 
+### 9.bb Audit du blog, lot 2b — six articles, corrections vérifiées à la main (21 septembre 2026)
+
+La vérification par agents a échoué (plus de crédits d'usage) : ce lot ne contient
+que des corrections **vérifiées par moi** sur source primaire ou par recalcul.
+`updatedDate` au 21 septembre 2026, répercutée dans `blog-meta.json`.
+
+| Article | Avant | Après | Source |
+|---|---|---|---|
+| `interets-composes-meilleur-remplacement` | « Livret A 2,4 % en 2026 » → 30 ans pour doubler ; « LEP 3,5 % » → 21 ans ; 10 000 € → 20 000 € contre 80 000 € | Livret A **1,7 %** depuis le 1er août 2026 → 42 ans ; LEP **2,5 %** → 29 ans ; 10 000 € → ≈ 16 600 € contre ≈ 76 000 € (« plus de ×4 ») | Ministère de l'Économie, 15 juillet 2026 ; règle des 72 |
+| `frais-pros-medecin-liberal-2026` | « Le PER se déduit du revenu global, pas du BNC » (FAQ, essentiel, encadré) | Deux voies au choix : bénéfice BNC (2035, art. 154 bis) ou revenu global (2042, art. 163 quatervicies), jamais les deux | CGI |
+| idem | ACRE décrite comme avant 2026 | Réservée à certains profils depuis le 1er janvier 2026, plafonnée à 25 %, dégressive | Loi n° 2025-1403 (LFSS 2026) |
+| `frais-pros-medecins-salaries-internes-2026` | « Déclaration corrective sur 3 ans (revenus 2022, 2023, 2024) » — FAQ, essentiel, corps | Réclamation : revenus 2023 jusqu'au 31/12/2026, 2024 jusqu'au 31/12/2027 ; 2022 n'est plus rattrapable | LPF, art. R*196-1 |
+| idem | Matériel > 500 € : « étalement recommandé sur 2-3 ans » | Étalement obligatoire au-delà de 500 € HT, 3 ans pour l'informatique | Doctrine frais réels |
+| `remplacement-salarie-guide-complet` | « Tu ne peux pas amortir ton ordi, bureau ou voiture » | Ordinateur et bureau déductibles (une fois jusqu'à 500 € HT, sinon étalés) ; voiture par le barème | idem |
+| `conge-maternite-paternite` | « Allocation + IJ = imposables, à intégrer aux recettes BNC » | Vrai au réel ; en micro-BNC elles ne s'ajoutent pas aux recettes | Position DGFiP 2022 ; guide du site |
+| idem | « À venir (LFSS 2026) … décrets attendus » | En vigueur depuis le 1er juillet 2026 (décrets du 31 mai) : ≈ 1 380 € puis ≈ 1 190 € par mois, conditions | ameli.fr ; ministère |
+| `remplir-declaration-2035` | Dépôt « avant début mai » (FAQ et corps) | Télétransmission jusqu'au 20 mai 2026 (2e jour ouvré après le 1er mai + 15 jours) | impots.gouv.fr |
+
+**⚠️ Laissé en l'état, décision du fondateur attendue — `frais-pros-medecins-salaries-internes-2026`, exemple « Léa ».**
+Le gain annoncé (≈ 1 435 €, « TMI 30 % ») est faux pour son profil : à 30 000 € de
+salaire elle est dans la tranche à 11 %. Recalcul (barème et décote 2026) : 1 564 €
+d'impôt au forfait, 799 € aux frais réels, soit **≈ 765 €**. Mais la promesse
+« ≈ 1 500 € d'impôt en moins, trois semaines de salaire net » porte la description,
+l'accroche, « L'essentiel » et très probablement les 19 slides (images). La corriger
+revient à re-cadrer l'article : à trancher (changer le profil, ou assumer ≈ 765 €) et
+slides à refaire.
+
+**Slides à refaire (images non modifiables ici)** : `interets-composes/` — au moins
+les slides qui affichent « Livret A 2,4 % », « 30 ans », « LEP 3,5 % » ; série
+`frais-pros-medecins-salaries-internes-2026-slide-*.png` selon la décision sur Léa.
+
+**Non traités, faute de vérification indépendante** : `medecin-outre-mer-avantages-fiscaux`
+(exonération outre-mer et CARMF ; indemnité hospitalière 40 %), `salaires-medecins-remplacants`
+(plafond légal de l'intérim, titre « 2025 »), `obtenir-sa-licence-de-remplacement`
+(date de validité), `guide-impots-internes-remplacants` (ordre des démarches RSPM),
+`choix-mode-exercice` (intérim : deux ans d'exercice), `micro-bnc-exemples-concrets`
+(recalcul des deux exemples), lignes 22 / 25 / 6 de `remplir-declaration-2035`.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
