@@ -2,6 +2,7 @@
 title: "Médecin libéral : ce qu'il te reste vraiment"
 description: "Tu connais ton CA. Mais sais-tu ce qu'il te reste après URSSAF, CARMF, impôt et acomptes ? Le revenu est un système, pas un chiffre."
 pubDate: "2026-03-18"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -16,7 +17,7 @@ faq:
   - question: "Quelles sont les cotisations sociales d'un médecin libéral en 2026 ?"
     answer: "Les cotisations comprennent **maladie-maternité, retraite de base et complémentaire (CARMF), invalidité-décès, allocations familiales, CFP, CSG et CRDS**. Côté CARMF, elles sont réparties entre base, complémentaire, ASV et invalidité-décès. L'ensemble représente un pourcentage significatif du revenu."
   - question: "Quelle est la différence entre micro-BNC et déclaration contrôlée pour un médecin ?"
-    answer: "Le **micro-BNC** applique un abattement forfaitaire de **34 %** sur les recettes (seuil 83 600 € en 2026). La **déclaration contrôlée** (régime réel) permet de déduire les charges réellement payées via la 2035. Le meilleur choix dépend du niveau de charges, du foyer fiscal et de la situation globale."
+    answer: "Le **micro-BNC** applique un abattement forfaitaire de **34 %** sur les recettes (seuil 83 600 € en 2026, sortie seulement après deux années consécutives de dépassement). La **déclaration contrôlée** (régime réel) permet de déduire les charges réellement payées via la 2035. Le meilleur choix dépend du niveau de charges, du foyer fiscal et de la situation globale."
   - question: "Comment fonctionne le taux individualisé du prélèvement à la source ?"
     answer: "Depuis le **1er septembre 2025**, le taux individualisé est le mode par défaut pour les couples mariés ou pacsés. Il **ne change pas le montant total d'impôt** du couple, mais répartit le prélèvement en fonction des revenus propres de chacun. On peut toujours opter pour le taux foyer."
   - question: "Qu'est-ce que le super-net d'un médecin libéral ?"
@@ -35,7 +36,7 @@ relatedArticles:
 - Le **micro-BNC** reste accessible en 2026 sous **83 600 €** de recettes, avec un abattement forfaitaire de **34 %** ; la **déclaration contrôlée** déduit tes charges réelles via la 2035.
 - Depuis le **1er septembre 2025**, le taux individualisé est le mode par défaut pour les couples mariés ou pacsés : il ne change pas l'impôt total du couple, seulement sa répartition.
 - En DOM, l'abattement d'impôt va de **30 % (plafonné à 2 450 €)** en Guadeloupe/Martinique/Réunion à **40 % (plafonné à 4 050 €)** en Guyane et Mayotte.
-- Le RSPM plafonne à **19 000 € d'honoraires par année civile** pour les remplaçants sans autre activité libérale.
+- Le RSPM s'ouvre sous **19 000 € d'honoraires par année civile**, pour les remplaçants sans autre activité libérale ; on peut ensuite y rester jusqu'à 38 000 €.
 :::
 
 Tu connais ton chiffre d'affaires. Tu sais ce que tu as encaissé. Mais sais-tu vraiment ce qu'il te reste ? Pas "à peu près". Pas "en gros". Pas après une estimation rapide. Le vrai sujet, ce n'est pas ton CA. Le vrai sujet, c'est ton **revenu disponible**. Celui qui reste une fois passés les cotisations, la retraite, l'impôt, les acomptes, la CFE, et les effets très concrets de ta situation familiale.
@@ -58,7 +59,7 @@ Le piège classique, c'est de croire que la question se résume à : micro ou r�
 
 En réalité, ce n'est qu'une partie du problème.
 
-À date, pour une activité libérale, le **micro-BNC reste accessible en 2026** si les recettes de 2024 et 2025 n'ont pas dépassé **83 600 €**. Dans ce régime, l'administration applique un **[abattement forfaitaire de 34](/blog/micro-bnc-exemples-concrets) %**, avec un minimum de 305 €. À l'inverse, en **[déclaration contrôlée](/blog/remplir-declaration-2035)**, tu déclares un bénéfice net qui tient compte de tes recettes et des charges réellement payées, via la 2035.
+À date, pour une activité libérale, le **micro-BNC reste accessible en 2026** tant que tes recettes n'ont pas dépassé **83 600 €** deux années de suite : il suffit que 2024 **ou** 2025 soit restée sous ce seuil. Dans ce régime, l'administration applique un **[abattement forfaitaire de 34](/blog/micro-bnc-exemples-concrets) %**, avec un minimum de 305 €. À l'inverse, en **[déclaration contrôlée](/blog/remplir-declaration-2035)**, tu déclares un bénéfice net qui tient compte de tes recettes et des charges réellement payées, via la 2035.
 
 Donc non : le "bon" régime ne se résume pas à une phrase simple du type "le micro est plus facile" ou "le réel est mieux quand on a beaucoup de frais". Il faut regarder l'ensemble de la mécanique.
 
@@ -88,7 +89,7 @@ La **CFE**, par exemple, est due par toute personne exerçant une activité prof
 
 En DOM, des abattements spécifiques d'impôt existent : **30 % plafonnés à 2 450 €** pour la Guadeloupe, la Martinique et La Réunion, et **40 % plafonnés à 4 050 €** pour la Guyane et Mayotte, sous les conditions prévues par l'administration fiscale.
 
-Pour certains remplaçants, le **RSPM** existe aussi : l'[Urssaf](/blog/tout-comprendre-urssaf) devient alors l'interlocuteur unique pour déclarer l'activité, les honoraires et payer les cotisations ; ce dispositif est réservé aux remplacements sans autre activité libérale, avec un **plafond de 19 000 € d'honoraires par année civile**.
+Pour certains remplaçants, le **RSPM** existe aussi : l'[Urssaf](/blog/tout-comprendre-urssaf) devient alors l'interlocuteur unique pour déclarer l'activité, les honoraires et payer les cotisations ; ce dispositif est réservé aux remplacements sans autre activité libérale, avec un **seuil d'entrée de 19 000 € d'honoraires par année civile** ; au-delà et jusqu'à 38 000 €, le taux passe à 21,2 % sur la part qui dépasse, et tu sors du dispositif après deux dépassements consécutifs de 19 000 € ou un seul de 38 000 €.
 
 ## 📋 Ce qu'un médecin devrait voir noir sur blanc
 

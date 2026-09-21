@@ -2,7 +2,7 @@
 title: "Tout comprendre sur la CARMF"
 description: "La CARMF, ta caisse de retraite obligatoire : affiliation, cotisations et astuces pour optimiser dès tes premiers remplacements."
 pubDate: "2025-10-21"
-updatedDate: "2026-08-18"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -20,9 +20,9 @@ faq:
   - question: "Quand dois-je m'affilier à la CARMF ?"
     answer: "Tu disposes d'**1 mois** après ton premier remplacement pour t'inscrire sur www.carmf.fr. En cas d'oubli, l'affiliation est automatique avec possibles pénalités de retard."
   - question: "Combien coûtent les cotisations CARMF en 2026 ?"
-    answer: "Les cotisations varient selon tes revenus : **retraite de base** (8,73% jusqu'à 48 060 € en 2026, après réforme de l'assiette sociale), **retraite complémentaire** (~10,20% en 2026, 11,80% à partir de 2027), **ASV** (variable selon secteur 1 ou 2), et **invalidité-décès** (157 € à 626 € selon le taux choisi : 25% ou 100%, montant forfaitaire indépendant des revenus)."
+    answer: "Les cotisations varient selon tes revenus : **retraite de base** (8,73% jusqu'à 48 060 € en 2026, après réforme de l'assiette sociale), **retraite complémentaire** (11,80% en 2026, sur tes revenus de l'avant-dernière année, sans régularisation — 10,20% en 2025), **ASV** (variable selon secteur 1 ou 2), et **invalidité-décès** (157 € à 626 € selon le taux choisi : 25% ou 100%, montant forfaitaire indépendant des revenus)."
   - question: "Quelle différence entre secteur 1 et secteur 2 pour la CARMF ?"
-    answer: "En **secteur 1**, l'ASV coûte ~1 850 € + 1,27% des revenus. En **secteur 2**, c'est ~5 550 € + 3,80%. Les médecins conventionnés secteur 1 paient donc moins de cotisations ASV."
+    answer: "En **secteur 1**, l'ASV coûte 1 917 € + 1,33% des revenus en 2026 (l'Assurance Maladie prend en charge les deux tiers). En **secteur 2**, c'est 5 751 € + 4%. Les médecins conventionnés secteur 1 paient donc moins de cotisations ASV."
   - question: "Puis-je être dispensé de cotisations CARMF ?"
     answer: "Une **dispense totale d'affiliation** est possible si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. Attention : elle n'est **pas automatique**, s'obtient sur **demande explicite** auprès de la CARMF et n'est pas rétroactive. La période dispensée ne compte pas pour tes droits à la retraite."
 relatedArticles:
@@ -56,18 +56,18 @@ Les cotisations CARMF dépendent de ton revenu net et comprennent :
 ## 1. Retraite de base 📊
 
 **8,73 %** des revenus nets dans la limite d'1 PASS* (taux 2026 après réforme de l'assiette sociale, ex-8,23 %)\
-**1,87%** des revenus nets entre 1 et 5 PASS\
+**1,87%** sur l'ensemble de tes revenus nets, jusqu'à 5 PASS\
 *PASS : Plafond Annuel de la Sécurité Sociale fixé à **48 060 €** en 2026
 
 ## 2. Retraite complémentaire 📈
 
-**10,20%** des revenus nets\
-Plafond maximal de cotisation : **~17 000 €**
+**11,80%** des revenus nets de l'avant-dernière année, plafonnés à 168 210 € (taux 2026 ; 10,20% en 2025), sans régularisation ultérieure\
+Plafond maximal de cotisation : **19 849 €**
 
 ## 3. ASV (Avantage Social Vieillesse) 💼 si tu es conventionné
 
-**Secteur 1** : ~1 850 € + 1,27% des revenus nets\
-**Secteur 2** : ~5 550 € + 3,80% des revenus nets\
+**Secteur 1** : 1 917 € + 1,33% des revenus nets (barème 2026 : l'Assurance Maladie paie les deux tiers)\
+**Secteur 2** : 5 751 € + 4% des revenus nets (barème 2026)\
 _Les barèmes ASV évoluent annuellement — vérifier sur carmf.fr pour les montants exacts de l'année en cours._
 
 ## 4. Invalidité / Décès 🛡
@@ -78,12 +78,12 @@ Montant **forfaitaire** (indépendant des revenus) — choix personnel du médec
 ## 🔍 Exemples pratiques
 
 **Si tu gagnes 40 000 € nets** :\
-• Secteur 1 ➝ ~10 350 €/an (≈ 26%)\
-• Secteur 2 ➝ ~15 000 €/an (≈ 37%)
+• Secteur 1 ➝ ~12 000 €/an (≈ 30%)\
+• Secteur 2 ➝ ~17 000 €/an (≈ 42%)
 
 **Si tu gagnes 90 000 € nets** :\
-• Secteur 1 ➝ ~17 000 €/an (≈ 19%)\
-• Secteur 2 ➝ ~24 500 €/an (≈ 27%)
+• Secteur 1 ➝ ~20 000 €/an (≈ 22%)\
+• Secteur 2 ➝ ~26 500 €/an (≈ 29%)
 
 :::tip
 **💡** Certaines cotisations étant plafonnées, le pourcentage baisse lorsque tes revenus augmentent.

@@ -2,6 +2,7 @@
 title: "Cotisations sociales vs impôt sur le revenu"
 description: "La différence entre cotisations sociales et impôt sur le revenu : ce qui part de ton encaissement et ce qui te reste vraiment."
 pubDate: "2025-10-21"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -17,9 +18,9 @@ faq:
   - question: "Quelle différence entre cotisations sociales et impôts sur le revenu ?"
     answer: "Les **cotisations sociales** (URSSAF, CARMF) financent ta protection sociale personnelle (maladie, retraite). Les **impôts sur le revenu** financent les services publics (écoles, hôpitaux). Les deux sont obligatoires mais distinctes."
   - question: "Combien représentent les cotisations sociales pour un médecin remplaçant ?"
-    answer: "Les cotisations sociales représentent environ **35 à 45% de ton revenu brut** : URSSAF (~20-25%), CARMF (~10-15%) et autres cotisations (~1-2%). En RSPM, c'est réduit à ~13,5-21,2%."
+    answer: "Pour un remplaçant conventionné secteur 1 au régime classique, les cotisations sociales représentent environ **un quart de ce que tu encaisses** : URSSAF ≈ 8 %, CARMF ≈ 16 %. Au RSPM, c'est 13,5 % de tes honoraires jusqu'à 19 000 €, puis 21,2 % au-delà."
   - question: "Combien me reste-t-il réellement après toutes les charges ?"
-    answer: "Sur 1 000 € encaissés, environ **350-450 €** partent en cotisations sociales et **50-150 €** en impôts. Il te reste donc entre **450 et 600 €** de revenu réel (Super-Net)."
+    answer: "Sur 1 000 € encaissés, environ **250 €** partent en cotisations sociales et environ **100 €** en impôt (célibataire, secteur 1, autour de 72 000 € de rétrocessions par an). Il te reste donc environ **650 €** de revenu réel (Super-Net)."
   - question: "Comment calculer mon Super-Net ?"
     answer: "Le Super-Net = Revenus bruts - Cotisations sociales (URSSAF + CARMF) - Impôts sur le revenu. Hippodoc calcule automatiquement ce montant en temps réel sur ton tableau de bord."
   - question: "Quand dois-je payer mes cotisations et impôts ?"
@@ -60,12 +61,12 @@ Elles assurent ta protection sociale personnelle, notamment :
 
 ## 💰 Combien représentent-elles ?
 
-Obligatoires, ces cotisations s'élèvent à environ **35 à 45 % de ton revenu brut**.
+Obligatoires, ces cotisations représentent environ **un quart de ce que tu encaisses** (tes rétrocessions) pour un remplaçant conventionné secteur 1 au régime classique.
 
 ## 📊 Répartition indicative :
 
-**URSSAF** : environ 20–25 %\
-**CARMF** (cotisation provisionnelle la première année) : environ 10–15 %\
+**URSSAF** : environ 8 % de tes rétrocessions\
+**CARMF** (ta retraite, provisionnelle la première année) : environ 16 %\
 **Autres cotisations** : environ 1–2 %
 
 ## ⏰ Quand payer ?
@@ -76,9 +77,9 @@ Les paiements sont généralement **trimestriels**, mais peuvent être adaptés 
 
 :::warning
 Pour chaque tranche de **1 000 € encaissée** :\
-💸 **350 à 450 €** partent en cotisations sociales\
-💸 **50 à 150 €** sont prélevés au titre de l'impôt sur le revenu, selon ta situation familiale et fiscale\
-✅ Il te reste donc entre **450 et 600 €** (revenu réel ou « [super-net](/blog/simulateur-super-net-combien-reste) »).
+💸 environ **250 €** partent en cotisations sociales\
+💸 environ **100 €** sont prélevés au titre de l'impôt sur le revenu — davantage ou moins selon ta situation familiale et fiscale\
+✅ Il te reste donc environ **650 €** (revenu réel ou « [super-net](/blog/simulateur-super-net-combien-reste) »).
 :::
 
 ## 💡 Bon à savoir : exonérations possibles

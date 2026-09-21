@@ -2,6 +2,7 @@
 title: "Déductions fiscales : payer moins d'impôt"
 description: "Réduis tes impôts en déclarant efficacement tes frais pros. Guide clair et complet pour optimiser ta déclaration fiscale."
 pubDate: "2025-10-21"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -15,7 +16,7 @@ tags:
 cta: "Prêt à optimiser ta déclaration fiscale ?"
 faq:
   - question: "Quels frais professionnels puis-je déduire en libéral ?"
-    answer: "Tu peux déduire : **déplacements** (barème kilométrique ou frais réels), **matériel médical**, **formations**, **assurances pro** (RCP), **téléphone/internet** (part pro), **cotisations URSSAF et CARMF**, et **frais de comptabilité**."
+    answer: "Au régime réel uniquement (en micro-BNC, l'abattement de 34 % remplace tous tes frais), tu peux déduire : **déplacements** (barème kilométrique ou frais réels), **matériel médical**, **formations**, **assurances pro** (RCP), **téléphone/internet** (part pro), **cotisations URSSAF et CARMF**, et **frais de comptabilité**."
   - question: "Comment fonctionne le barème kilométrique pour les médecins ?"
     answer: "Le barème kilométrique te permet de déduire un montant fixe par km parcouru (variable selon la puissance fiscale de ton véhicule). Alternativement, tu peux déduire tes **frais réels** : essence, assurance, entretien, péages."
   - question: "Puis-je déduire mes repas en remplacement ?"
@@ -23,7 +24,7 @@ faq:
   - question: "Comment déduire l'achat de matériel médical coûteux ?"
     answer: "Matériel < 500 € HT : **déduction immédiate** l'année d'achat. Matériel > 500 € HT : **amortissement** sur plusieurs années. Ex : ordinateur à 1 200 € = 400 €/an pendant 3 ans."
   - question: "L'abonnement Hippodoc est-il déductible ?"
-    answer: "Oui ! L'abonnement Hippodoc est **100% déductible** comme frais professionnel. C'est un outil de gestion de ton activité libérale, donc une charge professionnelle légitime."
+    answer: "Oui, si tu es au **régime réel** (déclaration 2035) : l'abonnement se déduit en totalité, c'est un outil de gestion de ton activité libérale. En micro-BNC, tu ne déduis aucune dépense : l'abattement forfaitaire de 34 % est censé tout couvrir, abonnement compris."
 relatedArticles:
   - "regime-fiscal-micro-bnc-vs-reel"
   - "cotisations-sociales-vs-impots"
@@ -44,7 +45,7 @@ Imposition uniquement sur **66 %** des recettes.
 ## ✅ Régime réel
 
 Déduction des **frais professionnels réels**.\
-Idéal si tes frais dépassent **34 %** de tes recettes.
+Intéressant si le total de tes charges — **cotisations URSSAF et CARMF comprises** — dépasse **34 %** de tes recettes.
 
 ## 🔹 Charges professionnelles déductibles (Régime réel)
 
@@ -100,7 +101,7 @@ Exonérée la première année, réduite la deuxième année.
 ## 🦛 Abonnement Hippodoc
 
 :::tip
-**100 % déductible** et très pratique pour gérer tes finances professionnelles.
+**100 % déductible au régime réel** (au micro-BNC, l'abattement de 34 % couvre déjà tes frais) et très pratique pour gérer tes finances professionnelles.
 :::
 
 ## ❌ Dépenses NON déductibles

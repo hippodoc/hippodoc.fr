@@ -2,7 +2,7 @@
 title: "Calendrier fiscal du remplaçant"
 description: "Ton calendrier fiscal complet, mois par mois, pour gérer tes obligations et anticiper chaque échéance sans être pris de court."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -16,13 +16,13 @@ tags:
 cta: "Prêt à maîtriser ton calendrier fiscal ?"
 faq:
   - question: "Quelles sont les dates clés URSSAF pour un médecin remplaçant ?"
-    answer: "Paiements trimestriels URSSAF : **5 février** (T4 N-1), **5 mai** (T1), **5 août** (T2), **5 novembre** (T3). Tu peux aussi choisir la mensualisation le 5 ou 20 de chaque mois."
+    answer: "Paiements trimestriels URSSAF (régime classique PAMC) : **5 février, 5 mai, 5 août, 5 novembre** — quatre parts égales de tes cotisations de l'année. Par défaut, le prélèvement est mensuel, le **5** ou le **20** de chaque mois."
   - question: "Quand dois-je déposer ma déclaration d'impôt sur le revenu ?"
-    answer: "La déclaration d'impôt ouvre en **avril**. Date limite : généralement **fin mai / début juin** selon ton département. La 2035 (régime réel) doit être déposée **avant début mai**."
+    answer: "La déclaration en ligne ouvre en **avril** (9 avril en 2026). Date limite selon ton département : **21 mai, 28 mai ou 4 juin** en 2026. Si tu es au régime réel, la **2035** se télétransmet en mai : échéance légale le 2e jour ouvré après le 1er mai, avec 15 jours de délai en télétransmission (**20 mai** en 2026). En micro-BNC, pas de 2035."
   - question: "Quand payer la CFE en tant que médecin remplaçant ?"
     answer: "La **CFE** (Cotisation Foncière des Entreprises) doit être réglée avant le **15 décembre**. Note : tu es exonéré la 1ère année d'activité et bénéficies d'une réduction de 50% la 2ème année."
-  - question: "Comment anticiper la régularisation URSSAF en 3ème année ?"
-    answer: "Les 2 premières années, tes cotisations sont forfaitaires. En 3ème année, l'URSSAF **régularise** sur tes vrais revenus. Mets de côté ~40% de tes revenus pour éviter les surprises !"
+  - question: "Quand tombe la première régularisation URSSAF d'un médecin remplaçant ?"
+    answer: "Au régime classique (PAMC), tes cotisations de début d'activité sont d'abord calculées sur une base forfaitaire, puis **régularisées dès que ton revenu réel est déclaré** : la 1re année est régularisée après ta déclaration de la 2e année, et l'échéancier de l'année en cours est recalculé au même moment. Au **RSPM**, pas de régularisation : tu cotises directement sur les honoraires déclarés. Pour ne pas être pris de court, mets de côté **30 à 40 %** de chaque rétrocession."
 relatedArticles:
   - "remplir-declaration-2035"
   - "tout-comprendre-urssaf"
@@ -45,7 +45,7 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 ## 📅 FÉVRIER – Respire et anticipe 🍃
 
-💸 **URSSAF** : Paiement du T4 année N-1 (si trimestriel, le 5 ou 20)\
+💸 **URSSAF** : 1re échéance trimestrielle le **5 février** (si tu as opté pour le trimestriel — en mensuel, prélèvement le 5 ou le 20 de chaque mois)\
 💸 **IMPÔT** : 1er acompte trimestriel (si trimestriel)
 
 ## 📅 MARS – Prépare-toi 🛠
@@ -58,7 +58,7 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 ## 📅 MAI – Le mai-rathon 🏃
 
-💸 **URSSAF** : Paiement du T1\
+💸 **URSSAF** : 2e échéance trimestrielle, le **5 mai**\
 💸 **IMPÔT** : 2ᵉ acompte trimestriel\
 📤 Dépôt de la [2035](/blog/remplir-declaration-2035)\
 📤 Finalisation de ta déclaration de revenus
@@ -75,7 +75,7 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 ## 📅 AOÛT – Le faux-calme 🌅
 
-💸 **URSSAF** : Paiement du T2\
+💸 **URSSAF** : 3e échéance trimestrielle, le **5 août**\
 💸 **IMPÔT** : 3ᵉ acompte trimestriel\
 💸 **CARMF** : Paiement solde retraite avant le 31 août\
 💡 Corrige ta déclaration IR en ligne si nécessaire
@@ -92,13 +92,13 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 ## 📅 NOVEMBRE – Clôture 📝
 
-💸 **URSSAF** : Paiement du T3\
+💸 **URSSAF** : 4e échéance trimestrielle, le **5 novembre**\
 💸 **IMPÔT** : 4ᵉ acompte trimestriel\
-📬 Réception avis de CFE
+📬 Avis de CFE **mis en ligne** dans ton espace professionnel impots.gouv.fr — il n'arrive jamais par courrier
 
 ## 📅 DÉCEMBRE – Clap de fin 🎬
 
-💸 **[CFE](/blog/cfe-medecin-remplacant)** : À régler avant le 15 décembre
+💸 **[CFE](/blog/cfe-medecin-remplacant)** : À régler au plus tard le 15 décembre
 
 ## 🔥 Tips Hippodoc
 

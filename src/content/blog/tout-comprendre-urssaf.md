@@ -2,7 +2,7 @@
 title: "Tout comprendre sur l'URSSAF"
 description: "L'URSSAF reste un mystère ? Fiche claire et pratique pour comprendre et gérer tes cotisations dès tes premiers remplacements."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -18,7 +18,7 @@ faq:
   - question: "Qu'est-ce que l'URSSAF et à quoi servent mes cotisations ?"
     answer: "L'**URSSAF** collecte tes cotisations sociales obligatoires qui financent ta protection sociale : assurance maladie-maternité, allocations familiales, retraite de base, CSG-CRDS, et indemnités journalières."
   - question: "Quand dois-je m'inscrire à l'URSSAF ?"
-    answer: "Tu dois t'inscrire à l'URSSAF **dans les 8 jours** suivant ton premier remplacement libéral. L'inscription se fait en ligne sur le portail autoentrepreneur.urssaf.fr ou urssaf.fr."
+    answer: "Tu dois t'inscrire à l'URSSAF **dans les 8 jours** suivant ton premier remplacement libéral. L'inscription se fait sur medecins-remplacants.urssaf.fr si tu choisis le RSPM (à déclarer avant ton premier remplacement), sinon sur le guichet unique formalites.entreprises.gouv.fr, qui transmet ton dossier à l'URSSAF."
   - question: "Quelle différence entre RSPM et régime PAMC ?"
     answer: "Le **RSPM** (CA < 38 000 €) offre des cotisations réduites (13,5-21,2%). Le **PAMC** (CA > 38 000 €) calcule les cotisations sur ton bénéfice réel. Ne pas confondre avec les régimes fiscaux (Micro-BNC/Réel)."
   - question: "Comment sont calculées mes cotisations URSSAF ?"
@@ -105,7 +105,7 @@ En cas de doute sur le montant à saisir pour **ta** situation, pose la question
 
 :::warning
 📆 **Paiement** : mensuel (le **5** ou le **20** de chaque mois) ou trimestriel (les **5 février, mai, août et novembre**).\
-⚠ **Attention** : Les cotisations des **2 premières années** sont forfaitaires et estimatives avec une **régularisation à prévoir en 3ᵉ année** : attention aux ajustements ! Pense à mettre de côté pour éviter les surprises financières.\
+⚠ **Attention** : Les cotisations de **début d'activité** sont forfaitaires et estimatives, puis **régularisées dès que ton revenu réel est déclaré** — la 1re année dès la déclaration de la 2e année, pas en 3ᵉ année : attention aux ajustements, et à [l'effet ciseaux](/blog/effet-ciseaux-regularisation-urssaf-medecin) ! Pense à mettre de côté pour éviter les surprises financières.\
 📞 **Besoin d'aide ?** Contacte l'URSSAF Médecin :\
 • ☎ **0806 804 209**\
 • 📧 **offre.medecin.remplacant@urssaf.fr**
