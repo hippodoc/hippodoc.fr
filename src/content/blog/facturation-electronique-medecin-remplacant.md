@@ -2,6 +2,7 @@
 title: "Facturation électronique médecin : es-tu concerné ?"
 description: "Réception obligatoire dès le 1er septembre 2026, tes rétrocessions non concernées, la vraie règle des 150 € : ce que la réforme change (ou pas) pour toi."
 pubDate: "2026-08-23"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -15,7 +16,7 @@ tags:
 cta: "Prêt à simplifier ta gestion financière ?"
 faq:
   - question: "Un médecin remplaçant est-il concerné par la facturation électronique du 1er septembre 2026 ?"
-    answer: "Oui, mais pour une seule chose : la **réception**. Comme tout professionnel avec un SIRET, tu dois être raccordé à une **plateforme agréée** pour recevoir les factures de tes fournisseurs (RCP, logiciel, banque…). En revanche, tes rétrocessions et tes actes de soins sont **hors de la réforme** : tu n'as rien à émettre ni à télédéclarer."
+    answer: "Oui, mais pour une seule chose : la **réception**. Comme tout professionnel avec un SIRET, tu dois être raccordé à une **plateforme agréée** pour recevoir les factures de tes fournisseurs (logiciel, téléphonie, matériel…). En revanche, tes rétrocessions et tes actes de soins sont **hors de la réforme** : tu n'as rien à émettre ni à télédéclarer."
   - question: "Dois-je envoyer mes factures de rétrocession par une plateforme électronique ?"
     answer: "**Non, rien ne change.** Ta facture d'honoraires de remplacement rémunère des soins, exonérés de TVA (art. 261, 4-1° du CGI) — et ces opérations sont **exclues de la réforme**. Tu continues à l'envoyer comme avant, par mail ou en main propre. La générer en quelques clics avec Hippodoc reste donc parfaitement valable, aucune plateforme n'est nécessaire."
   - question: "Les factures aux patients passent-elles par la facturation électronique ?"
@@ -25,7 +26,7 @@ faq:
   - question: "Le Portail Public de Facturation (PPF) est-il gratuit pour recevoir mes factures ?"
     answer: "Non. Depuis le **15 octobre 2024**, l'État a abandonné son portail d'échange gratuit. Le PPF ne sert plus qu'à tenir l'**annuaire des entreprises** et à transmettre les données au fisc. Tu dois passer par une **plateforme agréée privée** — certaines proposent la réception gratuitement (logiciels de comptabilité, banques pro)."
   - question: "Quelles sanctions si je ne respecte pas la facturation électronique ?"
-    answer: "Pour une facture qui aurait dû être émise au format électronique : **50 € par facture**, plafonné à 15 000 € par an. Pour une télédéclaration (e-reporting) manquante : **500 € par transmission**, même plafond (art. 1737 et 1788 D du CGI, loi de finances pour 2026). Il n'y a pas d'amende pour défaut de réception — mais tes fournisseurs ne pourront plus te transmettre leurs factures correctement."
+    answer: "Trois sanctions distinctes (loi de finances pour 2026) : **50 € par facture** qui aurait dû être émise au format électronique (plafond 15 000 €/an) ; **500 € par télédéclaration** manquante (plafond 15 000 €/an, distinct du précédent) ; et, si tu n'es raccordé à **aucune plateforme agréée**, une mise en demeure de 3 mois puis **500 €**, et 1 000 € tous les 3 mois tant que ça dure. Bonne nouvelle : une première infraction régularisée dans les 30 jours n'est pas sanctionnée."
 relatedArticles:
   - "generer-facture-remplacement"
   - "calendrier-fiscal-remplacant"
@@ -39,7 +40,7 @@ Tu es médecin libéral ou remplaçant, et tout le monde te parle de l'échéanc
 
 L'État veut que les factures **entre professionnels** circulent par des canaux informatiques contrôlés, au lieu de partir par mail en PDF. Deux mécanismes, deux mots de jargon que tu croiseras partout :
 
-**La « facturation électronique » (e-invoicing)** : quand une entreprise française facture **une autre entreprise française**, la facture devra passer par une **plateforme agréée** — un intermédiaire privé certifié par l'administration fiscale — dans un format que les machines savent lire. C'est ce que la réforme appelle le « B2B » : de professionnel à professionnel. Toi, quand tu achètes ton logiciel métier ou payes ta RCP, tu es le professionnel qui **reçoit** ce type de facture.\
+**La « facturation électronique » (e-invoicing)** : quand une entreprise française facture **une autre entreprise française**, la facture devra passer par une **plateforme agréée** — un intermédiaire privé certifié par l'administration fiscale — dans un format que les machines savent lire. C'est ce que la réforme appelle le « B2B » : de professionnel à professionnel. Toi, quand tu achètes ton logiciel métier, ton forfait téléphone ou du matériel médical, tu es le professionnel qui **reçoit** ce type de facture.\
 **Le « e-reporting »** : pour les ventes qui ne passent pas par ce circuit (clients particuliers, clients étrangers), les entreprises concernées devront **télédéclarer** leurs recettes au fisc. Spoiler : tes consultations n'y sont pas soumises, on y vient.
 
 📅 **Le calendrier officiel** :\
@@ -55,7 +56,7 @@ Aux yeux du fisc, tu es une entreprise comme une autre — même si tu ne factur
 ❌ Tes consultations, visites et actes → **rien ne change**.\
 ❌ Tes notes d'honoraires aux patients → **rien ne change**.\
 ❌ Tes rétrocessions de remplacement → **rien ne change** (voir juste en dessous).\
-✅ Les factures que t'envoient **tes fournisseurs** — RCP, logiciel métier, comptable, matériel, loyer professionnel — arriveront par plateforme agréée. **Tu dois pouvoir les recevoir dès le 1er septembre 2026.** C'est ta seule vraie action.
+✅ Les factures que t'envoient **tes fournisseurs** — logiciel métier, téléphonie, comptable, matériel — arriveront par plateforme agréée. **Tu dois pouvoir les recevoir dès le 1er septembre 2026.** C'est ta seule vraie action.
 :::
 
 ## 🔄 Et ta facture de rétrocession, alors ?
@@ -68,7 +69,7 @@ Les sommes que le médecin remplacé te reverse rémunèrent des **prestations d
 Autrement dit : [générer ta facture de rétrocession avec Hippodoc](/blog/generer-facture-remplacement) et l'envoyer par mail au remplacé reste **exactement la bonne façon de faire** — avant comme après la réforme. Propre, datée, archivée, et zéro obligation électronique là-dessus. 🚀
 :::
 
-En revanche, comme tout professionnel avec un SIRET, tu restes concerné par la **réception** : ta RCP, ton logiciel, ta banque pro te factureront par plateforme.
+En revanche, comme tout professionnel avec un SIRET, tu restes concerné par la **réception** : ton logiciel, ton opérateur télécom, ton comptable te factureront par plateforme. (Ton assurance RCP et ta banque, elles, restent hors réforme : leurs opérations sont exonérées de TVA, comme tes soins.)
 
 :::warning
 **Plusieurs structures = plusieurs raccordements.** Chaque entité a son propre SIREN : ton activité en nom propre, une SCM, une SCI… Chacune doit pouvoir recevoir **ses** factures. Vérifie le raccordement de chaque structure, pas seulement de ton activité principale.
@@ -110,10 +111,14 @@ Si tu ne fais que du soin et du remplacement : ce paragraphe ne te concerne pas.
 
 ## ⚖️ Les sanctions
 
-Fixées par la loi de finances pour 2026 (art. 1737 et 1788 D du CGI) :\
+Fixées par la loi de finances pour 2026 :\
 • Facture qui aurait dû être émise au format électronique : **50 € par facture**, plafonné à 15 000 € par an.\
-• Télédéclaration (e-reporting) manquante : **500 € par transmission**, même plafond annuel.\
-• **Réception** : pas d'amende dédiée — mais sans raccordement, tes fournisseurs ne peuvent plus te délivrer leurs factures normalement, et ton dossier de charges déductibles se fragilise.
+• Télédéclaration (e-reporting) manquante : **500 € par transmission**, plafonnée elle aussi à 15 000 € par an — les deux plafonds sont **distincts**, ils ne se partagent pas.\
+• **Pas de plateforme agréée du tout** — c'est le cas qui te concerne : l'administration commence par t'envoyer une **mise en demeure**, tu as **3 mois** pour te raccorder. Passé ce délai : **500 €**, puis **1 000 € tous les 3 mois** tant que tu n'es pas en règle.
+
+:::tip
+**Le droit à l'erreur existe.** Une première infraction régularisée spontanément, ou dans les 30 jours suivant la première demande de l'administration, n'est pas sanctionnée. Personne ne te tombera dessus le 2 septembre : tu es prévenu avant, et tu as le temps de régulariser. Ce n'est pas une raison pour attendre — mais ce n'est pas non plus une raison de paniquer.
+:::
 
 ## 🦛 Le Tips Hippodoc
 
@@ -126,4 +131,4 @@ L'échéance du 1er septembre est surtout une bonne occasion de **mettre de l'or
 • impots.gouv.fr — dossier « facturation électronique » : champ d'application, calendrier, exclusion des opérations exonérées (art. 261 à 261 E du CGI).\
 • entreprendre.service-public.gouv.fr — fiche « mentions obligatoires d'une facture » (dispense du n° de TVA ≤ 150 € HT) et calendrier de la réforme.\
 • Communiqué DGFiP du 15 octobre 2024 — recentrage du Portail Public de Facturation sur l'annuaire et la concentration des données.\
-• Loi de finances pour 2026 — art. 1737 et 1788 D du CGI (sanctions).
+• Loi de finances pour 2026 (loi n° 2026-103 du 19 février 2026, art. 123) — sanctions et droit à l'erreur ; art. 1737 et 1788 D du CGI.

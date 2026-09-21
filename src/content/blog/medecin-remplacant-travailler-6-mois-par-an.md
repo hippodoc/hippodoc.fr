@@ -2,6 +2,7 @@
 title: "Médecin remplaçant : bosser 6 mois, vivre 12"
 description: "120 jours de remplacement, c'est environ 3 900 € nets par mois sur 12 mois. Le vrai calcul 2026 : cotisations, micro-BNC, impôt, et combien de jours te suffisent."
 pubDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -17,13 +18,13 @@ faq:
   - question: "Pourquoi travailler deux fois moins ne divise pas le revenu net par deux ?"
     answer: "À cause de la **progressivité de l'impôt**. Le barème fonctionne comme un escalier : 0 %, puis 11 %, puis 30 %, puis 41 %. Les premiers euros de l'année remplissent les tranches à 0 % et 11 %, les derniers sont taxés à 30 % ou 41 %. Moins tu gagnes dans l'année, plus la part de tes revenus taxée doucement est grande."
   - question: "Combien de jours de remplacement faut-il pour 3 000 € nets par mois ?"
-    answer: "Avec nos hypothèses (600 € rétrocédés par jour, régime classique, micro-BNC, barème 2026, célibataire) : environ **90 jours par an**, soit quatre mois et demi de travail. Pour 2 000 € par mois, compte environ 60 jours ; pour 3 900 €, environ 120 jours ; pour 5 000 €, environ 165 jours — et tu sors alors du micro-BNC."
+    answer: "Avec nos hypothèses (600 € rétrocédés par jour, régime classique, micro-BNC, barème 2026, célibataire) : environ **90 jours par an**, soit quatre mois et demi de travail. Pour 2 000 € par mois, compte environ 60 jours ; pour 3 900 €, environ 120 jours ; pour 5 000 €, environ 165 jours — et tu dépasses alors le plafond du micro-BNC."
   - question: "Le second semestre de travail rapporte-t-il autant que le premier ?"
     answer: "Non. Dans notre simulation, le premier semestre laisse environ **46 500 € nets**, le second seulement **≈ 38 000 € de plus** : près d'un cinquième de moins, pour exactement le même travail. Les derniers euros de l'année tombent dans les tranches à 30 % puis 41 %, avec des cotisations toujours proportionnelles."
   - question: "Quels sont les risques de ne travailler que 6 mois par an ?"
     answer: "Trois prérequis. Une **prévoyance** solide : pas d'employeur, donc pas de maintien de salaire en cas d'arrêt. Une **trésorerie lissée** : l'URSSAF et la CARMF calculent d'abord tes cotisations sur tes revenus passés, puis régularisent avec décalage. Et un **choix retraite assumé** : moins de jours cotisés, c'est moins de points CARMF, à compenser par ton épargne."
   - question: "Reste-t-on au micro-BNC en travaillant 6 mois par an ?"
-    answer: "Dans notre exemple, oui : 72 000 € de recettes restent sous le plafond du micro-BNC, fixé à **83 600 €** depuis le 1er janvier 2026. L'administration applique alors un abattement forfaitaire de **34 %** : tu es imposé sur 66 % de tes recettes. Autour de 140 jours par an avec ces hypothèses, tu dépasses le plafond et tu passes au régime réel."
+    answer: "Dans notre exemple, oui : 72 000 € de recettes restent sous le plafond du micro-BNC, fixé à **83 600 €** depuis le 1er janvier 2026. L'administration applique alors un abattement forfaitaire de **34 %** : tu es imposé sur 66 % de tes recettes. Autour de 140 jours par an avec ces hypothèses, tu dépasses le plafond. Un dépassement isolé est toléré ; deux années de suite au-dessus, et tu passes au régime réel au 1er janvier suivant."
 relatedArticles:
   - "simulateur-super-net-combien-reste"
   - "salaires-medecins-remplacants"
@@ -73,9 +74,9 @@ Pour situer : le salaire net médian du secteur privé en France est de **2 190 
 
 ## 📉 Pourquoi l'impôt progressif est ton meilleur allié
 
-Voici le chiffre qui devrait te marquer : si ce même remplaçant doublait ses jours (240 jours, ~144 000 € de recettes), il sortirait du micro-BNC, passerait au régime réel, et son impôt grimperait dans les tranches à 30 % puis 41 %.
+Voici le chiffre qui devrait te marquer : si ce même remplaçant doublait ses jours, année après année (240 jours, ~144 000 € de recettes), il sortirait du micro-BNC, passerait au régime réel, et son impôt grimperait dans les tranches à 30 % puis 41 %.
 
-Résultat de la simulation, en ordre de grandeur :
+Résultat de la simulation, en ordre de grandeur (au régime réel, avec les déductions forfaitaires du secteur 1 que le simulateur applique — 2 %, groupe III, 3 % — et sans autres frais réels) :
 
 | | Net dans ta poche |
 |---|---|
@@ -95,10 +96,10 @@ Le raisonnement s'inverse facilement. En gardant les mêmes hypothèses (600 €
 | **3 900 €/mois** | ~120 jours | 6 mois |
 | **5 000 €/mois** | ~165 jours | un peu plus de 8 mois |
 
-À 5 000 € par mois, tu sors du micro-BNC. Et remarque la courbe : les derniers paliers « coûtent » plus de jours que les premiers. C'est la progressivité qui joue, dans l'autre sens cette fois.
+À 5 000 € par mois, tu dépasses le plafond du micro-BNC : un dépassement isolé est toléré, mais deux années de suite te font passer au régime réel — c'est l'hypothèse retenue pour cette ligne. Et remarque la courbe : les derniers paliers « coûtent » plus de jours que les premiers. C'est la progressivité qui joue, dans l'autre sens cette fois.
 
 :::tip
-**Sous 38 000 € d'honoraires par an**, tu peux relever du RSPM (régime simplifié des professions médicales), aux cotisations plus légères : l'objectif de 2 000 € par mois descend alors autour de 50 jours. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
+**Et le RSPM ?** Ce régime simplifié allège nettement les cotisations, mais il ne s'ouvre que si tes honoraires ne dépassent pas **19 000 € par an**. Tu peux ensuite y rester jusqu'à 38 000 €, mais deux années de suite au-dessus de 19 000 € te font basculer au régime classique au 1er janvier suivant. Il convient donc à une année très allégée (une trentaine de jours de remplacement), pas à un mi-temps durable. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
 :::
 
 ## ⚠️ Les 3 conditions pour que le deal tienne
@@ -129,4 +130,4 @@ Pour répondre avec tes propres chiffres — ta rétrocession, ton volume d'acte
 • Tarif de la consultation du généraliste, 30 € : tarifs conventionnels en vigueur au 1er janvier 2026 (ameli.fr).\
 • Cotisations, impôt et net des cas-types : calculés avec le moteur du [simulateur Hippodoc](/simulateur) (barèmes URSSAF et CARMF 2026), le 20 septembre 2026.
 
-*Simulation indicative pour un célibataire, 1 part fiscale, secteur 1, affilié à la CARMF depuis plus de 3 ans, sans autres revenus ni frais professionnels pris en compte, chiffres arrondis. Cet article ne remplace pas un conseil fiscal ou comptable personnalisé.*
+*Simulation indicative pour un célibataire, 1 part fiscale, secteur 1, affilié à la CARMF depuis plus de 3 ans, sans autres revenus ; au régime réel, seules les déductions forfaitaires du secteur 1 sont prises en compte, sans frais réels ; chiffres arrondis. Cet article ne remplace pas un conseil fiscal ou comptable personnalisé.*

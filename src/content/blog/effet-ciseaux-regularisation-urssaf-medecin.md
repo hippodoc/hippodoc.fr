@@ -2,6 +2,7 @@
 title: "Régularisation URSSAF : l'effet ciseaux expliqué"
 description: "Bonne année, puis appel de cotisations qui double ? C'est l'effet ciseaux : régularisation URSSAF et nouveau provisionnel tombent ensemble. Comment l'anticiper."
 pubDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -12,7 +13,7 @@ readTime: "9 min"
 cover: "/blog/effet-ciseaux-cover.jpg"
 tags:
   - "Fiche Fiscalité"
-cta: "Prêt à ce que la régul' d'automne ne soit plus une surprise ?"
+cta: "Prêt à ce que la régularisation URSSAF ne soit plus une surprise ?"
 faq:
   - question: "Qu'est-ce que l'effet ciseaux pour un médecin libéral ?"
     answer: "C'est le moment où, après une bonne année, **deux appels de cotisations tombent en même temps** : la **régularisation** de l'année écoulée et le **relèvement du provisionnel** de l'année en cours. Il ne vient pas d'une hausse de taux, mais d'un **décalage dans le temps** : tant que tu n'as pas déclaré, tu paies sur ton passé."
@@ -25,7 +26,7 @@ faq:
   - question: "La CARMF régularise-t-elle comme l'URSSAF ?"
     answer: "**Non.** Le régime complémentaire et l'ASV sont appelés sur tes revenus de l'**avant-dernière année (N−2), sans régularisation ultérieure** : ta très bonne année n'atteint ta cotisation CARMF complémentaire que deux ans plus tard. Le régime de base, lui, est bien régularisé. Une belle année produit donc une **onde de trois ans** : tu encaisses, l'URSSAF régularise, puis la CARMF s'aligne."
   - question: "Un médecin en micro-BNC peut-il moduler ses cotisations ?"
-    answer: "**Oui.** Le micro-BNC est un régime **fiscal** (abattement forfaitaire de 34 % sur tes recettes). Le statut de micro-entrepreneur, lui, est fermé aux médecins : les professions médicales sont exclues du régime micro-social. Tu cotises donc sur ton revenu annuel, comme tout indépendant au réel — et la modulation t'est ouverte."
+    answer: "**Oui.** Le micro-BNC est un régime **fiscal** (abattement forfaitaire de 34 % sur tes recettes). Le statut de micro-entrepreneur, lui, est fermé aux médecins : les professions médicales sont exclues du régime micro-social. Tu cotises donc sur ton revenu annuel, comme tout indépendant — et la modulation t'est ouverte."
   - question: "Que faire si je ne peux pas payer ma régularisation ?"
     answer: "Un **échéancier de paiement** se demande à l'URSSAF. Mieux vaut une demande anticipée qu'un prélèvement rejeté."
 relatedArticles:
@@ -37,7 +38,7 @@ relatedArticles:
   - "medecin-remplacant-travailler-6-mois-par-an"
 ---
 
-Tu as fait une bonne année. Plus de remplas, [une rétrocession mieux négociée](/blog/retrocession-honoraires-medecin-remplacant), quelques gardes en plus. Et l'automne suivant, l'appel de cotisations arrive : le montant n'a plus rien à voir avec l'année d'avant. La tentation est immédiate — « on me prend la moitié de ce que je gagne ». **C'est faux**, et le comprendre change la façon dont tu gères ta trésorerie.
+Tu as fait une bonne année. Plus de remplas, [une rétrocession mieux négociée](/blog/retrocession-honoraires-medecin-remplacant), quelques gardes en plus. Et quelques semaines après ta déclaration de printemps, le nouvel échéancier arrive : le montant n'a plus rien à voir avec celui du début d'année. La tentation est immédiate — « on me prend la moitié de ce que je gagne ». **C'est faux**, et le comprendre change la façon dont tu gères ta trésorerie.
 
 Ce phénomène a un nom : **l'effet ciseaux**. Il ne vient pas d'une hausse de taux. Il vient d'un **décalage dans le temps**.
 
@@ -81,7 +82,7 @@ Deux déclinaisons concrètes, parce que le sujet ne concerne pas que la médeci
 Et une nuance qui compte : sur ces deux vagues, **une seule est un vrai surcoût**. La régularisation solde ce que tu devais et n'avais pas versé. Le relèvement du provisionnel, lui, met simplement ton échéancier au niveau de ce que tu gagnes vraiment. Le problème est un problème de **trésorerie**, pas de taux.
 
 :::warning
-**Ces ordres de grandeur valent pour un exercice conventionné secteur 1.** En secteur 2, ou sur des honoraires non conventionnés, l'Assurance Maladie ne prend pas en charge la même part de tes cotisations (la cotisation ASV forfaitaire, notamment, n'est pas subventionnée de la même façon) : le même écart de bénéfice coûte sensiblement plus cher.
+**Ces ordres de grandeur valent pour un exercice conventionné secteur 1.** En secteur 2, ou sur des honoraires non conventionnés, l'Assurance Maladie ne prend pas en charge la même part de tes cotisations (en secteur 1, elle paie l'essentiel de ta cotisation maladie et une partie de tes allocations familiales ; en secteur 2, tu les paies toi-même) : le même écart de bénéfice coûte sensiblement plus cher.
 :::
 
 ## 🌊 3. La troisième vague : la CARMF, un an après l'URSSAF
@@ -94,18 +95,18 @@ Nuance : le régime de base, lui, est bien régularisé (sur les revenus N−2 p
 - **Année 2** : l'URSSAF régularise et relève.
 - **Année 3** : la CARMF s'aligne à son tour.
 
-Et 2026 ajoute une couche : la **réforme de l'assiette sociale des indépendants** est entrée en vigueur. Une assiette unique sert désormais au calcul des cotisations et de la CSG-CRDS : ton revenu professionnel avant déduction des charges sociales, auquel l'URSSAF applique automatiquement un **abattement forfaitaire de 26 %** (plancher d'environ 846 €, plafond d'environ 62 478 €, calés sur un plafond annuel de la Sécurité sociale de 48 060 € en 2026). En parallèle, les taux CARMF ont augmenté et la CSG-CRDS a baissé : plutôt neutre à légèrement favorable en secteur 1, plutôt défavorable en secteur 2. Tu n'as rien à calculer toi-même — mais tu as tout intérêt à comprendre pourquoi ton échéancier bouge.
+Et 2026 ajoute une couche : la **réforme de l'assiette sociale des indépendants** est entrée en vigueur. Une assiette unique sert désormais au calcul des cotisations et de la CSG-CRDS : ton revenu professionnel avant déduction des charges sociales, auquel l'URSSAF applique automatiquement un **abattement forfaitaire de 26 %** (plancher d'environ 846 €, plafond d'environ 62 478 €, calés sur un plafond annuel de la Sécurité sociale de 48 060 € en 2026). Si tu es en micro-BNC, cet abattement de 26 % ne te concerne pas : ton assiette reste tes recettes moins l'abattement fiscal de 34 %. En parallèle, les taux CARMF ont augmenté et la CSG-CRDS a baissé : plutôt neutre à légèrement favorable en secteur 1, plutôt défavorable en secteur 2. Tu n'as rien à calculer toi-même — mais tu as tout intérêt à comprendre pourquoi ton échéancier bouge.
 
 ## 🎛️ 4. Reprendre la main : la modulation
 
-Depuis ton espace sur urssaf.fr, tu peux déclarer un **revenu estimé** pour l'année en cours. L'URSSAF recalcule ton échéancier et t'adresse un appel rectificatif sous une quinzaine de jours. C'est gratuit, ça se fait en ligne, et ça reste possible tant qu'il reste des échéances dans l'année.
+Depuis ton espace sur urssaf.fr (service « Moduler mes revenus »), tu peux déclarer un **revenu estimé** pour l'année en cours. L'URSSAF recalcule ton échéancier et t'adresse un appel rectificatif sous une quinzaine de jours. C'est gratuit, ça se fait en ligne, et ça reste possible tant qu'il reste des échéances dans l'année.
 
 Tout le monde y pense pour payer moins quand l'activité ralentit. Presque personne n'y pense pour **payer plus tôt quand l'activité s'emballe** — alors que c'est précisément ce qui désamorce l'effet ciseaux : tu étales sur douze mois ce qui allait te tomber dessus après ta prochaine déclaration.
 
-Et un point important pour les remplaçants : **micro-BNC n'est pas micro-entrepreneur**. Le [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel) est un régime fiscal (abattement forfaitaire de 34 % sur tes recettes). Le statut de micro-entrepreneur, lui, est fermé aux médecins : les professions médicales sont exclues du régime micro-social. Tu cotises donc sur ton revenu annuel, comme tout indépendant au réel — et la modulation t'est ouverte.
+Et un point important pour les remplaçants : **micro-BNC n'est pas micro-entrepreneur**. Le [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel) est un régime fiscal (abattement forfaitaire de 34 % sur tes recettes). Le statut de micro-entrepreneur, lui, est fermé aux médecins : les professions médicales sont exclues du régime micro-social. Tu cotises donc sur ton revenu annuel, comme tout indépendant — et la modulation t'est ouverte.
 
 :::tip
-**Un seul cas échappe aux ciseaux : le RSPM.** Si tu relèves de ce régime simplifié (moins de 38 000 € d'honoraires par an), tu cotises directement sur les honoraires que tu déclares, à des taux connus d'avance (13,5 % puis 21,2 %) : pas de provisionnel calculé sur ton passé, donc pas de double vague. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
+**Un seul cas échappe aux ciseaux : le RSPM.** Si tu relèves de ce régime simplifié (ouvert jusqu'à 19 000 € d'honoraires par an, et où l'on peut rester jusqu'à 38 000 €), tu cotises directement sur les honoraires que tu déclares, à des taux connus d'avance (13,5 % puis 21,2 %) : pas de provisionnel calculé sur ton passé, donc pas de double vague. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
 :::
 
 ## 🐷 5. Le réflexe qui rend tout ça indolore
@@ -117,7 +118,7 @@ Et si la régularisation tombe alors que la trésorerie n'a pas suivi, un **éch
 ## 🦛 Le Tips Hippodoc
 
 :::tip
-Sur Hippodoc, tes rétrocessions, tes charges et ta provision se suivent au fil des remplas et [ton Super-Net se recalcule tout seul](/simulateur) — pour que la régul' d'automne ne soit jamais une surprise. Essai gratuit 30 jours, sans engagement.
+Sur Hippodoc, tes rétrocessions, tes charges et ta provision se suivent au fil des remplas et [ton Super-Net se recalcule tout seul](/simulateur) — pour que la régularisation ne soit jamais une surprise. Essai gratuit 30 jours, sans engagement.
 :::
 
 ## 📚 Sources (vérifiées au 20 septembre 2026)

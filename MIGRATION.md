@@ -2866,6 +2866,74 @@ corrections, cette fusion). Avertissement attendu, sans action.
 Lighthouse mobile local : perf 97 (3 passages), a11y / BP / SEO 100, CLS 0.
 Mobile 375 px : pas de débordement, le tableau tient dans l'écran.
 
+### 9.az Audit du blog, lot 1 — corrections de fond vérifiées (21 septembre 2026)
+
+Audit complet du blog mené le 21 septembre 2026 (42 articles lus sur 46, 8 audits
+transverses ; rapport dans `Claude outputs/audit-blog-2026-09-21.md`, hors dépôt).
+La contre-vérification automatique n'a pas abouti (limite de dépense) : les
+constats critiques ont été vérifiés à la main sur source primaire. Ce lot ne
+contient que des corrections vérifiées.
+
+**`facturation-electronique-medecin-remplacant`** — mise en ligne de la correction
+du fondateur, restée locale depuis le 20 septembre : le défaut de plateforme agréée
+est bien sanctionné (mise en demeure, 3 mois, 500 € puis 1 000 € par trimestre ;
+droit à l'erreur — loi n° 2026-103 du 19 février 2026, art. 123). La prod disait
+« pas d'amende dédiée », y compris dans le JSON-LD FAQPage. Ajout : la RCP et la
+banque ne sont plus citées comme fournisseurs qui factureront par plateforme —
+assurance et opérations bancaires sont exonérées de TVA (CGI, art. 261 C), donc
+hors réforme selon la règle que l'article énonce lui-même. Remplacées par
+téléphonie, comptable, matériel, avec une phrase qui l'explique.
+
+**`medecin-remplacant-travailler-6-mois-par-an`** — (1) encadré RSPM faux :
+« sous 38 000 € » ; le RSPM ne s'ouvre que jusqu'à 19 000 €, on peut y rester
+jusqu'à 38 000 €, et deux années de suite au-dessus de 19 000 € font basculer au
+PAMC : ce n'est donc pas un cadre pour un mi-temps durable. Réécrit. (2) La sortie
+du micro-BNC n'est pas automatique au premier dépassement : précisé à trois
+endroits (tableau, FAQ 3 et 6). (3) Hypothèses du « + 38 000 € » écrites : le
+moteur applique au réel les déductions forfaitaires du secteur 1 (2 %, groupe III,
+3 %) ; sans le seul forfait 2 %, le second semestre donne 37 058 € au lieu de
+38 239 € — le chiffre tient. La mention finale disait à tort « sans frais
+professionnels pris en compte ».
+
+**`effet-ciseaux-regularisation-urssaf-medecin`** — encadré RSPM (même erreur de
+seuil) ; « l'automne suivant » → « quelques semaines après ta déclaration de
+printemps » (la régularisation est lissée sur les échéances restantes dès la
+déclaration) ; ajout : l'abattement de 26 % ne s'applique pas au micro-BNC
+(cohérent avec `tout-comprendre-urssaf`) ; l'exemple de l'ASV forfaitaire, qui
+n'explique pas le surcoût du secteur 2, est remplacé par la maladie et les
+allocations familiales ; « comme tout indépendant au réel » → « comme tout
+indépendant » ; nom exact du service ajouté (« Moduler mes revenus », urssaf.fr).
+⚠️ L'audit proposait de bannir le mot « modulation » : **réfuté** — c'est bien le
+nom que l'URSSAF donne au service pour les praticiens.
+
+**`remplacement-regulier-requalification`** — (1) **décret n° 2026-691 du 27 juillet
+2026** (JO du 29, en vigueur le 30) : le mot « libérale » a disparu de
+l'art. R.4127-65, le remplacé doit cesser *toute* activité médicale. « Activité
+hospitalière » et « activité extérieure » retirées des motifs d'absence (trois
+endroits), règle nouvelle expliquée, source ajoutée. (2) Simulation du
+spécialiste : la tranche à 41 % était impossible (120 000 € × 66 % = 79 200 €,
+sous le seuil de 84 577 €). Recalcul à 30 % : 9 504 €/an, 19 008 € sur deux ans,
+20 909 € avec majoration, **≈ 22 000 €** avec intérêts (au lieu de ≈ 30 000 €).
+
+**`cfe-medecin-remplacant`** — deux précisions : pour les deux premières CFE, les
+recettes de référence sont celles de l'année de création ramenées à douze mois ;
+le seuil de 5 000 € s'apprécie lui aussi sur douze mois (corps et FAQ).
+
+**`src/data/boussoleData.ts`** — dates limites 2026 de la déclaration de revenus :
+jeudi 21 mai (01-19 et non-résidents), jeudi 28 mai (20-54), jeudi 4 juin (55+),
+au lieu des vendredis 22, 29 mai et 5 juin. Ces libellés n'alimentent que l'index
+de recherche du guide (îlot), pas le HTML statique : pas de changement de
+`lastmod` du guide.
+
+`updatedDate` au 21 septembre 2026 sur les cinq articles, répercutée dans
+`blog-meta.json`.
+
+**Restent ouverts (lots suivants de l'audit)** : décret de déontologie dans
+`signer-contrat-remplacement` (règle des 90 jours supprimée) ; option pour le réel
+« avant le 1er février » ; CARMF 2026 à 11,80 % ; ACRE 2026 ; exemple « Léa » ;
+Livret A et LEP ; phrases de référence (RSPM, rétrocession, poids des
+cotisations) ; gabarits ; maillage.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
