@@ -2,6 +2,7 @@
 title: "Salariat : 10 % ou frais réels ?"
 description: "En salariat aussi, tu peux déduire tes frais pro. Comment choisir entre abattement 10 % et frais réels pour payer moins d'impôt."
 pubDate: "2025-12-25"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -14,11 +15,11 @@ tags:
 cta: "Prêt à optimiser ta fiscalité ?"
 faq:
   - question: "Quelle est la différence entre l'abattement 10% et les frais réels ?"
-    answer: "L'**abattement 10%** est automatique et sans justificatif : 10% de ton salaire brut est déduit avant calcul de l'impôt. Les **frais réels** permettent de déduire le montant exact de tes dépenses professionnelles, mais tu dois les justifier."
+    answer: "L'**abattement 10%** est automatique et sans justificatif : l'administration retire 10% de ton **salaire net imposable** (le montant prérempli en case 1AJ, le « cumul net imposable » de ta fiche de paie de décembre) avant de calculer l'impôt. Les **frais réels** permettent de déduire le montant exact de tes dépenses professionnelles, mais tu dois les justifier."
   - question: "Quels frais professionnels sont déductibles en frais réels ?"
     answer: "Sont déductibles : les **trajets domicile-travail** (barème kilométrique), le **parking**, les **repas sur place**, le **matériel professionnel** (blouse, stéthoscope), la **RCP** à ta charge, et les **formations obligatoires**."
   - question: "Comment savoir si les frais réels sont plus avantageux ?"
-    answer: "Calcule le total de tes frais pro déductibles et compare avec 10% de ton salaire brut. **Si tes frais réels dépassent les 10%**, opte pour les frais réels. Sinon, garde l'abattement forfaitaire."
+    answer: "Calcule le total de tes frais pro déductibles et compare avec 10% de ton **salaire net imposable** (case 1AJ), pas de ton brut. **Si tes frais réels dépassent les 10%**, opte pour les frais réels. Sinon, garde l'abattement forfaitaire."
   - question: "Peut-on changer de méthode chaque année ?"
     answer: "Oui, tu peux **choisir librement chaque année** entre l'abattement 10% et les frais réels, selon ta situation. Tu n'es pas engagé sur plusieurs années."
 relatedArticles:
@@ -32,7 +33,7 @@ Oui : **en [salariat](/blog/salariat-vs-liberal) aussi, tu peux déduire tes fra
 
 ## 1️⃣ Le principe
 
-[En salariat](/blog/remplacement-salarie-guide-complet) (interne, centre de santé, clinique, intérim…), ton impôt est calculé sur un **revenu imposable**.
+[En salariat](/blog/remplacement-salarie-guide-complet) (interne, centre de santé, clinique, intérim…), ton impôt est calculé à partir de ton **salaire net imposable** : le montant déjà inscrit en case 1AJ de ta déclaration, que tu retrouves sur ta fiche de paie de décembre (« cumul net imposable »).
 
 Deux choix pour le réduire :
 
@@ -73,7 +74,7 @@ Tu déduis le **montant exact** de tes dépenses professionnelles.
 ## 4️⃣ Exemple A — "Je bosse pas loin"
 
 :::warning
-**Base : revenu imposable 35 000 €**
+**Base : salaire net imposable 35 000 €**
 
 • 10–15 min de trajet\
 • Quelques repas\
@@ -90,7 +91,7 @@ Tu déduis le **montant exact** de tes dépenses professionnelles.
 ## 4️⃣ Exemple B — "Je fais beaucoup de route"
 
 :::tip
-**Base : revenu imposable 35 000 €**
+**Base : salaire net imposable 35 000 €**
 
 • 40–60 km par jour\
 • Self obligatoire\

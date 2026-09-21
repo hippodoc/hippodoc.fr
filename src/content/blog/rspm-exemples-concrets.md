@@ -2,7 +2,7 @@
 title: "RSPM : 2 exemples concrets - Du CA au Super-Net"
 description: "Découvre ce qu'il te reste vraiment après cotisations et impôts avec le régime RSPM. Exemples chiffrés à 19 000 € et 38 000 € de CA."
 pubDate: "2025-11-28T11:00:00"
-updatedDate: "2026-08-18"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -15,13 +15,13 @@ tags:
 cta: "Prêt(e) à suivre ton Super-Net en temps réel ?"
 faq:
   - question: "C'est quoi le RSPM pour les médecins remplaçants ?"
-    answer: "Le **RSPM** (Régime Simplifié des Professions Médicales) est un régime social simplifié pour les médecins avec CA < 38 000 €. Cotisations réduites : **13,5%** jusqu'à 19 000 €, **21,2%** entre 19 000 € et 38 000 €."
+    answer: "Le **RSPM** (Régime Simplifié des Professions Médicales) est une option de l'URSSAF réservée aux médecins et étudiants qui font **uniquement des remplacements**, sans autre activité libérale, avec au plus **19 000 € d'honoraires par an** au moment d'y entrer. Tu paies **13,5%** de tes honoraires jusqu'à 19 000 €, puis **21,2%** sur la part entre 19 000 € et 38 000 € — le plafond à ne pas dépasser pour y rester."
   - question: "Combien me reste-t-il avec le RSPM à 19 000 € de CA ?"
     answer: "Avec 19 000 € de CA en RSPM : cotisations 2 722 € (14,3 %), impôt 0 € grâce à la décote, **Super-Net 16 278 €** soit 85,7 % de ton CA. Un des meilleurs taux de conservation !"
   - question: "Que se passe-t-il si je dépasse 38 000 € de CA en RSPM ?"
-    answer: "Si tu dépasses 38 000 € une seule année, tu passes automatiquement au **régime PAMC** (classique). Les cotisations seront alors calculées sur ton bénéfice réel, avec CARMF en plus."
+    answer: "Si tu dépasses 38 000 € sur une année civile (ou 19 000 € deux années de suite), tu perds le RSPM **à partir du 1er janvier suivant** : tu finis l'année en cours au RSPM, puis tu passes au **régime PAMC** (classique). Les cotisations seront alors calculées sur ton revenu professionnel, avec CARMF en plus."
   - question: "Le RSPM est-il plus avantageux que le régime classique ?"
-    answer: "Oui, le RSPM est très avantageux pour les revenus < 38 000 € : cotisations **13,5-21,2%** vs ~35-45% en régime classique. Idéal pour les internes et remplaçants occasionnels."
+    answer: "Le plus souvent oui, tant que tu restes sous 38 000 €. Au RSPM, tes cotisations pèsent **14 à 18 % de ce que tu encaisses** ; au régime classique en micro-BNC, compte plutôt **autour d'un quart de tes honoraires**. Idéal pour les internes et remplaçants occasionnels."
 relatedArticles:
   - "tout-comprendre-urssaf"
   - "micro-bnc-exemples-concrets"
@@ -97,7 +97,7 @@ relatedArticles:
 
 :::warning
 **Dépassement ponctuel > 19 000 €** = OK ✅\
-**MAIS** : si dépassement > 2 ans consécutifs ou CA > 38 000 € une seule année → passage au **régime classique PAMC** (cf. prochaine fiche)
+**MAIS** : si tu dépasses 19 000 € **deux années de suite**, ou 38 000 € **une seule année**, tu sors du RSPM. La bascule vers le **régime classique PAMC** se fait au **1er janvier de l'année suivante** : tu finis l'année en cours au RSPM (cf. [la fiche micro-BNC en exemples concrets](/blog/micro-bnc-exemples-concrets))
 :::
 
 ## 🗂 Les autres cases de la DSFU

@@ -2,7 +2,7 @@
 title: "Contrat de remplacement : checklist"
 description: "Avant d'enfiler la blouse blanche, sécurise ton remplacement avec un contrat clair. La checklist indispensable avant signature."
 pubDate: "2025-10-06"
-updatedDate: "2026-09-20"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -17,7 +17,7 @@ faq:
   - question: "Quelles sont les clauses obligatoires d'un contrat de remplacement ?"
     answer: "Clauses obligatoires : **identité des médecins** (RPPS, licence, SIRET), **dates précises**, **adresse du cabinet**, **missions exactes**, **taux de rétrocession** et **modalités de paiement**."
   - question: "Quelle est la durée maximale d'un contrat de remplacement ?"
-    answer: "Si tu n'es pas thésé(e) : **3 mois maximum** renouvelables. Si tu es thésé(e) : **durée illimitée**. Attention à la clause de non-installation si tu remplaces > 90 jours le même médecin."
+    answer: "Si tu n'es pas thésé(e) : le conseil départemental de l'Ordre autorise chaque remplacement pour **3 mois maximum**, renouvelables. Si tu es thésé(e) : aucun texte ne chiffre de durée maximale, mais le remplacement doit rester **temporaire**. Vérifie aussi si ton contrat contient une clause de non-réinstallation."
   - question: "Peut-on rompre un contrat de remplacement ?"
     answer: "Oui, selon les **clauses de préavis** prévues au contrat (généralement en cas de maladie ou urgence). Prévois toujours une clause de préavis clair pour éviter les litiges."
   - question: "Dois-je envoyer mon contrat à l'Ordre des Médecins ?"
@@ -35,7 +35,7 @@ Tu as enfin décroché le remplacement médical de tes rêves ? Génial ! Mais a
 ✅ **Identité complète des médecins :** RPPS, numéro de licence, numéro SIRET et adresses.\
 ✅ **Dates précises :** Durée exacte du remplacement (dates, horaires bien indiqués 📅).\
 ✅ **Adresse du cabinet & missions exactes :** Consultations, visites à domicile, gardes éventuelles clairement précisées.\
-✅ **Durée maximale :** 3 mois renouvelables si tu n'es pas encore thésé(e), durée illimitée pour les médecins thésés.
+✅ **Durée :** si tu n'es pas encore thésé(e), le conseil départemental de l'Ordre autorise chaque remplacement pour 3 mois maximum, renouvelables — c'est le médecin remplacé qui fait la demande. Si tu es thésé(e), aucun texte ne chiffre de durée maximale, mais le remplacement doit rester temporaire : un remplacement qui s'installe dans la durée expose à un [risque de requalification](/blog/remplacement-regulier-requalification).
 
 ## 💰 La rétrocession financière
 
@@ -46,12 +46,12 @@ Tu as enfin décroché le remplacement médical de tes rêves ? Génial ! Mais a
 ## 🛡️ Responsabilités et assurances
 
 ✅ **Assurance RCP personnelle obligatoire :** Vérifie bien que tu es couvert(e).\
-✅ **Activité du médecin remplacé :** Il doit impérativement arrêter toute activité libérale pendant ton remplacement. 🚫
+✅ **Activité du médecin remplacé :** Il doit cesser toute activité médicale pendant ton remplacement — y compris hospitalière ou salariée depuis le 30 juillet 2026 —, sauf dérogation du conseil départemental quand l'offre de soins est insuffisante. S'il consulte en même temps que toi, ce n'est plus un remplacement. 🚫
 
-## ⚠️ Attention à la clause de non-installation
+## ⚠️ Attention à la clause de non-réinstallation
 
 :::warning
-Si tu remplaces plus de 90 jours le même médecin, il peut y avoir une clause t'empêchant de t'installer à proximité pendant 2 ans. Mais cette clause est négociable, alors n'hésite pas à en discuter clairement avant la signature ! 🚨
+Depuis le 30 juillet 2026, le code de déontologie ne prévoit plus de règle automatique : l'ancien « 3 mois de remplacement = 2 ans sans t'installer à proximité » a disparu du texte. Tout dépend maintenant de **ton contrat**, qui peut contenir une clause de non-réinstallation (durée, périmètre). Lis-la et négocie-la avant de signer ! 🚨 Si tu veux t'installer malgré cette clause, il te faut l'accord du médecin remplacé ou, à défaut, l'autorisation du conseil départemental de l'Ordre (art. R.4127-86 du Code de la santé publique, décret n° 2026-691 du 27 juillet 2026).
 :::
 
 ## ✅ Clauses anti-galères à intégrer

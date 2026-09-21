@@ -2,6 +2,7 @@
 title: "T'as remplacé, t'as facturé"
 description: "Génère tes factures de remplacement en quelques clics. Simple, rapide, et zéro prise de tête avec Hippodoc."
 pubDate: "2025-11-28"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -18,7 +19,7 @@ faq:
   - question: "Comment numéroter mes factures de remplacement ?"
     answer: "La numérotation doit être **chronologique et continue**. Format recommandé : AAAA-XXXX (année + numéro séquentiel). Exemple : 2025-0001, 2025-0002..."
   - question: "Combien de temps dois-je conserver mes factures ?"
-    answer: "Tu dois conserver tes factures pendant **10 ans** (obligation fiscale). Hippodoc les archive automatiquement de manière sécurisée."
+    answer: "Au minimum **6 ans** : c'est le délai pendant lequel l'administration fiscale peut te les demander (art. L. 102 B du Livre des procédures fiscales). Beaucoup de comptables conseillent de viser 10 ans par prudence. Hippodoc les archive automatiquement de manière sécurisée."
   - question: "Un médecin remplaçant est-il soumis à la TVA ?"
     answer: "Non, les **actes médicaux sont exonérés de TVA**. Tu n'as pas à facturer ni déclarer de TVA pour tes remplacements médicaux."
 relatedArticles:

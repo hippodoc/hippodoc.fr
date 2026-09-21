@@ -2,7 +2,7 @@
 title: "Checklist administrative du remplaçant"
 description: "RCP, Ordre, CPAM, URSSAF sous 8 jours, CARMF dès le premier remplacement, prévoyance : quand faire chaque démarche et dans quel ordre, sans rien oublier."
 pubDate: "2025-10-06"
-updatedDate: "2026-08-18"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -48,7 +48,7 @@ Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse bla
 
 📅 **Quand ?** Dès ton tout premier remplacement.\
 🧐 **Pourquoi ?** Cela permet à l'Assurance Maladie d'être informée officiellement de ta situation professionnelle.\
-📌 **Astuce :** N'oublie pas de demander ta carte Vitale professionnelle qui te permettra de télétransmettre les feuilles de soins électroniques.
+📌 **Astuce :** Aucune carte à réclamer à la CPAM : ta carte CPS (ou CPF si tu es interne sous licence) t'est envoyée automatiquement par l'Agence du numérique en santé après ton enregistrement à l'Ordre. C'est elle qui te sert à télétransmettre les feuilles de soins électroniques.
 
 ## ✅ Inscription à l'URSSAF
 

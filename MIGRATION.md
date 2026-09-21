@@ -2934,6 +2934,54 @@ de recherche du guide (îlot), pas le HTML statique : pas de changement de
 Livret A et LEP ; phrases de référence (RSPM, rétrocession, poids des
 cotisations) ; gabarits ; maillage.
 
+### 9.ba Audit du blog, lot 2a — erreurs de fond dans douze anciens articles (21 septembre 2026)
+
+Corrections issues de l'audit du 21 septembre. Chaque constat a été vérifié sur
+source primaire par l'auditeur (URL citée), puis relu par moi avant application.
+Retouches minimales : seul le passage fautif est réécrit. `updatedDate` au
+21 septembre 2026 sur les douze articles, répercutée dans `blog-meta.json`.
+
+| Article | Avant | Après | Source |
+|---|---|---|---|
+| `signer-contrat-remplacement` | « Plus de 90 jours → clause de non-installation de 2 ans » | Plus de règle automatique depuis le 30 juillet 2026 : tout dépend du contrat ; accord du remplacé ou autorisation du CDOM pour s'installer malgré la clause. H2 renommé « non-réinstallation » (terme du texte) | CSP, art. R.4127-86, décret n° 2026-691 |
+| idem | « Durée illimitée pour les médecins thésés » | Aucun texte ne chiffre de durée, mais le remplacement doit rester temporaire ; les 3 mois des non-thésés sont la durée de l'autorisation du CDOM | CSP, art. R.4127-65 ; CNOM |
+| idem | Le remplacé arrête « toute activité libérale » | « Toute activité médicale », y compris hospitalière ou salariée, sauf dérogation | CSP, art. R.4127-65 (30 juillet 2026) |
+| `regime-fiscal-micro-bnc-vs-reel` | « Opter pour le réel avant le 1er février » (FAQ 5) | Option par simple dépôt de la 2035 dans le délai légal, au printemps suivant ; un an, reconduction tacite | BOFiP BOI-BNC-DECLA-10-10, § 130-140 |
+| idem | Encadré prorata : « deux demi-années » peuvent faire sortir du micro | Seule l'année de création est proratisée ; l'année N+1, complète, doit dépasser réellement le seuil | BOFiP BOI-BNC-DECLA-20-10, § 135 |
+| idem | Règle « charges > 34 % » sans les cotisations (cinq endroits) | « Cotisations URSSAF et CARMF comprises » + lien vers `/simulateur` | CGI, art. 102 ter ; `BreakEvenAnalysis.tsx` |
+| `calendrier-fiscal-remplacant` | « En 3e année, l'URSSAF régularise » ; trimestriel « le 5 ou 20 » ; « T4 N-1, T1, T2, T3 » ; 2035 « avant début mai » ; « réception » de l'avis de CFE | Régularisation dès la déclaration de l'année suivante ; trimestriel les 5 février, mai, août, novembre (quatre parts égales de l'année) ; dates 2026 ; 2035 télétransmise jusqu'au 20 mai ; avis de CFE mis en ligne | CSS, art. R613-3 ; service-public F39739 ; impots.gouv.fr |
+| `tout-comprendre-urssaf` | Inscription « sur autoentrepreneur.urssaf.fr » ; « régularisation en 3e année » | Portail des médecins remplaçants (RSPM) ou guichet unique ; régularisation dès l'année suivante, lien vers l'effet ciseaux | service-public F36740 |
+| `tout-comprendre-carmf` | Complémentaire « ~10,20 % en 2026, 11,80 % à partir de 2027 » ; plafond ~17 000 € ; ASV 1 850 € + 1,27 % / 5 550 € + 3,80 % ; base « entre 1 et 5 PASS » | **11,80 % en 2026** sur les revenus N-2, sans régularisation, assiette plafonnée à 168 210 €, cotisation maximale 19 849 € ; ASV 1 917 € + 1,33 % (S1) / 5 751 € + 4 % (S2) ; 1,87 % sur l'ensemble des revenus jusqu'à 5 PASS | carmf.fr, cotisations 2026 |
+| idem | Exemples à 40 000 € et 90 000 € | Recalculés par application directe des taux 2026 : ~12 000 € (30 %) et ~17 000 € (42 %) ; ~20 000 € (22 %) et ~26 500 € (29 %) | Recalcul |
+| `cotisations-sociales-vs-impots` | Cotisations « 35 à 45 % », URSSAF « 20-25 % », CARMF « 10-15 % » ; « il te reste 450 à 600 € sur 1 000 € » | Environ un quart des rétrocessions (URSSAF ≈ 8 %, CARMF ≈ 16 %) ; ≈ 250 € de cotisations, ≈ 100 € d'impôt, reste ≈ 650 € | Moteur du simulateur (72 000 € : 18 124 € + 7 360 €) |
+| `frais-professionnels-deductibles` | « L'abonnement Hippodoc est 100 % déductible » sans condition (FAQ, donc JSON-LD) ; « si tes frais dépassent 34 % » | Déductible au régime réel seulement ; cotisations comprises dans les 34 % | CGI, art. 102 ter |
+| `generer-facture-remplacement` | « Conserver 10 ans (obligation fiscale) » | 6 ans au minimum ; 10 ans par prudence | LPF, art. L.102 B ; BOFiP BOI-CF-COM-10-10-30-10 |
+| `checklist-administrative-medecin-remplacant` | « Demander ta carte Vitale professionnelle » | La CPS (ou CPF) est envoyée par l'Agence du numérique en santé | ameli.fr |
+| `simulateur-super-net-combien-reste` | Micro-BNC accessible si 2024 **et** 2025 sous le seuil ; RSPM « plafonne à 19 000 € » | 2024 **ou** 2025 ; seuil d'entrée de 19 000 €, maintien jusqu'à 38 000 € | service-public F32105 ; urssaf.fr |
+| `salariat-10-pourcent-ou-frais-reels` | « 10 % de ton salaire brut » ; « revenu imposable » | 10 % du salaire net imposable (case 1AJ) | BOFiP BOI-RSA-BASE-30-50-20 |
+| `rspm-exemples-concrets` | « Pour les médecins avec CA < 38 000 € » ; sortie « si dépassement > 2 ans » ; « 13,5-21,2 % vs ~35-45 % » | Remplacements exclusifs, 19 000 € à l'entrée, maintien jusqu'à 38 000 € ; sortie après deux années de suite au-dessus de 19 000 € ou une seule au-dessus de 38 000 €, au 1er janvier suivant ; comparaison ramenée à la même base (14-18 % contre environ un quart des honoraires) | CSS, art. D. 642-4-1 et R. 642-6 |
+
+**Réserves.** `tout-comprendre-carmf` et `tout-comprendre-urssaf` n'ont pas été lus
+par l'audit (lecture interrompue) : seuls les points signalés depuis d'autres
+articles y sont corrigés. Les exemples CARMF sont un calcul direct sur les taux
+publiés, non rapproché du moteur du simulateur.
+
+**Rectificatif au § 9.aw.** J'y signalais un possible écart d'assiette de la
+CSG-CRDS en micro-BNC dans `calculate-urssaf`. L'audit a reproduit le cas-type
+(72 000 € → 18 124 € de cotisations, 7 360 € d'impôt) **à l'euro près avec le
+simulateur public de l'URSSAF** : l'alerte est sans objet. Celle sur la décote
+(§ 9.at) reste ouverte.
+
+**Non traité dans ce lot** (constats « importants » des mêmes articles) : sections
+Sources, mentions d'information générale, maillage, marqueurs de nouveauté périmés.
+
+**Lot 2b, à suivre** : `frais-pros-medecin-liberal-2026` (PER, ACRE 2026),
+`frais-pros-medecins-salaries-internes-2026` (exemple « Léa », réclamation,
+amortissement — slides à refaire), `interets-composes…` (Livret A, LEP — slides),
+`conge-maternite-paternite` (IJ en micro-BNC, congé de naissance),
+`micro-bnc-exemples-concrets` (recalcul 2026), `remplir-declaration-2035`,
+`remplacement-salarie-guide-complet`, `choix-mode-exercice` (intérim).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
