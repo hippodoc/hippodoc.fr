@@ -2,6 +2,7 @@
 title: "Maternité & paternité du remplaçant"
 description: "Durées, montants 2026, fiscalité, pièges : tout sur le congé maternité et paternité du médecin remplaçant libéral."
 pubDate: "2026-02-11"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -78,8 +79,8 @@ Arrêt **TOTAL** + attestation sur l'honneur
 
 ## 🧾 Fiscalité (Important)
 
-Allocation + IJ = **imposables**\
-À intégrer aux recettes BNC (pas des honoraires)\
+**Au régime réel** : allocation + IJ = **imposables**, à intégrer à ta 2035 (pas en honoraires)\
+**En micro-BNC** (le cas de la plupart des remplaçants) : elles ne s'ajoutent pas à tes recettes\
 CSG/CRDS précomptées + PAS\
 Conserver **tous les décomptes CPAM**
 
@@ -87,12 +88,13 @@ Conserver **tous les décomptes CPAM**
 
 Les indemnités versées par la CPAM ont leur propre ligne sur la DSFU : [la case DSDX, détaillée dans le guide](/guide-declarations#case-DSDX), avec le piège du pré-remplissage erroné signalé cette année.
 
-## 🔮 À venir (LFSS 2026)
+## 🍼 Congé supplémentaire de naissance (depuis le 1er juillet 2026)
 
 :::tip
-Congé supplémentaire de naissance (dès 01/07/2026) :\
+En vigueur depuis le 1er juillet 2026 (décrets parus le 31 mai 2026) :\
 **1 à 2 mois en plus** pour CHAQUE parent\
 Après mat/pat\
 Indépendants concernés\
-IJ avec abattement (≈70 % puis 60 %) — décrets attendus
+Indemnité journalière à ≈ 70 % du plafond le 1er mois, puis ≈ 60 % le 2e — soit environ 1 380 € puis 1 190 € par mois\
+Conditions : 6 mois d'affiliation, arrêt complet de l'activité, congé maternité ou paternité déjà pris
 :::

@@ -2,6 +2,7 @@
 title: "Déclaration 2035 du médecin remplaçant"
 description: "La 2035 paraît complexe mais reste indispensable au régime réel. Guide pratique étape par étape pour la remplir sereinement."
 pubDate: "2025-10-21"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -19,7 +20,7 @@ faq:
   - question: "Quelle est la différence entre 2035 et 2042 ?"
     answer: "La **2035** détaille tes recettes et charges professionnelles (régime réel). La **2042-C-PRO** reporte ton bénéfice sur ta déclaration personnelle d'impôt. En micro-BNC, tu remplis seulement la 2042-C-PRO."
   - question: "Quelle est la date limite pour déposer la 2035 ?"
-    answer: "La 2035 doit être déposée **avant début mai** chaque année. Tu peux la déposer en ligne sur impots.gouv.fr ou via ton AGA/expert-comptable."
+    answer: "La 2035 se télétransmet **en mai** : échéance légale le 2e jour ouvré après le 1er mai, avec 15 jours de délai en télétransmission (**20 mai** en 2026). Tu peux la déposer en ligne sur impots.gouv.fr ou via ton AGA/expert-comptable."
   - question: "Faut-il obligatoirement un expert-comptable pour la 2035 ?"
     answer: "Non, ce n'est pas obligatoire mais **fortement recommandé**. La 2035 est complexe et un comptable garantit la conformité. Adhérer à une AGA (Association de Gestion Agréée) te permet aussi de bénéficier d'avantages fiscaux."
 relatedArticles:
@@ -81,7 +82,7 @@ Cette fiche donne la logique d'ensemble. Si tu bloques sur une ligne précise, l
 
 ## 📤 Quand et comment déclarer ?
 
-📅 **Avant début mai** chaque année\
+📅 **Autour du 20 mai** : 2e jour ouvré après le 1er mai, + 15 jours parce que tu télédéclares (20 mai 2026 pour les revenus 2025 — vérifie chaque année)\
 ✅ **En ligne** via impots.gouv.fr ou par ton AGA/comptable
 
 ## 💡 Astuce Hippodoc : simplifie ta gestion fiscale !

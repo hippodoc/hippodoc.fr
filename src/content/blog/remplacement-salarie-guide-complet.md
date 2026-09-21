@@ -2,6 +2,7 @@
 title: "Remplacement salarié : guide complet"
 description: "Remplacer sans URSSAF, CARMF ni comptabilité : le statut salarié est peut-être fait pour toi. Tout ce qu'il faut savoir."
 pubDate: "2025-11-28"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -60,7 +61,7 @@ Tu cotises automatiquement au **régime général**.\
 Tu as 2 options :\
 → **Abattement automatique de 10 %**\
 → **Frais réels** si >10 % du revenu imposable (transport, blouse, formations, RCP…)\
-❌ Tout doit être justifié et plafonné. Tu ne peux pas amortir ton ordi, bureau ou voiture comme en libéral.
+❌ Chaque dépense doit être justifiée (facture, relevé de kilomètres). Un ordi ou un bureau à usage pro se déduit : en une fois jusqu'à 500 € HT, sinon étalé sur plusieurs années (3 ans pour l'informatique), au prorata de l'usage pro. La voiture, elle, passe par le barème kilométrique.
 
 ## 6️⃣ Avantages 🎯
 

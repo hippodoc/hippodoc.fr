@@ -2,7 +2,7 @@
 title: "Intérêts composés : ton meilleur placement"
 description: "300 €/mois sur 30 ans : 70 k€ en compte courant vs 366 k€ en ETF Monde. La mécanique des intérêts composés pour le médecin."
 pubDate: "2026-04-21"
-updatedDate: "2026-04-21"
+updatedDate: "2026-09-21"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -21,7 +21,7 @@ faq:
   - question: "Combien dois-je verser par mois pour atteindre 1 million d'euros à 65 ans ?"
     answer: "Avec un ETF Monde à 7 %/an, il faut verser environ **380 €/mois si tu commences à 25 ans**, **560 €/mois à 30 ans**, **820 €/mois à 35 ans**, **1 230 €/mois à 40 ans**, **1 920 €/mois à 45 ans**, et **3 150 €/mois à 50 ans**. **×8 d'effort** entre 25 et 50 ans pour le même objectif final."
   - question: "Pourquoi le Livret A ne suffit-il pas pour épargner long terme ?"
-    answer: "Le Livret A est utile pour ton **épargne de précaution** (3 à 6 mois de dépenses). Mais comme placement long terme, il est pénalisant : à **2,4 % en 2026** avec une inflation autour de 2-3 %, ton capital perd silencieusement du pouvoir d'achat. Avec la **règle des 72**, il faut **30 ans** pour doubler ton capital sur Livret A, contre **~10 ans** sur un ETF Monde. Sur 30 ans, c'est un résultat **×4**."
+    answer: "Le Livret A est utile pour ton **épargne de précaution** (3 à 6 mois de dépenses). Mais comme placement long terme, il est pénalisant : à **1,7 % depuis le 1er août 2026** avec une inflation autour de 2-3 %, ton capital perd silencieusement du pouvoir d'achat. Avec la **règle des 72**, il faut **42 ans** pour doubler ton capital sur Livret A, contre **~10 ans** sur un ETF Monde. Sur 30 ans, c'est un résultat **plus de ×4**."
 relatedArticles:
   - "enveloppes-investissement-pea-assurance-vie-per-cto"
   - "base-financiere-rempla"
@@ -54,7 +54,7 @@ slides:
 - Sur **300 €/mois pendant 30 ans** (108 000 € versés), le résultat va de **70 k€** en compte courant à **366 k€** en ETF Monde en PEA (~7 %/an) : seul le support change.
 - Commencer à **25 ans** plutôt qu'à **35 ans** transforme 144 k€ versés en **788 k€** à 65 ans au lieu de 366 k€ pour 108 k€ versés : **10 ans d'attente coûtent ~422 k€**.
 - Pour viser **1 million d'euros à 65 ans**, il faut verser **380 €/mois à 25 ans** contre **3 150 €/mois à 50 ans**, soit un effort multiplié par **8**.
-- Avec la règle des 72, ton capital double en **10 ans** sur un ETF Monde (~7 %) contre **30 ans** sur un Livret A (2,4 % en 2026) : un résultat **×4** sur 30 ans.
+- Avec la règle des 72, ton capital double en **10 ans** sur un ETF Monde (~7 %) contre **42 ans** sur un Livret A (1,7 % depuis août 2026) : un résultat **plus de ×4** sur 30 ans.
 - Un ETF Monde comme le MSCI World regroupe environ **1 500 entreprises** dans **23 pays**, avec des frais très faibles (~**0,20 %/an**) mais un capital non garanti — à n'investir que si tu peux le laisser dormir **10 ans minimum**.
 :::
 
@@ -118,12 +118,12 @@ Si tu démarres tard, tu peux encore viser gros. Combien faut-il verser par mois
 
 Divise **72 par le rendement annuel** : tu obtiens le nombre d'années pour **doubler ton capital**.
 
-• **Livret A** (2,4 % en 2026) → **30 ans** pour doubler\
+• **Livret A** (1,7 % depuis le 1er août 2026) → **42 ans** pour doubler\
 • **Fonds euros** AV (2,65 %) → **27 ans**\
-• **LEP** si éligible (3,5 %) → **21 ans**\
+• **LEP** (Livret d'épargne populaire, réservé aux revenus modestes) si éligible (2,5 %) → **29 ans**\
 • **ETF Monde** (~7 %) → **10 ans**
 
-En clair : **10 000 € sur un Livret A pendant 30 ans deviennent 20 000 €**. Les mêmes 10 000 € sur un ETF Monde deviennent environ **80 000 €**. Même discipline, **résultat ×4**.
+En clair : **10 000 € sur un Livret A pendant 30 ans deviennent environ 16 600 €**. Les mêmes 10 000 € sur un ETF Monde deviennent environ **76 000 €**. Même discipline, **résultat plus de ×4**.
 
 ## 💊 C'est quoi un ETF, concrètement ?
 
@@ -140,7 +140,7 @@ Pas besoin d'être trader. **Un virement automatique le 5 du mois, c'est tout.**
 ## Les erreurs les plus fréquentes
 
 **Attendre d'être « installé ».** Le bon moment, c'était il y a 10 ans. Le deuxième, c'est aujourd'hui. Chaque année d'attente brûle les années les plus précieuses de la courbe des intérêts composés.\
-**Tout mettre sur le Livret A « par sécurité ».** À 2,4 % avec une inflation à 2-3 %, ton capital perd silencieusement du pouvoir d'achat. La fausse sécurité coûte cher.\
+**Tout mettre sur le Livret A « par sécurité ».** À 1,7 % avec une inflation à 2-3 %, ton capital perd silencieusement du pouvoir d'achat. La fausse sécurité coûte cher.\
 **Vendre quand ça baisse.** Les marchés actions font en moyenne +7 %/an sur le long terme, mais avec des chutes de -30 à -50 % en chemin. Vendre pendant une baisse, c'est réaliser la perte et casser la boule de neige. La règle : **n'investis que ce que tu peux laisser dormir 10 ans minimum.**
 
 ## 🎓 Par où commencer concrètement
