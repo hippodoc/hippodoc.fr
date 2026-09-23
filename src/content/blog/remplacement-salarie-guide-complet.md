@@ -9,6 +9,7 @@ category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 2
 readTime: "6 min"
+cta: "Prêt à suivre salaires et remplas au même endroit ?"
 cover: "/blog/remplacement-salarie-cover.png"
 tags:
   - "Guide et Conseil"

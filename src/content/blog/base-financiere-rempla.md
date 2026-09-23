@@ -12,6 +12,7 @@ cover: "/blog/base-financiere-rempla-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Prêt(e) à connaître ton vrai revenu ?"
+ctaHref: "/simulateur"
 faq:
   - question: "Qu'est-ce que le super-net exactement ?"
     answer: "Le **super-net**, c'est ce qu'il te reste vraiment après avoir payé toutes tes charges : URSSAF, CARMF, impôts. C'est ton vrai revenu disponible, celui que tu peux dépenser ou épargner."

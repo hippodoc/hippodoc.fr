@@ -118,6 +118,18 @@
     // `capture_dead_clicks` ici seul était resté sans effet.
     capture_heatmaps: false,
     capture_dead_clicks: false,
+    // ⚠️ Sans cette liste, les propriétés `hd_*` ne quittaient JAMAIS www
+    // (§ 9.bf, vérifié dans posthog-js 1.413.1) : en `localStorage+cookie`, le
+    // cookie `.hippodoc.fr` ne reçoit que 7 clés internes (identifiant, session…),
+    // le reste vit dans le localStorage de www, cloisonné par origine. Les clés
+    // listées ici sont AJOUTÉES au cookie ; à sa première visite, l'app les lit
+    // (cookie fusionné sous son localStorage) et les rattache à ses événements,
+    // dont l'inscription. ~400 octets.
+    cookie_persisted_properties: [
+      'hd_premiere_source', 'hd_premiere_campagne', 'hd_premier_contenu', 'hd_premier_support',
+      'hd_premier_terme', 'hd_premiere_page', 'hd_premier_referent', 'hd_premier_appareil',
+      'hd_dernier_article', 'hd_derniere_serie',
+    ],
   });
 
   /**
@@ -130,10 +142,10 @@
    * amené la personne était perdue entre la landing et la création de compte.
    * On ne pouvait donc pas répondre à « quelle publicité a produit ce client ».
    *
-   * `register_once` écrit des propriétés SUPER : elles sont stockées dans la
-   * persistance de PostHog — donc, avec `cross_subdomain_cookie`, sur
-   * `.hippodoc.fr` — et rattachées à TOUS les événements suivants, y compris
-   * ceux émis par l'app après l'inscription. « Once » signifie qu'un second
+   * `register_once` écrit des propriétés SUPER, rattachées à TOUS les
+   * événements suivants. Elles ne rejoignent le cookie `.hippodoc.fr` — donc
+   * l'app — que parce qu'elles figurent dans `cookie_persisted_properties`
+   * ci-dessus ; avant le § 9.bf elles restaient dans le localStorage de www. « Once » signifie qu'un second
    * passage ne les écrase pas : le PREMIER contact gagne, ce qui est bien la
    * définition de l'attribution d'acquisition.
    *

@@ -10,6 +10,7 @@ categoryNumber: "#1"
 seriesId: "fiche-pratique"
 episodeNumber: 1
 readTime: "6 min"
+cta: "Licence en poche ? Prépare tes premiers remplas"
 cover: "/blog/licence-remplacement-cover.png"
 tags:
   - "Fiche Pratique"

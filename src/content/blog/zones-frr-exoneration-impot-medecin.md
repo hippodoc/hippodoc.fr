@@ -13,6 +13,7 @@ cover: "/blog/zones-frr-cover.jpg"
 tags:
   - "Fiche Fiscalité"
 cta: "Prêt à chiffrer ton installation avant de signer ?"
+ctaHref: "/simulateur"
 faq:
   - question: "Qu'est-ce qu'une zone FRR pour un médecin ?"
     answer: "**France Ruralités Revitalisation (FRR)** est le zonage fiscal qui a remplacé les ZRR le **1er juillet 2024**. Dans près de **18 000 communes**, un médecin qui **crée ou reprend** une activité libérale est exonéré d'impôt sur son bénéfice pendant cinq ans, puis partiellement pendant trois ans. Le dispositif est ouvert à toutes les professions libérales, donc à toutes les spécialités médicales."

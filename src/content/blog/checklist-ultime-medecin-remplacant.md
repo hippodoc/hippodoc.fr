@@ -9,6 +9,7 @@ categoryNumber: "#8"
 seriesId: "fiche-pratique"
 episodeNumber: 8
 readTime: "5 min"
+cta: "Prêt(e) à garder toute ta gestion au même endroit ?"
 cover: "/blog/checklist-ultime-pro-cover.png"
 tags:
   - "Fiche Pratique"

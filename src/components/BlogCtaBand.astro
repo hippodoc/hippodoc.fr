@@ -1,0 +1,47 @@
+---
+/**
+ * Bandeau d'appel à l'action des pages de liste du blog (/blog et /blog/serie/*).
+ *
+ * Ces pages n'en avaient aucun (§ 9.bf) : en mobile, le bouton « Essai gratuit »
+ * du header est masqué sous le menu, l'inscription était donc à deux taps et
+ * rien ne menait au simulateur. Deux liens statiques, aucun JS.
+ *
+ * `emplacement` distingue l'index des pages de série dans `data-track`, sur le
+ * modèle `cta_<destination>_<emplacement>` des autres CTA du site.
+ */
+import { APP_URL } from '@/lib/site';
+
+interface Props {
+  emplacement: 'blog_index' | 'blog_serie';
+}
+
+const { emplacement } = Astro.props;
+---
+
+<aside
+  class="rounded-2xl border border-hippo-100 bg-hippo-50/60 p-6 sm:flex sm:items-center sm:justify-between sm:gap-6"
+  aria-label="Essayer Hippodoc"
+>
+  <div>
+    <p class="text-lg font-bold text-hippo-800">Et tes chiffres à toi ?</p>
+    <p class="mt-1 text-sm text-muted-foreground">
+      Calcule ton Super-Net : ce qu'il te reste vraiment après cotisations et impôts.
+    </p>
+  </div>
+  <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-0 sm:shrink-0">
+    <a
+      href="/simulateur"
+      data-track={`cta_simulateur_${emplacement}`}
+      class="inline-flex h-11 items-center justify-center rounded-full bg-hippo-600 px-5 font-semibold text-white shadow-sm transition-colors hover:bg-hippo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700"
+    >
+      Simule ton Super-Net
+    </a>
+    <a
+      href={`${APP_URL}/auth?tab=signup`}
+      data-track={`cta_signup_${emplacement}`}
+      class="inline-flex min-h-11 items-center text-sm font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-800"
+    >
+      Essai gratuit 30 jours
+    </a>
+  </div>
+</aside>

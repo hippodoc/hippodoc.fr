@@ -17,6 +17,7 @@ import {
   observerElements,
   safe,
   type Emetteur,
+  type PostHogLike,
   type Props,
 } from './analytics-commun';
 
@@ -37,18 +38,18 @@ const SEUILS_BLOG = [25, 50, 75, 100] as const;
  * Aiguille la page courante vers sa mesure. Ne fait rien — sans lever — sur une
  * page non instrumentée : l'appelant peut donc rester simple.
  */
-export function initPageAnalytics(emettre: Emetteur, chemin: string): void {
+export function initPageAnalytics(emettre: Emetteur, chemin: string, posthog?: PostHogLike): void {
 
   if (chemin === '/tarifs') return mesurerTarifs(emettre);
   if (chemin === '/faq') return mesurerFaq(emettre);
   if (chemin === '/comparatif') return void emettre('comparatif_viewed');
   if (chemin === '/guide-declarations') return mesurerGuide(emettre);
   if (chemin === '/blog') return mesurerBlogIndex(emettre);
-  // Un article : /blog/<slug>. Les pages de série (/blog/serie/<x>) sont
-  // postérieures à la migration et n'ont pas d'équivalent historique.
-  if (chemin.startsWith('/blog/') && !chemin.startsWith('/blog/serie/')) {
-    return mesurerArticle(emettre);
-  }
+  // Pages de série : postérieures à la migration, sans équivalent historique —
+  // l'événement est donc nouveau (§ 9.bf).
+  if (chemin.startsWith('/blog/serie/')) return mesurerSerie(emettre);
+  // Un article : /blog/<slug>.
+  if (chemin.startsWith('/blog/')) return mesurerArticle(emettre, posthog);
 }
 
 function mesurerTarifs(emettre: Emetteur): void {
@@ -101,7 +102,19 @@ function mesurerBlogIndex(emettre: Emetteur): void {
   emettre('blog_index_viewed', { total_articles: total });
 }
 
-function mesurerArticle(emettre: Emetteur): void {
+function mesurerSerie(emettre: Emetteur): void {
+  const main = safe(() => document.querySelector<HTMLElement>('[data-blog-serie]'), null);
+  if (!main) return;
+  emettre('blog_series_viewed', {
+    series_id: main.dataset.blogSerie ?? '',
+    total_articles: safe(() => Number(main.dataset.blogTotal) || 0, 0),
+  });
+}
+
+/** Destinations qui valent conversion depuis un article : outils, offre, app. */
+const DESTINATIONS_CTA = /^\/(simulateur|tarifs|essai|guide-declarations|comparatif)(\/|$)|^https:\/\/app\.hippodoc\.fr\//;
+
+function mesurerArticle(emettre: Emetteur, posthog?: PostHogLike): void {
   // Métadonnées injectées au build sur <article> : aucun calcul côté client, et
   // les valeurs sont exactement celles du frontmatter (donc de l'historique).
   const article = safe(() => document.querySelector<HTMLElement>('[data-blog-slug]'), null);
@@ -123,4 +136,51 @@ function mesurerArticle(emettre: Emetteur): void {
   // `blog_read_completed` que de `depth: 100`).
   const fin = safe(() => document.querySelector('[data-blog-fin]'), null);
   if (fin) observerElements([fin], () => emettre('blog_read_completed', meta));
+
+  // Dernier article lu, en propriété SUPER : elle accompagne les événements
+  // suivants, y compris l'inscription sur app.hippodoc.fr (le cookie la porte,
+  // cf. `cookie_persisted_properties` dans PostHog.astro). Pas d'UTM sur le lien
+  // d'inscription : ils écraseraient la vraie source (google/organic…).
+  safe(() => posthog?.register?.({ hd_dernier_article: meta.slug, hd_derniere_serie: meta.series_id }), undefined);
+
+  // Clics : UN écouteur délégué. La zone vient de `data-blog-zone`, posé au
+  // build dans [slug].astro (corps, cta, faq, partage, plus-loin, connexes).
+  // Avant ce lot, le clic sur le bouton d'inscription n'existait qu'en
+  // autocapture, sans slug ni série : aucun entonnoir par article possible.
+  safe(() => {
+    article.addEventListener('click', (ev) => {
+      safe(() => {
+        const lien = (ev.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
+        if (!lien || lien.hasAttribute('data-calendly')) return; // Calendly : déjà `calendly_clicked`
+        const zone = lien.closest<HTMLElement>('[data-blog-zone]')?.dataset.blogZone ?? 'autre';
+        const href = lien.getAttribute('href') ?? '';
+
+        if (zone === 'partage') {
+          emettre('blog_shared', { ...meta, network: (lien.dataset.ph ?? '').replace('blog_share_', '') });
+        } else if (zone === 'connexes') {
+          emettre('blog_related_clicked', {
+            ...meta,
+            to_slug: href.replace(/^\/blog\//, ''),
+            rank: Number(lien.dataset.phRank) || 0,
+          });
+        } else if (lien.dataset.track || DESTINATIONS_CTA.test(href)) {
+          emettre('blog_cta_clicked', {
+            ...meta,
+            cta_id: lien.dataset.track ?? href.split('#')[0],
+            destination: href.split('?')[0],
+            zone,
+          });
+        }
+      }, undefined);
+    }, { passive: true });
+  }, undefined);
+
+  // FAQ : même principe que `faq_question_opened` sur /faq — seule l'ouverture compte.
+  safe(() => {
+    article.querySelectorAll('[data-blog-zone="faq"] details').forEach((d, i) => {
+      d.addEventListener('toggle', () => {
+        if ((d as HTMLDetailsElement).open) emettre('blog_faq_opened', { ...meta, question_index: i });
+      });
+    });
+  }, undefined);
 }

@@ -10,6 +10,7 @@ categoryNumber: "#6"
 seriesId: "fiche-pratique"
 episodeNumber: 6
 readTime: "4 min"
+cta: "Le logiciel métier maîtrisé ? Simplifie aussi ta gestion"
 cover: "/blog/maitrise-logiciel-cover.png"
 tags:
   - "Fiche Pratique"

@@ -16,6 +16,8 @@ export type Props = Record<string, unknown>;
 
 export interface PostHogLike {
   capture: (event: string, props?: Props) => void;
+  /** Propriétés super (dernier article lu, § 9.bf). Optionnel : un double de test peut s'en passer. */
+  register?: (props: Props) => void;
 }
 
 const CLE_SESSION = 'hippodoc-landing-session';

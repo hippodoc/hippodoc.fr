@@ -15,6 +15,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BlogCard from '@/components/BlogCard.astro';
+import BlogCtaBand from '@/components/BlogCtaBand.astro';
 import { SITE_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { SERIES_SLUGS, SERIES_INTROS, seriesPath } from '@/lib/blog-series-slugs';
@@ -76,7 +77,7 @@ const breadcrumbSchema = {
 
 <BaseLayout title={title} description={description} path={path} jsonLd={[collectionSchema, breadcrumbSchema]}>
   <Header />
-  <main class="container max-w-6xl px-4 py-10">
+  <main class="container max-w-6xl px-4 py-10" data-blog-serie={series.id} data-blog-total={posts.length}>
     <nav aria-label="Fil d'Ariane" class="mb-6 text-sm text-muted-foreground">
       <ol class="flex flex-wrap items-center gap-1">
         <li><a href="/" class="inline-flex min-h-6 items-center hover:text-hippo-600">Accueil</a></li>
@@ -150,6 +151,10 @@ const breadcrumbSchema = {
           eager={i === 0}
         />
       ))}
+    </div>
+
+    <div class="mt-12">
+      <BlogCtaBand emplacement="blog_serie" />
     </div>
   </main>
   <Footer />

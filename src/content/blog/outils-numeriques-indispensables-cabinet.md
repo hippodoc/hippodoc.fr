@@ -10,6 +10,7 @@ categoryNumber: "#7"
 seriesId: "fiche-pratique"
 episodeNumber: 7
 readTime: "5 min"
+cta: "Prêt à ajouter Hippodoc à ta boîte à outils ?"
 cover: "/blog/outils-numeriques-cabinet-cover.png"
 tags:
   - "Fiche Pratique"
@@ -61,7 +62,7 @@ Tous les outils ci-dessus t'aident à soigner. Aucun ne t'aide à suivre tes ré
 ## 🚀 La solution complète pour gérer ta vie professionnelle
 
 :::tip
-**Hippodoc.fr** optimise entièrement ton quotidien de remplaçant avec :\
+**[Hippodoc.fr](/)** optimise entièrement ton quotidien de remplaçant avec :\
 ✅ Suivi simplifié des paiements et estimation instantanée de ton revenu net (« [Super-Net](/blog/simulateur-super-net-combien-reste) »)\
 ✅ Statistiques détaillées sur tes revenus\
 ✅ Calendrier intelligent et intuitif\

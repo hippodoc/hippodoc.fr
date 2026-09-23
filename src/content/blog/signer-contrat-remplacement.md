@@ -10,6 +10,7 @@ categoryNumber: "#5"
 seriesId: "fiche-pratique"
 episodeNumber: 5
 readTime: "2 min"
+cta: "Génère ton contrat de remplacement en quelques clics"
 cover: "/blog/signer-contrat-remplacement-cover.png"
 tags:
   - "Fiche Pratique"

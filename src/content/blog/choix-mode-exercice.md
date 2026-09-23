@@ -9,6 +9,7 @@ category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 1
 readTime: "6 min"
+cta: "Prêt à suivre ce que te rapporte vraiment chaque mode d'exercice ?"
 cover: "/blog/choix-mode-exercice-cover.png"
 tags:
   - "Guide et Conseil"

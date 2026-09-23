@@ -23,7 +23,7 @@ export function initAnalytics(posthog: PostHogLike): void {
   const { emettre, contexte } = creerEmetteur(posthog);
 
   if (chemin === '/') initLandingAnalytics(emettre);
-  else initPageAnalytics(emettre, chemin);
+  else initPageAnalytics(emettre, chemin, posthog);
 
   brancherCalendly(emettre, contexte);
 }

@@ -12,6 +12,7 @@ cover: "/blog/enveloppes-investissement-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Calcule ton super-net avant d'investir"
+ctaHref: "/simulateur"
 faq:
   - question: "Quelle est la différence entre une enveloppe fiscale et un placement ?"
     answer: "L'**enveloppe fiscale** (PEA, assurance-vie, PER, CTO) est le **contenant** qui détermine la fiscalité, la disponibilité et les règles applicables. Le **placement** (ETF, actions, fonds en euros, SCPI…) est le **contenu** que tu loges dedans. Un même ETF peut avoir une fiscalité très différente selon qu'il est dans un PEA ou un CTO."
