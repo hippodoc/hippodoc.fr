@@ -3070,6 +3070,44 @@ carte). Accessibilité, bonnes pratiques et SEO à 100, CLS 0.
 JSON-LD Article, hauteur de la cover sur ordinateur, 11 covers de 450 px, cover
 partagée de la facturation électronique, préchargement de la une sur ordinateur.
 
+### 9.bd Audit du blog, lot 3b — images : partage social, JSON-LD, hauteur de la cover (23 septembre 2026)
+
+Aucun contenu d'article modifié. Fichiers : `src/pages/blog/[slug].astro`,
+`src/layouts/BaseLayout.astro`.
+
+- **Image de partage** : les 46 articles envoyaient la cover PORTRAIT en WebP tout
+  en déclarant `og:image` 1200×630. LinkedIn, WhatsApp, Facebook et X recadraient
+  au centre et coupaient le titre dessiné en haut. Désormais : recadrage paysage
+  1,91:1 calé sur le **haut** de la cover (`fit: 'cover', position: 'top'`), en
+  JPEG ; `og:image:width/height` = dimensions réelles du fichier (nouvelles props
+  `ogImageWidth` / `ogImageHeight` de BaseLayout, défaut 1200×630 pour les autres
+  pages). Contrôlé visuellement : titre entier sur CFE et rétrocession.
+- **JSON-LD Article** : `image` passe d'une URL portrait à trois recadrages 16:9,
+  4:3 et 1:1 (recommandation Google). `<meta name="robots" content="max-image-preview:large">`
+  ajouté sur toutes les pages indexables (condition des grandes vignettes Discover).
+- **Cover d'en-tête** : affichée en pleine largeur (832 × 1 251 px), elle repoussait
+  le premier mot à ~1 600 px sur ordinateur. Plafonnée à 448 px à partir de `sm`
+  (`sm:max-w-md`, centrée) : le texte commence à ~930 px. Mobile inchangé.
+- **srcset honnête** : la largeur demandée à `getImage` est bornée à celle de la
+  source et les candidats sont dédoublonnés — onze covers de ~450 px étaient
+  annoncées « 800w » et « 1200w ». Candidats : 480 / 800 / 900 px.
+
+Lighthouse mobile local : CFE 98, URSSAF 98, frais pros salariés 94-95 (identique à
+`main` sur trois passages : le carrousel de 19 slides pèse, sans lien avec ce lot) ;
+desktop CFE 100. A11y / BP / SEO 100, CLS 0.
+
+**⚠️ Action fondateur — covers à ré-exporter** : l'image de partage ne peut pas être
+plus large que la source. Onze covers font ~450 px, donc des aperçus de 450 × 236 px
+(flous sur LinkedIn) et une cover floue sur ordinateur : `calendrier-fiscal-remplacant`,
+`checklist-ultime-medecin-remplacant`, `choix-mode-exercice`,
+`cotisations-sociales-vs-impots`, `frais-professionnels-deductibles`,
+`maitrise-ton-logiciel-metier-en-30-min`, `outils-numeriques-indispensables-cabinet`,
+`regime-fiscal-micro-bnc-vs-reel`, `remplir-declaration-2035`, `tout-comprendre-carmf`,
+`tout-comprendre-urssaf`. Format cible : 1611 × 2000 comme les fiches récentes, même
+nom de fichier dans `src/assets/blog/`. Aussi : une cover propre pour
+`facturation-electronique-medecin-remplacant` (elle partage celle de
+`generer-facture-remplacement`, titrée « T'as remplacé, t'as facturé »).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
