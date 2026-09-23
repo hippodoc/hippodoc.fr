@@ -13,7 +13,7 @@ export const blogSeries: BlogSeries[] = [
     "id": "fiche-pratique",
     "name": "Fiches Pratiques",
     "description": "Les essentiels pour débuter sereinement tes remplacements",
-    "color": "from-blue-500 to-cyan-500",
+    "color": "from-blue-700 to-cyan-700",
     "icon": "FileCheck",
     "totalEpisodes": 8
   },
@@ -21,7 +21,7 @@ export const blogSeries: BlogSeries[] = [
     "id": "fiche-fiscalite",
     "name": "Fiches Fiscalité",
     "description": "Tout comprendre sur la fiscalité du médecin remplaçant",
-    "color": "from-purple-500 to-pink-500",
+    "color": "from-purple-700 to-pink-700",
     "icon": "Calculator",
     "totalEpisodes": 9
   },
@@ -29,7 +29,7 @@ export const blogSeries: BlogSeries[] = [
     "id": "divers",
     "name": "Guides & Conseils",
     "description": "Salariat, rémunérations et types d'exercices",
-    "color": "from-orange-500 to-red-500",
+    "color": "from-orange-700 to-red-700",
     "icon": "Lightbulb",
     "totalEpisodes": null
   }

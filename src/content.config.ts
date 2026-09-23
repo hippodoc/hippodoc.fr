@@ -15,6 +15,8 @@ const blog = defineCollection({
     seriesId: z.enum(['fiche-pratique', 'fiche-fiscalite', 'divers']),
     episodeNumber: z.number().optional(),
     readTime: z.string(),
+    /** Article mis « à la une » sur /blog (sinon : le plus récent, cf. blog-sort.ts). */
+    featured: z.boolean().optional(),
     cover: z.string(),
     tags: z.array(z.string()),
     cta: z.string().optional(),

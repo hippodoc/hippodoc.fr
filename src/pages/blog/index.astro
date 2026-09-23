@@ -8,16 +8,18 @@ import { SITE_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
 import { resolveCover, resolveCovers } from '@/lib/blog-covers';
+import { byNewest, byEpisode } from '@/lib/blog-sort';
 
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
-);
+const posts = (await getCollection('blog')).sort(byNewest);
 
 const covers = await resolveCovers(posts);
 
 /* Mise en avant du dernier article : sans hiérarchie éditoriale, le guide le plus
    stratégique avait exactement le même poids visuel que le plus anecdotique. */
-const [featured, ...rest] = posts;
+/* La « une » est un choix éditorial (`featured: true` dans le frontmatter) ; à
+   défaut, le plus récent selon byNewest — et non plus l'ordre alphabétique. */
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p !== featured);
 /* Seuls les 8 suivants passent en cartes : les 38 empilées faisaient 19 000 px de
    haut en mobile. Les 38 restent tous accessibles via l'index en bas de page.
    8 et non 9 : la grille est en 2 puis 4 colonnes (cartes portrait), 8 remplit
@@ -85,7 +87,7 @@ const blogSchema = {
         </p>
       </div>
       <p class="text-sm text-muted-foreground">
-        <span class="font-semibold text-hippo-700">{posts.length}</span> fiches pratiques
+        <span class="font-semibold text-hippo-700">{posts.length}</span> articles
       </p>
     </header>
 
@@ -158,6 +160,7 @@ const blogSchema = {
     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
       {recents.map((post) => (
         <BlogCard
+          headingLevel={3}
           slug={post.id}
           title={post.data.title}
           description={post.data.description}
@@ -177,7 +180,7 @@ const blogSchema = {
          indexable, en trois colonnes sur grand écran. */}
     <section class="mt-16 border-t border-hippo-100 pt-10" aria-labelledby="index-titre">
       <h2 id="index-titre" class="text-xl font-bold text-foreground">Tous les articles</h2>
-      <p class="mt-1 text-sm text-muted-foreground">Les {posts.length} fiches, classées par série.</p>
+      <p class="mt-1 text-sm text-muted-foreground">Les {posts.length} articles, classés par série.</p>
 
       <div class="mt-8 grid gap-x-10 gap-y-9 lg:grid-cols-3">
         {blogSeries.map((s) => (
@@ -189,6 +192,7 @@ const blogSchema = {
             <ul class="mt-3 space-y-1">
               {posts
                 .filter((p) => p.data.seriesId === s.id)
+                .sort(s.totalEpisodes === null ? byNewest : byEpisode)
                 .map((p) => (
                   <li>
                     <a

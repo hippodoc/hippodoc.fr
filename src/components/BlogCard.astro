@@ -17,6 +17,8 @@
 import { blogSeries } from '@/lib/blog-series';
 
 interface Props {
+  /** Niveau du titre de carte : 3 quand la grille est sous un h2 de section (/blog). */
+  headingLevel?: 2 | 3;
   slug: string;
   title: string;
   description: string;
@@ -30,17 +32,18 @@ interface Props {
 }
 
 const {
-  slug, title, description, pubDate, readTime, seriesId, episodeNumber, cover, eager = false,
+  headingLevel = 2, slug, title, description, pubDate, readTime, seriesId, episodeNumber, cover, eager = false,
 } = Astro.props;
 
 const series = blogSeries.find((s) => s.id === seriesId);
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+const Heading = headingLevel === 3 ? 'h3' : 'h2';
 ---
 
 <article class={`blog-card s-${seriesId} blog-card-hover overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm`}>
-  <a href={`/blog/${slug}`} class="flex h-full sm:block">
+  <a href={`/blog/${slug}`} class="flex h-full rounded-2xl sm:block focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[hsl(var(--ring))]">
     {cover && (
       <div class="relative m-3 mr-0 aspect-[4/5] w-28 shrink-0 self-start overflow-hidden rounded-xl sm:m-0 sm:w-full sm:rounded-none">
         <img
@@ -63,7 +66,7 @@ const formatDate = (d: Date) =>
           <span class="text-xs text-muted-foreground">#{episodeNumber}</span>
         )}
       </div>
-      <h2 class="text-base font-bold leading-snug text-foreground sm:text-lg">{title}</h2>
+      <Heading class="text-base font-bold leading-snug text-foreground sm:text-lg">{title}</Heading>
       <p class="mt-2 line-clamp-2 text-sm text-muted-foreground sm:line-clamp-3">{description}</p>
       <div class="mt-4 flex items-center justify-between text-xs text-muted-foreground">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
