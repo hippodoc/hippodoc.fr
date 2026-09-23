@@ -13,6 +13,7 @@ cover: "/blog/interets-composes-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Calcule ton super-net avant d'investir"
+ctaHref: "/simulateur"
 faq:
   - question: "Pourquoi commencer à investir tôt change-t-il autant les choses ?"
     answer: "Parce que les **intérêts composés** récompensent le temps, pas le montant. Un médecin qui place 300 €/mois dès 25 ans atteint **~788 k€** à 65 ans (ETF Monde, 7 %/an). Le même médecin qui attend 35 ans n'arrive qu'à **~366 k€**. **10 ans d'attente coûtent ~422 k€**, alors qu'il n'a « économisé » que 36 k€ en retardant. Le temps est de loin le moteur le plus puissant de la mécanique."
@@ -167,4 +168,4 @@ Tu as deux superpowers que la plupart des profils n'ont pas : **des revenus stab
 
 Pour investir, encore faut-il **savoir ce qu'il te reste vraiment à la fin du mois**. Entre les remplas, l'[URSSAF](/blog/tout-comprendre-urssaf), les impôts, les charges variables, le remplaçant pilote ses finances au feeling. C'est précisément ce qu'Hippodoc corrige.
 
-👉 **hippodoc.fr** — ce qu'il te reste vraiment chaque mois, en clair. Tu sais précisément ce que tu peux investir ou dépenser, sans stress.
+👉 **[hippodoc.fr](/simulateur)** — ce qu'il te reste vraiment chaque mois, en clair. Tu sais précisément ce que tu peux investir ou dépenser, sans stress.

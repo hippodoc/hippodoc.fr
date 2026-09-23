@@ -43,7 +43,7 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
 ---
 
 <article class={`blog-card s-${seriesId} blog-card-hover overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm`}>
-  <a href={`/blog/${slug}`} class="flex h-full rounded-2xl sm:block focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[hsl(var(--ring))]">
+  <a href={`/blog/${slug}`} data-ph="blog_card" class="flex h-full rounded-2xl sm:block focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[hsl(var(--ring))]">
     {cover && (
       <div class="relative m-3 mr-0 aspect-[4/5] w-28 shrink-0 self-start overflow-hidden rounded-xl sm:m-0 sm:w-full sm:rounded-none">
         <img

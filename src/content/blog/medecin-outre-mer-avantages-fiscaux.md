@@ -13,6 +13,7 @@ cover: "/blog/medecin-outre-mer-cover.png"
 tags:
   - "Guide et Conseil"
 cta: "Prêt à simuler ton revenu net en outre-mer ?"
+ctaHref: "/simulateur"
 faq:
   - question: "Un médecin libéral en Guadeloupe a-t-il droit à la ZFANG ?"
     answer: "**Non.** Les activités libérales et BNC sont **exclues** de la ZFANG dans les DROM historiques (Guadeloupe, Martinique, Guyane, La Réunion). Le BOFiP est explicite sur ce point, et l'exclusion s'étend aussi à l'abattement de CFE associé. Un cabinet médical libéral classique n'y a donc pas droit, sauf activité accessoire commerciale ou de R&D éligible."

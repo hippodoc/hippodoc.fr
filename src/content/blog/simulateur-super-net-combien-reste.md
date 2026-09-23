@@ -13,6 +13,7 @@ cover: "/blog/simulateur-super-net-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Simule ton SuperNet gratuitement sur Hippodoc"
+ctaHref: "/simulateur"
 faq:
   - question: "Quelles sont les cotisations sociales d'un médecin libéral en 2026 ?"
     answer: "Les cotisations comprennent **maladie-maternité, retraite de base et complémentaire (CARMF), invalidité-décès, allocations familiales, CFP, CSG et CRDS**. Côté CARMF, elles sont réparties entre base, complémentaire, ASV et invalidité-décès. L'ensemble représente un pourcentage significatif du revenu."

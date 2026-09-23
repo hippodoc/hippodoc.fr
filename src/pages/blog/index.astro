@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BlogCard from '@/components/BlogCard.astro';
+import BlogCtaBand from '@/components/BlogCtaBand.astro';
 import { SITE_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
@@ -121,6 +122,7 @@ const blogSchema = {
          de la page), pour donner une hiérarchie de lecture dès le premier écran. */}
     <a
       href={`/blog/${featured.id}`}
+      data-ph="blog_index_featured"
       class="blog-card-hover mb-10 grid overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm md:grid-cols-[340px_1fr]"
     >
       <div class="flex flex-col justify-center p-6 md:p-8">
@@ -171,6 +173,10 @@ const blogSchema = {
           cover={covers.get(post.id)}
         />
       ))}
+    </div>
+
+    <div class="mt-12">
+      <BlogCtaBand emplacement="blog_index" />
     </div>
 
     {/* Index complet. Les 38 cartes empilées faisaient 19 000 px de haut en mobile

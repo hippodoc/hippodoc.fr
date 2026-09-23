@@ -424,7 +424,7 @@ Hippodoc t'aide à suivre tes rétrocessions au fil de l'eau, anticiper tes coti
 **05 — Aide à la déclaration** : Pages dédiées 2042-C PRO, 2035 et DSFU (ex DS-PAMC) : montants pré-remplis depuis tes données, case par case, avec glossaire et exemples.\
 **06 — Factures, exports & contrats** : Factures professionnelles, Contrats CNOM automatiques, Export PDF/Excel pour ton comptable.
 
-→ **hippodoc.fr**
+→ **[hippodoc.fr](/)**
 :::
 
 *Article informatif, à jour pour la déclaration 2026 des revenus 2025. Il ne remplace pas un avis personnalisé d'expert-comptable, notamment en cas de dépassement de seuil, régime réel, activité mixte, installation, situation familiale particulière, arrêt maladie/maternité ou rémunérations PDSA complexes.*

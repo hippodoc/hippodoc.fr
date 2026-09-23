@@ -5,7 +5,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BlogSlides from '@/components/BlogSlides.tsx';
-import { SITE_URL, APP_URL, LOGO_URL } from '@/lib/site';
+import { SITE_URL, APP_URL, LOGO_URL, CALENDLY_URL, PRODUCT_DEFINITION } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
 import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
@@ -37,8 +37,9 @@ const showToc = nbMots >= 1200 && toc.filter((h) => h.depth === 2).length >= 8;
 
 const {
   title, description, pubDate, updatedDate, author, authorRole, category, categoryNumber,
-  seriesId, episodeNumber, readTime, cover, cta, faq, relatedArticles, slides,
+  seriesId, episodeNumber, readTime, cover, cta, ctaHref, faq, relatedArticles, slides,
 } = post.data;
+const signupUrl = `${APP_URL}/auth?tab=signup`;
 
 const slug = post.id;
 const path = `/blog/${slug}`;
@@ -315,7 +316,7 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
            la cover et les blocs de fin restent en pleine largeur du conteneur.
            Les sauts de ligne volontaires (« \ » en fin de ligne) sortent en <br> : la
            règle `white-space: pre-wrap` qui les doublait a été retirée (§ 9.bc). */}
-      <div class="prose prose-slate blog-content mx-auto max-w-[68ch] prose-headings:text-foreground prose-a:text-hippo-600">
+      <div class="prose prose-slate blog-content mx-auto max-w-[68ch] prose-headings:text-foreground prose-a:text-hippo-600" data-blog-zone="corps">
         <Content />
         {/* Fin réelle du TEXTE — et non le bas de la page : le partage, le bloc
             auteur et le pied de page viennent après. C'est ce repère qui déclenche
@@ -324,8 +325,54 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         <span data-blog-fin aria-hidden="true"></span>
       </div>
 
+      {/* Appel à l'action — JUSTE APRÈS LE TEXTE (§ 9.bf). Il fermait la page,
+          derrière la FAQ, le bloc auteur, le partage, « Pour aller plus loin » et
+          3 à 6 articles connexes : 2,4 à 2,9 écrans mobiles après la fin de la
+          lecture, et les connexes faisaient partir le lecteur avant qu'il le voie.
+          Rendu sur TOUS les articles (8 n'en avaient pas) ; verify-site échoue
+          désormais sur un article sans `data-track="cta_`.
+          Le titre est un <p> : en <h3> après le <h2> « Articles connexes », il en
+          devenait un sous-titre dans le plan du document.
+          La définition produit est reprise mot pour mot de site.ts : le bloc ne
+          nommait jamais le produit, et 5 articles ne le citent nulle part.
+          Dégradé hippo-600→700 et texte blanc plein : ≥ 5,15:1 (§ 9.bc). */}
+      <aside
+        class="mt-10 rounded-2xl bg-gradient-to-r from-hippo-600 to-hippo-700 p-6 text-center text-white sm:p-8"
+        aria-label="Essayer Hippodoc"
+        data-blog-zone="cta"
+      >
+        <p class="text-xl font-bold" set:html={miniMarkdownToHtml(cta ?? 'Prêt à simplifier ta gestion de remplaçant ?')} />
+        <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white">{PRODUCT_DEFINITION}</p>
+        <a
+          href={ctaHref ?? signupUrl}
+          data-track={ctaHref ? 'cta_simulateur_blog' : 'cta_signup_blog'}
+          class="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-white px-6 font-semibold text-hippo-700 shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          {ctaHref ? 'Simule ton Super-Net' : 'Commencer gratuitement'}
+        </a>
+        {ctaHref ? (
+          <p class="mt-3 text-sm text-white">
+            <a href={signupUrl} data-track="cta_signup_blog" class="font-medium underline underline-offset-2">Ou commence l'essai gratuit</a>
+            · 30 jours · Sans engagement
+          </p>
+        ) : (
+          <p class="mt-2 text-sm text-white">Essai gratuit 30 jours · Sans engagement</p>
+        )}
+        {/* Lien direct, jamais le widget (CLAUDE.md). `brancherCalendly()` y
+            reporte les UTM de session et émet `calendly_clicked`. */}
+        <p class="mt-2 text-sm text-white">
+          <a
+            href={CALENDLY_URL}
+            data-calendly="blog_article"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex min-h-11 items-center font-medium underline underline-offset-2"
+          >Prendre 15 min avec Ryan</a>
+        </p>
+      </aside>
+
       {faq && faq.length > 0 && (
-        <section class="mt-12" aria-labelledby="faq-title">
+        <section class="mt-12" aria-labelledby="faq-title" data-blog-zone="faq">
           <h2 id="faq-title" class="mb-4 text-2xl font-bold text-foreground">Questions fréquentes</h2>
           <div class="space-y-3">
             {faq.map((item) => (
@@ -361,13 +408,14 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
 
       {/* Partage : liens simples, aucun script tiers (un guide fiscal se
            transfère surtout entre confrères par messagerie). */}
-      <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+      <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm" data-blog-zone="partage">
         <span class="font-medium text-muted-foreground">Partager cet article</span>
         <a
           href={`https://wa.me/?text=${encodeURIComponent(`${title} — ${SITE_URL}${path}`)}`}
           target="_blank"
           rel="nofollow noopener noreferrer"
           class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
+          data-ph="blog_share_whatsapp"
         >
           WhatsApp
         </a>
@@ -376,35 +424,37 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
           target="_blank"
           rel="nofollow noopener noreferrer"
           class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
+          data-ph="blog_share_linkedin"
         >
           LinkedIn
         </a>
         <a
           href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${description}\n\n${SITE_URL}${path}`)}`}
           class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
+          data-ph="blog_share_email"
         >
           E-mail
         </a>
       </div>
 
-      <aside class="mt-12 rounded-2xl border border-hippo-100 bg-hippo-50/50 p-6" aria-label="Pour aller plus loin">
+      <aside class="mt-12 rounded-2xl border border-hippo-100 bg-hippo-50/50 p-6" aria-label="Pour aller plus loin" data-blog-zone="plus-loin">
         <h2 class="mb-3 text-lg font-bold text-hippo-800">Pour aller plus loin</h2>
         <ul class="space-y-2 text-hippo-700">
-          <li><a href="/simulateur" class="font-medium underline-offset-2 hover:underline">→ Simule ton Super-Net (revenu net après cotisations et impôts)</a></li>
-          <li><a href="/guide-declarations" class="font-medium underline-offset-2 hover:underline">→ Guide des déclarations 2035, 2042 et DSFU du médecin</a></li>
-          <li><a href="/tarifs" class="font-medium underline-offset-2 hover:underline">→ Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel, essai 30 jours</a></li>
+          <li><a href="/simulateur" data-track="cta_simulateur_blog_more" class="font-medium underline-offset-2 hover:underline">→ Simule ton Super-Net (revenu net après cotisations et impôts)</a></li>
+          <li><a href="/guide-declarations" data-track="cta_guide_blog_more" class="font-medium underline-offset-2 hover:underline">→ Guide des déclarations 2035, 2042 et DSFU du médecin</a></li>
+          <li><a href="/tarifs" data-track="cta_pricing_blog_more" class="font-medium underline-offset-2 hover:underline">→ Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel, essai 30 jours</a></li>
         </ul>
       </aside>
 
       {related.length > 0 && (
-        <section class="mt-12" aria-labelledby="related-title">
+        <section class="mt-12" aria-labelledby="related-title" data-blog-zone="connexes">
           <h2 id="related-title" class="mb-4 text-2xl font-bold text-foreground">Articles connexes</h2>
           {/* Vignette portrait 4:5 ancrée en haut : les covers sont toutes en
               portrait avec le titre dessiné en haut, l'ancien bandeau de 128 px
               de haut n'en montrait qu'une tranche coupée au milieu du titre. */}
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((r) => (
-              <a href={`/blog/${r.id}`} class="blog-card-hover flex overflow-hidden rounded-xl border border-hippo-100 bg-white shadow-sm">
+            {related.map((r, i) => (
+              <a href={`/blog/${r.id}`} data-ph="blog_related" data-ph-rank={i + 1} class="blog-card-hover flex overflow-hidden rounded-xl border border-hippo-100 bg-white shadow-sm">
                 {relatedCovers.get(r.id) && (
                   <img src={relatedCovers.get(r.id)} alt="" class="aspect-[4/5] w-24 shrink-0 self-start object-cover object-top" loading="lazy" width="96" height="120" />
                 )}
@@ -418,24 +468,6 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         </section>
       )}
 
-      {/* Dégradé assombri de hippo-500→600 vers hippo-600→700 : sur hippo-500 même
-          du blanc PLEIN ne donne que 3,37:1, sous le seuil AA — tout ce bloc échouait
-          sur sa moitié gauche, et ce sur 30 articles. hippo-600 donne 5,15:1 et
-          hippo-700 6,82:1. Le sous-titre passe de `text-white/80` (3,85:1) à blanc
-          plein : la nuance vient de la taille, pas de l'opacité. */}
-      {cta && (
-        <div class="mt-12 rounded-2xl bg-gradient-to-r from-hippo-600 to-hippo-700 p-8 text-center text-white">
-          <h3 class="text-xl font-bold" set:html={miniMarkdownToHtml(cta)} />
-          <a
-            href={`${APP_URL}/auth?tab=signup`}
-            data-track="cta_signup_blog"
-            class="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-white px-6 font-semibold text-hippo-700 shadow-lg transition-transform hover:scale-105"
-          >
-            Commencer gratuitement
-          </a>
-          <p class="mt-2 text-sm text-white">Essai gratuit 30 jours · Sans engagement</p>
-        </div>
-      )}
     </article>
     </div>
 

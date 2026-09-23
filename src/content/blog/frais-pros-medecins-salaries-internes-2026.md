@@ -310,7 +310,7 @@ L'outil qui suit, calcule et t'aide à déclarer tes frais pros sans effort :
 • **Compatible exercice mixte** — les remplacements libéraux calculés à part, sans confusion fiscale.\
 • **Cases de déclaration pré-remplies** — 1AK, 1BK, note annexe : tu copies-colles, c'est terminé.
 
-Le guide complet et le simulateur t'attendent sur **hippodoc.fr** 🦛
+Le guide complet et le simulateur t'attendent sur **[hippodoc.fr](/)** 🦛
 :::
 
 ## 📚 Sources & disclaimer

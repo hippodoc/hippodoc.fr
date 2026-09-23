@@ -10,6 +10,7 @@ categoryNumber: "#2"
 seriesId: "fiche-pratique"
 episodeNumber: 2
 readTime: "2 min"
+cta: "Prêt à organiser tes remplas dès le premier ?"
 cover: "/blog/trouver-remplacement-cover.png"
 tags:
   - "Fiche Pratique"
@@ -54,4 +55,4 @@ Bravo, tu as ta [licence de remplacement](/blog/obtenir-sa-licence-de-remplaceme
 💳 Suivi ultra simple de tes paiements
 :::
 
-Alors, prêt·e à décoller ? Télécharge Hippodoc et simplifie ton quotidien de médecin remplaçant dès maintenant ! 🚀
+Alors, prêt·e à décoller ? Essaie Hippodoc gratuitement pendant 30 jours et simplifie ton quotidien de médecin remplaçant dès maintenant ! 🚀

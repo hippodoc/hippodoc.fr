@@ -12,7 +12,7 @@ readTime: "6 min"
 cover: "/blog/checklist-premier-jour-cover.png"
 tags:
   - "Fiche Pratique"
-cta: "🚀 Prêt(e) pour ton premier jour ? Télécharge Hippodoc et garde toutes tes infos essentielles à portée de main !"
+cta: "🚀 Prêt(e) pour ton premier jour ? Crée ton compte Hippodoc et garde toutes tes infos essentielles à portée de main !"
 faq:
   - question: "Comment se préparer pour son premier jour de remplacement ?"
     answer: "Vérifie : **clés et codes d'accès**, **identifiants logiciel**, **horaires précis**, **numéros d'urgence**. Arrive 15 min en avance et repère le matériel essentiel (stéthoscope, tensiomètre, ordonnances sécurisées)."

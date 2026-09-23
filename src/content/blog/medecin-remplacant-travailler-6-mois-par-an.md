@@ -12,6 +12,7 @@ cover: "/blog/bosser-6-mois-vivre-12-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Combien de jours ont du sens pour toi cette année ?"
+ctaHref: "/simulateur"
 faq:
   - question: "Combien gagne un médecin remplaçant qui travaille 6 mois par an ?"
     answer: "Dans notre cas-type (médecine générale, secteur 1, **120 jours** à 25 actes par jour, rétrocession de 80 %) : **72 000 €** encaissés, environ **18 100 €** de cotisations URSSAF et CARMF, autour de **7 400 €** d'impôt pour un célibataire. Il reste environ **46 500 € nets**, soit **≈ 3 900 € par mois** étalés sur 12 mois."
@@ -119,7 +120,7 @@ Le remplacement n'est pas seulement un statut d'attente avant l'installation. Bi
 ## 🦛 Le Tips Hippodoc
 
 :::tip
-Pour répondre avec tes propres chiffres — ta rétrocession, ton volume d'actes, ta situation fiscale — [Hippodoc simule tes revenus nets](/simulateur) et automatise ta gestion de remplaçant, de la déclaration URSSAF au suivi de tes jours. Ton comptable de poche, pour décider en connaissance de cause. 🦛
+Pour répondre avec tes propres chiffres — ta rétrocession, ton volume d'actes, ta situation fiscale — [Hippodoc simule tes revenus nets](/simulateur), centralise tes rétrocessions et ton planning, et prépare tes déclarations — pour décider en connaissance de cause. 🦛
 :::
 
 ## 📚 Sources (vérifiées au 20 septembre 2026)

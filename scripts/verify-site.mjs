@@ -640,7 +640,13 @@ for (const f of blogFiles) {
 const liensEntrants = new Map([...slugsBlog].map((s) => [s, 0]));
 for (const s of slugsBlog) {
   const html = readFileSync(resolve(dist, 'blog', s, 'index.html'), 'utf8');
-  const corps = (html.match(/<div class="prose[^"]*"[^>]*>([\s\S]*?)<\/article>/) ?? [, ''])[1];
+  // Le TEXTE seul : jusqu'au repère de fin, pas jusqu'à </article> — sinon les
+  // cartes « Articles connexes » comptaient comme des liens du texte (§ 9.bf).
+  const corps = (html.match(/<div class="prose[^"]*"[^>]*>([\s\S]*?)data-blog-fin/) ?? [, ''])[1];
+  if (!corps) fail(`blog/${s} : corps d'article introuvable (repère data-blog-fin absent ?)`);
+  // Appel à l'action (§ 9.bf) : 8 articles n'en avaient aucun.
+  const blocCta = (html.match(/data-blog-zone="cta"[\s\S]*?<\/aside>/) ?? [''])[0];
+  if (!/data-track="cta_/.test(blocCta)) fail(`blog/${s} : bloc d'appel à l'action absent ou sans data-track="cta_…"`);
   for (const cible of new Set([...corps.matchAll(/href="\/blog\/([a-z0-9-]+)"/g)].map((m) => m[1]))) {
     if (cible !== s && liensEntrants.has(cible)) liensEntrants.set(cible, liensEntrants.get(cible) + 1);
   }

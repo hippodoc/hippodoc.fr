@@ -11,6 +11,7 @@ cover: "/blog/retrocession-honoraires-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Prêt à savoir ce que vaut vraiment une annonce ?"
+ctaHref: "/simulateur"
 faq:
   - question: "Quel est le pourcentage de rétrocession d'un médecin remplaçant ?"
     answer: "En **médecine générale**, la fourchette courante se situe entre **70 et 90 %**, avec **80 %** comme point de repère. Chez les **spécialistes**, l'usage tourne plutôt autour de **60 à 70 %**, à cause du plateau technique à financer. Pour les **gardes régulées**, l'usage est de **100 %** pour le remplaçant. Aucun de ces chiffres n'est un tarif officiel : ce sont des usages."

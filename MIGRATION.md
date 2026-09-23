@@ -1590,6 +1590,11 @@ Les propriétés super sont stockées dans la persistance de PostHog — donc, a
 `cross_subdomain_cookie`, sur `.hippodoc.fr` — et rattachées à tous les
 événements suivants, **y compris ceux émis par l'app après l'inscription**.
 
+> ⚠️ **Corrigé au § 9.bf (23 septembre 2026)** : la phrase ci-dessus était
+> inexacte jusque-là. Le cookie `.hippodoc.fr` ne recevait que 7 clés internes de
+> posthog-js ; les `hd_*` restaient dans le localStorage de www et n'atteignaient
+> jamais l'app. Elles y passent désormais via `cookie_persisted_properties`.
+
 | Propriété | Contenu |
 |---|---|
 | `hd_premiere_source` | `utm_source`, sinon `meta` si `fbclid`, `google` si `gclid`, sinon le référent externe, sinon `direct` |
@@ -3172,6 +3177,105 @@ lien entrant depuis le texte d'un autre article, ou n'est cité dans aucun
 et ses sous-pages ; liens vers les sources officielles dans les sections Sources ;
 `llms.txt` ; footer. ⚠️ `/simulateur` décrit encore le RSPM comme applicable « en
 dessous de 38 000 € » (texte de page + mode Auto du moteur) : à revoir côté produit.
+
+### 9.bf Audit du blog, lot 5 — conversion et mesure (23 septembre 2026)
+
+**Position de l'appel à l'action.** Le bloc d'inscription fermait la page, derrière
+la FAQ, le bloc auteur, le partage, « Pour aller plus loin » et 3 à 6 articles
+connexes : 2,4 à 2,9 écrans mobiles après la fin du texte. Il vient désormais
+**juste après le texte**, avant la FAQ. Son titre passe de `<h3>` (rattaché à tort au
+`<h2>` « Articles connexes ») à `<p>`. Il est rendu sur **tous** les articles.
+
+**Contenu du bloc** (ajouts de wording, repris de textes existants du site) :
+- `PRODUCT_DEFINITION` de `site.ts`, mot pour mot : le bloc ne nommait jamais le
+  produit, et 5 articles ne le citent nulle part.
+- Lien direct Calendly « Prendre 15 min avec Ryan » (libellé repris de `/simulateur`
+  et de la FAQ d'accueil), `data-calendly="blog_article"` : UTM de session et
+  `calendly_clicked` gérés par `brancherCalendly()`. Jamais le widget.
+- Quand `ctaHref: "/simulateur"` : bouton « Simule ton Super-Net » (libellé de
+  « Pour aller plus loin »), `data-track="cta_simulateur_blog"`, et lien secondaire
+  « Ou commence l'essai gratuit · 30 jours · Sans engagement » (`cta_signup_blog`).
+
+**Destination par article** — nouveau champ `ctaHref` (`src/content.config.ts`,
+seule valeur admise : `/simulateur`). Les boutons qui promettaient une simulation
+ouvraient le formulaire d'inscription. Renseigné sur 8 articles : Super-Net,
+outre-mer, enveloppes, intérêts composés, base financière, 6 mois / 12 mois,
+rétrocession, zones FRR (le simulateur gère ZFU / ZFRR). L'article voiture garde
+l'inscription : le simulateur ne traite pas les frais de véhicule.
+
+**Accroches ajoutées** (champ `cta`, 8 articles qui n'en avaient pas) :
+| Article | `cta` |
+|---|---|
+| checklist-ultime | « Prêt(e) à garder toute ta gestion au même endroit ? » |
+| choix-mode-exercice | « Prêt à suivre ce que te rapporte vraiment chaque mode d'exercice ? » |
+| maitrise-ton-logiciel-metier | « Le logiciel métier maîtrisé ? Simplifie aussi ta gestion » |
+| obtenir-sa-licence | « Licence en poche ? Prépare tes premiers remplas » |
+| outils-numeriques | « Prêt à ajouter Hippodoc à ta boîte à outils ? » |
+| remplacement-salarie | « Prêt à suivre salaires et remplas au même endroit ? » |
+| signer-contrat | « Génère ton contrat de remplacement en quelques clics » |
+| trouver-facilement | « Prêt à organiser tes remplas dès le premier ? » |
+
+**Promesses corrigées** (texte modifié) :
+- « Télécharge Hippodoc » ×2 (Hippodoc est une application web, rien à
+  télécharger) → « Crée ton compte Hippodoc » (checklist premier jour, `cta`) et
+  « Essaie Hippodoc gratuitement pendant 30 jours » (trouver-facilement).
+- 6 mois / 12 mois : « …et automatise ta gestion de remplaçant, de la déclaration
+  URSSAF au suivi de tes jours. Ton comptable de poche, pour décider… » →
+  « …, centralise tes rétrocessions et ton planning, et prépare tes déclarations —
+  pour décider… ». L'ancienne phrase contredisait `PRODUCT_DEFINITION` et
+  `/comparatif` (Hippodoc ne dépose pas la déclaration et ne remplace pas le
+  comptable).
+- « hippodoc.fr » en gras sans lien (reliquats de légende Instagram) → liens :
+  intérêts composés (→ `/simulateur`, la phrase parle de « ce qu'il te reste
+  vraiment »), guide impôts internes, frais pros salariés, outils numériques (→ `/`).
+- « Abonnement 100 % déductible » : déjà nuancé au lot 1, rien à faire.
+
+**Pages de liste.** `/blog` et les pages de série n'avaient aucun appel à l'action.
+Nouveau `BlogCtaBand.astro` (statique) : « Et tes chiffres à toi ? » + « Simule ton
+Super-Net » + « Essai gratuit 30 jours » — texte nouveau.
+`data-track="cta_simulateur_blog_index|blog_serie"`, `cta_signup_blog_index|blog_serie`.
+Sur `/blog`, entre « Derniers articles » et l'index ; sur les séries, après les cartes.
+
+**Mesure.**
+- ⚠️ **Attribution vers l'app — le § 9.ab était inexact.** En `localStorage+cookie`,
+  posthog-js 1.413.1 n'écrit dans le cookie `.hippodoc.fr` que 7 clés internes ; les
+  `hd_premiere_*` restaient dans le localStorage de www, cloisonné par origine, et
+  n'atteignaient **jamais** l'app. Correctif : `cookie_persisted_properties` liste les
+  clés `hd_*` (vérifié en navigateur : cookie de 739 octets portant `hd_premiere_page`,
+  `hd_dernier_article`…). Code lu : l'app fusionne le cookie SOUS son localStorage au
+  chargement, donc les récupère à sa première visite.
+- **Dernier article lu** : `register({ hd_dernier_article, hd_derniere_serie })` à
+  chaque vue d'article, dans le cookie lui aussi. Pas d'UTM sur le lien
+  d'inscription : ils écraseraient la vraie source dans GA4 et PostHog.
+- **Événements nommés** (un écouteur délégué, zone lue sur `data-blog-zone`) :
+  `blog_cta_clicked {slug, category, series_id, episode_number, cta_id, destination, zone}`
+  (liens `data-track` ou vers `/simulateur`, `/tarifs`, `/essai`, `/guide-declarations`,
+  `/comparatif`, app) ; `blog_related_clicked {…, to_slug, rank}` ;
+  `blog_shared {…, network}` ; `blog_faq_opened {…, question_index}` ;
+  `blog_series_viewed {series_id, total_articles}` sur les pages de série. Calendly
+  exclu (déjà `calendly_clicked`). Tous vérifiés en navigateur (mode debug PostHog).
+- Autocapture : `data-ph` sur partage (`blog_share_*`), connexes (`blog_related` +
+  `data-ph-rank`), carte à la une (`blog_index_featured`), cartes (`blog_card`) ;
+  `data-track` sur « Pour aller plus loin » (`cta_*_blog_more`).
+
+**Garde-fous** (`verify-site.mjs`) : échec si un article n'a pas de bloc d'appel à
+l'action avec `data-track="cta_…"`. Le contrôle des liens entrants ne lit plus que
+le TEXTE (jusqu'à `data-blog-fin`) : il comptait jusque-là les cartes « Articles
+connexes » comme des liens du texte. Aucun orphelin après correction.
+
+**Vérification** : build 67 pages, verify-site sans erreur (4 814 liens internes).
+Lighthouse mobile (build local) : zones FRR 97, micro-BNC vs réel 98, `/blog` 95,
+série 94 (inchangé) ; a11y / BP / SEO 100 partout.
+
+**Décisions produit en attente (non faites)** :
+- **App** (dépôt séparé) : déclarer la même `cookie_persisted_properties`, sinon
+  l'app réécrit le cookie sans les `hd_*`. Et `hd_dernier_article` n'y est à jour
+  qu'à la PREMIÈRE visite de l'app (son localStorage l'emporte ensuite) — suffisant
+  pour l'inscription, pas pour un visiteur déjà venu. Option :
+  `__preview_cookie_wins_on_conflict`.
+- Pastille « Essai gratuit » dans le header mobile (tout le site).
+- Liens vers la newsletter `/transmissions` depuis les articles d'investissement.
+- `ctaHref: "/essai"` pour les sujets froids (syndrome de l'imposteur, inbox zéro).
 
 ## 10. TODO(owner) — faits manquants / décisions
 
