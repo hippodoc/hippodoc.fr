@@ -202,7 +202,7 @@ La déclaration d'impôt **ne couvre pas l'URSSAF**.
 
 Pour ton activité libérale de remplacement, tu dois aussi déclarer ton **début d'activité** et tes honoraires.
 
-Si tu relèves du **[RSPM](/blog/rspm-exemples-concrets)**, le régime simplifié des médecins remplaçants (uniquement des remplacements, pas d'autre activité indépendante, honoraires jusqu'à 19 000 € par an pour y entrer, maintien possible jusqu'à 38 000 €), tout se fait sur le portail **medecins-remplacants.urssaf.fr**, y compris la déclaration de début d'activité. Les étudiants y sont éligibles.
+Si tu relèves du **[RSPM](/blog/rspm-exemples-concrets)**, le régime simplifié des médecins remplaçants (uniquement des remplacements, pas d'autre activité indépendante, honoraires jusqu'à 19 000 € par an pour y entrer), tout se fait sur le portail **medecins-remplacants.urssaf.fr**, y compris la déclaration de début d'activité. Les étudiants y sont éligibles.
 
 Sinon, le début d'activité se déclare via le **guichet unique**. L'URSSAF indique qu'un praticien ou auxiliaire médical doit déclarer son activité dans les **8 jours** suivant le début d'activité.
 :::

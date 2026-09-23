@@ -882,7 +882,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <div className="space-y-2">
                           <p className="font-semibold">RSPM vs PAMC</p>
                           <p className="text-xs">
-                            <strong>RSPM</strong> (Simplifié) : cotisations forfaitaires à taux fixe. Réservé aux revenus libéraux &lt; 38 000€/an.<br/>
+                            <strong>RSPM</strong> (Simplifié) : cotisations forfaitaires à taux fixe. Ouvert jusqu'à 19 000 €/an d'honoraires ; perdu après deux années de suite au-dessus de 19 000 € ou une seule au-dessus de 38 000 €.<br/>
                             <strong>PAMC</strong> (Classique) : cotisations proportionnelles réelles, régime standard des médecins libéraux.
                           </p>
                           <TipBox variant="info">

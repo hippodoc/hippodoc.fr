@@ -2,7 +2,7 @@
 title: "Médecin libéral : ce qu'il te reste vraiment"
 description: "Tu connais ton CA. Mais sais-tu ce qu'il te reste après URSSAF, CARMF, impôt et acomptes ? Le revenu est un système, pas un chiffre."
 pubDate: "2026-03-18"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -37,7 +37,7 @@ relatedArticles:
 - Le **micro-BNC** reste accessible en 2026 sous **83 600 €** de recettes, avec un abattement forfaitaire de **34 %** ; la **déclaration contrôlée** déduit tes charges réelles via la 2035.
 - Depuis le **1er septembre 2025**, le taux individualisé est le mode par défaut pour les couples mariés ou pacsés : il ne change pas l'impôt total du couple, seulement sa répartition.
 - En DOM, l'abattement d'impôt va de **30 % (plafonné à 2 450 €)** en Guadeloupe/Martinique/Réunion à **40 % (plafonné à 4 050 €)** en Guyane et Mayotte.
-- Le RSPM s'ouvre sous **19 000 € d'honoraires par année civile**, pour les remplaçants sans autre activité libérale ; on peut ensuite y rester jusqu'à 38 000 €.
+- Le RSPM s'ouvre sous **19 000 € d'honoraires par année civile**, pour les remplaçants sans autre activité libérale  ; on le perd au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €.
 :::
 
 Tu connais ton chiffre d'affaires. Tu sais ce que tu as encaissé. Mais sais-tu vraiment ce qu'il te reste ? Pas "à peu près". Pas "en gros". Pas après une estimation rapide. Le vrai sujet, ce n'est pas ton CA. Le vrai sujet, c'est ton **revenu disponible**. Celui qui reste une fois passés les cotisations, la retraite, l'impôt, les acomptes, la CFE, et les effets très concrets de ta situation familiale.

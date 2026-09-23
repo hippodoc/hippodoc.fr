@@ -2,7 +2,7 @@
 title: "RSPM : 2 exemples concrets - Du CA au Super-Net"
 description: "Découvre ce qu'il te reste vraiment après cotisations et impôts avec le régime RSPM. Exemples chiffrés à 19 000 € et 38 000 € de CA."
 pubDate: "2025-11-28T11:00:00"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -21,7 +21,7 @@ faq:
   - question: "Que se passe-t-il si je dépasse 38 000 € de CA en RSPM ?"
     answer: "Si tu dépasses 38 000 € sur une année civile (ou 19 000 € deux années de suite), tu perds le RSPM **à partir du 1er janvier suivant** : tu finis l'année en cours au RSPM, puis tu passes au **régime PAMC** (classique). Les cotisations seront alors calculées sur ton revenu professionnel, avec CARMF en plus."
   - question: "Le RSPM est-il plus avantageux que le régime classique ?"
-    answer: "Le plus souvent oui, tant que tu restes sous 38 000 €. Au RSPM, tes cotisations pèsent **14 à 18 % de ce que tu encaisses** ; au régime classique en micro-BNC, compte plutôt **autour d'un quart de tes honoraires**. Idéal pour les internes et remplaçants occasionnels."
+    answer: "Le plus souvent oui, tant que tu y restes éligible. Au RSPM, tes cotisations pèsent **14 à 18 % de ce que tu encaisses** ; au régime classique en micro-BNC, compte plutôt **autour d'un quart de tes honoraires**. Idéal pour les internes et remplaçants occasionnels."
 relatedArticles:
   - "tout-comprendre-urssaf"
   - "micro-bnc-exemples-concrets"

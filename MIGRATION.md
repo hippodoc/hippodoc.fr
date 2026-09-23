@@ -3310,6 +3310,38 @@ Le découpage URSSAF / CARMF du recalcul suit la méthode du § 9.ba : CARMF = p
 - Hors blog : le glossaire du guide (`src/data/glossaireDeclarationsData.ts`) écrit
   encore « RSPM (remplaçants < 38 000 €) », comme `/simulateur` (§ 9.be).
 
+### 9.bh Règle de sortie du RSPM, titre « Salaires » (23 septembre 2026)
+
+**Règle de référence du RSPM, complétée** à la demande du fondateur et vérifiée :
+le RSPM s'ouvre jusqu'à 19 000 € d'honoraires ; on le **perd au 1er janvier
+suivant** après **deux années civiles de suite au-dessus de 19 000 €**, ou **une
+seule au-dessus de 38 000 €**. L'année du dépassement, on reste au RSPM quel que
+soit le montant : le taux de 21,2 % s'applique à toute la fraction au-dessus de
+19 000 €, sans limite haute (CSS, art. D. 642-4-3 ; règle de perte : CSS, section
+des art. D. 642-4-x, reprise par la presse professionnelle et les syndicats).
+
+La phrase du § 9.ba (« maintien possible jusqu'à 38 000 € ») laissait croire qu'on
+pouvait rester indéfiniment entre 19 000 € et 38 000 €. Remplacée partout :
+- **Blog** : effet ciseaux, 6 mois / 12 mois, Super-Net, URSSAF (FAQ + deux
+  « Pour qui ? » : RSPM « CA < 38 000 € » et PAMC « CA > 38 000 € » étaient faux),
+  RSPM en exemples (FAQ), micro-BNC exemples, impôts des internes.
+  `updatedDate` au 23 septembre sur les articles touchés.
+- **`/simulateur`** : FAQ « au-delà de 38 000 € » (le moteur retient toujours le RSPM
+  sous 38 000 € « pour une année type », c'est désormais dit) ; liste des champs ;
+  aide du formulaire (`SimulateurForm.tsx`) « Réservé aux revenus < 38 000 € ».
+- **Guide** : glossaire (PAMC, RSPM court et long) ; boussole (quiRemplit 2035,
+  alerte de bascule, deux pièges, « dans la limite de ~38 000 €/an » retiré).
+- Inchangés, justes : `rspm-exemples-concrets` (FAQ dépassement, encadré),
+  `tout-comprendre-urssaf` (encadré « Important »), « 21,2 % entre 19 000 et
+  38 000 € » pour qui reste sous 38 000 €.
+
+**Titre « Salaires des médecins remplaçants 2025 »** → « Salaire du médecin
+remplaçant : intérim, libéral, salariat » (URL inchangée). Les fourchettes n'ont
+pas été réactualisées : aucune source vérifiable ne permet de les passer en 2026
+(annonces, retours terrain). Retirer l'année évite un titre périmé sans affirmer
+une actualisation qui n'a pas eu lieu ; le corps garde « ordres de grandeur en
+2025 », et la FAQ « Combien gagne… » le précise.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

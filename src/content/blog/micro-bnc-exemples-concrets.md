@@ -17,7 +17,7 @@ faq:
   - question: "Combien me reste-t-il avec 50 000 € de CA en micro-BNC ?"
     answer: "Avec 50 000 € en micro-BNC : cotisations ~13 474 € (26,9 %), impôt 3 004 € (6,0 %), **Super-Net 33 522 €** soit 67,0 % de ton CA. C'est ce qui arrive vraiment dans ta poche !"
   - question: "Quelle est la différence entre RSPM et micro-BNC classique ?"
-    answer: "Le **RSPM** concerne les cotisations sociales : ouvert jusqu'à 19 000 € d'honoraires, maintien possible jusqu'à 38 000 €. Le **micro-BNC** concerne la fiscalité (< 83,6k€). Tu peux être en micro-BNC fiscal tout en étant au régime PAMC pour les cotisations sociales (au-delà de 38 000 €, ou si tu n'es pas entré au RSPM)."
+    answer: "Le **RSPM** concerne les cotisations sociales : ouvert jusqu'à 19 000 € d'honoraires, perdu après deux années de suite au-dessus de 19 000 € ou une seule au-dessus de 38 000 €. Le **micro-BNC** concerne la fiscalité (< 83,6k€). Tu peux être en micro-BNC fiscal tout en étant au régime PAMC pour les cotisations sociales (si tu n'es pas entré au RSPM, ou si tu l'as perdu)."
   - question: "Que se passe-t-il si je dépasse 83 600 € de CA ?"
     answer: "Si tu dépasses 83 600 € sur **2 années consécutives**, tu sors automatiquement du micro-BNC et passes au **régime réel**. Tu devras alors tenir une comptabilité détaillée."
   - question: "Comment est calculé l'impôt en micro-BNC ?"
@@ -35,7 +35,7 @@ Entre ton **chiffre d'affaires (CA)** et ce qui arrive vraiment dans ta poche, d
 **[URSSAF](/blog/tout-comprendre-urssaf)** = ta santé + contributions obligatoires\
 **[CARMF](/blog/tout-comprendre-carmf)** = ta retraite + ta prévoyance
 
-💡 **Jusqu'à 19 000 € d'honoraires** (maintien possible jusqu'à 38 000 €) → tu peux relever du **régime simplifié [RSPM](/blog/rspm-exemples-concrets)**
+💡 **Jusqu'à 19 000 € d'honoraires** → tu peux relever du **régime simplifié [RSPM](/blog/rspm-exemples-concrets)**
 
 ## 2️⃣ L'impôt sur le revenu : via le micro-BNC (< 83,6k€)
 

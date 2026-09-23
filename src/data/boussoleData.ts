@@ -835,7 +835,7 @@ export const caseopedia: CaseInfo[] = [
     nom: "Cotisation IJ CPAM obligatoire (PAMC)",
     formulaire: "2035-A",
     description: "Ligne **BT** de la 2035-A : cotisation obligatoire d'indemnités journalières CPAM pour les médecins PAMC (entrée en vigueur 2021, généralisée 2025). Taux **0,30 %** appliqué sur le **Revenu Brut Social (RBS)** après abattement forfaitaire 26 %, avec :\n• **revenus 2025 (déclaration 2026)** — plancher **56,52 €** / plafond **423,90 €** (calculés sur PASS 2025 = 47 100 € : assiette mini = 40 % PASS, assiette maxi = 3 PASS)\n• **revenus 2026 (déclaration 2027)** — plancher ≈ **57,67 €** / plafond ≈ **432,54 €** (PASS 2026 = 48 060 €)\n\nCharge déductible du BNC en régime réel.\n\n⚠️ Distincte de la cotisation **BU** (versements nouveaux PER individuels — voir CASE-034) et de **BZ** (cotisations facultatives Madelin retraite/prévoyance) : BT est obligatoire et concerne uniquement les IJ CPAM (délai de carence ramené de 91 à **3 jours** depuis le 1er juillet 2021, décret 2021-755).",
-    quiRemplit: "Tous les médecins PAMC en BNC réel (titulaires installés ≥ 38 000 €).",
+    quiRemplit: "Tous les médecins PAMC en BNC réel.",
     erreurFrequente: "Confondre BT (obligatoire, IJ CPAM) avec BU (Madelin volontaire, prévoyance privée). Oublier de la déduire en BNC réel alors qu'elle est prélevée par l'URSSAF avec les autres cotisations.",
     certitude: "confirmed",
     categorie: "fiscal",
@@ -2046,7 +2046,7 @@ export const calendrierAnnuel: CalendrierMois[] = [
     mois: "Janvier",
     numero: 1,
     demarches: [
-      { titre: "Bascule RSPM vers PAMC", description: "Pour les médecins dont le CA a dépassé le seuil RSPM (~38 000€), bascule vers le régime PAMC déclenchée par l'URSSAF. Vérifier que ton espace PAMC a bien été créé et que la CARMF a été notifiée (elle ne l'est jamais automatiquement). Forte probabilité de bugs administratifs sur URSSAF/CARMF.", urgent: true },
+      { titre: "Bascule RSPM vers PAMC", description: "Pour les médecins sortis du RSPM (deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €), bascule vers le régime PAMC déclenchée par l'URSSAF. Vérifier que ton espace PAMC a bien été créé et que la CARMF a été notifiée (elle ne l'est jamais automatiquement). Forte probabilité de bugs administratifs sur URSSAF/CARMF.", urgent: true },
       { titre: "Déclaration DAS-2 (honoraires versés)", description: "Déclarer en ligne sur impots.gouv.fr tous les honoraires > 1 200 €/an versés à des tiers non salariés (rétrocessions versées à un remplaçant, honoraires de comptable, d'avocat…). Deadline : 31 janvier. Amende de 50 % en cas d'oubli.", urgent: true },
       { titre: "Début de l'année comptable", description: "Début des enregistrements de recettes et dépenses pour l'année courante si tu es au régime réel.", urgent: false },
       { titre: "Versements Forfait Structure N-1", description: "Paiement du forfait structure de l'année précédente si régularisé (suite à des bugs ou réclamations).", urgent: false }
@@ -2540,7 +2540,7 @@ export function getWizardResult(
     // le piège « pas de DSFU » qui contredirait les cases DSFU préservées (Phase 12P A2).
     // Les cas B (dépassement seuil) et C (sortie volontaire) gardent ce piège : pas de DSFU sur N.
     if (!situations.includes('installation_collab_cours_annee')) {
-      pieges.push("RSPM : tu n'as PAS de DSFU à remplir. Tes cotisations sont prélevées trimestriellement par le RSPM sur ton CA déclaré (13,5 % jusqu'à ~19 000 €, 21,2 % au-delà, dans la limite de ~38 000 €/an).");
+      pieges.push("RSPM : tu n'as PAS de DSFU à remplir. Tes cotisations sont prélevées trimestriellement par le RSPM sur ton CA déclaré (13,5 % jusqu'à 19 000 €, 21,2 % au-delà).");
     }
     pieges.push("RSPM ≠ exonération fiscale : tu remplis quand même la 2042-C-PRO (5HQ en micro, 5QC en réel) auprès des impôts. Le RSPM ne concerne que tes cotisations sociales.");
     // Phase 12S — Précision réglementaire : un dépassement du seuil 38 000 € NE déclenche PAS
@@ -2548,7 +2548,7 @@ export function getWizardResult(
     // R7 (audit final mai 2026) : si le user a déjà coché « Sortie du RSPM » (sortie_rspm_n_plus_1),
     // le bloc dédié L2745+ couvre déjà précisément ce message — on évite le doublon.
     if (!situations.includes('sortie_rspm_n_plus_1')) {
-      pieges.push("Surveille tes recettes : si tu dépasses ~38 000 €/an en RSPM, l'URSSAF te radie automatiquement au 1er janvier N+1 (pas en cours d'année). Tu restes 100 % RSPM sur N et tu démarres au PAMC en N+1 — anticipe les cotisations PAMC qui sont sensiblement plus élevées.");
+      pieges.push("Surveille tes recettes : si tu dépasses 19 000 € deux années de suite, ou 38 000 € sur une seule année, l'URSSAF te radie automatiquement au 1er janvier N+1 (pas en cours d'année). Tu restes 100 % RSPM sur N et tu démarres au PAMC en N+1 — anticipe les cotisations PAMC qui sont sensiblement plus élevées.");
     }
   }
 
@@ -2762,7 +2762,7 @@ export function getWizardResult(
   //   pour éviter la confusion (3 lignes visuellement identiques pour 2 comportements identiques).
   if (situations.includes('sortie_rspm_n_plus_1')) {
     pieges.push("⚠️ Sortie du RSPM (dépassement de plafond ou demande volontaire) : il N'Y A PAS de bascule en cours d'année. Tu restes 100 % RSPM sur N et tu démarres au PAMC le **1er janvier N+1**. Aucune DSFU à remplir sur N.");
-    pieges.push("Dépassement automatique : si tu franchis ~19 000 € / 38 000 € de recettes annuelles, l'URSSAF te radie d'office au 1er janvier N+1 — tu n'as aucune démarche à faire.");
+    pieges.push("Dépassement automatique : si tu dépasses 19 000 € de recettes deux années de suite, ou 38 000 € sur une seule année, l'URSSAF te radie d'office au 1er janvier N+1 — tu n'as aucune démarche à faire.");
     pieges.push("Sortie volontaire : c'est une **option annuelle**. Demande écrite à l'URSSAF avant la fin de l'année N → effet au 1er janvier N+1. Stratégique si tu anticipes un dépassement ou si le PAMC devient plus avantageux (droits CARMF complets, IJ, prévoyance).");
     pieges.push("Anticipe la trésorerie : les cotisations PAMC (URSSAF + CARMF) sont sensiblement plus élevées que les forfaits RSPM. Mets de côté ~20 % de tes recettes dès que tu approches du seuil.");
     pieges.push("Conserve l'accusé de réception URSSAF de ta demande (sortie volontaire) et crée ton nouvel espace personnel URSSAF dès la radiation effective — l'ancien compte RSPM ne sera pas mis à jour, et la radiation peut tarder à être notifiée à la CARMF.");
