@@ -80,7 +80,7 @@ En 2025, tu as fait des remplacements libéraux pendant tes vacances, tes week-e
 En 2026, tu ne vas donc pas déclarer uniquement ton salaire d'interne. Tu vas déclarer **deux types de revenus** sur la même déclaration :
 
 • ton salaire CHU, en **traitements et salaires** ;\
-• tes [rétrocessions](/blog/salaires-medecins-remplacants) de remplacement, en **BNC**.
+• tes [rétrocessions](/blog/retrocession-honoraires-medecin-remplacant) de remplacement, en **BNC**.
 
 Personne ne t'apprend vraiment ça en cours de DES. Pourtant, si ta situation est simple, la logique tient en quelques étapes.
 
@@ -118,11 +118,11 @@ Ton salaire d'interne est normalement déjà **prérempli** dans ta déclaration
 
 Tu dois simplement vérifier que le montant correspond bien à ton cumul annuel imposable, en pratique avec ton bulletin de décembre 2025.
 
-L'administration applique automatiquement une **déduction forfaitaire de 10 %** pour frais professionnels. Pour les revenus 2025, cette déduction est au minimum de **509 €** et au maximum de **14 555 €** par personne.
+L'administration applique automatiquement une **[déduction forfaitaire de 10 %](/blog/salariat-10-pourcent-ou-frais-reels)** pour frais professionnels. Pour les revenus 2025, cette déduction est au minimum de **509 €** et au maximum de **14 555 €** par personne.
 
 ### Frais réels : quand ça vaut le coup ?
 
-Tu peux choisir les **frais réels** si tes dépenses professionnelles dépassent l'abattement automatique de 10 %.
+Tu peux choisir les **[frais réels](/blog/frais-pros-medecins-salaries-internes-2026)** si tes dépenses professionnelles dépassent l'abattement automatique de 10 %.
 
 Dans ce cas, tu indiques tes frais en :
 

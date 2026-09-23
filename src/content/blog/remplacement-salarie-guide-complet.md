@@ -25,6 +25,7 @@ relatedArticles:
   - "salariat-vs-liberal"
   - "choix-mode-exercice"
   - "cotisations-sociales-vs-impots"
+  - "conge-maternite-paternite"
 ---
 
 Tu veux remplacer sans te noyer dans l'[URSSAF](/blog/tout-comprendre-urssaf), la [CARMF](/blog/tout-comprendre-carmf) ou la comptabilité ? 👉 Le statut salarié est peut-être fait pour toi.
@@ -59,7 +60,7 @@ Tu cotises automatiquement au **régime général**.\
 ## 5️⃣ Frais pros déductibles ?
 
 Tu as 2 options :\
-→ **Abattement automatique de 10 %**\
+→ **[Abattement automatique de 10 %](/blog/salariat-10-pourcent-ou-frais-reels)**\
 → **Frais réels** si >10 % du revenu imposable (transport, blouse, formations, RCP…)\
 ❌ Chaque dépense doit être justifiée (facture, relevé de kilomètres). Un ordi ou un bureau à usage pro se déduit : en une fois jusqu'à 500 € HT, sinon étalé sur plusieurs années (3 ans pour l'informatique), au prorata de l'usage pro. La voiture, elle, passe par le barème kilométrique.
 

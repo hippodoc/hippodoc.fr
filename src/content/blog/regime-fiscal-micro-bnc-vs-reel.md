@@ -31,6 +31,9 @@ relatedArticles:
   - "cotisations-sociales-vs-impots"
   - "tout-comprendre-urssaf"
   - "frais-professionnels-deductibles"
+  - "micro-bnc-exemples-concrets"
+  - "voiture-bareme-kilometrique-ou-frais-reels-medecin"
+  - "zones-frr-exoneration-impot-medecin"
 ---
 
 En tant qu'interne ou médecin remplaçant débutant, gérer ta fiscalité peut sembler compliqué. Pas de panique ! Voici un guide clair et simple pour choisir facilement le régime fiscal qui convient à ta situation. ✨💼
@@ -42,7 +45,7 @@ En France, tu as le choix entre **deux régimes fiscaux principaux** pour décla
 ## ✅ Le régime Micro-BNC : simplicité idéale pour débuter
 
 ✅ **Déclaration simplifiée** : Tu déclares uniquement ton revenu annuel total, **sans détailler tes charges**.\
-✅ **[Abattement forfaitaire de 34](/blog/micro-bnc-exemples-concrets)%** : L'administration fiscale applique automatiquement un abattement de 34% sur tes revenus pour couvrir tes [frais professionnels](/blog/frais-professionnels-deductibles), **sans justificatifs à fournir**.\
+✅ **[Abattement forfaitaire de 34 %](/blog/micro-bnc-exemples-concrets)** : L'administration fiscale applique automatiquement un abattement de 34% sur tes revenus pour couvrir tes [frais professionnels](/blog/frais-professionnels-deductibles), **sans justificatifs à fournir**.\
 ✅ **Plafond de revenus** : Ce régime est accessible tant que tes recettes annuelles ne dépassent pas **[83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits/F32105)**. Ce seuil, revalorisé par la loi de finances pour 2026, s'applique aux revenus 2026, 2027 et 2028 : tu relèves du micro-BNC en 2026 si tes recettes 2025 ou 2024 n'ont pas dépassé ce montant.
 
 ## Attention au dépassement du plafond de 83 600 €
@@ -71,7 +74,7 @@ Rappel utile : rester en micro-BNC n'est pas toujours la bonne affaire. Si tes c
 
 ## ✅ Le Régime Réel : pour optimiser efficacement tes impôts
 
-✅ **Déduction des frais réels** : Tu déduis l'ensemble de tes **charges professionnelles réelles** (achat de matériel médical, frais de véhicule, formations, assurances, frais de déplacements, etc.).\
+✅ **Déduction des frais réels** : Tu déduis l'ensemble de tes **charges professionnelles réelles** (achat de matériel médical, [frais de véhicule](/blog/voiture-bareme-kilometrique-ou-frais-reels-medecin), formations, assurances, frais de déplacements, etc.).\
 ✅ **Économies potentielles importantes** : Si le total de tes charges — cotisations URSSAF et CARMF comprises, à elles seules autour d'un quart de tes recettes — **dépasse 34%** de tes revenus, ce régime peut te permettre de réaliser des **économies fiscales significatives**.\
 ⚠️ **Comptabilité rigoureuse** : Tu devras tenir une **comptabilité détaillée et précise**, ce qui nécessite souvent un accompagnement par un **expert-comptable** pour garantir la conformité de tes déclarations.
 
@@ -89,5 +92,5 @@ En micro-BNC, tout se joue sur une seule ligne du 2042-C-PRO : [la case 5HQ, dé
 ## 🔥 Astuce Hippodoc : simplifie ta gestion fiscale !
 
 :::tip
-Avec Hippodoc, enregistre facilement toutes tes **charges quotidiennes** (déplacements, matériel, formations, etc.) et utilise notre **simulateur intégré** pour estimer automatiquement tes **cotisations sociales** et ton revenu **"[Super-Net](/blog/simulateur-super-net-combien-reste)"** après impôts. Optimise ta fiscalité en toute sérénité et fais les bons choix pour ton avenir ! 📊✨
+Avec Hippodoc, enregistre facilement toutes tes **charges quotidiennes** (déplacements, matériel, formations, etc.) et utilise notre **[simulateur intégré](/simulateur)** pour estimer automatiquement tes **cotisations sociales** et ton revenu **"[Super-Net](/blog/simulateur-super-net-combien-reste)"** après impôts. Optimise ta fiscalité en toute sérénité et fais les bons choix pour ton avenir ! 📊✨
 :::

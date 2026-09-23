@@ -20,12 +20,14 @@ faq:
   - question: "Comment anticiper les cotisations URSSAF et CARMF ?"
     answer: "Utilise un outil comme Hippodoc qui calcule automatiquement ton **super-net prévisionnel** : revenus moins cotisations sociales et impôts. Ainsi, tu sais exactement ce qu'il te reste vraiment."
   - question: "Comment négocier la rétrocession avec un médecin titulaire ?"
-    answer: "Demande le taux **avant de t'engager**. Compare avec le marché (généralement 60-80%). N'hésite pas à négocier si le cabinet est loin, les horaires difficiles ou la patientèle exigeante."
+    answer: "Demande le taux **avant de t'engager**. Compare avec les usages (70-90% en médecine générale, 60-70% avec plateau technique). N'hésite pas à négocier si le cabinet est loin, les horaires difficiles ou la patientèle exigeante."
 relatedArticles:
   - "salariat-vs-liberal"
   - "choix-mode-exercice"
   - "signer-contrat-remplacement"
   - "checklist-premier-jour-remplacement"
+  - "retrocession-honoraires-medecin-remplacant"
+  - "remplacement-regulier-requalification"
 ---
 
 Le remplacement, c'est la liberté.\
@@ -56,7 +58,7 @@ Dossiers solides. Prescriptions propres. Décisions tracées.
 ## 3. Ne pas cadrer l'organisation dès le jour 1
 
 Sans cadre, tout finit par tomber sur toi :\
-appels, messages, urgences, courriers, visites, …
+[appels, messages, urgences, courriers](/blog/inbox-zero-remplacant), visites, …
 
 ✅ **Le réflexe pro :**\
 Définir dès le départ qui gère quoi, et comment.
@@ -79,7 +81,7 @@ On avance, on enchaîne… jusqu'à la fatigue.\
 Sans vision financière claire, même les pauses deviennent stressantes.
 
 ✅ **Le réflexe pro :**\
-Raisonne en année : rythme, semaines off, [super-net](/blog/simulateur-super-net-combien-reste) lissé.
+Raisonne en année : [rythme, semaines off](/blog/medecin-remplacant-travailler-6-mois-par-an), [super-net](/blog/simulateur-super-net-combien-reste) lissé.
 
 👉 La vision financière protège aussi ta santé mentale.
 

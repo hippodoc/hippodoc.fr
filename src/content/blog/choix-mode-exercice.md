@@ -14,13 +14,13 @@ tags:
   - "Guide et Conseil"
 faq:
   - question: "Quels sont les différents statuts pour un médecin remplaçant ?"
-    answer: "Les 8 statuts principaux sont : **Remplacement libéral** (60-80% des honoraires), **Salariat** (hôpital, centre de santé), **Collaboration libérale**, **Exercice mixte**, **Vacations médicales**, **Intérim médical**, **MSP** et **Télémédecine**."
+    answer: "Les 8 statuts principaux sont : **Remplacement libéral** (70-90% des honoraires en médecine générale, 60-70% avec plateau technique), **Salariat** (hôpital, centre de santé), **Collaboration libérale**, **Exercice mixte**, **Vacations médicales**, **Intérim médical**, **MSP** et **Télémédecine**."
   - question: "Peut-on cumuler salariat et libéral ?"
     answer: "Oui, le **statut mixte** est légal et courant. Tu peux être salarié pour la sécurité et faire du libéral pour la liberté et compléter tes revenus. Attention aux clauses d'exclusivité dans certains contrats."
   - question: "Quel statut choisir quand on débute ?"
     answer: "Pour débuter sereinement, le **salariat** offre stabilité et protection sociale complète. Le **remplacement libéral** est idéal si tu veux plus de flexibilité et un meilleur potentiel de revenus."
   - question: "Quels sont les avantages du remplacement libéral ?"
-    answer: "Le remplacement libéral offre : **flexibilité totale** du planning, **rémunération attractive** (60-80% des honoraires), formation variée, pas de gestion de cabinet, et liberté géographique."
+    answer: "Le remplacement libéral offre : **flexibilité totale** du planning, **rémunération attractive** (70-90% des honoraires en médecine générale, 60-70% avec plateau technique), formation variée, pas de gestion de cabinet, et liberté géographique."
 relatedArticles:
   - "salariat-vs-liberal"
   - "remplacement-salarie-guide-complet"
@@ -32,7 +32,7 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 ## 🏥 1. Remplacement Libéral
 
 • **Statut** : Libéral (BNC)\
-• **Rémunération** : 60-80 % des honoraires\
+• **Rémunération** : 70-90 % des honoraires en médecine générale, 60-70 % avec plateau technique — voir [comment négocier ta rétrocession](/blog/retrocession-honoraires-medecin-remplacant)\
 • **Fiscalité** : [Micro-BNC ou réel](/blog/regime-fiscal-micro-bnc-vs-reel), [URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf)
 
 ✅ **+** : Flexible, formateur, bien payé, sans gestion de cabinet\

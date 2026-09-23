@@ -27,6 +27,7 @@ relatedArticles:
   - "obtenir-sa-licence-de-remplacement"
   - "tout-comprendre-urssaf"
   - "signer-contrat-remplacement"
+  - "cfe-medecin-remplacant"
 ---
 
 Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse blanche et de démarrer cette nouvelle aventure, petit passage obligé par la case administrative. Mais pas de stress, voici ta checklist complète pour commencer sereinement. 📝🚀

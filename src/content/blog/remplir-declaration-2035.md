@@ -27,6 +27,9 @@ relatedArticles:
   - "calendrier-fiscal-remplacant"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "frais-professionnels-deductibles"
+  - "voiture-bareme-kilometrique-ou-frais-reels-medecin"
+  - "cfe-medecin-remplacant"
+  - "frais-pros-medecin-liberal-2026"
 ---
 
 La déclaration fiscale 2035 peut sembler compliquée, mais elle est indispensable si tu es au régime réel. Ce guide pratique et clair t'accompagne étape par étape pour remplir cette déclaration sereinement. 🚀✨
@@ -52,14 +55,14 @@ La déclaration 2035 concerne les professionnels libéraux au **régime réel**.
 
 ## 3️⃣ Déclare tes charges professionnelles déductibles
 
-**Ligne 12** : CET = ta CFE (exonérée la première année, -50% la deuxième année)\
+**Ligne 12** : CET = [ta CFE](/blog/cfe-medecin-remplacant) (exonérée la première année, -50% la deuxième année)\
 **Ligne 14** : CSG déductible (voir attestation URSSAF)\
 **Ligne 15** : Loyer du cabinet (si applicable)\
 **Ligne 16** : Redevances de collaboration libérale\
 **Ligne 19** : Petit matériel inférieur à 500 €\
 **Ligne 20** : Télétravail (part du loyer, électricité, etc.)\
 **Ligne 22** : Assurances RCP, prévoyance, mutuelle\
-**Ligne 23** : Frais kilométriques (+ remplir annexe B)\
+**Ligne 23** : [Frais kilométriques](/blog/voiture-bareme-kilometrique-ou-frais-reels-medecin) (+ remplir annexe B)\
 **Ligne 24** : Déplacements, hébergement, repas professionnels\
 **Ligne 25** : [Cotisations URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf), URPS (hors CSG ligne 14)\
 **Ligne 26** : Formations et congrès\

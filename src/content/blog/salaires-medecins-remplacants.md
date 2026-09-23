@@ -17,7 +17,7 @@ faq:
   - question: "Combien gagne un médecin remplaçant en 2025 ?"
     answer: "En **intérim** : 500-2 500 €/jour selon la spécialité. En **libéral cabinet** : 5 000-16 000+ €/mois. En **salariat** : 3 000-10 000 €/mois. Les spécialités techniques (anesthésie, radio) sont les mieux rémunérées."
   - question: "Quel est le taux de rétrocession moyen pour un remplaçant ?"
-    answer: "Le taux de rétrocession varie de **60 à 80%** selon la spécialité et la négociation. Médecine générale : ~70-80%. Spécialités : ~60-70%. Le reste couvre les charges du cabinet."
+    answer: "Le taux de rétrocession est libre : c'est un usage, négocié au contrat. Médecine générale : **70 à 90%** (repère : 80%). Spécialités avec plateau technique : **60 à 70%**. Le reste couvre les charges du cabinet."
   - question: "Intérim médical ou libéral : que choisir ?"
     answer: "L'**intérim** offre 500-2 500 €/jour avec zéro gestion mais moins de régularité. Le **libéral** permet 5 000-16 000+ €/mois avec plus de liberté mais gestion URSSAF/CARMF à prévoir."
   - question: "Quelles spécialités médicales sont les mieux payées en remplacement ?"
@@ -25,7 +25,9 @@ faq:
 relatedArticles:
   - "salariat-vs-liberal"
   - "trouver-facilement-tes-remplacements-medicaux"
-  - "micro-bnc-exemples-concrets"
+  - "retrocession-honoraires-medecin-remplacant"
+  - "medecin-remplacant-travailler-6-mois-par-an"
+  - "medecin-outre-mer-avantages-fiscaux"
 ---
 
 📍 **France métropolitaine** (annonces d'intérim, DREES/[URSSAF](/blog/tout-comprendre-urssaf), retours terrain). Varie beaucoup selon zone, rythme et secteurs 1/2/3 public/privé.

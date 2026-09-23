@@ -56,7 +56,7 @@ Un **abattement forfaitaire** :
 
 ## 3️⃣ Les frais réels
 
-Tu déduis le **montant exact** de tes dépenses professionnelles.
+Tu déduis le **montant exact** de tes dépenses professionnelles — le [guide poste par poste des frais réels](/blog/frais-pros-medecins-salaries-internes-2026) détaille chacune.
 
 **Pertinent seulement si ce total dépasse les 10 %.**
 

@@ -175,7 +175,7 @@ Dans les deux cas, les cotisations sociales peuvent suivre.
 
 ☑️ **Un contrat écrit par période de remplacement**, transmis au conseil départemental de l'Ordre — pas de remplacement « sur parole ».\
 ☑️ **Une absence réelle et documentable du titulaire** pour chaque jour remplacé : congés, formation, fonction élective — pas une autre activité médicale, que le remplacé doit cesser depuis le 30 juillet 2026. En cas de contrôle, c'est la première chose regardée.\
-☑️ **Une rétrocession classique** (pourcentage des honoraires), sans participation aux charges fixes ni aux bénéfices du cabinet.\
+☑️ **Une [rétrocession](/blog/retrocession-honoraires-medecin-remplacant) classique** (pourcentage des honoraires), sans participation aux charges fixes ni aux bénéfices du cabinet.\
 ☑️ **Ton indépendance d'organisation** : tes horaires dans le cadre de l'absence, tes prescriptions, ta responsabilité (RCP à jour).\
 ☑️ **Tes justificatifs conservés** : contrats, attestations de remplacement avec dates et lieux, relevés de rétrocessions, agenda corroborant les périodes. Ce dossier sert aussi pour tes [frais professionnels](/blog/frais-pros-medecin-liberal-2026).\
 ☑️ **Côté remplacé** : si les remplacements ne sont plus occasionnels, la part conservée doit être examinée au regard de la TVA — un point à évoquer ensemble, idéalement avec son expert-comptable.

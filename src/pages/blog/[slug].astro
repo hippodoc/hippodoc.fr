@@ -7,6 +7,7 @@ import Footer from '@/components/Footer.astro';
 import BlogSlides from '@/components/BlogSlides.tsx';
 import { SITE_URL, APP_URL, LOGO_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
+import { seriesPath } from '@/lib/blog-series-slugs';
 import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
 
 export async function getStaticPaths() {
@@ -155,7 +156,9 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE_URL },
     { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-    { '@type': 'ListItem', position: 3, name: title, item: `${SITE_URL}${path}` },
+    /* Niveau série : aucun article ne renvoyait vers sa page de série (§ 9.be). */
+    ...(series ? [{ '@type': 'ListItem', position: 3, name: series.name, item: `${SITE_URL}${seriesPath(series.id)}` }] : []),
+    { '@type': 'ListItem', position: series ? 4 : 3, name: title, item: `${SITE_URL}${path}` },
   ],
 };
 
@@ -193,6 +196,12 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         <li aria-hidden="true">›</li>
         <li><a href="/blog" class="inline-flex min-h-6 items-center hover:text-hippo-600">Blog</a></li>
         <li aria-hidden="true">›</li>
+        {series && (
+          <>
+            <li><a href={seriesPath(series.id)} class="inline-flex min-h-6 items-center hover:text-hippo-600">{series.name}</a></li>
+            <li aria-hidden="true">›</li>
+          </>
+        )}
         <li class="text-foreground" aria-current="page">{title}</li>
       </ol>
     </nav>
@@ -263,9 +272,9 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
       <header class="mb-8">
         <div class="mb-3 flex flex-wrap items-center gap-2">
           {series && (
-            <span class={`series-badge bg-gradient-to-r ${series.color}`}>
+            <a href={seriesPath(series.id)} class={`series-badge bg-gradient-to-r ${series.color} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))]`}>
               {category}{categoryNumber ? ` ${categoryNumber}` : ''}
-            </span>
+            </a>
           )}
           {episodeNumber !== undefined && seriesId !== 'divers' && (
             <span class="text-sm text-muted-foreground">Épisode {episodeNumber}</span>
@@ -357,7 +366,7 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         <a
           href={`https://wa.me/?text=${encodeURIComponent(`${title} — ${SITE_URL}${path}`)}`}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
         >
           WhatsApp
@@ -365,7 +374,7 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         <a
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${SITE_URL}${path}`)}`}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="nofollow noopener noreferrer"
           class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800"
         >
           LinkedIn

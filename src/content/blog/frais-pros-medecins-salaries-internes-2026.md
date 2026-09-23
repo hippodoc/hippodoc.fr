@@ -237,7 +237,7 @@ Avant de penser frais réels, **demande au CHU les indemnités auxquelles tu as 
 **Indemnité d'hébergement zone sous-dense** : 300 €/mois brut pour stage ambulatoire en zone définie à l'article L1434-4 du Code de la santé publique, avec logement à titre onéreux.\
 **Indemnité forfaitaire de transport** : 130 €/mois brut pour stage ambulatoire à plus de 15 km du CHU et du domicile.\
 **Prime de responsabilité SASPAS** : 125 €/mois brut en médecine générale, à partir de la 4e année.\
-**DOM/COM** : indemnité spéciale de **+40 % des émoluments** pour stage agréé en Guadeloupe, Guyane, Martinique, La Réunion, Mayotte, Saint-Barthélemy, Saint-Martin, Saint-Pierre-et-Miquelon.
+**[DOM/COM](/blog/medecin-outre-mer-avantages-fiscaux)** : indemnité spéciale de **+40 % des émoluments** pour stage agréé en Guadeloupe, Guyane, Martinique, La Réunion, Mayotte, Saint-Barthélemy, Saint-Martin, Saint-Pierre-et-Miquelon.
 
 ## 🏠 Cas particuliers : double résidence et déménagement
 

@@ -146,8 +146,8 @@ Pas besoin d'être trader. **Un virement automatique le 5 du mois, c'est tout.**
 ## 🎓 Par où commencer concrètement
 
 :::tip
-**Épargne de précaution** : 3 à 6 mois de dépenses sur Livret A + LEP (si tu es éligible, souvent le cas en internat).\
-**Long terme (>8 ans)** : ouvre un **PEA** (plafond 150 000 €, fiscalité allégée après 5 ans), et place sur un **ETF Monde**.\
+**[Épargne de précaution](/blog/base-financiere-rempla)** : 3 à 6 mois de dépenses sur Livret A + LEP (si tu es éligible, souvent le cas en internat).\
+**Long terme (>8 ans)** : ouvre un **[PEA](/blog/enveloppes-investissement-pea-assurance-vie-per-cto)** (plafond 150 000 €, fiscalité allégée après 5 ans), et place sur un **ETF Monde**.\
 **Optimisation** : ouvre une **assurance-vie dès aujourd'hui**, même avec 100 €, juste pour lancer le compteur des 8 ans (abattement fiscal).\
 **Automatise** : virement le 5 du mois, **avant de voir passer l'argent**.\
 **La règle d'or** : investis uniquement ce que tu peux te permettre de **ne pas toucher pendant 10 ans**.

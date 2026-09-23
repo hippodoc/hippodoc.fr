@@ -99,7 +99,7 @@ Parce qu'on connaît bien ces réalités, on t'aide à garder le cap sur l'essen
 
 💶 **ton [Super-Net](/blog/simulateur-super-net-combien-reste) en temps réel** (ce qu'il te reste vraiment)
 
-📊 **un suivi propre de tes paiements & [rétrocessions](/blog/salaires-medecins-remplacants)**
+📊 **un suivi propre de tes paiements & [rétrocessions](/blog/retrocession-honoraires-medecin-remplacant)**
 
 📂 **tes documents, contrats, charges & fiscalité au même endroit**
 :::

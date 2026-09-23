@@ -22,6 +22,7 @@ relatedArticles:
   - "maitrise-ton-logiciel-metier-en-30-min"
   - "checklist-premier-jour-remplacement"
   - "checklist-ultime-medecin-remplacant"
+  - "inbox-zero-remplacant"
 ---
 
 C'est enfin l'heure de démarrer ton remplacement en médecine générale ? Félicitations ! Pour t'aider à exercer avec efficacité, confort et confiance, voici LA sélection incontournable des outils numériques préférés chez Hippodoc. Découvre-les vite et gagne en sérénité dès ta première consultation !
@@ -65,7 +66,7 @@ Tous les outils ci-dessus t'aident à soigner. Aucun ne t'aide à suivre tes ré
 ✅ Statistiques détaillées sur tes revenus\
 ✅ Calendrier intelligent et intuitif\
 ✅ Ajout facile des charges et amortissements\
-✅ Génération rapide de contrats et factures électroniques\
+✅ Génération rapide de contrats et [factures électroniques](/blog/facturation-electronique-medecin-remplacant)\
 Et bien d'autres fonctionnalités pratiques à découvrir !
 :::
 

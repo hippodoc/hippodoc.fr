@@ -108,9 +108,9 @@ Ce mode de vie a des prérequis. Les ignorer, c'est transformer le rêve en gal�
 
 **1. Une prévoyance béton.** Pas d'employeur = pas de maintien de salaire. Un arrêt de 3 mois sans contrat de prévoyance adapté, et c'est ton année qui s'effondre. C'est LE poste à ne pas négocier au rabais.
 
-**2. Une trésorerie lissée.** L'URSSAF et la CARMF calculent d'abord tes cotisations sur tes revenus passés, puis régularisent avec décalage. L'année où tu réduis la voilure, tu paies encore des acomptes calés sur une année plus chargée. Provisionne, toujours. Pour ne pas confondre ce que tu dois à qui, et quand : [cotisations sociales ou impôts ?](/blog/cotisations-sociales-vs-impots)
+**2. Une trésorerie lissée.** L'URSSAF et la CARMF calculent d'abord tes cotisations sur tes revenus passés, puis régularisent avec décalage. L'année où tu réduis la voilure, tu paies encore [des acomptes calés sur une année plus chargée](/blog/effet-ciseaux-regularisation-urssaf-medecin). Provisionne, toujours. Pour ne pas confondre ce que tu dois à qui, et quand : [cotisations sociales ou impôts ?](/blog/cotisations-sociales-vs-impots)
 
-**3. Assumer le choix retraite.** Moins de jours cotisés, c'est moins de points CARMF. Le complément se construit toi-même : épargne régulière, [assurance-vie, PER](/blog/enveloppes-investissement-pea-assurance-vie-per-cto) — à toi de compenser ce que tu ne cotises pas.
+**3. Assumer le choix retraite.** Moins de jours cotisés, c'est moins de points CARMF. Le complément se construit toi-même : [épargne régulière](/blog/interets-composes-meilleur-remplacement), [assurance-vie, PER](/blog/enveloppes-investissement-pea-assurance-vie-per-cto) — à toi de compenser ce que tu ne cotises pas.
 
 ## ⏳ Le vrai luxe, c'est le temps
 

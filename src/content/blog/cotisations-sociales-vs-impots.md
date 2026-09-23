@@ -29,6 +29,7 @@ relatedArticles:
   - "regime-fiscal-micro-bnc-vs-reel"
   - "tout-comprendre-urssaf"
   - "tout-comprendre-carmf"
+  - "effet-ciseaux-regularisation-urssaf-medecin"
 ---
 
 Quand tu démarres ton activité de médecin remplaçant en libéral, la première surprise est souvent que ce que tu encaisses n'est pas entièrement ce que tu gardes. Entre [URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf) et impôts, il est facile de s'y perdre. Voici un guide clair pour comprendre facilement ces différences.

@@ -139,9 +139,9 @@ En pratique : utilise l'IA pour le générique, jamais pour déléguer ton jugem
 
 ## La vraie sécurité du remplaçant se joue au jour 1… et au dernier jour
 
-**Le jour 1**, il faut clarifier très vite : qui ouvre les résultats, qui gère les appels, ce qui doit t'être remonté immédiatement, ce qui peut attendre, et surtout qui reprend quoi après ton départ. Cette discussion prend dix minutes, mais elle évite beaucoup de flottement.
+**[Le jour 1](/blog/checklist-premier-jour-remplacement)**, il faut clarifier très vite : qui ouvre les résultats, qui gère les appels, ce qui doit t'être remonté immédiatement, ce qui peut attendre, et surtout qui reprend quoi après ton départ. Cette discussion prend dix minutes, mais elle évite beaucoup de flottement.
 
-**Le dernier jour**, même logique : tu ne laisses pas une zone grise derrière toi. Tu transmets une mini-liste "à suivre" propre, lisible, utile : patient à rappeler, résultat attendu, contrôle à vérifier, situation transmise au titulaire, point administratif en attente.
+**[Le dernier jour](/blog/checklist-ultime-medecin-remplacant)**, même logique : tu ne laisses pas une zone grise derrière toi. Tu transmets une mini-liste "à suivre" propre, lisible, utile : patient à rappeler, résultat attendu, contrôle à vérifier, situation transmise au titulaire, point administratif en attente.
 
 C'est d'autant plus important que le Code de déontologie rappelle deux choses très claires : la continuité des soins doit être assurée, et à l'issue d'un remplacement, le remplaçant doit cesser l'activité qui s'y rapporte tout en transmettant les informations nécessaires à cette continuité.
 

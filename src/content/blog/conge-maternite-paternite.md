@@ -23,9 +23,10 @@ faq:
   - question: "Les indemnités maternité et paternité sont-elles imposables ?"
     answer: "Oui, l'allocation forfaitaire et les IJ sont **imposables**. Elles doivent être intégrées aux recettes BNC. La CSG/CRDS est précomptée et le prélèvement à la source s'applique."
 relatedArticles:
-  - "super-net-budget"
-  - "base-financiere-rempla"
-  - "calendrier-fiscal-remplacant"
+  - "tout-comprendre-urssaf"
+  - "remplir-declaration-2035"
+  - "remplacement-salarie-guide-complet"
+  - "salariat-vs-liberal"
 ---
 
 🦛🩺 Bébé arrive. Tu fais du libéral ? 👉 Voyons comment ça se passe vraiment.

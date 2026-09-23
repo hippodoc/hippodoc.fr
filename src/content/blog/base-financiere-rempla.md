@@ -54,7 +54,7 @@ Sorties / restos, week-ends / voyages, loisirs / confort.\
 → Plaisir prévu = plaisir serein.
 
 **20% — Futur** 💰\
-Épargne de sécurité, investissement, projets long terme.\
+Épargne de sécurité, [investissement, projets long terme](/blog/interets-composes-meilleur-remplacement).\
 → Ce qui te fait passer de « je subis » → « je choisis ».
 
 ## ✅ La méthode ultra-simple en 4 étapes

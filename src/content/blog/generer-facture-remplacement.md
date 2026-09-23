@@ -25,7 +25,7 @@ faq:
 relatedArticles:
   - "signer-contrat-remplacement"
   - "checklist-administrative-medecin-remplacant"
-  - "frais-professionnels-deductibles"
+  - "facturation-electronique-medecin-remplacant"
 ---
 
 Vous l'avez réclamée… C'est fait : vous pouvez désormais générer des factures pour vos remplacements, vacations, interim ou toute autre mission en quelques clics.
@@ -39,7 +39,7 @@ Et comme toujours avec Hippodoc, c'est pas juste "possible" : **c'est simple, ra
 1️⃣ **Tu crées la facture**\
 2️⃣ **Tu la gardes au chaud sur Hippodoc**\
 3️⃣ **Tu la télécharges en PDF**\
-4️⃣ **Tu l'envoies direct**
+4️⃣ **[Tu l'envoies direct](/blog/facturation-electronique-medecin-remplacant)**
 
 ## ✅ Fini la galère administrative
 
