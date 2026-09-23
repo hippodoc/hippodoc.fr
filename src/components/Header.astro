@@ -37,7 +37,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
        sur un <label> sans rôle est un attribut ARIA interdit (signalé par
        Lighthouse sur toutes les pages). C'est bien la checkbox qui est le contrôle
        focusable, et son état coché traduit l'ouverture du tiroir. */}
-  <input type="checkbox" id="mobile-menu-toggle" class="peer sr-only" aria-label="Menu de navigation" />
+  <input type="checkbox" id="mobile-menu-toggle" class="peer sr-only lg:hidden" aria-label="Menu de navigation" />
   <div
     class="mx-auto flex h-16 max-w-[1320px] items-center justify-between rounded-2xl border border-[hsl(var(--landing-glass-border)/0.58)] bg-[hsl(var(--landing-glass)/0.74)] px-3 shadow-[var(--shadow-landing-glass)] backdrop-blur-xl backdrop-saturate-150 sm:px-5 lg:rounded-full lg:px-6"
   >

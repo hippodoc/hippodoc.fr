@@ -3020,6 +3020,56 @@ les slides qui affichent « Livret A 2,4 % », « 30 ans », « LEP 3,5 % » ; s
 `choix-mode-exercice` (intérim : deux ans d'exercice), `micro-bnc-exemples-concrets`
 (recalcul des deux exemples), lignes 22 / 25 / 6 de `remplir-declaration-2035`.
 
+### 9.bc Audit du blog, lot 3a — gabarits : tri, compteurs, contrastes, focus, lignes vides (23 septembre 2026)
+
+Aucun contenu d'article modifié : uniquement les gabarits de `/blog`, des pages de
+série et de la page d'article.
+
+- **Tri** (`src/lib/blog-sort.ts`, nouveau) : 38 articles sur 46 partagent leur date
+  avec un autre, et le départage retombait sur l'ordre alphabétique des fichiers —
+  la « une » de /blog dépendait de la première lettre du slug. Désormais : date
+  décroissante, puis numéro d'épisode décroissant, puis slug. Les pages de série
+  numérotées (Fiches Pratiques, Fiches Fiscalité) et leurs listes dans l'index
+  s'affichent dans l'ordre de lecture #1 → #N ; Guides & Conseils reste du plus
+  récent au plus ancien.
+- **« À la une »** : nouveau champ de frontmatter optionnel `featured: true`
+  (`content.config.ts`). Sans lui, la une est le premier article du tri — aujourd'hui
+  « barème kilométrique ou frais réels » (fiche #14). Aucun article n'est marqué :
+  choix éditorial laissé au fondateur.
+- **Compteurs** : « 14 articles sur 9 prévus » (Fiches Fiscalité) et « sur 8 prévus »
+  supprimés — `totalEpisodes` date de la SPA ; « 46 fiches pratiques » → « 46 articles »
+  dans l'en-tête de /blog (une série s'appelle « Fiches Pratiques »), même correction
+  dans l'index.
+- **Pastilles de série** (`blog-series.ts`) : dégradés -500 → -700. Le texte blanc de
+  12 px passait de 2,4-4,0:1 à 5,2-7,0:1 (AA). Lighthouse ne le détectait pas (fond en
+  dégradé). Fichier marqué « généré », mais le générateur ne doit plus être relancé
+  (CLAUDE.md).
+- **Focus clavier des cartes** (`BlogCard.astro`) : l'anneau natif était rogné par
+  l'`overflow-hidden` de la carte (WCAG 2.4.7). Contour intérieur
+  (`-outline-offset-2`), peint par-dessus l'image. Vérifié au clavier.
+- **Hiérarchie des titres** : les cartes de « Derniers articles » passent en `h3`
+  sous leur `h2` de section (prop `headingLevel`) ; inchangé sur les pages de série.
+- **Lignes vides parasites** : `.prose p { white-space: pre-wrap }` doublait chaque
+  retour à la ligne forcé (765 `<br>` sur les 46 articles). Contrôle préalable :
+  aucun retour à la ligne « doux » (sans `<br>`) dans les paragraphes, donc rien ne
+  dépendait de cette règle. Retirée.
+- **FAQ** : le marqueur d'ouverture était masqué sans remplacement ; chevron ajouté
+  (pivote à l'ouverture), zone cliquable portée par le `<summary>` (44 px minimum).
+- **Cases à cocher invisibles** (tiroir mobile du Header, sommaire) : elles restaient
+  focusables sur ordinateur, où leur libellé est masqué — premier Tab de chaque
+  page sur une case invisible. `lg:hidden` / `xl:hidden` les retire de l'ordre de
+  tabulation. Sommaire de niveau 3 : `text-muted-foreground/85` (3,6:1) →
+  `text-muted-foreground`.
+
+Lighthouse mobile local, `main` contre cette branche (3 passages) : `/blog` 96 / 95-96 ;
+`/blog/serie/fiches-fiscalite` 94-95 / 94 — pas de régression. La page de série est
+**sous 95 sur `main` aussi** : à traiter avec le lot images (cover de la première
+carte). Accessibilité, bonnes pratiques et SEO à 100, CLS 0.
+
+**Reste pour le lot 3b (images)** : image de partage paysage 1200×630, images du
+JSON-LD Article, hauteur de la cover sur ordinateur, 11 covers de 450 px, cover
+partagée de la facturation électronique, préchargement de la une sur ordinateur.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

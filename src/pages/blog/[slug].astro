@@ -179,7 +179,7 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
     <div class:list={[showToc ? 'xl:grid xl:grid-cols-[15rem_minmax(0,1fr)] xl:items-start xl:gap-12' : '']}>
       {showToc && (
         <div class="toc mb-8 rounded-2xl border border-hippo-100 bg-hippo-50/40 px-4 xl:sticky xl:top-24 xl:mb-0 xl:max-h-[calc(100vh-8rem)] xl:overflow-y-auto xl:rounded-none xl:border-0 xl:border-l xl:bg-transparent xl:px-0 xl:pl-4">
-          <input type="checkbox" id="toc-toggle" class="peer sr-only" />
+          <input type="checkbox" id="toc-toggle" class="peer sr-only xl:hidden" aria-label="Sommaire" />
           <label
             for="toc-toggle"
             class="flex min-h-11 cursor-pointer items-center justify-between gap-2 py-3 font-semibold text-hippo-800 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[hsl(var(--ring))] xl:hidden"
@@ -198,7 +198,7 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
                     class:list={[
                       'block rounded-md py-1.5 leading-snug transition-colors hover:text-hippo-700 xl:py-1',
                       h.depth === 3
-                        ? 'border-l border-hippo-100 pl-3 text-[0.8125rem] text-muted-foreground/85'
+                        ? 'border-l border-hippo-100 pl-3 text-[0.8125rem] text-muted-foreground'
                         : 'font-medium text-hippo-800',
                     ]}
                   >
@@ -274,8 +274,8 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
       {/* Largeur de lecture : le corps de texte est ramené à ~68 caractères par
            ligne (il en faisait 88, bien au-delà de l'optimum 60-75). L'en-tête,
            la cover et les blocs de fin restent en pleine largeur du conteneur.
-           Note : `.prose p { white-space: pre-wrap }` (global.css) est conservé —
-           29 des 38 articles contiennent des sauts de ligne volontaires. */}
+           Les sauts de ligne volontaires (« \ » en fin de ligne) sortent en <br> : la
+           règle `white-space: pre-wrap` qui les doublait a été retirée (§ 9.bc). */}
       <div class="prose prose-slate blog-content mx-auto max-w-[68ch] prose-headings:text-foreground prose-a:text-hippo-600">
         <Content />
         {/* Fin réelle du TEXTE — et non le bas de la page : le partage, le bloc
@@ -290,11 +290,12 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
           <h2 id="faq-title" class="mb-4 text-2xl font-bold text-foreground">Questions fréquentes</h2>
           <div class="space-y-3">
             {faq.map((item) => (
-              <details class="group rounded-xl border border-hippo-100 bg-white p-4 shadow-sm">
-                <summary class="cursor-pointer list-none font-semibold text-foreground [&::-webkit-details-marker]:hidden">
+              <details class="group rounded-xl border border-hippo-100 bg-white shadow-sm">
+                <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 p-4 font-semibold text-foreground [&::-webkit-details-marker]:hidden">
                   <span set:html={miniMarkdownToHtml(item.question)} />
+                  <svg class="h-4 w-4 shrink-0 text-hippo-600 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 </summary>
-                <div class="mt-3 text-muted-foreground" set:html={miniMarkdownToHtml(item.answer)} />
+                <div class="px-4 pb-4 text-muted-foreground" set:html={miniMarkdownToHtml(item.answer)} />
               </details>
             ))}
           </div>

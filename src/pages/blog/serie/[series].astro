@@ -19,6 +19,7 @@ import { SITE_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { SERIES_SLUGS, SERIES_INTROS, seriesPath } from '@/lib/blog-series-slugs';
 import { resolveCovers } from '@/lib/blog-covers';
+import { byNewest, byEpisode } from '@/lib/blog-sort';
 
 export async function getStaticPaths() {
   return blogSeries.map((series) => ({
@@ -31,7 +32,8 @@ const { series } = Astro.props;
 
 const posts = (await getCollection('blog'))
   .filter((p) => p.data.seriesId === series.id)
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+  /* Séries numérotées : ordre de lecture (#1, #2…) ; Guides & Conseils : plus récent d'abord. */
+  .sort(series.totalEpisodes === null ? byNewest : byEpisode);
 
 const covers = await resolveCovers(posts);
 
@@ -93,7 +95,7 @@ const breadcrumbSchema = {
       <h1 class="mt-4 text-4xl font-bold leading-tight tracking-tight text-hippo-800 md:text-5xl">{series.name}</h1>
       <p class="mt-3 text-lg text-muted-foreground">{series.description}.</p>
       <p class="mt-2 text-sm text-muted-foreground">
-        {posts.length} article{posts.length > 1 ? 's' : ''}{series.totalEpisodes ? ` sur ${series.totalEpisodes} prévus` : ''}
+        {posts.length} article{posts.length > 1 ? 's' : ''}
       </p>
     </header>
 
