@@ -50,23 +50,51 @@ const blogImages = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true }
 );
 
-async function resolveBlogImage(publicPath: string, width: number) {
-  const assetPath = publicPath.replace(/^\/blog\//, '/src/assets/blog/');
-  const mod = blogImages[assetPath];
-  if (!mod) return null;
-  return await getImage({ src: mod.default, width, format: 'webp' });
+function blogAsset(publicPath: string) {
+  return blogImages[publicPath.replace(/^\/blog\//, '/src/assets/blog/')]?.default ?? null;
 }
 
-const coverImage = await resolveBlogImage(cover, 1200);
-/* Variante étroite pour le mobile : la cover d'en-tête est l'élément LCP de
-   l'article. Servie en 1200 px uniques et en `lazy` (défaut de getImage), elle
-   tenait les articles à 90-93 en perf mobile. 800 px couvrent un écran de
-   412 px en densité 1,75 (profil Lighthouse) ; le 1200 reste l'image OG. */
-const coverImageSmall = await resolveBlogImage(cover, 800);
+/* La largeur demandée est bornée à celle de la source : sharp n'agrandit jamais
+   (withoutEnlargement), mais Astro annonçait quand même la largeur demandée — onze
+   covers de 450 px étaient déclarées « 800w » et « 1200w » (§ 9.bd). */
+async function resolveBlogImage(publicPath: string, width: number) {
+  const src = blogAsset(publicPath);
+  if (!src) return null;
+  return await getImage({ src, width: Math.min(width, src.width), format: 'webp' });
+}
+
+/* Recadrage paysage d'une cover portrait, calé sur le HAUT : c'est là qu'est
+   dessiné le titre. Dimensions bornées à la source pour que les valeurs déclarées
+   (og:image:width/height, JSON-LD) soient celles du fichier réellement servi. */
+async function croppedCover(publicPath: string, ratio: number, format: 'jpg' | 'webp') {
+  const src = blogAsset(publicPath);
+  if (!src) return null;
+  const width = Math.min(1200, src.width, Math.floor(src.height * ratio));
+  const height = Math.round(width / ratio);
+  const img = await getImage({ src, width, height, fit: 'cover', position: 'top', format });
+  return { url: `${SITE_URL}${img.src}`, width, height };
+}
+
+/* Cover d'en-tête : affichée à 448 px de large au plus (portrait : elle repoussait
+   le texte à deux écrans sur ordinateur, § 9.bd). Candidats du srcset : 480, 800 et
+   900 px, bornés à la largeur de la source et dédoublonnés. */
+const coverImage = await resolveBlogImage(cover, 900);
+const coverVariants = (
+  await Promise.all([480, 800, 900].map((w) => resolveBlogImage(cover, w)))
+).filter((v): v is NonNullable<typeof v> => v !== null);
+const coverSrcset = [...new Map(coverVariants.map((v) => [Number(v.attributes.width), v.src])).entries()]
+  .map(([w, src]) => `${src} ${w}w`)
+  .join(', ');
 /* `loading="lazy"` retiré des attributs de getImage : Astro ne dédoublonne pas un
    attribut étalé puis redéfini, et le navigateur garde le premier (lazy). */
 const { loading: _lazy, ...coverAttrs } = coverImage?.attributes ?? {};
-const coverForOg = coverImage ? `${SITE_URL}${coverImage.src}` : undefined;
+/* Image de partage : paysage 1,91:1 en JPEG (les aperçus LinkedIn, WhatsApp,
+   Facebook et X recadraient au centre la cover portrait et coupaient le titre).
+   Images du JSON-LD Article : 16:9, 4:3 et 1:1, comme le recommande Google. */
+const ogCover = await croppedCover(cover, 1200 / 630, 'jpg');
+const ldImages = (
+  await Promise.all([16 / 9, 4 / 3, 1].map((r) => croppedCover(cover, r, 'jpg')))
+).filter((v): v is NonNullable<typeof v> => v !== null);
 
 const resolvedSlides = slides
   ? (
@@ -106,7 +134,7 @@ const articleSchema = {
   '@id': `${SITE_URL}${path}#article`,
   headline: title,
   description,
-  image: coverForOg ?? `${SITE_URL}/lovable-uploads/og-image.png`,
+  image: ldImages.length ? ldImages.map((i) => i.url) : `${SITE_URL}/lovable-uploads/og-image.png`,
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
   inLanguage: 'fr-FR',
@@ -150,7 +178,9 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
   title={`${title} | Blog Hippodoc`}
   description={description}
   path={path}
-  ogImage={coverForOg}
+  ogImage={ogCover?.url}
+  ogImageWidth={ogCover?.width}
+  ogImageHeight={ogCover?.height}
   ogImageAlt={title}
   ogType="article"
   jsonLd={jsonLd}
@@ -257,10 +287,10 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
           src={coverImage.src}
           {...coverAttrs}
           loading="eager"
-          srcset={coverImageSmall ? `${coverImageSmall.src} 800w, ${coverImage.src} 1200w` : undefined}
-          sizes="(min-width: 900px) 832px, 100vw"
+          srcset={coverSrcset || undefined}
+          sizes="(min-width: 640px) 448px, 100vw"
           alt={title}
-          class="mb-8 w-full rounded-2xl shadow-lg"
+          class="mx-auto mb-8 w-full rounded-2xl shadow-lg sm:max-w-md"
           fetchpriority="high"
         />
       )}
