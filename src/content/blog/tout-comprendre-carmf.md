@@ -29,6 +29,7 @@ relatedArticles:
   - "tout-comprendre-urssaf"
   - "cotisations-sociales-vs-impots"
   - "frais-professionnels-deductibles"
+  - "effet-ciseaux-regularisation-urssaf-medecin"
 ---
 
 Après avoir découvert l'[URSSAF](/blog/tout-comprendre-urssaf), fais connaissance avec sa cousine un peu mystérieuse : la CARMF. Elle s'occupe de ton avenir (et de ton portefeuille dès aujourd'hui). 🎴🔮
@@ -43,7 +44,7 @@ La CARMF (Caisse Autonome de Retraite des Médecins de France) gère : **Ta retr
 
 ## 📝 Comment s'affilier ?
 
-Tu as **1 mois** à partir de ton [premier remplacement](/blog/realites-remplacement-medical) pour t'inscrire sur **www.carmf.fr**.
+Tu as **1 mois** à partir de ton [premier remplacement](/blog/realites-remplacement-medical) pour t'inscrire sur **[www.carmf.fr](https://www.carmf.fr)**.
 
 :::warning
 En cas d'oubli, affiliation automatique avec possibles pénalités.
@@ -100,7 +101,7 @@ C'est la cotisation la plus mal comprise des trois, parce qu'elle dépend de ton
 ## 🎁 Tips & astuces indispensables
 
 ✅ **Dispense d'affiliation possible** si ton revenu net d'activité indépendante reste inférieur à **15 000 €** et que tu n'es pas assujetti à la CET — ⚠ [sur demande](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm), non automatique et non rétroactive. En contrepartie, tu perds la couverture invalidité-décès et ces périodes ne compteront pas pour ta retraite.\
-✅ **[RSPM](/blog/rspm-exemples-concrets)** : cotisations sociales réduites (~13,5% tout compris) – Voir fiche fiscalité #3.\
+✅ **[RSPM](/blog/rspm-exemples-concrets)** : cotisations sociales réduites (~13,5% tout compris) – Voir [fiche fiscalité #3](/blog/tout-comprendre-urssaf).\
 ✅ **ACRE** : réduction de charges la 1ʳᵉ année si c'est ta première activité libérale et que tes revenus sont < 47 100 €.\
 ✅ **Cotisations CARMF déductibles** de tes impôts : n'oublie pas de les déclarer !
 

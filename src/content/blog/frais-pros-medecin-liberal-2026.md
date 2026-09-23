@@ -36,6 +36,7 @@ relatedArticles:
   - "regime-fiscal-micro-bnc-vs-reel"
   - "rspm-exemples-concrets"
   - "pdsa-exoneration-gardes-regulees"
+  - "voiture-bareme-kilometrique-ou-frais-reels-medecin"
 ---
 
 :::essentiel

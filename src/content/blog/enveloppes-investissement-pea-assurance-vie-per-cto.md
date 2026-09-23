@@ -26,6 +26,7 @@ relatedArticles:
   - "super-net-budget"
   - "simulateur-super-net-combien-reste"
   - "regime-fiscal-micro-bnc-vs-reel"
+  - "interets-composes-meilleur-remplacement"
 ---
 
 :::essentiel
@@ -40,7 +41,7 @@ relatedArticles:
 
 Quand on commence à investir, on pense souvent tout de suite au contenu : ETF, actions, fonds en euros, obligations, SCPI… En réalité, la première vraie question est souvent ailleurs : **dans quelle enveloppe fiscale vas-tu loger ce placement ?** Car tu peux viser des expositions parfois proches, mais avec une fiscalité, une disponibilité de l'argent et un intérêt patrimonial très différents selon que tu passes par un PEA, une assurance-vie, un PER ou un CTO.
 
-En clair : **l'enveloppe, c'est le contenant fiscal. Le placement, c'est le contenu.** Et le bon contenant peut faire une vraie différence sur 10, 20 ou 30 ans. Voilà pourquoi il faut arrêter de penser seulement "qu'est-ce que j'achète ?" et commencer par "où est-ce que je l'achète ?".
+En clair : **l'enveloppe, c'est le contenant fiscal. Le placement, c'est le contenu.** Et le bon contenant peut faire [une vraie différence sur 10, 20 ou 30 ans](/blog/interets-composes-meilleur-remplacement). Voilà pourquoi il faut arrêter de penser seulement "qu'est-ce que j'achète ?" et commencer par "où est-ce que je l'achète ?".
 
 ## 1. Le PEA : l'enveloppe reine pour investir en actions sur le long terme
 

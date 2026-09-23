@@ -27,6 +27,9 @@ relatedArticles:
   - "remplir-declaration-2035"
   - "tout-comprendre-urssaf"
   - "tout-comprendre-carmf"
+  - "cfe-medecin-remplacant"
+  - "effet-ciseaux-regularisation-urssaf-medecin"
+  - "facturation-electronique-medecin-remplacant"
 ---
 
 Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes obligations et anticiper chaque échéance ! Voici tout ce que tu dois savoir mois par mois, avec des astuces pour ne jamais être pris de court. 📅✨
@@ -65,7 +68,7 @@ Découvre ton calendrier fiscal complet et pratique pour gérer sereinement tes 
 
 ## 📅 JUIN – Vigilance 👀
 
-📬 **URSSAF** : Échéancier ajusté si variation de revenu\
+📬 **URSSAF** : [Échéancier ajusté si variation de revenu](/blog/effet-ciseaux-regularisation-urssaf-medecin)\
 📬 **CARMF** : Appel du solde cotisations retraite
 
 ## 📅 JUILLET – L'été fiscal ☀

@@ -17,7 +17,7 @@ faq:
   - question: "Où trouver des remplacements médicaux en libéral ?"
     answer: "Les meilleures sources : **plateformes spécialisées** (REMPLAX PRO, hoppi.work, Swing Santé, Medelse), **agences d'intérim** (Adecco Médical, Appel Médical) et **groupes Facebook** \"remplacement médecine + ta région\"."
   - question: "Quel taux de rétrocession négocier pour un remplacement ?"
-    answer: "En moyenne : **70-80%** en médecine générale, **60-70%** pour les spécialités. Ce taux est négociable selon ton expérience, la durée et les conditions (logement, déplacements inclus...)."
+    answer: "En moyenne : **70-90%** en médecine générale (repère : 80%), **60-70%** pour les spécialités avec plateau technique. Ce taux est négociable selon ton expérience, la durée et les conditions (logement, déplacements inclus...)."
   - question: "Quels critères vérifier avant d'accepter un remplacement ?"
     answer: "Vérifie : **lieu et trajet**, **type d'exercice** (cabinet, MSP, clinique), **rétrocession** précise, **horaires et rythme**, et **feeling** avec le titulaire. Profite des premiers remplacements pour tester différents environnements !"
   - question: "Comment réussir son premier remplacement médical ?"
@@ -26,6 +26,7 @@ relatedArticles:
   - "obtenir-sa-licence-de-remplacement"
   - "checklist-premier-jour-remplacement"
   - "salaires-medecins-remplacants"
+  - "retrocession-honoraires-medecin-remplacant"
 ---
 
 Bravo, tu as ta [licence de remplacement](/blog/obtenir-sa-licence-de-remplacement) en poche, c'est parti pour tes premières expériences ! 🚀 Voici ta checklist pour trouver rapidement le remplacement de tes rêves.
@@ -40,7 +41,7 @@ Bravo, tu as ta [licence de remplacement](/blog/obtenir-sa-licence-de-remplaceme
 
 📍 **Lieu & Trajet** : Privilégie un accès facile, du stationnement et des services pratiques à proximité (pause-café oblige ! ☕).\
 💼 **Type d'exercice** : Cabinet libéral, maison de santé, centre médical ou clinique privée ? Astuce : Profite de tes premiers remplacements pour tester différents environnements afin de mieux cerner celui qui colle à ta personnalité et à tes préférences !\
-💶 **[Rétrocession](/blog/salaires-medecins-remplacants)** : En moyenne, compte environ 70-80% pour la médecine générale et 60-70% pour les autres spécialités. [À négocier](/blog/retrocession-honoraires-medecin-remplacant) selon ton expérience et les spécificités du poste.\
+💶 **[Rétrocession](/blog/retrocession-honoraires-medecin-remplacant)** : En moyenne, compte environ 70-90% pour la médecine générale (repère : 80%) et 60-70% pour les spécialités avec plateau technique. À négocier selon ton expérience et les spécificités du poste.\
 ⏰ **Horaires & rythme** : Précise dès le départ les horaires exacts, les consultations prévues, les visites à domicile éventuelles ou les gardes.\
 🤝 **Feeling & ambiance** : Fais confiance à ton intuition dès le premier échange téléphonique ou lors de la première visite. Une bonne ambiance, ça change tout ! ✨
 

@@ -20,7 +20,7 @@ faq:
   - question: "Quand dois-je m'inscrire à l'URSSAF ?"
     answer: "Tu dois t'inscrire à l'URSSAF **dans les 8 jours** suivant ton premier remplacement libéral. L'inscription se fait sur medecins-remplacants.urssaf.fr si tu choisis le RSPM (à déclarer avant ton premier remplacement), sinon sur le guichet unique formalites.entreprises.gouv.fr, qui transmet ton dossier à l'URSSAF."
   - question: "Quelle différence entre RSPM et régime PAMC ?"
-    answer: "Le **RSPM** (CA < 38 000 €) offre des cotisations réduites (13,5-21,2%). Le **PAMC** (CA > 38 000 €) calcule les cotisations sur ton bénéfice réel. Ne pas confondre avec les régimes fiscaux (Micro-BNC/Réel)."
+    answer: "Le **RSPM** (ouvert jusqu'à 19 000 € d'honoraires, maintien possible jusqu'à 38 000 €) offre des cotisations réduites (13,5-21,2%). Le **PAMC** (régime classique) calcule les cotisations sur ton bénéfice réel. Ne pas confondre avec les régimes fiscaux (Micro-BNC/Réel)."
   - question: "Comment sont calculées mes cotisations URSSAF ?"
     answer: "En **RSPM** : 13,5% jusqu'à 19 000 € de CA, puis 21,2% entre 19 000 € et 38 000 €. En **PAMC** : cotisations variables calculées selon ton bénéfice net réel."
   - question: "Puis-je déduire mes cotisations URSSAF de mes impôts ?"
@@ -33,6 +33,8 @@ relatedArticles:
   - "cotisations-sociales-vs-impots"
   - "tout-comprendre-carmf"
   - "regime-fiscal-micro-bnc-vs-reel"
+  - "effet-ciseaux-regularisation-urssaf-medecin"
+  - "rspm-exemples-concrets"
 ---
 
 Tu viens de démarrer tes remplacements médicaux, et l'URSSAF reste encore un mystère ? Voici une fiche claire et pratique pour comprendre et gérer facilement tes cotisations sociales dès tes premiers remplacements. 🚀✨

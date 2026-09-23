@@ -63,7 +63,7 @@ Aux yeux du fisc, tu es une entreprise comme une autre — même si tu ne factur
 
 C'est LA question du remplaçant, alors disons-le clairement : **ta facture d'honoraires de remplacement n'est pas concernée**.
 
-Les sommes que le médecin remplacé te reverse rémunèrent des **prestations de soins** — exonérées de TVA, donc **hors de la réforme**. Ta facture d'honoraires en fin de remplacement reste un document classique : tu continues de l'envoyer **par mail ou en main propre**, comme aujourd'hui, sans plateforme, sans format spécial, sans rien de nouveau au 1er septembre.
+[Les sommes que le médecin remplacé te reverse](/blog/retrocession-honoraires-medecin-remplacant) rémunèrent des **prestations de soins** — exonérées de TVA, donc **hors de la réforme**. Ta facture d'honoraires en fin de remplacement reste un document classique : tu continues de l'envoyer **par mail ou en main propre**, comme aujourd'hui, sans plateforme, sans format spécial, sans rien de nouveau au 1er septembre.
 
 :::tip
 Autrement dit : [générer ta facture de rétrocession avec Hippodoc](/blog/generer-facture-remplacement) et l'envoyer par mail au remplacé reste **exactement la bonne façon de faire** — avant comme après la réforme. Propre, datée, archivée, et zéro obligation électronique là-dessus. 🚀

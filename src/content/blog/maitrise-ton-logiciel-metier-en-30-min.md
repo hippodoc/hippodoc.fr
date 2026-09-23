@@ -24,6 +24,7 @@ relatedArticles:
   - "checklist-premier-jour-remplacement"
   - "outils-numeriques-indispensables-cabinet"
   - "checklist-ultime-medecin-remplacant"
+  - "inbox-zero-remplacant"
 ---
 
 Tu t'apprêtes à débuter ton [premier remplacement](/blog/realites-remplacement-medical) médical, et l'idée d'utiliser un nouveau logiciel te fait un peu stresser ? Pas de panique ! Que ce soit Doctolib, Weda, MediStory, Axisanté, Crossway, Almapro, ou autre, cette checklist ultra-simple t'aidera à devenir rapidement opérationnel(le). Prends 30 minutes, un café, et c'est parti ! 🔥💻
@@ -52,7 +53,7 @@ Tu t'apprêtes à débuter ton [premier remplacement](/blog/realites-remplacemen
 
 ## 📥 Résultats d'examens : gestion simplifiée
 
-✅ Prends l'habitude de consulter régulièrement la messagerie sécurisée.\
+✅ Prends l'habitude de consulter régulièrement [la messagerie sécurisée](/blog/inbox-zero-remplacant).\
 ✅ Maîtrise l'importation directe des résultats d'examens dans les dossiers patients, pour un suivi fluide et rapide.
 
 ## 🖨🔍 Matériel informatique sous contrôle

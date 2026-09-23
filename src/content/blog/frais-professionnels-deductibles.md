@@ -29,13 +29,15 @@ relatedArticles:
   - "regime-fiscal-micro-bnc-vs-reel"
   - "cotisations-sociales-vs-impots"
   - "remplir-declaration-2035"
+  - "frais-pros-medecin-liberal-2026"
+  - "voiture-bareme-kilometrique-ou-frais-reels-medecin"
 ---
 
 💰 Réduis considérablement tes impôts en déclarant efficacement tes frais professionnels. Voici un guide clair et complet pour optimiser facilement ta déclaration fiscale.
 
 ## 🔹 Rappel rapide : les régimes fiscaux
 
-*(voir Fiche fiscalité #1)*
+*(voir [Fiche fiscalité #1](/blog/regime-fiscal-micro-bnc-vs-reel))*
 
 ## ✅ Micro-BNC (recettes annuelles < 83 600 €)
 
@@ -53,7 +55,7 @@ Intéressant si le total de tes charges — **cotisations URSSAF et CARMF compri
 
 ## 🚗 Déplacements professionnels
 
-**[Barème kilométrique](/blog/frais-pros-medecin-liberal-2026)** (€/km selon véhicule).\
+**[Barème kilométrique](/blog/voiture-bareme-kilometrique-ou-frais-reels-medecin)** (€/km selon véhicule).\
 **Frais réels** : essence, assurance, entretien, péages, parking.
 
 ## 🚆 Transports & hébergements
@@ -96,7 +98,7 @@ Honoraires du comptable ou adhésion à une Association de Gestion Agréée.
 
 ## 🏢 Cotisation Foncière des Entreprises (CFE)
 
-Exonérée la première année, réduite la deuxième année.
+[Exonérée la première année, réduite la deuxième année](/blog/cfe-medecin-remplacant).
 
 ## 🦛 Abonnement Hippodoc
 

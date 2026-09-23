@@ -3108,6 +3108,71 @@ nom de fichier dans `src/assets/blog/`. Aussi : une cover propre pour
 `facturation-electronique-medecin-remplacant` (elle partage celle de
 `generer-facture-remplacement`, titrée « T'as remplacé, t'as facturé »).
 
+### 9.be Audit du blog, lot 4 — maillage interne et phrases de référence (23 septembre 2026)
+
+**Liens posés sur des mots existants** (53 liens dans 30 articles, corps uniquement,
+aucune phrase réécrite ; chaque ancre vérifiée unique avant remplacement) :
+- **Ancres « rétrocession »** : les 5 qui pointaient vers `salaires-medecins-remplacants`
+  pointent vers le pilier `retrocession-honoraires-medecin-remplacant` ; le lien de
+  `signer-contrat-remplacement` (« rétrocession à définir ultérieurement ») est retiré,
+  l'article liant déjà le pilier ; l'ancre vague « À négocier » (trouver) est retirée
+  au profit de « Rétrocession » ; deux nouveaux liens (requalification, facturation
+  électronique).
+- **Orphelins** : facturation électronique (3 liens entrants), inbox zéro (3 + 2
+  sortants), intérêts composés (3 + 2 sortants).
+- **Renvois en texte brut** liés : « fiche pratique #6 / #7 », « Fiche fiscalité
+  #1 / #3 ». Retirés (sans objet sur le site) : « (cf. prochaine fiche) » et
+  « (cf. fiche précédente) » dans `micro-bnc-exemples-concrets`.
+- **Quasi-orphelins** : outre-mer, salariat 10 %, guide frais pros des salariés,
+  syndrome de l'imposteur, base financière, checklists.
+- **Articles du 20 septembre** : liens entrants vers CFE (4), voiture (3, dont une
+  ancre « Barème kilométrique » re-ciblée), effet ciseaux (3), 6 mois / 12 mois (2),
+  zones FRR (1).
+- **/simulateur** : « simulateur SuperNet Hippodoc », « simulateur intégré »,
+  « simuler ton vrai revenu net ».
+- Finitions : « Découvre Hippodoc ici ! » → « Découvre Hippodoc » ; « www.carmf.fr »
+  en HTTPS ; « 34 % » dans l'ancre.
+- **Une seule phrase ajoutée** : `salariat-10-pourcent-ou-frais-reels`, section
+  « Les frais réels » : « — le guide poste par poste des frais réels détaille
+  chacune » (seul article resté sans lien entrant).
+
+**`relatedArticles`** : 23 articles mis à jour (aucun texte touché) — les anciens
+articles citent désormais les articles d'août-septembre ; `conge-maternite-paternite`
+reçoit des connexes pertinents (URSSAF, 2035, salariat) au lieu de budget / base
+financière / calendrier ; `super-net-budget` et `generer-facture-remplacement`
+remplacent un connexe hors sujet. Plus aucun article n'est absent des connexes.
+
+**Gabarit** : la pastille de série de chaque article devient un lien vers sa page de
+série, et la série entre dans le fil d'Ariane visible et le `BreadcrumbList`
+(Accueil › Blog › série › article) — les trois pages de série ne recevaient aucun
+lien depuis les articles. Liens de partage WhatsApp / LinkedIn en `nofollow`.
+
+**Pages de série** : intro Fiches Fiscalité liée (URSSAF, CARMF, micro-BNC, 2035,
+PDSA, calendrier) et complétée des cinq nouvelles fiches, « 4 à 7 minutes » → « de
+4 à 15 minutes » ; intro Guides & Conseils liée (maternité, organisation, syndrome de
+l'imposteur, enveloppes) + rétrocession et requalification. **404** : « 38 fiches
+pratiques » → « Nos fiches pratiques ».
+
+**Phrases de référence — rétrocession** : fourchettes « 60-80 % » / « 70-80 % »
+alignées sur l'article de référence (70-90 % en médecine générale, repère 80 % ;
+60-70 % avec plateau technique) dans `choix-mode-exercice` (3), `pieges-debut-carriere`,
+`salaires-medecins-remplacants`, `trouver-facilement` (2), `signer-contrat`.
+**RSPM** : dernière mention « CA < 38 000 € » (`tout-comprendre-urssaf`, FAQ) alignée.
+
+**Dates** : les ajouts de liens ne relèvent **pas** `updatedDate` — un « Mis à jour
+le… » sur 35 articles dont le contenu n'a pas changé serait trompeur (constat de
+l'audit). Règle retenue : `updatedDate` seulement pour une modification du fond.
+
+**Garde-fou** (`verify-site.mjs`) : échec si un `relatedArticles` cite un slug
+inexistant (testé en injectant un faux slug) ; avertissement si un article n'a aucun
+lien entrant depuis le texte d'un autre article, ou n'est cité dans aucun
+`relatedArticles`. État actuel : aucun avertissement.
+
+**Non traités (à suivre)** : liens depuis `/faq`, `/simulateur`, le glossaire du guide
+et ses sous-pages ; liens vers les sources officielles dans les sections Sources ;
+`llms.txt` ; footer. ⚠️ `/simulateur` décrit encore le RSPM comme applicable « en
+dessous de 38 000 € » (texte de page + mode Auto du moteur) : à revoir côté produit.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

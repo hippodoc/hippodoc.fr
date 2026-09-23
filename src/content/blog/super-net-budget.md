@@ -24,7 +24,7 @@ faq:
 relatedArticles:
   - "base-financiere-rempla"
   - "pieges-debut-carriere-remplacant"
-  - "salariat-vs-liberal"
+  - "interets-composes-meilleur-remplacement"
 ---
 
 La nouvelle génération de médecins, c'est celle qui pilote.\
@@ -43,7 +43,7 @@ revenus / dépenses / investissements → et tu récupères un budget clair, lis
 
 ## 📊 Concrètement, tu vois :
 
-📊 la répartition de ton mois : Investissements / Dépenses / Disponible (ce qui reste vraiment)\
+📊 [la répartition de ton mois](/blog/base-financiere-rempla) : Investissements / Dépenses / Disponible (ce qui reste vraiment)\
 🧾 le détail de tes revenus (ex : rempla, [salariat](/blog/salariat-vs-liberal), etc.)\
 📌 tes postes de dépenses par catégorie (logement, vie quotidienne, loisirs…)\
 📈 tes investissements (Livret A, PEA, AV, PER…) + leur poids dans ton budget\

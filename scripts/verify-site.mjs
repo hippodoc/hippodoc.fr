@@ -624,6 +624,32 @@ for (const [date, n] of parDate) {
   if (n > 12) warn(`sitemap : ${n} URLs partagent le lastmod ${date} — vérifier qu'il ne s'agit pas d'une date de génération`);
 }
 
+/* Maillage du blog (MIGRATION.md § 9.be). Un slug erroné dans relatedArticles est
+   filtré en silence au rendu : on le signale ici. Et un article que rien ne cite
+   n'est atteignable que par l'index — trois articles l'étaient avant l'audit. */
+const slugsBlog = new Set(blogFiles.map((f) => f.replace(/\.md$/, '')));
+const citesEnConnexe = new Set();
+for (const f of blogFiles) {
+  const src = readFileSync(resolve(root, 'src/content/blog', f), 'utf8');
+  const bloc = src.match(/relatedArticles:\n((?:\s+- "[^"]+"\n)+)/);
+  for (const [, cible] of bloc ? bloc[1].matchAll(/"([^"]+)"/g) : []) {
+    if (!slugsBlog.has(cible)) fail(`blog/${f} : relatedArticles cite « ${cible} », qui n'existe pas`);
+    citesEnConnexe.add(cible);
+  }
+}
+const liensEntrants = new Map([...slugsBlog].map((s) => [s, 0]));
+for (const s of slugsBlog) {
+  const html = readFileSync(resolve(dist, 'blog', s, 'index.html'), 'utf8');
+  const corps = (html.match(/<div class="prose[^"]*"[^>]*>([\s\S]*?)<\/article>/) ?? [, ''])[1];
+  for (const cible of new Set([...corps.matchAll(/href="\/blog\/([a-z0-9-]+)"/g)].map((m) => m[1]))) {
+    if (cible !== s && liensEntrants.has(cible)) liensEntrants.set(cible, liensEntrants.get(cible) + 1);
+  }
+}
+for (const [s, n] of liensEntrants) {
+  if (n === 0) warn(`blog/${s} : aucun lien entrant depuis le texte d'un autre article`);
+  if (!citesEnConnexe.has(s)) warn(`blog/${s} : cité dans aucun relatedArticles`);
+}
+
 /* Rapport */
 if (warnings.length) {
   console.log(`\n⚠ ${warnings.length} avertissement(s) :`);

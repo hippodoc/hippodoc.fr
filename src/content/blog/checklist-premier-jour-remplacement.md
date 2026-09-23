@@ -26,9 +26,10 @@ relatedArticles:
   - "maitrise-ton-logiciel-metier-en-30-min"
   - "checklist-ultime-medecin-remplacant"
   - "signer-contrat-remplacement"
+  - "inbox-zero-remplacant"
 ---
 
-Ça y est, ton [premier remplacement](/blog/realites-remplacement-medical) approche à grands pas ! Un mélange d'excitation et de stress ? C'est totalement normal ! Respire, voici LA checklist complète et facile à suivre pour être parfaitement prêt(e) le jour J.
+Ça y est, ton [premier remplacement](/blog/realites-remplacement-medical) approche à grands pas ! [Un mélange d'excitation et de stress](/blog/syndrome-imposteur-5-astuces) ? C'est totalement normal ! Respire, voici LA checklist complète et facile à suivre pour être parfaitement prêt(e) le jour J.
 
 ## 🔑 Accès & confort
 
@@ -42,14 +43,14 @@ relatedArticles:
 ✅ **Visites à domicile prévues ?** GPS chargé et adresses notées clairement. 📍\
 ✅ **Charge de travail intense ?** Pas de panique, discute avec le titulaire pour ajuster selon ton rythme. Ta responsabilité : ton rythme ! 󰩓\
 ✅ **Secrétaire présente ?** Coordonne-toi bien, c'est ta nouvelle BFF !\
-✅ **Seul(e) au cabinet ?** Prépare-toi à gérer accueil et appels.\
+✅ **Seul(e) au cabinet ?** Prépare-toi à [gérer accueil et appels](/blog/inbox-zero-remplacant).\
 ✅ **Procédures d'urgence :** Numéros et protocoles bien mémorisés.\
 ✅ **Numéros essentiels :** Cabinet, titulaire, urgences, tout noté clairement.\
 ✅ **Protocoles internes :** Tri des déchets médicaux, entretien du matériel, tout doit être clair !
 
 ## 💻 Logiciels & tech maîtrisés
 
-✅ **Logiciel médical :** Familiarise-toi avec l'outil utilisé (cf : fiche pratique #6).\
+✅ **Logiciel médical :** Familiarise-toi avec l'outil utilisé (cf : [fiche pratique #6](/blog/maitrise-ton-logiciel-metier-en-30-min)).\
 ✅ **Identifiants prêts :** Ordinateur, AmeliPro, messagerie sécurisée.\
 ✅ **Contacts techniques :** Assistance logicielle et titulaire sous la main, pour éviter tout stress technique. 🛠
 

@@ -30,7 +30,7 @@ relatedArticles:
 ✅ **⏰ Arrive en avance** : Accorde-toi du temps pour découvrir le cabinet et être prêt(e) à temps.\
 ✅ **💻 Connecte-toi rapidement** : Vérifie tes accès aux outils numériques essentiels (logiciel médical, messagerie sécurisée, AmeliPro).\
 ✅ **🤝 Présentation conviviale** : Échange quelques mots chaleureux avec l'équipe du cabinet (secrétaires, infirmiers, confrères).\
-💡 **Astuce gagnante** : Dès ton arrivée, ouvre ton agenda, consulte ta boîte mail professionnelle, démarre le logiciel médical et prépare les outils numériques clés (cf. fiche pratique #7).
+💡 **Astuce gagnante** : Dès ton arrivée, ouvre ton agenda, consulte ta boîte mail professionnelle, démarre le logiciel médical et prépare les outils numériques clés (cf. [fiche pratique #7](/blog/outils-numeriques-indispensables-cabinet)).
 
 ## 🩺 Pendant les consultations
 
@@ -40,12 +40,12 @@ relatedArticles:
 ✅ **🔄 Continuité irréprochable des soins** : Respecte scrupuleusement les habitudes du cabinet et note minutieusement toute modification dans les dossiers médicaux.\
 ✅ **🧾 Facturation efficace** : Assure-toi de bien connaître les cotations et tarifs habituels pour éviter tout malentendu.\
 ✅ **📞 Contacts indispensables** : Garde à portée de main les numéros de téléphone du médecin titulaire ou d'un confrère pour une assistance rapide en cas de doute.\
-✅ **💪 Aie confiance en toi !** : Reste calme, prends ton temps, et n'hésite jamais à demander conseil si besoin.
+✅ **💪 [Aie confiance en toi](/blog/syndrome-imposteur-5-astuces) !** : Reste calme, prends ton temps, et n'hésite jamais à demander conseil si besoin.
 
 ## 📋 Après ton remplacement
 
 ✅ **Compte-rendu détaillé** : Prépare un document clair pour transmettre les informations importantes (cas complexes, examens à suivre, urgences traitées).\
-✅ **Clôture administrative impeccable** : Note rigoureusement les revenus quotidiens (espèces, CB, chèques, virements). Cela facilitera ta [rétrocession](/blog/salaires-medecins-remplacants) et préviendra tout litige éventuel. Utilise Hippodoc pour simplifier ces [démarches administratives](/blog/checklist-administrative-medecin-remplacant) !\
+✅ **Clôture administrative impeccable** : Note rigoureusement les revenus quotidiens (espèces, CB, chèques, virements). Cela facilitera ta [rétrocession](/blog/retrocession-honoraires-medecin-remplacant) et préviendra tout litige éventuel. Utilise Hippodoc pour simplifier ces [démarches administratives](/blog/checklist-administrative-medecin-remplacant) !\
 ✅ **Échange chaleureux de fin** : Prends le temps d'un bref entretien avec le titulaire à la fin de ton remplacement pour renforcer votre relation professionnelle et envisager sereinement de futures collaborations.
 
 ## ❌ Erreurs à absolument éviter

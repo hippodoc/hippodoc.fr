@@ -77,17 +77,17 @@ Autre zone grise : le timing.
 
 Côté impôt, les revenus indépendants donnent lieu à des acomptes, prélevés en principe le **15 de chaque mois**, avec une option trimestrielle aux 15 février, 15 mai, 15 août et 15 novembre. Si tes revenus changent, tu peux signaler à tout moment une variation dans le service "Gérer mon prélèvement à la source", et le taux comme les acomptes sont recalculés immédiatement.
 
-Côté social, les cotisations de l'indépendant sont **provisionnelles puis régularisées** après la déclaration de revenus. C'est une des raisons majeures pour lesquelles beaucoup de médecins surestiment ce qu'il leur "reste" quand ils regardent simplement leurs encaissements.
+Côté social, les cotisations de l'indépendant sont **[provisionnelles puis régularisées](/blog/effet-ciseaux-regularisation-urssaf-medecin)** après la déclaration de revenus. C'est une des raisons majeures pour lesquelles beaucoup de médecins surestiment ce qu'il leur "reste" quand ils regardent simplement leurs encaissements.
 
 ## ⚠️ Les oublis qui coûtent cher
 
 :::warning
-La **CFE**, par exemple, est due par toute personne exerçant une activité professionnelle non salariée, sauf exonération. L'entreprise en est exonérée l'année de sa création, puis bénéficie d'une réduction de moitié de sa base d'imposition l'année suivante si la déclaration initiale est faite. Là encore, ce n'est pas spectaculaire sur Instagram, mais dans la vraie vie, ça change le net.
+La **[CFE](/blog/cfe-medecin-remplacant)**, par exemple, est due par toute personne exerçant une activité professionnelle non salariée, sauf exonération. L'entreprise en est exonérée l'année de sa création, puis bénéficie d'une réduction de moitié de sa base d'imposition l'année suivante si la déclaration initiale est faite. Là encore, ce n'est pas spectaculaire sur Instagram, mais dans la vraie vie, ça change le net.
 :::
 
 ## 🌴 Profils spécifiques : DOM et RSPM
 
-En DOM, des abattements spécifiques d'impôt existent : **30 % plafonnés à 2 450 €** pour la Guadeloupe, la Martinique et La Réunion, et **40 % plafonnés à 4 050 €** pour la Guyane et Mayotte, sous les conditions prévues par l'administration fiscale.
+En DOM, [des abattements spécifiques d'impôt](/blog/medecin-outre-mer-avantages-fiscaux) existent : **30 % plafonnés à 2 450 €** pour la Guadeloupe, la Martinique et La Réunion, et **40 % plafonnés à 4 050 €** pour la Guyane et Mayotte, sous les conditions prévues par l'administration fiscale.
 
 Pour certains remplaçants, le **RSPM** existe aussi : l'[Urssaf](/blog/tout-comprendre-urssaf) devient alors l'interlocuteur unique pour déclarer l'activité, les honoraires et payer les cotisations ; ce dispositif est réservé aux remplacements sans autre activité libérale, avec un **seuil d'entrée de 19 000 € d'honoraires par année civile** ; au-delà et jusqu'à 38 000 €, le taux passe à 21,2 % sur la part qui dépasse, et tu sors du dispositif après deux dépassements consécutifs de 19 000 € ou un seul de 38 000 €.
 
@@ -111,7 +111,7 @@ Et surtout, son **super-net**, c'est-à-dire ce qu'il garde vraiment
 
 ## 🦛 Le simulateur SuperNet Hippodoc
 
-C'est précisément pour ça qu'on a décidé d'ouvrir le **simulateur SuperNet Hippodoc** au public.
+C'est précisément pour ça qu'on a décidé d'ouvrir le **[simulateur SuperNet Hippodoc](/simulateur)** au public.
 
 Tu renseignes ta situation réelle. Tu vois ce que tu paies. Tu vois ce que tu gardes. Et tu vois ce qui est le plus pertinent pour toi, entre micro et réel.
 

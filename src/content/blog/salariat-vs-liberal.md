@@ -25,6 +25,7 @@ relatedArticles:
   - "choix-mode-exercice"
   - "remplacement-salarie-guide-complet"
   - "salaires-medecins-remplacants"
+  - "conge-maternite-paternite"
 ---
 
 T'es indécis entre le salariat et le libéral ? 🤯 Voici la vraie diff' entre les deux statuts, sans promesses en l'air. 👉 À toi de choisir ce qui **TE** correspond 👇
@@ -41,8 +42,8 @@ T'es indécis entre le salariat et le libéral ? 🤯 Voici la vraie diff' entre
 ## LIBÉRAL = LIBERTÉ & RESPONSABILITÉS
 
 **📍 Où ?** Cabinet, maison de santé, régulation, centres…\
-**Tu choisis** ton planning, ton rythme\
-**💸 Paiement à l'acte** → Le médecin remplacé te reverse un pourcentage ([rétrocession](/blog/salaires-medecins-remplacants))\
+**Tu choisis** [ton planning, ton rythme](/blog/medecin-remplacant-travailler-6-mois-par-an)\
+**💸 Paiement à l'acte** → Le médecin remplacé te reverse un pourcentage ([rétrocession](/blog/retrocession-honoraires-medecin-remplacant))\
 **📂 Tu gères** : [URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf), impôts, compta, etc.\
 **🛑 Pas de congés payés ni chômage automatique** (prévoyance recommandée)
 

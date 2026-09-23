@@ -26,6 +26,8 @@ relatedArticles:
   - "checklist-administrative-medecin-remplacant"
   - "obtenir-sa-licence-de-remplacement"
   - "trouver-facilement-tes-remplacements-medicaux"
+  - "retrocession-honoraires-medecin-remplacant"
+  - "remplacement-regulier-requalification"
 ---
 
 Tu as enfin décroché le remplacement médical de tes rêves ? Génial ! Mais avant d'enfiler ta blouse blanche, il est temps de sécuriser ton aventure avec un contrat clair et précis. Voici LA checklist indispensable pour signer en toute sérénité. 🚀😉
@@ -39,7 +41,7 @@ Tu as enfin décroché le remplacement médical de tes rêves ? Génial ! Mais a
 
 ## 💰 La rétrocession financière
 
-✅ **Pourcentage clair :** Généralement entre 70% et 90% selon la spécialité et les conditions du remplacement — voir [comment négocier ta rétrocession](/blog/retrocession-honoraires-medecin-remplacant).\
+✅ **Pourcentage clair :** Généralement entre 70% et 90% en médecine générale, plutôt 60 à 70% avec un plateau technique — voir [comment négocier ta rétrocession](/blog/retrocession-honoraires-medecin-remplacant).\
 ✅ **Modalités précises de paiement :** Date et moyen (par exemple, virement bancaire en fin de mois) clairement spécifiés. 💸\
 ✅ **Indemnisation des frais éventuels :** Transport, logement, précisés pour éviter toute surprise !
 
@@ -62,7 +64,7 @@ Depuis le 30 juillet 2026, le code de déontologie ne prévoit plus de règle au
 ## 🚫 Pièges fréquents à éviter absolument
 
 ❌ Ne signe jamais un contrat oral. Tout doit être écrit !\
-🚫 Refuse les clauses financières floues comme « [rétrocession](/blog/salaires-medecins-remplacants) à définir ultérieurement ».\
+🚫 Refuse les clauses financières floues comme « rétrocession à définir ultérieurement ».\
 ⚠️ Évite les renouvellements automatiques prolongés.\
 ❗ Vérifie qu'il n'y ait aucune clause abusive limitant tes congés ou exigeant des obligations disproportionnées sur l'activité du remplacé.
 
@@ -78,7 +80,7 @@ Depuis le 30 juillet 2026, le code de déontologie ne prévoit plus de règle au
 :::tip
 Utilise les contrats officiels du CNOM directement sur Hippodoc : tu peux les signer électroniquement, les enregistrer facilement pour les conserver et les envoyer par mail en quelques clics ! 💻✨
 
-👉 [Découvre Hippodoc ici !](/)
+👉 [Découvre Hippodoc](/) !
 :::
 
 Tu es désormais armé(e) pour signer ton contrat en toute confiance et commencer ton remplacement dans les meilleures conditions possibles !

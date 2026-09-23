@@ -35,7 +35,7 @@ Entre ton **chiffre d'affaires (CA)** et ce qui arrive vraiment dans ta poche, d
 **[URSSAF](/blog/tout-comprendre-urssaf)** = ta santé + contributions obligatoires\
 **[CARMF](/blog/tout-comprendre-carmf)** = ta retraite + ta prévoyance
 
-💡 **< 38k€ de CA** → tu es au **régime simplifié [RSPM](/blog/rspm-exemples-concrets)** (cf. fiche précédente)
+💡 **< 38k€ de CA** → tu es au **régime simplifié [RSPM](/blog/rspm-exemples-concrets)**
 
 ## 2️⃣ L'impôt sur le revenu : via le micro-BNC (< 83,6k€)
 
@@ -106,7 +106,7 @@ Le [plafond de 83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits
 ## ⚠️ Attention
 
 :::warning
-**Si tu dépasses 83 600 € de CA sur 2 années consécutives** → sortie du [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel), passage au **régime réel** (cf. prochaine fiche)
+**Si tu dépasses 83 600 € de CA sur 2 années consécutives** → sortie du [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel), passage au **[régime réel](/blog/remplir-declaration-2035)**
 :::
 
 ## 🚀 Le Tips Hippodoc

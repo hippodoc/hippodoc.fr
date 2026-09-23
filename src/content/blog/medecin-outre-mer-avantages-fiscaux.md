@@ -26,6 +26,9 @@ relatedArticles:
   - "tout-comprendre-urssaf"
   - "tout-comprendre-carmf"
   - "salariat-vs-liberal"
+  - "zones-frr-exoneration-impot-medecin"
+  - "pdsa-exoneration-gardes-regulees"
+  - "simulateur-super-net-combien-reste"
 slides:
   - src: "/blog/medecin-outre-mer/slide-01.png"
     alt: "Fiche fiscalité DROM : médecin en outre-mer, les vrais avantages — Hippodoc"
@@ -141,7 +144,7 @@ Si tu es **salarié privé**, seul l'abattement IR DOM joue pour toi. Si tu es *
 ## 🎯 En pratique : que faire selon ton profil ?
 
 **Remplaçant en DROM** : abattement IR + régime social ultramarin pendant les 24 premiers mois à compter de la **création d'activité** (pas de ton arrivée dans le DROM).\
-**Primo-installé libéral Guadeloupe / Martinique / Guyane / Réunion** : socle complet (abattement IR + régime social + aides ZIP si classé) + LODEOM dès que tu emploies. **Pas de ZFANG.**\
+**Primo-installé libéral Guadeloupe / Martinique / Guyane / Réunion** : socle complet (abattement IR + régime social + [aides ZIP si classé](/blog/zones-frr-exoneration-impot-medecin)) + LODEOM dès que tu emploies. **Pas de ZFANG.**\
 **Primo-installé libéral à Mayotte** : tout ça + **zone franche 100 % pendant 5 ans**. Mathématiquement le **meilleur deal fiscal de France** pour un médecin libéral aujourd'hui.
 
 ## 🚀 Passe des généralités à ton cas concret
@@ -149,7 +152,7 @@ Si tu es **salarié privé**, seul l'abattement IR DOM joue pour toi. Si tu es *
 :::tip
 Le problème avec la fiscalité DROM, c'est qu'elle est **cumulative** : abattement IR + régime social + LODEOM + aides ZIP, tout se combine. Et chaque euro d'avantage dépend de ton statut, ton chiffre d'affaires et ton lieu d'exercice exact.
 
-Sur **hippodoc.fr**, tu peux simuler ton **vrai revenu net** selon ton mode d'exercice et ton territoire, et tester plusieurs scénarios avant de signer un contrat ou de déposer ton dossier d'installation. Ça vaut largement le quart d'heure passé à faire tourner les chiffres.
+Sur **hippodoc.fr**, tu peux [simuler ton **vrai revenu net**](/simulateur) selon ton mode d'exercice et ton territoire, et tester plusieurs scénarios avant de signer un contrat ou de déposer ton dossier d'installation. Ça vaut largement le quart d'heure passé à faire tourner les chiffres.
 :::
 
 ## ⚖️ Mention légale
