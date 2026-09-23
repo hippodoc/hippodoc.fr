@@ -2,7 +2,7 @@
 title: "Médecin en outre-mer : avantages fiscaux"
 description: "Abattement IR, régime ultramarin, LODEOM, ZFANG, zone franche Mayotte : le vrai mode d'emploi fiscal du médecin en DROM, 2026."
 pubDate: "2026-04-18"
-updatedDate: "2026-04-21"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -20,7 +20,7 @@ faq:
   - question: "Quels sont les 2 taux d'abattement IR pour les médecins en DROM ?"
     answer: "L'abattement d'impôt sur le revenu DOM est de **30 % (plafonné à 2 450 €)** en Guadeloupe, Martinique et La Réunion, et de **40 % (plafonné à 4 050 €)** en Guyane et à Mayotte. Ce n'est pas une exonération du bénéfice du cabinet, mais une réduction de l'impôt personnel final, applicable tant que le domicile fiscal reste dans le DROM."
   - question: "Pendant combien de temps un médecin indépendant est-il exonéré de cotisations sociales en outre-mer ?"
-    answer: "En Guadeloupe, Guyane, Martinique et La Réunion, l'article L. 751-1 du Code de la sécurité sociale prévoit **24 mois d'exonération totale** (sous seuils de revenu, ~52 866 € en 2026), puis **75 % d'exonération jusqu'à la fin de la 3ᵉ année civile**, puis **50 % à partir de la 4ᵉ année**. À Mayotte, le dispositif est différent (article 28-8 de l'ordonnance de 1996) avec 24 mois d'exonération à la création. Attention : la **CARMF complémentaire reste due**."
+    answer: "En Guadeloupe, Guyane, Martinique et La Réunion, l'article L. 756-5 du Code de la sécurité sociale prévoit **24 mois d'exonération totale** (sous seuils de revenu, ~52 866 € en 2026), puis un **abattement de 75 % jusqu'à la fin de la 3ᵉ année civile**, puis de **50 % à partir de la 4ᵉ année**. À Mayotte, le dispositif est différent (article 28-8 de l'ordonnance de 1996) avec 24 mois d'exonération à la création. Attention : pour un médecin, l'exonération ne porte que sur l'assurance maladie, les indemnités journalières, les allocations familiales et la CSG-CRDS : **toutes les cotisations CARMF restent dues** (retraite de base, complémentaire, invalidité-décès)."
   - question: "Pourquoi Mayotte est-elle devenue le territoire le plus avantageux fiscalement depuis 2025 ?"
     answer: "La **loi du 11 août 2025** de programmation pour la refondation de Mayotte a créé une **zone franche globale temporaire** qui s'applique à tous les secteurs, y compris BNC et professions libérales : **abattement 100 % sur les bénéfices pendant 5 ans** (impositions 2025-2029), exonération de CFE et taxe foncière bâtie 2026-2030, plafond 300 000 € par 12 mois. Cumulée au régime social local (24 mois d'exonération) et au régime employeur transitoire, c'est **le meilleur cadre fiscal d'installation libérale en France** aujourd'hui."
 relatedArticles:
@@ -49,7 +49,7 @@ slides:
 **L'essentiel**
 
 - L'abattement d'IR DOM est de **30 % (plafonné à 2 450 €)** en Guadeloupe/Martinique/Réunion, et de **40 % (plafonné à 4 050 €)** en Guyane et à Mayotte — une réduction d'impôt, pas une exonération du bénéfice du cabinet.
-- Le régime social ultramarin exonère les indépendants à **100 %** pendant **24 mois** (sous ~**52 866 €** de revenu annualisé en 2026), puis **75 %** jusqu'à fin de 3ᵉ année, puis **50 %** à partir de la 4ᵉ ; la **CARMF complémentaire reste due**.
+- Le régime social ultramarin exonère les indépendants à **100 %** pendant **24 mois** (sous ~**52 866 €** de revenu annualisé en 2026), puis applique un abattement de **75 %** (3ᵉ année) puis de **50 %** (à partir de la 4ᵉ) sur l'assiette ; pour un médecin, **toutes les cotisations CARMF restent dues**.
 - La **LODEOM** exonère totalement les charges patronales jusqu'à **1,3 SMIC annuel**, avec extinction à **2,2 SMIC**.
 - La **ZFANG** exclut les activités libérales et BNC dans les DROM historiques — c'est un faux ami pour un cabinet médical classique.
 - Depuis la loi du **11 août 2025**, **Mayotte** bénéficie d'une zone franche globale avec **abattement de 100 % sur les bénéfices pendant 5 ans** (2025-2029), plafonnée à **300 000 €** par 12 mois, ce qui en fait le territoire fiscal le plus favorable de France pour un médecin libéral.
@@ -80,17 +80,17 @@ Important : ce n'est **pas une exonération du bénéfice de ton cabinet**. C'es
 
 ## 💼 2. Le régime social ultramarin des indépendants
 
-C'est le levier **le plus mal connu et le plus puissant en début d'activité**. L'article L. 751-1 du Code de la Sécurité sociale prévoit, pour les travailleurs indépendants non agricoles de Guadeloupe, Guyane, Martinique et La Réunion :
+C'est le levier **le plus mal connu et le plus puissant en début d'activité**. L'article L. 756-5 du Code de la Sécurité sociale prévoit, pour les travailleurs indépendants non agricoles de Guadeloupe, Guyane, Martinique et La Réunion :
 
-**24 premiers mois** : exonération des cotisations sociales couvertes par le régime, sous condition que ton revenu annualisé reste sous certains seuils (en 2026, avec un PASS à 48 060 €, la borne principale est autour de **52 866 €**, soit 110 % du PASS).\
-**Au-delà et jusqu'à la fin de la 3ᵉ année civile** : exonération de **75 %**.\
-**À partir de la 4ᵉ année** : exonération de **50 %**, sous seuils.\
+**24 premiers mois** : exonération des cotisations maladie-maternité, indemnités journalières, allocations familiales et CSG-CRDS, sous condition que ton revenu annualisé reste sous certains seuils (en 2026, avec un PASS à 48 060 €, la borne principale est autour de **52 866 €**, soit 110 % du PASS).\
+**Au-delà et jusqu'à la fin de la 3ᵉ année civile** : abattement de **75 %** sur le revenu retenu pour ces cotisations (dans la limite du PASS, pour un revenu sous 150 % du PASS).\
+**À partir de la 4ᵉ année** : abattement de **50 %**, sous les mêmes seuils.\
 **À Mayotte**, le dispositif n'est pas le même : c'est l'article 28-8 de l'ordonnance du 20 décembre 1996 qui s'applique, avec **24 mois d'exonération** à la création.
 
 ### Attention : ce n'est pas « zéro charges »
 
 :::warning
-Ce n'est **pas « zéro [charges sociales](/blog/cotisations-sociales-vs-impots) »** au sens absolu. Les **cotisations de retraite complémentaire [CARMF](/blog/tout-comprendre-carmf)**, ainsi que certaines cotisations professionnelles, restent à ta charge. Si tu veux simuler ton vrai « [super-net](/blog/simulateur-super-net-combien-reste) », il faut intégrer ça dès le départ.
+Ce n'est **pas « zéro [charges sociales](/blog/cotisations-sociales-vs-impots) »** au sens absolu. Pour un médecin, profession libérale réglementée, **toutes les cotisations [CARMF](/blog/tout-comprendre-carmf)** restent à ta charge : retraite de base, complémentaire et invalidité-décès, ainsi que la contribution à la formation professionnelle. Si tu veux simuler ton vrai « [super-net](/blog/simulateur-super-net-combien-reste) », il faut intégrer ça dès le départ.
 :::
 
 ## 👥 3. LODEOM : le levier oublié pour les cabinets qui emploient
@@ -140,7 +140,7 @@ Ces aides ne sont pas propres aux DROM, mais **la plupart des DROM sont classés
 
 ## 👨‍⚕️ 7. Médecin salarié ou hospitalier ?
 
-Si tu es **salarié privé**, seul l'abattement IR DOM joue pour toi. Si tu es **hospitalier public**, tu cumules l'abattement IR avec la **majoration de traitement** : **+25 %** en Guadeloupe, Guyane, Martinique, Réunion, et **+40 %** à Mayotte. Pas une exonération fiscale, mais une majoration brute de ta rémunération qui, en net, pèse lourd.
+Si tu es **salarié privé**, seul l'abattement IR DOM joue pour toi. Si tu es **hospitalier public**, tu cumules l'abattement IR avec l'**indemnité spéciale** des personnels médicaux hospitaliers : **+40 % des émoluments** en Guadeloupe, Guyane, Martinique, à La Réunion et à Mayotte depuis 2023. Pas une exonération fiscale, mais une majoration brute de ta rémunération qui, en net, pèse lourd.
 
 ## 🎯 En pratique : que faire selon ton profil ?
 

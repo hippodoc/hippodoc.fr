@@ -1,8 +1,8 @@
 ---
 title: "Licence de remplacement interne : dossier et délais"
-description: "Conditions, pièces du dossier, envoi au CDOM, délai de 2 à 4 semaines, validité jusqu'au 15 novembre et renouvellement : la démarche complète."
+description: "Conditions, pièces du dossier, envoi au CDOM, délai de 2 à 4 semaines, validité annuelle et renouvellement : la démarche complète."
 pubDate: "2025-10-06"
-updatedDate: "2026-08-23"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -22,9 +22,9 @@ faq:
   - question: "Combien de semestres faut-il avoir validés pour remplacer ?"
     answer: "Le nombre varie **selon ton DES** : il est fixé par arrêté, spécialité par spécialité. Vérifie celui qui s'applique au tien avant de monter ton dossier — c'est la première cause de dossier retoqué."
   - question: "Combien de temps est valable la licence de remplacement ?"
-    answer: "La licence est valable **1 an**, jusqu'au 15 novembre de l'année en cours. Elle est renouvelable chaque année. Mets un rappel début novembre pour ne pas oublier !"
+    answer: "La licence est valable **1 an**, pour l'année universitaire : elle expire à une date fixée par ton conseil départemental, le plus souvent le 15 novembre, parfois le 30 novembre. Elle est renouvelable chaque année. Vérifie la date inscrite sur ta licence et mets un rappel un mois avant !"
   - question: "Comment renouveler sa licence de remplacement ?"
-    answer: "Le renouvellement se demande auprès du **même conseil départemental**, avant l'échéance du 15 novembre. Les pièces attendues sont fixées par lui : contacte-le début novembre pour éviter toute rupture entre deux licences."
+    answer: "Le renouvellement se demande auprès du **même conseil départemental**, avant l'échéance inscrite sur ta licence. Les pièces attendues sont fixées par lui : contacte-le un mois avant pour éviter toute rupture entre deux licences."
   - question: "Quelle est la différence entre licence et autorisation de remplacement ?"
     answer: "La **licence** atteste que tu remplis les conditions légales pour remplacer. Ce n'est PAS une autorisation directe : tu dois obligatoirement établir un **contrat de remplacement** avec chaque médecin remplacé."
   - question: "Puis-je remplacer avant d'avoir ma thèse ?"
@@ -43,7 +43,7 @@ relatedArticles:
 - Conditions : deuxième cycle **intégralement validé** + inscription en troisième cycle avec un nombre de semestres validés **qui dépend de ton DES**.
 - Cinq pièces : formulaire du CDOM, 2 photos, certificat de scolarité, pièce d'identité, attestation universitaire.
 - Délai courant : **2 à 4 semaines**, variable selon les départements. Anticipe d'un mois.
-- Validité : **1 an, jusqu'au 15 novembre**, renouvelable pendant ta formation + 3 ans pour soutenir ta thèse.
+- Validité : **1 an** (jusqu'au 15 novembre dans la plupart des départements, fin novembre dans d'autres), renouvelable pendant ta formation + 3 ans pour soutenir ta thèse.
 - La licence n'est **pas** une autorisation de remplacer : le médecin remplacé doit demander l'autorisation de son côté, et un contrat reste obligatoire.
 :::
 
@@ -80,13 +80,13 @@ Conseil pratique : Prévois large ! Anticipe ta demande et n'hésite pas à cont
 
 ## Quelle est la durée de validité de ta licence ?
 
-La licence de remplacement est valable pour une durée d'un an, jusqu'au 15 novembre de l'année en cours. Elle est renouvelable chaque année, tant que tu n'as pas dépassé la durée normale de ta formation augmentée de 3 années supplémentaires dédiées à la soutenance de ta thèse. Je te conseille de te mettre un rappel dans ton agenda début novembre pour te rappeler de demander le renouvellement : on l'oublie très vite !
+La licence de remplacement est valable pour une durée d'un an, pour l'année universitaire. Sa date d'échéance est fixée par le conseil départemental qui la délivre : le 15 novembre dans de nombreux départements, le 30 novembre dans d'autres, comme le Rhône. Elle figure sur ta licence. Elle est renouvelable chaque année, tant que tu n'as pas dépassé la durée normale de ta formation augmentée de 3 années supplémentaires dédiées à la soutenance de ta thèse. Je te conseille de te mettre un rappel dans ton agenda un mois avant cette date pour te rappeler de demander le renouvellement : on l'oublie très vite !
 
 ## Comment renouveler ta licence de remplacement ?
 
-Le renouvellement se demande auprès du **même conseil départemental** que la première fois, avant l'échéance du 15 novembre. Les pièces attendues et la procédure sont fixées par lui : un appel ou un mail début novembre suffit à savoir quoi préparer.
+Le renouvellement se demande auprès du **même conseil départemental** que la première fois, avant l'échéance inscrite sur ta licence. Les pièces attendues et la procédure sont fixées par lui : un appel ou un mail un mois avant suffit à savoir quoi préparer.
 
-L'enjeu est concret. Une licence expirée, c'est un remplacement qui ne peut pas être signé — et un cabinet qui appellera quelqu'un d'autre. Le 15 novembre tombe en plein semestre, au pire moment pour y penser tout seul.
+L'enjeu est concret. Une licence expirée, c'est un remplacement qui ne peut pas être signé — et un cabinet qui appellera quelqu'un d'autre. L'échéance tombe en plein semestre, au pire moment pour y penser tout seul.
 
 ## Licence ou autorisation de remplacement : la différence qui bloque
 

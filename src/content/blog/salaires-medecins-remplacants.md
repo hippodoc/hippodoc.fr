@@ -2,7 +2,7 @@
 title: "Salaires des médecins remplaçants 2025"
 description: "Fourchettes de rémunération en intérim, libéral et salariat selon les spécialités. Données indicatives pour bien te projeter."
 pubDate: "2025-11-28T12:00:00"
-updatedDate: "2026-09-20"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -40,6 +40,8 @@ relatedArticles:
 **Consultations spécialisées à actes techniques légers** (dermato, gynéco médicale, cardio non-interventionnelle) → Journée : **500–1 000+ €**\
 **Plateau technique / bloc opératoire** (gynéco-obs, ophtalmo, radiologie, anesthésie, chirurgie toutes spés, cardio interventionnelle) → Garde 24 h : **1 100–2 500+ €**\
 **Spécialités hospitalières de garde** (urgences, pédiatrie, gériatrie, pneumo, neuro, néphro, MPR…) → Garde 24 h : **1 100–2 000+ €**
+
+⚠️ **À l'hôpital public, l'intérim est plafonné** : **2 681 € HT pour 24 h** de mission d'un médecin (arrêté du 5 septembre 2025). Ce plafond couvre le coût total pour l'établissement — ton salaire brut, tes frais et la marge de l'agence. Les nets du haut de ces fourchettes ne se rencontrent donc pas à l'hôpital public. Le Conseil d'État a annulé partiellement cet arrêté le 15 juillet 2026 et un nouveau texte est attendu. Et depuis le 1er décembre 2025, une première mission d'intérim exige **deux ans d'exercice** hors intérim.
 
 ## 🏥 LIBÉRAL — Cabinet / Clinique (nets mensuels)
 
