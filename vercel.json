@@ -9,6 +9,10 @@
       "permanent": true
     },
 
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/:path*/index.html", "destination": "/:path*", "permanent": true },
+    { "source": "/blog/serie", "destination": "/blog", "permanent": true },
+
     { "source": "/landing", "destination": "/", "permanent": true },
     { "source": "/hippo-wall-street", "destination": "/transmissions", "permanent": true },
     { "source": "/instagram", "destination": "/essai", "permanent": true },
@@ -49,6 +53,15 @@
   ],
 
   "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
     {
       "source": "/_astro/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]

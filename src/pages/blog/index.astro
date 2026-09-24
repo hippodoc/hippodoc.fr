@@ -34,6 +34,13 @@ const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
    srcset suffisent (340 px × densité 2 ≈ 720). */
 const featuredCover = await resolveCover(featured.data.cover, 720);
 const featuredCoverSmall = await resolveCover(featured.data.cover, 480);
+// Descripteurs `w` = largeurs RÉELLES des fichiers (une cover source de 450 px
+// n'a qu'une variante utile).
+const featuredSrcset = featuredCover
+  ? featuredCoverSmall && featuredCoverSmall.width < featuredCover.width
+    ? `${featuredCoverSmall.src} ${featuredCoverSmall.width}w, ${featuredCover.src} ${featuredCover.width}w`
+    : `${featuredCover.src} ${featuredCover.width}w`
+  : undefined;
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -67,6 +74,12 @@ const blogSchema = {
 ---
 
 <BaseLayout title={title} description={description} path="/blog" jsonLd={[blogSchema]}>
+  {/* Desktop : la cover « À la une » est l'élément LCP (colonne gauche du premier
+      écran) mais reste en lazy pour le mobile, où elle est sous la ligne de
+      flottaison. On la précharge donc à partir de 768 px seulement (§ 9.bi). */}
+  {featuredSrcset && (
+    <link slot="head" rel="preload" as="image" media="(min-width: 768px)" imagesrcset={featuredSrcset} imagesizes="340px" fetchpriority="high" />
+  )}
   <Header />
   <main class="container px-4 py-10" data-blog-total={posts.length}>
     {/* En-tête resserré : la version centrée occupait 492 px avant la première
@@ -146,7 +159,7 @@ const blogSchema = {
       {featuredCover && (
         <img
           src={featuredCover.src}
-          srcset={featuredCoverSmall ? `${featuredCoverSmall.src} 480w, ${featuredCover.src} 720w` : undefined}
+          srcset={featuredSrcset}
           sizes="(min-width: 768px) 340px, 100vw"
           alt=""
           width={featuredCover.width}

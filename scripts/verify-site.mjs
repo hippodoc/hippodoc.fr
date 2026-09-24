@@ -600,7 +600,9 @@ for (const [, loc, lastmod] of entrees) {
    plutôt qu'importée, pour que ce script reste sans dépendance de compilation. */
 const srcLastmod = readFileSync(resolve(root, 'src/lib/pages-lastmod.ts'), 'utf8');
 const statiquesAttendues = new Map(
-  [...srcLastmod.matchAll(/'(\/[a-z-]+)':\s*([A-Z_]+|'[\d-]{10}')/g)].map(([, chemin, val]) => {
+  // Chemins à chiffres et à « / » internes compris (§ 9.bi) : l'ancien motif
+  // [a-z-]+ sautait en silence les trois sous-pages du guide.
+  [...srcLastmod.matchAll(/'(\/[a-z0-9\/-]+)':\s*([A-Z_]+|'[\d-]{10}')/g)].map(([, chemin, val]) => {
     const litteral = val.match(/'([\d-]{10})'/);
     if (litteral) return [chemin, litteral[1]];
     const constante = srcLastmod.match(new RegExp(`${val}\\s*=\\s*'([\\d-]{10})'`))
@@ -610,7 +612,8 @@ const statiquesAttendues = new Map(
 );
 for (const [chemin, attendu] of statiquesAttendues) {
   if (!attendu) { fail(`pages-lastmod.ts : date illisible pour ${chemin}`); continue; }
-  const entree = entrees.find(([, loc]) => loc.endsWith(chemin));
+  // Égalité exacte : endsWith('/guide-declarations') ne distinguait pas le hub.
+  const entree = entrees.find(([, loc]) => loc === `${SITE}${chemin}`);
   if (!entree) { fail(`sitemap : ${chemin} devrait porter un lastmod (${attendu}) et n'en a pas`); continue; }
   lastmodVerifies++;
   if (entree[2] !== attendu) {
@@ -654,6 +657,76 @@ for (const s of slugsBlog) {
 for (const [s, n] of liensEntrants) {
   if (n === 0) warn(`blog/${s} : aucun lien entrant depuis le texte d'un autre article`);
   if (!citesEnConnexe.has(s)) warn(`blog/${s} : cité dans aucun relatedArticles`);
+}
+
+
+/* 7. Garde-fous SEO techniques (MIGRATION.md § 9.bi) — angles morts relevés par
+   l'audit du 21 septembre 2026, tous passés au vert jusque-là. */
+const { default: sharp } = await import('sharp');
+const lireHtml = (url) => {
+  const chemin = url.replace(SITE, '').replace(/\/$/, '');
+  const f = chemin ? resolve(dist, `${chemin.slice(1)}/index.html`) : resolve(dist, 'index.html');
+  return existsSync(f) ? readFileSync(f, 'utf8') : '';
+};
+const ogVues = new Map();
+for (const url of urls) {
+  const html = lireHtml(url);
+  if (!html) continue;
+  // (a) une page du sitemap ne doit jamais être en noindex
+  if (/<meta name="robots"[^>]+noindex/.test(html)) fail(`${url} : dans le sitemap mais en noindex`);
+  // (b) liens internes à slash final (un 308 en prod) et liens http:// non sécurisés
+  for (const [, href] of html.matchAll(/href="(\/[^"#?]+\/)(?:[#?][^"]*)?"/g)) fail(`${url} : lien interne à slash final ${href}`);
+  for (const [, href] of html.matchAll(/href="(http:\/\/[^"]+)"/g)) fail(`${url} : lien non sécurisé ${href}`);
+  // (c) titre : contrat < 60 caractères (balise complète, suffixe de marque inclus)
+  const titre = (html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '').replace(/&amp;/g, '&').replace(/&#39;/g, "'");
+  if (titre.length > 60) warn(`${url} : <title> de ${titre.length} caractères (> 60)`);
+  // (d) image de partage : le fichier existe et ses dimensions sont celles déclarées
+  const og = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+  const ogL = Number(html.match(/<meta property="og:image:width" content="(\d+)"/)?.[1]);
+  const ogH = Number(html.match(/<meta property="og:image:height" content="(\d+)"/)?.[1]);
+  if (og?.startsWith(SITE)) {
+    const fichier = resolve(dist, decodeURIComponent(new URL(og).pathname).slice(1));
+    if (!existsSync(fichier)) { fail(`${url} : og:image introuvable dans dist (${og})`); continue; }
+    if (!ogVues.has(fichier)) ogVues.set(fichier, await sharp(fichier).metadata());
+    const { width, height } = ogVues.get(fichier);
+    if (width !== ogL || height !== ogH) {
+      fail(`${url} : og:image déclarée ${ogL}×${ogH}, fichier réel ${width}×${height}`);
+    }
+  }
+}
+// (e) pubDate / updatedDate avec heure mais sans fuseau : interprétées dans le
+// fuseau de la machine de build, elles diffèrent entre Vercel (UTC) et un poste local.
+for (const f of blogFiles) {
+  const fm = readFileSync(resolve(root, 'src/content/blog', f), 'utf8').split('---')[1] ?? '';
+  for (const [, cle, val] of fm.matchAll(/^(pubDate|updatedDate):\s*"?([^"\n]+)"?$/gm)) {
+    if (/T\d/.test(val) && !/(Z|[+-]\d\d:?\d\d)$/.test(val)) fail(`blog/${f} : ${cle} « ${val} » a une heure sans fuseau (ajouter Z)`);
+  }
+}
+// (f) pages de liste : lastmod = publication la plus récente de leurs articles
+const listes = new Map();
+for (const f of blogFiles) {
+  const src = readFileSync(resolve(root, 'src/content/blog', f), 'utf8');
+  const pub = src.match(/^pubDate:\s*"?([\d-]{10})/m)?.[1];
+  const serie = src.match(/^seriesId:\s*"?([a-z-]+)"?$/m)?.[1];
+  const slugSerie = serie && readFileSync(resolve(root, 'src/lib/blog-series-slugs.ts'), 'utf8')
+    .match(new RegExp(`['"]?${serie}['"]?\\s*:\\s*['"]([a-z-]+)['"]`))?.[1];
+  for (const cle of ['/blog', slugSerie && `/blog/serie/${slugSerie}`].filter(Boolean)) {
+    if (pub && (!listes.get(cle) || pub > listes.get(cle))) listes.set(cle, pub);
+  }
+}
+for (const [chemin, attendu] of listes) {
+  const entree = entrees.find(([, loc]) => loc === `${SITE}${chemin}`);
+  if (!entree) fail(`sitemap : ${chemin} devrait porter un lastmod (${attendu}) et n'en a pas`);
+  else if (entree[2] !== attendu) fail(`sitemap : lastmod ${entree[2]} pour ${chemin}, attendu ${attendu}`);
+}
+// (g) llms.txt et rss.xml citent chaque article
+const llms = existsSync(resolve(dist, 'llms.txt')) ? readFileSync(resolve(dist, 'llms.txt'), 'utf8') : '';
+const rssXml = existsSync(resolve(dist, 'rss.xml')) ? readFileSync(resolve(dist, 'rss.xml'), 'utf8') : '';
+if (!rssXml) fail('rss.xml absent de dist/');
+for (const f of blogFiles) {
+  const lien = `${SITE}/blog/${f.replace(/\.md$/, '')}`;
+  if (!llms.includes(`(${lien})`)) fail(`llms.txt : l'article ${lien} n'y figure pas`);
+  if (rssXml && !rssXml.includes(`<link>${lien}</link>`)) fail(`rss.xml : l'article ${lien} n'y figure pas`);
 }
 
 /* Rapport */

@@ -1,7 +1,7 @@
 ---
 title: "RSPM : 2 exemples concrets - Du CA au Super-Net"
 description: "Découvre ce qu'il te reste vraiment après cotisations et impôts avec le régime RSPM. Exemples chiffrés à 19 000 € et 38 000 € de CA."
-pubDate: "2025-11-28T11:00:00"
+pubDate: "2025-11-28T11:00:00Z"
 updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
