@@ -176,10 +176,19 @@ const faqSchema = faq && faq.length
   : null;
 
 const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])];
+
+/* Suffixe de marque adaptatif (§ 9.bi) : le suffixe fixe « | Blog Hippodoc »
+   (16 car.) faisait dépasser 60 caractères à plusieurs <title>, contre le contrat
+   SEO. Le titre de l'article n'est jamais tronqué : c'est la marque qui cède. */
+const titreComplet =
+  title.length <= 44 ? `${title} | Blog Hippodoc` : title.length <= 49 ? `${title} | Hippodoc` : title;
+/* « Mis à jour le » seulement si la date est POSTÉRIEURE à la publication :
+   un article affichait « 21 avril 2026 · Mis à jour le 21 avril 2026 ». */
+const misAJour = updatedDate && updatedDate.getTime() > pubDate.getTime() ? updatedDate : null;
 ---
 
 <BaseLayout
-  title={`${title} | Blog Hippodoc`}
+  title={titreComplet}
   description={description}
   path={path}
   ogImage={ogCover?.url}
@@ -285,8 +294,8 @@ const jsonLd = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [
         <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
           <span>{author}</span>
           <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
-          {updatedDate && (
-            <span>Mis à jour le <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time></span>
+          {misAJour && (
+            <span>Mis à jour le <time datetime={misAJour.toISOString()}>{formatDate(misAJour)}</time></span>
           )}
           <span>{readTime} de lecture</span>
         </div>

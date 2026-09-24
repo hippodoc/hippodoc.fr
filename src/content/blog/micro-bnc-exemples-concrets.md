@@ -1,7 +1,7 @@
 ---
 title: "2 exemples concrets de revenus en micro-BNC"
 description: "Du CA au Super-Net : découvre ce qu'il te reste vraiment après cotisations et impôts avec des exemples à 50 000 € et 75 000 € de chiffre d'affaires."
-pubDate: "2025-11-28T10:00:00"
+pubDate: "2025-11-28T10:00:00Z"
 updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"

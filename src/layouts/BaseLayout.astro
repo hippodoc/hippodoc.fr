@@ -52,9 +52,12 @@ const allJsonLd = [ORGANIZATION_SCHEMA, ...jsonLd];
     <meta name="author" content="Hippodoc" />
     {noindex ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="max-image-preview:large" />}
 
-    <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="fr" href={canonical} />
-    <link rel="alternate" hreflang="x-default" href={canonical} />
+    {/* Canonique sur les seules pages indexables : la 404, servie sous n'importe
+        quelle URL, déclarait « /404 » comme canonique. hreflang retirés : sur un
+        site monolingue, fr + x-default pointant sur la page elle-même n'apportent
+        rien (§ 9.bi). */}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <link rel="alternate" type="application/rss+xml" title="Blog Hippodoc" href={`${SITE_URL}/rss.xml`} />
 
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="5jk-XYDlgOh2l9tE_lWx3TSdQ0uBUrh4iXHyxvKYe9s" />

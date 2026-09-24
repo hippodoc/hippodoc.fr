@@ -3342,6 +3342,67 @@ pas été réactualisées : aucune source vérifiable ne permet de les passer en
 une actualisation qui n'a pas eu lieu ; le corps garde « ordres de grandeur en
 2025 », et la FAQ « Combien gagne… » le précise.
 
+### 9.bi Audit du blog, lot 7 — SEO technique et garde-fous (24 septembre 2026)
+
+**Découverte et agents IA**
+- **Flux RSS** `/rss.xml` (nouveau, `src/pages/rss.xml.ts`, écrit à la main, sans
+  dépendance) : 46 articles, titre + description du frontmatter, liens sans slash
+  final, `lastBuildDate` = dernière publication (jamais la date de build).
+  `<link rel="alternate" type="application/rss+xml">` dans `BaseLayout`.
+  Description du canal = sous-titre de `/blog`, mot pour mot.
+- **`/llms.txt` généré** (`src/pages/llms.txt.ts`, `public/llms.txt` supprimé) : il ne
+  citait aucun article. En-tête, « Pages » et « Optional » repris mot pour mot ;
+  ajout des 3 sous-pages du guide (titre et description de leurs balises) et d'une
+  section par série (titre + description du frontmatter). Seul texte nouveau :
+  « Toute la série : <url> ».
+
+**Sitemap**
+- `lastmod` sur `/blog` et les 3 pages de série = publication la plus récente de
+  leurs articles (`pubDate`, pas `updatedDate` : corriger un article ne change pas
+  la liste). Elles n'en avaient aucun.
+- Filtre `/essai` en égalité stricte (la sous-chaîne aurait exclu tout futur
+  `/blog/essai-…`).
+
+**Balises**
+- Suffixe de `<title>` adaptatif : « | Blog Hippodoc » si le titre fait ≤ 44 car.,
+  « | Hippodoc » si ≤ 49, rien au-delà. Le titre de l'article n'est jamais coupé.
+- Canonique rendue seulement sur les pages indexables (la 404, servie sous toute
+  URL, déclarait `/404`). `hreflang` fr / x-default retirés (site monolingue).
+- `/simulateur` : `og:image` déclarée 1200×630 alors que le fichier fait 1964×1287
+  (trouvé par le nouveau contrôle) → dimensions réelles.
+- « Mis à jour le » affiché seulement si `updatedDate` > `pubDate`.
+- 3 `pubDate` avec heure sans fuseau → `Z` ajouté (valeur identique à la prod,
+  bâtie en UTC ; le build local donnait une heure de moins).
+
+**Images**
+- `blog-covers.ts` (cartes et « À la une » de `/blog`) : largeur demandée bornée à
+  la source, comme `[slug].astro` au § 9.bd. Les onze covers de 450 px étaient
+  annoncées « 720w » ; le `srcset` de la carte « À la une » porte les vraies largeurs.
+- `/blog` desktop : préchargement de la cover « À la une » (élément LCP) à partir de
+  768 px seulement ; elle reste en lazy en mobile. Lighthouse `/blog` : mobile 95,
+  desktop 100 (LCP 0,63 s).
+
+**Vercel**
+- En-têtes sur toutes les routes : `X-Content-Type-Options: nosniff`,
+  `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: SAMEORIGIN`,
+  `Permissions-Policy: camera=(), microphone=(), geolocation=()`. Pas de CSP (il
+  faudrait inventorier PostHog, GA4, Pixel, Crisp, Supabase : chantier à part).
+- Redirections 308 : `/index.html` → `/`, `/:path*/index.html` → `/:path*` (chaque page
+  était aussi servie en 200 sous `…/index.html`), `/blog/serie` → `/blog` (répondait 404).
+- Non fait : la chaîne de 3 sauts `http://hippodoc.fr/x/` (sans gravité, aucun lien
+  interne ne la produit) ; les URL en majuscules (à traiter si la Search Console
+  remonte des 404).
+
+**`verify-site.mjs`**, nouveaux contrôles : page du sitemap en noindex (échec) ;
+lien interne à slash final ou lien `http://` (échec) ; `<title>` > 60 car.
+(avertissement) ; `og:image` locale introuvable ou dimensions déclarées ≠ fichier
+(échec, lecture par sharp) ; `pubDate`/`updatedDate` avec heure sans fuseau (échec) ;
+`lastmod` de `/blog` et des séries (échec) ; article absent de `llms.txt` ou de
+`rss.xml` (échec). Le contrôle des dates des pages statiques lit enfin les 5 entrées
+de `pages-lastmod.ts` (le motif en sautait 3) et compare le chemin exact.
+Avertissements restants, hors blog : `<title>` de 62-64 car. sur la calculette,
+la politique de confidentialité et la page RGPD.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

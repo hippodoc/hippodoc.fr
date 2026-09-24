@@ -32,7 +32,9 @@ export async function resolveCover(
 ): Promise<ResolvedCover | null> {
   const mod = blogImages[publicPath.replace(/^\/blog\//, '/src/assets/blog/')];
   if (!mod) return null;
-  const img = await getImage({ src: mod.default, width, format: 'webp' });
+  // Bornée à la largeur source (§ 9.bi) : sharp n'agrandit pas, mais Astro annonçait
+  // la largeur demandée — onze covers de 450 px étaient déclarées « 720w ».
+  const img = await getImage({ src: mod.default, width: Math.min(width, mod.default.width), format: 'webp' });
   return {
     src: img.src,
     width: Number(img.attributes.width),
