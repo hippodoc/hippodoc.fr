@@ -3403,6 +3403,53 @@ de `pages-lastmod.ts` (le motif en sautait 3) et compare le chemin exact.
 Avertissements restants, hors blog : `<title>` de 62-64 car. sur la calculette,
 la politique de confidentialité et la page RGPD.
 
+### 9.bj Chantier de fond, article 1 — CARMF, vérifié et enrichi (24 septembre 2026)
+
+Premier des articles minces de l'audit (priorité n° 1). Méthode : chaque chiffre
+revérifié sur carmf.fr ; le texte juste est gardé tel quel, le faux corrigé, les
+manques comblés. Le corpus d'audience a servi de boussole (l'erreur « la CARMF se
+calcule sur le CA » y est la plus répandue), jamais de source de texte.
+`updatedDate` au 24 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Corrigé (faux ou périmé)**
+- Invalidité-décès : « 157 € (25 %) ou 626 € (100 %) » présenté comme le régime
+  général → au régime classique 434 € + 0,4 % des revenus (626 € sous 1 PASS,
+  jusqu'à 1 010 €) ; le forfait 157 € / 626 € est l'option du RSPM.
+- Exemples recalculés avec le barème CARMF 2026, méthode validée en reproduisant
+  l'exemple officiel à 60 000 € (14 499 € en secteur 1) : 40 000 € → S1 ≈ 11 200 €
+  (était ~12 000), S2 ≈ 16 900 € ; 90 000 € → S1 ≈ 19 000 € (était ~20 000),
+  S2 ≈ 26 600 € (était ~26 500). L'ancien calcul oubliait la participation de
+  l'Assurance Maladie à la retraite de base en secteur 1.
+- ACRE « réduction la 1re année si revenus < 47 100 € » → réservée à certains
+  profils depuis 2026, plafonnée à 25 % (renvoi vers le guide des frais pros, § 9.bb).
+- « Cotisations CARMF déductibles de tes impôts » → au réel seulement (ligne 25 de
+  la 2035) ; en micro-BNC, couvertes par l'abattement de 34 %.
+- « En cas d'oubli, affiliation automatique avec pénalités » (introuvable sur
+  carmf.fr) → date d'effet de l'affiliation et perte des droits pour une période
+  non déclarée (carmf.fr).
+
+**Ajouté (texte nouveau)**
+- Bloc « L'essentiel » (réponse dans les 100 premiers mots).
+- Section « Affiliation obligatoire… » qui était VIDE : champ de l'obligation,
+  étudiants sous licence compris.
+- « Sur quoi la CARMF se calcule-t-elle ? » : revenu et non chiffre d'affaires
+  (micro-BNC : recettes − 34 % ; réel : résultat de la 2035) ; décalage de deux ans,
+  lien vers l'effet ciseaux.
+- « Tes deux premières années » : tableau CARMF 2026 (3 437 € S1 / 7 710 € S2),
+  complémentaire non due avant 40 ans, revenu forfaitaire de 9 131 € et régularisation.
+- Participation de l'Assurance Maladie (2,15 %) en secteur 1 ; appels payables sous
+  30 jours ; dispense partielle de complémentaire (barème 2026) ; section Sources
+  avec liens vers carmf.fr.
+- FAQ : deux questions ajoutées (CA ou revenu ? coût de la première année), deux
+  réponses précisées (affiliation, invalidité-décès).
+
+**Titre et description** : « Tout comprendre sur la CARMF » (aucun mot-clé
+exploitable) → « CARMF : cotisations 2026 du médecin remplaçant » ; description
+réécrite. URL inchangée.
+
+**Reste de la liste des articles minces** (ordre de l'audit) : salaires, RSPM en
+exemples, congé maternité / paternité, signer son contrat, puis le reste.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
