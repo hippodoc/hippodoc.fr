@@ -2,6 +2,7 @@
 title: "Impôts 2026 des internes qui remplacent"
 description: "Interne ayant fait des remplas en 2025 ? Salaire CHU + rétrocessions BNC : tout déclarer en 2026, étape par étape, sans confusion."
 pubDate: "2026-05-01"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -201,9 +202,9 @@ La déclaration d'impôt **ne couvre pas l'URSSAF**.
 
 Pour ton activité libérale de remplacement, tu dois aussi déclarer ton **début d'activité** et tes honoraires.
 
-En pratique, le début d'activité se déclare via le **guichet unique**. L'URSSAF indique qu'un praticien ou auxiliaire médical doit déclarer son activité dans les **8 jours** suivant le début d'activité.
+Si tu relèves du **[RSPM](/blog/rspm-exemples-concrets)**, le régime simplifié des médecins remplaçants (uniquement des remplacements, pas d'autre activité indépendante, honoraires jusqu'à 19 000 € par an pour y entrer), tout se fait sur le portail **medecins-remplacants.urssaf.fr**, y compris la déclaration de début d'activité. Les étudiants y sont éligibles.
 
-Ensuite, si ta situation y ouvre droit, tu peux relever du **[RSPM](/blog/rspm-exemples-concrets)**, le régime simplifié des médecins remplaçants, via le portail dédié aux médecins remplaçants.
+Sinon, le début d'activité se déclare via le **guichet unique**. L'URSSAF indique qu'un praticien ou auxiliaire médical doit déclarer son activité dans les **8 jours** suivant le début d'activité.
 :::
 
 ### Le RSPM : le régime simplifié des médecins remplaçants

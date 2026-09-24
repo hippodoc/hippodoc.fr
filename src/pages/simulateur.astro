@@ -51,7 +51,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Que se passe-t-il au-delà de 38 000 € de recettes ?',
-    a: "Le régime social change : le RSPM (taux simplifiés) s'applique en dessous de 38 000 €, le PAMC (barème classique) au-delà. En mode Auto, recommandé, le simulateur choisit lui-même selon ton chiffre d'affaires ; tu peux aussi forcer l'un ou l'autre.",
+    a: "Le régime social change. Le RSPM (taux simplifiés) est ouvert jusqu'à 19 000 € d'honoraires ; on le perd au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. Pour une année type, le simulateur retient le RSPM en dessous de 38 000 € et le PAMC (barème classique) au-delà. En mode Auto, recommandé, le simulateur choisit lui-même selon ton chiffre d'affaires ; tu peux aussi forcer l'un ou l'autre.",
   },
   {
     q: 'Compare-t-il le Micro-BNC et le Régime Réel ?',
@@ -250,7 +250,7 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
               <li><strong class="text-foreground">Année</strong> — Détermine les barèmes IR appliqués (2025 ou 2026).</li>
               <li><strong class="text-foreground">Lieu d'exercice</strong> — Métropole ou DOM-TOM. Les territoires ultramarins bénéficient d'un abattement automatique sur l'IR (30% Guadeloupe/Martinique/Réunion, 40% Guyane/Mayotte).</li>
               <li><strong class="text-foreground">Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu, déductions supplémentaires : 2% + 3% + Groupe III) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
-              <li><strong class="text-foreground">Régime social</strong> — Auto (recommandé, le simulateur choisit selon ton CA), RSPM (simplifié, &lt; 38 000 €) ou PAMC (classique).</li>
+              <li><strong class="text-foreground">Régime social</strong> — Auto (recommandé, le simulateur choisit selon ton CA), RSPM (simplifié, ouvert jusqu'à 19 000 €) ou PAMC (classique).</li>
             </ul>
           </div>
         </details>

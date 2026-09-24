@@ -1,8 +1,8 @@
 ---
-title: "Salaires des médecins remplaçants 2025"
+title: "Salaire du médecin remplaçant : intérim, libéral, salariat"
 description: "Fourchettes de rémunération en intérim, libéral et salariat selon les spécialités. Données indicatives pour bien te projeter."
 pubDate: "2025-11-28T12:00:00"
-updatedDate: "2026-09-20"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -14,8 +14,8 @@ tags:
   - "Guide et Conseil"
 cta: "Prêt(e) à reprendre le contrôle de tes finances ?"
 faq:
-  - question: "Combien gagne un médecin remplaçant en 2025 ?"
-    answer: "En **intérim** : 500-2 500 €/jour selon la spécialité. En **libéral cabinet** : 5 000-16 000+ €/mois. En **salariat** : 3 000-10 000 €/mois. Les spécialités techniques (anesthésie, radio) sont les mieux rémunérées."
+  - question: "Combien gagne un médecin remplaçant ?"
+    answer: "Ordres de grandeur observés en 2025. En **intérim** : 500-2 500 €/jour selon la spécialité. En **libéral cabinet** : 5 000-16 000+ €/mois. En **salariat** : 3 000-10 000 €/mois. Les spécialités techniques (anesthésie, radio) sont les mieux rémunérées."
   - question: "Quel est le taux de rétrocession moyen pour un remplaçant ?"
     answer: "Le taux de rétrocession est libre : c'est un usage, négocié au contrat. Médecine générale : **70 à 90%** (repère : 80%). Spécialités avec plateau technique : **60 à 70%**. Le reste couvre les charges du cabinet."
   - question: "Intérim médical ou libéral : que choisir ?"
@@ -40,6 +40,8 @@ relatedArticles:
 **Consultations spécialisées à actes techniques légers** (dermato, gynéco médicale, cardio non-interventionnelle) → Journée : **500–1 000+ €**\
 **Plateau technique / bloc opératoire** (gynéco-obs, ophtalmo, radiologie, anesthésie, chirurgie toutes spés, cardio interventionnelle) → Garde 24 h : **1 100–2 500+ €**\
 **Spécialités hospitalières de garde** (urgences, pédiatrie, gériatrie, pneumo, neuro, néphro, MPR…) → Garde 24 h : **1 100–2 000+ €**
+
+⚠️ **À l'hôpital public, l'intérim est plafonné** : **2 681 € HT pour 24 h** de mission d'un médecin (arrêté du 5 septembre 2025). Ce plafond couvre le coût total pour l'établissement — ton salaire brut, tes frais et la marge de l'agence. Les nets du haut de ces fourchettes ne se rencontrent donc pas à l'hôpital public. Le Conseil d'État a annulé partiellement cet arrêté le 15 juillet 2026 et un nouveau texte est attendu. Et depuis le 1er décembre 2025, une première mission d'intérim exige **deux ans d'exercice** hors intérim.
 
 ## 🏥 LIBÉRAL — Cabinet / Clinique (nets mensuels)
 

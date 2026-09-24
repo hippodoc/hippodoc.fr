@@ -2,7 +2,7 @@
 title: "Déclaration 2035 du médecin remplaçant"
 description: "La 2035 paraît complexe mais reste indispensable au régime réel. Guide pratique étape par étape pour la remplir sereinement."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -48,9 +48,10 @@ La déclaration 2035 concerne les professionnels libéraux au **régime réel**.
 
 ## 2️⃣ Déclare tes recettes professionnelles
 
-**Ligne 1** : Honoraires perçus + Indemnités journalières maladie/[maternité](/blog/conge-maternite-paternite)\
+**Ligne 1** : Honoraires perçus\
 **Ligne 4** : Recettes nettes (ligne 1 moins lignes 2 et 3)\
-**Lignes 5-6** : Intérêts professionnels, remboursements exceptionnels\
+**Ligne 5** : Produits financiers\
+**Ligne 6** : Gains divers, dont les indemnités journalières maladie/[maternité](/blog/conge-maternite-paternite) (CPAM, CARMF, contrat Madelin)\
 **Ligne 7** : Total des recettes (ligne 4 + lignes 5 et 6)
 
 ## 3️⃣ Déclare tes charges professionnelles déductibles
@@ -61,10 +62,10 @@ La déclaration 2035 concerne les professionnels libéraux au **régime réel**.
 **Ligne 16** : Redevances de collaboration libérale\
 **Ligne 19** : Petit matériel inférieur à 500 €\
 **Ligne 20** : Télétravail (part du loyer, électricité, etc.)\
-**Ligne 22** : Assurances RCP, prévoyance, mutuelle\
+**Ligne 22** : Primes d'assurance professionnelles (RCP, locaux, matériel)\
 **Ligne 23** : [Frais kilométriques](/blog/voiture-bareme-kilometrique-ou-frais-reels-medecin) (+ remplir annexe B)\
 **Ligne 24** : Déplacements, hébergement, repas professionnels\
-**Ligne 25** : [Cotisations URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf), URPS (hors CSG ligne 14)\
+**Ligne 25** : [Cotisations URSSAF](/blog/tout-comprendre-urssaf), [CARMF](/blog/tout-comprendre-carmf), URPS (hors CSG ligne 14), et contrats Madelin facultatifs (prévoyance, mutuelle) dans leurs plafonds\
 **Ligne 26** : Formations et congrès\
 **Ligne 27** : Téléphone, internet, fournitures\
 **Ligne 29** : Cotisations ordre, AGA, syndicats\

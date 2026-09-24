@@ -2,7 +2,7 @@
 title: "Tout comprendre sur l'URSSAF"
 description: "L'URSSAF reste un mystère ? Fiche claire et pratique pour comprendre et gérer tes cotisations dès tes premiers remplacements."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -20,7 +20,7 @@ faq:
   - question: "Quand dois-je m'inscrire à l'URSSAF ?"
     answer: "Tu dois t'inscrire à l'URSSAF **dans les 8 jours** suivant ton premier remplacement libéral. L'inscription se fait sur medecins-remplacants.urssaf.fr si tu choisis le RSPM (à déclarer avant ton premier remplacement), sinon sur le guichet unique formalites.entreprises.gouv.fr, qui transmet ton dossier à l'URSSAF."
   - question: "Quelle différence entre RSPM et régime PAMC ?"
-    answer: "Le **RSPM** (ouvert jusqu'à 19 000 € d'honoraires, maintien possible jusqu'à 38 000 €) offre des cotisations réduites (13,5-21,2%). Le **PAMC** (régime classique) calcule les cotisations sur ton bénéfice réel. Ne pas confondre avec les régimes fiscaux (Micro-BNC/Réel)."
+    answer: "Le **RSPM** (ouvert jusqu'à 19 000 € d'honoraires ; perdu après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €) offre des cotisations réduites (13,5-21,2%). Le **PAMC** (régime classique) calcule les cotisations sur ton bénéfice réel. Ne pas confondre avec les régimes fiscaux (Micro-BNC/Réel)."
   - question: "Comment sont calculées mes cotisations URSSAF ?"
     answer: "En **RSPM** : 13,5% jusqu'à 19 000 € de CA, puis 21,2% entre 19 000 € et 38 000 €. En **PAMC** : cotisations variables calculées selon ton bénéfice net réel."
   - question: "Puis-je déduire mes cotisations URSSAF de mes impôts ?"
@@ -55,7 +55,7 @@ Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime S
 
 ## 1. Régime Simplifié des Professions Médicales (RSPM)
 
-👉 **Pour qui ?** Médecins remplaçants ayant un chiffre d'affaires (CA) annuel **inférieur à 38 000 €**.\
+👉 **Pour qui ?** Médecins remplaçants et étudiants qui ne font que des remplacements, avec un chiffre d'affaires (CA) annuel **jusqu'à 19 000 €** pour y entrer.\
 📈 **Cotisations** : **13,5%** pour un CA jusqu'à 19 000 € par an, et **21,2%** pour la tranche de CA entre 19 000 € et 38 000 €.\
 🛡 **Invalidité-Décès** : **157 €/an** pour une couverture à 25% ou **626 €/an** pour une couverture à 100% (barème [CARMF](/blog/tout-comprendre-carmf) 2026).\
 🌐 **Déclaration simplifiée** sur le [portail RSPM](https://entreprendre.service-public.gouv.fr/vosdroits/R63763) — réservé aux remplacements exclusifs.\
@@ -66,7 +66,7 @@ Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime S
 
 ## 2. Régime Classique PAMC (Praticien et Auxiliaire Médical Conventionné)
 
-👉 **Pour qui ?** Médecins ayant un CA annuel **supérieur à 38 000 €**, ou par choix volontaire.\
+👉 **Pour qui ?** Médecins installés, remplaçants sortis du RSPM (voir ci-dessus) ou qui n'y sont pas entrés, par choix ou parce que leur CA dépassait 19 000 €.\
 💰 **Cotisations** : Variables, calculées selon ton bénéfice réel.\
 🧓 **Retraite** : Gérée via la **CARMF**.\
 🌐 **Inscription et déclaration** sur urssaf.fr.

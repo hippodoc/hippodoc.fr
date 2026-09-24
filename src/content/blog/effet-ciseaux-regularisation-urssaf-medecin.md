@@ -2,7 +2,7 @@
 title: "Régularisation URSSAF : l'effet ciseaux expliqué"
 description: "Bonne année, puis appel de cotisations qui double ? C'est l'effet ciseaux : régularisation URSSAF et nouveau provisionnel tombent ensemble. Comment l'anticiper."
 pubDate: "2026-09-20"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -106,7 +106,7 @@ Tout le monde y pense pour payer moins quand l'activité ralentit. Presque perso
 Et un point important pour les remplaçants : **micro-BNC n'est pas micro-entrepreneur**. Le [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel) est un régime fiscal (abattement forfaitaire de 34 % sur tes recettes). Le statut de micro-entrepreneur, lui, est fermé aux médecins : les professions médicales sont exclues du régime micro-social. Tu cotises donc sur ton revenu annuel, comme tout indépendant — et la modulation t'est ouverte.
 
 :::tip
-**Un seul cas échappe aux ciseaux : le RSPM.** Si tu relèves de ce régime simplifié (ouvert jusqu'à 19 000 € d'honoraires par an, et où l'on peut rester jusqu'à 38 000 €), tu cotises directement sur les honoraires que tu déclares, à des taux connus d'avance (13,5 % puis 21,2 %) : pas de provisionnel calculé sur ton passé, donc pas de double vague. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
+**Un seul cas échappe aux ciseaux : le RSPM.** Si tu relèves de ce régime simplifié (ouvert jusqu'à 19 000 € d'honoraires par an ; on le perd au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €), tu cotises directement sur les honoraires que tu déclares, à des taux connus d'avance (13,5 % puis 21,2 %) : pas de provisionnel calculé sur ton passé, donc pas de double vague. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
 :::
 
 ## 🐷 5. Le réflexe qui rend tout ça indolore

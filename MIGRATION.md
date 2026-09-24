@@ -3277,6 +3277,71 @@ série 94 (inchangé) ; a11y / BP / SEO 100 partout.
 - Liens vers la newsletter `/transmissions` depuis les articles d'investissement.
 - `ctaHref: "/essai"` pour les sujets froids (syndrome de l'imposteur, inbox zéro).
 
+### 9.bg Audit du blog, lot 6 — les sept points « à vérifier », vérifiés puis corrigés (23 septembre 2026)
+
+Chaque point a été vérifié sur source primaire (Légifrance, URSSAF, conseils de
+l'Ordre) ou par recalcul avec le moteur du simulateur, AVANT correction.
+`updatedDate` au 23 septembre 2026 sur les 7 articles (changement de fond),
+répercutée dans `blog-meta.json`.
+
+| Article | Avant | Après | Source |
+|---|---|---|---|
+| `choix-mode-exercice` | Intérim présenté sans condition | Ajout : deux ans d'exercice (ETP, hors intérim) avant une première mission en établissement de santé, depuis le 1er décembre 2025 | Décret n° 2025-1147 du 28 novembre 2025 (JO du 30), étendant aux médecins l'art. 29 de la loi Valletoux ; FHF |
+| `obtenir-sa-licence-de-remplacement` | « Valable jusqu'au 15 novembre » comme règle nationale (description, essentiel, 2 FAQ, corps) | Date fixée par le CDOM : 15 novembre dans de nombreux départements, 30 novembre dans d'autres ; « la date figure sur ta licence » ; rappels « un mois avant » | Sites des CDOM : 15/11 (63, 44, 78), 30/11 (69), « 31 novembre » [sic] (87) |
+| `guide-impots-internes-remplacants` | Guichet unique d'abord, RSPM ensuite | Au RSPM, tout se fait sur medecins-remplacants.urssaf.fr, y compris la déclaration de début d'activité (étudiants éligibles) ; guichet unique sinon | urssaf.fr, « L'offre simplifiée médecins remplaçants » |
+| `medecin-outre-mer-avantages-fiscaux` | « La CARMF complémentaire reste due » (FAQ, essentiel, encadré) ; « exonération » de 75 % / 50 % ; art. « L. 751-1 » | Pour un médecin (profession libérale réglementée), exonération limitée à maladie-maternité, IJ, allocations familiales, CSG-CRDS : **toute la CARMF reste due** (base, complémentaire, invalidité-décès) + CFP ; 75 % / 50 % = abattements d'assiette ; art. L. 756-5 | Bpifrance Création (régime social outre-mer) ; URSSAF outre-mer (seuil 110 % du PASS confirmé) |
+| idem | Hospitalier public : « +25 % » dans les DROM, « +40 % » à Mayotte | Indemnité spéciale de **40 %** dans les cinq DROM depuis 2023 | Décret n° 2023-242 du 31 mars 2023 ; FHF |
+| `salaires-medecins-remplacants` | Fourchettes d'intérim sans plafond | Encadré : 2 681 € HT pour 24 h à l'hôpital public, coût total (salaire brut, frais, marge d'agence) ; annulation partielle par le Conseil d'État le 15 juillet 2026 ; condition des deux ans | Arrêté du 5 septembre 2025 ; CE n° 509381 du 15 juillet 2026 ; décret 2025-1147 |
+| `remplir-declaration-2035` | IJ en ligne 1 ; lignes « 5-6 » intérêts et remboursements ; prévoyance et mutuelle en ligne 22 | IJ (CPAM, CARMF, Madelin) en ligne 6, gains divers ; ligne 5 produits financiers ; ligne 22 = primes d'assurance professionnelles ; Madelin prévoyance/mutuelle en ligne 25 | Notice 2035-NOT-SD 2026 (via trois guides concordants, le PDF n'ayant pu être lu directement) ; brochure DGFiP 2026 citée par le glossaire du site |
+| `micro-bnc-exemples-concrets` | Cotisations au barème 2025 : 13 207 € / 18 187 € ; Super-Net 33 789 € / 48 859 € | 13 474 € / 18 623 € ; Super-Net **33 522 € / 48 423 €** (67,0 % / 64,6 %) ; impôt inchangé (3 004 € / 7 954 €) | Moteur `calculate-urssaf`, valeurs par défaut du formulaire ; contrôle : 72 000 € redonne 46 516 € |
+| idem | « RSPM (< 38k€) », « PAMC (> 38k€) », « < 38k€ de CA → RSPM » | Phrase de référence : ouvert jusqu'à 19 000 €, maintien possible jusqu'à 38 000 € | § 9.ba |
+
+Le découpage URSSAF / CARMF du recalcul suit la méthode du § 9.ba : CARMF = poste
+« retraite » du moteur, URSSAF = le reste.
+
+**Non corrigé, signalé :**
+- `salaires-medecins-remplacants` : le titre et la FAQ disent encore « 2025 ». Les
+  fourchettes n'ayant pas été réactualisées, passer à « 2026 » serait trompeur :
+  décision du fondateur (mettre les chiffres à jour, ou retirer l'année du titre).
+- `medecin-outre-mer-avantages-fiscaux` : la slide 3 (image) affiche
+  vraisemblablement « 100/75/50 % » d'exonération — à refaire si elle parle
+  d'exonération des cotisations CARMF. Le régime de Mayotte (ordonnance de 1996)
+  n'a pas été revérifié.
+- Hors blog : le glossaire du guide (`src/data/glossaireDeclarationsData.ts`) écrit
+  encore « RSPM (remplaçants < 38 000 €) », comme `/simulateur` (§ 9.be).
+
+### 9.bh Règle de sortie du RSPM, titre « Salaires » (23 septembre 2026)
+
+**Règle de référence du RSPM, complétée** à la demande du fondateur et vérifiée :
+le RSPM s'ouvre jusqu'à 19 000 € d'honoraires ; on le **perd au 1er janvier
+suivant** après **deux années civiles de suite au-dessus de 19 000 €**, ou **une
+seule au-dessus de 38 000 €**. L'année du dépassement, on reste au RSPM quel que
+soit le montant : le taux de 21,2 % s'applique à toute la fraction au-dessus de
+19 000 €, sans limite haute (CSS, art. D. 642-4-3 ; règle de perte : CSS, section
+des art. D. 642-4-x, reprise par la presse professionnelle et les syndicats).
+
+La phrase du § 9.ba (« maintien possible jusqu'à 38 000 € ») laissait croire qu'on
+pouvait rester indéfiniment entre 19 000 € et 38 000 €. Remplacée partout :
+- **Blog** : effet ciseaux, 6 mois / 12 mois, Super-Net, URSSAF (FAQ + deux
+  « Pour qui ? » : RSPM « CA < 38 000 € » et PAMC « CA > 38 000 € » étaient faux),
+  RSPM en exemples (FAQ), micro-BNC exemples, impôts des internes.
+  `updatedDate` au 23 septembre sur les articles touchés.
+- **`/simulateur`** : FAQ « au-delà de 38 000 € » (le moteur retient toujours le RSPM
+  sous 38 000 € « pour une année type », c'est désormais dit) ; liste des champs ;
+  aide du formulaire (`SimulateurForm.tsx`) « Réservé aux revenus < 38 000 € ».
+- **Guide** : glossaire (PAMC, RSPM court et long) ; boussole (quiRemplit 2035,
+  alerte de bascule, deux pièges, « dans la limite de ~38 000 €/an » retiré).
+- Inchangés, justes : `rspm-exemples-concrets` (FAQ dépassement, encadré),
+  `tout-comprendre-urssaf` (encadré « Important »), « 21,2 % entre 19 000 et
+  38 000 € » pour qui reste sous 38 000 €.
+
+**Titre « Salaires des médecins remplaçants 2025 »** → « Salaire du médecin
+remplaçant : intérim, libéral, salariat » (URL inchangée). Les fourchettes n'ont
+pas été réactualisées : aucune source vérifiable ne permet de les passer en 2026
+(annonces, retours terrain). Retirer l'année évite un titre périmé sans affirmer
+une actualisation qui n'a pas eu lieu ; le corps garde « ordres de grandeur en
+2025 », et la FAQ « Combien gagne… » le précise.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

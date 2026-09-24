@@ -2,7 +2,7 @@
 title: "Médecin remplaçant : les 8 statuts clés"
 description: "Libéral, salariat, collaboration, mixte… découvre les 8 modes d'exercice pour bien débuter et choisir celui qui te correspond."
 pubDate: "2025-10-21"
-updatedDate: "2026-08-18"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -72,7 +72,8 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 
 ## 🧳 6. Intérim Médical
 
-• **Statut** : Salarié via agence d'intérim
+• **Statut** : Salarié via agence d'intérim\
+• **Condition** : depuis le 1er décembre 2025, **deux ans d'exercice** (en équivalent temps plein, hors intérim) avant ta première mission en établissement de santé
 
 ✅ **+** : Bien rémunéré, aucune paperasse, planning à la carte\
 ⚠️ **-** : Peu de perspectives d'évolution

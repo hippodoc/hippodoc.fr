@@ -2,7 +2,7 @@
 title: "Médecin remplaçant : bosser 6 mois, vivre 12"
 description: "120 jours de remplacement, c'est environ 3 900 € nets par mois sur 12 mois. Le vrai calcul 2026 : cotisations, micro-BNC, impôt, et combien de jours te suffisent."
 pubDate: "2026-09-20"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-23"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -100,7 +100,7 @@ Le raisonnement s'inverse facilement. En gardant les mêmes hypothèses (600 €
 À 5 000 € par mois, tu dépasses le plafond du micro-BNC : un dépassement isolé est toléré, mais deux années de suite te font passer au régime réel — c'est l'hypothèse retenue pour cette ligne. Et remarque la courbe : les derniers paliers « coûtent » plus de jours que les premiers. C'est la progressivité qui joue, dans l'autre sens cette fois.
 
 :::tip
-**Et le RSPM ?** Ce régime simplifié allège nettement les cotisations, mais il ne s'ouvre que si tes honoraires ne dépassent pas **19 000 € par an**. Tu peux ensuite y rester jusqu'à 38 000 €, mais deux années de suite au-dessus de 19 000 € te font basculer au régime classique au 1er janvier suivant. Il convient donc à une année très allégée (une trentaine de jours de remplacement), pas à un mi-temps durable. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
+**Et le RSPM ?** Ce régime simplifié allège nettement les cotisations, mais il ne s'ouvre que si tes honoraires ne dépassent pas **19 000 € par an**. Une année au-dessus de 19 000 € reste possible, mais deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €, te font basculer au régime classique au 1er janvier suivant. Il convient donc à une année très allégée (une trentaine de jours de remplacement), pas à un mi-temps durable. Le détail dans [le RSPM en exemples concrets](/blog/rspm-exemples-concrets).
 :::
 
 ## ⚠️ Les 3 conditions pour que le deal tienne
