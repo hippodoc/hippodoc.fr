@@ -3963,6 +3963,23 @@ l'audit sont traités (§ 9.bj à 9.ci). Seul `generer-facture-remplacement` res
 micro-BNC ou réel, checklist administrative, syndrome de l'imposteur ; 17 articles
 sans section Sources.
 
+### 9.cj « L'essentiel » sur les quatre derniers articles (25 septembre 2026)
+
+Bloc « L'essentiel » ajouté à `tout-comprendre-urssaf`, `regime-fiscal-micro-bnc-vs-reel`,
+`checklist-administrative-medecin-remplacant` et `syndrome-imposteur-5-astuces` : chaque
+ligne résume le contenu déjà vérifié de l'article (aucun fait nouveau). Les 46 articles
+en ont désormais un. `updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Corrigé au passage**
+- `tout-comprendre-urssaf` : « 🧓 Retraite (régime général) » et « Invalidité-Décès »
+  listés parmi ce que finance l'URSSAF → pour un médecin, retraite et invalidité-décès
+  relèvent de la CARMF (au RSPM, l'URSSAF les encaisse pour son compte, CSS
+  art. D. 642-4-2) ; liste recentrée sur maladie, allocations familiales, CSG-CRDS,
+  formation, URPS.
+- `checklist-administrative` : CARMF « dès le début » → « dans le mois » (carmf.fr) ;
+  « gère ta retraite complémentaire » → retraite (base, complémentaire, ASV) et
+  invalidité-décès ; rappel « pas d'IJ CPAM la première année » dans Prévoyance (§ 9.bs).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

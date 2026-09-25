@@ -2,7 +2,7 @@
 title: "Tout comprendre sur l'URSSAF"
 description: "L'URSSAF reste un mystère ? Fiche claire et pratique pour comprendre et gérer tes cotisations dès tes premiers remplacements."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-23"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -37,11 +37,20 @@ relatedArticles:
   - "rspm-exemples-concrets"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- Déclare ton début d'activité dans les **8 jours** : sur le portail des remplaçants si tu relèves du RSPM, au guichet unique sinon.
+- Deux régimes sociaux : le **RSPM** (ouvert jusqu'à 19 000 € d'honoraires, 13,5 % puis 21,2 %) ou le **régime classique PAMC**.
+- Au PAMC, tu cotises sur ton **revenu**, pas sur ton chiffre d'affaires : depuis les revenus 2025, au réel, sur ton revenu professionnel diminué d'un abattement de 26 %.
+- Paiement mensuel (le 5 ou le 20) ou trimestriel ; tes cotisations de départ sont **régularisées** dès la déclaration suivante.
+:::
+
 Tu viens de démarrer tes remplacements médicaux, et l'URSSAF reste encore un mystère ? Voici une fiche claire et pratique pour comprendre et gérer facilement tes cotisations sociales dès tes premiers remplacements. 🚀✨
 
 ## 🔹 Qu'est-ce que l'URSSAF ?
 
-L'**URSSAF** (Union de Recouvrement des Cotisations de Sécurité Sociale et d'Allocations Familiales) est l'organisme chargé de collecter tes cotisations sociales obligatoires. Ces cotisations financent ta protection sociale, notamment : 🩺 **Assurance Maladie-Maternité**, 👶 **Allocations Familiales**, 🧓 **Retraite** (régime général), 💸 **CSG-CRDS** (Contribution au remboursement de la dette sociale), 🛡 **Autres cotisations** (Invalidité-Décès, Formation professionnelle, etc.).
+L'**URSSAF** (Union de Recouvrement des Cotisations de Sécurité Sociale et d'Allocations Familiales) est l'organisme chargé de collecter tes cotisations sociales obligatoires. Ces cotisations financent ta protection sociale, notamment : 🩺 **Assurance Maladie-Maternité**, 👶 **Allocations Familiales**, 💸 **CSG-CRDS** (Contribution au remboursement de la dette sociale), 🛡 **Autres contributions** (formation professionnelle, URPS…). Ta **retraite** et ta **prévoyance invalidité-décès** relèvent, elles, de la [CARMF](/blog/tout-comprendre-carmf) — au RSPM, l'URSSAF les encaisse pour son compte.
 
 ## 📅 Quand s'inscrire ?
 
