@@ -3927,6 +3927,22 @@ cohérent avec le glossaire du guide) ; FAQ « trajets de plus de 40 km » ; Sou
 réels ? » ; description réécrite. URL inchangée.
 ⚠️ Montants des revenus 2025 : à revoir chaque année.
 
+### 9.ch Chantier de fond, article 25 — micro-BNC en exemples, enrichi (25 septembre 2026)
+
+Exemples recalculés au § 9.bg : gardés. `updatedDate` au 25 septembre 2026,
+répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; mise au point « les cotisations ne se
+calculent pas sur ton CA » (recettes − 34 %, erreur n° 1 du corpus) ; « Et si tu
+démarres ? » — micro-BNC de plein droit les deux premières années (erreur n° 2 du
+corpus, déjà sourcée dans `regime-fiscal-micro-bnc-vs-reel` : art. 102 ter CGI,
+BOI-BNC-DECLA-20-10 § 134) et cotisations de départ puis régularisées (§ 9.bj) ; FAQ
+« Puis-je rester en micro-BNC si je dépasse 83 600 € dès ma première année ? » ;
+Sources (hypothèses du simulateur explicitées).
+
+**Titre** : « 2 exemples concrets de revenus en micro-BNC » → « Micro-BNC : 2 exemples
+chiffrés du CA au Super-Net ». URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
