@@ -163,6 +163,11 @@ const liensCasses = new Map(); // cible -> pages qui la référencent
 for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
   const source = f.replace(/\/index\.html$/, '') || '/';
+  // Octet nul : invisible à l'œil, mais le texte servi diffère de celui que
+  // l'îlot rend au client (hydratation ratée) et « mat\0ériel » n'est plus le
+  // mot « matériel » pour un moteur (§ 9.cp).
+  const nuls = html.split('\u0000').length - 1;
+  if (nuls) fail(`${source} : ${nuls} octet(s) nul(s) U+0000 dans le HTML construit`);
   for (const [, href] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
     const cible = href.split('#')[0].split('?')[0].replace(/\/$/, '') || '/';
     if (cible.startsWith('//')) continue; // protocole-relatif : externe
