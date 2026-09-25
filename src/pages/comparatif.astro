@@ -93,7 +93,7 @@ const TOOLS: Tool[] = [
     pitch:
       "Créé en 2024 par un médecin pour les médecins. Hippodoc pilote ton revenu net (Super-Net), tes URSSAF, ta CARMF, tes acomptes IR et tes déclarations, du remplaçant à l'installé.",
     bullets: [
-      'Calcul URSSAF temps réel (RSPM < 38 k€ vs PAMC)',
+      'Calcul URSSAF temps réel (RSPM ou PAMC)',
       'Super-Net mensuel + simulateur fiscal',
       'PDSA Art. 151 ter + aide DSFU PAMC + 2035 + 2042',
     ],
@@ -144,7 +144,7 @@ const GROUPS: Group[] = [
     icon: 'wallet',
     rows: [
       {
-        label: 'Calcul URSSAF temps réel (RSPM < 38 k€ vs PAMC)',
+        label: 'Calcul URSSAF temps réel (RSPM ou PAMC)',
         help: 'Distingue le régime simplifié des remplaçants (RSPM) du régime PAMC complet, automatiquement.',
         values: { indy: 'partial', pennylane: false, hiway: 'partial', hippodoc: true },
       },
@@ -262,7 +262,7 @@ const PERSONAS: { name: string; subtitle: string; icon: IconName; need: string; 
     name: 'Karim, hospitalier qui démarre des gardes',
     subtitle: 'Salarié + PDSA régulé exonéré',
     icon: 'stethoscope',
-    need: 'Distinguer ses majorations PDSA exonérées Art. 151 ter de ses actes imposables, anticiper le seuil RSPM 38 k€.',
+    need: 'Distinguer ses majorations PDSA exonérées Art. 151 ter de ses actes imposables, anticiper les seuils du RSPM (19 000 € et 38 000 €).',
     reco: 'Hippodoc : seule plateforme avec un moteur PDSA Art. 151 ter et auto-switch RSPM → PAMC.',
   },
 ];

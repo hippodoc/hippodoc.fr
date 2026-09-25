@@ -532,7 +532,7 @@ export function CalculetteForm() {
                   </TooltipTrigger>
                   <TooltipContent className="max-w-sm text-xs space-y-1.5">
                     <p><strong>PAMC</strong> (Praticien Auxiliaire Médical Conventionné) : régime par défaut. Tu remplis la <strong>DSFU (ex DS-PAMC)</strong>. Obligatoire pour les installés (S1/S2) et collaborateurs.</p>
-                    <p><strong>RSPM</strong> (Régime Simplifié des Professions Médicales) : sur option, réservé aux <strong>remplaçants</strong> &lt; 38 000 € de recettes conventionnées. Pas de DSFU : cotisations via <strong>DRI-PAMC</strong> (13,5 % ≤ 19 k€, 21,2 % au-delà) + CARMF RID.</p>
+                    <p><strong>RSPM</strong> (Régime Simplifié des Professions Médicales) : sur option, réservé aux <strong>remplaçants</strong>, ouvert jusqu'à 19 000 € d'honoraires par an ; perdu au 1<sup>er</sup> janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. Pas de DSFU : cotisations via <strong>DRI-PAMC</strong> (13,5 % ≤ 19 k€, 21,2 % au-delà) + CARMF RID.</p>
                     <p className="text-muted-foreground pt-1 border-t border-border/40">Bascule en PAMC l'année <strong>suivant</strong> le dépassement (CSS Art. L646-1) — d'où le bouton « Forcer » pour la 1<sup>re</sup> année titulaire restée en RSPM transitoire.</p>
                   </TooltipContent>
                 </Tooltip>

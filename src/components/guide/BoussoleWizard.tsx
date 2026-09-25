@@ -690,7 +690,7 @@ export function BoussoleWizard() {
                         </TooltipTrigger>
                         <TooltipContent side="right" className="max-w-xs text-xs">
                           <p className="font-medium mb-1">Comment savoir ?</p>
-                          <p>Vérifie sur ton espace URSSAF (rubrique « Mon affiliation »). Par défaut tu démarres au RSPM ; l'URSSAF te bascule au PAMC dès que tu dépasses ~38 000 €/an de revenus libéraux ou que tu t'installes en cabinet.</p>
+                          <p>Vérifie sur ton espace URSSAF (rubrique « Mon affiliation »). Le RSPM est une option réservée aux remplaçants, ouverte jusqu'à 19 000 € d'honoraires par an. Tu le quittes au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 € ; sans cette option, ou dès que tu t'installes, tu es au PAMC.</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -698,8 +698,8 @@ export function BoussoleWizard() {
                   <p className="text-xs text-muted-foreground mb-4">Le régime social (URSSAF + CARMF) est <strong>indépendant</strong> du régime fiscal — c'est la confusion la plus fréquente.</p>
                   <div className="grid gap-3">
                     {[
-                      { v: 'rspm' as RegimeSocial, label: 'RSPM (Dispositif Simplifié)', desc: 'Revenus libéraux < ~38 000 €/an. Pas de DSFU. Cotisations trimestrielles 13,5 % / 21,2 %.', icon: Wallet },
-                      { v: 'pamc' as RegimeSocial, label: 'PAMC (Praticiens Conventionnés)', desc: 'Revenus ≥ ~38 000 € OU installé/conventionné. DSFU obligatoire (DSCS, DSAV…).', icon: ShieldCheck },
+                      { v: 'rspm' as RegimeSocial, label: 'RSPM (Dispositif Simplifié)', desc: "Option des remplaçants, ouverte jusqu'à 19 000 €/an d'honoraires (l'année d'un dépassement, tu y restes). Pas de DSFU. Cotisations mensuelles ou trimestrielles, 13,5 % / 21,2 %.", icon: Wallet },
+                      { v: 'pamc' as RegimeSocial, label: 'PAMC (Praticiens Conventionnés)', desc: 'Installé, collaborateur, ou remplaçant hors RSPM (jamais entré, ou sorti après un dépassement). DSFU obligatoire (DSCS, DSAV…).', icon: ShieldCheck },
                     ].map(r => {
                       const Icon = r.icon;
                       const isSel = regimeSocial === r.v;

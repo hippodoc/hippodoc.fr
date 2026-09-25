@@ -43,7 +43,7 @@ export const CALCULETTE_EXAMPLES: CalculetteExample[] = [
   {
     id: 'remplacant-rspm-micro',
     label: 'Remplaçant débutant — 25 k€ (RSPM)',
-    description: 'Médecin remplaçant non-titulaire en RSPM (recettes < 38 k€). Pas de DSFU à remplir, cotisations URSSAF via la DRI.',
+    description: "Médecin remplaçant non-titulaire au RSPM : 25 k€, au-dessus de 19 k€ mais pour la première année et sous 38 k€, donc sans sortie. Pas de DSFU à remplir, cotisations URSSAF via la DRI.",
     values: {
       ...CALCULETTE_DEFAULTS,
       profil: 'remplacant',
@@ -56,7 +56,7 @@ export const CALCULETTE_EXAMPLES: CalculetteExample[] = [
   {
     id: 'remplacant-reel',
     label: 'Remplaçant pur — 60 k€ (réel, PAMC)',
-    description: 'Médecin remplaçant à plein temps, BNC réel, AGA, IJ Madelin. Au-delà de 38 k€ → PAMC.',
+    description: 'Médecin remplaçant à plein temps, BNC réel, AGA, IJ Madelin. Hors RSPM (jamais entré, ou sorti après un dépassement) → PAMC.',
     values: {
       ...CALCULETTE_DEFAULTS,
       profil: 'remplacant',
@@ -150,7 +150,7 @@ export const CALCULETTE_EXAMPLES: CalculetteExample[] = [
   {
     id: 'micro-bnc-50k',
     label: 'Remplaçant Micro-BNC — 50 k€ (PAMC)',
-    description: 'Remplaçant Micro-BNC au-delà de 38 k€ : DSFU complète, régime PAMC.',
+    description: 'Remplaçant Micro-BNC au PAMC (hors RSPM) : DSFU complète.',
     values: {
       ...CALCULETTE_DEFAULTS,
       profil: 'remplacant',
