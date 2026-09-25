@@ -4198,6 +4198,30 @@ Corrigé :
 - `getCarmfLabel` (`src/lib/carmfStatus.ts`, « Dispensé·e (remplaçant·e < 38 000 €) ») :
   non affiché sur le site (seul `normalizeCarmfStatus` est utilisé).
 
+### 9.cs Codes des majorations PDSA : CRS n'existe pas (25 septembre 2026)
+
+Point laissé ouvert : le glossaire et la boussole citaient « CRD, CRS, CRN, VRN, VRS »,
+l'article PDSA « CRD / CRN / CRM / CRS, VRD / VRN / VRM / VRS ». Vérifié sur ameli.fr
+(« Tarifs conventionnels des médecins généralistes et spécialistes », tableau 2026) et
+recoupé avec la fiche SML « Quelles sont les règles de défiscalisation de la PDSA ? » :
+- majorations de permanence des soins régulée : **CRN, CRM, CRD** (cabinet) et
+  **VRN, VRM, VRD, VRS** (visite). **CRS n'existe pas** (le samedi n'a de majoration
+  régulée qu'en visite, VRS) ; CRM, VRM et VRD manquaient au guide ;
+- rémunération d'astreinte (montant fixé par le cahier des charges de l'ARS) : **PRN**
+  (nuit), **PRD** (dimanche et fériés), **RSP** (samedi après-midi) — RSP manquait.
+
+Corrigé : 14 listes de codes (boussole, glossaire PDSA, infobulles de la calculette,
+un exemple de la calculette « CRD/CRS » → « CRD/VRD ») ; article PDSA (liste de codes
++ source ameli ajoutée ; `updatedDate` inchangée : correction ponctuelle). ZG-009
+(position B) : « le BOFIP liste limitativement les majorations NGAP (…) » → le BOFiP
+vise la rémunération d'astreinte et les majorations spécifiques du tableau
+conventionnel (il ne nomme aucun code).
+
+**À trancher (fondateur)** — ZG-009 conclut que l'« indemnité forfaitaire CPAM de
+régulation » est imposable faute d'être « listée nommément ». Or le BOFiP (§ 60) parle
+d'une « rémunération forfaitaire de régulation et d'astreinte » dans la partie
+« Rémunération de l'astreinte », donc exonérable. Conseil fiscal non modifié ici.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

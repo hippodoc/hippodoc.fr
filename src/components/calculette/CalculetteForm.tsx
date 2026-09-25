@@ -716,7 +716,7 @@ export function CalculetteForm() {
                 <h4 className="text-sm font-semibold text-foreground">PDSA exonérée — Art. 151 ter</h4>
                 <span className="text-[10px] uppercase tracking-wide text-muted-foreground bg-muted/40 rounded px-1.5 py-0.5">Indépendant de ZFU/ZFRR</span>
               </div>
-              <FieldRow field={{ name: 'pdsaExonereBrut', label: 'PDSA exonérée — montant BRUT', case: 'PDSA', hint: 'Majorations CRD/CRS/CRN/VRN/VRS + forfaits PRD/PRN d\'astreinte en zone déficitaire. Exonérées d\'IR mais soumises aux cotisations sociales. Pré-déduites de 5HQ et reportées en NET (×0,66) en case DSFA de la DSFU. ⚠️ Ne JAMAIS reporter en 5HP (réservée ZFU/ZRR/JEI).' }} />
+              <FieldRow field={{ name: 'pdsaExonereBrut', label: 'PDSA exonérée — montant BRUT', case: 'PDSA', hint: 'Majorations CRN/CRM/CRD/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP d\'astreinte en zone déficitaire. Exonérées d\'IR mais soumises aux cotisations sociales. Pré-déduites de 5HQ et reportées en NET (×0,66) en case DSFA de la DSFU. ⚠️ Ne JAMAIS reporter en 5HP (réservée ZFU/ZRR/JEI).' }} />
             </div>
 
             {/* Phase 14.1 — Sous-section 3 — Exonération zonée ZFU/ZFRR */}
@@ -786,7 +786,7 @@ export function CalculetteForm() {
           {/* V18 — PDSA exonérée (Art. 151 ter) en régime réel */}
           {!isMicro && (
             <div className="sm:col-span-2">
-              <FieldRow field={{ name: 'pdsaExonereBrut', label: 'PDSA exonérée (Art. 151 ter) — montant BRUT', case: 'PDSA', hint: 'Majorations CRD/CRS/CRN/VRN/VRS + forfaits PRD/PRN d\'astreinte. Exonérée d\'IR — à déduire via la ligne CI (cadre 7 « Divers à déduire ») de ta 2035. Côté social : la ligne CI figure dans la formule du RBS → réintégration AUTOMATIQUE en DSDE/DSDG. ⚠️ Ne JAMAIS reporter en DSFA (réservée au micro-BNC) ni en 5QB (réservée ZFU/ZRR/JEI).' }} />
+              <FieldRow field={{ name: 'pdsaExonereBrut', label: 'PDSA exonérée (Art. 151 ter) — montant BRUT', case: 'PDSA', hint: 'Majorations CRN/CRM/CRD/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP d\'astreinte. Exonérée d\'IR — à déduire via la ligne CI (cadre 7 « Divers à déduire ») de ta 2035. Côté social : la ligne CI figure dans la formule du RBS → réintégration AUTOMATIQUE en DSDE/DSDG. ⚠️ Ne JAMAIS reporter en DSFA (réservée au micro-BNC) ni en 5QB (réservée ZFU/ZRR/JEI).' }} />
             </div>
           )}
           {/* B3 — Checkbox anti-double-déduction CV (réel uniquement, si CV saisis) */}
