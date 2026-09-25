@@ -3754,6 +3754,28 @@ rétrocession) ; FAQ « Puis-je facturer avec la carte CPS du remplacé ? » ; S
 **Titre** : « Checklist avant ton 1er remplacement » → « Premier remplacement médical :
 la checklist du jour J » ; description réécrite. URL inchangée.
 
+### 9.by Chantier de fond, article 16 — frais professionnels déductibles, enrichi (25 septembre 2026)
+
+`updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Corrigé**
+- Repas : « jusqu'à environ 15 € par repas » → règle des frais supplémentaires de
+  repas, valeurs BOFiP 2026 : part au-delà de 5,50 € dans la limite de 21,40 €, soit
+  15,90 € au maximum (corps et FAQ ; ACTU-2026-00008, BOI-BNC-BASE-40-60-60).
+- Assurances : « prévoyance » rangée avec la RCP → RCP / local / matériel en ligne 22 ;
+  prévoyance et mutuelle déductibles seulement en contrat Madelin, dans ses plafonds,
+  ligne 25 (cohérent avec le § 9.bg).
+- Section « Charges professionnelles déductibles (Régime réel) » vide → phrase de
+  cadrage (dépense engagée pour l'activité, payée, justifiée).
+
+**Ajouté** : « L'essentiel » ; renvoi explicite vers le guide long
+`frais-pros-medecin-liberal-2026` (cette fiche = la liste rapide, pour éviter la
+cannibalisation) ; Sources.
+
+**Titre** : « Déductions fiscales : payer moins d'impôt » → « Frais déductibles au
+régime réel : la liste du médecin » (distinct de « Frais pros du médecin libéral
+2026 ») ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
