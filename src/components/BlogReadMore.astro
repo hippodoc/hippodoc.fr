@@ -1,0 +1,49 @@
+---
+/**
+ * Encadré « Sur le blog » des pages hors blog (simulateur, guide des déclarations
+ * et ses sous-pages) — MIGRATION.md § 9.co.
+ *
+ * Ces pages ne liaient aucun article en dehors du pied de page : le guide des
+ * déclarations, page la plus riche du site, n'envoyait vers aucune fiche. Les
+ * titres sont lus dans la collection, jamais recopiés : un article renommé suit
+ * tout seul, et un slug inexistant fait échouer le build plutôt que de publier un
+ * lien mort.
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  /** Slugs des articles, dans l'ordre d'affichage. */
+  slugs: string[];
+  titre?: string;
+  /** Emplacement, pour l'autocapture PostHog (`data-ph="blog_readmore_<emplacement>"`). */
+  emplacement: string;
+}
+
+const { slugs, titre = 'Sur le blog', emplacement } = Astro.props;
+const posts = await getCollection('blog');
+const articles = slugs.map((slug) => {
+  const post = posts.find((p) => p.id === slug);
+  if (!post) throw new Error(`BlogReadMore : l'article « ${slug} » n'existe pas`);
+  return post;
+});
+---
+
+<aside
+  class="rounded-2xl border border-hippo-100 bg-hippo-50/50 p-6"
+  aria-label={titre}
+>
+  <h2 class="mb-3 text-lg font-bold text-hippo-800">{titre}</h2>
+  <ul class="space-y-2">
+    {articles.map((a) => (
+      <li>
+        <a
+          href={`/blog/${a.id}`}
+          data-ph={`blog_readmore_${emplacement}`}
+          class="font-medium text-hippo-700 underline-offset-2 hover:underline"
+        >
+          → {a.data.title}
+        </a>
+      </li>
+    ))}
+  </ul>
+</aside>
