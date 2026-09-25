@@ -429,3 +429,12 @@ Hippodoc t'aide à suivre tes rétrocessions au fil de l'eau, anticiper tes coti
 :::
 
 *Article informatif, à jour pour la déclaration 2026 des revenus 2025. Il ne remplace pas un avis personnalisé d'expert-comptable, notamment en cas de dépassement de seuil, régime réel, activité mixte, installation, situation familiale particulière, arrêt maladie/maternité ou rémunérations PDSA complexes.*
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Micro-BNC (seuil de 77 700 € applicable aux revenus 2025, abattement de 34 %, cases 5HQ / 5IQ) : [entreprendre.service-public.gouv.fr, fiche F32105](https://entreprendre.service-public.gouv.fr/vosdroits/F32105) ; CGI, art. 102 ter.\
+• Abattement de 10 % sur les salaires et frais réels : [service-public.gouv.fr, fiche F1989](https://www.service-public.gouv.fr/particuliers/vosdroits/F1989) ; règle des 40 km : [impots.gouv.fr](https://www.impots.gouv.fr/particulier/questions/existe-t-il-une-limite-liee-leloignement-de-mon-travail-et-de-mon-domicile).\
+• RSPM, conditions et portail : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html) ; taux : Code de la sécurité sociale, [art. D. 642-4-2](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656695) et [D. 642-4-3](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656684).\
+• Invalidité-décès de l'offre simplifiée (157 € ou 626 €) : barème CARMF 2026, [carmf.fr](https://www.carmf.fr/page.php?page=cdrom/coti/coti-cours.htm).\
+• Exonération PDSA : CGI, art. 151 ter ; [BOFiP BOI-BNC-CHAMP-10-40-20](https://bofip.impots.gouv.fr/bofip/2818-PGP.html/identifiant=BOI-BNC-CHAMP-10-40-20-20151202).\
+• Exemples chiffrés : barème de l'impôt 2026 sur les revenus 2025, décote comprise.

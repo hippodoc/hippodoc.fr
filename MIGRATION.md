@@ -4046,6 +4046,33 @@ ACTU-2025-00136).
 ZFANG hors Mayotte, classement des DROM en ZIP. Ces points ne figurent pas dans les
 Sources.
 
+### 9.cn Sections Sources, seconde vague (3/3) : frais pros 2026, internes, inbox zéro (25 septembre 2026)
+
+**`frais-pros-medecin-liberal-2026`** — vérifié : micro-BNC 83 600 € ; repas 2026 ;
+réduction OGA supprimée ; crédit d'impôt formation des dirigeants supprimé pour les
+formations depuis le 1er janvier 2025 (BOFiP ACTU-2026-00044) ; ZFU-TE fermées aux
+nouvelles implantations depuis 2026 et nouveau dispositif QPV 2026-2030 (BOFiP,
+service-public A18806) ; PDSA ; **DAS2 au-delà de 2 400 €** (relevé depuis les revenus
+2024, BOFiP ACTU-2024-00154 — l'article avait raison) ; CESU préfinancé 2 591 €
+(cesu.urssaf.fr).
+**Corrigé** : SMIC figé à 1 823 € (« à actualiser ») alors qu'il a été revalorisé au
+1er juin 2026 → 1 823,03 € au 1er janvier puis 1 867,02 € (service-public A18916) ;
+plafonds ANCV recalculés en conséquence (≈ 547 € puis ≈ 560 € côté social), 4 endroits.
+`updatedDate` au 25 septembre 2026. **Non revérifié** : les règles propres au
+chèque-vacances des TNS (plafond fiscal d'un SMIC, plafond social de 30 %) — seuls les
+montants du SMIC ont été actualisés.
+
+**`guide-impots-internes-remplacants`** — vérifié : seuil 77 700 € des revenus 2025,
+abattement 10 %, 40 km, RSPM, invalidité-décès, PDSA ; exemple recalculé (28 000 € +
+12 000 € → 33 120 € imposables, ≈ 3 040 € d'impôt, sans décote). Sources seulement.
+
+**`inbox-zero-remplacant`** — vérifié : guide HAS-CNIL 2026 sur l'IA en contexte de
+soins (cnil.fr, mars 2026) ; la méthode de tri est présentée comme méthode maison.
+Non sourcé : la recommandation du CNOM sur le téléphone personnel (non retrouvée).
+
+**Bilan** : les 46 articles ont une section Sources (celle de `base-financiere-rempla`
+s'intitule « D'où vient la règle 50/30/20 ? »).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

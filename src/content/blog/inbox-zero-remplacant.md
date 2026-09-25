@@ -154,3 +154,9 @@ Tu ne cherches pas à tout faire instantanément. Tu cherches à ce que rien d'i
 À la fin d'une bonne journée, il ne reste pas "plein de choses en tête". Il reste seulement ce qui est : **fait, daté, transmis, ou clairement repris par quelqu'un.**
 
 Et c'est exactement ce qu'on veut en remplacement : **zéro flou avant de partir.**
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• HAS et CNIL, guide « [Accompagner le bon usage des systèmes d'IA en contexte de soins](https://www.cnil.fr/sites/default/files/2026-03/guide_has_cnil_recommandations_ia.pdf) » (2026) : relecture par le professionnel des contenus générés par l'IA.\
+• HAS, « [Premières clefs d'usage de l'IA générative en santé](https://www.has-sante.fr/jcms/p_3703115/fr/premieres-clefs-d-usage-de-l-ia-generative-en-sante) ».\
+• Méthode de tri (3Q, rouge / jaune / vert, 90 secondes, créneaux fixes) : méthode de travail Hippodoc, pas une norme officielle.
