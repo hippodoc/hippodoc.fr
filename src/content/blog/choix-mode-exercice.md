@@ -1,14 +1,14 @@
 ---
-title: "Médecin remplaçant : les 8 statuts clés"
+title: "Modes d'exercice du médecin : les 8 statuts"
 description: "Libéral, salariat, collaboration, mixte… découvre les 8 modes d'exercice pour bien débuter et choisir celui qui te correspond."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-23"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 1
-readTime: "6 min"
+readTime: "7 min"
 cta: "Prêt à suivre ce que te rapporte vraiment chaque mode d'exercice ?"
 cover: "/blog/choix-mode-exercice-cover.png"
 tags:
@@ -20,6 +20,8 @@ faq:
     answer: "Oui, le **statut mixte** est légal et courant. Tu peux être salarié pour la sécurité et faire du libéral pour la liberté et compléter tes revenus. Attention aux clauses d'exclusivité dans certains contrats."
   - question: "Quel statut choisir quand on débute ?"
     answer: "Pour débuter sereinement, le **salariat** offre stabilité et protection sociale complète. Le **remplacement libéral** est idéal si tu veux plus de flexibilité et un meilleur potentiel de revenus."
+  - question: "Quelle différence entre remplaçant et collaborateur libéral ?"
+    answer: "Le **remplaçant** exerce à la place d'un médecin absent, temporairement, et lui reverse une part des honoraires. Le **collaborateur libéral** exerce **en même temps** que le titulaire, dans son cabinet, développe **sa propre patientèle** et lui verse une redevance. Le collaborateur est conventionné : il a accès, par exemple, à l'aide maternité de l'Assurance Maladie, dont les remplaçants sont exclus."
   - question: "Quels sont les avantages du remplacement libéral ?"
     answer: "Le remplacement libéral offre : **flexibilité totale** du planning, **rémunération attractive** (70-90% des honoraires en médecine générale, 60-70% avec plateau technique), formation variée, pas de gestion de cabinet, et liberté géographique."
 relatedArticles:
@@ -30,6 +32,28 @@ relatedArticles:
 
 Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréquents 👇
 
+:::essentiel
+**L'essentiel**
+
+- En **libéral** (remplacement, collaboration, MSP), tu cotises à l'URSSAF et à la CARMF ; en **salariat** et en **intérim**, au régime général.
+- Le **remplacement** est temporaire ; la **collaboration** te permet de te constituer ta propre patientèle.
+- L'**intérim** exige désormais **deux ans d'exercice** avant une première mission.
+- Tu peux **cumuler** salariat et libéral, dans le respect de ton contrat de travail.
+:::
+
+## 🗺️ En un coup d'œil
+
+| Mode | Statut | Cotisations |
+|---|---|---|
+| Remplacement | Libéral | URSSAF, CARMF |
+| Salariat | Salarié | Régime général |
+| Collaboration | Libéral | URSSAF, CARMF |
+| Mixte | Les deux | Les deux |
+| Vacations | Selon contrat | Selon contrat |
+| Intérim | Salarié | Régime général |
+| MSP | Libéral | URSSAF, CARMF |
+| Télémédecine | Selon contrat | Selon contrat |
+
 ## 🏥 1. Remplacement Libéral
 
 • **Statut** : Libéral (BNC)\
@@ -39,6 +63,8 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 ✅ **+** : Flexible, formateur, bien payé, sans gestion de cabinet\
 ⚠️ **-** : Revenus irréguliers
 
+💡 À savoir : si tu n'es pas thésé(e), chaque remplacement est autorisé par le conseil départemental pour 3 mois au plus. Et en libéral, un arrêt maladie n'est indemnisé par la CPAM qu'après **12 mois d'affiliation** : ta première année n'est pas couverte.
+
 ## 💼 2. Salariat (Hôpital, Centre de Santé)
 
 • **Statut** : Salarié (CDD/CDI)\
@@ -47,6 +73,8 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 ✅ **+** : Stabilité, congés payés\
 ⚠️ **-** : Moins d'autonomie, horaires fixes, salaire plafonné
 
+💡 À l'hôpital public, un remplaçant est en général **praticien contractuel** : 41 386 € à 71 163 € brut par an à temps plein, hors primes et gardes — [le guide du remplacement salarié](/blog/remplacement-salarie-guide-complet).
+
 ## 🤝 3. Collaboration Libérale
 
 • **Statut** : Libéral (BNC)\
@@ -54,6 +82,8 @@ Voici un panorama clair, rapide et concret des 8 modes d'exercice les plus fréq
 
 ✅ **+** : Développer sa patientèle, tremplin vers l'installation\
 ⚠️ **-** : Pas de revenu garanti, redevance parfois élevée
+
+💡 La différence avec le remplacement : le collaborateur exerce **en même temps** que le titulaire, dans son cabinet, et se constitue **sa propre patientèle**. Il est conventionné, ce qui lui ouvre par exemple l'[aide maternité de l'Assurance Maladie](/blog/conge-maternite-paternite), fermée aux remplaçants.
 
 ## ⚖️ 4. Exercice Mixte
 
@@ -113,5 +143,5 @@ Quel que soit ton statut, Hippodoc t'aide à :
 
 📊 Une vision claire, précise et complète de ta carrière médicale. Le tout, au même endroit.
 
-👇 Et toi, tu choisis quoi ? Partage ton expérience en commentaire !
+👇 Et toi, tu choisis quoi ? Raconte-nous ton parcours à contact@hippodoc.fr !
 :::

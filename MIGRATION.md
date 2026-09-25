@@ -3776,6 +3776,24 @@ cannibalisation) ; Sources.
 régime réel : la liste du médecin » (distinct de « Frais pros du médecin libéral
 2026 ») ; description réécrite. URL inchangée.
 
+### 9.bz Chantier de fond, article 17 — modes d'exercice, enrichi (25 septembre 2026)
+
+Les 8 fiches d'origine gardées telles quelles (intérim corrigé au § 9.bg).
+`updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Corrigé** : « Partage ton expérience en commentaire ! » (reliquat Instagram, le blog
+n'a pas de commentaires) → « Raconte-nous ton parcours à contact@hippodoc.fr ! ».
+
+**Ajouté (texte nouveau)**, règles déjà vérifiées ailleurs : « L'essentiel » ;
+tableau « En un coup d'œil » (mode, statut, cotisations — vérifié en mobile) ; trois
+« 💡 » : remplacement (autorisation de 3 mois pour les non-thésés ; pas d'IJ CPAM la
+première année, § 9.bs), salariat (praticien contractuel, § 9.bk), collaboration
+(exercice simultané, patientèle propre, accès à l'aide maternité conventionnelle,
+§ 9.bm) ; FAQ « Quelle différence entre remplaçant et collaborateur libéral ? ».
+
+**Titre** : « Médecin remplaçant : les 8 statuts clés » → « Modes d'exercice du
+médecin : les 8 statuts ». URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
