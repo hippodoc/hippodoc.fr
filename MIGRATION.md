@@ -3911,6 +3911,22 @@ factures électroniques depuis le 1er septembre 2026 (§ 9.ar–9.az) ; en déce
 remplaçant, mois par mois » ; description réécrite. URL inchangée.
 ⚠️ Article daté 2026 : dates à revoir chaque année (déclaration de revenus, 2035).
 
+### 9.cg Chantier de fond, article 24 — salariat : 10 % ou frais réels, enrichi (25 septembre 2026)
+
+Contenu et exemples d'origine gardés (base corrigée au § 9.ba : net imposable).
+`updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Les règles qui changent le calcul » —
+trajets limités à 40 km sauf circonstances justifiées (impots.gouv.fr) ; repas : part
+au-delà de 5,45 € avec justificatif, 5,45 € par repas sans (impots.gouv.fr, revenus
+2025 — à ne pas confondre avec les 5,50 € des BNC 2026 du § 9.by) ; justificatifs
+conservés 3 ans ; plancher 509 € et plafond 14 555 € de l'abattement (service-public,
+cohérent avec le glossaire du guide) ; FAQ « trajets de plus de 40 km » ; Sources.
+
+**Titre** : « Salariat : 10 % ou frais réels ? » → « Médecin salarié : 10 % ou frais
+réels ? » ; description réécrite. URL inchangée.
+⚠️ Montants des revenus 2025 : à revoir chaque année.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

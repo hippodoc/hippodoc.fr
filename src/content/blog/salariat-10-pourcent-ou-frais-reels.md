@@ -1,14 +1,14 @@
 ---
-title: "Salariat : 10 % ou frais réels ?"
-description: "En salariat aussi, tu peux déduire tes frais pro. Comment choisir entre abattement 10 % et frais réels pour payer moins d'impôt."
+title: "Médecin salarié : 10 % ou frais réels ?"
+description: "Interne, praticien salarié, intérim : abattement de 10 % ou frais réels ? Les règles (40 km, repas, justificatifs) et deux exemples chiffrés pour bien choisir."
 pubDate: "2025-12-25"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
 episodeNumber: 5
-readTime: "4 min"
+readTime: "6 min"
 cover: "/blog/salariat-10-frais-reels-cover.jpg"
 tags:
   - "Guide et Conseil"
@@ -20,6 +20,8 @@ faq:
     answer: "Sont déductibles : les **trajets domicile-travail** (barème kilométrique), le **parking**, les **repas sur place**, le **matériel professionnel** (blouse, stéthoscope), la **RCP** à ta charge, et les **formations obligatoires**."
   - question: "Comment savoir si les frais réels sont plus avantageux ?"
     answer: "Calcule le total de tes frais pro déductibles et compare avec 10% de ton **salaire net imposable** (case 1AJ), pas de ton brut. **Si tes frais réels dépassent les 10%**, opte pour les frais réels. Sinon, garde l'abattement forfaitaire."
+  - question: "Mes trajets de plus de 40 km sont-ils déductibles ?"
+    answer: "En principe, seuls les **40 premiers kilomètres** (80 km aller-retour) comptent. Tu peux déduire la distance complète si tu la justifies par des circonstances particulières liées à ton emploi ou à ta situation familiale — pas par simple préférence."
   - question: "Peut-on changer de méthode chaque année ?"
     answer: "Oui, tu peux **choisir librement chaque année** entre l'abattement 10% et les frais réels, selon ta situation. Tu n'es pas engagé sur plusieurs années."
 relatedArticles:
@@ -28,6 +30,15 @@ relatedArticles:
   - "remplacement-salarie-guide-complet"
   - "frais-professionnels-deductibles"
 ---
+
+:::essentiel
+**L'essentiel**
+
+- Par défaut, l'administration retire **10 %** de ton salaire net imposable (au moins 509 €, au plus 14 555 € par personne sur les revenus 2025).
+- Les **frais réels** ne valent le coup que s'ils dépassent ces 10 % — souvent quand tu fais beaucoup de route.
+- Trajets : **40 km** pris en compte au plus, sauf circonstances justifiées. Repas : la part qui dépasse **5,45 €**.
+- Tu peux changer d'option **chaque année** ; garde tes justificatifs **3 ans**.
+:::
 
 Oui : **en [salariat](/blog/salariat-vs-liberal) aussi, tu peux déduire tes frais pro.** Voici tout ce que tu dois savoir pour faire le bon choix fiscal.
 
@@ -70,6 +81,13 @@ Tu déduis le **montant exact** de tes dépenses professionnelles — le [guide 
 • 📜 DU, formations obligatoires (peut varier selon les situations)
 
 ❌ **Non déductible :** frais personnels, trajets occasionnels, repas pris à domicile
+
+## 📏 Les règles qui changent le calcul
+
+🚗 **Trajets domicile-travail** : si tu habites à plus de **40 km** de ton lieu de travail, seuls les 40 premiers kilomètres comptent (80 km aller-retour), sauf si tu justifies la distance par des circonstances particulières liées à ton emploi ou à ta famille.\
+🍽️ **Repas** : avec justificatif, tu déduis la part du repas qui dépasse **5,45 €** (valeur d'un repas pris à la maison, revenus 2025) ; sans justificatif, tu déduis **5,45 € par repas**.\
+📂 **Justificatifs** : à conserver **3 ans** et à tenir à disposition de l'administration.\
+🧮 **Le 10 % a un plancher et un plafond** : **509 €** au minimum et **14 555 €** au maximum par membre du foyer, sur les revenus 2025.
 
 ## 4️⃣ Exemple A — "Je bosse pas loin"
 
@@ -138,3 +156,9 @@ Hippodoc t'aide à :
 
 👉 Le tout, directement depuis ton espace remplaçant.
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• service-public.gouv.fr, « [Frais réels](https://www.service-public.gouv.fr/particuliers/vosdroits/F1989) » : plancher de 509 €, plafond de 14 555 €, justificatifs conservés 3 ans.\
+• impots.gouv.fr, « [Existe-t-il une limite liée à l'éloignement de mon travail ?](https://www.impots.gouv.fr/particulier/questions/existe-t-il-une-limite-liee-leloignement-de-mon-travail-et-de-mon-domicile) » : règle des 40 km.\
+• impots.gouv.fr, « [Frais de repas](https://www.impots.gouv.fr/particulier/frais-de-repas) » : valeur du repas pris au domicile, 5,45 € pour 2025.
