@@ -137,3 +137,10 @@ Statistiques claires pour voir tes patterns de revenus, comparer cabinets et ant
 :::
 
 🌱 **En bref**, le remplacement est un espace de liberté rare. Avec un peu de cadre, il devient une vraie opportunité pour construire la pratique qui te ressemble.
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Affiliation à la CARMF dans le mois : [carmf.fr, « Qui cotise à la CARMF ? »](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm).\
+• Indemnités journalières après 12 mois d'affiliation : [ameli.fr, « Les indemnités journalières du professionnel libéral »](https://www.ameli.fr/assure/remboursements/indemnites-journalieres-maladie-maternite-paternite/indemnites-journalieres-pour-maladie/arret-maladie-profession-liberale).\
+• CFE : fiche « Cotisation foncière des entreprises » d'entreprendre.service-public.gouv.fr (avis en ligne, échéance du 15 décembre, majoration de 5 %), détaillée dans [notre article CFE](/blog/cfe-medecin-remplacant).\
+• Régularisations et requalification : sources détaillées dans [l'article sur l'effet ciseaux](/blog/effet-ciseaux-regularisation-urssaf-medecin) et [celui sur la requalification](/blog/remplacement-regulier-requalification).

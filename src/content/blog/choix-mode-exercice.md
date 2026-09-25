@@ -145,3 +145,11 @@ Quel que soit ton statut, Hippodoc t'aide à :
 
 👇 Et toi, tu choisis quoi ? Raconte-nous ton parcours à contact@hippodoc.fr !
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Deux ans d'exercice avant une première mission d'intérim : [décret n° 2025-1147 du 28 novembre 2025](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000052953255).\
+• Autorisation de remplacement des non-thésés : [Conseil national de l'Ordre, « L'interne ou le docteur junior remplaçant »](https://www.conseil-national.medecin.fr/etudiant-interne-docteur-junior/linterne-docteur-junior-remplacant).\
+• Rémunération des praticiens contractuels : [arrêté du 8 juillet 2022, annexe III](https://www.legifrance.gouv.fr/loda/id/JORFTEXT000046029572).\
+• Indemnités journalières des libéraux : [ameli.fr, « Les indemnités journalières du professionnel libéral »](https://www.ameli.fr/assure/remboursements/indemnites-journalieres-maladie-maternite-paternite/indemnites-journalieres-pour-maladie/arret-maladie-profession-liberale).\
+• Aide maternité réservée aux installés et collaborateurs : [ameli.fr, « Aide financière maternité, paternité, adoption »](https://www.ameli.fr/medecin/exercice-liberal/vie-cabinet/aides-financieres/aide-financiere-maternite-paternite-adoption).

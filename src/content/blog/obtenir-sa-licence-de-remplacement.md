@@ -2,7 +2,7 @@
 title: "Licence de remplacement interne : dossier et délais"
 description: "Conditions, pièces du dossier, envoi au CDOM, délai de 2 à 4 semaines, validité annuelle et renouvellement : la démarche complète."
 pubDate: "2025-10-06"
-updatedDate: "2026-09-23"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -110,3 +110,8 @@ Côté revenus, le changement est plus net qu'il n'y paraît : les cotisations e
 :::tip
 L'application Hippodoc est un outil précieux qui te permet de gérer tes remplacements de façon intuitive et efficace : calendrier intelligent, gestion des contrats numériques, simulateur "[Super-Net](/blog/simulateur-super-net-combien-reste)" et suivi simplifié de tes paiements. Une aide précieuse pour débuter en toute sérénité !
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Conditions, pièces et démarches : [Conseil national de l'Ordre, « L'interne ou le docteur junior remplaçant »](https://www.conseil-national.medecin.fr/etudiant-interne-docteur-junior/linterne-docteur-junior-remplacant).\
+• Date d'échéance variable selon le département : sites des conseils départementaux, par exemple le [conseil départemental de l'Ordre du Puy-de-Dôme](https://conseil63.ordre.medecin.fr/la-licence-de-remplacement) (15 novembre) et celui [du Rhône](https://conseil69.ordre.medecin.fr/licence-de-remplacement) (30 novembre).

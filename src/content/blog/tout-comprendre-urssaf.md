@@ -118,7 +118,7 @@ En cas de doute sur le montant à saisir pour **ta** situation, pose la question
 📆 **Paiement** : mensuel (le **5** ou le **20** de chaque mois) ou trimestriel (les **5 février, mai, août et novembre**).\
 ⚠ **Attention** : Les cotisations de **début d'activité** sont forfaitaires et estimatives, puis **régularisées dès que ton revenu réel est déclaré** — la 1re année dès la déclaration de la 2e année, pas en 3ᵉ année : attention aux ajustements, et à [l'effet ciseaux](/blog/effet-ciseaux-regularisation-urssaf-medecin) ! Pense à mettre de côté pour éviter les surprises financières.\
 📞 **Besoin d'aide ?** Contacte l'URSSAF Médecin :\
-• ☎ **0806 804 209**\
+• ☎ **0 806 804 209** (choix 3, du lundi au vendredi de 9 h à 17 h)\
 • 📧 **offre.medecin.remplacant@urssaf.fr**
 :::
 
@@ -137,3 +137,11 @@ N'oublie jamais de **déduire tes cotisations URSSAF de tes revenus imposables**
 :::tip
 Avec **Hippodoc**, tu peux suivre en temps réel ton revenu réel (**« super-net »** après cotisations et impôts). Enregistre facilement tes cotisations URSSAF comme charges professionnelles et importe tes documents importants pour une gestion claire et sans mauvaises surprises ! 🚀
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Déclaration de début d'activité dans les 8 jours : [entreprendre.service-public.gouv.fr, fiche F36740](https://entreprendre.service-public.gouv.fr/vosdroits/F36740).\
+• RSPM, conditions et portail : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html) ; taux de 13,5 % et 21,2 % : Code de la sécurité sociale, [art. D. 642-4-2](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656695) et [art. D. 642-4-3](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656684).\
+• Réforme de l'assiette et abattement de 26 % : [urssaf.fr, « Réforme de l'assiette sociale et du barème des cotisations »](https://www.urssaf.fr/accueil/independant/comprendre-payer-cotisations/reforme-cotisations-independants.html).\
+• Invalidité-décès au RSPM : [carmf.fr, « Vos cotisations en cours d'activité »](https://www.carmf.fr/page.php?page=cdrom/coti/coti-cours.htm) (classe à 626 € en 2026).\
+• Contacts : [urssaf.fr, « Vos contacts pour l'offre simplifiée médecin remplaçant »](https://www.urssaf.fr/accueil/contacter-urssaf/pam-medecin-remplacant.html).

@@ -88,3 +88,11 @@ La dispense réduit tes charges, mais elle a un prix : pendant la période dispe
 :::tip
 Centralise et importe tous tes documents administratifs importants directement dans l'application Hippodoc. Fini les documents égarés et les heures passées à chercher, tout est désormais accessible facilement depuis ton smartphone ! 🌟
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Déclaration de début d'activité dans les 8 jours : [entreprendre.service-public.gouv.fr, fiche F36740](https://entreprendre.service-public.gouv.fr/vosdroits/F36740).\
+• Offre simplifiée (RSPM) : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html).\
+• Affiliation à la CARMF dans le mois, dispense sous 15 000 € : [carmf.fr, « Qui cotise à la CARMF ? »](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm).\
+• Carte CPS du remplaçant : [ameli.fr, « Les avantages de la télétransmission »](https://www.ameli.fr/medecin/exercice-liberal/facturation-remuneration/teletransmission-retour-noemie/teletransmission).\
+• Indemnités journalières après 12 mois d'affiliation : [ameli.fr, « Les indemnités journalières du professionnel libéral »](https://www.ameli.fr/assure/remboursements/indemnites-journalieres-maladie-maternite-paternite/indemnites-journalieres-pour-maladie/arret-maladie-profession-liberale).

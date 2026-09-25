@@ -3980,6 +3980,27 @@ en ont désormais un. `updatedDate` au 25 septembre 2026, répercutée dans `blo
   « gère ta retraite complémentaire » → retraite (base, complémentaire, ASV) et
   invalidité-décès ; rappel « pas d'IJ CPAM la première année » dans Prévoyance (§ 9.bs).
 
+### 9.ck Sections Sources, première vague (25 septembre 2026)
+
+Section « 📚 Sources » ajoutée à 9 articles dont tous les faits ont été vérifiés au fil
+du chantier : checklist administrative, réussir son remplacement, cotisations vs impôt,
+modes d'exercice, pièges du début, outils numériques, licence de remplacement,
+micro-BNC ou réel, URSSAF. Chaque ligne renvoie à la source primaire déjà consultée
+(carmf.fr, urssaf.fr, ameli.fr, CNOM, service-public, Légifrance, BOFiP). Aucune date
+relevée à tort : ces articles portaient déjà la mise à jour du 25 septembre.
+
+**Vérifié au passage (`tout-comprendre-urssaf`)** : le numéro 0 806 804 209 (précisé
+« choix 3, du lundi au vendredi de 9 h à 17 h ») et l'adresse
+offre.medecin.remplacant@urssaf.fr figurent sur la page contact officielle ; la page
+urssaf.fr de la réforme confirme l'assiette unique « revenu brut abattu de 26 % ».
+
+**Seconde vague (à faire, avec vérification)** : `enveloppes-investissement…` (dont le
+prélèvement forfaitaire à 31,4 %), `frais-pros-medecin-liberal-2026`,
+`guide-impots-internes-remplacants`, `inbox-zero-remplacant`,
+`interets-composes-meilleur-remplacement`, `medecin-outre-mer-avantages-fiscaux`,
+`simulateur-super-net-combien-reste` (abattements DOM, « 1er septembre 2025 »).
+`base-financiere-rempla` a déjà l'équivalent (« D'où vient la règle 50/30/20 ? »).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
