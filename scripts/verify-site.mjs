@@ -62,7 +62,11 @@ for (const url of urls) {
   const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.trim();
   if (!title) fail(`${url} : <title> absent`);
   else {
-    if (title.length > 70) warn(`${url} : titre long (${title.length} car.) : ${title}`);
+    // Contrat SEO : < 60 caractères affichés (entités décodées), au-delà Google
+    // tronque le titre dans les résultats (§ 9.cq).
+    const affiche = title.replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n))
+      .replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    if (affiche.length > 60) fail(`${url} : titre trop long (${affiche.length} car. > 60) : ${affiche}`);
     if (titles.has(title)) fail(`${url} : titre dupliqué avec ${titles.get(title)} : "${title}"`);
     titles.set(title, url);
   }

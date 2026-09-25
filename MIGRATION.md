@@ -4130,6 +4130,30 @@ l'octet près** à celui d'avant (identifiants `useId` compris) ; contre-épreuv
 l'alias, les 2 pages retrouvent leurs octets nuls et la garde échoue. Navigateur :
 recherche du guide, simulateur et calculette hydratés, console sans erreur.
 
+### 9.cq Titres trop longs, liens et formulaires accessibles (25 septembre 2026)
+
+**Titres ramenés sous 60 caractères** (contrat SEO, tronqués par Google au-delà) :
+- `/guide-declarations/calculette` : « HippoCalc 2026 — Calculette fiscale médecin libéral »
+  → « Calculette fiscale médecin libéral 2026 » (mot-clé d'abord) ;
+- `/politique-confidentialite` : « Politique de Confidentialité - Protection des Données »
+  → « Politique de confidentialité » ;
+- `/rgpd` : « Conformité RGPD - Protection des Données Personnelles »
+  → « Conformité RGPD et données personnelles ».
+Garde : `verify-site.mjs` échoue désormais au-delà de 60 caractères (entités décodées) ;
+c'était un simple avertissement au-delà de 70.
+
+**Accessibilité** (préexistant) :
+- 2042-C-PRO (96 → 100) et médecin remplaçant : liens dans le texte soulignés (ils ne se
+  distinguaient du texte que par la couleur, contraste 1,01:1 entre les deux).
+- Calculette (92 → 100) : les listes déroulantes et le champ « Année d'installation en
+  zone » sont reliés à leur libellé (`htmlFor`/`id`) — elles n'avaient pas de nom pour un
+  lecteur d'écran ; badge « case » en `hippo-700` plein (contraste 4,31 → conforme).
+
+**Correction du § 9.co** — `/simulateur` n'est pas sous l'objectif : 4 passes Lighthouse
+en production après § 9.cp donnent 97–100 en performance (TBT 0, CLS 0). Le 86 relevé
+était une variance de la simulation réseau de Lighthouse (même élément LCP, même
+décomposition dans toutes les passes). Rien à corriger.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
