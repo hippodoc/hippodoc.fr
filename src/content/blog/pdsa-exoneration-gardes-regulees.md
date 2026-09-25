@@ -66,7 +66,7 @@ Uniquement les **rémunérations spécifiques PDSA** :
 
 →✅ **Forfait d'astreinte** (ta rémunération de garde)\
 →✅ **Majorations PDSA régulées**, souvent codées CR… / VR…\
-(CRD / CRN / CRM / CRS, VRD / VRN / VRM / VRS)
+(au cabinet : CRN / CRM / CRD ; en visite : VRN / VRM / VRD / VRS)
 
 ⚠️ **À retenir** : astreinte + majorations PDSA CR/VR = part exonérable d'IR
 
@@ -135,4 +135,5 @@ Le tout centralisé au même endroit, que tu fasses du libéral, du [salariat](/
 
 • Code général des impôts, [art. 151 ter](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031930936) : exonération à hauteur de 60 jours de permanence par an, médecins ou leurs remplaçants installés en zone déficitaire.\
 • BOFiP, « [BNC — Exonérations spécifiques applicables aux médecins](https://bofip.impots.gouv.fr/bofip/2818-PGP.html/identifiant=BOI-BNC-CHAMP-10-40-20-20151202) » : astreinte et majorations spécifiques, perception à titre personnel, exclusion de la base du groupe III et des 3 %.\
+• Codes des majorations de permanence des soins régulée (CRN, CRM, CRD, VRN, VRM, VRD, VRS) : ameli.fr, « [Tarifs conventionnels des médecins généralistes et spécialistes](https://www.ameli.fr/medecin/exercice-liberal/facturation-remuneration/consultations-actes/tarifs/tarifs-conventionnels-medecins-generalistes-specialistes) ».\
 • Déclaration : [guide Hippodoc de la 2042-C-PRO](/guide-declarations/2042-c-pro).

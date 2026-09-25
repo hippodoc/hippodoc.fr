@@ -197,7 +197,7 @@ export const CALCULETTE_EXAMPLES: CalculetteExample[] = [
   {
     id: 'pdsa-zone-rurale',
     label: 'Installé S1 réel — 95 k€ + PDSA exonérée 8 k€',
-    description: 'Médecin S1 zone déficitaire avec PDSA Art. 151 ter : majorations CRD/CRS exonérées d\'IR. Déduction via ligne CI (cadre 7) de la 2035 → réintégration sociale automatique en DSDE.',
+    description: 'Médecin S1 zone déficitaire avec PDSA Art. 151 ter : majorations CRD/VRD exonérées d\'IR. Déduction via ligne CI (cadre 7) de la 2035 → réintégration sociale automatique en DSDE.',
     values: {
       ...CALCULETTE_DEFAULTS,
       profil: 'installe_s1',

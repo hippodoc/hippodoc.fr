@@ -81,7 +81,7 @@ export const calculetteSchema = z
     recettesMicroBnc: money,
     retrocessionsVerseesMicroBnc: money, // pré-déduites avant abatt. 34 % (CGI Art. 102 ter)
 
-    // V18 — PDSA exonérée Art. 151 ter (majorations CRD/CRS/CRN/VRN/VRS + forfaits PRD/PRN).
+    // V18 — PDSA exonérée Art. 151 ter (majorations CRN/CRM/CRD/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP).
     // Exonérée d'IR mais SOUMISE aux cotisations sociales → sort de 5HQ/5QC.
     // Micro-BNC : reportée en NET (×0,66) sur DSFA. Réel : déduite via ligne CI (cadre 7) de la 2035-B → réintégrée automatiquement en DSDE/DSDG par le RBS (DSFA = 0 en réel).
     pdsaExonereBrut: money,
