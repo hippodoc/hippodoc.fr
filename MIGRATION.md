@@ -3837,6 +3837,26 @@ l'ANS), sites vérifiés en ligne ; FAQ correspondante.
 
 Titre inchangé. URL inchangée.
 
+### 9.cc Chantier de fond, article 20 — checklist ultime, enrichie (25 septembre 2026)
+
+Checklist d'origine gardée. `updatedDate` ajoutée (25 septembre 2026), répercutée
+dans `blog-meta.json`.
+
+**Corrigé**
+- Conclusion « Reste connecté(e) : les prochains articles te guideront… » (annonce
+  périmée) → liens vers les fiches fiscales publiées.
+- Présentation « je suis le Dr X » : nuance ajoutée pour les non-thésés (le titre de
+  docteur vient avec la thèse ; « médecin remplaçant(e) du Dr Y »). Formulée sans
+  affirmation de sanction : les pages de l'Ordre consultées ne la détaillent pas.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; carte CPS propre (§ 9.bx) ; ligne
+« Facture de rétrocession » (mentions, 6 ans, § 9.bo) ; FAQ « non thésé et titre de
+docteur », « Que faire à la fin d'un remplacement ? ».
+
+**Titre** : « Checklist ultime du remplaçant » → « Réussir son remplacement : avant,
+pendant, après » (distinct de « Premier remplacement médical : la checklist du jour J »,
+pour éviter la cannibalisation) ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
