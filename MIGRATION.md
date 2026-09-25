@@ -3877,6 +3877,21 @@ site et avec `frais-pros-medecin-liberal-2026` (« Réduction OGA : supprimée �
 liens Légifrance (403 = blocage anti-robot du site, adresses issues des résultats
 officiels). Un lien vers la page du formulaire 2035 (404) corrigé avant publication.
 
+### 9.ce Chantier de fond, article 22 — pièges du début, enrichi (25 septembre 2026)
+
+Les 7 pièges d'origine gardés. `updatedDate` ajoutée (25 septembre 2026),
+répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)**, uniquement des règles déjà vérifiées : « L'essentiel » ;
+8e piège « Oublier l'administratif » (CARMF dans le mois § 9.bj ; avis de CFE en ligne
+et majoration de 5 % § 9.av ; régularisations / effet ciseaux § 9.aw ; pas d'IJ CPAM
+la première année § 9.bs ; requalification § 9.ay) avec un réflexe « point
+administratif mensuel » ; FAQ « Quels pièges administratifs coûtent le plus cher ? ».
+Intertitre « 8. Le tips Hippodoc » dénuméroté. Six liens internes ajoutés.
+
+**Titre** : « Les 7 pièges du début en remplacement » → « Remplaçant débutant : 8 pièges
+à éviter » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
