@@ -3479,6 +3479,33 @@ défaut de fond de l'article : il annonçait des montants « nets » sans dire d
 « nets » dans les intertitres d'origine (encaissé ou après cotisations) — à préciser
 par le fondateur s'il connaît la source.
 
+### 9.bl Chantier de fond, article 3 — RSPM en exemples, enrichi (25 septembre 2026)
+
+Même méthode (§ 9.bj). Les deux exemples de l'article ont été recalculés à la main
+et sont **justes** (décote de 226,03 €, impôt de 1 257 € à 38 000 €) : gardés tels
+quels. `updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Corrigé** : FAQ 1 et rappel « 21,2 % … jusqu'à 38 000 € » / « le plafond à ne pas
+dépasser pour y rester » → 21,2 % sur toute la part au-delà de 19 000 € (CSS,
+art. D. 642-4-3, sans limite haute) et règle de sortie du § 9.bh.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Qui peut en profiter ? » (les trois
+conditions de l'URSSAF, salariés, étudiants, retraités et régulateurs compris) ;
+« Comment ça marche au quotidien ? » (portail, début d'activité, déclaration mensuelle
+ou trimestrielle, rien à déclarer sans remplacement, interlocuteur unique) ;
+« RSPM ou régime classique : l'écart en euros » (tableau) ; FAQ « Comment adhérer
+au RSPM ? » ; section Sources liée.
+
+**Comparaison au régime classique** : cotisations PAMC tirées du moteur
+`calculate-urssaf` (secteur 1, hors deux premières années) : 19 000 € → ≈ 6 946 €,
+38 000 € → ≈ 10 937 €, soit un gain RSPM d'environ 4 200 € par an dans les deux cas.
+⚠️ Le moteur renvoie un impôt SANS décote (103 € et 1 483 € au lieu de 0 € et
+1 257 €) : confirmation de l'écart signalé au § 9.at, côté app. L'impôt étant le même
+dans les deux régimes, le tableau ne compare que les cotisations.
+
+**Titre** : « RSPM : 2 exemples concrets - Du CA au Super-Net » → « RSPM médecin
+remplaçant : exemples chiffrés 2026 » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
