@@ -4104,6 +4104,32 @@ proposée). 2042-C-PRO : accessibilité 96, également préexistante.
 (6 sur le hub, 1 sur 2042-C-PRO), introduits au rendu — les données sources sont
 propres. Ignorés par les navigateurs (norme HTML), mais à corriger : tâche séparée.
 
+### 9.cp Octets nuls dans le HTML des îlots React (25 septembre 2026)
+
+Suite du « trouvé en route » du § 9.co. Aucun changement de texte.
+
+**Cause** — défaut de React 18.3 dans son serveur Node (`writeStringChunk` de
+`react-dom-server.node`) : quand un caractère accentué ne tient plus en fin de tampon,
+React envoie le tampon **entier**, octets restés vides compris. D'où « mat\0ériel »
+(1 octet manquant pour « é ») ou « \0\0— » (2 pour le tiret cadratin). Seules les pages
+à gros îlots étaient touchées (/guide-declarations : 6, /guide-declarations/2042-c-pro : 1),
+en production aussi. Conséquences : le texte servi différait de celui rendu au client
+(hydratation en échec, îlot re-rendu en entier) et le mot coupé n'était plus lu comme tel.
+
+**Correctif (`astro.config.mjs`)** — alias Vite `react-dom/server` →
+`react-dom/server.browser` : Astro rend alors les îlots par `renderToReadableStream`,
+qui encode chaque morceau séparément et n'a pas ce défaut. Écarté : le rendu non streamé
+(`experimentalDisableStreaming`), qui perd le préfixe des `useId` (`:r1R1:` → `:R1:`)
+alors que le client hydrate avec ce préfixe — les `for`/`aria-*` des formulaires
+auraient divergé. À retirer au passage à React 19 (défaut corrigé en amont).
+
+**Garde (`scripts/verify-site.mjs`)** — échec si un HTML construit contient U+0000.
+
+**Vérifié** : 0 octet nul sur les 67 pages ; hors octets nuls, HTML **identique à
+l'octet près** à celui d'avant (identifiants `useId` compris) ; contre-épreuve : sans
+l'alias, les 2 pages retrouvent leurs octets nuls et la garde échoue. Navigateur :
+recherche du guide, simulateur et calculette hydratés, console sans erreur.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

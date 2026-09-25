@@ -75,5 +75,18 @@ export default defineConfig({
       // client, pas la liste des dépendances.
       __APP_VERSION__: JSON.stringify(pkg.version),
     },
+    resolve: {
+      alias: [
+        // Rendu des îlots React au build : version « browser » du serveur React
+        // (renderToReadableStream) au lieu de la version Node. Celle de React
+        // 18.3 (writeStringChunk) envoie son tampon entier quand un caractère
+        // accentué n'y tient plus, octets vides compris : des U+0000 se glissaient
+        // dans le HTML des îlots du guide (« mat\0ériel ») — § 9.cp. La version
+        // browser encode chaque morceau à part et n'a pas ce défaut ; le préfixe
+        // des useId (lu à l'hydratation) est conservé, contrairement à un rendu
+        // non streamé.
+        { find: /^react-dom\/server$/, replacement: 'react-dom/server.browser' },
+      ],
+    },
   },
 });
