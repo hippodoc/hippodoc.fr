@@ -3450,6 +3450,35 @@ réécrite. URL inchangée.
 **Reste de la liste des articles minces** (ordre de l'audit) : salaires, RSPM en
 exemples, congé maternité / paternité, signer son contrat, puis le reste.
 
+### 9.bk Chantier de fond, article 2 — Salaires, enrichi (25 septembre 2026)
+
+Même méthode qu'au § 9.bj. Les fourchettes existantes (annonces et retours
+terrain 2025) sont **gardées telles quelles** : aucune source publique ne permet
+de les réactualiser. L'enrichissement porte sur ce qui est vérifiable, et sur le
+défaut de fond de l'article : il annonçait des montants « nets » sans dire de quoi.
+`updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)**
+- Bloc « L'essentiel ».
+- « Avant de lire les chiffres : encaissé, net, super-net » : les trois niveaux, et
+  un tableau mensuel tiré du cas-type du simulateur (72 000 €/an : 6 000 € encaissés
+  → ≈ 1 510 € de cotisations, ≈ 613 € d'impôt, ≈ 3 880 € de super-net).
+- Intérim : indemnités de fin de mission et de congés payés (au moins 10 % chacune,
+  ministère du Travail), avec le conseil de vérifier si le tarif annoncé les inclut.
+- Libéral : rappel de vérifier si un chiffre est encaissé ou restant, lien simulateur.
+- Salariat : praticien contractuel à l'hôpital public, 41 386 € à 71 163 € brut par
+  an à temps plein hors primes et gardes (arrêté du 8 juillet 2022, annexe III,
+  montants en vigueur depuis le 1er juillet 2023 d'après la version consolidée).
+- FAQ « Quelle différence entre ce que j'encaisse et ce qu'il me reste ? ».
+- Section Sources avec liens (Légifrance, ministère du Travail), les fourchettes
+  étant explicitement présentées comme indicatives.
+
+**Description** réécrite (plus précise, 155 car.). Titre inchangé (§ 9.bh).
+
+**Non vérifié, laissé en l'état** : les fourchettes elles-mêmes et le sens exact de
+« nets » dans les intertitres d'origine (encaissé ou après cotisations) — à préciser
+par le fondateur s'il connaît la source.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
