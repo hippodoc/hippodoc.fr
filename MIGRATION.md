@@ -3714,6 +3714,28 @@ année n'est pas couverte en cas d'arrêt maladie » (IJ CPAM après 12 mois d'a
 **Titre** : « Ce qu'on ne te dit pas sur le rempla » → « Médecin remplaçant : ce qu'on
 ne te dit pas » ; description réécrite. URL inchangée.
 
+### 9.bw Chantier de fond, article 14 — PDSA, enrichi (25 septembre 2026)
+
+Contenu d'origine conforme au BOFiP (astreinte + majorations spécifiques, 60 jours,
+zone déficitaire, pas d'exonération sociale) : gardé tel quel. `updatedDate` ajoutée
+(25 septembre 2026), répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Et si tu es remplaçant ? » — le
+BOFiP (BOI-BNC-CHAMP-10-40-20) reprend l'art. 151 ter : « les médecins **ou leurs
+remplaçants** installés dans une zone… », rémunérations perçues **à titre personnel** ;
+« Comment la déclarer (sans double peine) » — micro-BNC : 5HQ hors part exonérée +
+DSFA ; réel : ligne CI de la 2035-B ; jamais en 5HP (repris du guide 2042-C-PRO du
+site) ; exclusion de la base du groupe III et des 3 % (BOFiP) ; deux FAQ ; Sources.
+
+**Incohérence relevée, non corrigée** : l'article liste les majorations CRD / CRN /
+CRM / CRS et VRD / VRN / VRM / VRS ; le glossaire du guide (`glossaireDeclarationsData.ts`,
+entrée PDSA) ne cite que CRD, CRS, CRN, VRN, VRS. Le BOFiP renvoie au tableau des
+majorations de régulation de la convention, sans lister les codes : à trancher sur la
+NGAP en vigueur avant d'aligner l'un sur l'autre.
+
+**Titre** : « PDSA : l'exonération sans se tromper » → « PDSA : exonération d'impôt
+des gardes régulées » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
