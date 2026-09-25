@@ -3597,6 +3597,25 @@ d'août) ; FAQ « Comment faire un budget avec des revenus irréguliers ? » ; S
 **Titre** : « Du Super-Net au budget : pilote ta vie » → « Budget du médecin
 remplaçant : partir du Super-Net » ; description réécrite. URL inchangée.
 
+### 9.bq Chantier de fond, article 8 — base financière (50/30/20), enrichi (25 septembre 2026)
+
+Texte d'origine (méthode 50/30/20) gardé tel quel. `updatedDate` ajoutée
+(25 septembre 2026), répercutée dans `blog-meta.json`.
+
+**Corrigé** : FAQ « 6 000 € → 3 500 € » (contredit le cas-type du site, relevé par
+l'audit) → ≈ 3 880 € (moteur du simulateur, 72 000 €/an).
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Un exemple chiffré » (tableau
+3 880 € → ≈ 1 940 / 1 165 / 775 €, et l'erreur d'appliquer la règle aux montants
+encaissés) ; « Et les régularisations ? » (provision avant le découpage si l'activité
+augmente, liens effet ciseaux et budget) ; « D'où vient la règle 50/30/20 ? »
+(popularisée par E. Warren et A. Warren Tyagi, *All Your Worth*, 2005 ; un repère,
+pas une obligation) ; FAQ chiffrée.
+
+**Titre** : « Rempla : ce qui te reste vraiment » → « Règle 50/30/20 du médecin
+remplaçant » (évite aussi la proximité avec l'article Super-Net) ; description
+réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
