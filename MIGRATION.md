@@ -3536,6 +3536,27 @@ répercutée dans `blog-meta.json`.
 **Titre** : « Maternité & paternité du remplaçant » → « Congé maternité et paternité
 du médecin remplaçant » ; description réécrite. URL inchangée.
 
+### 9.bn Chantier de fond, article 5 — contrat de remplacement, enrichi (25 septembre 2026)
+
+Même méthode (§ 9.bj). Le contenu existant (corrigé aux lots 1 et 2) est conforme :
+gardé tel quel. `updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Contre-vérification de R.4127-65.** Un résumé automatique de Légifrance citait
+encore « toute activité médicale libérale ». Le texte en vigueur affiché par le
+CNOM (avec la précision géographique ajoutée en 2026, cf. note du CDOM 62) dit bien
+« cesser toute activité médicale » : le mot « libérale » a disparu, comme retenu au
+§ 9.ba. Seul le commentaire du CNOM, antérieur, le cite encore. Rien à corriger.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Qui prévient l'Ordre, et quand ? »
+(information préalable par le remplacé, autorisation pour les non-thésés,
+communication du contrat dans le mois, remplacement strictement personnel) ; ligne
+de checklist sur l'assiette de la rétrocession ; FAQ « Qui doit prévenir l'Ordre
+d'un remplacement ? » ; section Sources (R.4127-65, R.4127-86 et décret 2026-691,
+L.4113-9, L.1142-2).
+
+**Titre** : « Contrat de remplacement : checklist » → « Contrat de remplacement
+médecin : la checklist » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

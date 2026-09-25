@@ -1,15 +1,15 @@
 ---
-title: "Contrat de remplacement : checklist"
-description: "Avant d'enfiler la blouse blanche, sécurise ton remplacement avec un contrat clair. La checklist indispensable avant signature."
+title: "Contrat de remplacement médecin : la checklist"
+description: "Clauses à vérifier, rétrocession, non-réinstallation depuis 2026, démarches auprès de l'Ordre : la checklist du contrat de remplacement avant de signer."
 pubDate: "2025-10-06"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#5"
 seriesId: "fiche-pratique"
 episodeNumber: 5
-readTime: "2 min"
+readTime: "5 min"
 cta: "Génère ton contrat de remplacement en quelques clics"
 cover: "/blog/signer-contrat-remplacement-cover.png"
 tags:
@@ -21,6 +21,8 @@ faq:
     answer: "Si tu n'es pas thésé(e) : le conseil départemental de l'Ordre autorise chaque remplacement pour **3 mois maximum**, renouvelables. Si tu es thésé(e) : aucun texte ne chiffre de durée maximale, mais le remplacement doit rester **temporaire**. Vérifie aussi si ton contrat contient une clause de non-réinstallation."
   - question: "Peut-on rompre un contrat de remplacement ?"
     answer: "Oui, selon les **clauses de préavis** prévues au contrat (généralement en cas de maladie ou urgence). Prévois toujours une clause de préavis clair pour éviter les litiges."
+  - question: "Qui doit prévenir l'Ordre d'un remplacement ?"
+    answer: "C'est le **médecin remplacé** : il informe le conseil départemental de l'Ordre **avant** le remplacement, sauf urgence, en indiquant ton nom, ta qualité, les dates et la durée. Si tu n'es pas thésé(e), c'est aussi lui qui demande l'autorisation de remplacement."
   - question: "Dois-je envoyer mon contrat à l'Ordre des Médecins ?"
     answer: "Oui, c'est **obligatoire**. Tu dois envoyer un exemplaire signé au Conseil de l'Ordre dans le mois suivant la signature. Conserve précieusement ton exemplaire original."
 relatedArticles:
@@ -31,6 +33,15 @@ relatedArticles:
   - "remplacement-regulier-requalification"
 ---
 
+:::essentiel
+**L'essentiel**
+
+- Un contrat **écrit**, signé **avant** le premier jour, et envoyé au conseil de l'Ordre **dans le mois**.
+- Le **remplacé prévient l'Ordre avant** le remplacement et **cesse toute activité médicale** pendant ce temps, sauf dérogation.
+- Depuis le 30 juillet 2026, la non-réinstallation **ne dépend plus que de ton contrat** : lis cette clause avant de signer.
+- Vérifie la **rétrocession**, ses modalités de paiement et ton **assurance RCP**.
+:::
+
 Tu as enfin décroché le remplacement médical de tes rêves ? Génial ! Mais avant d'enfiler ta blouse blanche, il est temps de sécuriser ton aventure avec un contrat clair et précis. Voici LA checklist indispensable pour signer en toute sérénité. 🚀😉
 
 ## 📌 Les infos essentielles à vérifier
@@ -40,10 +51,19 @@ Tu as enfin décroché le remplacement médical de tes rêves ? Génial ! Mais a
 ✅ **Adresse du cabinet & missions exactes :** Consultations, visites à domicile, gardes éventuelles clairement précisées.\
 ✅ **Durée :** si tu n'es pas encore thésé(e), le conseil départemental de l'Ordre autorise chaque remplacement pour 3 mois maximum, renouvelables — c'est le médecin remplacé qui fait la demande. Si tu es thésé(e), aucun texte ne chiffre de durée maximale, mais le remplacement doit rester temporaire : un remplacement qui s'installe dans la durée expose à un [risque de requalification](/blog/remplacement-regulier-requalification).
 
+## 🏛️ Qui prévient l'Ordre, et quand ?
+
+• **Avant le remplacement** : le médecin remplacé informe le conseil départemental de l'Ordre, sauf urgence, en indiquant ton nom, ta qualité, les dates et la durée.\
+• **Si tu n'es pas thésé(e)** : il faut en plus l'autorisation du conseil départemental, demandée par le remplacé, pour 3 mois au plus, renouvelables.\
+• **Dans le mois qui suit la signature** : le contrat est communiqué au conseil départemental.
+
+Le remplacement est **strictement personnel** : c'est toi qui exerces, et tu ne peux pas te faire remplacer à ton tour sur ce remplacement.
+
 ## 💰 La rétrocession financière
 
 ✅ **Pourcentage clair :** Généralement entre 70% et 90% en médecine générale, plutôt 60 à 70% avec un plateau technique — voir [comment négocier ta rétrocession](/blog/retrocession-honoraires-medecin-remplacant).\
 ✅ **Modalités précises de paiement :** Date et moyen (par exemple, virement bancaire en fin de mois) clairement spécifiés. 💸\
+✅ **Ce sur quoi elle porte :** consultations, visites, actes techniques… Écris noir sur blanc ce qui entre dans le calcul, pour éviter les discussions au moment de payer.\
 ✅ **Indemnisation des frais éventuels :** Transport, logement, précisés pour éviter toute surprise !
 
 ## 🛡️ Responsabilités et assurances
@@ -85,3 +105,10 @@ Utilise les contrats officiels du CNOM directement sur Hippodoc : tu peux les si
 :::
 
 Tu es désormais armé(e) pour signer ton contrat en toute confiance et commencer ton remplacement dans les meilleures conditions possibles !
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Code de la santé publique, art. R.4127-65, dans sa version du 30 juillet 2026 : information préalable de l'Ordre, remplacement personnel, cessation de toute activité médicale du remplacé et dérogations. Texte affiché par le [Conseil national de l'Ordre des médecins](https://www.conseil-national.medecin.fr/code-deontologie/rapport-medecins-membres-professions-sante-art-56-68-1/article-65-remplacement).\
+• Code de la santé publique, art. R.4127-86, modifié par le [décret n° 2026-691 du 27 juillet 2026](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054541620) : clause de non-réinstallation prévue par le contrat, accord du remplacé ou autorisation du conseil départemental.\
+• Code de la santé publique, art. L.4113-9 : communication des contrats au conseil départemental dans le mois qui suit leur conclusion.\
+• Code de la santé publique, art. L.1142-2 : assurance de responsabilité civile professionnelle obligatoire pour les médecins libéraux.
