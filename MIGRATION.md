@@ -3892,6 +3892,25 @@ Intertitre « 8. Le tips Hippodoc » dénuméroté. Six liens internes ajoutés.
 **Titre** : « Les 7 pièges du début en remplacement » → « Remplaçant débutant : 8 pièges
 à éviter » ; description réécrite. URL inchangée.
 
+### 9.cf Chantier de fond, article 23 — calendrier fiscal, enrichi (25 septembre 2026)
+
+Calendrier d'origine gardé (URSSAF et dates 2026 corrigées aux lots 1 et 2).
+`updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Corrigé** : « CARMF : paiement solde retraite avant le 31 août » → paiement dans les
+30 jours de l'appel du solde, reçu entre mai et juillet (carmf.fr, « Vos cotisations
+en cours d'activité », § 9.bj).
+
+**Ajouté (texte nouveau)**, dates déjà vérifiées ailleurs : « L'essentiel » ; « Ta
+première année : trois dates en plus » (CARMF dans le mois, URSSAF / RSPM, déclaration
+initiale de CFE 1447-C avant le 31 décembre — § 9.av) ; en septembre, réception des
+factures électroniques depuis le 1er septembre 2026 (§ 9.ar–9.az) ; en décembre, rappel
+1447-C ; FAQ « Quelles démarches faire la première année ? » ; Sources.
+
+**Titre** : « Calendrier fiscal du remplaçant » → « Calendrier fiscal du médecin
+remplaçant, mois par mois » ; description réécrite. URL inchangée.
+⚠️ Article daté 2026 : dates à revoir chaque année (déclaration de revenus, 2035).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
