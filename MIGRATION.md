@@ -4001,6 +4001,28 @@ prélèvement forfaitaire à 31,4 %), `frais-pros-medecin-liberal-2026`,
 `simulateur-super-net-combien-reste` (abattements DOM, « 1er septembre 2025 »).
 `base-financiere-rempla` a déjà l'équivalent (« D'où vient la règle 50/30/20 ? »).
 
+### 9.cl Sections Sources, seconde vague (1/3) : enveloppes et intérêts composés (25 septembre 2026)
+
+**`enveloppes-investissement-pea-assurance-vie-per-cto`** — tous les chiffres vérifiés,
+aucune correction, `updatedDate` inchangée (ajout de sources seulement) :
+PEA 150 000 € et date d'ouverture au premier versement (service-public F2385) ;
+assurance-vie 4 600 / 9 200 €, 7,5 % jusqu'à 150 000 € de primes, 12,8 % au-delà
+(F22414) ; transmission 152 500 € / 30 500 € (impots.gouv.fr) ; PER : transfert gratuit
+après 5 ans, 1 % avant (F34982) ; prélèvements sociaux 2026 à 18,6 % en général (PFU
+31,4 %), 17,2 % maintenus pour l'assurance-vie, les PEL/CEL et les revenus fonciers
+(F2329). L'écart 17,2 % / 18,6 % entre assurance-vie et CTO, qui semblait une
+contradiction, est exact.
+
+**`interets-composes-meilleur-remplacement`** — calculs refaits (taux nominaux
+capitalisés mensuellement : 366 k€, 788 k€, 381 / 555 / 820 / 1 234 / 1 920 / 3 155 €
+par mois pour 1 M€ — conformes). Corrigé : MSCI World « environ 1 500 entreprises »
+→ « environ 1 300 » (fiche MSCI : 1 280 constituants, 23 pays), 4 occurrences ; fonds
+euros 162 k€ → 165 k€ (recalcul à 2,65 %). Taux Livret A 1,7 % et LEP 2,5 % au 1er août
+2026 confirmés (communiqué du ministère de l'Économie). Sources et hypothèses
+explicitées (inflation ~3 % pour le compte courant, rendements supposés).
+`updatedDate` au 25 septembre 2026. ⚠️ Les slides (images) peuvent encore afficher
+« 1 500 entreprises » : à vérifier lors de leur refonte.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
