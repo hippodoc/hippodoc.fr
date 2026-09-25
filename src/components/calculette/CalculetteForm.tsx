@@ -109,7 +109,7 @@ function FieldRow({ field }: { field: FieldConfig }) {
               {displayCase}
             </span>
           ) : (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-hippo-50/60 dark:bg-hippo-900/20 text-hippo-700/80 dark:text-hippo-300/80 text-[10px] uppercase tracking-wide font-medium">
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-hippo-50/60 dark:bg-hippo-900/20 text-hippo-700 dark:text-hippo-300/80 text-[10px] uppercase tracking-wide font-medium">
               {displayCase}
             </span>
           )}
@@ -393,7 +393,7 @@ export function CalculetteForm() {
         <CardContent className="grid sm:grid-cols-3 gap-4">
           <div className="space-y-1.5 sm:col-span-1">
             <div className="flex items-center justify-between gap-2">
-              <Label className="text-sm font-medium">Profil d'exercice</Label>
+              <Label htmlFor="calc-profil" className="text-sm font-medium">Profil d'exercice</Label>
               <TooltipProvider delayDuration={150}>
                 <Tooltip>
                   <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide profil">
@@ -413,7 +413,7 @@ export function CalculetteForm() {
               name="profil"
               render={({ field }) => (
                 <Select value={field.value} onValueChange={(v) => field.onChange(v as ProfilCalculette)}>
-                  <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
+                  <SelectTrigger id="calc-profil" className="h-10"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {PROFILS_VISIBLES.map((p) => (
                       <SelectItem key={p} value={p}>{PROFIL_LABELS[p]}</SelectItem>
@@ -424,13 +424,13 @@ export function CalculetteForm() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-sm font-medium">Régime fiscal</Label>
+            <Label htmlFor="calc-regime-fiscal" className="text-sm font-medium">Régime fiscal</Label>
             <Controller
               control={control}
               name="regimeFiscal"
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
+                  <SelectTrigger id="calc-regime-fiscal" className="h-10"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="reel">Réel — Déclaration contrôlée (2035)</SelectItem>
                     <SelectItem value="micro_bnc">Micro-BNC (abattement 34 %)</SelectItem>
@@ -440,13 +440,13 @@ export function CalculetteForm() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-sm font-medium">Année des revenus</Label>
+            <Label htmlFor="calc-annee" className="text-sm font-medium">Année des revenus</Label>
             <Controller
               control={control}
               name="annee"
               render={({ field }) => (
                 <Select value={String(field.value)} onValueChange={(v) => field.onChange(parseInt(v, 10))}>
-                  <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
+                  <SelectTrigger id="calc-annee" className="h-10"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="2024">Revenus 2024 (déclaration 2025)</SelectItem>
                     <SelectItem value="2025">Revenus 2025 (déclaration 2026)</SelectItem>
@@ -931,13 +931,13 @@ function ZoneExoMicroBlock() {
 
       <div className="grid sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium">Zone d'exonération</Label>
+          <Label htmlFor="calc-zone" className="text-sm font-medium">Zone d'exonération</Label>
           <Controller
             control={control}
             name="zoneExoneree"
             render={({ field }) => (
               <Select value={field.value ?? 'aucune'} onValueChange={(v) => field.onChange(v as 'aucune' | 'zfu' | 'zfrr')}>
-                <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="calc-zone" className="h-9 text-sm"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="aucune">Aucune</SelectItem>
                   <SelectItem value="zfu">🏙️ ZFU-TE (Art. 44 octies A) — clos au 31/12/2025</SelectItem>
@@ -955,7 +955,7 @@ function ZoneExoMicroBlock() {
 
         {zone !== 'aucune' && (
           <div className="space-y-1.5">
-            <Label className="text-sm font-medium">Année d'installation en zone</Label>
+            <Label htmlFor="calc-annee-zone" className="text-sm font-medium">Année d'installation en zone</Label>
             <Controller
               control={control}
               name="anneeInstallationZone"
@@ -965,6 +965,7 @@ function ZoneExoMicroBlock() {
                   min={2000}
                   max={2030}
                   step={1}
+                  id="calc-annee-zone"
                   placeholder="Ex : 2022"
                   className="h-9 text-sm"
                   value={field.value ?? ''}
@@ -995,7 +996,7 @@ function ZoneExoMicroBlock() {
         {isZfuAnnee1 && (
           <div className="space-y-1.5 sm:col-span-2">
             <div className="flex items-center gap-1.5">
-              <Label className="text-sm font-medium">Mois d'installation <span className="text-muted-foreground font-normal">(optionnel — année 1)</span></Label>
+              <Label htmlFor="calc-mois-installation" className="text-sm font-medium">Mois d'installation <span className="text-muted-foreground font-normal">(optionnel — année 1)</span></Label>
               <TooltipProvider delayDuration={150}>
                 <Tooltip>
                   <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide mois d'installation">
@@ -1018,7 +1019,7 @@ function ZoneExoMicroBlock() {
                   value={field.value ? String(field.value) : ''}
                   onValueChange={(v) => field.onChange(v ? parseInt(v, 10) : undefined)}
                 >
-                  <SelectTrigger className="h-9 text-sm">
+                  <SelectTrigger id="calc-mois-installation" className="h-9 text-sm">
                     <SelectValue placeholder="Janvier (plafond plein 50 000 €)" />
                   </SelectTrigger>
                   <SelectContent>
