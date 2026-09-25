@@ -3557,6 +3557,27 @@ L.4113-9, L.1142-2).
 **Titre** : « Contrat de remplacement : checklist » → « Contrat de remplacement
 médecin : la checklist » ; description réécrite. URL inchangée.
 
+### 9.bo Chantier de fond, article 6 — facture de remplacement, enrichi (25 septembre 2026)
+
+Article le plus court du blog (142 mots) : une annonce de fonctionnalité qui ne
+disait pas ce que doit contenir la facture. Texte d'annonce gardé tel quel
+(vouvoiement d'origine compris). `updatedDate` au 25 septembre 2026,
+répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Que doit contenir ta facture de
+rétrocession ? » (mentions de service-public : date, numéro continu, nom suivi de
+« EI », SIREN, client, prestation, montant, date de paiement ; mention
+d'exonération « TVA non applicable, art. 261-4-1° du CGI » exigée par l'art. 242
+nonies A de l'annexe II ; mise en garde contre la mention de franchise « art. 293 B »,
+qui n'est pas le bon fondement pour des soins) ; « Comment l'envoyer, combien de
+temps la garder ? » (hors facturation électronique, 6 ans) ; section Sources.
+
+**Corrigé** : FAQ « mentions obligatoires » — « numéro SIRET » → SIREN, ajout de
+« EI », du médecin remplacé, de la date de paiement et de la mention d'exonération.
+
+**Titre** : « T'as remplacé, t'as facturé » (accroche Instagram, aucun mot-clé) →
+« Facture de remplacement : mentions et envoi » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
