@@ -3679,6 +3679,25 @@ d'exercice et indemnités de fin de mission / congés payés, § 9.bg et 9.bk) ;
 **Titre** : « Remplacement salarié : guide complet » → « Médecin remplaçant salarié :
 le guide complet ». URL inchangée.
 
+### 9.bu Chantier de fond, article 12 — syndrome de l'imposteur, enrichi (25 septembre 2026)
+
+Texte d'origine (5 clés) gardé tel quel. `updatedDate` ajoutée (25 septembre 2026),
+répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)** : paragraphe d'origine du concept (Clance et Imes, 1978) ;
+« Pour tes premiers remplas, en pratique » (liens vers la checklist du premier jour et
+le logiciel métier, numéros utiles à demander au remplacé) ; « Quand le doute devient
+trop lourd » : deux lignes d'écoute **vérifiées sur source officielle** —
+0800 288 038 (entraide de l'Ordre, médecins et médecins en formation, 24 h/24 ;
+page CNOM « L'entraide ») et 0805 23 23 36 (association SPS, professionnels de santé
+et étudiants, 24 h/24 ; portail ARS Bretagne) ; FAQ « À qui parler si je ne vais
+vraiment pas bien ? » ; Sources.
+
+⚠️ Numéros de téléphone publiés : à revérifier à chaque revue annuelle de l'article.
+
+**Titre** : « 5 astuces contre le syndrome d'imposteur » → « Syndrome de l'imposteur du
+jeune médecin : 5 clés ». URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
