@@ -3857,6 +3857,26 @@ docteur », « Que faire à la fin d'un remplacement ? ».
 pendant, après » (distinct de « Premier remplacement médical : la checklist du jour J »,
 pour éviter la cannibalisation) ; description réécrite. URL inchangée.
 
+### 9.cd Chantier de fond, article 21 — déclaration 2035, enrichie (25 septembre 2026)
+
+Lignes et date déjà corrigées (§ 9.bb, § 9.bg). `updatedDate` au 25 septembre 2026,
+répercutée dans `blog-meta.json`.
+
+**Corrigé** : FAQ « Adhérer à une AGA te permet de bénéficier d'avantages fiscaux » →
+plus aucun avantage fiscal : majoration des non-adhérents supprimée à partir des
+revenus 2023 (déjà dans le guide du site, `boussoleData`), puis loi de finances pour
+2025, art. 11 : abrogation de l'agrément et des missions légales des OGA et de la
+réduction d'impôt pour frais de comptabilité (CGI 199 quater B) — impots.gouv.fr.
+« par ton AGA/comptable » → « par ton comptable ». La contradiction avec le guide du
+site et avec `frais-pros-medecin-liberal-2026` (« Réduction OGA : supprimée ») est levée.
+
+**Ajouté** : « L'essentiel » ; phrase sous l'intertitre vide « Guide étape par
+étape » ; Sources (page du formulaire 2035-SD sur impots.gouv.fr, actualité OGA).
+
+**Contrôle des liens externes du blog** (40 liens) : tous répondent 200, sauf les 9
+liens Légifrance (403 = blocage anti-robot du site, adresses issues des résultats
+officiels). Un lien vers la page du formulaire 2035 (404) corrigé avant publication.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
