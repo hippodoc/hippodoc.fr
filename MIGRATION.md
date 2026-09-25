@@ -4222,6 +4222,39 @@ régulation » est imposable faute d'être « listée nommément ». Or le BOFiP
 d'une « rémunération forfaitaire de régulation et d'astreinte » dans la partie
 « Rémunération de l'astreinte », donc exonérable. Conseil fiscal non modifié ici.
 
+### 9.ct Chèques-vacances (ANCV) des indépendants : plafond de DSCN, SMIC de référence (25 septembre 2026)
+
+Point laissé ouvert (« règles ANCV TNS non vérifiées »). Sources primaires :
+- **ANCV** (ancv.com, et flyer « Offre ANCV TNS ») : ouvert aux travailleurs non salariés,
+  « profession libérale » comprise ; exonération de charges sociales jusqu'à 30 % du SMIC
+  mensuel brut par an (hors CSG-CRDS) ; exonération d'IR jusqu'à 1 SMIC mensuel brut par an.
+- **Notice officielle 2041 DRI** (n° 52348#06, déclaration des revenus 2025 des
+  indépendants, § 6.10) : « quel que soit le régime d'imposition (y compris micro-fiscal),
+  déclarez le montant des chèques-vacances versés au travailleur indépendant, déductible
+  fiscalement, **dans la limite d'un SMIC brut mensuel (1802 € au 01.01.2025)** » ; montant
+  ajouté à la base CSG-CRDS, seule la part au-delà de 30 % du SMIC (541 € en 2025) soumise
+  à cotisations.
+
+Corrigé :
+- **DSCN/DSDN** : le guide disait « montant **total** commandé, sans plafonner » ; c'est le
+  montant **dans la limite d'un SMIC mensuel brut** (le « ne pas ramener soi-même à 547 € »
+  reste juste). Glossaire ANCV, règle RO-005, fiche DSCN (description, erreur fréquente,
+  conseil), infobulles et alertes de la calculette.
+- **Calculette — moteur** : `DSCN` recevait le montant saisi sans plafond ; il reçoit
+  désormais `cv.capped` (plafond fiscal de l'année, déjà utilisé pour 5HQ/5QC), en réel
+  (`dsPamc.ts`) comme en micro (`useCalculetteResults.ts`). Vérifié : 690 € → 690 ;
+  1 823 € → 1 823 ; 2 500 € → 1 823 + alerte.
+- **Article frais pros** (FAQ, « L'essentiel », § 7.1) : « 1 867 € / ≈ 560 € depuis le
+  1er juin 2026 » → SMIC du 1er janvier retenu par la notice : **1 823 € / ≈ 547 €** pour
+  2026 ; déclaration « dans la limite d'un SMIC mensuel brut, micro-BNC compris » ; sources
+  ajoutées (notice § 6.10, ANCV). `updatedDate` déjà au 25 septembre 2026.
+
+**Non vérifié, laissé en l'état (à trancher)** : la mécanique micro-BNC « retirer de 5HQ
+le montant × 1,515 » (la notice confirme la déductibilité en micro, pas la méthode) ; la
+condition « activité libérale depuis plus d'un an » (absente des pages ANCV consultées) ;
+la ligne de la 2035-A des frais ANCV (L30 dans le guide, « BP / cadre 4 » dans la
+calculette).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

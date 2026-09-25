@@ -25,7 +25,7 @@ faq:
   - question: "Le PER se déduit-il du résultat BNC ?"
     answer: "Tu as le choix entre deux voies. Soit tu déduis tes versements de ton **bénéfice BNC** (sur la 2035, en cotisations facultatives, dans le plafond dit « Madelin » — art. 154 bis du CGI), soit tu les déduis de ton **revenu global** (sur la 2042 — art. 163 quatervicies). Un même versement ne se déduit qu'une fois : ne te trompe pas de rubrique. Les versements sont déductibles dans la limite du disponible fiscal, calculé à partir du **PASS 2026 fixé à 48 060 €**."
   - question: "Quel est le plafond ANCV pour un médecin libéral en 2026 ?"
-    answer: "Le **plafond d'exonération sociale** est de 30 % du SMIC mensuel brut, soit environ **547 €** au 1er janvier 2026 et **560 €** depuis la revalorisation du SMIC du 1er juin 2026. Le **plafond fiscal** correspond à 1 SMIC mensuel brut (1 823 € puis 1 867 €). Le dispositif n'est pas une « ligne vacances » libre : il se déclare en DSCN ou DSDN, et la part exonérée socialement reste soumise à CSG-CRDS."
+    answer: "Le **plafond fiscal** correspond à 1 SMIC mensuel brut et le **plafond d'exonération sociale** à 30 % de ce SMIC. La notice officielle de la déclaration des indépendants retient le SMIC du 1er janvier (1 802 € pour 2025) : pour 2026, compte **1 823 €** et **≈ 547 €**. Le dispositif n'est pas une « ligne vacances » libre : il se déclare en DSCN ou DSDN, dans la limite d'un SMIC mensuel brut, et la part exonérée socialement reste soumise à CSG-CRDS."
   - question: "Qu'est-ce que la déduction Groupe III ?"
     answer: "C'est une **déduction forfaitaire complémentaire** réservée aux médecins conventionnés secteur 1 et calculée selon un barème conventionnel. Elle se cumule avec la déduction complémentaire de 3 %, et elle est compatible avec les frais réels (à la différence du forfait 2 % qui exclut les frais réels qu'il couvre)."
   - question: "Qu'est-ce qui change en 2026 par rapport aux années précédentes ?"
@@ -46,7 +46,7 @@ relatedArticles:
 - Le barème kilométrique 2026 pour une 5 CV donne **5 679 € déductibles** pour 12 000 km pros, sans conserver le moindre ticket essence.
 - Un repas se déduit à hauteur de **(prix payé, plafonné à 21,40 €) − 5,50 €**, soit une déduction maximale de **15,90 €** pour les revenus 2026 (21,10 € / 5,45 € / 15,65 € pour la déclaration en cours).
 - Le médecin secteur 1 peut cumuler trois déductions au réel : le **forfait 2 %**, la **déduction Groupe III**, et la **déduction complémentaire de 3 %**.
-- Le PER se déduit au choix de ton **bénéfice BNC** (2035) ou de ton **revenu global** (2042), jamais des deux, dans la limite d'un disponible calculé sur le **PASS 2026 fixé à 48 060 €** ; le chèque-vacances ANCV est plafonné fiscalement à 1 SMIC mensuel (**1 867 €** depuis le 1er juin 2026) et socialement à 30 % de ce SMIC (**≈ 560 €**).
+- Le PER se déduit au choix de ton **bénéfice BNC** (2035) ou de ton **revenu global** (2042), jamais des deux, dans la limite d'un disponible calculé sur le **PASS 2026 fixé à 48 060 €** ; le chèque-vacances ANCV est plafonné fiscalement à 1 SMIC mensuel brut (**1 823 €** pour 2026, SMIC du 1er janvier) et socialement à 30 % de ce SMIC (**≈ 547 €**).
 :::
 
 À l'hôpital, on faisait tout pour toi. La paie tombait, les charges étaient payées, le matériel était fourni, le repas au self était subventionné. Tu cochais « salarié » dans tous les formulaires de la vie courante et c'était fini.
@@ -322,10 +322,10 @@ Le remplaçant a une fiscalité souvent plus simple que celle d'un installé, ma
 
 Oui, les chèques-vacances ANCV concernent les médecins libéraux. Mais ce n'est **pas** une « ligne vacances » librement déductible — c'est un **dispositif déclaratif plafonné**.
 
-**Plafond fiscal** : 1 SMIC mensuel brut — 1 823 € au 1er janvier 2026, **1 867 €** depuis la revalorisation du 1er juin 2026.\
-**Plafond social** : déduction de l'assiette de cotisations sociales dans la limite de **30 % du SMIC mensuel brut**, soit ≈ 547 € au 1er janvier 2026 et ≈ **560 €** depuis le 1er juin 2026.\
+**Plafond fiscal** : 1 SMIC mensuel brut. La notice officielle retient le SMIC du 1er janvier (1 802 € pour 2025) : pour 2026, compte **1 823 €**.\
+**Plafond social** : déduction de l'assiette de cotisations sociales dans la limite de **30 % du SMIC mensuel brut**, soit ≈ **547 €** pour 2026.\
 **Soumis à** CSG-CRDS.\
-**Déclaration** via la déclaration sociale et fiscale unique des indépendants (rubrique DSCN ou DSDN selon ta situation).
+**Déclaration** via la déclaration sociale et fiscale unique des indépendants (rubrique DSCN ou DSDN selon ta situation), dans la limite d'un SMIC mensuel brut, quel que soit ton régime fiscal (micro-BNC compris).
 
 ### 📌 Position pratique ANCV
 
@@ -426,5 +426,6 @@ C'est l'outil qui te permet de déduire juste — sans y passer tes soirées.
 • Exonération PDSA : CGI, art. 151 ter ; [BOFiP BOI-BNC-CHAMP-10-40-20](https://bofip.impots.gouv.fr/bofip/2818-PGP.html/identifiant=BOI-BNC-CHAMP-10-40-20-20151202).\
 • Déclaration DAS2 au-delà de 2 400 € par bénéficiaire : [BOFiP, relèvement du seuil](https://bofip.impots.gouv.fr/bofip/14327-PGP.html/ACTU-2024-00154).\
 • SMIC 2026 (1 823,03 € puis 1 867,02 € au 1er juin) : [service-public.gouv.fr](https://www.service-public.gouv.fr/particuliers/actualites/A18916).\
+• Chèques-vacances du travailleur indépendant (DSCN/DSDN, plafonds) : [notice officielle de la déclaration des revenus 2025 des indépendants](https://www.impots.gouv.fr/sites/default/files/media/1_metier/1_particulier/EV/1_declarer/190_travailleur_independant/2041dri-ti-revenus-2025-vf.pdf) (§ 6.10) ; éligibilité des professions libérales : [ANCV](https://www.ancv.com/mettre-en-place-le-cheque-vacances).\
 • CESU préfinancé, plafond de 2 591 € : [cesu.urssaf.fr](https://www.cesu.urssaf.fr/info/accueil/s-informer-sur-le-cesu/tout-savoir/le-cesu-prefinance-quest-ce-que.html).\
 • ACRE 2026 : loi n° 2025-1403 du 30 décembre 2025 de financement de la Sécurité sociale pour 2026 ; PER et Madelin : CGI, art. 154 bis et 163 quatervicies.
