@@ -2,7 +2,7 @@
 title: "Checklist administrative du remplaçant"
 description: "RCP, Ordre, CPAM, URSSAF sous 8 jours, CARMF dès le premier remplacement, prévoyance : quand faire chaque démarche et dans quel ordre, sans rien oublier."
 pubDate: "2025-10-06"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -29,6 +29,15 @@ relatedArticles:
   - "signer-contrat-remplacement"
   - "cfe-medecin-remplacant"
 ---
+
+:::essentiel
+**L'essentiel**
+
+- **Avant** ton premier remplacement : assurance **RCP**, inscription à l'**Ordre** (ou licence de remplacement), carte **CPS**.
+- **Dans les 8 jours** : déclaration de début d'activité à l'**URSSAF** (portail des remplaçants si tu relèves du RSPM).
+- **Dans le mois** : déclaration à la **CARMF** ; dispense possible sous 15 000 € de revenu, sur demande.
+- **Prévoyance** : ta première année, la CPAM ne t'indemnise pas en cas d'arrêt maladie.
+:::
 
 Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse blanche et de démarrer cette nouvelle aventure, petit passage obligé par la case administrative. Mais pas de stress, voici ta checklist complète pour commencer sereinement. 📝🚀
 
@@ -59,8 +68,8 @@ Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse bla
 
 ## ✅ Inscription à la CARMF
 
-📅 **Quand ?** Dès le début de ton activité libérale. L'affiliation est obligatoire pour tout médecin rémunéré à l'honoraire, remplacements compris — il n'y a pas de durée minimale d'activité en dessous de laquelle tu en serais exempté.\
-🧐 **Pourquoi ?** La Caisse Autonome de Retraite des Médecins de France (CARMF) gère ta retraite complémentaire obligatoire et d'autres couvertures spécifiques.\
+📅 **Quand ?** Dans le **mois** qui suit le début de ton activité libérale. L'affiliation est obligatoire pour tout médecin rémunéré à l'honoraire, remplacements compris — il n'y a pas de durée minimale d'activité en dessous de laquelle tu en serais exempté.\
+🧐 **Pourquoi ?** La Caisse Autonome de Retraite des Médecins de France (CARMF) gère ta **retraite** (base, complémentaire et ASV) et ta prévoyance **invalidité-décès**.\
 📌 **Astuce :** Tu peux demander une **dispense totale d'affiliation** si ton revenu net d'activité indépendante reste inférieur à **15 000 €** et que tu n'es pas assujetti à la contribution économique territoriale (CET). [Cette dispense n'est pas automatique](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm) : elle doit être demandée.
 
 :::warning
@@ -71,7 +80,8 @@ La dispense réduit tes charges, mais elle a un prix : pendant la période dispe
 
 📅 **Quand ?** Dès que possible, idéalement dès le début de ta carrière professionnelle.\
 🧐 **Pourquoi ?** Une assurance prévoyance garantit ton maintien de revenu en cas d'arrêt de travail prolongé pour cause de maladie ou d'accident.\
-📌 **Astuce :** Souscrire jeune à une prévoyance te permet de profiter de conditions avantageuses spécialement conçues pour les jeunes médecins.
+📌 **Astuce :** Souscrire jeune à une prévoyance te permet de profiter de conditions avantageuses spécialement conçues pour les jeunes médecins.\
+⚠️ **À savoir** : en libéral, la CPAM n'indemnise un arrêt maladie qu'après **12 mois d'affiliation**. Ta première année n'est donc pas couverte par l'Assurance Maladie — [ta protection sociale réelle](/blog/salariat-vs-liberal).
 
 ## 💡 L'astuce Hippodoc
 

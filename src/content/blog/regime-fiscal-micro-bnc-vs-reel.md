@@ -2,7 +2,7 @@
 title: "Micro-BNC ou réel : le choix du remplaçant"
 description: "Abattement de 34 %, plafond du micro-BNC, bascule après deux années de dépassement, déduction des frais réels : comment trancher selon tes charges."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -35,6 +35,15 @@ relatedArticles:
   - "voiture-bareme-kilometrique-ou-frais-reels-medecin"
   - "zones-frr-exoneration-impot-medecin"
 ---
+
+:::essentiel
+**L'essentiel**
+
+- **Micro-BNC** : abattement automatique de 34 %, sans justificatifs, tant que tes recettes restent sous **83 600 €** (seuil 2026-2028).
+- Tu en sors seulement après **deux années consécutives** au-dessus du seuil — et il t'est **garanti** l'année de création et la suivante.
+- Le **régime réel** devient intéressant quand tes charges, **cotisations URSSAF et CARMF comprises**, dépassent 34 % de tes recettes.
+- L'option pour le réel se prend en **déposant une 2035** dans le délai, au printemps de l'année suivante.
+:::
 
 En tant qu'interne ou médecin remplaçant débutant, gérer ta fiscalité peut sembler compliqué. Pas de panique ! Voici un guide clair et simple pour choisir facilement le régime fiscal qui convient à ta situation. ✨💼
 
