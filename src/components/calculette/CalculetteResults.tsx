@@ -881,7 +881,7 @@ export function CalculetteResultsView({
             <CaseRow code={c('DSCZ')} label="IJ Madelin + AJPA" value={dsPamc.DSCZ} hint="Réintégration sociale des IJ Madelin et de l'allocation journalière proche aidant." />
           )}
           {visible(dsPamc.DSCN) && (
-            <CaseRow code={c('DSCN')} label="Chèques-vacances ANCV" value={dsPamc.DSCN} hint={`${c('DSCN')} = montant total commandé. Exo cotisations URSSAF + CARMF dans la limite du plafond social ${fmt(plafondCvSocial)} (${annee}). Au-delà du plafond fiscal ${fmt(plafondCv)}, l'excédent n'est plus déductible du bénéfice. La CSG-CRDS reste due sur la part exonérée.`} badge={cvBadge} />
+            <CaseRow code={c('DSCN')} label="Chèques-vacances ANCV" value={dsPamc.DSCN} hint={`${c('DSCN')} = montant commandé, dans la limite du plafond fiscal ${fmt(plafondCv)} (1 SMIC mensuel brut). Exo cotisations URSSAF + CARMF dans la limite du plafond social ${fmt(plafondCvSocial)} (${annee}). Au-delà, l'excédent n'est ni déductible du bénéfice ni à déclarer ici. La CSG-CRDS reste due sur la part exonérée.`} badge={cvBadge} />
           )}
           {/* V20 — DSFA : micro-BNC uniquement. En réel, la réintégration sociale
               passe automatiquement par le RBS (la ligne CI figure dans la formule). */}

@@ -140,7 +140,7 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
       // s'applique UNIQUEMENT côté fiscal (5HQ) pour neutraliser l'abattement
       // 34 % et faire baisser le bénéfice final de exactement cv.capped €.
       // JAMAIS côté social : l'exo cotisations ANCV est gérée par l'URSSAF via
-      // DSCN (montant facial, exo plafond social). Plafond fiscal appliqué
+      // DSCN (montant facial plafonné à 1 SMIC mensuel, exo plafond social). Plafond fiscal appliqué
       // silencieusement (warning ci-dessous si excédent).
       const cvMinorationMicro = cv.capped * 1.515;
       // V21 — Doctrine SNIR (notice URSSAF DRI-PAMC) :
@@ -225,7 +225,7 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
       if (cv.depasse) {
         const params = getDeclarationParams(values.annee);
         microWarnings.push(
-          `Chèques-vacances saisis : ${values.chequesVacances} € — l'excédent de ${cv.excedent} € au-delà du plafond fiscal ${params.plafondChequesVacances} € (${values.annee}) n'est PAS déduit de tes recettes (5HQ minorée jusqu'au plafond seulement). DSCN reçoit le total commandé : l'URSSAF applique l'exo cotisations dans la limite du plafond social ${params.plafondSocialChequesVacances} € (= 30 % SMIC mensuel).`
+          `Chèques-vacances saisis : ${values.chequesVacances} € — l'excédent de ${cv.excedent} € au-delà du plafond fiscal ${params.plafondChequesVacances} € (${values.annee}) n'est PAS déduit de tes recettes (5HQ minorée jusqu'au plafond seulement). DSCN reçoit ${cv.capped} € (plafond d'un SMIC mensuel brut) : l'URSSAF applique l'exo cotisations dans la limite du plafond social ${params.plafondSocialChequesVacances} € (= 30 % SMIC mensuel).`
         );
       }
       // V14 — U1 : doublon warning S2-sans-dépassements supprimé (déjà signalé en amont).
@@ -265,7 +265,7 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
         // (médecin actif, arrêt courte durée). L'invalidité permanente (1AZ) et la
         // retraite/pension (1AS) restent traitées en 2042-C PRO, jamais ici.
         DSCZ: values.ijMadelin + (values.ijCarmfTemporaire ?? 0),
-        DSCN: values.chequesVacances,
+        DSCN: cv.capped,
         DSFA: values.declarant === 1 ? dsfaMicro : 0,
         DSFB: values.declarant === 2 ? dsfaMicro : 0,
         rbs: {

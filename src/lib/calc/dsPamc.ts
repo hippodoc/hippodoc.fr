@@ -251,15 +251,15 @@ export function calculerDSPAMC(
   const warnings: string[] = [];
   const errors: string[] = [];
 
-  // Chèques-vacances : DSCN reçoit le montant TOTAL commandé (doctrine officielle —
-  // cf. RO-005). L'URSSAF applique automatiquement l'exo dans la limite du plafond
-  // social (547 € en 2026). La déduction fiscale 5QC, elle, est plafonnée à 1 SMIC
+  // Chèques-vacances : DSCN reçoit le montant commandé dans la limite d'un SMIC
+  // mensuel brut (notice DRI 52348#06, § 6.10 — § 9.ct). L'URSSAF applique
+  // automatiquement l'exo dans la limite du plafond social (547 € en 2026). La déduction fiscale 5QC, elle, est plafonnée à 1 SMIC
   // mensuel (1 823 € en 2026) — gérée dans `calculer2042Liberal` via `cv.capped`.
   const cv = capChequesVacances(safe(e.chequesVacances), year);
   if (cv.depasse) {
     const params = getDeclarationParams(year);
     warnings.push(
-      `Chèques-vacances saisis : ${cv.capped + cv.excedent} € — l'excédent de ${cv.excedent} € au-delà du plafond fiscal ${params.plafondChequesVacances} € (${year}) n'est PAS déduit du bénéfice (case 5QC/5RC plafonnée). DSCN reçoit le total commandé : l'URSSAF applique l'exo cotisations URSSAF + CARMF dans la limite du plafond social ${params.plafondSocialChequesVacances} € (= 30 % SMIC mensuel). La CSG-CRDS reste due sur cette part exonérée.`
+      `Chèques-vacances saisis : ${cv.capped + cv.excedent} € — l'excédent de ${cv.excedent} € au-delà du plafond fiscal ${params.plafondChequesVacances} € (${year}) n'est PAS déduit du bénéfice (case 5QC/5RC plafonnée). DSCN reçoit ${cv.capped} € (plafond d'un SMIC mensuel brut) : l'URSSAF applique l'exo cotisations URSSAF + CARMF dans la limite du plafond social ${params.plafondSocialChequesVacances} € (= 30 % SMIC mensuel). La CSG-CRDS reste due sur cette part exonérée.`
     );
   }
 
@@ -375,7 +375,7 @@ export function calculerDSPAMC(
     DSDG,
     DSDX: round2(safe(e.ijCpam)),
     DSCZ: round2(safe(e.ijMadelin) + safe(e.ijCarmfTemporaire)),
-    DSCN: round2(safe(e.chequesVacances)),
+    DSCN: round2(cv.capped),
     DSFA,
     DSFB,
     rbs,

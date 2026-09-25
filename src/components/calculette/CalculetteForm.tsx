@@ -71,7 +71,7 @@ const BLOC_EXTRAS: FieldConfig[] = [
   { name: 'ijCpam', label: 'IJ CPAM hors ALD', case: 'IJ CPAM', hint: 'Maladie hors ALD, maternité, paternité, AFRM. **JAMAIS en 1AJ** (pré-tolérance CPAM supprimée). En réel : à inclure dans AF (gains divers) → 5QC, avec miroir en ligne DB du Cadre 8. En micro-BNC : exonérées d\'IR (PAS dans 5HQ — Brochure DGFiP 2026 p. 180), uniquement en DSDX (volet social, brut).' },
   { name: 'ijMadelin', label: 'IJ Madelin (+ AJPA proche aidant)', case: 'IJ Mad.', hint: 'Déjà comptées en gains divers — réintégrées en DSCZ.' },
   { name: 'ijCarmf', label: 'Pension de retraite CARMF (RB/RC/ASV)', case: 'Pension', hint: 'Réservée aux VRAIES pensions de retraite CARMF (régime de base RB, complémentaire RC, ASV) — déclarées en case 1AS (pensions/rentes). ⚠️ Ne PAS saisir ici tes IJ CARMF temporaires (médecin actif en arrêt court) : elles relèvent du BNC (ligne AF en réel, recettes 5HQ en micro), JAMAIS de 1AS. L\'invalidité permanente CARMF va en 1AZ.' },
-  { name: 'chequesVacances', label: 'Chèques-vacances ANCV', case: 'CV', hint: 'Deux plafonds indépendants. Plafond fiscal (max déductible du bénéfice) — Plafond 2024 : 1 766 € · 2025 : 1 802 € · 2026 : 1 823 €. Plafond social (exo cotisations URSSAF + CARMF, = 30 % SMIC mensuel) — 2024 : 530 € · 2025 : 541 € · 2026 : 547 €. DSCN reçoit le total commandé. 💡 **Frais d\'ouverture / d\'envoi ANCV** : à comptabiliser en **frais divers (poste BP / cadre 4 de la 2035-A)**, **PAS dans DSCN** (qui ne reçoit que le montant facial des chèques commandés).' },
+  { name: 'chequesVacances', label: 'Chèques-vacances ANCV', case: 'CV', hint: 'Deux plafonds indépendants. Plafond fiscal (max déductible du bénéfice) — Plafond 2024 : 1 766 € · 2025 : 1 802 € · 2026 : 1 823 €. Plafond social (exo cotisations URSSAF + CARMF, = 30 % SMIC mensuel) — 2024 : 530 € · 2025 : 541 € · 2026 : 547 €. DSCN reçoit le montant commandé, dans la limite du plafond fiscal. 💡 **Frais d\'ouverture / d\'envoi ANCV** : à comptabiliser en **frais divers (poste BP / cadre 4 de la 2035-A)**, **PAS dans DSCN** (qui ne reçoit que le montant facial des chèques commandés).' },
   { name: 'depassements', label: 'Dépassements d\'honoraires', case: 'DSAW', hint: 'Secteur 2 / OPTAM. En réel : impacte le taux ASV. En Micro-BNC : utilisé pour calculer dynamiquement le ratio conventionné DSAU et la part DSAV.' },
   { name: 'ehpadHadSsiadCmpp', label: 'EHPAD non opposable / HAD / SSIAD / CMPP', case: 'DSAT', hint: 'Recettes nettes de ces structures, déclarables séparément.' },
 ];
@@ -778,7 +778,7 @@ export function CalculetteForm() {
               // Remplaçant pur : pas de dépassements ni EHPAD/HAD
               if (isRemplacant && (f.name === 'depassements' || f.name === 'ehpadHadSsiadCmpp')) return false;
               // V19 — En micro-BNC, masquer EHPAD (rare en micro). CV reste visible :
-              // mécanique RO-005 supportée (× 1,515 sur 5HQ + DSCN = total commandé).
+              // mécanique RO-005 supportée (× 1,515 sur 5HQ + DSCN = montant plafonné à 1 SMIC mensuel).
               if (isMicro && f.name === 'ehpadHadSsiadCmpp') return false;
               return true;
             })
