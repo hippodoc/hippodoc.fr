@@ -3658,6 +3658,27 @@ quelle, datée 2025 dans l'article.
 **Titre** : « Salariat vs Libéral » → « Médecin salarié ou libéral : la vraie
 différence » ; description réécrite. URL inchangée.
 
+### 9.bt Chantier de fond, article 11 — remplacement salarié, enrichi (25 septembre 2026)
+
+Contenu d'origine gardé (le passage frais réels / matériel a été corrigé au § 9.bb).
+`updatedDate` au 25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Corrigé**
+- Retraite complémentaire : « Collectivités (type PMI) → IRCANTEC » → « Hôpital public
+  et collectivités (praticien contractuel, PMI…) → IRCANTEC » (les agents non
+  titulaires du public, dont les praticiens contractuels, relèvent de l'IRCANTEC).
+- Futur périmé : « tu pourras enregistrer tes revenus salariés dès mi-juillet 2025 »
+  → présent (fonction disponible : « revenus salariés » figure dans le suivi des
+  revenus décrit par le guide des impôts des internes).
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Combien, et à quelles conditions ? »
+(praticien contractuel 41 386 € – 71 163 € brut, § 9.bk ; intérim : deux ans
+d'exercice et indemnités de fin de mission / congés payés, § 9.bg et 9.bk) ; FAQ
+« Combien gagne un médecin qui remplace à l'hôpital public ? » ; Sources.
+
+**Titre** : « Remplacement salarié : guide complet » → « Médecin remplaçant salarié :
+le guide complet ». URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
