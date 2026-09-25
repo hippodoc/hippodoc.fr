@@ -3736,6 +3736,24 @@ NGAP en vigueur avant d'aligner l'un sur l'autre.
 **Titre** : « PDSA : l'exonération sans se tromper » → « PDSA : exonération d'impôt
 des gardes régulées » ; description réécrite. URL inchangée.
 
+### 9.bx Chantier de fond, article 15 — checklist du premier jour, enrichie (25 septembre 2026)
+
+Checklist d'origine gardée telle quelle. `updatedDate` ajoutée (25 septembre 2026),
+répercutée dans `blog-meta.json`.
+
+**Corrigé** : caractère d'usage privé (U+F0A53, rendu en carré vide) après « Ta
+responsabilité : ton rythme ! » — supprimé.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Avant le jour J : l'administratif »
+(licence, contrat, information de l'Ordre par le remplacé, RCP, carte CPS) ; mise en
+garde CPS dans « Facturation fluide » — ameli.fr : le remplaçant ne doit pas facturer
+avec la carte du remplacé, carte CPS propre à demander à l'Ordre (remplaçants et
+non-thésés autorisés), configuration du poste ; ligne « Dernier jour » (facture de
+rétrocession) ; FAQ « Puis-je facturer avec la carte CPS du remplacé ? » ; Sources.
+
+**Titre** : « Checklist avant ton 1er remplacement » → « Premier remplacement médical :
+la checklist du jour J » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
