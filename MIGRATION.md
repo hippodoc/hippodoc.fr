@@ -3634,6 +3634,30 @@ référence (licence, contrat, CARMF, RSPM, checklist administrative).
 **Titre** : « Trouver facilement tes remplacements » → « Trouver un remplacement
 médical : où chercher » ; description réécrite. URL inchangée.
 
+### 9.bs Chantier de fond, article 10 — salariat ou libéral, enrichi (25 septembre 2026)
+
+Comparatif d'origine gardé tel quel. `updatedDate` ajoutée (25 septembre 2026),
+répercutée dans `blog-meta.json`.
+
+**Corrigé** : FAQ « en libéral, tu … n'as pas droit au chômage » → pas d'assurance
+chômage classique, mais l'allocation des travailleurs indépendants existe sous
+conditions strictes (France Travail).
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Ta protection sociale en libéral,
+concrètement » (IJ maladie CPAM du 4e au 90e jour après 12 mois d'affiliation, 1/730
+du revenu moyen, 197,51 € max en 2026 — ameli.fr ; CARMF à partir du 91e jour —
+carmf.fr ; ATI : 2 ans d'activité, cessation involontaire, 10 000 € de revenus,
+≈ 600-800 €/mois pendant 6 mois — France Travail ; conséquence : première année de
+libéral sans IJ CPAM) ; précision « net avant impôt » avec lien simulateur ; FAQ
+« Un médecin libéral est-il indemnisé en arrêt maladie ? » ; Sources.
+
+**Non revérifié** : grille des praticiens hospitaliers (« échelon 1 ~ 4 600 € brut,
+échelon 13 ~ 9 400 € ») — Légifrance inaccessible en lecture directe ; laissée telle
+quelle, datée 2025 dans l'article.
+
+**Titre** : « Salariat vs Libéral » → « Médecin salarié ou libéral : la vraie
+différence » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
