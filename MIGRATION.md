@@ -3943,6 +3943,26 @@ Sources (hypothèses du simulateur explicitées).
 **Titre** : « 2 exemples concrets de revenus en micro-BNC » → « Micro-BNC : 2 exemples
 chiffrés du CA au Super-Net ». URL inchangée.
 
+### 9.ci Chantier de fond, article 26 — logiciel métier, enrichi (25 septembre 2026)
+
+Checklist d'origine gardée. `updatedDate` au 25 septembre 2026, répercutée dans
+`blog-meta.json`.
+
+**Corrigé** : « statuts CMU » → ALD et complémentaire santé solidaire (C2S), qui a
+remplacé la CMU-C en 2019.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; carte CPS propre (ameli.fr, § 9.bx) ;
+arrêts de travail : formulaire Cerfa sécurisé obligatoire depuis le 1er septembre 2025,
+ancien formulaire rejeté, arrêt en ligne privilégié (communiqué de l'Assurance Maladie
+du 2 juillet 2025) ; FAQ « Puis-je encore faire un arrêt de travail sur papier ? » ;
+Sources. Description réécrite ; titre et URL inchangés.
+
+**Bilan du chantier « articles minces »** : les 26 articles de moins de 600 mots de
+l'audit sont traités (§ 9.bj à 9.ci). Seul `generer-facture-remplacement` reste sous
+600 mots (540), suffisant pour son sujet. Restent sans « L'essentiel » : URSSAF,
+micro-BNC ou réel, checklist administrative, syndrome de l'imposteur ; 17 articles
+sans section Sources.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
