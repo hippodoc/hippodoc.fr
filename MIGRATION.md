@@ -3616,6 +3616,24 @@ pas une obligation) ; FAQ chiffrée.
 remplaçant » (évite aussi la proximité avec l'article Super-Net) ; description
 réécrite. URL inchangée.
 
+### 9.br Chantier de fond, article 9 — trouver ses remplacements, enrichi (25 septembre 2026)
+
+Liste des plateformes, agences et critères gardée telle quelle (non revérifiée
+une à une : ce sont des noms commerciaux, pas des règles). `updatedDate` au
+25 septembre 2026, répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)**, tout renvoyant à des règles déjà vérifiées dans les
+articles précédents : « L'essentiel » ; mise en garde intérim (deux ans d'exercice,
+décret 2025-1147) dans le paragraphe des agences et en FAQ ; « Étape 3 : Avant de
+dire oui » (licence à jour et date variable selon le CDOM, contrat écrit, information
+de l'Ordre par le remplacé, RCP) ; « Étape 4 : Après ton premier remplacement »
+(CARMF dans le mois, URSSAF selon RSPM ou guichet unique, renvoi vers la checklist
+administrative) ; section Sources. Six liens internes ajoutés vers les articles de
+référence (licence, contrat, CARMF, RSPM, checklist administrative).
+
+**Titre** : « Trouver facilement tes remplacements » → « Trouver un remplacement
+médical : où chercher » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
