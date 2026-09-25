@@ -3794,6 +3794,29 @@ première année, § 9.bs), salariat (praticien contractuel, § 9.bk), collabora
 **Titre** : « Médecin remplaçant : les 8 statuts clés » → « Modes d'exercice du
 médecin : les 8 statuts ». URL inchangée.
 
+### 9.ca Chantier de fond, article 18 — cotisations sociales vs impôt, enrichi (25 septembre 2026)
+
+Chiffres d'origine (corrigés au § 9.ba : ≈ 250 € de cotisations et ≈ 100 € d'impôt
+pour 1 000 € encaissés) gardés. `updatedDate` au 25 septembre 2026, répercutée
+dans `blog-meta.json`.
+
+**Corrigé**
+- Deux marqueurs de nouveauté périmés relevés par l'audit : « Nous détaillerons ce point
+  très prochainement » (exonérations de début d'activité) → complémentaire CARMF non
+  due deux ans avant 40 ans (§ 9.bj) et ACRE restreinte en 2026 (§ 9.bb), avec liens ;
+  section « 🔜 À venir prochainement : décryptage URSSAF & CARMF » → « Pour aller plus
+  loin » vers les deux articles existants.
+- Deux intertitres vides (« Impôts sur le revenu », « Cotisations sociales ») → une
+  phrase de cadrage chacun.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; mise au point « calculées sur ton
+revenu, pas sur ce que tu encaisses » (erreur n° 1 du corpus ; exception RSPM) ;
+justification des 40 % mis de côté (régularisations, lien effet ciseaux) ; FAQ « Les
+cotisations se calculent-elles sur mon chiffre d'affaires ? » ; source des chiffres
+(cas-type du simulateur).
+
+Titre inchangé ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
