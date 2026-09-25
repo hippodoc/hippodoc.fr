@@ -2,7 +2,7 @@
 title: "Intérêts composés : ton meilleur placement"
 description: "300 €/mois sur 30 ans : 70 k€ en compte courant vs 366 k€ en ETF Monde. La mécanique des intérêts composés pour le médecin."
 pubDate: "2026-04-21"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -18,7 +18,7 @@ faq:
   - question: "Pourquoi commencer à investir tôt change-t-il autant les choses ?"
     answer: "Parce que les **intérêts composés** récompensent le temps, pas le montant. Un médecin qui place 300 €/mois dès 25 ans atteint **~788 k€** à 65 ans (ETF Monde, 7 %/an). Le même médecin qui attend 35 ans n'arrive qu'à **~366 k€**. **10 ans d'attente coûtent ~422 k€**, alors qu'il n'a « économisé » que 36 k€ en retardant. Le temps est de loin le moteur le plus puissant de la mécanique."
   - question: "Qu'est-ce qu'un ETF Monde et est-ce risqué ?"
-    answer: "Un **ETF Monde** (souvent MSCI World) est un panier d'environ **1 500 entreprises cotées dans 23 pays développés** (Apple, Microsoft, LVMH, Nestlé, Novo Nordisk, etc.). Il offre une diversification automatique et des frais très faibles (~0,20 %/an). Le capital n'est **pas garanti** : les marchés actions ont en moyenne fait +7 %/an sur le long terme, mais avec des chutes possibles de -30 à -50 % à court terme. C'est pourquoi il faut **n'y placer que ce que tu peux laisser dormir 10 ans minimum**."
+    answer: "Un **ETF Monde** (souvent MSCI World) est un panier d'environ **1 300 entreprises cotées dans 23 pays développés** (Apple, Microsoft, LVMH, Nestlé, Novo Nordisk, etc.). Il offre une diversification automatique et des frais très faibles (~0,20 %/an). Le capital n'est **pas garanti** : les marchés actions ont en moyenne fait +7 %/an sur le long terme, mais avec des chutes possibles de -30 à -50 % à court terme. C'est pourquoi il faut **n'y placer que ce que tu peux laisser dormir 10 ans minimum**."
   - question: "Combien dois-je verser par mois pour atteindre 1 million d'euros à 65 ans ?"
     answer: "Avec un ETF Monde à 7 %/an, il faut verser environ **380 €/mois si tu commences à 25 ans**, **560 €/mois à 30 ans**, **820 €/mois à 35 ans**, **1 230 €/mois à 40 ans**, **1 920 €/mois à 45 ans**, et **3 150 €/mois à 50 ans**. **×8 d'effort** entre 25 et 50 ans pour le même objectif final."
   - question: "Pourquoi le Livret A ne suffit-il pas pour épargner long terme ?"
@@ -56,7 +56,7 @@ slides:
 - Commencer à **25 ans** plutôt qu'à **35 ans** transforme 144 k€ versés en **788 k€** à 65 ans au lieu de 366 k€ pour 108 k€ versés : **10 ans d'attente coûtent ~422 k€**.
 - Pour viser **1 million d'euros à 65 ans**, il faut verser **380 €/mois à 25 ans** contre **3 150 €/mois à 50 ans**, soit un effort multiplié par **8**.
 - Avec la règle des 72, ton capital double en **10 ans** sur un ETF Monde (~7 %) contre **42 ans** sur un Livret A (1,7 % depuis août 2026) : un résultat **plus de ×4** sur 30 ans.
-- Un ETF Monde comme le MSCI World regroupe environ **1 500 entreprises** dans **23 pays**, avec des frais très faibles (~**0,20 %/an**) mais un capital non garanti — à n'investir que si tu peux le laisser dormir **10 ans minimum**.
+- Un ETF Monde comme le MSCI World regroupe environ **1 300 entreprises** dans **23 pays**, avec des frais très faibles (~**0,20 %/an**) mais un capital non garanti — à n'investir que si tu peux le laisser dormir **10 ans minimum**.
 :::
 
 Tu es interne, remplaçant, ou jeune thésé. Tu enchaînes les gardes à 300 € la nuit, les remplas à 600 € la journée. Et quelque part dans ta tête, une voix te dit : « *il faudrait que je mette de l'argent de côté un jour.* »
@@ -85,7 +85,7 @@ C'est comme une garde qui ferait ta garde suivante à ta place. Tu bosses une fo
 Tu verses **300 €/mois pendant 30 ans**. Total versé : **108 000 €**. Voilà ce que ça devient, selon le support :
 
 • **Compte courant** (0 %) → **70 k€** de pouvoir d'achat réel (l'inflation en bouffe ~38 k€)\
-• **Fonds euros** d'assurance-vie (~2,65 %) → **162 k€**\
+• **Fonds euros** d'assurance-vie (~2,65 %) → **165 k€**\
 • **SCPI** (~4 %) → **208 k€**\
 • **ETF Monde** en PEA (~7 %) → **366 k€**
 
@@ -128,7 +128,7 @@ En clair : **10 000 € sur un Livret A pendant 30 ans deviennent environ 16 600
 
 ## 💊 C'est quoi un ETF, concrètement ?
 
-Un **ETF** (*Exchange Traded Fund*), ou tracker, est un panier d'actions qui suit automatiquement un indice boursier. L'ETF Monde le plus courant (**MSCI World**) contient environ **1 500 entreprises** cotées sur **23 pays développés** : Apple, Microsoft, ASML, LVMH, Nestlé, Novo Nordisk, L'Oréal, etc.
+Un **ETF** (*Exchange Traded Fund*), ou tracker, est un panier d'actions qui suit automatiquement un indice boursier. L'ETF Monde le plus courant (**MSCI World**) contient environ **1 300 entreprises** cotées sur **23 pays développés** : Apple, Microsoft, ASML, LVMH, Nestlé, Novo Nordisk, L'Oréal, etc.
 
 Les atouts :
 
@@ -169,3 +169,9 @@ Tu as deux superpowers que la plupart des profils n'ont pas : **des revenus stab
 Pour investir, encore faut-il **savoir ce qu'il te reste vraiment à la fin du mois**. Entre les remplas, l'[URSSAF](/blog/tout-comprendre-urssaf), les impôts, les charges variables, le remplaçant pilote ses finances au feeling. C'est précisément ce qu'Hippodoc corrige.
 
 👉 **[hippodoc.fr](/simulateur)** — ce qu'il te reste vraiment chaque mois, en clair. Tu sais précisément ce que tu peux investir ou dépenser, sans stress.
+
+## 📚 Sources et hypothèses (vérifiées au 25 septembre 2026)
+
+• Taux du Livret A (1,7 %) et du LEP (2,5 %) au 1er août 2026 : [communiqué du ministère de l'Économie](https://presse.economie.gouv.fr/?p=181486).\
+• Composition du MSCI World (environ 1 300 entreprises, 23 pays développés) : [fiche de l'indice, msci.com](https://www.msci.com/indexes/index/990100/msci-world-index).\
+• Calculs : versements mensuels, taux annuels nominaux capitalisés chaque mois ; rendements retenus à titre d'hypothèse (fonds euros ~2,65 %, SCPI ~4 %, ETF Monde ~7 %, moyenne historique qui ne préjuge pas de l'avenir) ; inflation d'environ 3 % par an pour le compte courant.

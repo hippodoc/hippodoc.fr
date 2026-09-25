@@ -93,3 +93,11 @@ Le bon réflexe n'est pas de chercher tout de suite "le meilleur ETF" ou "le mei
 Et avant tout ça : **connaître ton [super-net](/blog/simulateur-super-net-combien-reste)**, pour investir ce que tu peux réellement placer sans fragiliser ta trésorerie.
 
 *Contenu éducatif, pas un conseil en investissement personnalisé.*
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• PEA : plafond de 150 000 €, date d'ouverture fixée au premier versement, avantages après 5 ans — [service-public.gouv.fr, « Plan d'épargne en actions (PEA) »](https://www.service-public.gouv.fr/particuliers/vosdroits/F2385).\
+• Assurance-vie : abattement de 4 600 € / 9 200 € après 8 ans, taux de 7,5 % jusqu'à 150 000 € de primes et 12,8 % au-delà — [service-public.gouv.fr, « Comment sont imposés les revenus d'un contrat d'assurance-vie ? »](https://www.service-public.gouv.fr/particuliers/vosdroits/F22414).\
+• Assurance-vie et transmission : 152 500 € par bénéficiaire avant 70 ans, 30 500 € global après — [impots.gouv.fr](https://www.impots.gouv.fr/particulier/questions/je-suis-beneficiaire-dune-assurance-vie-comment-la-declarer).\
+• PER : déduction dans le plafond épargne retraite, transfert gratuit après 5 ans et plafonné à 1 % avant — [service-public.gouv.fr, « Plan d'épargne retraite (PER) »](https://www.service-public.gouv.fr/particuliers/vosdroits/F34982).\
+• Prélèvements sociaux 2026 : 18,6 % dans le cas général (d'où un prélèvement forfaitaire unique de 31,4 %), 17,2 % maintenus pour l'assurance-vie — [service-public.gouv.fr, « Prélèvements sociaux sur les revenus du patrimoine et de placements »](https://www.service-public.gouv.fr/particuliers/vosdroits/F2329).
