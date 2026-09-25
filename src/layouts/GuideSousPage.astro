@@ -11,6 +11,7 @@
  * les fils d'Ariane du site (rapport « Fils d'Ariane »), et un guide à deux
  * niveaux sans fil d'Ariane laisse le lecteur sans retour vers la référence.
  */
+import BlogReadMore from '@/components/BlogReadMore.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
@@ -28,9 +29,11 @@ interface Props {
   breadcrumb: string;
   /** Questions de la page pour le FAQPage JSON-LD. */
   faq?: { question: string; reponse: string }[];
+  /** Articles du blog à proposer en fin de page (slugs). */
+  articles?: string[];
 }
 
-const { title, description, path, h1, breadcrumb, faq = [] } = Astro.props;
+const { title, description, path, h1, breadcrumb, faq = [], articles = [] } = Astro.props;
 
 const authorSchema = {
   '@type': 'Person',
@@ -119,6 +122,11 @@ const jsonLd = faqSchema
       <slot />
 
       <div class="max-w-5xl mx-auto px-4 mt-16">
+        {articles.length > 0 && (
+          <div class="mb-8">
+            <BlogReadMore slugs={articles} emplacement={path.split('/').pop() ?? 'guide'} />
+          </div>
+        )}
         <div class="rounded-2xl border border-hippo-200/60 bg-hippo-50/50 p-6 dark:border-hippo-800/50 dark:bg-hippo-950/20">
           <h2 class="text-lg font-bold text-foreground">Le guide complet</h2>
           <p class="mt-2 text-sm text-muted-foreground">

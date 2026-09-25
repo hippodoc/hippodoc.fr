@@ -4073,6 +4073,37 @@ Non sourcé : la recommandation du CNOM sur le téléphone personnel (non retrou
 **Bilan** : les 46 articles ont une section Sources (celle de `base-financiere-rempla`
 s'intitule « D'où vient la règle 50/30/20 ? »).
 
+### 9.co Maillage des pages du site vers le blog (25 septembre 2026)
+
+Point laissé ouvert au § 9.be : la FAQ, le simulateur et le guide des déclarations ne
+liaient le blog que par le pied de page (et le guide, pas du tout).
+
+**FAQ (`src/pages/faq.astro`)** — liens posés dans 6 réponses (frais réels, PDSA,
+rétrocessions, cotisations URSSAF/CARMF/RSPM, micro-BNC ou réel, Super-Net) ; style
+de lien ajouté au conteneur des réponses. Liens distincts vers le blog : 3 → 10.
+**Corrigé au passage** : « RSPM (revenus < 38 000 €) » / « PAMC (revenus ≥ 38 000 €) »
+→ « RSPM (régime simplifié des remplaçants, ouvert jusqu'à 19 000 € d'honoraires) » /
+« PAMC (régime classique) », dans le HTML et dans le texte du JSON-LD (§ 9.bh) ;
+règle des 34 % : « cotisations URSSAF et CARMF comprises » (§ 9.az), idem.
+
+**Composant `BlogReadMore.astro`** — encadré « Sur le blog » : titres lus dans la
+collection (jamais recopiés), échec du build si un slug n'existe pas,
+`data-ph="blog_readmore_<emplacement>"`. Posé sur :
+- `/simulateur` (« Comprendre ton résultat », 5 articles) ;
+- `/guide-declarations` (« Pour aller plus loin, sur le blog », 6 articles) ;
+- les 3 sous-pages du guide, via une prop `articles` de `GuideSousPage.astro`
+  (DSFU : URSSAF, effet ciseaux, CARMF, maternité ; 2042-C-PRO : micro-BNC ou réel,
+  2035, PDSA, zones FRR ; médecin remplaçant : internes, RSPM, micro-BNC, calendrier).
+
+**Vérifié** : build, verify-site (4 936 liens internes, aucun mort), rendu mobile sans
+débordement. Lighthouse : FAQ 96, 2042-C-PRO 99-100 ; `/simulateur` 93 en local mais
+**86 en production avant ce lot** — sous l'objectif de 95, préexistant (tâche séparée
+proposée). 2042-C-PRO : accessibilité 96, également préexistante.
+
+**Trouvé en route, préexistant** : octets nuls (U+0000) dans le HTML du guide
+(6 sur le hub, 1 sur 2042-C-PRO), introduits au rendu — les données sources sont
+propres. Ignorés par les navigateurs (norme HTML), mais à corriger : tâche séparée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

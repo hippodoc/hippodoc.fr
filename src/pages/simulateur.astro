@@ -14,6 +14,7 @@
  * depuis l'origine, et /simulateur reçoit 41 liens internes pour zéro impression
  * de recherche. La parité de migration ne justifiait plus de s'en priver.
  */
+import BlogReadMore from '@/components/BlogReadMore.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
@@ -491,6 +492,15 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
         </div>
       </div>
     </section>
+
+    {/* Comprendre le résultat : aucun lien vers les fiches jusque-là (MIGRATION.md § 9.co). */}
+    <div class="container mx-auto max-w-4xl px-4 pb-16">
+      <BlogReadMore
+        emplacement="simulateur"
+        titre="Comprendre ton résultat"
+        slugs={['simulateur-super-net-combien-reste', 'regime-fiscal-micro-bnc-vs-reel', 'rspm-exemples-concrets', 'tout-comprendre-urssaf', 'tout-comprendre-carmf']}
+      />
+    </div>
   </main>
 
   <Footer />
