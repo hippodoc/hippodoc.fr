@@ -103,3 +103,9 @@ En micro-BNC, tout se joue sur une seule ligne du 2042-C-PRO : [la case 5HQ, dé
 :::tip
 Avec Hippodoc, enregistre facilement toutes tes **charges quotidiennes** (déplacements, matériel, formations, etc.) et utilise notre **[simulateur intégré](/simulateur)** pour estimer automatiquement tes **cotisations sociales** et ton revenu **"[Super-Net](/blog/simulateur-super-net-combien-reste)"** après impôts. Optimise ta fiscalité en toute sérénité et fais les bons choix pour ton avenir ! 📊✨
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Seuil de 83 600 € et règles d'accès au micro-BNC : [entreprendre.service-public.gouv.fr, fiche F32105](https://entreprendre.service-public.gouv.fr/vosdroits/F32105).\
+• Micro-BNC de plein droit l'année de création et la suivante : art. 102 ter du CGI ; BOFiP BOI-BNC-DECLA-20-10, § 132 et § 134.\
+• Option pour le régime réel par le dépôt de la 2035 : BOFiP, régime de la déclaration contrôlée ; voir aussi [notre fiche 2035](/blog/remplir-declaration-2035).

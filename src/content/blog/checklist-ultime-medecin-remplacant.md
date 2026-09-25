@@ -77,3 +77,9 @@ relatedArticles:
 :::tip
 Tu es désormais parfaitement équipé(e) pour réussir ton remplacement avec brio ! 💯 Côté fiscalité, tout est déjà en ligne : [micro-BNC ou réel](/blog/regime-fiscal-micro-bnc-vs-reel), [l'URSSAF](/blog/tout-comprendre-urssaf), [la CARMF](/blog/tout-comprendre-carmf) et [le calendrier fiscal du remplaçant](/blog/calendrier-fiscal-remplacant).
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Carte CPS du remplaçant, interdiction d'utiliser celle du remplacé : [ameli.fr, « Les avantages de la télétransmission »](https://www.ameli.fr/medecin/exercice-liberal/facturation-remuneration/teletransmission-retour-noemie/teletransmission).\
+• Mentions de la facture : [entreprendre.service-public.gouv.fr, mentions obligatoires d'une facture](https://entreprendre.service-public.gouv.fr/vosdroits/F31808) ; conservation 6 ans : Livre des procédures fiscales, art. L. 102 B.\
+• Remplacement et information de l'Ordre : [Conseil national de l'Ordre, article 65 du code de déontologie](https://www.conseil-national.medecin.fr/code-deontologie/rapport-medecins-membres-professions-sante-art-56-68-1/article-65-remplacement).

@@ -99,3 +99,8 @@ Aucun partenariat ni lien commercial avec les outils mentionnés ci-dessus. Les 
 :::
 
 🔥 **Liste non exhaustive !** Quels outils numériques utilises-tu quotidiennement ? N'hésite pas à explorer ces ressources pour améliorer ta pratique au quotidien ! 💙
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Outils officiels : [base de données publique des médicaments](https://base-donnees-publique.medicaments.gouv.fr), [HAS](https://www.has-sante.fr), [Mailiz](https://mailiz.mssante.fr), [e-CPS (Agence du numérique en santé)](https://esante.gouv.fr/produits-services/e-cps), [CRAT](https://www.lecrat.fr).\
+• Outils commerciaux : sites des éditeurs ; tarifs et fonctionnalités susceptibles d'évoluer, à vérifier avant de t'abonner.

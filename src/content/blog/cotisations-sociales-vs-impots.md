@@ -125,3 +125,10 @@ Grâce à Hippodoc, oublie les calculs compliqués ! Le **Super-Net** (revenu ap
 ## 📚 Pour aller plus loin
 
 Le décryptage détaillé des cotisations est en ligne : [tout comprendre sur l'URSSAF](/blog/tout-comprendre-urssaf) et [les cotisations CARMF 2026](/blog/tout-comprendre-carmf). Les chiffres de cette fiche viennent du [simulateur Hippodoc](/simulateur) (cas-type à 72 000 € par an : 18 124 € de cotisations, 7 360 € d'impôt).
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Ordres de grandeur : moteur du [simulateur Hippodoc](/simulateur), cas-type à 72 000 € par an (18 124 € de cotisations, 7 360 € d'impôt, 46 516 € de super-net).\
+• Assiette des cotisations des indépendants : [urssaf.fr, « Réforme de l'assiette sociale et du barème des cotisations »](https://www.urssaf.fr/accueil/independant/comprendre-payer-cotisations/reforme-cotisations-independants.html).\
+• Complémentaire CARMF non due les deux premières années avant 40 ans : [carmf.fr, « Vos cotisations en début d'activité »](https://www.carmf.fr/page.php?page=cdrom/coti/coti-debut.htm).\
+• RSPM : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html).
