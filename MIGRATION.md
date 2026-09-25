@@ -4255,6 +4255,21 @@ condition « activité libérale depuis plus d'un an » (absente des pages ANCV 
 la ligne de la 2035-A des frais ANCV (L30 dans le guide, « BP / cadre 4 » dans la
 calculette).
 
+### 9.cu Chèques-vacances, suite : ligne 2035-A des frais ANCV (25 septembre 2026)
+
+Suite des points ouverts au § 9.ct.
+- **Ligne des frais ANCV** : formulaire officiel 2035-A-SD 2026 (revenus 2025) — les lignes
+  26 à 30 (réception, fournitures, actes et contentieux, cotisations syndicales, « Autres
+  frais divers de gestion ») se totalisent en **BM** ; **BP** est la ligne 32 « Pertes
+  diverses ». Le guide (« ligne L30 ») était juste ; l'infobulle de la calculette (« poste
+  BP / cadre 4 ») → « Autres frais divers de gestion » (ligne 30, total BM).
+- **DSCN plafonné à un SMIC** : reconfirmé par le guide officiel « Déclaration de revenus
+  des travailleurs indépendants » (Urssaf, mars 2026) : « Ce montant ne peut excéder la
+  valeur d'un SMIC brut mensuel ».
+- **Toujours non vérifié sur source primaire** : la méthode micro-BNC « × 1,515 sur 5HQ »
+  (reprise partout par les cabinets comptables, absente des notices officielles
+  consultées) et la mécanique « L30 + L36 » de RO-011 en BNC réel.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
