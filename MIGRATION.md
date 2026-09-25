@@ -3698,6 +3698,22 @@ vraiment pas bien ? » ; Sources.
 **Titre** : « 5 astuces contre le syndrome d'imposteur » → « Syndrome de l'imposteur du
 jeune médecin : 5 clés ». URL inchangée.
 
+### 9.bv Chantier de fond, article 13 — réalités du remplacement, enrichi (25 septembre 2026)
+
+Les 7 réalités d'origine gardées telles quelles. `updatedDate` ajoutée
+(25 septembre 2026), répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)**, uniquement des règles déjà vérifiées ailleurs : « L'essentiel » ;
+un « 💡 » d'action sous quatre réalités (logiciel métier ; solitude → 0800 288 038,
+§ 9.bu ; mini-entreprise → calendrier de la première année : CARMF dans le mois,
+URSSAF / RSPM, déclaration au printemps, CFE nulle l'année de création puis 15 décembre ;
+paiement → date au contrat et facture, § 9.bn et 9.bo) ; une 8e réalité « Ta première
+année n'est pas couverte en cas d'arrêt maladie » (IJ CPAM après 12 mois d'affiliation,
+§ 9.bs) ; FAQ correspondante ; Sources. Dix liens internes ajoutés.
+
+**Titre** : « Ce qu'on ne te dit pas sur le rempla » → « Médecin remplaçant : ce qu'on
+ne te dit pas » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
