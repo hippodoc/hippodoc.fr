@@ -3578,6 +3578,25 @@ temps la garder ? » (hors facturation électronique, 6 ans) ; section Sources.
 **Titre** : « T'as remplacé, t'as facturé » (accroche Instagram, aucun mot-clé) →
 « Facture de remplacement : mentions et envoi » ; description réécrite. URL inchangée.
 
+### 9.bp Chantier de fond, article 7 — budget Super-Net, enrichi (25 septembre 2026)
+
+Annonce de fonctionnalité (222 mots) : texte d'origine gardé tel quel. Le corpus
+classe « trésorerie et placements » parmi les sujets à forte demande mais demande
+de rester sur le cadre, jamais sur la recommandation de produit : aucune
+allocation ni aucun produit conseillé. `updatedDate` ajoutée (25 septembre 2026),
+répercutée dans `blog-meta.json`.
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Ton budget en 4 étapes » (partir du
+super-net — cas-type du simulateur, 6 000 € encaissés ≈ 3 880 € ; lisser sur 12 mois ;
+provisionner les régularisations URSSAF / CARMF, lien effet ciseaux ; répartir) ;
+« L'épargne de précaution : le cadre » (Livret A : plafond 22 950 €, 1,7 % au
+1er août 2026 ; LEP : plafond 10 000 €, revenu fiscal de référence ≤ 23 028 € pour une
+part en 2026 — taux du LEP non cité, service-public n'affichant pas encore celui
+d'août) ; FAQ « Comment faire un budget avec des revenus irréguliers ? » ; Sources.
+
+**Titre** : « Du Super-Net au budget : pilote ta vie » → « Budget du médecin
+remplaçant : partir du Super-Net » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
