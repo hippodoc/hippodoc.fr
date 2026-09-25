@@ -3817,6 +3817,26 @@ cotisations se calculent-elles sur mon chiffre d'affaires ? » ; source des chif
 
 Titre inchangé ; description réécrite. URL inchangée.
 
+### 9.cb Chantier de fond, article 19 — outils numériques, enrichi (25 septembre 2026)
+
+Liste des 15 outils commerciaux gardée telle quelle (tarifs et fonctionnalités non
+revérifiés : noms commerciaux, qui changent vite). `updatedDate` au 25 septembre 2026,
+répercutée dans `blog-meta.json`.
+
+**Corrigé**
+- Encadré Hippodoc : « factures électroniques » (lien vers la réforme) → « factures
+  d'honoraires », qui s'envoient par mail et ne sont pas concernées par la facturation
+  électronique (cohérent avec § 9.bo) : l'ancienne formule laissait croire l'inverse.
+- FAQ Ordotype : « version gratuite limitée » contredisait le corps (« Payant ») →
+  outil payant, offres via les associations d'internes (reprend la note de l'article).
+
+**Ajouté (texte nouveau)** : « L'essentiel » ; « Bonus : les outils officiels et
+gratuits » (amelipro — cité en FAQ mais absent du corps ; base de données publique des
+médicaments ; HAS ; messagerie sécurisée de santé, dont Mailiz ; application e-CPS de
+l'ANS), sites vérifiés en ligne ; FAQ correspondante.
+
+Titre inchangé. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
