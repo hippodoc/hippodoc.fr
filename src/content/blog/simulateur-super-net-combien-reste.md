@@ -125,3 +125,11 @@ Comprendre son SuperNet, c'est la première étape. Ensuite, il faut pouvoir ant
 C'est ça, le vrai sujet.
 
 **On ne devine plus. On maîtrise.**
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Seuil du micro-BNC (83 600 €) et abattement de 34 % : [entreprendre.service-public.gouv.fr, fiche F32105](https://entreprendre.service-public.gouv.fr/vosdroits/F32105).\
+• Taux individualisé par défaut depuis le 1er septembre 2025 : [service-public.gouv.fr](https://www.service-public.gouv.fr/particuliers/actualites/A18226) ; [ministère de l'Économie](https://presse.economie.gouv.fr/prelevement-a-la-source-depuis-le-1er-septembre-2025-au-sein-des-couples-cest-chacun-son-taux/).\
+• Acomptes des indépendants, le 15 de chaque mois ou chaque trimestre : [impots.gouv.fr, « Les acomptes de prélèvement à la source »](https://www.impots.gouv.fr/particulier/les-acomptes-de-prelevement-la-source).\
+• Abattement d'impôt outre-mer (30 % plafonné à 2 450 €, 40 % plafonné à 4 050 €) : CGI, art. 197, I-3 ; [BOFiP, « Départements d'outre-mer » (BOI-IR-LIQ-20-30-10)](https://bofip.impots.gouv.fr/bofip/4618-PGP.html/identifiant%3DBOI-IR-LIQ-20-30-10-20190226).\
+• RSPM : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html).

@@ -161,3 +161,11 @@ Sur **hippodoc.fr**, tu peux [simuler ton **vrai revenu net**](/simulateur) selo
 :::warning
 Fiche informative à jour au **18 avril 2026**. Les dispositifs cités reposent sur des textes officiels (Code de la sécurité sociale, BOFiP, loi de finances 2025, conventions Assurance Maladie). Cette fiche ne remplace pas un conseil personnalisé : **valide systématiquement ta situation avec un expert-comptable, un avocat fiscaliste ou ton [Urssaf](/blog/tout-comprendre-urssaf) locale** avant toute décision d'installation.
 :::
+
+## 📚 Sources (vérifiées au 25 septembre 2026)
+
+• Abattement d'impôt outre-mer : CGI, art. 197, I-3 ; [BOFiP, « Départements d'outre-mer » (BOI-IR-LIQ-20-30-10)](https://bofip.impots.gouv.fr/bofip/4618-PGP.html/identifiant%3DBOI-IR-LIQ-20-30-10-20190226).\
+• Exonération sociale des 24 premiers mois, cotisations concernées pour une profession libérale réglementée, régime des années suivantes : [Bpifrance Création, « Régime social du chef d'entreprise en Outre-mer »](https://bpifrance-creation.fr/encyclopedie/aides-a-creation-a-reprise-dentreprise/aides-outre-mer/regime-social-du-chef).\
+• Indemnité spéciale de 40 % des personnels médicaux hospitaliers : décret n° 2023-242 du 31 mars 2023, [présentation par la FHF](https://www.fhf.fr/expertises/ressources-humaines/personnel-medical/extension-et-majoration-de-lindemnite-speciale-et-nouvelles-dispositions-relatives-aux-frais-de).\
+• Exonération Lodéom (barème des employeurs de moins de 11 salariés) : [urssaf.fr, « Exonération Lodéom »](https://www.urssaf.fr/accueil/employeur/beneficier-exonerations/exonerations-zonees/exoneration-lodeom.html).\
+• Zone franche globale de Mayotte : loi n° 2025-797 du 11 août 2025, art. 38 ; [BOFiP, actualité du dispositif](https://bofip.impots.gouv.fr/bofip/14787-PGP.html/ACTU-2025-00136).

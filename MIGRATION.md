@@ -4023,6 +4023,29 @@ explicitées (inflation ~3 % pour le compte courant, rendements supposés).
 `updatedDate` au 25 septembre 2026. ⚠️ Les slides (images) peuvent encore afficher
 « 1 500 entreprises » : à vérifier lors de leur refonte.
 
+### 9.cm Sections Sources, seconde vague (2/3) : Super-Net et outre-mer (25 septembre 2026)
+
+Ajout de sources seulement, aucune correction nécessaire : `updatedDate` inchangée.
+
+**`simulateur-super-net-combien-reste`** — vérifié : taux individualisé par défaut depuis
+le 1er septembre 2025 (service-public A18226, ministère de l'Économie ; LF 2024,
+art. 19) ; acomptes le 15 du mois ou trimestriels les 15 février, mai, août, novembre
+(impots.gouv.fr) ; abattement DOM 30 % / 2 450 € et 40 % / 4 050 € (CGI 197 I-3, BOFiP
+BOI-IR-LIQ-20-30-10) ; micro-BNC 83 600 € ; RSPM.
+
+**`medecin-outre-mer-avantages-fiscaux`** — vérifié : abattement DOM ; exonération
+sociale 24 mois et CARMF due (Bpifrance, § 9.bg) ; indemnité hospitalière 40 %
+(décret 2023-242, § 9.bg) ; Lodéom : exonération totale jusqu'à **1,3 Smic** pour les
+moins de 11 salariés en Guadeloupe, Guyane, Martinique, Réunion — conforme (le barème à
+1,4 Smic de la page urssaf.fr concerne Saint-Barthélemy et Saint-Martin) ; zone franche
+globale de Mayotte (loi n° 2025-797 du 11 août 2025, art. 38 : abattement de 100 % des
+bénéfices 2025-2029, BNC compris, CFE et TFPB 2026-2030, plafond de 300 000 € — BOFiP
+ACTU-2025-00136).
+**Non revérifié** : régime social propre à Mayotte (ordonnance de 1996, art. 28-8),
+« régime employeur transitoire 2026 / CICE mahorais », exclusion des libéraux de la
+ZFANG hors Mayotte, classement des DROM en ZIP. Ces points ne figurent pas dans les
+Sources.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
