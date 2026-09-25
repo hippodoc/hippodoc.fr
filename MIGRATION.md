@@ -3506,6 +3506,36 @@ dans les deux régimes, le tableau ne compare que les cotisations.
 **Titre** : « RSPM : 2 exemples concrets - Du CA au Super-Net » → « RSPM médecin
 remplaçant : exemples chiffrés 2026 » ; description réécrite. URL inchangée.
 
+### 9.bm Chantier de fond, article 4 — congé maternité et paternité, enrichi (25 septembre 2026)
+
+Même méthode (§ 9.bj). Conditions, durées, allocation (4 005 €) et plafond d'IJ
+(65,84 €) vérifiés sur ameli.fr : gardés. `updatedDate` au 25 septembre 2026,
+répercutée dans `blog-meta.json`.
+
+**Corrigé**
+- FAQ « imposables ? » : « à intégrer aux recettes BNC » sans distinction → réel /
+  micro-BNC, aligné sur le corps de l'article (§ 9.bb).
+- IJ présentées comme un montant fixe → maximum de 65,84 €, calculé sur les revenus
+  cotisés (ameli.fr).
+- Congé supplémentaire de naissance : « ≈ 70 % puis 60 % du plafond, 1 380 € puis
+  1 190 € par mois » (valeurs brutes non propres aux indépendants) → montants
+  ameli.fr pour les indépendants : 43 € puis 36,85 € nets par jour (≈ 1 290 € puis
+  1 105 € par mois), 6,14 € si le revenu annuel moyen est sous 4 582 €.
+
+**Ajouté (texte nouveau)**
+- « L'essentiel ».
+- « L'aide de 3 100 € par mois : pas pour les remplaçantes » : aide financière
+  conventionnelle (3 100 €/mois en S1 temps plein, 3 mois max, 2 232 € paternité)
+  réservée aux installés et collaborateurs ; remplaçants exclus du champ de la
+  convention de 2024 (art. 6), recours devant le Conseil d'État fin 2024 dont
+  l'issue n'est pas connue ici. Sujet repéré par le corpus (découverte tardive,
+  forte charge émotionnelle). Conseil de vérifier sa prévoyance, sans affirmation
+  générale sur les contrats (non vérifiable).
+- FAQ « Une remplaçante a-t-elle droit à l'aide de 3 100 € ? » ; section Sources liée.
+
+**Titre** : « Maternité & paternité du remplaçant » → « Congé maternité et paternité
+du médecin remplaçant » ; description réécrite. URL inchangée.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
