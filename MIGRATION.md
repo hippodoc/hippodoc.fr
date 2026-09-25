@@ -4154,6 +4154,50 @@ en production après § 9.cp donnent 97–100 en performance (TBT 0, CLS 0). Le 
 était une variance de la simulation réseau de Lighthouse (même élément LCP, même
 décomposition dans toutes les passes). Rien à corriger.
 
+### 9.cr Seuil du RSPM : dernières mentions « < 38 000 € » hors blog (25 septembre 2026)
+
+Suite du § 9.bh (harmonisation RSPM) : plusieurs textes visibles décrivaient encore le
+RSPM comme « < 38 000 € ». Règle retenue (fondateur + urssaf.fr, « L'offre simplifiée
+médecins remplaçants », relu le 25 septembre 2026 : remplaçant — salarié, étudiant,
+retraité ou régulateur —, exclusivement des remplacements, honoraires ≤ 19 000 € par
+année civile ; déclaration « au choix chaque mois ou chaque trimestre ») : ouvert jusqu'à
+19 000 € ; perdu au 1er janvier suivant après deux années de suite au-dessus de 19 000 €
+ou une seule au-dessus de 38 000 € ; l'année du dépassement, on y reste.
+
+Corrigé :
+- **Accueil** — encadré « Mode RSPM intégré » (`CtaBanner.astro`) : paliers « < 19 000 € /
+  19-38 k€ / > 38 000 € → PAMC » → « jusqu'à 19 000 € → 13,5 % / au-delà → 21,2 % sur la
+  part au-dessus / sortie → PAMC au 1er janvier, après 2 ans de suite > 19 000 € ou 1 an
+  > 38 000 € » ; FAQ « Je débute… » (`faqAccueil.ts`) : « Tu bénéficies automatiquement
+  du RSPM tant que tes revenus restent sous 38 000 € » → « Si tu es remplaçant, tu peux
+  opter pour le RSPM, ouvert jusqu'à 19 000 € d'honoraires par an » (c'est une option).
+- **Guide** — encadré « Régime ? » (`FiscalSocialPrimer.astro`) : « PAMC (≥ 38 k€) ou
+  RSPM (< 38 k€) » → « PAMC (cas général) ou RSPM (option des remplaçants, jusqu'à
+  19 k€) » ; boussole (`BoussoleWizard.tsx`) : infobulle « Par défaut tu démarres au
+  RSPM… ~38 000 € » réécrite, options RSPM/PAMC réécrites (« cotisations trimestrielles »
+  → « mensuelles ou trimestrielles ») ; glossaire (IJ CPAM, DSCZ) et pépite 2035
+  (`boussoleData.ts`) : « RSPM (< 38 000 €) », « PAMC (> 38 000 € …) », « PAMC (recettes
+  ≥ 38 000 €) » → formulations sans seuil faux ; alerte Hippodoc à ~38 k€ : « (sortie du
+  RSPM au 1er janvier suivant) ».
+- **Calculette** — infobulle « Régime social URSSAF » ; descriptions de 3 exemples.
+- **Simulateur** — exemple chiffré : « sous le seuil RSPM de 38 000 € » → le remplaçant
+  reste au RSPM cette année et la suivante (première année au-dessus de 19 000 €, sous
+  38 000 €). Chiffres inchangés.
+- **Comparatif** — « RSPM < 38 k€ vs PAMC » → « RSPM ou PAMC » (2×) ; persona Karim :
+  « seuil RSPM 38 k€ » → « seuils du RSPM (19 000 € et 38 000 €) » (les régulateurs sont
+  bien éligibles, d'après urssaf.fr).
+
+**Non modifié, à trancher (fondateur)** :
+- Le **moteur** du simulateur (mode Auto : RSPM sous 38 000 €) et de la calculette
+  (alerte seulement au-delà de 38 000 €) : approximation « première année au-dessus de
+  19 000 € » ; aucune alerte sur la règle des deux ans. Logique de calcul, hors lot texte.
+- **Sortie du RSPM automatique ou à déclarer ?** Le glossaire et la boussole disent
+  « l'URSSAF te radie d'office / tu bascules automatiquement » ; la calculette et une
+  pépite disent « déclaration à faire auprès de l'URSSAF / acte que toi seul peux
+  déclencher ». La page urssaf.fr ne le dit pas : à vérifier avant d'harmoniser.
+- `getCarmfLabel` (`src/lib/carmfStatus.ts`, « Dispensé·e (remplaçant·e < 38 000 €) ») :
+  non affiché sur le site (seul `normalizeCarmfStatus` est utilisé).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

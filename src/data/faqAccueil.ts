@@ -57,7 +57,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'debutants',
     question: "Je débute et je n'y connais rien en comptabilité — c'est jouable ?",
-    answerHtml: `Oui, aucune connaissance comptable n'est requise : l'application te guide <strong>pas à pas</strong>, et tu n'as jamais à savoir dans quelle case va quoi. Tu bénéficies automatiquement du <strong>régime RSPM</strong> tant que tes revenus restent sous <strong>38 000 €</strong>, ce qui simplifie fortement tes cotisations. Des exemples chiffrés : <a href="/blog/rspm-exemples-concrets">le RSPM en cas concrets</a>.`,
+    answerHtml: `Oui, aucune connaissance comptable n'est requise : l'application te guide <strong>pas à pas</strong>, et tu n'as jamais à savoir dans quelle case va quoi. Si tu es remplaçant, tu peux opter pour le <strong>régime RSPM</strong>, ouvert jusqu'à <strong>19 000 €</strong> d'honoraires par an, qui simplifie fortement tes cotisations. Des exemples chiffrés : <a href="/blog/rspm-exemples-concrets">le RSPM en cas concrets</a>.`,
   },
   {
     id: 'tarifs',

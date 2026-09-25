@@ -368,7 +368,7 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
 
     <!-- Définitions rapides + exemple chiffré (contenu rédigé pour cette page,
          factuellement cohérent avec le guide ci-dessus — sourcé uniquement sur
-         les constantes du moteur de calcul porté : SEUIL_RSPM=38000€,
+         les constantes du moteur de calcul porté : SEUIL_RSPM=38000€ (mode Auto),
          abattement micro-BNC 34%, taux RSPM 13,5%/21,2%, tranche RSPM 19 000€). -->
     <section class="mx-auto mt-16 max-w-3xl px-4" aria-labelledby="definitions-title">
       <h2 id="definitions-title" class="mb-6 text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -398,7 +398,7 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
       <div class="mt-8 rounded-xl border border-hippo-100 bg-hippo-50/40 p-5">
         <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-hippo-700">Exemple chiffré (illustration simplifiée)</p>
         <p class="text-sm leading-relaxed text-muted-foreground">
-          Un médecin remplaçant facture <strong class="text-foreground">30 000 €</strong> de rétrocessions sur l'année, sans autre revenu. Comme ce montant est sous le seuil RSPM de <strong class="text-foreground">38 000 €</strong>, ses cotisations sociales suivent le barème simplifié à deux tranches : <strong class="text-foreground">13,5 %</strong> sur les 19 000 premiers euros (2 565 €), puis <strong class="text-foreground">21,2 %</strong> sur les 11 000 € restants (2 332 €) — soit environ <strong class="text-foreground">4 897 €</strong> de cotisations URSSAF, plus la RID CARMF (157 € ou 626 € selon le taux choisi). Côté fiscal, en Micro-BNC, l'abattement forfaitaire de <strong class="text-foreground">34 %</strong> ramène directement son bénéfice imposable à <strong class="text-foreground">19 800 €</strong> (66 % de 30 000 €), avant application du barème de l'impôt sur le revenu. Le simulateur calcule ensuite l'IR précis selon la situation familiale, puis affiche le Super-Net final — et fait le même calcul en Régime Réel pour comparer.
+          Un médecin remplaçant, au RSPM l'an dernier avec moins de 19 000 €, facture cette année <strong class="text-foreground">30 000 €</strong> de rétrocessions, sans autre revenu. Il reste au RSPM cette année, et l'an prochain aussi : c'est sa première année au-dessus de 19 000 €, et il reste sous <strong class="text-foreground">38 000 €</strong> (une sortie ne jouerait de toute façon qu'au 1<sup>er</sup> janvier suivant). Ses cotisations sociales suivent donc le barème simplifié à deux tranches : <strong class="text-foreground">13,5 %</strong> sur les 19 000 premiers euros (2 565 €), puis <strong class="text-foreground">21,2 %</strong> sur les 11 000 € restants (2 332 €) — soit environ <strong class="text-foreground">4 897 €</strong> de cotisations URSSAF, plus la RID CARMF (157 € ou 626 € selon le taux choisi). Côté fiscal, en Micro-BNC, l'abattement forfaitaire de <strong class="text-foreground">34 %</strong> ramène directement son bénéfice imposable à <strong class="text-foreground">19 800 €</strong> (66 % de 30 000 €), avant application du barème de l'impôt sur le revenu. Le simulateur calcule ensuite l'IR précis selon la situation familiale, puis affiche le Super-Net final — et fait le même calcul en Régime Réel pour comparer.
         </p>
       </div>
     </section>
