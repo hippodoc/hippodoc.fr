@@ -12,6 +12,7 @@ cover: "/blog/inbox-zero-remplacant-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Simplifie ta gestion administrative dès aujourd'hui"
+ctaHref: "/essai"
 faq:
   - question: "Qu'est-ce que l'inbox zéro pour un médecin remplaçant ?"
     answer: "L'inbox zéro ne signifie pas tout traiter immédiatement. Cela signifie qu'en fin de journée, chaque résultat, message ou appel a un **statut clair** : fait, daté, transmis ou escaladé. L'objectif est **zéro ambiguïté et zéro oubli probable**."
