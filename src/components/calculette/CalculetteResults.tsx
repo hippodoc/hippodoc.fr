@@ -1125,7 +1125,7 @@ export function CalculetteResultsView({
                 )}
                 {cvMinoration > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">− Chèques-vacances (× 1,515, IR seul)</span>
+                    <span className="text-muted-foreground">− Chèques-vacances (× 1,515, IR seul, zone grise)</span>
                     <span className="font-medium text-muted-foreground">−{fmt(cvMinoration)}</span>
                   </div>
                 )}

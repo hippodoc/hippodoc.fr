@@ -4363,6 +4363,25 @@ Décisions produit du fondateur (points en attente du § 9.bf).
   Hippodoc ».
 Lighthouse local : accessibilité / bonnes pratiques / SEO 100 (accueil, article,
 simulateur), CLS 0, TBT 0.
+### 9.da Chèques-vacances en micro-BNC : le « × 1,515 » passe en zone grise (26 septembre 2026)
+
+Décision du fondateur. Le guide présentait comme **confirmée** la minoration de 5HQ du
+montant × 1,515. Sources : la notice officielle (n° 52348#06, § 6.10) vise le micro-fiscal
+et parle d'un montant « déductible fiscalement », mais ne décrit aucune méthode ; un
+article de praticien (non officiel) affirme qu'aucune déduction n'est possible en
+micro-BNC et que certains SIE refusent le coefficient. Aucune source primaire ne tranche.
+- Nouvelle fiche **ZG-017** (zones grises) : les deux positions, et la conclusion (ce qui
+  est sûr / ce qui ne l'est pas, demander au SIE par la messagerie impots.gouv.fr).
+- RO-005 : puce micro-BNC réécrite (renvoi ZG-017), exemple micro étiqueté « zone
+  grise ». Reste « confirmée » pour les plafonds, DSCN et le réel. ZG-017 est citée
+  depuis les cases 5HQ et DSCN et la question QT-026 (convention des tests de l'app :
+  une règle ne lie que des règles, toute fiche est citée au moins une fois).
+- Case 5HQ (description, conseil), piège ANCV micro, glossaire ANCV : même prudence.
+- Calculette : elle applique toujours le × 1,515 (déductibilité prévue par la notice),
+  mais affiche désormais une alerte « zone grise » dès qu'il y a des chèques-vacances en
+  micro-BNC ; libellé « − Chèques-vacances (× 1,515, IR seul, zone grise) ».
+- FAQ de la page calculette : idem, et « La case DSCN reçoit le montant TOTAL commandé »
+  (oubli du § 9.ct) → « dans la limite du plafond fiscal (1 SMIC mensuel brut) ».
 
 ## 10. TODO(owner) — faits manquants / décisions
 
