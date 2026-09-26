@@ -4495,7 +4495,7 @@ liste pour DSCZ.
   pro » (sans source) → présenté comme la zone la moins tranchée (absentes de la liste
   DSCZ ; exclues pour les salariés, brochure p. 93 ; rien d'exprès pour les BNC).
 
-### 9.dh Nouvel article : « EI, EI à l'IS ou SELARL : le comparatif honnête » (26 septembre 2026)
+### 9.di Nouvel article : « EI, EI à l'IS ou SELARL : le comparatif honnête » (26 septembre 2026)
 
 Contenu **ajouté** (flag § 9), tiré de la carte de la demande (§ 13 « SELARL, SELAS, EI à
 l'IS » : peu de questions, mais les réponses les plus contradictoires du corpus). Le corpus
