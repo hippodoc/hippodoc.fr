@@ -995,7 +995,7 @@ export const profils: ProfilMedecin[] = [
     description: "Interne ou étudiant effectuant ses premiers remplacements libéraux en parallèle de son activité hospitalière. Tu découvres les déclarations fiscales et sociales.",
     icon: "graduation-cap",
     casePrioritaires: ["5HQ", "1AJ", "DSCS"],
-    conseilsCles: ["Tes remplacements libéraux se déclarent séparément de ton salaire d'interne — ce sont deux revenus distincts.", "En micro-BNC (le plus fréquent au début) : reporte ton CA brut en 5HQ, l'abattement 34% est appliqué automatiquement.", "Tu es au RSPM tant que tes revenus libéraux restent < ~38 000€/an (en dessous de ~19 000€, tes cotisations sont au taux réduit de 13,5%) — c'est à toi de déclarer tes honoraires au RSPM pour que tes cotisations soient calculées.", "Pense à ouvrir un compte bancaire dédié à ton activité libérale dès le premier remplacement.", "Tu n'es PAS conventionné(e) personnellement — tu exerces sous la convention du médecin que tu remplaces."],
+    conseilsCles: ["Tes remplacements libéraux se déclarent séparément de ton salaire d'interne — ce sont deux revenus distincts.", "En micro-BNC (le plus fréquent au début) : reporte ton CA brut en 5HQ, l'abattement 34% est appliqué automatiquement.", "Le RSPM est une option ouverte jusqu'à 19 000 € d'honoraires par an (13,5 % jusqu'à 19 000 €, 21,2 % au-delà) ; tu en sors au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. C'est à toi de déclarer tes honoraires au RSPM pour que tes cotisations soient calculées.", "Pense à ouvrir un compte bancaire dédié à ton activité libérale dès le premier remplacement.", "Tu n'es PAS conventionné(e) personnellement — tu exerces sous la convention du médecin que tu remplaces."],
     faqPertinentes: ["QT-013","QT-014","QT-019","QT-029"]
   },
   {
@@ -1016,7 +1016,7 @@ export const profils: ProfilMedecin[] = [
   {
     id: "PM-009",
     label: "Médecin remplaçant RSPM vers PAMC",
-    description: "Médecin dont le régime social passe du Dispositif Simplifié (RSPM) au régime PAMC. Trois cas distincts : (A) installation en cabinet propre ou collaboration libérale en cours d'année — bascule au 1er jour du trimestre civil suivant, ANNÉE MIXTE ; (B) dépassement du plafond ~38 000 € — radiation au 1er janvier N+1, PAS de bascule sur N ; (C) demande volontaire — option annuelle, effet au 1er janvier N+1.",
+    description: "Médecin dont le régime social passe du Dispositif Simplifié (RSPM) au régime PAMC. Trois cas distincts : (A) installation en cabinet propre ou collaboration libérale en cours d'année — bascule au 1er jour du trimestre civil suivant, ANNÉE MIXTE ; (B) dépassement (deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €) — radiation au 1er janvier N+1, PAS de bascule sur N ; (C) demande volontaire — option annuelle, effet au 1er janvier N+1.",
     icon: "arrow-left-right",
     casePrioritaires: ["5HQ", "DSCS", "DSAV"],
     conseilsCles: [
@@ -1059,7 +1059,7 @@ export const profils: ProfilMedecin[] = [
     description: "Médecin effectuant des vacations en centre de santé, maison de santé pluriprofessionnelle ou structure de soins. La structure verse les honoraires bruts directement (pas de rétrocession au sens classique).",
     icon: "hospital",
     casePrioritaires: ["5HQ", "5QC", "DSCS", "DSAV", "BT"],
-    conseilsCles: ["La structure te verse des honoraires bruts (pas une rétrocession). Tu déclares ces honoraires en recettes BNC (5HQ en micro, 5QC en réel).", "Demande à la structure un récapitulatif annuel (relevé SNIR ou attestation) — sinon reconstitue via tes encaissements bancaires.", "En PAMC : DSCS = total des honoraires perçus, DSAV = part conventionnée.", "En PAMC réel : reporter la cotisation IJ CPAM obligatoire (0,30 % RBS, plancher **56,52 €** / plafond **423,90 €** pour les revenus 2025 — bornes calculées sur PASS 2025) en ligne **BT** de la 2035-A — déductible du BNC.", "En RSPM (< 38 000 €/an) : pas de DSFU à remplir, cotisations prélevées trimestriellement sur ton CA déclaré.", "Vérifie que la structure ne te déclare pas comme salarié (BS / 1AJ) si tu es bien en libéral — confusion fréquente."],
+    conseilsCles: ["La structure te verse des honoraires bruts (pas une rétrocession). Tu déclares ces honoraires en recettes BNC (5HQ en micro, 5QC en réel).", "Demande à la structure un récapitulatif annuel (relevé SNIR ou attestation) — sinon reconstitue via tes encaissements bancaires.", "En PAMC : DSCS = total des honoraires perçus, DSAV = part conventionnée.", "En PAMC réel : reporter la cotisation IJ CPAM obligatoire (0,30 % RBS, plancher **56,52 €** / plafond **423,90 €** pour les revenus 2025 — bornes calculées sur PASS 2025) en ligne **BT** de la 2035-A — déductible du BNC.", "En RSPM (option ouverte jusqu'à 19 000 € d'honoraires par an) : pas de DSFU à remplir, cotisations calculées sur tes honoraires déclarés chaque mois ou chaque trimestre.", "Vérifie que la structure ne te déclare pas comme salarié (BS / 1AJ) si tu es bien en libéral — confusion fréquente."],
     faqPertinentes: ["QT-001","QT-021","QT-022","QT-031"]
   },
   {
