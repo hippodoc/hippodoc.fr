@@ -4270,6 +4270,35 @@ Suite des points ouverts au § 9.ct.
   (reprise partout par les cabinets comptables, absente des notices officielles
   consultées) et la mécanique « L30 + L36 » de RO-011 en BNC réel.
 
+### 9.cv Décisions du fondateur : sortie du RSPM d'office, forfait de régulation PDSA, alerte 19 000 € (26 septembre 2026)
+
+Points laissés « à trancher » aux § 9.cr et 9.cs, tranchés par le fondateur.
+
+**1. La sortie du RSPM est automatique.** L'URSSAF radie d'office au 1er janvier
+suivant (deux années de suite au-dessus de 19 000 €, ou une au-dessus de 38 000 €) ;
+l'année du dépassement, on reste au RSPM, cotisé à 21,2 % sur la part au-dessus de
+19 000 €. Alignés sur le glossaire et la boussole (déjà justes) :
+- calculette, alerte au-delà de 38 000 € : « (déclaration à faire auprès de l'URSSAF —
+  CSS Art. L646-1) » → « l'URSSAF te fait sortir du RSPM d'office (aucune démarche) » ;
+- FAQ de `/guide-declarations/calculette` : idem, + 21,2 % sur la part au-dessus ;
+- pépite de la boussole : « acte administratif que toi seul(e) peux déclencher » →
+  « la sortie du RSPM se fait d'office ».
+
+**2. Forfait de régulation PDSA exonérable** (ZG-009) : le BOFiP (§ 60) range la
+« rémunération forfaitaire de régulation et d'astreinte » dans la rémunération
+d'astreinte. Position B et conclusion réécrites ; la phrase « Hippodoc la traite par
+défaut comme imposable » est retirée (à aligner dans l'application si elle le fait
+encore). Précision ajoutée : une régulation hors PDSA (ex. SAS en journée) reste
+imposable. Constats de décès, réquisitions, SNP : inchangés (imposables).
+
+**3. Calculette — nouvelle alerte** (`buildRspmWarnings`) : en RSPM, recettes entre
+19 000 € et 38 000 € → « tu restes au RSPM cette année (21,2 % au-dessus de 19 000 €) ;
+si tu avais déjà dépassé 19 000 € l'an dernier, sortie d'office au 1er janvier ; sinon,
+tu y restes ». Aucun montant calculé ne change. Testé : 15 000 € (rien), 25 000 €
+(alerte 19 k), 45 000 € (alerte 38 k).
+
+Le simulateur (mode Auto, RSPM sous 38 000 €) reste inchangé, par décision du fondateur.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
