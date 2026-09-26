@@ -162,7 +162,7 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
       // Les retros versées restent pré-déduites côté bénéfice fiscal (5HQ via
       // CGI Art. 102 ter) — c'est uniquement le volet social DSCS qui reste brut SNIR.
       const dscsBrut = Math.max(0, values.recettesMicroBnc);
-      // Assiette sociale URSSAF DSDE = brut − retros − PDSA (les retros sont
+      // Base sociale reconstituée (jamais déclarée en DSDE en micro-BNC, § 9.dd) = brut − retros − PDSA (les retros sont
       // pré-déduites par cohérence avec le fiscal ; la PDSA bascule en DSFA).
       // Aucun impact CV ici (géré par DSCN).
       const dsdeBase = Math.max(
@@ -275,7 +275,9 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
         DSAW: values.depassements,
         DSAU: DSAU_micro,
         DSAT: values.ehpadHadSsiadCmpp,
-        DSDE: dsdeBase,
+        // Micro-BNC : DSDE reste VIDE (guide Urssaf PAMC, § 9.dd). `dsdeBase` ne sert
+        // qu'à la décomposition pédagogique (rbs.rbs), jamais comme case à remplir.
+        DSDE: 0,
         DSDG: 0,
         DSDX: values.ijCpam,
         // Phase 9H parité moteur : DSCZ = IJ Madelin + IJ CARMF temporaire

@@ -532,7 +532,9 @@ export function CalculetteResultsView({
         `${getCode('DSAW', declarant)}=${dsPamc.DSAW}`,
         `${getCode('DSAU', declarant)}=${dsPamc.DSAU.toFixed(4).replace('.', ',')}`,
         `${getCode('DSAT', declarant)}=${dsPamc.DSAT}`,
-        `${getCode('DSDE', declarant)}=${dsPamc.DSDE}`,
+        isMicroBnc
+          ? `${getCode('DSDE', declarant)}=  # micro-BNC : laisser vide (recettes déjà prises en compte via 5HQ)`
+          : `${getCode('DSDE', declarant)}=${dsPamc.DSDE}`,
         `${getCode('DSDG', declarant)}=${dsPamc.DSDG}`,
         `${getCode('DSDX', declarant)}=${dsPamc.DSDX}`,
         `${getCode('DSCZ', declarant)}=${dsPamc.DSCZ}`,
@@ -868,8 +870,10 @@ export function CalculetteResultsView({
           {visible(dsPamc.DSAT) && (
             <CaseRow code={c('DSAT')} label="EHPAD non opposable / HAD / SSIAD / CMPP" value={dsPamc.DSAT} hint="Recettes nettes de ces structures." />
           )}
-          {visible(dsPamc.DSDE, true) && (
-            <CaseRow code={c('DSDE')} label={isMicroBnc ? 'Recettes nettes URSSAF (sans CV ni abatt. 34 %)' : 'Revenu Brut Social (si ≥ 0)'} value={dsPamc.DSDE} hint={isMicroBnc ? 'En Micro-BNC, DSDE = recettes brutes − rétrocessions versées (titulaire) ou redevance de collaboration (collaborateur — L16/BG) − PDSA exonérée. ⚠️ Les chèques-vacances NE sont PAS soustraits ici : l\'exo cotisations ANCV est gérée par l\'URSSAF via DSCN (montant facial, dans la limite du plafond social). L\'URSSAF applique elle-même son abattement forfaitaire de 34 % en interne pour calculer tes cotisations. Note : certains cabinets laissent DSDE vide en micro-BNC — les deux pratiques sont acceptées.' : 'Revenu Brut Social (Cadre 8 → case DD de la 2035-B). Réforme PAMC 2026 (revenus 2025+) : l\'URSSAF applique en interne un abattement forfaitaire de 26 % sur DSDE pour neutraliser les charges moyennes du métier (compense la réintégration de DG + DH dans le RBS). Source : réforme PAMC 2026.'} highlight />
+          {isMicroBnc ? (
+            <CaseRow code={c('DSDE')} label="Revenu brut social : laisser vide en micro-BNC" value={0} hint={`Guide Urssaf des PAMC : « Le chiffre d'affaires micro-BNC doit être déclaré uniquement en 5HQ/5IQ et ne doit pas figurer en revenu brut social ». Tes recettes sont déjà prises en compte via ${c('5HQ')} ; remplir ${c('DSDE')} les ferait compter deux fois (cotisations sur un revenu que tu n'as pas gagné).`} />
+          ) : visible(dsPamc.DSDE, true) && (
+            <CaseRow code={c('DSDE')} label="Revenu Brut Social (si ≥ 0)" value={dsPamc.DSDE} hint={'Revenu Brut Social (Cadre 8 → case DD de la 2035-B). Réforme PAMC 2026 (revenus 2025+) : l\'URSSAF applique en interne un abattement forfaitaire de 26 % sur DSDE pour neutraliser les charges moyennes du métier (compense la réintégration de DG + DH dans le RBS). Source : réforme PAMC 2026.'} highlight />
           )}
           {visible(dsPamc.DSDG) && (
             <CaseRow code={c('DSDG')} label="RBS négatif (valeur absolue)" value={dsPamc.DSDG} hint={`Si ton RBS est négatif (cas rare, réel uniquement), il se déclare en ${c('DSDG')} et non en ${c('DSDE')}. Pas d'abattement 26 % appliqué sur un RBS négatif.`} />
@@ -1070,15 +1074,15 @@ export function CalculetteResultsView({
         const recettesBrutes = round2(dsPamc.DSCS);
         // DSDE = brut − retros − PDSA (sans CV). Le bloc "retros + PDSA" se déduit
         // donc par différence DSCS − DSDE.
-        const preDeductions = Math.max(0, round2(recettesBrutes - dsPamc.DSDE));
+        const preDeductions = Math.max(0, round2(recettesBrutes - dsPamc.rbs.rbs));
         // CV minoration appliquée uniquement côté IR : delta entre DSDE et 5HQ
         // (avant exo zonée). 5HP est en NET → on remonte au brut pour la ligne zone.
         const recettesZone = round2((cases2042.case_5HP_5IP ?? 0) / 0.66);
         const cvMinoration = Math.max(
           0,
-          round2(dsPamc.DSDE - results.microBncRecettes - recettesZone),
+          round2(dsPamc.rbs.rbs - results.microBncRecettes - recettesZone),
         );
-        const dsdeRound = round2(dsPamc.DSDE);
+        const dsdeRound = round2(dsPamc.rbs.rbs);
         // Audit mai 2026 — Revenu net social transmis URSSAF en micro-BNC :
         // = 5HQ × 0,66 (part imposable abattue)
         //   + 5HP (part exonérée zonée, déjà nette)
@@ -1214,7 +1218,7 @@ export function CalculetteResultsView({
                 )}
 
                 <p className="text-[10px] text-muted-foreground/80 italic">
-                  Détail technique : assiette {c('DSDE')} transmise = {fmt(dsdeRound)} (recettes brutes − rétrocessions versées − PDSA, hors zone ZFU/ZFRR qui se reporte séparément en {c('5HP')}).
+                  Détail technique : base sociale reconstituée par l'Urssaf à partir de tes recettes = {fmt(dsdeRound)} (recettes brutes − rétrocessions versées − PDSA, hors zone ZFU/ZFRR qui se reporte séparément en {c('5HP')}). Rien à saisir en {c('DSDE')} en micro-BNC.
                 </p>
               </ResultCardCollapsible>
             )}

@@ -319,9 +319,14 @@ export function calculerDSPAMC(
   // L2.11 — propagation cadre 8 (DE/DB) depuis l'Aide 2035 pour un RBS unique cross-page.
   const rbs = calculerRBS(d, { DE: ctx.cadre8DE, DB: ctx.cadre8DB });
   // M2 (L2.8) — Routage DSDE / DSDG selon le signe (source AGA-PS millésime 2026)
-  const DSDE = rbs.rbs >= 0 ? rbs.rbs : 0;
-  const DSDG = rbs.rbs < 0 ? round2(-rbs.rbs) : 0;
-  if (rbs.rbs < 0) {
+  // Micro-BNC : aucun revenu brut social à déclarer — guide Urssaf PAMC (revenus
+  // 2025) : « Le chiffre d'affaires micro-BNC doit être déclaré uniquement en
+  // 5HQ/5IQ et ne doit pas figurer en revenu brut social ». DSDE/DSDG restent
+  // vides, sinon les recettes sont comptées deux fois (§ 9.dd).
+  const estMicro = ctx.regimeFiscal === 'micro-bnc';
+  const DSDE = !estMicro && rbs.rbs >= 0 ? rbs.rbs : 0;
+  const DSDG = !estMicro && rbs.rbs < 0 ? round2(-rbs.rbs) : 0;
+  if (!estMicro && rbs.rbs < 0) {
     warnings.push(
       `Revenu Brut Social négatif (${rbs.rbs} €) → à reporter en case DSDG (${DSDG} €), pas en DSDE. Cas rare, possible en cas de fortes insuffisances.`
     );
