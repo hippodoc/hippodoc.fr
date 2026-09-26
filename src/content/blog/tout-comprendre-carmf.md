@@ -30,6 +30,7 @@ faq:
   - question: "Puis-je être dispensé de cotisations CARMF ?"
     answer: "Une **dispense totale d'affiliation** est possible si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. Attention : elle n'est **pas automatique**, s'obtient sur **demande explicite** auprès de la CARMF et n'est pas rétroactive. La période dispensée ne compte pas pour tes droits à la retraite."
 relatedArticles:
+  - "ij-prevoyance-imposables-medecin"
   - "tout-comprendre-urssaf"
   - "cotisations-sociales-vs-impots"
   - "frais-professionnels-deductibles"
@@ -50,7 +51,7 @@ Après avoir découvert l'[URSSAF](/blog/tout-comprendre-urssaf), fais connaissa
 
 ## ❓ Qu'est-ce que la CARMF ?
 
-La CARMF (Caisse Autonome de Retraite des Médecins de France) gère : **Ta retraite** (base, complémentaire et ASV), **Ta prévoyance** (invalidité et décès).
+La CARMF (Caisse Autonome de Retraite des Médecins de France) gère : **Ta retraite** (base, complémentaire et ASV), **Ta prévoyance** (invalidité et décès). C'est elle qui te verse des indemnités journalières si ton arrêt dépasse 90 jours : [imposables, mais hors cotisations](/blog/ij-prevoyance-imposables-medecin).
 
 ## ⚠ Affiliation obligatoire dès ton premier remplacement !
 

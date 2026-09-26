@@ -25,6 +25,7 @@ faq:
   - question: "Une remplaçante a-t-elle droit à l'aide maternité de 3 100 € par mois ?"
     answer: "**Non.** Cette aide de l'Assurance Maladie (jusqu'à 3 100 € par mois pendant 3 mois en secteur 1) est réservée aux médecins **installées ou collaboratrices** conventionnées. Depuis la convention médicale de 2024, les remplaçants sont exclus de son champ, et donc de cette aide."
 relatedArticles:
+  - "ij-prevoyance-imposables-medecin"
   - "tout-comprendre-urssaf"
   - "remplir-declaration-2035"
   - "remplacement-salarie-guide-complet"
@@ -105,6 +106,8 @@ Arrêt **TOTAL** + attestation sur l'honneur
 **En micro-BNC** (le cas de la plupart des remplaçants) : elles ne s'ajoutent pas à tes recettes\
 CSG/CRDS précomptées + PAS\
 Conserver **tous les décomptes CPAM**
+
+Le traitement de chaque type d'indemnité (CPAM, CARMF, prévoyance Madelin ou non) est détaillé dans [tes IJ sont-elles imposables ?](/blog/ij-prevoyance-imposables-medecin)
 
 ## 📥 Où déclarer tes IJ
 
