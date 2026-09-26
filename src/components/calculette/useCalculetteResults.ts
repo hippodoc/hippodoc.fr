@@ -47,14 +47,25 @@ export interface CalculetteResults {
 
 /**
  * Construit la liste des warnings RSPM (saisies sociales ignorées + dépassement
- * du seuil 38 k€). Pure function, exportée pour test direct sans renderHook.
+ * des seuils 19 k€ / 38 k€). Pure function, exportée pour test direct sans renderHook.
+ *
+ * Règle de sortie (fondateur + urssaf.fr, § 9.cv) : deux années de suite au-dessus
+ * de 19 000 €, ou une seule au-dessus de 38 000 €, et l'URSSAF radie d'office au
+ * 1er janvier suivant. L'année du dépassement, on reste au RSPM (21,2 % sur la part
+ * au-dessus de 19 000 €). La calculette ne connaît pas l'année N-1 : entre 19 000 €
+ * et 38 000 €, elle prévient sans trancher.
  */
 export function buildRspmWarnings(values: CalculetteFormValues, isMicroBnc: boolean): string[] {
   const rspmWarnings: string[] = [];
   const recettesConv = isMicroBnc ? values.recettesMicroBnc : values.AA;
+  const recettesFmt = Math.round(recettesConv).toLocaleString('fr-FR');
   if (recettesConv > 38_000) {
     rspmWarnings.push(
-      `Tes recettes conventionnées (${Math.round(recettesConv).toLocaleString('fr-FR')} €) dépassent 38 000 € en ${values.annee}. Tu restes en RSPM jusqu'au 31 décembre ${values.annee} : les calculs ci-dessous restent valides pour cette année. La bascule en PAMC prendra effet au 1er janvier ${values.annee + 1} (déclaration à faire auprès de l'URSSAF — CSS Art. L646-1).`,
+      `Tes recettes conventionnées (${recettesFmt} €) dépassent 38 000 € en ${values.annee}. Tu restes en RSPM jusqu'au 31 décembre ${values.annee} (21,2 % sur la part au-dessus de 19 000 €) : les calculs ci-dessous restent valides pour cette année. Au 1er janvier ${values.annee + 1}, l'URSSAF te fait sortir du RSPM d'office (aucune démarche à faire) : tu passes au PAMC.`,
+    );
+  } else if (recettesConv > 19_000) {
+    rspmWarnings.push(
+      `Tes recettes conventionnées (${recettesFmt} €) dépassent 19 000 € en ${values.annee}. Tu restes en RSPM toute l'année (21,2 % sur la part au-dessus de 19 000 €). Si tu avais déjà dépassé 19 000 € en ${values.annee - 1}, l'URSSAF te fait sortir du RSPM d'office au 1er janvier ${values.annee + 1} (aucune démarche à faire) ; sinon, tu y restes en ${values.annee + 1}.`,
     );
   }
   const ignored: string[] = [];
