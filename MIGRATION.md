@@ -4495,6 +4495,13 @@ liste pour DSCZ.
   pro » (sans source) → présenté comme la zone la moins tranchée (absentes de la liste
   DSCZ ; exclues pour les salariés, brochure p. 93 ; rien d'exprès pour les BNC).
 
+### 9.dh Accueil : le compteur d'articles est calculé au build (26 septembre 2026)
+
+La tuile « Articles pédagogiques au blog » de `SocialProofSection.astro` affichait **38**
+(valeur écrite en dur lors de la migration) alors que le blog en compte 46. Elle lit
+désormais `getCollection('blog').length` au build : le chiffre suit chaque nouvel article.
+Seul le nombre change, pas le libellé.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
