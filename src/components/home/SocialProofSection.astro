@@ -9,20 +9,25 @@
  * Aucun chiffre inventé : chacun est vérifiable par un `count(*)`.
  * ⚠️ « 900+ médecins » est le seul qui reste au-dessus du réel (789 profils) —
  * repris tel quel du Hero et du CtaBanner, non tranché par l'owner.
+ * Articles : compté au build dans la collection `blog` (26/09/2026) — le « 38 »
+ * écrit en dur était resté figé alors que le blog en comptait 46.
  *
  * Compteur animé : le nombre FINAL est dans le HTML (`{stat.value}`), le script
  * ne fait qu'animer l'affichage. Sans ça, les robots qui n'exécutent pas le JS —
  * GPTBot, ClaudeBot, PerplexityBot, tous accueillis par le robots.txt — liraient
  * « 0 ». Le script restaure la chaîne exacte du HTML en fin d'animation.
  */
+import { getCollection } from 'astro:content';
 import SectionBadge from './SectionBadge.astro';
+
+const nbArticles = (await getCollection('blog')).length;
 
 const stats = [
   { value: '900+', nombre: 900, suffixe: '+', label: 'Médecins inscrits' },
   { value: '19 400', nombre: 19400, suffixe: '', label: 'Journées enregistrées' },
   { value: '2 379', nombre: 2379, suffixe: '', label: "Lieux d'exercice référencés" },
   { value: '623', nombre: 623, suffixe: '', label: 'Documents générés' },
-  { value: '38', nombre: 38, suffixe: '', label: 'Articles pédagogiques au blog' },
+  { value: String(nbArticles), nombre: nbArticles, suffixe: '', label: 'Articles pédagogiques au blog' },
   { value: '100 %', nombre: 100, suffixe: ' %', label: 'Données hébergées en France' },
 ];
 ---
