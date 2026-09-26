@@ -4475,6 +4475,26 @@ d'activité pour passer d'installé à remplaçant ? » (CNOM et ameli ne couvre
 l'information du conseil départemental et les obligations envers les patients ; rien sur
 la qualification URSSAF/fiscale). À traiter avec une réponse écrite du CDOM ou de l'URSSAF.
 
+### 9.df IJ CARMF d'incapacité temporaire : hors DSCZ, à retirer de l'assiette sociale (26 septembre 2026)
+
+Trouvé en préparant l'article « Prévoyance : tes IJ sont-elles imposables ? ».
+**Sources** : notice 52348#06 (revenus 2025) — § 6.5 : DSCZ/DSDZ = AJPA + IJ « Madelin »
+(hors ALD), rien d'autre ; § 5.4 : en micro-BNC, les « indemnités et allocations
+journalières d'invalidité servies par les régimes complémentaires obligatoires
+d'invalidité-décès en cas d'incapacité temporaire » se déclarent en DSCI/DSCJ, montant
+« déduit de l'assiette des cotisations et de la CSG-CRDS » ; en réel, elles figurent dans
+les sommes à déduire du revenu brut social (ligne DB). Brochure IR 2026 (p. 193, 209) : même
+liste pour DSCZ.
+- **Moteur `dsPamc.ts`** (utilisé par l'Aide DSFU de l'app) : `DSCZ` additionnait les IJ
+  CARMF temporaires aux IJ Madelin (« doctrine Phase 9H »), les soumettant à cotisations.
+  → `DSCZ = IJ Madelin` ; alerte quand des IJ CARMF sont saisies (imposables en BNC, à
+  retirer en DSCI en micro ou en ligne DB en réel). Même correction dans la calculette
+  (sans effet visible sur le site : le champ n'y est pas proposé).
+- **Guide** : fiche PC-014 et glossaire (DSCZ) — IJ CARMF : ajout du retrait de l'assiette
+  (DSCI / ligne DB) ; « IJ non Madelin … soumises aux cotisations si versées sur le compte
+  pro » (sans source) → présenté comme la zone la moins tranchée (absentes de la liste
+  DSCZ ; exclues pour les salariés, brochure p. 93 ; rien d'exprès pour les BNC).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
