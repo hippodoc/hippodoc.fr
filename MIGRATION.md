@@ -4327,7 +4327,9 @@ micro-BNC et que certains SIE refusent le coefficient. Aucune source primaire ne
 - Nouvelle fiche **ZG-017** (zones grises) : les deux positions, et la conclusion (ce qui
   est sûr / ce qui ne l'est pas, demander au SIE par la messagerie impots.gouv.fr).
 - RO-005 : puce micro-BNC réécrite (renvoi ZG-017), exemple micro étiqueté « zone
-  grise », lien `zone-ZG-017`. Reste « confirmée » pour les plafonds, DSCN et le réel.
+  grise ». Reste « confirmée » pour les plafonds, DSCN et le réel. ZG-017 est citée
+  depuis les cases 5HQ et DSCN et la question QT-026 (convention des tests de l'app :
+  une règle ne lie que des règles, toute fiche est citée au moins une fois).
 - Case 5HQ (description, conseil), piège ANCV micro, glossaire ANCV : même prudence.
 - Calculette : elle applique toujours le × 1,515 (déductibilité prévue par la notice),
   mais affiche désormais une alerte « zone grise » dès qu'il y a des chèques-vacances en

@@ -244,7 +244,6 @@ export const reglesOr: RegleOr[] = [
     relatedCases: ["5HQ", "DSCN", "5QC"],
     relatedTerms: ["ancv", "micro-bnc"],
     relatedQuestions: ["QT-026"],
-    relatedFiches: ["zone-ZG-017"],
   },
   {
     id: "RO-006",
@@ -399,7 +398,7 @@ export const caseopedia: CaseInfo[] = [
     conseil: "Déclarer le montant AVANT abattement 34 % (appliqué automatiquement par l'administration), mais APRÈS déduction des rétrocessions versées, revenus exonérés (ZFU/FRR/JEI **et** PDSA) et ajustement ANCV. Pour les chèques vacances ANCV, la méthode répandue (CA − CV × 1,515, dans la limite de 1 823 € en 2026) n'est décrite dans aucun texte officiel : zone grise, voir ZG-017. ⚠️ Le seuil micro-BNC (77 700 € en 2025 / 83 600 € en 2026) se calcule sur le CA TOTAL brut, incluant les revenus exonérés (ZFU et PDSA), même si ceux-ci sont retirés de la case 5HQ.",
     relatedTerms: ["micro-bnc", "retrocession", "redevance-collaboration", "comptabilite-caisse", "versement-liberatoire", "declarant-1-vs-2"],
     relatedQuestions: ["QT-013", "QT-014", "QT-020", "QT-021", "QT-029", "QT-039", "QT-041"],
-    relatedFiches: ["regle-RO-002", "regle-RO-003", "regle-RO-006", "regle-RO-014", "pepite-PC-003", "zone-ZG-009", "pepite-PC-008"],
+    relatedFiches: ["regle-RO-002", "regle-RO-003", "regle-RO-006", "regle-RO-014", "pepite-PC-003", "zone-ZG-009", "pepite-PC-008", "zone-ZG-017"],
   },
   {
     id: "CASE-002",
@@ -551,7 +550,7 @@ export const caseopedia: CaseInfo[] = [
     conseil: "Indiquer le montant brut commandé, dans la limite d'un SMIC mensuel brut (ex : 1 823 €) — **uniquement la valeur faciale des chèques**, jamais les frais annexes. L'URSSAF déduit l'exo sociale dans la limite de 547 € (2026). Le plafond fiscal (1 823 € en 2026, = 1 SMIC mensuel brut) est totalement indépendant et se gère côté 5HQ ou 5QC. Les frais d'achat ANCV (création de compte, frais d'envoi, commission) sont déductibles à 100 % en charges (ligne L30 de la 2035-A en réel ; noyés dans l'abattement 34 % en micro-BNC). Payer avec le compte pro pour la traçabilité.",
     relatedTerms: ["ancv"],
     relatedQuestions: ["QT-026"],
-    relatedFiches: ["regle-RO-005", "regle-RO-011"],
+    relatedFiches: ["regle-RO-005", "regle-RO-011", "zone-ZG-017"],
   },
   {
     id: "CASE-012",
@@ -1354,7 +1353,7 @@ export const questionsFAQ: QuestionReformule[] = [
     theme: "optimisation",
     relatedCases: ["8UZ", "2035"],
     relatedTerms: ["ir"],
-    relatedFiches: ["pepite-PC-006"],
+    relatedFiches: ["pepite-PC-006", "zone-ZG-017"],
   },
   {
     id: "QT-027",
