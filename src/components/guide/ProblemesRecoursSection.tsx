@@ -16,9 +16,9 @@ import { Bug, AlertCircle, CheckCircle2, RefreshCw, Search, ArrowRight, Mail, Ch
  */
 
 const statutConfig = {
-  actif: { icon: AlertCircle, label: 'Actif', className: 'text-red-600 bg-red-50 dark:bg-red-950/30' },
-  resolu: { icon: CheckCircle2, label: 'Résolu', className: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30' },
-  intermittent: { icon: RefreshCw, label: 'Intermittent', className: 'text-amber-600 bg-amber-50 dark:bg-amber-950/30' },
+  actif: { icon: AlertCircle, label: 'Actif', className: 'text-red-700 bg-red-50 dark:bg-red-950/30' },
+  resolu: { icon: CheckCircle2, label: 'Résolu', className: 'text-emerald-700 bg-emerald-50 dark:bg-emerald-950/30' },
+  intermittent: { icon: RefreshCw, label: 'Intermittent', className: 'text-amber-700 bg-amber-50 dark:bg-amber-950/30' },
 };
 
 export function ProblemesRecoursSection() {

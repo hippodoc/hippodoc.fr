@@ -52,7 +52,7 @@ export function TopQuestionsSection() {
           {grouped.map(({ theme, items }) => (
             <div key={theme}>
               <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
-                {questionThemeLabels[theme]} <span className="opacity-60">({items.length})</span>
+                {questionThemeLabels[theme]} <span>({items.length})</span>
               </h3>
               <div className="space-y-2">
                 {items.map(q => (

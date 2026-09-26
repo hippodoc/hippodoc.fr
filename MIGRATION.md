@@ -4299,6 +4299,24 @@ tu y restes ». Aucun montant calculé ne change. Testé : 15 000 € (rien), 25
 
 Le simulateur (mode Auto, RSPM sous 38 000 €) reste inchangé, par décision du fondateur.
 
+### 9.cw Balayage Lighthouse des 65 pages : derniers contrastes (26 septembre 2026)
+
+Lighthouse (accessibilité, SEO, bonnes pratiques) lancé en local sur les 65 pages du
+sitemap : 62 à 100/100/100. Trois pages à 96-97, toutes pour du contraste de couleur
+(aucun texte modifié) :
+- `/comparatif` : noms des outils écrits dans leur couleur de marque (Indy 4,15:1,
+  Pennylane 4,46, Hiway Care 3,67, Hippodoc 3,21 sur fond bleuté). Nouveau champ
+  `textColor` (couleur de marque assombrie : #C8215F, #4F46E5, #BE123C, #006BD6), la
+  couleur de marque reste sur les barres et pastilles.
+- `/guide-declarations` : compteurs « (17) » en `opacity-60` (Caseopédie, questions,
+  fiches), précisions « (réel L21/BG…) » en `opacity-70`, étiquettes « Micro-BNC /
+  Réel BNC » en `emerald-600` 10 px → `emerald-700`, statuts des problèmes (Actif /
+  Résolu / Intermittent) en `-600` → `-700`, calendrier (mois courant `hippo-500` →
+  `hippo-600`, « Ce mois » `hippo-600` → `hippo-700`).
+- `/qui-sommes-nous` : badges blancs sur `amber-500`, `emerald-600`, `fuchsia-500` →
+  `-700`.
+Après correction : 100 en accessibilité sur les trois pages.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

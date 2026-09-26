@@ -65,7 +65,7 @@ export function CaseopediaSection() {
           {grouped.map(({ cat, items }) => (
             <div key={cat}>
               <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
-                {CATEGORY_LABELS[cat]} <span className="opacity-60">({items.length})</span>
+                {CATEGORY_LABELS[cat]} <span>({items.length})</span>
               </h3>
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {items.map(c => (

@@ -23,6 +23,8 @@ type Tool = {
   key: ToolKey;
   name: string;
   wordmark: string;
+  /** Couleur du nom en texte : la couleur de marque assombrie jusqu'au contraste AA (4,5:1). */
+  textColor: string;
   color: string;
   tagline: string;
   pitch: string;
@@ -38,6 +40,7 @@ const TOOLS: Tool[] = [
     name: 'Indy',
     wordmark: 'Indy',
     color: '#E72E77',
+    textColor: '#C8215F',
     tagline: 'Comptabilité auto pour indépendants',
     pitch:
       "Logiciel de comptabilité en ligne basé à Lyon, lancé en 2016 (ex-Georges.tech). Indy revendique plus de 300 000 indépendants utilisateurs et 30 000 professionnels de santé clients.",
@@ -55,6 +58,7 @@ const TOOLS: Tool[] = [
     name: 'Pennylane',
     wordmark: 'Pennylane',
     color: '#6366F1',
+    textColor: '#4F46E5',
     tagline: 'Compta + pilotage financier TPE/PME',
     pitch:
       "Plateforme française lancée en 2020, orientée TPE/PME et cabinets d'expertise comptable. Pennylane revendique plus d'1 million d'utilisateurs et 6 000 cabinets partenaires.",
@@ -72,6 +76,7 @@ const TOOLS: Tool[] = [
     name: 'Hiway Care',
     wordmark: 'Hiway Care',
     color: '#F43F5E',
+    textColor: '#BE123C',
     tagline: 'Offre tout-en-un médecins libéraux',
     pitch:
       "Lancé fin 2024 par le Dr Franck Ehooman (anesthésiste). Hiway Care réunit installation, comptabilité, optimisation du statut et investissement patrimonial pour les médecins libéraux.",
@@ -89,6 +94,7 @@ const TOOLS: Tool[] = [
     name: 'Hippodoc',
     wordmark: 'Hippodoc',
     color: '#1A8CFF',
+    textColor: '#006BD6',
     tagline: 'Le cockpit financier des médecins',
     pitch:
       "Créé en 2024 par un médecin pour les médecins. Hippodoc pilote ton revenu net (Super-Net), tes URSSAF, ta CARMF, tes acomptes IR et tes déclarations, du remplaçant à l'installé.",
@@ -411,10 +417,10 @@ const faqSchema = {
           </span>
 
           <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-hippo-900 md:text-6xl">
-            <span class="font-bold tracking-tight" style={`color:${TOOLS[0].color}`}>{TOOLS[0].wordmark}</span>,{' '}
-            <span class="font-bold tracking-tight" style={`color:${TOOLS[1].color}`}>{TOOLS[1].wordmark}</span>,{' '}
-            <span class="font-bold tracking-tight" style={`color:${TOOLS[2].color}`}>{TOOLS[2].wordmark}</span>{' '}
-            ou <span class="font-bold tracking-tight" style={`color:${TOOLS[3].color}`}>{TOOLS[3].wordmark}</span> ?
+            <span class="font-bold tracking-tight" style={`color:${TOOLS[0].textColor}`}>{TOOLS[0].wordmark}</span>,{' '}
+            <span class="font-bold tracking-tight" style={`color:${TOOLS[1].textColor}`}>{TOOLS[1].wordmark}</span>,{' '}
+            <span class="font-bold tracking-tight" style={`color:${TOOLS[2].textColor}`}>{TOOLS[2].wordmark}</span>{' '}
+            ou <span class="font-bold tracking-tight" style={`color:${TOOLS[3].textColor}`}>{TOOLS[3].wordmark}</span> ?
             <span class="mt-4 block text-2xl font-medium text-slate-700 md:text-3xl">
               Quel outil de gestion choisir quand on est médecin libéral en 2026 ?
             </span>
@@ -456,7 +462,7 @@ const faqSchema = {
             const isHippodoc = v.key === 'hippodoc';
             return (
               <div class={`h-full rounded-2xl border p-6 ${isHippodoc ? 'border-hippo-300 bg-gradient-to-br from-hippo-50/80 to-white shadow-md shadow-hippo-100/50' : 'border-slate-200 transition-colors hover:border-slate-300'}`}>
-                <span class="font-bold tracking-tight text-base" style={`color:${tool.color}`}>{tool.wordmark}</span>
+                <span class="font-bold tracking-tight text-base" style={`color:${tool.textColor}`}>{tool.wordmark}</span>
                 <h3 class={`mt-3 text-base font-bold ${isHippodoc ? 'text-hippo-900' : 'text-slate-900'}`}>{v.label}</h3>
                 <p class="mt-3 text-sm leading-relaxed text-slate-600">{v.line}</p>
               </div>
@@ -483,7 +489,7 @@ const faqSchema = {
                 <div class="p-6">
                   <div class="flex items-start justify-between gap-3">
                     <div>
-                      <span class="font-bold tracking-tight text-2xl md:text-3xl" style={`color:${tool.color}`}>{tool.wordmark}</span>
+                      <span class="font-bold tracking-tight text-2xl md:text-3xl" style={`color:${tool.textColor}`}>{tool.wordmark}</span>
                       <p class="mt-2 text-sm text-slate-600">{tool.tagline}</p>
                     </div>
                     <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl" style={`background-color:${tool.color}15; color:${tool.color}`}>
@@ -530,7 +536,7 @@ const faqSchema = {
                 <th scope="col" class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Fonctionnalité</th>
                 {TOOLS.map((t) => (
                   <th scope="col" class={`px-3 py-4 text-center ${t.key === 'hippodoc' ? 'bg-hippo-50/60' : ''}`}>
-                    <span class="font-bold tracking-tight text-base" style={`color:${t.color}`}>{t.wordmark}</span>
+                    <span class="font-bold tracking-tight text-base" style={`color:${t.textColor}`}>{t.wordmark}</span>
                   </th>
                 ))}
               </tr>
@@ -646,7 +652,7 @@ const faqSchema = {
             const isHippodoc = p.key === 'hippodoc';
             return (
               <div class={`h-full rounded-2xl border p-6 ${isHippodoc ? 'border-hippo-300 bg-gradient-to-br from-hippo-50/60 to-white shadow-lg shadow-hippo-100/40 md:scale-[1.02]' : 'border-slate-200'}`}>
-                <span class="font-bold tracking-tight text-base" style={`color:${tool.color}`}>{tool.wordmark}</span>
+                <span class="font-bold tracking-tight text-base" style={`color:${tool.textColor}`}>{tool.wordmark}</span>
                 <div class="mt-3">
                   <p class="mb-1 text-xs uppercase tracking-wider text-slate-500">Prix d'entrée</p>
                   <p class={`text-2xl font-bold ${isHippodoc ? 'text-hippo-700' : 'text-slate-900'}`}>{p.entry}</p>
