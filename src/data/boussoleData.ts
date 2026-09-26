@@ -235,8 +235,8 @@ export const reglesOr: RegleOr[] = [
     id: "RO-005",
     numero: 5,
     titre: "Chèques Vacances ANCV : deux plafonds indépendants (547 € social / 1 823 € fiscal en 2026)",
-    description: "Un seul dispositif, deux plafonds qui ne se cumulent pas mais s'appliquent **en même temps** sur la même commande.\n\n**Plafond fiscal — 1 823 € en 2026** (= 1 SMIC mensuel brut, réindexé chaque année). C'est ce que tu peux retirer de ton bénéfice imposable.\n\n**Plafond social — 547 € en 2026**. Sur les 547 premiers euros commandés, exonération URSSAF + CARMF. Au-delà : neutre, pas de surcoût. La **CSG-CRDS reste due** sur ces 547 € (calcul automatique côté URSSAF, rien à saisir).\n\n**Côté déclaration sociale (DSFU volet PAMC, case DSCN)** : tu inscris le **montant commandé, dans la limite d'un SMIC mensuel brut** (ex : 1 823 €), sans le ramener toi-même à 547 €. L'URSSAF applique l'exo dans la limite de 547 €.\n\n**Côté fiscal selon ton régime** :\n• **Micro-BNC** → tu retires de 5HQ le montant commandé × **1,515** (le coefficient neutralise l'abattement 34 %).\n• **BNC réel** → mécanique en deux temps sur la 2035 puis minoration manuelle de 5QC. Voir la fiche dédiée RO-011.\n\n**Conditions** : activité libérale **depuis plus d'1 an**, pas de salarié OU ≤ 50 (avec obligation de proposer le dispositif si tu en as). Frais d'achat ANCV (port, création de compte) déductibles à 100 % en charges.",
-    exemple: "**Micro-BNC** — CA 64 280 €, 690 € de CV commandés → 5HQ = 64 280 − (690 × 1,515) ≈ **63 235 €**. DSCN reçoit 690 € : 547 € exonérés URSSAF + CARMF, 143 € soumis (neutre, pas de surcoût).\n\n**BNC réel** — bénéfice 2035 (CP) = 92 410 €, 1 380 € de CV commandés → résultat 2035 inchangé (cf. RO-011), puis 5QC = 92 410 − 1 380 = **91 030 €**. DSCN reçoit 1 380 €.",
+    description: "Un seul dispositif, deux plafonds qui ne se cumulent pas mais s'appliquent **en même temps** sur la même commande.\n\n**Plafond fiscal — 1 823 € en 2026** (= 1 SMIC mensuel brut, réindexé chaque année). C'est ce que tu peux retirer de ton bénéfice imposable.\n\n**Plafond social — 547 € en 2026**. Sur les 547 premiers euros commandés, exonération URSSAF + CARMF. Au-delà : neutre, pas de surcoût. La **CSG-CRDS reste due** sur ces 547 € (calcul automatique côté URSSAF, rien à saisir).\n\n**Côté déclaration sociale (DSFU volet PAMC, case DSCN)** : tu inscris le **montant commandé, dans la limite d'un SMIC mensuel brut** (ex : 1 823 €), sans le ramener toi-même à 547 €. L'URSSAF applique l'exo dans la limite de 547 €.\n\n**Côté fiscal selon ton régime** :\n• **Micro-BNC** → la notice officielle couvre aussi le micro-fiscal et parle d'un montant « déductible fiscalement », sans dire comment. La méthode répandue (retirer de 5HQ le montant commandé × **1,515**, pour neutraliser l'abattement de 34 %) n'est décrite dans aucun texte officiel et certains SIE la refusent : **zone grise**, lis la fiche ZG-017 avant de l'appliquer.\n• **BNC réel** → mécanique en deux temps sur la 2035 puis minoration manuelle de 5QC. Voir la fiche dédiée RO-011.\n\n**Conditions** : activité libérale **depuis plus d'1 an**, pas de salarié OU ≤ 50 (avec obligation de proposer le dispositif si tu en as). Frais d'achat ANCV (port, création de compte) déductibles à 100 % en charges.",
+    exemple: "**Micro-BNC** (méthode × 1,515, zone grise ZG-017) — CA 64 280 €, 690 € de CV commandés → 5HQ = 64 280 − (690 × 1,515) ≈ **63 235 €**. DSCN reçoit 690 € : 547 € exonérés URSSAF + CARMF, 143 € soumis (neutre, pas de surcoût).\n\n**BNC réel** — bénéfice 2035 (CP) = 92 410 €, 1 380 € de CV commandés → résultat 2035 inchangé (cf. RO-011), puis 5QC = 92 410 − 1 380 = **91 030 €**. DSCN reçoit 1 380 €.",
     certitude: "confirmed",
     icon: "💸",
     theme: "optimisation",
@@ -244,6 +244,7 @@ export const reglesOr: RegleOr[] = [
     relatedCases: ["5HQ", "DSCN", "5QC"],
     relatedTerms: ["ancv", "micro-bnc"],
     relatedQuestions: ["QT-026"],
+    relatedFiches: ["zone-ZG-017"],
   },
   {
     id: "RO-006",
@@ -390,12 +391,12 @@ export const caseopedia: CaseInfo[] = [
     code: "5HQ",
     nom: "Revenus Imposables (Micro-BNC)",
     formulaire: "2042 C PRO",
-    description: "Montant brut total des recettes issues de l'activité libérale, avant l'abattement de 34 % mais APRÈS déduction des rétrocessions versées (CGI Art. 102 ter), des revenus exonérés (ZFU, FRR, JEI **et** PDSA) et de l'ajustement ANCV (×1,515, plafond fiscal 1 823 € en 2026). Représente le CA imposable soumis à l'abattement forfaitaire.",
+    description: "Montant brut total des recettes issues de l'activité libérale, avant l'abattement de 34 % mais APRÈS déduction des rétrocessions versées (CGI Art. 102 ter), des revenus exonérés (ZFU, FRR, JEI **et** PDSA) et, le cas échéant, de l'ajustement ANCV (méthode × 1,515, zone grise : voir ZG-017). Représente le CA imposable soumis à l'abattement forfaitaire.",
     quiRemplit: "Médecin en micro-BNC",
     erreurFrequente: "Inclure les revenus exonérés, déduire l'abattement de 34% avant de reporter, ou oublier de pré-déduire les rétrocessions versées.",
     certitude: "confirmed",
     categorie: "fiscal",
-    conseil: "Déclarer le montant AVANT abattement 34 % (appliqué automatiquement par l'administration), mais APRÈS déduction des rétrocessions versées, revenus exonérés (ZFU/FRR/JEI **et** PDSA) et ajustement ANCV. Pour les chèques vacances ANCV, appliquer la règle spécifique (CA − CV × 1,515, dans la limite d'un plafond fiscal de 1 823 € en 2026). ⚠️ Le seuil micro-BNC (77 700 € en 2025 / 83 600 € en 2026) se calcule sur le CA TOTAL brut, incluant les revenus exonérés (ZFU et PDSA), même si ceux-ci sont retirés de la case 5HQ.",
+    conseil: "Déclarer le montant AVANT abattement 34 % (appliqué automatiquement par l'administration), mais APRÈS déduction des rétrocessions versées, revenus exonérés (ZFU/FRR/JEI **et** PDSA) et ajustement ANCV. Pour les chèques vacances ANCV, la méthode répandue (CA − CV × 1,515, dans la limite de 1 823 € en 2026) n'est décrite dans aucun texte officiel : zone grise, voir ZG-017. ⚠️ Le seuil micro-BNC (77 700 € en 2025 / 83 600 € en 2026) se calcule sur le CA TOTAL brut, incluant les revenus exonérés (ZFU et PDSA), même si ceux-ci sont retirés de la case 5HQ.",
     relatedTerms: ["micro-bnc", "retrocession", "redevance-collaboration", "comptabilite-caisse", "versement-liberatoire", "declarant-1-vs-2"],
     relatedQuestions: ["QT-013", "QT-014", "QT-020", "QT-021", "QT-029", "QT-039", "QT-041"],
     relatedFiches: ["regle-RO-002", "regle-RO-003", "regle-RO-006", "regle-RO-014", "pepite-PC-003", "zone-ZG-009", "pepite-PC-008"],
@@ -2038,6 +2039,20 @@ export const zonesGrises: ZoneGrise[] = [
     relatedCases: ["5QC", "DSDX", "1AJ"],
     relatedTerms: ["cpam", "bnc-reel"],
     relatedQuestions: ["QT-006", "QT-040", "QT-041"],
+  },
+  {
+    id: "ZG-017",
+    sujet: "Chèques-vacances ANCV en micro-BNC : déductibles, et avec quelle méthode ?",
+    positionA: "**Déductibles, méthode du × 1,515.** La notice officielle de la déclaration des indépendants (n° 52348#06, § 6.10) vise « quel que soit le régime d'imposition de l'activité (y compris pour les travailleurs indépendants relevant du régime micro-fiscal) » un montant de chèques-vacances « déductible fiscalement, dans la limite d'un SMIC brut mensuel ». Comme l'abattement de 34 % s'applique ensuite, on retire de 5HQ le montant × 1,515 (1 ÷ 0,66) pour que le bénéfice baisse exactement du montant commandé. Méthode reprise par de nombreux cabinets et logiciels.",
+    positionB: "**Pas de déduction en micro-BNC.** L'abattement de 34 % est réputé couvrir toutes les charges, et aucun texte (CGI, BOFiP) ne décrit de minoration de 5HQ pour les chèques-vacances : le coefficient 1,515 est une construction de praticiens. Certains SIE refusent cette minoration.",
+    conclusion: "**Zone grise.** Ce qui est sûr : les plafonds (1 823 € fiscal, 547 € social en 2026), la case DSCN (dans la limite d'un SMIC mensuel brut) et la méthode en BNC réel (fiche RO-011). Ce qui ne l'est pas : la façon de déduire en micro-BNC, qu'aucune source officielle ne décrit. Avant d'appliquer le × 1,515, pose la question à ton SIE par la messagerie de ton espace impots.gouv.fr et garde la réponse ; sans réponse écrite, la prudence est de ne pas minorer 5HQ. La calculette applique le × 1,515 et te le signale.",
+    certitude: "grey_zone",
+    theme: "optimisation",
+    profilsConcernes: ["PM-001", "PM-002", "PM-011", "PM-013"],
+    relatedCases: ["5HQ", "DSCN"],
+    relatedTerms: ["ancv", "micro-bnc"],
+    relatedQuestions: ["QT-026"],
+    relatedFiches: ["regle-RO-005", "regle-RO-011"],
   }
 ];
 
@@ -2687,7 +2702,7 @@ export function getWizardResult(
     cases.push({ code: 'DSCN', nom: 'Chèques Vacances ANCV', formulaire: 'DSFU', ordre: 15 });
     regles.push('RO-005');
     if (regime === 'micro-bnc') {
-      pieges.push("ANCV micro-BNC : 5HQ = CA − (montant CV × 1,515). Ce coefficient neutralise l'abattement 34% (1 ÷ 0,66 ≈ 1,515).");
+      pieges.push("ANCV en micro-BNC : la méthode répandue (5HQ = CA − montant CV × 1,515, pour neutraliser l'abattement de 34 %) n'est décrite dans aucun texte officiel et certains SIE la refusent. Zone grise (fiche ZG-017) : vérifie auprès de ton SIE avant de l'appliquer.");
     }
   }
   if (situations.includes('secteur2')) {

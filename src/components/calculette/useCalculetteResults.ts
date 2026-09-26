@@ -232,6 +232,12 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
 
       const microWarnings: string[] = [];
       const microErrors: string[] = [];
+      // ZG-017 : la minoration × 1,515 n'est décrite dans aucun texte officiel.
+      if (cv.capped > 0) {
+        microWarnings.push(
+          `Chèques-vacances en micro-BNC : la calculette retire de 5HQ ${Math.round(cv.capped * 1.515)} € (montant × 1,515, méthode répandue pour neutraliser l'abattement de 34 %). Aucun texte officiel ne décrit cette méthode et certains SIE la refusent : zone grise, confirme-la auprès de ton SIE avant de l'appliquer.`,
+        );
+      }
       // Warning excédent CV en micro-BNC (parité avec moteur réel).
       if (cv.depasse) {
         const params = getDeclarationParams(values.annee);
