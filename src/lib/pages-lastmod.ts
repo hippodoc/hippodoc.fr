@@ -19,6 +19,11 @@ import { GUIDE_DECLARATIONS_LAST_UPDATED_ISO } from './guide/lastUpdated';
 
 export const COMPARATIF_LAST_UPDATED_ISO = '2026-06-24';
 
+/** /guide (PDF offert, § 9.di) : date « À jour au » imprimée dans l'édition en ligne.
+ *  Littéral ici, pas dans `guide-remplacant.ts` : verify-site.mjs lit cette table par
+ *  expression régulière et ne résout que les constantes déclarées dans ce fichier. */
+export const GUIDE_REMPLACANT_LAST_UPDATED_ISO = '2026-09-26';
+
 /** Chemin de page (sans slash final) → date ISO de dernière revue. */
 /** Pages filles du guide, créées le 23 août 2026 (MIGRATION.md § 9.ap). Leur
  *  contenu provient des mêmes données que le hub : elles suivent donc sa date
@@ -31,4 +36,6 @@ export const STATIC_LASTMOD: Record<string, string> = {
   '/guide-declarations/2042-c-pro': GUIDE_SOUS_PAGES_LAST_UPDATED_ISO,
   '/guide-declarations/medecin-remplacant': GUIDE_SOUS_PAGES_LAST_UPDATED_ISO,
   '/comparatif': COMPARATIF_LAST_UPDATED_ISO,
+  /** Page du PDF offert : suit la date « À jour au » de l'édition (§ 9.di). */
+  '/guide': GUIDE_REMPLACANT_LAST_UPDATED_ISO,
 };

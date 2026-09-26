@@ -33,6 +33,7 @@ Contact : contact@hippodoc.fr
 - [DSFU (ex DS-PAMC) : les 15 cases du médecin](https://www.hippodoc.fr/guide-declarations/dsfu-pamc): DSCS, DSAV, DSDE, DSDX, DSFA… les 15 cases de la DSFU expliquées une par une : ce que l'URSSAF attend, qui remplit, et le pré-remplissage à corriger.
 - [2042-C-PRO médecin : 5HQ, 5QC et exonérations](https://www.hippodoc.fr/guide-declarations/2042-c-pro): Les 5 cases de la 2042-C-PRO du médecin libéral : 5HQ en micro-BNC, 5QC au réel, et les cases d'exonération ZFU-TE, FRR et JEI. Ce que chacune attend.
 - [Déclaration médecin remplaçant : cases et pièges](https://www.hippodoc.fr/guide-declarations/medecin-remplacant): Micro-BNC ou réel, 5HQ ou 5QC, DSCS et DSAV côté URSSAF : les cases que remplit un médecin remplaçant, et les erreurs qui reviennent chaque année.
+- [Guide du médecin remplaçant 2026-2027 (PDF gratuit)](https://www.hippodoc.fr/guide): Guide offert de 26 pages pour internes et jeunes remplaçants : licence, contrat, rétrocession, RSPM ou PAMC, CARMF, micro-BNC, acomptes d'impôt, Super-Net.
 - [Tarifs](https://www.hippodoc.fr/tarifs): Mensuel 29 €/mois ou annuel 19 €/mois, essai gratuit 30 jours, résiliation à tout moment.
 - [Blog](https://www.hippodoc.fr/blog): Fiches pratiques fiscalité, cotisations, contrats et conseils pour médecins remplaçants.
 - [FAQ](https://www.hippodoc.fr/faq): Questions fréquentes sur l'usage d'Hippodoc.

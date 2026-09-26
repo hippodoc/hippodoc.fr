@@ -96,7 +96,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (67 pages au 21 septembre 2026 : une de plus par nouvel article) puis `node scripts/verify-site.mjs`.
+1. `npm run build` (68 pages au 26 septembre 2026 : une de plus par nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).
 3. Lighthouse local si perf touchée : `npx serve dist -l 4321` +
