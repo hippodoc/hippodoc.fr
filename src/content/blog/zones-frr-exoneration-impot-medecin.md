@@ -2,6 +2,7 @@
 title: "Zones FRR médecin : 8 ans d'impôts allégés"
 description: "Zones FRR : 100 % du bénéfice exonéré d'impôt pendant 5 ans, puis 75, 50 et 25 %. Conditions, montants 2026, et pourquoi remplacer en zone ne suffit pas."
 pubDate: "2026-09-20"
+updatedDate: "2026-09-26"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -100,6 +101,18 @@ L'exonération FRR porte sur **l'impôt sur les bénéfices**. Elle ne touche ni
 4. **Moins de 11 salariés.**
 5. **Au plus 25 % de ton chiffre d'affaires réalisé hors zone.** Au-delà, l'exonération n'est pas perdue : elle devient proportionnelle à la part du chiffre d'affaires réalisée en zone. Utile à savoir si tu gardes des vacations en ville ou un cabinet secondaire.
 
+## 🚪 Et si tu pars avant la fin ?
+
+Tu rembourses **uniquement si tu déménages ton activité hors zone FRR** dans les **cinq ans qui suivent ta dernière année exonérée**. Dans ce cas, tout l'impôt économisé devient exigible d'un coup, avec l'intérêt de retard. Le délai de cinq ans part de la clôture de ton dernier exercice exonéré, que l'exonération ait été totale ou partielle : avec huit ans d'exonération, l'engagement court donc jusqu'à la treizième année après ton installation. Un déménagement même partiel de l'activité hors zone compte.
+
+Tu ne rembourses **rien** dans les autres cas :
+
+- **tu arrêtes simplement ton activité libérale.** L'administration prend précisément l'exemple d'un médecin généraliste installé en FRR qui devient, moins de cinq ans après, médecin du travail salarié : c'est une cessation sans délocalisation, sans remboursement ;
+- **tu déménages dans une autre commune classée FRR** : l'exonération passée est conservée, et même maintenue pour la durée restant à courir si tu remplis toujours les conditions ;
+- **ta commune perd son classement** : tu gardes ton exonération jusqu'à son terme.
+
+Si en cours de route tu ne remplis plus une condition (passage en micro-BNC, 11 salariés ou plus…), tu perds l'exonération **pour la suite**, sans rembourser les années passées, sauf si la condition n'était pas remplie dès le départ.
+
 ## 🗺️ Deux cartes, à ne pas confondre
 
 C'est l'erreur la plus fréquente. La **zone FRR** est une carte **fiscale**, définie par Bercy. La **zone sous-dotée (ZIP / ZAC)** est une carte **démographique**, définie par ton ARS. Elles ne se superposent pas : une commune peut être en FRR sans être sous-dotée, et l'inverse.
@@ -133,6 +146,7 @@ Sur Hippodoc, [tu simules ton Super-Net](/simulateur) avant de signer, tu compar
 
 • CGI, art. 44 quindecies A (exonération en zone France ruralités revitalisation) — Légifrance ; commentaires BOFiP, série BOI-BIC-CHAMP-80-10-75.\
 • Fiche « Zones France ruralités revitalisation : exonérations d'impôts » (entreprendre.service-public.gouv.fr, vérifiée le 21 février 2026) : dates, durée et taux, régime réel, moins de 11 salariés, règle des 25 %, plafond de minimis de 300 000 € sur trois exercices, option dans les six mois.\
+• Départ avant la fin, droits acquis et perte d'une condition : BOFiP BOI-BIC-CHAMP-80-10-75-40 (29 juillet 2026), § 150, 170 et 200 à 220 (dont l'exemple du médecin généraliste devenu médecin du travail salarié).\
 • Remplaçant devenant collaborateur libéral : rescrit BOI-RES-BIC-000030 (BOFiP), rendu pour les ZRR (CGI, art. 44 quindecies).\
 • Zonage : environ 17 800 communes classées et 13 départements entièrement zonés pour leurs communes de moins de 30 000 habitants (collectivites-locales.gouv.fr, juillet 2025).\
 • Aides à l'installation en zone sous-dense au 1er janvier 2026 : 10 000 € (ZIP), 5 000 € (ZAC), 3 000 € (cabinet secondaire en ZIP) et spécialités exclues (ameli.fr, page mise à jour le 17 mars 2026).\

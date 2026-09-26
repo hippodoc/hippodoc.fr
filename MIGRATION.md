@@ -4449,6 +4449,32 @@ social. » Même règle dans la notice 52348#06 (§ 4 et 6.1 : revenu brut socia
 - Vérifié : micro 60 000 € → DSDE 0 (base interne 60 000 €) ; réel (CP 70 000 €, BK
   15 000 €) → DSDE 85 000 €, inchangé.
 
+### 9.de Compléments issus de la carte de la demande : zones FRR, CFE, primes CPAM (26 septembre 2026)
+
+Trois questions du corpus sans réponse sur le site, vérifiées sur source primaire (le corpus
+n'a servi qu'à choisir les sujets).
+- **`zones-frr-exoneration-impot-medecin`** — nouvelle section « Et si tu pars avant la
+  fin ? » : remboursement de l'impôt exonéré (avec intérêt de retard) seulement en cas de
+  délocalisation hors zone FRR dans les cinq ans suivant le dernier exercice exonéré
+  (donc jusqu'à la 13e année) ; pas de remboursement en cas de simple cessation (exemple
+  BOFiP du généraliste devenu médecin du travail salarié), de transfert vers une autre
+  commune FRR (exonération maintenue) ou de déclassement de la commune (droits acquis) ;
+  perte d'une condition = perte pour l'avenir seulement. Source : BOI-BIC-CHAMP-80-10-75-40
+  (29/07/2026), § 150, 170, 200-220.
+- **`cfe-medecin-remplacant`** — bureau à domicile / téléconsultation : une seule
+  cotisation minimum, au principal établissement (CGI art. 1647 D ; BOI-IF-CFE-20-20-40-10)
+  ; pièce retenue seulement si affectée à l'activité, locaux d'habitation exclus
+  (BOI-IF-CFE-20-20-10-10, § 80) ; un bureau dédié en plus d'un cabinet s'ajoute sur sa
+  propre valeur locative.
+- **`remplir-declaration-2035`** — prime OPTAM, ROSP, forfaits CPAM : recettes imposables
+  (BOI-BNC-BASE-20-20, § 10 ; ameli : OPTAM « rémunération spécifique annuelle »),
+  imposées l'année d'encaissement.
+`updatedDate` des trois articles → 26 septembre 2026 (et `blog-meta.json`).
+**Non traité, faute de source officielle qui tranche** : « faut-il une cessation
+d'activité pour passer d'installé à remplaçant ? » (CNOM et ameli ne couvrent que
+l'information du conseil départemental et les obligations envers les patients ; rien sur
+la qualification URSSAF/fiscale). À traiter avec une réponse écrite du CDOM ou de l'URSSAF.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
