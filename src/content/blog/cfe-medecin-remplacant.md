@@ -2,7 +2,7 @@
 title: "CFE médecin remplaçant : la taxe de décembre"
 description: "Sans cabinet, tu paies quand même la CFE : 0 € l'année de création, moitié prix l'année 2, plein tarif l'année 3. Montants 2026, 15 décembre, check-list."
 pubDate: "2026-09-20"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-26"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -61,6 +61,8 @@ La règle est agnostique de ta spécialité : généraliste en cabinet de groupe
 Le caractère « habituel » se juge au cas par cas : nombre d'actes, durée des remplacements, importance des recettes. [Un interne](/blog/guide-impots-internes-remplacants) qui fait deux gardes dans l'année n'est pas dans la même situation qu'un remplaçant à temps plein — mais dès que l'activité s'installe dans la durée, la CFE suit.
 
 **Détail méconnu sur le lieu d'imposition** : depuis une décision du Conseil d'État (2017) reprise par la doctrine fiscale en 2022, le remplaçant est imposé à l'adresse du **cabinet où il a exercé de façon prépondérante dans l'année** — pas forcément à son domicile, même si c'est l'adresse de sa déclaration. Sans cabinet dominant (remplas dispersés, téléconsultation de chez soi), c'est le domicile qui reste retenu. L'enjeu n'est pas anecdotique : c'est le taux de cette commune qui s'appliquera.
+
+**Bureau à domicile ou téléconsultation depuis chez toi : une deuxième CFE ?** Pas de deuxième cotisation minimum : elle n'est due qu'une fois, au lieu de ton **principal établissement**. Et une pièce de ton logement n'entre dans la CFE que si elle est **affectée à ton activité**, comme un bureau ou une salle de téléconsultation dédiés. Un coin du salon ou une chambre qui reste un lieu de vie ne compte pas : l'administration exclut explicitement les locaux à usage d'habitation. Si tu as un cabinet ailleurs et un vrai bureau professionnel chez toi, ce bureau peut s'ajouter à ta CFE, calculé sur sa propre valeur locative (souvent modeste), dans ta commune de résidence si elle est différente.
 
 ## 🎁 2. Les trois bonnes nouvelles
 
@@ -135,6 +137,7 @@ C'est exactement la logique d'Hippodoc : centraliser tes remplas et tes rétroce
 
 • Fiche « Cotisation foncière des entreprises » (entreprendre.service-public.gouv.fr, vérifiée le 2 avril 2026) : barème 2026 de la base minimum, exonération l'année de création, réduction de moitié, seuil de 5 000 €, déclaration 1447-C avant le 31 décembre, avis dématérialisé, échéance du 15 décembre, acompte.\
 • impots.gouv.fr : redevabilité à domicile, avis en ligne et paiement dématérialisé, notice 1447-C, dégrèvement en cas de cessation.\
+• Une seule cotisation minimum, au lieu du principal établissement : CGI, art. 1647 D ; BOFiP BOI-IF-CFE-20-20-40-10, § 30 à 60. Locaux d'habitation exclus de la base : BOFiP BOI-IF-CFE-20-20-10-10, § 80.\
 • CGI, art. 1647 D (cotisation minimum, recettes ramenées à douze mois) et art. 1478 (création, cessation en cours d'année).\
 • Lieu d'imposition du remplaçant : CE, 24 novembre 2017, n° 412505 ; BOFiP BOI-IF-CFE-20-40-20 (24 août 2022).\
 • Exonération des médecins en petite commune ou en zone FRR : CGI, art. 1464 D ; BOFiP BOI-IF-CFE-10-30-60-10.\

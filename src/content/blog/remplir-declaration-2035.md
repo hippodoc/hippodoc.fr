@@ -2,7 +2,7 @@
 title: "Déclaration 2035 du médecin remplaçant"
 description: "Au régime réel, la 2035 ligne par ligne : recettes, charges, cotisations, Madelin, amortissements, puis le report sur la 2042-C-PRO et la date limite 2026."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-25"
+updatedDate: "2026-09-26"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -65,6 +65,8 @@ Les lignes ci-dessous sont celles du formulaire 2035-A, dans l'ordre où tu les 
 **Ligne 6** : Gains divers, dont les indemnités journalières maladie/[maternité](/blog/conge-maternite-paternite) (CPAM, CARMF, contrat Madelin)\
 **Ligne 7** : Total des recettes (ligne 4 + lignes 5 et 6)
 
+Les sommes que te verse l'Assurance Maladie en plus de tes actes sont des recettes comme les autres : **prime OPTAM** (si tu es installé en secteur 2 et adhérent), **ROSP**, forfaits (forfait structure, forfait médecin traitant…). Aucune n'est exonérée : l'administration range dans les recettes imposables tous les honoraires, primes et « autres rémunérations, quelle que soit la dénomination attribuée par les parties ». Elles s'imposent l'année où tu les encaisses, même si elles récompensent l'activité de l'année précédente.
+
 ## 3️⃣ Déclare tes charges professionnelles déductibles
 
 **Ligne 12** : CET = [ta CFE](/blog/cfe-medecin-remplacant) (exonérée la première année, -50% la deuxième année)\
@@ -108,6 +110,7 @@ Centralise facilement tes recettes, charges et justificatifs sur Hippodoc. Expor
 
 ## 📚 Sources (vérifiées au 25 septembre 2026)
 
+• Primes et forfaits de l'Assurance Maladie imposables : BOFiP BOI-BNC-BASE-20-20, § 10 (recettes « quelle que soit la dénomination attribuée par les parties ») ; prime OPTAM, « rémunération spécifique annuelle » : [ameli.fr](https://www.ameli.fr/medecin/exercice-liberal/facturation-remuneration/consultations-actes/maitrise-depassements-optam).\
 • Notice 2035-NOT-SD 2026 ([impots.gouv.fr](https://www.impots.gouv.fr/formulaire/2035-sd/revenus-non-commerciaux-et-assimiles-regime-de-la-declaration-controlee)) : lignes de recettes et de charges.\
 • impots.gouv.fr, « [Organismes de gestion agréés : abrogation de l'agrément et des missions légales](https://www.impots.gouv.fr/actualite/organismes-de-gestion-agrees-oga-abrogation-des-dispositions-relatives-lagrement-et-aux) » : article 11 de la loi de finances pour 2025, suppression de la réduction d'impôt pour frais de comptabilité.\
 • Date limite 2026 : impots.gouv.fr (2e jour ouvré après le 1er mai, + 15 jours en télétransmission).
