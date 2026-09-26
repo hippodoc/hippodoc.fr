@@ -32,6 +32,7 @@ relatedArticles:
   - "tout-comprendre-urssaf"
   - "tout-comprendre-carmf"
   - "effet-ciseaux-regularisation-urssaf-medecin"
+  - "ei-is-ou-selarl-medecin"
 ---
 
 :::essentiel

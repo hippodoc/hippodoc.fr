@@ -4495,6 +4495,32 @@ liste pour DSCZ.
   pro » (sans source) → présenté comme la zone la moins tranchée (absentes de la liste
   DSCZ ; exclues pour les salariés, brochure p. 93 ; rien d'exprès pour les BNC).
 
+### 9.di Nouvel article : « EI, EI à l'IS ou SELARL : le comparatif honnête » (26 septembre 2026)
+
+Contenu **ajouté** (flag § 9), tiré de la carte de la demande (§ 13 « SELARL, SELAS, EI à
+l'IS » : peu de questions, mais les réponses les plus contradictoires du corpus). Le corpus
+sert de boussole : aucun texte, aucun membre ni groupe n'est cité.
+
+- `src/content/blog/ei-is-ou-selarl-medecin.md` : Fiche Fiscalité #16 (le #15 est l'article
+  IJ, encore en brouillon, voir 9.dg sur sa branche). Réponse dans les 100 premiers mots,
+  exemple chiffré (10 000 € : 1 500 € d'IS ; distribués, 1 500 + 2 669 € de PFU = 41,7 %),
+  tableau comparatif, cas où ça ne vaut pas le coup, FAQ (6 questions, FAQPage JSON-LD).
+- Règles vérifiées sur sources primaires : F36380 (option IS de l'EI : réel, 3e mois,
+  renonciation jusqu'au 5e exercice, cotisations au-delà de 10 % du bénéfice net), F23575
+  (IS 15 % / 42 500 € / 25 %), F32963 (PFU 31,4 %, 2OP, abattement 40 %), F33816, F36235,
+  guide Urssaf PAMC (dividendes de SEL au-delà de 10 % du capital + primes + comptes
+  courants, DSAA/DSAB, tous associés de SEL), CSP R4113-3 et R4113-4 (Légifrance), F36354.
+- Volontairement **non chiffré** : les frais annuels (comptable, formalités) et l'écart de
+  cotisations, faute de source officielle ; présentés qualitativement.
+- Couverture **provisoire** typographique (`src/assets/blog/comparatif-ei-is-selarl-cover.png`),
+  à remplacer par une illustration.
+- Maillage entrant : ajouté aux `relatedArticles` de `regime-fiscal-micro-bnc-vs-reel` et
+  `cotisations-sociales-vs-impots`, plus une phrase **ajoutée** (flag § 9) à la fin de la
+  section « Le Régime Réel » de `regime-fiscal-micro-bnc-vs-reel` (l'option IS exige le réel,
+  lien vers le comparatif). `updatedDate` inchangé : ajout de maillage, pas de mise à jour
+  du fond.
+- `blog-meta.json` : entrée ajoutée (dates = frontmatter).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

@@ -34,6 +34,7 @@ relatedArticles:
   - "micro-bnc-exemples-concrets"
   - "voiture-bareme-kilometrique-ou-frais-reels-medecin"
   - "zones-frr-exoneration-impot-medecin"
+  - "ei-is-ou-selarl-medecin"
 ---
 
 :::essentiel
@@ -86,6 +87,8 @@ Rappel utile : rester en micro-BNC n'est pas toujours la bonne affaire. Si tes c
 ✅ **Déduction des frais réels** : Tu déduis l'ensemble de tes **charges professionnelles réelles** (achat de matériel médical, [frais de véhicule](/blog/voiture-bareme-kilometrique-ou-frais-reels-medecin), formations, assurances, frais de déplacements, etc.).\
 ✅ **Économies potentielles importantes** : Si le total de tes charges — cotisations URSSAF et CARMF comprises, à elles seules autour d'un quart de tes recettes — **dépasse 34%** de tes revenus, ce régime peut te permettre de réaliser des **économies fiscales significatives**.\
 ⚠️ **Comptabilité rigoureuse** : Tu devras tenir une **comptabilité détaillée et précise**, ce qui nécessite souvent un accompagnement par un **expert-comptable** pour garantir la conformité de tes déclarations.
+
+Le régime réel est aussi la porte d'entrée de l'impôt sur les sociétés : l'option pour l'IS n'est ouverte qu'aux entrepreneurs individuels au réel. Avant d'y penser, lis [notre comparatif EI, EI à l'IS ou SELARL](/blog/ei-is-ou-selarl-medecin).
 
 ## 💡 Conseils pour choisir facilement
 
