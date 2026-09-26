@@ -4317,6 +4317,36 @@ sitemap : 62 à 100/100/100. Trois pages à 96-97, toutes pour du contraste de c
   `-700`.
 Après correction : 100 en accessibilité sur les trois pages.
 
+### 9.cx RSPM : quatre textes oubliés (résultats de la boussole, exemple de calculette) (26 septembre 2026)
+
+Trouvés en portant les correctifs vers l'app : ces textes ne sont affichés que dans les
+résultats interactifs de la boussole (profils « interne » et « structure »), donc absents
+du HTML statique que le contrôle du § 9.cr avait balayé.
+- `boussoleData.ts`, profil interne : « Tu es au RSPM tant que tes revenus libéraux
+  restent < ~38 000 €/an » → option ouverte jusqu'à 19 000 €, 13,5 % / 21,2 %, sortie
+  au 1er janvier (deux ans > 19 000 € ou un an > 38 000 €).
+- `boussoleData.ts`, transition RSPM → PAMC, cas (B) : « dépassement du plafond
+  ~38 000 € » → les deux déclencheurs.
+- `boussoleData.ts`, profil structure : « En RSPM (< 38 000 €/an) … prélevées
+  trimestriellement » → option jusqu'à 19 000 €, déclaration mensuelle ou trimestrielle.
+- `calculetteExamples.ts` : « tant que tes recettes restent < 38 k€ » → « tant que tu y
+  restes ».
+Balayage complet des sources (hors commentaires) : plus aucune mention fausse du seuil.
+### 9.cy Exemple « Léa » : le vrai gain, ≈ 765 € (26 septembre 2026)
+
+Décision du fondateur (point ouvert du § 9.bf) : assumer le vrai chiffre.
+`frais-pros-medecins-salaries-internes-2026` annonçait ≈ 1 435 € « à TMI 30 % » (et
+≈ 1 500 €, « trois semaines de salaire net » en description et en accroche). À 30 000 € de
+salaire, Léa est dans la tranche à 11 %. Recalcul (barème et décote des revenus 2025) :
+impôt 1 564 € au forfait 10 % (27 000 € imposables), 799 € aux frais réels (22 216 €),
+**gain ≈ 765 €**.
+Modifié : description, « L'essentiel » (2 puces), accroche, règle d'or (11 % : 110 à
+160 € pour 1 000 € de frais, la décote amplifiant l'effet ; 30 % : 300 €), tableau du
+calcul (impôt forfait / réel / gain), encadré de conclusion (« une garde supplémentaire
+par mois » → « un peu plus de 60 € par mois »). **Slide 18** (« TMI 30 % ≈ 1 435 € »)
+retirée du carrousel en attendant sa refonte ; les 18 autres slides sont générales et
+justes. `updatedDate` → 26 septembre 2026 (et `blog-meta.json`).
+Non modifié : « 90 % des internes l'ignorent » (chiffre non sourcé, à étayer ou retirer).
 ### 9.cz Pastille « Essai gratuit » du header mobile, CTA `/essai` des sujets froids (26 septembre 2026)
 
 Décisions produit du fondateur (points en attente du § 9.bf).
