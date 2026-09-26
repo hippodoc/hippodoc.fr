@@ -4411,6 +4411,23 @@ Vérifié : build, verify-site ; navigateur (chargement au focus, résultats, ca
 Échap, Entrée, événement) ; mobile 375 px sans débordement ; Lighthouse `/blog` :
 a11y / BP / SEO 100, CLS 0, TBT 0.
 
+### 9.dc Chèques-vacances : conditions et multiples de 10 € ; « 90 % des internes » retiré (26 septembre 2026)
+
+- **Condition « activité depuis plus d'un an »** (RO-005, glossaire ANCV) : absente de la
+  page officielle de l'ANCV (« Un chef d'entreprise peut-il bénéficier des
+  Chèques-Vacances ? », cheque-vacances.com), qui ne pose que le seuil de moins de 50
+  salariés et renvoie à l'art. L.411-1 du Code du tourisme ; seuls des sites secondaires
+  l'évoquent. Reformulé au conditionnel (« l'ANCV ne mentionne pas d'ancienneté
+  minimale ; certains sites évoquent un an d'activité, vérifie-le en créant ton compte »).
+- **Multiples de 10 €** (même page ANCV : « commandés par multiples de 10 € ») : les
+  exemples « ex : 1 823 € » (montant inscrit en DSCN) → « ex : 1 820 € » avec la raison.
+  La même page confirme le plafond social 2026 : 546,90 € (30 % du SMIC du 1er janvier).
+- **« 90 % des internes l'ignorent »** (`frais-pros-medecins-salaries-internes-2026`,
+  L'essentiel et accroche) : aucune source trouvée. Remplacé par un fait vérifiable : le
+  forfait de 10 % s'applique par défaut. `updatedDate` inchangée (déjà au 26 septembre).
+Côté app : ces trois textes existent aussi dans ses copies du guide ; à reprendre lors
+d'une prochaine synchronisation (hors du patch déjà transmis).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
