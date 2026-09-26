@@ -4317,6 +4317,22 @@ sitemap : 62 à 100/100/100. Trois pages à 96-97, toutes pour du contraste de c
   `-700`.
 Après correction : 100 en accessibilité sur les trois pages.
 
+### 9.cx RSPM : quatre textes oubliés (résultats de la boussole, exemple de calculette) (26 septembre 2026)
+
+Trouvés en portant les correctifs vers l'app : ces textes ne sont affichés que dans les
+résultats interactifs de la boussole (profils « interne » et « structure »), donc absents
+du HTML statique que le contrôle du § 9.cr avait balayé.
+- `boussoleData.ts`, profil interne : « Tu es au RSPM tant que tes revenus libéraux
+  restent < ~38 000 €/an » → option ouverte jusqu'à 19 000 €, 13,5 % / 21,2 %, sortie
+  au 1er janvier (deux ans > 19 000 € ou un an > 38 000 €).
+- `boussoleData.ts`, transition RSPM → PAMC, cas (B) : « dépassement du plafond
+  ~38 000 € » → les deux déclencheurs.
+- `boussoleData.ts`, profil structure : « En RSPM (< 38 000 €/an) … prélevées
+  trimestriellement » → option jusqu'à 19 000 €, déclaration mensuelle ou trimestrielle.
+- `calculetteExamples.ts` : « tant que tes recettes restent < 38 k€ » → « tant que tu y
+  restes ».
+Balayage complet des sources (hors commentaires) : plus aucune mention fausse du seuil.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

@@ -16,7 +16,7 @@ export const CALCULETTE_EXAMPLES: CalculetteExample[] = [
     id: 'interne-precoce',
     label: 'Interne — début de stage, quelques remplas (4 k€, RSPM)',
     description:
-      "Tu es interne et tu fais quelques gardes ou remplacements à côté de ton stage. Ton salaire CHU se déclare à part en case 1AJ de la 2042 (hors calculette). Ici, on traite uniquement tes revenus de remplacement libéraux : micro-BNC, RSPM (pas de DSFU à remplir tant que tes recettes restent < 38 k€).",
+      "Tu es interne et tu fais quelques gardes ou remplacements à côté de ton stage. Ton salaire CHU se déclare à part en case 1AJ de la 2042 (hors calculette). Ici, on traite uniquement tes revenus de remplacement libéraux : micro-BNC, RSPM (pas de DSFU à remplir tant que tu y restes).",
     values: {
       ...CALCULETTE_DEFAULTS,
       profil: 'remplacant',
