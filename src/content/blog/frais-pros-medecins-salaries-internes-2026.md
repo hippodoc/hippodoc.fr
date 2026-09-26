@@ -1,8 +1,8 @@
 ---
 title: "Frais pros du médecin salarié 2026"
-description: "≈ 1 500 € d'impôt en moins par an, soit 3 semaines de salaire net. Guide 2026 des frais réels vs forfait 10 % pour salariés."
+description: "Frais réels ou forfait 10 % : ≈ 765 € d'impôt en moins pour un interne à 30 000 €. Guide 2026 des frais pros du médecin salarié."
 pubDate: "2026-05-09"
-updatedDate: "2026-09-21"
+updatedDate: "2026-09-26"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -64,8 +64,6 @@ slides:
     alt: "Postes lourds : double résidence et déménagement — preuves obligatoires"
   - src: "/blog/frais-pros-medecins-salaries-internes-2026-slide-17.png"
     alt: "Les 5 pièges à éviter qui font sauter une déduction au contrôle"
-  - src: "/blog/frais-pros-medecins-salaries-internes-2026-slide-18.png"
-    alt: "Et toi, combien tu peux récupérer ? L'exemple de Léa, interne 3e année"
   - src: "/blog/frais-pros-medecins-salaries-internes-2026-slide-19.png"
     alt: "Tout ça, Hippodoc le fait pour toi — l'outil qui suit tes frais pros"
 ---
@@ -73,14 +71,14 @@ slides:
 :::essentiel
 **L'essentiel**
 
-- Passer aux frais réels peut te faire économiser **≈ 1 500 € d'impôt par an**, l'équivalent de près de trois semaines de salaire net — et **90 % des internes l'ignorent**.
+- Passer aux frais réels peut te faire économiser **plusieurs centaines d'euros d'impôt par an** (≈ 765 € dans l'exemple de Léa) — et **90 % des internes l'ignorent**.
 - Le forfait automatique de 10 % est encadré par un **plancher de 509 €** et un **plafond de 14 555 €** pour la déclaration 2026 ; les frais réels ne valent le coup que si tes dépenses justifiées dépassent ce forfait.
-- Exemple de Léa (interne, 30 000 € de salaire, 30 km du CHU, 12 000 km/an en 5 CV) : ses frais réels totalisent **7 784 €**, pour un gain d'impôt d'environ **1 435 €** à TMI 30 %.
+- Exemple de Léa (interne, 30 000 € de salaire, 30 km du CHU, 12 000 km/an en 5 CV) : ses frais réels totalisent **7 784 €**, pour un gain d'impôt d'environ **765 €** par rapport au forfait (tranche à 11 %, décote comprise).
 - Le barème kilométrique 2026 pour une 5 CV thermique au-delà de 5 000 km est **(km × 0,357) + 1 395 €**, et au-delà de **40 km aller** sans motif, seuls les 40 premiers km sont retenus.
 - Tu peux encore déposer une **réclamation** pour tes revenus 2023 (jusqu'au 31 décembre 2026) et 2024 (jusqu'au 31 décembre 2027) si tu as coché 10 % par défaut à tort : plusieurs médecins ont récupéré **1 000 à 2 000 €** rétroactivement.
 :::
 
-≈ **1 500 € d'impôt en moins par an**. Près de **trois semaines de salaire net**. Et **90 % des internes l'ignorent**.
+≈ **765 € d'impôt en moins par an** dans l'exemple de Léa, interne à 30 000 €. Plus encore si ton salaire est plus élevé ou tes trajets plus longs. Et **90 % des internes l'ignorent**.
 
 Si tu es interne au CHU, docteur junior, assistant, praticien hospitalier (PH), contractuel ou médecin salarié dans un centre de santé, tu coches probablement le forfait de 10 % sur ta déclaration de revenus chaque année par défaut. Et c'est souvent une erreur.
 
@@ -110,7 +108,7 @@ Tu peux la remplacer par le **régime des frais réels** si le total de tes dép
 ### 💡 Règle d'or
 
 :::tip
-Une déduction réduit le **revenu imposable**, pas l'impôt euro pour euro. À 30 % de tranche marginale, **1 000 € de frais réels = environ 300 € d'impôt en moins**.
+Une déduction réduit le **revenu imposable**, pas l'impôt euro pour euro. Dans la tranche à 11 % (le cas de la plupart des internes), **1 000 € de frais réels = environ 110 à 160 € d'impôt en moins** (la décote amplifie l'effet) ; à 30 %, environ 300 €.
 :::
 
 ## 🧭 Calibrage important
@@ -265,12 +263,14 @@ Les frais des remplacements relèvent du **BNC**, pas des frais réels de salair
 **DU + congrès non remboursés** : 800 €\
 **Stéthoscope, livres, RCP, syndicat** : 450 €\
 **Total frais réels** : **7 784 €**\
-**Gain d'impôt vs forfait (TMI 30 %)** : **≈ 1 435 €**
+**Impôt avec le forfait 10 %** : ≈ 1 564 €\
+**Impôt aux frais réels** : ≈ 799 €\
+**Gain d'impôt vs forfait** : **≈ 765 €** (tranche à 11 %, décote comprise, barème des revenus 2025)
 
 ## 🦛 Pour 30 minutes de calcul en avril…
 
 :::tip
-Léa économise l'équivalent d'**une garde supplémentaire par mois**. Et toi, combien tu peux récupérer ?
+Léa récupère **≈ 765 € par an**, un peu plus de 60 € par mois. Et toi, combien tu peux récupérer ?
 :::
 
 ## 📝 Comment déclarer concrètement
