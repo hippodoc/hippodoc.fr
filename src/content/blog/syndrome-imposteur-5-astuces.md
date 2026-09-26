@@ -13,6 +13,7 @@ cover: "/blog/syndrome-imposteur-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Prêt(e) à reprendre confiance dans ton parcours ?"
+ctaHref: "/essai"
 faq:
   - question: "C'est quoi le syndrome de l'imposteur chez les médecins ?"
     answer: "Le syndrome de l'imposteur est ce **doute persistant** où tu penses ne pas être à la hauteur malgré ton diplôme. Tu te dis \"Et si je n'étais pas vraiment prêt(e) ?\". C'est très courant chez les jeunes médecins et prouve que tu veux bien faire."
