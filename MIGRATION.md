@@ -4317,6 +4317,22 @@ sitemap : 62 à 100/100/100. Trois pages à 96-97, toutes pour du contraste de c
   `-700`.
 Après correction : 100 en accessibilité sur les trois pages.
 
+### 9.cy Exemple « Léa » : le vrai gain, ≈ 765 € (26 septembre 2026)
+
+Décision du fondateur (point ouvert du § 9.bf) : assumer le vrai chiffre.
+`frais-pros-medecins-salaries-internes-2026` annonçait ≈ 1 435 € « à TMI 30 % » (et
+≈ 1 500 €, « trois semaines de salaire net » en description et en accroche). À 30 000 € de
+salaire, Léa est dans la tranche à 11 %. Recalcul (barème et décote des revenus 2025) :
+impôt 1 564 € au forfait 10 % (27 000 € imposables), 799 € aux frais réels (22 216 €),
+**gain ≈ 765 €**.
+Modifié : description, « L'essentiel » (2 puces), accroche, règle d'or (11 % : 110 à
+160 € pour 1 000 € de frais, la décote amplifiant l'effet ; 30 % : 300 €), tableau du
+calcul (impôt forfait / réel / gain), encadré de conclusion (« une garde supplémentaire
+par mois » → « un peu plus de 60 € par mois »). **Slide 18** (« TMI 30 % ≈ 1 435 € »)
+retirée du carrousel en attendant sa refonte ; les 18 autres slides sont générales et
+justes. `updatedDate` → 26 septembre 2026 (et `blog-meta.json`).
+Non modifié : « 90 % des internes l'ignorent » (chiffre non sourcé, à étayer ou retirer).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
