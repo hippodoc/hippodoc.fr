@@ -4428,6 +4428,27 @@ a11y / BP / SEO 100, CLS 0, TBT 0.
 Côté app : ces trois textes existent aussi dans ses copies du guide ; à reprendre lors
 d'une prochaine synchronisation (hors du patch déjà transmis).
 
+### 9.dd Micro-BNC : la case DSDE (revenu brut social) doit rester vide (26 septembre 2026)
+
+Trouvé en vérifiant la question « faut-il remplir DSDF en micro-BNC ? » de la carte de la
+demande. **Source primaire** : guide Urssaf « Déclaration sociale et fiscale de revenus
+2025 — Praticiens et Auxiliaires Médicaux Conventionnés », partie micro-BNC : « Vous
+n'êtes pas concerné par la nouvelle rubrique « revenu brut social ». Le chiffre d'affaires
+micro-BNC doit être déclaré uniquement en 5HQ/5IQ et ne doit pas figurer en revenu brut
+social. » Même règle dans la notice 52348#06 (§ 4 et 6.1 : revenu brut social = régime réel).
+- **Le guide disait juste** (fiche DSDE : « En micro-BNC, ne PAS remplir DSDE »), mais la
+  **calculette** affichait en micro-BNC une valeur à reporter en DSDE (« Recettes nettes
+  URSSAF »), avec la mention « certains cabinets laissent DSDE vide — les deux pratiques
+  sont acceptées ». Faux : la remplir fait compter les recettes deux fois.
+- **Corrigé** : moteur `dsPamc.ts` (DSDE/DSDG = 0 en micro-BNC ; l'app s'en sert pour son
+  Aide DSFU) ; calculette : `DSDE = 0` en micro, ligne « Revenu brut social : laisser vide
+  en micro-BNC » avec la citation Urssaf, « DSDE= # laisser vide » dans la liste à
+  recopier, ligne « Détail technique » réécrite ; la décomposition de 5HQ s'appuie sur la
+  base reconstituée (`rbs.rbs`), inchangée. Fiche DSDE : l'abattement de 34 % s'applique
+  aux recettes de **5HQ**, pas « au CA déclaré en DSCS ».
+- Vérifié : micro 60 000 € → DSDE 0 (base interne 60 000 €) ; réel (CP 70 000 €, BK
+  15 000 €) → DSDE 85 000 €, inchangé.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
