@@ -23,7 +23,7 @@ const blog = defineCollection({
     /* Destination du bouton quand l'accroche promet autre chose qu'une
        inscription (« Simule ton Super-Net… ») : un bouton qui annonce le
        simulateur ne doit pas ouvrir un formulaire de compte (§ 9.bf). */
-    ctaHref: z.enum(['/simulateur']).optional(),
+    ctaHref: z.enum(['/simulateur', '/essai']).optional(),
     faq: z
       .array(z.object({ question: z.string(), answer: z.string() }))
       .optional(),

@@ -4317,6 +4317,23 @@ sitemap : 62 à 100/100/100. Trois pages à 96-97, toutes pour du contraste de c
   `-700`.
 Après correction : 100 en accessibilité sur les trois pages.
 
+### 9.cz Pastille « Essai gratuit » du header mobile, CTA `/essai` des sujets froids (26 septembre 2026)
+
+Décisions produit du fondateur (points en attente du § 9.bf).
+- **Pastille « Essai gratuit »** (`Header.astro`) : sous 1024 px, l'essai n'était
+  accessible qu'en ouvrant le tiroir. Pastille visible à côté du menu, même lien que le
+  bouton desktop (`APP_URL/auth?tab=signup`), `data-track="cta_signup_header_pill"`,
+  40 px de haut. Zéro JS. Vérifié : logo + pastille + menu tiennent en 320 px sans
+  débordement ; masquée à partir de 1024 px (bouton desktop inchangé). Texte nouveau :
+  « Essai gratuit ».
+- **CTA `/essai`** : `ctaHref` accepte `/essai` (`content.config.ts`) ; le bloc d'appel à
+  l'action affiche alors « Découvrir Hippodoc » (`data-track="cta_essai_blog"`), avec le
+  lien secondaire « Ou commence l'essai gratuit » comme pour le simulateur. Appliqué à
+  `syndrome-imposteur-5-astuces` et `inbox-zero-remplacant`. Texte nouveau : « Découvrir
+  Hippodoc ».
+Lighthouse local : accessibilité / bonnes pratiques / SEO 100 (accueil, article,
+simulateur), CLS 0, TBT 0.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

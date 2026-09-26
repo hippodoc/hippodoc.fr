@@ -111,6 +111,18 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
         </a>
       </div>
 
+      {/* Pastille « Essai gratuit » du header mobile (§ 9.cz) : sous 1024 px, l'essai
+          n'était accessible qu'en ouvrant le tiroir. Même lien que le bouton desktop,
+          suivi distinct (`cta_signup_header_pill`). 40 px de haut : cible tactile
+          suffisante sans alourdir le header ; logo + pastille + menu tiennent en 320 px. */}
+      <a
+        href={`${APP_URL}/auth?tab=signup`}
+        data-track="cta_signup_header_pill"
+        class="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-full bg-hippo-600 px-4 text-sm font-semibold text-primary-foreground shadow-md shadow-hippo-500/20 transition-colors hover:bg-hippo-700 lg:hidden"
+      >
+        Essai gratuit
+      </a>
+
       {/* Bouton hamburger (le tiroir lui-même est un frère du conteneur, plus bas) */}
       <label
         for="mobile-menu-toggle"
