@@ -71,14 +71,14 @@ slides:
 :::essentiel
 **L'essentiel**
 
-- Passer aux frais réels peut te faire économiser **plusieurs centaines d'euros d'impôt par an** (≈ 765 € dans l'exemple de Léa) — et **90 % des internes l'ignorent**.
+- Passer aux frais réels peut te faire économiser **plusieurs centaines d'euros d'impôt par an** (≈ 765 € dans l'exemple de Léa) — encore faut-il le savoir : le forfait de 10 % s'applique **par défaut**, sans que tu aies rien demandé.
 - Le forfait automatique de 10 % est encadré par un **plancher de 509 €** et un **plafond de 14 555 €** pour la déclaration 2026 ; les frais réels ne valent le coup que si tes dépenses justifiées dépassent ce forfait.
 - Exemple de Léa (interne, 30 000 € de salaire, 30 km du CHU, 12 000 km/an en 5 CV) : ses frais réels totalisent **7 784 €**, pour un gain d'impôt d'environ **765 €** par rapport au forfait (tranche à 11 %, décote comprise).
 - Le barème kilométrique 2026 pour une 5 CV thermique au-delà de 5 000 km est **(km × 0,357) + 1 395 €**, et au-delà de **40 km aller** sans motif, seuls les 40 premiers km sont retenus.
 - Tu peux encore déposer une **réclamation** pour tes revenus 2023 (jusqu'au 31 décembre 2026) et 2024 (jusqu'au 31 décembre 2027) si tu as coché 10 % par défaut à tort : plusieurs médecins ont récupéré **1 000 à 2 000 €** rétroactivement.
 :::
 
-≈ **765 € d'impôt en moins par an** dans l'exemple de Léa, interne à 30 000 €. Plus encore si ton salaire est plus élevé ou tes trajets plus longs. Et **90 % des internes l'ignorent**.
+≈ **765 € d'impôt en moins par an** dans l'exemple de Léa, interne à 30 000 €. Plus encore si ton salaire est plus élevé ou tes trajets plus longs. Or le forfait de 10 % s'applique **par défaut** : si tu ne compares pas, personne ne le fera pour toi.
 
 Si tu es interne au CHU, docteur junior, assistant, praticien hospitalier (PH), contractuel ou médecin salarié dans un centre de santé, tu coches probablement le forfait de 10 % sur ta déclaration de revenus chaque année par défaut. Et c'est souvent une erreur.
 
