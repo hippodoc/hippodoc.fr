@@ -20,6 +20,7 @@ import {
   type PostHogLike,
   type Props,
 } from './analytics-commun';
+import { GUIDE_REMPLACANT } from './guide-remplacant';
 
 /** Sections du guide des déclarations (valeurs historiques de `section`). */
 const SECTIONS_GUIDE = [
@@ -44,12 +45,43 @@ export function initPageAnalytics(emettre: Emetteur, chemin: string, posthog?: P
   if (chemin === '/faq') return mesurerFaq(emettre);
   if (chemin === '/comparatif') return void emettre('comparatif_viewed');
   if (chemin === '/guide-declarations') return mesurerGuide(emettre);
+  // PDF offert (§ 9.di) : page postérieure à la migration, événements nouveaux.
+  if (chemin === '/guide') return mesurerGuideRemplacant(emettre);
   if (chemin === '/blog') return mesurerBlogIndex(emettre);
   // Pages de série : postérieures à la migration, sans équivalent historique —
   // l'événement est donc nouveau (§ 9.bf).
   if (chemin.startsWith('/blog/serie/')) return mesurerSerie(emettre);
   // Un article : /blog/<slug>.
   if (chemin.startsWith('/blog/')) return mesurerArticle(emettre, posthog);
+}
+
+/**
+ * /guide — le PDF offert, distribué en DM Instagram (ManyChat).
+ *
+ * `guide_remplacant_viewed` porte déjà `utm_*` et `referrer_source` via le contexte
+ * commun : c'est le dénominateur du taux de téléchargement par campagne.
+ * `guide_remplacant_downloaded` mesure le CLIC (l'ouverture du PDF se fait hors
+ * de la page). `placement` compare le bouton du haut à celui du bas ;
+ * `in_app_browser` isole les navigateurs intégrés d'Instagram/Facebook, où
+ * l'ouverture d'un PDF est la moins fiable — un écart vues/clics anormal y
+ * signalerait un blocage, pas un désintérêt.
+ */
+function mesurerGuideRemplacant(emettre: Emetteur): void {
+  const ua = safe(() => navigator.userAgent, '');
+  const inApp = /Instagram/i.test(ua) ? 'instagram' : /FBAN|FBAV|FB_IAB/i.test(ua) ? 'facebook' : null;
+  const meta: Props = { edition: GUIDE_REMPLACANT.edition, in_app_browser: inApp };
+
+  emettre('guide_remplacant_viewed', meta);
+
+  safe(() => {
+    for (const lien of document.querySelectorAll<HTMLAnchorElement>('a[data-guide-download]')) {
+      lien.addEventListener(
+        'click',
+        () => emettre('guide_remplacant_downloaded', { ...meta, placement: lien.dataset.guideDownload }),
+        { passive: true }
+      );
+    }
+  }, undefined);
 }
 
 function mesurerTarifs(emettre: Emetteur): void {

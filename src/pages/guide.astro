@@ -1,0 +1,308 @@
+---
+/**
+ * /guide — page de téléchargement du « Guide du remplaçant » (PDF offert).
+ *
+ * Porte d'entrée du lien envoyé en DM Instagram par ManyChat
+ * (`?utm_source=instagram&utm_medium=dm&utm_campaign=…`) : la cible est le
+ * navigateur intégré d'Instagram, sur téléphone. D'où, sur mobile, le bouton de
+ * téléchargement dans le premier écran, AVANT la couverture.
+ *
+ * Page indexable : le sommaire et les 6 règles (repris du guide, p. 2 et 3)
+ * sont le texte que Google lit. Le PDF lui-même porte `X-Robots-Tag: noindex`
+ * (vercel.json) : c'est cette page, mesurée et reliée au reste du site, qui doit
+ * se positionner, pas le fichier nu. Voir MIGRATION.md § 9.di.
+ *
+ * Mesure : `guide_remplacant_viewed` / `guide_remplacant_downloaded`
+ * (page-analytics.ts), via `[data-guide-download]`. Zéro JS propre à la page.
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import BlogCtaBand from '@/components/BlogCtaBand.astro';
+import { SITE_URL } from '@/lib/site';
+import { GUIDE_REMPLACANT } from '@/lib/guide-remplacant';
+import couverture from '@/assets/guide/couverture.png';
+import apercuRegles from '@/assets/guide/apercu-6-regles.png';
+import apercuJournee from '@/assets/guide/apercu-journee-600.png';
+import apercuCalendrier from '@/assets/guide/apercu-calendrier.png';
+import ryanPhoto from '@/assets/founders/ryan-goburdhun.jpeg';
+
+const { pdf, edition, pages, poidsKo, misAJourIso, misAJourTexte } = GUIDE_REMPLACANT;
+
+const title = 'Guide du médecin remplaçant 2026-2027 (PDF gratuit)';
+const description =
+  "Licence, contrat, URSSAF, CARMF, impôts : le guide offert aux internes et jeunes remplaçants. 26 pages, chiffres 2026, et ce qu'il te reste vraiment.";
+const path = '/guide';
+
+const sommaire = [
+  { n: 1, titre: 'Libéral, salarié ou les deux', detail: 'Ton cadre, et l’intérim en établissement' },
+  { n: 2, titre: 'Démarrer', detail: 'Les démarches dans l’ordre, licence et autorisation' },
+  { n: 3, titre: 'Ton premier rempla', detail: 'Le contrat en 4 points, le jour J' },
+  { n: 4, titre: 'Ton argent', detail: 'La rétrocession, ta journée à 600 €, le Super-Net' },
+  { n: 5, titre: 'Tes cotisations', detail: 'RSPM ou PAMC, pourquoi l’année 2 pique, la CARMF en clair' },
+  { n: 6, titre: 'Tes impôts', detail: 'Micro-BNC ou réel, acomptes, le piège de septembre, CFE' },
+  { n: 7, titre: 'Combien il te reste vraiment', detail: '3 profils chiffrés, la règle des 35 %' },
+  { n: 8, titre: 'Te protéger', detail: 'Si tu t’arrêtes, qui paie ?' },
+  { n: 9, titre: 'Ton calendrier et ta routine', detail: 'Ton année en un coup d’œil, rempla après rempla' },
+];
+
+/* Guide p. 3, « L'essentiel en 6 règles » : titres et textes repris du PDF.
+   Rendus en set:html pour les exposants (1<sup>re</sup>…) : chaînes littérales, jamais de saisie. */
+const regles = [
+  {
+    titre: 'Une licence ne suffit pas pour remplacer.',
+    texte:
+      'Interne, chaque rempla demande aussi une autorisation de l’Ordre, demandée par le remplacé, et un contrat écrit, même pour une journée.',
+  },
+  {
+    titre: 'Ton chiffre d’affaires n’est pas ton revenu.',
+    texte:
+      'Sur 100 € de rétrocession, il te reste de 60 à 69 € dans nos profils types, une fois cotisations, impôt et frais payés : ton Super-Net.',
+  },
+  {
+    titre: '35 % de chaque virement, de côté.',
+    texte:
+      'Sur un compte à part, dès que l’argent arrive : ta réserve pour les cotisations et l’impôt. À ajuster selon ton cas.',
+  },
+  {
+    titre: 'Les premiers prélèvements sont trompeurs.',
+    texte: 'En PAMC (le régime classique), tu paies d’abord des forfaits. La vraie facture arrive pendant ta 2<sup>e</sup> année.',
+  },
+  {
+    titre: 'Aucun impôt prélevé la 1<sup>re</sup> année, sauf si tu agis.',
+    texte:
+      'Crée ton acompte sur impots.gouv.fr dès ta première rétro. Sinon, tout tombe à partir de septembre de l’année suivante.',
+  },
+  {
+    titre: 'Pas d’indemnités de l’Assurance maladie avant 12 mois.',
+    texte: 'La CARMF ne prend le relais qu’à partir du 91<sup>e</sup> jour d’arrêt. Une prévoyance se prend tôt.',
+  },
+];
+
+const apercus = [
+  { src: apercuRegles, legende: 'L’essentiel en 6 règles', alt: 'Page 3 du guide : l’essentiel en 6 règles' },
+  { src: apercuJournee, legende: 'Ta journée à 600 €, vraiment', alt: 'Page 10 du guide : de 600 € de rétrocession à 373 € de Super-Net' },
+  { src: apercuCalendrier, legende: 'Ton année en un coup d’œil', alt: 'Page 22 du guide : le calendrier de l’année du remplaçant' },
+];
+
+const guideSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  '@id': `${SITE_URL}${path}#guide`,
+  name: `Le guide du remplaçant ${edition}`,
+  description:
+    'Licence, contrat, URSSAF, CARMF, impôts : le guide des internes et jeunes remplaçants pour démarrer ses remplacements et savoir ce qu’il reste vraiment.',
+  bookFormat: 'https://schema.org/EBook',
+  encodingFormat: 'application/pdf',
+  numberOfPages: pages,
+  inLanguage: 'fr-FR',
+  isAccessibleForFree: true,
+  url: `${SITE_URL}${path}`,
+  image: `${SITE_URL}/guide/partage.jpg`,
+  datePublished: misAJourIso,
+  dateModified: misAJourIso,
+  author: { '@type': 'Person', name: 'Ryan Goburdhun', jobTitle: 'Médecin, fondateur d’Hippodoc', url: `${SITE_URL}/qui-sommes-nous` },
+  publisher: { '@id': `${SITE_URL}/#organization` },
+  audience: { '@type': 'Audience', audienceType: 'Internes en médecine et jeunes médecins remplaçants' },
+};
+
+const boutonClasses =
+  'inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-emerald-700 px-6 text-lg font-bold text-white shadow-lg transition-colors hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto';
+const iconeTelechargement =
+  '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>';
+---
+
+<BaseLayout
+  {title}
+  {description}
+  {path}
+  ogImage="/guide/partage.jpg"
+  ogImageAlt={`Le guide du remplaçant ${edition}, PDF gratuit de 26 pages par Hippodoc`}
+  jsonLd={[guideSchema]}
+>
+  <Header />
+
+  <main>
+    <!-- Hero : sur mobile, titre → bouton → couverture (le bouton tient dans le premier écran). -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-hippo-700 via-hippo-800 to-hippo-900 text-white">
+      <div class="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-hippo-400/25 blur-3xl"></div>
+      <div class="container relative mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-8 md:grid-cols-[1fr_auto] md:gap-12 md:py-16">
+        <div>
+          <p class="mb-3 inline-flex items-center rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-semibold">
+            PDF gratuit · {pages} pages · Édition {edition}
+          </p>
+          <h1 class="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-5xl">
+            Le guide du médecin remplaçant <span class="text-hippo-200">{edition}</span>
+          </h1>
+          <p class="mt-4 max-w-xl text-lg leading-relaxed text-hippo-100">
+            Licence, contrat, URSSAF, CARMF, impôts : tout pour démarrer tes remplas sereinement,{' '}
+            <strong class="text-white">et savoir ce qu'il te reste vraiment.</strong>
+          </p>
+          <div class="mt-6">
+            <a
+              href={pdf}
+              target="_blank"
+              rel="noopener"
+              type="application/pdf"
+              data-guide-download="hero"
+              data-ph="guide_remplacant_download_hero"
+              class={boutonClasses}
+            >
+              <Fragment set:html={iconeTelechargement} />
+              Télécharger le guide
+            </a>
+            <p class="mt-3 text-sm text-hippo-100">
+              Gratuit, sans inscription · PDF, {poidsKo} Ko · Médecine générale et spécialités
+            </p>
+            <p class="mt-2 text-sm text-hippo-100">
+              Le PDF ne s'ouvre pas depuis Instagram ? Touche <span aria-hidden="true">⋯</span><span class="sr-only">le menu</span>
+              en haut à droite, puis ouvre la page dans ton navigateur.
+            </p>
+          </div>
+        </div>
+
+        <div class="mx-auto w-full max-w-[18rem] md:max-w-xs">
+          <a href={pdf} target="_blank" rel="noopener" data-guide-download="couverture" tabindex="-1" aria-hidden="true">
+            <Image
+              src={couverture}
+              alt=""
+              widths={[288, 432, 576, 720]}
+              sizes="(min-width: 768px) 320px, 288px"
+              loading="eager"
+              fetchpriority="high"
+              class="h-auto w-full rotate-2 rounded-xl shadow-2xl ring-1 ring-white/15"
+            />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sommaire -->
+    <section class="bg-white py-12 md:py-16" aria-labelledby="sommaire">
+      <div class="container mx-auto max-w-3xl px-4">
+        <h2 id="sommaire" class="text-2xl font-bold text-hippo-800 md:text-3xl">Ce que tu vas trouver dedans</h2>
+        <p class="mt-3 text-muted-foreground">
+          Le guide qu'on aurait aimé lire avant notre premier rempla. Licence en poche, tout arrive en même temps :
+          l'Ordre, l'URSSAF, la CARMF, les impôts, et la question que personne ne pose clairement : combien il te reste
+          vraiment ? Neuf chapitres, dans l'ordre où tu en auras besoin.
+        </p>
+        <ol class="mt-6 divide-y divide-hippo-100 rounded-2xl border border-hippo-100 bg-hippo-50/40">
+          {sommaire.map((c) => (
+            <li class="flex gap-4 px-4 py-3">
+              <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-hippo-600 text-sm font-bold text-white">
+                {c.n}
+              </span>
+              <span>
+                <span class="block font-semibold text-foreground">{c.titre}</span>
+                <span class="block text-sm text-muted-foreground">{c.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-4 text-sm text-muted-foreground">
+          Plus un glossaire des sigles (ASV, BNC, PAMC, RSPM…) et la liste des sources officielles.
+        </p>
+      </div>
+    </section>
+
+    <!-- L'essentiel en 6 règles (guide p. 3) -->
+    <section class="bg-gradient-to-b from-hippo-50/60 to-white py-12 md:py-16" aria-labelledby="regles">
+      <div class="container mx-auto max-w-3xl px-4">
+        <p class="text-sm font-semibold uppercase tracking-wide text-hippo-600">Si tu ne lis qu'une page</p>
+        <h2 id="regles" class="mt-1 text-2xl font-bold text-hippo-800 md:text-3xl">L'essentiel en 6 règles</h2>
+        <ol class="mt-6 space-y-3">
+          {regles.map((r, i) => (
+            <li class="flex gap-4 rounded-2xl border border-hippo-100 bg-white p-4 shadow-sm">
+              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-hippo-600 font-bold text-white">
+                {i + 1}
+              </span>
+              <span>
+                <strong class="block text-foreground" set:html={r.titre} />
+                <span class="mt-1 block text-sm leading-relaxed text-muted-foreground" set:html={r.texte} />
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p class="mt-4 text-sm text-muted-foreground">
+          Chaque règle renvoie à sa page détaillée dans le guide, avec les chiffres 2026.
+        </p>
+      </div>
+    </section>
+
+    <!-- Aperçu de pages -->
+    <section class="bg-white py-12 md:py-16" aria-labelledby="apercu">
+      <div class="container mx-auto max-w-5xl px-4">
+        <h2 id="apercu" class="text-2xl font-bold text-hippo-800 md:text-3xl">Un aperçu</h2>
+        <p class="mt-3 max-w-2xl text-muted-foreground">
+          Des pages courtes, des exemples chiffrés, et un calendrier pour ne rater aucune échéance.
+        </p>
+        <ul class="-mx-4 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
+          {apercus.map((a) => (
+            <li class="w-[72%] shrink-0 snap-center sm:w-[45%] md:w-auto">
+              <figure>
+                <Image
+                  src={a.src}
+                  alt={a.alt}
+                  widths={[280, 420, 560]}
+                  sizes="(min-width: 768px) 30vw, 72vw"
+                  loading="lazy"
+                  class="h-auto w-full rounded-xl border border-hippo-100 shadow-md"
+                />
+                <figcaption class="mt-2 text-center text-sm font-medium text-muted-foreground">{a.legende}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Auteur, fraîcheur, second bouton -->
+    <section class="bg-gradient-to-b from-white to-hippo-50/60 py-12 md:py-16" aria-labelledby="auteur">
+      <div class="container mx-auto max-w-3xl px-4">
+        <h2 id="auteur" class="sr-only">Qui a écrit ce guide</h2>
+        <div class="flex items-start gap-4 rounded-2xl border border-hippo-100 bg-white p-5 shadow-sm">
+          <Image src={ryanPhoto} alt="Ryan Goburdhun" width={128} height={128} class="h-16 w-16 shrink-0 rounded-full object-cover" />
+          <div>
+            <p class="font-semibold text-foreground">Écrit par Ryan, médecin, fondateur d'Hippodoc</p>
+            <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+              À jour au {misAJourTexte}. Chaque chiffre renvoie à sa source : Ordre des médecins, URSSAF, CARMF,
+              Assurance maladie, impots.gouv.fr. Information générale : pour ton cas, vois avec ton conseil de l'Ordre,
+              l'URSSAF, la CARMF ou un expert-comptable.
+            </p>
+            <p class="mt-2 text-sm">
+              <a href="/qui-sommes-nous" class="inline-flex min-h-11 items-center font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-800">
+                Qui sommes-nous
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-2xl bg-gradient-to-br from-hippo-700 to-hippo-900 p-6 text-center text-white shadow-lg">
+          <p class="text-xl font-bold">Garde-le sous la main pour ton premier rempla</p>
+          <p class="mt-1 text-hippo-100">Et envoie-le à un co-interne qui démarre.</p>
+          <div class="mt-5">
+            <a
+              href={pdf}
+              target="_blank"
+              rel="noopener"
+              type="application/pdf"
+              data-guide-download="bas"
+              data-ph="guide_remplacant_download_bas"
+              class={boutonClasses}
+            >
+              <Fragment set:html={iconeTelechargement} />
+              Télécharger le guide
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <BlogCtaBand emplacement="guide_remplacant" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

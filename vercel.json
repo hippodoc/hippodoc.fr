@@ -71,6 +71,18 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     },
     {
+      "source": "/guide/(.*\\.pdf)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" },
+        { "key": "Content-Disposition", "value": "inline; filename=\"Hippodoc_Guide_du_remplacant_2026-2027.pdf\"" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    },
+    {
+      "source": "/guide/partage.jpg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
       "source": "/(favicon.ico|icon-192.png|icon-512.png|hippodoc-presentation-st-poster.jpg)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     }

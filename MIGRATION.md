@@ -4502,6 +4502,43 @@ La tuile « Articles pédagogiques au blog » de `SocialProofSection.astro` affi
 désormais `getCollection('blog').length` au build : le chiffre suit chaque nouvel article.
 Seul le nombre change, pas le libellé.
 
+### 9.di Nouvelle page /guide : le « Guide du remplaçant » en PDF offert (26 septembre 2026)
+
+**Contenu ajouté** (à relire) : page `/guide`, porte d'entrée du lien envoyé en DM
+Instagram par ManyChat. Le PDF (`public/guide/guide-du-remplacant-2026-2027.pdf`,
+26 pages, fourni par le fondateur) se télécharge sans inscription. Le texte de la page
+reprend le guide : sommaire (p. 2) et « L'essentiel en 6 règles » (p. 3), mot pour mot.
+Rédigés pour la page : le chapô du sommaire (« Neuf chapitres, dans l'ordre où tu en
+auras besoin »), les sous-titres de chapitres, l'encart auteur, l'aide « Le PDF ne
+s'ouvre pas depuis Instagram ? » et le second bouton.
+
+Choix :
+- **Pas de formulaire.** ManyChat a déjà le contact ; redemander un email dans le
+  navigateur intégré d'Instagram coûte des téléchargements pour une donnée déjà acquise.
+- **Page indexable, PDF non indexable** : `X-Robots-Tag: noindex` sur `/guide/*.pdf`
+  (vercel.json), pour que Google positionne la page (mesurée, reliée au site) et non le
+  fichier nu. `Content-Disposition` donne au fichier enregistré un nom lisible.
+- **Bouton en `target="_blank"`**, dans le premier écran mobile (avant la couverture).
+  Dans le navigateur intégré, le PDF s'ouvre souvent dans le même onglet : vérifié en
+  local, `guide_remplacant_downloaded` part quand même avant la navigation.
+- **Image de partage dédiée** `public/guide/partage.jpg` (1200×630), pour l'aperçu du
+  lien dans le DM. Couverture et aperçus de pages rendus depuis le PDF
+  (`src/assets/guide/`, optimisés en webp au build).
+- Lien ajouté au footer (« Guide du remplaçant (PDF) ») et à `llms.txt`.
+
+Mesure (PostHog, `page-analytics.ts`, route ajoutée dans `PostHog.astro`) :
+`guide_remplacant_viewed` et `guide_remplacant_downloaded` (`placement` : hero /
+couverture / bas), avec le contexte commun (`utm_*`, `referrer_source`, `device_type`)
+plus `edition` et `in_app_browser` (instagram / facebook / null). Vérifié dans PostHog
+avec `?utm_source=instagram&utm_medium=dm&utm_campaign=guide-remplacant`.
+
+Données d'édition centralisées dans `src/lib/guide-remplacant.ts` ; la date « À jour
+au » est un littéral de `pages-lastmod.ts` (lu par regex dans verify-site.mjs).
+Nouvelle édition : nouveau nom de fichier PDF, mêmes constantes, visuels et
+`Content-Disposition` à mettre à jour ; l'URL `/guide` ne change jamais.
+
+Lighthouse mobile /guide : perf 97, a11y 100, BP 100, SEO 100.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
