@@ -280,10 +280,10 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
         DSDE: 0,
         DSDG: 0,
         DSDX: values.ijCpam,
-        // Phase 9H parité moteur : DSCZ = IJ Madelin + IJ CARMF temporaire
-        // (médecin actif, arrêt courte durée). L'invalidité permanente (1AZ) et la
+        // DSCZ = IJ Madelin (+ AJPA). L'invalidité permanente (1AZ) et la
         // retraite/pension (1AS) restent traitées en 2042-C PRO, jamais ici.
-        DSCZ: values.ijMadelin + (values.ijCarmfTemporaire ?? 0),
+        // IJ CARMF temporaires : hors DSCZ (notice 52348#06 § 6.5), à retirer en DSCI (§ 9.df).
+        DSCZ: values.ijMadelin,
         DSCN: cv.capped,
         DSFA: values.declarant === 1 ? dsfaMicro : 0,
         DSFB: values.declarant === 2 ? dsfaMicro : 0,

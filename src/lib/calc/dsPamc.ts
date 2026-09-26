@@ -58,8 +58,10 @@ export interface ExtrasMedecin {
   ijCarmf: number;
   /**
    * IJ CARMF TEMPORAIRE (médecin actif, arrêt maladie/maternité de courte durée).
-   * Doctrine Phase 9H : intégrées au BNC (AF/5HQ + bénéfice) puis réintégrées
-   * socialement en DSCZ (comme les IJ Madelin). PAS en 1AS.
+   * Imposables en BNC (AF/5HQ), mais HORS cotisations sociales : la notice
+   * 52348#06 (§ 5.4, 6.1, 6.5) les exclut de DSCZ (réservée à l'AJPA et aux IJ
+   * Madelin) et les fait retirer de l'assiette (DSCI en micro, DB en réel).
+   * PAS en 1AS. (§ 9.df — corrige la « doctrine Phase 9H » qui les mettait en DSCZ.)
    */
   ijCarmfTemporaire?: number;
   /**
@@ -249,6 +251,9 @@ export function calculerDSPAMC(
   ctx: DSPAMCContext = {}
 ): ResultatDSPAMC {
   const warnings: string[] = [];
+  if (safe(e.ijCarmfTemporaire) > 0) {
+    warnings.push(`IJ CARMF d'incapacité temporaire (${round2(safe(e.ijCarmfTemporaire))} €) : imposables en BNC (recettes 5HQ en micro-BNC, gains divers en réel) mais HORS cotisations sociales. Ne les mets pas en DSCZ : retire-les de l'assiette sociale en DSCI (micro-BNC) ou en ligne DB du cadre 8 de la 2035-B (réel). Notice 52348#06, § 5.4 et 6.1.`);
+  }
   const errors: string[] = [];
 
   // Chèques-vacances : DSCN reçoit le montant commandé dans la limite d'un SMIC
@@ -379,7 +384,7 @@ export function calculerDSPAMC(
     DSDE,
     DSDG,
     DSDX: round2(safe(e.ijCpam)),
-    DSCZ: round2(safe(e.ijMadelin) + safe(e.ijCarmfTemporaire)),
+    DSCZ: round2(safe(e.ijMadelin)),
     DSCN: round2(cv.capped),
     DSFA,
     DSFB,
