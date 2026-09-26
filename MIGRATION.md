@@ -4495,6 +4495,28 @@ liste pour DSCZ.
   pro » (sans source) → présenté comme la zone la moins tranchée (absentes de la liste
   DSCZ ; exclues pour les salariés, brochure p. 93 ; rien d'exprès pour les BNC).
 
+### 9.dg Nouvel article : « IJ du médecin libéral : imposables ou pas ? » (26 septembre 2026)
+
+Sujet n° 5 des pièces prioritaires de la carte de la demande (cluster prévoyance, erreur
+répandue n° 4 : « si je ne déduis pas ma Madelin, mes IJ ne sont pas imposées »). Le corpus
+n'a servi qu'à choisir le sujet ; tout le texte est neuf et sourcé.
+- **`ij-prevoyance-imposables-medecin`** (Fiche Fiscalité #15) : réponse dans les 100
+  premiers mots ; trois étages (CPAM J4-J90, 12 mois d'affiliation, 197,51 € ; CARMF dès
+  J91 ; prévoyance privée) ; tableau récap (impôt / cotisations / case) ; CPAM (réel :
+  gains divers + ligne DB + DSDX ; micro : hors recettes ; ALD non imposable) ; Madelin
+  (imposable quelle que soit la déduction, BOFiP BOI-BNC-BASE-40-60-50-30 § 10 ; DSCZ ;
+  placement micro non détaillé par les textes, signalé) ; CARMF (BNC, hors cotisations,
+  DSCI / ligne DB, jamais DSCZ) ; hors Madelin présenté comme zone non tranchée ;
+  check-list ; FAQ (6) ; sources (ameli, brochure IR 2026 p. 93/163/178, BOFiP, notice
+  52348#06, notice 2035 note 25, guide Urssaf PAMC).
+- **Couverture provisoire** typographique (`src/assets/blog/ij-prevoyance-imposables-cover.png`,
+  1611×2000, générée par script : couleurs de la série, logo) — **à remplacer** par une
+  illustration dans le style des autres couvertures.
+- Maillage entrant : `conge-maternite-paternite` (section fiscalité + connexes),
+  `tout-comprendre-carmf` (intro + connexes), `frais-pros-medecin-liberal-2026` (Madelin).
+  `blog-meta.json` : entrée ajoutée. 68 pages.
+- Lighthouse local : 99 / 100 / 100 / 100, CLS 0. Tableau sans débordement à 375 px.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

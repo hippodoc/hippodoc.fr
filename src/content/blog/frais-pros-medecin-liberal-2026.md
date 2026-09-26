@@ -241,7 +241,7 @@ Le **crédit d'impôt formation dirigeant** est **supprimé** pour toutes les fo
 
 **Obligatoires** (sans plafond particulier) : URSSAF / PAMC, CARMF, cotisation ordinale, RCP médicale (indispensable, y compris pour les remplaçants), syndicat professionnel et société savante si lien direct.
 
-**Facultatives** (dans des plafonds, sur attestation fiscale du contrat) : Prévoyance Madelin, PER individuel TNS, mutuelle TNS, complémentaire santé éligible Madelin, retraite supplémentaire facultative.
+**Facultatives** (dans des plafonds, sur attestation fiscale du contrat) : Prévoyance Madelin, PER individuel TNS, mutuelle TNS, complémentaire santé éligible Madelin, retraite supplémentaire facultative. Déduire ou non ta prévoyance Madelin ne change rien à l'imposition des IJ qu'elle te versera : [le détail ici](/blog/ij-prevoyance-imposables-medecin).
 
 ### Plafond Madelin / PER 2026 (PASS 48 060 €)
 
