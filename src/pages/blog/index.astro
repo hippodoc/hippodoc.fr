@@ -5,7 +5,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BlogCard from '@/components/BlogCard.astro';
 import BlogCtaBand from '@/components/BlogCtaBand.astro';
-import { SITE_URL } from '@/lib/site';
+import { SITE_URL, CALENDLY_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
 import { resolveCover, resolveCovers } from '@/lib/blog-covers';
@@ -104,6 +104,36 @@ const blogSchema = {
         <span class="font-semibold text-hippo-700">{posts.length}</span> articles
       </p>
     </header>
+
+    {/* Recherche (§ 9.db). Le lecteur arrive avec une question précise (« remplir
+         la DSFU », « chèques-vacances »), pas avec une série en tête : il ne pouvait
+         que faire défiler. Le module de recherche et l'index (/blog/recherche.json)
+         ne se chargent qu'au premier focus du champ ; la page ne s'alourdit pas.
+         Sans JavaScript, le bloc est masqué (<noscript>) et la page reste
+         identique. La ligne d'état a une hauteur réservée : rien ne bouge quand
+         le compteur s'affiche. */}
+    <div id="blog-recherche" role="search" class="mx-auto mb-8 max-w-2xl">
+      <label for="blog-recherche-champ" class="sr-only">Rechercher un article du blog</label>
+      <div class="relative">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input
+          id="blog-recherche-champ"
+          type="search"
+          autocomplete="off"
+          enterkeyhint="search"
+          placeholder="Rechercher : DSFU, CARMF, chèques-vacances…"
+          aria-describedby="blog-recherche-etat"
+          aria-controls="blog-recherche-resultats"
+          class="h-12 w-full rounded-full border border-hippo-200 bg-white pl-11 pr-4 text-base text-foreground shadow-sm placeholder:text-muted-foreground focus:border-hippo-600 focus:outline-none focus:ring-2 focus:ring-hippo-600/30"
+        />
+      </div>
+      <p id="blog-recherche-etat" class="mt-2 min-h-5 text-center text-sm text-muted-foreground" aria-live="polite"></p>
+      <ul id="blog-recherche-resultats" class="mt-1 divide-y divide-hippo-100 rounded-2xl border border-hippo-100 bg-white" hidden></ul>
+      <div id="blog-recherche-vide" class="mt-1 rounded-2xl border border-hippo-100 bg-hippo-50/60 p-4 text-sm text-foreground" hidden>
+        <p>Pas encore d'article sur ce sujet. Essaie un autre mot, cherche dans le <a href="/guide-declarations" class="font-medium text-hippo-700 underline underline-offset-2">guide des déclarations</a>, ou <a href={CALENDLY_URL} data-calendly="blog_search" target="_blank" rel="noopener" class="font-medium text-hippo-700 underline underline-offset-2">prends 15 min avec Ryan</a> pour en parler.</p>
+      </div>
+    </div>
+    <noscript><style>{'#blog-recherche{display:none}'}</style></noscript>
 
     {/* Navigation par série. Anciennement un filtre 100 % CSS (radios + `display:none`)
          qui ne laissait aucune trace dans l'URL : impossible à partager, à mettre en
@@ -231,3 +261,101 @@ const blogSchema = {
   </main>
   <Footer />
 </BaseLayout>
+
+<script>
+  /* Recherche du blog (§ 9.db) — exception à la règle « zéro JS » des pages
+     statiques, listée dans CLAUDE.md. Rien ne se charge avant le premier focus. */
+  import type { EntreeRecherche, Resultat } from '@/lib/blog-search';
+
+  const MAX = 10;
+  const champ = document.getElementById('blog-recherche-champ') as HTMLInputElement | null;
+  const etat = document.getElementById('blog-recherche-etat');
+  const liste = document.getElementById('blog-recherche-resultats');
+  const vide = document.getElementById('blog-recherche-vide');
+
+  if (champ && etat && liste && vide) {
+    let chercher: ((i: EntreeRecherche[], q: string) => { resultats: Resultat[]; approchant: boolean }) | null = null;
+    let index: EntreeRecherche[] = [];
+    let chargement: Promise<void> | null = null;
+    let premier: string | null = null;
+    let minuterie: number | undefined;
+
+    const charger = () =>
+      (chargement ??= Promise.all([
+        import('@/lib/blog-search'),
+        fetch('/blog/recherche.json').then((r) => r.json() as Promise<EntreeRecherche[]>),
+      ]).then(([mod, data]) => {
+        chercher = mod.chercher;
+        index = data;
+      }));
+
+    const lien = (r: Resultat, rang: number): HTMLLIElement => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `/blog/${r.entree.s}`;
+      a.dataset.ph = 'blog_search_result';
+      a.dataset.phRank = String(rang + 1);
+      a.className = 'flex items-baseline justify-between gap-3 px-4 py-3 text-sm leading-snug text-foreground transition-colors hover:bg-hippo-50 hover:text-hippo-700';
+      const titre = document.createElement('span');
+      titre.textContent = r.entree.t;
+      const meta = document.createElement('span');
+      meta.className = 'shrink-0 text-xs text-muted-foreground';
+      meta.textContent = r.entree.r;
+      a.append(titre, meta);
+      li.append(a);
+      return li;
+    };
+
+    const afficher = () => {
+      const q = champ.value.trim();
+      liste.replaceChildren();
+      premier = null;
+      if (!q || !chercher) {
+        liste.hidden = true;
+        vide.hidden = true;
+        etat.textContent = '';
+        return;
+      }
+      const { resultats, approchant } = chercher(index, q);
+      const n = resultats.length;
+      if (n === 0) {
+        liste.hidden = true;
+        vide.hidden = false;
+        etat.textContent = 'Aucun article trouvé.';
+      } else {
+        resultats.slice(0, MAX).forEach((r, i) => liste.append(lien(r, i)));
+        premier = `/blog/${resultats[0].entree.s}`;
+        liste.hidden = false;
+        vide.hidden = true;
+        const total = n > 1 ? `${n} articles` : '1 article';
+        etat.textContent = approchant
+          ? `Aucun article ne contient tous ces mots. ${total} en contiennent une partie :`
+          : n > MAX
+            ? `${total} trouvés, voici les ${MAX} plus pertinents :`
+            : `${total} trouvé${n > 1 ? 's' : ''} :`;
+      }
+      // Mesure : terme cherché (tronqué) et nombre de résultats, une fois la frappe
+      // terminée. Émis vers le module d'analytics, qui y ajoute le contexte commun.
+      window.clearTimeout(minuterie);
+      if (q.length >= 2) {
+        minuterie = window.setTimeout(() => {
+          window.dispatchEvent(
+            new CustomEvent('hippodoc:blog-search', { detail: { query: q.slice(0, 60), results: n, approchant } }),
+          );
+        }, 1500);
+      }
+    };
+
+    champ.addEventListener('focus', () => void charger(), { once: true });
+    champ.addEventListener('input', () => void charger().then(afficher));
+    champ.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && premier) {
+        e.preventDefault();
+        window.location.href = premier;
+      } else if (e.key === 'Escape') {
+        champ.value = '';
+        afficher();
+      }
+    });
+  }
+</script>

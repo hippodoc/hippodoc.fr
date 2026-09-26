@@ -4383,6 +4383,34 @@ micro-BNC et que certains SIE refusent le coefficient. Aucune source primaire ne
 - FAQ de la page calculette : idem, et « La case DSCN reçoit le montant TOTAL commandé »
   (oubli du § 9.ct) → « dans la limite du plafond fiscal (1 SMIC mensuel brut) ».
 
+### 9.db Recherche dans le blog (26 septembre 2026)
+
+Décision du fondateur. `/blog` ne permettait de trouver un sujet qu'en faisant défiler
+(46 articles rangés par série), alors que les lecteurs arrivent avec une question précise.
+- **Champ « Rechercher un article »** sous le titre de `/blog` (`role="search"`, libellé,
+  ligne d'état `aria-live` à hauteur réservée : aucun décalage de mise en page).
+  Filtre instantané, 10 résultats au plus (titre + temps de lecture), Entrée ouvre le
+  premier, Échap vide. Sans résultat : renvoi vers le guide des déclarations et
+  « Prendre 15 min avec Ryan » (`data-calendly="blog_search"`). Textes nouveaux :
+  placeholder, ligne d'état, bloc « Pas encore d'article sur ce sujet ».
+- **Index** `/blog/recherche.json` (généré au build, ~70 Ko, ~20 Ko compressé) : titre,
+  description, série, catégorie, mots-clés, questions de FAQ, intertitres et bloc
+  « L'essentiel » de chaque article, normalisés (minuscules, sans accents).
+- **Moteur** `src/lib/blog-search.ts` : mots vides ignorés (une question tapée en entier
+  marche), synonymes du métier (DS PAMC → DSFU, impôt ↔ IR, retraite ↔ CARMF,
+  chèques-vacances ↔ ANCV, garde ↔ PDSA…), termes courts cherchés comme mots entiers,
+  titre pondéré ; si aucun article ne contient tous les mots, résultats « approchants ».
+- **Chargement** : script de page ~1 Ko compressé (uniquement sur /blog) ; module et
+  index au premier focus. Sans JavaScript, bloc masqué (`<noscript>`), page identique.
+  Exception ajoutée à la règle « zéro JS » dans CLAUDE.md.
+- **Mesure** : `blog_search { query (60 car.), results_count, approximate }`, émis 1,5 s
+  après la fin de la frappe via `page-analytics.ts` (contexte commun) ; clics sur les
+  résultats en autocapture (`data-ph="blog_search_result"`, `data-ph-rank`). Les
+  recherches à 0 résultat disent ce qui manque au blog.
+Vérifié : build, verify-site ; navigateur (chargement au focus, résultats, cas vide,
+Échap, Entrée, événement) ; mobile 375 px sans débordement ; Lighthouse `/blog` :
+a11y / BP / SEO 100, CLS 0, TBT 0.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
