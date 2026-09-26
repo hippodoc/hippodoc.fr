@@ -100,6 +100,14 @@ function mesurerBlogIndex(emettre: Emetteur): void {
     0
   );
   emettre('blog_index_viewed', { total_articles: total });
+
+  // Recherche (§ 9.db) : le champ émet `hippodoc:blog-search` une fois la frappe
+  // terminée. Le terme cherché dit ce que les lecteurs attendent du blog, et
+  // `results_count: 0` ce qui y manque.
+  window.addEventListener('hippodoc:blog-search', (e) => {
+    const d = (e as CustomEvent<{ query: string; results: number; approchant: boolean }>).detail;
+    emettre('blog_search', { query: d.query, results_count: d.results, approximate: d.approchant });
+  });
 }
 
 function mesurerSerie(emettre: Emetteur): void {
