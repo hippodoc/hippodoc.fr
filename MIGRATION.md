@@ -4642,6 +4642,34 @@ image 187 → 20 ms, appui → affichage 112 → 16 ms ; `/simulateur` pire imag
 Rendu vérifié au pixel (pixelmatch, WebKit + Chrome, 390 et 1280 px, accueil, /guide,
 /simulateur, /qui-sommes-nous) : 0 pixel différent.
 
+### 9.do Menu mobile : réponse immédiate à l'appui, mouvement « natif iOS » (27 septembre 2026)
+
+Après § 9.dn, le menu restait perçu comme en retard sur iPhone 16 Pro : « le bouton
+s'allume en blanc, puis un temps mort avant que le menu apparaisse ». Ce n'est pas un
+problème de puissance mais de **courbe** : la transition utilisait la courbe par défaut
+de Tailwind `cubic-bezier(0.4, 0, 0.2, 1)`, qui démarre lentement (1 % de la course à
+16 ms, 9 % à 50 ms), et le tiroir partait 20 px hors écran (`translate-x-[110%]`) :
+rien de visible pendant ~70 ms, alors que le bouton, lui, changeait de fond aussitôt
+(`hover:bg-hippo-50`, appliqué au toucher par iOS et resté « collé » ensuite).
+Changements (`Header.astro`, aucun contenu ni lien modifié) :
+- tiroir : courbe des panneaux iOS `cubic-bezier(0.32, 0.72, 0, 1)`, 420 ms à
+  l'ouverture, 300 ms à la fermeture ; départ au ras du bord (`100% + 1rem`) : 40 px
+  visibles dès ~30 ms. Réglés dans le `<style>` du composant : avec le plugin
+  `tailwindcss-animate`, les classes arbitraires `ease-[…]`/`duration-[…]` sont
+  ambiguës et Tailwind les ignore sans erreur visible (seulement un warn en CLI) ;
+- overlay : fondu `ease-out` (départ rapide), 300 ms / 200 ms ;
+- liens du tiroir en cascade : glissement de 12 px + fondu, décalage 30 ms + 15 ms par
+  rang (`--i`), effacement groupé à la fermeture ; désactivé en `prefers-reduced-motion` ;
+- retour tactile : `active:scale-90 active:bg-hippo-100` sur le hamburger et la croix,
+  `active:bg-hippo-50` sur les liens ; les `hover:` du menu passent sous
+  `@media (hover: hover)` (plus de fond collé après un toucher) ; voile gris natif
+  supprimé (`-webkit-tap-highlight-color: transparent` sur le header) ; écouteur
+  `touchstart` passif vide dans le script inline, sans quoi Safari iOS n'applique pas
+  `:active`.
+Mesures WebKit (390 × 844) : 46 images par ouverture, pire image 19 ms, appui →
+affichage 16 ms ; Chrome CPU ×6 : pire image 17–33 ms. Fermeture par ancre, par
+l'overlay et par la croix vérifiées.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
