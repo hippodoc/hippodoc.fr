@@ -4687,6 +4687,82 @@ sans geste à 6,1 s ; un appui à 1 s → GA et pixel à 2,1 s ; gestes continus
 Effet de bord accepté : un visiteur qui quitte la page moins d'1 s après son premier
 geste n'envoie pas de page_view GA4 (PostHog, lui, est inchangé).
 
+### 9.dq /qui-sommes-nous : refonte éditoriale (27 septembre 2026)
+
+Demande owner (« carte blanche ») : rendre la page plus intéressante, retirer les
+coquilles, mettre en avant les soutiens, les syndicats d'internes et The Pitch by Deel.
+La page est aussi la **page auteur** des 46 articles (le JSON-LD `author` de chaque
+article pointe ici) : elle doit dire qui écrit, avec quelles sources, soutenu par qui.
+
+**Nouvelle structure** : héros (la question « combien je gagne vraiment ? » + photo
+de Ryan) → récit à la première personne (repris du pitch de Ryan, juin 2026, et du
+texte « Le constat » de l'ancienne page) → équipe (Ryan, Thomas) → 4 engagements →
+soutiens (cartes datées, pas seulement des logos) → syndicats d'internes avec leur
+ville → parcours → chiffres → contact direct (mail, Calendly `qui_sommes_nous`,
+Instagram) → CTA (`cta_signup_qui_sommes_nous` inchangé).
+
+**Retiré** :
+- jalon 2025 « Ouverture aux médecins installés, salariés et en activité mixte » —
+  contredit le positionnement « remplaçants » du reste du site ;
+- chiffres « 350+ documents générés » (dessert face à 900+ inscrits) et « 4.9/5
+  Satisfaction » (aucune source) ;
+- les trois témoignages hérités de la SPA (« Dr Sophie M. », « Dr Julien R. »,
+  « Dr Amina K. ») : invérifiables. Emplacement conservé dans le code (tableau
+  `testimonials` vide → section non rendue) pour de **vrais** avis, publiés avec
+  l'accord des personnes ;
+- badge « Made with ❤️ by doctors » (anglais, et « doctors » au pluriel inexact) ;
+- mention « levé 22M€ » (Meilisearch) dans la carte de Thomas : chiffre d'une autre
+  entreprise, non vérifié.
+
+**Ajouté (faits vérifiés sur pièces)** :
+- Innov'Up : subvention de la Région Île-de-France instruite par Bpifrance, accord
+  notifié le 26 novembre 2025. Remplace les deux logos « BPI France » + « Région IDF »
+  présentés comme deux soutiens distincts ;
+- La French Care : membre (réseau d'innovation en santé associé à Bpifrance) ;
+- The Pitch by Deel : candidature classée dans le top 3 % par des investisseurs,
+  finale régionale de Paris à Station F le 13 avril 2026, pitch sur scène en anglais.
+  Pas de victoire : rien ne le laisse entendre ;
+- syndicats : SILR (Montpellier, convention mars 2026, listé sur silr.fr), CRP-IMG
+  (Poitiers, convention juin 2026), SIOI (La Réunion, convention juin 2026), AIMGL
+  (Limoges — **le libellé de l'accueil disait « Association des Internes de Médecine
+  Générale » sans ville ; corrigé aussi dans `HeroSection`/`PartnersSection`**),
+  Doctripper ;
+- chiffre « 10 000+ abonnés sur Instagram » ; nombre d'articles calculé depuis la
+  collection `blog` (plus de chiffre figé à maintenir).
+
+**SEO** : H2 au lieu de H3 pour les sections ; JSON-LD `Person` pour Ryan (`@id`
+`/qui-sommes-nous#ryan-goburdhun`, `jobTitle`, `knowsAbout`, `sameAs` LinkedIn, image)
+et Thomas ; `AboutPage.mainEntity` → Organization. Schéma Organization global
+(`site.ts`) : `funder` (Bpifrance, Région Île-de-France) et `memberOf` (La French Care).
+Titre : « Hippodoc, créé par un médecin remplaçant — Qui sommes-nous ».
+
+**Coquilles hors page** : « BPI France » → « Bpifrance » (alt et libellés du footer,
+du héros et des partenaires de l'accueil).
+
+Lighthouse (build local, `/qui-sommes-nous`) : 99 / 100 / 100 / 100.
+
+**2e passe, même jour (retours owner : « trop dense, redondant ? », HomeDoc oublié,
+photo du pitch)** — chaque information n'apparaît plus qu'une fois :
+- héros réduit à une question + une phrase + la photo ; `PRODUCT_DEFINITION` déplacée
+  sous le H2 « Hippodoc aujourd'hui » (toujours visible, pour le GEO) ;
+- frise « Notre parcours » supprimée : elle redisait les soutiens et le « 900+ ».
+  Les dates 2023 (premières lignes) et 2024 (ouverture aux remplaçants, arrivée de
+  Thomas) sont passées dans le récit et la carte de Thomas ;
+- récit : la question du H1 n'y est plus répétée ; « captures d'écran » → « notes
+  iPhone » (demande owner) ; phrase de conclusion redondante avec la citation retirée ;
+- équipe : sous-titre retiré (redisait le héros), carte de Ryan réduite à 2 lignes,
+  citation de Thomas en un seul paragraphe ;
+- engagements : 3 au lieu de 4 (« Pensé par quelqu'un qui remplace » redisait le récit) ;
+- soutiens : **photo de Ryan sur scène** (fournie par l'owner,
+  `src/assets/about/ryan-the-pitch-deel-station-f.jpg`) en carte principale Deel,
+  Innov'Up et La French Care en deux cartes compactes. Innov'Up au passé (« a
+  financé ») : programme clos en mars 2026 ;
+- partenaires : syndicats (4) séparés des partenaires non syndicaux ; **HomeDoc
+  ajouté** (logement des internes, Dr Olivier Dosseh, collaboration Instagram d'avril
+  2026) — logo fourni par l'owner, recadré en `public/lovable-uploads/homedoc-logo-160.webp` ;
+- bloc contact fusionné dans le CTA final (plus de section à part), « 900+ » retiré
+  du CTA (il reste dans les chiffres).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
@@ -4705,6 +4781,10 @@ geste n'envoie pas de page_view GA4 (PostHog, lui, est inchangé).
       (actuellement `facture-generation-cover.png`) et
       `remplacement-regulier-requalification` (actuellement
       `signer-contrat-remplacement-cover.png`) — voir §9.aq.
+- [ ] `/qui-sommes-nous` (§ 9.dq) : relire le récit écrit à la première personne ;
+      fournir de vrais témoignages (avec accord) pour le tableau `testimonials` ;
+      confirmer le chiffre « 900+ inscrits » (repris sur tout le site) et le
+      partenariat AIMGL.
 - (liste complétée en fin de migration)
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)

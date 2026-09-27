@@ -72,6 +72,12 @@ export const ORGANIZATION_SCHEMA = {
       jobTitle: 'CTO',
     },
   ],
+  /** Subvention Innov'Up (Région IDF, instruite par Bpifrance), accordée en novembre 2025. */
+  funder: [
+    { '@type': 'Organization', name: 'Bpifrance', url: 'https://www.bpifrance.fr' },
+    { '@type': 'GovernmentOrganization', name: 'Région Île-de-France', url: 'https://www.iledefrance.fr' },
+  ],
+  memberOf: { '@type': 'Organization', name: 'La French Care', url: 'https://www.lafrenchcare.fr' },
   areaServed: {
     '@type': 'Country',
     name: 'France',
