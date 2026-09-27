@@ -4539,6 +4539,36 @@ Nouvelle édition : nouveau nom de fichier PDF, mêmes constantes, visuels et
 
 Lighthouse mobile /guide : perf 97, a11y 100, BP 100, SEO 100.
 
+### 9.dj /guide : audit après mise en ligne (27 septembre 2026)
+
+Premières données (26-27/09) : aucune vraie visite Instagram encore, hormis le test du
+fondateur (iPhone, Chrome). Cinq « vues » à 22 h 21 le 26/09 sont un robot Bing
+(référent bing.com, États-Unis, écrans factices, 5 visites en 4 s) : **pour le taux de
+téléchargement, filtrer `$geoip_country_code = FR`**, sinon chaque passage de robot le
+fait baisser.
+
+Changements :
+- **Premier écran allégé** : « Gratuit » en double et le poids du fichier (742 Ko)
+  retirés ; l'aide Instagram tient en une phrase (« Rien ne s'ouvre ? Touche ⋯ puis
+  « Ouvrir dans le navigateur ». »). Corrige aussi l'espace manquant après « ⋯ ».
+- **Bouton plus visible** : texte en 20 px gras (« grand texte » WCAG, seuil 3:1), ce
+  qui permet l'emerald-600 (3,76:1) au lieu du 700, plus terne sur le fond bleu.
+- **Les 6 règles passent avant le sommaire** : c'est la partie qui apporte quelque
+  chose tout de suite ; la phrase de remplissage qui les suivait devient une relance
+  « Télécharger le guide → » (`placement: regles`).
+- **Partage WhatsApp** (lien `wa.me`, zéro JS) dans le bloc du bas, avec
+  `utm_source=whatsapp&utm_medium=partage` ; événement `guide_remplacant_shared`.
+- Encadré auteur : le lien vers l'équipe porte sur « Ryan », la ligne « Qui sommes-nous »
+  séparée disparaît.
+
+Décidé de ne PAS ajouter la vidéo de présentation : elle présente l'app, pas le guide ;
+sur l'accueil, 9,4 % seulement de ceux qui voient sa section la lancent (§ commentaire de
+`PresentationVideoSection.astro`) ; le visiteur venu d'un DM veut le PDF, et la page 25
+du guide présente déjà Hippodoc. À réévaluer si les données montrent beaucoup de
+téléchargements et peu de visites vers le simulateur ou l'essai.
+
+Lighthouse mobile /guide : perf 98, a11y 100, BP 100, SEO 100.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

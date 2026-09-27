@@ -62,6 +62,7 @@ export function initPageAnalytics(emettre: Emetteur, chemin: string, posthog?: P
  * commun : c'est le dénominateur du taux de téléchargement par campagne.
  * `guide_remplacant_downloaded` mesure le CLIC (l'ouverture du PDF se fait hors
  * de la page). `placement` compare le bouton du haut à celui du bas ;
+ * `guide_remplacant_shared` compte les partages WhatsApp (§ 9.dj).
  * `in_app_browser` isole les navigateurs intégrés d'Instagram/Facebook, où
  * l'ouverture d'un PDF est la moins fiable — un écart vues/clics anormal y
  * signalerait un blocage, pas un désintérêt.
@@ -78,6 +79,15 @@ function mesurerGuideRemplacant(emettre: Emetteur): void {
       lien.addEventListener(
         'click',
         () => emettre('guide_remplacant_downloaded', { ...meta, placement: lien.dataset.guideDownload }),
+        { passive: true }
+      );
+    }
+    // Partage entre internes (lien wa.me) : l'intention, la visite qui en découle
+    // arrive avec utm_source=whatsapp.
+    for (const lien of document.querySelectorAll<HTMLAnchorElement>('a[data-guide-share]')) {
+      lien.addEventListener(
+        'click',
+        () => emettre('guide_remplacant_shared', { ...meta, network: lien.dataset.guideShare }),
         { passive: true }
       );
     }
