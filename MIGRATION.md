@@ -4670,6 +4670,23 @@ Mesures WebKit (390 × 844) : 46 images par ouverture, pire image 19 ms, appui �
 affichage 16 ms ; Chrome CPU ×6 : pire image 17–33 ms. Fermeture par ancre, par
 l'overlay et par la croix vérifiées.
 
+### 9.dp Scripts tiers : jamais chargés pendant un geste (27 septembre 2026)
+
+Après § 9.do, le menu était fluide sur l'accueil mais gardait « une latence étrange »
+sur `/guide`. Cause : GA4 (et le pixel Meta si consentement) se chargeait **au premier
+geste** — souvent l'appui sur le menu quand on arrive sur une page. gtag.js
+s'exécutait alors en plein démarrage de l'animation ; dès la 2e page vue, il sort du
+cache HTTP et s'exécute presque aussitôt, d'où un effet pire sur `/guide` que sur
+l'accueil. Mesuré (Chrome, CPU ×6, 1re ouverture) : 51 images / 17 ms tiers bloqués,
+38 images / 217 ms avec GA, 12 images / 250 ms avec GA + pixel.
+Nouvelle règle (`ThirdPartyScripts.astro`) : mêmes déclencheurs (1er geste ou 6 s après
+`load`), mais le chargement n'a lieu qu'après **1 s sans aucun geste**, puis via
+`requestIdleCallback`. Résultat : 1re ouverture 51–54 images, pire image 50–67 ms
+(identique au cas « tiers bloqués »), ouvertures suivantes 17 ms. Chargement vérifié :
+sans geste à 6,1 s ; un appui à 1 s → GA et pixel à 2,1 s ; gestes continus 5 s → 5,8 s.
+Effet de bord accepté : un visiteur qui quitte la page moins d'1 s après son premier
+geste n'envoie pas de page_view GA4 (PostHog, lui, est inchangé).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
