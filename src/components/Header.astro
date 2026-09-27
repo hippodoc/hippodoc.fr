@@ -6,7 +6,8 @@ import { APP_URL } from '@/lib/site';
  * Nav minimaliste (passe de simplification août 2026) : 3 ancres vers les
  * sections clés de la landing (« Découvrir », « Pour qui », « Tarifs ») + un
  * seul dropdown « Ressources ». Dropdown 100 % CSS (hover/focus-within) : les
- * liens restent dans le HTML statique (contrairement à Radix). Menu mobile à
+ * liens restent dans le HTML statique (contrairement à Radix). « Guide du remplaçant
+ * (PDF) » ajouté aux ressources le 27/09/2026 (§ 9.dl). Menu mobile à
  * plat 100 % CSS (checkbox) ; seul un micro-script inline referme le tiroir
  * quand on clique une ancre de la même page (aucune navigation ne se produit,
  * le CSS seul ne peut pas décocher la checkbox).
@@ -20,6 +21,7 @@ const anchorItems = [
 
 const resourceItems = [
   { href: '/simulateur', label: 'Simulateur', ph: 'landing_resource_simulateur' },
+  { href: '/guide', label: 'Guide du remplaçant (PDF)', ph: 'landing_resource_guide-remplacant' },
   { href: '/guide-declarations', label: 'Guide déclarations', ph: 'landing_resource_guide-declarations' },
   { href: '/blog', label: 'Blog', ph: 'landing_resource_blog' },
   { href: '/faq', label: 'FAQ', ph: 'landing_resource_faq' },
@@ -74,7 +76,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="invisible absolute right-0 top-full z-50 pt-2 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-          <div class="w-56 rounded-xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass)/0.92)] p-1.5 shadow-[var(--shadow-landing-glass-scrolled)] backdrop-blur-xl backdrop-saturate-150">
+          <div class="w-64 rounded-xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass)/0.92)] p-1.5 shadow-[var(--shadow-landing-glass-scrolled)] backdrop-blur-xl backdrop-saturate-150">
             {resourceItems.map((item) => (
               <a
                 href={item.href}

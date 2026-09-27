@@ -4584,6 +4584,20 @@ marginal depuis Instagram). Deux corrections :
   où la conversation a déjà lieu (le guide y renvoie p. 25). Règle CSS dans la page,
   vérifiée absente de la feuille partagée ; la bulle reste sur ordinateur.
 
+### 9.dl Menu « Ressources » : « Guide du remplaçant (PDF) » (27 septembre 2026)
+
+Ajouté au menu déroulant « Ressources » (ordinateur) et à la liste Ressources du tiroir
+mobile, en 2e position après le Simulateur. **Pas en onglet de premier niveau** : la nav
+a été volontairement réduite à 3 ancres produit + Ressources (passe d'août 2026), et le
+guide est une ressource, pas une section de l'offre.
+
+Pourquoi l'ajouter : /guide n'était lié que depuis le footer ; le header le relie
+désormais depuis toutes les pages (signal d'importance pour Google), et le PDF offert
+donne une porte d'entrée au visiteur de l'accueil qui n'est pas prêt pour l'essai.
+Menu élargi de `w-56` à `w-64` : le libellé passait sur deux lignes.
+Clics : `landing_resource_guide-remplacant` et `landing_mobile_resource_guide-remplacant`
+(autocapture, convention existante).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
