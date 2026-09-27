@@ -4598,6 +4598,14 @@ Menu élargi de `w-56` à `w-64` : le libellé passait sur deux lignes.
 Clics : `landing_resource_guide-remplacant` et `landing_mobile_resource_guide-remplacant`
 (autocapture, convention existante).
 
+### 9.dm /guide : le bleu du hero passe sous la pilule du menu (27 septembre 2026)
+
+Seule page du site dont le premier bloc est sombre et collé au header : la pilule du menu
+(sticky, fond « glass ») laissait une bande blanche au-dessus du bleu, effet « collé »
+remarqué sur iPhone. Le hero remonte de la hauteur du header (`-mt-[72px]`,
+`sm:-mt-[76px]`) et son padding haut compense exactement : le contenu ne bouge pas
+(badge à 104 px sur mobile, bouton inchangé), la pilule flotte sur le bleu.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
