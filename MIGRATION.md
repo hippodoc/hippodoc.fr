@@ -4569,6 +4569,21 @@ téléchargements et peu de visites vers le simulateur ou l'essai.
 
 Lighthouse mobile /guide : perf 98, a11y 100, BP 100, SEO 100.
 
+### 9.dk /guide : contrôle mobile 320 → 414 px et paysage (27 septembre 2026)
+
+Mesuré en production à 320×568, 360×640, 390×660, 414×736 et 740×360 (paysage) : aucun
+débordement horizontal, aucune cible tactile < 24 px, aucun texte < 12 px, bouton de
+téléchargement dans le premier écran partout sauf en paysage (à moitié visible, cas
+marginal depuis Instagram). Deux corrections :
+- **« 2026-2027 » ne se coupe plus au tiret** (titre et badge, `whitespace-nowrap`) ;
+  le badge passe en `inline-block` pour revenir à la ligne entre ses segments — en
+  `inline-flex`, les segments insécables l'élargissaient au-delà de 320 px, et le bouton
+  avec lui.
+- **Pas de bulle de chat sous 768 px sur /guide** : à 320 px, ses 56 px masquaient la
+  droite des cartes pendant toute la lecture. Ces visiteurs arrivent d'un DM Instagram,
+  où la conversation a déjà lieu (le guide y renvoie p. 25). Règle CSS dans la page,
+  vérifiée absente de la feuille partagée ; la bulle reste sur ordinateur.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
