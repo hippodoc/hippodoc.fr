@@ -129,17 +129,30 @@ const iconeTelechargement =
 >
   <Header />
 
+  <!-- Pas de bulle de chat sur mobile ici : elle masquait la droite des cartes
+       (56 px sur 320) pendant toute la lecture, et ces visiteurs arrivent d'un DM
+       Instagram, où la conversation a déjà lieu (le guide le dit p. 25). Sur
+       ordinateur, la bulle reste (§ 9.dk). -->
+  <style is:global>
+    @media (max-width: 767px) {
+      #crisp-launcher {
+        display: none;
+      }
+    }
+  </style>
+
   <main>
     <!-- Hero : sur mobile, titre → bouton → couverture (le bouton tient dans le premier écran). -->
     <section class="relative overflow-hidden bg-gradient-to-br from-hippo-700 via-hippo-800 to-hippo-900 text-white">
       <div class="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-hippo-400/25 blur-3xl"></div>
       <div class="container relative mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-8 md:grid-cols-[1fr_auto] md:gap-12 md:py-16">
         <div>
-          <p class="mb-3 inline-flex items-center rounded-full border border-white/30 bg-white/10 px-3 py-1 text-sm font-semibold">
-            PDF gratuit · {pages} pages · Édition {edition}
+          <p class="mb-3 inline-block rounded-2xl border border-white/30 bg-white/10 px-3 py-1 text-sm font-semibold">
+            <span class="whitespace-nowrap">PDF gratuit</span>&nbsp;· <span class="whitespace-nowrap">{pages} pages</span>&nbsp;·{' '}
+            <span class="whitespace-nowrap">Édition {edition}</span>
           </p>
           <h1 class="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-            Le guide du médecin remplaçant <span class="text-hippo-200">{edition}</span>
+            Le guide du médecin remplaçant <span class="whitespace-nowrap text-hippo-200">{edition}</span>
           </h1>
           <p class="mt-4 max-w-xl text-lg leading-relaxed text-hippo-100">
             Licence, contrat, URSSAF, CARMF, impôts : tout pour démarrer tes remplas sereinement,{' '}
