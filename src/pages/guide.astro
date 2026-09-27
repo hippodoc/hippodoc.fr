@@ -28,7 +28,13 @@ import apercuJournee from '@/assets/guide/apercu-journee-600.png';
 import apercuCalendrier from '@/assets/guide/apercu-calendrier.png';
 import ryanPhoto from '@/assets/founders/ryan-goburdhun.jpeg';
 
-const { pdf, edition, pages, poidsKo, misAJourIso, misAJourTexte } = GUIDE_REMPLACANT;
+const { pdf, edition, pages, misAJourIso, misAJourTexte } = GUIDE_REMPLACANT;
+
+/* Partage WhatsApp : simple lien `wa.me`, zéro JS. L'UTM rattache les visites
+   issues d'un partage entre internes (`hd_premiere_source` = whatsapp). */
+const partageWhatsApp = `https://wa.me/?text=${encodeURIComponent(
+  `Le guide du remplaçant ${edition}, offert par Hippodoc : licence, contrat, URSSAF, CARMF, impôts. ${SITE_URL}/guide?utm_source=whatsapp&utm_medium=partage&utm_campaign=guide-remplacant`
+)}`;
 
 const title = 'Guide du médecin remplaçant 2026-2027 (PDF gratuit)';
 const description =
@@ -108,7 +114,7 @@ const guideSchema = {
 };
 
 const boutonClasses =
-  'inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-emerald-700 px-6 text-lg font-bold text-white shadow-lg transition-colors hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto';
+  'inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-6 text-xl font-bold text-white shadow-lg transition-colors hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto';
 const iconeTelechargement =
   '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>';
 ---
@@ -152,12 +158,10 @@ const iconeTelechargement =
               <Fragment set:html={iconeTelechargement} />
               Télécharger le guide
             </a>
-            <p class="mt-3 text-sm text-hippo-100">
-              Gratuit, sans inscription · PDF, {poidsKo} Ko · Médecine générale et spécialités
-            </p>
-            <p class="mt-2 text-sm text-hippo-100">
-              Le PDF ne s'ouvre pas depuis Instagram ? Touche <span aria-hidden="true">⋯</span><span class="sr-only">le menu</span>
-              en haut à droite, puis ouvre la page dans ton navigateur.
+            <p class="mt-3 text-sm text-hippo-100">Sans inscription · Médecine générale et spécialités</p>
+            <p class="mt-1 text-sm text-hippo-100">
+              Rien ne s'ouvre ? Touche <span aria-hidden="true">⋯</span><span class="sr-only">le menu</span> puis
+              « Ouvrir dans le navigateur ».
             </p>
           </div>
         </div>
@@ -178,36 +182,8 @@ const iconeTelechargement =
       </div>
     </section>
 
-    <!-- Sommaire -->
-    <section class="bg-white py-12 md:py-16" aria-labelledby="sommaire">
-      <div class="container mx-auto max-w-3xl px-4">
-        <h2 id="sommaire" class="text-2xl font-bold text-hippo-800 md:text-3xl">Ce que tu vas trouver dedans</h2>
-        <p class="mt-3 text-muted-foreground">
-          Le guide qu'on aurait aimé lire avant notre premier rempla. Licence en poche, tout arrive en même temps :
-          l'Ordre, l'URSSAF, la CARMF, les impôts, et la question que personne ne pose clairement : combien il te reste
-          vraiment ? Neuf chapitres, dans l'ordre où tu en auras besoin.
-        </p>
-        <ol class="mt-6 divide-y divide-hippo-100 rounded-2xl border border-hippo-100 bg-hippo-50/40">
-          {sommaire.map((c) => (
-            <li class="flex gap-4 px-4 py-3">
-              <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-hippo-600 text-sm font-bold text-white">
-                {c.n}
-              </span>
-              <span>
-                <span class="block font-semibold text-foreground">{c.titre}</span>
-                <span class="block text-sm text-muted-foreground">{c.detail}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
-        <p class="mt-4 text-sm text-muted-foreground">
-          Plus un glossaire des sigles (ASV, BNC, PAMC, RSPM…) et la liste des sources officielles.
-        </p>
-      </div>
-    </section>
-
     <!-- L'essentiel en 6 règles (guide p. 3) -->
-    <section class="bg-gradient-to-b from-hippo-50/60 to-white py-12 md:py-16" aria-labelledby="regles">
+    <section class="bg-white py-12 md:py-16" aria-labelledby="regles">
       <div class="container mx-auto max-w-3xl px-4">
         <p class="text-sm font-semibold uppercase tracking-wide text-hippo-600">Si tu ne lis qu'une page</p>
         <h2 id="regles" class="mt-1 text-2xl font-bold text-hippo-800 md:text-3xl">L'essentiel en 6 règles</h2>
@@ -224,8 +200,48 @@ const iconeTelechargement =
             </li>
           ))}
         </ol>
+        <!-- Relance au pic d'intérêt : après les règles, le détail est dans le PDF. -->
+        <p class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+          Le détail et les chiffres 2026 de chaque règle sont dans le guide.
+          <a
+            href={pdf}
+            target="_blank"
+            rel="noopener"
+            type="application/pdf"
+            data-guide-download="regles"
+            data-ph="guide_remplacant_download_regles"
+            class="inline-flex min-h-11 items-center gap-1 font-semibold text-hippo-600 underline underline-offset-2 hover:text-hippo-800"
+          >
+            Télécharger le guide <span aria-hidden="true">→</span>
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <!-- Sommaire -->
+    <section class="bg-hippo-50/50 py-12 md:py-16" aria-labelledby="sommaire">
+      <div class="container mx-auto max-w-3xl px-4">
+        <h2 id="sommaire" class="text-2xl font-bold text-hippo-800 md:text-3xl">Ce que tu vas trouver dedans</h2>
+        <p class="mt-3 text-muted-foreground">
+          Le guide qu'on aurait aimé lire avant notre premier rempla. Licence en poche, tout arrive en même temps :
+          l'Ordre, l'URSSAF, la CARMF, les impôts, et la question que personne ne pose clairement : combien il te reste
+          vraiment ? Neuf chapitres, dans l'ordre où tu en auras besoin.
+        </p>
+        <ol class="mt-6 divide-y divide-hippo-100 rounded-2xl border border-hippo-100 bg-white">
+          {sommaire.map((c) => (
+            <li class="flex gap-4 px-4 py-3">
+              <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-hippo-600 text-sm font-bold text-white">
+                {c.n}
+              </span>
+              <span>
+                <span class="block font-semibold text-foreground">{c.titre}</span>
+                <span class="block text-sm text-muted-foreground">{c.detail}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
         <p class="mt-4 text-sm text-muted-foreground">
-          Chaque règle renvoie à sa page détaillée dans le guide, avec les chiffres 2026.
+          Plus un glossaire des sigles (ASV, BNC, PAMC, RSPM…) et la liste des sources officielles.
         </p>
       </div>
     </section>
@@ -264,16 +280,13 @@ const iconeTelechargement =
         <div class="flex items-start gap-4 rounded-2xl border border-hippo-100 bg-white p-5 shadow-sm">
           <Image src={ryanPhoto} alt="Ryan Goburdhun" width={128} height={128} class="h-16 w-16 shrink-0 rounded-full object-cover" />
           <div>
-            <p class="font-semibold text-foreground">Écrit par Ryan, médecin, fondateur d'Hippodoc</p>
+            <p class="font-semibold text-foreground">
+              Écrit par <a href="/qui-sommes-nous#ryan-goburdhun" class="text-hippo-600 underline underline-offset-2 hover:text-hippo-800">Ryan</a>, médecin, fondateur d'Hippodoc
+            </p>
             <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
               À jour au {misAJourTexte}. Chaque chiffre renvoie à sa source : Ordre des médecins, URSSAF, CARMF,
               Assurance maladie, impots.gouv.fr. Information générale : pour ton cas, vois avec ton conseil de l'Ordre,
               l'URSSAF, la CARMF ou un expert-comptable.
-            </p>
-            <p class="mt-2 text-sm">
-              <a href="/qui-sommes-nous" class="inline-flex min-h-11 items-center font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-800">
-                Qui sommes-nous
-              </a>
             </p>
           </div>
         </div>
@@ -295,6 +308,17 @@ const iconeTelechargement =
               Télécharger le guide
             </a>
           </div>
+          <a
+            href={partageWhatsApp}
+            target="_blank"
+            rel="noopener"
+            data-guide-share="whatsapp"
+            data-ph="guide_remplacant_share_whatsapp"
+            class="mt-3 inline-flex min-h-11 items-center gap-2 font-semibold text-white underline underline-offset-2 hover:text-hippo-100"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            L'envoyer sur WhatsApp
+          </a>
         </div>
 
         <div class="mt-8">
