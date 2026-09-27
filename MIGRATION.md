@@ -4763,6 +4763,21 @@ photo du pitch)** — chaque information n'apparaît plus qu'une fois :
 - bloc contact fusionné dans le CTA final (plus de section à part), « 900+ » retiré
   du CTA (il reste dans les chiffres).
 
+### 9.dr Liens Calendly : suivi chargé sur toute page qui en porte un (27 septembre 2026)
+
+Constaté en production juste après § 9.dq : le lien « 15 min avec Ryan » de
+`/qui-sommes-nous` partait **sans UTM** et sans `calendly_clicked`. Cause : le module
+`analytics-init` (qui branche les `a[data-calendly]`) n'était importé que sur une liste
+de chemins (`/`, `/tarifs`, `/faq`, `/comparatif`, `/guide-declarations`, `/guide`,
+`/blog`, `/simulateur`) et `/qui-sommes-nous` n'y figurait pas. `verify-site.mjs`
+contrôlait bien la présence de `data-calendly`, mais pas que le module soit chargé.
+Correctif (`PostHog.astro`) : import aussi dès qu'un `a[data-calendly]` est présent
+dans la page (le script est un module, donc exécuté après l'analyse du DOM). Les
+pages sans lien Calendly ne téléchargent toujours rien. Vérifié sur le build local :
+`/qui-sommes-nous?utm_source=instagram&utm_medium=bio&utm_campaign=test_qsn` →
+lien réécrit avec ces UTM et `utm_content=qui_sommes_nous` ; `/mentions-legales` →
+aucun module d'analytics chargé.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
