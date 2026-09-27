@@ -4606,6 +4606,42 @@ remarqué sur iPhone. Le hero remonte de la hauteur du header (`-mt-[72px]`,
 `sm:-mt-[76px]`) et son padding haut compense exactement : le contenu ne bouge pas
 (badge à 104 px sur mobile, bouton inchangé), la pilule flotte sur le bleu.
 
+### 9.dn Menu mobile : ouverture fluide, sans flou d'arrière-plan (27 septembre 2026)
+
+Ouverture du tiroir jugée saccadée, « avec de la latence », sur téléphone. Le calcul de
+style au clic est négligeable (~1 ms mesuré) : le coût est côté GPU. L'overlay plein
+écran portait un `backdrop-blur-sm` animé en opacité, et le tiroir un `backdrop-blur-xl
+backdrop-saturate-150` qui devait refloutir, à chaque image de son glissement, ce qui
+était déjà flouté — le tout au-dessus d'une landing qui compte ~95 surfaces en
+`backdrop-filter` (mesuré). Les deux flous du menu sont retirés ; le tiroir passe d'un
+fond « glass » à 92 % à un fond plein de la même teinte (sur un voile noir à 60 %, le
+flou était de toute façon quasi invisible). Ajouts : `touch-manipulation` sur le bouton
+hamburger (aucun délai de double-tap possible), `overscroll-contain` sur la liste du
+tiroir (le défilement n'entraîne plus la page derrière). Pas de verrouillage du scroll
+de la page : basculer `overflow` sur `<html>` relancerait une mise en page complète
+pile au démarrage de l'animation.
+Aucun contenu ni lien modifié.
+
+**Deuxième passe, même jour — la vraie cause.** Après déploiement, le menu restait peu
+fluide sur iPhone. Mesure avec Playwright (moteur WebKit, viewport 390 × 844, DPR 3) :
+sur l'accueil, chaque ouverture ne produisait que ~8 images en 700 ms (images de
+150–190 ms) et ~120 ms entre l'appui et l'affichage, alors que `/faq` était fluide
+(46 images, 16 ms). JS et recalcul de style ≈ 1 ms : tout le coût était au dessin.
+Bissection par CSS injecté : couper les `backdrop-filter` n'aidait qu'à moitié ; couper
+les **halos décoratifs en `filter: blur`** (`blur-3xl`, `blur-xl`… — 5 dans le hero,
+le pire étant le rectangle incliné derrière la capture du tableau de bord) rendait
+l'ouverture parfaite. Mécanisme : sans calque propre, WebKit recalcule le flou à chaque
+image où sa zone est redessinée, et les reflets `shimmer` en boucle des boutons voisins
+la redessinent en continu.
+Correctif : `will-change: transform` sur toute classe de flou Tailwind (règle unique en
+fin de `global.css`, sélecteurs `[class~='blur']`, `[class^='blur-']`,
+`[class*=' blur-']` — n'atteint pas `backdrop-blur-*`). 44 halos concernés sur
+l'accueil. Résultats WebKit avant → après : accueil 8 → 46 images/ouverture, pire
+image 187 → 20 ms, appui → affichage 112 → 16 ms ; `/simulateur` pire image 86 → 20 ms ;
+`/guide` 55 → 20 ms. Chrome (CPU ×6) : première ouverture sur l'accueil 150 → 33 ms.
+Rendu vérifié au pixel (pixelmatch, WebKit + Chrome, 390 et 1280 px, accueil, /guide,
+/simulateur, /qui-sommes-nous) : 0 pixel différent.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

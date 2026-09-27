@@ -218,3 +218,18 @@
     transform: translateY(-4px);
   }
 }
+
+/* Halos décoratifs flous (`blur-3xl`, `blur-[120px]`…) sur leur propre calque GPU
+   (27/09/2026, MIGRATION.md § 9.dn). Sans calque, Safari recalcule le flou à chaque
+   image où la zone qu'il couvre est redessinée — ici en continu, à cause des reflets
+   animés des boutons voisins — et l'ouverture du menu mobile au-dessus du hero tombait
+   à ~10 images/s (mesuré, moteur WebKit). Avec calque, le flou est calculé une fois :
+   45 images/s, rendu strictement identique. `filter` crée déjà un contexte
+   d'empilement, `will-change` ne change donc pas l'ordre de peinture.
+   Les sélecteurs ne touchent pas `backdrop-blur-*` (le caractère avant « blur » y est
+   un tiret, pas une espace). */
+[class~='blur'],
+[class^='blur-'],
+[class*=' blur-'] {
+  will-change: transform;
+}
