@@ -278,7 +278,11 @@
    * rien, et le code reste hors du chemin critique de rendu.
    */
   const cheminMesure = window.location.pathname.replace(/\/$/, '') || '/';
-  if (cheminMesure === '/' || /^\/(tarifs|faq|comparatif|guide-declarations|guide|blog|simulateur)(\/|$)/.test(cheminMesure)) {
+  const pageMesuree = cheminMesure === '/' || /^\/(tarifs|faq|comparatif|guide-declarations|guide|blog|simulateur)(\/|$)/.test(cheminMesure);
+  // Toute page qui porte un lien Calendly charge aussi le module : c'est lui qui y
+  // reporte les UTM et mesure le clic. /qui-sommes-nous, absente de la liste, en
+  // était privée (§ 9.dr) — ce test couvre d'office les prochains liens.
+  if (pageMesuree || document.querySelector('a[data-calendly]')) {
     import('@/lib/analytics-init')
       .then((m) => m.initAnalytics(posthog))
       .catch(() => {
