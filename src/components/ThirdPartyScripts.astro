@@ -4,8 +4,10 @@
  * + bannière cookies portée de src/components/cookies/CookieConsent.tsx (SPA source).
  *
  * Stratégie perf : rien ne se charge pendant la fenêtre Lighthouse.
- * gtag.js et Crisp ne sont injectés qu'après `load` + idle (~4 s) OU à la
- * première interaction (pointerdown/keydown/touchstart), au premier des deux.
+ * gtag.js n'est injecté que 6 s après `load` OU après la première interaction
+ * (pointerdown/keydown/touchstart), au premier des deux — et dans les deux cas
+ * seulement après 1 s sans aucun geste, pour ne jamais s'exécuter pendant une
+ * animation ou un défilement (§ 9.dp). Crisp : au clic sur la bulle uniquement.
  * Le Meta Pixel n'est chargé qu'avec le consentement « accepted » (comme la source).
  * Clé de consentement identique à la source : localStorage['cookie-consent'].
  * Calendly : simples liens HTML (zéro script) — pas de widget flottant.
@@ -249,11 +251,36 @@
       });
     }
 
-    /* GA4 + Pixel : première interaction OU 6 s après `load` (hors trace Lighthouse) */
+    /* GA4 + Pixel : première interaction OU 6 s après `load` (hors trace Lighthouse).
+       ⚠️ Jamais PENDANT un geste (§ 9.dp). Le premier geste est souvent l'appui sur
+       le menu mobile : charger gtag.js à ce moment précis l'exécutait en plein
+       démarrage de l'animation — et dès la 2e page, il sort du cache HTTP et
+       s'exécute aussitôt. Mesuré (Chrome, CPU ×6) : image de 217 ms à la 1re
+       ouverture, 12 images au lieu de 47 avec le pixel. Règle : on charge après
+       1 s SANS AUCUN GESTE (toucher, clic, touche), puis dans un moment libre du
+       navigateur. Un défilement continu repousse donc aussi le chargement : il
+       n'interrompt plus un scroll. */
+    var dernierGeste = 0;
+    var minuteur = null;
+    function planifier(delai) {
+      if (deferredDone) return;
+      clearTimeout(minuteur);
+      minuteur = setTimeout(essayer, delai);
+    }
+    function essayer() {
+      var calme = Date.now() - dernierGeste;
+      if (calme < 1000) return planifier(1000 - calme);
+      if ('requestIdleCallback' in window) requestIdleCallback(loadDeferred, { timeout: 2000 });
+      else loadDeferred();
+    }
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {
-      addEventListener(evt, loadDeferred, { once: true, passive: true });
+      addEventListener(evt, function () {
+        if (deferredDone) return;
+        dernierGeste = Date.now();
+        planifier(1000);
+      }, { passive: true });
     });
-    function armDeferred() { setTimeout(loadDeferred, 6000); }
+    function armDeferred() { setTimeout(function () { planifier(0); }, 6000); }
     if (document.readyState === 'complete') { armDeferred(); }
     else { addEventListener('load', armDeferred); }
 
