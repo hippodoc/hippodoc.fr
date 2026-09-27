@@ -129,7 +129,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
       <label
         for="mobile-menu-toggle"
         data-ph="landing_mobile_menu_open"
-        class="flex h-11 w-11 cursor-pointer touch-manipulation items-center justify-center rounded-xl text-hippo-800 transition-colors hover:bg-hippo-50 hover:text-hippo-600 lg:hidden"
+        class="flex h-11 w-11 cursor-pointer touch-manipulation items-center justify-center rounded-xl text-hippo-800 transition-[transform,background-color] duration-150 ease-out active:scale-90 active:bg-hippo-100 motion-reduce:transition-none [@media(hover:hover)]:hover:bg-hippo-50 [@media(hover:hover)]:hover:text-hippo-600 lg:hidden"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
       </label>
@@ -142,11 +142,16 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
        chaque image de son glissement, par-dessus une landing qui porte déjà ~95
        surfaces floutées. Sur téléphone, le GPU ne tenait pas le rythme : ouverture
        saccadée. Le tiroir étant opaque à 92 % sur un voile noir à 60 %, le flou
-       ne se voyait quasiment pas — fond plein, rendu identique. */}
+       ne se voyait quasiment pas — fond plein, rendu identique.
+       Courbes (§ 9.do) : l'ancienne courbe par défaut (0.4, 0, 0.2, 1) démarrait
+       lentement — 9 % de la course à 50 ms, et le tiroir partait 20 px hors écran :
+       rien de visible pendant ~70 ms après l'appui, d'où l'impression de latence.
+       Ouverture : courbe des panneaux iOS (0.32, 0.72, 0, 1), 420 ms, 40 px visibles
+       dès ~30 ms ; départ au ras du bord (100 % + 1rem). Fermeture : 300 ms. */}
   <label
     for="mobile-menu-toggle"
     aria-hidden="true"
-    class="invisible fixed inset-0 z-40 cursor-pointer bg-black/60 opacity-0 transition-[opacity,visibility] duration-300 peer-checked:visible peer-checked:opacity-100 motion-reduce:transition-none lg:hidden"
+    class="invisible fixed inset-0 z-40 cursor-pointer bg-black/60 opacity-0 transition-[opacity,visibility] duration-200 ease-out peer-checked:visible peer-checked:opacity-100 peer-checked:duration-300 motion-reduce:transition-none lg:hidden"
   ></label>
 
   <div
@@ -155,7 +160,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
         390), ne laissant que 12 à 18 px d'overlay — le geste « toucher à côté pour
         fermer » était donc hors de portée, sous le minimum de 44 px. Cette largeur
         garantit au moins 60 px de zone de fermeture de 320 à 430 px. */}
-    class="invisible fixed bottom-3 right-3 top-3 z-50 w-[calc(100%-4.5rem)] max-w-[340px] translate-x-[110%] overflow-hidden rounded-2xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass))] shadow-[var(--shadow-landing-glass-scrolled)] transition-[transform,visibility] duration-300 peer-checked:visible peer-checked:translate-x-0 motion-reduce:transition-none lg:hidden"
+    class="invisible fixed bottom-3 right-3 top-3 z-50 w-[calc(100%-4.5rem)] max-w-[340px] translate-x-[calc(100%+1rem)] overflow-hidden rounded-2xl border border-[hsl(var(--landing-glass-border)/0.72)] bg-[hsl(var(--landing-glass))] shadow-[var(--shadow-landing-glass-scrolled)] transition-[transform,visibility] duration-300 peer-checked:visible peer-checked:translate-x-0 motion-reduce:transition-none lg:hidden"
   >
         <div class="flex h-full flex-col px-5 pb-4 pt-5">
           <div class="flex min-h-11 items-center justify-between">
@@ -163,36 +168,38 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
               <img src="/lovable-uploads/hippodoc-logo-96.webp" alt="" width="36" height="36" class="h-9 w-auto" />
               <span class="text-lg font-bold text-hippo-700">Hippo<span class="text-hippo-500">doc</span></span>
             </span>
-            <label for="mobile-menu-toggle" class="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-hippo-700">
+            <label for="mobile-menu-toggle" class="flex h-11 w-11 cursor-pointer touch-manipulation items-center justify-center rounded-xl text-hippo-700 transition-[transform,background-color] duration-150 ease-out active:scale-90 active:bg-hippo-100 motion-reduce:transition-none">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </label>
           </div>
           <nav class="mt-5 flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain" aria-label="Navigation mobile">
             <div class="space-y-1">
-              {anchorItems.map((item) => (
+              {anchorItems.map((item, i) => (
                 <a
                   href={item.href}
                   data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`}
-                  class="flex min-h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold text-hippo-800 transition-colors hover:bg-hippo-50 hover:text-hippo-600"
+                  style={`--i:${i}`}
+                  class="menu-item flex min-h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold text-hippo-800 active:bg-hippo-50 [@media(hover:hover)]:hover:bg-hippo-50 [@media(hover:hover)]:hover:text-hippo-600"
                 >
                   {item.label}
                 </a>
               ))}
             </div>
-            <p class="mb-1 mt-5 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ressources</p>
+            <p style={`--i:${anchorItems.length}`} class="menu-item mb-1 mt-5 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Ressources</p>
             <div class="space-y-1">
-              {resourceItems.map((item) => (
+              {resourceItems.map((item, i) => (
                 <a
                   href={item.href}
                   data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`}
-                  class="flex min-h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold text-hippo-800 transition-colors hover:bg-hippo-50 hover:text-hippo-600"
+                  style={`--i:${anchorItems.length + 1 + i}`}
+                  class="menu-item flex min-h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold text-hippo-800 active:bg-hippo-50 [@media(hover:hover)]:hover:bg-hippo-50 [@media(hover:hover)]:hover:text-hippo-600"
                 >
                   {item.label}
                 </a>
               ))}
             </div>
           </nav>
-          <div class="mt-4 grid grid-cols-2 gap-2 border-t border-hippo-100 pt-4">
+          <div style={`--i:${anchorItems.length + 1 + resourceItems.length}`} class="menu-item mt-4 grid grid-cols-2 gap-2 border-t border-hippo-100 pt-4">
             <a
               href={`${APP_URL}/auth`}
               class="inline-flex h-11 items-center justify-center rounded-full border border-hippo-200 px-3 text-sm font-semibold text-hippo-700 transition-colors hover:bg-hippo-50 hover:text-hippo-600"
@@ -216,6 +223,10 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     document.getElementById('mobile-menu-drawer').addEventListener('click', function (e) {
       if (e.target.closest('a')) document.getElementById('mobile-menu-toggle').checked = false;
     });
+    /* Safari iOS n'applique `:active` (retour visuel à l'appui) que si un écouteur
+       `touchstart` existe dans la page. Celui de ThirdPartyScripts est `once` : il
+       disparaît au premier geste. Écouteur vide et passif, coût nul. */
+    document.addEventListener('touchstart', function () {}, { passive: true });
   </script>
 </header>
 
@@ -228,5 +239,51 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
   #mobile-menu-toggle:focus-visible ~ #mobile-menu-drawer label[for='mobile-menu-toggle'] {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+  }
+
+  /* Pas de voile gris natif de Safari iOS au toucher (propriété héritée) : le
+     retour visuel est donné par les états `active:` (bouton qui se contracte). Sur
+     l'overlay plein écran, ce voile flashait tout l'écran à la fermeture. */
+  header {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Courbe et durées du tiroir (voir le commentaire au-dessus du tiroir). En CSS et
+     non en classes : le plugin `tailwindcss-animate` rend ambiguës les classes
+     arbitraires `ease-[…]` et `duration-[…]`, que Tailwind ignore alors en silence. */
+  #mobile-menu-drawer {
+    transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  #mobile-menu-toggle:checked ~ #mobile-menu-drawer {
+    transition-duration: 420ms;
+  }
+
+  /* Contenu du tiroir en cascade (§ 9.do) : chaque ligne glisse de 12 px et
+     apparaît avec un décalage de 15 ms (`--i` = rang), pendant que le tiroir
+     arrive. À la fermeture, tout s'efface ensemble, sans délai. */
+  .menu-item {
+    opacity: 0;
+    transform: translateX(12px);
+    transition:
+      opacity 150ms ease,
+      transform 150ms ease,
+      background-color 150ms ease;
+  }
+  #mobile-menu-toggle:checked ~ #mobile-menu-drawer .menu-item {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 320ms cubic-bezier(0.32, 0.72, 0, 1),
+      transform 420ms cubic-bezier(0.32, 0.72, 0, 1),
+      background-color 150ms ease;
+    transition-delay: calc(30ms + var(--i) * 15ms), calc(30ms + var(--i) * 15ms), 0ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .menu-item,
+    #mobile-menu-toggle:checked ~ #mobile-menu-drawer .menu-item {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 </style>
