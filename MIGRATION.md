@@ -4622,6 +4622,26 @@ de la page : basculer `overflow` sur `<html>` relancerait une mise en page compl
 pile au démarrage de l'animation.
 Aucun contenu ni lien modifié.
 
+**Deuxième passe, même jour — la vraie cause.** Après déploiement, le menu restait peu
+fluide sur iPhone. Mesure avec Playwright (moteur WebKit, viewport 390 × 844, DPR 3) :
+sur l'accueil, chaque ouverture ne produisait que ~8 images en 700 ms (images de
+150–190 ms) et ~120 ms entre l'appui et l'affichage, alors que `/faq` était fluide
+(46 images, 16 ms). JS et recalcul de style ≈ 1 ms : tout le coût était au dessin.
+Bissection par CSS injecté : couper les `backdrop-filter` n'aidait qu'à moitié ; couper
+les **halos décoratifs en `filter: blur`** (`blur-3xl`, `blur-xl`… — 5 dans le hero,
+le pire étant le rectangle incliné derrière la capture du tableau de bord) rendait
+l'ouverture parfaite. Mécanisme : sans calque propre, WebKit recalcule le flou à chaque
+image où sa zone est redessinée, et les reflets `shimmer` en boucle des boutons voisins
+la redessinent en continu.
+Correctif : `will-change: transform` sur toute classe de flou Tailwind (règle unique en
+fin de `global.css`, sélecteurs `[class~='blur']`, `[class^='blur-']`,
+`[class*=' blur-']` — n'atteint pas `backdrop-blur-*`). 44 halos concernés sur
+l'accueil. Résultats WebKit avant → après : accueil 8 → 46 images/ouverture, pire
+image 187 → 20 ms, appui → affichage 112 → 16 ms ; `/simulateur` pire image 86 → 20 ms ;
+`/guide` 55 → 20 ms. Chrome (CPU ×6) : première ouverture sur l'accueil 150 → 33 ms.
+Rendu vérifié au pixel (pixelmatch, WebKit + Chrome, 390 et 1280 px, accueil, /guide,
+/simulateur, /qui-sommes-nous) : 0 pixel différent.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
