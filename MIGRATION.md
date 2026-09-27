@@ -4606,6 +4606,22 @@ remarqué sur iPhone. Le hero remonte de la hauteur du header (`-mt-[72px]`,
 `sm:-mt-[76px]`) et son padding haut compense exactement : le contenu ne bouge pas
 (badge à 104 px sur mobile, bouton inchangé), la pilule flotte sur le bleu.
 
+### 9.dn Menu mobile : ouverture fluide, sans flou d'arrière-plan (27 septembre 2026)
+
+Ouverture du tiroir jugée saccadée, « avec de la latence », sur téléphone. Le calcul de
+style au clic est négligeable (~1 ms mesuré) : le coût est côté GPU. L'overlay plein
+écran portait un `backdrop-blur-sm` animé en opacité, et le tiroir un `backdrop-blur-xl
+backdrop-saturate-150` qui devait refloutir, à chaque image de son glissement, ce qui
+était déjà flouté — le tout au-dessus d'une landing qui compte ~95 surfaces en
+`backdrop-filter` (mesuré). Les deux flous du menu sont retirés ; le tiroir passe d'un
+fond « glass » à 92 % à un fond plein de la même teinte (sur un voile noir à 60 %, le
+flou était de toute façon quasi invisible). Ajouts : `touch-manipulation` sur le bouton
+hamburger (aucun délai de double-tap possible), `overscroll-contain` sur la liste du
+tiroir (le défilement n'entraîne plus la page derrière). Pas de verrouillage du scroll
+de la page : basculer `overflow` sur `<html>` relancerait une mise en page complète
+pile au démarrage de l'animation.
+Aucun contenu ni lien modifié.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
