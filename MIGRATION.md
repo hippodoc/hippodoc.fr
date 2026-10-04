@@ -4222,6 +4222,8 @@ régulation » est imposable faute d'être « listée nommément ». Or le BOFiP
 d'une « rémunération forfaitaire de régulation et d'astreinte » dans la partie
 « Rémunération de l'astreinte », donc exonérable. Conseil fiscal non modifié ici.
 
+**Erratum (4 octobre 2026)** : « CRS n'existe pas » est faux, la CRS a été rétablie — voir § 9.ds.
+
 ### 9.ct Chèques-vacances (ANCV) des indépendants : plafond de DSCN, SMIC de référence (25 septembre 2026)
 
 Point laissé ouvert (« règles ANCV TNS non vérifiées »). Sources primaires :
@@ -4777,6 +4779,52 @@ pages sans lien Calendly ne téléchargent toujours rien. Vérifié sur le build
 `/qui-sommes-nous?utm_source=instagram&utm_medium=bio&utm_campaign=test_qsn` →
 lien réécrit avec ces UTM et `utm_content=qui_sommes_nous` ; `/mentions-legales` →
 aucun module d'analytics chargé.
+
+### 9.ds Codes des majorations PDSA : CRS existe (4 octobre 2026)
+
+Corrige le § 9.cs. Son affirmation « **CRS n'existe pas** (le samedi n'a de majoration
+régulée qu'en visite, VRS) » était **fausse** (signalé par le fondateur). Elle reposait
+sur le tableau ameli.fr des tarifs conventionnels, qui liste CRN, CRM, CRD, VRN, VRM,
+VRD et VRS mais pas la CRS : l'absence d'un code de ce tableau ne prouve pas qu'il
+n'existe pas.
+
+Source : MG France, « Cotation en permanence de soins »
+(https://mgfrance.org/index.php?Itemid=861&catid=107%3Anomenclature&id=272%3Acotation-en-permanence-de-soins&option=com_content&view=article,
+mise à jour du 4 mai 2022), rubrique « PDS au Cabinet » : majoration de samedi
+après-midi de 12 h à 20 h, **CRS**, 26,50 € ; créée par la CNAM pour distinguer le
+samedi des jours fériés, elle « n'est pas appliquée dans tous les départements » —
+là où elle ne l'est pas, on cote la **CRD**. Recoupé avec MG France, « Les majorations
+nuits et jours fériés en garde régulée »
+(https://www.mgfrance.org/cotation/publication/je-fais-un-acte-regule/les-majorations-nuits-et-jours-feries,
+mise à jour du 9 janvier 2026) : CRS listée, G 30 + CRS 26,50 = 56,50 €.
+
+Liste juste (8 majorations spécifiques de permanence des soins régulée) :
+- au cabinet : **CRN** (nuit 20 h-0 h / 6 h-8 h), **CRM** (milieu de nuit 0 h-6 h),
+  **CRD** (dimanche et fériés), **CRS** (samedi après-midi ; CRD à la place dans les
+  départements qui ne l'appliquent pas) ;
+- en visite : **VRN**, **VRM**, **VRD**, **VRS**.
+Le reste du § 9.cs tient : CRM, VRM, VRD et l'astreinte RSP manquaient bien ; la
+reformulation de ZG-009 (position B) est conservée (CRS ajoutée à sa liste) ; la ligne
+ameli des sources de l'article reste telle quelle (ameli ne liste que les 7 autres codes).
+
+Corrigé (ordre local conservé : CRS après CRD, symétrique de VRS après VRD) :
+- `src/data/boussoleData.ts` : 9 listes (RO-006, RO-015, cases DSFA et CI, QT-048,
+  PC-003, ZG-006 position A, ZG-009 positions A et B) ;
+- `src/data/glossaireDeclarationsData.ts` : entrée PDSA ;
+- `src/components/calculette/CalculetteForm.tsx` : 2 infobulles (micro et réel) ;
+  `calculetteSchema.ts` : commentaire ; `calculetteExamples.ts` : exemple
+  « pdsa-zone-rurale », « CRD/VRD » → « CRD/CRS » (texte d'avant le 25/09 : deux
+  majorations de cabinet du week-end, se lit naturellement) ;
+- article `pdsa-exoneration-gardes-regulees.md` : liste « au cabinet : CRN / CRM / CRD /
+  CRS » ; ligne Sources complétée par la page MG France 2026 pour la CRS (le titre
+  « vérifiées au 25 septembre 2026 » n'a pas été touché). `updatedDate` inchangée
+  (2026-09-25, `blog-meta.json` intact) : correction ponctuelle, comme le 25/09 ;
+  l'article retrouve un code qu'il citait jusqu'au 25/09.
+
+Réserve sur les départements non ajoutée au contenu du site : aucune phrase du site ne
+disait que la CRS n'existe pas ni que le samedi n'avait qu'une majoration de visite
+(c'était le seul § 9.cs) ; c'est une règle de cotation, pas de déclaration, et la CRD
+qui la remplace figure déjà dans toutes les listes.
 
 ## 10. TODO(owner) — faits manquants / décisions
 
