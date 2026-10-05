@@ -5,9 +5,9 @@ pubDate: "2026-09-26"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
-categoryNumber: "#16"
+categoryNumber: "#17"
 seriesId: "fiche-fiscalite"
-episodeNumber: 16
+episodeNumber: 17
 readTime: "10 min"
 cover: "/blog/comparatif-ei-is-selarl-cover.png"
 tags:

@@ -4501,8 +4501,8 @@ Contenu **ajouté** (flag § 9), tiré de la carte de la demande (§ 13 « SELAR
 l'IS » : peu de questions, mais les réponses les plus contradictoires du corpus). Le corpus
 sert de boussole : aucun texte, aucun membre ni groupe n'est cité.
 
-- `src/content/blog/ei-is-ou-selarl-medecin.md` : Fiche Fiscalité #16 (le #15 est l'article
-  IJ, encore en brouillon, voir 9.dg sur sa branche). Réponse dans les 100 premiers mots,
+- `src/content/blog/ei-is-ou-selarl-medecin.md` : Fiche Fiscalité #17 (renumérotée le
+  5 octobre 2026 : #15 = Madelin § 9.du, #16 = chèques-vacances § 9.dv). Réponse dans les 100 premiers mots,
   exemple chiffré (10 000 € : 1 500 € d'IS ; distribués, 1 500 + 2 669 € de PFU = 41,7 %),
   tableau comparatif, cas où ça ne vaut pas le coup, FAQ (6 questions, FAQPage JSON-LD).
 - Règles vérifiées sur sources primaires : F36380 (option IS de l'EI : réel, 3e mois,
