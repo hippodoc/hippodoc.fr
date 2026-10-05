@@ -4839,6 +4839,57 @@ Retour du fondateur : sur l'onglet « Tous les articles (46) », on ne voyait qu
 - Suivi : `data-ph="blog_index_show_all"` sur le bouton (autocapture PostHog).
 - Libellé ajouté : « Voir les N autres articles » (flag § 9). Index par série inchangé.
 
+### 9.du Nouvel article : « Prévoyance : Madelin ou pas Madelin ? », fusionné avec l'article IJ (5 octobre 2026)
+
+Texte du fondateur (fiche du 27 septembre) repris tel quel et mis au format maison :
+`src/content/blog/prevoyance-madelin-medecin.md`, **Fiche Fiscalité #15**, cover 4:5
+`src/assets/blog/prevoyance-madelin-cover.jpg` (illustration du fondateur). Il absorbe
+l'article IJ resté en brouillon (§ 9.dg, PR #110, `ij-prevoyance-imposables-medecin`,
+jamais publié) : une seule page sur le sujet, comme prévu le 26 septembre. PR #110 est
+fermée sans fusion.
+
+**Vérifié sur source primaire (rapport de vérification du 5 octobre 2026)** : plafond
+3,75 % + 7 % PASS limité à 3 % de 8 PASS (3 364 € / 11 534 € avec le PASS 2026 de
+48 060 €), commun prévoyance + santé (BOI-BIC-CHG-40-50-40-20 § 90, BOI-BNC-BASE-40-60-50-10
+§ 410) ; prestations Madelin imposables, déduction plafonnée « sans incidence », soins
+exonérés (BOI-BNC-BASE-40-60-50-30 § 10 et 70) ; imposables en ALD (RM n° 27956, JO AN
+1er sept. 2020 ; art. 154 bis A ne vise que la sécurité sociale) ; IJ Madelin hors ALD
+soumises à cotisations y compris en micro-BNC, abattement de 26 %, cotisations Madelin
+non déduites de l'assiette (guide Urssaf PAMC, notice 2041-DRI PAMC revenus 2025) ;
+Madelin retraite fermé au 1er octobre 2020 (ordonnance n° 2019-766, art. 8) ; IJ CPAM
+et CARMF 2026 (ameli.fr, carmf.fr) ; exemples chiffrés exacts (1 800 € × 5 ; 30 % →
+2 700 € ; 41 % → 3 690 €).
+
+**Écarts par rapport au texte fourni :**
+
+- ⚠️ **Contrat hors Madelin, côté impôt** : le texte disait « en principe exonérées, mais
+  sans garantie absolue ». Aucune doctrine ne l'exonère pour un BNC : l'exclusion ne vise
+  que les salariés (BOI-RSA-CHAMP-20-30-20 § 230), BOI-BNC-CHAMP-10-10-20-30 § 200 range
+  les IJ dans les résultats imposables, et la CAA Nantes (19 mars 2024, n° 23NT02189) a
+  refusé d'étendre la règle des salariés à un indépendant. Réécrit : thèse répandue,
+  sans texte pour un libéral ; zone la plus floue ; attestation et avis du comptable.
+  L'arrêt ne dit rien de la déduction des cotisations : rien ne lui est prêté à ce sujet.
+- « Hors Madelin, il arrive net » → « net de cotisations sociales (côté impôt, voir plus
+  haut) », par cohérence avec le point précédent.
+- CARMF : « à partir du 91ᵉ jour » → « du 91ᵉ jour d'arrêt total » (condition carmf.fr).
+- Sources corrigées : remboursements de soins → BOI-BNC-BASE-40-60-50-30 § 70 (et non
+  BOI-BIC-CHG-40-50-40-20, qui porte le plafond) ; ALD → art. 154 bis A ; fermeture du
+  Madelin retraite → ordonnance 2019-766. Liens ajoutés. Date de mise à jour au 5 octobre.
+
+**Ajouté (flag § 9)** : bloc « L'essentiel » ; FAQ (7 questions, FAQPage JSON-LD) ;
+tableau de l'exemple chiffré ; section « Le jour où tu touches des indemnités : où les
+déclarer », reprise de l'article IJ déjà vérifié (§ 9.dg : CPAM micro/réel, DSDX, ligne
+DB, DSCZ, CARMF en DSCI, ALD), complétée d'une ligne « Madelin en ALD » (imposable, hors
+cotisations).
+
+**Maillage entrant** (repris de la PR #110, cible renommée) : phrase + `relatedArticles`
+dans `conge-maternite-paternite` et `tout-comprendre-carmf` ; phrase dans
+`frais-pros-medecin-liberal-2026` (« déduire ou non ta prévoyance Madelin ne change rien à
+l'imposition des IJ »). `updatedDate` inchangés : ajout de maillage.
+
+À signaler, non modifié : la FAQ du guide (`boussoleData.ts`) place les IJ Madelin « en
+recettes 5HQ en micro-BNC » comme une certitude, alors que les textes ne le disent pas.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
@@ -4853,10 +4904,9 @@ Retour du fondateur : sur l'onglet « Tous les articles (46) », on ne voyait qu
       uploadé sur Supabase Storage (bucket public `public-assets`), lecteur natif inline
       restauré, VideoObject mis à jour (voir §9). L'URL `app.hippodoc.fr/__l5e/...`
       précédente ne résolvait pas en DNS.
-- [ ] Créer des covers dédiées pour `facturation-electronique-medecin-remplacant`
-      (actuellement `facture-generation-cover.png`) et
-      `remplacement-regulier-requalification` (actuellement
-      `signer-contrat-remplacement-cover.png`) — voir §9.aq.
+- [ ] Créer une cover dédiée pour `facturation-electronique-medecin-remplacant`
+      (actuellement `facture-generation-cover.png`) — voir §9.aq. (Celle de
+      `remplacement-regulier-requalification` est faite : § 9.ay.)
 - [ ] `/qui-sommes-nous` (§ 9.dq) : relire le récit écrit à la première personne ;
       fournir de vrais témoignages (avec accord) pour le tableau `testimonials` ;
       confirmer le chiffre « 900+ inscrits » (repris sur tout le site) et le
