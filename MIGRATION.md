@@ -4826,6 +4826,19 @@ disait que la CRS n'existe pas ni que le samedi n'avait qu'une majoration de vis
 (c'était le seul § 9.cs) ; c'est une règle de cotation, pas de déclaration, et la CRD
 qui la remplace figure déjà dans toutes les listes.
 
+### 9.dt /blog : « Voir les N autres articles » sous les 8 cartes (5 octobre 2026)
+
+Retour du fondateur : sur l'onglet « Tous les articles (46) », on ne voyait que la une +
+8 cartes, sans moyen d'afficher la suite (l'index en bas de page ne liste que les titres).
+
+- `src/pages/blog/index.astro` : les articles au-delà des 8 premiers sont rendus en cartes
+  dans un `<details>` natif, sous un bouton « Voir les N autres articles » (N calculé au
+  build). Zéro JS (conforme à l'invariant) ; contenu présent dans le HTML statique ; covers
+  en `loading="lazy"`, donc non téléchargées tant que le bloc est fermé (pas d'impact sur
+  le LCP). À l'ouverture, le bouton disparaît et la grille continue sous les 8 premières.
+- Suivi : `data-ph="blog_index_show_all"` sur le bouton (autocapture PostHog).
+- Libellé ajouté : « Voir les N autres articles » (flag § 9). Index par série inchangé.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

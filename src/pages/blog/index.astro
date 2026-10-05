@@ -21,11 +21,13 @@ const covers = await resolveCovers(posts);
    défaut, le plus récent selon byNewest — et non plus l'ordre alphabétique. */
 const featured = posts.find((p) => p.data.featured) ?? posts[0];
 const rest = posts.filter((p) => p !== featured);
-/* Seuls les 8 suivants passent en cartes : les 38 empilées faisaient 19 000 px de
-   haut en mobile. Les 38 restent tous accessibles via l'index en bas de page.
+/* 8 cartes d'emblée : les 38 empilées faisaient 19 000 px de haut en mobile.
    8 et non 9 : la grille est en 2 puis 4 colonnes (cartes portrait), 8 remplit
-   les deux sans carte orpheline. */
+   les deux sans carte orpheline. Les suivantes sont dans un <details> « Voir les
+   N autres articles » (§ 9.dt) : sans lui, l'onglet « Tous les articles (46) »
+   n'en montrait que 9 en cartes, le reste n'existant qu'en liste de titres. */
 const recents = rest.slice(0, 8);
+const autres = rest.slice(8);
 const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
 
 /* La cover « à la une » devient l'élément LCP de la page. Servie en 1200 px fixes,
@@ -52,7 +54,7 @@ const seriesCounts = new Map<string, number>(
 const title = 'Blog Hippodoc — Conseils pour médecins remplaçants';
 /* Description portée de 103 à ~155 caractères : sous ~120, Google complète
    l'aperçu avec un extrait de page choisi par lui. Les thèmes cités sont ceux
-   réellement couverts par les 38 articles. */
+   réellement couverts par les articles du blog. */
 const description = `${posts.length} articles pour médecins remplaçants : statuts et modes d'exercice, cotisations URSSAF et CARMF, déclarations 2035 et 2042, contrats, licence de remplacement.`;
 
 const blogSchema = {
@@ -218,13 +220,44 @@ const blogSchema = {
       ))}
     </div>
 
+    {/* Les autres articles, en cartes, derrière un <details> natif : zéro JS, contenu
+         présent dans le HTML (indexable), covers en lazy donc non téléchargées tant
+         que le bloc est fermé. À l'ouverture, le bouton disparaît et la grille
+         continue sans rupture sous les 8 premières cartes. */}
+    {autres.length > 0 && (
+      <details class="mt-8 open:mt-4 sm:open:mt-6 [&[open]>summary]:hidden">
+        <summary
+          data-ph="blog_index_show_all"
+          class="mx-auto flex w-fit cursor-pointer list-none items-center gap-2 rounded-full border border-hippo-200 bg-white px-6 py-3 text-sm font-semibold text-hippo-700 shadow-sm transition-colors hover:bg-hippo-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden"
+        >
+          Voir les {autres.length} autres articles
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </summary>
+        <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+          {autres.map((post) => (
+            <BlogCard
+              headingLevel={3}
+              slug={post.id}
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              readTime={post.data.readTime}
+              seriesId={post.data.seriesId}
+              episodeNumber={post.data.episodeNumber}
+              cover={covers.get(post.id)}
+            />
+          ))}
+        </div>
+      </details>
+    )}
+
     <div class="mt-12">
       <BlogCtaBand emplacement="blog_index" />
     </div>
 
     {/* Index complet. Les 38 cartes empilées faisaient 19 000 px de haut en mobile
          et n'offraient aucun moyen de repérer un sujet précis : on ne pouvait que
-         faire défiler. Cette liste donne les 38 titres d'un coup d'œil, groupés par
+         faire défiler. Cette liste donne tous les titres d'un coup d'œil, groupés par
          série. Toujours visible (pas de <details>) pour rester scannable et
          indexable, en trois colonnes sur grand écran. */}
     <section class="mt-16 border-t border-hippo-100 pt-10" aria-labelledby="index-titre">
