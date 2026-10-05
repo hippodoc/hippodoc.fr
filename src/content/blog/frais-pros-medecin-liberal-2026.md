@@ -37,6 +37,7 @@ relatedArticles:
   - "rspm-exemples-concrets"
   - "pdsa-exoneration-gardes-regulees"
   - "voiture-bareme-kilometrique-ou-frais-reels-medecin"
+  - "cheques-vacances-medecin-liberal"
 ---
 
 :::essentiel
@@ -326,6 +327,8 @@ Oui, les chèques-vacances ANCV concernent les médecins libéraux. Mais ce n'es
 **Plafond social** : déduction de l'assiette de cotisations sociales dans la limite de **30 % du SMIC mensuel brut**, soit ≈ **547 €** pour 2026.\
 **Soumis à** CSG-CRDS.\
 **Déclaration** via la déclaration sociale et fiscale unique des indépendants (rubrique DSCN ou DSDN selon ta situation), dans la limite d'un SMIC mensuel brut, quel que soit ton régime fiscal (micro-BNC compris).
+
+Combien ça rapporte vraiment selon ton régime et ta tranche, les frais ANCV et où les dépenser : [notre fiche chèques-vacances](/blog/cheques-vacances-medecin-liberal).
 
 ### 📌 Position pratique ANCV
 
