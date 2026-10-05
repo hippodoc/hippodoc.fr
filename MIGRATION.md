@@ -4890,6 +4890,51 @@ l'imposition des IJ »). `updatedDate` inchangés : ajout de maillage.
 À signaler, non modifié : la FAQ du guide (`boussoleData.ts`) place les IJ Madelin « en
 recettes 5HQ en micro-BNC » comme une certitude, alors que les textes ne le disent pas.
 
+### 9.dv Nouvel article : chèques-vacances du médecin libéral (5 octobre 2026)
+
+Texte du fondateur (mis à jour le 4 octobre) repris tel quel et mis au format maison :
+`src/content/blog/cheques-vacances-medecin-liberal.md`, **Fiche Fiscalité #16** (le
+comparatif EI/IS/SELARL, toujours en brouillon PR #111, passe en #17). Cover 4:5
+`src/assets/blog/cheques-vacances-cover.jpg` (illustration du fondateur). Pas de doublon :
+le sujet n'existait qu'en section 7.1 de `frais-pros-medecin-liberal-2026`, cohérente.
+Témoignage d'ouverture (« 89 € de frais, 0 € d'économie ») : absent du corpus (seule une
+question générique sur l'ANCV y figure), conservé comme message reçu par le fondateur.
+
+**Vérifié sur source primaire** : L411-1, L411-5, L411-9 du code du tourisme (Légifrance) ;
+notice 2041-DRI PAMC § 5.6.1 et TI § 6.10 (DSCN « quel que soit votre régime », SMIC du
+1er janvier, 1 802 € / 541 € en 2025, CSG-CRDS sur le tout) ; SMIC 2026 (12,02 €/h,
+1 823,03 €, revalorisé au 1er juin à 1 867,02 €) ; ANCV : 89 € d'ouverture, 1 % de
+commission, coupures, multiples de 10 €, validité « deux ans en plus de l'année
+d'émission », échange au 31 mars, dirigeant avec salariés, 115 700 enseignes ; tableau
+des gains exact (1 823 € × tranche − 89 € − 18 €) ; enseignes contrôlées sur
+leguide.ancv.com et les sites des marques. Méthode × 1,515 : aucun texte (cohérent ZG-017).
+
+**Écarts par rapport au texte fourni :**
+
+- Air France : « vols en France et vers l'Union européenne » → « appli uniquement »
+  (airfrance.fr : Connect seulement, toutes destinations).
+- Bip&Go : « appli uniquement » → « appli » (sa fiche leguide affiche encore le papier).
+- Disneyland Paris : « pas les boutiques » retiré (aucune source officielle).
+- « Refusés : l'essence » → « Non acceptés : le carburant, les plats à emporter » (pas de
+  phrase ANCV explicite sur le carburant ; L411-2 limite l'usage aux transports,
+  hébergement, repas, loisirs).
+- Papier : « ne rend pas la monnaie » → « le commerçant n'est pas obligé de rendre la
+  monnaie » (FAQ ANCV).
+- Center Parcs : la réservation centrale prend le papier seulement, mais les domaines
+  acceptent les deux formats : astuce reformulée.
+- Validité : « achetés en 2026 » → « émis en 2026 » (règle ANCV liée à l'émission).
+- Ouverture de compte : « profil non salarié » → « en tant que travailleur non salarié »
+  (aucun profil de ce nom trouvé). « Intersport Rent » → « Intersport » (référencé ainsi).
+- L411-1 : « ce qui inclut les chefs d'entreprise non salariés » → « les chefs d'entreprise »
+  (le texte ne dit pas « non salariés »).
+- Micro : « Aucune case ne permet » → « Aucune case de la déclaration d'impôt » (la case
+  DSCN, sociale, existe au micro ; le texte le disait déjà juste après).
+
+**Ajouté (flag § 9)** : « L'essentiel » ; FAQ (7 questions) ; mention « commande maximale
+1 820 € » (multiples de 10 €, § 9.dc) et note sous le tableau ; renvoi vers les frais pros
+2026. Maillage entrant : une phrase en fin de section 7.1 de `frais-pros-medecin-liberal-2026`,
+et ajout à ses `relatedArticles` (`updatedDate` inchangé).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
