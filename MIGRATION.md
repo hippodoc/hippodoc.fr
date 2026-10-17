@@ -4952,6 +4952,15 @@ l'offre « Interne » (10 €/mois) reste ; l'encart passe en une colonne
 - Hors dépôt (non traité ici) : codes promo Jeune Médecin déjà distribués / coupons
   Stripe côté app, réponses-types du support à contact@hippodoc.fr.
 
+**FAQ `/faq` « Il y a des tarifs pour les internes ? » réécrite (flag § 9)** : elle ne
+parlait que d'un « essai prolongé grâce à des codes promo dédiés » et taisait le tarif
+promis sur l'accueil. Confirmé par le fondateur le 17/10/2026 : 10 €/mois au lieu de
+29 € pendant tout l'internat, sur justificatif, code promo par e-mail ; l'essai prolongé
+existe aussi, via les syndicats d'internes partenaires. La réponse reprend les
+justificatifs et le délai de 24 h de l'encart de l'accueil (FAQPage JSON-LD = texte visible).
+La phrase « Hippodoc est pensé pour accompagner les médecins dès le début de leur
+activité, sans pré-requis comptable » est retirée de cette réponse.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
