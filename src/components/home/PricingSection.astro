@@ -3,7 +3,8 @@
  * Tarifs — porté de src/components/landing/PricingSection.tsx + PricingCard.tsx +
  * PricingComparisonTable.tsx + SpecialOffersCard.tsx (+ SpecialOffersModal.tsx).
  * Toggle mobile / drag / Stripe Checkout JS → 2 cartes statiques, CTA vers /auth?tab=signup&plan=.
- * Le tableau comparatif et les offres spéciales (ex-modale) deviennent des <details> natifs.
+ * Le tableau comparatif et l'offre spéciale Interne (ex-modale) deviennent des <details> natifs.
+ * Offre « Jeune Médecin » retirée le 17/10/2026 (MIGRATION.md § 9.dw).
  * Promo Instagram 10K : dormante dans la source (isInstagram10kActive() === false) → non reprise.
  */
 import SectionBadge from './SectionBadge.astro';
@@ -164,44 +165,15 @@ const includedFeatures = [
       </div>
     </div>
 
-    <!-- Offres spéciales -->
+    <!-- Offre spéciale (Interne) -->
     <div class="mb-10 flex justify-center px-4">
-      <div class="relative w-full max-w-3xl">
+      <div class="relative w-full max-w-md">
         <div class="relative mb-2 flex justify-center">
-          <span class="rounded-full bg-hippo-100/80 px-2.5 py-0.5 text-[11px] font-semibold text-hippo-600">Offres spéciales</span>
+          <span class="rounded-full bg-hippo-100/80 px-2.5 py-0.5 text-[11px] font-semibold text-hippo-600">Offre spéciale</span>
         </div>
 
         <div class="overflow-hidden rounded-xl border border-hippo-200/80 bg-gradient-to-br from-white via-hippo-50/60 to-purple-50/60 shadow-lg">
-          <div class="grid grid-cols-1 divide-y divide-hippo-200/50 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-            <details class="group/offer" data-ph="landing_special_offer_young_doctor">
-              <summary class="flex cursor-pointer list-none items-start gap-2.5 p-3 text-left transition-colors hover:bg-hippo-50/50">
-                <span class="shrink-0 rounded-full bg-gradient-to-br from-hippo-500 to-hippo-600 p-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg>
-                </span>
-                <span class="min-w-0 flex-1">
-                  <span class="mb-0.5 block text-sm font-bold text-hippo-800">Jeune Médecin</span>
-                  <span class="mb-1 block text-xs text-muted-foreground">Fin d'internat &lt; 6 mois</span>
-                  <span class="flex items-center gap-1.5 text-xs">
-                    <span class="font-semibold text-hippo-600">19€/mois</span>
-                    <span class="text-xs text-muted-foreground line-through">29€</span>
-                    <span class="rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-medium text-green-700">+30j gratuit</span>
-                  </span>
-                </span>
-              </summary>
-              <div class="border-t border-hippo-200/50 bg-white/70 p-4 text-sm">
-                <p class="mb-2 text-muted-foreground">Vous avez terminé votre internat il y a moins de 6 mois ? Profitez d'un tarif préférentiel pour bien démarrer votre activité.</p>
-                <p class="mb-2 font-semibold text-hippo-800">Avantage : 19€/mois au lieu de 29€ + 30 jours d'essai gratuit</p>
-                <p class="mb-3 text-xs text-muted-foreground">Pendant 12 mois après validation</p>
-                <p class="mb-1 text-xs font-semibold text-hippo-700">Justificatifs acceptés :</p>
-                <ul class="mb-3 list-inside list-disc text-xs text-muted-foreground">
-                  <li>Attestation de fin d'internat</li>
-                  <li>Diplôme d'État de Docteur en Médecine (DES validé)</li>
-                  <li>Tout document prouvant la fin récente de votre internat</li>
-                </ul>
-                <p class="text-xs text-muted-foreground">Comment en bénéficier ? Écris-nous à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a> — réponse sous 24h avec ton code promo personnalisé !</p>
-              </div>
-            </details>
-
+          <div>
             <details class="group/offer" data-ph="landing_special_offer_intern">
               <summary class="flex cursor-pointer list-none items-start gap-2.5 p-3 text-left transition-colors hover:bg-purple-50/50">
                 <span class="shrink-0 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 p-2">

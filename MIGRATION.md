@@ -4935,6 +4935,32 @@ leguide.ancv.com et les sites des marques. Méthode × 1,515 : aucun texte (coh�
 2026. Maillage entrant : une phrase en fin de section 7.1 de `frais-pros-medecin-liberal-2026`,
 et ajout à ses `relatedArticles` (`updatedDate` inchangé).
 
+### 9.dw Retrait de l'offre « Jeune Médecin » de l'accueil (17 octobre 2026)
+
+Décision du fondateur : l'offre « Jeune Médecin » (19 €/mois au lieu de 29 €, fin
+d'internat < 6 mois, 12 mois après validation, code promo par e-mail) est **retirée** de
+la section tarifs de l'accueil (`src/components/home/PricingSection.astro`). Seule
+l'offre « Interne » (10 €/mois) reste ; l'encart passe en une colonne
+(`max-w-md`) et le libellé « Offres spéciales » devient « Offre spéciale ».
+
+- Aucune autre page ne la mentionnait : `/tarifs`, FAQ (`/faq`, `faqAccueil.ts`),
+  JSON-LD `SOFTWARE_APPLICATION_SCHEMA` (`site.ts`), `llms.txt`, CGU ne citent que les
+  formules mensuelle (29 €) et annuelle (19 €/mois, 228 €/an), inchangées.
+- Le « 19 €/mois » encore affiché partout est le prix de **l'annuel**, pas l'offre retirée.
+- PostHog : l'événement autocapture `landing_special_offer_young_doctor` cesse d'être
+  émis ; `landing_special_offer_intern` est conservé tel quel.
+- Hors dépôt (non traité ici) : codes promo Jeune Médecin déjà distribués / coupons
+  Stripe côté app, réponses-types du support à contact@hippodoc.fr.
+
+**FAQ `/faq` « Il y a des tarifs pour les internes ? » réécrite (flag § 9)** : elle ne
+parlait que d'un « essai prolongé grâce à des codes promo dédiés » et taisait le tarif
+promis sur l'accueil. Confirmé par le fondateur le 17/10/2026 : 10 €/mois au lieu de
+29 € pendant tout l'internat, sur justificatif, code promo par e-mail ; l'essai prolongé
+existe aussi, via les syndicats d'internes partenaires. La réponse reprend les
+justificatifs et le délai de 24 h de l'encart de l'accueil (FAQPage JSON-LD = texte visible).
+La phrase « Hippodoc est pensé pour accompagner les médecins dès le début de leur
+activité, sans pré-requis comptable » est retirée de cette réponse.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
