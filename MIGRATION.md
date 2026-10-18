@@ -5033,6 +5033,14 @@ MACSF 700 € ; CAF (198,16 €, plafonds 37 118 / 49 054 €, revenus N-2). Cal
 **Ajouté (flag § 9)** : bloc « L'essentiel » ; FAQ (8) ; tableau du « vrai trou » ; liens
 (case DSDX, effet ciseaux, Madelin) ; Tips Hippodoc (texte de fin du fondateur).
 
+### 9.dy /blog : l'article maternité passe « À la une » (18 octobre 2026)
+
+Demande du fondateur. `featured: true` dans le frontmatter de `conge-maternite-paternite`
+(mécanisme existant de `src/pages/blog/index.astro` : la une est le premier article
+`featured`, à défaut le plus récent). ⚠️ Tant que ce drapeau reste en place, un nouvel
+article ne passe plus automatiquement à la une : le retirer (ou le déplacer) à la prochaine
+publication.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
