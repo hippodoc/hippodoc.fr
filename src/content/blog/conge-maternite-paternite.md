@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+featured: true
 episodeNumber: 9
 readTime: "18 min"
 cover: "/blog/remplacante-enceinte-cover.jpg"
