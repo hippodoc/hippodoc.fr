@@ -4961,6 +4961,78 @@ justificatifs et le délai de 24 h de l'encart de l'accueil (FAQPage JSON-LD = t
 La phrase « Hippodoc est pensé pour accompagner les médecins dès le début de leur
 activité, sans pré-requis comptable » est retirée de cette réponse.
 
+### 9.dx Maternité : nouveau texte FUSIONNÉ dans `conge-maternite-paternite` (18 octobre 2026)
+
+Le fondateur a fourni « Remplaçante enceinte : tes droits et tes chiffres 2026 » (mis à jour
+le 18 octobre) avec son illustration. **Pas de nouvelle URL** : le sujet avait sa page
+(`conge-maternite-paternite`, février 2026), comme pour la requalification (§ 9.ay). Le
+nouveau texte, bien plus complet, remplace le corps de l'article ; `updatedDate` au
+18 octobre 2026 (répercutée dans `blog-meta.json`). Titre : « Congé maternité remplaçante :
+droits et chiffres 2026 » (mot-clé d'abord, < 60 car.). Nouvelle cover 4:5
+`src/assets/blog/remplacante-enceinte-cover.jpg` (l'ancienne png n'est plus utilisée).
+
+**Gardé de l'ancien article** (vérifié sur ameli le 18 octobre) : report de trois semaines du
+prénatal vers le postnatal, prématurité, bébé hospitalisé, versement total de l'allocation
+si accouchement avant la fin du 7e mois, « zéro garde, zéro téléconsultation », le lien vers
+la case DSDX du guide, les FAQ (réécrites, 8 au total). Abandonnés : l'aide conventionnelle
+paternité (2 232 €, sans objet pour les remplaçants) et le congé paternité supplémentaire en
+cas d'hospitalisation du bébé (non repris dans le nouveau texte).
+
+**Vérifié sur source primaire (rapport du 18 octobre 2026)** : allocation 4 005 € et son
+versement ; IJ plafonnées à 65,84 € (1/730 PASS, D. 623-2 via D. 646-1) ; seuil de 4 582 €
+et réduction à 10 % (D. 623-3) ; six mois d'affiliation et périodes antérieures (ameli) ;
+durées ; D. 623-4 (30 jours, 2 × 15, 15 en postnatal) ; micro-BNC : IJ maternité « ne doivent
+pas être incluses dans 5HQ ou 5IQ, car elles ne sont pas imposables » (guide Urssaf PAMC et
+guide TI) ; réel : BOI-BNC-BASE-20-20 § 460-470 ; DSDX préremplie, allocation comprise
+(notice 2041-DRI PAMC) ; CSN (LFSS 2026 art. 99, décret 2026-426, 43 € / 36,85 € / 6,14 €,
+délais, téléservice, divergence service-public/ameli) ; paternité (25/32 jours, 65,84 €) ;
+convention 2024 art. 10-4 (citation exacte) et art. 97-98 (3 100 €, 75 %/50 %, 2 066 €) ;
+contrat de début d'exercice art. 3.2.2 et 4 ; saisine ReAGJIR du 20 décembre 2024 ; CARMF
+(dépliant octobre 2026 : 90 jours, 2 points, 6 mois → 4 points, certificat avant le 31 mars,
+100 points, 582, cotisant@carmf.fr ; 11,80 % et 168 210 €) ; arrêt maladie CPAM/CARMF ;
+MACSF 700 € ; CAF (198,16 €, plafonds 37 118 / 49 054 €, revenus N-2). Calculs exacts :
+11 379 €, 3 687 €, 7 374 €, 1 646 €, 2 395 €, 9 300 €, 1 770 / 2 950 / 4 720 €, tableau du trou.
+
+**Écarts par rapport au texte fourni :**
+
+- IJ « calculées sur les revenus » : formulation d'ameli conservée, mais précisée — le texte
+  fixe le montant à 65,84 € au-dessus du seuil (D. 623-2), d'où « forfaitaires ».
+- Seuil des 10 % : « comme pour les travailleuses indépendantes » retiré (non vérifié) ;
+  « applicable par renvoi » → « par un renvoi indirect » ; 400,50 € et 6,58 € présentés
+  comme des calculs.
+- Six mois : « article R. 313-3, auquel renvoie L. 646-4 » retiré (chaîne non vérifiée : le
+  décret 2023-790 vise R. 313-3 et D. 623-8) → « ramenée de dix à six mois pour les
+  non-salariés en 2023, et ameli l'applique aux praticiennes conventionnées ».
+- Pluriactivité : L. 171-2-1 ne porte que sur l'affiliation et la cotisation ; le versement
+  par chaque régime est attribué aux réponses des conseillers de l'Assurance maladie.
+- Fiscalité : CSG-CRDS « 6,7 % » rattachée aux seules IJ ; au réel, « recettes imposables
+  (§ 460 et 470), à inscrire en gains divers » ; cotisations : « Urssaf et CARMF » →
+  cotisations (CARMF non vérifiée).
+- CSN : ajout de l'exception de cumul avec le CMG pour les enfants nés au 1er semestre 2026.
+- Paternité : « la CARMF ne verse rien et n'exonère rien » → « ne prend pas en charge le congé
+  de paternité » (seule la première moitié est écrite par la CARMF) ; « bruts » retiré.
+- ASM : « bruts » retiré (la convention ne le dit pas).
+- Contrat de début d'exercice : « depuis 2024 » retiré (conditions déjà dans le texte de
+  2021) ; « 80 % de leurs remplacements » → « 80 % de leur activité » ; le non-cumul attribué
+  aux ARS Centre-Val de Loire et Auvergne-Rhône-Alpes est faux pour CVL (il vise l'aide
+  maladie) et non vérifié pour ARA → reformulé en point à vérifier auprès de l'ARS.
+- ReAGJIR : « Aucune décision n'est publiée » → « Aucune décision publiée n'a été trouvée ».
+- CARMF : « statuts du régime complémentaire, article 10 » → décret n° 49-579, art. 4 (version
+  du 1er juillet 2026 ; les statuts ont été remplacés par un règlement) ; « 77,14 € le point »
+  → « environ 77 € » (valeur non trouvée telle quelle sur carmf.fr).
+- Urssaf : libellé « rubrique Cotisations et paiements, puis Revenus, « réévaluer les
+  cotisations » » non retrouvé → « déclarer un revenu estimé, depuis ton espace » ; eCARMF
+  sur revenu estimé non vérifié → « demande si un recalcul est possible ».
+- Prévoyance : GPM « Sérénité revenus » et la condition des quatre mois avant la conception,
+  introuvables → « des allocations maternité soumises à un délai de carence spécifique ou à
+  plusieurs années d'ancienneté chez d'autres ».
+- Section 7 : « prestations brutes (après CSG et CRDS…) » → « (avant cotisations et impôt) » :
+  les 11 379 € sont des montants avant CSG-CRDS.
+- CAF : 99,09 € → 99,08 € ; sources : 1 093,08 € → 1 093,11 €.
+
+**Ajouté (flag § 9)** : bloc « L'essentiel » ; FAQ (8) ; tableau du « vrai trou » ; liens
+(case DSDX, effet ciseaux, Madelin) ; Tips Hippodoc (texte de fin du fondateur).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
