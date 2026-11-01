@@ -5041,6 +5041,25 @@ Demande du fondateur. `featured: true` dans le frontmatter de `conge-maternite-p
 article ne passe plus automatiquement à la une : le retirer (ou le déplacer) à la prochaine
 publication.
 
+### 9.dz /guide-declarations : encart HippoFisc retiré (1er novembre 2026)
+
+Décision du fondateur du 01/11/2026 : HippoFisc (l'assistant fiscal de l'app) est masqué
+dans l'app, donc le site ne le présente plus. L'encart « Une question fiscale précise ? »
+(badge « Premium », lien vers `app.hippodoc.fr`), placé entre le CTA premium et « Pour
+aller plus loin, sur le blog » en zone 4 de `/guide-declarations`, est **retiré** : import
+et balise ôtés de `src/pages/guide-declarations/index.astro`, composant
+`src/components/guide/AssistantBridgeCta.astro` supprimé (il n'était importé nulle part
+ailleurs).
+
+- **Aucun autre texte changé** : le CTA premium, la calculette, la boussole et le reste de
+  la page sont intacts ; aucune route touchée (URL inchangée).
+- C'était la seule mention de HippoFisc sur le site (recherche « HippoFisc », « assistant
+  fiscal », « ressources/assistant-fiscal » dans `src/`, `public/` et ce fichier).
+- Espacement : le CTA premium (`py-12 md:py-16`) est désormais suivi directement du bloc
+  blog (`mt-12`), le même enchaînement que « Questions » → « Glossaire » plus haut.
+- PostHog : l'encart ne portait ni `data-ph` ni `data-track-*` ; aucun événement nommé ne
+  disparaît.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
