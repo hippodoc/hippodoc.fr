@@ -9,7 +9,9 @@
  *   « Référence rapide » (FlowChart + Caseopedia, statiques) → Zone 3
  *   « Pour aller plus loin » (Fiches, Questions, Glossaire, statiques) →
  *   Zone 4 « Outils pratiques » (Problèmes/recours, Calendrier, CTA
- *   premium, pont assistant, disclaimer — tous statiques).
+ *   premium, disclaimer — tous statiques). L'encart « pont assistant »
+ *   (HippoFisc) est retiré le 01/11/2026 : HippoFisc est masqué dans
+ *   l'app (MIGRATION.md § 9.dz).
  *
  * Déviations volontaires documentées dans chaque composant porté
  * (src/components/guide/*) :
@@ -46,7 +48,6 @@ import FiscalSocialPrimer from '@/components/guide/FiscalSocialPrimer.astro';
 import FlowChartSection from '@/components/guide/FlowChartSection.astro';
 import CalendrierSection from '@/components/guide/CalendrierSection.astro';
 import PremiumCtaSection from '@/components/guide/PremiumCtaSection.astro';
-import AssistantBridgeCta from '@/components/guide/AssistantBridgeCta.astro';
 import DisclaimerSection from '@/components/guide/DisclaimerSection.astro';
 
 import { CaseopediaSection } from '@/components/guide/CaseopediaSection';
@@ -149,7 +150,6 @@ const webPageSchema = {
       <ProblemesRecoursSection />
       <CalendrierSection />
       <PremiumCtaSection />
-      <AssistantBridgeCta />
       {/* Le guide ne liait aucun article du blog (MIGRATION.md § 9.co). */}
       <div class="max-w-5xl mx-auto px-4 mt-12">
         <BlogReadMore
