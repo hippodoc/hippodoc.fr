@@ -29,7 +29,9 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
   Tout ajout/modification de contenu doit être flaggé dans MIGRATION.md §9.
 - **Zéro JS client hors** : îlots des outils (simulateur, calculette, boussole, carrousel
   blog), PostHog, `ThirdPartyScripts.astro`, le micro-script inline de `Header.astro`
-  (fermeture du tiroir mobile au clic d'une ancre — voir MIGRATION.md §9), et la recherche
+  (fermeture du tiroir mobile au clic d'une ancre — voir MIGRATION.md §9), le script inline
+  de tête de `BaseLayout.astro` (jetons de connexion Supabase renvoyés vers l'app —
+  MIGRATION.md § 9.ea ; à garder en premier dans `<head>`), et la recherche
   de `/blog` (script de page ~1 Ko ; module `src/lib/blog-search.ts` et index
   `/blog/recherche.json` chargés au premier focus — MIGRATION.md § 9.db). Les interactions
   des pages statiques sont CSS-only (radios/checkbox) ou natives (`<details>/<summary>`).

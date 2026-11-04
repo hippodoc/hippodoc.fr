@@ -28,6 +28,7 @@
 <script>
   import posthog from 'posthog-js';
   import { creerEmetteur } from '@/lib/analytics-commun';
+  import { caviarderEvenement } from '@/lib/caviardage-url';
 
   /**
    * ⚠️ Le consentement se lit d'ABORD dans le cookie `hippodoc-consent` (domaine
@@ -108,6 +109,10 @@
     // Le visiteur qui s'est opposé n'est pas mesuré du tout.
     opt_out_capturing_by_default: mesureRefusee(),
     disable_session_recording: true,
+    // Jetons de connexion Supabase (fragment `#access_token=…`) : jamais dans
+    // une URL envoyée. Le script de tête de BaseLayout renvoie déjà ces visites
+    // vers l'app avant tout chargement ; ceci est le filet (§ 9.ea).
+    before_send: (evenement) => caviarderEvenement(evenement),
     // PostHog chargeait `surveys.js` — 98 Ko — sur CHAQUE page du site alors
     // qu'aucune enquête n'est configurée sur le projet (table `surveys` vide).
     disable_surveys: true,
