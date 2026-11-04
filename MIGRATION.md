@@ -5060,6 +5060,42 @@ ailleurs).
 - PostHog : l'encart ne portait ni `data-ph` ni `data-track-*` ; aucun événement nommé ne
   disparaît.
 
+### 9.ea Jetons de connexion Supabase arrivés sur www : renvoi vers l'app et caviardage (4 novembre 2026)
+
+Lot sécurité S6. Le Site URL du projet Supabase est `https://www.hippodoc.fr` : quand un
+lien d'e-mail (confirmation d'inscription, connexion, réinitialisation du mot de passe)
+n'a pas de destination autorisée, Supabase renvoie le médecin sur **le site**, avec ses
+jetons dans le **fragment** de l'adresse (`#access_token=…&refresh_token=…`). Le site
+n'en fait rien : le parcours de connexion s'arrête, et l'adresse complète pouvait partir
+dans la mesure d'audience (`$current_url` de PostHog), car le caviardage de juillet 2026
+ne regardait que la requête (`?…`), jamais le fragment.
+
+- **Script inline en tête de `<head>`** (`src/layouts/BaseLayout.astro`, juste après
+  `<meta charset>`, donc avant tout autre script, sur toutes les pages, 404 comprise) :
+  si le fragment contient `access_token=`, `refresh_token=` ou `error_code=`, il l'efface
+  de l'adresse (`history.replaceState`), puis `location.replace('https://app.hippodoc.fr/auth'
+  + fragment)` : le parcours continue sur l'app (qui sait déjà traiter ces fragments sur
+  `/auth`, dont le passage vers `/auth/update-password` pour une réinitialisation).
+  Destination **fixe** ; seul le fragment est transmis, jamais la requête (pas de
+  redirection ouverte). `replace` : l'adresse portant le jeton ne reste pas dans
+  l'historique (le bouton retour ramène à la page d'avant). Les ancres ordinaires
+  (`#resultats`…) ne sont pas touchées.
+- **Caviardage du fragment** : `scrub()` de `ThirdPartyScripts.astro` (GA4) traite
+  désormais requête ET fragment ; nouveau module `src/lib/caviardage-url.ts`
+  (`caviarderUrl`, `caviarderEvenement`, même liste de clés) branché en `before_send` de
+  PostHog : `$current_url`, `$referrer`, `$initial_*`, y compris dans `$set`/`$set_once`.
+  Filet seulement : le script de tête part avant que la mesure ne lise l'adresse.
+- **Vérifié** : build (70 pages) + `verify-site.mjs` verts ; essai navigateur sur le build
+  local : `/#error=…&error_code=…` → `https://app.hippodoc.fr/auth#…`, retour arrière →
+  page précédente ; `/simulateur#resultats` inchangé ; caviardage testé sur jetons en
+  fragment, `code` en requête, URL illisible (tronquée avant `?`/`#`). Aucun vrai jeton
+  utilisé (l'essai par `error_code` ne déclenche aucun appel à Supabase).
+- **Aucun texte, aucune route, aucun événement nommé changé.** Coût : ~300 octets inline.
+- **Suite (hors de ce dépôt)** : compter, sans contenu, les événements PostHog passés
+  portant un jeton dans `$current_url` ; s'il y en a, purge et déconnexion des comptes
+  concernés (fondateur). Changer le Site URL Supabase vers l'app : seulement après avoir
+  relevé les modèles d'e-mail.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

@@ -124,14 +124,22 @@
     var PIXEL_ID = '3299991043509379';
     var CRISP_ID = '3e4f14e5-8e4e-40fd-b1f5-f0b940186f56';
 
-    /* Caviardage des URLs (jetons Supabase magic-link/OAuth) — audit source juillet 2026 */
+    /* Caviardage des URLs (jetons Supabase magic-link/OAuth) — audit source juillet 2026.
+       Requête ET fragment : Supabase met ses jetons dans le fragment (§ 9.ea).
+       ⚠️ Gardé identique à `caviarderUrl()` de src/lib/caviardage-url.ts. */
     function scrub(raw) {
+      if (!raw) return raw;
       try {
         var sensitive = ['access_token','refresh_token','provider_token','provider_refresh_token','id_token','code','token','token_hash','confirmation_token','recovery_token','invite_token'];
         var u = new URL(raw);
         for (var i = 0; i < sensitive.length; i++) if (u.searchParams.has(sensitive[i])) u.searchParams.set(sensitive[i], '<redacted>');
+        if (u.hash.length > 1) {
+          var f = new URLSearchParams(u.hash.slice(1)), touche = false;
+          for (var j = 0; j < sensitive.length; j++) if (f.has(sensitive[j])) { f.set(sensitive[j], '<redacted>'); touche = true; }
+          if (touche) u.hash = f.toString();
+        }
         return u.toString();
-      } catch (e) { return raw; }
+      } catch (e) { return String(raw).split(/[?#]/)[0]; }
     }
     window.hippodocScrubLocation = scrub;
 

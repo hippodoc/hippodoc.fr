@@ -45,6 +45,22 @@ const allJsonLd = [ORGANIZATION_SCHEMA, ...jsonLd];
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    {/* Jetons de connexion Supabase (§ 9.ea). Le Site URL Supabase est www : un
+        lien de confirmation, de connexion ou de réinitialisation peut donc arriver
+        ICI avec ses jetons dans le fragment (#access_token=…). On les retire de
+        l'adresse et de l'historique, puis on poursuit le parcours sur l'app, avant
+        que quoi que ce soit (mesure, scripts tiers) ait pu lire l'URL. Destination
+        fixe : seul le fragment est transmis, jamais la requête. */}
+    <script is:inline>
+      (function () {
+        try {
+          var h = location.hash;
+          if (!h || !/(?:^#|&)(?:access_token|refresh_token|error_code)=/.test(h)) return;
+          try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+          location.replace('https://app.hippodoc.fr/auth' + h);
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>{title}</title>
