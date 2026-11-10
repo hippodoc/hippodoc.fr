@@ -19,7 +19,8 @@
  *   `count(*)` de `remplacements` (24 252, écrit à la centaine inférieure) et
  *   de `medecins_remplaces` (2 714, écrit tel quel). La date affichée ne
  *   couvre que ces deux-là. À refaire à chaque mise à jour, jamais à la main.
- * - Film : le lecteur de home/PresentationVideoSection.astro, tel quel
+ * - Film : le lecteur de l'ancien home/PresentationVideoSection.astro (supprimé
+ *   en phase 4a, à lire dans l'historique git), tel quel
  *   (<video preload="none"> : aucun octet de vidéo avant le clic, mêmes
  *   identifiants, même titre, même nom de bouton, même pastille « 90 s »), et
  *   son script, recopié à l'octet. `PRODUCT_DEFINITION` reste dans ce sous-bloc.
@@ -143,7 +144,7 @@ const chiffres = [
 {/* Exception zéro-JS assumée, au même titre que le micro-script du tiroir mobile
     (MIGRATION.md §9) : aucun sélecteur CSS ne permet de savoir qu'une vidéo joue,
     donc « clic sur le bouton → lecture » ne peut pas se faire sans script. Aucune
-    dépendance, aucun asset. Script recopié de home/PresentationVideoSection.astro. */}
+    dépendance, aucun asset. Script recopié de l'ancien home/PresentationVideoSection.astro. */}
 <script is:inline>
   (function () {
     var video = document.getElementById('film-video');

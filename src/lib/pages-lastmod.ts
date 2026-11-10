@@ -41,5 +41,7 @@ export const STATIC_LASTMOD: Record<string, string> = {
   /* Accueil (DA 2026, phase 4a) : pas encore datée. Le jour où la nouvelle page
      est en ligne, ajouter ici une entrée pour le chemin « / », à cette date
      réelle (jamais une date de build). astro.config.mjs la passe au sitemap,
-     verify-site.mjs la contrôle. */
+     verify-site.mjs la contrôle. Ajouter le même jour, à la même date, « /faq »
+     et « /tarifs » : leur texte change dans le même lot (MIGRATION.md § 9,
+     « Textes des autres pages ») et elles n'ont pas encore de lastmod. */
 };

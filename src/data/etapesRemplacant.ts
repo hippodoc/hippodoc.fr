@@ -1,7 +1,8 @@
 /**
  * Les 7 étapes du parcours du médecin remplaçant, MOT POUR MOT telles qu'elles
- * sont sur l'accueil depuis src/components/home/JourneySection.astro (profil
- * « remplacant »). Ne rien y réécrire : tout changement de texte se déclare dans
+ * étaient sur l'ancienne accueil, dans src/components/home/JourneySection.astro
+ * (profil « remplacant » ; composant supprimé en phase 4a, à lire dans
+ * l'historique git). Ne rien y réécrire : tout changement de texte se déclare dans
  * MIGRATION.md § 9.
  *
  * Deux blocs de la nouvelle accueil (DA 2026) s'en servent :

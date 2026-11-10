@@ -5,7 +5,8 @@
  * « installé » ne sont plus sur l'accueil).
  *
  * MOT POUR MOT : les étapes « interne » et « mixte » viennent de
- * src/components/home/JourneySection.astro, celles du remplaçant de
+ * src/components/home/JourneySection.astro (supprimé en phase 4a, à lire dans
+ * l'historique git), celles du remplaçant de
  * etapesRemplacant.ts. Ne rien y réécrire : tout changement de texte se
  * déclare dans MIGRATION.md § 9.
  *

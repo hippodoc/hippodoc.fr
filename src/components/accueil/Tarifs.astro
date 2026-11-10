@@ -2,7 +2,8 @@
 /**
  * Tarifs (DA 2026, phase 3, MIGRATION.md § 9). Feuille « ciel », entre les
  * témoignages et les questions. Remplace home/PricingSection.astro et reprend
- * de home/CtaBanner.astro le seul bloc RSPM.
+ * de home/CtaBanner.astro le seul bloc RSPM (deux composants supprimés en
+ * phase 4a, à lire dans l'historique git).
  *
  * - `id="pricing"` : cible du lien « Tarifs » du menu sur TOUT le site, et de
  *   deux réponses de la FAQ (« la section tarifs juste au-dessus »).
@@ -45,7 +46,7 @@ import '@/styles/da.css';
 import { APP_URL } from '@/lib/site';
 import Mascotte from './Mascotte.astro';
 
-/* « Inclus dans toutes les offres » (home/PricingSection.astro). Six lignes
+/* « Inclus dans toutes les offres » (ancien home/PricingSection.astro). Six lignes
    visibles ; « contrats » et « factures avec notes » n'en font plus qu'une,
    « hébergées en France » devient « dans l'Union européenne », « Abonnement
    100 % déductible » passe dans la mention du bas. */
@@ -82,7 +83,7 @@ const comparatif: { ligne: string; mensuel: string | true; annuel: string | true
   { ligne: 'Toutes les fonctionnalités', mensuel: true, annuel: true },
 ];
 
-/* RSPM (home/CtaBanner.astro) : seuil, puis ce qui s'applique. */
+/* RSPM (ancien home/CtaBanner.astro) : seuil, puis ce qui s'applique. */
 const rspm = [
   { chip: 'ok', seuil: "jusqu'à 19\u00a0000\u00a0€", suite: '13,5\u00a0%' },
   { chip: 'wait', seuil: 'au-delà', suite: '21,2\u00a0% sur la part au-dessus' },
