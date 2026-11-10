@@ -19,18 +19,20 @@ import policeDA from '@/assets/fonts/google-sans-flex-latin-wght400-800-rond100.
 import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
-// DA 2026, phases 2 et 3 : le premier écran, puis « Sous la surface » (fenêtre
-// produit à onglets et trois grandes cases). Les sections suivantes sont encore
-// les anciennes. `home/SocialProofSection.astro` et `home/FeaturesSection.astro`
-// ne sont plus importés ; ils restent dans le dépôt jusqu'à la phase 4a.
+// DA 2026, phases 2 et 3 : le premier écran, « Sous la surface » (fenêtre
+// produit à onglets et trois grandes cases), puis les feuilles claires : « Pour
+// qui », le fondateur et le film, les syndicats et partenaires, les témoignages.
+// Les trois sections suivantes sont encore les anciennes. Les fichiers de
+// `home/` qui ne sont plus importés (SocialProof, Features, PresentationVideo,
+// Journey, Testimonials, Partners) restent dans le dépôt jusqu'à la phase 4a.
 import Hero from '@/components/accueil/Hero.astro';
 import { imagesBuste } from '@/components/accueil/buste';
 import SousLaSurface from '@/components/accueil/SousLaSurface.astro';
-import PresentationVideoSection from '@/components/home/PresentationVideoSection.astro';
+import PourQui from '@/components/accueil/PourQui.astro';
+import Fondateur from '@/components/accueil/Fondateur.astro';
+import Partenaires from '@/components/accueil/Partenaires.astro';
+import Temoignages from '@/components/accueil/Temoignages.astro';
 import CtaBanner from '@/components/home/CtaBanner.astro';
-import JourneySection from '@/components/home/JourneySection.astro';
-import TestimonialsSection from '@/components/home/TestimonialsSection.astro';
-import PartnersSection from '@/components/home/PartnersSection.astro';
 import PricingSection from '@/components/home/PricingSection.astro';
 import FaqSection from '@/components/home/FaqSection.astro';
 
@@ -65,7 +67,7 @@ const faqPageSchema = {
 };
 
 // VideoObject — mêmes valeurs que la source (src/pages/landing/index.tsx) ;
-// contentUrl = vidéo auto-hébergée Supabase Storage (cf. PresentationVideoSection.astro),
+// contentUrl = vidéo auto-hébergée Supabase Storage (cf. accueil/Fondateur.astro),
 // thumbnailUrl = poster de la source servi depuis public/.
 const videoSchema = {
   '@context': 'https://schema.org',
@@ -123,13 +125,13 @@ const videoSchema = {
 
     <main id="contenu-principal" tabindex="-1" class="flex-1">
       <Hero />
-      {/* `raccord` : tant que la section suivante est une ancienne section sur fond blanc. */}
-      <SousLaSurface raccord />
-      <PresentationVideoSection />
+      <SousLaSurface />
+      <PourQui />
+      <Fondateur />
+      <Partenaires />
+      {/* `dernier` : tant que la section suivante est une ancienne section. */}
+      <Temoignages dernier />
       <CtaBanner />
-      <JourneySection />
-      <TestimonialsSection />
-      <PartnersSection />
       <PricingSection />
       <FaqSection />
     </main>

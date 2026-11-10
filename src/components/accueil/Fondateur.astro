@@ -1,0 +1,259 @@
+---
+/**
+ * Bloc fondateur, avec le film de présentation (DA 2026, phase 3,
+ * MIGRATION.md § 9). Qui a construit l'outil, trois chiffres, le lien pour
+ * lui parler, puis le film de 90 secondes. Feuille « sable ».
+ *
+ * - Mesure : `data-landing-section="founder"` (série nouvelle) sur la section ;
+ *   le sous-bloc du film garde `data-landing-section="presentation-video"` et
+ *   `id="film-presentation"` : src/lib/landing-analytics.ts y cherche le
+ *   <video> (événements `landing_video_*`), et l'ancien en-tête des autres
+ *   pages y mène encore (« Découvrir »). Lien Calendly : `data-calendly="fondateur"`
+ *   (emplacement nouveau).
+ * - Texte du fondateur : le paragraphe de l'ancienne carte de fin de FAQ, en
+ *   entier et mot pour mot. Les trois chiffres viennent de l'ancienne section
+ *   « En chiffres » ; « 900+ » est confirmé au 10 novembre 2026, les deux
+ *   autres datent du 15 août : la date ne couvre qu'eux.
+ * - Film : le lecteur de home/PresentationVideoSection.astro, tel quel
+ *   (<video preload="none"> : aucun octet de vidéo avant le clic, mêmes
+ *   identifiants, même titre, même nom de bouton, même pastille « 90 s »), et
+ *   son script, recopié à l'octet. `PRODUCT_DEFINITION` reste dans ce sous-bloc.
+ *   L'affiche du film reste le fichier de public/ que cite le schéma
+ *   VideoObject : l'attribut `poster` ne prend qu'une adresse.
+ * - Titres : un <h2> (le fondateur), un <h3> (le film).
+ */
+import '@/styles/da.css';
+import { getImage } from 'astro:assets';
+import { CALENDLY_URL, PRODUCT_DEFINITION } from '@/lib/site';
+import portrait from '@/assets/founders/ryan-goburdhun.jpeg';
+
+const VIDEO_URL =
+  'https://zlqlijendlquvwnodeqq.supabase.co/storage/v1/object/public/public-assets/hippodoc-presentation-st.mp4';
+
+/* Portrait : 380 px de large au plus, moins sur téléphone. */
+const LARGEURS = [380, 570, 760];
+const SIZES = '(min-width: 420px) 380px, calc(100vw - 40px)';
+const [avif, webp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) => getImage({ src: portrait, format, width: 380, widths: LARGEURS }))
+);
+
+/* « En chiffres » (home/SocialProofSection.astro), valeurs et libellés d'origine. */
+const chiffres = [
+  { valeur: '900+', libelle: 'Médecins inscrits' },
+  { valeur: '19 400', libelle: 'Journées enregistrées' },
+  { valeur: '2 379', libelle: "Lieux d'exercice référencés" },
+];
+---
+
+<section data-landing-section="founder" class="band da-bloc fd" aria-labelledby="fondateur-titre">
+  <div class="wrap">
+    <div class="who">
+      <figure class="who-photo">
+        <picture>
+          <source type="image/avif" srcset={avif.srcSet.attribute} sizes={SIZES} />
+          <img
+            src={webp.src}
+            srcset={webp.srcSet.attribute}
+            sizes={SIZES}
+            alt="Ryan Goburdhun, médecin remplaçant et fondateur d’Hippodoc"
+            width="760"
+            height="760"
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
+        <figcaption>Ryan, médecin remplaçant</figcaption>
+      </figure>
+      <div class="who-copy">
+        <h2 id="fondateur-titre">Un médecin remplaçant derrière Hippodoc</h2>
+        <p class="lead">
+          Ryan est médecin remplaçant. Il a construit Hippodoc parce qu'il en avait besoin,
+          et il s'en sert tous les jours. En 15 minutes, il t'ouvre son propre compte —
+          son planning, ses contrats, ce qu'il lui reste vraiment à la fin du mois — et tu
+          lui poses tes questions. Rien à préparer. En visio, ou il t'appelle.
+        </p>
+        <a class="btn btn-line" href={CALENDLY_URL} data-calendly="fondateur" target="_blank" rel="noopener">Prendre 15 min avec Ryan</a>
+        <div class="facts">
+          <ul role="list">
+            {chiffres.map((c) => (
+              <li class="fact"><b class="aff num">{c.valeur}</b>{' '}<span>{c.libelle}</span></li>
+            ))}
+          </ul>
+          <small>journées et lieux au 15 août 2026</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="film" data-landing-section="presentation-video" id="film-presentation">
+      <div class="film-copy">
+        <h3>Hippodoc en 90 secondes</h3>
+        <p class="lead">URSSAF, CARMF, impôts, Super-Net : tu vois enfin ce qu'il te reste vraiment.</p>
+        {/* GEO : définition produit reprise mot pour mot (site.ts) */}
+        <p class="def">{PRODUCT_DEFINITION}</p>
+      </div>
+      <div class="film-frame">
+        <video
+          id="film-video"
+          src={VIDEO_URL}
+          poster="/hippodoc-presentation-st-poster.jpg"
+          preload="none"
+          controls
+          playsinline
+          title="Hippodoc en 90 secondes — film de présentation (sous-titré)"
+        ></video>
+
+        {/* Invitation à lire : toute l'image est le bouton, la pastille jaune en
+            est le dessin (en bas à gauche, pour laisser lire l'affiche). Le
+            lecteur natif dessine un bouton trop discret : mesuré sur 120 jours,
+            9,4 % de ceux qui voyaient le film le lançaient. `preload="none"` est
+            gardé, d'où l'état d'attente : sans lui, on croit que rien ne se passe. */}
+        <button type="button" id="film-play" class="film-play" aria-label="Lire le film de présentation, 90 secondes">
+          <span class="pill">
+            <svg id="film-play-icone" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.5 2.5v11l9-5.5z"/></svg>
+            <svg id="film-play-attente" hidden xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            90 s
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Exception zéro-JS assumée, au même titre que le micro-script du tiroir mobile
+    (MIGRATION.md §9) : aucun sélecteur CSS ne permet de savoir qu'une vidéo joue,
+    donc « clic sur le bouton → lecture » ne peut pas se faire sans script. Aucune
+    dépendance, aucun asset. Script recopié de home/PresentationVideoSection.astro. */}
+<script is:inline>
+  (function () {
+    var video = document.getElementById('film-video');
+    var bouton = document.getElementById('film-play');
+    var icone = document.getElementById('film-play-icone');
+    var attente = document.getElementById('film-play-attente');
+    if (!video || !bouton) return;
+
+    // Les contrôles natifs restent dans le HTML : sans script, le lecteur est
+    // pleinement utilisable. Mais tant que notre invitation est affichée, ils font
+    // doublon — deux boutons de lecture concurrents, et la barre passe sous le badge
+    // « 90 s ». On les retire ici et on les rend dès que la lecture démarre.
+    video.removeAttribute('controls');
+
+    // ⚠️ `hidden` est une propriété de HTMLElement, PAS de SVGElement : écrire
+    // `svg.hidden = false` crée une propriété fantôme sans toucher à l'attribut,
+    // et l'icône reste masquée par la règle `[hidden] { display: none }`. On passe
+    // donc par les attributs, qui fonctionnent sur les deux.
+    function afficher(el) { el.removeAttribute('hidden'); }
+    function masquer(el) { el.setAttribute('hidden', ''); }
+
+    function rendreLeBouton() {
+      masquer(attente);
+      afficher(icone);
+      // Lecture impossible : on rend les contrôles natifs pour ne laisser personne
+      // sans solution.
+      video.setAttribute('controls', '');
+    }
+
+    bouton.addEventListener('click', function () {
+      masquer(icone);
+      afficher(attente);
+      var lecture = video.play();
+      // Une lecture refusée (politique du navigateur, réseau coupé) doit rendre le
+      // bouton à son état initial, sinon le visiteur reste devant un spinner sans fin.
+      if (lecture && lecture.catch) lecture.catch(rendreLeBouton);
+    });
+
+    // `playing` et non `play` : on ne masque l'invitation qu'une fois l'image lancée.
+    // ⚠️ On masque par STYLE EN LIGNE et non par l'attribut `hidden` : le bouton porte
+    // la classe Tailwind `flex`, dont le `display: flex` vient de la feuille de
+    // l'auteur et l'emporte donc sur le `display: none` que le navigateur applique à
+    // `[hidden]`. Avec `hidden`, la propriété passait bien à true… et le spinner
+    // restait à l'écran par-dessus la vidéo en train de jouer.
+    video.addEventListener('playing', function () {
+      bouton.style.display = 'none';
+      video.setAttribute('controls', '');
+    });
+    video.addEventListener('error', rendreLeBouton);
+
+    /* Pause au toucher.
+       Sur ordinateur, le navigateur bascule DÉJÀ lecture/pause au clic sur l'image :
+       ajouter un gestionnaire y provoquerait un double basculement, et le clic ne
+       ferait plus rien. Sur mobile en revanche, taper la vidéo ne fait qu'afficher
+       la barre de contrôle — vérifié sur iPhone et Android. On ne prend donc en
+       charge que les pointeurs tactiles.
+       Le bas de l'image est exclu : c'est là que vit la barre de contrôle native, et
+       un tap sur « pause » y serait annulé par notre propre basculement. */
+    video.addEventListener('pointerup', function (e) {
+      if (e.pointerType === 'mouse') return;
+      var boite = video.getBoundingClientRect();
+      var zoneControles = Math.max(48, boite.height * 0.2);
+      if (e.clientY > boite.bottom - zoneControles) return;
+      if (video.paused) video.play(); else video.pause();
+    });
+  })();
+</script>
+
+<style>
+  .num { white-space: nowrap; }
+
+  .who { display: grid; align-items: center; gap: 44px; }
+  .who-photo { position: relative; width: min(100%, 380px); margin: 0; }
+  .who-photo img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 34px; rotate: -2deg; box-shadow: var(--clay); }
+  .who-photo figcaption { position: absolute; left: 14px; bottom: -12px; padding: 8px 16px; border-radius: var(--r-pill); background: var(--ink); color: var(--paper); font-size: 15px; font-weight: var(--tb); rotate: -2deg; }
+  .who-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  /* 30 px au moins, et non 32 : « Un médecin remplaçant » tient alors sur une
+     ligne à partir de 375 px, avec de la marge (à 32 px, il tenait à 390 px à
+     0,2 px près, d'un côté ou de l'autre selon le rendu de la police). */
+  .who-copy h2 { --corps: clamp(30px, 4.5vw, 58px); margin: 0; }
+
+  /* Trois chiffres, et la date des deux relevés */
+  .facts { display: flex; flex-direction: column; gap: 14px; width: 100%; margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--line); }
+  /* Sur téléphone, les trois tiennent sur une ligne à partir de 380 px. */
+  .facts ul { display: flex; flex-wrap: wrap; gap: 16px 20px; margin: 0; padding: 0; list-style: none; }
+  .fact { max-width: 100px; }
+  .fact b { --corps: 34px; display: block; }
+  .fact span { display: block; font-size: 15px; line-height: 1.35; color: var(--ink-2); }
+  .facts small { font-size: 14px; color: var(--ink-3); }
+
+  /* Le film */
+  .film { display: grid; align-items: center; gap: 28px; margin-top: 88px; }
+  .film-copy { display: flex; flex-direction: column; gap: 12px; }
+  .film-copy h3 { margin: 0; }
+  .def { max-width: 36rem; margin: 4px 0 0; font-size: 15.5px; line-height: 1.55; color: var(--ink-2); }
+  .film-frame { --focus: #FFFFFF; position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 30px; background: #0B1533; box-shadow: var(--clay); }
+  .film-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .film-play { position: absolute; inset: 0; width: 100%; margin: 0; padding: 0; border: 0; border-radius: inherit; background: none; font: inherit; color: var(--ink); cursor: pointer; }
+  .film-play:focus-visible { outline-offset: -7px; }
+  .pill { position: absolute; left: 16px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px 0 16px; border-radius: var(--r-pill); background: var(--sun); font-size: 16px; font-weight: var(--tb); box-shadow: 0 4px 0 var(--sun-edge); transition: translate 120ms var(--ease), background-color 160ms var(--ease); }
+  .film-play:hover .pill { background: var(--sun-hover); }
+  .film-play:active .pill { translate: 0 4px; box-shadow: 0 0 0 transparent; }
+  .pill svg[hidden] { display: none; }
+  /* L'attente tourne ; si le visiteur a demandé moins de mouvement, elle bat. */
+  #film-play-attente { animation: film-attente 0.9s linear infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    #film-play-attente { animation: film-bat 1.1s linear infinite alternate; }
+  }
+  @keyframes film-attente { to { rotate: 360deg; } }
+  @keyframes film-bat { from { opacity: 1; } to { opacity: 0.35; } }
+
+  @media (min-width: 560px) {
+    .facts ul { gap: 18px 44px; }
+    .fact { max-width: none; }
+    .fact b { --corps: 42px; }
+    .fact span { font-size: 15.5px; }
+  }
+  @media (min-width: 900px) {
+    .who { grid-template-columns: 380px minmax(0, 1fr); gap: 96px; }
+    .film { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 80px; }
+  }
+
+  /* Le portrait et le film montent en place quand ils entrent à l'écran :
+     seulement si le visiteur n'a pas demandé moins de mouvement, et si le
+     navigateur sait lier une animation au défilement. Deux règles, deux
+     sélecteurs : voir FenetreProduit.astro (piège de minification). */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .who-photo, .film-frame { animation: fondateur-arrive linear both; }
+      figure.who-photo, div.film-frame { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+    }
+  }
+  @keyframes fondateur-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+</style>

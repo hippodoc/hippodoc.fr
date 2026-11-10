@@ -12,26 +12,21 @@
  * - Les bulles du fond montent sans fin : la case « pause » du premier écran les
  *   arrête aussi, et elles ne bougent pas si le visiteur a demandé moins de
  *   mouvement (elles restent alors hors du cadre).
- * - `raccord` : à passer tant que le bloc suivant est une ancienne section sur
- *   fond blanc. Le bloc se termine alors sous le haut arrondi d'une feuille
- *   blanche, le motif des sections claires de la maquette. À retirer quand le
- *   bloc suivant sera lui-même une feuille de la DA (elle remonte de 40 px).
+ * - Le bloc suivant est « Pour qui » (PourQui.astro), la première feuille
+ *   claire : elle remonte de 40 px sur le bas de ce bloc, d'où les 148 px
+ *   laissés sous la phrase des régimes.
  */
 import '@/styles/da.css';
 import FenetreProduit from './FenetreProduit.astro';
 import TroisCases from './TroisCases.astro';
 import Mascotte from './Mascotte.astro';
 
-interface Props {
-  raccord?: boolean;
-}
-const { raccord = false } = Astro.props;
 ---
 
 <section
   data-landing-section="features"
   id="sous-la-surface"
-  class:list={['deep', 'da-bloc', raccord && 'raccord']}
+  class="deep da-bloc"
   aria-labelledby="sous-la-surface-titre"
 >
   <div class="bubbles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -83,10 +78,6 @@ const { raccord = false } = Astro.props;
     .bh-copy { padding-bottom: 56px; }
     .bh-mascot { width: 250px; margin: 0 0 -94px; }
   }
-
-  /* Raccord provisoire avec l'ancienne section qui suit (fond blanc) : le haut
-     arrondi d'une feuille blanche, posé sur le bas du bloc. */
-  .raccord::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 41px; border-radius: 40px 40px 0 0; background: #FFFFFF; }
 
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. La case
      « pause » du premier écran (Hero.astro) arrête aussi les bulles. */

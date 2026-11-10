@@ -32,7 +32,10 @@ import {
  * séries seraient coupées en deux. Les nouvelles sections s'ajoutent en fin de liste.
  * DA 2026, phase 3 (MIGRATION.md § 9) : `social-proof` n'est plus sur la page
  * (sa série s'arrête) ; `features` est le bloc « Sous la surface », placé juste
- * après le premier écran, et garde le rang 4.
+ * après le premier écran, et garde le rang 4. `presentation-video` (rang 3) est
+ * maintenant un sous-bloc de `founder`, après « Pour qui ». `founder` est
+ * nouveau : son rang (12) dit seulement qu'il est arrivé en dernier, pas sa
+ * place sur la page (quatrième bloc).
  */
 const SECTIONS = [
   'hero',
@@ -46,6 +49,7 @@ const SECTIONS = [
   'pricing',
   'faq',
   'footer',
+  'founder',
 ] as const;
 
 /** Sections qui émettent EN PLUS un événement dédié, comme sur l'ancienne landing. */

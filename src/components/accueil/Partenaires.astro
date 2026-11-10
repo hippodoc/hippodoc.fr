@@ -1,0 +1,168 @@
+---
+/**
+ * Syndicats d'internes, partenaires et soutiens (DA 2026, phase 3,
+ * MIGRATION.md § 9). Feuille « ciel », juste après le bloc fondateur : qui a
+ * construit l'outil, puis qui le soutient.
+ *
+ * - Décision du propriétaire (10 novembre 2026) : les syndicats d'internes ont
+ *   une vraie place, pas une ligne discrète. Seuls les partenariats SIGNÉS sont
+ *   affichés : SILR, CRP-IMG, SIOI, AIMGL (Limoges), HomeDoc, Doctripper. Deux
+ *   autres sont en cours : ne pas les ajouter avant signature. La ville figure
+ *   sur chaque tuile (un autre syndicat porte le sigle AIMGL).
+ * - Textes repris de /qui-sommes-nous (titre, introduction, noms, villes,
+ *   descriptions, textes alternatifs, liens) et de /faq (l'essai prolongé) ;
+ *   aucun texte nouveau.
+ * - Mesure : `data-landing-section="partners"` (la série continue) ; les cinq
+ *   `data-ph="landing_partner_*"` de l'ancienne section sont gardés,
+ *   `landing_partner_homedoc` est nouveau sur l'accueil.
+ * - Soutiens : Région Île-de-France et Bpifrance sont UNE seule aide
+ *   (Innov'Up, § 9.dq), d'où leurs deux logos sur la même plaque.
+ * - Logos : les fichiers de public/lovable-uploads/, copiés dans
+ *   src/assets/accueil/partenaires/ pour passer par astro:assets (AVIF et
+ *   WebP). Plusieurs ont un fond blanc opaque : tous sont posés sur du blanc.
+ * - Titres : un <h2>, un <h3> (les deux partenaires).
+ */
+import '@/styles/da.css';
+import { Picture } from 'astro:assets';
+import silr from '@/assets/accueil/partenaires/silr-logo.jpg';
+import crpImg from '@/assets/accueil/partenaires/crp-img-logo.png';
+import sioi from '@/assets/accueil/partenaires/sioi-logo.jpg';
+import aimgl from '@/assets/accueil/partenaires/aimgl-logo.png';
+import homedoc from '@/assets/accueil/partenaires/homedoc-logo-160.webp';
+import doctripper from '@/assets/accueil/partenaires/doctripper-logo.png';
+import regionIdf from '@/assets/accueil/partenaires/region-idf-112.webp';
+import bpifrance from '@/assets/accueil/partenaires/bpi-112.webp';
+import frenchCare from '@/assets/accueil/partenaires/french-care-160.webp';
+
+/* `largeur` : la largeur d'affichage la plus grande, en px (un fichier à cette largeur, un au double). */
+const syndicats = [
+  { ph: 'silr', nom: 'SILR', complet: 'Syndicat des Internes du Languedoc-Roussillon', ville: 'Montpellier', logo: silr, largeur: 124, url: 'https://www.silr.fr/le-silr/nos-partenaires/' },
+  { ph: 'crp_img', nom: 'CRP-IMG', complet: 'Internes de médecine générale de Poitiers', ville: 'Poitiers', logo: crpImg, largeur: 150, url: 'https://www.isnar-img.com/villes/poitiers-crp-img/' },
+  { ph: 'sioi', nom: 'SIOI', complet: "Syndicat des Internes de l'Océan Indien", ville: 'La Réunion', logo: sioi, largeur: 210, url: 'https://www.sioi974.fr/' },
+  { ph: 'aimgl', nom: 'AIMGL', complet: 'Association des Internes de Médecine Générale de Limoges', ville: 'Limoges', logo: aimgl, largeur: 128, url: 'https://www.aimgl.fr' },
+];
+
+const partenaires = [
+  { ph: 'homedoc', nom: 'HomeDoc', texte: 'Le logement des internes en médecine', logo: homedoc, largeur: 52, url: 'https://homedoc.fr' },
+  { ph: 'doctripper', nom: 'Doctripper', texte: 'Plateforme de remplacements médicaux', logo: doctripper, largeur: 54, url: 'https://doctripper.com' },
+];
+---
+
+<section data-landing-section="partners" class="band air da-bloc pt" aria-labelledby="partenaires-titre">
+  <div class="wrap">
+    <div class="band-head">
+      <h2 id="partenaires-titre">Aux côtés des internes, partout en France</h2>
+      <p class="lead">Ces syndicats d'internes ont signé une convention avec Hippodoc pour accompagner leurs adhérents dans leurs premiers remplacements.</p>
+    </div>
+
+    <ul class="synd" role="list">
+      {syndicats.map((s) => (
+        <li>
+          <a class="tile" href={s.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${s.ph}`}>
+            <span class="logo">
+              <Picture src={s.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={s.largeur} widths={[s.largeur, 2 * s.largeur]} sizes={`${s.largeur}px`} alt={`${s.nom} — ${s.complet}`} loading="lazy" decoding="async" />
+            </span>
+            <span class="nom">{s.nom}</span>{' '}
+            <span class="ville">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              {s.ville}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="plus">Certains syndicats d'internes partenaires donnent aussi droit à un essai prolongé.</p>
+
+    <h3>Et des partenaires pensés pour les jeunes médecins</h3>
+    <ul class="parts" role="list">
+      {partenaires.map((p) => (
+        <li>
+          <a class="part" href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${p.ph}`}>
+            <span class="logo">
+              <Picture src={p.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={p.largeur} widths={[p.largeur, 2 * p.largeur]} sizes={`${p.largeur}px`} alt="" loading="lazy" decoding="async" />
+            </span>
+            <span class="txt"><b>{p.nom}</b>{' '}<span>{p.texte}</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="backers">
+      <p class="backers-t">Soutenu par</p>
+      <ul role="list">
+        <li>
+          <span class="plaque">
+            <Picture src={regionIdf} formats={['avif', 'webp']} fallbackFormat="webp" width={82} widths={[82, 164]} sizes="82px" alt="Région Île-de-France" loading="lazy" decoding="async" />
+            <Picture src={bpifrance} formats={['avif', 'webp']} fallbackFormat="webp" width={86} widths={[86, 172]} sizes="86px" alt="Bpifrance" loading="lazy" decoding="async" />
+          </span>
+          <span>Lauréat Innov'Up</span>
+        </li>
+        <li>
+          <span class="plaque">
+            <Picture src={frenchCare} formats={['avif', 'webp']} fallbackFormat="webp" width={52} widths={[52, 104]} sizes="52px" alt="La French Care" class="tall" loading="lazy" decoding="async" />
+          </span>
+          <span>Membre de La French Care</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .synd, .parts, .backers ul { margin: 0; padding: 0; list-style: none; }
+
+  /* Les quatre syndicats, en grand */
+  .synd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; box-sizing: border-box; padding: 18px 12px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-align: center; text-decoration: none; transition: translate 200ms var(--ease); }
+  .tile:hover, .part:hover { translate: 0 -3px; }
+  .tile .logo { display: flex; align-items: center; justify-content: center; width: 100%; height: 84px; margin-bottom: 12px; }
+  /* <picture> s'efface : c'est l'image qui se cale dans la boîte du logo. */
+  .logo :global(picture), .plaque :global(picture) { display: contents; }
+  /* Sans cela, chaque <source> compterait pour un élément de la rangée (et son écart). */
+  .logo :global(source), .plaque :global(source) { display: none; }
+  .logo :global(img) { display: block; width: auto; max-width: 100%; height: auto; max-height: 100%; object-fit: contain; }
+  .nom { font-size: 19px; font-weight: var(--tb); line-height: 1.25; }
+  .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--ink-2); }
+  .ville svg { flex: none; color: var(--brand); }
+  .plus { max-width: 40rem; margin: 22px 0 0; font-size: 16.5px; color: var(--ink-2); }
+
+  /* Les deux partenaires */
+  h3 { margin: 60px 0 20px; font-size: clamp(22px, 2.2vw, 26px); }
+  .parts { display: grid; gap: 14px; }
+  .part { display: flex; align-items: center; gap: 16px; height: 100%; box-sizing: border-box; padding: 16px 20px 18px 16px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
+  .part .logo { display: flex; flex: none; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 18px; background: var(--sky-soft); }
+  .part .logo :global(img) { max-width: 54px; max-height: 54px; }
+  .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .txt b { font-size: 18px; }
+  .txt span { font-size: 15.5px; color: var(--ink-2); }
+
+  /* Les soutiens institutionnels, plus discrets : ils sont aussi dans le pied */
+  .backers { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 36px; margin-top: 60px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 15.5px; color: var(--ink-2); }
+  .backers-t { margin: 0; }
+  .backers ul { display: flex; flex-wrap: wrap; gap: 14px 36px; }
+  .backers li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .plaque { display: inline-flex; flex: none; align-items: center; gap: 14px; min-height: 60px; padding: 4px 16px; border-radius: 18px; background: var(--paper); }
+  .plaque :global(img) { display: block; flex: none; width: auto; height: 40px; }
+  .plaque :global(img.tall) { height: 52px; }
+
+  /* Petits téléphones : la plaque aux deux logos et sa légende tiennent sur une ligne. */
+  @media (max-width: 379px) {
+    .plaque { gap: 10px; padding-inline: 12px; }
+    .plaque :global(img) { height: 32px; }
+    .plaque :global(img.tall) { height: 46px; }
+  }
+  @media (min-width: 640px) {
+    .synd { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .parts { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; gap: 18px; }
+  }
+  @media (min-width: 900px) {
+    .synd { gap: 18px; }
+    .tile { padding: 24px 20px 26px; border-radius: 36px; }
+    .tile .logo { height: 124px; margin-bottom: 14px; }
+    .nom { font-size: 21px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .part { transition: none; }
+    .tile:hover, .part:hover { translate: none; }
+  }
+</style>

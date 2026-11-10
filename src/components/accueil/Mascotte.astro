@@ -7,7 +7,7 @@
  * Sources dans src/assets/accueil/, en WebP sans perte, rognées au ras du
  * personnage (le bas est coupé net : à poser au bord bas d'un bloc qui rogne) :
  *  - `pouce`, `pointe` : mascotte masculine, fichiers fournis par le propriétaire ;
- *  - `f-tablette` : mascotte féminine, détourée sans perte.
+ *  - `f-tablette`, `f-pointe` : mascotte féminine, détourée sans perte.
  *
  * La classe et l'attribut de portée du parent arrivent sur le <picture> : c'est
  * lui que le parent dimensionne et place, l'image le remplit.
@@ -16,8 +16,9 @@ import { getImage } from 'astro:assets';
 import pouce from '@/assets/accueil/mascotte-pouce.webp';
 import pointe from '@/assets/accueil/mascotte-pointe.webp';
 import fTablette from '@/assets/accueil/mascotte-f-tablette.webp';
+import fPointe from '@/assets/accueil/mascotte-f-pointe.webp';
 
-const SOURCES = { pouce, pointe, 'f-tablette': fTablette };
+const SOURCES = { pouce, pointe, 'f-tablette': fTablette, 'f-pointe': fPointe };
 
 interface Props {
   pose: keyof typeof SOURCES;

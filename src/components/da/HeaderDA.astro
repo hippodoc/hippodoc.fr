@@ -16,6 +16,10 @@ import { APP_URL } from '@/lib/site';
  * Double maintenance : `node scripts/verify-site.mjs` compare les liens, libellés
  * et attributs de mesure de cet en-tête à ceux de Header.astro (page /tarifs) et
  * échoue au premier écart.
+ * Seul écart voulu (phase 3, déclaré dans ECARTS_ENTETE_PIED_DA) : la première
+ * entrée du menu est « Comment ça marche » (/#sous-la-surface) et non plus
+ * « Découvrir » (/#film-presentation). Le film reste sur la page, et l'ancre
+ * `#film-presentation` aussi : Header.astro y mène depuis les autres pages.
  * Logo : le mot seul, « Hippo » puis « doc » dans la police de la DA, sans l'icône
  * au trait (décision du propriétaire, 10 novembre 2026). Le lien, son nom
  * accessible et le texte « Hippodoc » ne changent pas.
@@ -28,7 +32,7 @@ interface Props {
 const { variante = 'flux' } = Astro.props;
 
 const anchorItems = [
-  { href: '/#film-presentation', label: 'Découvrir', ph: 'landing_nav_decouvrir' },
+  { href: '/#sous-la-surface', label: 'Comment ça marche', ph: 'landing_nav_comment_ca_marche' },
   { href: '/#parcours', label: 'Pour qui', ph: 'landing_nav_pour_qui' },
   { href: '/#pricing', label: 'Tarifs', ph: 'landing_nav_pricing' },
 ];

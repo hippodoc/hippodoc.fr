@@ -170,6 +170,28 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .chip.plan { background: var(--plan-bg); color: var(--plan); }
 :where(.da) .chip.off { background: var(--sky-soft); color: var(--ink-2); }
 
+/* Feuilles claires : les blocs qui suivent l'eau profonde se superposent comme
+   des feuilles, chacune remonte de 40 px sur la précédente (d'où les 128 px du
+   bas : 88 px d'air, plus les 40 px que la feuille suivante recouvre). Sable,
+   ou ciel avec `.air`, en alternance. `.fin` : la dernière feuille avant un
+   bloc qui ne remonte pas sur elle. */
+:where(.da) .band { position: relative; z-index: 1; margin-top: -40px; padding: 88px 0 128px; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); }
+:where(.da) .band.air { background: var(--sky); }
+:where(.da) .band.fin { padding-bottom: 88px; }
+/* Téléphone : la page compte plus de feuilles que la maquette, chacune rend 24 px en haut et en bas. */
+@media (max-width: 559px) {
+  :where(.da) .band { padding: 64px 0 104px; }
+  :where(.da) .band.fin { padding-bottom: 64px; }
+  :where(.da) .band-head { margin-bottom: 32px; }
+}
+:where(.da) .band-head { display: flex; flex-direction: column; gap: 14px; max-width: 800px; margin-bottom: 44px; }
+:where(.da) .band-head > * { margin: 0; }
+:where(.da) .lead { max-width: 36rem; margin: 0; font-size: 19px; line-height: 1.55; color: var(--ink-2); }
+/* Lien dans une phrase : souligné, et une zone de toucher de 44 px de haut qui
+   ne change pas l'interligne (la marge négative rend ce que prend le remplissage). */
+:where(.da) .lien { display: inline-block; margin: -11px 0; padding: 11px 0; border-radius: 6px; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+:where(.da) .lien:hover { color: var(--brand); }
+
 /* Logo : le mot seul, « Hippo » en --brand et « doc » en --brand-2, sans l'icône
    au trait (décision du propriétaire, 10 novembre 2026). */
 :where(.da) .logo-word { font-family: var(--display); font-size: 22px; font-weight: 760; letter-spacing: -0.025em; line-height: 1; color: var(--brand); }

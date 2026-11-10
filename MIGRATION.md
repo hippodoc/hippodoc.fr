@@ -5647,7 +5647,7 @@ compteur animé de « En chiffres ».
   anciennes sections dans leur ordre (film, bandeau du milieu, parcours, témoignages,
   partenaires, tarifs, FAQ). Une feuille blanche aux coins ronds ferme le bloc tant que
   la section suivante est ancienne (prop `raccord` de `SousLaSurface.astro`, à retirer
-  avec le bloc suivant).
+  avec le bloc suivant). **Retirée en lot B.**
 - **Mesure.** `data-landing-section="features"` est gardé : la série continue, avec le
   même `section_order` (4). ⚠️ Elle ne dit plus la même chose : le bloc est maintenant le
   deuxième de la page, son taux de vue va monter d'un coup. À annoter dans PostHog le
@@ -5890,14 +5890,344 @@ compteur animé de « En chiffres ».
   pastilles.
 - **Menu de l'en-tête** : la cible `#sous-la-surface` existe, l'entrée « Comment ça
   marche » peut entrer dans `HeaderDA` (avec sa ligne dans `ECARTS_ENTETE_PIED_DA`). Non
-  fait dans ce lot.
+  fait dans ce lot. **Fait en lot B, voir plus bas.**
 - **Répétitions provisoires** (phrase du film, étapes du remplaçant, phrase des régimes)
   et chiffres « 19 400 » et « 2 379 » absents : jusqu'à l'arrivée des blocs « Pour qui »
-  et fondateur.
+  et fondateur. **Réglé en lot B.**
 - Texte seul grossi (réglage du navigateur) et zoom à 400 % non mesurés ; à 195 px de
   large (au-delà de ce que demande WCAG 1.4.10), la fenêtre déborde de 44 px.
 - Longueur de la page à 390 px : 17 065 px pendant la transition (15 799 avant ce lot),
   anciennes sections comprises ; le critère du plan se mesure à la fin de la phase 3.
+
+#### Phase 3, lot B : « Pour qui », fondateur et film, syndicats et partenaires, témoignages (10 novembre 2026)
+
+Quatre feuilles claires suivent maintenant l'eau du bloc « Sous la surface », dans cet
+ordre : « Pour qui » (ciel), le fondateur et le film (sable), les syndicats, partenaires
+et soutiens (ciel), les témoignages (sable). Elles remplacent **quatre** anciennes
+sections : le film (`home/PresentationVideoSection.astro`), les parcours
+(`home/JourneySection.astro`), les témoignages (`home/TestimonialsSection.astro`) et les
+partenaires (`home/PartnersSection.astro`). Ces fichiers ne sont plus importés mais
+restent dans le dépôt jusqu'à la phase 4a. **Zéro JS ajouté** : le seul script du lot est
+celui du lecteur du film, recopié à l'octet de l'ancienne section. Il reste trois
+anciennes sections sur la page : le bandeau du milieu (avec le bloc RSPM), les tarifs et
+la FAQ.
+
+- **Fichiers créés** : `src/components/accueil/PourQui.astro`, `Fondateur.astro`,
+  `Partenaires.astro`, `Temoignages.astro` ; `src/data/parcoursAccueil.ts` (les quatre
+  profils) ; `src/assets/accueil/mascotte-f-pointe.webp` ; neuf logos dans
+  `src/assets/accueil/partenaires/` (copies des fichiers de `public/lovable-uploads/`,
+  qui restent en place pour les autres pages).
+- **Fichiers modifiés** : `src/pages/index.astro`, `src/styles/da.css` (feuilles claires,
+  lien dans une phrase), `src/components/accueil/Mascotte.astro` (pose `f-pointe`),
+  `SousLaSurface.astro` (prop `raccord` retirée : la feuille « Pour qui » remonte de
+  40 px sur le bas du bloc), `src/components/da/HeaderDA.astro` (menu),
+  `src/lib/landing-analytics.ts`, `scripts/verify-site.mjs`.
+- **Ordre de la page** : premier écran, « Sous la surface », « Pour qui », fondateur et
+  film, syndicats et partenaires, témoignages, puis les trois anciennes sections. La
+  dernière feuille porte la prop `dernier` tant que la section suivante est ancienne
+  (pas de réserve de 40 px en bas), à retirer avec le bloc des tarifs.
+- **`da.css`** : `.band` (feuille sable, `.air` pour le ciel, `.fin` pour la dernière),
+  `.band-head`, `.lead`, `.lien` (lien souligné dans une phrase, zone de toucher de
+  44 px de haut sans changer l'interligne). Sous 560 px, chaque feuille rend 24 px en
+  haut et en bas par rapport à la maquette (64 et 104 px au lieu de 88 et 128) : la page
+  compte quatre feuilles de plus qu'elle.
+
+**Menu de l'en-tête (arbitrage 8 du plan).** Sur l'accueil : « Comment ça marche »
+(`/#sous-la-surface`), « Pour qui », « Tarifs », « Ressources ». « Découvrir » (le film)
+sort du menu, le film reste sur la page. L'écart avec `Header.astro` est déclaré dans
+`ECARTS_ENTETE_PIED_DA` (quatre lignes : menu d'ordinateur et tiroir, entrée retirée et
+entrée ajoutée). Les autres pages gardent « Découvrir » jusqu'à la phase 5a : l'ancre
+`#film-presentation` existe toujours, sur le sous-bloc du film.
+
+**Bloc « Pour qui »** (`id="parcours"`, `data-landing-section="practice-journeys"`).
+
+- Quatre profils au lieu de cinq (décision du propriétaire) : Remplaçant, Interne,
+  Vacataire, Mixte. « Collaborateur » et « Installé » quittent l'accueil.
+- Même mécanisme sans JS, rhabillé : quatre boutons radio (`parcours-<profil>`) dans un
+  `<fieldset>` nommé par la phrase d'introduction, un panneau par profil, affiché avec
+  `:has()`. Sans `:has()` : le sélecteur est retiré, les quatre parcours s'affichent
+  l'un sous l'autre, chacun sous son nom. Les quatre panneaux sont toujours dans le
+  HTML.
+- Chaque radio couvre son libellé, transparente (procédé de la fenêtre produit). Un
+  clic ne part qu'une fois : `landing_journey_profile_selected` compté une fois par
+  choix (vérifié). ⚠️ Nouveau : un choix fait **au clavier** (flèches) est maintenant
+  compté aussi, parce que le clic synthétique part de la radio, qui est dans le
+  libellé. Dans l'ancienne section il ne l'était pas.
+- Le sélecteur est une fiche bleu profond, avec la mascotte féminine qui montre du
+  doigt (décor). Sur téléphone elle désigne les profils, à sa droite. À partir de
+  900 px les profils sont en colonne, elle est dessous et montre le parcours ; sur un
+  écran d'au moins 760 px de haut, la fiche suit la lecture (`position: sticky`).
+- Le parcours est une fiche blanche : le nom du profil, les étapes numérotées (liste
+  ordonnée, un `<h3>` par étape comme l'ancienne section), puis l'appel, identique pour
+  les quatre profils, au pied de la fiche. La pastille de la dernière étape, le
+  Super-Net, est jaune.
+- Remplaçant : titres et lignes de détail seulement (les phrases d'accroche sont dans
+  « Sous la surface », juste au-dessus). Interne et Mixte : leurs 6 étapes, titre,
+  accroche et détail. Vacataire : 2 étapes nouvelles, puis 4 reprises du remplaçant
+  (charges, cotisations, déclaration, Super-Net).
+- Sous 560 px, l'accroche et le détail passent sous la pastille, sur toute la largeur.
+
+**Bloc fondateur et film** (`data-landing-section="founder"`, série nouvelle).
+
+- Portrait (`src/assets/founders/ryan-goburdhun.jpeg`, déjà dans le dépôt, servi en AVIF
+  et WebP à 380, 570 et 760 px), titre, le paragraphe de l'ancienne carte de fin de FAQ
+  en entier, le lien Calendly `data-calendly="fondateur"` (emplacement nouveau), trois
+  chiffres.
+- **Chiffres** : « 900+ » est confirmé au 10 novembre 2026 (908 comptes). « 19 400 » et
+  « 2 379 » datent du 15 août : la date écrite dessous ne couvre que ces deux-là
+  (« journées et lieux au 15 août 2026 »). Au 15 août le site comptait 789 profils :
+  « 900+ au 15 août » serait faux.
+- **Film** : sous-bloc `<div data-landing-section="presentation-video"
+  id="film-presentation">`. Le lecteur est celui de l'ancienne section : `<video
+  preload="none">`, mêmes identifiants, même titre, même nom de bouton (« Lire le film
+  de présentation, 90 secondes »), même pastille « 90 s », **script identique à
+  l'octet** (comparé par script). `PRODUCT_DEFINITION` est dans ce sous-bloc, mot pour
+  mot. Le schéma `VideoObject` ne change pas.
+- L'affiche du film reste `/hippodoc-presentation-st-poster.jpg` (60 Ko, dans
+  `public/`) : l'attribut `poster` ne prend qu'une adresse, et c'est le fichier que cite
+  le schéma. Seule image du lot qui ne passe pas par `astro:assets`, comme avant.
+- La pastille de lecture est en bas à gauche, comme sur la maquette, pour laisser lire
+  l'affiche ; toute l'image reste le bouton. L'état d'attente tourne ; en mouvement
+  réduit, il bat (opacité) au lieu de tourner.
+
+**Bloc syndicats, partenaires et soutiens** (`data-landing-section="partners"`).
+
+- Décision du propriétaire : les syndicats d'internes ont une vraie place. Quatre
+  grandes tuiles (logo, sigle, ville), sous leur propre `<h2>`, juste après le bloc
+  fondateur. Seuls les partenariats **signés** sont affichés : SILR, CRP-IMG, SIOI,
+  AIMGL (Limoges), HomeDoc, Doctripper. AIMGL (Lille) et RAOUL (Nancy) sont en cours :
+  ne pas les afficher avant signature. La ville est sur chaque tuile.
+- Puis les deux partenaires (HomeDoc, Doctripper), puis les soutiens, plus discrets :
+  Région Île-de-France et Bpifrance sur une même plaque (« Lauréat Innov'Up », une seule
+  aide, § 9.dq), La French Care (« Membre de La French Care »).
+- **Aucun texte nouveau** : tout vient de `/qui-sommes-nous` (titre, introduction, noms,
+  villes, descriptions, textes alternatifs, liens ; le lien du SILR mène maintenant à sa
+  page « nos partenaires ») et de `/faq` (« Certains syndicats d'internes partenaires
+  donnent aussi droit à un essai prolongé. »). « Soutenu par » vient de l'ancien hero.
+- Logos par `astro:assets` (AVIF et WebP, une largeur et son double), tous sur fond
+  blanc (plusieurs fichiers ont un fond opaque).
+
+**Bloc témoignages** (`data-landing-section="testimonials"`, `id="testimonials"`).
+
+- Décision du propriétaire (point 9) : les témoignages sont réels et reviennent, mot
+  pour mot. Quatre sur les quinze de `home/TestimonialsSection.astro`, sans coupe,
+  texte, nom et qualité tels quels : Dr Sofiane B., Médecin (SOS Médecins + cabinet) ;
+  Dr Anaïs V., Interne ; Dr Sarah M., Urgentiste (activité mixte) ; Dr Émilien C.,
+  Médecin généraliste. Comparés par script à la source : 4 sur 4 identiques.
+- **Seule retouche** : les guillemets droits qui entouraient chaque citation deviennent
+  des guillemets français. Les apostrophes droites à l'intérieur restent.
+- **Pas d'étoiles** : aucune note n'a été recueillie (§ 9.dq).
+- Sous 640 px, les cartes défilent de côté (accroche magnétique, la suivante dépasse) ;
+  au-delà, deux par ligne. Les quatre sont toujours dans le HTML.
+
+**Mesure**
+
+- Continu : `practice-journeys` (rang 6), `presentation-video` (rang 3), `partners`
+  (rang 8), `testimonials` (rang 7), `cta_signup_journey_section`,
+  `landing_journey_*` pour `remplacant`, `interne`, `mixte`, `data-calendly="pour_qui"`,
+  les `landing_video_*`, `landing_partner_silr`, `_crp_img`, `_sioi`, `_aimgl`,
+  `_doctripper`. Vérifié dans le navigateur, en décodant les envois de la page :
+  chaque section vue une fois avec son rang, un `landing_journey_profile_selected` par
+  clic, `landing_cta_clicked` et `landing_journey_cta_clicked` avec le profil,
+  `calendly_clicked` (`fondateur`, `pour_qui`), `landing_video_play`.
+- Nouveau : `founder` (rang 12, ajouté en fin de `SECTIONS` : le rang dit qu'il est
+  arrivé en dernier, pas sa place sur la page), profil `vacataire`
+  (`landing_journey_profile_vacataire`), `data-calendly="fondateur"`,
+  `landing_partner_homedoc` sur l'accueil, `landing_nav_comment_ca_marche` et
+  `landing_mobile_nav_comment_ca_marche`.
+- Arrêt : `landing_journey_profile_collaborateur` et `_installe` ; sur l'accueil,
+  `landing_nav_decouvrir` et `landing_mobile_nav_decouvrir` (ils continuent sur les
+  autres pages jusqu'à la phase 5a).
+- ⚠️ À annoter dans PostHog le jour de la bascule : le film est maintenant le cinquième
+  bloc, après « Pour qui » (il était le troisième) : `presentation-video`
+  et `landing_video_section_viewed` vont baisser d'un coup ; les partenaires passent
+  avant les témoignages ; les choix de profil au clavier sont comptés.
+- **`SECTIONS_LANDING`** (verify-site) : `hero`, `features`, `practice-journeys`,
+  `founder`, `presentation-video`, `partners`, `testimonials`, `mid-page-cta`, `pricing`,
+  `faq`. `mid-page-cta` part avec le lot des tarifs.
+- **Gardes ajoutées à `verify-site.mjs`** (contrôle « 4 quater ») : la section
+  `practice-journeys` porte `id="parcours"` ; quatre radios `parcours-<profil>` dont une
+  seule cochée, un libellé `data-profile` et un panneau par profil ;
+  `cta_signup_journey_section` dans le bloc ; l'élément `presentation-video` porte
+  `id="film-presentation"` et contient le `<video>` (ce dernier contrôle était prévu en
+  phase 4a). Chacune échoue quand on casse le HTML (sept cas essayés).
+- ⚠️ **Les autres pages changent d'un nom de fichier.** `founder` entre dans `SECTIONS`,
+  donc le module `analytics-init` change (+10 octets) et, avec lui, l'empreinte du
+  script PostHog que charge chaque page. 69 fichiers HTML hors accueil diffèrent de
+  `main` par ce seul nom (`PostHog.astro_…BRP-IoQN.js` au lieu de `…DokPdaiA.js`),
+  vérifié fichier par fichier ; 65 autres fichiers sont identiques à l'octet. La feuille
+  globale ne bouge pas.
+
+**Textes nouveaux, mot pour mot (lot B)**
+
+- Menu de l'en-tête : « Comment ça marche »
+- « Pour qui », profil : « Vacataire », « centre / maison de santé » (libellé de la
+  boussole de `/guide-declarations`)
+- Vacataire, étape 1 : « Tes vacations dans le même calendrier » ; « Centre de santé,
+  maison de santé, cabinet : autant de lieux que tu veux, chacun avec ses règles de
+  calcul. » ; « Récurrences possibles, par exemple tous les mercredis au centre
+  médical. »
+- Vacataire, étape 2 : « Tes honoraires suivis, structure par structure » ; « La
+  structure te verse tes honoraires : payés, en attente, planifiés. » ; « PDSA suivie de
+  la même façon. »
+- Fondateur : H2 « Un médecin remplaçant derrière Hippodoc » ; légende de la photo
+  « Ryan, médecin remplaçant » ; texte alternatif « Ryan Goburdhun, médecin remplaçant
+  et fondateur d’Hippodoc » ; « journées et lieux au 15 août 2026 »
+- Partenaires, témoignages : aucun.
+
+Les deux étapes du vacataire (une soixantaine de mots) reprennent des faits déjà
+publiés sur `/faq` et dans la boussole. « Vacataire » y désigne, comme ailleurs sur le
+site, un libéral payé à la vacation par une structure. **À faire valider par le
+propriétaire** ; s'il les refuse, l'onglet ne garde que les quatre étapes reprises.
+
+**Textes repris, mot pour mot** (comparés par script au HTML produit : 149 contrôles)
+
+- « Pour qui » (`home/JourneySection.astro`) : le titre « Quel que soit ton mode
+  d'exercice, Hippodoc te suit. », l'introduction, les libellés et précisions des
+  profils, les 6 étapes de l'interne et les 6 du mixte (titre, accroche, détail), les 7
+  titres et les 7 lignes de détail du remplaçant, « Prêt·e à voir ton Super-Net ? »,
+  « Crée ton compte et retrouve ce parcours appliqué à tes propres chiffres. »,
+  « Essayer 30 jours gratuitement », la ligne « Ton cas n'est pas listé — … ».
+- Fondateur (`home/FaqSection.astro`, carte de fin de FAQ) : « Ryan est médecin
+  remplaçant. Il a construit Hippodoc parce qu'il en avait besoin, et il s'en sert tous
+  les jours. En 15 minutes, il t'ouvre son propre compte — son planning, ses contrats,
+  ce qu'il lui reste vraiment à la fin du mois — et tu lui poses tes questions. Rien à
+  préparer. En visio, ou il t'appelle. » ; « Prendre 15 min avec Ryan ». ⚠️ Provisoire :
+  le paragraphe et le bouton figurent deux fois sur la page tant que l'ancienne FAQ est
+  là.
+- Chiffres (`home/SocialProofSection.astro`) : « 900+ », « Médecins inscrits » ;
+  « 19 400 », « Journées enregistrées » ; « 2 379 », « Lieux d'exercice référencés ».
+- Film (`home/PresentationVideoSection.astro`) : « Hippodoc en 90 secondes » (en `<h3>`),
+  « URSSAF, CARMF, impôts, Super-Net : tu vois enfin ce qu'il te reste vraiment. »,
+  `PRODUCT_DEFINITION`, « 90 s ».
+- Partenaires : textes de `/qui-sommes-nous` et de `/faq`, voir plus haut. **Textes
+  repris d'une autre page du site.**
+- Témoignages : le titre « Ce qu'en disent nos utilisateurs » et les quatre textes.
+
+**Textes retouchés**
+
+- « Sans engagement · Déjà 900+ médecins » devient « Sans engagement » (« 900+ » est au
+  premier écran et dans le bloc fondateur).
+- Guillemets français autour des quatre témoignages.
+
+**Textes retirés**
+
+- Parcours : les profils « Collaborateur » et « Installé » (14 étapes), la mention
+  « Bêta » et sa note, la pastille « Parcours · 5 profils », les trois réassurances
+  (« Forum modéré par des médecins », « Blog fiscal mis à jour chaque mois », « Support
+  réactif »), « Pensé par un médecin, pour tous les médecins — de l'internat à la
+  retraite. ». La phrase des régimes n'est plus que dans « Sous la surface ».
+- Film : la pastille « Nouveau · Film de présentation » ; « Tu factures. Hippodoc
+  calcule le reste. » n'est plus que dans « Sous la surface ».
+- Témoignages : les 11 autres (chacun était écrit deux fois dans le HTML, pour le
+  défilement en boucle), la pastille « Témoignages · La communauté », « Découvre
+  pourquoi plus de 900 médecins font confiance à Hippodoc », les cinq étoiles.
+- Partenaires : la pastille « Partenaires · Officiels », « Nos partenaires
+  institutionnels », « Hippodoc est soutenu par des acteurs de référence de l'innovation
+  et de la santé en France. », la pastille et le titre « Syndicats d'internes &
+  partenaires de l'écosystème médical », la phrase qui suivait, les textes alternatifs
+  « … partenaire Hippodoc gestion médicale ».
+
+**Écarts assumés par rapport à la maquette validée (lot B)**
+
+- La maquette n'avait ni bloc « Pour qui », ni témoignages, ni bloc de partenaires :
+  ces trois blocs sont dessinés dans son vocabulaire (feuilles, fiches en pâte à
+  modeler, pastilles), sans modèle à comparer. Seul le bloc fondateur se compare.
+- Bloc fondateur : paragraphe complet (la maquette l'avait coupé et sans tirets) ; trois
+  chiffres au lieu de deux, libellés d'origine (majuscule) ; la date dit ce qu'elle
+  couvre ; le vrai lecteur à la place de l'image liée ; « 90 s » dans la pastille au
+  lieu de « Voir le film » (texte nouveau évité) ; `PRODUCT_DEFINITION` sous le titre du
+  film ; les soutiens passent dans le bloc suivant. Hauteur, maquette → accueil :
+  1 877 → 1 888 px à 320 px, 1 796 → 1 734 px à 390 px, 1 777 → 1 806 px à 768 px,
+  1 255 → 1 172 px à 1 440 px (la maquette y compte la ligne des soutiens).
+- Titre du bloc fondateur : 30 px au moins et non 32. À 32 px, « Un médecin remplaçant »
+  tenait sur une ligne à 390 px à 0,2 px près, d'un côté ou de l'autre selon le rendu.
+  À 30 px, deux lignes à partir de 375 px, avec de la marge.
+- Feuilles : 24 px de moins en haut et en bas sous 560 px (voir plus haut).
+- Onglets de « Pour qui » : contour blanc à 62 % sur le bleu (3,30:1 au plus clair du
+  dégradé ; à 34 % il ne faisait que 1,98:1).
+
+**Vérifié (lot B)**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, 3 avertissements
+  (inchangés).
+- `dist` comparé à `main` : `index.html`, les images et `index.*.css` dans `_astro/`,
+  les deux modules de mesure, et le nom du script PostHog dans 69 pages (voir
+  « Mesure »). Feuille globale identique à l'octet (`BaseLayout.CmJyzVOB.css`).
+  `index.*.css` : 48,5 → 64,9 Ko (9,5 → 12,1 Ko gzip). `index.html` : 288,7 → 160,5 Ko.
+- Mots dans `<main>` (même comptage avant et après) : 3 980 avant ce lot, **2 954
+  après**. Les quatre blocs en portent 1 069 (« Pour qui » 709, panneaux masqués
+  compris ; fondateur 142 ; partenaires 73 ; témoignages 145). La baisse vient surtout
+  des 15 témoignages écrits deux fois et des deux parcours retirés. Au-dessus du
+  plancher du plan (2 000) ; le relevé définitif se fait en fin de phase 3.
+- Captures Chromium à 320, 390, 560, 768, 900, 1 024 et 1 440 px, les quatre profils
+  ouverts tour à tour, le bloc fondateur côte à côte avec la maquette rendue avec sa
+  police ; plus un défilement écran par écran avec le mouvement, à 390 et 1 440 px.
+  Aucun défilement horizontal.
+- Accessibilité (Chromium) : arbre d'accessibilité relu (quatre régions nommées par
+  leur `<h2>`, groupe de quatre radios nommé par l'introduction, étapes en liste,
+  citations en `<blockquote>` dans des figures nommées par leur auteur). Titres : `<h2>`
+  puis `<h3>`, sans saut. Clavier : Tab arrive sur le profil coché, les flèches changent
+  de parcours, anneau de 3 px (blanc sur le bleu de la fiche et sur le film, encre
+  ailleurs), aucun élément focalisé sous la pastille de l'en-tête. Cibles : aucune sous
+  44 × 44 px dans les quatre blocs, aux quatre largeurs (le lien « Prends 15 min avec
+  Ryan », dans une phrase, a une zone de 44 px de haut). Espacements imposés
+  (WCAG 1.4.12) à 320, 390, 768 et 1 440 px, quatre profils : aucun texte rogné, aucun
+  défilement horizontal. Mouvement réduit : 0 animation dans les quatre blocs.
+  Contrastes forcés : un contour marque le profil choisi. Sous 640 px, Chromium rend la
+  rangée de témoignages focalisable d'elle-même (défilement aux flèches).
+- Contrastes calculés : `--ink-2` 6,98:1 sur le ciel, 7,92:1 sur le sable, 7,67:1 sur
+  `--sky-soft`, 8,55:1 sur blanc ; `--ink-3` 5,27:1 sur le sable (la date) ; blanc sur
+  la fiche bleue 5,88:1 à 7,51:1, `--on-deep-2` 4,73:1 à 6,03:1 ; encre sur le jaune
+  10,78:1 ; blanc sur l'encre (légende de la photo) 14,92:1.
+- Mascotte `f-pointe` : PNG détouré converti en WebP sans perte, pixels identiques
+  (981 × 1 074 px), servie en AVIF et WebP à 150, 300, 450 et 620 px (4,1 à 21,6 Ko en
+  AVIF).
+- CLS : police à l'heure, puis retardée de 2 s, défilement de toute la page, à 320, 390, 768 et
+  1 440 px : inchangé (0, puis 0,0003 à 0,0021, les mêmes valeurs qu'avant le lot).
+- Lighthouse mobile en local (12.8.2), 5 passages alternés, avant → après :
+  performance 98, 97, 97, 99, 97 → 97, 97, 97, 97, 97 ; accessibilité 100 → 100 ; bonnes
+  pratiques 96 → 96 ; SEO 100 → 100 ; LCP simulé médian 2,52 s → 2,54 s (même effet de
+  seuil que dans le lot A, élément LCP inchangé) ; TBT médian 37 → 20 ms ; CLS 0 → 0 ;
+  poids 284 → 283 Ko. Deux audits ne sont plus signalés : images sans dimensions (anciens
+  logos) et nom accessible différent du libellé visible.
+
+**Connu, à traiter (lot B)**
+
+- **WebKit et Firefox non testés** (moteurs absents de la machine) : `:has()` sur les
+  radios, fiche collante, défilement magnétique des témoignages, `display: contents`
+  sur `<picture>`.
+- **Témoignages sous 640 px** : la rangée défile de côté. Chromium et Firefox la rendent
+  focalisable au clavier d'eux-mêmes ; Safari ne le fait pas (fenêtre étroite sur
+  ordinateur, clavier seul : pas de défilement aux flèches). Lui donner `tabindex="0"`
+  ajouterait un arrêt de tabulation inutile sur ordinateur, où rien ne défile.
+- **« Dr » devant les internes** (Dr Anaïs V., Interne) : repris tel quel, un interne
+  n'est pas encore docteur. À corriger avec la réponse du propriétaire, qui doit aussi
+  confirmer prénom, initiale, qualité et accord de chacun des quatre.
+- **Texte du vacataire** : deux étapes nouvelles à valider (voir plus haut).
+- **Essai prolongé** : « Certains syndicats d'internes partenaires donnent aussi droit à
+  un essai prolongé. » est repris de `/faq` ; à confirmer (lesquels ?). « HomeDoc » ou
+  « Homedoc » : écrit comme sur `/qui-sommes-nous`.
+- **Chiffres** : « 19 400 » et « 2 379 » datent du 15 août ; un relevé le jour de la
+  mise en ligne permettrait de retirer la date.
+- **Répétitions provisoires** : le paragraphe du fondateur et « Prendre 15 min avec
+  Ryan » (ancienne carte de fin de FAQ), « 900+ » une troisième fois (ancien bandeau du
+  milieu), « hébergées en France » (anciens tarifs). Elles partent avec le lot suivant.
+- **Poses** : la mascotte féminine « présente » est gardée pour les tarifs, où la
+  maquette la place ; « pouce levé » n'est pas encore utilisée.
+- **Longueur de la page à 390 px** : 17 065 → 17 679 px (bannière et en-tête
+  compris). ⚠️ Les quatre blocs font 614 px de plus que les quatre sections qu'ils
+  remplacent : 2 131 px pour « Pour qui » (profil remplaçant), 1 734 pour le fondateur et
+  le film (le portrait et le paragraphe n'existaient pas à cet endroit), 1 498 pour les
+  partenaires, 558 pour les témoignages. À 1 440 px la page raccourcit (13 233 →
+  12 994 px). Le critère du plan (11 168 px) se mesure en fin de phase 3 ; il est à
+  revoir avec le propriétaire, la page porte maintenant des blocs que la maquette
+  n'avait pas.
+- Affiche du film hors `astro:assets` (60 Ko, chargée avec la page comme avant : un
+  `<video>` charge son affiche même en `preload="none"`).
+- Le titre, la description et le `VideoObject` citent encore « installés,
+  collaborateurs » : prévu en phase 4c.
+- CLAUDE.md non mis à jour (phase 4a) : le script du film a changé de fichier.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

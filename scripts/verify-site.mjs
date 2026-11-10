@@ -272,10 +272,12 @@ for (const h of vercelJson.headers ?? []) {
    — et ce silence a déjà coûté cinq semaines de données après la bascule du
    07/08/2026. On le rend bruyant. */
 // DA 2026, phase 3 : « social-proof » (section « En chiffres ») a quitté la page.
-// L'ordre suit celui de la page ; `features` est maintenant le bloc « Sous la surface ».
+// L'ordre suit celui de la page ; `features` est le bloc « Sous la surface »,
+// `founder` (nouveau) contient le film (`presentation-video`).
+// `mid-page-cta` part avec les tarifs de la nouvelle DA (lot suivant).
 const SECTIONS_LANDING = [
-  'hero', 'features', 'presentation-video', 'mid-page-cta',
-  'practice-journeys', 'testimonials', 'partners', 'pricing', 'faq',
+  'hero', 'features', 'practice-journeys', 'founder', 'presentation-video',
+  'partners', 'testimonials', 'mid-page-cta', 'pricing', 'faq',
 ];
 const accueil = readFileSync(resolve(dist, 'index.html'), 'utf8');
 const sectionsVues = [...accueil.matchAll(/data-landing-section="([^"]+)"/g)].map((m) => m[1]);
@@ -332,6 +334,40 @@ const mentionsDemo = (accueil.match(/Compte de démonstration/g) ?? []).length;
 if (mentionsDemo !== 1) {
   fail(`accueil : « Compte de démonstration » doit figurer une fois, dans le pied de la fenêtre produit — trouvé ${mentionsDemo} fois`);
 }
+// « Pour qui » (DA 2026, phase 3) : le sélecteur de profil, sans JS.
+// - `id="parcours"` est la cible du lien « Pour qui » du menu, sur TOUT le site ;
+// - quatre radios `parcours-<profil>` (une seule cochée) et quatre panneaux dans le
+//   HTML : landing-analytics lit l'identifiant de la radio cochée, et chaque libellé
+//   porte `data-profile` (sans lui, `landing_journey_profile_selected` ne part plus) ;
+// - la conversion du bloc garde son identifiant.
+const pourQui = accueil.match(/<section\b[^>]*data-landing-section="practice-journeys"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!/^<section\b[^>]*\sid="parcours"/.test(pourQui)) {
+  fail('accueil : la section data-landing-section="practice-journeys" ne porte plus id="parcours" (cible de /#parcours)');
+}
+const PROFILS_POUR_QUI = ['remplacant', 'interne', 'vacataire', 'mixte'];
+const radiosProfil = [...pourQui.matchAll(/<input\b[^>]*type="radio"[^>]*name="parcours"[^>]*>/g)].map((m) => m[0]);
+for (const profil of PROFILS_POUR_QUI) {
+  if (!radiosProfil.some((r) => r.includes(`id="parcours-${profil}"`))) fail(`accueil, « Pour qui » : radio id="parcours-${profil}" absente — le profil ne serait plus mesuré`);
+  if (!new RegExp(`<label\\b[^>]*data-profile="${profil}"`).test(pourQui)) fail(`accueil, « Pour qui » : libellé data-profile="${profil}" absent — landing_journey_profile_selected ne partirait plus pour lui`);
+  if (!pourQui.includes(`data-panel="${profil}"`)) fail(`accueil, « Pour qui » : panneau data-panel="${profil}" absent du HTML`);
+}
+if (radiosProfil.length !== PROFILS_POUR_QUI.length || radiosProfil.filter((r) => /\schecked\b/.test(r)).length !== 1) {
+  fail(`accueil, « Pour qui » : ${PROFILS_POUR_QUI.length} profils attendus, dont un seul coché — trouvé ${radiosProfil.length} radio(s)`);
+}
+if (!pourQui.includes('data-track="cta_signup_journey_section"')) {
+  fail('accueil : data-track="cta_signup_journey_section" absent du bloc « Pour qui » — sa série PostHog s\'arrête');
+}
+// Le film (DA 2026, phase 3) est un sous-bloc du bloc fondateur. landing-analytics
+// cherche le <video> DANS l'élément `presentation-video` : ailleurs, tous les
+// `landing_video_*` s'arrêtent sans erreur. Cet élément porte aussi l'ancre
+// `#film-presentation`, que Header.astro vise encore depuis les autres pages.
+const blocFilm = accueil.match(/<(\w+)\b[^>]*data-landing-section="presentation-video"[^>]*>/);
+const finFondateur = accueil.indexOf('</section>', blocFilm?.index ?? 0);
+if (!blocFilm || !/\sid="film-presentation"/.test(blocFilm[0])) {
+  fail('accueil : l\'élément data-landing-section="presentation-video" ne porte plus id="film-presentation"');
+} else if (!/<video\b/.test(accueil.slice(blocFilm.index, finFondateur))) {
+  fail('accueil : le <video> n\'est plus dans le bloc data-landing-section="presentation-video" — landing_video_* ne partirait plus');
+}
 
 /* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).
    L'accueil est servie par src/components/da/HeaderDA.astro et FooterDA.astro,
@@ -346,8 +382,14 @@ if (mentionsDemo !== 1) {
    dans ECARTS_ENTETE_PIED_DA, avec la section de MIGRATION.md qui le décide.
    À retirer en phase 5a, quand les copies remplacent les originaux. */
 const ECARTS_ENTETE_PIED_DA = [
-  // Forme : le repère tel que l'erreur l'affiche, par exemple
-  // 'header : a | /#film-presentation | landing_nav_decouvrir |  |  | Découvrir',
+  // Forme : le repère tel que l'erreur l'affiche.
+  // Phase 3 (MIGRATION.md § 9, arbitrage 8 du plan) : sur l'accueil, « Découvrir »
+  // (le film) sort du menu et « Comment ça marche » y entre, à la même place.
+  // Menu d'ordinateur, puis tiroir mobile ; Header.astro garde « Découvrir ».
+  'header : a | /#film-presentation | landing_nav_decouvrir |  |  | Découvrir',
+  'header : a | /#film-presentation | landing_mobile_nav_decouvrir |  |  | Découvrir',
+  'header : a | /#sous-la-surface | landing_nav_comment_ca_marche |  |  | Comment ça marche',
+  'header : a | /#sous-la-surface | landing_mobile_nav_comment_ca_marche |  |  | Comment ça marche',
 ];
 function reperesNavigation(html, balise) {
   const bloc = html.match(new RegExp(`<${balise}\\b[\\s\\S]*?</${balise}>`))?.[0];
