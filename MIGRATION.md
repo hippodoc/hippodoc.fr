@@ -5855,6 +5855,33 @@ et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` 
   « Chiffres ») : à corriger par le propriétaire (« datés dans le code et dans
   MIGRATION.md »).
 
+**4. Guides : la CARMF entre, la licence de remplacement sort** (`accueil/Guides.astro`)
+
+- Ordre : Simulateur Super-Net (`/simulateur`), Guide des déclarations
+  (`/guide-declarations`), Guide du remplaçant (`/guide`), « Remplacement régulier : le
+  risque de requalification », **« CARMF : cotisations 2026 du médecin remplaçant »**
+  (`/blog/tout-comprendre-carmf`, nouveau, cinquième), « Régularisation URSSAF : l'effet
+  ciseaux expliqué » (passe de la cinquième à la sixième place).
+- Sort : « Licence de remplacement interne : dossier et délais », « Conditions, pièces
+  du dossier, envoi au CDOM » (`/blog/obtenir-sa-licence-de-remplacement`). L'article
+  n'a plus de lien depuis l'accueil ; il en garde depuis huit autres pages.
+- Texte ajouté : le titre de l'article CARMF, tel quel, et le début de sa description,
+  comme pour les autres articles du bloc : « Affiliation dès le premier rempla, calcul
+  sur ton revenu et non sur ton CA ». Rien d'autre ne change dans le bloc.
+- **Pourquoi** : visiteurs sur 90 jours (PostHog, chiffres du propriétaire) :
+  simulateur 385, requalification 293, guide des déclarations 256, guide 115, CARMF 48,
+  licence 28. L'effet ciseaux est gardé comme **pari éditorial** (le sujet le plus
+  demandé du corpus) : à réévaluer aux clics de `landing_guide_effet_ciseaux`. Réserve
+  du propriétaire : une faible audience peut aussi venir d'articles qui n'ont jamais
+  été mis en avant ; les clics de ce bloc le diront.
+- **Mesure** : `landing_guide_licence` **s'arrête** (série ouverte le jour même par
+  § 9.eb, quelques heures de données) ; `landing_guide_carmf` **commence**. Les cinq
+  autres continuent, mais `effet_ciseaux` change de rang (5 → 6) : à annoter dans
+  PostHog avec le reste.
+- L'article CARMF était déjà lié depuis une réponse de la FAQ de l'accueil : deux liens
+  vers lui sur la page, assumé (l'ancien critère « pas déjà lié » cède à l'audience).
+  La liste des six guides n'est plus « à confirmer » (§ 9.eb, « Reste ouvert »).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
