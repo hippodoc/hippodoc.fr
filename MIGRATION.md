@@ -5935,6 +5935,15 @@ sortent** (`accueil/Guides.astro`)
   du portrait. À partir de 900 px : 320 × 569 px, centré dans la colonne du portrait
   (380 px), le texte du film dans la colonne du texte du fondateur, au même bord
   gauche. Dans le code, le texte reste avant le cadre.
+- **Pastille de lecture sur téléphone** (correction du 11 novembre). La pastille jaune
+  « 1 min », seul signe que le cadre est un film, était en bas à gauche d'un cadre de
+  533 px de haut : sur un écran de 390 × 844 px, titre du film sous l'en-tête, elle
+  tombait à 861 px, hors écran (890 px sur un écran de 320 × 568 px), et le haut du
+  cadre ressemblait à une image. Sous 700 px, elle est maintenant **en haut du cadre,
+  centrée**, dans le bleu vide de l'affiche (20 px sous le bord). CSS seul, le script
+  n'est pas touché. Mesuré à 320, 360, 390, 560 et 699 px : la pastille est à l'écran
+  dès que 70 px du cadre y sont. À partir de 700 px, rien ne change (le cadre tient
+  entier à l'écran, pastille en bas à gauche).
 - **Inchangé** : `<video preload="none">`, le bouton de lecture et son script (un mot
   d'un commentaire mis à jour), `id="film-presentation"`,
   `data-landing-section="presentation-video"`, les événements `landing_video_*`. Aucun

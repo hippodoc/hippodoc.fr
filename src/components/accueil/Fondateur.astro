@@ -129,7 +129,8 @@ const chiffres = [
         ></video>
 
         {/* Invitation à lire : toute l'image est le bouton, la pastille jaune en
-            est le dessin (en bas à gauche, pour laisser lire l'affiche). Le
+            est le dessin (en bas à gauche, pour laisser lire l'affiche ; en haut
+            du cadre sous 700 px, voir la feuille). Le
             lecteur natif dessine un bouton trop discret : mesuré sur 120 jours,
             9,4 % de ceux qui voyaient le film le lançaient. `preload="none"` est
             gardé, d'où l'état d'attente : sans lui, on croit que rien ne se passe. */}
@@ -263,6 +264,14 @@ const chiffres = [
   .affiche img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
   .film-play:focus-visible { outline-offset: -7px; }
   .pill { position: absolute; left: 16px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px 0 16px; border-radius: var(--r-pill); background: var(--sun); font-size: 16px; font-weight: var(--tb); box-shadow: 0 4px 0 var(--sun-edge); transition: translate 120ms var(--ease), background-color 160ms var(--ease); }
+  /* Sous 700 px, le cadre (533 px de haut) dépasse de l'écran quand le titre
+     du film est sous l'en-tête : la pastille du bas restait hors champ, et le
+     haut du cadre ressemblait à une image. Elle passe en haut, centrée, dans
+     le bleu vide de l'affiche : seul signe que c'est un film, elle se voit dès
+     que le cadre entre à l'écran (MIGRATION.md § 9.ec). */
+  @media (max-width: 699px) {
+    .pill { left: 0; right: 0; top: 20px; bottom: auto; width: fit-content; margin-inline: auto; }
+  }
   .film-play:hover .pill { background: var(--sun-hover); }
   .film-play:active .pill { translate: 0 4px; box-shadow: 0 0 0 transparent; }
   .pill svg[hidden] { display: none; }
