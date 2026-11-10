@@ -5096,7 +5096,7 @@ ne regardait que la requête (`?…`), jamais le fragment.
   concernés (fondateur). Changer le Site URL Supabase vers l'app : seulement après avoir
   relevé les modèles d'e-mail.
 
-### 9.?? DA 2026 : nouvelle page d'accueil (lettre à prendre à la fusion) (10 novembre 2026)
+### 9.eb DA 2026 : nouvelle page d'accueil (10 novembre 2026)
 
 Nouvelle direction artistique, « le monde d'Hippodoc » : un ciel du matin, une eau en
 pâte à modeler, tout en rond, le jaune réservé à « ce qu'il te reste ». Elle s'applique
@@ -5734,7 +5734,7 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
    `origin/main` a avancé : rebaser, puis `npm run build` et
    `node scripts/verify-site.mjs` : 0 erreur.
 4. Prendre la lettre de cette entrée (la première libre après § 9.ea) et remplacer
-   « 9.?? » dans son titre. Les commentaires du code citent « MIGRATION.md § 9 » sans
+   « 9.eb » dans son titre (fait le 10 novembre 2026). Les commentaires du code citent « MIGRATION.md § 9 » sans
    lettre.
 5. Dater les pages dont le texte change, dans `src/lib/pages-lastmod.ts`, à la date
    réelle de mise en ligne (note dans le fichier) : « / », et aussi `/faq` et
