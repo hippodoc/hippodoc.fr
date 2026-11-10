@@ -126,7 +126,9 @@ const aMettreDeCote = [
 
   /* Les extraits d'écran, posés au bas de chaque case */
   .frag { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: end; gap: 0; margin: auto 0 0; padding-top: 8px; }
-  .frag .pointe { display: none; position: relative; z-index: 1; width: 110%; margin: 0 0 -7% 8%; }
+  /* Son doigt s'arrête dans la marge de la fiche (24 px), devant la ligne qu'il
+     montre : à 110 % de large et 8 % de marge, il recouvrait le jour (« dim. 19 »). */
+  .frag .pointe { display: none; position: relative; z-index: 1; width: 100%; margin: 0 0 -7% 5%; }
   .card { position: relative; padding: 18px 18px 14px; border-radius: 22px 22px 0 0; background: var(--paper); box-shadow: 0 -10px 30px -16px rgba(13, 40, 105, 0.4); }
   .c-white .card { background: var(--sky-soft); box-shadow: none; }
   .card-t { margin: 0 0 6px; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }

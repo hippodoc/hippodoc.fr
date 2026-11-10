@@ -29,6 +29,12 @@
  *   plus sur une ligne.
  * - « 120 € de moins… » : un surlignage jaune, pas une pastille. S'il passe sur
  *   deux lignes (320 px), chaque ligne garde son trait arrondi.
+ * - Offre interne : décision 13b du propriétaire (10 novembre 2026), internes
+ *   et docteurs juniors, 10 € par mois jusqu'à la fin de l'internat. Dit tel
+ *   quel sur la carte, dans son pli et dans la FAQ (src/data/faqAccueil.ts).
+ * - Sur ordinateur, la mascotte ne passe plus sous l'en-tête collant : là où le
+ *   navigateur sait lier une animation au défilement, elle descend derrière la
+ *   carte à mesure que l'en-tête approche (voir `.guide`, plus bas).
  * - Titres : un <h2>, puis des <h3> (les trois offres, « Inclus », le RSPM).
  */
 import '@/styles/da.css';
@@ -122,9 +128,9 @@ const rspm = [
 
       <article class="offer interne">
         <Mascotte pose="f-presente" class="guide" largeurs={[250, 375, 500]} sizes="250px" />
-        <h3>Interne</h3>
+        <h3>Interne et docteur junior</h3>
         <p class="price"><b class="aff num">10 €</b>{' '}<span>par mois</span></p>
-        <p>Encore en formation</p>
+        <p>Jusqu’à la fin de l’internat</p>
         <p>30 jours gratuits</p>
         {/* Le texte de l'offre s'ouvre dans la carte : /tarifs ne parle pas des internes. */}
         <details data-ph="landing_special_offer_intern">
@@ -135,7 +141,7 @@ const rspm = [
           <div class="more">
             <p>Vous êtes encore en internat&nbsp;? On sait que c'est pas facile financièrement. Hippodoc vous accompagne avec un tarif adapté.</p>
             <p><b>Avantage&nbsp;: 10&nbsp;€/mois au lieu de 29&nbsp;€ + 30 jours d'essai gratuit</b></p>
-            <p>Pendant toute la durée de votre internat</p>
+            <p>Internes et docteurs juniors, jusqu’à la fin de l’internat</p>
             <p><b>Justificatifs acceptés&nbsp;:</b></p>
             <ul>
               <li>Carte d'étudiant en cours de validité</li>
@@ -303,6 +309,16 @@ const rspm = [
 
   .fine { margin: 20px 0 0; font-size: 14.5px; color: var(--ink-2); }
 
+  /* Téléphone : cartes moins hautes, intervalles resserrés (la page est longue). */
+  @media (max-width: 559px) {
+    .band-head { margin-bottom: 26px; }
+    .plans { gap: 12px; }
+    .offer { gap: 4px; padding: 22px 24px 24px; }
+    .price b { --corps: 54px; }
+    .offer > p:last-of-type { margin-bottom: 14px; }
+    .incl { margin-top: 30px; padding-top: 24px; }
+    .plis { margin-top: 26px; }
+  }
   /* Petits téléphones : « Commencer 30 jours gratuits » tient sur une ligne. */
   @media (max-width: 374px) {
     .offer { padding: 24px 22px; }
@@ -357,6 +373,23 @@ const rspm = [
     }
   }
   @keyframes tarifs-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+  /* La mascotte ne passe pas sous l'en-tête collant (son visage disparaissait
+     sous « Essai gratuit » quand les trois offres étaient à l'écran). Quand son
+     cadre atteint le bas de l'en-tête (60 px à 10 px du haut, 6 px d'air), elle
+     descend derrière la carte, d'autant que la page monte : le haut de son
+     chignon reste sous l'en-tête, puis elle disparaît derrière la carte. Le
+     cadre rogne déjà l'image à 52 % de sa hauteur (698 px sur 1342) : la
+     descendre de 52,01 % la cache en entier. Sans animation liée au
+     défilement (Firefox), ou si le visiteur a demandé moins de mouvement, elle
+     passe sous l'en-tête comme avant. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    @supports (animation-timeline: view()) and (view-timeline-inset: 76px 0px) {
+      .guide { view-timeline-name: --tarifs-guide; view-timeline-axis: block; view-timeline-inset: 76px 0px; }
+      .guide :global(img) { animation: tarifs-plonge linear both; }
+      picture.guide :global(img) { animation-timeline: --tarifs-guide; animation-range: exit 0% exit 100%; }
+    }
+  }
+  @keyframes tarifs-plonge { to { translate: 0 52.01%; } }
   /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend sa forme à la fiche. */
   @media (forced-colors: active) { .offer { border: 1px solid CanvasText; } }
 </style>

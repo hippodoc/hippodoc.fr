@@ -188,12 +188,18 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
    dernière feuille. */
 :where(.da) .band { position: relative; z-index: 1; margin-top: -40px; padding: 88px 0 128px; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); }
 :where(.da) .band.air { background: var(--sky); }
-/* Téléphone : la page compte plus de feuilles que la maquette, chacune rend 24 px en haut et en bas. */
+/* Téléphone : la page compte plus de feuilles que la maquette. 52 px au-dessus
+   du titre, 48 px visibles sous le contenu (les 40 autres passent sous la
+   feuille suivante). */
 @media (max-width: 559px) {
-  :where(.da) .band { padding: 64px 0 104px; }
-  :where(.da) .band-head { margin-bottom: 32px; }
+  :where(.da) .band { padding: 52px 0 88px; }
 }
 :where(.da) .band-head { display: flex; flex-direction: column; gap: 14px; max-width: 800px; margin-bottom: 44px; }
+/* Après la règle générale : placée avant elle, cette marge de téléphone ne
+   s'appliquait pas (même poids, la dernière écrite l'emporte). */
+@media (max-width: 559px) {
+  :where(.da) .band-head { margin-bottom: 26px; }
+}
 :where(.da) .band-head > * { margin: 0; }
 /* Variante centrée : casse la suite « grand titre à gauche, contenu dessous ». */
 :where(.da) .band-head.mid { align-items: center; margin-inline: auto; text-align: center; }

@@ -10,8 +10,13 @@
  *   autres sont en cours : ne pas les ajouter avant signature. La ville figure
  *   sur chaque tuile (un autre syndicat porte le sigle AIMGL).
  * - Textes repris de /qui-sommes-nous (titre, introduction, noms, villes,
- *   descriptions, textes alternatifs, liens) et de /faq (l'essai prolongé) ;
- *   aucun texte nouveau.
+ *   descriptions, textes alternatifs, liens).
+ * - Essai de 6 mois : décision 13a du propriétaire (10 novembre 2026), TOUS les
+ *   syndicats d'internes partenaires donnent 6 mois d'essai au lieu d'un mois,
+ *   sans exception. La phrase vague reprise de /faq (« Certains syndicats…
+ *   un essai prolongé ») est remplacée par une phrase exacte, mise en avant
+ *   sous les quatre tuiles : une fiche bleu profond, comme l'offre annuelle
+ *   et le sélecteur de profils. Seul texte nouveau du bloc.
  * - Mesure : `data-landing-section="partners"` (la série continue) ; les cinq
  *   `data-ph="landing_partner_*"` de l'ancienne section sont gardés,
  *   `landing_partner_homedoc` est nouveau sur l'accueil.
@@ -85,7 +90,7 @@ const partenaires = [
         </li>
       ))}
     </ul>
-    <p class="plus">Certains syndicats d'internes partenaires donnent aussi droit à un essai prolongé.</p>
+    <p class="plus"><b class="aff num">6 mois</b>{' '}<span>d’essai gratuit au lieu d’un mois, pour les adhérents de ces syndicats.</span></p>
 
     <h3>Et des partenaires pensés pour les jeunes médecins</h3>
     <ul class="parts" role="list">
@@ -138,7 +143,12 @@ const partenaires = [
   .nom { font-size: 19px; font-weight: var(--tb); line-height: 1.25; }
   .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--ink-2); }
   .ville svg { flex: none; color: var(--brand); }
-  .plus { max-width: 40rem; margin: 22px 0 0; font-size: 16.5px; color: var(--ink-2); }
+  /* L'essai de 6 mois des adhérents : une fiche bleu profond sous les tuiles,
+     le chiffre en grand (une seule phrase, lue d'un trait). */
+  .plus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin: 14px 0 0; padding: 18px 22px 20px; border-radius: 26px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); font-size: 17px; line-height: 1.4; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .plus b { --corps: 40px; flex: none; }
+  .plus span { flex: 1 1 15rem; color: var(--on-deep-2); }
+  .num { white-space: nowrap; }
 
   /* Les deux partenaires */
   h3 { margin: 60px 0 20px; font-size: clamp(22px, 2.2vw, 26px); }
@@ -162,8 +172,8 @@ const partenaires = [
   /* Téléphone : plaques et intervalles resserrés (la page est longue) ; sous
      380 px, la plaque aux deux logos et sa légende tiennent sur une ligne. */
   @media (max-width: 639px) {
-    h3 { margin: 44px 0 16px; }
-    .backers { gap: 12px 24px; margin-top: 40px; padding-top: 22px; }
+    h3 { margin: 38px 0 16px; }
+    .backers { gap: 12px 24px; margin-top: 34px; padding-top: 22px; }
     .backers ul { gap: 12px 24px; }
     .plaque { min-height: 64px; padding: 7px 14px; border-radius: 16px; }
     .plaque :global(img) { height: calc(var(--h) * 0.8); }
@@ -176,11 +186,15 @@ const partenaires = [
     .parts { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; gap: 18px; }
   }
   @media (min-width: 900px) {
+    .plus { gap: 4px 28px; margin-top: 18px; padding: 22px 34px 24px; border-radius: 30px; font-size: 19px; }
+    .plus b { --corps: 52px; }
     .synd { gap: 18px; }
     .tile { padding: 24px 20px 26px; border-radius: 36px; }
     .tile .logo { height: 112px; margin-bottom: 16px; }
     .nom { font-size: 21px; }
   }
+  /* Contrastes forcés (Windows) : sans fond, un contour rend sa forme à la fiche. */
+  @media (forced-colors: active) { .plus { border: 1px solid CanvasText; } }
   @media (prefers-reduced-motion: reduce) {
     .tile, .part { transition: none; }
     .tile:hover, .part:hover { translate: none; }

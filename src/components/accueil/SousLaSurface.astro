@@ -73,6 +73,12 @@ import Mascotte from './Mascotte.astro';
   .regime { position: relative; max-width: 820px; margin: 64px 0 0; padding-top: 24px; border-top: 1px solid var(--line-deep); font-size: 16.5px; color: var(--on-deep-2); }
   .regime b { color: var(--paper); }
 
+  /* Téléphone : intervalles resserrés (la page est longue). */
+  @media (max-width: 559px) {
+    .deep { padding-bottom: 116px; }
+    .below-head { padding-top: 60px; }
+    .regime { margin-top: 44px; }
+  }
   @media (min-width: 900px) {
     .below-head { grid-template-columns: minmax(0, 1fr) 250px; padding-top: 104px; }
     .bh-copy { padding-bottom: 56px; }

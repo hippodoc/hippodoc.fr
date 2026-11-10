@@ -52,7 +52,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'internes',
     question: 'Je suis interne : à quoi Hippodoc me sert avant mes premiers remplacements ?',
-    answerHtml: `Dès ton <strong>premier semestre</strong>. Tu suis tes <strong>gardes hospitalières</strong>, ton <strong>salaire d'interne</strong> et tes <strong>frais réels</strong> (logement de stage, déplacements CHU, congrès, livres médicaux) — ceux-là mêmes que tu déduiras de ta déclaration. Et tu prépares ton passage en <strong>remplacement libéral</strong> sans découvrir l'administratif le jour J. Un <strong>tarif réduit</strong> s'applique pendant toute ta formation (<a href="/#pricing">voir les tarifs</a>). Pour la partie impôts : <a href="/blog/guide-impots-internes-remplacants">le guide des impôts pour internes et remplaçants</a>.`,
+    answerHtml: `Dès ton <strong>premier semestre</strong>. Tu suis tes <strong>gardes hospitalières</strong>, ton <strong>salaire d'interne</strong> et tes <strong>frais réels</strong> (logement de stage, déplacements CHU, congrès, livres médicaux) — ceux-là mêmes que tu déduiras de ta déclaration. Et tu prépares ton passage en <strong>remplacement libéral</strong> sans découvrir l'administratif le jour J. Internes et docteurs juniors paient <strong>10 € par mois</strong> jusqu'à la fin de l'internat (<a href="/#pricing">voir les tarifs</a>). Pour la partie impôts : <a href="/blog/guide-impots-internes-remplacants">le guide des impôts pour internes et remplaçants</a>.`,
   },
   {
     id: 'debutants',
@@ -62,7 +62,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'tarifs',
     question: 'Combien coûte Hippodoc ?',
-    answerHtml: `<strong>29 € par mois</strong>, ou <strong>19 € par mois</strong> en facturation annuelle. Tout est inclus : aucune option payante, aucune limite au nombre de journées ou de lieux d'exercice. L'<strong>essai est gratuit pendant 30 jours</strong>, sans carte bancaire. Des <strong>tarifs réduits</strong> existent pour les internes et les médecins en fin d'internat : le détail est dans la <a href="/#pricing">section tarifs</a> juste au-dessus. Le comparatif complet est sur la page <a href="/tarifs">tarifs</a>.`,
+    answerHtml: `<strong>29 € par mois</strong>, ou <strong>19 € par mois</strong> en facturation annuelle. Tout est inclus : aucune option payante, aucune limite au nombre de journées ou de lieux d'exercice. L'<strong>essai est gratuit pendant 30 jours</strong>, sans carte bancaire. Les <strong>internes et les docteurs juniors</strong> paient <strong>10 € par mois</strong> jusqu'à la fin de l'internat : le détail est dans la <a href="/#pricing">section tarifs</a> juste au-dessus. Le comparatif complet est sur la page <a href="/tarifs">tarifs</a>.`,
   },
   {
     id: 'revenus-remplacant',

@@ -6217,11 +6217,13 @@ propriétaire** ; s'il les refuse, l'onglet ne garde que les quatre étapes repr
   ajouterait un arrêt de tabulation inutile sur ordinateur, où rien ne défile.
 - **« Dr » devant les internes** (Dr Anaïs V., Interne) : repris tel quel, un interne
   n'est pas encore docteur. À corriger avec la réponse du propriétaire, qui doit aussi
-  confirmer prénom, initiale, qualité et accord de chacun des quatre.
+  confirmer prénom, initiale, qualité et accord de chacun des quatre. **« Dr » retiré
+  (retouches du 10 novembre, plus bas) ; le reste attend toujours.**
 - **Texte du vacataire** : deux étapes nouvelles à valider (voir plus haut).
 - **Essai prolongé** : « Certains syndicats d'internes partenaires donnent aussi droit à
   un essai prolongé. » est repris de `/faq` ; à confirmer (lesquels ?). « HomeDoc » ou
-  « Homedoc » : écrit comme sur `/qui-sommes-nous`.
+  « Homedoc » : écrit comme sur `/qui-sommes-nous`. **Phrase remplacée (retouches du
+  10 novembre, plus bas) : tous, 6 mois.**
 - **Chiffres** : « 19 400 » et « 2 379 » datent du 15 août ; un relevé le jour de la
   mise en ligne permettrait de retirer la date.
 - **Répétitions provisoires** : le paragraphe du fondateur et « Prendre 15 min avec
@@ -6603,7 +6605,8 @@ dans `ECARTS_ENTETE_PIED_DA` (les trois libellés avec la flèche, les trois san
 - **À trancher par le propriétaire** : la question sur la collaboration libérale (voir
   plus haut) ; « Des tarifs réduits existent pour les internes et les médecins en fin
   d'internat » dans la réponse « Combien coûte Hippodoc ? », alors que l'offre « Jeune
-  Médecin » a été retirée (§ 9.dw) ; le texte déplié de l'offre interne, qui vouvoie
+  Médecin » a été retirée (§ 9.dw) (**réglé, retouches du 10 novembre, plus bas**) ; le
+  texte déplié de l'offre interne, qui vouvoie
   puis tutoie ; « résiliable à tout moment » pour l'offre annuelle (non repris) ; la
   liste des trois articles des guides.
 - **Mascotte de dos** : la source ne fait que 431 px de large. En densité 2 sur
@@ -6906,6 +6909,8 @@ réversibles.
 - **Longueur mobile** : 16 267 px à 390 px contre 11 168 dans le plan. Accepter une page
   plus longue que la maquette, ou choisir ce qui part (trois témoignages au lieu de
   quatre, six questions visibles et le reste sur `/faq`, cartes des tarifs compactes).
+  **Tranché (décision 13d) : tout le contenu reste, les intervalles sont resserrés sur
+  téléphone, 15 690 px. Voir les retouches du 10 novembre, plus bas.**
 - **« Abonnement 100 % déductible au régime réel. »** : à confirmer (voir plus haut).
 - **Question sur la collaboration libérale** : retirée par délégation ; à confirmer. La
   première réponse de la FAQ cite encore, dans une liste, « cabinet propre » et
@@ -6921,13 +6926,186 @@ réversibles.
 - **Témoignages** : pour les quatre retenus, confirmer prénom, initiale, qualité, **ville**
   et accord. « Dr Anaïs V., Interne » : le titre « Dr » pour une interne qui écrit « Je
   suis interne » ; « Dr Sofiane B., Médecin (SOS Médecins + cabinet) » nomme une structure
-  tierce. Aucune retouche sans sa réponse.
+  tierce. Aucune retouche sans sa réponse. **« Dr » retiré devant Anaïs V. (décision
+  13e) ; statut, ville et accord des quatre toujours attendus.**
 - **Compte de démonstration** : le calendrier affiche « Avril 2026 », avec des journées
   planifiées, à côté d'un relevé « Année 2025 », sur une page mise en ligne en novembre
   2026. Assumer une démonstration datée, ou dater les deux vues de la même période.
 - **Logo CRP-IMG** : demander un fichier propre et plus grand au syndicat.
 - WebKit et Firefox toujours non testés (moteurs absents de la machine) ; s'y ajoutent
   `box-decoration-break`, `mask` sur un pseudo-élément et `text-wrap-style: pretty`.
+
+#### Phase 3, retouches après les réponses du propriétaire (10 novembre 2026, soir)
+
+Décisions 13a à 13e du propriétaire (syndicats, tarif interne, longueur sur téléphone,
+témoignages) et quatre finitions sur grand écran. **Accueil seule, zéro JS ajouté**
+(cinq balises `<script>` dans le HTML, comme avant). Les autres pages ne changent pas
+d'un octet.
+
+**Textes (mot pour mot)**
+
+- **Syndicats, nouveau** : « 6 mois d’essai gratuit au lieu d’un mois, pour les
+  adhérents de ces syndicats. » remplace « Certains syndicats d'internes partenaires
+  donnent aussi droit à un essai prolongé. » (repris de `/faq` au lot B). Source :
+  réponse du propriétaire, « tous les syndicats d'internes donnent 6 mois au lieu de
+  1 mois (sans exception) ». Une seule phrase dans le HTML (`<p class="plus">`), « 6 mois »
+  en grand. Mise en avant : une fiche bleu profond sous les quatre tuiles, sur toute leur
+  largeur, comme l'offre annuelle et le sélecteur de profils (pas de jaune, réservé à « ce
+  qu'il te reste »). ⚠️ La carte de l'offre interne dit « 30 jours gratuits » : c'est
+  l'essai de tous ; les 6 mois sont dits pour les seuls adhérents, sans code promo affiché
+  (garde « 4 octies » de `verify-site.mjs`).
+- **Tarif interne (décision 13b : internes et docteurs juniors, 10 € par mois jusqu'à
+  la fin de l'internat)**, dit de la même façon aux quatre endroits de l'accueil :
+  - carte, titre : « Interne et docteur junior » (auparavant « Interne ») ;
+  - carte, ligne sous le prix : « Jusqu’à la fin de l’internat » (auparavant « Encore en
+    formation ») ; le prix (« 10 € par mois ») et « 30 jours gratuits » ne changent pas ;
+  - pli de l'offre : « Internes et docteurs juniors, jusqu’à la fin de l’internat »
+    (auparavant « Pendant toute la durée de votre internat ») ; le reste du pli n'est pas
+    touché (il vouvoie toujours dans sa première phrase, point déjà signalé au lot C) ;
+  - FAQ « Combien coûte Hippodoc ? » : « Les **internes et les docteurs juniors** paient
+    **10 € par mois** jusqu'à la fin de l'internat : le détail est dans la section tarifs
+    juste au-dessus. » (auparavant « Des **tarifs réduits** existent pour les internes et
+    les médecins en fin d'internat : le détail est dans la section tarifs juste
+    au-dessus. ») ;
+  - FAQ « Je suis interne… » : « Internes et docteurs juniors paient **10 € par mois**
+    jusqu'à la fin de l'internat (voir les tarifs). » (auparavant « Un **tarif réduit**
+    s'applique pendant toute ta formation (voir les tarifs). »).
+  Plus aucune mention de « fin d'internat » comme catégorie à part, ni d'offre « Jeune
+  Médecin », dans le HTML de l'accueil (vérifié par recherche dans `dist/index.html`).
+  Les deux réponses viennent de `src/data/faqAccueil.ts` : ce fichier n'alimente que
+  l'accueil (bloc Questions et schéma `FAQPage` de `/`, dérivé du même tableau).
+  `/faq` a sa propre liste dans `src/pages/faq.astro` et **ne change pas** ;
+  `home/FaqSection.astro` l'importe encore mais n'est plus rendu.
+- **Témoignages** : « Anaïs V. » (auparavant « Dr Anaïs V. »), qualité « Interne »
+  inchangée. Les trois autres attributions (« Dr Sofiane B. », « Dr Sarah M. »,
+  « Dr Émilien C. », qualités) restent celles du site. **Rien d'inventé** : ni ville, ni
+  spécialité, ni statut, bien que le propriétaire ait proposé de les inventer en
+  attendant ; ils seront ajoutés quand il les fournira, avec l'accord de chacun.
+- Aucun autre texte ajouté, retiré ou déplacé. La carte de rendez-vous des questions
+  change de place sur ordinateur (voir plus bas), ses trois textes sont identiques.
+
+**Écart connu, non traité ici : titre, description et `VideoObject` (phase 4c)**
+
+- `<meta name="description">` de `/` : « Hippodoc calcule revenus, cotisations URSSAF,
+  CARMF, impôts et Super-Net des médecins remplaçants, installés, collaborateurs ou
+  salariés. Essai 30 jours. »
+- `description` du `VideoObject` : « Film de présentation sous-titré d'Hippodoc : tu
+  factures, Hippodoc calcule le reste — URSSAF, CARMF, impôts et Super-Net pour les
+  médecins remplaçants, installés, collaborateurs ou salariés. »
+- Les deux citent « installés, collaborateurs », que la page ne vise plus (décision 1).
+  **Non modifiés**, volontairement : prévu en phase 4c, avec le titre. Déjà noté aux
+  lots B et C et dans « Reste ouvert ».
+
+**Longueur sur téléphone (décision 13d : tout garder, resserrer)**
+
+- **390 px : 16 267 → 15 690 px** (−577 px, −3,5 %). 320 px : 17 703 → 17 169. Par bloc à
+  390 px : « Sous la surface » 3 609 → 3 533, « Pour qui » 1 957 → 1 911, fondateur
+  1 734 → 1 565, partenaires 1 443 → 1 457 (la fiche des 6 mois pèse plus que la phrase
+  qu'elle remplace), témoignages 676 → 615, tarifs 1 864 → 1 704, questions 1 604 →
+  1 570, guides 1 124 → 1 078 ; premier écran, scène finale et pied inchangés (908, 658,
+  1 011). Rien n'est retiré, aucun corps de texte n'est réduit.
+- **Feuilles** (`da.css`, sous 560 px) : 52 px au-dessus du titre (64 auparavant), 48 px
+  visibles sous le contenu (64). ⚠️ La marge de téléphone sous les titres de bloc
+  (`.band-head`) était écrite **avant** la règle générale, de même poids : elle ne
+  s'appliquait pas (44 px au lieu de 32). Replacée après, à 26 px.
+- **« Sous la surface »** : 60 px au-dessus du titre (84), 44 px au-dessus du paragraphe
+  des régimes (64), 116 px de bas de bloc (148).
+- **Fondateur** : portrait à 78 % de la largeur, 290 px au plus (toute la largeur
+  auparavant : 351 → 274 px à 390 px) ; 52 px au-dessus du film (88).
+- **Tarifs** : cartes moins hautes (marges de 22 à 24 px au lieu de 28, prix en 54 px au
+  lieu de 64, 12 px entre les cartes) : 287, 284 et 284 px → 256, 253 et 253 px à 390 px.
+- **Témoignages** : le vide sous les cartes passe de 94 à 63 px à 390 px (22 px pour
+  leur ombre, les 5 px de l'indice de défilement, puis 36 px).
+- **Indice de défilement des témoignages**, sans JS : un rail de 56 × 5 px centré sous
+  les cartes, dont le curseur (un quart du rail, quatre cartes) avance avec le défilement
+  de côté. CSS seul : `scroll-timeline-name` sur la rangée, `timeline-scope` sur la
+  section, animation du curseur liée à cette ligne de temps (deux règles, deux
+  sélecteurs, comme ailleurs). Décor (`aria-hidden`). Sous 640 px seulement, et
+  seulement si le navigateur sait le faire (`@supports`) : sinon l'élément n'est pas
+  affiché et le bord de la carte suivante reste le seul indice (Firefox aujourd'hui).
+  Mesuré à 390 px : curseur à 167 → 181 px au départ, 209 → 223 px en bout de rangée.
+
+**Finitions sur grand écran**
+
+- **Case « Ton activité »** : le doigt de la mascotte recouvrait le jour de la ligne
+  qu'il montre (« dim. 19 »). Elle est un peu plus petite (100 % de sa colonne au lieu de
+  110 %) et décalée (marge de 5 % au lieu de 8 %) : le doigt s'arrête dans la marge de la
+  fiche, devant le texte. Vérifié à 900, 1 024, 1 180 et 1 440 px.
+- **Fondateur et film** : à partir de 1 180 px, le film reprend les deux colonnes du
+  dessus (380 px, puis le reste) : son texte sous le portrait, son cadre sous le texte et
+  les chiffres, au même bord gauche (il en était décalé de 20 px), 56 px sous la date des
+  relevés (88 auparavant). Le vide en biais entre les chiffres et « Hippodoc en 90
+  secondes » disparaît : les quatre éléments forment deux rangées. Le cadre fait 644 px
+  (624), `sizes` de l'affiche mis à jour. De 900 à 1 179 px : colonnes inchangées, 64 px
+  au-dessus du film. ⚠️ Écrit avec `text-wrap-style`, pas le raccourci : le mot du
+  raccourci, lu par Tailwind dans le `.astro`, ajoutait une classe à la feuille globale
+  et changeait son empreinte, donc le HTML des 70 pages (constaté, corrigé).
+- **Questions, colonne de gauche** : elle restait vide sous le lien sur toute la hauteur
+  de la liste. À partir de 900 px, la carte de rendez-vous (« Tu veux voir ce que ça
+  donne au quotidien ? », `data-calendly="faq_accueil"`, inchangé) y prend place, sous le
+  lien, et toute la colonne suit la lecture (collante si l'écran fait au moins 700 px de
+  haut ; 600 auparavant, pour le titre seul). Sous 900 px, la carte ferme toujours la
+  liste, à 18 px de la dernière question comme avant. **Contrepartie** : la carte est
+  écrite dans le HTML juste après le titre (`.cote`, qui s'efface sous 900 px, et
+  `order`) ; au clavier ou au lecteur d'écran, sous 900 px, le bouton de rendez-vous
+  arrive avant les questions alors qu'il est affiché après.
+- **Mascotte des tarifs** : quand les trois offres étaient à l'écran, son visage passait
+  sous l'en-tête collant. Là où le navigateur sait lier une animation au défilement, elle
+  descend derrière la carte interne à mesure que l'en-tête approche : le haut de l'image
+  reste à 76 px du haut de l'écran (l'en-tête finit à 70), puis elle disparaît derrière la
+  carte. CSS seul (`view-timeline` sur son cadre, à partir de 1 024 px, hors « moins de
+  mouvement »). Mesuré à 1 440 × 900 et 1 024 × 768 : haut de l'image à 76 px pour toutes
+  les positions du cadre entre 76 px et sa sortie. **Sans cette prise en charge
+  (Firefox) ou avec « moins de mouvement », rien ne change : elle passe sous l'en-tête
+  comme avant.**
+
+**Mesure**
+
+- Aucun identifiant ne change : `data-landing-section`, `data-ph`, `data-track`,
+  `data-calendly` identiques, `SECTIONS` et `SECTIONS_LANDING` non touchés,
+  `verify-site.mjs` non modifié.
+
+**Vérifié**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, 3 avertissements
+  (inchangés).
+- `dist` comparé au commit précédent hors `index.html` et `_astro/` : 134 fichiers
+  identiques à l'octet. Comparé à `main` : 65 identiques, 69 qui ne diffèrent que par le
+  nom du script PostHog, aucun autre écart. Feuille globale inchangée
+  (`BaseLayout.CmJyzVOB.css`).
+- `index.*.css` : 89,6 → 93,8 Ko (16,0 → 16,6 Ko gzip). `index.html` : 140,0 → 140,4 Ko.
+- Captures Chromium à 320, 390, 768, 1 024 et 1 440 px, bloc par bloc, avant et après,
+  regardées à 390 et 1 440 px ; aucun défilement horizontal. Hauteur de page : 768 px
+  14 004 → 14 032 ; 1 024 px 12 689 → 12 583 ; 1 440 px 12 686 → 12 605.
+- Dans le navigateur, à 390 et 1 440 px, sans erreur de script : le pli de l'offre
+  interne et les deux réponses de FAQ modifiées s'ouvrent et affichent les nouveaux
+  textes ; la colonne des questions suit la lecture à 900, 1 024 et 1 440 px, bouton de
+  rendez-vous sur une ligne.
+- Lighthouse mobile en local, 2 passages alternés, avant → après : performance 100, 100
+  → 100, 100 ; accessibilité 100 ; bonnes pratiques 96 ; SEO 100 ; CLS 0 ; poids 227 Ko
+  des deux côtés. (Réglages par défaut de l'outil : les valeurs absolues ne se comparent
+  pas à celles des lots précédents.)
+- **Non testé** : WebKit et Firefox (moteurs absents de la machine), donc l'indice de
+  défilement et la descente de la mascotte sur Safari, et leur absence propre sur
+  Firefox ; un vrai téléphone.
+
+**Reste ouvert (au propriétaire)**
+
+- **`/faq` dit encore l'ancienne phrase**, non modifiée (hors du périmètre de l'accueil) :
+  « Certains syndicats d'internes partenaires donnent aussi droit à un essai prolongé. »,
+  dans la réponse « Il y a des tarifs pour les internes ? » et dans son schéma
+  `FAQPage`. La même réponse dit « Pendant tout ton internat, Hippodoc te coûte 10 € par
+  mois au lieu de 29 € », sans citer les docteurs juniors. À aligner sur les décisions
+  13a et 13b. `/tarifs` et `/qui-sommes-nous` ne parlent ni d'essai prolongé ni de tarif
+  interne.
+- **Témoignages** : statut exact, ville et accord de Sofiane B., Anaïs V., Sarah M. et
+  Émilien C. ; « Dr » devant les trois autres à confirmer.
+- **Chiffres du bloc fondateur** : « 19 400 » et « 2 379 » datent du 15 août ; relevé en
+  base à refaire le jour de la mise en ligne (accord donné, décision 13c), la mention
+  « journées et lieux au 15 août 2026 » changera avec lui.
+- **Essai et carte bancaire** (vu en passant, non vérifié) : l'accueil dit « 30 jours
+  gratuits, sans carte bancaire », `/faq` dit « On te demande ta CB (mais aucun
+  prélèvement avant la fin de l'essai) ». L'une des deux pages est à corriger.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

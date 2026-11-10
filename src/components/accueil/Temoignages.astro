@@ -20,6 +20,13 @@
  * - Seule feuille dont le titre est centré, sous de grands guillemets dessinés
  *   sur une pastille jaune (décor) : elle casse la suite des feuilles « titre à
  *   gauche, contenu dessous ».
+ * - Indice de défilement sous la rangée (téléphone seulement) : un petit rail
+ *   dont le curseur avance avec le défilement de côté, en CSS seul
+ *   (`scroll-timeline` sur la rangée, `timeline-scope` sur le bloc). Décor,
+ *   masqué aux lecteurs d'écran ; absent là où le navigateur ne sait pas lier
+ *   une animation au défilement (le bord de la carte suivante reste l'indice).
+ * - « Dr » retiré devant Anaïs V., interne (décision 13e du propriétaire) ;
+ *   les trois autres attributions sont celles du site, sans ajout.
  * - Un mot composé (« super-net », « week-end ») ne se coupe pas au trait
  *   d'union (mise en page seule, le texte ne change pas ; la police n'a pas de
  *   trait d'union insécable).
@@ -29,7 +36,7 @@ import { insecables } from '@/lib/typo';
 
 const temoignages = [
   { texte: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", auteur: 'Dr Sofiane B.', qualite: 'Médecin (SOS Médecins + cabinet)', initiales: 'SB' },
-  { texte: "Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire.", auteur: 'Dr Anaïs V.', qualite: 'Interne', initiales: 'AV' },
+  { texte: "Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire.", auteur: 'Anaïs V.', qualite: 'Interne', initiales: 'AV' },
   { texte: "Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision. Là tout est au même endroit et je comprends mon 'vrai super-net'.", auteur: 'Dr Sarah M.', qualite: 'Urgentiste (activité mixte)', initiales: 'SM' },
   { texte: "Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais. Là j'ai enfin un suivi clair entre activité, encaissements et provisions.", auteur: 'Dr Émilien C.', qualite: 'Médecin généraliste', initiales: 'EC' },
 ];
@@ -63,6 +70,7 @@ const temoignages = [
       ))}
     </ul>
     </div>
+    <span class="fil" aria-hidden="true"><i></i></span>
   </div>
 </section>
 
@@ -77,7 +85,26 @@ const temoignages = [
      des marges de la page pour que les cartes glissent jusqu'au bord. */
   .rail { margin: 0 calc(-1 * var(--gut)); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); -webkit-overflow-scrolling: touch; }
   .rail:focus-visible { outline-offset: -3px; border-radius: var(--r-md); }
-  .cards { display: flex; gap: 14px; width: max-content; margin: 0; padding: 6px var(--gut) 30px; list-style: none; }
+  .cards { display: flex; gap: 14px; width: max-content; margin: 0; padding: 6px var(--gut) 22px; list-style: none; }
+  /* L'indice de défilement : un rail court, centré, et son curseur (un quart du
+     rail, pour quatre cartes). Affiché plus bas, seulement si le navigateur
+     sait le faire avancer. */
+  .fil { display: none; width: 56px; height: 5px; margin: 0 auto; overflow: hidden; border-radius: var(--r-pill); background: rgba(20, 37, 79, 0.14); }
+  .fil i { display: block; width: 25%; height: 100%; border-radius: inherit; background: var(--ink-2); }
+  @keyframes temoignages-fil { to { translate: 300% 0; } }
+  /* Deux règles, deux sélecteurs pour l'animation : voir FenetreProduit.astro. */
+  @media (max-width: 639px) {
+    /* Le bas du bloc est resserré : sous la rangée, il restait près de 100 px de vide. */
+    .tm { padding-bottom: 76px; }
+    @supports (animation-timeline: scroll()) and (timeline-scope: --t) {
+      .tm { timeline-scope: --temoignages; }
+      .rail { scroll-timeline-name: --temoignages; scroll-timeline-axis: x; }
+      .fil { display: block; }
+      .fil i { animation: temoignages-fil linear both; }
+      span.fil i { animation-timeline: --temoignages; }
+    }
+  }
+  @media (max-width: 639px) and (forced-colors: active) { .fil { border: 1px solid CanvasText; } .fil i { background: CanvasText; } }
   .cards li { display: flex; flex: none; width: min(76vw, 340px); scroll-snap-align: start; }
   .card { display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; margin: 0; padding: 22px 22px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay-sm); }
   blockquote { flex: 1; margin: 0; }

@@ -44,8 +44,8 @@ const [avif, webp] = await Promise.all(
   (['avif', 'webp'] as const).map((format) => getImage({ src: portrait, format, width: 380, widths: LARGEURS }))
 );
 
-/* Affiche du film : le cadre fait 624 px de large sur ordinateur, la largeur de la page moins les marges en dessous. */
-const SIZES_AFFICHE = '(min-width: 1200px) 624px, (min-width: 900px) 52vw, calc(100vw - 40px)';
+/* Affiche du film : le cadre fait 644 px de large à partir de 1180 px, la largeur de la page moins les marges sous 900 px. */
+const SIZES_AFFICHE = '(min-width: 1180px) 644px, (min-width: 900px) 52vw, calc(100vw - 40px)';
 const [afficheAvif, afficheWebp] = await Promise.all(
   (['avif', 'webp'] as const).map((format) => getImage({ src: affiche, format, width: 800, widths: [400, 800, 1200] }))
 );
@@ -235,7 +235,7 @@ const chiffres = [
   .facts small { font-size: 14px; color: var(--ink-3); }
 
   /* Le film */
-  .film { display: grid; align-items: center; gap: 28px; margin-top: 88px; }
+  .film { display: grid; align-items: center; gap: 28px; margin-top: 64px; }
   .film-copy { display: flex; flex-direction: column; gap: 12px; }
   .film-copy h3 { margin: 0; }
   .def { max-width: 36rem; margin: 4px 0 0; font-size: 15.5px; line-height: 1.55; color: var(--ink-2); }
@@ -257,6 +257,14 @@ const chiffres = [
   @keyframes film-attente { to { rotate: 360deg; } }
   @keyframes film-bat { from { opacity: 1; } to { opacity: 0.35; } }
 
+  /* Téléphone : portrait moins haut, intervalles resserrés (la page est longue). */
+  @media (max-width: 559px) {
+    .who { gap: 36px; }
+    .who-photo { width: min(78%, 290px); }
+    .who-copy { gap: 18px; }
+    .facts { margin-top: 4px; padding-top: 20px; }
+    .film { gap: 22px; margin-top: 52px; }
+  }
   @media (min-width: 560px) {
     .facts ul { column-gap: 24px; }
     .fact b { --corps: 42px; }
@@ -276,9 +284,21 @@ const chiffres = [
   }
   @media (min-width: 1180px) {
     .facts ul { display: flex; flex-wrap: wrap; gap: 18px 44px; }
+    /* Le film reprend les deux colonnes du dessus : son texte sous le portrait,
+       son cadre sous le texte et les chiffres, au même bord gauche (il en était
+       décalé de 20 px, et un vide en biais séparait les chiffres du titre). */
+    .film { grid-template-columns: 380px minmax(0, 1fr); gap: 96px; margin-top: 56px; }
+    /* Colonne de 380 px : le titre se partage en deux lignes égales, et le
+       paragraphe ne finit pas sur un mot seul (« Super- / Net. »). */
+    /* ⚠️ `text-wrap-style`, pas le raccourci : Tailwind lit ce fichier et le mot
+       du raccourci ajouterait une classe à la feuille globale de tout le site. */
+    .film-copy h3 { text-wrap-style: balance; }
+    .def { text-wrap-style: pretty; }
   }
   @media (min-width: 900px) {
     .who { grid-template-columns: 380px minmax(0, 1fr); gap: 96px; }
+  }
+  @media (min-width: 900px) and (max-width: 1179px) {
     .film { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 80px; }
   }
 
