@@ -71,15 +71,18 @@ const faqPageSchema = {
 // de 57 secondes, servi par le site. contentUrl = public/hippodoc-film-v21.mp4
 // (le `src` du <video>, cf. accueil/Fondateur.astro), thumbnailUrl =
 // public/hippodoc-film-v21-poster.jpg (le film à 8,5 s). `name` suit le titre
-// visible du bloc ; `description` attend la phase 4c (§ 9.eb).
+// visible du bloc ; `description` attend la phase 4c (§ 9.eb), « sous-titré »
+// en est seulement retiré (le film porte ses textes à l'écran, pas des
+// sous-titres). `uploadDate` : le jour de la mise en ligne du film, à remettre
+// au jour réel de la fusion (§ 9.ec).
 const videoSchema = {
   '@context': 'https://schema.org',
   '@type': 'VideoObject',
   name: 'Hippodoc en une minute',
   description:
-    "Film de présentation sous-titré d'Hippodoc : tu factures, Hippodoc calcule le reste — URSSAF, CARMF, impôts et Super-Net pour les médecins remplaçants, installés, collaborateurs ou salariés.",
+    "Film de présentation d'Hippodoc : tu factures, Hippodoc calcule le reste — URSSAF, CARMF, impôts et Super-Net pour les médecins remplaçants, installés, collaborateurs ou salariés.",
   thumbnailUrl: [`${SITE_URL}/hippodoc-film-v21-poster.jpg`],
-  uploadDate: '2026-11-10T22:00:00+01:00',
+  uploadDate: '2026-11-11T00:00:00+01:00',
   duration: 'PT57S',
   contentUrl: `${SITE_URL}/hippodoc-film-v21.mp4`,
   width: 720,

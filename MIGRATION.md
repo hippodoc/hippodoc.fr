@@ -5852,8 +5852,10 @@ et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` 
   le même jour. La règle ne change pas : à chaque mise à jour, refaire les relevés et
   corriger la date aux deux endroits.
 - ⚠️ CLAUDE.md dit encore « datés sur la page » (section « Accueil — DA 2026 »,
-  « Chiffres ») : à corriger par le propriétaire (« datés dans le code et dans
-  MIGRATION.md »).
+  « Chiffres ») : faux depuis cette retouche. Non modifié ici (les consignes du dépôt
+  ne se changent que sur demande du propriétaire). Ligne proposée : « datés dans
+  l'en-tête de `Fondateur.astro` et dans MIGRATION.md § 9.ec, jamais écrits à la
+  main ».
 
 **4. Guides : la CARMF et les impôts des internes entrent, l'effet ciseaux et la licence
 sortent** (`accueil/Guides.astro`)
@@ -5901,16 +5903,34 @@ sortent** (`accueil/Guides.astro`)
 **5. Film : nouveau film vertical, servi par le site** (`accueil/Fondateur.astro`,
 `src/pages/index.astro`, `public/`)
 
+- ⚠️ **Périmètre, à confirmer par le propriétaire avant fusion.** Son « go » citait les
+  points 1, 2, 3 et 5 de la liste du 10 novembre (l'eau, la ligne fine, la date, les
+  guides). Le film en était le point 4 : c'est lui qui l'avait proposé (« mettre la
+  vidéo au format 9:16 »), la réponse disait « j'y ajouterais la vidéo […] si tu me
+  les envoies », et il a joint le fichier à son « go ». Le remplacement du film repose
+  donc sur cet envoi. **N'ont pas été annoncés** : le film servi par le site plutôt que
+  par Supabase (7 Mo par lecture complète servis par Vercel) et 7,1 Mo de binaires
+  ajoutés à l'historique git.
 - **Le film** (fichier du propriétaire, `hippodoc-film-v21-site.mp4`) : 1080 × 1920
   (9:16), 56,6 s, H.264 et AAC, 24,4 Mo. Animation sans prise de vue, sur fond bleu
   nuit, bleu ou blanc : la semaine du remplaçant (« T'enchaînes les remplas toute la
   semaine… et ton week-end ? »), puis le contrat, le planning, la saisie d'une journée,
   ce qu'il reste après URSSAF, CARMF et impôts, la facture de rétrocession, les
   paiements en attente, l'année, la déclaration de revenus, et la fin : « Toi, tu
-  soignes. Hippodoc s'occupe du reste. » **Tout le propos est écrit à l'écran**, en
-  grands titres qui s'affichent mot à mot ; pas de bandeau de sous-titres. La bande son
-  ressemble à une voix sur de la musique (spectrogramme) : **non écoutée, non
-  transcrite**.
+  soignes. Hippodoc s'occupe du reste. » Le propos est écrit à l'écran, en grands
+  titres qui s'affichent mot à mot ; pas de bandeau de sous-titres.
+- **Bande son : une voix, sur de la musique.** Transcrite le 11 novembre par un modèle
+  automatique lancé sur la machine (Whisper « small », rien n'est envoyé ailleurs),
+  puis comparée aux textes relevés sur 71 images du film. **Transcription automatique,
+  non écoutée par une personne** : à confirmer à l'oreille par le propriétaire. La
+  voix dit presque partout ce qui s'écrit. Trois passages diffèrent : la voix dit
+  « Encore en train de bidouiller ton Excel ? » quand l'écran affiche « Samedi :
+  Excel. Dimanche : encore Excel. » ; « Maintenant, tes week-ends, t'as officiellement
+  mieux à faire. » quand l'écran affiche « Samedi : enfin libre. Dimanche : aussi
+  libre. » ; et la fin, « Allez, essaie-le 30 jours gratuits », n'est à l'écran que
+  par le bouton « Essai gratuit 30 jours ». Le film se suit sans le son, mais ses
+  textes ne sont pas des sous-titres au sens strict : la mention « sous-titré » est
+  retirée (voir « Textes » et « Schéma »).
 - **Version web** : `public/hippodoc-film-v21.mp4`, **7 057 291 octets**, 720 × 1280,
   H.264 High 3.1 à 30 i/s (890 kb/s), AAC stéréo 96 kb/s, `moov` en tête (lecture
   progressive). Commande : `ffmpeg -i <source> -vf scale=720:1280:flags=lanczos -c:v
@@ -5951,26 +5971,36 @@ sortent** (`accueil/Guides.astro`)
   et reprise au toucher, `ended` à 56,6 s, aucune erreur de script.
 - ⚠️ **Mesure** : `video_id` reste `hippodoc-presentation-st` dans
   `src/lib/landing-analytics.ts` (fichier non touché : son empreinte change le HTML de
-  toutes les pages). Les deux films se distinguent par `duration_seconds` (93, puis 57)
-  et par la date. Les jalons en pourcentage ne sont pas comparables d'un film à l'autre.
-  À annoter dans PostHog ; à renommer si le propriétaire préfère une série neuve.
+  toutes les pages). **`landing_video_play` ne distingue les deux films que par la date** :
+  rejoué en interceptant les envois, il part avec `duration_seconds` 0 et
+  `percent_watched` 0 (`preload="none"` : la durée n'est pas connue au moment de la
+  lecture ; pareil sur `main`). Seuls `landing_video_progress`, `landing_video_pause`
+  et `landing_video_completed` portent 57 (93 pour l'ancien film). Les jalons en
+  pourcentage ne sont pas comparables d'un film à l'autre. **Annotation PostHog
+  obligatoire le jour de la mise en ligne.** Renommer `video_id` ouvrirait une série
+  neuve, mais change le HTML des 70 pages : au propriétaire de trancher.
 - **Textes** (avant → après) :
   - titre du bloc (`<h3>`) : « Hippodoc en 90 secondes » → « Hippodoc en une minute » ;
   - pastille du bouton : « 90 s » → « 1 min » ;
   - nom du bouton (`aria-label`) : « Lire le film de présentation, 90 secondes » →
     « Lire le film de présentation, une minute » ;
   - `title` du `<video>` : « Hippodoc en 90 secondes — film de présentation
-    (sous-titré) » → « Hippodoc en une minute — film de présentation (sous-titré) ».
+    (sous-titré) » → « Hippodoc en une minute — film de présentation » (« (sous-titré) »
+    retiré le 11 novembre : voir « Bande son ». Si le propriétaire, après écoute, tient
+    les textes à l'écran pour des sous-titres, la mention se remet telle quelle).
 - **Schéma `VideoObject`** : `name` « Hippodoc en 90 secondes » → « Hippodoc en une
   minute » (devenu faux, suit le titre visible) ; `contentUrl` →
   `https://www.hippodoc.fr/hippodoc-film-v21.mp4` ; `thumbnailUrl` →
   `https://www.hippodoc.fr/hippodoc-film-v21-poster.jpg` ; `duration` `PT1M33S` →
-  `PT57S` ; `uploadDate` `2026-08-04T09:00:00+02:00` → `2026-11-10T22:00:00+01:00`
-  (jour exact, heure arrondie : à corriger si la mise en ligne glisse au 11) ; `width`
-  720 et `height` 1280 ajoutés. `description` **non touchée** (phase 4c, § 9.eb) : « tu
-  factures, Hippodoc calcule le reste » n'est pas la phrase du nouveau film, et
-  « sous-titré » y désigne maintenant des textes à l'écran. À reprendre en 4c, ou
-  avant si le propriétaire le demande.
+  `PT57S` ; `uploadDate` `2026-08-04T09:00:00+02:00` → `2026-11-11T00:00:00+01:00`
+  (le jour seul compte ; rien n'était poussé le 10 à minuit, la mise en ligne tombe
+  au plus tôt le 11 : **à remettre au jour réel de la fusion** si elle glisse encore) ;
+  `width` 720 et `height` 1280 ajoutés. `description` : un seul mot retiré, « Film de
+  présentation sous-titré d'Hippodoc : […] » → « Film de présentation d'Hippodoc :
+  […] » (voir « Bande son »). Le reste n'est **pas touché** (phase 4c, § 9.eb) : « tu
+  factures, Hippodoc calcule le reste » n'est pas une phrase du nouveau film, et
+  « installés, collaborateurs ou salariés » n'y figurent pas. Une nouvelle description
+  demande une formulation du propriétaire : rien n'est inventé ici.
 - **`verify-site.mjs`** : le contrôle « 4 nonies » ne cite plus Supabase, et vérifie en
   plus que `VideoObject.contentUrl` est l'adresse du `<video>` et que `thumbnailUrl`
   est un fichier servi par le site (le contrôle des liens voit déjà le `src`).
@@ -5978,12 +6008,25 @@ sortent** (`accueil/Guides.astro`)
 **Vérifié** : build de 70 pages et `verify-site.mjs` à 0 erreur après chaque commit ;
 `BaseLayout.DakHsQiB.css` inchangée ; captures regardées à 390 et 1 440 px (premier
 écran, bloc fondateur avant et après le clic sur lecture, guides), et le cadre du film
-à 320, 768 et 1 024 px. Lighthouse local (serveur sans compression) : mêmes notes
-avant et après, même poids de page (698 Ko), aucun octet du film au chargement.
+à 320, 390, 699, 700, 768 et 1 024 px. Lecture lancée au toucher sur la pastille à 320
+et 390 px, à la souris à 1 440 px : aucune requête mp4 avant, le film joue, aucune
+erreur de script. Lighthouse local (serveur sans compression) : mêmes notes avant et
+après, même poids de page (698 Ko), aucun octet du film au chargement.
+
+**Relecture du 11 novembre** (trois commits de correction) : la liste des guides
+remise à celle qui avait été annoncée (point 4) ; la pastille de lecture en haut du
+cadre sur téléphone, « (sous-titré) » retiré, date du schéma et description de la
+mesure corrigées (point 5).
+
+**Au propriétaire, avant fusion** : confirmer le remplacement du film et son
+hébergement par le site (point 5, « Périmètre ») ; écouter le film (« Bande son ») ;
+lire le film sur un iPhone réel, dans Safari et dans le navigateur d'Instagram, sur
+l'aperçu Vercel ; remettre `uploadDate` au jour de la fusion ; annoter PostHog ; dire
+s'il veut la ligne proposée pour CLAUDE.md (point 3).
 
 **Non fait, à savoir** : Safari, Firefox et vrai téléphone non testés (lecture en ligne
-du mp4 sur iOS comprise) ; bande son non écoutée ; CLAUDE.md non modifié (il dit encore
-« datés sur la page ») ; `title` et description de la page inchangés.
+du mp4 sur iOS comprise) ; bande son transcrite par un modèle, non écoutée ; CLAUDE.md
+non modifié ; `title` et description de la page inchangés.
 
 ## 10. TODO(owner) — faits manquants / décisions
 
