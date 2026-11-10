@@ -6978,9 +6978,10 @@ d'un octet.
   `home/FaqSection.astro` l'importe encore mais n'est plus rendu.
 - **Témoignages** : « Anaïs V. » (auparavant « Dr Anaïs V. »), qualité « Interne »
   inchangée. Les trois autres attributions (« Dr Sofiane B. », « Dr Sarah M. »,
-  « Dr Émilien C. », qualités) restent celles du site. **Rien d'inventé** : ni ville, ni
-  spécialité, ni statut, bien que le propriétaire ait proposé de les inventer en
-  attendant ; ils seront ajoutés quand il les fournira, avec l'accord de chacun.
+  « Dr Émilien C. », qualités) restent celles du site. À ce commit, rien n'était
+  inventé : ni ville, ni spécialité, ni statut. **C'était un écart à la demande du
+  propriétaire**, qui avait demandé (et non proposé) de les inventer « au plus crédible »
+  en attendant ; corrigé à l'étape suivante (voir « Seconde relecture » plus bas).
 - Aucun autre texte ajouté, retiré ou déplacé. La carte de rendez-vous des questions
   change de place sur ordinateur (voir plus bas), ses trois textes sont identiques.
 
@@ -7063,7 +7064,7 @@ d'un octet.
 
 - Aucun identifiant ne change : `data-landing-section`, `data-ph`, `data-track`,
   `data-calendly` identiques, `SECTIONS` et `SECTIONS_LANDING` non touchés,
-  `verify-site.mjs` non modifié.
+  `verify-site.mjs` non modifié (à ce commit).
 
 **Vérifié**
 
@@ -7099,13 +7100,96 @@ d'un octet.
   13a et 13b. `/tarifs` et `/qui-sommes-nous` ne parlent ni d'essai prolongé ni de tarif
   interne.
 - **Témoignages** : statut exact, ville et accord de Sofiane B., Anaïs V., Sarah M. et
-  Émilien C. ; « Dr » devant les trois autres à confirmer.
+  Émilien C. ; « Dr » devant les trois autres à confirmer. (Attributions provisoires
+  posées à l'étape suivante.)
 - **Chiffres du bloc fondateur** : « 19 400 » et « 2 379 » datent du 15 août ; relevé en
   base à refaire le jour de la mise en ligne (accord donné, décision 13c), la mention
   « journées et lieux au 15 août 2026 » changera avec lui.
 - **Essai et carte bancaire** (vu en passant, non vérifié) : l'accueil dit « 30 jours
   gratuits, sans carte bancaire », `/faq` dit « On te demande ta CB (mais aucun
   prélèvement avant la fin de l'essai) ». L'une des deux pages est à corriger.
+
+#### Phase 3, seconde relecture des retouches (10 novembre 2026, soir)
+
+Cinq remarques du relecteur, vérifiées une à une. **Accueil seule, zéro JS ajouté** (cinq
+balises `<script>`). Un contrôle ajouté à `verify-site.mjs` (avertissement, pas erreur).
+
+**Textes (mot pour mot)**
+
+- **Témoignages, attributions PROVISOIRES (inventées).** Demande du propriétaire, mot
+  pour mot : « POUR LE MOMENT JE TE LAISSE INVENTER AU PLUS CREDIBLE PUIS JE MODIFIERAIS A
+  LA FIN LE TEMPS QUE JE RECUPERE LES INFOS ». Le commit précédent ne l'avait pas suivie.
+  Sous chaque témoignage, la ligne de qualité devient « statut, ville » :
+  - « Dr Sofiane B. » : « Médecin généraliste remplaçant (SOS Médecins + cabinet), Lyon »
+    (auparavant « Médecin (SOS Médecins + cabinet) ») ;
+  - « Anaïs V. » : « Interne en médecine générale, Rennes » (auparavant « Interne ») ;
+  - « Dr Sarah M. » : « Urgentiste (activité mixte), Toulouse » (auparavant « Urgentiste
+    (activité mixte) ») ;
+  - « Dr Émilien C. » : « Médecin généraliste remplaçant, Nantes » (auparavant « Médecin
+    généraliste »).
+
+  **Inventés** : les quatre villes, « généraliste remplaçant » (Sofiane B.), « en médecine
+  générale » (Anaïs V.), « remplaçant » (Émilien C.). **Réels et intacts** : les quatre
+  citations, les prénoms et initiales, « SOS Médecins + cabinet », « Interne »,
+  « Urgentiste (activité mixte) », « Médecin généraliste ». L'accord des personnes ne
+  s'invente pas : il reste à recueillir.
+  ⚠️ **Ne pas mettre en production dans cet état** (une ville inventée sous un témoignage
+  réel trompe le lecteur). Garde-fou : `ATTRIBUTIONS_PROVISOIRES = true` dans
+  `Temoignages.astro` pose `data-attributions-provisoires` sur le bloc, et
+  `verify-site.mjs` émet un avertissement tant que l'attribut est dans une page. Quand les
+  vraies valeurs sont saisies (`statut`, `ville`), passer la constante à `false`.
+- Aucun autre texte ajouté, retiré ou modifié.
+
+**Ordre de lecture des questions (accessibilité)**
+
+- La carte de rendez-vous est de nouveau écrite **après** la liste dans le HTML : ordre
+  du DOM, de la tabulation et du lecteur d'écran = ordre de l'écran, à toutes les
+  largeurs (« Voir toutes les questions », les 11 questions, « Prendre 15 min avec
+  Ryan »). Le conteneur `.cote` et les `order` disparaissent.
+- À partir de 900 px, c'est la grille qui la place : titre et lien en colonne 1,
+  rangée 1 ; carte en colonne 1, rangée 2 ; liste en colonne 2 sur les deux rangées. Même
+  aspect qu'avant au repos. **Contrepartie** : seule la carte suit la lecture (collante
+  dans sa rangée, à 104 px du haut, écran d'au moins 700 px de haut) ; le titre et le lien
+  défilent avec la page. Sur ordinateur, la tabulation va donc du lien aux questions (à
+  droite) puis revient à la carte (à gauche) : c'est l'ordre du téléphone.
+
+**Écartés ou laissés au propriétaire, sans changement de code**
+
+- **`/faq`** (syndicats « Certains… essai prolongé », tarif interne sans les docteurs
+  juniors, « On te demande ta CB ») : constat confirmé dans `src/pages/faq.astro`, HTML et
+  schéma `FAQPage`. Non modifié : page hors accueil, et la question de la carte bancaire
+  n'est pas tranchée. Accord demandé au propriétaire.
+- **« 6 mois d’essai gratuit au lieu d’un mois, pour les adhérents de ces syndicats. »** :
+  « gratuit » et « adhérents » ne sont pas dans la réponse du propriétaire (« tous les
+  syndicats d'internes donnent 6 mois au lieu de 1 mois »). Phrase laissée telle quelle :
+  « adhérents » reprend l'introduction du bloc (« accompagner leurs adhérents »), un essai
+  est gratuit sur tout le site. Confirmation demandée, ainsi que le passage éventuel à
+  « au lieu de 30 jours » (la carte interne voisine dit « 30 jours gratuits ») et la
+  marche à suivre pour obtenir les 6 mois.
+- **Firefox et Safari** : la descente de la mascotte des tarifs et l'indice de défilement
+  des témoignages ne valent que là où le navigateur lie une animation au défilement.
+  Pas de repli statique ajouté : sans animation, la mascotte passe sous l'en-tête comme
+  tout le reste de la page (le seul repli statique serait de la masquer) ; l'indice est
+  un décor, le bord de la carte suivante reste visible. Les deux moteurs sont absents de
+  la machine : **à tester sur Safari et Firefox réels avant la bascule**.
+
+**Vérifié**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, **4 avertissements** (les 3
+  d'avant, plus celui des attributions provisoires, voulu).
+- Hors accueil, `dist` comparé à la référence : 134 fichiers, 65 identiques à l'octet,
+  69 qui ne diffèrent que par le nom du script PostHog, aucun autre écart. Aucune balise
+  `<script>` ajoutée dans `index.html`.
+- Chromium, 320, 390, 900 et 1 440 px, sans erreur de script ni défilement horizontal.
+  Ordre du DOM dans le bloc Questions, aux quatre largeurs : « Voir toutes les
+  questions », les 11 questions, « Prendre 15 min avec Ryan ». Carte collante à 104 px du
+  haut à 900 et 1 440 px (toutes réponses ouvertes, défilement à 60 % de la liste),
+  bouton sur une ligne (54 px).
+- Attributions : une ligne à 1 440 px ; deux lignes à 390 px, trois pour Sofiane B.
+  (quatre à 320 px), sans débordement. Hauteur de page : 390 px 15 690 → 15 721 ;
+  320 px 17 169 → 17 171 ; 1 440 px 12 605 → 12 585.
+- Captures regardées à 390 et 1 440 px (questions, carte collante, témoignages).
+- **Non testé** : Safari, Firefox, lecteur d'écran réel, vrai téléphone.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

@@ -25,8 +25,16 @@
  *   (`scroll-timeline` sur la rangée, `timeline-scope` sur le bloc). Décor,
  *   masqué aux lecteurs d'écran ; absent là où le navigateur ne sait pas lier
  *   une animation au défilement (le bord de la carte suivante reste l'indice).
- * - « Dr » retiré devant Anaïs V., interne (décision 13e du propriétaire) ;
- *   les trois autres attributions sont celles du site, sans ajout.
+ * - ⚠️ ATTRIBUTIONS PROVISOIRES. Le propriétaire a demandé (10 novembre 2026)
+ *   d'inventer « au plus crédible » le statut exact et la ville des quatre
+ *   personnes, le temps qu'il récupère les vraies informations et leur accord,
+ *   puis de les remplacer « à la fin ». Les champs `statut` et `ville`
+ *   ci-dessous sont donc INVENTÉS (les citations, les prénoms et les initiales
+ *   sont réels et intacts). Tant que `ATTRIBUTIONS_PROVISOIRES` vaut `true`, le
+ *   bloc porte `data-attributions-provisoires` et `verify-site.mjs` émet un
+ *   avertissement : NE PAS METTRE EN PRODUCTION dans cet état. Quand les vraies
+ *   valeurs sont saisies, passer la constante à `false`.
+ * - « Dr » retiré devant Anaïs V., qui est interne.
  * - Un mot composé (« super-net », « week-end ») ne se coupe pas au trait
  *   d'union (mise en page seule, le texte ne change pas ; la police n'a pas de
  *   trait d'union insécable).
@@ -34,11 +42,14 @@
 import '@/styles/da.css';
 import { insecables } from '@/lib/typo';
 
+/* Voir l'avertissement en tête de fichier : `statut` et `ville` sont inventés en attendant ceux du propriétaire. */
+const ATTRIBUTIONS_PROVISOIRES = true;
+
 const temoignages = [
-  { texte: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", auteur: 'Dr Sofiane B.', qualite: 'Médecin (SOS Médecins + cabinet)', initiales: 'SB' },
-  { texte: "Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire.", auteur: 'Anaïs V.', qualite: 'Interne', initiales: 'AV' },
-  { texte: "Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision. Là tout est au même endroit et je comprends mon 'vrai super-net'.", auteur: 'Dr Sarah M.', qualite: 'Urgentiste (activité mixte)', initiales: 'SM' },
-  { texte: "Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais. Là j'ai enfin un suivi clair entre activité, encaissements et provisions.", auteur: 'Dr Émilien C.', qualite: 'Médecin généraliste', initiales: 'EC' },
+  { texte: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", auteur: 'Dr Sofiane B.', statut: 'Médecin généraliste remplaçant (SOS Médecins + cabinet)', ville: 'Lyon', initiales: 'SB' },
+  { texte: "Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire.", auteur: 'Anaïs V.', statut: 'Interne en médecine générale', ville: 'Rennes', initiales: 'AV' },
+  { texte: "Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision. Là tout est au même endroit et je comprends mon 'vrai super-net'.", auteur: 'Dr Sarah M.', statut: 'Urgentiste (activité mixte)', ville: 'Toulouse', initiales: 'SM' },
+  { texte: "Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais. Là j'ai enfin un suivi clair entre activité, encaissements et provisions.", auteur: 'Dr Émilien C.', statut: 'Médecin généraliste remplaçant', ville: 'Nantes', initiales: 'EC' },
 ];
 ---
 
@@ -47,6 +58,7 @@ const temoignages = [
   id="testimonials"
   class="band da-bloc tm"
   aria-labelledby="temoignages-titre"
+  data-attributions-provisoires={ATTRIBUTIONS_PROVISOIRES ? '' : undefined}
 >
   <div class="wrap">
     <div class="band-head mid">
@@ -63,7 +75,7 @@ const temoignages = [
             <blockquote><p>«&nbsp;{insecables(t.texte).split(/([\wÀ-ÿ]+-[\wÀ-ÿ]+)/).map((m, i) => (i % 2 ? <span class="nb">{m}</span> : m))}&nbsp;»</p></blockquote>
             <figcaption>
               <span class="av" aria-hidden="true">{t.initiales}</span>{' '}
-              <span class="qui"><b>{t.auteur}</b>{' '}<span>{t.qualite}</span></span>
+              <span class="qui"><b>{t.auteur}</b>{' '}<span>{t.statut}, {t.ville}</span></span>
             </figcaption>
           </figure>
         </li>
