@@ -294,6 +294,68 @@ for (const [balise] of accueil.matchAll(/<a\b[^>]*auth\?tab=signup[^>]*>/g)) {
   }
 }
 
+/* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).
+   L'accueil est servie par src/components/da/HeaderDA.astro et FooterDA.astro,
+   copies rhabillées de Header.astro et Footer.astro, que gardent toutes les
+   autres pages. Les liens, les libellés et les attributs de mesure y sont écrits
+   deux fois : une entrée ajoutée d'un seul côté n'arriverait pas sur l'accueil
+   (ou seulement sur elle) sans que rien n'échoue. On compare donc, dans l'ordre,
+   chaque lien, bouton ou <label> porteur d'un href, d'un data-ph, d'un data-track
+   ou de data-cookie-prefs, entre l'accueil et /tarifs, plus le micro-script en
+   ligne de l'en-tête. `aria-current` n'entre pas dans la comparaison.
+   Un écart VOULU (une ancre retirée du menu de l'accueil, par exemple) se déclare
+   dans ECARTS_ENTETE_PIED_DA, avec la section de MIGRATION.md qui le décide.
+   À retirer en phase 5a, quand les copies remplacent les originaux. */
+const ECARTS_ENTETE_PIED_DA = [
+  // Forme : le repère tel que l'erreur l'affiche, par exemple
+  // 'header : a | /#film-presentation | landing_nav_decouvrir |  |  | Découvrir',
+];
+function reperesNavigation(html, balise) {
+  const bloc = html.match(new RegExp(`<${balise}\\b[\\s\\S]*?</${balise}>`))?.[0];
+  if (!bloc) return null;
+  const scripts = [...bloc.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)]
+    .map((m) => m[1].replace(/\s+/g, ' ').trim());
+  const sansScript = bloc.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/<!--[\s\S]*?-->/g, '');
+  const reperes = [];
+  for (const m of sansScript.matchAll(/<(a|button|label)\b([^>]*)>([\s\S]*?)<\/\1>/g)) {
+    const attr = (nom) => m[2].match(new RegExp(`\\s${nom}="([^"]*)"`))?.[1] ?? '';
+    const prefs = /\sdata-cookie-prefs\b/.test(m[2]) ? 'data-cookie-prefs' : '';
+    const href = attr('href'), ph = attr('data-ph'), track = attr('data-track');
+    if (!href && !ph && !track && !prefs) continue;
+    const libelle = m[3].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() || attr('aria-label');
+    reperes.push(`${balise} : ${[m[1], href, ph, track, prefs, libelle].join(' | ')}`);
+  }
+  return { reperes, scripts };
+}
+const pageTemoin = resolve(dist, 'tarifs', 'index.html');
+if (!existsSync(pageTemoin)) {
+  fail('en-tête et pied DA : dist/tarifs/index.html absent, la comparaison avec Header.astro et Footer.astro est impossible');
+} else {
+  const temoin = readFileSync(pageTemoin, 'utf8');
+  for (const balise of ['header', 'footer']) {
+    const da = reperesNavigation(accueil, balise);
+    const origine = reperesNavigation(temoin, balise);
+    if (!da || !origine) {
+      fail(`en-tête et pied DA : <${balise}> introuvable sur ${da ? '/tarifs' : 'l’accueil'}`);
+      continue;
+    }
+    const voulu = (r) => ECARTS_ENTETE_PIED_DA.includes(r);
+    const a = da.reperes.filter((r) => !voulu(r));
+    const b = origine.reperes.filter((r) => !voulu(r));
+    const rang = [...a, ''].findIndex((r, i) => r !== b[i]);
+    if (rang < a.length || a.length !== b.length) {
+      fail(
+        `<${balise}> : l'accueil (composants da/) et /tarifs (Header.astro, Footer.astro) divergent au repère ${rang + 1} — ` +
+        `accueil « ${a[rang] ?? 'rien'} », /tarifs « ${b[rang] ?? 'rien'} ». ` +
+        `Reporte la modification dans l'autre composant, ou déclare l'écart dans ECARTS_ENTETE_PIED_DA`
+      );
+    }
+    if (da.scripts.join('\n') !== origine.scripts.join('\n')) {
+      fail(`<${balise}> : le script en ligne diffère entre l'accueil (composants da/) et /tarifs — les deux copies doivent rester identiques jusqu'à la phase 5a`);
+    }
+  }
+}
+
 /* 4 quinquies. Instrumentation des autres pages marketing.
    Même logique que la landing : les événements sont reconstruits depuis le DOM.
    Une rubrique de FAQ renommée, une section de guide disparue ou un article sans

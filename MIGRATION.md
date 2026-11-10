@@ -5119,17 +5119,31 @@ et aucune autre page ne change d'un octet.
   116 496 octets (169 196 chez Google).
   Importé depuis `src/assets` (nom à empreinte, exigé par la règle `immutable` de
   `vercel.json`), préchargé avec `crossorigin` : **une seule requête woff2**.
-- **Repli à métriques ajustées** (`Google Sans Flex Fallback` : Arial, `size-adjust`
-  101,19 %, `ascent-override` 95,47 %, `descent-override` 28,26 %), calculé sur le texte de
-  l'accueil à la graisse 430. « Nunito », cité par la maquette, n'est pas repris : non
-  chargé, il aurait court-circuité ce repli chez ceux qui l'ont installé.
-- **`src/styles/da.css`** (22 Ko de source, 14,4 Ko minifiée) : `@font-face`, jetons de
+- **Repli à métriques ajustées** (`Google Sans Flex Fallback`), en **deux faces**, calculées
+  sur le texte de l'accueil : graisses 400 à 599 sur Arial (`size-adjust` 101,19 %,
+  `ascent-override` 95,47 %, `descent-override` 28,26 %, réglé sur la graisse 430) ;
+  graisses 600 à 800 sur Arial Bold (102,22 %, 94,5 %, 27,98 %, réglé sur la graisse 720
+  des titres). Avec une seule face, le navigateur épaississait un Arial maigre, trop
+  étroit : « Hippodoc » (graisse 760) gagnait 14 % de large à l'arrivée de la police.
+  « Nunito », cité par la maquette, n'est pas repris : non chargé, il aurait
+  court-circuité ce repli chez ceux qui l'ont installé.
+- **`src/styles/da.css`** (25 Ko de source) : `@font-face`, jetons de
   couleur, cinq rayons (12, 20, 28, 40 px, pastille) et quatre ombres, `.wrap`, `.btn` (soleil, blanc,
   filet), `.hl`, `.chip`, titres `h2`/`h3`, anneau de focus, `scroll-padding-top`, en-tête
   (`hd-*`), pied (`ft-*`), habillage de la bannière cookies et de la bulle de chat. Tout
-  est sous la classe racine `.da` ; les règles s'écrivent `:where(.da) …` pour qu'une
-  classe Tailwind l'emporte toujours (les sections pas encore migrées gardent leur style).
+  est sous la classe racine `.da`.
   Importée par les composants `da/` seulement, ni par BaseLayout ni par `global.css`.
+- **Cohabitation avec les anciennes sections : la classe `.da-bloc`.** `.da`, posée sur
+  `<body>`, ne porte que les jetons et le fond de page. La typographie (police, corps de
+  17 px, graisse 430, couleur d'encre, interligne), les règles `h2`/`h3`/`strong` et
+  l'anneau de focus sont portés par les **blocs DA**, marqués `.da-bloc` : l'en-tête, le
+  pied, puis chaque section au moment où elle est migrée. Une section sans cette classe
+  garde son rendu d'origine, styles hérités compris. La première version posait tout sur
+  `<body>` : `:where()` laissait bien gagner les classes Tailwind, mais pas l'héritage, et
+  les dix sections changeaient de police, de corps (16 → 17 px), de graisse (400 → 430),
+  de couleur, d'interlettrage sur 88 titres, et de hauteur (`<main>` perdait 46 px à
+  1440 px, 142 px à 320 px). À la bascule (phase 4a), `.da-bloc` peut remonter sur
+  `<body>`.
 - **`BaseLayout.astro`** : prop optionnelle `bodyClass`, vide par défaut (`<body>` reste
   sans attribut sur les autres pages). Aucun autre changement.
 - **`src/components/da/HeaderDA.astro`** : copie de `Header.astro` rhabillée en pastille
@@ -5140,18 +5154,37 @@ et aucune autre page ne change d'un octet.
   Bascule menu d'ordinateur / tiroir à **960 px** (1024 auparavant) ; flou d'arrière-plan
   à partir de 900 px seulement (§ 9.dn). Deux variantes : `flottante` (la pastille survole
   le premier bloc) et `flux` (elle garde sa place). L'accueil utilise `flux` tant que le
-  hero actuel est là.
+  hero actuel est là. L'en-tête collant couvre toute la largeur, la pastille 1 120 px au
+  plus : hors de la pastille, du voile et du tiroir, les clics traversent vers la page
+  (`pointer-events`).
 - **`src/components/da/FooterDA.astro`** : tout le contenu de `Footer.astro`, dans le
   même ordre, en « eau profonde » : 26 liens, 6 `data-ph landing_footer_*`,
   `data-cookie-prefs`, téléphone, e-mail, adresse, réseaux, logos des soutiens. Il reste le
-  premier `<footer>` du document.
+  premier `<footer>` du document. Deux colonnes à partir de 640 px (marque et contact côte
+  à côte, informations dessous), trois à partir de 900 px.
+- **Icône du logo** : `src/assets/da/hippodoc-icone-132.webp` (121 × 132 px, 6 376 octets),
+  le logo d'origine `src/assets/hippodoc-logo.png` (1 024 px) recadré au ras de
+  l'hippopotame. **Fichier ajouté, hors de la liste du plan** : le fichier de 96 px
+  utilisé jusque-là ne porte l'hippopotame que sur 52 × 57 px, flou dès la densité 2 à la
+  taille de la maquette (36 px de haut). Même dessin, mêmes dimensions que le fichier de
+  la maquette validée. Utilisé dans la pastille, le tiroir et le pied ; les autres pages
+  gardent `hippodoc-logo-96.webp`.
+- **`scripts/verify-site.mjs`, contrôle « 4 quater bis »** (ajouté, hors de la liste du
+  plan) : tant que l'en-tête et le pied existent en double, le script compare dans
+  l'ordre, entre l'accueil et `/tarifs`, chaque lien, bouton ou `<label>` porteur d'un
+  `href`, d'un `data-ph`, d'un `data-track` ou de `data-cookie-prefs` (libellé compris),
+  plus le micro-script en ligne de l'en-tête, et échoue au premier écart (25 repères dans
+  l'en-tête, 27 dans le pied). Un écart voulu se déclare dans `ECARTS_ENTETE_PIED_DA`.
+  À retirer en phase 5a.
 - **`src/pages/index.astro`** : `HeaderDA`, `FooterDA`, `bodyClass="da"`, préchargement de
   la police, `theme-color` `#C9DEFF`. `Header.astro`, `Footer.astro`, `global.css`,
   `tailwind.config.ts` et `astro.config.mjs` ne sont pas touchés.
 - **Aucun texte, aucune route, aucun événement changé.** Vérifié par script sur le HTML
   produit : liens, `data-ph`, `data-track`, `aria-label`, `alt`, identifiants et texte
   visible de l'en-tête et du pied identiques à la référence ; `<main>` identique à
-  l'octet (280 053 octets).
+  l'octet (281 147 octets, 280 047 caractères). Son **rendu** aussi : sous Chromium, à 320,
+  390, 768 et 1440 px, les 2 180 éléments de `<main>` ont les mêmes styles calculés (toutes
+  propriétés) et la même géométrie que sur `main`, et `<main>` la même hauteur.
 
 **Écarts assumés par rapport à la maquette validée**
 
@@ -5166,23 +5199,33 @@ et aucune autre page ne change d'un octet.
   du dégradé) : jeton gardé, réservé au fond `--deep-2` ou au grand texte.
 - Pied : le logo garde ses couleurs d'origine, posé sur une pastille blanche ; les trois
   logos des soutiens sont sur une plaque blanche (deux fichiers ont un fond opaque).
-- Icône du logo : le fichier existant (`hippodoc-logo-96.webp`) recadré en CSS à la taille
-  de la maquette (33 × 36 px). 52 × 57 px utiles seulement : léger flou possible sur un
-  écran 3x, à remplacer par un fichier dédié en phase 2.
 - Bannière cookies et bulle de chat : mêmes tailles, mêmes textes, même mécanique ;
   « Tout refuser » en filet d'encre, « Tout accepter » en encre pleine (pas de jaune).
+  Focus de la bulle : anneau double, 3 px de blanc puis 2 px d'encre. La bulle est fixe et
+  passe au-dessus du clair comme de l'eau profonde ; un anneau d'encre seul ne faisait que
+  1,42:1 sur le bas du pied. Blanc sur le pied : 5,88:1 à 10,53:1 ; encre sur le clair :
+  13,82:1 à 14,92:1.
+- Cibles tactiles : 44 px de large au moins pour les liens du pied (« FAQ », « Blog »,
+  « Tarifs », « RGPD »), le logo de la pastille et le lien « Tarifs » du menu.
+- Pied : l'image du logo n'est pas en `loading="lazy"`, comme dans `Footer.astro` (le
+  fichier est déjà chargé par la pastille).
 
 **Vérifié**
 
 - Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, 3 avertissements (inchangés).
-- `dist` comparé à la référence : seuls diffèrent `index.html`, plus deux fichiers neufs,
-  le woff2 et `_astro/index.*.css` (17,7 Ko : `da.css` et 3,3 Ko de styles de l'accueil
-  jusque-là écrits en ligne dans son HTML). **La feuille globale est identique à
+- `dist` comparé à la référence : seuls diffèrent `index.html`, plus trois fichiers neufs
+  dans `_astro/`, le woff2, l'icône du logo et `index.*.css` (18,5 Ko, 4,4 Ko gzip :
+  `da.css` et les styles scopés de l'accueil, 4,7 Ko jusque-là écrits en ligne dans son
+  HTML). **La feuille globale est identique à
   l'octet** (`BaseLayout.CmJyzVOB.css`, 183 554 octets, même empreinte). ⚠️ Tailwind lit
   aussi les commentaires des `.astro` : le mot `backdrop-filter` dans un commentaire de
   `HeaderDA` avait ajouté la règle `.backdrop-filter` (+280 octets) et changé l'empreinte,
   donc le HTML des 70 pages. Seul écart constaté, retiré.
-- CSS bloquant sur l'accueil : 28,2 Ko gzip (feuille globale) + 4,3 Ko (`index.*.css`).
+- CSS bloquant sur l'accueil : 28,2 Ko gzip (feuille globale) + 4,4 Ko (`index.*.css`).
+  **Deux requêtes CSS bloquantes au lieu d'une** : les styles scopés de l'accueil, en
+  ligne jusque-là (`inlineStylesheets: 'auto'`), partent dans le fichier qui porte
+  `da.css`. Requêtes de l'accueil : 21 → 23 sur mobile, 22 → 24 sur ordinateur (une
+  feuille, une police). À suivre dans les mesures Lighthouse des phases suivantes.
 - Contrastes des paires de jetons utilisées : toutes au-dessus de 4,5:1 pour le texte et
   3:1 pour le focus (le plus bas : 4,73:1, `--on-deep-2` sur `--deep`). « doc » du logo
   (`#1A8CFF`) : 3,37:1 sur blanc, grand texte et logo.
@@ -5190,11 +5233,16 @@ et aucune autre page ne change d'un octet.
   moins 60 px de voile), fermeture au clic d'une ancre, menu Ressources au survol et au
   clavier, focus de la case reporté sur le bouton, bannière cookies, pied.
   **WebKit et Firefox non testés** (moteurs absents de la machine).
-- CLS de l'accueil : 0 au chargement normal ; police retardée de 1,5 s : 0,019 à 390 px
-  (anciennes sections en gras), 0,0003 à 1440 px.
+- CLS de l'accueil : 0 au chargement normal ; police retardée de 2,5 s : 0 à 390 px,
+  0,0001 à 1440 px (0,019 et 0,003 quand la typographie était posée sur `<body>`).
+  Police bloquée contre police chargée, largeurs dans la pastille : « Hippodoc »
+  99,2 → 102,4 px (89,6 avec une seule face de repli), « Essai gratuit » 131,0 → 129,3 px
+  (122,2), liens du menu en graisse 560 : 355,6 → 366,4 px (inchangé). Hauteur du pied et
+  de `<main>` identiques dans les deux cas. Repli réel de la machine : Liberation Sans
+  (métriques d'Arial).
 - Lighthouse mobile en local, 5 passages alternés, médianes référence → après :
   performance 93 → 93 (92 à 94, puis 91 à 97), accessibilité 100 → 100, bonnes pratiques
-  96 → 96, SEO 100 → 100, LCP 3,17 s → 3,20 s, TBT 50 → 35 ms, CLS 0 → 0, poids 445 → 490 Ko.
+  96 → 96, SEO 100 → 100, LCP 3,17 s → 3,18 s, TBT 48 → 39 ms, CLS 0 → 0, poids 445 → 493 Ko.
 
 **Connu, à traiter dans les phases suivantes**
 
@@ -5202,12 +5250,30 @@ et aucune autre page ne change d'un octet.
   large, contre 933 px avec la taille optique automatique de la maquette (+8,7 % ; +3,6 %
   à 58 px). À trancher en phase 2 : interlettrage plus serré sur les titres, ou axe `opsz`
   (+75 Ko).
-- Titres des anciennes sections : ils héritent de l'interlettrage (-0,035 em) et de
-  `text-wrap: balance` des règles `h2`/`h3`, faute de classe Tailwind qui les fixe. Sans
-  casse constatée ; disparaît avec les sections.
-- La flèche « → » des trois liens d'articles du pied (U+2192) n'est pas dans le
-  sous-ensemble latin : elle sort dans la police de repli, comme les « ✓ » et les émojis
-  des anciennes sections.
+- **Repli de police et grand titre** : le réglage des graisses 600 à 800 est une moyenne.
+  Le titre de la phase 2 (50 à 116 px, graisse 720) est à mesurer police bloquée avant
+  validation. Sur Android, ni Arial ni police aux mêmes métriques : le repli est la police
+  du système, sans ajustement (non testé).
+- **Clavier, hérité de `Header.astro`** (même comportement sur `main`, la copie le
+  reprend) : le menu Ressources n'a ni `aria-expanded` ni fermeture par Échap ; le tiroir
+  mobile ne se ferme pas par Échap, ne retient pas le focus (après « Essai gratuit 30j »,
+  il part dans la page masquée) et ne bloque pas le défilement. À traiter au plus tard en
+  phase 5a, dans le micro-script en ligne : Échap décoche la case et rend le focus au
+  bouton, `inert` sur la pastille, `main` et le pied à l'ouverture, `aria-expanded` sur le
+  bouton Ressources. C'est du JS client en plus : à faire valider et à inscrire dans
+  l'invariant « zéro JS » de CLAUDE.md.
+- La flèche « → » des trois liens d'articles du pied (U+2192) sort dans la police de
+  repli, comme les « ✓ » et les émojis des anciennes sections : la police source n'a
+  aucun glyphe de flèche (U+2190 à U+219F absents de son `cmap`), l'ajouter au
+  sous-ensemble est impossible. La remplacer par un SVG change le texte du pied : prévu
+  en phase 3, avec une entrée dans `ECARTS_ENTETE_PIED_DA`.
+- **Aperçu de transition** : la pastille blanche se détache peu du fond presque blanc de
+  l'ancien hero (`#F0F7FF`), et `theme-color` (`#C9DEFF`, le ciel) ne correspond pas encore
+  au haut de page. Les deux se règlent avec le hero de la phase 2.
+- **CLAUDE.md n'est pas mis à jour** (prévu en phase 4a) : l'invariant « zéro JS client »
+  ne cite que le micro-script de `Header.astro`, alors que `HeaderDA.astro` porte le même,
+  et rien n'y signale la double maintenance. Le contrôle « 4 quater bis » en tient lieu
+  d'ici là.
 - Fond de `<body>` bleu nuit (comme la maquette, pour le rebond en bas de page) : sur un
   défilement très rapide, les zones pas encore peintes apparaissent en bleu nuit et non
   plus en clair (vu en capture Chromium). À regarder sur un vrai téléphone.

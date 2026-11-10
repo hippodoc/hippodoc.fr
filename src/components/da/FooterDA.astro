@@ -1,22 +1,27 @@
 ---
 import '@/styles/da.css';
+// Même fichier que dans HeaderDA : déjà chargé quand le pied arrive à l'écran.
+import logoIcone from '@/assets/da/hippodoc-icone-132.webp?url';
 
 /**
  * Pied de la DA 2026 : l'eau profonde. Tout le contenu de Footer.astro, dans le
  * même ordre (liens internes, liens légaux, « Préférences cookies », téléphone,
  * e-mail, adresse, réseaux, logos des soutiens, `data-ph landing_footer_*`), à
  * maintenir en double jusqu'à la phase 5a. Habillage dans src/styles/da.css
- * (classes `ft-*`), sans classe Tailwind. Demande `bodyClass="da"` sur la page.
+ * (classes `ft-*`), sans classe Tailwind. Demande `bodyClass="da"` sur la page ;
+ * `da-bloc` marque un bloc de la DA (voir da.css).
  * Doit rester le premier <footer> du document : la mesure s'y accroche.
+ * Double maintenance : `node scripts/verify-site.mjs` compare les liens, libellés
+ * et attributs de mesure de ce pied à ceux de Footer.astro (page /tarifs).
  */
 const year = new Date().getFullYear();
 ---
 
-<footer class="ft">
+<footer class="ft da-bloc">
   <div class="wrap ft-in">
     <div>
       <a href="/" data-ph="landing_footer_home" class="ft-logo">
-        <span class="logo-mark"><img src="/lovable-uploads/hippodoc-logo-96.webp" alt="" width="96" height="96" loading="lazy" /></span>
+        <img src={logoIcone} alt="" width="121" height="132" class="logo-mark" />
         <span class="logo-word">Hippo<span>doc</span></span>
       </a>
 
