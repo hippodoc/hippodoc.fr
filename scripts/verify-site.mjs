@@ -134,8 +134,6 @@ for (const url of urls) {
   // lorem / placeholder
   if (/lorem ipsum/i.test(text)) fail(`${url} : texte placeholder « lorem ipsum » détecté`);
   if (/TODO\(owner\)/.test(text)) warn(`${url} : TODO(owner) visible dans la page`);
-  // Témoignages : statut et ville inventés à la demande du propriétaire, en attendant les vrais (MIGRATION.md § 9).
-  if (/data-attributions-provisoires/.test(html)) warn(`${url} : attributions PROVISOIRES (inventées) sous les témoignages — à remplacer avant la mise en production`);
 
   // balises sociales — une page indexable est une page partageable : sans elles,
   // aucun aperçu n'apparaît en messagerie ou sur les réseaux.

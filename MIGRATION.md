@@ -7111,6 +7111,9 @@ d'un octet.
 
 #### Phase 3, seconde relecture des retouches (10 novembre 2026, soir)
 
+> **Rectificatif (10 novembre 2026, nuit).** Les attributions inventées décrites ci-dessous (statut et ville sous les quatre témoignages, constante `ATTRIBUTIONS_PROVISOIRES`, avertissement de `verify-site.mjs`) ont été **retirées** au commit suivant : `Temoignages.astro` et `scripts/verify-site.mjs` sont revenus à leur état du commit 43b1fe9. Les quatre témoignages portent l'attribution déjà publiée sur le site, sans ajout ; seul « Dr » est retiré devant Anaïs V. (interne). Rien n'est inventé sous un témoignage réel, même provisoirement. Les vraies villes et l'accord des personnes restent à fournir par le propriétaire.
+
+
 Cinq remarques du relecteur, vérifiées une à une. **Accueil seule, zéro JS ajouté** (cinq
 balises `<script>`). Un contrôle ajouté à `verify-site.mjs` (avertissement, pas erreur).
 
