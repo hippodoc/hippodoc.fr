@@ -271,8 +271,10 @@ for (const h of vercelJson.headers ?? []) {
    composant renommé ou un CTA ajouté sans attribut casserait la mesure en silence
    — et ce silence a déjà coûté cinq semaines de données après la bascule du
    07/08/2026. On le rend bruyant. */
+// DA 2026, phase 3 : « social-proof » (section « En chiffres ») a quitté la page.
+// L'ordre suit celui de la page ; `features` est maintenant le bloc « Sous la surface ».
 const SECTIONS_LANDING = [
-  'hero', 'social-proof', 'presentation-video', 'features', 'mid-page-cta',
+  'hero', 'features', 'presentation-video', 'mid-page-cta',
   'practice-journeys', 'testimonials', 'partners', 'pricing', 'faq',
 ];
 const accueil = readFileSync(resolve(dist, 'index.html'), 'utf8');
@@ -309,6 +311,26 @@ if (!srcsetPrecharge || !srcsetAvif) {
   fail('accueil : préchargement du buste (imagesrcset) ou <source type="image/avif"> du premier écran introuvable');
 } else if (srcsetPrecharge !== srcsetAvif) {
   fail('accueil : le préchargement du buste (imagesrcset) ne correspond plus au srcset AVIF du <picture>');
+}
+// « Sous la surface » (DA 2026, phase 3) : la fenêtre produit à onglets.
+// - `id="sous-la-surface"` est la cible du lien « Comment ça marche » du menu ;
+// - les trois vues doivent toutes être dans le HTML (trois radios, dont une seule
+//   cochée, et trois panneaux) : une vue générée à la demande ne serait lue par
+//   aucun moteur ;
+// - les chiffres de la page sont ceux d'un compte fictif : la mention « Compte de
+//   démonstration » doit y figurer, une seule fois (décision du propriétaire).
+const sousLaSurface = accueil.match(/<section\b[^>]*data-landing-section="features"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!/^<section\b[^>]*\sid="sous-la-surface"/.test(sousLaSurface)) {
+  fail('accueil : la section data-landing-section="features" ne porte plus id="sous-la-surface"');
+}
+const radiosApercu = [...sousLaSurface.matchAll(/<input\b[^>]*type="radio"[^>]*name="apercu"[^>]*>/g)].map((m) => m[0]);
+const panneauxApercu = sousLaSurface.match(/class="panel p\d"/g) ?? [];
+if (radiosApercu.length !== 3 || panneauxApercu.length !== 3 || radiosApercu.filter((r) => /\schecked\b/.test(r)).length !== 1) {
+  fail(`accueil : la fenêtre produit doit avoir 3 onglets (un seul coché) et 3 panneaux dans le HTML — trouvé ${radiosApercu.length} onglet(s), ${panneauxApercu.length} panneau(x)`);
+}
+const mentionsDemo = (accueil.match(/Compte de démonstration/g) ?? []).length;
+if (mentionsDemo !== 1) {
+  fail(`accueil : « Compte de démonstration » doit figurer une fois, dans le pied de la fenêtre produit — trouvé ${mentionsDemo} fois`);
 }
 
 /* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).

@@ -130,7 +130,16 @@
 html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
 
 /* ───────── Éléments (dans un bloc DA seulement) ───────── */
-:where(.da .da-bloc) h2 { font-family: var(--display); font-weight: var(--dw); letter-spacing: var(--dtr); font-size: clamp(32px, 4.5vw, 58px); line-height: 1.05; text-wrap: balance; }
+/* Grands corps sans taille optique. La police du site n'a pas l'axe `opsz` (il
+   coûterait 75 Ko) : plus le corps est grand, plus le texte sort large par
+   rapport à la maquette (+3 % à 58 px, +7 % à 132 px). On retrouve sa largeur en
+   resserrant l'interlettrage selon le corps, sans toucher à la graisse : deux
+   droites, la plus serrée gagne. Valeurs mesurées contre la police complète sur
+   le titre « Sous la surface… » et sur les grands montants : -1,26 px à 32 px,
+   -2,83 px à 58 px, -3,19 px à 66 px, -8,80 px à 132 px. L'élément pose `--corps`.
+   (Le titre du premier écran a sa propre mesure, dans Hero.astro.) */
+:where(.da .da-bloc) h2, :where(.da) .aff { font-family: var(--display); font-weight: var(--dw); font-size: var(--corps); line-height: 1.05; letter-spacing: min(calc(0.66px - 0.059 * var(--corps)), calc(2.43px - 0.0851 * var(--corps))); }
+:where(.da .da-bloc) h2 { --corps: clamp(32px, 4.5vw, 58px); text-wrap: balance; }
 :where(.da .da-bloc) h3 { font-family: var(--display); font-weight: var(--dw); letter-spacing: calc(var(--dtr) * 0.7); font-size: clamp(24px, 2.5vw, 32px); line-height: 1.12; }
 :where(.da .da-bloc) b, :where(.da .da-bloc) strong { font-weight: var(--tb); }
 /* La maquette posait un anneau --brand-2 : 2,46:1 sur le ciel, sous le seuil de 3:1.

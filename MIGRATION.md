@@ -5253,7 +5253,8 @@ remplace la première des dix.)
   large, contre 933 px avec la taille optique automatique de la maquette (+8,7 % ; +3,6 %
   à 58 px). À trancher en phase 2 : interlettrage plus serré sur les titres, ou axe `opsz`
   (+75 Ko). **Tranché en phase 2 pour le titre du premier écran : interlettrage.** Reste à
-  faire pour les `h2` (58 px au plus, +3,6 %) quand leurs sections arrivent.
+  faire pour les `h2` (58 px au plus, +3,6 %) quand leurs sections arrivent. **Fait en
+  phase 3, lot A** (règle `h2` et classe `.aff` de `da.css`).
 - **Repli de police et grand titre** : le réglage des graisses 600 à 800 est une moyenne.
   Le titre de la phase 2 (50 à 116 px, graisse 720) est à mesurer police bloquée avant
   validation. Sur Android, ni Arial ni police aux mêmes métriques : le repli est la police
@@ -5298,7 +5299,8 @@ de `<main>` qui suit le hero est identique à l'octet (264 402 octets), le pied 
   variante `flottante`). `HeroSection.astro` n'est plus importé mais **reste dans le
   dépôt** jusqu'à la phase 4a : Tailwind le lit encore, et le supprimer changerait la
   feuille globale, donc le HTML de toutes les pages.
-- **Section « En chiffres » (`social-proof`) conservée.** Elle n'est pas dans le premier
+- **Section « En chiffres » (`social-proof`) conservée** (retirée en phase 3, lot A, voir
+  plus bas). Elle n'est pas dans le premier
   écran (section à part, sous le hero). Aucune section ne disparaît dans ce lot :
   `SECTIONS_LANDING` (verify-site) et `SECTIONS` (landing-analytics) sont inchangés, les
   dix `data-landing-section` sont toujours là. Conséquence provisoire : « 900+ » figure
@@ -5344,7 +5346,8 @@ de `<main>` qui suit le hero est identique à l'octet (264 402 octets), le pied 
   dernière vague se prolonge par 64 px d'eau de sa couleur (`--deep`), sur lesquels se pose
   le haut arrondi (40 px) d'une feuille blanche, le motif des sections claires de la
   maquette. La section « En chiffres » commence en blanc pur : pas de couture. À retirer
-  quand le bloc « Sous la surface » suivra le premier écran.
+  quand le bloc « Sous la surface » suivra le premier écran. **Retiré en phase 3, lot A :**
+  le premier écran fait de nouveau 908 px de haut à 390 px, comme la maquette.
 - **Mouvement** : lever du soleil, dérive des quatre couches d'eau, sortie de l'eau puis
   balancement de la mascotte, flottement des fiches et de la pastille. Tout est sous
   `prefers-reduced-motion: no-preference` : mouvement réduit demandé, 0 animation dans le
@@ -5622,6 +5625,279 @@ séparé, après la mise en ligne.
   sur blanc : grand texte et logo, comme en phase 1.
 - Les autres pages gardent `Header.astro` et `Footer.astro`, donc l'icône, jusqu'à la
   phase 5a.
+
+**Bloc « Sous la surface » : fenêtre produit à onglets et trois grandes cases.** Il suit
+le premier écran, dont l'eau se prolonge en bleu profond (la prop `raccord` de
+`Hero.astro` est retirée), et remplace **deux** anciennes sections : « Fonctionnalités »
+(`home/FeaturesSection.astro`) et « En chiffres » (`home/SocialProofSection.astro`). Les
+deux fichiers ne sont plus importés mais restent dans le dépôt jusqu'à la phase 4a
+(Tailwind les lit encore). **Zéro JS ajouté**, et un script de moins sur la page : le
+compteur animé de « En chiffres ».
+
+- **Fichiers créés** : `src/components/accueil/SousLaSurface.astro` (la section, le
+  titre, les bulles, la phrase des régimes), `FenetreProduit.astro` (les trois vues),
+  `TroisCases.astro`, `Mascotte.astro` (une pose, en AVIF et WebP) ;
+  `src/data/demoAccueil.ts` (le compte de démonstration) ;
+  `src/data/etapesRemplacant.ts` (les 7 étapes du remplaçant, mot pour mot, à réutiliser
+  par le bloc « Pour qui ») ; trois images dans `src/assets/accueil/`.
+- **Fichiers modifiés** : `src/pages/index.astro`, `src/components/accueil/Hero.astro`,
+  `src/styles/da.css`, `scripts/verify-site.mjs`, `src/lib/landing-analytics.ts`
+  (commentaire seul : le JS produit est identique à l'octet).
+- **Ordre provisoire de la page** : premier écran, « Sous la surface », puis les
+  anciennes sections dans leur ordre (film, bandeau du milieu, parcours, témoignages,
+  partenaires, tarifs, FAQ). Une feuille blanche aux coins ronds ferme le bloc tant que
+  la section suivante est ancienne (prop `raccord` de `SousLaSurface.astro`, à retirer
+  avec le bloc suivant).
+- **Mesure.** `data-landing-section="features"` est gardé : la série continue, avec le
+  même `section_order` (4). ⚠️ Elle ne dit plus la même chose : le bloc est maintenant le
+  deuxième de la page, son taux de vue va monter d'un coup. À annoter dans PostHog le
+  jour de la bascule. `id` : `sous-la-surface` (l'ancien `id="timeline"` n'était la cible
+  d'aucun lien). **`social-proof` s'arrête** : retiré de `SECTIONS_LANDING`
+  (verify-site) ; dans `SECTIONS` (landing-analytics) la ligne reste, pour que le rang
+  des sections suivantes ne glisse pas. Trois identifiants neufs pour l'autocapture, sur
+  les onglets : `data-ph="landing_apercu_super_net"`, `landing_apercu_journees`,
+  `landing_apercu_a_recevoir`.
+- **Onglets sans JS** : trois boutons radio dans un `<fieldset>` (légende masquée à
+  l'œil), chacun dans son `<label>`, qu'il recouvre en transparence. Tab entre dans le
+  groupe, les flèches changent de vue (vérifié : flèche droite, flèche gauche, Tab,
+  Maj+Tab, clic). La feuille affiche le panneau de la radio cochée avec `:has()`. **Sans
+  `:has()`** (Firefox avant 121, décembre 2023 ; Safari avant 15.4) : la barre d'onglets
+  est retirée et les trois vues s'affichent l'une sous l'autre (`@supports not
+  selector(:has(*))`, vérifié en appliquant la règle à la main). Les trois panneaux sont
+  toujours dans le HTML.
+- **Titres** : un seul `<h2>`, puis trois `<h3>` (les cases). La fenêtre, qui précède le
+  `<h2>`, ne porte aucune balise de titre (« Avril 2026 » y est un paragraphe).
+- **Vue « journées »** : la liste est le contenu. À partir de 860 px, un calendrier du
+  mois la remplace à l'œil ; il est masqué aux lecteurs d'écran, qui gardent la liste
+  complète (10 journées, le jour de DPC, le week-end prolongé). En dessous, la liste
+  montre les six journées les plus récentes, comme la maquette. L'état de chaque journée
+  est écrit pour les lecteurs d'écran (« , payé », « , en attente », « , planifié »).
+- **Compte de démonstration : un seul jeu de chiffres, dans `src/data/demoAccueil.ts`.**
+  Les fiches du premier écran, les trois vues et les trois cases le lisent ; les totaux
+  sont calculés, pas recopiés (30 462 = 6 386 + 11 752 + 12 324 ; 59 543 = 90 005 −
+  30 462 ; 66 % = 59 543 / 90 005 arrondi ; 4 125 = 2 625 + 1 500 ; les jours de la
+  semaine viennent du calendrier, le 1er avril 2026 est un mercredi). Le HTML du premier
+  écran est identique à l'octet à celui de la phase 2, raccord mis à part. **Une seule
+  mention « Compte de démonstration »** sur la page, dans le pied de la fenêtre, visible
+  sous les trois vues (décision du propriétaire). ⚠️ Seule l'arithmétique est
+  contrôlée : la vraisemblance fiscale du jeu « Année 2025 » n'a pas été recoupée avec
+  le simulateur.
+- **Vue « à recevoir » corrigée** par rapport à la maquette, qui ne se recoupait pas avec
+  les deux autres (7 626 €, « 8 paiements en attente » pour quatre lignes dont une
+  payée, une journée posée un jour de week-end prolongé) : 4 125 €, 2 paiements en
+  attente, puis les deux journées planifiées. La ligne « Super-Net prévu : 3 717 € » est
+  retirée (aucune règle de calcul connue) ; « Mon cabinet » et « Rétrocession à 100 % »
+  aussi (c'est le cas du médecin installé). « Cabinet M. » est écrit partout de la même
+  façon.
+- **Mascottes** (toutes décoratives, `alt=""`, `loading="lazy"`) : féminine à la tablette
+  près du titre (décision du propriétaire : alterner les deux), masculine dans les cases
+  1 (elle pointe l'extrait de calendrier, à partir de 900 px) et 3 (pouce levé). Sources
+  rognées au ras du personnage, en WebP sans perte, jamais servies telles quelles :
+  `mascotte-f-tablette.webp` (732 × 1 244 px, depuis le PNG détouré, pixels visibles
+  identiques), `mascotte-pointe.webp` (1 004 × 1 063 px) et `mascotte-pouce.webp`
+  (948 × 1 233 px), depuis les fichiers du propriétaire (WebP avec perte à l'origine).
+  Servies par `astro:assets` en AVIF et WebP : tablette 150, 250, 300, 500 px (5,3 à
+  24,0 Ko en AVIF) ; pointe 220, 330, 440 px (6,7 à 15,9 Ko) ; pouce 190, 300, 380,
+  600 px (5,9 à 23,4 Ko). Vérifié : sur téléphone, la pose « pointe » (masquée) n'est
+  pas téléchargée, le pouce ne l'est qu'au défilement ; bords regardés à la densité 2
+  sur le bleu, le ciel et le jaune, pas de liseré.
+- **`da.css`** : la règle `h2` et une classe `.aff` (grand texte d'affichage) resserrent
+  l'interlettrage selon le corps, que l'élément pose dans `--corps`. Largeurs, maquette
+  rendue avec sa police → accueil : titre 666,8 → 668,4 px à 1 440 px, 252,8 → 253,4 px à
+  390 px ; « 59 543 € » de la case jaune 467,2 → 467,2 px (132 px de corps), 223,5 →
+  222,9 px à 390 px ; Super-Net de la fenêtre 243,3 → 242,9 px. Sans ce réglage : +3,0 %,
+  +7,1 % et +2,9 %. Les `h3` ne sont pas touchés (+1,1 % à 32 px).
+- **Flèches** de la septième étape (« Brut → cotisations → impôt → … ») : absentes de la
+  police, elles sont dessinées en SVG ; le caractère reste dans le texte, masqué à
+  l'œil, et la phrase est lue telle quelle (vérifié dans l'arbre d'accessibilité).
+  ⚠️ Le futur contrôle « tous les caractères de l'accueil sont dans la police »
+  (phase 4a) devra ignorer le texte masqué.
+- **Mouvement** : les six bulles du fond montent sans fin ; la fenêtre et les cases
+  montent en place à leur entrée à l'écran (animation liée au défilement, là où le
+  navigateur la connaît) ; fondu de 300 ms au changement de vue. Tout est sous
+  `prefers-reduced-motion: no-preference` (mouvement réduit : 0 animation dans le bloc,
+  vérifié). **La case « pause » du premier écran arrête aussi les bulles** (`body:has()`,
+  vérifié : en cours, en pause après un clic, en cours après un second).
+- **Piège de minification, nouveau** : `animation: … ; animation-timeline: view()` dans
+  une même règle est fusionné au build en `animation: … view()`, que les navigateurs
+  refusent : toute la déclaration tombait, sans erreur, et rien ne bougeait. La ligne de
+  temps est donc écrite dans une seconde règle, sous un autre sélecteur
+  (`div.stage`, `article.cell`).
+- **`verify-site.mjs`**, contrôle « 4 quater », trois gardes de plus sur l'accueil : la
+  section `features` porte `id="sous-la-surface"` ; la fenêtre a 3 onglets (un seul
+  coché) et 3 panneaux dans le HTML ; « Compte de démonstration » figure une fois.
+  Chacune échoue quand on casse le HTML (essayé, quatre cas).
+
+**Textes repris, mot pour mot**
+
+- « Tu factures. Hippodoc calcule le reste. » (`home/PresentationVideoSection.astro`).
+  ⚠️ Provisoire : la phrase figure deux fois sur la page tant que l'ancienne section du
+  film est là.
+- Les 7 étapes du remplaçant, titre et phrase d'accroche (`home/JourneySection.astro`,
+  profil « remplacant »), réparties 3, 3 et 1 ; comparées par script à la source : 7 sur
+  7 identiques. ⚠️ Provisoire : elles sont aussi dans l'ancien bloc « Pour qui ».
+- « Micro-BNC ou frais réels, RSPM ou PAMC, secteur 1 ou 2, métropole, DOM ou zone
+  aidée » puis « — Hippodoc applique le bon régime, tout seul. », tiret gardé (la
+  maquette mettait un deux-points). ⚠️ Provisoire : aussi dans l'ancien bloc « Pour qui ».
+
+**Textes nouveaux, mot pour mot**
+
+- H2 : « Sous la surface, Hippodoc calcule URSSAF, CARMF et impôts » (espace insécable
+  entre « et » et « impôts »)
+- Sous le titre, troisième phrase : « Voici ce qui tourne en dessous pendant que tu
+  soignes. »
+- Légende du groupe d'onglets, masquée à l'œil : « Aperçu de l’application »
+- Onglets, sous 720 px puis au-delà : « Super-Net » / « Ce qu’il te reste » ;
+  « Journées » / « Tes journées » ; « À recevoir » / « Ce qu’on te doit »
+- Jauge (nom accessible) : « Jauge : 66 % de l’encaissé reste au-dessus de la ligne
+  d’eau, 34 % part en URSSAF, CARMF et impôts » ; dans la jauge : « 66 % »
+- Vue 1 : « Année 2025 » ; « Encaissé », « 90 005 € » ; « URSSAF », « − 6 386 € » ;
+  « CARMF », « − 11 752 € » ; « Impôts », « − 12 324 € » ; « Super-Net », « 59 543 € » ;
+  « 66 % de l’encaissé, une fois tout payé »
+- Vue 2 : « Avril 2026 » ; légende « Payé », « En attente », « Planifié » ; liste :
+  « mer. 1 », « Dujardin S. », « 2 250 € » ; « ven. 3 », « Valérie J. », « 1 785 € » ;
+  « lun. 6 », « Valérie J. », « 2 210 € » ; « mar. 7 », « Dujardin S. », « 1 425 € » ;
+  « mer. 8 », « Dujardin S. », « 2 550 € » ; « ven. 10 », « DPC » ; « lun. 13 »,
+  « Valérie J. », « 1 955 € » ; « mer. 15 », « Dujardin S. », « 2 625 € » ; « dim. 19 »,
+  « Cabinet M. », « 1 500 € » ; « lun. 20 », « Cabinet M. », « ~1 200 € » ; « mer. 22 »,
+  « Cabinet M. », « ~1 200 € » ; « jeu. 23 », « au dim. 26 », « WE prolongé ». Après
+  chaque montant, pour les lecteurs d'écran : « , payé », « , en attente » ou
+  « , planifié ». Calendrier (masqué aux lecteurs d'écran) : « lun. » à « dim. », les
+  quantièmes du 30 mars au 3 mai, les mêmes journées.
+- Vue 3 : « À recevoir », « 4 125 € », « 2 paiements en attente » ; « mer. 15 »,
+  « Dujardin S. », « 2 625 € », « En attente » ; « dim. 19 », « Cabinet M. », « 1 500 € »,
+  « En attente » ; « lun. 20 », « Cabinet M. », « ~1 200 € », « Planifié » ; « mer. 22 »,
+  « Cabinet M. », « ~1 200 € », « Planifié »
+- Pied de la fenêtre : « Compte de démonstration · Recalculé après chaque journée
+  enregistrée »
+- Cases : « 1 », « Ton activité » ; « 2 », « Tes obligations » ; « 3 », « Ce qu’il te
+  reste »
+- Case 1, extrait masqué aux lecteurs d'écran (il répète la vue 2) : « Avril 2026 » et
+  les journées des 13, 15, 19 et 20
+- Case 2 : « Année 2025, à mettre de côté » ; « URSSAF », « 6 386 € » ; « CARMF »,
+  « 11 752 € » ; « Impôts », « 12 324 € » ; « En tout », « 30 462 € »
+- Case 3 : « Super-Net 2025 », « 59 543 € », « 90 005 € encaissés, moins les cotisations,
+  moins l’impôt »
+- Fin de la phrase des régimes : « Remplaçant, interne, vacataire ou activité mixte. »
+  (la maquette écrivait « Remplaçant, interne, activité mixte, collaborateur ou
+  installé. » ; décision du propriétaire sur les profils)
+
+**Textes retirés**
+
+- Section « En chiffres » : pastille « En chiffres », titre « Pensé pour le terrain. »,
+  « Hippodoc accompagne chaque jour des médecins dans leur activité. », les six tuiles
+  (« 900+ Médecins inscrits », « 19 400 Journées enregistrées », « 2 379 Lieux d'exercice
+  référencés », « 623 Documents générés », le nombre d'articles « Articles pédagogiques
+  au blog », « 100 % Données hébergées en France ») et le compteur animé. ⚠️ « 19 400 »
+  et « 2 379 » ne sont plus sur la page jusqu'à l'arrivée du bloc fondateur, qui les
+  reprend avec « 900+ ». « 900+ » figure encore trois fois (premier écran, tarifs,
+  parcours). « Hébergées en France » reste une fois, dans la liste des tarifs (ancienne
+  section, à corriger avec elle : « Union européenne »).
+- Section « Fonctionnalités » : pastille « Fonctionnalités · Tout-en-un », titre
+  « Gestion automatisée complète », « Le système nerveux de ton organisation. », les 12
+  fonctionnalités et leurs descriptions (URSSAF, CARMF, Impôts, Rétrocessions,
+  Comptabilité, Contrats, Factures, Statistiques, Planning, RSPM, Micro-BNC, Frais
+  réels), le schéma en orbite. Décision du propriétaire.
+
+**Écarts assumés par rapport à la maquette validée (lot A)**
+
+- Vue « à recevoir » recalculée et mention « Compte de démonstration » déplacée dans le
+  pied de la fenêtre (voir plus haut).
+- Calendrier : le mois entier, cinq semaines du 30 mars au 3 mai (quatre sur la
+  maquette, qui s'arrêtait au 26) ; dans chaque case, le montant puis le lieu dessous
+  (sur une ligne, « ~1 200 € · Cabinet M. » était coupé par des points de suspension à
+  toutes les largeurs) ; affiché à partir de 860 px et non 780 (« WE prolongé » ne
+  tenait pas dans une case en dessous).
+- La fenêtre garde sa hauteur quand on change de vue : hauteur minimale des panneaux
+  (396 px, 454 px à partir de 720 px), vue « à recevoir » centrée en hauteur sur
+  ordinateur. Sur la maquette, elle perdait 180 px en passant à la troisième vue. Seul
+  le calendrier est plus haut (550 px).
+- 320 px de large : sur la maquette, le troisième onglet, « 90 005 € » et le Super-Net
+  sortaient de la fenêtre, et les noms de lieux étaient coupés (« Valéri… »). Onglets
+  dimensionnés par leur libellé, jauge de 72 px au lieu de 100, corps d'un cran en
+  dessous, colonnes de l'extrait resserrées.
+- Mascotte féminine à la tablette : elle dépasse derrière les cases de 94 px (150 sur la
+  maquette) et de 56 px sur téléphone (70), pour que la tablette et les mains restent
+  visibles ; le titre descend de 18 px sur ordinateur.
+- Pas de `nowrap` ni de points de suspension sur un texte lu : avec des espacements
+  imposés par le visiteur (WCAG 1.4.12), un libellé d'onglet, un nom de lieu ou le grand
+  montant passent à la ligne au lieu d'être rognés. Le grand montant de la case jaune
+  suit la largeur sous 375 px (49,6 px à 320 px, 58 px au moins sur la maquette).
+- Anneau de focus des onglets en encre (13,40:1 sur le fond de la barre), pas en
+  `#1A8CFF`. Point orange de la légende `#C97A00` (3,35:1 sur blanc ; `#E08A00` ne
+  faisait que 2,69:1).
+- Extraits des cases 2 et 3 lus par les lecteurs d'écran (masqués sur la maquette) :
+  « En tout 30 462 € » et le Super-Net de la case jaune ne sont nulle part ailleurs dans
+  le bloc sous cette forme. Celui de la case 1, simple répétition, reste masqué.
+- Hauteur du bloc, maquette rendue avec sa police → accueil : 3 626 → 3 618 px à 390 px,
+  3 276 → 3 271 px à 768 px, 2 522 → 2 540 px à 1 440 px ; 3 975 → 3 851 px à 320 px (la
+  fenêtre n'y déborde plus).
+
+**Vérifié (lot A)**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, 3 avertissements
+  (inchangés), à chacun des deux commits.
+- `dist` comparé à la référence (`main`) : seuls diffèrent `index.html` et, dans
+  `_astro/`, le woff2, `index.*.css` et les images des mascottes. Feuille globale
+  identique à l'octet (`BaseLayout.CmJyzVOB.css`), JS identique. `index.*.css` : 30,5 →
+  48,5 Ko (6,7 → 9,5 Ko gzip). `index.html` : 311,1 → 288,7 Ko. Mots dans `<main>` :
+  3 753 sur `main`, 3 790 avant ce lot, **4 012 après** (le bloc en porte 504, les trois
+  vues comprises ; les deux sections retirées en portaient 282).
+- Captures Chromium à 320, 390, 768, 1 024 et 1 440 px, côte à côte avec la maquette
+  rendue avec sa police, les trois vues ouvertes tour à tour ; plus un défilement écran
+  par écran avec le mouvement, à 390 et 1 440 px. Aucun défilement horizontal.
+- Accessibilité (Chromium) : arbre d'accessibilité relu (région nommée par le `<h2>`,
+  groupe « Aperçu de l’application », trois radios nommées, jauge en image nommée,
+  relevé en liste de définitions). Clavier : après le bouton de pause, Tab arrive sur
+  l'onglet coché, anneau de 3 px ; cibles des onglets 109 × 46 px à 390 px, 141 à
+  165 × 46 px à 1 440 px. Espacements imposés à 320, 390, 768, 1 024 et 1 440 px, les
+  trois vues : aucun texte rogné, aucun défilement horizontal. Contrastes forcés : un
+  contour marque l'onglet ouvert. Contrastes calculés : blanc sur le haut de l'eau
+  5,88:1 ; `--on-deep-2` 4,73:1 en haut, 8,46:1 en bas ; `--ink-2` 8,55:1 sur blanc,
+  6,98:1 sur le ciel de la case 1 ; `--ink-3` 5,69:1 sur blanc ; encre sur le jaune
+  10,78:1 ; pastilles 5,81:1 à 7,67:1.
+- CLS (police à l'heure, puis retardée de 2 s) à 320, 390, 768 et 1 440 px : inchangé au
+  chargement (0, puis 0,0003 à 0,0021) ; plus aucun décalage pendant le défilement
+  (0,0010 à 0,0045 auparavant, dans les anciennes sections).
+- Lighthouse mobile en local (12.8.2), 5 passages alternés, mêmes conditions de service
+  (Brotli), avant → après : performance 99, 99, 97, 96, 99 → 97, 97, 97, 97, 97 ;
+  accessibilité 100 → 100 ; bonnes pratiques 96 → 96 ; SEO 100 → 100 ; TBT médian
+  34 → 31 ms ; CLS 0 → 0 ; poids 269 → 284 Ko. **LCP simulé médian 2,12 s → 2,52 s**
+  (avant : 2,05 à 2,73 s selon les passages ; après : 2,51 à 2,54 s), FCP simulé 1,22 ou
+  1,54 s dans les deux cas. Élément LCP inchangé (le titre du premier écran), LCP
+  observé inchangé (200 à 285 ms : le moment où la police arrive). Cause cherchée : le
+  modèle de Lighthouse ajoute au LCP simulé toute requête terminée avant le LCP observé.
+  La bibliothèque PostHog (76 Ko) est demandée à la fin de la lecture du HTML ; la page
+  est plus légère (288,7 Ko contre 311,1), la lecture finit plus tôt, et la requête se
+  termine maintenant juste avant le LCP observé à chaque passage (2 passages sur 5
+  auparavant, les deux à 2,48 et 2,73 s). Essai de contrôle, mascottes du bloc masquées,
+  donc aucune image du bloc téléchargée, 5 passages : 2,58, 2,55, 2,12, 2,56, 2,56 s
+  (2,12 s le seul passage où PostHog finit après le LCP). Les images n'y sont pour
+  rien. C'est un effet de seuil de la machine locale (tout se joue en 30 ms), à
+  remesurer sur l'aperçu Vercel. ⚠️ Les mesures des
+  phases 1 et 2 de cette entrée étaient servies en gzip (`serve dist`) : elles ne se
+  comparent pas à celles-ci.
+
+**Connu, à traiter (lot A)**
+
+- **WebKit et Firefox non testés** (moteurs absents de la machine) : `:has()` avec une
+  radio cochée, `<fieldset>` en boîte flexible, animation liée au défilement (Safari 26).
+- **État d'une journée porté par la couleur** dans la vue « journées » (pastille verte,
+  orange ou bleue, légende en regard) : écrit pour les lecteurs d'écran, mais un
+  visiteur qui distingue mal le vert de l'orange n'a que la légende. Seul le tilde
+  distingue le planifié. À trancher avec le propriétaire (une coche dans la pastille
+  « payé », par exemple) : la fiche du premier écran, déjà validée, a les mêmes
+  pastilles.
+- **Menu de l'en-tête** : la cible `#sous-la-surface` existe, l'entrée « Comment ça
+  marche » peut entrer dans `HeaderDA` (avec sa ligne dans `ECARTS_ENTETE_PIED_DA`). Non
+  fait dans ce lot.
+- **Répétitions provisoires** (phrase du film, étapes du remplaçant, phrase des régimes)
+  et chiffres « 19 400 » et « 2 379 » absents : jusqu'à l'arrivée des blocs « Pour qui »
+  et fondateur.
+- Texte seul grossi (réglage du navigateur) et zoom à 400 % non mesurés ; à 195 px de
+  large (au-delà de ce que demande WCAG 1.4.10), la fenêtre déborde de 44 px.
+- Longueur de la page à 390 px : 17 065 px pendant la transition (15 799 avant ce lot),
+  anciennes sections comprises ; le critère du plan se mesure à la fin de la phase 3.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

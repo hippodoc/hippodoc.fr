@@ -25,7 +25,15 @@ import {
   type Props,
 } from './analytics-commun';
 
-/** Ordre historique des sections (`section_order` / `section_id` dans PostHog). */
+/**
+ * Ordre historique des sections (`section_order` / `section_id` dans PostHog).
+ * Le rang d'un identifiant ne change JAMAIS : une section retirée de la page garde
+ * sa ligne ici, sinon le `section_order` de toutes les suivantes glisserait et les
+ * séries seraient coupées en deux. Les nouvelles sections s'ajoutent en fin de liste.
+ * DA 2026, phase 3 (MIGRATION.md § 9) : `social-proof` n'est plus sur la page
+ * (sa série s'arrête) ; `features` est le bloc « Sous la surface », placé juste
+ * après le premier écran, et garde le rang 4.
+ */
 const SECTIONS = [
   'hero',
   'social-proof',

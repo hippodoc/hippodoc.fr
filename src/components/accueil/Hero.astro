@@ -10,7 +10,8 @@
  * - Mesure : `data-landing-section="hero"`, `cta_signup_hero`, `cta_simulator`,
  *   comme l'ancien hero (src/components/home/HeroSection.astro).
  * - Les fiches, les papiers et la pastille Super-Net sont un décor : chiffres de
- *   démonstration, masqués aux lecteurs d'écran, sans balise de titre.
+ *   démonstration (src/data/demoAccueil.ts, le jeu unique de l'accueil), masqués
+ *   aux lecteurs d'écran, sans balise de titre.
  * - Coupures de lignes : le nombre de lignes du mot-clé, du titre, de l'accroche,
  *   des boutons et de la ligne fine ne dépend que de la largeur d'écran, jamais
  *   de la police. Tant que le woff2 n'est pas arrivé, le repli (Arial ajusté) a
@@ -18,21 +19,27 @@
  *   distance des largeurs où les deux polices ne coupent pas au même endroit.
  *   Après toute retouche de texte ou de corps, refaire le balayage repli contre
  *   police (MIGRATION.md § 9, phase 2).
- * - `raccord` : à passer tant que le bloc suivant est une ancienne section sur
- *   fond blanc. L'eau se termine alors sous une feuille blanche aux coins ronds
- *   (le motif des sections claires de la maquette). À retirer quand le bloc
- *   « Sous la surface » suivra : la dernière vague a déjà sa couleur.
+ * - Le bloc suivant est « Sous la surface » (SousLaSurface.astro) : la dernière
+ *   vague a la couleur du haut de ce bloc, l'eau s'y prolonge sans couture.
  */
 import '@/styles/da.css';
 import { APP_URL } from '@/lib/site';
 import { imagesBuste } from './buste';
-
-interface Props {
-  raccord?: boolean;
-}
-const { raccord = false } = Astro.props;
+import {
+  DEMO_ANNEE,
+  DEMO_A_METTRE_DE_COTE,
+  DEMO_ETATS,
+  DEMO_MOIS,
+  DEMO_SUPER_NET,
+  euros,
+  jourCourt,
+  journee,
+  montantJournee,
+} from '@/data/demoAccueil';
 
 const buste = await imagesBuste();
+/** Trois journées du mois de démonstration : une payée, une en attente, une planifiée. */
+const extrait = [13, 15, 20].map(journee);
 ---
 
 <section data-landing-section="hero" id="hero" class="hero da-bloc">
@@ -81,23 +88,21 @@ const buste = await imagesBuste();
     <span class="wave w3" aria-hidden="true"></span>
     <span class="wave w4" aria-hidden="true"></span>
 
-    <div class="tag" aria-hidden="true"><small>Super-Net</small><b class="num hl">59 543 €</b></div>
+    <div class="tag" aria-hidden="true"><small>Super-Net</small><b class="num hl">{euros(DEMO_SUPER_NET)}</b></div>
 
     <div class="float l" aria-hidden="true">
-      <div class="float-t">Avril 2026</div>
-      <div class="row"><span>lun. 13 · Valérie J.</span><span class="chip ok num">1 955 €</span></div>
-      <div class="row"><span>mer. 15 · Dujardin S.</span><span class="chip wait num">2 625 €</span></div>
-      <div class="row"><span>lun. 20 · Cabinet M.</span><span class="chip plan num">~1 200 €</span></div>
+      <div class="float-t">{DEMO_MOIS.nom} {DEMO_MOIS.an}</div>
+      {extrait.map((j) => (
+        <div class="row"><span>{jourCourt(j.jour)} · {j.lieu}</span><span class={`chip ${DEMO_ETATS[j.etat].chip} num`}>{montantJournee(j)}</span></div>
+      ))}
     </div>
     <div class="float r" aria-hidden="true">
-      <div class="float-t">Année 2025</div>
-      <div class="row"><span>Encaissé</span><b class="num">90 005 €</b></div>
-      <div class="row"><span>URSSAF, CARMF, impôts</span><span class="num">− 30 462 €</span></div>
-      <div class="row sum"><span>Super-Net</span><span class="v num hl">59 543 €</span></div>
+      <div class="float-t">Année {DEMO_ANNEE.an}</div>
+      <div class="row"><span>Encaissé</span><b class="num">{euros(DEMO_ANNEE.encaisse)}</b></div>
+      <div class="row"><span>URSSAF, CARMF, impôts</span><span class="num">− {euros(DEMO_A_METTRE_DE_COTE)}</span></div>
+      <div class="row sum"><span>Super-Net</span><span class="v num hl">{euros(DEMO_SUPER_NET)}</span></div>
     </div>
   </div>
-
-  {raccord && <div class="raccord" aria-hidden="true"></div>}
 </section>
 
 <style>
@@ -247,12 +252,6 @@ const buste = await imagesBuste();
   .row b { color: var(--ink); }
   .row.sum { border-top: 2px solid var(--ink); padding-top: 12px; align-items: center; color: var(--ink); font-weight: var(--tb); }
   .row.sum .v { font-family: var(--display); font-size: 30px; line-height: 1.15; font-weight: var(--dw); letter-spacing: -0.02em; }
-
-  /* Raccord provisoire avec l'ancienne section qui suit (fond blanc) : une bande
-     d'eau de la couleur de la dernière vague, puis le haut arrondi d'une feuille
-     blanche posée dessus. */
-  .raccord { position: relative; height: 64px; background: var(--deep); }
-  .raccord::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 41px; border-radius: 40px 40px 0 0; background: #FFFFFF; }
 
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. Sans
      animation, chaque élément est déjà à sa place finale. */

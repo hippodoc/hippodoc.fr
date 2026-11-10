@@ -1,0 +1,180 @@
+---
+/**
+ * Les trois grandes cases du bloc « Sous la surface » : ton activité, tes
+ * obligations, et ce qu'il te reste, la seule case jaune de la page
+ * (DA 2026, phase 3, MIGRATION.md § 9). Zéro JS.
+ *
+ * - Texte : les 7 étapes du remplaçant, titre et phrase d'accroche, mot pour mot
+ *   (src/data/etapesRemplacant.ts), réparties 3, 3 et 1.
+ * - Chiffres : src/data/demoAccueil.ts, le même jeu que la fenêtre produit.
+ * - Les trois flèches de la septième étape ne sont pas dans la police du site :
+ *   elles sont dessinées en SVG, et le caractère reste dans le texte, masqué à
+ *   l'œil, pour qu'un lecteur d'écran ou un moteur lise la phrase d'origine.
+ * - L'extrait du calendrier (case 1) répète la vue « journées » de la fenêtre :
+ *   décor, masqué aux lecteurs d'écran. Les deux autres extraits sont lus.
+ */
+import '@/styles/da.css';
+import Mascotte from './Mascotte.astro';
+import { ETAPES_REMPLACANT } from '@/data/etapesRemplacant';
+import {
+  DEMO_ANNEE,
+  DEMO_A_METTRE_DE_COTE,
+  DEMO_ETATS,
+  DEMO_MOIS,
+  DEMO_SUPER_NET,
+  euros,
+  insecable,
+  jourCourt,
+  journee,
+  montantJournee,
+} from '@/data/demoAccueil';
+
+const activite = ETAPES_REMPLACANT.slice(0, 3);
+const obligations = ETAPES_REMPLACANT.slice(3, 6);
+const reste = ETAPES_REMPLACANT[6];
+/** La phrase d'accroche de la septième étape, découpée à ses flèches. */
+const morceaux = reste.accroche.split(' → ');
+
+/** Quatre journées du mois, une par état au moins. */
+const extrait = [13, 15, 19, 20].map(journee);
+const aMettreDeCote = [
+  { nom: 'URSSAF', montant: DEMO_ANNEE.urssaf, rang: 1 },
+  { nom: 'CARMF', montant: DEMO_ANNEE.carmf, rang: 2 },
+  { nom: 'Impôts', montant: DEMO_ANNEE.impots, rang: 3 },
+];
+---
+
+<div class="bento">
+  <article class="cell c-sky">
+    <span class="n">1</span>
+    <h3>Ton activité</h3>
+    <ul class="feat-list">
+      {activite.map((e) => <li><b>{e.titre}</b><span>{e.accroche}</span></li>)}
+    </ul>
+    <div class="frag" aria-hidden="true">
+      <Mascotte pose="pointe" class="pointe" largeurs={[220, 330, 440]} sizes="(min-width: 900px) 220px, 1px" />
+      <div class="card">
+        <p class="card-t">{DEMO_MOIS.nom} {DEMO_MOIS.an}</p>
+        {extrait.map((j) => (
+          <div class="day"><span class="w">{jourCourt(j.jour)}</span><span class="p">{j.lieu}</span><span class={`chip ${DEMO_ETATS[j.etat].chip} num`}>{montantJournee(j)}</span></div>
+        ))}
+      </div>
+    </div>
+  </article>
+
+  <article class="cell c-white">
+    <span class="n">2</span>
+    <h3>Tes obligations</h3>
+    <ul class="feat-list">
+      {obligations.map((e) => <li><b>{e.titre}</b><span>{e.accroche}</span></li>)}
+    </ul>
+    <div class="frag solo">
+      <div class="card">
+        <p class="card-t">Année {DEMO_ANNEE.an}, à mettre de côté</p>
+        <ul class="tiles">
+          {aMettreDeCote.map((l) => (
+            <li class="tile"><span><i class={`sw l${l.rang}`}></i>{l.nom}</span><b class="num">{euros(l.montant)}</b></li>
+          ))}
+          <li class="tile sum"><span>En tout</span><b class="num">{euros(DEMO_A_METTRE_DE_COTE)}</b></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="cell c-sun">
+    <div class="sun-copy">
+      <span class="n">3</span>
+      <h3>Ce qu’il te reste</h3>
+      <ul class="feat-list">
+        <li>
+          <b>{reste.titre}</b>
+          <span>{morceaux.map((m, i) => (
+            <Fragment>{i > 0 && <Fragment>{' '}<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>{' '}</Fragment>}{m}</Fragment>
+          ))}</span>
+        </li>
+      </ul>
+      <p class="sun-num"><small>Super-Net {DEMO_ANNEE.an}</small><b class="aff">{euros(DEMO_SUPER_NET)}</b><span>{insecable(euros(DEMO_ANNEE.encaisse))} encaissés, moins les cotisations, moins l’impôt</span></p>
+    </div>
+    <Mascotte pose="pouce" class="pouce" largeurs={[190, 300, 380, 600]} sizes="(min-width: 900px) 300px, (min-width: 488px) 250px, calc(62vw - 52px)" />
+  </article>
+</div>
+
+<style>
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .num { white-space: nowrap; }
+
+  .bento { position: relative; z-index: 1; display: grid; gap: 14px; }
+  .cell { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 26px 22px 0; overflow: hidden; border-radius: 30px; color: var(--ink); box-shadow: var(--clay); }
+  .c-sky { background: var(--sky); }
+  .c-white { background: var(--paper); }
+  .c-sun { background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1), 0 22px 44px -22px rgba(13, 40, 105, 0.42); }
+  .cell h3 { margin: 0; }
+  .n { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 17px; font-weight: var(--tb); }
+  .feat-list { margin: 0; padding: 0; list-style: none; }
+  .feat-list li { display: flex; flex-direction: column; gap: 2px; padding: 13px 0; border-top: 1px solid var(--line); }
+  .c-sun .feat-list li { border-top-color: rgba(20, 37, 79, 0.2); }
+  .feat-list b { font-size: 17.5px; }
+  .feat-list span { font-size: 16px; color: var(--ink-2); }
+  .c-sun .feat-list span { color: var(--ink); }
+  /* La flèche dessinée : à la place du caractère, sur la ligne du texte. */
+  .fl { position: relative; white-space: nowrap; }
+  .fl svg { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
+
+  /* Les extraits d'écran, posés au bas de chaque case */
+  .frag { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: end; gap: 0; margin: auto 0 0; padding-top: 8px; }
+  .frag .pointe { display: none; position: relative; z-index: 1; width: 116%; margin-bottom: -8%; }
+  .card { position: relative; padding: 18px 18px 14px; border-radius: 22px 22px 0 0; background: var(--paper); box-shadow: 0 -10px 30px -16px rgba(13, 40, 105, 0.4); }
+  .c-white .card { background: var(--sky-soft); box-shadow: none; }
+  .card-t { margin: 0 0 6px; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
+  .day { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 50px; border-top: 1px solid var(--line); font-size: 15.5px; }
+  .day .w { font-size: 14px; color: var(--ink-3); }
+  .day .p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* À 320 px, les noms de lieux étaient coupés (« Valéri… ») : colonnes resserrées. */
+  @media (max-width: 359px) {
+    .cell { padding-inline: 18px; }
+    .card { padding-inline: 12px; }
+    .day { grid-template-columns: 50px minmax(0, 1fr) auto; gap: 6px; }
+  }
+  .tiles { margin: 0; padding: 0; list-style: none; }
+  .tile { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-2); }
+  .tile b { font-family: var(--display); font-size: 21px; font-weight: var(--dw); letter-spacing: -0.015em; color: var(--ink); }
+  .tile.sum { border-top: 2px solid var(--ink); color: var(--ink); font-weight: var(--tb); }
+  .sw { display: inline-block; width: 11px; height: 11px; margin-right: 8px; border-radius: 4px; }
+  .l1 { background: #8DB9F2; }
+  .l2 { background: #4F88DE; }
+  .l3 { background: #1F4FA8; }
+
+  /* La case jaune : ce qu'il te reste */
+  .sun-copy { display: flex; flex-direction: column; gap: 16px; }
+  .sun-num { display: flex; flex-direction: column; gap: 2px; margin: 0; padding-bottom: 20px; }
+  .sun-num small { font-size: 15px; font-weight: var(--tb); }
+  /* Sous 375 px le montant suit la largeur (58 px au moins sur la maquette) : avec
+     des espacements imposés par le visiteur, il sortait de la case à 320 px. */
+  .sun-num b { --corps: clamp(46px, 15.5vw, 132px); line-height: 1; }
+  .sun-num span { max-width: 26rem; font-size: 15.5px; }
+  .c-sun .pouce { align-self: flex-end; width: min(62%, 250px); margin: -12px -8px -14% 0; }
+
+  @media (min-width: 900px) {
+    .bento { grid-template-columns: 1.12fr 1fr; gap: 18px; }
+    .cell { padding: 36px 36px 0; border-radius: 36px; }
+    .frag:not(.solo) { grid-template-columns: 34% minmax(0, 1fr); margin: auto -10px 0 -36px; }
+    .frag .pointe { display: block; }
+    .card { padding: 22px 24px 18px; border-radius: 26px 26px 0 0; }
+    .c-sun { grid-column: 1 / -1; flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 40px; }
+    .sun-copy { flex: 1; max-width: 700px; padding-bottom: 8px; }
+    .c-sun .pouce { width: 300px; margin: 0 16px -9% 0; }
+  }
+
+  /* Chaque case monte en place quand elle entre à l'écran : seulement si le
+     visiteur n'a pas demandé moins de mouvement, et si le navigateur sait lier
+     une animation au défilement. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* ⚠️ Deux règles, deux sélecteurs : voir FenetreProduit.astro (la minification
+       rangerait la ligne de temps dans le raccourci, que les navigateurs refusent). */
+    @supports (animation-timeline: view()) {
+      .cell { animation: cases-arrive linear both; }
+      article.cell { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+    }
+  }
+  @keyframes cases-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+</style>
