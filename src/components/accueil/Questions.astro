@@ -6,7 +6,9 @@
  *
  * - Les questions viennent de src/data/faqAccueil.ts, source unique partagée
  *   avec le JSON-LD FAQPage de index.astro : toutes, dans leur ordre, textes
- *   non touchés. <details> natifs : chaque réponse est dans le HTML.
+ *   non touchés (seules les espaces devant « ? » et « : » deviennent insécables
+ *   à l'affichage, src/lib/typo.ts). <details> natifs : chaque réponse est dans
+ *   le HTML.
  * - Mesure : `data-landing-section="faq"` (la série continue),
  *   `data-ph="landing_faq_<id>"` sur chaque <summary>, `landing_faq_all` sur le
  *   lien vers /faq. `id="questions"` est nouveau (aucun lien ne le vise encore).
@@ -20,6 +22,7 @@ import '@/styles/da.css';
 import { getImage } from 'astro:assets';
 import { FAQ_ACCUEIL } from '@/data/faqAccueil';
 import { CALENDLY_URL } from '@/lib/site';
+import { insecables } from '@/lib/typo';
 import portrait from '@/assets/founders/ryan-goburdhun.jpeg';
 
 /* Vignette de la carte de rendez-vous : 56 px, et son double. Décor (le nom est dans le bouton). */
@@ -40,10 +43,10 @@ const [avif, webp] = await Promise.all(
       {FAQ_ACCUEIL.map((item) => (
         <details class="qa">
           <summary data-ph={`landing_faq_${item.id}`}>
-            <h3>{item.question}</h3>
+            <h3>{insecables(item.question)}</h3>
             <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
           </summary>
-          <div class="qa-in"><p set:html={item.answerHtml} /></div>
+          <div class="qa-in"><p set:html={insecables(item.answerHtml)} /></div>
         </details>
       ))}
 
@@ -55,7 +58,7 @@ const [avif, webp] = await Promise.all(
           <img src={webp.src} srcset={webp.srcSet.attribute} sizes="56px" alt="" width="56" height="56" loading="lazy" decoding="async" />
         </picture>
         <div class="rdv-copy">
-          <p class="rdv-t">Tu veux voir ce que ça donne au quotidien ?</p>
+          <p class="rdv-t">Tu veux voir ce que ça donne au quotidien&nbsp;?</p>
           <p>Rien à préparer. En visio, ou il t'appelle.</p>
         </div>
         <a class="btn btn-white" href={CALENDLY_URL} data-calendly="faq_accueil" target="_blank" rel="noopener">Prendre 15 min avec Ryan</a>

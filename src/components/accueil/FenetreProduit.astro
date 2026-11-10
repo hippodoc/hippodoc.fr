@@ -18,8 +18,12 @@
  *   aux lecteurs d'écran, qui gardent la liste complète. En dessous, la liste
  *   montre les six journées les plus récentes, comme la maquette (le début du
  *   mois et les jours sans remplacement sont retirés pour tout le monde).
- *   L'état de chaque journée (payé, en attente, planifié) est écrit dans la
- *   liste, pas seulement porté par la couleur.
+ *   L'état de chaque journée (payé, en attente, planifié) n'est pas porté par
+ *   la seule couleur : une coche, une horloge ou un tilde dans la pastille
+ *   (`.sig`, da.css), repris par la légende ; il est écrit en toutes lettres
+ *   pour les lecteurs d'écran.
+ * - L'onglet ouvert est cerclé d'encre : le blanc sur le fond de la barre ne
+ *   faisait que 1,11:1 (WCAG 1.4.11 demande 3:1 pour l'état d'un composant).
  * - La fenêtre garde sa hauteur quand on change de vue (hauteur minimale des
  *   panneaux, celle du relevé) ; seul le calendrier est un peu plus haut.
  */
@@ -127,7 +131,7 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
     <div class="cal-head">
       <p class="cal-titre">{mois}</p>
       <ul class="legend">
-        <li><i class="ok"></i>Payé</li><li><i class="wait"></i>En attente</li><li><i class="plan"></i>Planifié</li>
+        <li><span class="chip sig ok" aria-hidden="true"></span>Payé</li><li><span class="chip sig wait" aria-hidden="true"></span>En attente</li><li><span class="chip plan" aria-hidden="true">~</span>Planifié</li>
       </ul>
     </div>
     <div class="cal" aria-hidden="true">
@@ -136,7 +140,7 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
         <div class:list={[c.dehors && 'dehors']}>
           <span class="d">{c.n}</span>
           {c.journee && (
-            <span class={`chip ${DEMO_ETATS[c.journee.etat].chip}`}><span class="num">{montantJournee(c.journee)}</span><span class="lieu">{c.journee.lieu}</span></span>
+            <span class={`chip sig ${DEMO_ETATS[c.journee.etat].chip}`}><span class="num">{montantJournee(c.journee)}</span><span class="lieu">{c.journee.lieu}</span></span>
           )}
           {c.pause && <span class="chip off">{c.pause.libelle}</span>}
         </div>
@@ -144,7 +148,7 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
     </div>
     <ul class="days">
       {lignes.map(({ jour, journee, pause }) => journee ? (
-        <li class:list={['day', jour < DEBUT_LISTE_COURTE && 'large']}><span class="w">{jourCourt(jour)}</span><span class="p">{journee.lieu}</span><span class={`chip ${DEMO_ETATS[journee.etat].chip} num`}>{montantJournee(journee)}<span class="sr">, {DEMO_ETATS[journee.etat].libelle.toLowerCase()}</span></span></li>
+        <li class:list={['day', jour < DEBUT_LISTE_COURTE && 'large']}><span class="w">{jourCourt(jour)}</span><span class="p">{journee.lieu}</span><span class={`chip sig ${DEMO_ETATS[journee.etat].chip} num`}>{montantJournee(journee)}<span class="sr">, {DEMO_ETATS[journee.etat].libelle.toLowerCase()}</span></span></li>
       ) : (
         <li class="day large"><span class="w">{jourCourt(jour)}</span><span class="p">{pause && pause.au > pause.du && <Fragment>au {jourCourt(pause.au)}</Fragment>}</span><span class="chip off">{pause.libelle}</span></li>
       ))}
@@ -185,7 +189,7 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
   .tab:hover { color: var(--ink); }
   .tab .long { display: none; }
-  .tab:has(input:checked) { background: var(--paper); color: var(--ink); box-shadow: var(--clay-sm); }
+  .tab:has(input:checked) { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), var(--clay-sm); }
   .tab:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
   /* Contrastes forcés : le fond et l'ombre disparaissent, un contour dit quel onglet est ouvert. */
   @media (forced-colors: active) { .tab:has(input:checked) { outline: 2px solid Highlight; outline-offset: -2px; } }
@@ -271,19 +275,17 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   .cal-titre { margin: 0; font-family: var(--display); font-weight: var(--dw); letter-spacing: calc(var(--dtr) * 0.7); font-size: 24px; line-height: 1.12; }
   .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: 14.5px; color: var(--ink-2); }
   .legend li { display: flex; align-items: center; gap: 6px; }
-  .legend i { width: 9px; height: 9px; border-radius: 50%; }
-  /* Points de la légende : au moins 3:1 sur blanc (3,45 / 3,35 / 5,22). L'orange
-     de la maquette (#E08A00) ne faisait que 2,69:1. */
-  .legend .ok { background: #1E9E5A; }
-  .legend .wait { background: #C97A00; }
-  .legend .plan { background: #2F64E0; }
+  /* La légende reprend les pastilles, avec leur signe : la coche, l'horloge, le
+     tilde (5,9:1 au moins sur leur fond). L'état ne tient plus à la couleur seule. */
+  .legend .chip { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; padding: 3px 6px; font-size: 12.5px; line-height: 1.2; }
+  .legend .chip::before { margin-right: 0; }
   .cal { display: none; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: 16px; }
   .cal > div { display: flex; flex-direction: column; gap: 4px; min-height: 68px; padding: 6px 5px 8px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .cal > div:nth-child(7n) { border-right: 0; }
   .cal > div:nth-last-child(-n + 7) { border-bottom: 0; }
   .cal .dow { min-height: 0; background: var(--sky-soft); font-size: 13.5px; font-weight: var(--tb); color: var(--ink-2); text-align: right; }
   .cal .d { align-self: flex-end; font-size: 13.5px; color: var(--ink-3); }
-  .cal .dehors .d { opacity: 0.5; }
+  .cal .dehors .d { opacity: 0.7; }
   /* Montant, puis lieu dessous : sur une ligne, « ~1 200 € · Cabinet M. » ne
      tenait dans une case à aucune largeur (coupé par des points de suspension
      sur la maquette). */

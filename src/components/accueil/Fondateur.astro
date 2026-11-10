@@ -18,23 +18,36 @@
  *   (<video preload="none"> : aucun octet de vidéo avant le clic, mêmes
  *   identifiants, même titre, même nom de bouton, même pastille « 90 s »), et
  *   son script, recopié à l'octet. `PRODUCT_DEFINITION` reste dans ce sous-bloc.
- *   L'affiche du film reste le fichier de public/ que cite le schéma
- *   VideoObject : l'attribut `poster` ne prend qu'une adresse.
+ *   L'affiche n'est plus l'attribut `poster` (une seule adresse : 60 Ko en
+ *   1920 × 1080, téléchargés dès l'ouverture de la page pour un bloc placé
+ *   quatre écrans plus bas). C'est une image astro:assets dans le bouton de
+ *   lecture, qui couvre le cadre : AVIF et WebP, trois largeurs, chargement
+ *   paresseux. Quand la lecture démarre, le script masque le bouton, donc
+ *   l'affiche. Même image : src/assets/accueil/film-affiche.jpg est la copie de
+ *   public/hippodoc-presentation-st-poster.jpg, que cite toujours le schéma
+ *   VideoObject.
  * - Titres : un <h2> (le fondateur), un <h3> (le film).
  */
 import '@/styles/da.css';
 import { getImage } from 'astro:assets';
 import { CALENDLY_URL, PRODUCT_DEFINITION } from '@/lib/site';
 import portrait from '@/assets/founders/ryan-goburdhun.jpeg';
+import affiche from '@/assets/accueil/film-affiche.jpg';
 
 const VIDEO_URL =
   'https://zlqlijendlquvwnodeqq.supabase.co/storage/v1/object/public/public-assets/hippodoc-presentation-st.mp4';
 
-/* Portrait : 380 px de large au plus, moins sur téléphone. */
-const LARGEURS = [380, 570, 760];
-const SIZES = '(min-width: 420px) 380px, calc(100vw - 40px)';
+/* Portrait : 380 px de large au plus, moins sur téléphone ; 240 px à côté du texte de 700 à 899 px. */
+const LARGEURS = [240, 380, 570, 760];
+const SIZES = '(min-width: 900px) 380px, (min-width: 700px) 240px, (min-width: 430px) 380px, calc(100vw - 40px)';
 const [avif, webp] = await Promise.all(
   (['avif', 'webp'] as const).map((format) => getImage({ src: portrait, format, width: 380, widths: LARGEURS }))
+);
+
+/* Affiche du film : le cadre fait 624 px de large sur ordinateur, la largeur de la page moins les marges en dessous. */
+const SIZES_AFFICHE = '(min-width: 1200px) 624px, (min-width: 900px) 52vw, calc(100vw - 40px)';
+const [afficheAvif, afficheWebp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) => getImage({ src: affiche, format, width: 800, widths: [400, 800, 1200] }))
 );
 
 /* « En chiffres » (home/SocialProofSection.astro), valeurs et libellés d'origine. */
@@ -87,7 +100,7 @@ const chiffres = [
     <div class="film" data-landing-section="presentation-video" id="film-presentation">
       <div class="film-copy">
         <h3>Hippodoc en 90 secondes</h3>
-        <p class="lead">URSSAF, CARMF, impôts, Super-Net : tu vois enfin ce qu'il te reste vraiment.</p>
+        <p class="lead">URSSAF, CARMF, impôts, Super-Net&nbsp;: tu vois enfin ce qu'il te reste vraiment.</p>
         {/* GEO : définition produit reprise mot pour mot (site.ts) */}
         <p class="def">{PRODUCT_DEFINITION}</p>
       </div>
@@ -95,7 +108,6 @@ const chiffres = [
         <video
           id="film-video"
           src={VIDEO_URL}
-          poster="/hippodoc-presentation-st-poster.jpg"
           preload="none"
           controls
           playsinline
@@ -108,6 +120,10 @@ const chiffres = [
             9,4 % de ceux qui voyaient le film le lançaient. `preload="none"` est
             gardé, d'où l'état d'attente : sans lui, on croit que rien ne se passe. */}
         <button type="button" id="film-play" class="film-play" aria-label="Lire le film de présentation, 90 secondes">
+          <picture class="affiche">
+            <source type="image/avif" srcset={afficheAvif.srcSet.attribute} sizes={SIZES_AFFICHE} />
+            <img src={afficheWebp.src} srcset={afficheWebp.srcSet.attribute} sizes={SIZES_AFFICHE} alt="" width="800" height="450" loading="lazy" decoding="async" />
+          </picture>
           <span class="pill">
             <svg id="film-play-icone" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.5 2.5v11l9-5.5z"/></svg>
             <svg id="film-play-attente" hidden xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
@@ -206,11 +222,16 @@ const chiffres = [
 
   /* Trois chiffres, et la date des deux relevés */
   .facts { display: flex; flex-direction: column; gap: 14px; width: 100%; margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--line); }
-  /* Sur téléphone, les trois tiennent sur une ligne à partir de 380 px. */
-  .facts ul { display: flex; flex-wrap: wrap; gap: 16px 20px; margin: 0; padding: 0; list-style: none; }
-  .fact { max-width: 100px; }
-  .fact b { --corps: 34px; display: block; }
+  /* Trois colonnes égales jusqu'à 1179 px : les trois chiffres restent sur une
+     ligne à toutes les largeurs (« 2 379 » passait seul dessous à 320, 560, 768
+     et 1024 px). */
+  .facts ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 14px; margin: 0; padding: 0; list-style: none; }
+  .fact b { --corps: clamp(28px, 8.8vw, 34px); display: block; }
   .fact span { display: block; font-size: 15px; line-height: 1.35; color: var(--ink-2); }
+  @media (max-width: 359px) {
+    .facts ul { column-gap: 10px; }
+    .fact span { font-size: 14px; }
+  }
   .facts small { font-size: 14px; color: var(--ink-3); }
 
   /* Le film */
@@ -221,6 +242,8 @@ const chiffres = [
   .film-frame { --focus: #FFFFFF; position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 30px; background: #0B1533; box-shadow: var(--clay); }
   .film-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .film-play { position: absolute; inset: 0; width: 100%; margin: 0; padding: 0; border: 0; border-radius: inherit; background: none; font: inherit; color: var(--ink); cursor: pointer; }
+  /* L'affiche remplit le bouton, donc le cadre ; elle part avec lui quand le film démarre. */
+  .affiche img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
   .film-play:focus-visible { outline-offset: -7px; }
   .pill { position: absolute; left: 16px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px 0 16px; border-radius: var(--r-pill); background: var(--sun); font-size: 16px; font-weight: var(--tb); box-shadow: 0 4px 0 var(--sun-edge); transition: translate 120ms var(--ease), background-color 160ms var(--ease); }
   .film-play:hover .pill { background: var(--sun-hover); }
@@ -235,10 +258,24 @@ const chiffres = [
   @keyframes film-bat { from { opacity: 1; } to { opacity: 0.35; } }
 
   @media (min-width: 560px) {
-    .facts ul { gap: 18px 44px; }
-    .fact { max-width: none; }
+    .facts ul { column-gap: 24px; }
     .fact b { --corps: 42px; }
     .fact span { font-size: 15.5px; }
+  }
+  /* Tablette : le portrait à côté du texte (seul à gauche, il laissait la moitié de l'écran vide). */
+  @media (min-width: 700px) and (max-width: 899px) {
+    .who { grid-template-columns: 240px minmax(0, 1fr); align-items: start; gap: 40px; }
+    .who-photo { margin-top: 8px; }
+    .who-photo img { border-radius: 28px; }
+  }
+  /* De 700 à 1179 px, la colonne du texte est étroite : les trois chiffres y
+     restent sur une ligne dans un corps plus petit. Au-delà, ils se suivent. */
+  @media (min-width: 700px) and (max-width: 1179px) {
+    .facts ul { column-gap: 16px; }
+    .fact b { --corps: 34px; }
+  }
+  @media (min-width: 1180px) {
+    .facts ul { display: flex; flex-wrap: wrap; gap: 18px 44px; }
   }
   @media (min-width: 900px) {
     .who { grid-template-columns: 380px minmax(0, 1fr); gap: 96px; }

@@ -15,8 +15,17 @@
  *   série continue.
  * - Sous 640 px, les cartes défilent de côté (une carte et le bord de la
  *   suivante) ; au-delà, deux par ligne. Les quatre sont toujours dans le HTML.
+ *   La rangée est un groupe nommé, atteignable au clavier (`tabindex="0"`) :
+ *   sans cela, Safari ne permet pas de la faire défiler aux flèches.
+ * - Seule feuille dont le titre est centré, sous de grands guillemets dessinés
+ *   sur une pastille jaune (décor) : elle casse la suite des feuilles « titre à
+ *   gauche, contenu dessous ».
+ * - Un mot composé (« super-net », « week-end ») ne se coupe pas au trait
+ *   d'union (mise en page seule, le texte ne change pas ; la police n'a pas de
+ *   trait d'union insécable).
  */
 import '@/styles/da.css';
+import { insecables } from '@/lib/typo';
 
 const temoignages = [
   { texte: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", auteur: 'Dr Sofiane B.', qualite: 'Médecin (SOS Médecins + cabinet)', initiales: 'SB' },
@@ -33,14 +42,18 @@ const temoignages = [
   aria-labelledby="temoignages-titre"
 >
   <div class="wrap">
-    <div class="band-head">
-      <h2 id="temoignages-titre">Ce qu'en disent nos utilisateurs</h2>
+    <div class="band-head mid">
+      <span class="guillemets" aria-hidden="true">
+        <svg viewBox="0 0 40 28" width="40" height="28" fill="currentColor"><path d="M0 28V16.4C0 7.3 4.8 1.7 14.4 0l1.7 4.3c-4.4 1.2-6.7 3.9-7 8H16V28Zm23.3 0V16.4c0-9.1 4.8-14.7 14.4-16.4l1.7 4.3c-4.4 1.2-6.7 3.9-7 8h6.9V28Z"/></svg>
+      </span>
+      <h2 id="temoignages-titre">Ce qu’en disent nos utilisateurs</h2>
     </div>
+    <div class="rail" tabindex="0" role="group" aria-labelledby="temoignages-titre">
     <ul class="cards" role="list">
       {temoignages.map((t) => (
         <li>
           <figure class="card">
-            <blockquote><p>«&nbsp;{t.texte}&nbsp;»</p></blockquote>
+            <blockquote><p>«&nbsp;{insecables(t.texte).split(/([\wÀ-ÿ]+-[\wÀ-ÿ]+)/).map((m, i) => (i % 2 ? <span class="nb">{m}</span> : m))}&nbsp;»</p></blockquote>
             <figcaption>
               <span class="av" aria-hidden="true">{t.initiales}</span>{' '}
               <span class="qui"><b>{t.auteur}</b>{' '}<span>{t.qualite}</span></span>
@@ -49,14 +62,23 @@ const temoignages = [
         </li>
       ))}
     </ul>
+    </div>
   </div>
 </section>
 
 <style>
+  .nb { white-space: nowrap; }
+  /* Les guillemets : une pastille jaune au-dessus du titre centré. */
+  .guillemets { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; margin-bottom: 4px; border-radius: 50%; background: var(--sun); color: var(--ink); box-shadow: 0 4px 0 var(--sun-edge); rotate: -4deg; }
+  .guillemets svg { width: 26px; height: auto; }
+  .band-head.mid { max-width: 640px; }
+
   /* Sur téléphone : une rangée qui défile de côté, carte par carte. Elle sort
      des marges de la page pour que les cartes glissent jusqu'au bord. */
-  .cards { display: flex; gap: 14px; margin: 0 -20px; padding: 6px 20px 30px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; list-style: none; -webkit-overflow-scrolling: touch; }
-  .cards li { display: flex; flex: none; width: min(84%, 340px); scroll-snap-align: start; }
+  .rail { margin: 0 calc(-1 * var(--gut)); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); -webkit-overflow-scrolling: touch; }
+  .rail:focus-visible { outline-offset: -3px; border-radius: var(--r-md); }
+  .cards { display: flex; gap: 14px; width: max-content; margin: 0; padding: 6px var(--gut) 30px; list-style: none; }
+  .cards li { display: flex; flex: none; width: min(76vw, 340px); scroll-snap-align: start; }
   .card { display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; margin: 0; padding: 22px 22px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay-sm); }
   blockquote { flex: 1; margin: 0; }
   blockquote p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--ink); }
@@ -68,11 +90,15 @@ const temoignages = [
 
   /* Au-delà : deux cartes par ligne, plus rien ne défile. */
   @media (min-width: 640px) {
-    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0; padding: 0; overflow: visible; }
+    .rail { margin: 0; overflow: visible; }
+    .rail:focus-visible { outline-offset: 6px; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: auto; padding: 0; }
     .cards li { width: auto; }
     .card { box-shadow: var(--clay); }
   }
   @media (min-width: 900px) {
+    .guillemets { width: 72px; height: 72px; }
+    .guillemets svg { width: 32px; }
     .card { gap: 18px; padding: 32px 34px 28px; border-radius: 36px; }
     blockquote p { font-size: 20px; line-height: 1.45; }
     figcaption { padding-top: 18px; }

@@ -10,6 +10,9 @@ import { APP_URL } from '@/lib/site';
  * dans le HTML), tiroir mobile 100 % CSS piloté par la case `#mobile-menu-toggle`
  * (dont dépend aussi la bannière cookies), micro-script qui referme le tiroir au
  * clic d'une ancre, mêmes `data-ph` et `data-track`, mêmes libellés.
+ * ⚠️ Ce micro-script est le même, mais il vit dans ScriptTiroirDA.astro, que la
+ * page rend après son pied : au milieu de l'en-tête, il faisait peindre la page
+ * en deux temps (voir ce fichier). Une page qui utilise HeaderDA doit le rendre.
  * Habillage dans src/styles/da.css (classes `hd-*`), sans classe Tailwind.
  * Demande `bodyClass="da"` sur la page. `da-bloc` marque un bloc de la DA : c'est
  * lui qui reçoit la typographie (voir da.css).
@@ -140,15 +143,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     </div>
   </div>
 
-  {/* Cliquer une ancre de la page courante ne déclenche aucune navigation :
-       la case doit être décochée explicitement, sinon le tiroir reste ouvert. */}
-  <script is:inline>
-    document.getElementById('mobile-menu-drawer').addEventListener('click', function (e) {
-      if (e.target.closest('a')) document.getElementById('mobile-menu-toggle').checked = false;
-    });
-    /* Safari iOS n'applique `:active` (retour visuel à l'appui) que si un écouteur
-       `touchstart` existe dans la page. Celui de ThirdPartyScripts est `once` : il
-       disparaît au premier geste. Écouteur vide et passif, coût nul. */
-    document.addEventListener('touchstart', function () {}, { passive: true });
-  </script>
+  {/* Le micro-script qui referme le tiroir au clic d'une ancre n'est plus ici :
+       voir ScriptTiroirDA.astro, à rendre après le pied de la page. */}
 </header>

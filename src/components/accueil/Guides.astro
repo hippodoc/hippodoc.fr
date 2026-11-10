@@ -60,7 +60,8 @@ const guides = [
     .guide { gap: 14px; padding-left: 20px; }
   }
   @media (min-width: 900px) {
-    .guides { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    /* Rangées de même hauteur : une seule carte à titre long allongeait la sienne. */
+    .guides { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 14px; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .guide, .guide svg { transition: translate 200ms var(--ease); }

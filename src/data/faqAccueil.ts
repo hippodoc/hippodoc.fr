@@ -80,11 +80,6 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
     answerHtml: `Hippodoc distingue automatiquement les journées <strong>payées</strong> de celles <strong>en attente</strong>. Tu visualises d'un coup d'œil les montants à percevoir, avec des <strong>alertes</strong> pour les <strong>paiements tardifs</strong>. Tu peux même envoyer des <strong>relances</strong> directement depuis l'application.`,
   },
   {
-    id: 'collaboration',
-    question: 'Comment fonctionne la collaboration libérale sur Hippodoc ?',
-    answerHtml: `Hippodoc gère nativement la <strong>collaboration libérale</strong>. Tu enregistres ton lieu d'exercice avec ton <strong>taux de redevance</strong>, et chaque mois la redevance due est <strong>calculée automatiquement</strong> à partir de tes recettes encaissées. Le suivi <strong>payé/à verser</strong> est intégré, et la redevance est ventilée en <strong>ligne L16/BG</strong> de ta déclaration 2035, <strong>déductible</strong> de ton bénéfice imposable. Voir <a href="/blog/remplir-declaration-2035">comment remplir sa 2035</a>.`,
-  },
-  {
     id: 'contrats',
     question: 'Peut-on générer des contrats de remplacement médical ?',
     answerHtml: `Oui, Hippodoc permet de générer des <strong>contrats de remplacement</strong> conformes aux exigences de l'<strong>Ordre des médecins</strong>. Tu renseignes les informations (dates, lieu d'exercice, conditions) et le <strong>contrat PDF</strong> est généré avec <strong>signature électronique</strong> intégrée. Ce qu'il faut vérifier avant de signer : <a href="/blog/signer-contrat-remplacement">signer un contrat de remplacement</a>.`,

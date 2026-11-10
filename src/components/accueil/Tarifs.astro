@@ -19,7 +19,16 @@
  *   seule mention de l'hébergement sur l'accueil.
  * - Caractères absents de la police (« ✓ », « → ») : dessinés en SVG, le
  *   caractère reste dans le texte, masqué à l'œil (procédé de TroisCases.astro).
- * - Mascotte féminine qui présente (décor), à partir de 900 px.
+ * - Mascotte féminine qui présente (décor), à partir de 1024 px : cadrée à
+ *   mi-corps, elle dépasse derrière la carte de l'offre interne (comme celle
+ *   à la tablette derrière les trois cases). Elle est dans cette carte : elle
+ *   monte en place avec elle, et ne prend aucune place dans la mise en page.
+ * - De 700 à 1023 px : l'offre annuelle sur toute la largeur (texte à gauche,
+ *   bouton à droite), les deux autres côte à côte. Trois colonnes à partir de
+ *   1024 px seulement : en dessous, « Commencer 30 jours gratuits » ne tenait
+ *   plus sur une ligne.
+ * - « 120 € de moins… » : un surlignage jaune, pas une pastille. S'il passe sur
+ *   deux lignes (320 px), chaque ligne garde son trait arrondi.
  * - Titres : un <h2>, puis des <h3> (les trois offres, « Inclus », le RSPM).
  */
 import '@/styles/da.css';
@@ -51,7 +60,8 @@ const inclusSuite = [
   'Support réactif et humain',
 ];
 
-/* Tableau « Détail des offres ». `true` : une coche. Espace insécable entre un
+/* Tableau « Détail des offres ». `true` : une coche (lue « Oui ») ; le tiret
+   de « Économie » est lu « Aucune ». Espace insécable entre un
    nombre et son unité : le reste de la cellule peut passer à la ligne. */
 const comparatif: { ligne: string; mensuel: string | true; annuel: string | true }[] = [
   { ligne: 'Prix par mois', mensuel: '29\u00a0€', annuel: '19\u00a0€' },
@@ -72,12 +82,9 @@ const rspm = [
 
 <section data-landing-section="pricing" id="pricing" class="band air da-bloc tf" aria-labelledby="tarifs-titre">
   <div class="wrap">
-    <div class="price-head">
-      <div class="band-head">
-        <h2 id="tarifs-titre">Tarifs&nbsp;: un outil pro, à un prix humain</h2>
-        <p class="lead">30 jours gratuits, sans carte bancaire.</p>
-      </div>
-      <Mascotte pose="f-presente" class="guide" largeurs={[190, 285, 380]} sizes="190px" />
+    <div class="band-head">
+      <h2 id="tarifs-titre">Tarifs&nbsp;: un outil pro, à un prix humain</h2>
+      <p class="lead">30 jours gratuits, sans carte bancaire.</p>
     </div>
 
     <div class="plans">
@@ -85,7 +92,7 @@ const rspm = [
         <h3 id="offre-annuel">Annuel</h3>
         <p class="price"><b class="aff num">19 €</b>{' '}<span>par mois</span></p>
         <p>228&nbsp;€ facturés une fois par an</p>
-        <p class="save">120&nbsp;€ de moins par an que le mensuel</p>
+        <p class="save"><span>120&nbsp;€ de moins par an que le mensuel</span></p>
         <a
           class="btn btn-brand"
           href={`${APP_URL}/auth?tab=signup&plan=yearly`}
@@ -114,6 +121,7 @@ const rspm = [
       </article>
 
       <article class="offer interne">
+        <Mascotte pose="f-presente" class="guide" largeurs={[250, 375, 500]} sizes="250px" />
         <h3>Interne</h3>
         <p class="price"><b class="aff num">10 €</b>{' '}<span>par mois</span></p>
         <p>Encore en formation</p>
@@ -125,16 +133,16 @@ const rspm = [
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 6 4.5 4.5L12.5 6"/></svg>
           </summary>
           <div class="more">
-            <p>Vous êtes encore en internat ? On sait que c'est pas facile financièrement. Hippodoc vous accompagne avec un tarif adapté.</p>
-            <p><b>Avantage : 10&nbsp;€/mois au lieu de 29&nbsp;€ + 30 jours d'essai gratuit</b></p>
+            <p>Vous êtes encore en internat&nbsp;? On sait que c'est pas facile financièrement. Hippodoc vous accompagne avec un tarif adapté.</p>
+            <p><b>Avantage&nbsp;: 10&nbsp;€/mois au lieu de 29&nbsp;€ + 30 jours d'essai gratuit</b></p>
             <p>Pendant toute la durée de votre internat</p>
-            <p><b>Justificatifs acceptés :</b></p>
+            <p><b>Justificatifs acceptés&nbsp;:</b></p>
             <ul>
               <li>Carte d'étudiant en cours de validité</li>
               <li>Attestation d'inscription en internat</li>
               <li>Certificat de scolarité</li>
             </ul>
-            <p>Comment en bénéficier ? Écris-nous à <a class="lien" href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a> — réponse sous 24h avec ton code promo personnalisé !</p>
+            <p>Comment en bénéficier&nbsp;? Écris-nous à <a class="lien" href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a> — réponse sous 24h avec ton code promo personnalisé&nbsp;!</p>
           </div>
         </details>
       </article>
@@ -175,8 +183,10 @@ const rspm = [
                   {[l.mensuel, l.annuel].map((v) => (
                     <td role="cell">
                       {v === true
-                        ? <Fragment><span class="sr">✓</span><svg class="oui" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg></Fragment>
-                        : v}
+                        ? <Fragment><span class="sr">Oui</span><svg class="oui" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg></Fragment>
+                        : v === '—'
+                          ? <Fragment><span aria-hidden="true">—</span><span class="sr">Aucune</span></Fragment>
+                          : v}
                     </td>
                   ))}
                 </tr>
@@ -194,7 +204,7 @@ const rspm = [
         </summary>
         <div class="qa-in rspm">
           <h3>Mode RSPM Intégré</h3>
-          <p>Le RSPM (Régime Simplifié des Professions Médicales) propose des cotisations sociales réduites et une gestion administrative simplifiée, avec des taux progressifs :</p>
+          <p>Le RSPM (Régime Simplifié des Professions Médicales) propose des cotisations sociales réduites et une gestion administrative simplifiée, avec des taux progressifs&nbsp;:</p>
           <ul role="list">
             {rspm.map((r) => (
               <li>
@@ -208,7 +218,7 @@ const rspm = [
       </details>
     </div>
 
-    <p class="fine">Tous nos prix sont TTC, sans frais cachés. L’abonnement est 100&nbsp;% déductible.</p>
+    <p class="fine">Tous nos prix sont TTC, sans frais cachés. Abonnement 100&nbsp;% déductible au régime réel.</p>
   </div>
 </section>
 
@@ -216,14 +226,13 @@ const rspm = [
   .num { white-space: nowrap; }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-  /* Titre, et la mascotte qui présente les offres (à partir de 900 px) */
-  .price-head { display: grid; align-items: end; gap: 24px; margin-bottom: 36px; }
-  .price-head .band-head { margin-bottom: 0; }
+  .band-head { margin-bottom: 36px; }
+  /* La mascotte qui présente les offres : à partir de 1024 px (voir plus bas). */
   .guide { display: none; }
 
   /* Les trois offres */
   .plans { position: relative; display: grid; gap: 14px; }
-  .offer { display: flex; flex-direction: column; gap: 6px; padding: 28px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .offer { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 28px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
   .offer h3 { margin: 0; font-family: var(--text); font-size: 18px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
   .offer p { margin: 0; font-size: 16px; color: var(--ink-2); }
   .offer .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
@@ -231,8 +240,10 @@ const rspm = [
   .offer.main { --focus: #FFFFFF; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
   .offer.main p { color: var(--on-deep-2); }
   .offer.main .price b { color: var(--paper); }
-  /* Même hauteur de ligne qu'un paragraphe : les trois cartes gardent la même hauteur. */
-  .offer.main .save { align-self: flex-start; padding: 0 12px; border-radius: var(--r-md); background: var(--sun); color: var(--ink); font-weight: var(--tb); }
+  /* Un surlignage, pas une pastille : sur deux lignes (320 px), chaque ligne
+     garde son trait jaune arrondi au lieu de former un pavé. */
+  .offer.main .save { line-height: 1.75; }
+  .save span { padding: 3px 9px; border-radius: 9px; background: var(--sun); color: var(--ink); font-size: 14.5px; font-weight: var(--tb); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
   /* Les boutons au pied des cartes, sur une même ligne, libellé sur une ligne. */
   .offer > .btn, .offer > details { margin-top: auto; }
   .offer > .btn, .offer summary { padding: 8px 14px; text-align: center; }
@@ -292,27 +303,48 @@ const rspm = [
 
   .fine { margin: 20px 0 0; font-size: 14.5px; color: var(--ink-2); }
 
+  /* Petits téléphones : « Commencer 30 jours gratuits » tient sur une ligne. */
+  @media (max-width: 374px) {
+    .offer { padding: 24px 22px; }
+    .offer > .btn, .offer summary { padding-inline: 8px; font-size: 15.5px; }
+  }
   @media (min-width: 640px) {
     .checks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
+  /* Tablette : l'offre annuelle sur toute la largeur, le texte à gauche et le
+     bouton à droite ; les deux autres côte à côte. Ouverte, la carte interne
+     s'allonge seule (`align-items: start`). */
+  @media (min-width: 700px) and (max-width: 1023px) {
+    .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .offer.main { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 24px; }
+    .offer.main > * { grid-column: 1; }
+    .offer.main > .btn { grid-column: 2; grid-row: 1 / span 4; margin: 0; padding-inline: 20px; }
+    .offer.main > p:last-of-type { margin-bottom: 0; }
+    .offer:not(.main) > .btn, .offer summary { padding-inline: 8px; }
+  }
   @media (min-width: 900px) {
-    .price-head { grid-template-columns: minmax(0, 1fr) 250px; }
-    /* Elle est posée sur les cartes : ses pieds passent devant la troisième. */
-    .guide { position: relative; z-index: 2; display: block; justify-self: center; width: 190px; margin: -64px 0 -78px; pointer-events: none; }
+    .checks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1024px) {
     /* Deux rangées : la première a la hauteur des cartes, la seconde (souple)
        n'existe que pour l'offre interne, qui couvre les deux. Fermée, sa carte a
        la hauteur des deux autres ; ouverte, elle s'allonge seule dans la seconde
        rangée, les deux autres ne bougent pas. */
     .plans { grid-template-columns: 1.2fr 1fr 1fr; grid-template-rows: auto 1fr; gap: 0 14px; }
     .interne { grid-column: 3; grid-row: 1 / span 2; }
-    .checks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    /* Le titre s'arrête avant elle. */
+    .band-head { max-width: calc(100% - 320px); }
+    /* Elle se tient derrière la carte interne, coupée à mi-corps par son bord
+       haut (les 52 % du haut de l'image) : à l'écart des coins arrondis, et
+       hors du flux, pour que le titre garde sa place. */
+    .guide { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; overflow: hidden; pointer-events: none; }
   }
-  /* De 900 à 1179 px, la pastille de l'offre annuelle passe sur deux lignes : la
-     dernière ligne des trois cartes réserve la même hauteur. Sans cela, la carte
-     interne aurait du vide au-dessus de son bouton, et le bouton remonterait
-     sous le doigt à l'ouverture. */
-  @media (min-width: 900px) and (max-width: 1179px) {
-    .offer > p:last-of-type { min-height: 3.1em; }
+  /* De 1024 à 1179 px, les colonnes sont étroites : marges des cartes et
+     boutons resserrés, pour que « Commencer 30 jours gratuits » tienne sur une
+     ligne. */
+  @media (min-width: 1024px) and (max-width: 1179px) {
+    .offer { padding: 26px 24px; }
+    .offer > .btn, .offer summary { padding-inline: 8px; font-size: 15.5px; }
   }
 
   /* Les cartes montent en place quand elles entrent à l'écran. Deux règles,

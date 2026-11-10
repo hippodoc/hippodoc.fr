@@ -292,6 +292,22 @@ for (const vue of sectionsVues) {
     fail(`accueil : data-landing-section="${vue}" inconnu — ajoute-le ici ET dans src/lib/landing-analytics.ts, sinon son section_order sera faux`);
   }
 }
+// Les deux listes vont ensemble : une section connue ici mais absente de `SECTIONS`
+// (src/lib/landing-analytics.ts) partirait avec `section_order: 0`, sans erreur.
+{
+  const source = readFileSync(resolve(root, 'src/lib/landing-analytics.ts'), 'utf8');
+  const liste = source.match(/const SECTIONS = \[([\s\S]*?)\]/)?.[1];
+  const connues = liste ? [...liste.matchAll(/'([^']+)'/g)].map((m) => m[1]) : [];
+  if (!connues.length) {
+    fail('src/lib/landing-analytics.ts : tableau SECTIONS introuvable, le contrôle des identifiants de section est impossible');
+  } else {
+    for (const section of SECTIONS_LANDING) {
+      if (!connues.includes(section)) {
+        fail(`accueil : « ${section} » est dans SECTIONS_LANDING mais pas dans SECTIONS (src/lib/landing-analytics.ts) — son section_order vaudrait 0`);
+      }
+    }
+  }
+}
 // Tout lien d'inscription doit rester instrumenté : c'est la conversion elle-même.
 for (const [balise] of accueil.matchAll(/<a\b[^>]*auth\?tab=signup[^>]*>/g)) {
   if (!/data-track="/.test(balise)) {
@@ -354,6 +370,17 @@ for (const profil of PROFILS_POUR_QUI) {
 }
 if (radiosProfil.length !== PROFILS_POUR_QUI.length || radiosProfil.filter((r) => /\schecked\b/.test(r)).length !== 1) {
   fail(`accueil, « Pour qui » : ${PROFILS_POUR_QUI.length} profils attendus, dont un seul coché — trouvé ${radiosProfil.length} radio(s)`);
+}
+// Les deux autres liens de rendez-vous de la page (arbitrage 7 du plan) : la série
+// `pour_qui` continue, `fondateur` est neuve et sera réévaluée à 60 jours. Le
+// contrôle générique plus bas vérifie qu'un lien Calendly porte l'attribut, pas
+// qu'il est toujours là.
+if (!pourQui.includes('data-calendly="pour_qui"')) {
+  fail('accueil, « Pour qui » : le lien de rendez-vous data-calendly="pour_qui" a disparu du bloc — sa série PostHog s\'arrête');
+}
+const blocFondateur = accueil.match(/<section\b[^>]*data-landing-section="founder"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!blocFondateur.includes('data-calendly="fondateur"')) {
+  fail('accueil, bloc fondateur : le lien de rendez-vous data-calendly="fondateur" a disparu');
 }
 if (!pourQui.includes('data-track="cta_signup_journey_section"')) {
   fail('accueil : data-track="cta_signup_journey_section" absent du bloc « Pour qui » — sa série PostHog s\'arrête');
@@ -476,6 +503,13 @@ const ECARTS_ENTETE_PIED_DA = [
   'footer : a | /blog/regime-fiscal-micro-bnc-vs-reel |  |  |  | Micro-BNC vs Réel',
   'footer : a | /blog/salaires-medecins-remplacants |  |  |  | Salaires remplaçants',
   'footer : a | /blog/checklist-administrative-medecin-remplacant |  |  |  | Checklist administrative',
+  // Phase 3, corrections après relecture (MIGRATION.md § 9) : dans le pied de
+  // l'accueil, les trois liens en toutes lettres de la colonne de contact ne sont
+  // pas repris. Les pastilles rondes y mènent déjà, avec leur data-ph
+  // (`landing_footer_linkedin`, `_facebook`, `_instagram`) ; Footer.astro garde les deux.
+  'footer : a | https://www.linkedin.com/company/hippodoc/ |  |  |  | LinkedIn',
+  'footer : a | https://www.facebook.com/profile.php?id=61574895730373 |  |  |  | Facebook',
+  'footer : a | https://www.instagram.com/hippodoc.fr/ |  |  |  | Instagram',
 ];
 function reperesNavigation(html, balise) {
   const bloc = html.match(new RegExp(`<${balise}\\b[\\s\\S]*?</${balise}>`))?.[0];
@@ -517,7 +551,20 @@ if (!existsSync(pageTemoin)) {
         `Reporte la modification dans l'autre composant, ou déclare l'écart dans ECARTS_ENTETE_PIED_DA`
       );
     }
-    if (da.scripts.join('\n') !== origine.scripts.join('\n')) {
+    // Le micro-script du tiroir mobile. Sur l'accueil il n'est plus dans <header>
+    // (un script en ligne au milieu du flux faisait peindre la page en deux temps,
+    // MIGRATION.md § 9) : ScriptTiroirDA.astro le rend après </main>. Il doit y être,
+    // identique à celui de Header.astro, et ne pas revenir dans l'en-tête.
+    const scriptsDA = balise === 'header'
+      ? [...accueil.slice(accueil.indexOf('</main>')).matchAll(/<script\b(?![^>]*\b(?:src|type)=)[^>]*>([\s\S]*?)<\/script>/g)]
+          .map((m) => m[1].replace(/\s+/g, ' ').trim())
+      : da.scripts;
+    if (balise === 'header') {
+      if (da.scripts.length) fail('<header> de l\'accueil : un script en ligne est revenu dans l\'en-tête — il doit rester dans ScriptTiroirDA.astro, après le pied');
+      for (const script of origine.scripts) {
+        if (!scriptsDA.includes(script)) fail('<header> : le micro-script du tiroir mobile (Header.astro) est absent de l\'accueil après </main>, ou en diffère — les deux copies doivent rester identiques jusqu\'à la phase 5a');
+      }
+    } else if (da.scripts.join('\n') !== origine.scripts.join('\n')) {
       fail(`<${balise}> : le script en ligne diffère entre l'accueil (composants da/) et /tarifs — les deux copies doivent rester identiques jusqu'à la phase 5a`);
     }
   }

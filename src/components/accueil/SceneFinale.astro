@@ -48,10 +48,15 @@ import Mascotte from './Mascotte.astro';
   /* Dernier bloc avant le pied : tant qu'il est loin de l'écran, le navigateur
      n'en calcule ni n'en peint rien (ses vagues ne tournent pas), et lui
      réserve à peu près sa hauteur (658 px à 390 px de large, 961 px à 1440 px). */
-  .end { position: relative; z-index: 1; margin-top: -40px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; content-visibility: auto; contain-intrinsic-size: auto 670px; }
+  /* -1 px en bas : le bas de la scène tombe à une ordonnée fractionnaire et
+     laissait voir un filet clair au-dessus du pied sur téléphone. Le pied
+     remonte d'un pixel sur la dernière vague, qui a sa couleur. */
+  .end { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; content-visibility: auto; contain-intrinsic-size: auto 670px; }
   .end-copy { display: flex; flex-direction: column; align-items: center; gap: 26px; padding-top: 88px; }
   .end-copy h2 { --corps: clamp(36px, 6vw, 76px); max-width: 17ch; margin: 0; line-height: 1.02; }
   .end-copy .btn { padding-block: 8px; text-align: center; }
+  /* Petits téléphones : le libellé du bouton tient sur une ligne. */
+  @media (max-width: 359px) { .end-copy .btn { padding-inline: 16px; font-size: 16px; } }
 
   .pond { position: relative; height: 360px; margin-top: 20px; --p: 300px; --th: 40px; }
   .sun { position: absolute; left: 50%; bottom: 50px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }

@@ -27,7 +27,16 @@
  * - La dernière étape de chaque parcours est le Super-Net : sa pastille est
  *   jaune, la couleur de « ce qu'il te reste ».
  * - Mascotte féminine qui montre du doigt (décor) : elle désigne les profils sur
- *   téléphone, le parcours sur ordinateur.
+ *   téléphone (entière, à leur gauche ; retirée sous 360 px, où les profils se
+ *   rangent deux par deux), le parcours sur ordinateur.
+ * - Remplaçant (étapes sans phrase d'accroche, classe `court`) : ses sept titres
+ *   viennent d'être lus dans « Sous la surface », juste au-dessus. Ils ne sont
+ *   plus répétés en gras : chaque titre devient une étiquette, et la ligne de
+ *   détail, qui est ce que ce bloc apporte de neuf, le texte de l'étape.
+ * - La porte de sortie (« Ton cas n'est pas listé ? ») est au pied de la fiche,
+ *   sous l'appel. Phrase d'origine coupée de sa parenthèse (« interne en fin de
+ *   cursus, exercice mixte, installation en cours ») : deux de ces cas sont
+ *   maintenant des profils du bloc, le troisième n'est plus une cible de l'accueil.
  * - Les flèches de l'étape « Brut → cotisations → impôt » ne sont pas dans la
  *   police du site : dessin en SVG, le caractère reste dans le texte, masqué à
  *   l'œil (même procédé que TroisCases.astro).
@@ -36,6 +45,7 @@ import '@/styles/da.css';
 import { APP_URL, CALENDLY_URL } from '@/lib/site';
 import { PROFILS_PARCOURS } from '@/data/parcoursAccueil';
 import Mascotte from './Mascotte.astro';
+import { insecables } from '@/lib/typo';
 ---
 
 <section
@@ -46,8 +56,8 @@ import Mascotte from './Mascotte.astro';
 >
   <div class="wrap">
     <div class="band-head">
-      <h2 id="parcours-titre">Quel que soit ton mode d'exercice, Hippodoc te suit.</h2>
-      <p class="lead" id="parcours-intro">Choisis ton mode d'exercice : tu verras exactement ce qu'Hippodoc fait pour toi.</p>
+      <h2 id="parcours-titre">Quel que soit ton mode d’exercice, Hippodoc te suit.</h2>
+      <p class="lead" id="parcours-intro">Choisis ton mode d’exercice&nbsp;: tu verras exactement ce qu’Hippodoc fait pour toi.</p>
     </div>
 
     <div class="pq-grid">
@@ -61,7 +71,7 @@ import Mascotte from './Mascotte.astro';
             </label>
           ))}
         </fieldset>
-        <Mascotte pose="f-pointe" class="guide" largeurs={[150, 300, 450, 620]} sizes="(min-width: 900px) 310px, (min-width: 560px) 216px, 46vw" />
+        <Mascotte pose="f-pointe" class="guide" largeurs={[150, 300, 450, 620]} sizes="(min-width: 900px) 310px, (min-width: 560px) 216px, 38vw" />
       </div>
 
       <div class="sheet">
@@ -70,17 +80,17 @@ import Mascotte from './Mascotte.astro';
             <p class="pour"><b>{profil.label}</b>{' '}{profil.precision && <span>{profil.precision}</span>}</p>
             <ol class="steps" role="list">
               {profil.etapes.map((etape, i) => {
-                const morceaux = (etape.accroche ?? '').split(' → ');
+                const morceaux = insecables(etape.accroche ?? '').split(' → ');
                 return (
-                  <li>
+                  <li class:list={[!etape.accroche && 'court']}>
                     <span class="n" aria-hidden="true">{i + 1}</span>{' '}
-                    <h3>{etape.titre}</h3>
+                    <h3>{insecables(etape.titre)}</h3>
                     {etape.accroche && (
                       <p class="acc">{morceaux.map((m, k) => (
                         <Fragment>{k > 0 && <Fragment>{' '}<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>{' '}</Fragment>}{m}</Fragment>
                       ))}</p>
                     )}
-                    <p class="det">{etape.detail}</p>
+                    <p class="det">{insecables(etape.detail)}</p>
                   </li>
                 );
               })}
@@ -99,16 +109,16 @@ import Mascotte from './Mascotte.astro';
             <p class="fine">Sans engagement</p>
           </div>
         </div>
+
+        {/* Une ligne, pas un bouton : la porte de sortie de celui qui ne se reconnaît
+            dans aucun des quatre profils (voir MIGRATION.md § 9.r). */}
+        <p class="autre">
+          Ton cas n'est pas listé&nbsp;?{' '}
+          <a class="lien" href={CALENDLY_URL} data-calendly="pour_qui" target="_blank" rel="noopener">Prends 15 min avec Ryan</a>, médecin remplaçant&nbsp;: il te dira franchement si Hippodoc
+          t'apporte quelque chose.
+        </p>
       </div>
     </div>
-
-    {/* Une ligne, pas un bouton : la porte de sortie de celui qui ne se reconnaît
-        dans aucun des quatre profils (voir MIGRATION.md § 9.r). */}
-    <p class="autre">
-      Ton cas n'est pas listé — interne en fin de cursus, exercice mixte, installation en cours ?{' '}
-      <a class="lien" href={CALENDLY_URL} data-calendly="pour_qui" target="_blank" rel="noopener">Prends 15 min avec Ryan</a>, médecin remplaçant : il te dira franchement si Hippodoc
-      t'apporte quelque chose.
-    </p>
   </div>
 </section>
 
@@ -120,13 +130,15 @@ import Mascotte from './Mascotte.astro';
 
   /* Le sélecteur : une fiche bleu profond, les quatre profils et la mascotte
      qui les montre du doigt. */
-  .chooser { --focus: #FFFFFF; position: relative; display: grid; grid-template-columns: minmax(0, 0.74fr) minmax(0, 1fr); align-items: end; gap: 0 10px; padding: 16px 16px 0 0; overflow: hidden; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  /* Téléphone : elle tient entière dans sa colonne, à gauche des profils (plus
+     de chignon rogné par le bord de la fiche). */
+  .chooser { --focus: #FFFFFF; position: relative; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); align-items: end; gap: 0 4px; padding: 16px 16px 0 6px; overflow: hidden; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
   .tabs { grid-column: 2; grid-row: 1; display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0 0 16px; border: 0; }
-  .chooser .guide { grid-column: 1; grid-row: 1; width: 122%; margin: 0 0 -3% -17%; pointer-events: none; }
+  .chooser .guide { grid-column: 1; grid-row: 1; width: 100%; margin: 0 0 -3%; pointer-events: none; }
 
   /* Un profil. La radio couvre son libellé, transparente : la cible tactile est
      la sienne, et le navigateur sait où elle est quand elle reçoit le focus. */
-  .tab { position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 56px; padding: 7px 16px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.62); line-height: 1.25; transition: background-color 160ms var(--ease), color 160ms var(--ease), box-shadow 160ms var(--ease); }
+  .tab { position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 56px; padding: 7px 13px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.62); line-height: 1.25; transition: background-color 160ms var(--ease), color 160ms var(--ease), box-shadow 160ms var(--ease); }
   .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
   .tab .t { font-size: 17px; font-weight: var(--tb); }
   .tab .h { font-size: 13.5px; color: var(--on-deep-2); }
@@ -138,6 +150,14 @@ import Mascotte from './Mascotte.astro';
   @media (forced-colors: active) {
     .tab { border: 1px solid ButtonText; }
     .tab:has(input:checked) { outline: 3px solid Highlight; outline-offset: -3px; }
+  }
+
+  /* Petits téléphones : sans elle, les profils deux par deux sur toute la largeur. */
+  @media (max-width: 359px) {
+    .chooser { display: block; padding: 14px 14px 0; }
+    .tabs { grid-template-columns: 1fr 1fr; padding-bottom: 14px; }
+    .tab { padding-inline: 12px; }
+    .chooser .guide { display: none; }
   }
 
   /* La fiche du parcours */
@@ -167,6 +187,12 @@ import Mascotte from './Mascotte.astro';
   .steps p { grid-column: 1 / -1; margin: 0; }
   .steps .acc { padding-top: 8px; font-size: 16px; color: var(--ink-2); }
   .steps .det { justify-self: start; margin-top: 9px; padding: 5px 12px; border-radius: var(--r-sm); background: var(--sky-soft); font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
+  /* Étape « courte » (le remplaçant) : son titre vient d'être lu dans le bloc
+     du dessus. Il devient une étiquette, la ligne de détail est le texte. */
+  .steps .court { padding-block: 12px; }
+  .steps .court h3 { padding-top: 0; font-size: 14.5px; font-weight: 560; line-height: 1.35; color: var(--ink-2); }
+  .steps .court .det { grid-column: 2; margin-top: 2px; padding: 0; border-radius: 0; background: none; font-size: 16.5px; line-height: 1.45; color: var(--ink); }
+  .steps .court .n { grid-row: 1 / span 2; }
   /* La flèche dessinée : à la place du caractère, sur la ligne du texte. */
   .fl { position: relative; white-space: nowrap; }
   .fl svg { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
@@ -180,14 +206,18 @@ import Mascotte from './Mascotte.astro';
   .go-cta { display: grid; justify-items: center; gap: 12px; }
   /* Le libellé peut passer sur deux lignes (320 px, ou espacements imposés). */
   .go .btn { width: 100%; padding: 8px 18px; text-align: center; }
+  @media (max-width: 374px) { .go .btn { padding-inline: 10px; font-size: 16px; } }
   .fine { font-size: 14.5px; color: var(--ink-2); }
 
-  .autre { max-width: 46rem; margin: 30px 0 0; font-size: 16.5px; color: var(--ink-2); }
+  /* La porte de sortie, au pied de la fiche. */
+  .autre { margin: 0; padding: 16px 20px 20px; font-size: 15.5px; line-height: 1.55; color: var(--ink-2); }
 
   @media (min-width: 560px) {
-    .chooser { grid-template-columns: 196px minmax(0, 1fr); gap: 0 18px; padding: 20px 22px 0 0; }
+    .chooser { grid-template-columns: 212px minmax(0, 1fr); gap: 0 18px; padding: 20px 22px 0 0; }
+    .autre { padding: 18px 30px 22px; }
     .tabs { grid-template-columns: 1fr 1fr; align-self: center; padding-bottom: 20px; }
-    .chooser .guide { width: 216px; margin: 0 0 -6px -14px; }
+    .tab { padding-inline: 16px; }
+    .chooser .guide { width: 216px; margin: 0 0 -6px 2px; }
     .panel { padding: 28px 30px 8px; }
     .steps li { column-gap: 14px; padding: 16px 0; }
     .steps p { grid-column: 2; }
@@ -211,6 +241,7 @@ import Mascotte from './Mascotte.astro';
     .steps li { column-gap: 18px; padding: 18px 0; }
     .steps h3 { font-size: 19px; }
     .go { padding: 30px 40px 32px; }
+    .autre { padding: 20px 40px 24px; }
   }
   /* L'appel sur une ligne quand la fiche est assez large : le texte à gauche, le bouton à droite. */
   @media (min-width: 1180px) {

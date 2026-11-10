@@ -5150,7 +5150,9 @@ remplace la première des dix.)
 - **`src/components/da/HeaderDA.astro`** : copie de `Header.astro` rhabillée en pastille
   flottante. Reprises telles quelles : 3 ancres actuelles, menu « Ressources » 100 % CSS,
   tiroir mobile (case `#mobile-menu-toggle`, dont dépend la bannière cookies, voile,
-  `#mobile-menu-drawer`, micro-script inline identique à l'octet), « Connexion » dans le
+  `#mobile-menu-drawer`, micro-script inline identique à l'octet ; **sorti de l'en-tête
+  en phase 3, dans `ScriptTiroirDA.astro` : voir « corrections après relecture »**),
+  « Connexion » dans le
   tiroir, pastille d'essai mobile, les 20 `data-ph` et les 3 `data-track`, les libellés.
   Bascule menu d'ordinateur / tiroir à **960 px** (1024 auparavant) ; flou d'arrière-plan
   à partir de 900 px seulement (§ 9.dn). Deux variantes : `flottante` (la pastille survole
@@ -6044,9 +6046,19 @@ entrée ajoutée). Les autres pages gardent « Découvrir » jusqu'à la phase 5
   bloc, après « Pour qui » (il était le troisième) : `presentation-video`
   et `landing_video_section_viewed` vont baisser d'un coup ; les partenaires passent
   avant les témoignages ; les choix de profil au clavier sont comptés.
-- **`SECTIONS_LANDING`** (verify-site) : `hero`, `features`, `practice-journeys`,
-  `founder`, `presentation-video`, `partners`, `testimonials`, `mid-page-cta`, `pricing`,
-  `faq`. `mid-page-cta` part avec le lot des tarifs. **Fait en lot C.**
+- **`SECTIONS_LANDING`** (verify-site), **état intermédiaire du lot B, périmé** (la
+  liste en vigueur est celle du lot C, plus bas) : `hero`, `features`,
+  `practice-journeys`, `founder`, `presentation-video`, `partners`, `testimonials`,
+  `mid-page-cta`, `pricing`, `faq`. `mid-page-cta` est parti avec le lot des tarifs.
+- ⚠️ **Autocapture en double sur les profils** (relevé à la relecture) : chaque choix de
+  profil à la souris envoie maintenant deux `$autocapture` porteurs de
+  `data-ph="landing_journey_profile_<id>"`, un `click` et un `change`, contre un seul
+  sur `main` (la radio est dans le `<label>` ; avant, elle était à côté et ses
+  événements ne portaient pas le `data-ph`). Même chose pour les trois
+  `landing_apercu_*` (série neuve). L'événement dédié
+  `landing_journey_profile_selected` n'est pas touché (un par choix). **Un insight qui
+  compte ces `$autocapture` doit filtrer `$event_type = click`**, sinon il double le
+  jour de la bascule. À annoter dans PostHog ce jour-là.
 - **Gardes ajoutées à `verify-site.mjs`** (contrôle « 4 quater ») : la section
   `practice-journeys` porte `id="parcours"` ; quatre radios `parcours-<profil>` dont une
   seule cochée, un libellé `data-profile` et un panneau par profil ;
@@ -6309,7 +6321,8 @@ sur la dernière comme les autres.
 - Chaque question est un `<details>` natif ; son libellé est un `<h3>` dans le
   `<summary>`, qui porte `data-ph="landing_faq_<id>"`. Les numéros devant les questions
   sont retirés.
-- ⚠️ **Question « Comment fonctionne la collaboration libérale sur Hippodoc ? »** : la
+- ⚠️ **Question « Comment fonctionne la collaboration libérale sur Hippodoc ? »**
+  (**retirée de l'accueil dans les corrections après relecture, plus bas**) : la
   décision du propriétaire retire le parcours « collaborateur » de l'accueil et demande
   de revoir cette question. Elle est **gardée** dans ce lot (les 11 questions étaient la
   consigne), mais elle dit « gère nativement » d'un module que l'ancien parcours
@@ -6615,6 +6628,306 @@ dans `ECARTS_ENTETE_PIED_DA` (les trois libellés avec la flèche, les trois san
   `mid-page-cta` et `cta_signup_cta_banner` s'arrêtent ; `pricing` et `faq` gardent leur
   rang mais ne sont plus suivis du même bloc ; `guides`, `final-cta` et
   `cta_signup_final` commencent.
+
+#### Phase 3, corrections après relecture (10 novembre 2026)
+
+Quatre relectures de la phase 3 (fidélité à la maquette, technique, mesure et SEO,
+contenu et accessibilité). Chaque point a été vérifié avant correction ; trois étaient
+faux et sont écartés plus bas. **Zéro JS ajouté** (un script change de place). Le
+propriétaire a laissé trancher les points de direction (« tranche ce que tu penses être
+le mieux ») : les décisions prises à sa place sont marquées **Tranché** et restent
+réversibles.
+
+**Rythme et longueur de la page**
+
+- **« Pour qui », onglet Remplaçant** : ses sept titres venaient d'être lus dans « Sous la
+  surface », juste au-dessus. Ils ne sont plus répétés en gras : chaque titre devient une
+  étiquette (14,5 px, `--ink-2`, toujours un `<h3>`), et la ligne de détail, qui est ce
+  que le bloc apporte de neuf, devient le texte de l'étape (classe `court`, posée quand
+  une étape n'a pas de phrase d'accroche). Les trois autres profils ne changent pas.
+- **« Pour qui », la porte de sortie** (« Ton cas n'est pas listé ? ») passe au pied de la
+  fiche blanche, sous l'appel : elle flottait seule sous le sélecteur.
+- **« Pour qui », téléphone** : la mascotte tient entière dans sa colonne, à gauche des
+  profils (son chignon était rogné par le bord de la fiche) ; sous 360 px elle est
+  retirée et les quatre profils se rangent deux par deux. De 560 à 899 px, elle n'est
+  plus rognée à gauche non plus.
+- **Témoignages** : seule feuille à titre centré, sous de grands guillemets dessinés sur
+  une pastille jaune (SVG décoratif). Elle casse la suite « grand titre à gauche, contenu
+  dessous » (`.band-head.mid`, da.css).
+- **Pied sur téléphone** : la liste « Informations » est sur deux colonnes dès 340 px (480
+  auparavant) ; les liens en toutes lettres « LinkedIn », « Facebook », « Instagram » ne
+  sont pas repris (les trois pastilles rondes y mènent déjà, avec leur `data-ph`) ; la
+  plaque des soutiens est retirée du pied de l'accueil (voir « Soutiens »). 1 583 →
+  1 011 px à 390 px.
+- **Longueur à 390 px : 17 132 → 16 267 px** (18 585 → 17 703 à 320 ; 14 999 → 14 004 à
+  768 ; 12 931 → 12 689 à 1 024 ; 12 919 → 12 686 à 1 440). Par bloc à 390 px : « Pour
+  qui » 2 131 → 1 957, partenaires 1 498 → 1 443, tarifs 1 886 → 1 864, questions 1 715 →
+  1 604, pied 1 583 → 1 011 ; témoignages 598 → 676 (les guillemets). ⚠️ **Le critère du
+  plan (11 168 px) n'est toujours pas tenu** et ne peut pas l'être avec les blocs que la
+  maquette n'avait pas : voir « Reste ouvert ».
+
+**Un seul personnage par bloc**
+
+- « Sous la surface » montrait la mascotte féminine près du titre, puis la masculine
+  dans les cases 1 et 3. La féminine prend tout le bloc (décision 7 du propriétaire : la
+  tablette est à elle) : pose « pointe » dans la case 1, pose « pouce levé » dans la case
+  jaune. Nouvelle source `src/assets/accueil/mascotte-f-pouce.webp` (685 × 1 225 px, WebP
+  sans perte, pixels identiques au PNG détouré). Les poses masculines
+  `mascotte-pouce.webp` et `mascotte-pointe.webp` ne sont plus utilisées : **fichiers
+  supprimés**. La mascotte masculine garde le premier écran et la scène finale.
+- **Tarifs** : la mascotte féminine qui présente était petite (190 px) et poussait le
+  titre vers le bas. Elle est maintenant cadrée à mi-corps (250 px de large, les 52 % du
+  haut de l'image), debout derrière la carte de l'offre interne, comme celle à la
+  tablette derrière les trois cases. Elle est dans la carte : elle monte en place avec
+  elle, et ne prend aucune place dans la mise en page (le titre retrouve ses 88 px).
+  Affichée à partir de 1 024 px (900 auparavant).
+
+**Tablette et largeurs intermédiaires**
+
+- **Tarifs, de 700 à 1 023 px** : l'offre annuelle sur toute la largeur (texte à gauche,
+  bouton à droite), les deux autres côte à côte. Trois colonnes à partir de 1 024 px
+  seulement (900 auparavant) : en dessous, « Commencer 30 jours gratuits » ne tenait pas
+  sur une ligne. De 1 024 à 1 179 px et sous 375 px, marges des cartes et boutons
+  resserrés : libellé sur une ligne aux 21 largeurs mesurées, de 320 à 1 920 px.
+- **« 120 € de moins par an que le mensuel »** : un surlignage jaune (14,5 px) et non une
+  pastille. Sur une ligne à partir de 375 px ; en dessous, chaque ligne garde son trait
+  arrondi (`box-decoration-break: clone`) au lieu de former un pavé.
+- **Fondateur, de 700 à 899 px** : le portrait (240 px) à côté du texte. Les trois
+  chiffres sont en trois colonnes égales jusqu'à 1 179 px : « 2 379 » ne passe plus seul
+  sous les deux autres (c'était le cas à 320, 560, 768 et 1 024 px).
+- **Gouttière** (`--gut`, da.css) : 20 px jusqu'à 390 px, 40 px à partir de 1 024 px
+  (`clamp(20px, 7.7px + 3.155vw, 40px)`), 1 120 px de contenu au plus comme avant. À
+  1 024 px, titres et cartes étaient à 20 px du bord de feuilles aux coins de 40 px. Le
+  premier écran, centré, ne bouge pas (même hauteur aux cinq largeurs).
+- **Guides** : rangées de même hauteur à partir de 900 px (`grid-auto-rows: 1fr`).
+- **Scène finale** : bouton sur une ligne à 320 px ; le pied remonte d'un pixel sur la
+  dernière vague (un filet clair apparaissait entre les deux à 390 px).
+- **Questions** : lignes équilibrées sous 560 px seulement ; au-delà, l'équilibrage
+  coupait en deux lignes courtes des questions qui tenaient presque sur une.
+
+**Syndicats, partenaires, soutiens**
+
+- **Logo CRP-IMG** : le fichier portait un voile presque blanc, semi-transparent, qui
+  dessinait un rectangle gris pâle sur la tuile. Il est aplati sur blanc, le voile ramené
+  au blanc, et rogné au ras du dessin (268 × 160 px). Le dessin n'est pas touché. ⚠️ La
+  source reste petite (300 px) : **demander un fichier propre au syndicat**.
+- **Quatre logos calés sur une même masse** : zone de 112 px de haut sur ordinateur (76 px
+  sur téléphone), chaque logo a sa part de la zone en hauteur et en largeur.
+- **Soutiens** : les trois fichiers étaient à moitié vides (le dessin occupait 16 à 19 px
+  de haut une fois affiché). Ils sont rognés au ras du dessin : `region-idf.png` (231 ×
+  57 px, depuis `public/lovable-uploads/logo-region-idf.png`, la plus grande source du
+  dépôt), `bpifrance.png` (189 × 60 px), `french-care.png` (78 × 132 px). Affichés à 26,
+  28 et 66 px de haut, sur des plaques blanches en relief. Les anciens fichiers
+  `*-112.webp` et `french-care-160.webp` de `src/assets/accueil/partenaires/` sont
+  supprimés (ceux de `public/lovable-uploads/` restent pour les autres pages).
+- **Une seule occurrence des soutiens sur l'accueil** : le bloc Partenaires, qui dit ce
+  que sont Innov'Up et La French Care. `FooterDA` reçoit une prop `soutiens` (vraie par
+  défaut) ; l'accueil passe `soutiens={false}`. La plaque du pied reste dans le
+  composant pour les pages qui l'adopteront en phase 5a ; elle passe par `astro:assets`
+  (mêmes fichiers, dimensions réelles : les anciennes balises déclaraient 160 × 80 pour
+  un fichier de 158 × 160). Rendu vérifié en la rétablissant le temps d'une capture.
+- Texte alternatif des syndicats : le nom complet seul (« Syndicat des Internes du
+  Languedoc-Roussillon »). Avec le sigle, la tuile était lue deux fois.
+
+**Technique**
+
+- **Micro-script du tiroir mobile sorti de l'en-tête.** Un `<script>` en ligne au milieu
+  du flux laissait le navigateur peindre l'en-tête seul, puis le premier écran 100 à
+  150 ms plus tard : Lighthouse retenait deux candidats LCP. Le script, **identique au
+  caractère près**, vit dans `src/components/da/ScriptTiroirDA.astro`, que `index.astro`
+  rend après le pied. `HeaderDA.astro` n'en contient plus : **toute page qui utilise
+  HeaderDA doit rendre ScriptTiroirDA** (à reprendre en phase 5a). `Header.astro` n'est
+  pas touché. ⚠️ La ligne de CLAUDE.md sur « le micro-script inline de `Header.astro` »
+  reste à compléter en phase 4a, avec le reste du fichier.
+- **Affiche du film** : l'attribut `poster` est retiré (60 Ko en 1 920 × 1 080,
+  téléchargés à l'ouverture de la page à toutes les largeurs, 21 % du poids initial).
+  L'affiche est une image `astro:assets` dans le bouton de lecture, qui couvre le cadre :
+  AVIF et WebP à 400, 800 et 1 200 px, chargement paresseux, dimensions déclarées.
+  `src/assets/accueil/film-affiche.jpg` est la copie de
+  `public/hippodoc-presentation-st-poster.jpg`, qui reste en place pour le
+  `thumbnailUrl` du `VideoObject`. Le script du lecteur n'est pas touché : quand la
+  lecture démarre, il masque le bouton, donc l'affiche. Plus aucune image de l'accueil
+  ne sort de `astro:assets`.
+- **Portrait** : une largeur de 240 px en plus (tablette), `sizes` mis à jour.
+- **`src/lib/typo.ts`** (nouveau, 3 lignes utiles) : voir « Typographie ».
+
+**Accessibilité**
+
+- **Onglet ouvert de la fenêtre produit** : cerclé d'encre (2 px, 13,4:1 sur la barre).
+  Le blanc sur `--sky-soft` ne faisait que 1,11:1, sous les 3:1 de WCAG 1.4.11.
+- **État d'une journée** : il ne tient plus à la seule couleur. Une coche dans la pastille
+  « payé », une horloge dans « en attente » (le tilde marquait déjà « planifié »), dans la
+  liste, le calendrier, l'extrait de la case 1 et la légende, qui reprend les trois
+  pastilles (classe `.sig`, da.css ; dessins en masque CSS, couleur du texte). Les fiches
+  du premier écran, validées, ne sont pas touchées. Quantièmes hors mois du calendrier :
+  opacité 0,7 au lieu de 0,5.
+- **Rangée des témoignages** (défilement de côté sous 640 px) : `tabindex="0"`,
+  `role="group"`, nommée par le titre. Safari ne rendait pas la rangée atteignable au
+  clavier. Contrepartie : un arrêt de tabulation de plus sur ordinateur, où rien ne
+  défile.
+- **Tableau « Détail des offres »** : les coches sont lues « Oui », le tiret de la ligne
+  « Économie » est lu « Aucune » (textes masqués à l'œil).
+
+**Typographie : la règle**
+
+- **Titres et chapôs écrits dans les composants** : apostrophe typographique. Corrigés :
+  « Quel que soit ton mode d’exercice, Hippodoc te suit. », « Choisis ton mode
+  d’exercice : tu verras exactement ce qu’Hippodoc fait pour toi. », « Ce qu’en disent
+  nos utilisateurs ».
+- **Textes repris de fichiers de données** (étapes, questions et réponses, témoignages) :
+  mots et apostrophes laissés tels quels. Une seule retouche, à l'affichage
+  (`insecables()`, `src/lib/typo.ts`) : l'espace devant « ? », « ! », « : », « ; », « » » et
+  celle qui suit « « » deviennent insécables. Plus de ponctuation seule en début de
+  ligne (un deux-points l'était à 390 px dans une réponse). Les fichiers de données et
+  le JSON-LD `FAQPage` gardent leurs espaces. Même correction, à la main, dans les textes
+  écrits dans `Tarifs.astro`, `Fondateur.astro`, `Questions.astro` et `PourQui.astro`.
+- Dans les témoignages, un mot composé ne se coupe plus au trait d'union (« super-net »,
+  « week-end ») : mise en page seule.
+
+**Textes (mot pour mot)**
+
+- **Nouveau** : « Abonnement 100 % déductible au régime réel. » (mention du bas des
+  tarifs, à la place de « L’abonnement est 100 % déductible. »). **Tranché** : la phrase
+  d'origine n'est exacte qu'au régime réel ; en micro-BNC, l'abattement forfaitaire
+  remplace toute déduction, et la page dit gérer les deux régimes. Les trois mots « au
+  régime réel » sont nouveaux. **À faire confirmer par le propriétaire.**
+- **Nouveau, masqué à l'œil** : « Oui », « Aucune » (tableau des offres).
+- **Coupé** : « Ton cas n'est pas listé — interne en fin de cursus, exercice mixte,
+  installation en cours ? Prends 15 min avec Ryan, médecin remplaçant : il te dira
+  franchement si Hippodoc t'apporte quelque chose. » devient « Ton cas n'est pas listé ?
+  Prends 15 min avec Ryan, médecin remplaçant : il te dira franchement si Hippodoc
+  t'apporte quelque chose. » **Tranché** (décision 1 du propriétaire) : « Interne » et
+  « Mixte » sont deux des quatre profils juste au-dessus, et l'installation n'est plus
+  une cible de l'accueil. Aucun mot ajouté.
+- **Retiré de l'accueil, tranché** (décision 1 : plus de parcours « collaborateur ») : la
+  question « Comment fonctionne la collaboration libérale sur Hippodoc ? » et sa réponse
+  (« Hippodoc gère nativement la **collaboration libérale**. Tu enregistres ton lieu
+  d'exercice avec ton **taux de redevance**, et chaque mois la redevance due est
+  **calculée automatiquement** à partir de tes recettes encaissées. Le suivi **payé/à
+  verser** est intégré, et la redevance est ventilée en **ligne L16/BG** de ta
+  déclaration 2035, **déductible** de ton bénéfice imposable. Voir comment remplir sa
+  2035. », lien vers `/blog/remplir-declaration-2035`). Elle disait « gère nativement »
+  d'un module que l'ancien parcours signalait « Bêta ». L'entrée est retirée de
+  `src/data/faqAccueil.ts` : **10 questions** sur la page et dans le schéma `FAQPage`
+  (la garde de `verify-site.mjs` compare les deux nombres). `landing_faq_collaboration`
+  s'arrête. Pour la rétablir : remettre l'entrée (elle est dans l'historique git).
+- **Retiré du pied de l'accueil** : « Ils soutiennent Hippodoc » et ses trois logos ; les
+  liens « LinkedIn », « Facebook », « Instagram » en toutes lettres.
+- **Repris d'une autre page, mot pour mot** (bloc Partenaires, non recopiés au lot B) :
+  de `/qui-sommes-nous`, « Aux côtés des internes, partout en France », « Ces syndicats
+  d'internes ont signé une convention avec Hippodoc pour accompagner leurs adhérents
+  dans leurs premiers remplacements. », « Et des partenaires pensés pour les jeunes
+  médecins », « Le logement des internes en médecine », « Plateforme de remplacements
+  médicaux » ; de `/faq`, « Certains syndicats d'internes partenaires donnent aussi droit
+  à un essai prolongé. »
+
+**Mesure**
+
+- Aucun identifiant de section ne change : `SECTIONS` et `SECTIONS_LANDING` ne bougent
+  pas, le nom du script PostHog non plus (les autres pages sont identiques à l'octet au
+  commit précédent).
+- Arrêt : `landing_faq_collaboration`. `data-calendly="pour_qui"` change de place dans
+  le bloc (pied de la fiche), pas d'identifiant.
+- **`verify-site.mjs`** : deux gardes pour les liens de rendez-vous
+  (`data-calendly="pour_qui"` dans `practice-journeys`, `data-calendly="fondateur"` dans
+  `founder`) ; chaque valeur de `SECTIONS_LANDING` doit figurer dans `SECTIONS`
+  (`src/lib/landing-analytics.ts` est lu par le script) ; le micro-script du tiroir doit
+  être sur l'accueil après `</main>`, identique à celui de `Header.astro`, et absent de
+  `<header>` ; trois lignes de plus dans `ECARTS_ENTETE_PIED_DA` (les liens en toutes
+  lettres du pied).
+- À annoter dans PostHog le jour de la bascule, en plus des points des lots A à C :
+  autocapture en double sur les profils (voir lot B, « Mesure ») ; une question de FAQ
+  en moins ; la page est plus courte de 5 % sur téléphone qu'en fin de lot C, mais
+  toujours plus longue que `main` sur téléphone : `landing_scroll_depth` et le taux de
+  vue des blocs du bas ne se comparent pas à l'avant-bascule.
+
+**Relevés écartés (vérifiés, faux)**
+
+- « Le sélecteur de profils n'est pas collant (position calculée : static) » : il l'est.
+  À 1 440 × 900 et 1 024 × 768, `position: sticky`, et la fiche reste à 92 px du haut
+  pendant le défilement du parcours (mesuré). Une capture pleine page ne peut pas le
+  montrer. Sous 760 px de haut, il est volontairement dans le flux.
+- « La colonne de gauche des questions n'est pas collante » : elle l'est (104 px du haut,
+  mesuré aux deux mêmes tailles).
+- « Le portrait s'affiche en 393 px pour un `sizes` de 380 » : sa boîte fait 380 px ; 393
+  est la boîte englobante de l'image tournée de 2 degrés. Le fichier de 760 px couvre la
+  densité 2.
+
+**Relevés acceptés sans correction**
+
+- Hauteur des blocs qui change de 24 à 30 px à l'arrivée de la police (CLS 0,03 au pire,
+  en arrivant sur une ancre avec une police retardée de 2,5 s) : sous 0,1, police
+  préchargée. Le balayage repli contre police n'a pas été refait sur les blocs de la
+  phase 3.
+- CSS bloquant de l'accueil (voir « Vérifié ») : à reprendre en phase 4a, avec la
+  suppression de `home/*`.
+- Treize blocs animés au défilement et dix-sept animations sans fin : fluidité mesurée
+  bonne par la relecture, aucune action.
+- Mascotte de dos (source de 431 px) : pas de source plus grande.
+- Hauteur de la fenêtre produit et de « Pour qui » qui change avec l'onglet : le contenu
+  qui bouge est sous le sélecteur, après une action du visiteur.
+- Film (script identique à l'octet jusqu'à la phase 4a) : quand la lecture démarre, le
+  focus retombe sur `<body>` ; le nom du bouton (« 90 secondes ») ne contient pas le
+  texte visible (« 90 s ») ; pas de piste `<track>`. **À traiter en phase 4a.**
+- Liens externes ouverts dans un nouvel onglet sans annonce (neuf dans `<main>`) : pas de
+  mention ajoutée (ce serait un texte nouveau sur neuf liens).
+
+**Vérifié**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, 3 avertissements
+  (inchangés).
+- `dist` comparé à `main` hors `index.html` et `_astro/` : 65 fichiers identiques, 69 qui
+  ne diffèrent que par le nom du script PostHog (inchangé depuis le lot C), aucun autre
+  écart. Comparé au commit précédent : 134 fichiers identiques à l'octet. Feuille
+  globale inchangée (`BaseLayout.CmJyzVOB.css`).
+- `index.*.css` : 83,5 → 89,6 Ko (14,9 → 15,8 Ko gzip). `index.html` : 140,5 → 140,0 Ko.
+  Mots dans le HTML brut : 3 257 → **3 165** (plancher de 2 931 inchangé).
+- Captures Chromium à 320, 390, 768, 1 024 et 1 440 px, bloc par bloc, avant et après ;
+  aucun défilement horizontal. Balayage de 21 largeurs, de 320 à 1 920 px : boutons des
+  offres et de la scène finale sur une ligne, trois chiffres du fondateur sur une ligne
+  sans débordement, titre des tarifs à plus de 300 px de la mascotte. Seul le bouton de
+  « Pour qui » passe encore sur deux lignes à 320 px (prévu).
+- Dans le navigateur, à 390 et 1 440 px, sans erreur de script : le tiroir se referme au
+  clic d'une ancre (script déplacé) ; les profils et les vues de la fenêtre changent ;
+  le bouton du film demande la lecture et, quand elle échoue (réseau coupé pendant
+  l'essai), rend les contrôles ; l'offre
+  interne et le détail des offres s'ouvrent ; la rangée des témoignages défile sous
+  640 px ; aucun `<img>` et 23 liens dans le pied (26 auparavant).
+- CLS, police à l'heure puis retardée de 2 s, défilement de toute la page, à 390, 768 et
+  1 440 px : inchangé (0, puis 0,0003 à 0,0021).
+- Lighthouse mobile en local (12.8.2, pages servies en gzip), 4 passages alternés, avant
+  → après : performance 96, 96, 95, 96 → 98, 97, 98, 97 ; LCP simulé 2,61 à 2,86 s → 2,32
+  à 2,53 s ; accessibilité 100, bonnes pratiques 96, SEO 100 des deux côtés ; CLS 0 ;
+  poids 285 → 227 Ko. L'audit des images ne signale plus rien (56 Ko d'économie
+  signalés auparavant, l'affiche du film).
+
+**Reste ouvert (au propriétaire)**
+
+- **Longueur mobile** : 16 267 px à 390 px contre 11 168 dans le plan. Accepter une page
+  plus longue que la maquette, ou choisir ce qui part (trois témoignages au lieu de
+  quatre, six questions visibles et le reste sur `/faq`, cartes des tarifs compactes).
+- **« Abonnement 100 % déductible au régime réel. »** : à confirmer (voir plus haut).
+- **Question sur la collaboration libérale** : retirée par délégation ; à confirmer. La
+  première réponse de la FAQ cite encore, dans une liste, « cabinet propre » et
+  « collaborations libérales » (« revenus libéraux (remplacements, cabinet propre,
+  vacations, collaborations libérales) ») : non touchée, c'est une liste de ce que
+  l'outil sait suivre, pas un parcours. Le titre, la description et le `VideoObject`
+  citent encore « installés, collaborateurs » (phase 4c).
+- **Guides** : la liste des six liens reste à valider. `/comparatif` n'a toujours qu'un
+  lien depuis l'accueil (le pied) et `/blog/tout-comprendre-carmf` n'est lié que depuis
+  une réponse repliée. Pour pousser `/comparatif` : l'ajouter au tableau en tête de
+  `Guides.astro` et passer la garde de `verify-site.mjs` de 6 à 7 liens dans le même
+  commit.
+- **Témoignages** : pour les quatre retenus, confirmer prénom, initiale, qualité, **ville**
+  et accord. « Dr Anaïs V., Interne » : le titre « Dr » pour une interne qui écrit « Je
+  suis interne » ; « Dr Sofiane B., Médecin (SOS Médecins + cabinet) » nomme une structure
+  tierce. Aucune retouche sans sa réponse.
+- **Compte de démonstration** : le calendrier affiche « Avril 2026 », avec des journées
+  planifiées, à côté d'un relevé « Année 2025 », sur une page mise en ligne en novembre
+  2026. Assumer une démonstration datée, ou dater les deux vues de la même période.
+- **Logo CRP-IMG** : demander un fichier propre et plus grand au syndicat.
+- WebKit et Firefox toujours non testés (moteurs absents de la machine) ; s'y ajoutent
+  `box-decoration-break`, `mask` sur un pseudo-élément et `text-wrap-style: pretty`.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

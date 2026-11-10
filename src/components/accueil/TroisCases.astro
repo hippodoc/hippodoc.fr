@@ -10,11 +10,15 @@
  * - Les trois flèches de la septième étape ne sont pas dans la police du site :
  *   elles sont dessinées en SVG, et le caractère reste dans le texte, masqué à
  *   l'œil, pour qu'un lecteur d'écran ou un moteur lise la phrase d'origine.
+ * - Mascotte : la féminine dans tout le bloc (elle tient la tablette près du
+ *   titre, montre l'extrait de la case 1, lève le pouce dans la case jaune) :
+ *   un seul personnage par bloc.
  * - L'extrait du calendrier (case 1) répète la vue « journées » de la fenêtre :
  *   décor, masqué aux lecteurs d'écran. Les deux autres extraits sont lus.
  */
 import '@/styles/da.css';
 import Mascotte from './Mascotte.astro';
+import { insecables } from '@/lib/typo';
 import { ETAPES_REMPLACANT } from '@/data/etapesRemplacant';
 import {
   DEMO_ANNEE,
@@ -49,14 +53,14 @@ const aMettreDeCote = [
     <span class="n">1</span>
     <h3>Ton activité</h3>
     <ul class="feat-list">
-      {activite.map((e) => <li><b>{e.titre}</b><span>{e.accroche}</span></li>)}
+      {activite.map((e) => <li><b>{e.titre}</b><span>{insecables(e.accroche)}</span></li>)}
     </ul>
     <div class="frag" aria-hidden="true">
-      <Mascotte pose="pointe" class="pointe" largeurs={[220, 330, 440]} sizes="(min-width: 900px) 220px, 1px" />
+      <Mascotte pose="f-pointe" class="pointe" largeurs={[220, 330, 440]} sizes="(min-width: 900px) 220px, 1px" />
       <div class="card">
         <p class="card-t">{DEMO_MOIS.nom} {DEMO_MOIS.an}</p>
         {extrait.map((j) => (
-          <div class="day"><span class="w">{jourCourt(j.jour)}</span><span class="p">{j.lieu}</span><span class={`chip ${DEMO_ETATS[j.etat].chip} num`}>{montantJournee(j)}</span></div>
+          <div class="day"><span class="w">{jourCourt(j.jour)}</span><span class="p">{j.lieu}</span><span class={`chip sig ${DEMO_ETATS[j.etat].chip} num`}>{montantJournee(j)}</span></div>
         ))}
       </div>
     </div>
@@ -66,7 +70,7 @@ const aMettreDeCote = [
     <span class="n">2</span>
     <h3>Tes obligations</h3>
     <ul class="feat-list">
-      {obligations.map((e) => <li><b>{e.titre}</b><span>{e.accroche}</span></li>)}
+      {obligations.map((e) => <li><b>{e.titre}</b><span>{insecables(e.accroche)}</span></li>)}
     </ul>
     <div class="frag solo">
       <div class="card">
@@ -95,7 +99,7 @@ const aMettreDeCote = [
       </ul>
       <p class="sun-num"><small>Super-Net {DEMO_ANNEE.an}</small><b class="aff">{euros(DEMO_SUPER_NET)}</b><span>{insecable(euros(DEMO_ANNEE.encaisse))} encaissés, moins les cotisations, moins l’impôt</span></p>
     </div>
-    <Mascotte pose="pouce" class="pouce" largeurs={[190, 300, 380, 600]} sizes="(min-width: 900px) 300px, (min-width: 488px) 250px, calc(62vw - 52px)" />
+    <Mascotte pose="f-pouce" class="pouce" largeurs={[150, 230, 300, 460]} sizes="(min-width: 900px) 230px, (min-width: 540px) 190px, calc(42vw - 36px)" />
   </article>
 </div>
 
@@ -122,7 +126,7 @@ const aMettreDeCote = [
 
   /* Les extraits d'écran, posés au bas de chaque case */
   .frag { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: end; gap: 0; margin: auto 0 0; padding-top: 8px; }
-  .frag .pointe { display: none; position: relative; z-index: 1; width: 116%; margin-bottom: -8%; }
+  .frag .pointe { display: none; position: relative; z-index: 1; width: 110%; margin: 0 0 -7% 8%; }
   .card { position: relative; padding: 18px 18px 14px; border-radius: 22px 22px 0 0; background: var(--paper); box-shadow: 0 -10px 30px -16px rgba(13, 40, 105, 0.4); }
   .c-white .card { background: var(--sky-soft); box-shadow: none; }
   .card-t { margin: 0 0 6px; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
@@ -152,7 +156,7 @@ const aMettreDeCote = [
      des espacements imposés par le visiteur, il sortait de la case à 320 px. */
   .sun-num b { --corps: clamp(46px, 15.5vw, 132px); line-height: 1; }
   .sun-num span { max-width: 26rem; font-size: 15.5px; }
-  .c-sun .pouce { align-self: flex-end; width: min(62%, 250px); margin: -12px -8px -14% 0; }
+  .c-sun .pouce { align-self: flex-end; width: min(42%, 190px); margin: -16px 4px -10% 0; }
 
   @media (min-width: 900px) {
     .bento { grid-template-columns: 1.12fr 1fr; gap: 18px; }
@@ -162,7 +166,7 @@ const aMettreDeCote = [
     .card { padding: 22px 24px 18px; border-radius: 26px 26px 0 0; }
     .c-sun { grid-column: 1 / -1; flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 40px; }
     .sun-copy { flex: 1; max-width: 700px; padding-bottom: 8px; }
-    .c-sun .pouce { width: 300px; margin: 0 16px -9% 0; }
+    .c-sun .pouce { width: 230px; margin: 0 40px -7% 0; }
   }
 
   /* Chaque case monte en place quand elle entre à l'écran : seulement si le

@@ -1,5 +1,9 @@
 ---
 import '@/styles/da.css';
+import { Picture } from 'astro:assets';
+import frenchCare from '@/assets/accueil/partenaires/french-care.png';
+import bpifrance from '@/assets/accueil/partenaires/bpifrance.png';
+import regionIdf from '@/assets/accueil/partenaires/region-idf.png';
 
 /**
  * Pied de la DA 2026 : l'eau profonde. Tout le contenu de Footer.astro, dans le
@@ -15,7 +19,20 @@ import '@/styles/da.css';
  * ECARTS_ENTETE_PIED_DA (scripts/verify-site.mjs).
  * Double maintenance : `node scripts/verify-site.mjs` compare les liens, libellés
  * et attributs de mesure de ce pied à ceux de Footer.astro (page /tarifs).
+ * Deux autres écarts déclarés au même endroit :
+ * - les liens en toutes lettres « LinkedIn », « Facebook », « Instagram » de la
+ *   colonne de contact ne sont pas repris : les trois pastilles rondes y mènent
+ *   déjà, avec leur `data-ph` (132 px de moins sur téléphone) ;
+ * - prop `soutiens` : la plaque « Ils soutiennent Hippodoc ». L'accueil la
+ *   retire (`soutiens={false}`) : son bloc Partenaires montre déjà les trois
+ *   logos, avec leur légende. Les logos passent par astro:assets (mêmes
+ *   fichiers que ce bloc, dimensions réelles).
  */
+interface Props {
+  /** Affiche la plaque des soutiens (à retirer sur une page qui les montre déjà). */
+  soutiens?: boolean;
+}
+const { soutiens = true } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
@@ -45,14 +62,16 @@ const year = new Date().getFullYear();
         </a>
       </div>
 
-      <div class="ft-backers">
-        <p>Ils soutiennent Hippodoc</p>
-        <div class="ft-backers-logos">
-          <img src="/lovable-uploads/french-care-160.webp" alt="La French Care" class="tall" loading="lazy" width="160" height="80" />
-          <img src="/lovable-uploads/bpi-112.webp" alt="Bpifrance" loading="lazy" width="112" height="56" />
-          <img src="/lovable-uploads/region-idf-112.webp" alt="Région Île-de-France" loading="lazy" width="112" height="56" />
+      {soutiens && (
+        <div class="ft-backers">
+          <p>Ils soutiennent Hippodoc</p>
+          <div class="ft-backers-logos">
+            <Picture src={frenchCare} formats={['avif', 'webp']} fallbackFormat="webp" width={39} widths={[39, 78]} sizes="33px" alt="La French Care" style="--h:56px" loading="lazy" decoding="async" />
+            <Picture src={bpifrance} formats={['avif', 'webp']} fallbackFormat="webp" width={88} widths={[88, 176]} sizes="82px" alt="Bpifrance" style="--h:26px" loading="lazy" decoding="async" />
+            <Picture src={regionIdf} formats={['avif', 'webp']} fallbackFormat="webp" width={105} widths={[105, 210]} sizes="97px" alt="Région Île-de-France" style="--h:24px" loading="lazy" decoding="async" />
+          </div>
         </div>
-      </div>
+      )}
     </div>
 
     <div>
@@ -61,9 +80,6 @@ const year = new Date().getFullYear();
         <li><a href="tel:+33756898961">+33 (0)7 56 89 89 61</a></li>
         <li><a href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a></li>
         <li><span class="ft-text">60 rue François Ier, 75008 Paris</span></li>
-        <li><a href="https://www.linkedin.com/company/hippodoc/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-        <li><a href="https://www.facebook.com/profile.php?id=61574895730373" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-        <li><a href="https://www.instagram.com/hippodoc.fr/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
       </ul>
     </div>
 
