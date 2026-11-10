@@ -5855,31 +5855,47 @@ et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` 
   « Chiffres ») : à corriger par le propriétaire (« datés dans le code et dans
   MIGRATION.md »).
 
-**4. Guides : la CARMF entre, la licence de remplacement sort** (`accueil/Guides.astro`)
+**4. Guides : la CARMF et les impôts des internes entrent, l'effet ciseaux et la licence
+sortent** (`accueil/Guides.astro`)
 
+- **Annoncé, puis livré.** La proposition faite au propriétaire le 10 novembre était :
+  « [L'effet ciseaux,] je le remplacerais par la CARMF, et la licence par les impôts des
+  internes ». Sa réponse : « go », « concernant les pages du 5 je te fais confiance ».
+  Un premier commit (`68afac9`) faisait autre chose sans le dire : la CARMF à la place
+  de la licence, l'effet ciseaux gardé comme « pari éditorial ». C'était choisir à sa
+  place. Le commit suivant remet **la liste annoncée**, décrite ici.
 - Ordre : Simulateur Super-Net (`/simulateur`), Guide des déclarations
   (`/guide-declarations`), Guide du remplaçant (`/guide`), « Remplacement régulier : le
   risque de requalification », **« CARMF : cotisations 2026 du médecin remplaçant »**
-  (`/blog/tout-comprendre-carmf`, nouveau, cinquième), « Régularisation URSSAF : l'effet
-  ciseaux expliqué » (passe de la cinquième à la sixième place).
-- Sort : « Licence de remplacement interne : dossier et délais », « Conditions, pièces
-  du dossier, envoi au CDOM » (`/blog/obtenir-sa-licence-de-remplacement`). L'article
-  n'a plus de lien depuis l'accueil ; il en garde depuis huit autres pages.
-- Texte ajouté : le titre de l'article CARMF, tel quel, et le début de sa description,
+  (`/blog/tout-comprendre-carmf`), **« Impôts 2026 des internes qui remplacent »**
+  (`/blog/guide-impots-internes-remplacants`).
+- Sortent (par rapport à § 9.eb) : « Licence de remplacement interne : dossier et
+  délais », « Conditions, pièces du dossier, envoi au CDOM »
+  (`/blog/obtenir-sa-licence-de-remplacement`) ; « Régularisation URSSAF : l'effet
+  ciseaux expliqué », « Bonne année, puis appel de cotisations qui double ? »
+  (`/blog/effet-ciseaux-regularisation-urssaf-medecin`). Aucun des deux n'a plus de lien
+  depuis l'accueil ; ils en gardent depuis d'autres pages (8 pour la licence, 15 pour
+  l'effet ciseaux, comptées dans le build, hors page de l'article).
+- Textes ajoutés : le titre de chaque article, tel quel, et le début de sa description,
   comme pour les autres articles du bloc : « Affiliation dès le premier rempla, calcul
-  sur ton revenu et non sur ton CA ». Rien d'autre ne change dans le bloc.
-- **Pourquoi** : visiteurs sur 90 jours (PostHog, chiffres du propriétaire) :
-  simulateur 385, requalification 293, guide des déclarations 256, guide 115, CARMF 48,
-  licence 28. L'effet ciseaux est gardé comme **pari éditorial** (le sujet le plus
-  demandé du corpus) : à réévaluer aux clics de `landing_guide_effet_ciseaux`. Réserve
-  du propriétaire : une faible audience peut aussi venir d'articles qui n'ont jamais
-  été mis en avant ; les clics de ce bloc le diront.
-- **Mesure** : `landing_guide_licence` **s'arrête** (série ouverte le jour même par
-  § 9.eb, quelques heures de données) ; `landing_guide_carmf` **commence**. Les cinq
-  autres continuent, mais `effet_ciseaux` change de rang (5 → 6) : à annoter dans
-  PostHog avec le reste.
-- L'article CARMF était déjà lié depuis une réponse de la FAQ de l'accueil : deux liens
-  vers lui sur la page, assumé (l'ancien critère « pas déjà lié » cède à l'audience).
+  sur ton revenu et non sur ton CA » ; « Interne ayant fait des remplas en 2025 ?
+  Salaire CHU + rétrocessions BNC ». Rien d'autre ne change dans le bloc.
+- **Pourquoi** : visiteurs sur 90 jours (PostHog, relevé du 10 novembre) : simulateur
+  385, requalification 293, guide des déclarations 256, guide 115, CARMF 48, impôts des
+  internes 35, licence 28, effet ciseaux moins de 21.
+- **Réserve du propriétaire**, à garder en tête : une faible audience peut aussi venir
+  d'articles qui n'ont jamais été mis en avant. Elle vaut pour les deux articles qui
+  sortent comme pour les deux qui entrent, et 90 jours de visites ne la tranchent pas.
+  Ce bloc est la première mise en avant : les clics de `landing_guide_*` diront ce qui
+  prend. Garder l'effet ciseaux à la place d'un des deux entrants tient en une ligne de
+  `Guides.astro` : à lui de dire.
+- **Mesure** : `landing_guide_licence` et `landing_guide_effet_ciseaux` **s'arrêtent**
+  (séries ouvertes le jour même par § 9.eb, quelques heures de données) ;
+  `landing_guide_carmf` et `landing_guide_impots_internes` **commencent**. Les quatre
+  autres continuent, au même rang. À annoter dans PostHog.
+- Les deux articles qui entrent étaient déjà liés depuis une réponse de la FAQ de
+  l'accueil : deux liens vers chacun sur la page, assumé (l'ancien critère « pas déjà
+  lié » cède à l'audience).
   La liste des six guides n'est plus « à confirmer » (§ 9.eb, « Reste ouvert »).
 
 **5. Film : nouveau film vertical, servi par le site** (`accueil/Fondateur.astro`,
