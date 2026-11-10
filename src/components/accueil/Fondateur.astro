@@ -11,9 +11,14 @@
  *   pages y mène encore (« Découvrir »). Lien Calendly : `data-calendly="fondateur"`
  *   (emplacement nouveau).
  * - Texte du fondateur : le paragraphe de l'ancienne carte de fin de FAQ, en
- *   entier et mot pour mot. Les trois chiffres viennent de l'ancienne section
- *   « En chiffres » ; « 900+ » est confirmé au 10 novembre 2026, les deux
- *   autres datent du 15 août : la date ne couvre qu'eux.
+ *   entier et mot pour mot. Les trois chiffres et leurs libellés viennent de
+ *   l'ancienne section « En chiffres ». « 900+ » : 908 comptes inscrits,
+ *   confirmés par le propriétaire le 10 novembre 2026. Journées et lieux :
+ *   relevé du 10 novembre 2026 sur le projet Supabase « Hippodoc - SAAS
+ *   FINANCE », même définition que le relevé du 15 août (MIGRATION.md § 9.u) :
+ *   `count(*)` de `remplacements` (24 252, écrit à la centaine inférieure) et
+ *   de `medecins_remplaces` (2 714, écrit tel quel). La date affichée ne
+ *   couvre que ces deux-là. À refaire à chaque mise à jour, jamais à la main.
  * - Film : le lecteur de home/PresentationVideoSection.astro, tel quel
  *   (<video preload="none"> : aucun octet de vidéo avant le clic, mêmes
  *   identifiants, même titre, même nom de bouton, même pastille « 90 s »), et
@@ -50,11 +55,11 @@ const [afficheAvif, afficheWebp] = await Promise.all(
   (['avif', 'webp'] as const).map((format) => getImage({ src: affiche, format, width: 800, widths: [400, 800, 1200] }))
 );
 
-/* « En chiffres » (home/SocialProofSection.astro), valeurs et libellés d'origine. */
+/* Libellés de l'ancienne section « En chiffres ». Valeurs : voir l'en-tête. */
 const chiffres = [
   { valeur: '900+', libelle: 'Médecins inscrits' },
-  { valeur: '19 400', libelle: 'Journées enregistrées' },
-  { valeur: '2 379', libelle: "Lieux d'exercice référencés" },
+  { valeur: '24 200', libelle: 'Journées enregistrées' },
+  { valeur: '2 714', libelle: "Lieux d'exercice référencés" },
 ];
 ---
 
@@ -92,7 +97,7 @@ const chiffres = [
               <li class="fact"><b class="aff num">{c.valeur}</b>{' '}<span>{c.libelle}</span></li>
             ))}
           </ul>
-          <small>journées et lieux au 15 août 2026</small>
+          <small>journées et lieux au 10 novembre 2026</small>
         </div>
       </div>
     </div>
@@ -223,7 +228,7 @@ const chiffres = [
   /* Trois chiffres, et la date des deux relevés */
   .facts { display: flex; flex-direction: column; gap: 14px; width: 100%; margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--line); }
   /* Trois colonnes égales jusqu'à 1179 px : les trois chiffres restent sur une
-     ligne à toutes les largeurs (« 2 379 » passait seul dessous à 320, 560, 768
+     ligne à toutes les largeurs (le troisième chiffre passait seul dessous à 320, 560, 768
      et 1024 px). */
   .facts ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 14px; margin: 0; padding: 0; list-style: none; }
   .fact b { --corps: clamp(28px, 8.8vw, 34px); display: block; }
