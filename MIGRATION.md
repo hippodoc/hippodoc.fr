@@ -5169,7 +5169,8 @@ remplace la première des dix.)
   utilisé jusque-là ne porte l'hippopotame que sur 52 × 57 px, flou dès la densité 2 à la
   taille de la maquette (36 px de haut). Même dessin, mêmes dimensions que le fichier de
   la maquette validée. Utilisé dans la pastille, le tiroir et le pied ; les autres pages
-  gardent `hippodoc-logo-96.webp`.
+  gardent `hippodoc-logo-96.webp`. **Retiré en phase 3 (lot A) : logo en lettres, voir
+  plus bas.**
 - **`scripts/verify-site.mjs`, contrôle « 4 quater bis »** (ajouté, hors de la liste du
   plan) : tant que l'en-tête et le pied existent en double, le script compare dans
   l'ordre, entre l'accueil et `/tarifs`, chaque lien, bouton ou `<label>` porteur d'un
@@ -5193,7 +5194,8 @@ remplace la première des dix.)
   Pour qui, Tarifs, Ressources). Le menu de la maquette arrive avec ses sections (un lien
   d'ancre n'entre dans l'en-tête que dans le commit qui crée sa cible).
 - Bouton de menu ajouté sous 960 px (la maquette n'avait ni menu ni Connexion sur mobile) ;
-  sous 380 px, l'icône du logo seule, pour que logo, essai et menu tiennent sur 320 px.
+  sous 380 px, l'icône du logo seule, pour que logo, essai et menu tiennent sur 320 px
+  (remplacé en phase 3, lot A : le mot seul, à toutes les largeurs).
 - Anneau de focus en encre (`#14254F`) ou en blanc sur le pied : celui de la maquette
   (`#1A8CFF`) ne fait que 2,46:1 sur le ciel.
 - Pied : texte en `--on-deep-2` partout. `--on-deep-3` ne fait que 3,63:1 sur `--deep` (haut
@@ -5596,6 +5598,30 @@ Le `title` et la description de la page ne changent pas (prévu en phase 4c).
   `shimmer`). À revérifier quand la phase 3 les remplace.
 - Les fichiers `public/lovable-uploads/hero-*` ne sont plus utilisés par l'accueil :
   suppression prévue en phase 6, après un grep.
+
+#### Phase 3, lot A : logo en lettres, aperçu à onglets et « Sous la surface » (10 novembre 2026)
+
+**Logo en lettres (décision du propriétaire, 10 novembre 2026).** Dans la pastille, le
+tiroir mobile et le pied de la nouvelle DA, le logo devient le mot seul : « Hippo »
+(`#0059B3`) puis « doc » (`#1A8CFF`), dans la police de la DA, **sans l'icône au trait**.
+Favicon, image de partage et application inchangés. Un signe abstrait est un chantier
+séparé, après la mise en ligne.
+
+- `HeaderDA.astro`, `FooterDA.astro` : la balise `<img>` de l'icône est retirée (deux
+  fois dans l'en-tête, une fois dans le pied). Lien `/`, `aria-label="Hippodoc — accueil"`,
+  `data-ph="landing_footer_home"` et texte « Hippodoc » inchangés : le contrôle
+  « 4 quater bis » passe sans écart déclaré.
+- `src/assets/da/hippodoc-icone-132.webp` (ajouté en phase 1) est **supprimé** : plus
+  aucun fichier ne l'importe. La règle `.logo-mark` de `da.css` part avec lui.
+- **Le mot est affiché à toutes les largeurs.** Jusque-là, sous 380 px, l'icône restait
+  seule. Sous 340 px, le mot passe de 22 à 20 px et la pastille d'essai perd 5 px de
+  marge intérieure de chaque côté : à 320 px, 14 px séparent le mot de la pastille
+  d'essai (mot de 26 à 119 px, pastille de 133 à 252 px, bouton du menu de 256 à 300 px),
+  aucun défilement horizontal. Cible du lien : 101 × 44 px à 320 px, 110 × 44 px ensuite.
+- Pied : le mot garde sa pastille blanche (146 × 52 px). « doc » (`#1A8CFF`) fait 3,37:1
+  sur blanc : grand texte et logo, comme en phase 1.
+- Les autres pages gardent `Header.astro` et `Footer.astro`, donc l'icône, jusqu'à la
+  phase 5a.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

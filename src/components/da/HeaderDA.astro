@@ -1,8 +1,6 @@
 ---
 import '@/styles/da.css';
 import { APP_URL } from '@/lib/site';
-// Icône du logo d'origine, recadrée (121 × 132 px) : nette jusqu'à la densité 3.
-import logoIcone from '@/assets/da/hippodoc-icone-132.webp?url';
 
 /**
  * En-tête de la DA 2026 : la pastille flottante. COPIE de Header.astro rhabillée,
@@ -18,6 +16,9 @@ import logoIcone from '@/assets/da/hippodoc-icone-132.webp?url';
  * Double maintenance : `node scripts/verify-site.mjs` compare les liens, libellés
  * et attributs de mesure de cet en-tête à ceux de Header.astro (page /tarifs) et
  * échoue au premier écart.
+ * Logo : le mot seul, « Hippo » puis « doc » dans la police de la DA, sans l'icône
+ * au trait (décision du propriétaire, 10 novembre 2026). Le lien, son nom
+ * accessible et le texte « Hippodoc » ne changent pas.
  */
 interface Props {
   /** « flottante » : la pastille survole le premier bloc de la page (qui doit
@@ -57,7 +58,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
   <div class="hd-bar">
     <a href="/" class="hd-brand" aria-label="Hippodoc — accueil">
-      <img src={logoIcone} alt="" width="121" height="132" class="logo-mark" />
       <span class="logo-word">Hippo<span>doc</span></span>
     </a>
 
@@ -110,7 +110,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     <div class="hd-drawer-in">
       <div class="hd-drawer-top">
         <span class="hd-drawer-brand">
-          <img src={logoIcone} alt="" width="121" height="132" class="logo-mark" />
           <span class="logo-word">Hippo<span>doc</span></span>
         </span>
         <label for="mobile-menu-toggle" class="hd-close">

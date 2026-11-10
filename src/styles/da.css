@@ -161,10 +161,8 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .chip.plan { background: var(--plan-bg); color: var(--plan); }
 :where(.da) .chip.off { background: var(--sky-soft); color: var(--ink-2); }
 
-/* Icône du logo : src/assets/da/hippodoc-icone-132.webp, le logo d'origine
-   (src/assets/hippodoc-logo.png) recadré au ras de l'hippopotame, 121 × 132 px.
-   Affichée à 36 px de haut, elle reste nette jusqu'à la densité 3 (108 px). */
-:where(.da) .logo-mark { flex: none; display: block; width: auto; height: 36px; }
+/* Logo : le mot seul, « Hippo » en --brand et « doc » en --brand-2, sans l'icône
+   au trait (décision du propriétaire, 10 novembre 2026). */
 :where(.da) .logo-word { font-family: var(--display); font-size: 22px; font-weight: 760; letter-spacing: -0.025em; line-height: 1; color: var(--brand); }
 :where(.da) .logo-word span { color: var(--brand-2); }
 
@@ -186,10 +184,14 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 @media (min-width: 900px) {
   :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
 }
-:where(.da) .hd-brand { display: flex; align-items: center; gap: 8px; min-width: 44px; min-height: 44px; border-radius: var(--r-sm); text-decoration: none; }
-/* Sous 380 px, l'icône seule : logo, essai et menu doivent tenir sur 320 px. */
-:where(.da) .hd-brand .logo-word { display: none; }
-@media (min-width: 380px) { :where(.da) .hd-brand .logo-word { display: inline; } }
+:where(.da) .hd-brand { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); text-decoration: none; }
+/* Sous 340 px, tout se resserre : le mot, la pastille d'essai et le bouton du
+   menu doivent tenir sur 320 px (296 px de pastille). */
+@media (max-width: 339px) {
+  :where(.da) .hd-bar { gap: 6px; padding-left: 10px; }
+  :where(.da) .hd-brand .logo-word { font-size: 20px; }
+  :where(.da) .hd .btn.hd-cta-pill { padding: 0 13px; }
+}
 
 :where(.da) .hd-links { display: none; align-items: center; gap: 30px; font-size: 15.5px; font-weight: 560; color: var(--ink-2); }
 :where(.da) .hd-links a, :where(.da) .hd-res-btn { display: inline-flex; align-items: center; min-height: 44px; border-radius: var(--r-sm); color: inherit; text-decoration: none; transition: color 160ms var(--ease); }
@@ -235,7 +237,7 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .hd-toggle:checked ~ .hd-drawer { visibility: visible; transform: none; transition-duration: 420ms; }
 :where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; padding: 20px 20px 16px; }
 :where(.da) .hd-drawer-top { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
-:where(.da) .hd-drawer-brand { display: flex; align-items: center; gap: 8px; }
+:where(.da) .hd-drawer-brand { display: flex; align-items: center; padding-left: 12px; }
 :where(.da) .hd-drawer-nav { display: flex; flex: 1; flex-direction: column; min-height: 0; margin-top: 20px; overflow-y: auto; overscroll-behavior: contain; }
 /* « Guide du remplaçant (PDF) » passe sur deux lignes à 320 px : d'où l'interligne serré. */
 :where(.da) .hd-drawer-nav a { display: flex; align-items: center; min-height: 48px; padding: 8px 12px; border-radius: var(--r-sm); font-size: 17px; font-weight: 600; line-height: 1.25; color: var(--ink); text-decoration: none; }
@@ -274,7 +276,7 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .ft-list a { min-width: 44px; }
 
 /* Le logo garde ses couleurs d'origine : il lui faut du blanc sous lui. */
-:where(.da) .ft .ft-logo { gap: 8px; min-height: 52px; padding: 0 20px 0 14px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
+:where(.da) .ft .ft-logo { min-height: 52px; padding: 0 22px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
 :where(.da) .ft .ft-logo:hover { translate: 0 -2px; }
 :where(.da) .ft-tagline { margin: 14px 0 0; }
 :where(.da) .ft-social { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
