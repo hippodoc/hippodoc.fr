@@ -35,7 +35,9 @@ import {
  * après le premier écran, et garde le rang 4. `presentation-video` (rang 3) est
  * maintenant un sous-bloc de `founder`, après « Pour qui ». `founder` est
  * nouveau : son rang (12) dit seulement qu'il est arrivé en dernier, pas sa
- * place sur la page (quatrième bloc).
+ * place sur la page (quatrième bloc). Même chose pour `guides` (13) et
+ * `final-cta` (14), les deux derniers blocs avant le pied. `mid-page-cta`
+ * (le bandeau du milieu de page) n'est plus sur la page : sa série s'arrête.
  */
 const SECTIONS = [
   'hero',
@@ -50,6 +52,8 @@ const SECTIONS = [
   'faq',
   'footer',
   'founder',
+  'guides',
+  'final-cta',
 ] as const;
 
 /** Sections qui émettent EN PLUS un événement dédié, comme sur l'ancienne landing. */

@@ -5271,7 +5271,7 @@ remplace la première des dix.)
   repli, comme les « ✓ » et les émojis des anciennes sections : la police source n'a
   aucun glyphe de flèche (U+2190 à U+219F absents de son `cmap`), l'ajouter au
   sous-ensemble est impossible. La remplacer par un SVG change le texte du pied : prévu
-  en phase 3, avec une entrée dans `ECARTS_ENTETE_PIED_DA`.
+  en phase 3, avec une entrée dans `ECARTS_ENTETE_PIED_DA`. **Fait en phase 3, lot C.**
 - **Aperçu de transition** : la pastille blanche se détache peu du fond presque blanc de
   l'ancien hero (`#F0F7FF`), et `theme-color` (`#C9DEFF`, le ciel) ne correspond pas encore
   au haut de page. Les deux se règlent avec le hero de la phase 2. **Réglé en phase 2.**
@@ -5598,7 +5598,8 @@ Le `title` et la description de la page ne changent pas (prévu en phase 4c).
   241 recalculs de style et 1 205 peintures en 4 s à 1 440 × 900, contre 62 et 310 en
   phase 1. Les animations du premier écran n'y sont pour rien (1 recalcul, 0 peinture
   quand elles tournent seules) : le travail vient des anciennes sections (animations
-  `shimmer`). À revérifier quand la phase 3 les remplace.
+  `shimmer`). À revérifier quand la phase 3 les remplace. **Revérifié en lot C : 0
+  recalcul au repos, voir plus bas.**
 - Les fichiers `public/lovable-uploads/hero-*` ne sont plus utilisés par l'accueil :
   suppression prévue en phase 6, après un grep.
 
@@ -5910,7 +5911,7 @@ partenaires (`home/PartnersSection.astro`). Ces fichiers ne sont plus importés 
 restent dans le dépôt jusqu'à la phase 4a. **Zéro JS ajouté** : le seul script du lot est
 celui du lecteur du film, recopié à l'octet de l'ancienne section. Il reste trois
 anciennes sections sur la page : le bandeau du milieu (avec le bloc RSPM), les tarifs et
-la FAQ.
+la FAQ (remplacées en lot C, voir plus bas).
 
 - **Fichiers créés** : `src/components/accueil/PourQui.astro`, `Fondateur.astro`,
   `Partenaires.astro`, `Temoignages.astro` ; `src/data/parcoursAccueil.ts` (les quatre
@@ -5925,7 +5926,8 @@ la FAQ.
 - **Ordre de la page** : premier écran, « Sous la surface », « Pour qui », fondateur et
   film, syndicats et partenaires, témoignages, puis les trois anciennes sections. La
   dernière feuille porte la prop `dernier` tant que la section suivante est ancienne
-  (pas de réserve de 40 px en bas), à retirer avec le bloc des tarifs.
+  (pas de réserve de 40 px en bas), à retirer avec le bloc des tarifs. **Retirée en
+  lot C**, avec la classe `.fin` de `da.css`.
 - **`da.css`** : `.band` (feuille sable, `.air` pour le ciel, `.fin` pour la dernière),
   `.band-head`, `.lead`, `.lien` (lien souligné dans une phrase, zone de toucher de
   44 px de haut sans changer l'interligne). Sous 560 px, chaque feuille rend 24 px en
@@ -6044,7 +6046,7 @@ entrée ajoutée). Les autres pages gardent « Découvrir » jusqu'à la phase 5
   avant les témoignages ; les choix de profil au clavier sont comptés.
 - **`SECTIONS_LANDING`** (verify-site) : `hero`, `features`, `practice-journeys`,
   `founder`, `presentation-video`, `partners`, `testimonials`, `mid-page-cta`, `pricing`,
-  `faq`. `mid-page-cta` part avec le lot des tarifs.
+  `faq`. `mid-page-cta` part avec le lot des tarifs. **Fait en lot C.**
 - **Gardes ajoutées à `verify-site.mjs`** (contrôle « 4 quater ») : la section
   `practice-journeys` porte `id="parcours"` ; quatre radios `parcours-<profil>` dont une
   seule cochée, un libellé `data-profile` et un panneau par profil ;
@@ -6213,8 +6215,10 @@ propriétaire** ; s'il les refuse, l'onglet ne garde que les quatre étapes repr
 - **Répétitions provisoires** : le paragraphe du fondateur et « Prendre 15 min avec
   Ryan » (ancienne carte de fin de FAQ), « 900+ » une troisième fois (ancien bandeau du
   milieu), « hébergées en France » (anciens tarifs). Elles partent avec le lot suivant.
+  **Réglé en lot C.**
 - **Poses** : la mascotte féminine « présente » est gardée pour les tarifs, où la
-  maquette la place ; « pouce levé » n'est pas encore utilisée.
+  maquette la place ; « pouce levé » n'est pas encore utilisée. **Lot C : « présente »
+  est aux tarifs ; la pose féminine « pouce levé » reste sans emploi.**
 - **Longueur de la page à 390 px** : 17 065 → 17 679 px (bannière et en-tête
   compris). ⚠️ Les quatre blocs font 614 px de plus que les quatre sections qu'ils
   remplacent : 2 131 px pour « Pour qui » (profil remplaçant), 1 734 pour le fondateur et
@@ -6228,6 +6232,389 @@ propriétaire** ; s'il les refuse, l'onglet ne garde que les quatre étapes repr
 - Le titre, la description et le `VideoObject` citent encore « installés,
   collaborateurs » : prévu en phase 4c.
 - CLAUDE.md non mis à jour (phase 4a) : le script du film a changé de fichier.
+
+#### Phase 3, lot C : tarifs, questions, guides, scène finale (10 novembre 2026)
+
+Fin de la phase 3. Les trois dernières anciennes sections de l'accueil sont remplacées :
+les tarifs (`home/PricingSection.astro`), la FAQ (`home/FaqSection.astro`) et le bandeau
+du milieu de page (`home/CtaBanner.astro`, dont seuls la phrase-titre et le bloc RSPM
+sont repris). Deux blocs sont nouveaux : les guides et la scène finale. **Plus aucun
+fichier de `src/components/home/` n'est importé par l'accueil** ; ils restent dans le
+dépôt jusqu'à la phase 4a (Tailwind les lit encore : les supprimer changerait la feuille
+globale, donc le HTML de toutes les pages). **Zéro JS ajouté.**
+
+Ordre final de la page : premier écran, « Sous la surface », « Pour qui », fondateur et
+film, syndicats et partenaires, témoignages, tarifs, questions, guides, scène finale,
+pied. Les feuilles alternent ciel et sable jusqu'à la scène finale, qui remonte de 40 px
+sur la dernière comme les autres.
+
+- **Fichiers créés** : `src/components/accueil/Tarifs.astro`, `Questions.astro`,
+  `Guides.astro`, `SceneFinale.astro` ; `src/assets/accueil/mascotte-f-presente.webp`
+  (721 × 1 342 px, WebP sans perte, pixels identiques au PNG détouré) et
+  `mascotte-dos.webp` (431 × 727 px, le fichier détouré de la maquette validée, copié
+  tel quel : WebP avec perte à l'origine, c'est sa plus grande taille).
+- **Fichiers modifiés** : `src/pages/index.astro`, `src/styles/da.css` (plis `.qa`,
+  flèche du pied, classe `.fin` retirée), `src/components/accueil/Mascotte.astro` (poses
+  `f-presente` et `dos`), `Temoignages.astro` (prop `dernier` retirée),
+  `src/components/da/FooterDA.astro`, `src/lib/landing-analytics.ts`,
+  `scripts/verify-site.mjs`.
+- **`da.css`, les plis (`.qa`)** : un `<details>` natif en fiche blanche, une croix qui
+  tourne et jaunit à l'ouverture. Sert aux 11 questions, au détail des offres et au
+  RSPM. Le texte replié est dans le HTML. Transitions sous
+  `prefers-reduced-motion: no-preference` seulement.
+
+**Tarifs** (`id="pricing"`, `data-landing-section="pricing"`).
+
+- Trois cartes, comme la maquette : Annuel (la carte bleue), Mensuel, Interne. Boutons
+  alignés au pied des cartes, libellé sur une ligne à 390 et à 1 440 px (sur la
+  maquette, « Commencer 30 jours gratuits » passait sur deux lignes dans la carte
+  mensuelle).
+- **Offre interne** : la carte porte un `<details data-ph="landing_special_offer_intern">`
+  dont le `<summary>` est le bouton « Voir l’offre interne ». Le texte de l'offre
+  s'ouvre dans la carte. Sur la maquette, le bouton menait à `/tarifs`, qui ne parle pas
+  des internes. À partir de 900 px, la grille des offres a deux rangées et la carte
+  interne couvre les deux : fermée, elle a la hauteur des deux autres ; ouverte, elle
+  s'allonge seule (de 293 à 687 px à 1 440 px), les deux autres ne bougent pas. Le
+  bouton ne bouge pas sous le doigt à l'ouverture (0 px sur téléphone et à partir de
+  1 180 px, 3 px de 900 à 1 179 px, où la dernière ligne des trois cartes réserve la
+  hauteur de la pastille de l'offre annuelle, alors sur deux lignes).
+- **« Inclus dans toutes les offres »** : six lignes visibles, celles de la maquette. Les
+  neuf autres lignes de l'ancienne liste sont, mot pour mot, dans le pli « Détail des
+  offres », avec le tableau (dont **« Engagement : Aucun / 12 mois »**, qui n'est écrit
+  nulle part ailleurs sur la page) et le lien « Voir la page tarifs complète ».
+- **Tableau** : un vrai `<table>`, une seule fois dans le HTML (l'ancienne section
+  l'écrivait deux fois, une version d'ordinateur et une de téléphone). Sous 560 px,
+  chaque ligne devient une grille : l'intitulé sur toute la largeur, les deux valeurs
+  dessous, sous « Mensuel » et « Annuel » (trois colonnes ne tiennent pas dans 236 px).
+  Les rôles ARIA du tableau sont écrits, pour qu'il reste un tableau dans ce cas.
+- **RSPM** : le bloc du bandeau du milieu de page, replié, sous les tarifs (« Compatible
+  RSPM · En savoir plus »). Les trois seuils gardent leurs pastilles de couleur.
+- **Hébergement** : « Données sécurisées et hébergées dans l’Union européenne »
+  (décision du propriétaire). C'est la seule mention de l'hébergement sur l'accueil.
+  ⚠️ « Hébergées en France » reste sur `/tarifs` et dans le guide (hors périmètre de la
+  phase 3).
+- **Mascotte féminine qui présente** (décision du propriétaire : alterner les deux), à
+  partir de 900 px, posée sur les cartes. Décor, `alt=""`, chargement paresseux : elle
+  n'est pas téléchargée sur téléphone (vérifié). AVIF et WebP à 190, 285 et 380 px (7,4 à
+  17,5 Ko en AVIF).
+- Caractères absents de la police : les « ✓ » du tableau et les trois « → » du RSPM sont
+  dessinés en SVG, le caractère reste dans le texte, masqué à l'œil (procédé du lot A).
+
+**Questions fréquentes** (`id="questions"`, `data-landing-section="faq"`).
+
+- Les **11 questions** de `src/data/faqAccueil.ts`, dans leur ordre, textes non touchés
+  (comparés par script au HTML produit, questions et réponses). Le fichier de données
+  n'est pas modifié, le schéma `FAQPage` non plus : toujours 11 questions, dérivées de la
+  même source.
+- Chaque question est un `<details>` natif ; son libellé est un `<h3>` dans le
+  `<summary>`, qui porte `data-ph="landing_faq_<id>"`. Les numéros devant les questions
+  sont retirés.
+- ⚠️ **Question « Comment fonctionne la collaboration libérale sur Hippodoc ? »** : la
+  décision du propriétaire retire le parcours « collaborateur » de l'accueil et demande
+  de revoir cette question. Elle est **gardée** dans ce lot (les 11 questions étaient la
+  consigne), mais elle dit « gère nativement » d'un module que l'ancien parcours
+  signalait « Bêta », mention qui a quitté la page. **À trancher par le propriétaire** :
+  la retirer de l'accueil (10 questions ; le contenu reste sur `/comparatif`), ou la
+  garder. La retirer se fait dans `faqAccueil.ts` : le schéma et la garde de
+  `verify-site.mjs` suivent seuls ; `landing_faq_collaboration` s'arrêterait.
+- Carte de rendez-vous compacte en fin de liste, `data-calendly="faq_accueil"` (même
+  emplacement, même identifiant) : « Tu veux voir ce que ça donne au quotidien ? »,
+  « Rien à préparer. En visio, ou il t'appelle. », « Prendre 15 min avec Ryan », avec
+  une vignette du portrait (56 px, décor). Le reste du paragraphe est dans le bloc
+  fondateur depuis le lot B.
+- Sur ordinateur, le titre et le lien « Voir toutes les questions » suivent la lecture
+  (`position: sticky`, écran d'au moins 600 px de haut).
+
+**Guides** (`id="guides"`, `data-landing-section="guides"`, bloc nouveau).
+
+- **Six liens internes**, en chemins relatifs : `/simulateur`, `/guide-declarations`,
+  `/guide`, puis trois articles : `/blog/remplacement-regulier-requalification`,
+  `/blog/effet-ciseaux-regularisation-urssaf-medecin`,
+  `/blog/obtenir-sa-licence-de-remplacement`.
+- **Écart avec la maquette et avec le plan**, qui listaient « Micro-BNC ou réel »,
+  « Tout comprendre sur l'URSSAF » et « Combien gagne un médecin remplaçant » (et, pour le
+  plan, la CARMF et `/comparatif`). Ces articles sont déjà liés sur la page, depuis une
+  réponse de la FAQ ou depuis le pied. Les trois retenus ne l'étaient pas, et répondent
+  à ce que les remplaçants demandent le plus (remplacement régulier, appel de
+  cotisations qui grimpe) et au profil interne, que rien d'autre ne guidait (licence de
+  remplacement). `/comparatif` reste dans le pied. **À valider par le propriétaire** ; la
+  liste se change dans le tableau en tête de `Guides.astro`.
+
+**Scène finale** (`data-landing-section="final-cta"`, bloc nouveau).
+
+- La phrase de l'ancien bandeau du milieu (« On soigne mieux quand on comprend ce qu’on
+  gagne »), un seul bouton, « Essayer 30 jours gratuitement »
+  (`data-track="cta_signup_final"`). **Pas de lien de rendez-vous** : celui de la
+  maquette est retiré (§ 9.r, zéro clic en 150 jours sous un bouton principal).
+- Le décor : le soleil, la mascotte de dos, le mot « Hippodoc » **en lettres, sans
+  l'icône** (décision du propriétaire), posé devant elle, puis l'eau. La dernière vague a
+  la couleur du haut du pied (`--deep`) : l'eau descend dans le pied sans couture. Le mot
+  et la mascotte sont un décor, masqués aux lecteurs d'écran (le nom de la marque est
+  dans l'en-tête et le pied).
+- **Mot sans taille optique** : à ce corps (65 à 310 px, graisse 800) il sortait de 3 à
+  9 % plus large que sur la maquette. Interlettrage resserré en plus des -0,045 em de la
+  maquette, deux droites mesurées contre la police complète
+  (`min(0.0747em - 4.05px, 0.0488em)`). Largeur du mot, maquette → accueil : 286,5 →
+  289,5 px à 320 px ; 345,8 → 345,8 à 390 ; 419,9 → 418,1 à 480 ; 592,7 → 595,0 à 700 ;
+  649,6 → 649,6 à 768 ; 866,1 → 866,1 à 1 024 ; 1 218,1 → 1 218,1 à 1 440 ; 1 285,4 →
+  1 285,5 à 1 920 (13 largeurs mesurées, 3 px d'écart au plus).
+- **Pause du décor** (WCAG 2.2.2) : la même case à cocher que le premier écran, au même
+  endroit de la scène, même nom accessible. Elle arrête ce qui tourne sans fin ici
+  (quatre vagues, le balancement de la mascotte). Vérifié : 5 animations en cours, 5 en
+  pause après un clic, 5 en cours après Espace. Chaque scène a son bouton et n'arrête
+  que son décor (celui du premier écran arrête aussi les bulles).
+- `content-visibility: auto` sur la section, avec une hauteur réservée (670 px, 940 px à
+  partir de 900 px, pour 658 et 961 px réels à 390 et 1 440 px) : tant qu'elle est loin
+  de l'écran, rien n'en est calculé ni peint, et ses vagues ne tournent pas.
+
+**Pied : flèches en SVG.** La flèche « → » des trois liens d'articles du pied sortait
+dans la police de repli. Dans `FooterDA.astro`, elle est dessinée (SVG décoratif) et
+sort du libellé. `Footer.astro` garde le caractère jusqu'à la phase 5a : six lignes
+dans `ECARTS_ENTETE_PIED_DA` (les trois libellés avec la flèche, les trois sans).
+
+**Mesure**
+
+- Continu : `pricing` (rang 9) et `landing_pricing_viewed` ; `cta_signup_pricing` avec
+  `plan`, `period` (`yearly`, `monthly`) et `promo="false"` ; `landing_special_offer_intern` ;
+  `landing_pricing_comparison_toggle` ; `faq` (rang 10) ; les 11 `landing_faq_<id>` ;
+  `landing_faq_all` ; `data-calendly="faq_accueil"`. Vérifié dans le navigateur, en
+  décodant les envois : chaque section vue une fois avec son rang, `landing_cta_clicked`
+  avec le plan pour les deux offres, `calendly_clicked` (`faq_accueil`, avec ses UTM),
+  `landing_cta_clicked` pour `cta_signup_final`.
+- Nouveau : `guides` (rang 13) et `final-cta` (rang 14), ajoutés en fin de `SECTIONS` :
+  comme pour `founder`, le rang dit qu'ils sont arrivés en dernier, pas leur place sur
+  la page. `cta_signup_final`. Pour l'autocapture : `landing_pricing_rspm_toggle` et six
+  `landing_guide_*` (`simulateur`, `declarations`, `remplacant`, `requalification`,
+  `effet_ciseaux`, `licence`).
+- Arrêt : `mid-page-cta` et `cta_signup_cta_banner` (le bandeau du milieu de page a
+  disparu ; la scène finale n'est pas à la même place, d'où un identifiant neuf).
+- **`SECTIONS_LANDING`** (verify-site), liste finale : `hero`, `features`,
+  `practice-journeys`, `founder`, `presentation-video`, `partners`, `testimonials`,
+  `pricing`, `faq`, `guides`, `final-cta`.
+- **Gardes ajoutées à `verify-site.mjs`** (contrôle « 4 quater ») : la section `pricing`
+  porte `id="pricing"` ; deux liens `cta_signup_pricing`, un par plan, avec leurs trois
+  attributs et la bonne destination ; le `<details>` de l'offre interne et le `<summary>`
+  du détail des offres portent leur `data-ph` ; « Engagement … 12 mois » est dans le
+  HTML ; « hébergées en France » n'est plus sur l'accueil et « Union européenne » est
+  dans les tarifs ; autant de `<summary data-ph="landing_faq_…">` que de questions dans
+  le schéma `FAQPage`, chacun dans un `<details>` ; `landing_faq_all` et
+  `data-calendly="faq_accueil"` présents ; six liens internes distincts dans les
+  guides ; `cta_signup_final` dans la scène finale, sans lien de rendez-vous ; **plancher
+  de mots**. Chacune échoue quand on casse le HTML (13 cas essayés).
+- **Plancher de mots** (critère de sortie de la phase 3) : l'accueil porte **3 257 mots**
+  dans son HTML brut (comptage du contrôle des 150 mots ; 4 134 sur `main`, 3 408 avant
+  ce lot). Plancher à 90 % : 2 931, au-dessus des 2 000 du plan. Les quatre blocs du lot
+  en portent 1 248 (tarifs 358, questions 787, guides 88, scène finale 15).
+- ⚠️ **Les autres pages changent encore d'un nom de fichier**, comme au lot B : `guides`
+  et `final-cta` entrent dans `SECTIONS`, donc le module `analytics-init` change et,
+  avec lui, l'empreinte du script PostHog que charge chaque page. 69 fichiers HTML hors
+  accueil diffèrent de `main` par ce seul nom, vérifié fichier par fichier. La feuille
+  globale ne bouge pas (`BaseLayout.CmJyzVOB.css`).
+
+**Textes nouveaux, mot pour mot (lot C)**
+
+- Tarifs : H2 « Tarifs : un outil pro, à un prix humain » (espace insécable avant le
+  deux-points ; « Un outil pro, à un prix humain. » était le sous-titre de l'ancienne
+  section) ; « 30 jours gratuits, sans carte bancaire. » ; « par mois » (à la place de
+  « /mois ») ; « 120 € de moins par an que le mensuel » ; « Voir l’offre interne » ;
+  « L’abonnement est 100 % déductible. »
+- Questions : H2 « Questions fréquentes » ; « Celles qu’on nous pose avant de se
+  lancer. »
+- Guides : H2 « Guides et simulateurs pour médecins remplaçants » ; « Pour aller plus
+  loin, en accès libre. » ; « Simulateur Super-Net », « Ton revenu après URSSAF, CARMF et
+  impôts » ; « Guide des déclarations », « 2035, 2042-C PRO, DSFU : quoi remplir, et
+  où » ; « Guide du remplaçant », « Le PDF 2026-2027 ». (Les trois titres sont déjà ceux
+  du pied.)
+- Scène finale : aucun.
+- Identifiants des titres (`tarifs-titre`, `questions-titre`, `guides-titre`,
+  `fin-titre`, `offre-annuel`, `offre-mensuel`) : non affichés.
+
+**Textes repris, mot pour mot** (comparés par script au HTML produit : 115 contrôles,
+0 échec)
+
+- Tarifs (`home/PricingSection.astro`) : « Annuel », « Mensuel », « Interne », « Encore en
+  formation », « Sans engagement » (carte mensuelle), « Commencer 30 jours gratuits »,
+  « Inclus dans toutes les offres », treize des dix-sept lignes de la liste, « Détail des
+  offres », le tableau (« Caractéristiques », « Prix par mois », « Facturation »,
+  « Mensuelle », « Économie », « Engagement », « Aucun », « 12 mois », « Essai gratuit »,
+  « Toutes les fonctionnalités »), « Voir la page tarifs complète », et tout le texte
+  déplié de l'offre interne (« Vous êtes encore en internat ? … », les trois
+  justificatifs, « Comment en bénéficier ? Écris-nous à contact@hippodoc.fr — réponse
+  sous 24h avec ton code promo personnalisé ! »). ⚠️ Ce texte vouvoie puis tutoie :
+  repris tel quel.
+- RSPM (`home/CtaBanner.astro`) : « Compatible RSPM · En savoir plus », « Mode RSPM
+  Intégré », le paragraphe, les trois lignes de taux, « Idéal si tu débutes ou en début
+  d'activité libérale ».
+- Questions : les 11 questions et leurs réponses, « Voir toutes les questions », les
+  trois textes de la carte de rendez-vous.
+- Scène finale : la phrase-titre de `home/CtaBanner.astro`, et le libellé de bouton du
+  premier écran.
+- **Repris d'une autre page du site** : les titres des trois articles (leur `title`) et,
+  en sous-titre, le début de leur `description` (« Remplacer le même médecin chaque
+  semaine peut être requalifié en collaboration. » ; « Bonne année, puis appel de
+  cotisations qui double ? » ; « Conditions, pièces du dossier, envoi au CDOM »).
+
+**Textes retouchés**
+
+- « Données sécurisées et hébergées en France » devient « Données sécurisées et
+  hébergées dans l’Union européenne ».
+- « Génération rapide de contrats » et « Génération rapide de factures avec notes » ne
+  font plus qu'une ligne : « Génération rapide de contrats et de factures » (maquette ;
+  « avec notes » disparaît).
+- « Abonnement 100 % déductible » (dernière ligne de la liste) devient la phrase « L’abonnement
+  est 100 % déductible. », dans la mention du bas.
+- « Tous nos prix sont TTC · Sans frais cachés » devient « Tous nos prix sont TTC, sans
+  frais cachés. » (maquette).
+- Carte interne : « 10€/mois », « 29€ » barré et « +30j gratuit » deviennent « 10 € par
+  mois » et « 30 jours gratuits » (maquette) ; « au lieu de 29 € » reste dans le texte
+  déplié.
+- Montants et taux écrits avec une espace, insécable : « 19 € », « 29 € », « 228 € »,
+  « 10 €/mois », « 120 €/an », « −34 % », « 19 000 € », « 38 000 € », « 13,5 % »,
+  « 21,2 % ».
+- En-tête du tableau « Annuel 💎 » devient « Annuel » ; « 📊 Détail des offres » devient
+  « Détail des offres » (plus d'émoji).
+- Scène finale : apostrophe typographique dans « ce qu’on gagne » (maquette ; à 76 px,
+  l'apostrophe droite se voit).
+- Pied de l'accueil : « → » retiré du libellé de trois liens (dessiné à la place).
+
+**Textes retirés**
+
+- Tarifs : la pastille « Nos offres · Sans engagement » ; le titre « Exercer, c'est
+  bien. Savoir ce que ça te rapporte, c'est mieux. » ; le bandeau « 30 jours gratuits •
+  Sans engagement • Résiliable à tout moment » (l'offre annuelle engage 12 mois : « Sans
+  engagement » n'est plus écrit que sur la carte mensuelle) ; les pastilles « FLEXIBLE »
+  et « POPULAIRE » ; « Économisez 120€/an (-34%) » ; sur les deux cartes, « 30 jours
+  d'essai gratuit » et, sur l'annuelle, « Facturation annuelle » (« 228 € facturés une
+  fois par an » le dit) ; la pastille « Offre spéciale » ; le bandeau « Meilleure
+  offre : 19€/mois au lieu de 29€ (-34%) » et « Économisez 120€/an avec la facturation
+  annuelle » ; la version téléphone du tableau (doublon) et son « Meilleure offre » ;
+  « ✓ Prix TTC · Sans frais cachés » sous le tableau (la mention du bas le dit).
+- Bandeau du milieu de page : la pastille « Déjà 900+ médecins nous font confiance »,
+  le paragraphe « Des centaines de médecins ont retrouvé le pouvoir de décider… », les
+  quatre garanties (dont « Données chiffrées : personne n'y a accès, pas même nous. »),
+  l'image `super-net-card-salaire.png` et son texte alternatif, le bouton « Essai
+  gratuit 30 jours ».
+- FAQ : la pastille « FAQ · Tes questions », le titre « Questions fréquentes sur la
+  gestion médicale », « Tout ce que tu dois savoir pour bien gérer ton activité de
+  médecin », les numéros, et le paragraphe sur Ryan de la carte de fin (il est dans le
+  bloc fondateur).
+- Conséquences sur la page entière (comptées dans `<main>`) : « 900+ » figure deux fois
+  (premier écran, chiffres du fondateur) ; « Union européenne » une fois ; « hébergées en
+  France » zéro ; « Ryan est médecin remplaçant… » une fois ; « Prendre 15 min avec
+  Ryan » deux fois (fondateur, fin de FAQ), plus le lien dans la phrase de « Pour qui ».
+
+**Écarts assumés par rapport à la maquette validée (lot C)**
+
+- Tarifs : sous le titre, une phrase et non deux (« Sans engagement, résiliable à tout
+  moment » n'est pas repris au-dessus d'une offre qui engage 12 mois) ; mascotte
+  féminine au lieu de la masculine, 190 px de large au lieu de 250 (elle est plus
+  élancée : à 250 px elle ferait 465 px de haut) ; offre interne en pli, voir plus haut ;
+  titre « Inclus dans toutes les offres » au-dessus des six lignes ; deux plis de plus
+  (détail des offres, RSPM) ; pastille « 120 € de moins… » à la hauteur d'une ligne de
+  texte, pour que les trois cartes aient la même hauteur. Hauteur du bloc, maquette →
+  accueil : 1 813 → 1 969 px à 320 px, 1 765 → 1 886 à 390, 1 581 → 1 715 à 768, 1 014 →
+  1 196 à 1 440.
+- Questions : 11 questions au lieu de 6, textes d'origine (la maquette en avait retouché
+  la ponctuation) ; carte de rendez-vous en fin de liste ; titre qui suit la lecture ;
+  colonne du titre de 280 px de 900 à 1 179 px (320 au-delà). Hauteur : 1 233 → 1 902 px
+  à 320 px, 1 021 → 1 715 à 390, 862 → 1 373 à 768, 693 → 1 220 à 1 440.
+- Guides : trois autres articles, titres plus longs. Hauteur : 1 358 → 1 380 px à
+  320 px, 1 113 → 1 124 à 390, 964 → 964 à 768, 717 → 758 à 1 440.
+- Scène finale : un bouton au lieu de deux ; bouton de pause ; **à partir de 900 px, le
+  mot est remonté** : sa ligne de base affleure la crête de la vague qui passe devant
+  (`bottom: calc(172px - 0.06em)`), seuls les jambages trempent. Sur la maquette, la
+  moitié basse des lettres était sous l'eau à 1 440 px et le mot se lisait mal. Sous
+  900 px, même place qu'à la maquette. Hauteur : 761 → 698 px à 320 px, 724 → 658 à 390,
+  689 → 689 à 768, 961 → 961 à 1 440.
+- Feuilles : 24 px de moins en haut et en bas sous 560 px, comme au lot B.
+
+**Vérifié (lot C)**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, 3 avertissements
+  (inchangés), à chaque commit.
+- `dist` comparé à `main` : `index.html`, les images, `index.*.css` et les deux modules
+  de mesure dans `_astro/`, et le nom du script PostHog dans 69 pages (voir « Mesure »).
+  Feuille globale identique à l'octet. `index.*.css` : 64,9 → 83,5 Ko (12,1 → 15,1 Ko
+  gzip). `index.html` : 160,5 → 140,5 Ko.
+- Captures Chromium à 320, 390, 560, 768, 900, 1 024 et 1 440 px, côte à côte avec la
+  maquette rendue avec sa police, plis fermés puis tous ouverts ; plus un défilement
+  écran par écran avec le mouvement, à 390 et 1 440 px. Aucun défilement horizontal.
+  Corrigé en cours de route : tableau qui débordait de 51 px à 390 px, point
+  d'interrogation seul sur une ligne dans une question, carte de rendez-vous écrasée à
+  900 px, « Super-Net » coupé au trait d'union, deux-points seul en début de ligne, mot
+  « Hippodoc » trop large.
+- Accessibilité (Chromium) : titres `<h2>` puis `<h3>` sans saut sur toute la page ;
+  arbre d'accessibilité relu (quatre régions nommées par leur `<h2>`, tableau avec ses
+  en-têtes de ligne et de colonne, les deux liens « Commencer 30 jours gratuits »
+  décrits par le nom de leur offre) ; clavier : Tab passe par les deux offres, le bouton
+  de l'offre interne (Entrée l'ouvre), les deux plis, le lien vers `/faq`, les 11
+  questions, le rendez-vous, les six guides, le bouton final, la pause ; anneau de focus
+  de 3 px partout (blanc sur la carte bleue, la pause et le pied, encre ailleurs).
+  Cibles : aucune sous 44 × 44 px dans les quatre blocs et le pied, à 320, 390, 768 et
+  1 440 px, plis fermés et ouverts (hors liens dans une phrase). Espacements imposés
+  (WCAG 1.4.12) aux quatre largeurs, plis fermés et ouverts : aucun texte rogné, aucun
+  défilement horizontal. Mouvement réduit : 0 animation dans les quatre blocs, bouton de
+  pause masqué. Contrastes forcés : contour sur les cartes, les plis, les guides.
+- Contrastes calculés : `--ink-2` 6,98:1 sur le ciel, 8,55:1 sur blanc ; liens des
+  réponses (`--brand`) 6,82:1 sur blanc ; sur la carte annuelle, blanc 5,88:1 et
+  `--on-deep-2` 4,73:1 en haut, 6,03:1 en bas ; encre sur le jaune 10,78:1 ; coches
+  5,57:1 sur le ciel, 7,34:1 sur blanc ; pastilles du RSPM 5,81:1 à 6,57:1 ; titre de la
+  scène finale 10,93:1 au plus clair.
+- Images : aucune des images du lot n'est demandée au chargement ; au défilement, la
+  mascotte de dos (7,3 Ko en AVIF à 1 440 px, 11,8 Ko en densité 2 ou 3) et la vignette
+  du portrait (0,8 ou 1,5 Ko) ; la mascotte des tarifs à partir de 900 px seulement.
+- CLS : police à l'heure, puis retardée de 2 s, défilement de toute la page, à 320, 390,
+  768 et 1 440 px : inchangé (0, puis 0,0003 à 0,0021).
+- **Fil principal au repos** (signalé en phase 2) : en haut de page, à 1 440 × 900, 240
+  recalculs de style en 4 s avant ce lot, **0 après**. Ils venaient des animations sans
+  fin des anciennes sections.
+- Lighthouse mobile en local (12.8.2), 5 passages alternés, avant → après : performance
+  97, 97, 97, 97, 97 → 97, 97, 97, 97, 97 ; accessibilité 100 → 100 ; bonnes pratiques
+  96 → 96 ; SEO 100 → 100 ; LCP simulé médian 2,54 s → 2,54 s (même effet de seuil
+  qu'aux lots A et B, élément LCP inchangé : le titre du premier écran) ; TBT médian
+  34 → 1 ms ; CLS 0 → 0 ; poids 283 → 282 Ko.
+- **Longueur de la page à 390 px** : 17 679 → 17 132 px (12 994 → 12 919 px à 1 440 px).
+  La maquette fait 11 163 px : le critère du plan n'est pas tenu, et ne peut pas l'être
+  avec les blocs que la maquette n'avait pas (« Pour qui », partenaires, témoignages,
+  cinq questions de plus, deux plis). Voir « Connu ».
+
+**Connu, à traiter (lot C)**
+
+- **WebKit et Firefox non testés** (moteurs absents de la machine) : `<summary>` en
+  bouton, carte interne sur deux rangées de grille, tableau en grille sous 560 px,
+  `content-visibility`, titre collant.
+- **Longueur mobile** : 17 132 px à 390 px contre 11 163 sur la maquette. À revoir avec
+  le propriétaire : accepter une page plus longue, ou resserrer (trois témoignages, FAQ
+  à 6 questions visibles et le reste sur `/faq`, cartes des tarifs plus compactes sur
+  téléphone).
+- **À trancher par le propriétaire** : la question sur la collaboration libérale (voir
+  plus haut) ; « Des tarifs réduits existent pour les internes et les médecins en fin
+  d'internat » dans la réponse « Combien coûte Hippodoc ? », alors que l'offre « Jeune
+  Médecin » a été retirée (§ 9.dw) ; le texte déplié de l'offre interne, qui vouvoie
+  puis tutoie ; « résiliable à tout moment » pour l'offre annuelle (non repris) ; la
+  liste des trois articles des guides.
+- **Mascotte de dos** : la source ne fait que 431 px de large. En densité 2 sur
+  ordinateur (536 px demandés), elle est agrandie d'un quart. Une source plus grande
+  réglerait la question.
+- **Bouton de pause de la scène finale** : même décision à confirmer que celui du
+  premier écran. Les deux boutons sont indépendants : mettre en pause en haut de page
+  n'arrête pas l'eau du bas (elle ne tourne que quand elle est près de l'écran).
+- Carte interne ouverte à partir de 900 px : elle s'allonge de 394 px à 1 440 px (de 480
+  à 550 px entre 900 et 1 024 px) à côté des deux autres ; le texte y tient dans une
+  colonne étroite.
+- L'autocapture des `data-ph` (plis, guides) n'a pas été observée dans le navigateur de
+  test, comme au lot B ; seuls les événements `landing_*` et `calendly_clicked` l'ont été.
+- Le contrôle « 4 decies » de `verify-site.mjs` (compteurs animés) n'a plus rien à
+  contrôler depuis le lot A : à retirer en phase 4a, avec `home/*`. L'image
+  `public/lovable-uploads/super-net-card-salaire.png` n'est plus utilisée par l'accueil
+  (suppression en phase 6, après un grep).
+- Le titre, la description et le `VideoObject` citent encore « installés,
+  collaborateurs » (phase 4c). CLAUDE.md n'est pas mis à jour (phase 4a) : composants de
+  l'accueil, exceptions JS, contrôles de `verify-site.mjs`.
+- À annoter dans PostHog le jour de la bascule, en plus des points des lots A et B :
+  `mid-page-cta` et `cta_signup_cta_banner` s'arrêtent ; `pricing` et `faq` gardent leur
+  rang mais ne sont plus suivis du même bloc ; `guides`, `final-cta` et
+  `cta_signup_final` commencent.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

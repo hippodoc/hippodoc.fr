@@ -21,10 +21,11 @@ import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
 // DA 2026, phases 2 et 3 : le premier écran, « Sous la surface » (fenêtre
 // produit à onglets et trois grandes cases), puis les feuilles claires : « Pour
-// qui », le fondateur et le film, les syndicats et partenaires, les témoignages.
-// Les trois sections suivantes sont encore les anciennes. Les fichiers de
-// `home/` qui ne sont plus importés (SocialProof, Features, PresentationVideo,
-// Journey, Testimonials, Partners) restent dans le dépôt jusqu'à la phase 4a.
+// qui », le fondateur et le film, les syndicats et partenaires, les témoignages,
+// les tarifs, les questions, les guides, et la scène finale. Plus aucune
+// section de `src/components/home/` n'est importée : ces fichiers restent dans
+// le dépôt jusqu'à la phase 4a (Tailwind les lit encore, les supprimer
+// changerait la feuille globale de toutes les pages).
 import Hero from '@/components/accueil/Hero.astro';
 import { imagesBuste } from '@/components/accueil/buste';
 import SousLaSurface from '@/components/accueil/SousLaSurface.astro';
@@ -32,9 +33,10 @@ import PourQui from '@/components/accueil/PourQui.astro';
 import Fondateur from '@/components/accueil/Fondateur.astro';
 import Partenaires from '@/components/accueil/Partenaires.astro';
 import Temoignages from '@/components/accueil/Temoignages.astro';
-import CtaBanner from '@/components/home/CtaBanner.astro';
-import PricingSection from '@/components/home/PricingSection.astro';
-import FaqSection from '@/components/home/FaqSection.astro';
+import Tarifs from '@/components/accueil/Tarifs.astro';
+import Questions from '@/components/accueil/Questions.astro';
+import Guides from '@/components/accueil/Guides.astro';
+import SceneFinale from '@/components/accueil/SceneFinale.astro';
 
 // Mêmes fichiers que le <picture> de Hero.astro (même fabrique, mêmes URL).
 const buste = await imagesBuste();
@@ -53,7 +55,7 @@ const websiteSchema = {
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 
-// 11 questions/réponses — verbatim, identiques à celles rendues par FaqSection.astro.
+// 11 questions/réponses — verbatim, identiques à celles rendues par accueil/Questions.astro.
 const faqPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -129,11 +131,11 @@ const videoSchema = {
       <PourQui />
       <Fondateur />
       <Partenaires />
-      {/* `dernier` : tant que la section suivante est une ancienne section. */}
-      <Temoignages dernier />
-      <CtaBanner />
-      <PricingSection />
-      <FaqSection />
+      <Temoignages />
+      <Tarifs />
+      <Questions />
+      <Guides />
+      <SceneFinale />
     </main>
 
     <FooterDA />

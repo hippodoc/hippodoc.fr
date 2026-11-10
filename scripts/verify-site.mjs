@@ -274,10 +274,11 @@ for (const h of vercelJson.headers ?? []) {
 // DA 2026, phase 3 : « social-proof » (section « En chiffres ») a quitté la page.
 // L'ordre suit celui de la page ; `features` est le bloc « Sous la surface »,
 // `founder` (nouveau) contient le film (`presentation-video`).
-// `mid-page-cta` part avec les tarifs de la nouvelle DA (lot suivant).
+// `mid-page-cta` (le bandeau du milieu de page) est parti avec les tarifs de la
+// nouvelle DA ; `guides` et `final-cta` (la scène finale) sont nouveaux.
 const SECTIONS_LANDING = [
   'hero', 'features', 'practice-journeys', 'founder', 'presentation-video',
-  'partners', 'testimonials', 'mid-page-cta', 'pricing', 'faq',
+  'partners', 'testimonials', 'pricing', 'faq', 'guides', 'final-cta',
 ];
 const accueil = readFileSync(resolve(dist, 'index.html'), 'utf8');
 const sectionsVues = [...accueil.matchAll(/data-landing-section="([^"]+)"/g)].map((m) => m[1]);
@@ -367,6 +368,82 @@ if (!blocFilm || !/\sid="film-presentation"/.test(blocFilm[0])) {
   fail('accueil : l\'élément data-landing-section="presentation-video" ne porte plus id="film-presentation"');
 } else if (!/<video\b/.test(accueil.slice(blocFilm.index, finFondateur))) {
   fail('accueil : le <video> n\'est plus dans le bloc data-landing-section="presentation-video" — landing_video_* ne partirait plus');
+}
+// Tarifs (DA 2026, phase 3). `id="pricing"` est la cible du lien « Tarifs » du
+// menu sur TOUT le site et de deux réponses de la FAQ. Les deux liens
+// d'inscription gardent `cta_signup_pricing` et leurs trois attributs (le plan
+// choisi part avec le clic), l'offre interne et le détail des offres restent des
+// <details> natifs, avec leur identifiant d'autocapture.
+const tarifsAccueil = accueil.match(/<section\b[^>]*data-landing-section="pricing"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!/^<section\b[^>]*\sid="pricing"/.test(tarifsAccueil)) {
+  fail('accueil : la section data-landing-section="pricing" ne porte plus id="pricing" (cible de /#pricing)');
+}
+const ctaTarifs = [...tarifsAccueil.matchAll(/<a\b[^>]*data-track="cta_signup_pricing"[^>]*>/g)].map((m) => m[0]);
+for (const plan of ['yearly', 'monthly']) {
+  const lien = ctaTarifs.find((b) => b.includes(`data-track-plan="${plan}"`));
+  if (!lien) fail(`accueil, tarifs : lien cta_signup_pricing du plan « ${plan} » absent — landing_cta_clicked perdrait ce plan`);
+  else if (!lien.includes(`data-track-period="${plan}"`) || !lien.includes('data-track-promo="false"') || !lien.includes(`plan=${plan}`)) {
+    fail(`accueil, tarifs : le lien du plan « ${plan} » doit porter data-track-period="${plan}", data-track-promo="false" et mener à plan=${plan}`);
+  }
+}
+if (ctaTarifs.length !== 2) fail(`accueil, tarifs : 2 liens cta_signup_pricing attendus (annuel, mensuel) — trouvé ${ctaTarifs.length}`);
+if (!/<details\b[^>]*data-ph="landing_special_offer_intern"/.test(tarifsAccueil)) {
+  fail('accueil, tarifs : le <details data-ph="landing_special_offer_intern"> de l\'offre interne a disparu');
+}
+if (!/<summary\b[^>]*data-ph="landing_pricing_comparison_toggle"/.test(tarifsAccueil)) {
+  fail('accueil, tarifs : le <summary data-ph="landing_pricing_comparison_toggle"> du détail des offres a disparu');
+}
+// « Engagement : 12 mois » n'est écrit que dans le détail des offres : il doit rester dans le HTML.
+if (!/Engagement<\/th>[\s\S]{0,200}12 mois/.test(tarifsAccueil)) {
+  fail('accueil, tarifs : la ligne « Engagement : 12 mois » de l\'offre annuelle a disparu du détail des offres');
+}
+// Hébergement : « Union européenne » (décision du propriétaire, les pages légales
+// disent la même chose). « hébergées en France » ne doit pas revenir sur l'accueil.
+if (/hébergées? en France/i.test(accueil)) fail('accueil : « hébergées en France » — la mention validée est « Union européenne »');
+if (!/Union européenne/.test(tarifsAccueil)) fail('accueil, tarifs : la mention de l\'hébergement (« Union européenne ») a disparu');
+// Questions fréquentes (DA 2026, phase 3) : une question par <details>, chacune avec
+// son identifiant d'autocapture, autant que dans le schéma FAQPage ; le lien vers /faq.
+const questionsAccueil = accueil.match(/<section\b[^>]*data-landing-section="faq"[\s\S]*?<\/section>/)?.[0] ?? '';
+const plisFaq = questionsAccueil.match(/<summary\b[^>]*data-ph="landing_faq_[a-z0-9-]+"/g) ?? [];
+let questionsSchema = 0;
+for (const [, bloc] of accueil.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+  try { const j = JSON.parse(bloc); if (j['@type'] === 'FAQPage') questionsSchema = (j.mainEntity ?? []).length; } catch { /* JSON-LD invalide : signalé plus haut */ }
+}
+if (!plisFaq.length || plisFaq.length !== questionsSchema || new Set(plisFaq).size !== plisFaq.length) {
+  fail(`accueil, questions : ${questionsSchema} question(s) dans le schéma FAQPage, ${plisFaq.length} <summary data-ph="landing_faq_…"> dans la page (${new Set(plisFaq).size} distinct(s))`);
+}
+if ((questionsAccueil.match(/<details\b/g) ?? []).length !== plisFaq.length) {
+  fail('accueil, questions : chaque question doit être un <details> natif (réponse dans le HTML), et rien d\'autre');
+}
+if (!/<a\b[^>]*href="\/faq"[^>]*data-ph="landing_faq_all"/.test(questionsAccueil)) {
+  fail('accueil, questions : le lien data-ph="landing_faq_all" vers /faq a disparu');
+}
+if (!questionsAccueil.includes('data-calendly="faq_accueil"')) {
+  fail('accueil, questions : le lien de rendez-vous data-calendly="faq_accueil" a disparu de la fin de la FAQ');
+}
+// Guides (DA 2026, phase 3) : six liens internes, en chemins relatifs.
+const guidesAccueil = accueil.match(/<section\b[^>]*data-landing-section="guides"[\s\S]*?<\/section>/)?.[0] ?? '';
+const liensGuides = [...guidesAccueil.matchAll(/<a\b[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
+if (liensGuides.length !== 6 || liensGuides.some((h) => !h.startsWith('/')) || new Set(liensGuides).size !== 6) {
+  fail(`accueil, guides : 6 liens internes distincts attendus, en chemins relatifs — trouvé ${liensGuides.join(', ') || 'aucun'}`);
+}
+// Scène finale (DA 2026, phase 3) : une seule demande, l'inscription. Pas de lien de
+// rendez-vous sous un bouton principal (§ 9.r : zéro clic en 150 jours).
+const sceneFinale = accueil.match(/<section\b[^>]*data-landing-section="final-cta"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!sceneFinale.includes('data-track="cta_signup_final"')) {
+  fail('accueil : data-track="cta_signup_final" absent de la scène finale — sa série PostHog s\'arrête');
+}
+if (sceneFinale.includes('calendly.com')) fail('accueil, scène finale : pas de lien de rendez-vous ici (§ 9.r)');
+// Plancher de mots (critère de sortie de la phase 3) : la nouvelle accueil porte
+// 3 257 mots dans son HTML brut (même comptage que le contrôle des 150 mots,
+// relevé du 10 novembre 2026 ; 4 134 sur l'ancienne accueil). Plancher à 90 %.
+// Une section perdue ou un panneau généré à la demande ferait passer la page dessous.
+const MOTS_ACCUEIL_MIN = 2931;
+const motsAccueil = accueil
+  .replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<style[\s\S]*?<\/style>/g, ' ')
+  .replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+if (motsAccueil < MOTS_ACCUEIL_MIN) {
+  fail(`accueil : ${motsAccueil} mots dans le HTML brut, sous le plancher de ${MOTS_ACCUEIL_MIN} (90 % du relevé de fin de phase 3)`);
 }
 
 /* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).

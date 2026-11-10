@@ -7,7 +7,9 @@
  * Sources dans src/assets/accueil/, en WebP sans perte, rognées au ras du
  * personnage (le bas est coupé net : à poser au bord bas d'un bloc qui rogne) :
  *  - `pouce`, `pointe` : mascotte masculine, fichiers fournis par le propriétaire ;
- *  - `f-tablette`, `f-pointe` : mascotte féminine, détourée sans perte.
+ *  - `f-tablette`, `f-pointe`, `f-presente` : mascotte féminine, détourée sans perte ;
+ *  - `dos` : mascotte masculine vue de dos (scène finale), le fichier détouré de
+ *    la maquette validée, 431 px de large : c'est sa plus grande taille.
  *
  * La classe et l'attribut de portée du parent arrivent sur le <picture> : c'est
  * lui que le parent dimensionne et place, l'image le remplit.
@@ -17,8 +19,10 @@ import pouce from '@/assets/accueil/mascotte-pouce.webp';
 import pointe from '@/assets/accueil/mascotte-pointe.webp';
 import fTablette from '@/assets/accueil/mascotte-f-tablette.webp';
 import fPointe from '@/assets/accueil/mascotte-f-pointe.webp';
+import fPresente from '@/assets/accueil/mascotte-f-presente.webp';
+import dos from '@/assets/accueil/mascotte-dos.webp';
 
-const SOURCES = { pouce, pointe, 'f-tablette': fTablette, 'f-pointe': fPointe };
+const SOURCES = { pouce, pointe, dos, 'f-tablette': fTablette, 'f-pointe': fPointe, 'f-presente': fPresente };
 
 interface Props {
   pose: keyof typeof SOURCES;

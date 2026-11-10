@@ -15,15 +15,8 @@
  *   série continue.
  * - Sous 640 px, les cartes défilent de côté (une carte et le bord de la
  *   suivante) ; au-delà, deux par ligne. Les quatre sont toujours dans le HTML.
- * - `dernier` : à passer tant que le bloc suivant est une ancienne section, qui
- *   ne remonte pas sur cette feuille (pas de réserve de 40 px en bas).
  */
 import '@/styles/da.css';
-
-interface Props {
-  dernier?: boolean;
-}
-const { dernier = false } = Astro.props;
 
 const temoignages = [
   { texte: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", auteur: 'Dr Sofiane B.', qualite: 'Médecin (SOS Médecins + cabinet)', initiales: 'SB' },
@@ -36,7 +29,7 @@ const temoignages = [
 <section
   data-landing-section="testimonials"
   id="testimonials"
-  class:list={['band', 'da-bloc', 'tm', dernier && 'fin']}
+  class="band da-bloc tm"
   aria-labelledby="temoignages-titre"
 >
   <div class="wrap">
