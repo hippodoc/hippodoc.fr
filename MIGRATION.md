@@ -5799,6 +5799,30 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
   `<track>` (script et balise non touchés).
 - `hippodoc-corpus/`, que CLAUDE.md demande de lire, n'est pas dans le dépôt.
 
+### 9.ec Accueil : cinq retouches le soir de la mise en ligne (10 novembre 2026)
+
+Retouches décidées par le propriétaire quelques heures après la fusion de § 9.eb, donc
+pendant la fenêtre d'observation (§ 9.eb, « À faire le jour de la mise en ligne »,
+point 8) : du texte et des liens internes de l'accueil changent. `title`, description
+et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` à
+0 erreur à chaque commit, `BaseLayout.DakHsQiB.css` garde son nom.
+
+**1. Premier écran : « l'eau » en bleu** (`accueil/Hero.astro`)
+
+- Le dernier mot du grand titre, apostrophe comprise, passe de l'encre (`--ink`,
+  `#14254F`) au bleu de la vague du premier plan (`--w4`, `#2A60C4`, même valeur que
+  `--deep`). Texte du H1 inchangé, au caractère près : « Logiciel de gestion pour
+  médecin remplaçant : Sors la tête de l'eau ». Pas de jaune (réservé à « ce qu'il te
+  reste »).
+- Contraste sur le ciel : 4,31:1 en haut (`--sky-1`), 5,04:1 au milieu (`--sky-2`),
+  pour un texte de 44 à 116 px en graisse 720 (seuil des grands textes : 3:1).
+  `--deep-2` (`#163A88`) ferait 7,71:1 mais ne se distingue presque plus de l'encre :
+  non retenu.
+- Coupes et interlettrage : le mot est dans un `<span>` qui ne porte que la couleur.
+  Balayage de 320 à 1 600 px (651 largeurs, police chargée puis woff2 bloqué) comparé
+  à `main` : mêmes lignes, mêmes hauteurs, largeur du titre à 0,02 px près. L'écart
+  connu entre 906 et 1 026 px (§ 9.eb, « Reste ouvert ») n'a pas bougé.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
