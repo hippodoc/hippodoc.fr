@@ -12,9 +12,9 @@
      corps, graisse, couleur, interligne), les règles de titres et l'anneau de
      focus sont portés par les blocs DA, marqués `.da-bloc` (l'en-tête, le pied,
      puis chaque section migrée). Une section pas encore migrée n'a pas cette
-     classe : elle garde son rendu d'origine, styles hérités compris. À la
-     bascule (phase 4a), quand il ne reste aucune ancienne section, `.da-bloc`
-     peut remonter sur <body> ;
+     classe : elle garde son rendu d'origine, styles hérités compris. Depuis
+     la phase 4a il ne reste aucune ancienne section sur l'accueil ; la classe
+     reste portée par chaque bloc (elle n'a pas été remontée sur <body>) ;
    - `:where(…)` ne pèse rien : dans un bloc DA, une classe l'emporte toujours
      sur une règle d'élément ;
    - aucune classe Tailwind dans les composants `da/` : la feuille globale ne
