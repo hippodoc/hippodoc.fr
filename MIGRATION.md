@@ -7345,6 +7345,9 @@ suivre : rien d'autre n'est confirmé.
 
 #### Phase 3, relecture du lot « carte bancaire et syndicats » (10 novembre 2026, nuit)
 
+> **Suite (réponses du propriétaire, 10 novembre 2026, nuit).** Quatre textes changés. (1) `/tarifs`, « Comment fonctionne l'essai gratuit de 30 jours ? » (texte et FAQPage) : « …et tu profites de 30 jours d'essai gratuit avec toutes les fonctionnalités. À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour continuer. » devient « Tu crées ton compte sur app.hippodoc.fr, tu choisis l'offre mensuelle ou annuelle à l'inscription, et tu profites de 30 jours d'essai gratuit avec toutes les fonctionnalités. Ta carte bancaire est demandée, mais rien n'est débité pendant l'essai. » (l'offre se choisit à l'inscription). (2) Accueil, pli de l'offre interne : « Vous êtes encore en internat ? … Hippodoc vous accompagne avec un tarif adapté. » passe au tutoiement (« Tu es encore en internat ? … Hippodoc t'accompagne avec un tarif adapté. »). (3) Même pli : « réponse sous 24h avec ton code promo personnalisé ! » devient « on te répond très vite avec ton code promo personnalisé ! » (la réponse est quasi immédiate). (4) `/faq`, « Il y a des tarifs pour les internes ? » (texte et FAQPage) : « on t'envoie ton code promo sous 24 h. » devient « on t'envoie ton code promo très vite. » Confirmé aussi : pas de cumul de remises ; tout interne paie 10 € par mois, l'adhésion à un syndicat partenaire donne seulement 6 mois d'essai au lieu d'un. Premier écran laissé tel quel (« Rien n'est débité pendant l'essai. »).
+
+
 Huit points relevés à la relecture du lot précédent. **Un seul texte change, sur `/`.**
 Zéro JS ajouté. Aucun nom de code, aucune marche à suivre.
 
