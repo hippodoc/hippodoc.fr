@@ -11,6 +11,13 @@
  *   comme l'ancien hero (src/components/home/HeroSection.astro).
  * - Les fiches, les papiers et la pastille Super-Net sont un décor : chiffres de
  *   démonstration, masqués aux lecteurs d'écran, sans balise de titre.
+ * - Coupures de lignes : le nombre de lignes du mot-clé, du titre, de l'accroche,
+ *   des boutons et de la ligne fine ne dépend que de la largeur d'écran, jamais
+ *   de la police. Tant que le woff2 n'est pas arrivé, le repli (Arial ajusté) a
+ *   d'autres largeurs de mots : chaque bascule se fait donc à un seuil écrit, à
+ *   distance des largeurs où les deux polices ne coupent pas au même endroit.
+ *   Après toute retouche de texte ou de corps, refaire le balayage repli contre
+ *   police (MIGRATION.md § 9, phase 2).
  * - `raccord` : à passer tant que le bloc suivant est une ancienne section sur
  *   fond blanc. L'eau se termine alors sous une feuille blanche aux coins ronds
  *   (le motif des sections claires de la maquette). À retirer quand le bloc
@@ -32,9 +39,11 @@ const buste = await imagesBuste();
   <div class="wrap hero-copy">
     {/* Le mot-clé et l'accroche sont deux lignes d'un même titre. Le deux-points
         entre elles n'est pas dessiné, mais il est dans le texte : un lecteur
-        d'écran marque la pause, un moteur lit une phrase et non deux mots collés. */}
-    <h1><span class="kicker">Logiciel de gestion pour médecin remplaçant</span><span class="sr">&nbsp;: </span><span class="title">Sors la tête de&nbsp;l’eau</span></h1>
-    <p class="pitch">URSSAF, CARMF, impôts&nbsp;: Hippodoc calcule tout après chaque journée de remplacement, et te montre ce qu’il te reste vraiment</p>
+        d'écran marque la pause, un moteur lit une phrase et non deux mots collés.
+        Les deux espaces du titre sont dans des <span> : la feuille choisit
+        laquelle porte le retour à la ligne (voir `.e1`, `.e2`). */}
+    <h1><span class="kicker">Logiciel de gestion pour médecin remplaçant</span><span class="sr">{' : '}</span><span class="title">Sors la<span class="e1">{' '}</span>tête<span class="e2">{' '}</span>de&nbsp;l’eau</span></h1>
+    <p class="pitch">URSSAF, CARMF, impôts&nbsp;: Hippodoc calcule tout après chaque journée de remplacement, et te montre ce qu’il te reste&nbsp;vraiment</p>
     <div class="cta">
       <a class="btn btn-brand" href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_hero">Essayer 30 jours gratuitement</a>
       <a class="btn btn-white" href="/simulateur" data-track="cta_simulator">Simuler mon Super-Net</a>
@@ -45,6 +54,10 @@ const buste = await imagesBuste();
   {/* La scène. L'ordre des éléments fait l'ordre des plans : soleil, deux vagues,
       mascotte, papiers, deux vagues devant. */}
   <div class="pond">
+    {/* Pause du décor (WCAG 2.2.2) : une case à cocher, sans JS. Elle précède
+        tout ce qui bouge, pour que la feuille l'atteigne par `~`. Masquée quand
+        le visiteur a demandé moins d'animations : rien ne bouge alors. */}
+    <input type="checkbox" class="pause" aria-label="Mettre le décor animé en pause" />
     <span class="sun" aria-hidden="true"></span>
     <span class="wave w1" aria-hidden="true"></span>
     <span class="wave w2" aria-hidden="true"></span>
@@ -100,8 +113,11 @@ const buste = await imagesBuste();
      raison pour les courbes d'animation écrites en chiffres plus bas. */
   /* Corps du mot-clé : 15,5 px sur la maquette, un peu moins sous 388 px de large.
      À 375 px, il tenait sur une ligne à 1 px près (334 px pour 335), et la police
-     de repli, plus large de 6 px, le passait sur deux lignes le temps du chargement. */
-  .kicker { font-size: clamp(14.5px, 4vw, 15.5px); line-height: 1.3; font-weight: 600; color: var(--ink-2); text-wrap-style: balance; }
+     de repli, plus large de 6 px, le passait sur deux lignes le temps du chargement.
+     Sous 375 px, deux lignes dans tous les cas (comme la maquette à 360 px) : à
+     360 px le repli tenait sur une ligne à 1,5 px près. */
+  .kicker { max-width: 14em; font-size: clamp(14.5px, 4vw, 15.5px); line-height: 1.3; font-weight: 600; color: var(--ink-2); text-wrap-style: balance; }
+  @media (min-width: 375px) { .kicker { max-width: none; } }
   /* Grand titre. La police du site n'a pas l'axe de taille optique (il coûterait
      75 Ko de plus) : à corps égal, le titre sort plus large que sur la maquette,
      de 2,7 % à 50 px et de 8,7 % à 116 px. On retrouve sa largeur en resserrant
@@ -114,10 +130,43 @@ const buste = await imagesBuste();
     letter-spacing: min(calc(1.175px - 0.0695 * var(--corps)), calc(2.778px - 0.0924 * var(--corps)));
     text-wrap-style: balance;
   }
-  .pitch { max-width: 33rem; margin: 0; font-size: clamp(17.5px, 1.6vw, 21px); line-height: 1.5; color: var(--ink-2); }
-  .cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-  .cta .btn { white-space: nowrap; }
-  .fine { margin: 0; font-size: 14.5px; color: var(--ink-2); text-wrap-style: balance; }
+  /* Sur deux lignes, « Sors la / tête de l’eau » et « Sors la tête / de l’eau »
+     ont la même largeur à quelques pixels près : l'équilibrage choisissait l'une
+     avec la police et l'autre avec le repli. La coupe est donc écrite : l'espace
+     qui la porte passe en bloc (hauteur nulle, elle ne contient qu'une espace),
+     après « la » sur téléphone, après « tête » à partir de 600 px, comme la
+     maquette à 390 et à 768 px. Les autres espaces restent libres : si le
+     visiteur grossit ou espace le texte, le titre passe sur trois lignes. */
+  .title .e1 { display: block; }
+  @media (min-width: 600px) {
+    .title .e1 { display: inline; }
+    .title .e2 { display: block; }
+  }
+  /* Accroche : largeur par paliers, et non « toute la place disponible ». À
+     chaque palier, repli et police coupent aux mêmes mots, avec au moins 5 px de
+     marge (largeurs sûres mesurées à 17,5 px : 305 à 340, 360 à 371, 387 à 416,
+     513 à 554 ; à 16 px : 279 à 311 ; à 21 px : 524 à 537). Seule exception, de
+     320 à 324 px d'écran : le paragraphe fait 280 à 284 px, à moins de 5 px du
+     bas de sa plage ; en dessous, un mot change de ligne, pas la hauteur. Quatre lignes sous
+     406 px d'écran, trois jusqu'à 567 px, deux ensuite, trois à partir de 1180 px
+     où le corps passe à 21 px (la maquette le faisait grandir en continu de 1094
+     à 1312 px : le nombre de lignes y changeait à une largeur différente selon
+     la police). */
+  .pitch { max-width: 330px; margin: 0; font-size: 17.5px; line-height: 1.5; color: var(--ink-2); }
+  @media (min-width: 406px) { .pitch { max-width: 366px; } }
+  @media (min-width: 440px) { .pitch { max-width: 401px; } }
+  @media (min-width: 568px) { .pitch { max-width: 528px; } }
+  @media (min-width: 1180px) { .pitch { max-width: 530px; font-size: 21px; } }
+  /* Boutons empilés sous 620 px, côte à côte ensuite (553 px pour 580 px de
+     place) : la bascule ne dépend pas de la largeur des libellés. Le libellé peut
+     passer sur deux lignes si le visiteur grossit le texte. */
+  .cta { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .cta .btn { padding-block: 8px; text-align: center; }
+  .fine { max-width: 30em; margin: 0; font-size: 14.5px; color: var(--ink-2); text-wrap-style: balance; }
+  @media (min-width: 620px) {
+    .cta { flex-flow: row wrap; justify-content: center; }
+    .fine { max-width: none; }
+  }
   /* Petits téléphones (320 px de large) : à la première visite, la bannière
      cookies occupe le bas de l'écran. Tout est resserré pour que les deux
      boutons restent au-dessus d'elle sur un écran de 568 px de haut, et le
@@ -126,11 +175,9 @@ const buste = await imagesBuste();
     .hero-copy { gap: 12px; padding-top: 80px; }
     h1 { gap: 8px; }
     .title { --corps: 44px; }
-    .pitch { font-size: 16px; line-height: 1.45; }
+    .pitch { max-width: 296px; font-size: 16px; line-height: 1.45; }
     .cta { gap: 10px; }
-    .cta .btn { min-height: 50px; padding: 0 16px; font-size: 16.5px; }
-    /* La pastille Super-Net sortait de 10 px à droite de l'écran. */
-    .pond .tag { margin-left: 36px; }
+    .cta .btn { min-height: 50px; padding-inline: 16px; font-size: 16.5px; }
   }
   @media (min-width: 900px) {
     .hero-copy { padding-top: 132px; gap: 22px; }
@@ -138,8 +185,13 @@ const buste = await imagesBuste();
     .kicker { font-size: 17.5px; }
     /* Sur une ligne. À 116 px le titre fait 933 px de large : de 900 à 990 px de
        fenêtre, il débordait des deux côtés (défaut de la maquette). Le corps suit
-       donc la largeur jusqu'à 992 px, puis reste à 116 px. */
-    .title { --corps: min(116px, 12.2vw - 5px); white-space: nowrap; }
+       donc la largeur jusqu'à 1017 px, puis reste à 116 px. Pas de `nowrap` : si
+       le visiteur impose ses espacements (WCAG 1.4.12), le titre doit pouvoir
+       passer sur deux lignes au lieu d'être rogné. Il tient donc sur sa ligne par
+       sa seule largeur, repli compris (1,5 % plus large) : au moins 21 px de
+       marge de 900 à 1016 px. */
+    .title { --corps: min(116px, 11.9vw - 5px); }
+    .title .e2 { display: inline; }
   }
 
   /* La scène : soleil, eau en volume, mascotte qui émerge, papiers qui coulent */
@@ -161,7 +213,9 @@ const buste = await imagesBuste();
   .slip.b { right: 12px; bottom: 82px; rotate: 6deg; }
   .slip.c, .slip.d { display: none; }
   .float { display: none; }
-  .tag { position: absolute; left: 50%; bottom: 122px; margin-left: 56px; padding: 9px 14px 11px; border-radius: 18px; background: var(--paper); rotate: 4deg; text-align: left; box-shadow: var(--clay); }
+  /* À 56 px du centre, sauf si elle sortait de l'écran (sous 380 px de large) :
+     son bord droit reste alors à 5 px du bord. */
+  .tag { position: absolute; left: 50%; bottom: 122px; margin-left: min(56px, 50vw - 134px); padding: 9px 14px 11px; border-radius: 18px; background: var(--paper); rotate: 4deg; text-align: left; box-shadow: var(--clay); }
   .tag small { display: block; font-size: 13px; font-weight: var(--tb); color: var(--ink-2); }
   .tag b { font-family: var(--display); font-size: 24px; line-height: 1.15; font-weight: var(--dw); letter-spacing: -0.02em; }
   @media (min-width: 900px) {
@@ -202,7 +256,18 @@ const buste = await imagesBuste();
 
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. Sans
      animation, chaque élément est déjà à sa place finale. */
+  .pause { display: none; }
   @media (prefers-reduced-motion: no-preference) {
+    /* Le bouton de pause : un disque d'eau profonde en bas à gauche de la scène.
+       Ses couleurs sont gardées en mode contrastes forcés (icône blanche). */
+    .pause {
+      display: block; position: absolute; left: 12px; bottom: 10px; z-index: 3; width: 44px; height: 44px; margin: 0; padding: 0;
+      border: 2px solid rgba(255, 255, 255, 0.55); border-radius: 50%; -webkit-appearance: none; appearance: none; forced-color-adjust: none; cursor: pointer;
+      background: var(--deep-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 2.5h3v11H4zM9 2.5h3v11H9z' fill='%23fff'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+    }
+    .pause:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 2.2v11.6L13.5 8z' fill='%23fff'/%3E%3C/svg%3E"); }
+    .pause:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
+    .pause:checked ~ .sun, .pause:checked ~ .wave::before, .pause:checked ~ picture .hippo, .pause:checked ~ .tag, .pause:checked ~ .float { animation-play-state: paused; }
     .sun { animation: hero-sunrise 1600ms var(--ease) both; }
     .wave::before { animation: hero-drift var(--t, 46s) linear infinite; }
     .w2::before, .w4::before { animation-direction: reverse; }

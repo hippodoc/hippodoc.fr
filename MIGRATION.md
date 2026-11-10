@@ -5300,9 +5300,15 @@ de `<main>` qui suit le hero est identique à l'octet (264 402 octets), le pied 
   écran (section à part, sous le hero). Aucune section ne disparaît dans ce lot :
   `SECTIONS_LANDING` (verify-site) et `SECTIONS` (landing-analytics) sont inchangés, les
   dix `data-landing-section` sont toujours là. Conséquence provisoire : « 900+ » figure
-  deux fois sur la page (premier écran, tuile « Médecins inscrits »), et la tuile
-  « 100 % Données hébergées en France » est encore là (décision du propriétaire : « Union
-  européenne » partout, à traiter avec cette section en phase 3).
+  quatre fois dans le HTML rendu (premier écran ; tuile « Médecins inscrits » de la
+  section En chiffres ; pastille « Déjà 900+ médecins nous font confiance » des tarifs ;
+  ligne « Sans engagement · Déjà 900+ médecins » sous le bouton du parcours), contre trois
+  sur `main`. La tuile « 100 % Données hébergées en France » est encore là (décision du
+  propriétaire : « Union européenne » partout, à traiter avec cette section en phase 3).
+  ⚠️ Le commentaire d'en-tête de `SocialProofSection.astro` (lignes 9 et 10) dit encore
+  que « 900+ » est « au-dessus du réel (789 profils) » : périmé depuis la confirmation du
+  propriétaire (908 comptes inscrits, 10 novembre 2026). Fichier non touché dans ce lot ;
+  à corriger quand la section sera reprise en phase 3.
 - **Mesure** : `data-landing-section="hero"`, `id="hero"` (gardé, bien que le plan ne
   prévoie pas d'identifiant), `data-track="cta_signup_hero"` sur le lien d'inscription,
   `data-track="cta_simulator"` sur le lien vers `/simulateur`. Mêmes valeurs que l'ancien
@@ -5311,7 +5317,9 @@ de `<main>` qui suit le hero est identique à l'octet (264 402 octets), le pied 
 - **H1** : une seule balise, deux lignes dessinées, un deux-points entre elles qui n'est
   pas dessiné mais qui est dans le texte. Texte lu par un moteur ou un lecteur d'écran :
   « Logiciel de gestion pour médecin remplaçant : Sors la tête de l'eau » (nom accessible
-  vérifié dans l'arbre d'accessibilité de Chromium).
+  lu dans l'arbre d'accessibilité de Chromium, à 390 et 1 440 px : une seule espace de
+  chaque côté du deux-points, identique au `textContent`). Le séparateur était d'abord
+  écrit avec une espace insécable : Chromium en exposait deux avant le deux-points.
 - **Image** : le fichier fourni par le propriétaire (`2.webp`, 1 254 × 1 254 px) rogné au
   ras du personnage, 1 171 × 1 229 px, enregistré en WebP sans perte (737 828 octets, jamais
   servi). ⚠️ Le fichier fourni n'est pas sans perte : c'est un WebP VP8 avec perte
@@ -5340,6 +5348,41 @@ de `<main>` qui suit le hero est identique à l'octet (264 402 octets), le pied 
   `prefers-reduced-motion: no-preference` : mouvement réduit demandé, 0 animation dans le
   premier écran (vérifié), chaque élément à sa place finale. Aucune animation liée au
   défilement.
+- **Pause du décor (WCAG 2.2.2, RGAA 13.8), ajoutée après relecture, absente de la
+  maquette : à confirmer par le propriétaire.** Sept animations tournent sans fin (les
+  quatre vagues, le balancement de la mascotte, les deux fiches ou la pastille). Il faut
+  un moyen de les arrêter dans la page, le réglage du système ne suffit pas. Un bouton
+  rond de 44 px, en bas à gauche de la scène, sur l'eau : c'est une case à cocher
+  (`<input type="checkbox" class="pause">`, nom accessible « Mettre le décor animé en
+  pause »), **sans JS** : cochée, elle met `animation-play-state: paused` sur tout ce qui
+  la suit dans la scène. Vérifié à 1 440 px : 7 animations en cours avant, 0 après un clic
+  (les 9 du premier écran en pause), 7 à nouveau après un appui sur Espace ; à 390 px :
+  6, puis 0 (8 en pause), puis 6. Elle vient après
+  les deux boutons dans l'ordre de tabulation ; anneau de focus blanc de 3 px. Masquée
+  quand le visiteur a demandé moins d'animations (rien ne bouge). L'état n'est pas
+  retenu d'une visite à l'autre. Les deux autres voies étaient d'arrêter tout mouvement
+  au bout de 5 secondes (le décor validé perd son eau qui bouge) ou de consigner un écart
+  accepté (décision qui revient au propriétaire). Si le bouton est refusé : retirer
+  l'`<input>` et le bloc `.pause` de `Hero.astro`, et inscrire l'écart ici.
+- **Coupures de lignes indépendantes de la police (après relecture).** Tant que le woff2
+  n'est pas arrivé, le repli (Arial ajusté) a d'autres largeurs de mots : le texte
+  d'accroche tenait sur 3 lignes en repli et 4 avec la police de 392 à 399 px de large
+  (les boutons et la scène descendaient de 26 px, CLS 0,0265 à 393 px), sur 2 contre 3
+  de 1 129 à 1 151 px, et le titre, le mot-clé, la ligne fine et les boutons avaient
+  chacun leur plage. Chaque bascule se fait maintenant à un seuil écrit :
+  - mot-clé : deux lignes sous 375 px (`max-width: 14em`), une ensuite ;
+  - titre : la coupe est portée par une des deux espaces, chacune dans un `<span>` que la
+    feuille passe en bloc : après « la » sous 600 px, après « tête » de 600 à 899 px, une
+    ligne à partir de 900 px ;
+  - accroche : largeur par paliers (296 px sous 360 px d'écran, 330 px jusqu'à 405, 366
+    jusqu'à 439, 401 jusqu'à 567, 528 ensuite, 530 à partir de 1 180 px où le corps passe
+    de 17,5 à 21 px), chacun au milieu d'une plage où les deux polices coupent aux mêmes
+    mots ; « reste vraiment » liés par une espace insécable (plus de « vraiment » seul
+    sur la dernière ligne à 359, 390, 393 et 540 px) ;
+  - boutons : empilés sous 620 px, côte à côte ensuite ; ligne fine : deux lignes sous
+    620 px, une ensuite.
+  ⚠️ Après toute retouche d'un texte ou d'un corps du premier écran, refaire le balayage
+  repli contre police (woff2 bloqué, puis chargé, largeur par largeur de 320 à 1 600 px).
 - **Piège Tailwind, encore** : il lit aussi le `<style>` des `.astro`. Le raccourci
   d'équilibrage des lignes et la courbe d'animation nommée « entrée et sortie » sont des
   noms de classes Tailwind : écrits tels quels, ils ajoutaient trois règles à la feuille
@@ -5351,11 +5394,11 @@ de `<main>` qui suit le hero est identique à l'octet (264 402 octets), le pied 
 Visibles et lus :
 
 - H1, première ligne : « Logiciel de gestion pour médecin remplaçant »
-- H1, séparateur non dessiné : espace insécable, deux-points, espace
+- H1, séparateur non dessiné : espace, deux-points, espace
 - H1, seconde ligne : « Sors la tête de l’eau » (espace insécable entre « de » et « l’eau »)
 - Paragraphe : « URSSAF, CARMF, impôts : Hippodoc calcule tout après chaque journée de
   remplacement, et te montre ce qu’il te reste vraiment » (sans point final, comme la
-  maquette ; espace insécable avant le deux-points)
+  maquette ; espace insécable avant le deux-points et entre « reste » et « vraiment »)
 - Bouton principal : « Essayer 30 jours gratuitement »
 - Bouton secondaire : « Simuler mon Super-Net »
 - Ligne fine : « Sans carte bancaire. Créé par un médecin remplaçant. Déjà 900+ médecins
@@ -5364,6 +5407,7 @@ Visibles et lus :
   bancaire » figure déjà dans la FAQ de l'accueil.
 - Texte alternatif de l'image : « La mascotte Hippodoc, un hippopotame bleu à lunettes en
   blouse blanche, la tête et les épaules hors de l’eau »
+- Nom accessible du bouton de pause (non affiché) : « Mettre le décor animé en pause »
 
 Décor, présent dans le HTML mais masqué aux lecteurs d'écran (`aria-hidden`), sans balise
 de titre, chiffres de démonstration fictifs (décision du propriétaire : pas de mention
@@ -5400,14 +5444,50 @@ Le `title` et la description de la page ne changent pas (prévu en phase 4c).
 
 - Fiches décoratives : `<div>` à la place des `<h3>` (pas de titre dans un décor masqué).
 - Sous 360 px de large : mot-clé à 14,5 px, titre à 44 px (50 sur la maquette),
-  paragraphe à 16 px, boutons de 50 px de haut (54) avec 16 px de marge intérieure. Sans
-  cela, à la première visite sur un écran de 320 × 568 px, le second bouton passait sous la
-  bannière cookies (74 px de trop) et le premier bouton s'écrivait sur deux lignes.
-  La pastille Super-Net est décalée de 20 px vers la gauche : elle sortait de l'écran.
+  paragraphe à 16 px (17,5), boutons de 50 px de haut (54) avec 16 px de marge intérieure.
+  Sans cela, à la première visite sur un écran de 320 × 568 px, le second bouton passait
+  sous la bannière cookies (74 px de trop) et le premier bouton s'écrivait sur deux lignes.
+- Pastille Super-Net : à 56 px du centre comme sur la maquette, sauf sous 380 px de
+  large, où son bord droit reste à 5 px du bord de l'écran
+  (`margin-left: min(56px, 50vw - 134px)`). Sur la maquette elle sortait de l'écran sous
+  375 px ; le premier correctif ne couvrait ni 360 px (5 px dehors) ni 320 px.
 - Mot-clé : corps de 15 px à 375 px de large (15,5 sur la maquette). À 15,5 px il tenait
-  sur une ligne à 1 px près, et la police de repli le passait sur deux lignes.
-- De 900 à 991 px de large : corps du titre réduit (104,8 px à 900 px) pour qu'il tienne
-  sur sa ligne. Sur la maquette, il débordait de la fenêtre des deux côtés.
+  sur une ligne à 1 px près, et la police de repli le passait sur deux lignes. Sous
+  375 px : deux lignes, comme la maquette à 360 px.
+- Accroche : largeur par paliers (voir plus haut). À 390 px, quatre lignes et « reste
+  vraiment » en dernière ligne comme sur la maquette, mais « calcule » commence la
+  deuxième ligne au lieu de finir la première (paragraphe de 330 px au lieu de 350).
+  De 1 094 à 1 311 px, le corps ne grandit plus en continu : 17,5 px jusqu'à 1 179 px,
+  21 px ensuite. Identique à la maquette à 1 024 et à 1 440 px.
+- De 900 à 1 016 px de large : corps du titre réduit (102,1 px à 900 px) pour qu'il
+  tienne sur sa ligne, repli compris (au moins 21 px de marge). Sur la maquette, il
+  débordait de la fenêtre des deux côtés. Pas de `white-space: nowrap` sur le titre
+  (WCAG 1.4.12) : avec des espacements imposés par le visiteur, il était rogné des deux
+  côtés à partir de 900 px (de -221 à 1 245 px à 1 024 px) ; il passe maintenant sur deux
+  lignes. Même chose pour les deux boutons, dont le libellé peut passer sur deux lignes
+  quand le texte est grossi.
+- Ligne fine plus longue que sur la maquette (troisième phrase ajoutée) : deux lignes
+  pleines sur téléphone, 550 px de large au lieu de 374 sur ordinateur.
+- Raccord provisoire : la feuille blanche pleine largeur remplace la carte produit sur
+  fond bleu de la maquette. Le premier écran fait 972 px de haut à 390 px, contre 908 sur
+  la maquette (64 px de plus). Disparaît en phase 3.
+- Petits textes 3 à 5 % plus étroits que sur la maquette (police sans axe de taille
+  optique, 75 Ko économisés) : papiers (« Appel URSSAF » 93 px contre 98), mot-clé
+  (334 px contre 344 à 390 px), libellés des boutons (298 et 243 px contre 301 et 246).
+  À peine visible côte à côte ; le grand titre, lui, est au pixel. Pas de correctif.
+- Bouton de pause du décor, absent de la maquette (voir « Pause du décor »).
+- **Bannière cookies, sur l'accueil seulement (`da.css`), à confirmer par le
+  propriétaire** : à partir de 900 px elle se range en bas à gauche, en colonne (268 px
+  de large, texte puis les deux boutons de même taille côte à côte). Centrée, elle
+  tombait sur le visage de la mascotte à la première visite (les yeux à 1 024 × 768, le
+  museau à 1 440 × 900). Mêmes textes, mêmes boutons, même mécanique ; sous 900 px rien ne
+  change de place. Son texte est équilibré sur ses lignes (`text-wrap-style: balance`) :
+  à 360 px de large, « publicitaires » changeait de ligne à l'arrivée de la police et le
+  lien « En savoir plus » sautait de 69 px (CLS 0,0366). Le composant partagé
+  `ThirdPartyScripts.astro` n'est pas touché ; les autres pages gardent la bannière
+  centrée.
+- Contrastes forcés (Windows), `da.css` : contour de 2 px sur `.btn`. Sans lui, les
+  boutons de l'accueil (premier écran, pastille) n'étaient plus que des libellés nus.
 - La sortie de l'eau de la mascotte anime `translate` et son balancement `transform`.
   Avec deux animations de `transform`, comme sur la maquette, Chromium ne les confiait pas
   au processeur graphique (audit Lighthouse « non-composited-animations »).
@@ -5419,32 +5499,64 @@ Le `title` et la description de la page ne changent pas (prévu en phase 4c).
 - `dist` comparé à la référence (`main`) : seuls diffèrent `index.html` et, dans
   `_astro/`, le woff2, l'icône du logo, `index.*.css` et les huit fichiers du buste.
   Feuille globale identique à l'octet (`BaseLayout.CmJyzVOB.css`). `index.*.css` passe
-  de 18,5 à 28,2 Ko (4,4 → 6,3 Ko gzip) : les styles du premier écran, dont les quatre
-  vagues en SVG. `index.html` : 322,7 → 311,2 Ko.
+  de 18,5 à 30,5 Ko (4,4 → 6,7 Ko gzip ; 28,2 Ko avant les corrections de relecture) : les
+  styles du premier écran, dont les quatre vagues en SVG. `index.html` : 322,7 → 311,4 Ko.
+- `verify-site.mjs`, contrôle « 4 quater », trois gardes ajoutées sur l'accueil :
+  `data-track="cta_signup_hero"` et `data-track="cta_simulator"` présents dans la section
+  `data-landing-section="hero"`, et `imagesrcset` du préchargement égal au `srcset` du
+  `<source type="image/avif">`. Chacune échoue quand on casse le HTML (essayé).
 - Captures Chromium à 320, 390, 768, 1 024 et 1 440 px, côte à côte avec la maquette
   rendue avec sa vraie police ; plus 900, 1 180 et 1 920 px. Aucun défilement horizontal.
   Boutons à la même place qu'à la maquette à 390, 768, 1 024 et 1 440 px (3 px moins
   larges : la police sans `opsz` est un peu plus étroite à 17 px).
 - Première visite, bannière cookies affichée : les deux boutons sont au-dessus de la
-  bannière, avec 5 px de marge à 320 × 568, 77 px à 320 × 640, 46 px à 360 × 640, 71 px à
-  375 × 667, 63 px à 390 × 664, 243 px à 390 × 844. ⚠️ À 320 × 568, la marge n'est que de
-  5 px : sur un téléphone dont la barre du navigateur réduit encore la hauteur, le second
-  bouton passe sous la bannière.
+  bannière, avec 10 px de marge à 320 × 568, 32 px à 360 × 640 (le mot-clé y est sur deux
+  lignes), 68 px à 390 × 664, 248 px à 390 × 844. ⚠️ À 320 × 568, la marge n'est que de
+  10 px : sur un téléphone dont la barre du navigateur réduit encore la hauteur, le second
+  bouton passe sous la bannière. À partir de 900 px, la bannière (en bas à gauche, de 24 à
+  292 px) ne recouvre ni le texte, ni les boutons, ni le dessin de la mascotte à
+  900 × 700, 1 024 × 768, 1 366 × 650, 1 440 × 900 et 1 920 × 1 080 (captures regardées).
 - Élément LCP : du texte, pas l'image. Paragraphe d'accroche à 390 × 844, titre à
   1 440 × 900 et sous Lighthouse mobile. La mascotte commence sa sortie de l'eau en partie
   hors de l'écran : au premier rendu, sa surface visible est plus petite que le texte.
-- CLS : 0 à 390 et 1 440 px (avec et sans bannière). Police retardée de 2,5 s : 0,0086 à
-  390 px, 0,0008 à 1 440 px (lignes centrées qui se recalent, aucune hauteur ne change).
-  Police bloquée contre police chargée : mêmes hauteurs de mot-clé, titre, paragraphe,
-  boutons et ligne fine à 320, 360, 375, 390, 412, 768 et 1 440 px. Repli réel de la
-  machine : Liberation Sans. Android toujours non testé.
+- CLS : 0 à 390 et 1 440 px (avec et sans bannière) quand la police arrive à temps.
+  **Police retardée de 2 s, après les corrections de relecture** (14 tailles d'écran,
+  première visite et consentement donné, mêmes valeurs) : 0,0012 à 320 × 568 et
+  360 × 640, 0,0009 à 360 × 740 et 360 × 800, 0,0025 à 375 × 667, 0,0019 à 390 × 844,
+  0,0018 à 393 × 852 et 412 × 823, 0,0015 à 414 × 896, 0,0014 à 430 × 932, 0,0003 à
+  768 × 1 024, 0,0043 à 1 024 × 768 (le plus haut), 0,0033 à 1 280 × 720, 0,0021 à
+  1 440 × 900. Critère du plan : sous 0,02. Avant ces corrections : 0,0265 à 393 × 852
+  (l'accroche passait de 3 à 4 lignes) et 0,0366 à 360 × 640 (lien de la bannière) ; la
+  phrase « aucune hauteur ne change » de la première version de cette entrée était
+  fausse de 392 à 399 px.
+- **Balayage repli contre police**, largeur par largeur de 320 à 1 600 px (woff2 bloqué,
+  puis chargé) : mêmes coupures de lignes et mêmes hauteurs (à 1,5 px près) pour le
+  mot-clé, le titre, l'accroche, les boutons et la ligne fine, même position de la
+  scène : **0 largeur en écart, contre 277 avant** de 320 à 1 500 px (dont une ligne
+  d'écart sur l'accroche, 26 ou 27 px, de 392 à 399 px, de 542 à 552 px et de 1 129 à
+  1 151 px, et sur le mot-clé, 19 px, de 353 à 358 px ; le reste : des mots qui
+  changeaient de ligne sans changer la hauteur). Repli réel de la machine : Liberation Sans (mêmes
+  chasses qu'Arial). **Android non testé** : sans Arial, le repli est Roboto, sans
+  ajustement ; les paliers n'y garantissent rien.
+- Accessibilité, après relecture (Chromium) : espacements imposés (interlettrage
+  0,12 em, intermot 0,16 em, interligne 1,5) à 320, 390, 768, 900, 1 024 et 1 440 px,
+  aucun texte du premier écran ne sort de l'écran (titre de 92 à 932 px à 1 024 px, sur
+  deux lignes), aucun défilement horizontal. Texte seul grossi 2 fois à 390 px : titre
+  sur trois lignes de 5 à 385 px, libellés des boutons sur deux lignes dans leur bouton
+  (20 à 370 px). Contrastes forcés à 390 px : contour de 2 px sur les boutons, bouton de
+  pause lisible. Aucun défilement horizontal de 320 à 2 560 px.
 - Lighthouse mobile en local, 3 passages alternés, médianes avant → après : performance
   93 → 97 (92 à 94, puis 97 à 99), accessibilité 100 → 100, bonnes pratiques 96 → 96, SEO
   100 → 100, LCP 3,21 s → 2,42 s, TBT 13 → 43 ms, CLS 0 → 0, poids 493 → 275 Ko, requêtes
   27 → 19. Une première série, avant deux retouches de style, donnait 96 → 99, LCP 2,65 →
   2,12 s, TBT 44 → 33 ms : l'écart de TBT est du bruit de la machine, pas un effet du lot.
-- Clavier : lien d'évitement, en-tête, puis les deux boutons du premier écran ; anneau de
-  focus en encre, 3 px.
+  Après les corrections de relecture (Lighthouse 12.8.2, 3 passages alternés, avant →
+  après les corrections) : performance 97, 98, 97 → 97, 97, 99 ; accessibilité 100 → 100 ;
+  bonnes pratiques 96 → 96 ; SEO 100 → 100 ; LCP médian 2,43 s → 2,42 s ; TBT médian
+  39 → 49 ms (24 à 71) ; CLS 0 → 0 ; poids 275 → 276 Ko. Aucune animation non composée
+  dans le premier écran.
+- Clavier : lien d'évitement, en-tête, puis les deux boutons du premier écran (anneau de
+  focus en encre, 3 px), puis le bouton de pause (anneau blanc, 3 px).
 
 **Connu, à traiter (phase 2)**
 
@@ -5453,10 +5565,35 @@ Le `title` et la description de la page ne changent pas (prévu en phase 4c).
 - `text-wrap-style: balance` : Chrome 130, Firefox 124, Safari 17.5. Sur un navigateur plus
   ancien, le titre se coupe « Sors la tête / de l'eau » sur téléphone au lieu de « Sors la /
   tête de l'eau » : deux lignes dans les deux cas.
-- La bulle de chat, fixe en bas à droite, recouvre le papier « Échéance CARMF » sur
-  téléphone.
-- Entre 352 et 357 px de large (tailles rares), le mot-clé peut tenir sur une ligne avec
-  la police et passer sur deux avec le repli : un décalage de 19 px pendant le chargement.
+- La bulle de chat, fixe en bas à droite, recouvre le mot « CARMF » du papier « Échéance
+  CARMF » et le coin de la pastille Super-Net à 390 × 844 (selon la hauteur d'écran).
+  Laissé tel quel : c'est un décor masqué aux lecteurs d'écran, la bulle se déplace au
+  défilement, et décaler le papier vers la gauche le poserait sur la mascotte.
+- **Bannière cookies en bas à gauche et fiche de gauche** : de 1 180 à 1 700 px de large
+  environ, sur un écran de moins de 1 000 px de haut, la bannière recouvre une partie de
+  la fiche décorative « Avril 2026 » jusqu'au choix du visiteur (presque toute la fiche à
+  1 180 × 800, son coin bas gauche à 1 440 × 900). Le visage de la mascotte et la fiche
+  Super-Net restent dégagés. À trancher avec le propriétaire, comme le déplacement
+  lui-même.
+- **LCP sur une bande étroite de hauteurs de téléphone** (vu à 360 × 740, police retardée
+  de 2 s) : la mascotte commence sa sortie de l'eau entièrement sous le bas de l'écran,
+  Chrome ne la compte pas au premier affichage, puis la compte quand la police arrive
+  (entrées LCP : accroche à 300 ms, image à 2 084 ms). Sans retard de police : accroche
+  seule, à 220 ms. Le changement de police ne déplace plus rien (CLS 0,0009), mais il
+  repeint. Réduire le décalage de départ (58 %) ne ferait que déplacer la bande vers
+  d'autres hauteurs (360 × 640 au lieu de 360 × 740) : laissé tel quel.
+- **`title` et description sans rapport avec le H1 jusqu'à la phase 4c** : après la
+  bascule (4a), le `title` (« Cockpit financier des médecins ») et la description
+  (« remplaçants, installés, collaborateurs ou salariés ») ne correspondront plus au H1 ni
+  à la décision 1 du propriétaire ; « cockpit financier » n'est plus dans le corps de la
+  page que dans le pied (1 occurrence, 2 sur `main`). Écart assumé pendant la fenêtre
+  d'observation. Risque : Google peut réécrire le titre affiché dans ses résultats. À
+  surveiller dans la Search Console après la bascule.
+- **Fil principal au repos sur ordinateur** (relevé d'un relecteur, cause non trouvée) :
+  241 recalculs de style et 1 205 peintures en 4 s à 1 440 × 900, contre 62 et 310 en
+  phase 1. Les animations du premier écran n'y sont pour rien (1 recalcul, 0 peinture
+  quand elles tournent seules) : le travail vient des anciennes sections (animations
+  `shimmer`). À revérifier quand la phase 3 les remplace.
 - Les fichiers `public/lovable-uploads/hero-*` ne sont plus utilisés par l'accueil :
   suppression prévue en phase 6, après un grep.
 

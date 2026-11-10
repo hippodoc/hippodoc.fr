@@ -148,6 +148,9 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .btn-white, :where(.da) .btn-line { background: var(--paper); color: var(--ink); box-shadow: 0 5px 0 var(--edge); }
 :where(.da) .btn-white:hover, :where(.da) .btn-line:hover { background: var(--sky-soft); }
 :where(.da) .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 5px 0 var(--edge); }
+/* Contrastes forcés (Windows) : le navigateur retire le fond et l'ombre, il ne
+   restait qu'un libellé nu. Un contour rend sa forme au bouton. */
+@media (forced-colors: active) { :where(.da) .btn { border: 2px solid ButtonText; } }
 
 /* Le Super-Net : toujours sur du jaune */
 :where(.da) .hl { display: inline-block; padding: 0 0.2em; margin-left: -0.2em; border-radius: 0.28em; background: var(--sun); }
@@ -315,6 +318,10 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
    il est réservé à ce qu'il te reste. */
 .da #cookie-banner { border: 0; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); font-family: var(--text); font-weight: var(--tw); -webkit-backdrop-filter: none; backdrop-filter: none; }
 .da #cookie-banner p { color: var(--ink-2); }
+/* Lignes équilibrées : à 360 px de large, la première ligne tenait à 1 px près
+   avec la police de repli et pas avec la police du site. « publicitaires »
+   changeait de ligne à l'arrivée du woff2 et le lien sautait de 69 px. */
+.da #cookie-banner p span { text-wrap-style: balance; }
 .da #cookie-banner p svg, .da #cookie-banner a { color: var(--brand); }
 .da #cookie-banner [data-cookie-action] { border: 0; border-radius: var(--r-pill); background-image: none; font-weight: var(--tb); }
 .da #cookie-banner [data-cookie-action]:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
@@ -322,6 +329,14 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 .da #cookie-banner [data-cookie-action="essential"]:hover { background-color: var(--sky-soft); }
 .da #cookie-banner [data-cookie-action="accept"] { background-color: var(--ink); color: var(--paper); }
 .da #cookie-banner [data-cookie-action="accept"]:hover { background-color: #0C1838; }
+/* À partir de 900 px, la bannière se range en bas à gauche, en colonne : au
+   centre, elle tombait sur le visage de la mascotte du premier écran. Mêmes
+   textes, mêmes boutons, de même taille l'un que l'autre. */
+@media (min-width: 900px) {
+  .da #cookie-banner { left: 24px; right: auto; width: 268px; margin: 0; }
+  .da #cookie-banner > div { flex-direction: column; align-items: stretch; gap: 12px; }
+  .da #cookie-banner > div > div { display: grid; }
+}
 /* L'anneau blanc détache la bulle du pied, lui aussi bleu nuit. */
 .da #crisp-launcher { background-color: var(--ink); background-image: none; color: var(--paper); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 10px 22px -10px rgba(9, 20, 52, 0.6); }
 /* La bulle est fixe : elle passe au-dessus du clair comme de l'eau profonde.

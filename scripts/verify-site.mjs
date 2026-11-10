@@ -293,6 +293,23 @@ for (const [balise] of accueil.matchAll(/<a\b[^>]*auth\?tab=signup[^>]*>/g)) {
     fail(`accueil : un CTA d'inscription sans data-track — le clic ne sera pas attribué (${balise.slice(0, 80)})`);
   }
 }
+// Premier écran (DA 2026, phase 2) : ses deux conversions gardent leur identifiant,
+// sinon les séries PostHog `cta_signup_hero` et `cta_simulator` s'arrêtent sans bruit.
+const premierEcran = accueil.match(/<section\b[^>]*data-landing-section="hero"[\s\S]*?<\/section>/)?.[0] ?? '';
+for (const mesure of ['cta_signup_hero', 'cta_simulator']) {
+  if (!premierEcran.includes(`data-track="${mesure}"`)) {
+    fail(`accueil : data-track="${mesure}" absent du premier écran — sa série PostHog s'arrête`);
+  }
+}
+// Le préchargement du buste et le <picture> doivent demander les mêmes fichiers :
+// sinon le navigateur précharge une image puis en affiche une autre.
+const srcsetPrecharge = accueil.match(/<link\b[^>]*rel="preload"[^>]*imagesrcset="([^"]+)"/)?.[1];
+const srcsetAvif = premierEcran.match(/<source\b[^>]*type="image\/avif"[^>]*srcset="([^"]+)"/)?.[1];
+if (!srcsetPrecharge || !srcsetAvif) {
+  fail('accueil : préchargement du buste (imagesrcset) ou <source type="image/avif"> du premier écran introuvable');
+} else if (srcsetPrecharge !== srcsetAvif) {
+  fail('accueil : le préchargement du buste (imagesrcset) ne correspond plus au srcset AVIF du <picture>');
+}
 
 /* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).
    L'accueil est servie par src/components/da/HeaderDA.astro et FooterDA.astro,
