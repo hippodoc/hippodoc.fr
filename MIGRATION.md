@@ -5102,7 +5102,8 @@ Premier lot de la nouvelle direction artistique (« le monde d'Hippodoc » : cie
 tout en rond, jaune réservé à « ce qu'il te reste »). **Branche longue** : rien n'entre
 dans `main` avant la bascule de l'accueil. Ce lot pose la police, les jetons, l'en-tête
 et le pied, **sur l'accueil seule** ; les dix sections actuelles de `/` restent en place
-et aucune autre page ne change d'un octet.
+et aucune autre page ne change d'un octet. (La phase 2, plus bas dans cette même entrée,
+remplace la première des dix.)
 
 - **Police** : Google Sans Flex, un seul fichier auto-hébergé,
   `src/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2`, **41 936 octets**.
@@ -5249,11 +5250,12 @@ et aucune autre page ne change d'un octet.
 - **Grands titres sans `opsz`** : à 116 px, « Sors la tête de l'eau » fait 1 014 px de
   large, contre 933 px avec la taille optique automatique de la maquette (+8,7 % ; +3,6 %
   à 58 px). À trancher en phase 2 : interlettrage plus serré sur les titres, ou axe `opsz`
-  (+75 Ko).
+  (+75 Ko). **Tranché en phase 2 pour le titre du premier écran : interlettrage.** Reste à
+  faire pour les `h2` (58 px au plus, +3,6 %) quand leurs sections arrivent.
 - **Repli de police et grand titre** : le réglage des graisses 600 à 800 est une moyenne.
   Le titre de la phase 2 (50 à 116 px, graisse 720) est à mesurer police bloquée avant
   validation. Sur Android, ni Arial ni police aux mêmes métriques : le repli est la police
-  du système, sans ajustement (non testé).
+  du système, sans ajustement (non testé). **Mesuré en phase 2**, voir plus bas.
 - **Clavier, hérité de `Header.astro`** (même comportement sur `main`, la copie le
   reprend) : le menu Ressources n'a ni `aria-expanded` ni fermeture par Échap ; le tiroir
   mobile ne se ferme pas par Échap, ne retient pas le focus (après « Essai gratuit 30j »,
@@ -5269,7 +5271,7 @@ et aucune autre page ne change d'un octet.
   en phase 3, avec une entrée dans `ECARTS_ENTETE_PIED_DA`.
 - **Aperçu de transition** : la pastille blanche se détache peu du fond presque blanc de
   l'ancien hero (`#F0F7FF`), et `theme-color` (`#C9DEFF`, le ciel) ne correspond pas encore
-  au haut de page. Les deux se règlent avec le hero de la phase 2.
+  au haut de page. Les deux se règlent avec le hero de la phase 2. **Réglé en phase 2.**
 - **CLAUDE.md n'est pas mis à jour** (prévu en phase 4a) : l'invariant « zéro JS client »
   ne cite que le micro-script de `Header.astro`, alors que `HeaderDA.astro` porte le même,
   et rien n'y signale la double maintenance. Le contrôle « 4 quater bis » en tient lieu
@@ -5279,6 +5281,184 @@ et aucune autre page ne change d'un octet.
   plus en clair (vu en capture Chromium). À regarder sur un vrai téléphone.
 - `HeaderDA` et `FooterDA` doublent `Header.astro` et `Footer.astro` jusqu'à la phase 5a :
   toute modification de l'un se reporte sur l'autre.
+
+#### Phase 2 : premier écran (10 novembre 2026)
+
+Le hero de l'accueil (`src/components/home/HeroSection.astro`) est remplacé par le premier
+écran de la maquette validée : `src/components/accueil/Hero.astro`, styles dans un
+`<style>` scopé, **zéro JS**. Les neuf autres sections de `/` ne bougent pas : la partie
+de `<main>` qui suit le hero est identique à l'octet (264 402 octets), le pied aussi.
+
+- **Fichiers créés** : `src/components/accueil/Hero.astro`,
+  `src/components/accueil/buste.ts` (fabrique des images du buste, partagée entre le
+  `<picture>` et le préchargement), `src/assets/accueil/mascotte-buste.webp`.
+- **Fichier modifié** : `src/pages/index.astro` (import, préchargement, en-tête en
+  variante `flottante`). `HeroSection.astro` n'est plus importé mais **reste dans le
+  dépôt** jusqu'à la phase 4a : Tailwind le lit encore, et le supprimer changerait la
+  feuille globale, donc le HTML de toutes les pages.
+- **Section « En chiffres » (`social-proof`) conservée.** Elle n'est pas dans le premier
+  écran (section à part, sous le hero). Aucune section ne disparaît dans ce lot :
+  `SECTIONS_LANDING` (verify-site) et `SECTIONS` (landing-analytics) sont inchangés, les
+  dix `data-landing-section` sont toujours là. Conséquence provisoire : « 900+ » figure
+  deux fois sur la page (premier écran, tuile « Médecins inscrits »), et la tuile
+  « 100 % Données hébergées en France » est encore là (décision du propriétaire : « Union
+  européenne » partout, à traiter avec cette section en phase 3).
+- **Mesure** : `data-landing-section="hero"`, `id="hero"` (gardé, bien que le plan ne
+  prévoie pas d'identifiant), `data-track="cta_signup_hero"` sur le lien d'inscription,
+  `data-track="cta_simulator"` sur le lien vers `/simulateur`. Mêmes valeurs que l'ancien
+  hero : les séries PostHog continuent. Le libellé des deux boutons change (voir les
+  textes), pas leur identifiant.
+- **H1** : une seule balise, deux lignes dessinées, un deux-points entre elles qui n'est
+  pas dessiné mais qui est dans le texte. Texte lu par un moteur ou un lecteur d'écran :
+  « Logiciel de gestion pour médecin remplaçant : Sors la tête de l'eau » (nom accessible
+  vérifié dans l'arbre d'accessibilité de Chromium).
+- **Image** : le fichier fourni par le propriétaire (`2.webp`, 1 254 × 1 254 px) rogné au
+  ras du personnage, 1 171 × 1 229 px, enregistré en WebP sans perte (737 828 octets, jamais
+  servi). ⚠️ Le fichier fourni n'est pas sans perte : c'est un WebP VP8 avec perte
+  (173 420 octets). Le rognage n'ajoute aucune perte, mais la source en porte déjà une.
+  Servi par `astro:assets` en AVIF et WebP, largeurs 262, 440, 524 et 880 px (6,8 / 12,4 /
+  15,2 / 28,8 Ko en AVIF ; 12,2 / 23,7 / 30,1 / 62,8 Ko en WebP),
+  `sizes="(min-width: 900px) 440px, 262px"`, `fetchpriority="high"`. Préchargement
+  `imagesrcset` en AVIF dans `<head>`, sans `href` ; l'ancien préchargement
+  (`hero-dashboard-4-*.avif`) est retiré. Vérifié : une seule requête d'image pour le
+  buste (880 px en densité 3 à 390 px, 440 px en densité 1 à 1 440 px, 880 px en densité 2).
+  Bords de l'AVIF regardés sur le soleil à la densité 2 : pas de liseré (PSNR de l'alpha
+  50,7 dB, de la couleur 39,0 dB contre la source réduite).
+- **Grand titre sans `opsz`** : interlettrage resserré en fonction du corps, graisse
+  inchangée (720). Mesuré contre la police complète : il faut -2,30 px à 50 px, -3,69 px à
+  70 px, -7,94 px à 116 px (de -0,046 em à -0,068 em, contre -0,035 em sur la maquette).
+  La feuille l'écrit avec deux droites (`min()` de deux `calc()` sur le corps). Largeur du
+  titre, maquette rendue avec sa police → accueil : 285,5 → 285,4 px à 390 px ; 491,4 →
+  490,3 px à 768 px ; 932,9 → 933,0 px à 1 024 et 1 440 px.
+- **Raccord avec l'ancienne section qui suit** (prop `raccord` de `Hero.astro`) : la
+  dernière vague se prolonge par 64 px d'eau de sa couleur (`--deep`), sur lesquels se pose
+  le haut arrondi (40 px) d'une feuille blanche, le motif des sections claires de la
+  maquette. La section « En chiffres » commence en blanc pur : pas de couture. À retirer
+  quand le bloc « Sous la surface » suivra le premier écran.
+- **Mouvement** : lever du soleil, dérive des quatre couches d'eau, sortie de l'eau puis
+  balancement de la mascotte, flottement des fiches et de la pastille. Tout est sous
+  `prefers-reduced-motion: no-preference` : mouvement réduit demandé, 0 animation dans le
+  premier écran (vérifié), chaque élément à sa place finale. Aucune animation liée au
+  défilement.
+- **Piège Tailwind, encore** : il lit aussi le `<style>` des `.astro`. Le raccourci
+  d'équilibrage des lignes et la courbe d'animation nommée « entrée et sortie » sont des
+  noms de classes Tailwind : écrits tels quels, ils ajoutaient trois règles à la feuille
+  globale (+153 octets, nouvelle empreinte, HTML des 70 pages modifié). Remplacés par
+  `text-wrap-style` et par `cubic-bezier(0.42, 0, 0.58, 1)`.
+
+**Textes nouveaux du premier écran (mot pour mot)**
+
+Visibles et lus :
+
+- H1, première ligne : « Logiciel de gestion pour médecin remplaçant »
+- H1, séparateur non dessiné : espace insécable, deux-points, espace
+- H1, seconde ligne : « Sors la tête de l’eau » (espace insécable entre « de » et « l’eau »)
+- Paragraphe : « URSSAF, CARMF, impôts : Hippodoc calcule tout après chaque journée de
+  remplacement, et te montre ce qu’il te reste vraiment » (sans point final, comme la
+  maquette ; espace insécable avant le deux-points)
+- Bouton principal : « Essayer 30 jours gratuitement »
+- Bouton secondaire : « Simuler mon Super-Net »
+- Ligne fine : « Sans carte bancaire. Créé par un médecin remplaçant. Déjà 900+ médecins
+  inscrits. » La troisième phrase n'est pas dans la maquette : ajoutée à la demande du
+  propriétaire (908 comptes inscrits confirmés le 10 novembre 2026). « Sans carte
+  bancaire » figure déjà dans la FAQ de l'accueil.
+- Texte alternatif de l'image : « La mascotte Hippodoc, un hippopotame bleu à lunettes en
+  blouse blanche, la tête et les épaules hors de l’eau »
+
+Décor, présent dans le HTML mais masqué aux lecteurs d'écran (`aria-hidden`), sans balise
+de titre, chiffres de démonstration fictifs (décision du propriétaire : pas de mention
+« fictif » ou « exemple » sur ces fiches) :
+
+- Papiers : « Appel URSSAF », « Échéance CARMF », « Déclaration 2035 », « DSFU » (les deux
+  derniers à partir de 900 px)
+- Pastille (sous 1 180 px) : « Super-Net », « 59 543 € »
+- Fiche de gauche (à partir de 1 180 px) : « Avril 2026 » ; « lun. 13 · Valérie J. »,
+  « 1 955 € » ; « mer. 15 · Dujardin S. », « 2 625 € » ; « lun. 20 · Cabinet M. »,
+  « ~1 200 € »
+- Fiche de droite (à partir de 1 180 px) : « Année 2025 » ; « Encaissé », « 90 005 € » ;
+  « URSSAF, CARMF, impôts », « − 30 462 € » ; « Super-Net », « 59 543 € »
+
+**Textes retirés avec l'ancien hero**
+
+- Pastille « Plus de 900 médecins nous font confiance »
+- H1 « Ton activité médicale, sous contrôle. »
+- « Le cockpit financier des médecins qui calcule tout pour toi. »
+- Boutons « Commencer l'essai gratuit » et « Simuler mes revenus gratuitement »
+- Pastilles « Essai gratuit 30j » (« Gratuit 30j » sur téléphone), « Toutes les
+  fonctionnalités », « Annulable à tout moment »
+- Cinq captures d'écran et leurs étiquettes (« Dashboard », « Calendrier »,
+  « Statistiques », « Par médecin », « Communauté »), avec leurs textes alternatifs
+- Bandeau « Soutenu par » et ses huit logos défilants (Bpifrance, La French Care, Région
+  Île-de-France, Doctripper, AIMGL, SILR, CRP IMG, SIOI). La section « partners » plus bas
+  les porte toujours. Décision du propriétaire à appliquer en phase 3 : donner une vraie
+  place aux syndicats d'internes, près du premier écran ou du bloc fondateur.
+- H2 « Votre vrai revenu » et la ligne « clair · super-net · précis »
+
+Le `title` et la description de la page ne changent pas (prévu en phase 4c).
+
+**Écarts assumés par rapport à la maquette validée (phase 2)**
+
+- Fiches décoratives : `<div>` à la place des `<h3>` (pas de titre dans un décor masqué).
+- Sous 360 px de large : mot-clé à 14,5 px, titre à 44 px (50 sur la maquette),
+  paragraphe à 16 px, boutons de 50 px de haut (54) avec 16 px de marge intérieure. Sans
+  cela, à la première visite sur un écran de 320 × 568 px, le second bouton passait sous la
+  bannière cookies (74 px de trop) et le premier bouton s'écrivait sur deux lignes.
+  La pastille Super-Net est décalée de 20 px vers la gauche : elle sortait de l'écran.
+- Mot-clé : corps de 15 px à 375 px de large (15,5 sur la maquette). À 15,5 px il tenait
+  sur une ligne à 1 px près, et la police de repli le passait sur deux lignes.
+- De 900 à 991 px de large : corps du titre réduit (104,8 px à 900 px) pour qu'il tienne
+  sur sa ligne. Sur la maquette, il débordait de la fenêtre des deux côtés.
+- La sortie de l'eau de la mascotte anime `translate` et son balancement `transform`.
+  Avec deux animations de `transform`, comme sur la maquette, Chromium ne les confiait pas
+  au processeur graphique (audit Lighthouse « non-composited-animations »).
+- Lien du simulateur en chemin relatif (`/simulateur`), lien d'inscription vers `APP_URL`.
+
+**Vérifié (phase 2)**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, 0 erreur, 3 avertissements (inchangés).
+- `dist` comparé à la référence (`main`) : seuls diffèrent `index.html` et, dans
+  `_astro/`, le woff2, l'icône du logo, `index.*.css` et les huit fichiers du buste.
+  Feuille globale identique à l'octet (`BaseLayout.CmJyzVOB.css`). `index.*.css` passe
+  de 18,5 à 28,2 Ko (4,4 → 6,3 Ko gzip) : les styles du premier écran, dont les quatre
+  vagues en SVG. `index.html` : 322,7 → 311,2 Ko.
+- Captures Chromium à 320, 390, 768, 1 024 et 1 440 px, côte à côte avec la maquette
+  rendue avec sa vraie police ; plus 900, 1 180 et 1 920 px. Aucun défilement horizontal.
+  Boutons à la même place qu'à la maquette à 390, 768, 1 024 et 1 440 px (3 px moins
+  larges : la police sans `opsz` est un peu plus étroite à 17 px).
+- Première visite, bannière cookies affichée : les deux boutons sont au-dessus de la
+  bannière, avec 5 px de marge à 320 × 568, 77 px à 320 × 640, 46 px à 360 × 640, 71 px à
+  375 × 667, 63 px à 390 × 664, 243 px à 390 × 844. ⚠️ À 320 × 568, la marge n'est que de
+  5 px : sur un téléphone dont la barre du navigateur réduit encore la hauteur, le second
+  bouton passe sous la bannière.
+- Élément LCP : du texte, pas l'image. Paragraphe d'accroche à 390 × 844, titre à
+  1 440 × 900 et sous Lighthouse mobile. La mascotte commence sa sortie de l'eau en partie
+  hors de l'écran : au premier rendu, sa surface visible est plus petite que le texte.
+- CLS : 0 à 390 et 1 440 px (avec et sans bannière). Police retardée de 2,5 s : 0,0086 à
+  390 px, 0,0008 à 1 440 px (lignes centrées qui se recalent, aucune hauteur ne change).
+  Police bloquée contre police chargée : mêmes hauteurs de mot-clé, titre, paragraphe,
+  boutons et ligne fine à 320, 360, 375, 390, 412, 768 et 1 440 px. Repli réel de la
+  machine : Liberation Sans. Android toujours non testé.
+- Lighthouse mobile en local, 3 passages alternés, médianes avant → après : performance
+  93 → 97 (92 à 94, puis 97 à 99), accessibilité 100 → 100, bonnes pratiques 96 → 96, SEO
+  100 → 100, LCP 3,21 s → 2,42 s, TBT 13 → 43 ms, CLS 0 → 0, poids 493 → 275 Ko, requêtes
+  27 → 19. Une première série, avant deux retouches de style, donnait 96 → 99, LCP 2,65 →
+  2,12 s, TBT 44 → 33 ms : l'écart de TBT est du bruit de la machine, pas un effet du lot.
+- Clavier : lien d'évitement, en-tête, puis les deux boutons du premier écran ; anneau de
+  focus en encre, 3 px.
+
+**Connu, à traiter (phase 2)**
+
+- **WebKit et Firefox non testés** (moteurs absents de la machine). À regarder sur Safari :
+  la pastille floutée au-dessus de l'eau qui bouge, à partir de 900 px (§ 9.dn).
+- `text-wrap-style: balance` : Chrome 130, Firefox 124, Safari 17.5. Sur un navigateur plus
+  ancien, le titre se coupe « Sors la tête / de l'eau » sur téléphone au lieu de « Sors la /
+  tête de l'eau » : deux lignes dans les deux cas.
+- La bulle de chat, fixe en bas à droite, recouvre le papier « Échéance CARMF » sur
+  téléphone.
+- Entre 352 et 357 px de large (tailles rares), le mot-clé peut tenir sur une ligne avec
+  la police et passer sur deux avec le repli : un décalage de 19 px pendant le chargement.
+- Les fichiers `public/lovable-uploads/hero-*` ne sont plus utilisés par l'accueil :
+  suppression prévue en phase 6, après un grep.
 
 ## 10. TODO(owner) — faits manquants / décisions
 

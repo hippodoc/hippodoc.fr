@@ -19,7 +19,9 @@ import policeDA from '@/assets/fonts/google-sans-flex-latin-wght400-800-rond100.
 import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
-import HeroSection from '@/components/home/HeroSection.astro';
+// DA 2026, phase 2 : le premier écran. Les sections suivantes sont encore les anciennes.
+import Hero from '@/components/accueil/Hero.astro';
+import { imagesBuste } from '@/components/accueil/buste';
 import SocialProofSection from '@/components/home/SocialProofSection.astro';
 import PresentationVideoSection from '@/components/home/PresentationVideoSection.astro';
 import FeaturesSection from '@/components/home/FeaturesSection.astro';
@@ -29,6 +31,9 @@ import TestimonialsSection from '@/components/home/TestimonialsSection.astro';
 import PartnersSection from '@/components/home/PartnersSection.astro';
 import PricingSection from '@/components/home/PricingSection.astro';
 import FaqSection from '@/components/home/FaqSection.astro';
+
+// Mêmes fichiers que le <picture> de Hero.astro (même fabrique, mêmes URL).
+const buste = await imagesBuste();
 
 const title = 'Hippodoc — Cockpit financier des médecins | Super-Net';
 const description =
@@ -90,14 +95,15 @@ const videoSchema = {
     <link rel="preload" as="font" type="font/woff2" href={policeDA} crossorigin />
     <!-- Barre du navigateur mobile : le ciel de la DA (jeton sky-1). -->
     <meta name="theme-color" content="#C9DEFF" />
-    <!-- Préchargement de l'image LCP du Hero (AVIF) — mirroré depuis index.html de la source. -->
+    <!-- Préchargement du buste de la mascotte, l'image du premier écran. Pas de `href` :
+         un navigateur qui lit l'AVIF mais pas `imagesrcset` (Safari 16.4 à 17.1)
+         téléchargerait une largeur que le <picture> ne choisira peut-être pas. -->
     <link
       rel="preload"
       as="image"
       type="image/avif"
-      href="/lovable-uploads/hero-dashboard-4-960.avif"
-      imagesrcset="/lovable-uploads/hero-dashboard-4-640.avif 640w, /lovable-uploads/hero-dashboard-4-960.avif 960w, /lovable-uploads/hero-dashboard-4.avif 1920w"
-      imagesizes="(max-width: 768px) 100vw, 50vw"
+      imagesrcset={buste.avif.srcSet.attribute}
+      imagesizes={buste.sizes}
       fetchpriority="high"
     />
   </Fragment>
@@ -110,12 +116,12 @@ const videoSchema = {
   </a>
 
   <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white">
-    {/* Variante « flux » tant que le hero actuel est en place : il n'est pas
-        dessiné pour passer sous la pastille. « flottante » arrive avec le hero DA. */}
-    <HeaderDA variante="flux" />
+    {/* La pastille survole le ciel du premier écran, qui lui réserve le haut. */}
+    <HeaderDA variante="flottante" />
 
     <main id="contenu-principal" tabindex="-1" class="flex-1">
-      <HeroSection />
+      {/* `raccord` : tant que la section suivante est une ancienne section sur fond blanc. */}
+      <Hero raccord />
       <SocialProofSection />
       <PresentationVideoSection />
       <FeaturesSection />
