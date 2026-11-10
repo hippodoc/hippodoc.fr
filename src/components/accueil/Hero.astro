@@ -208,9 +208,9 @@ const buste = await imagesBuste();
   .w3::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
   .w4::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
   .hippo { position: absolute; left: 50%; bottom: 24px; display: block; width: 262px; max-width: none; height: auto; margin-left: -131px; }
-  .slip { position: absolute; bottom: 78px; padding: 8px 12px 20px; border-radius: 10px; background: var(--paper); color: var(--ink); font-size: 13.5px; font-weight: var(--tb); white-space: nowrap; box-shadow: 0 8px 14px -8px rgba(13, 40, 105, 0.45); }
+  .slip { position: absolute; bottom: 50px; padding: 8px 12px 38px; border-radius: 10px; background: var(--paper); color: var(--ink); font-size: 13.5px; font-weight: var(--tb); white-space: nowrap; box-shadow: 0 8px 14px -8px rgba(13, 40, 105, 0.45); }
   .slip.a { left: 14px; rotate: -7deg; }
-  .slip.b { right: 12px; bottom: 82px; rotate: 6deg; }
+  .slip.b { right: 12px; bottom: 46px; rotate: 6deg; }
   .slip.c, .slip.d { display: none; }
   .float { display: none; }
   /* À 56 px du centre, sauf si elle sortait de l'écran (sous 380 px de large) :
@@ -226,11 +226,11 @@ const buste = await imagesBuste();
     .w3 { height: 140px; }
     .w4 { height: 70px; }
     .hippo { width: 440px; margin-left: -220px; bottom: 30px; }
-    .slip { bottom: 112px; font-size: 15px; padding: 10px 14px 26px; border-radius: 12px; }
+    .slip { bottom: 76px; font-size: 15px; padding: 10px 14px 58px; border-radius: 12px; }
     .slip.a { left: 8%; }
-    .slip.b { right: 3%; bottom: 92px; }
-    .slip.c { display: block; left: 25%; bottom: 104px; rotate: 5deg; }
-    .slip.d { display: block; right: 25%; bottom: 108px; rotate: -6deg; }
+    .slip.b { right: 3%; bottom: 70px; }
+    .slip.c { display: block; left: 25%; bottom: 72px; rotate: 5deg; }
+    .slip.d { display: block; right: 25%; bottom: 74px; rotate: -6deg; }
     .tag { display: none; }
     .float { display: block; position: absolute; top: 150px; width: 296px; padding: 20px 22px; border-radius: 26px; background: var(--paper); text-align: left; box-shadow: var(--clay); }
     .float.l { right: calc(50% + 262px); rotate: -4deg; }
