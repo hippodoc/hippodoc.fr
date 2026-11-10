@@ -49,17 +49,19 @@ const extrait = [13, 15, 20].map(journee);
         entre elles n'est pas dessiné, mais il est dans le texte : un lecteur
         d'écran marque la pause, un moteur lit une phrase et non deux mots collés.
         Les deux espaces du titre sont dans des <span> : la feuille choisit
-        laquelle porte le retour à la ligne (voir `.e1`, `.e2`). */}
-    <h1><span class="kicker">Logiciel de gestion pour médecin remplaçant</span><span class="sr">{' : '}</span><span class="title">Sors la<span class="e1">{' '}</span>tête<span class="e2">{' '}</span>de&nbsp;l’eau</span></h1>
+        laquelle porte le retour à la ligne (voir `.e1`, `.e2`). Le dernier mot,
+        apostrophe comprise, est dans un <span> pour sa seule couleur (`.eau`). */}
+    <h1><span class="kicker">Logiciel de gestion pour médecin remplaçant</span><span class="sr">{' : '}</span><span class="title">Sors la<span class="e1">{' '}</span>tête<span class="e2">{' '}</span>de&nbsp;<span class="eau">l’eau</span></span></h1>
     <p class="pitch">URSSAF, CARMF, impôts&nbsp;: Hippodoc calcule tout après chaque journée de remplacement, et te montre ce qu’il te reste&nbsp;vraiment</p>
     <div class="cta">
       <a class="btn btn-brand" href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_hero">Essayer 30 jours gratuitement</a>
       <a class="btn btn-white" href="/simulateur" data-track="cta_simulator">Simuler mon Super-Net</a>
     </div>
-    {/* Trois phrases. Comme pour le titre, les coupes sont écrites : trois espaces
-        dans des <span>, et la feuille choisit lesquelles portent le retour à la
-        ligne (voir `.f1`, `.f2`, `.f3`). */}
-    <p class="fine">Rien n’est débité pendant l’essai.<span class="f1">{' '}</span>Créé par un<span class="f2">{' '}</span>médecin remplaçant.<span class="f3">{' '}</span>Déjà 900+ médecins inscrits.</p>
+    {/* Deux phrases (MIGRATION.md § 9.ec ; la mention de la carte bancaire reste
+        dans les tarifs et la FAQ). Comme pour le titre, la coupe est écrite :
+        l'espace entre les deux est dans un <span>, et la feuille décide si elle
+        porte le retour à la ligne (voir `.f1`). */}
+    <p class="fine">Créé par un médecin remplaçant.<span class="f1">{' '}</span>Déjà 900+ médecins inscrits.</p>
   </div>
 
   {/* La scène. L'ordre des éléments fait l'ordre des plans : soleil, deux vagues,
@@ -147,6 +149,12 @@ const extrait = [13, 15, 20].map(journee);
      maquette à 390 et à 768 px. Les autres espaces restent libres : si le
      visiteur grossit ou espace le texte, le titre passe sur trois lignes. */
   .title .e1 { display: block; }
+  /* « l’eau » prend le bleu de la vague du premier plan (MIGRATION.md § 9.ec) :
+     4,31:1 sur le haut du ciel, 5,04:1 sur son milieu, pour un texte de 44 px au
+     moins en graisse 720 (seuil des grands textes : 3:1). Seule la couleur
+     change : même police, même graisse, même interlettrage, mêmes coupes. Le
+     jaune reste réservé à « ce qu'il te reste ». */
+  .title .eau { color: var(--w4); }
   @media (min-width: 600px) {
     .title .e1 { display: inline; }
     .title .e2 { display: block; }
@@ -172,21 +180,17 @@ const extrait = [13, 15, 20].map(journee);
   .cta { display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .cta .btn { padding-block: 8px; text-align: center; }
   .fine { max-width: 30em; margin: 0; font-size: 14.5px; color: var(--ink-2); text-wrap-style: balance; }
-  /* Ligne fine : coupes écrites, comme le titre. Sous 380 px, une phrase par
-     ligne (trois lignes) ; de 380 à 699 px, deux lignes, coupées après « Créé
-     par un » ; une seule ligne à partir de 700 px. Sans cela, la police et le
-     repli ne coupaient pas à la même largeur (368 à 372 px, 688 px). */
-  .fine .f1, .fine .f3 { display: block; }
-  @media (min-width: 380px) {
-    .fine .f1, .fine .f3 { display: inline; }
-    .fine .f2 { display: block; }
+  /* Ligne fine : coupe écrite, comme le titre. Sous 480 px, une phrase par
+     ligne (deux lignes) ; une seule ligne à partir de 480 px. La ligne entière
+     fait 413 px avec la police et 409 px avec le repli, pour 434 px de place à
+     480 px d'écran : la bascule ne dépend pas de la police. */
+  .fine .f1 { display: block; }
+  @media (min-width: 480px) {
+    .fine .f1 { display: inline; }
   }
   @media (min-width: 620px) {
     .cta { flex-flow: row wrap; justify-content: center; }
     .fine { max-width: none; }
-  }
-  @media (min-width: 700px) {
-    .fine .f2 { display: inline; }
   }
   /* Petits téléphones (320 px de large) : à la première visite, la bannière
      cookies occupe le bas de l'écran. Tout est resserré pour que les deux
@@ -199,9 +203,6 @@ const extrait = [13, 15, 20].map(journee);
     .pitch { max-width: 296px; font-size: 16px; line-height: 1.45; }
     .cta { gap: 10px; }
     .cta .btn { min-height: 50px; padding-inline: 16px; font-size: 16.5px; }
-    /* Trois lignes ici : interligne resserré, pour que la dernière ne passe pas
-       sous la bulle de chat sur un écran de 568 px de haut. */
-    .fine { line-height: 1.35; }
   }
   @media (min-width: 900px) {
     .hero-copy { padding-top: 132px; gap: 22px; }

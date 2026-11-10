@@ -6,24 +6,30 @@
  *
  * - Mesure : `data-landing-section="guides"` et `id="guides"` (série nouvelle),
  *   un `data-ph="landing_guide_<nom>"` par lien pour l'autocapture.
- * - Choix des trois articles : ceux que la page ne lie pas déjà depuis une
- *   réponse de la FAQ ou depuis le pied, et qui répondent aux questions les
- *   plus posées par les remplaçants (remplacement régulier, appel de
- *   cotisations qui grimpe) et par les internes (licence de remplacement).
+ * - Choix des trois articles (MIGRATION.md § 9.ec, 10 novembre 2026) : par
+ *   l'audience mesurée, liste annoncée au propriétaire et validée par lui.
+ *   Visiteurs sur 90 jours (PostHog) : requalification 293, CARMF 48, impôts
+ *   des internes 35, licence de remplacement 28, effet ciseaux moins de 21.
+ *   La CARMF et les impôts des internes entrent (`landing_guide_carmf`,
+ *   `landing_guide_impots_internes`, séries nouvelles) ; l'effet ciseaux et
+ *   la licence sortent (`landing_guide_effet_ciseaux`, `landing_guide_licence`,
+ *   séries arrêtées). Les deux articles qui entrent sont déjà liés depuis
+ *   une réponse de la FAQ : assumé.
  * - Titres des articles : leur titre. Sous-titres : le début de leur
  *   description. Les trois outils gardent les textes de la maquette validée.
  * - La flèche est un dessin (la police n'a pas ce caractère).
  */
 import '@/styles/da.css';
 
-/* Espace insécable avant « : » et « ? » : pas de ponctuation seule en début de ligne. */
+/* Espace insécable avant « : » et « ? » : pas de ponctuation seule en début de ligne.
+   Après « + » aussi : le signe ne reste pas seul en fin de ligne. */
 const guides = [
   { ph: 'simulateur', href: '/simulateur', titre: 'Simulateur Super-Net', texte: 'Ton revenu après URSSAF, CARMF et impôts' },
   { ph: 'declarations', href: '/guide-declarations', titre: 'Guide des déclarations', texte: '2035, 2042-C PRO, DSFU\u00a0: quoi remplir, et où' },
   { ph: 'remplacant', href: '/guide', titre: 'Guide du remplaçant', texte: 'Le PDF 2026-2027' },
   { ph: 'requalification', href: '/blog/remplacement-regulier-requalification', titre: 'Remplacement régulier\u00a0: le risque de requalification', texte: 'Remplacer le même médecin chaque semaine peut être requalifié en collaboration.' },
-  { ph: 'effet_ciseaux', href: '/blog/effet-ciseaux-regularisation-urssaf-medecin', titre: "Régularisation URSSAF\u00a0: l'effet ciseaux expliqué", texte: 'Bonne année, puis appel de cotisations qui double\u00a0?' },
-  { ph: 'licence', href: '/blog/obtenir-sa-licence-de-remplacement', titre: 'Licence de remplacement interne\u00a0: dossier et délais', texte: 'Conditions, pièces du dossier, envoi au CDOM' },
+  { ph: 'carmf', href: '/blog/tout-comprendre-carmf', titre: 'CARMF\u00a0: cotisations 2026 du médecin remplaçant', texte: 'Affiliation dès le premier rempla, calcul sur ton revenu et non sur ton CA' },
+  { ph: 'impots_internes', href: '/blog/guide-impots-internes-remplacants', titre: 'Impôts 2026 des internes qui remplacent', texte: 'Interne ayant fait des remplas en 2025\u00a0? Salaire CHU +\u00a0rétrocessions BNC' },
 ];
 ---
 

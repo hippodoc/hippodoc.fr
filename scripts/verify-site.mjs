@@ -738,15 +738,36 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
 }
 
 /* 4 nonies. Le film de présentation ne doit rien télécharger avant le clic.
-   `preload="none"` est ce qui garantit qu'aucun octet du mp4 (hébergé chez
-   Supabase) ne part au chargement de la page — vérifié : 0 requête mp4 avant
-   interaction. Le passer à `metadata` ou `auto` déplacerait ce coût sur le LCP
-   de la landing, qui est la page de la campagne payante. */
+   `preload="none"` est ce qui garantit qu'aucun octet du mp4 (7 Mo, servi par
+   le site depuis public/, § 9.ec) ne part au chargement de la page — vérifié :
+   0 requête mp4 avant interaction. Le passer à `metadata` ou `auto` déplacerait
+   ce coût sur le LCP de la landing, qui est la page de la campagne payante. */
 const accueilVideo = readFileSync(resolve(dist, 'index.html'), 'utf8');
 const balise = accueilVideo.match(/<video\b[^>]*>/);
 if (!balise) fail("accueil : le film de présentation a disparu de la page");
 else if (!/preload="none"/.test(balise[0])) {
   fail(`accueil : le film n'est plus en preload="none" — la vidéo se téléchargerait avant le clic (${balise[0].slice(0, 90)})`);
+}
+/* Le film et son affiche sont des fichiers de public/ (§ 9.ec). Le contrôle des
+   liens (2) voit le `src` du <video>, pas les adresses du schéma VideoObject :
+   un fichier renommé d'un seul côté y laisserait une adresse en 404. */
+{
+  const srcFilm = balise?.[0].match(/\ssrc="([^"]+)"/)?.[1] ?? '';
+  let schemaFilm = null;
+  for (const [, bloc] of accueilVideo.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    try { const j = JSON.parse(bloc); if (j['@type'] === 'VideoObject') schemaFilm = j; } catch { /* JSON-LD invalide : signalé plus haut */ }
+  }
+  if (!schemaFilm) fail('accueil : schéma VideoObject absent');
+  else {
+    if (schemaFilm.contentUrl !== `${SITE}${srcFilm}`) {
+      fail(`accueil : VideoObject.contentUrl (${schemaFilm.contentUrl}) n'est pas l'adresse du <video> (${SITE}${srcFilm})`);
+    }
+    for (const vignette of [schemaFilm.thumbnailUrl].flat()) {
+      if (!String(vignette).startsWith(`${SITE}/`) || !fichiersServis.has(String(vignette).replace(SITE, ''))) {
+        fail(`accueil : VideoObject.thumbnailUrl (${vignette}) n'est pas un fichier servi par le site`);
+      }
+    }
+  }
 }
 
 /* 4 undecies. Le consentement se lit au MÊME endroit partout.
