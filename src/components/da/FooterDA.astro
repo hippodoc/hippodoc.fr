@@ -1,0 +1,90 @@
+---
+import '@/styles/da.css';
+
+/**
+ * Pied de la DA 2026 : l'eau profonde. Tout le contenu de Footer.astro, dans le
+ * même ordre (liens internes, liens légaux, « Préférences cookies », téléphone,
+ * e-mail, adresse, réseaux, logos des soutiens, `data-ph landing_footer_*`), à
+ * maintenir en double jusqu'à la phase 5a. Habillage dans src/styles/da.css
+ * (classes `ft-*`), sans classe Tailwind. Demande `bodyClass="da"` sur la page.
+ * Doit rester le premier <footer> du document : la mesure s'y accroche.
+ */
+const year = new Date().getFullYear();
+---
+
+<footer class="ft">
+  <div class="wrap ft-in">
+    <div>
+      <a href="/" data-ph="landing_footer_home" class="ft-logo">
+        <span class="logo-mark"><img src="/lovable-uploads/hippodoc-logo-96.webp" alt="" width="96" height="96" loading="lazy" /></span>
+        <span class="logo-word">Hippo<span>doc</span></span>
+      </a>
+
+      <p class="ft-tagline">Le cockpit financier des médecins.</p>
+      <div class="ft-social">
+        <a href="tel:+33756898961" data-ph="landing_footer_phone" aria-label="Téléphone">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </a>
+        <a href="mailto:contact@hippodoc.fr" data-ph="landing_footer_email" aria-label="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/company/hippodoc/" data-ph="landing_footer_linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61574895730373" data-ph="landing_footer_facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/hippodoc.fr/" data-ph="landing_footer_instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+      </div>
+
+      <div class="ft-backers">
+        <p>Ils soutiennent Hippodoc</p>
+        <div class="ft-backers-logos">
+          <img src="/lovable-uploads/french-care-160.webp" alt="La French Care" class="tall" loading="lazy" width="160" height="80" />
+          <img src="/lovable-uploads/bpi-112.webp" alt="Bpifrance" loading="lazy" width="112" height="56" />
+          <img src="/lovable-uploads/region-idf-112.webp" alt="Région Île-de-France" loading="lazy" width="112" height="56" />
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="ft-title">Contactez-nous</h3>
+      <ul class="ft-list">
+        <li><a href="tel:+33756898961">+33 (0)7 56 89 89 61</a></li>
+        <li><a href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a></li>
+        <li><span class="ft-text">60 rue François Ier, 75008 Paris</span></li>
+        <li><a href="https://www.linkedin.com/company/hippodoc/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://www.facebook.com/profile.php?id=61574895730373" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+        <li><a href="https://www.instagram.com/hippodoc.fr/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="ft-title">Informations</h3>
+      <ul class="ft-list cols">
+        <li><a href="/simulateur">Simulateur Super-Net</a></li>
+        <li><a href="/guide-declarations">Guide des déclarations</a></li>
+        <li><a href="/guide">Guide du remplaçant (PDF)</a></li>
+        <li><a href="/tarifs">Tarifs</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/comparatif">Comparatif outils</a></li>
+        <li class="ft-sub"><a href="/blog/regime-fiscal-micro-bnc-vs-reel">→ Micro-BNC vs Réel</a></li>
+        <li class="ft-sub"><a href="/blog/salaires-medecins-remplacants">→ Salaires remplaçants</a></li>
+        <li class="ft-sub"><a href="/blog/checklist-administrative-medecin-remplacant">→ Checklist administrative</a></li>
+        <li><a href="/qui-sommes-nous">Qui sommes-nous ?</a></li>
+        <li><a href="/rgpd">RGPD</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/conditions-utilisations">Conditions d'utilisation</a></li>
+        <li><a href="/politique-confidentialite">Politique de confidentialité</a></li>
+        <li><a href="/mentions-legales">Mentions légales</a></li>
+        <li><button type="button" data-cookie-prefs class="ft-prefs">Préférences cookies</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap ft-legal">
+    <p>© {year} Hippodoc. Tous droits réservés.</p>
+  </div>
+</footer>

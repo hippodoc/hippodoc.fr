@@ -1,0 +1,145 @@
+---
+import '@/styles/da.css';
+import { APP_URL } from '@/lib/site';
+
+/**
+ * En-tête de la DA 2026 : la pastille flottante. COPIE de Header.astro rhabillée,
+ * à maintenir en double jusqu'à la phase 5a (son contenu remplacera alors celui de
+ * Header.astro). Toute la mécanique et toute la mesure sont reprises telles quelles :
+ * 3 ancres + menu « Ressources » 100 % CSS (survol et focus-within, liens toujours
+ * dans le HTML), tiroir mobile 100 % CSS piloté par la case `#mobile-menu-toggle`
+ * (dont dépend aussi la bannière cookies), micro-script qui referme le tiroir au
+ * clic d'une ancre, mêmes `data-ph` et `data-track`, mêmes libellés.
+ * Habillage dans src/styles/da.css (classes `hd-*`), sans classe Tailwind.
+ * Demande `bodyClass="da"` sur la page.
+ */
+interface Props {
+  /** « flottante » : la pastille survole le premier bloc de la page (qui doit
+      prévoir 88 px en haut). « flux » : elle garde sa place dans la page. */
+  variante?: 'flottante' | 'flux';
+}
+const { variante = 'flux' } = Astro.props;
+
+const anchorItems = [
+  { href: '/#film-presentation', label: 'Découvrir', ph: 'landing_nav_decouvrir' },
+  { href: '/#parcours', label: 'Pour qui', ph: 'landing_nav_pour_qui' },
+  { href: '/#pricing', label: 'Tarifs', ph: 'landing_nav_pricing' },
+];
+
+const resourceItems = [
+  { href: '/simulateur', label: 'Simulateur', ph: 'landing_resource_simulateur' },
+  { href: '/guide', label: 'Guide du remplaçant (PDF)', ph: 'landing_resource_guide-remplacant' },
+  { href: '/guide-declarations', label: 'Guide déclarations', ph: 'landing_resource_guide-declarations' },
+  { href: '/blog', label: 'Blog', ph: 'landing_resource_blog' },
+  { href: '/faq', label: 'FAQ', ph: 'landing_resource_faq' },
+  { href: '/qui-sommes-nous', label: 'Qui sommes-nous ?', ph: 'landing_resource_qui-sommes-nous' },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class:list={['hd', variante === 'flux' && 'hd--flux']}>
+  {/* Case du menu mobile : enfant direct du header, hors de la pastille (le flou
+       d'arrière-plan de celle-ci créerait un bloc conteneur et casserait le
+       positionnement fixe du voile et du tiroir). Le nom accessible porte sur la
+       case, pas sur les <label> : c'est elle le contrôle focusable, et son état
+       coché traduit l'ouverture du tiroir.
+       ⚠️ Tailwind lit aussi les commentaires de ce fichier : un mot qui est une
+       classe utilitaire (nom d'une propriété CSS, par exemple) ajouterait une
+       règle à la feuille globale de TOUTES les pages. */}
+  <input type="checkbox" id="mobile-menu-toggle" class="hd-toggle" aria-label="Menu de navigation" />
+
+  <div class="hd-bar">
+    <a href="/" class="hd-brand" aria-label="Hippodoc — accueil">
+      <span class="logo-mark"><img src="/lovable-uploads/hippodoc-logo-96.webp" alt="" width="96" height="96" /></span>
+      <span class="logo-word">Hippo<span>doc</span></span>
+    </a>
+
+    <nav class="hd-links" aria-label="Navigation principale">
+      {anchorItems.map((item) => (
+        <a href={item.href} data-ph={item.ph}>{item.label}</a>
+      ))}
+
+      <div class="hd-res">
+        <button
+          type="button"
+          class:list={['hd-res-btn', resourceItems.some((item) => item.href === currentPath) && 'is-current']}
+        >
+          Ressources
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="hd-res-pop">
+          <div class="hd-res-menu">
+            {resourceItems.map((item) => (
+              <a href={item.href} data-ph={item.ph} aria-current={currentPath === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="hd-end">
+      <a href={`${APP_URL}/auth`} data-ph="landing_login_header" class="hd-login">Connexion</a>
+      <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header" class="btn btn-brand hd-cta-desk">
+        Essai gratuit 30j
+      </a>
+
+      {/* Pastille « Essai gratuit » sous 960 px (§ 9.cz) : même lien que le bouton
+          d'ordinateur, suivi distinct (`cta_signup_header_pill`). */}
+      <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header_pill" class="btn btn-brand hd-cta-pill">
+        Essai gratuit
+      </a>
+
+      <label for="mobile-menu-toggle" data-ph="landing_mobile_menu_open" class="hd-burger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </label>
+    </div>
+  </div>
+
+  <label for="mobile-menu-toggle" aria-hidden="true" class="hd-overlay"></label>
+
+  <div id="mobile-menu-drawer" class="hd-drawer">
+    <div class="hd-drawer-in">
+      <div class="hd-drawer-top">
+        <span class="hd-drawer-brand">
+          <span class="logo-mark"><img src="/lovable-uploads/hippodoc-logo-96.webp" alt="" width="96" height="96" /></span>
+          <span class="logo-word">Hippo<span>doc</span></span>
+        </span>
+        <label for="mobile-menu-toggle" class="hd-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </label>
+      </div>
+      <nav class="hd-drawer-nav" aria-label="Navigation mobile">
+        {anchorItems.map((item, i) => (
+          <a href={item.href} data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`} style={`--i:${i}`} class="hd-item">
+            {item.label}
+          </a>
+        ))}
+        <p style={`--i:${anchorItems.length}`} class="hd-item hd-drawer-label">Ressources</p>
+        {resourceItems.map((item, i) => (
+          <a href={item.href} data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`} style={`--i:${anchorItems.length + 1 + i}`} class="hd-item">
+            {item.label}
+          </a>
+        ))}
+      </nav>
+      <div style={`--i:${anchorItems.length + 1 + resourceItems.length}`} class="hd-item hd-drawer-end">
+        <a href={`${APP_URL}/auth`} class="btn btn-line">Connexion</a>
+        <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header_mobile" class="btn btn-brand">Essai gratuit 30j</a>
+      </div>
+    </div>
+  </div>
+
+  {/* Cliquer une ancre de la page courante ne déclenche aucune navigation :
+       la case doit être décochée explicitement, sinon le tiroir reste ouvert. */}
+  <script is:inline>
+    document.getElementById('mobile-menu-drawer').addEventListener('click', function (e) {
+      if (e.target.closest('a')) document.getElementById('mobile-menu-toggle').checked = false;
+    });
+    /* Safari iOS n'applique `:active` (retour visuel à l'appui) que si un écouteur
+       `touchstart` existe dans la page. Celui de ThirdPartyScripts est `once` : il
+       disparaît au premier geste. Écouteur vide et passif, coût nul. */
+    document.addEventListener('touchstart', function () {}, { passive: true });
+  </script>
+</header>

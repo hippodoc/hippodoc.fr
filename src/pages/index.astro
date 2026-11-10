@@ -9,8 +9,13 @@
  *  - CalendlyWidget : badge flottant tiers déposé (cf. CtaBanner : CTA devenu mailto).
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
+// DA 2026, phase 1 (MIGRATION.md § 9) : en-tête et pied de la nouvelle direction
+// artistique, sur l'accueil seule. Les autres pages gardent Header et Footer.
+import HeaderDA from '@/components/da/HeaderDA.astro';
+import FooterDA from '@/components/da/FooterDA.astro';
+// Même fichier que le `src` du @font-face de da.css : Vite émet une seule URL à
+// empreinte, le préchargement et la feuille de style demandent donc le même fichier.
+import policeDA from '@/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2?url';
 import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
@@ -77,8 +82,14 @@ const videoSchema = {
   ogImage="https://www.hippodoc.fr/lovable-uploads/og-image.png"
   ogImageAlt="Hippodoc — Le cockpit financier des médecins"
   jsonLd={[SOFTWARE_APPLICATION_SCHEMA, websiteSchema, faqPageSchema, videoSchema]}
+  bodyClass="da"
 >
   <Fragment slot="head">
+    <!-- Police de la DA : préchargée, sinon elle n'est découverte qu'après la feuille de style.
+         `crossorigin` obligatoire : sans lui, le fichier est téléchargé deux fois. -->
+    <link rel="preload" as="font" type="font/woff2" href={policeDA} crossorigin />
+    <!-- Barre du navigateur mobile : le ciel de la DA (jeton sky-1). -->
+    <meta name="theme-color" content="#C9DEFF" />
     <!-- Préchargement de l'image LCP du Hero (AVIF) — mirroré depuis index.html de la source. -->
     <link
       rel="preload"
@@ -99,7 +110,9 @@ const videoSchema = {
   </a>
 
   <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white">
-    <Header />
+    {/* Variante « flux » tant que le hero actuel est en place : il n'est pas
+        dessiné pour passer sous la pastille. « flottante » arrive avec le hero DA. */}
+    <HeaderDA variante="flux" />
 
     <main id="contenu-principal" tabindex="-1" class="flex-1">
       <HeroSection />
@@ -114,6 +127,6 @@ const videoSchema = {
       <FaqSection />
     </main>
 
-    <Footer />
+    <FooterDA />
   </div>
 </BaseLayout>
