@@ -5113,8 +5113,10 @@ des étapes est dans l'historique git (commits « DA 2026 »).
 - `/` : toute la page (habillage, structure, textes, H1). `title`, description et
   données structurées : voir « Ce qui ne change pas ».
 - `/faq` : deux réponses (essai des syndicats, tarif interne). `/tarifs` : une réponse
-  (essai et carte bancaire). Textes plus bas.
-- Les 67 autres pages : aucun texte, aucune balise. Leur HTML diffère de `main` par
+  (essai et carte bancaire) et une ligne de la liste « Inclus dans toutes les offres »
+  (hébergement). `/guide-declarations` : la ligne fine sous les boutons du bloc d'appel
+  (hébergement). Textes plus bas.
+- Les 66 autres pages : aucun texte, aucune balise. Leur HTML diffère de `main` par
   deux noms de fichiers à empreinte, la feuille de style globale (plus légère, voir
   « Nettoyage ») et le script PostHog (le tableau `SECTIONS` a trois lignes de plus).
   Rendu identique au pixel, vérifié.
@@ -5424,7 +5426,9 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
   alternatifs « … partenaire Hippodoc gestion médicale ».
 - Tarifs : « Exercer, c'est bien. Savoir ce que ça te rapporte, c'est mieux. » ; « 30
   jours gratuits • Sans engagement • Résiliable à tout moment » (l'offre annuelle
-  engage 12 mois : « Sans engagement » n'est plus écrit que sur la carte mensuelle) ;
+  engage 12 mois : dans les tarifs, « Sans engagement » n'est plus écrit que sur la
+  carte mensuelle ; il reste sous le bouton du bloc « Pour qui », voir « Reste
+  ouvert ») ;
   « FLEXIBLE », « POPULAIRE », « Offre spéciale » ; « Économisez 120€/an (-34%) » ;
   « Meilleure offre : 19€/mois au lieu de 29€ (-34%) » ; la version téléphone du
   tableau (doublon).
@@ -5468,12 +5472,36 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
   l'essai. » (auparavant « …et tu profites de 30 jours d'essai gratuit avec toutes les
   fonctionnalités. À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour
   continuer. »).
+- **`/tarifs`, liste « Inclus dans toutes les offres »** : « Données sécurisées et
+  hébergées en France » devient « Données sécurisées et hébergées dans l'Union
+  européenne ».
+- **`/guide-declarations`, ligne fine du bloc d'appel**
+  (`src/components/guide/PremiumCtaSection.astro`) : « 30 jours offerts · Sans
+  engagement · Données hébergées en France » devient « 30 jours offerts · Sans
+  engagement · Données hébergées dans l'Union européenne ». La date « Mis à jour le »
+  de la page n'est pas avancée : ce n'est pas une revue du guide.
+- Ces deux lignes appliquent la décision du propriétaire (« Union européenne »
+  partout, comme les pages légales, `/faq` et `/qui-sommes-nous`). « hébergées en
+  France » n'est plus écrit nulle part : cherché dans `src/`, `public/`, `llms.txt` et
+  le PDF du guide ; `verify-site.mjs` échoue s'il revient sur une page.
 - Faits confirmés par le propriétaire, à redire tels quels ailleurs : la carte est
-  demandée à l'inscription et rien n'est débité pendant l'essai ; l'offre se choisit à
-  l'inscription ; internes et docteurs juniors paient 10 € par mois jusqu'à la fin de
-  l'internat ; les adhérents de tous les syndicats d'internes partenaires ont 6 mois
-  d'essai au lieu de 30 jours, par un code que fournit leur syndicat ; pas de cumul de
-  remises ; 908 comptes inscrits au 10 novembre 2026 (« 900+ » est exact).
+  demandée à l'inscription et rien n'est débité pendant l'essai ; internes et docteurs
+  juniors paient 10 € par mois jusqu'à la fin de l'internat ; les adhérents de tous les
+  syndicats d'internes partenaires ont 6 mois d'essai au lieu de 30 jours, par un code
+  que fournit leur syndicat ; les données sont hébergées dans l'Union européenne ;
+  908 comptes inscrits au 10 novembre 2026 (« 900+ » est exact).
+- ⚠️ **Deux autres faits n'ont qu'une trace écrite**, à faire relire par le
+  propriétaire avant la fusion. Ils viennent de ses réponses du 10 novembre 2026
+  (nuit), consignées dans le brouillon de cette entrée par le commit « DA 2026,
+  phase 3 : offre choisie à l'inscription, pli interne au tutoiement, réponse rapide »
+  (`git show` de ce commit sur `MIGRATION.md`), en ces termes : « l'offre se choisit à
+  l'inscription » ; « Confirmé aussi : pas de cumul de remises ; tout interne paie 10 €
+  par mois, l'adhésion à un syndicat partenaire donne seulement 6 mois d'essai au lieu
+  d'un. » Le premier est publié sur `/tarifs` (texte et `FAQPage`), où il remplace
+  « À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour continuer. » Le
+  second répondait à la question posée au lot précédent sur les deux codes (tarif
+  interne, essai de 6 mois) : « un adhérent interne cumule-t-il les deux ? » ; il n'est
+  écrit nulle part sur le site.
 - `/tarifs`, `/essai`, `/qui-sommes-nous`, `/comparatif`, `llms.txt` relus : rien n'y
   contredit ces faits. `/comparatif` dit « Carte requise. », `/faq` dit « On te demande
   ta CB (mais aucun prélèvement avant la fin de l'essai) » : justes, non touchés.
@@ -5554,6 +5582,9 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
   `ECARTS_ENTETE_PIED_DA` (13 lignes : « Découvrir » et « Comment ça marche », les trois
   flèches du pied, les trois liens de réseaux en toutes lettres). **À retirer en
   phase 5a.**
+- **Hébergement, sur tout le site** : aucune page du build ne doit contenir
+  « hébergées en France » (contrôle posé dans la boucle des liens internes, qui lit
+  chaque fichier HTML de `dist`).
 - Le contrôle « 4 decies » (compteurs animés) est retiré : il n'y a plus de compteur.
 - Chaque garde a été essayée en cassant le HTML.
 
@@ -5693,20 +5724,29 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
 
 #### À faire le jour de la mise en ligne
 
-1. Prendre la lettre de cette entrée (la première libre après § 9.ea) et remplacer
+1. Pousser la branche, puis attendre l'aperçu Vercel de son dernier commit. Les
+   commits de la phase 4a n'étaient pas poussés quand cette entrée a été écrite : un
+   aperçu plus ancien ne montre ni les chiffres du 10 novembre ni la feuille allégée.
+2. Regarder cet aperçu-là sur Safari (iPhone et Mac), Firefox et un Android.
+3. `git fetch origin`, puis comparer et rebaser contre `origin/main`, jamais contre le
+   `main` local, qui peut être en retard (le 10 novembre, celui de la machine de
+   travail avait trois commits de retard : 92 fichiers d'écart au lieu de 82). Si
+   `origin/main` a avancé : rebaser, puis `npm run build` et
+   `node scripts/verify-site.mjs` : 0 erreur.
+4. Prendre la lettre de cette entrée (la première libre après § 9.ea) et remplacer
    « 9.?? » dans son titre. Les commentaires du code citent « MIGRATION.md § 9 » sans
    lettre.
-2. Rebaser sur `main` s'il a avancé, puis `npm run build` et
-   `node scripts/verify-site.mjs` : 0 erreur.
-3. Ajouter l'entrée « / » dans `src/lib/pages-lastmod.ts`, à la date du jour (note dans
-   le fichier). Si la mise en ligne n'est pas le 10 novembre, refaire les deux
-   `count(*)` et corriger chiffres et date dans `accueil/Fondateur.astro`.
-4. Regarder l'aperçu Vercel sur Safari (iPhone et Mac), Firefox et un Android.
-5. Fusionner, puis annoter PostHog le jour même : « nouvelle accueil », avec les
+5. Dater les pages dont le texte change, dans `src/lib/pages-lastmod.ts`, à la date
+   réelle de mise en ligne (note dans le fichier) : « / », et aussi `/faq` et
+   `/tarifs`, qui n'avaient pas de `lastmod`. `/guide-declarations` garde sa date de
+   revue. Si la mise en ligne n'est pas le 10 novembre, refaire les deux `count(*)` et
+   corriger chiffres et date dans `accueil/Fondateur.astro`. Build et contrôle à
+   nouveau.
+6. Fusionner, puis annoter PostHog le jour même : « nouvelle accueil », avec les
    séries qui s'arrêtent, commencent ou changent de sens (liste plus haut).
-6. Relever la Search Console de l'accueil (requêtes, impressions, positions sur 3
+7. Relever la Search Console de l'accueil (requêtes, impressions, positions sur 3
    mois) : c'est la référence de la fenêtre d'observation.
-7. Sous sept jours : phase 5a (en-tête, pied et police sur tout le site). Puis trois à
+8. Sous sept jours : phase 5a (en-tête, pied et police sur tout le site). Puis trois à
    quatre semaines sans toucher `title`, description, H1, texte ni lien interne d'une
    page indexée.
 
@@ -5718,16 +5758,32 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
 - **À confirmer par le propriétaire** : « Abonnement 100 % déductible au régime réel. »
   (les trois derniers mots sont ajoutés : en micro-BNC rien ne se déduit) ; les deux
   étapes nouvelles du vacataire ; la liste des six guides (`/comparatif` n'a qu'un lien
-  depuis l'accueil, dans le pied) ; le retrait de la question sur la collaboration.
+  depuis l'accueil, dans le pied) ; le retrait de la question sur la collaboration ;
+  les deux faits qui n'ont qu'une trace écrite (« l'offre se choisit à l'inscription »,
+  « pas de cumul de remises » : voir « Textes des autres pages »).
+- **H1 de l'accueil, à trancher avant la fusion** : il change dès la mise en ligne
+  (« Ton activité médicale, sous contrôle. » devient « Logiciel de gestion pour médecin
+  remplaçant : Sors la tête de l'eau »), comme le plan le prévoit depuis la phase 2 et
+  comme le premier écran a été validé, alors que `title` et description attendent la
+  phase 4c. Garder l'ancien H1 jusque-là voudrait dire changer le titre dessiné du
+  premier écran.
+- **« Sans engagement »** sous le bouton du bloc « Pour qui » (repris de l'ancienne
+  accueil) : ce bouton mène à une inscription où l'on choisit aussi l'offre annuelle,
+  qui engage 12 mois. Même formule sous des boutons d'essai de `/essai`,
+  `/qui-sommes-nous`, `/comparatif`, `/guide-declarations`, de la calculette et des
+  articles : non touchée, à faire confirmer ou préciser (« en mensuel »).
 - **Phase 4c** : `title`, description, `WebSite.description`, `VideoObject.description`,
   première ligne de `llms.txt`, image de partage de l'accueil.
 - **Phase 5a** : `HeaderDA` et `FooterDA` remplacent `Header` et `Footer`, le contrôle
   « 4 quater bis » part. À traiter alors, au clavier : le menu Ressources n'a ni
   `aria-expanded` ni fermeture par Échap, le tiroir ne retient pas le focus (comportement
   hérité de `Header.astro` ; c'est du JS en plus, à inscrire dans l'invariant « zéro JS »).
-- **Ailleurs sur le site** : « hébergées en France » reste sur `/tarifs` et dans le
-  guide ; `/tarifs` ne parle ni du tarif interne ni des 6 mois ; le PDF du guide
-  (page 25) dit « pendant tout ton internat », sans les docteurs juniors.
+- **Ailleurs sur le site** : `/tarifs` ne parle ni du tarif interne ni des 6 mois ; le
+  PDF du guide (page 25) dit « pendant tout ton internat », sans les docteurs juniors.
+  À corriger avant la phase 5a ou après la fenêtre d'observation, pas pendant.
+- **Images supprimées** : les 21 adresses de `public/lovable-uploads/` répondent 404.
+  Si l'une d'elles sert ailleurs (signature d'e-mail, publication), restaurer ce
+  fichier.
 - **Compte de démonstration** : un calendrier « Avril 2026 » à côté d'un relevé « Année
   2025 », sur une page mise en ligne en novembre. Vraisemblance fiscale non recoupée
   avec le simulateur.

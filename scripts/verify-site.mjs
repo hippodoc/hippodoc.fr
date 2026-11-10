@@ -172,6 +172,9 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   // mot « matériel » pour un moteur (§ 9.cp).
   const nuls = html.split('\u0000').length - 1;
   if (nuls) fail(`${source} : ${nuls} octet(s) nul(s) U+0000 dans le HTML construit`);
+  // Hébergement : « Union européenne » sur TOUT le site (décision du propriétaire,
+  // comme les pages légales ; MIGRATION.md § 9, DA 2026). « en France » était faux.
+  if (/hébergées? en France/i.test(html)) fail(`${source} : « hébergées en France » — la mention validée est « Union européenne »`);
   for (const [, href] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
     const cible = href.split('#')[0].split('?')[0].replace(/\/$/, '') || '/';
     if (cible.startsWith('//')) continue; // protocole-relatif : externe
