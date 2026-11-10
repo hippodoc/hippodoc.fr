@@ -5882,6 +5882,84 @@ et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` 
   vers lui sur la page, assumé (l'ancien critère « pas déjà lié » cède à l'audience).
   La liste des six guides n'est plus « à confirmer » (§ 9.eb, « Reste ouvert »).
 
+**5. Film : nouveau film vertical, servi par le site** (`accueil/Fondateur.astro`,
+`src/pages/index.astro`, `public/`)
+
+- **Le film** (fichier du propriétaire, `hippodoc-film-v21-site.mp4`) : 1080 × 1920
+  (9:16), 56,6 s, H.264 et AAC, 24,4 Mo. Animation sans prise de vue, sur fond bleu
+  nuit, bleu ou blanc : la semaine du remplaçant (« T'enchaînes les remplas toute la
+  semaine… et ton week-end ? »), puis le contrat, le planning, la saisie d'une journée,
+  ce qu'il reste après URSSAF, CARMF et impôts, la facture de rétrocession, les
+  paiements en attente, l'année, la déclaration de revenus, et la fin : « Toi, tu
+  soignes. Hippodoc s'occupe du reste. » **Tout le propos est écrit à l'écran**, en
+  grands titres qui s'affichent mot à mot ; pas de bandeau de sous-titres. La bande son
+  ressemble à une voix sur de la musique (spectrogramme) : **non écoutée, non
+  transcrite**.
+- **Version web** : `public/hippodoc-film-v21.mp4`, **7 057 291 octets**, 720 × 1280,
+  H.264 High 3.1 à 30 i/s (890 kb/s), AAC stéréo 96 kb/s, `moov` en tête (lecture
+  progressive). Commande : `ffmpeg -i <source> -vf scale=720:1280:flags=lanczos -c:v
+  libx264 -preset slow -crf 21 -profile:v high -level 3.1 -pix_fmt yuv420p -c:a aac
+  -b:a 96k -ac 2 -movflags +faststart -map_metadata -1`. SSIM 0,9955 contre la source
+  ramenée à 720 px ; images comparées côte à côte sur les plans à petit texte (saisie
+  de la journée, facture) : pas de différence visible.
+- **Hébergement** : le film n'est plus lu chez Supabase mais sur le site (en-tête de
+  cache d'un jour dans `vercel.json`, avec l'affiche). L'ancien film
+  (`…/public-assets/hippodoc-presentation-st.mp4`, 16:9, 93 s) n'est plus cité par
+  l'accueil ; **rien n'est supprimé chez Supabase**. `public/hippodoc-presentation-st-poster.jpg`
+  reste en place (adresse déjà publiée dans le schéma), sans plus être cité.
+- **Affiche** : le film à 8,5 s (« Hippodoc te rend tes soirées et tes week-ends. »,
+  fond bleu), 1080 × 1920, 68 146 octets, en deux copies : `src/assets/accueil/film-affiche.jpg`
+  (astro:assets, AVIF et WebP en 320, 640 et 960 px, chargement paresseux) et
+  `public/hippodoc-film-v21-poster.jpg` (schéma).
+- **Poids ajouté au dépôt** : 7 125 437 octets dans `public/` (film 7 057 291, affiche
+  68 146) et 8 111 de plus pour l'affiche de `src/assets/` : **7,1 Mo**, binaires, que
+  git ne compresse pas. Un prochain film ajoutera le sien à l'historique.
+- **Cadre** : vertical, 9:16, coins de 30 px. Sous 700 px : centré sous le texte,
+  300 px de large au plus (533 px de haut). De 700 à 899 px : 240 px, dans la colonne
+  du portrait. À partir de 900 px : 320 × 569 px, centré dans la colonne du portrait
+  (380 px), le texte du film dans la colonne du texte du fondateur, au même bord
+  gauche. Dans le code, le texte reste avant le cadre.
+- **Inchangé** : `<video preload="none">`, le bouton de lecture et son script (un mot
+  d'un commentaire mis à jour), `id="film-presentation"`,
+  `data-landing-section="presentation-video"`, les événements `landing_video_*`. Aucun
+  JS ajouté. Vérifié au navigateur : aucune requête mp4 avant le clic, lecture, pause
+  et reprise au toucher, `ended` à 56,6 s, aucune erreur de script.
+- ⚠️ **Mesure** : `video_id` reste `hippodoc-presentation-st` dans
+  `src/lib/landing-analytics.ts` (fichier non touché : son empreinte change le HTML de
+  toutes les pages). Les deux films se distinguent par `duration_seconds` (93, puis 57)
+  et par la date. Les jalons en pourcentage ne sont pas comparables d'un film à l'autre.
+  À annoter dans PostHog ; à renommer si le propriétaire préfère une série neuve.
+- **Textes** (avant → après) :
+  - titre du bloc (`<h3>`) : « Hippodoc en 90 secondes » → « Hippodoc en une minute » ;
+  - pastille du bouton : « 90 s » → « 1 min » ;
+  - nom du bouton (`aria-label`) : « Lire le film de présentation, 90 secondes » →
+    « Lire le film de présentation, une minute » ;
+  - `title` du `<video>` : « Hippodoc en 90 secondes — film de présentation
+    (sous-titré) » → « Hippodoc en une minute — film de présentation (sous-titré) ».
+- **Schéma `VideoObject`** : `name` « Hippodoc en 90 secondes » → « Hippodoc en une
+  minute » (devenu faux, suit le titre visible) ; `contentUrl` →
+  `https://www.hippodoc.fr/hippodoc-film-v21.mp4` ; `thumbnailUrl` →
+  `https://www.hippodoc.fr/hippodoc-film-v21-poster.jpg` ; `duration` `PT1M33S` →
+  `PT57S` ; `uploadDate` `2026-08-04T09:00:00+02:00` → `2026-11-10T22:00:00+01:00`
+  (jour exact, heure arrondie : à corriger si la mise en ligne glisse au 11) ; `width`
+  720 et `height` 1280 ajoutés. `description` **non touchée** (phase 4c, § 9.eb) : « tu
+  factures, Hippodoc calcule le reste » n'est pas la phrase du nouveau film, et
+  « sous-titré » y désigne maintenant des textes à l'écran. À reprendre en 4c, ou
+  avant si le propriétaire le demande.
+- **`verify-site.mjs`** : le contrôle « 4 nonies » ne cite plus Supabase, et vérifie en
+  plus que `VideoObject.contentUrl` est l'adresse du `<video>` et que `thumbnailUrl`
+  est un fichier servi par le site (le contrôle des liens voit déjà le `src`).
+
+**Vérifié** : build de 70 pages et `verify-site.mjs` à 0 erreur après chaque commit ;
+`BaseLayout.DakHsQiB.css` inchangée ; captures regardées à 390 et 1 440 px (premier
+écran, bloc fondateur avant et après le clic sur lecture, guides), et le cadre du film
+à 320, 768 et 1 024 px. Lighthouse local (serveur sans compression) : mêmes notes
+avant et après, même poids de page (698 Ko), aucun octet du film au chargement.
+
+**Non fait, à savoir** : Safari, Firefox et vrai téléphone non testés (lecture en ligne
+du mp4 sur iOS comprise) ; bande son non écoutée ; CLAUDE.md non modifié (il dit encore
+« datés sur la page ») ; `title` et description de la page inchangés.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

@@ -83,7 +83,7 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     },
     {
-      "source": "/(favicon.ico|icon-192.png|icon-512.png|hippodoc-presentation-st-poster.jpg)",
+      "source": "/(favicon.ico|icon-192.png|icon-512.png|hippodoc-presentation-st-poster.jpg|hippodoc-film-v21-poster.jpg|hippodoc-film-v21.mp4)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     }
   ]

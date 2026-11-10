@@ -67,20 +67,23 @@ const faqPageSchema = {
   })),
 };
 
-// VideoObject — mêmes valeurs que la source (src/pages/landing/index.tsx) ;
-// contentUrl = vidéo auto-hébergée Supabase Storage (cf. accueil/Fondateur.astro),
-// thumbnailUrl = poster de la source servi depuis public/.
+// VideoObject. Depuis le 10 novembre 2026 (MIGRATION.md § 9.ec) : film vertical
+// de 57 secondes, servi par le site. contentUrl = public/hippodoc-film-v21.mp4
+// (le `src` du <video>, cf. accueil/Fondateur.astro), thumbnailUrl =
+// public/hippodoc-film-v21-poster.jpg (le film à 8,5 s). `name` suit le titre
+// visible du bloc ; `description` attend la phase 4c (§ 9.eb).
 const videoSchema = {
   '@context': 'https://schema.org',
   '@type': 'VideoObject',
-  name: 'Hippodoc en 90 secondes',
+  name: 'Hippodoc en une minute',
   description:
     "Film de présentation sous-titré d'Hippodoc : tu factures, Hippodoc calcule le reste — URSSAF, CARMF, impôts et Super-Net pour les médecins remplaçants, installés, collaborateurs ou salariés.",
-  thumbnailUrl: [`${SITE_URL}/hippodoc-presentation-st-poster.jpg`],
-  uploadDate: '2026-08-04T09:00:00+02:00',
-  duration: 'PT1M33S',
-  contentUrl:
-    'https://zlqlijendlquvwnodeqq.supabase.co/storage/v1/object/public/public-assets/hippodoc-presentation-st.mp4',
+  thumbnailUrl: [`${SITE_URL}/hippodoc-film-v21-poster.jpg`],
+  uploadDate: '2026-11-10T22:00:00+01:00',
+  duration: 'PT57S',
+  contentUrl: `${SITE_URL}/hippodoc-film-v21.mp4`,
+  width: 720,
+  height: 1280,
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 ---
