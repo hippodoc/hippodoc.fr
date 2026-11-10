@@ -1,0 +1,68 @@
+---
+/**
+ * Une pose de la mascotte, sous le premier écran (DA 2026, phase 3).
+ * Toujours un décor : texte alternatif vide, chargement paresseux. Servie par
+ * astro:assets en AVIF et en WebP, aux largeurs demandées.
+ *
+ * Sources dans src/assets/accueil/, en WebP sans perte, rognées au ras du
+ * personnage (le bas est coupé net : à poser au bord bas d'un bloc qui rogne) :
+ *  - `f-tablette`, `f-pointe`, `f-presente`, `f-pouce` : mascotte féminine,
+ *    détourée sans perte ;
+ *  - `dos` : mascotte masculine vue de dos (scène finale), le fichier détouré de
+ *    la maquette validée, 431 px de large : c'est sa plus grande taille.
+ * Un seul personnage par bloc : la mascotte masculine a le premier écran (son
+ * buste, dans Hero.astro) et la scène finale, la féminine tout le reste. Les
+ * poses masculines « pouce » et « pointe » ne sont plus utilisées (fichiers
+ * retirés du dépôt).
+ *
+ * La classe et l'attribut de portée du parent arrivent sur le <picture> : c'est
+ * lui que le parent dimensionne et place, l'image le remplit.
+ */
+import { getImage } from 'astro:assets';
+import fTablette from '@/assets/accueil/mascotte-f-tablette.webp';
+import fPointe from '@/assets/accueil/mascotte-f-pointe.webp';
+import fPresente from '@/assets/accueil/mascotte-f-presente.webp';
+import fPouce from '@/assets/accueil/mascotte-f-pouce.webp';
+import dos from '@/assets/accueil/mascotte-dos.webp';
+
+const SOURCES = { dos, 'f-tablette': fTablette, 'f-pointe': fPointe, 'f-presente': fPresente, 'f-pouce': fPouce };
+
+interface Props {
+  pose: keyof typeof SOURCES;
+  /** Largeurs des fichiers, en px, de la plus petite à la plus grande. */
+  largeurs: number[];
+  /** Attribut `sizes` : la largeur affichée, selon la largeur d'écran. */
+  sizes: string;
+  class?: string;
+}
+const { pose, largeurs, sizes, class: classe, ...reste } = Astro.props;
+
+const [avif, webp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) =>
+    // `width` fixe le fichier de repli (`src`) ; sans lui, Astro fabriquerait en
+    // plus la taille d'origine, que rien ne demande.
+    getImage({ src: SOURCES[pose], format, width: largeurs[Math.min(1, largeurs.length - 1)], widths: largeurs })
+  )
+);
+---
+
+<picture class:list={['mascotte', classe]} {...reste}>
+  <source type="image/avif" srcset={avif.srcSet.attribute} sizes={sizes} />
+  <img
+    src={webp.src}
+    srcset={webp.srcSet.attribute}
+    sizes={sizes}
+    alt=""
+    width={webp.attributes.width}
+    height={webp.attributes.height}
+    loading="lazy"
+    decoding="async"
+  />
+</picture>
+
+<style>
+  /* `:where` : ces deux règles ne pèsent rien, la classe du parent l'emporte
+     toujours (pour masquer une pose sur téléphone, par exemple). */
+  :where(.mascotte) { display: block; }
+  :where(.mascotte) img { display: block; width: 100%; max-width: none; height: auto; }
+</style>

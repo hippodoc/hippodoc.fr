@@ -1,0 +1,215 @@
+---
+/**
+ * Syndicats d'internes, partenaires et soutiens (DA 2026, phase 3,
+ * MIGRATION.md § 9). Feuille « ciel », juste après le bloc fondateur : qui a
+ * construit l'outil, puis qui le soutient.
+ *
+ * - Décision du propriétaire (10 novembre 2026) : les syndicats d'internes ont
+ *   une vraie place, pas une ligne discrète. Seuls les partenariats SIGNÉS sont
+ *   affichés : SILR, CRP-IMG, SIOI, AIMGL (Limoges), HomeDoc, Doctripper. Deux
+ *   autres sont en cours : ne pas les ajouter avant signature. La ville figure
+ *   sur chaque tuile (un autre syndicat porte le sigle AIMGL).
+ * - Textes repris de /qui-sommes-nous (titre, introduction, noms, villes,
+ *   descriptions, textes alternatifs, liens).
+ * - Essai de 6 mois : décision 13a du propriétaire (10 novembre 2026), TOUS les
+ *   syndicats d'internes partenaires donnent 6 mois d'essai au lieu d'un mois,
+ *   sans exception. La phrase vague reprise de /faq (« Certains syndicats…
+ *   un essai prolongé ») est remplacée par une phrase exacte, mise en avant
+ *   sous les quatre tuiles : une fiche bleu profond, comme l'offre annuelle
+ *   et le sélecteur de profils. Seul texte nouveau du bloc.
+ * - Décision 14c (10 novembre 2026, nuit) : les 6 mois sont gratuits, réservés
+ *   aux adhérents et obtenus avec un code fourni par leur syndicat. La fiche le
+ *   dit dans la même phrase, mot pour mot (« grâce à un code fourni par leur
+ *   syndicat »), fin de phrase gardée sur sa ligne : « Le code est fourni par
+ *   ton syndicat. » citait « le code » sans l'avoir annoncé et passait de
+ *   « les adhérents » à « ton », au risque d'être confondu avec le « code
+ *   promo » du tarif interne (pli des tarifs). Aucun nom de code, aucune marche
+ *   à suivre : rien d'autre n'est confirmé (et verify-site.mjs, garde
+ *   « 4 octies », refuse un code promo affiché). « au lieu de 30 jours » et non
+ *   plus « d'un mois » : la durée dite partout ailleurs sur la page.
+ * - Mesure : `data-landing-section="partners"` (la série continue) ; les cinq
+ *   `data-ph="landing_partner_*"` de l'ancienne section sont gardés,
+ *   `landing_partner_homedoc` est nouveau sur l'accueil.
+ * - Soutiens : Région Île-de-France et Bpifrance sont UNE seule aide
+ *   (Innov'Up, § 9.dq), d'où leurs deux logos sur la même plaque.
+ * - Logos : les fichiers de public/lovable-uploads/, copiés dans
+ *   src/assets/accueil/partenaires/ pour passer par astro:assets (AVIF et
+ *   WebP). Plusieurs ont un fond blanc opaque : tous sont posés sur du blanc.
+ *   Retouches de fond, sans toucher au dessin : le voile gris du fichier
+ *   CRP-IMG est ramené au blanc ; les logos des trois soutiens sont rognés au
+ *   ras du dessin (leurs fichiers étaient à moitié vides, d'où des logos
+ *   minuscules) ; celui de la Région vient de logo-region-idf.png (275 px).
+ * - Les quatre logos de syndicats sont calés sur une même masse : chacun a sa
+ *   part de la zone (`h`, `l`, en pour cent), le rond et le carré un peu
+ *   moins hauts que les logos en largeur.
+ * - Les soutiens ne sont montrés qu'ici : le pied de l'accueil ne répète pas
+ *   leurs logos (FooterDA, prop `soutiens`).
+ * - Texte alternatif des syndicats : le nom complet seul (le sigle est écrit
+ *   juste dessous, il était lu deux fois).
+ * - Titres : un <h2>, un <h3> (les deux partenaires).
+ */
+import '@/styles/da.css';
+import { Picture } from 'astro:assets';
+import silr from '@/assets/accueil/partenaires/silr-logo.jpg';
+import crpImg from '@/assets/accueil/partenaires/crp-img-logo.png';
+import sioi from '@/assets/accueil/partenaires/sioi-logo.jpg';
+import aimgl from '@/assets/accueil/partenaires/aimgl-logo.png';
+import homedoc from '@/assets/accueil/partenaires/homedoc-logo-160.webp';
+import doctripper from '@/assets/accueil/partenaires/doctripper-logo.png';
+import regionIdf from '@/assets/accueil/partenaires/region-idf.png';
+import bpifrance from '@/assets/accueil/partenaires/bpifrance.png';
+import frenchCare from '@/assets/accueil/partenaires/french-care.png';
+
+/* `largeur` : la largeur d'affichage la plus grande, en px (un fichier à cette
+   largeur, un au double). `h` et `l` : la part de la zone du logo qu'il peut
+   occuper, en hauteur et en largeur (zone de 112 px de haut sur ordinateur,
+   84 px sur téléphone). */
+const syndicats = [
+  { ph: 'silr', nom: 'SILR', complet: 'Syndicat des Internes du Languedoc-Roussillon', ville: 'Montpellier', logo: silr, largeur: 112, h: 100, l: 100, url: 'https://www.silr.fr/le-silr/nos-partenaires/' },
+  { ph: 'crp_img', nom: 'CRP-IMG', complet: 'Internes de médecine générale de Poitiers', ville: 'Poitiers', logo: crpImg, largeur: 168, h: 100, l: 76, url: 'https://www.isnar-img.com/villes/poitiers-crp-img/' },
+  { ph: 'sioi', nom: 'SIOI', complet: "Syndicat des Internes de l'Océan Indien", ville: 'La Réunion', logo: sioi, largeur: 186, h: 100, l: 84, url: 'https://www.sioi974.fr/' },
+  { ph: 'aimgl', nom: 'AIMGL', complet: 'Association des Internes de Médecine Générale de Limoges', ville: 'Limoges', logo: aimgl, largeur: 116, h: 100, l: 100, url: 'https://www.aimgl.fr' },
+];
+
+const partenaires = [
+  { ph: 'homedoc', nom: 'HomeDoc', texte: 'Le logement des internes en médecine', logo: homedoc, largeur: 52, url: 'https://homedoc.fr' },
+  { ph: 'doctripper', nom: 'Doctripper', texte: 'Plateforme de remplacements médicaux', logo: doctripper, largeur: 54, url: 'https://doctripper.com' },
+];
+---
+
+<section data-landing-section="partners" class="band air da-bloc pt" aria-labelledby="partenaires-titre">
+  <div class="wrap">
+    <div class="band-head">
+      <h2 id="partenaires-titre">Aux côtés des internes, partout en France</h2>
+      <p class="lead">Ces syndicats d'internes ont signé une convention avec Hippodoc pour accompagner leurs adhérents dans leurs premiers remplacements.</p>
+    </div>
+
+    <ul class="synd" role="list">
+      {syndicats.map((s) => (
+        <li>
+          <a class="tile" href={s.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${s.ph}`}>
+            <span class="logo" style={`--h:${s.h}%;--l:${s.l}%`}>
+              <Picture src={s.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={s.largeur} widths={[s.largeur, 2 * s.largeur]} sizes={`${s.largeur}px`} alt={s.complet} loading="lazy" decoding="async" />
+            </span>
+            <span class="nom">{s.nom}</span>{' '}
+            <span class="ville">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              {s.ville}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="plus"><b class="aff num">6 mois</b>{' '}<span>d’essai gratuit au lieu de 30 jours, pour les adhérents de ces syndicats,{' '}<span class="code">grâce à un code fourni par leur syndicat.</span></span></p>
+
+    <h3>Et des partenaires pensés pour les jeunes médecins</h3>
+    <ul class="parts" role="list">
+      {partenaires.map((p) => (
+        <li>
+          <a class="part" href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${p.ph}`}>
+            <span class="logo">
+              <Picture src={p.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={p.largeur} widths={[p.largeur, 2 * p.largeur]} sizes={`${p.largeur}px`} alt="" loading="lazy" decoding="async" />
+            </span>
+            <span class="txt"><b>{p.nom}</b>{' '}<span>{p.texte}</span></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="backers">
+      <p class="backers-t">Soutenu par</p>
+      <ul role="list">
+        <li>
+          <span class="plaque">
+            <Picture src={regionIdf} formats={['avif', 'webp']} fallbackFormat="webp" width={105} widths={[105, 210]} sizes="105px" alt="Région Île-de-France" style="--h:26px" loading="lazy" decoding="async" />
+            <Picture src={bpifrance} formats={['avif', 'webp']} fallbackFormat="webp" width={88} widths={[88, 176]} sizes="88px" alt="Bpifrance" style="--h:28px" loading="lazy" decoding="async" />
+          </span>
+          <span>Lauréat Innov'Up</span>
+        </li>
+        <li>
+          <span class="plaque">
+            <Picture src={frenchCare} formats={['avif', 'webp']} fallbackFormat="webp" width={39} widths={[39, 78]} sizes="39px" alt="La French Care" style="--h:66px" loading="lazy" decoding="async" />
+          </span>
+          <span>Membre de La French Care</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .synd, .parts, .backers ul { margin: 0; padding: 0; list-style: none; }
+
+  /* Les quatre syndicats, en grand */
+  .synd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; box-sizing: border-box; padding: 18px 12px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-align: center; text-decoration: none; transition: translate 200ms var(--ease); }
+  .tile:hover, .part:hover { translate: 0 -3px; }
+  .tile .logo { display: flex; align-items: center; justify-content: center; width: 100%; height: 76px; margin-bottom: 12px; }
+  /* <picture> s'efface : c'est l'image qui se cale dans la boîte du logo. */
+  .logo :global(picture), .plaque :global(picture) { display: contents; }
+  /* Sans cela, chaque <source> compterait pour un élément de la rangée (et son écart). */
+  .logo :global(source), .plaque :global(source) { display: none; }
+  .logo :global(img) { display: block; width: auto; max-width: var(--l, 100%); height: auto; max-height: var(--h, 100%); object-fit: contain; }
+  .nom { font-size: 19px; font-weight: var(--tb); line-height: 1.25; }
+  .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--ink-2); }
+  .ville svg { flex: none; color: var(--brand); }
+  /* L'essai de 6 mois des adhérents : une fiche bleu profond sous les tuiles,
+     le chiffre en grand, puis deux phrases courtes (l'offre, le code). */
+  .plus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin: 14px 0 0; padding: 18px 22px 20px; border-radius: 26px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); font-size: 17px; line-height: 1.4; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .plus b { --corps: 40px; flex: none; }
+  .plus span { flex: 1 1 15rem; color: var(--on-deep-2); text-wrap-style: balance; }
+  /* Le code : fin de la phrase, toujours sur sa propre ligne. Lignes équilibrées
+     au-dessus : plus de « syndicats. » seul sur la sienne (900 px). */
+  .plus .code { display: block; }
+  .num { white-space: nowrap; }
+
+  /* Les deux partenaires */
+  h3 { margin: 60px 0 20px; font-size: clamp(22px, 2.2vw, 26px); }
+  .parts { display: grid; gap: 14px; }
+  .part { display: flex; align-items: center; gap: 16px; height: 100%; box-sizing: border-box; padding: 16px 20px 18px 16px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
+  .part .logo { display: flex; flex: none; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 18px; background: var(--sky-soft); }
+  .part .logo :global(img) { max-width: 54px; max-height: 54px; }
+  .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .txt b { font-size: 18px; }
+  .txt span { font-size: 15.5px; color: var(--ink-2); }
+
+  /* Les soutiens institutionnels, plus discrets (ils ne sont plus répétés dans le pied de l'accueil) */
+  .backers { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 36px; margin-top: 60px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 15.5px; color: var(--ink-2); }
+  .backers-t { margin: 0; }
+  .backers ul { display: flex; flex-wrap: wrap; gap: 14px 36px; }
+  .backers li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  /* Chaque logo a sa hauteur (`--h`) : rognés au ras du dessin, ils n'ont pas tous le même rapport. */
+  .plaque { display: inline-flex; flex: none; align-items: center; gap: 18px; box-sizing: border-box; min-height: 84px; padding: 9px 18px; border-radius: 20px; background: var(--paper); box-shadow: var(--clay-sm); }
+  .plaque :global(img) { display: block; flex: none; width: auto; height: var(--h); }
+
+  /* Téléphone : plaques et intervalles resserrés (la page est longue) ; sous
+     380 px, la plaque aux deux logos et sa légende tiennent sur une ligne. */
+  @media (max-width: 639px) {
+    h3 { margin: 38px 0 16px; }
+    .backers { gap: 12px 24px; margin-top: 34px; padding-top: 22px; }
+    .backers ul { gap: 12px 24px; }
+    .plaque { min-height: 64px; padding: 7px 14px; border-radius: 16px; }
+    .plaque :global(img) { height: calc(var(--h) * 0.8); }
+  }
+  @media (max-width: 379px) {
+    .plaque { gap: 12px; padding-inline: 12px; }
+  }
+  @media (min-width: 640px) {
+    .synd { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .parts { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; gap: 18px; }
+  }
+  @media (min-width: 900px) {
+    .plus { gap: 4px 28px; margin-top: 18px; padding: 22px 34px 24px; border-radius: 30px; font-size: 19px; }
+    .plus b { --corps: 52px; }
+    .synd { gap: 18px; }
+    .tile { padding: 24px 20px 26px; border-radius: 36px; }
+    .tile .logo { height: 112px; margin-bottom: 16px; }
+    .nom { font-size: 21px; }
+  }
+  /* Contrastes forcés (Windows) : sans fond, un contour rend sa forme à la fiche. */
+  @media (forced-colors: active) { .plus { border: 1px solid CanvasText; } }
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .part { transition: none; }
+    .tile:hover, .part:hover { translate: none; }
+  }
+</style>

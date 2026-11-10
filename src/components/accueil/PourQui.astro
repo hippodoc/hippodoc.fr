@@ -1,0 +1,255 @@
+---
+/**
+ * « Pour qui » : les quatre profils de l'accueil (DA 2026, phase 3,
+ * MIGRATION.md § 9). Remplaçant, interne, vacataire, activité mixte : on
+ * choisit son mode d'exercice, le parcours correspondant s'affiche. Zéro JS.
+ * Première feuille claire de la page : elle remonte de 40 px sur l'eau du bloc
+ * « Sous la surface ».
+ *
+ * - Mesure, inchangée : `data-landing-section="practice-journeys"`,
+ *   `id="parcours"` (cible du lien « Pour qui » du menu, sur tout le site),
+ *   `data-profile` et `data-ph="landing_journey_profile_<id>"` sur chaque
+ *   libellé, radios `parcours-<id>` (src/lib/landing-analytics.ts lit la radio
+ *   cochée), `data-track="cta_signup_journey_section"`, `data-calendly="pour_qui"`.
+ * - Mécanisme : quatre boutons radio dans un <fieldset>, nommé par la phrase
+ *   d'introduction. Tab entre dans le groupe, les flèches changent de profil.
+ *   Chaque radio couvre son libellé, transparente : un clic ne part qu'une
+ *   fois, de la radio vers le libellé (un libellé qui contiendrait une radio
+ *   visible en émettrait deux, et le choix serait compté en double).
+ *   La feuille affiche le panneau de la radio cochée avec `:has()`. Sans
+ *   `:has()` (navigateurs d'avant fin 2023), le sélecteur est retiré et les
+ *   quatre parcours s'affichent l'un sous l'autre, chacun sous son nom.
+ * - Les quatre panneaux sont toujours dans le HTML.
+ * - Textes : src/data/parcoursAccueil.ts, mot pour mot, sauf les deux étapes
+ *   nouvelles du vacataire (listées en § 9).
+ * - Titres : un <h2>, puis un <h3> par étape (comme l'ancienne section) et un
+ *   pour l'appel final.
+ * - La dernière étape de chaque parcours est le Super-Net : sa pastille est
+ *   jaune, la couleur de « ce qu'il te reste ».
+ * - Mascotte féminine qui montre du doigt (décor) : elle désigne les profils sur
+ *   téléphone (entière, à leur gauche ; retirée sous 360 px, où les profils se
+ *   rangent deux par deux), le parcours sur ordinateur.
+ * - Remplaçant (étapes sans phrase d'accroche, classe `court`) : ses sept titres
+ *   viennent d'être lus dans « Sous la surface », juste au-dessus. Ils ne sont
+ *   plus répétés en gras : chaque titre devient une étiquette, et la ligne de
+ *   détail, qui est ce que ce bloc apporte de neuf, le texte de l'étape.
+ * - La porte de sortie (« Ton cas n'est pas listé ? ») est au pied de la fiche,
+ *   sous l'appel. Phrase d'origine coupée de sa parenthèse (« interne en fin de
+ *   cursus, exercice mixte, installation en cours ») : deux de ces cas sont
+ *   maintenant des profils du bloc, le troisième n'est plus une cible de l'accueil.
+ * - Les flèches de l'étape « Brut → cotisations → impôt » ne sont pas dans la
+ *   police du site : dessin en SVG, le caractère reste dans le texte, masqué à
+ *   l'œil (même procédé que TroisCases.astro).
+ */
+import '@/styles/da.css';
+import { APP_URL, CALENDLY_URL } from '@/lib/site';
+import { PROFILS_PARCOURS } from '@/data/parcoursAccueil';
+import Mascotte from './Mascotte.astro';
+import { insecables } from '@/lib/typo';
+---
+
+<section
+  data-landing-section="practice-journeys"
+  id="parcours"
+  class="band air da-bloc pq"
+  aria-labelledby="parcours-titre"
+>
+  <div class="wrap">
+    <div class="band-head">
+      <h2 id="parcours-titre">Quel que soit ton mode d’exercice, Hippodoc te suit.</h2>
+      <p class="lead" id="parcours-intro">Choisis ton mode d’exercice&nbsp;: tu verras exactement ce qu’Hippodoc fait pour toi.</p>
+    </div>
+
+    <div class="pq-grid">
+      <div class="chooser">
+        <fieldset class="tabs" aria-labelledby="parcours-intro">
+          {PROFILS_PARCOURS.map((profil, i) => (
+            <label class="tab" data-profile={profil.id} data-ph={`landing_journey_profile_${profil.id}`}>
+              <input type="radio" name="parcours" id={`parcours-${profil.id}`} checked={i === 0} />
+              <span class="t">{profil.label}</span>{' '}
+              {profil.precision && <span class="h">{profil.precision}</span>}
+            </label>
+          ))}
+        </fieldset>
+        <Mascotte pose="f-pointe" class="guide" largeurs={[150, 300, 450, 620]} sizes="(min-width: 900px) 310px, (min-width: 560px) 216px, 38vw" />
+      </div>
+
+      <div class="sheet">
+        {PROFILS_PARCOURS.map((profil) => (
+          <div class="panel" data-panel={profil.id}>
+            <p class="pour"><b>{profil.label}</b>{' '}{profil.precision && <span>{profil.precision}</span>}</p>
+            <ol class="steps" role="list">
+              {profil.etapes.map((etape, i) => {
+                const morceaux = insecables(etape.accroche ?? '').split(' → ');
+                return (
+                  <li class:list={[!etape.accroche && 'court']}>
+                    <span class="n" aria-hidden="true">{i + 1}</span>{' '}
+                    <h3>{insecables(etape.titre)}</h3>
+                    {etape.accroche && (
+                      <p class="acc">{morceaux.map((m, k) => (
+                        <Fragment>{k > 0 && <Fragment>{' '}<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>{' '}</Fragment>}{m}</Fragment>
+                      ))}</p>
+                    )}
+                    <p class="det">{insecables(etape.detail)}</p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        ))}
+
+        {/* L'appel, identique pour les quatre profils : le pied de la fiche. */}
+        <div class="go">
+          <div class="go-copy">
+            <h3>Prêt·e à voir ton <span class="nb">Super-Net&nbsp;?</span></h3>
+            <p>Crée ton compte et retrouve ce parcours appliqué à tes propres chiffres.</p>
+          </div>
+          <div class="go-cta">
+            <a class="btn btn-brand" href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_journey_section">Essayer 30 jours gratuitement</a>
+            <p class="fine">Sans engagement</p>
+          </div>
+        </div>
+
+        {/* Une ligne, pas un bouton : la porte de sortie de celui qui ne se reconnaît
+            dans aucun des quatre profils (voir MIGRATION.md § 9.r). */}
+        <p class="autre">
+          Ton cas n'est pas listé&nbsp;?{' '}
+          <a class="lien" href={CALENDLY_URL} data-calendly="pour_qui" target="_blank" rel="noopener">Prends 15 min avec Ryan</a>, médecin remplaçant&nbsp;: il te dira franchement si Hippodoc
+          t'apporte quelque chose.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .nb { white-space: nowrap; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .pq-grid { display: grid; gap: 14px; }
+
+  /* Le sélecteur : une fiche bleu profond, les quatre profils et la mascotte
+     qui les montre du doigt. */
+  /* Téléphone : elle tient entière dans sa colonne, à gauche des profils (plus
+     de chignon rogné par le bord de la fiche). */
+  .chooser { --focus: #FFFFFF; position: relative; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); align-items: end; gap: 0 4px; padding: 16px 16px 0 6px; overflow: hidden; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .tabs { grid-column: 2; grid-row: 1; display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0 0 16px; border: 0; }
+  .chooser .guide { grid-column: 1; grid-row: 1; width: 100%; margin: 0 0 -3%; pointer-events: none; }
+
+  /* Un profil. La radio couvre son libellé, transparente : la cible tactile est
+     la sienne, et le navigateur sait où elle est quand elle reçoit le focus. */
+  .tab { position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 56px; padding: 7px 13px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.62); line-height: 1.25; transition: background-color 160ms var(--ease), color 160ms var(--ease), box-shadow 160ms var(--ease); }
+  .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .tab .t { font-size: 17px; font-weight: var(--tb); }
+  .tab .h { font-size: 13.5px; color: var(--on-deep-2); }
+  .tab:hover { box-shadow: inset 0 0 0 1.5px #FFFFFF; }
+  .tab:has(input:checked) { background: var(--paper); color: var(--ink); box-shadow: 0 4px 0 rgba(10, 25, 70, 0.3); }
+  .tab:has(input:checked) .h { color: var(--ink-2); }
+  .tab:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  /* Contrastes forcés : le fond disparaît, un contour dit quel profil est choisi. */
+  @media (forced-colors: active) {
+    .tab { border: 1px solid ButtonText; }
+    .tab:has(input:checked) { outline: 3px solid Highlight; outline-offset: -3px; }
+  }
+
+  /* Petits téléphones : sans elle, les profils deux par deux sur toute la largeur. */
+  @media (max-width: 359px) {
+    .chooser { display: block; padding: 14px 14px 0; }
+    .tabs { grid-template-columns: 1fr 1fr; padding-bottom: 14px; }
+    .tab { padding-inline: 12px; }
+    .chooser .guide { display: none; }
+  }
+
+  /* La fiche du parcours */
+  .sheet { overflow: hidden; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .panel { display: none; padding: 20px 20px 6px; }
+  .pq:has(#parcours-remplacant:checked) [data-panel="remplacant"],
+  .pq:has(#parcours-interne:checked) [data-panel="interne"],
+  .pq:has(#parcours-vacataire:checked) [data-panel="vacataire"],
+  .pq:has(#parcours-mixte:checked) [data-panel="mixte"] { display: block; }
+  /* Sans `:has()`, rien ne relie un profil à son parcours : pas de sélecteur,
+     les quatre parcours l'un sous l'autre, chacun sous son nom. */
+  @supports not selector(:has(*)) {
+    .chooser { display: none; }
+    .panel { display: block; }
+  }
+  .pour { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0 0 6px; font-size: 15px; color: var(--ink-2); }
+  .pour b { color: var(--ink); }
+
+  .steps { margin: 0; padding: 0; list-style: none; }
+  /* Sur téléphone, l'accroche et le détail passent sous la pastille, sur toute
+     la largeur : une ligne de moins par étape. */
+  .steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; column-gap: 12px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .steps .n { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--sky); font-size: 15.5px; font-weight: var(--tb); line-height: 1; }
+  /* La dernière étape est le Super-Net : ce qu'il te reste, donc du jaune. */
+  .steps li:last-child .n { background: var(--sun); }
+  .steps h3 { grid-column: 2; margin: 0; padding-top: 5px; font-family: var(--text); font-size: 18px; font-weight: var(--tb); letter-spacing: 0; line-height: 1.3; }
+  .steps p { grid-column: 1 / -1; margin: 0; }
+  .steps .acc { padding-top: 8px; font-size: 16px; color: var(--ink-2); }
+  .steps .det { justify-self: start; margin-top: 9px; padding: 5px 12px; border-radius: var(--r-sm); background: var(--sky-soft); font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
+  /* Étape « courte » (le remplaçant) : son titre vient d'être lu dans le bloc
+     du dessus. Il devient une étiquette, la ligne de détail est le texte. */
+  .steps .court { padding-block: 12px; }
+  .steps .court h3 { padding-top: 0; font-size: 14.5px; font-weight: 560; line-height: 1.35; color: var(--ink-2); }
+  .steps .court .det { grid-column: 2; margin-top: 2px; padding: 0; border-radius: 0; background: none; font-size: 16.5px; line-height: 1.45; color: var(--ink); }
+  .steps .court .n { grid-row: 1 / span 2; }
+  /* La flèche dessinée : à la place du caractère, sur la ligne du texte. */
+  .fl { position: relative; white-space: nowrap; }
+  .fl svg { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
+
+  /* L'appel, au pied de la fiche */
+  .go { display: grid; gap: 18px; padding: 24px 20px 26px; background: var(--sky-soft); }
+  .go-copy { display: grid; gap: 8px; }
+  .go h3 { margin: 0; }
+  .go p { margin: 0; }
+  .go-copy p { max-width: 26rem; font-size: 16.5px; color: var(--ink-2); }
+  .go-cta { display: grid; justify-items: center; gap: 12px; }
+  /* Le libellé peut passer sur deux lignes (320 px, ou espacements imposés). */
+  .go .btn { width: 100%; padding: 8px 18px; text-align: center; }
+  @media (max-width: 374px) { .go .btn { padding-inline: 10px; font-size: 16px; } }
+  .fine { font-size: 14.5px; color: var(--ink-2); }
+
+  /* La porte de sortie, au pied de la fiche. */
+  .autre { margin: 0; padding: 16px 20px 20px; font-size: 15.5px; line-height: 1.55; color: var(--ink-2); }
+
+  @media (min-width: 560px) {
+    .chooser { grid-template-columns: 212px minmax(0, 1fr); gap: 0 18px; padding: 20px 22px 0 0; }
+    .autre { padding: 18px 30px 22px; }
+    .tabs { grid-template-columns: 1fr 1fr; align-self: center; padding-bottom: 20px; }
+    .tab { padding-inline: 16px; }
+    .chooser .guide { width: 216px; margin: 0 0 -6px 2px; }
+    .panel { padding: 28px 30px 8px; }
+    .steps li { column-gap: 14px; padding: 16px 0; }
+    .steps p { grid-column: 2; }
+    .steps .acc { padding-top: 4px; }
+    .go { padding: 28px 30px 30px; }
+    .go-cta { justify-items: start; }
+    .go .btn { width: auto; padding-inline: 26px; }
+  }
+
+  @media (min-width: 900px) {
+    .pq-grid { grid-template-columns: 330px minmax(0, 1fr); align-items: start; gap: 22px; }
+    .chooser { display: block; padding: 20px 20px 0; border-radius: 36px; }
+    .tabs { grid-template-columns: 1fr; padding: 0; }
+    .tab { min-height: 60px; padding-inline: 20px; }
+    .tab .t { font-size: 18px; }
+    .tab .h { font-size: 14.5px; }
+    /* Elle montre le parcours, à droite : sa main arrive au bord de la fiche. */
+    .chooser .guide { width: 310px; margin: 14px 0 -6px -8px; }
+    .sheet { border-radius: 36px; }
+    .panel { padding: 34px 40px 10px; }
+    .steps li { column-gap: 18px; padding: 18px 0; }
+    .steps h3 { font-size: 19px; }
+    .go { padding: 30px 40px 32px; }
+    .autre { padding: 20px 40px 24px; }
+  }
+  /* L'appel sur une ligne quand la fiche est assez large : le texte à gauche, le bouton à droite. */
+  @media (min-width: 1180px) {
+    .go { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 32px; }
+    .go-cta { justify-items: center; }
+  }
+  /* Sur un écran assez haut, le sélecteur suit la lecture du parcours. */
+  @media (min-width: 900px) and (min-height: 760px) {
+    .chooser { position: sticky; top: 92px; }
+  }
+</style>

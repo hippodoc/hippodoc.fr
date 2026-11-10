@@ -1,0 +1,146 @@
+---
+/**
+ * Témoignages (DA 2026, phase 3, MIGRATION.md § 9). Quatre cartes, feuille
+ * « sable », entre les partenaires et les tarifs.
+ *
+ * - Décision du propriétaire (10 novembre 2026) : les témoignages sont réels et
+ *   reviennent sur l'accueil, MOT POUR MOT. Aucun n'est inventé ni réécrit.
+ *   Quatre sur les quinze de l'ancien home/TestimonialsSection.astro (supprimé
+ *   en phase 4a, à lire dans l'historique git), un par situation :
+ *   gardes et remplacements, interne, activité mixte, paiements en retard.
+ *   Texte, nom et qualité tels qu'ils étaient dans ce fichier, sans coupe. Seuls
+ *   les guillemets droits qui entouraient chaque citation deviennent des
+ *   guillemets français ; les apostrophes droites à l'intérieur restent.
+ * - Pas d'étoiles : aucune note n'a été recueillie (voir § 9.dq).
+ * - Mesure : `data-landing-section="testimonials"` et `id="testimonials"`, la
+ *   série continue.
+ * - Sous 640 px, les cartes défilent de côté (une carte et le bord de la
+ *   suivante) ; au-delà, deux par ligne. Les quatre sont toujours dans le HTML.
+ *   La rangée est un groupe nommé, atteignable au clavier (`tabindex="0"`) :
+ *   sans cela, Safari ne permet pas de la faire défiler aux flèches.
+ * - Seule feuille dont le titre est centré, sous de grands guillemets dessinés
+ *   sur une pastille jaune (décor) : elle casse la suite des feuilles « titre à
+ *   gauche, contenu dessous ».
+ * - Indice de défilement sous la rangée (téléphone seulement) : un petit rail
+ *   dont le curseur avance avec le défilement de côté, en CSS seul
+ *   (`scroll-timeline` sur la rangée, `timeline-scope` sur le bloc). Décor,
+ *   masqué aux lecteurs d'écran ; absent là où le navigateur ne sait pas lier
+ *   une animation au défilement (le bord de la carte suivante reste l'indice).
+ * - « Dr » retiré devant Anaïs V., interne (décision 13e du propriétaire) ;
+ *   les trois autres attributions sont celles du site, sans ajout.
+ * - Un mot composé (« super-net », « week-end ») ne se coupe pas au trait
+ *   d'union (mise en page seule, le texte ne change pas ; la police n'a pas de
+ *   trait d'union insécable).
+ */
+import '@/styles/da.css';
+import { insecables } from '@/lib/typo';
+
+const temoignages = [
+  { texte: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", auteur: 'Dr Sofiane B.', qualite: 'Médecin (SOS Médecins + cabinet)', initiales: 'SB' },
+  { texte: "Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire.", auteur: 'Anaïs V.', qualite: 'Interne', initiales: 'AV' },
+  { texte: "Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision. Là tout est au même endroit et je comprends mon 'vrai super-net'.", auteur: 'Dr Sarah M.', qualite: 'Urgentiste (activité mixte)', initiales: 'SM' },
+  { texte: "Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais. Là j'ai enfin un suivi clair entre activité, encaissements et provisions.", auteur: 'Dr Émilien C.', qualite: 'Médecin généraliste', initiales: 'EC' },
+];
+---
+
+<section
+  data-landing-section="testimonials"
+  id="testimonials"
+  class="band da-bloc tm"
+  aria-labelledby="temoignages-titre"
+>
+  <div class="wrap">
+    <div class="band-head mid">
+      <span class="guillemets" aria-hidden="true">
+        <svg viewBox="0 0 40 28" width="40" height="28" fill="currentColor"><path d="M0 28V16.4C0 7.3 4.8 1.7 14.4 0l1.7 4.3c-4.4 1.2-6.7 3.9-7 8H16V28Zm23.3 0V16.4c0-9.1 4.8-14.7 14.4-16.4l1.7 4.3c-4.4 1.2-6.7 3.9-7 8h6.9V28Z"/></svg>
+      </span>
+      <h2 id="temoignages-titre">Ce qu’en disent nos utilisateurs</h2>
+    </div>
+    <div class="rail" tabindex="0" role="group" aria-labelledby="temoignages-titre">
+    <ul class="cards" role="list">
+      {temoignages.map((t) => (
+        <li>
+          <figure class="card">
+            <blockquote><p>«&nbsp;{insecables(t.texte).split(/([\wÀ-ÿ]+-[\wÀ-ÿ]+)/).map((m, i) => (i % 2 ? <span class="nb">{m}</span> : m))}&nbsp;»</p></blockquote>
+            <figcaption>
+              <span class="av" aria-hidden="true">{t.initiales}</span>{' '}
+              <span class="qui"><b>{t.auteur}</b>{' '}<span>{t.qualite}</span></span>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+    </div>
+    <span class="fil" aria-hidden="true"><i></i></span>
+  </div>
+</section>
+
+<style>
+  .nb { white-space: nowrap; }
+  /* Les guillemets : une pastille jaune au-dessus du titre centré. */
+  .guillemets { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; margin-bottom: 4px; border-radius: 50%; background: var(--sun); color: var(--ink); box-shadow: 0 4px 0 var(--sun-edge); rotate: -4deg; }
+  .guillemets svg { width: 26px; height: auto; }
+  .band-head.mid { max-width: 640px; }
+
+  /* Sur téléphone : une rangée qui défile de côté, carte par carte. Elle sort
+     des marges de la page pour que les cartes glissent jusqu'au bord. */
+  .rail { margin: 0 calc(-1 * var(--gut)); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); -webkit-overflow-scrolling: touch; }
+  .rail:focus-visible { outline-offset: -3px; border-radius: var(--r-md); }
+  .cards { display: flex; gap: 14px; width: max-content; margin: 0; padding: 6px var(--gut) 22px; list-style: none; }
+  /* L'indice de défilement : un rail court, centré, et son curseur (un quart du
+     rail, pour quatre cartes). Affiché plus bas, seulement si le navigateur
+     sait le faire avancer. */
+  .fil { display: none; width: 56px; height: 5px; margin: 0 auto; overflow: hidden; border-radius: var(--r-pill); background: rgba(20, 37, 79, 0.14); }
+  .fil i { display: block; width: 25%; height: 100%; border-radius: inherit; background: var(--ink-2); }
+  @keyframes temoignages-fil { to { translate: 300% 0; } }
+  /* Deux règles, deux sélecteurs pour l'animation : voir FenetreProduit.astro. */
+  @media (max-width: 639px) {
+    /* Le bas du bloc est resserré : sous la rangée, il restait près de 100 px de vide. */
+    .tm { padding-bottom: 76px; }
+    @supports (animation-timeline: scroll()) and (timeline-scope: --t) {
+      .tm { timeline-scope: --temoignages; }
+      .rail { scroll-timeline-name: --temoignages; scroll-timeline-axis: x; }
+      .fil { display: block; }
+      .fil i { animation: temoignages-fil linear both; }
+      span.fil i { animation-timeline: --temoignages; }
+    }
+  }
+  @media (max-width: 639px) and (forced-colors: active) { .fil { border: 1px solid CanvasText; } .fil i { background: CanvasText; } }
+  .cards li { display: flex; flex: none; width: min(76vw, 340px); scroll-snap-align: start; }
+  .card { display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; margin: 0; padding: 22px 22px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay-sm); }
+  blockquote { flex: 1; margin: 0; }
+  blockquote p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--ink); }
+  figcaption { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .av { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--sky); font-size: 15px; font-weight: var(--tb); letter-spacing: 0.02em; }
+  .qui { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+  .qui b { font-size: 16px; }
+  .qui span { font-size: 14.5px; color: var(--ink-2); }
+
+  /* Au-delà : deux cartes par ligne, plus rien ne défile. */
+  @media (min-width: 640px) {
+    .rail { margin: 0; overflow: visible; }
+    .rail:focus-visible { outline-offset: 6px; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: auto; padding: 0; }
+    .cards li { width: auto; }
+    .card { box-shadow: var(--clay); }
+  }
+  @media (min-width: 900px) {
+    .guillemets { width: 72px; height: 72px; }
+    .guillemets svg { width: 32px; }
+    .card { gap: 18px; padding: 32px 34px 28px; border-radius: 36px; }
+    blockquote p { font-size: 20px; line-height: 1.45; }
+    figcaption { padding-top: 18px; }
+  }
+
+  /* Chaque carte monte en place quand elle entre à l'écran (à partir de 640 px :
+     en dessous, la rangée défile de côté). Seulement si le visiteur n'a pas
+     demandé moins de mouvement, et si le navigateur sait lier une animation au
+     défilement. Deux règles, deux sélecteurs : voir FenetreProduit.astro. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 640px) {
+    @supports (animation-timeline: view()) {
+      .card { animation: temoignages-arrive linear both; }
+      figure.card { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+    }
+  }
+  @keyframes temoignages-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+</style>

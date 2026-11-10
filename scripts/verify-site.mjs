@@ -172,6 +172,9 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   // mot « matériel » pour un moteur (§ 9.cp).
   const nuls = html.split('\u0000').length - 1;
   if (nuls) fail(`${source} : ${nuls} octet(s) nul(s) U+0000 dans le HTML construit`);
+  // Hébergement : « Union européenne » sur TOUT le site (décision du propriétaire,
+  // comme les pages légales ; MIGRATION.md § 9, DA 2026). « en France » était faux.
+  if (/hébergées? en France/i.test(html)) fail(`${source} : « hébergées en France » — la mention validée est « Union européenne »`);
   for (const [, href] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
     const cible = href.split('#')[0].split('?')[0].replace(/\/$/, '') || '/';
     if (cible.startsWith('//')) continue; // protocole-relatif : externe
@@ -271,9 +274,14 @@ for (const h of vercelJson.headers ?? []) {
    composant renommé ou un CTA ajouté sans attribut casserait la mesure en silence
    — et ce silence a déjà coûté cinq semaines de données après la bascule du
    07/08/2026. On le rend bruyant. */
+// DA 2026, phase 3 : « social-proof » (section « En chiffres ») a quitté la page.
+// L'ordre suit celui de la page ; `features` est le bloc « Sous la surface »,
+// `founder` (nouveau) contient le film (`presentation-video`).
+// `mid-page-cta` (le bandeau du milieu de page) est parti avec les tarifs de la
+// nouvelle DA ; `guides` et `final-cta` (la scène finale) sont nouveaux.
 const SECTIONS_LANDING = [
-  'hero', 'social-proof', 'presentation-video', 'features', 'mid-page-cta',
-  'practice-journeys', 'testimonials', 'partners', 'pricing', 'faq',
+  'hero', 'features', 'practice-journeys', 'founder', 'presentation-video',
+  'partners', 'testimonials', 'pricing', 'faq', 'guides', 'final-cta',
 ];
 const accueil = readFileSync(resolve(dist, 'index.html'), 'utf8');
 const sectionsVues = [...accueil.matchAll(/data-landing-section="([^"]+)"/g)].map((m) => m[1]);
@@ -287,10 +295,318 @@ for (const vue of sectionsVues) {
     fail(`accueil : data-landing-section="${vue}" inconnu — ajoute-le ici ET dans src/lib/landing-analytics.ts, sinon son section_order sera faux`);
   }
 }
+// Les deux listes vont ensemble : une section connue ici mais absente de `SECTIONS`
+// (src/lib/landing-analytics.ts) partirait avec `section_order: 0`, sans erreur.
+{
+  const source = readFileSync(resolve(root, 'src/lib/landing-analytics.ts'), 'utf8');
+  const liste = source.match(/const SECTIONS = \[([\s\S]*?)\]/)?.[1];
+  const connues = liste ? [...liste.matchAll(/'([^']+)'/g)].map((m) => m[1]) : [];
+  if (!connues.length) {
+    fail('src/lib/landing-analytics.ts : tableau SECTIONS introuvable, le contrôle des identifiants de section est impossible');
+  } else {
+    for (const section of SECTIONS_LANDING) {
+      if (!connues.includes(section)) {
+        fail(`accueil : « ${section} » est dans SECTIONS_LANDING mais pas dans SECTIONS (src/lib/landing-analytics.ts) — son section_order vaudrait 0`);
+      }
+    }
+  }
+}
 // Tout lien d'inscription doit rester instrumenté : c'est la conversion elle-même.
 for (const [balise] of accueil.matchAll(/<a\b[^>]*auth\?tab=signup[^>]*>/g)) {
   if (!/data-track="/.test(balise)) {
     fail(`accueil : un CTA d'inscription sans data-track — le clic ne sera pas attribué (${balise.slice(0, 80)})`);
+  }
+}
+// Premier écran (DA 2026, phase 2) : ses deux conversions gardent leur identifiant,
+// sinon les séries PostHog `cta_signup_hero` et `cta_simulator` s'arrêtent sans bruit.
+const premierEcran = accueil.match(/<section\b[^>]*data-landing-section="hero"[\s\S]*?<\/section>/)?.[0] ?? '';
+for (const mesure of ['cta_signup_hero', 'cta_simulator']) {
+  if (!premierEcran.includes(`data-track="${mesure}"`)) {
+    fail(`accueil : data-track="${mesure}" absent du premier écran — sa série PostHog s'arrête`);
+  }
+}
+// Le préchargement du buste et le <picture> doivent demander les mêmes fichiers :
+// sinon le navigateur précharge une image puis en affiche une autre.
+const srcsetPrecharge = accueil.match(/<link\b[^>]*rel="preload"[^>]*imagesrcset="([^"]+)"/)?.[1];
+const srcsetAvif = premierEcran.match(/<source\b[^>]*type="image\/avif"[^>]*srcset="([^"]+)"/)?.[1];
+if (!srcsetPrecharge || !srcsetAvif) {
+  fail('accueil : préchargement du buste (imagesrcset) ou <source type="image/avif"> du premier écran introuvable');
+} else if (srcsetPrecharge !== srcsetAvif) {
+  fail('accueil : le préchargement du buste (imagesrcset) ne correspond plus au srcset AVIF du <picture>');
+}
+// « Sous la surface » (DA 2026, phase 3) : la fenêtre produit à onglets.
+// - `id="sous-la-surface"` est la cible du lien « Comment ça marche » du menu ;
+// - les trois vues doivent toutes être dans le HTML (trois radios, dont une seule
+//   cochée, et trois panneaux) : une vue générée à la demande ne serait lue par
+//   aucun moteur ;
+// - les chiffres de la page sont ceux d'un compte fictif : la mention « Compte de
+//   démonstration » doit y figurer, une seule fois (décision du propriétaire).
+const sousLaSurface = accueil.match(/<section\b[^>]*data-landing-section="features"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!/^<section\b[^>]*\sid="sous-la-surface"/.test(sousLaSurface)) {
+  fail('accueil : la section data-landing-section="features" ne porte plus id="sous-la-surface"');
+}
+const radiosApercu = [...sousLaSurface.matchAll(/<input\b[^>]*type="radio"[^>]*name="apercu"[^>]*>/g)].map((m) => m[0]);
+const panneauxApercu = sousLaSurface.match(/class="panel p\d"/g) ?? [];
+if (radiosApercu.length !== 3 || panneauxApercu.length !== 3 || radiosApercu.filter((r) => /\schecked\b/.test(r)).length !== 1) {
+  fail(`accueil : la fenêtre produit doit avoir 3 onglets (un seul coché) et 3 panneaux dans le HTML — trouvé ${radiosApercu.length} onglet(s), ${panneauxApercu.length} panneau(x)`);
+}
+const mentionsDemo = (accueil.match(/Compte de démonstration/g) ?? []).length;
+if (mentionsDemo !== 1) {
+  fail(`accueil : « Compte de démonstration » doit figurer une fois, dans le pied de la fenêtre produit — trouvé ${mentionsDemo} fois`);
+}
+// « Pour qui » (DA 2026, phase 3) : le sélecteur de profil, sans JS.
+// - `id="parcours"` est la cible du lien « Pour qui » du menu, sur TOUT le site ;
+// - quatre radios `parcours-<profil>` (une seule cochée) et quatre panneaux dans le
+//   HTML : landing-analytics lit l'identifiant de la radio cochée, et chaque libellé
+//   porte `data-profile` (sans lui, `landing_journey_profile_selected` ne part plus) ;
+// - la conversion du bloc garde son identifiant.
+const pourQui = accueil.match(/<section\b[^>]*data-landing-section="practice-journeys"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!/^<section\b[^>]*\sid="parcours"/.test(pourQui)) {
+  fail('accueil : la section data-landing-section="practice-journeys" ne porte plus id="parcours" (cible de /#parcours)');
+}
+const PROFILS_POUR_QUI = ['remplacant', 'interne', 'vacataire', 'mixte'];
+const radiosProfil = [...pourQui.matchAll(/<input\b[^>]*type="radio"[^>]*name="parcours"[^>]*>/g)].map((m) => m[0]);
+for (const profil of PROFILS_POUR_QUI) {
+  if (!radiosProfil.some((r) => r.includes(`id="parcours-${profil}"`))) fail(`accueil, « Pour qui » : radio id="parcours-${profil}" absente — le profil ne serait plus mesuré`);
+  if (!new RegExp(`<label\\b[^>]*data-profile="${profil}"`).test(pourQui)) fail(`accueil, « Pour qui » : libellé data-profile="${profil}" absent — landing_journey_profile_selected ne partirait plus pour lui`);
+  if (!pourQui.includes(`data-panel="${profil}"`)) fail(`accueil, « Pour qui » : panneau data-panel="${profil}" absent du HTML`);
+}
+if (radiosProfil.length !== PROFILS_POUR_QUI.length || radiosProfil.filter((r) => /\schecked\b/.test(r)).length !== 1) {
+  fail(`accueil, « Pour qui » : ${PROFILS_POUR_QUI.length} profils attendus, dont un seul coché — trouvé ${radiosProfil.length} radio(s)`);
+}
+// Les deux autres liens de rendez-vous de la page (arbitrage 7 du plan) : la série
+// `pour_qui` continue, `fondateur` est neuve et sera réévaluée à 60 jours. Le
+// contrôle générique plus bas vérifie qu'un lien Calendly porte l'attribut, pas
+// qu'il est toujours là.
+if (!pourQui.includes('data-calendly="pour_qui"')) {
+  fail('accueil, « Pour qui » : le lien de rendez-vous data-calendly="pour_qui" a disparu du bloc — sa série PostHog s\'arrête');
+}
+const blocFondateur = accueil.match(/<section\b[^>]*data-landing-section="founder"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!blocFondateur.includes('data-calendly="fondateur"')) {
+  fail('accueil, bloc fondateur : le lien de rendez-vous data-calendly="fondateur" a disparu');
+}
+if (!pourQui.includes('data-track="cta_signup_journey_section"')) {
+  fail('accueil : data-track="cta_signup_journey_section" absent du bloc « Pour qui » — sa série PostHog s\'arrête');
+}
+// Le film (DA 2026, phase 3) est un sous-bloc du bloc fondateur. landing-analytics
+// cherche le <video> DANS l'élément `presentation-video` : ailleurs, tous les
+// `landing_video_*` s'arrêtent sans erreur. Cet élément porte aussi l'ancre
+// `#film-presentation`, que Header.astro vise encore depuis les autres pages.
+const blocFilm = accueil.match(/<(\w+)\b[^>]*data-landing-section="presentation-video"[^>]*>/);
+const finFondateur = accueil.indexOf('</section>', blocFilm?.index ?? 0);
+if (!blocFilm || !/\sid="film-presentation"/.test(blocFilm[0])) {
+  fail('accueil : l\'élément data-landing-section="presentation-video" ne porte plus id="film-presentation"');
+} else if (!/<video\b/.test(accueil.slice(blocFilm.index, finFondateur))) {
+  fail('accueil : le <video> n\'est plus dans le bloc data-landing-section="presentation-video" — landing_video_* ne partirait plus');
+}
+// Tarifs (DA 2026, phase 3). `id="pricing"` est la cible du lien « Tarifs » du
+// menu sur TOUT le site et de deux réponses de la FAQ. Les deux liens
+// d'inscription gardent `cta_signup_pricing` et leurs trois attributs (le plan
+// choisi part avec le clic), l'offre interne et le détail des offres restent des
+// <details> natifs, avec leur identifiant d'autocapture.
+const tarifsAccueil = accueil.match(/<section\b[^>]*data-landing-section="pricing"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!/^<section\b[^>]*\sid="pricing"/.test(tarifsAccueil)) {
+  fail('accueil : la section data-landing-section="pricing" ne porte plus id="pricing" (cible de /#pricing)');
+}
+const ctaTarifs = [...tarifsAccueil.matchAll(/<a\b[^>]*data-track="cta_signup_pricing"[^>]*>/g)].map((m) => m[0]);
+for (const plan of ['yearly', 'monthly']) {
+  const lien = ctaTarifs.find((b) => b.includes(`data-track-plan="${plan}"`));
+  if (!lien) fail(`accueil, tarifs : lien cta_signup_pricing du plan « ${plan} » absent — landing_cta_clicked perdrait ce plan`);
+  else if (!lien.includes(`data-track-period="${plan}"`) || !lien.includes('data-track-promo="false"') || !lien.includes(`plan=${plan}`)) {
+    fail(`accueil, tarifs : le lien du plan « ${plan} » doit porter data-track-period="${plan}", data-track-promo="false" et mener à plan=${plan}`);
+  }
+}
+if (ctaTarifs.length !== 2) fail(`accueil, tarifs : 2 liens cta_signup_pricing attendus (annuel, mensuel) — trouvé ${ctaTarifs.length}`);
+if (!/<details\b[^>]*data-ph="landing_special_offer_intern"/.test(tarifsAccueil)) {
+  fail('accueil, tarifs : le <details data-ph="landing_special_offer_intern"> de l\'offre interne a disparu');
+}
+if (!/<summary\b[^>]*data-ph="landing_pricing_comparison_toggle"/.test(tarifsAccueil)) {
+  fail('accueil, tarifs : le <summary data-ph="landing_pricing_comparison_toggle"> du détail des offres a disparu');
+}
+// « Engagement : 12 mois » n'est écrit que dans le détail des offres : il doit rester dans le HTML.
+if (!/Engagement<\/th>[\s\S]{0,200}12 mois/.test(tarifsAccueil)) {
+  fail('accueil, tarifs : la ligne « Engagement : 12 mois » de l\'offre annuelle a disparu du détail des offres');
+}
+// Hébergement : « Union européenne » (décision du propriétaire, les pages légales
+// disent la même chose). « hébergées en France » ne doit pas revenir sur l'accueil.
+if (/hébergées? en France/i.test(accueil)) fail('accueil : « hébergées en France » — la mention validée est « Union européenne »');
+if (!/Union européenne/.test(tarifsAccueil)) fail('accueil, tarifs : la mention de l\'hébergement (« Union européenne ») a disparu');
+// Questions fréquentes (DA 2026, phase 3) : une question par <details>, chacune avec
+// son identifiant d'autocapture, autant que dans le schéma FAQPage ; le lien vers /faq.
+const questionsAccueil = accueil.match(/<section\b[^>]*data-landing-section="faq"[\s\S]*?<\/section>/)?.[0] ?? '';
+const plisFaq = questionsAccueil.match(/<summary\b[^>]*data-ph="landing_faq_[a-z0-9-]+"/g) ?? [];
+let questionsSchema = 0;
+for (const [, bloc] of accueil.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+  try { const j = JSON.parse(bloc); if (j['@type'] === 'FAQPage') questionsSchema = (j.mainEntity ?? []).length; } catch { /* JSON-LD invalide : signalé plus haut */ }
+}
+if (!plisFaq.length || plisFaq.length !== questionsSchema || new Set(plisFaq).size !== plisFaq.length) {
+  fail(`accueil, questions : ${questionsSchema} question(s) dans le schéma FAQPage, ${plisFaq.length} <summary data-ph="landing_faq_…"> dans la page (${new Set(plisFaq).size} distinct(s))`);
+}
+if ((questionsAccueil.match(/<details\b/g) ?? []).length !== plisFaq.length) {
+  fail('accueil, questions : chaque question doit être un <details> natif (réponse dans le HTML), et rien d\'autre');
+}
+if (!/<a\b[^>]*href="\/faq"[^>]*data-ph="landing_faq_all"/.test(questionsAccueil)) {
+  fail('accueil, questions : le lien data-ph="landing_faq_all" vers /faq a disparu');
+}
+if (!questionsAccueil.includes('data-calendly="faq_accueil"')) {
+  fail('accueil, questions : le lien de rendez-vous data-calendly="faq_accueil" a disparu de la fin de la FAQ');
+}
+// Guides (DA 2026, phase 3) : six liens internes, en chemins relatifs.
+const guidesAccueil = accueil.match(/<section\b[^>]*data-landing-section="guides"[\s\S]*?<\/section>/)?.[0] ?? '';
+const liensGuides = [...guidesAccueil.matchAll(/<a\b[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
+if (liensGuides.length !== 6 || liensGuides.some((h) => !h.startsWith('/')) || new Set(liensGuides).size !== 6) {
+  fail(`accueil, guides : 6 liens internes distincts attendus, en chemins relatifs — trouvé ${liensGuides.join(', ') || 'aucun'}`);
+}
+// Scène finale (DA 2026, phase 3) : une seule demande, l'inscription. Pas de lien de
+// rendez-vous sous un bouton principal (§ 9.r : zéro clic en 150 jours).
+const sceneFinale = accueil.match(/<section\b[^>]*data-landing-section="final-cta"[\s\S]*?<\/section>/)?.[0] ?? '';
+if (!sceneFinale.includes('data-track="cta_signup_final"')) {
+  fail('accueil : data-track="cta_signup_final" absent de la scène finale — sa série PostHog s\'arrête');
+}
+if (sceneFinale.includes('calendly.com')) fail('accueil, scène finale : pas de lien de rendez-vous ici (§ 9.r)');
+// Plancher de mots (critère de sortie de la phase 3) : la nouvelle accueil porte
+// 3 257 mots dans son HTML brut (même comptage que le contrôle des 150 mots,
+// relevé du 10 novembre 2026 ; 4 134 sur l'ancienne accueil). Plancher à 90 %.
+// Une section perdue ou un panneau généré à la demande ferait passer la page dessous.
+const MOTS_ACCUEIL_MIN = 2931;
+const motsAccueil = accueil
+  .replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<style[\s\S]*?<\/style>/g, ' ')
+  .replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+if (motsAccueil < MOTS_ACCUEIL_MIN) {
+  fail(`accueil : ${motsAccueil} mots dans le HTML brut, sous le plancher de ${MOTS_ACCUEIL_MIN} (90 % du relevé de fin de phase 3)`);
+}
+// Police de la DA (phase 4a) : un seul fichier, sous-ensemble latin. Un caractère
+// hors de ce sous-ensemble (une flèche, une coche, un émoji) sort dans la police de
+// repli, au milieu d'un titre ou d'une phrase. On lit la plage `unicode-range` du
+// @font-face de da.css et on y cherche chaque caractère du texte DESSINÉ de
+// l'accueil. Le texte masqué à l'œil (classe `sr` : il garde le caractère pour les
+// lecteurs d'écran, un dessin SVG le remplace à l'écran) est ignoré, comme les
+// attributs (alt, aria-label).
+// Limite : la plage dit ce que la feuille demande au fichier, pas ce qu'il contient.
+// Les flèches U+2191 et U+2193 y figurent alors que la police n'en a aucune
+// (MIGRATION.md § 9) : tout le bloc des flèches est donc refusé.
+{
+  const daCss = readFileSync(resolve(root, 'src/styles/da.css'), 'utf8');
+  const plage = daCss.match(/@font-face\s*\{[^}]*font-family:\s*"Google Sans Flex";[^}]*unicode-range:\s*([^;]+);/)?.[1];
+  if (!plage) {
+    fail('da.css : unicode-range du @font-face « Google Sans Flex » introuvable, le contrôle des caractères de l\'accueil est impossible');
+  } else {
+    const bornes = plage.split(',').map((p) => p.trim().match(/^U\+([0-9A-F]+)(?:-([0-9A-F]+))?$/i))
+      .filter(Boolean).map((m) => [parseInt(m[1], 16), parseInt(m[2] ?? m[1], 16)]);
+    const dansLaPolice = (code) => !(code >= 0x2190 && code <= 0x21ff) && bornes.some(([a, b]) => code >= a && code <= b);
+    const dessine = accueil.slice(accueil.indexOf('<body'))
+      .replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<!--[\s\S]*?-->/g, ' ')
+      .replace(/<(\w+)\b[^>]*\sclass="(?:[^"]*\s)?sr(?:\s[^"]*)?"[^>]*>[\s\S]*?<\/\1>/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+      .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+      .replace(/&(?:amp|lt|gt|quot|apos|nbsp);/g, ' ');
+    const absents = new Map();
+    for (const car of dessine) {
+      const code = car.codePointAt(0);
+      if (code > 0x20 && !dansLaPolice(code)) absents.set(car, (absents.get(car) ?? 0) + 1);
+    }
+    if (absents.size) {
+      const liste = [...absents].map(([car, n]) => `« ${car} » (U+${car.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}, ${n} fois)`).join(', ');
+      fail(`accueil : caractère(s) absent(s) de la police de la DA dans le texte dessiné : ${liste} — le dessiner en SVG et garder le caractère dans un élément de classe « sr », ou l'écrire autrement`);
+    }
+  }
+}
+
+/* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).
+   L'accueil est servie par src/components/da/HeaderDA.astro et FooterDA.astro,
+   copies rhabillées de Header.astro et Footer.astro, que gardent toutes les
+   autres pages. Les liens, les libellés et les attributs de mesure y sont écrits
+   deux fois : une entrée ajoutée d'un seul côté n'arriverait pas sur l'accueil
+   (ou seulement sur elle) sans que rien n'échoue. On compare donc, dans l'ordre,
+   chaque lien, bouton ou <label> porteur d'un href, d'un data-ph, d'un data-track
+   ou de data-cookie-prefs, entre l'accueil et /tarifs, plus le micro-script en
+   ligne de l'en-tête. `aria-current` n'entre pas dans la comparaison.
+   Un écart VOULU (une ancre retirée du menu de l'accueil, par exemple) se déclare
+   dans ECARTS_ENTETE_PIED_DA, avec la section de MIGRATION.md qui le décide.
+   À retirer en phase 5a, quand les copies remplacent les originaux. */
+const ECARTS_ENTETE_PIED_DA = [
+  // Forme : le repère tel que l'erreur l'affiche.
+  // Phase 3 (MIGRATION.md § 9, arbitrage 8 du plan) : sur l'accueil, « Découvrir »
+  // (le film) sort du menu et « Comment ça marche » y entre, à la même place.
+  // Menu d'ordinateur, puis tiroir mobile ; Header.astro garde « Découvrir ».
+  'header : a | /#film-presentation | landing_nav_decouvrir |  |  | Découvrir',
+  'header : a | /#film-presentation | landing_mobile_nav_decouvrir |  |  | Découvrir',
+  'header : a | /#sous-la-surface | landing_nav_comment_ca_marche |  |  | Comment ça marche',
+  'header : a | /#sous-la-surface | landing_mobile_nav_comment_ca_marche |  |  | Comment ça marche',
+  // Phase 3 (MIGRATION.md § 9, lot C) : la police de la DA n'a pas le caractère
+  // « → ». Dans le pied de l'accueil, la flèche des trois liens d'articles est un
+  // dessin (SVG décoratif) et sort du libellé ; Footer.astro garde le caractère.
+  'footer : a | /blog/regime-fiscal-micro-bnc-vs-reel |  |  |  | → Micro-BNC vs Réel',
+  'footer : a | /blog/salaires-medecins-remplacants |  |  |  | → Salaires remplaçants',
+  'footer : a | /blog/checklist-administrative-medecin-remplacant |  |  |  | → Checklist administrative',
+  'footer : a | /blog/regime-fiscal-micro-bnc-vs-reel |  |  |  | Micro-BNC vs Réel',
+  'footer : a | /blog/salaires-medecins-remplacants |  |  |  | Salaires remplaçants',
+  'footer : a | /blog/checklist-administrative-medecin-remplacant |  |  |  | Checklist administrative',
+  // Phase 3, corrections après relecture (MIGRATION.md § 9) : dans le pied de
+  // l'accueil, les trois liens en toutes lettres de la colonne de contact ne sont
+  // pas repris. Les pastilles rondes y mènent déjà, avec leur data-ph
+  // (`landing_footer_linkedin`, `_facebook`, `_instagram`) ; Footer.astro garde les deux.
+  'footer : a | https://www.linkedin.com/company/hippodoc/ |  |  |  | LinkedIn',
+  'footer : a | https://www.facebook.com/profile.php?id=61574895730373 |  |  |  | Facebook',
+  'footer : a | https://www.instagram.com/hippodoc.fr/ |  |  |  | Instagram',
+];
+function reperesNavigation(html, balise) {
+  const bloc = html.match(new RegExp(`<${balise}\\b[\\s\\S]*?</${balise}>`))?.[0];
+  if (!bloc) return null;
+  const scripts = [...bloc.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)]
+    .map((m) => m[1].replace(/\s+/g, ' ').trim());
+  const sansScript = bloc.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/<!--[\s\S]*?-->/g, '');
+  const reperes = [];
+  for (const m of sansScript.matchAll(/<(a|button|label)\b([^>]*)>([\s\S]*?)<\/\1>/g)) {
+    const attr = (nom) => m[2].match(new RegExp(`\\s${nom}="([^"]*)"`))?.[1] ?? '';
+    const prefs = /\sdata-cookie-prefs\b/.test(m[2]) ? 'data-cookie-prefs' : '';
+    const href = attr('href'), ph = attr('data-ph'), track = attr('data-track');
+    if (!href && !ph && !track && !prefs) continue;
+    const libelle = m[3].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() || attr('aria-label');
+    reperes.push(`${balise} : ${[m[1], href, ph, track, prefs, libelle].join(' | ')}`);
+  }
+  return { reperes, scripts };
+}
+const pageTemoin = resolve(dist, 'tarifs', 'index.html');
+if (!existsSync(pageTemoin)) {
+  fail('en-tête et pied DA : dist/tarifs/index.html absent, la comparaison avec Header.astro et Footer.astro est impossible');
+} else {
+  const temoin = readFileSync(pageTemoin, 'utf8');
+  for (const balise of ['header', 'footer']) {
+    const da = reperesNavigation(accueil, balise);
+    const origine = reperesNavigation(temoin, balise);
+    if (!da || !origine) {
+      fail(`en-tête et pied DA : <${balise}> introuvable sur ${da ? '/tarifs' : 'l’accueil'}`);
+      continue;
+    }
+    const voulu = (r) => ECARTS_ENTETE_PIED_DA.includes(r);
+    const a = da.reperes.filter((r) => !voulu(r));
+    const b = origine.reperes.filter((r) => !voulu(r));
+    const rang = [...a, ''].findIndex((r, i) => r !== b[i]);
+    if (rang < a.length || a.length !== b.length) {
+      fail(
+        `<${balise}> : l'accueil (composants da/) et /tarifs (Header.astro, Footer.astro) divergent au repère ${rang + 1} — ` +
+        `accueil « ${a[rang] ?? 'rien'} », /tarifs « ${b[rang] ?? 'rien'} ». ` +
+        `Reporte la modification dans l'autre composant, ou déclare l'écart dans ECARTS_ENTETE_PIED_DA`
+      );
+    }
+    // Le micro-script du tiroir mobile. Sur l'accueil il n'est plus dans <header>
+    // (un script en ligne au milieu du flux faisait peindre la page en deux temps,
+    // MIGRATION.md § 9) : ScriptTiroirDA.astro le rend après </main>. Il doit y être,
+    // identique à celui de Header.astro, et ne pas revenir dans l'en-tête.
+    const scriptsDA = balise === 'header'
+      ? [...accueil.slice(accueil.indexOf('</main>')).matchAll(/<script\b(?![^>]*\b(?:src|type)=)[^>]*>([\s\S]*?)<\/script>/g)]
+          .map((m) => m[1].replace(/\s+/g, ' ').trim())
+      : da.scripts;
+    if (balise === 'header') {
+      if (da.scripts.length) fail('<header> de l\'accueil : un script en ligne est revenu dans l\'en-tête — il doit rester dans ScriptTiroirDA.astro, après le pied');
+      for (const script of origine.scripts) {
+        if (!scriptsDA.includes(script)) fail('<header> : le micro-script du tiroir mobile (Header.astro) est absent de l\'accueil après </main>, ou en diffère — les deux copies doivent rester identiques jusqu\'à la phase 5a');
+      }
+    } else if (da.scripts.join('\n') !== origine.scripts.join('\n')) {
+      fail(`<${balise}> : le script en ligne diffère entre l'accueil (composants da/) et /tarifs — les deux copies doivent rester identiques jusqu'à la phase 5a`);
+    }
   }
 }
 
@@ -431,18 +747,6 @@ const balise = accueilVideo.match(/<video\b[^>]*>/);
 if (!balise) fail("accueil : le film de présentation a disparu de la page");
 else if (!/preload="none"/.test(balise[0])) {
   fail(`accueil : le film n'est plus en preload="none" — la vidéo se téléchargerait avant le clic (${balise[0].slice(0, 90)})`);
-}
-
-/* 4 decies. Compteurs animés : la valeur rendue et la cible doivent concorder.
-   Le nombre FINAL est écrit dans le HTML (pour les robots qui n'exécutent pas le
-   JS), et `data-compteur` porte la cible de l'animation. Si les deux divergent,
-   le compteur monte vers un nombre puis saute brutalement sur un autre. */
-const accueilChiffres = readFileSync(resolve(dist, 'index.html'), 'utf8');
-for (const [, cible, rendu] of accueilChiffres.matchAll(/data-compteur="(\d+)"[^>]*>([^<]+)</g)) {
-  const chiffresRendus = rendu.replace(/[^0-9]/g, '');
-  if (chiffresRendus !== cible) {
-    fail(`accueil : compteur incohérent — le HTML affiche « ${rendu.trim()} » mais l'animation vise ${cible}`);
-  }
 }
 
 /* 4 undecies. Le consentement se lit au MÊME endroit partout.
@@ -610,8 +914,10 @@ for (const [, loc, lastmod] of entrees) {
 const srcLastmod = readFileSync(resolve(root, 'src/lib/pages-lastmod.ts'), 'utf8');
 const statiquesAttendues = new Map(
   // Chemins à chiffres et à « / » internes compris (§ 9.bi) : l'ancien motif
-  // [a-z-]+ sautait en silence les trois sous-pages du guide.
-  [...srcLastmod.matchAll(/'(\/[a-z0-9\/-]+)':\s*([A-Z_]+|'[\d-]{10}')/g)].map(([, chemin, val]) => {
+  // [a-z-]+ sautait en silence les trois sous-pages du guide. L'accueil, '/',
+  // est acceptée aussi (DA 2026, phase 4a) : le motif exigeait un caractère
+  // après le slash et l'aurait sautée de la même façon.
+  [...srcLastmod.matchAll(/'(\/[a-z0-9\/-]*)':\s*([A-Z_]+|'[\d-]{10}')/g)].map(([, chemin, val]) => {
     const litteral = val.match(/'([\d-]{10})'/);
     if (litteral) return [chemin, litteral[1]];
     const constante = srcLastmod.match(new RegExp(`${val}\\s*=\\s*'([\\d-]{10})'`))
@@ -622,7 +928,8 @@ const statiquesAttendues = new Map(
 for (const [chemin, attendu] of statiquesAttendues) {
   if (!attendu) { fail(`pages-lastmod.ts : date illisible pour ${chemin}`); continue; }
   // Égalité exacte : endsWith('/guide-declarations') ne distinguait pas le hub.
-  const entree = entrees.find(([, loc]) => loc === `${SITE}${chemin}`);
+  // Le sitemap écrit l'accueil sans slash final (`https://www.hippodoc.fr`).
+  const entree = entrees.find(([, loc]) => loc === `${SITE}${chemin === '/' ? '' : chemin}`);
   if (!entree) { fail(`sitemap : ${chemin} devrait porter un lastmod (${attendu}) et n'en a pas`); continue; }
   lastmodVerifies++;
   if (entree[2] !== attendu) {

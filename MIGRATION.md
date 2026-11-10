@@ -5096,6 +5096,709 @@ ne regardait que la requête (`?…`), jamais le fragment.
   concernés (fondateur). Changer le Site URL Supabase vers l'app : seulement après avoir
   relevé les modèles d'e-mail.
 
+### 9.eb DA 2026 : nouvelle page d'accueil (10 novembre 2026)
+
+Nouvelle direction artistique, « le monde d'Hippodoc » : un ciel du matin, une eau en
+pâte à modeler, tout en rond, le jaune réservé à « ce qu'il te reste ». Elle s'applique
+à **l'accueil seule**. Les autres pages gardent Tailwind, `Header.astro` et
+`Footer.astro` jusqu'à la phase 5a (en-tête, pied et police sur tout le site, dans les
+sept jours qui suivent la mise en ligne).
+
+Travail fait sur une branche longue, en quatre phases (fondations, premier écran,
+sections, bascule), relues à chaque étape. Cette entrée décrit l'état final ; le détail
+des étapes est dans l'historique git (commits « DA 2026 »).
+
+**Ce qui change, page par page**
+
+- `/` : toute la page (habillage, structure, textes, H1). `title`, description et
+  données structurées : voir « Ce qui ne change pas ».
+- `/faq` : deux réponses (essai des syndicats, tarif interne). `/tarifs` : une réponse
+  (essai et carte bancaire) et une ligne de la liste « Inclus dans toutes les offres »
+  (hébergement). `/guide-declarations` : la ligne fine sous les boutons du bloc d'appel
+  (hébergement). Textes plus bas.
+- Les 66 autres pages : aucun texte, aucune balise. Leur HTML diffère de `main` par
+  deux noms de fichiers à empreinte, la feuille de style globale (plus légère, voir
+  « Nettoyage ») et le script PostHog (le tableau `SECTIONS` a trois lignes de plus).
+  Rendu identique au pixel, vérifié.
+
+**Ce qui ne change pas (prévu en phase 4c, après la fenêtre d'observation)**
+
+- `title` (« Hippodoc — Cockpit financier des médecins | Super-Net »), description,
+  schémas `WebSite`, `SoftwareApplication`, `VideoObject`, image de partage.
+- ⚠️ Écart assumé d'ici là : le `title` et la description parlent de « cockpit
+  financier » et de médecins « installés, collaborateurs », que la page ne vise plus ;
+  le H1 dit « Logiciel de gestion pour médecin remplaçant ». Google peut réécrire le
+  titre affiché. À surveiller dans la Search Console.
+- Le schéma `FAQPage` suit le texte visible, comme avant : 10 questions au lieu de 11,
+  deux réponses retouchées (voir « Textes de l'accueil »).
+
+#### Architecture
+
+- **Police** : Google Sans Flex, un seul fichier auto-hébergé,
+  `src/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2`, **41 936 octets**.
+  Source : dépôt `google/fonts`, `ofl/googlesansflex/GoogleSansFlex[ROND,opsz,slnt,wdth,wght].ttf`
+  (version 5.000, sha256 `a9ac7707…783a77ba`). **Licence SIL OFL 1.1**, sans nom réservé :
+  `OFL.txt` joint, champs de copyright et de licence gardés dans le fichier. Fabriqué
+  avec fonttools 4.68 : `varLib.instancer` (wght 400 à 800, `ROND=100`, `opsz=18`,
+  `wdth=100`, `slnt=0`), puis `subset` sur la plage « latin » de Google Fonts (228
+  caractères). Importé depuis `src/assets` (nom à empreinte), préchargé avec
+  `crossorigin` : une seule requête woff2. Avec l'axe `opsz`, il pèserait 116 496 octets.
+- **Sans taille optique**, les grands corps sortent 3 à 9 % plus larges que sur la
+  maquette. Corrigé par l'interlettrage, calculé sur le corps : titre du premier écran,
+  `h2`, classe `.aff` (grands montants), mot de la scène finale. Largeurs à 1 à 3 px de
+  la maquette rendue avec sa police.
+- **Repli à métriques ajustées** (`Google Sans Flex Fallback`), deux faces : graisses
+  400 à 599 sur Arial (`size-adjust` 101,19 %), 600 à 800 sur Arial Bold (102,22 %).
+  « Nunito », cité par la maquette, n'est pas repris.
+- **`src/styles/da.css`** : `@font-face`, jetons, `.wrap`, `.btn`, `.chip`, `.sig`,
+  feuilles `.band`, plis `.qa`, lien `.lien`, en-tête `hd-*`, pied `ft-*`, habillage de
+  la bannière cookies et de la bulle de chat. Importée par les composants `da/` et
+  `accueil/` seulement.
+- **`.da` et `.da-bloc`** : `.da`, posée sur `<body>` (prop `bodyClass` de BaseLayout,
+  vide par défaut, seule modification de ce fichier), ne porte que les jetons et le fond
+  de page. La typographie, les règles `h2`/`h3`/`strong` et l'anneau de focus sont
+  portés par les blocs marqués `.da-bloc`. Raison : posées sur `<body>`, ces règles
+  changeaient par héritage tout ce qui n'était pas encore migré. La classe n'a pas été
+  remontée sur `<body>` à la fin (rien à y gagner).
+- **Composants** : `src/components/accueil/` (`Hero`, `SousLaSurface`,
+  `FenetreProduit`, `TroisCases`, `PourQui`, `Fondateur`, `Partenaires`, `Temoignages`,
+  `Tarifs`, `Questions`, `Guides`, `SceneFinale`, `Mascotte`, `buste.ts`), styles dans
+  le `<style>` scopé de chacun, aucune classe Tailwind. Données : `src/data/demoAccueil.ts`
+  (compte de démonstration), `etapesRemplacant.ts`, `parcoursAccueil.ts`, `faqAccueil.ts`.
+  `src/lib/typo.ts` : espaces insécables devant la ponctuation haute, à l'affichage.
+- **En-tête et pied** : `src/components/da/HeaderDA.astro` et `FooterDA.astro`, copies
+  rhabillées de `Header.astro` et `Footer.astro` (pastille flottante, pied « eau
+  profonde »). Mêmes liens, mêmes `data-ph`, même tiroir mobile (case
+  `#mobile-menu-toggle`, dont dépend la bannière cookies). Bascule menu / tiroir à
+  960 px (1 024 auparavant). ⚠️ **Double maintenance jusqu'à la phase 5a** : voir
+  « Garde-fous ».
+- **Micro-script du tiroir** : identique au caractère près à celui de `Header.astro`,
+  mais rendu après le pied par `src/components/da/ScriptTiroirDA.astro`. Dans l'en-tête,
+  ce script en ligne faisait peindre la page en deux temps (deux candidats LCP). Toute
+  page qui utilise `HeaderDA` doit rendre `ScriptTiroirDA`.
+- **Logo en lettres** (décision du propriétaire) : dans la pastille, le tiroir, le pied
+  et la scène finale, le mot seul, « Hippo » (`#0059B3`) puis « doc » (`#1A8CFF`), sans
+  l'icône au trait. Favicon, image de partage et application inchangés.
+- **Images** : toutes par `astro:assets` (AVIF et WebP, plusieurs largeurs), sources
+  dans `src/assets/accueil/`. Buste du premier écran préchargé (`imagesrcset`), les
+  autres en chargement paresseux. Mascottes : la masculine au premier écran et à la
+  scène finale, la féminine ailleurs (décision du propriétaire : alterner). Logos des
+  partenaires : copies dans `src/assets/accueil/partenaires/`, rognées au ras du dessin ;
+  celui du CRP-IMG est aplati sur blanc (il portait un voile semi-transparent). L'affiche
+  du film est une image dans le bouton de lecture (plus d'attribut `poster`, qui
+  téléchargeait 60 Ko à l'ouverture) ; `public/hippodoc-presentation-st-poster.jpg`
+  reste pour le `thumbnailUrl` du `VideoObject`.
+- **Zéro JS ajouté.** Deux scripts en ligne déplacés sans changer d'un caractère (tiroir,
+  lecteur du film), un supprimé (compteur animé de « En chiffres »). Onglets, profils,
+  plis, pause du décor : radios, cases à cocher, `:has()`, `<details>`.
+
+#### La page, bloc par bloc
+
+| Bloc | `id` | `data-landing-section` | Série PostHog |
+|---|---|---|---|
+| Premier écran | `hero` | `hero` | continue |
+| « Sous la surface » : fenêtre produit, trois cases | `sous-la-surface` | `features` | continue |
+| « Pour qui » | `parcours` | `practice-journeys` | continue |
+| Fondateur | (aucun) | `founder` | nouvelle |
+| Film, sous-bloc du fondateur | `film-presentation` | `presentation-video` | continue |
+| Syndicats, partenaires, soutiens | (aucun) | `partners` | continue |
+| Témoignages | `testimonials` | `testimonials` | continue |
+| Tarifs | `pricing` | `pricing` | continue |
+| Questions | `questions` | `faq` | continue |
+| Guides | `guides` | `guides` | nouvelle |
+| Scène finale | (aucun) | `final-cta` | nouvelle |
+
+Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`social-proof`), les
+12 fonctionnalités, le bandeau du milieu de page (`mid-page-cta`).
+
+- **Premier écran.** Une seule balise H1, deux lignes dessinées, un deux-points dans le
+  texte mais pas à l'écran. Coupures de lignes écrites à des seuils fixes (titre,
+  accroche, ligne fine) pour qu'elles soient les mêmes avec la police et avec son
+  repli. Décor animé (soleil, eau, mascotte, fiches) sous
+  `prefers-reduced-motion: no-preference`.
+- **Pause du décor** (WCAG 2.2.2), absente de la maquette, validée par le propriétaire
+  avec le premier écran : une case à cocher en bas à gauche de la scène, sans JS. Celle
+  du premier écran arrête aussi les bulles de « Sous la surface » ; la scène finale a la
+  sienne.
+- **Bannière cookies**, sur l'accueil seulement (`da.css`), validée de la même façon :
+  en bas à gauche à partir de 900 px (centrée, elle tombait sur le visage de la
+  mascotte). `ThirdPartyScripts.astro` n'est pas touché.
+- **Fenêtre produit** : trois vues en onglets (radios dans un `<fieldset>`), les trois
+  toujours dans le HTML. Sans `:has()`, elles s'affichent l'une sous l'autre. Un seul
+  jeu de chiffres, fictif, dans `src/data/demoAccueil.ts`, totaux calculés ; **une seule
+  mention « Compte de démonstration »** sur la page (décision du propriétaire). L'état
+  d'une journée ne tient pas à la seule couleur (coche, horloge, tilde).
+- **« Pour qui »** : quatre profils au lieu de cinq (décision du propriétaire :
+  remplaçant, interne, vacataire, mixte ; « collaborateur » et « installé » quittent
+  l'accueil). Même mécanisme à radios, rhabillé ; les quatre parcours sont dans le HTML.
+- **Fondateur et film** : portrait, paragraphe de l'ancienne carte de fin de FAQ, lien
+  de rendez-vous, trois chiffres ; puis le lecteur du film, tel quel
+  (`<video preload="none">`, mêmes identifiants, script identique à l'octet).
+  `PRODUCT_DEFINITION` y figure mot pour mot.
+- **Syndicats** : quatre grandes tuiles sous leur propre titre (décision du
+  propriétaire : une vraie place). Seuls les partenariats signés : SILR, CRP-IMG, SIOI,
+  AIMGL (Limoges), HomeDoc, Doctripper. ⚠️ AIMGL (Lille) et RAOUL (Nancy) sont en
+  cours : ne pas les afficher avant signature. Soutiens : Région Île-de-France et
+  Bpifrance sur une même plaque (une seule aide, Innov'Up, § 9.dq), La French Care.
+- **Témoignages** : quatre des quinze de l'ancienne section, mot pour mot, sans
+  étoiles (aucune note recueillie, § 9.dq). Défilement de côté sous 640 px.
+- **Tarifs** : trois cartes (annuel, mensuel, interne). L'offre interne s'ouvre dans sa
+  carte (`<details>`). « Détail des offres » (un vrai `<table>`, une fois dans le HTML)
+  et le bloc RSPM sont des plis sous les cartes.
+- **Questions** : 10 questions de `src/data/faqAccueil.ts`, un `<details>` chacune, puis
+  la carte de rendez-vous.
+- **Guides** : six liens internes, `/simulateur`, `/guide-declarations`, `/guide`,
+  `/blog/remplacement-regulier-requalification`,
+  `/blog/effet-ciseaux-regularisation-urssaf-medecin`,
+  `/blog/obtenir-sa-licence-de-remplacement`. Les articles proposés par la maquette
+  étaient déjà liés ailleurs sur la page.
+- **Scène finale** : la phrase de l'ancien bandeau, un seul bouton. Pas de lien de
+  rendez-vous (§ 9.r : zéro clic en 150 jours sous un bouton principal).
+- **Menu** : « Comment ça marche » (`/#sous-la-surface`), « Pour qui », « Tarifs »,
+  « Ressources ». « Découvrir » (le film) sort du menu de l'accueil ; il reste sur les
+  autres pages jusqu'à la phase 5a, et l'ancre `#film-presentation` existe toujours.
+
+#### Textes de l'accueil
+
+**Nouveaux, mot pour mot**
+
+- Premier écran. H1 : « Logiciel de gestion pour médecin remplaçant », espace,
+  deux-points, espace, « Sors la tête de l’eau ». Paragraphe : « URSSAF, CARMF, impôts :
+  Hippodoc calcule tout après chaque journée de remplacement, et te montre ce qu’il te
+  reste vraiment » (sans point final). Boutons : « Essayer 30 jours gratuitement »,
+  « Simuler mon Super-Net ». Ligne fine : « Rien n’est débité pendant l’essai. Créé par
+  un médecin remplaçant. Déjà 900+ médecins inscrits. » Texte alternatif : « La mascotte
+  Hippodoc, un hippopotame bleu à lunettes en blouse blanche, la tête et les épaules
+  hors de l’eau ». Nom du bouton de pause : « Mettre le décor animé en pause ».
+- Premier écran, décor masqué aux lecteurs d'écran (chiffres du compte de
+  démonstration) : « Appel URSSAF », « Échéance CARMF », « Déclaration 2035 », « DSFU » ;
+  « Super-Net », « 59 543 € » ; « Avril 2026 », « lun. 13 · Valérie J. », « 1 955 € »,
+  « mer. 15 · Dujardin S. », « 2 625 € », « lun. 20 · Cabinet M. », « ~1 200 € » ;
+  « Année 2025 », « Encaissé », « 90 005 € », « URSSAF, CARMF, impôts », « − 30 462 € ».
+- Menu : « Comment ça marche ».
+- « Sous la surface ». H2 : « Sous la surface, Hippodoc calcule URSSAF, CARMF et
+  impôts ». Après « Tu factures. Hippodoc calcule le reste. » : « Voici ce qui tourne en
+  dessous pendant que tu soignes. » Fin de la phrase des régimes : « Remplaçant, interne,
+  vacataire ou activité mixte. »
+- Fenêtre produit. Légende masquée : « Aperçu de l’application ». Onglets, sous 720 px
+  puis au-delà : « Super-Net » / « Ce qu’il te reste », « Journées » / « Tes journées »,
+  « À recevoir » / « Ce qu’on te doit ». Jauge : « Jauge : 66 % de l’encaissé reste
+  au-dessus de la ligne d’eau, 34 % part en URSSAF, CARMF et impôts », « 66 % ». Vue 1 :
+  « Année 2025 », « Encaissé », « 90 005 € », « URSSAF », « − 6 386 € », « CARMF »,
+  « − 11 752 € », « Impôts », « − 12 324 € », « Super-Net », « 59 543 € », « 66 % de
+  l’encaissé, une fois tout payé ». Vue 2 : « Avril 2026 », légende « Payé », « En
+  attente », « Planifié », puis « mer. 1 », « Dujardin S. », « 2 250 € » ; « ven. 3 »,
+  « Valérie J. », « 1 785 € » ; « lun. 6 », « Valérie J. », « 2 210 € » ; « mar. 7 »,
+  « Dujardin S. », « 1 425 € » ; « mer. 8 », « Dujardin S. », « 2 550 € » ; « ven. 10 »,
+  « DPC » ; « lun. 13 », « Valérie J. », « 1 955 € » ; « mer. 15 », « Dujardin S. »,
+  « 2 625 € » ; « dim. 19 », « Cabinet M. », « 1 500 € » ; « lun. 20 », « Cabinet M. »,
+  « ~1 200 € » ; « mer. 22 », « Cabinet M. », « ~1 200 € » ; « jeu. 23 », « au dim. 26 »,
+  « WE prolongé » ; après chaque montant, pour les lecteurs d'écran, « , payé », « , en
+  attente » ou « , planifié » ; calendrier masqué aux lecteurs d'écran (« lun. » à
+  « dim. », du 30 mars au 3 mai). Vue 3 : « À recevoir », « 4 125 € », « 2 paiements en
+  attente », puis les journées des 15, 19, 20 et 22 avec « En attente » ou « Planifié ».
+  Pied : « Compte de démonstration · Recalculé après chaque journée enregistrée ».
+- Trois cases : « 1 », « Ton activité » ; « 2 », « Tes obligations » ; « 3 », « Ce qu’il
+  te reste ». Case 1, extrait masqué aux lecteurs d'écran (il répète la vue 2) : « Avril
+  2026 » et les journées des 13, 15, 19 et 20. Case 2 : « Année 2025, à mettre de côté », « URSSAF », « 6 386 € »,
+  « CARMF », « 11 752 € », « Impôts », « 12 324 € », « En tout », « 30 462 € ». Case 3 :
+  « Super-Net 2025 », « 59 543 € », « 90 005 € encaissés, moins les cotisations, moins
+  l’impôt ».
+- « Pour qui », profil nouveau : « Vacataire », « centre / maison de santé ». Étape 1 :
+  « Tes vacations dans le même calendrier » ; « Centre de santé, maison de santé,
+  cabinet : autant de lieux que tu veux, chacun avec ses règles de calcul. » ;
+  « Récurrences possibles, par exemple tous les mercredis au centre médical. » Étape 2 :
+  « Tes honoraires suivis, structure par structure » ; « La structure te verse tes
+  honoraires : payés, en attente, planifiés. » ; « PDSA suivie de la même façon. » Les
+  quatre autres étapes du vacataire sont celles du remplaçant.
+- Fondateur. H2 : « Un médecin remplaçant derrière Hippodoc ». Légende : « Ryan, médecin
+  remplaçant ». Texte alternatif : « Ryan Goburdhun, médecin remplaçant et fondateur
+  d’Hippodoc ». Sous les chiffres : « journées et lieux au 10 novembre 2026 ».
+- Syndicats : « 6 mois d’essai gratuit au lieu de 30 jours, pour les adhérents de ces
+  syndicats, grâce à un code fourni par leur syndicat. »
+- Tarifs. H2 : « Tarifs : un outil pro, à un prix humain ». Dessous : « 30 jours
+  gratuits. Ta carte bancaire est demandée à l’inscription, mais rien n’est débité
+  pendant l’essai. » Cartes : « par mois », « 120 € de moins par an que le mensuel »,
+  « Interne et docteur junior », « Jusqu’à la fin de l’internat », « Voir l’offre
+  interne ». Pli de l'offre : « Internes et docteurs juniors, jusqu’à la fin de
+  l’internat ». Mention du bas : « Abonnement 100 % déductible au régime réel. »
+  Masqués à l'œil, dans le tableau : « Oui », « Aucune ».
+- Questions. H2 : « Questions fréquentes ». Dessous : « Celles qu’on nous pose avant de
+  se lancer. »
+- Guides. H2 : « Guides et simulateurs pour médecins remplaçants ». Dessous : « Pour
+  aller plus loin, en accès libre. » Cartes : « Simulateur Super-Net », « Ton revenu
+  après URSSAF, CARMF et impôts » ; « Guide des déclarations », « 2035, 2042-C PRO,
+  DSFU : quoi remplir, et où » ; « Guide du remplaçant », « Le PDF 2026-2027 ».
+
+**Repris d'une autre page du site, mot pour mot**
+
+- De `/qui-sommes-nous` : « Aux côtés des internes, partout en France » ; « Ces
+  syndicats d'internes ont signé une convention avec Hippodoc pour accompagner leurs
+  adhérents dans leurs premiers remplacements. » ; « Et des partenaires pensés pour les
+  jeunes médecins » ; « Le logement des internes en médecine » ; « Plateforme de
+  remplacements médicaux » ; noms, villes et liens des syndicats ; « Lauréat Innov'Up »,
+  « Membre de La French Care ».
+- Des trois articles des guides : leur `title` et le début de leur `description`
+  (« Remplacer le même médecin chaque semaine peut être requalifié en collaboration. » ;
+  « Bonne année, puis appel de cotisations qui double ? » ; « Conditions, pièces du
+  dossier, envoi au CDOM »).
+
+**Repris de l'ancienne accueil, mot pour mot** (comparés par script au HTML produit)
+
+- Les 7 étapes du remplaçant, les 6 de l'interne, les 6 du mixte ; l'appel du bloc
+  « Pour qui » ; le paragraphe sur Ryan et « Prendre 15 min avec Ryan » ; « Hippodoc en
+  90 secondes » et sa phrase ; les libellés des chiffres ; quatre témoignages ; les
+  offres, la liste « Inclus dans toutes les offres » (six lignes visibles, neuf dans le
+  pli), le tableau, le texte de l'offre interne ; le bloc RSPM ; 10 questions et leurs
+  réponses (deux réponses retouchées, voir plus bas) ; « Soutenu par » ; « On soigne
+  mieux quand on comprend ce qu’on gagne ».
+
+**Retouchés**
+
+- Chiffres du fondateur : « 19 400 » devient « 24 200 », « 2 379 » devient « 2 714 »
+  (voir « Nettoyage et bascule »).
+- « Quel que soit ton mode d’exercice, Hippodoc te suit. », « Choisis ton mode
+  d’exercice : tu verras exactement ce qu’Hippodoc fait pour toi. », « Ce qu’en disent
+  nos utilisateurs », « ce qu’on gagne » : apostrophe typographique.
+- « Ton cas n'est pas listé — interne en fin de cursus, exercice mixte, installation en
+  cours ? Prends 15 min avec Ryan… » devient « Ton cas n'est pas listé ? Prends 15 min
+  avec Ryan, médecin remplaçant : il te dira franchement si Hippodoc t'apporte quelque
+  chose. » (coupe, aucun mot ajouté).
+- « Sans engagement · Déjà 900+ médecins » devient « Sans engagement ».
+- Témoignages : guillemets français autour des citations ; « Dr Anaïs V. » devient
+  « Anaïs V. » (elle est interne). Les trois autres attributions sont celles du site
+  (« Dr Sofiane B., Médecin (SOS Médecins + cabinet) », « Dr Sarah M., Urgentiste
+  (activité mixte) », « Dr Émilien C., Médecin généraliste »). **Rien n'est inventé** :
+  ni ville, ni spécialité.
+- Textes alternatifs des logos de syndicats : le nom complet seul.
+- Tarifs : « Données sécurisées et hébergées en France » devient « Données sécurisées
+  et hébergées dans l’Union européenne » (décision du propriétaire, comme les pages
+  légales) ; « Génération rapide de contrats » et « Génération rapide de factures avec
+  notes » deviennent « Génération rapide de contrats et de factures » ; « Abonnement
+  100 % déductible » devient la mention citée plus haut ; « Tous nos prix sont TTC ·
+  Sans frais cachés » devient « Tous nos prix sont TTC, sans frais cachés. » ; « Interne »
+  et « Encore en formation » deviennent « Interne et docteur junior » et « Jusqu’à la fin
+  de l’internat » ; « 10€/mois », « 29€ » barré et « +30j gratuit » deviennent « 10 € par
+  mois » et « 30 jours gratuits » ; « Annuel 💎 » et « 📊 Détail des offres » perdent leur
+  émoji ; montants et taux écrits avec une espace insécable.
+- Pli de l'offre interne : « Vous êtes encore en internat ? … Hippodoc vous accompagne
+  avec un tarif adapté. » devient « Tu es encore en internat ? … Hippodoc t'accompagne
+  avec un tarif adapté. » ; « Pendant toute la durée de votre internat » devient
+  « Internes et docteurs juniors, jusqu’à la fin de l’internat » ; « réponse sous 24h
+  avec ton code promo personnalisé ! » devient « on te répond très vite avec ton code
+  promo personnalisé ! ».
+- Question « Combien coûte Hippodoc ? » : « L'**essai est gratuit pendant 30 jours**,
+  sans carte bancaire. » devient « L'**essai est gratuit pendant 30 jours** : ta carte
+  bancaire est demandée à l'inscription, mais rien n'est débité pendant l'essai. » ;
+  « Des **tarifs réduits** existent pour les internes et les médecins en fin
+  d'internat : … » devient « Les **internes et les docteurs juniors** paient **10 € par
+  mois** jusqu'à la fin de l'internat : le détail est dans la section tarifs juste
+  au-dessus. »
+- Question « Je suis interne… » : « Un **tarif réduit** s'applique pendant toute ta
+  formation (voir les tarifs). » devient « Internes et docteurs juniors paient **10 € par
+  mois** jusqu'à la fin de l'internat (voir les tarifs). »
+- Pied de l'accueil : la flèche « → » de trois liens d'articles est dessinée (elle
+  n'est pas dans la police) et sort du libellé.
+
+**Retirés de l'accueil**
+
+- Ancien premier écran : « Plus de 900 médecins nous font confiance » ; H1 « Ton
+  activité médicale, sous contrôle. » ; « Le cockpit financier des médecins qui calcule
+  tout pour toi. » ; « Commencer l'essai gratuit », « Simuler mes revenus gratuitement » ;
+  les pastilles « Essai gratuit 30j », « Toutes les fonctionnalités », « Annulable à tout
+  moment » ; cinq captures d'écran, leurs étiquettes et textes alternatifs ; le bandeau
+  « Soutenu par » à huit logos ; « Votre vrai revenu », « clair · super-net · précis ».
+- « En chiffres » : « Pensé pour le terrain. », « Hippodoc accompagne chaque jour des
+  médecins dans leur activité. », les tuiles « 623 Documents générés », le nombre
+  d'articles et « 100 % Données hébergées en France », le compteur animé.
+- « Fonctionnalités » : « Gestion automatisée complète », « Le système nerveux de ton
+  organisation. », les 12 fonctionnalités et leurs descriptions, le schéma en orbite.
+- Parcours : les profils « Collaborateur » et « Installé » (14 étapes), la mention
+  « Bêta », « Parcours · 5 profils », les trois réassurances (« Forum modéré par des
+  médecins », « Blog fiscal mis à jour chaque mois », « Support réactif »), « Pensé par
+  un médecin, pour tous les médecins — de l'internat à la retraite. ».
+- Film : la pastille « Nouveau · Film de présentation ».
+- Témoignages : 11 sur 15, « Découvre pourquoi plus de 900 médecins font confiance à
+  Hippodoc », les étoiles.
+- Partenaires : « Nos partenaires institutionnels », « Hippodoc est soutenu par des
+  acteurs de référence de l'innovation et de la santé en France. », « Syndicats
+  d'internes & partenaires de l'écosystème médical » et sa phrase, les textes
+  alternatifs « … partenaire Hippodoc gestion médicale ».
+- Tarifs : « Exercer, c'est bien. Savoir ce que ça te rapporte, c'est mieux. » ; « 30
+  jours gratuits • Sans engagement • Résiliable à tout moment » (l'offre annuelle
+  engage 12 mois : dans les tarifs, « Sans engagement » n'est plus écrit que sur la
+  carte mensuelle ; il reste sous le bouton du bloc « Pour qui », voir « Reste
+  ouvert ») ;
+  « FLEXIBLE », « POPULAIRE », « Offre spéciale » ; « Économisez 120€/an (-34%) » ;
+  « Meilleure offre : 19€/mois au lieu de 29€ (-34%) » ; la version téléphone du
+  tableau (doublon).
+- Bandeau du milieu de page : « Déjà 900+ médecins nous font confiance », « Des
+  centaines de médecins ont retrouvé le pouvoir de décider… », les quatre garanties
+  (dont « Données chiffrées : personne n'y a accès, pas même nous. »), l'image de la
+  carte Super-Net, « Essai gratuit 30 jours ».
+- Questions : « Questions fréquentes sur la gestion médicale », « Tout ce que tu dois
+  savoir pour bien gérer ton activité de médecin », les numéros, et la question
+  « Comment fonctionne la collaboration libérale sur Hippodoc ? » avec sa réponse
+  (décision du propriétaire sur les profils ; elle disait « gère nativement » d'un
+  module signalé « Bêta »). Pour la rétablir : remettre l'entrée dans
+  `src/data/faqAccueil.ts` (historique git), le schéma suit.
+- Toute mention « sans carte bancaire » : elle était fausse (la carte est demandée à
+  l'inscription, rien n'est débité pendant l'essai). Cherché sur tout le site : les
+  trois occurrences étaient sur l'accueil.
+- Pied de l'accueil : « Ils soutiennent Hippodoc » et ses trois logos (ils sont dans le
+  bloc des partenaires) ; les liens « LinkedIn », « Facebook », « Instagram » en toutes
+  lettres (les trois pastilles rondes y mènent, avec leur `data-ph`).
+
+#### Textes des autres pages
+
+- **`/faq`, « Y a un essai gratuit ? »** (texte et `FAQPage`), ajout en fin de réponse :
+  « Tu adhères à un syndicat d'internes partenaire (SILR, CRP-IMG, SIOI, AIMGL
+  Limoges) ? Ton essai dure **6 mois**, gratuitement, grâce à un code fourni par ton
+  syndicat. »
+- **`/faq`, « Il y a des tarifs pour les internes ? »** (texte et `FAQPage`) : « Oui.
+  Internes et docteurs juniors paient **10 € par mois au lieu de 29 €** jusqu'à la fin
+  de l'internat, sur justificatif (carte d'étudiant, attestation d'inscription ou
+  certificat de scolarité). » (auparavant « Oui. Pendant tout ton internat, Hippodoc te
+  coûte **10 € par mois au lieu de 29 €**, sur justificatif (…). ») ; « on t'envoie ton
+  code promo sous 24 h. » devient « on t'envoie ton code promo très vite. » ; « Certains
+  syndicats d'internes partenaires donnent aussi droit à un **essai prolongé**. »
+  devient « Les adhérents des syndicats d'internes partenaires (SILR, CRP-IMG, SIOI,
+  AIMGL Limoges) ont aussi **6 mois d'essai gratuit** au lieu de 30 jours, grâce à un
+  code fourni par leur syndicat. »
+- **`/tarifs`, « Comment fonctionne l'essai gratuit de 30 jours ? »** (texte et
+  `FAQPage`) : « Tu crées ton compte sur app.hippodoc.fr, tu choisis l'offre mensuelle
+  ou annuelle à l'inscription, et tu profites de 30 jours d'essai gratuit avec toutes
+  les fonctionnalités. Ta carte bancaire est demandée, mais rien n'est débité pendant
+  l'essai. » (auparavant « …et tu profites de 30 jours d'essai gratuit avec toutes les
+  fonctionnalités. À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour
+  continuer. »).
+- **`/tarifs`, liste « Inclus dans toutes les offres »** : « Données sécurisées et
+  hébergées en France » devient « Données sécurisées et hébergées dans l'Union
+  européenne ».
+- **`/guide-declarations`, ligne fine du bloc d'appel**
+  (`src/components/guide/PremiumCtaSection.astro`) : « 30 jours offerts · Sans
+  engagement · Données hébergées en France » devient « 30 jours offerts · Sans
+  engagement · Données hébergées dans l'Union européenne ». La date « Mis à jour le »
+  de la page n'est pas avancée : ce n'est pas une revue du guide.
+- Ces deux lignes appliquent la décision du propriétaire (« Union européenne »
+  partout, comme les pages légales, `/faq` et `/qui-sommes-nous`). « hébergées en
+  France » n'est plus écrit nulle part : cherché dans `src/`, `public/`, `llms.txt` et
+  le PDF du guide ; `verify-site.mjs` échoue s'il revient sur une page.
+- Faits confirmés par le propriétaire, à redire tels quels ailleurs : la carte est
+  demandée à l'inscription et rien n'est débité pendant l'essai ; internes et docteurs
+  juniors paient 10 € par mois jusqu'à la fin de l'internat ; les adhérents de tous les
+  syndicats d'internes partenaires ont 6 mois d'essai au lieu de 30 jours, par un code
+  que fournit leur syndicat ; les données sont hébergées dans l'Union européenne ;
+  908 comptes inscrits au 10 novembre 2026 (« 900+ » est exact).
+- ⚠️ **Deux autres faits n'ont qu'une trace écrite**, à faire relire par le
+  propriétaire avant la fusion. Ils viennent de ses réponses du 10 novembre 2026
+  (nuit), consignées dans le brouillon de cette entrée par le commit « DA 2026,
+  phase 3 : offre choisie à l'inscription, pli interne au tutoiement, réponse rapide »
+  (`git show` de ce commit sur `MIGRATION.md`), en ces termes : « l'offre se choisit à
+  l'inscription » ; « Confirmé aussi : pas de cumul de remises ; tout interne paie 10 €
+  par mois, l'adhésion à un syndicat partenaire donne seulement 6 mois d'essai au lieu
+  d'un. » Le premier est publié sur `/tarifs` (texte et `FAQPage`), où il remplace
+  « À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour continuer. » Le
+  second répondait à la question posée au lot précédent sur les deux codes (tarif
+  interne, essai de 6 mois) : « un adhérent interne cumule-t-il les deux ? » ; il n'est
+  écrit nulle part sur le site.
+- `/tarifs`, `/essai`, `/qui-sommes-nous`, `/comparatif`, `llms.txt` relus : rien n'y
+  contredit ces faits. `/comparatif` dit « Carte requise. », `/faq` dit « On te demande
+  ta CB (mais aucun prélèvement avant la fin de l'essai) » : justes, non touchés.
+
+#### Mesure PostHog : ce qui continue, commence, s'arrête
+
+- **Continue** : `hero`, `features`, `practice-journeys`, `presentation-video`,
+  `partners`, `testimonials`, `pricing`, `faq` ; `cta_signup_hero`, `cta_simulator`,
+  `cta_signup_journey_section`, `cta_signup_pricing` (plan, période, promo),
+  `cta_signup_header*` ; `landing_journey_*` pour `remplacant`, `interne`, `mixte` ;
+  `landing_video_*` ; `landing_special_offer_intern`,
+  `landing_pricing_comparison_toggle` ; `landing_faq_<id>` (10), `landing_faq_all` ;
+  `landing_partner_silr`, `_crp_img`, `_sioi`, `_aimgl`, `_doctripper` ;
+  `data-calendly="pour_qui"` et `"faq_accueil"` ; tous les `landing_footer_*` et ceux
+  de l'en-tête.
+- **Commence** : sections `founder`, `guides`, `final-cta` ; `cta_signup_final` ;
+  `data-calendly="fondateur"` (à réévaluer à 60 jours) ; profil `vacataire`
+  (`landing_journey_profile_vacataire`) ; `landing_apercu_super_net`, `_journees`,
+  `_a_recevoir` ; `landing_pricing_rspm_toggle` ; six `landing_guide_*` (`simulateur`,
+  `declarations`, `remplacant`, `requalification`, `effet_ciseaux`, `licence`) ;
+  `landing_nav_comment_ca_marche` et `landing_mobile_nav_comment_ca_marche` ;
+  `landing_partner_homedoc` sur l'accueil.
+- **S'arrête** : sections `social-proof` et `mid-page-cta` ; `cta_signup_cta_banner` ;
+  `landing_journey_profile_collaborateur` et `_installe` ; `landing_faq_collaboration` ;
+  sur l'accueil seulement, `landing_nav_decouvrir` et `landing_mobile_nav_decouvrir`
+  (ils continuent sur les autres pages jusqu'à la phase 5a).
+- **`SECTIONS`** (`src/lib/landing-analytics.ts`) garde ses onze lignes d'origine, dont
+  `social-proof` et `mid-page-cta`, pour que le rang des autres ne glisse pas.
+  `founder`, `guides` et `final-cta` s'ajoutent en fin : leur `section_order` (12, 13,
+  14) dit qu'ils sont arrivés en dernier, pas leur place sur la page.
+- ⚠️ **Séries qui continuent mais ne disent plus la même chose** (à annoter) :
+  - `features` est maintenant le deuxième bloc : son taux de vue monte d'un coup ;
+  - le film est le cinquième bloc (il était le troisième) : `presentation-video` et
+    `landing_video_section_viewed` baissent d'un coup ;
+  - les partenaires passent avant les témoignages ;
+  - un choix de profil fait au clavier est maintenant compté
+    (`landing_journey_profile_selected`) ;
+  - **autocapture en double** : chaque choix de profil ou d'onglet à la souris envoie
+    deux `$autocapture` porteurs du `data-ph` (un `click`, un `change`), contre un sur
+    `main`. Un insight qui les compte doit filtrer `$event_type = click`. L'événement
+    dédié `landing_journey_profile_selected` reste à un par choix ;
+  - la page n'a plus la même longueur (4 % plus courte sur téléphone, 6 % plus longue
+    sur tablette) ni les mêmes blocs aux mêmes endroits : `landing_scroll_depth` et le
+    taux de vue des blocs du bas ne se comparent pas à l'avant.
+- Vérifié dans le navigateur en décodant les envois (voir « Mesures »). L'autocapture
+  des `data-ph` (onglets, plis, guides, menu) n'a pas été observée dans le navigateur
+  de test : seuls les événements nommés l'ont été.
+
+#### Garde-fous (`scripts/verify-site.mjs`)
+
+- **`SECTIONS_LANDING`** : les onze valeurs du tableau ci-dessus ; chacune doit aussi
+  figurer dans `SECTIONS` (le script lit `landing-analytics.ts`).
+- **Par bloc** : `cta_signup_hero` et `cta_simulator` dans le premier écran,
+  préchargement du buste égal au `srcset` AVIF ; `id="sous-la-surface"`, trois onglets
+  dont un coché, trois panneaux, « Compte de démonstration » une seule fois ;
+  `id="parcours"`, quatre radios, libellés `data-profile`, panneaux,
+  `cta_signup_journey_section`, `data-calendly="pour_qui"` ; `data-calendly="fondateur"` ;
+  `id="film-presentation"` et le `<video>` dans `presentation-video` ; `id="pricing"`,
+  deux `cta_signup_pricing` avec leurs attributs, `<details>` de l'offre interne,
+  « Engagement … 12 mois », « Union européenne » présent et « hébergées en France »
+  absent ; autant de `<summary data-ph="landing_faq_…">` que de questions dans
+  `FAQPage` ; `landing_faq_all`, `data-calendly="faq_accueil"` ; six liens internes dans
+  les guides ; `cta_signup_final` sans lien de rendez-vous.
+- **Plancher de mots** : 2 931 (90 % du relevé de fin de phase 3 ; la page en porte
+  3 215).
+- **Caractères hors police** (ajouté en phase 4a) : le texte dessiné de l'accueil ne
+  contient aucun caractère hors de la plage `unicode-range` de `da.css` (flèches
+  refusées : la plage en cite deux que la police n'a pas). Le texte masqué à l'œil
+  (classe `sr`) est ignoré : c'est là que restent « → » et « ✓ », dessinés en SVG.
+- **`lastmod` de l'accueil** (ajouté en phase 4a) : `pages-lastmod.ts` peut recevoir une
+  entrée pour « / ». Avant, elle aurait été ignorée (le motif exigeait un caractère
+  après le slash) et jamais comparée (le sitemap écrit l'accueil sans slash final).
+- **Contrôle « 4 quater bis », en-tête et pied en double** : compare dans l'ordre,
+  entre l'accueil et `/tarifs`, chaque lien, bouton ou `<label>` porteur d'un `href`,
+  d'un `data-ph`, d'un `data-track` ou de `data-cookie-prefs`, libellé compris, et
+  vérifie que le micro-script du tiroir est sur l'accueil après `</main>`, identique à
+  celui de `Header.astro`, et absent de `<header>`. Les écarts voulus sont dans
+  `ECARTS_ENTETE_PIED_DA` (13 lignes : « Découvrir » et « Comment ça marche », les trois
+  flèches du pied, les trois liens de réseaux en toutes lettres). **À retirer en
+  phase 5a.**
+- **Hébergement, sur tout le site** : aucune page du build ne doit contenir
+  « hébergées en France » (contrôle posé dans la boucle des liens internes, qui lit
+  chaque fichier HTML de `dist`).
+- Le contrôle « 4 decies » (compteurs animés) est retiré : il n'y a plus de compteur.
+- Chaque garde a été essayée en cassant le HTML.
+
+#### Écarts assumés par rapport à la maquette validée
+
+- La maquette n'avait ni menu mobile, ni Connexion sur téléphone, ni menu Ressources,
+  ni pied complet, ni attribut de mesure : repris de l'existant.
+- Elle n'avait ni bloc « Pour qui », ni témoignages, ni bloc de partenaires, et 6
+  questions : ces blocs sont dessinés dans son vocabulaire, sans modèle à comparer.
+- **Longueur sur téléphone** : 15 797 px à 390 px, contre 11 163 px pour la maquette
+  (et 16 494 px pour l'ancienne accueil). Décision du propriétaire : tout le contenu
+  reste, les intervalles sont resserrés sur téléphone, rien n'est retiré.
+- Anneau de focus en encre ou en blanc : celui de la maquette (`#1A8CFF`) ne fait que
+  2,46:1 sur le ciel. Contrastes calculés pour chaque paire de jetons utilisée : tous
+  au-dessus de 4,5:1 pour le texte (le plus bas : 4,73:1) et de 3:1 pour le focus.
+- Vue « à recevoir » recalculée (celle de la maquette ne se recoupait pas avec les deux
+  autres) ; calendrier sur cinq semaines ; fenêtre de hauteur constante.
+- Pas de `nowrap` ni de points de suspension sur un texte lu : avec des espacements
+  imposés par le visiteur (WCAG 1.4.12), un libellé passe à la ligne.
+- Tarifs : offre interne en pli (le bouton de la maquette menait à `/tarifs`, qui n'en
+  parle pas) ; une seule phrase sous le titre ; trois colonnes à partir de 1 024 px.
+- Scène finale : un bouton au lieu de deux ; à partir de 900 px le mot « Hippodoc » est
+  remonté (sur la maquette, la moitié basse des lettres était sous l'eau).
+- Sous 360 px : corps et boutons du premier écran un cran en dessous, pour que les deux
+  boutons restent au-dessus de la bannière cookies à la première visite.
+
+#### Pièges rencontrés (à ne pas refaire)
+
+- ⚠️ **Tailwind lit tout le fichier `.astro`**, `<style>` et commentaires compris. Le
+  mot `backdrop-filter` dans un commentaire, le raccourci `text-wrap` et la courbe
+  `ease-in-out` dans un `<style>` ont chacun ajouté une règle à la feuille globale :
+  nouvelle empreinte, HTML des 70 pages modifié. Écrire `text-wrap-style`,
+  `cubic-bezier(0.42, 0, 0.58, 1)`, et vérifier le nom de `BaseLayout.*.css` après
+  chaque build. (Les fichiers `.css` ne sont pas lus.)
+- ⚠️ **Minification** : `animation` et `animation-timeline: view()` dans la même règle
+  sont fusionnés en une déclaration que les navigateurs refusent, sans erreur. La ligne
+  de temps s'écrit dans une seconde règle, sous un autre sélecteur.
+- ⚠️ **Script en ligne au milieu du flux** : il coupe le premier rendu en deux (voir
+  « Micro-script du tiroir »).
+- ⚠️ **Typographie posée sur `<body>`** : `:where()` laisse gagner les classes, pas
+  l'héritage (voir « `.da` et `.da-bloc` »).
+- ⚠️ **Après toute retouche d'un texte ou d'un corps du premier écran**, refaire le
+  balayage repli contre police (woff2 bloqué, puis chargé, de 320 à 1 600 px) : une
+  ligne de plus à l'arrivée de la police déplace toute la scène.
+- ⚠️ **Capture pleine page** : les blocs animés à l'entrée dans l'écran et la scène
+  finale (`content-visibility`) y sortent vides. Capturer écran par écran.
+
+#### Nettoyage et bascule (phase 4a)
+
+- **`src/components/home/` supprimé** (11 composants) : plus aucun n'était importé,
+  vérifié nom par nom dans `src/` et `scripts/`. `/essai` et `/qui-sommes-nous` n'en
+  utilisaient aucun.
+- **Feuille globale** : Tailwind ne lit plus ces fichiers. `BaseLayout.*.css` passe de
+  183 554 à **158 392 octets** (28,2 → 25,3 Ko gzip), 310 classes en moins. Preuve que
+  les autres pages n'y perdent rien : aucune des 310 classes n'apparaît dans un
+  attribut `class` du build ni dans un script ; les 69 pages hors accueil ne diffèrent
+  du commit précédent que par le nom de la feuille ; rendu comparé au pixel à 390 et
+  1 440 px, 139 captures sur 140 identiques au premier passage, la dernière
+  (`/comparatif` à 1 440 px, 7 px) identique aux trois rejeux. L'accueil aussi est
+  identique au pixel avant et après.
+- **21 images supprimées** de `public/lovable-uploads/` (2,0 Mo) : les 19 `hero-*`,
+  `super-net-card-salaire.png`, `6ddc3383-….png`. Seuls les composants supprimés les
+  citaient. ⚠️ Ces adresses étaient publiques : un lien externe vers l'une d'elles
+  renverrait une 404, ce que ce dépôt ne permet pas de vérifier. Commit séparé, qui se
+  retire seul. `og-image.png` et l'affiche du film ne sont pas touchés.
+- **Chiffres du bloc fondateur, relevés en base le 10 novembre 2026** (accord du
+  propriétaire). Même définition qu'au 15 août (§ 9.u) : `count(*)` de `remplacements`
+  (**24 252**, écrit « 24 200 », à la centaine inférieure comme « 19 400 ») et de
+  `medecins_remplaces` (**2 714**, écrit tel quel comme « 2 379 »), projet Supabase
+  « Hippodoc - SAAS FINANCE », lecture seule, aucune donnée personnelle lue. « 900+ » :
+  908 comptes, confirmés par le propriétaire.
+- **Image de partage : inchangée.** Le plan prévoyait une image propre à l'accueil ;
+  la décision du propriétaire sur le logo dit « image de partage inchangée pour
+  l'instant ». Essai fait : une capture 1 200 × 630 du premier écran coupe la mascotte
+  aux oreilles et garde l'en-tête et la bulle de chat. Une image fidèle demande une
+  composition à part, à faire avec le `title` en phase 4c.
+- **CLAUDE.md** mis à jour : section « Accueil — DA 2026 », exceptions JS, version
+  d'Astro, nombre de pages.
+
+#### Mesures, `main` → branche
+
+- **Build** : 70 pages, `verify-site.mjs` 68 URLs, 0 erreur, 3 avertissements (les
+  mêmes que sur `main`), à chaque commit.
+- **Accueil, fichiers** : HTML 339,0 → 140,8 Ko (46,4 → 31,0 Ko gzip). CSS bloquant :
+  une feuille de 28,2 Ko gzip et 4,7 Ko de styles en ligne → deux feuilles, 25,3 et
+  16,4 Ko gzip (**41,7 Ko**, le plan en attendait 33 après nettoyage). Balises
+  `<script>` : 11 → 10. Mots dans le HTML brut : 4 134 → 3 215.
+- **Autres pages** : feuille globale 28,2 → 25,3 Ko gzip, rien d'autre.
+- **Longueur de l'accueil** (après défilement complet) : 18 067 → 17 290 px à 320 px ;
+  16 494 → **15 797 px** à 390 px (−4,2 %) ; 13 292 → 14 085 px à 768 px (+6,0 %) ;
+  12 717 → 12 635 px à 1 440 px. Aucun défilement horizontal.
+- **Lighthouse mobile en local** (12.8.2, pages servies en gzip, 5 passages alternés
+  `main` / branche, médianes) :
+
+  | Page | Performance | LCP | TBT | CLS | Poids | Requêtes |
+  |---|---|---|---|---|---|---|
+  | `/` | 96 → **98** (90 à 97, puis 98 à 99) | 2,72 → 2,26 s | 52 → 27 ms | 0 → 0 | 445 → 223 Ko | 25 → 22 |
+  | `/simulateur` | 93 → 92 (90 à 95, puis 87 à 98) | 2,33 → 2,08 s | 264 → 245 ms | 0 → 0 | 309 → 306 Ko | 26 → 26 |
+  | `/blog/tout-comprendre-urssaf` | 99 → 99 | 2,04 → 2,03 s | 49 → 35 ms | 0 → 0 | 174 → 172 Ko | 12 → 12 |
+
+  Accessibilité 100, bonnes pratiques 96, SEO 100 sur les trois pages, des deux côtés.
+  ⚠️ `/simulateur` est sous les 95 de CLAUDE.md, sur `main` comme sur la branche
+  (hydratation de l'îlot) : l'écart d'un point est dans le bruit, la page ne change que
+  par le nom de sa feuille. Le FCP simulé oscille entre deux valeurs (1,1 ou 1,5 à
+  1,9 s) sur les trois pages et des deux côtés : effet de seuil du modèle, pas du lot.
+  Élément LCP de l'accueil : le titre du premier écran.
+- **CLS de l'accueil** : 0 quand la police arrive à temps. Police retardée de 2 s :
+  0,0003 à 0,0043 selon la taille d'écran (critère du plan : sous 0,02). En arrivant
+  sur une ancre avec une police retardée, un bloc peut bouger de 24 à 30 px (0,03 au
+  pire, sous 0,1). Mesures des phases 2 et 3, non refaites en phase 4a (le rendu de
+  l'accueil y est resté identique au pixel).
+- **Événements, sur le build final** (Chromium, 1 440 px, envois décodés, rien n'est
+  parti vers PostHog) : chaque section vue une fois avec son rang (`hero` 1, `features`
+  4, `practice-journeys` 6, `founder` 12, `presentation-video` 3, `partners` 8,
+  `testimonials` 7, `pricing` 9, `faq` 10, `guides` 13, `final-cta` 14, `footer` 11) ;
+  `landing_cta_clicked` pour `cta_signup_header`, `cta_signup_hero`, `cta_simulator`,
+  `cta_signup_journey_section`, `cta_signup_pricing` (`yearly`, `monthly`),
+  `cta_signup_final` ; un `landing_journey_profile_selected` par profil ;
+  `calendly_clicked` pour `pour_qui`, `fondateur`, `faq_accueil` ; `landing_video_play`.
+  Non rejoués ici : les deux CTA de l'en-tête mobile.
+- **Captures regardées** après nettoyage, écran par écran, à 390 et 1 440 px : page
+  complète, aucune image manquante, aucune erreur de script.
+
+#### Non testé
+
+- **Safari et Firefox** : aucun des deux moteurs n'était sur la machine. À regarder en
+  priorité : `:has()` sur les radios (onglets, profils), la pastille floutée au-dessus
+  de l'eau qui bouge (§ 9.dn), les animations liées au défilement (absentes de Firefox :
+  l'indice de défilement des témoignages ne s'affiche pas et la mascotte des tarifs
+  passe sous l'en-tête, prévu), `content-visibility`, le tableau en grille sous 560 px,
+  `box-decoration-break`, `text-wrap-style`.
+- **Android** : sans Arial, le repli de police est Roboto, sans ajustement ; les seuils
+  de coupure du premier écran n'y garantissent rien tant que la police n'est pas là.
+- **Lecteur d'écran réel** (VoiceOver, NVDA, TalkBack) : seul l'arbre d'accessibilité
+  de Chromium a été relu. **Vrai téléphone** : aucun.
+- Aperçu Vercel : Lighthouse n'y a pas été lancé (mesures locales seulement).
+
+#### À faire le jour de la mise en ligne
+
+1. Pousser la branche, puis attendre l'aperçu Vercel de son dernier commit. Les
+   commits de la phase 4a n'étaient pas poussés quand cette entrée a été écrite : un
+   aperçu plus ancien ne montre ni les chiffres du 10 novembre ni la feuille allégée.
+2. Regarder cet aperçu-là sur Safari (iPhone et Mac), Firefox et un Android.
+3. `git fetch origin`, puis comparer et rebaser contre `origin/main`, jamais contre le
+   `main` local, qui peut être en retard (le 10 novembre, celui de la machine de
+   travail avait trois commits de retard : 92 fichiers d'écart au lieu de 82). Si
+   `origin/main` a avancé : rebaser, puis `npm run build` et
+   `node scripts/verify-site.mjs` : 0 erreur.
+4. Prendre la lettre de cette entrée (la première libre après § 9.ea) et remplacer
+   « 9.eb » dans son titre (fait le 10 novembre 2026). Les commentaires du code citent « MIGRATION.md § 9 » sans
+   lettre.
+5. Dater les pages dont le texte change, dans `src/lib/pages-lastmod.ts`, à la date
+   réelle de mise en ligne (note dans le fichier) : « / », et aussi `/faq` et
+   `/tarifs`, qui n'avaient pas de `lastmod`. `/guide-declarations` garde sa date de
+   revue. Si la mise en ligne n'est pas le 10 novembre, refaire les deux `count(*)` et
+   corriger chiffres et date dans `accueil/Fondateur.astro`. Build et contrôle à
+   nouveau.
+6. Fusionner, puis annoter PostHog le jour même : « nouvelle accueil », avec les
+   séries qui s'arrêtent, commencent ou changent de sens (liste plus haut).
+7. Relever la Search Console de l'accueil (requêtes, impressions, positions sur 3
+   mois) : c'est la référence de la fenêtre d'observation.
+8. Sous sept jours : phase 5a (en-tête, pied et police sur tout le site). Puis trois à
+   quatre semaines sans toucher `title`, description, H1, texte ni lien interne d'une
+   page indexée.
+
+#### Reste ouvert
+
+- **Témoignages** : statut, ville et accord de Sofiane B., Anaïs V., Sarah M. et
+  Émilien C. ; « Dr » devant les trois autres à confirmer ; « SOS Médecins » nomme une
+  structure tierce.
+- **À confirmer par le propriétaire** : « Abonnement 100 % déductible au régime réel. »
+  (les trois derniers mots sont ajoutés : en micro-BNC rien ne se déduit) ; les deux
+  étapes nouvelles du vacataire ; la liste des six guides (`/comparatif` n'a qu'un lien
+  depuis l'accueil, dans le pied) ; le retrait de la question sur la collaboration ;
+  les deux faits qui n'ont qu'une trace écrite (« l'offre se choisit à l'inscription »,
+  « pas de cumul de remises » : voir « Textes des autres pages »).
+- **H1 de l'accueil, à trancher avant la fusion** : il change dès la mise en ligne
+  (« Ton activité médicale, sous contrôle. » devient « Logiciel de gestion pour médecin
+  remplaçant : Sors la tête de l'eau »), comme le plan le prévoit depuis la phase 2 et
+  comme le premier écran a été validé, alors que `title` et description attendent la
+  phase 4c. Garder l'ancien H1 jusque-là voudrait dire changer le titre dessiné du
+  premier écran.
+- **« Sans engagement »** sous le bouton du bloc « Pour qui » (repris de l'ancienne
+  accueil) : ce bouton mène à une inscription où l'on choisit aussi l'offre annuelle,
+  qui engage 12 mois. Même formule sous des boutons d'essai de `/essai`,
+  `/qui-sommes-nous`, `/comparatif`, `/guide-declarations`, de la calculette et des
+  articles : non touchée, à faire confirmer ou préciser (« en mensuel »).
+- **Phase 4c** : `title`, description, `WebSite.description`, `VideoObject.description`,
+  première ligne de `llms.txt`, image de partage de l'accueil.
+- **Phase 5a** : `HeaderDA` et `FooterDA` remplacent `Header` et `Footer`, le contrôle
+  « 4 quater bis » part. À traiter alors, au clavier : le menu Ressources n'a ni
+  `aria-expanded` ni fermeture par Échap, le tiroir ne retient pas le focus (comportement
+  hérité de `Header.astro` ; c'est du JS en plus, à inscrire dans l'invariant « zéro JS »).
+- **Ailleurs sur le site** : `/tarifs` ne parle ni du tarif interne ni des 6 mois ; le
+  PDF du guide (page 25) dit « pendant tout ton internat », sans les docteurs juniors.
+  À corriger avant la phase 5a ou après la fenêtre d'observation, pas pendant.
+- **Images supprimées** : les 21 adresses de `public/lovable-uploads/` répondent 404.
+  Si l'une d'elles sert ailleurs (signature d'e-mail, publication), restaurer ce
+  fichier.
+- **Compte de démonstration** : un calendrier « Avril 2026 » à côté d'un relevé « Année
+  2025 », sur une page mise en ligne en novembre. Vraisemblance fiscale non recoupée
+  avec le simulateur.
+- **Images** : demander au CRP-IMG un logo propre et plus grand (source de 300 px) ; la
+  mascotte de dos ne fait que 431 px de large. Trois fichiers de `src/assets/`
+  (`cnom-logo.jpg`, `cnom-logo-adjoint.jpg`, `google-calendar-logo.png`) et quinze de
+  `public/lovable-uploads/` n'étaient déjà cités nulle part sur `main` : non touchés.
+- **Premier écran** : entre 906 et 1 026 px de large, le titre tient sur une ligne avec
+  la police et sur deux avec le repli (la scène bouge si la police arrive tard). La
+  bannière cookies, en bas à gauche, recouvre la fiche décorative « Avril 2026 » de
+  1 180 à 1 700 px de large jusqu'au choix du visiteur.
+- **Film** : quand la lecture démarre, le focus retombe sur `<body>` ; pas de piste
+  `<track>` (script et balise non touchés).
+- `hippodoc-corpus/`, que CLAUDE.md demande de lire, n'est pas dans le dépôt.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

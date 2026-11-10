@@ -1,0 +1,400 @@
+---
+/**
+ * Tarifs (DA 2026, phase 3, MIGRATION.md § 9). Feuille « ciel », entre les
+ * témoignages et les questions. Remplace home/PricingSection.astro et reprend
+ * de home/CtaBanner.astro le seul bloc RSPM (deux composants supprimés en
+ * phase 4a, à lire dans l'historique git).
+ *
+ * - `id="pricing"` : cible du lien « Tarifs » du menu sur TOUT le site, et de
+ *   deux réponses de la FAQ (« la section tarifs juste au-dessus »).
+ * - Mesure : `data-landing-section="pricing"` (série et `landing_pricing_viewed`
+ *   continuent) ; les deux liens d'inscription gardent `cta_signup_pricing` et
+ *   leurs trois attributs (`plan`, `period`, `promo`) ; `landing_special_offer_intern`
+ *   reste sur le <details> de l'offre interne, `landing_pricing_comparison_toggle`
+ *   sur le <summary> du détail des offres. `landing_pricing_rspm_toggle` est nouveau.
+ * - Trois plis natifs, zéro JS : l'offre interne (dans sa carte, qui s'allonge
+ *   seule à l'ouverture), « Détail des offres » (les neuf autres lignes
+ *   « inclus », le tableau avec « Engagement : 12 mois », le lien vers /tarifs)
+ *   et le RSPM. Tout leur texte est dans le HTML.
+ * - Hébergement : « Union européenne » (décision du propriétaire). C'est la
+ *   seule mention de l'hébergement sur l'accueil.
+ * - Caractères absents de la police (« ✓ », « → ») : dessinés en SVG, le
+ *   caractère reste dans le texte, masqué à l'œil (procédé de TroisCases.astro).
+ * - Mascotte féminine qui présente (décor), à partir de 1024 px : cadrée à
+ *   mi-corps, elle dépasse derrière la carte de l'offre interne (comme celle
+ *   à la tablette derrière les trois cases). Elle est dans cette carte : elle
+ *   monte en place avec elle, et ne prend aucune place dans la mise en page.
+ * - De 700 à 1023 px : l'offre annuelle sur toute la largeur (texte à gauche,
+ *   bouton à droite), les deux autres côte à côte. Trois colonnes à partir de
+ *   1024 px seulement : en dessous, « Commencer 30 jours gratuits » ne tenait
+ *   plus sur une ligne.
+ * - « 120 € de moins… » : un surlignage jaune, pas une pastille. S'il passe sur
+ *   deux lignes (320 px), chaque ligne garde son trait arrondi.
+ * - Offre interne : décision 13b du propriétaire (10 novembre 2026), internes
+ *   et docteurs juniors, 10 € par mois jusqu'à la fin de l'internat. Dit tel
+ *   quel sur la carte, dans son pli et dans la FAQ (src/data/faqAccueil.ts).
+ * - Carte bancaire : décision 14a du propriétaire (10 novembre 2026, nuit), elle
+ *   EST demandée à l'inscription, et rien n'est débité pendant l'essai. Ne
+ *   jamais écrire « sans carte bancaire » (ni ici, ni dans le premier écran,
+ *   ni dans la FAQ).
+ * - Sur ordinateur, la mascotte ne passe plus sous l'en-tête collant : là où le
+ *   navigateur sait lier une animation au défilement, elle descend derrière la
+ *   carte à mesure que l'en-tête approche (voir `.guide`, plus bas).
+ * - Titres : un <h2>, puis des <h3> (les trois offres, « Inclus », le RSPM).
+ */
+import '@/styles/da.css';
+import { APP_URL } from '@/lib/site';
+import Mascotte from './Mascotte.astro';
+
+/* « Inclus dans toutes les offres » (ancien home/PricingSection.astro). Six lignes
+   visibles ; « contrats » et « factures avec notes » n'en font plus qu'une,
+   « hébergées en France » devient « dans l'Union européenne », « Abonnement
+   100 % déductible » passe dans la mention du bas. */
+const inclus = [
+  'Super-Net calculé en temps réel',
+  'Calcul URSSAF, CARMF et impôts en temps réel',
+  'Déclarations fiscales guidées',
+  'Planning centralisé avec synchro Google',
+  'Génération rapide de contrats et de factures',
+  'Données sécurisées et hébergées dans l’Union européenne',
+];
+/* Les neuf autres lignes de la même liste, mot pour mot, dans « Détail des offres ». */
+const inclusSuite = [
+  'Dashboard clair et intuitif',
+  'Micro-BNC et régime réel intégrés',
+  'RSPM et PAMC pris en charge',
+  'Gestion activité mixte libéral et salariat',
+  'PDSA et revenus exonérés intégrés',
+  'Suivi des charges et amortissements',
+  'Statistiques et exports comptables instantanés',
+  "Forum privé d'entraide entre médecins",
+  'Support réactif et humain',
+];
+
+/* Tableau « Détail des offres ». `true` : une coche (lue « Oui ») ; le tiret
+   de « Économie » est lu « Aucune ». Espace insécable entre un
+   nombre et son unité : le reste de la cellule peut passer à la ligne. */
+const comparatif: { ligne: string; mensuel: string | true; annuel: string | true }[] = [
+  { ligne: 'Prix par mois', mensuel: '29\u00a0€', annuel: '19\u00a0€' },
+  { ligne: 'Facturation', mensuel: 'Mensuelle', annuel: '228\u00a0€ une fois par an' },
+  { ligne: 'Économie', mensuel: '—', annuel: '−34\u00a0% (120\u00a0€/an)' },
+  { ligne: 'Engagement', mensuel: 'Aucun', annuel: '12 mois' },
+  { ligne: 'Essai gratuit', mensuel: true, annuel: true },
+  { ligne: 'Toutes les fonctionnalités', mensuel: true, annuel: true },
+];
+
+/* RSPM (ancien home/CtaBanner.astro) : seuil, puis ce qui s'applique. */
+const rspm = [
+  { chip: 'ok', seuil: "jusqu'à 19\u00a0000\u00a0€", suite: '13,5\u00a0%' },
+  { chip: 'wait', seuil: 'au-delà', suite: '21,2\u00a0% sur la part au-dessus' },
+  { chip: 'plan', seuil: 'sortie', suite: 'PAMC (régime classique) au 1er janvier, après 2 ans de suite >\u00a019\u00a0000\u00a0€ ou 1 an >\u00a038\u00a0000\u00a0€' },
+];
+---
+
+<section data-landing-section="pricing" id="pricing" class="band air da-bloc tf" aria-labelledby="tarifs-titre">
+  <div class="wrap">
+    <div class="band-head">
+      <h2 id="tarifs-titre">Tarifs&nbsp;: un outil pro, à un prix humain</h2>
+      <p class="lead">30 jours gratuits. Ta carte bancaire est demandée à l’inscription, mais rien n’est débité pendant l’essai.</p>
+    </div>
+
+    <div class="plans">
+      <article class="offer main">
+        <h3 id="offre-annuel">Annuel</h3>
+        <p class="price"><b class="aff num">19 €</b>{' '}<span>par mois</span></p>
+        <p>228&nbsp;€ facturés une fois par an</p>
+        <p class="save"><span>120&nbsp;€ de moins par an que le mensuel</span></p>
+        <a
+          class="btn btn-brand"
+          href={`${APP_URL}/auth?tab=signup&plan=yearly`}
+          data-track="cta_signup_pricing"
+          data-track-plan="yearly"
+          data-track-period="yearly"
+          data-track-promo="false"
+          aria-describedby="offre-annuel"
+        >Commencer 30 jours gratuits</a>
+      </article>
+
+      <article class="offer">
+        <h3 id="offre-mensuel">Mensuel</h3>
+        <p class="price"><b class="aff num">29 €</b>{' '}<span>par mois</span></p>
+        <p>29&nbsp;€ facturés chaque mois</p>
+        <p>Sans engagement</p>
+        <a
+          class="btn btn-line"
+          href={`${APP_URL}/auth?tab=signup&plan=monthly`}
+          data-track="cta_signup_pricing"
+          data-track-plan="monthly"
+          data-track-period="monthly"
+          data-track-promo="false"
+          aria-describedby="offre-mensuel"
+        >Commencer 30 jours gratuits</a>
+      </article>
+
+      <article class="offer interne">
+        <Mascotte pose="f-presente" class="guide" largeurs={[250, 375, 500]} sizes="250px" />
+        <h3>Interne et docteur junior</h3>
+        <p class="price"><b class="aff num">10 €</b>{' '}<span>par mois</span></p>
+        <p>Jusqu’à la fin de l’internat</p>
+        <p>30 jours gratuits</p>
+        {/* Le texte de l'offre s'ouvre dans la carte : /tarifs ne parle pas des internes. */}
+        <details data-ph="landing_special_offer_intern">
+          <summary class="btn btn-line">
+            Voir l’offre interne
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 6 4.5 4.5L12.5 6"/></svg>
+          </summary>
+          <div class="more">
+            <p>Tu es encore en internat&nbsp;? On sait que c'est pas facile financièrement. Hippodoc t'accompagne avec un tarif adapté.</p>
+            <p><b>Avantage&nbsp;: 10&nbsp;€/mois au lieu de 29&nbsp;€ + 30 jours d'essai gratuit</b></p>
+            <p>Internes et docteurs juniors, jusqu’à la fin de l’internat</p>
+            <p><b>Justificatifs acceptés&nbsp;:</b></p>
+            <ul>
+              <li>Carte d'étudiant en cours de validité</li>
+              <li>Attestation d'inscription en internat</li>
+              <li>Certificat de scolarité</li>
+            </ul>
+            <p>Comment en bénéficier&nbsp;? Écris-nous à <a class="lien" href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a> — on te répond très vite avec ton code promo personnalisé&nbsp;!</p>
+          </div>
+        </details>
+      </article>
+    </div>
+
+    <div class="incl">
+      <h3>Inclus dans toutes les offres</h3>
+      <ul class="checks" role="list">
+        {inclus.map((texte) => (
+          <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>{texte}</li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="plis">
+      <details class="qa">
+        <summary data-ph="landing_pricing_comparison_toggle">
+          <span class="qa-t">Détail des offres</span>
+          <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
+        </summary>
+        <div class="qa-in">
+          <ul class="checks" role="list">
+            {inclusSuite.map((texte) => (
+              <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>{texte}</li>
+            ))}
+          </ul>
+          {/* Les rôles sont écrits : sous 560 px la feuille range chaque ligne
+              en grille (l'intitulé, puis les deux valeurs dessous), et un
+              navigateur peut alors oublier que c'est un tableau. */}
+          <table role="table">
+            <thead role="rowgroup">
+              <tr role="row"><th role="columnheader" scope="col" class="carac">Caractéristiques</th><th role="columnheader" scope="col">Mensuel</th><th role="columnheader" scope="col">Annuel</th></tr>
+            </thead>
+            <tbody role="rowgroup">
+              {comparatif.map((l) => (
+                <tr role="row">
+                  <th role="rowheader" scope="row">{l.ligne}</th>
+                  {[l.mensuel, l.annuel].map((v) => (
+                    <td role="cell">
+                      {v === true
+                        ? <Fragment><span class="sr">Oui</span><svg class="oui" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg></Fragment>
+                        : v === '—'
+                          ? <Fragment><span aria-hidden="true">—</span><span class="sr">Aucune</span></Fragment>
+                          : v}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="vers"><a class="lien" href="/tarifs">Voir la page tarifs complète</a></p>
+        </div>
+      </details>
+
+      <details class="qa">
+        <summary data-ph="landing_pricing_rspm_toggle">
+          <span class="qa-t">Compatible RSPM&nbsp;· En savoir plus</span>
+          <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
+        </summary>
+        <div class="qa-in rspm">
+          <h3>Mode RSPM Intégré</h3>
+          <p>Le RSPM (Régime Simplifié des Professions Médicales) propose des cotisations sociales réduites et une gestion administrative simplifiée, avec des taux progressifs&nbsp;:</p>
+          <ul role="list">
+            {rspm.map((r) => (
+              <li>
+                <span class={`chip ${r.chip}`}>{r.seuil}</span>{' '}
+                <span class="suite"><span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>{' '}{r.suite}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="pour">Idéal si tu débutes ou en début d'activité libérale</p>
+        </div>
+      </details>
+    </div>
+
+    <p class="fine">Tous nos prix sont TTC, sans frais cachés. Abonnement 100&nbsp;% déductible au régime réel.</p>
+  </div>
+</section>
+
+<style>
+  .num { white-space: nowrap; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .band-head { margin-bottom: 36px; }
+  /* La mascotte qui présente les offres : à partir de 1024 px (voir plus bas). */
+  .guide { display: none; }
+
+  /* Les trois offres */
+  .plans { position: relative; display: grid; gap: 14px; }
+  .offer { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 28px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .offer h3 { margin: 0; font-family: var(--text); font-size: 18px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
+  .offer p { margin: 0; font-size: 16px; color: var(--ink-2); }
+  .offer .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
+  .price b { --corps: 64px; color: var(--ink); }
+  .offer.main { --focus: #FFFFFF; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .offer.main p { color: var(--on-deep-2); }
+  .offer.main .price b { color: var(--paper); }
+  /* Un surlignage, pas une pastille : sur deux lignes (320 px), chaque ligne
+     garde son trait jaune arrondi au lieu de former un pavé. */
+  .offer.main .save { line-height: 1.75; }
+  .save span { padding: 3px 9px; border-radius: 9px; background: var(--sun); color: var(--ink); font-size: 14.5px; font-weight: var(--tb); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  /* Les boutons au pied des cartes, sur une même ligne, libellé sur une ligne. */
+  .offer > .btn, .offer > details { margin-top: auto; }
+  .offer > .btn, .offer summary { padding: 8px 14px; text-align: center; }
+  .offer > p:last-of-type { margin-bottom: 18px; }
+
+  /* L'offre interne : le bouton ouvre le texte dans la carte */
+  .interne summary { display: flex; gap: 8px; width: 100%; list-style: none; }
+  .interne summary::-webkit-details-marker { display: none; }
+  .interne summary svg { flex: none; }
+  .interne details[open] summary svg { rotate: 180deg; }
+  .more { display: flex; flex-direction: column; gap: 10px; padding-top: 22px; }
+  .more p, .more li { font-size: 15.5px; line-height: 1.5; }
+  .more b { color: var(--ink); }
+  .more ul { margin: -4px 0 0; padding-left: 1.2em; list-style: disc; color: var(--ink-2); }
+
+  /* Inclus dans toutes les offres */
+  .incl { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .incl h3 { margin: 0 0 16px; font-family: var(--text); font-size: 16.5px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
+  .checks { display: grid; gap: 10px 40px; margin: 0; padding: 0; list-style: none; font-size: 16.5px; color: var(--ink-2); }
+  .checks li { display: flex; align-items: flex-start; gap: 10px; }
+  .checks svg { flex: none; margin-top: 5px; color: var(--brand); }
+
+  /* Les deux plis : détail des offres, RSPM */
+  .plis { margin-top: 32px; }
+  .plis .qa:last-child { margin-bottom: 0; }
+  .qa-in { display: flex; flex-direction: column; gap: 22px; }
+  .qa-in .checks { padding-top: 4px; }
+  /* Le tableau. Sous 560 px, chaque ligne devient une grille de deux colonnes :
+     l'intitulé sur toute la largeur, les deux valeurs dessous, sous « Mensuel »
+     et « Annuel » (trois colonnes ne tiennent pas dans 236 px). L'intitulé de la
+     première colonne reste lu, il n'est plus affiché. */
+  table { width: 100%; max-width: 46rem; border-spacing: 0; font-size: 16px; }
+  th, td { padding: 12px 16px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th:first-child { padding-left: 0; }
+  th:last-child, td:last-child { padding-right: 0; }
+  thead th { padding-top: 0; border-top: 0; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
+  tbody th { font-weight: var(--tw); color: var(--ink-2); }
+  td { font-weight: var(--tb); color: var(--ink); }
+  @media (max-width: 559px) {
+    table, thead, tbody { display: block; }
+    tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+    th, td { padding: 0; border-top: 0; }
+    thead th { padding-bottom: 10px; }
+    .carac { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    tbody th { grid-column: 1 / -1; padding-top: 10px; border-top: 1px solid var(--line); font-size: 15px; }
+    td { padding-bottom: 10px; }
+  }
+  .oui { display: block; margin-top: 3px; color: var(--ok); }
+  .vers { align-self: flex-start; }
+  .rspm { gap: 14px; }
+  .rspm h3 { margin: 0; font-family: var(--text); font-size: 17px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
+  .rspm ul { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .rspm li { font-size: 16.5px; line-height: 1.7; color: var(--ink-2); }
+  .rspm .chip { margin-right: 4px; font-size: 14.5px; }
+  .fl svg { display: inline-block; vertical-align: -1px; color: var(--ink-3); }
+  .pour { padding-top: 14px; border-top: 1px solid var(--line); }
+
+  .fine { margin: 20px 0 0; font-size: 14.5px; color: var(--ink-2); }
+
+  /* Téléphone : cartes moins hautes, intervalles resserrés (la page est longue). */
+  @media (max-width: 559px) {
+    .band-head { margin-bottom: 26px; }
+    .plans { gap: 12px; }
+    .offer { gap: 4px; padding: 22px 24px 24px; }
+    .price b { --corps: 54px; }
+    .offer > p:last-of-type { margin-bottom: 14px; }
+    .incl { margin-top: 30px; padding-top: 24px; }
+    .plis { margin-top: 26px; }
+  }
+  /* Petits téléphones : « Commencer 30 jours gratuits » tient sur une ligne. */
+  @media (max-width: 374px) {
+    .offer { padding: 24px 22px; }
+    .offer > .btn, .offer summary { padding-inline: 8px; font-size: 15.5px; }
+  }
+  @media (min-width: 640px) {
+    .checks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  /* Tablette : l'offre annuelle sur toute la largeur, le texte à gauche et le
+     bouton à droite ; les deux autres côte à côte. Ouverte, la carte interne
+     s'allonge seule (`align-items: start`). */
+  @media (min-width: 700px) and (max-width: 1023px) {
+    .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .offer.main { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 24px; }
+    .offer.main > * { grid-column: 1; }
+    .offer.main > .btn { grid-column: 2; grid-row: 1 / span 4; margin: 0; padding-inline: 20px; }
+    .offer.main > p:last-of-type { margin-bottom: 0; }
+    .offer:not(.main) > .btn, .offer summary { padding-inline: 8px; }
+  }
+  @media (min-width: 900px) {
+    .checks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1024px) {
+    /* Deux rangées : la première a la hauteur des cartes, la seconde (souple)
+       n'existe que pour l'offre interne, qui couvre les deux. Fermée, sa carte a
+       la hauteur des deux autres ; ouverte, elle s'allonge seule dans la seconde
+       rangée, les deux autres ne bougent pas. */
+    .plans { grid-template-columns: 1.2fr 1fr 1fr; grid-template-rows: auto 1fr; gap: 0 14px; }
+    .interne { grid-column: 3; grid-row: 1 / span 2; }
+    /* Le titre s'arrête avant elle. */
+    .band-head { max-width: calc(100% - 320px); }
+    /* Elle se tient derrière la carte interne, coupée à mi-corps par son bord
+       haut (les 52 % du haut de l'image) : à l'écart des coins arrondis, et
+       hors du flux, pour que le titre garde sa place. */
+    .guide { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; overflow: hidden; pointer-events: none; }
+  }
+  /* De 1024 à 1179 px, les colonnes sont étroites : marges des cartes et
+     boutons resserrés, pour que « Commencer 30 jours gratuits » tienne sur une
+     ligne. */
+  @media (min-width: 1024px) and (max-width: 1179px) {
+    .offer { padding: 26px 24px; }
+    .offer > .btn, .offer summary { padding-inline: 8px; font-size: 15.5px; }
+  }
+
+  /* Les cartes montent en place quand elles entrent à l'écran. Deux règles,
+     deux sélecteurs : voir FenetreProduit.astro (piège de minification). */
+  @media (prefers-reduced-motion: no-preference) {
+    .interne summary svg { transition: rotate 200ms var(--ease); }
+    @supports (animation-timeline: view()) {
+      .offer { animation: tarifs-arrive linear both; }
+      article.offer { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+    }
+  }
+  @keyframes tarifs-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+  /* La mascotte ne passe pas sous l'en-tête collant (son visage disparaissait
+     sous « Essai gratuit » quand les trois offres étaient à l'écran). Quand son
+     cadre atteint le bas de l'en-tête (60 px à 10 px du haut, 6 px d'air), elle
+     descend derrière la carte, d'autant que la page monte : le haut de son
+     chignon reste sous l'en-tête, puis elle disparaît derrière la carte. Le
+     cadre rogne déjà l'image à 52 % de sa hauteur (698 px sur 1342) : la
+     descendre de 52,01 % la cache en entier. Sans animation liée au
+     défilement (Firefox), ou si le visiteur a demandé moins de mouvement, elle
+     passe sous l'en-tête comme avant. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    @supports (animation-timeline: view()) and (view-timeline-inset: 76px 0px) {
+      .guide { view-timeline-name: --tarifs-guide; view-timeline-axis: block; view-timeline-inset: 76px 0px; }
+      .guide :global(img) { animation: tarifs-plonge linear both; }
+      picture.guide :global(img) { animation-timeline: --tarifs-guide; animation-range: exit 0% exit 100%; }
+    }
+  }
+  @keyframes tarifs-plonge { to { translate: 0 52.01%; } }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend sa forme à la fiche. */
+  @media (forced-colors: active) { .offer { border: 1px solid CanvasText; } }
+</style>

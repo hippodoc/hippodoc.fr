@@ -9,21 +9,36 @@
  *  - CalendlyWidget : badge flottant tiers déposé (cf. CtaBanner : CTA devenu mailto).
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
+// DA 2026, phase 1 (MIGRATION.md § 9) : en-tête et pied de la nouvelle direction
+// artistique, sur l'accueil seule. Les autres pages gardent Header et Footer.
+import HeaderDA from '@/components/da/HeaderDA.astro';
+import FooterDA from '@/components/da/FooterDA.astro';
+import ScriptTiroirDA from '@/components/da/ScriptTiroirDA.astro';
+// Même fichier que le `src` du @font-face de da.css : Vite émet une seule URL à
+// empreinte, le préchargement et la feuille de style demandent donc le même fichier.
+import policeDA from '@/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2?url';
 import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
-import HeroSection from '@/components/home/HeroSection.astro';
-import SocialProofSection from '@/components/home/SocialProofSection.astro';
-import PresentationVideoSection from '@/components/home/PresentationVideoSection.astro';
-import FeaturesSection from '@/components/home/FeaturesSection.astro';
-import CtaBanner from '@/components/home/CtaBanner.astro';
-import JourneySection from '@/components/home/JourneySection.astro';
-import TestimonialsSection from '@/components/home/TestimonialsSection.astro';
-import PartnersSection from '@/components/home/PartnersSection.astro';
-import PricingSection from '@/components/home/PricingSection.astro';
-import FaqSection from '@/components/home/FaqSection.astro';
+// DA 2026, phases 2 et 3 : le premier écran, « Sous la surface » (fenêtre
+// produit à onglets et trois grandes cases), puis les feuilles claires : « Pour
+// qui », le fondateur et le film, les syndicats et partenaires, les témoignages,
+// les tarifs, les questions, les guides, et la scène finale. Les anciennes
+// sections (`src/components/home/`) sont supprimées depuis la phase 4a.
+import Hero from '@/components/accueil/Hero.astro';
+import { imagesBuste } from '@/components/accueil/buste';
+import SousLaSurface from '@/components/accueil/SousLaSurface.astro';
+import PourQui from '@/components/accueil/PourQui.astro';
+import Fondateur from '@/components/accueil/Fondateur.astro';
+import Partenaires from '@/components/accueil/Partenaires.astro';
+import Temoignages from '@/components/accueil/Temoignages.astro';
+import Tarifs from '@/components/accueil/Tarifs.astro';
+import Questions from '@/components/accueil/Questions.astro';
+import Guides from '@/components/accueil/Guides.astro';
+import SceneFinale from '@/components/accueil/SceneFinale.astro';
+
+// Mêmes fichiers que le <picture> de Hero.astro (même fabrique, mêmes URL).
+const buste = await imagesBuste();
 
 const title = 'Hippodoc — Cockpit financier des médecins | Super-Net';
 const description =
@@ -39,7 +54,7 @@ const websiteSchema = {
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 
-// 11 questions/réponses — verbatim, identiques à celles rendues par FaqSection.astro.
+// 10 questions/réponses — verbatim, identiques à celles rendues par accueil/Questions.astro.
 const faqPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -53,7 +68,7 @@ const faqPageSchema = {
 };
 
 // VideoObject — mêmes valeurs que la source (src/pages/landing/index.tsx) ;
-// contentUrl = vidéo auto-hébergée Supabase Storage (cf. PresentationVideoSection.astro),
+// contentUrl = vidéo auto-hébergée Supabase Storage (cf. accueil/Fondateur.astro),
 // thumbnailUrl = poster de la source servi depuis public/.
 const videoSchema = {
   '@context': 'https://schema.org',
@@ -77,16 +92,23 @@ const videoSchema = {
   ogImage="https://www.hippodoc.fr/lovable-uploads/og-image.png"
   ogImageAlt="Hippodoc — Le cockpit financier des médecins"
   jsonLd={[SOFTWARE_APPLICATION_SCHEMA, websiteSchema, faqPageSchema, videoSchema]}
+  bodyClass="da"
 >
   <Fragment slot="head">
-    <!-- Préchargement de l'image LCP du Hero (AVIF) — mirroré depuis index.html de la source. -->
+    <!-- Police de la DA : préchargée, sinon elle n'est découverte qu'après la feuille de style.
+         `crossorigin` obligatoire : sans lui, le fichier est téléchargé deux fois. -->
+    <link rel="preload" as="font" type="font/woff2" href={policeDA} crossorigin />
+    <!-- Barre du navigateur mobile : le ciel de la DA (jeton sky-1). -->
+    <meta name="theme-color" content="#C9DEFF" />
+    <!-- Préchargement du buste de la mascotte, l'image du premier écran. Pas de `href` :
+         un navigateur qui lit l'AVIF mais pas `imagesrcset` (Safari 16.4 à 17.1)
+         téléchargerait une largeur que le <picture> ne choisira peut-être pas. -->
     <link
       rel="preload"
       as="image"
       type="image/avif"
-      href="/lovable-uploads/hero-dashboard-4-960.avif"
-      imagesrcset="/lovable-uploads/hero-dashboard-4-640.avif 640w, /lovable-uploads/hero-dashboard-4-960.avif 960w, /lovable-uploads/hero-dashboard-4.avif 1920w"
-      imagesizes="(max-width: 768px) 100vw, 50vw"
+      imagesrcset={buste.avif.srcSet.attribute}
+      imagesizes={buste.sizes}
       fetchpriority="high"
     />
   </Fragment>
@@ -99,21 +121,25 @@ const videoSchema = {
   </a>
 
   <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white">
-    <Header />
+    {/* La pastille survole le ciel du premier écran, qui lui réserve le haut. */}
+    <HeaderDA variante="flottante" />
 
     <main id="contenu-principal" tabindex="-1" class="flex-1">
-      <HeroSection />
-      <SocialProofSection />
-      <PresentationVideoSection />
-      <FeaturesSection />
-      <CtaBanner />
-      <JourneySection />
-      <TestimonialsSection />
-      <PartnersSection />
-      <PricingSection />
-      <FaqSection />
+      <Hero />
+      <SousLaSurface />
+      <PourQui />
+      <Fondateur />
+      <Partenaires />
+      <Temoignages />
+      <Tarifs />
+      <Questions />
+      <Guides />
+      <SceneFinale />
     </main>
 
-    <Footer />
+    {/* Les trois logos des soutiens sont dans le bloc Partenaires : le pied ne les répète pas. */}
+    <FooterDA soutiens={false} />
+    {/* Micro-script du tiroir mobile de l'en-tête, hors du flux de l'en-tête. */}
+    <ScriptTiroirDA />
   </div>
 </BaseLayout>

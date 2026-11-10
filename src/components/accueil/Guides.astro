@@ -1,0 +1,73 @@
+---
+/**
+ * Guides et simulateurs (DA 2026, phase 3, MIGRATION.md § 9). Feuille « ciel »,
+ * dernière avant la scène finale. Bloc nouveau : six liens internes, en chemins
+ * relatifs, vers les trois outils en accès libre et trois articles.
+ *
+ * - Mesure : `data-landing-section="guides"` et `id="guides"` (série nouvelle),
+ *   un `data-ph="landing_guide_<nom>"` par lien pour l'autocapture.
+ * - Choix des trois articles : ceux que la page ne lie pas déjà depuis une
+ *   réponse de la FAQ ou depuis le pied, et qui répondent aux questions les
+ *   plus posées par les remplaçants (remplacement régulier, appel de
+ *   cotisations qui grimpe) et par les internes (licence de remplacement).
+ * - Titres des articles : leur titre. Sous-titres : le début de leur
+ *   description. Les trois outils gardent les textes de la maquette validée.
+ * - La flèche est un dessin (la police n'a pas ce caractère).
+ */
+import '@/styles/da.css';
+
+/* Espace insécable avant « : » et « ? » : pas de ponctuation seule en début de ligne. */
+const guides = [
+  { ph: 'simulateur', href: '/simulateur', titre: 'Simulateur Super-Net', texte: 'Ton revenu après URSSAF, CARMF et impôts' },
+  { ph: 'declarations', href: '/guide-declarations', titre: 'Guide des déclarations', texte: '2035, 2042-C PRO, DSFU\u00a0: quoi remplir, et où' },
+  { ph: 'remplacant', href: '/guide', titre: 'Guide du remplaçant', texte: 'Le PDF 2026-2027' },
+  { ph: 'requalification', href: '/blog/remplacement-regulier-requalification', titre: 'Remplacement régulier\u00a0: le risque de requalification', texte: 'Remplacer le même médecin chaque semaine peut être requalifié en collaboration.' },
+  { ph: 'effet_ciseaux', href: '/blog/effet-ciseaux-regularisation-urssaf-medecin', titre: "Régularisation URSSAF\u00a0: l'effet ciseaux expliqué", texte: 'Bonne année, puis appel de cotisations qui double\u00a0?' },
+  { ph: 'licence', href: '/blog/obtenir-sa-licence-de-remplacement', titre: 'Licence de remplacement interne\u00a0: dossier et délais', texte: 'Conditions, pièces du dossier, envoi au CDOM' },
+];
+---
+
+<section data-landing-section="guides" id="guides" class="band air da-bloc gd" aria-labelledby="guides-titre">
+  <div class="wrap">
+    <div class="band-head">
+      <h2 id="guides-titre">Guides et simulateurs pour médecins remplaçants</h2>
+      <p class="lead">Pour aller plus loin, en accès libre.</p>
+    </div>
+    <ul class="guides" role="list">
+      {guides.map((g) => (
+        <li>
+          <a class="guide" href={g.href} data-ph={`landing_guide_${g.ph}`}>
+            {/* « Super-Net » ne se coupe pas au trait d'union (la police n'a pas de trait d'union insécable). */}
+            <span class="txt"><b>{g.titre.split('Super-Net').map((m, i) => <Fragment>{i > 0 && <span class="num">Super-Net</span>}{m}</Fragment>)}</b>{' '}<small>{g.texte}</small></span>
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11h14M12 5l6 6-6 6"/></svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .num { white-space: nowrap; }
+  .guides { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .guide { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 100%; min-height: 88px; padding: 16px 16px 16px 24px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; }
+  .txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .guide b { font-size: 18px; line-height: 1.35; }
+  .guide small { font-size: 15.5px; line-height: 1.5; color: var(--ink-2); }
+  .guide svg { flex: none; width: 44px; height: 44px; padding: 11px; border-radius: 50%; background: var(--sun); }
+  /* Petits téléphones : un peu plus de place pour le texte. */
+  @media (max-width: 359px) {
+    .guide { gap: 14px; padding-left: 20px; }
+  }
+  @media (min-width: 900px) {
+    /* Rangées de même hauteur : une seule carte à titre long allongeait la sienne. */
+    .guides { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 14px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .guide, .guide svg { transition: translate 200ms var(--ease); }
+    .guide:hover { translate: 0 -3px; }
+    .guide:hover svg { translate: 3px 0; }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend sa forme à la fiche. */
+  @media (forced-colors: active) { .guide { border: 1px solid CanvasText; } }
+</style>

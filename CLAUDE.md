@@ -1,7 +1,7 @@
 # CLAUDE.md — hippodoc.fr (site public)
 
 Site marketing public d'Hippodoc (SaaS français pour médecins remplaçants), reconstruit en
-**Astro 5 statique** depuis une SPA React/Vite Lovable pour le SEO (HTML complet servi aux
+**Astro 7 statique** depuis une SPA React/Vite Lovable pour le SEO (HTML complet servi aux
 crawlers). L'application privée vit sur **app.hippodoc.fr** (dépôt séparé, SPA Lovable
 `roshangbd/hippodocfinary` — lecture seule, ne jamais y pousser). Historique complet de la
 migration, table des redirections et TODO(owner) : voir **MIGRATION.md**.
@@ -28,17 +28,63 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 - **Contenu français verbatim** — le wording produit/articles ne se « réécrit » pas.
   Tout ajout/modification de contenu doit être flaggé dans MIGRATION.md §9.
 - **Zéro JS client hors** : îlots des outils (simulateur, calculette, boussole, carrousel
-  blog), PostHog, `ThirdPartyScripts.astro`, le micro-script inline de `Header.astro`
-  (fermeture du tiroir mobile au clic d'une ancre — voir MIGRATION.md §9), le script inline
-  de tête de `BaseLayout.astro` (jetons de connexion Supabase renvoyés vers l'app —
-  MIGRATION.md § 9.ea ; à garder en premier dans `<head>`), et la recherche
-  de `/blog` (script de page ~1 Ko ; module `src/lib/blog-search.ts` et index
+  blog), PostHog, `ThirdPartyScripts.astro`, le micro-script inline du tiroir mobile
+  (fermeture au clic d'une ancre — voir MIGRATION.md §9 ; dans `Header.astro` sur toutes
+  les pages sauf l'accueil, où le même script, au caractère près, est rendu après le pied
+  par `src/components/da/ScriptTiroirDA.astro`), le script inline du lecteur du film de
+  l'accueil (`src/components/accueil/Fondateur.astro`, bouton de lecture — MIGRATION.md
+  § 9.t), le script inline de tête de `BaseLayout.astro` (jetons de connexion Supabase
+  renvoyés vers l'app — MIGRATION.md § 9.ea ; à garder en premier dans `<head>`), et la
+  recherche de `/blog` (script de page ~1 Ko ; module `src/lib/blog-search.ts` et index
   `/blog/recherche.json` chargés au premier focus — MIGRATION.md § 9.db). Les interactions
-  des pages statiques sont CSS-only (radios/checkbox) ou natives (`<details>/<summary>`).
+  des pages statiques sont CSS-only (radios/checkbox, `:has()`) ou natives
+  (`<details>/<summary>`) : onglets, profils, plis et pause du décor de l'accueil compris.
 - **Radix ne SSR pas le contenu fermé** — un Accordion/Collapsible Radix fermé ne livre
   PAS son texte dans le HTML statique. Pour tout contenu porteur de SEO : `<details>` natif.
 - **Lighthouse ≥ 95** (perf/SEO/a11y/BP) sur `/`, `/simulateur` et un article. Contraste :
   `text-hippo-500` interdit sur fond blanc en petit texte (utiliser `hippo-600`).
+
+## Accueil — DA 2026
+
+L'accueil est la seule page dans la nouvelle direction artistique (MIGRATION.md § 9,
+entrée « DA 2026 »). Les autres pages gardent Tailwind, `Header.astro` et `Footer.astro`
+jusqu'à la phase 5a.
+
+- **Feuille** : `src/styles/da.css` (police, jetons, `.btn`, `.wrap`, feuilles `.band`,
+  plis `.qa`, en-tête `hd-*`, pied `ft-*`). Importée par les composants `da/` et
+  `accueil/` seulement, ni par BaseLayout ni par `global.css`. Tout vit sous `.da`, posée
+  sur `<body>` par la prop `bodyClass="da"` de BaseLayout : jetons et fond de page. La
+  typographie, les règles de titres et l'anneau de focus sont portés par `.da-bloc`, à
+  poser sur chaque bloc (en-tête, pied, section).
+- **Composants** : `src/components/accueil/` (un par section, styles dans son `<style>`
+  scopé ; données dans `src/data/`), `src/components/da/` (`HeaderDA`, `FooterDA`,
+  `ScriptTiroirDA`). Aucune classe Tailwind dans ces deux dossiers.
+- ⚠️ **Pièges Tailwind dans les `<style>`** : Tailwind lit tout le fichier `.astro`,
+  `<style>` et commentaires compris. Un mot qui est aussi un nom de classe
+  (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille globale :
+  son empreinte change, donc le HTML de toutes les pages. Écrire `text-wrap-style`,
+  `cubic-bezier(…)`, et vérifier après build que `BaseLayout.*.css` n'a pas changé de nom.
+  Autre piège, à la minification : `animation` et `animation-timeline` dans la même règle
+  sont fusionnés en une déclaration invalide ; écrire la ligne de temps dans une seconde
+  règle, sous un autre sélecteur.
+- **Police** : un seul woff2 (`src/assets/fonts/`, sous-ensemble latin), préchargé par
+  `index.astro`. Un caractère hors sous-ensemble (→, ✓, émoji) se dessine en SVG, et reste
+  dans le texte dans un élément de classe `sr` (masqué à l'œil) : `verify-site.mjs`
+  échoue sinon.
+- ⚠️ **En-tête et pied en double jusqu'à la phase 5a** : `HeaderDA` et `FooterDA` sont
+  des copies rhabillées de `Header` et `Footer`. Un lien, un libellé ou un `data-ph`
+  modifié d'un côté se reporte de l'autre. `verify-site.mjs` (contrôle « 4 quater bis »)
+  compare l'accueil à `/tarifs` et échoue au premier écart non déclaré dans
+  `ECARTS_ENTETE_PIED_DA`. Une page qui utilise `HeaderDA` rend `ScriptTiroirDA` après
+  son pied.
+- **Mesure** : chaque section porte `data-landing-section`. `SECTIONS_LANDING`
+  (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
+  commit ; verify-site garde aussi les `data-track`, les ancres `#parcours`, `#pricing` et
+  `#film-presentation`, un plancher de mots et l'égalité FAQ visible / `FAQPage`.
+- **Chiffres** : journées et lieux du bloc fondateur relevés en base par `count(*)`
+  (MIGRATION.md § 9.u), datés sur la page, jamais écrits à la main. Le compte de la
+  fenêtre produit est fictif (`src/data/demoAccueil.ts`, une seule mention « Compte de
+  démonstration »).
 
 ## SEO — contrat par page
 
@@ -51,7 +97,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Blog
 
-- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (46 articles au 21 septembre 2026), schéma dans
+- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (48 articles au 10 novembre 2026), schéma dans
   `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL).
 - ⚠️ `scripts/generate-blog-content.mjs` a servi à la migration initiale depuis
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
@@ -98,7 +144,8 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (68 pages au 26 septembre 2026 : une de plus par nouvel article) puis `node scripts/verify-site.mjs`.
+1. `npm run build` (70 pages au 10 novembre 2026, dont 68 dans le sitemap : une de plus par
+   nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).
 3. Lighthouse local si perf touchée : `npx serve dist -l 4321` +

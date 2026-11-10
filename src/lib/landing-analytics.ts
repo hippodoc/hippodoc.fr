@@ -25,7 +25,20 @@ import {
   type Props,
 } from './analytics-commun';
 
-/** Ordre historique des sections (`section_order` / `section_id` dans PostHog). */
+/**
+ * Ordre historique des sections (`section_order` / `section_id` dans PostHog).
+ * Le rang d'un identifiant ne change JAMAIS : une section retirée de la page garde
+ * sa ligne ici, sinon le `section_order` de toutes les suivantes glisserait et les
+ * séries seraient coupées en deux. Les nouvelles sections s'ajoutent en fin de liste.
+ * DA 2026, phase 3 (MIGRATION.md § 9) : `social-proof` n'est plus sur la page
+ * (sa série s'arrête) ; `features` est le bloc « Sous la surface », placé juste
+ * après le premier écran, et garde le rang 4. `presentation-video` (rang 3) est
+ * maintenant un sous-bloc de `founder`, après « Pour qui ». `founder` est
+ * nouveau : son rang (12) dit seulement qu'il est arrivé en dernier, pas sa
+ * place sur la page (quatrième bloc). Même chose pour `guides` (13) et
+ * `final-cta` (14), les deux derniers blocs avant le pied. `mid-page-cta`
+ * (le bandeau du milieu de page) n'est plus sur la page : sa série s'arrête.
+ */
 const SECTIONS = [
   'hero',
   'social-proof',
@@ -38,6 +51,9 @@ const SECTIONS = [
   'pricing',
   'faq',
   'footer',
+  'founder',
+  'guides',
+  'final-cta',
 ] as const;
 
 /** Sections qui émettent EN PLUS un événement dédié, comme sur l'ancienne landing. */

@@ -1,0 +1,95 @@
+---
+/**
+ * « Sous la surface » : le deuxième bloc de l'accueil (DA 2026, phase 3,
+ * MIGRATION.md § 9). L'eau du premier écran se prolonge ici en bleu profond :
+ * la dernière vague de Hero.astro a déjà la couleur du haut de ce bloc.
+ * Dans l'ordre : la fenêtre produit à onglets, le titre et la mascotte à la
+ * tablette, les trois grandes cases, la phrase des régimes. Zéro JS.
+ *
+ * - Mesure : `data-landing-section="features"` (la série PostHog de l'ancienne
+ *   section « Fonctionnalités » continue), `id="sous-la-surface"`.
+ * - Un seul <h2>, après la fenêtre produit, qui ne porte aucune balise de titre.
+ * - Les bulles du fond montent sans fin : la case « pause » du premier écran les
+ *   arrête aussi, et elles ne bougent pas si le visiteur a demandé moins de
+ *   mouvement (elles restent alors hors du cadre).
+ * - Le bloc suivant est « Pour qui » (PourQui.astro), la première feuille
+ *   claire : elle remonte de 40 px sur le bas de ce bloc, d'où les 148 px
+ *   laissés sous la phrase des régimes.
+ */
+import '@/styles/da.css';
+import FenetreProduit from './FenetreProduit.astro';
+import TroisCases from './TroisCases.astro';
+import Mascotte from './Mascotte.astro';
+
+---
+
+<section
+  data-landing-section="features"
+  id="sous-la-surface"
+  class="deep da-bloc"
+  aria-labelledby="sous-la-surface-titre"
+>
+  <div class="bubbles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <FenetreProduit />
+
+    <div class="below-head">
+      <div class="bh-copy">
+        <h2 id="sous-la-surface-titre">Sous la surface, Hippodoc calcule URSSAF, CARMF et&nbsp;impôts</h2>
+        <p>Tu factures. Hippodoc calcule le reste. Voici ce qui tourne en dessous pendant que tu soignes.</p>
+      </div>
+      <Mascotte pose="f-tablette" class="bh-mascot" largeurs={[150, 250, 300, 500]} sizes="(min-width: 900px) 250px, 150px" />
+    </div>
+
+    <TroisCases />
+
+    <p class="regime"><b>Micro-BNC ou frais réels, RSPM ou PAMC, secteur 1 ou 2, métropole, DOM ou zone aidée</b> — Hippodoc applique le bon régime, tout seul. Remplaçant, interne, vacataire ou activité mixte.</p>
+  </div>
+</section>
+
+<style>
+  .deep { --focus: #FFFFFF; position: relative; overflow: hidden; padding: 8px 0 148px; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--paper); }
+  /* Le blanc de l'anneau de focus vaut sur l'eau ; la fenêtre et les cases sont claires. */
+  .deep :global(.stage), .deep :global(.cell) { --focus: var(--ink); }
+
+  .bubbles { position: absolute; inset: 0; pointer-events: none; }
+  .bubbles i { position: absolute; bottom: -30px; width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.34); }
+  .bubbles i:nth-child(1) { left: 6%; --t: 19s; --d: 0s; }
+  .bubbles i:nth-child(2) { left: 17%; width: 7px; height: 7px; --t: 14s; --d: -6s; }
+  .bubbles i:nth-child(3) { left: 38%; width: 16px; height: 16px; --t: 23s; --d: -11s; }
+  .bubbles i:nth-child(4) { left: 61%; width: 8px; height: 8px; --t: 15s; --d: -3s; }
+  .bubbles i:nth-child(5) { left: 79%; --t: 20s; --d: -14s; }
+  .bubbles i:nth-child(6) { left: 93%; width: 18px; height: 18px; --t: 26s; --d: -8s; }
+
+  /* Le titre, sous la fenêtre, et la mascotte qui dépasse derrière les cases */
+  .below-head { position: relative; display: grid; align-items: end; gap: 8px 40px; padding-top: 84px; }
+  .bh-copy { display: flex; flex-direction: column; gap: 16px; max-width: 760px; padding-bottom: 8px; }
+  .bh-copy h2 { margin: 0; }
+  .bh-copy p { max-width: 36rem; margin: 0; font-size: 19px; line-height: 1.55; color: var(--on-deep-2); }
+  /* La mascotte dépasse derrière les cases : sa tablette et ses mains restent
+     au-dessus du bord (les 78 % du haut de l'image). */
+  .bh-mascot { justify-self: end; width: 150px; margin: -34px 6px -56px 0; }
+
+  .regime { position: relative; max-width: 820px; margin: 64px 0 0; padding-top: 24px; border-top: 1px solid var(--line-deep); font-size: 16.5px; color: var(--on-deep-2); }
+  .regime b { color: var(--paper); }
+
+  /* Téléphone : intervalles resserrés (la page est longue). */
+  @media (max-width: 559px) {
+    .deep { padding-bottom: 116px; }
+    .below-head { padding-top: 60px; }
+    .regime { margin-top: 44px; }
+  }
+  @media (min-width: 900px) {
+    .below-head { grid-template-columns: minmax(0, 1fr) 250px; padding-top: 104px; }
+    .bh-copy { padding-bottom: 56px; }
+    .bh-mascot { width: 250px; margin: 0 0 -94px; }
+  }
+
+  /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. La case
+     « pause » du premier écran (Hero.astro) arrête aussi les bulles. */
+  @media (prefers-reduced-motion: no-preference) {
+    .bubbles i { animation: surface-rise var(--t, 16s) linear var(--d, 0s) infinite; }
+    :global(body:has(.hero .pause:checked)) .bubbles i { animation-play-state: paused; }
+  }
+  @keyframes surface-rise { from { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { transform: translateY(-1500px); opacity: 0; } }
+</style>

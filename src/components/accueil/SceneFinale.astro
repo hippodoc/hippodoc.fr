@@ -1,0 +1,115 @@
+---
+/**
+ * Scène finale (DA 2026, phase 3, MIGRATION.md § 9). On remonte à la surface :
+ * le ciel et le soleil du premier écran, la mascotte de dos qui regarde le
+ * soleil, le mot « Hippodoc » posé sur l'eau devant elle, et l'eau qui
+ * descend jusqu'au pied de page (même bleu, sans couture).
+ *
+ * - Mesure : `data-landing-section="final-cta"` (série nouvelle) et
+ *   `data-track="cta_signup_final"` (nouveau). Un seul bouton : le lien de
+ *   rendez-vous de la maquette est retiré (§ 9.r : zéro clic en 150 jours sous
+ *   un bouton principal ; les trois liens Calendly de la page sont ailleurs).
+ * - Texte : la phrase de l'ancien bandeau du milieu de page, et le libellé de
+ *   bouton du premier écran. Aucun texte nouveau.
+ * - Le mot « Hippodoc » est en lettres, sans l'icône (décision du propriétaire).
+ *   C'est un décor, comme la mascotte : masqué aux lecteurs d'écran, le nom de
+ *   la marque est dans l'en-tête et dans le pied.
+ * - Les quatre vagues sont celles de Hero.astro (mêmes dessins, mêmes vitesses).
+ * - Pause du décor (WCAG 2.2.2) : la même case à cocher que le premier écran,
+ *   sans JS. Elle arrête ce qui bouge sans fin ici (l'eau, le balancement).
+ * - Rien ne bouge si le visiteur a demandé moins d'animations.
+ */
+import '@/styles/da.css';
+import { APP_URL } from '@/lib/site';
+import Mascotte from './Mascotte.astro';
+---
+
+<section data-landing-section="final-cta" class="end da-bloc" aria-labelledby="fin-titre">
+  <div class="wrap end-copy">
+    <h2 id="fin-titre">On soigne mieux quand on comprend ce qu’on gagne</h2>
+    <a class="btn btn-brand" href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_final">Essayer 30 jours gratuitement</a>
+  </div>
+
+  {/* L'ordre des éléments fait l'ordre des plans : soleil, une vague, la
+      mascotte, le mot devant elle, trois vagues devant le mot. */}
+  <div class="pond">
+    <input type="checkbox" class="pause" aria-label="Mettre le décor animé en pause" />
+    <span class="sun" aria-hidden="true"></span>
+    <span class="wave w1" aria-hidden="true"></span>
+    <Mascotte pose="dos" class="hippo" largeurs={[172, 268, 344, 431]} sizes="(min-width: 900px) 268px, 172px" />
+    <span class="wordmark" aria-hidden="true">Hippo<span>doc</span></span>
+    <span class="wave w2" aria-hidden="true"></span>
+    <span class="wave w3" aria-hidden="true"></span>
+    <span class="wave w4" aria-hidden="true"></span>
+  </div>
+</section>
+
+<style>
+  /* Dernier bloc avant le pied : tant qu'il est loin de l'écran, le navigateur
+     n'en calcule ni n'en peint rien (ses vagues ne tournent pas), et lui
+     réserve à peu près sa hauteur (658 px à 390 px de large, 961 px à 1440 px). */
+  /* -1 px en bas : le bas de la scène tombe à une ordonnée fractionnaire et
+     laissait voir un filet clair au-dessus du pied sur téléphone. Le pied
+     remonte d'un pixel sur la dernière vague, qui a sa couleur. */
+  .end { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; content-visibility: auto; contain-intrinsic-size: auto 670px; }
+  .end-copy { display: flex; flex-direction: column; align-items: center; gap: 26px; padding-top: 88px; }
+  .end-copy h2 { --corps: clamp(36px, 6vw, 76px); max-width: 17ch; margin: 0; line-height: 1.02; }
+  .end-copy .btn { padding-block: 8px; text-align: center; }
+  /* Petits téléphones : le libellé du bouton tient sur une ligne. */
+  @media (max-width: 359px) { .end-copy .btn { padding-inline: 16px; font-size: 16px; } }
+
+  .pond { position: relative; height: 360px; margin-top: 20px; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: 50px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; }
+  .wave::before { content: ""; position: absolute; inset: 0 calc(var(--p) * -1) 0 0; }
+  .w1 { height: 176px; --t: 64s; }
+  .w2 { height: 142px; --t: 52s; }
+  .w3 { height: 98px; --t: 40s; }
+  .w4 { height: 52px; --t: 30s; }
+  .w1::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.1'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%23A9CBF8'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23D6E7FE' stroke-width='3'/%3E%3C/svg%3E") repeat-x 0 0 / var(--p) var(--th), linear-gradient(#A9CBF8, #93BCF4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w2::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.12'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%237FAEF0'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23B5D2FA' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.4) 0 / var(--p) var(--th), linear-gradient(#7FAEF0, #699CE8) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w3::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* La dernière vague a la couleur du haut du pied de page (--deep). */
+  .w4::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .hippo { position: absolute; left: 50%; bottom: 34px; width: 172px; margin-left: -86px; }
+  /* Le mot. La police du site n'a pas l'axe de taille optique : à ce corps, il
+     sortirait plus large que sur la maquette (de 3 % à 65 px à 9 % au-delà de
+     156 px). L'interlettrage est resserré d'autant, en plus des -0,045 em de la
+     maquette : deux droites mesurées contre la police complète, la moins serrée
+     gagne (voir MIGRATION.md § 9).
+     Sa ligne de base est à 0,06 em du bas de sa boîte : le bas est écrit pour
+     qu'elle affleure la crête de la vague qui passe devant, quel que soit le
+     corps. Les lettres restent lisibles, seuls les jambages trempent. */
+  .wordmark { position: absolute; left: 50%; bottom: calc(128px - 0.06em); translate: -50% 0; font-family: var(--display); font-size: min(20.4vw, 310px); line-height: 0.8; font-weight: 800; letter-spacing: calc(-0.045em - min(0.0747em - 4.05px, 0.0488em)); color: var(--brand); white-space: nowrap; }
+  .wordmark span { color: var(--brand-2); }
+  @media (min-width: 900px) {
+    .end { contain-intrinsic-size: auto 940px; }
+    .pond { height: 540px; --p: 440px; --th: 54px; }
+    .sun { width: 480px; height: 480px; margin-left: -240px; bottom: 48px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+    .w1 { height: 250px; }
+    .w2 { height: 204px; }
+    .w3 { height: 140px; }
+    .w4 { height: 70px; }
+    .wordmark { bottom: calc(172px - 0.06em); }
+    .hippo { width: 268px; margin-left: -134px; bottom: 56px; }
+  }
+
+  /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. */
+  .pause { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    /* Le bouton de pause du premier écran, à la même place (voir Hero.astro). */
+    .pause {
+      display: block; position: absolute; left: 12px; bottom: 10px; z-index: 3; width: 44px; height: 44px; margin: 0; padding: 0;
+      border: 2px solid rgba(255, 255, 255, 0.55); border-radius: 50%; -webkit-appearance: none; appearance: none; forced-color-adjust: none; cursor: pointer;
+      background: var(--deep-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 2.5h3v11H4zM9 2.5h3v11H9z' fill='%23fff'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+    }
+    .pause:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 2.2v11.6L13.5 8z' fill='%23fff'/%3E%3C/svg%3E"); }
+    .pause:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
+    .pause:checked ~ .wave::before, .pause:checked ~ .hippo { animation-play-state: paused; }
+    .wave::before { animation: fin-drift var(--t, 46s) linear infinite; }
+    .w2::before, .w4::before { animation-direction: reverse; }
+    .hippo { animation: fin-bob 5s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate; }
+  }
+  @keyframes fin-bob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+  @keyframes fin-drift { to { transform: translateX(calc(var(--p) * -1)); } }
+</style>

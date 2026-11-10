@@ -1,0 +1,335 @@
+---
+/**
+ * La fenêtre produit de l'accueil : trois vues de l'application, à onglets
+ * (DA 2026, phase 3, MIGRATION.md § 9). Zéro JS.
+ *
+ * - Onglets : trois boutons radio dans un <fieldset> (légende masquée à l'œil).
+ *   Tab entre dans le groupe, les flèches changent de vue, comme tout groupe de
+ *   radios. La feuille affiche le panneau de la radio cochée avec `:has()`.
+ *   Sans `:has()` (navigateurs d'avant fin 2023), la barre d'onglets est retirée
+ *   et les trois vues s'affichent l'une sous l'autre.
+ * - Les trois panneaux sont toujours dans le HTML.
+ * - Aucune balise de titre ici : la fenêtre précède le <h2> du bloc.
+ * - Chiffres : src/data/demoAccueil.ts, un seul jeu pour toute l'accueil. La
+ *   mention « Compte de démonstration » est dans le pied de la fenêtre, visible
+ *   sous les trois vues ; elle n'est répétée nulle part ailleurs sur la page.
+ * - Vue « journées » : la liste est le contenu, à toutes les largeurs. À partir
+ *   de 860 px un calendrier du mois entier la remplace à l'œil ; il est masqué
+ *   aux lecteurs d'écran, qui gardent la liste complète. En dessous, la liste
+ *   montre les six journées les plus récentes, comme la maquette (le début du
+ *   mois et les jours sans remplacement sont retirés pour tout le monde).
+ *   L'état de chaque journée (payé, en attente, planifié) n'est pas porté par
+ *   la seule couleur : une coche, une horloge ou un tilde dans la pastille
+ *   (`.sig`, da.css), repris par la légende ; il est écrit en toutes lettres
+ *   pour les lecteurs d'écran.
+ * - L'onglet ouvert est cerclé d'encre : le blanc sur le fond de la barre ne
+ *   faisait que 1,11:1 (WCAG 1.4.11 demande 3:1 pour l'état d'un composant).
+ * - La fenêtre garde sa hauteur quand on change de vue (hauteur minimale des
+ *   panneaux, celle du relevé) ; seul le calendrier est un peu plus haut.
+ */
+import '@/styles/da.css';
+import {
+  DEMO_ANNEE,
+  DEMO_A_METTRE_DE_COTE,
+  DEMO_A_RECEVOIR,
+  DEMO_EN_ATTENTE,
+  DEMO_ETATS,
+  DEMO_HORS_ACTIVITE,
+  DEMO_JOURNEES,
+  DEMO_MOIS,
+  DEMO_PART_NETTE,
+  DEMO_SUPER_NET,
+  euros,
+  jourCourt,
+  montantJournee,
+  rangDansLaSemaine,
+} from '@/data/demoAccueil';
+
+const VUES = [
+  { id: 'super-net', court: 'Super-Net', long: 'Ce qu’il te reste' },
+  { id: 'journees', court: 'Journées', long: 'Tes journées' },
+  { id: 'a-recevoir', court: 'À recevoir', long: 'Ce qu’on te doit' },
+];
+
+const annee = `Année ${DEMO_ANNEE.an}`;
+const mois = `${DEMO_MOIS.nom} ${DEMO_MOIS.an}`;
+const partNette = `${DEMO_PART_NETTE} %`;
+const partPrelevee = `${100 - DEMO_PART_NETTE} %`;
+const prelevements = [
+  { nom: 'URSSAF', montant: DEMO_ANNEE.urssaf, rang: 1 },
+  { nom: 'CARMF', montant: DEMO_ANNEE.carmf, rang: 2 },
+  { nom: 'Impôts', montant: DEMO_ANNEE.impots, rang: 3 },
+];
+
+/* Vue « journées » : la liste (journées et jours sans remplacement, dans l'ordre).
+   Sur téléphone, seules les journées à partir de ce quantième sont affichées. */
+const DEBUT_LISTE_COURTE = 8;
+const lignes = [
+  ...DEMO_JOURNEES.map((j) => ({ jour: j.jour, journee: j, pause: undefined })),
+  ...DEMO_HORS_ACTIVITE.map((p) => ({ jour: p.du, journee: undefined, pause: p })),
+].sort((a, b) => a.jour - b.jour);
+
+/* Le calendrier : semaines entières, du lundi au dimanche, autour du mois. */
+const joursDuMois = new Date(Date.UTC(DEMO_MOIS.an, DEMO_MOIS.mois, 0)).getUTCDate();
+const finDuMoisPrecedent = new Date(Date.UTC(DEMO_MOIS.an, DEMO_MOIS.mois - 1, 0)).getUTCDate();
+const avant = (rangDansLaSemaine(1) + 6) % 7;
+const apres = (7 - ((avant + joursDuMois) % 7)) % 7;
+const cases = [
+  ...Array.from({ length: avant }, (_, i) => ({ n: finDuMoisPrecedent - avant + 1 + i, dehors: true })),
+  ...Array.from({ length: joursDuMois }, (_, i) => ({ n: i + 1, dehors: false })),
+  ...Array.from({ length: apres }, (_, i) => ({ n: i + 1, dehors: true })),
+].map((c) => ({
+  ...c,
+  journee: c.dehors ? undefined : DEMO_JOURNEES.find((j) => j.jour === c.n),
+  pause: c.dehors ? undefined : DEMO_HORS_ACTIVITE.find((p) => c.n >= p.du && c.n <= p.au),
+}));
+
+/* Vue « à recevoir » : ce qui est dû, puis ce qui est prévu. */
+const aVenir = DEMO_JOURNEES.filter((j) => j.etat !== 'paye');
+const nbEnAttente = DEMO_EN_ATTENTE.length;
+---
+
+<div class="stage">
+  <fieldset class="stage-bar">
+    <legend class="sr">Aperçu de l’application</legend>
+    {VUES.map((vue, i) => (
+      <label class="tab" data-ph={`landing_apercu_${vue.id.replace(/-/g, '_')}`}>
+        <input type="radio" name="apercu" id={`apercu-${vue.id}`} checked={i === 0} />
+        <span class="short">{vue.court}</span><span class="long">{vue.long}</span>
+      </label>
+    ))}
+  </fieldset>
+
+  {/* Vue 1 : le relevé de l'année et sa jauge */}
+  <div class="panel p1">
+    <div class="releve">
+      <div class="gauge" role="img" aria-label={`Jauge : ${DEMO_PART_NETTE} % de l’encaissé reste au-dessus de la ligne d’eau, ${100 - DEMO_PART_NETTE} % part en URSSAF, CARMF et impôts`}>
+        <div class="g-air" style={`flex-grow:${DEMO_SUPER_NET}`}><b class="aff num">{partNette}</b></div>
+        <div class="g-water" style={`flex-grow:${DEMO_A_METTRE_DE_COTE}`}>
+          {prelevements.map((p) => <i class={`l${p.rang}`} style={`flex-grow:${p.montant}`}></i>)}
+        </div>
+      </div>
+      <div class="lines">
+        <p class="cap">{annee}</p>
+        <dl>
+          <div class="row"><dt>Encaissé</dt><dd class="fort num">{euros(DEMO_ANNEE.encaisse)}</dd></div>
+          {prelevements.map((p) => (
+            <div class="row"><dt><i class={`sw l${p.rang}`}></i>{p.nom}</dt><dd class="num">− {euros(p.montant)}</dd></div>
+          ))}
+          <div class="net">
+            <dt class="k">Super-Net</dt>
+            <dd class="v aff num hl">{euros(DEMO_SUPER_NET)}</dd>
+            <dd class="s">{partNette} de l’encaissé, une fois tout payé</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  {/* Vue 2 : les journées du mois */}
+  <div class="panel p2">
+    <div class="cal-head">
+      <p class="cal-titre">{mois}</p>
+      <ul class="legend">
+        <li><span class="chip sig ok" aria-hidden="true"></span>Payé</li><li><span class="chip sig wait" aria-hidden="true"></span>En attente</li><li><span class="chip plan" aria-hidden="true">~</span>Planifié</li>
+      </ul>
+    </div>
+    <div class="cal" aria-hidden="true">
+      {['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'].map((j) => <div class="dow">{j}</div>)}
+      {cases.map((c) => (
+        <div class:list={[c.dehors && 'dehors']}>
+          <span class="d">{c.n}</span>
+          {c.journee && (
+            <span class={`chip sig ${DEMO_ETATS[c.journee.etat].chip}`}><span class="num">{montantJournee(c.journee)}</span><span class="lieu">{c.journee.lieu}</span></span>
+          )}
+          {c.pause && <span class="chip off">{c.pause.libelle}</span>}
+        </div>
+      ))}
+    </div>
+    <ul class="days">
+      {lignes.map(({ jour, journee, pause }) => journee ? (
+        <li class:list={['day', jour < DEBUT_LISTE_COURTE && 'large']}><span class="w">{jourCourt(jour)}</span><span class="p">{journee.lieu}</span><span class={`chip sig ${DEMO_ETATS[journee.etat].chip} num`}>{montantJournee(journee)}<span class="sr">, {DEMO_ETATS[journee.etat].libelle.toLowerCase()}</span></span></li>
+      ) : (
+        <li class="day large"><span class="w">{jourCourt(jour)}</span><span class="p">{pause && pause.au > pause.du && <Fragment>au {jourCourt(pause.au)}</Fragment>}</span><span class="chip off">{pause.libelle}</span></li>
+      ))}
+    </ul>
+  </div>
+
+  {/* Vue 3 : ce qui est dû */}
+  <div class="panel p3">
+    <div class="due">
+      <p class="due-sum">
+        <span>À recevoir</span>
+        <b class="v aff num">{euros(DEMO_A_RECEVOIR)}</b>
+        <span>{nbEnAttente} paiement{nbEnAttente > 1 ? 's' : ''} en attente</span>
+      </p>
+      <ul class="days">
+        {aVenir.map((j) => (
+          <li class="day"><span class="w">{jourCourt(j.jour)}</span><span class="p">{j.lieu}<small class="num">{montantJournee(j)}</small></span><span class={`chip ${DEMO_ETATS[j.etat].chip}`}>{DEMO_ETATS[j.etat].libelle}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <p class="stage-foot">Compte de démonstration · Recalculé après chaque journée enregistrée</p>
+</div>
+
+<style>
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .num { white-space: nowrap; }
+
+  .stage { position: relative; z-index: 2; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); color: var(--ink); box-shadow: var(--clay); }
+
+  /* Onglets. La radio couvre son libellé, transparente : la cible tactile est la
+     sienne, et le navigateur sait où elle est quand elle reçoit le focus. */
+  .stage-bar { display: flex; gap: 4px; min-width: 0; margin: 0; padding: 8px; border: 0; background: var(--sky-soft); }
+  /* Pas de `nowrap` : si le visiteur impose ses espacements (WCAG 1.4.12), un
+     libellé passe sur deux lignes au lieu d'être rogné. */
+  .tab { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; min-height: 46px; padding: 4px 10px; border-radius: var(--r-pill); font-size: 15px; font-weight: var(--tb); line-height: 1.2; text-align: center; color: var(--ink-2); transition: background-color 160ms var(--ease), color 160ms var(--ease); }
+  .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .tab:hover { color: var(--ink); }
+  .tab .long { display: none; }
+  .tab:has(input:checked) { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), var(--clay-sm); }
+  .tab:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  /* Contrastes forcés : le fond et l'ombre disparaissent, un contour dit quel onglet est ouvert. */
+  @media (forced-colors: active) { .tab:has(input:checked) { outline: 2px solid Highlight; outline-offset: -2px; } }
+
+  /* Hauteur minimale : celle du relevé (396 px à 390 px de large, 454 px à partir de 720 px). La
+     fenêtre ne se replie pas de moitié quand on passe à la vue « à recevoir ». */
+  .panel { display: none; box-sizing: border-box; min-height: 396px; padding: 22px 18px 26px; }
+  .stage:has(#apercu-super-net:checked) .p1,
+  .stage:has(#apercu-journees:checked) .p2,
+  .stage:has(#apercu-a-recevoir:checked) .p3 { display: block; }
+  /* Sans `:has()`, rien ne relie l'onglet à son panneau : pas d'onglets, les
+     trois vues l'une sous l'autre. */
+  @supports not selector(:has(*)) {
+    .stage-bar { display: none; }
+    .panel { display: block; }
+  }
+  .stage-foot { margin: 0; padding: 12px 18px; background: var(--sky-soft); font-size: 14px; color: var(--ink-2); }
+  @media (min-width: 720px) {
+    .tab { flex: none; padding: 4px 22px; font-size: 16px; }
+    .tab .long { display: inline; }
+    .tab .short { display: none; }
+    .panel { min-height: 454px; padding: 36px 40px 40px; }
+    .stage-foot { padding: 14px 40px; }
+  }
+
+  /* Petits téléphones (320 px) : sur la maquette, le troisième onglet, le
+     montant encaissé et le Super-Net sortaient de la fenêtre. Les onglets se
+     partagent la place selon leur libellé, la jauge s'affine, les corps baissent
+     d'un cran. */
+  @media (max-width: 359px) {
+    .stage-bar { gap: 2px; padding: 8px 6px; }
+    .tab { flex: 1 1 auto; padding: 4px 6px; font-size: 14.5px; }
+    .panel { padding-inline: 14px; }
+    .stage-foot { padding-inline: 14px; }
+  }
+
+  /* Lignes d'un relevé (les mêmes que sur les fiches du premier écran) */
+  .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-2); }
+  .row dd, .row dt { margin: 0; }
+  .row .fort { font-weight: var(--tb); color: var(--ink); }
+  .sw { display: inline-block; width: 11px; height: 11px; margin-right: 8px; border-radius: 4px; }
+  .l1 { background: #8DB9F2; }
+  .l2 { background: #4F88DE; }
+  .l3 { background: #1F4FA8; }
+
+  /* Vue 1 : le relevé et sa jauge, un petit bassin à l'échelle des chiffres */
+  .releve { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 18px; }
+  .gauge { display: flex; flex-direction: column; min-height: 280px; overflow: hidden; border-radius: var(--r-md); }
+  .g-air { position: relative; flex: 0 1 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 12px 12px; overflow: hidden; background: linear-gradient(var(--sky-1), var(--glow)); }
+  .g-air::before { content: ""; position: absolute; right: -22%; bottom: -30%; width: 86%; aspect-ratio: 1; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 12px rgba(255, 214, 74, 0.28); }
+  .g-air b { --corps: 26px; position: relative; line-height: 1.1; }
+  .g-water { position: relative; flex: 0 1 0; display: flex; flex-direction: column; }
+  .g-water::before { content: ""; position: absolute; left: 0; right: 0; top: -7px; height: 8px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 10' preserveAspectRatio='none'%3E%3Cpath d='M0 5Q12.5 0 25 5T50 5V10H0Z' fill='%238DB9F2'/%3E%3C/svg%3E") repeat-x 0 0 / 50px 8px; }
+  .g-water i { flex: 0 1 0; }
+  .lines { display: flex; flex-direction: column; min-width: 0; }
+  .lines dl { display: flex; flex: 1; flex-direction: column; margin: 0; }
+  .cap { margin: 0; padding-bottom: 10px; font-size: 14px; color: var(--ink-3); }
+  .net { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 2px solid var(--ink); }
+  .net dt, .net dd { margin: 0; }
+  .net .k { font-size: 16px; font-weight: var(--tb); }
+  .net .v { --corps: clamp(36px, 9.4vw, 66px); margin-left: 0; }
+  .net .s { font-size: 14.5px; color: var(--ink-2); }
+  @media (max-width: 359px) {
+    .releve { grid-template-columns: 72px minmax(0, 1fr); gap: 12px; }
+    .g-air { padding: 8px 8px 10px; }
+    /* Le soleil se place d'après la hauteur du ciel : dans une jauge aussi
+       étroite, il passait tout entier sous la ligne d'eau. */
+    .g-air::before { bottom: -30px; }
+    .g-air b { --corps: 22px; }
+    .row { font-size: 15.5px; }
+    .net .v { --corps: 32px; }
+  }
+  @media (min-width: 720px) {
+    .releve { grid-template-columns: 220px minmax(0, 1fr); gap: 44px; }
+    .gauge { min-height: 360px; border-radius: 26px; }
+    .g-air { padding: 18px 20px; }
+    .g-air b { --corps: 46px; }
+    .row { font-size: 17px; padding: 12px 0; }
+  }
+
+  /* Vue 2 : les journées */
+  .cal-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 14px; }
+  .cal-titre { margin: 0; font-family: var(--display); font-weight: var(--dw); letter-spacing: calc(var(--dtr) * 0.7); font-size: 24px; line-height: 1.12; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: 14.5px; color: var(--ink-2); }
+  .legend li { display: flex; align-items: center; gap: 6px; }
+  /* La légende reprend les pastilles, avec leur signe : la coche, l'horloge, le
+     tilde (5,9:1 au moins sur leur fond). L'état ne tient plus à la couleur seule. */
+  .legend .chip { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; padding: 3px 6px; font-size: 12.5px; line-height: 1.2; }
+  .legend .chip::before { margin-right: 0; }
+  .cal { display: none; grid-template-columns: repeat(7, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: 16px; }
+  .cal > div { display: flex; flex-direction: column; gap: 4px; min-height: 68px; padding: 6px 5px 8px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .cal > div:nth-child(7n) { border-right: 0; }
+  .cal > div:nth-last-child(-n + 7) { border-bottom: 0; }
+  .cal .dow { min-height: 0; background: var(--sky-soft); font-size: 13.5px; font-weight: var(--tb); color: var(--ink-2); text-align: right; }
+  .cal .d { align-self: flex-end; font-size: 13.5px; color: var(--ink-3); }
+  .cal .dehors .d { opacity: 0.7; }
+  /* Montant, puis lieu dessous : sur une ligne, « ~1 200 € · Cabinet M. » ne
+     tenait dans une case à aucune largeur (coupé par des points de suspension
+     sur la maquette). */
+  .cal .chip { display: block; overflow: hidden; padding: 4px 6px; border-radius: 8px; font-size: 12.5px; text-overflow: ellipsis; }
+  .cal .lieu { display: block; overflow: hidden; font-weight: var(--tw); text-overflow: ellipsis; }
+  .days { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+  .day { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 50px; border-top: 1px solid var(--line); font-size: 15.5px; }
+  .day .w { font-size: 14px; color: var(--ink-3); }
+  /* Le nom du lieu peut passer à la ligne : jamais de points de suspension sur un texte lu. */
+  .day .p { min-width: 0; overflow-wrap: anywhere; }
+  .day .p small { display: block; font-size: 13.5px; color: var(--ink-3); }
+  /* Sous 860 px, la liste courte : les six journées les plus récentes. */
+  .p2 .day.large { display: none; }
+  @media (min-width: 860px) {
+    .cal { display: grid; }
+    /* La liste entière reste aux lecteurs d'écran : le calendrier leur est masqué. */
+    .p2 .days { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); }
+    .p2 .day.large { display: grid; }
+  }
+
+  /* Vue 3 : à recevoir */
+  .due { display: grid; gap: 24px; }
+  .due-sum { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+  .due-sum .v { --corps: clamp(40px, 9.4vw, 66px); }
+  .due-sum span { font-size: 16px; color: var(--ink-2); }
+  @media (min-width: 780px) {
+    .due { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; align-items: center; min-height: 360px; }
+  }
+
+  /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. */
+  @media (prefers-reduced-motion: no-preference) {
+    .stage:has(#apercu-super-net:checked) .p1,
+    .stage:has(#apercu-journees:checked) .p2,
+    .stage:has(#apercu-a-recevoir:checked) .p3 { animation: apercu-fade 300ms var(--ease) both; }
+    /* La fenêtre monte en place quand elle entre à l'écran (navigateurs qui
+       savent lier une animation au défilement ; les autres l'affichent telle quelle).
+       ⚠️ Deux règles, deux sélecteurs : écrites ensemble, la minification du build
+       range la ligne de temps dans le raccourci `animation`, ce que les
+       navigateurs refusent (toute la déclaration tombe, plus aucun mouvement). */
+    @supports (animation-timeline: view()) {
+      .stage { animation: apercu-arrive linear both; }
+      div.stage { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+    }
+  }
+  @keyframes apercu-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes apercu-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+</style>

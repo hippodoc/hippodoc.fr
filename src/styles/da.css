@@ -1,0 +1,442 @@
+/* ==========================================================================
+   DA 2026 « le monde d'Hippodoc » : fondations (phase 1, MIGRATION.md § 9).
+
+   Un ciel du matin, une eau en pâte à modeler, tout est rond et mat, dans les
+   bleus de la mascotte. Le jaune porte une seule idée : ce qu'il te reste (le
+   soleil, le Super-Net, le bouton qui y mène).
+
+   Règles de cette feuille :
+   - tout vit sous la classe racine `.da`, posée sur <body> par la prop
+     `bodyClass` de BaseLayout : sans elle, rien ne s'applique ;
+   - `.da` ne porte que les jetons et le fond de page. La typographie (police,
+     corps, graisse, couleur, interligne), les règles de titres et l'anneau de
+     focus sont portés par les blocs DA, marqués `.da-bloc` (l'en-tête, le pied,
+     puis chaque section migrée). Une section pas encore migrée n'a pas cette
+     classe : elle garde son rendu d'origine, styles hérités compris. Depuis
+     la phase 4a il ne reste aucune ancienne section sur l'accueil ; la classe
+     reste portée par chaque bloc (elle n'a pas été remontée sur <body>) ;
+   - `:where(…)` ne pèse rien : dans un bloc DA, une classe l'emporte toujours
+     sur une règle d'élément ;
+   - aucune classe Tailwind dans les composants `da/` : la feuille globale ne
+     doit pas grossir pour eux ;
+   - feuille importée par les composants `da/` seulement, ni par BaseLayout ni
+     par global.css.
+   ========================================================================== */
+
+/* ───────── Police ─────────
+   Google Sans Flex (SIL OFL 1.1, voir src/assets/fonts/OFL.txt), un seul fichier :
+   latin, graisse variable 400 à 800, arrondi (ROND) figé à 100, taille optique
+   (opsz) figée à 18, largeur et pente par défaut. */
+@font-face {
+  font-family: "Google Sans Flex";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Repli à métriques ajustées : tant que le woff2 n'est pas là (`swap`), Arial
+   occupe à peu près la même place, pour limiter le saut à l'arrivée de la police.
+   Deux faces, parce que la police s'élargit avec la graisse et qu'un Arial
+   maigre épaissi par le navigateur reste trop étroit (« Hippodoc » en 760 :
+   +14 % à l'arrivée de la police avec une seule face). Valeurs calculées sur le
+   texte de l'accueil ; hhea de la police 1932 / -572 / 0 pour 2000 unités.
+   - 400 à 599 : Arial, réglé sur la graisse du texte courant (430), chasse
+     moyenne 0,4515 em contre 0,4462 em ;
+   - 600 à 800 : Arial Bold, réglé sur la graisse des titres (720), chasse
+     moyenne 0,4885 em contre 0,4780 em.
+   L'ajustement est une moyenne : un mot donné peut encore bouger de quelques
+   pour cent (voir MIGRATION.md § 9). Sans Arial ni police aux mêmes métriques
+   (Android), le repli est la police du système, sans ajustement. */
+@font-face {
+  font-family: "Google Sans Flex Fallback";
+  font-weight: 400 599;
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Arimo");
+  size-adjust: 101.19%;
+  ascent-override: 95.47%;
+  descent-override: 28.26%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Google Sans Flex Fallback";
+  font-weight: 600 800;
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"), local("Arimo Bold"), local("Arimo-Bold");
+  size-adjust: 102.22%;
+  ascent-override: 94.5%;
+  descent-override: 27.98%;
+  line-gap-override: 0%;
+}
+
+/* ───────── Jetons ───────── */
+.da {
+  /* Ciel, papier, encre */
+  --sky-1: #C9DEFF; --sky-2: #E4EEFF; --glow: #FFF2D2;
+  --sky: #DCE9FF; --sky-soft: #EDF3FE; --sand: #FBF6EA; --paper: #FFFFFF;
+  --ink: #14254F; --ink-2: #3A4B78; --ink-3: #56668F;
+  /* Logo d'origine : « Hippo » en --brand, « doc » en --brand-2 */
+  --brand: #0059B3; --brand-2: #1A8CFF;
+  /* Eau : de la surface au fond */
+  --w1: #A9CBF8; --w2: #7FAEF0; --w3: #4F88DE; --w4: #2A60C4;
+  --deep: #2A60C4; --deep-2: #163A88;
+  /* Texte sur l'eau. --on-deep-3 ne fait que 3,63:1 sur --deep : à réserver au
+     grand texte ou au fond --deep-2 (6,50:1). */
+  --on-deep-2: #DCE7FB; --on-deep-3: #B9CCF0;
+  --sun: #FFD84A; --sun-hover: #FFE169; --sun-edge: #DDA800;
+  --line: rgba(20, 37, 79, 0.11); --line-deep: rgba(255, 255, 255, 0.2);
+  /* États */
+  --ok-bg: #DFF3E7; --ok: #0F6338;
+  --wait-bg: #FCEACF; --wait: #874C00;
+  --plan-bg: #DFE9FF; --plan: #1B48B3;
+
+  /* Rayons : cinq crans, pas un par composant */
+  --r-sm: 12px; --r-md: 20px; --r-lg: 28px; --r-xl: 40px; --r-pill: 999px;
+  /* Ombres : la pâte à modeler (deux tailles), ce qui flotte, les bords de bouton */
+  --clay: inset 0 2px 0 rgba(255, 255, 255, 0.8), inset 0 -4px 0 rgba(20, 37, 79, 0.05), 0 22px 44px -22px rgba(13, 40, 105, 0.42);
+  --clay-sm: inset 0 -3px 0 rgba(20, 37, 79, 0.05), 0 10px 22px -14px rgba(13, 40, 105, 0.32);
+  --float: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 12px 28px -16px rgba(13, 40, 105, 0.4);
+  --edge: rgba(20, 37, 79, 0.16);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Typographie */
+  --text: "Google Sans Flex", "Google Sans Flex Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --display: var(--text);
+  --dw: 720; --dtr: -0.035em; --tw: 430; --tb: 660;
+
+  /* Anneau de focus : en encre sur le clair, en blanc sur l'eau (voir `.ft`) */
+  --focus: var(--ink);
+
+  /* Gouttière : 20 px jusqu'à 390 px de large, 40 px à partir de 1024 px (les
+     feuilles ont des coins de 40 px : à 20 px du bord, un titre les touchait). */
+  --gut: clamp(20px, calc(7.7px + 3.155vw), 40px);
+}
+
+/* ───────── Page ─────────
+   `.da` est posée sur <body>. Le fond prolonge le pied (eau profonde) quand la
+   page rebondit en bas, et le ciel quand elle rebondit en haut. Rien d'hérité
+   ici : voir `.da-bloc`. */
+.da {
+  margin: 0;
+  background: var(--deep-2) linear-gradient(var(--sky-1), var(--sky-1)) no-repeat 0 0 / 100% 520px;
+}
+/* Bloc DA : l'en-tête, le pied, chaque section migrée. C'est lui qui porte la
+   typographie, pas <body> : les anciennes sections, qui n'ont pas la classe,
+   gardent le rendu de `main` (police, corps de 16 px, graisse 400, couleur). */
+:where(.da .da-bloc) {
+  color-scheme: light;
+  color: var(--ink);
+  font-family: var(--text);
+  font-weight: var(--tw);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+/* La pastille est collée à 10 px du haut et fait 60 px : une ancre s'arrête dessous. */
+html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
+
+/* ───────── Éléments (dans un bloc DA seulement) ───────── */
+/* Grands corps sans taille optique. La police du site n'a pas l'axe `opsz` (il
+   coûterait 75 Ko) : plus le corps est grand, plus le texte sort large par
+   rapport à la maquette (+3 % à 58 px, +7 % à 132 px). On retrouve sa largeur en
+   resserrant l'interlettrage selon le corps, sans toucher à la graisse : deux
+   droites, la plus serrée gagne. Valeurs mesurées contre la police complète sur
+   le titre « Sous la surface… » et sur les grands montants : -1,26 px à 32 px,
+   -2,83 px à 58 px, -3,19 px à 66 px, -8,80 px à 132 px. L'élément pose `--corps`.
+   (Le titre du premier écran a sa propre mesure, dans Hero.astro.) */
+:where(.da .da-bloc) h2, :where(.da) .aff { font-family: var(--display); font-weight: var(--dw); font-size: var(--corps); line-height: 1.05; letter-spacing: min(calc(0.66px - 0.059 * var(--corps)), calc(2.43px - 0.0851 * var(--corps))); }
+:where(.da .da-bloc) h2 { --corps: clamp(32px, 4.5vw, 58px); text-wrap: balance; }
+:where(.da .da-bloc) h3 { font-family: var(--display); font-weight: var(--dw); letter-spacing: calc(var(--dtr) * 0.7); font-size: clamp(24px, 2.5vw, 32px); line-height: 1.12; }
+:where(.da .da-bloc) b, :where(.da .da-bloc) strong { font-weight: var(--tb); }
+/* La maquette posait un anneau --brand-2 : 2,46:1 sur le ciel, sous le seuil de 3:1.
+   `--focus` vaut l'encre ; tout bloc à fond sombre le repasse en blanc (voir `.ft`). */
+:where(.da .da-bloc) :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ───────── Primitives ───────── */
+/* 1120 px de contenu au plus, quelle que soit la gouttière. */
+:where(.da) .wrap { position: relative; max-width: calc(1120px + 2 * var(--gut)); margin-inline: auto; padding-left: max(var(--gut), env(safe-area-inset-left, 0px)); padding-right: max(var(--gut), env(safe-area-inset-right, 0px)); }
+
+/* Boutons : épais, on les enfonce */
+:where(.da) .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 0 26px; border: 0; border-radius: var(--r-pill); font-family: var(--text); font-size: 17px; font-weight: var(--tb); line-height: 1.2; text-decoration: none; cursor: pointer; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
+:where(.da) .btn:active { translate: 0 5px; box-shadow: 0 0 0 transparent; }
+:where(.da) .btn-brand { background: var(--sun); color: var(--ink); box-shadow: 0 5px 0 var(--sun-edge); }
+:where(.da) .btn-brand:hover { background: var(--sun-hover); }
+:where(.da) .btn-white, :where(.da) .btn-line { background: var(--paper); color: var(--ink); box-shadow: 0 5px 0 var(--edge); }
+:where(.da) .btn-white:hover, :where(.da) .btn-line:hover { background: var(--sky-soft); }
+:where(.da) .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 5px 0 var(--edge); }
+/* Contrastes forcés (Windows) : le navigateur retire le fond et l'ombre, il ne
+   restait qu'un libellé nu. Un contour rend sa forme au bouton. */
+@media (forced-colors: active) { :where(.da) .btn { border: 2px solid ButtonText; } }
+
+/* Le Super-Net : toujours sur du jaune */
+:where(.da) .hl { display: inline-block; padding: 0 0.2em; margin-left: -0.2em; border-radius: 0.28em; background: var(--sun); }
+
+:where(.da) .chip { display: inline-block; padding: 3px 9px; border-radius: var(--r-pill); font-size: 13.5px; font-weight: var(--tb); line-height: 1.35; white-space: nowrap; }
+:where(.da) .chip.ok { background: var(--ok-bg); color: var(--ok); }
+:where(.da) .chip.wait { background: var(--wait-bg); color: var(--wait); }
+:where(.da) .chip.plan { background: var(--plan-bg); color: var(--plan); }
+:where(.da) .chip.off { background: var(--sky-soft); color: var(--ink-2); }
+/* `.sig` : l'état est aussi un signe, pas seulement une couleur (une coche pour
+   « payé », une horloge pour « en attente » ; « planifié » a déjà son tilde). */
+:where(.da) .sig.ok::before, :where(.da) .sig.wait::before { content: ""; display: inline-block; width: 0.82em; height: 0.82em; margin-right: 0.32em; vertical-align: -0.06em; background: currentColor; -webkit-mask: var(--signe) center / contain no-repeat; mask: var(--signe) center / contain no-repeat; }
+:where(.da) .sig.ok { --signe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.4l2.7 2.7L10 3.4' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+:where(.da) .sig.wait { --signe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='4.6' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3Cpath d='M6 3.5V6l1.7 1.2' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+@media (forced-colors: active) { :where(.da) .sig.ok::before, :where(.da) .sig.wait::before { background: CanvasText; } }
+
+/* Feuilles claires : les blocs qui suivent l'eau profonde se superposent comme
+   des feuilles, chacune remonte de 40 px sur la précédente (d'où les 128 px du
+   bas : 88 px d'air, plus les 40 px que la feuille suivante recouvre). Sable,
+   ou ciel avec `.air`, en alternance. La scène finale remonte de même sur la
+   dernière feuille. */
+:where(.da) .band { position: relative; z-index: 1; margin-top: -40px; padding: 88px 0 128px; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); }
+:where(.da) .band.air { background: var(--sky); }
+/* Téléphone : la page compte plus de feuilles que la maquette. 52 px au-dessus
+   du titre, 48 px visibles sous le contenu (les 40 autres passent sous la
+   feuille suivante). */
+@media (max-width: 559px) {
+  :where(.da) .band { padding: 52px 0 88px; }
+}
+:where(.da) .band-head { display: flex; flex-direction: column; gap: 14px; max-width: 800px; margin-bottom: 44px; }
+/* Après la règle générale : placée avant elle, cette marge de téléphone ne
+   s'appliquait pas (même poids, la dernière écrite l'emporte). */
+@media (max-width: 559px) {
+  :where(.da) .band-head { margin-bottom: 26px; }
+}
+:where(.da) .band-head > * { margin: 0; }
+/* Variante centrée : casse la suite « grand titre à gauche, contenu dessous ». */
+:where(.da) .band-head.mid { align-items: center; margin-inline: auto; text-align: center; }
+:where(.da) .lead { max-width: 36rem; margin: 0; font-size: 19px; line-height: 1.55; color: var(--ink-2); }
+/* Lien dans une phrase : souligné, et une zone de toucher de 44 px de haut qui
+   ne change pas l'interligne (la marge négative rend ce que prend le remplissage). */
+:where(.da) .lien { display: inline-block; margin: -11px 0; padding: 11px 0; border-radius: 6px; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+:where(.da) .lien:hover { color: var(--brand); }
+
+/* Plis : un <details> natif en fiche blanche, une croix qui tourne et jaunit à
+   l'ouverture (questions fréquentes, détail des offres, RSPM). Le texte replié
+   est dans le HTML : c'est ce qui le rend lisible par un moteur. Le libellé du
+   <summary> est un <h3> (les questions) ou un `.qa-t` (un simple libellé). */
+:where(.da) .qa { margin: 0 0 10px; padding: 0 22px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+:where(.da) .qa > summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 68px; padding: 14px 0; border-radius: var(--r-sm); cursor: pointer; list-style: none; }
+:where(.da) .qa > summary::-webkit-details-marker { display: none; }
+/* Pas de mot seul sur la dernière ligne. Lignes équilibrées sous 560 px
+   seulement : au-delà, l'équilibrage coupait en deux lignes courtes une
+   question qui tenait presque sur une, et les rangées n'avaient plus la même
+   hauteur. (`text-wrap-style`, pas le raccourci : voir MIGRATION.md § 9, piège
+   Tailwind.) */
+:where(.da) .qa > summary h3, :where(.da) .qa-t { margin: 0; font-family: var(--text); font-size: 18px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; text-wrap-style: pretty; }
+@media (max-width: 559px) { :where(.da) .qa > summary h3, :where(.da) .qa-t { text-wrap-style: balance; } }
+:where(.da) .qa > summary > svg { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 50%; background: var(--sky); }
+:where(.da) .qa[open] > summary > svg { rotate: 45deg; background: var(--sun); }
+:where(.da) .qa-in { padding: 0 0 22px; }
+:where(.da) .qa-in p { max-width: 42rem; margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--ink-2); }
+:where(.da) .qa-in :is(b, strong) { color: var(--ink); }
+:where(.da) .qa-in a { font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  :where(.da) .qa > summary > svg { transition: rotate 200ms var(--ease), background-color 200ms var(--ease); }
+  :where(.da) .qa[open] > .qa-in { animation: da-pli 300ms var(--ease) both; }
+}
+/* Petits téléphones : un peu plus de place pour le libellé. */
+@media (max-width: 359px) {
+  :where(.da) .qa { padding: 0 18px; }
+  :where(.da) .qa > summary { gap: 14px; }
+  :where(.da) .qa > summary h3, :where(.da) .qa-t { font-size: 17px; }
+}
+@keyframes da-pli { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@media (forced-colors: active) { :where(.da) .qa { border: 1px solid CanvasText; } }
+
+/* Logo : le mot seul, « Hippo » en --brand et « doc » en --brand-2, sans l'icône
+   au trait (décision du propriétaire, 10 novembre 2026). */
+:where(.da) .logo-word { font-family: var(--display); font-size: 22px; font-weight: 760; letter-spacing: -0.025em; line-height: 1; color: var(--brand); }
+:where(.da) .logo-word span { color: var(--brand-2); }
+
+/* ───────── En-tête : une pastille qui flotte ─────────
+   Mécanique reprise de Header.astro : menu Ressources en CSS (survol et
+   focus-within), tiroir mobile piloté par la case #mobile-menu-toggle. */
+/* L'en-tête couvre toute la largeur, la pastille 1120 px au plus : hors de la
+   pastille, du voile et du tiroir, les clics traversent vers la page. */
+:where(.da) .hd { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 50; height: 60px; margin: 10px 0 -70px; pointer-events: none; -webkit-tap-highlight-color: transparent; }
+:where(.da) .hd-bar, :where(.da) .hd-overlay, :where(.da) .hd-drawer { pointer-events: auto; }
+/* Variante « dans le flux » : la pastille garde sa place au lieu de survoler le
+   premier bloc (pages dont le haut n'est pas dessiné pour passer dessous). Des
+   marges intérieures et non extérieures : une marge haute fusionnerait avec
+   celle du conteneur et laisserait 10 px du fond de page au-dessus de lui. */
+:where(.da) .hd--flux { box-sizing: border-box; top: env(safe-area-inset-top, 0px); height: 80px; margin: 0; padding: 10px 0; }
+/* Sous 900 px, pas de flou d'arrière-plan : il coûte cher au défilement sur
+   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. */
+:where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+@media (min-width: 900px) {
+  :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
+}
+:where(.da) .hd-brand { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); text-decoration: none; }
+/* Sous 340 px, tout se resserre : le mot, la pastille d'essai et le bouton du
+   menu doivent tenir sur 320 px (296 px de pastille). */
+@media (max-width: 339px) {
+  :where(.da) .hd-bar { gap: 6px; padding-left: 10px; }
+  :where(.da) .hd-brand .logo-word { font-size: 20px; }
+  :where(.da) .hd .btn.hd-cta-pill { padding: 0 13px; }
+}
+
+:where(.da) .hd-links { display: none; align-items: center; gap: 30px; font-size: 15.5px; font-weight: 560; color: var(--ink-2); }
+:where(.da) .hd-links a, :where(.da) .hd-res-btn { display: inline-flex; align-items: center; min-height: 44px; border-radius: var(--r-sm); color: inherit; text-decoration: none; transition: color 160ms var(--ease); }
+/* « Tarifs » ne fait que 40 px de large : cible de 44 px, mot centré. */
+:where(.da) .hd-links > a { min-width: 44px; justify-content: center; }
+:where(.da) .hd-links a:hover { color: var(--ink); }
+:where(.da) .hd-res { position: relative; }
+:where(.da) .hd-res-btn { gap: 4px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+:where(.da) .hd-res-btn.is-current { color: var(--brand); }
+:where(.da) .hd-res:hover .hd-res-btn, :where(.da) .hd-res:focus-within .hd-res-btn { color: var(--ink); }
+:where(.da) .hd-res-btn svg { transition: rotate 200ms var(--ease); }
+:where(.da) .hd-res:hover .hd-res-btn svg, :where(.da) .hd-res:focus-within .hd-res-btn svg { rotate: 180deg; }
+:where(.da) .hd-res-pop { position: absolute; right: -16px; top: 100%; z-index: 1; padding-top: 14px; visibility: hidden; opacity: 0; transition: opacity 150ms ease, visibility 150ms; }
+:where(.da) .hd-res:hover .hd-res-pop, :where(.da) .hd-res:focus-within .hd-res-pop { visibility: visible; opacity: 1; }
+:where(.da) .hd-res-menu { width: 272px; padding: 8px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); }
+:where(.da) .hd-res-menu a { display: flex; padding: 0 14px; border-radius: var(--r-sm); transition: background-color 160ms var(--ease), color 160ms var(--ease); }
+:where(.da) .hd-res-menu a:hover { background: var(--sky-soft); color: var(--ink); }
+:where(.da) .hd-res-menu a[aria-current="page"] { color: var(--brand); }
+
+:where(.da) .hd-end { display: flex; align-items: center; gap: 4px; }
+:where(.da) .hd-login { display: none; align-items: center; min-height: 44px; padding: 0 14px; border-radius: var(--r-pill); font-size: 15.5px; font-weight: 560; color: var(--ink-2); text-decoration: none; transition: color 160ms var(--ease); }
+:where(.da) .hd-login:hover { color: var(--ink); }
+:where(.da) .hd .btn { min-height: 44px; padding: 0 18px; font-size: 15.5px; white-space: nowrap; }
+:where(.da) .hd .btn-brand { box-shadow: 0 3px 0 var(--sun-edge); }
+:where(.da) .hd .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 3px 0 var(--edge); }
+:where(.da) .hd .btn:active { translate: 0 3px; box-shadow: 0 0 0 transparent; }
+:where(.da) .hd-cta-desk { display: none; }
+:where(.da) .hd-burger, :where(.da) .hd-close { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink); cursor: pointer; touch-action: manipulation; transition: scale 150ms ease-out, background-color 150ms ease-out; }
+:where(.da) .hd-burger:active, :where(.da) .hd-close:active { scale: 0.9; background: var(--sky); }
+@media (hover: hover) { :where(.da) .hd-burger:hover, :where(.da) .hd-close:hover { background: var(--sky-soft); } }
+
+/* La case du tiroir : invisible mais focusable (c'est elle, le contrôle). */
+:where(.da) .hd-toggle { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:where(.da) .hd-toggle:focus-visible ~ .hd-bar .hd-burger,
+:where(.da) .hd-toggle:focus-visible ~ .hd-drawer .hd-close { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Voile et tiroir. Aucun flou (§ 9.dn). Courbes et durées de § 9.do : départ au
+   ras du bord, courbe des panneaux iOS, 420 ms à l'ouverture, 300 à la fermeture. */
+:where(.da) .hd-overlay { position: fixed; inset: 0; z-index: 40; visibility: hidden; opacity: 0; background: rgba(9, 20, 52, 0.6); cursor: pointer; transition: opacity 200ms ease-out, visibility 200ms ease-out; }
+:where(.da) .hd-toggle:checked ~ .hd-overlay { visibility: visible; opacity: 1; transition-duration: 300ms; }
+/* Largeur : au moins 60 px de voile restent visibles pour fermer en touchant à côté. */
+:where(.da) .hd-drawer { position: fixed; top: 12px; right: 12px; bottom: 12px; z-index: 50; width: calc(100% - 72px); max-width: 340px; visibility: hidden; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); transform: translateX(calc(100% + 16px)); transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
+:where(.da) .hd-toggle:checked ~ .hd-drawer { visibility: visible; transform: none; transition-duration: 420ms; }
+:where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; padding: 20px 20px 16px; }
+:where(.da) .hd-drawer-top { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
+:where(.da) .hd-drawer-brand { display: flex; align-items: center; padding-left: 12px; }
+:where(.da) .hd-drawer-nav { display: flex; flex: 1; flex-direction: column; min-height: 0; margin-top: 20px; overflow-y: auto; overscroll-behavior: contain; }
+/* « Guide du remplaçant (PDF) » passe sur deux lignes à 320 px : d'où l'interligne serré. */
+:where(.da) .hd-drawer-nav a { display: flex; align-items: center; min-height: 48px; padding: 8px 12px; border-radius: var(--r-sm); font-size: 17px; font-weight: 600; line-height: 1.25; color: var(--ink); text-decoration: none; }
+:where(.da) .hd-drawer-nav a:active { background: var(--sky-soft); }
+@media (hover: hover) { :where(.da) .hd-drawer-nav a:hover { background: var(--sky-soft); } }
+:where(.da) .hd-drawer-label { margin: 20px 0 4px; padding: 0 12px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+/* Une colonne quand « Essai gratuit 30j » ne tient pas à côté de « Connexion » (320 px). */
+:where(.da) .hd-drawer-end { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 12px 8px; margin-top: 16px; padding: 16px 0 4px; border-top: 1px solid var(--line); }
+:where(.da) .hd-drawer-end .btn { padding: 0 10px; font-size: 15px; }
+
+/* Contenu du tiroir en cascade (§ 9.do) : chaque ligne glisse de 12 px avec un
+   décalage de 15 ms (--i = rang). À la fermeture, tout s'efface ensemble. */
+:where(.da) .hd-item { opacity: 0; transform: translateX(12px); transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease; }
+:where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: opacity 320ms cubic-bezier(0.32, 0.72, 0, 1), transform 420ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease; transition-delay: calc(30ms + var(--i) * 15ms), calc(30ms + var(--i) * 15ms), 0ms; }
+@media (prefers-reduced-motion: reduce) {
+  :where(.da) .hd-item, :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: none; }
+  :where(.da) .hd-drawer, :where(.da) .hd-overlay { transition: none; }
+}
+
+@media (min-width: 960px) {
+  :where(.da) .hd-links, :where(.da) .hd-login { display: flex; }
+  :where(.da) .hd-cta-desk { display: inline-flex; }
+  :where(.da) .hd-cta-pill, :where(.da) .hd-burger, :where(.da) .hd-toggle, :where(.da) .hd-overlay, :where(.da) .hd-drawer { display: none; }
+}
+
+/* ───────── Pied : l'eau profonde ───────── */
+:where(.da) .ft { --focus: #FFFFFF; position: relative; z-index: 1; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 16px; }
+:where(.da) .ft-in { display: grid; gap: 36px 56px; padding-top: 36px; padding-bottom: 28px; }
+:where(.da) .ft a, :where(.da) .ft-prefs { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; transition: color 160ms var(--ease); }
+:where(.da) .ft a:hover, :where(.da) .ft-prefs:hover { color: var(--paper); }
+:where(.da) .ft-prefs { padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+:where(.da) .ft-text { display: inline-flex; align-items: center; min-height: 44px; }
+:where(.da) .ft-title { margin-bottom: 6px; font-family: var(--text); font-size: 15px; font-weight: var(--tb); letter-spacing: 0; line-height: 1.4; color: var(--paper); }
+:where(.da) .ft-list { margin: 0; padding: 0; list-style: none; }
+/* « FAQ », « Blog », « RGPD » : une cible de 44 px de large aussi. */
+:where(.da) .ft-list a { min-width: 44px; }
+
+/* Le logo garde ses couleurs d'origine : il lui faut du blanc sous lui. */
+:where(.da) .ft .ft-logo { min-height: 52px; padding: 0 22px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
+:where(.da) .ft .ft-logo:hover { translate: 0 -2px; }
+:where(.da) .ft-tagline { margin: 14px 0 0; }
+:where(.da) .ft-social { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+:where(.da) .ft .ft-social a { justify-content: center; width: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.12); color: var(--paper); transition: background-color 160ms var(--ease); }
+:where(.da) .ft .ft-social a:hover { background: rgba(255, 255, 255, 0.22); }
+:where(.da) .ft-backers { margin-top: 26px; }
+:where(.da) .ft-backers p { margin: 0 0 10px; font-size: 14.5px; }
+/* Logos des soutiens sur une plaque blanche : deux des trois fichiers ont un fond opaque. */
+:where(.da) .ft-backers-logos { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; min-height: 56px; padding: 8px 20px; border-radius: var(--r-md); background: var(--paper); }
+:where(.da) .ft-backers-logos picture { display: contents; }
+:where(.da) .ft-backers-logos source { display: none; }
+:where(.da) .ft-backers-logos img { display: block; width: auto; height: var(--h, 26px); }
+
+:where(.da) .ft-sub { padding-left: 12px; border-left: 2px solid var(--line-deep); font-size: 15px; }
+/* La flèche des trois liens d'articles : un dessin (la police n'a pas ce caractère). */
+:where(.da) .ft-sub a { gap: 7px; }
+:where(.da) .ft-sub svg { flex: none; }
+/* Deux colonnes remplies de haut en bas : les 9 premières des 16 lignes (outils,
+   blog, comparatif et les trois articles) à gauche, les 7 suivantes (maison et
+   mentions) à droite. Le 9 suit le contenu de FooterDA.astro. Dès 340 px : sur
+   une seule colonne, le pied faisait presque deux écrans de téléphone. Sous
+   480 px les colonnes sont égales et un libellé long passe sur deux lignes. */
+@media (min-width: 340px) {
+  :where(.da) .ft-list.cols { display: grid; grid-auto-flow: column; grid-template-rows: repeat(9, auto); grid-auto-columns: minmax(0, 1fr); column-gap: 18px; }
+  :where(.da) .ft-list.cols a, :where(.da) .ft-list.cols .ft-prefs { padding-block: 5px; line-height: 1.3; }
+}
+@media (min-width: 480px) {
+  :where(.da) .ft-list.cols { grid-auto-columns: auto; column-gap: 32px; }
+}
+/* Téléphone : moins d'air entre les trois groupes, la page est déjà longue. */
+@media (max-width: 639px) {
+  :where(.da) .ft-in { gap: 26px; padding-top: 30px; padding-bottom: 20px; }
+}
+/* De 640 à 899 px : marque et contact côte à côte, les informations dessous,
+   sur les deux mêmes colonnes. */
+@media (min-width: 640px) {
+  :where(.da) .ft-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  :where(.da) .ft-in > :last-child { grid-column: 1 / -1; }
+  :where(.da) .ft-list.cols { grid-auto-columns: minmax(0, 1fr); column-gap: 56px; }
+}
+@media (min-width: 900px) {
+  :where(.da) .ft-in { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.8fr) minmax(0, 1.55fr); padding-top: 44px; }
+  :where(.da) .ft-in > :last-child { grid-column: auto; }
+  :where(.da) .ft-list.cols { grid-auto-columns: auto; column-gap: 32px; }
+}
+/* 104 px en bas, comme la maquette : la bulle de chat ne recouvre aucun lien.
+   Le filet est sur le paragraphe : il s'arrête aux marges du contenu. */
+:where(.da) .ft-legal { padding-bottom: 104px; font-size: 14.5px; }
+:where(.da) .ft-legal p { margin: 0; padding-top: 18px; border-top: 1px solid var(--line-deep); }
+
+/* ───────── Bannière cookies et bulle de chat ─────────
+   Rendues par ThirdPartyScripts.astro avec des classes Tailwind : il faut ici
+   une vraie spécificité (`.da #…`) pour les rhabiller. Tailles, textes et
+   mécanique inchangés ; refuser reste aussi visible qu'accepter. Pas de jaune :
+   il est réservé à ce qu'il te reste. */
+.da #cookie-banner { border: 0; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); font-family: var(--text); font-weight: var(--tw); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.da #cookie-banner p { color: var(--ink-2); }
+/* Lignes équilibrées : à 360 px de large, la première ligne tenait à 1 px près
+   avec la police de repli et pas avec la police du site. « publicitaires »
+   changeait de ligne à l'arrivée du woff2 et le lien sautait de 69 px. */
+.da #cookie-banner p span { text-wrap-style: balance; }
+.da #cookie-banner p svg, .da #cookie-banner a { color: var(--brand); }
+.da #cookie-banner [data-cookie-action] { border: 0; border-radius: var(--r-pill); background-image: none; font-weight: var(--tb); }
+.da #cookie-banner [data-cookie-action]:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.da #cookie-banner [data-cookie-action="essential"] { background-color: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.da #cookie-banner [data-cookie-action="essential"]:hover { background-color: var(--sky-soft); }
+.da #cookie-banner [data-cookie-action="accept"] { background-color: var(--ink); color: var(--paper); }
+.da #cookie-banner [data-cookie-action="accept"]:hover { background-color: #0C1838; }
+/* À partir de 900 px, la bannière se range en bas à gauche, en colonne : au
+   centre, elle tombait sur le visage de la mascotte du premier écran. Mêmes
+   textes, mêmes boutons, de même taille l'un que l'autre. */
+@media (min-width: 900px) {
+  .da #cookie-banner { left: 24px; right: auto; width: 268px; margin: 0; }
+  .da #cookie-banner > div { flex-direction: column; align-items: stretch; gap: 12px; }
+  .da #cookie-banner > div > div { display: grid; }
+}
+/* L'anneau blanc détache la bulle du pied, lui aussi bleu nuit. */
+.da #crisp-launcher { background-color: var(--ink); background-image: none; color: var(--paper); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 10px 22px -10px rgba(9, 20, 52, 0.6); }
+/* La bulle est fixe : elle passe au-dessus du clair comme de l'eau profonde.
+   Anneau double : 3 px de blanc (visible sur le sombre), puis 2 px d'encre
+   (visibles sur le clair). */
+.da #crisp-launcher:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; box-shadow: 0 0 0 7px var(--ink); }
