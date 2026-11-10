@@ -38,4 +38,8 @@ export const STATIC_LASTMOD: Record<string, string> = {
   '/comparatif': COMPARATIF_LAST_UPDATED_ISO,
   /** Page du PDF offert : suit la date « À jour au » de l'édition (§ 9.di). */
   '/guide': GUIDE_REMPLACANT_LAST_UPDATED_ISO,
+  /* Accueil (DA 2026, phase 4a) : pas encore datée. Le jour où la nouvelle page
+     est en ligne, ajouter ici une entrée pour le chemin « / », à cette date
+     réelle (jamais une date de build). astro.config.mjs la passe au sitemap,
+     verify-site.mjs la contrôle. */
 };

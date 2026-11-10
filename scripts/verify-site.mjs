@@ -472,6 +472,43 @@ const motsAccueil = accueil
 if (motsAccueil < MOTS_ACCUEIL_MIN) {
   fail(`accueil : ${motsAccueil} mots dans le HTML brut, sous le plancher de ${MOTS_ACCUEIL_MIN} (90 % du relevé de fin de phase 3)`);
 }
+// Police de la DA (phase 4a) : un seul fichier, sous-ensemble latin. Un caractère
+// hors de ce sous-ensemble (une flèche, une coche, un émoji) sort dans la police de
+// repli, au milieu d'un titre ou d'une phrase. On lit la plage `unicode-range` du
+// @font-face de da.css et on y cherche chaque caractère du texte DESSINÉ de
+// l'accueil. Le texte masqué à l'œil (classe `sr` : il garde le caractère pour les
+// lecteurs d'écran, un dessin SVG le remplace à l'écran) est ignoré, comme les
+// attributs (alt, aria-label).
+// Limite : la plage dit ce que la feuille demande au fichier, pas ce qu'il contient.
+// Les flèches U+2191 et U+2193 y figurent alors que la police n'en a aucune
+// (MIGRATION.md § 9) : tout le bloc des flèches est donc refusé.
+{
+  const daCss = readFileSync(resolve(root, 'src/styles/da.css'), 'utf8');
+  const plage = daCss.match(/@font-face\s*\{[^}]*font-family:\s*"Google Sans Flex";[^}]*unicode-range:\s*([^;]+);/)?.[1];
+  if (!plage) {
+    fail('da.css : unicode-range du @font-face « Google Sans Flex » introuvable, le contrôle des caractères de l\'accueil est impossible');
+  } else {
+    const bornes = plage.split(',').map((p) => p.trim().match(/^U\+([0-9A-F]+)(?:-([0-9A-F]+))?$/i))
+      .filter(Boolean).map((m) => [parseInt(m[1], 16), parseInt(m[2] ?? m[1], 16)]);
+    const dansLaPolice = (code) => !(code >= 0x2190 && code <= 0x21ff) && bornes.some(([a, b]) => code >= a && code <= b);
+    const dessine = accueil.slice(accueil.indexOf('<body'))
+      .replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<!--[\s\S]*?-->/g, ' ')
+      .replace(/<(\w+)\b[^>]*\sclass="(?:[^"]*\s)?sr(?:\s[^"]*)?"[^>]*>[\s\S]*?<\/\1>/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+      .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+      .replace(/&(?:amp|lt|gt|quot|apos|nbsp);/g, ' ');
+    const absents = new Map();
+    for (const car of dessine) {
+      const code = car.codePointAt(0);
+      if (code > 0x20 && !dansLaPolice(code)) absents.set(car, (absents.get(car) ?? 0) + 1);
+    }
+    if (absents.size) {
+      const liste = [...absents].map(([car, n]) => `« ${car} » (U+${car.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}, ${n} fois)`).join(', ');
+      fail(`accueil : caractère(s) absent(s) de la police de la DA dans le texte dessiné : ${liste} — le dessiner en SVG et garder le caractère dans un élément de classe « sr », ou l'écrire autrement`);
+    }
+  }
+}
 
 /* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).
    L'accueil est servie par src/components/da/HeaderDA.astro et FooterDA.astro,
@@ -874,8 +911,10 @@ for (const [, loc, lastmod] of entrees) {
 const srcLastmod = readFileSync(resolve(root, 'src/lib/pages-lastmod.ts'), 'utf8');
 const statiquesAttendues = new Map(
   // Chemins à chiffres et à « / » internes compris (§ 9.bi) : l'ancien motif
-  // [a-z-]+ sautait en silence les trois sous-pages du guide.
-  [...srcLastmod.matchAll(/'(\/[a-z0-9\/-]+)':\s*([A-Z_]+|'[\d-]{10}')/g)].map(([, chemin, val]) => {
+  // [a-z-]+ sautait en silence les trois sous-pages du guide. L'accueil, '/',
+  // est acceptée aussi (DA 2026, phase 4a) : le motif exigeait un caractère
+  // après le slash et l'aurait sautée de la même façon.
+  [...srcLastmod.matchAll(/'(\/[a-z0-9\/-]*)':\s*([A-Z_]+|'[\d-]{10}')/g)].map(([, chemin, val]) => {
     const litteral = val.match(/'([\d-]{10})'/);
     if (litteral) return [chemin, litteral[1]];
     const constante = srcLastmod.match(new RegExp(`${val}\\s*=\\s*'([\\d-]{10})'`))
@@ -886,7 +925,8 @@ const statiquesAttendues = new Map(
 for (const [chemin, attendu] of statiquesAttendues) {
   if (!attendu) { fail(`pages-lastmod.ts : date illisible pour ${chemin}`); continue; }
   // Égalité exacte : endsWith('/guide-declarations') ne distinguait pas le hub.
-  const entree = entrees.find(([, loc]) => loc === `${SITE}${chemin}`);
+  // Le sitemap écrit l'accueil sans slash final (`https://www.hippodoc.fr`).
+  const entree = entrees.find(([, loc]) => loc === `${SITE}${chemin === '/' ? '' : chemin}`);
   if (!entree) { fail(`sitemap : ${chemin} devrait porter un lastmod (${attendu}) et n'en a pas`); continue; }
   lastmodVerifies++;
   if (entree[2] !== attendu) {
