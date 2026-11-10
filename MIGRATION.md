@@ -5823,6 +5823,23 @@ et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` 
   à `main` : mêmes lignes, mêmes hauteurs, largeur du titre à 0,02 px près. L'écart
   connu entre 906 et 1 026 px (§ 9.eb, « Reste ouvert ») n'a pas bougé.
 
+**2. Premier écran : ligne fine sous les boutons** (`accueil/Hero.astro`)
+
+- Avant : « Rien n'est débité pendant l'essai. Créé par un médecin remplaçant. Déjà
+  900+ médecins inscrits. »
+- Après : « Créé par un médecin remplaçant. Déjà 900+ médecins inscrits. »
+- La mention de la carte bancaire reste dans les tarifs (« Ta carte bancaire est
+  demandée à l'inscription, mais rien n'est débité pendant l'essai. ») et dans la FAQ :
+  non touchées.
+- Coupes : une seule espace écrite (`.f1`) au lieu de trois. Sous 480 px d'écran, une
+  phrase par ligne (deux lignes, à 320 px aussi) ; une ligne à partir de 480 px (700
+  auparavant). La ligne entière fait 413 px avec la police et 409 px avec le repli,
+  pour 434 px de place à 480 px. Balayage refait de 320 à 1 600 px : la ligne fine
+  coupe pareil avec la police et avec le repli à toutes les largeurs ; mot-clé, titre
+  et accroche inchangés. La règle d'interligne resserré sous 360 px (faite pour trois
+  lignes) est retirée : regardé à 320 × 568 px, la ligne reste à gauche de la bulle
+  de chat.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
