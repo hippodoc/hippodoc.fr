@@ -17,8 +17,10 @@
  *   relevé du 10 novembre 2026 sur le projet Supabase « Hippodoc - SAAS
  *   FINANCE », même définition que le relevé du 15 août (MIGRATION.md § 9.u) :
  *   `count(*)` de `remplacements` (24 252, écrit à la centaine inférieure) et
- *   de `medecins_remplaces` (2 714, écrit tel quel). La date affichée ne
- *   couvre que ces deux-là. À refaire à chaque mise à jour, jamais à la main.
+ *   de `medecins_remplaces` (2 714, écrit tel quel). À refaire à chaque mise
+ *   à jour, jamais à la main. La date du relevé (10 novembre 2026) n'est plus
+ *   affichée sous les chiffres (MIGRATION.md § 9.ec) : elle vit ici et dans
+ *   MIGRATION.md, à mettre à jour avec les chiffres.
  * - Film : le lecteur de l'ancien home/PresentationVideoSection.astro (supprimé
  *   en phase 4a, à lire dans l'historique git), tel quel
  *   (<video preload="none"> : aucun octet de vidéo avant le clic, mêmes
@@ -56,7 +58,8 @@ const [afficheAvif, afficheWebp] = await Promise.all(
   (['avif', 'webp'] as const).map((format) => getImage({ src: affiche, format, width: 800, widths: [400, 800, 1200] }))
 );
 
-/* Libellés de l'ancienne section « En chiffres ». Valeurs : voir l'en-tête. */
+/* Libellés de l'ancienne section « En chiffres ». Valeurs : voir l'en-tête.
+   Journées et lieux : relevé du 10 novembre 2026. */
 const chiffres = [
   { valeur: '900+', libelle: 'Médecins inscrits' },
   { valeur: '24 200', libelle: 'Journées enregistrées' },
@@ -98,7 +101,6 @@ const chiffres = [
               <li class="fact"><b class="aff num">{c.valeur}</b>{' '}<span>{c.libelle}</span></li>
             ))}
           </ul>
-          <small>journées et lieux au 10 novembre 2026</small>
         </div>
       </div>
     </div>
@@ -226,8 +228,8 @@ const chiffres = [
      0,2 px près, d'un côté ou de l'autre selon le rendu de la police). */
   .who-copy h2 { --corps: clamp(30px, 4.5vw, 58px); margin: 0; }
 
-  /* Trois chiffres, et la date des deux relevés */
-  .facts { display: flex; flex-direction: column; gap: 14px; width: 100%; margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--line); }
+  /* Trois chiffres */
+  .facts { width: 100%; margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--line); }
   /* Trois colonnes égales jusqu'à 1179 px : les trois chiffres restent sur une
      ligne à toutes les largeurs (le troisième chiffre passait seul dessous à 320, 560, 768
      et 1024 px). */
@@ -238,7 +240,6 @@ const chiffres = [
     .facts ul { column-gap: 10px; }
     .fact span { font-size: 14px; }
   }
-  .facts small { font-size: 14px; color: var(--ink-3); }
 
   /* Le film */
   .film { display: grid; align-items: center; gap: 28px; margin-top: 64px; }

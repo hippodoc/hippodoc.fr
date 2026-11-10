@@ -5840,6 +5840,21 @@ et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` 
   lignes) est retirée : regardé à 320 × 568 px, la ligne reste à gauche de la bulle
   de chat.
 
+**3. Bloc fondateur : la date du relevé n'est plus affichée** (`accueil/Fondateur.astro`)
+
+- Avant, sous les trois chiffres : « journées et lieux au 10 novembre 2026 ». Après :
+  rien (ligne retirée, avec sa règle de style). Les trois chiffres et leurs libellés
+  restent : « 900+ Médecins inscrits », « 24 200 Journées enregistrées », « 2 714
+  Lieux d'exercice référencés ».
+- **Date du relevé, à tenir ici et dans l'en-tête de `Fondateur.astro`** : journées
+  (24 252, écrit « 24 200 ») et lieux (2 714) relevés le **10 novembre 2026** par
+  `count(*)` (§ 9.eb, § 9.u) ; « 900+ » : 908 comptes confirmés par le propriétaire
+  le même jour. La règle ne change pas : à chaque mise à jour, refaire les relevés et
+  corriger la date aux deux endroits.
+- ⚠️ CLAUDE.md dit encore « datés sur la page » (section « Accueil — DA 2026 »,
+  « Chiffres ») : à corriger par le propriétaire (« datés dans le code et dans
+  MIGRATION.md »).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
