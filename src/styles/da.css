@@ -1,0 +1,280 @@
+/* ==========================================================================
+   DA 2026 « le monde d'Hippodoc » : fondations (phase 1, MIGRATION.md § 9).
+
+   Un ciel du matin, une eau en pâte à modeler, tout est rond et mat, dans les
+   bleus de la mascotte. Le jaune porte une seule idée : ce qu'il te reste (le
+   soleil, le Super-Net, le bouton qui y mène).
+
+   Règles de cette feuille :
+   - tout vit sous la classe racine `.da`, posée sur <body> par la prop
+     `bodyClass` de BaseLayout : sans elle, rien ne s'applique ;
+   - `:where(.da)` ne pèse rien : une classe utilitaire Tailwind l'emporte
+     toujours, les sections pas encore migrées gardent donc leur style ;
+   - aucune classe Tailwind dans les composants `da/` : la feuille globale ne
+     doit pas grossir pour eux ;
+   - feuille importée par les composants `da/` seulement, ni par BaseLayout ni
+     par global.css.
+   ========================================================================== */
+
+/* ───────── Police ─────────
+   Google Sans Flex (SIL OFL 1.1, voir src/assets/fonts/OFL.txt), un seul fichier :
+   latin, graisse variable 400 à 800, arrondi (ROND) figé à 100, taille optique
+   (opsz) figée à 18, largeur et pente par défaut. */
+@font-face {
+  font-family: "Google Sans Flex";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Repli à métriques ajustées : tant que le woff2 n'est pas là (`swap`), Arial
+   occupe la même place, le texte ne saute pas à l'arrivée de la police.
+   Valeurs calculées sur le texte de l'accueil, à la graisse du texte courant
+   (430) : chasse moyenne 0,4515 em contre 0,4462 em pour Arial ; hhea de la
+   police 1932 / -572 / 0 pour 2000 unités. */
+@font-face {
+  font-family: "Google Sans Flex Fallback";
+  src: local("Arial"), local("Liberation Sans"), local("Arimo");
+  size-adjust: 101.19%;
+  ascent-override: 95.47%;
+  descent-override: 28.26%;
+  line-gap-override: 0%;
+}
+
+/* ───────── Jetons ───────── */
+.da {
+  color-scheme: light;
+
+  /* Ciel, papier, encre */
+  --sky-1: #C9DEFF; --sky-2: #E4EEFF; --glow: #FFF2D2;
+  --sky: #DCE9FF; --sky-soft: #EDF3FE; --sand: #FBF6EA; --paper: #FFFFFF;
+  --ink: #14254F; --ink-2: #3A4B78; --ink-3: #56668F;
+  /* Logo d'origine : « Hippo » en --brand, « doc » en --brand-2 */
+  --brand: #0059B3; --brand-2: #1A8CFF;
+  /* Eau : de la surface au fond */
+  --w1: #A9CBF8; --w2: #7FAEF0; --w3: #4F88DE; --w4: #2A60C4;
+  --deep: #2A60C4; --deep-2: #163A88;
+  /* Texte sur l'eau. --on-deep-3 ne fait que 3,63:1 sur --deep : à réserver au
+     grand texte ou au fond --deep-2 (6,50:1). */
+  --on-deep-2: #DCE7FB; --on-deep-3: #B9CCF0;
+  --sun: #FFD84A; --sun-hover: #FFE169; --sun-edge: #DDA800;
+  --line: rgba(20, 37, 79, 0.11); --line-deep: rgba(255, 255, 255, 0.2);
+  /* États */
+  --ok-bg: #DFF3E7; --ok: #0F6338;
+  --wait-bg: #FCEACF; --wait: #874C00;
+  --plan-bg: #DFE9FF; --plan: #1B48B3;
+
+  /* Rayons : cinq crans, pas un par composant */
+  --r-sm: 12px; --r-md: 20px; --r-lg: 28px; --r-xl: 40px; --r-pill: 999px;
+  /* Ombres : la pâte à modeler (deux tailles), ce qui flotte, les bords de bouton */
+  --clay: inset 0 2px 0 rgba(255, 255, 255, 0.8), inset 0 -4px 0 rgba(20, 37, 79, 0.05), 0 22px 44px -22px rgba(13, 40, 105, 0.42);
+  --clay-sm: inset 0 -3px 0 rgba(20, 37, 79, 0.05), 0 10px 22px -14px rgba(13, 40, 105, 0.32);
+  --float: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 12px 28px -16px rgba(13, 40, 105, 0.4);
+  --edge: rgba(20, 37, 79, 0.16);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Typographie */
+  --text: "Google Sans Flex", "Google Sans Flex Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --display: var(--text);
+  --dw: 720; --dtr: -0.035em; --tw: 430; --tb: 660;
+
+  /* Anneau de focus : en encre sur le clair, en blanc sur l'eau (voir `.ft`) */
+  --focus: var(--ink);
+}
+
+/* ───────── Page ─────────
+   `.da` est posée sur <body>. Le fond prolonge le pied (eau profonde) quand la
+   page rebondit en bas, et le ciel quand elle rebondit en haut. */
+.da {
+  margin: 0;
+  background: var(--deep-2) linear-gradient(var(--sky-1), var(--sky-1)) no-repeat 0 0 / 100% 520px;
+  color: var(--ink);
+  font-family: var(--text);
+  font-weight: var(--tw);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+/* La pastille est collée à 10 px du haut et fait 60 px : une ancre s'arrête dessous. */
+html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
+
+/* ───────── Éléments ───────── */
+:where(.da) h2 { font-family: var(--display); font-weight: var(--dw); letter-spacing: var(--dtr); font-size: clamp(32px, 4.5vw, 58px); line-height: 1.05; text-wrap: balance; }
+:where(.da) h3 { font-family: var(--display); font-weight: var(--dw); letter-spacing: calc(var(--dtr) * 0.7); font-size: clamp(24px, 2.5vw, 32px); line-height: 1.12; }
+:where(.da) b, :where(.da) strong { font-weight: var(--tb); }
+/* La maquette posait un anneau --brand-2 : 2,46:1 sur le ciel, sous le seuil de 3:1. */
+:where(.da) :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ───────── Primitives ───────── */
+:where(.da) .wrap { position: relative; max-width: 1160px; margin-inline: auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+
+/* Boutons : épais, on les enfonce */
+:where(.da) .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 0 26px; border: 0; border-radius: var(--r-pill); font-family: var(--text); font-size: 17px; font-weight: var(--tb); line-height: 1.2; text-decoration: none; cursor: pointer; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
+:where(.da) .btn:active { translate: 0 5px; box-shadow: 0 0 0 transparent; }
+:where(.da) .btn-brand { background: var(--sun); color: var(--ink); box-shadow: 0 5px 0 var(--sun-edge); }
+:where(.da) .btn-brand:hover { background: var(--sun-hover); }
+:where(.da) .btn-white, :where(.da) .btn-line { background: var(--paper); color: var(--ink); box-shadow: 0 5px 0 var(--edge); }
+:where(.da) .btn-white:hover, :where(.da) .btn-line:hover { background: var(--sky-soft); }
+:where(.da) .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 5px 0 var(--edge); }
+
+/* Le Super-Net : toujours sur du jaune */
+:where(.da) .hl { display: inline-block; padding: 0 0.2em; margin-left: -0.2em; border-radius: 0.28em; background: var(--sun); }
+
+:where(.da) .chip { display: inline-block; padding: 3px 9px; border-radius: var(--r-pill); font-size: 13.5px; font-weight: var(--tb); line-height: 1.35; white-space: nowrap; }
+:where(.da) .chip.ok { background: var(--ok-bg); color: var(--ok); }
+:where(.da) .chip.wait { background: var(--wait-bg); color: var(--wait); }
+:where(.da) .chip.plan { background: var(--plan-bg); color: var(--plan); }
+:where(.da) .chip.off { background: var(--sky-soft); color: var(--ink-2); }
+
+/* Icône du logo. Le fichier d'origine (96 × 96) porte l'hippopotame dans une
+   boîte de 52 × 57 px, à 22 px du bord gauche et 20 px du haut : on le recadre
+   pour que --h soit la hauteur de l'icône elle-même, comme sur la maquette. */
+:where(.da) .logo-mark { --h: 36px; position: relative; flex: none; display: block; width: calc(var(--h) * 52 / 57); height: var(--h); overflow: hidden; }
+:where(.da) .logo-mark img { position: absolute; left: calc(var(--h) * -22 / 57); top: calc(var(--h) * -20 / 57); width: calc(var(--h) * 96 / 57); height: calc(var(--h) * 96 / 57); max-width: none; }
+:where(.da) .logo-word { font-family: var(--display); font-size: 22px; font-weight: 760; letter-spacing: -0.025em; line-height: 1; color: var(--brand); }
+:where(.da) .logo-word span { color: var(--brand-2); }
+
+/* ───────── En-tête : une pastille qui flotte ─────────
+   Mécanique reprise de Header.astro : menu Ressources en CSS (survol et
+   focus-within), tiroir mobile piloté par la case #mobile-menu-toggle. */
+:where(.da) .hd { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 50; height: 60px; margin: 10px 0 -70px; -webkit-tap-highlight-color: transparent; }
+/* Variante « dans le flux » : la pastille garde sa place au lieu de survoler le
+   premier bloc (pages dont le haut n'est pas dessiné pour passer dessous). Des
+   marges intérieures et non extérieures : une marge haute fusionnerait avec
+   celle du conteneur et laisserait 10 px du fond de page au-dessus de lui. */
+:where(.da) .hd--flux { box-sizing: border-box; top: env(safe-area-inset-top, 0px); height: 80px; margin: 0; padding: 10px 0; }
+/* Sous 900 px, pas de flou d'arrière-plan : il coûte cher au défilement sur
+   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. */
+:where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+@media (min-width: 900px) {
+  :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
+}
+:where(.da) .hd-brand { display: flex; align-items: center; gap: 8px; min-height: 44px; border-radius: var(--r-sm); text-decoration: none; }
+/* Sous 380 px, l'icône seule : logo, essai et menu doivent tenir sur 320 px. */
+:where(.da) .hd-brand .logo-word { display: none; }
+@media (min-width: 380px) { :where(.da) .hd-brand .logo-word { display: inline; } }
+
+:where(.da) .hd-links { display: none; align-items: center; gap: 30px; font-size: 15.5px; font-weight: 560; color: var(--ink-2); }
+:where(.da) .hd-links a, :where(.da) .hd-res-btn { display: inline-flex; align-items: center; min-height: 44px; border-radius: var(--r-sm); color: inherit; text-decoration: none; transition: color 160ms var(--ease); }
+:where(.da) .hd-links a:hover { color: var(--ink); }
+:where(.da) .hd-res { position: relative; }
+:where(.da) .hd-res-btn { gap: 4px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+:where(.da) .hd-res-btn.is-current { color: var(--brand); }
+:where(.da) .hd-res:hover .hd-res-btn, :where(.da) .hd-res:focus-within .hd-res-btn { color: var(--ink); }
+:where(.da) .hd-res-btn svg { transition: rotate 200ms var(--ease); }
+:where(.da) .hd-res:hover .hd-res-btn svg, :where(.da) .hd-res:focus-within .hd-res-btn svg { rotate: 180deg; }
+:where(.da) .hd-res-pop { position: absolute; right: -16px; top: 100%; z-index: 1; padding-top: 14px; visibility: hidden; opacity: 0; transition: opacity 150ms ease, visibility 150ms; }
+:where(.da) .hd-res:hover .hd-res-pop, :where(.da) .hd-res:focus-within .hd-res-pop { visibility: visible; opacity: 1; }
+:where(.da) .hd-res-menu { width: 272px; padding: 8px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); }
+:where(.da) .hd-res-menu a { display: flex; padding: 0 14px; border-radius: var(--r-sm); transition: background-color 160ms var(--ease), color 160ms var(--ease); }
+:where(.da) .hd-res-menu a:hover { background: var(--sky-soft); color: var(--ink); }
+:where(.da) .hd-res-menu a[aria-current="page"] { color: var(--brand); }
+
+:where(.da) .hd-end { display: flex; align-items: center; gap: 4px; }
+:where(.da) .hd-login { display: none; align-items: center; min-height: 44px; padding: 0 14px; border-radius: var(--r-pill); font-size: 15.5px; font-weight: 560; color: var(--ink-2); text-decoration: none; transition: color 160ms var(--ease); }
+:where(.da) .hd-login:hover { color: var(--ink); }
+:where(.da) .hd .btn { min-height: 44px; padding: 0 18px; font-size: 15.5px; white-space: nowrap; }
+:where(.da) .hd .btn-brand { box-shadow: 0 3px 0 var(--sun-edge); }
+:where(.da) .hd .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 3px 0 var(--edge); }
+:where(.da) .hd .btn:active { translate: 0 3px; box-shadow: 0 0 0 transparent; }
+:where(.da) .hd-cta-desk { display: none; }
+:where(.da) .hd-burger, :where(.da) .hd-close { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink); cursor: pointer; touch-action: manipulation; transition: scale 150ms ease-out, background-color 150ms ease-out; }
+:where(.da) .hd-burger:active, :where(.da) .hd-close:active { scale: 0.9; background: var(--sky); }
+@media (hover: hover) { :where(.da) .hd-burger:hover, :where(.da) .hd-close:hover { background: var(--sky-soft); } }
+
+/* La case du tiroir : invisible mais focusable (c'est elle, le contrôle). */
+:where(.da) .hd-toggle { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:where(.da) .hd-toggle:focus-visible ~ .hd-bar .hd-burger,
+:where(.da) .hd-toggle:focus-visible ~ .hd-drawer .hd-close { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* Voile et tiroir. Aucun flou (§ 9.dn). Courbes et durées de § 9.do : départ au
+   ras du bord, courbe des panneaux iOS, 420 ms à l'ouverture, 300 à la fermeture. */
+:where(.da) .hd-overlay { position: fixed; inset: 0; z-index: 40; visibility: hidden; opacity: 0; background: rgba(9, 20, 52, 0.6); cursor: pointer; transition: opacity 200ms ease-out, visibility 200ms ease-out; }
+:where(.da) .hd-toggle:checked ~ .hd-overlay { visibility: visible; opacity: 1; transition-duration: 300ms; }
+/* Largeur : au moins 60 px de voile restent visibles pour fermer en touchant à côté. */
+:where(.da) .hd-drawer { position: fixed; top: 12px; right: 12px; bottom: 12px; z-index: 50; width: calc(100% - 72px); max-width: 340px; visibility: hidden; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); transform: translateX(calc(100% + 16px)); transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
+:where(.da) .hd-toggle:checked ~ .hd-drawer { visibility: visible; transform: none; transition-duration: 420ms; }
+:where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; padding: 20px 20px 16px; }
+:where(.da) .hd-drawer-top { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
+:where(.da) .hd-drawer-brand { display: flex; align-items: center; gap: 8px; }
+:where(.da) .hd-drawer-nav { display: flex; flex: 1; flex-direction: column; min-height: 0; margin-top: 20px; overflow-y: auto; overscroll-behavior: contain; }
+/* « Guide du remplaçant (PDF) » passe sur deux lignes à 320 px : d'où l'interligne serré. */
+:where(.da) .hd-drawer-nav a { display: flex; align-items: center; min-height: 48px; padding: 8px 12px; border-radius: var(--r-sm); font-size: 17px; font-weight: 600; line-height: 1.25; color: var(--ink); text-decoration: none; }
+:where(.da) .hd-drawer-nav a:active { background: var(--sky-soft); }
+@media (hover: hover) { :where(.da) .hd-drawer-nav a:hover { background: var(--sky-soft); } }
+:where(.da) .hd-drawer-label { margin: 20px 0 4px; padding: 0 12px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+/* Une colonne quand « Essai gratuit 30j » ne tient pas à côté de « Connexion » (320 px). */
+:where(.da) .hd-drawer-end { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 12px 8px; margin-top: 16px; padding: 16px 0 4px; border-top: 1px solid var(--line); }
+:where(.da) .hd-drawer-end .btn { padding: 0 10px; font-size: 15px; }
+
+/* Contenu du tiroir en cascade (§ 9.do) : chaque ligne glisse de 12 px avec un
+   décalage de 15 ms (--i = rang). À la fermeture, tout s'efface ensemble. */
+:where(.da) .hd-item { opacity: 0; transform: translateX(12px); transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease; }
+:where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: opacity 320ms cubic-bezier(0.32, 0.72, 0, 1), transform 420ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease; transition-delay: calc(30ms + var(--i) * 15ms), calc(30ms + var(--i) * 15ms), 0ms; }
+@media (prefers-reduced-motion: reduce) {
+  :where(.da) .hd-item, :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: none; }
+  :where(.da) .hd-drawer, :where(.da) .hd-overlay { transition: none; }
+}
+
+@media (min-width: 960px) {
+  :where(.da) .hd-links, :where(.da) .hd-login { display: flex; }
+  :where(.da) .hd-cta-desk { display: inline-flex; }
+  :where(.da) .hd-cta-pill, :where(.da) .hd-burger, :where(.da) .hd-toggle, :where(.da) .hd-overlay, :where(.da) .hd-drawer { display: none; }
+}
+
+/* ───────── Pied : l'eau profonde ───────── */
+:where(.da) .ft { --focus: #FFFFFF; position: relative; z-index: 1; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 16px; }
+:where(.da) .ft-in { display: grid; gap: 36px 56px; padding-top: 36px; padding-bottom: 28px; }
+:where(.da) .ft a, :where(.da) .ft-prefs { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; transition: color 160ms var(--ease); }
+:where(.da) .ft a:hover, :where(.da) .ft-prefs:hover { color: var(--paper); }
+:where(.da) .ft-prefs { padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+:where(.da) .ft-text { display: inline-flex; align-items: center; min-height: 44px; }
+:where(.da) .ft-title { margin-bottom: 6px; font-family: var(--text); font-size: 15px; font-weight: var(--tb); letter-spacing: 0; line-height: 1.4; color: var(--paper); }
+:where(.da) .ft-list { margin: 0; padding: 0; list-style: none; }
+
+/* Le logo garde ses couleurs d'origine : il lui faut du blanc sous lui. */
+:where(.da) .ft .ft-logo { gap: 8px; min-height: 52px; padding: 0 20px 0 14px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
+:where(.da) .ft .ft-logo:hover { translate: 0 -2px; }
+:where(.da) .ft-tagline { margin: 14px 0 0; }
+:where(.da) .ft-social { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+:where(.da) .ft .ft-social a { justify-content: center; width: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.12); color: var(--paper); transition: background-color 160ms var(--ease); }
+:where(.da) .ft .ft-social a:hover { background: rgba(255, 255, 255, 0.22); }
+:where(.da) .ft-backers { margin-top: 26px; }
+:where(.da) .ft-backers p { margin: 0 0 10px; font-size: 14.5px; }
+/* Logos des soutiens sur une plaque blanche : deux des trois fichiers ont un fond opaque. */
+:where(.da) .ft-backers-logos { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; padding: 8px 20px; border-radius: var(--r-md); background: var(--paper); }
+:where(.da) .ft-backers-logos img { display: block; width: auto; height: 38px; }
+:where(.da) .ft-backers-logos img.tall { height: 56px; }
+
+:where(.da) .ft-sub { padding-left: 12px; border-left: 2px solid var(--line-deep); font-size: 15px; }
+/* Deux colonnes remplies de haut en bas : les 9 premières lignes (outils, blog et
+   ses trois articles) à gauche, les 8 suivantes (maison et mentions) à droite.
+   Le 9 suit le contenu de FooterDA.astro. */
+@media (min-width: 480px) {
+  :where(.da) .ft-list.cols { display: grid; grid-auto-flow: column; grid-template-rows: repeat(9, auto); column-gap: 32px; }
+}
+@media (min-width: 900px) {
+  :where(.da) .ft-in { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.8fr) minmax(0, 1.55fr); padding-top: 44px; }
+}
+/* 104 px en bas, comme la maquette : la bulle de chat ne recouvre aucun lien. */
+:where(.da) .ft-legal { padding-top: 18px; padding-bottom: 104px; border-top: 1px solid var(--line-deep); font-size: 14.5px; }
+:where(.da) .ft-legal p { margin: 0; }
+
+/* ───────── Bannière cookies et bulle de chat ─────────
+   Rendues par ThirdPartyScripts.astro avec des classes Tailwind : il faut ici
+   une vraie spécificité (`.da #…`) pour les rhabiller. Tailles, textes et
+   mécanique inchangés ; refuser reste aussi visible qu'accepter. Pas de jaune :
+   il est réservé à ce qu'il te reste. */
+.da #cookie-banner { border: 0; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.da #cookie-banner p { color: var(--ink-2); }
+.da #cookie-banner p svg, .da #cookie-banner a { color: var(--brand); }
+.da #cookie-banner [data-cookie-action] { border: 0; border-radius: var(--r-pill); background-image: none; font-weight: var(--tb); }
+.da #cookie-banner [data-cookie-action]:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.da #cookie-banner [data-cookie-action="essential"] { background-color: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.da #cookie-banner [data-cookie-action="essential"]:hover { background-color: var(--sky-soft); }
+.da #cookie-banner [data-cookie-action="accept"] { background-color: var(--ink); color: var(--paper); }
+.da #cookie-banner [data-cookie-action="accept"]:hover { background-color: #0C1838; }
+/* L'anneau blanc détache la bulle du pied, lui aussi bleu nuit. */
+.da #crisp-launcher { background-color: var(--ink); background-image: none; color: var(--paper); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 10px 22px -10px rgba(9, 20, 52, 0.6); }
+.da #crisp-launcher:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }

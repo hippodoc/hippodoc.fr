@@ -21,6 +21,8 @@ interface Props {
   /** Blocs JSON-LD additionnels (Organization est injecté partout). */
   jsonLd?: object[];
   noindex?: boolean;
+  /** Classe posée sur <body> (vide par défaut). `da` active la DA 2026 (src/styles/da.css). */
+  bodyClass?: string;
 }
 
 const {
@@ -34,6 +36,7 @@ const {
   ogType = 'website',
   jsonLd = [],
   noindex = false,
+  bodyClass = '',
 } = Astro.props;
 
 const canonical = `${SITE_URL}${path}`;
@@ -111,7 +114,7 @@ const allJsonLd = [ORGANIZATION_SCHEMA, ...jsonLd];
     <slot name="head" />
   </head>
 
-  <body>
+  <body class={bodyClass || undefined}>
     <slot />
     <PostHog />
     <ThirdPartyScripts />
