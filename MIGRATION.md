@@ -7343,6 +7343,77 @@ suivre : rien d'autre n'est confirmé.
 - Hauteur de l'accueil : 390 px 15 692 → 15 775 ; 1 440 px 12 575 → 12 604.
 - **Non testé** : Safari, Firefox, lecteur d'écran réel, vrai téléphone.
 
+#### Phase 3, relecture du lot « carte bancaire et syndicats » (10 novembre 2026, nuit)
+
+Huit points relevés à la relecture du lot précédent. **Un seul texte change, sur `/`.**
+Zéro JS ajouté. Aucun nom de code, aucune marche à suivre.
+
+**Texte (mot pour mot)**
+
+- **Accueil, fiche des syndicats** (`accueil/Partenaires.astro`) : « 6 mois d’essai
+  gratuit au lieu de 30 jours, pour les adhérents de ces syndicats, grâce à un code
+  fourni par leur syndicat. » (auparavant « 6 mois d’essai gratuit au lieu de 30 jours,
+  pour les adhérents de ces syndicats. Le code est fourni par ton syndicat. »).
+  Pourquoi : l'ancienne seconde phrase disait « Le code » sans l'avoir annoncé et
+  passait de « les adhérents » à « ton syndicat » ; la nouvelle reprend le fait B tel
+  qu'il est confirmé. Elle écarte aussi la confusion avec le « code promo » du tarif
+  interne, cité dans le pli des tarifs de la même page.
+- Mise en page : « grâce à un code fourni par leur syndicat. » garde sa propre ligne
+  (`.code`, en bloc). Lignes du texte, mesurées dans Chromium, police chargée : 5 à 320
+  et 360 px, 4 à 375 et 390 px, 3 de 640 à 900 px, 2 à 1 024 et 1 440 px. Hauteur de la
+  fiche : 203 px à 320 et 360 px, 179 px à 390 px (155 auparavant), 109 px à 640 px,
+  101 px à 1 440 px (inchangée). Aucun défilement horizontal à ces largeurs.
+- Aucun autre texte ajouté, retiré ou modifié. Témoignages non touchés.
+
+**Points relus et laissés tels quels, avec la raison**
+
+- `/tarifs`, « Comment fonctionne l'essai gratuit de 30 jours ? » : toujours non
+  modifiée (texte et schéma). Le moment où l'offre est choisie n'est pas confirmé ;
+  ajouter la phrase sur la carte à côté de « À la fin de l'essai, tu choisis l'offre »
+  sans cette réponse ferait deux phrases qui se contredisent. Reste ouvert.
+- Premier écran, « Rien n’est débité pendant l’essai. » : exact, mais ne dit que la
+  seconde moitié du fait A (la demande de carte est dite aux tarifs et dans la FAQ).
+  Premier écran validé par le propriétaire (décision 11) : non retouché sans son accord.
+  Reste ouvert.
+- Ligne fine, coupe « Créé par un / médecin remplaçant. » entre 380 et 699 px : gardée.
+  Couper entre les phrases demanderait une seconde ligne « Créé par un médecin
+  remplaçant. Déjà 900+ médecins inscrits. » d'environ 410 px (estimation à partir des
+  333 px mesurés pour la ligne actuelle, non remesurée), pour 340 px de place à 380 px.
+  Elle ne tient qu'au-delà de 450 px environ ; en dessous il faudrait trois lignes, soit
+  22 px de plus sur le premier écran validé, à 390 px compris.
+- Fait A dit en deux registres (`/` et `/faq`), absent de `/essai` et `/tarifs` : aucune
+  phrase fausse. La réponse de `/faq` est un texte d'origine, non réécrit sans demande.
+  Reste ouvert.
+- Pli « Voir l'offre interne » de l'accueil : texte d'origine, hors de ce lot, non
+  touché. Déjà signalé au lot C pour le vouvoiement ; voir ci-dessous.
+
+**Reste ouvert (au propriétaire), en plus de la liste du lot précédent**
+
+- Premier écran : garder « Rien n’est débité pendant l’essai. », ou dire aussi que la
+  carte est demandée (les coupes `.f1`, `.f2`, `.f3` seraient à remesurer) ?
+- Une seule formulation du fait A partout (celle de l'accueil reprise sur `/faq`, et
+  ajoutée ou non sur `/tarifs` et `/essai`) ?
+- Pli « Voir l'offre interne » : il vouvoie dans sa première phrase (« Vous êtes encore
+  en internat ? … Hippodoc vous accompagne ») puis tutoie ; il décrit une marche à
+  suivre (justificatifs, mail, code promo sous 24 h) qui ne fait pas partie des faits A
+  à C ; il dit « 30 jours gratuits » sans renvoi vers les 6 mois des adhérents. À
+  valider avant toute retouche.
+- PDF `public/guide/guide-du-remplacant-2026-2027.pdf`, page 25 : « Interne ? 10 € par
+  mois pendant tout ton internat, après l’essai (sur justificatif). » Pas de
+  contradiction avec le fait C, mais ni les docteurs juniors ni « jusqu'à la fin de
+  l'internat ». À aligner à la prochaine régénération du PDF ; rien à changer dans le
+  code.
+
+**Vérifié**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, **0 erreur**, 3 avertissements (ceux
+  d'avant).
+- Chromium, 320, 360, 375, 390, 640, 768, 900, 1 024 et 1 440 px : aucune erreur de
+  script, aucun défilement horizontal. Captures de la fiche regardées à 390 et
+  1 440 px.
+- **Non refait** : balayage repli contre police (la ligne fine n'a pas changé) ;
+  Safari, Firefox, lecteur d'écran réel, vrai téléphone.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
