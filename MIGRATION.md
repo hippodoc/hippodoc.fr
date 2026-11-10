@@ -7158,6 +7158,8 @@ balises `<script>`). Un contrôle ajouté à `verify-site.mjs` (avertissement, p
 
 **Écartés ou laissés au propriétaire, sans changement de code**
 
+> **Suite (10 novembre 2026, nuit).** Les deux premiers points ci-dessous sont tranchés par les décisions 14a à 14c du propriétaire et traités dans « Phase 3, carte bancaire, essai des syndicats et tarif interne », plus bas.
+
 - **`/faq`** (syndicats « Certains… essai prolongé », tarif interne sans les docteurs
   juniors, « On te demande ta CB ») : constat confirmé dans `src/pages/faq.astro`, HTML et
   schéma `FAQPage`. Non modifié : page hors accueil, et la question de la carte bancaire
@@ -7192,6 +7194,153 @@ balises `<script>`). Un contrôle ajouté à `verify-site.mjs` (avertissement, p
   (quatre à 320 px), sans débordement. Hauteur de page : 390 px 15 690 → 15 721 ;
   320 px 17 169 → 17 171 ; 1 440 px 12 605 → 12 585.
 - Captures regardées à 390 et 1 440 px (questions, carte collante, témoignages).
+- **Non testé** : Safari, Firefox, lecteur d'écran réel, vrai téléphone.
+
+#### Phase 3, carte bancaire, essai des syndicats et tarif interne (10 novembre 2026, nuit)
+
+Décisions 14a à 14c du propriétaire. Trois faits, dits tels quels, sans rien ajouter :
+**(A)** à l'inscription la carte bancaire est demandée, mais rien n'est débité pendant
+l'essai ; **(B)** l'essai dure 30 jours, et 6 mois pour les adhérents des syndicats
+d'internes partenaires (SILR, CRP-IMG, SIOI, AIMGL Limoges), gratuitement, grâce à un
+code fourni par leur syndicat ; **(C)** internes et docteurs juniors paient 10 € par mois
+jusqu'à la fin de l'internat. **Deux pages changent : `/` et `/faq`.** Zéro JS ajouté
+(cinq balises `<script>` dans chacune, comme avant). Aucun nom de code, aucune marche à
+suivre : rien d'autre n'est confirmé.
+
+**« Sans carte bancaire » : recherche sur tout le site**
+
+- Cherché dans `src/` et `public/` (pages, composants, données, articles, schémas, textes
+  alternatifs, PDF du guide passé par `pdftotext`), puis dans `dist/` : « sans carte »,
+  « sans CB », « aucune carte », « pas de carte », « carte bancaire », « CB »,
+  « prélèvement », « débité ». **Trois affirmations fausses, toutes sur l'accueil**,
+  corrigées ci-dessous. Après build : plus aucune occurrence de « sans carte bancaire »
+  dans `dist/`.
+- Faux positifs, **non modifiés** : `src/pages/blog/index.astro` (« sans carte
+  orpheline », un commentaire sur la grille des articles) ;
+  `checklist-administrative-medecin-remplacant.md` (« Aucune carte à réclamer à la
+  CPAM », il s'agit de la carte CPS) ; les articles qui citent la carte bancaire comme
+  moyen de paiement ; `/conditions-utilisations` (paiement par carte via Stripe).
+- Déjà justes, **non modifiés** : `/comparatif` (« Carte requise. Aucun engagement,
+  résiliable en 1 clic. ») ; `/faq`, « Y a un essai gratuit ? » (« On te demande ta CB
+  (mais aucun prélèvement avant la fin de l'essai). ») ; `home/CtaBanner.astro` (« Essai
+  gratuit de 30 jours, sans prélèvement. », composant qui n'est plus rendu).
+
+**Textes (mot pour mot)**
+
+- **Accueil, ligne fine du premier écran** (`accueil/Hero.astro`) : « Rien n’est débité
+  pendant l’essai. Créé par un médecin remplaçant. Déjà 900+ médecins inscrits. »
+  (auparavant « Sans carte bancaire. Créé par un médecin remplaçant. Déjà 900+ médecins
+  inscrits. »).
+- **Accueil, sous le titre des tarifs** (`accueil/Tarifs.astro`) : « 30 jours gratuits.
+  Ta carte bancaire est demandée à l’inscription, mais rien n’est débité pendant
+  l’essai. » (auparavant « 30 jours gratuits, sans carte bancaire. »).
+- **Accueil, question « Combien coûte Hippodoc ? »** (`src/data/faqAccueil.ts`, texte
+  visible et schéma `FAQPage` de `/`, dérivé du même tableau) : « L'**essai est gratuit
+  pendant 30 jours** : ta carte bancaire est demandée à l'inscription, mais rien n'est
+  débité pendant l'essai. » (auparavant « L'**essai est gratuit pendant 30 jours**, sans
+  carte bancaire. »). Le reste de la réponse ne change pas.
+- **Accueil, fiche des syndicats** (`accueil/Partenaires.astro`) : « 6 mois d’essai
+  gratuit au lieu de 30 jours, pour les adhérents de ces syndicats. Le code est fourni
+  par ton syndicat. » (auparavant « 6 mois d’essai gratuit au lieu d’un mois, pour les
+  adhérents de ces syndicats. »). Deux retouches : la phrase sur le code, nouvelle ; « au
+  lieu de 30 jours » à la place d'« au lieu d’un mois » (la durée dite partout ailleurs
+  sur la page, et dans le fait B).
+- **`/faq`, « Y a un essai gratuit ? »** (texte visible et schéma `FAQPage`, champs
+  `aHtml` et `aPlain`) : à la fin de la réponse, ajout de « Tu adhères à un syndicat
+  d'internes partenaire (SILR, CRP-IMG, SIOI, AIMGL Limoges) ? Ton essai dure **6 mois**,
+  gratuitement, grâce à un code fourni par ton syndicat. ». Le début ne change pas
+  (« Oui : **30 jours offerts** pour tester toutes les fonctionnalités. On te demande ta
+  CB (mais **aucun prélèvement avant la fin de l'essai**). Tu testes tranquille. Si ça
+  t'aide, tu restes. Sinon, tu pars sans frais. ») : il dit déjà le fait A.
+- **`/faq`, « Il y a des tarifs pour les internes ? »** (texte visible et schéma) :
+  - « Oui. Internes et docteurs juniors paient **10 € par mois au lieu de 29 €** jusqu'à
+    la fin de l'internat, sur justificatif (carte d'étudiant, attestation d'inscription
+    ou certificat de scolarité). » (auparavant « Oui. Pendant tout ton internat, Hippodoc
+    te coûte **10 € par mois au lieu de 29 €**, sur justificatif (carte d'étudiant,
+    attestation d'inscription ou certificat de scolarité). ») ;
+  - « Écris-nous à contact@hippodoc.fr, on t'envoie ton code promo sous 24 h. » :
+    inchangé ;
+  - « Les adhérents des syndicats d'internes partenaires (SILR, CRP-IMG, SIOI, AIMGL
+    Limoges) ont aussi **6 mois d'essai gratuit** au lieu de 30 jours, grâce à un code
+    fourni par leur syndicat. » (auparavant « Certains syndicats d'internes partenaires
+    donnent aussi droit à un **essai prolongé**. »).
+- Aucun autre texte ajouté, retiré ou modifié. Témoignages : non touchés (attributions
+  du site, rien d'inventé).
+
+**Pages relues et laissées telles quelles (aucune ne contredit B ou C)**
+
+- `/tarifs` : ne parle ni des internes ni des syndicats ; « essai gratuit de 30 jours »
+  partout. Voir « Reste ouvert » pour une phrase de sa FAQ.
+- `/qui-sommes-nous` : cite les quatre syndicats et leur convention, sans durée d'essai
+  ni tarif.
+- `/essai` : « essai gratuit de 30 jours », « Sans engagement • Résiliable à tout
+  moment », rien sur la carte.
+- `/comparatif` : « 30 jours d'essai », « Carte requise. » (juste).
+- `llms.txt`, `src/lib/site.ts` (schémas `Offer`), bandeaux du blog : « Essai gratuit
+  30 jours », sans mention de carte.
+- **`lastmod`** : rien à mettre à jour. `src/lib/pages-lastmod.ts` ne date que
+  `/guide-declarations` et ses trois pages filles, `/comparatif` et `/guide` ; aucune ne
+  change. `/` et `/faq` n'ont pas de `lastmod` déclaré. Aucun article modifié.
+
+**Premier écran : la ligne fine, coupes écrites**
+
+- La phrase est plus longue de 14 caractères. Sans autre retouche, mesuré : trois lignes
+  sous 373 px avec la police (deux avec le repli de 368 à 372 px), deux lignes de 620 à
+  688 px (une avec le repli à 688 px). Soit des largeurs où la scène bouge de 22 px à
+  l'arrivée de la police.
+- Les coupes sont donc écrites, comme celles du titre : trois espaces dans des `<span>`
+  (`.f1`, `.f2`, `.f3`), que la feuille passe en bloc.
+  - sous 380 px : une phrase par ligne, **trois lignes** (la plus longue fait 220 px
+    pour 280 px de place à 320 px) ;
+  - de 380 à 699 px : **deux lignes**, coupées après « Créé par un » (ligne la plus
+    longue : 333 px avec la police, 328 px avec le repli, pour 340 px de place à 380 px) ;
+  - à partir de 700 px : **une ligne** (630 px pour 640 px de place).
+  **390 px : deux lignes. 1 440 px : une ligne.** Auparavant : deux lignes sous 620 px,
+  une ensuite. La scène descend donc de 22 px sous 380 px et de 620 à 699 px.
+- Sous 360 px, interligne de la ligne fine resserré (1,35) : à 320 × 568, la troisième
+  ligne passait de 7 px sous la bulle de chat.
+- Balayage repli contre police refait pour la ligne fine, de 320 à 1 600 px (woff2
+  bloqué, puis chargé) : **0 largeur en écart** (même hauteur, mêmes coupes).
+
+**Fiche des syndicats**
+
+- La phrase sur le code est sur sa propre ligne (`.code`, en bloc) ; lignes équilibrées
+  (`text-wrap-style: balance`). À 900 px, « syndicats. » restait seul sur une ligne.
+  Hauteur de la fiche : 155 px à 390 px (132 auparavant), 101 px à 1 440 px (inchangée).
+
+**Reste ouvert (au propriétaire)**
+
+- `/tarifs`, question « Comment fonctionne l'essai gratuit de 30 jours ? » : « À la fin
+  de l'essai, tu choisis l'offre mensuelle ou annuelle pour continuer. » La phrase ne dit
+  pas « sans carte », mais laisse entendre que rien n'est demandé avant la fin de
+  l'essai. **Non modifiée** : le moment où l'offre est choisie n'est pas confirmé.
+- `/tarifs` ne mentionne ni le tarif interne ni l'essai de 6 mois (omission, pas
+  contradiction). Non modifiée.
+- `/faq` écrit « CB » et « aucun prélèvement avant la fin de l'essai » ; l'accueil écrit
+  « carte bancaire » et « rien n'est débité pendant l'essai ». Même fait, deux registres
+  (celui de `/faq` est parlé, voir `src/data/faqAccueil.ts`). Laissé.
+- Deux codes distincts sont maintenant cités sur `/faq` : le « code promo » du tarif
+  interne (envoyé par Hippodoc sous 24 h, texte d'origine) et le code de l'essai de
+  6 mois (fourni par le syndicat). À confirmer : un adhérent interne cumule-t-il les
+  deux ?
+- **Relevé hors sujet, non corrigé** : entre 906 et 1 026 px de large, le titre du
+  premier écran tient sur une ligne avec la police et sur deux avec le repli (la scène
+  bouge d'environ 100 px si la police arrive tard). Identique avant ce lot (mesuré sur
+  le commit précédent) ; contredit le « 0 largeur en écart » de la phase 2.
+
+**Vérifié**
+
+- Build (70 pages) et `verify-site.mjs` : 68 URLs, **0 erreur**, 3 avertissements (ceux
+  d'avant).
+- `dist` comparé au build du commit précédent : 885 fichiers, 882 identiques à l'octet ;
+  seuls changent `index.html`, `faq/index.html` et la feuille de style de l'accueil.
+  Cinq balises `<script>` dans chacune des deux pages, comme avant.
+- Schémas `FAQPage` relus dans `dist` : les trois réponses modifiées y sont mot pour mot
+  celles du texte visible.
+- Chromium, 320, 360, 375, 390, 640, 660, 900 et 1 440 px, sans erreur de script ni
+  défilement horizontal. Captures regardées à 390 et 1 440 px : premier écran, tarifs,
+  bloc syndicats ; `/faq`, les deux réponses ouvertes.
+- Hauteur de l'accueil : 390 px 15 692 → 15 775 ; 1 440 px 12 575 → 12 604.
 - **Non testé** : Safari, Firefox, lecteur d'écran réel, vrai téléphone.
 
 ## 10. TODO(owner) — faits manquants / décisions

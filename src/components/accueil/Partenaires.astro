@@ -17,6 +17,12 @@
  *   un essai prolongé ») est remplacée par une phrase exacte, mise en avant
  *   sous les quatre tuiles : une fiche bleu profond, comme l'offre annuelle
  *   et le sélecteur de profils. Seul texte nouveau du bloc.
+ * - Décision 14c (10 novembre 2026, nuit) : les 6 mois sont gratuits, réservés
+ *   aux adhérents et obtenus avec un code fourni par leur syndicat. La fiche le
+ *   dit en une seconde phrase, sur sa ligne. Aucun nom de code, aucune marche
+ *   à suivre : rien d'autre n'est confirmé (et verify-site.mjs, garde
+ *   « 4 octies », refuse un code promo affiché). « au lieu de 30 jours » et non
+ *   plus « d'un mois » : la durée dite partout ailleurs sur la page.
  * - Mesure : `data-landing-section="partners"` (la série continue) ; les cinq
  *   `data-ph="landing_partner_*"` de l'ancienne section sont gardés,
  *   `landing_partner_homedoc` est nouveau sur l'accueil.
@@ -90,7 +96,7 @@ const partenaires = [
         </li>
       ))}
     </ul>
-    <p class="plus"><b class="aff num">6 mois</b>{' '}<span>d’essai gratuit au lieu d’un mois, pour les adhérents de ces syndicats.</span></p>
+    <p class="plus"><b class="aff num">6 mois</b>{' '}<span>d’essai gratuit au lieu de 30 jours, pour les adhérents de ces syndicats.{' '}<span class="code">Le code est fourni par ton syndicat.</span></span></p>
 
     <h3>Et des partenaires pensés pour les jeunes médecins</h3>
     <ul class="parts" role="list">
@@ -144,10 +150,13 @@ const partenaires = [
   .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--ink-2); }
   .ville svg { flex: none; color: var(--brand); }
   /* L'essai de 6 mois des adhérents : une fiche bleu profond sous les tuiles,
-     le chiffre en grand (une seule phrase, lue d'un trait). */
+     le chiffre en grand, puis deux phrases courtes (l'offre, le code). */
   .plus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin: 14px 0 0; padding: 18px 22px 20px; border-radius: 26px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); font-size: 17px; line-height: 1.4; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
   .plus b { --corps: 40px; flex: none; }
-  .plus span { flex: 1 1 15rem; color: var(--on-deep-2); }
+  .plus span { flex: 1 1 15rem; color: var(--on-deep-2); text-wrap-style: balance; }
+  /* Le code : seconde phrase, toujours sur sa propre ligne. Lignes équilibrées
+     au-dessus : plus de « syndicats. » seul sur la sienne (900 px). */
+  .plus .code { display: block; }
   .num { white-space: nowrap; }
 
   /* Les deux partenaires */
