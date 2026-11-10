@@ -321,6 +321,9 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .ft-backers-logos img.tall { height: 56px; }
 
 :where(.da) .ft-sub { padding-left: 12px; border-left: 2px solid var(--line-deep); font-size: 15px; }
+/* La flèche des trois liens d'articles : un dessin (la police n'a pas ce caractère). */
+:where(.da) .ft-sub a { gap: 7px; }
+:where(.da) .ft-sub svg { flex: none; }
 /* Deux colonnes remplies de haut en bas : les 9 premières des 16 lignes (outils,
    blog, comparatif et les trois articles) à gauche, les 7 suivantes (maison et
    mentions) à droite. Le 9 suit le contenu de FooterDA.astro. */

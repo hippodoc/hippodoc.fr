@@ -10,6 +10,9 @@ import '@/styles/da.css';
  * `da-bloc` marque un bloc de la DA (voir da.css).
  * Doit rester le premier <footer> du document : la mesure s'y accroche.
  * Logo : le mot seul, comme dans l'en-tête (voir HeaderDA.astro).
+ * Les trois liens d'articles : la flèche « → » de Footer.astro n'est pas dans la
+ * police, elle est dessinée (décor, absente du texte). Écart déclaré dans
+ * ECARTS_ENTETE_PIED_DA (scripts/verify-site.mjs).
  * Double maintenance : `node scripts/verify-site.mjs` compare les liens, libellés
  * et attributs de mesure de ce pied à ceux de Footer.astro (page /tarifs).
  */
@@ -73,9 +76,9 @@ const year = new Date().getFullYear();
         <li><a href="/tarifs">Tarifs</a></li>
         <li><a href="/blog">Blog</a></li>
         <li><a href="/comparatif">Comparatif outils</a></li>
-        <li class="ft-sub"><a href="/blog/regime-fiscal-micro-bnc-vs-reel">→ Micro-BNC vs Réel</a></li>
-        <li class="ft-sub"><a href="/blog/salaires-medecins-remplacants">→ Salaires remplaçants</a></li>
-        <li class="ft-sub"><a href="/blog/checklist-administrative-medecin-remplacant">→ Checklist administrative</a></li>
+        <li class="ft-sub"><a href="/blog/regime-fiscal-micro-bnc-vs-reel"><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>Micro-BNC vs Réel</a></li>
+        <li class="ft-sub"><a href="/blog/salaires-medecins-remplacants"><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>Salaires remplaçants</a></li>
+        <li class="ft-sub"><a href="/blog/checklist-administrative-medecin-remplacant"><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>Checklist administrative</a></li>
         <li><a href="/qui-sommes-nous">Qui sommes-nous ?</a></li>
         <li><a href="/rgpd">RGPD</a></li>
         <li><a href="/faq">FAQ</a></li>

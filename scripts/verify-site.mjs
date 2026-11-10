@@ -390,6 +390,15 @@ const ECARTS_ENTETE_PIED_DA = [
   'header : a | /#film-presentation | landing_mobile_nav_decouvrir |  |  | Découvrir',
   'header : a | /#sous-la-surface | landing_nav_comment_ca_marche |  |  | Comment ça marche',
   'header : a | /#sous-la-surface | landing_mobile_nav_comment_ca_marche |  |  | Comment ça marche',
+  // Phase 3 (MIGRATION.md § 9, lot C) : la police de la DA n'a pas le caractère
+  // « → ». Dans le pied de l'accueil, la flèche des trois liens d'articles est un
+  // dessin (SVG décoratif) et sort du libellé ; Footer.astro garde le caractère.
+  'footer : a | /blog/regime-fiscal-micro-bnc-vs-reel |  |  |  | → Micro-BNC vs Réel',
+  'footer : a | /blog/salaires-medecins-remplacants |  |  |  | → Salaires remplaçants',
+  'footer : a | /blog/checklist-administrative-medecin-remplacant |  |  |  | → Checklist administrative',
+  'footer : a | /blog/regime-fiscal-micro-bnc-vs-reel |  |  |  | Micro-BNC vs Réel',
+  'footer : a | /blog/salaires-medecins-remplacants |  |  |  | Salaires remplaçants',
+  'footer : a | /blog/checklist-administrative-medecin-remplacant |  |  |  | Checklist administrative',
 ];
 function reperesNavigation(html, balise) {
   const bloc = html.match(new RegExp(`<${balise}\\b[\\s\\S]*?</${balise}>`))?.[0];
