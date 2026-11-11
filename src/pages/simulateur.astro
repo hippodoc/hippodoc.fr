@@ -18,7 +18,7 @@
  * changé. Textes, titres, liens, ancres, ordre des blocs, JSON-LD, `data-track`
  * et `data-calendly` sont ceux d'avant (période d'observation SEO) ; aucun
  * calcul n'est touché.
- * - Page entièrement dans la DA : fond `da-fond`, en-tête « flottante ».
+ * - Page entièrement dans la DA : fond `da-fond`, en-tête qui flotte.
  * - Cinq blocs : le ciel (titre, l'îlot du simulateur, la prise de rendez-vous),
  *   une feuille sable (le mode d'emploi, en plis `.qa`), une feuille ciel (les
  *   trois définitions, l'exemple chiffré, les limites), une feuille sable (les
@@ -148,7 +148,7 @@ const fleche =
     <meta name="theme-color" content="#C9DEFF" />
   </Fragment>
   {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
-  <Header variante="flottante" />
+  <Header />
 
   <main>
     <div class="tete da-bloc">

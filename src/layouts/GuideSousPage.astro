@@ -12,7 +12,7 @@
  * niveaux sans fil d'Ariane laisse le lecteur sans retour vers la référence.
  *
  * DA 2026 (phase 5d, MIGRATION.md § 9.el) : seul l'habillage a changé. Page
- * entièrement dans la DA (fond `da-fond`, en-tête « flottante ») : le ciel
+ * entièrement dans la DA (fond `da-fond`, en-tête qui flotte) : le ciel
  * (fil d'Ariane, titre, signature, chapô), les feuilles que chaque page pose
  * dans son contenu (`<div class="band da-bloc">`, sable puis ciel), et la fin
  * (les articles, « Le guide complet », l'avertissement, le soleil sur l'eau
@@ -112,7 +112,7 @@ const jsonLd = faqSchema
     <meta name="theme-color" content="#C9DEFF" />
   </Fragment>
   {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
-  <Header variante="flottante" />
+  <Header />
 
   <main class="gd gd-fille">
     <div class="gd-tete da-bloc">

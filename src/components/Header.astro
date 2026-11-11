@@ -24,18 +24,11 @@ import { APP_URL } from '@/lib/site';
  * Logo : le mot seul, « Hippo » puis « doc » dans la police du site, sans l'icône
  * au trait (décision du propriétaire, 10 novembre 2026). Le lien, son nom
  * accessible et le texte « Hippodoc » ne changent pas.
+ * Une seule forme, sans prop : la pastille survole le premier bloc de la page,
+ * un ciel qui lui réserve le haut par son remplissage. L'ancienne forme pour les
+ * pages sans ciel (80 px gardés en haut, bande de ciel) ne servait plus à aucune
+ * page depuis la phase 5d : retirée en phase 6 (MIGRATION.md § 9.eo).
  */
-interface Props {
-  /** « flux » (par défaut, pages intérieures, qui n'ont pas de ciel) : la
-      pastille garde ses 80 px en haut de la page, sur une bande de ciel qui
-      part avec le défilement, puis reste collée en haut de l'écran.
-      « flottante » (accueil, /tarifs) : elle survole le premier bloc de la
-      page, qui lui réserve 88 px en haut au moins.
-      Depuis la phase 5d (MIGRATION.md § 9.em), toutes les pages passent
-      « flottante » : « flux » ne sert plus à aucune. */
-  variante?: 'flottante' | 'flux';
-}
-const { variante = 'flux' } = Astro.props;
 
 const anchorItems = [
   { href: '/#sous-la-surface', label: 'Comment ça marche', ph: 'landing_nav_comment_ca_marche' },
@@ -55,10 +48,7 @@ const resourceItems = [
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
-{/* Bande de ciel des pages intérieures : un décor de 80 px, hors de l'en-tête
-     (qui est collant : la bande, elle, part avec la page). Voir `.hd-ciel`. */}
-{variante === 'flux' && <div class="hd-ciel" aria-hidden="true"></div>}
-<header class:list={['hd', 'da-bloc', variante === 'flux' && 'hd--flux']}>
+<header class="hd da-bloc">
   {/* Case du menu mobile : enfant direct du header, hors de la pastille (le flou
        d'arrière-plan de celle-ci créerait un bloc conteneur et casserait le
        positionnement fixe du voile et du tiroir). Le nom accessible porte sur la

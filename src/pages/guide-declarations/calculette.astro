@@ -9,7 +9,7 @@
  * Habillée dans la DA 2026 en phase 5d (MIGRATION.md § 9.el) : seul l'habillage a
  * changé. Textes, titres, liens, `id`, ordre des blocs, JSON-LD et `data-track`
  * sont ceux d'avant (période d'observation SEO) ; aucun calcul n'est touché.
- * - Page entièrement dans la DA : fond `da-fond`, en-tête « flottante ».
+ * - Page entièrement dans la DA : fond `da-fond`, en-tête qui flotte.
  * - Trois blocs : le ciel (le titre et son aperçu fictif, l'îlot de la
  *   calculette, l'appel à l'essai sur l'eau profonde), une feuille sable (les
  *   questions, en plis `.qa`), puis la fin (l'avertissement, le soleil sur
@@ -116,7 +116,7 @@ const flecheGauche = `<span class="fl gauche"><span class="sr">←</span>${dessi
     <meta name="theme-color" content="#C9DEFF" />
   </Fragment>
   {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
-  <Header variante="flottante" />
+  <Header />
   <main>
     <div class="tete da-bloc">
       <!-- Titre de la page : « Hippo » en encre, « Calc » dans le bleu de l'eau, et l'aperçu (décor) -->
