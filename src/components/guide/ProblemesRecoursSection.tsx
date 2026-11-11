@@ -2,7 +2,8 @@ import React from 'react';
 import { bugsAdmin, messagesTypes, getProfilShortLabel } from '@/data/boussoleData';
 import { CertitudeBadge } from './CertitudeBadge';
 import { formatInline } from './FormattedText';
-import { Bug, AlertCircle, CheckCircle2, RefreshCw, Search, ArrowRight, Mail, ChevronDown } from 'lucide-react';
+import { Bug, AlertCircle, CheckCircle2, RefreshCw, Search, ArrowRight, Mail } from 'lucide-react';
+import { Croix } from './Croix';
 
 /**
  * Portage statique de ProblemesRecoursSection.tsx (SPA source). Déviations
@@ -13,12 +14,16 @@ import { Bug, AlertCircle, CheckCircle2, RefreshCw, Search, ArrowRight, Mail, Ch
  *  - Accordéon (framer-motion) → `<details>/<summary>` natif.
  *  - `CopyButton` (API Clipboard, JS) → retiré ; le texte du courrier
  *    reste affiché en clair et sélectionnable/copiable manuellement.
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : des plis `.qa` ; états dans les jetons
+ * de la DA (actif en alerte, résolu en vert, intermittent en ambre). La flèche
+ * des actions est un dessin (la police n'a pas de flèche), le caractère reste
+ * dans le texte, masqué à l'œil. Styles dans src/styles/guide.css.
  */
 
 const statutConfig = {
-  actif: { icon: AlertCircle, label: 'Actif', className: 'text-red-700 bg-red-50 dark:bg-red-950/30' },
-  resolu: { icon: CheckCircle2, label: 'Résolu', className: 'text-emerald-700 bg-emerald-50 dark:bg-emerald-950/30' },
-  intermittent: { icon: RefreshCw, label: 'Intermittent', className: 'text-amber-700 bg-amber-50 dark:bg-amber-950/30' },
+  actif: { icon: AlertCircle, label: 'Actif', className: 'stop' },
+  resolu: { icon: CheckCircle2, label: 'Résolu', className: 'ok' },
+  intermittent: { icon: RefreshCw, label: 'Intermittent', className: 'wait' },
 };
 
 export function ProblemesRecoursSection() {
@@ -27,15 +32,15 @@ export function ProblemesRecoursSection() {
   const orphanMessages = messagesTypes.filter(m => !linkedMessageIds.has(m.id));
 
   return (
-    <section id="problemes" className="py-12 md:py-16 scroll-mt-20">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
-            <Bug className="h-7 w-7 text-hippo-500" /> Problèmes connus & recours
+    <section id="problemes" className="gd-sec">
+      <div className="wrap">
+        <div className="gd-sec-tete">
+          <h2 className="gd-h2">
+            <Bug className="gd-ic" /> Problèmes connus & recours
           </h2>
-          <p className="text-muted-foreground mt-1">Bugs signalés sur le terrain + modèles de courrier prêts à envoyer</p>
+          <p className="gd-sous">Bugs signalés sur le terrain + modèles de courrier prêts à envoyer</p>
           {/* Introduction visible — cf. Caseopedia, même raison (MIGRATION.md § 9.am). */}
-          <div className="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <div className="gd-intro">
             <p>
               Certaines anomalies ne viennent pas de toi. Forfait structure affiché à zéro en
               première année d'installation, accès au compte URSSAF ou CARMF bloqué après une
@@ -52,56 +57,56 @@ export function ProblemesRecoursSection() {
           </div>
         </div>
 
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
+        <h3 className="gd-sur">
           Bugs connus ({bugsAdmin.length})
         </h3>
-        <div className="grid gap-4 md:grid-cols-2 mb-10">
+        <div className="gd-grille g2 gd-bugs">
           {bugsAdmin.map(b => {
             const s = statutConfig[b.statut];
             const Icon = s.icon;
             const linkedMsgs = (b.messageIds || []).map(id => messagesTypes.find(m => m.id === id)).filter(Boolean);
 
             return (
-              <details key={b.id} id={`bug-${b.id}`} className="group rounded-xl bg-white/80 backdrop-blur border border-slate-200/60 shadow-sm overflow-hidden dark:bg-slate-800/60 dark:border-slate-700/60 scroll-mt-24">
-                <summary className="w-full p-5 text-left cursor-pointer list-none">
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <h4 className="font-semibold text-foreground text-sm">{b.titre}</h4>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${s.className}`}>
-                        <Icon className="h-3 w-3" /> {s.label}
+              <details key={b.id} id={`bug-${b.id}`} className="qa gd-pli gd-bug">
+                <summary>
+                  <div className="gd-bug-tete">
+                    <h4 className="gd-pli-nom">{b.titre}</h4>
+                    <div className="gd-bug-etat">
+                      <span className={`gd-puce ${s.className}`}>
+                        <Icon className="gd-ic" /> {s.label}
                       </span>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+                      <Croix />
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-1 flex items-center gap-1"><Search className="h-3 w-3" /> Symptômes</p>
-                    <ul className="space-y-0.5">{b.symptomes.map((sym, i) => (<li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5"><span className="text-muted-foreground mt-0.5">—</span><span>{formatInline(sym)}</span></li>))}</ul>
+                    <p className="gd-champ"><Search className="gd-ic" /> Symptômes</p>
+                    <ul className="gd-tirets">{b.symptomes.map((sym, i) => (<li key={i}><span className="gd-tiret">—</span><span>{formatInline(sym)}</span></li>))}</ul>
                   </div>
                 </summary>
 
-                <div className="px-5 pb-5 space-y-3">
+                <div className="gd-pli-in">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-1 flex items-center gap-1"><ArrowRight className="h-3 w-3" /> Actions possibles</p>
-                    <ul className="space-y-0.5">{b.actionsPossibles.map((a, i) => (<li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">→</span><span>{formatInline(a)}</span></li>))}</ul>
+                    <p className="gd-champ"><ArrowRight className="gd-ic" /> Actions possibles</p>
+                    <ul className="gd-tirets">{b.actionsPossibles.map((a, i) => (<li key={i}><span className="gd-tiret ok"><span className="gd-sr">→</span><svg className="gd-fl" viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5" /></svg></span><span>{formatInline(a)}</span></li>))}</ul>
                   </div>
 
                   {linkedMsgs.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
-                      <p className="text-xs font-medium text-cyan-600 dark:text-cyan-400 mb-2 flex items-center gap-1">
-                        <Mail className="h-3 w-3" /> Modèle de courrier à envoyer
+                    <div className="gd-courriers">
+                      <p className="gd-champ">
+                        <Mail className="gd-ic" /> Modèle de courrier à envoyer
                       </p>
                       {linkedMsgs.map(m => m && (
-                        <div key={m.id} id={`msg-${m.id}`} className="rounded-lg bg-cyan-50/50 border border-cyan-100 p-3 dark:bg-cyan-950/20 dark:border-cyan-900/40 scroll-mt-24">
-                          <p className="text-xs font-semibold text-foreground mb-2">{m.destinataire} — {m.objet}</p>
-                          <pre className="text-[11px] text-muted-foreground whitespace-pre-wrap font-sans leading-relaxed max-h-40 overflow-y-auto select-text">{m.corps}</pre>
+                        <div key={m.id} id={`msg-${m.id}`} className="gd-encart gd-courrier">
+                          <p className="gd-courrier-nom">{m.destinataire} — {m.objet}</p>
+                          <pre className="gd-lettre-corps court">{m.corps}</pre>
                         </div>
                       ))}
                     </div>
                   )}
 
-                  <div className="flex items-center gap-2 pt-2">
+                  <div className="gd-etiquettes">
                     <CertitudeBadge level={b.certitude} />
-                    <span className="text-[10px] text-muted-foreground truncate">{b.profilsConcernes.map(id => getProfilShortLabel(id)).join(' · ')}</span>
+                    <span className="gd-profils">{b.profilsConcernes.map(id => getProfilShortLabel(id)).join(' · ')}</span>
                   </div>
                 </div>
               </details>
@@ -109,24 +114,24 @@ export function ProblemesRecoursSection() {
           })}
         </div>
 
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
+        <h3 className="gd-sur">
           Modèles de courrier ({orphanMessages.length})
         </h3>
-        <div className="space-y-3">
+        <div className="gd-plis">
           {orphanMessages.map(m => (
-            <details key={m.id} id={`msg-${m.id}`} className="group rounded-xl bg-white/80 backdrop-blur border border-slate-200/60 shadow-sm overflow-hidden dark:bg-slate-800/60 dark:border-slate-700/60 scroll-mt-24">
-              <summary className="w-full px-4 py-4 text-left flex items-center justify-between gap-3 cursor-pointer list-none">
-                <div className="flex items-center gap-3 flex-1">
-                  <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
+            <details key={m.id} id={`msg-${m.id}`} className="qa gd-pli gd-modele">
+              <summary>
+                <div className="gd-modele-tete">
+                  <Mail className="gd-ic" />
                   <div>
-                    <p className="font-semibold text-sm text-foreground">{m.destinataire} — {m.objet}</p>
-                    <p className="text-xs text-muted-foreground">{m.contexte}</p>
+                    <p className="gd-pli-nom">{m.destinataire} — {m.objet}</p>
+                    <p className="gd-petit">{m.contexte}</p>
                   </div>
                 </div>
-                <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+                <Croix />
               </summary>
-              <div className="px-4 pb-4">
-                <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-sans leading-relaxed p-4 rounded-lg bg-slate-50 border border-slate-100 dark:bg-slate-900/50 dark:border-slate-700 select-text">
+              <div className="gd-pli-in">
+                <pre className="gd-lettre-corps">
                   {m.corps}
                 </pre>
               </div>

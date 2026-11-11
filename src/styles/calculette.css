@@ -1,0 +1,250 @@
+/* ==========================================================================
+   /guide-declarations/calculette : l'îlot React dans la DA 2026 (phase 5d,
+   MIGRATION.md § 9.el).
+
+   Feuille importée par src/pages/guide-declarations/calculette.astro : elle
+   sort dans la feuille de la page, servie à la calculette seule. Tailwind ne
+   lit pas les .css : rien ici n'ajoute de règle à la feuille commune.
+
+   - `.calc` est posée sur la racine de l'îlot (CalculetteApp.tsx) et sur ce que
+     Radix rend hors de l'îlot, dans <body> : bulles d'aide (`.calc-bulle`),
+     listes déroulantes et menu des exemples (`.calc-pop`), boîtes de
+     confirmation (`.calc-dialogue`). Les jetons de la DA viennent de `.da`.
+   - Les composants de src/components/ui/ sont partagés : ils ne sont pas
+     modifiés. Leurs jetons (--border, --muted-foreground, --primary…) reçoivent
+     ici les couleurs de la DA, et champs, listes, cases, interrupteurs, cartes,
+     alertes sont habillés par leur rôle.
+   - Les .tsx de la calculette gardent leurs utilitaires (4 000 lignes, des
+     tables de classes par état) : les utilitaires de COULEUR y sont recouverts
+     un par un, par famille (dernière partie de cette feuille, fabriquée à
+     partir des classes réellement présentes). Ambre = attention, vert =
+     favorable, bleu = information, rose = à éviter ; violet et ardoise
+     rejoignent le ciel et l'encre de la DA.
+   - Tout est sous `@media screen` : l'impression (bouton « Imprimer ») garde
+     ses règles `print:` d'avant.
+   - Corps en rem : ils suivent la taille de police réglée dans le navigateur.
+   ========================================================================== */
+
+/* L'alerte : la DA n'a pas de rouge. Encre #A12D16 sur fond #FCE6E1 : 6,0:1. */
+.da { --stop: #A12D16; --stop-bg: #FCE6E1; }
+
+@media screen {
+
+/* ───────── Jetons des composants partagés, aux couleurs de la DA ─────────
+   Triplets HSL (Tailwind les enveloppe dans hsl()) : encre #14254F, encre 2
+   #3A4B78, marque #0059B3, ciel doux #EDF3FE. */
+.calc {
+  --background: 0 0% 100%;
+  --foreground: 223 60% 19%;
+  --card: 0 0% 100%;
+  --card-foreground: 223 60% 19%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 223 60% 19%;
+  --primary: 210 100% 35%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 219 89% 96%;
+  --secondary-foreground: 223 60% 19%;
+  --muted: 219 89% 96%;
+  --muted-foreground: 224 30% 38%;
+  --accent: 219 89% 96%;
+  --accent-foreground: 223 60% 19%;
+  --destructive: 8 76% 36%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 223 16% 91%;
+  --input: 222 15% 87%;
+  --ring: 223 60% 19%;
+  --radius: 14px;
+}
+
+/* ───────── L'îlot ───────── */
+.calc.calc-ile { max-width: calc(1120px + 2 * var(--gut)); margin-inline: auto; padding-left: max(var(--gut), env(safe-area-inset-left, 0px)); padding-right: max(var(--gut), env(safe-area-inset-right, 0px)); font-family: var(--text); font-size: 1rem; font-weight: var(--tw); color: var(--ink); }
+.calc :is(b, strong) { font-weight: var(--tb); }
+.calc :is(button, a, summary, [tabindex]):focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; box-shadow: none; }
+/* Les plus petits corps gagnent un cran : 10 px ne se lisait pas. */
+.calc :is(.text-\[10px\], .text-\[10\.5px\]) { font-size: 0.6875rem; }
+.calc .text-\[11px\] { font-size: 0.75rem; }
+.calc .text-xs { font-size: 0.8125rem; line-height: 1.5; }
+.calc .text-sm { font-size: 0.9375rem; }
+.calc .calc-resultats .text-sm { font-size: 0.875rem; }
+.calc .font-semibold, .calc .font-bold { font-weight: var(--tb); }
+.calc .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.calc .backdrop-blur, .calc .backdrop-blur-md, .calc .backdrop-blur-sm { -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* La barre d'outils : collée sous la pastille de l'en-tête. */
+.calc .calc-barre { top: 76px; min-height: 52px; padding: 4px 6px 4px 18px; border-radius: 26px; background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+/* Téléphone : les trois actions passent sous le libellé, et à la ligne s'il le faut. */
+.calc .calc-barre > div { flex-wrap: wrap; justify-content: flex-end; }
+.calc .calc-sur { font-size: 0.75rem; font-weight: var(--tb); letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; color: var(--ink-3); }
+.calc .calc-outil { height: auto; min-height: 44px; padding: 4px 12px; border-radius: var(--r-pill); font-size: 0.875rem; font-weight: 560; color: var(--ink-2); }
+.calc .calc-outil:hover { background: var(--sky-soft); color: var(--ink); }
+.calc .calc-outil.fort { font-weight: var(--tb); color: var(--brand); }
+.calc .calc-barre [role="none"], .calc .calc-barre [data-orientation="vertical"] { background: var(--line); }
+.calc .calc-separe { display: flex; align-items: center; gap: 14px; padding: 26px 0 4px; }
+.calc .calc-separe > div { display: none; }
+.calc .calc-separe > p { display: flex; flex: 1; align-items: center; gap: 14px; margin: 0; }
+.calc .calc-separe > p::before, .calc .calc-separe > p::after { content: ""; flex: 1; height: 1px; background: rgba(20, 37, 79, 0.16); }
+
+/* Fiches en relief : une par section du formulaire, une pour les résultats */
+.calc .calc-fiche, .calc .calc-resultats { border: 0; border-radius: 28px; background: var(--paper); color: var(--ink); box-shadow: var(--clay); }
+.calc .calc-colonne { top: 84px; scroll-margin-top: 88px; }
+.calc .calc-fiche h3 { font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+.calc .calc-fiche h3 + p { font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
+/* Le numéro d'une section : une pastille ciel. */
+.calc .calc-fiche h3 > span:first-child { flex: none; width: 30px; height: 30px; background: var(--sky); color: var(--ink); font-size: 0.875rem; }
+.calc .calc-fiche > button:hover h3, .calc .calc-fiche > button:hover { color: var(--ink); }
+/* Dans la fiche des résultats, les cartes sont à plat : ciel doux, sans filet. */
+.calc .calc-resultats :is(.rounded-lg.border, .rounded-xl.border, .rounded-2xl.border):not([role="alert"]) { border-color: transparent; box-shadow: none; }
+.calc .calc-resultats > div > .rounded-lg.border.shadow-sm, .calc .calc-resultats .rounded-2xl.border.shadow-sm, .calc .calc-resultats .rounded-xl.border.shadow-sm { border-radius: 22px; background-color: var(--sky-soft); }
+.calc .calc-resultats h3 { font-family: var(--text); font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+/* L'en-tête d'une carte pliable : l'étiquette passe sous le titre quand la
+   rangée ne tient pas (à 320 px, « Comprendre » était rogné). */
+.calc .calc-resultats button[aria-expanded] > div:first-child { flex-wrap: wrap; row-gap: 6px; }
+.calc .calc-resultats button[aria-expanded] > div:first-child > div:last-child { margin-left: auto; }
+/* Copier, imprimer, tout afficher : à la ligne quand la rangée ne tient pas. */
+.calc .calc-resultats div:has(> div > [id="show-zeros"]) { flex-wrap: wrap; row-gap: 8px; }
+.calc .calc-resultats .ring-1 { box-shadow: none; }
+/* Le liseré de couleur en haut d'une carte de résultat : décor retiré. */
+.calc .calc-resultats .absolute.top-0.left-0.h-1 { display: none; }
+/* La case à recopier en premier : sur le ciel. */
+.calc .calc-resultats .bg-hippo-50.ring-1 { border-radius: 14px; background-color: var(--paper); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.calc .tabular-nums { font-variant-numeric: tabular-nums; }
+
+/* Encarts (Notice, Alert) : une couleur de fond, pas de filet autour. Les filets
+   de séparation (`border-t`) gardent leur trait, dans le ton du texte. */
+.calc :is(.rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl).border:not(button, input) { border-color: transparent; }
+.calc .calc-note, .calc [role="alert"], .calc [role="status"] > [role="alert"] { border: 0; border-radius: 18px; }
+.calc .calc-note { font-size: 0.8125rem; line-height: 1.5; }
+.calc [role="alert"] > svg { color: currentColor; }
+.calc .text-destructive { color: var(--stop); }
+.calc .bg-destructive\/10 { background-color: var(--stop-bg); }
+.calc .border-destructive\/30, .calc .border-destructive\/50 { border-color: transparent; }
+.calc [role="alert"].text-destructive { background-color: var(--stop-bg); }
+
+/* ───────── Formulaire ───────── */
+.calc label { font-size: 0.9375rem; font-weight: 560; line-height: 1.3; color: var(--ink); }
+.calc label.text-xs { font-size: 0.8125rem; font-weight: var(--tw); }
+/* Champs et listes : une case ciel doux, ronde, 48 px de haut (16 px de corps :
+   pas de zoom à la saisie sur iPhone). */
+.calc input:where(:not([type="checkbox"], [type="radio"])),
+.calc button[role="combobox"] { height: 48px; padding-inline: 14px; border: 0; border-radius: 14px; background: var(--sky-soft); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.12); font-family: inherit; font-size: 1rem; font-weight: 500; color: var(--ink); }
+.calc button[role="combobox"] { gap: 8px; text-align: left; }
+.calc button[role="combobox"].h-8 { height: 44px; font-size: 0.9375rem; }
+.calc input::placeholder { color: var(--ink-3); opacity: 1; font-weight: var(--tw); }
+.calc input:where(:not([type="checkbox"], [type="radio"])):focus-visible,
+.calc button[role="combobox"]:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.calc input[aria-invalid="true"] { box-shadow: inset 0 0 0 2px var(--stop); }
+.calc button[role="combobox"] > svg { flex: none; width: 18px; height: 18px; opacity: 1; color: var(--ink-2); }
+/* Dans un encart teinté, la case passe au blanc. */
+.calc :is(.calc-note, .bg-amber-50\/50, .bg-violet-50\/60, .bg-emerald-50\/40, .bg-blue-50\/40) input:where(:not([type="checkbox"], [type="radio"])),
+.calc :is(.calc-note, .bg-amber-50\/50, .bg-violet-50\/60, .bg-emerald-50\/40, .bg-blue-50\/40) button[role="combobox"] { background: var(--paper); }
+/* Le code d'une case, devant son libellé */
+.calc label > span.font-mono, .calc span.font-mono.rounded { padding: 2px 7px; border-radius: 8px; font-size: 0.75rem; }
+/* Boutons radio, cases à cocher, interrupteurs */
+.calc button[role="radio"] { width: 22px; height: 22px; border: 1.5px solid var(--ink-3); background: var(--paper); color: var(--brand); }
+.calc button[role="radio"][data-state="checked"] { border-color: var(--brand); }
+.calc button[role="radio"] svg { width: 12px; height: 12px; }
+.calc button[role="checkbox"] { width: 22px; height: 22px; border: 1.5px solid var(--ink-3); border-radius: 7px; background: var(--paper); }
+.calc button[role="checkbox"][data-state="checked"] { border-color: var(--brand); background: var(--brand); color: var(--paper); }
+.calc button[role="switch"] { width: 46px; height: 28px; border: 0; padding: 3px; background: #B9C4DC; }
+.calc button[role="switch"][data-state="checked"] { background: var(--brand); }
+.calc button[role="switch"] > span { width: 22px; height: 22px; box-shadow: 0 1px 3px rgba(9, 20, 52, 0.3); }
+.calc button[role="switch"][data-state="checked"] > span { transform: translateX(18px); }
+/* L'aide d'un champ : une cible de 44 px autour du point d'interrogation. */
+.calc button[aria-label^="Aide"] { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -12px -10px -12px 0; padding: 0; border-radius: 50%; color: var(--ink-3); }
+.calc button[aria-label^="Aide"]:hover { background: var(--sky-soft); color: var(--ink); }
+.calc button[aria-label^="Aide"] svg { width: 17px; height: 17px; color: inherit; }
+.calc a { text-underline-offset: 3px; }
+
+/* Boutons de la DA : épais, on les enfonce */
+.calc .calc-btn { height: auto; min-height: 54px; padding: 8px 26px; border: 0; border-radius: var(--r-pill); background-image: none; font-family: var(--text); font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.2; color: var(--ink); white-space: normal; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
+.calc .calc-btn:active { translate: 0 5px; box-shadow: 0 0 0 transparent; }
+.calc .calc-btn svg { width: 20px; height: 20px; }
+.calc .calc-btn-soleil { margin-bottom: 5px; background-color: var(--sun); box-shadow: 0 5px 0 var(--sun-edge); }
+.calc .calc-btn-soleil:hover { background-color: var(--sun-hover); color: var(--ink); }
+/* Les autres boutons du composant partagé (contour, discret) : des pastilles. */
+.calc button.border.border-input { height: auto; min-height: 40px; padding-inline: 13px; border: 0; border-radius: var(--r-pill); background-color: var(--paper); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.14); font-size: 0.875rem; font-weight: 560; color: var(--ink); }
+.calc button.border.border-input.w-full { white-space: normal; }
+.calc button.border.border-input:hover { background-color: var(--sky-soft); color: var(--ink); }
+.calc button.border.border-input.border-amber-300 { box-shadow: inset 0 0 0 1.5px var(--wait); color: var(--wait); }
+/* « Copier » : 28 px à l'œil (la ligne est étroite), 44 px au doigt. */
+.calc button.h-7.w-7 { position: relative; border-radius: 50%; color: var(--ink-2); }
+.calc button.h-7.w-7::after { content: ""; position: absolute; inset: -8px; }
+.calc button.h-7.w-7:hover { background: var(--paper); color: var(--ink); }
+
+/* ───────── Hors de l'îlot : bulles, listes, menu, boîtes de confirmation ───────── */
+.calc.calc-bulle { max-width: min(340px, 86vw); padding: 14px 16px; border: 0; border-radius: 20px; background: var(--paper); color: var(--ink-2); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); font-size: 0.875rem; font-weight: var(--tw); line-height: 1.5; }
+.calc.calc-bulle.max-w-sm { max-width: min(400px, 90vw); }
+.calc.calc-bulle :is(b, strong) { color: var(--ink); }
+.calc.calc-pop { border: 0; border-radius: 18px; background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); }
+.calc.calc-pop [role="option"], .calc.calc-pop [role="menuitem"] { min-height: 44px; border-radius: 12px; font-size: 0.9375rem; font-weight: 500; }
+.calc.calc-pop [role="option"][data-state="checked"] { color: var(--brand); font-weight: var(--tb); }
+.calc.calc-menu { width: min(22rem, 92vw); max-height: min(70vh, var(--radix-dropdown-menu-content-available-height, 70vh)); padding: 6px; overflow-y: auto; }
+.calc.calc-menu [role="menuitem"] { padding: 10px 12px; }
+.calc.calc-menu [role="menuitem"] > span:first-child { font-weight: var(--tb); line-height: 1.3; }
+.calc .calc-menu-desc { font-size: 0.8125rem; line-height: 1.4; color: var(--ink-2); }
+.calc.calc-dialogue { max-width: min(32rem, calc(100vw - 32px)); padding: 26px 24px 22px; border: 0; border-radius: 28px; background: var(--paper); color: var(--ink); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); font-family: var(--text); }
+.calc.calc-dialogue h2 { font-family: var(--text); font-size: 1.25rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+.calc.calc-dialogue p { font-size: 0.9375rem; line-height: 1.55; color: var(--ink-2); }
+.calc.calc-dialogue button { height: auto; min-height: 46px; padding: 6px 20px; border: 0; border-radius: var(--r-pill); font-size: 0.9375rem; font-weight: var(--tb); }
+.calc.calc-dialogue button.border { background: var(--paper); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.14); color: var(--ink); }
+.calc.calc-dialogue button.border:hover { background: var(--sky-soft); }
+.calc.calc-dialogue button.bg-primary { background: var(--ink); color: var(--paper); }
+.calc.calc-dialogue button.calc-danger { background: var(--stop); color: var(--paper); }
+/* Le voile d'une boîte de confirmation : celui du menu du site. */
+.da .fixed.inset-0.bg-black\/80 { background: rgba(9, 20, 52, 0.6); }
+
+/* ───────── Utilitaires de couleur recouverts, par famille ───────── */
+.calc :is(.bg-amber-100, .bg-amber-50, .bg-amber-50\/50, .bg-amber-50\/60, .bg-amber-50\/70, .bg-amber-50\/80) { background-color: var(--wait-bg); }
+.calc :is(.bg-blue-100\/80, .bg-blue-50, .bg-blue-50\/40, .bg-blue-50\/50, .bg-blue-50\/60) { background-color: var(--plan-bg); }
+.calc :is(.bg-emerald-100, .bg-emerald-100\/70, .bg-emerald-100\/80, .bg-emerald-50, .bg-emerald-50\/30, .bg-emerald-50\/40, .bg-emerald-50\/50, .bg-emerald-50\/60) { background-color: var(--ok-bg); }
+.calc :is(.bg-emerald-500) { background-color: var(--ok); }
+.calc :is(.bg-hippo-100, .bg-slate-200, .bg-violet-100, .bg-violet-50, .bg-violet-50\/50, .bg-violet-50\/60) { background-color: var(--sky); }
+.calc :is(.bg-hippo-50, .bg-hippo-50\/60, .bg-slate-100, .bg-slate-50) { background-color: var(--sky-soft); }
+.calc :is(.bg-hippo-500) { background-color: var(--brand); }
+.calc :is(.bg-rose-100\/80, .bg-rose-50\/70) { background-color: var(--stop-bg); }
+.calc :is(.bg-slate-400) { background-color: var(--ink-3); }
+.calc :is(.bg-violet-600) { background-color: var(--ink); }
+.calc :is(.bg-white, .bg-white\/60, .bg-white\/70) { background-color: var(--paper); }
+.calc :is(.border-\[\#e8ecf1\], .border-slate-200) { border-color: var(--line); }
+.calc :is(.border-amber-200, .border-amber-200\/40, .border-amber-200\/50, .border-amber-200\/60, .border-amber-200\/70, .border-amber-300\/60, .border-blue-100\/50, .border-blue-100\/70, .border-blue-200, .border-blue-200\/70, .border-emerald-100\/70, .border-emerald-200, .border-emerald-200\/40, .border-emerald-200\/60, .border-emerald-200\/70, .border-hippo-200, .border-hippo-200\/70, .border-rose-200\/60, .border-violet-200\/60, .border-violet-200\/70, .border-violet-300) { border-color: color-mix(in srgb, currentColor 16%, transparent); }
+.calc :is(.border-amber-300) { border-color: var(--wait); }
+.calc :is(.border-emerald-300) { border-color: var(--ok); }
+.calc :is(.decoration-rose-500\/60) { text-decoration-color: var(--stop); }
+.calc :is(.hover\:bg-amber-100:hover, .hover\:bg-amber-100\/40:hover) { background-color: #F8DDB4; }
+.calc :is(.hover\:bg-violet-50\/50:hover) { background-color: var(--sky); }
+.calc :is(.hover\:bg-violet-700:hover) { background-color: #1B3064; }
+.calc :is(.hover\:text-amber-900:hover, .text-amber-600, .text-amber-700, .text-amber-700\/70, .text-amber-700\/80, .text-amber-800, .text-amber-800\/80, .text-amber-800\/85, .text-amber-900, .text-amber-900\/80) { color: var(--wait); }
+.calc :is(.hover\:text-blue-700:hover, .text-blue-500, .text-blue-600, .text-blue-700, .text-blue-700\/70, .text-blue-900, .text-blue-900\/80) { color: var(--plan); }
+.calc :is(.hover\:text-emerald-900:hover, .text-emerald-600, .text-emerald-700, .text-emerald-700\/70, .text-emerald-700\/80, .text-emerald-800, .text-emerald-800\/90, .text-emerald-900, .text-emerald-900\/90, .text-emerald-950) { color: var(--ok); }
+.calc :is(.text-hippo-500, .text-hippo-600, .text-hippo-700, .text-violet-600, .text-violet-700, .text-violet-900) { color: var(--brand); }
+.calc :is(.text-hippo-900, .text-slate-900) { color: var(--ink); }
+.calc :is(.text-rose-700, .text-rose-700\/80, .text-rose-900\/90) { color: var(--stop); }
+.calc :is(.text-slate-500) { color: var(--ink-3); }
+.calc :is(.text-slate-600) { color: var(--ink-2); }
+.calc .text-muted-foreground\/40, .calc .text-muted-foreground\/50 { color: var(--ink-3); }
+.calc .border-border\/40, .calc .border-border\/60 { border-color: var(--line); }
+.calc .hover\:bg-muted\/30:hover, .calc .hover\:bg-muted\/40:hover { background-color: var(--sky); }
+
+/* ───────── Selon la largeur ───────── */
+@media (max-width: 479px) {
+  .calc .calc-barre { padding: 6px 6px 6px 14px; }
+  .calc .calc-barre > div { gap: 0; }
+  .calc .calc-barre [data-orientation="vertical"] { display: none; }
+}
+@media (max-width: 359px) {
+  .calc .calc-outil { padding-inline: 7px; }
+  .calc .calc-outil svg { display: none; }
+  .calc .calc-outil { padding-inline: 8px; font-size: 0.8125rem; }
+  .calc .calc-outil svg { margin-right: 5px; }
+  .calc button.border.border-input { padding-inline: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .calc .calc-btn { transition: none; }
+}
+/* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+   aux fiches, aux champs et aux boutons. */
+@media (forced-colors: active) {
+  .calc :is(.calc-fiche, .calc-resultats, .calc-barre, .calc-note, .calc-btn), .calc input, .calc button[role="combobox"], .calc.calc-bulle, .calc.calc-pop, .calc.calc-dialogue { border: 1px solid CanvasText; }
+}
+
+}

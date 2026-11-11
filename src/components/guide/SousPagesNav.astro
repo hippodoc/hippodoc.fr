@@ -8,6 +8,9 @@
  * non indexée » qui touchait déjà 48 URL du domaine.
  *
  * Bloc purement additif : aucune section existante du hub n'est modifiée.
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : quatre fiches en relief sur le ciel,
+ * sous la barre de recherche.
  */
 const PAGES = [
   {
@@ -33,24 +36,26 @@ const PAGES = [
 ];
 ---
 
-<nav aria-label="Pages détaillées du guide" class="max-w-5xl mx-auto px-4 mt-10">
-  <h2 class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-    Aller droit au but
-  </h2>
-  <p class="mt-1 text-sm text-muted-foreground">
-    Cette page réunit tout. Ces quatre-là traitent un point précis, en détail.
-  </p>
-  <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-    {PAGES.map((p) => (
-      <li>
-        <a
-          href={p.href}
-          class="flex h-full flex-col rounded-xl border border-slate-200/70 bg-white/80 p-4 no-underline transition-colors hover:border-hippo-300 hover:bg-hippo-50/50 dark:border-slate-700/60 dark:bg-slate-800/50 dark:hover:border-hippo-700 dark:hover:bg-hippo-950/30"
-        >
-          <span class="font-semibold text-foreground">{p.titre}</span>
-          <span class="mt-1 text-sm text-muted-foreground">{p.detail}</span>
-        </a>
-      </li>
-    ))}
-  </ul>
+<nav aria-label="Pages détaillées du guide" class="gd-droit da-bloc">
+  <div class="wrap">
+    <h2 class="gd-sur">
+      Aller droit au but
+    </h2>
+    <p class="gd-droit-p">
+      Cette page réunit tout. Ces quatre-là traitent un point précis, en détail.
+    </p>
+    <ul class="gd-droit-liste">
+      {PAGES.map((p) => (
+        <li>
+          <a
+            href={p.href}
+            class="gd-porte"
+          >
+            <span class="gd-porte-nom">{p.titre}</span>
+            <span class="gd-porte-sous">{p.detail}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
 </nav>

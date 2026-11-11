@@ -3,7 +3,8 @@ import { reglesOr, pepitesCachees, zonesGrises, ficheThemeLabels, type FicheThem
 import { CertitudeBadge } from './CertitudeBadge';
 import { FormattedText, formatInline } from './FormattedText';
 import { CrossLinks } from './CrossLinks';
-import { ChevronDown, Lightbulb, Scale, Zap, Gem } from 'lucide-react';
+import { Lightbulb, Scale, Zap, Gem } from 'lucide-react';
+import { Croix } from './Croix';
 
 /**
  * Portage statique de FichesPratiquesSection.tsx (SPA source). Déviations
@@ -14,6 +15,9 @@ import { ChevronDown, Lightbulb, Scale, Zap, Gem } from 'lucide-react';
  *  - Tri par pertinence profil (selectedProfil) : supprimé (îlot wizard
  *    autonome, ne filtre plus les sections statiques).
  *  - Accordéon (framer-motion) → `<details>/<summary>` natif.
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : des plis `.qa` ; types dans les jetons
+ * d'état (règle d'or en ambre, astuce en bleu, débattu en ciel doux). Styles
+ * dans src/styles/guide.css.
  */
 
 type FicheItem = {
@@ -89,12 +93,12 @@ function buildFiches(): FicheItem[] {
 }
 
 const typeConfig = {
-  regle: { icon: Zap, label: "Règle d'or", className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
-  pepite: { icon: Gem, label: 'Astuce', className: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' },
-  'zone-grise': { icon: Scale, label: 'Débattu', className: 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300' },
+  regle: { icon: Zap, label: "Règle d'or", className: 'wait' },
+  pepite: { icon: Gem, label: 'Astuce', className: 'plan' },
+  'zone-grise': { icon: Scale, label: 'Débattu', className: 'off' },
 };
 
-const impactColors = { faible: 'bg-slate-200 dark:bg-slate-700', moyen: 'bg-amber-400', fort: 'bg-red-500' };
+const impactColors = { faible: 'faible', moyen: 'moyen', fort: 'fort' };
 
 export function FichesPratiquesSection() {
   const allFiches = buildFiches();
@@ -104,16 +108,16 @@ export function FichesPratiquesSection() {
     .filter(g => g.items.length > 0);
 
   return (
-    <section id="fiches" className="py-12 md:py-16 scroll-mt-20 bg-gradient-to-b from-amber-50/30 to-transparent dark:from-amber-950/10">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
-            <Lightbulb className="h-7 w-7 text-hippo-500" /> Fiches pratiques
-            <span className="text-base font-normal text-muted-foreground">({allFiches.length})</span>
+    <section id="fiches" className="gd-sec">
+      <div className="wrap">
+        <div className="gd-sec-tete">
+          <h2 className="gd-h2">
+            <Lightbulb className="gd-ic" /> Fiches pratiques
+            <span className="gd-compte">({allFiches.length})</span>
           </h2>
-          <p className="text-muted-foreground mt-1">Règles essentielles, astuces d'optimisation et sujets débattus — tout en un seul endroit</p>
+          <p className="gd-sous">Règles essentielles, astuces d'optimisation et sujets débattus — tout en un seul endroit</p>
           {/* Introduction visible — cf. Caseopedia, même raison (MIGRATION.md § 9.am). */}
-          <div className="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <div className="gd-intro">
             <p>
               Trois natures de fiches, signalées par leur badge. Les <strong>règles</strong> sont
               les points sur lesquels l'administration ne transige pas : priorité du chiffre
@@ -130,54 +134,54 @@ export function FichesPratiquesSection() {
           </div>
         </div>
 
-        <div className="space-y-10">
+        <div className="gd-groupes">
           {grouped.map(({ theme, items }) => (
             <div key={theme}>
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
+              <h3 className="gd-sur">
                 {ficheThemeLabels[theme]} <span>({items.length})</span>
               </h3>
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="gd-grille g2">
                 {items.map(f => {
                   const tc = typeConfig[f.type];
                   const TypeIcon = tc.icon;
                   return (
-                    <details key={f.id} id={f.id} className="group rounded-xl bg-white/90 backdrop-blur border border-slate-200/60 shadow-sm overflow-hidden scroll-mt-24 dark:bg-slate-800/60 dark:border-slate-700/60">
-                      <summary className="w-full p-4 text-left flex items-start justify-between gap-2 cursor-pointer list-none">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium ${tc.className}`}>
-                              <TypeIcon className="h-3 w-3" /> {tc.label}
+                    <details key={f.id} id={f.id} className="qa gd-pli">
+                      <summary>
+                        <div className="gd-pli-tete">
+                          <div className="gd-pli-puces">
+                            <span className={`gd-puce ${tc.className}`}>
+                              <TypeIcon className="gd-ic" /> {tc.label}
                             </span>
                             {f.impact && (
-                              <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                                <span className={`w-2 h-2 rounded-full ${impactColors[f.impact]}`} />
+                              <span className="gd-impact">
+                                <span className={`gd-pastille ${impactColors[f.impact]}`} />
                                 Impact {f.impact}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm font-medium text-foreground leading-snug">{f.titre}</p>
+                          <p className="gd-pli-nom">{f.titre}</p>
                         </div>
-                        <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform shrink-0 mt-1 group-open:rotate-180" />
+                        <Croix />
                       </summary>
 
-                      <div className="px-4 pb-4 space-y-3">
+                      <div className="gd-pli-in">
                         <FormattedText text={f.description} />
 
                         {f.type === 'zone-grise' && f.positionA && f.positionB && (
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-100 dark:bg-blue-950/20 dark:border-blue-900/40">
-                              <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">Position A</p>
-                              <p className="text-xs text-muted-foreground">{formatInline(f.positionA)}</p>
+                          <div className="gd-positions">
+                            <div className="gd-encart plan">
+                              <p className="gd-champ">Position A</p>
+                              <p className="gd-petit">{formatInline(f.positionA)}</p>
                             </div>
-                            <div className="p-3 rounded-lg bg-amber-50/60 border border-amber-100 dark:bg-amber-950/20 dark:border-amber-900/40">
-                              <p className="text-xs font-medium text-amber-600 dark:text-amber-400 mb-1">Position B</p>
-                              <p className="text-xs text-muted-foreground">{formatInline(f.positionB)}</p>
+                            <div className="gd-encart wait">
+                              <p className="gd-champ">Position B</p>
+                              <p className="gd-petit">{formatInline(f.positionB)}</p>
                             </div>
                           </div>
                         )}
 
                         {f.exemple && (
-                          <div className="p-3 rounded-lg bg-slate-50 border border-slate-100 dark:bg-slate-900/50 dark:border-slate-700">
+                          <div className="gd-encart">
                             <FormattedText text={f.exemple} variant="example" />
                           </div>
                         )}

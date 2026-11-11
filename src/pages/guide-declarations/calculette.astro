@@ -5,7 +5,22 @@
  * chrome (Header/Footer/Hero/FAQ/Disclaimer/CTA) rendu en HTML statique ici,
  * formulaire + résultats interactifs délégués à l'îlot React CalculetteApp
  * (src/components/calculette/CalculetteApp.tsx), 100 % client-side, zéro réseau.
+ *
+ * Habillée dans la DA 2026 en phase 5d (MIGRATION.md § 9.el) : seul l'habillage a
+ * changé. Textes, titres, liens, `id`, ordre des blocs, JSON-LD et `data-track`
+ * sont ceux d'avant (période d'observation SEO) ; aucun calcul n'est touché.
+ * - Page entièrement dans la DA : fond `da-fond`, en-tête « flottante ».
+ * - Trois blocs : le ciel (le titre et son aperçu fictif, l'îlot de la
+ *   calculette, l'appel à l'essai sur l'eau profonde), une feuille sable (les
+ *   questions, en plis `.qa`), puis la fin (l'avertissement, le soleil sur
+ *   l'eau du pied de page).
+ * - Aucune classe utilitaire dans cette page : tout est dans son <style> et dans
+ *   da.css. L'îlot React garde ses utilitaires ; ses couleurs et ses formes
+ *   viennent de src/styles/calculette.css (`.calc`).
+ * - Caractères absents de la police (←, →) et « + » des plis : dessinés en SVG,
+ *   le caractère reste dans le texte, masqué à l'œil (classe `sr`).
  */
+import '@/styles/calculette.css';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
@@ -84,193 +99,205 @@ const breadcrumbSchema = {
 };
 
 const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
+
+/* Dessins : la croix des plis (da.css la fait tourner), la flèche (le dessin de
+   accueil/TroisCases.astro ; `gauche` la retourne). */
+const croix =
+  '<svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>';
+const dessinFleche =
+  '<svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>';
+const fleche = `<span class="fl"><span class="sr">→</span>${dessinFleche}</span>`;
+const flecheGauche = `<span class="fl gauche"><span class="sr">←</span>${dessinFleche}</span>`;
 ---
 
-<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
-  <Header />
-  <main class="relative overflow-hidden bg-[#fafbfc] pb-20 pt-20 sm:pt-28">
-    <!-- Halo accent discret en haut, palette Cloud White (porté verbatim du hero source) -->
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] bg-[radial-gradient(ellipse_at_top,_rgba(26,140,255,0.05),_transparent_65%)]"
-    ></div>
-
-    <!-- Hero premium — bichromie Hippo / Calc + preview desktop -->
-    <section class="mx-auto mb-14 max-w-6xl px-4">
-      <a
-        href="/guide-declarations"
-        class="mb-8 inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
-      >
-        ← Guide Déclarations
-      </a>
-      <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <div>
-          <div class="mb-6 flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-hippo-600">
-              <span class="h-1 w-1 rounded-full bg-hippo-500"></span>
-              Outil gratuit · Millésime 2026
-            </span>
-            <span class="inline-flex items-center gap-1 rounded-sm bg-amber-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-700">
-              Bêta · En travaux
-            </span>
-          </div>
-          <h1 class="mb-6 text-4xl font-semibold leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
-            <span class="text-foreground">Hippo</span><span class="text-hippo-500">Calc</span>
-          </h1>
-          <p class="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Ta 2042-C PRO et ta DSFU pré-remplies en 2 minutes, depuis ta 2035 ou tes recettes Micro-BNC.
-          </p>
-          <p class="mt-5 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-            Tout reste dans ton navigateur. Rien n'est envoyé.
-          </p>
-          <p class="mt-6 text-sm text-muted-foreground">
-            Pas sûr d'une case ?{' '}
-            <a href="/guide-declarations#glossaire" class="text-hippo-600 underline-offset-4 hover:underline">
-              Consulte le glossaire 2035
-            </a>
-            <span class="mx-2 text-border">·</span>
-            <a href="/guide-declarations#fiches" class="text-hippo-600 underline-offset-4 hover:underline">
-              Trouve ta fiche profil
-            </a>
-          </p>
-        </div>
-
-        <!-- Preview card — éditorial, décoratif (chiffres d'illustration repris verbatim du hero source) -->
-        <div aria-hidden="true" class="relative hidden lg:block">
-          <div class="space-y-5 rounded-2xl border border-[#e8ecf1] bg-white p-6 shadow-xl shadow-slate-200/50">
-            <div class="flex items-center justify-between text-[10px] uppercase tracking-[0.16em]">
-              <span class="font-semibold text-hippo-600">2042-C PRO · 2026</span>
-              <span class="inline-flex items-center gap-1 text-muted-foreground">
-                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                Pré-rempli
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
+  <main>
+    <div class="tete da-bloc">
+      <!-- Titre de la page : « Hippo » en encre, « Calc » dans le bleu de l'eau, et l'aperçu (décor) -->
+      <section class="wrap intro">
+        <a
+          href="/guide-declarations"
+          class="retour"
+        >
+          <Fragment set:html={flecheGauche} /> Guide Déclarations
+        </a>
+        <div class="hero">
+          <div class="hero-txt">
+            <div class="gages">
+              <span class="chip plan gage">
+                <span class="point"></span>
+                Outil gratuit · Millésime 2026
+              </span>
+              <span class="chip wait gage">
+                Bêta · En travaux
               </span>
             </div>
-            <div class="space-y-2 font-mono text-xs">
-              <div class="flex items-center justify-between gap-3">
-                <span class="text-muted-foreground">5QC</span>
-                <span class="font-semibold tabular-nums text-foreground">52 800 €</span>
+            <h1 class="aff">
+              <span>Hippo</span><span class="eau">Calc</span>
+            </h1>
+            <p class="lead">
+              Ta 2042-C PRO et ta DSFU pré-remplies en 2 minutes, depuis ta 2035 ou tes recettes Micro-BNC.
+            </p>
+            <p class="prive">
+              Tout reste dans ton navigateur. Rien n'est envoyé.
+            </p>
+            <p class="aide">
+              Pas sûr d'une case ?{' '}
+              <a href="/guide-declarations#glossaire" class="lien">
+                Consulte le glossaire 2035
+              </a>
+              <span class="sep">·</span>
+              <a href="/guide-declarations#fiches" class="lien">
+                Trouve ta fiche profil
+              </a>
+            </p>
+          </div>
+
+          <!-- Aperçu décoratif (chiffres d'illustration repris verbatim du hero source) -->
+          <div aria-hidden="true" class="apercu">
+            <div class="apercu-fiche">
+              <div class="apercu-tete">
+                <span class="apercu-nom">2042-C PRO · 2026</span>
+                <span class="apercu-etat">
+                  <span class="point"></span>
+                  Pré-rempli
+                </span>
               </div>
-              <div class="flex items-center justify-between gap-3">
-                <span class="text-muted-foreground">1AS</span>
-                <span class="font-semibold tabular-nums text-foreground">14 200 €</span>
-              </div>
-              <div class="flex items-center justify-between gap-3">
-                <span class="text-muted-foreground">1AJ</span>
-                <span class="font-semibold tabular-nums text-foreground">0 €</span>
-              </div>
-            </div>
-            <div class="border-t border-[#e8ecf1] pt-4">
-              <div class="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-hippo-600">
-                DSFU · URSSAF
-              </div>
-              <div class="space-y-2 font-mono text-xs">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="text-muted-foreground">DSCS</span>
-                  <span class="font-semibold tabular-nums text-foreground">52 800 €</span>
+              <div class="apercu-lignes">
+                <div>
+                  <span>5QC</span>
+                  <span class="val">52 800 €</span>
                 </div>
-                <div class="flex items-center justify-between gap-3">
-                  <span class="text-muted-foreground">DSCN</span>
-                  <span class="font-semibold tabular-nums text-foreground">11 244 €</span>
+                <div>
+                  <span>1AS</span>
+                  <span class="val">14 200 €</span>
                 </div>
-                <div class="flex items-center justify-between gap-3">
-                  <span class="text-muted-foreground">DSAU</span>
-                  <span class="font-semibold tabular-nums text-foreground">1,0000</span>
+                <div>
+                  <span>1AJ</span>
+                  <span class="val">0 €</span>
+                </div>
+              </div>
+              <div class="apercu-suite">
+                <div class="apercu-nom">
+                  DSFU · URSSAF
+                </div>
+                <div class="apercu-lignes">
+                  <div>
+                    <span>DSCS</span>
+                    <span class="val">52 800 €</span>
+                  </div>
+                  <div>
+                    <span>DSCN</span>
+                    <span class="val">11 244 €</span>
+                  </div>
+                  <div>
+                    <span>DSAU</span>
+                    <span class="val">1,0000</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Îlot React — formulaire + résultats, 100 % client-side -->
-    {/* Titre réservé aux lecteurs d'écran : les cartes de l'îlot ouvrent sur des
-        titres de niveau 3 (CardTitle), d'où un saut h1 → h3 dans la hiérarchie.
-        CardTitle est partagé par tout le site : on ne touche pas au composant,
-        on rétablit le niveau manquant ici. `sr-only` est en position absolue et
-        ne modifie donc pas la mise en page.
-        Commentaire Astro `{…}` et non `<!-- -->` : un commentaire HTML est émis
-        dans la page, et celui-ci citait « h3 » — il était compté comme un vrai
-        titre par les outils d'analyse. */}
-    <h2 class="sr-only">La calculette</h2>
-    <CalculetteApp client:visible />
+      <!-- Îlot React — formulaire + résultats, 100 % client-side -->
+      {/* Titre réservé aux lecteurs d'écran : les cartes de l'îlot ouvrent sur des
+          titres de niveau 3 (CardTitle), d'où un saut h1 → h3 dans la hiérarchie.
+          CardTitle est partagé par tout le site : on ne touche pas au composant,
+          on rétablit le niveau manquant ici.
+          Commentaire Astro `{…}` et non `<!-- -->` : un commentaire HTML est émis
+          dans la page, et celui-ci citait « h3 » — il était compté comme un vrai
+          titre par les outils d'analyse. */}
+      <h2 class="sr">La calculette</h2>
+      <CalculetteApp client:visible />
 
-    <!-- CTA premium -->
-    <section class="mx-auto mt-20 max-w-6xl px-4">
-      <div class="relative overflow-hidden rounded-2xl border border-hippo-200/50 bg-gradient-to-br from-hippo-50/60 via-white to-[#fafbfc] p-6 sm:p-10">
-        <div
-          aria-hidden="true"
-          class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[radial-gradient(circle,_rgba(26,140,255,0.15),_transparent_70%)]"
-        ></div>
-        <div class="relative grid items-center gap-6 sm:grid-cols-[1fr_auto]">
-          <div>
-            <span class="mb-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
-              Hippodoc
-            </span>
-            <h2 class="mb-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Et si tout ça se faisait tout seul ?
-            </h2>
-            <p class="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Hippodoc pré-remplit ta 2042-C PRO et ta DSFU à partir de tes encaissements, et garde ton Super-Net à jour en temps réel.
-            </p>
-          </div>
-          <div class="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
-            <a
-              id="calculette-cta-signup"
-              href={signupUrl}
-              data-track="calculette_2042_dspamc_cta_click"
-              class="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 px-6 font-semibold text-white shadow-md shadow-hippo-500/15 transition-all hover:shadow-lg hover:shadow-hippo-500/25 sm:w-auto"
-            >
-              Essayer Hippodoc →
-            </a>
-            <p class="text-center text-[11px] text-muted-foreground sm:text-right">
-              30 jours offerts · Sans engagement
-            </p>
+      <!-- Appel à l'essai : une fiche sur l'eau profonde -->
+      <section class="wrap essai">
+        <div class="essai-fiche">
+          <div class="essai-in">
+            <div class="essai-txt">
+              <span class="essai-gage">
+                Hippodoc
+              </span>
+              <h2>
+                Et si tout ça se faisait tout seul ?
+              </h2>
+              <p>
+                Hippodoc pré-remplit ta 2042-C PRO et ta DSFU à partir de tes encaissements, et garde ton Super-Net à jour en temps réel.
+              </p>
+            </div>
+            <div class="essai-action">
+              <a
+                id="calculette-cta-signup"
+                href={signupUrl}
+                data-track="calculette_2042_dspamc_cta_click"
+                class="btn btn-brand"
+              >
+                Essayer Hippodoc <Fragment set:html={fleche} />
+              </a>
+              <p class="essai-mention">
+                30 jours offerts · Sans engagement
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <!-- FAQ — SEO, natif details/summary (pas de Radix : le contenu doit être présent dans le HTML) -->
-    <section class="mx-auto mt-24 max-w-3xl px-4" aria-labelledby="faq-title">
-      <div class="mb-8">
-        <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-hippo-600">FAQ</p>
-        <h2 id="faq-title" class="mb-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Questions fréquentes
-        </h2>
-        <p class="text-sm text-muted-foreground">
-          Les {FAQ.length} questions qu'on nous pose le plus souvent.
+    <section class="band da-bloc" aria-labelledby="faq-title">
+      <div class="wrap cote">
+        <div class="band-head">
+          <p class="sur">FAQ</p>
+          <h2 id="faq-title">
+            Questions fréquentes
+          </h2>
+          <p class="lead">
+            Les {FAQ.length} questions qu'on nous pose le plus souvent.
+          </p>
+        </div>
+        <div class="liste">
+          {FAQ.map((f) => (
+            <details class="qa">
+              <summary>
+                <span class="qa-t">{f.q}</span>
+                <span aria-hidden="true" class="sr">+</span><Fragment set:html={croix} />
+              </summary>
+              <div class="qa-in"><p>{f.a}</p></div>
+            </details>
+          ))}
+        </div>
+        <p class="autre">
+          Une autre question ?{' '}
+          <a href="/guide-declarations#glossaire" class="lien">
+            Consulte le glossaire complet <Fragment set:html={fleche} />
+          </a>
         </p>
       </div>
-      <div class="divide-y divide-border/60 border-y border-border/60">
-        {FAQ.map((f) => (
-          <details class="group py-1">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-              <span class="flex-1 pr-4">{f.q}</span>
-              <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
-            </summary>
-            <p class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
-          </details>
-        ))}
-      </div>
-      <p class="mt-6 text-sm text-muted-foreground">
-        Une autre question ?{' '}
-        <a href="/guide-declarations#glossaire" class="font-medium text-hippo-600 hover:underline">
-          Consulte le glossaire complet →
-        </a>
-      </p>
     </section>
 
-    <!-- Disclaimer minimaliste -->
-    <section class="mx-auto mt-16 max-w-3xl px-4">
-      <div class="border-t border-border/60 pt-6 text-center text-xs leading-relaxed text-muted-foreground">
-        <p>
-          <strong class="font-medium text-foreground">Outil d'estimation.</strong>{' '}
+    <!-- Avertissement, puis le soleil qui se lève sur l'eau du pied de page -->
+    <section class="fin da-bloc">
+      <div class="wrap fin-copy">
+        <p class="avis">
+          <strong>Outil d'estimation.</strong>{' '}
           HippoCalc automatise les formules officielles 2042-C PRO et DSFU mais ne remplace ni ton expert-comptable, ni ton AGA, ni les notices officielles (2041 DRI PAMC, 2035-NOT).
-          <span class="mx-2 text-border">•</span>
-          <strong class="font-medium text-foreground">100 % local.</strong>{' '}
+          <span class="sep">•</span>
+          <strong>100 % local.</strong>{' '}
           Tes saisies sont sauvegardées uniquement dans ton navigateur. Aucune donnée n'est envoyée à Hippodoc.
         </p>
+      </div>
+      <div class="horizon" aria-hidden="true">
+        <span class="sun"></span>
+        <span class="wave w3"></span>
+        <span class="wave w4"></span>
       </div>
     </section>
   </main>
@@ -286,3 +313,138 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
     });
   </script>
 </BaseLayout>
+
+<style>
+  /* Texte grossi : un mot plus large que sa fiche se coupe au lieu de la pousser
+     (la propriété s'hérite : elle vaut aussi dans l'îlot). */
+  main { overflow-wrap: break-word; }
+  /* Les flèches arrivent par `set:html` : leurs classes ne portent pas l'attribut
+     de portée de la page, d'où `:global`. */
+  .sr, main :global(.sr) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  /* La flèche dessinée, sur la ligne du texte (accueil/TroisCases.astro). */
+  main :global(.fl) { white-space: nowrap; }
+  main :global(.fl svg) { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
+  main :global(.fl.gauche svg) { scale: -1 1; }
+
+  /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
+     haut. En bas, 88 px d'air et les 40 px que recouvre la feuille suivante. */
+  .tete { position: relative; padding: 100px 0 128px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+  /* Corps de texte en rem : la feuille de la DA les pose en px, ils ne suivaient
+     plus la taille de police du navigateur. Même rendu à 16 px. */
+  .da-bloc { font-size: 1.0625rem; }
+  .lead { font-size: 1.1875rem; }
+  .btn { gap: 9px; padding-block: 8px; font-size: 1.0625rem; text-align: center; }
+  .chip { font-size: 0.84375rem; }
+  .qa-t { min-width: 0; font-size: 1.125rem; overflow-wrap: anywhere; }
+  .qa-in p { font-size: 1.03125rem; }
+  h2 { --corps: clamp(min(2rem, 10vw), 4.5vw, 3.625rem); }
+  @media (max-width: 359px) { .qa-t { font-size: 1.0625rem; } }
+
+  /* Le titre de la page */
+  .intro { margin-bottom: 36px; }
+  .retour { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; border-radius: var(--r-sm); font-size: 0.9375rem; font-weight: 560; color: var(--ink-2); text-decoration: none; }
+  .retour:hover { color: var(--ink); }
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 40px; margin-top: 10px; }
+  .hero-txt { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .hero-txt > * { margin: 0; }
+  .gages { display: flex; flex-wrap: wrap; gap: 8px; }
+  .gage { display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px; white-space: normal; }
+  .point { flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  /* « Hippo » en encre, « Calc » dans le bleu de l'eau. Plus grand que le titre
+     des autres pages : c'est un nom, sur une ligne. */
+  .intro h1 { --corps: clamp(min(3rem, 16vw), 7.4vw, 5.5rem); }
+  .eau { color: var(--w4); }
+  .prive { font-size: 0.9375rem; color: var(--ink-2); }
+  .aide { font-size: 1rem; color: var(--ink-2); }
+  .aide .sep { margin: 0 8px; color: var(--ink-3); }
+  /* L'aperçu (décor, à partir de 1 024 px) : une fiche en relief, un peu penchée. */
+  .apercu { display: none; }
+  .apercu-fiche { display: grid; gap: 16px; padding: 24px 24px 26px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); rotate: 2deg; }
+  .apercu-tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .apercu-nom { font-size: 0.75rem; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand); }
+  .apercu-etat { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: var(--tb); color: var(--ok); }
+  .apercu-lignes { display: grid; gap: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.875rem; color: var(--ink-3); }
+  .apercu-lignes > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .apercu-lignes .val { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .apercu-suite { display: grid; gap: 10px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+  /* L'appel à l'essai : l'eau profonde, le bouton jaune. */
+  .essai { margin-top: 28px; }
+  .essai-fiche { --focus: #FFFFFF; padding: 32px 24px 34px; border-radius: 32px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .essai-in { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 24px; }
+  .essai-txt { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .essai-txt > * { margin: 0; }
+  .essai-gage { padding: 4px 12px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.14); font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.06em; line-height: 1.4; text-transform: uppercase; }
+  .essai h2 { --corps: clamp(min(1.75rem, 9vw), 3.4vw, 2.5rem); color: var(--paper); }
+  .essai-txt p { max-width: 36rem; font-size: 1.0625rem; line-height: 1.55; color: var(--on-deep-2); }
+  .essai-action { display: flex; flex-direction: column; align-items: stretch; gap: 14px; }
+  .essai-mention { margin: 0; font-size: 0.875rem; color: var(--on-deep-2); text-align: center; }
+
+  /* Petit titre au-dessus d'un titre */
+  .sur { margin: 0; font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; color: var(--ink-3); }
+  /* Les questions : le titre à gauche, les plis à droite (accueil/Questions.astro). */
+  .cote { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 26px; }
+  .cote .band-head { margin-bottom: 0; }
+  .liste { min-width: 0; }
+  .liste .qa:last-child { margin-bottom: 0; }
+  .autre { margin: 0; font-size: 1rem; color: var(--ink-2); }
+
+  /* La fin : l'avertissement, puis le soleil qui se lève sur l'eau du pied de
+     page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles).
+     -1 px en bas : pas de filet clair au-dessus du pied. */
+  .fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; }
+  .fin-copy { z-index: 1; padding-top: 72px; }
+  .avis { max-width: 46rem; margin: 0 auto; font-size: 0.9375rem; line-height: 1.6; color: var(--ink-2); text-wrap-style: pretty; }
+  .avis strong { color: var(--ink); }
+  .avis .sep { margin: 0 8px; color: var(--ink-3); }
+  /* Le halo dépasse le soleil de 62 px (92 px sur ordinateur) : 20 px d'air
+     entre le texte et lui. */
+  .horizon { position: relative; height: 190px; margin-top: 60px; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; }
+  .w3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* La dernière vague a la couleur du haut du pied de page (--deep). */
+  .w4 { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+  /* Téléphone : intervalles resserrés. */
+  @media (max-width: 559px) {
+    .tete { padding: 92px 0 88px; }
+    .intro { margin-bottom: 26px; }
+    .essai { margin-top: 22px; }
+    .essai-fiche { padding: 28px 20px 30px; }
+    .fin-copy { padding-top: 52px; }
+  }
+  @media (min-width: 760px) {
+    .essai-fiche { padding: 40px 44px 42px; }
+    .essai-in { grid-template-columns: minmax(0, 1fr) auto; gap: 40px; }
+    .essai-action { align-items: flex-end; }
+    .essai-mention { text-align: right; }
+  }
+  @media (min-width: 900px) {
+    .tete { padding-top: 132px; }
+    .cote { grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 28px 56px; }
+    /* Le titre suit la lecture d'un pli ouvert. */
+    .cote .band-head { position: sticky; top: 104px; }
+    .autre { grid-column: 2; }
+    .horizon { height: 270px; margin-top: 108px; --p: 440px; --th: 54px; }
+    .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+    .w3 { height: 112px; }
+    .w4 { height: 60px; }
+  }
+  @media (min-width: 1024px) {
+    .hero { grid-template-columns: minmax(0, 1fr) 340px; gap: 56px; }
+    .apercu { display: block; padding-top: 10px; }
+  }
+  @media (min-width: 1180px) {
+    .cote { grid-template-columns: 320px minmax(0, 1fr); column-gap: 96px; }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+     aux fiches ; le décor de la fin disparaît. */
+  @media (forced-colors: active) {
+    .apercu-fiche, .essai-fiche { border: 1px solid CanvasText; }
+    .horizon { display: none; }
+  }
+  @media print {
+    .tete { padding-top: 0; background: none; }
+  }
+</style>

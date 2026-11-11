@@ -11,11 +11,12 @@ const SECTION_ICONS = {
   situations: Bell,
 } as const;
 
+// DA 2026 (§ 9.el) : la couleur de la pastille d'icône, dans les jetons d'état.
 const SECTION_ACCENT = {
-  fiscal: 'text-hippo-600 dark:text-hippo-400',
-  exonerations: 'text-amber-600 dark:text-amber-400',
-  social: 'text-emerald-600 dark:text-emerald-400',
-  situations: 'text-violet-600 dark:text-violet-400',
+  fiscal: 'plan',
+  exonerations: 'wait',
+  social: 'ok',
+  situations: '',
 } as const;
 
 interface Props {
@@ -40,68 +41,68 @@ export const ChecklistSection: React.FC<Props> = ({ section, index, defaultOpen 
   const inlineSecondary = secondary.length > 0 && secondary.length <= SECONDARY_INLINE_THRESHOLD;
 
   return (
-    <div className="rounded-lg border border-slate-200/70 bg-white/60 dark:bg-slate-900/40 dark:border-slate-700/70 overflow-hidden backdrop-blur-sm">
+    <div className={`gd-cl-section ${open ? 'ouvert' : ''}`}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-3 p-3.5 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
+        className="gd-cl-tete"
       >
-        <div className={`h-8 w-8 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 ${accent}`}>
-          <Icon className="h-4 w-4" />
+        <div className={`gd-rond ${accent}`}>
+          <Icon className="gd-ic" />
         </div>
-        <div className="flex-1 text-left min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm text-foreground">{section.titre}</span>
+        <div className="gd-cl-titre">
+          <div className="gd-cl-ligne">
+            <span className="gd-cl-nom">{section.titre}</span>
             {casesCount > 0 && (
               <span
                 title={`${casesCount} case${casesCount > 1 ? 's' : ''} à remplir`}
-                className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-muted-foreground font-medium"
+                className="gd-puce off"
               >
                 {casesCount}
               </span>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">{section.sousTitre}</p>
+          <p className="gd-petit">{section.sousTitre}</p>
         </div>
         {section.formulairePrincipal && (
-          <span className="text-[10px] font-medium text-muted-foreground bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded hidden sm:inline">
+          <span className="gd-puce off gd-cl-form">
             {section.formulairePrincipal}
           </span>
         )}
         <ChevronDown
-          className={`h-4 w-4 text-muted-foreground transition-transform shrink-0 ${open ? 'rotate-180' : ''}`}
+          className={`gd-ic gd-chevron ${open ? 'haut' : ''}`}
         />
       </button>
 
       {open && (
-        <div className="p-3 pt-1 space-y-2 border-t border-slate-100 dark:border-slate-800">
+        <div className="gd-cl-corps">
           {section.cases.length > 0 && (
-            <div className="space-y-1.5">
+            <div className="gd-pile serre">
               {section.cases.map(c => (
                 <ChecklistCase key={c.code} caseItem={c} />
               ))}
             </div>
           )}
           {important.length > 0 && (
-            <div className="space-y-1.5 pt-1">
+            <div className="gd-pile serre">
               {important.map((p, i) => (
                 <ChecklistPoint key={`imp-${i}`} type={p.type}>{p.texte}</ChecklistPoint>
               ))}
             </div>
           )}
           {inlineSecondary && (
-            <div className="space-y-1.5 pt-1">
+            <div className="gd-pile serre">
               {secondary.map((p, i) => (
                 <ChecklistPoint key={`sec-${i}`} type={p.type}>{p.texte}</ChecklistPoint>
               ))}
             </div>
           )}
           {!inlineSecondary && secondary.length > 0 && (
-            <details className="group pt-1">
-              <summary className="cursor-pointer list-none flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors px-1 py-1">
-                <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-0 -rotate-90" />
+            <details className="gd-cl-plus">
+              <summary>
+                <ChevronDown className="gd-ic gd-chevron" />
                 <span>Bon à savoir ({secondary.length})</span>
               </summary>
-              <div className="space-y-1.5 mt-1.5">
+              <div className="gd-pile serre">
                 {secondary.map((p, i) => (
                   <ChecklistPoint key={`sec-${i}`} type={p.type}>{p.texte}</ChecklistPoint>
                 ))}

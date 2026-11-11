@@ -82,7 +82,7 @@ export function IrEstimateCard({ beneficeImposable, annee }: IrEstimateCardProps
                 <SelectTrigger id="ir-parts" className="h-8 text-xs w-[280px] max-w-full">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="calc calc-pop">
                   {PARTS_OPTIONS.map(o => (
                     <SelectItem key={o.value} value={o.value} className="text-xs">{o.label}</SelectItem>
                   ))}

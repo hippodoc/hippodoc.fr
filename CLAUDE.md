@@ -160,9 +160,18 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   POST vers l'Edge Function Supabase publique `calculate-urssaf` via
   `src/lib/supabase-public.ts` (clé anon publique dans `.env`, RLS côté serveur).
 - `/guide-declarations/calculette` → `src/components/calculette/CalculetteApp.tsx`,
-  100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage.
-- `/guide-declarations` → îlot `BoussoleWizard` + sections statiques, données
-  `src/data/boussoleData.ts`.
+  100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage. Habillage DA
+  (§ 9.el) : `.calc` de `src/styles/calculette.css` (page seule), posée sur la racine de
+  l'îlot et sur ce que Radix rend dans `<body>`. Les `.tsx` gardent leurs utilitaires ;
+  leurs couleurs sont recouvertes une par une dans cette feuille : une nouvelle classe de
+  couleur dans un `.tsx` s'y ajoute, sinon elle sort dans l'ancienne palette.
+- `/guide-declarations` → îlots `BoussoleWizard` et `BoussoleSearchIsland` + sections
+  statiques, données `src/data/boussoleData.ts`. Habillage DA (§ 9.el) : classes `gd-*` de
+  `src/styles/guide.css`, servie au hub et aux trois pages filles (`GuideSousPage.astro`) ;
+  plus de classe utilitaire dans `src/components/guide/`, sauf `FormattedText.tsx`
+  (recouvert par la feuille). La barre de recherche reste enfant direct de `<main>` : elle
+  est collante sur toute la page ; la boussole se place d'après `[role="search"]` et le
+  premier `<h3>` de sa fiche.
 - Les îlots sont SSR-és au build (leur HTML est indexable) ; pas d'accès
   window/localStorage au rendu (uniquement useEffect/handlers). Pas de framer-motion.
 

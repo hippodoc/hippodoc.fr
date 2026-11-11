@@ -1,0 +1,748 @@
+/* ==========================================================================
+   Guide des déclarations dans la DA 2026 (phase 5d, MIGRATION.md § 9.el) :
+   /guide-declarations (le hub) et ses trois pages filles.
+
+   Feuille importée par src/pages/guide-declarations/index.astro et par
+   src/layouts/GuideSousPage.astro : elle sort dans une feuille servie aux pages
+   du guide seulement. Tailwind ne lit pas les .css : rien ici n'ajoute de règle
+   à la feuille commune.
+
+   - `.gd` est posée sur <main>. Les jetons de la DA viennent de `.da` (<body>),
+     les primitives (`.wrap`, `.btn`, `.chip`, `.band`, `.qa`, `.lead`, `.lien`)
+     de da.css. Hors de <main> : le bandeau d'échéance (`.gd-echeance`), et la
+     bulle d'aide de la boussole (`.gd-bulle`), que Radix rend dans <body>.
+   - Les composants de src/components/guide/ n'ont plus de classe utilitaire :
+     leurs classes sont ici (`gd-*`). Deux exceptions, recouvertes par leur rôle :
+     src/components/ui/ (champ, bouton, étiquette, bulle : partagés avec la
+     calculette et le simulateur, non modifiés) et FormattedText.tsx (non
+     modifié : d'autres corrections y sont en cours), dont les utilitaires de
+     couleur passent par les jetons ci-dessous.
+   - Corps en rem : ils suivent la taille de police réglée dans le navigateur.
+   - Le jaune : ce qu'il te reste (le Super-Net de l'appel à l'essai, « Le net »
+     de la page du remplaçant), et le bouton qui mène à la suite.
+   ========================================================================== */
+
+/* ───────── Jetons ─────────
+   L'alerte (erreur fréquente, bug actif, point critique) : la DA n'a pas de
+   rouge. Encre #A12D16 sur fond #FCE6E1 : 6,0:1.
+   Jetons des composants partagés et de FormattedText, aux couleurs de la DA
+   (triplets HSL, Tailwind les enveloppe dans hsl()) : encre #14254F, encre 2
+   #3A4B78 pour le texte courant, marque #0059B3. */
+.da { --stop: #A12D16; --stop-bg: #FCE6E1; }
+.gd, .gd-bulle {
+  --background: 0 0% 100%;
+  --foreground: 223 60% 19%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 223 60% 19%;
+  --primary: 210 100% 35%;
+  --primary-foreground: 0 0% 100%;
+  --muted-foreground: 224 35% 35%;
+  --accent: 219 89% 96%;
+  --accent-foreground: 223 60% 19%;
+  --border: 223 16% 91%;
+  --input: 222 15% 87%;
+  --ring: 223 60% 19%;
+}
+
+/* ───────── La page ─────────
+   <main> porte le ciel : le titre, la barre de recherche et les pages
+   détaillées sont posés dessus ; les feuilles et la fin le recouvrent. */
+.gd { background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); overflow-wrap: break-word; }
+/* La barre de recherche est collée sous la pastille de l'en-tête : une ancre
+   s'arrête sous les deux. */
+html:has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0px)); }
+.gd .da-bloc, .gd-echeance { font-size: 1.0625rem; }
+.gd .lead { font-size: 1.1875rem; }
+.gd .btn { gap: 9px; padding-block: 8px; font-size: 1.0625rem; text-align: center; }
+.gd .chip { font-size: 0.84375rem; }
+.gd :is(b, strong) { font-weight: var(--tb); }
+.gd-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.gd-num { white-space: nowrap; }
+.gd-eau { color: var(--w4); }
+/* Icônes (lucide) : la taille vient du texte qui les porte. */
+.gd .gd-ic, .gd-echeance .gd-ic { display: inline-block; flex: none; width: 1.1em; height: 1.1em; vertical-align: -0.16em; }
+.gd .gd-fl { display: inline-block; flex: none; width: 0.95em; height: auto; vertical-align: -0.02em; }
+.gd .gd-chevron { transition: rotate 200ms var(--ease); }
+.gd details[open] > summary .gd-chevron, .gd .gd-chevron.haut { rotate: 180deg; }
+.gd details:not([open]) > summary .gd-chevron.droite { rotate: 0deg; }
+.gd details[open] > summary .gd-chevron.droite { rotate: 90deg; }
+.gd summary { cursor: pointer; list-style: none; }
+.gd summary::-webkit-details-marker { display: none; }
+.gd :is(button, summary, a):focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; box-shadow: none; }
+/* La cible d'un résultat de recherche ou d'une case de la checklist reçoit
+   `ring-2 ring-hippo-400 ring-offset-2` pendant deux secondes (scripts des
+   îlots, inchangés) : un contour d'encre autour de la fiche. */
+.gd .ring-2.ring-hippo-400 { outline: 3px solid var(--ink); outline-offset: 4px; }
+
+/* Petit titre en capitales */
+.gd .gd-sur { margin: 0; font-family: var(--text); font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; color: var(--ink-3); }
+.gd .gd-sur.petit { font-size: 0.75rem; }
+.gd .gd-petit { margin: 0; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
+.gd .gd-doux { color: var(--ink-3); }
+.gd .gd-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9375rem; font-weight: 700; letter-spacing: -0.01em; color: var(--brand); }
+.gd .gd-filet { flex: 1; height: 1px; background: var(--line); }
+.gd .gd-lien { font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.gd .gd-lien:hover { color: var(--brand); }
+
+/* Pastille d'icône */
+.gd .gd-rond { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--sky); color: var(--brand); font-size: 1.0625rem; }
+.gd .gd-rond.grand { width: 46px; height: 46px; font-size: 1.1875rem; }
+.gd .gd-rond.petit { width: 32px; height: 32px; font-size: 0.875rem; }
+.gd .gd-rond.blanc { background: var(--paper); }
+.gd .gd-rond.plan, .gd .gd-rond.cat-fiscal { background: var(--plan-bg); color: var(--plan); }
+.gd .gd-rond.ok, .gd .gd-rond.cat-social { background: var(--ok-bg); color: var(--ok); }
+.gd .gd-rond.wait, .gd .gd-rond.cat-comptable { background: var(--wait-bg); color: var(--wait); }
+.gd .gd-rond.cat-administratif { background: var(--sky-soft); color: var(--ink-2); }
+.gd .gd-rond.plan.plein { background: var(--plan); color: var(--paper); }
+.gd .gd-rond.ok.plein { background: var(--ok); color: var(--paper); }
+
+/* Étiquettes : l'état est une couleur ET un mot (ou un signe). Le composant
+   partagé Badge (ui/) garde ses classes : elles sont recouvertes ici. */
+.gd .gd-puce { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border: 0; border-radius: var(--r-pill); background: var(--sky-soft); color: var(--ink-2); font-size: 0.75rem; font-weight: var(--tb); line-height: 1.4; white-space: nowrap; box-shadow: none; }
+.gd .gd-puce.grande { padding: 5px 12px; font-size: 0.8125rem; }
+.gd .gd-puce.ok, .gd .gd-puce.cat-social { background: var(--ok-bg); color: var(--ok); }
+.gd .gd-puce.wait, .gd .gd-puce.cat-comptable { background: var(--wait-bg); color: var(--wait); }
+.gd .gd-puce.plan, .gd .gd-puce.cat-fiscal { background: var(--plan-bg); color: var(--plan); }
+.gd .gd-puce.stop { background: var(--stop-bg); color: var(--stop); }
+.gd .band:not(.air) .gd-puce.off, .gd .band:not(.air) .gd-puce.cat-administratif { background: var(--sky-soft); }
+.gd .gd-pastille { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--sky-1); }
+.gd .gd-pastille.moyen { background: var(--sun-edge); }
+.gd .gd-pastille.fort, .gd .gd-pastille.urgent { background: var(--stop); }
+.gd .gd-point { flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+/* Encart : ciel doux, ou la couleur d'un état */
+.gd .gd-encart { padding: 12px 14px; border-radius: 16px; background: var(--sky-soft); }
+.gd .gd-encart.stop { background: var(--stop-bg); }
+.gd .gd-encart.stop > .gd-champ { color: var(--stop); }
+.gd .gd-encart.plan { background: var(--plan-bg); }
+.gd .gd-encart.plan > .gd-champ { color: var(--plan); }
+.gd .gd-encart.wait { background: var(--wait-bg); }
+.gd .gd-encart.wait > .gd-champ { color: var(--wait); }
+
+/* Piles et grilles */
+.gd .gd-pile { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.gd .gd-pile.serre { gap: 7px; }
+/* Les fiches d'une rangée ont la même hauteur au repos ; dès qu'un pli est
+   ouvert, chacune reprend la sienne (sinon ses voisines s'étirent, vides). */
+.gd .gd-grille { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.gd .gd-grille:has(> details[open]) { align-items: start; }
+.gd .gd-plis { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.gd .gd-groupes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; }
+.gd .gd-groupes > div > .gd-sur, .gd .gd-sec > .wrap > .gd-sur { margin-bottom: 12px; }
+.gd .gd-tirets { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); }
+.gd .gd-tirets.large { gap: 8px; font-size: 0.9375rem; }
+.gd .gd-tirets li { display: flex; align-items: flex-start; gap: 8px; }
+.gd .gd-tirets li > span:last-child { min-width: 0; }
+.gd .gd-tirets .gd-ic { margin-top: 0.22em; }
+.gd .gd-tiret { flex: none; color: var(--ink-3); }
+.gd .gd-tiret.ok, .gd .gd-ic.ok { color: var(--ok); }
+.gd .gd-tel { display: inline; }
+.gd .gd-ordi { display: none; }
+
+/* ───────── Le bandeau d'échéance ─────────
+   Entre l'en-tête et <main>, dans le flux : il part avec la page. La pastille
+   de l'en-tête flotte au-dessus du ciel ; le bandeau lui laisse le haut et se
+   pose juste dessous, en pastille lui aussi. */
+.gd-echeance { padding: calc(82px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px)); }
+.gd-echeance-in { display: flex; align-items: center; justify-content: center; gap: 9px; max-width: 1120px; min-height: 44px; margin-inline: auto; padding: 7px 16px; border-radius: var(--r-pill); background: var(--paper); color: var(--ink); box-shadow: var(--clay-sm); font-size: 0.875rem; font-weight: 560; line-height: 1.35; }
+.gd-echeance-in.alerte { background: var(--wait-bg); color: var(--wait); }
+.gd-echeance-nom { display: none; flex: none; align-items: center; gap: 6px; padding: 3px 11px; border-radius: var(--r-pill); background: var(--plan-bg); color: var(--plan); font-size: 0.8125rem; font-weight: var(--tb); white-space: nowrap; }
+.gd-echeance-in.alerte .gd-echeance-nom { background: var(--paper); color: var(--wait); }
+.gd-echeance-signe { display: inline-flex; flex: none; }
+.gd-echeance-texte { min-width: 0; }
+.gd-echeance-texte a { font-weight: var(--tb); color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.gd-echeance-suite { display: none; }
+/* Sous le bandeau, le titre n'a plus à réserver le haut à l'en-tête. */
+.gd-echeance + .gd .gd-tete { padding-top: 34px; }
+
+/* ───────── Le ciel : titre de la page ───────── */
+.gd .gd-tete { position: relative; padding: 108px 0 26px; }
+.gd .gd-tete-in { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.gd .gd-tete-in > * { margin: 0; }
+.gd .gd-tete h1 { --corps: var(--h1-page); max-width: 16em; text-wrap-style: balance; }
+.gd .gd-tete .lead strong { color: var(--ink); }
+.gd .gd-gages { display: flex; flex-wrap: wrap; gap: 8px; }
+.gd .gd-gage { display: inline-flex; align-items: center; gap: 7px; padding: 6px 13px; white-space: normal; }
+.gd .gd-signe { max-width: 40rem; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.gd .gd-actions { display: flex; flex-wrap: wrap; gap: 12px 10px; padding: 6px 0 5px; }
+.gd .gd-sources { font-size: 0.875rem; color: var(--ink-2); }
+.gd .gd-sources > summary { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; border-radius: var(--r-sm); font-weight: 560; }
+.gd .gd-sources > summary:hover { color: var(--ink); }
+.gd .gd-sources-in { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 0; max-width: 46rem; padding-bottom: 6px; line-height: 1.5; }
+.gd .gd-source { display: inline-flex; align-items: center; }
+.gd .gd-sep { margin: 0 8px; color: var(--ink-3); }
+.gd .gd-source a { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.gd .gd-source a:hover { color: var(--brand); }
+/* La mascotte (décor) : à partir de 1 024 px seulement. */
+.gd .gd-guide { display: none; pointer-events: none; }
+.gd .gd-guide img { display: block; width: 100%; max-width: none; height: auto; }
+
+/* Pages filles : fil d'Ariane, signature, chapô */
+.gd .gd-ariane { margin-bottom: 18px; font-size: 0.9375rem; color: var(--ink-2); }
+.gd .gd-ariane ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; margin: 0; padding: 0; list-style: none; }
+.gd .gd-ariane a { display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; }
+.gd .gd-ariane a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.gd .gd-ariane .ici { font-weight: var(--tb); color: var(--ink); }
+.gd.gd-fille .gd-tete { padding-bottom: 128px; }
+.gd.gd-fille .gd-tete h1 { margin: 0; max-width: 18em; }
+.gd.gd-fille .gd-signe { margin: 16px 0 0; }
+.gd .gd-chapo { display: grid; gap: 16px; max-width: 46rem; margin-top: 26px; font-size: 1.125rem; line-height: 1.62; color: var(--ink-2); }
+.gd .gd-chapo p { margin: 0; }
+.gd .gd-chapo strong { color: var(--ink); }
+.gd .gd-chapo .petit { font-size: 1rem; }
+/* Un lien long dans une phrase : en ligne (le `.lien` de da.css est un bloc en
+   ligne, la suite de la phrase partait à la ligne après lui). */
+.gd :is(.gd-chapo, .gd-fiche, .gd-sous) .lien { display: inline; margin: 0; padding: 0; }
+
+/* ───────── La barre de recherche ─────────
+   Collante sous la pastille de l'en-tête (70 px), sur toute la hauteur de
+   <main> : même mécanique qu'avant. Elle flotte comme l'en-tête : seule la
+   pastille prend les clics, la page se lit autour. */
+.gd .gd-rech { position: sticky; top: 70px; z-index: 30; pointer-events: none; }
+.gd .gd-rech-in { max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 8px 0; }
+.gd .gd-rech-champ { position: relative; pointer-events: auto; }
+.gd .gd-rech-loupe { position: absolute; left: 20px; top: 50%; z-index: 1; width: 20px; height: 20px; translate: 0 -50%; color: var(--ink-3); pointer-events: none; }
+.gd .gd-rech-saisie { height: 56px; padding: 0 52px; border: 0; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.96); box-shadow: var(--float), 0 0 0 1.5px rgba(20, 37, 79, 0.08); font-family: var(--text); font-size: 1rem; font-weight: 500; color: var(--ink); transition: height 200ms var(--ease); }
+.gd .gd-rech-in.compact .gd-rech-saisie { height: 48px; }
+.gd .gd-rech-saisie::placeholder, .gd .gd-b-saisie::placeholder { color: var(--ink-3); opacity: 1; font-weight: var(--tw); }
+.gd .gd-rech-saisie:focus-visible, .gd .gd-b-saisie:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; box-shadow: var(--float), 0 0 0 1.5px var(--ink); }
+.gd :is(.gd-rech-saisie, .gd-b-saisie)::-webkit-search-cancel-button { display: none; }
+.gd .gd-rech-effacer { position: absolute; right: 6px; top: 50%; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; translate: 0 -50%; border-radius: 50%; color: var(--ink-2); font-size: 1.0625rem; }
+.gd .gd-rech-effacer:hover { background: var(--sky-soft); color: var(--ink); }
+.gd .gd-rech-liste { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 50; max-height: min(60vh, 520px); padding: 8px; overflow-y: auto; overscroll-behavior: contain; border-radius: 24px; background: var(--paper); box-shadow: 0 0 0 1px var(--line), 0 24px 48px -20px rgba(13, 40, 105, 0.5); }
+.gd .gd-rech-res { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 46px; padding: 8px 12px; border-radius: 14px; text-align: left; }
+.gd .gd-rech-res:hover { background: var(--sky-soft); }
+.gd .gd-rech-res-nom { min-width: 0; overflow: hidden; font-size: 0.9375rem; font-weight: 500; color: var(--ink); text-overflow: ellipsis; white-space: nowrap; }
+
+/* ───────── « Aller droit au but » : quatre fiches sur le ciel ───────── */
+.gd .gd-droit { padding: 28px 0 128px; }
+.gd .gd-droit-p { max-width: 40rem; margin: 6px 0 0; font-size: 1rem; color: var(--ink-2); }
+.gd .gd-droit-liste { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; }
+.gd .gd-porte { display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 20px 22px 22px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay); color: inherit; text-decoration: none; transition: translate 200ms var(--ease); }
+.gd .gd-porte:hover { translate: 0 -3px; }
+.gd .gd-porte-nom { font-size: 1.125rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.gd .gd-porte-sous { font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
+
+/* ───────── Les feuilles : une par étape ───────── */
+.gd .gd-etape-in { display: flex; align-items: center; gap: 16px; }
+.gd .gd-etape-num { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: var(--display); font-size: 1.5rem; font-weight: var(--dw); line-height: 1; }
+.gd .gd-etape-txt { flex: 1; min-width: 0; }
+.gd .gd-etape-txt > * { margin: 0; }
+.gd .gd-etape h2 { --corps: clamp(min(1.875rem, 9vw), 4vw, 3rem); }
+.gd .gd-etape-indice { font-size: 0.9375rem; line-height: 1.4; color: var(--ink-2); }
+.gd .gd-etape-indice.bas { margin-top: 5px; }
+.gd .gd-etape-indice.cote { display: none; }
+
+/* Une section dans une feuille */
+.gd .gd-sec { margin-top: 56px; scroll-margin-top: 8px; }
+.gd .gd-sec-tete { margin-bottom: 24px; }
+.gd .gd-sec-tete.milieu { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.gd .gd-h2 { --corps: clamp(1.5rem, 2.9vw, 2.125rem); margin: 0; }
+.gd .gd-h2 > .gd-ic { display: inline-block; box-sizing: content-box; width: 0.72em; height: 0.72em; margin-right: 0.12em; padding: 0.3em; border-radius: 50%; background: var(--paper); color: var(--brand); vertical-align: -0.34em; }
+.gd .gd-sec-tete.milieu .gd-h2 > .gd-ic { display: block; margin: 0 auto 10px; }
+.gd .band.air .gd-h2 > .gd-ic { box-shadow: var(--clay-sm); }
+.gd .band:not(.air) .gd-h2 > .gd-ic { background: var(--sky); }
+.gd .gd-compte { margin-left: 0.25em; font-family: var(--text); font-size: 1rem; font-weight: var(--tw); letter-spacing: 0; color: var(--ink-3); white-space: nowrap; }
+.gd .gd-sous { max-width: 44rem; margin: 8px 0 0; font-size: 1.0625rem; line-height: 1.5; color: var(--ink-2); }
+.gd .gd-intro { display: grid; gap: 12px; max-width: 46rem; margin-top: 16px; font-size: 1rem; line-height: 1.62; color: var(--ink-2); }
+.gd .gd-intro p { margin: 0; }
+.gd .gd-intro strong { color: var(--ink); }
+
+/* ───────── Rappel « Fiscal ≠ social » ───────── */
+.gd .gd-rappel { margin-top: 32px; }
+.gd .gd-rappel .qa { margin: 0; border-radius: 28px; box-shadow: var(--clay); }
+.gd .gd-rappel-tete { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.gd .gd-duo { display: flex; flex: none; }
+.gd .gd-duo .gd-rond { width: 34px; height: 34px; font-size: 0.9375rem; box-shadow: 0 0 0 2px var(--paper); }
+.gd .gd-duo .gd-rond + .gd-rond { margin-left: -8px; }
+.gd .gd-rappel h2.qa-t { min-width: 0; font-size: 1.1875rem; line-height: 1.3; }
+/* Le groupe reste sur une ligne tant qu'il y tient ; plus large que la fiche
+   (texte grossi), il se coupe au lieu de la pousser. */
+.gd .qa-t .gd-num { display: inline-block; max-width: 100%; white-space: normal; }
+.gd .gd-rappel .qa-in { padding-bottom: 20px; }
+.gd .gd-rappel-p { max-width: 46rem; font-size: 1rem; }
+.gd .gd-mondes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+.gd .gd-monde { padding: 18px 18px 20px; border-radius: 22px; background: var(--plan-bg); }
+.gd .gd-monde.ok { background: var(--ok-bg); }
+.gd .gd-monde-tete { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.gd .gd-monde-nom { flex: 1; min-width: 0; font-size: 1rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.gd .gd-monde .chip { background: var(--paper); }
+.gd .gd-monde dl { display: grid; grid-template-columns: fit-content(42%) minmax(0, 1fr); gap: 9px 14px; margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--ink); }
+.gd .gd-monde dt { min-width: 0; padding-top: 0.2em; overflow-wrap: anywhere; font-size: 0.75rem; font-weight: var(--tb); letter-spacing: 0.06em; text-transform: uppercase; color: var(--plan); }
+.gd .gd-monde.ok dt { color: var(--ok); }
+.gd .gd-monde dd { margin: 0; }
+.gd .gd-monde ul { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3px; margin: 0; padding-left: 1.1em; list-style: disc; }
+.gd .gd-monde li::marker { color: var(--ink-3); }
+.gd .gd-monde .gd-doux { color: var(--ink-2); }
+.gd .gd-rappel-fin { margin-top: 14px; }
+.gd .gd-rappel-fin p { max-width: none; font-size: 0.9375rem; }
+
+/* ───────── La boussole ───────── */
+.gd .gd-boussole { scroll-margin-top: 0; }
+.gd .gd-boussole .gd-sous { max-width: 40rem; font-size: 1rem; }
+.gd .gd-b-filtre { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 8px 8px 8px 16px; border-radius: 20px; background: var(--plan-bg); color: var(--plan); font-size: 1.0625rem; }
+.gd .gd-b-filtre-txt { flex: 1; min-width: 0; font-size: 0.9375rem; font-weight: 560; line-height: 1.35; }
+.gd .gd-b-effacer { display: inline-flex; flex: none; align-items: center; justify-content: center; gap: 5px; min-width: 44px; min-height: 44px; padding: 0 10px; border-radius: var(--r-pill); font-size: 0.875rem; font-weight: var(--tb); color: var(--plan); }
+.gd .gd-b-effacer:hover { background: var(--paper); }
+.gd .gd-b-fiche { overflow: hidden; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+/* Fil d'étapes du téléphone : « Étape n / m », puis une barre par étape (cible
+   de 44 px de haut autour d'un trait de 6 px). */
+.gd .gd-b-fil-tel { padding: 16px 18px 6px; }
+.gd .gd-b-fil-tel-tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.gd .gd-b-fil-tel-nom { min-width: 0; overflow: hidden; font-size: 0.875rem; font-weight: var(--tb); color: var(--brand); text-overflow: ellipsis; white-space: nowrap; }
+.gd .gd-b-barres { display: flex; align-items: center; gap: 6px; }
+.gd .gd-b-barre { position: relative; flex: 1; height: 32px; }
+.gd .gd-b-barre::before { content: ""; position: absolute; left: 0; right: 0; top: 13px; height: 6px; border-radius: 3px; background: var(--sky); }
+.gd .gd-b-barre.actif::before { background: var(--ink); }
+.gd .gd-b-barre.fait::before { background: var(--brand-2); }
+.gd .gd-b-barre.verrou { cursor: not-allowed; }
+/* Fil d'étapes à partir de 640 px : une rangée de pastilles. */
+.gd .gd-b-fil { display: none; gap: 6px; padding: 14px 14px 0; overflow-x: auto; }
+.gd .gd-b-pas { flex: 1; min-width: 92px; min-height: 52px; padding: 7px 8px; border-radius: 18px; background: var(--sky-soft); color: var(--ink-3); font-size: 0.875rem; font-weight: 560; line-height: 1.3; text-align: center; transition: background-color 160ms var(--ease); }
+.gd .gd-b-pas.actif { background: var(--ink); color: var(--paper); }
+.gd .gd-b-pas.fait { background: var(--sky); color: var(--ink); }
+.gd .gd-b-pas.fait:hover { background: var(--sky-1); }
+.gd .gd-b-pas.verrou { cursor: not-allowed; }
+.gd .gd-b-pas-nom { display: flex; align-items: center; justify-content: center; gap: 7px; }
+.gd .gd-b-pas.fait .gd-ic { color: var(--brand); }
+.gd .gd-b-pas-num { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; border: 1.5px solid currentColor; border-radius: 50%; font-size: 0.6875rem; font-weight: var(--tb); line-height: 1; }
+.gd .gd-b-pas-resume { margin-top: 1px; overflow: hidden; font-size: 0.75rem; font-weight: var(--tw); color: var(--ink-2); text-overflow: ellipsis; white-space: nowrap; }
+.gd .gd-b-auto { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 7px; margin: 12px 14px 0; padding: 9px 14px; border-radius: 16px; background: var(--ok-bg); color: var(--ok); font-size: 0.8125rem; line-height: 1.4; }
+.gd .gd-b-auto-nom { font-weight: var(--tb); }
+.gd .gd-b-auto-item { display: inline-flex; align-items: center; gap: 7px; }
+.gd .gd-b-auto-val { padding: 2px 9px; border-radius: var(--r-pill); background: var(--paper); font-weight: var(--tb); }
+.gd .gd-b-auto-modifier { min-height: 32px; margin-left: 2px; padding: 0 4px; border-radius: 8px; font-weight: var(--tb); color: var(--ok); text-decoration: underline; text-underline-offset: 3px; }
+.gd .gd-b-corps { padding: 20px 18px 18px; }
+.gd h3.gd-etape-titre { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+.gd .gd-b-titre-aide { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+.gd .gd-b-titre-aide h3 { margin: 0; }
+.gd .gd-b-aide { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -8px 0; border-radius: 50%; color: var(--ink-3); font-size: 1.125rem; }
+.gd .gd-b-aide:hover { background: var(--sky-soft); color: var(--ink); }
+.gd .gd-b-note { max-width: 44rem; margin: -6px 0 16px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.gd .gd-b-note strong { color: var(--ink); }
+.gd .gd-b-cherche { position: relative; max-width: 30rem; margin-bottom: 14px; }
+.gd .gd-b-cherche .gd-rech-loupe { left: 16px; width: 18px; height: 18px; }
+.gd .gd-b-saisie { height: 50px; padding: 0 48px 0 44px; border: 0; border-radius: 16px; background: var(--sky-soft); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.12); font-family: var(--text); font-size: 1rem; font-weight: 500; color: var(--ink); }
+.gd .gd-b-saisie:focus-visible { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.gd .gd-b-cherche .gd-rech-effacer { right: 3px; }
+.gd .gd-b-profils { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.gd .gd-b-options { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.gd .gd-b-groupes { display: grid; gap: 18px; }
+.gd .gd-b-groupes .gd-sur { margin-bottom: 8px; }
+.gd .gd-b-situations { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.gd .gd-b-vide { grid-column: 1 / -1; margin: 0; padding: 22px 0; font-size: 0.9375rem; font-style: italic; color: var(--ink-2); text-align: center; }
+/* Un choix : une fiche ciel doux à pastille blanche ; cerclée d'encre une fois
+   choisie (une forme, pas seulement une couleur). */
+.gd .gd-b-choix { display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 10px 14px 10px 10px; border-radius: 20px; background: var(--sky-soft); color: var(--ink); text-align: left; transition: background-color 160ms var(--ease), box-shadow 160ms var(--ease); }
+.gd .gd-b-choix:hover { background: var(--sky); }
+.gd .gd-b-choix.choisi { background: var(--sky); box-shadow: inset 0 0 0 2px var(--ink); }
+.gd .gd-b-choix.choisi .gd-rond { background: var(--ink); color: var(--paper); }
+.gd .gd-b-choix.grand { gap: 14px; padding: 12px 16px 12px 12px; }
+.gd .gd-b-choix.autre { background: none; box-shadow: inset 0 0 0 1.5px var(--edge); }
+.gd .gd-b-choix.autre:hover { background: var(--sky-soft); }
+.gd .gd-b-choix.autre.choisi { box-shadow: inset 0 0 0 2px var(--ink); }
+.gd .gd-b-choix.autre .gd-rond { background: var(--sky-soft); color: var(--ink-2); }
+.gd .gd-b-choix.coche { min-height: 52px; padding: 8px 14px; font-size: 1.0625rem; }
+.gd .gd-b-choix.coche > .gd-ic { color: var(--ink-3); }
+.gd .gd-b-choix.coche .gd-b-coche { margin-left: auto; color: var(--ink); }
+.gd .gd-b-choix-nom { margin: 0; min-width: 0; font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.3; }
+.gd .gd-b-choix-desc { margin: 2px 0 0; font-size: 0.875rem; line-height: 1.42; color: var(--ink-2); }
+.gd .gd-b-pied { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); }
+.gd .gd-b-pied-fin { display: flex; align-items: center; gap: 8px; padding-bottom: 4px; }
+/* Boutons des îlots (composant partagé Button) : ceux de la DA, un cran plus petits. */
+.gd .gd-bouton { height: auto; min-height: 46px; gap: 7px; padding: 6px 18px; border: 0; border-radius: var(--r-pill); background-image: none; font-family: var(--text); font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.2; color: var(--ink); white-space: normal; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
+.gd .gd-bouton .gd-ic { width: 16px; height: 16px; }
+.gd .gd-bouton:active { translate: 0 4px; box-shadow: 0 0 0 transparent; }
+.gd .gd-bouton.soleil { background-color: var(--sun); box-shadow: 0 4px 0 var(--sun-edge); }
+.gd .gd-bouton.soleil:hover { background-color: var(--sun-hover); color: var(--ink); }
+.gd .gd-bouton.ligne { background-color: var(--paper); box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 4px 0 var(--edge); }
+.gd .gd-bouton.ligne:hover { background-color: var(--sky-soft); color: var(--ink); }
+.gd .gd-bouton.encre { background-color: var(--ink); color: var(--paper); box-shadow: 0 4px 0 #0A1633; }
+.gd .gd-bouton.encre:hover { background-color: #1B3064; color: var(--paper); }
+.gd .gd-bouton.nu { min-width: 46px; padding-inline: 12px; background: none; color: var(--ink-2); }
+.gd .gd-bouton.nu:hover { background: var(--sky-soft); color: var(--ink); }
+.gd .gd-bouton.nu:active { translate: none; }
+
+/* La bulle « Comment savoir ? » (Radix la rend dans <body>) */
+.da .gd-bulle { max-width: min(340px, 86vw); padding: 14px 16px; border: 0; border-radius: 20px; background: var(--paper); color: var(--ink-2); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); font-size: 0.875rem; font-weight: var(--tw); line-height: 1.5; }
+.da .gd-bulle p { margin: 0; }
+.da .gd-bulle .gd-bulle-titre { margin-bottom: 5px; font-weight: var(--tb); color: var(--ink); }
+
+/* La checklist */
+.gd .gd-cl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.gd .gd-cl-haut h3 { margin: 0; }
+.gd .gd-cl-haut .gd-ic { width: 1.25em; height: 1.25em; }
+.gd .gd-cl-bref { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 16px 16px 14px; border-radius: 22px; background: var(--sky-soft); }
+.gd .gd-cl-bref-tete { display: flex; flex-direction: column; gap: 5px; }
+.gd .gd-cl-bref-compte { display: flex; align-items: center; gap: 7px; font-size: 1rem; color: var(--ink); }
+.gd .gd-cl-bref-compte .gd-ic { color: var(--brand); }
+.gd .gd-cl-codes { display: flex; flex-wrap: wrap; gap: 6px; }
+.gd .gd-cl-code { min-width: 44px; min-height: 36px; padding: 4px 11px; border-radius: 12px; background: var(--paper); box-shadow: inset 0 -2px 0 rgba(20, 37, 79, 0.06); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.875rem; font-weight: 700; color: var(--brand); }
+.gd .gd-cl-code:hover { background: var(--sky); }
+.gd .gd-cl-code.plus { background: none; box-shadow: none; font-family: var(--text); color: var(--ink-2); }
+.gd .gd-cl-conseils { padding-top: 4px; border-top: 1px solid var(--line); }
+.gd .gd-cl-conseils > summary, .gd .gd-cl-regles > summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; border-radius: 12px; }
+.gd .gd-cl-conseils-tete { display: flex; flex: 1; align-items: flex-start; gap: 9px; min-width: 0; font-size: 1.0625rem; color: var(--brand); }
+.gd .gd-cl-conseils-tete > .gd-ic { margin-top: 0.12em; }
+.gd .gd-cl-conseils-txt { flex: 1; min-width: 0; font-size: 0.9375rem; line-height: 1.35; }
+.gd .gd-cl-nom { font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.gd .gd-cl-conseils-profil { display: block; overflow: hidden; color: var(--ink-2); text-overflow: ellipsis; white-space: nowrap; }
+.gd .gd-cl-conseils-sep { display: none; }
+.gd .gd-cl-conseils > .gd-tirets { padding: 4px 0 8px; }
+.gd .gd-cl-section { overflow: hidden; border-radius: 22px; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); }
+.gd .gd-cl-tete { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 12px 14px; text-align: left; }
+.gd .gd-cl-tete:hover { background: var(--sky-soft); }
+.gd .gd-cl-tete:focus-visible { outline-offset: -3px; border-radius: 22px; }
+.gd .gd-cl-titre { flex: 1; min-width: 0; }
+.gd .gd-cl-ligne { display: flex; align-items: center; gap: 8px; }
+.gd .gd-cl-form { display: none; }
+.gd .gd-cl-tete > .gd-chevron { width: 18px; height: 18px; color: var(--ink-2); }
+.gd .gd-cl-corps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 4px 12px 14px; }
+.gd .gd-cl-case { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 12px; border-radius: 14px; background: var(--sky-soft); text-align: left; }
+.gd .gd-cl-case:hover { background: var(--sky); }
+.gd .gd-cl-case .gd-code { flex: none; width: 3.4em; }
+.gd .gd-cl-case-nom { flex: 1; min-width: 0; font-size: 0.9375rem; line-height: 1.35; color: var(--ink); }
+.gd .gd-cl-case-form { display: none; font-size: 0.75rem; font-weight: 560; color: var(--ink-3); white-space: nowrap; }
+.gd .gd-cl-case > .gd-ic { color: var(--ink-3); }
+.gd .gd-cl-point { display: flex; align-items: flex-start; gap: 10px; }
+.gd .gd-cl-point > .gd-ic { margin-top: 0.2em; color: var(--ink-3); }
+.gd .gd-cl-point.stop > .gd-ic { color: var(--stop); }
+.gd .gd-cl-point p { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); }
+.gd .gd-cl-point.stop p { color: #5E1D10; }
+.gd .gd-cl-plus > summary { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 6px; border-radius: 10px; font-size: 0.875rem; font-weight: var(--tb); color: var(--ink-2); }
+.gd .gd-cl-plus:not([open]) > summary .gd-chevron { rotate: -90deg; }
+.gd .gd-cl-plus[open] > summary .gd-chevron { rotate: 0deg; }
+.gd .gd-cl-regles { padding: 2px 16px; border-radius: 20px; background: var(--sky-soft); }
+.gd .gd-cl-regles > summary { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.gd .gd-cl-regles > .gd-tirets { padding: 2px 0 14px; }
+.gd .gd-cl-suite { display: flex; flex-wrap: wrap; gap: 8px; padding: 2px 0 4px; }
+.gd .gd-cl-avis { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 0.8125rem; font-style: italic; line-height: 1.5; color: var(--ink-3); }
+
+/* ───────── Le parcours de la déclaration ───────── */
+.gd .gd-flux { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 14px; }
+.gd .gd-col { padding: 20px 18px 22px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); }
+.gd .gd-col-tete { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.gd .gd-col-tete h3 { margin: 0; font-family: var(--text); font-size: 1.125rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; }
+.gd .gd-calcul { display: grid; gap: 7px; padding: 14px 16px; border-radius: 18px; background: var(--sky-soft); font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
+.gd .gd-calcul-haut { font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); }
+.gd .gd-calcul-total { padding-top: 8px; border-top: 1px solid var(--line); font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); }
+.gd .gd-vers { display: flex; justify-content: center; margin-top: 10px; color: var(--ink-3); }
+.gd .gd-lot { padding: 12px; border-radius: 18px; background: var(--sky-soft); }
+.gd .gd-lot > .gd-sur, .gd .gd-autres > .gd-sur { margin-bottom: 8px; font-size: 0.75rem; }
+.gd .gd-autres { margin-top: 6px; }
+.gd .gd-noeud { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 5px; min-height: 40px; padding: 9px 13px; border-radius: 14px; background: var(--sky-soft); color: var(--ink); font-size: 0.875rem; font-weight: 500; line-height: 1.35; text-decoration: none; transition: background-color 160ms var(--ease); }
+.gd .gd-lot .gd-noeud { background: var(--paper); }
+.gd .gd-noeud.plein { display: flex; }
+.gd .gd-noeud:hover { background: var(--sky); }
+.gd .gd-noeud .gd-code { font-size: 0.875rem; }
+.gd .gd-noeud.retire { color: var(--ink-3); text-decoration: line-through; }
+.gd .gd-noeud.retire .gd-code { color: inherit; }
+
+/* ───────── Les plis : cases, fiches, questions, termes, bugs, courriers ─────────
+   Le pli `.qa` de da.css (fiche blanche, croix qui tourne et jaunit), ici plus
+   dense : ces sections en comptent plus de deux cents. */
+.gd .gd-pli { margin: 0; padding: 0 16px; border-radius: 22px; scroll-margin-top: 8px; }
+.gd .gd-pli > summary { gap: 12px; min-height: 64px; padding: 12px 0; }
+.gd .gd-pli > summary > svg:not(.gd-ic), .gd .gd-bug-etat > svg { flex: none; width: 30px; height: 30px; padding: 6px; border-radius: 50%; background: var(--sky); transition: rotate 200ms var(--ease), background-color 200ms var(--ease); }
+.gd .gd-bug[open] .gd-bug-etat > svg { rotate: 45deg; background: var(--sun); }
+.gd .gd-pli-tete { flex: 1; min-width: 0; }
+.gd .gd-pli-puces { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; margin-bottom: 4px; }
+.gd .gd-pli-nom { margin: 0; font-family: var(--text); font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; color: var(--ink); }
+.gd .gd-impact { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 560; color: var(--ink-2); }
+.gd .gd-pli-in { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 2px 0 18px; font-size: 0.9375rem; line-height: 1.58; color: var(--ink-2); }
+.gd .gd-pli-in > .gd-puce { justify-self: start; }
+.gd .gd-pli[open] > .gd-pli-in { animation: da-pli 300ms var(--ease) both; }
+.gd .gd-champ { display: flex; align-items: center; gap: 5px; margin: 0 0 4px; font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.4; color: var(--ink-3); }
+.gd .gd-valeur { margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--ink); }
+.gd .gd-etiquettes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.gd .gd-etiquettes .gd-puce { min-width: 0; white-space: normal; }
+.gd .gd-profils { min-width: 0; overflow: hidden; font-size: 0.75rem; color: var(--ink-3); text-overflow: ellipsis; white-space: nowrap; }
+.gd .gd-positions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+/* Questions : l'icône, la question, la croix */
+/* La première icône n'est pas la croix : elle ne prend pas sa pastille (da.css). */
+.gd .gd-question > summary > .gd-ic { padding: 0; border-radius: 0; background: none; rotate: none; color: var(--brand-2); font-size: 1.125rem; }
+.gd .gd-question .qa-t { flex: 1; min-width: 0; font-size: 1rem; font-weight: var(--tb); }
+/* Glossaire */
+.gd .gd-legende { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+.gd .gd-alphabet { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.gd .gd-lettre { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink-2); text-decoration: none; }
+.gd .gd-lettre:hover { background: var(--paper); color: var(--ink); }
+.gd .gd-lettre-groupe { scroll-margin-top: 8px; }
+.gd .gd-lettre-tete { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.gd .gd-lettre-grande { font-family: var(--display); font-size: 1.75rem; font-weight: var(--dw); line-height: 1; color: var(--w4); }
+.gd .gd-lettre-compte { font-size: 0.8125rem; color: var(--ink-3); }
+.gd .gd-terme > summary { align-items: flex-start; }
+.gd .gd-terme > summary.fixe { cursor: default; }
+.gd .gd-terme-tete { display: flex; flex: 1; align-items: flex-start; gap: 11px; min-width: 0; }
+.gd .gd-terme-tete > .gd-rond { margin-top: 1px; }
+.gd h3.gd-terme-nom { margin: 0; font-family: var(--text); font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; color: var(--ink); }
+.gd .gd-terme-def { margin: 4px 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); }
+.gd .gd-terme-in { gap: 10px; }
+.gd .gd-terme-long { padding-top: 12px; border-top: 1px solid var(--line); }
+/* Problèmes et modèles de courrier */
+.gd .gd-bugs { margin-bottom: 36px; }
+.gd .gd-bug > summary { display: block; padding: 14px 0 16px; }
+.gd .gd-bug-tete { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.gd .gd-bug-tete h4 { flex: 1 1 9rem; min-width: 0; }
+.gd .gd-bug-tete h4 { padding-top: 4px; }
+.gd .gd-bug-etat { display: flex; flex: none; align-items: center; gap: 8px; max-width: 100%; margin-left: auto; }
+.gd .gd-bug-etat .gd-puce { min-width: 0; white-space: normal; }
+.gd .gd-courriers { padding-top: 14px; border-top: 1px solid var(--line); }
+.gd .gd-courriers > .gd-champ { margin-bottom: 8px; }
+.gd .gd-courrier { scroll-margin-top: 8px; }
+.gd .gd-courrier-nom { margin: 0 0 8px; font-size: 0.875rem; font-weight: var(--tb); color: var(--ink); }
+.gd .gd-lettre-corps { margin: 0; padding: 16px 18px; border-radius: 16px; background: var(--sky-soft); font-family: var(--text); font-size: 0.9375rem; line-height: 1.6; color: var(--ink-2); white-space: pre-wrap; user-select: text; }
+.gd .gd-lettre-corps.court { max-height: 11rem; padding: 0; overflow-y: auto; background: none; font-size: 0.8125rem; }
+.gd .gd-modele-tete { display: flex; flex: 1; align-items: center; gap: 12px; min-width: 0; font-size: 1.125rem; color: var(--brand-2); }
+.gd .gd-modele-tete > div { min-width: 0; }
+
+/* Références croisées : des pastilles ciel doux qui mènent à une fiche */
+.gd .gd-croises { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.gd .gd-croises .gd-sur { margin-bottom: 6px; }
+.gd .gd-refs, .gd .gd-voir { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.gd .gd-voir-nom { font-size: 0.8125rem; color: var(--ink-3); }
+.gd .gd-ref { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; min-height: 30px; padding: 3px 10px; border-radius: var(--r-pill); background: var(--sky-soft); color: var(--ink); font-size: 0.8125rem; font-weight: 560; line-height: 1.3; text-decoration: none; transition: background-color 160ms var(--ease); }
+.gd .gd-ref:hover { background: var(--sky); }
+.gd .gd-ref .gd-ic { width: 13px; height: 13px; color: var(--brand); }
+.gd .gd-ref .gd-code { font-size: 0.8125rem; }
+.gd .gd-ref-nom { min-width: 0; max-width: 15rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gd .gd-ref-nom.court { max-width: 11rem; color: var(--ink-2); }
+/* Dans une phrase : sur la ligne du texte. */
+.gd .gd-ref.enligne { min-height: 0; padding: 0 8px; vertical-align: -0.12em; font-size: 0.86em; font-style: normal; line-height: 1.55; white-space: nowrap; }
+.gd .gd-ref.enligne .gd-ic { width: 12px; height: 12px; }
+/* Plus large que sa ligne (téléphone, texte grossi) : le libellé se coupe, la
+   pastille ne pousse pas la page. */
+.gd .gd-ref.enligne > span:not([class]) { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.gd .gd-ref-type { font-weight: var(--tb); }
+.gd .gd-ref-sep { color: var(--ink-3); }
+.gd .gd-ref-va { display: none; }
+
+/* Textes mis en forme par FormattedText.tsx (non modifié) : ses utilitaires de
+   taille et ses trois encarts (attention, validé, astuce) sont recouverts. */
+.gd .text-sm { font-size: 0.9375rem; line-height: 1.58; }
+.gd .text-xs:not(.gd-puce) { font-size: 0.875rem; line-height: 1.55; }
+.gd .font-semibold { font-weight: var(--tb); }
+/* Une puce de FormattedText : le texte cède sa largeur (formules insécables). */
+.gd li.flex > span { min-width: 0; }
+.gd .gd-reponse { margin-bottom: 4px; }
+.gd :is(.bg-amber-50\/80, .bg-emerald-50\/80, .bg-blue-50\/80) { gap: 10px; padding: 10px 12px; border: 0; border-radius: 14px; background: var(--wait-bg); }
+/* Le texte d'un encart cède sa largeur (sans cela, une référence insécable le
+   poussait hors de l'écran sur téléphone). */
+.gd :is(.bg-amber-50\/80, .bg-emerald-50\/80, .bg-blue-50\/80) > div { min-width: 0; }
+.gd .bg-emerald-50\/80 { background: var(--ok-bg); }
+.gd .bg-blue-50\/80 { background: var(--plan-bg); }
+.gd .text-amber-500, .gd .text-amber-800 { color: var(--wait); }
+.gd .text-emerald-500, .gd .text-emerald-800 { color: var(--ok); }
+.gd .text-blue-500, .gd .text-blue-800 { color: var(--plan); }
+.gd :is(.text-amber-800, .text-emerald-800, .text-blue-800) :is(.text-foreground, .text-muted-foreground) { color: inherit; }
+
+/* ───────── Le calendrier ───────── */
+.gd .gd-mois-grille { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 12px; }
+.gd .gd-mois { padding: 18px 18px 20px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+.gd .gd-mois.courant { box-shadow: inset 0 0 0 2px var(--ink), var(--clay-sm); }
+.gd .gd-mois-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 14px; }
+.gd .gd-mois-num { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--sky); color: var(--ink); font-size: 0.875rem; font-weight: var(--tb); font-variant-numeric: tabular-nums; }
+.gd .gd-mois.courant .gd-mois-num { background: var(--ink); color: var(--paper); }
+.gd .gd-mois-nom { flex: 1; min-width: 0; font-size: 1.0625rem; font-weight: var(--tb); color: var(--ink); }
+.gd .gd-demarche { display: flex; align-items: flex-start; gap: 10px; }
+.gd .gd-demarche .gd-pastille { margin-top: 0.42em; }
+.gd .gd-demarche > div { min-width: 0; }
+.gd .gd-demarche p { margin: 0; overflow-wrap: anywhere; }
+.gd .gd-demarche-nom { font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.35; color: var(--ink); }
+.gd .gd-demarche-p { font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
+
+/* ───────── La fin : l'appel à l'essai, les articles, l'avertissement, le soleil ───────── */
+.gd .gd-fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); }
+.gd .gd-essai { position: relative; z-index: 1; padding-top: 88px; scroll-margin-top: 0; }
+.gd .gd-essai-fiche { --focus: #FFFFFF; padding: 44px 22px 40px; border-radius: 36px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+.gd .gd-essai-pile { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
+.gd .gd-essai-gage { display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.14); font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.06em; line-height: 1.4; text-transform: uppercase; color: var(--paper); }
+.gd .gd-essai-titre { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.gd .gd-essai-titre > * { margin: 0; }
+.gd .gd-essai h2 { --corps: clamp(min(1.75rem, 8.2vw), 4.4vw, 3.25rem); color: var(--paper); }
+.gd .gd-essai h2 .hl { margin: 0; color: var(--ink); }
+.gd .gd-essai .lead { color: var(--on-deep-2); text-wrap-style: balance; }
+.gd .gd-br-tel { display: inline; }
+/* L'aperçu (fictif) : une fiche blanche, le Super-Net sur du jaune. */
+.gd .gd-apercu { width: 100%; max-width: 27rem; }
+.gd .gd-apercu-in { padding: 22px 22px 20px; border-radius: 26px; background: var(--paper); color: var(--ink); box-shadow: var(--clay); text-align: left; }
+.gd .gd-apercu-tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+.gd .gd-apercu-nom { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.gd .gd-apercu-vif { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: var(--tb); color: var(--ok); }
+.gd .gd-apercu-lignes { display: grid; gap: 7px; font-size: 0.9375rem; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.gd .gd-apercu-lignes > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.gd .gd-apercu-lignes .fort { font-weight: var(--tb); color: var(--ink); }
+.gd .gd-apercu-filet { height: 1px; margin: 14px 0; background: var(--line); }
+.gd .gd-apercu-total { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 1.0625rem; font-weight: var(--tb); }
+.gd .gd-apercu-total .hl { margin: 0; padding: 2px 0.4em; font-family: var(--display); font-size: 1.625rem; font-weight: var(--dw); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.gd .gd-apercu-plus { display: flex; align-items: center; justify-content: flex-end; gap: 5px; margin-top: 8px; font-size: 0.8125rem; font-weight: var(--tb); color: var(--ok); }
+.gd .gd-essai-atouts { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; margin: 0; padding: 0; list-style: none; font-size: 1rem; line-height: 1.4; color: var(--paper); text-align: left; }
+.gd .gd-essai-atouts li { display: flex; align-items: flex-start; gap: 9px; }
+.gd .gd-essai-atouts .gd-ic { margin-top: 0.14em; color: var(--sun); }
+.gd .gd-essai-boutons { display: flex; flex-direction: column; align-items: stretch; gap: 14px 12px; width: 100%; padding-bottom: 5px; }
+.gd .gd-essai .btn-white { box-shadow: 0 5px 0 rgba(10, 25, 70, 0.4); }
+.gd .gd-essai-mention { margin: 0; font-size: 0.875rem; color: var(--on-deep-2); }
+/* Les articles : la fiche de /simulateur. BlogReadMore.astro garde ses classes
+   (partagé), elles sont recouvertes ici. */
+.gd .gd-lire { z-index: 1; margin-top: 40px; }
+.gd .gd-lire aside { max-width: 720px; margin-inline: auto; padding: 24px 24px 12px; border: 0; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); text-align: left; }
+.gd .gd-lire aside h2 { margin: 0 0 6px; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+.gd .gd-lire aside ul { margin: 0; padding: 0; list-style: none; }
+.gd .gd-lire aside ul > li { margin: 0; border-top: 1px solid var(--line); }
+.gd .gd-lire aside ul > li:first-child { border-top: 0; }
+.gd .gd-lire aside a { display: flex; align-items: center; min-height: 50px; padding: 8px 0; font-size: 1rem; font-weight: 560; line-height: 1.35; color: var(--ink); text-decoration: none; }
+.gd .gd-lire aside a:hover { color: var(--brand); text-decoration: underline; text-underline-offset: 4px; }
+.gd .gd-avis { position: relative; z-index: 1; margin-top: 16px; scroll-margin-top: 8px; }
+.gd .gd-avis-fiche { max-width: 720px; margin-inline: auto; padding: 18px 22px; border-radius: 24px; background: rgba(255, 255, 255, 0.6); }
+.gd .gd-avis-in { display: flex; align-items: flex-start; gap: 12px; color: var(--ink-3); font-size: 1.125rem; }
+.gd .gd-avis-in > .gd-ic { margin-top: 0.1em; }
+.gd .gd-avis-in p, .gd .gd-avis-p { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); }
+.gd .gd-avis-in strong { color: var(--ink); }
+/* Pages filles : la fin commence par les articles. */
+.gd .gd-fin-in { z-index: 1; padding-top: 88px; }
+.gd .gd-fin-in > .gd-lire { margin-top: 0; }
+.gd .gd-complet { max-width: 720px; margin: 16px auto 0; padding: 26px 24px 26px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); }
+.gd .gd-fin-in > .gd-complet:first-child { margin-top: 0; }
+.gd .gd-complet > * { margin: 0; }
+.gd .gd-complet h2 { font-family: var(--text); font-size: 1.375rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; }
+.gd .gd-complet p { margin-top: 8px; font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+.gd .gd-complet .gd-complet-bouton { margin-top: 18px; padding-bottom: 5px; }
+.gd .gd-complet .gd-complet-autres { margin-top: 18px; font-size: 0.9375rem; line-height: 2; }
+.gd .gd-complet-autres a { font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.gd .gd-complet-autres a:hover { color: var(--brand); }
+.gd .gd-avis-p { max-width: 720px; margin: 20px auto 0; padding: 0 4px; }
+/* Le soleil se lève sur l'eau du pied de page (les deux dernières vagues de
+   accueil/SceneFinale.astro, immobiles). Le halo dépasse le soleil de 62 px
+   (92 px sur ordinateur) : 20 px d'air entre le dernier texte et lui. */
+.gd .gd-horizon { position: relative; height: 190px; margin-top: 60px; --p: 300px; --th: 40px; }
+.gd .gd-soleil { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+.gd .gd-vague { position: absolute; left: 0; right: 0; bottom: 0; }
+.gd .gd-vague.v3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+/* La dernière vague a la couleur du haut du pied de page (--deep). */
+.gd .gd-vague.v4 { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+/* ───────── Pages filles : fiches, étapes, conseils ───────── */
+.gd.gd-fille .band > .gd-sec:first-child { margin-top: 0; }
+.gd.gd-fille .gd-sec > .gd-sous { margin-bottom: 22px; }
+.gd.gd-fille .gd-sec > .gd-h2 + :not(.gd-sous) { margin-top: 20px; }
+.gd .gd-fiches { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.gd .gd-fiche { padding: 22px 22px 24px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay); font-size: 1rem; line-height: 1.58; color: var(--ink-2); }
+.gd .gd-fiche > p { margin: 0; }
+.gd .gd-fiche > p + p { margin-top: 10px; }
+.gd .gd-fiche > .gd-sur + .gd-fiche-nom { margin-top: 6px; }
+.gd .gd-fiche :is(strong, em) { color: var(--ink); }
+.gd .gd-fiche-nom { font-size: 1.125rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.gd .gd-fiche.etroit { max-width: 46rem; }
+.gd .gd-fiche.stop { background: var(--stop-bg); box-shadow: none; color: #5E1D10; }
+.gd .gd-fiche.stop :is(strong, em, .gd-fiche-nom) { color: var(--stop); }
+/* « Le net : ce qui te reste » : sur du jaune, comme le Super-Net. */
+.gd .gd-fiche.soleil { background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1), 0 22px 44px -22px rgba(13, 40, 105, 0.42); color: var(--ink); }
+.gd .gd-fiche.soleil .gd-sur { color: var(--ink); }
+.gd .gd-suite { max-width: 46rem; margin: 20px 0 0; font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
+.gd .gd-etapes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 48rem; margin: 0; padding: 0; list-style: none; }
+.gd .gd-etapes .gd-fiche { padding: 18px 22px 20px; box-shadow: var(--clay-sm); }
+.gd .gd-etapes .gd-fiche-nom { font-size: 1.0625rem; }
+.gd .gd-conseils { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 52rem; margin: 0; padding: 0; list-style: none; }
+.gd .gd-conseil { display: flex; gap: 14px; padding: 18px 20px; border-radius: 22px; background: var(--paper); box-shadow: var(--clay-sm); }
+.gd .gd-conseil-num { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--sky); color: var(--ink); font-size: 0.875rem; font-weight: var(--tb); }
+.gd .gd-conseil-txt { flex: 1; min-width: 0; padding-top: 2px; }
+
+/* ───────── Selon la largeur ───────── */
+@media (max-width: 559px) {
+  .gd .gd-tete { padding-top: 100px; }
+  .gd .gd-droit { padding-bottom: 88px; }
+  .gd.gd-fille .gd-tete { padding-bottom: 88px; }
+  .gd .gd-sec { margin-top: 44px; }
+  .gd .gd-essai, .gd .gd-fin-in { padding-top: 52px; }
+  .gd .gd-lire aside { padding: 22px 20px 10px; }
+  .gd .gd-positions { grid-template-columns: minmax(0, 1fr); }
+  .gd .gd-etape-num { width: 44px; height: 44px; font-size: 1.25rem; }
+  .gd .gd-etape-in { gap: 12px; }
+}
+@media (max-width: 359px) {
+  .gd .gd-pli { padding: 0 14px; }
+  .gd .gd-b-corps { padding: 18px 14px 16px; }
+  .gd .gd-col, .gd .gd-fiche { padding-inline: 16px; }
+  .gd .gd-essai-fiche { padding-inline: 16px; }
+  .gd .gd-apercu-in { padding-inline: 16px; }
+}
+@media (min-width: 560px) {
+  .gd .gd-droit-liste, .gd .gd-b-profils, .gd .gd-b-situations, .gd .gd-mois-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 640px) {
+  .gd .gd-tel { display: none; }
+  .gd .gd-ordi { display: inline; }
+  .gd-echeance-nom { display: inline-flex; }
+  .gd-echeance-signe { display: none; }
+  .gd-echeance-suite { display: inline; }
+  .gd .gd-etape-indice.bas { display: none; }
+  .gd .gd-etape-indice.cote { display: block; padding-bottom: 6px; text-align: right; }
+  .gd .gd-etape-in { align-items: flex-end; }
+  .gd .gd-mondes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gd .gd-b-fil-tel { display: none; }
+  .gd .gd-b-fil { display: flex; }
+  .gd .gd-b-pas { font-size: 0.8125rem; }
+  .gd .gd-b-corps { padding: 24px 26px 22px; }
+  .gd .gd-b-auto { margin-inline: 26px; }
+  .gd .gd-b-fil { padding: 18px 26px 0; }
+  .gd .gd-cl-bref-tete { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+  .gd .gd-cl-conseils-tete { align-items: center; }
+  .gd .gd-cl-conseils-tete > .gd-ic { margin-top: 0; }
+  .gd .gd-cl-conseils-profil { display: inline; margin-left: 4px; }
+  .gd .gd-cl-conseils-sep { display: inline; }
+  .gd .gd-cl-form, .gd .gd-cl-case-form { display: inline-flex; }
+  .gd .gd-br-tel { display: none; }
+  .gd .gd-essai-fiche { padding: 56px 40px 52px; }
+  .gd .gd-essai-atouts { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 9px 24px; }
+  .gd .gd-essai-boutons { flex-direction: row; align-items: center; justify-content: center; width: auto; }
+  .gd .gd-pli { padding: 0 20px; }
+  .gd .gd-col { padding: 22px 22px 24px; }
+}
+@media (min-width: 760px) {
+  .gd .gd-grille.g2, .gd .gd-grille.g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Trois colonnes tant que chacune garde 14 rem (une seule si le texte est grossi). */
+  .gd .gd-flux { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+  .gd .gd-fiches.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gd .gd-fiches.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .gd .gd-mois-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 900px) {
+  .gd .gd-tete { padding-top: 148px; }
+  .gd .gd-b-pas { min-width: 118px; padding-inline: 10px; font-size: 0.875rem; }
+  .gd-echeance + .gd .gd-tete { padding-top: 44px; }
+  .gd .gd-droit-liste { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .gd .gd-b-profils { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .gd .gd-b-choix.autre { grid-column: 1 / -1; }
+  .gd .gd-horizon { height: 270px; margin-top: 108px; --p: 440px; --th: 54px; }
+  .gd .gd-soleil { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+  .gd .gd-vague.v3 { height: 112px; }
+  .gd .gd-vague.v4 { height: 60px; }
+}
+@media (min-width: 1024px) {
+  .gd .gd-grille.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .gd .gd-mois-grille { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* Le titre s'arrête avant la mascotte. Elle se tient derrière la barre de
+     recherche, coupée à mi-corps (les 62 % du haut de l'image), retournée pour
+     désigner le titre. Quand la barre se resserre (la page a défilé de 320 px,
+     état déjà posé par l'îlot), elle se baisse derrière elle : la barre va se
+     coller en haut, et ne cachera plus la coupe. */
+  .gd .gd-tete-in { max-width: calc(100% - 320px); }
+  .gd .gd-guide { position: absolute; right: calc(max(var(--gut), env(safe-area-inset-right, 0px)) + 36px); bottom: -42px; display: block; width: 264px; aspect-ratio: 981 / 720; overflow: hidden; }
+  .gd .gd-guide img { scale: -1 1; transition: translate 320ms var(--ease); }
+  .gd:has(.gd-rech-in.compact) .gd-guide img { translate: 0 105%; }
+}
+@media (hover: none) {
+  .gd .gd-porte:hover { translate: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gd :is(.gd-porte, .gd-bouton, .gd-chevron, .gd-rech-saisie, .gd-guide img) { transition: none; }
+  .gd .gd-pli[open] > .gd-pli-in { animation: none; }
+}
+/* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+   aux fiches, aux pastilles et aux boutons ; le décor de la fin disparaît. */
+@media (forced-colors: active) {
+  .gd :is(.gd-porte, .gd-b-fiche, .gd-b-choix, .gd-b-pas, .gd-col, .gd-noeud, .gd-mois, .gd-fiche, .gd-conseil, .gd-encart, .gd-puce, .gd-ref, .gd-bouton, .gd-cl-section, .gd-cl-case, .gd-cl-code, .gd-essai-fiche, .gd-apercu-in, .gd-complet, .gd-avis-fiche, .gd-monde, .gd-rech-saisie, .gd-b-saisie, .gd-rech-liste, .gd-lire aside), .gd-echeance-in, .da .gd-bulle { border: 1px solid CanvasText; }
+  .gd .gd-b-choix.choisi, .gd .gd-b-pas.actif, .gd .gd-mois.courant { border-width: 3px; }
+  .gd .gd-horizon, .gd .gd-guide { display: none; }
+  .gd :is(.gd-pastille, .gd-point, .gd-b-barre::before) { forced-color-adjust: none; }
+}

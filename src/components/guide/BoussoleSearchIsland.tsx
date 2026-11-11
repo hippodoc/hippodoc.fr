@@ -14,6 +14,13 @@ import { GLOSSAIRE_DECLARATIONS } from '@/data/glossaireDeclarationsData';
  * existe forcément dans le HTML statique de la page (rendu server-side).
  * Reste identique : moteur de recherche (mêmes champs indexés), debounce
  * 150ms, mode compact au scroll.
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : seules les classes changent. La barre
+ * reste collante à 70 px du haut, sous la pastille de l'en-tête, sur toute la
+ * hauteur de <main> ; elle devient une pastille blanche qui flotte, comme
+ * l'en-tête, et se resserre après 320 px de défilement (`compact`). Styles dans
+ * src/styles/guide.css (`gd-rech`). Les trois classes posées sur la cible d'un
+ * résultat (`ring-2`…) sont inchangées : guide.css en fait un contour d'encre.
  */
 export function BoussoleSearchIsland() {
   const [value, setValue] = useState('');
@@ -105,20 +112,20 @@ export function BoussoleSearchIsland() {
   };
 
   return (
-    <div className="sticky top-[70px] z-30 bg-white/80 backdrop-blur-lg border-b border-slate-200/50 dark:bg-slate-900/80 dark:border-slate-700/50 transition-all duration-200" role="search">
-      <div className={`max-w-5xl mx-auto px-4 transition-all duration-200 ${compact ? 'py-1.5' : 'py-3'}`}>
-        <div className="relative">
-          <Search aria-hidden="true" className={`absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-all ${compact ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />
+    <div className="gd-rech da-bloc" role="search">
+      <div className={`wrap gd-rech-in ${compact ? 'compact' : ''}`}>
+        <div className="gd-rech-champ">
+          <Search aria-hidden="true" className="gd-ic gd-rech-loupe" />
           <Input
             type="search"
             aria-label="Rechercher dans le guide des déclarations"
             placeholder={compact ? 'Rechercher…' : 'Rechercher une case, un terme, un sujet, un mot-clé…'}
             value={value}
             onChange={e => setValue(e.target.value)}
-            className={`pl-10 pr-10 bg-white/90 dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 transition-all ${compact ? 'h-8 text-xs' : 'h-10'}`}
+            className="gd-rech-saisie"
           />
-          {value && (<button type="button" aria-label="Effacer la recherche" onClick={() => setValue('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"><X className="h-4 w-4" /></button>)}
-          <div className="sr-only" aria-live="polite" role="status">
+          {value && (<button type="button" aria-label="Effacer la recherche" onClick={() => setValue('')} className="gd-rech-effacer"><X className="gd-ic" /></button>)}
+          <div className="gd-sr" aria-live="polite" role="status">
             {debounced && debounced.length >= 2
               ? results.length === 0
                 ? 'Aucun résultat'
@@ -126,12 +133,12 @@ export function BoussoleSearchIsland() {
               : ''}
           </div>
           {results.length > 0 && (
-            <div role="listbox" aria-label="Résultats de recherche" className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-lg z-50 overflow-hidden dark:bg-slate-800 dark:border-slate-700">
+            <div role="listbox" aria-label="Résultats de recherche" className="gd-rech-liste">
               {results.map((r, i) => (
                 <button key={`${r.sectionId}-${r.itemId ?? 'none'}-${r.type}-${i}`} role="option" aria-selected="false" onClick={() => navigate(r.sectionId, r.itemId)}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left hover:bg-hippo-50 transition-colors border-b border-slate-100 last:border-0 dark:hover:bg-hippo-900/20 dark:border-slate-700">
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-medium bg-hippo-100 text-hippo-700 shrink-0 dark:bg-hippo-900/40 dark:text-hippo-300">{r.type}</span>
-                  <span className="text-sm text-foreground truncate">{r.title}</span>
+                  className="gd-rech-res">
+                  <span className="gd-puce plan">{r.type}</span>
+                  <span className="gd-rech-res-nom">{r.title}</span>
                 </button>
               ))}
             </div>
