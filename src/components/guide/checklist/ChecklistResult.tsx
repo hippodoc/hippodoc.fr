@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, CheckCircle2, FileStack, UserCircle2 } from 'lucide-react';
 import type { WizardResultGrouped, WizardCase } from '@/data/boussoleData';
@@ -37,18 +37,13 @@ export const ChecklistResult: React.FC<Props> = ({ result }) => {
   const visibleChips = showAllChips ? allCases : allCases.slice(0, CHIPS_INITIAL);
   const hiddenCount = allCases.length - visibleChips.length;
 
-  // Auto-scroll au top de la checklist au montage (vers le bloc "En bref")
-  const rootRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const t = setTimeout(() => {
-      rootRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 50);
-    return () => clearTimeout(t);
-  }, []);
+  // Pas de défilement au montage : c'est `BoussoleWizard` qui place la page à chaque
+  // changement d'étape (un seul défilement, sous la barre de recherche). La marge de
+  // défilement de la racine ne sert plus à ce défilement ; elle reste dans la classe pour
+  // que la feuille de styles commune à toutes les pages garde son empreinte.
 
   return (
     <div
-      ref={rootRef}
       className="space-y-4 scroll-mt-32"
       role="region"
       aria-live="polite"

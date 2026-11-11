@@ -6196,7 +6196,7 @@ sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`
   le même écran (« Essai gratuit 30j » jaune en relief dans la pastille, « Commencer
   l'essai gratuit » bleu plat dans la carte Annuel), plus le bleu nuit de la bannière et de
   la bulle. C'est le seul endroit où le nouvel en-tête et l'ancien corps jurent.
-- **Boussole de `/guide-declarations`, à 390 px** (existait avant, aggravé de 6 px) : après
+- (corrigé le 11 novembre 2026, § 9.ef) **Boussole de `/guide-declarations`, à 390 px** (existait avant, aggravé de 6 px) : après
   le choix d'un profil, le titre de l'étape arrive à 96 px, sous la barre de recherche
   collante (70 à 115 px ; 64 à 109 avant, titre alors à moitié caché). Aucun défilement
   n'est demandé à ce moment-là (`handleSelectProfil`), c'est l'ancrage du navigateur qui
@@ -6457,7 +6457,49 @@ texte du build ne diffèrent que par le nom de la feuille commune.
   `/_astro/hippodoc-logo.*.webp` n'est plus produit (une copie en cache de l'ancienne
   `/essai` afficherait un logo cassé).
 
-### 9.ef /guide-declarations : gras inversé et astérisques dans les textes du guide (11 novembre 2026)
+### 9.ef Boussole de `/guide-declarations` : le titre de l'étape reste sous la barre de recherche (11 novembre 2026)
+
+Suite de § 9.ed, « Reste ouvert ». Aucun texte, titre, lien ni JSON-LD ne change : le
+HTML de `/guide-declarations` est identique à celui de `main`, au nom du fichier JS de
+l'îlot près ; la feuille de styles commune garde son empreinte.
+
+- **Avant** : trois défilements différents selon le chemin. Choix d'un profil : aucun
+  (l'ancrage du navigateur plaçait la page). « Continuer », « Retour », stepper,
+  « Recommencer » : `#profils` en haut de l'écran, demandé avant le rendu de la nouvelle
+  étape. Checklist : deux défilements en concurrence (`#profils` par `goToStep`, la racine
+  de `ChecklistResult` 50 ms après).
+- **Après** : un seul défilement, dans un effet de `BoussoleWizard.tsx` sur
+  `[currentStep, scrollTick]`, donc après le rendu de la nouvelle étape, quel que soit le
+  chemin. Cible : le haut de la carte du parcours (« Étape n / m » sur téléphone, puis le
+  titre), placé 12 px sous la barre de recherche, dont le bas est mesuré sur place
+  (`top` + hauteur de `[role=search]` : 115 px aujourd'hui ; 80 px si la barre est absente).
+  La page ne bouge pas si le haut de la carte est déjà sous la barre et le titre dans les
+  deux tiers hauts de l'écran. Le défilement n'impose plus `behavior: 'smooth'` : la règle
+  `scroll-behavior` de `global.css` décide, donc pas d'animation sous
+  `prefers-reduced-motion`. `ChecklistResult.tsx` ne défile plus au montage (sa classe
+  `scroll-mt-32` reste, pour ne pas changer la feuille commune).
+- **Mesuré** (Playwright, Chromium, build servi en local, les 12 profils cliqués l'un après
+  l'autre, bouton centré à l'écran avant le clic ; barre de 70 à 115 px) :
+
+| Écran | Avant : haut de « Étape n / m » le plus haut | Après |
+|---|---|---|
+| 390 × 844 | −156 px (titre de −27 à −3 px) ; 5 profils sur 12 sous 115 px | 140 px au moins, titre entre 238 et 547 px |
+| 360 × 640 | −376 px ; 10 profils sur 12 sous 115 px | 140 px pour les 12, titre entre 238 et 317 px |
+| 1 440 × 900 | page immobile, titre entre 308 et 518 px | identique, page immobile |
+
+- Parcours complet (premier profil, « Voir ma checklist », « Retour », checklist,
+  « Recommencer », « Aucun profil », choix d'un régime), à 390 × 844 avec et sans
+  `prefers-reduced-motion` et à 1 440 × 900 : « Étape 3 / 3 » à 140 px sur téléphone
+  (95 px avant, sous la barre), titre de la checklist à 269 px ; à 1 440 px, titre de la
+  checklist à 250 px (224 avant). Aucune erreur de page ni de console.
+- **Ce qui change sur grand écran** : « Retour », le stepper et « Recommencer » ne
+  ramènent plus `#profils` en haut de l'écran quand l'étape est déjà bien placée ; quand
+  ils défilent, c'est la carte qui vient sous la barre (le titre « Trouve ta situation »
+  passe au-dessus).
+- Non testé : Safari, Firefox, un vrai téléphone (clavier ouvert, barre d'adresse
+  rétractable).
+
+### 9.eg /guide-declarations : gras inversé et astérisques dans les textes du guide (11 novembre 2026)
 
 Correction de rendu, dans `src/components/guide/FormattedText.tsx` seulement. Aucun texte
 de `src/data/boussoleData.ts` n'est modifié.
@@ -6497,9 +6539,9 @@ de `src/data/boussoleData.ts` n'est modifié.
   erreur de console, le wizard va jusqu'à la checklist (57 gras, aucun astérisque).
 
 
-### 9.eg /guide-declarations : gras des positions A/B et des définitions courtes (11 novembre 2026)
+### 9.eh /guide-declarations : gras des positions A/B et des définitions courtes (11 novembre 2026)
 
-Suite de § 9.ef, correction de rendu. Sept paragraphes affichaient encore des `**` tels
+Suite de § 9.eg, correction de rendu. Sept paragraphes affichaient encore des `**` tels
 quels, parce que leur texte sortait brut : les positions A et B des zones grises
 (`FichesPratiquesSection.tsx`) et la définition courte des termes du glossaire
 (`GlossaireSection.tsx`). Ils passent maintenant par `formatInline`. Aucun texte de
