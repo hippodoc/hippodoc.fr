@@ -493,14 +493,6 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
   .da #cookie-banner > div { flex-direction: column; align-items: stretch; gap: 12px; }
   .da #cookie-banner > div > div { display: grid; }
 }
-/* Articles avec sommaire : à partir de 1280 px le sommaire est collant, à
-   gauche, là où la bannière se range. Tant qu'elle est affichée, il s'arrête
-   au-dessus d'elle (il défile déjà dans sa colonne) au lieu de passer dessous.
-   25rem = sa place en haut de page, avant qu'il colle (200 px sous le fil
-   d'Ariane), la bannière (147 px + 24 px) et 29 px d'air. */
-@media (min-width: 1280px) {
-  .da:has(#cookie-banner:not([hidden])) .toc { max-height: calc(100vh - 25rem); }
-}
 /* L'anneau blanc détache la bulle du pied, lui aussi bleu nuit. */
 .da #crisp-launcher { background-color: var(--ink); background-image: none; color: var(--paper); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 10px 22px -10px rgba(9, 20, 52, 0.6); }
 /* La bulle est fixe : elle passe au-dessus du clair comme de l'eau profonde.
