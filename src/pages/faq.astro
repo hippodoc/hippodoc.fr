@@ -3,12 +3,61 @@
  * /faq — porté verbatim depuis src/pages/faq.tsx (SPA source).
  * Accordéons natifs <details>/<summary> (zéro JS). Les 32 questions
  * alimentent la FAQPage JSON-LD en intégralité (texte visible = schéma).
+ *
+ * Habillée dans la DA 2026 en phase 5b (MIGRATION.md § 9.ee) : seul l'habillage
+ * a changé. Textes, titres, liens, ancres, ordre des blocs et JSON-LD sont ceux
+ * d'avant, au caractère près (période d'observation SEO).
+ * - Page entièrement dans la DA, comme l'accueil et /tarifs : fond `da-fond`,
+ *   en-tête en variante « flottante » (le ciel du premier bloc lui réserve le
+ *   haut).
+ * - Un ciel (fil d'Ariane, titre), puis une feuille par rubrique, sable et ciel
+ *   en alternance : son nom à gauche, ses questions en plis `.qa` à droite
+ *   (l'un sous l'autre sur téléphone). La page finit sur le soleil et l'eau du
+ *   pied de page, comme /tarifs.
+ * - Chaque rubrique reste un <section id="…"> qui contient ses <details>, dans
+ *   l'ordre : src/lib/page-analytics.ts les compte pour `faq_question_opened`.
+ * - Les questions restent des libellés (`.qa-t`), pas des titres : la page
+ *   garde ses onze titres (un <h1>, un <h2> par rubrique).
+ * - Aucune classe utilitaire ici, réponses comprises : tout est dans le <style>
+ *   de la page (une feuille à part, servie à /faq seule) et dans da.css. Les
+ *   réponses sont injectées en HTML : leurs règles passent par `:global()`.
+ * - Les émojis ne sont pas dans la police : dessinés en SVG (ou, pour les
+ *   couleurs du calendrier, portés par les pastilles d'état de l'accueil), le
+ *   caractère reste dans le texte, masqué à l'œil (classe `sr`).
+ * - Mascotte à la tablette, derrière la première feuille : les mêmes fichiers
+ *   que sur l'accueil (décor). Le <picture> est écrit ici, sans
+ *   accueil/Mascotte.astro (voir tarifs.astro).
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import Icon from '@/components/pages/Icon.astro';
+import { getImage } from 'astro:assets';
+import tablette from '@/assets/accueil/mascotte-f-tablette.webp';
 import { SITE_URL } from '@/lib/site';
+
+/* Dessins au trait (tracés Lucide, comme pages/Icon.astro), à la place des émojis. */
+const TRACES = {
+  aide: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  courrier: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  date: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  lieu: '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  montant: '<path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>',
+  agenda: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>',
+  billet: '<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01"/><path d="M18 12h.01"/>',
+  calcul: '<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/><path d="M16 14v4"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+  papier: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  mobile: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
+  verrou: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  carte: '<rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/>',
+  bouee: '<circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/>',
+};
+const picto = (nom: keyof typeof TRACES, taille = 18) =>
+  `<svg width="${taille}" height="${taille}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TRACES[nom]}</svg>`;
+/* Le dessin de chaque rubrique (son émoji reste dans `icon`, et dans le texte). */
+const DESSINS: Record<string, keyof typeof TRACES> = {
+  activite: 'date', revenus: 'montant', planification: 'agenda', paiements: 'billet', cotisations: 'calcul',
+  documents: 'papier', mobile: 'mobile', securite: 'verrou', tarifs: 'carte', contact: 'bouee',
+};
 
 type Question = { q: string; aHtml: string; aPlain: string };
 type Section = { id: string; icon: string; title: string; questions: Question[] };
@@ -22,12 +71,12 @@ const faqSections: Section[] = [
       {
         q: "Comment j'enregistre mes journées d'activité ?",
         aHtml: `En <strong>moins de 30 secondes</strong>. Tu renseignes :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
-            <li>📅 La date (ou la période)</li>
-            <li>🏥 Le lieu d'exercice (cabinet, centre médical, structure…)</li>
-            <li>💰 Le <strong>montant encaissé</strong> (la rétrocession se calcule automatiquement selon le taux défini)</li>
+          <ul class="pictos">
+            <li><span class="sr">📅</span> ${picto('date')}La date (ou la période)</li>
+            <li><span class="sr">🏥</span> ${picto('lieu')}Le lieu d'exercice (cabinet, centre médical, structure…)</li>
+            <li><span class="sr">💰</span> ${picto('montant')}Le <strong>montant encaissé</strong> (la rétrocession se calcule automatiquement selon le taux défini)</li>
           </ul>
-          <p class="mt-2">Et c'est tout. Hippodoc fait le reste : <strong>calculs, classement, statistiques</strong>.</p>`,
+          <p>Et c'est tout. Hippodoc fait le reste : <strong>calculs, classement, statistiques</strong>.</p>`,
         aPlain:
           "En moins de 30 secondes. Tu renseignes : la date (ou la période), le lieu d'exercice (cabinet, centre médical, structure…), le montant encaissé (la rétrocession se calcule automatiquement selon le taux défini). Et c'est tout. Hippodoc fait le reste : calculs, classement, statistiques.",
       },
@@ -41,12 +90,12 @@ const faqSections: Section[] = [
       {
         q: 'Je peux gérer un cabinet propre en plus de mes remplacements ?',
         aHtml: `Oui. Hippodoc gère les <strong>3 types de structures</strong> :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li><strong>Remplacement chez un titulaire</strong> — rétrocession classique (70% par défaut)</li>
             <li><strong>Vacation en centre médical</strong> — honoraires reversés par la structure</li>
             <li><strong>Cabinet propre</strong> — 100% de tes recettes, paiement direct patients</li>
           </ul>
-          <p class="mt-2">Chaque structure a ses propres règles de calcul, <strong>tout est automatique</strong>.</p>`,
+          <p>Chaque structure a ses propres règles de calcul, <strong>tout est automatique</strong>.</p>`,
         aPlain:
           "Oui. Hippodoc gère les 3 types de structures : remplacement chez un titulaire — rétrocession classique (70% par défaut) ; vacation en centre médical — honoraires reversés par la structure ; cabinet propre — 100% de tes recettes, paiement direct patients. Chaque structure a ses propres règles de calcul, tout est automatique.",
       },
@@ -73,12 +122,12 @@ const faqSections: Section[] = [
       {
         q: "Comment j'enregistre mes revenus salariés ?",
         aHtml: `Dans l'onglet <strong>Revenus salariés</strong>. Tu renseignes :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li>Le type (gardes, urgences, centre de santé…)</li>
             <li>Le <strong>montant net imposable</strong></li>
             <li>La période concernée</li>
           </ul>
-          <p class="mt-2">Tu choisis ensuite entre <strong>abattement 10%</strong> ou <strong>frais réels</strong> pour optimiser ta fiscalité — <a href="/blog/salariat-10-pourcent-ou-frais-reels">comment choisir</a>.</p>`,
+          <p>Tu choisis ensuite entre <strong>abattement 10%</strong> ou <strong>frais réels</strong> pour optimiser ta fiscalité — <a href="/blog/salariat-10-pourcent-ou-frais-reels">comment choisir</a>.</p>`,
         aPlain:
           "Dans l'onglet Revenus salariés. Tu renseignes : le type (gardes, urgences, centre de santé…), le montant net imposable, la période concernée. Tu choisis ensuite entre abattement 10% ou frais réels pour optimiser ta fiscalité.",
       },
@@ -92,11 +141,11 @@ const faqSections: Section[] = [
       {
         q: 'Qu\'est-ce que les rétrocessions versées ?',
         aHtml: `Si tu es <strong>titulaire installé</strong> et que tu accueilles des remplaçants, tu encaisses leurs honoraires puis tu leur reverses leur part : c'est la <strong>rétrocession versée</strong>.
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li>La rétrocession versée est une <strong>charge déductible</strong> de ton BNC</li>
             <li>La <strong>part gardée</strong> (recette totale − rétrocédé) est ton revenu imposable</li>
           </ul>
-          <p class="mt-2">Hippodoc calcule tout automatiquement et l'intègre dans ton <strong>Super-Net</strong>. Côté remplaçant, voir <a href="/blog/retrocession-honoraires-medecin-remplacant">comment se négocie une rétrocession</a>.</p>`,
+          <p>Hippodoc calcule tout automatiquement et l'intègre dans ton <strong>Super-Net</strong>. Côté remplaçant, voir <a href="/blog/retrocession-honoraires-medecin-remplacant">comment se négocie une rétrocession</a>.</p>`,
         aPlain:
           "Si tu es titulaire installé et que tu accueilles des remplaçants, tu encaisses leurs honoraires puis tu leur reverses leur part : c'est la rétrocession versée. La rétrocession versée est une charge déductible de ton BNC. La part gardée (recette totale − rétrocédé) est ton revenu imposable. Hippodoc calcule tout automatiquement et l'intègre dans ton Super-Net.",
       },
@@ -117,13 +166,13 @@ const faqSections: Section[] = [
       {
         q: 'Le calendrier, il affiche quoi exactement ?',
         aHtml: `Tout ce dont tu as besoin en un coup d'œil :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
-            <li>🟢 <strong>Vert</strong> : journées payées</li>
-            <li>🟠 <strong>Orange</strong> : en attente de paiement</li>
-            <li>🔵 <strong>Bleu</strong> : planifiées (pas encore effectuées)</li>
-            <li>⚫ <strong>Gris</strong> : indisponibilités (congés, formation…)</li>
+          <ul class="etats">
+            <li><span class="sr">🟢</span> <strong class="chip sig ok">Vert</strong> : journées payées</li>
+            <li><span class="sr">🟠</span> <strong class="chip sig wait">Orange</strong> : en attente de paiement</li>
+            <li><span class="sr">🔵</span> <strong class="chip plan">Bleu</strong> : planifiées (pas encore effectuées)</li>
+            <li><span class="sr">⚫</span> <strong class="chip off">Gris</strong> : indisponibilités (congés, formation…)</li>
           </ul>
-          <p class="mt-2">Tu peux aussi créer des <strong>récurrences</strong> (ex : "tous les mercredis au centre médical").</p>`,
+          <p>Tu peux aussi créer des <strong>récurrences</strong> (ex : "tous les mercredis au centre médical").</p>`,
         aPlain:
           'Tout ce dont tu as besoin en un coup d\'œil : vert = journées payées, orange = en attente de paiement, bleu = planifiées (pas encore effectuées), gris = indisponibilités (congés, formation…). Tu peux aussi créer des récurrences (ex : "tous les mercredis au centre médical").',
       },
@@ -168,34 +217,34 @@ const faqSections: Section[] = [
         q: 'Mes cotisations URSSAF, elles se calculent toutes seules ?',
         aHtml: `Hippodoc calcule <strong>automatiquement</strong> tes cotisations sociales grâce à une connexion directe aux <strong>serveurs officiels de l'URSSAF</strong>.
           Selon ton régime :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li><strong><a href="/blog/rspm-exemples-concrets">RSPM</a></strong> (régime simplifié des remplaçants, ouvert jusqu'à 19 000 € d'honoraires) — cotisations simplifiées à 13,5% ou 21,2%</li>
             <li><strong>PAMC</strong> (régime classique) — barème complet avec toutes les cotisations détaillées</li>
           </ul>
-          <p class="mt-2">La CARMF est aussi intégrée dans le calcul. Pour comprendre chaque cotisation : <a href="/blog/tout-comprendre-urssaf">l'URSSAF</a> et <a href="/blog/tout-comprendre-carmf">la CARMF</a> expliquées.</p>`,
+          <p>La CARMF est aussi intégrée dans le calcul. Pour comprendre chaque cotisation : <a href="/blog/tout-comprendre-urssaf">l'URSSAF</a> et <a href="/blog/tout-comprendre-carmf">la CARMF</a> expliquées.</p>`,
         aPlain:
           "Hippodoc calcule automatiquement tes cotisations sociales grâce à une connexion directe aux serveurs officiels de l'URSSAF. Selon ton régime : RSPM (régime simplifié des remplaçants, ouvert jusqu'à 19 000 € d'honoraires) — cotisations simplifiées à 13,5% ou 21,2% ; PAMC (régime classique) — barème complet avec toutes les cotisations détaillées. La CARMF est aussi intégrée dans le calcul.",
       },
       {
         q: 'Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ?',
         aHtml: `Hippodoc intègre un <strong>simulateur fiscal</strong> qui compare les deux régimes avec tes données réelles :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li><strong>Micro-BNC</strong> — abattement forfaitaire de 34%, pas de charges déductibles</li>
             <li><strong>Régime réel</strong> — tu déduis tes charges professionnelles réelles</li>
           </ul>
-          <p class="mt-2">En général, le Micro-BNC est avantageux si tes charges, <strong>cotisations URSSAF et CARMF comprises</strong>, sont <strong>inférieures à 34%</strong> de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes. La règle complète : <a href="/blog/regime-fiscal-micro-bnc-vs-reel">micro-BNC ou réel</a>.</p>`,
+          <p>En général, le Micro-BNC est avantageux si tes charges, <strong>cotisations URSSAF et CARMF comprises</strong>, sont <strong>inférieures à 34%</strong> de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes. La règle complète : <a href="/blog/regime-fiscal-micro-bnc-vs-reel">micro-BNC ou réel</a>.</p>`,
         aPlain:
           "Hippodoc intègre un simulateur fiscal qui compare les deux régimes avec tes données réelles : Micro-BNC — abattement forfaitaire de 34%, pas de charges déductibles ; régime réel — tu déduis tes charges professionnelles réelles. En général, le Micro-BNC est avantageux si tes charges, cotisations URSSAF et CARMF comprises, sont inférieures à 34% de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes.",
       },
       {
         q: "C'est quoi le Super-Net ?",
         aHtml: `Le <strong>Super-Net</strong>, c'est ton <strong>vrai revenu disponible</strong> après :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li>Cotisations sociales (URSSAF + CARMF)</li>
             <li>Impôt sur le revenu (barème progressif, quotient familial)</li>
             <li>Charges professionnelles (si régime réel)</li>
           </ul>
-          <p class="mt-2">Il prend en compte <strong>tous tes revenus</strong> : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment — <a href="/blog/simulateur-super-net-combien-reste">le calcul expliqué</a>.</p>`,
+          <p>Il prend en compte <strong>tous tes revenus</strong> : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment — <a href="/blog/simulateur-super-net-combien-reste">le calcul expliqué</a>.</p>`,
         aPlain:
           "Le Super-Net, c'est ton vrai revenu disponible après : cotisations sociales (URSSAF + CARMF), impôt sur le revenu (barème progressif, quotient familial), charges professionnelles (si régime réel). Il prend en compte tous tes revenus : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment.",
       },
@@ -217,21 +266,21 @@ const faqSections: Section[] = [
       {
         q: "J'exporte facilement mes données pour ma compta ?",
         aHtml: `Oui. En <strong>CSV, Excel ou PDF</strong>, avec :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li>Tes journées avec dates et lieux d'exercice</li>
             <li>Les <strong>montants bruts et nets</strong> encaissés</li>
             <li>Le détail des rétrocessions (reçues et versées)</li>
             <li>Tes revenus salariés et exonérés</li>
             <li>Le statut de paiement (payé / en attente)</li>
           </ul>
-          <p class="mt-2">Parfait pour ton <strong>comptable, ton AGA ou ta déclaration URSSAF</strong>.</p>`,
+          <p>Parfait pour ton <strong>comptable, ton AGA ou ta déclaration URSSAF</strong>.</p>`,
         aPlain:
           "Oui. En CSV, Excel ou PDF, avec : tes journées avec dates et lieux d'exercice, les montants bruts et nets encaissés, le détail des rétrocessions (reçues et versées), tes revenus salariés et exonérés, le statut de paiement (payé / en attente). Parfait pour ton comptable, ton AGA ou ta déclaration URSSAF.",
       },
       {
         q: 'Je peux générer des factures et des contrats ?',
         aHtml: `Oui. Hippodoc te génère :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li><strong>Factures d'honoraires</strong> en PDF, prêtes à envoyer (avec RPPS, IBAN, détail des journées)</li>
             <li><strong>Contrats de remplacement</strong> conformes au CNOM, avec signature électronique intégrée</li>
           </ul>`,
@@ -241,13 +290,13 @@ const faqSections: Section[] = [
       {
         q: 'Je peux stocker mes documents administratifs ?',
         aHtml: `Oui. Tu peux uploader :
-          <ul class="list-disc ml-6 mt-2 space-y-1">
+          <ul>
             <li>Ta <strong>licence de remplacement</strong></li>
             <li>Tes <strong>contrats signés</strong></li>
             <li>Tes <strong>attestations d'assurance (RCP)</strong></li>
             <li>Ton diplôme, justificatifs divers, etc.</li>
           </ul>
-          <p class="mt-2">Tout est <strong>centralisé, sécurisé</strong>, et accessible en 2 clics.</p>`,
+          <p>Tout est <strong>centralisé, sécurisé</strong>, et accessible en 2 clics.</p>`,
         aPlain:
           "Oui. Tu peux uploader : ta licence de remplacement, tes contrats signés, tes attestations d'assurance (RCP), ton diplôme, justificatifs divers, etc. Tout est centralisé, sécurisé, et accessible en 2 clics.",
       },
@@ -331,7 +380,7 @@ const faqSections: Section[] = [
         q: 'Il y a des tarifs pour les internes ?',
         aHtml: `Oui. Internes et docteurs juniors paient <strong>10 € par mois au lieu de 29 €</strong> jusqu'à la fin de l'internat, sur justificatif
           (carte d'étudiant, attestation d'inscription ou certificat de scolarité). Écris-nous à
-          <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>, on t'envoie ton code promo très vite.
+          <a href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a>, on t'envoie ton code promo très vite.
           Les adhérents des syndicats d'internes partenaires (SILR, CRP-IMG, SIOI, AIMGL Limoges) ont aussi
           <strong>6 mois d'essai gratuit</strong> au lieu de 30 jours, grâce à un code fourni par leur syndicat.`,
         aPlain:
@@ -368,13 +417,10 @@ const faqSections: Section[] = [
       },
       {
         q: 'Comment te contacter ?',
-        aHtml: `<div class="flex flex-col gap-3">
+        aHtml: `<div class="ecrire">
             <p>Une question, un bug, une suggestion ? Écris-nous, on te répond vite :</p>
-            <a
-              href="mailto:contact@hippodoc.fr"
-              class="inline-flex items-center gap-2 w-fit bg-gradient-to-r from-hippo-500 to-hippo-600 text-white py-2.5 px-5 rounded-lg font-semibold shadow-lg shadow-hippo-500/25 hover:shadow-xl hover:shadow-hippo-500/30 hover:scale-[1.02] transition-all duration-300"
-            >contact@hippodoc.fr</a>
-            <p class="text-sm">On est une petite équipe. On lit <strong>tous les messages</strong>, et on fait évoluer l'app avec <strong>vos retours terrain</strong>.</p>
+            <a href="mailto:contact@hippodoc.fr" class="btn btn-line">contact@hippodoc.fr</a>
+            <p>On est une petite équipe. On lit <strong>tous les messages</strong>, et on fait évoluer l'app avec <strong>vos retours terrain</strong>.</p>
           </div>`,
         aPlain:
           "Une question, un bug, une suggestion ? Écris-nous, on te répond vite : contact@hippodoc.fr. On est une petite équipe. On lit tous les messages, et on fait évoluer l'app avec vos retours terrain.",
@@ -384,6 +430,18 @@ const faqSections: Section[] = [
 ];
 
 let globalQuestionIndex = 0;
+
+/* Pas de « ? », « : », « ! » ou « / » seul en début de ligne : le mot qui précède et sa
+   ponctuation tiennent ensemble dans un <span class="num">. Le texte ne change
+   pas (l'espace reste une espace), ni le JSON-LD, qui lit `q` et `aPlain`.
+   Les balises sont laissées telles quelles, seul le texte entre elles est lu. */
+const nouer = (html: string) =>
+  html
+    .split(/(<[^>]+>)/)
+    .map((morceau) => (morceau.startsWith('<') ? morceau : morceau.replace(/(\S+) ([?!:/])(?=\s|$)/g, '<span class="num">$1 $2</span>')))
+    .join('');
+/* Une question est du texte, pas du HTML : elle est échappée avant d'être nouée. */
+const echapper = (texte: string) => texte.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 const faqSchema = {
   '@context': 'https://schema.org',
@@ -409,96 +467,236 @@ const breadcrumbSchema = {
 const title = 'FAQ Hippodoc - Questions fréquentes pour médecins';
 const description =
   'Toutes les réponses sur Hippodoc : activité libérale et salariée, cotisations URSSAF, Super-Net, fiscalité, paiements et export comptable.';
+
+/* La mascotte : mêmes largeurs et mêmes formats que dans accueil/SousLaSurface.astro,
+   donc les mêmes fichiers (aucune image de plus dans le build). */
+const [mascotteAvif, mascotteWebp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) => getImage({ src: tablette, format, width: 250, widths: [150, 250, 300, 500] }))
+);
+const TAILLES = '(min-width: 900px) 250px, (min-width: 560px) 190px, 124px';
 ---
 
-<BaseLayout title={title} description={description} path="/faq" jsonLd={[breadcrumbSchema, faqSchema]}>
-  <Header />
+<BaseLayout title={title} description={description} path="/faq" jsonLd={[breadcrumbSchema, faqSchema]} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
 
-  <div class="da-sous-entete min-h-screen relative overflow-hidden">
-    <!-- Fond dégradé -->
-    <div class="absolute inset-0 bg-gradient-to-b from-hippo-50/80 via-white to-cyan-50/30" aria-hidden="true"></div>
+  <main>
+    <div class="tete da-bloc">
+      <div class="wrap">
+        <nav aria-label="Fil d'Ariane" class="fil">
+          <ol role="list">
+            <li><a href="/">Accueil</a></li>
+            <li aria-hidden="true">›</li>
+            <li aria-current="page">FAQ</li>
+          </ol>
+        </nav>
 
-    <div class="relative z-10 container max-w-4xl pt-12 pb-12">
-      <nav aria-label="Fil d'Ariane" class="mb-6 text-sm text-muted-foreground">
-        <ol class="flex flex-wrap items-center gap-1">
-          <li><a href="/" class="inline-flex min-h-6 items-center hover:text-hippo-600">Accueil</a></li>
-          <li aria-hidden="true">›</li>
-          <li class="text-foreground" aria-current="page">FAQ</li>
-        </ol>
-      </nav>
+        <div class="intro">
+          <div class="marque">
+            <Fragment set:html={picto('aide', 16)} />
+            <span>FAQ</span>
+          </div>
 
-      <!-- Header -->
-      <div class="text-center mb-12">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-hippo-100/80 backdrop-blur-sm border border-hippo-200/50 shadow-sm mb-6">
-          <Icon name="help-circle" class="w-4 h-4 text-hippo-600" />
-          <span class="text-sm font-semibold text-hippo-700">FAQ</span>
+          <h1 class="aff">
+            Toutes tes questions sur{' '}
+            <span>Hippodoc</span>
+          </h1>
+          <p class="lead">
+            L'app qui simplifie la gestion administrative de <strong>tous les médecins</strong>
+          </p>
         </div>
 
-        <h1 class="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          Toutes tes questions sur{' '}
-          <span class="bg-gradient-to-r from-hippo-600 via-cyan-500 to-hippo-500 bg-clip-text text-transparent">Hippodoc</span>
-        </h1>
-        <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
-          L'app qui simplifie la gestion administrative de <strong class="text-hippo-700">tous les médecins</strong>
-        </p>
+        {/* Décor : elle consulte sa tablette, debout derrière la première feuille. */}
+        <picture class="guide">
+          <source type="image/avif" srcset={mascotteAvif.srcSet.attribute} sizes={TAILLES} />
+          <img src={mascotteWebp.src} srcset={mascotteWebp.srcSet.attribute} sizes={TAILLES} alt="" width={mascotteWebp.attributes.width} height={mascotteWebp.attributes.height} decoding="async" />
+        </picture>
       </div>
+    </div>
 
-      <!-- FAQ Sections -->
-      <div class="space-y-6">
-        {faqSections.map((section) => (
-          <section id={section.id} class="bg-white/70 backdrop-blur-xl rounded-2xl border border-white/60 shadow-lg shadow-hippo-100/20 overflow-hidden">
-            <div class="px-6 py-4 border-b border-hippo-100/50 bg-gradient-to-r from-hippo-50/50 to-cyan-50/30">
-              <div class="flex items-center gap-3">
-                <span class="text-2xl" aria-hidden="true">{section.icon}</span>
-                <h2 class="text-xl font-bold text-gray-900">{section.title}</h2>
-              </div>
-            </div>
+    {/* Une feuille par rubrique : sable, puis ciel, en alternance. */}
+    {faqSections.map((section, rang) => (
+      <section id={section.id} class:list={['band', 'da-bloc', 'rubrique', rang % 2 === 1 && 'air']}>
+        <div class="wrap grille">
+          <div class="nom">
+            <span class="pastille" aria-hidden="true"><span class="sr">{section.icon}</span><Fragment set:html={picto(DESSINS[section.id], 24)} /></span>
+            <h2>{section.title}</h2>
+          </div>
 
-            <div class="px-2">
-              {section.questions.map((item) => {
-                globalQuestionIndex++;
-                const questionNumber = globalQuestionIndex;
-                return (
-                  <details class="group border-b border-hippo-100/30 last:border-0">
-                    <summary class="py-4 px-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center gap-3 text-left">
-                      <span class="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-hippo-500 to-cyan-500 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-                        {questionNumber}
-                      </span>
-                      <span class="text-base font-medium text-gray-800 group-open:text-hippo-700 transition-colors flex-1">
-                        {item.q}
-                      </span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-hippo-400 transition-transform group-open:rotate-180" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-                    </summary>
-                    <div class="pb-5 pl-14 pr-4 text-muted-foreground leading-relaxed [&_strong]:text-hippo-700 [&_strong]:font-semibold [&_a]:font-medium [&_a]:text-hippo-600 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-hippo-800" set:html={item.aHtml} />
-                  </details>
-                );
-              })}
-            </div>
-          </section>
-        ))}
-      </div>
+          <div class="liste">
+            {section.questions.map((item) => {
+              globalQuestionIndex++;
+              const questionNumber = globalQuestionIndex;
+              return (
+                <details class="qa">
+                  <summary>
+                    <span class="qa-t"><span class="qa-n">{questionNumber}</span><span class="qa-q" set:html={nouer(echapper(item.q))} /></span>
+                    <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
+                  </summary>
+                  <div class="qa-in" set:html={nouer(item.aHtml)} />
+                </details>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    ))}
 
-      <!-- Bottom CTA -->
-      <div class="mt-12 text-center">
-        <p class="text-muted-foreground mb-4">Tu n'as pas trouvé ta réponse ?</p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href="/#pricing"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-hippo-500 to-hippo-600 text-white font-semibold rounded-lg shadow-lg shadow-hippo-500/25 hover:shadow-xl hover:shadow-hippo-500/30 hover:scale-[1.02] transition-all duration-300"
-          >
+    {/* La fin : la question, les deux portes de sortie, puis le soleil de
+        l'accueil qui se lève sur l'eau du pied de page (décor). */}
+    <div class="fin da-bloc">
+      <div class="wrap fin-copy">
+        <p class="aff">Tu n'as pas trouvé ta <span class="num">réponse ?</span></p>
+        <div class="portes">
+          <a href="/#pricing" class="btn btn-brand">
             Découvrir Hippodoc
           </a>
-          <a
-            href="mailto:contact@hippodoc.fr"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur-sm border border-hippo-200/60 text-hippo-700 font-semibold rounded-xl shadow-sm hover:shadow-md hover:scale-[1.02] transition-all duration-300"
-          >
-            <Icon name="mail" class="w-4 h-4" />
+          <a href="mailto:contact@hippodoc.fr" class="btn btn-white">
+            <Fragment set:html={picto('courrier', 18)} />
             Nous contacter
           </a>
         </div>
       </div>
+      <div class="horizon" aria-hidden="true">
+        <span class="sun"></span>
+        <span class="wave w3"></span>
+        <span class="wave w4"></span>
+      </div>
     </div>
-  </div>
+  </main>
 
   <Footer />
 </BaseLayout>
+
+<style>
+  .num, .qa-q :global(.num) { white-space: nowrap; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
+     haut. En bas, l'air et les 40 px que recouvre la première feuille. */
+  .tete { position: relative; padding: 100px 0 88px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+  .fil { font-size: 14.5px; color: var(--ink-2); }
+  .fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
+  /* Une cible de 44 px de haut, sans changer la hauteur de la ligne. */
+  .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.4); text-underline-offset: 4px; }
+  .fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
+  .fil [aria-current] { font-weight: var(--tb); color: var(--ink); }
+  .intro { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 22px; }
+  .intro > * { margin: 0; }
+  /* « FAQ » : une pastille blanche, comme « Populaire » sur les tarifs. */
+  .marque { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px 4px 9px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 13.5px; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
+  .marque :global(svg) { flex: none; color: var(--brand); }
+  .intro h1 { --corps: clamp(34px, 5.4vw, 64px); max-width: 13em; text-wrap-style: balance; }
+  .intro h1 span { color: var(--brand); }
+  .lead strong { color: var(--ink); }
+  /* La mascotte : debout derrière la première feuille, coupée à mi-corps par son
+     bord haut (les 78 % du haut de l'image : la tablette et les mains restent
+     visibles), hors du flux. Le texte lui laisse la place à droite. */
+  .guide { position: absolute; right: max(var(--gut), env(safe-area-inset-right, 0px)); bottom: -50px; width: var(--masc); aspect-ratio: 732 / 970; overflow: hidden; pointer-events: none; }
+  .guide img { display: block; width: 100%; max-width: none; height: auto; }
+  .tete { --masc: clamp(104px, 30vw, 124px); --place: calc(100% - var(--masc) - 14px); }
+  .lead { max-width: min(36rem, var(--place)); }
+
+  /* Une rubrique, une feuille. Moins d'air que sur l'accueil : il y en a dix. */
+  .rubrique { padding: 44px 0 80px; }
+  .grille { display: grid; gap: 22px; }
+  .nom { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .nom h2 { --corps: clamp(26px, 3.2vw, 36px); margin: 0; }
+  .pastille { display: flex; flex: none; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: var(--paper); box-shadow: var(--clay-sm); color: var(--brand); }
+  .liste { min-width: 0; }
+  .liste .qa:last-child { margin-bottom: 0; }
+
+  /* Le numéro de la question : une petite pastille, en tête de sa première ligne
+     sur téléphone, dans sa colonne à partir de 560 px. */
+  .rubrique .qa > summary { gap: 14px; }
+  .qa-n { display: inline-flex; align-items: center; justify-content: center; min-width: 23px; height: 23px; margin-right: 7px; padding: 0 5px; border-radius: var(--r-pill); background: var(--sky-soft); font-size: 13px; font-weight: var(--tb); line-height: 1; color: var(--ink-2); vertical-align: 2px; font-variant-numeric: tabular-nums; }
+  .qa[open] .qa-n { background: var(--ink); color: var(--paper); }
+
+  /* Les réponses : du texte, des listes, des paragraphes, dans cet ordre. */
+  .qa-in { max-width: 42rem; font-size: 16.5px; line-height: 1.6; color: var(--ink-2); }
+  .qa-in :global(p), .qa-in :global(ul) { max-width: none; margin: 10px 0 0; }
+  .qa-in :global(ul) { display: grid; gap: 6px; padding: 0; list-style: none; }
+  .qa-in :global(li) { position: relative; padding-left: 20px; }
+  .qa-in :global(li)::before { content: ""; position: absolute; left: 3px; top: 0.62em; width: 7px; height: 7px; border-radius: 50%; background: var(--w3); }
+  /* Les trois lignes de la saisie : un dessin à la place de la puce. */
+  .qa-in :global(.pictos li) { padding-left: 28px; }
+  .qa-in :global(.pictos li)::before, .qa-in :global(.etats li)::before { content: none; }
+  .qa-in :global(.pictos svg) { position: absolute; left: 0; top: 0.26em; color: var(--brand); }
+  /* Les couleurs du calendrier : les pastilles d'état de l'accueil. */
+  .qa-in :global(.etats) { gap: 8px; }
+  .qa-in :global(.etats li) { padding-left: 0; }
+  .qa-in :global(.sr) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .qa-in :global(.num) { white-space: nowrap; }
+  /* « Comment te contacter ? » : l'adresse est un bouton. */
+  .qa-in :global(.ecrire) { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .qa-in :global(.ecrire p) { margin: 0; }
+  .qa-in :global(a.btn) { min-height: 48px; padding: 0 22px; font-size: 16.5px; color: var(--ink); text-decoration: none; }
+  .qa-in :global(.ecrire p:last-child) { font-size: 15.5px; }
+
+  /* La fin : le ciel de l'accueil, puis le soleil qui se lève sur l'eau du pied
+     de page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles,
+     comme sur /tarifs). -1 px en bas : pas de filet clair au-dessus du pied. */
+  .fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; }
+  .fin-copy { display: flex; flex-direction: column; align-items: center; gap: 26px; padding-top: 52px; }
+  .fin-copy > * { margin: 0; }
+  .fin .aff { --corps: clamp(32px, 5vw, 58px); max-width: 14em; text-wrap-style: balance; }
+  .portes { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px 14px; }
+  .portes .btn { gap: 9px; padding-block: 8px; text-align: center; }
+  .portes :global(svg) { flex: none; }
+  .horizon { position: relative; height: 190px; margin-top: 40px; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; }
+  .w3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* La dernière vague a la couleur du haut du pied de page (--deep). */
+  .w4 { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+  /* Petits téléphones : le chapeau un peu plus petit, à côté de la mascotte. */
+  @media (max-width: 359px) {
+    .lead { font-size: 17.5px; }
+  }
+  /* À partir de 560 px : le numéro dans sa colonne, la réponse alignée sur la
+     question ; plus d'air autour des rubriques. */
+  @media (min-width: 560px) {
+    .tete { padding: 108px 0 128px; --masc: min(190px, 27vw); --place: calc(100% - var(--masc) - 20px); }
+    .guide { bottom: -90px; }
+    .intro h1 { max-width: min(13em, var(--place)); }
+    .rubrique { padding: 52px 0 92px; }
+    .grille { gap: 26px; }
+    .pastille { width: 52px; height: 52px; }
+    .rubrique .qa > summary { gap: 20px; }
+    .qa-t { display: flex; align-items: baseline; gap: 12px; }
+    .qa-n { flex: none; min-width: 26px; height: 26px; margin-right: 0; vertical-align: baseline; }
+    .qa-in { padding-left: 38px; }
+    .fin-copy { padding-top: 88px; }
+  }
+  /* Ordinateur : le nom de la rubrique à gauche, ses questions à droite
+     (accueil/Questions.astro). Le nom suit la lecture d'une longue réponse. */
+  @media (min-width: 900px) {
+    .tete { padding-top: 148px; --masc: 250px; --place: calc(100% - 330px); }
+    .intro { margin-top: 30px; }
+    .guide { right: calc(max(var(--gut), env(safe-area-inset-right, 0px)) + 40px); }
+    .rubrique { padding: 64px 0 104px; }
+    .grille { grid-template-columns: minmax(0, 280px) minmax(0, 1fr); align-items: start; gap: 28px 56px; }
+    .nom { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .horizon { height: 270px; --p: 440px; --th: 54px; }
+    .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+    .w3 { height: 112px; }
+    .w4 { height: 60px; }
+  }
+  @media (min-width: 900px) and (min-height: 700px) {
+    .nom { position: sticky; top: 104px; }
+  }
+  @media (min-width: 1180px) {
+    .grille { grid-template-columns: 320px minmax(0, 1fr); column-gap: 96px; }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+     aux pastilles ; le décor de la fin disparaît. */
+  @media (forced-colors: active) {
+    .marque, .pastille, .qa-n { border: 1px solid CanvasText; }
+    .horizon { display: none; }
+  }
+</style>

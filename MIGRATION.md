@@ -6267,6 +6267,47 @@ change. Un lot par page.
   alors que l'accueil montre l'annuel en premier ; l'inverser à l'écran sans toucher au
   HTML séparerait l'ordre de lecture de l'ordre affiché.
 
+**`/faq`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 11 titres du contenu (un H1,
+  un H2 par rubrique ; les questions restent des libellés), les 13 liens du contenu et
+  les 61 de la page (adresse et libellé, dans l'ordre), les 10 ancres de rubrique, les
+  3 blocs JSON-LD (les 32 questions du `FAQPage`), les 29 éléments porteurs d'un attribut
+  de mesure, les 4 scripts, et le texte : 1 625 mots, mêmes suites de texte entre balises
+  de bloc. Chaque rubrique reste un `<section id>` qui contient ses `<details>` dans
+  l'ordre (`faq_question_opened`). Les autres HTML du build sont identiques, au nom de la
+  feuille commune près. Aucun JS ajouté. La page n'avait ni sommaire ni `data-ph`.
+- **Habillage** (`src/pages/faq.astro`, aucune classe Tailwind, réponses comprises) : page
+  entièrement dans la DA (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color`). Un
+  ciel : fil d'Ariane, pastille « FAQ », titre à gauche, mascotte à la tablette debout
+  derrière la première feuille (les fichiers de l'accueil, à toutes les largeurs). Puis
+  une feuille par rubrique, sable et ciel en alternance : son nom et son dessin à gauche
+  (collant sur ordinateur, il suit la lecture d'une longue réponse), ses questions en
+  plis `.qa` à droite ; l'un sous l'autre sous 900 px. La fin : la question en grand,
+  le bouton jaune vers `/#pricing`, « Nous contacter », et le soleil sur l'eau du pied.
+- **Dans le HTML, sans toucher au texte** : un `<main>` (la page n'en avait pas) ; les
+  émojis sont dessinés en SVG, ou portés par les pastilles d'état de l'accueil pour les
+  quatre couleurs du calendrier, et restent dans le texte, masqués à l'œil (`sr`) ; des
+  `<span class="num">` gardent sur une ligne un mot et le « ? », le « : », le « ! » ou
+  le « / » qui le suit ; l'adresse de « Comment te contacter ? » est un bouton blanc ;
+  une image décorative (`alt=""`).
+- **Feuilles** : commune 173 841 → 172 720 octets (13 utilitaires que seule `/faq`
+  employait disparaissent, rien n'est ajouté ; son nom change) ; feuilles de l'accueil et
+  de `/tarifs` inchangées à l'octet ; nouvelle `faq.*.css`, 9 493 octets (2 391 gzip).
+  HTML de `/faq` : 21 688 → 21 367 octets gzip. Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px contre `main`, contre l'accueil et
+  contre `/tarifs`, plis fermés et ouverts ; 25 largeurs de 320 à 1 920 px, toutes
+  réponses ouvertes : aucun défilement horizontal, aucune ponctuation seule en début de
+  ligne, 14 px au moins entre le texte et la mascotte ; contrastes AA (le plus bas :
+  4,99:1, « Hippodoc » du titre) ; clavier, ancre `#tarifs`, tiroir, bannière cookies,
+  contrastes forcés. Lighthouse mobile, trois mesures : performance 99 à 100 (100 sur
+  `main` ; LCP 1,1 s contre 0,9 s, la feuille de la page est une requête de plus),
+  accessibilité 100, SEO 100.
+- **Longueur** : la page est plus haute, plis fermés (5 373 px contre 4 024 à 1 440 px,
+  6 434 contre 5 238 à 390 px) : chaque question est une fiche, chaque rubrique une
+  feuille.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
