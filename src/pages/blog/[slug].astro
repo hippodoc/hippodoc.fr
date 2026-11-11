@@ -561,7 +561,7 @@ const croix =
   .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.4); text-underline-offset: 4px; }
   .fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
   .fil [aria-current] { font-weight: var(--tb); color: var(--ink); }
-  .retour { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin: 8px var(--d) 12px var(--g); border-radius: 6px; font-size: 0.96875rem; font-weight: var(--tb); color: var(--ink); text-decoration: none; }
+  .retour { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin: 4px var(--d) 8px var(--g); border-radius: 6px; font-size: 0.96875rem; font-weight: var(--tb); color: var(--ink); text-decoration: none; }
   .retour:hover { color: var(--brand); }
   .retour :global(svg) { flex: none; }
 
@@ -571,7 +571,7 @@ const croix =
      fiche collante à gauche, dans la même cellule de grille que l'article, qui
      lui laisse la place (--som). */
   .grille { display: grid; grid-template-columns: minmax(0, 1fr); }
-  .toc { position: relative; margin: 0 var(--d) 26px var(--g); padding: 0 20px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+  .toc { position: relative; margin: 0 var(--d) 22px var(--g); padding: 0 20px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
   /* La case : invisible mais focusable (c'est elle, le contrôle). */
   .toc-case { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .toc-titre { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 58px; border-radius: var(--r-sm); font-size: 1.0625rem; font-weight: var(--tb); color: var(--ink); cursor: pointer; }
@@ -609,7 +609,7 @@ const croix =
      Une feuille sable à coins ronds, sur toute la largeur. En bas, les coins
      ronds de la feuille « air » suivante sont peints par `::after` : ce qui
      suit l'article est posé sur le fond de la page, de la même couleur. */
-  .corps { position: relative; margin-top: 34px; padding: 50px var(--d) 100px calc(var(--g) + var(--som)); border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); color: var(--ink-2); font-size: 1.0625rem; line-height: 1.7; overflow-wrap: break-word; }
+  .corps { position: relative; margin-top: 28px; padding: 42px var(--d) 100px calc(var(--g) + var(--som)); border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); color: var(--ink-2); font-size: 1.0625rem; line-height: 1.7; overflow-wrap: break-word; }
   .corps::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sky); }
   /* La colonne de lecture, centrée sous le titre. */
   .corps > :global(*) { max-width: var(--mes); margin-left: auto; margin-right: auto; }
@@ -765,6 +765,7 @@ const croix =
      même cellule (le titre lui réserve sa place à droite). Le texte grandit. */
   @media (min-width: 700px) {
     .page { --cw: clamp(12.5rem, 27vw, 18.75rem); padding-top: 104px; }
+    .retour { margin-top: 8px; margin-bottom: 12px; }
     .illustree .tete { grid-area: 1 / 1; align-self: center; padding-right: calc(var(--d) + var(--cw) + 40px); }
     .couverture { grid-area: 1 / 1; align-self: center; justify-self: end; width: var(--cw); margin: 0 var(--d) 0 0; }
     .corps { margin-top: 44px; padding-top: 64px; padding-bottom: 116px; font-size: 1.125rem; }
