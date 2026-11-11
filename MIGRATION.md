@@ -6221,6 +6221,9 @@ sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`
 
 ### 9.ee Phase 5b : les pages intérieures dans la DA (11 novembre 2026)
 
+> **Avant fusion (11 novembre 2026), deux retouches sur `/essai` (page noindex, hors période d'observation).** (1) Retiré : la note « 4.9/5 » et ses cinq étoiles, qui n'étaient adossées à aucune source. « +900 médecins nous font confiance » reste. (2) Bannière cookies sur téléphone, cette page seulement : texte et boutons inchangés, boutons côte à côte, 96 px de haut au lieu de 113 ; sur un écran de moins de 780 px de haut, les trois vignettes d'atouts (« Super-Net », « Statistiques », « Planning ») s'effacent tant que la bannière est affichée, puis reviennent. Mesuré : bouton d'inscription entièrement visible au-dessus de la bannière à 390 × 664 et 360 × 740 ; à 320 × 568 il reste sous le premier écran.
+
+
 Suite de § 9.ed. Période d'observation SEO : sur une page rhabillée, seul l'habillage
 change. Un lot par page.
 
