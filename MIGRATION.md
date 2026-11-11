@@ -6202,7 +6202,9 @@ sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`
   n'est demandé à ce moment-là (`handleSelectProfil`), c'est l'ancrage du navigateur qui
   place la page. À corriger dans l'îlot (`BoussoleWizard.tsx`), hors phase 5a.
 - Vus pendant la recette, existaient avant, non touchés :
-  - dix espaces avalées autour d'une balise en ligne, même cause que sur `/tarifs` :
+  - (corrigé le 11 novembre 2026, à la demande du propriétaire : les lignes sources sont
+    recollées, onze espaces rétablies, aucun mot changé ; la onzième est « l'honoraire. Indemnités »
+    sur `/guide-declarations/dsfu-pamc`) dix espaces avalées autour d'une balise en ligne, même cause que sur `/tarifs` :
     `/guide-declarations/2042-c-pro` (« auréel », « en5QC », « voirla déclaration »,
     « laDSFU », « auxrégimes zonés »), `/guide-declarations/dsfu-pamc`
     (« tescotisations », « tesrecettes brutes »), `/guide-declarations/medecin-remplacant`
