@@ -6196,7 +6196,7 @@ sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`
   le même écran (« Essai gratuit 30j » jaune en relief dans la pastille, « Commencer
   l'essai gratuit » bleu plat dans la carte Annuel), plus le bleu nuit de la bannière et de
   la bulle. C'est le seul endroit où le nouvel en-tête et l'ancien corps jurent.
-- **Boussole de `/guide-declarations`, à 390 px** (existait avant, aggravé de 6 px) : après
+- (corrigé le 11 novembre 2026, § 9.ef) **Boussole de `/guide-declarations`, à 390 px** (existait avant, aggravé de 6 px) : après
   le choix d'un profil, le titre de l'étape arrive à 96 px, sous la barre de recherche
   collante (70 à 115 px ; 64 à 109 avant, titre alors à moitié caché). Aucun défilement
   n'est demandé à ce moment-là (`handleSelectProfil`), c'est l'ancrage du navigateur qui
@@ -6457,6 +6457,131 @@ texte du build ne diffèrent que par le nom de la feuille commune.
   `/_astro/hippodoc-logo.*.webp` n'est plus produit (une copie en cache de l'ancienne
   `/essai` afficherait un logo cassé).
 
+### 9.ef Boussole de `/guide-declarations` : le titre de l'étape reste sous la barre de recherche (11 novembre 2026)
+
+Suite de § 9.ed, « Reste ouvert ». Aucun texte, titre, lien ni JSON-LD ne change : le
+HTML de `/guide-declarations` est identique à celui de `main`, au nom du fichier JS de
+l'îlot près ; la feuille de styles commune garde son empreinte.
+
+- **Avant** : trois défilements différents selon le chemin. Choix d'un profil : aucun
+  (l'ancrage du navigateur plaçait la page). « Continuer », « Retour », stepper,
+  « Recommencer » : `#profils` en haut de l'écran, demandé avant le rendu de la nouvelle
+  étape. Checklist : deux défilements en concurrence (`#profils` par `goToStep`, la racine
+  de `ChecklistResult` 50 ms après).
+- **Après** : un seul défilement, dans un effet de `BoussoleWizard.tsx` sur
+  `[currentStep, scrollTick]`, donc après le rendu de la nouvelle étape, quel que soit le
+  chemin. Cible : le haut de la carte du parcours (« Étape n / m » sur téléphone, puis le
+  titre), placé 12 px sous la barre de recherche, dont le bas est mesuré sur place
+  (`top` + hauteur de `[role=search]` : 115 px aujourd'hui ; 80 px si la barre est absente).
+  La page ne bouge pas si le haut de la carte est déjà sous la barre et le titre dans les
+  deux tiers hauts de l'écran. Le défilement n'impose plus `behavior: 'smooth'` : la règle
+  `scroll-behavior` de `global.css` décide, donc pas d'animation sous
+  `prefers-reduced-motion`. `ChecklistResult.tsx` ne défile plus au montage (sa classe
+  `scroll-mt-32` reste, pour ne pas changer la feuille commune).
+- **Mesuré** (Playwright, Chromium, build servi en local, les 12 profils cliqués l'un après
+  l'autre, bouton centré à l'écran avant le clic ; barre de 70 à 115 px) :
+
+| Écran | Avant : haut de « Étape n / m » le plus haut | Après |
+|---|---|---|
+| 390 × 844 | −156 px (titre de −27 à −3 px) ; 5 profils sur 12 sous 115 px | 140 px au moins, titre entre 238 et 547 px |
+| 360 × 640 | −376 px ; 10 profils sur 12 sous 115 px | 140 px pour les 12, titre entre 238 et 317 px |
+| 1 440 × 900 | page immobile, titre entre 308 et 518 px | identique, page immobile |
+
+- Parcours complet (premier profil, « Voir ma checklist », « Retour », checklist,
+  « Recommencer », « Aucun profil », choix d'un régime), à 390 × 844 avec et sans
+  `prefers-reduced-motion` et à 1 440 × 900 : « Étape 3 / 3 » à 140 px sur téléphone
+  (95 px avant, sous la barre), titre de la checklist à 269 px ; à 1 440 px, titre de la
+  checklist à 250 px (224 avant). Aucune erreur de page ni de console.
+- **Ce qui change sur grand écran** : « Retour », le stepper et « Recommencer » ne
+  ramènent plus `#profils` en haut de l'écran quand l'étape est déjà bien placée ; quand
+  ils défilent, c'est la carte qui vient sous la barre (le titre « Trouve ta situation »
+  passe au-dessus).
+- Non testé : Safari, Firefox, un vrai téléphone (clavier ouvert, barre d'adresse
+  rétractable).
+
+### 9.eg /guide-declarations : gras inversé et astérisques dans les textes du guide (11 novembre 2026)
+
+Correction de rendu, dans `src/components/guide/FormattedText.tsx` seulement. Aucun texte
+de `src/data/boussoleData.ts` n'est modifié.
+
+- **Le défaut** : dans certains textes, le gras sortait inversé et des `**` restaient dans
+  le HTML servi (« Cas particulier RSPM », périmètre de DSCN / chèques ANCV).
+- **Trois causes**, toutes dans le composant :
+  1. le texte est découpé (émoji marqueur ⚠️ ✅ 💡, fin de phrase, saut de ligne) avant la
+     lecture du gras : un `**…**` qui enjambe la découpe (`**⚠️ Cas particulier RSPM**`)
+     laissait un `**` seul de chaque côté, et toutes les paires suivantes se décalaient.
+     Chaque morceau est maintenant refermé et le suivant rouvert (`equilibrerGras`) ;
+  2. une seule expression lisait à la fois le balisage de l'auteur et les termes mis en
+     gras d'office : une citation « … » contenant un `**gras**` ou un `*italique*`
+     l'avalait avec ses astérisques. `formatInline` travaille en deux passes : balisage
+     de l'auteur d'abord, termes ensuite sur le texte nu ;
+  3. les bornes de mot (`\w`, `\b`) ignorent les lettres accentuées en JavaScript : un
+     terme était reconnu au milieu d'un mot. Bornes en `\p{L}`.
+- **Effet sur la page**, mesuré par script contre le build d'avant, balises retirées :
+  le texte est identique à 10 astérisques près, tous disparus (87 → 77 ; les 77 restants
+  ne passent pas par ce composant, voir plus bas). Hors balises de mise en avant, la seule
+  différence de structure est un paragraphe `<p>**</p>` qui disparaît. Aucune autre page
+  du build ne change (le fichier JS de l'îlot `BoussoleWizard` change de nom).
+- **Gras déplacé** : « Cas particulier RSPM », « aucune régularisation URSSAF ni CARMF »,
+  « tranches progressives », « Périmètre exact de DSCN », « uniquement la valeur faciale
+  des chèques », « frais d'ouverture du compte ANCV », « frais d'envoi/port »,
+  « commission ANCV », « L30 « Autres frais divers de gestion » » sont en gras comme écrit
+  dans la source ; le texte entre eux ne l'est plus. La citation du guide UNASA (« Les
+  médecins conventionnés du secteur 1… ») sort en italique, sans ses astérisques.
+- **Mots coupés** : « TR » dans « TRÈS », « 6 an » dans « 6 années », « 3 an » dans
+  « 3 années » ne sont plus en gras ; « Art. 163 quatervicies » (6 fois) garde
+  « Art. 163 » en gras, sans « quater ».
+- **Non traité ici** : 77 astérisques restent visibles sur la page, dans sept paragraphes
+  que d'autres composants rendent tels quels, sans passer par `FormattedText` (six
+  positions A et B des zones grises, `FichesPratiquesSection.tsx`, et une définition sur
+  les rétrocessions), plus « Cerfa 15945*08 », légitime.
+- Vérifié : `verify-site.mjs` à 0 erreur ; dans Chromium, les deux îlots s'hydratent sans
+  erreur de console, le wizard va jusqu'à la checklist (57 gras, aucun astérisque).
+
+
+### 9.eh /guide-declarations : gras des positions A/B et des définitions courtes (11 novembre 2026)
+
+Suite de § 9.eg, correction de rendu. Sept paragraphes affichaient encore des `**` tels
+quels, parce que leur texte sortait brut : les positions A et B des zones grises
+(`FichesPratiquesSection.tsx`) et la définition courte des termes du glossaire
+(`GlossaireSection.tsx`). Ils passent maintenant par `formatInline`. Aucun texte de
+`src/data/boussoleData.ts` n'est modifié.
+
+- **Texte de la page**, par script contre le build d'avant, balises retirées : identique à
+  76 astérisques près, tous disparus (77 → 1 ; il reste « Cerfa 15945*08 », légitime).
+  Structure hors `<strong>` / `<em>` identique. Aucune autre page ni aucun fichier JS ne
+  change.
+- **Gras d'office** : dans les positions A/B, `formatInline` met aussi en gras les sigles,
+  cases et montants, comme partout ailleurs sur la page (« URSSAF », « 5HQ », « 34 % »…),
+  y compris dans les positions qui n'avaient pas d'astérisques. Les définitions courtes
+  du glossaire, elles, ne rendent que le balisage de l'auteur
+  (`formatInline(texte, { auto: false })`) : sans cela, toutes recevaient du gras d'office
+  (110 gras de plus). Bilan sur la page : 4 394 → 4 518 `<strong>`.
+- `verify-site.mjs` à 0 erreur. Les deux composants sont statiques (hors îlot) ; le
+  wizard, qui partage `formatInline`, revérifié dans Chromium (checklist, aucune erreur).
+
+### 9.ei Espaces avalées autour d'une balise en ligne : correction de rendu et contrôle (11 novembre 2026)
+
+Correction de rendu, pas de contenu : aucun mot n'a changé. Au build, Astro supprime un
+retour à la ligne collé à une balise en ligne (`<strong>`, `<a>`, `<em>`), avant ou après
+elle ; le mot et la balise sortent collés.
+
+- **Onze espaces rétablies** (commit `0f91ecc`), en recollant les lignes sources :
+  `/guide-declarations/2042-c-pro` (« au réel », « en 5QC », « voir la déclaration »,
+  « la DSFU », « aux régimes zonés »), `/guide-declarations/dsfu-pamc` (« tes
+  cotisations », « tes recettes brutes », « l'honoraire. Indemnités »),
+  `/guide-declarations/medecin-remplacant` (« Le simulateur le calcule », des deux côtés
+  du lien ; « la page DSFU »). Les deux de `/tarifs` l'étaient déjà (§ 9.ed, point 5).
+- **`verify-site.mjs`, contrôle « 4 septies bis »** : échoue quand une lettre ou un chiffre
+  est collé à l'extérieur d'une balise `<strong>`, `<a>`, `<em>` ou `<b>` dont l'intérieur
+  ne commence pas (ou ne finit pas) par une espace, sur toutes les pages du build. Rejoué
+  sur les sources d'avant `0f91ecc` : les onze sortent en erreur. Une balise qui coupe un
+  mot exprès se déclare dans `MOTS_COUPES_EXPRES`.
+- `src/lib/pages-lastmod.ts` non touché : `lastmod` des trois pages inchangé.
+- Les mots coupés par un gras de `FormattedText` (« quater**vicies** », « TRÈS »,
+  « 6 années », « 3 années ») ont été corrigés entre-temps (§ 9.eg) : ils n'ont plus
+  d'exception. Il n'en reste qu'une, « impôt(s) » sur `/blog/tout-comprendre-carmf`.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
@@ -6539,41 +6664,3 @@ La source a reçu 33 commits après la migration initiale (snapshot `e024235` �
 
 - JS client : uniquement PostHog (module différé) + les îlots des 3 outils + le carrousel
   des 4 articles à slides. Pages marketing/blog/légales : zéro JS applicatif.
-
-### 9.ef Espaces avalées autour d'une balise en ligne : correction de rendu et contrôle (11 novembre 2026)
-
-Correction de rendu, pas de contenu : aucun mot n'a changé. Au build, Astro supprime un
-retour à la ligne collé à une balise en ligne (`<strong>`, `<a>`, `<em>`), avant ou après
-elle ; le mot et la balise sortent collés.
-
-- **Onze espaces rétablies** (commit `0f91ecc`), en recollant les lignes sources :
-  `/guide-declarations/2042-c-pro` (« au réel », « en 5QC », « voir la déclaration »,
-  « la DSFU », « aux régimes zonés »), `/guide-declarations/dsfu-pamc` (« tes
-  cotisations », « tes recettes brutes », « l'honoraire. Indemnités »),
-  `/guide-declarations/medecin-remplacant` (« Le simulateur le calcule », des deux côtés
-  du lien ; « la page DSFU »). Les deux de `/tarifs` l'étaient déjà (§ 9.ed, point 5).
-- **`verify-site.mjs`, contrôle « 4 septies bis »** : échoue quand une lettre ou un chiffre
-  est collé à l'extérieur d'une balise `<strong>`, `<a>`, `<em>` ou `<b>` dont l'intérieur
-  ne commence pas (ou ne finit pas) par une espace, sur toutes les pages du build. Rejoué
-  sur les sources d'avant `0f91ecc` : les onze sortent en erreur. Une balise qui coupe un
-  mot exprès se déclare dans `MOTS_COUPES_EXPRES` : « quater**vicies** », « TRÈS »,
-  « 6 années » et « 3 années » sur `/guide-declarations`, « impôt(s) » sur
-  `/blog/tout-comprendre-carmf`.
-- `src/lib/pages-lastmod.ts` non touché : `lastmod` des trois pages inchangé.
-- **Gras inversé sur `/guide-declarations`, corrigé le même jour** (correction de rendu,
-  `src/components/guide/FormattedText.tsx`, aucun texte de `src/data/` touché). Un
-  marqueur écrit dans un gras (« `**⚠️ Titre**` ») laissait son `**` ouvrant dans le
-  segment d'avant : les paires suivantes se décalaient, le gras sortait inversé et deux
-  astérisques restaient visibles (« tranches progressives** », réponse sur le RSPM ;
-  « Périmètre exact de DSCN », glossaire). Le marqueur sort maintenant du gras avant la
-  coupe. Trois motifs ne mordent plus au milieu d'un mot : « Art. 163 quatervicies » est
-  en gras en entier (cinq fois), « TRÈS », « 6 années » et « 3 années » ne sont plus
-  coupés par un gras ; leurs exceptions quittent `MOTS_COUPES_EXPRES`. Prouvé par script
-  contre le build d'avant : seule `/guide-declarations` change (et le JS de l'îlot), son
-  texte est identique aux quatre astérisques parasites près, seul le gras bouge. Îlot
-  rechargé dans Chromium : aucune erreur d'hydratation.
-- **Vu en passant, non touché** : sur `/guide-declarations`, des `**…**` restent affichés
-  tels quels dans des textes qui ne passent pas par `FormattedText` (blocs « Position A » /
-  « Position B », « **perçues** », « **versées** » ; 38 astérisques doubles dans le HTML).
-  Les y faire passer changerait aussi le gras automatique de ces blocs : au propriétaire
-  de dire.

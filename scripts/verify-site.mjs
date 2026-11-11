@@ -768,7 +768,7 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
 /* 4 septies bis. Aucun mot collé à une balise en ligne.
    Au build, Astro supprime un retour à la ligne collé à une balise en ligne, avant
    ou après elle : « ou⏎<strong>19 € » sort « ou<strong>19 € », lu « ou19 € »
-   (MIGRATION.md § 9.ed point 5, puis § 9.ef : treize espaces perdues sur quatre pages).
+   (MIGRATION.md § 9.ed point 5, puis § 9.ei : treize espaces perdues sur quatre pages).
    On cherche, dans le HTML servi, une lettre ou un chiffre collé à l'extérieur d'une
    balise <strong>, <a>, <em> ou <b> dont l'intérieur ne commence pas (ou ne finit
    pas) par une espace. Correction côté source : garder la balise sur la ligne du mot
