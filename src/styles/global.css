@@ -80,99 +80,13 @@
     100% { background-position: 200% center; }
   }
 
-  /* Blog Components */
-  .blog-card-hover {
-    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl;
-  }
+  /* Cartes et pastilles de série des pages de liste du blog : dans
+     `src/styles/blog-liste.css` depuis la phase 5c (MIGRATION.md § 9.ej). */
 
-  .series-badge {
-    @apply px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide text-white border-0 shadow-lg backdrop-blur-sm;
-  }
-
-  /* Encadrés d'articles (sections type warning/tip de la SPA + « L'essentiel ») */
-  .callout {
-    @apply my-6 rounded-xl border p-4 md:p-5;
-  }
-  .callout > :first-child { margin-top: 0; }
-  .callout > :last-child { margin-bottom: 0; }
-  .callout-warning {
-    @apply border-amber-200 bg-amber-50 text-amber-900;
-  }
-  .callout-tip {
-    @apply border-emerald-200 bg-emerald-50 text-emerald-900;
-  }
-  .callout-essentiel {
-    @apply border-hippo-200 bg-hippo-50 text-hippo-900;
-  }
-
-  /* Blog Typography */
-  .blog-title {
-    @apply text-2xl font-bold leading-tight;
-    letter-spacing: -0.02em;
-  }
-
-  .blog-content {
-    @apply leading-relaxed;
-    line-height: 1.75;
-  }
-
-  .prose p {
-    margin-bottom: 1em;
-  }
-
-  .prose p:last-child {
-    margin-bottom: 0;
-  }
-
-  .prose p + p {
-    margin-top: 1em;
-  }
-
-  .prose strong {
-    @apply font-bold text-foreground;
-  }
-
-  .prose em {
-    @apply italic;
-  }
-
-  .prose a {
-    /* `--primary` vaut hippo-500 (#1A8CFF) : 3,37:1 sur blanc, sous le seuil AA de
-       4,5:1 — précisément le cas interdit par CLAUDE.md (« text-hippo-500 interdit
-       sur fond blanc en petit texte »). Cette règle l'emportait sur le
-       `prose-a:text-hippo-600` du gabarit d'article. hippo-600 donne 5,15:1, et
-       hippo-800 au survol assombrit au lieu d'éclaircir. */
-    @apply text-hippo-600 underline hover:text-hippo-800 transition-colors;
-  }
-
-  .prose ul, .prose ol {
-    @apply my-2 ml-4;
-  }
-
-  /* Tableaux d'articles. Comprimés dans 358 px en mobile, les cellules cassaient
-     les montants en deux (« 1 065 » sur deux lignes, « Au-delà » césuré) : sur des
-     chiffres fiscaux c'est inacceptable. Le tableau défile donc horizontalement
-     dans son propre conteneur — le corps de page ne défile jamais latéralement. */
-  .prose table {
-    display: block;
-    max-width: 100%;
-    overflow-x: auto;
-    font-variant-numeric: tabular-nums;
-    /* Avec les chiffres tabulaires, Google Sans Flex élargit aussi l'espace (un
-       demi-chiffre : 4,52 px en 14 px au lieu de 3,16) : « 3 CV et moins » ou
-       « d × 0,529 » paraissaient écartelés. On retire la différence ; les chiffres
-       restent alignés. Les milliers des tableaux sont tous saisis avec une espace
-       ordinaire (§ 9.ed). */
-    word-spacing: -0.097em;
-  }
-  .prose table th,
-  .prose table td {
-    white-space: nowrap;
-  }
-
-  .prose li {
-    @apply my-1;
-  }
+  /* Typographie des articles (titre, corps, liens, listes, tableaux) et encadrés
+     `:::warning` / `:::tip` / `:::essentiel` : dans la feuille du gabarit
+     d'article depuis la phase 5c (`src/pages/blog/[slug].astro`, MIGRATION.md
+     § 9.ej). Ces règles ne servaient qu'aux articles. */
 }
 
 @keyframes fadeIn {

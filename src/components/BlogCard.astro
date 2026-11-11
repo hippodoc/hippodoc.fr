@@ -1,20 +1,23 @@
 ---
 /**
- * Carte d'article — extraite de src/pages/blog/index.astro (phase 3 de la refonte
- * blog) pour être partagée avec les pages de série `/blog/serie/*`.
- * Balisage et classes repris à l'identique : aucun changement visuel.
+ * Carte d'article des pages de liste du blog (/blog et /blog/serie/*).
  *
- * La classe `blog-card s-<seriesId>` est conservée : elle sert de crochet aux
- * styles existants et reste utile pour cibler une série en CSS.
+ * Habillée dans la DA 2026 en phase 5c (MIGRATION.md § 9.ej) : une fiche blanche
+ * en relief, la couverture dedans, à coins ronds. Lien, titre (et son niveau),
+ * extrait, date, durée, série et numéro : ceux d'avant, dans le même ordre.
+ * Aucune classe utilitaire : les styles sont dans `src/styles/blog-liste.css`,
+ * la feuille des quatre pages de liste.
  *
- * Format des covers : les 38 illustrations sont en PORTRAIT (2:3, 3:4 ou 4:5),
- * titre dessiné en haut. L'ancien cadre 16:9 n'en montrait que ~40 % et coupait
- * ce titre. Le cadre est donc 4:5 (format cible des nouvelles fiches), ancré sur
- * le haut (`object-top`) : une 4:5 s'affiche entière, une 2:3 ne perd que le bas.
- * En mobile, la carte passe à l'horizontale (vignette à gauche) : une cover 4:5
- * pleine largeur ferait ~430 px de haut par carte.
+ * La classe `blog-card s-<seriesId>` est conservée : elle reste utile pour cibler
+ * une série en CSS.
+ *
+ * Format des couvertures : toutes en PORTRAIT (2:3, 3:4 ou 4:5), titre dessiné en
+ * haut. Le cadre est 4:5, ancré sur le haut : une 4:5 s'affiche entière, une 2:3
+ * ne perd que le bas. Sur téléphone, la carte passe à l'horizontale (vignette à
+ * gauche) : une couverture 4:5 pleine largeur ferait ~430 px de haut par carte.
  */
 import { blogSeries } from '@/lib/blog-series';
+import { nouer, echapper } from '@/lib/typo';
 
 interface Props {
   /** Niveau du titre de carte : 3 quand la grille est sous un h2 de section (/blog). */
@@ -27,7 +30,7 @@ interface Props {
   seriesId: string;
   episodeNumber?: number;
   cover?: { src: string; width: number; height: number; srcSmall?: string };
-  /** Charge la cover en priorité (première carte de la grille) plutôt qu'en lazy. */
+  /** Charge la couverture en priorité (première carte de la grille) plutôt qu'en différé. */
   eager?: boolean;
 }
 
@@ -42,10 +45,10 @@ const formatDate = (d: Date) =>
 const Heading = headingLevel === 3 ? 'h3' : 'h2';
 ---
 
-<article class={`blog-card s-${seriesId} blog-card-hover overflow-hidden rounded-2xl border border-hippo-100 bg-white shadow-sm`}>
-  <a href={`/blog/${slug}`} data-ph="blog_card" class="flex h-full rounded-2xl sm:block focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[hsl(var(--ring))]">
+<article class={`blog-card s-${seriesId} bl-carte`}>
+  <a href={`/blog/${slug}`} data-ph="blog_card">
     {cover && (
-      <div class="relative m-3 mr-0 aspect-[4/5] w-28 shrink-0 self-start overflow-hidden rounded-xl sm:m-0 sm:w-full sm:rounded-none">
+      <div class="bl-vignette">
         <img
           src={cover.src}
           srcset={cover.srcSmall ? `${cover.srcSmall} 320w, ${cover.src} ${cover.width}w` : undefined}
@@ -53,22 +56,21 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
           alt=""
           width={cover.width}
           height={cover.height}
-          class="absolute inset-0 h-full w-full object-cover object-top"
           loading={eager ? 'eager' : 'lazy'}
           fetchpriority={eager ? 'high' : undefined}
         />
       </div>
     )}
-    <div class="min-w-0 p-4 sm:p-5">
-      <div class="mb-2 flex flex-wrap items-center gap-2">
-        {series && <span class={`series-badge bg-gradient-to-r ${series.color}`}>{series.name}</span>}
+    <div class="bl-carte-texte">
+      <div class="bl-marques">
+        {series && <span class="chip plan">{series.name}</span>}
         {episodeNumber !== undefined && seriesId !== 'divers' && (
-          <span class="text-xs text-muted-foreground">#{episodeNumber}</span>
+          <span class="bl-numero">#{episodeNumber}</span>
         )}
       </div>
-      <Heading class="text-base font-bold leading-snug text-foreground sm:text-lg">{title}</Heading>
-      <p class="mt-2 line-clamp-2 text-sm text-muted-foreground sm:line-clamp-3">{description}</p>
-      <div class="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+      <Heading set:html={nouer(echapper(title))} />
+      <p class="bl-extrait" set:html={nouer(echapper(description))} />
+      <div class="bl-infos">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
         <span>{readTime}</span>
       </div>

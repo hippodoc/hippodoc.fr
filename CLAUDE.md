@@ -47,7 +47,8 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 ## DA 2026 — accueil, en-tête, pied et police
 
 L'accueil est entièrement dans la nouvelle direction artistique (MIGRATION.md § 9.eb),
-`/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai` aussi depuis la phase 5b (§ 9.ee). Depuis la phase 5a (§ 9.ed), l'en-tête, le
+`/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai` aussi depuis la phase 5b (§ 9.ee), `/blog`, les
+pages de série et les 48 articles depuis la phase 5c (§ 9.ej). Depuis la phase 5a (§ 9.ed), l'en-tête, le
 pied, la police, la bannière cookies et la bulle de chat de la DA servent sur **toutes**
 les pages ; le contenu des autres pages intérieures garde ses classes Tailwind et ses
 couleurs (phases 5b à 5d).
@@ -136,7 +137,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
   (ex. les blocs « L'essentiel »). Ne le relancer que pour ré-importer sciemment.
 - Encadrés : directives `:::warning` / `:::tip` / `:::essentiel` (plugin
-  `src/lib/remark-callouts.mjs`, styles `.callout-*` dans global.css).
+  `src/lib/remark-callouts.mjs` ; depuis la phase 5c, les styles des encadrés et de tout le
+  corps d'article sont dans le `<style>` scopé de `src/pages/blog/[slug].astro`, plus dans
+  global.css ; le corps se repère par `data-blog-zone="corps"`).
 - Frontmatter `faq`/`relatedArticles`/`slides`/`cta` rendus par `src/pages/blog/[slug].astro`
   (FAQ visible + FAQPage JSON-LD ; slides = îlot embla `BlogSlides.tsx`).
 - Dates : `pubDate`/`updatedDate` alimentent le `lastmod` du sitemap via

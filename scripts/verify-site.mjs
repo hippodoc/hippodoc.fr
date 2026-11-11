@@ -1059,7 +1059,9 @@ for (const s of slugsBlog) {
   const html = readFileSync(resolve(dist, 'blog', s, 'index.html'), 'utf8');
   // Le TEXTE seul : jusqu'au repère de fin, pas jusqu'à </article> — sinon les
   // cartes « Articles connexes » comptaient comme des liens du texte (§ 9.bf).
-  const corps = (html.match(/<div class="prose[^"]*"[^>]*>([\s\S]*?)data-blog-fin/) ?? [, ''])[1];
+  // Repéré par `data-blog-zone="corps"` (l'attribut de mesure), plus par une classe
+  // d'habillage : le gabarit d'article n'en a plus depuis la phase 5c (§ 9.ej).
+  const corps = (html.match(/<div[^>]*data-blog-zone="corps"[^>]*>([\s\S]*?)data-blog-fin/) ?? [, ''])[1];
   if (!corps) fail(`blog/${s} : corps d'article introuvable (repère data-blog-fin absent ?)`);
   // Appel à l'action (§ 9.bf) : 8 articles n'en avaient aucun.
   const blocCta = (html.match(/data-blog-zone="cta"[\s\S]*?<\/aside>/) ?? [''])[0];

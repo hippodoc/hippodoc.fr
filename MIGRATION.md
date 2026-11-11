@@ -6582,6 +6582,91 @@ elle ; le mot et la balise sortent collés.
   « 6 années », « 3 années ») ont été corrigés entre-temps (§ 9.eg) : ils n'ont plus
   d'exception. Il n'en reste qu'une, « impôt(s) » sur `/blog/tout-comprendre-carmf`.
 
+### 9.ej Phase 5c : le blog dans la DA (11 novembre 2026)
+
+> **Numérotation.** Cette entrée a été écrite sous le numéro § 9.ef ; elle a pris § 9.ej à la fusion de `main`, où § 9.ef à § 9.ei étaient déjà attribués (guide des déclarations).
+
+
+Suite de § 9.ee. Période d'observation SEO, et le blog est la porte d'entrée depuis
+Google : seul l'habillage change, sur `/blog`, les trois pages de série et les 48 articles
+(`src/pages/blog/[slug].astro`, `index.astro`, `serie/[series].astro`, `BlogCard.astro`,
+nouveau `BlogAppel.astro`, nouvelle feuille `src/styles/blog-liste.css`). Aucun `.md`
+touché, aucun JS ajouté, `lastmod` non touchés.
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` sur les 71 HTML.
+  Les 19 pages hors blog : identiques à l'octet, au nom de la feuille commune près. Les 48
+  articles : `title`, description, canonique, robots, balises sociales, 192 blocs JSON-LD,
+  H1, 919 titres (niveau, texte, `id`), 4 085 liens (adresse, libellé, `rel`, `target`,
+  dans l'ordre), 986 `id`, 2 401 éléments de mesure (`data-blog-*`, `data-track`,
+  `data-ph`, `data-calendly`), 463 images (`src`, `alt`, dimensions, `srcset`), scripts,
+  îlot des slides, ordre des blocs, suites de texte (100 056 mots) ; le HTML du corps,
+  issu du Markdown, est le même à l'octet (526 004 octets). `/blog` et les séries : mêmes
+  clés (11 blocs JSON-LD, 117 titres, 395 liens, 108 images avec `sizes` et `loading`,
+  5 129 mots), tous les attributs des éléments de `<main>` hors `class`, en-tête et pied.
+  Recherche de `/blog` : mêmes fichiers JS, mêmes identifiants, rien ne se charge avant le
+  focus (essayée à 390 et 1 440 px, avant et après).
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` et en-tête `flottante` (comme en § 9.ee) ; une feuille de page en plus de la
+  feuille commune ; `sizes` de la couverture des articles (sa largeur réelle : 200 à
+  300 px à côté du titre) ; une clé de style scopé dans les `props` de l'îlot des slides ;
+  `role="list"` sur les listes sans puce ; « ← » et « → » dessinés en SVG (le caractère
+  reste dans le texte, classe `sr`) ; des `<span class="num">` (`nouer`) qui gardent sur
+  une ligne un mot et le « ? », « : », « ! », « ; », « / » ou guillemet qui le touche, et
+  les formes inversées (« a-t-elle ») : titres, fil d'Ariane, sommaire, questions, cartes,
+  jamais le corps ; la croix des plis à la place du chevron ; la classe `longue` du
+  sommaire de trois articles.
+- **Habillage** (aucune classe utilitaire dans les gabarits). Articles : le ciel (fil
+  d'Ariane, série en pastille, titre, couverture en carte à droite du titre dès 700 px),
+  une feuille sable pour le texte, colonne de 36 rem (17 px et interligne 1,6 sur
+  téléphone, 16 px sous 360 px, 18 px et 1,7 dès 700 px : 68 caractères par ligne en
+  médiane à 1 440 px, 60 à 74 pour neuf lignes sur dix, 95 sur `main` ; 43 à 390 px),
+  encadrés en fiches avec un signe par genre, tableaux en fiche (cellules insécables,
+  défilement dans la fiche, ombre du côté où il reste des colonnes ; un tableau étroit à
+  l'aplomb du texte, un tableau large centré sur la colonne), sommaire en pli sur
+  téléphone et en fiche collante à gauche dès 1 280 px (le texte est alors à l'aplomb du
+  titre), puis sur une feuille ciel l'appel à l'essai, les questions en plis `.qa`,
+  l'auteur, le partage, les articles connexes, et deux vagues au-dessus du pied. Liste et
+  séries : recherche et séries en pastilles, article à la une en grande fiche, cartes en
+  fiches (vignette à gauche sur téléphone, quatre par ligne dès 1 024 px), index en une
+  fiche par série. Les pastilles de série n'ont plus qu'une teinte.
+- **Feuilles** : commune 167 711 → 147 529 octets (25,8 Ko gzip, son nom change) :
+  `.prose`, `.callout*`, `.blog-*`, `.series-badge` quittent `global.css`. Articles :
+  `_slug_.*.css`, 25 337 octets (5,0 Ko gzip). Liste et séries : 13 222 octets (3,4 Ko
+  gzip). `verify-site.mjs` repère le corps par `data-blog-zone="corps"`.
+- **Après trois relectures** (lecture, invariance SEO, accessibilité), corrigé : interligne
+  et marges du téléphone (les 48 articles font +5,4 % de haut que sur `main` à 390 px, au
+  lieu de +8,9 % ; +0,1 % à 320 px) ; plus d'équilibrage des intertitres, qui renvoyait
+  « : » ou « ? » en début de ligne (0 cas dès 768 px, 6 à 390 px contre 8 sur `main`) ;
+  cellules resserrées sur téléphone (6 tableaux sur 20 défilent à 390 px, comme sur
+  `main` ; aucun dès 744 px) ; les deux liens de l'appel se recouvraient dès 560 px sur
+  dix articles (15 % du lien d'inscription partait vers Calendly) ; compteur des slides à
+  4,13:1 sur le ciel ; questions, partage et lien de l'auteur sur téléphone ; texte de la
+  série resserré (la première carte remonte de 110 à 140 px) ; sommaire collant (ombre
+  quand la liste dépasse, sous-sections masquées au-delà de vingt entrées, plancher sous
+  la bannière cookies) ; cibles de 44 px (index, sommaire replié, flèches des slides) ;
+  contrastes forcés (croix des plis, aussi sur `/faq` ; signe des encadrés) et impression
+  des encadrés ; `/blog` à 320 px avec le texte à 200 %.
+- **Contrôles** : les 52 pages à 22 largeurs de 320 à 1 920 px (aucun défilement
+  horizontal, tableaux à leur place), texte à 200 %, contrastes AA sur tout le texte,
+  captures à 390, 768 et 1 440 px. Lighthouse mobile, article le plus lu, médiane de
+  trois : performance 97 avant et après ces corrections, accessibilité 100, SEO 100 ;
+  `/blog` 100.
+- **À décider** : la feuille de page est une requête bloquante de plus (FCP +0,15 s en
+  local sur `/blog` et les articles, LCP des articles et scores inchangés) ; la mettre
+  en ligne dans le HTML des 52 pages l'éviterait.
+- **Vu, non traité** : le point médian de « Ou commence l'essai gratuit· 30 jours » est
+  masqué à l'œil sous 560 px (dix articles, le lien y prend sa ligne). À 768 px, 40
+  extraits de cartes sur 47 sont coupés par les trois lignes, contre 33 sur `main`. Les 6
+  intertitres encore coupés avant un signe à 390 px sont dans le corps, que rien ne
+  retouche. Pas de repère de la section en cours dans le sommaire : `:target-current`
+  le ferait sans script dans Chrome, mais le minifieur du build ne le connaît pas
+  (avertissement). Les pages restent plus hautes à 1 440 px (+21 % : colonne plus étroite,
+  corps plus grand). Déjà sur `main` : 92 en performance sur l'article à slides
+  `interets-composes-meilleur-remplacement`, `td-has-header` sur deux articles à
+  tableaux. `CLAUDE.md` dit encore que les styles `.callout-*` sont dans `global.css` et
+  que l'accueil est la seule page dans la DA. `blog-series.ts` (généré) garde ses classes
+  de dégradé, que plus rien n'affiche.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

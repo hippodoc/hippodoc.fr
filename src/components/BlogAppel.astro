@@ -1,0 +1,38 @@
+---
+/**
+ * Appel à l'action des pages de liste du blog (/blog et /blog/serie/*), dans la
+ * DA 2026 (phase 5c, MIGRATION.md § 9.ej) : une fiche « eau profonde », le bouton
+ * jaune du Super-Net.
+ *
+ * Texte, liens et `data-track` : ceux de `BlogCtaBand.astro`, au caractère près
+ * (ce composant-là ne sert plus qu'à /guide, qui garde son habillage). Deux liens
+ * statiques, aucun JS. Styles dans `src/styles/blog-liste.css`.
+ *
+ * `emplacement` distingue l'index des pages de série dans `data-track`, sur le
+ * modèle `cta_<destination>_<emplacement>` des autres CTA du site.
+ */
+import { APP_URL } from '@/lib/site';
+
+interface Props {
+  emplacement: 'blog_index' | 'blog_serie';
+}
+
+const { emplacement } = Astro.props;
+---
+
+<aside class="bl-appel" aria-label="Essayer Hippodoc">
+  <div>
+    <p class="bl-appel-titre">Et tes chiffres à <span class="num">toi ?</span></p>
+    <p class="bl-appel-texte">
+      Calcule ton <span class="num">Super-Net :</span> ce qu'il te reste vraiment après cotisations et impôts.
+    </p>
+  </div>
+  <div class="bl-appel-actions">
+    <a href="/simulateur" data-track={`cta_simulateur_${emplacement}`} class="btn btn-brand">
+      Simule ton Super-Net
+    </a>
+    <a href={`${APP_URL}/auth?tab=signup`} data-track={`cta_signup_${emplacement}`} class="bl-appel-lien">
+      Essai gratuit 30 jours
+    </a>
+  </div>
+</aside>
