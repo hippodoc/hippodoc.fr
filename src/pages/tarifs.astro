@@ -148,6 +148,24 @@ const jsonLd = [SOFTWARE_APPLICATION_SCHEMA, faqSchema, breadcrumbSchema];
       </div>
     </div>
 
+    {/* Internes et syndicats partenaires (MIGRATION.md § 9.ed) : décisions 13 et 14
+         du propriétaire (10 novembre 2026), déjà publiées sur l'accueil et sur /faq.
+         Pas de cumul annoncé, pas de liste de syndicats : /faq la tient. */}
+    <section class="mx-auto mt-6 max-w-3xl rounded-2xl border border-hippo-100 bg-white p-6 shadow-sm md:px-8" aria-labelledby="internes-title">
+      <h2 id="internes-title" class="text-lg font-bold text-hippo-800">Internes et docteurs juniors</h2>
+      {/* ⚠️ Un retour à la ligne juste avant une balise en ligne fait disparaître
+           l'espace au rendu (« dure6 mois ») : chaque balise reste sur la ligne
+           du mot qui la précède. */}
+      <p class="mt-2 text-sm text-muted-foreground">
+        Tu paies <strong class="text-foreground">10 € par mois</strong> jusqu'à la fin de l'internat, sur
+        justificatif : écris-nous à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>.
+      </p>
+      <p class="mt-2 text-sm text-muted-foreground">
+        Tu adhères à un syndicat d'internes partenaire ? Ton essai gratuit
+        dure <strong class="text-foreground">6 mois</strong> au lieu de 30 jours, grâce à un code fourni par ton syndicat.
+      </p>
+    </section>
+
     <section class="mx-auto mt-16 max-w-4xl" aria-labelledby="inclus-title">
       <h2 id="inclus-title" class="text-center text-2xl font-bold text-foreground">Inclus dans toutes les offres</h2>
       <ul class="mt-8 grid gap-x-8 gap-y-3 text-[15px] text-foreground sm:grid-cols-2">
