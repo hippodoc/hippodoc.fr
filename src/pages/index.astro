@@ -13,9 +13,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 // la phase 5a, MIGRATION.md § 9.ed). Footer rend aussi le micro-script du tiroir.
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-// Même fichier que le `src` du @font-face de da.css : Vite émet une seule URL à
-// empreinte, le préchargement et la feuille de style demandent donc le même fichier.
-import policeDA from '@/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2?url';
 import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
@@ -100,9 +97,6 @@ const videoSchema = {
   bodyClass="da-fond"
 >
   <Fragment slot="head">
-    <!-- Police de la DA : préchargée, sinon elle n'est découverte qu'après la feuille de style.
-         `crossorigin` obligatoire : sans lui, le fichier est téléchargé deux fois. -->
-    <link rel="preload" as="font" type="font/woff2" href={policeDA} crossorigin />
     <!-- Barre du navigateur mobile : le ciel de la DA (jeton sky-1). -->
     <meta name="theme-color" content="#C9DEFF" />
     <!-- Préchargement du buste de la mascotte, l'image du premier écran. Pas de `href` :

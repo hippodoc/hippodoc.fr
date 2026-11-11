@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 // @ts-ignore
 import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
 	darkMode: ["class"],
@@ -26,6 +27,15 @@ export default {
 			}
 		},
 		extend: {
+			/* Police du site (phase 5a, MIGRATION.md § 9.ed) : Google Sans Flex sur
+			   toutes les pages, par la règle `html` du socle de Tailwind. Les deux
+			   @font-face (la police, son repli à métriques ajustées) sont dans
+			   src/styles/da.css ; BaseLayout précharge le woff2. Un caractère absent
+			   du fichier (flèche, coche, émoji) sort dans la suite de la liste,
+			   celle de Tailwind par défaut. */
+			fontFamily: {
+				sans: ['"Google Sans Flex"', '"Google Sans Flex Fallback"', ...defaultTheme.fontFamily.sans],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

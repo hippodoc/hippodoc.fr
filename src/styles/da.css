@@ -26,6 +26,8 @@
    ========================================================================== */
 
 /* ───────── Police ─────────
+   La police de tout le site depuis la phase 5a : `fontFamily.sans` de
+   tailwind.config.ts la donne à <html>, BaseLayout la précharge.
    Google Sans Flex (SIL OFL 1.1, voir src/assets/fonts/OFL.txt), un seul fichier :
    latin, graisse variable 400 à 800, arrondi (ROND) figé à 100, taille optique
    (opsz) figée à 18, largeur et pente par défaut. */

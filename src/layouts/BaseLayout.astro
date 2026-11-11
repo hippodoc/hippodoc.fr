@@ -6,6 +6,9 @@ import '@/styles/da.css';
 import PostHog from '@/components/PostHog.astro';
 import ThirdPartyScripts from '@/components/ThirdPartyScripts.astro';
 import { SITE_URL, DEFAULT_OG_IMAGE, ORGANIZATION_SCHEMA } from '@/lib/site';
+// Même fichier que le `src` du @font-face de da.css : Vite émet une seule URL à
+// empreinte, le préchargement et la feuille de style demandent donc le même fichier.
+import policeSite from '@/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2?url';
 
 interface Props {
   /** Titre unique < 60 caractères, mot-clé d'abord, marque à la fin. */
@@ -115,6 +118,11 @@ const allJsonLd = [ORGANIZATION_SCHEMA, ...jsonLd];
     {allJsonLd.map((schema) => (
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     ))}
+
+    {/* Police du site (Google Sans Flex, toutes les pages depuis la phase 5a, § 9.ed) :
+        préchargée, sinon elle n'est découverte qu'après la feuille de style.
+        `crossorigin` obligatoire : sans lui, le fichier est téléchargé deux fois. */}
+    <link rel="preload" as="font" type="font/woff2" href={policeSite} crossorigin />
 
     <slot name="head" />
   </head>
