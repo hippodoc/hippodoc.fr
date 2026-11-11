@@ -6497,6 +6497,26 @@ de `src/data/boussoleData.ts` n'est modifié.
   erreur de console, le wizard va jusqu'à la checklist (57 gras, aucun astérisque).
 
 
+### 9.eg /guide-declarations : gras des positions A/B et des définitions courtes (11 novembre 2026)
+
+Suite de § 9.ef, correction de rendu. Sept paragraphes affichaient encore des `**` tels
+quels, parce que leur texte sortait brut : les positions A et B des zones grises
+(`FichesPratiquesSection.tsx`) et la définition courte des termes du glossaire
+(`GlossaireSection.tsx`). Ils passent maintenant par `formatInline`. Aucun texte de
+`src/data/boussoleData.ts` n'est modifié.
+
+- **Texte de la page**, par script contre le build d'avant, balises retirées : identique à
+  76 astérisques près, tous disparus (77 → 1 ; il reste « Cerfa 15945*08 », légitime).
+  Structure hors `<strong>` / `<em>` identique. Aucune autre page ni aucun fichier JS ne
+  change.
+- **Effet de bord assumé** : `formatInline` met aussi en gras d'office les sigles, cases
+  et montants, comme partout ailleurs sur la page. Ces paragraphes en reçoivent donc là
+  où ils n'en avaient aucun (« URSSAF », « 5HQ », « 34 % »…), dans toutes les positions
+  A/B et toutes les définitions courtes, pas seulement les sept qui avaient des
+  astérisques.
+- `verify-site.mjs` à 0 erreur. Les deux composants sont statiques (hors îlot).
+
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

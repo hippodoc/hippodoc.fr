@@ -2,7 +2,7 @@ import React from 'react';
 import { BookA, ChevronDown, Landmark, HeartPulse, Building2, Calculator } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { GLOSSAIRE_DECLARATIONS, GLOSSAIRE_CATEGORIES, type GlossaireCategory } from '@/data/glossaireDeclarationsData';
-import { FormattedText } from './FormattedText';
+import { FormattedText, formatInline } from './FormattedText';
 import { CrossLinks } from './CrossLinks';
 import { useAnchorResolver, termAnchor } from '@/lib/guide/anchors';
 
@@ -103,7 +103,7 @@ export function GlossaireSection() {
                               {cat.label}
                             </Badge>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{term.shortDef}</p>
+                          <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{formatInline(term.shortDef)}</p>
                         </div>
                         {term.longDef && (
                           <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 transition-transform group-open:rotate-180" />
