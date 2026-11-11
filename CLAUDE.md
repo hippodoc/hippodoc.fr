@@ -66,6 +66,12 @@ contenu des pages intérieures garde ses classes Tailwind et ses couleurs (phase
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
   l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
   en-tête se déclare dans `PAGES_SANS_ENTETE`.
+- **Premier bloc d'une page intérieure** : s'il a son propre fond (dégradé, halo, blanc),
+  il prend la classe `da-sous-entete` (`da.css`) : il remonte sous l'en-tête et peint
+  lui-même la bande de ciel, qui s'éteint sur son fond. Sans elle, le fond commence net à
+  80 px et laisse une ligne sur toute la largeur. Un premier bloc sans fond (`/tarifs`,
+  `/blog`, les articles) n'en a pas besoin. La classe ne fait rien si le bloc n'est pas
+  le premier après l'en-tête ; pas sur un conteneur flex ou grille.
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
@@ -81,15 +87,18 @@ contenu des pages intérieures garde ses classes Tailwind et ses couleurs (phase
   règle, sous un autre sélecteur.
 - **Police** : Google Sans Flex sur tout le site. Un seul woff2 (`src/assets/fonts/`,
   sous-ensemble latin, graisses 400 à 800), préchargé par BaseLayout sur toutes les pages
-  et donné à `<html>` par `fontFamily.sans` (`tailwind.config.ts`) ; les deux `@font-face`
-  (la police, son repli à métriques ajustées) sont dans `da.css`. Dans un bloc de la DA
-  (accueil, en-tête, pied), un caractère hors sous-ensemble (→, ✓, émoji) se dessine en
-  SVG, et reste dans le texte dans un élément de classe `sr` (masqué à l'œil) :
-  `verify-site.mjs` échoue sinon sur l'accueil. Dans le contenu des pages intérieures, ces
-  caractères restent tels quels et sortent dans la police du système.
+  et donné à `<html>` par `fontFamily.sans` (`tailwind.config.ts`) ; les trois `@font-face`
+  (la police, et deux faces de repli à métriques ajustées : graisses 400 à 599 et 600 à
+  800) sont dans `da.css`. La police n'a aucune flèche. Dans un bloc de la DA (accueil,
+  en-tête, pied), un caractère hors sous-ensemble (→, ✓, émoji) se dessine en SVG, et reste
+  dans le texte dans un élément de classe `sr` (masqué à l'œil) : `verify-site.mjs` échoue
+  sinon sur l'accueil. Dans le contenu des pages intérieures, ces caractères restent tels
+  quels (→ ↓ ≈ ≠ ≥ ᵉ…) et sortent dans la police suivante de la pile : Arial par la face
+  de repli, sinon la police du système.
 - **Mesure** : chaque section porte `data-landing-section`. `SECTIONS_LANDING`
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
-  commit ; verify-site garde aussi les `data-track`, les ancres `#parcours`, `#pricing` et
+  commit ; verify-site garde aussi les `data-track`, les ancres `#sous-la-surface`,
+  `#parcours`, `#pricing` (les trois cibles du menu, sur toutes les pages) et
   `#film-presentation`, un plancher de mots et l'égalité FAQ visible / `FAQPage`.
 - **Chiffres** : journées et lieux du bloc fondateur relevés en base par `count(*)`
   (MIGRATION.md § 9.u), datés dans l'en-tête de `Fondateur.astro` et dans MIGRATION.md

@@ -28,11 +28,12 @@ export default {
 		},
 		extend: {
 			/* Police du site (phase 5a, MIGRATION.md § 9.ed) : Google Sans Flex sur
-			   toutes les pages, par la règle `html` du socle de Tailwind. Les deux
-			   @font-face (la police, son repli à métriques ajustées) sont dans
-			   src/styles/da.css ; BaseLayout précharge le woff2. Un caractère absent
-			   du fichier (flèche, coche, émoji) sort dans la suite de la liste,
-			   celle de Tailwind par défaut. */
+			   toutes les pages, par la règle `html` du socle de Tailwind. Les trois
+			   @font-face (la police, et deux faces de repli à métriques ajustées :
+			   400 à 599, 600 à 800) sont dans src/styles/da.css ; BaseLayout
+			   précharge le woff2. Un caractère absent du fichier (flèche, coche,
+			   émoji, ≈ ≠) sort dans la suite de la liste : Arial par la face de
+			   repli, puis la liste de Tailwind par défaut. */
 			fontFamily: {
 				sans: ['"Google Sans Flex"', '"Google Sans Flex Fallback"', ...defaultTheme.fontFamily.sans],
 			},
