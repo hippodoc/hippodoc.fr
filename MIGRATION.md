@@ -6560,6 +6560,27 @@ quels, parce que leur texte sortait brut : les positions A et B des zones grises
 - `verify-site.mjs` à 0 erreur. Les deux composants sont statiques (hors îlot) ; le
   wizard, qui partage `formatInline`, revérifié dans Chromium (checklist, aucune erreur).
 
+### 9.ei Espaces avalées autour d'une balise en ligne : correction de rendu et contrôle (11 novembre 2026)
+
+Correction de rendu, pas de contenu : aucun mot n'a changé. Au build, Astro supprime un
+retour à la ligne collé à une balise en ligne (`<strong>`, `<a>`, `<em>`), avant ou après
+elle ; le mot et la balise sortent collés.
+
+- **Onze espaces rétablies** (commit `0f91ecc`), en recollant les lignes sources :
+  `/guide-declarations/2042-c-pro` (« au réel », « en 5QC », « voir la déclaration »,
+  « la DSFU », « aux régimes zonés »), `/guide-declarations/dsfu-pamc` (« tes
+  cotisations », « tes recettes brutes », « l'honoraire. Indemnités »),
+  `/guide-declarations/medecin-remplacant` (« Le simulateur le calcule », des deux côtés
+  du lien ; « la page DSFU »). Les deux de `/tarifs` l'étaient déjà (§ 9.ed, point 5).
+- **`verify-site.mjs`, contrôle « 4 septies bis »** : échoue quand une lettre ou un chiffre
+  est collé à l'extérieur d'une balise `<strong>`, `<a>`, `<em>` ou `<b>` dont l'intérieur
+  ne commence pas (ou ne finit pas) par une espace, sur toutes les pages du build. Rejoué
+  sur les sources d'avant `0f91ecc` : les onze sortent en erreur. Une balise qui coupe un
+  mot exprès se déclare dans `MOTS_COUPES_EXPRES`.
+- `src/lib/pages-lastmod.ts` non touché : `lastmod` des trois pages inchangé.
+- Les mots coupés par un gras de `FormattedText` (« quater**vicies** », « TRÈS »,
+  « 6 années », « 3 années ») ont été corrigés entre-temps (§ 9.eg) : ils n'ont plus
+  d'exception. Il n'en reste qu'une, « impôt(s) » sur `/blog/tout-comprendre-carmf`.
 
 ## 10. TODO(owner) — faits manquants / décisions
 
