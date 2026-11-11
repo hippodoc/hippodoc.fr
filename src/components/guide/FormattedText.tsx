@@ -48,13 +48,13 @@ const FISCAL_KEYWORDS = [
 ];
 
 // Pattern dédié aux références d'articles : « Art. 102 ter », « Art. 261-4-1 », « Art. 194 »
-const ARTICLE_PATTERN = /Art\. ?\d+(?:-\d+(?:-\d+)?)?(?:\s+(?:bis|ter|quater|quinquies))?/g;
+const ARTICLE_PATTERN = /Art\. ?\d+(?:-\d+(?:-\d+)?)?(?:\s+(?:bis|ter|quatervicies|quater|quinquies)(?![\wÀ-ÿ]))?/g;
 
 // Phase 2 — Codes 2 lettres MAJ de la 2035 (AA, BK, DD, CP, CR, etc.)
 // Uniquement quand introduits par un mot déclencheur (case/ligne/en/la),
 // pour éviter les faux positifs type "OK", "TV", initiales aléatoires.
 // Lookbehind ne consomme pas → match[0] = code 2 lettres seul.
-const CASE_2L_PATTERN = /(?<=\b(?:case|cases|ligne|lignes|en|la)\s)[A-Z]{2}(?!\w)/g;
+const CASE_2L_PATTERN = /(?<=\b(?:case|cases|ligne|lignes|en|la)\s)[A-Z]{2}(?![\wÀ-ÿ])/g;
 
 // Phase 3 — Statuts d'exercice & seuils-clés (notions métier, couleur distincte)
 // Première lettre tolère MAJ ou min via [Xx] pour gérer les débuts de phrase.
@@ -90,7 +90,10 @@ type Segment = {
 /** Split text on emoji markers into typed segments */
 function splitOnMarkers(text: string): Segment[] {
   // Split on ⚠️, ✅, 💡 — keep the marker with the segment after it
-  const parts = text.split(/(⚠️|✅|💡)/);
+  // Un marqueur écrit DANS un gras (« **⚠️ Titre** ») laisserait son « ** » ouvrant
+  // dans le segment d'avant : toutes les paires suivantes se décalent (gras inversé,
+  // astérisques visibles). On sort le marqueur du gras avant de couper.
+  const parts = text.replace(/(^|\s)\*\*(⚠️|✅|💡)\s*/g, '$1$2 **').split(/(⚠️|✅|💡)/);
   const segments: Segment[] = [];
   
   let i = 0;
@@ -166,7 +169,7 @@ export function formatInline(text: string): React.ReactNode[] {
     `((?<![\\w-])(?:${keywordPattern})(?![\\w-]))|` +            // group 4: keywords (word-bounded)
     `(\\b(?:RO|PC|ZG|QT|CASE)-\\d{3}\\b)|` + // group 5b: internal cross-refs (rendered as InlineRef)
     `(\\b(?:5[A-Z]{2}|20[34][25](?:-[A-Z]-?[A-Z]*)?|1[A-Z]{2})\\b)|` + // group 6: case codes
-    `(\\d[\\d\\s,.]{0,15}(?:€|%|jours?\\/an|jours?|ans?|mois))|` +       // group 7: amounts
+    `(\\d[\\d\\s,.]{0,15}(?:€|%|(?:jours?\\/an|jours?|ans?|mois)(?![\\wÀ-ÿ])))|` +       // group 7: amounts
     `(«\\s.*?\\s»)|` +                  // group 8: quoted
     `(${ARTICLE_PATTERN.source})|` +    // group 9: legal articles (Art. 102 ter, Art. 261-4-1…)
     `(${CASE_2L_PATTERN.source})|` +    // group 10: 2L 2035 codes (case AA, ligne BK…)

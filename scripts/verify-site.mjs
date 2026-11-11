@@ -776,12 +776,6 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
    Une balise qui coupe un mot exprès se déclare ici, par page, sous la forme
    « avant<balise>après » (balise sans attributs). */
 const MOTS_COUPES_EXPRES = {
-  // FormattedText met en gras un terme reconnu au milieu d'un mot.
-  '/guide-declarations': [
-    'quater</strong>vicies', // « Art. 163 quater » en gras, « vicies » à la suite
-    'TR</strong>ÈS',
-    'an</strong>nées', // « 6 années », « 3 années »
-  ],
   // Lien posé sur « cotisations sociales et impôt », le « s » du pluriel dehors.
   '/blog/tout-comprendre-carmf': ['impôt</a>s'],
 };

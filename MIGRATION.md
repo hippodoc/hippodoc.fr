@@ -6560,7 +6560,20 @@ elle ; le mot et la balise sortent collés.
   « 6 années » et « 3 années » sur `/guide-declarations`, « impôt(s) » sur
   `/blog/tout-comprendre-carmf`.
 - `src/lib/pages-lastmod.ts` non touché : `lastmod` des trois pages inchangé.
-- **Vu en passant, non touché** : sur `/guide-declarations`, quelques textes passés par
-  `FormattedText` sortent avec le gras inversé et deux astérisques visibles (« tranches
-  progressives** », réponse sur le RSPM ; aussi les passages ANCV / DSCN). Le contrôle ne
-  les voit pas : les espaces y sont, à l'intérieur de la balise.
+- **Gras inversé sur `/guide-declarations`, corrigé le même jour** (correction de rendu,
+  `src/components/guide/FormattedText.tsx`, aucun texte de `src/data/` touché). Un
+  marqueur écrit dans un gras (« `**⚠️ Titre**` ») laissait son `**` ouvrant dans le
+  segment d'avant : les paires suivantes se décalaient, le gras sortait inversé et deux
+  astérisques restaient visibles (« tranches progressives** », réponse sur le RSPM ;
+  « Périmètre exact de DSCN », glossaire). Le marqueur sort maintenant du gras avant la
+  coupe. Trois motifs ne mordent plus au milieu d'un mot : « Art. 163 quatervicies » est
+  en gras en entier (cinq fois), « TRÈS », « 6 années » et « 3 années » ne sont plus
+  coupés par un gras ; leurs exceptions quittent `MOTS_COUPES_EXPRES`. Prouvé par script
+  contre le build d'avant : seule `/guide-declarations` change (et le JS de l'îlot), son
+  texte est identique aux quatre astérisques parasites près, seul le gras bouge. Îlot
+  rechargé dans Chromium : aucune erreur d'hydratation.
+- **Vu en passant, non touché** : sur `/guide-declarations`, des `**…**` restent affichés
+  tels quels dans des textes qui ne passent pas par `FormattedText` (blocs « Position A » /
+  « Position B », « **perçues** », « **versées** » ; 38 astérisques doubles dans le HTML).
+  Les y faire passer changerait aussi le gras automatique de ces blocs : au propriétaire
+  de dire.
