@@ -6509,12 +6509,14 @@ quels, parce que leur texte sortait brut : les positions A et B des zones grises
   76 astérisques près, tous disparus (77 → 1 ; il reste « Cerfa 15945*08 », légitime).
   Structure hors `<strong>` / `<em>` identique. Aucune autre page ni aucun fichier JS ne
   change.
-- **Effet de bord assumé** : `formatInline` met aussi en gras d'office les sigles, cases
-  et montants, comme partout ailleurs sur la page. Ces paragraphes en reçoivent donc là
-  où ils n'en avaient aucun (« URSSAF », « 5HQ », « 34 % »…), dans toutes les positions
-  A/B et toutes les définitions courtes, pas seulement les sept qui avaient des
-  astérisques.
-- `verify-site.mjs` à 0 erreur. Les deux composants sont statiques (hors îlot).
+- **Gras d'office** : dans les positions A/B, `formatInline` met aussi en gras les sigles,
+  cases et montants, comme partout ailleurs sur la page (« URSSAF », « 5HQ », « 34 % »…),
+  y compris dans les positions qui n'avaient pas d'astérisques. Les définitions courtes
+  du glossaire, elles, ne rendent que le balisage de l'auteur
+  (`formatInline(texte, { auto: false })`) : sans cela, toutes recevaient du gras d'office
+  (110 gras de plus). Bilan sur la page : 4 394 → 4 518 `<strong>`.
+- `verify-site.mjs` à 0 erreur. Les deux composants sont statiques (hors îlot) ; le
+  wizard, qui partage `formatInline`, revérifié dans Chromium (checklist, aucune erreur).
 
 
 ## 10. TODO(owner) — faits manquants / décisions

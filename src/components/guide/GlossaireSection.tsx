@@ -103,7 +103,7 @@ export function GlossaireSection() {
                               {cat.label}
                             </Badge>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{formatInline(term.shortDef)}</p>
+                          <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{formatInline(term.shortDef, { auto: false })}</p>
                         </div>
                         {term.longDef && (
                           <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 transition-transform group-open:rotate-180" />

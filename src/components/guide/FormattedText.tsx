@@ -221,7 +221,9 @@ type Auto = { start: number; end: number; group: number };
  *     un code de l'auteur y reste fondu (comme avant) ; un terme qui contient du balisage
  *     (une citation) le rend à l'intérieur ; un terme à cheval sur une borne est ignoré.
  */
-export function formatInline(text: string): React.ReactNode[] {
+export function formatInline(text: string, options: { auto?: boolean } = {}): React.ReactNode[] {
+  // `auto: false` : seul le balisage de l'auteur est rendu, sans termes mis en gras d'office.
+  const { auto = true } = options;
   // Passe 1
   let plain = '';
   const marques: Marque[] = [];
@@ -241,7 +243,7 @@ export function formatInline(text: string): React.ReactNode[] {
 
   // Passe 2
   const autos: Auto[] = [];
-  for (const m of plain.matchAll(AUTO_PATTERN)) {
+  for (const m of auto ? plain.matchAll(AUTO_PATTERN) : []) {
     const start = m.index!;
     const end = start + m[0].length;
     const gene = marques.some(k => {
