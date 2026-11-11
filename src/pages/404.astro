@@ -18,6 +18,10 @@ import Footer from '@/components/Footer.astro';
  *
  * Zéro JS, conformément à l'invariant du site : ni recherche, ni suggestion
  * dynamique — seulement des liens statiques vers les destinations réelles.
+ *
+ * Habillée dans la DA 2026 en phase 5d (MIGRATION.md § 9.em) : le ciel, quatre
+ * fiches en relief, l'eau du pied de page. Textes, titres et liens inchangés ;
+ * aucune classe utilitaire, tout est dans le <style> de la page.
  */
 
 const title = 'Page introuvable (404) | Hippodoc';
@@ -49,33 +53,36 @@ const destinations = [
 ];
 ---
 
-<BaseLayout {title} {description} path="/404" noindex>
-  <Header />
+<BaseLayout {title} {description} path="/404" noindex bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel de la page, qui lui réserve le haut. */}
+  <Header variante="flottante" />
 
-  <main class="da-sous-entete min-h-screen bg-gradient-to-b from-hippo-50 to-white pb-20 pt-12">
-    <div class="container max-w-3xl">
-      <p class="text-sm font-semibold uppercase tracking-wide text-hippo-600">
+  <main class="page da-bloc">
+    <div class="wrap">
+      <p class="marque">
         Erreur 404
       </p>
 
-      {/* Même traitement que le H1 du blog : le dégradé ne porte que sur une
-          partie du titre, à une taille qui passe le seuil AA « grand texte ». */}
       {/* Le fragment doit rester sur UNE ligne : un retour à la ligne avant le
           <span> est absorbé à la compilation et colle les deux mots
           (« estintrouvable »). Même contrainte que le H1 de blog/index.astro. */}
-      {/* `break-words` : « introuvable » est un mot de onze lettres insécable.
-          À 200 % de zoom sur 320 px, il débordait la page de 63 px (103 px sur
-          un Galaxy Fold) et imposait un défilement horizontal — échec WCAG
-          1.4.10 « Reflow ».
-          Surtout PAS `hyphens-auto` ici : la césure automatique optimise le
-          remplissage des lignes même quand rien ne déborde, et coupait
-          « intro-uvable » à taille normale. `break-words` ne se déclenche que
-          lorsque le mot ne tient réellement pas. */}
-      <h1 class="mt-2 break-words text-4xl font-bold leading-tight tracking-tight text-hippo-800 md:text-5xl">
-        Cette page est <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">introuvable</span>
+      {/* `overflow-wrap: break-word` (feuille de la page) : « introuvable » est un
+          mot de onze lettres insécable. À 200 % de zoom sur 320 px, il débordait
+          la page de 63 px (103 px sur un Galaxy Fold) et imposait un défilement
+          horizontal — échec WCAG 1.4.10 « Reflow ».
+          Surtout PAS de césure automatique ici : elle optimise le remplissage
+          des lignes même quand rien ne déborde, et coupait « intro-uvable » à
+          taille normale. La coupure ne se déclenche que lorsque le mot ne tient
+          réellement pas. */}
+      <h1 class="aff">
+        Cette page est <span class="eau">introuvable</span>
       </h1>
 
-      <p class="mt-4 text-lg text-muted-foreground">
+      <p class="lead">
         L'adresse demandée n'existe pas, ou plus. Elle a peut-être été renommée,
         ou le lien qui vous a amené ici est incomplet.
       </p>
@@ -84,32 +91,32 @@ const destinations = [
           (« Contactez-nous », « Informations »). Sans lui, la page enchaînait
           h1 → h3, un saut de niveau signalé par Lighthouse (heading-order) et
           désorientant à la navigation par titres d'un lecteur d'écran. */}
-      <h2 class="mt-10 text-lg font-semibold text-hippo-800">Où aller maintenant ?</h2>
+      <h2>Où aller maintenant ?</h2>
 
-      {/* `min-w-0` sur les cartes : un élément de grille a `min-width:auto` et
+      {/* `min-width: 0` sur les fiches : un élément de grille a `min-width:auto` et
           refuse donc de rétrécir sous la largeur de son mot le plus long. À 200 %
-          de zoom sur 280 px, les quatre cartes débordaient de 14 px. */}
-      <nav aria-label="Destinations principales" class="mt-4 grid gap-4 sm:grid-cols-2">
+          de zoom sur 280 px, les quatre fiches débordaient de 14 px. */}
+      <nav aria-label="Destinations principales" class="portes">
         {
           destinations.map((d) => (
             <a
               href={d.href}
-              class="group min-w-0 break-words rounded-2xl border border-hippo-100 bg-white p-5 shadow-sm transition hover:border-hippo-300 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-600"
+              class="porte"
             >
-              <span class="block font-semibold text-hippo-800 group-hover:text-hippo-700">
+              <span class="porte-t">
                 {d.titre}
               </span>
-              <span class="mt-1 block text-sm text-muted-foreground">{d.texte}</span>
+              <span class="porte-p">{d.texte}</span>
             </a>
           ))
         }
       </nav>
 
-      <p class="mt-10 text-sm text-muted-foreground">
+      <p class="signal">
         Vous pensez qu'il s'agit d'une erreur de notre côté ?{' '}
         <a
           href="mailto:contact@hippodoc.fr?subject=Lien%20cass%C3%A9%20sur%20hippodoc.fr"
-          class="inline-flex min-h-6 items-center font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-700"
+          class="lien"
         >
           Signalez-nous le lien cassé
         </a>.
@@ -119,3 +126,55 @@ const destinations = [
 
   <Footer />
 </BaseLayout>
+
+<style>
+  /* La page : le ciel, puis l'eau du pied de page (les deux dernières vagues de
+     la scène de fin de /tarifs, immobiles ; la dernière a la couleur du haut du
+     pied, --deep). Le bloc passe sous la pastille de l'en-tête, il lui réserve
+     le haut. -1 px en bas : pas de filet clair au-dessus du pied. */
+  .page { position: relative; display: block; margin-bottom: -1px; padding: 116px 0 170px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px, var(--sky-2) 100%); font-size: 1.0625rem; overflow-wrap: break-word; }
+  .page::before, .page::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none; --p: 300px; --th: 40px; }
+  .page::before { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .page::after { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .wrap { max-width: calc(48rem + 2 * var(--gut)); }
+  .wrap > * { margin: 0; }
+
+  /* « Erreur 404 » : une pastille blanche, comme « FAQ » en tête de /faq. */
+  .wrap .marque { display: inline-block; margin-bottom: 16px; padding: 4px 13px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
+  h1 { --corps: var(--h1-page); text-wrap-style: balance; }
+  /* « introuvable » dans le bleu de l'eau (4,3:1 sur le ciel, grand texte). */
+  .eau { color: var(--w4); }
+  .wrap .lead { margin-top: 18px; font-size: 1.1875rem; }
+  /* Un titre de rubrique, pas un grand titre : la page n'a qu'un écran. */
+  .wrap h2 { margin-top: 44px; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; }
+
+  /* Les quatre destinations : des fiches en relief, entières cliquables. */
+  .wrap .portes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+  .porte { position: relative; display: block; min-width: 0; padding: 20px 56px 22px 22px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; transition: translate 160ms var(--ease), background-color 160ms var(--ease); }
+  .porte:hover { background: var(--sky-soft); translate: 0 -2px; }
+  /* La flèche : un dessin (la police n'a pas ce caractère), dans une pastille. */
+  .porte::after { content: ""; position: absolute; top: 50%; right: 16px; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%; background: var(--sky) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2314254F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8h10M9 4l4 4-4 4'/%3E%3C/svg%3E") center / 16px 16px no-repeat; }
+  .porte-t { display: block; font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.35; }
+  .porte-p { display: block; margin-top: 4px; font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+  .wrap .signal { margin-top: 40px; font-size: 1rem; line-height: 1.7; color: var(--ink-2); }
+
+  @media (max-width: 559px) {
+    .page { padding: 104px 0 146px; }
+  }
+  @media (min-width: 640px) {
+    .wrap .portes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  }
+  @media (min-width: 900px) {
+    .page { padding: 156px 0 230px; }
+    .page::before, .page::after { --p: 440px; --th: 54px; }
+    .page::before { height: 112px; }
+    .page::after { height: 60px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .porte:hover { translate: none; } }
+  /* Contrastes forcés (Windows) : un contour rend leur forme aux fiches ; le
+     décor de l'eau disparaît. */
+  @media (forced-colors: active) {
+    .porte, .wrap .marque { border: 1px solid CanvasText; }
+    .page::before, .page::after, .porte::after { display: none; }
+  }
+</style>

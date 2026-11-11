@@ -2,7 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Portage de src/index.css de la SPA source — parties utilisées par le site public. */
+/* Portage de src/index.css de la SPA source — parties utilisées par le site public.
+   Depuis la phase 5d (MIGRATION.md § 9.em), toutes les pages sont dans la DA
+   (src/styles/da.css et la feuille de chaque page) : ne restent ici que le socle
+   de Tailwind, les jetons des composants partagés `src/components/ui/` (îlots du
+   simulateur, de la calculette et du guide des déclarations), et les réglages
+   de <html> et <body>. */
 
 @layer base {
   :root {
@@ -39,14 +44,6 @@
     --ring: 222 84% 48%;
 
     --radius: 0.5rem;
-
-    /* Blog Series Colors */
-    --series-pratique-from: 217 91% 60%;
-    --series-pratique-to: 191 91% 55%;
-    --series-fiscalite-from: 271 91% 65%;
-    --series-fiscalite-to: 338 90% 66%;
-    --series-divers-from: 25 95% 53%;
-    --series-divers-to: 0 84% 60%;
   }
 }
 
@@ -75,11 +72,6 @@
 }
 
 @layer components {
-  @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-
   /* Cartes et pastilles de série des pages de liste du blog : dans
      `src/styles/blog-liste.css` depuis la phase 5c (MIGRATION.md § 9.ej). */
 
@@ -89,49 +81,16 @@
      § 9.ej). Ces règles ne servaient qu'aux articles. */
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Images clés `fadeIn`, `slideInLeft`, `pulseRing`, `bounceSubtle`, `shimmer` et
+   couleurs de série `--series-*` : retirées en phase 5d (MIGRATION.md § 9.em),
+   plus rien ne les employait. Le reflet du squelette de chargement du simulateur
+   (`ui/skeleton.tsx`) prend ses images clés `shimmer` dans tailwind.config.ts :
+   celles d'ici, de même nom, étaient déjà recouvertes par elles. */
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulseRing {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes bounceSubtle {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-/* Halos décoratifs flous (`blur-3xl`, `blur-[120px]`…) sur leur propre calque GPU
+/* Depuis la phase 5d, les halos des pages ont disparu : la règle ne vise plus que
+   le texte flouté du simulateur (`blur-[6px]`, GuidePatrimonialTeaser.tsx). Gardée
+   telle quelle. Son histoire :
+   Halos décoratifs flous (`blur-3xl`, `blur-[120px]`…) sur leur propre calque GPU
    (27/09/2026, MIGRATION.md § 9.dn). Sans calque, Safari recalcule le flou à chaque
    image où la zone qu'il couvre est redessinée — ici en continu, à cause des reflets
    animés des boutons voisins — et l'ouverture du menu mobile au-dessus du hero tombait

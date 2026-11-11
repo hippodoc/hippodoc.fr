@@ -1,0 +1,50 @@
+---
+/**
+ * Gabarit des quatre pages légales (/mentions-legales, /politique-confidentialite,
+ * /conditions-utilisations, /rgpd), dans la DA 2026 depuis la phase 5d
+ * (MIGRATION.md § 9.em). Sobre : le titre sur le ciel, le texte sur une feuille
+ * sable dans une colonne de lecture, l'eau du pied de page.
+ *
+ * - Emplacement `tete` : le <h1> et la ligne qui le suit (date ou chapô).
+ *   Emplacement par défaut : le texte, tel qu'il sort de la page (<section>,
+ *   <h2>, <h3>, <p>, <ul>, <table>…), sans classe : la feuille l'habille par
+ *   élément, avec la typographie de lecture du gabarit d'article.
+ * - Styles dans `src/styles/legal.css` (une feuille pour les quatre pages, servie
+ *   à elles seules), sous `.lg`. Aucune classe utilitaire.
+ * - <main> est nouveau : ces pages n'avaient pas de région principale.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import '@/styles/legal.css';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+}
+
+const { title, description, path } = Astro.props;
+---
+
+<BaseLayout {title} {description} {path} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
+
+  <main class="lg da-bloc">
+    <article>
+      <div class="lg-tete">
+        <slot name="tete" />
+      </div>
+      <div class="lg-feuille">
+        <slot />
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

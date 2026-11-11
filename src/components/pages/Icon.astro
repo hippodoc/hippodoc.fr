@@ -1,8 +1,9 @@
 ---
 /**
- * Icônes inline (tracés Lucide) partagées par les pages statiques
- * /faq, /comparatif et /qui-sommes-nous. Zéro dépendance JS — SVG pur,
- * pour rester cohérent avec Header.astro / Footer.astro (mêmes conventions).
+ * Icônes inline (tracés Lucide) de /comparatif (/faq et /qui-sommes-nous
+ * dessinent les leurs depuis la phase 5b). Zéro dépendance JS — SVG pur.
+ * Pas de classe par défaut : la page donne la sienne et la taille par sa
+ * feuille (`:global(.ic)` : le <svg> ne reçoit pas le style scopé de la page).
  */
 export interface Props {
   /** Nom d'icône : une des clés de `paths` ci-dessous. */
@@ -10,7 +11,7 @@ export interface Props {
   class?: string;
 }
 
-const { name, class: className = 'h-4 w-4' } = Astro.props;
+const { name, class: className } = Astro.props;
 
 const paths: Record<string, string> = {
   'help-circle': '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',

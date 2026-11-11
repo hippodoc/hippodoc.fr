@@ -1,49 +1,65 @@
 ---
 /**
- * Bandeau d'appel à l'action de /guide. Les pages de liste du blog (/blog et
- * /blog/serie/*), pour lesquelles il a été écrit, ont le leur dans la DA depuis
- * la phase 5c : `BlogAppel.astro`, même texte, mêmes liens (MIGRATION.md § 9.ej).
+ * Appel au simulateur de /guide, dans la DA 2026 depuis la phase 5d
+ * (MIGRATION.md § 9.em) : une fiche blanche, deux liens statiques, aucun JS.
+ * Texte, liens et `data-track` inchangés. Les pages de liste du blog, pour
+ * lesquelles il a été écrit (§ 9.bf), ont le leur depuis la phase 5c :
+ * `BlogAppel.astro`, même texte, mêmes liens (§ 9.ej).
  *
- * Ces pages n'en avaient aucun (§ 9.bf) : en mobile, le bouton « Essai gratuit »
- * du header est masqué sous le menu, l'inscription était donc à deux taps et
- * rien ne menait au simulateur. Deux liens statiques, aucun JS.
+ * Le jaune est pris par le bouton de téléchargement, juste au-dessus : celui-ci
+ * est blanc, pour qu'il n'y ait qu'une action principale à l'écran.
  *
- * `emplacement` distingue l'index des pages de série dans `data-track`, sur le
- * modèle `cta_<destination>_<emplacement>` des autres CTA du site.
+ * `emplacement` entre dans `data-track`, sur le modèle
+ * `cta_<destination>_<emplacement>` des autres CTA du site.
  */
 import { APP_URL } from '@/lib/site';
 
 interface Props {
-  emplacement: 'blog_index' | 'blog_serie' | 'guide_remplacant';
+  emplacement: 'guide_remplacant';
 }
 
 const { emplacement } = Astro.props;
 ---
 
 <aside
-  class="rounded-2xl border border-hippo-100 bg-hippo-50/60 p-6 sm:flex sm:items-center sm:justify-between sm:gap-6"
+  class="appel"
   aria-label="Essayer Hippodoc"
 >
   <div>
-    <p class="text-lg font-bold text-hippo-800">Et tes chiffres à toi ?</p>
-    <p class="mt-1 text-sm text-muted-foreground">
+    <p class="appel-t">Et tes chiffres à toi ?</p>
+    <p class="appel-p">
       Calcule ton Super-Net : ce qu'il te reste vraiment après cotisations et impôts.
     </p>
   </div>
-  <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-0 sm:shrink-0">
+  <div class="appel-actions">
     <a
       href="/simulateur"
       data-track={`cta_simulateur_${emplacement}`}
-      class="inline-flex h-11 items-center justify-center rounded-full bg-hippo-600 px-5 font-semibold text-white shadow-sm transition-colors hover:bg-hippo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700"
+      class="btn btn-line"
     >
       Simule ton Super-Net
     </a>
     <a
       href={`${APP_URL}/auth?tab=signup`}
       data-track={`cta_signup_${emplacement}`}
-      class="inline-flex min-h-11 items-center text-sm font-medium text-hippo-600 underline underline-offset-2 hover:text-hippo-800"
+      class="lien"
     >
       Essai gratuit 30 jours
     </a>
   </div>
 </aside>
+
+<style>
+  .appel { display: flex; flex-direction: column; gap: 18px; padding: 24px 22px 26px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); text-align: left; }
+  .appel p { margin: 0; }
+  .appel-t { font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+  .appel-p { margin-top: 4px !important; font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+  .appel-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding-bottom: 5px; }
+  .appel .btn { min-height: 48px; padding: 6px 22px; font-size: 1rem; text-align: center; }
+  .appel .lien { font-size: 1rem; }
+  @media (min-width: 700px) {
+    .appel { flex-direction: row; align-items: center; justify-content: space-between; gap: 24px; padding: 26px 28px; }
+    .appel-actions { flex: none; }
+  }
+  @media (forced-colors: active) { .appel { border: 1px solid CanvasText; } }
+</style>

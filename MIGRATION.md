@@ -6908,6 +6908,123 @@ pages filles) et `src/styles/calculette.css` (la calculette seule).
   émojis et les signes ≠ ≥ → des données restent des caractères (police de repli). Les
   classes de couleur de `GLOSSAIRE_CATEGORIES` (`src/data/`) ne servent plus.
 
+### 9.em Phase 5d : `/guide`, `/comparatif`, les pages légales et la 404 dans la DA ; ménage de Tailwind (11 novembre 2026)
+
+Suite de § 9.ek et § 9.el : les sept dernières pages. **Toutes les pages du site sont
+maintenant dans la DA.** Période d'observation SEO : seul l'habillage change, sur `/guide`
+(le guide du remplaçant en PDF), `/comparatif`, `/mentions-legales`,
+`/politique-confidentialite`, `/conditions-utilisations`, `/rgpd` et la 404. Aucun JS
+ajouté, `src/lib/` et les îlots pas touchés, `lastmod` non touché.
+
+- **Ce qui ne change pas**, prouvé par script. Les sept pages étaient identiques entre
+  `main` et le commit précédent (§ 9.el) : le build de `main` sert de référence. Les
+  64 autres HTML : identiques à l'octet au commit précédent, au nom de la feuille commune
+  près ; les 6 autres fichiers texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`,
+  index de recherche) aussi ; les dix autres feuilles identiques à l'octet ; aucune image
+  de plus. Sur chaque page du lot : `title`, description, canonique, robots, balises
+  sociales, JSON-LD, H1, titres (niveau, texte, `id`), liens (adresse, libellé, `rel`,
+  `target`, `type`, mesure, dans l'ordre), `id`, images (adresse, `alt`, dimensions,
+  `srcset`), éléments de mesure (`data-ph`, `data-track`, `data-guide-download`,
+  `data-guide-share`, `data-mesure`), scripts, plis, tableaux cellule par cellule, ordre
+  des blocs, et le texte, suite par suite entre balises de bloc. `/guide` : 8 titres,
+  56 liens, 8 images, 652 mots. `/comparatif` : 5 JSON-LD, 19 titres, 64 liens, 8 plis, le
+  tableau, 1 713 mots. Mentions légales 772 mots, confidentialité 2 020, conditions 1 228,
+  RGPD 1 355, 404 196.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille en plus
+  de la feuille commune ; `role="list"` sur les listes dont la puce est retirée ; halos
+  et liserés décoratifs en moins, le décor de la fin en plus (`aria-hidden`). Pages
+  légales : un `<main>` en plus (elles n'avaient pas de région principale). `/guide` : la
+  règle qui masque la bulle de chat sur téléphone (§ 9.dk) passe du `<style>` en ligne à
+  la feuille de la page. Les flèches « → », les trois points « ⋯ » et la pastille « ● »
+  sont dessinés, le caractère reste dans le texte, masqué à l'œil. Des `<span>` gardent
+  sur une ligne un mot et le tiret qui le suit (titres des pages légales : la ligne
+  commençait par « – »).
+- **`/guide`** : le ciel (pastille « PDF gratuit · 26 pages · Édition », titre avec
+  l'édition dans le bleu de l'eau, bouton de téléchargement jaune, la couverture en carte
+  au bord blanc ; sur téléphone toujours titre, bouton, couverture, le bouton à 373 px
+  du haut à 390 px de large, 386 avant) ; une feuille sable (les six règles en fiches, numéro en
+  pastille encre) ; une feuille ciel (le sommaire : titre et chapô à gauche, les neuf
+  chapitres sur une fiche) ; une feuille sable (l'aperçu : trois pages en cartes, rangée
+  qui défile de côté sur téléphone) ; la fin (la fiche de l'auteur, le second bouton sur
+  l'eau profonde, l'appel au simulateur, le soleil sur l'eau du pied).
+  `BlogCtaBand.astro`, qui ne sert plus qu'ici, est rhabillé : bouton blanc, le jaune
+  est pris par le téléchargement juste au-dessus.
+- **`/comparatif`** : le ciel (fil d'Ariane, pastille, titre aux quatre noms dans leur
+  couleur de marque, les cinq ancres en pastilles) ; six feuilles, sable et ciel en
+  alternance (quatre verdicts, quatre solutions, le tableau, quatre profils, les tarifs,
+  les questions en plis `.qa` avec le titre à gauche) ; la fin (appel à l'essai, bouton
+  jaune, note « À propos de ce comparatif », soleil). La fiche et la colonne d'Hippodoc
+  n'ont qu'un liseré et une teinte : le comparatif reste factuel. **Le tableau** reste un
+  seul `<table>`, dans une fiche : sur téléphone il défile de côté dans sa fiche (la page
+  jamais), la colonne des fonctionnalités reste en place (collante), le nom du groupe
+  aussi, et une ombre à droite dit qu'il reste des colonnes ; on voit deux éditeurs à la
+  fois à 390 px, un et demi à 320 px ; plus de défilement à partir de 740 px environ.
+  `pages/Icon.astro` n'a plus de classe par défaut (il ne sert plus qu'ici).
+- **Pages légales** : un gabarit, `src/layouts/PageLegale.astro`, et une feuille,
+  `src/styles/legal.css`. Sobres : le titre sur le ciel, le texte sur une feuille sable
+  dans une colonne de 40 rem, l'eau du pied. Le texte n'a plus aucune classe : il est
+  habillé par élément, avec la typographie de lecture du gabarit d'article (§ 9.ej).
+  Encarts en fiches rondes (ciel doux, ambre pour l'alerte HDS, bleu pour la
+  recommandation) ; le tableau des finalités sur une fiche, une finalité par bloc sous
+  560 px ; les deux boutons de la mesure d'audience en boutons de la DA, de même poids
+  (`data-mesure` et `#mesure-etat` inchangés).
+- **404** : le ciel, « introuvable » dans le bleu de l'eau, les quatre destinations en
+  fiches en relief, l'eau du pied.
+- **Ménage** (`global.css`, `tailwind.config.ts`), chaque retrait prouvé par script avant
+  d'être fait : le nom cherché dans `src/` et dans tout le build (HTML, CSS, JS), puis la
+  feuille commune comparée règle par règle avant et après. Retirés : les images clés
+  `fadeIn`, `slideInLeft`, `pulseRing`, `bounceSubtle` et les six couleurs `--series-*` de
+  `global.css` ; dans la config, le conteneur (`corePlugins.container` coupé : la classe
+  n'est portée par aucun élément, mais le mot revient dans les sources et Tailwind en
+  tirait la règle), quatorze animations dont aucune classe `animate-*` n'existe, le plugin
+  typography (`prose` nulle part) et le plugin qui exposait chaque couleur de Tailwind en
+  variable CSS : 263 variables dans la feuille commune, aucune lue (`var()`,
+  `getPropertyValue`, nom composé en JS). Les 20 jetons shadcn gardent leur valeur.
+  Deux pièges, vus à la comparaison des règles : les images clés `shimmer` de
+  `global.css` étaient recouvertes par celles de la config, de même nom, que le squelette
+  de chargement du simulateur emploie (`animate-[shimmer_…]`) : ce sont celles de la
+  config qui restent ; et `fadeIn` est aussi le nom d'images clés que le tiroir d'aide du
+  simulateur (vaul) apporte lui-même, dans une feuille injectée après celle du site : la
+  nôtre ne servait à rien. Effet sur la feuille commune, exactement : 10 règles retirées
+  (les quatre images clés, `.container`), `:root` de 283 à 20 variables, aucune règle
+  ajoutée, aucune valeur changée. **Gardé** : la règle `will-change` des éléments floutés
+  (elle vise encore le texte flouté du simulateur), `shimmer`, l'accordéon, les couleurs
+  `hippo` et les jetons shadcn (îlots, `ui/`, bannière cookies). Les pages hors lot,
+  capturées en entier à 1 440 et 390 px avant et après (64 pages, 128 comparaisons) : les
+  mêmes au pixel.
+- **Feuilles et poids** : commune 103 136 → 87 083 octets (20,3 → 16,7 Ko gzip ; 173 règles
+  en moins depuis § 9.el, son nom change, donc le `<link>` de toutes les pages) ;
+  `guide.*.css` 13,5 Ko (3,0 gzip), `comparatif.*.css` 18,0 Ko (3,6), `PageLegale.*.css`
+  6,5 Ko (2,0), `404.*.css` 4,5 Ko (1,4). HTML : `/comparatif` 115,6 → 105,5 Ko, les six
+  autres pages de 1 à 2,5 Ko de moins chacune.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs` ; le tableau à trois positions de défilement ; 25 largeurs de 280 à 1 920 px
+  × 7 pages, plis ouverts : aucun défilement horizontal, aucune erreur de console, y
+  compris avec le texte à 200 % (taille de la racine doublée). Lighthouse mobile en local,
+  trois mesures alternées : `/guide` 85 sur `main` et 89 après (LCP 4,2 → 3,7 s, la
+  couverture), `/comparatif` 98 et 98, `/mentions-legales` 99 et 100. Accessibilité 100,
+  SEO 100 (404 : noindex, voulu), bonnes pratiques 96 avant et après (requêtes sortantes
+  refusées par le bac à sable de mesure).
+- **À valider** : le jaune du bouton de téléchargement de `/guide` (deux fois : en haut
+  et en bas) et le bouton blanc de « Simule ton Super-Net » à côté ; les noms des
+  éditeurs en couleur de marque sur le ciel (3,8:1 pour Hippodoc, 4,0:1 pour Indy :
+  conforme en grand texte seulement, ce qu'est le titre) ; le liseré bleu pour seule
+  marque d'Hippodoc dans le comparatif ; le `<main>` ajouté aux pages légales. Les pages
+  sont plus hautes : `/guide` de 9 % à 1 440 px et de 12 % à 390 px, `/comparatif` de 10
+  et 12 %, les pages légales de 19 à 23 % sur téléphone et de 25 à 30 % à 1 440 px (corps
+  de 17 px au lieu de 16, interligne de lecture, colonne de 40 rem).
+- **À décider** : l'en-tête « flux », la bande `.hd-ciel`, `.da-sous-entete` et le pied
+  arrondi des pages sans `da-fond` (`da.css`, `Header.astro`) ne servent plus à aucune
+  page. Laissés en place : le ménage demandé portait sur `global.css` et la config.
+  `@tailwindcss/typography` reste dans `package.json`. `src/pages/index.astro` garde
+  trois classes utilitaires (lien d'évitement, conteneurs).
+- **Vu, non traité** : sur téléphone, l'en-tête du tableau (les noms des éditeurs) part
+  avec la page quand on descend, comme avant ; les précisions « i » du tableau sont des
+  attributs `title` (survol), sans équivalent au toucher, comme avant, et la phrase
+  « Survole les ⓘ » le dit ; les émojis ⚠️ et 💡 des mentions légales restent des
+  caractères.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

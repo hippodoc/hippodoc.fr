@@ -23,6 +23,14 @@
      `accueil/` : la feuille globale ne doit pas grossir pour eux ;
    - feuille importée par BaseLayout (après global.css) et par les composants
      qui s'en servent : elle sort dans la feuille commune à toutes les pages.
+
+   Depuis la phase 5d (MIGRATION.md § 9.em), toutes les pages sont dans la DA :
+   elles ont toutes `.da-fond` et l'en-tête « flottante ». Ce que cette feuille
+   dit plus bas des pages intérieures « qui gardent leur rendu Tailwind » décrit
+   l'état d'avant. L'en-tête « flux » (`.hd--flux`), la bande `.hd-ciel`,
+   `.da-sous-entete` et le pied arrondi des pages sans `.da-fond` ne servent
+   plus à aucune page : laissés en place, à retirer ou à garder (décision du
+   propriétaire).
    ========================================================================== */
 
 /* ───────── Police ─────────
