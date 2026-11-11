@@ -6539,3 +6539,28 @@ La source a reçu 33 commits après la migration initiale (snapshot `e024235` �
 
 - JS client : uniquement PostHog (module différé) + les îlots des 3 outils + le carrousel
   des 4 articles à slides. Pages marketing/blog/légales : zéro JS applicatif.
+
+### 9.ef Espaces avalées autour d'une balise en ligne : correction de rendu et contrôle (11 novembre 2026)
+
+Correction de rendu, pas de contenu : aucun mot n'a changé. Au build, Astro supprime un
+retour à la ligne collé à une balise en ligne (`<strong>`, `<a>`, `<em>`), avant ou après
+elle ; le mot et la balise sortent collés.
+
+- **Onze espaces rétablies** (commit `0f91ecc`), en recollant les lignes sources :
+  `/guide-declarations/2042-c-pro` (« au réel », « en 5QC », « voir la déclaration »,
+  « la DSFU », « aux régimes zonés »), `/guide-declarations/dsfu-pamc` (« tes
+  cotisations », « tes recettes brutes », « l'honoraire. Indemnités »),
+  `/guide-declarations/medecin-remplacant` (« Le simulateur le calcule », des deux côtés
+  du lien ; « la page DSFU »). Les deux de `/tarifs` l'étaient déjà (§ 9.ed, point 5).
+- **`verify-site.mjs`, contrôle « 4 septies bis »** : échoue quand une lettre ou un chiffre
+  est collé à l'extérieur d'une balise `<strong>`, `<a>`, `<em>` ou `<b>` dont l'intérieur
+  ne commence pas (ou ne finit pas) par une espace, sur toutes les pages du build. Rejoué
+  sur les sources d'avant `0f91ecc` : les onze sortent en erreur. Une balise qui coupe un
+  mot exprès se déclare dans `MOTS_COUPES_EXPRES` : « quater**vicies** », « TRÈS »,
+  « 6 années » et « 3 années » sur `/guide-declarations`, « impôt(s) » sur
+  `/blog/tout-comprendre-carmf`.
+- `src/lib/pages-lastmod.ts` non touché : `lastmod` des trois pages inchangé.
+- **Vu en passant, non touché** : sur `/guide-declarations`, quelques textes passés par
+  `FormattedText` sortent avec le gras inversé et deux astérisques visibles (« tranches
+  progressives** », réponse sur le RSPM ; aussi les passages ANCV / DSCN). Le contrôle ne
+  les voit pas : les espaces y sont, à l'intérieur de la balise.

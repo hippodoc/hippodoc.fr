@@ -765,6 +765,47 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   }
 }
 
+/* 4 septies bis. Aucun mot collé à une balise en ligne.
+   Au build, Astro supprime un retour à la ligne collé à une balise en ligne, avant
+   ou après elle : « ou⏎<strong>19 € » sort « ou<strong>19 € », lu « ou19 € »
+   (MIGRATION.md § 9.ed point 5, puis § 9.ef : treize espaces perdues sur quatre pages).
+   On cherche, dans le HTML servi, une lettre ou un chiffre collé à l'extérieur d'une
+   balise <strong>, <a>, <em> ou <b> dont l'intérieur ne commence pas (ou ne finit
+   pas) par une espace. Correction côté source : garder la balise sur la ligne du mot
+   voisin, ou écrire {' '}.
+   Une balise qui coupe un mot exprès se déclare ici, par page, sous la forme
+   « avant<balise>après » (balise sans attributs). */
+const MOTS_COUPES_EXPRES = {
+  // FormattedText met en gras un terme reconnu au milieu d'un mot.
+  '/guide-declarations': [
+    'quater</strong>vicies', // « Art. 163 quater » en gras, « vicies » à la suite
+    'TR</strong>ÈS',
+    'an</strong>nées', // « 6 années », « 3 années »
+  ],
+  // Lien posé sur « cotisations sociales et impôt », le « s » du pluriel dehors.
+  '/blog/tout-comprendre-carmf': ['impôt</a>s'],
+};
+const COLLE_A_UNE_BALISE =
+  /([\p{L}\p{N}]+)(<(strong|a|em|b)(?:\s[^>]*)?>)(?=([^\s<]+))|([^\s<>]*[^\s>])(<\/(?:strong|a|em|b)>)([\p{L}\p{N}]+)/gu;
+for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+  const page = f.replace(/\/index\.html$/, '') || '/';
+  const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8')
+    .replace(/<(script|style|svg|template|noscript)\b[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<!--[\s\S]*?-->/g, '');
+  const declares = MOTS_COUPES_EXPRES[page] ?? [];
+  const vus = new Set();
+  for (const m of html.matchAll(COLLE_A_UNE_BALISE)) {
+    const colle = m[2] ? `${m[1]}<${m[3]}>${m[4]}` : `${m[5]}${m[6]}${m[7]}`;
+    vus.add(colle);
+    if (!declares.includes(colle)) {
+      fail(`${page} : « ${colle} », mot collé à une balise en ligne (espace perdue au build ? sinon le déclarer dans MOTS_COUPES_EXPRES)`);
+    }
+  }
+  for (const d of declares) {
+    if (!vus.has(d)) warn(`${page} : « ${d} » est déclaré dans MOTS_COUPES_EXPRES mais n'est plus dans la page`);
+  }
+}
+
 /* 4 octies. Aucun code promo affiché sur le site public.
    Décision de l'owner (août 2026). Le site annonçait « INTERNE2026 : 90 jours
    offerts » dans une réponse de FAQ, alors que la section tarifs de la MÊME page
