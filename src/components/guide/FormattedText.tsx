@@ -48,13 +48,17 @@ const FISCAL_KEYWORDS = [
 ];
 
 // Pattern dédié aux références d'articles : « Art. 102 ter », « Art. 261-4-1 », « Art. 194 »
-const ARTICLE_PATTERN = /Art\. ?\d+(?:-\d+(?:-\d+)?)?(?:\s+(?:bis|ter|quater|quinquies))?/g;
+// Le suffixe ne se prend que s'il est un mot entier : « Art. 163 quatervicies » ne donne
+// pas « Art. 163 quater » + « vicies ».
+const ARTICLE_PATTERN = /Art\. ?\d+(?:-\d+(?:-\d+)?)?(?:\s+(?:bis|ter|quater|quinquies)(?![\p{L}\p{N}_]))?/gu;
 
 // Phase 2 — Codes 2 lettres MAJ de la 2035 (AA, BK, DD, CP, CR, etc.)
 // Uniquement quand introduits par un mot déclencheur (case/ligne/en/la),
 // pour éviter les faux positifs type "OK", "TV", initiales aléatoires.
 // Lookbehind ne consomme pas → match[0] = code 2 lettres seul.
-const CASE_2L_PATTERN = /(?<=\b(?:case|cases|ligne|lignes|en|la)\s)[A-Z]{2}(?!\w)/g;
+// Bornes en \p{L} et non \w / \b : en JS ces deux-là ignorent les lettres accentuées
+// (« la TRÈS » donnait « TR » en gras).
+const CASE_2L_PATTERN = /(?<=(?<![\p{L}\p{N}_])(?:case|cases|ligne|lignes|en|la)\s)[A-Z]{2}(?![\p{L}\p{N}_])/gu;
 
 // Phase 3 — Statuts d'exercice & seuils-clés (notions métier, couleur distincte)
 // Première lettre tolère MAJ ou min via [Xx] pour gérer les débuts de phrase.
@@ -68,7 +72,7 @@ const CONTEXT_KEYWORDS = [
   '[Pp]lafonds?', '[Pp]lafonné(?:e?s?)', '[Ff]ranchise',
   '[Ff]orfaits?', '[Qq]uotient\\sfamilial',
 ];
-const contextPattern = `(?<![\\w-])(?:${CONTEXT_KEYWORDS.join('|')})(?![\\w-])`;
+const contextPattern = `(?<![\\p{L}\\p{N}_-])(?:${CONTEXT_KEYWORDS.join('|')})(?![\\p{L}\\p{N}_-])`;
 
 
 
@@ -87,10 +91,35 @@ type Segment = {
   content: string;
 };
 
+/**
+ * Un gras `**…**` peut enjamber un point de découpe (émoji marqueur, fin de phrase,
+ * saut de ligne). Chaque morceau est alors refermé, et le suivant rouvert, pour que les
+ * paires restent appariées dans chaque morceau — sinon tout le gras de la suite s'inverse
+ * et des astérisques sortent tels quels.
+ */
+function equilibrerGras(morceaux: string[]): string[] {
+  let ouvert = false;
+  return morceaux.map((m) => {
+    const rouvert = ouvert;
+    let out = rouvert ? `**${m}` : m;
+    ouvert = (out.match(/\*\*/g) || []).length % 2 === 1;
+    if (ouvert) out += '**';
+    // Un gras que l'on vient de rouvrir ou de refermer peut être vide (« ** » seul avant
+    // un marqueur, par exemple) : il ne rend rien. Ne pas toucher aux autres « ** ** »,
+    // qui sont une fermeture suivie d'une ouverture.
+    if (rouvert) out = out.replace(/^\*\*\s*\*\*/, '');
+    if (ouvert) out = out.replace(/\*\*\s*\*\*$/, '');
+    return out.trim();
+  });
+}
+
 /** Split text on emoji markers into typed segments */
 function splitOnMarkers(text: string): Segment[] {
   // Split on ⚠️, ✅, 💡 — keep the marker with the segment after it
-  const parts = text.split(/(⚠️|✅|💡)/);
+  const brut = text.split(/(⚠️|✅|💡)/);
+  // Indices pairs = texte, impairs = marqueurs : on n'équilibre que le texte.
+  const textes = equilibrerGras(brut.filter((_, k) => k % 2 === 0).map((t) => t.trim()));
+  const parts = brut.map((t, k) => (k % 2 === 0 ? textes[k / 2] : t));
   const segments: Segment[] = [];
   
   let i = 0;
@@ -119,7 +148,7 @@ function splitIntoParagraphs(text: string): string[] {
     const normalized = text.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n');
     // Split on \n\n (hard breaks). Within each block, keep \n single — they'll be
     // treated as line breaks downstream (bullets, "Étape", etc.).
-    return normalized.split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
+    return equilibrerGras(normalized.split(/\n{2,}/).map(s => s.trim())).filter(Boolean);
   }
 
   // 2) Legacy fallback: no explicit breaks → re-flow long text by sentence.
@@ -136,7 +165,7 @@ function splitIntoParagraphs(text: string): string[] {
     }
   }
   if (current.trim()) paragraphs.push(current.trim());
-  return paragraphs;
+  return equilibrerGras(paragraphs).filter(Boolean);
 }
 
 /** Within a paragraph, split on single \n into typed lines (bullets / steps / plain). */
@@ -146,90 +175,132 @@ function splitParagraphLines(para: string): { hasBullets: boolean; lines: Line[]
     return { hasBullets: false, lines: [{ kind: 'plain', content: para }] };
   }
   const rawLines = para.split('\n').map(l => l.trim()).filter(Boolean);
-  const lines: Line[] = rawLines.map(l => {
+  const typed: Line[] = rawLines.map(l => {
     const m = l.match(/^[•\-]\s+(.*)$/);
     if (m) return { kind: 'bullet', content: m[1] };
     return { kind: 'plain', content: l };
   });
+  const contenus = equilibrerGras(typed.map(l => l.content));
+  const lines: Line[] = typed.map((l, i) => ({ ...l, content: contenus[i] }));
   const bulletCount = lines.filter(l => l.kind === 'bullet').length;
   return { hasBullets: bulletCount >= 2, lines };
 }
 
-/** Apply inline formatting: bold keywords, codes, amounts, quotes */
-export function formatInline(text: string): React.ReactNode[] {
-  // Build a combined regex for all bold-able patterns
-  const keywordPattern = FISCAL_KEYWORDS.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-  const combinedPattern = new RegExp(
-    `(\\*\\*[^*]+?\\*\\*)|` +           // group 1: **markdown bold**
-    `(\\*(?!\\s)[^*\\n]+?(?<!\\s)\\*)|` + // group 2: *markdown italic* (no leading/trailing space)
-    `(\`[^\`]+?\`)|` +                  // group 3: `inline code`
-    `((?<![\\w-])(?:${keywordPattern})(?![\\w-]))|` +            // group 4: keywords (word-bounded)
-    `(\\b(?:RO|PC|ZG|QT|CASE)-\\d{3}\\b)|` + // group 5b: internal cross-refs (rendered as InlineRef)
-    `(\\b(?:5[A-Z]{2}|20[34][25](?:-[A-Z]-?[A-Z]*)?|1[A-Z]{2})\\b)|` + // group 6: case codes
-    `(\\d[\\d\\s,.]{0,15}(?:€|%|jours?\\/an|jours?|ans?|mois))|` +       // group 7: amounts
-    `(«\\s.*?\\s»)|` +                  // group 8: quoted
-    `(${ARTICLE_PATTERN.source})|` +    // group 9: legal articles (Art. 102 ter, Art. 261-4-1…)
-    `(${CASE_2L_PATTERN.source})|` +    // group 10: 2L 2035 codes (case AA, ligne BK…)
-    `(${contextPattern})`,              // group 11: context keywords (statuts, seuils — couleur hippo)
-    'g'
-  );
+// Bornes de mot en \p{L} (drapeau `u`) : `\w` et `\b` ne connaissent pas les lettres
+// accentuées, d'où un terme reconnu au milieu d'un mot (« 6 an » dans « 6 années »).
+const MOT = '[\\p{L}\\p{N}_]';
+const keywordPattern = FISCAL_KEYWORDS.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
 
+// Passe 1 — balisage écrit par l'auteur : **gras**, *italique*, `code`.
+const MARKDOWN_PATTERN = /\*\*([^*]+?)\*\*|\*(?!\s)([^*\n]+?)(?<!\s)\*|`([^`]+?)`/g;
+
+// Passe 2 — termes mis en avant d'office, cherchés sur le texte SANS son balisage.
+const AUTO_PATTERN = new RegExp(
+  `((?<![\\p{L}\\p{N}_-])(?:${keywordPattern})(?![\\p{L}\\p{N}_-]))|` + // 1: keywords (word-bounded)
+  `((?<!${MOT})(?:RO|PC|ZG|QT|CASE)-\\d{3}(?!${MOT}))|` +                // 2: internal cross-refs (InlineRef)
+  `((?<!${MOT})(?:5[A-Z]{2}|20[34][25](?:-[A-Z]-?[A-Z]*)?|1[A-Z]{2})(?!${MOT}))|` + // 3: case codes
+  `(\\d[\\d\\s,.]{0,15}(?:€|%|(?:jours?\\/an|jours?|ans?|mois)(?!${MOT})))|` +     // 4: amounts
+  `(«\\s.*?\\s»)|` +                  // 5: quoted
+  `(${ARTICLE_PATTERN.source})|` +    // 6: legal articles (Art. 102 ter, Art. 261-4-1…)
+  `(${CASE_2L_PATTERN.source})|` +    // 7: 2L 2035 codes (case AA, ligne BK…)
+  `(${contextPattern})`,              // 8: context keywords (statuts, seuils — couleur hippo)
+  'gu'
+);
+
+type Marque = { start: number; end: number; type: 'bold' | 'italic' | 'code' };
+type Auto = { start: number; end: number; group: number };
+
+/**
+ * Apply inline formatting: bold keywords, codes, amounts, quotes.
+ *
+ * Deux passes, pour que le balisage de l'auteur et les termes mis en avant d'office ne
+ * se marchent pas dessus (avant : une seule expression, où une citation « … » contenant
+ * un `**gras**` l'avalait et laissait ses astérisques dans la page) :
+ *  1. on retire le balisage en notant où il s'appliquait ;
+ *  2. on cherche les termes sur le texte nu. Un terme situé dans un gras, un italique ou
+ *     un code de l'auteur y reste fondu (comme avant) ; un terme qui contient du balisage
+ *     (une citation) le rend à l'intérieur ; un terme à cheval sur une borne est ignoré.
+ */
+export function formatInline(text: string): React.ReactNode[] {
+  // Passe 1
+  let plain = '';
+  const marques: Marque[] = [];
+  let last = 0;
+  for (const m of text.matchAll(MARKDOWN_PATTERN)) {
+    plain += text.slice(last, m.index);
+    const inner = m[1] ?? m[2] ?? m[3];
+    marques.push({
+      start: plain.length,
+      end: plain.length + inner.length,
+      type: m[1] !== undefined ? 'bold' : m[2] !== undefined ? 'italic' : 'code',
+    });
+    plain += inner;
+    last = m.index! + m[0].length;
+  }
+  plain += text.slice(last);
+
+  // Passe 2
+  const autos: Auto[] = [];
+  for (const m of plain.matchAll(AUTO_PATTERN)) {
+    const start = m.index!;
+    const end = start + m[0].length;
+    const gene = marques.some(k => {
+      if (k.end <= start || k.start >= end) return false; // disjoints
+      if (k.start === start && k.end === end) return true; // même étendue : l'auteur l'emporte
+      return !(k.start >= start && k.end <= end);        // la marque n'est pas dans le terme
+    });
+    if (!gene) autos.push({ start, end, group: m.findIndex((g, i) => i > 0 && g !== undefined) });
+  }
+
+  let key = 0;
+  const rendreMarque = (k: Marque): React.ReactNode => {
+    const inner = plain.slice(k.start, k.end);
+    if (k.type === 'bold') return <strong key={key++} className="font-semibold text-foreground">{inner}</strong>;
+    if (k.type === 'italic') return <em key={key++} className="italic text-foreground">{inner}</em>;
+    // `inline code` — discreet semibold (module names)
+    return <span key={key++} className="font-semibold text-hippo-700 dark:text-hippo-300">{inner}</span>;
+  };
+
+  const rendreAuto = (a: Auto): React.ReactNode => {
+    const matched = plain.slice(a.start, a.end);
+    // Internal cross-ref (RO/PC/ZG/QT-NNN) — clickable inline chip with human title
+    if (a.group === 2) return <InlineRef key={key++} token={matched} />;
+    if (a.group === 5) {
+      // Quoted text — italic + slightly different style ; le balisage de l'auteur y reste rendu
+      const enfants: React.ReactNode[] = [];
+      let pos = a.start;
+      for (const k of marques) {
+        if (k.start < a.start || k.end > a.end) continue;
+        if (k.start > pos) enfants.push(plain.slice(pos, k.start));
+        enfants.push(rendreMarque(k));
+        pos = k.end;
+      }
+      if (pos < a.end) enfants.push(plain.slice(pos, a.end));
+      return <span key={key++} className="font-medium text-foreground italic">{enfants}</span>;
+    }
+    if (a.group === 8) {
+      // Phase 3 — Statuts/seuils-clés : couleur hippo pour les distinguer des acronymes officiels
+      return <strong key={key++} className="font-semibold text-hippo-700 dark:text-hippo-300">{matched}</strong>;
+    }
+    // Keywords, codes, amounts, articles, 2L 2035 — bold neutre
+    return <strong key={key++} className="font-semibold text-foreground">{matched}</strong>;
+  };
+
+  // Les marques contenues dans un terme sont rendues par lui.
+  const dehors = marques.filter(k => !autos.some(a => k.start >= a.start && k.end <= a.end));
+  const items = [
+    ...dehors.map(k => ({ start: k.start, end: k.end, node: () => rendreMarque(k) })),
+    ...autos.map(a => ({ start: a.start, end: a.end, node: () => rendreAuto(a) })),
+  ].sort((x, y) => x.start - y.start);
 
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
-  let match: RegExpExecArray | null;
-  let key = 0;
-
-  while ((match = combinedPattern.exec(text)) !== null) {
-    // Add text before match
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index));
-    }
-    
-    const matched = match[0];
-    if (match[1]) {
-      // **markdown bold** — strip ** and bold
-      const inner = matched.slice(2, -2);
-      parts.push(
-        <strong key={key++} className="font-semibold text-foreground">{inner}</strong>
-      );
-    } else if (match[2]) {
-      // *markdown italic* — strip * and render italic
-      const inner = matched.slice(1, -1);
-      parts.push(
-        <em key={key++} className="italic text-foreground">{inner}</em>
-      );
-    } else if (match[3]) {
-      // `inline code` — strip backticks, render as discreet semibold (module names)
-      const inner = matched.slice(1, -1);
-      parts.push(
-        <span key={key++} className="font-semibold text-hippo-700 dark:text-hippo-300">{inner}</span>
-      );
-    } else if (match[5]) {
-      // Internal cross-ref (RO/PC/ZG/QT-NNN) — clickable inline chip with human title
-      parts.push(<InlineRef key={key++} token={matched} />);
-    } else if (match[8]) {
-      // Quoted text — italic + slightly different style
-      parts.push(
-        <span key={key++} className="font-medium text-foreground italic">{matched}</span>
-      );
-    } else if (match[11]) {
-      // Phase 3 — Statuts/seuils-clés : couleur hippo pour les distinguer des acronymes officiels
-      parts.push(
-        <strong key={key++} className="font-semibold text-hippo-700 dark:text-hippo-300">{matched}</strong>
-      );
-    } else {
-      // Keywords, codes, amounts, articles, 2L 2035 — bold neutre
-      parts.push(
-        <strong key={key++} className="font-semibold text-foreground">{matched}</strong>
-      );
-    }
-    lastIndex = match.index + matched.length;
+  for (const it of items) {
+    if (it.start > lastIndex) parts.push(plain.slice(lastIndex, it.start));
+    parts.push(it.node());
+    lastIndex = it.end;
   }
-
-  if (lastIndex < text.length) {
-    parts.push(text.slice(lastIndex));
-  }
+  if (lastIndex < plain.length) parts.push(plain.slice(lastIndex));
 
   return parts.length > 0 ? parts : [text];
 }
