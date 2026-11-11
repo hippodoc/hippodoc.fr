@@ -6499,6 +6499,68 @@ l'îlot près ; la feuille de styles commune garde son empreinte.
 - Non testé : Safari, Firefox, un vrai téléphone (clavier ouvert, barre d'adresse
   rétractable).
 
+### 9.eg /guide-declarations : gras inversé et astérisques dans les textes du guide (11 novembre 2026)
+
+Correction de rendu, dans `src/components/guide/FormattedText.tsx` seulement. Aucun texte
+de `src/data/boussoleData.ts` n'est modifié.
+
+- **Le défaut** : dans certains textes, le gras sortait inversé et des `**` restaient dans
+  le HTML servi (« Cas particulier RSPM », périmètre de DSCN / chèques ANCV).
+- **Trois causes**, toutes dans le composant :
+  1. le texte est découpé (émoji marqueur ⚠️ ✅ 💡, fin de phrase, saut de ligne) avant la
+     lecture du gras : un `**…**` qui enjambe la découpe (`**⚠️ Cas particulier RSPM**`)
+     laissait un `**` seul de chaque côté, et toutes les paires suivantes se décalaient.
+     Chaque morceau est maintenant refermé et le suivant rouvert (`equilibrerGras`) ;
+  2. une seule expression lisait à la fois le balisage de l'auteur et les termes mis en
+     gras d'office : une citation « … » contenant un `**gras**` ou un `*italique*`
+     l'avalait avec ses astérisques. `formatInline` travaille en deux passes : balisage
+     de l'auteur d'abord, termes ensuite sur le texte nu ;
+  3. les bornes de mot (`\w`, `\b`) ignorent les lettres accentuées en JavaScript : un
+     terme était reconnu au milieu d'un mot. Bornes en `\p{L}`.
+- **Effet sur la page**, mesuré par script contre le build d'avant, balises retirées :
+  le texte est identique à 10 astérisques près, tous disparus (87 → 77 ; les 77 restants
+  ne passent pas par ce composant, voir plus bas). Hors balises de mise en avant, la seule
+  différence de structure est un paragraphe `<p>**</p>` qui disparaît. Aucune autre page
+  du build ne change (le fichier JS de l'îlot `BoussoleWizard` change de nom).
+- **Gras déplacé** : « Cas particulier RSPM », « aucune régularisation URSSAF ni CARMF »,
+  « tranches progressives », « Périmètre exact de DSCN », « uniquement la valeur faciale
+  des chèques », « frais d'ouverture du compte ANCV », « frais d'envoi/port »,
+  « commission ANCV », « L30 « Autres frais divers de gestion » » sont en gras comme écrit
+  dans la source ; le texte entre eux ne l'est plus. La citation du guide UNASA (« Les
+  médecins conventionnés du secteur 1… ») sort en italique, sans ses astérisques.
+- **Mots coupés** : « TR » dans « TRÈS », « 6 an » dans « 6 années », « 3 an » dans
+  « 3 années » ne sont plus en gras ; « Art. 163 quatervicies » (6 fois) garde
+  « Art. 163 » en gras, sans « quater ».
+- **Non traité ici** : 77 astérisques restent visibles sur la page, dans sept paragraphes
+  que d'autres composants rendent tels quels, sans passer par `FormattedText` (six
+  positions A et B des zones grises, `FichesPratiquesSection.tsx`, et une définition sur
+  les rétrocessions), plus « Cerfa 15945*08 », légitime.
+- Vérifié : `verify-site.mjs` à 0 erreur ; dans Chromium, les deux îlots s'hydratent sans
+  erreur de console, le wizard va jusqu'à la checklist (57 gras, aucun astérisque).
+
+
+### 9.eh /guide-declarations : gras des positions A/B et des définitions courtes (11 novembre 2026)
+
+Suite de § 9.eg, correction de rendu. Sept paragraphes affichaient encore des `**` tels
+quels, parce que leur texte sortait brut : les positions A et B des zones grises
+(`FichesPratiquesSection.tsx`) et la définition courte des termes du glossaire
+(`GlossaireSection.tsx`). Ils passent maintenant par `formatInline`. Aucun texte de
+`src/data/boussoleData.ts` n'est modifié.
+
+- **Texte de la page**, par script contre le build d'avant, balises retirées : identique à
+  76 astérisques près, tous disparus (77 → 1 ; il reste « Cerfa 15945*08 », légitime).
+  Structure hors `<strong>` / `<em>` identique. Aucune autre page ni aucun fichier JS ne
+  change.
+- **Gras d'office** : dans les positions A/B, `formatInline` met aussi en gras les sigles,
+  cases et montants, comme partout ailleurs sur la page (« URSSAF », « 5HQ », « 34 % »…),
+  y compris dans les positions qui n'avaient pas d'astérisques. Les définitions courtes
+  du glossaire, elles, ne rendent que le balisage de l'auteur
+  (`formatInline(texte, { auto: false })`) : sans cela, toutes recevaient du gras d'office
+  (110 gras de plus). Bilan sur la page : 4 394 → 4 518 `<strong>`.
+- `verify-site.mjs` à 0 erreur. Les deux composants sont statiques (hors îlot) ; le
+  wizard, qui partage `formatInline`, revérifié dans Chromium (checklist, aucune erreur).
+
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
