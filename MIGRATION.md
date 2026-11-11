@@ -7203,6 +7203,159 @@ n'est pas touché ; aucun JS ajouté ; aucun état, gestionnaire, appel réseau 
       partenariat AIMGL.
 - (liste complétée en fin de migration)
 
+### 9.eo Phase 6 : ménage du code mort (11 novembre 2026)
+
+Le propriétaire a donné carte blanche pour retirer ce qui ne sert plus. Règle suivie : on ne
+retire que ce dont on prouve qu'aucune source et aucun fichier du build ne le nomme, et on
+prouve après coup que rien n'a bougé. Période d'observation SEO : aucun `title`, description,
+titre, texte, lien, JSON-LD, `data-ph`, `data-track` ni `data-landing-section` ne change ;
+`src/lib/` et `public/` ne sont pas touchés ; la logique des îlots non plus ; aucun JS ajouté.
+Les scripts de preuve nommés plus bas sont des scripts de session, hors dépôt.
+
+**Retiré**
+
+- **L'ancienne forme de l'en-tête.** `Header.astro` n'a plus de prop `variante` : les quinze
+  gabarits passaient tous `flottante`, ils rendent `<Header />`. Avec elle partent, dans
+  `da.css` : `.hd--flux`, la bande `.hd-ciel`, le jeton `--ciel-bande`, `.da-sous-entete`, et
+  les coins ronds du pied des pages sans `.da-fond`. Vérifié avant : aucun HTML, JS ni CSS
+  du build ne nomme ces classes hors de la feuille commune, `verify-site.mjs` et
+  `public/transmissions` non plus, et les 70 pages ont `<body class="da da-fond">`.
+  9 règles et un jeton, 1 169 octets.
+- **Les variantes du mode sombre.** Le site n'en a pas : aucune source ne nomme `dark` hors
+  des préfixes de classes, aucun HTML du build ne porte la classe, et le seul JS qui parle
+  de thème sombre est sonner (les avis de la calculette), qui pose un attribut
+  `data-theme` et pas une classe. Les 99 règles `.dark\:…:is(.dark *)` de la feuille commune
+  (7 911 octets) ne pouvaient donc s'appliquer à rien. Solution de configuration, sans
+  toucher aux `.tsx` : `content.transform` de `tailwind.config.ts` retire du texte que lit
+  Tailwind tout mot qui contient `dark:`. Les 259 classes `dark:…` restent dans les îlots
+  et dans `src/components/ui/` (elles viennent de l'application), sans règle derrière.
+  `darkMode: class` est gardé : si le filtre sautait, les règles reviendraient sous la
+  classe (inerte) et non sous `prefers-color-scheme` (qui s'appliquerait).
+- **Deux règles nées d'un mot de commentaire** (le piège décrit dans CLAUDE.md) : `.ring`
+  (« poser un ring highlight », `BoussoleSearchIsland.tsx`) et `.overflow-x-auto`
+  (`comparatif.astro`). Commentaires reformulés, 342 octets.
+- **Un composant** : `src/components/simulateur/CotisationsDetailChart.tsx`, importé nulle
+  part (signalé en § 9.ek). Sept utilitaires n'existaient que pour lui (507 octets).
+  ⚠️ L'audit des fichiers inatteignables, plus haut dans ce document, l'avait gardé
+  exprès (« ressemble à une fonctionnalité désactivée, à trancher ») : supprimé ici sur
+  la carte blanche du propriétaire. Pour le reprendre :
+  `git checkout c9b383b -- src/components/simulateur/CotisationsDetailChart.tsx`.
+- **Sept images de `src/assets/`.** Quatre n'étaient importées par rien et n'entraient pas
+  dans le build : `cnom-logo.jpg`, `cnom-logo-adjoint.jpg`, `google-calendar-logo.png`,
+  `hippodoc-logo.png` (589 Ko). Trois étaient dans `src/assets/blog/`, donc atteintes par
+  le glob du blog, mais citées par aucun frontmatter ni aucune donnée :
+  `conge-maternite-paternite-cover.png` (ancienne cover, remplacée par
+  `remplacante-enceinte-cover.jpg`), `frais-pros-medecins-salaries-internes-2026-slide-18.png`
+  (la diapositive 18 n'est plus dans l'article) et `temp-contract.png`. Le build copiait
+  leurs originaux dans `dist/_astro/` (3,3 Mo) sans qu'aucune page, aucun flux ni aucun JS
+  les nomme. ⚠️ Ces trois adresses à empreinte (`/_astro/<nom>.<empreinte>.png`) répondaient
+  200 sur le site en ligne et répondront 404 : aucune page ne les a jamais liées (les
+  pages servent des dérivés webp et jpg, d'autres adresses).
+- **Le paquet `@tailwindcss/typography`** (`devDependencies`) : le plugin n'était plus
+  chargé depuis § 9.em. Build identique octet pour octet avant et après.
+
+**Mesuré, laissé en place, et pourquoi**
+
+- *Variables de couleurs en `:root` posées par un plugin* : il n'y en a plus (retirées en
+  § 9.em). `:root` ne porte que les 20 jetons shadcn (511 octets).
+- *Jetons shadcn* : les 20 sont lus par au moins une règle de la feuille commune, et chacune
+  de ces règles est une classe de `src/components/ui/` nommée dans le JS du build. Rien à
+  retirer.
+- *Couleurs `hippo`* : les dix teintes ont chacune au moins une classe portée par le build
+  (800 et 900 n'en ont plus qu'une, les autres étaient des `dark:`). Rien à retirer.
+  `hippo-950`, que quatre classes `dark:` nomment, n'a jamais existé dans la configuration.
+- *Images clés* : les sept de la feuille commune (`pulse`, `spin`, `enter`, `exit`,
+  `shimmer`, `accordion-up`, `accordion-down`) et `da-pli` sont toutes nommées par une règle.
+- *Règles de `global.css`* : toutes servent. `scroll-padding-top: 96px` sur `<html>` est
+  recouvert partout par `html:has(.da-fond)` (84 px), mais reste la valeur des navigateurs
+  sans `:has()`. Le fond de `<body>` (`bg-background`) est recouvert sur les 70 pages par
+  `.da-fond` : 40 octets, gardés pour une page qui n'aurait pas `da-fond`. La règle
+  `will-change` vise toujours `blur-[6px]` du simulateur.
+- *Utilitaires que le build ne nomme nulle part* (ni attribut `class` d'un HTML, ni chaîne
+  d'un JS) : il en reste 88, 6 263 octets sur 77 154.
+  - 75 classes, 5 036 octets : les neuf squelettes de chargement de
+    `src/components/ui/skeleton.tsx` que rien n'importe (`DashboardCardSkeleton`,
+    `ChartSkeleton`, `ReplacementItemCardSkeleton`… venus de l'application ; seul `Skeleton`
+    sert, au simulateur). La consigne de ce lot interdisait de modifier `ui/` au-delà des
+    classes `dark:`. **À trancher par le propriétaire** : retirer ces neuf exports (240
+    lignes) rendrait 5 Ko.
+  - 6 classes, 810 octets : le champ `color` des séries (`from-blue-700 to-cyan-700`…) de
+    `src/lib/blog-series.ts`, que plus aucun gabarit ne lit. `src/lib/` n'est pas touché
+    dans cette phase.
+  - `filter` (185 octets, la méthode `.filter(` du JS), `paused` (36, une valeur CSS de
+    l'accueil), `flex-grow` (23, une propriété CSS), `bg-blue-100`, `tracking-widest`,
+    `opacity-60`, `mt-auto` (173 à eux quatre, champs ou exports inutilisés de fichiers
+    vivants) : 417 octets. Les faire taire demanderait une `blocklist`, qui empêcherait
+    aussi de s'en servir un jour sans le savoir. Risque pour presque rien : laissés.
+- *Module orphelin de `src/lib/`* : `src/lib/calc/declaration2035Inputs.ts` (4 187 octets)
+  n'est importé par rien (gardé exprès par le même audit, avec le composant ci-dessus).
+  Laissé : `src/lib/` n'est pas touché. **À trancher par le propriétaire.**
+- *`public/`* : rien de supprimé (adresses publiques). 31 fichiers, 3,7 Mo sur 12,3, ne
+  sont nommés par aucune source ni aucun fichier du build (`vercel.json`, qui règle leur
+  cache, ne compte pas comme un usage) :
+  - à la racine : `icon-192.png`, `icon-512.png` (le site n'a pas de `manifest`),
+    `hippodoc-presentation-st-poster.jpg` (affiche de l'ancien film, quittée le 10 novembre) ;
+  - `lovable-uploads/`, logos passés dans `src/assets/accueil/` : `aimgl-logo-160.webp`,
+    `silr-logo-160.webp`, `sioi-logo.jpg`, `crp-img-logo.png`, `doctripper-logo.png`,
+    `homedoc-logo-160.webp`, `bpi-112.webp`, `french-care-160.webp`, `region-idf-112.webp`,
+    `hippodoc-logo-96.webp` (ces dix étaient encore dans le HTML d'une page le 11 novembre
+    2026 : des pages en cache et Google les demandent encore), et leurs sources
+    `aimgl-logo.png`, `silr-logo.jpg`, `logo-region-idf.png` ;
+  - `lovable-uploads/`, images venues de la SPA que ce dépôt n'a jamais citées (regardées
+    une à une) : `0de70a76-….png` (la mascotte, doublon du logo `1a136973-….png` qui sert),
+    `c4df22cf-….png` (doublon de `icon-512.png`), quatre captures du tableau de bord de
+    l'application (`0fd2c2a3`, `344502fe`, `d4ba736d`, `3575b114`), `4332de9f` et son
+    doublon `ea61c5fb` (statistiques par médecin), `2bfc231b` (calendrier), les logos
+    Bpifrance (`16d4c030`), Google Agenda (`68383614`), Ordre des médecins (`686e20c5`) et
+    La French Care (`43467e81`), `fbacc978` (une icône d'image cassée de 60 px) et
+    `super-net-card-preview.png` (carte Super-Net de l'application).
+  Ce qui peut encore pointer dessus : l'application et ses courriels (ces adresses étaient
+  celles de la SPA sur le même domaine), des aperçus de partage, des pages en cache. Non
+  vérifiable depuis ce dépôt ; les journaux d'accès de Vercel le diraient.
+
+**Poids** (build de `main` `c9b383b` → cette branche)
+
+| | Avant | Après |
+|---|---|---|
+| Feuille commune (`_astro_assets.*.css`) | 87 083 octets, 16 748 gzip | 77 154 octets, 15 271 gzip |
+| Les 14 autres feuilles | 321 845 octets | identiques octet pour octet |
+| JS (29 fichiers) | 1 762 823 octets, 524 758 gzip | identiques octet pour octet |
+| `dist/` | 878 fichiers, 107,2 Mo | 875 fichiers, 103,9 Mo |
+| `src/assets/` | 127 fichiers, 46,3 Mo | 120 fichiers, 42,4 Mo |
+
+Feuille commune, règle par règle (`compare-css.cjs`) : 118 règles retirées (99 `dark:`,
+10 de l'ancien en-tête dont `.da` réécrite sans son jeton, 9 utilitaires), aucune autre
+ajoutée, ordre des règles restantes conservé.
+
+**Preuves** (11 novembre 2026)
+
+- *HTML* (`compare-html.py`, contre `ref-dist-6`) : les 70 pages sont identiques à celles
+  de `main` une fois remplacé le nom de la feuille commune (`_astro_assets.CvdXYDEr.css` →
+  `_astro_assets.B7wEZqJv.css`), seul écart ; `/transmissions` est identique octet pour
+  octet. Aucun attribut retiré : la classe `hd--flux` et l'élément `.hd-ciel` n'étaient
+  rendus sur aucune page. Contrôle séparé de `title`, description, canonique, `robots`,
+  balises `og:` et `twitter:`, H1 à H6, texte visible, liens (adresse, libellé, `rel`,
+  `target`), JSON-LD, `data-ph`, `data-track*`, `data-landing-section`, `id` et images :
+  0 écart sur 194 021 mots, 7 272 liens, 1 475 titres, 257 blocs JSON-LD, 2 327 `data-ph`.
+  Sitemap, flux RSS, `llms.txt`, `robots.txt` et `recherche.json` identiques.
+- *Captures* (`captures.cjs`, Chromium, animations coupées, réseau externe coupé, bannière
+  cookies et bulle de chat visibles) : les 68 pages du sitemap, `/essai` et la 404, pleine
+  page à 1 440 et 390 px, soit 314 tranches de 6 000 px au plus : toutes identiques au
+  pixel à la référence. La méthode voit un écart d'un cran de couleur (essai : `--sun`
+  passé de `#ffd84a` à `#ffd84b`, trois tranches sur trois signalées).
+- *Îlots* (`etats.cjs`, mêmes largeurs) : résultats du simulateur pour 30 000 / 3 000, avec
+  la liste déroulante de Radix ouverte ; calculette avec l'exemple « Remplaçant pur, 60 k€ »
+  chargé, avec le menu des exemples ouvert et l'avis de sonner ; boussole à l'étape 3 sur 5.
+  29 captures identiques au pixel, textes des îlots identiques, aucune erreur JS.
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages, 5 388
+  liens internes), à chacun des trois commits.
+
+**Non testé.** Le moteur de Safari : la passe WebKit prévue en appoint n'a pas pu être
+lancée dans cette session. Ce que ce lot retire ne dépend pas du moteur (des règles dont le
+sélecteur ne trouve aucun élément, des fichiers que rien ne charge), et les règles qui
+restent sont les mêmes, dans le même ordre. Pas de Lighthouse : aucune page ne charge plus
+qu'avant, la feuille commune perd 1,5 Ko une fois compressée. Firefox non plus.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

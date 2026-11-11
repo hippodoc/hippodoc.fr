@@ -61,21 +61,19 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   seulement). Le fond de page de la DA demande en plus `bodyClass="da-fond"` : toutes les
   pages le passent. La typographie de la DA, ses règles de titres et son anneau de focus
   sont portés par `.da-bloc`, à poser sur chaque bloc (en-tête, pied, section).
-- **Un seul en-tête, un seul pied** : `src/components/Header.astro` (prop `variante` :
-  toutes les pages passent `flottante`, leur premier bloc est un ciel qui réserve le haut
-  à la pastille ; `flux`, la valeur par défaut, où la pastille garde 80 px sur une bande
-  de ciel, ne sert plus à aucune page depuis la phase 5d) et `Footer.astro` (prop
-  `soutiens`), qui rend aussi `ScriptTiroir.astro`. Une page rend les deux ou aucun. `verify-site.mjs` (contrôle
+- **Un seul en-tête, un seul pied** : `src/components/Header.astro` (sans prop, une seule
+  forme : la pastille survole le premier bloc de la page, un ciel qui lui réserve le
+  haut) et `Footer.astro` (prop `soutiens`), qui rend aussi `ScriptTiroir.astro`. Une page
+  rend les deux ou aucun. `verify-site.mjs` (contrôle
   « 4 quater bis ») fige les `data-ph` et `data-track` de l'en-tête et du pied
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
   l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
   en-tête se déclare dans `PAGES_SANS_ENTETE`.
 - **Premier bloc d'une page** : un ciel (`linear-gradient(var(--sky-1) 0, var(--sky) 460px)`)
   qui passe sous la pastille de l'en-tête et lui réserve le haut par son remplissage
-  (100 à 148 px selon la largeur, voir `.tete` de `/tarifs`). La classe `da-sous-entete`
-  et la bande `.hd-ciel` (`da.css`), faites pour l'en-tête `flux` des pages d'avant la DA,
-  ne servent plus à aucune page : restées dans `da.css` et `Header.astro`, à retirer ou à
-  garder, décision du propriétaire (MIGRATION.md § 9.em).
+  (100 à 148 px selon la largeur, voir `.tete` de `/tarifs`). L'ancienne forme de
+  l'en-tête pour les pages sans ciel (prop `variante`, bande `.hd-ciel`, classe
+  `da-sous-entete`) a été retirée en phase 6 (MIGRATION.md § 9.eo).
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
@@ -127,7 +125,11 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `da.css`) ; trois classes de `src/pages/index.astro` (lien d'évitement, conteneurs).
   `tailwind.config.ts` ne garde que les couleurs `hippo`, les jetons shadcn, les rayons,
   l'accordéon et les images clés `shimmer` (squelette du simulateur) ;
-  `corePlugins.container` est coupé. Avant de retirer une règle de `global.css` ou de la
+  `corePlugins.container` est coupé. Le site n'a pas de mode sombre : les classes
+  `dark:…` des `.tsx` (îlots, `ui/`) y restent, mais `content.transform` les cache à
+  Tailwind, qui n'écrit plus leurs règles (§ 9.eo) ; ne pas poser de classe `dark` sur un
+  élément sans retirer ce filtre. Ce qui reste d'inemployé dans la feuille commune, et
+  pourquoi, est listé en § 9.eo (exports inutilisés de `ui/skeleton.tsx`, surtout). Avant de retirer une règle de `global.css` ou de la
   config : prouver qu'aucune source ni aucun fichier du build ne la nomme, puis comparer
   la feuille commune règle par règle (une image clé peut en recouvrir une autre de même
   nom : `shimmer`, `fadeIn`).
@@ -181,7 +183,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Ne jamais y mettre une date de build : un `lastmod` faux fait ignorer le signal
   sur tout le site (voir MIGRATION.md § 9.ai).
 - Covers : chemins `/blog/...` du frontmatter résolus vers `src/assets/blog/` et optimisés
-  (webp) via `import.meta.glob` + `getImage` dans les templates blog.
+  (webp) via `import.meta.glob` + `getImage` dans les templates blog. Le glob copie dans
+  le build TOUTE image de ce dossier, citée ou non : une image que plus aucun frontmatter
+  ne cite se supprime (§ 9.eo).
 
 ## Outils (îlots React, hydratés `client:visible`)
 
@@ -238,6 +242,11 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
    `npx serve` sert en HTTP/1.1 : sur les pages à deux feuilles bloquantes (outils, guide,
    comparatif, pages légales), FCP et LCP y sortent 0,15 à 0,3 s plus hauts que sur Vercel
    (HTTP/2, où l'écart disparaît). Ne pas le lire comme une régression (§ 9.en).
+4. Moteur de Safari (WebKitGTK 2.52 et Selenium installés) : servir `dist` en local, puis
+   `WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 WEBKIT_DISABLE_COMPOSITING_MODE=1 xvfb-run -a -s "-screen 0 1600x1400x24" python3 -I script.py`.
+   Dans le script : `Options().binary_location = '/usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/MiniBrowser'`,
+   `add_argument('--automation')`, `webdriver.WebKitGTK(options=…, service=Service('/usr/bin/WebKitWebDriver'))`.
+   Ce n'est ni Safari ni un iPhone (polices, barres d'iOS, tactile) ; mesurer `innerWidth` réel.
 
 ## Recherche d'audience
 
