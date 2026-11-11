@@ -262,6 +262,15 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
    marges intérieures et non extérieures : une marge haute fusionnerait avec
    celle du conteneur et laisserait 10 px du fond de page au-dessus de lui. */
 :where(.da) .hd--flux { box-sizing: border-box; top: env(safe-area-inset-top, 0px); height: 80px; margin: 0; padding: 10px 0; }
+/* Pages intérieures : elles n'ont pas de ciel. Une bande de ciel de 80 px, la
+   place que l'en-tête occupe en haut de la page, qui s'éteint vers le bas : la
+   pastille blanche se détache, et la bande rejoint le fond de la page quel
+   qu'il soit. Élément à part, rendu juste avant l'en-tête et de hauteur nulle
+   dans le flux : l'en-tête est collant, la bande non (elle part avec la page,
+   aucun élément collant ne passe dessous). Sans position ni z-index : elle se
+   peint sous tout le contenu, et un fond posé par la page la recouvre. */
+:where(.da) .hd-ciel { height: 80px; margin-bottom: -80px; background: linear-gradient(var(--sky-1), var(--sky-2) 55%, rgba(228, 238, 255, 0)); pointer-events: none; }
+@media (forced-colors: active) { :where(.da) .hd-ciel { display: none; } }
 /* Sous 900 px, pas de flou d'arrière-plan : il coûte cher au défilement sur
    téléphone (§ 9.dn). Le fond est plus opaque pour compenser. */
 :where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
@@ -349,6 +358,11 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 
 /* ───────── Pied : l'eau profonde ───────── */
 :where(.da) .ft { --focus: #FFFFFF; position: relative; z-index: 1; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 16px; }
+/* Pages intérieures (sans `.da-fond`) : le pied ne prolonge pas une scène d'eau,
+   il arrive sous une page claire. Il prend les coins ronds d'une feuille de la
+   DA ; le fond de la page se voit dans les coins. */
+:where(.da:not(.da-fond)) .ft { border-radius: var(--r-xl) var(--r-xl) 0 0; }
+@media (max-width: 559px) { :where(.da:not(.da-fond)) .ft { border-radius: var(--r-lg) var(--r-lg) 0 0; } }
 :where(.da) .ft-in { display: grid; gap: 36px 56px; padding-top: 36px; padding-bottom: 28px; }
 :where(.da) .ft a, :where(.da) .ft-prefs { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; transition: color 160ms var(--ease); }
 :where(.da) .ft a:hover, :where(.da) .ft-prefs:hover { color: var(--paper); }

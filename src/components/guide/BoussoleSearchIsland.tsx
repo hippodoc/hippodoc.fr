@@ -105,7 +105,7 @@ export function BoussoleSearchIsland() {
   };
 
   return (
-    <div className="sticky top-16 z-30 bg-white/80 backdrop-blur-lg border-b border-slate-200/50 dark:bg-slate-900/80 dark:border-slate-700/50 transition-all duration-200" role="search">
+    <div className="sticky top-[70px] z-30 bg-white/80 backdrop-blur-lg border-b border-slate-200/50 dark:bg-slate-900/80 dark:border-slate-700/50 transition-all duration-200" role="search">
       <div className={`max-w-5xl mx-auto px-4 transition-all duration-200 ${compact ? 'py-1.5' : 'py-3'}`}>
         <div className="relative">
           <Search aria-hidden="true" className={`absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-all ${compact ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />

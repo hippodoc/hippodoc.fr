@@ -26,10 +26,11 @@ import { APP_URL } from '@/lib/site';
  * accessible et le texte « Hippodoc » ne changent pas.
  */
 interface Props {
-  /** « flux » (par défaut, pages intérieures) : la pastille garde ses 80 px en
-      haut de la page, puis reste collée en haut de l'écran. « flottante »
-      (accueil) : elle survole le premier bloc de la page, qui lui réserve
-      88 px en haut. */
+  /** « flux » (par défaut, pages intérieures, qui n'ont pas de ciel) : la
+      pastille garde ses 80 px en haut de la page, sur une bande de ciel qui
+      part avec le défilement, puis reste collée en haut de l'écran.
+      « flottante » (accueil) : elle survole le premier bloc de la page, qui
+      lui réserve 88 px en haut. */
   variante?: 'flottante' | 'flux';
 }
 const { variante = 'flux' } = Astro.props;
@@ -52,6 +53,9 @@ const resourceItems = [
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
+{/* Bande de ciel des pages intérieures : un décor de 80 px, hors de l'en-tête
+     (qui est collant : la bande, elle, part avec la page). Voir `.hd-ciel`. */}
+{variante === 'flux' && <div class="hd-ciel" aria-hidden="true"></div>}
 <header class:list={['hd', 'da-bloc', variante === 'flux' && 'hd--flux']}>
   {/* Case du menu mobile : enfant direct du header, hors de la pastille (le flou
        d'arrière-plan de celle-ci créerait un bloc conteneur et casserait le
