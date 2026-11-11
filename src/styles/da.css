@@ -30,14 +30,19 @@
    tailwind.config.ts la donne à <html>, BaseLayout la précharge.
    Google Sans Flex (SIL OFL 1.1, voir src/assets/fonts/OFL.txt), un seul fichier :
    latin, graisse variable 400 à 800, arrondi (ROND) figé à 100, taille optique
-   (opsz) figée à 18, largeur et pente par défaut. */
+   (opsz) figée à 18, largeur et pente par défaut.
+   La police n'a aucune flèche (← → ↑ ↓ absentes de la source) : la plage « latin »
+   de Google Fonts déclarait U+2191 et U+2193, retirés ici pour que
+   `verify-site.mjs`, qui lit cette plage, les refuse dans le texte de l'accueil.
+   ≈ ≠ ≤ ≥ existent dans la source mais pas dans ce fichier : comme les flèches,
+   ils sortent dans la police suivante de la pile (Arial, par la face de repli). */
 @font-face {
   font-family: "Google Sans Flex";
   font-style: normal;
   font-weight: 400 800;
   font-display: swap;
   src: url("../assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 /* Repli à métriques ajustées : tant que le woff2 n'est pas là (`swap`), Arial
    occupe à peu près la même place, pour limiter le saut à l'arrivée de la police.
@@ -87,6 +92,8 @@
   --on-deep-2: #DCE7FB; --on-deep-3: #B9CCF0;
   --sun: #FFD84A; --sun-hover: #FFE169; --sun-edge: #DDA800;
   --line: rgba(20, 37, 79, 0.11); --line-deep: rgba(255, 255, 255, 0.2);
+  /* Bande de ciel des pages intérieures (`.hd-ciel`, `.da-sous-entete`) */
+  --ciel-bande: linear-gradient(var(--sky-1), var(--sky-2) 55%, rgba(228, 238, 255, 0));
   /* États */
   --ok-bg: #DFF3E7; --ok: #0F6338;
   --wait-bg: #FCEACF; --wait: #874C00;
@@ -266,19 +273,46 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 :where(.da) .hd--flux { box-sizing: border-box; top: env(safe-area-inset-top, 0px); height: 80px; margin: 0; padding: 10px 0; }
 /* Pages intérieures : elles n'ont pas de ciel. Une bande de ciel de 80 px, la
    place que l'en-tête occupe en haut de la page, qui s'éteint vers le bas : la
-   pastille blanche se détache, et la bande rejoint le fond de la page quel
-   qu'il soit. Élément à part, rendu juste avant l'en-tête et de hauteur nulle
-   dans le flux : l'en-tête est collant, la bande non (elle part avec la page,
-   aucun élément collant ne passe dessous). Sans position ni z-index : elle se
-   peint sous tout le contenu, et un fond posé par la page la recouvre. */
-:where(.da) .hd-ciel { height: 80px; margin-bottom: -80px; background: linear-gradient(var(--sky-1), var(--sky-2) 55%, rgba(228, 238, 255, 0)); pointer-events: none; }
-@media (forced-colors: active) { :where(.da) .hd-ciel { display: none; } }
+   pastille blanche se détache. Élément à part, rendu juste avant l'en-tête et
+   de hauteur nulle dans le flux : l'en-tête est collant, la bande non (elle
+   part avec la page, aucun élément collant ne passe dessous). Sans position ni
+   z-index : elle se peint sous tout le contenu, et un fond posé par la page la
+   recouvre (le bandeau bleu de /guide, qui remonte sous la pastille).
+   Elle s'éteint sur le fond de <body> : la jonction est invisible quand le
+   premier bloc de la page n'a pas de fond (/blog, les articles, /tarifs). Un
+   premier bloc qui a le sien prend `.da-sous-entete`, ci-dessous. */
+:where(.da) .hd-ciel { height: 80px; margin-bottom: -80px; background: var(--ciel-bande); pointer-events: none; }
+/* Premier bloc d'une page intérieure, quand il a son propre fond (dégradé,
+   halo, blanc) : sans cela ce fond commence net à 80 px, sous une bande qui
+   s'est éteinte sur une autre couleur, et on voit une ligne sur toute la
+   largeur. Le bloc remonte donc sous l'en-tête, rend les 80 px à son contenu
+   (`::before`, dans le flux) et peint lui-même la bande de ciel par-dessus son
+   fond et ses halos (`::after`, dernier dans l'ordre de peinture) : elle
+   s'éteint sur le fond du bloc, quel qu'il soit. La classe n'agit que si le
+   bloc est bien le premier après l'en-tête « flux » (lui-même, ou le premier
+   enfant de l'élément qui suit) : précédé d'un bandeau, il reste à sa place.
+   Le bloc ne doit pas être un conteneur flex ou grille (le `::before` y
+   deviendrait une cellule). */
+:where(.da) .hd--flux + .da-sous-entete,
+:where(.da) .hd--flux + * > .da-sous-entete:first-child { position: relative; margin-top: -80px; }
+:where(.da) .hd--flux + .da-sous-entete::before,
+:where(.da) .hd--flux + * > .da-sous-entete:first-child::before { content: ""; display: block; height: 80px; }
+:where(.da) .hd--flux + .da-sous-entete::after,
+:where(.da) .hd--flux + * > .da-sous-entete:first-child::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 80px; background: var(--ciel-bande); pointer-events: none; }
+@media (forced-colors: active) {
+  :where(.da) .hd-ciel,
+  :where(.da) .hd--flux + .da-sous-entete::after,
+  :where(.da) .hd--flux + * > .da-sous-entete:first-child::after { display: none; }
+}
 /* Sous 900 px, pas de flou d'arrière-plan : il coûte cher au défilement sur
-   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. */
+   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. Sur les pages
+   intérieures (« flux ») il est plein : la pastille y passe sur du texte foncé
+   et dense (formulaires, tableaux, cartes), qu'on lisait au travers à 94 %. */
 :where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
 @media (min-width: 900px) {
   :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
 }
+@media (max-width: 899px) { :where(.da) .hd--flux .hd-bar { background: #fff; } }
 :where(.da) .hd-brand { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); text-decoration: none; }
 /* Sous 340 px, tout se resserre : le mot, la pastille d'essai et le bouton du
    menu doivent tenir sur 320 px (296 px de pastille). */
@@ -452,6 +486,14 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
   .da #cookie-banner { left: 24px; right: auto; width: 268px; margin: 0; }
   .da #cookie-banner > div { flex-direction: column; align-items: stretch; gap: 12px; }
   .da #cookie-banner > div > div { display: grid; }
+}
+/* Articles avec sommaire : à partir de 1280 px le sommaire est collant, à
+   gauche, là où la bannière se range. Tant qu'elle est affichée, il s'arrête
+   au-dessus d'elle (il défile déjà dans sa colonne) au lieu de passer dessous.
+   25rem = sa place en haut de page, avant qu'il colle (200 px sous le fil
+   d'Ariane), la bannière (147 px + 24 px) et 29 px d'air. */
+@media (min-width: 1280px) {
+  .da:has(#cookie-banner:not([hidden])) .toc { max-height: calc(100vh - 25rem); }
 }
 /* L'anneau blanc détache la bulle du pied, lui aussi bleu nuit. */
 .da #crisp-launcher { background-color: var(--ink); background-image: none; color: var(--paper); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 10px 22px -10px rgba(9, 20, 52, 0.6); }
