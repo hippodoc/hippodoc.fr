@@ -6219,6 +6219,54 @@ sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`
   `landing_nav_comment_ca_marche` sur toutes les pages) et vérifier qu'aucun insight ne
   filtre encore sur `landing_nav_decouvrir` ou `landing_mobile_nav_decouvrir`.
 
+### 9.ee Phase 5b : les pages intérieures dans la DA (11 novembre 2026)
+
+Suite de § 9.ed. Période d'observation SEO : sur une page rhabillée, seul l'habillage
+change. Un lot par page.
+
+**`/tarifs`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 10 titres (niveau et texte),
+  les 6 liens du `<main>` et les 54 de la page (adresse et libellé, dans l'ordre), les
+  3 ancres (`internes-title`, `inclus-title`, `faq-tarifs-title`), les 4 blocs JSON-LD,
+  les 32 éléments de la page qui portent un attribut de mesure (dont `cta_signup_tarifs_mensuel`, `_annuel`,
+  `_bottom`), les 4 scripts, et le texte du `<main>` : 506 mots, mêmes suites de texte
+  entre balises de bloc, espaces comprises. Les 70 autres HTML du build sont identiques,
+  au nom de la feuille commune près. Aucun JS ajouté. `lastmod` de `/tarifs` non touché.
+- **Habillage** (`src/pages/tarifs.astro`, aucune classe Tailwind) : page entièrement dans
+  la DA, comme l'accueil (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color` du
+  ciel). Un bloc « ciel » : titre, puis trois fiches en relief dans l'ordre du HTML
+  (mensuel, annuel en bleu profond avec le bouton jaune, internes) ; une feuille sable :
+  les 17 inclus sur une fiche blanche, en colonnes ; une feuille ciel : les 5 questions en
+  plis `.qa` ; une fin : le soleil de l'accueil sur l'eau du pied de page, immobile.
+  Mascotte « qui présente » derrière la fiche des internes à partir de 1 024 px : les
+  fichiers de l'accueil, hors du flux, et elle plonge derrière la fiche quand l'en-tête
+  approche (même mécanique CSS).
+- **Dans le HTML, sans toucher au texte** : « ✓ » est dessiné en SVG, le caractère reste
+  dans le texte, masqué à l'œil (`sr`) ; des `<span class="num">` gardent sur une ligne un
+  prix ou un mot et le « : » ou le « ? » qui le suit ; « 10 € par mois » de la phrase des
+  internes est écrit en grand, seul sur sa ligne (même `<strong>`, même phrase) ;
+  `role="list"` sur les listes ; une image décorative (`alt=""`).
+- **Feuilles** : commune 174 197 → 173 841 octets (trois utilitaires que seule `/tarifs`
+  employait disparaissent, rien n'est ajouté ; son nom change, donc le `<link>` de toutes
+  les pages) ; feuille de l'accueil inchangée à l'octet ; nouvelle `tarifs.*.css`,
+  9 710 octets (2 433 gzip), servie à `/tarifs` seule. HTML de `/tarifs` : 13 975 →
+  14 117 octets gzip. Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  l'accueil ; 25 largeurs de 320 à 1 920 px sans défilement horizontal, chaque bouton sur
+  une ligne ; contrastes AA (le plus bas : 4,73:1, texte clair de l'offre annuelle) ;
+  clavier, plis, tiroir, bannière cookies, contrastes forcés. Lighthouse mobile, quatre
+  mesures : performance 96 à 100 (99 à 100 sur `main`, écart de mesure sur le temps de
+  blocage), accessibilité 100, SEO 100.
+- **Piège relevé** : rendre `accueil/Mascotte.astro` depuis `/tarifs` sortait son `<style>`
+  de la feuille de l'accueil (elle changeait de nom, et le HTML de l'accueil gagnait un
+  `<style>` en ligne). Le `<picture>` est écrit dans la page, par `getImage`, aux mêmes
+  largeurs.
+- **À valider** : l'ordre visuel des offres suit le HTML (mensuel, annuel, internes),
+  alors que l'accueil montre l'annuel en premier ; l'inverser à l'écran sans toucher au
+  HTML séparerait l'ordre de lecture de l'ordre affiché.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

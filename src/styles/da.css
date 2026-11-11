@@ -11,8 +11,8 @@
      cookies et la bulle de chat sont partout ceux de la DA ;
    - `.da` ne porte que les jetons. Le fond de page de la DA (ciel en haut, eau
      profonde en bas) demande en plus `.da-fond` (prop `bodyClass` de
-     BaseLayout) : l'accueil seule, tant que les autres pages gardent leurs
-     couleurs ;
+     BaseLayout) : les pages entièrement dans la DA (l'accueil, /tarifs), tant
+     que les autres gardent leurs couleurs ;
    - la typographie de la DA (corps, graisse, couleur, interligne), ses règles
      de titres et son anneau de focus sont portés par les blocs marqués
      `.da-bloc` (l'en-tête, le pied, chaque section de l'accueil). Le contenu
@@ -279,7 +279,7 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
    z-index : elle se peint sous tout le contenu, et un fond posé par la page la
    recouvre (le bandeau bleu de /guide, qui remonte sous la pastille).
    Elle s'éteint sur le fond de <body> : la jonction est invisible quand le
-   premier bloc de la page n'a pas de fond (/blog, les articles, /tarifs). Un
+   premier bloc de la page n'a pas de fond (/blog, les articles). Un
    premier bloc qui a le sien prend `.da-sous-entete`, ci-dessous. */
 :where(.da) .hd-ciel { height: 80px; margin-bottom: -80px; background: var(--ciel-bande); pointer-events: none; }
 /* Premier bloc d'une page intérieure, quand il a son propre fond (dégradé,

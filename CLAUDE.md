@@ -46,21 +46,23 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 
 ## DA 2026 — accueil, en-tête, pied et police
 
-L'accueil est la seule page entièrement dans la nouvelle direction artistique
-(MIGRATION.md § 9.eb). Depuis la phase 5a (§ 9.ed), l'en-tête, le pied, la police, la
-bannière cookies et la bulle de chat de la DA servent sur **toutes** les pages ; le
-contenu des pages intérieures garde ses classes Tailwind et ses couleurs (phases 5b à 5d).
+L'accueil est entièrement dans la nouvelle direction artistique (MIGRATION.md § 9.eb),
+`/tarifs` aussi depuis la phase 5b (§ 9.ee). Depuis la phase 5a (§ 9.ed), l'en-tête, le
+pied, la police, la bannière cookies et la bulle de chat de la DA servent sur **toutes**
+les pages ; le contenu des autres pages intérieures garde ses classes Tailwind et ses
+couleurs (phases 5b à 5d).
 
 - **Feuille** : `src/styles/da.css` (police, jetons, `.btn`, `.wrap`, feuilles `.band`,
   plis `.qa`, en-tête `hd-*`, pied `ft-*`, bannière cookies, bulle de chat). Importée par
   BaseLayout après `global.css` : elle sort dans la feuille commune à toutes les pages.
   Tout vit sous `.da`, que BaseLayout pose sur le `<body>` de toutes les pages (jetons
-  seulement). Le fond de page de la DA demande en plus `bodyClass="da-fond"` : l'accueil
-  seule. La typographie de la DA, ses règles de titres et son anneau de focus sont portés
+  seulement). Le fond de page de la DA demande en plus `bodyClass="da-fond"` : les pages
+  entièrement dans la DA (l'accueil, `/tarifs`). La typographie de la DA, ses règles de titres et son anneau de focus sont portés
   par `.da-bloc`, à poser sur chaque bloc (en-tête, pied, section).
 - **Un seul en-tête, un seul pied** : `src/components/Header.astro` (prop `variante` :
   `flux` par défaut, la pastille garde 80 px en haut de la page sur une bande de ciel ;
-  `flottante` sur l'accueil) et `Footer.astro` (prop `soutiens`), qui rend aussi
+  `flottante` sur l'accueil et `/tarifs`, dont le premier bloc est un ciel qui lui réserve
+  le haut) et `Footer.astro` (prop `soutiens`), qui rend aussi
   `ScriptTiroir.astro`. Une page rend les deux ou aucun. `verify-site.mjs` (contrôle
   « 4 quater bis ») fige les `data-ph` et `data-track` de l'en-tête et du pied
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
@@ -69,18 +71,25 @@ contenu des pages intérieures garde ses classes Tailwind et ses couleurs (phase
 - **Premier bloc d'une page intérieure** : s'il a son propre fond (dégradé, halo, blanc),
   il prend la classe `da-sous-entete` (`da.css`) : il remonte sous l'en-tête et peint
   lui-même la bande de ciel, qui s'éteint sur son fond. Sans elle, le fond commence net à
-  80 px et laisse une ligne sur toute la largeur. Un premier bloc sans fond (`/tarifs`,
-  `/blog`, les articles) n'en a pas besoin. La classe ne fait rien si le bloc n'est pas
+  80 px et laisse une ligne sur toute la largeur. Un premier bloc sans fond (`/blog`,
+  les articles) n'en a pas besoin. La classe ne fait rien si le bloc n'est pas
   le premier après l'en-tête ; pas sur un conteneur flex ou grille.
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
+- **`/tarifs` dans la DA** (phase 5b, § 9.ee) : `da-fond`, en-tête `flottante`, un bloc
+  « ciel » puis des feuilles `.band`, aucune classe Tailwind ; styles dans le `<style>` de
+  `src/pages/tarifs.astro` (une feuille à part, `tarifs.*.css` : la feuille commune ne
+  grossit pas). ⚠️ Une page intérieure ne rend pas un composant de `accueil/` qui a un
+  `<style>` (`Mascotte.astro`) : partagé, ce style sort de la feuille de l'accueil et
+  change son HTML. Période d'observation SEO : texte, titres, liens et JSON-LD d'une page
+  rhabillée se prouvent identiques au build de `main`, par script.
 - ⚠️ **Pièges Tailwind dans les `<style>`** : Tailwind lit tout le fichier `.astro`,
   `<style>` et commentaires compris. Un mot qui est aussi un nom de classe
   (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille commune :
   son empreinte change, donc le HTML de toutes les pages. Écrire `text-wrap-style`,
   `cubic-bezier(…)`, et vérifier après build que la feuille commune (la seule feuille de
-  `/tarifs` : `dist/_astro/_astro_assets.*.css` depuis la phase 5a) n'a pas changé de nom
+  `/faq` : `dist/_astro/_astro_assets.*.css` depuis la phase 5a) n'a pas changé de nom
   quand seule l'accueil a changé.
   Autre piège, à la minification : `animation` et `animation-timeline` dans la même règle
   sont fusionnés en une déclaration invalide ; écrire la ligne de temps dans une seconde

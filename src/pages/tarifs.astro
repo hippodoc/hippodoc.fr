@@ -2,12 +2,34 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import { getImage } from 'astro:assets';
+import presente from '@/assets/accueil/mascotte-f-presente.webp';
 import { SITE_URL, APP_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 
 /**
  * NOUVELLE page (n'existe pas dans la SPA source) — cible « hippodoc prix »,
  * « tarif logiciel médecin remplaçant ». Faits repris de src/config/pricing.ts
  * et FeaturesListModal.tsx de la source (aucun chiffre inventé).
+ *
+ * Habillée dans la DA 2026 en phase 5b (MIGRATION.md § 9.ee) : seul l'habillage
+ * a changé. Textes, titres, liens, ordre des blocs, JSON-LD et `data-track`
+ * sont ceux d'avant, au caractère près (période d'observation SEO).
+ * - Page entièrement dans la DA, comme l'accueil : fond `da-fond`, en-tête en
+ *   variante « flottante » (le ciel du premier bloc lui réserve le haut).
+ * - Quatre blocs : le ciel (titre, les deux offres et la fiche des internes,
+ *   dans l'ordre du HTML : mensuel, annuel, internes), une feuille sable (la
+ *   liste des inclus), une feuille ciel (les questions, en plis `.qa`), puis
+ *   une scène de fin (le soleil sur l'eau du pied de page), immobile.
+ * - Aucune classe utilitaire ici : tout est dans le <style> de la page (une
+ *   feuille à part, servie à /tarifs seule) et dans da.css. Les fiches d'offre
+ *   reprennent celles de accueil/Tarifs.astro, qui garde ses propres styles.
+ * - « ✓ » n'est pas dans la police : dessiné en SVG, le caractère reste dans le
+ *   texte, masqué à l'œil (classe `sr`).
+ * - Mascotte féminine qui présente, à partir de 1024 px, derrière la fiche des
+ *   internes : les mêmes fichiers que sur l'accueil, hors du flux (décor). Le
+ *   <picture> est écrit ici, sans accueil/Mascotte.astro : partagé entre deux
+ *   pages, le style de ce composant sortait de la feuille de l'accueil et
+ *   changeait son HTML.
  */
 
 const title = 'Tarif logiciel médecin remplaçant : 29 €/mois | Hippodoc';
@@ -85,131 +107,333 @@ const breadcrumbSchema = {
 };
 
 const jsonLd = [SOFTWARE_APPLICATION_SCHEMA, faqSchema, breadcrumbSchema];
+
+/* La mascotte : mêmes largeurs et mêmes formats que dans accueil/Tarifs.astro,
+   donc les mêmes fichiers (aucune image de plus dans le build). */
+const [mascotteAvif, mascotteWebp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) => getImage({ src: presente, format, width: 375, widths: [250, 375, 500] }))
+);
+
+/* La coche des listes : le dessin de accueil/Tarifs.astro. */
+const coche =
+  '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>';
 ---
 
-<BaseLayout title={title} description={description} path="/tarifs" jsonLd={jsonLd}>
-  <Header />
-  <main class="container px-4 py-12">
-    <header class="mx-auto max-w-3xl text-center">
-      <h1 class="text-3xl font-bold text-foreground md:text-4xl">
-        Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel
-      </h1>
-      {/* ⚠️ Un retour à la ligne collé à une balise en ligne, avant ou après elle,
-           fait disparaître l'espace au rendu (la page a affiché « ou19 € » jusqu'à
-           § 9.ed) : une balise reste sur la ligne du mot qui la précède et du mot
-           qui la suit. */}
-      <p class="mt-4 text-lg text-muted-foreground">
-        Hippodoc coûte <strong class="text-foreground">29 € par mois sans engagement</strong>,
-        ou <strong class="text-foreground">19 € par mois en facturation annuelle</strong> (228 € par an, soit 34 % d'économie).
-        Chaque offre commence par un essai gratuit de 30 jours, avec toutes les fonctionnalités incluses.
-      </p>
-    </header>
+<BaseLayout title={title} description={description} path="/tarifs" jsonLd={jsonLd} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
+  <main>
+    <div class="tete da-bloc">
+      <div class="wrap">
+        <header class="band-head intro">
+          {/* Les <span class="num"> de la page ne changent pas le texte : ils gardent sur
+               une ligne un prix, ou un mot et le « : » ou le « ? » qui le suit (sur
+               téléphone, le titre coupait « 29 » de « €/mois »). */}
+          <h1 class="aff">Tarifs <span class="num">Hippodoc :</span> <span class="num">29 €/mois</span> <span class="num">ou 19 €/mois</span> en annuel</h1>
+          {/* ⚠️ Un retour à la ligne collé à une balise en ligne, avant ou après elle,
+               fait disparaître l'espace au rendu (la page a affiché « ou19 € » jusqu'à
+               § 9.ed) : une balise reste sur la ligne du mot qui la précède et du mot
+               qui la suit. */}
+          <p class="lead">
+            Hippodoc coûte <strong>29 € par mois sans engagement</strong>,
+            ou <strong>19 € par mois en facturation annuelle</strong> (<span class="num">228 €</span> par an, soit <span class="num">34 %</span> d'économie).
+            Chaque offre commence par un essai gratuit de 30 jours, avec toutes les fonctionnalités incluses.
+          </p>
+        </header>
 
-    <div class="mx-auto mt-12 grid max-w-3xl gap-6 md:grid-cols-2">
-      <!-- Offre mensuelle -->
-      <div class="flex flex-col rounded-2xl border border-hippo-100 bg-white p-8 shadow-md">
-        <div class="mb-2 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-hippo-800">Mensuel</h2>
-          <span class="rounded-full bg-hippo-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-hippo-600">Flexible</span>
-        </div>
-        <p class="mt-2"><span class="text-4xl font-extrabold text-foreground">29 €</span><span class="text-muted-foreground"> / mois</span></p>
-        <p class="mt-1 text-sm text-muted-foreground">29 € facturés chaque mois · Sans engagement</p>
-        <ul class="mt-6 space-y-2 text-sm text-foreground">
-          <li>✓ Essai gratuit 30 jours</li>
-          <li>✓ Toutes les fonctionnalités incluses</li>
-          <li>✓ Résiliable à tout moment</li>
-        </ul>
-        <a
-          href={signupUrl}
-          data-track="cta_signup_tarifs_mensuel"
-          class="mt-8 inline-flex h-11 items-center justify-center rounded-full border border-hippo-200 px-6 font-semibold text-hippo-700 transition-colors hover:bg-hippo-50"
-        >
-          Commencer l'essai gratuit
-        </a>
-      </div>
+        <div class="plans">
+          <!-- Offre mensuelle -->
+          <div class="offer">
+            <div class="offer-top">
+              <h2>Mensuel</h2>
+              <span class="chip plan">Flexible</span>
+            </div>
+            <p class="price"><b class="aff num">29 €</b><span> / mois</span></p>
+            <p>29 € facturés chaque mois · Sans engagement</p>
+            <ul class="checks" role="list">
+              <li><span class="sr">✓</span>{' '}<Fragment set:html={coche} />Essai gratuit 30 jours</li>
+              <li><span class="sr">✓</span>{' '}<Fragment set:html={coche} />Toutes les fonctionnalités incluses</li>
+              <li><span class="sr">✓</span>{' '}<Fragment set:html={coche} />Résiliable à tout moment</li>
+            </ul>
+            <a
+              href={signupUrl}
+              data-track="cta_signup_tarifs_mensuel"
+              class="btn btn-line"
+            >
+              Commencer l'essai gratuit
+            </a>
+          </div>
 
-      <!-- Offre annuelle -->
-      <div class="relative flex flex-col rounded-2xl border-2 border-hippo-500 bg-white p-8 shadow-lg">
-        <span class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 px-4 py-1 text-xs font-bold uppercase tracking-wide text-white shadow">Populaire</span>
-        <div class="mb-2 flex items-center justify-between">
-          <h2 class="text-xl font-bold text-hippo-800">Annuel</h2>
-          <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">−34 %</span>
+          <!-- Offre annuelle -->
+          <div class="offer main">
+            <span class="pop">Populaire</span>
+            <div class="offer-top">
+              <h2>Annuel</h2>
+              <span class="save">−34 %</span>
+            </div>
+            <p class="price"><b class="aff num">19 €</b><span> / mois</span></p>
+            <p>228 € facturés une fois par an</p>
+            <ul class="checks" role="list">
+              <li><span class="sr">✓</span>{' '}<Fragment set:html={coche} />Essai gratuit 30 jours</li>
+              <li><span class="sr">✓</span>{' '}<Fragment set:html={coche} />Toutes les fonctionnalités incluses</li>
+              <li><span class="sr">✓</span>{' '}<Fragment set:html={coche} />10 € d'économie par mois vs mensuel</li>
+            </ul>
+            <a
+              href={signupUrl}
+              data-track="cta_signup_tarifs_annuel"
+              class="btn btn-brand"
+            >
+              Commencer l'essai gratuit
+            </a>
+          </div>
+
+          {/* Internes et syndicats partenaires (MIGRATION.md § 9.ed) : décisions 13 et 14
+               du propriétaire (10 novembre 2026), déjà publiées sur l'accueil et sur /faq.
+               Pas de cumul annoncé, pas de liste de syndicats : /faq la tient. */}
+          <section class="offer interne" aria-labelledby="internes-title">
+            <picture class="guide">
+              <source type="image/avif" srcset={mascotteAvif.srcSet.attribute} sizes="250px" />
+              <img src={mascotteWebp.src} srcset={mascotteWebp.srcSet.attribute} sizes="250px" alt="" width={mascotteWebp.attributes.width} height={mascotteWebp.attributes.height} loading="lazy" decoding="async" />
+            </picture>
+            <h2 id="internes-title">Internes et docteurs juniors</h2>
+            {/* ⚠️ Un retour à la ligne juste avant une balise en ligne fait disparaître
+                 l'espace au rendu (« dure6 mois ») : chaque balise reste sur la ligne
+                 du mot qui la précède. */}
+            <p>
+              Tu paies <strong class="aff num prix">10 € par mois</strong> jusqu'à la fin de
+              l'internat, sur <span class="num">justificatif :</span> écris-nous à <a href="mailto:contact@hippodoc.fr" class="lien">contact@hippodoc.fr</a>.
+            </p>
+            <p>
+              Tu adhères à un syndicat d'internes <span class="num">partenaire ?</span> Ton essai gratuit
+              dure <strong>6 mois</strong> au lieu de 30 jours, grâce à un code fourni par ton syndicat.
+            </p>
+          </section>
         </div>
-        <p class="mt-2"><span class="text-4xl font-extrabold text-foreground">19 €</span><span class="text-muted-foreground"> / mois</span></p>
-        <p class="mt-1 text-sm text-muted-foreground">228 € facturés une fois par an</p>
-        <ul class="mt-6 space-y-2 text-sm text-foreground">
-          <li>✓ Essai gratuit 30 jours</li>
-          <li>✓ Toutes les fonctionnalités incluses</li>
-          <li>✓ 10 € d'économie par mois vs mensuel</li>
-        </ul>
-        <a
-          href={signupUrl}
-          data-track="cta_signup_tarifs_annuel"
-          class="mt-8 inline-flex h-11 items-center justify-center rounded-full bg-hippo-600 px-6 font-semibold text-primary-foreground shadow-lg shadow-hippo-500/20 transition-colors hover:bg-hippo-700"
-        >
-          Commencer l'essai gratuit
-        </a>
       </div>
     </div>
 
-    {/* Internes et syndicats partenaires (MIGRATION.md § 9.ed) : décisions 13 et 14
-         du propriétaire (10 novembre 2026), déjà publiées sur l'accueil et sur /faq.
-         Pas de cumul annoncé, pas de liste de syndicats : /faq la tient. */}
-    <section class="mx-auto mt-6 max-w-3xl rounded-2xl border border-hippo-100 bg-white p-6 shadow-sm md:px-8" aria-labelledby="internes-title">
-      <h2 id="internes-title" class="text-lg font-bold text-hippo-800">Internes et docteurs juniors</h2>
-      {/* ⚠️ Un retour à la ligne juste avant une balise en ligne fait disparaître
-           l'espace au rendu (« dure6 mois ») : chaque balise reste sur la ligne
-           du mot qui la précède. */}
-      <p class="mt-2 text-sm text-muted-foreground">
-        Tu paies <strong class="text-foreground">10 € par mois</strong> jusqu'à la fin de l'internat, sur
-        justificatif : écris-nous à <a href="mailto:contact@hippodoc.fr" class="text-hippo-600 underline">contact@hippodoc.fr</a>.
-      </p>
-      <p class="mt-2 text-sm text-muted-foreground">
-        Tu adhères à un syndicat d'internes partenaire ? Ton essai gratuit
-        dure <strong class="text-foreground">6 mois</strong> au lieu de 30 jours, grâce à un code fourni par ton syndicat.
-      </p>
-    </section>
-
-    <section class="mx-auto mt-16 max-w-4xl" aria-labelledby="inclus-title">
-      <h2 id="inclus-title" class="text-center text-2xl font-bold text-foreground">Inclus dans toutes les offres</h2>
-      <ul class="mt-8 grid gap-x-8 gap-y-3 text-[15px] text-foreground sm:grid-cols-2">
-        {features.map((f) => (
-          <li class="flex items-start gap-2">
-            <span class="mt-0.5 text-hippo-500" aria-hidden="true">✓</span>
-            {f}
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="mx-auto mt-16 max-w-3xl" aria-labelledby="faq-tarifs-title">
-      <h2 id="faq-tarifs-title" class="text-center text-2xl font-bold text-foreground">Questions fréquentes sur les tarifs</h2>
-      <div class="mt-8 space-y-3">
-        {faqTarifs.map((item) => (
-          <details class="group rounded-xl border border-hippo-100 bg-white p-4 shadow-sm">
-            <summary class="cursor-pointer list-none font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-              {item.question}
-            </summary>
-            <p class="mt-3 text-muted-foreground">{item.answer}</p>
-          </details>
-        ))}
+    <section class="band da-bloc" aria-labelledby="inclus-title">
+      <div class="wrap">
+        <div class="band-head mid">
+          <h2 id="inclus-title">Inclus dans toutes les offres</h2>
+        </div>
+        <ul class="checks tout" role="list">
+          {features.map((f) => (
+            <li>
+              <span class="sr" aria-hidden="true">✓</span><Fragment set:html={coche} />
+              {f}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
 
-    <section class="mx-auto mt-16 max-w-2xl rounded-2xl bg-gradient-to-r from-hippo-500 to-hippo-600 p-8 text-center text-white">
-      <h2 class="text-2xl font-bold">Essaie Hippodoc gratuitement pendant 30 jours</h2>
-      <p class="mt-2 text-white/90">Le cockpit financier des médecins remplaçants qui calcule tout pour vous.</p>
-      <a
-        href={signupUrl}
-        data-track="cta_signup_tarifs_bottom"
-        class="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-white px-8 font-semibold text-hippo-700 shadow-lg transition-transform hover:scale-105"
-      >
-        Créer mon compte
-      </a>
-      <p class="mt-3 text-sm text-white/80">
-        Une question ? <a href="/faq" class="underline">Consulte la FAQ</a> ou <a href="mailto:contact@hippodoc.fr" class="underline">écris-nous</a>.
-      </p>
+    <section class="band air da-bloc" aria-labelledby="faq-tarifs-title">
+      <div class="wrap faq">
+        <div class="band-head">
+          <h2 id="faq-tarifs-title">Questions fréquentes sur les tarifs</h2>
+        </div>
+        <div class="liste">
+          {faqTarifs.map((item) => (
+            <details class="qa">
+              <summary>
+                <span class="qa-t">{item.question}</span>
+                <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
+              </summary>
+              <div class="qa-in"><p>{item.answer}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="fin da-bloc">
+      <div class="wrap fin-copy">
+        <h2>Essaie Hippodoc gratuitement pendant 30 jours</h2>
+        <p class="lead">Le cockpit financier des médecins remplaçants qui calcule tout pour vous.</p>
+        <a
+          href={signupUrl}
+          data-track="cta_signup_tarifs_bottom"
+          class="btn btn-brand"
+        >
+          Créer mon compte
+        </a>
+        <p class="aide">
+          Une <span class="num">question ?</span> <a href="/faq" class="lien">Consulte la FAQ</a> ou <a href="mailto:contact@hippodoc.fr" class="lien">écris-nous</a>.
+        </p>
+      </div>
+      {/* Décor : le soleil de l'accueil se lève sur l'eau du pied de page. */}
+      <div class="horizon" aria-hidden="true">
+        <span class="sun"></span>
+        <span class="wave w3"></span>
+        <span class="wave w4"></span>
+      </div>
     </section>
   </main>
   <Footer />
 </BaseLayout>
+
+<style>
+  .num { white-space: nowrap; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
+     haut. En bas, 88 px d'air et les 40 px que recouvre la feuille suivante. */
+  .tete { position: relative; padding: 108px 0 128px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+  .intro h1 { --corps: clamp(32px, 4.5vw, 58px); text-wrap-style: balance; }
+  .lead strong { color: var(--ink); }
+  /* La mascotte qui présente les offres : à partir de 1024 px (voir plus bas). */
+  .guide { display: none; }
+
+  /* Les trois fiches, dans l'ordre du HTML : mensuel, annuel, internes. 22 px
+     entre elles tant qu'elles s'empilent : la pastille « Populaire » dépasse de
+     13 px au-dessus de l'offre annuelle. */
+  .plans { position: relative; display: grid; gap: 22px 14px; }
+  .offer { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 28px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .offer-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 26px; }
+  .offer h2 { margin: 0; font-family: var(--text); font-size: 18px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
+  .offer p { margin: 0; font-size: 16px; color: var(--ink-2); }
+  .offer .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
+  .price b { --corps: 64px; color: var(--ink); }
+  .offer > .btn { margin-top: auto; padding: 8px 14px; text-align: center; }
+
+  /* Les coches : celles des fiches, puis celles de la liste des inclus. */
+  .checks { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; color: var(--ink-2); }
+  .checks li { display: flex; align-items: flex-start; gap: 10px; }
+  .checks :global(svg) { flex: none; margin-top: 4px; color: var(--brand); }
+  .offer .checks { margin: 14px 0 24px; font-size: 16px; }
+
+  /* L'offre annuelle : l'eau profonde, le bouton jaune. */
+  .offer.main { --focus: #FFFFFF; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .offer.main p, .offer.main .checks { color: var(--on-deep-2); }
+  .offer.main .price b, .offer.main .checks :global(svg) { color: var(--paper); }
+  /* « Populaire » : une pastille blanche à cheval sur le bord haut de la fiche. */
+  .pop { position: absolute; top: -13px; left: 28px; padding: 3px 12px; border-radius: var(--r-pill); background: var(--paper); color: var(--ink); font-size: 13.5px; font-weight: var(--tb); line-height: 1.5; box-shadow: var(--clay-sm); }
+  /* L'économie : sur du jaune, comme « 120 € de moins… » sur l'accueil. */
+  .save { padding: 3px 9px; border-radius: 9px; background: var(--sun); color: var(--ink); font-size: 14.5px; font-weight: var(--tb); line-height: 1.35; white-space: nowrap; }
+
+  /* La fiche des internes : deux paragraphes. Dans le premier, le prix est écrit
+     en grand, seul sur sa ligne, comme celui des deux offres (la phrase n'a pas
+     changé). Le second, pour les adhérents d'un syndicat, est une note au pied
+     de la fiche. */
+  .interne { gap: 10px; }
+  .interne p { line-height: 1.5; }
+  .interne strong { color: var(--ink); white-space: nowrap; }
+  .interne .prix { --corps: 36px; display: block; margin: 5px 0 9px; }
+  .interne p:last-child { margin-top: auto; padding: 14px 16px; border-radius: 18px; background: var(--sky-soft); font-size: 15.5px; }
+
+  /* Inclus dans toutes les offres : la liste entière sur une fiche blanche. */
+  /* En colonnes de texte à partir de 640 px (lecture de haut en bas, colonne
+     après colonne) : les lignes gardent le même écart, qu'un libellé tienne sur
+     une ligne ou sur deux. */
+  .tout { display: block; padding: 28px 24px 16px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); font-size: 16.5px; column-gap: 40px; }
+  .tout li { margin-bottom: 12px; break-inside: avoid; }
+  .tout :global(svg) { margin-top: 5px; }
+
+  /* Les questions : le titre à gauche, les plis à droite (accueil/Questions.astro). */
+  .faq { display: grid; gap: 32px; }
+  .faq .band-head { margin-bottom: 0; }
+  .liste { min-width: 0; }
+  .liste .qa:last-child { margin-bottom: 0; }
+
+  /* La fin : le ciel de l'accueil, puis le soleil qui se lève sur l'eau du pied
+     de page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles).
+     -1 px en bas : pas de filet clair au-dessus du pied. */
+  .fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; }
+  .fin-copy { display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 88px; }
+  .fin-copy > * { margin: 0; }
+  .fin h2 { --corps: clamp(34px, 5.2vw, 64px); max-width: 17ch; }
+  .fin .btn { margin-top: 8px; padding-block: 8px; text-align: center; }
+  .fin .lead { text-wrap-style: balance; }
+  .aide { font-size: 16px; color: var(--ink-2); }
+  .horizon { position: relative; height: 190px; margin-top: 40px; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; }
+  .w3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* La dernière vague a la couleur du haut du pied de page (--deep). */
+  .w4 { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+  /* Téléphone : fiches moins hautes, intervalles resserrés. */
+  @media (max-width: 559px) {
+    .tete { padding: 100px 0 88px; }
+    .offer { gap: 4px; padding: 22px 24px 24px; }
+    .price b { --corps: 54px; }
+    .offer .checks { margin: 12px 0 20px; }
+    .interne { gap: 8px; }
+    .tout { padding: 22px 20px 10px; }
+    .faq { gap: 26px; }
+    .fin-copy { padding-top: 52px; }
+  }
+  /* Petits téléphones : « Commencer l'essai gratuit » tient sur une ligne. */
+  @media (max-width: 374px) {
+    .offer { padding: 24px 22px; }
+    .offer > .btn { padding-inline: 8px; font-size: 15.5px; }
+  }
+  @media (min-width: 640px) {
+    .tout { column-count: 2; padding: 32px 32px 20px; }
+  }
+  /* Tablette : les deux offres côte à côte, la fiche des internes dessous, sur
+     toute la largeur. */
+  @media (min-width: 700px) {
+    .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* La ligne sous le prix tient sur deux lignes dans l'offre mensuelle : la
+       même place est gardée dans l'autre, les deux listes restent alignées. */
+    .price + p { min-height: 3.1em; }
+    .interne { grid-column: 1 / -1; }
+  }
+  @media (min-width: 900px) {
+    .tete { padding-top: 148px; }
+    .tout { column-count: 3; padding: 36px 40px 24px; }
+    .faq { grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 28px 56px; }
+    .horizon { height: 270px; --p: 440px; --th: 54px; }
+    .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+    .w3 { height: 112px; }
+    .w4 { height: 60px; }
+  }
+  @media (min-width: 1024px) {
+    /* Trois colonnes, l'offre annuelle un peu plus large, au milieu. */
+    .plans { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr); gap: 14px; }
+    .interne { grid-column: auto; }
+    /* Le titre s'arrête avant la mascotte. */
+    .intro { max-width: calc(100% - 320px); }
+    /* Elle se tient derrière la fiche des internes, coupée à mi-corps par son
+       bord haut (les 52 % du haut de l'image), hors du flux : comme sur
+       l'accueil (accueil/Tarifs.astro). */
+    .guide { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; overflow: hidden; pointer-events: none; }
+    .guide img { display: block; width: 100%; max-width: none; height: auto; }
+  }
+  /* De 1024 à 1179 px, les colonnes sont étroites : marges et boutons resserrés. */
+  @media (min-width: 1024px) and (max-width: 1179px) {
+    .offer { padding: 26px 24px; }
+    .offer > .btn { padding-inline: 8px; font-size: 15.5px; }
+  }
+  @media (min-width: 1180px) {
+    .faq { grid-template-columns: 320px minmax(0, 1fr); column-gap: 96px; }
+  }
+
+  /* La mascotte ne passe pas sous l'en-tête collant : quand son cadre atteint le
+     bas de la pastille, elle descend derrière la fiche (mécanique et valeurs de
+     accueil/Tarifs.astro ; deux règles, deux sélecteurs : piège de minification).
+     Sans animation liée au défilement, ou si le visiteur a demandé moins de
+     mouvement, elle passe sous l'en-tête. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+    @supports (animation-timeline: view()) and (view-timeline-inset: 76px 0px) {
+      .guide { view-timeline-name: --page-tarifs-guide; view-timeline-axis: block; view-timeline-inset: 76px 0px; }
+      .guide img { animation: page-tarifs-plonge linear both; }
+      picture.guide img { animation-timeline: --page-tarifs-guide; animation-range: exit 0% exit 100%; }
+    }
+  }
+  @keyframes page-tarifs-plonge { to { translate: 0 52.01%; } }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+     aux fiches et aux pastilles ; les coches blanches de l'offre annuelle
+     reprennent la couleur du texte ; le décor de la fin disparaît. */
+  @media (forced-colors: active) {
+    .offer, .tout, .pop, .save, .interne p:last-child { border: 1px solid CanvasText; }
+    .checks :global(svg) { color: CanvasText; }
+    .horizon { display: none; }
+  }
+</style>
