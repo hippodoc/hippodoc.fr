@@ -29,9 +29,9 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
   Tout ajout/modification de contenu doit être flaggé dans MIGRATION.md §9.
 - **Zéro JS client hors** : îlots des outils (simulateur, calculette, boussole, carrousel
   blog), PostHog, `ThirdPartyScripts.astro`, le micro-script inline du tiroir mobile
-  (fermeture au clic d'une ancre — voir MIGRATION.md §9 ; dans `Header.astro` sur toutes
-  les pages sauf l'accueil, où le même script, au caractère près, est rendu après le pied
-  par `src/components/da/ScriptTiroirDA.astro`), le script inline du lecteur du film de
+  (fermeture au clic d'une ancre — voir MIGRATION.md §9 ; rendu une seule fois par page,
+  après le pied, par `src/components/ScriptTiroir.astro`, que rend `Footer.astro` ; il ne
+  se modifie pas : `verify-site.mjs` en fige l'empreinte), le script inline du lecteur du film de
   l'accueil (`src/components/accueil/Fondateur.astro`, bouton de lecture — MIGRATION.md
   § 9.t), le script inline de tête de `BaseLayout.astro` (jetons de connexion Supabase
   renvoyés vers l'app — MIGRATION.md § 9.ea ; à garder en premier dans `<head>`), et la
@@ -44,45 +44,56 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 - **Lighthouse ≥ 95** (perf/SEO/a11y/BP) sur `/`, `/simulateur` et un article. Contraste :
   `text-hippo-500` interdit sur fond blanc en petit texte (utiliser `hippo-600`).
 
-## Accueil — DA 2026
+## DA 2026 — accueil, en-tête, pied et police
 
-L'accueil est la seule page dans la nouvelle direction artistique (MIGRATION.md § 9,
-entrée « DA 2026 »). Les autres pages gardent Tailwind, `Header.astro` et `Footer.astro`
-jusqu'à la phase 5a.
+L'accueil est la seule page entièrement dans la nouvelle direction artistique
+(MIGRATION.md § 9.eb). Depuis la phase 5a (§ 9.ed), l'en-tête, le pied, la police, la
+bannière cookies et la bulle de chat de la DA servent sur **toutes** les pages ; le
+contenu des pages intérieures garde ses classes Tailwind et ses couleurs (phases 5b à 5d).
 
 - **Feuille** : `src/styles/da.css` (police, jetons, `.btn`, `.wrap`, feuilles `.band`,
-  plis `.qa`, en-tête `hd-*`, pied `ft-*`). Importée par les composants `da/` et
-  `accueil/` seulement, ni par BaseLayout ni par `global.css`. Tout vit sous `.da`, posée
-  sur `<body>` par la prop `bodyClass="da"` de BaseLayout : jetons et fond de page. La
-  typographie, les règles de titres et l'anneau de focus sont portés par `.da-bloc`, à
-  poser sur chaque bloc (en-tête, pied, section).
-- **Composants** : `src/components/accueil/` (un par section, styles dans son `<style>`
-  scopé ; données dans `src/data/`), `src/components/da/` (`HeaderDA`, `FooterDA`,
-  `ScriptTiroirDA`). Aucune classe Tailwind dans ces deux dossiers.
+  plis `.qa`, en-tête `hd-*`, pied `ft-*`, bannière cookies, bulle de chat). Importée par
+  BaseLayout après `global.css` : elle sort dans la feuille commune à toutes les pages.
+  Tout vit sous `.da`, que BaseLayout pose sur le `<body>` de toutes les pages (jetons
+  seulement). Le fond de page de la DA demande en plus `bodyClass="da-fond"` : l'accueil
+  seule. La typographie de la DA, ses règles de titres et son anneau de focus sont portés
+  par `.da-bloc`, à poser sur chaque bloc (en-tête, pied, section).
+- **Un seul en-tête, un seul pied** : `src/components/Header.astro` (prop `variante` :
+  `flux` par défaut, la pastille garde 80 px en haut de la page sur une bande de ciel ;
+  `flottante` sur l'accueil) et `Footer.astro` (prop `soutiens`), qui rend aussi
+  `ScriptTiroir.astro`. Une page rend les deux ou aucun. `verify-site.mjs` (contrôle
+  « 4 quater bis ») fige les `data-ph` et `data-track` de l'en-tête et du pied
+  (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
+  l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
+  en-tête se déclare dans `PAGES_SANS_ENTETE`.
+- **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
+  `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
+  dans `Header.astro` et `Footer.astro`.
 - ⚠️ **Pièges Tailwind dans les `<style>`** : Tailwind lit tout le fichier `.astro`,
   `<style>` et commentaires compris. Un mot qui est aussi un nom de classe
-  (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille globale :
+  (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille commune :
   son empreinte change, donc le HTML de toutes les pages. Écrire `text-wrap-style`,
-  `cubic-bezier(…)`, et vérifier après build que `BaseLayout.*.css` n'a pas changé de nom.
+  `cubic-bezier(…)`, et vérifier après build que la feuille commune (la seule feuille de
+  `/tarifs` : `dist/_astro/_astro_assets.*.css` depuis la phase 5a) n'a pas changé de nom
+  quand seule l'accueil a changé.
   Autre piège, à la minification : `animation` et `animation-timeline` dans la même règle
   sont fusionnés en une déclaration invalide ; écrire la ligne de temps dans une seconde
   règle, sous un autre sélecteur.
-- **Police** : un seul woff2 (`src/assets/fonts/`, sous-ensemble latin), préchargé par
-  `index.astro`. Un caractère hors sous-ensemble (→, ✓, émoji) se dessine en SVG, et reste
-  dans le texte dans un élément de classe `sr` (masqué à l'œil) : `verify-site.mjs`
-  échoue sinon.
-- ⚠️ **En-tête et pied en double jusqu'à la phase 5a** : `HeaderDA` et `FooterDA` sont
-  des copies rhabillées de `Header` et `Footer`. Un lien, un libellé ou un `data-ph`
-  modifié d'un côté se reporte de l'autre. `verify-site.mjs` (contrôle « 4 quater bis »)
-  compare l'accueil à `/tarifs` et échoue au premier écart non déclaré dans
-  `ECARTS_ENTETE_PIED_DA`. Une page qui utilise `HeaderDA` rend `ScriptTiroirDA` après
-  son pied.
+- **Police** : Google Sans Flex sur tout le site. Un seul woff2 (`src/assets/fonts/`,
+  sous-ensemble latin, graisses 400 à 800), préchargé par BaseLayout sur toutes les pages
+  et donné à `<html>` par `fontFamily.sans` (`tailwind.config.ts`) ; les deux `@font-face`
+  (la police, son repli à métriques ajustées) sont dans `da.css`. Dans un bloc de la DA
+  (accueil, en-tête, pied), un caractère hors sous-ensemble (→, ✓, émoji) se dessine en
+  SVG, et reste dans le texte dans un élément de classe `sr` (masqué à l'œil) :
+  `verify-site.mjs` échoue sinon sur l'accueil. Dans le contenu des pages intérieures, ces
+  caractères restent tels quels et sortent dans la police du système.
 - **Mesure** : chaque section porte `data-landing-section`. `SECTIONS_LANDING`
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
   commit ; verify-site garde aussi les `data-track`, les ancres `#parcours`, `#pricing` et
   `#film-presentation`, un plancher de mots et l'égalité FAQ visible / `FAQPage`.
 - **Chiffres** : journées et lieux du bloc fondateur relevés en base par `count(*)`
-  (MIGRATION.md § 9.u), datés sur la page, jamais écrits à la main. Le compte de la
+  (MIGRATION.md § 9.u), datés dans l'en-tête de `Fondateur.astro` et dans MIGRATION.md
+  § 9.ec (la date n'est plus affichée sur la page), jamais écrits à la main. Le compte de la
   fenêtre produit est fictif (`src/data/demoAccueil.ts`, une seule mention « Compte de
   démonstration »).
 
@@ -153,7 +164,8 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Recherche d'audience
 
-Le dossier `hippodoc-corpus/` contient la demande réelle des médecins libéraux
-(94 questions, 958 réponses). Lire `hippodoc-corpus/carte-de-la-demande.md` avant
-toute décision éditoriale, et respecter `hippodoc-corpus/CLAUDE.md` — le corpus est
-une boussole, jamais une source de texte.
+Le corpus `hippodoc-corpus/` contient la demande réelle des médecins libéraux
+(94 questions, 958 réponses). **Il n'est pas dans ce dépôt** : le propriétaire le
+fournit à part. Quand il est fourni, lire `hippodoc-corpus/carte-de-la-demande.md`
+avant toute décision éditoriale, et respecter `hippodoc-corpus/CLAUDE.md` — le corpus
+est une boussole, jamais une source de texte.
