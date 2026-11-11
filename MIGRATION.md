@@ -6484,7 +6484,7 @@ l'îlot près ; la feuille de styles commune garde son empreinte.
 | Écran | Avant : haut de « Étape n / m » le plus haut | Après |
 |---|---|---|
 | 390 × 844 | −156 px (titre de −27 à −3 px) ; 5 profils sur 12 sous 115 px | 140 px au moins, titre entre 238 et 547 px |
-| 360 × 640 | −376 px ; 9 profils sur 12 sous 115 px | 140 px pour les 12, titre entre 238 et 317 px |
+| 360 × 640 | −376 px ; 10 profils sur 12 sous 115 px | 140 px pour les 12, titre entre 238 et 317 px |
 | 1 440 × 900 | page immobile, titre entre 308 et 518 px | identique, page immobile |
 
 - Parcours complet (premier profil, « Voir ma checklist », « Retour », checklist,
