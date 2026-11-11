@@ -14,9 +14,20 @@
  * - Une colonne centrée sur téléphone ; à partir de 1 024 px, le texte à gauche
  *   et la fiche d'inscription à droite, dans l'ordre du HTML.
  * - Logo : le mot seul, comme partout depuis la phase 5a. En haut, il remplace
- *   l'icône au trait (une image dont le texte alternatif était « Hippodoc ») ;
- *   en bas, c'est le buste de la mascotte qui porte ce texte alternatif, à la
- *   place de la seconde icône.
+ *   l'icône au trait, une image dont le texte alternatif était « Hippodoc » :
+ *   le mot est dessiné par la feuille de style (`.mot`), dans un élément
+ *   `role="img"` qui garde ce nom. Le texte de la page reste celui d'avant, au
+ *   mot près, et un lecteur d'écran annonce la même image. En bas, c'est le
+ *   buste de la mascotte qui porte ce texte alternatif, à la place de la
+ *   seconde icône.
+ * - Téléphone : tout ce qui précède la fiche d'inscription est resserré, pour
+ *   que son bouton tienne dans le premier écran (648 px du haut à 390 px de
+ *   large, 748 avant), au-dessus de la bannière cookies de première visite.
+ * - Corps de texte en rem (ils suivent la taille de police réglée dans le
+ *   navigateur).
+ * - Téléphone : la bulle de chat n'apparaît qu'après la fiche d'inscription
+ *   (animation liée au défilement, voir la fin du <style>) ; elle ne touche
+ *   plus ni le bouton ni le texte de la fiche.
  * - Aucune classe utilitaire ici : tout est dans le <style> de la page et dans
  *   da.css. Les caractères que la police n'a pas (🎁, →) sont dessinés en SVG et
  *   restent dans le texte, masqués à l'œil (classe `sr`).
@@ -45,9 +56,9 @@ const TAILLES_BUSTE = '(min-width: 700px) 340px, 262px';
   <div class="page da-bloc">
     <main class="wrap grille">
       <div class="copie">
-        <!-- Le mot « Hippodoc », le titre -->
+        <!-- Le mot « Hippodoc » (dessiné par la feuille de style, voir l'en-tête du fichier), le titre -->
         <div class="tete">
-          <p class="marque"><span class="logo-word">Hippo<span>doc</span></span></p>
+          <p class="marque"><span class="logo-word mot" role="img" aria-label="Hippodoc"></span></p>
 
           <h1 class="aff">
             <span>Remplacer, c'est bien.</span>
@@ -291,17 +302,29 @@ const TAILLES_BUSTE = '(min-width: 700px) 340px, 262px';
      son eau. */
   .page { position: relative; overflow: hidden; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 46%, var(--glow) 100%); }
   /* Le contenu passe devant la scène : le soleil se lève derrière les fiches. */
-  .grille { z-index: 1; display: grid; gap: 20px; max-width: calc(520px + 2 * var(--gut)); padding-top: 18px; text-align: center; }
-  .copie { display: grid; gap: 14px; min-width: 0; }
+  /* Sur téléphone, tout ce qui précède la fiche d'inscription est resserré
+     (marges, pastille du logo, titre, atouts) : son bouton tient dans le
+     premier écran. Les valeurs d'origine reviennent à partir de 560 px. */
+  .grille { z-index: 1; display: grid; gap: 12px; max-width: calc(520px + 2 * var(--gut)); padding-top: 10px; text-align: center; }
+  .copie { display: grid; gap: 10px; min-width: 0; }
+  /* Corps de texte en rem : la feuille de la DA les pose en px, ils ne suivaient
+     plus la taille de police du navigateur. Même rendu à 16 px. */
+  .da-bloc { font-size: 1.0625rem; }
+  .btn { font-size: 1.0625rem; }
+  .logo-word { font-size: 1.375rem; }
 
-  .tete { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .tete { display: flex; flex-direction: column; align-items: center; gap: 9px; }
   .tete > *, .sous > * { margin: 0; }
   /* Le mot seul, sur la pastille blanche de l'en-tête du site. */
-  .marque { display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+  .marque { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+  /* Le mot est écrit par la feuille de style : « Hippo » en --brand (la couleur
+     de `.logo-word`), « doc » en --brand-2. */
+  .mot::before { content: "Hippo"; }
+  .mot::after { content: "doc"; color: var(--brand-2); }
   /* Sur téléphone, le corps suit la largeur : la seconde phrase tient sur deux
      lignes à partir de 375 px, et le bouton d'inscription reste dans le
      premier écran. */
-  .tete h1 { --corps: clamp(23px, 6.9vw, 40px); margin-top: 4px; line-height: 1.1; text-wrap-style: balance; }
+  .tete h1 { --corps: clamp(min(1.375rem, 6.9vw), 6.3vw, 2.5rem); margin-top: 2px; line-height: 1.1; text-wrap-style: balance; }
   /* La première phrase est un bloc et le retour à la ligne du HTML est retiré du
      rendu : derrière un <br>, le navigateur n'équilibre pas les lignes, et
      « mieux. » restait seul sur la sienne. Le rendu ne change pas : la première
@@ -311,25 +334,29 @@ const TAILLES_BUSTE = '(min-width: 700px) 340px, 262px';
   /* « vraiment » : sur du jaune, comme le Super-Net de l'accueil. En ligne, pour
      que la virgule qui suit reste collée au mot. */
   .vrai { margin: 0 -0.12em; padding: 0 0.12em; border-radius: 0.28em; background: var(--sun); }
-  .sous { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .lead { font-size: 16.5px; text-wrap-style: balance; }
+  .sous { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  /* 16 px sur téléphone : la phrase tient sur une ligne à 390 px. */
+  .lead { font-size: 1rem; text-wrap-style: balance; }
   /* L'essai : une pastille blanche, deux lignes. */
-  .offre { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; padding: 8px 20px 9px; border-radius: 22px; background: var(--paper); box-shadow: var(--clay-sm); }
-  .offre-t { display: inline-flex; align-items: center; gap: 7px; font-size: 16px; font-weight: var(--tb); line-height: 1.35; color: var(--ok); }
+  .offre { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 20px 7px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+  .offre-t { display: inline-flex; align-items: center; gap: 7px; font-size: 1rem; font-weight: var(--tb); line-height: 1.35; color: var(--ok); }
   .offre-t svg { flex: none; }
-  .offre-d { font-size: 13.5px; line-height: 1.4; color: var(--ink-2); text-wrap-style: balance; }
+  .offre-d { font-size: 0.84375rem; line-height: 1.4; color: var(--ink-2); text-wrap-style: balance; }
 
-  /* Les trois atouts : trois petites fiches. */
+  /* Les trois atouts : trois petites fiches, aux coins de 24 px de l'accueil.
+     Leur largeur plancher suit le corps du texte (em) : quand il grossit, elles
+     passent l'une sous l'autre au lieu de se chevaucher, et un mot trop long
+     pour sa fiche se coupe. */
   .atouts { display: grid; gap: 2px; }
-  .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-  .atout { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px 14px; border-radius: 22px; background: var(--paper); box-shadow: var(--clay-sm); }
-  .atout p { margin: 0; }
-  .rond { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--sky); color: var(--brand); }
+  .trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.4em), 1fr)); gap: 10px; font-size: 1rem; }
+  .atout { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; padding: 10px 6px 11px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+  .atout p { margin: 0; overflow-wrap: anywhere; }
+  .rond { display: flex; flex: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--sky); color: var(--brand); }
   /* Le Super-Net : sur du jaune. */
   .rond.net { background: var(--sun); color: var(--ink); box-shadow: 0 3px 0 var(--sun-edge); }
-  .atout-t { font-size: 15.5px; font-weight: var(--tb); line-height: 1.3; }
-  .atout-d { font-size: 13.5px; line-height: 1.35; color: var(--ink-2); }
-  .tout { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; margin-bottom: -6px; justify-self: center; border-radius: 6px; font-size: 15.5px; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .atout-t { font-size: 0.96875rem; font-weight: var(--tb); line-height: 1.3; }
+  .atout-d { font-size: 0.84375rem; line-height: 1.35; color: var(--ink-2); }
+  .tout { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 44px; margin-block: -5px -10px; justify-self: center; border-radius: 6px; font-size: 0.96875rem; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
   .tout:hover { color: var(--brand); }
   .tout svg { flex: none; }
 
@@ -338,26 +365,26 @@ const TAILLES_BUSTE = '(min-width: 700px) 340px, 262px';
   .preuve-in { display: flex; align-items: center; justify-content: center; gap: 12px; text-align: left; }
   .avatars { display: flex; flex: none; }
   .av { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 2px solid var(--paper); border-radius: 50%; background: var(--brand); color: var(--paper); }
-  .av.plus { margin-left: -9px; background: var(--ink); font-size: 14px; font-weight: var(--tb); line-height: 1; }
+  .av.plus { margin-left: -9px; background: var(--ink); font-size: 0.875rem; font-weight: var(--tb); line-height: 1; }
   .preuve-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .combien { font-size: 16px; line-height: 1.3; color: var(--ink-2); }
+  .combien { font-size: 1rem; line-height: 1.3; color: var(--ink-2); }
   /* Dans le HTML, le nombre et la suite se touchent : l'écart est ici. */
   .combien .num { margin-right: 0.28em; font-weight: var(--tb); color: var(--ink); }
   .note { display: flex; align-items: center; gap: 2px; }
   .note svg { flex: none; fill: #F2B200; stroke: #B98200; stroke-width: 1.2; stroke-linejoin: round; }
-  .note span { margin-left: 6px; font-size: 13.5px; font-weight: 560; color: var(--ink-2); }
+  .note span { margin-left: 6px; font-size: 0.84375rem; font-weight: 560; color: var(--ink-2); }
 
   /* La fiche d'inscription : la seule grande fiche de la page, son bouton jaune. */
   .compte { min-width: 0; }
-  .compte-in { padding: 24px 22px 22px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
-  .compte-t { display: flex; align-items: center; justify-content: center; gap: 9px; margin-bottom: 10px; color: var(--brand); }
+  .compte-in { padding: 18px 22px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .compte-t { display: flex; align-items: center; justify-content: center; gap: 9px; margin-bottom: 6px; color: var(--brand); }
   .compte-t svg { flex: none; }
-  .compte h2 { --corps: 24px; margin: 0; color: var(--ink); }
-  .compte-c { display: grid; gap: 16px; }
-  .compte-c p { margin: 0; font-size: 16.5px; line-height: 1.5; color: var(--ink-2); text-wrap-style: balance; }
-  .compte .btn { gap: 9px; width: 100%; box-sizing: border-box; padding-block: 8px; font-size: 18px; text-align: center; }
+  .compte h2 { --corps: 1.5rem; margin: 0; color: var(--ink); }
+  .compte-c { display: grid; gap: 12px; }
+  .compte-c p { margin: 0; font-size: 1.03125rem; line-height: 1.5; color: var(--ink-2); text-wrap-style: balance; }
+  .compte .btn { gap: 9px; width: 100%; box-sizing: border-box; padding-block: 8px; font-size: 1.125rem; text-align: center; }
   .compte .btn svg { flex: none; }
-  .compte-c .fine { margin-top: 2px; font-size: 13.5px; }
+  .compte-c .fine { margin-top: 2px; font-size: 0.84375rem; }
 
   /* La scène de l'accueil (accueil/Hero.astro), immobile : soleil, deux vagues,
      le buste, deux vagues devant. La dernière a la couleur du haut du pied. */
@@ -372,7 +399,7 @@ const TAILLES_BUSTE = '(min-width: 700px) 340px, 262px';
 
   /* Le pied : l'eau profonde, comme celui du site. -1 px en haut : pas de filet
      clair sous la dernière vague. */
-  .fond { --focus: #FFFFFF; position: relative; margin-top: -1px; padding: 18px 0 104px; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 16px; text-align: center; }
+  .fond { --focus: #FFFFFF; position: relative; margin-top: -1px; padding: 18px 0 104px; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 1rem; text-align: center; }
   .pied-in { display: flex; flex-direction: column; align-items: center; gap: 26px; }
   .pied-in p { margin: 0; }
   .signe { display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -389,38 +416,46 @@ const TAILLES_BUSTE = '(min-width: 700px) 340px, 262px';
      ligne, il en restait un seul en bout de ligne. L'écart les remplace. */
   .liens span { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .liens { gap: 0 22px; }
-  .legal { margin-top: -14px; padding-top: 12px; border-top: 1px solid var(--line-deep); font-size: 14.5px; }
+  .legal { margin-top: -14px; padding-top: 12px; border-top: 1px solid var(--line-deep); font-size: 0.90625rem; }
 
-  /* Petits téléphones : les libellés des trois fiches tiennent sur une ligne. */
+  /* Petits téléphones : côte à côte, « Statistiques » touchait les bords de sa
+     fiche et deux libellés sur trois passaient sur deux lignes. Les trois
+     atouts sont des pastilles d'une ligne, l'une sous l'autre. */
   @media (max-width: 359px) {
-    .trio { gap: 8px; }
-    .atout { padding-inline: 4px; }
-    .atout-t { font-size: 14.5px; }
-    .atout-d { font-size: 13px; }
+    .trio { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+    .atout { flex-direction: row; gap: 10px; padding: 5px 16px 5px 6px; text-align: left; }
+    .atout > div:last-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; min-width: 0; }
+    .rond { width: 32px; height: 32px; }
     .preuve-in { gap: 10px; }
-    .combien { font-size: 15px; }
+    .combien { font-size: 0.9375rem; }
     .compte-in { padding-inline: 18px; }
     /* Le dessin passe au-dessus du titre, qui tient alors sur une ligne. */
     .compte-t { flex-direction: column; gap: 4px; }
-    .compte .btn { padding-inline: 12px; font-size: 16.5px; }
+    .compte .btn { padding-inline: 12px; font-size: 1.03125rem; }
   }
   /* Téléphones : le titre de la fiche sur une ligne, son texte sur trois. */
   @media (max-width: 399px) {
-    .compte h2 { --corps: 21px; }
-    .compte-c p { font-size: 15.5px; }
-    .compte-c .fine { font-size: 13.5px; }
+    .compte h2 { --corps: 1.3125rem; }
+    .compte-c p { font-size: 0.96875rem; }
+    .compte-c .fine { font-size: 0.84375rem; }
   }
   @media (min-width: 560px) {
     .grille { gap: 28px; padding-top: 34px; }
     .copie { gap: 22px; }
     .tete { gap: 14px; }
-    .tete h1 { --corps: 40px; margin-top: 8px; line-height: 1.05; }
-    .lead { font-size: 19px; }
+    .marque { min-height: 48px; padding: 0 22px; }
+    .tete h1 { --corps: 2.5rem; margin-top: 8px; line-height: 1.05; }
+    .sous { gap: 10px; }
+    .lead { font-size: 1.1875rem; }
+    .offre { padding: 8px 20px 9px; }
     .atouts { gap: 6px; }
-    .tout { margin-bottom: 0; }
+    .tout { margin-block: 0; }
     .trio { gap: 14px; }
-    .atout { padding: 18px 10px; }
+    .atout { gap: 8px; padding: 18px 10px; }
+    .rond { width: 44px; height: 44px; }
     .compte-in { padding: 30px 32px 28px; border-radius: 36px; }
+    .compte-t { margin-bottom: 10px; }
+    .compte-c { gap: 16px; }
     .mare { margin-top: 28px; }
   }
   @media (min-width: 700px) {
@@ -437,15 +472,30 @@ const TAILLES_BUSTE = '(min-width: 700px) 340px, 262px';
     .grille { grid-template-columns: minmax(0, 1fr) minmax(0, 420px); align-items: center; gap: 64px; max-width: calc(1120px + 2 * var(--gut)); padding-top: 40px; text-align: left; }
     .copie { gap: 26px; max-width: 560px; }
     .tete, .sous { align-items: flex-start; }
-    .tete h1 { --corps: clamp(40px, 4vw, 56px); margin-top: 14px; }
+    /* Le plafond des titres de pages intérieures (58 px). */
+    .tete h1 { --corps: clamp(2.5rem, 4vw, 3.625rem); margin-top: 14px; }
     .offre { align-items: flex-start; }
     .tout { justify-self: start; }
     .atout { align-items: flex-start; padding: 20px 18px; text-align: left; }
     .preuve-in { justify-content: flex-start; }
     .compte-in { padding: 38px 38px 34px; text-align: center; }
-    .compte h2 { --corps: 28px; }
+    .compte h2 { --corps: 1.75rem; }
     .mare { margin-top: 64px; }
   }
+  /* Téléphone : la bulle de chat, fixe en bas à droite, se posait sur le bout du
+     bouton d'inscription ou sur le texte de la fiche (390 × 664, 360 × 740,
+     320 × 568). Elle n'apparaît qu'une fois la fiche passée, après 380 px de
+     défilement : une animation liée au défilement, sans script. Un navigateur
+     qui ne la connaît pas garde la bulle dès le haut de la page, comme avant.
+     Deux règles, deux sélecteurs : réunies, la minification fusionne
+     l'animation et sa ligne de temps en une déclaration invalide. */
+  @media (max-width: 559px) {
+    @supports (animation-timeline: scroll()) {
+      :global(#crisp-launcher) { animation: essai-bulle linear both; }
+      :global(body #crisp-launcher) { animation-timeline: scroll(root block); animation-range: 380px 420px; }
+    }
+  }
+  @keyframes essai-bulle { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
   /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
      aux fiches et aux pastilles ; le décor disparaît, sauf la mascotte. */
   @media (forced-colors: active) {

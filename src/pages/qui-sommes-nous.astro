@@ -32,6 +32,8 @@
  *   pages/Icon.astro, ils n'auraient pas reçu les styles de la page.
  * - Mascotte : le <picture> est écrit ici, sans accueil/Mascotte.astro (voir
  *   tarifs.astro).
+ * - Corps de texte en rem (ils suivent la taille de police réglée dans le
+ *   navigateur).
  */
 import { Image, Picture, getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
@@ -532,7 +534,14 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
   /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
      haut. En bas, l'air et les 40 px que recouvre la première feuille. */
   .tete { position: relative; padding: 100px 0 104px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
-  .fil { font-size: 14.5px; color: var(--ink-2); }
+  /* Corps de texte en rem : la feuille de la DA les pose en px, ils ne suivaient
+     plus la taille de police du navigateur. Même rendu à 16 px. */
+  .da-bloc { font-size: 1.0625rem; }
+  .lead { font-size: 1.1875rem; }
+  .btn { font-size: 1.0625rem; }
+  h2 { --corps: clamp(min(2rem, 10vw), 4.5vw, 3.625rem); }
+  h3 { font-size: clamp(1.5rem, 2.5vw, 2rem); }
+  .fil { font-size: 0.90625rem; color: var(--ink-2); }
   .fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
   /* Une cible de 44 px de haut, sans changer la hauteur de la ligne. */
   .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.4); text-underline-offset: 4px; }
@@ -542,17 +551,19 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
   .intro { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; min-width: 0; }
   .intro > * { margin: 0; }
   /* « Qui sommes-nous » : une pastille blanche, comme « FAQ » sur /faq. */
-  .marque { padding: 4px 12px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 13.5px; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
-  .intro h1 { --corps: clamp(32px, 4.6vw, 58px); max-width: 15em; text-wrap-style: balance; }
-  /* La question : le bleu de « Hippo », comme « Hippodoc » dans le titre de /faq. */
-  .intro h1 .q { color: var(--brand); }
+  .marque { padding: 4px 12px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
+  .intro h1 { --corps: var(--h1-page); max-width: 15em; text-wrap-style: balance; }
+  /* La question : le bleu de « l'eau » dans le titre de l'accueil, comme
+     « Hippodoc » dans celui de /faq. */
+  .intro h1 .q { color: var(--w4); }
   /* Le portrait du bloc fondateur de l'accueil, penché de l'autre côté ; sa
-     légende, sur deux lignes, est une étiquette d'encre à cheval sur son bord. */
-  .portrait { position: relative; width: min(84%, 290px); margin: 0 0 22px; }
+     légende est une étiquette d'encre à cheval sur son bord, qui ne dépasse pas
+     la largeur de la photo. Centré tant qu'il est sous le texte. */
+  .portrait { position: relative; width: min(84%, 290px); margin: 0 auto 22px; }
   .portrait :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 34px; rotate: 2deg; box-shadow: var(--clay); }
-  .portrait figcaption { position: absolute; left: 8px; bottom: -30px; display: flex; flex-direction: column; gap: 1px; box-sizing: border-box; width: max-content; max-width: calc(100% + 8px); padding: 9px 16px 11px; border-radius: 18px; background: var(--ink); color: var(--paper); line-height: 1.3; rotate: -2deg; }
-  .portrait figcaption span:first-child { font-size: 15.5px; font-weight: var(--tb); }
-  .portrait figcaption span + span { font-size: 13px; color: var(--on-deep-2); }
+  .portrait figcaption { position: absolute; left: 0; bottom: -30px; display: flex; flex-direction: column; gap: 1px; box-sizing: border-box; width: max-content; max-width: 100%; padding: 9px 16px 11px; border-radius: 18px; background: var(--ink); color: var(--paper); line-height: 1.3; rotate: -2deg; }
+  .portrait figcaption span:first-child { font-size: 0.96875rem; font-weight: var(--tb); }
+  .portrait figcaption span + span { font-size: 0.8125rem; color: var(--on-deep-2); }
 
   /* Un titre à gauche, son contenu à droite (accueil/Questions.astro). */
   .deux { display: grid; gap: 26px; }
@@ -560,33 +571,38 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
 
   /* Le récit : une colonne de lecture. */
   .recit { min-width: 0; max-width: 42rem; }
-  .para p { margin: 0 0 18px; font-size: 18px; line-height: 1.65; color: var(--ink-2); }
+  .para p { margin: 0 0 18px; font-size: 1.125rem; line-height: 1.65; color: var(--ink-2); }
   .para strong, .mot strong { color: var(--ink); }
   /* La citation : l'eau profonde, comme l'offre annuelle et la fiche des 6 mois
      de l'accueil ; les guillemets jaunes des témoignages. */
   .cite { --focus: #FFFFFF; position: relative; margin: 38px 0 34px; padding: 34px 24px 28px; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
-  .cite p { --corps: clamp(23px, 2.7vw, 31px); margin: 0; line-height: 1.2; color: var(--paper); text-wrap-style: pretty; }
+  .cite p { --corps: clamp(min(1.4375rem, 7.2vw), 2.7vw, 1.9375rem); margin: 0; line-height: 1.2; color: var(--paper); text-wrap-style: pretty; }
   .guillemets { position: absolute; left: 22px; top: -20px; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: var(--sun); color: var(--ink); box-shadow: 0 4px 0 var(--sun-edge); rotate: -4deg; }
-  .signe { margin: 26px 0 0; font-family: var(--display); font-size: 22px; font-weight: var(--dw); letter-spacing: -0.02em; color: var(--ink); }
+  .signe { margin: 26px 0 0; font-family: var(--display); font-size: 1.375rem; font-weight: var(--dw); letter-spacing: -0.02em; color: var(--ink); }
 
   /* L'équipe : deux fiches en relief. */
-  .membres { display: grid; gap: 14px; }
+  /* Chaque fiche à sa hauteur : étirée sur celle de sa voisine, celle de Ryan
+     restait vide sur la moitié. */
+  .membres { display: grid; align-items: start; gap: 14px; }
   .membre { --focus: var(--ink); min-width: 0; margin: 0; padding: 24px 22px 26px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
   .membre-top { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
   .membre-top :global(img) { display: block; flex: none; width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 4px var(--sky-soft); }
   .qui { min-width: 0; }
-  .membre h3 { margin: 0; font-size: clamp(21px, 2.2vw, 24px); }
-  .role { margin: 4px 0 0; font-size: 15px; font-weight: 560; line-height: 1.4; color: var(--ink-2); }
-  .role a { border-radius: 4px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .membre h3 { margin: 0; font-size: clamp(min(1.3125rem, 6.6vw), 2.2vw, 1.5rem); }
+  .role { margin: 4px 0 0; font-size: 0.9375rem; font-weight: 560; line-height: 1.4; color: var(--ink-2); }
+  /* « Meilisearch » : une zone de toucher de 38 px de haut qui ne change pas
+     l'interligne (elle en faisait 18), et le lien LinkedIn un peu plus bas : les
+     deux zones se suivent sans se recouvrir. */
+  .role a { display: inline-block; margin: -11px 0 -6px; padding: 11px 0 6px; border-radius: 4px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
   .role a:hover { color: var(--ink); }
   /* Une cible de 44 px de haut ; la marge négative rend ce qu'elle ajoute à la fiche. */
-  .lk { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin: 0 0 -12px; border-radius: 6px; font-size: 15.5px; font-weight: var(--tb); color: var(--brand); text-decoration: none; }
+  .lk { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin: 6px 0 -12px; border-radius: 6px; font-size: 0.96875rem; font-weight: var(--tb); color: var(--brand); text-decoration: none; }
   .lk:hover { text-decoration: underline; text-underline-offset: 4px; }
   .lk :global(svg) { flex: none; }
-  .faits { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; font-size: 16.5px; line-height: 1.55; color: var(--ink-2); }
+  .faits { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; font-size: 1.03125rem; line-height: 1.55; color: var(--ink-2); }
   .faits li { display: flex; align-items: flex-start; gap: 12px; }
   .faits :global(svg) { flex: none; margin-top: 4px; color: var(--brand); }
-  .mot { margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--ink-2); }
+  .mot { margin: 0; font-size: 1.03125rem; line-height: 1.6; color: var(--ink-2); }
 
   /* Les promesses : le titre et la mascotte, puis trois fiches. Elle se tient
      derrière les fiches : son pouce et ses mains restent au-dessus de leur bord
@@ -598,8 +614,8 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
   .promesses { position: relative; z-index: 1; display: grid; gap: 14px; }
   .promesse { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 24px 22px 26px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
   .rond { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; margin-bottom: 6px; border-radius: 50%; background: var(--sky); color: var(--brand); }
-  .promesse h3 { margin: 0; font-size: 21px; line-height: 1.2; }
-  .promesse p { margin: 0; font-size: 16.5px; line-height: 1.55; color: var(--ink-2); }
+  .promesse h3 { margin: 0; font-size: 1.3125rem; line-height: 1.2; }
+  .promesse p { margin: 0; font-size: 1.03125rem; line-height: 1.55; color: var(--ink-2); }
 
   /* Les soutiens : l'eau profonde de l'accueil (« Sous la surface »), en feuille
      qui remonte sur la précédente ; la suivante remonte de 40 px sur son bas. */
@@ -610,16 +626,16 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
   .scene :global(img) { display: block; width: 100%; height: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
   .scene-copy { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; padding: 24px 22px 28px; }
   .scene-copy > *, .appui p, .appui h3 { margin: 0; }
-  .scene h3 { font-size: clamp(23px, 2.4vw, 28px); text-wrap-style: balance; }
-  .scene-copy p:last-child, .appui p:last-child { font-size: 16.5px; line-height: 1.55; color: var(--ink-2); }
+  .scene h3 { font-size: clamp(min(1.4375rem, 7.2vw), 2.4vw, 1.75rem); text-wrap-style: balance; }
+  .scene-copy p:last-child, .appui p:last-child { font-size: 1.03125rem; line-height: 1.55; color: var(--ink-2); }
   /* La date : une pastille « planifié » de l'accueil, qui peut passer sur deux
      lignes (à 320 px, « 13 avril 2026 · Station F, Paris » ne tient pas sur une). */
-  .quand { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 13px; background: var(--plan-bg); color: var(--plan); font-size: 13.5px; font-weight: var(--tb); line-height: 1.35; }
+  .quand { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 13px; background: var(--plan-bg); color: var(--plan); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.35; }
   .quand :global(svg) { flex: none; }
   .appuis { display: grid; gap: 14px; margin-top: 14px; }
   .appui { display: flex; flex-direction: column; gap: 16px; padding: 22px 22px 26px; }
   .appui .quand { margin-bottom: 8px; }
-  .appui h3 { margin-bottom: 6px; font-size: 21px; line-height: 1.2; }
+  .appui h3 { margin-bottom: 6px; font-size: 1.3125rem; line-height: 1.2; }
   /* Les logos des soutiens, posés sur le blanc de la fiche (deux des trois
      fichiers ont un fond opaque). Chacun a sa hauteur (`--h`). */
   .plaque { display: flex; flex: none; align-items: center; gap: 18px; min-height: 52px; }
@@ -634,48 +650,54 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
   .tile:hover, .part:hover { translate: 0 -3px; }
   .tile .logo { display: flex; align-items: center; justify-content: center; width: 100%; height: 76px; margin-bottom: 12px; }
   .logo :global(img) { display: block; width: auto; max-width: var(--l, 100%); height: auto; max-height: var(--h, 100%); object-fit: contain; }
-  .nom { font-size: 19px; font-weight: var(--tb); line-height: 1.25; }
-  .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--ink-2); }
+  .nom { font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.25; }
+  .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 0.9375rem; color: var(--ink-2); }
   .ville :global(svg) { flex: none; color: var(--brand); }
-  .suite { margin: 38px 0 16px; font-size: clamp(22px, 2.2vw, 26px); }
+  .suite { margin: 38px 0 16px; font-size: clamp(min(1.375rem, 6.9vw), 2.2vw, 1.625rem); }
   .parts { display: grid; gap: 14px; }
   .part { display: flex; align-items: center; gap: 16px; height: 100%; box-sizing: border-box; padding: 16px 20px 18px 16px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
   .part .logo { display: flex; flex: none; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 18px; background: var(--sky-soft); }
   .part .logo :global(img) { max-width: 54px; max-height: 54px; }
-  .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-  .txt span:first-child { font-size: 18px; font-weight: var(--tb); }
-  .txt span + span { font-size: 15.5px; color: var(--ink-2); }
-  .appel { max-width: 44rem; margin: 34px 0 0; padding-top: 22px; border-top: 1px solid var(--line); font-size: 16.5px; line-height: 1.6; color: var(--ink-2); }
+  .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; overflow-wrap: anywhere; }
+  .txt span:first-child { font-size: 1.125rem; font-weight: var(--tb); }
+  .txt span + span { font-size: 0.96875rem; color: var(--ink-2); }
+  .appel { max-width: 44rem; margin: 34px 0 0; padding-top: 22px; border-top: 1px solid var(--line); font-size: 1.03125rem; line-height: 1.6; color: var(--ink-2); }
 
   /* Hippodoc aujourd'hui : la définition, puis les quatre chiffres sur une
      fiche. Dans le HTML le libellé précède le chiffre ; à l'écran, le chiffre
      passe devant, en grand (accueil/Fondateur.astro). */
-  .def { max-width: 42rem; font-size: 17.5px; }
-  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; overflow: hidden; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
-  .stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 20px 18px 22px; }
+  .def { max-width: 42rem; font-size: 1.09375rem; }
+  /* Rien n'est rogné : un chiffre grossi ou espacé peut dépasser dans la marge
+     de sa case, ou passer à la ligne, il reste entier. */
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 20px 16px 22px; }
   .stat:nth-child(even) { border-left: 1px solid var(--line); }
   .stat:nth-child(n + 3) { border-top: 1px solid var(--line); }
   .stat :global(svg) { order: 1; margin-bottom: 8px; color: var(--brand); }
-  .stat dd { --corps: clamp(30px, 8.6vw, 44px); order: 2; margin: 0; line-height: 1; }
-  .stat dt { order: 3; font-size: 15px; line-height: 1.35; color: var(--ink-2); }
+  .stat dd { --corps: clamp(min(1.5rem, 7.5vw), 7.6vw, 2.75rem); order: 2; margin: 0; line-height: 1; white-space: normal; overflow-wrap: anywhere; }
+  .stat dt { order: 3; font-size: 0.9375rem; line-height: 1.35; color: var(--ink-2); overflow-wrap: anywhere; }
 
   /* La fin : le ciel de l'accueil, puis le soleil qui se lève sur l'eau du pied
      de page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles,
      comme sur /tarifs et /faq). -1 px en bas : pas de filet clair au-dessus du pied. */
   .fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; }
-  .fin-copy { display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 52px; }
+  /* Le texte et les boutons passent devant le décor (`z-index`), et le halo du
+     soleil ne commence qu'après la dernière porte (marge de `.horizon`). */
+  .fin-copy { z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 52px; }
   .fin-copy > * { margin: 0; }
-  .fin h2 { --corps: clamp(34px, 5.2vw, 64px); max-width: 17ch; }
+  .fin h2 { --corps: var(--h2-fin); max-width: 17ch; }
   .fin .btn { padding-block: 8px; text-align: center; }
   .fin .lead, .ecrire p { text-wrap-style: balance; }
   .fin-copy > .btn { margin-top: 8px; }
   /* Le contact direct : trois portes de même poids, sous le bouton jaune. */
   .ecrire { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; max-width: 44rem; margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--line); }
-  .ecrire p { margin: 0; font-size: 16.5px; color: var(--ink-2); }
+  .ecrire p { margin: 0; font-size: 1.03125rem; color: var(--ink-2); }
   .portes { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 12px; }
-  .portes .btn { gap: 9px; min-height: 48px; padding-inline: 20px; font-size: 16px; }
+  .portes .btn { gap: 9px; min-width: 0; min-height: 48px; padding-inline: 20px; font-size: 1rem; overflow-wrap: anywhere; }
   .portes :global(svg) { flex: none; color: var(--brand); }
-  .horizon { position: relative; height: 190px; margin-top: 40px; --p: 300px; --th: 40px; }
+  /* Le halo dépasse le soleil de 62 px (92 px sur ordinateur) : 20 px d'air
+     entre la dernière porte et lui. */
+  .horizon { position: relative; height: 190px; margin-top: 60px; --p: 300px; --th: 40px; }
   .sun { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
   .wave { position: absolute; left: 0; right: 0; bottom: 0; }
   .w3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
@@ -691,7 +713,7 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
   /* Sous 640 px, les trois portes l'une sous l'autre, de même largeur (côte à
      côte, la troisième passait seule à la ligne). */
   @media (max-width: 639px) {
-    .portes { flex-direction: column; align-items: stretch; width: min(100%, 300px); }
+    .portes { flex-direction: column; align-items: stretch; width: min(100%, 18.75rem); }
   }
   @media (min-width: 560px) {
     .tete { padding: 108px 0 144px; }
@@ -699,8 +721,8 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
     .fond { padding: 88px 0 128px; }
     .appui { padding: 26px 26px 28px; }
     .stat { padding: 26px 26px 28px; }
-    .stat dd { --corps: 44px; }
-    .stat dt { font-size: 15.5px; }
+    .stat dd { --corps: min(2.75rem, 8vw); }
+    .stat dt { font-size: 0.96875rem; }
     .appel { margin-top: 60px; padding-top: 28px; }
     .fin-copy { padding-top: 88px; }
   }
@@ -718,39 +740,42 @@ const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
   }
   /* Tablette : le portrait à côté du titre, les fiches côte à côte. */
   @media (min-width: 700px) {
-    .haut { grid-template-columns: minmax(0, 1fr) 240px; align-items: center; gap: 40px; }
-    .portrait { width: 100%; }
+    /* 280 px : la légende du portrait tient sur deux lignes, dans sa largeur. */
+    .haut { grid-template-columns: minmax(0, 1fr) 280px; align-items: center; gap: 32px; }
+    .portrait { width: 100%; margin-inline: 0; }
     .membres, .appuis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .promesses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .promesse { padding: 24px 20px 26px; }
-    .promesse h3 { font-size: 19px; }
+    .promesse h3 { font-size: 1.1875rem; }
     .scene { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
   }
   @media (min-width: 900px) {
     .tete { padding-top: 148px; }
     .haut { grid-template-columns: minmax(0, 1fr) 320px; gap: 72px; margin-top: 30px; }
-    .portrait figcaption span:first-child { font-size: 16.5px; }
-    .portrait figcaption span + span { font-size: 14.5px; }
+    .portrait figcaption span:first-child { font-size: 1.03125rem; }
+    .portrait figcaption span + span { font-size: 0.90625rem; }
     .deux { grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 28px 56px; }
-    .para p { font-size: 19px; }
+    .para p { font-size: 1.1875rem; }
     .membres, .appuis, .promesses, .synd { gap: 18px; }
     .membre { padding: 34px 36px 36px; border-radius: 36px; }
     .tenue h2 { margin-bottom: 44px; }
     .guide { width: 170px; margin: -24px 40px -115px 0; }
     .promesse { padding: 30px 28px 32px; border-radius: 36px; }
-    .promesse h3 { font-size: 21px; }
+    .promesse h3 { font-size: 1.3125rem; }
     .scene { grid-template-columns: 1.3fr 1fr; border-radius: 36px; }
     .scene-copy { gap: 14px; padding: 36px 40px; }
     .appuis { margin-top: 18px; }
     .tile { padding: 24px 20px 26px; border-radius: 36px; }
     .tile .logo { height: 112px; margin-bottom: 16px; }
-    .nom { font-size: 21px; }
+    .nom { font-size: 1.3125rem; }
     .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); border-radius: 36px; }
     .stat { padding: 30px 28px 32px; }
     .stat:nth-child(n + 3) { border-top: 0; }
     .stat:nth-child(n + 2) { border-left: 1px solid var(--line); }
-    .stat dd { --corps: 52px; }
-    .horizon { height: 270px; --p: 440px; --th: 54px; }
+    /* Quatre cases de front : le corps suit la largeur (à 1 024 px, « 10 000+ »
+       en 52 px dépassait de sa case). */
+    .stat dd { --corps: clamp(min(2.375rem, 4.2vw), 4.2vw, 3.25rem); }
+    .horizon { height: 270px; margin-top: 108px; --p: 440px; --th: 54px; }
     .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
     .w3 { height: 112px; }
     .w4 { height: 60px; }

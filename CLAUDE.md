@@ -47,7 +47,7 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 ## DA 2026 — accueil, en-tête, pied et police
 
 L'accueil est entièrement dans la nouvelle direction artistique (MIGRATION.md § 9.eb),
-`/tarifs` aussi depuis la phase 5b (§ 9.ee). Depuis la phase 5a (§ 9.ed), l'en-tête, le
+`/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai` aussi depuis la phase 5b (§ 9.ee). Depuis la phase 5a (§ 9.ed), l'en-tête, le
 pied, la police, la bannière cookies et la bulle de chat de la DA servent sur **toutes**
 les pages ; le contenu des autres pages intérieures garde ses classes Tailwind et ses
 couleurs (phases 5b à 5d).
@@ -57,12 +57,12 @@ couleurs (phases 5b à 5d).
   BaseLayout après `global.css` : elle sort dans la feuille commune à toutes les pages.
   Tout vit sous `.da`, que BaseLayout pose sur le `<body>` de toutes les pages (jetons
   seulement). Le fond de page de la DA demande en plus `bodyClass="da-fond"` : les pages
-  entièrement dans la DA (l'accueil, `/tarifs`). La typographie de la DA, ses règles de titres et son anneau de focus sont portés
+  entièrement dans la DA (l'accueil et les quatre pages de la phase 5b). La typographie de la DA, ses règles de titres et son anneau de focus sont portés
   par `.da-bloc`, à poser sur chaque bloc (en-tête, pied, section).
 - **Un seul en-tête, un seul pied** : `src/components/Header.astro` (prop `variante` :
   `flux` par défaut, la pastille garde 80 px en haut de la page sur une bande de ciel ;
-  `flottante` sur l'accueil et `/tarifs`, dont le premier bloc est un ciel qui lui réserve
-  le haut) et `Footer.astro` (prop `soutiens`), qui rend aussi
+  `flottante` sur l'accueil, `/tarifs`, `/faq` et `/qui-sommes-nous`, dont le premier bloc
+  est un ciel qui lui réserve le haut) et `Footer.astro` (prop `soutiens`), qui rend aussi
   `ScriptTiroir.astro`. Une page rend les deux ou aucun. `verify-site.mjs` (contrôle
   « 4 quater bis ») fige les `data-ph` et `data-track` de l'en-tête et du pied
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
@@ -77,10 +77,14 @@ couleurs (phases 5b à 5d).
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
-- **`/tarifs` dans la DA** (phase 5b, § 9.ee) : `da-fond`, en-tête `flottante`, un bloc
-  « ciel » puis des feuilles `.band`, aucune classe Tailwind ; styles dans le `<style>` de
-  `src/pages/tarifs.astro` (une feuille à part, `tarifs.*.css` : la feuille commune ne
-  grossit pas). ⚠️ Une page intérieure ne rend pas un composant de `accueil/` qui a un
+- **Pages intérieures dans la DA** (phase 5b, § 9.ee : `/tarifs`, `/faq`,
+  `/qui-sommes-nous`, `/essai`) : `da-fond`, un bloc « ciel » puis des feuilles `.band`,
+  aucune classe Tailwind ; styles dans le `<style>` de la page (une feuille à part,
+  `tarifs.*.css`… : la feuille commune ne grossit pas). Titres : `--h1-page` pour le
+  `<h1>`, `--h2-fin` pour le titre de la scène de fin (jetons de `da.css`). Corps de
+  texte en rem dans ces pages (la feuille de la DA les pose en px : chaque page les
+  repose en tête de son `<style>`). Dans la scène de fin, le texte passe devant le décor
+  (`z-index`) et le halo du soleil commence après le dernier lien. ⚠️ Une page intérieure ne rend pas un composant de `accueil/` qui a un
   `<style>` (`Mascotte.astro`) : partagé, ce style sort de la feuille de l'accueil et
   change son HTML. Période d'observation SEO : texte, titres, liens et JSON-LD d'une page
   rhabillée se prouvent identiques au build de `main`, par script.
@@ -88,9 +92,9 @@ couleurs (phases 5b à 5d).
   `<style>` et commentaires compris. Un mot qui est aussi un nom de classe
   (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille commune :
   son empreinte change, donc le HTML de toutes les pages. Écrire `text-wrap-style`,
-  `cubic-bezier(…)`, et vérifier après build que la feuille commune (la seule feuille de
-  `/faq` : `dist/_astro/_astro_assets.*.css` depuis la phase 5a) n'a pas changé de nom
-  quand seule l'accueil a changé.
+  `cubic-bezier(…)`, et vérifier après build que la feuille commune
+  (`dist/_astro/_astro_assets.*.css`, la seule feuille de `/mentions-legales` ou d'un
+  article) n'a pas changé de nom quand seule l'accueil a changé.
   Autre piège, à la minification : `animation` et `animation-timeline` dans la même règle
   sont fusionnés en une déclaration invalide ; écrire la ligne de temps dans une seconde
   règle, sous un autre sélecteur.

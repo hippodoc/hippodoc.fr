@@ -6392,6 +6392,68 @@ change. Un lot par page.
   bannière cookies recouvre le bouton d'inscription ; le lien Instagram a un
   `aria-label` qui ne reprend pas son libellé visible.
 
+**Après les trois relectures (direction artistique, invariance SEO, accessibilité)**
+
+Ce qui suit remplace, là où il diffère, ce qui est écrit plus haut pour chaque page.
+Preuve refaite contre le build de `main` sur les quatre pages : texte, titres, liens,
+ancres, JSON-LD, attributs de mesure et scripts identiques ; les 73 autres fichiers
+texte du build ne diffèrent que par le nom de la feuille commune.
+
+- **Deux écarts dans le HTML, tracés** : le `<head>` des quatre pages gagne
+  `<meta name="theme-color" content="#C9DEFF">` (le seul ajout ; il vient avec le fond
+  de la DA, l'accueil le portait déjà). Sur `/essai`, le logo du haut n'est plus du
+  texte : le mot est dessiné par la feuille de style dans un élément `role="img"` nommé
+  « Hippodoc », comme l'image qu'il remplace. Le texte de `/essai` est donc celui
+  d'avant au mot près (125 mots), l'écart « voulu » noté plus haut n'existe plus.
+- **Scène de fin** (`/tarifs`, `/faq`, `/qui-sommes-nous`) : le halo du soleil était
+  peint par-dessus les derniers boutons. Le texte passe devant le décor et le halo
+  commence 20 px après le dernier lien, à toutes les largeurs.
+- **`/faq`** : quatre feuilles au lieu de dix (sable : activité, revenus, planning ;
+  eau profonde : paiements, cotisations, documents ; ciel : mobile, sécurité ; sable :
+  tarifs, aide), les rubriques se suivent dans leur feuille. Chaque rubrique reste un
+  `<section id>` avec ses `<details>` ; la feuille est un `<div>` sans texte. Mascotte
+  au pouce levé à « Besoin d'aide ? » (fichiers de l'accueil). Plis moins hauts sur
+  téléphone. Hauteur, plis fermés : 5 725 px à 390 px (6 434 avant, 5 238 sur `main`),
+  6 676 px à 320 px (7 229 avant). À 320 px le chapô prend toute la largeur, la
+  mascotte se tient dessous. Le nom de rubrique collant existait déjà : le relevé
+  inverse venait d'une capture pleine page, où rien ne colle.
+- **`/tarifs`** : la mascotte sert aussi sous 1 024 px, à droite du titre « Inclus dans
+  toutes les offres », derrière la liste (second `<picture>` décoratif, masqué au-delà).
+  Plus de ligne réservée sous le prix (elle trouait l'offre annuelle) ; la note des
+  internes suit son texte ; titre des questions collant ; à 320 px le titre finit sur
+  « en annuel » (un `<span class="num">` de plus). Grille des offres bornée et prix des
+  internes sécable : plus de défilement horizontal avec les espacements de WCAG 1.4.12.
+  Contrastes forcés : les coches de l'offre annuelle reprennent la couleur du texte.
+- **`/qui-sommes-nous`** : chiffres plus petits sur téléphone et à 1 024 px, fiche non
+  rognée (« 17 000+ » était coupé avec les espacements 1.4.12) ; fiches de l'équipe à
+  leur hauteur ; légende du portrait contenue dans la photo, sur deux lignes ; portrait
+  centré sur téléphone ; lien « Meilisearch » avec une zone de toucher de 38 px (18 avant).
+- **`/essai`** : sur téléphone, ce qui précède la fiche d'inscription est resserré. Le
+  bouton est à 573–627 px du haut à 390 px de large (694–748 avant) : au-dessus de la
+  bannière cookies de première visite sur un écran de 780 px de haut. À 320 px les trois
+  atouts sont des pastilles d'une ligne ; coins de 24 px ; les fiches passent l'une sous
+  l'autre quand le texte grossit. **À valider** : sur téléphone, la bulle de chat
+  n'apparaît qu'après 380 px de défilement (animation CSS liée au défilement, sans
+  script ; navigateur sans cette fonction : bulle dès le haut, comme avant). Elle ne
+  touche plus ni le bouton ni le texte de la fiche, mais elle est absente du premier
+  écran.
+- **Titres** : deux jetons dans `da.css`, `--h1-page` (58 px au plus, les quatre pages)
+  et `--h2-fin` (52 px au plus : le titre de fin ne dépasse plus le `<h1>`). Mots en
+  couleur des `<h1>` : le bleu de « l'eau » de l'accueil (`--w4`, 4,3:1 sur le ciel, grand
+  texte).
+- **Texte en rem** sur les quatre pages (la DA pose ses corps en px : ils ne suivaient
+  plus la taille de police du navigateur). Avec une taille doublée, le texte courant
+  double et aucune page ne défile de côté de 320 à 1 280 px. L'accueil, l'en-tête et le
+  pied restent en px : à reprendre à part si on le souhaite.
+- **Feuilles** : commune 167 613 → 167 711 octets (les deux jetons, rien d'autre) ;
+  feuille de l'accueil inchangée à l'octet ; `tarifs` 11 633, `faq` 11 603,
+  `qui-sommes-nous` 20 972, `essai` 14 585 octets (2,7 à 4,1 Ko gzip). Cette seconde
+  feuille est une requête bloquante de plus par page : laissée en l'état, Lighthouse
+  mobile donne performance 98 à 100, accessibilité 100 sur les quatre pages.
+- **Non traité** : l'accueil a le même halo par-dessus son bouton de fin (hors du lot) ;
+  `/_astro/hippodoc-logo.*.webp` n'est plus produit (une copie en cache de l'ancienne
+  `/essai` afficherait un logo cassé).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
