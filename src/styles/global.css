@@ -38,14 +38,6 @@
     --input: 214 32% 91%;
     --ring: 222 84% 48%;
 
-    /* Landing navigation glass */
-    --landing-glass: 213 100% 99%;
-    --landing-glass-soft: 211 100% 96%;
-    --landing-glass-border: 208 100% 86%;
-    --landing-glass-glow: 210 100% 55%;
-    --shadow-landing-glass: 0 14px 38px -22px hsl(var(--foreground) / 0.3), inset 0 1px 0 hsl(var(--landing-glass) / 0.9);
-    --shadow-landing-glass-scrolled: 0 18px 44px -24px hsl(var(--foreground) / 0.34), inset 0 1px 0 hsl(var(--landing-glass) / 0.94);
-
     --radius: 0.5rem;
 
     /* Blog Series Colors */
@@ -166,6 +158,12 @@
     max-width: 100%;
     overflow-x: auto;
     font-variant-numeric: tabular-nums;
+    /* Avec les chiffres tabulaires, Google Sans Flex élargit aussi l'espace (un
+       demi-chiffre : 4,52 px en 14 px au lieu de 3,16) : « 3 CV et moins » ou
+       « d × 0,529 » paraissaient écartelés. On retire la différence ; les chiffres
+       restent alignés. Les milliers des tableaux sont tous saisis avec une espace
+       ordinaire (§ 9.ed). */
+    word-spacing: -0.097em;
   }
   .prose table th,
   .prose table td {

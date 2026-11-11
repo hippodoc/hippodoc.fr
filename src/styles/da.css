@@ -1,39 +1,48 @@
 /* ==========================================================================
-   DA 2026 « le monde d'Hippodoc » : fondations (phase 1, MIGRATION.md § 9).
+   DA 2026 « le monde d'Hippodoc » : fondations (MIGRATION.md § 9.eb, § 9.ed).
 
    Un ciel du matin, une eau en pâte à modeler, tout est rond et mat, dans les
    bleus de la mascotte. Le jaune porte une seule idée : ce qu'il te reste (le
    soleil, le Super-Net, le bouton qui y mène).
 
    Règles de cette feuille :
-   - tout vit sous la classe racine `.da`, posée sur <body> par la prop
-     `bodyClass` de BaseLayout : sans elle, rien ne s'applique ;
-   - `.da` ne porte que les jetons et le fond de page. La typographie (police,
-     corps, graisse, couleur, interligne), les règles de titres et l'anneau de
-     focus sont portés par les blocs DA, marqués `.da-bloc` (l'en-tête, le pied,
-     puis chaque section migrée). Une section pas encore migrée n'a pas cette
-     classe : elle garde son rendu d'origine, styles hérités compris. Depuis
-     la phase 4a il ne reste aucune ancienne section sur l'accueil ; la classe
-     reste portée par chaque bloc (elle n'a pas été remontée sur <body>) ;
+   - tout vit sous la classe racine `.da`, que BaseLayout pose sur le <body> de
+     TOUTES les pages depuis la phase 5a : l'en-tête, le pied, la bannière
+     cookies et la bulle de chat sont partout ceux de la DA ;
+   - `.da` ne porte que les jetons. Le fond de page de la DA (ciel en haut, eau
+     profonde en bas) demande en plus `.da-fond` (prop `bodyClass` de
+     BaseLayout) : l'accueil seule, tant que les autres pages gardent leurs
+     couleurs ;
+   - la typographie de la DA (corps, graisse, couleur, interligne), ses règles
+     de titres et son anneau de focus sont portés par les blocs marqués
+     `.da-bloc` (l'en-tête, le pied, chaque section de l'accueil). Le contenu
+     des pages intérieures n'a pas cette classe : il garde son rendu Tailwind ;
    - `:where(…)` ne pèse rien : dans un bloc DA, une classe l'emporte toujours
      sur une règle d'élément ;
-   - aucune classe Tailwind dans les composants `da/` : la feuille globale ne
-     doit pas grossir pour eux ;
-   - feuille importée par les composants `da/` seulement, ni par BaseLayout ni
-     par global.css.
+   - aucune classe Tailwind dans l'en-tête, le pied ni les composants
+     `accueil/` : la feuille globale ne doit pas grossir pour eux ;
+   - feuille importée par BaseLayout (après global.css) et par les composants
+     qui s'en servent : elle sort dans la feuille commune à toutes les pages.
    ========================================================================== */
 
 /* ───────── Police ─────────
+   La police de tout le site depuis la phase 5a : `fontFamily.sans` de
+   tailwind.config.ts la donne à <html>, BaseLayout la précharge.
    Google Sans Flex (SIL OFL 1.1, voir src/assets/fonts/OFL.txt), un seul fichier :
    latin, graisse variable 400 à 800, arrondi (ROND) figé à 100, taille optique
-   (opsz) figée à 18, largeur et pente par défaut. */
+   (opsz) figée à 18, largeur et pente par défaut.
+   La police n'a aucune flèche (← → ↑ ↓ absentes de la source) : la plage « latin »
+   de Google Fonts déclarait U+2191 et U+2193, retirés ici pour que
+   `verify-site.mjs`, qui lit cette plage, les refuse dans le texte de l'accueil.
+   ≈ ≠ ≤ ≥ existent dans la source mais pas dans ce fichier : comme les flèches,
+   ils sortent dans la police suivante de la pile (Arial, par la face de repli). */
 @font-face {
   font-family: "Google Sans Flex";
   font-style: normal;
   font-weight: 400 800;
   font-display: swap;
   src: url("../assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 /* Repli à métriques ajustées : tant que le woff2 n'est pas là (`swap`), Arial
    occupe à peu près la même place, pour limiter le saut à l'arrivée de la police.
@@ -83,6 +92,8 @@
   --on-deep-2: #DCE7FB; --on-deep-3: #B9CCF0;
   --sun: #FFD84A; --sun-hover: #FFE169; --sun-edge: #DDA800;
   --line: rgba(20, 37, 79, 0.11); --line-deep: rgba(255, 255, 255, 0.2);
+  /* Bande de ciel des pages intérieures (`.hd-ciel`, `.da-sous-entete`) */
+  --ciel-bande: linear-gradient(var(--sky-1), var(--sky-2) 55%, rgba(228, 238, 255, 0));
   /* États */
   --ok-bg: #DFF3E7; --ok: #0F6338;
   --wait-bg: #FCEACF; --wait: #874C00;
@@ -111,16 +122,16 @@
 }
 
 /* ───────── Page ─────────
-   `.da` est posée sur <body>. Le fond prolonge le pied (eau profonde) quand la
-   page rebondit en bas, et le ciel quand elle rebondit en haut. Rien d'hérité
-   ici : voir `.da-bloc`. */
-.da {
+   `.da-fond` s'ajoute à `.da` sur <body> (l'accueil). Le fond prolonge le pied
+   (eau profonde) quand la page rebondit en bas, et le ciel quand elle rebondit
+   en haut. Rien d'hérité ici : voir `.da-bloc`. */
+.da-fond {
   margin: 0;
   background: var(--deep-2) linear-gradient(var(--sky-1), var(--sky-1)) no-repeat 0 0 / 100% 520px;
 }
-/* Bloc DA : l'en-tête, le pied, chaque section migrée. C'est lui qui porte la
-   typographie, pas <body> : les anciennes sections, qui n'ont pas la classe,
-   gardent le rendu de `main` (police, corps de 16 px, graisse 400, couleur). */
+/* Bloc DA : l'en-tête, le pied, chaque section de l'accueil. C'est lui qui
+   porte la typographie, pas <body> : le contenu des pages intérieures, qui n'a
+   pas la classe, garde son rendu (corps de 16 px, graisse 400, couleur). */
 :where(.da .da-bloc) {
   color-scheme: light;
   color: var(--ink);
@@ -130,8 +141,9 @@
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
-/* La pastille est collée à 10 px du haut et fait 60 px : une ancre s'arrête dessous. */
-html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
+/* La pastille est collée à 10 px du haut et fait 60 px : une ancre s'arrête
+   dessous. Les pages intérieures gardent les 96 px de global.css. */
+html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
 
 /* ───────── Éléments (dans un bloc DA seulement) ───────── */
 /* Grands corps sans taille optique. La police du site n'a pas l'axe `opsz` (il
@@ -259,12 +271,48 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
    marges intérieures et non extérieures : une marge haute fusionnerait avec
    celle du conteneur et laisserait 10 px du fond de page au-dessus de lui. */
 :where(.da) .hd--flux { box-sizing: border-box; top: env(safe-area-inset-top, 0px); height: 80px; margin: 0; padding: 10px 0; }
+/* Pages intérieures : elles n'ont pas de ciel. Une bande de ciel de 80 px, la
+   place que l'en-tête occupe en haut de la page, qui s'éteint vers le bas : la
+   pastille blanche se détache. Élément à part, rendu juste avant l'en-tête et
+   de hauteur nulle dans le flux : l'en-tête est collant, la bande non (elle
+   part avec la page, aucun élément collant ne passe dessous). Sans position ni
+   z-index : elle se peint sous tout le contenu, et un fond posé par la page la
+   recouvre (le bandeau bleu de /guide, qui remonte sous la pastille).
+   Elle s'éteint sur le fond de <body> : la jonction est invisible quand le
+   premier bloc de la page n'a pas de fond (/blog, les articles, /tarifs). Un
+   premier bloc qui a le sien prend `.da-sous-entete`, ci-dessous. */
+:where(.da) .hd-ciel { height: 80px; margin-bottom: -80px; background: var(--ciel-bande); pointer-events: none; }
+/* Premier bloc d'une page intérieure, quand il a son propre fond (dégradé,
+   halo, blanc) : sans cela ce fond commence net à 80 px, sous une bande qui
+   s'est éteinte sur une autre couleur, et on voit une ligne sur toute la
+   largeur. Le bloc remonte donc sous l'en-tête, rend les 80 px à son contenu
+   (`::before`, dans le flux) et peint lui-même la bande de ciel par-dessus son
+   fond et ses halos (`::after`, dernier dans l'ordre de peinture) : elle
+   s'éteint sur le fond du bloc, quel qu'il soit. La classe n'agit que si le
+   bloc est bien le premier après l'en-tête « flux » (lui-même, ou le premier
+   enfant de l'élément qui suit) : précédé d'un bandeau, il reste à sa place.
+   Le bloc ne doit pas être un conteneur flex ou grille (le `::before` y
+   deviendrait une cellule). */
+:where(.da) .hd--flux + .da-sous-entete,
+:where(.da) .hd--flux + * > .da-sous-entete:first-child { position: relative; margin-top: -80px; }
+:where(.da) .hd--flux + .da-sous-entete::before,
+:where(.da) .hd--flux + * > .da-sous-entete:first-child::before { content: ""; display: block; height: 80px; }
+:where(.da) .hd--flux + .da-sous-entete::after,
+:where(.da) .hd--flux + * > .da-sous-entete:first-child::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 80px; background: var(--ciel-bande); pointer-events: none; }
+@media (forced-colors: active) {
+  :where(.da) .hd-ciel,
+  :where(.da) .hd--flux + .da-sous-entete::after,
+  :where(.da) .hd--flux + * > .da-sous-entete:first-child::after { display: none; }
+}
 /* Sous 900 px, pas de flou d'arrière-plan : il coûte cher au défilement sur
-   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. */
+   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. Sur les pages
+   intérieures (« flux ») il est plein : la pastille y passe sur du texte foncé
+   et dense (formulaires, tableaux, cartes), qu'on lisait au travers à 94 %. */
 :where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
 @media (min-width: 900px) {
   :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
 }
+@media (max-width: 899px) { :where(.da) .hd--flux .hd-bar { background: #fff; } }
 :where(.da) .hd-brand { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); text-decoration: none; }
 /* Sous 340 px, tout se resserre : le mot, la pastille d'essai et le bouton du
    menu doivent tenir sur 320 px (296 px de pastille). */
@@ -346,6 +394,11 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 
 /* ───────── Pied : l'eau profonde ───────── */
 :where(.da) .ft { --focus: #FFFFFF; position: relative; z-index: 1; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 16px; }
+/* Pages intérieures (sans `.da-fond`) : le pied ne prolonge pas une scène d'eau,
+   il arrive sous une page claire. Il prend les coins ronds d'une feuille de la
+   DA ; le fond de la page se voit dans les coins. */
+:where(.da:not(.da-fond)) .ft { border-radius: var(--r-xl) var(--r-xl) 0 0; }
+@media (max-width: 559px) { :where(.da:not(.da-fond)) .ft { border-radius: var(--r-lg) var(--r-lg) 0 0; } }
 :where(.da) .ft-in { display: grid; gap: 36px 56px; padding-top: 36px; padding-bottom: 28px; }
 :where(.da) .ft a, :where(.da) .ft-prefs { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; transition: color 160ms var(--ease); }
 :where(.da) .ft a:hover, :where(.da) .ft-prefs:hover { color: var(--paper); }
@@ -377,7 +430,7 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .ft-sub svg { flex: none; }
 /* Deux colonnes remplies de haut en bas : les 9 premières des 16 lignes (outils,
    blog, comparatif et les trois articles) à gauche, les 7 suivantes (maison et
-   mentions) à droite. Le 9 suit le contenu de FooterDA.astro. Dès 340 px : sur
+   mentions) à droite. Le 9 suit le contenu de Footer.astro. Dès 340 px : sur
    une seule colonne, le pied faisait presque deux écrans de téléphone. Sous
    480 px les colonnes sont égales et un libellé long passe sur deux lignes. */
 @media (min-width: 340px) {
@@ -433,6 +486,14 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
   .da #cookie-banner { left: 24px; right: auto; width: 268px; margin: 0; }
   .da #cookie-banner > div { flex-direction: column; align-items: stretch; gap: 12px; }
   .da #cookie-banner > div > div { display: grid; }
+}
+/* Articles avec sommaire : à partir de 1280 px le sommaire est collant, à
+   gauche, là où la bannière se range. Tant qu'elle est affichée, il s'arrête
+   au-dessus d'elle (il défile déjà dans sa colonne) au lieu de passer dessous.
+   25rem = sa place en haut de page, avant qu'il colle (200 px sous le fil
+   d'Ariane), la bannière (147 px + 24 px) et 29 px d'air. */
+@media (min-width: 1280px) {
+  .da:has(#cookie-banner:not([hidden])) .toc { max-height: calc(100vh - 25rem); }
 }
 /* L'anneau blanc détache la bulle du pied, lui aussi bleu nuit. */
 .da #crisp-launcher { background-color: var(--ink); background-image: none; color: var(--paper); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 10px 22px -10px rgba(9, 20, 52, 0.6); }

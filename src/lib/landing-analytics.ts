@@ -186,10 +186,12 @@ export function initLandingAnalytics(emettre: Emetteur): void {
     });
     video.addEventListener('ended', () => emettre('landing_video_completed', base()));
 
-    /* Erreurs de lecture. Signal réel et non théorique : la vidéo est servie
-       depuis Supabase Storage et lue à 97 % dans le navigateur intégré
-       d'Instagram. Une vidéo qui ne démarre pas y est invisible côté produit —
-       et trois insights l'attendent. */
+    /* Erreurs de lecture. Signal réel et non théorique : le film est lu à 97 %
+       dans le navigateur intégré d'Instagram (relevé du temps où Supabase
+       Storage le servait). Depuis le 10 novembre 2026 il est servi par le site
+       lui-même (public/hippodoc-film-v21.mp4, MIGRATION.md § 9.ec). Une vidéo
+       qui ne démarre pas y est invisible côté produit — et trois insights
+       l'attendent. */
     video.addEventListener('error', () =>
       emettre('landing_video_error', {
         ...base(),

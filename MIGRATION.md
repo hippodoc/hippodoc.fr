@@ -6028,6 +6028,197 @@ s'il veut la ligne proposée pour CLAUDE.md (point 3).
 du mp4 sur iOS comprise) ; bande son transcrite par un modèle, non écoutée ; CLAUDE.md
 non modifié ; `title` et description de la page inchangés.
 
+### 9.ed Phase 5a : en-tête, pied et police de la DA sur tout le site (11 novembre 2026)
+
+Suite de § 9.eb. Les 68 pages intérieures prennent l'en-tête en pastille, le pied « eau
+profonde », la police, la bannière cookies et la bulle de chat de l'accueil. Leur contenu
+garde ses classes Tailwind et ses couleurs (phases 5b à 5d). Contrôlé sur les 71 HTML du
+build, comparés à `main` : hors en-tête et pied, texte, liens, `title`, description,
+canonique, H1, JSON-LD, `data-ph` et `data-track` sont identiques, `/tarifs` exceptée
+(point 5). L'accueil est identique au pixel près (six captures, 390 et 1 440 px). Aucun JS
+ajouté. Build et `verify-site.mjs` à 0 erreur à chaque commit. Trois relectures (outils,
+contenu, technique) ont suivi ; ce qu'elles ont fait corriger est signalé « relecture ».
+
+**1. Un seul en-tête, un seul pied**
+
+- `src/components/Header.astro` et `Footer.astro` SONT désormais les composants de la DA
+  (ex-`da/HeaderDA.astro`, `da/FooterDA.astro`) ; le dossier `components/da/` disparaît.
+  BaseLayout pose `da` sur le `<body>` de toutes les pages (jetons) et importe `da.css` ;
+  le fond de page de la DA passe sous `da-fond` (accueil seule).
+- Micro-script du tiroir : `src/components/ScriptTiroir.astro`, rendu par `Footer.astro`
+  après `</footer>`, une fois par page. Inchangé au caractère près (même empreinte
+  SHA-256, espaces réduits, que dans l'ancien `Header.astro` : `10a3011d…`).
+- **Ce qui change dans le menu des pages intérieures** : « Découvrir »
+  (`/#film-presentation`, `landing_nav_decouvrir`, `landing_mobile_nav_decouvrir`) devient
+  « Comment ça marche » (`/#sous-la-surface`, `landing_nav_comment_ca_marche`,
+  `landing_mobile_nav_comment_ca_marche`), comme sur l'accueil depuis § 9.eb. **Ces deux
+  séries PostHog `…_decouvrir` s'arrêtent** ; l'ancre `#film-presentation` reste sur
+  l'accueil. Tous les autres `data-ph` et `data-track` sont repris tels quels.
+- **Ce qui change dans le pied des pages intérieures** : les liens en toutes lettres
+  « LinkedIn », « Facebook », « Instagram » (sans `data-ph`) ne sont plus répétés (les
+  trois pastilles rondes restent, avec leur `data-ph`) ; la flèche « → » des trois liens
+  d'articles sort du libellé (dessin) ; logo en lettres, sans l'icône.
+  `public/lovable-uploads/hippodoc-logo-96.webp` n'est plus référencé (laissé en place,
+  phase 6).
+- `verify-site.mjs`, contrôle « 4 quater bis » : la comparaison accueil / `/tarifs` devient
+  une garde. Liste figée des `data-ph` et `data-track` de l'en-tête et du pied
+  (`MESURE_ENTETE_PIED`, 30 repères) ; chaque page du build a l'en-tête et le pied avec les
+  mêmes liens que l'accueil, ou se déclare dans `PAGES_SANS_ENTETE` (`/essai`,
+  `/transmissions`) ; micro-script une seule fois, après le pied, à l'empreinte figée.
+- Variables `--landing-glass*` de `global.css` retirées (seul l'ancien en-tête les lisait).
+
+**2. Pages intérieures : la pastille sur une bande de ciel**
+
+- Variante `flux` : l'en-tête garde 80 px en haut de la page (72 à 76 px avant), puis la
+  pastille reste collée à 10 px du haut. Derrière elle, une bande de ciel de 80 px qui
+  s'éteint vers le bas (`.hd-ciel`, élément décoratif rendu avant l'en-tête) : elle part
+  avec la page, elle n'est pas collante. Le pied prend des coins ronds en haut.
+- **Jonction avec la page (relecture).** La bande s'éteint sur le fond de `<body>`. Quand
+  le premier bloc d'une page a son propre fond, ce fond commençait net à 80 px : une ligne
+  sur toute la largeur (écart entre les lignes 79 et 80 : 27 niveaux sur `/comparatif`, 22
+  sur `/qui-sommes-nous`, 10 sur `/simulateur`, 6 à 7 sur `/faq`, les quatre pages légales
+  et la 404). Ces neuf blocs prennent la classe `da-sous-entete` (`da.css`) : le bloc
+  remonte sous l'en-tête, rend les 80 px à son contenu et peint lui-même la bande
+  par-dessus son fond. Après : plus aucune couture sur les 71 pages ; position du `h1`, du
+  pied et hauteur de page identiques à 390, 768 et 1 440 px (seule la 404, plus courte que
+  l'écran, perd 80 px de vide). La classe est aussi sur le héros de `/guide-declarations`,
+  où elle n'agit que les mois sans bandeau saisonnier (vérifié en retirant le bandeau).
+- **Pastille pleine sous 900 px (relecture)** sur les pages intérieures : à 94 % sans
+  flou, on lisait au travers le texte des outils et du blog. L'accueil garde 94 %. Autour
+  de la pastille (10 px au-dessus, 12 px de chaque côté), le contenu qui défile reste
+  visible, y compris au-dessus de la barre de recherche de `/guide-declarations` : c'est
+  le principe d'une pastille flottante.
+- **`/simulateur` (relecture)** : après un calcul la page défile jusqu'aux résultats, et
+  le bouton « Simuler » s'arrêtait exactement derrière la pastille. `scroll-mt-20` sur le
+  bloc des résultats : bouton entier de 96 à 144 px, titre à 176 px, à 390, 768 et
+  1 440 px.
+- Recette (15 pages × 390, 768 et 1 440 px) : aucun `h1` sous la pastille ; ancres du menu
+  testées depuis `/blog`, la calculette et une page légale (cible à 84 px, pastille à
+  70 px) ; tiroir mobile ouvert et refermé sur `/faq` et `/guide-declarations`.
+- `/guide` : le bandeau bleu remontait de 72 / 76 px sous l'ancien en-tête ; il remonte de
+  80 px (`-mt-20`, `pt-28`, `md:pt-36`), mêmes distances sous l'en-tête.
+- `/guide-declarations` : la barre de recherche collante passe de `top-16` à `top-[70px]`,
+  au ras de la pastille. Avant : 8 à 12 px de la barre sous l'en-tête, dont 2 à 6 px du
+  champ. Après : 0.
+- Calculette : sa barre « Cases 2035 » (`sticky top-16`) ne colle pas, ni avant ni après
+  (`<main>` a `overflow-hidden`). Non touché. Sommaire collant des articles (`xl:top-24`) :
+  26 px sous la pastille.
+
+**3. Police : Google Sans Flex partout**
+
+- `fontFamily.sans` (`tailwind.config.ts`) : la police, son repli à métriques ajustées,
+  puis la liste par défaut de Tailwind. Le woff2 (41 936 octets) est préchargé par
+  BaseLayout sur toutes les pages. Les graisses Tailwind (400 à 800) tombent dans la plage
+  du fichier ; l'italique est penché par le navigateur (pas de fichier italique).
+- **Signes absents du fichier**, dans le contenu des pages (hors en-tête et pied) : → (546
+  fois, 59 pages), ≈ (117, 22 pages), ← (49), ≠ (48, 8 pages), ᵉ et ʳ (37), ≥ et ≤ (19),
+  ✓ et ✔ (38), ₂, Σ, ↓, et les émojis. Ils sortent dans la police suivante de la pile :
+  Arial par la face de repli (Mac, Windows, iOS), sinon la police du système (Android).
+  Le plus visible : « Essai gratuit 30 jours → » sur le bouton de `/essai`, flèche plus
+  maigre que le texte. La police source n'a **aucune flèche** : impossible de les ajouter
+  au fichier ; `unicode-range` déclarait à tort U+2191 et U+2193, retirés. ≈ ≠ ≤ ≥ ₂
+  existent dans la source ; fichier non refait (il ne se régénère pas à l'octet près :
+  41 880 octets contre 41 936, à contrôler au pixel avant de le remplacer).
+- Balayage de 70 pages × 6 largeurs (320 à 1 440 px), simulateur calculé et exemple de
+  calculette chargé, comparé à `main` : aucun nouveau défilement horizontal, aucun élément
+  hors écran, aucun libellé tronqué en plus ; aucun bouton, onglet, en-tête de tableau ni
+  libellé de champ sur une ligne de plus. 281 retours à la ligne en plus, tous dans des
+  liens de texte courant et des titres. Rien à corriger du fait de la police.
+- **Relecture, trois effets de la police.** (a) Tableaux d'articles (15 articles) : avec
+  `tabular-nums`, la police élargit aussi l'espace (4,52 px en 14 px au lieu de 3,16) ;
+  `word-spacing: -0.097em` sur `.prose table` (`global.css`) la ramène à sa largeur, les
+  chiffres restent alignés. Les 86 milliers de ces tableaux sont saisis avec une espace
+  ordinaire. (b) H1 de `/guide-declarations` à 1 440 px : « claires » partait seul à la
+  ligne ; `whitespace-nowrap` sur « enfin claires » (tient sur une ligne jusqu'à 320 px).
+  (c) Non touché : la colonne de texte des articles (`max-w-[68ch]`) passe de 688 à
+  702 px à 1 440 px, le « 0 » de la police étant plus large ; à resserrer en phase 5c.
+- **Corrigé au passage (existait avant)** : `/simulateur`, une fois le calcul affiché, un
+  halo décoratif faisait défiler la page de côté sur téléphone (425 px pour 390) ;
+  `overflow-x-clip` sur `<main>`.
+
+**4. Bannière cookies et bulle de chat** : même habillage que sur l'accueil sur toutes les
+pages, `/essai` comprise (règles `.da #cookie-banner`, `.da #crisp-launcher`, inchangées).
+Relecture : à partir de 1 280 px la bannière, rangée en bas à gauche, recouvrait quatre
+liens du sommaire collant des 19 articles qui en ont un. Tant qu'elle est affichée, le
+sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`, sans JS) :
+0 recouvrement à 1 280 × 720, 1 440 × 900 et 1 920 × 1 080.
+
+**5. Trois corrections de contenu autorisées par le propriétaire, une quatrième à valider**
+
+- **/tarifs**, nouveau bloc sous les deux offres, mot pour mot. Titre : « Internes et
+  docteurs juniors ». Texte : « Tu paies **10 € par mois** jusqu'à la fin de l'internat,
+  sur justificatif : écris-nous à contact@hippodoc.fr. » puis « Tu adhères à un syndicat
+  d'internes partenaire ? Ton essai gratuit dure **6 mois** au lieu de 30 jours, grâce à un
+  code fourni par ton syndicat. » « Sur justificatif » et l'adresse viennent de `/faq`
+  (§ 9.eb). Rien sur le cumul (décision 15b, pas encore relue). FAQ de la page, JSON-LD,
+  title et description inchangés. `lastmod` de `/tarifs` : 11 novembre 2026.
+- **CLAUDE.md** : chiffres du bloc fondateur « datés dans l'en-tête de `Fondateur.astro`
+  et dans MIGRATION.md § 9.ec » (ligne proposée en § 9.ec) ; section DA réécrite (un seul
+  en-tête, police globale, `da-fond`) ; `hippodoc-corpus/` : « Il n'est pas dans ce
+  dépôt ».
+- **`src/lib/landing-analytics.ts`** : le commentaire disait le film « servi depuis
+  Supabase Storage ». Il dit maintenant qu'il est servi par le site depuis § 9.ec.
+  Commentaire seul, script inchangé.
+- **À valider : `/tarifs`, deux espaces rendues (relecture).** Un retour à la ligne collé
+  à une balise en ligne disparaît au build. La phrase sous le H1 se lisait « sans
+  engagement, ou19 € par mois », le bandeau du bas « Consulte la FAQ ouécris-nous ». Les
+  deux espaces reviennent ; le texte source n'a pas changé, seules les coupures de ligne
+  de `tarifs.astro`. Commit séparé (`/tarifs : deux espaces avalées au rendu`), à retirer
+  s'il ne convient pas.
+
+**6. Mesures** (build de `main` avant la phase → cette branche)
+
+- Feuille commune : 158 392 → 174 197 octets (25 361 → 29 633 gzip). Elle s'appelle
+  désormais `_astro_assets.*.css` (`BaseLayout.*.css` avant). Feuille de l'accueil :
+  94 251 → 74 615 (16 509 → 12 304 gzip).
+- Par page, HTML + CSS, gzip : accueil 72 722 → 72 792 octets ; `/simulateur` 52 385 →
+  55 561 ; article `frais-pros-medecin-liberal-2026` 59 893 → 62 609. HTML brut des pages
+  intérieures : −11,6 Ko chacune. Plus la police à la première visite d'une page
+  intérieure : 41 936 octets.
+- Lighthouse 13.6 mobile, local, 5 passes alternées, refaites après les corrections de
+  la relecture (performance, de la plus basse à la plus haute) : accueil 100 → 100 ;
+  `/simulateur` 95 à 99 → 98 à 99 ; article 97 à 99 → 97 à 98. Ni gain ni perte au-delà du
+  bruit. Accessibilité 100, SEO 100, bonnes pratiques 96 des deux côtés (le bac à sable
+  bloque `t.hippodoc.fr`), CLS 0 partout. LCP : accueil 1,21 → 1,06 s ; `/simulateur`
+  0,91 s des deux côtés (une passe de `main` à 1,88 s, aucune sur la branche) ; article
+  2,24 à 2,36 s → 2,41 à 2,43 s.
+- CLS à l'arrivée de la police (woff2 retardé de 1,5 s, repli Liberation Sans ajusté),
+  sept pages intérieures : à 390 px, de 0,000 à 0,055 (`/guide-declarations` 0,055,
+  `/simulateur` 0,036, `/tarifs` 0,008, article 0,000) ; à 1 440 px, 0,007 au plus.
+  Chargement normal (police préchargée) : 0.
+
+**Reste ouvert**
+
+- Non testé : Safari, Firefox, un vrai téléphone. Sur Android (pas d'Arial), le repli
+  n'est pas ajusté : le CLS réel à l'arrivée de la police n'y est pas mesuré, et les signes
+  absents du fichier (point 3) y sortent dans la police du système.
+- **Phase 5b, `/tarifs` en premier** : deux boutons principaux de styles différents dans
+  le même écran (« Essai gratuit 30j » jaune en relief dans la pastille, « Commencer
+  l'essai gratuit » bleu plat dans la carte Annuel), plus le bleu nuit de la bannière et de
+  la bulle. C'est le seul endroit où le nouvel en-tête et l'ancien corps jurent.
+- **Boussole de `/guide-declarations`, à 390 px** (existait avant, aggravé de 6 px) : après
+  le choix d'un profil, le titre de l'étape arrive à 96 px, sous la barre de recherche
+  collante (70 à 115 px ; 64 à 109 avant, titre alors à moitié caché). Aucun défilement
+  n'est demandé à ce moment-là (`handleSelectProfil`), c'est l'ancrage du navigateur qui
+  place la page. À corriger dans l'îlot (`BoussoleWizard.tsx`), hors phase 5a.
+- Vus pendant la recette, existaient avant, non touchés :
+  - (corrigé le 11 novembre 2026, à la demande du propriétaire : les lignes sources sont
+    recollées, onze espaces rétablies, aucun mot changé ; la onzième est « l'honoraire. Indemnités »
+    sur `/guide-declarations/dsfu-pamc`) dix espaces avalées autour d'une balise en ligne, même cause que sur `/tarifs` :
+    `/guide-declarations/2042-c-pro` (« auréel », « en5QC », « voirla déclaration »,
+    « laDSFU », « auxrégimes zonés »), `/guide-declarations/dsfu-pamc`
+    (« tescotisations », « tesrecettes brutes »), `/guide-declarations/medecin-remplacant`
+    (« Lesimulateurle calcule », « lapage DSFU ») ;
+  - `/simulateur` à 390 px, bloc « Exemple chiffré » : trois montants coupés en fin de
+    ligne (« 30 / 000 € », « 19 000 / premiers euros », « 11 / 000 € restants »). Les
+    espaces de milliers y sont sécables depuis toujours ; la nouvelle police a déplacé les
+    coupures. Les rendre insécables est une modification de contenu ;
+  - défilement horizontal sous 360 px sur deux articles (`conge-maternite-paternite`, une
+    URL dans un `<code>` ; `frais-pros-medecin-liberal-2026` à 320 px).
+- Le jour de la mise en ligne : annoter PostHog (fin des séries `…_nav_decouvrir`, début de
+  `landing_nav_comment_ca_marche` sur toutes les pages) et vérifier qu'aucun insight ne
+  filtre encore sur `landing_nav_decouvrir` ou `landing_mobile_nav_decouvrir`.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

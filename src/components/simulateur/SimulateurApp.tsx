@@ -200,9 +200,11 @@ export default function SimulateurApp() {
         </Alert>
       )}
 
-      {/* Results */}
+      {/* Results. `scroll-mt-20` (§ 9.ed) : après le calcul, la page défile jusqu'ici.
+          Sans marge, le bouton « Simuler » s'arrêtait juste derrière la pastille de
+          l'en-tête et se lisait au travers ; il reste maintenant entier dessous. */}
       {results.recommande && !loading && formDataRef.current && (
-        <div ref={resultsRef}>
+        <div ref={resultsRef} className="scroll-mt-20">
           <SimulateurResults
             comparison={results}
             formData={formDataRef.current}
