@@ -6308,6 +6308,50 @@ change. Un lot par page.
   6 434 contre 5 238 à 390 px) : chaque question est une fiche, chaque rubrique une
   feuille.
 
+**`/qui-sommes-nous`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 20 titres de la page (niveau
+  et texte), les 16 liens du `<main>` et les 64 de la page (adresse et libellé, dans
+  l'ordre), les 8 ancres (`histoire`, `equipe`, `ryan-goburdhun`, `thomas-payet`,
+  `engagements`, `soutiens`, `internes`, `chiffres`), les 5 blocs JSON-LD, les 40 éléments
+  porteurs d'un attribut de mesure (`landing_partner_*`, `landing_about_*`,
+  `cta_signup_qui_sommes_nous`, `data-calendly="qui_sommes_nous"`), les 4 scripts, les
+  textes alternatifs, et le texte : 713 mots, mêmes suites de texte entre balises de bloc.
+  Les autres HTML du build sont identiques, au nom de la feuille commune près. Aucun JS
+  ajouté. Les chiffres restent ceux de la page (« 17 000+ » journées, quand l'accueil
+  dit « 24 200 »).
+- **Habillage** (`src/pages/qui-sommes-nous.astro`, aucune classe Tailwind) : page
+  entièrement dans la DA (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color`).
+  Huit blocs, dans l'ordre d'avant : un ciel (fil d'Ariane, pastille, titre, le portrait
+  penché du bloc fondateur de l'accueil et sa légende sur une étiquette d'encre) ; une
+  feuille sable (le récit, titre à gauche ; la citation sur une fiche bleu profond, sous
+  les guillemets jaunes des témoignages) ; une feuille ciel (l'équipe, deux fiches) ; une
+  feuille sable (les trois promesses, mascotte au pouce levé derrière les fiches) ; l'eau
+  profonde de « Sous la surface » (les soutiens, sur des fiches blanches) ; une feuille
+  ciel (syndicats et partenaires : les tuiles de `accueil/Partenaires.astro`) ; une feuille
+  sable (la définition, les quatre chiffres sur une fiche) ; la fin de `/tarifs` et `/faq`
+  (bouton jaune, trois portes de contact, soleil sur l'eau du pied).
+- **Dans le HTML, sans toucher au texte** : logos des syndicats, des partenaires et des
+  soutiens pris dans `src/assets/accueil/partenaires/` (fonds ramenés au blanc, rognés au
+  ras du dessin, AVIF et WebP) aux largeurs de l'accueil, à la place des fichiers de
+  `public/lovable-uploads/` ; leurs textes alternatifs restent ceux de la page. Portrait,
+  vignettes de l'équipe et photo de The Pitch : mêmes fichiers qu'avant. Dessins au trait
+  écrits dans la page (plus de `pages/Icon.astro` ici) ; la flèche du bouton de fin,
+  décorative, disparaît ; deux `<span class="num">` ; `role="list"` ; une image
+  décorative de plus (la mascotte, `alt=""`).
+- **Feuilles** : commune 172 720 → 171 013 octets (les utilitaires que seule cette page
+  employait disparaissent, rien n'est ajouté ; son nom change) ; feuilles de l'accueil,
+  de `/tarifs` et de `/faq` inchangées à l'octet ; nouvelle `qui-sommes-nous.*.css`,
+  20 214 octets (3 890 gzip). HTML : 17 569 → 17 488 octets gzip. Aucune image de plus
+  dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  l'accueil ; 28 largeurs de 320 à 1 920 px sans défilement horizontal ; contrastes AA
+  mesurés sur le rendu (le plus bas : 4,96:1, le chapeau des soutiens sur l'eau) ;
+  clavier, ancre `#thomas-payet`, contrastes forcés. Lighthouse mobile : performance 98
+  (99 sur `main`, LCP 2,3 s des deux côtés), accessibilité 100, SEO 100. Hauteur :
+  7 039 px contre 6 259 à 1 440 px, 9 255 contre 9 223 à 390 px.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
