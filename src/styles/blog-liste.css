@@ -1,0 +1,241 @@
+/* ==========================================================================
+   Pages de liste du blog dans la DA 2026 : /blog et /blog/serie/* (phase 5c,
+   MIGRATION.md § 9.ef). Seul l'habillage a changé : textes, titres, liens,
+   ordre des blocs, JSON-LD et attributs de mesure sont ceux d'avant.
+
+   Une feuille à part, importée par les deux gabarits (`pages/blog/index.astro`,
+   `pages/blog/serie/[series].astro`) et servie à ces quatre pages seules : une
+   seule requête en plus de la feuille commune, la même d'une page de liste à
+   l'autre. En <style> scopés, les cartes (partagées) et chaque page auraient
+   eu chacune la leur.
+
+   - Tout est préfixé `bl-` ; les primitives viennent de da.css (`.wrap`,
+     `.band`, `.lead`, `.btn`, `.chip`, `.lien`, `.aff`).
+   - Le ciel en haut (titre, recherche, séries, article à la une), une feuille
+     sable (les cartes, l'appel au simulateur), une feuille ciel (l'index, sur
+     /blog), puis les deux vagues du pied de page, comme sous les articles.
+   - Corps de texte en rem : ils suivent la taille de police du navigateur.
+   - Les résultats de la recherche sont créés par le script de /blog, avec ses
+     classes utilitaires d'origine (script inchangé) : les règles d'ici pèsent
+     plus lourd qu'elles.
+   ========================================================================== */
+
+.bl { position: relative; margin-bottom: -1px; font-size: 1.0625rem; overflow-wrap: break-word; }
+.bl .lead { font-size: 1.1875rem; }
+.bl .btn { font-size: 1.0625rem; }
+/* Texte grossi : une pastille plus large que sa carte passe à la ligne. */
+.bl .chip { font-size: 0.8125rem; white-space: normal; }
+/* Un mot et sa ponctuation (`nouer`, src/lib/typo.ts) : ensemble sur la ligne ;
+   plus larges que leur bloc (texte grossi), ils se dénouent au lieu de déborder. */
+.bl .num { display: inline-block; max-width: 100%; white-space: normal; }
+.bl-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* L'eau du pied de page : les deux dernières vagues de la scène de fin de
+   /tarifs, immobiles, comme sous les articles. La dernière a la couleur du
+   haut du pied (--deep). Elles passent devant la dernière feuille. */
+.bl::before, .bl::after { content: ""; position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; pointer-events: none; --p: 300px; --th: 40px; }
+.bl::before { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+.bl::after { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+/* La dernière feuille laisse la place des vagues sous son contenu. */
+.bl .bl-fin { padding-bottom: 150px; }
+
+/* ───────── Le ciel : titre, recherche, séries, article à la une ─────────
+   Le bloc passe sous la pastille de l'en-tête, il lui réserve le haut. En bas,
+   l'air et les 40 px que recouvre la feuille suivante. */
+.bl-tete { padding: 100px 0 80px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+.bl-intro { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.bl-intro > *, .bl-intro > div > * { margin: 0; }
+.bl-intro h1 { --corps: var(--h1-page); text-wrap-style: balance; }
+/* Le membre de phrase accentué, comme « Hippodoc » dans le titre de /faq. */
+.bl-intro h1 span { color: var(--w4); }
+.bl-intro .lead { max-width: 44rem; margin-top: 12px; }
+.bl-compte { font-size: 0.9375rem; color: var(--ink-2); }
+.bl-compte span { font-weight: var(--tb); color: var(--ink); }
+
+/* La recherche : une pastille blanche. Les résultats et le message « aucun
+   article » sont des fiches, sous le champ ; ils poussent la page (comme avant). */
+.bl-recherche { max-width: 36rem; margin-top: 24px; }
+.bl-champ { position: relative; }
+.bl-champ svg { position: absolute; top: 50%; left: 19px; translate: 0 -50%; color: var(--ink-2); pointer-events: none; }
+.bl-champ input { box-sizing: border-box; width: 100%; height: 54px; margin: 0; padding: 0 20px 0 50px; border: 0; border-radius: var(--r-pill); background: var(--paper); box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), var(--clay-sm); font: inherit; font-size: 1rem; color: var(--ink); -webkit-appearance: none; appearance: none; }
+.bl-champ input::placeholder { color: var(--ink-3); opacity: 1; }
+/* La ligne d'état garde sa hauteur vide : rien ne bouge quand le compteur arrive. */
+.bl-etat { min-height: 1.5rem; margin: 8px 0 0 20px; font-size: 0.9375rem; line-height: 1.5rem; color: var(--ink-2); }
+.bl-resultats { margin: 6px 0 0; padding: 6px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); list-style: none; }
+/* L'attribut `hidden` ne masque pas un élément dont la feuille fixe `display`. */
+.bl-resultats[hidden], .bl-vide[hidden] { display: none; }
+.bl-resultats li + li { border-top: 1px solid var(--line); }
+.bl-resultats a { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 11px 14px; border-radius: 14px; font-size: 1rem; font-weight: 560; line-height: 1.35; color: var(--ink); text-decoration: none; }
+.bl-resultats a:hover { background: var(--sky-soft); color: var(--ink); }
+.bl-resultats a span + span { flex: none; font-size: 0.84375rem; font-weight: var(--tw); color: var(--ink-3); }
+.bl-vide { margin-top: 6px; padding: 16px 20px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
+.bl-vide p { margin: 0; }
+
+/* Les séries : des pastilles blanches qu'on enfonce ; la page en cours est sur
+   l'eau profonde. Sur téléphone, deux par ligne. */
+.bl-series { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.bl-series a { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0 0.3em; min-height: 44px; padding: 4px 10px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 3px 0 var(--edge); font-size: 0.875rem; font-weight: var(--tb); line-height: 1.2; color: var(--ink); text-align: center; text-decoration: none; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
+.bl-series a:hover { background: var(--sky-soft); }
+.bl-series a:active { translate: 0 3px; box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12); }
+.bl-series a[aria-current] { background: linear-gradient(var(--deep), #1F4FAF); box-shadow: 0 3px 0 var(--deep-2); color: var(--paper); }
+.bl-series a[aria-current]:active { box-shadow: 0 0 0 transparent; }
+.bl-series span { font-weight: var(--tw); }
+
+/* Marques d'une carte : la série en pastille, le numéro, « À la une ». */
+.bl-marques { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.bl-etiquette { display: inline-block; padding: 3px 10px; border-radius: var(--r-pill); background: var(--ink); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.35; color: var(--paper); white-space: nowrap; }
+.bl-numero { font-size: 0.84375rem; color: var(--ink-3); }
+.bl-infos { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; font-size: 0.84375rem; color: var(--ink-3); }
+
+/* L'article à la une : une grande fiche, la couverture dedans. Le texte
+   d'abord dans le HTML ; à partir de 768 px l'image reprend la gauche. */
+.bl-une { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 30px; padding: 10px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
+.bl-une:hover { translate: 0 -3px; }
+.bl-une-texte { display: flex; flex-direction: column; justify-content: center; padding: 14px 12px 20px; }
+.bl-une h2 { --corps: clamp(1.5rem, 3.1vw, 2.125rem); margin: 14px 0 0; line-height: 1.12; text-wrap-style: balance; }
+.bl-une-extrait { margin: 12px 0 0; font-size: 1.0625rem; line-height: 1.55; color: var(--ink-2); }
+.bl-une .bl-infos { justify-content: flex-start; margin-top: 16px; font-size: 0.90625rem; }
+.bl-une img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; border-radius: 22px; object-fit: cover; object-position: top; }
+
+/* ───────── Les feuilles ───────── */
+.bl-titre { --corps: clamp(min(1.75rem, 8.2vw), 3.4vw, 2.5rem); margin: 0 0 24px; }
+.bl-titre:has(+ .bl-sous-titre) { margin-bottom: 8px; }
+.bl-sous-titre { margin: 0 0 24px; color: var(--ink-2); }
+
+/* Les cartes : des fiches blanches en relief. Téléphone : à l'horizontale, la
+   vignette à gauche. À partir de 640 px : la couverture en haut, deux par
+   ligne, puis quatre à partir de 1024 px. */
+.bl-grille { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.bl-carte { border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
+.bl-carte:hover { translate: 0 -3px; }
+.bl-carte > a { box-sizing: border-box; display: flex; height: 100%; padding: 10px; border-radius: 24px; color: var(--ink); text-decoration: none; }
+.bl-vignette { flex: none; align-self: flex-start; width: 112px; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 15px; background: var(--sky-soft); }
+.bl-vignette img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.bl-carte-texte { display: flex; flex: 1; flex-direction: column; min-width: 0; padding: 4px 6px 2px 14px; }
+.bl-carte h2, .bl-carte h3 { margin: 8px 0 0; font-family: var(--text); font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.28; letter-spacing: 0; text-wrap-style: pretty; }
+/* L'extrait : deux lignes sur téléphone, trois au-delà. Ici le mot et sa
+   ponctuation restent en ligne (insécables) : un bloc en ligne gênerait la
+   coupe avec points de suspension. */
+.bl-extrait { display: -webkit-box; margin: 6px 0 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
+.bl .bl-extrait .num { display: inline; white-space: nowrap; }
+.bl-carte .bl-infos { margin-top: auto; padding-top: 10px; }
+
+/* « Voir les N autres articles » : un bouton ; ouvert, il disparaît et la
+   grille continue sans rupture. */
+.bl-suite { margin-top: 28px; }
+.bl-suite[open] { margin-top: 12px; }
+.bl-suite > summary { display: flex; gap: 8px; width: fit-content; max-width: 100%; margin: 0 auto; padding: 8px 24px; list-style: none; text-align: center; }
+.bl-suite > summary::-webkit-details-marker { display: none; }
+.bl-suite[open] > summary { display: none; }
+.bl-suite > summary svg { flex: none; }
+
+/* L'appel au simulateur : l'eau profonde, le bouton jaune (l'offre annuelle
+   de /tarifs, l'appel à l'essai des articles). */
+.bl-appel-place { margin-top: 44px; }
+.bl-appel { --focus: #FFFFFF; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 28px 24px 26px; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+.bl-appel p { margin: 0; }
+.bl-appel .bl-appel-titre { font-family: var(--display); font-size: clamp(1.4375rem, 3vw, 1.875rem); font-weight: var(--dw); line-height: 1.15; letter-spacing: -0.022em; }
+.bl-appel .bl-appel-texte { margin-top: 8px; font-size: 1rem; line-height: 1.55; color: var(--on-deep-2); }
+.bl-appel-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
+.bl-appel .btn { padding: 8px 26px; text-align: center; }
+.bl-appel-lien { display: inline-flex; align-items: center; min-height: 44px; border-radius: 6px; font-size: 1rem; font-weight: var(--tb); color: var(--paper); text-decoration: underline; text-underline-offset: 4px; }
+
+/* L'index de /blog : une fiche par série, tous les titres. */
+.bl-index { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 14px; }
+.bl-serie { padding: 20px 20px 10px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+.bl-serie h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
+/* Une zone de toucher de 44 px de haut qui ne change pas la hauteur du titre. */
+.bl-serie h3 a { display: inline-block; margin: -9px 0; padding: 9px 0; border-radius: 6px; color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.bl-serie h3 a:hover { color: var(--brand); }
+.bl-serie h3 span { padding: 2px 9px; border-radius: var(--r-pill); background: var(--plan-bg); font-size: 0.8125rem; line-height: 1.35; color: var(--plan); }
+.bl-serie ul { margin: 0; padding: 0; list-style: none; }
+.bl-serie li + li { border-top: 1px solid var(--line); }
+.bl-serie li a { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 0; border-radius: 6px; font-size: 0.9375rem; line-height: 1.35; color: var(--ink); text-decoration: none; }
+.bl-serie li a:hover { color: var(--brand); }
+.bl-serie li a > span + span { flex: none; font-size: 0.84375rem; color: var(--ink-3); }
+
+/* ───────── Pages de série : fil d'Ariane, titre, texte de la série ───────── */
+.bl-fil { font-size: 0.90625rem; color: var(--ink-2); }
+.bl-fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
+/* Une cible de 44 px de haut, sans changer la hauteur de la ligne. */
+.bl-fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.4); text-underline-offset: 4px; }
+.bl-fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
+.bl-fil [aria-current] { font-weight: var(--tb); color: var(--ink); }
+.bl-presentation { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 20px; }
+.bl-presentation .bl-intro { justify-items: start; }
+/* La série : une pastille blanche, comme en tête des articles. */
+.bl-pastille { display: inline-flex; align-items: center; padding: 4px 13px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
+.bl-presentation .bl-intro .lead { margin-top: 4px; }
+/* Le texte de la série : une fiche blanche, une colonne de lecture. */
+.bl-texte { max-width: 40rem; padding: 20px 20px 22px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
+.bl-texte strong { font-weight: var(--tb); color: var(--ink); }
+.bl-texte a { font-weight: 560; color: var(--brand); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.bl-texte a:hover { color: var(--ink); }
+.bl-texte strong a { font-weight: inherit; }
+.bl-presentation + .bl-series { margin-top: 28px; }
+
+/* ───────── Largeurs ───────── */
+/* Petits téléphones : la vignette cède de la place au titre. */
+@media (max-width: 359px) {
+  .bl-vignette { width: 88px; }
+  .bl-carte-texte { padding-left: 12px; }
+  .bl-carte h2, .bl-carte h3 { font-size: 1rem; }
+}
+@media (min-width: 560px) {
+  .bl-tete { padding: 108px 0 96px; }
+  .bl-series { display: flex; flex-wrap: wrap; }
+  .bl-series a { flex-wrap: nowrap; padding: 0 18px; border-radius: var(--r-pill); font-size: 0.96875rem; white-space: nowrap; }
+  .bl-appel { padding: 34px 36px; }
+  .bl-serie { padding: 24px 26px 12px; }
+  .bl-texte { padding: 26px 28px 28px; font-size: 1.0625rem; line-height: 1.65; }
+}
+@media (min-width: 640px) {
+  .bl-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .bl-suite[open] { margin-top: 18px; }
+  .bl-carte > a { flex-direction: column; padding: 8px; }
+  .bl-vignette { align-self: stretch; width: auto; border-radius: 17px; }
+  .bl-carte-texte { padding: 14px 10px 8px; }
+  .bl-carte h2, .bl-carte h3 { font-size: 1.125rem; }
+  .bl-extrait { -webkit-line-clamp: 3; line-clamp: 3; margin-top: 8px; }
+  .bl-carte .bl-infos { padding-top: 14px; }
+}
+/* Tablette : le compte à droite du titre ; la couverture de la une à gauche,
+   340 px de large (la largeur annoncée par `sizes` et par le préchargement). */
+@media (min-width: 768px) {
+  .wrap > .bl-intro { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 24px; }
+  .bl-une { grid-template-columns: 340px minmax(0, 1fr); }
+  .bl-une img { order: -1; }
+  .bl-une-texte { padding: 20px 30px 20px 34px; }
+  .bl-une-extrait { font-size: 1.125rem; }
+  .bl-appel { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px 36px; }
+}
+@media (min-width: 900px) {
+  .bl-tete { padding-top: 124px; }
+  .bl .bl-fin { padding-bottom: 204px; }
+  .bl::before, .bl::after { --p: 440px; --th: 54px; }
+  .bl::before { height: 112px; }
+  .bl::after { height: 60px; }
+  .bl-une-texte { padding: 24px 44px 24px 48px; }
+  .bl-appel { padding: 38px 44px; }
+}
+@media (min-width: 1024px) {
+  .bl-grille { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .bl-suite[open] { margin-top: 16px; }
+  .bl-index { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .bl-serie { padding: 22px 22px 10px; }
+  /* Page de série : le titre à gauche, la fiche du texte à droite. */
+  .bl-presentation { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; gap: 56px; margin-top: 26px; }
+  .bl-texte { max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bl-une, .bl-carte, .bl-series a { transition: none; }
+  .bl-une:hover, .bl-carte:hover { translate: none; }
+}
+/* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+   aux fiches et aux pastilles ; le décor du bas disparaît. */
+@media (forced-colors: active) {
+  .bl-champ input, .bl-resultats, .bl-vide, .bl-series a, .bl-etiquette, .bl-une, .bl-carte, .bl-appel, .bl-serie, .bl-serie h3 span, .bl-pastille, .bl-texte, .bl .chip { border: 1px solid CanvasText; }
+  .bl-series a[aria-current] { border-width: 3px; }
+  .bl::before, .bl::after { display: none; }
+}

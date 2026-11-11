@@ -13,3 +13,27 @@
 export function insecables(texte: string): string {
   return texte.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ');
 }
+
+/**
+ * Pages de liste du blog (phase 5c, MIGRATION.md § 9.ef) : même effet, sans
+ * changer un seul caractère du texte (période d'observation SEO). Un mot et la
+ * ponctuation qui le suit après une espace (? ! : ; / »), ou le guillemet ouvrant
+ * et le mot qui le suit, tiennent ensemble dans un <span class="num"> ; l'espace
+ * reste une espace, les balises sont laissées telles quelles.
+ *
+ * Même fonction que dans `pages/faq.astro` et `pages/blog/[slug].astro`, qui
+ * gardent leur copie (leur HTML ne bouge pas pendant la période d'observation).
+ */
+export const nouer = (html: string) =>
+  html
+    .split(/(<[^>]+>)/)
+    .map((morceau) =>
+      morceau.startsWith('<')
+        ? morceau
+        : morceau.replace(/(?:« )?[^\s«]+(?: [?!:;/»](?=[\s"')\].,]|$))+|« [^\s«]+/g, '<span class="num">$&</span>')
+    )
+    .join('');
+
+/** Un titre est du texte, pas du HTML : il est échappé avant d'être noué. */
+export const echapper = (texte: string) =>
+  texte.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

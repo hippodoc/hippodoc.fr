@@ -6528,6 +6528,61 @@ Google : seul l'habillage change. Un lot par gabarit.
   commence à 690 px du haut à 1 440 px (972 avant), à 1 033 px à 390 px (1 023 avant).
   `CLAUDE.md` dit encore que les styles `.callout-*` sont dans `global.css`.
 
+**Liste et séries** (`src/pages/blog/index.astro`, `src/pages/blog/serie/[series].astro`,
+`BlogCard.astro`, nouveau `BlogAppel.astro`)
+
+- **Ce qui ne change pas**, prouvé par script sur les 71 HTML : les 67 pages hors lot (les
+  48 articles compris) sont identiques à l'octet au build d'avant le lot, au nom de la
+  feuille commune près. Sur `/blog` et les trois pages de série, contre `main` : `title`,
+  description, canonique, balises sociales, les 11 blocs JSON-LD, H1, les 117 titres
+  (niveau, texte, `id`), les 395 liens (adresse, libellé, `rel`, `target`, `aria-current`,
+  attributs de mesure, dans l'ordre), les 26 `id`, les 226 éléments de mesure, les 108
+  images (`src`, `alt`, dimensions, `srcset`, `sizes`, `loading`), tous les attributs des
+  éléments de `<main>` hors `class`, l'ordre des blocs, les suites de texte (5 129 mots),
+  l'en-tête et le pied. Cartes : mêmes liens, titres et extraits, dans le même ordre.
+- **Recherche** : script de page et module inchangés (mêmes fichiers JS, mêmes noms), mêmes
+  identifiants. Essayée dans le navigateur à 390 et 1 440 px, avant et après, résultats
+  identiques : rien ne se charge avant le focus, « CARMF » (24 articles, 10 affichés),
+  « chèques vacances », « dsfu », résultats approchants, aucun résultat, Échap, Entrée
+  (ouvre le premier résultat), événement `hippodoc:blog-search`. Les résultats gardent les
+  classes utilitaires que le script leur donne ; la feuille des pages de liste les habille.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête `flottante` (comme en § 9.ee) ; la feuille des pages de
+  liste en plus de la feuille commune ; `role="list"` sur six listes sans puce ; des
+  `<span class="num">` (`nouer`, désormais aussi dans `src/lib/typo.ts`) gardent un mot et
+  le « ? » ou le « : » qui le suit sur une ligne (titres et extraits des cartes, index,
+  texte des séries) : sur `main`, « : la taxe de décembre » commençait une ligne.
+- **Habillage** (aucune classe utilitaire dans les deux gabarits ni dans les cartes). Le
+  ciel : titre, recherche en pastille, séries en pastilles qu'on enfonce (la page en cours
+  sur l'eau profonde), article à la une en grande fiche, couverture dedans (340 px à
+  partir de 768 px, comme l'annoncent `sizes` et le préchargement). Feuille sable : les
+  cartes, fiches blanches en relief (vignette à gauche sur téléphone, couverture en haut à
+  partir de 640 px, quatre par ligne à partir de 1 024 px), le pli « Voir les N autres
+  articles » en bouton, l'appel au simulateur sur l'eau profonde avec le bouton jaune.
+  Feuille ciel, sur `/blog` : l'index, une fiche par série. Pages de série : fil d'Ariane,
+  pastille, titre, et le texte de la série sur une fiche (à droite du titre à partir de
+  1 024 px ; 17 px, interligne 1,65, 65 à 73 caractères par ligne à 768 et 1 440 px). Deux
+  vagues au-dessus du pied. Les pastilles de série perdent leurs trois dégradés (violet,
+  orange, bleu) pour une seule teinte : le nom reste écrit.
+- **Feuilles** : une feuille à part, `src/styles/blog-liste.css`, importée par les deux
+  gabarits et servie à ces quatre pages seules (12,9 Ko, 3,4 Ko gzip) : en `<style>`
+  scopés, les cartes et chaque page auraient eu chacune la leur. Feuille commune 150 675 →
+  147 486 octets (25,8 Ko gzip ; 39 règles retirées, aucune ajoutée ; son nom change) :
+  `.blog-card-hover` et `.series-badge` quittent `global.css`. HTML de `/blog` : 23,7 →
+  22,1 Ko gzip. Aucune image de plus. `BlogCtaBand.astro` ne sert plus qu'à `/guide`.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px contre `main` et contre `/tarifs` ;
+  les quatre pages à douze largeurs, de 320 à 1 920 px, pli ouvert : aucun défilement
+  horizontal, aucune ponctuation seule en début de ligne ; texte à 200 % (`main` débordait
+  de 69 px à 390 px) et espacements WCAG 1.4.12 ; contrastes AA (le plus bas en petit
+  corps : 4,73:1, la phrase de l'appel sur l'eau profonde). Lighthouse mobile, médiane de
+  trois, avant puis après : article le plus lu 97 puis 97 (son HTML n'a pas bougé) ;
+  `/blog` 100 puis 100, série 100 puis 100, accessibilité et SEO 100. FCP et LCP de `/blog`
+  et des séries : 0,91 s puis 1,06 s, la feuille des pages de liste est une requête
+  bloquante de plus (même arbitrage que pour les articles : non mise en ligne).
+- **Vu, non traité** : les pages sont plus hautes (`/blog` 4 227 → 4 957 px à 1 440 px,
+  7 100 → 7 859 px à 390 px) : contenu sur 1 120 px au lieu de 1 400, index en fiches.
+  `blog-series.ts` (généré) garde ses classes de dégradé, que plus rien n'affiche.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

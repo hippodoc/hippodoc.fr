@@ -80,14 +80,8 @@
     100% { background-position: 200% center; }
   }
 
-  /* Blog Components */
-  .blog-card-hover {
-    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl;
-  }
-
-  .series-badge {
-    @apply px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide text-white border-0 shadow-lg backdrop-blur-sm;
-  }
+  /* Cartes et pastilles de série des pages de liste du blog : dans
+     `src/styles/blog-liste.css` depuis la phase 5c (MIGRATION.md § 9.ef). */
 
   /* Typographie des articles (titre, corps, liens, listes, tableaux) et encadrés
      `:::warning` / `:::tip` / `:::essentiel` : dans la feuille du gabarit
