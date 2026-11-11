@@ -15,7 +15,7 @@ export function insecables(texte: string): string {
 }
 
 /**
- * Pages de liste du blog (phase 5c, MIGRATION.md § 9.ef) : même effet, sans
+ * Pages de liste du blog (phase 5c, MIGRATION.md § 9.ej) : même effet, sans
  * changer un seul caractère du texte (période d'observation SEO). Un mot et la
  * ponctuation qui le suit après une espace (? ! : ; / »), ou le guillemet ouvrant
  * et le mot qui le suit, tiennent ensemble dans un <span class="num"> ; l'espace

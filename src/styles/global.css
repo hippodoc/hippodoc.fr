@@ -81,12 +81,12 @@
   }
 
   /* Cartes et pastilles de série des pages de liste du blog : dans
-     `src/styles/blog-liste.css` depuis la phase 5c (MIGRATION.md § 9.ef). */
+     `src/styles/blog-liste.css` depuis la phase 5c (MIGRATION.md § 9.ej). */
 
   /* Typographie des articles (titre, corps, liens, listes, tableaux) et encadrés
      `:::warning` / `:::tip` / `:::essentiel` : dans la feuille du gabarit
      d'article depuis la phase 5c (`src/pages/blog/[slug].astro`, MIGRATION.md
-     § 9.ef). Ces règles ne servaient qu'aux articles. */
+     § 9.ej). Ces règles ne servaient qu'aux articles. */
 }
 
 @keyframes fadeIn {

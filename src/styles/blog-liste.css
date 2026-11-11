@@ -1,6 +1,6 @@
 /* ==========================================================================
    Pages de liste du blog dans la DA 2026 : /blog et /blog/serie/* (phase 5c,
-   MIGRATION.md § 9.ef). Seul l'habillage a changé : textes, titres, liens,
+   MIGRATION.md § 9.ej). Seul l'habillage a changé : textes, titres, liens,
    ordre des blocs, JSON-LD et attributs de mesure sont ceux d'avant.
 
    Une feuille à part, importée par les deux gabarits (`pages/blog/index.astro`,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { reglesOr, pepitesCachees, zonesGrises, ficheThemeLabels, type FicheTheme, type CertitudeLevel } from '@/data/boussoleData';
 import { CertitudeBadge } from './CertitudeBadge';
-import { FormattedText } from './FormattedText';
+import { FormattedText, formatInline } from './FormattedText';
 import { CrossLinks } from './CrossLinks';
 import { ChevronDown, Lightbulb, Scale, Zap, Gem } from 'lucide-react';
 
@@ -167,11 +167,11 @@ export function FichesPratiquesSection() {
                           <div className="grid grid-cols-2 gap-2">
                             <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-100 dark:bg-blue-950/20 dark:border-blue-900/40">
                               <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">Position A</p>
-                              <p className="text-xs text-muted-foreground">{f.positionA}</p>
+                              <p className="text-xs text-muted-foreground">{formatInline(f.positionA)}</p>
                             </div>
                             <div className="p-3 rounded-lg bg-amber-50/60 border border-amber-100 dark:bg-amber-950/20 dark:border-amber-900/40">
                               <p className="text-xs font-medium text-amber-600 dark:text-amber-400 mb-1">Position B</p>
-                              <p className="text-xs text-muted-foreground">{f.positionB}</p>
+                              <p className="text-xs text-muted-foreground">{formatInline(f.positionB)}</p>
                             </div>
                           </div>
                         )}

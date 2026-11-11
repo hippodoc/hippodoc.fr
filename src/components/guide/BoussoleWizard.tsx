@@ -161,6 +161,11 @@ export function BoussoleWizard() {
   const [situations, setSituations] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<StepKey>('profil');
   const [isOther, setIsOther] = useState(false);
+  // Défilement vers l'étape : `reset` l'incrémente pour redemander un défilement quand
+  // l'étape ne change pas (« Recommencer » depuis l'étape profil).
+  const [scrollTick, setScrollTick] = useState(0);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const firstRender = useRef(true);
 
   // Apply preset on profil select : on REMPLACE les valeurs du preset (et on vide les autres).
   // U2 — on replace AUSSI `currentStep` au premier step utile, sinon un changement de profil
@@ -179,6 +184,37 @@ export function BoussoleWizard() {
     else setCurrentStep('situations');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProfil]);
+
+  // Un seul défilement par changement d'étape, quel que soit le chemin (choix d'un profil,
+  // d'un régime, « Continuer », « Retour », stepper, « Recommencer »). Il part APRÈS le rendu
+  // de la nouvelle étape (effet + image suivante) : avant, il visait `#profils` pendant que
+  // le contenu changeait, ou n'était pas demandé du tout (choix d'un profil), et le titre de
+  // l'étape finissait sous la barre de recherche collante. Cible : le haut de la carte
+  // (« Étape n / m » sur téléphone, puis le titre), placé sous l'en-tête et la barre mesurés
+  // sur place. Si le haut de la carte est déjà sous la barre et le titre de l'étape dans
+  // les deux tiers hauts de l'écran, la page ne bouge pas (cas du grand écran). Sans `behavior` : c'est `scroll-behavior`
+  // de `global.css` qui décide, donc pas d'animation sous `prefers-reduced-motion`.
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const raf = requestAnimationFrame(() => {
+      const card = cardRef.current;
+      if (!card) return;
+      const bar = document.querySelector<HTMLElement>('[role="search"]');
+      const barBottom = bar
+        ? (parseFloat(getComputedStyle(bar).top) || 0) + bar.offsetHeight
+        : 80;
+      const min = barBottom + 12;
+      const top = card.getBoundingClientRect().top;
+      const titre = card.querySelector('h3');
+      const basTitre = titre ? titre.getBoundingClientRect().bottom : top;
+      if (top >= min && basTitre <= (window.innerHeight * 2) / 3) return;
+      window.scrollTo({ top: window.scrollY + top - min });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [currentStep, scrollTick]);
 
   // Compute the dynamic flow of steps based on what's known
   // Audit final wizard (mai 2026) — P0 : flow DYNAMIQUE basé sur (preset, regime, typeActivite).
@@ -333,22 +369,13 @@ export function BoussoleWizard() {
     // Phase 12N — U7 : analytics
     trackEvent('guide_declarations_wizard_reset');
     // P8 : ramener la vue en haut du wizard pour un nouveau parcours fluide
-    if (typeof window !== 'undefined') {
-      requestAnimationFrame(() => {
-        document.getElementById('profils')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    }
+    // (défilement fait par l'effet `[currentStep, scrollTick]`).
+    setScrollTick(t => t + 1);
   };
 
   const goToStep = (s: StepKey) => {
+    // Le défilement vers la nouvelle étape est fait par l'effet `[currentStep, scrollTick]`.
     setCurrentStep(s);
-    // Ramène la vue en haut du wizard à chaque changement d'étape
-    // (sinon, sur mobile, on reste scrollé en bas et on rate le contenu de la nouvelle étape).
-    if (typeof window !== 'undefined') {
-      requestAnimationFrame(() => {
-        document.getElementById('profils')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    }
   };
 
   // Stepper labels
@@ -428,7 +455,7 @@ export function BoussoleWizard() {
         )}
 
         {/* Stepper */}
-        <div className="rounded-2xl bg-white/90 backdrop-blur border border-slate-200/60 shadow-lg overflow-hidden dark:bg-slate-800/80 dark:border-slate-700/60">
+        <div ref={cardRef} className="rounded-2xl bg-white/90 backdrop-blur border border-slate-200/60 shadow-lg overflow-hidden dark:bg-slate-800/80 dark:border-slate-700/60">
           {/* Mobile stepper compact (< sm) */}
           <div className="sm:hidden border-b border-slate-100 dark:border-slate-700 px-4 py-3">
             <div className="flex items-center justify-between mb-2">

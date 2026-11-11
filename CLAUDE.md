@@ -48,7 +48,7 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 
 L'accueil est entièrement dans la nouvelle direction artistique (MIGRATION.md § 9.eb),
 `/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai` aussi depuis la phase 5b (§ 9.ee), `/blog`, les
-pages de série et les 48 articles depuis la phase 5c (§ 9.ef). Depuis la phase 5a (§ 9.ed), l'en-tête, le
+pages de série et les 48 articles depuis la phase 5c (§ 9.ej). Depuis la phase 5a (§ 9.ed), l'en-tête, le
 pied, la police, la bannière cookies et la bulle de chat de la DA servent sur **toutes**
 les pages ; le contenu des autres pages intérieures garde ses classes Tailwind et ses
 couleurs (phases 5b à 5d).
