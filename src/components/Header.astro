@@ -29,8 +29,8 @@ interface Props {
   /** « flux » (par défaut, pages intérieures, qui n'ont pas de ciel) : la
       pastille garde ses 80 px en haut de la page, sur une bande de ciel qui
       part avec le défilement, puis reste collée en haut de l'écran.
-      « flottante » (accueil) : elle survole le premier bloc de la page, qui
-      lui réserve 88 px en haut. */
+      « flottante » (accueil, /tarifs) : elle survole le premier bloc de la
+      page, qui lui réserve 88 px en haut au moins. */
   variante?: 'flottante' | 'flux';
 }
 const { variante = 'flux' } = Astro.props;

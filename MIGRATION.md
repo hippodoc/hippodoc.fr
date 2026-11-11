@@ -6219,6 +6219,244 @@ sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`
   `landing_nav_comment_ca_marche` sur toutes les pages) et vérifier qu'aucun insight ne
   filtre encore sur `landing_nav_decouvrir` ou `landing_mobile_nav_decouvrir`.
 
+### 9.ee Phase 5b : les pages intérieures dans la DA (11 novembre 2026)
+
+> **Avant fusion (11 novembre 2026), deux retouches sur `/essai` (page noindex, hors période d'observation).** (1) Retiré : la note « 4.9/5 » et ses cinq étoiles, qui n'étaient adossées à aucune source. « +900 médecins nous font confiance » reste. (2) Bannière cookies sur téléphone, cette page seulement : texte et boutons inchangés, boutons côte à côte, 96 px de haut au lieu de 113 ; sur un écran de moins de 780 px de haut, les trois vignettes d'atouts (« Super-Net », « Statistiques », « Planning ») s'effacent tant que la bannière est affichée, puis reviennent. Mesuré : bouton d'inscription entièrement visible au-dessus de la bannière à 390 × 664 et 360 × 740 ; à 320 × 568 il reste sous le premier écran.
+
+
+Suite de § 9.ed. Période d'observation SEO : sur une page rhabillée, seul l'habillage
+change. Un lot par page.
+
+**`/tarifs`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 10 titres (niveau et texte),
+  les 6 liens du `<main>` et les 54 de la page (adresse et libellé, dans l'ordre), les
+  3 ancres (`internes-title`, `inclus-title`, `faq-tarifs-title`), les 4 blocs JSON-LD,
+  les 32 éléments de la page qui portent un attribut de mesure (dont `cta_signup_tarifs_mensuel`, `_annuel`,
+  `_bottom`), les 4 scripts, et le texte du `<main>` : 506 mots, mêmes suites de texte
+  entre balises de bloc, espaces comprises. Les 70 autres HTML du build sont identiques,
+  au nom de la feuille commune près. Aucun JS ajouté. `lastmod` de `/tarifs` non touché.
+- **Habillage** (`src/pages/tarifs.astro`, aucune classe Tailwind) : page entièrement dans
+  la DA, comme l'accueil (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color` du
+  ciel). Un bloc « ciel » : titre, puis trois fiches en relief dans l'ordre du HTML
+  (mensuel, annuel en bleu profond avec le bouton jaune, internes) ; une feuille sable :
+  les 17 inclus sur une fiche blanche, en colonnes ; une feuille ciel : les 5 questions en
+  plis `.qa` ; une fin : le soleil de l'accueil sur l'eau du pied de page, immobile.
+  Mascotte « qui présente » derrière la fiche des internes à partir de 1 024 px : les
+  fichiers de l'accueil, hors du flux, et elle plonge derrière la fiche quand l'en-tête
+  approche (même mécanique CSS).
+- **Dans le HTML, sans toucher au texte** : « ✓ » est dessiné en SVG, le caractère reste
+  dans le texte, masqué à l'œil (`sr`) ; des `<span class="num">` gardent sur une ligne un
+  prix ou un mot et le « : » ou le « ? » qui le suit ; « 10 € par mois » de la phrase des
+  internes est écrit en grand, seul sur sa ligne (même `<strong>`, même phrase) ;
+  `role="list"` sur les listes ; une image décorative (`alt=""`).
+- **Feuilles** : commune 174 197 → 173 841 octets (trois utilitaires que seule `/tarifs`
+  employait disparaissent, rien n'est ajouté ; son nom change, donc le `<link>` de toutes
+  les pages) ; feuille de l'accueil inchangée à l'octet ; nouvelle `tarifs.*.css`,
+  9 710 octets (2 433 gzip), servie à `/tarifs` seule. HTML de `/tarifs` : 13 975 →
+  14 117 octets gzip. Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  l'accueil ; 25 largeurs de 320 à 1 920 px sans défilement horizontal, chaque bouton sur
+  une ligne ; contrastes AA (le plus bas : 4,73:1, texte clair de l'offre annuelle) ;
+  clavier, plis, tiroir, bannière cookies, contrastes forcés. Lighthouse mobile, quatre
+  mesures : performance 96 à 100 (99 à 100 sur `main`, écart de mesure sur le temps de
+  blocage), accessibilité 100, SEO 100.
+- **Piège relevé** : rendre `accueil/Mascotte.astro` depuis `/tarifs` sortait son `<style>`
+  de la feuille de l'accueil (elle changeait de nom, et le HTML de l'accueil gagnait un
+  `<style>` en ligne). Le `<picture>` est écrit dans la page, par `getImage`, aux mêmes
+  largeurs.
+- **À valider** : l'ordre visuel des offres suit le HTML (mensuel, annuel, internes),
+  alors que l'accueil montre l'annuel en premier ; l'inverser à l'écran sans toucher au
+  HTML séparerait l'ordre de lecture de l'ordre affiché.
+
+**`/faq`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 11 titres du contenu (un H1,
+  un H2 par rubrique ; les questions restent des libellés), les 13 liens du contenu et
+  les 61 de la page (adresse et libellé, dans l'ordre), les 10 ancres de rubrique, les
+  3 blocs JSON-LD (les 32 questions du `FAQPage`), les 29 éléments porteurs d'un attribut
+  de mesure, les 4 scripts, et le texte : 1 625 mots, mêmes suites de texte entre balises
+  de bloc. Chaque rubrique reste un `<section id>` qui contient ses `<details>` dans
+  l'ordre (`faq_question_opened`). Les autres HTML du build sont identiques, au nom de la
+  feuille commune près. Aucun JS ajouté. La page n'avait ni sommaire ni `data-ph`.
+- **Habillage** (`src/pages/faq.astro`, aucune classe Tailwind, réponses comprises) : page
+  entièrement dans la DA (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color`). Un
+  ciel : fil d'Ariane, pastille « FAQ », titre à gauche, mascotte à la tablette debout
+  derrière la première feuille (les fichiers de l'accueil, à toutes les largeurs). Puis
+  une feuille par rubrique, sable et ciel en alternance : son nom et son dessin à gauche
+  (collant sur ordinateur, il suit la lecture d'une longue réponse), ses questions en
+  plis `.qa` à droite ; l'un sous l'autre sous 900 px. La fin : la question en grand,
+  le bouton jaune vers `/#pricing`, « Nous contacter », et le soleil sur l'eau du pied.
+- **Dans le HTML, sans toucher au texte** : un `<main>` (la page n'en avait pas) ; les
+  émojis sont dessinés en SVG, ou portés par les pastilles d'état de l'accueil pour les
+  quatre couleurs du calendrier, et restent dans le texte, masqués à l'œil (`sr`) ; des
+  `<span class="num">` gardent sur une ligne un mot et le « ? », le « : », le « ! » ou
+  le « / » qui le suit ; l'adresse de « Comment te contacter ? » est un bouton blanc ;
+  une image décorative (`alt=""`).
+- **Feuilles** : commune 173 841 → 172 720 octets (13 utilitaires que seule `/faq`
+  employait disparaissent, rien n'est ajouté ; son nom change) ; feuilles de l'accueil et
+  de `/tarifs` inchangées à l'octet ; nouvelle `faq.*.css`, 9 493 octets (2 391 gzip).
+  HTML de `/faq` : 21 688 → 21 367 octets gzip. Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px contre `main`, contre l'accueil et
+  contre `/tarifs`, plis fermés et ouverts ; 25 largeurs de 320 à 1 920 px, toutes
+  réponses ouvertes : aucun défilement horizontal, aucune ponctuation seule en début de
+  ligne, 14 px au moins entre le texte et la mascotte ; contrastes AA (le plus bas :
+  4,99:1, « Hippodoc » du titre) ; clavier, ancre `#tarifs`, tiroir, bannière cookies,
+  contrastes forcés. Lighthouse mobile, trois mesures : performance 99 à 100 (100 sur
+  `main` ; LCP 1,1 s contre 0,9 s, la feuille de la page est une requête de plus),
+  accessibilité 100, SEO 100.
+- **Longueur** : la page est plus haute, plis fermés (5 373 px contre 4 024 à 1 440 px,
+  6 434 contre 5 238 à 390 px) : chaque question est une fiche, chaque rubrique une
+  feuille.
+
+**`/qui-sommes-nous`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 20 titres de la page (niveau
+  et texte), les 16 liens du `<main>` et les 64 de la page (adresse et libellé, dans
+  l'ordre), les 8 ancres (`histoire`, `equipe`, `ryan-goburdhun`, `thomas-payet`,
+  `engagements`, `soutiens`, `internes`, `chiffres`), les 5 blocs JSON-LD, les 40 éléments
+  porteurs d'un attribut de mesure (`landing_partner_*`, `landing_about_*`,
+  `cta_signup_qui_sommes_nous`, `data-calendly="qui_sommes_nous"`), les 4 scripts, les
+  textes alternatifs, et le texte : 713 mots, mêmes suites de texte entre balises de bloc.
+  Les autres HTML du build sont identiques, au nom de la feuille commune près. Aucun JS
+  ajouté. Les chiffres restent ceux de la page (« 17 000+ » journées, quand l'accueil
+  dit « 24 200 »).
+- **Habillage** (`src/pages/qui-sommes-nous.astro`, aucune classe Tailwind) : page
+  entièrement dans la DA (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color`).
+  Huit blocs, dans l'ordre d'avant : un ciel (fil d'Ariane, pastille, titre, le portrait
+  penché du bloc fondateur de l'accueil et sa légende sur une étiquette d'encre) ; une
+  feuille sable (le récit, titre à gauche ; la citation sur une fiche bleu profond, sous
+  les guillemets jaunes des témoignages) ; une feuille ciel (l'équipe, deux fiches) ; une
+  feuille sable (les trois promesses, mascotte au pouce levé derrière les fiches) ; l'eau
+  profonde de « Sous la surface » (les soutiens, sur des fiches blanches) ; une feuille
+  ciel (syndicats et partenaires : les tuiles de `accueil/Partenaires.astro`) ; une feuille
+  sable (la définition, les quatre chiffres sur une fiche) ; la fin de `/tarifs` et `/faq`
+  (bouton jaune, trois portes de contact, soleil sur l'eau du pied).
+- **Dans le HTML, sans toucher au texte** : logos des syndicats, des partenaires et des
+  soutiens pris dans `src/assets/accueil/partenaires/` (fonds ramenés au blanc, rognés au
+  ras du dessin, AVIF et WebP) aux largeurs de l'accueil, à la place des fichiers de
+  `public/lovable-uploads/` ; leurs textes alternatifs restent ceux de la page. Portrait,
+  vignettes de l'équipe et photo de The Pitch : mêmes fichiers qu'avant. Dessins au trait
+  écrits dans la page (plus de `pages/Icon.astro` ici) ; la flèche du bouton de fin,
+  décorative, disparaît ; deux `<span class="num">` ; `role="list"` ; une image
+  décorative de plus (la mascotte, `alt=""`).
+- **Feuilles** : commune 172 720 → 171 013 octets (les utilitaires que seule cette page
+  employait disparaissent, rien n'est ajouté ; son nom change) ; feuilles de l'accueil,
+  de `/tarifs` et de `/faq` inchangées à l'octet ; nouvelle `qui-sommes-nous.*.css`,
+  20 214 octets (3 890 gzip). HTML : 17 569 → 17 488 octets gzip. Aucune image de plus
+  dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  l'accueil ; 28 largeurs de 320 à 1 920 px sans défilement horizontal ; contrastes AA
+  mesurés sur le rendu (le plus bas : 4,96:1, le chapeau des soutiens sur l'eau) ;
+  clavier, ancre `#thomas-payet`, contrastes forcés. Lighthouse mobile : performance 98
+  (99 sur `main`, LCP 2,3 s des deux côtés), accessibilité 100, SEO 100. Hauteur :
+  7 039 px contre 6 259 à 1 440 px, 9 255 contre 9 223 à 390 px.
+
+**`/essai`** (page de campagne, `noindex`, toujours sans l'en-tête ni le pied du site)
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, `noindex, nofollow`, balises sociales, H1, les 3 titres, les 12 liens
+  (adresse, libellé, `aria-label`, dans l'ordre), le bloc JSON-LD, `cta_signup_essai`,
+  les 3 scripts, et les mots de la page dans l'ordre, textes alternatifs compris. Les
+  autres HTML du build sont identiques, au nom de la feuille commune près. Aucun JS
+  ajouté. Les chiffres restent ceux de la page (« +900 », « 4.9/5 »).
+- **Un écart, voulu** : le logo est le mot seul, comme partout depuis la phase 5a. En
+  haut de page, « Hippodoc » est donc du texte, là où une image (l'icône au trait)
+  portait ce mot en texte alternatif ; en bas, c'est le buste de la mascotte qui porte
+  le texte alternatif « Hippodoc », à la place de la seconde icône.
+  `src/assets/hippodoc-logo.png` n'est plus employé (fichier laissé en place).
+- **Habillage** (`src/pages/essai.astro`, aucune classe Tailwind) : le ciel du premier
+  écran de l'accueil (`bodyClass="da-fond"`, `theme-color`) ; titre en grand, « vraiment »
+  sur du jaune (le Super-Net) ; trois petites fiches, la preuve sociale en ligne fine,
+  la fiche d'inscription et son bouton jaune épais ; puis la scène de l'accueil, immobile
+  (soleil, quatre couches d'eau, le buste de la mascotte : les fichiers de l'accueil, par
+  `accueil/buste.ts`), et le pied de la page dans l'eau profonde. Une colonne centrée ; à
+  partir de 1 024 px, le texte à gauche et la fiche d'inscription à droite, dans l'ordre
+  du HTML : le bouton d'inscription est à 464 px du haut à 1 440 px (770 avant), et à
+  748 px à 390 px (747 avant).
+- **Dans le HTML, sans toucher au texte** : un `<main>` (la page n'en avait pas) ; « 🎁 »
+  et « → » dessinés en SVG, le caractère reste dans le texte, masqué à l'œil (`sr`) ; les
+  points médians du pied aussi (il en restait un seul en bout de ligne) ; le « $ » du
+  dessin Super-Net devient un « € » ; le retour à la ligne du titre est rendu par un bloc
+  (derrière un `<br>`, le navigateur n'équilibre pas les lignes).
+- **Feuilles** : commune 171 013 → 167 613 octets (rien n'est ajouté ; son nom change) ;
+  autres feuilles inchangées à l'octet ; nouvelle `essai.*.css`, 13 368 octets (2 663
+  gzip). HTML : 11 367 → 10 897 octets gzip. Une image de moins dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  le premier écran de l'accueil ; 28 largeurs sans défilement horizontal, boutons sur
+  une ligne ; texte grossi à 200 % ; contrastes AA mesurés sur le rendu (le plus bas en
+  texte courant : 5,09:1 ; « doc » du logo, 22 px en gras : 3,31:1 pour un seuil de
+  3:1, comme dans l'en-tête du site) ; clavier, contrastes forcés. Lighthouse mobile : performance 100,
+  accessibilité 100, comme sur `main`.
+- **Vu, non traité** (déjà vrai sur `main`) : à la première visite sur téléphone, la
+  bannière cookies recouvre le bouton d'inscription ; le lien Instagram a un
+  `aria-label` qui ne reprend pas son libellé visible.
+
+**Après les trois relectures (direction artistique, invariance SEO, accessibilité)**
+
+Ce qui suit remplace, là où il diffère, ce qui est écrit plus haut pour chaque page.
+Preuve refaite contre le build de `main` sur les quatre pages : texte, titres, liens,
+ancres, JSON-LD, attributs de mesure et scripts identiques ; les 73 autres fichiers
+texte du build ne diffèrent que par le nom de la feuille commune.
+
+- **Deux écarts dans le HTML, tracés** : le `<head>` des quatre pages gagne
+  `<meta name="theme-color" content="#C9DEFF">` (le seul ajout ; il vient avec le fond
+  de la DA, l'accueil le portait déjà). Sur `/essai`, le logo du haut n'est plus du
+  texte : le mot est dessiné par la feuille de style dans un élément `role="img"` nommé
+  « Hippodoc », comme l'image qu'il remplace. Le texte de `/essai` est donc celui
+  d'avant au mot près (125 mots), l'écart « voulu » noté plus haut n'existe plus.
+- **Scène de fin** (`/tarifs`, `/faq`, `/qui-sommes-nous`) : le halo du soleil était
+  peint par-dessus les derniers boutons. Le texte passe devant le décor et le halo
+  commence 20 px après le dernier lien, à toutes les largeurs.
+- **`/faq`** : quatre feuilles au lieu de dix (sable : activité, revenus, planning ;
+  eau profonde : paiements, cotisations, documents ; ciel : mobile, sécurité ; sable :
+  tarifs, aide), les rubriques se suivent dans leur feuille. Chaque rubrique reste un
+  `<section id>` avec ses `<details>` ; la feuille est un `<div>` sans texte. Mascotte
+  au pouce levé à « Besoin d'aide ? » (fichiers de l'accueil). Plis moins hauts sur
+  téléphone. Hauteur, plis fermés : 5 725 px à 390 px (6 434 avant, 5 238 sur `main`),
+  6 676 px à 320 px (7 229 avant). À 320 px le chapô prend toute la largeur, la
+  mascotte se tient dessous. Le nom de rubrique collant existait déjà : le relevé
+  inverse venait d'une capture pleine page, où rien ne colle.
+- **`/tarifs`** : la mascotte sert aussi sous 1 024 px, à droite du titre « Inclus dans
+  toutes les offres », derrière la liste (second `<picture>` décoratif, masqué au-delà).
+  Plus de ligne réservée sous le prix (elle trouait l'offre annuelle) ; la note des
+  internes suit son texte ; titre des questions collant ; à 320 px le titre finit sur
+  « en annuel » (un `<span class="num">` de plus). Grille des offres bornée et prix des
+  internes sécable : plus de défilement horizontal avec les espacements de WCAG 1.4.12.
+  Contrastes forcés : les coches de l'offre annuelle reprennent la couleur du texte.
+- **`/qui-sommes-nous`** : chiffres plus petits sur téléphone et à 1 024 px, fiche non
+  rognée (« 17 000+ » était coupé avec les espacements 1.4.12) ; fiches de l'équipe à
+  leur hauteur ; légende du portrait contenue dans la photo, sur deux lignes ; portrait
+  centré sur téléphone ; lien « Meilisearch » avec une zone de toucher de 38 px (18 avant).
+- **`/essai`** : sur téléphone, ce qui précède la fiche d'inscription est resserré. Le
+  bouton est à 573–627 px du haut à 390 px de large (694–748 avant) : au-dessus de la
+  bannière cookies de première visite sur un écran de 780 px de haut. À 320 px les trois
+  atouts sont des pastilles d'une ligne ; coins de 24 px ; les fiches passent l'une sous
+  l'autre quand le texte grossit. **À valider** : sur téléphone, la bulle de chat
+  n'apparaît qu'après 380 px de défilement (animation CSS liée au défilement, sans
+  script ; navigateur sans cette fonction : bulle dès le haut, comme avant). Elle ne
+  touche plus ni le bouton ni le texte de la fiche, mais elle est absente du premier
+  écran.
+- **Titres** : deux jetons dans `da.css`, `--h1-page` (58 px au plus, les quatre pages)
+  et `--h2-fin` (52 px au plus : le titre de fin ne dépasse plus le `<h1>`). Mots en
+  couleur des `<h1>` : le bleu de « l'eau » de l'accueil (`--w4`, 4,3:1 sur le ciel, grand
+  texte).
+- **Texte en rem** sur les quatre pages (la DA pose ses corps en px : ils ne suivaient
+  plus la taille de police du navigateur). Avec une taille doublée, le texte courant
+  double et aucune page ne défile de côté de 320 à 1 280 px. L'accueil, l'en-tête et le
+  pied restent en px : à reprendre à part si on le souhaite.
+- **Feuilles** : commune 167 613 → 167 711 octets (les deux jetons, rien d'autre) ;
+  feuille de l'accueil inchangée à l'octet ; `tarifs` 11 633, `faq` 11 603,
+  `qui-sommes-nous` 20 972, `essai` 14 585 octets (2,7 à 4,1 Ko gzip). Cette seconde
+  feuille est une requête bloquante de plus par page : laissée en l'état, Lighthouse
+  mobile donne performance 98 à 100, accessibilité 100 sur les quatre pages.
+- **Non traité** : l'accueil a le même halo par-dessus son bouton de fin (hors du lot) ;
+  `/_astro/hippodoc-logo.*.webp` n'est plus produit (une copie en cache de l'ancienne
+  `/essai` afficherait un logo cassé).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

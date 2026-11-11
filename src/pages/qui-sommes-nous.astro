@@ -7,17 +7,53 @@
  *     `author` pointe ici : qui écrit, avec quelles sources, soutenu par qui.
  * Chaque information n'apparaît qu'une fois (pas de frise qui redise les soutiens,
  * pas de « 900+ » répété). Zéro JS client.
+ *
+ * Habillée dans la DA 2026 en phase 5b (MIGRATION.md § 9.ee) : seul l'habillage
+ * a changé. Textes, chiffres, titres, liens, ancres, ordre des blocs, JSON-LD et
+ * attributs de mesure sont ceux d'avant, au caractère près (période
+ * d'observation SEO), même là où l'accueil dit autre chose (« 17 000+ »
+ * journées ici, « 24 200 » sur l'accueil).
+ * - Page entièrement dans la DA, comme l'accueil, /tarifs et /faq : fond
+ *   `da-fond`, en-tête en variante « flottante ».
+ * - Huit blocs, dans l'ordre d'avant : le ciel (titre, portrait du bloc
+ *   fondateur de l'accueil), une feuille sable (le récit, la citation sur une
+ *   fiche bleu profond), une feuille ciel (l'équipe), une feuille sable (les
+ *   trois promesses, mascotte au pouce levé derrière les fiches), l'eau profonde
+ *   (les soutiens, comme « Sous la surface »), une feuille ciel (syndicats et
+ *   partenaires : les tuiles de accueil/Partenaires.astro), une feuille sable
+ *   (la définition et les quatre chiffres), puis le soleil sur l'eau du pied.
+ * - Aucune classe utilitaire ici : tout est dans le <style> de la page (une
+ *   feuille à part, servie à cette page seule) et dans da.css.
+ * - Logos des syndicats, des partenaires et des soutiens : les fichiers de
+ *   l'accueil (src/assets/accueil/partenaires/, fonds ramenés au blanc, rognés
+ *   au ras du dessin), aux mêmes largeurs : aucune image de plus dans le build.
+ *   Les textes alternatifs restent ceux de cette page.
+ * - Les dessins au trait (tracés Lucide) sont écrits ici : rendus par
+ *   pages/Icon.astro, ils n'auraient pas reçu les styles de la page.
+ * - Mascotte : le <picture> est écrit ici, sans accueil/Mascotte.astro (voir
+ *   tarifs.astro).
+ * - Corps de texte en rem (ils suivent la taille de police réglée dans le
+ *   navigateur).
  */
-import { Image, getImage } from 'astro:assets';
+import { Image, Picture, getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import Icon from '@/components/pages/Icon.astro';
 import { SITE_URL, APP_URL, PRODUCT_DEFINITION, CONTACT_EMAIL, CALENDLY_URL, SOCIALS } from '@/lib/site';
 import ryanPhoto from '@/assets/founders/ryan-goburdhun.jpeg';
 import thomasPhoto from '@/assets/founders/thomas-payet.jpeg';
 import pitchPhoto from '@/assets/about/ryan-the-pitch-deel-station-f.jpg';
+import pouce from '@/assets/accueil/mascotte-f-pouce.webp';
+import silr from '@/assets/accueil/partenaires/silr-logo.jpg';
+import crpImg from '@/assets/accueil/partenaires/crp-img-logo.png';
+import sioi from '@/assets/accueil/partenaires/sioi-logo.jpg';
+import aimgl from '@/assets/accueil/partenaires/aimgl-logo.png';
+import homedoc from '@/assets/accueil/partenaires/homedoc-logo-160.webp';
+import doctripper from '@/assets/accueil/partenaires/doctripper-logo.png';
+import regionIdf from '@/assets/accueil/partenaires/region-idf.png';
+import bpifrance from '@/assets/accueil/partenaires/bpifrance.png';
+import frenchCare from '@/assets/accueil/partenaires/french-care.png';
 
 const title = 'Hippodoc, créé par un médecin remplaçant — Qui sommes-nous';
 const description =
@@ -94,19 +130,19 @@ const promises = [
   },
 ] as const;
 
-type Partner = { name: string; full: string; place: string; url: string; logo?: string; w?: number; h?: number };
-
-const syndicats: Partner[] = [
-  { name: 'SILR', full: 'Syndicat des Internes du Languedoc-Roussillon', place: 'Montpellier', logo: '/lovable-uploads/silr-logo-160.webp', w: 160, h: 160, url: 'https://www.silr.fr/le-silr/nos-partenaires/' },
-  { name: 'CRP-IMG', full: 'Internes de médecine générale de Poitiers', place: 'Poitiers', logo: '/lovable-uploads/crp-img-logo.png', w: 300, h: 168, url: 'https://www.isnar-img.com/villes/poitiers-crp-img/' },
-  { name: 'SIOI', full: "Syndicat des Internes de l'Océan Indien", place: 'La Réunion', logo: '/lovable-uploads/sioi-logo.jpg', w: 501, h: 254, url: 'https://www.sioi974.fr/' },
-  { name: 'AIMGL', full: 'Association des Internes de Médecine Générale de Limoges', place: 'Limoges', logo: '/lovable-uploads/aimgl-logo-160.webp', w: 166, h: 160, url: 'https://www.aimgl.fr' },
+/* Syndicats et partenaires : noms, villes, descriptions et liens de cette page ;
+   logos, largeurs et calage (`h`, `l` : la part de la zone du logo qu'il peut
+   occuper, en pour cent) de accueil/Partenaires.astro. */
+const syndicats = [
+  { name: 'SILR', full: 'Syndicat des Internes du Languedoc-Roussillon', place: 'Montpellier', logo: silr, largeur: 112, h: 100, l: 100, url: 'https://www.silr.fr/le-silr/nos-partenaires/' },
+  { name: 'CRP-IMG', full: 'Internes de médecine générale de Poitiers', place: 'Poitiers', logo: crpImg, largeur: 168, h: 100, l: 76, url: 'https://www.isnar-img.com/villes/poitiers-crp-img/' },
+  { name: 'SIOI', full: "Syndicat des Internes de l'Océan Indien", place: 'La Réunion', logo: sioi, largeur: 186, h: 100, l: 84, url: 'https://www.sioi974.fr/' },
+  { name: 'AIMGL', full: 'Association des Internes de Médecine Générale de Limoges', place: 'Limoges', logo: aimgl, largeur: 116, h: 100, l: 100, url: 'https://www.aimgl.fr' },
 ];
 
-/** Sans `logo`, la tuile affiche l'initiale du partenaire. */
-const partenaires: Partner[] = [
-  { name: 'HomeDoc', full: 'Le logement des internes en médecine', place: 'Partout en France', logo: '/lovable-uploads/homedoc-logo-160.webp', w: 147, h: 160, url: 'https://homedoc.fr' },
-  { name: 'Doctripper', full: 'Plateforme de remplacements médicaux', place: 'Partout en France', logo: '/lovable-uploads/doctripper-logo.png', w: 1127, h: 1183, url: 'https://doctripper.com' },
+const partenaires = [
+  { name: 'HomeDoc', full: 'Le logement des internes en médecine', logo: homedoc, largeur: 52, url: 'https://homedoc.fr' },
+  { name: 'Doctripper', full: 'Plateforme de remplacements médicaux', logo: doctripper, largeur: 54, url: 'https://doctripper.com' },
 ];
 
 const stats = [
@@ -125,43 +161,71 @@ const stats = [
 const testimonials: { name: string; role: string; quote: string }[] = [];
 
 const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+
+/* Dessins au trait (tracés Lucide, ceux de pages/Icon.astro). */
+const TRACES = {
+  linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+  code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  'file-check': '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/>',
+  'shield-check': '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>',
+  'map-pin': '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  'calendar-check': '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>',
+  calendar: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  instagram: '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>',
+};
+const picto = (nom: keyof typeof TRACES, taille = 18) =>
+  `<svg width="${taille}" height="${taille}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${TRACES[nom]}</svg>`;
+
+/* La mascotte au pouce levé : mêmes largeurs et mêmes formats que dans
+   accueil/TroisCases.astro, donc les mêmes fichiers. */
+const [mascotteAvif, mascotteWebp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) => getImage({ src: pouce, format, width: 230, widths: [150, 230, 300, 460] }))
+);
+const TAILLES_MASCOTTE = '(min-width: 900px) 170px, 104px';
 ---
 
-<BaseLayout title={title} description={description} path="/qui-sommes-nous" jsonLd={[breadcrumbSchema, aboutSchema, ryanSchema, thomasSchema]}>
-  <Header />
+<BaseLayout title={title} description={description} path="/qui-sommes-nous" jsonLd={[breadcrumbSchema, aboutSchema, ryanSchema, thomasSchema]} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
 
-  <main class="flex-1 bg-white">
-    <!-- Héros : une question, une phrase, un visage -->
-    <section class="da-sous-entete relative overflow-hidden bg-gradient-to-br from-hippo-50 via-white to-hippo-100/60">
-      <div class="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-hippo-200/40 blur-3xl"></div>
-      <div class="container relative max-w-6xl px-4 pb-16 pt-8 md:pb-24">
-        <nav aria-label="Fil d'Ariane" class="mb-10 text-sm text-muted-foreground">
-          <ol class="flex flex-wrap items-center gap-1">
-            <li><a href="/" class="inline-flex min-h-6 items-center hover:text-hippo-600">Accueil</a></li>
+  <main>
+    <!-- Le ciel : une question, une phrase, un visage -->
+    <section class="tete da-bloc">
+      <div class="wrap">
+        <nav aria-label="Fil d'Ariane" class="fil">
+          <ol role="list">
+            <li><a href="/">Accueil</a></li>
             <li aria-hidden="true">›</li>
-            <li class="text-foreground" aria-current="page">Qui sommes-nous</li>
+            <li aria-current="page">Qui sommes-nous</li>
           </ol>
         </nav>
 
-        <div class="grid items-center gap-12 md:grid-cols-[1.4fr_1fr]">
-          <div>
-            <p class="mb-4 text-sm font-semibold uppercase tracking-wider text-hippo-600">Qui sommes-nous</p>
-            <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-hippo-900 md:text-5xl">
-              Hippodoc est né d'une question : <span class="text-hippo-600">«&nbsp;combien je gagne vraiment&nbsp;?&nbsp;»</span>
+        <div class="haut">
+          <div class="intro">
+            <p class="marque">Qui sommes-nous</p>
+            {/* Les <span class="num"> de la page ne changent pas le texte : ils gardent sur
+                 une ligne un mot et le « : » ou le « ? » qui le suit. */}
+            <h1 class="aff">
+              Hippodoc est né d'une <span class="num">question :</span> <span class="q">«&nbsp;combien je gagne vraiment&nbsp;?&nbsp;»</span>
             </h1>
-            <p class="max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+            <p class="lead">
               Un médecin remplaçant et un expert de la tech ont construit l'outil qui te dit, à tout moment, ce que tu as gagné, ce que tu dois mettre de côté et ce qui te reste.
             </p>
           </div>
 
-          <figure class="mx-auto w-full max-w-xs">
-            <div class="relative">
-              <div class="absolute -inset-3 rotate-3 rounded-[2rem] bg-hippo-200/60"></div>
-              <Image src={ryanPhoto} alt="Dr Ryan Goburdhun, médecin généraliste remplaçant et fondateur d'Hippodoc" width={320} height={320} widths={[320, 640]} sizes="320px" loading="eager" class="relative aspect-square w-full rounded-[2rem] object-cover shadow-xl" />
-            </div>
-            <figcaption class="mt-6 text-center">
-              <span class="block font-semibold text-hippo-900">Dr Ryan Goburdhun</span>
-              <span class="block text-sm text-muted-foreground">Médecin généraliste remplaçant, fondateur</span>
+          {/* Le portrait du bloc fondateur de l'accueil : même image, même cadre penché. */}
+          <figure class="portrait">
+            <Image src={ryanPhoto} alt="Dr Ryan Goburdhun, médecin généraliste remplaçant et fondateur d'Hippodoc" width={320} height={320} widths={[320, 640]} sizes="320px" loading="eager" />
+            <figcaption>
+              <span>Dr Ryan Goburdhun</span>
+              <span>Médecin généraliste remplaçant, fondateur</span>
             </figcaption>
           </figure>
         </div>
@@ -169,75 +233,85 @@ const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
     </section>
 
     <!-- L'histoire, à la première personne (reprise du pitch de Ryan) -->
-    <section class="py-16 md:py-24" aria-labelledby="histoire">
-      <div class="container max-w-3xl px-4">
-        <h2 id="histoire" class="mb-8 text-3xl font-bold text-hippo-900 md:text-4xl">L'histoire, racontée par Ryan</h2>
-        <div class="space-y-5 text-lg leading-relaxed text-foreground/85">
-          <p>
-            <strong class="text-foreground">J'adore mon métier.</strong> Mais en commençant à remplacer, j'ai vite compris que le plus compliqué, ce n'était pas la médecine : c'était de savoir <strong class="text-foreground">où j'en étais financièrement</strong>. Chaque cabinet a son taux de rétrocession, ses délais, ses habitudes. L'URSSAF tombe sans prévenir, la CARMF est à anticiper, le choix micro-BNC ou réel à trancher…
-          </p>
-          <p>
-            Le piège, c'est que les cotisations et les impôts arrivent tard, parfois calculés sur les revenus d'il y a un ou deux ans. On peut donc avoir de l'argent sur son compte alors qu'une partie n'est déjà plus vraiment à nous. Elle n'a juste pas encore été prélevée.
-          </p>
+    <section class="band da-bloc" aria-labelledby="histoire">
+      <div class="wrap deux">
+        <div class="band-head">
+          <h2 id="histoire">L'histoire, racontée par Ryan</h2>
         </div>
+        <div class="recit">
+          <div class="para">
+            <p>
+              <strong>J'adore mon métier.</strong> Mais en commençant à remplacer, j'ai vite compris que le plus compliqué, ce n'était pas la médecine : c'était de savoir <strong>où j'en étais financièrement</strong>. Chaque cabinet a son taux de rétrocession, ses délais, ses habitudes. L'URSSAF tombe sans prévenir, la CARMF est à anticiper, le choix micro-BNC ou réel à trancher…
+            </p>
+            <p>
+              Le piège, c'est que les cotisations et les impôts arrivent tard, parfois calculés sur les revenus d'il y a un ou deux ans. On peut donc avoir de l'argent sur son compte alors qu'une partie n'est déjà plus vraiment à nous. Elle n'a juste pas encore été prélevée.
+            </p>
+          </div>
 
-        <blockquote class="my-10 border-l-4 border-hippo-500 pl-6">
-          <p class="text-2xl font-semibold leading-snug text-hippo-800 md:text-3xl">
-            «&nbsp;Quand le stress financier entre dans la pièce avec le patient, ce n'est plus seulement un problème d'argent. Ça devient un problème de soin.&nbsp;»
-          </p>
-        </blockquote>
+          {/* La citation : une fiche bleu profond, les guillemets de l'accueil (décor). */}
+          <blockquote class="cite">
+            <span class="guillemets" aria-hidden="true">
+              <svg viewBox="0 0 40 28" width="26" height="18" fill="currentColor"><path d="M0 28V16.4C0 7.3 4.8 1.7 14.4 0l1.7 4.3c-4.4 1.2-6.7 3.9-7 8H16V28Zm23.3 0V16.4c0-9.1 4.8-14.7 14.4-16.4l1.7 4.3c-4.4 1.2-6.7 3.9-7 8h6.9V28Z"/></svg>
+            </span>
+            <p class="aff">
+              «&nbsp;Quand le stress financier entre dans la pièce avec le patient, ce n'est plus seulement un problème d'argent. Ça devient un problème de soin.&nbsp;»
+            </p>
+          </blockquote>
 
-        <div class="space-y-5 text-lg leading-relaxed text-foreground/85">
-          <p>
-            En en parlant autour de moi, j'ai compris que je n'étais pas le seul : tout le monde bricolait avec un tableur, des notes iPhone et beaucoup d'inquiétude.
-          </p>
-          <p>
-            Comme je code aussi, je pouvais construire la solution. Médecin le jour, développeur la nuit, j'ai écrit les premières lignes d'<strong class="text-foreground">Hippodoc</strong> en 2023, puis je l'ai ouvert aux premiers remplaçants en 2024 : l'outil que j'aurais voulu avoir dès mon premier remplacement.
-          </p>
-          <p>
-            Je remplace toujours, et beaucoup d'idées d'Hippodoc viennent de là, ou des questions que m'envoient les internes.
-          </p>
+          <div class="para">
+            <p>
+              En en parlant autour de moi, j'ai compris que je n'étais pas le seul : tout le monde bricolait avec un tableur, des notes iPhone et beaucoup d'inquiétude.
+            </p>
+            <p>
+              Comme je code aussi, je pouvais construire la solution. Médecin le jour, développeur la nuit, j'ai écrit les premières lignes d'<strong>Hippodoc</strong> en 2023, puis je l'ai ouvert aux premiers remplaçants en 2024 : l'outil que j'aurais voulu avoir dès mon premier remplacement.
+            </p>
+            <p>
+              Je remplace toujours, et beaucoup d'idées d'Hippodoc viennent de là, ou des questions que m'envoient les internes.
+            </p>
+          </div>
+          <p class="signe">— Ryan</p>
         </div>
-        <p class="mt-8 font-semibold text-hippo-800">— Ryan</p>
       </div>
     </section>
 
     <!-- L'équipe -->
-    <section class="bg-hippo-50/50 py-16 md:py-24" aria-labelledby="equipe">
-      <div class="container max-w-5xl px-4">
-        <h2 id="equipe" class="mb-12 text-center text-3xl font-bold text-hippo-900 md:text-4xl">L'équipe</h2>
+    <section class="band air da-bloc" aria-labelledby="equipe">
+      <div class="wrap">
+        <div class="band-head">
+          <h2 id="equipe">L'équipe</h2>
+        </div>
 
-        <div class="grid gap-8 md:grid-cols-2">
-          <article id="ryan-goburdhun" class="scroll-mt-24 rounded-2xl border border-hippo-100 bg-white p-6 shadow-sm md:p-8">
-            <div class="mb-6 flex items-center gap-4">
-              <Image src={ryanPhoto} alt="" width={80} height={80} widths={[80, 160]} sizes="80px" class="h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-hippo-50" />
-              <div class="min-w-0">
-                <h3 class="text-xl font-bold text-hippo-900">Dr Ryan Goburdhun</h3>
-                <p class="text-sm font-medium text-hippo-700">Médecin généraliste remplaçant · Fondateur</p>
-                <a href="https://www.linkedin.com/in/ryangbd/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Ryan Goburdhun" class="mt-1 inline-flex min-h-6 items-center gap-1.5 text-sm text-hippo-600 hover:text-hippo-800">
-                  <Icon name="linkedin" class="h-4 w-4" /> LinkedIn
+        <div class="membres">
+          <article id="ryan-goburdhun" class="membre">
+            <div class="membre-top">
+              <Image src={ryanPhoto} alt="" width={80} height={80} widths={[80, 160]} sizes="80px" />
+              <div class="qui">
+                <h3>Dr Ryan Goburdhun</h3>
+                <p class="role">Médecin généraliste remplaçant · Fondateur</p>
+                <a href="https://www.linkedin.com/in/ryangbd/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Ryan Goburdhun" class="lk">
+                  <Fragment set:html={picto('linkedin', 16)} /> LinkedIn
                 </a>
               </div>
             </div>
-            <ul class="space-y-3 text-sm leading-relaxed text-muted-foreground">
-              <li class="flex gap-3"><Icon name="code" class="mt-0.5 h-4 w-4 shrink-0 text-hippo-600" /><span>Conçoit et développe l'application.</span></li>
-              <li class="flex gap-3"><Icon name="file-check" class="mt-0.5 h-4 w-4 shrink-0 text-hippo-600" /><span>Écrit les <a href="/blog" class="font-medium text-hippo-600 underline-offset-2 hover:underline">{articleCount} articles du blog</a> et les guides, à partir des textes officiels.</span></li>
+            <ul class="faits" role="list">
+              <li><Fragment set:html={picto('code')} /><span>Conçoit et développe l'application.</span></li>
+              <li><Fragment set:html={picto('file-check')} /><span>Écrit les <a href="/blog" class="lien">{articleCount} articles du blog</a> et les guides, à partir des textes officiels.</span></li>
             </ul>
           </article>
 
-          <article id="thomas-payet" class="scroll-mt-24 rounded-2xl border border-hippo-100 bg-white p-6 shadow-sm md:p-8">
-            <div class="mb-6 flex items-center gap-4">
-              <Image src={thomasPhoto} alt="" width={80} height={80} widths={[80, 160]} sizes="80px" class="h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-hippo-50" />
-              <div class="min-w-0">
-                <h3 class="text-xl font-bold text-hippo-900">Thomas Payet</h3>
-                <p class="text-sm font-medium text-hippo-700">Direction technique · COO de <a href="https://www.meilisearch.com/" target="_blank" rel="noopener noreferrer" class="underline-offset-2 hover:underline">Meilisearch</a></p>
-                <a href="https://www.linkedin.com/in/tpayet/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Thomas Payet" class="mt-1 inline-flex min-h-6 items-center gap-1.5 text-sm text-hippo-600 hover:text-hippo-800">
-                  <Icon name="linkedin" class="h-4 w-4" /> LinkedIn
+          <article id="thomas-payet" class="membre">
+            <div class="membre-top">
+              <Image src={thomasPhoto} alt="" width={80} height={80} widths={[80, 160]} sizes="80px" />
+              <div class="qui">
+                <h3>Thomas Payet</h3>
+                <p class="role">Direction technique · COO de <a href="https://www.meilisearch.com/" target="_blank" rel="noopener noreferrer">Meilisearch</a></p>
+                <a href="https://www.linkedin.com/in/tpayet/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de Thomas Payet" class="lk">
+                  <Fragment set:html={picto('linkedin', 16)} /> LinkedIn
                 </a>
               </div>
             </div>
-            <p class="text-sm leading-relaxed text-muted-foreground">
-              «&nbsp;Chez Meilisearch, on construit des outils utilisés par des millions de personnes. Quand Ryan m'a montré comment un médecin gère ses finances, j'ai été surpris : aucune vision en temps réel, aucune estimation fiable des cotisations, zéro automatisation. J'ai rejoint Hippodoc en 2024 pour apporter une tech <strong class="text-foreground">solide, précise et simple</strong> à utiliser.&nbsp;»
+            <p class="mot">
+              «&nbsp;Chez Meilisearch, on construit des outils utilisés par des millions de personnes. Quand Ryan m'a montré comment un médecin gère ses finances, j'ai été surpris : aucune vision en temps réel, aucune estimation fiable des cotisations, zéro automatisation. J'ai rejoint Hippodoc en 2024 pour apporter une tech <strong>solide, précise et simple</strong> à utiliser.&nbsp;»
             </p>
           </article>
         </div>
@@ -245,17 +319,24 @@ const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
     </section>
 
     <!-- Nos engagements -->
-    <section class="py-16 md:py-24" aria-labelledby="engagements">
-      <div class="container max-w-5xl px-4">
-        <h2 id="engagements" class="mb-12 text-center text-3xl font-bold text-hippo-900 md:text-4xl">Ce qu'on te promet</h2>
-        <div class="grid gap-8 md:grid-cols-3">
+    <section class="band da-bloc" aria-labelledby="engagements">
+      <div class="wrap">
+        <div class="tenue">
+          <h2 id="engagements">Ce qu'on te promet</h2>
+          {/* Décor : elle lève le pouce, debout derrière les fiches. */}
+          <picture class="guide">
+            <source type="image/avif" srcset={mascotteAvif.srcSet.attribute} sizes={TAILLES_MASCOTTE} />
+            <img src={mascotteWebp.src} srcset={mascotteWebp.srcSet.attribute} sizes={TAILLES_MASCOTTE} alt="" width={mascotteWebp.attributes.width} height={mascotteWebp.attributes.height} loading="lazy" decoding="async" />
+          </picture>
+        </div>
+        <div class="promesses">
           {promises.map((p) => (
-            <div class="text-center">
-              <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-hippo-600 text-white">
-                <Icon name={p.icon} class="h-6 w-6" />
+            <div class="promesse">
+              <div class="rond">
+                <Fragment set:html={picto(p.icon, 24)} />
               </div>
-              <h3 class="mb-2 font-semibold text-hippo-900">{p.title}</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground">{p.text}</p>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
             </div>
           ))}
         </div>
@@ -263,49 +344,51 @@ const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
     </section>
 
     <!-- Soutiens : ce qui s'est réellement passé, pas seulement des logos -->
-    <section class="bg-hippo-900 py-16 text-white md:py-24" aria-labelledby="soutiens">
-      <div class="container max-w-6xl px-4">
-        <h2 id="soutiens" class="mb-3 text-center text-3xl font-bold md:text-4xl">Ils ont examiné Hippodoc de près</h2>
-        <p class="mx-auto mb-12 max-w-2xl text-center text-lg text-hippo-100">
-          Un dossier, un jury, des questions difficiles. Voici ceux qui ont dit oui.
-        </p>
+    <section class="fond da-bloc" aria-labelledby="soutiens">
+      <div class="wrap">
+        <div class="band-head">
+          <h2 id="soutiens">Ils ont examiné Hippodoc de près</h2>
+          <p class="lead">
+            Un dossier, un jury, des questions difficiles. Voici ceux qui ont dit oui.
+          </p>
+        </div>
 
-        <article class="grid overflow-hidden rounded-3xl bg-white text-foreground shadow-lg lg:grid-cols-[1.3fr_1fr]">
-          <Image src={pitchPhoto} alt="Ryan Goburdhun présente Hippodoc sur la scène de The Pitch by Deel, à Station F" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 660px, 100vw" class="aspect-[3/2] h-full w-full object-cover" />
-          <div class="flex flex-col justify-center p-6 md:p-10">
-            <p class="mb-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-hippo-700">
-              <Icon name="mic" class="h-4 w-4" /> 13 avril 2026 · Station F, Paris
+        <article class="scene">
+          <Image src={pitchPhoto} alt="Ryan Goburdhun présente Hippodoc sur la scène de The Pitch by Deel, à Station F" widths={[480, 800, 1200]} sizes="(min-width: 900px) 640px, 100vw" />
+          <div class="scene-copy">
+            <p class="quand">
+              <Fragment set:html={picto('mic', 15)} /> 13 avril 2026 · Station F, Paris
             </p>
-            <h3 class="mb-4 text-2xl font-bold text-hippo-900">The Pitch by Deel : top 3&nbsp;% des candidatures</h3>
-            <p class="leading-relaxed text-muted-foreground">
+            <h3>The Pitch by <span class="num">Deel :</span> top 3&nbsp;% des candidatures</h3>
+            <p>
               Des milliers de jeunes entreprises ont candidaté dans le monde à ce concours international. Hippodoc a été retenu pour la finale de Paris, et Ryan a présenté le projet sur scène, en anglais, devant un jury d'investisseurs.
             </p>
           </div>
         </article>
 
-        <div class="mt-6 grid gap-6 md:grid-cols-2">
-          <article class="flex gap-5 rounded-2xl bg-white p-6 text-foreground shadow-lg">
-            <div class="flex w-28 shrink-0 flex-col items-center justify-center gap-3">
-              <img src="/lovable-uploads/region-idf-112.webp" alt="Région Île-de-France" width="114" height="56" loading="lazy" class="h-12 w-auto" />
-              <img src="/lovable-uploads/bpi-112.webp" alt="Bpifrance" width="103" height="48" loading="lazy" class="h-10 w-auto" />
+        <div class="appuis">
+          <article class="appui">
+            <div class="plaque">
+              <Picture src={regionIdf} formats={['avif', 'webp']} fallbackFormat="webp" width={105} widths={[105, 210]} sizes="105px" alt="Région Île-de-France" style="--h:26px" loading="lazy" decoding="async" />
+              <Picture src={bpifrance} formats={['avif', 'webp']} fallbackFormat="webp" width={88} widths={[88, 176]} sizes="88px" alt="Bpifrance" style="--h:28px" loading="lazy" decoding="async" />
             </div>
             <div>
-              <p class="mb-1 text-xs font-semibold uppercase tracking-wider text-hippo-700">Novembre 2025</p>
-              <h3 class="mb-2 text-lg font-bold text-hippo-900">Lauréat Innov'Up</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground">
+              <p class="quand">Novembre 2025</p>
+              <h3>Lauréat Innov'Up</h3>
+              <p>
                 La subvention d'innovation de la Région Île-de-France, instruite par Bpifrance, a financé le développement de l'application.
               </p>
             </div>
           </article>
 
-          <article class="flex gap-5 rounded-2xl bg-white p-6 text-foreground shadow-lg">
-            <div class="flex w-28 shrink-0 items-center justify-center">
-              <img src="/lovable-uploads/french-care-160.webp" alt="La French Care" width="79" height="80" loading="lazy" class="h-20 w-auto" />
+          <article class="appui">
+            <div class="plaque">
+              <Picture src={frenchCare} formats={['avif', 'webp']} fallbackFormat="webp" width={39} widths={[39, 78]} sizes="39px" alt="La French Care" style="--h:66px" loading="lazy" decoding="async" />
             </div>
             <div>
-              <p class="mb-1 text-xs font-semibold uppercase tracking-wider text-hippo-700">Depuis 2025</p>
-              <h3 class="mb-2 text-lg font-bold text-hippo-900">Membre de La French Care</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground">
+              <p class="quand">Depuis 2025</p>
+              <h3>Membre de La French Care</h3>
+              <p>
                 Le réseau des acteurs de l'innovation en santé en France, porté avec Bpifrance.
               </p>
             </div>
@@ -315,69 +398,69 @@ const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
     </section>
 
     <!-- Aux côtés des internes -->
-    <section class="py-16 md:py-24" aria-labelledby="internes">
-      <div class="container max-w-5xl px-4">
-        <h2 id="internes" class="mb-3 text-center text-3xl font-bold text-hippo-900 md:text-4xl">Aux côtés des internes, partout en France</h2>
-        <p class="mx-auto mb-12 max-w-2xl text-center text-lg text-muted-foreground">
-          Ces syndicats d'internes ont signé une convention avec Hippodoc pour accompagner leurs adhérents dans leurs premiers remplacements.
-        </p>
+    <section class="band air da-bloc" aria-labelledby="internes">
+      <div class="wrap">
+        <div class="band-head">
+          <h2 id="internes">Aux côtés des internes, partout en France</h2>
+          <p class="lead">
+            Ces syndicats d'internes ont signé une convention avec Hippodoc pour accompagner leurs adhérents dans leurs premiers remplacements.
+          </p>
+        </div>
 
-        <ul class="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <ul class="synd" role="list">
           {syndicats.map((p) => (
             <li>
-              <a href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${slug(p.name)}`} class="flex h-full flex-col items-center rounded-2xl border border-hippo-100 bg-white p-4 text-center transition-shadow hover:shadow-md">
-                <span class="mb-3 flex h-20 w-full items-center justify-center">
-                  <img src={p.logo} alt={`${p.name} — ${p.full}`} width={p.w} height={p.h} loading="lazy" class="max-h-16 max-w-full object-contain" />
+              <a href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${slug(p.name)}`} class="tile">
+                <span class="logo" style={`--h:${p.h}%;--l:${p.l}%`}>
+                  <Picture src={p.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={p.largeur} widths={[p.largeur, 2 * p.largeur]} sizes={`${p.largeur}px`} alt={`${p.name} — ${p.full}`} loading="lazy" decoding="async" />
                 </span>
-                <span class="font-semibold text-hippo-900">{p.name}</span>
-                <span class="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground">
-                  <Icon name="map-pin" class="h-3 w-3" /> {p.place}
+                <span class="nom">{p.name}</span>
+                <span class="ville">
+                  <Fragment set:html={picto('map-pin', 14)} /> {p.place}
                 </span>
               </a>
             </li>
           ))}
         </ul>
 
-        <h3 class="mb-4 mt-12 text-center text-sm font-semibold uppercase tracking-wider text-hippo-700">Et des partenaires pensés pour les jeunes médecins</h3>
-        <ul class="mx-auto grid max-w-xl gap-4 sm:grid-cols-2">
+        <h3 class="suite">Et des partenaires pensés pour les jeunes médecins</h3>
+        <ul class="parts" role="list">
           {partenaires.map((p) => (
             <li>
-              <a href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${slug(p.name)}`} class="flex h-full items-center gap-4 rounded-2xl border border-hippo-100 bg-white p-4 transition-shadow hover:shadow-md">
-                <span class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-hippo-50">
-                  {p.logo ? (
-                    <img src={p.logo} alt="" width={p.w} height={p.h} loading="lazy" class="max-h-12 max-w-12 object-contain" />
-                  ) : (
-                    <span class="text-lg font-bold text-hippo-700" aria-hidden="true">{p.name.charAt(0)}</span>
-                  )}
+              <a href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${slug(p.name)}`} class="part">
+                <span class="logo">
+                  <Picture src={p.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={p.largeur} widths={[p.largeur, 2 * p.largeur]} sizes={`${p.largeur}px`} alt="" loading="lazy" decoding="async" />
                 </span>
-                <span class="min-w-0">
-                  <span class="block font-semibold text-hippo-900">{p.name}</span>
-                  <span class="block text-sm text-muted-foreground">{p.full}</span>
+                <span class="txt">
+                  <span>{p.name}</span>
+                  <span>{p.full}</span>
                 </span>
               </a>
             </li>
           ))}
         </ul>
 
-        <p class="mt-10 text-center text-sm text-muted-foreground">
+        <p class="appel">
           Tu fais partie du bureau d'un syndicat ou d'une association d'internes&nbsp;?{' '}
-          <a href={`mailto:${CONTACT_EMAIL}?subject=Partenariat%20Hippodoc`} data-ph="landing_about_partner_contact" class="font-medium text-hippo-600 underline-offset-2 hover:underline">Écris-nous</a>, on monte une offre pour tes adhérents.
+          <a href={`mailto:${CONTACT_EMAIL}?subject=Partenariat%20Hippodoc`} data-ph="landing_about_partner_contact" class="lien">Écris-nous</a>, on monte une offre pour tes adhérents.
         </p>
       </div>
     </section>
 
     <!-- Hippodoc aujourd'hui : définition (GEO) + chiffres -->
-    <section class="bg-hippo-50/50 py-16 md:py-24" aria-labelledby="chiffres">
-      <div class="container max-w-5xl px-4">
-        <h2 id="chiffres" class="mb-4 text-center text-3xl font-bold text-hippo-900 md:text-4xl">Hippodoc aujourd'hui</h2>
-        <!-- GEO : définition produit verbatim (site.ts) -->
-        <p class="mx-auto mb-12 max-w-2xl text-center leading-relaxed text-muted-foreground">{PRODUCT_DEFINITION}</p>
-        <dl class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+    <section class="band da-bloc" aria-labelledby="chiffres">
+      <div class="wrap">
+        <div class="band-head">
+          <h2 id="chiffres">Hippodoc aujourd'hui</h2>
+          <!-- GEO : définition produit verbatim (site.ts) -->
+          <p class="lead def">{PRODUCT_DEFINITION}</p>
+        </div>
+        <dl class="stats">
           {stats.map((s) => (
-            <div class="flex flex-col items-center rounded-2xl border border-hippo-100 bg-white p-5 text-center">
-              <Icon name={s.icon} class="order-1 mb-3 h-6 w-6 text-hippo-600" />
-              <dt class="order-3 text-sm text-muted-foreground">{s.label}</dt>
-              <dd class="order-2 mb-1 text-3xl font-bold text-hippo-900 md:text-4xl">{s.value}</dd>
+            <div class="stat">
+              <Fragment set:html={picto(s.icon, 22)} />
+              <dt>{s.label}</dt>
+              <dd class="aff num">{s.value}</dd>
             </div>
           ))}
         </dl>
@@ -385,17 +468,18 @@ const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
     </section>
 
     {testimonials.length > 0 && (
-      <section class="py-16 md:py-24" aria-labelledby="temoignages">
-        <div class="container max-w-5xl px-4">
-          <h2 id="temoignages" class="mb-12 text-center text-3xl font-bold text-hippo-900 md:text-4xl">Ce qu'en disent les médecins</h2>
-          <div class="grid gap-6 md:grid-cols-3">
+      <section class="band air da-bloc" aria-labelledby="temoignages">
+        <div class="wrap">
+          <div class="band-head">
+            <h2 id="temoignages">Ce qu'en disent les médecins</h2>
+          </div>
+          <div class="avis">
             {testimonials.map((t) => (
-              <figure class="rounded-2xl border border-hippo-100 bg-white p-6">
-                <Icon name="quote" class="mb-3 h-5 w-5 text-hippo-300" />
-                <blockquote class="mb-4 text-sm leading-relaxed text-foreground/85">«&nbsp;{t.quote}&nbsp;»</blockquote>
+              <figure class="membre">
+                <blockquote class="mot">«&nbsp;{t.quote}&nbsp;»</blockquote>
                 <figcaption>
-                  <span class="block text-sm font-semibold text-foreground">{t.name}</span>
-                  <span class="block text-xs text-muted-foreground">{t.role}</span>
+                  <span>{t.name}</span>
+                  <span>{t.role}</span>
                 </figcaption>
               </figure>
             ))}
@@ -405,39 +489,308 @@ const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
     )}
 
     <!-- CTA + contact direct -->
-    <section class="px-4 py-16 md:py-24">
-      <div class="container relative max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-hippo-600 via-hippo-700 to-hippo-900 px-6 py-12 text-center text-white shadow-2xl md:py-16">
-        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(56,189,248,0.18),transparent_55%)]"></div>
-        <div class="relative">
-          <h2 class="mb-4 text-3xl font-bold md:text-4xl">Prêt à y voir clair&nbsp;?</h2>
-          <p class="mx-auto mb-8 max-w-xl text-lg text-hippo-100">30 jours pour essayer, sans engagement.</p>
-          <a
-            href={`${APP_URL}/auth?tab=signup`}
-            data-track="cta_signup_qui_sommes_nous"
-            class="group inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-hippo-700 shadow-lg transition-transform hover:scale-105 hover:text-hippo-800"
-          >
-            Commencer gratuitement
-            <Icon name="arrow-right" class="h-5 w-5 transition-transform group-hover:translate-x-1" />
-          </a>
+    <section class="fin da-bloc">
+      <div class="wrap fin-copy">
+        <h2>Prêt à y voir clair&nbsp;?</h2>
+        <p class="lead">30 jours pour essayer, sans engagement.</p>
+        <a
+          href={`${APP_URL}/auth?tab=signup`}
+          data-track="cta_signup_qui_sommes_nous"
+          class="btn btn-brand"
+        >
+          Commencer gratuitement
+        </a>
 
-          <div class="mx-auto mt-12 max-w-2xl border-t border-white/15 pt-8">
-            <p class="mb-4 text-sm text-hippo-100">Une question avant de te lancer&nbsp;? Écris-nous, on lit tout.</p>
-            <div class="flex flex-wrap justify-center gap-3">
-              <a href={`mailto:${CONTACT_EMAIL}`} data-ph="landing_about_email" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20">
-                <Icon name="mail" class="h-4 w-4" /> {CONTACT_EMAIL}
-              </a>
-              <a href={CALENDLY_URL} target="_blank" rel="noopener" data-calendly="qui_sommes_nous" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20">
-                <Icon name="calendar" class="h-4 w-4" /> 15 min avec Ryan
-              </a>
-              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" data-ph="landing_about_instagram" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20">
-                <Icon name="instagram" class="h-4 w-4" /> @hippodoc.fr
-              </a>
-            </div>
+        <div class="ecrire">
+          <p>Une question avant de te lancer&nbsp;? Écris-nous, on lit tout.</p>
+          <div class="portes">
+            <a href={`mailto:${CONTACT_EMAIL}`} data-ph="landing_about_email" class="btn btn-white">
+              <Fragment set:html={picto('mail')} /> {CONTACT_EMAIL}
+            </a>
+            <a href={CALENDLY_URL} target="_blank" rel="noopener" data-calendly="qui_sommes_nous" class="btn btn-white">
+              <Fragment set:html={picto('calendar')} /> 15 min avec Ryan
+            </a>
+            <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" data-ph="landing_about_instagram" class="btn btn-white">
+              <Fragment set:html={picto('instagram')} /> @hippodoc.fr
+            </a>
           </div>
         </div>
+      </div>
+      {/* Décor : le soleil de l'accueil se lève sur l'eau du pied de page. */}
+      <div class="horizon" aria-hidden="true">
+        <span class="sun"></span>
+        <span class="wave w3"></span>
+        <span class="wave w4"></span>
       </div>
     </section>
   </main>
 
   <Footer />
 </BaseLayout>
+
+<style>
+  .num { white-space: nowrap; }
+
+  /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
+     haut. En bas, l'air et les 40 px que recouvre la première feuille. */
+  .tete { position: relative; padding: 100px 0 104px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+  /* Corps de texte en rem : la feuille de la DA les pose en px, ils ne suivaient
+     plus la taille de police du navigateur. Même rendu à 16 px. */
+  .da-bloc { font-size: 1.0625rem; }
+  .lead { font-size: 1.1875rem; }
+  .btn { font-size: 1.0625rem; }
+  h2 { --corps: clamp(min(2rem, 10vw), 4.5vw, 3.625rem); }
+  h3 { font-size: clamp(1.5rem, 2.5vw, 2rem); }
+  .fil { font-size: 0.90625rem; color: var(--ink-2); }
+  .fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
+  /* Une cible de 44 px de haut, sans changer la hauteur de la ligne. */
+  .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.4); text-underline-offset: 4px; }
+  .fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
+  .fil [aria-current] { font-weight: var(--tb); color: var(--ink); }
+  .haut { display: grid; gap: 40px; margin-top: 22px; }
+  .intro { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; min-width: 0; }
+  .intro > * { margin: 0; }
+  /* « Qui sommes-nous » : une pastille blanche, comme « FAQ » sur /faq. */
+  .marque { padding: 4px 12px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
+  .intro h1 { --corps: var(--h1-page); max-width: 15em; text-wrap-style: balance; }
+  /* La question : le bleu de « l'eau » dans le titre de l'accueil, comme
+     « Hippodoc » dans celui de /faq. */
+  .intro h1 .q { color: var(--w4); }
+  /* Le portrait du bloc fondateur de l'accueil, penché de l'autre côté ; sa
+     légende est une étiquette d'encre à cheval sur son bord, qui ne dépasse pas
+     la largeur de la photo. Centré tant qu'il est sous le texte. */
+  .portrait { position: relative; width: min(84%, 290px); margin: 0 auto 22px; }
+  .portrait :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 34px; rotate: 2deg; box-shadow: var(--clay); }
+  .portrait figcaption { position: absolute; left: 0; bottom: -30px; display: flex; flex-direction: column; gap: 1px; box-sizing: border-box; width: max-content; max-width: 100%; padding: 9px 16px 11px; border-radius: 18px; background: var(--ink); color: var(--paper); line-height: 1.3; rotate: -2deg; }
+  .portrait figcaption span:first-child { font-size: 0.96875rem; font-weight: var(--tb); }
+  .portrait figcaption span + span { font-size: 0.8125rem; color: var(--on-deep-2); }
+
+  /* Un titre à gauche, son contenu à droite (accueil/Questions.astro). */
+  .deux { display: grid; gap: 26px; }
+  .deux .band-head { margin-bottom: 0; }
+
+  /* Le récit : une colonne de lecture. */
+  .recit { min-width: 0; max-width: 42rem; }
+  .para p { margin: 0 0 18px; font-size: 1.125rem; line-height: 1.65; color: var(--ink-2); }
+  .para strong, .mot strong { color: var(--ink); }
+  /* La citation : l'eau profonde, comme l'offre annuelle et la fiche des 6 mois
+     de l'accueil ; les guillemets jaunes des témoignages. */
+  .cite { --focus: #FFFFFF; position: relative; margin: 38px 0 34px; padding: 34px 24px 28px; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .cite p { --corps: clamp(min(1.4375rem, 7.2vw), 2.7vw, 1.9375rem); margin: 0; line-height: 1.2; color: var(--paper); text-wrap-style: pretty; }
+  .guillemets { position: absolute; left: 22px; top: -20px; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: var(--sun); color: var(--ink); box-shadow: 0 4px 0 var(--sun-edge); rotate: -4deg; }
+  .signe { margin: 26px 0 0; font-family: var(--display); font-size: 1.375rem; font-weight: var(--dw); letter-spacing: -0.02em; color: var(--ink); }
+
+  /* L'équipe : deux fiches en relief. */
+  /* Chaque fiche à sa hauteur : étirée sur celle de sa voisine, celle de Ryan
+     restait vide sur la moitié. */
+  .membres { display: grid; align-items: start; gap: 14px; }
+  .membre { --focus: var(--ink); min-width: 0; margin: 0; padding: 24px 22px 26px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .membre-top { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+  .membre-top :global(img) { display: block; flex: none; width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 4px var(--sky-soft); }
+  .qui { min-width: 0; }
+  .membre h3 { margin: 0; font-size: clamp(min(1.3125rem, 6.6vw), 2.2vw, 1.5rem); }
+  .role { margin: 4px 0 0; font-size: 0.9375rem; font-weight: 560; line-height: 1.4; color: var(--ink-2); }
+  /* « Meilisearch » : une zone de toucher de 38 px de haut qui ne change pas
+     l'interligne (elle en faisait 18), et le lien LinkedIn un peu plus bas : les
+     deux zones se suivent sans se recouvrir. */
+  .role a { display: inline-block; margin: -11px 0 -6px; padding: 11px 0 6px; border-radius: 4px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .role a:hover { color: var(--ink); }
+  /* Une cible de 44 px de haut ; la marge négative rend ce qu'elle ajoute à la fiche. */
+  .lk { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin: 6px 0 -12px; border-radius: 6px; font-size: 0.96875rem; font-weight: var(--tb); color: var(--brand); text-decoration: none; }
+  .lk:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .lk :global(svg) { flex: none; }
+  .faits { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; font-size: 1.03125rem; line-height: 1.55; color: var(--ink-2); }
+  .faits li { display: flex; align-items: flex-start; gap: 12px; }
+  .faits :global(svg) { flex: none; margin-top: 4px; color: var(--brand); }
+  .mot { margin: 0; font-size: 1.03125rem; line-height: 1.6; color: var(--ink-2); }
+
+  /* Les promesses : le titre et la mascotte, puis trois fiches. Elle se tient
+     derrière les fiches : son pouce et ses mains restent au-dessus de leur bord
+     (les 62 % du haut de l'image), comme derrière les cases de l'accueil. */
+  .tenue { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0 16px; }
+  .tenue h2 { margin: 0 0 26px; }
+  .guide { display: block; width: 104px; margin: -16px 6px -70px 0; pointer-events: none; }
+  .guide img { display: block; width: 100%; max-width: none; height: auto; }
+  .promesses { position: relative; z-index: 1; display: grid; gap: 14px; }
+  .promesse { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 24px 22px 26px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .rond { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; margin-bottom: 6px; border-radius: 50%; background: var(--sky); color: var(--brand); }
+  .promesse h3 { margin: 0; font-size: 1.3125rem; line-height: 1.2; }
+  .promesse p { margin: 0; font-size: 1.03125rem; line-height: 1.55; color: var(--ink-2); }
+
+  /* Les soutiens : l'eau profonde de l'accueil (« Sous la surface »), en feuille
+     qui remonte sur la précédente ; la suivante remonte de 40 px sur son bas. */
+  .fond { --focus: #FFFFFF; position: relative; z-index: 1; margin-top: -40px; padding: 52px 0 88px; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--paper); }
+  .fond .lead { color: var(--on-deep-2); text-wrap-style: balance; }
+  .scene, .appui { --focus: var(--ink); border-radius: 30px; background: var(--paper); color: var(--ink); box-shadow: var(--clay); }
+  .scene { display: grid; overflow: hidden; }
+  .scene :global(img) { display: block; width: 100%; height: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  .scene-copy { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; padding: 24px 22px 28px; }
+  .scene-copy > *, .appui p, .appui h3 { margin: 0; }
+  .scene h3 { font-size: clamp(min(1.4375rem, 7.2vw), 2.4vw, 1.75rem); text-wrap-style: balance; }
+  .scene-copy p:last-child, .appui p:last-child { font-size: 1.03125rem; line-height: 1.55; color: var(--ink-2); }
+  /* La date : une pastille « planifié » de l'accueil, qui peut passer sur deux
+     lignes (à 320 px, « 13 avril 2026 · Station F, Paris » ne tient pas sur une). */
+  .quand { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 13px; background: var(--plan-bg); color: var(--plan); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.35; }
+  .quand :global(svg) { flex: none; }
+  .appuis { display: grid; gap: 14px; margin-top: 14px; }
+  .appui { display: flex; flex-direction: column; gap: 16px; padding: 22px 22px 26px; }
+  .appui .quand { margin-bottom: 8px; }
+  .appui h3 { margin-bottom: 6px; font-size: 1.3125rem; line-height: 1.2; }
+  /* Les logos des soutiens, posés sur le blanc de la fiche (deux des trois
+     fichiers ont un fond opaque). Chacun a sa hauteur (`--h`). */
+  .plaque { display: flex; flex: none; align-items: center; gap: 18px; min-height: 52px; }
+  .plaque :global(picture), .logo :global(picture) { display: contents; }
+  .plaque :global(source), .logo :global(source) { display: none; }
+  .plaque :global(img) { display: block; flex: none; width: auto; height: calc(var(--h) * 0.8); }
+
+  /* Syndicats et partenaires : les tuiles de accueil/Partenaires.astro. */
+  .synd, .parts { margin: 0; padding: 0; list-style: none; }
+  .synd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; box-sizing: border-box; padding: 18px 12px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-align: center; text-decoration: none; transition: translate 200ms var(--ease); }
+  .tile:hover, .part:hover { translate: 0 -3px; }
+  .tile .logo { display: flex; align-items: center; justify-content: center; width: 100%; height: 76px; margin-bottom: 12px; }
+  .logo :global(img) { display: block; width: auto; max-width: var(--l, 100%); height: auto; max-height: var(--h, 100%); object-fit: contain; }
+  .nom { font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.25; }
+  .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 0.9375rem; color: var(--ink-2); }
+  .ville :global(svg) { flex: none; color: var(--brand); }
+  .suite { margin: 38px 0 16px; font-size: clamp(min(1.375rem, 6.9vw), 2.2vw, 1.625rem); }
+  .parts { display: grid; gap: 14px; }
+  .part { display: flex; align-items: center; gap: 16px; height: 100%; box-sizing: border-box; padding: 16px 20px 18px 16px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
+  .part .logo { display: flex; flex: none; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 18px; background: var(--sky-soft); }
+  .part .logo :global(img) { max-width: 54px; max-height: 54px; }
+  .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; overflow-wrap: anywhere; }
+  .txt span:first-child { font-size: 1.125rem; font-weight: var(--tb); }
+  .txt span + span { font-size: 0.96875rem; color: var(--ink-2); }
+  .appel { max-width: 44rem; margin: 34px 0 0; padding-top: 22px; border-top: 1px solid var(--line); font-size: 1.03125rem; line-height: 1.6; color: var(--ink-2); }
+
+  /* Hippodoc aujourd'hui : la définition, puis les quatre chiffres sur une
+     fiche. Dans le HTML le libellé précède le chiffre ; à l'écran, le chiffre
+     passe devant, en grand (accueil/Fondateur.astro). */
+  .def { max-width: 42rem; font-size: 1.09375rem; }
+  /* Rien n'est rogné : un chiffre grossi ou espacé peut dépasser dans la marge
+     de sa case, ou passer à la ligne, il reste entier. */
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+  .stat { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 20px 16px 22px; }
+  .stat:nth-child(even) { border-left: 1px solid var(--line); }
+  .stat:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .stat :global(svg) { order: 1; margin-bottom: 8px; color: var(--brand); }
+  .stat dd { --corps: clamp(min(1.5rem, 7.5vw), 7.6vw, 2.75rem); order: 2; margin: 0; line-height: 1; white-space: normal; overflow-wrap: anywhere; }
+  .stat dt { order: 3; font-size: 0.9375rem; line-height: 1.35; color: var(--ink-2); overflow-wrap: anywhere; }
+
+  /* La fin : le ciel de l'accueil, puis le soleil qui se lève sur l'eau du pied
+     de page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles,
+     comme sur /tarifs et /faq). -1 px en bas : pas de filet clair au-dessus du pied. */
+  .fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; }
+  /* Le texte et les boutons passent devant le décor (`z-index`), et le halo du
+     soleil ne commence qu'après la dernière porte (marge de `.horizon`). */
+  .fin-copy { z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 52px; }
+  .fin-copy > * { margin: 0; }
+  .fin h2 { --corps: var(--h2-fin); max-width: 17ch; }
+  .fin .btn { padding-block: 8px; text-align: center; }
+  .fin .lead, .ecrire p { text-wrap-style: balance; }
+  .fin-copy > .btn { margin-top: 8px; }
+  /* Le contact direct : trois portes de même poids, sous le bouton jaune. */
+  .ecrire { display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; max-width: 44rem; margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--line); }
+  .ecrire p { margin: 0; font-size: 1.03125rem; color: var(--ink-2); }
+  .portes { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 12px; }
+  .portes .btn { gap: 9px; min-width: 0; min-height: 48px; padding-inline: 20px; font-size: 1rem; overflow-wrap: anywhere; }
+  .portes :global(svg) { flex: none; color: var(--brand); }
+  /* Le halo dépasse le soleil de 62 px (92 px sur ordinateur) : 20 px d'air
+     entre la dernière porte et lui. */
+  .horizon { position: relative; height: 190px; margin-top: 60px; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; }
+  .w3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* La dernière vague a la couleur du haut du pied de page (--deep). */
+  .w4 { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+  /* Petits téléphones : le portrait de la fiche est plus petit, le nom tient mieux. */
+  @media (max-width: 359px) {
+    .membre { padding-inline: 18px; }
+    .membre-top { gap: 12px; }
+    .membre-top :global(img) { width: 64px; height: 64px; }
+  }
+  /* Sous 640 px, les trois portes l'une sous l'autre, de même largeur (côte à
+     côte, la troisième passait seule à la ligne). */
+  @media (max-width: 639px) {
+    .portes { flex-direction: column; align-items: stretch; width: min(100%, 18.75rem); }
+  }
+  @media (min-width: 560px) {
+    .tete { padding: 108px 0 144px; }
+    .cite { padding: 40px 34px 34px; }
+    .fond { padding: 88px 0 128px; }
+    .appui { padding: 26px 26px 28px; }
+    .stat { padding: 26px 26px 28px; }
+    .stat dd { --corps: min(2.75rem, 8vw); }
+    .stat dt { font-size: 0.96875rem; }
+    .appel { margin-top: 60px; padding-top: 28px; }
+    .fin-copy { padding-top: 88px; }
+  }
+  /* Les logos à gauche du texte quand la fiche est assez large : seule sur sa
+     ligne (560 à 699 px), ou à deux par ligne à partir de 900 px. */
+  @media (min-width: 560px) and (max-width: 699px), (min-width: 900px) {
+    .appui { flex-direction: row; align-items: flex-start; gap: 22px; }
+    .plaque { flex-direction: column; justify-content: center; width: 112px; min-height: 0; padding-top: 4px; }
+    .plaque :global(img) { height: var(--h); }
+  }
+  @media (min-width: 640px) {
+    .synd { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .parts { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; gap: 18px; }
+    .suite { margin: 60px 0 20px; }
+  }
+  /* Tablette : le portrait à côté du titre, les fiches côte à côte. */
+  @media (min-width: 700px) {
+    /* 280 px : la légende du portrait tient sur deux lignes, dans sa largeur. */
+    .haut { grid-template-columns: minmax(0, 1fr) 280px; align-items: center; gap: 32px; }
+    .portrait { width: 100%; margin-inline: 0; }
+    .membres, .appuis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .promesses { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .promesse { padding: 24px 20px 26px; }
+    .promesse h3 { font-size: 1.1875rem; }
+    .scene { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+  }
+  @media (min-width: 900px) {
+    .tete { padding-top: 148px; }
+    .haut { grid-template-columns: minmax(0, 1fr) 320px; gap: 72px; margin-top: 30px; }
+    .portrait figcaption span:first-child { font-size: 1.03125rem; }
+    .portrait figcaption span + span { font-size: 0.90625rem; }
+    .deux { grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 28px 56px; }
+    .para p { font-size: 1.1875rem; }
+    .membres, .appuis, .promesses, .synd { gap: 18px; }
+    .membre { padding: 34px 36px 36px; border-radius: 36px; }
+    .tenue h2 { margin-bottom: 44px; }
+    .guide { width: 170px; margin: -24px 40px -115px 0; }
+    .promesse { padding: 30px 28px 32px; border-radius: 36px; }
+    .promesse h3 { font-size: 1.3125rem; }
+    .scene { grid-template-columns: 1.3fr 1fr; border-radius: 36px; }
+    .scene-copy { gap: 14px; padding: 36px 40px; }
+    .appuis { margin-top: 18px; }
+    .tile { padding: 24px 20px 26px; border-radius: 36px; }
+    .tile .logo { height: 112px; margin-bottom: 16px; }
+    .nom { font-size: 1.3125rem; }
+    .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); border-radius: 36px; }
+    .stat { padding: 30px 28px 32px; }
+    .stat:nth-child(n + 3) { border-top: 0; }
+    .stat:nth-child(n + 2) { border-left: 1px solid var(--line); }
+    /* Quatre cases de front : le corps suit la largeur (à 1 024 px, « 10 000+ »
+       en 52 px dépassait de sa case). */
+    .stat dd { --corps: clamp(min(2.375rem, 4.2vw), 4.2vw, 3.25rem); }
+    .horizon { height: 270px; margin-top: 108px; --p: 440px; --th: 54px; }
+    .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+    .w3 { height: 112px; }
+    .w4 { height: 60px; }
+  }
+  @media (min-width: 1180px) {
+    .deux { grid-template-columns: 320px minmax(0, 1fr); column-gap: 96px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .part { transition: none; }
+    .tile:hover, .part:hover { translate: none; }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+     aux fiches et aux pastilles ; le décor de la fin disparaît. */
+  @media (forced-colors: active) {
+    .marque, .cite, .membre, .promesse, .scene, .appui, .tile, .part, .stats, .quand, .portrait figcaption { border: 1px solid CanvasText; }
+    .horizon { display: none; }
+  }
+</style>
