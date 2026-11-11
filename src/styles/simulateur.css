@@ -1,0 +1,349 @@
+/* ==========================================================================
+   /simulateur : l'îlot React dans la DA 2026 (phase 5d, MIGRATION.md § 9.ek).
+
+   Feuille importée par src/pages/simulateur.astro : elle sort dans la feuille
+   de la page, servie à /simulateur seule. Tailwind ne lit pas les .css : rien
+   ici n'ajoute de règle à la feuille commune.
+
+   - `.sim` est posée sur la racine de l'îlot (SimulateurApp.tsx) et sur les
+     contenus que Radix rend hors de l'îlot, dans <body> : bulles d'aide
+     (`.sim-bulle`), tiroir d'aide du téléphone (`.sim-tiroir`), listes
+     déroulantes (`.sim-pop`). Les jetons de la DA viennent de `.da` (<body>).
+   - Les composants de src/components/ui/ sont partagés avec la calculette et
+     le guide : ils ne sont pas modifiés. Ici, leurs jetons (--border,
+     --muted-foreground, --primary…) reçoivent les couleurs de la DA, et les
+     champs, listes, boutons radio sont habillés par leur rôle.
+   - Dans les .tsx du simulateur, les couleurs passent par des classes `sim-*` ;
+     les utilitaires Tailwind qui restent règlent la mise en page.
+   - Corps en rem : ils suivent la taille de police réglée dans le navigateur.
+   - Le jaune : le Super-Net du régime recommandé, ce qu'on garde en plus, et
+     le bouton qui lance le calcul. Rien d'autre.
+   ========================================================================== */
+
+/* ───────── Jetons des composants partagés, aux couleurs de la DA ─────────
+   Triplets HSL (Tailwind les enveloppe dans hsl()) : encre #14254F, encre 3
+   #56668F, marque #0059B3, ciel doux #EDF3FE, filets = encre à 11 % et 16 %
+   sur blanc. */
+.sim {
+  --background: 0 0% 100%;
+  --foreground: 223 60% 19%;
+  --card: 0 0% 100%;
+  --card-foreground: 223 60% 19%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 223 60% 19%;
+  --primary: 210 100% 35%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 219 89% 96%;
+  --secondary-foreground: 223 60% 19%;
+  --muted: 219 89% 96%;
+  --muted-foreground: 223 25% 45%;
+  --accent: 219 89% 96%;
+  --accent-foreground: 223 60% 19%;
+  --destructive: 8 76% 36%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 223 16% 91%;
+  --input: 222 15% 87%;
+  --ring: 223 60% 19%;
+  --radius: 14px;
+}
+
+/* ───────── L'îlot ───────── */
+/* Devant la mascotte de la page (décor, hors du flux), qui passe sous son bord haut. */
+.sim-ile { position: relative; z-index: 1; font-size: 1rem; }
+/* Radix rend l'en-tête d'un accordéon dans un <h3> : il ne prend pas le corps
+   des titres de la DA. Les vrais titres ont leur classe. */
+.sim h3 { font: inherit; letter-spacing: 0; }
+.sim :is(b, strong) { font-weight: var(--tb); }
+
+/* Fiches en relief */
+.sim .sim-fiche { padding: 24px 22px; border: 0; border-radius: 28px; background: var(--paper); color: var(--ink); box-shadow: var(--clay); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.sim .sim-fiche-tete { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.sim .sim-fiche-titre { margin: 0; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+.sim .sim-fiche-titre.grand { font-size: 1.25rem; }
+.sim .sim-panneau { padding: 16px; border-radius: 20px; background: var(--sky-soft); }
+.sim .sim-panneau-titre { font-size: 1rem; font-weight: var(--tb); color: var(--ink); }
+
+/* Pastille d'icône */
+.sim .sim-rond { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--sky); color: var(--brand); }
+.sim .sim-rond.grand { width: 46px; height: 46px; }
+.sim .sim-rond.plein { background: var(--ink); color: var(--paper); }
+.sim .sim-rond.blanc { background: var(--paper); }
+
+/* ───────── Formulaire ───────── */
+.sim .sim-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.sim .sim-form label { font-size: 0.9375rem; font-weight: 560; line-height: 1.3; color: var(--ink); overflow-wrap: anywhere; }
+/* Champ en erreur : le libellé reprend la couleur d'alerte des composants partagés. */
+.sim .sim-form label.text-destructive { color: hsl(var(--destructive)); }
+.sim .sim-form [id$="-form-item-description"] { font-size: 0.8125rem; line-height: 1.45; color: var(--ink-3); }
+.sim .sim-form [id$="-form-item-message"] { font-size: 0.875rem; }
+
+/* Champs et listes : une case ciel doux, ronde, 50 px de haut (16 px de corps :
+   pas de zoom à la saisie sur iPhone). */
+.sim input:where(:not([type="checkbox"], [type="radio"])),
+.sim button[role="combobox"] { height: 50px; padding-inline: 14px; border: 0; border-radius: 14px; background: var(--sky-soft); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.12); font-family: inherit; font-size: 1rem; font-weight: 500; color: var(--ink); }
+.sim input.pr-8 { padding-right: 38px; }
+.sim input::placeholder { color: var(--ink-3); opacity: 1; font-weight: var(--tw); }
+.sim input:where(:not([type="checkbox"], [type="radio"])):focus-visible,
+.sim button[role="combobox"]:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.sim button[role="combobox"] > svg { width: 18px; height: 18px; opacity: 1; color: var(--ink-2); }
+/* Dans une rangée ciel doux, la case passe au blanc. */
+.sim .sim-rangee input:where(:not([type="checkbox"], [type="radio"])),
+.sim .sim-rangee button[role="combobox"] { background: var(--paper); }
+
+/* Boutons radio et cases à cocher */
+.sim button[role="radio"] { width: 22px; height: 22px; border: 1.5px solid var(--ink-3); background: var(--paper); color: var(--brand); }
+.sim button[role="radio"][data-state="checked"] { border-color: var(--brand); }
+.sim button[role="radio"]:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; box-shadow: none; }
+.sim button[role="radio"] svg { width: 12px; height: 12px; }
+.sim .sim-case { flex: none; width: 22px; height: 22px; margin: 1px 0 0; border-radius: 6px; accent-color: var(--brand); }
+.sim .sim-coche { padding: 14px; border-radius: 16px; background: var(--paper); }
+
+/* Plis du formulaire : une ligne à toucher, le chevron dans une pastille */
+.sim .sim-pli { min-height: 48px; padding: 4px 4px 4px 0; border-radius: 14px; background: none; color: var(--ink); white-space: normal; text-align: left; }
+.sim .sim-pli > span { min-width: 0; font-size: 0.9375rem; font-weight: 560; overflow-wrap: anywhere; }
+.sim .sim-pli:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; box-shadow: none; }
+.sim .sim-chevron { box-sizing: content-box; flex: none; width: 18px; height: 18px; padding: 8px; border-radius: 50%; background: var(--sky); color: var(--ink); }
+.sim .sim-pli:hover .sim-chevron, .sim .sim-profils-tete:hover .sim-chevron { background: var(--sky-1); }
+.sim .sim-pli-in { border-top: 1px solid var(--line); }
+.sim .sim-fiche-options { padding-block: 14px; }
+.sim .sim-rangee { border: 0; border-radius: 18px; background: var(--sky-soft); }
+.sim .sim-rangee > h3 > button { min-height: 52px; gap: 10px; color: var(--ink); text-align: left; }
+.sim .sim-rangee > h3 > button > span { min-width: 0; font-size: 0.9375rem; }
+/* Le rappel à droite du nom (« 1 active », « ZFRR ») garde sa ligne ; le nom passe sur deux. */
+.sim .sim-rangee > h3 > button > span > span:last-child { flex: none; max-width: 50%; }
+
+/* Boutons de la DA : épais, on les enfonce */
+.sim .sim-btn { height: auto; min-height: 54px; padding: 8px 26px; border: 0; border-radius: var(--r-pill); background-image: none; font-family: var(--text); font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.2; color: var(--ink); white-space: normal; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
+.sim .sim-btn:active { translate: 0 5px; box-shadow: 0 0 0 transparent; }
+.sim .sim-btn:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; }
+.sim .sim-btn svg { width: 20px; height: 20px; }
+.sim .sim-btn-soleil { background-color: var(--sun); box-shadow: 0 5px 0 var(--sun-edge); }
+.sim .sim-btn-soleil:hover { background-color: var(--sun-hover); color: var(--ink); }
+.sim .sim-btn-ligne { background-color: var(--paper); box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 5px 0 var(--edge); }
+.sim .sim-btn-ligne:hover { background-color: var(--sky-soft); color: var(--ink); }
+.sim .sim-btn[disabled] { opacity: 0.75; }
+/* Le bouton du calcul : 5 px sous lui pour son bord. */
+.sim .sim-form > .sim-btn { margin: 6px 0 5px; }
+
+/* ───────── Profils types ───────── */
+.sim .sim-profils-tete { min-height: 60px; padding: 8px 12px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); }
+.sim .sim-profils-titre { font-size: 1rem; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-profil { padding: 16px 14px; border-radius: 22px; background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
+.sim .sim-profil:hover { translate: 0 -2px; }
+.sim .sim-profil:focus-visible, .sim button:where(.sim-porte, .sim-plafond-tete):focus-visible, .sim [data-state] > button:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; }
+.sim .sim-profil-nom { font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.25; color: var(--ink); overflow-wrap: anywhere; }
+.sim .sim-profil-desc { margin-top: 3px; font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); overflow-wrap: anywhere; }
+
+/* ───────── Pastilles et encarts d'état ───────── */
+.sim .sim-puce { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 0; border-radius: var(--r-pill); background: var(--sky); color: var(--ink-2); font-size: 0.75rem; font-weight: var(--tb); line-height: 1.35; white-space: nowrap; box-shadow: none; }
+.sim .sim-puce.grande { padding: 4px 11px; font-size: 0.8125rem; }
+.sim .sim-puce.petite { padding: 1px 7px; font-size: 0.6875rem; }
+.sim .sim-puce.multi, .sim .sim-profil .sim-puce { align-items: flex-start; border-radius: 14px; white-space: normal; overflow-wrap: anywhere; }
+.sim .sim-profil > .flex > div { max-width: 100%; }
+.sim .sim-puce.multi svg { margin-top: 3px; }
+.sim .sim-puce.ok { background: var(--ok-bg); color: var(--ok); }
+.sim .sim-puce.attn { background: var(--wait-bg); color: var(--wait); }
+.sim .sim-puce.attn.fort { box-shadow: inset 0 0 0 1.5px var(--wait); }
+.sim .sim-puce.info { background: var(--plan-bg); color: var(--plan); }
+.sim .sim-puce.encre { background: var(--ink); color: var(--paper); }
+.sim .sim-puce.blanche { background: var(--paper); color: var(--ink); }
+.sim a.sim-puce { min-height: 30px; text-decoration: underline; text-underline-offset: 3px; }
+.sim a.sim-puce:hover { background: var(--sky-1); }
+
+.sim .sim-note { padding: 10px 12px; border: 0; border-radius: 14px; background: var(--sky-soft); color: var(--ink-2); font-size: 0.8125rem; line-height: 1.45; }
+.sim .sim-note.grande { padding: 14px 16px; border-radius: 20px; font-size: 0.9375rem; }
+.sim .sim-note.ok { background: var(--ok-bg); color: var(--ok); }
+.sim .sim-note.attn { background: var(--wait-bg); color: var(--wait); }
+.sim .sim-note.info { background: var(--plan-bg); color: var(--plan); }
+.sim .sim-note > svg { flex: none; }
+.sim .sim-note-in { font-size: inherit; line-height: inherit; color: inherit; }
+.sim .sim-note-fort { font-size: 1rem; font-weight: var(--tb); line-height: 1.3; }
+.sim .sim-note-sous { font-size: 0.8125rem; }
+.sim .sim-note .sim-rond.blanc { color: inherit; }
+
+/* ───────── Résultats ───────── */
+.sim .sim-resultats-tete { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 20px; text-align: center; }
+.sim .sim-titre { --corps: clamp(min(1.75rem, 9vw), 3.4vw, 2.5rem); margin: 0; }
+.sim .sim-chapo { margin: 0; font-size: 1.0625rem; color: var(--ink-2); }
+
+/* Les deux régimes */
+.sim .sim-regime { padding: 0; }
+.sim .sim-regime-tete { padding: 24px 22px 14px; }
+.sim .sim-regime-corps { padding: 0 22px 24px; }
+.sim .sim-regime-nom { font-family: var(--display); font-size: 1.5rem; font-weight: var(--dw); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); }
+.sim .sim-regime-desc { margin-top: 2px; font-size: 0.9375rem; color: var(--ink-2); }
+/* Le Super-Net : sur du jaune dans la fiche du régime recommandé. */
+.sim .sim-supernet { padding: 18px 20px 20px; border-radius: 24px; background: var(--sky-soft); }
+.sim .sim-supernet.soleil { background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1); }
+.sim .sim-supernet > div:first-child, .sim .sim-supernet .items-baseline { flex-wrap: wrap; gap: 6px 10px; }
+.sim .sim-supernet .items-baseline { gap: 0 4px; }
+.sim .sim-supernet-nom { font-size: 1rem; font-weight: var(--tb); color: var(--ink); }
+/* Le plancher suit la largeur de l'écran : avec un texte grossi à 200 %, le montant
+   (insécable) ne pousse pas la fiche hors d'un téléphone. */
+.sim .sim-supernet-montant { --corps: clamp(min(2.25rem, 10.5vw), 10vw, 3rem); color: var(--ink); white-space: nowrap; }
+.sim .sim-supernet-euro { margin-left: 0.16em; }
+.sim .sim-supernet-par { font-size: min(1rem, 7vw); font-weight: var(--tb); color: var(--ink-2); }
+.sim .sim-supernet-soit { margin-top: 5px; font-size: 0.9375rem; color: var(--ink-2); }
+.sim .sim-supernet.soleil :is(.sim-supernet-par, .sim-supernet-soit, .sim-aide) { color: var(--ink); }
+/* Le détail : une ligne par poste, un filet entre deux. */
+.sim .sim-ligne-detail { gap: 12px; min-height: 44px; margin: 0; padding: 7px 0; border-top: 1px solid var(--line); }
+.sim .sim-ligne-detail:first-child { border-top: 0; }
+/* Le nom d'un poste peut se couper (texte grossi) : c'est lui qui cède, pas la fiche. */
+.sim .sim-ligne-detail > div { min-width: 0; }
+.sim .sim-ligne-nom { min-width: 0; font-size: 0.9375rem; line-height: 1.3; color: var(--ink-2); overflow-wrap: anywhere; }
+.sim .sim-ligne-valeur { font-size: min(1rem, 7vw); font-weight: var(--tb); color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sim .sim-aide { flex: none; color: var(--ink-3); }
+
+/* La conclusion : l'eau profonde quand un régime l'emporte, la pastille jaune
+   pour ce qu'on garde en plus. */
+.sim .sim-conclusion { padding: 18px 20px; border-radius: 26px; background: var(--paper); color: var(--ink); box-shadow: var(--clay-sm); }
+.sim .sim-conclusion.gain { --focus: #FFFFFF; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+.sim .sim-conclusion-signe { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 50%; background: var(--sky); }
+.sim .sim-conclusion.gain .sim-conclusion-signe { background: var(--sun); box-shadow: 0 3px 0 var(--sun-edge); }
+.sim .sim-conclusion.attn .sim-conclusion-signe { background: var(--wait-bg); }
+/* 12 rem au moins pour la phrase : sur téléphone, la pastille passe dessous. */
+.sim .sim-conclusion-texte { flex: 1 1 12rem; font-size: 1.125rem; font-weight: var(--tb); line-height: 1.35; color: inherit; text-wrap-style: pretty; }
+.sim .sim-conclusion.gain .sim-puce.encre { background: var(--sun); color: var(--ink); }
+
+/* « Approfondir » : deux plis dans une fiche, la croix de la DA en chevron */
+.sim .sim-fiche-plis { padding-block: 4px; }
+.sim .sim-pli-titre { gap: 16px; min-height: 72px; padding: 14px 0; text-align: left; }
+.sim .sim-pli-titre > svg, .sim .sim-plafond-tete > svg { box-sizing: content-box; width: 18px; height: 18px; padding: 8px; border-radius: 50%; background: var(--sky); color: var(--ink); }
+.sim .sim-pli-titre[data-state="open"] > svg { background: var(--sun); }
+.sim .sim-pli-titre > span, .sim .sim-pli-titre > span > div { min-width: 0; }
+.sim .sim-pli-nom, .sim .sim-pli-sous { overflow-wrap: anywhere; }
+.sim .sim-pli-nom { font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.sim .sim-pli-sous { margin-top: 2px; font-size: 0.875rem; font-weight: var(--tw); line-height: 1.35; color: var(--ink-2); }
+.sim .sim-pli-corps { padding: 4px 0 22px; }
+
+/* Comparaison des déductions */
+.sim .sim-colonne { padding: 18px; border-radius: 22px; background: var(--sky-soft); }
+.sim .sim-colonne-nom { font-size: 0.875rem; font-weight: var(--tb); letter-spacing: 0.05em; color: var(--ink); }
+.sim .sim-vs { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 0.75rem; font-weight: var(--tb); }
+.sim .sim-verdict { padding: 16px; border-radius: 20px; background: var(--sky); }
+.sim .sim-formule { padding: 6px 10px; border-radius: 10px; background: var(--paper); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8125rem; color: var(--ink); }
+.sim.sim-bulle .sim-formule, .sim.sim-tiroir .sim-formule { background: var(--sky-soft); }
+
+/* Tableau du couple */
+.sim .sim-tableau { overflow: hidden; border-radius: 18px; background: var(--paper); }
+.sim .sim-tableau table { border-collapse: collapse; font-size: 0.9375rem; }
+.sim .sim-tableau th { padding: 10px 14px; background: var(--sky); font-size: 0.8125rem; font-weight: var(--tb); color: var(--ink-2); }
+.sim .sim-tableau td { padding: 12px 14px; border-top: 1px solid var(--line); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.sim .sim-tableau td.text-right { white-space: nowrap; }
+.sim .sim-tableau tr.total td { background: var(--sky-soft); }
+.sim .sim-tableau td.mode { font-size: 0.8125rem; color: var(--ink-3); }
+
+/* « Et maintenant ? » */
+.sim .sim-surtitre { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.sim .sim-porte { min-height: 68px; padding: 12px 16px; border-radius: 22px; background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
+.sim .sim-porte:hover { translate: 0 -2px; }
+.sim .sim-porte-nom { font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.sim .sim-porte-sous { font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); }
+
+/* Guide patrimonial : l'aperçu flouté et son bouton */
+.sim .sim-trait { border-radius: 6px; background: var(--sky); }
+.sim .sim-trait.clair { border-radius: 16px; background: var(--sky-soft); }
+.sim .sim-voile { background: linear-gradient(to top, #FFFFFF 0, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0) 100%); }
+
+/* Plafond du Micro-BNC dépassé */
+.sim .sim-plafond { border-radius: 22px; background: var(--wait-bg); color: var(--wait); }
+.sim .sim-plafond-tete { min-height: 60px; padding: 10px 14px; border-radius: 22px; text-align: left; }
+.sim .sim-plafond-tete > svg { background: var(--paper); color: var(--wait); }
+.sim .sim-plafond .sim-rond.blanc { color: var(--wait); }
+.sim .sim-plafond .sim-fort { color: inherit; }
+.sim .sim-plafond-corps { padding: 2px 16px 16px; font-size: 0.9375rem; line-height: 1.5; }
+.sim .sim-plafond-cas { padding: 10px 12px; border-radius: 14px; background: rgba(255, 255, 255, 0.62); font-size: 0.8125rem; line-height: 1.4; }
+
+/* Limites de la simulation */
+.sim .sim-limites-filet { display: none; }
+/* Texte grossi : la colonne de texte cède, et une pastille peut passer sur deux lignes. */
+.sim .sim-limites .flex > div { min-width: 0; }
+.sim .sim-limites .sim-puce { border-radius: 16px; white-space: normal; }
+.sim .sim-limites-titre { margin: 0; font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.sim .sim-attente { padding: 0; }
+.sim .sim-alerte { border: 0; border-radius: 22px; background: var(--wait-bg); color: var(--wait); }
+.sim .sim-alerte > svg { color: var(--wait); }
+
+/* ───────── Textes ───────── (après les composants : à poids égal, ces
+   couleurs l'emportent, par exemple sur `.sim-ligne-valeur`) */
+.sim .sim-texte { font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-petit { font-size: 0.8125rem; line-height: 1.45; font-style: italic; color: var(--ink-3); }
+.sim .sim-petit.droit { font-style: normal; }
+.sim .sim-fort { font-weight: var(--tb); color: var(--ink); }
+.sim .sim-note .sim-fort { color: inherit; }
+.sim .sim-montant { font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sim .sim-montant.grand { font-size: 1.125rem; }
+.sim .sim-filet { border-top: 1px solid var(--line); }
+.sim .sim-retrait { border-left: 2px solid var(--sky-1); }
+.sim .sim-lien { font-weight: var(--tb); text-decoration: underline; text-underline-offset: 3px; }
+.sim .sim-ok { color: var(--ok); }
+.sim .sim-attn { color: var(--wait); }
+.sim .sim-marque { color: var(--brand); }
+.sim .sim-eau { color: var(--w4); }
+.sim .sim-encre { color: var(--ink); }
+.sim .sim-encre3 { color: var(--ink-3); }
+.sim .sim-point { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--brand); }
+.sim .sim-point.b { background: var(--w2); }
+.sim .sim-point.c { background: var(--ink); }
+.sim .sim-point.d { background: var(--sun-edge); }
+
+/* ───────── Hors de l'îlot : bulles, tiroir, listes ───────── */
+/* Bulle d'aide : une fiche blanche, plus de fond noir. */
+.sim.sim-bulle { max-width: min(320px, 85vw); padding: 16px; border: 0; border-radius: 20px; background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); font-size: 0.875rem; font-weight: var(--tw); line-height: 1.45; -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Les textes des bulles gardent leurs classes de taille ; ici ils gagnent un
+   cran : 10 px devenait illisible sur une fiche claire. */
+.sim-bulle-in .text-xs { font-size: 0.8125rem; line-height: 1.45; }
+.sim-bulle-in :is(.text-\[10px\], .text-\[11px\], .text-\[9px\]) { font-size: 0.75rem; line-height: 1.45; }
+.sim-bulle-in .sim-note { font-size: 0.75rem; }
+.sim.sim-tiroir { border: 0; border-radius: 28px 28px 0 0; background: var(--paper); color: var(--ink); font-family: var(--text); font-weight: var(--tw); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.sim.sim-tiroir .sim-bulle-in { font-size: 0.9375rem; line-height: 1.5; }
+.sim .sim-tiroir-tete { border-bottom: 1px solid var(--line); }
+.sim .sim-tiroir-titre { font-size: 1.125rem; font-weight: var(--tb); letter-spacing: 0; color: var(--ink); text-align: left; }
+.sim .sim-tiroir-fermer { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -6px -6px -6px 0; border-radius: 50%; color: var(--ink); }
+.sim .sim-tiroir-fermer:hover { background: var(--sky-soft); }
+.sim .sim-tiroir-fermer:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+/* Le voile du tiroir : celui du menu du site. */
+[data-vaul-overlay] { background: rgba(9, 20, 52, 0.6); }
+/* Liste déroulante */
+.sim.sim-pop { border: 0; border-radius: 18px; background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); }
+.sim.sim-pop [role="option"] { min-height: 44px; border-radius: 12px; font-size: 0.9375rem; font-weight: 500; }
+.sim.sim-pop [role="option"][data-state="checked"] { color: var(--brand); font-weight: var(--tb); }
+
+/* ───────── Petits écrans ───────── */
+/* Téléphone : deux profils par ligne, l'icône au-dessus du texte ; tableau resserré. */
+@media (max-width: 479px) {
+  /* Libellé d'un pli : le signe reste devant son nom, la pastille passe dessous
+     (en ligne, le signe se retrouvait seul sur la première ligne à 320 px). */
+  .sim .sim-pli > span { display: grid; grid-template-columns: auto minmax(0, 1fr); justify-items: start; gap: 4px 8px; }
+  .sim .sim-pli > span > .sim-puce { grid-column: 2; }
+  .sim .sim-profil { padding: 14px 12px; }
+  .sim .sim-profil > .flex { flex-direction: column; gap: 8px; }
+  .sim .sim-tableau :is(th, td) { padding-inline: 10px; }
+}
+@media (max-width: 359px) {
+  .sim .sim-fiche { padding: 20px 16px; border-radius: 24px; }
+  .sim .sim-regime { padding: 0; }
+  .sim .sim-regime-tete { padding: 20px 16px 12px; }
+  .sim .sim-regime-corps { padding: 0 16px 20px; }
+  .sim .sim-supernet { padding: 16px; }
+}
+@media (min-width: 640px) {
+  .sim .sim-fiche { padding: 28px; }
+  .sim .sim-regime { padding: 0; }
+  .sim .sim-fiche-options { padding-block: 16px; }
+  .sim .sim-fiche-plis { padding-block: 6px; }
+  .sim .sim-regime-tete { padding: 28px 28px 16px; }
+  .sim .sim-regime-corps { padding: 0 28px 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sim :is(.sim-btn, .sim-profil, .sim-porte) { transition: none; }
+}
+
+/* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+   aux fiches, aux champs, aux pastilles et aux boutons. */
+@media (forced-colors: active) {
+  .sim :is(.sim-fiche, .sim-panneau, .sim-note, .sim-puce, .sim-btn, .sim-profil, .sim-profils-tete, .sim-porte, .sim-supernet, .sim-conclusion, .sim-colonne, .sim-verdict, .sim-plafond, .sim-rangee, .sim-coche, .sim-tableau),
+  .sim input, .sim button[role="combobox"], .sim.sim-bulle, .sim.sim-tiroir, .sim.sim-pop { border: 1px solid CanvasText; }
+  .sim .sim-point { forced-color-adjust: none; }
+}

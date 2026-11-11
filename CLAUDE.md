@@ -152,7 +152,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Outils (îlots React, hydratés `client:visible`)
 
-- `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Branche RSPM (< 38 k€) :
+- `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Habillage DA (§ 9.ek) :
+  classes `sim-*` de `src/styles/simulateur.css` (page seule), posées aussi sur les bulles
+  et listes que Radix rend hors de l'îlot ; `src/components/ui/` est partagé avec la
+  calculette et le guide, ne pas le modifier pour le simulateur. Branche RSPM (< 38 k€) :
   calcul 100 % local (`src/lib/simulateur/`, `src/lib/baremes-ir.ts`…). Branche PAMC :
   POST vers l'Edge Function Supabase publique `calculate-urssaf` via
   `src/lib/supabase-public.ts` (clé anon publique dans `.env`, RLS côté serveur).

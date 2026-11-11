@@ -71,30 +71,30 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
   return (
     <div className="space-y-5">
       {/* Explication pédagogique */}
-      <p className="text-sm text-muted-foreground leading-relaxed">
-        En <strong className="text-blue-600 dark:text-blue-400">Micro-BNC</strong>, l'État te donne automatiquement un abattement de 34%. 
-        En <strong className="text-emerald-600 dark:text-emerald-400">Régime Réel</strong>, tu déduis tes vraies dépenses (charges + cotisations).
+      <p className="sim-texte">
+        En <strong className="sim-encre">Micro-BNC</strong>, l'État te donne automatiquement un abattement de 34%. 
+        En <strong className="sim-encre">Régime Réel</strong>, tu déduis tes vraies dépenses (charges + cotisations).
       </p>
 
       {/* Bloc pédagogique : C'est quoi "déduire" ? */}
-      <div className="bg-slate-50/80 dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-700/40 rounded-xl p-3">
+      <div className="sim-panneau">
         <div className="flex items-start gap-2">
-          <Info className="h-4 w-4 text-slate-500 mt-0.5 flex-shrink-0" />
+          <Info className="sim-marque h-4 w-4 mt-0.5 flex-shrink-0" />
           <div className="space-y-1">
-            <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+            <p className="sim-texte sim-fort">
               Déduire, c'est quoi ?
             </p>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="sim-petit droit">
               Ton impôt est calculé sur ton <strong>bénéfice imposable</strong> :
             </p>
-            <div className="flex items-center gap-2 text-xs font-mono bg-white/60 dark:bg-slate-800/60 rounded-lg px-2 py-1.5 border border-slate-200/40 dark:border-slate-600/40">
-              <span className="text-slate-700 dark:text-slate-200">CA</span>
-              <span className="text-slate-400">−</span>
-              <span className="text-hippo-600 dark:text-hippo-400">Déductions</span>
-              <span className="text-slate-400">=</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-100">Imposable</span>
+            <div className="sim-formule flex items-center gap-2">
+              <span>CA</span>
+              <span className="sim-encre3">−</span>
+              <span className="sim-marque">Déductions</span>
+              <span className="sim-encre3">=</span>
+              <span className="sim-fort">Imposable</span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="sim-petit droit">
               Plus tu déduis → moins tu paies d'impôts
             </p>
           </div>
@@ -107,41 +107,41 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
       >
         {/* Colonne Micro-BNC */}
         <div 
-          className="bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/50 dark:border-blue-800/40 rounded-xl p-4 space-y-3"
+          className="sim-colonne space-y-3"
         >
           <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 rounded-lg bg-blue-100 dark:bg-blue-900/50">
-              <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <div className="sim-rond blanc">
+              <FileText className="h-4 w-4" />
             </div>
-            <span className="font-semibold text-sm text-blue-900 dark:text-blue-100">MICRO-BNC</span>
+            <span className="sim-colonne-nom">MICRO-BNC</span>
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-blue-700 dark:text-blue-300">Abattement 34%</span>
-              <span className="font-semibold text-blue-900 dark:text-blue-100">{formatMontant(abattementMicro)}</span>
+              <span className="sim-texte">Abattement 34%</span>
+              <span className="sim-montant">{formatMontant(abattementMicro)}</span>
             </div>
-            <p className="text-xs text-blue-600/70 dark:text-blue-400/70">(forfait automatique)</p>
+            <p className="sim-petit droit">(forfait automatique)</p>
           </div>
           
-          <div className="border-t border-blue-200/50 dark:border-blue-700/50 pt-3 mt-3">
+          <div className="sim-filet pt-3 mt-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Total déduit</span>
+              <span className="sim-texte sim-fort">Total déduit</span>
               <div className="text-right">
-                <span className="font-bold text-lg text-blue-900 dark:text-blue-100">{formatMontant(abattementMicro)}</span>
-                <p className="text-xs text-blue-600 dark:text-blue-400">(34%)</p>
+                <span className="sim-montant grand">{formatMontant(abattementMicro)}</span>
+                <p className="sim-petit droit">(34%)</p>
               </div>
             </div>
           </div>
           
           {/* Bénéfice imposable */}
-          <div className="border-t border-blue-200/50 dark:border-blue-700/50 pt-2 mt-2">
+          <div className="sim-filet pt-2 mt-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
+              <span className="sim-petit droit flex items-center gap-1">
                 <ArrowRight className="h-3 w-3" />
                 Imposable
               </span>
-              <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">
+              <span className="sim-montant">
                 {formatMontant(beneficeImposableMicro)}
               </span>
             </div>
@@ -152,75 +152,75 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
         <div 
           className="hidden md:flex items-center justify-center"
         >
-          <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center">
-            <span className="text-xs font-bold text-muted-foreground">VS</span>
+          <div className="sim-vs">
+            <span>VS</span>
           </div>
         </div>
 
         {/* Colonne Régime Réel */}
         <div 
-          className="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/50 dark:border-emerald-800/40 rounded-xl p-4 space-y-3"
+          className="sim-colonne space-y-3"
         >
           <div className="flex items-center gap-2 mb-3">
-            <div className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
-              <Calculator className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="sim-rond blanc">
+              <Calculator className="h-4 w-4" />
             </div>
-            <span className="font-semibold text-sm text-emerald-900 dark:text-emerald-100">RÉGIME RÉEL</span>
+            <span className="sim-colonne-nom">RÉGIME RÉEL</span>
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-emerald-700 dark:text-emerald-300">Charges pro</span>
-              <span className="font-semibold text-emerald-900 dark:text-emerald-100">{formatMontant(chargesProAnnuelles)}</span>
+              <span className="sim-texte">Charges pro</span>
+              <span className="sim-montant">{formatMontant(chargesProAnnuelles)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-emerald-700 dark:text-emerald-300">+ Cotisations</span>
-              <span className="font-semibold text-emerald-900 dark:text-emerald-100">{formatMontant(cotisationsReel)}</span>
+              <span className="sim-texte">+ Cotisations</span>
+              <span className="sim-montant">{formatMontant(cotisationsReel)}</span>
             </div>
             {optim && optim.forfait2pct && optim.forfait2pct > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-emerald-700 dark:text-emerald-300">+ Forfait 2%</span>
-                <span className="font-semibold text-emerald-900 dark:text-emerald-100">{formatMontant(optim.forfait2pct)}</span>
+                <span className="sim-texte">+ Forfait 2%</span>
+                <span className="sim-montant">{formatMontant(optim.forfait2pct)}</span>
               </div>
             )}
             {optim && optim.deductionsS1 && optim.deductionsS1 > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-emerald-700 dark:text-emerald-300">+ Déductions S1</span>
-                <span className="font-semibold text-emerald-900 dark:text-emerald-100">{formatMontant(optim.deductionsS1)}</span>
+                <span className="sim-texte">+ Déductions S1</span>
+                <span className="sim-montant">{formatMontant(optim.deductionsS1)}</span>
               </div>
             )}
             {optim && optim.cotisationsVolontaires && optim.cotisationsVolontaires > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-emerald-700 dark:text-emerald-300">+ PER/Madelin</span>
-                <span className="font-semibold text-emerald-900 dark:text-emerald-100">{formatMontant(optim.cotisationsVolontaires)}</span>
+                <span className="sim-texte">+ PER/Madelin</span>
+                <span className="sim-montant">{formatMontant(optim.cotisationsVolontaires)}</span>
               </div>
             )}
             {optim && optim.exonerationZone && optim.exonerationZone > 0 && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-emerald-700 dark:text-emerald-300">+ Zone ({Math.round((optim.tauxExonerationZone || 0) * 100)}%)</span>
-                <span className="font-semibold text-emerald-900 dark:text-emerald-100">{formatMontant(optim.exonerationZone)}</span>
+                <span className="sim-texte">+ Zone ({Math.round((optim.tauxExonerationZone || 0) * 100)}%)</span>
+                <span className="sim-montant">{formatMontant(optim.exonerationZone)}</span>
               </div>
             )}
           </div>
           
-          <div className="border-t border-emerald-200/50 dark:border-emerald-700/50 pt-3 mt-3">
+          <div className="sim-filet pt-3 mt-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">Total déduit</span>
+              <span className="sim-texte sim-fort">Total déduit</span>
               <div className="text-right">
-                <span className="font-bold text-lg text-emerald-900 dark:text-emerald-100">{formatMontant(totalDeductionsReel)}</span>
-                <p className="text-xs text-emerald-600 dark:text-emerald-400">({pourcentageReel.toFixed(1)}%)</p>
+                <span className="sim-montant grand">{formatMontant(totalDeductionsReel)}</span>
+                <p className="sim-petit droit">({pourcentageReel.toFixed(1)}%)</p>
               </div>
             </div>
           </div>
           
           {/* Bénéfice imposable */}
-          <div className="border-t border-emerald-200/50 dark:border-emerald-700/50 pt-2 mt-2">
+          <div className="sim-filet pt-2 mt-2">
             <div className="flex justify-between items-center">
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+              <span className="sim-petit droit flex items-center gap-1">
                 <ArrowRight className="h-3 w-3" />
                 Imposable
               </span>
-              <span className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">
+              <span className="sim-montant">
                 {formatMontant(beneficeImposableReel)}
               </span>
             </div>
@@ -231,24 +231,20 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
       {/* Message de conclusion */}
       <div>
         {equilibre ? (
-          <div className="bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/50 dark:border-amber-800/40 rounded-xl p-4">
-            <p className="text-sm font-medium text-amber-800 dark:text-amber-200 text-center">
+          <div className="sim-verdict">
+            <p className="sim-texte sim-fort text-center">
               Les deux régimes sont quasi équivalents à ce niveau de charges
             </p>
           </div>
         ) : (
-          <div className={`${
-            microAvantage 
-              ? 'bg-blue-50/80 dark:bg-blue-950/30 border-blue-200/50 dark:border-blue-800/40' 
-              : 'bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-200/50 dark:border-emerald-800/40'
-          } border rounded-xl p-4`}>
-            <p className="text-sm font-medium text-center">
-              <span className={microAvantage ? 'text-blue-800 dark:text-blue-200' : 'text-emerald-800 dark:text-emerald-200'}>
+          <div className="sim-verdict">
+            <p className="sim-texte sim-fort text-center">
+              <span>
                 Le {microAvantage ? 'Micro-BNC' : 'Régime Réel'} te fait déduire{' '}
                 <strong>{formatMontant(Math.abs(difference))}</strong> de plus
               </span>
             </p>
-            <p className="text-xs text-muted-foreground text-center mt-1">
+            <p className="sim-petit droit text-center mt-1">
               {microAvantage 
                 ? 'Le forfait de 34% est plus avantageux que tes charges réelles'
                 : 'Tes charges réelles dépassent le forfait de 34%'}
@@ -260,7 +256,7 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
       {/* Note pédagogique (uniquement si Micro-BNC avantageux) */}
       {microAvantage && !equilibre && (
         <div
-          className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/30 rounded-lg p-3"
+          className="sim-note neutre flex items-start gap-2"
         >
           <PremiumTooltip
             title="Note Micro-BNC"
@@ -271,7 +267,7 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
               </p>
             }
           >
-            <Info className="h-4 w-4 flex-shrink-0 mt-0.5 cursor-help text-hippo-500" />
+            <Info className="sim-marque h-4 w-4 flex-shrink-0 mt-0.5 cursor-help" />
           </PremiumTooltip>
           <p>
             <strong>À noter :</strong> En Micro-BNC, tu paies quand même tes charges réelles, 
@@ -293,12 +289,12 @@ export function BreakEvenAnalysis({ formData, reelResult, microBncResult, revenu
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <Card className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 shadow-lg overflow-hidden">
+      <Card className="sim-fiche overflow-hidden">
         <CollapsibleTrigger asChild>
           <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
             <CardTitle className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-hippo-400 to-hippo-600 shadow-lg shadow-hippo-500/20">
-                <Scale className="h-5 w-5 text-white" />
+              <div className="sim-rond">
+                <Scale className="h-5 w-5" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-foreground">Comprendre la différence</h3>

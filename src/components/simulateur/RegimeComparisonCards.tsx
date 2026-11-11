@@ -37,12 +37,13 @@ interface RegimeComparisonCardsProps {
   annee?: number;  // ✅ Année fiscale sélectionnée (pour tooltip ANCV dynamique)
 }
 
-// Palette harmonisée avec les charts
+// Palette de la DA : trois bleus de l'eau pour ce qui part (du plus clair au
+// plus profond, comme la jauge de l'accueil), le jaune pour ce qu'il reste.
 const HIPPO_COLORS = {
-  charges: 'hsl(35, 95%, 50%)',
-  cotisations: 'hsl(10, 85%, 55%)',
-  impots: 'hsl(250, 60%, 55%)',
-  superNet: 'hsl(150, 75%, 45%)',
+  charges: '#8DB9F2',
+  cotisations: '#4F88DE',
+  impots: '#1F4FA8',
+  superNet: '#FFD84A',
 };
 
 
@@ -236,7 +237,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Stethoscope,
       label: "Revenus libéraux",
       value: recettesAnnuelles || 0,
-      colorClass: "text-hippo-500",
+      colorClass: "sim-marque",
       negative: false,
       tooltip: "Vos recettes d'activité libérale avant toute déduction"
     });
@@ -251,7 +252,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Briefcase,
         label: "Revenus salariés",
         value: revenusSalariesAnnuels,
-        colorClass: "text-sky-500",
+        colorClass: "sim-marque",
         negative: false,
         tooltip: `${formatMontant(revenusSalariesAnnuels)} brut − ${formatMontant(abattementSalaries)} (abattement 10%) = ${formatMontant(imposableSalaries)} imposable`
       });
@@ -284,7 +285,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Heart,
         label: "Revenus du conjoint",
         value: revenusConjointAnnuels,
-        colorClass: "text-pink-500",
+        colorClass: "sim-marque",
         negative: false,
         tooltip: getConjointTooltip()
       });
@@ -296,7 +297,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Shield,
         label: "dont PDSA",
         value: liberalExonereAnnuel,
-        colorClass: "text-emerald-500",
+        colorClass: "sim-marque",
         negative: false,
         badge: "Exonéré IR",
         tooltip: "Inclus dans tes honoraires. Exonéré d'IR (Art. 151 ter CGI) mais soumis aux cotisations sociales."
@@ -305,11 +306,11 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
     // ✅ Helper TMI badge coloré
     const getTMIBadgeClass = (tmi: number): string => {
-      if (tmi <= 0) return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300';
-      if (tmi <= 11) return 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300';
-      if (tmi <= 30) return 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300';
-      if (tmi <= 41) return 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300';
-      return 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300';
+      if (tmi <= 0) return 'ok';
+      if (tmi <= 11) return 'info';
+      if (tmi <= 30) return 'attn';
+      if (tmi <= 41) return 'attn';
+      return 'attn fort';
     };
 
     // ✅ Tooltip JSX "Revenu imposable" - Composition détaillée avec optimisations
@@ -323,7 +324,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-blue-400" />
+            <Wallet className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Composition du revenu imposable</span>
           </div>
           
@@ -332,7 +333,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {/* Libéral */}
             <div className="flex justify-between gap-4 items-start">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                <div className="sim-point a" />
                 <span className="text-muted-foreground">Libéral :</span>
               </div>
               <div className="text-right">
@@ -348,35 +349,35 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
             {/* Optimisations appliquées (visibles dans le tooltip) */}
             {optim && type === 'reel' && (
-              <div className="space-y-1 pl-3 border-l-2 border-emerald-200 dark:border-emerald-800 ml-1">
+              <div className="sim-retrait space-y-1 pl-3 ml-1">
                 {optim.forfait2pct && optim.forfait2pct > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Forfait 2% :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.forfait2pct)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.forfait2pct)}</span>
                   </div>
                 )}
                 {optim.deductionsS1 && optim.deductionsS1 > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Déductions S1 :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.deductionsS1)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.deductionsS1)}</span>
                   </div>
                 )}
                 {optim.cotisationsVolontaires && optim.cotisationsVolontaires > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− PER/Madelin :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.cotisationsVolontaires)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.cotisationsVolontaires)}</span>
                   </div>
                 )}
                 {optim.chequesVacances && optim.chequesVacances > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Chèques-vacances :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.chequesVacances)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.chequesVacances)}</span>
                   </div>
                 )}
                 {optim.exonerationZone && optim.exonerationZone > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Zone exonérée ({Math.round((optim.tauxExonerationZone || 0) * 100)}%) :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.exonerationZone)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.exonerationZone)}</span>
                   </div>
                 )}
               </div>
@@ -386,7 +387,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {hasRevenusSalaries && (
               <div className="flex justify-between gap-4 items-start">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-sky-500" />
+                  <div className="sim-point b" />
                   <span className="text-muted-foreground">Salarié :</span>
                 </div>
                 <div className="text-right">
@@ -402,7 +403,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {hasRevenusConjoint && (
               <div className="flex justify-between gap-4 items-start">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-pink-500" />
+                  <div className="sim-point c" />
                   <span className="text-muted-foreground">Conjoint :</span>
                 </div>
                 <div className="text-right">
@@ -415,7 +416,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {optim?.revenuFoncier && optim.revenuFoncier !== 0 && (
               <div className="flex justify-between gap-4 items-start">
                 <div className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full ${optim.revenuFoncier < 0 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                  <div className="sim-point d" />
                   <span className="text-muted-foreground">
                     {optim.revenuFoncier < 0 
                       ? 'Déficit foncier :' 
@@ -423,7 +424,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                   </span>
                 </div>
                 <div className="text-right">
-                  <div className={`font-medium ${optim.revenuFoncier < 0 ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
+                  <div className="font-medium">
                     {optim.revenuFoncier > 0 ? '+' : ''}{formatMontant(optim.revenuFoncier)}
                   </div>
                 </div>
@@ -434,16 +435,16 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Total */}
           <div className="flex justify-between gap-4 pt-1.5 border-t border-border/40">
             <span className="text-xs font-medium">Total imposable :</span>
-            <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+            <span className="text-xs font-bold">
               {formatMontant(result.revenuImposableTotal || (liberal + salarie + conjoint))}
             </span>
           </div>
 
           {/* Crédits d'impôt (post-impôt) */}
           {optim && ((optim.creditFormation && optim.creditFormation > 0) || (optim.creditImpotAutre && optim.creditImpotAutre > 0) || (optim.creditEmploiDomicile && optim.creditEmploiDomicile > 0) || (optim.creditGardeEnfants && optim.creditGardeEnfants > 0)) && (
-            <div className="bg-emerald-100 dark:bg-emerald-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-emerald-800 dark:text-emerald-200">💡 Crédits d'impôt appliqués</strong>
-              <p className="text-emerald-700 dark:text-emerald-300 mt-1">
+            <div className="sim-note ok">
+              <strong>💡 Crédits d'impôt appliqués</strong>
+              <p className="mt-1">
                 {[
                   optim.creditFormation ? `Formation : −${formatMontant(optim.creditFormation)}` : '',
                   optim.creditEmploiDomicile ? `Emploi domicile : −${formatMontant(optim.creditEmploiDomicile)}` : '',
@@ -475,7 +476,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header avec icône contextuelle */}
           <div className="flex items-center gap-2">
-            <Landmark className="h-4 w-4 text-indigo-400" />
+            <Landmark className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">
               {hasRevenusConjoint 
                 ? "Impôt du foyer fiscal" 
@@ -501,7 +502,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Badge TMI + Taux effectif */}
           {tmi !== undefined && (
             <div className="flex items-center gap-2 pt-1.5 border-t border-border/40">
-              <div className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${getTMIBadgeClass(tmi)}`}>
+              <div className={`sim-puce ${getTMIBadgeClass(tmi)}`}>
                 TMI {tmi}%
               </div>
               <span className="text-[10px] text-muted-foreground">
@@ -512,9 +513,9 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           
           {/* ✅ Encart plafonnement QF si appliqué */}
           {plafonnementApplique && (
-            <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-amber-800 dark:text-amber-200">⚠️ Plafonnement appliqué</strong>
-              <p className="text-amber-700 dark:text-amber-300 mt-1">
+            <div className="sim-note attn">
+              <strong>⚠️ Plafonnement appliqué</strong>
+              <p className="mt-1">
                 L'avantage fiscal lié à tes enfants est limité à {formatMontant(plafondUtilise || 0)}.
                 <br />
                 Sans ce plafond, tu aurais économisé {formatMontant(avantageEnfantsInitial || 0)}.
@@ -523,7 +524,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           )}
           
           {/* Encart pédagogique */}
-          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-2 text-[10px] text-muted-foreground leading-relaxed">
+          <div className="sim-note neutre">
             <strong className="text-foreground">Quotient familial</strong> : ton revenu est divisé par tes parts 
             avant d'appliquer le barème progressif, puis multiplié à nouveau.
           </div>
@@ -542,7 +543,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <Landmark className="h-4 w-4 text-indigo-400" />
+            <Landmark className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Ma part d'impôt (taux individualisé)</span>
           </div>
           
@@ -555,21 +556,21 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           <div className="space-y-1.5 text-xs">
             <div className="flex justify-between gap-4 items-center">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-hippo-500" />
+                <div className="sim-point a" />
                 <span className="text-muted-foreground">
                   Toi (~{tauxMedecin}%) :
                 </span>
               </div>
-              <span className="font-medium text-hippo-600 dark:text-hippo-400">{formatMontant(impotMedecin)}</span>
+              <span className="font-medium">{formatMontant(impotMedecin)}</span>
             </div>
             <div className="flex justify-between gap-4 items-center">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-pink-500" />
+                <div className="sim-point c" />
                 <span className="text-muted-foreground">
                   Conjoint (~{tauxConjoint}%) :
                 </span>
               </div>
-              <span className="font-medium text-pink-600 dark:text-pink-400">{formatMontant(impotConjoint)}</span>
+              <span className="font-medium">{formatMontant(impotConjoint)}</span>
             </div>
             <div className="flex justify-between gap-4 pt-1 border-t border-border/40">
               <span className="font-medium">Total foyer :</span>
@@ -584,9 +585,9 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         </div>
           
           {/* Avertissement */}
-          <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-            <strong className="text-amber-800 dark:text-amber-200">⚠️ Estimation indicative</strong>
-            <p className="text-amber-700 dark:text-amber-300 mt-1">
+          <div className="sim-note attn">
+            <strong>⚠️ Estimation indicative</strong>
+            <p className="mt-1">
               Les vrais taux sont calculés par la DGFiP avec des règles supplémentaires (revenus communs, arrondis officiels, etc.).
             </p>
           </div>
@@ -602,7 +603,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-violet-400" />
+            <Users className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Parts fiscales</span>
           </div>
           
@@ -629,7 +630,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Total avec badge */}
           <div className="flex items-center justify-between pt-1.5 border-t border-border/40">
             <span className="text-xs font-medium">Total :</span>
-            <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:border-violet-700 text-[10px]">
+            <Badge variant="outline" className="sim-puce info">
               {parts} part{parts > 1 ? 's' : ''}
             </Badge>
           </div>
@@ -651,13 +652,13 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header avec badge régime */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Shield className="h-4 w-4 text-orange-400" />
+            <Shield className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Cotisations sociales</span>
             <Badge variant="outline" className={cn(
-              "text-[9px]",
+              "sim-puce petite",
               isRSPM 
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700" 
-                : "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600"
+                ? "info" 
+                : "neutre"
             )}>
               {isRSPM ? 'RSPM' : 'PAMC'}
             </Badge>
@@ -726,15 +727,15 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Total avec séparateur */}
           <div className="flex justify-between gap-4 pt-1.5 border-t border-border/40">
             <span className="text-xs font-medium">Total :</span>
-            <span className="text-xs font-bold text-orange-600 dark:text-orange-400">
+            <span className="text-xs font-bold">
               {formatMontant(result.cotisationsTotales)}
             </span>
           </div>
           
           {/* ✅ Encart pédagogique sur la déductibilité du CA libéral */}
-          <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-            <strong className="text-blue-800 dark:text-blue-200">💡 Déductibles du CA libéral</strong>
-            <p className="text-blue-700 dark:text-blue-300 mt-1">
+          <div className="sim-note info">
+            <strong>💡 Déductibles du CA libéral</strong>
+            <p className="mt-1">
               Ces cotisations réduisent ton revenu imposable, diminuant ainsi ton impôt final.
             </p>
           </div>
@@ -760,7 +761,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <Briefcase className="h-4 w-4 text-amber-400" />
+            <Briefcase className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Charges professionnelles</span>
           </div>
           
@@ -772,17 +773,17 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           
           {/* Explication contextuelle selon régime */}
           {type === 'micro-bnc' ? (
-            <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-amber-800 dark:text-amber-200">⚠️ Non déductibles en Micro-BNC</strong>
-              <p className="text-amber-700 dark:text-amber-300 mt-1">
+            <div className="sim-note attn">
+              <strong>⚠️ Non déductibles en Micro-BNC</strong>
+              <p className="mt-1">
                 L'abattement forfaitaire de 34 % (CGI Art. 102 ter) remplace tes charges réelles.
                 Elles sont saisies à titre d'information mais n'impactent ni l'impôt ni le Super-Net.
               </p>
             </div>
           ) : (
-            <div className="bg-emerald-100 dark:bg-emerald-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-emerald-800 dark:text-emerald-200">✅ Déductibles en Régime Réel</strong>
-              <p className="text-emerald-700 dark:text-emerald-300 mt-1">
+            <div className="sim-note ok">
+              <strong>✅ Déductibles en Régime Réel</strong>
+              <p className="mt-1">
                 Ces charges réduisent directement ton revenu imposable, diminuant ainsi ton impôt.
               </p>
             </div>
@@ -799,7 +800,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Briefcase,
         label: "Charges professionnelles",
         value: result.chargesReelles,
-        colorClass: "text-amber-500",
+        colorClass: "sim-eau",
         negative: true,
         tooltipContent: getChargesTooltipContent()
       });
@@ -812,7 +813,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Shield, 
       label: "Cotisations sociales", 
       value: result.cotisationsTotales, 
-      colorClass: "text-orange-500",
+      colorClass: "sim-eau",
       negative: true,
       tooltipContent: getCotisationsTooltipContent()
     });
@@ -830,7 +831,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Percent,
           label: "Forfait 2% (représentation)",
           value: optim.forfait2pct,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: "Frais de représentation forfaitaires (2% du CA) déductibles pour les médecins conventionnés Secteur 1 en BNC réel."
         });
@@ -841,7 +842,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Building,
           label: "Déductions S1 (3% + Grp III)",
           value: optim.deductionsS1,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: "Déduction conventionnelle de 3% sur les honoraires + barème Groupe III (770 € à 3 050 € selon le CA) pour les Secteur 1 en BNC réel."
         });
@@ -857,7 +858,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Leaf,
           label: "Chèques-vacances ANCV",
           value: optim.chequesVacances,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: `Chèques-vacances ANCV déductibles du BNC réel (Art. L411-5 Code du tourisme). Plafond annuel = 1 SMIC mensuel : ${plafondLabel}${mentionProjete}.`
         });
@@ -872,7 +873,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Leaf,
           label: "PER / Madelin",
           value: optim.cotisationsVolontaires,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: type === 'reel'
             ? "Cotisations volontaires (PER individuel, contrat Madelin) déductibles du revenu imposable libéral."
@@ -885,7 +886,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: MapPin,
           label: `Zone exonérée (${Math.round((optim.tauxExonerationZone || 0) * 100)}%)`,
           value: optim.exonerationZone,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: `Exonération ZFU-TE ou ZFRR : ${Math.round((optim.tauxExonerationZone || 0) * 100)}% du bénéfice libéral est exonéré d'impôt.`
         });
@@ -911,7 +912,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Home,
           label: foncierLabel,
           value: Math.abs(optim.revenuFoncier),
-          colorClass: isDeficit ? "text-emerald-600" : "text-amber-600",
+          colorClass: isDeficit ? "sim-eau" : "sim-marque",
           negative: isDeficit,
           tooltip: foncierTooltip
         });
@@ -923,7 +924,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: GraduationCap,
           label: "Crédits d'impôt",
           value: totalCredits,
-          colorClass: "text-emerald-600",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: "Crédits d'impôt soustraits directement de l'impôt brut (formation dirigeant, autres). Ne réduisent pas le revenu imposable."
         });
@@ -937,7 +938,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Wallet, 
       label: "Revenu imposable", 
       value: result.revenuImposableTotal || result.netAvantImpot, 
-      colorClass: "text-blue-500",
+      colorClass: "sim-marque",
       negative: false,
       tooltipContent: getRevenuImposableTooltipContent()
     });
@@ -949,7 +950,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Users, 
       label: `${result.impotDetails?.parts || 1} part${(result.impotDetails?.parts || 1) > 1 ? 's' : ''} fiscale${(result.impotDetails?.parts || 1) > 1 ? 's' : ''}`, 
       value: 0, 
-      colorClass: "text-violet-500",
+      colorClass: "sim-marque",
       negative: false,
       tooltipContent: getPartsTooltipContent(),
       isInfoLine: true
@@ -962,14 +963,14 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Landmark, 
       label: hasRevenusConjoint ? "Mon impôt (estimé)" : "Impôt sur le revenu", 
       value: hasRevenusConjoint ? impotMedecin : result.impot, 
-      colorClass: "text-indigo-500",
+      colorClass: "sim-eau",
       negative: true,
       tooltipContent: hasRevenusConjoint ? getImpotMedecinTooltipContent() : getImpotTooltipContent()
     });
 
     const cardClassName = isRecommended
-      ? "relative bg-white/80 dark:bg-slate-900/70 backdrop-blur-xl border-2 border-emerald-200/50 dark:border-emerald-500/30 shadow-xl shadow-emerald-500/10 rounded-2xl overflow-visible"
-      : "relative bg-white/60 dark:bg-slate-900/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-700/50 rounded-2xl overflow-hidden";
+      ? "sim-fiche sim-regime recommande relative overflow-visible"
+      : "sim-fiche sim-regime relative overflow-hidden";
 
     return (
       <div
@@ -980,7 +981,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           <div 
             className="absolute -top-3 -right-2 z-10"
           >
-            <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25 px-3 py-1.5 text-xs font-semibold">
+            <Badge className="sim-puce encre grande">
               <Trophy className="h-3.5 w-3.5 mr-1.5" />
               Recommandé
             </Badge>
@@ -1002,7 +1003,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             >
               <Badge 
                 variant="outline" 
-                className="border-orange-400 bg-orange-50 text-orange-700 dark:bg-orange-950/50 dark:text-orange-300 cursor-help text-xs"
+                className="sim-puce attn grande cursor-help"
               >
                 ⚠️ Vérifiez
               </Badge>
@@ -1011,45 +1012,43 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         )}
 
         <Card className={cardClassName}>
-          <CardHeader className="pb-3 pt-5">
+          <CardHeader className="sim-regime-tete">
             <div className="flex items-center gap-3">
               {/* Icon badge */}
-              <div className={`p-2.5 rounded-xl ${
+              <div className={`sim-rond grand ${
                 isRecommended 
-                  ? 'bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50' 
-                  : 'bg-slate-100 dark:bg-slate-800'
+                  ? 'plein' 
+                  : ''
               }`}>
-                <Icon className={`h-5 w-5 ${
-                  isRecommended ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400'
-                }`} />
+                <Icon className="h-5 w-5" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <CardTitle className="text-xl sm:text-2xl font-bold">{title}</CardTitle>
+                  <CardTitle className="sim-regime-nom">{title}</CardTitle>
                   {/* Badge RSPM/PAMC - ✅ Utilise result.isRSPM (état réel) et non isRSPMUsed (intention) */}
                   {result.isRSPM !== undefined && (
                     <Badge 
                       variant="outline" 
                       className={result.isRSPM 
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 text-[10px]" 
-                        : "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900/50 dark:text-slate-400 text-[10px]"
+                        ? "sim-puce info" 
+                        : "sim-puce neutre"
                       }
                     >
                       {result.isRSPM ? '🎓 RSPM' : '🩺 PAMC'}
                     </Badge>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{description}</p>
+                <p className="sim-regime-desc">{description}</p>
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-4">
+          <CardContent className="sim-regime-corps space-y-4">
             {/* Phase 5 Bug #17 — Avertissement marge conservatrice 20 % en Micro-BNC */}
             {type === 'micro-bnc' && !showWarning && (
-              <div className="rounded-lg border border-amber-200/60 dark:border-amber-800/40 bg-amber-50/70 dark:bg-amber-950/20 px-3 py-2 flex items-start gap-2">
-                <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-                <p className="text-[11px] leading-snug text-amber-800 dark:text-amber-200">
+              <div className="sim-note attn flex items-start gap-2">
+                <AlertTriangle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                <p className="sim-note-in">
                   <strong>Estimation optimiste.</strong> En Micro-BNC, l'abattement forfaitaire 34 % suppose
                   que tes charges réelles ne dépassent pas ce seuil. Si tu as beaucoup de frais
                   (cabinet, matériel, déplacements), prévois <strong>~20 % de marge</strong> sur ce Super-Net.
@@ -1057,27 +1056,23 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               </div>
             )}
 
-            {/* Hero Section - Super-Net avec glow */}
+            {/* Le Super-Net : sur du jaune dans la fiche recommandée (le halo flou
+                d'avant est retiré, il débordait de la fiche sur téléphone). */}
             <div className="relative">
-              {/* Glow effect */}
-              {isRecommended && (
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 blur-2xl rounded-full scale-150 -z-10" />
-              )}
-              
-              <div className={`relative rounded-xl p-4 sm:p-5 ${
+              <div className={`sim-supernet relative ${
                 isRecommended
-                  ? 'bg-gradient-to-br from-emerald-50/80 to-teal-50/80 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/50 dark:border-emerald-700/30'
-                  : 'bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/30'
+                  ? 'soleil'
+                  : ''
               }`}>
                 <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
+                <span className="sim-supernet-nom flex items-center gap-1.5">
                     {superNetLabel}
                     <PremiumTooltip
                       title="Super-Net"
                       content={
                         <div className="space-y-2">
                           <p className="font-medium">Calcul du Super-Net :</p>
-                          <p className="text-sm font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                          <p className="sim-formule">
                             CA - Impôt{hasRevenusConjoint ? " (ta part)" : ""} - Cotisations - Charges
                           </p>
                           <p className="text-sm text-muted-foreground">
@@ -1091,11 +1086,11 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                         </div>
                       }
                     >
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" />
+                      <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
                     </PremiumTooltip>
                   </span>
                   {revenusTotaux > 0 && (
-                    <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/60 dark:bg-slate-800/60">
+                    <Badge variant="secondary" className="sim-puce blanche grande">
                       {Math.round(((superNetMedecinReel || 0) / revenusTotaux) * 100)}% {hasRevenusSalaries ? 'des revenus' : 'du CA'}
                     </Badge>
                   )}
@@ -1105,17 +1100,13 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                   className="flex flex-col"
                 >
                   <div className="flex items-baseline gap-1">
-                    <span className={`text-3xl sm:text-4xl font-bold ${
-                      isRecommended 
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent' 
-                        : 'text-slate-700 dark:text-slate-200'
-                    }`}>
+                    <span className="aff sim-supernet-montant">
                       <CountUp end={periode === 'mensuel' ? superNetMedecinReel / 12 : superNetMedecinReel} />
-                      <span className="text-lg sm:text-xl ml-1">€</span>
+                      <span className="sim-supernet-euro">€</span>
                     </span>
-                    <span className="text-sm text-muted-foreground">{periodeSuffix}</span>
+                    <span className="sim-supernet-par">{periodeSuffix}</span>
                   </div>
-                  <span className="text-xs text-muted-foreground mt-0.5">
+                  <span className="sim-supernet-soit">
                     {periode === 'mensuel' 
                       ? `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(superNetMedecinReel)} /an`
                       : `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(superNetMedecinReel / 12))} /mois`
@@ -1139,13 +1130,13 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               {detailItems.map((item, i) => (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                  className="sim-ligne-detail flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
                     <item.icon className={`h-4 w-4 ${item.colorClass}`} />
-                    <span className="text-sm text-muted-foreground">{item.label}</span>
+                    <span className="sim-ligne-nom">{item.label}</span>
                     {item.badge && (
-                      <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700">
+                      <Badge variant="outline" className="sim-puce ok petite">
                         {item.badge}
                       </Badge>
                     )}
@@ -1155,7 +1146,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                         title={item.label}
                         content={item.tooltipContent}
                       >
-                        <Info className="h-3 w-3 text-muted-foreground/50 hover:text-muted-foreground transition-colors cursor-help" />
+                        <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
                       </PremiumTooltip>
                     )}
                     {/* Tooltip texte simple (revenus salariés, conjoint, charges) */}
@@ -1164,11 +1155,11 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                         title={item.label}
                         content={<p className="text-sm">{item.tooltip}</p>}
                       >
-                        <Info className="h-3 w-3 text-muted-foreground/50 hover:text-muted-foreground transition-colors cursor-help" />
+                        <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
                       </PremiumTooltip>
                     )}
                   </div>
-                  <span className={`font-semibold text-sm ${item.negative ? item.colorClass : ''}`}>
+                  <span className={`sim-ligne-valeur ${item.negative ? item.colorClass : ''}`}>
                     {item.isInfoLine 
                       ? '' 
                       : `${item.negative ? '-' : ''}${formatMontant(item.value)}`
@@ -1181,17 +1172,17 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {/* Footer Économie */}
             {isRecommended && economie > 100 && (
                 <div
-                  className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/50 dark:border-emerald-700/30 rounded-xl p-3 sm:p-4"
+                  className="sim-note ok grande"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex-shrink-0">
-                      <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
+                    <div className="sim-rond blanc flex-shrink-0">
+                      <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-100">
+                      <p className="sim-note-fort">
                         Économie de {formatMontant(economie)}{periodeSuffix}
                       </p>
-                      <p className="text-xs text-emerald-700 dark:text-emerald-300">
+                      <p className="sim-note-sous">
                         par rapport au {type === 'reel' ? 'Micro-BNC' : 'Régime Réel'}
                       </p>
                     </div>
@@ -1201,11 +1192,11 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
               {!isRecommended && economie > 100 && (
                 <div
-                  className="bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/30 rounded-xl p-3"
+                  className="sim-note neutre grande"
                 >
                   <div className="flex items-center gap-3">
-                    <TrendingDown className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                    <p className="text-sm text-muted-foreground">
+                    <TrendingDown className="h-4 w-4 flex-shrink-0" />
+                    <p className="sim-note-in">
                       Moins avantageux de <span className="font-semibold">{formatMontant(economie)}{periodeSuffix}</span>
                     </p>
                   </div>
@@ -1222,35 +1213,35 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       {/* Encart pédagogique DOM-TOM si applicable */}
       {domTomInfo && (
         <div
-          className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/50 dark:border-emerald-700/30 rounded-xl p-4"
+          className="sim-fiche sim-dom"
         >
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex-shrink-0">
-              <MapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="sim-rond grand flex-shrink-0">
+              <MapPin className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-emerald-900 dark:text-emerald-100">
+                <h3 className="sim-fiche-titre">
                   Avantage fiscal DOM : {domTomInfo.territoire}
                 </h3>
-                <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/50 dark:text-emerald-300 text-[10px]">
+                <Badge className="sim-puce ok">
                   🏝️ DOM-TOM
                 </Badge>
               </div>
-              <p className="text-sm text-emerald-700 dark:text-emerald-300 mb-2">
+              <p className="sim-texte mb-2">
                 Tu bénéficies d'une réduction d'impôt de <strong>{Math.round(domTomInfo.tauxAbattement * 100)}%</strong> (plafonnée à{' '}
                 <strong>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(domTomInfo.plafond)}</strong>) sur tes revenus.
               </p>
               {domTomInfo.abattementApplique && domTomInfo.abattementApplique > 0 && (
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-slate-900/40 rounded-lg px-3 py-2 mt-2">
-                  <TrendingUp className="h-4 w-4 text-emerald-600" />
-                  <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
+                <div className="sim-note ok flex items-center gap-2 mt-2">
+                  <TrendingUp className="h-4 w-4" />
+                  <span className="sim-note-in sim-fort">
                     Économie réalisée : {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(domTomInfo.abattementApplique))}
                   </span>
                 </div>
               )}
               {/* Phase 4C Bug #14 (Option A) — Disclaimer pédagogique cotisations DOM */}
-              <p className="text-[11px] text-emerald-700/80 dark:text-emerald-300/70 mt-2 italic flex items-start gap-1">
+              <p className="sim-petit mt-2 flex items-start gap-1">
                 <Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
                 <span>Cotisations URSSAF estimées au taux métropole. Écart réel &lt; 3 % pour les médecins PAMC en DOM.</span>
               </p>
@@ -1261,38 +1252,38 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       {/* Encadré informatif si plafond dépassé - Version compacte */}
       {depassePlafond && (
         <Collapsible open={isInfoOpen} onOpenChange={setIsInfoOpen}>
-          <div className="bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-700/40 rounded-xl overflow-hidden">
-            <CollapsibleTrigger className="w-full px-4 py-3 flex items-center justify-between hover:bg-amber-100/40 dark:hover:bg-amber-900/20 transition-colors">
+          <div className="sim-plafond overflow-hidden">
+            <CollapsibleTrigger className="sim-plafond-tete w-full flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/50">
-                  <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <div className="sim-rond blanc">
+                  <AlertTriangle className="h-4 w-4" />
                 </div>
-                <span className="font-medium text-sm text-amber-900 dark:text-amber-100">
+                <span className="sim-fort">
                   Plafond Micro-BNC dépassé
                 </span>
               </div>
               <ChevronDown className={cn(
-                "h-4 w-4 text-amber-500 transition-transform duration-200",
+                "h-4 w-4 transition-transform duration-200",
                 isInfoOpen && "rotate-180"
               )} />
             </CollapsibleTrigger>
             
             <CollapsibleContent>
-              <div className="px-4 pb-3 pt-1 text-sm space-y-3">
-                <p className="text-slate-700 dark:text-slate-300">
+              <div className="sim-plafond-corps space-y-3">
+                <p>
                   Le plafond Micro-BNC est de <strong>83 600 €/an</strong>. 
                   Si vous le dépassez <strong>2 années consécutives</strong>, vous passerez 
                   automatiquement en Régime Réel au <strong>1er janvier</strong> de l'année suivante.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/50 dark:border-emerald-800/40 rounded-lg px-3 py-2">
-                    <p className="font-semibold text-emerald-800 dark:text-emerald-200">1ère année au-dessus</p>
-                    <p className="text-emerald-700 dark:text-emerald-300">Micro-BNC maintenu</p>
+                  <div className="sim-plafond-cas">
+                    <p className="sim-fort">1ère année au-dessus</p>
+                    <p>Micro-BNC maintenu</p>
                   </div>
-                  <div className="bg-orange-50/80 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/40 rounded-lg px-3 py-2">
-                    <p className="font-semibold text-orange-800 dark:text-orange-200">2ème année au-dessus</p>
-                    <p className="text-orange-700 dark:text-orange-300">Régime Réel au 1er janv.</p>
+                  <div className="sim-plafond-cas">
+                    <p className="sim-fort">2ème année au-dessus</p>
+                    <p>Régime Réel au 1er janv.</p>
                   </div>
                 </div>
               </div>
@@ -1308,20 +1299,20 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         ) : (
           <div
           >
-            <Card className="relative bg-white/60 dark:bg-slate-900/50 backdrop-blur-lg border border-dashed border-slate-300 dark:border-slate-600 rounded-2xl">
+            <Card className="sim-fiche sim-regime relative">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800">
+                  <div className="sim-rond grand">
                     <Calculator className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl">Micro-BNC</CardTitle>
+                    <CardTitle className="sim-regime-nom">Micro-BNC</CardTitle>
                     <p className="text-sm text-muted-foreground">Erreur de calcul</p>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="bg-slate-50/50 dark:bg-slate-800/30 rounded-lg p-4">
+                <div className="sim-panneau">
                   <p className="text-sm text-muted-foreground">
                     Une erreur est survenue lors du calcul du régime Micro-BNC.
                   </p>

@@ -13,7 +13,28 @@
  * /guide-declarations/calculette porte WebApplication + FAQPage + BreadcrumbList
  * depuis l'origine, et /simulateur reçoit 41 liens internes pour zéro impression
  * de recherche. La parité de migration ne justifiait plus de s'en priver.
+ *
+ * Habillée dans la DA 2026 en phase 5d (MIGRATION.md § 9.ek) : seul l'habillage a
+ * changé. Textes, titres, liens, ancres, ordre des blocs, JSON-LD, `data-track`
+ * et `data-calendly` sont ceux d'avant (période d'observation SEO) ; aucun
+ * calcul n'est touché.
+ * - Page entièrement dans la DA : fond `da-fond`, en-tête « flottante ».
+ * - Cinq blocs : le ciel (titre, l'îlot du simulateur, la prise de rendez-vous),
+ *   une feuille sable (le mode d'emploi, en plis `.qa`), une feuille ciel (les
+ *   trois définitions, l'exemple chiffré, les limites), une feuille sable (les
+ *   questions), puis la fin (l'appel à l'essai, les articles à lire, le soleil
+ *   sur l'eau du pied de page).
+ * - Aucune classe utilitaire dans cette page : tout est dans son <style> et
+ *   dans da.css. L'îlot React garde ses utilitaires de mise en page ; ses
+ *   couleurs viennent de src/styles/simulateur.css (classes `sim-*`).
+ * - Caractères absents de la police (→, ↗, 💡) : dessinés en SVG, le caractère
+ *   reste dans le texte, masqué à l'œil (classe `sr`). Le « + » des plis aussi.
+ * - Mascotte au pouce levé (décor, les fichiers de l'accueil), à partir de
+ *   1 024 px : à droite du titre, debout derrière le haut de l'îlot.
  */
+import '@/styles/simulateur.css';
+import { getImage } from 'astro:assets';
+import pouce from '@/assets/accueil/mascotte-f-pouce.webp';
 import BlogReadMore from '@/components/BlogReadMore.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
@@ -96,133 +117,149 @@ const breadcrumbSchema = {
 };
 
 const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
+
+/* Affichage seulement : garde sur une ligne un mot composé (« prend-il »,
+   « Micro-BNC ») et un mot avec le « ? » qui le suit. Le texte ne change pas. */
+const echapper = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const nouer = (t: string) =>
+  echapper(t)
+    .replace(/(\S+) \?/g, '<span class="num">$1 ?</span>')
+    .replace(/(^|[\s>])([^\s<>]+-[^\s<>]+)(?=[\s<]|$)/g, '$1<span class="num">$2</span>');
+
+/* La mascotte : mêmes largeurs et mêmes formats que dans accueil/TroisCases.astro,
+   donc les mêmes fichiers (aucune image de plus dans le build). */
+const [pouceAvif, pouceWebp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) => getImage({ src: pouce, format, width: 230, widths: [150, 230, 300, 460] }))
+);
+
+/* Dessins : la croix des plis (da.css la fait tourner), la coche des gages, la
+   flèche du mode d'emploi (le dessin de accueil/TroisCases.astro). */
+const croix =
+  '<svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>';
+const coche =
+  '<svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>';
+const fleche =
+  '<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>';
 ---
 
-<BaseLayout title={title} description={description} path={path} ogImage="/lovable-uploads/Hero-simulateur.png" ogImageWidth={1964} ogImageHeight={1287} jsonLd={jsonLd}>
-  <Header />
+<BaseLayout title={title} description={description} path={path} ogImage="/lovable-uploads/Hero-simulateur.png" ogImageWidth={1964} ogImageHeight={1287} jsonLd={jsonLd} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
 
-  {/* `overflow-x-clip` (§ 9.ed) : une fois le calcul affiché, un halo décoratif des
-       cartes de régime (agrandi à 150 %) dépassait de 35 px à droite sur téléphone
-       et la page défilait de côté. Rogné au bord de la page, sans conteneur de
-       défilement (les éléments collants ne sont pas concernés). */}
-  <main class="da-sous-entete min-h-screen overflow-x-clip bg-gradient-to-b from-white via-gray-50/30 to-white pb-20">
-    <div class="container max-w-6xl mx-auto py-8 sm:py-12 px-4 space-y-8">
-      <!-- Hero compact (statique — pas d'animation d'entrée) -->
-      <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/80 via-gray-50/60 to-emerald-50/30 border border-white/40 shadow-xl">
-        <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
-          <div class="absolute -top-16 -right-16 w-40 h-40 bg-gradient-to-br from-emerald-400/25 to-teal-500/15 rounded-full blur-3xl"></div>
-          <div class="absolute -bottom-16 -left-16 w-36 h-36 bg-gradient-to-tr from-blue-400/20 to-emerald-400/15 rounded-full blur-2xl"></div>
-        </div>
+  <main>
+    <div class="tete da-bloc">
+      <div class="wrap">
+        <!-- Titre de la page (statique) -->
+        <section class="band-head intro">
+          {/* « Super-Net » sur du jaune, comme partout dans la DA. Les <span class="num">
+               ne changent pas le texte : ils gardent le « : » sur la ligne du mot. */}
+          <h1 class="aff">Simulateur <span class="num"><span class="hl">Super-Net</span> :</span> ton revenu net de médecin</h1>
 
-        <div class="relative p-6 sm:p-8 text-center">
-          <div class="inline-flex h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 items-center justify-center shadow-lg shadow-emerald-500/25 mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-          </div>
-
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-blue-600 bg-clip-text text-transparent mb-3">
-            Simulateur Super-Net : ton revenu net de médecin
-          </h1>
-
-          <p class="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-4">
-            Renseigne ta situation en 2 min, découvre <strong class="text-foreground">ce qu'il te reste vraiment</strong> après charges et impôts, et laisse le simulateur te montrer <strong class="text-foreground">le régime le plus rentable</strong> entre Micro-BNC et Réel.
+          <p class="lead">
+            Renseigne ta situation en 2 min, découvre <strong>ce qu'il te reste vraiment</strong> après charges et impôts, et laisse le simulateur te montrer <strong>le régime le plus rentable</strong> entre Micro-BNC et Réel.
           </p>
 
-          <div class="flex flex-wrap gap-2 md:gap-3 justify-center">
+          <div class="gages">
             {trustBadges.map((label) => (
-              <div class="flex items-center gap-1.5 bg-white/70 backdrop-blur-sm px-3 py-2 rounded-full border border-white/30">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600 flex-shrink-0" aria-hidden="true"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
-                <span class="text-xs font-medium">{label}</span>
+              <div class="gage">
+                <Fragment set:html={coche} />
+                <span>{label}</span>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Îlot React — formulaire + résultats, hydraté à la vue.
-          ⚠️ Le <div> enveloppant n'est pas décoratif : le parent espace ses enfants
-          avec `space-y-8`, qui pose une marge haute sur chacun sauf le premier. Or
-          ni le <h2 sr-only> (position absolue, hors flux) ni l'<astro-island>
-          (display: contents, donc sans boîte) ne peuvent porter cette marge —
-          l'espacement tombait dans le vide et le sélecteur de profil collait à la
-          carte du titre. Ce <div> est un enfant normal : il reçoit la marge. */}
-      <div>
-        <h2 class="sr-only">Ta simulation Super-Net</h2>
-        <SimulateurApp client:visible />
+        {/* Îlot React — formulaire + résultats, hydraté à la vue. Le <div> porte la
+            mascotte (décor, à partir de 1 024 px) : elle se tient derrière le haut de
+            l'îlot, coupée à mi-corps. */}
+        <div class="outil">
+          <picture class="guide">
+            <source type="image/avif" srcset={pouceAvif.srcSet.attribute} sizes="190px" />
+            <img src={pouceWebp.src} srcset={pouceWebp.srcSet.attribute} sizes="190px" alt="" width={pouceWebp.attributes.width} height={pouceWebp.attributes.height} loading="lazy" decoding="async" />
+          </picture>
+          <h2 class="sr">Ta simulation Super-Net</h2>
+          <SimulateurApp client:visible />
+        </div>
+
+        {/* Prise de rendez-vous — juste après le résultat, l'endroit de plus forte
+            intention du site : `cta_simulator` est le lien le plus cliqué de la
+            landing (20 clics contre 17 pour l'inscription), et le simulateur tourne
+            (92 utilisations en 21 jours). Quelqu'un qui vient de voir son super-net a
+            un chiffre concret et une question précise sur SA situation. */}
+        <section class="rdv">
+          <div class="rdv-fiche">
+            {/* Formulation valable AVANT comme APRÈS la simulation : le bloc est placé
+                sous l'îlot, donc visible dès le chargement, avant qu'aucun chiffre
+                n'existe. « Ce chiffre te surprend ? » n'aurait alors eu aucun sens. */}
+            <p class="rdv-t">Un doute sur ton <span class="num">chiffre ?</span></p>
+            <p class="rdv-p">
+              Ton super-net dépend de ton régime, de tes charges et de ton mode d'exercice.
+            En 15 minutes, Ryan — médecin remplaçant — te montre comment il suit ses propres
+            chiffres au quotidien, et répond à tes questions. En visio, ou il t'appelle.
+            </p>
+            <a
+              href={CALENDLY_URL}
+              data-calendly="simulateur_resultat"
+              target="_blank"
+              rel="noopener"
+              class="btn btn-line"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18"/><rect width="18" height="18" x="3" y="4" rx="2"/></svg>
+              <span>Prendre 15 min avec Ryan</span>
+            </a>
+          </div>
+        </section>
       </div>
     </div>
-
-    {/* Prise de rendez-vous — juste après le résultat, l'endroit de plus forte
-        intention du site : `cta_simulator` est le lien le plus cliqué de la
-        landing (20 clics contre 17 pour l'inscription), et le simulateur tourne
-        (92 utilisations en 21 jours). Quelqu'un qui vient de voir son super-net a
-        un chiffre concret et une question précise sur SA situation. */}
-    <section class="mx-auto mt-10 max-w-3xl px-4">
-      <div class="rounded-2xl border border-hippo-200/60 bg-white p-6 text-center shadow-sm sm:p-8">
-        {/* Formulation valable AVANT comme APRÈS la simulation : le bloc est placé
-            sous l'îlot, donc visible dès le chargement, avant qu'aucun chiffre
-            n'existe. « Ce chiffre te surprend ? » n'aurait alors eu aucun sens. */}
-        <p class="text-lg font-semibold text-hippo-800">Un doute sur ton chiffre ?</p>
-        <p class="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
-          Ton super-net dépend de ton régime, de tes charges et de ton mode d'exercice.
-          En 15 minutes, Ryan — médecin remplaçant — te montre comment il suit ses propres
-          chiffres au quotidien, et répond à tes questions. En visio, ou il t'appelle.
-        </p>
-        <a
-          href={CALENDLY_URL}
-          data-calendly="simulateur_resultat"
-          target="_blank"
-          rel="noopener"
-          class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-hippo-600 px-6 py-3 font-semibold text-white shadow-lg shadow-hippo-600/20 transition-all hover:bg-hippo-700 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hippo-700"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4M16 2v4M3 10h18"/><rect width="18" height="18" x="3" y="4" rx="2"/></svg>
-          <span>Prendre 15 min avec Ryan</span>
-        </a>
-      </div>
-    </section>
 
     <!-- Section explicative statique (SEO) — contenu de SimulateurGuide.tsx (SPA source),
          porté en <details>/<summary> natif : un accordéon Radix fermé ne livre pas son
          texte au HTML statique, ce qui casserait l'indexation. -->
-    <section class="mx-auto mt-4 max-w-3xl px-4" aria-labelledby="guide-title">
-      <div class="mb-8 text-center">
-        <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-hippo-600">Mode d'emploi</p>
-        <h2 id="guide-title" class="mb-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          Comment utiliser le simulateur
-        </h2>
-        <p class="text-sm text-muted-foreground">
-          8 points pour comprendre chaque champ et chaque résultat.
-        </p>
-      </div>
+    <section class="band da-bloc" aria-labelledby="guide-title">
+      <div class="wrap cote">
+        <div class="band-head">
+          <p class="sur">Mode d'emploi</p>
+          <h2 id="guide-title">
+            Comment utiliser le simulateur
+          </h2>
+          <p class="lead">
+            8 points pour comprendre chaque champ et chaque résultat.
+          </p>
+        </div>
 
-      <div class="divide-y divide-border/60 border-y border-border/60">
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">1. C'est quoi le Super-Net ?</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <div class="liste">
+        <details class="qa">
+          <summary>
+            <span class="qa-t">1. C'est quoi le <span class="num">Super-Net ?</span></span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
+          <div class="qa-in">
             <p>
-              Ce simulateur compare <strong class="text-foreground">Micro-BNC</strong> et <strong class="text-foreground">Régime Réel</strong> pour calculer ton <strong class="text-foreground">Super-Net</strong> : ce qu'il te reste vraiment après cotisations sociales ET impôt sur le revenu. En 2 minutes, tu sais quel régime te laisse le plus en poche.
+              Ce simulateur compare <strong>Micro-BNC</strong> et <strong>Régime Réel</strong> pour calculer ton <strong>Super-Net</strong> : ce qu'il te reste vraiment après cotisations sociales ET impôt sur le revenu. En 2 minutes, tu sais quel régime te laisse le plus en poche.
             </p>
           </div>
         </details>
 
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">2. Tes revenus — les champs essentiels</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <details class="qa">
+          <summary>
+            <span class="qa-t">2. Tes revenus — les champs essentiels</span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
-            <ul class="space-y-2.5 list-disc pl-5">
+          <div class="qa-in">
+            <ul>
               <li>
-                <strong class="text-foreground">Tes revenus libéraux</strong> — Total <em>annuel</em> de tous tes honoraires encaissés (consultations, actes techniques, dépassements, PDSA). Retrouve-le sur ton relevé SNIR ou ta comptabilité.
+                <strong>Tes revenus libéraux</strong> — Total <em>annuel</em> de tous tes honoraires encaissés (consultations, actes techniques, dépassements, PDSA). Retrouve-le sur ton relevé SNIR ou ta comptabilité.
               </li>
               <li>
-                <strong class="text-foreground">Tes charges réelles</strong> — Dépenses professionnelles déductibles : loyer, matériel, RCP, comptable, véhicule, formations. <strong class="text-foreground">Hors cotisations sociales</strong> (URSSAF et CARMF sont calculées automatiquement). Utilisé en Régime Réel uniquement — en Micro-BNC, un abattement forfaitaire de 34% les remplace.
+                <strong>Tes charges réelles</strong> — Dépenses professionnelles déductibles : loyer, matériel, RCP, comptable, véhicule, formations. <strong>Hors cotisations sociales</strong> (URSSAF et CARMF sont calculées automatiquement). Utilisé en Régime Réel uniquement — en Micro-BNC, un abattement forfaitaire de 34% les remplace.
               </li>
               <li>
-                <strong class="text-foreground">Revenus complémentaires</strong> (dépliable) :
-                <ul class="mt-1.5 ml-4 space-y-1.5 list-disc">
+                <strong>Revenus complémentaires</strong> (dépliable) :
+                <ul>
                   <li><em>Revenus salariés</em> — Net imposable annuel si tu cumules hôpital ou gardes salariées. L'abattement de 10% est appliqué automatiquement.</li>
                   <li><em>Revenus PDSA</em> — Gardes de nuit et week-end régulées par l'ARS. Exonérés d'impôt sur le revenu (art. 151 ter CGI), mais restent soumis aux cotisations sociales.</li>
                 </ul>
@@ -231,279 +268,286 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
           </div>
         </details>
 
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">3. Ta situation fiscale</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <details class="qa">
+          <summary>
+            <span class="qa-t">3. Ta situation fiscale</span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
-            <ul class="space-y-2.5 list-disc pl-5">
-              <li><strong class="text-foreground">Situation familiale</strong> — Célibataire, marié/pacsé, veuf ou parent isolé. Détermine ton nombre de parts fiscales et donc ton quotient familial.</li>
-              <li><strong class="text-foreground">Enfants à charge</strong> — Chaque enfant augmente ton quotient familial. Demi-parts possibles (ex : garde alternée = 0.5 part).</li>
-              <li><strong class="text-foreground">Revenus du conjoint</strong> (apparaît si marié/pacsé) — Net imposable annuel + type de revenu (salarié, libéral micro, libéral réel, autre). Impact direct sur le taux marginal d'imposition du foyer.</li>
+          <div class="qa-in">
+            <ul>
+              <li><strong>Situation familiale</strong> — Célibataire, marié/pacsé, veuf ou parent isolé. Détermine ton nombre de parts fiscales et donc ton quotient familial.</li>
+              <li><strong>Enfants à charge</strong> — Chaque enfant augmente ton quotient familial. Demi-parts possibles (ex : garde alternée = 0.5 part).</li>
+              <li><strong>Revenus du conjoint</strong> (apparaît si marié/pacsé) — Net imposable annuel + type de revenu (salarié, libéral micro, libéral réel, autre). Impact direct sur le taux marginal d'imposition du foyer.</li>
             </ul>
           </div>
         </details>
 
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">4. Paramètres de calcul</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <details class="qa">
+          <summary>
+            <span class="qa-t">4. Paramètres de calcul</span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
-            <ul class="space-y-2.5 list-disc pl-5">
-              <li><strong class="text-foreground">Année</strong> — Détermine les barèmes IR appliqués (2025 ou 2026).</li>
-              <li><strong class="text-foreground">Lieu d'exercice</strong> — Métropole ou DOM-TOM. Les territoires ultramarins bénéficient d'un abattement automatique sur l'IR (30% Guadeloupe/Martinique/Réunion, 40% Guyane/Mayotte).</li>
-              <li><strong class="text-foreground">Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu, déductions supplémentaires : 2% + 3% + Groupe III) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
-              <li><strong class="text-foreground">Régime social</strong> — Auto (recommandé, le simulateur choisit selon ton CA), RSPM (simplifié, ouvert jusqu'à 19 000 €) ou PAMC (classique).</li>
+          <div class="qa-in">
+            <ul>
+              <li><strong>Année</strong> — Détermine les barèmes IR appliqués (2025 ou 2026).</li>
+              <li><strong>Lieu d'exercice</strong> — Métropole ou DOM-TOM. Les territoires ultramarins bénéficient d'un abattement automatique sur l'IR (30% Guadeloupe/Martinique/Réunion, 40% Guyane/Mayotte).</li>
+              <li><strong>Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu, déductions supplémentaires : 2% + 3% + Groupe III) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
+              <li><strong>Régime social</strong> — Auto (recommandé, le simulateur choisit selon ton CA), RSPM (simplifié, ouvert jusqu'à 19 000 €) ou PAMC (classique).</li>
             </ul>
           </div>
         </details>
 
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">5. Options avancées — pour affiner</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <details class="qa">
+          <summary>
+            <span class="qa-t">5. Options avancées — pour affiner</span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl space-y-4 pb-5 text-sm leading-relaxed text-muted-foreground">
+          <div class="qa-in">
             <div>
-              <p class="mb-1.5 font-medium text-foreground">Retraite &amp; CARMF</p>
-              <ul class="space-y-2 list-disc pl-5">
-                <li><strong class="text-foreground">Affilié (régime normal)</strong> — C'est le cas le plus courant. Tu paies l'ensemble des cotisations CARMF : retraite de base, retraite complémentaire, ASV (allocations supplémentaires vieillesse) et invalidité-décès (RID).</li>
-                <li><strong class="text-foreground">Affilié &lt; 2 ans, &lt; 40 ans</strong> — Si tu viens de t'installer et que tu as moins de 40 ans, tu es <em>exonéré de la cotisation complémentaire</em> pendant tes 2 premières années. Tes cotisations sont donc réduites (montants forfaitaires). C'est un vrai coup de pouce au démarrage.</li>
-                <li><strong class="text-foreground">Dispensé</strong> — Sur demande à la CARMF, généralement pour des revenus faibles (démarche non automatique, à effectuer auprès de la caisse).</li>
-                <li><strong class="text-foreground">Taux RID</strong> — L'invalidité-décès peut être cotisée à 25% (couverture minimale) ou 100% (couverture complète). Par défaut, le simulateur utilise 100%.</li>
+              <p class="st">Retraite &amp; CARMF</p>
+              <ul>
+                <li><strong>Affilié (régime normal)</strong> — C'est le cas le plus courant. Tu paies l'ensemble des cotisations CARMF : retraite de base, retraite complémentaire, ASV (allocations supplémentaires vieillesse) et invalidité-décès (RID).</li>
+                <li><strong>Affilié &lt; 2 ans, &lt; 40 ans</strong> — Si tu viens de t'installer et que tu as moins de 40 ans, tu es <em>exonéré de la cotisation complémentaire</em> pendant tes 2 premières années. Tes cotisations sont donc réduites (montants forfaitaires). C'est un vrai coup de pouce au démarrage.</li>
+                <li><strong>Dispensé</strong> — Sur demande à la CARMF, généralement pour des revenus faibles (démarche non automatique, à effectuer auprès de la caisse).</li>
+                <li><strong>Taux RID</strong> — L'invalidité-décès peut être cotisée à 25% (couverture minimale) ou 100% (couverture complète). Par défaut, le simulateur utilise 100%.</li>
               </ul>
             </div>
             <div>
-              <p class="mb-1.5 font-medium text-foreground">Déductions Secteur 1</p>
-              <ul class="space-y-2 list-disc pl-5">
-                <li><strong class="text-foreground">Forfait 2%</strong> — Frais de représentation, réception et prospection déduits automatiquement de tes honoraires, sans justificatif. <em>Secteur 1 uniquement.</em></li>
-                <li><strong class="text-foreground">Déduction 3% conventionnelle</strong> — Un abattement supplémentaire sur tes honoraires conventionnés, plafonné par la Sécu. <em>Secteur 1 uniquement.</em></li>
-                <li><strong class="text-foreground">Barème Groupe III</strong> — Une déduction fixe calculée selon ta tranche de revenus (de 770 € à 3 050 €), en plus des 2% et 3%. <em>Secteur 1 uniquement.</em></li>
-                <li><strong class="text-foreground">Ratio honoraires non conventionnés</strong> — Si une partie de tes honoraires est hors convention, les déductions S1 sont réduites proportionnellement.</li>
+              <p class="st">Déductions Secteur 1</p>
+              <ul>
+                <li><strong>Forfait 2%</strong> — Frais de représentation, réception et prospection déduits automatiquement de tes honoraires, sans justificatif. <em>Secteur 1 uniquement.</em></li>
+                <li><strong>Déduction 3% conventionnelle</strong> — Un abattement supplémentaire sur tes honoraires conventionnés, plafonné par la Sécu. <em>Secteur 1 uniquement.</em></li>
+                <li><strong>Barème Groupe III</strong> — Une déduction fixe calculée selon ta tranche de revenus (de 770 € à 3 050 €), en plus des 2% et 3%. <em>Secteur 1 uniquement.</em></li>
+                <li><strong>Ratio honoraires non conventionnés</strong> — Si une partie de tes honoraires est hors convention, les déductions S1 sont réduites proportionnellement.</li>
               </ul>
             </div>
             <div>
-              <p class="mb-1.5 font-medium text-foreground">Cotisations volontaires</p>
-              <ul class="space-y-2 list-disc pl-5">
-                <li><strong class="text-foreground">PER (Plan d'Épargne Retraite)</strong> — Tes versements sont déductibles de ton revenu imposable. Fonctionne en <em>Micro-BNC et en Réel</em>.</li>
-                <li><strong class="text-foreground">Madelin (prévoyance/retraite)</strong> — Cotisations complémentaires déductibles de ton bénéfice. <em>Régime Réel uniquement.</em></li>
-                <li><strong class="text-foreground">Chèques-vacances ANCV</strong> — Déductibles de ton BNC dans la limite d'1 SMIC mensuel par an : <strong class="text-foreground">{cvPlafond2024.toLocaleString('fr-FR')} € en 2024</strong>, <strong class="text-foreground">{cvPlafond2025.toLocaleString('fr-FR')} € officiel en 2025</strong>, <strong class="text-foreground">{cvPlafond2026.toLocaleString('fr-FR')} € projeté en 2026</strong> (à confirmer après publication du SMIC 2026). <em>Régime Réel uniquement</em> (sans effet en Micro-BNC).</li>
+              <p class="st">Cotisations volontaires</p>
+              <ul>
+                <li><strong>PER (Plan d'Épargne Retraite)</strong> — Tes versements sont déductibles de ton revenu imposable. Fonctionne en <em>Micro-BNC et en Réel</em>.</li>
+                <li><strong>Madelin (prévoyance/retraite)</strong> — Cotisations complémentaires déductibles de ton bénéfice. <em>Régime Réel uniquement.</em></li>
+                <li><strong>Chèques-vacances ANCV</strong> — Déductibles de ton BNC dans la limite d'1 SMIC mensuel par an : <strong>{cvPlafond2024.toLocaleString('fr-FR')} € en 2024</strong>, <strong>{cvPlafond2025.toLocaleString('fr-FR')} € officiel en 2025</strong>, <strong>{cvPlafond2026.toLocaleString('fr-FR')} € projeté en 2026</strong> (à confirmer après publication du SMIC 2026). <em>Régime Réel uniquement</em> (sans effet en Micro-BNC).</li>
               </ul>
             </div>
             <div>
-              <p class="mb-1.5 font-medium text-foreground">Fiscalité immobilière &amp; zones</p>
-              <ul class="space-y-2 list-disc pl-5">
-                <li><strong class="text-foreground">Zones exonérées (ZFU-TE / ZFRR)</strong> — Si tu exerces dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur 8 ans (100 % les 5 premières années). Dégressivité différente selon la zone : <strong class="text-foreground">ZFU-TE</strong> → 60 % / 40 % / 20 % (clos au 31.12.2025) ; <strong class="text-foreground">ZFRR</strong> → 75 % / 50 % / 25 %. Plafond commun : 50 000 € de bénéfice exonéré/an.</li>
-                <li><strong class="text-foreground">Revenus fonciers</strong> — Si tu as des revenus locatifs : micro-foncier (abattement 30%) ou régime réel (avec possibilité de déduire un déficit foncier jusqu'à −10 700 €/an de ton revenu global).</li>
+              <p class="st">Fiscalité immobilière &amp; zones</p>
+              <ul>
+                <li><strong>Zones exonérées (ZFU-TE / ZFRR)</strong> — Si tu exerces dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur 8 ans (100 % les 5 premières années). Dégressivité différente selon la zone : <strong>ZFU-TE</strong> <Fragment set:html={fleche} /> 60 % / 40 % / 20 % (clos au 31.12.2025) ; <strong>ZFRR</strong> <Fragment set:html={fleche} /> 75 % / 50 % / 25 %. Plafond commun : 50 000 € de bénéfice exonéré/an.</li>
+                <li><strong>Revenus fonciers</strong> — Si tu as des revenus locatifs : micro-foncier (abattement 30%) ou régime réel (avec possibilité de déduire un déficit foncier jusqu'à −10 700 €/an de ton revenu global).</li>
               </ul>
             </div>
             <div>
-              <p class="mb-1.5 font-medium text-foreground">Crédits d'impôt</p>
-              <ul class="space-y-2 list-disc pl-5">
-                <li><strong class="text-foreground">Formation dirigeant</strong> — Heures de formation × SMIC horaire, plafonné à 40h (soit environ 475 €). Réduit directement ton impôt.</li>
-                <li><strong class="text-foreground">Emploi à domicile</strong> — 50% des dépenses (ménage, garde, jardinage…), plafond de 12 000 à 15 000 €.</li>
-                <li><strong class="text-foreground">Garde d'enfant &lt; 6 ans (hors domicile)</strong> — 50% des frais de crèche ou assistante maternelle, plafond de 3 500 € par enfant.</li>
-                <li><strong class="text-foreground">Autres crédits</strong> — Un champ libre pour tout autre crédit d'impôt dont tu bénéficies.</li>
+              <p class="st">Crédits d'impôt</p>
+              <ul>
+                <li><strong>Formation dirigeant</strong> — Heures de formation × SMIC horaire, plafonné à 40h (soit environ 475 €). Réduit directement ton impôt.</li>
+                <li><strong>Emploi à domicile</strong> — 50% des dépenses (ménage, garde, jardinage…), plafond de 12 000 à 15 000 €.</li>
+                <li><strong>Garde d'enfant &lt; 6 ans (hors domicile)</strong> — 50% des frais de crèche ou assistante maternelle, plafond de 3 500 € par enfant.</li>
+                <li><strong>Autres crédits</strong> — Un champ libre pour tout autre crédit d'impôt dont tu bénéficies.</li>
               </ul>
             </div>
           </div>
         </details>
 
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">6. Comprendre les résultats</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <details class="qa">
+          <summary>
+            <span class="qa-t">6. Comprendre les résultats</span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
-            <ul class="space-y-2.5 list-disc pl-5">
-              <li><strong class="text-foreground">Les 2 cartes</strong> — Micro-BNC (abattement 34%) vs Régime Réel (charges réelles + optimisations). Chacune affiche un mini-donut et ton Super-Net mensuel et annuel.</li>
-              <li><strong class="text-foreground">Le badge « Recommandé »</strong> — Indique le régime qui te laisse le plus en poche.</li>
-              <li><strong class="text-foreground">Le Super-Net</strong> — Le montant final après TOUT : charges, cotisations, impôt. C'est LE chiffre qui compte.</li>
-              <li><strong class="text-foreground">« Approfondir »</strong> — Détails ligne par ligne : donut de répartition, comparaison des deux régimes, modalités de prélèvement (source, acomptes, régularisation).</li>
+          <div class="qa-in">
+            <ul>
+              <li><strong>Les 2 cartes</strong> — Micro-BNC (abattement 34%) vs Régime Réel (charges réelles + optimisations). Chacune affiche un mini-donut et ton Super-Net mensuel et annuel.</li>
+              <li><strong>Le badge « Recommandé »</strong> — Indique le régime qui te laisse le plus en poche.</li>
+              <li><strong>Le Super-Net</strong> — Le montant final après TOUT : charges, cotisations, impôt. C'est LE chiffre qui compte.</li>
+              <li><strong>« Approfondir »</strong> — Détails ligne par ligne : donut de répartition, comparaison des deux régimes, modalités de prélèvement (source, acomptes, régularisation).</li>
             </ul>
           </div>
         </details>
 
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">7. Comment est calculé ton Super-Net ?</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <details class="qa">
+          <summary>
+            <span class="qa-t">7. Comment est calculé ton <span class="num">Super-Net ?</span></span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl space-y-3 pb-5 text-sm leading-relaxed text-muted-foreground">
-            <p>Le Super-Net, c'est ce qu'il te reste <strong class="text-foreground">vraiment</strong> en poche après tout. Voici le calcul, étape par étape :</p>
-            <ol class="space-y-2.5 list-decimal pl-5">
-              <li><strong class="text-foreground">Tes revenus libéraux</strong> — Le total de tout ce que tu as encaissé dans l'année (honoraires, actes, dépassements).</li>
-              <li><strong class="text-foreground">− Tes charges</strong> — En <em>Régime Réel</em>, on soustrait tes dépenses professionnelles réelles (loyer, matériel, véhicule…). En <em>Micro-BNC</em>, l'État applique un abattement forfaitaire de 34%. → Ça donne ton <strong class="text-foreground">bénéfice</strong>.</li>
-              <li><strong class="text-foreground">− Cotisations sociales</strong> — URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) + CARMF (retraite complémentaire, invalidité-décès, ASV). Le simulateur les calcule automatiquement selon tes revenus et ta situation CARMF (voir point 5).</li>
-              <li><strong class="text-foreground">− Déductions fiscales</strong> — Si tu es en Secteur 1 : forfait 2%, déduction 3%, barème Groupe III. Puis PER, Madelin, chèques-vacances, zones exonérées… → Ça donne ton <strong class="text-foreground">revenu imposable libéral</strong>.</li>
-              <li><strong class="text-foreground">+ Autres revenus du foyer</strong> — On ajoute les salaires (après abattement 10%), les revenus du conjoint, les revenus fonciers. → Ça donne le <strong class="text-foreground">revenu fiscal du foyer</strong>.</li>
-              <li><strong class="text-foreground">÷ Parts fiscales</strong> — On divise par ton nombre de parts (selon ta situation familiale et tes enfants) pour obtenir le quotient familial, puis on applique le barème progressif (11%, 30%, 41%, 45%).</li>
-              <li><strong class="text-foreground">− Crédits d'impôt</strong> — Formation dirigeant, emploi à domicile, garde d'enfant… Ils viennent réduire directement ton impôt. → Ça donne ton <strong class="text-foreground">impôt final</strong>.</li>
-              <li><strong class="text-foreground">= Super-Net</strong> — Revenus − Charges − Cotisations − Impôt = <strong class="text-foreground">ce qu'il te reste vraiment</strong>.</li>
+          <div class="qa-in">
+            <p>Le Super-Net, c'est ce qu'il te reste <strong>vraiment</strong> en poche après tout. Voici le calcul, étape par étape :</p>
+            <ol>
+              <li><strong>Tes revenus libéraux</strong> — Le total de tout ce que tu as encaissé dans l'année (honoraires, actes, dépassements).</li>
+              <li><strong>− Tes charges</strong> — En <em>Régime Réel</em>, on soustrait tes dépenses professionnelles réelles (loyer, matériel, véhicule…). En <em>Micro-BNC</em>, l'État applique un abattement forfaitaire de 34%. <Fragment set:html={fleche} /> Ça donne ton <strong>bénéfice</strong>.</li>
+              <li><strong>− Cotisations sociales</strong> — URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) + CARMF (retraite complémentaire, invalidité-décès, ASV). Le simulateur les calcule automatiquement selon tes revenus et ta situation CARMF (voir point 5).</li>
+              <li><strong>− Déductions fiscales</strong> — Si tu es en Secteur 1 : forfait 2%, déduction 3%, barème Groupe III. Puis PER, Madelin, chèques-vacances, zones exonérées… <Fragment set:html={fleche} /> Ça donne ton <strong>revenu imposable libéral</strong>.</li>
+              <li><strong>+ Autres revenus du foyer</strong> — On ajoute les salaires (après abattement 10%), les revenus du conjoint, les revenus fonciers. <Fragment set:html={fleche} /> Ça donne le <strong>revenu fiscal du foyer</strong>.</li>
+              <li><strong>÷ Parts fiscales</strong> — On divise par ton nombre de parts (selon ta situation familiale et tes enfants) pour obtenir le quotient familial, puis on applique le barème progressif (11%, 30%, 41%, 45%).</li>
+              <li><strong>− Crédits d'impôt</strong> — Formation dirigeant, emploi à domicile, garde d'enfant… Ils viennent réduire directement ton impôt. <Fragment set:html={fleche} /> Ça donne ton <strong>impôt final</strong>.</li>
+              <li><strong>= Super-Net</strong> — Revenus − Charges − Cotisations − Impôt = <strong>ce qu'il te reste vraiment</strong>.</li>
             </ol>
-            <div class="mt-3 rounded-lg border border-border/30 bg-muted/50 p-3 text-xs">
-              <strong class="text-foreground">Micro vs Réel en bref :</strong> En Micro-BNC, tes charges sont remplacées par un abattement de 34% — c'est plus simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil. Le simulateur compare les deux pour toi.
+            <div class="bref">
+              <strong>Micro vs Réel en bref :</strong> En Micro-BNC, tes charges sont remplacées par un abattement de 34% — c'est plus simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil. Le simulateur compare les deux pour toi.
             </div>
           </div>
         </details>
 
-        <details class="group py-1">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-            <span class="flex-1 pr-4">8. Conseils personnalisés &amp; profils types</span>
-            <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
+        <details class="qa">
+          <summary>
+            <span class="qa-t">8. Conseils personnalisés &amp; profils types</span>
+            <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
           </summary>
-          <div class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">
-            <ul class="space-y-2.5 list-disc pl-5">
-              <li><strong class="text-foreground">4 piliers</strong> — Budget, Sécurité, Investissement, Optimisation : des recommandations concrètes basées sur TON Super-Net.</li>
-              <li><strong class="text-foreground">La règle 50/30/20</strong> — Appliquée à ta situation : combien consacrer aux besoins, aux envies et à l'épargne.</li>
-              <li><strong class="text-foreground">Estimation charges sociales</strong> — Cotisations URSSAF, CARMF et CFE détaillées pour anticiper ta trésorerie.</li>
-              <li><strong class="text-foreground">Profils types</strong> — Pas envie de tout remplir ? Clique sur un profil type pour pré-remplir le formulaire avec des données réalistes (interne, remplaçant, installé, spécialiste…). Tu peux ensuite ajuster les chiffres avant de lancer la simulation.</li>
+          <div class="qa-in">
+            <ul>
+              <li><strong>4 piliers</strong> — Budget, Sécurité, Investissement, Optimisation : des recommandations concrètes basées sur TON Super-Net.</li>
+              <li><strong>La règle 50/30/20</strong> — Appliquée à ta situation : combien consacrer aux besoins, aux envies et à l'épargne.</li>
+              <li><strong>Estimation charges sociales</strong> — Cotisations URSSAF, CARMF et CFE détaillées pour anticiper ta trésorerie.</li>
+              <li><strong>Profils types</strong> — Pas envie de tout remplir ? Clique sur un profil type pour pré-remplir le formulaire avec des données réalistes (interne, remplaçant, installé, spécialiste…). Tu peux ensuite ajuster les chiffres avant de lancer la simulation.</li>
             </ul>
           </div>
         </details>
-      </div>
-
-      <p class="mt-6 text-center text-xs text-muted-foreground">
-        Ce simulateur fournit des estimations basées sur les barèmes en vigueur. Il ne remplace pas l'avis d'un expert-comptable.
-      </p>
-    </section>
-
-    <!-- Définitions rapides + exemple chiffré (contenu rédigé pour cette page,
-         factuellement cohérent avec le guide ci-dessus — sourcé uniquement sur
-         les constantes du moteur de calcul porté : SEUIL_RSPM=38000€ (mode Auto),
-         abattement micro-BNC 34%, taux RSPM 13,5%/21,2%, tranche RSPM 19 000€). -->
-    <section class="mx-auto mt-16 max-w-3xl px-4" aria-labelledby="definitions-title">
-      <h2 id="definitions-title" class="mb-6 text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-        Trois mots à connaître
-      </h2>
-      <div class="grid gap-4 sm:grid-cols-3">
-        <div class="rounded-xl border border-border/60 bg-white p-4 shadow-sm">
-          <h3 class="mb-1.5 text-sm font-semibold text-hippo-700">Rétrocession</h3>
-          <p class="text-sm leading-relaxed text-muted-foreground">
-            La part des honoraires qu'un médecin remplaçant perçoit du titulaire du cabinet (ou de la structure) qu'il remplace, en échange des actes réalisés. C'est la base de tes "revenus libéraux" dans le simulateur.
-          </p>
         </div>
-        <div class="rounded-xl border border-border/60 bg-white p-4 shadow-sm">
-          <h3 class="mb-1.5 text-sm font-semibold text-hippo-700">URSSAF</h3>
-          <p class="text-sm leading-relaxed text-muted-foreground">
-            L'organisme qui collecte tes cotisations sociales de travailleur indépendant : maladie-maternité, allocations familiales, retraite de base, CSG-CRDS et formation professionnelle. Le simulateur les calcule automatiquement, en RSPM (taux simplifiés) ou en PAMC (barème classique).
-          </p>
-        </div>
-        <div class="rounded-xl border border-border/60 bg-white p-4 shadow-sm">
-          <h3 class="mb-1.5 text-sm font-semibold text-hippo-700">Super-Net</h3>
-          <p class="text-sm leading-relaxed text-muted-foreground">
-            Ce qu'il te reste vraiment en poche : tes revenus, moins tes charges professionnelles, moins tes cotisations sociales (URSSAF/CARMF), moins ton impôt sur le revenu. C'est le chiffre affiché en tête de chaque carte de résultat.
-          </p>
-        </div>
-      </div>
 
-      <div class="mt-8 rounded-xl border border-hippo-100 bg-hippo-50/40 p-5">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-hippo-700">Exemple chiffré (illustration simplifiée)</p>
-        <p class="text-sm leading-relaxed text-muted-foreground">
-          Un médecin remplaçant, au RSPM l'an dernier avec moins de 19 000 €, facture cette année <strong class="text-foreground">30 000 €</strong> de rétrocessions, sans autre revenu. Il reste au RSPM cette année, et l'an prochain aussi : c'est sa première année au-dessus de 19 000 €, et il reste sous <strong class="text-foreground">38 000 €</strong> (une sortie ne jouerait de toute façon qu'au 1<sup>er</sup> janvier suivant). Ses cotisations sociales suivent donc le barème simplifié à deux tranches : <strong class="text-foreground">13,5 %</strong> sur les 19 000 premiers euros (2 565 €), puis <strong class="text-foreground">21,2 %</strong> sur les 11 000 € restants (2 332 €) — soit environ <strong class="text-foreground">4 897 €</strong> de cotisations URSSAF, plus la RID CARMF (157 € ou 626 € selon le taux choisi). Côté fiscal, en Micro-BNC, l'abattement forfaitaire de <strong class="text-foreground">34 %</strong> ramène directement son bénéfice imposable à <strong class="text-foreground">19 800 €</strong> (66 % de 30 000 €), avant application du barème de l'impôt sur le revenu. Le simulateur calcule ensuite l'IR précis selon la situation familiale, puis affiche le Super-Net final — et fait le même calcul en Régime Réel pour comparer.
+        <p class="avis">
+          Ce simulateur fournit des estimations basées sur les barèmes en vigueur. Il ne remplace pas l'avis d'un expert-comptable.
         </p>
       </div>
     </section>
 
-    <!-- Disclaimer verbatim (identique à celui affiché dans les résultats de l'îlot,
-         dupliqué ici en statique pour rester visible sans avoir lancé de simulation). -->
-    <section class="mx-auto mt-16 max-w-3xl px-4">
-      <div class="rounded-2xl overflow-hidden bg-white/80 backdrop-blur-xl border border-slate-200/50 shadow-lg">
-        <div class="h-1.5 w-full bg-gradient-to-r from-slate-400 to-slate-500"></div>
-        <div class="p-4 sm:p-6 space-y-3">
-          <h4 class="font-semibold text-slate-700">Limites de cette simulation</h4>
-          <p class="text-sm text-slate-600">
-            Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte tes spécificités fiscales individuelles, les évolutions réglementaires, ou les optimisations spécifiques à ta situation.
-          </p>
-          <p class="text-sm font-medium text-slate-700">Pour une analyse personnalisée, consulte :</p>
-          <div class="flex flex-wrap gap-2 text-xs">
-            <span class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">Expert-comptable</span>
-            <span class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">Avocat fiscaliste</span>
-            <span class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-600">CGP indépendant</span>
-            <a href="https://mon-entreprise.urssaf.fr" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">
-              Simulateur URSSAF ↗
-            </a>
+    <div class="band air da-bloc">
+      <div class="wrap">
+        <!-- Définitions rapides + exemple chiffré (contenu rédigé pour cette page,
+             factuellement cohérent avec le guide ci-dessus — sourcé uniquement sur
+             les constantes du moteur de calcul porté : SEUIL_RSPM=38000€ (mode Auto),
+             abattement micro-BNC 34%, taux RSPM 13,5%/21,2%, tranche RSPM 19 000€). -->
+        <section aria-labelledby="definitions-title">
+          <h2 id="definitions-title" class="mots-t">
+            Trois mots à connaître
+          </h2>
+          <div class="mots">
+            <div class="mot">
+              <h3>Rétrocession</h3>
+              <p>
+                La part des honoraires qu'un médecin remplaçant perçoit du titulaire du cabinet (ou de la structure) qu'il remplace, en échange des actes réalisés. C'est la base de tes "revenus libéraux" dans le simulateur.
+              </p>
+            </div>
+            <div class="mot">
+              <h3>URSSAF</h3>
+              <p>
+                L'organisme qui collecte tes cotisations sociales de travailleur indépendant : maladie-maternité, allocations familiales, retraite de base, CSG-CRDS et formation professionnelle. Le simulateur les calcule automatiquement, en RSPM (taux simplifiés) ou en PAMC (barème classique).
+              </p>
+            </div>
+            <div class="mot soleil">
+              <h3>Super-Net</h3>
+              <p>
+                Ce qu'il te reste vraiment en poche : tes revenus, moins tes charges professionnelles, moins tes cotisations sociales (URSSAF/CARMF), moins ton impôt sur le revenu. C'est le chiffre affiché en tête de chaque carte de résultat.
+              </p>
+            </div>
           </div>
-          <p class="text-xs text-muted-foreground italic pt-1">
-            💡 Hippodoc t'aide à y voir plus clair, mais seul un professionnel pourra te conseiller de manière définitive.
-          </p>
-        </div>
+
+          <div class="exemple">
+            <p class="sur">Exemple chiffré (illustration simplifiée)</p>
+            <p>
+              Un médecin remplaçant, au RSPM l'an dernier avec moins de 19 000 €, facture cette année <strong>30 000 €</strong> de rétrocessions, sans autre revenu. Il reste au RSPM cette année, et l'an prochain aussi : c'est sa première année au-dessus de 19 000 €, et il reste sous <strong>38 000 €</strong> (une sortie ne jouerait de toute façon qu'au 1<sup>er</sup> janvier suivant). Ses cotisations sociales suivent donc le barème simplifié à deux tranches : <strong>13,5 %</strong> sur les 19 000 premiers euros (2 565 €), puis <strong>21,2 %</strong> sur les 11 000 € restants (2 332 €) — soit environ <strong>4 897 €</strong> de cotisations URSSAF, plus la RID CARMF (157 € ou 626 € selon le taux choisi). Côté fiscal, en Micro-BNC, l'abattement forfaitaire de <strong>34 %</strong> ramène directement son bénéfice imposable à <strong>19 800 €</strong> (66 % de 30 000 €), avant application du barème de l'impôt sur le revenu. Le simulateur calcule ensuite l'IR précis selon la situation familiale, puis affiche le Super-Net final — et fait le même calcul en Régime Réel pour comparer.
+            </p>
+          </div>
+        </section>
+
+        <!-- Disclaimer verbatim (identique à celui affiché dans les résultats de l'îlot,
+             dupliqué ici en statique pour rester visible sans avoir lancé de simulation). -->
+        <section class="limites">
+          <div class="limites-fiche">
+            <div class="limites-in">
+              <h4>Limites de cette simulation</h4>
+              <p>
+                Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte tes spécificités fiscales individuelles, les évolutions réglementaires, ou les optimisations spécifiques à ta situation.
+              </p>
+              <p class="fort">Pour une analyse personnalisée, consulte :</p>
+              <div class="pros">
+                <span class="chip off">Expert-comptable</span>
+                <span class="chip off">Avocat fiscaliste</span>
+                <span class="chip off">CGP indépendant</span>
+                <a href="https://mon-entreprise.urssaf.fr" target="_blank" rel="noopener noreferrer" class="chip plan">
+                  Simulateur URSSAF <span class="sr">↗</span><svg viewBox="0 0 12 12" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l6-6M4.5 3H9v4.5"/></svg>
+                </a>
+              </div>
+              <p class="mot-fin">
+                <span class="sr">💡</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> Hippodoc t'aide à y voir plus clair, mais seul un professionnel pourra te conseiller de manière définitive.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
 
     <!-- FAQ — SEO, natif details/summary (pas de Radix : le contenu doit être
          présent dans le HTML). Les questions doublent le FAQPage JSON-LD ;
          un balisage sans contenu visible enfreindrait les consignes Google. -->
-    <section class="mx-auto mt-24 max-w-3xl px-4" aria-labelledby="faq-title">
-      <div class="mb-8">
-        <p class="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-hippo-600">FAQ</p>
-        <h2 id="faq-title" class="mb-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Questions fréquentes
-        </h2>
-        <p class="text-sm text-muted-foreground">
-          Les {FAQ.length} questions qu'on nous pose le plus souvent sur le simulateur.
-        </p>
-      </div>
-      <div class="divide-y divide-border/60 border-y border-border/60">
-        {FAQ.map((f) => (
-          <details class="group py-1">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-base font-semibold text-foreground [&::-webkit-details-marker]:hidden">
-              <span class="flex-1 pr-4">{f.q}</span>
-              <span aria-hidden="true" class="shrink-0 text-xl leading-none text-muted-foreground transition-transform duration-200 group-open:rotate-45">+</span>
-            </summary>
-            <p class="max-w-3xl pb-5 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-
-    <!-- Bandeau CTA (statique) -->
-    <section class="mx-auto mt-16 max-w-4xl px-4">
-      <div class="relative overflow-hidden rounded-2xl bg-white/90 backdrop-blur-xl border border-white/40 shadow-2xl p-8 sm:p-12 text-center">
-        <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
-          <div class="absolute -top-20 -left-20 w-56 h-56 bg-gradient-to-br from-hippo-300/30 to-hippo-500/15 rounded-full blur-3xl"></div>
-          <div class="absolute -bottom-20 -right-20 w-48 h-48 bg-gradient-to-tr from-emerald-300/25 to-teal-400/15 rounded-full blur-3xl"></div>
-        </div>
-
-        <div class="relative space-y-6">
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold">
-            Prêt à <span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">piloter ton activité</span><br class="hidden sm:block" /> de médecin ?
+    <section class="band da-bloc" aria-labelledby="faq-title">
+      <div class="wrap cote">
+        <div class="band-head">
+          <p class="sur">FAQ</p>
+          <h2 id="faq-title">
+            Questions fréquentes
           </h2>
-
-          <div class="flex flex-col items-center gap-3 pt-2">
-            <a
-              id="simulateur-cta-signup"
-              href={signupUrl}
-              data-track="cta_signup_simulateur_bottom"
-              class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-hippo-500 to-hippo-600 px-8 py-4 text-base sm:text-lg font-semibold text-white shadow-lg shadow-hippo-500/25 transition-all hover:from-hippo-600 hover:to-hippo-700 hover:shadow-xl"
-            >
-              Commencer gratuitement
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-            <a
-              href="/tarifs"
-              data-track="cta_pricing_simulateur_bottom"
-              class="inline-flex min-h-6 items-center gap-1.5 text-sm text-muted-foreground hover:text-hippo-600 transition-colors"
-            >
-              Voir les tarifs
-            </a>
-          {/* Le lien Calendly de bas de page a été remonté sous le résultat de la
-              simulation : c'est là que naît le doute sur le chiffre, pas après le
-              mode d'emploi et les tarifs. */}
-          </div>
+          <p class="lead">
+            Les {FAQ.length} questions qu'on nous pose le plus souvent sur le simulateur.
+          </p>
+        </div>
+        <div class="liste">
+          {FAQ.map((f) => (
+            <details class="qa">
+              <summary>
+                <span class="qa-t" set:html={nouer(f.q)} />
+                <span class="sr" aria-hidden="true">+</span><Fragment set:html={croix} />
+              </summary>
+              <div class="qa-in"><p>{f.a}</p></div>
+            </details>
+          ))}
         </div>
       </div>
     </section>
 
-    {/* Comprendre le résultat : aucun lien vers les fiches jusque-là (MIGRATION.md § 9.co). */}
-    <div class="container mx-auto max-w-4xl px-4 pb-16">
-      <BlogReadMore
-        emplacement="simulateur"
-        titre="Comprendre ton résultat"
-        slugs={['simulateur-super-net-combien-reste', 'regime-fiscal-micro-bnc-vs-reel', 'rspm-exemples-concrets', 'tout-comprendre-urssaf', 'tout-comprendre-carmf']}
-      />
+    <div class="fin da-bloc">
+      <!-- Bandeau CTA (statique) -->
+      <section class="wrap fin-copy">
+        <h2>
+          Prêt à <span class="eau">piloter ton activité</span><br class="br-sm" /> de médecin ?
+        </h2>
+
+        <div class="fin-liens">
+          <a
+            id="simulateur-cta-signup"
+            href={signupUrl}
+            data-track="cta_signup_simulateur_bottom"
+            class="btn btn-brand"
+          >
+            Commencer gratuitement
+          </a>
+          <a
+            href="/tarifs"
+            data-track="cta_pricing_simulateur_bottom"
+            class="lien"
+          >
+            Voir les tarifs
+          </a>
+        {/* Le lien Calendly de bas de page a été remonté sous le résultat de la
+            simulation : c'est là que naît le doute sur le chiffre, pas après le
+            mode d'emploi et les tarifs. */}
+        </div>
+      </section>
+
+      {/* Comprendre le résultat : aucun lien vers les fiches jusque-là (MIGRATION.md § 9.co).
+          Le composant est partagé avec le guide des déclarations : il n'est pas
+          modifié, son habillage est repris ici (`.lire`). */}
+      <div class="wrap lire">
+        <BlogReadMore
+          emplacement="simulateur"
+          titre="Comprendre ton résultat"
+          slugs={['simulateur-super-net-combien-reste', 'regime-fiscal-micro-bnc-vs-reel', 'rspm-exemples-concrets', 'tout-comprendre-urssaf', 'tout-comprendre-carmf']}
+        />
+      </div>
+
+      {/* Décor : le soleil de l'accueil se lève sur l'eau du pied de page. */}
+      <div class="horizon" aria-hidden="true">
+        <span class="sun"></span>
+        <span class="wave w3"></span>
+        <span class="wave w4"></span>
+      </div>
     </div>
   </main>
 
@@ -519,3 +563,186 @@ const jsonLd = [webAppSchema, faqSchema, breadcrumbSchema];
     });
   </script>
 </BaseLayout>
+
+<style>
+  /* Texte grossi : un mot plus large que sa fiche se coupe au lieu de la pousser
+     (la propriété s'hérite : elle vaut aussi dans l'îlot). */
+  main { overflow-wrap: break-word; }
+  .num { white-space: nowrap; }
+  /* Dans un libellé de pli : le groupe reste sur une ligne tant qu'il y tient ;
+     plus large que sa fiche (texte grossi), il se coupe au lieu de la pousser. */
+  .qa-t .num, .liste :global(.num) { display: inline-block; max-width: 100%; white-space: normal; }
+  .sr, .liste :global(.sr) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
+     haut. En bas, 88 px d'air et les 40 px que recouvre la feuille suivante. */
+  .tete { position: relative; padding: 108px 0 128px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+  /* Corps de texte en rem : la feuille de la DA les pose en px, ils ne suivaient
+     plus la taille de police du navigateur. Même rendu à 16 px. */
+  .da-bloc { font-size: 1.0625rem; }
+  .lead { font-size: 1.1875rem; }
+  .btn { font-size: 1.0625rem; }
+  .chip { font-size: 0.84375rem; }
+  .qa-t { min-width: 0; font-size: 1.125rem; overflow-wrap: anywhere; }
+  h2 { --corps: clamp(min(2rem, 10vw), 4.5vw, 3.625rem); }
+  @media (max-width: 359px) { .qa-t { font-size: 1.0625rem; } }
+
+  /* Le titre de la page */
+  .intro { margin-bottom: 32px; }
+  .intro h1 { --corps: var(--h1-page); text-wrap-style: balance; }
+  /* Le jaune de « Super-Net » : la feuille de la DA le fait déborder à gauche
+     (début de ligne) ; ici il suit un mot, il garde son espace. */
+  .intro .hl { margin-left: -0.06em; }
+  .lead strong { color: var(--ink); }
+  /* Les trois gages : des pastilles blanches. */
+  .gages { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+  .gage { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 14px 0 11px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.875rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+  .gage :global(svg) { flex: none; color: var(--brand); }
+
+  /* L'îlot. La mascotte (décor) n'apparaît qu'à partir de 1 024 px. */
+  .outil { position: relative; }
+  .guide { display: none; pointer-events: none; }
+  .guide img { display: block; width: 100%; max-width: none; height: auto; }
+
+  /* La prise de rendez-vous : une fiche sous l'îlot. */
+  .rdv { margin-top: 28px; }
+  .rdv-fiche { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 760px; margin-inline: auto; padding: 28px 24px 32px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); text-align: center; }
+  .rdv-fiche > * { margin: 0; }
+  .rdv-t { font-size: 1.375rem; font-weight: var(--tb); line-height: 1.25; color: var(--ink); }
+  .rdv-p { max-width: 36rem; font-size: 1.03125rem; line-height: 1.55; color: var(--ink-2); text-wrap-style: pretty; }
+  .rdv .btn { gap: 9px; margin-top: 8px; padding-block: 8px; text-align: center; }
+
+  /* Petit titre au-dessus d'un titre ou d'un texte */
+  .sur { margin: 0; font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; color: var(--ink-3); }
+
+  /* Mode d'emploi et questions : le titre à gauche, les plis à droite
+     (accueil/Questions.astro). */
+  .cote { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 26px; }
+  .cote .band-head { margin-bottom: 0; }
+  .liste { min-width: 0; }
+  .liste .qa:last-child { margin-bottom: 0; }
+  /* Le texte des plis : listes, sous-titres, encart. */
+  .qa-in > * + * { margin-top: 14px; }
+  .qa-in :is(p, li) { font-size: 1.03125rem; line-height: 1.6; color: var(--ink-2); }
+  .qa-in :is(ul, ol) { max-width: 42rem; margin-bottom: 0; padding-left: 1.3em; }
+  .qa-in ul { list-style: disc; }
+  .qa-in ol { list-style: decimal; }
+  .qa-in li + li, .qa-in li > ul { margin-top: 9px; }
+  .qa-in li::marker { color: var(--ink-3); }
+  .qa-in .st { margin-bottom: 8px; font-weight: var(--tb); color: var(--ink); }
+  .qa-in .bref { max-width: 42rem; padding: 14px 16px; border-radius: 16px; background: var(--sky-soft); font-size: 0.96875rem; line-height: 1.55; color: var(--ink-2); }
+  /* La flèche dessinée, sur la ligne du texte (accueil/TroisCases.astro). */
+  .liste :global(.fl) { white-space: nowrap; }
+  .liste :global(.fl svg) { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
+  .avis { max-width: 42rem; margin: 0; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-3); }
+
+  /* Trois mots à connaître : trois fiches, le Super-Net sur du jaune. */
+  .mots-t { margin: 0 0 32px; text-align: center; }
+  .mots { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .mot { padding: 24px 22px 26px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); }
+  .mot h3 { margin: 0 0 8px; font-size: clamp(1.375rem, 2.2vw, 1.625rem); overflow-wrap: anywhere; }
+  .mot p { margin: 0; font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+  .mot.soleil { background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1), 0 22px 44px -22px rgba(13, 40, 105, 0.42); }
+  .mot.soleil p { color: var(--ink); }
+  /* L'exemple chiffré : son nom à gauche, le texte à droite dès 900 px. */
+  .exemple { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px 40px; margin-top: 14px; padding: 24px 22px 26px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); }
+  .exemple p { margin: 0; }
+  .exemple p + p { max-width: 46rem; font-size: 1.03125rem; line-height: 1.65; color: var(--ink-2); }
+  .exemple strong { color: var(--ink); white-space: nowrap; }
+  /* Les limites : une fiche à plat, moins présente que les autres. */
+  .limites { margin-top: 14px; }
+  .limites-fiche { padding: 24px 22px 26px; border-radius: 28px; background: rgba(255, 255, 255, 0.6); }
+  .limites-in { display: flex; flex-direction: column; gap: 10px; max-width: 46rem; }
+  .limites-in > * { margin: 0; }
+  .limites h4 { font-size: 1.125rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+  .limites p { font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+  .limites .fort { font-weight: var(--tb); color: var(--ink); }
+  .pros { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pros .chip { padding: 6px 13px; font-size: 0.875rem; }
+  .pros .chip.off { background: var(--paper); }
+  .pros a.chip { display: inline-flex; align-items: center; gap: 6px; text-decoration: underline; text-underline-offset: 3px; }
+  .pros .chip { white-space: normal; }
+  .pros a.chip:hover { background: var(--sky-1); }
+  .limites .mot-fin { display: flex; align-items: flex-start; gap: 8px; padding-top: 2px; font-size: 0.9375rem; font-style: italic; }
+  .mot-fin svg { flex: none; margin-top: 2px; color: var(--brand); }
+
+  /* La fin : le ciel de l'accueil, puis le soleil qui se lève sur l'eau du pied
+     de page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles).
+     -1 px en bas : pas de filet clair au-dessus du pied. */
+  .fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; }
+  /* Le texte, les boutons et la fiche des articles passent devant le décor
+     (`z-index`), et le halo du soleil ne commence qu'après le dernier lien
+     (marge de `.horizon`). */
+  .fin-copy { z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 88px; }
+  .fin-copy > * { margin: 0; }
+  .fin h2 { --corps: var(--h2-fin); max-width: 20ch; }
+  .eau { color: var(--w4); }
+  .br-sm { display: none; }
+  .fin-liens { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .fin .btn { margin-top: 8px; padding-block: 8px; text-align: center; }
+  /* « Comprendre ton résultat » : la fiche des articles. Le composant
+     BlogReadMore.astro garde ses classes ; elles sont recouvertes ici. */
+  .lire { z-index: 1; margin-top: 48px; }
+  .lire :global(aside) { max-width: 720px; margin-inline: auto; padding: 24px 24px 12px; border: 0; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); text-align: left; }
+  .lire :global(aside h2) { margin: 0 0 6px; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+  .lire :global(aside ul > li) { margin: 0; border-top: 1px solid var(--line); }
+  .lire :global(aside ul > li:first-child) { border-top: 0; }
+  .lire :global(aside a) { display: flex; align-items: center; min-height: 50px; padding: 8px 0; font-size: 1rem; font-weight: 560; line-height: 1.35; color: var(--ink); text-decoration: none; }
+  .lire :global(aside a:hover) { color: var(--brand); text-decoration: underline; text-underline-offset: 4px; }
+  /* Le halo dépasse le soleil de 62 px (92 px sur ordinateur) : 20 px d'air
+     entre la fiche et lui. */
+  .horizon { position: relative; height: 190px; margin-top: 60px; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; }
+  .w3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* La dernière vague a la couleur du haut du pied de page (--deep). */
+  .w4 { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+  /* Téléphone : intervalles resserrés. */
+  @media (max-width: 559px) {
+    .tete { padding: 100px 0 88px; }
+    .intro { margin-bottom: 24px; }
+    .rdv { margin-top: 22px; }
+    .rdv-fiche { padding: 24px 20px 28px; }
+    .mots-t { margin-bottom: 24px; }
+    .fin-copy { padding-top: 52px; }
+    .lire { margin-top: 36px; }
+    .lire :global(aside) { padding: 22px 20px 10px; }
+  }
+  @media (min-width: 640px) {
+    .br-sm { display: inline; }
+    .mot, .exemple, .limites-fiche { padding: 28px 28px 30px; }
+  }
+  @media (min-width: 760px) {
+    .mots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 900px) {
+    .tete { padding-top: 148px; }
+    .cote { grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 28px 56px; }
+    /* Le titre suit la lecture d'un pli ouvert. */
+    .cote .band-head { position: sticky; top: 104px; }
+    .avis { grid-column: 2; }
+    .exemple { grid-template-columns: 200px minmax(0, 1fr); padding: 32px 36px 34px; }
+    .horizon { height: 270px; margin-top: 108px; --p: 440px; --th: 54px; }
+    .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+    .w3 { height: 112px; }
+    .w4 { height: 60px; }
+  }
+  @media (min-width: 1024px) {
+    /* Le titre s'arrête avant la mascotte. */
+    .intro { max-width: calc(100% - 300px); }
+    /* Elle se tient derrière le haut de l'îlot, coupée à mi-corps par son bord
+       (les 52 % du haut de l'image), hors du flux : 16 px passent sous l'îlot,
+       qui est devant elle (`.sim-ile`, simulateur.css). */
+    .guide { position: absolute; right: 48px; bottom: calc(100% - 16px); display: block; width: 190px; aspect-ratio: 685 / 640; overflow: hidden; }
+  }
+  @media (min-width: 1180px) {
+    .cote { grid-template-columns: 320px minmax(0, 1fr); column-gap: 96px; }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+     aux fiches et aux pastilles ; le décor de la fin disparaît. */
+  @media (forced-colors: active) {
+    .gage, .rdv-fiche, .mot, .exemple, .limites-fiche, .qa-in .bref, .lire :global(aside) { border: 1px solid CanvasText; }
+    .horizon, .guide { display: none; }
+  }
+</style>

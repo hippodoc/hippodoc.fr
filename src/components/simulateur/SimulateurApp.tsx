@@ -19,6 +19,11 @@ import { insertPublicEvent } from "@/lib/supabase-public";
  * (`simulateur_public_events`), scroll-to-results. Le hero, le "mode
  * d'emploi" (contenu de SimulateurGuide) et le bandeau CTA de bas de page
  * sont rendus à part, en HTML statique, par la page `simulateur.astro`.
+ *
+ * Habillage (phase 5d, MIGRATION.md § 9.ek) : la racine porte `sim` (jetons et
+ * règles de `src/styles/simulateur.css`) et `da-bloc` (typographie de la DA).
+ * Les couleurs des composants du dossier passent par des classes `sim-*` ; les
+ * utilitaires Tailwind qui restent ne règlent que la mise en page.
  */
 
 const SESSION_ID_KEY = "hippodoc-anon-session-id";
@@ -149,7 +154,7 @@ export default function SimulateurApp() {
   };
 
   return (
-    <div ref={topRef} className="space-y-8">
+    <div ref={topRef} className="sim sim-ile da-bloc space-y-6">
       {/* Profils types collapsibles */}
       {!results.recommande && <ProfilsTypesPublic onSelectProfil={handleSelectProfil} />}
 
@@ -166,8 +171,8 @@ export default function SimulateurApp() {
 
       {/* Loading */}
       {loading && (
-        <Card>
-          <CardContent className="pt-6 space-y-4">
+        <Card className="sim-fiche">
+          <CardContent className="sim-attente space-y-4">
             <div className="flex items-center justify-center gap-3 py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
               <span className="text-lg font-medium">Calcul en cours...</span>
@@ -183,7 +188,7 @@ export default function SimulateurApp() {
 
       {/* Error */}
       {error && !loading && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="sim-alerte">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Erreur lors du calcul</AlertTitle>
           <AlertDescription className="mt-2 space-y-3">
@@ -191,6 +196,7 @@ export default function SimulateurApp() {
             <Button
               variant="outline"
               size="sm"
+              className="sim-btn sim-btn-ligne"
               onClick={() => formDataRef.current && simulate(formDataRef.current)}
             >
               <RotateCcw className="mr-2 h-4 w-4" />

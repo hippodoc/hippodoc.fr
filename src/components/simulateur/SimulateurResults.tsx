@@ -51,12 +51,12 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
 
   return (
     <div
-      className="space-y-6 md:space-y-8"
+      className="sim-resultats space-y-6 md:space-y-8"
     >
       {/* Titre de la section */}
-      <div className="text-center space-y-2">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Comparaison des régimes fiscaux</h2>
-        <p className="text-muted-foreground">
+      <div className="sim-resultats-tete">
+        <h2 className="sim-titre">Comparaison des régimes fiscaux</h2>
+        <p className="sim-chapo">
           Analyse détaillée pour t'aider à choisir le meilleur régime
         </p>
       </div>
@@ -87,20 +87,20 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
 
       {/* ✅ APPROFONDIR — Accordion unifié avec 2 items */}
       <Accordion type="single" collapsible className="space-y-0">
-        <div className="rounded-2xl overflow-hidden bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 shadow-lg">
-          <AccordionItem value="comprendre" className="border-b border-slate-200/30 dark:border-slate-700/30">
-            <AccordionTrigger className="px-4 sm:px-6 py-4 hover:no-underline hover:bg-muted/30 transition-colors">
+        <div className="sim-fiche sim-fiche-plis">
+          <AccordionItem value="comprendre" className="sim-pli-ligne">
+            <AccordionTrigger className="sim-pli-titre hover:no-underline">
               <span className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-hippo-100 to-hippo-200 dark:from-hippo-800/50 dark:to-hippo-700/50">
-                  <Scale className="h-4 w-4 text-hippo-600 dark:text-hippo-400" />
+                <div className="sim-rond">
+                  <Scale className="h-4 w-4" />
                 </div>
                 <div className="text-left">
-                  <span className="text-sm font-semibold text-foreground">Comprendre la différence</span>
-                  <p className="text-xs text-muted-foreground font-normal mt-0.5">Quel régime te fait déduire le plus ?</p>
+                  <span className="sim-pli-nom">Comprendre la différence</span>
+                  <p className="sim-pli-sous">Quel régime te fait déduire le plus ?</p>
                 </div>
               </span>
             </AccordionTrigger>
-            <AccordionContent className="px-4 sm:px-6 pb-6">
+            <AccordionContent className="sim-pli-corps">
               <BreakEvenAnalysis 
                 formData={formData}
                 reelResult={reel}
@@ -111,19 +111,19 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="prelevement" className="border-0">
-            <AccordionTrigger className="px-4 sm:px-6 py-4 hover:no-underline hover:bg-muted/30 transition-colors">
+          <AccordionItem value="prelevement" className="sim-pli-ligne border-0">
+            <AccordionTrigger className="sim-pli-titre hover:no-underline">
               <span className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-hippo-100 to-hippo-200 dark:from-hippo-800/50 dark:to-hippo-700/50">
-                  <Lightbulb className="h-4 w-4 text-hippo-600 dark:text-hippo-400" />
+                <div className="sim-rond">
+                  <Lightbulb className="h-4 w-4" />
                 </div>
                 <div className="text-left">
-                  <span className="text-sm font-semibold text-foreground">Comment l'impôt sera prélevé</span>
-                  <p className="text-xs text-muted-foreground font-normal mt-0.5">Prélèvement à la source et régularisation</p>
+                  <span className="sim-pli-nom">Comment l'impôt sera prélevé</span>
+                  <p className="sim-pli-sous">Prélèvement à la source et régularisation</p>
                 </div>
               </span>
             </AccordionTrigger>
-            <AccordionContent className="px-4 sm:px-6 pb-6">
+            <AccordionContent className="sim-pli-corps">
               <PaymentExplanation 
                 annee={formData.annee}
                 hasRevenusSalaries={(comparison.revenusSalariesAnnuels ?? 0) > 0}
@@ -156,34 +156,34 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
 
       {/* ✅ CTA "Et maintenant ?" — Standalone léger */}
       <div className="space-y-3">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center">
+        <p className="sim-surtitre text-center">
           Et maintenant ?
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
           <button
             onClick={scrollToGuide}
-            className="group flex items-center gap-3 p-3 rounded-xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-white/40 dark:border-gray-700/40 hover:bg-white/80 dark:hover:bg-gray-800/60 hover:shadow-md hover:scale-[1.02] transition-all duration-200 text-left"
+            className="sim-porte group flex items-center gap-3 text-left"
           >
-            <div className="shrink-0 p-2 rounded-lg bg-gradient-to-br from-hippo-400 to-hippo-600 shadow-sm">
-              <Compass className="h-4 w-4 text-white" />
+            <div className="sim-rond shrink-0">
+              <Compass className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">Guide Patrimonial</p>
-              <p className="text-xs text-muted-foreground">Optimise ton Super-Net</p>
+              <p className="sim-porte-nom">Guide Patrimonial</p>
+              <p className="sim-porte-sous">Optimise ton Super-Net</p>
             </div>
-            <ArrowDown className="h-4 w-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+            <ArrowDown className="sim-encre3 h-4 w-4 ml-auto" />
           </button>
 
           <button
             onClick={() => { window.location.href = `${APP_URL}/analyses/budget`; }}
-            className="group flex items-center gap-3 p-3 rounded-xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-white/40 dark:border-gray-700/40 hover:bg-white/80 dark:hover:bg-gray-800/60 hover:shadow-md hover:scale-[1.02] transition-all duration-200 text-left"
+            className="sim-porte group flex items-center gap-3 text-left"
           >
-            <div className="shrink-0 p-2 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-sm">
-              <PiggyBank className="h-4 w-4 text-white" />
+            <div className="sim-rond shrink-0">
+              <PiggyBank className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">Planifier mon budget</p>
-              <p className="text-xs text-muted-foreground">Organise tes dépenses</p>
+              <p className="sim-porte-nom">Planifier mon budget</p>
+              <p className="sim-porte-sous">Organise tes dépenses</p>
             </div>
           </button>
         </div>
@@ -195,49 +195,43 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
       </div>
 
       {/* Disclaimer global unifié */}
-      <div className={cn(
-        'rounded-2xl overflow-hidden',
-        'bg-white/80 dark:bg-slate-900/80',
-        'backdrop-blur-xl',
-        'border border-slate-200/50 dark:border-slate-700/50',
-        'shadow-lg'
-      )}>
-        <div className="h-1.5 w-full bg-gradient-to-r from-slate-400 to-slate-500" />
+      <div className={cn('sim-fiche sim-limites')}>
+        <div className="sim-limites-filet" />
         
-        <div className="p-4 sm:p-6 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-slate-500 flex-shrink-0 mt-0.5" />
+            <Info className="sim-marque h-5 w-5 flex-shrink-0 mt-0.5" />
             <div className="space-y-3">
-              <h4 className="font-semibold text-slate-700 dark:text-slate-300">
+              <h4 className="sim-limites-titre">
                 Limites de cette simulation
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="sim-texte">
                 Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte 
                 tes spécificités fiscales individuelles, les évolutions réglementaires, 
                 ou les optimisations spécifiques à ta situation.
               </p>
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              <p className="sim-texte sim-fort">
                 Pour une analyse personnalisée, consulte :
               </p>
-              <div className="flex flex-wrap gap-2 text-xs">
-                <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+              <div className="flex flex-wrap gap-2">
+                <span className="sim-puce neutre grande">
                   Expert-comptable
                 </span>
-                <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                <span className="sim-puce neutre grande">
                   Avocat fiscaliste
                 </span>
-                <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                <span className="sim-puce neutre grande">
                   CGP indépendant
                 </span>
                 <a 
                   href="https://mon-entreprise.urssaf.fr" 
                   target="_blank" rel="noopener noreferrer" 
-                  className="px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900 transition-colors"
+                  className="sim-puce info grande lien"
                 >
                   Simulateur URSSAF ↗
                 </a>
               </div>
-              <p className="text-xs text-muted-foreground italic pt-1">
+              <p className="sim-petit pt-1">
                 💡 Hippodoc t'aide à y voir plus clair, mais seul un professionnel 
                 pourra te conseiller de manière définitive.
               </p>
@@ -252,6 +246,7 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
           <Button 
             variant="outline" 
             size="lg"
+            className="sim-btn sim-btn-ligne"
             onClick={onNewSimulation}
           >
             <RotateCcw className="mr-2 h-5 w-5" />

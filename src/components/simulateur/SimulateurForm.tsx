@@ -26,19 +26,15 @@ interface SimulateurFormProps {
 
 // ─── Tooltip helper components ─────────────────────────────────────────────
 const TipBox = ({ children, variant = "tip" }: { children: React.ReactNode; variant?: "tip" | "warning" | "info" }) => {
+  // États de la DA (jetons --ok, --wait, --plan) : voir src/styles/simulateur.css.
   const colors = {
-    tip: "bg-emerald-50/80 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800",
-    warning: "bg-amber-50/80 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800",
-    info: "bg-blue-50/80 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800",
-  };
-  const textColors = {
-    tip: "text-emerald-700 dark:text-emerald-300",
-    warning: "text-amber-700 dark:text-amber-300",
-    info: "text-blue-700 dark:text-blue-300",
+    tip: "ok",
+    warning: "attn",
+    info: "info",
   };
   return (
-    <div className={cn("rounded-lg border p-2", colors[variant])}>
-      <div className={cn("text-[10px]", textColors[variant])}>{children}</div>
+    <div className={cn("sim-note", colors[variant])}>
+      <div className="sim-note-in">{children}</div>
     </div>
   );
 };
@@ -90,19 +86,15 @@ export const SIMULATEUR_DEFAULTS = {
 const SectionHeader = ({ 
   icon: Icon, 
   title, 
-  colorClass,
-  iconColorClass 
 }: { 
   icon: React.ElementType; 
   title: string; 
-  colorClass: string;
-  iconColorClass: string;
 }) => (
-  <div className={cn("flex items-center gap-2.5 pb-3 mb-4 border-b", colorClass)}>
-    <div className={cn("p-1.5 rounded-lg", iconColorClass)}>
+  <div className="sim-fiche-tete">
+    <div className="sim-rond">
       <Icon className="h-4 w-4" />
     </div>
-    <h3 className="font-semibold text-base">{title}</h3>
+    <h3 className="sim-fiche-titre">{title}</h3>
   </div>
 );
 
@@ -213,17 +205,15 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="sim-form">
         
         {/* ═══════════════════════════════════════════════════════════════════
             SECTION 1 : TES REVENUS (Essentiel)
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="rounded-xl border-2 border-emerald-200/60 dark:border-emerald-800/40 bg-gradient-to-br from-white to-emerald-50/30 dark:from-slate-900 dark:to-emerald-950/20 p-4 sm:p-5 shadow-sm">
+        <div className="sim-fiche">
           <SectionHeader 
             icon={Wallet} 
             title="Tes revenus" 
-            colorClass="border-emerald-200 dark:border-emerald-800"
-            iconColorClass="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400"
           />
           
           {/* Champs essentiels : Recettes + Charges (toujours visibles) */}
@@ -343,22 +333,22 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               <Button
                 type="button"
                 variant="ghost"
-                className="w-full justify-between text-muted-foreground hover:text-foreground hover:bg-emerald-50 dark:hover:bg-emerald-950/30 py-2 px-3 h-auto"
+                className="sim-pli w-full justify-between h-auto"
               >
                 <span className="flex items-center gap-1.5 sm:gap-2 text-sm flex-wrap">
                   <Plus className="h-4 w-4 flex-shrink-0" />
                   <span className="sm:hidden">Revenus complémentaires</span>
                   <span className="hidden sm:inline">Revenus complémentaires (Salariat, PDSA...)</span>
-                  <Badge variant="outline" className="text-[10px] font-normal">Optionnel</Badge>
+                  <Badge variant="outline" className="sim-puce neutre">Optionnel</Badge>
                 </span>
                 <ChevronDown className={cn(
-                  "h-4 w-4 transition-transform duration-200",
+                  "sim-chevron h-5 w-5 transition-transform duration-200",
                   isRevenusComplementairesOpen && "rotate-180"
                 )} />
               </Button>
             </CollapsibleTrigger>
             
-            <CollapsibleContent className="space-y-4 pt-4 border-t border-dashed border-emerald-200 dark:border-emerald-800 mt-3">
+            <CollapsibleContent className="sim-pli-in space-y-4 pt-4 mt-3">
               {/* Revenus salariés */}
               <FormField
                 control={form.control}
@@ -422,7 +412,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-sm">
                       Revenus PDSA
-                      <Badge variant="outline" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-700">
+                      <Badge variant="outline" className="sim-puce ok">
                         Exonéré IR
                       </Badge>
                       <PremiumTooltip
@@ -474,12 +464,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         {/* ═══════════════════════════════════════════════════════════════════
             SECTION 2 : TA SITUATION FISCALE
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="rounded-xl border-2 border-pink-200/60 dark:border-pink-800/40 bg-gradient-to-br from-white to-pink-50/30 dark:from-slate-900 dark:to-pink-950/20 p-4 sm:p-5 shadow-sm">
+        <div className="sim-fiche">
           <SectionHeader 
             icon={Users} 
             title="Ta situation fiscale" 
-            colorClass="border-pink-200 dark:border-pink-800"
-            iconColorClass="bg-pink-100 text-pink-600 dark:bg-pink-900/50 dark:text-pink-400"
           />
           
           <div className="grid md:grid-cols-2 gap-4">
@@ -492,7 +480,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   <FormLabel className="flex items-center gap-2 flex-wrap">
                     Situation familiale
                     {hasProfileData && (
-                      <Badge variant="outline" className="text-[10px] bg-green-50 text-green-700 border-green-200">
+                      <Badge variant="outline" className="sim-puce ok">
                         Pré-rempli
                       </Badge>
                     )}
@@ -503,7 +491,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <SelectValue placeholder="Célibataire" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="sim sim-pop">
                       <SelectItem value="celibataire">Célibataire</SelectItem>
                       <SelectItem value="marie_pacse">Marié(e) ou Pacsé(e)</SelectItem>
                       <SelectItem value="veuf">Veuf(ve)</SelectItem>
@@ -524,7 +512,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   <FormLabel className="flex items-center gap-2 flex-wrap">
                     Enfants à charge
                     {hasProfileData && (
-                      <Badge variant="outline" className="text-[10px] bg-green-50 text-green-700 border-green-200">
+                      <Badge variant="outline" className="sim-puce ok">
                         Pré-rempli
                       </Badge>
                     )}
@@ -572,17 +560,17 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
 
           {/* Revenus du conjoint (visible uniquement si marié/pacsé) */}
           {showConjointField && (
-            <div className="mt-4 pt-4 border-t border-dashed border-pink-200 dark:border-pink-800 space-y-4">
+            <div className="sim-pli-in mt-4 pt-4 space-y-4">
                 <FormField
                 control={form.control}
                 name="revenusConjoint"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 flex-wrap">
-                      <Heart className="h-4 w-4 text-pink-500 flex-shrink-0" />
+                      <Heart className="sim-marque h-4 w-4 flex-shrink-0" />
                       <span className="sm:hidden">Revenus nets conjoint, si en couple (annuel)</span>
                       <span className="hidden sm:inline">Revenus nets avant impôt du conjoint, si en couple (par an)</span>
-                      <Badge variant="outline" className="text-[10px] bg-pink-50 text-pink-700 border-pink-200 dark:bg-pink-950/30 dark:text-pink-300 dark:border-pink-700">
+                      <Badge variant="outline" className="sim-puce neutre">
                         Optionnel
                       </Badge>
                       <PremiumTooltip
@@ -671,7 +659,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             <SelectValue placeholder="Type de revenu" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className="sim sim-pop">
                           <SelectItem value="salarie">
                             💼 Salarié / Retraite (abattement 10%)
                           </SelectItem>
@@ -698,12 +686,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         {/* ═══════════════════════════════════════════════════════════════════
             SECTION 3 : PARAMÈTRES DE CALCUL (Secondaire)
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 p-4 sm:p-5 shadow-sm">
+        <div className="sim-fiche">
           <SectionHeader 
             icon={Settings} 
             title="Paramètres de calcul" 
-            colorClass="border-slate-200 dark:border-slate-700"
-            iconColorClass="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
           />
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -738,7 +724,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <SelectValue placeholder="2026" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="sim sim-pop">
                       <SelectItem value="2025">2025</SelectItem>
                       <SelectItem value="2026">2026</SelectItem>
                     </SelectContent>
@@ -785,7 +771,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <SelectValue placeholder="France métro" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="sim sim-pop">
                       <SelectItem value="metropole">
                         {DOM_TOM_CONFIG.metropole.emoji} France métro
                       </SelectItem>
@@ -808,9 +794,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   </Select>
                   {/* Badge territoire DOM-TOM détecté */}
                   {domTomInfo && (
-                    <div className="flex items-center gap-2 mt-2 p-2 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/50 dark:border-emerald-700/30">
+                    <div className="sim-note ok flex items-center gap-2 mt-2">
                       <span className="text-sm">{domTomInfo.emoji}</span>
-                      <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                      <p className="text-xs">
                         Abattement {formatTauxAbattement(domTomInfo)} (max {formatPlafond(domTomInfo)})
                       </p>
                     </div>
@@ -857,7 +843,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <SelectValue placeholder="Secteur" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="sim sim-pop">
                       <SelectItem value="secteur_1">Secteur 1</SelectItem>
                       <SelectItem value="secteur_2">Secteur 2</SelectItem>
                     </SelectContent>
@@ -906,7 +892,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <SelectValue placeholder="Régime" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="sim sim-pop">
                       <SelectItem value="auto">🔄 Auto</SelectItem>
                       <SelectItem value="rspm">🎓 RSPM</SelectItem>
                       <SelectItem value="pamc">🩺 PAMC</SelectItem>
@@ -922,26 +908,26 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         {/* ═══════════════════════════════════════════════════════════════════
             SECTION 4 : OPTIONS AVANCÉES (Fusionnée CARMF + Optimisation)
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="rounded-xl border border-amber-200/60 dark:border-amber-800/40 bg-gradient-to-br from-white to-amber-50/30 dark:from-slate-900 dark:to-amber-950/20 p-4 sm:p-5 shadow-sm">
+        <div className="sim-fiche sim-fiche-options">
           <Collapsible open={isOptionsAvanceesOpen} onOpenChange={setIsOptionsAvanceesOpen}>
             <CollapsibleTrigger asChild>
-              <Button type="button" variant="ghost" className="w-full justify-between text-muted-foreground hover:text-foreground hover:bg-amber-50 dark:hover:bg-amber-950/30 py-2 px-3 h-auto">
+              <Button type="button" variant="ghost" className="sim-pli w-full justify-between h-auto">
                 <span className="flex items-center gap-1.5 sm:gap-2 text-sm flex-wrap">
-                  <Settings className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                  <Settings className="sim-marque h-4 w-4 flex-shrink-0" />
                   <span className="font-semibold text-foreground">Options avancées</span>
-                  <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 text-[10px]">Optimisation</Badge>
+                  <Badge variant="secondary" className="sim-puce info">Optimisation</Badge>
                 </span>
-                <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", isOptionsAvanceesOpen && "rotate-180")} />
+                <ChevronDown className={cn("sim-chevron h-5 w-5 transition-transform duration-200", isOptionsAvanceesOpen && "rotate-180")} />
               </Button>
             </CollapsibleTrigger>
-            <CollapsibleContent className="pt-4 border-t border-dashed border-amber-200 dark:border-amber-800 mt-3">
+            <CollapsibleContent className="sim-pli-in pt-4 mt-3">
               <Accordion type="multiple" className="space-y-2">
 
                 {/* ─── ACCORDION 1 : Retraite & CARMF ─── */}
-                <AccordionItem value="carmf" className="rounded-lg border border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 px-3 overflow-hidden">
+                <AccordionItem value="carmf" className="sim-rangee px-3 overflow-hidden">
                   <AccordionTrigger className="py-3 hover:no-underline gap-2 text-sm">
                     <span className="flex items-center gap-2 flex-1">
-                      <Shield className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                      <Shield className="sim-marque h-4 w-4 flex-shrink-0" />
                       <span className="font-semibold text-foreground">Retraite & CARMF</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {situationCarmf === 'dispense' && 'Dispensé'}
@@ -976,7 +962,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value || 'affilie_3ans_plus'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Affilié (cas général)" /></SelectTrigger></FormControl>
-                          <SelectContent>
+                          <SelectContent className="sim sim-pop">
                             <SelectItem value="affilie_3ans_plus">Affilié (cas général)</SelectItem>
                             <SelectItem value="affilie_jeune">Jeune affilié (&lt; 2 ans, &lt; 40 ans)</SelectItem>
                             <SelectItem value="dispense">Dispensé (sur demande)</SelectItem>
@@ -984,7 +970,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </Select>
                         <div className="text-xs mt-1.5 px-1">
                           {field.value === 'affilie_3ans_plus' && <p className="text-muted-foreground">Cotisations complètes : base + complémentaire + invalidité-décès</p>}
-                          {field.value === 'affilie_jeune' && <p className="text-emerald-600 dark:text-emerald-400">✅ Exonéré de complémentaire les 2 premières années — cotisations réduites</p>}
+                          {field.value === 'affilie_jeune' && <p className="sim-ok">✅ Exonéré de complémentaire les 2 premières années — cotisations réduites</p>}
                           {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation appelée par la CARMF (PAMC : dispense sur demande, revenus faibles).</p>}
                           {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (157€ ou 626€/an selon le taux ci-dessous).</p>}
                         </div>
@@ -1029,10 +1015,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                 </AccordionItem>
 
                 {/* ─── ACCORDION 2 : Déductions professionnelles ─── */}
-                <AccordionItem value="deductions" className="rounded-lg border border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 px-3 overflow-hidden">
+                <AccordionItem value="deductions" className="sim-rangee px-3 overflow-hidden">
                   <AccordionTrigger className="py-3 hover:no-underline gap-2 text-sm">
                     <span className="flex items-center gap-2 flex-1">
-                      <PiggyBank className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                      <PiggyBank className="sim-marque h-4 w-4 flex-shrink-0" />
                       <span className="font-semibold text-foreground">Déductions professionnelles</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {(() => {
@@ -1051,8 +1037,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     <p className="text-xs text-muted-foreground px-1">Ces déductions <strong className="text-foreground/70">s'ajoutent</strong> à tes charges ci-dessus. Ne les inclus pas dans le champ « Charges réelles ».</p>
                     {secteurConventionnel === 'secteur_1' && (
                       <FormField control={form.control} name="forfait2pct" render={({ field }) => (
-                        <FormItem className="flex items-start gap-3 p-3 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30">
-                          <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="mt-1 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500" /></FormControl>
+                        <FormItem className="sim-coche flex items-start gap-3">
+                          <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="sim-case" /></FormControl>
                           <div className="flex-1">
                             <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
                               Forfait 2% (Secteur 1 - BNC réel)
@@ -1082,7 +1068,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     {secteurConventionnel === 'secteur_1' && (
                       <FormField control={form.control} name="ratioNonConventionne" render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2 text-sm">% d'honoraires non conventionnés <Badge variant="outline" className="text-[10px] font-normal">Optionnel</Badge>
+                          <FormLabel className="flex items-center gap-2 text-sm">% d'honoraires non conventionnés <Badge variant="outline" className="sim-puce neutre">Optionnel</Badge>
                             <PremiumTooltip title="Honoraires non conventionnés" content={
                               <div className="space-y-2">
                                 <p className="font-semibold">Part d'activité hors convention</p>
@@ -1162,17 +1148,17 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <FormDescription className="text-xs">
                           En plus de tes charges. Déduit du revenu imposable (PER) ou du BNC réel (Madelin).
                           {depasseCap && saisie > 0 && (
-                            <span className="block mt-1 text-amber-600 dark:text-amber-400">
+                            <span className="block mt-1 sim-attn">
                               ⚠️ Plafond légal {perPlafond.toLocaleString('fr-FR')}€ atteint — seuls {perPlafond.toLocaleString('fr-FR')}€ seront déduits (CGI Art. 163 quatervicies).
                             </span>
                           )}
                           {madelinEnMicro && (
-                            <span className="block mt-1 text-amber-600 dark:text-amber-400">
+                            <span className="block mt-1 sim-attn">
                               ⚠️ Madelin sélectionné — non déduit en Micro-BNC (Art. 154 bis CGI). Bascule sur PER ou passe en BNC réel.
                             </span>
                           )}
                           {!madelinEnMicro && !depasseCap && isMicroLikely && typeCotisation === 'per' && saisie > 0 && (
-                            <span className="block mt-1 text-emerald-600 dark:text-emerald-400">✓ PER en Micro-BNC : déduction du revenu global appliquée.</span>
+                            <span className="block mt-1 sim-ok">✓ PER en Micro-BNC : déduction du revenu global appliquée.</span>
                           )}
                         </FormDescription>
                         <FormMessage />
@@ -1186,7 +1172,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       const plafondLabel = `${plafondCV.toLocaleString('fr-FR')}€/an`;
                       return (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-sm">Chèques-vacances ANCV <Badge variant="outline" className="text-[10px] font-normal">Réel</Badge>
+                        <FormLabel className="flex items-center gap-2 text-sm">Chèques-vacances ANCV <Badge variant="outline" className="sim-puce neutre">Réel</Badge>
                           <PremiumTooltip title="Chèques-vacances ANCV" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Chèques-vacances pour indépendants</p>
@@ -1207,24 +1193,24 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </PremiumTooltip>
                         </FormLabel>
                         <FormControl><div className="relative"><Input type="number" step="1" min={0} max={plafondCV} placeholder="Ex: 1 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
-                        <FormDescription className="text-xs">En plus de tes charges. Max {plafondLabel} ({annee}) — BNC réel uniquement. <span className="text-amber-600 dark:text-amber-400">⚠️ Sans effet en Micro-BNC.</span></FormDescription>
+                        <FormDescription className="text-xs">En plus de tes charges. Max {plafondLabel} ({annee}) — BNC réel uniquement. <span className="sim-attn">⚠️ Sans effet en Micro-BNC.</span></FormDescription>
                         <FormMessage />
                       </FormItem>
                       );
                     }} />
                     {secteurConventionnel === 'secteur_1' && (
-                      <div className="p-3 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30">
-                        <p className="text-xs text-emerald-700 dark:text-emerald-400"><strong>✅ Déductions Secteur 1 automatiques</strong> (BNC réel) : 3% + barème Groupe III appliquées automatiquement.</p>
+                      <div className="sim-note ok">
+                        <p className="text-xs"><strong>✅ Déductions Secteur 1 automatiques</strong> (BNC réel) : 3% + barème Groupe III appliquées automatiquement.</p>
                       </div>
                     )}
                   </AccordionContent>
                 </AccordionItem>
 
                 {/* ─── ACCORDION 3 : Revenus complémentaires ─── */}
-                <AccordionItem value="revenus-complementaires" className="rounded-lg border border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 px-3 overflow-hidden">
+                <AccordionItem value="revenus-complementaires" className="sim-rangee px-3 overflow-hidden">
                   <AccordionTrigger className="py-3 hover:no-underline gap-2 text-sm">
                     <span className="flex items-center gap-2 flex-1">
-                      <Home className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                      <Home className="sim-marque h-4 w-4 flex-shrink-0" />
                       <span className="font-semibold text-foreground">Fiscalité immobilière & zones</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {(() => {
@@ -1242,7 +1228,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       const anneeInstallationZone = form.watch('anneeInstallationZone');
                       return (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-sm"><Map className="h-4 w-4 text-amber-600" /> Zone exonérée
+                        <FormLabel className="flex items-center gap-2 text-sm"><Map className="sim-marque h-4 w-4" /> Zone exonérée
                           <PremiumTooltip title="Zones exonérées" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Exonération d'impôt en zone prioritaire</p>
@@ -1260,7 +1246,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                   <p>Année 6 → <strong>75 %</strong> · Année 7 → <strong>50 %</strong> · Année 8 → <strong>25 %</strong></p>
                                   <p>Plafond : 50 000 € de bénéfice exonéré/an</p>
                                 </div>
-                                <p className="text-[11px] text-amber-700 dark:text-amber-300 border-t border-amber-200 dark:border-amber-800/40 pt-1.5 mt-1.5">
+                                <p className="sim-filet text-[11px] pt-1.5 mt-1.5">
                                   ⚠️ <strong>Prorata du plafond</strong> : l'année d'installation et l'année de basculement de palier (100 % → 60 %), le plafond annuel est proratisé au nombre de mois d'exonération effective (CGI Art. 44 octies A I + Art. 49 K annexe III CGI ; CE 18 juillet 2018, n° 412142). Sécurise auprès de ton SIE/AGA.
                                 </p>
                               </TipBox>
@@ -1272,7 +1258,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value || 'aucune'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Aucune" /></SelectTrigger></FormControl>
-                          <SelectContent>
+                          <SelectContent className="sim sim-pop">
                             <SelectItem value="aucune">Aucune</SelectItem>
                             {/* ZFU-TE : dispositif clos au 31.12.2025 — caché pour les nouvelles installations 2026+.
                                 Logique centralisée dans simulateurSchema.isZoneExoneneeAvailable (CGI Art. 44 octies A). */}
@@ -1304,7 +1290,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     )}
                     <FormField control={form.control} name="regimeFoncier" render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-sm"><Home className="h-4 w-4 text-amber-600" /> Revenus fonciers
+                        <FormLabel className="flex items-center gap-2 text-sm"><Home className="sim-marque h-4 w-4" /> Revenus fonciers
                           <PremiumTooltip title="Revenus fonciers" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Revenus de tes biens immobiliers</p>
@@ -1325,7 +1311,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value || 'aucun'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Aucun" /></SelectTrigger></FormControl>
-                          <SelectContent><SelectItem value="aucun">Aucun</SelectItem><SelectItem value="micro">Micro-foncier (abattement 30%)</SelectItem><SelectItem value="reel">Régime réel</SelectItem></SelectContent>
+                          <SelectContent className="sim sim-pop"><SelectItem value="aucun">Aucun</SelectItem><SelectItem value="micro">Micro-foncier (abattement 30%)</SelectItem><SelectItem value="reel">Régime réel</SelectItem></SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
@@ -1337,7 +1323,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: 12 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
                           <FormDescription className="text-xs">Loyers bruts (≤ 15 000€ pour micro-foncier)</FormDescription>
                           {form.watch('revenusFonciersBruts') > 15000 && (
-                            <p className="text-xs text-amber-600 dark:text-amber-400">⚠️ Au-delà de 15 000€/an, le micro-foncier n'est plus applicable. Passe en régime réel.</p>
+                            <p className="text-xs sim-attn">⚠️ Au-delà de 15 000€/an, le micro-foncier n'est plus applicable. Passe en régime réel.</p>
                           )}
                           <FormMessage />
                         </FormItem>
@@ -1357,10 +1343,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                 </AccordionItem>
 
                 {/* ─── ACCORDION 4 : Crédits d'impôt ─── */}
-                <AccordionItem value="credits" className="rounded-lg border border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30 px-3 overflow-hidden">
+                <AccordionItem value="credits" className="sim-rangee px-3 overflow-hidden">
                   <AccordionTrigger className="py-3 hover:no-underline gap-2 text-sm">
                     <span className="flex items-center gap-2 flex-1">
-                      <GraduationCap className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                      <GraduationCap className="sim-marque h-4 w-4 flex-shrink-0" />
                       <span className="font-semibold text-foreground">Crédits d'impôt</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {(() => {
@@ -1379,8 +1365,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   </AccordionTrigger>
                   <AccordionContent className="space-y-3 pb-3">
                     <FormField control={form.control} name="creditFormationDirigeant" render={({ field }) => (
-                      <FormItem className="flex items-start gap-3 p-3 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30">
-                        <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="mt-1 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500" /></FormControl>
+                      <FormItem className="sim-coche flex items-start gap-3">
+                        <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="sim-case" /></FormControl>
                         <div className="flex-1">
                           <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">Crédit formation dirigeant
                             <PremiumTooltip title="Crédit formation dirigeant" content={
@@ -1444,7 +1430,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             return `Dépenses annuelles. Plafond : ${plafond.toLocaleString('fr-FR')}€ → crédit max : ${creditMax.toLocaleString('fr-FR')}€`;
                           })()}
                           {(field.value || 0) > Math.min(12000 + (form.getValues('enfants') || 0) * 1500, 15000) && (
-                            <span className="block mt-1 text-amber-600 dark:text-amber-400">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
+                            <span className="block mt-1 sim-attn">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
                           )}
                         </FormDescription>
                         <FormMessage />
@@ -1488,7 +1474,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               return `Plafond : ${plafond.toLocaleString('fr-FR')}€ (${nbEnfants} enfant${nbEnfants > 1 ? 's' : ''} × 3 500€) → crédit max : ${creditMax.toLocaleString('fr-FR')}€`;
                             })()}
                             {(field.value || 0) > 3500 * (form.getValues('nombreEnfantsGarde') || 0) && (
-                              <span className="block mt-1 text-amber-600 dark:text-amber-400">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
+                              <span className="block mt-1 sim-attn">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
                             )}
                           </FormDescription>
                           <FormMessage />
@@ -1498,7 +1484,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
 
                     <FormField control={form.control} name="creditImpotAutre" render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-sm">Autres crédits d'impôt <Badge variant="outline" className="text-[10px] font-normal">Optionnel</Badge></FormLabel>
+                        <FormLabel className="flex items-center gap-2 text-sm">Autres crédits d'impôt <Badge variant="outline" className="sim-puce neutre">Optionnel</Badge></FormLabel>
                         <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: 1 500" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
                         <FormDescription className="text-xs">Dons, investissements locatifs, etc.</FormDescription>
                         <FormMessage />
@@ -1515,7 +1501,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         <Button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-gradient-to-r from-hippo-500 to-hippo-600 hover:from-hippo-600 hover:to-hippo-700 text-white shadow-lg shadow-hippo-500/25 h-12 text-base font-semibold rounded-xl"
+          className="sim-btn sim-btn-soleil w-full"
         >
           {loading ? (
             <span className="flex items-center gap-2">

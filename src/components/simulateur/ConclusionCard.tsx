@@ -144,22 +144,22 @@ export function ConclusionCard({ comparison, formData }: ConclusionCardProps) {
 
   // ============ STYLES ============
   const getMainIcon = () => {
-    if (hasWarnings) return { Icon: AlertTriangle, color: "text-orange-500" };
-    if (hasSignificantEconomie) return { Icon: Trophy, color: "text-emerald-500" };
-    return { Icon: Scale, color: "text-amber-500" };
+    if (hasWarnings) return { Icon: AlertTriangle, color: "sim-attn" };
+    if (hasSignificantEconomie) return { Icon: Trophy, color: "sim-encre" };
+    return { Icon: Scale, color: "sim-marque" };
   };
 
   const getBgClass = () => {
-    if (hasWarnings) return "bg-orange-50/80 border-orange-200/50 dark:bg-orange-950/20 dark:border-orange-800/30";
-    if (hasSignificantEconomie) return "bg-emerald-50/80 border-emerald-200/50 dark:bg-emerald-950/20 dark:border-emerald-800/30";
-    return "bg-amber-50/80 border-amber-200/50 dark:bg-amber-950/20 dark:border-amber-800/30";
+    if (hasWarnings) return "attn";
+    if (hasSignificantEconomie) return "gain";
+    return "egal";
   };
 
   const getAlertPillStyle = (type: 'warning' | 'info' | 'danger') => {
     switch (type) {
-      case 'danger': return "bg-red-100/80 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800";
-      case 'warning': return "bg-orange-100/80 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800";
-      default: return "bg-blue-100/80 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800";
+      case 'danger': return "attn fort";
+      case 'warning': return "attn";
+      default: return "info";
     }
   };
 
@@ -168,21 +168,21 @@ export function ConclusionCard({ comparison, formData }: ConclusionCardProps) {
   // ============ RENDER ============
   return (
     <div
-      className={`rounded-xl border p-4 ${getBgClass()}`}
+      className={`sim-conclusion ${getBgClass()}`}
     >
       {/* Ligne principale : icône + message + badge */}
       <div className="flex items-center gap-3 flex-wrap">
-        <MainIcon className={`h-5 w-5 shrink-0 ${iconColor}`} />
-        <p className="text-sm sm:text-base font-semibold text-foreground flex-1 min-w-0">
+        <span className="sim-conclusion-signe"><MainIcon className={`h-5 w-5 shrink-0 ${iconColor}`} /></span>
+        <p className="sim-conclusion-texte flex-1 min-w-0">
           {getMessage()}
         </p>
         {percentageEconomie !== null && hasSignificantEconomie && (
-          <Badge variant="outline" className="bg-emerald-100/80 text-emerald-700 border-emerald-200 font-semibold text-xs shrink-0">
+          <Badge variant="outline" className="sim-puce encre grande shrink-0">
             +{percentageEconomie.toFixed(1)}% Super-Net
           </Badge>
         )}
         {percentageEconomie !== null && !hasSignificantEconomie && !ecartNegligeable && (
-          <Badge variant="outline" className="bg-amber-100/80 text-amber-700 border-amber-200 font-medium text-xs shrink-0">
+          <Badge variant="outline" className="sim-puce neutre grande shrink-0">
             ~{percentageEconomie.toFixed(1)}%
           </Badge>
         )}
@@ -196,7 +196,7 @@ export function ConclusionCard({ comparison, formData }: ConclusionCardProps) {
             return (
               <span
                 key={index}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${getAlertPillStyle(alert.type)}`}
+                className={`sim-puce grande multi ${getAlertPillStyle(alert.type)}`}
               >
                 <AlertIcon className="h-3 w-3 shrink-0" />
                 {alert.message}

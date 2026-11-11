@@ -6667,6 +6667,107 @@ touché, aucun JS ajouté, `lastmod` non touchés.
   que l'accueil est la seule page dans la DA. `blog-series.ts` (généré) garde ses classes
   de dégradé, que plus rien n'affiche.
 
+### 9.ek Phase 5d : `/simulateur` dans la DA (11 novembre 2026)
+
+Suite de § 9.ej. Période d'observation SEO : seul l'habillage change, sur la page
+(`src/pages/simulateur.astro`) et sur l'îlot React (`src/components/simulateur/*.tsx`,
+nouvelle feuille `src/styles/simulateur.css`). Aucun calcul n'est touché : `src/lib/` et
+`src/components/ui/` n'ont pas une ligne de diff, aucun JS ajouté, `lastmod` non touché.
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main`. Les 70 autres
+  HTML : identiques à l'octet, au nom de la feuille commune près ; les 6 autres fichiers
+  texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`, index de recherche) aussi. `/simulateur` :
+  `title`, description, canonique, robots, balises sociales, 4 blocs JSON-LD, H1,
+  17 titres (niveau, texte, `id`), 57 liens dont 9 dans `<main>` (adresse, libellé, `rel`,
+  `target`, dans l'ordre), 13 `id`, 45 éléments de mesure (`cta_signup_simulateur_bottom`,
+  `cta_pricing_simulateur_bottom`, `data-calendly="simulateur_resultat"`,
+  `blog_readmore_simulateur`), 11 scripts, l'îlot (même composant, `client:visible`), les
+  13 plis, l'ordre des sections, et le texte : 2 259 mots (2 141 dans `<main>`, 57 dans
+  l'îlot rendu côté serveur), mêmes 172 suites de texte entre balises de bloc ; mêmes
+  28 champs et boutons dans l'îlot (`name`, `type`, `placeholder`, `role`).
+- **Aucun calcul ne change**, prouvé par script (Playwright, écrit et lancé sur le build
+  de `main` avant toute modification, rejoué après) : 12 jeux de valeurs, 7 en RSPM
+  (calcul local : simple, mixte avec PDSA, couple et deux enfants, 2025 en secteur 2 à La
+  Réunion avec RID à 100 % et PER, parent isolé au seuil avec ZFRR, foncier et crédits
+  d'impôt, RSPM forcé au-dessus du plafond micro avec conjoint libéral, 12 000 € avec
+  chèques-vacances et Madelin) et 5 en PAMC. Relevé par `textContent`, sans aucune classe :
+  le texte de l'îlot, chaque pli ouvert à son tour, chaque bulle d'aide des résultats.
+  1 679 nombres, 36 678 caractères, 89 plis, 201 bulles : identiques au caractère près.
+  **Limite** : l'Edge Function `calculate-urssaf` est injoignable d'ici (le proxy refuse
+  le tunnel). La branche PAMC est donc rejouée avec une réponse de la forme
+  `SimulationResult` calculée à partir du corps de la requête, la même avant et après :
+  cela prouve que les 10 corps de requête envoyés sont identiques et que l'affichage
+  d'une même réponse l'est aussi, pas le calcul du serveur (qui n'est pas dans ce dépôt).
+  Les 24 insertions d'analytics (`simulateur_public_events`) sont interceptées, donc
+  rien n'est parti en base, et leur contenu est identique.
+- **Dans les `.tsx`**, relu ligne à ligne après effacement des valeurs de `className` :
+  il ne reste que des tables de classes (couleurs des lignes, des pastilles, des
+  encarts), les quatre couleurs du camembert, le halo flou de la fiche recommandée
+  (retiré : c'est lui qui faisait défiler la page de côté, § 9.ed), un `<span>` autour
+  de l'icône de la conclusion, et des `className` ajoutés ou retirés. États, effets,
+  gestionnaires, appels réseau, `localStorage` : aucune ligne.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille de page
+  en plus de la feuille commune ; une clé de style scopé dans les `props` de l'îlot ; une
+  image décorative (`alt=""`, la mascotte) ; l'icône du titre, la flèche du bouton de fin
+  et deux halos, décoratifs, disparaissent ; « → », « ↗ », « 💡 » et le « + » des plis
+  dessinés en SVG, le caractère reste dans le texte, masqué à l'œil (`sr`) ; des
+  `<span class="num">` qui gardent sur une ligne « Super-Net : », « chiffre ? », un mot
+  composé d'une question (« prend-il », « Micro-BNC »).
+- **Habillage de la page** (aucune classe utilitaire). Le ciel : titre à gauche,
+  « Super-Net » sur du jaune, trois gages en pastilles, puis l'îlot et la fiche du
+  rendez-vous ; mascotte au pouce levé dès 1 024 px, debout derrière le haut de l'îlot
+  (les fichiers de l'accueil). Une feuille sable : le mode d'emploi en huit plis `.qa`,
+  titre collant à gauche. Une feuille ciel : les trois mots en fiches (le Super-Net sur
+  une fiche jaune), l'exemple chiffré, les limites. Une feuille sable : les cinq
+  questions en plis. La fin : l'appel à l'essai (bouton jaune), la fiche « Comprendre ton
+  résultat », le soleil sur l'eau du pied. `BlogReadMore.astro`, partagé avec le guide
+  des déclarations, n'est pas modifié : la page recouvre son habillage.
+- **Habillage de l'îlot** (`simulateur.css`, classes `sim-*`). Les composants de `ui/`
+  sont partagés avec la calculette et le guide : ils ne sont pas modifiés. Leurs jetons
+  (`--border`, `--muted-foreground`, `--primary`, `--radius`…) reçoivent les couleurs de
+  la DA sous `.sim` ; champs, listes et boutons radio sont habillés par leur rôle ; les
+  bulles, le tiroir d'aide du téléphone et les listes déroulantes, que Radix rend dans
+  `<body>`, portent `.sim` eux aussi. Formulaire : une fiche en relief par section, champs
+  ciel doux de 50 px, plis à pastille, bouton « Simuler » jaune épais. Résultats : deux
+  fiches, le Super-Net du régime recommandé sur du jaune (l'autre sur ciel doux),
+  camembert aux bleus de l'eau et au jaune du soleil (les couleurs de la jauge de
+  l'accueil), une ligne par poste ; la conclusion sur l'eau profonde avec le gain en
+  pastille jaune ; tableau du couple, comparaison des déductions et prélèvement en fiches
+  ciel doux ; états (favorable, attention, information) par les jetons `--ok`, `--wait`,
+  `--plan`. Bulles d'aide sur fond blanc (elles étaient noires, à 10 px), tiroir blanc.
+  Les utilitaires Tailwind qui restent dans les `.tsx` ne règlent que la mise en page.
+- **Feuilles** : commune 147 529 → 129 500 octets (23,7 Ko gzip ; 204 règles en moins,
+  aucune ajoutée ; son nom change, donc le `<link>` de toutes les pages) ; les sept autres
+  feuilles identiques à l'octet ; nouvelle `simulateur.*.css`, 30 916 octets (6,1 Ko gzip). HTML de
+  `/simulateur` : 25 878 → 25 184 octets gzip. JS : mêmes fichiers, `SimulateurApp`
+  136,8 → 122,9 Ko, `RegimeComparisonCards` 395,8 → 389,6 Ko (chaînes de classes plus
+  courtes). Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs`, dans cinq états (page vierge, résultat RSPM, tous les plis du formulaire
+  ouverts, résultat PAMC en couple avec plafond dépassé, bulle et liste ouvertes) ;
+  24 largeurs de 320 à 1 920 px dans quatre états : aucun défilement horizontal, aucune
+  erreur de console ; texte à 200 % : aucun défilement de 320 à 1 280 px (14 largeurs).
+  Lighthouse mobile en local, mesures alternées avant et après : sur les trois premières,
+  performance médiane 95 sur `main` (95, 89, 99) et 93 après (93, 97, 89) ; sur neuf, 92
+  sur `main` (87 à 99) et 95 après (89 à 97). L'écart d'une mesure à l'autre vient du
+  temps de blocage (hydratation de l'îlot : 120 à 500 ms des deux côtés, médiane 342 ms
+  avant, 254 ms après) ; l'objectif de 95 n'est donc tenu qu'en médiane longue, sur
+  `main` comme ici. Accessibilité 100, SEO 100, bonnes pratiques 96 avant et après.
+- **À valider** : le jaune du Super-Net ne sert que dans la fiche du régime recommandé ;
+  « Économie de … » reste en vert (état favorable) ; la conclusion passe en bleu profond.
+  La page est plus haute (8 302 px contre 7 158 à 390 px, 6 125 contre 5 353 à 1 440 px).
+- **À décider** : la feuille de page est une requête bloquante de plus (comme en
+  § 9.ej) : FCP et LCP simulés passent de 0,9 à 1,2 s en local, à chaque mesure.
+- **Vu, non traité** (déjà sur `main`, relève de la logique) : `SimulateurApp` passe au
+  formulaire des valeurs par défaut partielles ; la liste « Régime » s'affiche donc vide
+  (le choix de la RID n'apparaît qu'après avoir choisi « Auto » ou « RSPM ») et le pli
+  « Fiscalité immobilière & zones » annonce « ZFRR · Foncier réel » sur un formulaire
+  vierge. `CotisationsDetailChart.tsx` n'est rendu nulle part : laissé tel quel. Les
+  émojis des textes de l'îlot et le « → » de `BlogReadMore` restent des caractères (ils
+  sortent dans la police de repli). Les bonnes pratiques Lighthouse restent à 96, avant comme après : trois
+  requêtes sortantes sont refusées par le bac à sable de mesure (erreurs de console).
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

@@ -5,32 +5,26 @@ import { insertPublicEvent } from "@/lib/supabase-public";
 import { APP_URL } from "@/lib/site";
 
 const piliers = [
-  { icon: Wallet, label: "Budget", description: "Règle 50/30/20 adaptée", color: "from-emerald-500 to-teal-500", bg: "bg-emerald-50 dark:bg-emerald-950/30" },
-  { icon: Shield, label: "Sécurité", description: "Matelas d'urgence médecin", color: "from-blue-500 to-cyan-500", bg: "bg-blue-50 dark:bg-blue-950/30" },
-  { icon: TrendingUp, label: "Investir", description: "PEA, assurance-vie, PER…", color: "from-violet-500 to-purple-500", bg: "bg-violet-50 dark:bg-violet-950/30" },
-  { icon: Settings, label: "Optimiser", description: "Stratégies fiscales BNC", color: "from-amber-500 to-orange-500", bg: "bg-amber-50 dark:bg-amber-950/30" },
+  { icon: Wallet, label: "Budget", description: "Règle 50/30/20 adaptée" },
+  { icon: Shield, label: "Sécurité", description: "Matelas d'urgence médecin" },
+  { icon: TrendingUp, label: "Investir", description: "PEA, assurance-vie, PER…" },
+  { icon: Settings, label: "Optimiser", description: "Stratégies fiscales BNC" },
 ];
 
 export function GuidePatrimonialTeaser() {
   return (
     <div
-      className={cn(
-        "relative rounded-2xl overflow-hidden",
-        "bg-white/60 dark:bg-slate-900/60",
-        "backdrop-blur-xl",
-        "border border-white/30 dark:border-slate-700/30",
-        "shadow-xl"
-      )}
+      className={cn("sim-fiche sim-guide relative overflow-hidden")}
     >
       {/* Header */}
-      <div className="p-6 pb-4 space-y-2">
+      <div className="pb-4 space-y-2">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-hippo-400 to-hippo-600 flex items-center justify-center shadow-lg shadow-hippo-400/20">
-            <Lock className="h-5 w-5 text-white" />
+          <div className="sim-rond plein grand">
+            <Lock className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-foreground">Guide Patrimonial Personnalisé</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="sim-fiche-titre grand">Guide Patrimonial Personnalisé</h3>
+            <p className="sim-texte">
               Conseils épargne et patrimoine adaptés à ta situation
             </p>
           </div>
@@ -38,14 +32,14 @@ export function GuidePatrimonialTeaser() {
       </div>
 
       {/* 4 piliers visibles */}
-      <div className="px-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {piliers.map((p) => (
-          <div key={p.label} className={cn("rounded-xl p-3 text-center space-y-1.5", p.bg)}>
-            <div className={cn("mx-auto h-8 w-8 rounded-lg bg-gradient-to-br flex items-center justify-center", p.color)}>
-              <p.icon className="h-4 w-4 text-white" />
+          <div key={p.label} className={cn("sim-panneau text-center space-y-1.5")}>
+            <div className={cn("sim-rond blanc mx-auto")}>
+              <p.icon className="h-4 w-4" />
             </div>
-            <p className="text-xs font-semibold text-foreground">{p.label}</p>
-            <p className="text-[10px] text-muted-foreground leading-tight">{p.description}</p>
+            <p className="sim-porte-nom">{p.label}</p>
+            <p className="sim-porte-sous">{p.description}</p>
           </div>
         ))}
       </div>
@@ -53,21 +47,21 @@ export function GuidePatrimonialTeaser() {
       {/* Zone floutée + CTA overlay */}
       <div className="relative mt-4">
         {/* Faux contenu flouté */}
-        <div className="px-6 pb-6 space-y-3 blur-[6px] select-none pointer-events-none" aria-hidden="true">
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full" />
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-5/6" />
-          <div className="h-20 bg-slate-100 dark:bg-slate-800 rounded-xl" />
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-2/3" />
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full" />
+        <div className="sim-flou pb-2 space-y-3 blur-[6px] select-none pointer-events-none" aria-hidden="true">
+          <div className="sim-trait h-4 w-3/4" />
+          <div className="sim-trait h-4 w-full" />
+          <div className="sim-trait h-4 w-5/6" />
+          <div className="sim-trait clair h-20" />
+          <div className="sim-trait h-4 w-2/3" />
+          <div className="sim-trait h-4 w-full" />
         </div>
 
         {/* Overlay gradient + CTA */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-white via-white/90 to-transparent dark:from-slate-900 dark:via-slate-900/90">
+        <div className="sim-voile absolute inset-0 flex flex-col items-center justify-center">
           <Button
             variant="gradient"
             size="lg"
-            className="shadow-xl shadow-hippo-400/30"
+            className="sim-btn sim-btn-soleil"
             onClick={() => {
               // Fire-and-forget tracking (anonyme, best-effort)
               insertPublicEvent('simulateur_public_events', {
@@ -80,7 +74,7 @@ export function GuidePatrimonialTeaser() {
             Créer mon compte gratuit
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="sim-petit droit mt-3">
             ✨ Inclus dans l'essai gratuit de 30 jours
           </p>
         </div>
