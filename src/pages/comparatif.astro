@@ -541,7 +541,7 @@ const faqSchema = {
         {/* Un seul vrai <table>. Plus large que l'écran sur téléphone, il défile de
              côté dans sa fiche (la page, jamais) ; la colonne des fonctionnalités
              reste en place, et une ombre à droite dit qu'il reste des colonnes. */}
-        <div class="tableau">
+        <div class="tableau" tabindex="0" role="region" aria-label="Tableau comparatif">
           <table>
             <thead>
               <tr>
@@ -914,8 +914,26 @@ const faqSchema = {
   .precision { display: inline-block; font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); }
   .nous .precision { font-weight: var(--tb); color: var(--brand); }
   /* Le « i » d'une précision : une cible de 24 px, le texte reste lu. */
-  .aide { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin: -4px 0 -4px 2px; border-radius: 50%; vertical-align: middle; color: var(--ink-3); cursor: help; }
+  .aide { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin: -4px 0 -4px 2px; border-radius: 50%; vertical-align: middle; color: var(--ink-3); cursor: help; }
   .aide :global(.ic) { font-size: 1rem; }
+  /* La précision se lit aussi au clavier et au toucher (à la souris, le
+     navigateur montre déjà `title` au survol) : une fiche posée sous le nom de
+     la fonctionnalité, par-dessus les colonnes voisines. Elle se place par
+     rapport à la cellule (collante), pas au « i » : elle reste dans la partie
+     visible du tableau. Sur les dernières lignes elle monte, pour ne pas en
+     sortir. Le second `content` la retire de ce que lit un lecteur d'écran,
+     qui a déjà le texte masqué. */
+  .aide::after {
+    content: attr(title); content: attr(title) / "";
+    position: absolute; z-index: 2; top: calc(100% - 4px); left: 12px; display: none;
+    width: max-content; max-width: min(17rem, 76vw); padding: 10px 14px; border-radius: 16px; background: var(--paper);
+    box-shadow: 0 0 0 1px var(--line), var(--float);
+    font-size: 0.8125rem; font-weight: var(--tw); line-height: 1.45; text-align: left; white-space: normal; color: var(--ink-2); cursor: auto;
+  }
+  .aide:focus::after { display: block; }
+  @media (hover: none) { .aide:hover::after { display: block; } }
+  .tableau th[scope="row"]:focus-within, .tableau th[scope="row"]:hover { z-index: 3; }
+  .tableau tbody:last-of-type tr:nth-last-child(-n+3) .aide::after { top: auto; bottom: calc(100% - 4px); }
   .legende { max-width: 46rem; margin: 20px auto 0; font-size: 0.875rem; line-height: 1.6; text-align: center; color: var(--ink-2); }
   .legende :global(.ic) { display: inline-block; font-size: 1rem; vertical-align: -0.18em; }
   .legende :global(.oui) { color: var(--ok); }
@@ -984,6 +1002,11 @@ const faqSchema = {
   /* Petits téléphones : la première colonne se resserre, pour qu'on voie presque
      deux éditeurs à la fois. */
   @media (max-width: 359px) { .tableau { --col: 7.25rem; } }
+  /* Téléphone : l'intitulé de la première colonne tient sur une ligne (il se
+     coupait en plein mot, « FONCTIONNALI / TÉ ») : capitales resserrées, puis
+     bas de casse sur les plus petits écrans. */
+  @media (max-width: 479px) { .tableau thead th:first-child { padding-right: 4px; font-size: 0.6875rem; letter-spacing: 0.03em; overflow-wrap: normal; } }
+  @media (max-width: 359px) { .tableau thead th:first-child { font-size: 0.75rem; letter-spacing: 0; text-transform: none; } }
   /* Téléphone : intervalles resserrés. */
   @media (max-width: 559px) {
     .tete { padding-bottom: 80px; }

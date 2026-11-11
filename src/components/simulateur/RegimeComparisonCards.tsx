@@ -995,6 +995,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           >
             <PremiumTooltip
               title="Plafond Micro-BNC"
+              texteVisible
               content={
                 <p className="text-sm">
                   Vos recettes dépassent 83 600€. Vérifiez si vous avez aussi dépassé ce seuil l'année dernière.

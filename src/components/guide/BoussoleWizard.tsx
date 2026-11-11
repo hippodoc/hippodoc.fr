@@ -866,6 +866,7 @@ export function BoussoleWizard() {
                                   <button
                                     key={s.v}
                                     onClick={() => toggleSituation(s.v)}
+                                    aria-pressed={isSel}
                                     className={`gd-b-choix coche ${isSel ? 'choisi' : ''}`}
                                   >
                                     <Icon className="gd-ic" />

@@ -224,9 +224,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               name="recettesBrutes"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex items-center gap-2">
                   <FormLabel className="flex items-center gap-2">
                     Tes revenus libéraux
-                    <PremiumTooltip
+                  </FormLabel>
+                  <PremiumTooltip
                       title="Revenus libéraux"
                       content={
                         <div className="space-y-2">
@@ -246,10 +248,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     >
                       <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
+                  </div>
+                  <div className="relative">
+                      <FormControl><Input
                         type="number"
                         step="0.01"
                         placeholder="Ex: 80 000"
@@ -258,16 +259,15 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                         onFocus={(e) => e.target.select()}
                         className="pr-8"
-                      />
+                      /></FormControl>
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                         €
                       </span>
                     </div>
-                  </FormControl>
                   <FormDescription className="text-xs">
                     Montant {periode === 'mensuel' ? 'mensuel' : 'annuel'}
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -278,9 +278,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               name="chargesHorsCotisations"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex items-center gap-2">
                   <FormLabel className="flex items-center gap-2">
                     Tes charges réelles
-                    <PremiumTooltip
+                  </FormLabel>
+                  <PremiumTooltip
                       title="Charges réelles"
                       content={
                         <div className="space-y-2">
@@ -297,10 +299,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     >
                       <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
+                  </div>
+                  <div className="relative">
+                      <FormControl><Input
                         type="number"
                         step="0.01"
                         placeholder="Ex: 15 000"
@@ -309,16 +310,15 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                         onFocus={(e) => e.target.select()}
                         className="pr-8"
-                      />
+                      /></FormControl>
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                         €
                       </span>
                     </div>
-                  </FormControl>
                   <FormDescription className="text-xs text-muted-foreground">
                     Dépenses pro (loyer, matériel, RCP…) · <span className="italic">hors cotisations sociales et déductions fiscales</span>
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -355,9 +355,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                 name="revenusSalaries"
                 render={({ field }) => (
                   <FormItem>
+                    <div className="flex items-center gap-2">
                     <FormLabel className="flex items-center gap-2 text-sm">
                       Revenus salariés (si cumul)
-                      <PremiumTooltip
+                    </FormLabel>
+                    <PremiumTooltip
                         title="Revenus salariés"
                         content={
                           <div className="space-y-2">
@@ -381,10 +383,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       >
                         <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                       </PremiumTooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
+                    </div>
+                    <div className="relative">
+                        <FormControl><Input
                           type="number"
                           step="0.01"
                           placeholder="Ex: 20 000"
@@ -393,13 +394,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                           onFocus={(e) => e.target.select()}
                           className="pr-8"
-                        />
+                        /></FormControl>
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                           €
                         </span>
                       </div>
-                    </FormControl>
-                    <FormMessage />
+                    <FormMessage role="alert" />
                   </FormItem>
                 )}
               />
@@ -410,12 +410,14 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                 name="revenusExoneresPdsa"
                 render={({ field }) => (
                   <FormItem>
+                    <div className="flex items-center gap-2">
                     <FormLabel className="flex items-center gap-2 text-sm">
                       Revenus PDSA
                       <Badge variant="outline" className="sim-puce ok">
                         Exonéré IR
                       </Badge>
-                      <PremiumTooltip
+                    </FormLabel>
+                    <PremiumTooltip
                         title="Revenus PDSA"
                         content={
                           <div className="space-y-2">
@@ -435,10 +437,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       >
                         <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                       </PremiumTooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
+                    </div>
+                    <div className="relative">
+                        <FormControl><Input
                           type="number"
                           step="0.01"
                           placeholder="Ex: 5 000"
@@ -447,13 +448,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                           onFocus={(e) => e.target.select()}
                           className="pr-8"
-                        />
+                        /></FormControl>
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                           €
                         </span>
                       </div>
-                    </FormControl>
-                    <FormMessage />
+                    <FormMessage role="alert" />
                   </FormItem>
                 )}
               />
@@ -498,7 +498,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <SelectItem value="parent_isole">Parent isolé</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -509,6 +509,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               name="enfants"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex items-center gap-2">
                   <FormLabel className="flex items-center gap-2 flex-wrap">
                     Enfants à charge
                     {hasProfileData && (
@@ -516,7 +517,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         Pré-rempli
                       </Badge>
                     )}
-                    <PremiumTooltip
+                  </FormLabel>
+                  <PremiumTooltip
                       title="Enfants à charge"
                       content={
                         <div className="space-y-2">
@@ -540,7 +542,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     >
                       <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
-                  </FormLabel>
+                  </div>
                   <FormControl>
                     <Input
                       type="number"
@@ -552,7 +554,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       onFocus={(e) => e.target.select()}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -566,6 +568,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                 name="revenusConjoint"
                 render={({ field }) => (
                   <FormItem>
+                    <div className="flex items-center gap-2">
                     <FormLabel className="flex items-center gap-2 flex-wrap">
                       <Heart className="sim-marque h-4 w-4 flex-shrink-0" />
                       <span className="sm:hidden">Revenus nets conjoint, si en couple (annuel)</span>
@@ -573,7 +576,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <Badge variant="outline" className="sim-puce neutre">
                         Optionnel
                       </Badge>
-                      <PremiumTooltip
+                    </FormLabel>
+                    <PremiumTooltip
                         title="Revenus du conjoint"
                         content={
                           <div className="space-y-2">
@@ -593,10 +597,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       >
                         <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                       </PremiumTooltip>
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
+                    </div>
+                    <div className="relative">
+                        <FormControl><Input
                           type="number"
                           step="0.01"
                           placeholder="Ex: 35 000"
@@ -608,16 +611,15 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }}
                           onFocus={(e) => e.target.select()}
                           className="pr-8"
-                        />
+                        /></FormControl>
                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                           €
                         </span>
                       </div>
-                    </FormControl>
                     <FormDescription className="text-xs">
                       Améliore la précision du calcul d'impôt pour ton foyer fiscal
                     </FormDescription>
-                    <FormMessage />
+                    <FormMessage role="alert" />
                   </FormItem>
                 )}
               />
@@ -629,9 +631,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   name="typeRevenuConjoint"
                   render={({ field }) => (
                     <FormItem>
+                      <div className="flex items-center gap-2">
                       <FormLabel className="flex items-center gap-2">
                         Type de revenu du conjoint
-                        <PremiumTooltip
+                      </FormLabel>
+                      <PremiumTooltip
                           title="Type de revenu du conjoint"
                           content={
                             <div className="space-y-2">
@@ -652,7 +656,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         >
                           <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                         </PremiumTooltip>
-                      </FormLabel>
+                      </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -674,7 +678,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
+                      <FormMessage role="alert" />
                     </FormItem>
                   )}
                 />
@@ -699,10 +703,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               name="annee"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex items-center gap-1">
                   <FormLabel className="flex items-center gap-1 text-sm">
                     <Calculator className="h-3.5 w-3.5" />
                     Année
-                    <PremiumTooltip
+                  </FormLabel>
+                  <PremiumTooltip
                       title="Année fiscale"
                       content={
                         <div className="space-y-2">
@@ -717,7 +723,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     >
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
-                  </FormLabel>
+                  </div>
                   <Select onValueChange={(v) => field.onChange(parseInt(v))} defaultValue={String(field.value)}>
                     <FormControl>
                       <SelectTrigger className="h-9">
@@ -729,7 +735,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <SelectItem value="2026">2026</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -739,10 +745,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               name="lieuExercice"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex items-center gap-1">
                   <FormLabel className="flex items-center gap-1 text-sm">
                     <MapPin className="h-3.5 w-3.5" />
                     Lieu d'exercice
-                    <PremiumTooltip
+                  </FormLabel>
+                  <PremiumTooltip
                       title="Lieu d'exercice"
                       content={
                         <div className="space-y-2">
@@ -764,7 +772,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     >
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
-                  </FormLabel>
+                  </div>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-9">
@@ -801,7 +809,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       </p>
                     </div>
                   )}
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -812,10 +820,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               name="secteurConventionnel"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex items-center gap-1">
                   <FormLabel className="flex items-center gap-1 text-sm">
                     <Stethoscope className="h-3.5 w-3.5" />
                     Secteur
-                    <PremiumTooltip
+                  </FormLabel>
+                  <PremiumTooltip
                       title="Secteur conventionnel"
                       content={
                         <div className="space-y-2">
@@ -836,7 +846,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     >
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
-                  </FormLabel>
+                  </div>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-9">
@@ -848,7 +858,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <SelectItem value="secteur_2">Secteur 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -859,10 +869,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               name="regimeSocial"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex items-center gap-1">
                   <FormLabel className="flex items-center gap-1 text-sm">
                     <Briefcase className="h-3.5 w-3.5" />
                     Régime
-                    <PremiumTooltip
+                  </FormLabel>
+                  <PremiumTooltip
                       title="Régime social"
                       content={
                         <div className="space-y-2">
@@ -885,7 +897,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     >
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
-                  </FormLabel>
+                  </div>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-9">
@@ -898,7 +910,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <SelectItem value="pamc">🩺 PAMC</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage role="alert" />
                 </FormItem>
               )}
             />
@@ -939,9 +951,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   <AccordionContent className="space-y-3 pb-3">
                     <FormField control={form.control} name="situationCarmf" render={({ field }) => (
                       <FormItem>
+                        <div className="flex items-center gap-2">
                         <FormLabel className="flex items-center gap-2 text-sm">
                           Situation CARMF
-                          <PremiumTooltip title="Situation CARMF" content={
+                        </FormLabel>
+                        <PremiumTooltip title="Situation CARMF" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Ta retraite obligatoire de médecin</p>
                               <p className="text-xs">La CARMF (Caisse Autonome de Retraite des Médecins de France) gère ta retraite de base, ta complémentaire et ton invalidité-décès.</p>
@@ -959,7 +973,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }>
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
-                        </FormLabel>
+                        </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value || 'affilie_3ans_plus'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Affilié (cas général)" /></SelectTrigger></FormControl>
                           <SelectContent className="sim sim-pop">
@@ -974,15 +988,17 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation appelée par la CARMF (PAMC : dispense sur demande, revenus faibles).</p>}
                           {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (157€ ou 626€/an selon le taux ci-dessous).</p>}
                         </div>
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                     )} />
                     {showRidToggle && (
                       <FormField control={form.control} name="tauxRid" render={({ field }) => (
                         <FormItem>
+                          <div className="flex items-center gap-2">
                           <FormLabel className="flex items-center gap-2 text-sm">
                             Cotisation RID CARMF
-                            <PremiumTooltip title="Cotisation RID" content={
+                          </FormLabel>
+                          <PremiumTooltip title="Cotisation RID" content={
                               <div className="space-y-2">
                                 <p className="font-semibold">Régime Invalidité-Décès CARMF</p>
                                 <p className="text-xs">Assurance obligatoire dès que tu es affilié à la CARMF. Te couvre en cas d'invalidité ou de décès (capital versé aux ayants droit).</p>
@@ -999,14 +1015,14 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             }>
                               <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                             </PremiumTooltip>
-                          </FormLabel>
+                          </div>
                           <FormControl>
                             <RadioGroup onValueChange={field.onChange} defaultValue={field.value || '25%'} className="flex gap-4">
                               <div className="flex items-center gap-2"><RadioGroupItem value="25%" id="rid-25" /><label htmlFor="rid-25" className="text-sm cursor-pointer">25% (157€/an)</label></div>
                               <div className="flex items-center gap-2"><RadioGroupItem value="100%" id="rid-100" /><label htmlFor="rid-100" className="text-sm cursor-pointer">100% (626€/an)</label></div>
                             </RadioGroup>
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage role="alert" />
                         </FormItem>
                       )} />
                     )}
@@ -1040,9 +1056,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <FormItem className="sim-coche flex items-start gap-3">
                           <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="sim-case" /></FormControl>
                           <div className="flex-1">
+                            <div className="flex items-center gap-2">
                             <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
                               Forfait 2% (Secteur 1 - BNC réel)
-                              <PremiumTooltip title="Forfait 2%" content={
+                            </FormLabel>
+                            <PremiumTooltip title="Forfait 2%" content={
                                 <div className="space-y-2">
                                   <p className="font-semibold">Déduction forfaitaire de 2%</p>
                                   <p className="text-xs">Frais de représentation, réception et prospection. Réservée aux médecins <strong>Secteur 1</strong> en <strong>BNC réel</strong>.</p>
@@ -1059,7 +1077,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               }>
                                 <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                               </PremiumTooltip>
-                            </FormLabel>
+                            </div>
                             <FormDescription className="text-xs mt-0.5">Déduit 2% de ton CA (frais de représentation)</FormDescription>
                           </div>
                         </FormItem>
@@ -1068,8 +1086,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     {secteurConventionnel === 'secteur_1' && (
                       <FormField control={form.control} name="ratioNonConventionne" render={({ field }) => (
                         <FormItem>
+                          <div className="flex items-center gap-2">
                           <FormLabel className="flex items-center gap-2 text-sm">% d'honoraires non conventionnés <Badge variant="outline" className="sim-puce neutre">Optionnel</Badge>
-                            <PremiumTooltip title="Honoraires non conventionnés" content={
+                          </FormLabel>
+                          <PremiumTooltip title="Honoraires non conventionnés" content={
                               <div className="space-y-2">
                                 <p className="font-semibold">Part d'activité hors convention</p>
                                 <p className="text-xs">Si une partie de ton activité est hors nomenclature (esthétique, expertise, médecine du travail…), les déductions S1 ne s'appliquent que sur la part conventionnée.</p>
@@ -1081,10 +1101,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             }>
                               <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                             </PremiumTooltip>
-                          </FormLabel>
-                          <FormControl><div className="relative"><Input type="number" step="1" min={0} max={100} placeholder="0" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span></div></FormControl>
+                          </div>
+                          <div className="relative"><FormControl><Input type="number" step="1" min={0} max={100} placeholder="0" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">%</span></div>
                           <FormDescription className="text-xs">Part du CA hors convention — Déductions S1 proratisées</FormDescription>
-                          <FormMessage />
+                          <FormMessage role="alert" />
                         </FormItem>
                       )} />
                     )}
@@ -1106,8 +1126,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       const madelinEnMicro = isMicroLikely && typeCotisation === 'madelin';
                       return (
                       <FormItem>
+                        <div className="flex items-center gap-2">
                         <FormLabel className="flex items-center gap-2 text-sm">Cotisations volontaires (PER, Madelin...)
-                          <PremiumTooltip title="Épargne retraite (PER / Madelin)" content={
+                        </FormLabel>
+                        <PremiumTooltip title="Épargne retraite (PER / Madelin)" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Versements PER ou contrat Madelin</p>
                               <p className="text-xs">Tes versements d'épargne retraite sont déductibles de ton revenu imposable → moins d'impôt à payer.</p>
@@ -1125,8 +1147,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }>
                             <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
-                        </FormLabel>
-                        <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: 5 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
+                        </div>
+                        <div className="relative"><FormControl><Input type="number" step="0.01" placeholder="Ex: 5 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                         {saisie > 0 && (
                           <FormField control={form.control} name="typeCotisationsVolontaires" render={({ field: typeField }) => (
                             <FormItem className="mt-2">
@@ -1161,7 +1183,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             <span className="block mt-1 sim-ok">✓ PER en Micro-BNC : déduction du revenu global appliquée.</span>
                           )}
                         </FormDescription>
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                       );
                     }} />
@@ -1172,8 +1194,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       const plafondLabel = `${plafondCV.toLocaleString('fr-FR')}€/an`;
                       return (
                       <FormItem>
+                        <div className="flex items-center gap-2">
                         <FormLabel className="flex items-center gap-2 text-sm">Chèques-vacances ANCV <Badge variant="outline" className="sim-puce neutre">Réel</Badge>
-                          <PremiumTooltip title="Chèques-vacances ANCV" content={
+                        </FormLabel>
+                        <PremiumTooltip title="Chèques-vacances ANCV" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Chèques-vacances pour indépendants</p>
                               <p className="text-xs">Tu achètes des chèques-vacances via l'ANCV → tu les déduis de ton BNC réel → tu les utilises pour tes vacances, restos, loisirs, culture.</p>
@@ -1191,10 +1215,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }>
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
-                        </FormLabel>
-                        <FormControl><div className="relative"><Input type="number" step="1" min={0} max={plafondCV} placeholder="Ex: 1 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
+                        </div>
+                        <div className="relative"><FormControl><Input type="number" step="1" min={0} max={plafondCV} placeholder="Ex: 1 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                         <FormDescription className="text-xs">En plus de tes charges. Max {plafondLabel} ({annee}) — BNC réel uniquement. <span className="sim-attn">⚠️ Sans effet en Micro-BNC.</span></FormDescription>
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                       );
                     }} />
@@ -1228,8 +1252,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       const anneeInstallationZone = form.watch('anneeInstallationZone');
                       return (
                       <FormItem>
+                        <div className="flex items-center gap-2">
                         <FormLabel className="flex items-center gap-2 text-sm"><Map className="sim-marque h-4 w-4" /> Zone exonérée
-                          <PremiumTooltip title="Zones exonérées" content={
+                        </FormLabel>
+                        <PremiumTooltip title="Zones exonérées" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Exonération d'impôt en zone prioritaire</p>
                               <p className="text-xs">Si tu exerces en zone franche urbaine (ZFU-TE, CGI Art. 44 octies A) ou en zone France ruralités revitalisation (ZFRR, CGI Art. 44 quindecies), une partie de tes bénéfices est exonérée d'IR avec des taux de dégressivité différents.</p>
@@ -1255,7 +1281,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }>
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
-                        </FormLabel>
+                        </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value || 'aucune'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Aucune" /></SelectTrigger></FormControl>
                           <SelectContent className="sim sim-pop">
@@ -1273,7 +1299,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             ℹ️ ZFU-TE : dispositif clos au 31.12.2025 (CGI Art. 44 octies A). Plus disponible pour les nouvelles installations à partir de 2026. Les installations antérieures conservent leur exonération dégressive jusqu'au terme.
                           </FormDescription>
                         )}
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                     );
                     }} />
@@ -1283,15 +1309,17 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <FormLabel className="text-sm">Année d'installation dans la zone</FormLabel>
                           <FormControl><Input type="number" step="1" min={2000} max={2030} placeholder="Ex: 2022" {...field} value={field.value || ''} onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)} onFocus={(e) => e.target.select()} /></FormControl>
                           <FormDescription className="text-xs">Taux d'exonération dégressif selon l'ancienneté. ⚠️ L'année d'installation et l'année de basculement de palier (5 ans + 1) → plafond proratisé temporis (CGI Art. 49 K annexe III ; CE 18/07/2018 n° 412142) : notre calcul affiche le plafond plein par simplification, sécurise auprès de ton SIE/AGA.</FormDescription>
-                          <FormMessage />
+                          <FormMessage role="alert" />
                         </FormItem>
 
                       )} />
                     )}
                     <FormField control={form.control} name="regimeFoncier" render={({ field }) => (
                       <FormItem>
+                        <div className="flex items-center gap-2">
                         <FormLabel className="flex items-center gap-2 text-sm"><Home className="sim-marque h-4 w-4" /> Revenus fonciers
-                          <PremiumTooltip title="Revenus fonciers" content={
+                        </FormLabel>
+                        <PremiumTooltip title="Revenus fonciers" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Revenus de tes biens immobiliers</p>
                               <p className="text-xs">Si tu perçois des loyers, ils s'ajoutent à ton revenu imposable et modifient ton taux d'imposition.</p>
@@ -1308,24 +1336,24 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }>
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
-                        </FormLabel>
+                        </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value || 'aucun'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Aucun" /></SelectTrigger></FormControl>
                           <SelectContent className="sim sim-pop"><SelectItem value="aucun">Aucun</SelectItem><SelectItem value="micro">Micro-foncier (abattement 30%)</SelectItem><SelectItem value="reel">Régime réel</SelectItem></SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                     )} />
                     {regimeFoncier === 'micro' && (
                       <FormField control={form.control} name="revenusFonciersBruts" render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">Revenus fonciers bruts annuels</FormLabel>
-                          <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: 12 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
+                          <div className="relative"><FormControl><Input type="number" step="0.01" placeholder="Ex: 12 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                           <FormDescription className="text-xs">Loyers bruts (≤ 15 000€ pour micro-foncier)</FormDescription>
                           {form.watch('revenusFonciersBruts') > 15000 && (
                             <p className="text-xs sim-attn">⚠️ Au-delà de 15 000€/an, le micro-foncier n'est plus applicable. Passe en régime réel.</p>
                           )}
-                          <FormMessage />
+                          <FormMessage role="alert" />
                         </FormItem>
                       )} />
                     )}
@@ -1333,9 +1361,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <FormField control={form.control} name="revenuFoncierNet" render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">Résultat foncier net annuel</FormLabel>
-                          <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: -5000 ou 8000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
+                          <div className="relative"><FormControl><Input type="number" step="0.01" placeholder="Ex: -5000 ou 8000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                           <FormDescription className="text-xs">Négatif = déficit. Imputable sur ton revenu global jusqu'à -10 700€/an (CGI Art. 156-I-3°). L'excédent éventuel reste reportable 10 ans sur tes futurs revenus fonciers.</FormDescription>
-                          <FormMessage />
+                          <FormMessage role="alert" />
                         </FormItem>
                       )} />
                     )}
@@ -1368,8 +1396,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <FormItem className="sim-coche flex items-start gap-3">
                         <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="sim-case" /></FormControl>
                         <div className="flex-1">
+                          <div className="flex items-center gap-2">
                           <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">Crédit formation dirigeant
-                            <PremiumTooltip title="Crédit formation dirigeant" content={
+                          </FormLabel>
+                          <PremiumTooltip title="Crédit formation dirigeant" content={
                               <div className="space-y-2">
                                 <p className="font-semibold">Crédit d'impôt pour formation</p>
                                 <p className="text-xs">Tu suis une formation pro (DPC, congrès, DIU…) → tu récupères un crédit d'impôt calculé sur le nombre d'heures.</p>
@@ -1383,7 +1413,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             }>
                               <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                             </PremiumTooltip>
-                          </FormLabel>
+                          </div>
                           <FormDescription className="text-xs mt-0.5">Heures × SMIC (plafond 40h = ~475€)</FormDescription>
                         </div>
                       </FormItem>
@@ -1394,7 +1424,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <FormLabel className="text-sm">Nombre d'heures de formation</FormLabel>
                           <FormControl><Input type="number" step="1" min={0} max={40} placeholder="Ex: 20" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} /></FormControl>
                           <FormDescription className="text-xs">Max 40h/an — Crédit = {calculateCreditFormation(field.value || 0)}€</FormDescription>
-                          <FormMessage />
+                          <FormMessage role="alert" />
                         </FormItem>
                       )} />
                     )}
@@ -1402,8 +1432,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     {/* ─── Emploi à domicile ─── */}
                     <FormField control={form.control} name="fraisEmploiDomicile" render={({ field }) => (
                       <FormItem>
+                        <div className="flex items-center gap-2">
                         <FormLabel className="flex items-center gap-2 text-sm">Emploi à domicile
-                          <PremiumTooltip title="Emploi à domicile (Art. 199 sexdecies CGI)" content={
+                        </FormLabel>
+                        <PremiumTooltip title="Emploi à domicile (Art. 199 sexdecies CGI)" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Crédit d'impôt = 50% des dépenses</p>
                               <p className="text-xs">Ménage, garde d'enfant à domicile, jardinage, aide aux personnes âgées… → crédit de 50% des sommes versées.</p>
@@ -1420,8 +1452,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }>
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
-                        </FormLabel>
-                        <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: 6 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
+                        </div>
+                        <div className="relative"><FormControl><Input type="number" step="0.01" placeholder="Ex: 6 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                         <FormDescription className="text-xs">
                           {(() => {
                             const enfants = form.getValues('enfants') || 0;
@@ -1433,15 +1465,17 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             <span className="block mt-1 sim-attn">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
                           )}
                         </FormDescription>
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                     )} />
 
                     {/* ─── Garde d'enfant < 6 ans ─── */}
                     <FormField control={form.control} name="nombreEnfantsGarde" render={({ field }) => (
                       <FormItem>
+                        <div className="flex items-center gap-2">
                         <FormLabel className="flex items-center gap-2 text-sm">Enfants en garde (&lt; 6 ans)
-                          <PremiumTooltip title="Garde d'enfant < 6 ans (Art. 200 quater B CGI)" content={
+                        </FormLabel>
+                        <PremiumTooltip title="Garde d'enfant < 6 ans (Art. 200 quater B CGI)" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Crédit d'impôt = 50% des frais de garde</p>
                               <p className="text-xs">Crèche, assistante maternelle, garderie… pour les enfants de moins de 6 ans au 1er janvier.</p>
@@ -1455,17 +1489,17 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           }>
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
-                        </FormLabel>
+                        </div>
                         <FormControl><Input type="number" step="1" min={0} max={10} placeholder="0" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} onFocus={(e) => e.target.select()} /></FormControl>
                         <FormDescription className="text-xs">Nombre d'enfants de moins de 6 ans gardés hors domicile</FormDescription>
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                     )} />
                     {(form.watch('nombreEnfantsGarde') || 0) > 0 && (
                       <FormField control={form.control} name="fraisGardeEnfants" render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-sm">Frais de garde annuels (total)</FormLabel>
-                          <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: 5 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
+                          <div className="relative"><FormControl><Input type="number" step="0.01" placeholder="Ex: 5 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                           <FormDescription className="text-xs">
                             {(() => {
                               const nbEnfants = form.getValues('nombreEnfantsGarde') || 0;
@@ -1477,7 +1511,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               <span className="block mt-1 sim-attn">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
                             )}
                           </FormDescription>
-                          <FormMessage />
+                          <FormMessage role="alert" />
                         </FormItem>
                       )} />
                     )}
@@ -1485,9 +1519,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     <FormField control={form.control} name="creditImpotAutre" render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-2 text-sm">Autres crédits d'impôt <Badge variant="outline" className="sim-puce neutre">Optionnel</Badge></FormLabel>
-                        <FormControl><div className="relative"><Input type="number" step="0.01" placeholder="Ex: 1 500" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div></FormControl>
+                        <div className="relative"><FormControl><Input type="number" step="0.01" placeholder="Ex: 1 500" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                         <FormDescription className="text-xs">Dons, investissements locatifs, etc.</FormDescription>
-                        <FormMessage />
+                        <FormMessage role="alert" />
                       </FormItem>
                     )} />
                   </AccordionContent>

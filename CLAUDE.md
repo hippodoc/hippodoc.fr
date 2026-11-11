@@ -106,6 +106,16 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   Autre piège, à la minification : `animation` et `animation-timeline` dans la même règle
   sont fusionnés en une déclaration invalide ; écrire la ligne de temps dans une seconde
   règle, sous un autre sélecteur.
+- ⚠️ **Ordre des feuilles sur les pages d'outils** (§ 9.en) : sur `/simulateur`, la
+  calculette et les pages du guide des déclarations, la feuille de la page
+  (`simulateur.css`, `calculette.css`, `guide.css`) est liée AVANT la feuille commune
+  (ailleurs, après : regarder l'ordre des `<link>` dans le HTML du build). Deux effets.
+  À poids égal, `da.css` l'emporte : une règle sur `<html>` s'écrit
+  `html:has(.da-fond):has(.gd-rech)`, pas `html:has(.gd-rech)`. Et une règle
+  `.calc .x { display: … }` bat un utilitaire Tailwind gardé dans le .tsx (`lg:hidden`,
+  `sticky`) : la borner par `@media` à la plage où l'utilitaire ne s'applique pas.
+  Une barre collante se double d'un `scroll-padding-top` sur `<html>` (sa hauteur),
+  sinon ancres et focus au clavier arrivent dessous.
 - **Ce qui reste de Tailwind, et pourquoi** (§ 9.em). Tailwind n'habille plus aucune
   page. Il reste dans le build pour : son socle (preflight, sur lequel la DA est écrite) ;
   `src/components/ui/` (shadcn, partagé par les trois outils) et ses jetons `--background`,
@@ -175,7 +185,11 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Outils (îlots React, hydratés `client:visible`)
 
-- `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Habillage DA (§ 9.ek) :
+- `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Accessibilité (§ 9.en) :
+  l'aide « i » d'un champ est un bouton nommé (`PremiumTooltip.tsx`), posé À CÔTÉ du
+  `<label>`, jamais dedans ; `FormControl` enveloppe le champ lui-même, pas le `<div>` de
+  son suffixe (le champ y perdait son nom, son état d'erreur et sa description).
+  Habillage DA (§ 9.ek) :
   classes `sim-*` de `src/styles/simulateur.css` (page seule), posées aussi sur les bulles
   et listes que Radix rend hors de l'îlot ; `src/components/ui/` est partagé avec la
   calculette et le guide, ne pas le modifier pour le simulateur. Branche RSPM (< 38 k€) :
@@ -221,6 +235,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
    de session ; Chromium : `/opt/pw-browsers/chromium`).
 3. Lighthouse local si perf touchée : `npx serve dist -l 4321` +
    `npx lighthouse http://localhost:4321/ --chrome-flags="--headless --no-sandbox"`.
+   `npx serve` sert en HTTP/1.1 : sur les pages à deux feuilles bloquantes (outils, guide,
+   comparatif, pages légales), FCP et LCP y sortent 0,15 à 0,3 s plus hauts que sur Vercel
+   (HTTP/2, où l'écart disparaît). Ne pas le lire comme une régression (§ 9.en).
 
 ## Recherche d'audience
 

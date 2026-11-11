@@ -26,6 +26,8 @@ interface PremiumTooltipProps {
   side?: "top" | "right" | "bottom" | "left";
   delayDuration?: number;
   title?: string;
+  /** Le déclencheur porte déjà son texte (une pastille) : le bouton ne reçoit pas de nom en plus. */
+  texteVisible?: boolean;
 }
 
 export const PremiumTooltip = ({
@@ -34,22 +36,28 @@ export const PremiumTooltip = ({
   side = "top",
   delayDuration = 200,
   title = "Détail",
+  texteVisible = false,
 }: PremiumTooltipProps) => {
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
+  // Le déclencheur est un vrai bouton : il prend le focus au clavier (la bulle
+  // s'ouvre au focus), il a un nom pour les lecteurs d'écran et une cible de
+  // 44 px au doigt (`.sim-aide-btn`, simulateur.css). Une icône seule est nommée
+  // d'après le titre de l'aide.
+  const nom = texteVisible ? undefined : `Aide : ${title}`;
 
   // Mobile : utiliser un Drawer (bottom sheet)
   if (isMobile) {
     return (
       <>
-        <div onClick={() => setOpen(true)} className="cursor-pointer">
+        <button type="button" onClick={() => setOpen(true)} className="sim-aide-btn" aria-label={nom}>
           {children}
-        </div>
+        </button>
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerContent className="sim sim-tiroir max-h-[85vh]">
             <DrawerHeader className="sim-tiroir-tete flex justify-between items-center pb-3">
               <DrawerTitle className="sim-tiroir-titre">{title}</DrawerTitle>
-              <DrawerClose className="sim-tiroir-fermer">
+              <DrawerClose className="sim-tiroir-fermer" aria-label="Fermer">
                 <X className="h-5 w-5" />
               </DrawerClose>
             </DrawerHeader>
@@ -67,7 +75,9 @@ export const PremiumTooltip = ({
     <TooltipProvider delayDuration={delayDuration}>
       <Tooltip>
         <TooltipTrigger asChild>
-          {children}
+          <button type="button" className="sim-aide-btn" aria-label={nom}>
+            {children}
+          </button>
         </TooltipTrigger>
         <TooltipPrimitive.Portal>
           <TooltipContent

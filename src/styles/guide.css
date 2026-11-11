@@ -49,8 +49,10 @@
    détaillées sont posés dessus ; les feuilles et la fin le recouvrent. */
 .gd { background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); overflow-wrap: break-word; }
 /* La barre de recherche est collée sous la pastille de l'en-tête : une ancre
-   s'arrête sous les deux. */
-html:has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0px)); }
+   s'arrête sous les deux. Cette feuille est liée AVANT la feuille commune, où
+   `html:has(.da-fond)` pose 84 px : à poids égal elle perdait, d'où le second
+   `:has()`. */
+html:has(.da-fond):has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0px)); }
 .gd .da-bloc, .gd-echeance { font-size: 1.0625rem; }
 .gd .lead { font-size: 1.1875rem; }
 .gd .btn { gap: 9px; padding-block: 8px; font-size: 1.0625rem; text-align: center; }
@@ -202,7 +204,7 @@ html:has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0
 .gd .gd-rech-in { max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 8px 0; }
 .gd .gd-rech-champ { position: relative; pointer-events: auto; }
 .gd .gd-rech-loupe { position: absolute; left: 20px; top: 50%; z-index: 1; width: 20px; height: 20px; translate: 0 -50%; color: var(--ink-3); pointer-events: none; }
-.gd .gd-rech-saisie { height: 56px; padding: 0 52px; border: 0; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.96); box-shadow: var(--float), 0 0 0 1.5px rgba(20, 37, 79, 0.08); font-family: var(--text); font-size: 1rem; font-weight: 500; color: var(--ink); transition: height 200ms var(--ease); }
+.gd .gd-rech-saisie { height: 56px; padding: 0 52px; border: 0; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--float), 0 0 0 1.5px rgba(20, 37, 79, 0.08); font-family: var(--text); font-size: 1rem; font-weight: 500; color: var(--ink); transition: height 200ms var(--ease); }
 .gd .gd-rech-in.compact .gd-rech-saisie { height: 48px; }
 .gd .gd-rech-saisie::placeholder, .gd .gd-b-saisie::placeholder { color: var(--ink-3); opacity: 1; font-weight: var(--tw); }
 .gd .gd-rech-saisie:focus-visible, .gd .gd-b-saisie:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; box-shadow: var(--float), 0 0 0 1.5px var(--ink); }
@@ -291,8 +293,8 @@ html:has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0
 .gd .gd-b-fil-tel-tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .gd .gd-b-fil-tel-nom { min-width: 0; overflow: hidden; font-size: 0.875rem; font-weight: var(--tb); color: var(--brand); text-overflow: ellipsis; white-space: nowrap; }
 .gd .gd-b-barres { display: flex; align-items: center; gap: 6px; }
-.gd .gd-b-barre { position: relative; flex: 1; height: 32px; }
-.gd .gd-b-barre::before { content: ""; position: absolute; left: 0; right: 0; top: 13px; height: 6px; border-radius: 3px; background: var(--sky); }
+.gd .gd-b-barre { position: relative; flex: 1; height: 44px; margin-block: -6px; }
+.gd .gd-b-barre::before { content: ""; position: absolute; left: 0; right: 0; top: 19px; height: 6px; border-radius: 3px; background: var(--sky); }
 .gd .gd-b-barre.actif::before { background: var(--ink); }
 .gd .gd-b-barre.fait::before { background: var(--brand-2); }
 .gd .gd-b-barre.verrou { cursor: not-allowed; }
@@ -430,7 +432,7 @@ html:has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0
 .gd .gd-lot { padding: 12px; border-radius: 18px; background: var(--sky-soft); }
 .gd .gd-lot > .gd-sur, .gd .gd-autres > .gd-sur { margin-bottom: 8px; font-size: 0.75rem; }
 .gd .gd-autres { margin-top: 6px; }
-.gd .gd-noeud { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 5px; min-height: 40px; padding: 9px 13px; border-radius: 14px; background: var(--sky-soft); color: var(--ink); font-size: 0.875rem; font-weight: 500; line-height: 1.35; text-decoration: none; transition: background-color 160ms var(--ease); }
+.gd .gd-noeud { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 0 5px; min-height: 44px; padding: 11px 13px; border-radius: 14px; background: var(--sky-soft); color: var(--ink); font-size: 0.875rem; font-weight: 500; line-height: 1.35; text-decoration: none; transition: background-color 160ms var(--ease); }
 .gd .gd-lot .gd-noeud { background: var(--paper); }
 .gd .gd-noeud.plein { display: flex; }
 .gd .gd-noeud:hover { background: var(--sky); }
@@ -499,10 +501,13 @@ html:has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0
 /* Références croisées : des pastilles ciel doux qui mènent à une fiche */
 .gd .gd-croises { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
 .gd .gd-croises .gd-sur { margin-bottom: 6px; }
-.gd .gd-refs, .gd .gd-voir { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.gd .gd-refs, .gd .gd-voir { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 6px; }
 .gd .gd-voir-nom { font-size: 0.8125rem; color: var(--ink-3); }
 .gd .gd-ref { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; min-height: 30px; padding: 3px 10px; border-radius: var(--r-pill); background: var(--sky-soft); color: var(--ink); font-size: 0.8125rem; font-weight: 560; line-height: 1.3; text-decoration: none; transition: background-color 160ms var(--ease); }
 .gd .gd-ref:hover { background: var(--sky); }
+/* 30 px à l'œil, 44 px au doigt (les rangées sont à 8 px l'une de l'autre). */
+.gd .gd-ref:not(.enligne) { position: relative; }
+.gd .gd-ref:not(.enligne)::after { content: ""; position: absolute; inset: -7px 0; }
 .gd .gd-ref .gd-ic { width: 13px; height: 13px; color: var(--brand); }
 .gd .gd-ref .gd-code { font-size: 0.8125rem; }
 .gd .gd-ref-nom { min-width: 0; max-width: 15rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -556,7 +561,7 @@ html:has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0
 .gd .gd-essai { position: relative; z-index: 1; padding-top: 88px; scroll-margin-top: 0; }
 .gd .gd-essai-fiche { --focus: #FFFFFF; padding: 44px 22px 40px; border-radius: 36px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
 .gd .gd-essai-pile { display: flex; flex-direction: column; align-items: center; gap: 28px; text-align: center; }
-.gd .gd-essai-gage { display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.14); font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.06em; line-height: 1.4; text-transform: uppercase; color: var(--paper); }
+.gd .gd-essai-gage { display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.08); font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.06em; line-height: 1.4; text-transform: uppercase; color: var(--paper); }
 .gd .gd-essai-titre { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .gd .gd-essai-titre > * { margin: 0; }
 .gd .gd-essai h2 { --corps: clamp(min(1.75rem, 8.2vw), 4.4vw, 3.25rem); color: var(--paper); }

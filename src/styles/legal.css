@@ -60,26 +60,20 @@
 .lg-feuille hr { height: 2px; margin: 2.4em 0 1.6em; border: 0; border-radius: 2px; background: var(--line); }
 
 /* Tableau (finalités et bases légales) : deux colonnes de phrases, sur une
-   fiche. Les cellules passent à la ligne ; sous 560 px, chaque ligne devient
-   un bloc (la finalité en gras, sa base légale dessous) et la ligne d'en-tête
-   n'est plus dessinée (elle reste lue). */
-.lg-feuille table { display: block; margin: 1.4em 0; border-radius: 18px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.9375rem; line-height: 1.5; }
-.lg-feuille :is(thead, tbody, tr) { display: block; }
-.lg-feuille :is(th, td) { display: block; padding: 0 18px; text-align: left; }
-.lg-feuille thead tr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.lg-feuille tbody tr { padding: 14px 0; border-top: 1px solid var(--line); }
-.lg-feuille tbody tr:first-child { border-top: 0; }
-.lg-feuille td:first-child { margin-bottom: 4px; font-weight: var(--tb); color: var(--ink); }
+   fiche. Un vrai tableau à toutes les largeurs : la ligne d'en-tête reste
+   dessinée et les lecteurs d'écran gardent lignes et colonnes ; sur téléphone
+   les cellules se resserrent et passent à la ligne. */
+.lg-feuille table { width: 100%; margin: 1.4em 0; border-collapse: separate; border-spacing: 0; border-radius: 18px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.875rem; line-height: 1.45; }
+.lg-feuille :is(th, td) { padding: 10px 12px; text-align: left; vertical-align: top; overflow-wrap: break-word; }
+.lg-feuille th { padding-top: 13px; font-weight: var(--tb); color: var(--ink); }
+.lg-feuille td { border-top: 1px solid var(--line); }
+.lg-feuille thead + tbody tr:first-child td { border-top: 2px solid rgba(20, 37, 79, 0.18); }
+.lg-feuille td:first-child { width: 56%; }
 @media (min-width: 560px) {
-  .lg-feuille table { display: table; width: 100%; border-collapse: collapse; }
-  .lg-feuille thead { display: table-header-group; }
-  .lg-feuille tbody { display: table-row-group; }
-  .lg-feuille tr, .lg-feuille thead tr { display: table-row; position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; padding: 0; border: 0; }
-  .lg-feuille :is(th, td) { display: table-cell; padding: 12px 18px; vertical-align: top; }
-  .lg-feuille th { padding-top: 15px; font-weight: var(--tb); color: var(--ink); }
-  .lg-feuille td { border-top: 1px solid var(--line); }
-  .lg-feuille thead + tbody tr:first-child td { border-top: 2px solid rgba(20, 37, 79, 0.18); }
-  .lg-feuille td:first-child { width: 58%; margin: 0; font-weight: var(--tw); color: inherit; }
+  .lg-feuille table { font-size: 0.9375rem; line-height: 1.5; }
+  .lg-feuille :is(th, td) { padding: 12px 18px; }
+  .lg-feuille th { padding-top: 15px; }
+  .lg-feuille td:first-child { width: 58%; }
 }
 
 /* Encarts : des fiches rondes et mates. Ciel doux (une adresse, des liens, un

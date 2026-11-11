@@ -70,8 +70,17 @@
 .calc .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .calc .backdrop-blur, .calc .backdrop-blur-md, .calc .backdrop-blur-sm { -webkit-backdrop-filter: none; backdrop-filter: none; }
 
-/* La barre d'outils : collée sous la pastille de l'en-tête. */
-.calc .calc-barre { top: 76px; min-height: 52px; padding: 4px 6px 4px 18px; border-radius: 26px; background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+/* La barre d'outils : une pastille opaque (le formulaire ne se lit pas au
+   travers). Elle reste dans le fil sur téléphone, où elle prendrait avec
+   l'en-tête un tiers de l'écran ; à partir de 640 px elle colle sous la pastille
+   de l'en-tête, et le défilement (focus au clavier, ancres) lui réserve sa
+   hauteur. Cette feuille est liée AVANT la feuille commune, où
+   `html:has(.da-fond)` pose 84 px : d'où le second `:has()`. */
+.calc .calc-barre { position: static; min-height: 52px; padding: 4px 6px 4px 18px; border-radius: 26px; background: var(--paper); box-shadow: var(--float); }
+@media (min-width: 640px) {
+  .calc .calc-barre { position: sticky; top: 76px; }
+  html:has(.da-fond):has(.calc-barre) { scroll-padding-top: calc(140px + env(safe-area-inset-top, 0px)); }
+}
 /* Téléphone : les trois actions passent sous le libellé, et à la ligne s'il le faut. */
 .calc .calc-barre > div { flex-wrap: wrap; justify-content: flex-end; }
 .calc .calc-sur { font-size: 0.75rem; font-weight: var(--tb); letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; color: var(--ink-3); }
@@ -79,14 +88,25 @@
 .calc .calc-outil:hover { background: var(--sky-soft); color: var(--ink); }
 .calc .calc-outil.fort { font-weight: var(--tb); color: var(--brand); }
 .calc .calc-barre [role="none"], .calc .calc-barre [data-orientation="vertical"] { background: var(--line); }
-.calc .calc-separe { display: flex; align-items: center; gap: 14px; padding: 26px 0 4px; }
-.calc .calc-separe > div { display: none; }
-.calc .calc-separe > p { display: flex; flex: 1; align-items: center; gap: 14px; margin: 0; }
-.calc .calc-separe > p::before, .calc .calc-separe > p::after { content: ""; flex: 1; height: 1px; background: rgba(20, 37, 79, 0.16); }
+/* Le séparateur « Résultats » : téléphone et tablette seulement. Sous 1024 px
+   la colonne des résultats passe sous le formulaire ; au-delà, l'utilitaire
+   `lg:hidden` du bloc le masque, et cette règle, plus lourde que lui, ne doit
+   pas le rallumer. */
+@media (max-width: 1023.98px) {
+  .calc .calc-separe { display: flex; align-items: center; gap: 14px; padding: 26px 0 4px; }
+  .calc .calc-separe > div { display: none; }
+  .calc .calc-separe > p { display: flex; flex: 1; align-items: center; gap: 14px; margin: 0; }
+  .calc .calc-separe > p::before, .calc .calc-separe > p::after { content: ""; flex: 1; height: 1px; background: rgba(20, 37, 79, 0.16); }
+}
 
 /* Fiches en relief : une par section du formulaire, une pour les résultats */
 .calc .calc-fiche, .calc .calc-resultats { border: 0; border-radius: 28px; background: var(--paper); color: var(--ink); box-shadow: var(--clay); }
+/* « Voir mes résultats » y défile : la fiche s'arrête à 172 px du haut, comme
+   avant (le séparateur « Résultats » reste lisible sous l'en-tête). La marge
+   s'ajoute au retrait de défilement de la page : 84 px sur téléphone, 140 px à
+   partir de 640 px (voir la barre d'outils). */
 .calc .calc-colonne { top: 84px; scroll-margin-top: 88px; }
+@media (min-width: 640px) { .calc .calc-colonne { scroll-margin-top: 32px; } }
 .calc .calc-fiche h3 { font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
 .calc .calc-fiche h3 + p { font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
 /* Le numéro d'une section : une pastille ciel. */
@@ -103,11 +123,24 @@
 /* Copier, imprimer, tout afficher : à la ligne quand la rangée ne tient pas. */
 .calc .calc-resultats div:has(> div > [id="show-zeros"]) { flex-wrap: wrap; row-gap: 8px; }
 .calc .calc-resultats .ring-1 { box-shadow: none; }
+/* Le libellé d'une case à recopier se lit en entier : il passe à la ligne au
+   lieu d'être coupé (« CA t… » à 320 px), le montant et « Copier » restent à
+   droite. */
+.calc .calc-resultats .truncate { flex: 1 1 6rem; min-width: 0; overflow: visible; text-overflow: clip; white-space: normal; overflow-wrap: break-word; }
+/* Le pied des résultats : de vrais liens (soulignés, 14 px, 24 px de cible). */
+.calc .calc-resultats .text-\[11px\]:has(> a.hover\:underline) { font-size: 0.875rem; line-height: 1.7; }
+.calc .calc-resultats a.hover\:underline { font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.calc .calc-resultats a.hover\:underline:hover { color: var(--brand); }
 /* Le liseré de couleur en haut d'une carte de résultat : décor retiré. */
 .calc .calc-resultats .absolute.top-0.left-0.h-1 { display: none; }
 /* La case à recopier en premier : sur le ciel. */
 .calc .calc-resultats .bg-hippo-50.ring-1 { border-radius: 14px; background-color: var(--paper); box-shadow: inset 0 0 0 1.5px var(--ink); }
 .calc .tabular-nums { font-variant-numeric: tabular-nums; }
+
+/* Le chevron d'un pli : la pastille des plis de la DA. Un titre long ne
+   l'écrase plus (il faisait 5 à 10 px de large). */
+.calc svg.lucide-chevron-down.transition-transform { box-sizing: content-box; flex: none; padding: 8px; border-radius: 50%; background: var(--sky-soft); color: var(--ink); }
+.calc .calc-resultats svg.lucide-chevron-down.transition-transform { background: var(--paper); }
 
 /* Encarts (Notice, Alert) : une couleur de fond, pas de filet autour. Les filets
    de séparation (`border-t`) gardent leur trait, dans le ton du texte. */
@@ -149,6 +182,10 @@
 .calc button[role="switch"][data-state="checked"] { background: var(--brand); }
 .calc button[role="switch"] > span { width: 22px; height: 22px; box-shadow: 0 1px 3px rgba(9, 20, 52, 0.3); }
 .calc button[role="switch"][data-state="checked"] > span { transform: translateX(18px); }
+/* 28 px à l'œil, 44 px au doigt ; de même pour « Forcer PAMC » (20 px de haut). */
+.calc button[role="switch"], .calc button.underline-offset-2 { position: relative; }
+.calc button[role="switch"]::after { content: ""; position: absolute; inset: -8px 0; }
+.calc button.underline-offset-2::after { content: ""; position: absolute; inset: -12px -4px; }
 /* L'aide d'un champ : une cible de 44 px autour du point d'interrogation. */
 .calc button[aria-label^="Aide"] { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: -12px -10px -12px 0; padding: 0; border-radius: 50%; color: var(--ink-3); }
 .calc button[aria-label^="Aide"]:hover { background: var(--sky-soft); color: var(--ink); }
@@ -162,7 +199,7 @@
 .calc .calc-btn-soleil { margin-bottom: 5px; background-color: var(--sun); box-shadow: 0 5px 0 var(--sun-edge); }
 .calc .calc-btn-soleil:hover { background-color: var(--sun-hover); color: var(--ink); }
 /* Les autres boutons du composant partagé (contour, discret) : des pastilles. */
-.calc button.border.border-input { height: auto; min-height: 40px; padding-inline: 13px; border: 0; border-radius: var(--r-pill); background-color: var(--paper); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.14); font-size: 0.875rem; font-weight: 560; color: var(--ink); }
+.calc button.border.border-input { height: auto; min-height: 44px; padding-inline: 13px; border: 0; border-radius: var(--r-pill); background-color: var(--paper); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.14); font-size: 0.875rem; font-weight: 560; color: var(--ink); }
 .calc button.border.border-input.w-full { white-space: normal; }
 .calc button.border.border-input:hover { background-color: var(--sky-soft); color: var(--ink); }
 .calc button.border.border-input.border-amber-300 { box-shadow: inset 0 0 0 1.5px var(--wait); color: var(--wait); }
@@ -190,6 +227,13 @@
 .calc.calc-dialogue button.border:hover { background: var(--sky-soft); }
 .calc.calc-dialogue button.bg-primary { background: var(--ink); color: var(--paper); }
 .calc.calc-dialogue button.calc-danger { background: var(--stop); color: var(--paper); }
+/* Les notifications (sonner, rendues à côté de l'îlot) : une fiche de la DA.
+   La feuille de sonner est écrite sous `:where()` : ces règles l'emportent. */
+.da [data-sonner-toaster][data-theme] { --normal-bg: var(--paper); --normal-text: var(--ink); --normal-border: transparent; --border-radius: 22px; font-family: var(--text); }
+.da [data-sonner-toast][data-styled="true"] { gap: 10px; padding: 14px 18px; border: 0; box-shadow: 0 0 0 1px var(--line), var(--float); font-size: 0.9375rem; font-weight: 560; line-height: 1.4; }
+.da [data-sonner-toast] [data-icon] { width: 20px; height: 20px; color: var(--brand); }
+.da [data-sonner-toast] [data-icon] svg { width: 20px; height: 20px; }
+.da [data-sonner-toast] [data-description] { font-size: 0.875rem; font-weight: var(--tw); color: var(--ink-2); }
 /* Le voile d'une boîte de confirmation : celui du menu du site. */
 .da .fixed.inset-0.bg-black\/80 { background: rgba(9, 20, 52, 0.6); }
 
@@ -227,6 +271,13 @@
 
 /* ───────── Selon la largeur ───────── */
 @media (max-width: 479px) {
+  /* Une case à recopier, sur téléphone : le code et le libellé sur toute la
+     largeur, le montant et « Copier » dessous, à droite. */
+  .calc .calc-resultats .justify-between:has(> div > .truncate) { flex-wrap: wrap; row-gap: 2px; }
+  .calc .calc-resultats .justify-between:has(> div > .truncate) > div:first-child { flex: 1 1 100%; }
+  .calc .calc-resultats .justify-between:has(> div > .truncate) > div:last-child { margin-left: auto; }
+  /* Le « | » entre les deux liens du pied : il finissait seul en bout de ligne. */
+  .calc .calc-resultats a.hover\:underline + span[aria-hidden] { display: none; }
   .calc .calc-barre { padding: 6px 6px 6px 14px; }
   .calc .calc-barre > div { gap: 0; }
   .calc .calc-barre [data-orientation="vertical"] { display: none; }
@@ -244,7 +295,7 @@
 /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
    aux fiches, aux champs et aux boutons. */
 @media (forced-colors: active) {
-  .calc :is(.calc-fiche, .calc-resultats, .calc-barre, .calc-note, .calc-btn), .calc input, .calc button[role="combobox"], .calc.calc-bulle, .calc.calc-pop, .calc.calc-dialogue { border: 1px solid CanvasText; }
+  .calc :is(.calc-fiche, .calc-resultats, .calc-barre, .calc-note, .calc-btn), .calc input, .calc button[role="combobox"], .calc.calc-bulle, .calc.calc-pop, .calc.calc-dialogue, .da [data-sonner-toast] { border: 1px solid CanvasText; }
 }
 
 }
