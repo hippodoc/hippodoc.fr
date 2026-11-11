@@ -46,42 +46,49 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 
 ## DA 2026 — accueil, en-tête, pied et police
 
-L'accueil est entièrement dans la nouvelle direction artistique (MIGRATION.md § 9.eb),
-`/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai` aussi depuis la phase 5b (§ 9.ee), `/blog`, les
-pages de série et les 48 articles depuis la phase 5c (§ 9.ej). Depuis la phase 5a (§ 9.ed), l'en-tête, le
-pied, la police, la bannière cookies et la bulle de chat de la DA servent sur **toutes**
-les pages ; le contenu des autres pages intérieures garde ses classes Tailwind et ses
-couleurs (phases 5b à 5d).
+**Toutes les pages sont dans la nouvelle direction artistique** depuis la phase 5d :
+l'accueil (MIGRATION.md § 9.eb), l'en-tête, le pied, la police, la bannière cookies et la
+bulle de chat (phase 5a, § 9.ed), `/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai`
+(5b, § 9.ee), `/blog`, les pages de série et les 48 articles (5c, § 9.ej), `/simulateur`
+(§ 9.ek), le guide des déclarations et la calculette (§ 9.el), `/guide`, `/comparatif`,
+les quatre pages légales et la 404 (§ 9.em). Une nouvelle page se fait dans la DA, sans
+classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
 
 - **Feuille** : `src/styles/da.css` (police, jetons, `.btn`, `.wrap`, feuilles `.band`,
   plis `.qa`, en-tête `hd-*`, pied `ft-*`, bannière cookies, bulle de chat). Importée par
   BaseLayout après `global.css` : elle sort dans la feuille commune à toutes les pages.
   Tout vit sous `.da`, que BaseLayout pose sur le `<body>` de toutes les pages (jetons
-  seulement). Le fond de page de la DA demande en plus `bodyClass="da-fond"` : les pages
-  entièrement dans la DA (l'accueil et les quatre pages de la phase 5b). La typographie de la DA, ses règles de titres et son anneau de focus sont portés
-  par `.da-bloc`, à poser sur chaque bloc (en-tête, pied, section).
+  seulement). Le fond de page de la DA demande en plus `bodyClass="da-fond"` : toutes les
+  pages le passent. La typographie de la DA, ses règles de titres et son anneau de focus
+  sont portés par `.da-bloc`, à poser sur chaque bloc (en-tête, pied, section).
 - **Un seul en-tête, un seul pied** : `src/components/Header.astro` (prop `variante` :
-  `flux` par défaut, la pastille garde 80 px en haut de la page sur une bande de ciel ;
-  `flottante` sur l'accueil, `/tarifs`, `/faq` et `/qui-sommes-nous`, dont le premier bloc
-  est un ciel qui lui réserve le haut) et `Footer.astro` (prop `soutiens`), qui rend aussi
-  `ScriptTiroir.astro`. Une page rend les deux ou aucun. `verify-site.mjs` (contrôle
+  toutes les pages passent `flottante`, leur premier bloc est un ciel qui réserve le haut
+  à la pastille ; `flux`, la valeur par défaut, où la pastille garde 80 px sur une bande
+  de ciel, ne sert plus à aucune page depuis la phase 5d) et `Footer.astro` (prop
+  `soutiens`), qui rend aussi `ScriptTiroir.astro`. Une page rend les deux ou aucun. `verify-site.mjs` (contrôle
   « 4 quater bis ») fige les `data-ph` et `data-track` de l'en-tête et du pied
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
   l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
   en-tête se déclare dans `PAGES_SANS_ENTETE`.
-- **Premier bloc d'une page intérieure** : s'il a son propre fond (dégradé, halo, blanc),
-  il prend la classe `da-sous-entete` (`da.css`) : il remonte sous l'en-tête et peint
-  lui-même la bande de ciel, qui s'éteint sur son fond. Sans elle, le fond commence net à
-  80 px et laisse une ligne sur toute la largeur. Un premier bloc sans fond (`/blog`,
-  les articles) n'en a pas besoin. La classe ne fait rien si le bloc n'est pas
-  le premier après l'en-tête ; pas sur un conteneur flex ou grille.
+- **Premier bloc d'une page** : un ciel (`linear-gradient(var(--sky-1) 0, var(--sky) 460px)`)
+  qui passe sous la pastille de l'en-tête et lui réserve le haut par son remplissage
+  (100 à 148 px selon la largeur, voir `.tete` de `/tarifs`). La classe `da-sous-entete`
+  et la bande `.hd-ciel` (`da.css`), faites pour l'en-tête `flux` des pages d'avant la DA,
+  ne servent plus à aucune page : restées dans `da.css` et `Header.astro`, à retirer ou à
+  garder, décision du propriétaire (MIGRATION.md § 9.em).
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
-- **Pages intérieures dans la DA** (phase 5b, § 9.ee : `/tarifs`, `/faq`,
-  `/qui-sommes-nous`, `/essai`) : `da-fond`, un bloc « ciel » puis des feuilles `.band`,
-  aucune classe Tailwind ; styles dans le `<style>` de la page (une feuille à part,
-  `tarifs.*.css`… : la feuille commune ne grossit pas). Titres : `--h1-page` pour le
+- **Pages intérieures** (phases 5b à 5d) : `da-fond`, un bloc « ciel » puis des feuilles
+  `.band`, aucune classe Tailwind ; styles dans le `<style>` de la page (une feuille à
+  part, `tarifs.*.css`… : la feuille commune ne grossit pas), ou dans une feuille de
+  `src/styles/` quand plusieurs pages ou un îlot la partagent (`blog-liste.css`,
+  `simulateur.css`, `guide.css`, `calculette.css`, `legal.css`). Les quatre pages légales
+  passent par `src/layouts/PageLegale.astro` (emplacement `tete` : le `<h1>` et sa
+  ligne ; le texte sans classe, habillé par élément par `legal.css`, typographie de
+  lecture du gabarit d'article). ⚠️ Dans un `<style>` scopé, une remise à zéro du genre
+  `.bloc > * { margin: 0 }` pèse plus qu'une classe seule (`.titre`) : écrire la marge
+  avec deux classes (`.bloc .titre`). Titres : `--h1-page` pour le
   `<h1>`, `--h2-fin` pour le titre de la scène de fin (jetons de `da.css`). Corps de
   texte en rem dans ces pages (la feuille de la DA les pose en px : chaque page les
   repose en tête de son `<style>`). Dans la scène de fin, le texte passe devant le décor
@@ -99,6 +106,31 @@ couleurs (phases 5b à 5d).
   Autre piège, à la minification : `animation` et `animation-timeline` dans la même règle
   sont fusionnés en une déclaration invalide ; écrire la ligne de temps dans une seconde
   règle, sous un autre sélecteur.
+- ⚠️ **Ordre des feuilles sur les pages d'outils** (§ 9.en) : sur `/simulateur`, la
+  calculette et les pages du guide des déclarations, la feuille de la page
+  (`simulateur.css`, `calculette.css`, `guide.css`) est liée AVANT la feuille commune
+  (ailleurs, après : regarder l'ordre des `<link>` dans le HTML du build). Deux effets.
+  À poids égal, `da.css` l'emporte : une règle sur `<html>` s'écrit
+  `html:has(.da-fond):has(.gd-rech)`, pas `html:has(.gd-rech)`. Et une règle
+  `.calc .x { display: … }` bat un utilitaire Tailwind gardé dans le .tsx (`lg:hidden`,
+  `sticky`) : la borner par `@media` à la plage où l'utilitaire ne s'applique pas.
+  Une barre collante se double d'un `scroll-padding-top` sur `<html>` (sa hauteur),
+  sinon ancres et focus au clavier arrivent dessous.
+- **Ce qui reste de Tailwind, et pourquoi** (§ 9.em). Tailwind n'habille plus aucune
+  page. Il reste dans le build pour : son socle (preflight, sur lequel la DA est écrite) ;
+  `src/components/ui/` (shadcn, partagé par les trois outils) et ses jetons `--background`,
+  `--primary`… de `global.css` ; les `.tsx` des îlots, où la logique et l'habillage sont
+  mêlés (la calculette garde tous ses utilitaires, que `calculette.css` recouvre ; le
+  simulateur et le guide des déclarations en gardent une partie à côté de leurs classes
+  `sim-*` et `gd-*`) ; le carrousel du blog (`BlogSlides.tsx`), `BlogReadMore.astro` ; la
+  bannière cookies et la bulle de chat de `ThirdPartyScripts.astro` (rhabillées par
+  `da.css`) ; trois classes de `src/pages/index.astro` (lien d'évitement, conteneurs).
+  `tailwind.config.ts` ne garde que les couleurs `hippo`, les jetons shadcn, les rayons,
+  l'accordéon et les images clés `shimmer` (squelette du simulateur) ;
+  `corePlugins.container` est coupé. Avant de retirer une règle de `global.css` ou de la
+  config : prouver qu'aucune source ni aucun fichier du build ne la nomme, puis comparer
+  la feuille commune règle par règle (une image clé peut en recouvrir une autre de même
+  nom : `shimmer`, `fadeIn`).
 - **Police** : Google Sans Flex sur tout le site. Un seul woff2 (`src/assets/fonts/`,
   sous-ensemble latin, graisses 400 à 800), préchargé par BaseLayout sur toutes les pages
   et donné à `<html>` par `fontFamily.sans` (`tailwind.config.ts`) ; les trois `@font-face`
@@ -106,9 +138,10 @@ couleurs (phases 5b à 5d).
   800) sont dans `da.css`. La police n'a aucune flèche. Dans un bloc de la DA (accueil,
   en-tête, pied), un caractère hors sous-ensemble (→, ✓, émoji) se dessine en SVG, et reste
   dans le texte dans un élément de classe `sr` (masqué à l'œil) : `verify-site.mjs` échoue
-  sinon sur l'accueil. Dans le contenu des pages intérieures, ces caractères restent tels
-  quels (→ ↓ ≈ ≠ ≥ ᵉ…) et sortent dans la police suivante de la pile : Arial par la face
-  de repli, sinon la police du système.
+  sinon sur l'accueil. Les pages intérieures font de même pour les flèches de leurs
+  gabarits. Dans les textes des données et des articles (guide des déclarations, îlots,
+  Markdown), ces caractères restent tels quels (→ ↓ ≈ ≠ ≥ ᵉ, émojis…) et sortent dans la
+  police suivante de la pile : Arial par la face de repli, sinon la police du système.
 - **Mesure** : chaque section porte `data-landing-section`. `SECTIONS_LANDING`
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
   commit ; verify-site garde aussi les `data-track`, les ancres `#sous-la-surface`,
@@ -152,14 +185,30 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Outils (îlots React, hydratés `client:visible`)
 
-- `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Branche RSPM (< 38 k€) :
+- `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Accessibilité (§ 9.en) :
+  l'aide « i » d'un champ est un bouton nommé (`PremiumTooltip.tsx`), posé À CÔTÉ du
+  `<label>`, jamais dedans ; `FormControl` enveloppe le champ lui-même, pas le `<div>` de
+  son suffixe (le champ y perdait son nom, son état d'erreur et sa description).
+  Habillage DA (§ 9.ek) :
+  classes `sim-*` de `src/styles/simulateur.css` (page seule), posées aussi sur les bulles
+  et listes que Radix rend hors de l'îlot ; `src/components/ui/` est partagé avec la
+  calculette et le guide, ne pas le modifier pour le simulateur. Branche RSPM (< 38 k€) :
   calcul 100 % local (`src/lib/simulateur/`, `src/lib/baremes-ir.ts`…). Branche PAMC :
   POST vers l'Edge Function Supabase publique `calculate-urssaf` via
   `src/lib/supabase-public.ts` (clé anon publique dans `.env`, RLS côté serveur).
 - `/guide-declarations/calculette` → `src/components/calculette/CalculetteApp.tsx`,
-  100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage.
-- `/guide-declarations` → îlot `BoussoleWizard` + sections statiques, données
-  `src/data/boussoleData.ts`.
+  100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage. Habillage DA
+  (§ 9.el) : `.calc` de `src/styles/calculette.css` (page seule), posée sur la racine de
+  l'îlot et sur ce que Radix rend dans `<body>`. Les `.tsx` gardent leurs utilitaires ;
+  leurs couleurs sont recouvertes une par une dans cette feuille : une nouvelle classe de
+  couleur dans un `.tsx` s'y ajoute, sinon elle sort dans l'ancienne palette.
+- `/guide-declarations` → îlots `BoussoleWizard` et `BoussoleSearchIsland` + sections
+  statiques, données `src/data/boussoleData.ts`. Habillage DA (§ 9.el) : classes `gd-*` de
+  `src/styles/guide.css`, servie au hub et aux trois pages filles (`GuideSousPage.astro`) ;
+  plus de classe utilitaire dans `src/components/guide/`, sauf `FormattedText.tsx`
+  (recouvert par la feuille). La barre de recherche reste enfant direct de `<main>` : elle
+  est collante sur toute la page ; la boussole se place d'après `[role="search"]` et le
+  premier `<h3>` de sa fiche.
 - Les îlots sont SSR-és au build (leur HTML est indexable) ; pas d'accès
   window/localStorage au rendu (uniquement useEffect/handlers). Pas de framer-motion.
 
@@ -186,6 +235,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
    de session ; Chromium : `/opt/pw-browsers/chromium`).
 3. Lighthouse local si perf touchée : `npx serve dist -l 4321` +
    `npx lighthouse http://localhost:4321/ --chrome-flags="--headless --no-sandbox"`.
+   `npx serve` sert en HTTP/1.1 : sur les pages à deux feuilles bloquantes (outils, guide,
+   comparatif, pages légales), FCP et LCP y sortent 0,15 à 0,3 s plus hauts que sur Vercel
+   (HTTP/2, où l'écart disparaît). Ne pas le lire comme une régression (§ 9.en).
 
 ## Recherche d'audience
 

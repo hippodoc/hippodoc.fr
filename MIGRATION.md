@@ -6667,6 +6667,519 @@ touché, aucun JS ajouté, `lastmod` non touchés.
   que l'accueil est la seule page dans la DA. `blog-series.ts` (généré) garde ses classes
   de dégradé, que plus rien n'affiche.
 
+### 9.ek Phase 5d : `/simulateur` dans la DA (11 novembre 2026)
+
+Suite de § 9.ej. Période d'observation SEO : seul l'habillage change, sur la page
+(`src/pages/simulateur.astro`) et sur l'îlot React (`src/components/simulateur/*.tsx`,
+nouvelle feuille `src/styles/simulateur.css`). Aucun calcul n'est touché : `src/lib/` et
+`src/components/ui/` n'ont pas une ligne de diff, aucun JS ajouté, `lastmod` non touché.
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main`. Les 70 autres
+  HTML : identiques à l'octet, au nom de la feuille commune près ; les 6 autres fichiers
+  texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`, index de recherche) aussi. `/simulateur` :
+  `title`, description, canonique, robots, balises sociales, 4 blocs JSON-LD, H1,
+  17 titres (niveau, texte, `id`), 57 liens dont 9 dans `<main>` (adresse, libellé, `rel`,
+  `target`, dans l'ordre), 13 `id`, 45 éléments de mesure (`cta_signup_simulateur_bottom`,
+  `cta_pricing_simulateur_bottom`, `data-calendly="simulateur_resultat"`,
+  `blog_readmore_simulateur`), 11 scripts, l'îlot (même composant, `client:visible`), les
+  13 plis, l'ordre des sections, et le texte : 2 259 mots (2 141 dans `<main>`, 57 dans
+  l'îlot rendu côté serveur), mêmes 172 suites de texte entre balises de bloc ; mêmes
+  28 champs et boutons dans l'îlot (`name`, `type`, `placeholder`, `role`).
+- **Aucun calcul ne change**, prouvé par script (Playwright, écrit et lancé sur le build
+  de `main` avant toute modification, rejoué après) : 12 jeux de valeurs, 7 en RSPM
+  (calcul local : simple, mixte avec PDSA, couple et deux enfants, 2025 en secteur 2 à La
+  Réunion avec RID à 100 % et PER, parent isolé au seuil avec ZFRR, foncier et crédits
+  d'impôt, RSPM forcé au-dessus du plafond micro avec conjoint libéral, 12 000 € avec
+  chèques-vacances et Madelin) et 5 en PAMC. Relevé par `textContent`, sans aucune classe :
+  le texte de l'îlot, chaque pli ouvert à son tour, chaque bulle d'aide des résultats.
+  1 679 nombres, 36 678 caractères, 89 plis, 201 bulles : identiques au caractère près.
+  **Limite** : l'Edge Function `calculate-urssaf` est injoignable d'ici (le proxy refuse
+  le tunnel). La branche PAMC est donc rejouée avec une réponse de la forme
+  `SimulationResult` calculée à partir du corps de la requête, la même avant et après :
+  cela prouve que les 10 corps de requête envoyés sont identiques et que l'affichage
+  d'une même réponse l'est aussi, pas le calcul du serveur (qui n'est pas dans ce dépôt).
+  Les 24 insertions d'analytics (`simulateur_public_events`) sont interceptées, donc
+  rien n'est parti en base, et leur contenu est identique.
+- **Dans les `.tsx`**, relu ligne à ligne après effacement des valeurs de `className` :
+  il ne reste que des tables de classes (couleurs des lignes, des pastilles, des
+  encarts), les quatre couleurs du camembert, le halo flou de la fiche recommandée
+  (retiré : c'est lui qui faisait défiler la page de côté, § 9.ed), un `<span>` autour
+  de l'icône de la conclusion, et des `className` ajoutés ou retirés. États, effets,
+  gestionnaires, appels réseau, `localStorage` : aucune ligne.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille de page
+  en plus de la feuille commune ; une clé de style scopé dans les `props` de l'îlot ; une
+  image décorative (`alt=""`, la mascotte) ; l'icône du titre, la flèche du bouton de fin
+  et deux halos, décoratifs, disparaissent ; « → », « ↗ », « 💡 » et le « + » des plis
+  dessinés en SVG, le caractère reste dans le texte, masqué à l'œil (`sr`) ; des
+  `<span class="num">` qui gardent sur une ligne « Super-Net : », « chiffre ? », un mot
+  composé d'une question (« prend-il », « Micro-BNC »).
+- **Habillage de la page** (aucune classe utilitaire). Le ciel : titre à gauche,
+  « Super-Net » sur du jaune, trois gages en pastilles, puis l'îlot et la fiche du
+  rendez-vous ; mascotte au pouce levé dès 1 024 px, debout derrière le haut de l'îlot
+  (les fichiers de l'accueil). Une feuille sable : le mode d'emploi en huit plis `.qa`,
+  titre collant à gauche. Une feuille ciel : les trois mots en fiches (le Super-Net sur
+  une fiche jaune), l'exemple chiffré, les limites. Une feuille sable : les cinq
+  questions en plis. La fin : l'appel à l'essai (bouton jaune), la fiche « Comprendre ton
+  résultat », le soleil sur l'eau du pied. `BlogReadMore.astro`, partagé avec le guide
+  des déclarations, n'est pas modifié : la page recouvre son habillage.
+- **Habillage de l'îlot** (`simulateur.css`, classes `sim-*`). Les composants de `ui/`
+  sont partagés avec la calculette et le guide : ils ne sont pas modifiés. Leurs jetons
+  (`--border`, `--muted-foreground`, `--primary`, `--radius`…) reçoivent les couleurs de
+  la DA sous `.sim` ; champs, listes et boutons radio sont habillés par leur rôle ; les
+  bulles, le tiroir d'aide du téléphone et les listes déroulantes, que Radix rend dans
+  `<body>`, portent `.sim` eux aussi. Formulaire : une fiche en relief par section, champs
+  ciel doux de 50 px, plis à pastille, bouton « Simuler » jaune épais. Résultats : deux
+  fiches, le Super-Net du régime recommandé sur du jaune (l'autre sur ciel doux),
+  camembert aux bleus de l'eau et au jaune du soleil (les couleurs de la jauge de
+  l'accueil), une ligne par poste ; la conclusion sur l'eau profonde avec le gain en
+  pastille jaune ; tableau du couple, comparaison des déductions et prélèvement en fiches
+  ciel doux ; états (favorable, attention, information) par les jetons `--ok`, `--wait`,
+  `--plan`. Bulles d'aide sur fond blanc (elles étaient noires, à 10 px), tiroir blanc.
+  Les utilitaires Tailwind qui restent dans les `.tsx` ne règlent que la mise en page.
+- **Feuilles** : commune 147 529 → 129 500 octets (23,7 Ko gzip ; 204 règles en moins,
+  aucune ajoutée ; son nom change, donc le `<link>` de toutes les pages) ; les sept autres
+  feuilles identiques à l'octet ; nouvelle `simulateur.*.css`, 30 916 octets (6,1 Ko gzip). HTML de
+  `/simulateur` : 25 878 → 25 184 octets gzip. JS : mêmes fichiers, `SimulateurApp`
+  136,8 → 122,9 Ko, `RegimeComparisonCards` 395,8 → 389,6 Ko (chaînes de classes plus
+  courtes). Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs`, dans cinq états (page vierge, résultat RSPM, tous les plis du formulaire
+  ouverts, résultat PAMC en couple avec plafond dépassé, bulle et liste ouvertes) ;
+  24 largeurs de 320 à 1 920 px dans quatre états : aucun défilement horizontal, aucune
+  erreur de console ; texte à 200 % : aucun défilement de 320 à 1 280 px (14 largeurs).
+  Lighthouse mobile en local, mesures alternées avant et après : sur les trois premières,
+  performance médiane 95 sur `main` (95, 89, 99) et 93 après (93, 97, 89) ; sur neuf, 92
+  sur `main` (87 à 99) et 95 après (89 à 97). L'écart d'une mesure à l'autre vient du
+  temps de blocage (hydratation de l'îlot : 120 à 500 ms des deux côtés, médiane 342 ms
+  avant, 254 ms après) ; l'objectif de 95 n'est donc tenu qu'en médiane longue, sur
+  `main` comme ici. Accessibilité 100, SEO 100, bonnes pratiques 96 avant et après.
+- **À valider** : le jaune du Super-Net ne sert que dans la fiche du régime recommandé ;
+  « Économie de … » reste en vert (état favorable) ; la conclusion passe en bleu profond.
+  La page est plus haute (8 302 px contre 7 158 à 390 px, 6 125 contre 5 353 à 1 440 px).
+- **À décider** : la feuille de page est une requête bloquante de plus (comme en
+  § 9.ej) : FCP et LCP simulés passent de 0,9 à 1,2 s en local, à chaque mesure.
+- **Vu, non traité** (déjà sur `main`, relève de la logique) : `SimulateurApp` passe au
+  formulaire des valeurs par défaut partielles ; la liste « Régime » s'affiche donc vide
+  (le choix de la RID n'apparaît qu'après avoir choisi « Auto » ou « RSPM ») et le pli
+  « Fiscalité immobilière & zones » annonce « ZFRR · Foncier réel » sur un formulaire
+  vierge. `CotisationsDetailChart.tsx` n'est rendu nulle part : laissé tel quel. Les
+  émojis des textes de l'îlot et le « → » de `BlogReadMore` restent des caractères (ils
+  sortent dans la police de repli). Les bonnes pratiques Lighthouse restent à 96, avant comme après : trois
+  requêtes sortantes sont refusées par le bac à sable de mesure (erreurs de console).
+
+### 9.el Phase 5d : le guide des déclarations et la calculette dans la DA (11 novembre 2026)
+
+Suite de § 9.ek. Période d'observation SEO : seul l'habillage change, sur
+`/guide-declarations` (le hub), ses trois pages filles (`2042-c-pro`, `dsfu-pamc`,
+`medecin-remplacant`) et `/guide-declarations/calculette`. Aucun calcul n'est touché :
+`src/lib/`, `src/data/` et `src/components/ui/` n'ont pas une ligne de diff, aucun JS
+ajouté, `lastmod` non touché. Deux feuilles nouvelles : `src/styles/guide.css` (hub et
+pages filles) et `src/styles/calculette.css` (la calculette seule).
+
+- **Ce qui ne change pas**, prouvé par script contre le build du commit précédent (§ 9.ek).
+  Les 66 autres HTML : identiques à l'octet, au nom de la feuille commune près ; les
+  6 autres fichiers texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`, index de
+  recherche) aussi ; les huit autres feuilles identiques à l'octet. Sur les cinq pages du
+  lot : `title`, description, canonique, robots, balises sociales, JSON-LD (4 blocs par
+  page), H1, titres (niveau, texte, `id`), liens (adresse, libellé, `rel`, `target`,
+  mesure, dans l'ordre), `id`, ancres internes, attributs `title`, éléments de mesure
+  (`guide_declarations_cta_essai`, `guide_declarations_cta_simulateur`,
+  `calculette_2042_dspamc_cta_click`, `blog_readmore_*`), scripts, îlots (même composant,
+  `client:visible`), plis, ordre des sections, et le texte, suite par suite entre balises
+  de bloc. Hub : 131 titres, 1 427 liens dont 1 379 dans `<main>`, 259 `id`, 229 ancres,
+  220 plis, 46 943 mots, 3 555 suites de texte. Calculette : 14 titres, 54 liens, 39 `id`,
+  7 plis, 1 085 mots, 94 champs, boutons et plis de l'îlot rendu côté serveur. 2042-C-PRO :
+  11 titres, 161 liens, 3 491 mots. DSFU : 13 titres, 231 liens, 6 901 mots. Médecin
+  remplaçant : 11 titres, 205 liens, 4 300 mots.
+- **Sept espaces rétablies** (correction de rendu, comme en § 9.ei : aucun mot ne change,
+  mêmes caractères hors espaces). Un retour à la ligne collé à une balise en ligne faisait
+  disparaître l'espace, et le contrôle « 4 septies bis » ne voit que les lettres et les
+  chiffres collés : « Goburdhun,médecin remplaçant » et « Autres pages du guide :DSFU
+  (ex DS-PAMC) ·2042-C-PRO… » sur les trois pages filles (`GuideSousPage.astro`),
+  « dépassements.DSAV » sur `/guide-declarations/dsfu-pamc`. Le compte de mots de ces
+  pages monte de 5 ou 6 : des mots qui étaient collés.
+- **Aucun calcul ne change** (calculette), prouvé par script Playwright, écrit et lancé sur
+  le build de `main` avant toute modification, rejoué après sur le build final : 26 jeux de
+  valeurs. Les 14 exemples du menu « Charger un exemple », 9 sauvegardes posées dans
+  `localStorage` avant le chargement (réel secteur 1 avec exonérations, IJ, cadre 8 et
+  assistance ; micro-BNC au RSPM à 37 999,99 € ; secteur 2 en ZFU ; dépassements
+  autorisés et chèques-vacances déjà déduits ; RBS négatif et déficit ; ancien profil
+  « mixte » migré ; plafond micro ; deux sauvegardes invalides, nettoyées), 3 saisies au
+  clavier (virgule française, liste de profil, montant négatif). Relevé sans aucune
+  classe (champs et listes par `id`, texte par `textContent`) : texte de l'îlot, panneau
+  des résultats, valeurs des champs, tous les plis ouverts, « Tout afficher », déclarant 2,
+  contenu de `localStorage`, puis rechargement de la page et nouveau relevé, et pour une
+  saisie la boîte « Réinitialiser » jusqu'au bout. 3 678 nombres, 92 195 caractères, 88 plis,
+  387 valeurs de champs, 24 sauvegardes : identiques au caractère près. **Persistance
+  intacte** : même JSON écrit, mêmes valeurs restaurées, mêmes sauvegardes invalides
+  supprimées.
+- **La boussole** : 17 parcours complets, à 1 280 px et à 390 px (les 12 profils, dont deux
+  avec deux chemins, et trois parcours « Aucun ne me correspond »), relevés avant et
+  après : titre de l'étape, texte, fil d'étapes (libellé, étape en cours, verrouillage),
+  boutons, bulle « Comment savoir ? », recherche de profil, checklist toutes sections et
+  tous plis ouverts, puis Retour, fil d'étapes, « Modifier », « Effacer » ou
+  « Recommencer ». 175 relevés et 4 190 boutons par largeur : identiques. Après chaque
+  changement d'étape, le titre n'est jamais sous la barre de recherche.
+- **Barre de recherche et bandeau d'échéance** : même comportement, relevé à 390 et
+  1 280 px. Barre `sticky` à 70 px du haut, collée à 70 px au milieu comme en bas de page,
+  même champ (libellé long, puis « Rechercher… » après 320 px de défilement), 8 requêtes et
+  48 résultats identiques, clic sur un résultat : recherche vidée, cible atteinte, les trois
+  classes posées puis retirées. Bandeau : même texte, dans le flux, il part avec la page.
+  La variante d'avril à juin (lien vers la boussole, fin de phrase masquée sur
+  téléphone) a été construite à part pour être regardée ; celle de décembre a le même
+  habillage, elle n'a pas été construite.
+- **Dans les `.tsx`**, relus après effacement des valeurs de `className` : il ne reste que
+  des tables de classes (catégories, types, états), la croix des plis à la place du
+  chevron (`Croix.tsx`, décor), un `<span>` autour de la flèche des actions, des
+  `className` ajoutés ou retirés, et un liseré décoratif retiré dans `CalculetteApp`.
+  États, effets, gestionnaires, schéma, moteur, sauvegarde : aucune ligne.
+  `FormattedText.tsx` n'est pas modifié du tout (des corrections y sont en cours
+  ailleurs) : `guide.css` recouvre ses utilitaires.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille en plus
+  de la feuille commune ; une clé de style scopé dans les `props` de l'îlot de la
+  calculette ; une image décorative sur le hub (`alt=""`, la mascotte, fichiers de
+  l'accueil) ; trois halos décoratifs en moins sur la calculette ; « → », « ← », « ↓ » et
+  le « + » des plis dessinés en SVG, le caractère reste dans le texte, masqué à l'œil ;
+  des `<span>` qui gardent sur une ligne un mot et le « : » qui le suit (titres des pages
+  filles, « Fiscal ≠ social : »). Le `prefix` des îlots (compteur interne d'Astro) change.
+- **Habillage du hub.** `<main class="gd">` porte le ciel : le titre à gauche (« enfin
+  claires » dans le bleu de l'eau), le bouton « Trouver ma situation » en jaune, la barre
+  de recherche en pastille qui flotte (comme l'en-tête, même largeur), puis les quatre
+  pages détaillées en fiches en relief. Le bandeau d'échéance reste entre l'en-tête et
+  `<main>` : une pastille sur le ciel, ambre pour une échéance de paiement. Quatre
+  feuilles, une par étape (sable, ciel, sable, ciel), le numéro dans une pastille encre :
+  le rappel fiscal / social en pli `.qa` ouvert ; la boussole en grande fiche (fil d'étapes
+  en pastilles, choix en fiches ciel doux cerclées d'encre une fois choisies, bouton vers
+  la checklist en jaune) ; le parcours en trois fiches ; cases, fiches, questions, termes,
+  bugs et courriers en plis `.qa` denses (la croix de la DA). États par les jetons de la
+  DA : fiscal en bleu, social en vert, attention en ambre ; l'alerte, que la DA n'avait
+  pas, est un rose foncé (`--stop`, 6,0:1). La fin : l'appel à l'essai sur l'eau profonde,
+  le Super-Net sur du jaune, les articles, l'avertissement, le soleil sur l'eau du pied.
+  Mascotte qui montre du doigt dès 1 024 px, derrière la barre de recherche ; elle se
+  baisse quand la barre se resserre (`:has()` sur un état que l'îlot pose déjà).
+- **Pages filles** (`GuideSousPage.astro`) : le ciel (fil d'Ariane, titre, signature,
+  chapô), trois feuilles par page, la fin (articles, « Le guide complet » avec son bouton
+  jaune, avertissement, soleil). Sur la page du remplaçant, « Le net : ce qui te reste »
+  est la fiche jaune.
+- **Calculette** : le ciel (« Hippo » en encre, « Calc » dans le bleu de l'eau, l'aperçu
+  fictif en fiche penchée, l'îlot, l'appel à l'essai sur l'eau profonde avec son bouton
+  jaune), une feuille sable (les sept questions en plis `.qa`), la fin (avertissement,
+  soleil). Îlot : `.calc` sur la racine et sur ce que Radix rend dans `<body>` (bulles,
+  listes, menu des exemples, boîtes de confirmation) ; une fiche en relief par section,
+  champs ciel doux de 48 px, barre d'outils en pastille collée sous l'en-tête, résultats
+  dans une fiche. Les `.tsx` gardent leurs utilitaires : `calculette.css` donne les jetons
+  des composants partagés, habille par rôle, et recouvre les 108 utilitaires de couleur
+  présents, par famille. Tout est sous `@media screen` : l'impression garde ses règles.
+- **Feuilles et poids** : commune 129 500 → 103 136 octets (23,7 → 20,3 Ko gzip ; 361 règles
+  en moins, aucune ajoutée ; son nom change, donc le `<link>` de toutes les pages) ;
+  feuille du guide 48 260 octets (9,6 Ko gzip, nommée `QuestionCard.*.css` par le build :
+  c'est le morceau partagé par les quatre pages) ; `calculette.*.css` 23 894 octets (5,5 Ko
+  gzip). HTML du hub : 2 488 520 → 1 872 047 octets (238 → 213 Ko gzip) ; DSFU 375 → 297 Ko,
+  remplaçant 278 → 217 Ko, 2042-C-PRO 220 → 175 Ko, calculette 112 → 110 Ko. JS :
+  `BoussoleWizard` 44,0 → 34,4 Ko, `CalculetteApp` 200,5 → 199,1 Ko. Aucune image de plus.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs` (pages entières, et par états : boussole à chaque étape, checklist, un pli
+  ouvert de chaque sorte, recherche ouverte, barre collée ; calculette vide, réel, micro,
+  tout ouvert, menu, bulle, liste, boîte de confirmation). 24 largeurs de 320 à 1 920 px ×
+  5 pages, dans ces états : aucun défilement horizontal, aucune erreur de console ; texte à
+  200 % (taille de la racine doublée) : aucun défilement de 320 à 1 280 px (11 largeurs).
+  Lighthouse mobile en local, trois mesures alternées : hub 96 sur `main` (96, 88, 96) et
+  98 après (95, 98, 98) ; calculette 96 (97, 96, 94) et 98 (98, 98, 99) ; 2042-C-PRO 100 et
+  100. Accessibilité 100, SEO 100, bonnes pratiques 96 avant et après (trois requêtes
+  sortantes refusées par le bac à sable de mesure).
+- **À valider** : le jaune du hub (bouton « Trouver ma situation », bouton vers la
+  checklist, Super-Net de l'appel à l'essai) ; la fiche jaune « Le net » ; l'alerte en
+  rose foncé ; les références croisées toutes en ciel doux (l'icône seule dit le type) ;
+  la mascotte du hub, retournée pour désigner le titre. Les pages sont plus hautes : le hub
+  de 8 % à 1 440 px (24 375 → 26 329 px) et de 12 % à 390 px (40 598 → 45 372 px), la
+  calculette de 9 à 11 %, les pages filles de 14 % sur téléphone et de 38 % à 1 440 px
+  (corps plus grand, feuilles et scène de fin).
+- **À décider** : la feuille de page est une requête bloquante de plus (comme en § 9.ej
+  et § 9.ek) : FCP et LCP simulés passent de 1,5 à 1,8 s sur le hub, de 0,9 à 1,2 s sur la
+  calculette et les pages filles, à chaque mesure.
+- **Vu, non traité** (déjà sur `main`, relève de la logique). Boussole, « Aucun ne me
+  correspond » puis « SELARL / SEL » : l'étape « régime social » s'affiche alors que le
+  PAMC est forcé, et y répondre renvoie à l'étape 1 (le fil d'étapes est recalculé après
+  le choix). Calculette, « Estimation indicative de l'impôt » : la tranche marginale
+  s'affiche « 3000 % » (taux déjà en pour cent, multiplié par 100). Sur 320 px, le libellé
+  d'une case des résultats est coupé après quelques lettres (« CA… »), comme avant. Les
+  émojis et les signes ≠ ≥ → des données restent des caractères (police de repli). Les
+  classes de couleur de `GLOSSAIRE_CATEGORIES` (`src/data/`) ne servent plus.
+
+### 9.em Phase 5d : `/guide`, `/comparatif`, les pages légales et la 404 dans la DA ; ménage de Tailwind (11 novembre 2026)
+
+Suite de § 9.ek et § 9.el : les sept dernières pages. **Toutes les pages du site sont
+maintenant dans la DA.** Période d'observation SEO : seul l'habillage change, sur `/guide`
+(le guide du remplaçant en PDF), `/comparatif`, `/mentions-legales`,
+`/politique-confidentialite`, `/conditions-utilisations`, `/rgpd` et la 404. Aucun JS
+ajouté, `src/lib/` et les îlots pas touchés, `lastmod` non touché.
+
+- **Ce qui ne change pas**, prouvé par script. Les sept pages étaient identiques entre
+  `main` et le commit précédent (§ 9.el) : le build de `main` sert de référence. Les
+  64 autres HTML : identiques à l'octet au commit précédent, au nom de la feuille commune
+  près ; les 6 autres fichiers texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`,
+  index de recherche) aussi ; les dix autres feuilles identiques à l'octet ; aucune image
+  de plus. Sur chaque page du lot : `title`, description, canonique, robots, balises
+  sociales, JSON-LD, H1, titres (niveau, texte, `id`), liens (adresse, libellé, `rel`,
+  `target`, `type`, mesure, dans l'ordre), `id`, images (adresse, `alt`, dimensions,
+  `srcset`), éléments de mesure (`data-ph`, `data-track`, `data-guide-download`,
+  `data-guide-share`, `data-mesure`), scripts, plis, tableaux cellule par cellule, ordre
+  des blocs, et le texte, suite par suite entre balises de bloc. `/guide` : 8 titres,
+  56 liens, 8 images, 652 mots. `/comparatif` : 5 JSON-LD, 19 titres, 64 liens, 8 plis, le
+  tableau, 1 713 mots. Mentions légales 772 mots, confidentialité 2 020, conditions 1 228,
+  RGPD 1 355, 404 196.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille en plus
+  de la feuille commune ; `role="list"` sur les listes dont la puce est retirée ; halos
+  et liserés décoratifs en moins, le décor de la fin en plus (`aria-hidden`). Pages
+  légales : un `<main>` en plus (elles n'avaient pas de région principale). `/guide` : la
+  règle qui masque la bulle de chat sur téléphone (§ 9.dk) passe du `<style>` en ligne à
+  la feuille de la page. Les flèches « → », les trois points « ⋯ » et la pastille « ● »
+  sont dessinés, le caractère reste dans le texte, masqué à l'œil. Des `<span>` gardent
+  sur une ligne un mot et le tiret qui le suit (titres des pages légales : la ligne
+  commençait par « – »).
+- **`/guide`** : le ciel (pastille « PDF gratuit · 26 pages · Édition », titre avec
+  l'édition dans le bleu de l'eau, bouton de téléchargement jaune, la couverture en carte
+  au bord blanc ; sur téléphone toujours titre, bouton, couverture, le bouton à 373 px
+  du haut à 390 px de large, 386 avant) ; une feuille sable (les six règles en fiches, numéro en
+  pastille encre) ; une feuille ciel (le sommaire : titre et chapô à gauche, les neuf
+  chapitres sur une fiche) ; une feuille sable (l'aperçu : trois pages en cartes, rangée
+  qui défile de côté sur téléphone) ; la fin (la fiche de l'auteur, le second bouton sur
+  l'eau profonde, l'appel au simulateur, le soleil sur l'eau du pied).
+  `BlogCtaBand.astro`, qui ne sert plus qu'ici, est rhabillé : bouton blanc, le jaune
+  est pris par le téléchargement juste au-dessus.
+- **`/comparatif`** : le ciel (fil d'Ariane, pastille, titre aux quatre noms dans leur
+  couleur de marque, les cinq ancres en pastilles) ; six feuilles, sable et ciel en
+  alternance (quatre verdicts, quatre solutions, le tableau, quatre profils, les tarifs,
+  les questions en plis `.qa` avec le titre à gauche) ; la fin (appel à l'essai, bouton
+  jaune, note « À propos de ce comparatif », soleil). La fiche et la colonne d'Hippodoc
+  n'ont qu'un liseré et une teinte : le comparatif reste factuel. **Le tableau** reste un
+  seul `<table>`, dans une fiche : sur téléphone il défile de côté dans sa fiche (la page
+  jamais), la colonne des fonctionnalités reste en place (collante), le nom du groupe
+  aussi, et une ombre à droite dit qu'il reste des colonnes ; on voit deux éditeurs à la
+  fois à 390 px, un et demi à 320 px ; plus de défilement à partir de 740 px environ.
+  `pages/Icon.astro` n'a plus de classe par défaut (il ne sert plus qu'ici).
+- **Pages légales** : un gabarit, `src/layouts/PageLegale.astro`, et une feuille,
+  `src/styles/legal.css`. Sobres : le titre sur le ciel, le texte sur une feuille sable
+  dans une colonne de 40 rem, l'eau du pied. Le texte n'a plus aucune classe : il est
+  habillé par élément, avec la typographie de lecture du gabarit d'article (§ 9.ej).
+  Encarts en fiches rondes (ciel doux, ambre pour l'alerte HDS, bleu pour la
+  recommandation) ; le tableau des finalités sur une fiche, une finalité par bloc sous
+  560 px ; les deux boutons de la mesure d'audience en boutons de la DA, de même poids
+  (`data-mesure` et `#mesure-etat` inchangés).
+- **404** : le ciel, « introuvable » dans le bleu de l'eau, les quatre destinations en
+  fiches en relief, l'eau du pied.
+- **Ménage** (`global.css`, `tailwind.config.ts`), chaque retrait prouvé par script avant
+  d'être fait : le nom cherché dans `src/` et dans tout le build (HTML, CSS, JS), puis la
+  feuille commune comparée règle par règle avant et après. Retirés : les images clés
+  `fadeIn`, `slideInLeft`, `pulseRing`, `bounceSubtle` et les six couleurs `--series-*` de
+  `global.css` ; dans la config, le conteneur (`corePlugins.container` coupé : la classe
+  n'est portée par aucun élément, mais le mot revient dans les sources et Tailwind en
+  tirait la règle), quatorze animations dont aucune classe `animate-*` n'existe, le plugin
+  typography (`prose` nulle part) et le plugin qui exposait chaque couleur de Tailwind en
+  variable CSS : 263 variables dans la feuille commune, aucune lue (`var()`,
+  `getPropertyValue`, nom composé en JS). Les 20 jetons shadcn gardent leur valeur.
+  Deux pièges, vus à la comparaison des règles : les images clés `shimmer` de
+  `global.css` étaient recouvertes par celles de la config, de même nom, que le squelette
+  de chargement du simulateur emploie (`animate-[shimmer_…]`) : ce sont celles de la
+  config qui restent ; et `fadeIn` est aussi le nom d'images clés que le tiroir d'aide du
+  simulateur (vaul) apporte lui-même, dans une feuille injectée après celle du site : la
+  nôtre ne servait à rien. Effet sur la feuille commune, exactement : 10 règles retirées
+  (les quatre images clés, `.container`), `:root` de 283 à 20 variables, aucune règle
+  ajoutée, aucune valeur changée. **Gardé** : la règle `will-change` des éléments floutés
+  (elle vise encore le texte flouté du simulateur), `shimmer`, l'accordéon, les couleurs
+  `hippo` et les jetons shadcn (îlots, `ui/`, bannière cookies). Les pages hors lot,
+  capturées en entier à 1 440 et 390 px avant et après (64 pages, 128 comparaisons) : les
+  mêmes au pixel.
+- **Feuilles et poids** : commune 103 136 → 87 083 octets (20,3 → 16,7 Ko gzip ; 173 règles
+  en moins depuis § 9.el, son nom change, donc le `<link>` de toutes les pages) ;
+  `guide.*.css` 13,5 Ko (3,0 gzip), `comparatif.*.css` 18,0 Ko (3,6), `PageLegale.*.css`
+  6,5 Ko (2,0), `404.*.css` 4,5 Ko (1,4). HTML : `/comparatif` 115,6 → 105,5 Ko, les six
+  autres pages de 1 à 2,5 Ko de moins chacune.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs` ; le tableau à trois positions de défilement ; 25 largeurs de 280 à 1 920 px
+  × 7 pages, plis ouverts : aucun défilement horizontal, aucune erreur de console, y
+  compris avec le texte à 200 % (taille de la racine doublée). Lighthouse mobile en local,
+  trois mesures alternées : `/guide` 85 sur `main` et 89 après (LCP 4,2 → 3,7 s, la
+  couverture), `/comparatif` 98 et 98, `/mentions-legales` 99 et 100. Accessibilité 100,
+  SEO 100 (404 : noindex, voulu), bonnes pratiques 96 avant et après (requêtes sortantes
+  refusées par le bac à sable de mesure).
+- **À valider** : le jaune du bouton de téléchargement de `/guide` (deux fois : en haut
+  et en bas) et le bouton blanc de « Simule ton Super-Net » à côté ; les noms des
+  éditeurs en couleur de marque sur le ciel (3,8:1 pour Hippodoc, 4,0:1 pour Indy :
+  conforme en grand texte seulement, ce qu'est le titre) ; le liseré bleu pour seule
+  marque d'Hippodoc dans le comparatif ; le `<main>` ajouté aux pages légales. Les pages
+  sont plus hautes : `/guide` de 9 % à 1 440 px et de 12 % à 390 px, `/comparatif` de 10
+  et 12 %, les pages légales de 19 à 23 % sur téléphone et de 25 à 30 % à 1 440 px (corps
+  de 17 px au lieu de 16, interligne de lecture, colonne de 40 rem).
+- **À décider** : l'en-tête « flux », la bande `.hd-ciel`, `.da-sous-entete` et le pied
+  arrondi des pages sans `da-fond` (`da.css`, `Header.astro`) ne servent plus à aucune
+  page. Laissés en place : le ménage demandé portait sur `global.css` et la config.
+  `@tailwindcss/typography` reste dans `package.json`. `src/pages/index.astro` garde
+  trois classes utilitaires (lien d'évitement, conteneurs).
+- **Vu, non traité** : sur téléphone, l'en-tête du tableau (les noms des éditeurs) part
+  avec la page quand on descend, comme avant ; les précisions « i » du tableau sont des
+  attributs `title` (survol), sans équivalent au toucher, comme avant, et la phrase
+  « Survole les ⓘ » le dit ; les émojis ⚠️ et 💡 des mentions légales restent des
+  caractères.
+
+### 9.en Phase 5d : corrections après les trois relectures (11 novembre 2026)
+
+Trois relecteurs ont repris § 9.ek à § 9.em : calculs et fonctionnement, invariance SEO,
+direction artistique et accessibilité. Chaque point a été vérifié sur le build avant
+d'être corrigé ou écarté. Période d'observation SEO : aucun mot de contenu, `title`,
+description, H1, titre, lien, ancre, `id` d'ancre, `alt` ni JSON-LD ne change ; `src/lib/`
+n'est pas touché ; aucun JS ajouté ; aucun état, gestionnaire, appel réseau ni accès à
+`localStorage` nouveau dans les îlots.
+
+- **Ancres de `/guide-declarations` sous la barre de recherche** (important). Les
+  1 357 liens à ancre de la page arrivaient à 84 px du haut, sous la barre collante (70 à
+  134 px). Cause : `html:has(.gd-rech) { scroll-padding-top: 146px }` ne s'appliquait
+  jamais. Sur les pages d'outils, la feuille de la page est liée AVANT la feuille commune,
+  où `html:has(.da-fond)` pose 84 px avec le même poids : la dernière gagnait. Sélecteur
+  alourdi (`html:has(.da-fond):has(.gd-rech)`). Mesuré à 1 366 et 390 px : `#case-5HQ`,
+  `#cases` et `#glossaire-lettre-C` arrivent à 146 px, la barre finit à 126 px.
+- **Séparateur « Résultats » de la calculette affiché sur ordinateur** (important).
+  `.calc .calc-separe { display: flex }` battait l'utilitaire `lg:hidden` du bloc : la
+  règle est bornée à `max-width: 1023.98px`. `display` mesuré : `flex` à 320, 390 et
+  700 px, `none` à 1 024 et 1 366 px. Balayage des utilitaires de masquage gardés dans les
+  .tsx (simulateur, calculette, guide, comparatif, confidentialité ; 390, 700, 800, 1 100
+  et 1 366 px) : aucun autre n'est battu par une classe de la DA.
+- **Barre d'outils de la calculette** (important). Fond opaque (le formulaire se lisait au
+  travers). Elle ne colle plus sur téléphone, où elle prenait avec l'en-tête jusqu'à un
+  tiers de l'écran : collante à partir de 640 px seulement, comme une ligne de 52 px, et
+  `<html>` lui réserve alors sa hauteur (`scroll-padding-top` de 140 px, même précaution
+  de poids). Maj+Tab sur tout le formulaire à 320, 390, 700, 1 024 et 1 366 px, défilement
+  posé avant chaque mesure : aucun contrôle ne prend le focus sous la barre ou sous
+  l'en-tête. « Voir mes résultats » arrête la fiche à 172 px du haut, comme avant (la
+  marge de défilement de la colonne compense : 88 px sur téléphone, 32 px au-delà).
+  Ceci remplace, en § 9.el, « la barre d'outils colle sous l'en-tête ».
+- **Libellés des cases de résultat coupés** (important). « CA t… », « BNC a… » à 320 px,
+  sans `title` : le libellé passe à la ligne et se lit en entier à toutes les largeurs ;
+  sous 480 px, le code et le libellé prennent la largeur, le montant et « Copier »
+  passent dessous, à droite. Plus aucun libellé coupé à 320, 390 et 1 440 px (9 sur 9).
+- **Notifications de la calculette** (important). Elles étaient restées dans l'habit de
+  sonner (police du système, rayon de 8 px) : fiche blanche de la DA, Google Sans Flex,
+  encre, rayon de 22 px, icône dans le bleu de la marque. Habillage seul, dans
+  `calculette.css` (la feuille de sonner est écrite sous `:where()`).
+- **Champs du simulateur sans nom accessible** (important, déjà sur `main`). Sur treize
+  champs à suffixe (€, %), `FormControl` enveloppait le `<div>` du suffixe : l'`id`,
+  `aria-invalid` et `aria-describedby` tombaient sur ce `<div>`, le `<label>` ne nommait
+  rien. `FormControl` enveloppe maintenant le champ. Les 27 messages d'erreur portent
+  `role="alert"`. Vérifié, tous plis du formulaire ouverts : 21 champs visibles, 0 sans
+  nom ; soumission vide : champ `aria-invalid="true"`, décrit par le message, message
+  annoncé.
+- **Aides « i » du simulateur inatteignables** (important, déjà sur `main`). Le
+  déclencheur était un `<svg>` (ordinateur) ou un `<div>` (téléphone). C'est un
+  `<button type="button">` dans `PremiumTooltip.tsx`, pour ses 27 emplois : il prend le
+  focus, la bulle s'ouvre au focus, il s'appelle « Aide : » suivi du titre de l'aide
+  (`aria-label`, pas de texte visible ; la pastille « Vérifiez », qui a son texte, n'en
+  reçoit pas). Il épouse son icône (rien ne bouge) et sa cible déborde : 24 px à la
+  souris, 44 px au doigt. Dans le formulaire, les 22 aides sortent de leur `<label>`
+  (un bouton n'a pas sa place dans le libellé d'un autre champ) : le libellé et l'aide
+  sont côte à côte dans un `<div>`. Le bouton de fermeture du tiroir d'aide s'appelle
+  « Fermer ». Aucun état ni gestionnaire nouveau : le `onClick` du `<div>` passe au
+  bouton. Tabulation : l'aide précède son champ.
+- **Précisions « i » du comparatif** (important). Elles ne s'affichaient ni au toucher ni
+  au clavier, alors que la page dit « Survole les ⓘ ». Une fiche en CSS seul (`::after`,
+  texte de l'attribut `title`) s'ouvre au focus et, sur écran tactile, au toucher ; elle
+  se place par rapport à la cellule collante et reste dans la partie visible du tableau
+  (5 précisions sur 5 à 320, 390 et 1 440 px, aucune hors du tableau). À la souris, le
+  navigateur montre toujours `title`. Le conteneur qui défile reçoit `tabindex="0"`,
+  `role="region"` et `aria-label="Tableau comparatif"` (les mots de la pastille de la
+  section). Ceci remplace, en § 9.em, le « Vu, non traité » sur les précisions.
+- **Mineurs corrigés**, en CSS sauf mention. Calculette : les chevrons des trois plis
+  (5 à 10 px de large) ne se laissent plus écraser et prennent la pastille des plis de la
+  DA (32 px) ; les deux liens du pied des résultats sont soulignés, en 14 px, 24 px de
+  cible, et le « | » orphelin est masqué sous 480 px ; « Tout copier » et « Imprimer »
+  44 px de haut, interrupteur et « Forcer PAMC » 44 px au doigt. Simulateur : un filet
+  d'encre autour de chaque secteur de l'anneau (le jaune du reste à vivre faisait 1,4:1
+  sur la fiche) et libellé central à 10 px au lieu de 7 ; à 320 px, le rappel d'une rangée
+  d'options (« ZFRR · Foncier réel ») passe sous son nom, le chevron n'est plus rogné.
+  Bloc d'essai bleu du guide et de la calculette : voile de la pastille de 14 à 8 %,
+  contraste mesuré au pixel de 4,44 à 5,06:1 au moins (guide) et de 4,48 à 5,11:1
+  (calculette). Comparatif : « Fonctionnalité » tient sur une ligne à 320 et 390 px.
+  Guide : champ de recherche opaque (plus de texte en fantôme derrière « Rechercher… ») ;
+  renvois `.gd-ref` 44 px au doigt (30 px à l'œil, rangées à 8 px), nœuds du parcours et
+  barres d'étape de la boussole à 44 px ; `aria-pressed` sur les choix multiples de
+  « Situations particulières » (`BoussoleWizard.tsx`, un attribut).
+- **Tableau des finalités de `/politique-confidentialite`**. Sous 560 px, la ligne
+  d'en-tête (« Finalité », « Base Légale ») n'était plus dessinée et le tableau, en
+  `display: block`, perdait lignes et colonnes pour les lecteurs d'écran. Il reste un
+  vrai tableau à toutes les largeurs, cellules resserrées sur téléphone (pas de
+  défilement horizontal de 280 à 1 920 px). Ceci remplace, en § 9.em, « une finalité par
+  bloc sous 560 px ».
+- **Écartés, et pourquoi.** Le taux non arrondi de la bulle « Impôt sur ton activité »
+  (« 0.8213716108452951% ») : identique sur `main`, et aucun affichage de nombre ne bouge
+  pendant la période d'observation ; à traiter à part. Les boutons « Copier » de
+  28 × 28 px et les outils de la barre : leur cible faisait déjà 44 px (un `::after`, que
+  la mesure de la boîte ne voit pas). Le menu « Charger un exemple » plus haut que
+  l'écran : mesuré à 390 px, il tient dans l'écran (223 à 814 px sur 844) et défile, sa
+  hauteur est bornée depuis § 9.el, et la barre ne collant plus sur téléphone il ne
+  recouvre plus l'en-tête ; ses descriptions ne sont pas coupées à deux lignes, c'est sur
+  elles qu'on choisit un exemple. `role="status"` sur les résultats du simulateur : le
+  bloc entier (2 500 à 4 100 caractères) serait lu d'une traite, ou rien, la région
+  n'existant pas avant le calcul ; il faudrait un message court, donc du texte et de la
+  logique. Boussole : le focus qui retombe sur `<body>` après un choix, la liste de
+  recherche sans flèches, le champ « Trouve ton profil… » nommé par son seul
+  `placeholder` relèvent de la logique de l'îlot (et d'autres corrections sont en cours
+  sur `src/components/guide/`) : **dette d'accessibilité**, avec la région des résultats.
+  L'intervalle de 8 px entre l'en-tête et la barre de recherche reste : ce sont deux
+  pastilles flottantes, la page se lit autour comme autour de l'en-tête.
+- **Notés, sans correction.** Lighthouse en local : `npx serve` sert en HTTP/1.1, et la
+  deuxième feuille bloquante des pages du lot y coûte 0,15 à 0,3 s de FCP et de LCP
+  (`/simulateur` 0,90 → 1,20 s) ; rejoué en HTTP/2, le protocole de Vercel, l'écart
+  disparaît (consigné dans CLAUDE.md). La feuille du guide (48,4 Ko, 9,7 Ko gzip) est
+  chargée en entier par ses trois pages filles, qui n'en lisent qu'une partie (CSS
+  bloquante 21,9 → 23,6 Ko brotli, poids total de la page en baisse) : laissée d'un seul
+  tenant. Les îlots du simulateur et de la calculette reçoivent une prop
+  `data-astro-cid-*` (`props="{}"` devenait `{"data-astro-cid-…":[0,true]}` en § 9.ek et
+  § 9.el) : Astro la passe à tout composant rendu dans une page à `<style>` scopé, les
+  composants ne lisent aucune prop, leur HTML est le même. La mascotte de `/simulateur`
+  et celle de `/guide-declarations` (`<picture>`, `alt=""`, `loading="lazy"`) sont les
+  seuls éléments porteurs d'URL ajoutés à ces pages par la phase 5d ; la balise
+  `theme-color` vient avec `da-fond` sur les 13 pages ; les quatre pages légales ont
+  gagné leur `<main>` (§ 9.em).
+- **Ce qui change dans le HTML**, build du commit précédent contre celui-ci, par script :
+  878 fichiers des deux côtés, 11 HTML modifiés. Neuf ne changent que par le nom d'une
+  feuille ou d'un script (guide et ses trois pages filles, calculette, quatre pages
+  légales). `/comparatif` : les trois attributs du conteneur du tableau. `/simulateur`
+  (HTML de l'îlot rendu au build) : 7 boutons d'aide et 7 `<div>` de rangée en plus,
+  5 `<label>` déplacés, les attributs `id`, `aria-invalid` et `aria-describedby` de deux
+  champs passés du `<div>` au champ. Sur ces deux pages : texte identique, mot à mot et
+  collé, titres, liens, images, `alt`, balises du `<head>` et JSON-LD identiques. Les
+  59 autres pages : identiques à l'octet, feuille commune comprise
+  (`_astro_assets.CvdXYDEr.css`, nom inchangé).
+- **Calculs rejoués**, nombres identiques au build de `main`. Simulateur : 12 jeux de
+  valeurs, 1 812 nombres, 36 678 caractères de texte d'îlot, 89 plis, 197 bulles, les
+  10 corps de requête PAMC et 24 événements : 0 écart. Calculette : 26 jeux (14 exemples,
+  9 sauvegardes restaurées, 3 saisies au clavier), 3 678 nombres, 387 valeurs de champs,
+  24 sauvegardes `localStorage` : 0 écart. Guide : 17 parcours de la boussole à 1 280 et
+  390 px (175 relevés d'étape, 4 190 boutons) et la recherche : 0 écart, et le titre
+  d'une étape ne passe jamais sous la barre. Le relevé des bulles du simulateur lit
+  désormais la bulle qui vient de s'ouvrir : sur `main`, celle de la pastille
+  « Vérifiez » reste ouverte après le survol et l'ancien relevé la relisait à la place
+  des suivantes (4 jeux sur 12) ; `main` et la branche ont été relevés avec la même
+  lecture.
+- **Feuilles** : `simulateur.*.css` 30,9 → 31,7 Ko (6,1 → 6,3 gzip), `calculette.*.css`
+  23,9 → 26,0 Ko (5,5 → 5,9), feuille du guide 48,3 → 48,4 Ko, `comparatif.*.css`
+  18,0 → 19,3 Ko (3,6 → 3,8), `PageLegale.*.css` 6,5 → 5,9 Ko. `SimulateurApp.*.js`
+  122,9 → 124,6 Ko (les 22 rangées et le bouton).
+- **Contrôles** : `npm run build` (70 pages), `verify-site.mjs` à 0 erreur ; 6 pages ×
+  13 largeurs de 280 à 1 920 px, plis ouverts et résultats affichés : aucun défilement
+  horizontal, aucune erreur de page ; captures à 320, 390 et 1 440 px (barre, résultats,
+  plis, menu, notification, formulaire, bulle au clavier, tiroir, anneau, tableau, ancre).
+  Lighthouse mobile en local sur `/simulateur`, trois mesures alternées, même serveur
+  sans compression : performance 94, 95 et 93 avant, 95, 95 et 95 après (TBT 190 à 230 ms
+  avant, 170 à 200 ms après). Accessibilité 100 et SEO 100 sur `/simulateur`, la
+  calculette et `/comparatif` ; bonnes pratiques 96, comme avant (requêtes sortantes
+  refusées par le bac à sable de mesure).
+- **À valider** : les noms « Aide : … » des boutons d'aide, « Fermer » et « Tableau
+  comparatif » (des `aria-label`, lus mais pas affichés) ; le filet autour des secteurs
+  de l'anneau ; la barre d'outils de la calculette qui ne colle plus sur téléphone.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement

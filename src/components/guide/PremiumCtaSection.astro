@@ -12,8 +12,13 @@
  *  - `trackEvent(...)` sur clic → attributs `data-track` (PostHog
  *    autocapture, cf. Header.astro), pas de handler JS.
  *  - `motion.div` (framer-motion, whileInView) → markup brut.
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : une fiche sur l'eau profonde, dans la
+ * scène de fin. Le Super-Net sur du jaune, comme partout dans la DA ; le bouton
+ * de l'essai en jaune, celui du simulateur en blanc. Les deux halos et le
+ * reflet (décor) disparaissent. Styles dans src/styles/guide.css.
  */
-import { ArrowRight, Wand2, Calculator, Check, TrendingUp } from 'lucide-react';
+import { Wand2, Calculator, Check, TrendingUp } from 'lucide-react';
 import { APP_URL } from '@/lib/site';
 
 const badge = "Quel que soit ton mode d'exercice";
@@ -26,103 +31,96 @@ const BENEFICES = [
 ];
 ---
 
-<section id="cta-premium" class="py-12 md:py-16 scroll-mt-20" aria-labelledby="cta-premium-title">
-  <div class="max-w-5xl mx-auto px-4">
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-hippo-600 via-hippo-700 to-blue-900 p-px shadow-2xl shadow-hippo-900/30">
-      <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/25 via-transparent to-cyan-300/15 opacity-70 pointer-events-none" />
-
-      <div class="relative rounded-[calc(1.5rem-1px)] bg-gradient-to-br from-hippo-600 via-hippo-700 to-blue-900 px-5 py-10 sm:px-8 md:px-12 md:py-14 overflow-hidden">
-        <div class="absolute -top-32 -right-24 w-[28rem] h-[28rem] bg-cyan-300/20 rounded-full blur-[120px] pointer-events-none" />
-        <div class="absolute -bottom-32 -left-24 w-80 h-80 bg-hippo-400/25 rounded-full blur-[100px] pointer-events-none" />
-
-        <div class="relative space-y-7 md:space-y-9">
-          <div class="flex items-center justify-center">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-[11px] font-semibold text-white uppercase tracking-wider ring-1 ring-white/25">
-              <Wand2 className="h-3 w-3" />
-              {badge}
+<section id="cta-premium" class="gd-essai" aria-labelledby="cta-premium-title">
+  <div class="wrap">
+    <div class="gd-essai-fiche">
+      <div class="gd-essai-in">
+        <div class="gd-essai-in2">
+          <div class="gd-essai-pile">
+            <div class="gd-essai-centre">
+              <div class="gd-essai-gage">
+                <Wand2 className="gd-ic" />
+                {badge}
+              </div>
             </div>
-          </div>
 
-          <div class="text-center space-y-3 max-w-3xl mx-auto">
-            <h2 id="cta-premium-title" class="text-[26px] leading-[1.15] sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-              Ton Super-Net,<br class="sm:hidden" /> calculé en temps réel.
-            </h2>
-            <p class="text-sm sm:text-base md:text-lg text-white/85 leading-relaxed max-w-xl mx-auto">
-              {subtitle}
+            <div class="gd-essai-titre">
+              <h2 id="cta-premium-title">
+                Ton <span class="hl">Super-Net</span>,<br class="gd-br-tel" /> calculé en temps réel.
+              </h2>
+              <p class="lead">
+                {subtitle}
+              </p>
+            </div>
+
+            {/* Mockup statique du Super-Net — preuve visuelle, pas de données user */}
+            <div class="gd-apercu">
+              <div class="gd-apercu-in">
+                <div class="gd-apercu-tete">
+                  <div class="gd-apercu-nom">
+                    Super-Net 2026
+                  </div>
+                  <div class="gd-apercu-vif">
+                    <span class="gd-point" aria-hidden="true"></span>
+                    Mis à jour à l'instant
+                  </div>
+                </div>
+
+                <div class="gd-apercu-lignes">
+                  <div><span>Recettes</span><span class="fort">82 400 €</span></div>
+                  <div><span>− URSSAF</span><span>−12 100 €</span></div>
+                  <div><span>− CARMF</span><span>−8 600 €</span></div>
+                  <div><span>− Impôts</span><span>−14 200 €</span></div>
+                </div>
+
+                <div class="gd-apercu-filet"></div>
+
+                <div class="gd-apercu-total">
+                  <span>Super-Net</span>
+                  <span class="hl">
+                    47 500 €
+                  </span>
+                </div>
+                <div class="gd-apercu-plus">
+                  <TrendingUp className="gd-ic" />
+                  +1 240 € ce mois
+                </div>
+              </div>
+            </div>
+
+            <ul class="gd-essai-atouts">
+              {BENEFICES.map((b) => (
+                <li>
+                  <Check className="gd-ic" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div class="gd-essai-boutons">
+              <a
+                href={`${APP_URL}/auth?tab=signup`}
+                data-track="guide_declarations_cta_essai"
+                class="btn btn-brand"
+              >
+                Démarrer mon essai gratuit 30 jours
+                <svg class="gd-fl" viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>
+              </a>
+              <a
+                href="/simulateur"
+                data-track="guide_declarations_cta_simulateur"
+                aria-label="Tester le simulateur public sans inscription"
+                class="btn btn-white"
+              >
+                <Calculator className="gd-ic" />
+                Tester le simulateur
+              </a>
+            </div>
+
+            <p class="gd-essai-mention">
+              30 jours offerts · Sans engagement · Données hébergées dans l'Union européenne
             </p>
           </div>
-
-          {/* Mockup statique du Super-Net — preuve visuelle, pas de données user */}
-          <div class="relative max-w-md mx-auto w-full">
-            <div class="absolute -inset-px rounded-2xl bg-gradient-to-br from-cyan-200/30 via-white/10 to-transparent blur-sm pointer-events-none" />
-            <div class="relative rounded-2xl bg-white/[0.08] backdrop-blur-md ring-1 ring-white/20 p-5 sm:p-6 shadow-2xl shadow-black/20">
-              <div class="flex items-center justify-between mb-4">
-                <div class="text-[11px] font-semibold uppercase tracking-wider text-white/70">
-                  Super-Net 2026
-                </div>
-                <div class="inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-200">
-                  <span class="relative flex h-1.5 w-1.5">
-                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
-                    <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                  </span>
-                  Mis à jour à l'instant
-                </div>
-              </div>
-
-              <div class="space-y-1.5 font-mono text-[13px] sm:text-sm">
-                <div class="flex items-baseline justify-between gap-3"><span class="text-white/85">Recettes</span><span class="tabular-nums text-white">82 400 €</span></div>
-                <div class="flex items-baseline justify-between gap-3"><span class="text-white/65">− URSSAF</span><span class="tabular-nums text-white/75">−12 100 €</span></div>
-                <div class="flex items-baseline justify-between gap-3"><span class="text-white/65">− CARMF</span><span class="tabular-nums text-white/75">−8 600 €</span></div>
-                <div class="flex items-baseline justify-between gap-3"><span class="text-white/65">− Impôts</span><span class="tabular-nums text-white/75">−14 200 €</span></div>
-              </div>
-
-              <div class="my-3 h-px bg-white/15" />
-
-              <div class="flex items-baseline justify-between">
-                <span class="text-sm sm:text-base font-semibold text-white">Super-Net</span>
-                <span class="font-mono text-xl sm:text-2xl font-bold text-cyan-200 tabular-nums">
-                  47 500 €
-                </span>
-              </div>
-              <div class="mt-1 flex items-center justify-end gap-1 text-[11px] text-emerald-200">
-                <TrendingUp className="h-3 w-3" />
-                +1 240 € ce mois
-              </div>
-            </div>
-          </div>
-
-          <ul class="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center sm:justify-center gap-2 sm:gap-x-5 sm:gap-y-2 max-w-3xl mx-auto">
-            {BENEFICES.map((b) => (
-              <li class="flex items-center gap-2 text-[13px] sm:text-sm text-white/90">
-                <Check className="h-4 w-4 text-cyan-200 shrink-0" />
-                <span>{b}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-            <a
-              href={`${APP_URL}/auth?tab=signup`}
-              data-track="guide_declarations_cta_essai"
-              class="group inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-4 text-[15px] sm:text-base font-semibold text-hippo-700 bg-white rounded-xl transition-all shadow-xl shadow-black/25 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.99] min-h-[52px] w-full sm:w-auto no-underline"
-            >
-              Démarrer mon essai gratuit 30 jours
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
-            <a
-              href="/simulateur"
-              data-track="guide_declarations_cta_simulateur"
-              aria-label="Tester le simulateur public sans inscription"
-              class="inline-flex items-center justify-center gap-2 px-6 py-4 text-sm font-semibold text-white bg-white/10 hover:bg-white/20 rounded-xl transition-all ring-1 ring-white/30 hover:ring-white/50 backdrop-blur-sm min-h-[52px] w-full sm:w-auto no-underline"
-            >
-              <Calculator className="h-4 w-4" />
-              Tester le simulateur
-            </a>
-          </div>
-
-          <p class="text-center text-[11px] sm:text-xs text-white/70">
-            30 jours offerts · Sans engagement · Données hébergées dans l'Union européenne
-          </p>
         </div>
       </div>
     </div>

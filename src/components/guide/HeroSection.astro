@@ -11,7 +11,15 @@
  *  - `ShareButton` (Web Share API / presse-papiers, JS) : retiré (même
  *    contrainte) — le lien reste partageable via l'URL de la page.
  *  - "Sources officielles" (toggle JS) → `<details>/<summary>` natif.
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : le titre sur le ciel, à gauche ; « enfin
+ * claires » dans le bleu de l'eau ; le bouton qui mène à la boussole en jaune.
+ * Styles dans src/styles/guide.css (`gd-tete`). Mascotte qui montre du doigt
+ * (décor, les fichiers de l'accueil, retournée pour désigner le titre), à
+ * partir de 1 024 px.
  */
+import { getImage } from 'astro:assets';
+import pointe from '@/assets/accueil/mascotte-f-pointe.webp';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Compass, ShieldCheck, Calculator, ChevronDown, ExternalLink, BookOpen } from 'lucide-react';
@@ -61,89 +69,93 @@ const SOURCES_OFFICIELLES = [
 ];
 
 const updatedLabel = format(LAST_UPDATED, 'd MMMM yyyy', { locale: fr });
+
+/* La mascotte : mêmes largeurs et mêmes formats que dans accueil/PourQui.astro,
+   donc les mêmes fichiers (aucune image de plus dans le build). */
+const [mascotteAvif, mascotteWebp] = await Promise.all(
+  (['avif', 'webp'] as const).map((format) => getImage({ src: pointe, format, width: 300, widths: [150, 300, 450, 620] }))
+);
 ---
 
-<section class="da-sous-entete relative overflow-hidden py-12 md:py-20">
-  <div class="absolute inset-0 bg-gradient-to-br from-hippo-50 via-white to-cyan-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-hippo-950/30" />
-  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-hippo-400/10 rounded-full blur-[120px]" />
+<section class="gd-tete da-bloc">
+  <div class="wrap">
+    <div class="gd-tete-in">
+      <div class="gd-gages">
+        <div class="chip ok gd-gage">
+          <span class="gd-point" aria-hidden="true"></span>
+          Mis à jour le {updatedLabel}
+        </div>
+        <div class="chip plan gd-gage">
+          <ShieldCheck className="gd-ic" />
+          Terrain + sources officielles
+        </div>
+      </div>
 
-  <div class="relative max-w-5xl mx-auto px-4 text-center">
-    <div class="flex flex-wrap items-center justify-center gap-2 mb-6">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100/60 border border-emerald-200/40 text-emerald-700 text-sm font-medium dark:bg-emerald-900/30 dark:border-emerald-700/30 dark:text-emerald-300">
-        <span class="relative flex h-2 w-2" aria-hidden="true">
-          <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-          <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+      {/* L'espace entre la virgule et le <span> est supprimé au build : sans le
+          `{' '}` explicite, le h1 se lit « sociales,enfin claires ».
+          « enfin claires » ne se coupe pas en deux (§ 9.ed). */}
+      <h1 class="aff">
+        Tes déclarations fiscales et sociales,{' '}
+        <span class="gd-eau gd-num">
+          enfin claires
         </span>
-        Mis à jour le {updatedLabel}
+      </h1>
+
+      <p class="lead">
+        2042-C-PRO, 2035, DSFU (ex DS-PAMC) : chaque case expliquée, chaque piège signalé.
+        Guide pratique créé par des médecins, pour des médecins.
+      </p>
+
+      {/* Signature visible : le pendant à l'écran du `author` JSON-LD. Une page
+          fiscale anonyme n'inspire pas confiance, à un lecteur comme à un moteur. */}
+      <p class="gd-signe">
+        Écrit et tenu à jour par{' '}
+        <a href="/qui-sommes-nous" class="lien">
+          Dr. Ryan Goburdhun
+        </a>, médecin remplaçant et fondateur d'Hippodoc · Révisé le {updatedLabel}
+      </p>
+
+      <div class="gd-actions">
+        <a
+          href="#profils"
+          class="btn btn-brand"
+        >
+          <Compass className="gd-ic" />
+          Trouver ma situation
+        </a>
+        <a
+          href="/guide-declarations/calculette"
+          class="btn btn-line"
+        >
+          <Calculator className="gd-ic" />
+          Calculette
+        </a>
       </div>
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-hippo-100/60 border border-hippo-200/40 text-hippo-700 text-sm font-medium dark:bg-hippo-900/30 dark:border-hippo-700/30 dark:text-hippo-300">
-        <ShieldCheck className="h-4 w-4" />
-        Terrain + sources officielles
-      </div>
+      <details class="gd-sources">
+        <summary>
+          <BookOpen className="gd-ic" />
+          Sources officielles
+          <ChevronDown className="gd-ic gd-chevron" />
+        </summary>
+        <div class="gd-sources-in">
+          {SOURCES_OFFICIELLES.map((source, i) => (
+            <span class="gd-source">
+              {i > 0 && <span class="gd-sep">·</span>}
+              <a
+                href={source.url}
+                target="_blank" rel="noopener noreferrer"
+              >
+                {source.label}
+                <ExternalLink className="gd-ic" />
+              </a>
+            </span>
+          ))}
+        </div>
+      </details>
     </div>
-
-    {/* L'espace entre la virgule et le <span> est supprimé au build : sans le
-        `{' '}` explicite, le h1 se lit « sociales,enfin claires ».
-        `whitespace-nowrap` (§ 9.ed) : « enfin claires » ne se coupe plus en deux
-        (à 1 440 px, « claires » partait seul à la ligne et coupait le dégradé). */}
-    <h1 class="text-3xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
-      Tes déclarations fiscales et sociales,{' '}
-      <span class="whitespace-nowrap bg-gradient-to-r from-hippo-600 to-cyan-500 bg-clip-text text-transparent">
-        enfin claires
-      </span>
-    </h1>
-
-    <p class="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-      2042-C-PRO, 2035, DSFU (ex DS-PAMC) : chaque case expliquée, chaque piège signalé.
-      Guide pratique créé par des médecins, pour des médecins.
-    </p>
-
-    {/* Signature visible : le pendant à l'écran du `author` JSON-LD. Une page
-        fiscale anonyme n'inspire pas confiance, à un lecteur comme à un moteur. */}
-    <p class="text-sm text-muted-foreground mb-8">
-      Écrit et tenu à jour par{' '}
-      <a href="/qui-sommes-nous" class="font-medium text-hippo-600 underline-offset-2 hover:underline dark:text-hippo-300">
-        Dr. Ryan Goburdhun
-      </a>, médecin remplaçant et fondateur d'Hippodoc · Révisé le {updatedLabel}
-    </p>
-
-    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a
-        href="#profils"
-        class="inline-flex items-center justify-center gap-2 h-11 rounded-lg px-8 text-base font-semibold bg-gradient-to-r from-hippo-500 to-hippo-600 hover:from-hippo-600 hover:to-hippo-700 text-white shadow-lg shadow-hippo-500/25 no-underline transition-colors"
-      >
-        <Compass className="h-4 w-4" />
-        Trouver ma situation
-      </a>
-      <a
-        href="/guide-declarations/calculette"
-        class="inline-flex items-center justify-center gap-2 h-11 rounded-md px-8 text-base font-normal border border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800 dark:border-emerald-800 dark:text-emerald-300 dark:hover:bg-emerald-950/40 no-underline transition-colors"
-      >
-        <Calculator className="h-4 w-4" />
-        Calculette
-      </a>
-    </div>
-    <details class="mt-4 text-xs text-muted-foreground group">
-      <summary class="inline-flex items-center gap-1 cursor-pointer hover:text-hippo-600 dark:hover:text-hippo-400 transition-colors list-none">
-        <BookOpen className="h-3 w-3" />
-        Sources officielles
-        <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-180" />
-      </summary>
-      <div class="mt-2 flex flex-wrap items-center justify-center gap-1">
-        {SOURCES_OFFICIELLES.map((source, i) => (
-          <span class="inline-flex items-center">
-            {i > 0 && <span class="mx-1">·</span>}
-            <a
-              href={source.url}
-              target="_blank" rel="noopener noreferrer"
-              class="underline underline-offset-2 hover:text-hippo-600 dark:hover:text-hippo-400 transition-colors inline-flex items-center gap-0.5"
-            >
-              {source.label}
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          </span>
-        ))}
-      </div>
-    </details>
+    <picture class="gd-guide">
+      <source type="image/avif" srcset={mascotteAvif.srcSet.attribute} sizes="264px" />
+      <img src={mascotteWebp.src} srcset={mascotteWebp.srcSet.attribute} sizes="264px" alt="" width={mascotteWebp.attributes.width} height={mascotteWebp.attributes.height} loading="lazy" decoding="async" />
+    </picture>
   </div>
 </section>

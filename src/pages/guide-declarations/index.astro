@@ -31,7 +31,24 @@
  *    via la nav globale du Header.
  *  - `PromoBanner` (dormant en prod, cf. src/pages/index.astro) : non
  *    repris, comme sur le reste du site cible.
+ *
+ * Habillée dans la DA 2026 en phase 5d (MIGRATION.md § 9.el) : seul l'habillage a
+ * changé. Textes, titres, liens, ancres, `id`, ordre des blocs, JSON-LD et
+ * `data-track` sont ceux d'avant (période d'observation SEO) ; la logique des
+ * deux îlots (recherche, boussole) n'est pas touchée.
+ * - Page entièrement dans la DA : fond `da-fond`, en-tête « flottante ». Le
+ *   bandeau d'échéance reste entre l'en-tête et <main>, dans le flux : une
+ *   pastille sur le ciel, sous celle de l'en-tête.
+ * - <main class="gd"> porte le ciel : le titre, la barre de recherche (collante,
+ *   enfant direct de <main> pour le rester sur toute la page) et les quatre
+ *   pages détaillées sont posés dessus. Puis quatre feuilles, une par étape
+ *   (sable, ciel, sable, ciel), et la fin : l'appel à l'essai sur l'eau
+ *   profonde, les articles, l'avertissement, le soleil sur l'eau du pied.
+ * - Aucune classe utilitaire dans cette page ni dans les composants `guide/`
+ *   (sauf FormattedText.tsx, non modifié) : tout est dans src/styles/guide.css
+ *   (classes `gd-*`, feuille servie aux pages du guide seulement) et da.css.
  */
+import '@/styles/guide.css';
 import BlogReadMore from '@/components/BlogReadMore.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
@@ -117,41 +134,59 @@ const webPageSchema = {
   path="/guide-declarations"
   ogType="article"
   jsonLd={[faqSchema, breadcrumbSchema, webPageSchema]}
+  bodyClass="da-fond"
 >
-  <div class="min-h-screen bg-white dark:bg-slate-950">
-    <Header />
-    <SeasonalBanner />
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel : le bandeau d'échéance, ou à défaut le titre,
+      lui réserve le haut. */}
+  <Header variante="flottante" />
+  <SeasonalBanner />
 
-    <main class="pb-20">
-      <HeroSection />
-      <BoussoleSearchIsland client:visible />
-      <SousPagesNav />
+  <main class="gd">
+    <HeroSection />
+    <BoussoleSearchIsland client:visible />
+    <SousPagesNav />
 
-      {/* Zone 1 : Commence ici */}
+    {/* Zone 1 : Commence ici */}
+    <div class="band da-bloc">
       <SectionDivider step={1} label="Commence ici" hint="Comprends · identifie-toi · checklist" compact />
       <FiscalSocialPrimer />
       <BoussoleWizard client:visible />
+    </div>
 
-      {/* Zone 2 : Référence rapide */}
+    {/* Zone 2 : Référence rapide */}
+    <div class="band air da-bloc">
       <SectionDivider step={2} label="Référence rapide" hint="Parcours déclaratif & cases" />
       <FlowChartSection />
       <CaseopediaSection />
+    </div>
 
-      {/* Zone 3 : Pour aller plus loin */}
+    {/* Zone 3 : Pour aller plus loin */}
+    <div class="band da-bloc">
       <SectionDivider step={3} label="Pour aller plus loin" hint="Fiches · questions · glossaire" />
       <FichesPratiquesSection />
       <TopQuestionsSection />
-      <div class="max-w-5xl mx-auto px-4 mt-12">
+      <div class="wrap gd-sec">
         <GlossaireSection />
       </div>
+    </div>
 
-      {/* Zone 4 : Outils pratiques */}
+    {/* Zone 4 : Outils pratiques */}
+    <div class="band air da-bloc">
       <SectionDivider step={4} label="Outils pratiques" hint="Problèmes · calendrier" />
       <ProblemesRecoursSection />
       <CalendrierSection />
+    </div>
+
+    {/* La fin : l'appel à l'essai, les articles, l'avertissement, puis le soleil
+        qui se lève sur l'eau du pied de page. */}
+    <div class="gd-fin da-bloc">
       <PremiumCtaSection />
       {/* Le guide ne liait aucun article du blog (MIGRATION.md § 9.co). */}
-      <div class="max-w-5xl mx-auto px-4 mt-12">
+      <div class="wrap gd-lire">
         <BlogReadMore
           emplacement="guide"
           titre="Pour aller plus loin, sur le blog"
@@ -159,8 +194,13 @@ const webPageSchema = {
         />
       </div>
       <DisclaimerSection />
-    </main>
+      <div class="gd-horizon" aria-hidden="true">
+        <span class="gd-soleil"></span>
+        <span class="gd-vague v3"></span>
+        <span class="gd-vague v4"></span>
+      </div>
+    </div>
+  </main>
 
-    <Footer />
-  </div>
+  <Footer />
 </BaseLayout>

@@ -30,6 +30,12 @@ import { trackEvent } from '@/lib/analytics';
 //     synchronisation croisée n'existe plus : le wizard est autonome et
 //     ne filtre plus le reste de la page. Toutes les sections statiques
 //     affichent donc TOUJOURS l'intégralité du contenu, non filtré.
+//
+// DA 2026 (phase 5d, MIGRATION.md § 9.el) : seules les classes changent
+// (src/styles/guide.css, `gd-b-*`). Une grande fiche en relief ; le fil
+// d'étapes en pastilles ; chaque choix est une fiche ciel doux à pastille
+// d'icône, cerclée d'encre quand elle est choisie ; le bouton qui mène à la
+// checklist en jaune. États, effets, gestionnaires : pas une ligne.
 // =====================================================================
 
 type Regime = 'micro-bnc' | 'reel' | 'selarl';
@@ -419,56 +425,56 @@ export function BoussoleWizard() {
   };
 
   return (
-    <section id="profils" className="py-6 md:py-12 scroll-mt-20">
-      <div className="max-w-5xl mx-auto px-3 sm:px-4">
+    <section id="profils" className="gd-sec gd-boussole">
+      <div className="wrap">
         {/* Header */}
-        <div className="text-center mb-5 md:mb-6">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1.5 flex items-center justify-center gap-2">
-            <Compass className="h-5 w-5 sm:h-6 sm:w-6 text-hippo-500" /> Trouve ta situation
+        <div className="gd-sec-tete milieu">
+          <h2 className="gd-h2">
+            <Compass className="gd-ic" /> Trouve ta situation
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto">
+          <p className="gd-sous">
             Quelques questions pour personnaliser ta checklist de cases à remplir et filtrer la page autour de ton cas.
           </p>
         </div>
 
         {/* Page-filtered banner (persistent once a profil is set) */}
         {(selected || isOther) && (
-          <div className="mb-4 flex items-start sm:items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-hippo-50 border border-hippo-200/60 dark:bg-hippo-900/20 dark:border-hippo-700/40">
+          <div className="gd-b-filtre">
             {(() => {
               const Icon = selected ? (iconMap[selected.icon] || Stethoscope) : HelpCircle;
-              return <Icon className="h-5 w-5 text-hippo-600 dark:text-hippo-400 shrink-0 mt-0.5 sm:mt-0" />;
+              return <Icon className="gd-ic" />;
             })()}
-            <span className="text-xs sm:text-sm font-medium text-hippo-700 dark:text-hippo-300 flex-1 min-w-0 leading-snug">
+            <span className="gd-b-filtre-txt">
               {selected
                 ? `Page filtrée pour : ${selected.label}`
                 : 'Aucun profil prédéfini — on construit ton cas pas à pas (page non filtrée).'}
             </span>
             <button
               onClick={reset}
-              className="flex items-center gap-1 text-xs text-hippo-500 hover:text-hippo-700 transition-colors shrink-0"
+              className="gd-b-effacer"
               aria-label="Effacer le profil"
             >
-              <X className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Effacer</span>
+              <X className="gd-ic" />
+              <span className="gd-ordi">Effacer</span>
             </button>
           </div>
         )}
 
         {/* Stepper */}
-        <div ref={cardRef} className="rounded-2xl bg-white/90 backdrop-blur border border-slate-200/60 shadow-lg overflow-hidden dark:bg-slate-800/80 dark:border-slate-700/60">
+        <div ref={cardRef} className="gd-b-fiche">
           {/* Mobile stepper compact (< sm) */}
-          <div className="sm:hidden border-b border-slate-100 dark:border-slate-700 px-4 py-3">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+          <div className="gd-b-fil-tel">
+            <div className="gd-b-fil-tel-tete">
+              <span className="gd-sur petit">
                 {/* I1 (audit final mai 2026) : dénominateur basé sur les étapes RÉELLEMENT visibles. */}
                 Étape {currentIndex + 1} / {visibleSteps.length}
               </span>
-              <span className="text-xs font-semibold text-hippo-600 dark:text-hippo-300 truncate ml-2">
+              <span className="gd-b-fil-tel-nom">
                 {stepMeta[currentStep].label}
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="gd-b-barres">
               {visibleSteps.map((s) => {
                 const status = stepStatus(s);
                 const isResultLocked = s === 'result' && !result;
@@ -480,11 +486,11 @@ export function BoussoleWizard() {
                     disabled={!clickable}
                     aria-label={`Étape ${stepMeta[s].num} : ${stepMeta[s].label}`}
                     aria-current={status === 'active' ? 'step' : undefined}
-                    className={`flex-1 h-1.5 rounded-full transition-colors ${
-                      status === 'active' ? 'bg-hippo-500'
-                      : status === 'done' ? 'bg-emerald-500'
-                      : 'bg-slate-200 dark:bg-slate-700'
-                    } ${clickable ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                    className={`gd-b-barre ${
+                      status === 'active' ? 'actif'
+                      : status === 'done' ? 'fait'
+                      : ''
+                    } ${clickable ? '' : 'verrou'}`}
                   />
                 );
               })}
@@ -492,7 +498,7 @@ export function BoussoleWizard() {
           </div>
 
           {/* Desktop stepper (≥ sm) */}
-          <div className="hidden sm:flex border-b border-slate-100 dark:border-slate-700 overflow-x-auto">
+          <div className="gd-b-fil">
             {visibleSteps.map((s) => {
               const meta = stepMeta[s];
               const status = stepStatus(s);
@@ -505,16 +511,16 @@ export function BoussoleWizard() {
                   onClick={() => clickable && goToStep(s)}
                   disabled={!clickable}
                   aria-current={status === 'active' ? 'step' : undefined}
-                  className={`flex-1 min-w-[110px] py-3 px-3 text-center text-xs font-medium transition-colors border-r last:border-r-0 border-slate-100 dark:border-slate-700 ${
-                    status === 'active' ? 'text-hippo-600 bg-hippo-50/60 dark:bg-hippo-900/20 dark:text-hippo-300'
-                    : status === 'done' ? 'text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50/40 dark:hover:bg-emerald-900/10'
-                    : 'text-muted-foreground'
-                  } ${clickable ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}
+                  className={`gd-b-pas ${
+                    status === 'active' ? 'actif'
+                    : status === 'done' ? 'fait'
+                    : ''
+                  } ${clickable ? '' : 'verrou'}`}
                 >
-                  <div className="flex items-center justify-center gap-1.5">
+                  <div className="gd-b-pas-nom">
                     {status === 'done'
-                      ? <Check className="h-3.5 w-3.5" />
-                      : <span className="w-4 h-4 rounded-full border border-current text-[9px] flex items-center justify-center">
+                      ? <Check className="gd-ic" />
+                      : <span className="gd-b-pas-num">
                           {/* D1 (audit final mai 2026) : numéro = position dans les étapes
                               RÉELLEMENT visibles (sinon « 1, 5, 6 » pour PM-001). */}
                           {visibleSteps.indexOf(s) + 1}
@@ -522,7 +528,7 @@ export function BoussoleWizard() {
                     <span>{meta.label}</span>
                   </div>
                   {status === 'done' && summary && (
-                    <div className="mt-0.5 text-[10px] text-muted-foreground truncate">{summary}</div>
+                    <div className="gd-b-pas-resume">{summary}</div>
                   )}
                 </button>
               );
@@ -560,32 +566,32 @@ export function BoussoleWizard() {
               .filter(Boolean);
             if (autoFilled.length === 0 && situationLabels.length === 0) return null;
             return (
-              <div className="px-4 py-2 bg-emerald-50/50 dark:bg-emerald-950/20 border-b border-emerald-100/70 dark:border-emerald-900/40 flex items-center gap-2 flex-wrap text-[11px]">
-                <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span className="text-emerald-700 dark:text-emerald-300 font-medium">Auto-rempli depuis ton profil :</span>
+              <div className="gd-b-auto">
+                <Check className="gd-ic" />
+                <span className="gd-b-auto-nom">Auto-rempli depuis ton profil :</span>
                 {autoFilled.map((a, i) => (
-                  <span key={a.key} className="flex items-center gap-1">
-                    <span className="px-1.5 py-0.5 rounded bg-white/80 dark:bg-slate-900/60 border border-emerald-200/70 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-medium">
+                  <span key={a.key} className="gd-b-auto-item">
+                    <span className="gd-b-auto-val">
                       {a.label}
                     </span>
-                    {i < autoFilled.length - 1 && <span className="text-emerald-700">·</span>}
+                    {i < autoFilled.length - 1 && <span>·</span>}
                   </span>
                 ))}
                 {situationLabels.length > 0 && (
                   <>
-                    {autoFilled.length > 0 && <span className="text-emerald-700">·</span>}
-                    <span className="text-emerald-700 dark:text-emerald-300 font-medium">Situations :</span>
+                    {autoFilled.length > 0 && <span>·</span>}
+                    <span className="gd-b-auto-nom">Situations :</span>
                     {situationLabels.map((lbl, i) => (
-                      <span key={`sit-${i}`} className="flex items-center gap-1">
-                        <span className="px-1.5 py-0.5 rounded bg-white/80 dark:bg-slate-900/60 border border-emerald-200/70 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300 font-medium">
+                      <span key={`sit-${i}`} className="gd-b-auto-item">
+                        <span className="gd-b-auto-val">
                           {lbl}
                         </span>
-                        {i < situationLabels.length - 1 && <span className="text-emerald-700">·</span>}
+                        {i < situationLabels.length - 1 && <span>·</span>}
                       </span>
                     ))}
                     <button
                       onClick={() => goToStep('situations')}
-                      className="ml-1 text-emerald-700 dark:text-emerald-300 underline underline-offset-2 hover:text-emerald-900 dark:hover:text-emerald-200"
+                      className="gd-b-auto-modifier"
                       aria-label="Modifier les situations pré-cochées"
                     >
                       Modifier
@@ -597,32 +603,32 @@ export function BoussoleWizard() {
           })()}
 
           {/* Step body */}
-          <div className="p-4 md:p-6">
+          <div className="gd-b-corps">
               {currentStep === 'profil' && (
                 <div key="step-profil">
-                  <h3 className="font-semibold text-foreground mb-3">Quel profil te ressemble le plus ?</h3>
+                  <h3 className="gd-etape-titre">Quel profil te ressemble le plus ?</h3>
 
                   {/* Search */}
-                  <div className="relative max-w-md mb-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <div className="gd-b-cherche">
+                    <Search className="gd-ic gd-rech-loupe" />
                     <Input
                       type="search"
                       value={query}
                       onChange={e => setQuery(e.target.value)}
                       placeholder="Trouve ton profil (ex : remplaçant, ZFU, SELARL…)"
-                      className="pl-10 pr-10 h-10 bg-white/90 dark:bg-slate-800/80"
+                      className="gd-b-saisie"
                     />
                     {query && (
-                      <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                        <X className="h-4 w-4" />
+                      <button onClick={() => setQuery('')} className="gd-rech-effacer">
+                        <X className="gd-ic" />
                       </button>
                     )}
                   </div>
 
                   {/* Chips */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                  <div className="gd-b-profils">
                     {filteredProfils.length === 0 ? (
-                      <p className="text-sm text-muted-foreground italic col-span-full text-center py-6">
+                      <p className="gd-b-vide">
                         Aucun profil trouvé pour « {query} »
                       </p>
                     ) : (
@@ -633,16 +639,12 @@ export function BoussoleWizard() {
                           <button
                             key={p.id}
                             onClick={() => handleSelectProfil(p.id)}
-                            className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-left transition-all ${
-                              isSel
-                                ? 'bg-hippo-50 border-hippo-300 shadow-sm dark:bg-hippo-900/30 dark:border-hippo-600'
-                                : 'bg-white/80 border-slate-200 hover:border-hippo-200 hover:bg-hippo-50/40 dark:bg-slate-800/50 dark:border-slate-700 dark:hover:border-hippo-700'
-                            }`}
+                            className={`gd-b-choix ${isSel ? 'choisi' : ''}`}
                           >
-                            <span className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isSel ? 'bg-hippo-500 text-white' : 'bg-hippo-50 text-hippo-600 dark:bg-hippo-900/40 dark:text-hippo-400'}`}>
-                              <Icon className="h-4 w-4" />
+                            <span className="gd-rond blanc">
+                              <Icon className="gd-ic" />
                             </span>
-                            <span className="text-xs font-medium text-foreground leading-tight">{p.label}</span>
+                            <span className="gd-b-choix-nom">{p.label}</span>
                           </button>
                         );
                       })
@@ -650,16 +652,12 @@ export function BoussoleWizard() {
                     {/* Option "Autre / Aucun ne me correspond" */}
                     <button
                       onClick={handleSelectOther}
-                      className={`sm:col-span-2 lg:col-span-3 flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 border-dashed text-left transition-all ${
-                        isOther
-                          ? 'bg-hippo-50 border-hippo-300 dark:bg-hippo-900/30 dark:border-hippo-600'
-                          : 'bg-white/60 border-slate-300 hover:border-hippo-300 hover:bg-hippo-50/30 dark:bg-slate-800/40 dark:border-slate-600 dark:hover:border-hippo-700'
-                      }`}
+                      className={`gd-b-choix autre ${isOther ? 'choisi' : ''}`}
                     >
-                      <span className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${isOther ? 'bg-hippo-500 text-white' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300'}`}>
-                        <HelpCircle className="h-4 w-4" />
+                      <span className="gd-rond blanc">
+                        <HelpCircle className="gd-ic" />
                       </span>
-                      <span className="text-xs font-medium text-foreground leading-tight">
+                      <span className="gd-b-choix-nom">
                         Aucun ne me correspond — guide-moi
                       </span>
                     </button>
@@ -673,8 +671,8 @@ export function BoussoleWizard() {
 
               {currentStep === 'regime' && (
                 <div key="step-regime">
-                  <h3 className="font-semibold text-foreground mb-4">Quel est ton régime fiscal ?</h3>
-                  <div className="grid gap-3">
+                  <h3 className="gd-etape-titre">Quel est ton régime fiscal ?</h3>
+                  <div className="gd-b-options">
                     {[
                       { v: 'micro-bnc' as Regime, label: 'Micro-BNC', desc: 'Abattement forfaitaire 34 %, pas de 2035', icon: FileText },
                       { v: 'reel' as Regime, label: 'BNC Réel', desc: 'Liasse 2035, charges déductibles au réel', icon: ArrowDownRight },
@@ -686,16 +684,14 @@ export function BoussoleWizard() {
                         <button
                           key={r.v}
                           onClick={() => handleSelectRegime(r.v)}
-                          className={`flex items-center gap-3 p-4 rounded-xl border text-left transition-all ${
-                            isSel ? 'border-hippo-400 bg-hippo-50 shadow-sm dark:bg-hippo-900/20 dark:border-hippo-600' : 'border-slate-200 hover:border-hippo-200 dark:border-slate-700'
-                          }`}
+                          className={`gd-b-choix grand ${isSel ? 'choisi' : ''}`}
                         >
-                          <div className="w-10 h-10 rounded-lg bg-hippo-50 flex items-center justify-center shrink-0 dark:bg-hippo-900/30">
-                            <Icon className="h-5 w-5 text-hippo-600 dark:text-hippo-400" />
+                          <div className="gd-rond blanc grand">
+                            <Icon className="gd-ic" />
                           </div>
                           <div>
-                            <p className="font-medium text-sm text-foreground">{r.label}</p>
-                            <p className="text-xs text-muted-foreground">{r.desc}</p>
+                            <p className="gd-b-choix-nom">{r.label}</p>
+                            <p className="gd-b-choix-desc">{r.desc}</p>
                           </div>
                         </button>
                       );
@@ -706,24 +702,24 @@ export function BoussoleWizard() {
 
               {currentStep === 'regimeSocial' && (
                 <div key="step-regimeSocial">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold text-foreground">Quel est ton régime social ?</h3>
+                  <div className="gd-b-titre-aide">
+                    <h3 className="gd-etape-titre">Quel est ton régime social ?</h3>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button className="text-muted-foreground hover:text-hippo-500 transition-colors" aria-label="Comment savoir ?">
-                            <Info className="h-4 w-4" />
+                          <button className="gd-b-aide" aria-label="Comment savoir ?">
+                            <Info className="gd-ic" />
                           </button>
                         </TooltipTrigger>
-                        <TooltipContent side="right" className="max-w-xs text-xs">
-                          <p className="font-medium mb-1">Comment savoir ?</p>
+                        <TooltipContent side="right" className="gd-bulle">
+                          <p className="gd-bulle-titre">Comment savoir ?</p>
                           <p>Vérifie sur ton espace URSSAF (rubrique « Mon affiliation »). Le RSPM est une option réservée aux remplaçants, ouverte jusqu'à 19 000 € d'honoraires par an. Tu le quittes au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 € ; sans cette option, ou dès que tu t'installes, tu es au PAMC.</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <p className="text-xs text-muted-foreground mb-4">Le régime social (URSSAF + CARMF) est <strong>indépendant</strong> du régime fiscal — c'est la confusion la plus fréquente.</p>
-                  <div className="grid gap-3">
+                  <p className="gd-b-note">Le régime social (URSSAF + CARMF) est <strong>indépendant</strong> du régime fiscal — c'est la confusion la plus fréquente.</p>
+                  <div className="gd-b-options">
                     {[
                       { v: 'rspm' as RegimeSocial, label: 'RSPM (Dispositif Simplifié)', desc: "Option des remplaçants, ouverte jusqu'à 19 000 €/an d'honoraires (l'année d'un dépassement, tu y restes). Pas de DSFU. Cotisations mensuelles ou trimestrielles, 13,5 % / 21,2 %.", icon: Wallet },
                       { v: 'pamc' as RegimeSocial, label: 'PAMC (Praticiens Conventionnés)', desc: 'Installé, collaborateur, ou remplaçant hors RSPM (jamais entré, ou sorti après un dépassement). DSFU obligatoire (DSCS, DSAV…).', icon: ShieldCheck },
@@ -734,16 +730,14 @@ export function BoussoleWizard() {
                         <button
                           key={r.v}
                           onClick={() => handleSelectRegimeSocial(r.v)}
-                          className={`flex items-center gap-3 p-4 rounded-xl border text-left transition-all ${
-                            isSel ? 'border-hippo-400 bg-hippo-50 shadow-sm dark:bg-hippo-900/20 dark:border-hippo-600' : 'border-slate-200 hover:border-hippo-200 dark:border-slate-700'
-                          }`}
+                          className={`gd-b-choix grand ${isSel ? 'choisi' : ''}`}
                         >
-                          <div className="w-10 h-10 rounded-lg bg-hippo-50 flex items-center justify-center shrink-0 dark:bg-hippo-900/30">
-                            <Icon className="h-5 w-5 text-hippo-600 dark:text-hippo-400" />
+                          <div className="gd-rond blanc grand">
+                            <Icon className="gd-ic" />
                           </div>
                           <div>
-                            <p className="font-medium text-sm text-foreground">{r.label}</p>
-                            <p className="text-xs text-muted-foreground">{r.desc}</p>
+                            <p className="gd-b-choix-nom">{r.label}</p>
+                            <p className="gd-b-choix-desc">{r.desc}</p>
                           </div>
                         </button>
                       );
@@ -754,8 +748,8 @@ export function BoussoleWizard() {
 
               {currentStep === 'type' && (
                 <div key="step-type">
-                  <h3 className="font-semibold text-foreground mb-4">Quel type d'activité ?</h3>
-                  <div className="grid gap-3">
+                  <h3 className="gd-etape-titre">Quel type d'activité ?</h3>
+                  <div className="gd-b-options">
                     {[
                       { v: 'remplacant' as TypeActivite, label: 'Remplaçant', desc: 'Tu touches des rétrocessions perçues, sans cabinet propre', icon: Car },
                       { v: 'installe' as TypeActivite, label: 'Installé', desc: 'Cabinet propre, patientèle, charges fixes', icon: Hospital },
@@ -769,16 +763,14 @@ export function BoussoleWizard() {
                         <button
                           key={r.v}
                           onClick={() => handleSelectType(r.v)}
-                          className={`flex items-center gap-3 p-4 rounded-xl border text-left transition-all ${
-                            isSel ? 'border-hippo-400 bg-hippo-50 shadow-sm dark:bg-hippo-900/20 dark:border-hippo-600' : 'border-slate-200 hover:border-hippo-200 dark:border-slate-700'
-                          }`}
+                          className={`gd-b-choix grand ${isSel ? 'choisi' : ''}`}
                         >
-                          <div className="w-10 h-10 rounded-lg bg-hippo-50 flex items-center justify-center shrink-0 dark:bg-hippo-900/30">
-                            <Icon className="h-5 w-5 text-hippo-600 dark:text-hippo-400" />
+                          <div className="gd-rond blanc grand">
+                            <Icon className="gd-ic" />
                           </div>
                           <div>
-                            <p className="font-medium text-sm text-foreground">{r.label}</p>
-                            <p className="text-xs text-muted-foreground">{r.desc}</p>
+                            <p className="gd-b-choix-nom">{r.label}</p>
+                            <p className="gd-b-choix-desc">{r.desc}</p>
                           </div>
                         </button>
                       );
@@ -789,8 +781,8 @@ export function BoussoleWizard() {
 
               {currentStep === 'situations' && (
                 <div key="step-situations">
-                  <h3 className="font-semibold text-foreground mb-1">Situations particulières ?</h3>
-                  <p className="text-xs text-muted-foreground mb-4">Coche tout ce qui s'applique — ou passe directement à la checklist.</p>
+                  <h3 className="gd-etape-titre">Situations particulières ?</h3>
+                  <p className="gd-b-note">Coche tout ce qui s'applique — ou passe directement à la checklist.</p>
                   {(() => {
                     // M5 : groupes pédagogiques (Exonérations / Vie & arrêts / Conventionnel / Charges & crédits)
                     type SitItem = { v: string; label: string; icon: React.ElementType };
@@ -862,11 +854,11 @@ export function BoussoleWizard() {
                       }] : []),
                     ];
                     return (
-                      <div className="space-y-4">
+                      <div className="gd-b-groupes">
                         {groups.filter(g => g.items.length > 0).map(g => (
                           <div key={g.titre}>
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-1.5">{g.titre}</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <p className="gd-sur petit">{g.titre}</p>
+                            <div className="gd-b-situations">
                               {g.items.map(s => {
                                 const Icon = s.icon;
                                 const isSel = situations.includes(s.v);
@@ -874,13 +866,12 @@ export function BoussoleWizard() {
                                   <button
                                     key={s.v}
                                     onClick={() => toggleSituation(s.v)}
-                                    className={`flex items-center gap-2 p-3 rounded-lg border text-left text-sm transition-all ${
-                                      isSel ? 'border-hippo-400 bg-hippo-50 dark:bg-hippo-900/20 dark:border-hippo-600' : 'border-slate-200 hover:border-slate-300 dark:border-slate-700'
-                                    }`}
+                                    aria-pressed={isSel}
+                                    className={`gd-b-choix coche ${isSel ? 'choisi' : ''}`}
                                   >
-                                    <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
-                                    <span className="text-xs font-medium text-foreground">{s.label}</span>
-                                    {isSel && <Check className="h-3.5 w-3.5 text-hippo-500 ml-auto" />}
+                                    <Icon className="gd-ic" />
+                                    <span className="gd-b-choix-nom">{s.label}</span>
+                                    {isSel && <Check className="gd-ic gd-b-coche" />}
                                   </button>
                                 );
                               })}
@@ -897,14 +888,14 @@ export function BoussoleWizard() {
                 <ChecklistResult result={grouped} />
               )}
             {/* Footer nav */}
-            <div className="flex items-center justify-between gap-2 mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
-              <Button variant="ghost" size="sm" onClick={reset} className="gap-1.5 px-2 sm:px-3 shrink-0" aria-label="Recommencer">
-                <RotateCcw className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Recommencer</span>
+            <div className="gd-b-pied">
+              <Button variant="ghost" size="sm" onClick={reset} className="gd-bouton nu" aria-label="Recommencer">
+                <RotateCcw className="gd-ic" /> <span className="gd-ordi">Recommencer</span>
               </Button>
-              <div className="flex items-center gap-2">
+              <div className="gd-b-pied-fin">
                 {currentIndex > 0 && (
-                  <Button variant="outline" size="sm" onClick={() => goToStep(visibleSteps[currentIndex - 1])} className="gap-1">
-                    <ChevronLeft className="h-3.5 w-3.5" /> Retour
+                  <Button variant="outline" size="sm" onClick={() => goToStep(visibleSteps[currentIndex - 1])} className="gd-bouton ligne">
+                    <ChevronLeft className="gd-ic" /> Retour
                   </Button>
                 )}
                 {/* F6 / Audit final wizard (mai 2026) — P2 : CTA "Continuer" factorisé.
@@ -922,8 +913,8 @@ export function BoussoleWizard() {
                   const cta = ctas[currentStep];
                   if (!cta || !cta.ready) return null;
                   return (
-                    <Button size="sm" onClick={() => goToStep(cta.target)} className="gap-1.5">
-                      {cta.label} <ChevronRight className="h-3.5 w-3.5" />
+                    <Button size="sm" onClick={() => goToStep(cta.target)} className="gd-bouton soleil">
+                      {cta.label} <ChevronRight className="gd-ic" />
                     </Button>
                   );
                 })()}

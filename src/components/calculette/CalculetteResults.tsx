@@ -58,7 +58,7 @@ function CaseRow({ code, label, value, hint, isRatio, highlight, badge }: CaseRo
             <TooltipTrigger asChild>
               <span className="text-sm text-foreground truncate cursor-help">{label}</span>
             </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">{hint}</TooltipContent>
+            <TooltipContent className="calc calc-bulle max-w-xs text-xs">{hint}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
         {badge && (
@@ -631,7 +631,7 @@ export function CalculetteResultsView({
                     <Info className="h-3 w-3" />
                   </span>
                 </TooltipTrigger>
-                <TooltipContent className="max-w-[260px] text-xs">
+                <TooltipContent className="calc calc-bulle max-w-[260px] text-xs">
                   Cotisations URSSAF en direct (DRI-PAMC : <strong>13,5&nbsp;%</strong> ≤ 19&nbsp;000&nbsp;€, puis <strong>21,2&nbsp;%</strong>) + CARMF&nbsp;RID. Pas de DSFU à remplir.
                 </TooltipContent>
               </Tooltip>

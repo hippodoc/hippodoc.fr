@@ -39,45 +39,45 @@ export const ChecklistResult: React.FC<Props> = ({ result }) => {
 
   // Pas de défilement au montage : c'est `BoussoleWizard` qui place la page à chaque
   // changement d'étape (un seul défilement, sous la barre de recherche). La marge de
-  // défilement de la racine ne sert plus à ce défilement ; elle reste dans la classe pour
-  // que la feuille de styles commune à toutes les pages garde son empreinte.
+  // défilement de la racine ne sert plus à ce défilement.
+  // DA 2026 (phase 5d, MIGRATION.md § 9.el) : classes `gd-cl-*` de src/styles/guide.css.
 
   return (
     <div
-      className="space-y-4 scroll-mt-32"
+      className="gd-cl"
       role="region"
       aria-live="polite"
       aria-label="Ta checklist personnalisée"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-foreground flex items-center gap-2">
-          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+      <div className="gd-cl-haut">
+        <h3 className="gd-etape-titre">
+          <CheckCircle2 className="gd-ic ok" />
           Ta checklist personnalisée
         </h3>
       </div>
 
       {/* HERO — En bref (+ conseils profil repliés) */}
-      <div className="rounded-xl bg-gradient-to-br from-hippo-50 via-white to-hippo-50/40 dark:from-hippo-950/30 dark:via-slate-900/40 dark:to-hippo-950/20 border border-hippo-200/60 dark:border-hippo-800/40 p-4 space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3">
-          <p className="text-xs font-medium text-hippo-700 dark:text-hippo-300 uppercase tracking-wide">En bref</p>
-          <div className="flex items-center gap-1.5 text-sm">
-            <FileStack className="h-4 w-4 text-hippo-600 dark:text-hippo-400" />
-            <span className="text-foreground">
-              <strong className="font-semibold">{resume.cases}</strong> {resume.cases > 1 ? 'cases' : 'case'}
-              {' '}sur <strong className="font-semibold">{resume.formulaires}</strong> {resume.formulaires > 1 ? 'formulaires' : 'formulaire'}
+      <div className="gd-cl-bref">
+        <div className="gd-cl-bref-tete">
+          <p className="gd-sur">En bref</p>
+          <div className="gd-cl-bref-compte">
+            <FileStack className="gd-ic" />
+            <span>
+              <strong>{resume.cases}</strong> {resume.cases > 1 ? 'cases' : 'case'}
+              {' '}sur <strong>{resume.formulaires}</strong> {resume.formulaires > 1 ? 'formulaires' : 'formulaire'}
             </span>
           </div>
         </div>
 
         {allCases.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="gd-cl-codes">
             {visibleChips.map(c => (
               <button
                 key={c.code}
                 onClick={() => scrollToCase(c.code)}
                 title={`${c.nom} — ${c.formulaire}`}
-                className="font-mono font-semibold text-[11px] tracking-tight px-2 py-0.5 rounded-md bg-white/80 dark:bg-slate-900/60 border border-hippo-200/70 dark:border-hippo-800/50 text-hippo-700 dark:text-hippo-300 hover:bg-hippo-100 dark:hover:bg-hippo-900/40 hover:border-hippo-400 transition-colors"
+                className="gd-cl-code"
               >
                 {c.code}
               </button>
@@ -85,7 +85,7 @@ export const ChecklistResult: React.FC<Props> = ({ result }) => {
             {hiddenCount > 0 && !showAllChips && (
               <button
                 onClick={() => setShowAllChips(true)}
-                className="text-[11px] px-2 py-0.5 rounded-md text-hippo-700 dark:text-hippo-300 hover:bg-hippo-100/60 dark:hover:bg-hippo-900/40 transition-colors"
+                className="gd-cl-code plus"
               >
                 +{hiddenCount}
               </button>
@@ -94,23 +94,23 @@ export const ChecklistResult: React.FC<Props> = ({ result }) => {
         )}
 
         {conseilsProfil && (
-          <details className="group border-t border-hippo-200/50 dark:border-hippo-800/40 pt-2.5">
-            <summary className="cursor-pointer list-none flex items-start sm:items-center justify-between gap-2 text-sm">
-              <span className="flex items-start sm:items-center gap-2 min-w-0 flex-1">
-                <UserCircle2 className="h-4 w-4 text-hippo-600 dark:text-hippo-400 shrink-0 mt-0.5 sm:mt-0" />
-                <span className="min-w-0 flex-1">
-                  <span className="font-medium text-foreground">Conseils pour ton profil</span>
-                  <span className="text-muted-foreground block sm:inline sm:ml-1 truncate">
-                    <span className="hidden sm:inline">· </span>{conseilsProfil.nom}
+          <details className="gd-cl-conseils">
+            <summary>
+              <span className="gd-cl-conseils-tete">
+                <UserCircle2 className="gd-ic" />
+                <span className="gd-cl-conseils-txt">
+                  <span className="gd-cl-nom">Conseils pour ton profil</span>
+                  <span className="gd-cl-conseils-profil">
+                    <span className="gd-cl-conseils-sep">· </span>{conseilsProfil.nom}
                   </span>
                 </span>
               </span>
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-open:rotate-90 shrink-0 mt-1 sm:mt-0" />
+              <ChevronRight className="gd-ic gd-chevron droite" />
             </summary>
-            <ul className="mt-2.5 space-y-1.5">
+            <ul className="gd-tirets large">
               {conseilsProfil.conseils.map((c, i) => (
-                <li key={i} className="text-sm text-foreground/90 flex items-start gap-2 leading-relaxed">
-                  <span className="text-hippo-500 dark:text-hippo-400 mt-1.5 shrink-0">•</span>
+                <li key={i}>
+                  <span className="gd-tiret">•</span>
                   <span>{formatInline(c)}</span>
                 </li>
               ))}
@@ -120,7 +120,7 @@ export const ChecklistResult: React.FC<Props> = ({ result }) => {
       </div>
 
       {/* Sections */}
-      <div className="space-y-2.5">
+      <div className="gd-pile">
         {sections.map((s, i) => (
           <ChecklistSection key={s.id} section={s} index={i} defaultOpen={isDefaultOpen(i)} />
         ))}
@@ -128,18 +128,18 @@ export const ChecklistResult: React.FC<Props> = ({ result }) => {
 
       {/* Règles d'or condensées */}
       {reglesPertinentes.length > 0 && (
-        <details className="group rounded-lg border border-slate-200/70 dark:border-slate-700/70 bg-slate-50/60 dark:bg-slate-900/40 px-3.5 py-2.5">
-          <summary className="cursor-pointer text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center justify-between list-none">
+        <details className="gd-cl-regles">
+          <summary>
             <span>Règles d'or à retenir ({reglesPertinentes.length})</span>
-            <ChevronRight className="h-3.5 w-3.5 transition-transform group-open:rotate-90" />
+            <ChevronRight className="gd-ic gd-chevron droite" />
           </summary>
-          <ul className="mt-2.5 space-y-1.5">
+          <ul className="gd-tirets">
             {reglesPertinentes.map(rId => {
               const r = reglesOr.find(x => x.id === rId);
               if (!r) return null;
               return (
-                <li key={rId} className="text-xs text-muted-foreground flex items-start gap-2">
-                  <CheckCircle2 className="h-3 w-3 text-emerald-500 mt-0.5 shrink-0" />
+                <li key={rId}>
+                  <CheckCircle2 className="gd-ic ok" />
                   <span>{r.titre}</span>
                 </li>
               );
@@ -149,20 +149,20 @@ export const ChecklistResult: React.FC<Props> = ({ result }) => {
       )}
 
       {/* CTA */}
-      <div className="flex flex-wrap gap-2 pt-1">
+      <div className="gd-cl-suite">
         <Button
           size="sm"
           onClick={() => document.getElementById('cases')?.scrollIntoView({ behavior: 'smooth' })}
-          className="gap-1.5"
+          className="gd-bouton encre"
         >
-          <span className="sm:hidden">Voir mes cases</span>
-          <span className="hidden sm:inline">Voir mes cases en détail dans la page</span>
-          <ChevronRight className="h-3.5 w-3.5" />
+          <span className="gd-tel">Voir mes cases</span>
+          <span className="gd-ordi">Voir mes cases en détail dans la page</span>
+          <ChevronRight className="gd-ic" />
         </Button>
       </div>
 
       {/* Disclaimer */}
-      <p className="text-[11px] text-muted-foreground italic leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-3">
+      <p className="gd-cl-avis">
         Cette checklist est indicative et fondée sur les règles fiscales en vigueur. Elle ne remplace pas l'avis de ton AGA, expert-comptable ou des services fiscaux. En cas de doute, fais-toi accompagner.
       </p>
     </div>

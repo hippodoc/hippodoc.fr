@@ -11,6 +11,10 @@
  * n'est recopié à la main — si les données changent, la page suit.
  *
  * Le hub garde tout : cette page est additive (MIGRATION.md § 9.ap).
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : seul l'habillage a changé. Les
+ * sections sont posées sur des feuilles (`band`, sable puis ciel) ; styles dans
+ * src/styles/guide.css.
  */
 import GuideSousPage from '@/layouts/GuideSousPage.astro';
 import { GuideCaseGrid, GuideQuestionList, GuideConseils } from '@/components/guide/GuideSubset';
@@ -61,7 +65,7 @@ if (manquants.length) {
   breadcrumb="Médecin remplaçant"
   faq={faq.map((q) => ({ question: q.question, reponse: q.reponse }))}
 >
-  <div slot="chapo" class="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
+  <div slot="chapo" class="gd-chapo">
     <p>{profil.description}</p>
     <p>
       Un remplaçant remplit <strong>deux déclarations qui ne se ressemblent pas</strong> :
@@ -74,84 +78,91 @@ if (manquants.length) {
       Cette page réunit les <strong>{CASE_CODES.length} cases</strong> qui te concernent et
       les <strong>{QUESTION_IDS.length} questions</strong> qu'on nous pose le plus souvent
       sur ce statut. Si tu ne sais pas encore si tu relèves du RSPM ou du PAMC, commence par
-      la <a href="/guide-declarations" class="text-hippo-600 underline underline-offset-2 hover:text-hippo-800 dark:text-hippo-400">boussole du guide</a>,
+      la <a href="/guide-declarations" class="lien">boussole du guide</a>,
       qui te situe en trois questions.
     </p>
   </div>
 
-  <section class="max-w-5xl mx-auto px-4 mt-12">
-    <h2 class="text-2xl font-bold text-foreground">Les trois chiffres à ne pas confondre</h2>
-    <p class="mt-1 mb-5 text-sm text-muted-foreground">
-      Un remplaçant manipule trois montants différents pour la même année d'activité. Les
-      intervertir est l'erreur de première déclaration par excellence.
-    </p>
-    <div class="grid gap-4 md:grid-cols-3">
-      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
-        <p class="font-mono text-xs font-bold uppercase tracking-wide text-hippo-600 dark:text-hippo-400">1 · Le brut</p>
-        <p class="mt-2 font-semibold text-foreground">Ce que tu as encaissé</p>
-        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-          La somme des rétrocessions reçues des titulaires. C'est ce chiffre que veut
-          l'URSSAF, en DSCS et DSAV — et c'est lui, pas ton bénéfice, qui sert d'assiette
-          à tes cotisations.
-        </p>
+  <div class="band da-bloc">
+    <section class="wrap gd-sec">
+      <h2 class="gd-h2">Les trois chiffres à ne pas confondre</h2>
+      <p class="gd-sous">
+        Un remplaçant manipule trois montants différents pour la même année d'activité. Les
+        intervertir est l'erreur de première déclaration par excellence.
+      </p>
+      <div class="gd-fiches g3">
+        <div class="gd-fiche">
+          <p class="gd-sur">1 · Le brut</p>
+          <p class="gd-fiche-nom">Ce que tu as encaissé</p>
+          <p>
+            La somme des rétrocessions reçues des titulaires. C'est ce chiffre que veut
+            l'URSSAF, en DSCS et DSAV — et c'est lui, pas ton bénéfice, qui sert d'assiette
+            à tes cotisations.
+          </p>
+        </div>
+        <div class="gd-fiche">
+          <p class="gd-sur">2 · Le bénéfice</p>
+          <p class="gd-fiche-nom">Ce que retient le fisc</p>
+          <p>
+            En micro-BNC, il n'existe pas : tu déclares le brut en 5HQ et l'abattement de 34 %
+            est appliqué pour toi. Au réel, c'est le résultat de ta 2035, reporté en 5QC.
+          </p>
+        </div>
+        {/* « Ce qui te reste » : la seule idée que porte le jaune dans la DA. */}
+        <div class="gd-fiche soleil">
+          <p class="gd-sur">3 · Le net</p>
+          <p class="gd-fiche-nom">Ce qui te reste</p>
+          <p>
+            Une fois cotisations et impôt payés. Aucune case ne le demande, mais c'est le seul
+            qui compte pour toi. Le <a href="/simulateur" class="lien">simulateur</a> le calcule à partir du premier.
+          </p>
+        </div>
       </div>
-      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
-        <p class="font-mono text-xs font-bold uppercase tracking-wide text-hippo-600 dark:text-hippo-400">2 · Le bénéfice</p>
-        <p class="mt-2 font-semibold text-foreground">Ce que retient le fisc</p>
-        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-          En micro-BNC, il n'existe pas : tu déclares le brut en 5HQ et l'abattement de 34 %
-          est appliqué pour toi. Au réel, c'est le résultat de ta 2035, reporté en 5QC.
-        </p>
-      </div>
-      <div class="rounded-xl border border-slate-200/70 bg-white/70 p-5 dark:border-slate-700/60 dark:bg-slate-800/40">
-        <p class="font-mono text-xs font-bold uppercase tracking-wide text-hippo-600 dark:text-hippo-400">3 · Le net</p>
-        <p class="mt-2 font-semibold text-foreground">Ce qui te reste</p>
-        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Une fois cotisations et impôt payés. Aucune case ne le demande, mais c'est le seul
-          qui compte pour toi. Le <a href="/simulateur" class="text-hippo-600 underline underline-offset-2 hover:text-hippo-800 dark:text-hippo-400">simulateur</a> le calcule à partir du premier.
-        </p>
-      </div>
-    </div>
-    <p class="mt-5 max-w-3xl text-[15px] leading-relaxed text-muted-foreground">
-      La conséquence pratique : un remplaçant qui déclare son bénéfice là où l'URSSAF attend
-      son brut sous-déclare son assiette sociale, et s'expose à une régularisation l'année
-      suivante — au moment précis où il paie déjà les cotisations de l'année en cours.
-    </p>
-  </section>
+      <p class="gd-suite">
+        La conséquence pratique : un remplaçant qui déclare son bénéfice là où l'URSSAF attend
+        son brut sous-déclare son assiette sociale, et s'expose à une régularisation l'année
+        suivante — au moment précis où il paie déjà les cotisations de l'année en cours.
+      </p>
+    </section>
 
-  <section class="max-w-5xl mx-auto px-4 mt-12">
-    <h2 class="text-2xl font-bold text-foreground">Ce qu'il faut retenir</h2>
-    <p class="mt-1 mb-5 text-sm text-muted-foreground">
-      Les points qui décident du reste. Chaque référence renvoie à la fiche
-      correspondante du guide.
-    </p>
-    <GuideConseils subset={SUBSET} conseils={profil.conseilsCles} />
-  </section>
+    <section class="wrap gd-sec">
+      <h2 class="gd-h2">Ce qu'il faut retenir</h2>
+      <p class="gd-sous">
+        Les points qui décident du reste. Chaque référence renvoie à la fiche
+        correspondante du guide.
+      </p>
+      <GuideConseils subset={SUBSET} conseils={profil.conseilsCles} />
+    </section>
+  </div>
 
-  <section class="max-w-5xl mx-auto px-4 mt-12">
-    <h2 class="text-2xl font-bold text-foreground">Côté impôts</h2>
-    <p class="mt-1 mb-5 text-sm text-muted-foreground">
-      Micro-BNC ou réel : tu remplis 5HQ ou 5QC, jamais les deux. Au réel s'ajoutent
-      la 2035 et la cotisation IJ à ne pas oublier.
-    </p>
-    <GuideCaseGrid subset={SUBSET} codes={CASES_FISCAL} />
-  </section>
+  <div class="band air da-bloc">
+    <section class="wrap gd-sec">
+      <h2 class="gd-h2">Côté impôts</h2>
+      <p class="gd-sous">
+        Micro-BNC ou réel : tu remplis 5HQ ou 5QC, jamais les deux. Au réel s'ajoutent
+        la 2035 et la cotisation IJ à ne pas oublier.
+      </p>
+      <GuideCaseGrid subset={SUBSET} codes={CASES_FISCAL} />
+    </section>
 
-  <section class="max-w-5xl mx-auto px-4 mt-12">
-    <h2 class="text-2xl font-bold text-foreground">Côté cotisations</h2>
-    <p class="mt-1 mb-5 text-sm text-muted-foreground">
-      Sur la DSFU, on repart du chiffre d'affaires brut — pas du bénéfice. Le détail
-      des 15 cases est sur la <a href="/guide-declarations/dsfu-pamc" class="text-hippo-600 underline underline-offset-2 hover:text-hippo-800 dark:text-hippo-400">page DSFU</a>.
-    </p>
-    <GuideCaseGrid subset={SUBSET} codes={CASES_SOCIAL} />
-  </section>
+    <section class="wrap gd-sec">
+      <h2 class="gd-h2">Côté cotisations</h2>
+      <p class="gd-sous">
+        Sur la DSFU, on repart du chiffre d'affaires brut — pas du bénéfice. Le détail
+        des 15 cases est sur la <a href="/guide-declarations/dsfu-pamc" class="lien">page DSFU</a>.
+      </p>
+      <GuideCaseGrid subset={SUBSET} codes={CASES_SOCIAL} />
+    </section>
+  </div>
 
-  <section id="questions" class="max-w-5xl mx-auto px-4 mt-16 scroll-mt-20">
-    <h2 class="text-2xl font-bold text-foreground">Questions fréquentes des remplaçants</h2>
-    <p class="mt-1 mb-5 text-sm text-muted-foreground">
-      Régime fiscal, passage RSPM → PAMC, première déclaration mixte interne + remplaçant,
-      IJ pré-remplies de travers.
-    </p>
-    <GuideQuestionList subset={SUBSET} ids={QUESTION_IDS} />
-  </section>
+  <div class="band da-bloc">
+    <section id="questions" class="wrap gd-sec">
+      <h2 class="gd-h2">Questions fréquentes des remplaçants</h2>
+      <p class="gd-sous">
+        Régime fiscal, passage RSPM → PAMC, première déclaration mixte interne + remplaçant,
+        IJ pré-remplies de travers.
+      </p>
+      <GuideQuestionList subset={SUBSET} ids={QUESTION_IDS} />
+    </section>
+  </div>
 </GuideSousPage>

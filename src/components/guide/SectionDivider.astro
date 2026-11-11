@@ -3,6 +3,11 @@
  * Portage verbatim (markup + classes) de SectionDivider.tsx (SPA source).
  * Séparateur de zone : pastille numérotée + titre + hint. 4 zones :
  * 1·Commence ici · 2·Référence rapide · 3·Pour aller plus loin · 4·Outils pratiques.
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : c'est l'en-tête d'une feuille (une
+ * feuille par étape). Le numéro dans une pastille encre, le titre de l'étape en
+ * grand. Mêmes éléments, même ordre ; l'indice reste écrit deux fois (sous le
+ * titre sur téléphone, à droite au-delà), un seul est affiché.
  */
 interface Props {
   step: 1 | 2 | 3 | 4;
@@ -15,26 +20,26 @@ interface Props {
 const { step, label, hint, compact } = Astro.props;
 ---
 
-<div class={`max-w-5xl mx-auto px-4 mb-2 ${compact ? 'mt-12' : 'mt-20'}`}>
-  <div class="flex items-end gap-3 pb-3 border-b-2 border-hippo-100 dark:border-hippo-900/60">
-    <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-hippo-500 to-hippo-600 text-white text-sm font-bold shadow-md shadow-hippo-400/30 shrink-0">
+<div class:list={['wrap', 'gd-etape', compact && 'compact']}>
+  <div class="gd-etape-in">
+    <span class="gd-etape-num">
       {step}
     </span>
-    <div class="flex-1 min-w-0">
-      <p class="text-[10px] font-semibold uppercase tracking-widest text-hippo-600 dark:text-hippo-400">
+    <div class="gd-etape-txt">
+      <p class="gd-sur">
         Étape {step} / 4
       </p>
-      <h2 class="text-lg sm:text-xl font-bold text-foreground leading-tight">
+      <h2>
         {label}
       </h2>
       {hint && (
-        <p class="sm:hidden mt-0.5 text-[11px] text-muted-foreground">
+        <p class="gd-etape-indice bas">
           {hint}
         </p>
       )}
     </div>
     {hint && (
-      <span class="hidden sm:inline text-[11px] text-muted-foreground pb-1">
+      <span class="gd-etape-indice cote">
         {hint}
       </span>
     )}

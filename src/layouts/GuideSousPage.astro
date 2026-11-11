@@ -10,7 +10,15 @@
  * Le fil d'Ariane visible double le `BreadcrumbList` : Search Console suit déjà
  * les fils d'Ariane du site (rapport « Fils d'Ariane »), et un guide à deux
  * niveaux sans fil d'Ariane laisse le lecteur sans retour vers la référence.
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : seul l'habillage a changé. Page
+ * entièrement dans la DA (fond `da-fond`, en-tête « flottante ») : le ciel
+ * (fil d'Ariane, titre, signature, chapô), les feuilles que chaque page pose
+ * dans son contenu (`<div class="band da-bloc">`, sable puis ciel), et la fin
+ * (les articles, « Le guide complet », l'avertissement, le soleil sur l'eau
+ * du pied). Styles dans src/styles/guide.css, partagés avec le hub.
  */
+import '@/styles/guide.css';
 import BlogReadMore from '@/components/BlogReadMore.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
@@ -88,77 +96,98 @@ const dateLisible = GUIDE_DECLARATIONS_LAST_UPDATED.toLocaleDateString('fr-FR', 
   year: 'numeric',
 });
 
+/* Le titre, découpé pour l'affichage seulement : le mot qui précède « : » reste
+   sur sa ligne (sur téléphone, le « : » partait seul au début de la suivante).
+   Le texte du <h1> est le même, au caractère près. */
+const h1Morceaux = h1.split(/(\S+ [:?!])/);
+
 const jsonLd = faqSchema
   ? [breadcrumbSchema, webPageSchema, faqSchema]
   : [breadcrumbSchema, webPageSchema];
 ---
 
-<BaseLayout title={title} description={description} path={path} ogType="article" jsonLd={jsonLd}>
-  <div class="min-h-screen bg-white dark:bg-slate-950">
-    <Header />
+<BaseLayout title={title} description={description} path={path} ogType="article" jsonLd={jsonLd} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
 
-    <main class="pb-20">
-      <div class="max-w-5xl mx-auto px-4 pt-10 md:pt-14">
-        <nav aria-label="Fil d'Ariane" class="mb-6">
-          <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-            <li><a href="/" class="hover:text-hippo-600 hover:underline">Accueil</a></li>
+  <main class="gd gd-fille">
+    <div class="gd-tete da-bloc">
+      <div class="wrap">
+        <nav aria-label="Fil d'Ariane" class="gd-ariane">
+          <ol>
+            <li><a href="/">Accueil</a></li>
             <li aria-hidden="true">›</li>
-            <li><a href="/guide-declarations" class="hover:text-hippo-600 hover:underline">Guide Déclarations</a></li>
+            <li><a href="/guide-declarations">Guide Déclarations</a></li>
             <li aria-hidden="true">›</li>
-            <li class="text-foreground font-medium" aria-current="page">{breadcrumb}</li>
+            <li class="ici" aria-current="page">{breadcrumb}</li>
           </ol>
         </nav>
 
-        <h1 class="text-3xl md:text-4xl font-bold leading-tight text-foreground">{h1}</h1>
+        <h1 class="aff">{h1Morceaux.map((m, i) => (i % 2 ? <span class="gd-num">{m}</span> : m))}</h1>
 
-        <p class="mt-3 text-sm text-muted-foreground">
-          Mis à jour le {dateLisible} · révisé par Dr. Ryan Goburdhun,
-          <span class="whitespace-nowrap">médecin remplaçant</span>
+        {/* `{' '}` : un retour à la ligne collé à une balise en ligne fait disparaître
+            l'espace au rendu (la page a affiché « Goburdhun,médecin » et « guide :DSFU »
+            jusqu'à § 9.el ; même correction de rendu qu'en § 9.ei, aucun mot ne change). */}
+        <p class="gd-signe">
+          Mis à jour le {dateLisible} · révisé par Dr. Ryan Goburdhun,{' '}
+          <span class="gd-num">médecin remplaçant</span>
         </p>
 
         <slot name="chapo" />
       </div>
+    </div>
 
-      <slot />
+    <slot />
 
-      <div class="max-w-5xl mx-auto px-4 mt-16">
+    <div class="gd-fin da-bloc">
+      <div class="wrap gd-fin-in">
         {articles.length > 0 && (
-          <div class="mb-8">
+          <div class="gd-lire">
             <BlogReadMore slugs={articles} emplacement={path.split('/').pop() ?? 'guide'} />
           </div>
         )}
-        <div class="rounded-2xl border border-hippo-200/60 bg-hippo-50/50 p-6 dark:border-hippo-800/50 dark:bg-hippo-950/20">
-          <h2 class="text-lg font-bold text-foreground">Le guide complet</h2>
-          <p class="mt-2 text-sm text-muted-foreground">
+        <div class="gd-complet">
+          <h2>Le guide complet</h2>
+          <p>
             Cette page traite un cas précis. Le guide des déclarations réunit la totalité de
             la matière : les 35 cases de formulaires, 49 questions fréquentes, 85 termes de
             glossaire, la boussole qui identifie ton profil et le calendrier annuel.
           </p>
-          <p class="mt-4">
+          <p class="gd-complet-bouton">
             <a
               href="/guide-declarations"
-              class="inline-flex items-center gap-1.5 rounded-lg bg-hippo-600 px-4 py-2 text-sm font-semibold text-white no-underline hover:bg-hippo-700"
+              class="btn btn-brand"
             >
               Ouvrir le guide des déclarations
             </a>
           </p>
-          <p class="mt-4 text-sm text-muted-foreground">
-            Autres pages du guide :
-            <a href="/guide-declarations/dsfu-pamc" class="text-hippo-600 hover:underline dark:text-hippo-400">DSFU (ex DS-PAMC)</a> ·
-            <a href="/guide-declarations/2042-c-pro" class="text-hippo-600 hover:underline dark:text-hippo-400">2042-C-PRO</a> ·
-            <a href="/guide-declarations/medecin-remplacant" class="text-hippo-600 hover:underline dark:text-hippo-400">Médecin remplaçant</a> ·
-            <a href="/guide-declarations/calculette" class="text-hippo-600 hover:underline dark:text-hippo-400">HippoCalc</a>
+          <p class="gd-complet-autres">
+            Autres pages du guide :{' '}
+            <a href="/guide-declarations/dsfu-pamc">DSFU (ex DS-PAMC)</a> ·{' '}
+            <a href="/guide-declarations/2042-c-pro">2042-C-PRO</a> ·{' '}
+            <a href="/guide-declarations/medecin-remplacant">Médecin remplaçant</a> ·{' '}
+            <a href="/guide-declarations/calculette">HippoCalc</a>
           </p>
         </div>
 
-        <p class="mt-8 text-xs leading-relaxed text-muted-foreground">
+        <p class="gd-avis-p">
           Contenu informatif, à jour des règles connues au {dateLisible}. Il ne remplace pas
           l'avis d'un expert-comptable ou de ton AGA, et n'engage ni l'administration fiscale
           ni l'URSSAF. En cas de doute sur ta situation, fais vérifier ta déclaration.
         </p>
       </div>
-    </main>
+      {/* Décor : le soleil de l'accueil se lève sur l'eau du pied de page. */}
+      <div class="gd-horizon" aria-hidden="true">
+        <span class="gd-soleil"></span>
+        <span class="gd-vague v3"></span>
+        <span class="gd-vague v4"></span>
+      </div>
+    </div>
+  </main>
 
-    <Footer />
-  </div>
+  <Footer />
 </BaseLayout>

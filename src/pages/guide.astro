@@ -12,6 +12,14 @@
  * (vercel.json) : c'est cette page, mesurée et reliée au reste du site, qui doit
  * se positionner, pas le fichier nu. Voir MIGRATION.md § 9.di.
  *
+ * Habillée dans la DA 2026 en phase 5d (MIGRATION.md § 9.em) : seul l'habillage
+ * a changé. Textes, titres, liens, images, ordre des blocs, JSON-LD, `data-ph`,
+ * `data-guide-download` et `data-guide-share` sont ceux d'avant, au caractère près
+ * (période d'observation SEO). Un bloc « ciel » (titre, bouton, couverture), trois
+ * feuilles (les règles, le sommaire, l'aperçu), puis la fin : l'auteur, le second
+ * bouton sur l'eau profonde, l'appel au simulateur, et le soleil sur l'eau du
+ * pied. Aucune classe utilitaire : tout est dans le <style> de la page.
+ *
  * Mesure : `guide_remplacant_viewed` / `guide_remplacant_downloaded`
  * (page-analytics.ts), via `[data-guide-download]`. Zéro JS propre à la page.
  */
@@ -113,10 +121,14 @@ const guideSchema = {
   audience: { '@type': 'Audience', audienceType: 'Internes en médecine et jeunes médecins remplaçants' },
 };
 
-const boutonClasses =
-  'inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-6 text-xl font-bold text-white shadow-lg transition-colors hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:w-auto';
+/* Les flèches et les points de suspension du menu d'Instagram ne sont pas dans
+   la police : dessinés, le caractère reste dans le texte, masqué à l'œil. */
 const iconeTelechargement =
   '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>';
+const flecheDroite =
+  '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+const troisPoints =
+  '<svg class="pts" width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="9" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="14.5" cy="9" r="1.6"/></svg>';
 ---
 
 <BaseLayout
@@ -126,8 +138,14 @@ const iconeTelechargement =
   ogImage="/guide/partage.jpg"
   ogImageAlt={`Le guide du remplaçant ${edition}, PDF gratuit de 26 pages par Hippodoc`}
   jsonLd={[guideSchema]}
+  bodyClass="da-fond"
 >
-  <Header />
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header variante="flottante" />
 
   <!-- Pas de bulle de chat sur mobile ici : elle masquait la droite des cartes
        (56 px sur 320) pendant toute la lecture, et ces visiteurs arrivent d'un DM
@@ -142,27 +160,23 @@ const iconeTelechargement =
   </style>
 
   <main>
-    <!-- Hero : sur mobile, titre → bouton → couverture (le bouton tient dans le premier écran).
-         Remonté sous l'en-tête (80 px à toutes les largeurs depuis la phase 5a, § 9.ed ;
-         72 puis 76 px avant) : la pastille du menu flotte sur le bleu au lieu de laisser
-         une bande claire entre les deux (§ 9.dm). Le padding haut compense exactement la
-         remontée : le contenu garde ses 32 px (64 px à partir de md) sous l'en-tête. -->
-    <section class="relative -mt-20 overflow-hidden bg-gradient-to-br from-hippo-700 via-hippo-800 to-hippo-900 text-white">
-      <div class="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-hippo-400/25 blur-3xl"></div>
-      <div class="container relative mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-28 md:grid-cols-[1fr_auto] md:gap-12 md:pb-16 md:pt-36">
-        <div>
-          <p class="mb-3 inline-block rounded-2xl border border-white/30 bg-white/10 px-3 py-1 text-sm font-semibold">
-            <span class="whitespace-nowrap">PDF gratuit</span>&nbsp;· <span class="whitespace-nowrap">{pages} pages</span>&nbsp;·{' '}
-            <span class="whitespace-nowrap">Édition {edition}</span>
+    <!-- Le ciel : sur mobile, titre → bouton → couverture (le bouton tient dans le
+         premier écran). À partir de 768 px, la couverture est à droite du titre. -->
+    <section class="tete da-bloc">
+      <div class="wrap haut">
+        <div class="intro">
+          <p class="marque">
+            <span class="num">PDF gratuit</span>&nbsp;· <span class="num">{pages} pages</span>&nbsp;·{' '}
+            <span class="num">Édition {edition}</span>
           </p>
-          <h1 class="text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-            Le guide du médecin remplaçant <span class="whitespace-nowrap text-hippo-200">{edition}</span>
+          <h1 class="aff">
+            Le guide du médecin remplaçant <span class="num eau">{edition}</span>
           </h1>
-          <p class="mt-4 max-w-xl text-lg leading-relaxed text-hippo-100">
+          <p class="lead">
             Licence, contrat, URSSAF, CARMF, impôts : tout pour démarrer tes remplas sereinement,{' '}
-            <strong class="text-white">et savoir ce qu'il te reste vraiment.</strong>
+            <strong>et savoir ce qu'il te reste vraiment.</strong>
           </p>
-          <div class="mt-6">
+          <div class="action">
             <a
               href={pdf}
               target="_blank"
@@ -170,20 +184,20 @@ const iconeTelechargement =
               type="application/pdf"
               data-guide-download="hero"
               data-ph="guide_remplacant_download_hero"
-              class={boutonClasses}
+              class="btn btn-brand"
             >
               <Fragment set:html={iconeTelechargement} />
               Télécharger le guide
             </a>
-            <p class="mt-3 text-sm text-hippo-100">Sans inscription · Médecine générale et spécialités</p>
-            <p class="mt-1 text-sm text-hippo-100">
-              Rien ne s'ouvre ? Touche <span aria-hidden="true">⋯</span><span class="sr-only">le menu</span> puis
+            <p class="note">Sans inscription · Médecine générale et spécialités</p>
+            <p class="note">
+              Rien ne s'ouvre ? Touche <span aria-hidden="true" class="sr">⋯</span><Fragment set:html={troisPoints} /><span class="sr">le menu</span> puis
               « Ouvrir dans le navigateur ».
             </p>
           </div>
         </div>
 
-        <div class="mx-auto w-full max-w-[18rem] md:max-w-xs">
+        <div class="couverture">
           <a href={pdf} target="_blank" rel="noopener" data-guide-download="couverture" tabindex="-1" aria-hidden="true">
             <Image
               src={couverture}
@@ -192,33 +206,34 @@ const iconeTelechargement =
               sizes="(min-width: 768px) 320px, 288px"
               loading="eager"
               fetchpriority="high"
-              class="h-auto w-full rotate-2 rounded-xl shadow-2xl ring-1 ring-white/15"
             />
           </a>
         </div>
       </div>
     </section>
 
-    <!-- L'essentiel en 6 règles (guide p. 3) -->
-    <section class="bg-white py-12 md:py-16" aria-labelledby="regles">
-      <div class="container mx-auto max-w-3xl px-4">
-        <p class="text-sm font-semibold uppercase tracking-wide text-hippo-600">Si tu ne lis qu'une page</p>
-        <h2 id="regles" class="mt-1 text-2xl font-bold text-hippo-800 md:text-3xl">L'essentiel en 6 règles</h2>
-        <ol class="mt-6 space-y-3">
+    <!-- L'essentiel en 6 règles (guide p. 3) : une feuille sable, six fiches -->
+    <section class="band da-bloc" aria-labelledby="regles">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="sur">Si tu ne lis qu'une page</p>
+          <h2 id="regles">L'essentiel en 6 règles</h2>
+        </div>
+        <ol class="regles" role="list">
           {regles.map((r, i) => (
-            <li class="flex gap-4 rounded-2xl border border-hippo-100 bg-white p-4 shadow-sm">
-              <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-hippo-600 font-bold text-white">
+            <li class="regle">
+              <span class="n">
                 {i + 1}
               </span>
-              <span>
-                <strong class="block text-foreground" set:html={r.titre} />
-                <span class="mt-1 block text-sm leading-relaxed text-muted-foreground" set:html={r.texte} />
+              <span class="regle-in">
+                <strong set:html={r.titre} />
+                <span class="regle-p" set:html={r.texte} />
               </span>
             </li>
           ))}
         </ol>
         <!-- Relance au pic d'intérêt : après les règles, le détail est dans le PDF. -->
-        <p class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+        <p class="relance">
           Le détail et les chiffres 2026 de chaque règle sont dans le guide.
           <a
             href={pdf}
@@ -227,52 +242,58 @@ const iconeTelechargement =
             type="application/pdf"
             data-guide-download="regles"
             data-ph="guide_remplacant_download_regles"
-            class="inline-flex min-h-11 items-center gap-1 font-semibold text-hippo-600 underline underline-offset-2 hover:text-hippo-800"
+            class="lien fl"
           >
-            Télécharger le guide <span aria-hidden="true">→</span>
+            Télécharger le guide <span aria-hidden="true" class="sr">→</span><Fragment set:html={flecheDroite} />
           </a>
         </p>
       </div>
     </section>
 
-    <!-- Sommaire -->
-    <section class="bg-hippo-50/50 py-12 md:py-16" aria-labelledby="sommaire">
-      <div class="container mx-auto max-w-3xl px-4">
-        <h2 id="sommaire" class="text-2xl font-bold text-hippo-800 md:text-3xl">Ce que tu vas trouver dedans</h2>
-        <p class="mt-3 text-muted-foreground">
-          Le guide qu'on aurait aimé lire avant notre premier rempla. Licence en poche, tout arrive en même temps :
-          l'Ordre, l'URSSAF, la CARMF, les impôts, et la question que personne ne pose clairement : combien il te reste
-          vraiment ? Neuf chapitres, dans l'ordre où tu en auras besoin.
-        </p>
-        <ol class="mt-6 divide-y divide-hippo-100 rounded-2xl border border-hippo-100 bg-white">
-          {sommaire.map((c) => (
-            <li class="flex gap-4 px-4 py-3">
-              <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-hippo-600 text-sm font-bold text-white">
-                {c.n}
-              </span>
-              <span>
-                <span class="block font-semibold text-foreground">{c.titre}</span>
-                <span class="block text-sm text-muted-foreground">{c.detail}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
-        <p class="mt-4 text-sm text-muted-foreground">
-          Plus un glossaire des sigles (ASV, BNC, PAMC, RSPM…) et la liste des sources officielles.
-        </p>
+    <!-- Sommaire : une feuille ciel, le titre à gauche, les neuf chapitres sur une fiche -->
+    <section class="band air da-bloc" aria-labelledby="sommaire">
+      <div class="wrap cote">
+        <div class="band-head">
+          <h2 id="sommaire">Ce que tu vas trouver dedans</h2>
+          <p class="lead">
+            Le guide qu'on aurait aimé lire avant notre premier rempla. Licence en poche, tout arrive en même temps :
+            l'Ordre, l'URSSAF, la CARMF, les impôts, et la question que personne ne pose clairement : combien il te reste
+            vraiment ? Neuf chapitres, dans l'ordre où tu en auras besoin.
+          </p>
+        </div>
+        <div class="chapitres">
+          <ol class="fiche" role="list">
+            {sommaire.map((c) => (
+              <li class="chapitre">
+                <span class="n">
+                  {c.n}
+                </span>
+                <span class="chapitre-in">
+                  <span class="chapitre-t">{c.titre}</span>
+                  <span class="chapitre-p">{c.detail}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+          <p class="plus">
+            Plus un glossaire des sigles (ASV, BNC, PAMC, RSPM…) et la liste des sources officielles.
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- Aperçu de pages -->
-    <section class="bg-white py-12 md:py-16" aria-labelledby="apercu">
-      <div class="container mx-auto max-w-5xl px-4">
-        <h2 id="apercu" class="text-2xl font-bold text-hippo-800 md:text-3xl">Un aperçu</h2>
-        <p class="mt-3 max-w-2xl text-muted-foreground">
-          Des pages courtes, des exemples chiffrés, et un calendrier pour ne rater aucune échéance.
-        </p>
-        <ul class="-mx-4 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
+    <!-- Aperçu de pages : une feuille sable, trois pages en cartes au bord blanc -->
+    <section class="band da-bloc" aria-labelledby="apercu">
+      <div class="wrap">
+        <div class="band-head">
+          <h2 id="apercu">Un aperçu</h2>
+          <p class="lead">
+            Des pages courtes, des exemples chiffrés, et un calendrier pour ne rater aucune échéance.
+          </p>
+        </div>
+        <ul class="pages" role="list">
           {apercus.map((a) => (
-            <li class="w-[72%] shrink-0 snap-center sm:w-[45%] md:w-auto">
+            <li>
               <figure>
                 <Image
                   src={a.src}
@@ -280,9 +301,8 @@ const iconeTelechargement =
                   widths={[280, 420, 560]}
                   sizes="(min-width: 768px) 30vw, 72vw"
                   loading="lazy"
-                  class="h-auto w-full rounded-xl border border-hippo-100 shadow-md"
                 />
-                <figcaption class="mt-2 text-center text-sm font-medium text-muted-foreground">{a.legende}</figcaption>
+                <figcaption>{a.legende}</figcaption>
               </figure>
             </li>
           ))}
@@ -290,17 +310,18 @@ const iconeTelechargement =
       </div>
     </section>
 
-    <!-- Auteur, fraîcheur, second bouton -->
-    <section class="bg-gradient-to-b from-white to-hippo-50/60 py-12 md:py-16" aria-labelledby="auteur">
-      <div class="container mx-auto max-w-3xl px-4">
-        <h2 id="auteur" class="sr-only">Qui a écrit ce guide</h2>
-        <div class="flex items-start gap-4 rounded-2xl border border-hippo-100 bg-white p-5 shadow-sm">
-          <Image src={ryanPhoto} alt="Ryan Goburdhun" width={128} height={128} class="h-16 w-16 shrink-0 rounded-full object-cover" />
+    <!-- Auteur, fraîcheur, second bouton : la fin, sur le ciel, puis le soleil de
+         l'accueil qui se lève sur l'eau du pied de page (décor). -->
+    <section class="fin da-bloc" aria-labelledby="auteur">
+      <div class="wrap fin-in">
+        <h2 id="auteur" class="sr">Qui a écrit ce guide</h2>
+        <div class="auteur">
+          <Image src={ryanPhoto} alt="Ryan Goburdhun" width={128} height={128} />
           <div>
-            <p class="font-semibold text-foreground">
-              Écrit par <a href="/qui-sommes-nous#ryan-goburdhun" class="text-hippo-600 underline underline-offset-2 hover:text-hippo-800">Ryan</a>, médecin, fondateur d'Hippodoc
+            <p class="auteur-nom">
+              Écrit par <a href="/qui-sommes-nous#ryan-goburdhun" class="lien">Ryan</a>, médecin, fondateur d'Hippodoc
             </p>
-            <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+            <p class="auteur-mot">
               À jour au {misAJourTexte}. Chaque chiffre renvoie à sa source : Ordre des médecins, URSSAF, CARMF,
               Assurance maladie, impots.gouv.fr. Information générale : pour ton cas, vois avec ton conseil de l'Ordre,
               l'URSSAF, la CARMF ou un expert-comptable.
@@ -308,10 +329,10 @@ const iconeTelechargement =
           </div>
         </div>
 
-        <div class="mt-8 rounded-2xl bg-gradient-to-br from-hippo-700 to-hippo-900 p-6 text-center text-white shadow-lg">
-          <p class="text-xl font-bold">Garde-le sous la main pour ton premier rempla</p>
-          <p class="mt-1 text-hippo-100">Et envoie-le à un co-interne qui démarre.</p>
-          <div class="mt-5">
+        <div class="garde">
+          <p class="garde-t">Garde-le sous la main pour ton premier rempla</p>
+          <p class="garde-p">Et envoie-le à un co-interne qui démarre.</p>
+          <div class="garde-btn">
             <a
               href={pdf}
               target="_blank"
@@ -319,7 +340,7 @@ const iconeTelechargement =
               type="application/pdf"
               data-guide-download="bas"
               data-ph="guide_remplacant_download_bas"
-              class={boutonClasses}
+              class="btn btn-brand"
             >
               <Fragment set:html={iconeTelechargement} />
               Télécharger le guide
@@ -331,19 +352,196 @@ const iconeTelechargement =
             rel="noopener"
             data-guide-share="whatsapp"
             data-ph="guide_remplacant_share_whatsapp"
-            class="mt-3 inline-flex min-h-11 items-center gap-2 font-semibold text-white underline underline-offset-2 hover:text-hippo-100"
+            class="envoi"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
             L'envoyer sur WhatsApp
           </a>
         </div>
 
-        <div class="mt-8">
+        <div class="chiffres">
           <BlogCtaBand emplacement="guide_remplacant" />
         </div>
+      </div>
+      <div class="horizon" aria-hidden="true">
+        <span class="sun"></span>
+        <span class="wave w3"></span>
+        <span class="wave w4"></span>
       </div>
     </section>
   </main>
 
   <Footer />
 </BaseLayout>
+
+<style>
+  /* Un groupe de mots reste sur une ligne ; plus large que son bloc (texte
+     grossi), il se dénoue au lieu de déborder. */
+  .num { display: inline-block; max-width: 100%; white-space: normal; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  /* Texte grossi : un mot plus large que sa fiche se coupe au lieu de la pousser. */
+  main { overflow-wrap: break-word; }
+
+  /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
+     haut. En bas, l'air et les 40 px que recouvre la feuille suivante. */
+  .tete { position: relative; padding: 100px 0 96px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+  /* Corps de texte en rem : la feuille de la DA les pose en px, ils ne suivaient
+     plus la taille de police du navigateur. Même rendu à 16 px. */
+  .da-bloc { font-size: 1.0625rem; }
+  .lead { font-size: 1.1875rem; }
+  .btn { font-size: 1.0625rem; }
+  h2 { --corps: clamp(min(2rem, 10vw), 4.5vw, 3.625rem); }
+
+  /* Le premier écran. Une colonne bornée : le titre, le bouton, la couverture. */
+  .haut { display: grid; grid-template-columns: minmax(0, 1fr); gap: 34px; }
+  .intro > * { margin: 0; }
+  /* « PDF gratuit · 26 pages · Édition » : une pastille blanche, comme « FAQ ». */
+  /* Deux classes : la remise à zéro des marges (`.intro > *`) pèse plus qu'une
+     classe seule, une fois le style scopé. */
+  .intro .marque { display: inline-block; margin-bottom: 16px; padding: 5px 14px; border-radius: 18px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
+  .intro h1 { --corps: var(--h1-page); text-wrap-style: balance; }
+  .eau { color: var(--w4); }
+  .intro .lead { margin-top: 16px; }
+  .lead strong { color: var(--ink); }
+  .intro .action { margin-top: 26px; }
+  .action > * { margin: 0; }
+  /* Le bouton : toute la largeur sur téléphone (la cible du navigateur intégré
+     d'Instagram), à sa mesure au-delà. */
+  .action .btn, .garde .btn { gap: 10px; width: 100%; min-height: 58px; padding-block: 8px; font-size: 1.1875rem; text-align: center; }
+  .btn :global(svg) { flex: none; }
+  .note { font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+  .action .btn + .note { margin-top: 18px; }
+  .note + .note { margin-top: 4px; }
+  /* Les trois points du menu d'Instagram : dessinés, sur la ligne du texte. */
+  .note :global(.pts) { display: inline-block; margin: 0 0.1em; vertical-align: -0.22em; color: var(--ink); }
+
+  /* La couverture : une carte au bord blanc, à peine penchée. */
+  .couverture { justify-self: center; width: 100%; max-width: 18rem; }
+  .couverture a { display: block; }
+  .couverture img { box-sizing: border-box; display: block; width: 100%; height: auto; border: 6px solid var(--paper); border-radius: var(--r-md); box-shadow: var(--clay); rotate: 2deg; }
+
+  /* Petit titre au-dessus d'un titre */
+  .sur { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; line-height: 1.4; text-transform: uppercase; color: var(--ink-3); }
+  .band-head .sur { margin-bottom: -4px; }
+
+  /* Le numéro : une pastille encre. */
+  .n { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 0.9375rem; font-weight: var(--tb); line-height: 1; font-variant-numeric: tabular-nums; }
+
+  /* Les six règles : six fiches. */
+  .regles { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .regle { display: flex; gap: 14px; padding: 20px 20px 22px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+  .regle-in { min-width: 0; }
+  .regle strong { display: block; font-size: 1.0625rem; line-height: 1.35; color: var(--ink); text-wrap-style: pretty; }
+  .regle-p { display: block; margin-top: 6px; font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+  /* Les exposants (« 1re », « 2e ») ne changent pas l'interligne. */
+  .regle :global(sup) { line-height: 0; }
+  .relance { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin: 22px 0 0; font-size: 1rem; color: var(--ink-2); }
+  /* La flèche dessinée, sur la ligne du lien. */
+  .fl { display: inline-flex; align-items: center; gap: 6px; }
+  .fl :global(svg) { flex: none; }
+
+  /* Le sommaire : le titre et le chapô à gauche, les chapitres à droite. */
+  .cote { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 26px; }
+  .cote .band-head { margin-bottom: 0; }
+  .cote .lead { font-size: 1.0625rem; line-height: 1.6; }
+  .chapitres { min-width: 0; }
+  .fiche { margin: 0; padding: 6px 20px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); list-style: none; }
+  .chapitre { display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .chapitre:first-child { border-top: 0; }
+  .chapitre .n { width: 28px; height: 28px; margin-top: 1px; font-size: 0.875rem; }
+  .chapitre-in { min-width: 0; }
+  .chapitre-t { display: block; font-weight: var(--tb); line-height: 1.35; color: var(--ink); }
+  .chapitre-p { display: block; margin-top: 2px; font-size: 0.96875rem; line-height: 1.5; color: var(--ink-2); }
+  .plus { margin: 16px 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+
+  /* L'aperçu : trois pages du guide. Sur téléphone, une rangée qui défile de
+     côté, jusqu'aux bords de l'écran (la page, elle, ne défile pas). */
+  .pages { display: flex; gap: 14px; margin: 0 calc(-1 * var(--gut)); padding: 4px var(--gut) 30px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); list-style: none; }
+  .pages li { flex: none; width: 72%; max-width: 20rem; scroll-snap-align: center; }
+  .pages figure { margin: 0; }
+  .pages img { box-sizing: border-box; display: block; width: 100%; height: auto; border: 5px solid var(--paper); border-radius: var(--r-md); box-shadow: var(--clay-sm); }
+  .pages figcaption { margin-top: 12px; font-size: 0.9375rem; font-weight: 560; line-height: 1.4; text-align: center; color: var(--ink-2); }
+  .band:has(.pages) { padding-bottom: 104px; }
+
+  /* La fin : le ciel de l'accueil, puis le soleil qui se lève sur l'eau du pied
+     de page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles).
+     -1 px en bas : pas de filet clair au-dessus du pied. */
+  .fin { position: relative; z-index: 1; margin-top: -40px; margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); }
+  /* Les trois fiches passent devant le décor (`z-index`) ; le halo du soleil ne
+     commence qu'après la dernière (marge de `.horizon`). */
+  .fin-in { z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; max-width: calc(760px + 2 * var(--gut)); padding-top: 64px; }
+  .fin-in > * { min-width: 0; margin: 0; }
+  /* Qui a écrit le guide : une fiche blanche. */
+  .auteur { display: flex; align-items: flex-start; gap: 16px; padding: 22px 22px 24px; border-radius: 28px; background: var(--paper); box-shadow: var(--clay); }
+  .auteur img { flex: none; width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+  .auteur p { margin: 0; }
+  .auteur-nom { font-weight: var(--tb); line-height: 1.4; color: var(--ink); }
+  .auteur-mot { margin-top: 6px !important; font-size: 0.96875rem; line-height: 1.55; color: var(--ink-2); }
+  /* Le second bouton : une fiche « eau profonde », le bouton jaune. */
+  .garde { --focus: #FFFFFF; display: flex; flex-direction: column; align-items: center; padding: 30px 22px 22px; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); color: var(--paper); text-align: center; }
+  .garde > * { margin: 0; }
+  .garde-t { font-family: var(--display); font-size: clamp(1.375rem, 2.6vw, 1.75rem); font-weight: var(--dw); line-height: 1.15; letter-spacing: -0.02em; text-wrap-style: balance; }
+  .garde .garde-p { margin-top: 10px; color: var(--on-deep-2); }
+  .garde .garde-btn { align-self: stretch; margin-top: 24px; }
+  .garde .envoi { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; border-radius: 8px; font-weight: var(--tb); color: var(--paper); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .envoi:hover { color: var(--on-deep-2); }
+  .envoi svg { flex: none; }
+  /* Le halo dépasse le soleil de 62 px (92 px sur ordinateur) : 20 px d'air
+     entre la dernière fiche et lui. */
+  .horizon { position: relative; height: 190px; margin-top: 60px; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: -122px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 26px rgba(255, 214, 74, 0.26), 0 0 0 62px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; }
+  .w3 { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* La dernière vague a la couleur du haut du pied de page (--deep). */
+  .w4 { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+  /* Téléphone : intervalles resserrés. */
+  /* Petits téléphones : « Télécharger le guide » tient sur une ligne. */
+  @media (max-width: 374px) {
+    .garde { padding-inline: 16px; }
+    .action .btn, .garde .btn { padding-inline: 12px; font-size: 1.0625rem; }
+  }
+  @media (max-width: 559px) {
+    .tete { padding-bottom: 80px; }
+    .fin-in { padding-top: 44px; }
+    .auteur { gap: 14px; padding: 20px 18px 22px; }
+    .auteur img { width: 52px; height: 52px; }
+  }
+  @media (min-width: 560px) {
+    .action .btn, .garde .btn { width: auto; padding-inline: 30px; }
+    .garde .garde-btn { align-self: center; }
+    .fiche { padding: 8px 26px; }
+    .regle { padding: 22px 24px 24px; }
+    .pages li { width: 45%; }
+  }
+  /* Tablette : la couverture à droite du titre ; les pages de l'aperçu côte à côte. */
+  @media (min-width: 768px) {
+    .tete { padding: 132px 0 136px; }
+    .haut { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 48px; }
+    .couverture { width: clamp(15rem, 28vw, 20rem); max-width: none; margin-right: 12px; }
+    .pages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin: 0; padding: 0; overflow: visible; }
+    .pages li { width: auto; max-width: none; }
+    .band:has(.pages) { padding-bottom: 128px; }
+  }
+  @media (min-width: 900px) {
+    .tete { padding-top: 148px; }
+    .regles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .cote { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 28px 56px; }
+    /* Le titre du sommaire suit la lecture des chapitres. */
+    .cote .band-head { position: sticky; top: 104px; }
+    .fin-in { padding-top: 88px; }
+    .horizon { height: 270px; margin-top: 108px; --p: 440px; --th: 54px; }
+    .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
+    .w3 { height: 112px; }
+    .w4 { height: 60px; }
+  }
+  @media (min-width: 1180px) {
+    .cote { column-gap: 96px; }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
+     aux fiches et aux pastilles ; le décor de la fin disparaît. */
+  @media (forced-colors: active) {
+    .marque, .regle, .fiche, .auteur, .garde, .n { border: 1px solid CanvasText; }
+    .horizon { display: none; }
+  }
+</style>
