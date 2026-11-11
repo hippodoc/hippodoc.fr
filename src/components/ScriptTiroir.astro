@@ -1,9 +1,9 @@
 ---
 /**
- * Micro-script du tiroir mobile de HeaderDA.astro (DA 2026, MIGRATION.md § 9).
- * LE MÊME script que celui de Header.astro, au caractère près : il referme le
- * tiroir au clic d'une ancre et pose l'écouteur `touchstart` vide dont Safari
- * iOS a besoin pour `:active`. Aucun JS ajouté : il a seulement changé de place.
+ * Micro-script du tiroir mobile de Header.astro (MIGRATION.md § 9.eb, § 9.ed).
+ * Il referme le tiroir au clic d'une ancre et pose l'écouteur `touchstart` vide
+ * dont Safari iOS a besoin pour `:active`. Le script lui-même n'a pas changé
+ * d'un caractère depuis l'ancien en-tête : seule sa place a changé.
  *
  * Pourquoi hors de <header> : un <script> en ligne au milieu du flux laisse le
  * navigateur peindre ce qui le précède. L'en-tête sortait seul, le premier
@@ -11,9 +11,10 @@
  * (2,6 s simulés au lieu de 1,2 s). Rendu en fin de page, il ne coupe plus le
  * premier rendu ; il ne fait qu'attacher deux écouteurs.
  *
- * À placer après le pied, sur toute page qui utilise HeaderDA (le tiroir doit
- * exister quand il s'exécute). `node scripts/verify-site.mjs` vérifie qu'il est
- * sur l'accueil, après </main>, identique à celui de Header.astro.
+ * Rendu par Footer.astro, après </footer> : une fois par page, sur toute page
+ * qui a l'en-tête (le tiroir doit exister quand il s'exécute).
+ * `node scripts/verify-site.mjs` vérifie sur chaque page du build qu'il est là
+ * une seule fois, après le pied, au caractère près, et jamais sans le tiroir.
  */
 ---
 

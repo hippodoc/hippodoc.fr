@@ -1,5 +1,8 @@
 ---
 import '@/styles/global.css';
+// Après la feuille globale : en-tête, pied, bannière cookies et bulle de chat de
+// la DA 2026 (toutes les pages depuis la phase 5a, MIGRATION.md § 9.ed).
+import '@/styles/da.css';
 import PostHog from '@/components/PostHog.astro';
 import ThirdPartyScripts from '@/components/ThirdPartyScripts.astro';
 import { SITE_URL, DEFAULT_OG_IMAGE, ORGANIZATION_SCHEMA } from '@/lib/site';
@@ -21,7 +24,9 @@ interface Props {
   /** Blocs JSON-LD additionnels (Organization est injecté partout). */
   jsonLd?: object[];
   noindex?: boolean;
-  /** Classe posée sur <body> (vide par défaut). `da` active la DA 2026 (src/styles/da.css). */
+  /** Classe ajoutée à <body>, après `da` (jetons de la DA 2026, sur toutes les
+      pages). `da-fond` : le fond de page de la DA (ciel en haut, eau profonde
+      en bas), pour une page entièrement dans la DA comme l'accueil. */
   bodyClass?: string;
 }
 
@@ -114,7 +119,7 @@ const allJsonLd = [ORGANIZATION_SCHEMA, ...jsonLd];
     <slot name="head" />
   </head>
 
-  <body class={bodyClass || undefined}>
+  <body class:list={['da', bodyClass]}>
     <slot />
     <PostHog />
     <ThirdPartyScripts />

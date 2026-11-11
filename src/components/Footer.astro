@@ -1,87 +1,113 @@
 ---
+import '@/styles/da.css';
+import { Picture } from 'astro:assets';
+import ScriptTiroir from '@/components/ScriptTiroir.astro';
+import frenchCare from '@/assets/accueil/partenaires/french-care.png';
+import bpifrance from '@/assets/accueil/partenaires/bpifrance.png';
+import regionIdf from '@/assets/accueil/partenaires/region-idf.png';
+
 /**
- * Footer global — porté de src/components/landing/Footer.tsx (SPA source).
- * Liens ajoutés vs source : Simulateur, Guide déclarations, Tarifs (spec migration),
- * Guide du remplaçant (PDF offert, § 9.di).
+ * Pied du site : l'eau profonde de la DA 2026, sur toutes les pages depuis la
+ * phase 5a (MIGRATION.md § 9.ed). Il n'y a plus de copie à tenir en double.
+ * Liens internes, liens légaux, « Préférences cookies », téléphone, e-mail,
+ * adresse, réseaux, logos des soutiens, `data-ph landing_footer_*`. Habillage
+ * dans src/styles/da.css (classes `ft-*`), sans classe Tailwind ; `da-bloc`
+ * marque un bloc de la DA (voir da.css).
+ * Doit rester le premier <footer> du document : la mesure s'y accroche.
+ * Logo : le mot seul, comme dans l'en-tête (voir Header.astro).
+ * - La flèche des trois liens d'articles est dessinée (décor, absente du
+ *   texte) : la police du site n'a pas ce caractère.
+ * - Les réseaux sont les trois pastilles rondes, avec leur `data-ph` ; ils ne
+ *   sont pas répétés en toutes lettres dans la colonne de contact.
+ * - Prop `soutiens` : la plaque « Ils soutiennent Hippodoc ». L'accueil la
+ *   retire (`soutiens={false}`) : son bloc Partenaires montre déjà les trois
+ *   logos, avec leur légende. Les logos passent par astro:assets (mêmes
+ *   fichiers que ce bloc, dimensions réelles).
+ * - Après le pied, ScriptTiroir.astro : le micro-script du tiroir mobile de
+ *   l'en-tête, une fois par page (voir ce fichier).
  */
+interface Props {
+  /** Affiche la plaque des soutiens (à retirer sur une page qui les montre déjà). */
+  soutiens?: boolean;
+}
+const { soutiens = true } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t bg-white py-16">
-  <div class="container">
-    <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
-      <div>
-        <a href="/" data-ph="landing_footer_home" class="mb-6 flex items-center gap-2 transition-opacity hover:opacity-80">
-          <img src="/lovable-uploads/hippodoc-logo-96.webp" alt="" width="48" height="48" class="h-12 w-auto" />
-          <span class="text-xl font-bold text-hippo-700">Hippo<span class="bg-gradient-to-r from-hippo-500 to-hippo-600 bg-clip-text text-transparent">doc</span></span>
+<footer class="ft da-bloc">
+  <div class="wrap ft-in">
+    <div>
+      <a href="/" data-ph="landing_footer_home" class="ft-logo">
+        <span class="logo-word">Hippo<span>doc</span></span>
+      </a>
+
+      <p class="ft-tagline">Le cockpit financier des médecins.</p>
+      <div class="ft-social">
+        <a href="tel:+33756898961" data-ph="landing_footer_phone" aria-label="Téléphone">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         </a>
+        <a href="mailto:contact@hippodoc.fr" data-ph="landing_footer_email" aria-label="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/company/hippodoc/" data-ph="landing_footer_linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61574895730373" data-ph="landing_footer_facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/hippodoc.fr/" data-ph="landing_footer_instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+      </div>
 
-        <p class="mb-4 text-muted-foreground">Le cockpit financier des médecins.</p>
-        <div class="mt-4 flex gap-1">
-          <a href="tel:+33756898961" data-ph="landing_footer_phone" aria-label="Téléphone" class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-hippo-600 transition-colors hover:bg-hippo-50 hover:text-hippo-800">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          </a>
-          <a href="mailto:contact@hippodoc.fr" data-ph="landing_footer_email" aria-label="Email" class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-hippo-600 transition-colors hover:bg-hippo-50 hover:text-hippo-800">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/company/hippodoc/" data-ph="landing_footer_linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-hippo-600 transition-colors hover:bg-hippo-50 hover:text-hippo-800">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-          <a href="https://www.facebook.com/profile.php?id=61574895730373" data-ph="landing_footer_facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-hippo-600 transition-colors hover:bg-hippo-50 hover:text-hippo-800">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="https://www.instagram.com/hippodoc.fr/" data-ph="landing_footer_instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-hippo-600 transition-colors hover:bg-hippo-50 hover:text-hippo-800">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-          </a>
-        </div>
-
-        <div class="mt-6">
-          <p class="mb-3 text-xs text-muted-foreground">Ils soutiennent Hippodoc</p>
-          <div class="flex flex-wrap items-center gap-y-4 space-x-6">
-            <img src="/lovable-uploads/french-care-160.webp" alt="La French Care" class="h-20 w-auto opacity-70 transition-opacity hover:opacity-100" loading="lazy" width="160" height="80" />
-            <img src="/lovable-uploads/bpi-112.webp" alt="Bpifrance" class="h-14 w-auto opacity-70 transition-opacity hover:opacity-100" loading="lazy" width="112" height="56" />
-            <img src="/lovable-uploads/region-idf-112.webp" alt="Région Île-de-France" class="h-14 w-auto opacity-70 transition-opacity hover:opacity-100" loading="lazy" width="112" height="56" />
+      {soutiens && (
+        <div class="ft-backers">
+          <p>Ils soutiennent Hippodoc</p>
+          <div class="ft-backers-logos">
+            <Picture src={frenchCare} formats={['avif', 'webp']} fallbackFormat="webp" width={39} widths={[39, 78]} sizes="33px" alt="La French Care" style="--h:56px" loading="lazy" decoding="async" />
+            <Picture src={bpifrance} formats={['avif', 'webp']} fallbackFormat="webp" width={88} widths={[88, 176]} sizes="82px" alt="Bpifrance" style="--h:26px" loading="lazy" decoding="async" />
+            <Picture src={regionIdf} formats={['avif', 'webp']} fallbackFormat="webp" width={105} widths={[105, 210]} sizes="97px" alt="Région Île-de-France" style="--h:24px" loading="lazy" decoding="async" />
           </div>
         </div>
-      </div>
-
-      <div>
-        <h3 class="mb-4 text-lg font-semibold text-hippo-800">Contactez-nous</h3>
-        <ul class="space-y-3">
-          <li><a href="tel:+33756898961" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">+33 (0)7 56 89 89 61</a></li>
-          <li><a href="mailto:contact@hippodoc.fr" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">contact@hippodoc.fr</a></li>
-          <li><span class="inline-flex min-h-11 items-center text-muted-foreground">60 rue François Ier, 75008 Paris</span></li>
-          <li><a href="https://www.linkedin.com/company/hippodoc/" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">LinkedIn</a></li>
-          <li><a href="https://www.facebook.com/profile.php?id=61574895730373" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Facebook</a></li>
-          <li><a href="https://www.instagram.com/hippodoc.fr/" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Instagram</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3 class="mb-4 text-lg font-semibold text-hippo-800">Informations</h3>
-        <ul class="space-y-2">
-          <li><a href="/simulateur" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Simulateur Super-Net</a></li>
-          <li><a href="/guide-declarations" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Guide des déclarations</a></li>
-          <li><a href="/guide" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Guide du remplaçant (PDF)</a></li>
-          <li><a href="/tarifs" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Tarifs</a></li>
-          <li><a href="/blog" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Blog</a></li>
-          <li><a href="/comparatif" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Comparatif outils</a></li>
-          <li class="border-l-2 border-hippo-200 pl-3"><a href="/blog/regime-fiscal-micro-bnc-vs-reel" class="inline-flex min-h-11 items-center text-sm text-hippo-600 transition-colors hover:text-hippo-800">→ Micro-BNC vs Réel</a></li>
-          <li class="border-l-2 border-hippo-200 pl-3"><a href="/blog/salaires-medecins-remplacants" class="inline-flex min-h-11 items-center text-sm text-hippo-600 transition-colors hover:text-hippo-800">→ Salaires remplaçants</a></li>
-          <li class="border-l-2 border-hippo-200 pl-3"><a href="/blog/checklist-administrative-medecin-remplacant" class="inline-flex min-h-11 items-center text-sm text-hippo-600 transition-colors hover:text-hippo-800">→ Checklist administrative</a></li>
-          <li><a href="/qui-sommes-nous" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Qui sommes-nous ?</a></li>
-          <li><a href="/rgpd" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">RGPD</a></li>
-          <li><a href="/faq" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">FAQ</a></li>
-          <li><a href="/conditions-utilisations" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Conditions d'utilisation</a></li>
-          <li><a href="/politique-confidentialite" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Politique de confidentialité</a></li>
-          <li><a href="/mentions-legales" class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Mentions légales</a></li>
-          <li><button type="button" data-cookie-prefs class="inline-flex min-h-11 items-center text-hippo-600 transition-colors hover:text-hippo-800">Préférences cookies</button></li>
-        </ul>
-      </div>
+      )}
     </div>
 
-    <div class="mt-12 border-t pt-12 text-center text-sm text-muted-foreground">
-      <p>© {year} Hippodoc. Tous droits réservés.</p>
+    <div>
+      <h3 class="ft-title">Contactez-nous</h3>
+      <ul class="ft-list">
+        <li><a href="tel:+33756898961">+33 (0)7 56 89 89 61</a></li>
+        <li><a href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a></li>
+        <li><span class="ft-text">60 rue François Ier, 75008 Paris</span></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="ft-title">Informations</h3>
+      <ul class="ft-list cols">
+        <li><a href="/simulateur">Simulateur Super-Net</a></li>
+        <li><a href="/guide-declarations">Guide des déclarations</a></li>
+        <li><a href="/guide">Guide du remplaçant (PDF)</a></li>
+        <li><a href="/tarifs">Tarifs</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/comparatif">Comparatif outils</a></li>
+        <li class="ft-sub"><a href="/blog/regime-fiscal-micro-bnc-vs-reel"><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>Micro-BNC vs Réel</a></li>
+        <li class="ft-sub"><a href="/blog/salaires-medecins-remplacants"><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>Salaires remplaçants</a></li>
+        <li class="ft-sub"><a href="/blog/checklist-administrative-medecin-remplacant"><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>Checklist administrative</a></li>
+        <li><a href="/qui-sommes-nous">Qui sommes-nous ?</a></li>
+        <li><a href="/rgpd">RGPD</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/conditions-utilisations">Conditions d'utilisation</a></li>
+        <li><a href="/politique-confidentialite">Politique de confidentialité</a></li>
+        <li><a href="/mentions-legales">Mentions légales</a></li>
+        <li><button type="button" data-cookie-prefs class="ft-prefs">Préférences cookies</button></li>
+      </ul>
     </div>
   </div>
+
+  <div class="wrap ft-legal">
+    <p>© {year} Hippodoc. Tous droits réservés.</p>
+  </div>
 </footer>
+
+{/* Micro-script du tiroir mobile de l'en-tête, hors du flux de l'en-tête. */}
+<ScriptTiroir />

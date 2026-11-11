@@ -391,7 +391,8 @@ if (!pourQui.includes('data-track="cta_signup_journey_section"')) {
 // Le film (DA 2026, phase 3) est un sous-bloc du bloc fondateur. landing-analytics
 // cherche le <video> DANS l'élément `presentation-video` : ailleurs, tous les
 // `landing_video_*` s'arrêtent sans erreur. Cet élément porte aussi l'ancre
-// `#film-presentation`, que Header.astro vise encore depuis les autres pages.
+// `#film-presentation` : plus aucune entrée du menu n'y mène depuis la phase 5a
+// (§ 9.ed), mais l'ancre reste, pour les liens déjà partagés.
 const blocFilm = accueil.match(/<(\w+)\b[^>]*data-landing-section="presentation-video"[^>]*>/);
 const finFondateur = accueil.indexOf('</section>', blocFilm?.index ?? 0);
 if (!blocFilm || !/\sid="film-presentation"/.test(blocFilm[0])) {
@@ -513,49 +514,69 @@ if (motsAccueil < MOTS_ACCUEIL_MIN) {
   }
 }
 
-/* 4 quater bis. En-tête et pied en double (DA 2026, de la phase 1 à la phase 5a).
-   L'accueil est servie par src/components/da/HeaderDA.astro et FooterDA.astro,
-   copies rhabillées de Header.astro et Footer.astro, que gardent toutes les
-   autres pages. Les liens, les libellés et les attributs de mesure y sont écrits
-   deux fois : une entrée ajoutée d'un seul côté n'arriverait pas sur l'accueil
-   (ou seulement sur elle) sans que rien n'échoue. On compare donc, dans l'ordre,
-   chaque lien, bouton ou <label> porteur d'un href, d'un data-ph, d'un data-track
-   ou de data-cookie-prefs, entre l'accueil et /tarifs, plus le micro-script en
-   ligne de l'en-tête. `aria-current` n'entre pas dans la comparaison.
-   Un écart VOULU (une ancre retirée du menu de l'accueil, par exemple) se déclare
-   dans ECARTS_ENTETE_PIED_DA, avec la section de MIGRATION.md qui le décide.
-   À retirer en phase 5a, quand les copies remplacent les originaux. */
-const ECARTS_ENTETE_PIED_DA = [
-  // Forme : le repère tel que l'erreur l'affiche.
-  // Phase 3 (MIGRATION.md § 9, arbitrage 8 du plan) : sur l'accueil, « Découvrir »
-  // (le film) sort du menu et « Comment ça marche » y entre, à la même place.
-  // Menu d'ordinateur, puis tiroir mobile ; Header.astro garde « Découvrir ».
-  'header : a | /#film-presentation | landing_nav_decouvrir |  |  | Découvrir',
-  'header : a | /#film-presentation | landing_mobile_nav_decouvrir |  |  | Découvrir',
+/* 4 quater bis. Un seul en-tête, un seul pied (phase 5a, MIGRATION.md § 9.ed).
+   Jusqu'à la phase 5a, l'accueil avait ses copies rhabillées de l'en-tête et du
+   pied, et ce contrôle comparait les deux jeux. Il n'y a plus qu'un composant de
+   chaque (src/components/Header.astro, Footer.astro) : la comparaison est
+   devenue une garde.
+   a. La mesure : chaque lien, bouton ou <label> de l'en-tête et du pied de
+      l'accueil porteur d'un data-ph ou d'un data-track figure dans la liste
+      figée ci-dessous, dans l'ordre. Un attribut retiré ou renommé arrêterait
+      une série PostHog sans que rien n'échoue ; une entrée ajoutée s'ajoute ici.
+   b. Toutes les pages : une page du build a l'en-tête ET le pied du site, avec
+      les mêmes liens, libellés et attributs de mesure que l'accueil (aucune page
+      ne se refait un en-tête à elle), ou n'a ni l'un ni l'autre et le déclare
+      dans PAGES_SANS_ENTETE. `aria-current` n'entre pas dans la comparaison.
+   c. Le micro-script du tiroir mobile (ScriptTiroir.astro) : une seule fois par
+      page, après </footer>, jamais dans <header> (il y faisait peindre la page
+      en deux temps, § 9.eb), jamais sur une page sans tiroir (il y lèverait une
+      erreur), et au caractère près celui de l'ancien en-tête : son empreinte est
+      figée ici. Le modifier demande de changer l'empreinte, donc de le décider. */
+const MESURE_ENTETE_PIED = [
   'header : a | /#sous-la-surface | landing_nav_comment_ca_marche |  |  | Comment ça marche',
+  'header : a | /#parcours | landing_nav_pour_qui |  |  | Pour qui',
+  'header : a | /#pricing | landing_nav_pricing |  |  | Tarifs',
+  'header : a | /simulateur | landing_resource_simulateur |  |  | Simulateur',
+  'header : a | /guide | landing_resource_guide-remplacant |  |  | Guide du remplaçant (PDF)',
+  'header : a | /guide-declarations | landing_resource_guide-declarations |  |  | Guide déclarations',
+  'header : a | /blog | landing_resource_blog |  |  | Blog',
+  'header : a | /faq | landing_resource_faq |  |  | FAQ',
+  'header : a | /qui-sommes-nous | landing_resource_qui-sommes-nous |  |  | Qui sommes-nous ?',
+  'header : a | https://app.hippodoc.fr/auth | landing_login_header |  |  | Connexion',
+  'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header |  | Essai gratuit 30j',
+  'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_pill |  | Essai gratuit',
+  'header : label |  | landing_mobile_menu_open |  |  |',
   'header : a | /#sous-la-surface | landing_mobile_nav_comment_ca_marche |  |  | Comment ça marche',
-  // Phase 3 (MIGRATION.md § 9, lot C) : la police de la DA n'a pas le caractère
-  // « → ». Dans le pied de l'accueil, la flèche des trois liens d'articles est un
-  // dessin (SVG décoratif) et sort du libellé ; Footer.astro garde le caractère.
-  'footer : a | /blog/regime-fiscal-micro-bnc-vs-reel |  |  |  | → Micro-BNC vs Réel',
-  'footer : a | /blog/salaires-medecins-remplacants |  |  |  | → Salaires remplaçants',
-  'footer : a | /blog/checklist-administrative-medecin-remplacant |  |  |  | → Checklist administrative',
-  'footer : a | /blog/regime-fiscal-micro-bnc-vs-reel |  |  |  | Micro-BNC vs Réel',
-  'footer : a | /blog/salaires-medecins-remplacants |  |  |  | Salaires remplaçants',
-  'footer : a | /blog/checklist-administrative-medecin-remplacant |  |  |  | Checklist administrative',
-  // Phase 3, corrections après relecture (MIGRATION.md § 9) : dans le pied de
-  // l'accueil, les trois liens en toutes lettres de la colonne de contact ne sont
-  // pas repris. Les pastilles rondes y mènent déjà, avec leur data-ph
-  // (`landing_footer_linkedin`, `_facebook`, `_instagram`) ; Footer.astro garde les deux.
-  'footer : a | https://www.linkedin.com/company/hippodoc/ |  |  |  | LinkedIn',
-  'footer : a | https://www.facebook.com/profile.php?id=61574895730373 |  |  |  | Facebook',
-  'footer : a | https://www.instagram.com/hippodoc.fr/ |  |  |  | Instagram',
+  'header : a | /#parcours | landing_mobile_nav_pour_qui |  |  | Pour qui',
+  'header : a | /#pricing | landing_mobile_nav_pricing |  |  | Tarifs',
+  'header : a | /simulateur | landing_mobile_resource_simulateur |  |  | Simulateur',
+  'header : a | /guide | landing_mobile_resource_guide-remplacant |  |  | Guide du remplaçant (PDF)',
+  'header : a | /guide-declarations | landing_mobile_resource_guide-declarations |  |  | Guide déclarations',
+  'header : a | /blog | landing_mobile_resource_blog |  |  | Blog',
+  'header : a | /faq | landing_mobile_resource_faq |  |  | FAQ',
+  'header : a | /qui-sommes-nous | landing_mobile_resource_qui-sommes-nous |  |  | Qui sommes-nous ?',
+  'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_mobile |  | Essai gratuit 30j',
+  'footer : a | / | landing_footer_home |  |  | Hippodoc',
+  'footer : a | tel:+33756898961 | landing_footer_phone |  |  | Téléphone',
+  'footer : a | mailto:contact@hippodoc.fr | landing_footer_email |  |  | Email',
+  'footer : a | https://www.linkedin.com/company/hippodoc/ | landing_footer_linkedin |  |  | LinkedIn',
+  'footer : a | https://www.facebook.com/profile.php?id=61574895730373 | landing_footer_facebook |  |  | Facebook',
+  'footer : a | https://www.instagram.com/hippodoc.fr/ | landing_footer_instagram |  |  | Instagram',
+  'footer : button |  |  |  | data-cookie-prefs | Préférences cookies',
 ];
-function reperesNavigation(html, balise) {
-  const bloc = html.match(new RegExp(`<${balise}\\b[\\s\\S]*?</${balise}>`))?.[0];
+// Pages sans l'en-tête ni le pied du site, et pourquoi.
+const PAGES_SANS_ENTETE = new Set([
+  '/essai/index.html',         // page de campagne, noindex : son propre en-tête, sans menu
+  '/transmissions/index.html', // page HTML déposée dans public/, hors Astro
+]);
+// SHA-256 du micro-script du tiroir, espaces réduits : le même que dans l'ancien
+// Header.astro (relevé sur le build de main avant la phase 5a).
+const EMPREINTE_SCRIPT_TIROIR = '10a3011d80ece8d8fd07d7623db4b6642c3f1aea2eb69c85ef2ab6f04277a547';
+
+function reperesNavigation(html, balise, classe) {
+  const bloc = html.match(new RegExp(`<${balise}\\b[^>]*\\sclass="${classe}\\b[^"]*"[\\s\\S]*?</${balise}>`))?.[0];
   if (!bloc) return null;
-  const scripts = [...bloc.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)]
-    .map((m) => m[1].replace(/\s+/g, ' ').trim());
+  const scripts = [...bloc.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   const sansScript = bloc.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/<!--[\s\S]*?-->/g, '');
   const reperes = [];
   for (const m of sansScript.matchAll(/<(a|button|label)\b([^>]*)>([\s\S]*?)<\/\1>/g)) {
@@ -564,49 +585,70 @@ function reperesNavigation(html, balise) {
     const href = attr('href'), ph = attr('data-ph'), track = attr('data-track');
     if (!href && !ph && !track && !prefs) continue;
     const libelle = m[3].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() || attr('aria-label');
-    reperes.push(`${balise} : ${[m[1], href, ph, track, prefs, libelle].join(' | ')}`);
+    reperes.push(`${balise} : ${[m[1], href, ph, track, prefs, libelle].join(' | ').trim()}`);
   }
   return { reperes, scripts };
 }
-const pageTemoin = resolve(dist, 'tarifs', 'index.html');
-if (!existsSync(pageTemoin)) {
-  fail('en-tête et pied DA : dist/tarifs/index.html absent, la comparaison avec Header.astro et Footer.astro est impossible');
-} else {
-  const temoin = readFileSync(pageTemoin, 'utf8');
-  for (const balise of ['header', 'footer']) {
-    const da = reperesNavigation(accueil, balise);
-    const origine = reperesNavigation(temoin, balise);
-    if (!da || !origine) {
-      fail(`en-tête et pied DA : <${balise}> introuvable sur ${da ? '/tarifs' : 'l’accueil'}`);
-      continue;
-    }
-    const voulu = (r) => ECARTS_ENTETE_PIED_DA.includes(r);
-    const a = da.reperes.filter((r) => !voulu(r));
-    const b = origine.reperes.filter((r) => !voulu(r));
-    const rang = [...a, ''].findIndex((r, i) => r !== b[i]);
-    if (rang < a.length || a.length !== b.length) {
+{
+  const { createHash } = await import('node:crypto');
+  const navAccueil = { header: reperesNavigation(accueil, 'header', 'hd'), footer: reperesNavigation(accueil, 'footer', 'ft') };
+  if (!navAccueil.header || !navAccueil.footer) {
+    fail('en-tête et pied : <header class="hd …"> ou <footer class="ft …"> introuvable sur l\'accueil');
+  } else {
+    // a. La mesure de l'en-tête et du pied.
+    const mesures = [...navAccueil.header.reperes, ...navAccueil.footer.reperes]
+      .filter((r) => { const c = r.split(' | '); return c[2] || c[3] || c[4]; });
+    const rang = [...MESURE_ENTETE_PIED, ''].findIndex((r, i) => r !== mesures[i]);
+    if (rang < MESURE_ENTETE_PIED.length || mesures.length !== MESURE_ENTETE_PIED.length) {
       fail(
-        `<${balise}> : l'accueil (composants da/) et /tarifs (Header.astro, Footer.astro) divergent au repère ${rang + 1} — ` +
-        `accueil « ${a[rang] ?? 'rien'} », /tarifs « ${b[rang] ?? 'rien'} ». ` +
-        `Reporte la modification dans l'autre composant, ou déclare l'écart dans ECARTS_ENTETE_PIED_DA`
+        `en-tête et pied : la mesure diverge de MESURE_ENTETE_PIED au repère ${rang + 1} — ` +
+        `attendu « ${MESURE_ENTETE_PIED[rang] ?? 'rien'} », rendu « ${mesures[rang] ?? 'rien'} ». ` +
+        `Un data-ph ou un data-track retiré arrête sa série PostHog : le remettre, ou mettre la liste à jour si c'est voulu`
       );
     }
-    // Le micro-script du tiroir mobile. Sur l'accueil il n'est plus dans <header>
-    // (un script en ligne au milieu du flux faisait peindre la page en deux temps,
-    // MIGRATION.md § 9) : ScriptTiroirDA.astro le rend après </main>. Il doit y être,
-    // identique à celui de Header.astro, et ne pas revenir dans l'en-tête.
-    const scriptsDA = balise === 'header'
-      ? [...accueil.slice(accueil.indexOf('</main>')).matchAll(/<script\b(?![^>]*\b(?:src|type)=)[^>]*>([\s\S]*?)<\/script>/g)]
-          .map((m) => m[1].replace(/\s+/g, ' ').trim())
-      : da.scripts;
-    if (balise === 'header') {
-      if (da.scripts.length) fail('<header> de l\'accueil : un script en ligne est revenu dans l\'en-tête — il doit rester dans ScriptTiroirDA.astro, après le pied');
-      for (const script of origine.scripts) {
-        if (!scriptsDA.includes(script)) fail('<header> : le micro-script du tiroir mobile (Header.astro) est absent de l\'accueil après </main>, ou en diffère — les deux copies doivent rester identiques jusqu\'à la phase 5a');
+    // b et c. Toutes les pages du build.
+    let pagesAvecEntete = 0;
+    for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
+      const html = readFileSync(resolve(dist, f.slice(1)), 'utf8');
+      const page = f.replace(/\/index\.html$/, '') || '/';
+      const scriptsTiroir = [...html.matchAll(/<script\b(?![^>]*\b(?:src|type)=)[^>]*>([\s\S]*?)<\/script>/g)]
+        .filter((m) => m[1].includes("getElementById('mobile-menu-drawer')"));
+      const entete = reperesNavigation(html, 'header', 'hd');
+      const pied = reperesNavigation(html, 'footer', 'ft');
+      if (!entete && !pied) {
+        if (!PAGES_SANS_ENTETE.has(f)) fail(`${page} : ni l'en-tête ni le pied du site — rendre Header.astro et Footer.astro, ou déclarer la page dans PAGES_SANS_ENTETE`);
+        if (scriptsTiroir.length) fail(`${page} : le micro-script du tiroir mobile est rendu sans l'en-tête — il lèverait une erreur (tiroir absent)`);
+        if (html.includes('id="mobile-menu-drawer"')) fail(`${page} : un tiroir mobile sans l'en-tête du site`);
+        continue;
       }
-    } else if (da.scripts.join('\n') !== origine.scripts.join('\n')) {
-      fail(`<${balise}> : le script en ligne diffère entre l'accueil (composants da/) et /tarifs — les deux copies doivent rester identiques jusqu'à la phase 5a`);
+      if (PAGES_SANS_ENTETE.has(f)) fail(`${page} : déclarée dans PAGES_SANS_ENTETE, mais elle rend l'en-tête ou le pied du site`);
+      if (!entete || !pied) {
+        fail(`${page} : ${entete ? 'l\'en-tête du site sans son pied (le micro-script du tiroir, rendu par Footer.astro, manquerait)' : 'le pied du site sans son en-tête (le micro-script du tiroir lèverait une erreur)'}`);
+        continue;
+      }
+      pagesAvecEntete++;
+      for (const [balise, ici] of [['header', entete], ['footer', pied]]) {
+        const a = navAccueil[balise].reperes, b = ici.reperes;
+        const ecart = [...a, ''].findIndex((r, i) => r !== b[i]);
+        if (ecart < a.length || a.length !== b.length) {
+          fail(`${page} : <${balise}> diffère de celui de l'accueil au repère ${ecart + 1} — accueil « ${a[ecart] ?? 'rien'} », ici « ${b[ecart] ?? 'rien'} ». Il n'y a qu'un en-tête et qu'un pied : Header.astro et Footer.astro`);
+        }
+      }
+      if ((html.match(/<header\b[^>]*\sclass="hd\b/g) ?? []).length !== 1 || (html.match(/\sid="mobile-menu-drawer"/g) ?? []).length !== 1) {
+        fail(`${page} : l'en-tête du site (ou son tiroir mobile) est rendu plus d'une fois`);
+      }
+      if (entete.scripts.length) fail(`${page} : un script en ligne est revenu dans <header> — il doit rester dans ScriptTiroir.astro, après le pied`);
+      if (scriptsTiroir.length !== 1) {
+        fail(`${page} : le micro-script du tiroir mobile est rendu ${scriptsTiroir.length} fois (attendu : une seule, par Footer.astro)`);
+        continue;
+      }
+      if (scriptsTiroir[0].index < html.indexOf('</footer>')) fail(`${page} : le micro-script du tiroir mobile est rendu avant la fin du pied`);
+      const empreinte = createHash('sha256').update(scriptsTiroir[0][1].replace(/\s+/g, ' ').trim()).digest('hex');
+      if (empreinte !== EMPREINTE_SCRIPT_TIROIR) {
+        fail(`${page} : le micro-script du tiroir mobile a changé (empreinte ${empreinte.slice(0, 12)}…) — il ne se modifie pas sans décision ; mettre alors EMPREINTE_SCRIPT_TIROIR à jour`);
+      }
     }
+    console.log(`En-tête et pied : ${pagesAvecEntete} pages, mêmes liens et même mesure que l'accueil, micro-script du tiroir une fois par page`);
   }
 }
 

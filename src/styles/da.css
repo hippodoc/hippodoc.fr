@@ -1,26 +1,28 @@
 /* ==========================================================================
-   DA 2026 « le monde d'Hippodoc » : fondations (phase 1, MIGRATION.md § 9).
+   DA 2026 « le monde d'Hippodoc » : fondations (MIGRATION.md § 9.eb, § 9.ed).
 
    Un ciel du matin, une eau en pâte à modeler, tout est rond et mat, dans les
    bleus de la mascotte. Le jaune porte une seule idée : ce qu'il te reste (le
    soleil, le Super-Net, le bouton qui y mène).
 
    Règles de cette feuille :
-   - tout vit sous la classe racine `.da`, posée sur <body> par la prop
-     `bodyClass` de BaseLayout : sans elle, rien ne s'applique ;
-   - `.da` ne porte que les jetons et le fond de page. La typographie (police,
-     corps, graisse, couleur, interligne), les règles de titres et l'anneau de
-     focus sont portés par les blocs DA, marqués `.da-bloc` (l'en-tête, le pied,
-     puis chaque section migrée). Une section pas encore migrée n'a pas cette
-     classe : elle garde son rendu d'origine, styles hérités compris. Depuis
-     la phase 4a il ne reste aucune ancienne section sur l'accueil ; la classe
-     reste portée par chaque bloc (elle n'a pas été remontée sur <body>) ;
+   - tout vit sous la classe racine `.da`, que BaseLayout pose sur le <body> de
+     TOUTES les pages depuis la phase 5a : l'en-tête, le pied, la bannière
+     cookies et la bulle de chat sont partout ceux de la DA ;
+   - `.da` ne porte que les jetons. Le fond de page de la DA (ciel en haut, eau
+     profonde en bas) demande en plus `.da-fond` (prop `bodyClass` de
+     BaseLayout) : l'accueil seule, tant que les autres pages gardent leurs
+     couleurs ;
+   - la typographie de la DA (corps, graisse, couleur, interligne), ses règles
+     de titres et son anneau de focus sont portés par les blocs marqués
+     `.da-bloc` (l'en-tête, le pied, chaque section de l'accueil). Le contenu
+     des pages intérieures n'a pas cette classe : il garde son rendu Tailwind ;
    - `:where(…)` ne pèse rien : dans un bloc DA, une classe l'emporte toujours
      sur une règle d'élément ;
-   - aucune classe Tailwind dans les composants `da/` : la feuille globale ne
-     doit pas grossir pour eux ;
-   - feuille importée par les composants `da/` seulement, ni par BaseLayout ni
-     par global.css.
+   - aucune classe Tailwind dans l'en-tête, le pied ni les composants
+     `accueil/` : la feuille globale ne doit pas grossir pour eux ;
+   - feuille importée par BaseLayout (après global.css) et par les composants
+     qui s'en servent : elle sort dans la feuille commune à toutes les pages.
    ========================================================================== */
 
 /* ───────── Police ─────────
@@ -111,16 +113,16 @@
 }
 
 /* ───────── Page ─────────
-   `.da` est posée sur <body>. Le fond prolonge le pied (eau profonde) quand la
-   page rebondit en bas, et le ciel quand elle rebondit en haut. Rien d'hérité
-   ici : voir `.da-bloc`. */
-.da {
+   `.da-fond` s'ajoute à `.da` sur <body> (l'accueil). Le fond prolonge le pied
+   (eau profonde) quand la page rebondit en bas, et le ciel quand elle rebondit
+   en haut. Rien d'hérité ici : voir `.da-bloc`. */
+.da-fond {
   margin: 0;
   background: var(--deep-2) linear-gradient(var(--sky-1), var(--sky-1)) no-repeat 0 0 / 100% 520px;
 }
-/* Bloc DA : l'en-tête, le pied, chaque section migrée. C'est lui qui porte la
-   typographie, pas <body> : les anciennes sections, qui n'ont pas la classe,
-   gardent le rendu de `main` (police, corps de 16 px, graisse 400, couleur). */
+/* Bloc DA : l'en-tête, le pied, chaque section de l'accueil. C'est lui qui
+   porte la typographie, pas <body> : le contenu des pages intérieures, qui n'a
+   pas la classe, garde son rendu (corps de 16 px, graisse 400, couleur). */
 :where(.da .da-bloc) {
   color-scheme: light;
   color: var(--ink);
@@ -130,8 +132,9 @@
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
-/* La pastille est collée à 10 px du haut et fait 60 px : une ancre s'arrête dessous. */
-html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
+/* La pastille est collée à 10 px du haut et fait 60 px : une ancre s'arrête
+   dessous. Les pages intérieures gardent les 96 px de global.css. */
+html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
 
 /* ───────── Éléments (dans un bloc DA seulement) ───────── */
 /* Grands corps sans taille optique. La police du site n'a pas l'axe `opsz` (il
@@ -377,7 +380,7 @@ html:has(.da) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); 
 :where(.da) .ft-sub svg { flex: none; }
 /* Deux colonnes remplies de haut en bas : les 9 premières des 16 lignes (outils,
    blog, comparatif et les trois articles) à gauche, les 7 suivantes (maison et
-   mentions) à droite. Le 9 suit le contenu de FooterDA.astro. Dès 340 px : sur
+   mentions) à droite. Le 9 suit le contenu de Footer.astro. Dès 340 px : sur
    une seule colonne, le pied faisait presque deux écrans de téléphone. Sous
    480 px les colonnes sont égales et un libellé long passe sur deux lignes. */
 @media (min-width: 340px) {

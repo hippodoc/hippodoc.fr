@@ -9,11 +9,10 @@
  *  - CalendlyWidget : badge flottant tiers déposé (cf. CtaBanner : CTA devenu mailto).
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
-// DA 2026, phase 1 (MIGRATION.md § 9) : en-tête et pied de la nouvelle direction
-// artistique, sur l'accueil seule. Les autres pages gardent Header et Footer.
-import HeaderDA from '@/components/da/HeaderDA.astro';
-import FooterDA from '@/components/da/FooterDA.astro';
-import ScriptTiroirDA from '@/components/da/ScriptTiroirDA.astro';
+// En-tête et pied du site (ceux de la DA 2026, communs à toutes les pages depuis
+// la phase 5a, MIGRATION.md § 9.ed). Footer rend aussi le micro-script du tiroir.
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
 // Même fichier que le `src` du @font-face de da.css : Vite émet une seule URL à
 // empreinte, le préchargement et la feuille de style demandent donc le même fichier.
 import policeDA from '@/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2?url';
@@ -98,7 +97,7 @@ const videoSchema = {
   ogImage="https://www.hippodoc.fr/lovable-uploads/og-image.png"
   ogImageAlt="Hippodoc — Le cockpit financier des médecins"
   jsonLd={[SOFTWARE_APPLICATION_SCHEMA, websiteSchema, faqPageSchema, videoSchema]}
-  bodyClass="da"
+  bodyClass="da-fond"
 >
   <Fragment slot="head">
     <!-- Police de la DA : préchargée, sinon elle n'est découverte qu'après la feuille de style.
@@ -128,7 +127,7 @@ const videoSchema = {
 
   <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white">
     {/* La pastille survole le ciel du premier écran, qui lui réserve le haut. */}
-    <HeaderDA variante="flottante" />
+    <Header variante="flottante" />
 
     <main id="contenu-principal" tabindex="-1" class="flex-1">
       <Hero />
@@ -144,8 +143,6 @@ const videoSchema = {
     </main>
 
     {/* Les trois logos des soutiens sont dans le bloc Partenaires : le pied ne les répète pas. */}
-    <FooterDA soutiens={false} />
-    {/* Micro-script du tiroir mobile de l'en-tête, hors du flux de l'en-tête. */}
-    <ScriptTiroirDA />
+    <Footer soutiens={false} />
   </div>
 </BaseLayout>
