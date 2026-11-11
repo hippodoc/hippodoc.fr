@@ -65,7 +65,7 @@
 /* L'attribut `hidden` ne masque pas un élément dont la feuille fixe `display`. */
 .bl-resultats[hidden], .bl-vide[hidden] { display: none; }
 .bl-resultats li + li { border-top: 1px solid var(--line); }
-.bl-resultats a { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 11px 14px; border-radius: 14px; font-size: 1rem; font-weight: 560; line-height: 1.35; color: var(--ink); text-decoration: none; }
+.bl-resultats a { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 12px 14px; border-radius: 14px; font-size: 1rem; font-weight: 560; line-height: 1.35; color: var(--ink); text-decoration: none; }
 .bl-resultats a:hover { background: var(--sky-soft); color: var(--ink); }
 .bl-resultats a span + span { flex: none; font-size: 0.84375rem; font-weight: var(--tw); color: var(--ink-3); }
 .bl-vide { margin-top: 6px; padding: 16px 20px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
@@ -150,9 +150,12 @@
 .bl-serie h3 span { padding: 2px 9px; border-radius: var(--r-pill); background: var(--plan-bg); font-size: 0.8125rem; line-height: 1.35; color: var(--plan); }
 .bl-serie ul { margin: 0; padding: 0; list-style: none; }
 .bl-serie li + li { border-top: 1px solid var(--line); }
-.bl-serie li a { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 9px 0; border-radius: 6px; font-size: 0.9375rem; line-height: 1.35; color: var(--ink); text-decoration: none; }
+/* Une grille plutôt qu'une rangée flexible : un titre d'une seule ligne se
+   centre dans les 44 px de la cible, un titre de deux lignes garde sa hauteur,
+   et la durée reste sur la ligne de base de la première ligne. */
+.bl-serie li a { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; align-content: center; column-gap: 14px; min-height: 44px; padding: 9px 0; border-radius: 6px; font-size: 0.9375rem; line-height: 1.35; color: var(--ink); text-decoration: none; }
 .bl-serie li a:hover { color: var(--brand); }
-.bl-serie li a > span + span { flex: none; font-size: 0.84375rem; color: var(--ink-3); }
+.bl-serie li a > span + span { font-size: 0.84375rem; color: var(--ink-3); }
 
 /* ───────── Pages de série : fil d'Ariane, titre, texte de la série ───────── */
 .bl-fil { font-size: 0.90625rem; color: var(--ink-2); }
@@ -180,6 +183,19 @@
   .bl-vignette { width: 88px; }
   .bl-carte-texte { padding-left: 12px; }
   .bl-carte h2, .bl-carte h3 { font-size: 1rem; }
+  /* Texte grossi à 200 % : un mot et sa ponctuation se dénouent dans l'extrait,
+     un mot plus large que sa place se coupe dans l'index, au lieu de faire
+     défiler la page de côté. */
+  .bl-extrait { overflow-wrap: anywhere; }
+  .bl .bl-extrait .num { white-space: normal; }
+  .bl-serie li a > span:first-child { overflow-wrap: anywhere; }
+}
+/* Téléphone, pages de série : le texte de la série se resserre, la première
+   carte remonte d'autant. */
+@media (max-width: 559px) {
+  .bl-presentation { gap: 16px; }
+  .bl-texte { padding: 16px; font-size: 0.9375rem; line-height: 1.5; }
+  .bl-presentation + .bl-series { margin-top: 18px; }
 }
 @media (min-width: 560px) {
   .bl-tete { padding: 108px 0 96px; }
