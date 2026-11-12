@@ -211,8 +211,47 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   le build TOUTE image de ce dossier, citée ou non : une image que plus aucun frontmatter
   ne cite se supprime (§ 9.eo).
 
-## Outils (îlots React, hydratés `client:visible`)
+## Outils (îlots React, hydratés à la vue)
 
+- ⚠️ **Un îlot ne répond qu'une fois hydraté** (§ 9.er). Entre l'affichage et l'hydratation,
+  l'outil a l'air prêt et ne répond pas ; tout ce qui allonge ce moment se paie en clics
+  perdus. Quatre règles, gardées par le contrôle 5 de `verify-site.mjs` :
+  - **Un îlot n'importe jamais `posthog-js`**, ni un module qui l'importe. Il émet par
+    `trackEvent()` de `src/lib/analytics.ts`, qui met en file tant que `PostHog.astro` n'a
+    pas donné l'instance (`brancherMesure()`, appelée une fois, après `init()` et
+    `register_once`) ; la file est rejouée dans l'ordre, après la page vue initiale.
+    Une seule instance de posthog-js, dans un fichier à lui (`codeSplitting`,
+    `astro.config.mjs` : fondu dans le script de `PostHog.astro`, il partirait avant la
+    première peinture sur toutes les pages).
+  - **Les fichiers des îlots sont préchargés** sur les trois pages d'outils : la page pose
+    `<template data-precharge-ilots="*"></template>` (ou une liste de noms de composants),
+    que `src/lib/precharge-ilots.mjs` remplace après le build par un
+    `<link rel="modulepreload">` par fichier (noms à empreinte lus dans le build, imports
+    statiques suivis). La balise se pose **dans le `<body>`**, après le premier écran du
+    HTML : dans le `<head>`, les fichiers disputent le débit aux feuilles de style et la
+    première peinture recule en 4G lente (mesuré : +0,35 à +0,6 s) ; avec
+    `fetchpriority="low"`, le navigateur les charge un par un et le gain fond. Sur
+    `/guide-declarations` : les fichiers de la recherche juste après son îlot, ceux de la
+    boussole en fin de page.
+  - **Un module lourd qui ne sert qu'après le premier geste se charge par `import()`** :
+    le bloc des résultats du simulateur (`RegimeComparisonCards`), le moteur de la
+    recherche du guide et ses données (`src/components/guide/rechercheGuide.ts`, 100 Ko
+    gzip, chargé juste après l'hydratation).
+  - **Tant que `<astro-island>` porte `ssr`, la feuille de l'outil le dit** (fin de
+    `simulateur.css`, `calculette.css`, `guide.css`) : contrôles sans clic ni toucher
+    (`pointer-events: none`, et `interactivity: inert` là où le navigateur le lit),
+    curseur d'attente, et après 0,5 s un trait qui glisse (bord haut de la première fiche,
+    ou sous le champ de recherche). Les sélecteurs visent des balises (`button`, `input`,
+    `select`, `textarea`, `summary`, `label`, `[role="button"]`, `[tabindex]`) sous la
+    racine de l'îlot (`.sim-ile`, `.calc-ile`, `.gd-rech-champ`, `.gd-boussole`) : un
+    nouvel îlot d'outil reçoit le même bloc, avec ses propres noms d'images clés. La
+    boussole est neutralisée sans trait (elle s'hydrate plus tard que la page : un trait
+    s'y montrerait d'emblée). Astro retire `ssr` juste avant que React ait fini : il reste
+    quelques dizaines de millisecondes où un clic peut encore se perdre.
+  Directives : simulateur, calculette et recherche en `client:visible` (`client:load` et
+  `client:idle` ne gagnent rien de mesurable) ; la boussole en
+  `client:visible={{ rootMargin: "100%" }}`, hydratée un écran avant d'entrer dans la
+  fenêtre. Pour mesurer : scripts de § 9.er (trois réseaux, cinq chargements à froid).
 - `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Accessibilité (§ 9.en) :
   l'aide « i » d'un champ est un bouton nommé (`PremiumTooltip.tsx`), posé À CÔTÉ du
   `<label>`, jamais dedans ; `FormControl` enveloppe le champ lui-même, pas le `<div>` de
@@ -245,6 +284,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 - **PostHog** (`src/components/PostHog.astro`) : clé projet
   `phc_x3JYWa7EjhuuwVVBLyks74ud58ZmUppaC666QkmTUXox`, proxy first-party
   `https://t.hippodoc.fr`, persistance `memory` → `localStorage+cookie` après consentement.
+- **Îlots et scripts de page** : `trackEvent()` de `src/lib/analytics.ts`, jamais
+  `posthog-js` en direct (voir « Outils », § 9.er). Un événement émis avant que la
+  bibliothèque soit là part dès qu'elle arrive, même nom, mêmes propriétés ; un clic fait
+  dans un îlot avant ce moment n'a pas d'autocapture.
 - **Instrumentation** : attributs `data-ph="landing_*"` (autocapture) et `data-track-*`
   sur les CTA — suivre la convention de nommage de la SPA source pour ne pas casser les
   insights PostHog existants.
