@@ -7356,6 +7356,153 @@ sélecteur ne trouve aucun élément, des fichiers que rien ne charge), et les r
 restent sont les mêmes, dans le même ordre. Pas de Lighthouse : aucune page ne charge plus
 qu'avant, la feuille commune perd 1,5 Ko une fois compressée. Firefox non plus.
 
+### 9.ep Phase 6 : passage dans le moteur de Safari, corrections (12 novembre 2026)
+
+Tout le site avait été conçu et vérifié dans Chromium seulement. Deux audits (pages
+statiques, outils) l'ont passé dans WebKitGTK 2.52, le moteur de Safari, à côté de
+Chromium. Cette entrée consigne ce qui a été corrigé, ce qui est proposé sans être fait et
+ce qui reste. Règles de la période d'observation : habillage seul (CSS et configuration du
+build), aucun mot, aucun lien, aucune ligne de logique des îlots, aucun JS client de plus.
+Chaque défaut a été reproduit sur le build de la branche avant d'être corrigé ; les deux
+défauts des vieux Safari, que le moteur installé ne montre pas, sont dits à part.
+
+**Corrigé**
+
+- **Mascottes deux fois trop hautes dans Safari** (`/faq` à toutes les largeurs, `/tarifs`
+  et les offres de l'accueil à partir de 1 024 px). Le moteur de Safari donne à un cadre
+  `aspect-ratio` posé hors du flux la hauteur de son contenu (l'image entière) au lieu de
+  celle de son rapport : la mascotte du haut de `/faq` montait sur le titre, celle du bas
+  recouvrait « Besoin d'aide ? », celle de `/tarifs` passait derrière la pastille dès le haut
+  de page, celle de l'accueil débordait sur les témoignages. `min-height: 0` sur les quatre
+  cadres (`tarifs.astro` `.guide.haut`, `accueil/Tarifs.astro` `.guide`, `faq.astro`
+  `.guide` et `.pouce`). Mesuré dans WebKit, avant → après : 250 × 465 → 250 × 242
+  (`/tarifs` 1 440), 215 × 400 → 215 × 208 (`/tarifs` 1 024), 250 × 425 → 250 × 331 et
+  160 × 286 → 160 × 183 (`/faq` 1 440), 117 × 199 → 117 × 155 (`/faq` 390), 92 × 156 →
+  92 × 122 (`/faq` 320), 242 × 451 → 242 × 235 (accueil 1 440) : les tailles de Chromium,
+  au pixel. Rien ne change dans Chromium.
+- **Mots collés dans les tableaux d'articles** (Safari, 15 articles). Le tableau demandait
+  les chiffres tabulaires et retirait 0,097 em à chaque espace (§ 9.ed). La fonction `tnum`
+  de la police remplace aussi l'espace par une espace plus large (645 unités au lieu de 450
+  sur 2 000, lu dans le fichier) : Chromium l'applique, d'où la compensation ; le moteur de
+  Safari garde l'espace ordinaire, et la compensation y collait les mots (« 3CVetmoins »).
+  Le tableau ne demande plus les chiffres tabulaires : il prend une seconde face de la même
+  police, « Google Sans Flex Chiffres » (`[slug].astro`), limitée par `unicode-range` aux
+  caractères que `tnum` remplace, espace exceptée (chiffres, `. , : ;`, opérateurs, signes
+  monétaires, `# % §`), et qui porte `font-feature-settings: "tnum"`. Les chiffres restent
+  de même chasse, l'espace reste celle du texte, dans les deux moteurs, sans compensation.
+  Même fichier woff2 : une seule requête, comme avant. Mesuré (premier tableau de
+  `/blog/frais-pros-medecin-liberal-2026`, 1 440 px) : WebKit 565,3 → 581,3 px ; Chromium
+  581,1 → 579,5 px. Dans Chromium, les 40 tableaux relevés (15 articles, 2 largeurs)
+  perdent 0 à 2 px de large, aucune hauteur de page ne change.
+- **Pastille de l'en-tête : le texte de la page se lisait au travers.** Sous 900 px (deux
+  moteurs), elle n'a pas de flou (§ 9.dn) et son fond était à 94 % : un titre passait en
+  lettres nettes derrière le logo. Le fond est plein (`#fff`). À partir de 900 px, le
+  verre reste : flou inchangé, fond passé de 86 à 92 % (à 86 %, un titre gras laissait un
+  nuage gris derrière le menu ; l'audit mesure 3 à 14 niveaux sur 255 à 86 %, 2 à 8 à
+  92 %). Le verre est posé sous `@supports` : un navigateur sans flou d'arrière-plan garde
+  le fond plein.
+- **Safari avant 18 : la pastille sans flou** (iPad en paysage, Mac ; vu par émulation, le
+  moteur lancé avec `--features=-CSSUnprefixedBackdropFilter`). La source écrivait bien
+  `-webkit-backdrop-filter`, mais le build ne le contenait plus : Astro construit en
+  « esnext » et le minificateur (lightningcss), sans navigateur cible, retirait le préfixe.
+  `astro.config.mjs` lui donne ses cibles : `vite.build.cssTarget` = Safari et iOS 16.4,
+  Chrome et Edge 111, Firefox 121. Le préfixe revient (12 occurrences dans le build).
+- **Safari avant 26.2 : liens sans soulignement** (non vu : aucun vieux Safari ici ; établi
+  sur le CSS du build et les tables de compatibilité de MDN). Le même minificateur
+  fusionnait `text-decoration: underline` et `text-decoration-thickness` en
+  `text-decoration: underline 2px`, forme que Safari ne lit que depuis 26.2 : la
+  déclaration entière y est rejetée (liens `.lien`, corps des articles et des pages légales,
+  fils d'Ariane…). Avec les cibles, les deux propriétés restent séparées et la forme à
+  couleur est doublée de `-webkit-text-decoration`. Dans le WebKit installé, les
+  soulignements calculés sont les mêmes avant et après sur `/faq`, un article,
+  `/mentions-legales` et `/comparatif`.
+- **Ce que les cibles changent d'autre dans le CSS du build** (feuilles comparées
+  déclaration par déclaration) : des préfixes rendus (`-webkit-user-select`,
+  `-webkit-mask` pour Chrome avant 120, `-webkit-box-decoration-break`,
+  `-webkit-print-color-adjust`, `-webkit-text-decoration-color`,
+  `-webkit-backdrop-filter` des utilitaires Tailwind) et deux variables internes du
+  minificateur à côté de `color-scheme`. Aucun sélecteur ne change. Firefox est visé à 121
+  et non 114 : en dessous (pas de `:has()`), le minificateur réécrivait six listes de
+  sélecteurs en `:is(…)`.
+- **Super-Net du simulateur : « 24044 € » dans Safari.** Les milliers sont séparés par une
+  espace fine insécable (U+202F). Chromium n'applique aucun interlettrage à une suite de
+  chiffres qui en contient une ; le moteur de Safari applique celui de `.aff` (-2,2 px à
+  48 px) à chaque caractère, espace comprise. `simulateur.css` : le montant est posé sans
+  interlettrage, le signe « € » garde celui de `.aff`. Largeur de « 24 044 € » à 1 440 px :
+  WebKit 177,6 → 190,7 px ; Chromium 189,5 → 189,5 px (capture identique au pixel). Seul
+  effet dans Chromium : un Super-Net inférieur à 1 000 € perd son interlettrage négatif.
+  Cherché ailleurs : aucun nombre à espace fine sous un interlettrage non nul dans le HTML
+  des 70 pages, ni dans les résultats du simulateur (deux plis ouverts), la calculette avec
+  une valeur saisie et le guide des déclarations.
+- **Flèches natives des champs de montant du simulateur** (mineur, deux moteurs) : dessinées
+  en permanence dans WebKitGTK, au survol dans Chromium, avec un pas d'un centime. Retirées
+  (`appearance: textfield`). Hauteur des champs (50 px), saisie et calcul inchangés.
+
+**Proposé, non fait (décision du propriétaire)**
+
+- *Îlot pas encore hydraté.* Entre l'affichage et l'hydratation (0,1 à 0,3 s en local ;
+  0,8 → 2,5 s sur un réseau bridé, jusqu'à 4,5 s en « 4G lente », mesures de l'audit), les
+  outils ont l'air prêts mais rien ne répond : clics perdus, montants tapés effacés à
+  l'hydratation, « Simuler » qui recharge la page. C'est le candidat le plus sérieux pour
+  le signalement « les listes ne s'ouvrent pas » retiré depuis. Un état d'attente en CSS
+  seul existe, essayé par l'audit par injection dans les deux moteurs, sans script et sans
+  décalage de mise en page : tant que `<astro-island>` porte l'attribut `ssr`, curseur
+  d'attente, contrôles neutralisés (`pointer-events: none`), bouton atténué et une barre de
+  progression qui n'apparaît qu'après 0,4 s. À reporter dans `simulateur.css`,
+  `calculette.css` et `guide.css`. Restent hors habillage : la saisie au clavier, et la
+  durée de la fenêtre elle-même.
+- *Un fichier JS de l'îlot qui ne charge pas* : l'îlot reste inerte toute la visite, sans
+  message. `posthog-js` (30 % du JS de l'îlot) est une dépendance statique des trois
+  outils par `src/lib/analytics.ts`. En habillage seul, on ne peut qu'afficher un message
+  après 10 s (du texte en plus : à valider) ; la vraie correction change un import.
+- *Aides « i » et « ? » au toucher* (simulateur à partir de 768 px, calculette partout) :
+  les bulles Radix ne s'ouvrent qu'au survol ou au clavier. Il faut changer le composant.
+- *Colonne des résultats de la calculette*, plus haute que l'écran alors qu'elle colle : une
+  hauteur maximale avec défilement interne est une piste, non essayée (ombres, impression).
+
+**Laissé, avec la raison**
+
+- Les deux faces de repli de la police : Safari ne lit `size-adjust` que depuis 17 et pas
+  les trois `*-override` ; le saut à l'arrivée du woff2 (préchargé) y est un peu plus grand.
+- `/guide-declarations` : premier affichage plus tardif dans WebKit (0,9 à 1 s en local
+  contre 0,2 à 0,3 s), le moteur ne peignant qu'une fois analysé le document de 1,8 Mo.
+- Sans équivalent dans un Safari de deux ans, sans correction nécessaire : animations liées
+  au défilement (Safari 26), toutes sous `@supports`, les éléments sont alors fixes et
+  visibles ; `text-wrap-style` (coupures ordinaires) ; `content-visibility` et
+  `scrollbar-width` (ignorés).
+
+**Preuves** (12 novembre 2026 ; scripts de session, hors dépôt)
+
+- *HTML* contre le build de `main` : 70 pages identiques au nom des feuilles près,
+  `/transmissions` identique octet pour octet ; 0 écart sur `title`, description,
+  canonique, `robots`, H1 à H6, texte, liens, JSON-LD, `data-ph`, `data-track`,
+  `data-landing-section` (194 021 mots, 7 272 liens, 1 475 titres, 257 blocs JSON-LD).
+  JS identique octet pour octet (29 fichiers). CSS : 398 999 → 401 921 octets, feuille
+  commune 77 154 → 78 642 (gzip 15 241 → 15 334).
+- *Chromium, avant / après* : les 68 pages du sitemap, `/essai` et la 404 à 1 440 et
+  390 px, 314 tranches. 166 identiques au pixel ; 115 ne diffèrent que dans la pastille ;
+  33 diffèrent aussi dans un tableau d'article ou son ombre, et nulle part ailleurs. Îlots
+  (résultats du simulateur, exemple de la calculette, boussole, listes de Radix) : 29
+  captures, écarts dans le seul rectangle de la pastille.
+- *WebKit, avant / après* : chaque défaut corrigé a sa capture avant et après (mascottes,
+  tableaux, pastille aux trois configurations, Super-Net, champs). Passe de mesure sur
+  21 pages à 1 440 et 390 px (dont les outils au repos, le guide des déclarations et deux
+  pages légales) : aucune hauteur de page ne change, aucun débordement ; seuls changent de
+  taille les quatre cadres des mascottes et les cellules des tableaux de l'article long.
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages,
+  5 388 liens internes). Lighthouse en local : `/` 99 / 100 / 96 / 100, `/simulateur`
+  98 / 100 / 96 / 100, l'article aux tableaux 98 / 100 / 96 / 100 (performance,
+  accessibilité, bonnes pratiques, SEO), décalage de mise en page 0 ; l'article donnait
+  les mêmes notes avant.
+
+**Non testé.** Safari réel, sur iPhone, iPad ou Mac : tout est mesuré dans WebKitGTK sous
+Linux (même moteur, autres polices système, ni barres d'iOS ni toucher). Aucun vieux
+Safari : le flou préfixé est vu par un drapeau d'émulation, les soulignements ne sont pas
+vus. La face « Chiffres » repose sur le descripteur `font-feature-settings` de
+`@font-face` (Safari 10 selon MDN) : s'il manquait, les chiffres des tableaux
+reprendraient leur chasse ordinaire, sans autre effet. Firefox : non testé. La branche
+PAMC du simulateur (appel Supabase) n'est pas joignable d'ici.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

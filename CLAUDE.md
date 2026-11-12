@@ -114,6 +114,26 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `sticky`) : la borner par `@media` à la plage où l'utilitaire ne s'applique pas.
   Une barre collante se double d'un `scroll-padding-top` sur `<html>` (sa hauteur),
   sinon ancres et focus au clavier arrivent dessous.
+- ⚠️ **Pièges du moteur de Safari** (§ 9.ep). Le site se conçoit dans Chromium : ces
+  écarts ne s'y voient pas, ils se vérifient dans WebKit (« Vérification avant push »).
+  Un cadre `aspect-ratio` posé hors du flux (`position: absolute`) y prend la hauteur de
+  son contenu : lui donner `min-height: 0` (mascottes de `/faq`, `/tarifs`, accueil).
+  `font-variant-numeric: tabular-nums` élargit aussi l'espace dans Chromium (fonction
+  `tnum` de la police), pas dans Safari : ne jamais compenser par `word-spacing` ; pour
+  des chiffres alignés au milieu de mots, la face « Google Sans Flex Chiffres » de
+  `src/pages/blog/[slug].astro` (tableaux d'articles). Un interlettrage négatif (`.aff`,
+  titres) sur un nombre à espace fine (U+202F, `Intl.NumberFormat`) : Chromium ne
+  l'applique pas, Safari colle les milliers ; poser `letter-spacing: 0` sur le nombre
+  (`.sim-supernet-montant`). Un fond translucide sans flou laisse lire le texte qui passe
+  dessous : la pastille de l'en-tête a un fond plein sous 900 px, et son verre (flou, fond
+  à 92 %) sous `@supports` à partir de 900 px.
+- ⚠️ **Préfixes et vieux Safari** (§ 9.ep) : `astro.config.mjs` donne ses navigateurs cibles
+  au minificateur CSS (`vite.build.cssTarget`). Sans elles, il retire les préfixes écrits
+  dans les sources (`-webkit-backdrop-filter` : pas de flou avant Safari 18) et fusionne
+  `text-decoration` et son épaisseur en une forme que Safari ne lit que depuis 26.2 (liens
+  sans soulignement). Ne pas les retirer. Après un changement de cibles, comparer les
+  feuilles du build déclaration par déclaration : une cible sans `:has()` (Firefox avant
+  121) fait réécrire les listes de sélecteurs en `:is(…)`, ce qui change leur poids.
 - **Ce qui reste de Tailwind, et pourquoi** (§ 9.em). Tailwind n'habille plus aucune
   page. Il reste dans le build pour : son socle (preflight, sur lequel la DA est écrite) ;
   `src/components/ui/` (shadcn, partagé par les trois outils) et ses jetons `--background`,
@@ -242,11 +262,16 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
    `npx serve` sert en HTTP/1.1 : sur les pages à deux feuilles bloquantes (outils, guide,
    comparatif, pages légales), FCP et LCP y sortent 0,15 à 0,3 s plus hauts que sur Vercel
    (HTTP/2, où l'écart disparaît). Ne pas le lire comme une régression (§ 9.en).
-4. Moteur de Safari (WebKitGTK 2.52 et Selenium installés) : servir `dist` en local, puis
-   `WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1 WEBKIT_DISABLE_COMPOSITING_MODE=1 xvfb-run -a -s "-screen 0 1600x1400x24" python3 -I script.py`.
+4. Moteur de Safari (WebKitGTK 2.52 et Selenium installés), dès qu'une feuille change :
+   servir `dist` en local, puis
+   `WEBKIT_DISABLE_COMPOSITING_MODE=1 xvfb-run -a -s "-screen 0 1600x1400x24" python3 -I script.py`.
    Dans le script : `Options().binary_location = '/usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/MiniBrowser'`,
    `add_argument('--automation')`, `webdriver.WebKitGTK(options=…, service=Service('/usr/bin/WebKitWebDriver'))`.
-   Ce n'est ni Safari ni un iPhone (polices, barres d'iOS, tactile) ; mesurer `innerWidth` réel.
+   Sans `WEBKIT_DISABLE_COMPOSITING_MODE`, le flou d'arrière-plan est peint (pour regarder la
+   pastille) ; `add_argument('--features=-CSSUnprefixedBackdropFilter')` émule un Safari d'avant
+   18. La fenêtre ne descend pas sous 447 px : en dessous, charger la page dans un `<iframe>`
+   de même origine à la largeur voulue. Ce n'est ni Safari ni un iPhone (polices, barres
+   d'iOS, tactile) ; mesurer `innerWidth` réel. Comparer chaque page à Chromium (§ 9.ep).
 
 ## Recherche d'audience
 
