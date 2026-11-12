@@ -77,6 +77,38 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
+- **Accueil épurée** (novembre 2026, MIGRATION.md § 9.eu) : chaque chose est dite une fois.
+  Ordre : premier écran, « Sous la surface », « Pour qui », fondateur et film,
+  témoignages (ciel), syndicats et partenaires (sable), tarifs, questions, guides, scène
+  finale. Ne pas remettre ce qui a été retiré sans le décider (textes archivés en § 9.eu).
+  - Les étapes ne sont racontées que dans « Pour qui » : une seule forme pour les quatre
+    profils (titre, phrase `acc`, précision `det` ; `verify-site.mjs` échoue si une étape
+    n'a pas les trois). Sous 640 px, elles se feuillettent de côté comme les témoignages,
+    et les quatre panneaux occupent la même case de grille (même hauteur de section pour
+    tous les profils). Les trois cases de « Sous la surface » n'ont qu'une ligne chacune.
+  - Feuilles à lignes (questions, guides, partenaires et soutiens) : une feuille blanche
+    qui rogne (`overflow: hidden`), un filet entre deux lignes, la ligne teintée au
+    survol, l'anneau de focus tracé à l'intérieur (`outline-offset` négatif, sinon la
+    feuille le rogne). `.qa` (da.css) reste une fiche, partagée avec `/faq`, `/tarifs` et
+    les plis des tarifs : les règles de la feuille des questions sont dans
+    `Questions.astro`.
+  - Les règles communes aux feuilles de l'accueil (remplissage 44 et 72 px sous 560 px,
+    76 et 112 px à partir de 900 px, chapô en 17 px sur téléphone, marge sous l'en-tête)
+    sont répétées dans le `<style>` de chaque composant, jamais dans `da.css`.
+  - Film : sous 700 px, le cadre est une vignette tant que le `<video>` n'a pas
+    l'attribut `controls` (`.film:not(:has(video[controls]))`). Le script du film, non
+    modifié, le retire au chargement et le rend à la lecture : c'est ce qui redonne sa
+    taille au cadre. Toucher à ce que le script fait de `controls` change donc la mise en
+    page. Sans `:has()` ou sans script, le cadre est grand d'emblée.
+  - Pause du décor : `body:has(.pause:checked)`, une seule pour les deux scènes et les
+    bulles. Ne pas donner la classe `pause` à autre chose sur l'accueil.
+  - Questions : huit (`src/data/faqAccueil.ts`). Les `id` `super-net` et `retrocessions`
+    sont retirés et ne se réutilisent pas (séries PostHog arrêtées).
+  - ⚠️ Astro ajoute son attribut de portée à chaque maillon d'un sélecteur : `.a .b + .b >
+    x` pèse donc plus que `.a .b > x:hover`. Un raccourci (`background`) posé dans le
+    premier efface la couleur de survol du second : y écrire les propriétés longues.
+  - Sitemap : `/` a sa date, `ACCUEIL_LAST_UPDATED_ISO` (`src/lib/pages-lastmod.ts`), à
+    mettre à jour à chaque retouche de texte de l'accueil.
 - **Pages intérieures** (phases 5b à 5d) : `da-fond`, un bloc « ciel » puis des feuilles
   `.band`, aucune classe Tailwind ; styles dans le `<style>` de la page (une feuille à
   part, `tarifs.*.css`… : la feuille commune ne grossit pas), ou dans une feuille de
@@ -170,9 +202,14 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   police suivante de la pile : Arial par la face de repli, sinon la police du système.
 - **Mesure** : chaque section porte `data-landing-section`. `SECTIONS_LANDING`
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
-  commit ; verify-site garde aussi les `data-track`, les ancres `#sous-la-surface`,
-  `#parcours`, `#pricing` (les trois cibles du menu, sur toutes les pages) et
-  `#film-presentation`, un plancher de mots et l'égalité FAQ visible / `FAQPage`.
+  commit quand une section apparaît ou disparaît ; `SECTIONS_LANDING` suit l'ordre de la
+  page (vérifié), `SECTIONS` garde son rang historique. verify-site garde aussi les
+  `data-track`, les ancres `#sous-la-surface`, `#parcours`, `#pricing` (les trois cibles
+  du menu, sur toutes les pages) et `#film-presentation`, l'égalité FAQ visible /
+  `FAQPage`, un plancher de mots (2 680 depuis l'épure, à abaisser sciemment seulement) et
+  la présence des termes porteurs dans le texte rendu (« médecin remplaçant », URSSAF,
+  CARMF, 2035, 2042-C PRO, DSFU, RSPM, PAMC, Micro-BNC, rétrocession, contrat et licence
+  de remplacement).
 - **Chiffres** : journées et lieux du bloc fondateur relevés en base par `count(*)`
   (MIGRATION.md § 9.u), datés dans l'en-tête de `Fondateur.astro` et dans MIGRATION.md
   § 9.ec (la date n'est plus affichée sur la page), jamais écrits à la main. Le compte de la

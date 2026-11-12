@@ -103,7 +103,7 @@ const [avif, webp] = await Promise.all(
   .liste .qa > summary { gap: 14px; min-height: 60px; box-sizing: border-box; margin: 0 calc(-1 * var(--marge)); padding: 13px var(--marge); border-radius: 0; transition: background-color 160ms var(--ease); }
   /* Le filet : un trait d'un pixel en haut de la ligne, dessiné en fond pour
      s'arrêter aux marges alors que la ligne, elle, va d'un bord à l'autre. */
-  .liste .qa + .qa > summary { background: linear-gradient(var(--line), var(--line)) no-repeat var(--marge) 0 / calc(100% - 2 * var(--marge)) 1px; }
+  .liste .qa + .qa > summary { background-image: linear-gradient(var(--line), var(--line)); background-repeat: no-repeat; background-position: var(--marge) 0; background-size: calc(100% - 2 * var(--marge)) 1px; }
   .liste .qa > summary:hover { background-color: var(--survol); }
   .liste .qa > summary:focus-visible { outline-offset: -4px; border-radius: 16px; }
   .liste .qa > summary h3 { font-size: 17px; line-height: 1.35; }

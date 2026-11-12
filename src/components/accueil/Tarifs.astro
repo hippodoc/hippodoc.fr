@@ -1,7 +1,8 @@
 ---
 /**
  * Tarifs (DA 2026, phase 3, MIGRATION.md § 9). Feuille « ciel », entre les
- * témoignages et les questions. Remplace home/PricingSection.astro et reprend
+ * syndicats et les questions (entre les témoignages et les questions jusqu'à
+ * l'épure de novembre 2026). Remplace home/PricingSection.astro et reprend
  * de home/CtaBanner.astro le seul bloc RSPM (deux composants supprimés en
  * phase 4a, à lire dans l'historique git).
  *
@@ -355,6 +356,11 @@ const rspm = [
     .offer { padding: 20px 22px 24px; }
     .offer:not(.main) { padding-top: 18px; }
     .offer > .btn, .offer summary { padding-inline: 8px; font-size: 15.5px; }
+  }
+  /* Sous 340 px, il tenait à 1 px près dans Chromium et passait sur deux
+     lignes dans le moteur de Safari, dont la police sort un peu plus large. */
+  @media (max-width: 339px) {
+    .offer > .btn, .offer summary { padding-inline: 4px; font-size: 15px; }
   }
   @media (min-width: 640px) {
     .checks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
