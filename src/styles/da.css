@@ -25,12 +25,12 @@
      qui s'en servent : elle sort dans la feuille commune à toutes les pages.
 
    Depuis la phase 5d (MIGRATION.md § 9.em), toutes les pages sont dans la DA :
-   elles ont toutes `.da-fond` et l'en-tête « flottante ». Ce que cette feuille
-   dit plus bas des pages intérieures « qui gardent leur rendu Tailwind » décrit
-   l'état d'avant. L'en-tête « flux » (`.hd--flux`), la bande `.hd-ciel`,
-   `.da-sous-entete` et le pied arrondi des pages sans `.da-fond` ne servent
-   plus à aucune page : laissés en place, à retirer ou à garder (décision du
-   propriétaire).
+   elles ont toutes `.da-fond` et le même en-tête. Ce que cette feuille dit plus
+   bas des pages intérieures « qui gardent leur rendu Tailwind » décrit l'état
+   d'avant. Retirés en phase 6 (MIGRATION.md § 9.eo), plus aucune page ne s'en
+   servant : l'en-tête « dans le flux » (`.hd--flux`), la bande de ciel
+   `.hd-ciel` et son jeton `--ciel-bande`, la classe `.da-sous-entete`, et les
+   coins ronds du pied des pages sans `.da-fond`.
    ========================================================================== */
 
 /* ───────── Police ─────────
@@ -100,8 +100,6 @@
   --on-deep-2: #DCE7FB; --on-deep-3: #B9CCF0;
   --sun: #FFD84A; --sun-hover: #FFE169; --sun-edge: #DDA800;
   --line: rgba(20, 37, 79, 0.11); --line-deep: rgba(255, 255, 255, 0.2);
-  /* Bande de ciel des pages intérieures (`.hd-ciel`, `.da-sous-entete`) */
-  --ciel-bande: linear-gradient(var(--sky-1), var(--sky-2) 55%, rgba(228, 238, 255, 0));
   /* États */
   --ok-bg: #DFF3E7; --ok: #0F6338;
   --wait-bg: #FCEACF; --wait: #874C00;
@@ -282,53 +280,20 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
    pastille, du voile et du tiroir, les clics traversent vers la page. */
 :where(.da) .hd { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 50; height: 60px; margin: 10px 0 -70px; pointer-events: none; -webkit-tap-highlight-color: transparent; }
 :where(.da) .hd-bar, :where(.da) .hd-overlay, :where(.da) .hd-drawer { pointer-events: auto; }
-/* Variante « dans le flux » : la pastille garde sa place au lieu de survoler le
-   premier bloc (pages dont le haut n'est pas dessiné pour passer dessous). Des
-   marges intérieures et non extérieures : une marge haute fusionnerait avec
-   celle du conteneur et laisserait 10 px du fond de page au-dessus de lui. */
-:where(.da) .hd--flux { box-sizing: border-box; top: env(safe-area-inset-top, 0px); height: 80px; margin: 0; padding: 10px 0; }
-/* Pages intérieures : elles n'ont pas de ciel. Une bande de ciel de 80 px, la
-   place que l'en-tête occupe en haut de la page, qui s'éteint vers le bas : la
-   pastille blanche se détache. Élément à part, rendu juste avant l'en-tête et
-   de hauteur nulle dans le flux : l'en-tête est collant, la bande non (elle
-   part avec la page, aucun élément collant ne passe dessous). Sans position ni
-   z-index : elle se peint sous tout le contenu, et un fond posé par la page la
-   recouvre (le bandeau bleu de /guide, qui remonte sous la pastille).
-   Elle s'éteint sur le fond de <body> : la jonction est invisible quand le
-   premier bloc de la page n'a pas de fond (/blog, les articles). Un
-   premier bloc qui a le sien prend `.da-sous-entete`, ci-dessous. */
-:where(.da) .hd-ciel { height: 80px; margin-bottom: -80px; background: var(--ciel-bande); pointer-events: none; }
-/* Premier bloc d'une page intérieure, quand il a son propre fond (dégradé,
-   halo, blanc) : sans cela ce fond commence net à 80 px, sous une bande qui
-   s'est éteinte sur une autre couleur, et on voit une ligne sur toute la
-   largeur. Le bloc remonte donc sous l'en-tête, rend les 80 px à son contenu
-   (`::before`, dans le flux) et peint lui-même la bande de ciel par-dessus son
-   fond et ses halos (`::after`, dernier dans l'ordre de peinture) : elle
-   s'éteint sur le fond du bloc, quel qu'il soit. La classe n'agit que si le
-   bloc est bien le premier après l'en-tête « flux » (lui-même, ou le premier
-   enfant de l'élément qui suit) : précédé d'un bandeau, il reste à sa place.
-   Le bloc ne doit pas être un conteneur flex ou grille (le `::before` y
-   deviendrait une cellule). */
-:where(.da) .hd--flux + .da-sous-entete,
-:where(.da) .hd--flux + * > .da-sous-entete:first-child { position: relative; margin-top: -80px; }
-:where(.da) .hd--flux + .da-sous-entete::before,
-:where(.da) .hd--flux + * > .da-sous-entete:first-child::before { content: ""; display: block; height: 80px; }
-:where(.da) .hd--flux + .da-sous-entete::after,
-:where(.da) .hd--flux + * > .da-sous-entete:first-child::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 80px; background: var(--ciel-bande); pointer-events: none; }
-@media (forced-colors: active) {
-  :where(.da) .hd-ciel,
-  :where(.da) .hd--flux + .da-sous-entete::after,
-  :where(.da) .hd--flux + * > .da-sous-entete:first-child::after { display: none; }
-}
-/* Sous 900 px, pas de flou d'arrière-plan : il coûte cher au défilement sur
-   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. Sur les pages
-   intérieures (« flux ») il est plein : la pastille y passe sur du texte foncé
-   et dense (formulaires, tableaux, cartes), qu'on lisait au travers à 94 %. */
-:where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+/* Le fond de la pastille. Sous 900 px, pas de flou d'arrière-plan : il coûte
+   cher au défilement sur téléphone (§ 9.dn). Sans flou, un fond même à 94 %
+   laissait lire en lettres nettes le texte qui passe dessous : il est plein.
+   À partir de 900 px, le verre : un flou et un fond à 92 % (à 86 %, un titre
+   gras laissait un nuage gris derrière le menu), seulement là où le flou
+   existe. Un navigateur sans flou d'arrière-plan garde le fond plein (§ 9.ep).
+   Le préfixe -webkit- sert Safari avant la version 18 : il n'arrive dans le
+   build que parce que `astro.config.mjs` donne ses cibles au minificateur. */
+:where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: #fff; box-shadow: var(--float); }
 @media (min-width: 900px) {
-  :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.92); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
+  }
 }
-@media (max-width: 899px) { :where(.da) .hd--flux .hd-bar { background: #fff; } }
 :where(.da) .hd-brand { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); text-decoration: none; }
 /* Sous 340 px, tout se resserre : le mot, la pastille d'essai et le bouton du
    menu doivent tenir sur 320 px (296 px de pastille). */
@@ -410,11 +375,6 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 
 /* ───────── Pied : l'eau profonde ───────── */
 :where(.da) .ft { --focus: #FFFFFF; position: relative; z-index: 1; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 16px; }
-/* Pages intérieures (sans `.da-fond`) : le pied ne prolonge pas une scène d'eau,
-   il arrive sous une page claire. Il prend les coins ronds d'une feuille de la
-   DA ; le fond de la page se voit dans les coins. */
-:where(.da:not(.da-fond)) .ft { border-radius: var(--r-xl) var(--r-xl) 0 0; }
-@media (max-width: 559px) { :where(.da:not(.da-fond)) .ft { border-radius: var(--r-lg) var(--r-lg) 0 0; } }
 :where(.da) .ft-in { display: grid; gap: 36px 56px; padding-top: 36px; padding-bottom: 28px; }
 :where(.da) .ft a, :where(.da) .ft-prefs { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; transition: color 160ms var(--ease); }
 :where(.da) .ft a:hover, :where(.da) .ft-prefs:hover { color: var(--paper); }

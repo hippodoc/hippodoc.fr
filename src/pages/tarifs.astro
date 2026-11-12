@@ -14,8 +14,8 @@ import { SITE_URL, APP_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
  * Habillée dans la DA 2026 en phase 5b (MIGRATION.md § 9.ee) : seul l'habillage
  * a changé. Textes, titres, liens, ordre des blocs, JSON-LD et `data-track`
  * sont ceux d'avant, au caractère près (période d'observation SEO).
- * - Page entièrement dans la DA, comme l'accueil : fond `da-fond`, en-tête en
- *   variante « flottante » (le ciel du premier bloc lui réserve le haut).
+ * - Page entièrement dans la DA, comme l'accueil : fond `da-fond`, en-tête qui
+ *   flotte (le ciel du premier bloc lui réserve le haut).
  * - Quatre blocs : le ciel (titre, les deux offres et la fiche des internes,
  *   dans l'ordre du HTML : mensuel, annuel, internes), une feuille sable (la
  *   liste des inclus), une feuille ciel (les questions, en plis `.qa`), puis
@@ -130,7 +130,7 @@ const coche =
     <meta name="theme-color" content="#C9DEFF" />
   </Fragment>
   {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
-  <Header variante="flottante" />
+  <Header />
   <main>
     <div class="tete da-bloc">
       <div class="wrap">
@@ -455,8 +455,9 @@ const coche =
     .intro { max-width: calc(100% - 320px); }
     /* Elle se tient derrière la fiche des internes, coupée à mi-corps par son
        bord haut (les 52 % du haut de l'image), hors du flux : comme sur
-       l'accueil (accueil/Tarifs.astro). */
-    .guide.haut { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; overflow: hidden; }
+       l'accueil (accueil/Tarifs.astro). `min-height: 0` : sans lui, le moteur
+       de Safari donne au cadre la hauteur de l'image entière (§ 9.ep). */
+    .guide.haut { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; min-height: 0; overflow: hidden; }
     /* La liste des inclus retrouve son titre centré, sans mascotte. */
     .guide.bas { display: none; }
     .band-head.tenue { display: flex; align-items: center; max-width: 800px; margin-bottom: 44px; text-align: center; }

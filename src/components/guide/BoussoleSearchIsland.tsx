@@ -8,7 +8,7 @@ import { GLOSSAIRE_DECLARATIONS } from '@/data/glossaireDeclarationsData';
  * Portage de src/pages/guide-declarations/components/BoussoleSearch.tsx (SPA
  * source). Déviation volontaire : dans la source, `value`/`onChange` et la
  * navigation (`onNavigate`) étaient levés dans `GuideDeclarationsBody` (pour
- * vider la recherche + scroller + poser un ring highlight). Ici, la
+ * vider la recherche + scroller + poser un anneau de repérage). Ici, la
  * recherche est un îlot autonome (`client:visible`) : l'état vit en local et
  * la navigation appelle directement `scrollIntoView` sur l'id ciblé, qui
  * existe forcément dans le HTML statique de la page (rendu server-side).

@@ -36,7 +36,7 @@
  * changé. Textes, titres, liens, ancres, `id`, ordre des blocs, JSON-LD et
  * `data-track` sont ceux d'avant (période d'observation SEO) ; la logique des
  * deux îlots (recherche, boussole) n'est pas touchée.
- * - Page entièrement dans la DA : fond `da-fond`, en-tête « flottante ». Le
+ * - Page entièrement dans la DA : fond `da-fond`, en-tête qui flotte. Le
  *   bandeau d'échéance reste entre l'en-tête et <main>, dans le flux : une
  *   pastille sur le ciel, sous celle de l'en-tête.
  * - <main class="gd"> porte le ciel : le titre, la barre de recherche (collante,
@@ -142,7 +142,7 @@ const webPageSchema = {
   </Fragment>
   {/* La pastille survole le ciel : le bandeau d'échéance, ou à défaut le titre,
       lui réserve le haut. */}
-  <Header variante="flottante" />
+  <Header />
   <SeasonalBanner />
 
   <main class="gd">

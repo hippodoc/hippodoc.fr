@@ -1,7 +1,7 @@
 ---
 /**
  * /comparatif — porté verbatim depuis src/pages/comparatif.tsx (SPA source).
- * Tableau desktop/mobile unifié en un seul <table> réel + overflow-x-auto
+ * Tableau desktop/mobile unifié en un seul <table> réel, défilant en largeur
  * (spec migration : pas de Tabs JS mobile). Tooltips → attribut title natif.
  * Accordéon FAQ → <details>/<summary> natif. Zéro JS.
  *
@@ -404,7 +404,7 @@ const faqSchema = {
   </Fragment>
 
   {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
-  <Header variante="flottante" />
+  <Header />
 
   <main>
     <!-- ═════════════════ LE CIEL : TITRE ═════════════════ -->

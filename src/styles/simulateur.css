@@ -82,6 +82,12 @@
 .sim input:where(:not([type="checkbox"], [type="radio"])),
 .sim button[role="combobox"] { height: 50px; padding-inline: 14px; border: 0; border-radius: 14px; background: var(--sky-soft); box-shadow: inset 0 0 0 1.5px rgba(20, 37, 79, 0.12); font-family: inherit; font-size: 1rem; font-weight: 500; color: var(--ink); }
 .sim input.pr-8 { padding-right: 38px; }
+/* Champs de montant : sans les flèches natives du navigateur (dessinées en
+   permanence dans WebKitGTK, au survol ailleurs), dont le pas est d'un centime.
+   La saisie, les flèches du clavier et la validation ne changent pas (§ 9.ep). */
+.sim input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+.sim input[type="number"]::-webkit-inner-spin-button,
+.sim input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .sim input::placeholder { color: var(--ink-3); opacity: 1; font-weight: var(--tw); }
 .sim input:where(:not([type="checkbox"], [type="radio"])):focus-visible,
 .sim button[role="combobox"]:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; box-shadow: inset 0 0 0 1.5px var(--ink); }
@@ -181,8 +187,16 @@
 .sim .sim-supernet-nom { font-size: 1rem; font-weight: var(--tb); color: var(--ink); }
 /* Le plancher suit la largeur de l'écran : avec un texte grossi à 200 %, le montant
    (insécable) ne pousse pas la fiche hors d'un téléphone. */
-.sim .sim-supernet-montant { --corps: clamp(min(2.25rem, 10.5vw), 10vw, 3rem); color: var(--ink); white-space: nowrap; }
-.sim .sim-supernet-euro { margin-left: 0.16em; }
+.sim .sim-supernet-montant { --corps: clamp(min(2.25rem, 10.5vw), 10vw, 3rem); color: var(--ink); white-space: nowrap; letter-spacing: 0; }
+/* Interlettrage du montant. Les milliers sont séparés par une espace fine
+   insécable (U+202F, posée par `Intl.NumberFormat`). Chromium n'applique aucun
+   interlettrage à une suite de chiffres qui en contient une ; le moteur de
+   Safari applique celui de `.aff` (-2,2 px à 48 px) à chaque caractère, espace
+   fine comprise : « 24 044 » s'y lisait « 24044 » (§ 9.ep). Le montant est donc
+   posé sans interlettrage, comme Chromium le dessinait déjà, et le signe « € »
+   garde celui de `.aff` (même formule que da.css) : rien ne bouge dans Chromium
+   pour un montant d'au moins 1 000 €. */
+.sim .sim-supernet-euro { margin-left: 0.16em; letter-spacing: min(calc(0.66px - 0.059 * var(--corps)), calc(2.43px - 0.0851 * var(--corps))); }
 .sim .sim-supernet-par { font-size: min(1rem, 7vw); font-weight: var(--tb); color: var(--ink-2); }
 .sim .sim-supernet-soit { margin-top: 5px; font-size: 0.9375rem; color: var(--ink-2); }
 .sim .sim-supernet.soleil :is(.sim-supernet-par, .sim-supernet-soit, .sim-aide) { color: var(--ink); }

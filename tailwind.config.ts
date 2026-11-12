@@ -13,13 +13,28 @@ import defaultTheme from "tailwindcss/defaultTheme";
    l'accordéon. Retirés en 5d, preuve d'inemploi à l'appui : le conteneur
    (`container`), quatorze animations et treize de leurs images clés, le plugin
    typography (`prose`), et le plugin qui exposait chaque couleur de Tailwind en
-   variable CSS (263 variables dans la feuille commune, aucune lue). */
+   variable CSS (263 variables dans la feuille commune, aucune lue).
+   Phase 6 (§ 9.eo) : les variantes du mode sombre ne sont plus écrites (voir
+   `content.transform`), et le paquet du plugin typography, qui n'était plus
+   chargé, est désinstallé. */
 
 export default {
+	/* Le site n'a pas de mode sombre : rien ne pose jamais la classe `dark`
+	   (aucune source ne la nomme hors des préfixes de classes, aucun HTML ni JS
+	   du build non plus ; sonner ne pose qu'un attribut `data-theme`). Les
+	   classes `dark:…` des îlots et de `src/components/ui/` viennent de
+	   l'application d'origine : elles restent dans les .tsx, mais Tailwind ne les
+	   voit plus (voir `content.transform`), donc n'écrit plus leurs règles
+	   (99 règles, 7,9 Ko de la feuille commune ; MIGRATION.md § 9.eo).
+	   `darkMode: class` est gardé : sans lui, si le filtre sautait, ces règles
+	   reviendraient sous `prefers-color-scheme` et s'appliqueraient pour de bon. */
 	darkMode: ["class"],
-	content: [
-		"./src/**/*.{astro,ts,tsx,md,mdx}",
-	],
+	content: {
+		files: ["./src/**/*.{astro,ts,tsx,md,mdx}"],
+		/* Retire du texte que lit Tailwind tout mot qui contient le préfixe
+		   « dark » suivi de deux-points. Le fichier, lui, n'est pas modifié. */
+		transform: (contenu: string) => contenu.replace(/[^\s"'`]*\bdark:[^\s"'`]*/g, ''),
+	},
 	prefix: "",
 	/* `.container` : plus aucun élément ne porte la classe, mais le mot revient
 	   dans les sources (noms de variables), et Tailwind en tirait la règle. */

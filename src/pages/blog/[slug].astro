@@ -234,7 +234,7 @@ const croix =
     <meta name="theme-color" content="#C9DEFF" />
   </Fragment>
   {/* La pastille survole le ciel du haut de la page, qui lui réserve la place. */}
-  <Header variante="flottante" />
+  <Header />
   <main id="top" class:list={['page', 'da-bloc', showToc && 'guidee']}>
     <nav aria-label="Fil d'Ariane" class="fil">
       <ol role="list">
@@ -659,8 +659,8 @@ const croix =
      défile de côté dans sa fiche, la page jamais. Les deux ombres de bord
      n'apparaissent que du côté où il reste des colonnes à faire défiler (fonds
      « local » : ils défilent avec le contenu et couvrent l'ombre en bout de
-     course). Avec les chiffres tabulaires, la police élargit aussi l'espace :
-     on retire la différence (§ 9.ed).
+     course). Chiffres tabulaires : par une face de police à part, voir plus
+     bas (§ 9.ep).
      Place : un tableau part du bord gauche du texte et peut dépasser la colonne
      de lecture à droite, jusqu'au bord du contenu. */
   .corps > :global(table) { --retrait: calc((100% - min(100%, var(--mes))) / 2); max-width: calc(100% - var(--retrait)); margin-left: var(--retrait); margin-right: 0; }
@@ -691,7 +691,26 @@ const croix =
       linear-gradient(to right, rgba(20, 37, 79, 0.34), rgba(20, 37, 79, 0)) 0 0 / 28px 100% no-repeat scroll,
       linear-gradient(to left, rgba(20, 37, 79, 0.34), rgba(20, 37, 79, 0)) 100% 0 / 28px 100% no-repeat scroll,
       var(--paper);
-    font-size: 0.875rem; line-height: 1.45; font-variant-numeric: tabular-nums; word-spacing: -0.097em;
+    font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; line-height: 1.45;
+  }
+  /* Chiffres de même chasse dans les tableaux, sans toucher à l'espace. La
+     fonction « tnum » de la police élargit aussi l'espace (645 unités au lieu
+     de 450 sur 2000). Chromium l'applique, le moteur de Safari garde l'espace
+     ordinaire : on ne peut donc pas demander les chiffres tabulaires sur la
+     cellule et compenser l'espace (l'ancien réglage, un espacement des mots
+     négatif, collait les mots dans Safari ; § 9.ep). Cette face reprend le
+     même fichier, limitée aux caractères que « tnum » remplace, espace
+     exceptée (chiffres, ponctuation des nombres, opérateurs, monnaies) : eux
+     seuls sortent tabulaires, dans tous les moteurs. Sans prise en charge du
+     descripteur, les chiffres gardent leur chasse ordinaire. */
+  @font-face {
+    font-family: "Google Sans Flex Chiffres";
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url("../../assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2") format("woff2");
+    font-feature-settings: "tnum";
+    unicode-range: U+23-25, U+2B-2C, U+2E, U+30-3E, U+A2-A4, U+A7, U+AC, U+B1, U+D7, U+F7, U+20AC, U+2212;
   }
   .corps :global(th), .corps :global(td) { padding: 10px 12px; text-align: left; vertical-align: top; white-space: nowrap; }
   .corps :global(th) { padding-top: 13px; font-weight: var(--tb); color: var(--ink); }

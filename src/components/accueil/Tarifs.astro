@@ -357,8 +357,10 @@ const rspm = [
     .band-head { max-width: calc(100% - 320px); }
     /* Elle se tient derrière la carte interne, coupée à mi-corps par son bord
        haut (les 52 % du haut de l'image) : à l'écart des coins arrondis, et
-       hors du flux, pour que le titre garde sa place. */
-    .guide { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; overflow: hidden; pointer-events: none; }
+       hors du flux, pour que le titre garde sa place. `min-height: 0` : sans
+       lui, le moteur de Safari donne au cadre, posé hors du flux, la hauteur
+       de l'image entière au lieu de celle de son rapport (§ 9.ep). */
+    .guide { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; min-height: 0; overflow: hidden; pointer-events: none; }
   }
   /* De 1024 à 1179 px, les colonnes sont étroites : marges des cartes et
      boutons resserrés, pour que « Commencer 30 jours gratuits » tienne sur une

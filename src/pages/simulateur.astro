@@ -18,7 +18,7 @@
  * changé. Textes, titres, liens, ancres, ordre des blocs, JSON-LD, `data-track`
  * et `data-calendly` sont ceux d'avant (période d'observation SEO) ; aucun
  * calcul n'est touché.
- * - Page entièrement dans la DA : fond `da-fond`, en-tête « flottante ».
+ * - Page entièrement dans la DA : fond `da-fond`, en-tête qui flotte.
  * - Cinq blocs : le ciel (titre, l'îlot du simulateur, la prise de rendez-vous),
  *   une feuille sable (le mode d'emploi, en plis `.qa`), une feuille ciel (les
  *   trois définitions, l'exemple chiffré, les limites), une feuille sable (les
@@ -148,7 +148,7 @@ const fleche =
     <meta name="theme-color" content="#C9DEFF" />
   </Fragment>
   {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
-  <Header variante="flottante" />
+  <Header />
 
   <main>
     <div class="tete da-bloc">
@@ -733,8 +733,10 @@ const fleche =
     .intro { max-width: calc(100% - 300px); }
     /* Elle se tient derrière le haut de l'îlot, coupée à mi-corps par son bord
        (les 52 % du haut de l'image), hors du flux : 16 px passent sous l'îlot,
-       qui est devant elle (`.sim-ile`, simulateur.css). */
-    .guide { position: absolute; right: 48px; bottom: calc(100% - 16px); display: block; width: 190px; aspect-ratio: 685 / 640; overflow: hidden; }
+       qui est devant elle (`.sim-ile`, simulateur.css). `min-height: 0` : sans
+       lui, le moteur de Safari donne au cadre la hauteur de l'image entière
+       (§ 9.ep, § 9.eq). */
+    .guide { position: absolute; right: 48px; bottom: calc(100% - 16px); display: block; width: 190px; aspect-ratio: 685 / 640; min-height: 0; overflow: hidden; }
   }
   @media (min-width: 1180px) {
     .cote { grid-template-columns: 320px minmax(0, 1fr); column-gap: 96px; }
