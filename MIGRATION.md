@@ -8905,8 +8905,8 @@ Lot 2 :
 **12. Ce qui n'est pas fait**
 
 - Le lot à part, qui touche `da.css` : le menu mobile qui fait remonter la page à
-  l'ouverture et à la fermeture du tiroir, et la bulle de chat qui recouvre des montants
-  sur téléphone.
+  l'ouverture et à la fermeture du tiroir (fait depuis : § 9.ev), et la bulle de chat
+  qui recouvre des montants sur téléphone.
 - Relevés et laissés : taille de police du navigateur ignorée sur l'accueil (corps en
   px) ; bannière cookies sur la fiche « Avril 2026 » à l'ordinateur ; logos en deux
   densités seulement ; arrêt de tabulation sans effet sur les rangées à partir de 640 px ;
@@ -8931,6 +8931,120 @@ Lot 2 :
 `parcoursAccueil.ts`, `etapesRemplacant.ts` ; `src/lib/pages-lastmod.ts` ;
 `scripts/verify-site.mjs` ; `CLAUDE.md`. Scripts et relevés : dossiers de travail
 `accueil2/lot1/` et `accueil2/lot2/`, hors dépôt.
+
+### 9.ev En-tête : le menu ne fait plus remonter la page (12 novembre 2026)
+
+Troisième lot du chantier de § 9.eu, à part parce qu'il touche `da.css` : la feuille
+commune change de nom, donc le HTML des 70 pages. Défaut relevé par l'audit de l'accueil
+(point 14 du plan), présent sur toutes les pages depuis la phase 5a. `origin/main` n'a
+pas avancé (`481f3f2`). Aucun mot, aucun script, aucun attribut : `Header.astro` et
+`ScriptTiroir.astro` ne sont pas touchés.
+
+**Le défaut, mesuré avant** (build de `fbddb87`, page défilée à mi-hauteur)
+
+| Geste | Chromium, 390 × 844, tactile | Moteur de Safari (WebKitGTK, 447 px) |
+|---|---|---|
+| Appui sur le bouton du menu | la page remonte de 454 px | de 75 px |
+| Appui sur la croix, ou sur le voile | encore 454 px | encore 75 px |
+| Sur `/guide-declarations` | 485 px à chaque geste | 137 px |
+| Tab jusqu'à la case du menu (clavier, 390 px) | 454 px | non mesuré |
+| Tab dans les liens de la pastille (1440 px) | 452 px **par lien** (1 808 px après quatre Tab) | non mesuré |
+
+Mêmes chiffres sur `/`, `/tarifs`, `/simulateur` et `/faq` dans les deux moteurs (et
+`/blog` dans Chromium), animations réduites ou non. Un clic sur une ancre du menu
+arrivait au bon endroit : le défaut ne touchait que les gestes qui ne naviguent pas.
+
+**La cause.** L'appui sur le bouton (un `<label>`) donne le focus à la case
+`#mobile-menu-toggle`. Elle est en haut de la fenêtre, dans la bande que
+`scroll-padding-top` de `<html>` réserve à la pastille (84 px ; 146 sur le guide, 140
+sur la calculette). Le navigateur fait défiler pour la sortir de cette bande : au milieu
+de la fenêtre dans Chromium (d'où 454 px), au ras de la bande dans le moteur de Safari
+(84 − 9 = 75 px). Mais l'en-tête était collé (`position: sticky`) : la case suit la
+fenêtre, elle n'en sort jamais, et chaque nouveau focus refait le même trajet. Tout lien
+de la pastille est dans le même cas au clavier.
+
+**Le correctif** (`src/styles/da.css`, deux règles de plus, rien de retiré)
+
+- À l'écran (`@media screen`), l'en-tête est tenu à la fenêtre : `position: fixed`,
+  `left: 0`, `right: 0`, `margin: 0`. Un élément tenu à la fenêtre ne fait pas défiler
+  la page. Même place qu'avant : 10 px du haut (plus l'encoche), toute la largeur ;
+  il ne prenait déjà aucune place dans le flux (10 + 60 − 70 = 0).
+  À l'impression, la règle d'origine reste seule : tenu à la fenêtre, l'en-tête
+  s'imprimerait en haut de chaque feuille.
+- Tiroir ouvert, la page ne défile plus sous le doigt :
+  `html:has(#mobile-menu-toggle:checked) { overflow: hidden }`, sous 960 px de large
+  (une case restée cochée dans une fenêtre qu'on élargit ne fige pas la page) et pour un
+  pointeur tactile seulement (`pointer: coarse`).
+
+Pourquoi « tactile seulement » : dans une fenêtre d'ordinateur étroite, la barre de
+défilement prend 15 px. La retirer refaisait la mise en page sous le voile ; lui garder
+sa place (`scrollbar-gutter: stable`) change la largeur de référence des tailles fluides
+(`vw`) : 4 px de hauteur en moins sur `/tarifs` à 800 px, 11 sur l'accueil. Essayé,
+mesuré, retiré. À la souris, la page défile donc encore sous le tiroir, comme avant.
+
+**Vérifié après** (build servi en local, « avant » : build de `fbddb87`)
+
+- Chromium tactile, 320 × 568, 390 × 844, 430 × 932 et 768 × 1024, six pages
+  (`/`, `/tarifs`, `/simulateur`, `/guide-declarations`, `/blog`, `/faq`), animations
+  réduites ou non : ouverture, fermeture par la croix, seconde ouverture, fermeture par
+  le voile, 0 px à chaque geste (48 parcours). Moteur de Safari, cinq pages : 0 px.
+- Les trois ancres du menu (`#sous-la-surface`, `#parcours`, `#pricing`), depuis
+  l'accueil défilée à mi-hauteur et depuis `/tarifs`, aux quatre tailles et dans les
+  deux moteurs : le tiroir se ferme, la case est décochée, la cible arrive à 84 px du
+  haut, sous la pastille (70 px), comme avant.
+- Clavier, 390 px : focus sur la case, Espace ouvre, Tab parcourt les neuf liens du
+  tiroir, Espace ferme, 0 px ; l'anneau de 3 px reste sur le bouton puis sur la croix.
+  1440 px : six Tab dans la pastille, 0 px.
+- Verrou (gestes tactiles réels, 390 × 844, 844 × 390 et 320 × 480) : tiroir ouvert, un
+  glissement sur le voile ou dans le tiroir ne déplace plus la page (285 px avant) ; le
+  menu du tiroir défile quand il dépasse (476 px de contenu dans 185 px en paysage), son
+  dernier lien s'atteint ; tiroir fermé, la page est au même endroit et défile.
+- Fenêtre d'ordinateur de 800 px, barre de défilement classique : tiroir ouvert, largeur
+  et hauteur de la page inchangées ; élargie à 1 200 px case cochée, la page défile.
+- Rien d'autre ne bouge à l'écran : quinze pages (accueil, `/tarifs`, `/faq`,
+  `/qui-sommes-nous`, `/blog`, un article, `/simulateur`, le guide des déclarations et
+  une page fille, la calculette, `/mentions-legales`, `/comparatif`, `/guide`, `/essai`,
+  la 404) à 390 et 1440 px, en pleine page, premier écran, tiers et mi-hauteur, plus
+  quatre pages en média d'impression : 140 captures identiques au pixel. Le premier bloc
+  de chaque page commence à 0 px avant comme après ; la barre de recherche du guide reste
+  à 70 px du haut, celle de la calculette à 76 px (ordinateur). Seule mesure qui change :
+  la boîte de `<body>` commence à 0 px au lieu de 10 (la marge haute de l'en-tête ne la
+  traverse plus) ; son fond est celui de la fenêtre, rien ne se déplace.
+  Menu « Ressources » au survol (1024 et 1440 px, haut de page et page défilée) et
+  tiroir ouvert (390 et 768 px), quatre pages : 23 captures identiques sur 24 ; la
+  dernière (guide, 390 px) diffère de six pixels d'un ou deux niveaux, sous le voile.
+  PDF de quatre pages : même nombre de feuilles (12, 11, 1, 5).
+- Moteur de Safari, sept pages à 447 et 1440 px, premier écran et mi-hauteur : 27
+  captures identiques sur 28 ; la dernière diffère aussi entre deux passes du même build
+  (barre d'une rangée à feuilleter).
+- HTML : 70 pages sur 70 ne diffèrent que par le nom de la feuille commune, une
+  occurrence par page (`_astro_assets.QWDU2rDT.css` → `_astro_assets.vwVYL-zs.css`) ;
+  `/transmissions`, qui ne la lie pas, est identique. Feuille commune comparée règle par
+  règle : deux règles de plus, aucune autre différence (78 642 → 78 824 octets). Aucun
+  autre fichier du build ne change. Build 70 pages, `verify-site.mjs` 0 erreur.
+
+**Vu en passant, non corrigé** (hors de ce lot : `guide.css` et `calculette.css`, pas la
+feuille commune)
+
+La barre de recherche collante du guide et la barre collante de la calculette ont la
+même mécanique : collées dans le flux, sous la marge de défilement de leur page. Un
+appui à la souris ou au doigt ne déplace rien (mesuré : 0 px). Un focus donné par
+programme, comme le fait le clavier, fait remonter la page : 393 px sur le guide à
+390 px de large, 421 à 1440, 418 sur la calculette à 1440. Ces barres doivent rester
+dans le flux : le correctif de l'en-tête ne s'y transpose pas tel quel.
+
+**Non testé**
+
+- Aucun vrai Safari ni iPhone. Le verrou du défilement n'a pas pu être essayé dans le
+  moteur de Safari : WebKitGTK n'a pas de pointeur tactile ici, la règle ne s'y applique
+  pas. Sur iOS, si `overflow: hidden` sur `<html>` ne retient pas le défilement, le
+  comportement est celui d'avant.
+- Encoche (`env(safe-area-inset-top)`), zoom par pincement, clavier virtuel ouvert.
+- Navigateurs sans `:has()` : pas de verrou, par construction.
+- Tab au clavier dans le moteur de Safari (seuls les clics y sont mesurés).
+
+**Fichiers** : `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/lot3/`, hors dépôt.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

@@ -69,6 +69,15 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
   l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
   en-tête se déclare dans `PAGES_SANS_ENTETE`.
+  ⚠️ À l'écran, l'en-tête est tenu à la fenêtre (`position: fixed` sous `@media screen`,
+  § 9.ev), pas collé dans le flux : ne pas le remettre en `sticky`. Un élément collé dont
+  un contrôle se trouve dans la bande de `scroll-padding-top` fait remonter la page à
+  chaque focus qui ne vient pas d'un appui direct (le `<label>` du menu qui donne le focus
+  à sa case, Tab) : le navigateur fait défiler pour sortir le contrôle de la bande, et il
+  n'en sort jamais. Les barres collantes du guide et de la calculette ont encore ce défaut
+  au clavier. Tiroir ouvert, `<html>` passe en `overflow: hidden` sous 960 px et au doigt
+  seulement (`pointer: coarse`) : à la souris, retirer la barre de défilement refait la
+  mise en page, et `scrollbar-gutter: stable` change la largeur de référence des `vw`.
 - **Premier bloc d'une page** : un ciel (`linear-gradient(var(--sky-1) 0, var(--sky) 460px)`)
   qui passe sous la pastille de l'en-tête et lui réserve le haut par son remplissage
   (100 à 148 px selon la largeur, voir `.tete` de `/tarifs`). L'ancienne forme de

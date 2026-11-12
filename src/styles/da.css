@@ -279,6 +279,31 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 /* L'en-tête couvre toute la largeur, la pastille 1120 px au plus : hors de la
    pastille, du voile et du tiroir, les clics traversent vers la page. */
 :where(.da) .hd { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 50; height: 60px; margin: 10px 0 -70px; pointer-events: none; -webkit-tap-highlight-color: transparent; }
+/* À l'écran, l'en-tête est sorti du flux et tenu à la fenêtre (§ 9.ev). Collé
+   dans le flux, il faisait remonter la page à chaque appui sur le bouton du
+   menu : l'appui donne le focus à la case du tiroir, qui se trouve sous la
+   marge de défilement de <html> (84 px, plus sur le guide et la calculette) ;
+   le navigateur fait défiler pour l'en sortir, la case suit la fenêtre et n'en
+   sort jamais (454 px de remontée dans Chromium à 390 × 844, 75 px dans le
+   moteur de Safari, à l'ouverture comme à la fermeture, et autant au clavier
+   pour tout lien de la pastille). Un élément tenu à la fenêtre ne fait pas
+   défiler la page. Même place à l'écran : 10 px du haut, toute la largeur, et
+   aucune place prise dans le flux, comme avant (10 + 60 − 70 = 0).
+   À l'impression la règle d'au-dessus reste seule : tenu à la fenêtre,
+   l'en-tête s'imprimerait en haut de chaque feuille. */
+@media screen {
+  :where(.da) .hd { position: fixed; right: 0; left: 0; margin: 0; }
+}
+/* Tiroir ouvert, la page ne défile plus sous le doigt. Deux bornes. Au doigt
+   seulement : là, la barre de défilement se pose sur la page, la retirer ne
+   change rien à la mise en page ; dans une fenêtre d'ordinateur étroite elle
+   prend 15 px, et la retirer (ou lui garder sa gouttière, qui change la
+   largeur de référence des tailles fluides) refaisait la mise en page sous le
+   voile. Et aux largeurs où le tiroir existe : une case restée cochée dans
+   une fenêtre qu'on élargit ne doit pas figer la page. */
+@media screen and (max-width: 959.98px) and (pointer: coarse) {
+  html:has(#mobile-menu-toggle:checked) { overflow: hidden; }
+}
 :where(.da) .hd-bar, :where(.da) .hd-overlay, :where(.da) .hd-drawer { pointer-events: auto; }
 /* Le fond de la pastille. Sous 900 px, pas de flou d'arrière-plan : il coûte
    cher au défilement sur téléphone (§ 9.dn). Sans flou, un fond même à 94 %
