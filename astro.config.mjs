@@ -68,6 +68,18 @@ export default defineConfig({
     inlineStylesheets: 'auto',
   },
   vite: {
+    build: {
+      /* Navigateurs visés par le minificateur CSS. Astro construit en « esnext » :
+         sans cible, lightningcss retirait `-webkit-backdrop-filter` (le flou de la
+         pastille manquait à Safari avant 18) et fusionnait les soulignements en
+         `text-decoration: underline 2px`, que Safari ne lit que depuis 26.2 (le
+         lien perdait son soulignement). Avec ces cibles, il garde les préfixes et
+         les propriétés longues (MIGRATION.md § 9.ep). Ne vaut que pour le CSS.
+         Firefox 121 et non plus ancien : c'est la première version qui lit
+         `:has()` ; en dessous, le minificateur réécrit les listes de sélecteurs
+         qui en contiennent (`:is(…)`), ce qui change leur poids. */
+      cssTarget: ['safari16.4', 'ios16.4', 'chrome111', 'edge111', 'firefox121'],
+    },
     define: {
       // Injecté au build et joint à chaque événement `landing_*` (propriété
       // `app_version` de l'historique PostHog). Passe par `define` plutôt qu'un

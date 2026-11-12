@@ -280,11 +280,19 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
    pastille, du voile et du tiroir, les clics traversent vers la page. */
 :where(.da) .hd { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 50; height: 60px; margin: 10px 0 -70px; pointer-events: none; -webkit-tap-highlight-color: transparent; }
 :where(.da) .hd-bar, :where(.da) .hd-overlay, :where(.da) .hd-drawer { pointer-events: auto; }
-/* Sous 900 px, pas de flou d'arrière-plan : il coûte cher au défilement sur
-   téléphone (§ 9.dn). Le fond est plus opaque pour compenser. */
-:where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+/* Le fond de la pastille. Sous 900 px, pas de flou d'arrière-plan : il coûte
+   cher au défilement sur téléphone (§ 9.dn). Sans flou, un fond même à 94 %
+   laissait lire en lettres nettes le texte qui passe dessous : il est plein.
+   À partir de 900 px, le verre : un flou et un fond à 92 % (à 86 %, un titre
+   gras laissait un nuage gris derrière le menu), seulement là où le flou
+   existe. Un navigateur sans flou d'arrière-plan garde le fond plein (§ 9.ep).
+   Le préfixe -webkit- sert Safari avant la version 18 : il n'arrive dans le
+   build que parce que `astro.config.mjs` donne ses cibles au minificateur. */
+:where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: 1120px; margin-inline: max(12px, calc((100% - 1120px) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: #fff; box-shadow: var(--float); }
 @media (min-width: 900px) {
-  :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.92); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
+  }
 }
 :where(.da) .hd-brand { display: flex; align-items: center; min-width: 44px; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); text-decoration: none; }
 /* Sous 340 px, tout se resserre : le mot, la pastille d'essai et le bouton du

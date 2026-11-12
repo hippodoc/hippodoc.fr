@@ -455,8 +455,9 @@ const coche =
     .intro { max-width: calc(100% - 320px); }
     /* Elle se tient derrière la fiche des internes, coupée à mi-corps par son
        bord haut (les 52 % du haut de l'image), hors du flux : comme sur
-       l'accueil (accueil/Tarifs.astro). */
-    .guide.haut { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; overflow: hidden; }
+       l'accueil (accueil/Tarifs.astro). `min-height: 0` : sans lui, le moteur
+       de Safari donne au cadre la hauteur de l'image entière (§ 9.ep). */
+    .guide.haut { position: absolute; right: 38px; bottom: 100%; display: block; width: min(250px, calc(100% - 76px)); aspect-ratio: 721 / 698; min-height: 0; overflow: hidden; }
     /* La liste des inclus retrouve son titre centré, sans mascotte. */
     .guide.bas { display: none; }
     .band-head.tenue { display: flex; align-items: center; max-width: 800px; margin-bottom: 44px; text-align: center; }

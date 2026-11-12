@@ -644,8 +644,10 @@ const TAILLES_POUCE = '(min-width: 900px) 160px, (min-width: 560px) 104px, 92px'
   .lead strong { color: var(--ink); }
   /* La mascotte : debout derrière la première feuille, coupée à mi-corps par son
      bord haut (les 78 % du haut de l'image : la tablette et les mains restent
-     visibles), hors du flux. Le texte lui laisse la place à droite. */
-  .guide { position: absolute; right: max(var(--gut), env(safe-area-inset-right, 0px)); bottom: -50px; width: var(--masc); aspect-ratio: 732 / 970; overflow: hidden; pointer-events: none; }
+     visibles), hors du flux. Le texte lui laisse la place à droite.
+     `min-height: 0` : sans lui, le moteur de Safari donne au cadre la hauteur
+     de l'image entière (§ 9.ep) ; de même pour `.pouce` à partir de 1024 px. */
+  .guide { position: absolute; right: max(var(--gut), env(safe-area-inset-right, 0px)); bottom: -50px; width: var(--masc); aspect-ratio: 732 / 970; min-height: 0; overflow: hidden; pointer-events: none; }
   .guide img { display: block; width: 100%; max-width: none; height: auto; }
   .tete { --masc: clamp(104px, 30vw, 124px); --place: calc(100% - var(--masc) - 14px); }
   .lead { max-width: min(36rem, var(--place)); }
@@ -766,7 +768,7 @@ const TAILLES_POUCE = '(min-width: 900px) 160px, (min-width: 560px) 104px, 92px'
        dont 80 visibles : elle descend de 82 px sous la grille). La rubrique lui
        garde la place (les 64 % du haut de l'image : 183 px à 160 px de large). */
     .nom.aidee { padding-bottom: 116px; }
-    .pouce { position: absolute; left: calc(max(var(--gut), env(safe-area-inset-left, 0px)) + 28px); bottom: -82px; width: 160px; aspect-ratio: 685 / 784; margin: 0; }
+    .pouce { position: absolute; left: calc(max(var(--gut), env(safe-area-inset-left, 0px)) + 28px); bottom: -82px; width: 160px; aspect-ratio: 685 / 784; min-height: 0; margin: 0; }
     .horizon { height: 270px; margin-top: 108px; --p: 440px; --th: 54px; }
     .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; box-shadow: 0 0 0 40px rgba(255, 214, 74, 0.26), 0 0 0 92px rgba(255, 214, 74, 0.13); }
     .w3 { height: 112px; }
