@@ -320,6 +320,10 @@
 /* ───────── Hors de l'îlot : bulles, tiroir, listes ───────── */
 /* Bulle d'aide : une fiche blanche, plus de fond noir. */
 .sim.sim-bulle { max-width: min(320px, 85vw); padding: 16px; border: 0; border-radius: 20px; background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); font-size: 0.875rem; font-weight: var(--tw); line-height: 1.45; -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Une bulle plus haute que la place libre au-dessus ou au-dessous de son « i » (aide « Zones
+   exonérées » : 500 px) sortait de la fenêtre. Elle prend la hauteur que Radix lui mesure et
+   défile dedans : à la souris la bulle se survole, au doigt elle reste ouverte (§ 9.es). */
+.sim.sim-bulle { max-height: min(calc(100vh - 64px), var(--radix-tooltip-content-available-height, 100vh)); overscroll-behavior: contain; }
 /* Les textes des bulles gardent leurs classes de taille ; ici ils gagnent un
    cran : 10 px devenait illisible sur une fiche claire. */
 .sim-bulle-in .text-xs { font-size: 0.8125rem; line-height: 1.45; }

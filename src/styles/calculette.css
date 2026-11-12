@@ -211,6 +211,9 @@
 /* ───────── Hors de l'îlot : bulles, listes, menu, boîtes de confirmation ───────── */
 .calc.calc-bulle { max-width: min(340px, 86vw); padding: 14px 16px; border: 0; border-radius: 20px; background: var(--paper); color: var(--ink-2); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); font-size: 0.875rem; font-weight: var(--tw); line-height: 1.5; }
 .calc.calc-bulle.max-w-sm { max-width: min(400px, 90vw); }
+/* Une bulle plus haute que la place libre (« Aide profil » sur téléphone : 452 px) sortait de la
+   fenêtre : elle prend la hauteur que Radix lui mesure, et défile dedans (§ 9.es). */
+.calc.calc-bulle { max-height: var(--radix-tooltip-content-available-height, 100vh); overflow-y: auto; overscroll-behavior: contain; }
 .calc.calc-bulle :is(b, strong) { color: var(--ink); }
 .calc.calc-pop { border: 0; border-radius: 18px; background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); }
 .calc.calc-pop [role="option"], .calc.calc-pop [role="menuitem"] { min-height: 44px; border-radius: 12px; font-size: 0.9375rem; font-weight: 500; }

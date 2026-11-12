@@ -367,6 +367,9 @@ html:has(.da-fond):has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-are
 
 /* La bulle « Comment savoir ? » (Radix la rend dans <body>) */
 .da .gd-bulle { max-width: min(340px, 86vw); padding: 14px 16px; border: 0; border-radius: 20px; background: var(--paper); color: var(--ink-2); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); font-size: 0.875rem; font-weight: var(--tw); line-height: 1.5; }
+/* La bulle de la boussole s'ouvre sur le côté : sur téléphone elle sortait de la fenêtre (44 px à
+   gauche à 390 px). Elle prend la largeur et la hauteur que Radix lui mesure (§ 9.es). */
+.da .gd-bulle { max-width: min(340px, 86vw, var(--radix-tooltip-content-available-width, 100vw)); max-height: var(--radix-tooltip-content-available-height, 100vh); overflow-y: auto; overscroll-behavior: contain; }
 .da .gd-bulle p { margin: 0; }
 .da .gd-bulle .gd-bulle-titre { margin-bottom: 5px; font-weight: var(--tb); color: var(--ink); }
 
