@@ -154,10 +154,7 @@ const webPageSchema = {
     <div class="band da-bloc">
       <SectionDivider step={1} label="Commence ici" hint="Comprends · identifie-toi · checklist" compact />
       <FiscalSocialPrimer />
-      {/* Hydratée un écran avant d'entrer dans la fenêtre, pas à son entrée : le visiteur qui
-          y arrive attend moins. Dans une fenêtre haute, où elle est à moins d'un écran, elle
-          s'hydrate donc dès le chargement (MIGRATION.md § 9.er, § 9.et). */}
-      <BoussoleWizard client:visible={{ rootMargin: "100%" }} />
+      <BoussoleWizard client:visible />
     </div>
 
     {/* Zone 2 : Référence rapide */}

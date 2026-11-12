@@ -8545,6 +8545,19 @@ Retirés ou rendus à `main` : `src/lib/precharge-ilots.mjs`,
 `src/pages/guide-declarations/index.astro`, `src/styles/simulateur.css`,
 `src/styles/calculette.css`, `src/styles/guide.css`, `CLAUDE.md`.
 
+**Dernier réglage avant la demande de fusion : la marge de la boussole est retirée.**
+`<BoussoleWizard client:visible={{ rootMargin: "100%" }} />` redevient
+`<BoussoleWizard client:visible />`, comme sur `main`. Raison : le gain n'existait que dans
+une fenêtre de 876 px de haut et plus (boussole prête à l'arrivée, 1,4 s gagnée en 4G
+lente), et le contrôle final a mesuré, sur un réseau à 1,6 Mbit/s et 150 ms de latence, un
+champ de recherche prêt 0,55 s plus tard (1,49 s puis 2,04 s, cinq chargements sur cinq) ;
+dans une fenêtre plus basse, ni gain ni perte. Un gain qui dépend de l'écran et coûte
+ailleurs ne se garde pas. Conséquences : l'attribut `opts` de l'`<astro-island>` de la
+boussole est celui de `main` (plus d'écart dans le HTML de `/guide-declarations` ni dans la
+chaîne d'éléments des clics mesurés), les 35 Ko de la boussole ne se chargent plus qu'à
+son approche, et tout ce que cette entrée et § 9.er disent de cette marge décrit un essai
+retiré. La boussole reste neutralisée sans trait d'attente tant qu'elle n'est pas hydratée.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

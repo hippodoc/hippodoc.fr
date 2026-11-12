@@ -251,11 +251,11 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     d'accessibilité et de la recherche dans la page (§ 9.et). Le clavier reste donc celui
     d'avant pendant l'attente : Tab atteint les contrôles, une saisie y est effacée à
     l'hydratation, « Entrée » envoie le formulaire en natif.
-  Directives : simulateur, calculette et recherche en `client:visible` (`client:load` et
-  `client:idle` ne gagnent rien de mesurable) ; la boussole en
-  `client:visible={{ rootMargin: "100%" }}`, hydratée un écran avant d'entrer dans la
-  fenêtre (donc au chargement dans une fenêtre de 876 px de haut et plus, où elle est à
-  moins d'un écran : 35 Ko de plus au chargement, § 9.et). Pour mesurer un changement de
+  Directives : les quatre îlots (simulateur, calculette, recherche et boussole du guide)
+  en `client:visible` (`client:load` et `client:idle` ne gagnent rien de mesurable ; une
+  marge `rootMargin` sur la boussole, essayée puis retirée, la rendait prête plus tôt
+  dans une fenêtre haute mais retardait le champ de recherche sur certains réseaux,
+  § 9.et). Pour mesurer un changement de
   chargement : trois réseaux, cinq chargements à froid, **et le chargement sans geste**
   (première peinture, LCP, arrivée de la police, décalage, page vue), en HTTP/1.1 et en
   HTTP/2, côtés alternés ; le Lighthouse simulé seul ne suffit pas (§ 9.et).
