@@ -7946,6 +7946,202 @@ et un lien pour recharger la page.
 (nouveau), `src/styles/simulateur.css`, `src/styles/calculette.css`, `src/styles/guide.css`,
 `scripts/verify-site.mjs`, `CLAUDE.md`.
 
+### 9.es Phase 7 : des outils qui répondent, les aides au doigt, un taux, l'impression (12 novembre 2026)
+
+Suite de § 9.er. Trois défauts relevés par l'audit de la phase 6, tous antérieurs à la
+refonte : les bulles d'aide ne s'ouvrent pas au doigt ; un taux sort non arrondi dans une
+bulle du simulateur ; la calculette s'imprime sur quatre pages et plus, avec l'en-tête, la
+FAQ et le pied. Aucun calcul n'est touché, aucune dépendance n'entre, le HTML du build ne
+change pas (`origin/main` n'a pas avancé : `771de40`).
+
+**A. Les aides s'ouvrent au doigt**
+
+*Le défaut, reproduit.* Chromium piloté avec un écran tactile (`hasTouch`, appuis par
+`touchscreen.tap`), sur le build d'avant : simulateur à 1 024 et 820 px, 83 aides « i »
+sur 83 muettes ; calculette à 390, 820 et 1 024 px, 46 aides sur 46 muettes (34 « ? »,
+11 libellés de cases des résultats, la pastille « RSPM · sans DSFU ») ; boussole du guide,
+1 sur 1. Sous 768 px, le simulateur passait déjà par un tiroir (`PremiumTooltip.tsx`),
+qui s'ouvre. Cause : la bulle de Radix écarte les pointeurs tactiles, s'ouvre au focus
+que l'appui donne au bouton, et se referme au clic du même appui.
+
+*La correction, en un seul endroit* : `src/components/ui/tooltip.tsx`, que seuls les
+trois outils utilisent (`PremiumTooltip.tsx` pour le simulateur, `CalculetteForm.tsx`,
+`CalculetteResults.tsx`, `BoussoleWizard.tsx` ; aucune autre page). Aucun appelant ne
+change.
+
+- À la souris et au clavier, rien d'autre que Radix : ouverture au survol et au focus,
+  fermeture en quittant, au clic, à Échap.
+- Au doigt, un appui ouvre la bulle et la retient (« épinglée ») : elle ne suit plus les
+  fermetures de Radix (défilement, perte du survol, autre bulle). Elle se ferme à un
+  second appui, à un appui ailleurs, à Échap, ou quand le focus part vers un autre
+  contrôle. Un défilement au doigt n'est pas un appui (le navigateur annule le pointeur) :
+  la bulle reste. Est « au doigt » : un appui dont le pointeur est un doigt ou un stylet
+  (portable tactile compris), ou tout clic quand le pointeur principal ne survole pas
+  (`(hover: none)` ou `(pointer: coarse)`, lu par `useSyncExternalStore` après le montage,
+  jamais au rendu).
+- Le tiroir du simulateur sous 768 px est gardé tel quel. Au-dessus, la tablette reçoit
+  la bulle épinglée.
+- Accessibilité. Le déclencheur est un bouton nommé. Les douze déclencheurs qui n'en
+  étaient pas (un `<span>` : libellés de cases, pastille RSPM) reçoivent après le montage
+  `role="button"`, `tabindex="0"`, et Entrée et Espace : ils n'étaient pas atteignables au
+  clavier, ils le sont (douze arrêts de tabulation de plus dans les résultats de la
+  calculette). Sur un appareil tactile, le déclencheur porte `aria-expanded` (faux, puis
+  vrai) en plus du `aria-describedby` de Radix ; le texte d'une bulle épinglée est aussi
+  posé dans une zone `role="status"` (`#aide-annonce`, une par page, ajoutée à `<body>`
+  après le montage, vidée à la fermeture). Le focus reste sur le déclencheur.
+- Trois bulles sortaient de la fenêtre, à la souris comme au doigt : « Zones exonérées »
+  du simulateur (500 px de haut : 23 px coupés en haut d'une fenêtre de 900 px, davantage
+  sur une tablette), « Aide profil » de la calculette à 390 px (14 px), la bulle de la
+  boussole à 390 px (44 px à gauche). Les trois feuilles donnent à la bulle la place que
+  Radix lui mesure (`--radix-tooltip-content-available-height`, et `-width` pour la
+  boussole, qui s'ouvre sur le côté) ; au-delà, elle défile dedans.
+
+*Vérifié sur le build final* (scripts de travail, hors dépôt : `tactile.cjs`,
+`souris.cjs`, `divers.cjs`, `wk-aides.py`). Les aides sont comptées en parcourant tous
+les états : simulateur, quatre jeux de saisies (dont un couple avec toutes les options,
+un régime RSPM forcé à 90 000 €, un Micro-BNC plus avantageux), formulaire et résultats,
+plis ouverts, soit 97 aides (22 du formulaire, 75 des résultats) ; calculette, les trois
+profils, les deux régimes et les quatorze exemples, soit 46 ; boussole, 1.
+
+| Outil, largeur | Aides | S'ouvrent à l'appui | Restent ouvertes | Second appui | Appui ailleurs | Échap | Dans la fenêtre |
+|---|---|---|---|---|---|---|---|
+| Simulateur, 1 024 px | 97 | 97 (bulle) | 97 | 97 | 97 | 97 | 97 |
+| Simulateur, 820 px | 97 | 97 (bulle) | 97 | 97 | 97 | 97 | 97 |
+| Simulateur, 390 px | 97 | 97 (tiroir) | 97 | bouton « Fermer » : 97 | 97 | 97 | tiroir |
+| Calculette, 390 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Calculette, 820 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Calculette, 1 024 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Boussole, 390 et 820 px | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+
+Sur chaque bulle : `aria-expanded` vrai ouverte et faux fermée, zone d'annonce égale au
+texte puis vidée. En plus (`divers.cjs`, 34 contrôles, aucun échec) : la page défile au
+doigt bulle ouverte (376 px) et la bulle reste, encore ouverte six secondes plus tard ;
+bulle ouverte, un appui sur une liste l'ouvre et un choix s'y fait, un pli bascule, le
+menu « Charger un exemple » s'ouvre, un champ prend le focus, « Simuler » lance le
+calcul, et la bulle se ferme à chaque fois ; un appui sur une seconde aide ferme la
+première ; arbre d'accessibilité de Chromium : bouton nommé, déplié faux puis vrai,
+description égale au texte de la bulle ; Tab quitte le déclencheur et ferme la bulle ;
+clavier sur tablette : le focus ouvre, Entrée garde ouvert, Entrée ferme, Échap ferme ;
+un doigt sur un appareil qui survole ouvre et retient ; une bulle plus haute que la place
+défile sous le doigt et reste ouverte.
+
+*À la souris et au clavier* (1 440 × 900, les 130 aides des trois premiers jeux, build
+d'avant contre build final, même script) : survol ouvre 130 sur 130 des deux côtés, clic
+ferme, quitter ferme, Échap ferme, Tab sort et ferme. Focus clavier : 118 aides avant, 130
+après (les douze libellés). Photos de la fenêtre bulle ouverte, au survol et au focus,
+260 paires : 114 identiques au pixel ; 95 à un écart d'au plus 7/255 sur 1 à 91 pixels
+(deux passes du même build donnent 26 paires de ce genre, à 6/255 au plus) ; 21 à un écart
+petit (moins de 400 pixels), dont le « 30 % » de la calculette visible derrière la
+bulle (voir B) ; 30 nettes, toutes expliquées : les douze libellés au focus (la bulle s'y
+ouvre maintenant), les huit clichés des bulles « Impôt sur le revenu » (le taux, voir B),
+les deux de « Zones exonérées » (plus coupée), sept clichés où la page entière est
+décalée de 1 à 5 px (quatre aides, la première essayée après un chargement ; trois
+d'entre elles le sont aussi entre deux passes du même build), et la bulle de la boussole
+au survol (fondu en cours, 20/255 au plus ; identique au focus).
+WebKitGTK, souris et clavier : 34 aides (7, 26 et 1), survol, clic, sortie, focus, Échap,
+toutes dans la fenêtre.
+
+**B. Deux nombres mal affichés** (texte affiché seul, calcul intact)
+
+- Simulateur, bulle « Impôt sur le revenu » (`RegimeComparisonCards.tsx`). Le calcul rend
+  le taux effectif brut. Avant : « Taux effectif : 3.7918173598553344% ». Après :
+  « Taux effectif : 3,8 % » (une décimale au plus, virgule, espace insécable avant %).
+  Relevés sur trois jeux : 4.555555555555555% → 4,6 % ; 3.7918173598553344% → 3,8 % ;
+  10.22517730496454% → 10,2 % ; 8.624507374151872% → 8,6 %. Quand le calcul ne rend pas
+  de taux, la même ligne en affiche un arrondi à l'entier : « Taux effectif : 4% »
+  devient « Taux effectif : 4 % » (même formule, non observé ici : c'est la branche PAMC,
+  dont la fonction Supabase est injoignable).
+  Recherche des autres nombres bruts : 71 textes lus sur trois jeux (résultats, chaque
+  pli ouvert, les 61 bulles des résultats). Aucun autre nombre à plus de deux décimales.
+  Laissés tels quels (arrondis, mais écrits avec un point) : « +13.0% Super-Net »,
+  « (41.0%) », « +1.0 part(s) », « 1.5 parts fiscales ».
+- Calculette, pli « Estimation indicative de l'impôt sur le revenu »
+  (`IrEstimateCard.tsx`), trouvé en relisant les pages imprimées. `getTMI()` rend un
+  pourcentage (30) et l'affichage le multipliait par cent. Avant : « Tranche marginale
+  (TMI) 3000 % ». Après : « Tranche marginale (TMI) 30 % ». `src/lib/baremes-ir.ts`
+  n'est pas touché.
+
+**C. La calculette s'imprime sur une page**
+
+`@media print` à la fin de `src/styles/calculette.css` (servie à cette page seule ; le
+reste de la feuille est sous `@media screen`). Retirés de la feuille imprimée :
+l'en-tête, le pied, la bannière cookies, la bulle de chat (`#crisp-launcher`, et
+`.crisp-client`, que le script de Crisp pose), les avis éphémères, le lien de retour, les
+pastilles, l'accroche et l'aperçu du haut de page, l'appel à l'essai, la FAQ, le décor de
+fin ; les fonds et les ombres. Restent le titre, les résultats et l'avertissement de fin.
+Le formulaire, la barre collante et les boutons d'action portaient déjà `print:hidden`.
+Résultats sur deux colonnes, corps à 13,5 px pour 16, fiches jamais coupées
+(`break-inside`), libellés jamais tronqués ; ne s'impriment pas les boutons de copie, les
+flèches des plis et la ligne de liens « Pas sûr d'une case ? ».
+
+Mesuré par `page.pdf()` de Chromium (A4, marges de 10 mm, sans puis avec les fonds) sur
+29 cas : les quatorze exemples, plis de détail fermés puis ouverts (ce que fait le bouton
+« Imprimer »), et la page sans saisie.
+
+| | Avant | Après |
+|---|---|---|
+| Pages | 4 (16 cas), 5 (10 cas), 6 (3 cas) | 1 (29 cas) |
+| En-tête, pied, FAQ, appel à l'essai imprimés | 29 cas | 0 |
+| Bannière cookies ou bulle de chat, répétée sur chaque page | 29 cas | 0 |
+| Éléments collants ou fixes sous `@media print` | 2 par cas | 0 |
+
+Rien de coupé : les 965 nombres des résultats lus à l'écran sont dans le texte du PDF,
+sauf le « (2042 » de la ligne de liens retirée ; sous `emulateMedia({ media: 'print' })`,
+à la largeur utile d'un A4, aucun élément des résultats ne déborde et aucun n'est rogné.
+
+**Preuves communes**
+
+- Calculs : trois cas du simulateur en calcul local, un cas PAMC (même état d'erreur) et
+  deux exemples de la calculette : texte de l'îlot identique au caractère près à celui du
+  build de `main` (`ref-dist-7`). Les deux nombres de B sont dans une bulle et dans un pli
+  fermés pendant ce relevé.
+- Mesure : sur les trois parcours de § 9.er, 17, 18 et 12 événements, même suite, mêmes
+  noms, 2 827 propriétés comparées, identiques au build d'avant ; contre `main`, les deux
+  écarts de § 9.er et rien d'autre. Un écart nouveau, sur un appareil tactile seulement :
+  dans la chaîne d'éléments du clic capturé sur une aide, le bouton porte
+  `aria-expanded` (parcours au doigt relevé avant et après : 8 événements des deux côtés,
+  394 propriétés comparées, seul `$elements_chain` diffère sur les quatre clics).
+- HTML : contre le build d'avant, 65 fichiers identiques à l'octet, 6 aux noms de fichiers
+  près (simulateur, calculette, le guide et ses trois pages filles), aucun autre écart :
+  aucun attribut n'est ajouté au HTML du build (`aria-expanded`, `role` et `tabindex`
+  arrivent après le montage). Contre `ref-dist-7` : titres, metas, liens, JSON-LD,
+  `data-ph`, `data-track`, texte identiques sur 71 fichiers ; seuls écarts, ceux de
+  § 9.er. Feuille commune inchangée (`_astro_assets.QWDU2rDT.css`). `tooltip.*.js` passe
+  de 17,8 à 18,9 Ko gzip (50,1 à 53,3 Ko bruts).
+- `npm run build` : 70 pages ; `verify-site.mjs` : 0 erreur (68 pages, 5 431 liens).
+- Hydratation (scripts de § 9.er rejoués sur le build final, cinq chargements à froid) :
+  rien ne recule. En 4G lente, hydraté puis clic pris : `/simulateur` 3 079 → 3 071 et
+  3 169 → 3 154 ms ; calculette 2 994 → 2 998 et 3 134 → 3 137 ; recherche du guide
+  2 836 → 2 814 et 4 102 → 4 051 ; boussole au saut immédiat 4 086 → 4 076 et
+  4 132 → 4 110. Sans bridage, la boussole au saut immédiat prend le clic à 332 ms
+  contre 296, les autres scénarios à 30 à 90 ms de moins : bruit de la machine, dans les
+  deux sens. JS avant l'hydratation : 1 Ko de plus (`tooltip.*.js`).
+- Lighthouse mobile, médiane de trois passes (performance, accessibilité, bonnes
+  pratiques, SEO) : accueil 99, 100, 96, 100, LCP 1 053 ms ; `/simulateur` 99, 100, 96,
+  100, LCP 1 202 ms, blocage 128 ms ; article 98, 100, 96, 100, LCP 2 402 ms ;
+  calculette 96, 100, 96, 100, LCP 1 203 ms, blocage 210 ms.
+
+**Limites, non testé**
+
+- Un vrai téléphone, une vraie tablette, Safari sur iOS : le toucher est émulé dans
+  Chromium (le pilote de WebKitGTK ne le simule pas). Safari ne donne pas le focus à un
+  bouton touché : la bulle y est ouverte par le clic seul, chemin couvert par l'essai du
+  portable tactile, pas par un essai dans Safari.
+- Un lecteur d'écran : l'arbre d'accessibilité et la zone d'annonce sont lus par script,
+  aucune synthèse vocale n'a été écoutée.
+- La branche PAMC du simulateur (fonction Supabase injoignable d'ici) : ses bulles ne
+  sont pas affichées, donc pas essayées.
+- L'impression : PDF de Chromium seulement (pas Firefox, pas Safari, pas d'imprimante) ;
+  la bulle de chat de Crisp une fois ouverte (script extérieur, injoignable d'ici) est
+  visée par son nom de classe, sans essai.
+- Firefox ; `npm run dev`.
+
+**Fichiers**
+
+`src/components/ui/tooltip.tsx`, `src/components/simulateur/RegimeComparisonCards.tsx`,
+`src/components/calculette/IrEstimateCard.tsx`, `src/styles/simulateur.css`,
+`src/styles/calculette.css`, `src/styles/guide.css`, `CLAUDE.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

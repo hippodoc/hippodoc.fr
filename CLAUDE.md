@@ -252,6 +252,28 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   `client:idle` ne gagnent rien de mesurable) ; la boussole en
   `client:visible={{ rootMargin: "100%" }}`, hydratée un écran avant d'entrer dans la
   fenêtre. Pour mesurer : scripts de § 9.er (trois réseaux, cinq chargements à froid).
+- **Poser une aide** (bulle « i » ou « ? », § 9.es) : `Tooltip`, `TooltipTrigger` et
+  `TooltipContent` de `src/components/ui/tooltip.tsx`, ou `PremiumTooltip` dans le
+  simulateur (tiroir sous 768 px, bulle au-dessus). Jamais `@radix-ui/react-tooltip` nu :
+  au doigt il ne s'ouvre pas. Le composant garde le survol et le focus de Radix ; au
+  doigt (pointeur tactile ou stylet, ou tout clic sous `(hover: none)` ou
+  `(pointer: coarse)`, lu après le montage), un appui ouvre la bulle et la retient, un
+  second appui, un appui ailleurs ou Échap la ferment, un défilement non. Il pose
+  lui-même `aria-expanded` (appareil tactile) et remplit la zone `#aide-annonce`
+  (`role="status"`) : ne pas les écrire à la main, ni piloter `open`.
+  - Le déclencheur est un `<button type="button">` nommé (`aria-label` s'il ne porte
+    qu'une icône), à côté du `<label>`, jamais dedans. Un `asChild` sur autre chose qu'un
+    bouton reçoit `role="button"` et `tabindex="0"` après le montage : cela marche, un
+    vrai bouton reste préférable.
+  - La bulle porte la classe de son outil (`sim sim-bulle`, `calc calc-bulle`,
+    `gd-bulle`) : sa feuille borne sa hauteur à
+    `--radix-tooltip-content-available-height` (elle défile si la place manque, au lieu de
+    sortir de la fenêtre) ; une nouvelle classe de bulle reprend cette règle. Une bulle
+    ouverte sur le côté (`side="right"`) borne aussi sa largeur (`…-available-width`).
+  - Le HTML du build n'y gagne aucun attribut : tout arrive après le montage.
+  - Essai : Chromium avec `hasTouch` et `page.touchscreen.tap()` (un clic de souris ne
+    reproduit pas le défaut), à 390, 820 et 1 024 px ; puis survol, focus, Échap à la
+    souris, et dans WebKit.
 - `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Accessibilité (§ 9.en) :
   l'aide « i » d'un champ est un bouton nommé (`PremiumTooltip.tsx`), posé À CÔTÉ du
   `<label>`, jamais dedans ; `FormControl` enveloppe le champ lui-même, pas le `<div>` de
@@ -269,6 +291,13 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   l'îlot et sur ce que Radix rend dans `<body>`. Les `.tsx` gardent leurs utilitaires ;
   leurs couleurs sont recouvertes une par une dans cette feuille : une nouvelle classe de
   couleur dans un `.tsx` s'y ajoute, sinon elle sort dans l'ancienne palette.
+  Impression (§ 9.es) : le dernier bloc de la feuille, `@media print`, le seul hors de
+  `@media screen`. Il retire tout ce qui n'est ni le titre, ni les résultats, ni
+  l'avertissement de fin, et met les résultats sur deux colonnes : les quatorze exemples
+  tiennent sur une page A4. Un nouveau bloc de la page (section, bandeau, élément fixe)
+  s'ajoute à sa liste, sinon il s'imprime ; les règles de la page sont scopées, d'où ses
+  `!important`. Vérifier par `page.pdf()` (nombre de pages) et
+  `page.emulateMedia({ media: 'print' })`.
 - `/guide-declarations` → îlots `BoussoleWizard` et `BoussoleSearchIsland` + sections
   statiques, données `src/data/boussoleData.ts`. Habillage DA (§ 9.el) : classes `gd-*` de
   `src/styles/guide.css`, servie au hub et aux trois pages filles (`GuideSousPage.astro`) ;
