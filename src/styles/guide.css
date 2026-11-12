@@ -730,9 +730,11 @@ html:has(.da-fond):has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-are
      recherche, coupée à mi-corps (les 62 % du haut de l'image), retournée pour
      désigner le titre. Quand la barre se resserre (la page a défilé de 320 px,
      état déjà posé par l'îlot), elle se baisse derrière elle : la barre va se
-     coller en haut, et ne cachera plus la coupe. */
+     coller en haut, et ne cachera plus la coupe. `min-height: 0` : sans lui,
+     le moteur de Safari donne au cadre la hauteur de l'image entière
+     (§ 9.ep, § 9.eq). */
   .gd .gd-tete-in { max-width: calc(100% - 320px); }
-  .gd .gd-guide { position: absolute; right: calc(max(var(--gut), env(safe-area-inset-right, 0px)) + 36px); bottom: -42px; display: block; width: 264px; aspect-ratio: 981 / 720; overflow: hidden; }
+  .gd .gd-guide { position: absolute; right: calc(max(var(--gut), env(safe-area-inset-right, 0px)) + 36px); bottom: -42px; display: block; width: 264px; aspect-ratio: 981 / 720; min-height: 0; overflow: hidden; }
   .gd .gd-guide img { scale: -1 1; transition: translate 320ms var(--ease); }
   .gd:has(.gd-rech-in.compact) .gd-guide img { translate: 0 105%; }
 }
