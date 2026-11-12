@@ -211,8 +211,76 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   le build TOUTE image de ce dossier, citée ou non : une image que plus aucun frontmatter
   ne cite se supprime (§ 9.eo).
 
-## Outils (îlots React, hydratés `client:visible`)
+## Outils (îlots React, hydratés à la vue)
 
+- ⚠️ **Un îlot ne répond qu'une fois hydraté** (§ 9.er, § 9.et). Entre l'affichage et
+  l'hydratation, l'outil a l'air prêt et ne répond pas (0,1 à 0,2 s en local, 0,7 s en
+  4G rapide, 2,4 s en 4G lente). Ce moment se montre ; il ne se raccourcit pas sans coût :
+  - **Pas de `<link rel="modulepreload">` des fichiers des îlots**, dans le `<head>` comme
+    dans le `<body>` : essayé, mesuré, retiré (§ 9.et). Les fichiers partent en même temps
+    que les feuilles de style et la police, et l'hydratation passe avant le premier
+    affichage : en HTTP/2 la première peinture et le LCP reculaient de 0,2 s, en 4G rapide
+    comme en 4G lente ; en HTTP/1.1 la police arrivait après l'affichage.
+    `fetchpriority="low"` n'y change rien en HTTP/2 et perd le gain en HTTP/1.1. Avant d'y
+    revenir : mesurer sur un aperçu Vercel, en réseau réellement bridé (première peinture,
+    LCP, arrivée de la police, décalage de mise en page), pas par le Lighthouse simulé,
+    qui ne voit rien.
+  - **`src/lib/analytics.ts` importe `posthog-js`, comme avant** : l'en sortir (file
+    d'attente, instance donnée par `PostHog.astro`) ne gagne rien sans les préchargements
+    (mesuré, § 9.et), et changeait la mesure à la marge. Une seule instance, celle que
+    `PostHog.astro` initialise ; îlots et scripts de page émettent par `trackEvent()`.
+  - **Un module ne se charge par `import()` que s'il ne sert pas au premier geste** : le
+    bloc des résultats du simulateur (`RegimeComparisonCards`) l'est. Le moteur de la
+    recherche du guide et ses données (100 Ko gzip) restent un import statique de
+    `BoussoleSearchIsland.tsx` : chargés après l'hydratation, le champ prenait la saisie
+    0,2 s plus tôt mais la première liste sortait 0,75 s plus tard en 4G lente (un
+    aller-retour de plus, § 9.et).
+  - **Tant que `<astro-island>` porte `ssr`, la feuille de l'outil le dit** (fin de
+    `simulateur.css`, `calculette.css`, `guide.css`) : contrôles sans clic ni toucher
+    (`pointer-events: none`), curseur d'attente, et après 0,8 s un trait qui glisse (bord
+    haut de la première fiche, ou sous le champ de recherche), figé après 30 s, fixe sous
+    `prefers-reduced-motion`, à la couleur du texte en contrastes forcés. Les sélecteurs
+    visent des balises (`button`, `input`, `select`, `textarea`, `summary`, `label`,
+    `[role="button"]`, `[tabindex]`) sous la racine de l'îlot (`.sim-ile`, `.calc-ile`,
+    `.gd-rech-champ`, `.gd-boussole`) : un nouvel îlot d'outil reçoit le même bloc, avec
+    ses propres noms d'images clés. La boussole est neutralisée sans trait (elle s'hydrate
+    plus tard que la page : un trait s'y montrerait d'emblée).
+    ⚠️ **Jamais `interactivity: inert` (ni `inert`, ni `visibility`) dans ce bloc** : un
+    îlot `client:visible` qui n'est pas encore entré dans la fenêtre garde `ssr` sans
+    limite de temps ; ses contrôles sortaient du parcours clavier, de l'arbre
+    d'accessibilité et de la recherche dans la page (§ 9.et). Le clavier reste donc celui
+    d'avant pendant l'attente : Tab atteint les contrôles, une saisie y est effacée à
+    l'hydratation, « Entrée » envoie le formulaire en natif.
+  Directives : les quatre îlots (simulateur, calculette, recherche et boussole du guide)
+  en `client:visible` (`client:load` et `client:idle` ne gagnent rien de mesurable ; une
+  marge `rootMargin` sur la boussole, essayée puis retirée, la rendait prête plus tôt
+  dans une fenêtre haute mais retardait le champ de recherche sur certains réseaux,
+  § 9.et). Pour mesurer un changement de
+  chargement : trois réseaux, cinq chargements à froid, **et le chargement sans geste**
+  (première peinture, LCP, arrivée de la police, décalage, page vue), en HTTP/1.1 et en
+  HTTP/2, côtés alternés ; le Lighthouse simulé seul ne suffit pas (§ 9.et).
+- **Poser une aide** (bulle « i » ou « ? », § 9.es) : `Tooltip`, `TooltipTrigger` et
+  `TooltipContent` de `src/components/ui/tooltip.tsx`, ou `PremiumTooltip` dans le
+  simulateur (tiroir sous 768 px, bulle au-dessus). Jamais `@radix-ui/react-tooltip` nu :
+  au doigt il ne s'ouvre pas. Le composant garde le survol et le focus de Radix ; au
+  doigt (pointeur tactile ou stylet, ou tout clic sous `(hover: none)` ou
+  `(pointer: coarse)`, lu après le montage), un appui ouvre la bulle et la retient, un
+  second appui, un appui ailleurs ou Échap la ferment, un défilement non. Il pose
+  lui-même `aria-expanded` (appareil tactile) et remplit la zone `#aide-annonce`
+  (`role="status"`) : ne pas les écrire à la main, ni piloter `open`.
+  - Le déclencheur est un `<button type="button">` nommé (`aria-label` s'il ne porte
+    qu'une icône), à côté du `<label>`, jamais dedans. Un `asChild` sur autre chose qu'un
+    bouton reçoit `role="button"` et `tabindex="0"` après le montage : cela marche, un
+    vrai bouton reste préférable.
+  - La bulle porte la classe de son outil (`sim sim-bulle`, `calc calc-bulle`,
+    `gd-bulle`) : sa feuille borne sa hauteur à
+    `--radix-tooltip-content-available-height` (elle défile si la place manque, au lieu de
+    sortir de la fenêtre) ; une nouvelle classe de bulle reprend cette règle. Une bulle
+    ouverte sur le côté (`side="right"`) borne aussi sa largeur (`…-available-width`).
+  - Le HTML du build n'y gagne aucun attribut : tout arrive après le montage.
+  - Essai : Chromium avec `hasTouch` et `page.touchscreen.tap()` (un clic de souris ne
+    reproduit pas le défaut), à 390, 820 et 1 024 px ; puis survol, focus, Échap à la
+    souris, et dans WebKit.
 - `/simulateur` → `src/components/simulateur/SimulateurApp.tsx`. Accessibilité (§ 9.en) :
   l'aide « i » d'un champ est un bouton nommé (`PremiumTooltip.tsx`), posé À CÔTÉ du
   `<label>`, jamais dedans ; `FormControl` enveloppe le champ lui-même, pas le `<div>` de
@@ -230,6 +298,15 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   l'îlot et sur ce que Radix rend dans `<body>`. Les `.tsx` gardent leurs utilitaires ;
   leurs couleurs sont recouvertes une par une dans cette feuille : une nouvelle classe de
   couleur dans un `.tsx` s'y ajoute, sinon elle sort dans l'ancienne palette.
+  Impression (§ 9.es) : le dernier bloc de la feuille, `@media print`, le seul hors de
+  `@media screen`. Il retire tout ce qui n'est ni le titre, ni les résultats, ni
+  l'avertissement de fin, et met les résultats sur deux colonnes : les quatorze exemples
+  tiennent sur une page A4 dans l'état par défaut, plis de détail ouverts compris (deux
+  pages pour les plus longs avec « Tout afficher », ou en format Letter). Un nouveau bloc
+  de la page (section, bandeau, élément fixe) s'ajoute à sa liste, sinon il s'imprime
+  (une bulle d'aide ou une liste restée ouverte y est : `[data-radix-popper-content-wrapper]`) ;
+  les règles de la page sont scopées, d'où ses `!important`. Vérifier par `page.pdf()` (nombre de pages) et
+  `page.emulateMedia({ media: 'print' })`.
 - `/guide-declarations` → îlots `BoussoleWizard` et `BoussoleSearchIsland` + sections
   statiques, données `src/data/boussoleData.ts`. Habillage DA (§ 9.el) : classes `gd-*` de
   `src/styles/guide.css`, servie au hub et aux trois pages filles (`GuideSousPage.astro`) ;

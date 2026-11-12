@@ -506,7 +506,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                 TMI {tmi}%
               </div>
               <span className="text-[10px] text-muted-foreground">
-                Taux effectif : {tauxEffectif ?? (revenuTotal > 0 ? Math.round((result.impot / revenuTotal) * 100) : 0)}%
+                {/* Affichage seul : une décimale au plus, à la française. Le calcul rend le taux brut (3.7918173598553344). */}
+                Taux effectif : {(tauxEffectif ?? (revenuTotal > 0 ? Math.round((result.impot / revenuTotal) * 100) : 0)).toLocaleString('fr-FR', { maximumFractionDigits: 1 })}{'\u00a0'}%
               </span>
             </div>
           )}

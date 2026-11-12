@@ -107,7 +107,8 @@ export function IrEstimateCard({ beneficeImposable, annee }: IrEstimateCardProps
               </div>
               <div className="flex justify-between text-[11px] text-muted-foreground pt-0.5">
                 <span>Tranche marginale (TMI)</span>
-                <span>{(result.tmi * 100).toFixed(0)} %</span>
+                {/* getTMI rend déjà un pourcentage (30) : le multiplier par 100 affichait « 3000 % ». */}
+                <span>{result.tmi.toFixed(0)} %</span>
               </div>
             </div>
 

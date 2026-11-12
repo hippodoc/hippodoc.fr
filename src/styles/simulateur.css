@@ -320,6 +320,12 @@
 /* ───────── Hors de l'îlot : bulles, tiroir, listes ───────── */
 /* Bulle d'aide : une fiche blanche, plus de fond noir. */
 .sim.sim-bulle { max-width: min(320px, 85vw); padding: 16px; border: 0; border-radius: 20px; background: var(--paper); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 18px 40px -16px rgba(13, 40, 105, 0.5); font-family: var(--text); font-size: 0.875rem; font-weight: var(--tw); line-height: 1.45; -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Une bulle plus haute que la place libre au-dessus ou au-dessous de son « i » (aide « Zones
+   exonérées » : 500 px) sortait de la fenêtre. Elle prend la hauteur que Radix lui mesure et
+   défile dedans : à la souris la bulle se survole, au doigt elle reste ouverte (§ 9.es). Sans
+   transition : la bulle porte `duration-300`, qui animait cette hauteur (elle dépassait encore
+   du haut de la fenêtre pendant 0,3 s, § 9.et) ; son entrée est une animation, pas une transition. */
+.sim.sim-bulle { max-height: min(calc(100vh - 64px), var(--radix-tooltip-content-available-height, 100vh)); overscroll-behavior: contain; transition: none; }
 /* Les textes des bulles gardent leurs classes de taille ; ici ils gagnent un
    cran : 10 px devenait illisible sur une fiche claire. */
 .sim-bulle-in .text-xs { font-size: 0.8125rem; line-height: 1.45; }
@@ -370,6 +376,40 @@
   .sim .sim-regime-tete { padding: 28px 28px 16px; }
   .sim .sim-regime-corps { padding: 0 28px 28px; }
 }
+
+/* Avant l'hydratation (MIGRATION.md § 9.er, § 9.et). Astro garde l'attribut `ssr` sur
+   <astro-island> tant que React n'a pas pris l'îlot : le HTML a l'air prêt, rien ne
+   répond. Sans script, cette feuille le dit :
+   - les contrôles ne prennent ni clic ni toucher (un clic n'est plus perdu sans
+     signe, une saisie au pointeur n'est plus effacée à l'hydratation). Les liens
+     restent des liens. Le clavier, lui, n'est PAS neutralisé : Tab atteint les
+     contrôles comme avant. ⚠️ Ne pas y remettre `interactivity: inert` : un îlot
+     `client:visible` qui n'est pas encore entré dans la fenêtre garde `ssr` sans
+     limite de temps, et ses contrôles sortaient du parcours clavier, de l'arbre
+     d'accessibilité et de la recherche dans la page (§ 9.et) ;
+   - le curseur attend ;
+   - passé 0,8 s, un trait qui glisse sur le bord haut de la première
+     fiche du formulaire (pas au-dessus de l'îlot : la mascotte s'y tient) : rien
+     ne s'affiche quand l'hydratation est rapide. Aucun texte, aucun décalage de
+     mise en page. Le glissement ne démarre qu'avec le trait (avant, il occuperait
+     le navigateur à chaque image pour un trait invisible) et s'arrête après
+     30 s : le trait reste, fixe. Fixe d'emblée si le visiteur a demandé moins
+     de mouvement ; à la couleur du texte en contrastes forcés, où un dégradé
+     ne se voit pas.
+   Tout tombe avec l'attribut. Si un fichier JS ne charge jamais, l'état reste :
+   l'outil ne prend pas le pointeur, et cela se voit. */
+astro-island[ssr] .sim-ile { cursor: progress; }
+astro-island[ssr] .sim-ile :is(button, input, select, textarea, summary, label, [role="button"], [tabindex]:not([tabindex="-1"])) { pointer-events: none; }
+astro-island[ssr] #simulateur-form::before { content: ""; display: block; position: relative; z-index: 2; margin: 0 28px -3px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(0, 89, 179, 0), var(--brand) 50%, rgba(0, 89, 179, 0)) 0 0 / 40% 100% no-repeat, rgba(20, 37, 79, 0.12); opacity: 0; pointer-events: none; animation: sim-attente-glisse 1.2s linear 0.8s 25, sim-attente-entree 0.25s 0.8s forwards, sim-attente-fige 0.01s 30.8s forwards; }
+@media (prefers-reduced-motion: reduce) {
+  astro-island[ssr] #simulateur-form::before { background: rgba(0, 89, 179, 0.5); animation: sim-attente-entree 0.01s 0.8s forwards; }
+}
+@media (forced-colors: active) {
+  astro-island[ssr] #simulateur-form::before { background: CanvasText; forced-color-adjust: none; animation: sim-attente-entree 0.01s 0.8s forwards; }
+}
+@keyframes sim-attente-glisse { from { background-position: -70% 0, 0 0; } to { background-position: 170% 0, 0 0; } }
+@keyframes sim-attente-entree { to { opacity: 1; } }
+@keyframes sim-attente-fige { to { background: rgba(0, 89, 179, 0.5); } }
 
 @media (prefers-reduced-motion: reduce) {
   .sim :is(.sim-btn, .sim-profil, .sim-porte) { transition: none; }

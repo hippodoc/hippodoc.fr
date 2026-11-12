@@ -7625,6 +7625,939 @@ Linux. Lighthouse : non relancé (une déclaration de plus dans deux feuilles de
 Firefox : non testé. Les mesures attribuées au relecteur (texte grossi, impression, focus
 des tableaux, étiquette sur deux lignes) n'ont pas été refaites ici.
 
+### 9.er Phase 7 : des outils qui répondent, la fenêtre morte avant l'hydratation (12 novembre 2026)
+
+> **Corrigé par § 9.et, le même jour.** Après trois relectures, trois des quatre pas décrits
+> ici ont été retirés : les préchargements (b), qui faisaient reculer la première peinture
+> dès que le réseau est bridé ; la sortie de `posthog-js` du graphe des îlots (a), qui ne
+> gagne rien sans eux ; le moteur de recherche chargé après l'hydratation (d), qui, sans
+> eux, retardait la première liste de résultats. `interactivity: inert` est retiré de
+> l'état d'attente (régression au clavier). Restent : la boussole hydratée un écran plus
+> tôt (c) et l'état d'attente. Le texte ci-dessous est gardé comme trace de ce qui a été
+> essayé et mesuré ; ses colonnes « après », ses noms de fichiers à empreinte, sa liste
+> d'ajouts au HTML et son relevé de mesure sont ceux du build d'alors (commit `72254ed`),
+> plus ceux du site : l'état réel est en § 9.et.
+
+Le défaut, relevé par l'audit de la phase 6 (§ 9.ep, § 9.eq) et antérieur à la refonte : le
+simulateur, la calculette et le guide des déclarations sont rendus au build puis hydratés.
+Entre l'affichage et l'hydratation, tout a l'air prêt et rien ne répond : un clic est perdu,
+un montant déjà tapé est effacé à l'hydratation, « Simuler » envoie le formulaire en natif et
+recharge la page. Ce lot raccourcit ce moment, puis le rend visible. Aucun calcul n'est
+touché, aucun mot n'est ajouté à une page, aucune dépendance n'entre.
+
+**Mesure, avant**
+
+Un script rejoué à l'identique à la fin (`mesure-cr.cjs`, Chromium par Playwright ;
+`mesure-wk.py`, WebKitGTK ; scripts de travail, hors dépôt, comme les autres cités ici), sur le build de `main` (`771de40`) servi en local (HTTP/1.1,
+gzip). Par page, par réseau (sans bridage, « 4G rapide » 9 Mbit/s et 165 ms, « 4G lente »
+1,6 Mbit/s et 562 ms, réglages des outils de développement) : première peinture, instant où
+`<astro-island>` perd `ssr`, instant où la page reçoit le premier clic (ou la première
+frappe) qui a un effet, fichiers JS demandés avant, profondeur de la chaîne « demandé par ».
+Médiane de cinq chargements à froid, un navigateur neuf à chaque fois, fenêtre de
+1 440 × 900. En 4G lente : `/simulateur` peint à 1,54 s et répond à 3,94 s (2,4 s de
+fenêtre morte) ; la calculette, 1,55 s et 4,01 s ; la recherche du guide, 1,63 s et 4,25 s.
+Cause : 11 à 19 fichiers JS (234 à 271 Ko transférés) découverts en deux ou trois vagues, sans
+préchargement, dont `posthog-js` (76,6 Ko gzip), que chaque îlot importait par
+`src/lib/analytics.ts`.
+
+**Ce qui a été fait, par ordre de rendement, chaque pas mesuré**
+
+- **(a) Les îlots n'attendent plus `posthog-js`.** `src/lib/analytics.ts` ne l'importe
+  plus : `trackEvent()` émet par l'instance que `PostHog.astro` lui donne
+  (`brancherMesure(posthog)`, une fois, après `init()` et `register_once`), et met en
+  file ce qui est émis avant (cent événements au plus). La file est rejouée dans l'ordre,
+  un tour après `init()` : posthog-js émet sa page vue initiale par un minuteur d'une
+  milliseconde, la file passe derrière. Pas de seconde instance : `posthog-js` n'est que
+  dans `module.*.js`, identique à l'octet à celui de `main`. Le graphe d'un îlot passe de
+  238 à 162 Ko gzip (simulateur), 250 à 174 (calculette). Seul, ce pas gagne peu (0,1 à
+  0,3 s en 4G lente ; **faux**, § 9.et : rien de mesurable, 3 919 ms contre 3 938) : la
+  bibliothèque part quand même, par le script de `PostHog.astro`, et prend sa part du débit. Il vaut par le pas suivant. Effet de bord corrigé : n'étant
+  plus partagé, `posthog-js` était fondu par le bundler dans le script de
+  `PostHog.astro` (3 Ko → 79 Ko), qui partait alors avant la première peinture, sur les
+  70 pages (+30 à +40 ms de première peinture en 4G lente sur les deux pages mesurées).
+  `astro.config.mjs` lui rend
+  son fichier (`environments.client.build.rolldownOptions.output.codeSplitting`) : le
+  script d'entrée reste à 3 Ko, la bibliothèque part après lui, comme sur `main`.
+  Gain annexe : si `posthog-js` ne charge pas, les outils marchent (avant, l'îlot ne
+  s'hydratait jamais).
+- **(b) Les fichiers des îlots sont préchargés.** `src/lib/precharge-ilots.mjs`,
+  intégration Astro : à la fin du build, elle lit dans le HTML produit les `component-url`
+  et `renderer-url` de chaque `<astro-island>`, suit les imports statiques des fichiers de
+  `_astro/` et remplace la balise `<template data-precharge-ilots="…"></template>` que la
+  page a posée par un `<link rel="modulepreload">` par fichier. Aucun nom n'est écrit à la
+  main : une empreinte qui change est relue au build suivant. Elle passe avant la copie
+  vers `.vercel/output/static` (vérifié : mêmes liens des deux côtés). Trois placements
+  essayés sur `/simulateur`, 4G lente, cinq chargements (première peinture / hydraté / clic
+  pris, référence 1 540 / 3 867 / 3 961 ms) :
+  - dans le `<head>` : 1 892 / 2 999 / 3 085. L'hydratation gagne 0,87 s, la première
+    peinture en perd 0,35 (0,44 sur la calculette, 0,59 sur le guide) : les fichiers
+    disputent le débit aux feuilles de style. Écarté ;
+  - dans le `<head>` avec `fetchpriority="low"` : 1 616 / 3 618 / 3 689. La peinture est
+    presque gardée, mais Chromium ne charge alors ces fichiers qu'un par un tant qu'elle
+    n'a pas eu lieu : le gain fond à 0,25 s. Écarté ;
+  - dans le `<body>`, après le pied de page : 1 632 / 3 081 / 3 183. Quand le navigateur
+    lit les liens, les feuilles ont pris leur avance. **Retenu.**
+  Sur `/guide-declarations`, dont le HTML pèse 215 Ko gzip, la fin de page arrive trop
+  tard pour la recherche : ses fichiers sont préchargés juste après son îlot (25 Ko de
+  HTML avant eux, comme sur les deux autres pages), ceux de la boussole en fin de page.
+  Lighthouse ne voit aucune différence entre ces placements (première peinture et LCP à
+  1,20 s partout) ; c'est la mesure en réseau bridé qui tranche.
+- **(c) Directives d'hydratation.** Simulateur et calculette : `client:visible`,
+  `client:load` et `client:idle` comparés sur les trois réseaux, cinq chargements chacun.
+  En 4G lente : hydraté à 3 081, 3 081 et 3 073 ms (simulateur), 3 000, 3 006 et 2 994
+  (calculette) ; sans bridage, `client:load` gagne 35 ms. Temps de blocage de Lighthouse :
+  238, 214 et 301 ms (simulateur), 249, 335 et 250 (calculette), dans le bruit de la
+  machine. Rien de mesurable : **`client:visible` est gardé**, le HTML ne change pas.
+  Boussole du guide : avec ses fichiers préchargés, elle est hydratée 0,2 s avant que le
+  visiteur y arrive à la molette (3 000 px/s), quel que soit le réseau ; sur un saut (le
+  bouton « Trouver ma situation » du haut de page mène à `#profils`), il restait 0,2 s
+  de processeur après l'arrivée (0,3 à 0,45 s, processeur ralenti quatre fois). `client:visible={{ rootMargin: "100%" }}`
+  l'hydrate un écran avant qu'elle entre dans la fenêtre : prête à l'arrivée dans tous
+  les cas mesurés, y compris processeur ralenti quatre fois. À 1 440 × 900, elle est à
+  moins d'un écran du bas de la fenêtre : elle s'hydrate au chargement ; sur un
+  téléphone, pas avant un écran de défilement.
+- **(d) Un module lourd sorti du chemin.** La recherche du guide importait toutes les
+  données du guide (100 Ko gzip) pour s'hydrater, alors qu'elle n'en a besoin qu'à la
+  première frappe. Son moteur est déplacé tel quel dans
+  `src/components/guide/rechercheGuide.ts` (mêmes champs, même ordre, dix résultats),
+  que l'îlot charge par `import()` juste après s'être hydraté. Son graphe, rendu React
+  compris, passe de 156 à 56 Ko gzip. Tant que le module n'est pas là, une frappe ne donne ni liste ni « Aucun
+  résultat » ; la liste sort à son arrivée. Le bloc des résultats du simulateur
+  (`RegimeComparisonCards`, 102 Ko) était déjà chargé à la demande. Non fait : le
+  fichier partagé `site` (47 Ko : formulaires, validation, listes Radix) et `tooltip`
+  (18 Ko) servent dès l'hydratation.
+
+**L'état d'attente, en CSS seul**
+
+Astro garde `ssr` sur `<astro-island>` jusqu'à l'hydratation. Tant qu'il y est, à la fin
+de `simulateur.css`, `calculette.css` et `guide.css` :
+
+- les contrôles de l'îlot (`button`, `input`, `select`, `textarea`, `summary`, `label`,
+  `[role="button"]`, `[tabindex]`) ne prennent ni clic ni toucher (`pointer-events:
+  none`) ; `interactivity: inert` les sort aussi du parcours clavier dans Chromium 135 et
+  suivants. Les liens de l'îlot restent des liens ;
+- le curseur attend (`progress`) ;
+- après 0,5 s, un trait de 3 px qui glisse, au bleu de la marque : sur le bord haut de
+  la première fiche du formulaire (simulateur), de la fiche « Ton profil » (calculette),
+  sous le champ de recherche (guide). Le trait ne prend aucune place (posé dans le flux,
+  marge basse de -3 px, ou hors flux dans le champ de recherche). Sans mouvement sous
+  `prefers-reduced-motion`.
+
+Les deux défauts connus de l'essai de l'audit sont réglés. Sur `/simulateur`, le trait
+n'est plus au-dessus de l'îlot : il est 84 px sous son bord haut, la mascotte s'arrête
+67 px au-dessus (photos à 1 440 et 1 024 px). Sur `/guide-declarations`, la boussole est
+neutralisée sans trait ; avec (c), elle est de toute façon hydratée avant l'arrivée.
+
+Vérifié dans Chromium (JS retenu par interception, puis relâché) sur les quatre îlots :
+curseur, contrôles neutralisés, trait à 0 puis à 1 après le délai ; géométrie des fiches
+et hauteur de page identiques à la référence dans le même état ; un clic puis « 30000 »
+tapé : rien n'est saisi, le focus reste sur la page ; clic sur « Simuler » : pas d'envoi,
+l'adresse ne bouge pas ; toucher à 390 px : rien ne s'ouvre ; Tab passe par-dessus les
+contrôles de l'îlot et continue après lui, Maj+Tab revient ; après l'hydratation, plus
+rien n'est neutralisé, la saisie est gardée, la liste s'ouvre. Le trait selon le réseau,
+relevé à chaque image : jamais affiché sans bridage ni en 4G rapide, affiché 0,6 à 1 s en
+4G lente. Dans WebKit : mêmes effets au pointeur, trait affiché ; `interactivity` n'y est
+pas lu, Tab atteint donc les contrôles et en ressort (18 Tab pour traverser le
+simulateur, 56 la calculette).
+
+**Tableau avant / après** (médianes de cinq chargements à froid ; millisecondes)
+
+| Page | Moteur, réseau | 1re peinture | Hydraté | Clic pris | Fenêtre morte | JS avant hydratation | Cascade |
+|---|---|---|---|---|---|---|---|
+| `/simulateur` | Chromium, sans bridage | 168 → 180 | 297 → 165 | 369 → 266 | 201 → 86 | 19 fichiers, 245 Ko → 17 fichiers, 168 Ko | 3 → 1 |
+| `/simulateur` | Chromium, 4G rapide | 536 → 560 | 1144 → 836 | 1216 → 952 | 680 → 392 | 19 fichiers, 245 Ko → 17 fichiers, 168 Ko | 3 → 1 |
+| `/simulateur` | Chromium, 4G lente | 1540 → 1596 | 3866 → 3079 | 3935 → 3169 | 2395 → 1573 | 19 fichiers, 245 Ko → 17 fichiers, 168 Ko | 3 → 1 |
+| `/simulateur` | WebKit, sans bridage | 312 → 328 | 466 → 416 | 660 → 656 | 348 → 328 | 19 fichiers, 245 Ko → 18 fichiers, 242 Ko | — → — |
+| calculette | Chromium, sans bridage | 192 → 192 | 279 → 156 | 417 → 346 | 225 → 154 | 17 fichiers, 257 Ko → 16 fichiers, 254 Ko | 2 → 2 |
+| calculette | Chromium, 4G rapide | 548 → 572 | 1135 → 780 | 1271 → 913 | 723 → 341 | 17 fichiers, 257 Ko → 14 fichiers, 178 Ko | 2 → 1 |
+| calculette | Chromium, 4G lente | 1552 → 1612 | 3875 → 2994 | 4006 → 3134 | 2454 → 1522 | 17 fichiers, 257 Ko → 14 fichiers, 178 Ko | 2 → 1 |
+| calculette | WebKit, sans bridage | 350 → 326 | 467 → 412 | 784 → 788 | 434 → 462 | 17 fichiers, 257 Ko → 16 fichiers, 254 Ko | — → — |
+| guide, recherche | Chromium, sans bridage | 204 → 240 | 340 → 273 | 487 → 564 | 283 → 324 | 11 fichiers, 234 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, recherche | Chromium, 4G rapide | 588 → 620 | 1171 → 790 | 1369 → 920 | 781 → 300 | 12 fichiers, 237 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, recherche | Chromium, 4G lente | 1632 → 1648 | 4015 → 2836 | 4254 → 4102 | 2622 → 2454 | 11 fichiers, 234 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, recherche | WebKit, sans bridage | 883 → 915 | 1022 → 1004 | 1250 → 1258 | 367 → 343 | 12 fichiers, 237 Ko → 17 fichiers, 193 Ko | — → — |
+| guide, boussole (saut immédiat) | Chromium, sans bridage | 216 → 200 | 430 → 229 | 515 → 296 | 299 → 96 | 17 fichiers, 268 Ko → 17 fichiers, 193 Ko | 3 → 1 |
+| guide, boussole (saut immédiat) | Chromium, 4G rapide | 584 → 580 | 1303 → 1045 | 1343 → 1060 | 759 → 480 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut immédiat) | Chromium, 4G lente | 1636 → 1648 | 4517 → 4086 | 4560 → 4132 | 2924 → 2484 | 17 fichiers, 268 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut immédiat) | WebKit, sans bridage | 887 → 930 | 1082 → 1044 | 1731 → 1712 | 844 → 782 | 18 fichiers, 271 Ko → 17 fichiers, 193 Ko | — → — |
+| guide, boussole (saut après chargement) * | Chromium, sans bridage | 216 → 208 | 91 → -1600 | 120 → 9 | 120 → 9 | 18 fichiers, 271 Ko → 18 fichiers, 268 Ko | 2 → 2 |
+| guide, boussole (saut après chargement) * | Chromium, 4G rapide | 608 → 592 | 411 → -1724 | 422 → 12 | 422 → 12 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut après chargement) * | Chromium, 4G lente | 1636 → 1648 | 1377 → -1993 | 1416 → 8 | 1416 → 8 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut après chargement) * | WebKit, sans bridage | 925 → 881 | 139 → 55 | 705 → 683 | 705 → 683 | 18 fichiers, 271 Ko → 20 fichiers, 272 Ko | — → — |
+| guide, boussole (molette, 3 000 px/s) * | Chromium, sans bridage | 216 → 192 | -168 → -2497 | 4 → 4 | 4 → 4 | 18 fichiers, 271 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, boussole (molette, 3 000 px/s) * | Chromium, 4G rapide | 596 → 592 | 165 → -2542 | 205 → 6 | 205 → 6 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (molette, 3 000 px/s) * | Chromium, 4G lente | 1640 → 1656 | 1127 → -2852 | 1141 → 4 | 1141 → 4 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (molette, 3 000 px/s) * | WebKit, sans bridage | 912 → 942 | -461 → -1426 | 698 → 689 | 698 → 689 | 18 fichiers, 271 Ko → 20 fichiers, 272 Ko | — → — |
+
+\* Boussole après chargement ou à la molette : « hydraté » et « clic pris » sont comptés depuis
+l'arrivée du visiteur sur la boussole (négatif : prête avant qu'il arrive). « JS avant
+hydratation » compte tous les fichiers de `_astro/` demandés avant, ceux de la mesure compris.
+
+Lecture. « Fenêtre morte » : du premier affichage au premier clic pris. En 4G lente, les
+trois outils répondent 0,8 à 1,2 s plus tôt (le champ de recherche du guide dès
+« hydraté », 2,84 s au lieu de 4,02 ; une saisie n'y est plus effacée ensuite) ; la
+boussole est prête quand le visiteur y arrive, dans les trois réseaux, au lieu de 0,1 à
+1,4 s après. Ce qui recule :
+
+- la première peinture, de 0,02 à 0,06 s en 4G bridée sur les trois pages (le
+  préchargement prend un peu du débit des feuilles de style ; **incomplet**, § 9.et : ce
+  chiffre vient d'un scénario qui clique pendant le chargement, en HTTP/1.1 ; en HTTP/2
+  le recul est de 0,2 s, et la police arrive après l'affichage dans les deux cas) ; sans bridage, elle ne
+  bouge pas (0 à 12 ms ; sur le guide, 188 à 244 ms des deux côtés dans les scénarios de
+  la boussole, le scénario de la recherche tapant au clavier pendant le chargement) ;
+- sur le guide sans bridage, la liste des résultats de la recherche sort 0,08 s plus
+  tard (564 ms contre 487) : le module des données arrive après l'hydratation, et la
+  boussole s'hydrate au même moment à cette taille de fenêtre. En 4G, elle sort plus tôt.
+
+Dans WebKit (sans bridage seulement), le pilote met 0,25 à 0,6 s par clic : « clic pris »
+y est grossier, « hydraté » est exact, et gagne 0,02 à 0,09 s. Le scénario de la molette
+n'y est pas comparable à Chromium (le défilement piloté y est bien plus lent que
+3 000 px/s).
+
+Deux corrections du script en cours de route, appliquées des deux côtés. Le saut vers la
+boussole est instantané (`behavior: 'instant'`) : la page a un défilement doux, et les
+premiers clics partaient pendant l'animation. Dans le scénario de la recherche, le champ
+est vidé par sa propre sélection, plus par Ctrl+A : le champ neutralisé ne prenant pas
+le focus, Ctrl+A sélectionnait les 1,8 Mo de la page et retardait lui-même l'hydratation
+de 0,3 s. La référence a été rejouée pour ce scénario dans Chromium et en entier dans
+WebKit ; ses autres scénarios Chromium, que la correction ne touche pas, datent de la
+passe précédente (même script pour eux, même serveur).
+
+**Lighthouse mobile** (médiane de trois passes, deux séries en alternance référence /
+build, même serveur)
+
+| Page | Référence (performance, LCP, blocage) | Build (performance, LCP, blocage) |
+|---|---|---|
+| `/` | 100 et 100 · 1 052 et 1 052 ms · 24 et 2 ms | 100 et 100 · 1 052 et 1 054 ms · 32 et 39 ms |
+| `/simulateur` | 98 et 98 · 1 202 et 1 204 ms · 147 et 152 ms | 98 et 98 · 1 203 et 1 202 ms · 144 et 175 ms |
+| `/blog/frais-pros-medecin-liberal-2026` | 98 et 97 · 2 403 et 2 422 ms · 37 et 75 ms | 98 et 98 · 2 404 et 2 431 ms · 25 et 58 ms |
+
+Accessibilité 100, bonnes pratiques 96, SEO 100 sur les trois pages, des deux côtés. Rien
+ne recule au-delà du bruit d'une passe à l'autre.
+
+Un premier état d'attente coûtait à `/simulateur` environ 40 ms de temps de blocage
+(processeur ralenti quatre fois par Lighthouse) et un à deux points : 96 ou 97 contre 98,
+sur quatre séries. Cherché par variantes, six passes chacune : le build sans l'état
+d'attente rendait le temps de la référence (151 contre 157 ms), le build sans les
+préchargements ne le rendait pas (230 ms). Les préchargements ne coûtent donc rien à
+Lighthouse ; c'était le trait, dont le glissement (une animation de fond, calculée à
+chaque image) tournait dès l'affichage, encore invisible. Il démarre maintenant avec le
+trait, après 0,5 s : les chiffres ci-dessus sont ceux du build final. Le bruit de la
+machine reste fort d'une passe à l'autre (100 à 290 ms de blocage sur la même page).
+
+**Ajouts au HTML, un par un** (période d'observation SEO ; liste exacte par
+`invariance7.py`, build contre `ref-dist-7`)
+
+- **Sur les 70 pages** : le nom du script de `PostHog.astro` change
+  (`PostHog.astro_astro_type_script_index_0_lang.D-OG_3oS.js` → `….DwdnB0sC.js`). Rien
+  d'autre sur 64 d'entre elles.
+- **Sur les quatre pages du guide des déclarations** (le hub et ses trois pages filles) :
+  le nom de la feuille du guide (`QuestionCard.BitHE1NA.css` → `….0sFLbjMO.css`).
+- **`/simulateur`** : nom de la feuille (`simulateur.DyZySLzp.css` → `….B_IDJn-V.css`),
+  du fichier de l'îlot (`component-url` : `SimulateurApp.C0aBMWk0.js` → `….CeVPZew1.js`) et
+  du script de page ; **15 `<link rel="modulepreload">`** ajoutés dans le `<body>`, après
+  le pied de page.
+- **`/guide-declarations/calculette`** : nom de la feuille (`calculette.B1_8-bMq.css` →
+  `….Cuuglc0m.css`), du fichier de l'îlot (`CalculetteApp.Bee9n-an.js` → `….B33wKo7r.js`)
+  et du script de page ; **12 `<link rel="modulepreload">`** dans le `<body>`, après le
+  pied de page.
+- **`/guide-declarations`** : nom des fichiers des deux îlots
+  (`BoussoleSearchIsland.dVAs37l4.js` → `….CXUiv3KO.js`, `BoussoleWizard.IqDNcLdm.js` →
+  `….BbvxH8SF.js`) ; **9 `<link rel="modulepreload">`** juste après la barre de recherche,
+  **7** après le pied de page ; **attribut `opts` de l'`<astro-island>` de la boussole** :
+  `{"name":"BoussoleWizard","value":true}` → `{"name":"BoussoleWizard","value":{"rootMargin":"100%"}}`.
+- Aucun autre écart : sur les 71 fichiers HTML du build, `<title>`, metas, canonique,
+  titres H1 à H6 (1 475), liens (7 272), JSON-LD (257 blocs), `data-ph` (2 327),
+  `data-track` (436), images et texte (193 420 mots) sont identiques à la référence,
+  page par page ; 1 fichier est identique à l'octet (`/transmissions`), 67 aux noms de
+  fichiers près, 3 portent les ajouts ci-dessus. Le HTML rendu par les îlots est le même.
+- Côté fichiers : deux fichiers JS de plus (`rechercheGuide`, et `search`, une icône que
+  le bundler a séparée), 31 au lieu de 29 ; `module.D6cv-y7S.js` (posthog-js) identique à
+  l'octet.
+
+**Mesure (PostHog)**
+
+Relevé des envois à `t.hippodoc.fr` (interceptés, décodés) sur un parcours complet de
+chaque outil, référence deux fois puis build (`releve-mesure.cjs`, `compare-mesure.py` :
+les propriétés qui changent entre deux relevés de la référence, identifiants et instants,
+sont écartées ; toutes les autres sont comparées, événement par événement, dans l'ordre).
+Simulateur (profil type, deux simulations, nouvelle simulation, appel à l'essai) :
+17 événements ; calculette (exemple, copie d'une case, tout copier, imprimer, estimation
+d'impôt, appel à l'essai, rechargement) : 18 ; guide (recherche, boussole, remise à
+zéro) : 12. Même suite, mêmes noms, mêmes propriétés (2 837 comparées), une seule
+page vue par chargement, `posthog-js` dans un seul fichier. Deux écarts, expliqués :
+
+- l'événement d'arrivée d'un îlot (`public_simulator_started`,
+  `calculette_2042_dspamc_view`) part maintenant juste après la page vue, donc parfois
+  avant que posthog-js ait reçu sa configuration distante : il ne porte alors pas cinq
+  propriétés d'état que la bibliothèque ajoute d'elle-même (`$active_feature_flags`,
+  `$feature_flag_payloads`, `$autocapture_disabled_server_side`,
+  `$dead_clicks_enabled_server_side`, `$web_vitals_enabled_server_side`), comme la page
+  vue ne les porte pas. Ce n'est pas propre au build : la bibliothèque retenue 2,5 s, la
+  référence les perd aussi, et les deux relevés sont identiques. Le nom, les propriétés
+  passées par le code et les `hd_*` ne changent pas ;
+- dans la chaîne d'éléments des clics capturés dans la boussole, l'attribut `opts` de
+  `<astro-island>` porte la marge d'hydratation (voir la liste ci-dessus).
+
+Ce qui est nouveau : un îlot peut répondre avant que posthog-js soit là. Ses événements
+nommés sont alors mis en file et partent à son arrivée ; un clic fait dans ce court
+moment n'a pas de capture automatique (avant, l'îlot était inerte : ce clic n'existait
+pas). L'horodatage d'un événement rejoué est celui du rejeu, pas de l'émission : lui
+donner l'instant d'origine ferait ajouter deux propriétés par posthog-js.
+
+**Preuves**
+
+- Calculs : trois cas du simulateur en calcul local (30 000 / 3 000, 900 / 100,
+  37 500 / 12 000), un cas PAMC (80 000 / 10 000 : la fonction Supabase est injoignable
+  d'ici, les deux builds affichent le même état d'erreur) et deux exemples de la
+  calculette : texte de l'îlot, montants et champs identiques au caractère près
+  (`calculs.cjs`).
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur, 68 pages,
+  5 431 liens (50 de plus : les préchargements, dont il vérifie la cible).
+- `verify-site.mjs`, contrôle 5 (nouveau) : aucun îlot n'importe `posthog-js` ;
+  `posthog-js` tient dans un fichier à part ; les trois pages d'outils préchargent tous
+  les fichiers de leurs îlots, dans le `<body>` ; aucune balise `data-precharge-ilots`
+  n'est restée. Le contrôle échoue comme attendu sur un build abîmé à la main (trois
+  erreurs sur trois).
+- Feuille commune inchangée (`_astro_assets.QWDU2rDT.css`) : seules les feuilles des
+  trois outils changent de nom.
+- Après l'hydratation, rien ne change à l'œil : huit vues (les quatre îlots, à 1 440 et
+  390 px, Chromium) identiques au pixel à la référence.
+
+**Si un fichier JS ne charge jamais**
+
+Essayé en refusant `react-dom` (simulateur) et `CalculetteApp` (calculette). L'îlot garde
+`ssr` : le visiteur voit le formulaire, le trait qui glisse sans fin, un curseur
+d'attente ; rien ne se clique, rien ne se saisit. Avant ce lot, la page avait l'air
+prête : il pouvait taper un montant, et « Simuler » rechargeait la page. L'outil est
+inerte dans les deux cas ; maintenant cela se voit. Proposé, non fait (texte à valider
+par le propriétaire) : après une dizaine de secondes, remplacer le trait par une phrase
+et un lien pour recharger la page.
+
+**Limites, non testé**
+
+- Le clavier : hors Chromium 135 et suivants, Tab atteint encore les contrôles avant
+  l'hydratation ; une saisie y est effacée, « Entrée » dans un champ envoie le formulaire
+  en natif. Le CSS seul ne ferme pas ce chemin.
+- Astro retire `ssr` juste avant que React ait fini d'hydrater (hydratation en
+  transition) : il reste quelques dizaines de millisecondes, jusqu'à 0,2 s relevé sur
+  cette machine, où un contrôle n'est plus neutralisé et ne répond pas encore.
+- Les mesures sont faites en local, en HTTP/1.1 (six connexions), réseau bridé par les
+  outils de développement de Chromium. Sur Vercel (HTTP/2), l'ordre et le partage du
+  débit diffèrent : les gains devraient être du même ordre, ils n'y ont pas été mesurés.
+  WebKit : sans bridage seulement, et WebKitGTK n'est ni Safari ni un iPhone ; son pilote
+  ne simule pas le toucher (le toucher est essayé dans Chromium émulé).
+- Non testé : Firefox ; un vrai téléphone ; `npm run dev` ; la branche PAMC du
+  simulateur avec la fonction Supabase.
+
+**Fichiers**
+
+`src/lib/analytics.ts`, `src/components/PostHog.astro`, `astro.config.mjs`,
+`src/lib/precharge-ilots.mjs` (nouveau), `src/pages/simulateur.astro`,
+`src/pages/guide-declarations/calculette.astro`, `src/pages/guide-declarations/index.astro`,
+`src/components/guide/BoussoleSearchIsland.tsx`, `src/components/guide/rechercheGuide.ts`
+(nouveau), `src/styles/simulateur.css`, `src/styles/calculette.css`, `src/styles/guide.css`,
+`scripts/verify-site.mjs`, `CLAUDE.md`.
+
+### 9.es Phase 7 : des outils qui répondent, les aides au doigt, un taux, l'impression (12 novembre 2026)
+
+> **Complété par § 9.et** : une bulle haute ne dépasse plus pendant son ouverture, une
+> bulle ouverte ne s'imprime plus, et deux défauts antérieurs que ce lot n'a pas vus y
+> sont consignés (deux aides hors de la fenêtre à 390 px, bulles refermées par le
+> défilement au clavier). Les chiffres d'hydratation, de mesure et d'invariance « contre
+> le build d'avant » ci-dessous valent pour le build d'alors (commit `0be0b5c`).
+
+Suite de § 9.er. Trois défauts relevés par l'audit de la phase 6, tous antérieurs à la
+refonte : les bulles d'aide ne s'ouvrent pas au doigt ; un taux sort non arrondi dans une
+bulle du simulateur ; la calculette s'imprime sur quatre pages et plus, avec l'en-tête, la
+FAQ et le pied. Aucun calcul n'est touché, aucune dépendance n'entre, le HTML du build ne
+change pas (`origin/main` n'a pas avancé : `771de40`).
+
+**A. Les aides s'ouvrent au doigt**
+
+*Le défaut, reproduit.* Chromium piloté avec un écran tactile (`hasTouch`, appuis par
+`touchscreen.tap`), sur le build d'avant : simulateur à 1 024 et 820 px, 83 aides « i »
+sur 83 muettes ; calculette à 390, 820 et 1 024 px, 46 aides sur 46 muettes (34 « ? »,
+11 libellés de cases des résultats, la pastille « RSPM · sans DSFU ») ; boussole du guide,
+1 sur 1. Sous 768 px, le simulateur passait déjà par un tiroir (`PremiumTooltip.tsx`),
+qui s'ouvre. Cause : la bulle de Radix écarte les pointeurs tactiles, s'ouvre au focus
+que l'appui donne au bouton, et se referme au clic du même appui.
+
+*La correction, en un seul endroit* : `src/components/ui/tooltip.tsx`, que seuls les
+trois outils utilisent (`PremiumTooltip.tsx` pour le simulateur, `CalculetteForm.tsx`,
+`CalculetteResults.tsx`, `BoussoleWizard.tsx` ; aucune autre page). Aucun appelant ne
+change.
+
+- À la souris et au clavier, rien d'autre que Radix : ouverture au survol et au focus,
+  fermeture en quittant, au clic, à Échap.
+- Au doigt, un appui ouvre la bulle et la retient (« épinglée ») : elle ne suit plus les
+  fermetures de Radix (défilement, perte du survol, autre bulle). Elle se ferme à un
+  second appui, à un appui ailleurs, à Échap, ou quand le focus part vers un autre
+  contrôle. Un défilement au doigt n'est pas un appui (le navigateur annule le pointeur) :
+  la bulle reste. Est « au doigt » : un appui dont le pointeur est un doigt ou un stylet
+  (portable tactile compris), ou tout clic quand le pointeur principal ne survole pas
+  (`(hover: none)` ou `(pointer: coarse)`, lu par `useSyncExternalStore` après le montage,
+  jamais au rendu).
+- Le tiroir du simulateur sous 768 px est gardé tel quel. Au-dessus, la tablette reçoit
+  la bulle épinglée.
+- Accessibilité. Le déclencheur est un bouton nommé. Les douze déclencheurs qui n'en
+  étaient pas (un `<span>` : libellés de cases, pastille RSPM) reçoivent après le montage
+  `role="button"`, `tabindex="0"`, et Entrée et Espace : ils n'étaient pas atteignables au
+  clavier, ils le sont (douze arrêts de tabulation de plus dans les résultats de la
+  calculette). Sur un appareil tactile, le déclencheur porte `aria-expanded` (faux, puis
+  vrai) en plus du `aria-describedby` de Radix ; le texte d'une bulle épinglée est aussi
+  posé dans une zone `role="status"` (`#aide-annonce`, une par page, ajoutée à `<body>`
+  après le montage, vidée à la fermeture). Le focus reste sur le déclencheur.
+- Trois bulles sortaient de la fenêtre, à la souris comme au doigt : « Zones exonérées »
+  du simulateur (500 px de haut : 23 px coupés en haut d'une fenêtre de 900 px, davantage
+  sur une tablette), « Aide profil » de la calculette à 390 px (14 px), la bulle de la
+  boussole à 390 px (44 px à gauche). Les trois feuilles donnent à la bulle la place que
+  Radix lui mesure (`--radix-tooltip-content-available-height`, et `-width` pour la
+  boussole, qui s'ouvre sur le côté) ; au-delà, elle défile dedans.
+
+*Vérifié sur le build final* (scripts de travail, hors dépôt : `tactile.cjs`,
+`souris.cjs`, `divers.cjs`, `wk-aides.py`). Les aides sont comptées en parcourant tous
+les états : simulateur, quatre jeux de saisies (dont un couple avec toutes les options,
+un régime RSPM forcé à 90 000 €, un Micro-BNC plus avantageux), formulaire et résultats,
+plis ouverts, soit 97 aides (22 du formulaire, 75 des résultats) ; calculette, les trois
+profils, les deux régimes et les quatorze exemples, soit 46 ; boussole, 1.
+
+| Outil, largeur | Aides | S'ouvrent à l'appui | Restent ouvertes | Second appui | Appui ailleurs | Échap | Dans la fenêtre |
+|---|---|---|---|---|---|---|---|
+| Simulateur, 1 024 px | 97 | 97 (bulle) | 97 | 97 | 97 | 97 | 97 |
+| Simulateur, 820 px | 97 | 97 (bulle) | 97 | 97 | 97 | 97 | 97 |
+| Simulateur, 390 px | 97 | 97 (tiroir) | 97 | bouton « Fermer » : 97 | 97 | 97 | tiroir |
+| Calculette, 390 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Calculette, 820 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Calculette, 1 024 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Boussole, 390 et 820 px | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+
+Sur chaque bulle : `aria-expanded` vrai ouverte et faux fermée, zone d'annonce égale au
+texte puis vidée. En plus (`divers.cjs`, 34 contrôles, aucun échec) : la page défile au
+doigt bulle ouverte (376 px) et la bulle reste, encore ouverte six secondes plus tard ;
+bulle ouverte, un appui sur une liste l'ouvre et un choix s'y fait, un pli bascule, le
+menu « Charger un exemple » s'ouvre, un champ prend le focus, « Simuler » lance le
+calcul, et la bulle se ferme à chaque fois ; un appui sur une seconde aide ferme la
+première ; arbre d'accessibilité de Chromium : bouton nommé, déplié faux puis vrai,
+description égale au texte de la bulle ; Tab quitte le déclencheur et ferme la bulle ;
+clavier sur tablette : le focus ouvre, Entrée garde ouvert, Entrée ferme, Échap ferme ;
+un doigt sur un appareil qui survole ouvre et retient ; une bulle plus haute que la place
+défile sous le doigt et reste ouverte.
+
+*À la souris et au clavier* (1 440 × 900, les 130 aides des trois premiers jeux, build
+d'avant contre build final, même script) : survol ouvre 130 sur 130 des deux côtés, clic
+ferme, quitter ferme, Échap ferme, Tab sort et ferme. Focus clavier : 118 aides avant, 130
+après (les douze libellés). Photos de la fenêtre bulle ouverte, au survol et au focus,
+260 paires : 114 identiques au pixel ; 95 à un écart d'au plus 7/255 sur 1 à 91 pixels
+(deux passes du même build donnent 26 paires de ce genre, à 6/255 au plus) ; 21 à un écart
+petit (moins de 400 pixels), dont le « 30 % » de la calculette visible derrière la
+bulle (voir B) ; 30 nettes, toutes expliquées : les douze libellés au focus (la bulle s'y
+ouvre maintenant), les huit clichés des bulles « Impôt sur le revenu » (le taux, voir B),
+les deux de « Zones exonérées » (plus coupée), sept clichés où la page entière est
+décalée de 1 à 5 px (quatre aides, la première essayée après un chargement ; trois
+d'entre elles le sont aussi entre deux passes du même build), et la bulle de la boussole
+au survol (fondu en cours, 20/255 au plus ; identique au focus).
+WebKitGTK, souris et clavier : 34 aides (7, 26 et 1), survol, clic, sortie, focus, Échap,
+toutes dans la fenêtre.
+
+**B. Deux nombres mal affichés** (texte affiché seul, calcul intact)
+
+- Simulateur, bulle « Impôt sur le revenu » (`RegimeComparisonCards.tsx`). Le calcul rend
+  le taux effectif brut. Avant : « Taux effectif : 3.7918173598553344% ». Après :
+  « Taux effectif : 3,8 % » (une décimale au plus, virgule, espace insécable avant %).
+  Relevés sur trois jeux : 4.555555555555555% → 4,6 % ; 3.7918173598553344% → 3,8 % ;
+  10.22517730496454% → 10,2 % ; 8.624507374151872% → 8,6 %. Quand le calcul ne rend pas
+  de taux, la même ligne en affiche un arrondi à l'entier : « Taux effectif : 4% »
+  devient « Taux effectif : 4 % » (même formule, non observé ici : c'est la branche PAMC,
+  dont la fonction Supabase est injoignable).
+  Recherche des autres nombres bruts : 71 textes lus sur trois jeux (résultats, chaque
+  pli ouvert, les 61 bulles des résultats). Aucun autre nombre à plus de deux décimales.
+  Laissés tels quels (arrondis, mais écrits avec un point) : « +13.0% Super-Net »,
+  « (41.0%) », « +1.0 part(s) », « 1.5 parts fiscales ».
+- Calculette, pli « Estimation indicative de l'impôt sur le revenu »
+  (`IrEstimateCard.tsx`), trouvé en relisant les pages imprimées. `getTMI()` rend un
+  pourcentage (30) et l'affichage le multipliait par cent. Avant : « Tranche marginale
+  (TMI) 3000 % ». Après : « Tranche marginale (TMI) 30 % ». `src/lib/baremes-ir.ts`
+  n'est pas touché.
+
+**C. La calculette s'imprime sur une page**
+
+`@media print` à la fin de `src/styles/calculette.css` (servie à cette page seule ; le
+reste de la feuille est sous `@media screen`). Retirés de la feuille imprimée :
+l'en-tête, le pied, la bannière cookies, la bulle de chat (`#crisp-launcher`, et
+`.crisp-client`, que le script de Crisp pose), les avis éphémères, le lien de retour, les
+pastilles, l'accroche et l'aperçu du haut de page, l'appel à l'essai, la FAQ, le décor de
+fin ; les fonds et les ombres. Restent le titre, les résultats et l'avertissement de fin.
+Le formulaire, la barre collante et les boutons d'action portaient déjà `print:hidden`.
+Résultats sur deux colonnes, corps à 13,5 px pour 16, fiches jamais coupées
+(`break-inside`), libellés jamais tronqués ; ne s'impriment pas les boutons de copie, les
+flèches des plis et la ligne de liens « Pas sûr d'une case ? ».
+
+Mesuré par `page.pdf()` de Chromium (A4, marges de 10 mm, sans puis avec les fonds) sur
+29 cas : les quatorze exemples, plis de détail fermés puis ouverts (ce que fait le bouton
+« Imprimer »), et la page sans saisie.
+
+| | Avant | Après |
+|---|---|---|
+| Pages (A4, état par défaut ou plis de détail ouverts) | 4 (16 cas), 5 (10 cas), 6 (3 cas) | 1 (29 cas) |
+| En-tête, pied, FAQ, appel à l'essai imprimés | 29 cas | 0 |
+| Bannière cookies ou bulle de chat, répétée sur chaque page | 29 cas | 0 |
+| Éléments collants ou fixes sous `@media print` | 2 par cas | 0 |
+
+Hors de ces 29 cas (relevé de la relecture, § 9.et) : avec l'interrupteur « Tout
+afficher », deux pages en A4 pour les exemples 11 et 12, deux en format Letter pour les
+exemples 7 à 12 ; rien n'est coupé ni perdu, la feuille passe à la page suivante. Une
+bulle d'aide restée ouverte s'imprimait par-dessus les résultats : corrigé en § 9.et.
+
+Rien de coupé : les 965 nombres des résultats lus à l'écran sont dans le texte du PDF,
+sauf le « (2042 » de la ligne de liens retirée ; sous `emulateMedia({ media: 'print' })`,
+à la largeur utile d'un A4, aucun élément des résultats ne déborde et aucun n'est rogné.
+
+**Preuves communes**
+
+- Calculs : trois cas du simulateur en calcul local, un cas PAMC (même état d'erreur) et
+  deux exemples de la calculette : texte de l'îlot identique au caractère près à celui du
+  build de `main` (`ref-dist-7`). Les deux nombres de B sont dans une bulle et dans un pli
+  fermés pendant ce relevé.
+- Mesure : sur les trois parcours de § 9.er, 17, 18 et 12 événements, même suite, mêmes
+  noms, 2 827 propriétés comparées, identiques au build d'avant ; contre `main`, les deux
+  écarts de § 9.er et rien d'autre. Un écart nouveau, sur un appareil tactile seulement :
+  dans la chaîne d'éléments du clic capturé sur une aide, le bouton porte
+  `aria-expanded` (parcours au doigt relevé avant et après : 8 événements des deux côtés,
+  394 propriétés comparées, seul `$elements_chain` diffère sur les quatre clics).
+- HTML : contre le build d'avant, 65 fichiers identiques à l'octet, 6 aux noms de fichiers
+  près (simulateur, calculette, le guide et ses trois pages filles), aucun autre écart :
+  aucun attribut n'est ajouté au HTML du build (`aria-expanded`, `role` et `tabindex`
+  arrivent après le montage). Contre `ref-dist-7` : titres, metas, liens, JSON-LD,
+  `data-ph`, `data-track`, texte identiques sur 71 fichiers ; seuls écarts, ceux de
+  § 9.er. Feuille commune inchangée (`_astro_assets.QWDU2rDT.css`). `tooltip.*.js` passe
+  de 17,8 à 18,9 Ko gzip (50,1 à 53,3 Ko bruts).
+- `npm run build` : 70 pages ; `verify-site.mjs` : 0 erreur (68 pages, 5 431 liens).
+- Hydratation (scripts de § 9.er rejoués sur le build final, cinq chargements à froid) :
+  rien ne recule. En 4G lente, hydraté puis clic pris : `/simulateur` 3 079 → 3 071 et
+  3 169 → 3 154 ms ; calculette 2 994 → 2 998 et 3 134 → 3 137 ; recherche du guide
+  2 836 → 2 814 et 4 102 → 4 051 ; boussole au saut immédiat 4 086 → 4 076 et
+  4 132 → 4 110. Sans bridage, la boussole au saut immédiat prend le clic à 332 ms
+  contre 296, les autres scénarios à 30 à 90 ms de moins : bruit de la machine, dans les
+  deux sens. JS avant l'hydratation : 1 Ko de plus (`tooltip.*.js`).
+- Lighthouse mobile, médiane de trois passes (performance, accessibilité, bonnes
+  pratiques, SEO) : accueil 99, 100, 96, 100, LCP 1 053 ms ; `/simulateur` 99, 100, 96,
+  100, LCP 1 202 ms, blocage 128 ms ; article 98, 100, 96, 100, LCP 2 402 ms ;
+  calculette 96, 100, 96, 100, LCP 1 203 ms, blocage 210 ms.
+
+**Limites, non testé**
+
+- Un vrai téléphone, une vraie tablette, Safari sur iOS : le toucher est émulé dans
+  Chromium (le pilote de WebKitGTK ne le simule pas). Safari ne donne pas le focus à un
+  bouton touché : la bulle y est ouverte par le clic seul, chemin couvert par l'essai du
+  portable tactile, pas par un essai dans Safari.
+- Un lecteur d'écran : l'arbre d'accessibilité et la zone d'annonce sont lus par script,
+  aucune synthèse vocale n'a été écoutée.
+- La branche PAMC du simulateur (fonction Supabase injoignable d'ici) : ses bulles ne
+  sont pas affichées, donc pas essayées.
+- L'impression : PDF de Chromium seulement (pas Firefox, pas Safari, pas d'imprimante) ;
+  la bulle de chat de Crisp une fois ouverte (script extérieur, injoignable d'ici) est
+  visée par son nom de classe, sans essai.
+- Firefox ; `npm run dev`.
+
+**Fichiers**
+
+`src/components/ui/tooltip.tsx`, `src/components/simulateur/RegimeComparisonCards.tsx`,
+`src/components/calculette/IrEstimateCard.tsx`, `src/styles/simulateur.css`,
+`src/styles/calculette.css`, `src/styles/guide.css`, `CLAUDE.md`.
+
+### 9.et Phase 7 : corrections après les trois relectures (12 novembre 2026)
+
+Trois relecteurs indépendants (fonctionnement ; invariance et performance ; attaque) ont
+repris § 9.er et § 9.es : 25 constats. Chacun a été rejoué contre le code et le build
+avant d'agir. Le résultat tient en trois lignes : une régression au clavier est corrigée ;
+trois des quatre gains de chargement de § 9.er sont **retirés**, parce qu'ils se payaient
+ailleurs (première peinture, police, première liste de résultats) ; restent l'état
+d'attente, la boussole hydratée un écran plus tôt, et tout § 9.es, avec quelques
+corrections.
+`origin/main` n'a pas avancé (`771de40`). Aucun calcul touché, aucun mot ajouté, aucune
+dépendance.
+
+**1. Bloquant, corrigé : le clavier sautait les outils (`interactivity: inert`)**
+
+Un îlot `client:visible` qui n'est pas encore entré dans la fenêtre garde `ssr` sans
+limite de temps. La règle `interactivity: inert` de l'état d'attente s'y appliquait donc
+aussi longtemps, page au repos, sans panne ni réseau lent : dans Chrome et Edge 135 et
+suivants, Tab sautait tous ses contrôles, qui sortaient aussi de l'arbre d'accessibilité
+et de la recherche dans la page. Sur `main`, Tab entrait dans l'îlot, ce qui le faisait
+défiler et s'hydrater.
+
+Rejoué (`tab.cjs`, Chromium 153, page chargée, 2,5 s d'attente, 70 Tab ; arrêts dans un
+îlot, puis boutons, listes et champs de l'arbre d'accessibilité) :
+
+| Page, fenêtre | `main` | Build d'avant (`0be0b5c`) | Corrigé |
+|---|---|---|---|
+| `/simulateur`, 683 × 316, 640 × 360 et 320 × 568 | 19 arrêts dès le 4e Tab ; 14 boutons, 5 listes, 3 champs | 14 arrêts, le premier au 57e Tab (après un tour de page) ; 3 boutons, 0 liste, 0 champ | 19 dès le 4e ; 14, 5, 3 |
+| calculette, 640 × 360 | 58 arrêts ; 33, 3, 22 | 21 arrêts ; 3, 0, 0 | 58 ; 33, 3, 22 |
+| `/guide-declarations`, 720 × 450 et 390 × 844 | 17 arrêts ; 23 boutons, 2 champs | 1 arrêt ; 3 boutons, 0 ou 1 champ | 17 ; 23, 2 |
+| `/guide-declarations`, 1 366 × 633 | 17 arrêts dès le 18e Tab ; 24 boutons, 2 champs | 16 arrêts, le premier au 24e (champ de recherche sauté) ; 4 boutons, 0 champ | 17 dès le 18e ; 24, 2 |
+| `/simulateur` et calculette, 1 440 × 900 | 19 et 54 arrêts | 19 et 54 | 19 et 54 |
+
+Correction : la ligne `astro-island[ssr] … { interactivity: inert; }` est retirée des trois
+feuilles. Le pointeur reste neutralisé (`pointer-events: none`). Le clavier redevient
+celui de `main` pendant l'attente : Tab atteint les contrôles, une saisie y est effacée à
+l'hydratation, « Entrée » dans un champ du simulateur envoie le formulaire en natif.
+C'était déjà le cas dans Safari et Firefox, qui ne lisent pas cette propriété. La même
+correction règle la boussole sautée quand Tab est tenu (autre constat).
+
+**2. Les préchargements sont retirés**
+
+Le brief le prévoyait : « un préchargement qui ferait reculer le LCP […] se retire ».
+§ 9.er avait conclu, en HTTP/1.1 local et sur un scénario qui clique pendant le
+chargement, à un recul de 0,02 à 0,06 s de la première peinture. Deux relecteurs ont
+mesuré plus, et autrement ; rejoué ici.
+
+*HTTP/2 local* (serveur Node sur TLS, même bridage de Chromium, chargement sans aucun
+geste, trois chargements à froid par côté, en alternance ; `passif.cjs`). Première
+peinture (le LCP lui est égal) / police reçue / îlot hydraté, en millisecondes :
+
+| Page, réseau | `main` | Build d'avant | Build d'avant, liens retirés |
+|---|---|---|---|
+| `/simulateur`, 4G lente | 1 600 / 1 556 / 3 938 | 1 816 / 2 424 / 2 592 | 1 592 / 1 542 / 3 919 |
+| `/simulateur`, 4G rapide | 500 / 424 / 1 093 | 688 / 598 / 681 | 500 / 425 / 1 091 |
+| calculette, 4G lente | 1 604 / 1 549 / 3 681 | 1 800 / 2 399 / 2 602 | 1 612 / 1 550 / 3 735 |
+| calculette, 4G rapide | 508 / 424 / 977 | 700 / 585 / 698 | 512 / 428 / 979 |
+
+La première peinture et le LCP reculaient de 0,2 s sur les deux réseaux. En 4G rapide,
+la première peinture tombait au moment exact de l'hydratation (688 et 681 ms, 700 et
+698) : les fichiers arrivés tôt, React hydratait avant le premier affichage et le
+retenait. Ce n'est pas une affaire de priorités du serveur. En 4G lente, la police
+arrivait 0,6 s après l'affichage (texte affiché dans la police de repli, puis changé).
+Limite de l'essai : le bridage de Chromium ne modélise pas les priorités qu'un serveur
+HTTP/2 applique ; le comportement de Vercel n'a pas pu être mesuré d'ici.
+
+*HTTP/1.1 local* (relevés de la relecture, cinq chargements par côté, non rejoués ici) :
+en 4G lente la police finissait à 1 565 puis 1 724 ms sur `/simulateur`, soit 0,13 à
+0,2 s après la première peinture au lieu d'avant ; la mascotte du premier écran à 2 307
+puis 3 274 ms ; sur la calculette à 390 px, le changement de police déplaçait le
+formulaire (décalage de 0,123, voir « antérieurs ») ; `posthog-js` arrivait 0,5 à 1,5 s
+plus tard, donc la page vue aussi ; en 2G (250 kbit/s), la première peinture reculait de
+0,3 à 0,65 s. Lighthouse à bridage appliqué, en HTTP/2 : performance 96 puis 90 sur
+`/simulateur`, 94 puis 88 sur la calculette. Le Lighthouse habituel (bridage simulé) ne
+voit rien de tout cela : 98 des deux côtés.
+
+Les variantes essayées par la relecture ne sauvent rien : liens en fin de `<head>`,
+même résultat que dans le `<body>` ; `fetchpriority="low"`, première peinture gardée en
+HTTP/1.1 mais gain réduit à 0,25 s, et aucun effet en HTTP/2. Le gain ne vient que d'un
+départ plus tôt, donc en même temps que les feuilles de style et la police : il n'est
+pas gratuit. Piste non essayée, pour qui voudrait y revenir : ne lancer les fichiers
+qu'une fois les feuilles reçues (une directive d'hydratation à soi, qui pose les liens
+depuis le script de l'îlot), mesuré sur un aperçu Vercel ; le gain attendu est de
+l'ordre de celui de `fetchpriority="low"` en HTTP/1.1 (0,25 s en 4G lente).
+
+Retiré : `src/lib/precharge-ilots.mjs`, son appel dans `astro.config.mjs`, les balises
+`<template data-precharge-ilots>` des trois pages, le contrôle 5 de `verify-site.mjs`.
+
+**3. `posthog-js` revient dans le graphe des îlots**
+
+Sans les liens, l'en avoir sorti ne gagne rien : hydraté à 3 919 ms contre 3 938 sur
+`main`, 1 091 contre 1 093, 3 735 contre 3 681, 979 contre 977 (tableau ci-dessus,
+troisième colonne). La bibliothèque part quand même, par le script de `PostHog.astro`,
+et prend la même part du débit ; la profondeur de la cascade ne change pas. Restaient ses
+coûts : une file d'attente dont le contenu se perd si le visiteur part avant l'arrivée
+de la bibliothèque, cinq propriétés d'état absentes de l'événement d'arrivée, un fichier
+de plus sur les 70 pages (`analytics.*.js`, 166 octets), le nom du script de mesure
+changé sur les 70 pages, un réglage de découpe dans la configuration. Une relecture a
+aussi relevé 35 à 85 ms de temps de blocage de plus sur la calculette dans Lighthouse,
+sans que ce soient les liens ni l'état d'attente.
+
+Retiré : `src/lib/analytics.ts`, `src/components/PostHog.astro` et `astro.config.mjs`
+sont de nouveau ceux de `main`, à l'octet. Conséquence : 65 fichiers HTML sur 71 sont
+identiques à `main` à l'octet (1 avant) ; le relevé de mesure du simulateur et de la
+calculette est identique à celui de `main` sans aucun écart ; Lighthouse sur la
+calculette : 96 sur `main`, 98 ici, blocage 210 puis 178 ms (quatre passes alternées).
+
+**4. Le moteur de recherche du guide redevient un import statique**
+
+Chargé par `import()` après l'hydratation (§ 9.er, d), il laissait le champ prendre la
+saisie plus tôt, mais demandait ses données un aller-retour plus tard. Avec les liens,
+elles arrivaient en parallèle ; sans eux, la première liste de résultats reculait.
+Mesuré sur le build sans les liens (`mesure-cr.cjs`, cinq chargements, 1 440 × 900,
+champ hydraté / première liste) : sans bridage 318 / 444 ms sur `main`, 288 / 492 ;
+4G rapide 1 160 / 1 217, puis 1 142 / 1 392 ; 4G lente 4 023 / 4 083, puis
+3 798 / 4 828. En 4G lente, le champ gagnait 0,2 s et la liste en perdait 0,75 ; la
+boussole, sur un saut immédiat, était prête à 5 051 ms au lieu de 4 573.
+
+Retiré : `BoussoleSearchIsland.tsx` est de nouveau celui de `main` (son fichier du build
+a la même empreinte), `rechercheGuide.ts` est supprimé. Les deux constats sur ce module
+(rien ne s'affiche pendant qu'il charge ; rien ne se passe s'il ne charge pas) tombent
+avec lui. Essayé avant de retirer : relancer `import()` à la frappe suivante ne
+redemande pas le fichier dans Chromium (une seule demande réseau, l'échec est gardé).
+
+**5. Ce qui reste de § 9.er**
+
+- *La boussole hydratée un écran avant d'entrer dans la fenêtre*
+  (`client:visible={{ rootMargin: "100%" }}`). Deux cas, selon la hauteur de la fenêtre
+  (la boussole est à 1 752 px du haut de la page à 1 366 et 1 440 px de large, à
+  2 797 px à 390).
+  - *Fenêtre de moins de 876 px de haut* (portables courants, téléphones) : elle ne
+    s'hydrate pas au chargement, mais un écran plus tôt pendant le défilement. Mesuré sur
+    le vrai bouton « Trouver ma situation » du haut de page (défilement doux de 0,75 à
+    0,95 s), cliqué 1,5 s après le chargement, trois chargements par côté en alternance
+    (`saut.cjs`) ; boussole hydratée par rapport à l'arrêt du défilement, `main` puis
+    build : à 1 366 × 768, 0,40 puis 0,49 s avant sans bridage, 0,05 puis 0,13 s avant
+    en 4G rapide, 0,93 puis 0,83 s après en 4G lente ; à 390 × 844, 0,50 puis 0,60 s
+    avant, 0,14 puis 0,25 s avant, 0,84 puis 0,72 s après. Gain : 0,1 s. Au chargement,
+    rien ne change (à 390 × 844 en 4G lente : champ hydraté à 4 029 puis 4 013 ms,
+    `posthog-js` à 4 171 puis 4 155).
+  - *Fenêtre de 876 px de haut et plus* (1 440 × 900) : la boussole est à moins d'un
+    écran du bas de la fenêtre, elle s'hydrate au chargement. Clic pris, compté depuis
+    l'arrivée sur la boussole (`mesure-cr.cjs`, saut instantané), `main` puis build :
+    saut après chargement 96 puis 9 ms sans bridage, 425 puis 9 en 4G rapide, 1 410
+    puis 11 en 4G lente ; à la molette 4 puis 6, 205 puis 6, 1 147 puis 5. Sur un saut
+    immédiat (avant la fin du chargement), rien ne change : 414 puis 401, 1 334 puis
+    1 406, 4 573 puis 4 589. Son prix, payé au chargement : six fichiers de plus (35 Ko) ;
+    le champ de recherche hydraté 0,02 à 0,05 s plus tard sans bridage et en 4G rapide
+    (318 puis 371 ms et 1 160 puis 1 185 en cliquant pendant le chargement, première
+    liste 444 puis 538 et 1 217 puis 1 234 ; sans geste, 244 puis 263 et 1 100 puis
+    1 151) ; en 4G lente, 0,25 s plus tôt en HTTP/1.1 (4 007 puis 3 747) et 0,13 s plus
+    tard en HTTP/2 (3 615 puis 3 745) ; `posthog-js`, donc la page vue, 0,12 s plus tard
+    en 4G rapide et 0,3 s en 4G lente en HTTP/1.1 (950 puis 1 070 ms, 4 156 puis 4 456),
+    sans écart en HTTP/2 (881 puis 859, 2 822 puis 2 789) ni sans bridage (331 puis
+    263).
+  Première peinture, police, mascotte : identiques dans tous les cas (tableaux plus
+  bas). § 9.er écrivait « à 1 440 × 900 elle s'hydrate au chargement » sans dire que
+  cela tient à la hauteur de la fenêtre. À valider par le propriétaire : c'est le seul
+  réglage de chargement gardé ; il vaut 0,1 s sur la plupart des écrans, davantage sur
+  un grand écran, à ce prix.
+- *L'état d'attente*, sans `interactivity`. Trois réglages :
+  - le trait n'apparaît qu'après 0,8 s (0,5 avant), en 0,25 s : quand l'hydratation
+    tombait 0,5 à 0,7 s après l'affichage, il clignotait le temps de trois à huit images
+    (relevé de la relecture). Relevé sur le build, image par image, trois chargements par
+    cas (`trait.cjs`) : jamais affiché sans bridage ni en 4G rapide (hydraté 0,05 à
+    0,17 s et 0,5 à 0,7 s après la première peinture), affiché 1,3 à 1,5 s en 4G lente ;
+  - le glissement s'arrête après 25 passages (30 s), le trait reste, fixe. Il tournait
+    sans fin : aussi pour un îlot hors de l'écran, et pour toujours si un fichier manque
+    (360 recalculs de style en 6 s, relevé de la relecture). Vérifié en avançant
+    l'horloge des animations : plus aucune en cours, fond uni ;
+  - en contrastes forcés, le navigateur retirait le dégradé : le trait ne se voyait
+    pas. Il prend la couleur du texte (`CanvasText`, `forced-color-adjust: none`), fixe.
+
+**6. Petites corrections dans § 9.es**
+
+- *Bulle « Zones exonérées »* (`simulateur.css`). La bulle porte `duration-300` : sa
+  hauteur maximale, que Radix ne donne qu'après mesure, était animée, et la bulle
+  dépassait encore du haut de la fenêtre pendant 0,3 s. `transition: none` sur
+  `.sim.sim-bulle` (son entrée est une animation, pas une transition). Relevé image par
+  image à 1 440 × 900 : haut à 16 px dès la première image, jamais au-dessus (73 images
+  dans Chromium, 146 dans WebKit).
+- *Impression de la calculette* (`calculette.css`). Une bulle d'aide ouverte s'imprimait
+  par-dessus les résultats ; au doigt elle reste ouverte tant qu'on ne touche pas la
+  page. `[data-radix-popper-content-wrapper]` rejoint la liste de ce qui ne s'imprime
+  pas. Essayé : tablette tactile, appui sur une aide, `emulateMedia('print')` : bulle
+  en `display: none` ; de retour à l'écran, elle est là.
+- *« Une page dans les 29 cas »* (§ 9.es) valait pour l'état par défaut et les plis de
+  détail ouverts, en A4. Avec « Tout afficher », deux pages en A4 pour les exemples 11
+  et 12, deux en Letter pour les exemples 7 à 12 (relevé de la relecture) : phrase
+  corrigée en § 9.es et dans CLAUDE.md, pas de changement de code.
+
+**7. Constats notés, non corrigés**
+
+Antérieurs, identiques sur `main`, hors du périmètre du brief (relevés de la relecture,
+non rejoués ici) :
+
+- Calculette à 390 px, cases remplies : la fiche « Cadre 8 » déborde de la fenêtre, les
+  deux aides « ? » de DE et DB sortent à droite (421 à 465 px dans une fenêtre de 390)
+  et ne peuvent être ni touchées ni survolées ; la liste « Profil d'exercice » dépasse
+  de 37 px. Le « 46 aides sur 46 à 390 px » de § 9.es vaut pour le parcours essayé
+  (profils, régimes, exemples), pas pour cet état : 54 sur 56 au doigt.
+- Au clavier, une bulle sur quatre environ s'ouvre au focus puis se referme aussitôt :
+  Tab fait défiler la page, et Radix ferme la bulle au défilement (simulateur à
+  1 024 px : 21 sur 73, sur `main` comme sur le build). Le « focus clavier : 130 sur
+  130 » de § 9.es compte l'ouverture, pas la tenue.
+- Calculette sous 412 px : la ligne de pastilles du haut de page ne passe pas à la ligne
+  au même endroit dans la police de repli. Quand la police arrive après l'affichage, le
+  formulaire se déplace (décalage de 0,123). Sur `main` comme ici, la police arrive
+  avant ou avec la première peinture dans tous les cas mesurés (rejoué : décalage à
+  1 614 puis 1 607 ms pour une première peinture à 1 612 puis 1 608) : le décalage est
+  compté, pas vu.
+- Avant l'hydratation, hors pointeur : Tab atteint le champ, la saisie est effacée,
+  « Entrée » envoie le formulaire du simulateur en natif et recharge la page (tous
+  navigateurs désormais, comme sur `main`). Piste sans script, non essayée :
+  `method="dialog"` sur le `<form>` du simulateur (hors d'un `<dialog>`, l'envoi natif
+  ne fait rien). Non retenue ici : attribut de plus dans le HTML et dans la chaîne
+  d'éléments de chaque clic mesuré dans le formulaire, non essayable dans Firefox.
+
+À valider par le propriétaire (texte à écrire) :
+
+- JavaScript coupé, ou fichier JS qui ne charge jamais : le visiteur voit le formulaire,
+  le trait (qui glisse 30 s, puis reste), un curseur d'attente, sans un mot. Proposé en
+  § 9.er, toujours non fait : une phrase et un lien de rechargement après une dizaine de
+  secondes, et une ligne `<noscript>`.
+
+Sans objet depuis les retraits : `posthog-js` plus tardif sur les pages d'outils ; le
+fichier `analytics.*.js` de plus sur les 70 pages ; les 37 Ko et 8 requêtes de
+préchargement de la boussole pour tous (restent 35 Ko dans une fenêtre haute, voir 5) ; la
+simulation non comptée si le visiteur part avant l'arrivée de `posthog-js` ; les 15
+fichiers téléchargés pour rien sans JavaScript ; les noms de fichiers à empreinte
+périmés de § 9.er (ils datent du commit `72254ed`, c'est dit en tête de § 9.er).
+
+**Tableau avant / après, build final** (`mesure-cr.cjs`, médianes de cinq chargements à
+froid, Chromium, 1 440 × 900, millisecondes ; référence puis build, non alternés)
+
+| Page | Réseau | 1re peinture | Hydraté | Clic pris | Fenêtre morte |
+|---|---|---|---|---|---|
+| `/simulateur` | sans bridage | 132 → 156 | 197 → 190 | 266 → 280 | 134 → 124 |
+| `/simulateur` | 4G rapide | 520 → 552 | 1 225 → 1 212 | 1 290 → 1 295 | 770 → 743 |
+| `/simulateur` | 4G lente | 1 536 → 1 548 | 3 873 → 3 868 | 3 944 → 3 961 | 2 408 → 2 413 |
+| calculette | sans bridage | 128 → 152 | 194 → 194 | 312 → 352 | 184 → 200 |
+| calculette | 4G rapide | 540 → 548 | 1 102 → 1 113 | 1 222 → 1 269 | 682 → 721 |
+| calculette | 4G lente | 1 560 → 1 564 | 3 875 → 3 858 | 4 011 → 4 007 | 2 451 → 2 443 |
+| guide, recherche | sans bridage | 140 → 172 | 318 → 371 | 444 → 538 | 304 → 366 |
+| guide, recherche | 4G rapide | 608 → 628 | 1 160 → 1 185 | 1 217 → 1 234 | 609 → 606 |
+| guide, recherche | 4G lente | 1 636 → 1 648 | 4 023 → 3 782 | 4 083 → 3 892 | 2 447 → 2 244 |
+| guide, boussole (saut immédiat) | sans bridage | 144 → 160 | 313 → 329 | 414 → 401 | 270 → 241 |
+| guide, boussole (saut immédiat) | 4G rapide | 604 → 620 | 1 301 → 1 356 | 1 334 → 1 406 | 730 → 786 |
+| guide, boussole (saut immédiat) | 4G lente | 1 636 → 1 648 | 4 532 → 4 561 | 4 573 → 4 589 | 2 937 → 2 941 |
+| guide, boussole (saut après chargement) * | sans bridage | 140 → 160 | 50 → −1 596 | 96 → 9 | 96 → 9 |
+| guide, boussole (saut après chargement) * | 4G rapide | 580 → 628 | 405 → −1 448 | 425 → 9 | 425 → 9 |
+| guide, boussole (saut après chargement) * | 4G lente | 1 632 → 1 648 | 1 380 → −1 554 | 1 410 → 11 | 1 410 → 11 |
+| guide, boussole (molette, 3 000 px/s) * | sans bridage | 136 → 176 | −205 → −2 437 | 4 → 6 | 4 → 6 |
+| guide, boussole (molette, 3 000 px/s) * | 4G rapide | 596 → 624 | 161 → −2 265 | 205 → 6 | 205 → 6 |
+| guide, boussole (molette, 3 000 px/s) * | 4G lente | 1 632 → 1 648 | 1 134 → −2 416 | 1 147 → 5 | 1 147 → 5 |
+
+\* Comptés depuis l'arrivée du visiteur sur la boussole (négatif : prête avant).
+
+Le simulateur et la calculette répondent quand ils répondaient sur `main` : la fenêtre
+morte n'est pas raccourcie (0,1 à 0,2 s sans bridage, 0,7 s en 4G rapide, 2,4 s en 4G
+lente), elle est signalée. Seule la boussole gagne.
+La première peinture de ce tableau sort 0,01 à 0,04 s plus haute côté build : les deux
+côtés y sont mesurés l'un après l'autre, à 25 minutes d'écart. En alternance et sans
+geste, elle ne bouge pas : sans bridage 136 puis 132 ms (`/simulateur`), 148 puis 136
+(calculette), 156 puis 144 (guide), cinq chargements par côté ; en 4G, tableau suivant.
+
+**Chargement sans geste, build final contre `main`** (`passif.cjs`, trois chargements
+par côté, en alternance ; première peinture / police / hydraté, millisecondes)
+
+| Page, réseau | HTTP/1.1 | HTTP/2 |
+|---|---|---|
+| `/simulateur`, 4G lente | 1 624 / 1 565 / 3 876 → 1 624 / 1 566 / 3 879 | 1 600 / 1 548 / 3 926 → 1 604 / 1 548 / 3 920 |
+| `/simulateur`, 4G rapide | 496 / 420 / 1 178 → 496 / 421 / 1 182 | 500 / 424 / 1 101 → 512 / 427 / 1 114 |
+| calculette, 4G lente | 1 604 / 1 566 / 3 941 → 1 628 / 1 565 / 3 929 | 1 608 / 1 541 / 3 686 → 1 608 / 1 555 / 3 696 |
+| calculette, 4G rapide | 516 / 423 / 1 083 → 516 / 421 / 1 095 | 520 / 424 / 984 → 524 / 428 / 983 |
+| guide, 4G lente | 1 636 / 1 882 / 4 007 → 1 636 / 1 882 / 3 747 | 1 680 / 1 648 / 3 615 → 1 680 / 1 647 / 3 745 |
+| guide, 4G rapide | 592 / 452 / 1 100 → 608 / 451 / 1 151 | 600 / 445 / 1 054 → 592 / 443 / 1 083 |
+
+Mascotte du premier écran : 2 324 puis 2 323 ms (`/simulateur`, 4G lente, HTTP/1.1),
+2 223 puis 2 214 (guide). Décalage de mise en page : le même des deux côtés, partout.
+
+**Lighthouse mobile** (bridage simulé, médiane de quatre passes, côtés alternés ;
+performance, LCP, temps de blocage ; `main` puis build)
+
+| Page | `main` | Build |
+|---|---|---|
+| `/` | 100 · 1 052 ms · 50 ms | 100 · 1 054 ms · 20 ms |
+| `/simulateur` | 98 · 1 202 ms · 134 ms | 98 · 1 202 ms · 154 ms |
+| `/blog/frais-pros-medecin-liberal-2026` | 96 · 2 701 ms · 38 ms | 96 · 2 702 ms · 27 ms |
+| `/guide-declarations/calculette` | 96 · 1 202 ms · 210 ms | 98 · 1 202 ms · 178 ms |
+| `/guide-declarations` | 95 · 2 107 ms · 138 ms | 96 · 2 102 ms · 136 ms |
+
+Accessibilité 100, bonnes pratiques 96, SEO 100 sur les cinq pages, des deux côtés ;
+décalage de mise en page nul. Le temps de blocage varie de 125 à 230 ms d'une passe à
+l'autre sur une même page : aucun écart au-delà de ce bruit. Poids et requêtes : ceux de
+`main` à 2 Ko près.
+
+**Ajouts au HTML, liste à jour** (remplace celle de § 9.er ; `invariance7.py`, build
+contre `ref-dist-7`)
+
+- **65 fichiers HTML sur 71 identiques à `main` à l'octet.**
+- **5 aux noms de fichiers près** : `/simulateur` (feuille `simulateur.*.css`, fichier de
+  l'îlot `SimulateurApp.*.js`), `/guide-declarations/calculette` (`calculette.*.css`,
+  `CalculetteApp.*.js`), les trois pages filles du guide (feuille `QuestionCard.*.css`).
+- **1 avec un autre écart**, `/guide-declarations` : la feuille, le fichier
+  `BoussoleWizard.*.js`, et l'attribut `opts` de l'`<astro-island>` de la boussole,
+  `{"name":"BoussoleWizard","value":true}` →
+  `{"name":"BoussoleWizard","value":{"rootMargin":"100%"}}`.
+- Aucun `<link rel="modulepreload">`, aucun autre attribut. `<title>`, metas, canonique,
+  titres (1 475), liens (7 272), JSON-LD (257), `data-ph` (2 327), `data-track` (436),
+  images et texte (193 420 mots) identiques page par page.
+- Fichiers : 29 fichiers JS, comme sur `main` ; sept changent de nom (`SimulateurApp`,
+  `CalculetteApp`, `BoussoleWizard`, `RegimeComparisonCards`, `individualizedTax`, `site`,
+  `tooltip`), avec les trois feuilles ci-dessus ; les autres sont ceux de `main`, dont
+  `BoussoleSearchIsland`, le script de mesure et `posthog-js`. Feuille commune inchangée (`_astro_assets.QWDU2rDT.css`).
+
+**Mesure (PostHog)**, relevé de § 9.er rejoué (`releve-mesure.cjs`, `main` deux fois puis
+build) : simulateur 17 événements, 1 232 propriétés comparées, identique ; calculette
+18 événements, 812 propriétés, identique ; guide 12 événements, 578 propriétés, un seul
+écart : dans la chaîne d'éléments de quatre clics capturés dans la boussole, l'attribut
+`opts` de `<astro-island>` (ci-dessus). Les deux écarts de § 9.er sur l'événement
+d'arrivée n'existent plus. Reste celui de § 9.es, sur un appareil tactile seulement
+(`aria-expanded` dans la chaîne d'éléments du clic sur une aide).
+
+**Preuves, build final**
+
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages,
+  5 388 liens : les 43 liens de préchargement en moins). Le build final est identique à
+  l'octet à celui qui a été mesuré.
+- Calculs : trois cas du simulateur en calcul local, un cas PAMC (même état d'erreur des
+  deux côtés) et deux exemples de la calculette, identiques au caractère près à
+  `ref-dist-7`.
+- Points touchés, Chromium (`points.cjs`, 20 contrôles, aucun échec) : bulle « Zones
+  exonérées » image par image ; recherche du guide (« csg », 10 résultats) ; état
+  d'attente sur les trois pages, JS de l'îlot retenu puis relâché (trait invisible à
+  0,45 s, visible à 1,35 s, curseur d'attente, un clic ne donne pas le focus et rien
+  n'est saisi, plus rien après l'hydratation) ; contrastes forcés ; moins de mouvement ;
+  arrêt du glissement après 30 s ; impression avec une bulle épinglée au doigt.
+- WebKitGTK (`wk-points.py`, 12 contrôles, aucun échec) : bulle « Zones exonérées »
+  image par image ; état d'attente sur les trois pages (îlot privé de son fichier) :
+  curseur, pointeur neutralisé, trait visible, un clic puis une frappe ne saisissent
+  rien, Tab atteint les contrôles (17, 46 et 17 arrêts en 60 Tab) ; recherche du guide.
+- Aides au doigt, scripts de § 9.es rejoués sur le build final (Chromium tactile) :
+  simulateur à 1 024 px 83 aides sur 83, calculette à 390 px 46 sur 46, boussole à
+  390 px 1 sur 1 ; chacune s'ouvre à l'appui, tient, se ferme au second appui, à l'appui
+  ailleurs et à Échap, et reste dans la fenêtre. À la souris et au clavier, simulateur à 1 440 px : 83 sur 83
+  (survol, clic, sortie, focus, Échap, Tab), comme en § 9.es.
+- Clavier, les dix cas du tableau du point 1 : arrêts et arbre d'accessibilité égaux à
+  ceux de `main`.
+- Hydratation dans WebKitGTK (`mesure-wk.py`, sans bridage, cinq chargements, fenêtre de
+  1 440 × 862 ; première peinture / hydraté / clic pris, `main` puis build) :
+  `/simulateur` 358 / 498 / 700 → 346 / 473 / 705 ; calculette 326 / 443 / 806 →
+  365 / 499 / 834 ; recherche du guide 1 004 / 1 129 / 1 365 → 904 / 1 042 / 1 250 ;
+  boussole au saut immédiat, hydratée à 1 218 → 1 075 ms ; au saut après chargement,
+  141 ms après l'arrivée contre 171 (fenêtre de 862 px : pas hydratée au chargement) ;
+  à la molette, 1 417 ms avant l'arrivée contre 458. Le pilote met 0,25 à 0,6 s par
+  clic : « clic pris » y est grossier. Écarts de 0,05 s dans les deux sens : bruit.
+
+**Limites, non testé**
+
+- Vercel : rien n'y a été mesuré. Les deux protocoles sont essayés en local, réseau
+  bridé par Chromium, qui ne modélise pas les priorités d'un serveur HTTP/2.
+- WebKit : sans bridage ; WebKitGTK n'est ni Safari ni un iPhone ; son pilote ne simule
+  pas le toucher (essayé dans Chromium émulé) et n'imprime pas (l'impression est
+  essayée dans Chromium seul).
+- Firefox ; un vrai téléphone ; un lecteur d'écran (l'arbre d'accessibilité est lu par
+  script) ; `npm run dev` ; la branche PAMC du simulateur avec la fonction Supabase.
+- Les relevés repris des relecteurs et non rejoués ici sont dits tels dans le texte.
+- Scripts et relevés : dossier de travail `phase7/corrections/`, hors dépôt.
+
+**Fichiers**
+
+Retirés ou rendus à `main` : `src/lib/precharge-ilots.mjs`,
+`src/components/guide/rechercheGuide.ts`, `src/lib/analytics.ts`,
+`src/components/PostHog.astro`, `astro.config.mjs`, `scripts/verify-site.mjs`,
+`src/pages/simulateur.astro`, `src/pages/guide-declarations/calculette.astro`,
+`src/components/guide/BoussoleSearchIsland.tsx`. Modifiés :
+`src/pages/guide-declarations/index.astro`, `src/styles/simulateur.css`,
+`src/styles/calculette.css`, `src/styles/guide.css`, `CLAUDE.md`.
+
+**Dernier réglage avant la demande de fusion : la marge de la boussole est retirée.**
+`<BoussoleWizard client:visible={{ rootMargin: "100%" }} />` redevient
+`<BoussoleWizard client:visible />`, comme sur `main`. Raison : le gain n'existait que dans
+une fenêtre de 876 px de haut et plus (boussole prête à l'arrivée, 1,4 s gagnée en 4G
+lente), et le contrôle final a mesuré, sur un réseau à 1,6 Mbit/s et 150 ms de latence, un
+champ de recherche prêt 0,55 s plus tard (1,49 s puis 2,04 s, cinq chargements sur cinq) ;
+dans une fenêtre plus basse, ni gain ni perte. Un gain qui dépend de l'écran et coûte
+ailleurs ne se garde pas. Conséquences : l'attribut `opts` de l'`<astro-island>` de la
+boussole est celui de `main` (plus d'écart dans le HTML de `/guide-declarations` ni dans la
+chaîne d'éléments des clics mesurés), les 35 Ko de la boussole ne se chargent plus qu'à
+son approche, et tout ce que cette entrée et § 9.er disent de cette marge décrit un essai
+retiré. La boussole reste neutralisée sans trait d'attente tant qu'elle n'est pas hydratée.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
