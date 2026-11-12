@@ -744,34 +744,41 @@ html:has(.da-fond):has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-are
 @media (hover: none) {
   .gd .gd-porte:hover { translate: none; }
 }
-/* Avant l'hydratation (MIGRATION.md § 9.er). Astro garde l'attribut `ssr` sur
+/* Avant l'hydratation (MIGRATION.md § 9.er, § 9.et). Astro garde l'attribut `ssr` sur
    <astro-island> tant que React n'a pas pris l'îlot : le HTML a l'air prêt, rien ne
-   répond. Sans script, cette feuille le dit et le garantit :
+   répond. Sans script, cette feuille le dit :
    - les contrôles ne prennent ni clic ni toucher (un clic n'est plus perdu sans
-     signe, une saisie n'est plus effacée à l'hydratation, « Entrée » n'envoie plus
-     le formulaire en natif) ; `interactivity: inert` les sort aussi du parcours
-     clavier là où le navigateur le lit (Chromium 135 et suivants) ; ailleurs
-     Tab les atteint encore. Les liens restent des liens ;
+     signe, une saisie au pointeur n'est plus effacée à l'hydratation). Les liens
+     restent des liens. Le clavier, lui, n'est PAS neutralisé : Tab atteint les
+     contrôles comme avant. ⚠️ Ne pas y remettre `interactivity: inert` : un îlot
+     `client:visible` qui n'est pas encore entré dans la fenêtre garde `ssr` sans
+     limite de temps, et ses contrôles sortaient du parcours clavier, de l'arbre
+     d'accessibilité et de la recherche dans la page (§ 9.et) ;
    - le curseur attend ;
-   - passé une demi-seconde, un trait qui glisse sous le champ de recherche : rien
-     ne s'affiche quand l'hydratation est rapide. Sans mouvement si le visiteur
-     le demande. Aucun texte, aucun décalage de mise en page. Le glissement ne
-     démarre qu'avec le trait : avant, il occuperait le navigateur à chaque image
-     pour un trait invisible.
-   La boussole, plus bas, est neutralisée sans trait : elle s'hydrate un écran avant
-   d'entrer dans la fenêtre, et un trait s'y afficherait d'emblée pour qui arrive
-   pendant ce court moment.
+   - passé 0,8 s, un trait qui glisse sous le champ de recherche : rien
+     ne s'affiche quand l'hydratation est rapide. Aucun texte, aucun décalage de
+     mise en page. Le glissement ne démarre qu'avec le trait (avant, il occuperait
+     le navigateur à chaque image pour un trait invisible) et s'arrête après
+     30 s : le trait reste, fixe. Fixe d'emblée si le visiteur a demandé moins
+     de mouvement ; à la couleur du texte en contrastes forcés, où un dégradé
+     ne se voit pas.
+   La boussole, plus bas, ne prend pas le pointeur non plus, sans trait : elle
+   s'hydrate un écran avant d'entrer dans la fenêtre, et un trait s'y afficherait
+   d'emblée pour qui arrive pendant ce court moment.
    Tout tombe avec l'attribut. Si un fichier JS ne charge jamais, l'état reste :
-   l'outil est inerte, et cela se voit. */
+   l'outil ne prend pas le pointeur, et cela se voit. */
 astro-island[ssr] :is(.gd-rech-champ, .gd-boussole) { cursor: progress; }
 astro-island[ssr] :is(.gd-rech-champ, .gd-boussole) :is(button, input, select, textarea, summary, label, [role="button"], [tabindex]:not([tabindex="-1"])) { pointer-events: none; }
-astro-island[ssr] :is(.gd-rech-champ, .gd-boussole) :is(button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])) { interactivity: inert; }
-astro-island[ssr] .gd-rech-champ::after { content: ""; position: absolute; z-index: 2; left: 28px; right: 28px; bottom: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(0, 89, 179, 0), var(--brand) 50%, rgba(0, 89, 179, 0)) 0 0 / 40% 100% no-repeat, rgba(20, 37, 79, 0.12); opacity: 0; pointer-events: none; animation: gd-attente-glisse 1.2s linear 0.5s infinite, gd-attente-entree 0.2s 0.5s forwards; }
+astro-island[ssr] .gd-rech-champ::after { content: ""; position: absolute; z-index: 2; left: 28px; right: 28px; bottom: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(0, 89, 179, 0), var(--brand) 50%, rgba(0, 89, 179, 0)) 0 0 / 40% 100% no-repeat, rgba(20, 37, 79, 0.12); opacity: 0; pointer-events: none; animation: gd-attente-glisse 1.2s linear 0.8s 25, gd-attente-entree 0.25s 0.8s forwards, gd-attente-fige 0.01s 30.8s forwards; }
 @media (prefers-reduced-motion: reduce) {
-  astro-island[ssr] .gd-rech-champ::after { background: rgba(0, 89, 179, 0.5); animation: gd-attente-entree 0.01s 0.5s forwards; }
+  astro-island[ssr] .gd-rech-champ::after { background: rgba(0, 89, 179, 0.5); animation: gd-attente-entree 0.01s 0.8s forwards; }
+}
+@media (forced-colors: active) {
+  astro-island[ssr] .gd-rech-champ::after { background: CanvasText; forced-color-adjust: none; animation: gd-attente-entree 0.01s 0.8s forwards; }
 }
 @keyframes gd-attente-glisse { from { background-position: -70% 0, 0 0; } to { background-position: 170% 0, 0 0; } }
 @keyframes gd-attente-entree { to { opacity: 1; } }
+@keyframes gd-attente-fige { to { background: rgba(0, 89, 179, 0.5); } }
 @media (prefers-reduced-motion: reduce) {
   .gd :is(.gd-porte, .gd-bouton, .gd-chevron, .gd-rech-saisie, .gd-guide img) { transition: none; }
   .gd .gd-pli[open] > .gd-pli-in { animation: none; }
