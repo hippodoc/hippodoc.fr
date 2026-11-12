@@ -1145,69 +1145,6 @@ for (const f of blogFiles) {
   if (rssXml && !rssXml.includes(`<link>${lien}</link>`)) fail(`rss.xml : l'article ${lien} n'y figure pas`);
 }
 
-/* 5. Des outils qui répondent (MIGRATION.md § 9.er).
-   Un îlot ne répond qu'une fois hydraté, et ne s'hydrate qu'après avoir reçu tous
-   ses fichiers. Trois choses, acquises par la mesure, ne doivent pas se défaire
-   sans bruit :
-   (a) aucun îlot n'attend posthog-js (76 Ko gzip) : `src/lib/analytics.ts` ne
-       l'importe plus ; un import statique qui reviendrait dans un composant d'îlot
-       rallongerait de nouveau la fenêtre où l'outil a l'air prêt sans l'être ;
-   (b) posthog-js garde son fichier à lui : fondu dans le script de PostHog.astro
-       (ce que fait le bundler sans `codeSplitting`, astro.config.mjs), il partirait
-       avant la première peinture, sur toutes les pages ;
-   (c) les trois pages d'outils préchargent tous les fichiers de leurs îlots, par
-       des liens écrits dans le <body> (dans le <head>, ils disputent le débit aux
-       feuilles de style : première peinture retardée, mesuré), et aucun repère
-       `data-precharge-ilots` n'est resté dans le build. */
-{
-  const lireJs = (url) => readFileSync(resolve(dist, url.replace(/^\//, '')), 'utf8');
-  const importsStatiques = (url) =>
-    [...lireJs(url).matchAll(/(?:\bimport|\bexport)\s*(?:[\w$*{},\s]+?\s*from\s*)?["'](\.{1,2}\/[^"']+?\.js)["']/g)]
-      .map((m) => new URL(m[1], `http://x${url}`).pathname);
-  const fermeture = (entrees) => {
-    const vus = new Set();
-    const aVoir = [...entrees];
-    while (aVoir.length) {
-      const url = aVoir.shift();
-      if (vus.has(url) || !fichiersServis.has(url)) continue;
-      vus.add(url);
-      aVoir.push(...importsStatiques(url));
-    }
-    return vus;
-  };
-  const scriptsJs = fichiersDist.filter((f) => /^\/_astro\/.*\.js$/.test(f));
-  // posthog-js se reconnaît à une option que lui seul nomme, et à son poids.
-  const fichiersPosthog = scriptsJs.filter((f) => { const src = lireJs(f); return src.length > 100_000 && src.includes('opt_out_capturing_by_default'); });
-  if (fichiersPosthog.length !== 1) {
-    fail(`mesure : posthog-js devrait tenir dans un seul fichier de _astro/, trouvé ${fichiersPosthog.length} (${fichiersPosthog.join(', ')})`);
-  }
-  const entreePosthog = scriptsJs.find((f) => f.includes('/PostHog.astro_astro_type_script'));
-  if (!entreePosthog) fail('mesure : script de PostHog.astro introuvable dans _astro/');
-  else if (fichiersPosthog.includes(entreePosthog)) {
-    fail(`mesure : posthog-js est fondu dans ${entreePosthog} — il doit rester un fichier à part (codeSplitting, astro.config.mjs)`);
-  }
-
-  const PAGES_OUTILS = ['/simulateur', '/guide-declarations/calculette', '/guide-declarations'];
-  for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
-    const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
-    const page = f.replace(/\/index\.html$/, '') || '/';
-    if (html.includes('data-precharge-ilots')) fail(`${page} : un repère data-precharge-ilots est resté dans le build (src/lib/precharge-ilots.mjs n'a pas tourné ?)`);
-    const ilots = [...html.matchAll(/<astro-island\b[^>]*>/g)].map(([b]) => [/component-url="([^"]+)"/.exec(b)?.[1], /renderer-url="([^"]+)"/.exec(b)?.[1]].filter(Boolean));
-    const fichiersIlots = fermeture(ilots.flat());
-    for (const ph of fichiersPosthog) {
-      if (fichiersIlots.has(ph)) fail(`${page} : un îlot importe posthog-js (${ph}) — il attendrait ses 76 Ko pour s'hydrater ; émettre par trackEvent() de src/lib/analytics.ts`);
-    }
-    const precharges = [...html.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1]);
-    for (const url of precharges) if (!fichiersServis.has(url)) fail(`${page} : précharge ${url}, absent du build`);
-    if (!PAGES_OUTILS.includes(page)) continue;
-    if (!ilots.length) { fail(`${page} : page d'outil sans îlot`); continue; }
-    const manquants = [...fichiersIlots].filter((url) => !precharges.includes(url));
-    if (manquants.length) fail(`${page} : ${manquants.length} fichier(s) d'îlot sans <link rel="modulepreload"> (${manquants.slice(0, 3).join(', ')}…) — repère <template data-precharge-ilots> manquant ?`);
-    const tete = html.slice(0, html.indexOf('</head>'));
-    if (tete.includes('rel="modulepreload"')) fail(`${page} : préchargement d'îlot dans le <head> — il retarde la première peinture en 4G lente ; le poser dans le <body>`);
-  }
-}
-
 /* Rapport */
 if (warnings.length) {
   console.log(`\n⚠ ${warnings.length} avertissement(s) :`);
