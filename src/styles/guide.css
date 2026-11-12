@@ -752,7 +752,9 @@ html:has(.da-fond):has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-are
    - le curseur attend ;
    - passé une demi-seconde, un trait qui glisse sous le champ de recherche : rien
      ne s'affiche quand l'hydratation est rapide. Sans mouvement si le visiteur
-     le demande. Aucun texte, aucun décalage de mise en page.
+     le demande. Aucun texte, aucun décalage de mise en page. Le glissement ne
+     démarre qu'avec le trait : avant, il occuperait le navigateur à chaque image
+     pour un trait invisible.
    La boussole, plus bas, est neutralisée sans trait : elle s'hydrate un écran avant
    d'entrer dans la fenêtre, et un trait s'y afficherait d'emblée pour qui arrive
    pendant ce court moment.
@@ -761,7 +763,7 @@ html:has(.da-fond):has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-are
 astro-island[ssr] :is(.gd-rech-champ, .gd-boussole) { cursor: progress; }
 astro-island[ssr] :is(.gd-rech-champ, .gd-boussole) :is(button, input, select, textarea, summary, label, [role="button"], [tabindex]:not([tabindex="-1"])) { pointer-events: none; }
 astro-island[ssr] :is(.gd-rech-champ, .gd-boussole) :is(button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])) { interactivity: inert; }
-astro-island[ssr] .gd-rech-champ::after { content: ""; position: absolute; z-index: 2; left: 28px; right: 28px; bottom: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(0, 89, 179, 0), var(--brand) 50%, rgba(0, 89, 179, 0)) 0 0 / 40% 100% no-repeat, rgba(20, 37, 79, 0.12); opacity: 0; pointer-events: none; animation: gd-attente-glisse 1.2s linear infinite, gd-attente-entree 0.2s 0.5s forwards; }
+astro-island[ssr] .gd-rech-champ::after { content: ""; position: absolute; z-index: 2; left: 28px; right: 28px; bottom: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(0, 89, 179, 0), var(--brand) 50%, rgba(0, 89, 179, 0)) 0 0 / 40% 100% no-repeat, rgba(20, 37, 79, 0.12); opacity: 0; pointer-events: none; animation: gd-attente-glisse 1.2s linear 0.5s infinite, gd-attente-entree 0.2s 0.5s forwards; }
 @media (prefers-reduced-motion: reduce) {
   astro-island[ssr] .gd-rech-champ::after { background: rgba(0, 89, 179, 0.5); animation: gd-attente-entree 0.01s 0.5s forwards; }
 }
