@@ -374,6 +374,23 @@ for (const profil of PROFILS_POUR_QUI) {
 if (radiosProfil.length !== PROFILS_POUR_QUI.length || radiosProfil.filter((r) => /\schecked\b/.test(r)).length !== 1) {
   fail(`accueil, « Pour qui » : ${PROFILS_POUR_QUI.length} profils attendus, dont un seul coché — trouvé ${radiosProfil.length} radio(s)`);
 }
+// Une seule forme d'étape pour les quatre profils (épure de novembre 2026). Le
+// profil Remplaçant n'avait ni phrase d'accroche ni précision sous son onglet : il
+// sortait dans une autre forme que les trois autres (défaut signalé par le
+// propriétaire). Chaque étape porte un titre, une phrase (`acc`) et une précision
+// (`det`) ; chaque onglet, une précision sous son nom (`h`).
+for (const panneau of pourQui.split(/<div class="panel"/).slice(1)) {
+  const profil = panneau.match(/data-panel="([^"]+)"/)?.[1];
+  const etapes = panneau.match(/<li\b[^>]*>[\s\S]*?<\/li>/g) ?? [];
+  const entieres = etapes.filter((e) => /<h3\b[^>]*>[^<]+<\/h3>/.test(e) && /<p class="acc"[^>]*>\s*[^<\s]/.test(e) && /<p class="det"[^>]*>\s*[^<\s]/.test(e));
+  if (etapes.length < 6 || entieres.length !== etapes.length) {
+    fail(`accueil, « Pour qui », profil « ${profil} » : ${etapes.length} étape(s), dont ${entieres.length} avec titre, phrase et précision — les quatre profils ont la même forme, 6 étapes au moins`);
+  }
+}
+const precisionsOnglets = [...pourQui.matchAll(/<span class="h"[^>]*>([^<]*)<\/span>/g)].filter((m) => m[1].trim());
+if (precisionsOnglets.length !== PROFILS_POUR_QUI.length) {
+  fail(`accueil, « Pour qui » : chaque onglet porte une précision sous son nom — trouvé ${precisionsOnglets.length} sur ${PROFILS_POUR_QUI.length}`);
+}
 // Les deux autres liens de rendez-vous de la page (arbitrage 7 du plan) : la série
 // `pour_qui` continue, `fondateur` est neuve et sera réévaluée à 60 jours. Le
 // contrôle générique plus bas vérifie qu'un lien Calendly porte l'attribut, pas

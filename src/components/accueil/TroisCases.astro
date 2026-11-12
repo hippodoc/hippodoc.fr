@@ -1,25 +1,25 @@
 ---
 /**
- * Les trois grandes cases du bloc « Sous la surface » : ton activité, tes
- * obligations, et ce qu'il te reste, la seule case jaune de la page
- * (DA 2026, phase 3, MIGRATION.md § 9). Zéro JS.
+ * Les trois cases du bloc « Sous la surface » : ton activité, tes obligations,
+ * et ce qu'il te reste, la seule case jaune de la page (DA 2026, phase 3,
+ * MIGRATION.md § 9 ; épure de novembre 2026). Zéro JS.
  *
- * - Texte : les 7 étapes du remplaçant, titre et phrase d'accroche, mot pour mot
- *   (src/data/etapesRemplacant.ts), réparties 3, 3 et 1.
+ * - Trois temps courts. Les cases 1 et 2 portent un numéro, un titre et une
+ *   ligne ; la case 3, le Super-Net. Les sept étapes du remplaçant (titre et
+ *   phrase), qui étaient listées ici, ne sont plus dites qu'une fois, dans
+ *   « Pour qui » (PourQui.astro, profil Remplaçant).
+ * - Les deux lignes des cases 1 et 2 sont des textes nouveaux (MIGRATION.md § 9).
  * - Chiffres : src/data/demoAccueil.ts, le même jeu que la fenêtre produit.
- * - Les trois flèches de la septième étape ne sont pas dans la police du site :
- *   elles sont dessinées en SVG, et le caractère reste dans le texte, masqué à
- *   l'œil, pour qu'un lecteur d'écran ou un moteur lise la phrase d'origine.
  * - Mascotte : la féminine dans tout le bloc (elle tient la tablette près du
- *   titre, montre l'extrait de la case 1, lève le pouce dans la case jaune) :
- *   un seul personnage par bloc.
- * - L'extrait du calendrier (case 1) répète la vue « journées » de la fenêtre :
- *   décor, masqué aux lecteurs d'écran. Les deux autres extraits sont lus.
+ *   titre, lève le pouce dans la case jaune) : un seul personnage par bloc.
+ * - Les deux extraits d'écran (calendrier d'avril, sommes à mettre de côté)
+ *   redisent la fenêtre produit, juste au-dessus : décor, masqués aux lecteurs
+ *   d'écran, affichés à partir de 900 px seulement.
+ * - Téléphone : les cases 1 et 2 côte à côte à partir de 360 px, la jaune
+ *   dessous sur toute la largeur, la mascotte à droite du chiffre.
  */
 import '@/styles/da.css';
 import Mascotte from './Mascotte.astro';
-import { insecables } from '@/lib/typo';
-import { ETAPES_REMPLACANT } from '@/data/etapesRemplacant';
 import {
   DEMO_ANNEE,
   DEMO_A_METTRE_DE_COTE,
@@ -32,12 +32,6 @@ import {
   journee,
   montantJournee,
 } from '@/data/demoAccueil';
-
-const activite = ETAPES_REMPLACANT.slice(0, 3);
-const obligations = ETAPES_REMPLACANT.slice(3, 6);
-const reste = ETAPES_REMPLACANT[6];
-/** La phrase d'accroche de la septième étape, découpée à ses flèches. */
-const morceaux = reste.accroche.split(' → ');
 
 /** Quatre journées du mois, une par état au moins. */
 const extrait = [13, 15, 19, 20].map(journee);
@@ -52,11 +46,8 @@ const aMettreDeCote = [
   <article class="cell c-sky">
     <span class="n">1</span>
     <h3>Ton activité</h3>
-    <ul class="feat-list">
-      {activite.map((e) => <li><b>{e.titre}</b><span>{insecables(e.accroche)}</span></li>)}
-    </ul>
+    <p class="ligne">Tes journées, tes rétrocessions, tes factures et tes contrats.</p>
     <div class="frag" aria-hidden="true">
-      <Mascotte pose="f-pointe" class="pointe" largeurs={[220, 330, 440]} sizes="(min-width: 900px) 220px, 1px" />
       <div class="card">
         <p class="card-t">{DEMO_MOIS.nom} {DEMO_MOIS.an}</p>
         {extrait.map((j) => (
@@ -69,10 +60,8 @@ const aMettreDeCote = [
   <article class="cell c-white">
     <span class="n">2</span>
     <h3>Tes obligations</h3>
-    <ul class="feat-list">
-      {obligations.map((e) => <li><b>{e.titre}</b><span>{insecables(e.accroche)}</span></li>)}
-    </ul>
-    <div class="frag solo">
+    <p class="ligne">Tes charges déductibles, l’URSSAF et la CARMF, ta déclaration.</p>
+    <div class="frag" aria-hidden="true">
       <div class="card">
         <p class="card-t">Année {DEMO_ANNEE.an}, à mettre de côté</p>
         <ul class="tiles">
@@ -89,58 +78,37 @@ const aMettreDeCote = [
     <div class="sun-copy">
       <span class="n">3</span>
       <h3>Ce qu’il te reste</h3>
-      <ul class="feat-list">
-        <li>
-          <b>{reste.titre}</b>
-          <span>{morceaux.map((m, i) => (
-            <Fragment>{i > 0 && <Fragment>{' '}<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>{' '}</Fragment>}{m}</Fragment>
-          ))}</span>
-        </li>
-      </ul>
       <p class="sun-num"><small>Super-Net {DEMO_ANNEE.an}</small><b class="aff">{euros(DEMO_SUPER_NET)}</b><span>{insecable(euros(DEMO_ANNEE.encaisse))} encaissés, moins les cotisations, moins l’impôt</span></p>
     </div>
-    <Mascotte pose="f-pouce" class="pouce" largeurs={[150, 230, 300, 460]} sizes="(min-width: 900px) 230px, (min-width: 540px) 190px, calc(42vw - 36px)" />
+    <Mascotte pose="f-pouce" class="pouce" largeurs={[150, 230, 300, 460]} sizes="(min-width: 900px) 230px, (min-width: 640px) 170px, 30vw" />
   </article>
 </div>
 
 <style>
-  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .num { white-space: nowrap; }
 
-  .bento { position: relative; z-index: 1; display: grid; gap: 14px; }
-  .cell { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 26px 22px 0; overflow: hidden; border-radius: 30px; color: var(--ink); box-shadow: var(--clay); }
+  /* Téléphone : deux colonnes, la case jaune sur toute la largeur. */
+  .bento { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .cell { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 18px 16px 20px; overflow: hidden; border-radius: 26px; color: var(--ink); box-shadow: var(--clay); }
   .c-sky { background: var(--sky); }
   .c-white { background: var(--paper); }
-  .c-sun { background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1), 0 22px 44px -22px rgba(13, 40, 105, 0.42); }
-  .cell h3 { margin: 0; }
-  .n { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 17px; font-weight: var(--tb); }
-  .feat-list { margin: 0; padding: 0; list-style: none; }
-  .feat-list li { display: flex; flex-direction: column; gap: 2px; padding: 13px 0; border-top: 1px solid var(--line); }
-  .c-sun .feat-list li { border-top-color: rgba(20, 37, 79, 0.2); }
-  .feat-list b { font-size: 17.5px; }
-  .feat-list span { font-size: 16px; color: var(--ink-2); }
-  .c-sun .feat-list span { color: var(--ink); }
-  /* La flèche dessinée : à la place du caractère, sur la ligne du texte. */
-  .fl { position: relative; white-space: nowrap; }
-  .fl svg { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
+  .c-sun { grid-column: 1 / -1; background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1), 0 22px 44px -22px rgba(13, 40, 105, 0.42); }
+  .cell h3 { margin: 0; font-size: 21px; }
+  .n { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 15px; font-weight: var(--tb); }
+  .ligne { margin: 0; font-size: 15px; line-height: 1.45; color: var(--ink-2); text-wrap-style: pretty; }
+  /* Petits téléphones : les cases l'une sous l'autre. */
+  @media (max-width: 359px) {
+    .bento { grid-template-columns: minmax(0, 1fr); }
+  }
 
-  /* Les extraits d'écran, posés au bas de chaque case */
-  .frag { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: end; gap: 0; margin: auto 0 0; padding-top: 8px; }
-  /* Son doigt s'arrête dans la marge de la fiche (24 px), devant la ligne qu'il
-     montre : à 110 % de large et 8 % de marge, il recouvrait le jour (« dim. 19 »). */
-  .frag .pointe { display: none; position: relative; z-index: 1; width: 100%; margin: 0 0 -7% 5%; }
-  .card { position: relative; padding: 18px 18px 14px; border-radius: 22px 22px 0 0; background: var(--paper); box-shadow: 0 -10px 30px -16px rgba(13, 40, 105, 0.4); }
+  /* Les deux extraits d'écran, au bas des cases 1 et 2 : décor, à partir de 900 px. */
+  .frag { display: none; }
+  .card { position: relative; padding: 22px 24px 18px; border-radius: 26px 26px 0 0; background: var(--paper); box-shadow: 0 -10px 30px -16px rgba(13, 40, 105, 0.4); }
   .c-white .card { background: var(--sky-soft); box-shadow: none; }
   .card-t { margin: 0 0 6px; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
   .day { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 50px; border-top: 1px solid var(--line); font-size: 15.5px; }
   .day .w { font-size: 14px; color: var(--ink-3); }
   .day .p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  /* À 320 px, les noms de lieux étaient coupés (« Valéri… ») : colonnes resserrées. */
-  @media (max-width: 359px) {
-    .cell { padding-inline: 18px; }
-    .card { padding-inline: 12px; }
-    .day { grid-template-columns: 50px minmax(0, 1fr) auto; gap: 6px; }
-  }
   .tiles { margin: 0; padding: 0; list-style: none; }
   .tile { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-2); }
   .tile b { font-family: var(--display); font-size: 21px; font-weight: var(--dw); letter-spacing: -0.015em; color: var(--ink); }
@@ -150,24 +118,48 @@ const aMettreDeCote = [
   .l2 { background: #4F88DE; }
   .l3 { background: #1F4FA8; }
 
-  /* La case jaune : ce qu'il te reste */
-  .sun-copy { display: flex; flex-direction: column; gap: 16px; }
-  .sun-num { display: flex; flex-direction: column; gap: 2px; margin: 0; padding-bottom: 20px; }
+  /* La case jaune : ce qu'il te reste. Le chiffre à gauche, la mascotte au
+     pouce levé dans sa colonne, à droite, posée sur le bord bas de la case. */
+  .c-sun { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0 10px; padding-bottom: 0; }
+  .sun-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; padding-bottom: 20px; }
+  .sun-num { display: flex; flex-direction: column; gap: 2px; margin: 4px 0 0; }
   .sun-num small { font-size: 15px; font-weight: var(--tb); }
-  /* Sous 375 px le montant suit la largeur (58 px au moins sur la maquette) : avec
-     des espacements imposés par le visiteur, il sortait de la case à 320 px. */
-  .sun-num b { --corps: clamp(46px, 15.5vw, 132px); line-height: 1; }
-  .sun-num span { max-width: 26rem; font-size: 15.5px; }
-  .c-sun .pouce { align-self: flex-end; width: min(42%, 190px); margin: -16px 4px -10% 0; }
+  /* Le montant suit la largeur : il tient à gauche de la mascotte à 320 px
+     comme à 430 px, même avec des espacements imposés par le visiteur. */
+  .sun-num b { --corps: clamp(34px, 11.6vw, 132px); line-height: 1; white-space: nowrap; }
+  @media (max-width: 359px) { .sun-num b { --corps: 34px; } }
+  .sun-num span { max-width: 26rem; margin-top: 4px; font-size: 15px; line-height: 1.45; text-wrap-style: pretty; }
+  .c-sun .pouce { width: clamp(84px, 26vw, 124px); margin: 0 -2px -9% 0; }
 
+  /* Tablette : mêmes cases, plus d'air. */
+  @media (min-width: 640px) {
+    .bento { gap: 14px; }
+    .cell { gap: 12px; padding: 26px 26px 28px; border-radius: 30px; }
+    .cell h3 { font-size: 24px; }
+    .n { width: 34px; height: 34px; font-size: 16px; }
+    .ligne { font-size: 16px; }
+    .c-sun { gap: 0 32px; padding-bottom: 0; }
+    .sun-copy { padding-bottom: 28px; }
+    .sun-num b { --corps: clamp(34px, 11vw, 132px); }
+    .sun-num span { font-size: 15.5px; }
+    .c-sun .pouce { width: 170px; margin: 0 20px -8% 0; }
+  }
+
+  /* Ordinateur : le damier, et les extraits d'écran au bas des cases 1 et 2. */
   @media (min-width: 900px) {
     .bento { grid-template-columns: 1.12fr 1fr; gap: 18px; }
-    .cell { padding: 36px 36px 0; border-radius: 36px; }
-    .frag:not(.solo) { grid-template-columns: 34% minmax(0, 1fr); margin: auto -10px 0 -36px; }
-    .frag .pointe { display: block; }
-    .card { padding: 22px 24px 18px; border-radius: 26px 26px 0 0; }
-    .c-sun { grid-column: 1 / -1; flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 40px; }
-    .sun-copy { flex: 1; max-width: 700px; padding-bottom: 8px; }
+    .cell { gap: 14px; padding: 36px 36px 0; border-radius: 36px; }
+    .cell h3 { font-size: clamp(24px, 2.5vw, 32px); }
+    .n { width: 38px; height: 38px; font-size: 17px; }
+    .ligne { max-width: 26rem; font-size: 17px; line-height: 1.5; }
+    .frag { display: block; align-self: stretch; margin: auto 0 0; padding-top: 14px; }
+    .c-sun { gap: 0 40px; }
+    /* Le texte au milieu de la case (la mascotte est plus haute que lui). */
+    .sun-copy { align-self: center; gap: 14px; max-width: 700px; padding-bottom: 36px; }
+    /* De 900 à 1 080 px le montant suit la largeur : à 132 px, il passait sur
+       deux lignes à côté de la mascotte. */
+    .sun-num b { --corps: clamp(46px, calc(15.5vw - 36px), 132px); }
+    .sun-num span { font-size: 15.5px; }
     .c-sun .pouce { width: 230px; margin: 0 40px -7% 0; }
   }
 
@@ -179,7 +171,7 @@ const aMettreDeCote = [
        rangerait la ligne de temps dans le raccourci, que les navigateurs refusent). */
     @supports (animation-timeline: view()) {
       .cell { animation: cases-arrive linear both; }
-      article.cell { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+      article.cell { animation-timeline: view(); animation-range: entry 0% entry 25%; }
     }
   }
   @keyframes cases-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }

@@ -10,8 +10,10 @@
  * etapesRemplacant.ts. Ne rien y réécrire : tout changement de texte se
  * déclare dans MIGRATION.md § 9.
  *
- * - Remplaçant : titre et ligne de détail seulement. Les phrases d'accroche
- *   sont déjà dans le bloc « Sous la surface », juste au-dessus.
+ * - Remplaçant : les sept étapes entières (titre, phrase d'accroche, ligne de
+ *   détail), comme les trois autres profils. Jusqu'à l'épure de novembre 2026,
+ *   ce profil n'avait ni accroche (elles étaient dans « Sous la surface ») ni
+ *   précision sous son nom : il sortait dans une autre forme que les autres.
  * - Vacataire : ce profil n'existait pas. Deux étapes NOUVELLES (les deux
  *   premières, listées en § 9), puis quatre étapes reprises du remplaçant.
  *   « Vacataire » s'entend comme ailleurs sur le site : un libéral payé à la
@@ -24,15 +26,14 @@ import { ETAPES_REMPLACANT } from './etapesRemplacant';
 
 export interface EtapeParcours {
   titre: string;
-  /** Absente pour le remplaçant (déjà dans « Sous la surface »). */
-  accroche?: string;
+  accroche: string;
   detail: string;
 }
 
 export interface ProfilParcours {
   id: 'remplacant' | 'interne' | 'vacataire' | 'mixte';
   label: string;
-  /** Précision affichée sous le libellé ; vide pour le remplaçant. */
+  /** Précision affichée sous le libellé de l'onglet : les quatre profils en ont une. */
   precision: string;
   etapes: EtapeParcours[];
 }
@@ -41,8 +42,10 @@ export const PROFILS_PARCOURS: ProfilParcours[] = [
   {
     id: 'remplacant',
     label: 'Remplaçant',
-    precision: '',
-    etapes: ETAPES_REMPLACANT.map(({ titre, detail }) => ({ titre, detail })),
+    // Texte nouveau (novembre 2026). « en libéral », pas « cabinet libéral » : un
+    // remplaçant exerce aussi en maison de santé ou en SOS Médecins.
+    precision: 'remplacements en libéral',
+    etapes: ETAPES_REMPLACANT,
   },
   {
     id: 'interne',

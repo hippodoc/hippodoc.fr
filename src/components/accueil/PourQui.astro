@@ -1,10 +1,10 @@
 ---
 /**
  * « Pour qui » : les quatre profils de l'accueil (DA 2026, phase 3,
- * MIGRATION.md § 9). Remplaçant, interne, vacataire, activité mixte : on
- * choisit son mode d'exercice, le parcours correspondant s'affiche. Zéro JS.
- * Première feuille claire de la page : elle remonte de 40 px sur l'eau du bloc
- * « Sous la surface ».
+ * MIGRATION.md § 9 ; épure de novembre 2026). Remplaçant, interne, vacataire,
+ * activité mixte : on choisit son mode d'exercice, le parcours correspondant
+ * s'affiche. Zéro JS. Première feuille claire de la page : elle remonte de
+ * 40 px sur l'eau du bloc « Sous la surface ».
  *
  * - Mesure, inchangée : `data-landing-section="practice-journeys"`,
  *   `id="parcours"` (cible du lien « Pour qui » du menu, sur tout le site),
@@ -18,28 +18,40 @@
  *   visible en émettrait deux, et le choix serait compté en double).
  *   La feuille affiche le panneau de la radio cochée avec `:has()`. Sans
  *   `:has()` (navigateurs d'avant fin 2023), le sélecteur est retiré et les
- *   quatre parcours s'affichent l'un sous l'autre, chacun sous son nom.
- * - Les quatre panneaux sont toujours dans le HTML.
- * - Textes : src/data/parcoursAccueil.ts, mot pour mot, sauf les deux étapes
- *   nouvelles du vacataire (listées en § 9).
- * - Titres : un <h2>, puis un <h3> par étape (comme l'ancienne section) et un
- *   pour l'appel final.
+ *   quatre parcours s'affichent l'un sous l'autre, chacun sous son nom (la
+ *   ligne `.pour`, qui ne sert plus qu'à cela : ailleurs elle répétait
+ *   l'onglet coché).
+ * - Les quatre panneaux sont toujours dans le HTML, étapes comprises.
+ * - Textes : src/data/parcoursAccueil.ts, mot pour mot.
+ * - UNE SEULE FORME d'étape pour les quatre profils : pastille numérotée,
+ *   titre en gras, une phrase, une précision en pastille bleu pâle. Le profil
+ *   Remplaçant avait la sienne (titre en petite étiquette, détail en grand,
+ *   pas de précision sous l'onglet) tant que ses phrases étaient dites dans
+ *   « Sous la surface » : elles ne sont plus dites qu'ici.
+ * - Titres : un <h2>, puis un <h3> par étape et un pour l'appel final.
  * - La dernière étape de chaque parcours est le Super-Net : sa pastille est
  *   jaune, la couleur de « ce qu'il te reste ».
+ * - Sous 640 px, les étapes d'un parcours défilent de côté, une carte par
+ *   étape (une carte et le bord de la suivante), sur le modèle des
+ *   témoignages : rangée nommée, atteignable au clavier, indice de défilement
+ *   en CSS seul sous la rangée (absent là où le navigateur ne sait pas lier
+ *   une animation au défilement). Les quatre parcours occupent la même case
+ *   d'une grille, les trois non choisis masqués (`visibility`) : la rangée a
+ *   la hauteur de la plus haute carte des quatre profils, et rien ne saute
+ *   quand on change de profil. À partir de 640 px : la liste verticale, dans
+ *   la fiche blanche.
  * - Mascotte féminine qui montre du doigt (décor) : elle désigne les profils sur
  *   téléphone (entière, à leur gauche ; retirée sous 360 px, où les profils se
- *   rangent deux par deux), le parcours sur ordinateur.
- * - Remplaçant (étapes sans phrase d'accroche, classe `court`) : ses sept titres
- *   viennent d'être lus dans « Sous la surface », juste au-dessus. Ils ne sont
- *   plus répétés en gras : chaque titre devient une étiquette, et la ligne de
- *   détail, qui est ce que ce bloc apporte de neuf, le texte de l'étape.
- * - La porte de sortie (« Ton cas n'est pas listé ? ») est au pied de la fiche,
- *   sous l'appel. Phrase d'origine coupée de sa parenthèse (« interne en fin de
- *   cursus, exercice mixte, installation en cours ») : deux de ces cas sont
- *   maintenant des profils du bloc, le troisième n'est plus une cible de l'accueil.
+ *   rangent deux par deux), le parcours sur ordinateur. Sur une fenêtre
+ *   d'ordinateur de moins de 760 px de haut, elle est retirée : le sélecteur
+ *   reste collant et tient dans la fenêtre.
+ * - La porte de sortie (« Ton cas n'est pas listé ? ») est sous l'appel. Phrase
+ *   d'origine coupée de sa parenthèse (« interne en fin de cursus, exercice
+ *   mixte, installation en cours ») : deux de ces cas sont maintenant des
+ *   profils du bloc, le troisième n'est plus une cible de l'accueil.
  * - Les flèches de l'étape « Brut → cotisations → impôt » ne sont pas dans la
  *   police du site : dessin en SVG, le caractère reste dans le texte, masqué à
- *   l'œil (même procédé que TroisCases.astro).
+ *   l'œil.
  */
 import '@/styles/da.css';
 import { APP_URL, CALENDLY_URL } from '@/lib/site';
@@ -57,7 +69,7 @@ import { insecables } from '@/lib/typo';
   <div class="wrap">
     <div class="band-head">
       <h2 id="parcours-titre">Quel que soit ton mode d’exercice, Hippodoc te suit.</h2>
-      <p class="lead" id="parcours-intro">Choisis ton mode d’exercice&nbsp;: tu verras exactement ce qu’Hippodoc fait pour toi.</p>
+      <p class="lead" id="parcours-intro">Choisis ton mode d’exercice.</p>
     </div>
 
     <div class="pq-grid">
@@ -67,7 +79,7 @@ import { insecables } from '@/lib/typo';
             <label class="tab" data-profile={profil.id} data-ph={`landing_journey_profile_${profil.id}`}>
               <input type="radio" name="parcours" id={`parcours-${profil.id}`} checked={i === 0} />
               <span class="t">{profil.label}</span>{' '}
-              {profil.precision && <span class="h">{profil.precision}</span>}
+              <span class="h">{profil.precision}</span>
             </label>
           ))}
         </fieldset>
@@ -75,46 +87,48 @@ import { insecables } from '@/lib/typo';
       </div>
 
       <div class="sheet">
-        {PROFILS_PARCOURS.map((profil) => (
-          <div class="panel" data-panel={profil.id}>
-            <p class="pour"><b>{profil.label}</b>{' '}{profil.precision && <span>{profil.precision}</span>}</p>
-            <ol class="steps" role="list">
-              {profil.etapes.map((etape, i) => {
-                const morceaux = insecables(etape.accroche ?? '').split(' → ');
-                return (
-                  <li class:list={[!etape.accroche && 'court']}>
-                    <span class="n" aria-hidden="true">{i + 1}</span>{' '}
-                    <h3>{insecables(etape.titre)}</h3>
-                    {etape.accroche && (
-                      <p class="acc">{morceaux.map((m, k) => (
-                        <Fragment>{k > 0 && <Fragment>{' '}<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>{' '}</Fragment>}{m}</Fragment>
-                      ))}</p>
-                    )}
-                    <p class="det">{insecables(etape.detail)}</p>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        ))}
+        <div class="panels">
+          {PROFILS_PARCOURS.map((profil) => (
+            <div class="panel" data-panel={profil.id}>
+              <p class="pour"><b>{profil.label}</b>{' '}<span>{profil.precision}</span></p>
+              <div class="rail" tabindex="0" role="group" aria-label={`Parcours ${profil.label}`}>
+                <ol class="steps" role="list">
+                  {profil.etapes.map((etape, i) => {
+                    const morceaux = insecables(etape.accroche).split(' → ');
+                    return (
+                      <li>
+                        <span class="n" aria-hidden="true">{i + 1}</span>{' '}
+                        <h3>{insecables(etape.titre)}</h3>
+                        <p class="acc">{morceaux.map((m, k) => (
+                          <Fragment>{k > 0 && <Fragment>{' '}<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>{' '}</Fragment>}{m}</Fragment>
+                        ))}</p>
+                        <p class="det">{insecables(etape.detail)}</p>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+              <span class="fil" aria-hidden="true" style={`--n:${profil.etapes.length}`}><i></i></span>
+            </div>
+          ))}
+        </div>
 
-        {/* L'appel, identique pour les quatre profils : le pied de la fiche. */}
+        {/* L'appel, identique pour les quatre profils. */}
         <div class="go">
-          <div class="go-copy">
-            <h3>Prêt·e à voir ton <span class="nb">Super-Net&nbsp;?</span></h3>
-            <p>Crée ton compte et retrouve ce parcours appliqué à tes propres chiffres.</p>
-          </div>
+          <h3>Prêt·e à voir ton <span class="nb">Super-Net&nbsp;?</span></h3>
           <div class="go-cta">
             <a class="btn btn-brand" href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_journey_section">Essayer 30 jours gratuitement</a>
-            <p class="fine">Sans engagement</p>
+            <p class="fine">Rien n’est débité pendant l’essai</p>
           </div>
         </div>
 
         {/* Une ligne, pas un bouton : la porte de sortie de celui qui ne se reconnaît
-            dans aucun des quatre profils (voir MIGRATION.md § 9.r). */}
+            dans aucun des quatre profils (voir MIGRATION.md § 9.r). Le lien et sa
+            virgule tiennent ensemble : dans le moteur de Safari, la virgule passait
+            seule à la ligne. */}
         <p class="autre">
           Ton cas n'est pas listé&nbsp;?{' '}
-          <a class="lien" href={CALENDLY_URL} data-calendly="pour_qui" target="_blank" rel="noopener">Prends 15 min avec Ryan</a>, médecin remplaçant&nbsp;: il te dira franchement si Hippodoc
+          <span class="nb"><a class="lien" href={CALENDLY_URL} data-calendly="pour_qui" target="_blank" rel="noopener">Prends 15 min avec Ryan</a>,</span> médecin remplaçant&nbsp;: il te dira franchement si Hippodoc
           t'apporte quelque chose.
         </p>
       </div>
@@ -126,19 +140,36 @@ import { insecables } from '@/lib/typo';
   .nb { white-space: nowrap; }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-  .pq-grid { display: grid; gap: 14px; }
+  /* La feuille : remplissages et chapô de l'épure (ici, pas dans da.css, que
+     toutes les pages partagent). */
+  .lead { text-wrap-style: balance; }
+  @media (max-width: 559px) {
+    .pq { padding: 44px 0 72px; }
+    .band-head { margin-bottom: 22px; }
+    .lead { font-size: 17px; }
+  }
+  @media (min-width: 900px) {
+    .pq { padding: 76px 0 112px; }
+    .band-head { margin-bottom: 36px; }
+  }
+
+  .pq-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 
   /* Le sélecteur : une fiche bleu profond, les quatre profils et la mascotte
      qui les montre du doigt. */
   /* Téléphone : elle tient entière dans sa colonne, à gauche des profils (plus
-     de chignon rogné par le bord de la fiche). */
-  .chooser { --focus: #FFFFFF; position: relative; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); align-items: end; gap: 0 4px; padding: 16px 16px 0 6px; overflow: hidden; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
-  .tabs { grid-column: 2; grid-row: 1; display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0 0 16px; border: 0; }
+     de chignon rogné par le bord de la fiche). La colonne des profils est assez
+     large pour que les quatre précisions tiennent sur une ligne à partir de
+     375 px (« remplacements en libéral » : 155 px). */
+  .chooser { --focus: #FFFFFF; position: relative; display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr); align-items: end; gap: 0 4px; padding: 16px 16px 0 6px; overflow: hidden; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  /* Quatre profils de même hauteur, quel que soit celui dont la précision passe
+     sur deux lignes. */
+  .tabs { grid-column: 2; grid-row: 1; display: grid; grid-auto-rows: 1fr; gap: 8px; min-width: 0; margin: 0; padding: 0 0 16px; border: 0; }
   .chooser .guide { grid-column: 1; grid-row: 1; width: 100%; margin: 0 0 -3%; pointer-events: none; }
 
   /* Un profil. La radio couvre son libellé, transparente : la cible tactile est
      la sienne, et le navigateur sait où elle est quand elle reçoit le focus. */
-  .tab { position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 56px; padding: 7px 13px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.62); line-height: 1.25; transition: background-color 160ms var(--ease), color 160ms var(--ease), box-shadow 160ms var(--ease); }
+  .tab { position: relative; display: flex; flex-direction: column; justify-content: center; min-height: 56px; padding: 7px 12px; border-radius: 18px; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.62); line-height: 1.25; transition: background-color 160ms var(--ease), color 160ms var(--ease), box-shadow 160ms var(--ease); }
   .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
   .tab .t { font-size: 17px; font-weight: var(--tb); }
   .tab .h { font-size: 13.5px; color: var(--on-deep-2); }
@@ -160,76 +191,104 @@ import { insecables } from '@/lib/typo';
     .chooser .guide { display: none; }
   }
 
-  /* La fiche du parcours */
-  .sheet { overflow: hidden; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
-  .panel { display: none; padding: 20px 20px 6px; }
-  .pq:has(#parcours-remplacant:checked) [data-panel="remplacant"],
-  .pq:has(#parcours-interne:checked) [data-panel="interne"],
-  .pq:has(#parcours-vacataire:checked) [data-panel="vacataire"],
-  .pq:has(#parcours-mixte:checked) [data-panel="mixte"] { display: block; }
-  /* Sans `:has()`, rien ne relie un profil à son parcours : pas de sélecteur,
-     les quatre parcours l'un sous l'autre, chacun sous son nom. */
-  @supports not selector(:has(*)) {
-    .chooser { display: none; }
-    .panel { display: block; }
-  }
-  .pour { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0 0 6px; font-size: 15px; color: var(--ink-2); }
+  /* Une étape : la même forme pour les quatre profils. */
+  .pour { display: none; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0 0 8px; font-size: 15px; color: var(--ink-2); }
   .pour b { color: var(--ink); }
-
   .steps { margin: 0; padding: 0; list-style: none; }
-  /* Sur téléphone, l'accroche et le détail passent sous la pastille, sur toute
-     la largeur : une ligne de moins par étape. */
-  .steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; column-gap: 12px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: start; column-gap: 12px; }
   .steps .n { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: var(--sky); font-size: 15.5px; font-weight: var(--tb); line-height: 1; }
   /* La dernière étape est le Super-Net : ce qu'il te reste, donc du jaune. */
   .steps li:last-child .n { background: var(--sun); }
   .steps h3 { grid-column: 2; margin: 0; padding-top: 5px; font-family: var(--text); font-size: 18px; font-weight: var(--tb); letter-spacing: 0; line-height: 1.3; }
-  .steps p { grid-column: 1 / -1; margin: 0; }
-  .steps .acc { padding-top: 8px; font-size: 16px; color: var(--ink-2); }
-  .steps .det { justify-self: start; margin-top: 9px; padding: 5px 12px; border-radius: var(--r-sm); background: var(--sky-soft); font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
-  /* Étape « courte » (le remplaçant) : son titre vient d'être lu dans le bloc
-     du dessus. Il devient une étiquette, la ligne de détail est le texte. */
-  .steps .court { padding-block: 12px; }
-  .steps .court h3 { padding-top: 0; font-size: 14.5px; font-weight: 560; line-height: 1.35; color: var(--ink-2); }
-  .steps .court .det { grid-column: 2; margin-top: 2px; padding: 0; border-radius: 0; background: none; font-size: 16.5px; line-height: 1.45; color: var(--ink); }
-  .steps .court .n { grid-row: 1 / span 2; }
+  .steps p { margin: 0; }
+  .steps .acc { font-size: 16px; color: var(--ink-2); text-wrap-style: pretty; }
+  .steps .det { justify-self: start; padding: 5px 12px; border-radius: var(--r-sm); background: var(--sky-soft); font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
   /* La flèche dessinée : à la place du caractère, sur la ligne du texte. */
   .fl { position: relative; white-space: nowrap; }
   .fl svg { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
 
-  /* L'appel, au pied de la fiche */
-  .go { display: grid; gap: 18px; padding: 24px 20px 26px; background: var(--sky-soft); }
-  .go-copy { display: grid; gap: 8px; }
-  .go h3 { margin: 0; }
-  .go p { margin: 0; }
-  .go-copy p { max-width: 26rem; font-size: 16.5px; color: var(--ink-2); }
-  .go-cta { display: grid; justify-items: center; gap: 12px; }
-  /* Le libellé peut passer sur deux lignes (320 px, ou espacements imposés). */
-  .go .btn { width: 100%; padding: 8px 18px; text-align: center; }
-  @media (max-width: 374px) { .go .btn { padding-inline: 10px; font-size: 16px; } }
-  .fine { font-size: 14.5px; color: var(--ink-2); }
+  /* L'indice de défilement de la rangée (téléphone) : un rail court, centré, et
+     son curseur, large d'une étape sur le nombre d'étapes du parcours (`--n`).
+     Affiché plus bas, seulement si le navigateur sait le faire avancer. */
+  .fil { display: none; width: 72px; height: 6px; margin: 0 auto; overflow: hidden; border-radius: var(--r-pill); background: rgba(20, 37, 79, 0.16); }
+  .fil i { display: block; width: calc(100% / var(--n)); height: 100%; border-radius: inherit; background: var(--ink-2); }
+  @keyframes parcours-fil { to { translate: calc((var(--n) - 1) * 100%) 0; } }
 
-  /* La porte de sortie, au pied de la fiche. */
-  .autre { margin: 0; padding: 16px 20px 20px; font-size: 15.5px; line-height: 1.55; color: var(--ink-2); }
+  /* L'appel et la porte de sortie */
+  .go h3 { margin: 0; }
+  .go-cta { display: grid; justify-items: center; gap: 10px; }
+  .fine { margin: 0; font-size: 14.5px; color: var(--ink-2); }
+  .autre { margin: 0; color: var(--ink-2); }
+
+  /* ───── Sous 640 px : une rangée de cartes qui défile de côté ───── */
+  @media (max-width: 639px) {
+    .sheet { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
+    /* Les quatre parcours dans la même case : la hauteur du plus haut, pour tous. */
+    .panels { display: grid; grid-template-columns: minmax(0, 1fr); }
+    .panel { grid-area: 1 / 1; display: flex; flex-direction: column; min-width: 0; visibility: hidden; }
+    .pq:has(#parcours-remplacant:checked) [data-panel="remplacant"],
+    .pq:has(#parcours-interne:checked) [data-panel="interne"],
+    .pq:has(#parcours-vacataire:checked) [data-panel="vacataire"],
+    .pq:has(#parcours-mixte:checked) [data-panel="mixte"] { visibility: inherit; }
+    /* La rangée sort des marges de la page : les cartes glissent jusqu'au bord. */
+    .rail { flex: 1; display: flex; margin: 0 calc(-1 * var(--gut)); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); -webkit-overflow-scrolling: touch; }
+    .rail:focus-visible { outline-offset: -3px; border-radius: var(--r-md); }
+    .steps { display: flex; flex: none; gap: 12px; width: max-content; padding: 4px var(--gut) 20px; }
+    /* Une carte : la pastille et le titre, la phrase, la précision calée en bas.
+       74 % de la fenêtre : la carte suivante dépasse de 45 à 80 px, pastille comprise. */
+    .steps li { flex: none; box-sizing: border-box; width: min(74vw, 330px); grid-template-rows: auto auto 1fr; padding: 18px 18px 20px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay-sm); scroll-snap-align: start; }
+    .steps p { grid-column: 1 / -1; }
+    .steps .acc { padding-top: 10px; }
+    .steps .det { align-self: end; margin-top: 14px; }
+    /* Deux règles, deux sélecteurs pour l'animation : voir FenetreProduit.astro. */
+    @supports (animation-timeline: scroll()) and (timeline-scope: --t) {
+      .panel { timeline-scope: --parcours; }
+      .rail { scroll-timeline-name: --parcours; scroll-timeline-axis: x; }
+      .fil { display: block; }
+      .fil i { animation: parcours-fil linear both; }
+      span.fil i { animation-timeline: --parcours; }
+    }
+    /* L'appel : une carte blanche. */
+    .go { display: grid; gap: 14px; padding: 20px 20px 22px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay-sm); text-align: center; }
+    .go h3 { font-size: 22px; }
+    /* Le libellé du bouton tient sur une ligne jusqu'à 320 px. */
+    .go .btn { width: 100%; padding: 8px 18px; text-align: center; }
+    .autre { padding: 2px 4px 0; font-size: 15px; line-height: 1.5; text-wrap-style: pretty; }
+  }
+  @media (max-width: 374px) { .go .btn { padding-inline: 10px; font-size: 16px; } }
+  @media (max-width: 339px) { .go .btn { padding-inline: 6px; font-size: 15px; } }
+  @media (max-width: 639px) and (forced-colors: active) { .fil { border: 1px solid CanvasText; } .fil i { background: CanvasText; } }
 
   @media (min-width: 560px) {
     .chooser { grid-template-columns: 212px minmax(0, 1fr); gap: 0 18px; padding: 20px 22px 0 0; }
-    .autre { padding: 18px 30px 22px; }
     .tabs { grid-template-columns: 1fr 1fr; align-self: center; padding-bottom: 20px; }
     .tab { padding-inline: 16px; }
     .chooser .guide { width: 216px; margin: 0 0 -6px 2px; }
-    .panel { padding: 28px 30px 8px; }
-    .steps li { column-gap: 14px; padding: 16px 0; }
+  }
+
+  /* ───── À partir de 640 px : la liste, dans la fiche blanche ───── */
+  @media (min-width: 640px) {
+    .sheet { overflow: hidden; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); }
+    .panel { display: none; padding: 14px 30px 8px; }
+    .pq:has(#parcours-remplacant:checked) [data-panel="remplacant"],
+    .pq:has(#parcours-interne:checked) [data-panel="interne"],
+    .pq:has(#parcours-vacataire:checked) [data-panel="vacataire"],
+    .pq:has(#parcours-mixte:checked) [data-panel="mixte"] { display: block; }
+    .rail:focus-visible { outline-offset: -3px; border-radius: var(--r-md); }
+    .steps li { column-gap: 14px; padding: 16px 0; border-top: 1px solid var(--line); }
+    .steps li:first-child { border-top: 0; }
     .steps p { grid-column: 2; }
     .steps .acc { padding-top: 4px; }
-    .go { padding: 28px 30px 30px; }
+    .steps .det { margin-top: 9px; }
+    .go { display: grid; gap: 18px; padding: 28px 30px 30px; background: var(--sky-soft); }
     .go-cta { justify-items: start; }
-    .go .btn { width: auto; padding-inline: 26px; }
+    .go .btn { padding: 8px 26px; text-align: center; }
+    .autre { padding: 18px 30px 22px; font-size: 15.5px; line-height: 1.55; }
   }
 
   @media (min-width: 900px) {
     .pq-grid { grid-template-columns: 330px minmax(0, 1fr); align-items: start; gap: 22px; }
-    .chooser { display: block; padding: 20px 20px 0; border-radius: 36px; }
+    .chooser { display: block; position: sticky; top: 92px; padding: 20px 20px 0; border-radius: 36px; }
     .tabs { grid-template-columns: 1fr; padding: 0; }
     .tab { min-height: 60px; padding-inline: 20px; }
     .tab .t { font-size: 18px; }
@@ -237,19 +296,34 @@ import { insecables } from '@/lib/typo';
     /* Elle montre le parcours, à droite : sa main arrive au bord de la fiche. */
     .chooser .guide { width: 310px; margin: 14px 0 -6px -8px; }
     .sheet { border-radius: 36px; }
-    .panel { padding: 34px 40px 10px; }
+    .panel { padding: 18px 40px 10px; }
     .steps li { column-gap: 18px; padding: 18px 0; }
     .steps h3 { font-size: 19px; }
     .go { padding: 30px 40px 32px; }
     .autre { padding: 20px 40px 24px; }
   }
-  /* L'appel sur une ligne quand la fiche est assez large : le texte à gauche, le bouton à droite. */
+  /* Fenêtre d'ordinateur basse : le sélecteur reste collant, sans la mascotte
+     (il fait alors 300 px de haut au lieu de 630, et tient sous l'en-tête). */
+  @media (min-width: 900px) and (max-height: 759px) {
+    .chooser { padding-bottom: 20px; }
+    .chooser .guide { display: none; }
+  }
+  /* L'appel sur une ligne quand la fiche est assez large : le titre à gauche, le bouton à droite. */
   @media (min-width: 1180px) {
     .go { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 32px; }
     .go-cta { justify-items: center; }
   }
-  /* Sur un écran assez haut, le sélecteur suit la lecture du parcours. */
-  @media (min-width: 900px) and (min-height: 760px) {
-    .chooser { position: sticky; top: 92px; }
+
+  /* Sans `:has()`, rien ne relie un profil à son parcours : pas de sélecteur,
+     les quatre parcours l'un sous l'autre, chacun sous son nom. En dernier dans
+     la feuille : ces règles l'emportent sur celles des deux mises en page. */
+  @supports not selector(:has(*)) {
+    .chooser { display: none; }
+    /* Une seule colonne : sans le sélecteur, la fiche tombait dans la sienne (330 px). */
+    .pq-grid { grid-template-columns: minmax(0, 1fr); }
+    .panels { display: block; }
+    .panel { display: block; visibility: inherit; }
+    .panel + .panel { margin-top: 18px; }
+    .pour { display: flex; }
   }
 </style>

@@ -24,8 +24,10 @@
  *   pour les lecteurs d'écran.
  * - L'onglet ouvert est cerclé d'encre : le blanc sur le fond de la barre ne
  *   faisait que 1,11:1 (WCAG 1.4.11 demande 3:1 pour l'état d'un composant).
- * - La fenêtre garde sa hauteur quand on change de vue (hauteur minimale des
- *   panneaux, celle du relevé) ; seul le calendrier est un peu plus haut.
+ * - La fenêtre garde sa hauteur quand on change de vue : hauteur minimale des
+ *   panneaux, celle du relevé sous 860 px (les lignes de la liste des journées
+ *   y font 46 px, pour tenir dedans), celle du calendrier à partir de 860 px
+ *   (le relevé et la vue « à recevoir » s'étirent alors à sa hauteur).
  */
 import '@/styles/da.css';
 import {
@@ -194,8 +196,9 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   /* Contrastes forcés : le fond et l'ombre disparaissent, un contour dit quel onglet est ouvert. */
   @media (forced-colors: active) { .tab:has(input:checked) { outline: 2px solid Highlight; outline-offset: -2px; } }
 
-  /* Hauteur minimale : celle du relevé (396 px à 390 px de large, 454 px à partir de 720 px). La
-     fenêtre ne se replie pas de moitié quand on passe à la vue « à recevoir ». */
+  /* Hauteur minimale : celle du relevé (396 px à 390 px de large, 454 px à partir de 720 px),
+     puis celle du calendrier à partir de 860 px (550 px). La fenêtre ne change pas de
+     hauteur quand on passe d'une vue à l'autre. */
   .panel { display: none; box-sizing: border-box; min-height: 396px; padding: 22px 18px 26px; }
   .stage:has(#apercu-super-net:checked) .p1,
   .stage:has(#apercu-journees:checked) .p2,
@@ -214,6 +217,10 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
     .panel { min-height: 454px; padding: 36px 40px 40px; }
     .stage-foot { padding: 14px 40px; }
   }
+  @media (min-width: 860px) { .panel { min-height: 550px; } }
+  /* De 400 à 719 px le Super-Net grossit avec la fenêtre : son panneau dépassait
+     les deux autres de 1 à 7 px. */
+  @media (min-width: 400px) and (max-width: 719px) { .panel { min-height: 403px; } }
 
   /* Petits téléphones (320 px) : sur la maquette, le troisième onglet, le
      montant encaissé et le Super-Net sortaient de la fenêtre. Les onglets se
@@ -269,6 +276,13 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
     .g-air b { --corps: 46px; }
     .row { font-size: 17px; padding: 12px 0; }
   }
+  /* À la hauteur du calendrier : la jauge et les lignes remplissent le panneau
+     (lignes plus hautes, pour ne pas laisser un trou au-dessus du Super-Net). */
+  @media (min-width: 860px) {
+    .releve { min-height: 474px; }
+    .cap { padding-bottom: 14px; }
+    .row { padding: 17px 0; }
+  }
 
   /* Vue 2 : les journées */
   .cal-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 14px; }
@@ -297,8 +311,12 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   /* Le nom du lieu peut passer à la ligne : jamais de points de suspension sur un texte lu. */
   .day .p { min-width: 0; overflow-wrap: anywhere; }
   .day .p small { display: block; font-size: 13.5px; color: var(--ink-3); }
-  /* Sous 860 px, la liste courte : les six journées les plus récentes. */
+  /* Sous 860 px, la liste courte : les six journées les plus récentes, sur des
+     lignes de 46 px (à 50 px, la fenêtre grandissait de 24 px à cet onglet). */
   .p2 .day.large { display: none; }
+  .p2 .day { min-height: 46px; }
+  /* À 320 px la légende passe sous le mois : cinq pixels de moins par ligne. */
+  @media (max-width: 359px) { .p2 .day { min-height: 41px; } }
   @media (min-width: 860px) {
     .cal { display: grid; }
     /* La liste entière reste aux lecteurs d'écran : le calendrier leur est masqué. */
@@ -314,6 +332,7 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   @media (min-width: 780px) {
     .due { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; align-items: center; min-height: 360px; }
   }
+  @media (min-width: 860px) { .due { min-height: 474px; } }
 
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. */
   @media (prefers-reduced-motion: no-preference) {
