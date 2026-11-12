@@ -371,6 +371,31 @@
   .sim .sim-regime-corps { padding: 0 28px 28px; }
 }
 
+/* Avant l'hydratation (MIGRATION.md § 9.er). Astro garde l'attribut `ssr` sur
+   <astro-island> tant que React n'a pas pris l'îlot : le HTML a l'air prêt, rien ne
+   répond. Sans script, cette feuille le dit et le garantit :
+   - les contrôles ne prennent ni clic ni toucher (un clic n'est plus perdu sans
+     signe, une saisie n'est plus effacée à l'hydratation, « Entrée » n'envoie plus
+     le formulaire en natif) ; `interactivity: inert` les sort aussi du parcours
+     clavier là où le navigateur le lit (Chromium 135 et suivants) ; ailleurs
+     Tab les atteint encore. Les liens restent des liens ;
+   - le curseur attend ;
+   - passé une demi-seconde, un trait qui glisse sur le bord haut de la première
+     fiche du formulaire (pas au-dessus de l'îlot : la mascotte s'y tient) : rien
+     ne s'affiche quand l'hydratation est rapide. Sans mouvement si le visiteur
+     le demande. Aucun texte, aucun décalage de mise en page.
+   Tout tombe avec l'attribut. Si un fichier JS ne charge jamais, l'état reste :
+   l'outil est inerte, et cela se voit. */
+astro-island[ssr] .sim-ile { cursor: progress; }
+astro-island[ssr] .sim-ile :is(button, input, select, textarea, summary, label, [role="button"], [tabindex]:not([tabindex="-1"])) { pointer-events: none; }
+astro-island[ssr] .sim-ile :is(button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])) { interactivity: inert; }
+astro-island[ssr] #simulateur-form::before { content: ""; display: block; position: relative; z-index: 2; margin: 0 28px -3px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(0, 89, 179, 0), var(--brand) 50%, rgba(0, 89, 179, 0)) 0 0 / 40% 100% no-repeat, rgba(20, 37, 79, 0.12); opacity: 0; pointer-events: none; animation: sim-attente-glisse 1.2s linear infinite, sim-attente-entree 0.2s 0.5s forwards; }
+@media (prefers-reduced-motion: reduce) {
+  astro-island[ssr] #simulateur-form::before { background: rgba(0, 89, 179, 0.5); animation: sim-attente-entree 0.01s 0.5s forwards; }
+}
+@keyframes sim-attente-glisse { from { background-position: -70% 0, 0 0; } to { background-position: 170% 0, 0 0; } }
+@keyframes sim-attente-entree { to { opacity: 1; } }
+
 @media (prefers-reduced-motion: reduce) {
   .sim :is(.sim-btn, .sim-profil, .sim-porte) { transition: none; }
 }
