@@ -32,6 +32,15 @@ export interface FaqAccueilItem {
  * l'accordéon sur 150 jours), la position pesant beaucoup sur le taux d'ouverture.
  * La question « internes » était en 9ᵉ position alors qu'elle est la 4ᵉ la plus
  * ouverte — les gens descendaient la chercher.
+ *
+ * Épure de novembre 2026 (MIGRATION.md § 9.eu) : huit questions au lieu de dix.
+ * Les deux moins ouvertes (13 et 15 personnes en 87 jours), qui redisaient des
+ * fonctions montrées plus haut sur la page, sont retirées : `super-net`
+ * (« Comment estimer mon revenu net après impôts en tant que médecin ? ») et
+ * `retrocessions` (« Comment suivre mes paiements en attente de rétrocession ? »).
+ * Leur texte est archivé mot pour mot dans MIGRATION.md § 9.eu ; les séries
+ * `landing_faq_super-net` et `landing_faq_retrocessions` s'arrêtent. Ne pas
+ * réutiliser ces deux `id` pour une autre question.
  */
 export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
@@ -68,16 +77,6 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
     id: 'revenus-remplacant',
     question: 'Comment gérer mes revenus de médecin remplaçant ?',
     answerHtml: `Hippodoc <strong>centralise</strong> toute ton activité en un seul endroit. Tu enregistres chaque journée avec le lieu d'exercice, le montant encaissé et la rétrocession. Le tableau de bord affiche <strong>en temps réel</strong> tes revenus <strong>encaissés</strong>, <strong>en attente</strong>, et ton <strong>Super-Net</strong> estimé après cotisations et impôts. Pour situer tes tarifs : <a href="/blog/salaires-medecins-remplacants">combien gagne un médecin remplaçant</a>.`,
-  },
-  {
-    id: 'super-net',
-    question: 'Comment estimer mon revenu net après impôts en tant que médecin ?',
-    answerHtml: `Avec le <strong>Super-Net</strong> d'Hippodoc, tu vois ton <strong>vrai revenu</strong> après <strong>URSSAF</strong>, <strong>CARMF</strong> et <strong>impôts</strong>. Tout est calculé selon ta situation réelle (<strong>régime fiscal</strong>, <strong>famille</strong>, <strong>revenus salariés</strong>), sans mauvaise surprise en fin d'année. Tu peux l'essayer tout de suite, sans compte, avec le <a href="/simulateur">simulateur de revenus</a>.`,
-  },
-  {
-    id: 'retrocessions',
-    question: 'Comment suivre mes paiements en attente de rétrocession ?',
-    answerHtml: `Hippodoc distingue automatiquement les journées <strong>payées</strong> de celles <strong>en attente</strong>. Tu visualises d'un coup d'œil les montants à percevoir, avec des <strong>alertes</strong> pour les <strong>paiements tardifs</strong>. Tu peux même envoyer des <strong>relances</strong> directement depuis l'application.`,
   },
   {
     id: 'contrats',

@@ -30,8 +30,14 @@ export const GUIDE_REMPLACANT_LAST_UPDATED_ISO = '2026-09-26';
  *  de revue éditoriale, et non leur date de création. */
 export const GUIDE_SOUS_PAGES_LAST_UPDATED_ISO = '2026-08-23';
 
-/** Mise en ligne de la nouvelle accueil (DA 2026, § 9.eb). */
+/** Mise en ligne de la nouvelle accueil (DA 2026, § 9.eb). Depuis l'épure de
+ *  l'accueil (§ 9.eu), seule /faq porte encore cette date. */
 export const ACCUEIL_DA_LAST_UPDATED_ISO = '2026-11-10';
+
+/** Accueil : épure de novembre 2026 (MIGRATION.md § 9.eu), textes coupés,
+ *  huit questions au lieu de dix, sections déplacées. Date de la construction ;
+ *  à remettre au jour réel de la mise en ligne. */
+export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-12';
 
 /** /tarifs : tarif des internes et essai de 6 mois des syndicats partenaires
  *  ajoutés le 11 novembre 2026 (MIGRATION.md § 9.ed). */
@@ -45,9 +51,10 @@ export const STATIC_LASTMOD: Record<string, string> = {
   '/comparatif': COMPARATIF_LAST_UPDATED_ISO,
   /** Page du PDF offert : suit la date « À jour au » de l'édition (§ 9.di). */
   '/guide': GUIDE_REMPLACANT_LAST_UPDATED_ISO,
-  /** Accueil DA 2026, mise en ligne le 10 novembre 2026 (MIGRATION.md § 9.eb).
-   *  /faq : textes corrigés dans le même lot, datée du même jour. */
-  '/': ACCUEIL_DA_LAST_UPDATED_ISO,
+  /** Accueil : sa propre date depuis l'épure (MIGRATION.md § 9.eu).
+   *  /faq : textes corrigés avec l'accueil de la DA 2026, le 10 novembre 2026
+   *  (§ 9.eb), non touchée depuis. */
+  '/': ACCUEIL_LAST_UPDATED_ISO,
   '/faq': ACCUEIL_DA_LAST_UPDATED_ISO,
   '/tarifs': TARIFS_LAST_UPDATED_ISO,
 };

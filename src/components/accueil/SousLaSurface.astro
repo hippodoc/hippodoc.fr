@@ -100,10 +100,11 @@ import Mascotte from './Mascotte.astro';
   }
 
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. La case
-     « pause » du premier écran (Hero.astro) arrête aussi les bulles. */
+     « pause » du premier écran (Hero.astro) arrête aussi les bulles, comme
+     celle de la scène finale : une seule pause pour la page. */
   @media (prefers-reduced-motion: no-preference) {
     .bubbles i { animation: surface-rise var(--t, 16s) linear var(--d, 0s) infinite; }
-    :global(body:has(.hero .pause:checked)) .bubbles i { animation-play-state: paused; }
+    :global(body:has(.pause:checked)) .bubbles i { animation-play-state: paused; }
   }
   @keyframes surface-rise { from { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { transform: translateY(-1500px); opacity: 0; } }
 </style>

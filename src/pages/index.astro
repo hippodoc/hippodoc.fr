@@ -17,9 +17,12 @@ import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
 // DA 2026, phases 2 et 3 : le premier écran, « Sous la surface » (fenêtre
-// produit à onglets et trois grandes cases), puis les feuilles claires : « Pour
-// qui », le fondateur et le film, les syndicats et partenaires, les témoignages,
-// les tarifs, les questions, les guides, et la scène finale. Les anciennes
+// produit à onglets et trois cases courtes), puis les feuilles claires : « Pour
+// qui », le fondateur et le film, les témoignages, les syndicats et partenaires,
+// les tarifs, les questions, les guides, et la scène finale. Depuis l'épure de
+// novembre 2026 (MIGRATION.md § 9.eu), les témoignages passent avant les
+// syndicats : un confrère l'a construit, des confrères s'en servent, puis les
+// syndicats et leurs 6 mois d'essai, qui mènent aux prix. Les anciennes
 // sections (`src/components/home/`) sont supprimées depuis la phase 4a.
 import Hero from '@/components/accueil/Hero.astro';
 import { imagesBuste } from '@/components/accueil/buste';
@@ -50,12 +53,13 @@ const websiteSchema = {
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 
-// 10 questions/réponses — verbatim, identiques à celles rendues par accueil/Questions.astro.
+// 8 questions/réponses (10 jusqu'à l'épure de novembre 2026, MIGRATION.md § 9.eu) —
+// verbatim, identiques à celles rendues par accueil/Questions.astro.
 const faqPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   // Dérivé de la source unique : le schéma ne peut plus diverger du texte visible,
-  // ce que Google exige. Auparavant les 10 questions étaient recopiées à la main ici.
+  // ce que Google exige. Auparavant les questions étaient recopiées à la main ici.
   mainEntity: FAQ_ACCUEIL.map((item) => ({
     '@type': 'Question',
     name: item.question,
@@ -128,8 +132,8 @@ const videoSchema = {
       <SousLaSurface />
       <PourQui />
       <Fondateur />
-      <Partenaires />
       <Temoignages />
+      <Partenaires />
       <Tarifs />
       <Questions />
       <Guides />
