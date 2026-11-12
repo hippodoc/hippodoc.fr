@@ -7379,7 +7379,8 @@ défauts des vieux Safari, que le moteur installé ne montre pas, sont dits à p
   (`/tarifs` 1 440), 215 × 400 → 215 × 208 (`/tarifs` 1 024), 250 × 425 → 250 × 331 et
   160 × 286 → 160 × 183 (`/faq` 1 440), 117 × 199 → 117 × 155 (`/faq` 390), 92 × 156 →
   92 × 122 (`/faq` 320), 242 × 451 → 242 × 235 (accueil 1 440) : les tailles de Chromium,
-  au pixel. Rien ne change dans Chromium.
+  au pixel. Rien ne change dans Chromium. Deux cadres du même genre avaient été oubliés
+  (`/simulateur`, `/guide-declarations`) : corrigés en § 9.eq.
 - **Mots collés dans les tableaux d'articles** (Safari, 15 articles). Le tableau demandait
   les chiffres tabulaires et retirait 0,097 em à chaque espace (§ 9.ed). La fonction `tnum`
   de la police remplace aussi l'espace par une espace plus large (645 unités au lieu de 450
@@ -7423,7 +7424,8 @@ défauts des vieux Safari, que le moteur installé ne montre pas, sont dits à p
   `-webkit-backdrop-filter` des utilitaires Tailwind) et deux variables internes du
   minificateur à côté de `color-scheme`. Aucun sélecteur ne change. Firefox est visé à 121
   et non 114 : en dessous (pas de `:has()`), le minificateur réécrivait six listes de
-  sélecteurs en `:is(…)`.
+  sélecteurs en `:is(…)`. Un de ces préfixes se voit dans Safari, et deux effets de bord
+  n'étaient pas dits : § 9.eq.
 - **Super-Net du simulateur : « 24044 € » dans Safari.** Les milliers sont séparés par une
   espace fine insécable (U+202F). Chromium n'applique aucun interlettrage à une suite de
   chiffres qui en contient une ; le moteur de Safari applique celui de `.aff` (-2,2 px à
@@ -7432,8 +7434,9 @@ défauts des vieux Safari, que le moteur installé ne montre pas, sont dits à p
   WebKit 177,6 → 190,7 px ; Chromium 189,5 → 189,5 px (capture identique au pixel). Seul
   effet dans Chromium : un Super-Net inférieur à 1 000 € perd son interlettrage négatif.
   Cherché ailleurs : aucun nombre à espace fine sous un interlettrage non nul dans le HTML
-  des 70 pages, ni dans les résultats du simulateur (deux plis ouverts), la calculette avec
-  une valeur saisie et le guide des déclarations.
+  des 70 pages, ni dans les résultats du simulateur (deux plis ouverts) et le guide des
+  déclarations. La calculette en a deux, que cette recherche (une valeur saisie, plis
+  fermés) n'avait pas vus : § 9.eq.
 - **Flèches natives des champs de montant du simulateur** (mineur, deux moteurs) : dessinées
   en permanence dans WebKitGTK, au survol dans Chromium, avec un pas d'un centime. Retirées
   (`appearance: textfield`). Hauteur des champs (50 px), saisie et calcul inchangés.
@@ -7450,7 +7453,8 @@ défauts des vieux Safari, que le moteur installé ne montre pas, sont dits à p
   d'attente, contrôles neutralisés (`pointer-events: none`), bouton atténué et une barre de
   progression qui n'apparaît qu'après 0,4 s. À reporter dans `simulateur.css`,
   `calculette.css` et `guide.css`. Restent hors habillage : la saisie au clavier, et la
-  durée de la fenêtre elle-même.
+  durée de la fenêtre elle-même. Rejoué en § 9.eq, avec deux réglages à faire avant de
+  l'appliquer.
 - *Un fichier JS de l'îlot qui ne charge pas* : l'îlot reste inerte toute la visite, sans
   message. `posthog-js` (30 % du JS de l'îlot) est une dépendance statique des trois
   outils par `src/lib/analytics.ts`. En habillage seul, on ne peut qu'afficher un message
@@ -7502,6 +7506,124 @@ vus. La face « Chiffres » repose sur le descripteur `font-feature-settings` de
 `@font-face` (Safari 10 selon MDN) : s'il manquait, les chiffres des tableaux
 reprendraient leur chasse ordinaire, sans autre effet. Firefox : non testé. La branche
 PAMC du simulateur (appel Supabase) n'est pas joignable d'ici.
+
+### 9.eq Phase 6 : corrections après les trois relectures (12 novembre 2026)
+
+Trois relecteurs ont repris § 9.eo et § 9.ep : invariance du HTML, régression dans
+Chromium, contre-visite dans WebKit. Chaque constat a été vérifié sur le code et le build
+avant d'être corrigé ou écarté. Mêmes règles : habillage seul, aucun mot, aucune ligne de
+logique, aucun JS de plus. Une seule correction de code ; le reste précise § 9.ep ou
+attend une décision.
+
+**Corrigé**
+
+- **Mascottes de `/simulateur` et de `/guide-declarations` trop hautes dans Safari**
+  (important, à partir de 1 024 px ; en dessous, elles ne sont pas affichées). § 9.ep
+  avait corrigé quatre cadres `aspect-ratio` hors du flux sur six. Les deux oubliés
+  gardaient le défaut : la mascotte du simulateur sortait entière au lieu d'être coupée à
+  mi-corps par l'îlot, celle du guide des déclarations dépassait de 95 px. `min-height: 0`
+  sur `.guide` (`simulateur.astro`) et `.gd .gd-guide` (`guide.css`). Reproduit dans
+  WebKit avant correction, puis mesuré après, à 1 440, 1 180 et 1 024 px : 190 × 339,5 →
+  190 × 177,5 et 264 × 288,6 → 264 × 193,8, les tailles de Chromium ; les hauteurs de page
+  ne changent pas. Barre de recherche resserrée (page défilée) : la mascotte du guide reste
+  cachée, comme avant. Dans Chromium, rien ne change (40 tranches identiques au pixel, voir
+  les preuves). Relevé dans WebKit sur les 70 pages, à 1 440, 1 024 et 447 px : plus aucun
+  cadre à rapport fixe dont la hauteur s'écarte de son rapport (108, 108 et 105 cadres
+  affichés).
+
+**Vérifié, laissé à la décision du propriétaire**
+
+- *Îlot pas encore hydraté* (important, « proposé, non fait » de § 9.ep). Le défaut est
+  toujours là, rejoué dans WebKit à 1 440 px, le JS retenu 3 s par fichier (hydratation
+  après 9,4 s) : « 30000 » tapé dans le premier champ est effacé à l'hydratation, le clic
+  sur une liste ne fait rien, le curseur reste une main. Non corrigé ici : la correction
+  proposée ajoute un état visible que personne n'a validé, et le signalement qui l'avait
+  motivée a été retiré. Elle a été rejouée par injection, même montage : le clic ne donne
+  plus le focus au champ, rien ne se tape, curseur d'attente, bouton à 75 %, barre visible
+  après 0,4 s ; à l'hydratation tout revient, champ et liste répondent ; la hauteur de page
+  ne bouge pas. Le clavier passe toujours (trois Tab atteignent un champ), comme annoncé.
+  Deux réglages à faire avant de l'appliquer : sur `/simulateur`, la barre (posée 10 px
+  au-dessus de l'îlot, devant lui) traverse la mascotte, qui se tient juste derrière ce
+  bord ; sur `/guide-declarations`, la boussole est à 1 900 px du haut (2 700 px à 447 px
+  de large) et son îlot, hydraté seulement quand il arrive à l'écran, porte encore `ssr` à
+  ce moment : le délai de 0,4 s étant écoulé depuis longtemps, la barre s'y afficherait
+  d'emblée à chaque arrivée, le temps de charger le JS, même sur un bon réseau. Non
+  rejoué : la calculette, Chromium, le toucher.
+- *Trois adresses de `/_astro` qui passeront de 200 à 404* (originaux des trois images de
+  blog retirées en § 9.eo) et *`CotisationsDetailChart.tsx` supprimé* contre la note qui
+  le gardait « à trancher » : le relecteur confirme qu'aucun fichier du build ni de l'arbre
+  de `main` ne les nomme, et que les 29 fichiers JS sont identiques octet pour octet. Rien
+  n'a été restauré. Pour revenir en arrière : `git checkout c9b383b -- <chemin>`.
+- *Pastille de l'en-tête à 92 %* à partir de 900 px : question de goût. Le relecteur la
+  juge pareille au premier écran, un peu plus pâle sur du contenu. Pour un verre plus
+  coloré : 88 à 90 % dans `da.css` (règle `.hd-bar` sous `@supports`).
+
+**Précisions sur § 9.ep**
+
+- *Noms des feuilles.* Les cibles du minificateur réécrivent toutes les feuilles : 14 sur
+  15 changent de nom par rapport à `main` (seule celle de la 404 garde le sien), pas
+  seulement la feuille commune. Les pages qu'aucune correction ne visait ont donc deux
+  adresses de feuille qui changent au lieu d'une ; rien d'autre ne change dans leur HTML.
+  Chaque visiteur retélécharge ces feuilles une fois.
+- *Deux effets de bord inertes du minificateur* dans la feuille commune :
+  `:where(.da .da-bloc)` reçoit deux variables que rien ne lit (`--lightningcss-light`,
+  `--lightningcss-dark`), et `.sig.ok::before` / `.sig.wait::before` portent
+  `-webkit-mask` deux fois de suite (le second n'était pas dit). Aucune valeur calculée ne
+  change.
+- *Un préfixe rendu qui se voit dans Safari* : avec `-webkit-box-decoration-break: clone`,
+  l'étiquette jaune « 120 € de moins par an que le mensuel » de l'accueil garde ses coins
+  ronds et ses marges sur chaque ligne quand elle passe sur deux lignes (320 px de large,
+  ou texte grossi). Avant, elle était coupée net à la césure. Conforme à Chromium.
+- *Nombres à espace fine sous un interlettrage.* La calculette en a deux, plis « Comprendre
+  ton RBS » et « Estimation de ton assiette sociale » ouverts (exemple « Remplaçant pur,
+  60 k€ ») : « 56 300 € » et « ≈ 41 662 € », 30 px, interlettrage de -0,75 px. Relevé
+  refait dans WebKit : l'espace des milliers y fait 3 px, le nombre reste lisible. Sans
+  rapport avec les -2,2 px du Super-Net ; laissé.
+- *Super-Net et texte grossi dans Safari.* Avec le zoom du texte seul (réglage de Safari
+  sur Mac, × 2) sur un écran étroit, le montant, plus large de 22 à 26 px depuis sa
+  correction, pousse la fiche jaune hors de l'écran (bord droit à 403 px pour 390 ; 381
+  avant ; mesures du relecteur). La page débordait déjà. Ce zoom multiplie la taille après
+  le `clamp()` : un plafond en `vw` n'y peut rien. Laissé : réglage rare, et le montant se
+  lit enfin.
+
+**Relevé par les relecteurs, hors de ce lot** (déjà là sur `main`, dans les deux moteurs
+sauf mention)
+
+- La bulle « Impôt sur ton activité » du simulateur affiche un taux non arrondi (« Taux
+  effectif : 3.7918173598553344% », `RegimeComparisonCards.tsx`). C'est du texte d'îlot :
+  pas touché pendant la période d'observation. À corriger après.
+- La calculette imprimée sort toute la page autour des résultats (en-tête, bloc d'essai,
+  FAQ, scène de fin, pied, bulle de chat) : 4 pages A4. Le site n'a aucune règle
+  d'impression qui masque l'en-tête ou le pied, sur aucune page : c'est un choix à faire,
+  pas un oubli de ce lot.
+- Texte grossi à 200 % par le zoom du texte seul de Safari : le menu de la pastille passe
+  sur deux lignes et en sort, le titre « HippoCalc » passe sous la fiche inclinée. Le zoom
+  ordinaire de la page n'est pas concerné.
+- Safari ne donne pas le focus au clavier à un tableau d'article qui défile de côté (6
+  tableaux sur 20 à 390 px) ; Chromium le fait de lui-même. Il faudrait un `tabindex` sur
+  le tableau : un changement de HTML, après la période d'observation.
+
+**Preuves** (12 novembre 2026 ; scripts de session, hors dépôt)
+
+- *Build* : deux feuilles changent, d'une déclaration chacune (`min-height:0`) : celle de
+  `/simulateur` (32 118 → 32 131 octets) et celle du guide des déclarations (48 469 →
+  48 482). La feuille commune garde son nom. Cinq pages changent, de la seule adresse de
+  leur feuille (`/simulateur`, `/guide-declarations` et ses trois pages filles). Tout le
+  reste du build est identique octet pour octet à celui de § 9.ep (JS : 29 fichiers).
+- *HTML* contre le build de `main` : 70 pages identiques au nom des feuilles près,
+  `/transmissions` identique octet pour octet ; 0 écart sur `title`, description,
+  canonique, `robots`, H1 à H6, texte, liens, JSON-LD, `data-ph`, `data-track`,
+  `data-landing-section` (194 021 mots, 7 272 liens, 1 475 titres, 257 blocs JSON-LD).
+- *Chromium, avant / après* : `/simulateur`, `/guide-declarations`, ses trois pages filles
+  et la calculette à 1 440, 1 024 et 390 px, pleine page : 40 tranches sur 40 identiques au
+  pixel, hauteurs de page égales, cadres à 190 × 177,5 et 264 × 193,8 avant comme après.
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages,
+  5 388 liens internes).
+
+**Non testé.** Safari réel (iPhone, iPad, Mac) : tout est mesuré dans WebKitGTK 2.52 sous
+Linux. Lighthouse : non relancé (une déclaration de plus dans deux feuilles de page).
+Firefox : non testé. Les mesures attribuées au relecteur (texte grossi, impression, focus
+des tableaux, étiquette sur deux lignes) n'ont pas été refaites ici.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

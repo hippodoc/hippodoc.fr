@@ -114,10 +114,12 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `sticky`) : la borner par `@media` à la plage où l'utilitaire ne s'applique pas.
   Une barre collante se double d'un `scroll-padding-top` sur `<html>` (sa hauteur),
   sinon ancres et focus au clavier arrivent dessous.
-- ⚠️ **Pièges du moteur de Safari** (§ 9.ep). Le site se conçoit dans Chromium : ces
+- ⚠️ **Pièges du moteur de Safari** (§ 9.ep, § 9.eq). Le site se conçoit dans Chromium : ces
   écarts ne s'y voient pas, ils se vérifient dans WebKit (« Vérification avant push »).
   Un cadre `aspect-ratio` posé hors du flux (`position: absolute`) y prend la hauteur de
-  son contenu : lui donner `min-height: 0` (mascottes de `/faq`, `/tarifs`, accueil).
+  son contenu : lui donner `min-height: 0` (les six cadres de mascotte : `/faq` deux
+  fois, `/tarifs`, accueil, `/simulateur`, `/guide-declarations` ; un nouveau cadre de ce
+  genre le reçoit d'office).
   `font-variant-numeric: tabular-nums` élargit aussi l'espace dans Chromium (fonction
   `tnum` de la police), pas dans Safari : ne jamais compenser par `word-spacing` ; pour
   des chiffres alignés au milieu de mots, la face « Google Sans Flex Chiffres » de
@@ -134,6 +136,8 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   sans soulignement). Ne pas les retirer. Après un changement de cibles, comparer les
   feuilles du build déclaration par déclaration : une cible sans `:has()` (Firefox avant
   121) fait réécrire les listes de sélecteurs en `:is(…)`, ce qui change leur poids.
+  Toucher aux cibles réécrit toutes les feuilles, pas seulement la commune : leurs noms
+  changent sur toutes les pages (§ 9.eq).
 - **Ce qui reste de Tailwind, et pourquoi** (§ 9.em). Tailwind n'habille plus aucune
   page. Il reste dans le build pour : son socle (preflight, sur lequel la DA est écrite) ;
   `src/components/ui/` (shadcn, partagé par les trois outils) et ses jetons `--background`,
