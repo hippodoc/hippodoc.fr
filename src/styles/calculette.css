@@ -20,8 +20,9 @@
      partir des classes réellement présentes). Ambre = attention, vert =
      favorable, bleu = information, rose = à éviter ; violet et ardoise
      rejoignent le ciel et l'encre de la DA.
-   - Tout est sous `@media screen` : l'impression (bouton « Imprimer ») garde
-     ses règles `print:` d'avant.
+   - Tout est sous `@media screen`, sauf le dernier bloc : la feuille
+     d'impression (`@media print`, § 9.es), qui complète les règles `print:`
+     des .tsx et ne s'applique qu'à cette page.
    - Corps en rem : ils suivent la taille de police réglée dans le navigateur.
    ========================================================================== */
 
@@ -327,4 +328,58 @@ astro-island[ssr] .calc-ile .calc-fiche:first-child::before { content: ""; displ
   .calc :is(.calc-fiche, .calc-resultats, .calc-barre, .calc-note, .calc-btn), .calc input, .calc button[role="combobox"], .calc.calc-bulle, .calc.calc-pop, .calc.calc-dialogue, .da [data-sonner-toast] { border: 1px solid CanvasText; }
 }
 
+}
+
+/* ==========================================================================
+   Impression (bouton « Imprimer » des résultats, ou Ctrl+P) : une feuille de
+   résultats, rien d'autre (MIGRATION.md § 9.es). Avant : 4 à 5 pages, avec
+   l'en-tête, la bannière cookies répétée sur chaque page, la FAQ, l'appel à
+   l'essai et le pied.
+
+   - Restent le titre, les résultats et l'avertissement de fin de page.
+   - Les .tsx cachaient déjà le formulaire, la barre collante et les boutons
+     d'action (`print:hidden`). Le reste de la page se retire ici ; les règles
+     de la page sont scopées (une classe et un attribut), d'où les
+     `!important`.
+   - Les résultats passent sur deux colonnes, corps à 13,5 px pour 16 (les
+     utilitaires sont en rem, ils suivent) ; aucune fiche n'est coupée
+     (`break-inside`), aucun libellé n'est tronqué. Les 14 exemples tiennent
+     sur une page A4, plis de détail ouverts.
+   - Les couleurs de la DA sont sous `@media screen` : l'impression garde la
+     palette des utilitaires, sans fond si le navigateur n'imprime pas les
+     arrière-plans.
+   Vérifier : `page.pdf()` et `page.emulateMedia({ media: 'print' })` de
+   Chromium, sur un exemple chargé, les deux plis de détail ouverts.
+   ========================================================================== */
+@media print {
+  @page { margin: 10mm 12mm; }
+  /* Hors de la feuille : en-tête, pied, bannière cookies, bulle de chat, avis éphémères, et de la page
+     tout ce qui n'est ni son titre, ni les résultats, ni l'avertissement de fin. */
+  .da .hd, .da .ft, #cookie-banner, #crisp-launcher, .crisp-client, [data-sonner-toaster],
+  .da .tete :is(.retour, .gages, .lead, .prive, .aide), .da .tete .hero > :not(.hero-txt),
+  .da .tete .essai, .da main > .band, .da .fin .horizon { display: none !important; }
+  /* Ni fond, ni décor, ni ombre : de l'encre sur du papier. */
+  html { font-size: 84.375% !important; }
+  html, .da, .da :is(main, .tete, .fin, .intro) { background: none !important; }
+  .da .fin { position: static !important; overflow: visible !important; border-radius: 0 !important; }
+  .da :is(.tete, .intro, .fin, .fin-copy, .hero, .wrap) { display: block !important; width: auto !important; max-width: none !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
+  .da .tete .aff { margin: 0 0 2mm !important; font-size: 16pt !important; line-height: 1.1 !important; }
+  .da .fin .avis { max-width: none !important; margin: 1mm 0 0 !important; padding: 1.5mm 0 0 !important; border-top: 0.5pt solid #9aa3b5; font-size: 7.5pt !important; line-height: 1.35 !important; text-align: left !important; color: #000 !important; break-inside: avoid; }
+  /* Les résultats, seuls (le formulaire et la barre collante portent déjà `print:hidden`). */
+  .calc-ile { display: block !important; margin: 0 !important; padding: 0 !important; max-width: none !important; }
+  .calc-ile :is(.calc-colonne, .calc-resultats) { position: static !important; overflow: visible !important; max-height: none !important; margin: 0 !important; padding: 0 !important; border: 0 !important; background: none !important; }
+  .calc-resultats * { box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; transition: none !important; animation: none !important; }
+  .calc-resultats { color: #000; }
+  /* Ce qui ne s'imprime pas : boutons de copie, flèches des plis. */
+  .calc-resultats button:not([aria-expanded], [role]), .calc-resultats button[aria-expanded] svg[class*="chevron"], .calc-resultats > .space-y-4 > .text-\[11px\]:last-child { display: none !important; }
+  /* Serré : deux colonnes de fiches, aucune fiche coupée, aucun libellé tronqué. */
+  .calc-resultats > .space-y-4 { columns: 2; column-gap: 7mm; }
+  .calc-resultats > .space-y-4 > * { margin: 0 0 2.5mm !important; break-inside: avoid; }
+  .calc-resultats > .space-y-4 > .flex-col { display: block !important; break-inside: auto; }
+  .calc-resultats > .space-y-4 > .flex-col > * { margin: 0 0 2.5mm; break-inside: avoid; }
+  .calc-resultats :is(.p-6, .p-4, .p-5) { padding: 2mm 3mm !important; }
+  .calc-resultats .pt-0 { padding-top: 0 !important; }
+  .calc-resultats :is(.py-2, .py-3, .py-2\.5) { padding-top: 1mm !important; padding-bottom: 1mm !important; }
+  .calc-resultats :is(.px-3, .px-4) { padding-left: 2mm !important; padding-right: 2mm !important; }
+  .calc-resultats :is(.truncate, .sm\:truncate) { overflow: visible !important; text-overflow: clip !important; white-space: normal !important; }
 }
