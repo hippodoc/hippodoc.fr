@@ -213,45 +213,52 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Outils (îlots React, hydratés à la vue)
 
-- ⚠️ **Un îlot ne répond qu'une fois hydraté** (§ 9.er). Entre l'affichage et l'hydratation,
-  l'outil a l'air prêt et ne répond pas ; tout ce qui allonge ce moment se paie en clics
-  perdus. Quatre règles, gardées par le contrôle 5 de `verify-site.mjs` :
-  - **Un îlot n'importe jamais `posthog-js`**, ni un module qui l'importe. Il émet par
-    `trackEvent()` de `src/lib/analytics.ts`, qui met en file tant que `PostHog.astro` n'a
-    pas donné l'instance (`brancherMesure()`, appelée une fois, après `init()` et
-    `register_once`) ; la file est rejouée dans l'ordre, après la page vue initiale.
-    Une seule instance de posthog-js, dans un fichier à lui (`codeSplitting`,
-    `astro.config.mjs` : fondu dans le script de `PostHog.astro`, il partirait avant la
-    première peinture sur toutes les pages).
-  - **Les fichiers des îlots sont préchargés** sur les trois pages d'outils : la page pose
-    `<template data-precharge-ilots="*"></template>` (ou une liste de noms de composants),
-    que `src/lib/precharge-ilots.mjs` remplace après le build par un
-    `<link rel="modulepreload">` par fichier (noms à empreinte lus dans le build, imports
-    statiques suivis). La balise se pose **dans le `<body>`**, après le premier écran du
-    HTML : dans le `<head>`, les fichiers disputent le débit aux feuilles de style et la
-    première peinture recule en 4G lente (mesuré : +0,35 à +0,6 s) ; avec
-    `fetchpriority="low"`, le navigateur les charge un par un et le gain fond. Sur
-    `/guide-declarations` : les fichiers de la recherche juste après son îlot, ceux de la
-    boussole en fin de page.
-  - **Un module lourd qui ne sert qu'après le premier geste se charge par `import()`** :
-    le bloc des résultats du simulateur (`RegimeComparisonCards`), le moteur de la
-    recherche du guide et ses données (`src/components/guide/rechercheGuide.ts`, 100 Ko
-    gzip, chargé juste après l'hydratation).
+- ⚠️ **Un îlot ne répond qu'une fois hydraté** (§ 9.er, § 9.et). Entre l'affichage et
+  l'hydratation, l'outil a l'air prêt et ne répond pas (0,1 à 0,2 s en local, 0,7 s en
+  4G rapide, 2,4 s en 4G lente). Ce moment se montre ; il ne se raccourcit pas sans coût :
+  - **Pas de `<link rel="modulepreload">` des fichiers des îlots**, dans le `<head>` comme
+    dans le `<body>` : essayé, mesuré, retiré (§ 9.et). Les fichiers partent en même temps
+    que les feuilles de style et la police, et l'hydratation passe avant le premier
+    affichage : en HTTP/2 la première peinture et le LCP reculaient de 0,2 s, en 4G rapide
+    comme en 4G lente ; en HTTP/1.1 la police arrivait après l'affichage.
+    `fetchpriority="low"` n'y change rien en HTTP/2 et perd le gain en HTTP/1.1. Avant d'y
+    revenir : mesurer sur un aperçu Vercel, en réseau réellement bridé (première peinture,
+    LCP, arrivée de la police, décalage de mise en page), pas par le Lighthouse simulé,
+    qui ne voit rien.
+  - **`src/lib/analytics.ts` importe `posthog-js`, comme avant** : l'en sortir (file
+    d'attente, instance donnée par `PostHog.astro`) ne gagne rien sans les préchargements
+    (mesuré, § 9.et), et changeait la mesure à la marge. Une seule instance, celle que
+    `PostHog.astro` initialise ; îlots et scripts de page émettent par `trackEvent()`.
+  - **Un module ne se charge par `import()` que s'il ne sert pas au premier geste** : le
+    bloc des résultats du simulateur (`RegimeComparisonCards`) l'est. Le moteur de la
+    recherche du guide et ses données (100 Ko gzip) restent un import statique de
+    `BoussoleSearchIsland.tsx` : chargés après l'hydratation, le champ prenait la saisie
+    0,2 s plus tôt mais la première liste sortait 0,75 s plus tard en 4G lente (un
+    aller-retour de plus, § 9.et).
   - **Tant que `<astro-island>` porte `ssr`, la feuille de l'outil le dit** (fin de
     `simulateur.css`, `calculette.css`, `guide.css`) : contrôles sans clic ni toucher
-    (`pointer-events: none`, et `interactivity: inert` là où le navigateur le lit),
-    curseur d'attente, et après 0,5 s un trait qui glisse (bord haut de la première fiche,
-    ou sous le champ de recherche). Les sélecteurs visent des balises (`button`, `input`,
-    `select`, `textarea`, `summary`, `label`, `[role="button"]`, `[tabindex]`) sous la
-    racine de l'îlot (`.sim-ile`, `.calc-ile`, `.gd-rech-champ`, `.gd-boussole`) : un
-    nouvel îlot d'outil reçoit le même bloc, avec ses propres noms d'images clés. La
-    boussole est neutralisée sans trait (elle s'hydrate plus tard que la page : un trait
-    s'y montrerait d'emblée). Astro retire `ssr` juste avant que React ait fini : il reste
-    quelques dizaines de millisecondes où un clic peut encore se perdre.
+    (`pointer-events: none`), curseur d'attente, et après 0,8 s un trait qui glisse (bord
+    haut de la première fiche, ou sous le champ de recherche), figé après 30 s, fixe sous
+    `prefers-reduced-motion`, à la couleur du texte en contrastes forcés. Les sélecteurs
+    visent des balises (`button`, `input`, `select`, `textarea`, `summary`, `label`,
+    `[role="button"]`, `[tabindex]`) sous la racine de l'îlot (`.sim-ile`, `.calc-ile`,
+    `.gd-rech-champ`, `.gd-boussole`) : un nouvel îlot d'outil reçoit le même bloc, avec
+    ses propres noms d'images clés. La boussole est neutralisée sans trait (elle s'hydrate
+    plus tard que la page : un trait s'y montrerait d'emblée).
+    ⚠️ **Jamais `interactivity: inert` (ni `inert`, ni `visibility`) dans ce bloc** : un
+    îlot `client:visible` qui n'est pas encore entré dans la fenêtre garde `ssr` sans
+    limite de temps ; ses contrôles sortaient du parcours clavier, de l'arbre
+    d'accessibilité et de la recherche dans la page (§ 9.et). Le clavier reste donc celui
+    d'avant pendant l'attente : Tab atteint les contrôles, une saisie y est effacée à
+    l'hydratation, « Entrée » envoie le formulaire en natif.
   Directives : simulateur, calculette et recherche en `client:visible` (`client:load` et
   `client:idle` ne gagnent rien de mesurable) ; la boussole en
   `client:visible={{ rootMargin: "100%" }}`, hydratée un écran avant d'entrer dans la
-  fenêtre. Pour mesurer : scripts de § 9.er (trois réseaux, cinq chargements à froid).
+  fenêtre (donc au chargement dans une fenêtre de 876 px de haut et plus, où elle est à
+  moins d'un écran : 35 Ko de plus au chargement, § 9.et). Pour mesurer un changement de
+  chargement : trois réseaux, cinq chargements à froid, **et le chargement sans geste**
+  (première peinture, LCP, arrivée de la police, décalage, page vue), en HTTP/1.1 et en
+  HTTP/2, côtés alternés ; le Lighthouse simulé seul ne suffit pas (§ 9.et).
 - **Poser une aide** (bulle « i » ou « ? », § 9.es) : `Tooltip`, `TooltipTrigger` et
   `TooltipContent` de `src/components/ui/tooltip.tsx`, ou `PremiumTooltip` dans le
   simulateur (tiroir sous 768 px, bulle au-dessus). Jamais `@radix-ui/react-tooltip` nu :
@@ -294,9 +301,11 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Impression (§ 9.es) : le dernier bloc de la feuille, `@media print`, le seul hors de
   `@media screen`. Il retire tout ce qui n'est ni le titre, ni les résultats, ni
   l'avertissement de fin, et met les résultats sur deux colonnes : les quatorze exemples
-  tiennent sur une page A4. Un nouveau bloc de la page (section, bandeau, élément fixe)
-  s'ajoute à sa liste, sinon il s'imprime ; les règles de la page sont scopées, d'où ses
-  `!important`. Vérifier par `page.pdf()` (nombre de pages) et
+  tiennent sur une page A4 dans l'état par défaut, plis de détail ouverts compris (deux
+  pages pour les plus longs avec « Tout afficher », ou en format Letter). Un nouveau bloc
+  de la page (section, bandeau, élément fixe) s'ajoute à sa liste, sinon il s'imprime
+  (une bulle d'aide ou une liste restée ouverte y est : `[data-radix-popper-content-wrapper]`) ;
+  les règles de la page sont scopées, d'où ses `!important`. Vérifier par `page.pdf()` (nombre de pages) et
   `page.emulateMedia({ media: 'print' })`.
 - `/guide-declarations` → îlots `BoussoleWizard` et `BoussoleSearchIsland` + sections
   statiques, données `src/data/boussoleData.ts`. Habillage DA (§ 9.el) : classes `gd-*` de
@@ -313,10 +322,6 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 - **PostHog** (`src/components/PostHog.astro`) : clé projet
   `phc_x3JYWa7EjhuuwVVBLyks74ud58ZmUppaC666QkmTUXox`, proxy first-party
   `https://t.hippodoc.fr`, persistance `memory` → `localStorage+cookie` après consentement.
-- **Îlots et scripts de page** : `trackEvent()` de `src/lib/analytics.ts`, jamais
-  `posthog-js` en direct (voir « Outils », § 9.er). Un événement émis avant que la
-  bibliothèque soit là part dès qu'elle arrive, même nom, mêmes propriétés ; un clic fait
-  dans un îlot avant ce moment n'a pas d'autocapture.
 - **Instrumentation** : attributs `data-ph="landing_*"` (autocapture) et `data-track-*`
   sur les CTA — suivre la convention de nommage de la SPA source pour ne pas casser les
   insights PostHog existants.
