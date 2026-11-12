@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { caseopedia, reglesOr, questionsFAQ, bugsAdmin, pepitesCachees, zonesGrises, messagesTypes, calendrierAnnuel, profils } from '@/data/boussoleData';
-import { GLOSSAIRE_DECLARATIONS } from '@/data/glossaireDeclarationsData';
+import type { ResultatRecherche } from './rechercheGuide';
 
 /**
  * Portage de src/pages/guide-declarations/components/BoussoleSearch.tsx (SPA
@@ -14,6 +13,11 @@ import { GLOSSAIRE_DECLARATIONS } from '@/data/glossaireDeclarationsData';
  * existe forcément dans le HTML statique de la page (rendu server-side).
  * Reste identique : moteur de recherche (mêmes champs indexés), debounce
  * 150ms, mode compact au scroll.
+ *
+ * Le moteur vit dans `rechercheGuide.ts`, chargé par `import()` après
+ * l'hydratation (MIGRATION.md § 9.er) : l'îlot n'attend plus les données du guide
+ * (100 Ko gzip) pour répondre. Tant que le module n'est pas là, une frappe ne donne
+ * ni résultat ni « Aucun résultat » ; la liste sort dès son arrivée.
  *
  * DA 2026 (phase 5d, MIGRATION.md § 9.el) : seules les classes changent. La barre
  * reste collante à 70 px du haut, sous la pastille de l'en-tête, sur toute la
@@ -30,65 +34,22 @@ export function BoussoleSearchIsland() {
     return () => clearTimeout(t);
   }, [value]);
 
-  const results = useMemo(() => {
-    if (!debounced || debounced.length < 2) return [];
-    const q = debounced.toLowerCase();
-    const items: { type: string; title: string; sectionId: string; itemId?: string }[] = [];
+  // Le moteur et ses données (100 Ko gzip) arrivent après l'hydratation, pas avant :
+  // le champ répond tout de suite, les résultats suivent dès que le module est là
+  // (src/components/guide/rechercheGuide.ts, MIGRATION.md § 9.er).
+  const [chercher, setChercher] = useState<null | ((q: string) => ResultatRecherche[])>(null);
+  useEffect(() => {
+    let monte = true;
+    import('./rechercheGuide')
+      .then((m) => { if (monte) setChercher(() => m.chercher); })
+      .catch(() => { /* réseau : la recherche reste vide, la page se lit sans elle */ });
+    return () => { monte = false; };
+  }, []);
 
-    for (const c of caseopedia) {
-      if (`${c.code} ${c.nom} ${c.description} ${c.conseil || ''} ${c.erreurFrequente || ''}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Case', title: `${c.code} — ${c.nom}`, sectionId: 'cases', itemId: `case-${c.code}` });
-      }
-    }
-    for (const r of reglesOr) {
-      if (`${r.titre} ${r.description} ${r.exemple || ''}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Fiche', title: r.titre, sectionId: 'fiches', itemId: `regle-${r.id}` });
-      }
-    }
-    for (const qr of questionsFAQ) {
-      if (`${qr.question} ${qr.reponse}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Question', title: qr.question, sectionId: 'questions', itemId: `question-${qr.id}` });
-      }
-    }
-    for (const b of bugsAdmin) {
-      if (`${b.titre} ${b.symptomes.join(' ')} ${b.actionsPossibles?.join(' ') || ''}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Problème', title: b.titre, sectionId: 'problemes', itemId: `bug-${b.id}` });
-      }
-    }
-    for (const p of pepitesCachees) {
-      if (`${p.titre} ${p.description}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Fiche', title: p.titre, sectionId: 'fiches', itemId: `pepite-${p.id}` });
-      }
-    }
-    for (const z of zonesGrises) {
-      if (`${z.sujet} ${z.conclusion} ${z.positionA || ''} ${z.positionB || ''}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Fiche', title: z.sujet, sectionId: 'fiches', itemId: `zone-${z.id}` });
-      }
-    }
-    for (const m of messagesTypes) {
-      if (`${m.destinataire} ${m.objet} ${m.corps || ''}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Courrier', title: `${m.destinataire} — ${m.objet}`, sectionId: 'problemes', itemId: `msg-${m.id}` });
-      }
-    }
-    for (const g of GLOSSAIRE_DECLARATIONS) {
-      if (`${g.id} ${g.term} ${g.shortDef} ${g.longDef || ''}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Glossaire', title: g.term, sectionId: 'glossaire', itemId: `glossaire-term-${g.id}` });
-      }
-    }
-    for (const mois of calendrierAnnuel) {
-      for (const d of mois.demarches) {
-        if (`${d.titre} ${d.description}`.toLowerCase().includes(q)) {
-          items.push({ type: 'Calendrier', title: `${mois.mois} — ${d.titre}`, sectionId: 'calendrier' });
-        }
-      }
-    }
-    for (const p of profils) {
-      if (`${p.label} ${p.conseilsCles.join(' ')}`.toLowerCase().includes(q)) {
-        items.push({ type: 'Profil', title: p.label, sectionId: 'profils' });
-      }
-    }
-    return items.slice(0, 10);
-  }, [debounced]);
+  const results = useMemo(() => {
+    if (!chercher || !debounced || debounced.length < 2) return [];
+    return chercher(debounced);
+  }, [debounced, chercher]);
 
   // Compact mode after scroll for less visual weight
   const [compact, setCompact] = useState(false);
@@ -126,7 +87,7 @@ export function BoussoleSearchIsland() {
           />
           {value && (<button type="button" aria-label="Effacer la recherche" onClick={() => setValue('')} className="gd-rech-effacer"><X className="gd-ic" /></button>)}
           <div className="gd-sr" aria-live="polite" role="status">
-            {debounced && debounced.length >= 2
+            {chercher && debounced && debounced.length >= 2
               ? results.length === 0
                 ? 'Aucun résultat'
                 : `${results.length} résultat${results.length > 1 ? 's' : ''} trouvé${results.length > 1 ? 's' : ''}`

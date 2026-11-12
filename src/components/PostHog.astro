@@ -27,6 +27,7 @@
 ---
 <script>
   import posthog from 'posthog-js';
+  import { brancherMesure } from '@/lib/analytics';
   import { creerEmetteur } from '@/lib/analytics-commun';
   import { caviarderEvenement } from '@/lib/caviardage-url';
 
@@ -191,6 +192,15 @@
     }
   }
   enregistrerPremierContact();
+
+  /**
+   * Les îlots (simulateur, calculette, boussole) et les scripts de page émettent par
+   * `trackEvent()` (`src/lib/analytics.ts`), qui n'importe plus posthog-js : les
+   * outils s'hydratent sans attendre ce fichier (§ 9.er). C'est ICI que l'instance
+   * leur est donnée, la même et la seule. Après `register_once` : les événements
+   * rejoués portent les `hd_*`, comme ceux d'avant.
+   */
+  brancherMesure(posthog);
 
   /**
    * Droit d'opposition, exercé depuis `/politique-confidentialite`.

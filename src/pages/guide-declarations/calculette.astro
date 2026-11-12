@@ -302,6 +302,10 @@ const flecheGauche = `<span class="fl gauche"><span class="sr">←</span>${dessi
     </section>
   </main>
   <Footer />
+  {/* Remplacé au build par un <link rel="modulepreload"> par fichier JS des îlots de la
+      page (src/lib/precharge-ilots.mjs). En fin de page, pas dans le <head> : les feuilles
+      de style passent d'abord (MIGRATION.md § 9.er). */}
+  <template data-precharge-ilots="*"></template>
 
   <script>
     // Analytics du CTA marketing statique (hors îlot React) — même événement que

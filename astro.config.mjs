@@ -6,6 +6,7 @@ import vercel from '@astrojs/vercel';
 import { unified } from '@astrojs/markdown-remark';
 import remarkDirective from 'remark-directive';
 import { remarkCallouts } from './src/lib/remark-callouts.mjs';
+import { prechargeIlots } from './src/lib/precharge-ilots.mjs';
 import blogMeta from './src/generated/blog-meta.json' with { type: 'json' };
 import { STATIC_LASTMOD } from './src/lib/pages-lastmod.ts';
 import { seriesPath } from './src/lib/blog-series-slugs.ts';
@@ -58,6 +59,10 @@ export default defineConfig({
         return item;
       },
     }),
+    // <link rel="modulepreload"> des fichiers des îlots, sur les pages qui le
+    // demandent (les trois outils) : écrit après le build, d'après les noms à
+    // empreinte que le build vient de produire (MIGRATION.md § 9.er).
+    prechargeIlots(),
   ],
   markdown: {
     // Astro 7 : le processeur unified (remark) n'est plus celui par défaut ;
@@ -86,6 +91,24 @@ export default defineConfig({
       // import de package.json : seule la chaîne de version entre dans le bundle
       // client, pas la liste des dépendances.
       __APP_VERSION__: JSON.stringify(pkg.version),
+    },
+    environments: {
+      client: {
+        build: {
+          rolldownOptions: {
+            output: {
+              /* posthog-js garde son fichier à lui (`module.*.js`), comme avant. Depuis
+                 que les îlots ne l'importent plus (§ 9.er), le bundler le fondait dans
+                 le script de PostHog.astro : ses 76 Ko partaient un aller-retour plus
+                 tôt, avant la première peinture, sur les 70 pages. Séparé, le script
+                 d'entrée reste à 3 Ko et la bibliothèque part après lui. */
+              codeSplitting: {
+                groups: [{ name: 'module', test: /node_modules[\\/]posthog-js[\\/]/ }],
+              },
+            },
+          },
+        },
+      },
     },
     resolve: {
       alias: [

@@ -148,13 +148,17 @@ const webPageSchema = {
   <main class="gd">
     <HeroSection />
     <BoussoleSearchIsland client:visible />
+    {/* Remplacé au build par un <link rel="modulepreload"> par fichier JS de la
+        recherche (src/lib/precharge-ilots.mjs, MIGRATION.md § 9.er). Ici et pas dans le
+        <head> : à cet endroit du HTML, les feuilles de style ont pris leur avance. */}
+    <template data-precharge-ilots="BoussoleSearchIsland"></template>
     <SousPagesNav />
 
     {/* Zone 1 : Commence ici */}
     <div class="band da-bloc">
       <SectionDivider step={1} label="Commence ici" hint="Comprends · identifie-toi · checklist" compact />
       <FiscalSocialPrimer />
-      <BoussoleWizard client:visible />
+      <BoussoleWizard client:visible={{ rootMargin: "100%" }} />
     </div>
 
     {/* Zone 2 : Référence rapide */}
@@ -203,4 +207,8 @@ const webPageSchema = {
   </main>
 
   <Footer />
+  {/* Les fichiers de la boussole, eux, en fin de page : elle est plus bas, hydratée à
+      l'approche ; ses fichiers (dont les données du guide, 100 Ko) ne disputent pas le
+      débit à la recherche et sont là quand le visiteur arrive (§ 9.er). */}
+  <template data-precharge-ilots="BoussoleWizard"></template>
 </BaseLayout>
