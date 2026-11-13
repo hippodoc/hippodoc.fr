@@ -122,10 +122,43 @@
 .fiche .infos .auteur:hover { color: var(--brand); text-decoration-color: currentColor; }
 /* Mise à jour : la date de publication reste dans le texte, la ligne n'affiche que la plus récente. */
 .fiche .infos.a-jour .publie { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.fiche .illustree .infos { padding-right: 84px; }
+.fiche .illustree .infos { padding-right: 96px; }
 
-/* La couverture en vignette : l'affiche reste, en petit, posée sur le ciel. */
-.fiche .couverture { box-sizing: border-box; justify-self: end; align-self: end; width: 64px; height: auto; aspect-ratio: 4 / 5; margin-top: 12px; margin-bottom: 16px; object-fit: cover; object-position: top; border: 3px solid var(--paper); border-radius: 12px; box-shadow: var(--clay-sm); }
+/* La couverture en vignette (§ 9.fj, § 9.fo) : l'affiche, en petit, posée sur le ciel. Un bouton (la
+   cible de l'appui, sans fond ni bord) autour de l'image, qui porte le cadre. Agrandie là où c'était
+   gratuit, mesuré sur les 48 articles (la première ligne du texte descend de 16 px au plus) : 76 px au
+   téléphone (64 avant, +15 px), 88 px de 560 à 699 px, 144 px à partir de 1 360 px ; 120 et 132 px
+   inchangés entre les deux (un titre de plus passait alors sur une ligne de plus). Règle des affiches :
+   l'affiche est entière, calée en haut, dans le cadre 4:5 ; le vide d'une affiche plus étroite prend
+   les couleurs de ses bords (`--bord-g`, `--bord-d`, posées en style à la construction). */
+.fiche .couverture { position: relative; display: block; justify-self: end; align-self: end; margin-top: 12px; margin-bottom: 16px; padding: 0; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; }
+.fiche .couverture img { display: block; box-sizing: border-box; width: 76px; height: auto; min-height: 0; aspect-ratio: 4 / 5; object-fit: contain; object-position: 50% 0; border: 3px solid var(--paper); border-radius: inherit; box-shadow: var(--clay-sm); background: linear-gradient(var(--bord-g)) left / 50.5% 100% no-repeat, linear-gradient(var(--bord-d)) right / 50.5% 100% no-repeat, var(--sky-soft); }
+/* Le signe qu'on peut agrandir : une pastille de papier et sa loupe, au coin bas de la vignette (le titre de
+   l'affiche est en haut), visible sans survol (au doigt il n'y en a pas). Seulement là où le popover existe :
+   ailleurs, la vignette reste une vignette, sans promesse. */
+@supports selector(:popover-open) {
+  .fiche .couverture { cursor: zoom-in; }
+  .fiche .couverture::after { content: ""; position: absolute; right: -7px; bottom: -7px; width: 26px; height: 26px; border-radius: 50%; background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230059B3' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='m20 20-4.8-4.8M10.5 7.8v5.4M7.8 10.5h5.4'/%3E%3C/svg%3E") center / 15px no-repeat; box-shadow: 0 0 0 1px var(--line), 0 3px 8px rgba(13, 40, 105, 0.2); }
+  .fiche .couverture:hover::after { background-color: var(--sky-soft); }
+}
+
+/* L'affiche en grand (§ 9.fo) : un popover natif, ouvert par la vignette, sans script. Fermé, il n'est pas
+   dessiné (et sans prise en charge du popover, il reste caché : la première règle). Ouvert : l'affiche
+   entière, la plus grande qui tient dans l'écran (largeur et hauteur de la fenêtre, rapport `--r` écrit au
+   rendu), centrée sous une bande de 52 px où se tient « Fermer ». La boîte du popover est l'image seule :
+   un appui à côté tombe sur le fond, et le ferme (fermeture « auto »). Le fond, sombre, est pris à l'encre
+   de la DA (écrit en clair : un ::backdrop ne lit pas toujours les jetons de la page). */
+.fiche .grande { display: none; }
+.fiche .grande:popover-open { --zg: 16px; --focus: #FFFFFF; display: block; position: fixed; inset: calc(var(--zg) + 52px) var(--zg) var(--zg); box-sizing: border-box; width: fit-content; height: fit-content; max-width: none; max-height: none; margin: auto; padding: 0; border: 0; overflow: visible; background: none; color: var(--ink); }
+.fiche .grande::backdrop { background: rgba(11, 23, 52, 0.9); }
+.fiche .grande img { display: block; width: min(100vw - 2 * var(--zg), (100vh - 2 * var(--zg) - 52px) * var(--r)); width: min(100vw - 2 * var(--zg), (100dvh - 2 * var(--zg) - 52px) * var(--r)); height: auto; max-width: none; border-radius: 16px; background: linear-gradient(var(--bord-g)) left / 50.5% 100% no-repeat, linear-gradient(var(--bord-d)) right / 50.5% 100% no-repeat, var(--sky-soft); box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55); }
+.fiche .grande-fermer { position: absolute; right: 0; bottom: calc(100% + 8px); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: var(--paper); color: var(--ink); cursor: pointer; box-shadow: var(--clay-sm); -webkit-tap-highlight-color: transparent; }
+.fiche .grande-fermer:hover { background: var(--sky-soft); }
+/* Au doigt, sous 960 px : la page ne défile plus sous l'affiche (comme sous le tiroir du menu). À la souris, la
+   barre de défilement reste : la retirer referait la mise en page. */
+@media (max-width: 959.98px) and (pointer: coarse) {
+  html:has(.fiche .grande:popover-open) { overflow: hidden; }
+}
 
 /* ───────── Le sommaire ─────────
    Téléphone et tablette : une ligne « Sommaire » en pli natif, en tête de la feuille. Ordinateur : le rail. */
@@ -606,7 +639,8 @@
 @media (min-width: 560px) {
   .fiche { --gut: clamp(24px, 6vw, 48px); }
   .fiche .infos { padding-right: 96px; }
-  .fiche .couverture { width: 76px; }
+  .fiche .illustree .infos { padding-right: 108px; }
+  .fiche .couverture img { width: 88px; }
   .fiche .essai { padding: 20px 24px 16px; }
 }
 /* Tablette : une colonne de 624 px, centrée. */
@@ -621,7 +655,10 @@
   .fiche .corps :is(h2, h3).t-encadre { font-size: 1.125rem; }
   .fiche .infos { font-size: 0.9375rem; }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 150px; }
-  .fiche .couverture { grid-row: 2 / 5; align-self: center; width: 120px; margin: 0; border-width: 4px; border-radius: 14px; box-shadow: var(--clay); }
+  .fiche .couverture { grid-row: 2 / 5; align-self: center; margin: 0; border-radius: 14px; }
+  .fiche .couverture img { width: 120px; border-width: 4px; box-shadow: var(--clay); }
+  .fiche .couverture::after { right: -9px; bottom: -9px; width: 32px; height: 32px; background-size: 18px; }
+  .fiche .grande:popover-open { --zg: 32px; }
   .fiche .questions h2, .fiche .connexes h2 { font-size: 1.5rem; }
   .fiche .som { margin-bottom: 26px; }
   .fiche .corps .callout { padding: 22px 24px; }
@@ -647,7 +684,8 @@
   .fiche .marques { margin-bottom: 14px; }
   .fiche .infos { margin-top: 20px; margin-bottom: 36px; }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 170px; }
-  .fiche .couverture { width: 132px; border-radius: 16px; }
+  .fiche .couverture { border-radius: 16px; }
+  .fiche .couverture img { width: 132px; }
   .fiche .corps h2 { --t: 1.8125rem; margin-top: 64px; }
   .fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.5rem; margin-top: 44px; }
   /* Encadrés : 17 px pour un corps de 19 (un vrai cran ; plus bas, ils suivent le corps) ; « L'essentiel »,
@@ -753,8 +791,10 @@
   }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 0; }
   .fiche .aff { --corps: 3rem; }
-  /* La vignette : son bas sur celui de la ligne de confiance (même marge basse). */
+  /* La vignette : son bas sur celui de la ligne de confiance (même marge basse). 144 px : la place libre
+     au-dessus d'elle, à côté de la série et du titre (le seul titre d'une ligne descend de 15 px). */
   .fiche .couverture { grid-column: droite; justify-self: start; align-self: end; margin-bottom: 36px; }
+  .fiche .couverture img { width: 144px; }
   /* La carte d'essai : collante, dans la colonne de droite ; au repos, son haut sur celui de « L'essentiel »,
      collée, sur celui du rail. La mascotte sur sa ligne, au-dessus du titre : dans 248 px, un titre qui
      l'entourait sortait en escalier, des mots seuls sur une ligne. */
@@ -774,11 +814,13 @@
 
 /* Contrastes forcés : un contour rend leur forme aux cartes, les dessins gardent leur couleur. */
 @media (forced-colors: active) {
-  .fiche .serie, .fiche .couverture, .fiche .essai, .fiche .liste, .fiche .cartes, .fiche .reseau,
+  .fiche .serie, .fiche .couverture img, .fiche .essai, .fiche .liste, .fiche .cartes, .fiche .reseau,
   .fiche .corps .callout, .fiche .corps .tbl, .fiche .corps :is(h2, h3).t-encadre { border: 1px solid CanvasText; }
   .fiche::before, .fiche::after, .fiche .article::before { display: none; }
-  /* Articles connexes : les bandes de bord prolongent l'affiche (aucun texte) ; elles restent, comme l'image. */
-  .fiche .carte img { forced-color-adjust: none; }
+  /* Affiches (vignette, en grand, articles connexes) : les bandes de bord prolongent l'affiche (aucun texte) ;
+     elles restent, comme l'image, et la pastille de la loupe garde son dessin. */
+  .fiche .carte img, .fiche .couverture img, .fiche .grande img, .fiche .couverture::after { forced-color-adjust: none; }
+  .fiche .grande-fermer { border: 1px solid ButtonText; }
   .fiche .corps li::before, .fiche .corps li::after, .fiche .infos > *::before, .fiche .corps > h2[data-np]::before { forced-color-adjust: none; }
   /* Sauf ce qui tomberait sous le contraste dans ce mode : la croix « non » et le repère prennent les couleurs
      du système ; la partie en cours du rail (une ombre, retirée ici) prend un trait. */
@@ -796,6 +838,6 @@
 }
 
 @media print {
-  .fiche .som, .fiche .som-pastille, .fiche .lecture-fil, .fiche .essai, .fiche .partage, .fiche .remonter { display: none !important; }
+  .fiche .som, .fiche .som-pastille, .fiche .lecture-fil, .fiche .essai, .fiche .partage, .fiche .remonter, .fiche .grande, .fiche .couverture::after { display: none !important; }
   .fiche .corps .sources-pli::details-content { content-visibility: visible; }
 }
