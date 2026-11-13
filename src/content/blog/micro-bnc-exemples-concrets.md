@@ -70,10 +70,12 @@ Le [plafond de 83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits
 
 **3. Impôt**\
 • Base imposable = 50 000 × 66 % = **33 000 €**\
-• Barème 2026, applicable aux revenus 2025 (1 part) :\
-  - 0 % jusqu'à 11 600 € → **0 €**\
-  - 11 % sur 17 979 € → **1 978 €**\
-  - 30 % sur 3 421 € → **1 026 €**\
+• Barème 2026, applicable aux revenus 2025 (1 part) :
+
+  - 0 % jusqu'à 11 600 € → **0 €**
+  - 11 % sur 17 979 € → **1 978 €**
+  - 30 % sur 3 421 € → **1 026 €**
+
 • → **Total IR ≈ 3 004 €**
 
 ✅ **Super net : 36 526 − 3 004 = 33 522 €** (67,0 % du CA)
@@ -99,10 +101,12 @@ Le [plafond de 83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits
 
 **3. Impôt**\
 • Base imposable = 75 000 × 66 % = **49 500 €**\
-• Barème 2026, applicable aux revenus 2025 (1 part) :\
-  - 0 % jusqu'à 11 600 € → **0 €**\
-  - 11 % sur 17 979 € → **1 978 €**\
-  - 30 % sur 19 921 € → **5 976 €**\
+• Barème 2026, applicable aux revenus 2025 (1 part) :
+
+  - 0 % jusqu'à 11 600 € → **0 €**
+  - 11 % sur 17 979 € → **1 978 €**
+  - 30 % sur 19 921 € → **5 976 €**
+
 • → **Total IR ≈ 7 954 €**
 
 ✅ **Super net : 56 377 − 7 954 = 48 423 €** (64,6 % du CA)

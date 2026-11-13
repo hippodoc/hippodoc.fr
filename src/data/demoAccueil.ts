@@ -9,13 +9,13 @@
  *
  * Ce ne sont pas les chiffres d'un vrai compte. La page ne le dit plus (mention
  * « Compte de démonstration » retirée à la demande du propriétaire, MIGRATION.md
- * § 9.fj : un aperçu d'application se lit comme tel).
+ * § 9.fn : un aperçu d'application se lit comme tel).
  * Seule l'arithmétique est contrôlée : la vraisemblance fiscale du jeu « année »
  * (cotisations et impôt pour ce niveau d'honoraires) n'a pas été recoupée avec
  * le simulateur.
  */
 
-/** L'année du compte (2026 depuis § 9.fj, 2025 avant) : ce qui a été encaissé, et ce qui en part. */
+/** L'année du compte (2026 depuis § 9.fn, 2025 avant) : ce qui a été encaissé, et ce qui en part. */
 export const DEMO_ANNEE = {
   an: 2026,
   encaisse: 90005,

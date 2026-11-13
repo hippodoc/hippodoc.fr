@@ -348,9 +348,9 @@ if (!srcsetPrecharge || !srcsetAvif) {
 // - `id="sous-la-surface"` est la cible du lien « Comment ça marche » du menu ;
 // - les quatre vues doivent toutes être dans le HTML (quatre radios, dont une
 //   seule cochée, et quatre panneaux) : une vue générée à la demande ne serait lue
-//   par aucun moteur (vue « déclaration » ajoutée en § 9.fj) ;
+//   par aucun moteur (vue « déclaration » ajoutée en § 9.fn) ;
 // - la mention « Compte de démonstration », exigée jusqu'au 13 novembre 2026, a
-//   été retirée à la demande du propriétaire (§ 9.fj) : plus de contrôle.
+//   été retirée à la demande du propriétaire (§ 9.fn) : plus de contrôle.
 const sousLaSurface = accueil.match(/<section\b[^>]*data-landing-section="features"[\s\S]*?<\/section>/)?.[0] ?? '';
 if (!/^<section\b[^>]*\sid="sous-la-surface"/.test(sousLaSurface)) {
   fail('accueil : la section data-landing-section="features" ne porte plus id="sous-la-surface"');

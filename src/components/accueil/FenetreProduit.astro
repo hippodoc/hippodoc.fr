@@ -1,7 +1,7 @@
 ---
 /**
  * La fenêtre produit de l'accueil : quatre vues de l'application, à onglets
- * (DA 2026, phase 3, MIGRATION.md § 9 ; vue « déclaration » ajoutée en § 9.fj).
+ * (DA 2026, phase 3, MIGRATION.md § 9 ; vue « déclaration » ajoutée en § 9.fn).
  * Zéro JS.
  *
  * - Onglets : quatre boutons radio dans un <fieldset> (légende masquée à l'œil).
@@ -13,7 +13,7 @@
  * - Aucune balise de titre ici : la fenêtre précède le <h2> du bloc.
  * - Chiffres : src/data/demoAccueil.ts, un seul jeu pour toute l'accueil. La
  *   page ne porte plus de mention « Compte de démonstration » (retirée à la
- *   demande du propriétaire, § 9.fj : un aperçu se lit comme tel).
+ *   demande du propriétaire, § 9.fn : un aperçu se lit comme tel).
  * - Vue « déclaration » : les cases que l'application pré-remplit pour un
  *   remplaçant en micro-BNC, au PAMC, 100 % conventionné (le cas de
  *   l'exemple de la fiche RO-014 du guide des déclarations) : 5HQ = DSCS = DSAV = encaissé,
@@ -239,7 +239,7 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
   .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
   .tab:hover { color: var(--ink); }
   .tab .long { display: none; }
-  /* Quatre onglets sur téléphone (§ 9.fj) : chacun prend la place de son
+  /* Quatre onglets sur téléphone (§ 9.fn) : chacun prend la place de son
      libellé, sur une ligne de 320 à 719 px (mesuré à 320, 360, 390 et 430 px). */
   @media (max-width: 719px) { .tab { flex: 1 1 auto; padding: 4px 8px; } }
   @media (max-width: 409px) { .stage-bar { gap: 2px; padding: 8px 6px; } .tab { padding: 4px 6px; font-size: 14px; } }

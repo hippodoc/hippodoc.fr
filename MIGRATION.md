@@ -10277,7 +10277,592 @@ le visage d'une vingtaine de pixels.
 
 **Fichiers** : `src/components/accueil/Hero.astro`, `MIGRATION.md`.
 
-### 9.fj Fenêtre produit : sans « Compte de démonstration », année 2026, un onglet « Tes déclarations » (13 novembre 2026)
+### 9.fj Blog : nouveau système de lecture, la page d'article (13 novembre 2026)
+
+Demande du propriétaire : « un nouveau système de lecture, digne des meilleures références en
+design éditorial, en web design et en SEO. Hyper agréable, aéré, moderne, harmonieux, au niveau de
+notre DA 2026. » Un audit (usage PostHog, recensement du Markdown, lecteur, designer, SEO,
+références), trois directions maquettées et des planches de décision ont précédé. Le propriétaire
+a répondu « je te fais full confiance, je veux tes choix » : les choix ci-dessous sont décidés.
+Les maquettes et l'audit ne sont pas dans le dépôt. `/blog` et les séries : § 9.fk ; images de
+partage : § 9.fl ; corrections après six relectures, le même jour : § 9.fm (ce qui change ici y
+est dit ; les comptes et les mesures de cette section sont ceux d'avant les corrections, sauf
+mention).
+
+**Ce que l'audit a mesuré sur `main`** (téléphone médian des lecteurs : 393 × 692 px ; ordinateur
+médian : 1 512 × 800 px, PostHog sur 90 jours) :
+
+- Aucun des 48 articles ne montrait une ligne de texte au premier écran du téléphone : la première
+  ligne arrivait à 1 101 px en médiane (1 681 au plus), après le fil d'Ariane, « Retour au blog »,
+  le sommaire replié, le titre et l'affiche (les trois quarts d'un écran). Sur ordinateur, 885 px.
+- Après le texte, 4,1 écrans de téléphone en médiane avant le pied (sept blocs de même poids).
+- Sommaire : 0 ouverture sur 494 lectures ; absent des 29 articles courts ; aucun repère de la
+  partie en cours.
+- 1 074 émojis dans les corps (192 différents), dans 475 titres sur 583, sortis dans les émojis
+  colorés du système (la police n'en a pas) ; 213 fausses listes (788 lignes de paragraphe qui
+  commencent par un émoji ou un signe, sans retrait au retour à la ligne).
+- Les 186 encadrés (17,9 % des mots des articles) étaient des `<aside>` : le mode lecture de
+  Firefox et trafilatura (courant dans les outils d'IA) les jettent. « L'essentiel » conservé :
+  0 article sur 48 pour le premier, 1 sur 48 pour le second.
+- Le nom de l'auteur n'était un lien sur aucun article ; 31 articles sur 48 n'avaient pas d'image de
+  partage de 1 200 px (§ 9.fl).
+
+**Les choix** (décidés le 13 novembre 2026) :
+
+1. Base : la direction « fiche pratique ». Grille d'ordinateur : rail numéroté à gauche (216 px),
+   texte de 624 px en 19 px / 1,6 au centre, carte d'essai collante à droite à partir de 1 360 px.
+   Ligne de confiance sous le titre (date, durée de lecture, auteur), « L'essentiel » en carte blanche
+   et en tête (à coches dans la maquette ; des puces depuis § 9.fm), encadrés plats étiquetés, étapes, blocs de chiffres, tableaux larges en fiches
+   sous 560 px, FAQ en feuille à lignes, articles liés en rangée qui défile sur téléphone, auteur
+   compact, fin de page resserrée dans l'ordre du téléphone (FAQ, connexes, essai, auteur, partage,
+   « Pour aller plus loin »).
+2. Titres de partie : un filet de 38 × 3 px en `--brand` au-dessus du h2 et un repère « 04 / 10 »
+   écrit par compteurs CSS ; sous-parties (`t-sous`) sans filet, plus petites, en retrait dans le
+   rail ; titres d'encadré fondus dans leur encadré.
+3. Émojis : « rien dans les titres, un dessin là où l'émoji porte un sens » (règle plus bas).
+4. Couverture : une vignette (64 × 80 px au téléphone, à côté de la ligne de confiance ; 132 × 165 px
+   sur ordinateur), `srcset` 160, 264 et 400 px, `fetchpriority` retiré. Le `src` reste celui de
+   `main` (900 px, ou la largeur de l'affiche quand elle est plus petite : 12 articles).
+5. Image de partage générée : § 9.fl.
+6. Sommaire : le plan seul (parties et sous-parties), sur les 48 articles. À partir de 1 040 px, un
+   rail collant numéroté qui allume la partie en cours, sans script (`scroll-target-group` et
+   `:target-current`, dans sa propre règle ; repli par lignes de temps de vue écrites au rendu pour
+   Safari 26 et Firefox). Sur téléphone : un pli « Sommaire », un fil de lecture de 3 px dans le bas
+   de la pastille de l'en-tête, une pastille ronde de 44 px qui ramène au sommaire.
+8. Bulle de chat sous 640 px : elle n'arrive qu'après le corps (ligne de temps, sans script ; depuis
+   § 9.fm, une fois passée la carte d'essai).
+9. Carrousel de planches (4 articles) : après le texte.
+10. « L'essentiel » remonté en tête dans les 11 articles où il suivait l'introduction.
+11. Sources : pli natif fermé sous 700 px, ouvert au-delà (`::details-content`) ; texte toujours dans
+    le HTML.
+12. Encadrés : `<div class="callout …" role="note">` au lieu d'`<aside>` (`remark-callouts.mjs`).
+    L'`<aside>` de l'appel à l'essai reste (`verify-site.mjs` le lit).
+13. Tableaux : `scope="col"` sur les titres de colonne.
+14. Auteur : le nom, dans la ligne de confiance, devient un lien vers `/qui-sommes-nous#ryan-goburdhun`
+    (l'ancre existe) ; dans le JSON-LD `Article`, `author` gagne `"@id"` (même identifiant que la
+    `Person` de cette page). Le nom et `url` ne changent pas. Le bloc auteur garde « En savoir plus ».
+15. Antislashs : voir « Contenu modifié ».
+
+(Le choix 7 est § 9.fk ; le choix 16, « Ce qui reste », en fin de section.)
+
+**Le balisage au rendu.** `src/lib/rehype-article.mjs`, branché dans `astro.config.mjs`, pose sur le
+HTML de chaque article ce que la feuille dessine. Le Markdown n'est pas touché ; aucun mot ni aucune
+espace n'est ajouté ou retiré : le plugin enveloppe (émojis `span.em`, marques de liste, lignes,
+numéros de titre), reclasse (un paragraphe de lignes marquées devient `ul.fl` ou `ol.fl`) et
+étiquette (`t-sous`, `t-encadre`, `t-sources`, `data-np`, `div.tbl[data-large]`, `td[data-th]`,
+`data-court`, `ul.kv`, `.fl-legende`, `span.nb`…). Compagnons : `article-options.mjs` (options :
+`sourcesPli`, `essentielEnTete`, `decorMuet`, `stats`), `article-emojis.mjs` (définition, rôles et
+pictogrammes des émojis), `article-sommaire.ts` (le plan, ses numéros, le mode « auteur »). La feuille
+est `src/styles/blog-article.css` (importée par le gabarit, hors de portée de Tailwind ; tout est
+préfixé par `.fiche`, le `<main>`) ; le `<style>` scopé de `[slug].astro` est retiré.
+
+- **Empreinte du cache.** Astro garde le HTML rendu des articles dans `node_modules/.astro` (que Vercel
+  garde aussi entre deux constructions) tant que le Markdown et la configuration ne changent pas : une
+  retouche des seuls plugins ne referait rien. `astro.config.mjs` passe au plugin l'empreinte des
+  `rehype-*`, `remark-*` et `article-*` en `.mjs` de `src/lib` (lus dans le dossier depuis § 9.fm)
+  et de la version des paquets qu'ils emploient : toute retouche de l'un d'eux vide ce cache.
+- **Ancres** : le plugin lance d'abord lui-même le calcul des ancres d'Astro (`rehypeHeadingIds`) ;
+  elles sont donc celles d'avant, posées avant toute retouche.
+
+**Règle des émojis** (le caractère reste toujours dans le HTML, Markdown intact) :
+
+- Titres h2 et h3, sommaire, appel à l'essai : émoji masqué.
+- Masquage : celui de la classe `sr` du site (hors du flux, rogné), jamais `font-size: 0` (forme de
+  texte caché citée par les consignes anti-spam ; la feuille n'en contient aucune). Les émojis de
+  décor portent en plus `aria-hidden` (option `decorMuet`) ; ceux qui portent un sens gardent leur
+  annonce.
+- Un dessin seulement là où l'émoji porte un sens, dans une liste, avec les seuls jetons de la DA :
+  oui (✅ ☑️ ✔) coche `--ok` sur `--ok-bg` ; attention (⚠️ ❗) triangle `--wait` sur `--wait-bg` ;
+  non (❌ ⛔ 🚫) croix `--ink-2` sur `--line` (pas de rouge : la forme porte le sens) ; touches 1️⃣ :
+  le chiffre ; 👉 et « → » : une flèche ; légende du calendrier fiscal (« 💸 : Tu paies »…) : ses
+  quatre pictogrammes, aussi dans les listes de cet article. Tout autre émoji de liste : une puce
+  ronde `--brand`. En tête ou fin de ligne, de paragraphe, en cours de phrase, 🦛 : masqués.
+- Un élément rogné rogne aussi son `::before` : le dessin est porté par l'élément de liste ou le
+  titre. Le plugin pose `data-touche="n"` (la feuille écrit le chiffre).
+- Comptes (HTML construit) : 1 074 émojis, tous masqués à l'œil, dont 588 de décor en `aria-hidden` ;
+  216 marques d'état dessinées (173 oui, 25 non, 18 attention), 4 touches de liste, 28 titres à
+  touche, 15 flèches, 32 pictogrammes de légende ; 101 émojis de liste devenus une puce.
+
+**Décisions prises en construisant :**
+
+- Rang 2 (`t-sous`) : un numéro décimal qui n'ouvre pas son groupe (4.2 à 4.8), ou une suite
+  « 1. 2. 3. » sous un titre non numéroté dont la section n'a qu'un bloc. 29 titres dans 5 articles ;
+  le sommaire les met en retrait, hors du compte.
+- Repère « NN / NN » : absent dès qu'une partie du plan porte un numéro d'auteur (« 1. », 1️⃣,
+  « Étape 1 ») : deux numérotations se superposaient. 252 titres le portent, dans 31 articles ; le
+  filet reste partout. Le rail numérote toujours (numéros de l'auteur si la moitié des parties en
+  ont, sinon 01, 02…).
+- Rail réduit aux parties (`som-dense`) quand le plan dépasse 14 entrées avec des sous-parties
+  (le seul `frais-pros-medecin-liberal-2026` : 11 entrées sur 22, il tient dans 800 px de haut) ; le
+  pli du téléphone les montre toutes.
+- Fiches de tableau courtes (`data-court`) décidées par colonne : toutes les fiches d'un tableau ont
+  la même forme (33 cellules).
+- Bulle de chat : la ligne de temps du corps (`--lecture`) est déclarée sur `<body>` (la bulle est
+  hors de `<main>`) ; règles écrites avec `#crisp-launcher` seul, comme `/essai`.
+
+**Contenu modifié (choix 15)** : `micro-bnc-exemples-concrets`, `rspm-exemples-concrets`,
+`tout-comprendre-urssaf`. Treize « \ » s'affichaient (6, 4 et 3) et sept lignes étaient avalées par
+le paragraphe précédent : une ligne vide avant et après chacune des cinq listes, et les « \ » qui ne
+coupaient plus rien retirés. Aucun mot changé, dates des articles inchangées.
+
+**Écarts voulus, comptés** (`preuve.cjs` contre `main`, 52 pages, 11 clés, détail complet ; classés
+par script) :
+
+| Clé | Pages identiques / différentes | Nature (toutes voulues) |
+|---|---|---|
+| `tete` | 4 / 48 | `og:image` et `twitter:image` : l'image de partage (§ 9.fl) ; dimensions déclarées changées sur 31 |
+| `jsonld` | 4 / 48 | `author["@id"]` et la première image (§ 9.fl) ; le reste égal à `main` sur les 48 |
+| `titres` | 4 / 48 | même ensemble de titres et d'ancres ; « Articles connexes » passe avant « Pour aller plus loin » |
+| `liens` | 4 / 48 | 107 perdus : ancres de l'ancien sommaire (entrées h3, titres d'encadré, sources) des 19 articles qui en avaient un. 339 ajoutés : 214 entrées de sommaire (les 29 articles qui n'en avaient pas), 48 pastilles `#sommaire-liste`, 29 « Retour en haut » du rail, 48 liens d'auteur. Aucun lien du corps ne change |
+| `corps` | 38 / 14 | 11 « L'essentiel » remontés (mêmes mots, même nombre) ; 3 articles sans leurs 13 « \ » |
+| `main`, `mainSac` | 4 / 48 | conséquences des lignes ci-dessus (mots du sommaire et de la pastille, blocs déplacés) |
+| `faq`, `images` | 52 / 0 | — (la vignette garde son `src` ; seuls `srcset` et `sizes` changent) |
+| `mesure` | 4 / 48 | mêmes attributs `data-blog-*`, `data-track`, `data-ph`, `data-calendly`, autre ordre |
+| `ids` | 4 / 48 | `toc-toggle` retiré (19) ; `sommaire` et `sommaire-liste` ajoutés (48) |
+
+`/blog` et les trois pages de série : identiques sur les 11 clés. `preuve-corps.cjs` (corps des 48
+articles) : titres et ancres différents 0, liens différents 0, un seul h1 partout ; mots différents :
+les 3 articles aux antislashs, et seulement par les « \ ». Écarts d'affichage, sans changement de
+texte : sommaire sur 48 articles (19 avant), sources en pli sur 47, vignette sur 48 ; « Retour au
+blog » n'est plus affiché (le fil d'Ariane mène déjà au blog ; retiré du HTML en § 9.fm) ; dernier maillon du fil d'Ariane et date de publication d'un article mis à jour
+masqués à l'œil seulement (rognage de la classe `sr`) ; mots écrits par
+la feuille (`content`, lus une fois : `content: attr(data-th) / ""` pour les titres de colonne) :
+repère « NN / NN », chiffres des touches, étiquettes d'encadré (29 encadrés sans titre), titres de
+colonne devant les valeurs sous 560 px (96 cellules), numéros du rail. Balisage sans changement de
+texte : `t-sous` 29, `scope="col"` 61, `data-court` 33, `.nb` 3 408, `div role="note"` 186.
+
+`verify-site.mjs` n'est pas modifié : aucun de ses contrôles ne portait sur une forme changée (il lit
+l'`<aside>` de l'appel à l'essai, qui reste). Il passe : 68 pages, 5 434 liens internes (5 386 sur
+`main` : les 48 liens d'auteur), les mêmes 7 avertissements que `main`. Feuille commune :
+`_astro_assets.BdxOyZgM.css`, même nom que sur `main`. Aucun script ajouté.
+
+**Mesures** (Chromium, 48 articles, `main` contre la construction) :
+
+| Format | Première ligne du texte (médiane / max) | Écrans après le texte (médiane / max ; articles au-dessus de 2,5) |
+|---|---|---|
+| 393 × 692 | 1 101 / 1 681 px → **492 / 525 px** | 4,10 / 4,93 ; 48 → **2,08 / 2,80 ; 4** |
+| 360 × 640 | 1 077 px → 525 / 558 px | 4,59 → 2,38 / 3,13 ; 15 |
+| 1 512 × 800 | 885 / 1 663 px → **487 / 538 px** | 2,83 / 3,18 ; 48 → **1,76 / 2,59 ; 2** |
+| 820 × 1 180, 1 280 × 800, 1 920 × 1 080 | 516, 556, 487 px | 1,38, 2,15, 1,30 |
+
+Aucun défilement de côté à 360, 393, 820, 1 280, 1 512 et 1 920 px, sur les 48 articles. Texte à
+taille nulle : 0 ; émoji visible : 0, à toutes les largeurs. Les 4 articles au-dessus de 2,5 écrans
+à 393 px sont les 4 à carrousel (choix 9 : il compte dans « après le texte », environ 0,7 écran).
+Article par article (393 px : première ligne, après le texte, page entière) : requalification
+1 036 → 525 px, 4,82 → 2,38, 30,7 → 25,5 écrans ; CARMF 1 181 → 492, 4,50 → 2,20, 18,3 → 14,1 ;
+checklist administrative 1 100 → 492, 3,98 → 2,05, 14,1 → 10,9.
+
+Lighthouse mobile (réglages par défaut, `npx serve` qui compresse, trois passes alternées avec
+`main` servi de même) : `tout-comprendre-carmf` 98 / 98 / 98 (`main` 100 / 98 / 98), LCP 2,23 s
+(2,15) ; `remplacement-regulier-requalification` 98 / 98 / 98 (97 / 97 / 97), LCP 2,16 s (2,56).
+Accessibilité, bonnes pratiques et SEO à 100 ; CLS 0. `td-has-header` échoue des deux côtés sur la
+requalification (déjà sur `main`). Feuille de la page : 45,6 Ko, 9,3 Ko compressée (`main` : 25,8 et
+5,2 Ko). Clavier (Tab, 393 et 1 512 px) : chaque élément atteint est à l'écran, avec son anneau.
+Impression A4 de la CARMF : 9 pages (10 sur `main`), sources imprimées.
+
+WebKitGTK 2.52 (WebDriver piloté sans Selenium, absent de la machine) : `::details-content`,
+`animation-timeline: view()` et `timeline-scope` lus, `scroll-target-group` non : le repli
+s'applique ; une seule partie allumée dans le rail, la bonne ; sources ouvertes à 1 512 px ; repère
+écrit ; à 393 px (cadre), fil de lecture et pastille actifs, légende dessinée. Ce n'est ni Safari ni
+iOS.
+
+**Pièges rencontrés :**
+
+- Poids des variantes d'état : `.corps :is(ul, ol) > li[data-etat]::before` battait
+  `.corps li[data-etat="non"]::before` (toutes les croix sortaient en coches). Les variantes
+  s'écrivent avec le même chemin (`:is(ul, ol) > li[…]`). Même piège pour les puces des sources.
+- Un dessin ne peut pas venir d'un émoji masqué par rognage (son `::before` l'est aussi).
+- Espaces autour d'un émoji hors du flux : Chromium et WebKit les fusionnent en une (mesuré) ; pas
+  besoin de `display: none`.
+- La ligne de temps de la bulle se déclare sur `<body>` : déclarée sur `.fiche` (le `<main>`), elle
+  n'aurait pas été à portée de la bulle.
+- Défilement doux du site : la pastille met 1 à 3 s à poser la liste du sommaire ; un test qui lit la
+  position trop tôt la croit ailleurs.
+- Le cache d'Astro (`node_modules/.astro`) : voir « Empreinte » ; le vider avant une première
+  construction après une retouche faite sans elle.
+- lightningcss avertit à la construction qu'il ne connaît pas `:target-current` : la règle est
+  gardée telle quelle, seule dans sa règle (une liste de sélecteurs serait jetée entière par les
+  navigateurs qui ne le lisent pas).
+
+**Ce qui reste faible :**
+
+- Les 4 articles à carrousel dépassent 2,5 écrans après le texte au téléphone (2,72 à 2,80) ; la
+  médiane tient.
+- La pastille « Sommaire » passait sur la marge gauche du texte pendant le défilement (corrigé en
+  § 9.fm : à droite).
+- 4 articles en mode compteur ont quelques parties numérotées par l'auteur : pas de repère
+  au-dessus de leurs titres (le rail les numérote).
+- La croix « non » est discrète (encre sur gris) : à juger sur un vrai téléphone.
+- Feuille de la page : 9,3 Ko compressée (5,2 sur `main`) ; Lighthouse égal ou meilleur.
+- Non vérifié : Safari réel et iOS, Firefox, contrastes forcés à l'écran (règles écrites, non
+  regardées), aperçu Vercel en HTTP/2 et réseau bridé.
+
+**Ce qui reste (suivis séparés, hors de cette refonte) :**
+
+1. Temps de lecture calculé : `readTime` est écrit à la main dans le frontmatter et ne suit pas la
+   longueur réelle.
+2. Huit blocs « Sources » sans aucun lien (dont l'article le plus lu).
+3. Dates incohérentes dans 5 à 10 articles (date de publication, de mise à jour, « vérifié au » des
+   sources) : à relever article par article, sans date de construction (§ 9.ai).
+4. Le nom de l'auteur dans le schéma de l'article est « Dr. Ryan Goburdhun » : Google demande le nom
+   seul, le titre ayant sa propriété (`honorificPrefix`, déjà dans la `Person` de
+   `/qui-sommes-nous`, qui porte le même `@id` et le nom « Ryan Goburdhun »). À accorder sur les 48.
+5. Sur `/blog` et les séries, toute la ligne est un lien (le titre seul serait plus net pour un
+   lecteur d'écran) ; inchangé ici (§ 9.fk).
+6. Avant la mise en ligne : un relevé Search Console (pages du blog, requêtes, extraits), pour
+   comparer après ; puis surveiller deux semaines.
+7. Thèmes du blog : une seconde PR, après celle-ci.
+8. Déclarer `sharp` dans `package.json` (version du verrou) à la prochaine mise à jour des paquets
+   (§ 9.fm).
+
+**Fichiers** : `src/lib/rehype-article.mjs`, `src/lib/article-options.mjs`,
+`src/lib/article-emojis.mjs`, `src/lib/article-sommaire.ts`, `src/lib/remark-callouts.mjs`,
+`astro.config.mjs`, `src/pages/blog/[slug].astro`, `src/styles/blog-article.css`,
+`src/assets/blog-article/{tete,buste}.webp`, les 3 articles du choix 15, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fk Blog : `/blog` et les pages de série en lignes (13 novembre 2026)
+
+Suite de § 9.fj (choix 7). Sur `main`, une carte d'article faisait 181 à 246 px de haut au téléphone
+(l'affiche en vignette de 112 px, l'extrait sur deux lignes), « À la une » 770 px (1,1 écran, son
+affiche en pleine largeur), et une page de série ne montrait aucun titre d'article au premier
+écran. Trois variantes ont été maquettées (lignes de texte, affiche en vignette, couverture
+générée) ; la retenue est la deuxième.
+
+- Les articles sont des lignes sur une feuille blanche, un filet entre deux lignes, la ligne teintée
+  au survol (comme les feuilles à lignes de l'accueil) ; une colonne au téléphone, deux à partir de
+  640 px (les cartes étaient sur quatre colonnes à partir de 1 024 px).
+- L'affiche en vignette : un carré de 64 px recadré sur le dessin au téléphone (`object-position:
+  50% 74%` : le titre dessiné, illisible à cette taille, sort du cadre) ; l'affiche entière en
+  portrait de 96 px, puis 104 px à partir de 1 024 px.
+- La série et le numéro en petites capitales `--brand` (« FICHES FISCALITÉ · #4 ») au lieu de la
+  pastille ; date et durée séparées par « · ». Les points sont écrits par la feuille, avec un texte
+  de remplacement vide (`content: "·" / ""`, après une déclaration sans lui) : ils ne sont pas lus.
+- L'extrait n'est pas affiché au téléphone (il reste dans le HTML) ; au-delà, deux lignes. Ses
+  nombres tiennent ensemble : `nouerNombres()` (`src/lib/typo.ts`) les met dans un
+  `<span class="nb">` sans changer un caractère.
+- « À la une » compacte : l'affiche à 84 px à droite du titre au téléphone, 180 px à gauche à partir
+  de 768 px ; l'extrait sur trois lignes.
+- La bulle de chat est masquée sous 640 px sur ces quatre pages (elle passait sur la fin des titres
+  des lignes), comme `/guide` sous 768 px.
+- `sizes` et le préchargement de la une disent les vraies largeurs. Le `srcset` de la une gagne 180
+  et 360 px, celui des lignes 160 px : au téléphone, la une est maintenant dans le premier écran et
+  tirait le fichier de 480 px en priorité haute pendant que la police arrivait (Lighthouse mobile de
+  `/blog` 96 / 93 / 94 avant cette retouche). Les `src` et les dimensions déclarées ne changent pas.
+- Les règles de la maquette (une classe de variante sur `<main>`) sont fondues dans
+  `blog-liste.css` : aucun sélecteur de variante dans le dépôt. Preuve que la page est celle de la
+  maquette : styles calculés et boîtes de chaque élément de `<main>` égaux, à 320, 360, 393, 600, 700,
+  820, 1 024, 1 280 et 1 512 px, liste fermée et ouverte, sur les quatre pages (0 écart, hors deux
+  formes équivalentes : `gap: normal` pour `0`, et le texte de remplacement des « · »).
+
+**Écarts** : aucun à la preuve (`preuve.cjs`, 4 pages sur 4 identiques à `main` sur les 11 clés,
+images comprises). La recherche marche (« DSFU » : 2 articles trouvés ; un mot absent montre le
+message « Pas encore d'article ») ; attributs `data-blog-*`, `data-ph` (`blog_card`,
+`blog_index_featured`, `blog_index_show_all`, `blog_search_result`) et `data-calendly` inchangés.
+
+**Mesures** (Chromium ; ligne : plus petite / moyenne / plus grande) :
+
+| Page, largeur | Ligne d'article | « À la une » | Hauteur de la page |
+|---|---|---|---|
+| `/blog`, 393 px | 181 / 192 / 203 → 97 / 111 / 132 px | 770 → 279 px | 7 880 → 6 651 px |
+| `/blog`, 360 px | 181 / 207 / 246 → 97 / 114 / 132 px | 756 → 333 px | 8 185 → 6 895 px |
+| Fiches Fiscalité, 393 px | 181 / 192 / 203 → 97 / 110 / 111 px | — | 5 745 → 4 253 px |
+| Guides & Conseils, 393 px | 181 / 191 / 203 → 97 / 111 / 132 px | — | 7 426 → 5 231 px |
+| `/blog`, 1 512 px | 539 / 558 / 562 → 179 / 198 / 200 px (8 premières : 1 140 → 808 px) | 445 → 241 px | 4 997 → 4 457 px |
+| `/blog`, 820 px | 640 / 662 / 663 → 200 / 224 / 250 px | 445 → 262 px | 7 847 → 5 860 px |
+
+Aucun défilement de côté à 360, 393, 820, 1 280, 1 512 et 1 920 px. Lighthouse mobile (`npx serve`,
+cinq passes alternées) : `/blog` 99 / 98 / 96 / 98 / 99 (`main` 95 / 95 / 94 / 99 / 99), LCP médian
+2,37 s (2,89) ; Fiches Fiscalité 96 / 99 / 97 (99 / 93 / 93). Accessibilité, bonnes pratiques et SEO
+à 100. Feuille des listes : 14,2 Ko, 3,7 Ko compressée (13,3 et 3,4 sur `main`). WebKitGTK : mêmes
+hauteurs à quelques pixels près (polices), petites capitales et points lus, aucun débordement.
+
+**Ce qui reste faible** : à 64 px, l'affiche recadrée montre une scène chargée (plusieurs
+personnages) ; c'est plus un repère de couleur qu'une information. Une ligne dont le titre fait trois
+lignes atteint 132 px au téléphone (cible de la maquette : 96 à 120 px).
+
+**Fichiers** : `src/styles/blog-liste.css`, `src/components/BlogCard.astro`,
+`src/pages/blog/index.astro`, `src/lib/typo.ts`, `src/lib/blog-covers.ts`, `MIGRATION.md`.
+
+### 9.fl Blog : une image de partage par article, fabriquée à la construction (13 novembre 2026)
+
+Suite de § 9.fj (choix 5). L'image de partage (`og:image`, `twitter:image`) était un recadrage
+1,91:1 du haut de l'affiche : 31 articles sur 48 n'avaient pas d'affiche de 1 200 px de large, 11
+une image de 450 px (dont le 2ᵉ et le 6ᵉ article en audience), floue dans un aperçu de lien.
+
+- **`/blog/partage/<slug>-<empreinte>.jpg`** (empreinte depuis § 9.fm), 1 200 × 630 px, JPEG : un
+  point de terminaison statique
+  (`src/pages/blog/partage/[slug].jpg.ts`, `getStaticPaths` et `GET`). Un nouvel article a la sienne
+  sans rien faire. Un point de terminaison n'entre pas dans le sitemap : il garde ses 68 adresses.
+- **Dans la DA** (`src/lib/image-partage.mjs`) : fond de la série (ciel pour les Fiches Fiscalité,
+  sable pour les Fiches Pratiques, eau profonde pour les Guides & Conseils), pastille de série
+  (« Fiche Fiscalité #4 », le libellé de la pastille de l'article depuis § 9.fm), titre, mascotte de l'accueil entière sur un halo, marque, vagues du
+  pied. Aucun jaune. Quatre poses en pied tournent dans une série, dans l'ordre des épisodes (le
+  buste de l'accueil, coupé à la poitrine, n'est pas repris) ; celle qui montre du doigt est
+  retournée vers le titre.
+- **Le titre** est composé ligne à ligne : un mot court (la, du, les, à, ton, te…) reste avec le mot
+  qui le suit, un nombre avec le mot qui le suit (« 8 statuts »), sauf un mot court (« 2026 du
+  médecin » se coupe après « 2026 ») ; jamais un mot seul sur la dernière ligne quand le titre en a
+  trois ou plus ; jamais de coupure à un trait d'union ; puis le moins de lignes, pas de ligne de
+  moins de 40 % de la plus longue, la plus longue la plus courte, les lignes les plus égales. Deux
+  tailles (72 et 60 px) : la plus grande qui tient en trois lignes, sinon en quatre ; 50 px, puis
+  une coupe suivie de « … », pour un titre qui ne tient pas (§ 9.fm). Apostrophes et espaces
+  insécables de la typographie française, dans l'image seulement.
+- **Outils** : sharp seul (installé avec Astro, qui s'en sert pour ses images) ; texte composé par
+  Pango avec la police du site en TTF, deux graisses fixes (560 et 720), dans
+  `src/assets/fonts/partage/` (licence OFL : `src/assets/fonts/OFL.txt`). Lues par chemin depuis la
+  racine du projet, jamais importées : elles ne sont pas copiées dans le build (vérifié : aucun
+  `.ttf` dans `dist` ni dans `.vercel/output`). Un émoji est retiré du titre de l'image : la machine
+  de construction n'a pas de police de secours.
+- **Le gabarit d'article** la donne en `og:image` et `twitter:image` (`og:image:width` 1 200,
+  `og:image:height` 630, `og:image:alt` = le titre, comme avant), et en première image du JSON-LD
+  `Article` ; les recadrages 16:9, 4:3 et 1:1 de l'affiche suivent, comme le recommande Google. Le
+  recadrage 1,91:1 de l'affiche n'est plus fabriqué.
+
+**Contrôles** : les 48 images regardées une à une (titres courts et longs, trois séries) : titres
+lisibles, aucun mot seul en fin de titre, aucun jaune, mascotte entière. Poids : 45 à 63 Ko (moins de
+120 Ko). `verify-site.mjs` vérifie déjà que le fichier de l'`og:image` existe et qu'il a les
+dimensions déclarées (contrôle (d)) : il passe. Construction : 7 s de plus (14 → 21 s en local).
+
+**Écarts** : `tete` différente sur les 48 articles (`og:image`, `twitter:image`, et les dimensions
+déclarées sur les 31 dont l'affiche était étroite) ; JSON-LD : une image de plus, en tête. Comptés
+dans le tableau de § 9.fj.
+
+**À vérifier sur l'aperçu Vercel** : la génération n'a été essayée que sur cette machine. Le sharp
+installé sur Vercel embarque Pango et lit la police par son fichier (`fontfile`). Un fichier de
+police absent arrête la construction (erreur explicite) ; depuis § 9.fm, une police que Pango ne
+prendrait pas aussi (garde : la largeur de « Hippodoc » en 720 à 100 px). Coller un lien d'article
+dans un aperçu (WhatsApp, LinkedIn) une fois en ligne.
+
+**Fichiers** : `src/lib/image-partage.mjs`, `src/pages/blog/partage/[slug].jpg.ts`,
+`src/assets/fonts/partage/gsf-560.ttf`, `src/assets/fonts/partage/gsf-720.ttf`,
+`src/pages/blog/[slug].astro`, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fm Blog : corrections après six relectures (13 novembre 2026)
+
+Suite de § 9.fj à 9.fl. Six relectures indépendantes ont jugé la construction : design (7/10),
+lecteur sur iPhone (7,5/10), contenu et SEO (9/10), technique et accessibilité (7/10), Safari et
+vitesse (8,5/10), code (7,5/10). Elles relevaient un défaut bloquant, treize majeurs et une
+quarantaine de mineurs. Tous les bloquants et les majeurs sont corrigés, et presque tous les
+mineurs ; ceux qui sont écartés le sont plus bas, avec leur raison. Aucun mot du contenu ne
+change.
+
+**Arbitrages** (là où une relecture allait contre un choix de § 9.fj) :
+
+- **« L'essentiel » : des puces, plus des coches.** Le choix 1 disait « à coches ». Or 40 des 194
+  points, dans 32 articles, sont des mises en garde ou des négations (« ✓ Un contrat validé par
+  l'Ordre ne te protège pas du fisc »), et plus bas sur la même page, la coche verte veut dire
+  « oui » (choix 3 : la forme porte le sens). Le choix 3 l'emporte : les points prennent la puce
+  ronde `--brand` du corps. La carte blanche, son étiquette et sa place en tête ne changent pas.
+- **Sources ouvertes au-delà de 700 px** : la relecture technique proposait un pli à toutes les
+  largeurs. Le choix 11 est gardé. Le `<summary>` passe en `display: contents` quand le contenu
+  est ouvert par `::details-content` : il n'est plus un arrêt de tabulation, la touche Entrée ne
+  bascule plus un état invisible, l'anneau ne coupe plus le « S ». Reste : un lecteur d'écran peut
+  encore l'annoncer « réduit » (le pli est fermé pour le navigateur).
+- **Bulle de chat** (choix 8, « à la fin du corps ») : même mécanisme, un peu plus tard. Elle
+  paraît de 60 à 180 px de défilement après que le bas de la carte d'essai est entré dans l'écran
+  (ligne de temps `--essai`). À la fin du corps, elle se posait sur le chevron du pli des
+  sources, puis passait sur les « + » des questions et sur le bout du bouton d'essai : un appui
+  y ouvrait le chat. Jusque-là, la carte porte le contact (« Prendre 15 min avec Ryan »).
+- **Tableaux en fiches** : le design voulait des valeurs d'un seul tenant, alignées à droite ;
+  le lecteur, des paires courtes serrées. Les deux s'appliquent : une ligne pleine garde son titre
+  à gauche et sa valeur à droite ; deux colonnes courtes partagent une ligne, chaque valeur contre
+  son titre, 24 px entre les paires ; une cellule courte sans voisine courte prend la ligne entière.
+
+**La page d'article** (`src/styles/blog-article.css`, `src/pages/blog/[slug].astro`) :
+
+- **Pastille « Sommaire »** (le défaut bloquant) : elle était en bas à gauche, sur le début des
+  lignes (le texte commence à 20 px, le rond couvrait 16 à 60 px). Sous 640 px, elle passe en bas
+  à droite ; de 640 à 1 039 px, au-dessus de la bulle, sur le même axe. Elle part au début de la
+  sortie du corps (8 % au lieu de 30 %). Elle est cachée hors de son animation
+  (`visibility: hidden` de base). Signes du corps qu'elle cache, sommés sur tout le défilement
+  (pas de 40 px, 393 × 692) : CARMF 596 → 197, requalification 1 527 → 618, et plus aucun en
+  début de ligne (317 et 828 avant). À 360 × 640 : 653 → 253.
+- **Ronds des étapes et des touches** : `top: calc(0.5lh - 14px)` dans un `::before` qui change de
+  corps prenait la ligne du `::before` ; les ronds sortaient 6 px au-dessus de leur ligne. La
+  hauteur de ligne passe par `--lig` (propriété enregistrée, `1lh` calculé sur le `li`) : −0,83 et
+  2,17 px dans Chromium, 1,2 px dans WebKit à 19 px.
+- **Rail** : le fondu du bas était décidé par le nombre d'entrées, pas par un débord ; « Retour en
+  haut » était dans le fondu. Maintenant, « Retour en haut » est collé au bas du rail (fond sable),
+  et le fondu au-dessus de lui suit une animation liée au défilement du rail (`scroll(self)`) :
+  aucun si le rail ne défile pas, plein tant qu'il reste plus de 24 px cachés, rien au bout.
+  `scroll-padding-bottom` garde une entrée qui prend le focus au-dessus de lui. Fenêtre de moins
+  de 760 px de haut : entrées resserrées ; au doigt : entrées de 44 px. Rails qui défilent : 9 sur
+  48 à 1 280 × 700 (15 avant), 3 à 1 512 × 800, 0 à 1 920 × 1 080 ; « Retour en haut » coupé : 0.
+- **Repli du repère pour Safari** : comme dans Chrome, la première partie est allumée dès le haut,
+  la dernière jusqu'au bas, et le numéro de la partie en cours passe au bleu. Une ligne de temps
+  `none` ne convenait pas (WebKit applique l'état final de l'animation) : les liens du début et
+  de la fin portent `som-debut` et `som-fin`. Vérifié dans WebKitGTK sur la CARMF et le calendrier.
+  La feuille du repli, écrite au rendu, va dans `<head>` (elle était dans `<main>`) et ne vaut
+  qu'à partir de 1 040 px.
+- **Carte d'essai, à partir de 1 360 px** : la mascotte sur sa ligne, au-dessus du titre (le titre
+  l'entourait en escalier dans 248 px) ; son haut sur celui de « L'essentiel » au repos, sur celui
+  du rail une fois collée (`top: var(--haut-colle)`). Un titre de plus de 90 signes (deux
+  articles) passe en 15 px. Vignette : son bas sur celui de la ligne de confiance.
+- **Article sans sommaire** (moins de trois parties, aucun aujourd'hui) : la règle `.fiche:not(.guidee)`
+  de 1 040 px l'emportait sur la grille des trois zones ; la carte d'essai tombait dans la marge.
+  Elle est bornée à 1 359 px ; vérifié en retirant le sommaire d'un article, à 1 040, 1 360,
+  1 512 et 1 920 px.
+- **Encadrés** : à la taille du corps sous 1 040 px (16 px pour un corps de 17 avant), 17 px pour
+  un corps de 19 au-delà ; « L'essentiel » à la taille du corps partout. Un titre d'encadré long
+  (plus de 24 signes, ou un deux-points final ; 4 encadrés) est en gras ordinaire, pas en petites
+  capitales. Un `:::essentiel` sans titre est étiqueté « L'essentiel ». Titres de fin en 24 px.
+- **Blocs de chiffres** : bornés à 28 rem à partir de 700 px (la valeur était à 520 px de son
+  libellé). La ligne de total dont le séparateur est dans le gras (« **Total cotisations :
+  13 474 €** (26,9 % du CA) », 2 lignes) est coupée au deux-points comme les autres.
+- **Accessibilité** : le repère « 04 / 10 » et le chiffre d'une touche ont un texte de remplacement
+  vide (`content: … / ""`) : ils n'entrent plus dans le nom des 270 titres ni dans les éléments de
+  liste. Contrastes forcés : la croix « non » et le repère prennent les couleurs du système, la
+  partie en cours du rail un trait `Highlight`. Défilement vers un titre : `scroll-margin-top`
+  12 px (il s'ajoutait aux 84 px du site : le titre s'arrêtait à 180 px). Zones de toucher : 21 px
+  sous le fil d'Ariane, liens de « Pour aller plus loin » sans marge négative. `role="navigation"`
+  sur le sommaire : le mode lecture de Firefox commençait l'article par le plan dans 22 articles
+  sur 48 ; avec ce rôle, dans aucun (essai de la relecture SEO, mots du corps gardés : 98,8 %).
+- **Fin de page** : « Retour au blog » est retiré du gabarit (il était en `display: none` ; le fil
+  d'Ariane porte le même lien). « Retour en haut » du bas de page est affiché sous 1 040 px (la
+  pastille est partie avec le texte) et sans rail ; il était masqué partout. « Épisode N » est
+  masqué à l'œil quand la pastille porte déjà « #N » (24 articles). L'auteur a son portrait rond
+  de 56 px (les mêmes fichiers que l'accueil) au lieu de ses initiales. Vignettes des articles
+  connexes : 132 px de large au lieu de 288 (affichées en 40 ou 44 px).
+- **Auteur** : table `AUTEURS` dans `src/lib/site.ts` (nom du frontmatter → ancre et portrait) ; un
+  auteur absent n'a ni lien ni `@id` (il prenait ceux de Ryan).
+
+**Le plugin** (`src/lib/rehype-article.mjs`, `article-emojis.mjs`, `article-sommaire.ts`) :
+
+- Une ligne seule qui commence par « • » ou « → » devient une liste d'un élément : 5 paragraphes
+  (« • → Total IR ≈ 3 004 € » sortait collé à la marge, ses marques tapées visibles) et 3 lignes
+  de `base-financiere-rempla`. Une flèche après un émoji (« 🧮 → … », 2 lignes) est masquée comme
+  après une puce ; 👉 en marque se dessine en flèche (`data-m="fleche"`, sans `:has()`).
+- Légende du calendrier fiscal : ses émojis restent annoncés, dans la légende et dans les listes
+  des mois (26 émojis sortent d'`aria-hidden` : un lecteur d'écran lisait « : Tu paies ») ;
+  l'élément de liste porte le pictogramme (`data-picto`, sans `:has()`). Le titre « Légende »
+  sort du compte du plan (`t-hors`) : plus de repère au-dessus de lui, une entrée sans numéro dans
+  le rail, les mois remontent d'un rang (15 → 14 parties).
+- Sources : seul le dernier h2 peut être le titre des sources, et le motif est resserré
+  (`RE_SOURCES`) : un « Sources de revenus… » au milieu d'un article restait plié et grisé.
+- `role="list"` sur les 324 listes du corps (la feuille retire leurs puces : WebKit ne les
+  annonçait plus comme des listes) ; rôles ARIA écrits sur les 6 tableaux mis en fiches.
+- Groupes insécables (`span.nb`) : 3 408 → 4 151. Un élément en ligne et la ponctuation qui le suit
+  (« **CARMF** ; »), le dernier mot d'un gras trop long et sa ponctuation, « micro-BNC »,
+  « 2042-C PRO », « n° 2025-1044 ». Lignes du corps qui commencent par une ponctuation, à 393 px :
+  3 (dans des sources, après un lien qu'on ne coupe pas), plus les 4 lignes de la légende (« : Tu
+  paies », voulu). La relecture en comptait 11 dans 10 articles.
+- Une liste numérotée qui reprend (`start`) reçoit son `counter-reset` ; les notes de bas de page
+  (aucune aujourd'hui) n'entrent plus dans le plan, et leur « ↩ » reste visible.
+- Nettoyage : option `sections`, journal d'audit et `PICTO_APPROCHE` retirés ; les comptes passent
+  par l'option `stats` (jamais dans le cache) ; les attributs de travail sont retirés à la fin
+  (environ 1 Ko par article) ; les caractères invisibles des expressions sont écrits en
+  échappement ; définition et rôles des émojis dans `article-emojis.mjs`, que le gabarit importe
+  sans tirer le plugin. L'empreinte du cache lit les fichiers dans le dossier et ajoute la version
+  de `remark-directive` et de `@astrojs/markdown-remark`.
+
+**Images de partage** (`src/lib/image-partage.mjs`) :
+
+- L'adresse porte une empreinte (`/blog/partage/<slug>-<8 signes>.jpg`) : du titre, de la
+  pastille, de la pose et du code de l'image. Un aperçu de lien garde l'image d'une adresse des
+  jours durant ; un titre retouché en donne une nouvelle.
+- La pastille reprend le libellé de celle de l'article (« Fiche Fiscalité #4 », « Guide et
+  Conseil »).
+- Le titre est posé d'un seul appel à Pango, sur des lignes de base régulières (une ligne sans
+  lettre haute remontait de 8 px). Les coupes sont énumérées par leurs points de coupure, quatre
+  lignes au plus (l'essai de toutes les coupes prenait 2,6 s pour 40 mots et cassait au-delà de
+  31) ; la hauteur du titre est bornée au-dessus des vagues ; 50 px puis « … » pour un titre qui
+  ne tient pas, avec un avertissement. Essayé avec des titres de 101, 146 et 213 signes.
+- Une garde arrête la construction si Pango ne prend pas la police du site (« Hippodoc » en 720 à
+  100 px : 471 px avec elle, 446 avec la police de secours de la machine).
+
+**`/blog` et les séries** (`src/styles/blog-liste.css`) : `--ink-3` jamais sous 14 px (dates,
+durées, résultats de recherche, index : 13 et 13,5 px avant) ; série en petites capitales à 13 px,
+son numéro à 13 px en `--ink-2`. Sous 400 px, les pastilles de série prennent leur largeur et
+s'étirent (« Tous les articles (48) » passait à la ligne dans sa pastille).
+
+**Écarts, comptés** (`preuve.cjs` contre `main`, 52 pages) : ceux de § 9.fj, plus ceux-ci.
+
+| Clé | Pages identiques / différentes | Nature |
+|---|---|---|
+| `liens` | 4 / 48 | 155 perdus (107 de § 9.fj et les 48 « Retour au blog ») ; 339 ajoutés, comme en § 9.fj |
+| `images` | 4 / 48 | 223 vignettes d'articles connexes déclarées en 44 × 55 au lieu de 96 × 120 (même affiche) ; 48 portraits de l'auteur ajoutés |
+| `main`, `mainSac` | 4 / 48 | en plus : « ← Retour au blog » (48) et les initiales « RG » (48) disparaissent |
+| `tete`, `jsonld` | 4 / 48 | l'adresse de l'image de partage change (empreinte) ; le reste comme en § 9.fj |
+
+Les autres clés sont celles de § 9.fj. `preuve-corps.cjs` : titres et ancres différents 0, liens
+différents 0, mots différents dans les 3 articles aux antislashs seulement. `verify-site.mjs`
+n'est pas modifié et passe (68 pages, 5 434 liens internes, les 7 avertissements de `main`).
+Feuille commune : même nom. Aucun script ajouté.
+
+**Comptes** (HTML construit) : 1 074 émojis, 562 en `aria-hidden` (588 avant : les 26 de la
+légende) ; 216 marques d'état (173, 25, 18) ; 4 touches de liste et 28 de titre ; 26 flèches ;
+32 pictogrammes de légende ; 101 émojis de liste devenus une puce ; 4 151 `span.nb` ; 324 listes en
+`role="list"` ; 186 `role="note"` ; 61 `scope="col"` ; 6 tableaux à rôles écrits ; 29 `t-sous`,
+1 `t-hors` ; 4 titres d'encadré longs ; 0 attribut de travail.
+
+**Mesures** (Chromium, 48 articles) :
+
+| Format | Première ligne (médiane / max) | Écrans après le texte (médiane / max ; au-dessus de 2,5) |
+|---|---|---|
+| 393 × 692 | 492 / 525 → 499 / 532 px | 2,08 / 2,80 ; 4 → 2,24 / 2,97 ; 6 |
+| 360 × 640 | 525 / 558 → 532 / 565 px | 2,38 / 3,13 ; 15 → 2,49 / 3,27 ; 23 |
+| 1 512 × 800 | 487 / 538 → 490 / 541 px | 1,76 / 2,59 ; 2 → 1,81 / 2,64 ; 2 |
+
+La fin de page gagne 0,16 écran au téléphone : « Retour en haut » affiché, liens de « Pour aller
+plus loin » sans marge négative, portrait de 56 px ; la première ligne, 7 px (fil d'Ariane). Aucun
+défilement de côté (52 pages, 6 largeurs, plis fermés et ouverts : 624 états). Lighthouse mobile
+(serveur qui compresse, trois passes) : 98 / 100 / 100 / 100 sur la CARMF, la requalification et
+`/blog`, CLS 0. Feuille de l'article : 48,2 Ko, 9,9 Ko compressée (45,6 et 9,3 avant).
+
+**Écartés, et pourquoi :**
+
+- Bannière cookies plus basse sur l'article (lecteur) : elle est commune au site, son texte ne
+  tient pas sur une ligne à 393 px sans changer ses mots ni passer sous 12 px, et refuser doit
+  rester aussi visible qu'accepter. À 393 × 692, le premier point de « L'essentiel » reste
+  visible ; la bannière part au premier choix.
+- Zone de toucher de la pastille de série (lecteur) : elle fait déjà 44 px (`::after`).
+- Extraits masqués au téléphone sur `/blog` (SEO) : choix 7 ; à suivre (suivi n° 6).
+- Nom de l'auteur dans le schéma (SEO) : hors périmètre (suivi n° 4).
+- `sharp` dans les dépendances de `package.json` (code) : il faudrait mettre à jour le verrou
+  (`npm install`, exclu ici). Il vient avec Astro (dépendance facultative) ; à déclarer à la
+  prochaine mise à jour des paquets (suivi n° 8).
+- Étiquettes en petites capitales à 13 px (« L'essentiel », « Sommaire »…) : ce sont des
+  étiquettes en `--brand` ou `--ink-2`, pas du corps de texte.
+- Pastille dans Safari 26.0 et 26.1 (Safari) : son lien vise la liste du sommaire, dans un
+  `<details>` fermé, que ces versions n'ouvrent pas d'elles-mêmes (Safari 26.2 le fait). Viser le
+  pli lui-même coûterait un appui de plus à tout le monde ; la part de ces deux versions est très
+  faible. Limite notée ci-dessous.
+- `.da:has(.hd-toggle:checked)` du fil de lecture (Safari, coût des styles) : la case du menu est
+  dans l'en-tête, aucun sélecteur de voisinage ne la relie au `<main>`. Les autres `:has()` coûteux
+  sont remplacés par des attributs du plugin.
+- Seuil du titre long de la carte d'essai à 90 signes et non 70 (design) : avec la mascotte
+  au-dessus, les titres de 61 à 71 signes tiennent en trois ou quatre lignes à 17 px.
+
+**Pièges rencontrés :**
+
+- `lh` dans un pseudo-élément qui change de `font-size` : voir les ronds, plus haut.
+- `animation-timeline: none` : WebKit applique l'état final de l'animation ; ne pas s'en servir
+  pour « pas d'animation ».
+- Une ligne de temps `scroll(self)` sur un élément qui ne défile pas est inactive (vérifié dans
+  Chromium et WebKit) : c'est ce qui fait le fondu « seulement s'il défile ». Un débord d'un pixel
+  (arrondi) l'active : la plage `calc(100% - 24px) 100%` rend le fondu proportionnel à ce qui reste.
+- Image de partage : avec une troisième taille, la règle « la plus grande qui tient en trois
+  lignes sans mot seul » choisissait 50 px pour des titres courts ; la petite taille n'est
+  essayée que si 72 et 60 px ne tiennent pas du tout.
+
+**Ce qui reste faible :**
+
+- À 360 × 640, la médiane des écrans après le texte est à 2,49 (la limite de 2,5 vaut à 393).
+- La pastille couvre encore des fins de ligne au téléphone (moins de signes, aucun début de ligne).
+- Lecteur d'écran : les sources ouvertes au-delà de 700 px peuvent être annoncées « réduit ».
+- Safari 26.0 et 26.1 : la pastille ne fait rien (voir « Écartés »).
+- Non vérifié : Safari réel et iPhone, Firefox, VoiceOver (rôles de liste et de tableau écrits,
+  non écoutés), aperçu Vercel en HTTP/2.
+
+**Suivi ajouté** à la liste de § 9.fj : n° 8, déclarer `sharp` dans `package.json`.
+
+**Fichiers** : `src/lib/rehype-article.mjs`, `src/lib/article-emojis.mjs`,
+`src/lib/article-options.mjs`, `src/lib/article-sommaire.ts`, `src/lib/image-partage.mjs`,
+`src/lib/site.ts`, `astro.config.mjs`, `src/pages/blog/[slug].astro`,
+`src/pages/blog/partage/[slug].jpg.ts`, `src/styles/blog-article.css`, `src/styles/blog-liste.css`,
+`MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fn Fenêtre produit : sans « Compte de démonstration », année 2026, un onglet « Tes déclarations » (13 novembre 2026)
 
 Trois décisions du propriétaire sur le bloc sous le premier écran.
 
