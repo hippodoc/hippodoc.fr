@@ -110,13 +110,15 @@
 
 .fiche .aff { --corps: 1.875rem; margin: 0; font-size: var(--corps); font-weight: var(--dw); line-height: 1.1; letter-spacing: -0.03em; color: var(--ink); text-wrap-style: balance; }
 
-/* La ligne de confiance : date, durée, auteur, chacun précédé d'un petit dessin. */
+/* La ligne de confiance : date, durée, auteur, chacun précédé d'un petit dessin. Le nom de l'auteur
+   mène à sa fiche ; sa cible fait 44 px de haut sans écarter la ligne. */
 .fiche .infos { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; align-self: center; margin-top: 16px; margin-bottom: 24px; font-size: 0.875rem; line-height: 1.4; color: var(--ink-2); }
 .fiche .infos > * { display: inline-block; }
 .fiche .infos > *::before { content: ""; display: inline-block; width: 15px; height: 15px; margin-right: 6px; vertical-align: -2px; background: var(--brand); -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; }
 .fiche .infos .publie, .fiche .infos .maj { order: 1; --i: var(--i-cal); }
 .fiche .infos .duree { order: 2; --i: var(--i-horloge); }
-.fiche .infos .auteur { order: 3; --i: var(--i-steth); font-weight: var(--tb); color: var(--ink); }
+.fiche .infos .auteur { order: 3; --i: var(--i-steth); display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0; border-radius: 6px; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-color: rgba(20, 37, 79, 0.3); text-underline-offset: 4px; }
+.fiche .infos .auteur:hover { color: var(--brand); text-decoration-color: currentColor; }
 /* Mise à jour : la date de publication reste dans le texte, la ligne n'affiche que la plus récente. */
 .fiche .infos.a-jour .publie { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .fiche .illustree .infos { padding-right: 84px; }

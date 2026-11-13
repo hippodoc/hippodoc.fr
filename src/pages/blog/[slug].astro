@@ -179,8 +179,11 @@ for (const r of related) {
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-/* JSON-LD */
-const authorSchema = { '@type': 'Person', name: author, url: `${SITE_URL}/qui-sommes-nous` };
+/* JSON-LD. L'auteur renvoie à sa fiche de /qui-sommes-nous (même `@id` que la Person de
+   cette page, § 9.fj) : les 48 articles se rattachent à elle au lieu de redéclarer une
+   personne sans identifiant. Le nom ne change pas. */
+const AUTEUR_ANCRE = '/qui-sommes-nous#ryan-goburdhun';
+const authorSchema = { '@type': 'Person', '@id': `${SITE_URL}${AUTEUR_ANCRE}`, name: author, url: `${SITE_URL}/qui-sommes-nous` };
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -338,10 +341,10 @@ const croix =
         </div>
         <h1 class="aff" set:html={nouer(echapper(title))} />
         {/* La ligne de confiance : les mêmes mots, réordonnés par la feuille (date, durée,
-            auteur). Quand l'article a été mis à jour, la date de publication reste dans la
-            page, masquée à l'œil. */}
+            auteur). Le nom de l'auteur mène à sa fiche (§ 9.fj). Quand l'article a été mis
+            à jour, la date de publication reste dans la page, masquée à l'œil. */}
         <div class:list={['infos', misAJour && 'a-jour']}>
-          <span class="auteur">{author}</span>
+          <a href={AUTEUR_ANCRE} class="auteur">{author}</a>
           <time class="publie" datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
           {misAJour && (
             <span class="maj">Mis à jour le <time datetime={misAJour.toISOString()}>{formatDate(misAJour)}</time></span>
