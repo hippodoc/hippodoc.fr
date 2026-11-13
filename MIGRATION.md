@@ -11011,7 +11011,8 @@ LCP à aucun format (le texte de la série l'est) et, plus lourde, elle partait 
 `generer-facture-remplacement` ont la même affiche (« T'AS REMPLACÉ, T'AS FACTURÉ »,
 `facture-generation-cover.png`). Rien n'est changé : décision de contenu pour le propriétaire.
 
-**Écarts, comptés** (contre `main`) : `preuve.cjs` (52 pages, 11 clés) : **52 pages identiques sur les
+**Écarts de la partie A seule, comptés** (contre `main` ; ceux de la branche entière, A et B, à la fin
+de la section) : `preuve.cjs` (52 pages, 11 clés) : **52 pages identiques sur les
 11 clés**, images comprises (alt, dimensions, adresse sans empreinte) ; `preuve-corps.cjs` (48 articles)
 : 0 écart de mots, titres, ancres, liens. HTML brut, comparé attribut par attribut (71 pages) : 19 pages
 identiques octet pour octet ; ailleurs, seulement : `srcset`, `sizes` et `style` ajoutés sur les 223
@@ -11081,10 +11082,179 @@ sans texte). Ce n'est ni Safari ni un iPhone.
 `src/styles/blog-liste.css`, `src/pages/blog/[slug].astro` et `src/styles/blog-article.css` (articles
 connexes seulement), `MIGRATION.md`, `CLAUDE.md`.
 
-#### B. La page d'article
+#### B. La page d'article : la vignette, et l'affiche en grand d'un appui
 
-(À écrire avec la partie B : la vignette qui s'ouvre en grand d'un appui, sa taille, la règle 1 dans la
-vignette.)
+Le premier message du propriétaire : « C'est super, mais c'est dommage que les illustrations soient si
+petites. Ou alors qu'on ne puisse pas les voir si on clique dessus. » Le gain de § 9.fj se garde : le
+texte de l'article reste dans le premier écran du téléphone (première ligne du texte, sur `main`, à
+499 px en médiane et 532 au plus à 393 × 692).
+
+**Règle 1 dans la vignette.** Sur `main`, la vignette rognait le bas des affiches 2:3 (`cover` dans un
+cadre 4:5 : « CE QUE TU NE DÉCIDES PAS, TU LE PORTES. » était coupé). Elle prend le cadre des listes :
+l'affiche entière (`object-fit: contain`, calée en haut), sur les couleurs de ses bords
+(`bordsAffiche()`, posées en `style` sur l'image). Le cadre (bord de papier, coins, ombre) reste
+celui de § 9.fj.
+
+**Plus grande là où c'est gratuit.** Borne : la première ligne du texte ne descend pas de plus de
+16 px, sur aucun des 48 articles (lue article par article, plus stricte que « médiane et maximum » :
+à 820 px, une vignette de 152 px garde la médiane et le maximum de `main` mais fait passer 10 titres
+sur une ligne de plus, +41 à +54 px pour eux ; refusé). Méthode : CSS injectée sur la construction de
+`main`, sans reconstruire (`zoom/b/essai-vignette.cjs`), largeur de la vignette et retrait du texte à
+côté d'elle (largeur + 20 px au téléphone, + 30 px, + 38 px) ; la première ligne est celle de
+`vitrine.cjs` (premier paragraphe ou élément de liste du corps).
+
+| Palier (format mesuré) | Largeurs essayées | Ce qui se passe | Retenu |
+|---|---|---|---|
+| moins de 560 px (360 × 640, 393 × 692) | 64, 68, 72, 76, 80, 84 | la vignette fixe la hauteur de la ligne de confiance : +1,25 px par px de large, pour les 48 | **76 × 95 px** (+15 px) |
+| 560 à 699 px (640 × 960, en plus) | 76 à 104 | idem | **88 × 110 px** (+15 px) |
+| 700 à 1 039 px (820 × 1 180) | 120 à 152 | le titre se retire d'autant : dès 124 px, un titre passe sur une ligne de plus (+41 px) | **120 px, inchangé** |
+| 1 040 à 1 359 px (1 280 × 800) | 132 à 160 | dès 136 px, quatre titres passent sur une ligne de plus (+50 px) | **132 px, inchangé** |
+| 1 360 px et plus (1 512 × 800, 1 920 × 1 080) | 132 à 248 | la vignette, dans la colonne de droite, a la place de la série et du titre au-dessus d'elle : rien ne bouge jusqu'à 144 px, sauf le seul titre d'une ligne (+15 px) ; à 152 px, +5 px pour 41 articles et +25 pour lui | **144 × 180 px** |
+
+Résultat sur la construction (48 articles, `zoom/b/premiere-ligne.txt`) : 360 × 640 : médiane 532 →
+547, maximum 565 → 580 ; 393 × 692 : 499 → 514 et 532 → 547 (+15 px pour chaque article) ;
+640 × 960 : 514 → 529 ; 820 × 1 180 et 1 280 × 800 : aucun écart ; 1 512 × 800 et 1 920 × 1 080 :
+médiane 490 et maximum 541 inchangés, +15 px pour un seul article (`inbox-zero-remplacant`, titre
+d'une ligne), 0 pour les 47 autres. Aucun défilement de côté. Le `sizes` dit ces largeurs ; le
+`srcset` (160, 264, 400 px) les couvre déjà, jusqu'à la densité 2 à 144 px.
+
+**L'affiche en grand, d'un appui** (aucun script, CLAUDE.md « Zéro JS client »). La vignette devient
+un `<button type="button" popovertarget="affiche-grande">`, nommé « Agrandir l'affiche »
+(`aria-label` : le titre de l'article est juste à côté), mesuré par l'autocapture de PostHog
+(`data-ph="blog_cover_zoom"`). Elle ouvre un popover natif (`<div popover="auto" class="grande"
+role="dialog" aria-label="L'affiche en grand">`, Chrome 114, Safari 17, Firefox 125) :
+
+- l'affiche entière, à la plus grande taille qui tient dans l'écran : sa largeur est la plus petite
+  de la largeur de la fenêtre (moins 16 px de chaque côté, 32 px à partir de 700 px) et de la hauteur
+  (en `dvh`, moins ces marges et une bande de 52 px en haut) fois le rapport de l'affiche (`--r`,
+  écrit au rendu) ; centrée sous cette bande ;
+- un fond sombre (`::backdrop`, l'encre de la DA à 90 %, écrite en clair : un `::backdrop` ne lit pas
+  toujours les jetons de la page ; aucun jaune) ;
+- « Fermer » : un rond de papier de 44 px au-dessus du coin droit de l'image, une croix en SVG, le mot
+  dans un élément `sr` ; il prend le focus à l'ouverture (`autofocus`) ;
+- fermeture par « Fermer » (`popovertargetaction="hide"`), Échap, ou un appui hors de l'image (la
+  boîte du popover est l'image seule ; un appui sur l'image ne ferme pas). Après Échap et « Fermer »,
+  le focus revient à la vignette ; après un appui dehors, non : le popover rend le focus seulement
+  quand on le ferme depuis lui (règle du navigateur) ;
+- au doigt, sous 960 px, la page ne défile pas sous l'affiche (`html { overflow: hidden }` tant
+  qu'elle est ouverte, comme sous le tiroir du menu) ; à la souris, la molette fait défiler la page
+  sous le fond, l'affiche reste ouverte et fixe ;
+- le signe qu'on peut agrandir : une pastille de papier et sa loupe (SVG en fond, bleu de marque), au
+  coin bas de la vignette (en bas : le titre de l'affiche est en haut), visible sans survol ; curseur
+  `zoom-in` ; anneau de focus de la DA. La loupe et le curseur sont sous `@supports
+  selector(:popover-open)` : sans popover, la vignette reste une vignette, sans promesse, et le popover
+  reste caché (`.grande { display: none }`, que seul `:popover-open` défait).
+
+**Aucun coût au chargement.** La grande image est en `loading="lazy"` dans le popover fermé, que le
+navigateur ne dessine pas : elle n'est demandée qu'à l'ouverture. `srcset` 600, 900, 1 200 px et la
+largeur de la source, bornés à la source et dédoublonnés (une affiche de 450 px n'a qu'un fichier,
+celui du `src`) ; `sizes` en `min()` des deux bornes (lu juste par Chromium et WebKitGTK : le fichier
+choisi correspond à la largeur dessinée). 88 fichiers ajoutés au build (36 à 600 px, 16 à 1 200 px,
+36 à la largeur de la source ; 13 Mo, lus seulement à l'ouverture). Le `src` de la grande image est
+celui de la vignette (900 px, ou la source plus petite).
+
+**Contenu ajouté** (flagué ici, CLAUDE.md « Contenu français verbatim ») : « Fermer » (texte du
+bouton, masqué à l'œil), et deux noms de la page : « Agrandir l'affiche », « L'affiche en grand »
+(`aria-label`). La seconde `<img>` reprend le texte de remplacement de la vignette (le titre).
+
+**Essais (Chromium, `zoom/b/essai-popover.cjs`)** sur trois affiches (une de 450 px, `tout-comprendre-
+carmf` ; une 2:3 de 1 024 px, `inbox-zero-remplacant` ; une 0,805, `cfe-medecin-remplacant`, la plus
+large des cinq formats : il n'y a pas d'affiche 0,88), à 393 × 692 au doigt (`hasTouch`,
+`touchscreen.tap`, densité 3), 820 × 1 180 au doigt (densité 2) et 1 512 × 800 à la souris :
+
+- 9 sur 9 : aucune requête de la grande image avant l'ouverture, une seule à l'ouverture ; rien n'a le
+  focus au chargement (l'`autofocus` d'un popover fermé n'est pas pris) ;
+- ouverture : 9 sur 9, focus sur « Fermer » ; l'image entière dans la fenêtre, à son rapport
+  (361 × 542 et 361 × 448 à 393 ; 709 × 1 064 et 756 × 939 à 820 ; 456 × 684 et 551 × 684 à 1 512) ;
+  « Fermer » dans la fenêtre ; aucun défilement de côté ;
+- Échap : 9 sur 9 ferment, focus rendu à la vignette ; appui dehors : 9 sur 9 ferment (focus non
+  rendu, voir plus haut) ; appui sur l'image : reste ouverte ; « Fermer » : 9 sur 9, focus rendu ;
+- défilement : au doigt, la page ne bouge pas (un glissé synthétique sur le fond ferme l'affiche
+  comme un appui ; des événements tactiles bruts, non) ; à la souris, la page défile de 400 px sous
+  le fond, l'affiche reste ouverte ;
+- clavier : la vignette est le 9e arrêt de Tab au téléphone, le 13e à 1 512 (après le fil, la série et
+  l'auteur) ; anneau visible ; Entrée ouvre, focus visible sur « Fermer » ; Échap ferme et rend le
+  focus ; Entrée sur « Fermer » ferme et le rend. Tab depuis « Fermer » sort du popover (il n'est
+  pas modal) : le focus passe au sommaire, sous le fond, l'affiche reste ouverte ; Échap la ferme
+  encore, sans rendre le focus à la vignette ;
+- 4G lente (150 ms, 1,6 Mbit/s) : la grande image (100 Ko pour la 0,805 à 393 px) arrive 0,7 s après
+  l'appui ; d'ici là, le cadre est déjà à sa taille, rempli des couleurs des bords (deux dégradés,
+  une couture au milieu), sans saut ;
+- contrastes forcés : la vignette, ses bandes et la loupe gardent leurs couleurs ; « Fermer » a un
+  bord.
+
+**WebKitGTK 2.52** (`zoom/b/webkit-b.py`, méthode de CLAUDE.md ; 393 px dans un `<iframe>`) : popover
+pris en charge ; mêmes résultats sur les trois affiches à 1 512 et à 393 : vignettes de 144 × 180 et
+76 × 95 en `contain`, loupe et curseur ; aucune grande image avant l'ouverture (session neuve : dans
+une session qui avait déjà ouvert la même image, WebKit la reprend de son cache mémoire dès le
+chargement, sans requête), une à l'ouverture ; image entière dans la fenêtre (497 × 746 et 601 × 746 à
+1 512 ; 361 × 542 et 361 × 448 à 393) ; focus sur « Fermer » (anneau visible même après un clic,
+contrairement à Chromium) ; Échap, clic dehors, « Fermer » ferment ; focus rendu après Échap et
+« Fermer » ; clic sur l'image : reste ouverte ; clavier : 19e arrêt de Tab, Entrée, Échap, Entrée sur
+« Fermer », comme Chromium. Ce n'est ni Safari ni un iPhone.
+
+**Lighthouse mobile** (serveurs qui compressent, passes alternées avec `main`, `zoom/b/lighthouse`) :
+CARMF 98, 98, 97 (`main` 98, 98, 83 — passe bruitée, TBT 663 ms), CFE 98, 98, 98 (`main` 98, 98, 98) ;
+accessibilité, bonnes pratiques et SEO à 100 ; CLS 0 ; élément LCP inchangé (un texte de « L'essentiel ») ;
+seule la vignette est chargée (8 à 10 Ko). Sur ordinateur (1 280, 1 512, 1 920 px), l'élément LCP reste
+un texte (le titre, un paragraphe ou un élément de liste), le même que sur `main` (la vignette de 144 px
+n'y passe pas devant).
+
+**Ce qui reste faible (partie B) :**
+
+- Le popover n'est pas modal : au clavier, Tab depuis « Fermer » sort de l'affiche, qui reste ouverte
+  au-dessus de la page ; Échap la ferme. Un `<dialog>` modal ouvert sans script (`command="show-modal"`)
+  piégerait le focus ; écarté (le cahier a décidé le popover, et ce mécanisme est plus récent).
+- Après un appui hors de l'image, le focus n'est pas rendu à la vignette (règle du popover).
+- Les 11 affiches de 450 px sont agrandies (1,57 fois en largeur CSS à 820 px, 2,4 fois en pixels
+  réels sur un téléphone de densité 3) : nettes à l'œil sur les captures, mais plus douces que les
+  autres. La source ne peut pas mieux faire.
+- Pendant le chargement de la grande image, le remplissage montre une couture au milieu (les
+  couleurs du bord gauche et du bord droit).
+- La vignette du téléphone a coûté 15 px (le texte commence à 514 px au lieu de 499, médiane à
+  393 × 692) ; tablette et petit ordinateur n'ont pas grandi (aucune place gratuite).
+- Non essayé : un vieux navigateur sans popover (raisonné sur la feuille : popover caché, ni loupe ni
+  curseur ; la désactivation par option de Chromium n'existe plus), Safari réel, iPhone, Firefox,
+  VoiceOver.
+
+#### Écarts de la branche (A et B), comptés contre `main`
+
+- `preuve-corps.cjs` (48 articles) : 0 écart de mots, de titres, d'ancres et de liens du corps ; un
+  seul `<h1>` partout.
+- `preuve.cjs` (52 pages, 11 clés) : `/blog` et les 3 séries identiques sur les 11 clés ; les 48
+  articles identiques sur la tête, le JSON-LD, les titres, les liens, le corps et la FAQ ; sur chacun,
+  quatre écarts voulus, les mêmes : le texte de `<main>` gagne « Fermer » (même nombre de mots : le
+  mot se colle, dans `textContent`, à « lecture » et « Sommaire », comme ceux-ci l'étaient déjà),
+  une `<img>` de plus (la grande, même texte de remplacement et mêmes dimensions déclarées que la
+  vignette), un attribut de mesure de plus (`data-ph=blog_cover_zoom`), un identifiant de plus
+  (`affiche-grande`).
+- HTML brut, attribut par attribut (`zoom/b/ecarts-ab.cjs`, 71 pages) : 19 pages identiques octet
+  pour octet ; ailleurs, seulement :
+
+  | Écart | Nombre | Pages | Partie |
+  |---|---|---|---|
+  | `srcset`, `sizes`, `style` ajoutés sur les affiches des connexes | 223 chacun | 48 | A |
+  | `srcset` et `sizes` changés, `style` ajouté sur les affiches des listes | 96 chacun | 4 | A |
+  | préchargement de la une : `imagesrcset`, `imagesizes` changés | 1 chacun | 1 | A |
+  | première affiche des séries : `loading` changé, `fetchpriority` retiré | 3 chacun | 3 | A |
+  | vignette : bouton autour de l'image (`popovertarget`, `aria-label`, `data-ph`) | 48 | 48 | B |
+  | vignette : `class` retirée de l'image (passée au bouton), `sizes` changé, `style` ajouté | 48 chacun | 48 | B |
+  | popover ajouté après la vignette (une `<img>`, le texte « Fermer ») | 48 | 48 | B |
+  | nom de la feuille de page (empreinte) | 52 | 52 | A et B |
+
+  Aucun autre écart : le HTML, ces éléments et ces attributs retirés, est identique octet pour octet.
+- `verify-site.mjs`, non modifié : passe (68 pages, 5 482 liens internes : 48 de plus que la partie
+  A seule, le `src` de la grande image de chaque article ; les 7 avertissements de `main`).
+- Feuille commune : `_astro_assets.BdxOyZgM.css`, même nom. Aucun script ajouté. Feuille de l'article :
+  9,9 → 10,5 Ko compressée. HTML d'un article : +1,2 à +1,4 Ko compressé (A et B). Images : 135
+  fichiers ajoutés (47 à 240 px pour les listes, 88 pour l'affiche en grand), aucun retiré.
+- Hauteur des pages d'article (médiane des 48) : 8 716 → 8 787 px à 393 × 692 (+70 à +91 : connexes
+  et vignette), 7 546 → 7 567 px à 1 512 × 800.
+
+**Fichiers (partie B)** : `src/pages/blog/[slug].astro` (la vignette, le popover, leurs `srcset`),
+`src/styles/blog-article.css` (vignette, loupe, popover, contrastes forcés, impression), `MIGRATION.md`,
+`CLAUDE.md` (« Zéro JS client » : le popover parmi les interactions natives ; puce « Couverture » ;
+la règle des affiches étendue à la vignette).
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

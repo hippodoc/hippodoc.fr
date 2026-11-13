@@ -38,7 +38,8 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
   recherche de `/blog` (script de page ~1 Ko ; module `src/lib/blog-search.ts` et index
   `/blog/recherche.json` chargés au premier focus — MIGRATION.md § 9.db). Les interactions
   des pages statiques sont CSS-only (radios/checkbox, `:has()`) ou natives
-  (`<details>/<summary>`) : onglets, profils, plis et pause du décor de l'accueil compris.
+  (`<details>/<summary>`, `popover`) : onglets, profils, plis et pause du décor de l'accueil
+  compris, et l'affiche d'un article ouverte en grand (§ 9.fo).
 - **Radix ne SSR pas le contenu fermé** — un Accordion/Collapsible Radix fermé ne livre
   PAS son texte dans le HTML statique. Pour tout contenu porteur de SEO : `<details>` natif.
 - **Lighthouse ≥ 95** (perf/SEO/a11y/BP) sur `/`, `/simulateur` et un article. Contraste :
@@ -401,9 +402,26 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   - ⚠️ `lh` dans un `::before` qui change de corps (chiffre d'une étape) vaut la ligne du
     `::before`, pas celle de l'élément : passer par `--lig` (propriété enregistrée, `1lh`
     calculé sur le `li`). Une liste qui reprend (`start`) reçoit son `counter-reset` du plugin.
-  - **Couverture** : une vignette (64 × 80 px au téléphone, 132 × 165 px sur ordinateur),
-    `srcset` 160, 264, 400 px ; le `src` reste celui d'avant (900 px, ou la largeur de
-    l'affiche quand elle est plus petite).
+  - **Couverture** (§ 9.fj, § 9.fo) : une vignette, l'affiche entière dans le cadre 4:5 des
+    listes (règle des affiches, plus bas), 76 × 95 px au téléphone, 88 px de 560 à 699 px, 120
+    et 132 px de 700 à 1 359 px, 144 × 180 px au-delà. Ces tailles sont les plus grandes qui ne
+    font pas descendre la première ligne du texte de plus de 16 px, mesurées sur les 48 articles
+    à chaque palier (méthode en § 9.fo) : on ne les agrandit pas sans refaire la mesure. `srcset` 160, 264, 400 px ; le `src` reste celui
+    d'avant (900 px, ou la largeur de l'affiche quand elle est plus petite).
+    La vignette est un `<button popovertarget="affiche-grande">` (`aria-label` « Agrandir
+    l'affiche », `data-ph="blog_cover_zoom"`) : d'un appui, l'affiche en grand dans un
+    popover natif (`<div popover="auto" class="grande">`, aucun script), à la plus grande
+    taille qui tient dans l'écran (rapport `--r` écrit au rendu), sous une bande de 52 px où
+    se tient « Fermer » (`autofocus`). Échap, un appui hors de l'image et « Fermer » ferment ;
+    le focus revient à la vignette (pas après un appui dehors : c'est la règle du popover). La
+    boîte du popover est l'image seule : un élément ajouté dedans élargit la zone qui ne ferme
+    pas. Sa grande image est en `loading="lazy"` dans le popover fermé : elle n'est demandée
+    qu'à l'ouverture (`srcset` 600, 900, 1 200 px et la source ; `sizes` en `min()` des deux
+    bornes de la fenêtre). La loupe (pastille dessinée par `::after`) et le curseur ne
+    s'affichent que sous `@supports selector(:popover-open)` ; sans popover, la vignette reste
+    une vignette et le popover reste caché (`.grande { display: none }`). Au doigt sous 960 px,
+    la page ne défile pas sous l'affiche ouverte, comme sous le tiroir. Le popover n'est pas
+    modal : Tab depuis « Fermer » en sort (vers le sommaire).
   - **Image de partage** (§ 9.fl) : `/blog/partage/<slug>-<empreinte>.jpg`, 1 200 × 630,
     fabriquée à la construction (`src/pages/blog/partage/[slug].jpg.ts`,
     `src/lib/image-partage.mjs`) : `og:image`, `twitter:image` et première image du JSON-LD
@@ -418,8 +436,8 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 - **Les affiches** (§ 9.fo ; le propriétaire : « pas trop grande mais pas trop petite ») : une
   affiche ne se rogne jamais là où elle a du texte ou la scène, et jamais en haut (son titre).
   Les 48 ont cinq formats (2:3, 0,75, 0,79, 0,805) : aucun cadre commun ne les garde toutes.
-  Dans les listes (`/blog`, séries, une, articles connexes) : un cadre 4:5, l'affiche entière
-  (`object-fit: contain`, calée en haut) sur les couleurs de ses bords. `src/lib/affiche-bords.mjs`
+  Dans les listes (`/blog`, séries, une, articles connexes) et la vignette d'article : un cadre
+  4:5, l'affiche entière (`object-fit: contain`, calée en haut) sur les couleurs de ses bords. `src/lib/affiche-bords.mjs`
   (sharp, à la construction, mémoïsé) les rend en `--bord-g` et `--bord-d` (8 couleurs de haut en
   bas), posées en `style` sur l'`<img>` ; la feuille en fait deux dégradés (moitié gauche, moitié
   droite) en fond de l'image. Un nouvel emplacement d'affiche reçoit le même cadre et le même fond.
