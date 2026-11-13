@@ -403,6 +403,10 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
   :where(.da) .hd-links, :where(.da) .hd-login { display: flex; }
   :where(.da) .hd-cta-desk { display: inline-flex; }
   :where(.da) .hd-cta-pill, :where(.da) .hd-burger, :where(.da) .hd-toggle, :where(.da) .hd-overlay, :where(.da) .hd-drawer { display: none; }
+  /* Le mot commence à 26 px du bord gauche, comme le texte du bouton d'essai
+     finit à 26 px du bord droit (8 px de pastille, 18 px de bouton). Sous
+     960 px, il répond déjà à l'icône du menu, à 20 px de chaque bord. § 9.ff */
+  :where(.da) .hd-bar { padding-left: 22px; }
 }
 
 /* ───────── Pied : l'eau profonde ───────── */
