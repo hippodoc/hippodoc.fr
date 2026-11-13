@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#10"
 seriesId: "fiche-fiscalite"
+theme: "statut-contrats-revenus"
 episodeNumber: 10
 readTime: "9 min"
 cover: "/blog/facture-generation-cover.png"

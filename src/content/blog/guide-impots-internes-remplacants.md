@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#9"
 seriesId: "fiche-fiscalite"
+theme: "impots-declarations"
 episodeNumber: 9
 readTime: "15 min"
 cover: "/blog/guide-impots-internes-cover.jpg"

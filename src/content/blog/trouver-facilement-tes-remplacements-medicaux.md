@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#2"
 seriesId: "fiche-pratique"
+theme: "debuter-organiser"
 episodeNumber: 2
 readTime: "4 min"
 cta: "Prêt à organiser tes remplas dès le premier ?"

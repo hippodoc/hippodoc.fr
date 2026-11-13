@@ -7,6 +7,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#15"
 seriesId: "fiche-fiscalite"
+theme: "cotisations-protection"
 episodeNumber: 15
 readTime: "11 min"
 cover: "/blog/prevoyance-madelin-cover.jpg"

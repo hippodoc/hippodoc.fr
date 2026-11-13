@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#4"
 seriesId: "fiche-fiscalite"
+theme: "cotisations-protection"
 episodeNumber: 4
 readTime: "7 min"
 cover: "/blog/carmf-cover.png"

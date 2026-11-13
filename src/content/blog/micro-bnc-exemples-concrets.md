@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "impots-declarations"
 episodeNumber: 7
 readTime: "6 min"
 cover: "/blog/micro-bnc-exemples-concrets-cover.jpg"

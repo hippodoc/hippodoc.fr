@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#3"
 seriesId: "fiche-pratique"
+theme: "debuter-organiser"
 episodeNumber: 3
 readTime: "4 min"
 cover: "/blog/checklist-administrative-cover.png"

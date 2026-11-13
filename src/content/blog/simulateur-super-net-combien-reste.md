@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "budget-patrimoine"
 episodeNumber: 10
 readTime: "8 min"
 cover: "/blog/simulateur-super-net-cover.jpg"

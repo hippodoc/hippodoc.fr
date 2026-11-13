@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "cotisations-protection"
 episodeNumber: 6
 readTime: "7 min"
 cover: "/blog/rspm-exemples-concrets-cover.jpg"

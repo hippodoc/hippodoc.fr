@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#3"
 seriesId: "fiche-fiscalite"
+theme: "cotisations-protection"
 episodeNumber: 3
 readTime: "8 min"
 cover: "/blog/urssaf-comprendre-cover.png"
