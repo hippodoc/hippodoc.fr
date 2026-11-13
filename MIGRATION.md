@@ -10136,6 +10136,23 @@ vrai build.
 **Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Relevé, bancs et cas de mutation :
 dossier de travail, hors dépôt.
 
+### 9.fd Sitemap : `/faq` datée du 13 novembre 2026 (13 novembre 2026)
+
+Décision du propriétaire. Le 13 novembre, la PR 146 (§ 9.fa) a réécrit douze réponses du
+schéma `FAQPage` de `/faq` pour qu'elles disent ce que la page affiche ; le `lastmod` de
+la page restait au 10 novembre, date qu'elle partageait avec la mise en ligne de l'accueil
+de la DA 2026 (§ 9.eb). Le texte visible de `/faq` n'a pas changé ce jour-là.
+
+- `src/lib/pages-lastmod.ts` : `/faq` a sa propre constante, `FAQ_LAST_UPDATED_ISO`,
+  au `2026-11-13`. `ACCUEIL_DA_LAST_UPDATED_ISO`, que plus aucune page ne portait, est
+  retirée (aucune autre source ni script ne la lisait). Le commentaire de
+  `ACCUEIL_LAST_UPDATED_ISO` ne dit plus « à remettre au jour réel de la mise en ligne » :
+  c'est fait (PR 144, 13 novembre).
+- Effet sur le build : seule l'entrée `/faq` de `sitemap-0.xml` change de date ; aucune
+  page ne change. `verify-site.mjs` relit cette table et compare le sitemap.
+
+**Fichiers** : `src/lib/pages-lastmod.ts`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
