@@ -468,14 +468,19 @@
 .fiche .qa-in { padding-bottom: 16px; }
 .fiche .qa-in, .fiche .qa-in p { font-size: 0.96875rem; line-height: 1.55; color: var(--ink-2); }
 
-/* Articles liés : des lignes, petite vignette. */
+/* Articles liés (§ 9.fo) : la carte de /blog. Une feuille blanche à deux colonnes de lignes, un filet
+   entre deux rangs, l'affiche à gauche (96 px) ; sous 700 px, une rangée de cartes qui défile de côté
+   (plus bas). L'affiche n'est jamais rognée : entière dans un cadre 4:5, calée en haut, sur les
+   couleurs de ses bords (`--bord-g`, `--bord-d`, posées en style sur l'image à la construction,
+   `src/lib/affiche-bords.mjs`) ; sans elles, un ciel doux. Six lignes en trois rangs : la feuille
+   garde la hauteur de l'ancienne liste à une colonne (vignettes de 40 × 50 px, rognées). */
 .fiche .connexes { margin-top: 32px; }
-.fiche .cartes { overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
-.fiche .carte { display: flex; align-items: center; gap: 14px; padding: 9px 16px; color: var(--ink); text-decoration: none; }
-.fiche .carte + .carte { border-top: 1px solid var(--line); }
+.fiche .cartes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 6px; overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.fiche .carte { display: flex; align-items: center; gap: 14px; padding: 12px 10px; color: var(--ink); text-decoration: none; }
+.fiche .carte:nth-child(n+3) { border-top: 1px solid var(--line); }
 .fiche .carte:hover { background: var(--sky-soft); }
 .fiche .carte:focus-visible { outline-offset: -3px; }
-.fiche .carte img { flex: none; width: 40px; height: 50px; object-fit: cover; object-position: top; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
+.fiche .carte img { flex: none; width: 96px; height: auto; min-height: 0; aspect-ratio: 4 / 5; object-fit: contain; object-position: 50% 0; border-radius: 10px; background: linear-gradient(var(--bord-g)) left / 50.5% 100% no-repeat, linear-gradient(var(--bord-d)) right / 50.5% 100% no-repeat, var(--sky-soft); }
 .fiche .carte > div { min-width: 0; }
 .fiche .carte p { margin: 0; }
 .fiche .carte-titre { font-size: 0.9375rem; font-weight: 620; line-height: 1.3; text-wrap-style: pretty; }
@@ -527,18 +532,25 @@
 .fiche .remonter { margin-top: 20px; text-align: center; }
 .fiche .remonter .lien { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); text-decoration: none; }
 
-/* Téléphone : la fin de page tient en 2,5 écrans. Articles liés en rangée de cartes qui défile de côté,
-   partage sur une ligne, questions resserrées. */
-@media (max-width: 559px) {
-  /* La carte suivante dépasse du bord : les six restent visibles, sans lien caché. */
+/* Articles liés, sous 700 px : une rangée de cartes qui défile de côté (la feuille à deux colonnes y
+   laissait des titres trop étroits). La carte suivante dépasse du bord : les six restent visibles, sans
+   lien caché. L'affiche fait 112 px de large (au moins 96 px demandés) : la plus grande qui garde la
+   rangée nette, aucun des 223 titres coupé à 360 et à 393 px avec cinq lignes (à 120 px, 4 coupés à
+   360 px ; avec quatre lignes, 18 coupés dès 104 px). Cinq lignes de titre et la durée tiennent dans la
+   hauteur de l'affiche (140 px) : la carte ne grandit pas pour elles. */
+@media (max-width: 699.98px) {
   .fiche .cartes { display: flex; gap: 10px; margin: 0 calc(-1 * var(--gut)); padding: 2px var(--gut) 12px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); border-radius: 0; background: none; box-shadow: none; scrollbar-width: none; }
   .fiche .cartes::-webkit-scrollbar { display: none; }
-  .fiche .carte { flex: 0 0 min(76%, 280px); box-sizing: border-box; align-items: flex-start; gap: 12px; padding: 12px 14px 12px 12px; scroll-snap-align: start; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
-  .fiche .carte + .carte { border-top: 0; }
+  .fiche .carte { flex: 0 0 min(82%, 300px); box-sizing: border-box; align-items: flex-start; gap: 12px; padding: 12px 14px 12px 12px; scroll-snap-align: start; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+  .fiche .cartes > .carte { border-top: 0; }
   .fiche .carte:focus-visible { outline-offset: 2px; }
-  .fiche .carte img { width: 44px; height: 55px; border-radius: 8px; }
-  .fiche .carte-titre { font-size: 0.9375rem; line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+  .fiche .carte img { width: 112px; }
+  .fiche .carte-titre { font-size: 0.9375rem; line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
   .fiche .carte .carte-duree { margin-top: 4px; font-size: 0.875rem; }
+}
+
+/* Téléphone : la fin de page tient en 2,5 écrans. Partage sur une ligne, questions resserrées. */
+@media (max-width: 559px) {
   .fiche .liste .qa > summary { min-height: 50px; padding: 8px 0; }
   .fiche .qa-t { font-size: 0.9375rem; line-height: 1.32; }
   .fiche .partage { gap: 0 6px; margin-top: 12px; font-size: 0.875rem; }

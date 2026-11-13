@@ -18,6 +18,7 @@ import '@/styles/blog-article.css';
 import { entreesSommaire } from '@/lib/article-sommaire';
 import { EMO_SRC } from '@/lib/article-emojis.mjs';
 import { donneesPartage, nomImagePartage } from '@/lib/image-partage.mjs';
+import { bordsAffiche } from '@/lib/affiche-bords.mjs';
 import portraitRyan from '@/assets/founders/ryan-goburdhun.jpeg';
 
 export async function getStaticPaths() {
@@ -189,12 +190,19 @@ const related = (relatedArticles ?? [])
   .filter((p) => p !== undefined)
   .slice(0, 6);
 
-/* Vignettes des articles connexes : 40 × 50 px (44 × 55 au téléphone) ; 132 px de large
-   suffisent à trois fois cette taille (288 px servaient l'ancienne vignette de 96 px). */
-const relatedCovers = new Map<string, string>();
+/* Affiches des articles connexes (§ 9.fo) : entières, jamais rognées, dans un cadre 4:5 sur
+   les couleurs de leurs bords (`affiche-bords.mjs`) ; 112 px de large dans la rangée qui défile
+   (sous 700 px), 96 px dans la feuille à deux colonnes au-delà. Le `src` reste le fichier de
+   132 px d'avant ; le srcset ajoute 240 et 320 px (densités 2 et 3), bornés à la source. */
+const relatedCovers = new Map<string, { src: string; srcset: string; bords: string }>();
 for (const r of related) {
-  const img = await resolveBlogImage(r.data.cover, 132);
-  if (img) relatedCovers.set(r.id, img.src);
+  const variantes = (await Promise.all([132, 240, 320].map((w) => resolveBlogImage(r.data.cover, w))))
+    .filter((v): v is NonNullable<typeof v> => v !== null);
+  if (!variantes.length) continue;
+  const srcset = [...new Map(variantes.map((v) => [Number(v.attributes.width), v.src])).entries()]
+    .map(([w, src]) => `${src} ${w}w`)
+    .join(', ');
+  relatedCovers.set(r.id, { src: variantes[0].src, srcset, bords: await bordsAffiche(r.data.cover) });
 }
 
 /* Dates */
@@ -492,7 +500,16 @@ const croix =
             {related.map((r, i) => (
               <a href={`/blog/${r.id}`} data-ph="blog_related" data-ph-rank={i + 1} class="carte">
                 {relatedCovers.get(r.id) && (
-                  <img src={relatedCovers.get(r.id)} alt="" loading="lazy" width="44" height="55" />
+                  <img
+                    src={relatedCovers.get(r.id)!.src}
+                    srcset={relatedCovers.get(r.id)!.srcset}
+                    sizes="(max-width: 699px) 112px, 96px"
+                    alt=""
+                    loading="lazy"
+                    width="44"
+                    height="55"
+                    style={relatedCovers.get(r.id)!.bords}
+                  />
                 )}
                 <div>
                   <p class="carte-titre" set:html={nouer(echapper(r.data.title))} />
