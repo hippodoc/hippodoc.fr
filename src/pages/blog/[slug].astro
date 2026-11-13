@@ -5,10 +5,20 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BlogSlides from '@/components/BlogSlides.tsx';
-import { SITE_URL, APP_URL, LOGO_URL, CALENDLY_URL, PRODUCT_DEFINITION } from '@/lib/site';
+import { SITE_URL, APP_URL, LOGO_URL, CALENDLY_URL, PRODUCT_DEFINITION, AUTEURS } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
 import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
+/* Nouveau système de lecture (novembre 2026, MIGRATION.md § 9.fj). Toute la feuille de la
+   page est dans un fichier de src/styles : Tailwind ne la lit pas, et le corps de l'article,
+   rendu depuis le Markdown, n'a pas l'attribut de portée d'Astro. Elle part dans la feuille
+   de la page, jamais dans la feuille commune. Le balisage qu'elle dessine est posé au rendu
+   par src/lib/rehype-article.mjs. */
+import '@/styles/blog-article.css';
+import { entreesSommaire } from '@/lib/article-sommaire';
+import { EMO_SRC } from '@/lib/article-emojis.mjs';
+import { donneesPartage, nomImagePartage } from '@/lib/image-partage.mjs';
+import portraitRyan from '@/assets/founders/ryan-goburdhun.jpeg';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -16,24 +26,77 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content, headings } = await render(post);
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+/* Une entrée par titre { slug, depth, texte, emoji, numero, encadre, sources, sous, np… }. */
+const entrees = entreesSommaire(headings, remarkPluginFrontmatter?.balisage);
 const posts = await getCollection('blog');
 
-/* Sommaire — CONDITIONNEL. Les ancres existent déjà (tous les titres reçoivent un
-   `id` au build), donc c'est une simple liste de liens — zéro JS. Pas de surlignage
-   de la section courante : un scrollspy imposerait du JS.
-
-   Le seuil porte sur la LONGUEUR, pas sur le nombre de sections. Un seuil « ≥ 8
-   sections » avait été essayé et s'est révélé faux : le style maison découpe même
-   les articles courts en nombreuses micro-sections, si bien que 14 articles de
-   moins de 900 mots déclenchaient un sommaire. Le pire cas — 367 mots pour
-   19 entrées — produisait un sommaire occupant 25 % de la hauteur de l'article,
-   soit 19 mots par section. Un sommaire n'a de sens que si l'article ne tient pas
-   à l'écran : au-dessous de ~1 200 mots, il coûte plus qu'il ne rapporte.
-   La mesure montre une rupture nette dans le corpus entre 1 245 et 536 mots. */
+/* Le sommaire — le plan seul : les h2 qui ne sont ni un titre d'encadré ni les sources.
+   Dès trois parties (les 48 articles, contre 19 avec l'ancien seuil de 1 200 mots et
+   8 h2) : on sait toujours où l'on est, et les fiches courtes en profitent autant que
+   les guides. Ordinateur (1 040 px et plus) : rail collant à gauche, toujours ouvert,
+   la partie en cours repérée sans script. Téléphone et tablette : un pli « Sommaire »
+   en tête de la feuille, une pastille ronde qui y ramène, un fil de lecture.
+   Les sous-parties (rang 2, `t-sous` posé par le plugin : « 4.2 », ou « 1. Retraite de
+   base » sous « Combien ça coûte ? ») sont en retrait, hors du compte des parties. */
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
-const nbMots = post.body?.split(/\s+/).length ?? 0;
-const showToc = nbMots >= 1200 && toc.filter((h) => h.depth === 2).length >= 8;
+const plan = entrees.filter((e) => e.depth === 2 && !e.encadre && !e.sources);
+/* Les parties comptées : ni les sous-parties, ni un titre hors du compte (« Légende » du
+   calendrier fiscal : dans le sommaire, sans numéro, sans repère au-dessus du titre). */
+const principal = plan.filter((e) => !e.sous && !e.horsCompte);
+const showToc = plan.length >= 3;
+/* Numéros. Dans le texte, au-dessus de chaque titre de partie, sa place dans le plan
+   (« 04 / 10 », compteurs CSS, le total donné ici) ; pas quand l'auteur a numéroté des
+   parties (« 1. », 1️⃣, « Étape 1 ») : deux numérotations se seraient superposées.
+   Dans le rail : un plan numéroté par l'auteur sur au moins la moitié de ses parties
+   (« mode auteur ») garde ses numéros, une entrée sans numéro n'en a pas ; sinon, le
+   rail numérote les parties (01, 02…), du même compte que le repère. Une sous-partie
+   garde toujours le numéro de l'auteur. */
+const numerote = principal.some((e) => e.numero);
+const modeAuteur = principal.length > 0 && principal.filter((e) => e.numero).length * 2 >= principal.length;
+const parSlug = new Map(entrees.map((e) => [e.slug, e]));
+/* Libellé d'une entrée : le texte du lien est celui du titre, caractère pour caractère.
+   Les émojis (et le numéro écrit, quand le rail l'affiche dans sa colonne) restent dans
+   le lien, masqués à l'œil comme la classe `sr` du site, et muets. */
+const libelle = (h: { slug: string; text: string }) => {
+  const e = parSlug.get(h.slug);
+  if (!e) return { avant: '', milieu: h.text, apres: '' };
+  const visible = e.numero && (modeAuteur || e.sous) ? e.texteSansNumero : e.texte;
+  const i = visible ? h.text.indexOf(visible) : -1;
+  if (i < 0) return { avant: '', milieu: h.text, apres: '' };
+  return { avant: h.text.slice(0, i), milieu: visible, apres: h.text.slice(i + visible.length) };
+};
+const RE_EMO = new RegExp(EMO_SRC, 'gu');
+const masquerEmojis = (html: string) => html.replace(RE_EMO, (m) => `<span class="em-cache" aria-hidden="true">${m}</span>`);
+/* Repère de la partie en cours, repli pour les moteurs sans `scroll-target-group` (Safari 26,
+   Firefox 159) : une ligne de temps par titre du plan, nommée ici ; chaque lien suit la sienne et
+   celle de la partie suivante. Une petite feuille écrite au rendu, aucun script, sous la largeur
+   du rail seulement (ailleurs, le moteur calculait des lignes de temps pour un rail absent).
+   Comme le repère natif de Chrome : la première partie est allumée dès le haut de la page (son
+   lien, `som-debut`, ne suit que la ligne de la partie suivante), la dernière le reste jusqu'au
+   bas (`som-fin` : elle ne suit que la sienne). Une ligne de temps `none` ne convient pas :
+   WebKit applique quand même l'état final de l'animation. */
+const nomLigne = (i: number) => `--p${i}`;
+const lignes = plan.map((e, i) => `[id="${e.slug.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]{view-timeline-name:${nomLigne(i)}}`).join('');
+const feuilleRepere = showToc
+  ? `@supports (animation-timeline: view()) and (not (scroll-target-group: auto)){@media (min-width:1040px){.fiche{timeline-scope:${plan.map((_, i) => nomLigne(i)).join(',')}}${lignes}}}`
+  : '';
+/* Plan long (plus de 14 parties) qui a des sous-parties : le rail de l'ordinateur ne montre que les
+   parties (frais-pros-medecin-liberal-2026 : 11 entrées sur 22, il tient dans un écran de 800 px) ;
+   la partie reste repérée pendant ses sous-parties. Le pli du téléphone les montre toutes. */
+const dense = plan.length > 14 && plan.some((e) => e.sous);
+const auRail = dense ? principal : plan;
+const lignesDuLien = (slug: string) => {
+  const i = plan.findIndex((e) => e.slug === slug);
+  if (i < 0) return { style: undefined, debut: false, fin: false };
+  const k = auRail.findIndex((e) => e.slug === slug);
+  const suivante = k >= 0 ? auRail[k + 1] : plan[i + 1];
+  return {
+    style: `--ta:${nomLigne(i)};--tb:${suivante ? nomLigne(plan.indexOf(suivante)) : nomLigne(i)}`,
+    debut: k === 0,
+    fin: !suivante,
+  };
+};
 
 const {
   title, description, pubDate, updatedDate, author, authorRole, category, categoryNumber,
@@ -77,12 +140,15 @@ async function croppedCover(publicPath: string, ratio: number, format: 'jpg' | '
   return { url: `${SITE_URL}${img.src}`, width, height };
 }
 
-/* Cover d'en-tête : affichée à 448 px de large au plus (portrait : elle repoussait
-   le texte à deux écrans sur ordinateur, § 9.bd). Candidats du srcset : 480, 800 et
-   900 px, bornés à la largeur de la source et dédoublonnés. */
+/* Couverture : une vignette (§ 9.fj), 64 × 80 px sur téléphone à côté de la ligne de
+   confiance, 132 × 165 px sur ordinateur (elle repoussait le texte à 1,5 écran sur
+   téléphone). Candidats du srcset : 160, 264 et 400 px (deux fois la plus grande
+   vignette, et un peu plus), bornés à la largeur de la source et dédoublonnés. Le `src`
+   reste celui d'avant (900 px, ou la largeur de l'affiche quand elle est plus petite :
+   les robots qui ne lisent pas le srcset). */
 const coverImage = await resolveBlogImage(cover, 900);
 const coverVariants = (
-  await Promise.all([480, 800, 900].map((w) => resolveBlogImage(cover, w)))
+  await Promise.all([160, 264, 400].map((w) => resolveBlogImage(cover, w)))
 ).filter((v): v is NonNullable<typeof v> => v !== null);
 const coverSrcset = [...new Map(coverVariants.map((v) => [Number(v.attributes.width), v.src])).entries()]
   .map(([w, src]) => `${src} ${w}w`)
@@ -90,13 +156,19 @@ const coverSrcset = [...new Map(coverVariants.map((v) => [Number(v.attributes.wi
 /* `loading="lazy"` retiré des attributs de getImage : Astro ne dédoublonne pas un
    attribut étalé puis redéfini, et le navigateur garde le premier (lazy). */
 const { loading: _lazy, ...coverAttrs } = coverImage?.attributes ?? {};
-/* Image de partage : paysage 1,91:1 en JPEG (les aperçus LinkedIn, WhatsApp,
-   Facebook et X recadraient au centre la cover portrait et coupaient le titre).
-   Images du JSON-LD Article : 16:9, 4:3 et 1:1, comme le recommande Google. */
-const ogCover = await croppedCover(cover, 1200 / 630, 'jpg');
-const ldImages = (
-  await Promise.all([16 / 9, 4 / 3, 1].map((r) => croppedCover(cover, r, 'jpg')))
-).filter((v): v is NonNullable<typeof v> => v !== null);
+/* Image de partage (§ 9.fl) : fabriquée à la construction, 1 200 × 630 px, dans la DA
+   (src/pages/blog/partage/[slug].jpg.ts). Elle remplace le recadrage de l'affiche, souvent
+   flou (31 articles sur 48 avaient une affiche de moins de 1 200 px, 11 vers 450 px).
+   C'est l'og:image, la twitter:image et la première image du JSON-LD Article ; suivent
+   les recadrages de l'affiche en 16:9, 4:3 et 1:1, comme le recommande Google. */
+const partage = donneesPartage(posts).get(slug)!;
+const imagePartage = { url: `${SITE_URL}/blog/partage/${nomImagePartage(slug, partage)}.jpg`, width: 1200, height: 630 };
+const ldImages = [
+  imagePartage,
+  ...(await Promise.all([16 / 9, 4 / 3, 1].map((r) => croppedCover(cover, r, 'jpg')))).filter(
+    (v): v is NonNullable<typeof v> => v !== null
+  ),
+];
 
 const resolvedSlides = slides
   ? (
@@ -117,9 +189,11 @@ const related = (relatedArticles ?? [])
   .filter((p) => p !== undefined)
   .slice(0, 6);
 
+/* Vignettes des articles connexes : 40 × 50 px (44 × 55 au téléphone) ; 132 px de large
+   suffisent à trois fois cette taille (288 px servaient l'ancienne vignette de 96 px). */
 const relatedCovers = new Map<string, string>();
 for (const r of related) {
-  const img = await resolveBlogImage(r.data.cover, 288);
+  const img = await resolveBlogImage(r.data.cover, 132);
   if (img) relatedCovers.set(r.id, img.src);
 }
 
@@ -127,8 +201,24 @@ for (const r of related) {
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-/* JSON-LD */
-const authorSchema = { '@type': 'Person', name: author, url: `${SITE_URL}/qui-sommes-nous` };
+/* JSON-LD. Un auteur connu (table AUTEURS de site.ts) renvoie à sa fiche de /qui-sommes-nous
+   (même `@id` que la Person de cette page, § 9.fj) : les 48 articles se rattachent à elle au
+   lieu de redéclarer une personne sans identifiant. Le nom ne change pas. Un auteur absent
+   de la table n'a ni lien ni identifiant (il ne prend pas ceux d'un autre). */
+const fiche = AUTEURS[author];
+const authorSchema = fiche
+  ? { '@type': 'Person', '@id': `${SITE_URL}${fiche.ancre}`, name: author, url: `${SITE_URL}${fiche.ancre.split('#')[0]}` }
+  : { '@type': 'Person', name: author };
+/* Portrait de l'auteur (bloc auteur) : 56 px, et son double, comme sur l'accueil (mêmes fichiers). */
+const portrait = fiche?.portrait === 'ryan'
+  ? await Promise.all((['avif', 'webp'] as const).map((format) => getImage({ src: portraitRyan, format, width: 56, widths: [56, 112] })))
+  : null;
+/* « Fiche Fiscalité #4 » puis « Épisode 4 » : le même numéro deux fois. Quand la pastille le
+   porte, « Épisode N » reste dans le texte, masqué à l'œil (classe `sr`). */
+const episodeRepete = !!categoryNumber && episodeNumber !== undefined && categoryNumber.replace(/\D/g, '') === String(episodeNumber);
+/* Appel à l'essai : un titre long (plus de 90 signes, deux articles) passe d'un cran plus petit. */
+const ctaTitre = cta ?? 'Prêt à simplifier ta gestion de remplaçant ?';
+const ctaLong = [...stripMiniMarkdown(ctaTitre).replace(new RegExp(EMO_SRC, 'gu'), '').trim()].length > 90;
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -136,7 +226,7 @@ const articleSchema = {
   '@id': `${SITE_URL}${path}#article`,
   headline: title,
   description,
-  image: ldImages.length ? ldImages.map((i) => i.url) : `${SITE_URL}/lovable-uploads/og-image.png`,
+  image: ldImages.map((i) => i.url),
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
   inLanguage: 'fr-FR',
@@ -189,8 +279,6 @@ const misAJour = updatedDate && updatedDate.getTime() > pubDate.getTime() ? upda
 /* Habillage DA 2026 (phase 5c, MIGRATION.md § 9.ej). Les caractères que la police
    du site n'a pas (les flèches) sont dessinés ; le caractère reste dans le texte,
    masqué à l'œil (classe `sr`). */
-const flecheGauche =
-  '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg>';
 const flecheDroite =
   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
 /* Un mot et la ponctuation qui le suit après une espace (? ! : ; / »), ou le
@@ -221,9 +309,9 @@ const croix =
   title={titreComplet}
   description={description}
   path={path}
-  ogImage={ogCover?.url}
-  ogImageWidth={ogCover?.width}
-  ogImageHeight={ogCover?.height}
+  ogImage={imagePartage.url}
+  ogImageWidth={imagePartage.width}
+  ogImageHeight={imagePartage.height}
   ogImageAlt={title}
   ogType="article"
   jsonLd={jsonLd}
@@ -232,10 +320,16 @@ const croix =
   <Fragment slot="head">
     {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
     <meta name="theme-color" content="#C9DEFF" />
+    {/* Le repère de la partie en cours, repli sans scroll-target-group (feuille écrite au rendu ;
+        dans <head> : une feuille n'a pas sa place dans <main>). */}
+    {feuilleRepere && <style is:inline set:html={feuilleRepere} />}
   </Fragment>
   {/* La pastille survole le ciel du haut de la page, qui lui réserve la place. */}
   <Header />
-  <main id="top" class:list={['page', 'da-bloc', showToc && 'guidee']}>
+  <main id="top" class:list={['page', 'fiche', 'da-bloc', showToc && 'guidee']}>
+    {/* Fil de lecture (téléphone et tablette) : 3 px dans le bas de la pastille de l'en-tête, calé sur le corps. */}
+    <div class="lecture-fil" aria-hidden="true"></div>
+
     <nav aria-label="Fil d'Ariane" class="fil">
       <ol role="list">
         <li><a href="/">Accueil</a></li>
@@ -252,61 +346,21 @@ const croix =
       </ol>
     </nav>
 
-    <a href="/blog" class="retour"><span class="sr">←</span>{' '}<Fragment set:html={flecheGauche} />Retour au blog</a>
-
-    {/* Sommaire : repli piloté par une case à cocher, et non par un <details>. Chrome
-         applique `content-visibility: hidden` au contenu d'un <details> fermé, si
-         bien qu'un changement d'affichage en media query ne suffit plus à le
-         remettre en flux (l'élément gardait une hauteur de 0 et la colonne collante
-         restait vide). C'est aussi le motif zéro-JS du tiroir mobile de l'en-tête.
-         Un seul <nav> dans le DOM : aucune duplication des ancres entre téléphone
-         et ordinateur. */}
-    <div class="grille">
-      {showToc && (
-        <div class:list={['toc', toc.length > 20 && 'longue']}>
-          <input type="checkbox" id="toc-toggle" class="toc-case" aria-label="Sommaire" />
-          <label for="toc-toggle" class="toc-titre">
-            Sommaire
-            <Fragment set:html={croix} />
-          </label>
-
-          <nav aria-label="Sommaire de l'article" class="toc-nav">
-            <p class="toc-nom">Sommaire</p>
-            <ol role="list">
-              {toc.map((h) => (
-                <li>
-                  <a
-                    href={`#${h.slug}`}
-                    class:list={[h.depth === 3 && 'sous']}
-                    set:html={nouer(echapper(h.text))}
-                  />
-                </li>
-              ))}
-            </ol>
-            {/* Retour en haut. N'apparaît pas « au scroll » : ce comportement
-                 exigerait du JS (invariant zéro-JS), il est donc permanent. */}
-            <a
-              href="#top"
-              class="toc-haut"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
-              Retour en haut
-            </a>
-          </nav>
-        </div>
-      )}
+    {/* « Retour au blog » est retiré (§ 9.fj) : le fil d'Ariane porte le même lien, juste au-dessus. */}
 
     {/* Métadonnées d'instrumentation, injectées au build : `page-analytics.ts` les
        lit pour blog_article_viewed / blog_scroll_depth / blog_read_completed. Les
        valeurs viennent du frontmatter, donc identiques à l'historique PostHog
-       (category « Fiche Fiscalité », series_id « fiche-fiscalite »…). */}
-  <article
-    class:list={['article', coverImage && 'illustree']}
-    data-blog-slug={slug}
-    data-blog-category={category}
-    data-blog-series={seriesId}
-    data-blog-episode={episodeNumber ?? 0}
-  >
+       (category « Fiche Fiscalité », series_id « fiche-fiscalite »…).
+       La page est une grille (le <main>) : <article> et son <header> n'y font pas de
+       boîte, leurs enfants s'y placent directement (blog-article.css). */}
+    <article
+      class:list={['article', coverImage && 'illustree']}
+      data-blog-slug={slug}
+      data-blog-category={category}
+      data-blog-series={seriesId}
+      data-blog-episode={episodeNumber ?? 0}
+    >
       <header class="tete">
         <div class="marques">
           {series && (
@@ -315,46 +369,85 @@ const croix =
             </a>
           )}
           {episodeNumber !== undefined && seriesId !== 'divers' && (
-            <span class="episode">Épisode {episodeNumber}</span>
+            <span class:list={['episode', episodeRepete && 'sr']}>Épisode {episodeNumber}</span>
           )}
         </div>
         <h1 class="aff" set:html={nouer(echapper(title))} />
-        <div class="infos">
-          <span class="auteur">{author}</span>
-          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {/* La ligne de confiance : les mêmes mots, réordonnés par la feuille (date, durée,
+            auteur). Le nom de l'auteur mène à sa fiche (§ 9.fj). Quand l'article a été mis
+            à jour, la date de publication reste dans la page, masquée à l'œil. */}
+        <div class:list={['infos', misAJour && 'a-jour']}>
+          {fiche ? <a href={fiche.ancre} class="auteur">{author}</a> : <span class="auteur">{author}</span>}
+          <time class="publie" datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
           {misAJour && (
-            <span>Mis à jour le <time datetime={misAJour.toISOString()}>{formatDate(misAJour)}</time></span>
+            <span class="maj">Mis à jour le <time datetime={misAJour.toISOString()}>{formatDate(misAJour)}</time></span>
           )}
-          <span>{readTime} de lecture</span>
+          <span class="duree">{readTime} de lecture</span>
         </div>
       </header>
 
-      {/* Couverture : une carte posée sur le ciel, à droite du titre à partir de
-           700 px (200 à 300 px de large, la valeur de --cw), sous lui en dessous
-           (448 px au plus). */}
+      {/* Couverture : une vignette, 64 × 80 px sur téléphone à droite de la ligne de
+          confiance, 132 × 165 px sur ordinateur. Ce n'est plus l'élément principal de la
+          page : pas de `fetchpriority`. */}
       {coverImage && (
         <img
           src={coverImage.src}
           {...coverAttrs}
           loading="eager"
           srcset={coverSrcset || undefined}
-          sizes="(min-width: 700px) clamp(200px, 27vw, 300px), (min-width: 488px) 448px, calc(100vw - 40px)"
+          sizes="(min-width: 1040px) 132px, (min-width: 700px) 120px, (min-width: 560px) 76px, 64px"
           alt={title}
           class="couverture"
-          fetchpriority="high"
         />
       )}
 
-      {resolvedSlides && (
-        <div class="planches">
-          <BlogSlides slides={resolvedSlides} client:visible />
-        </div>
+      {/* Le sommaire : un seul <details>. Téléphone et tablette : un pli fermé en tête de
+          la feuille. Ordinateur : le rail collant à gauche, toujours ouvert
+          (::details-content). Ses entrées : les parties du plan seulement. */}
+      {showToc && (
+        <details class:list={['som', modeAuteur && 'som-auteur', dense && 'som-dense', auRail.length > 12 && 'som-long']} id="sommaire">
+          <summary class="som-tete">
+            <span class="som-tete-nom">Sommaire</span>
+            <svg class="som-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </summary>
+          {/* role explicite : le mode lecture de Firefox (Readability) écarte une navigation ainsi
+              marquée, et le texte de l'article y commence par « L'essentiel », pas par le plan. */}
+          <nav aria-label="Sommaire de l'article" class="som-nav" role="navigation">
+            <p class="som-nom">Sommaire</p>
+            <ol role="list" id="sommaire-liste" class="som-liste">
+              {plan.map((e) => {
+                const h = toc.find((x) => x.slug === e.slug)!;
+                const l = libelle(h);
+                const repere = lignesDuLien(e.slug);
+                return (
+                  <li class:list={['partie', e.sous && 'sous-partie', e.horsCompte && 'hors-compte']}>
+                    <a
+                      href={`#${e.slug}`}
+                      data-no={e.numero && (modeAuteur || e.sous) ? e.numero : undefined}
+                      class:list={[repere.debut && 'som-debut', repere.fin && 'som-fin']}
+                      style={repere.style}
+                    >{l.avant && <span class="em-cache" aria-hidden="true">{l.avant}</span>}<span class="som-txt" set:html={masquerEmojis(nouer(echapper(l.milieu)))} />{l.apres && <span class="em-cache" aria-hidden="true">{l.apres}</span>}</a>
+                  </li>
+                );
+              })}
+            </ol>
+            <a href="#top" class="som-haut">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+              Retour en haut
+            </a>
+          </nav>
+        </details>
       )}
 
-      {/* Le corps : une feuille sable sur toute la largeur, le texte dans une
-           colonne de lecture (65 à 72 caractères par ligne sur ordinateur). Les
-           sauts de ligne volontaires (« \ » en fin de ligne) sortent en <br>. */}
-      <div class="corps" data-blog-zone="corps">
+      {/* Le corps : le texte dans une colonne de lecture de 624 px au plus (67 à 69
+          caractères par ligne pleine sur ordinateur, 19 px). Les sauts de ligne
+          volontaires (« \ » en fin de ligne) sortent en <br>. Le total des parties sert
+          au repère « 04 / 10 » des titres (compteurs de blog-article.css). */}
+      <div
+        class:list={['corps', numerote && 'numerote']}
+        data-blog-zone="corps"
+        style={`counter-reset: np-tot ${principal.length} np-pos`}
+      >
         <Content />
         {/* Fin réelle du TEXTE — et non le bas de la page : le partage, le bloc
             auteur et le pied de page viennent après. C'est ce repère qui déclenche
@@ -363,36 +456,77 @@ const croix =
         <span data-blog-fin aria-hidden="true"></span>
       </div>
 
-      {/* Appel à l'action — JUSTE APRÈS LE TEXTE (§ 9.bf). Il fermait la page,
-          derrière la FAQ, le bloc auteur, le partage, « Pour aller plus loin » et
-          3 à 6 articles connexes : 2,4 à 2,9 écrans mobiles après la fin de la
-          lecture, et les connexes faisaient partir le lecteur avant qu'il le voie.
-          Rendu sur TOUS les articles (8 n'en avaient pas) ; verify-site échoue
-          désormais sur un article sans `data-track="cta_`.
-          Le titre est un <p> : en <h3> après le <h2> « Articles connexes », il en
-          devenait un sous-titre dans le plan du document.
-          La définition produit est reprise mot pour mot de site.ts : le bloc ne
-          nommait jamais le produit, et 5 articles ne le citent nulle part.
-          Fiche « eau profonde » de la DA, bouton jaune (§ 9.ej). */}
+      {/* Le carrousel de planches (4 articles) : après le texte (§ 9.fj). Avant, il
+          repoussait le début du texte à 1,4 écran sur téléphone. */}
+      {resolvedSlides && (
+        <div class="planches">
+          <BlogSlides slides={resolvedSlides} client:visible />
+        </div>
+      )}
+
+      {/* Fin d'article, dans l'ordre du téléphone (§ 9.fj) : questions, articles
+          connexes, appel à l'essai, auteur, partage, « Pour aller plus loin ». Sur
+          ordinateur large, l'appel à l'essai est la carte collante de la colonne de
+          droite. */}
+      {faq && faq.length > 0 && (
+        <section class="questions" aria-labelledby="faq-title" data-blog-zone="faq">
+          <h2 id="faq-title">Questions fréquentes</h2>
+          <div class="liste">
+            {faq.map((item) => (
+              <details class="qa">
+                <summary>
+                  <span class="qa-t" set:html={nouer(miniMarkdownToHtml(item.question))} />
+                  <Fragment set:html={croix} />
+                </summary>
+                <div class="qa-in" set:html={nouer(miniMarkdownToHtml(item.answer))} />
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section class="connexes" aria-labelledby="related-title" data-blog-zone="connexes">
+          <h2 id="related-title">Articles connexes</h2>
+          <div class="cartes">
+            {related.map((r, i) => (
+              <a href={`/blog/${r.id}`} data-ph="blog_related" data-ph-rank={i + 1} class="carte">
+                {relatedCovers.get(r.id) && (
+                  <img src={relatedCovers.get(r.id)} alt="" loading="lazy" width="44" height="55" />
+                )}
+                <div>
+                  <p class="carte-titre" set:html={nouer(echapper(r.data.title))} />
+                  <p class="carte-duree">{r.data.readTime} de lecture</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Appel à l'action (§ 9.bf) : rendu sur TOUS les articles ; verify-site échoue sur
+          un article sans `data-track="cta_` dans cet <aside>. Sur ordinateur large (1 360 px
+          et plus), la carte collante de la colonne de droite ; ailleurs, après les questions
+          et les articles connexes (§ 9.fj). Un seul élément, mêmes mots, mêmes attributs.
+          Le titre est un <p> : en titre, il devenait un sous-titre du plan du document. Son
+          émoji (deux 🚀) reste dans le texte, masqué à l'œil. La définition produit est
+          reprise mot pour mot de site.ts : 5 articles ne nomment jamais le produit. */}
       <aside
         class="essai"
         aria-label="Essayer Hippodoc"
         data-blog-zone="cta"
       >
-        <p class="essai-titre" set:html={nouer(miniMarkdownToHtml(cta ?? 'Prêt à simplifier ta gestion de remplaçant ?'))} />
+        <p class:list={['essai-titre', ctaLong && 'essai-titre-long']} set:html={masquerEmojis(nouer(miniMarkdownToHtml(ctaTitre)))} />
         <p class="essai-def" set:html={nouer(echapper(PRODUCT_DEFINITION))} />
         <a
           href={ctaHref ?? signupUrl}
           data-track={ctaHref === '/simulateur' ? 'cta_simulateur_blog' : ctaHref === '/essai' ? 'cta_essai_blog' : 'cta_signup_blog'}
           class="btn btn-brand"
         >
-          {/* `/essai` (§ 9.cz) : pour les sujets sans lien avec le simulateur (syndrome
-              de l'imposteur, inbox zéro), la page de présentation avant l'inscription. */}
           {ctaHref === '/simulateur' ? 'Simule ton Super-Net' : ctaHref === '/essai' ? 'Découvrir Hippodoc' : 'Commencer gratuitement'}
         </a>
         {/* Le HTML n'a jamais eu d'espace entre le lien et le point médian (« gratuit· ») :
-            le texte reste tel quel, le point est dans un <span> que la feuille
-            écarte du lien, ou masque à l'œil quand le lien prend sa propre ligne. */}
+            le texte reste tel quel, le point est dans un <span> que la feuille écarte du lien. */}
         {ctaHref ? (
           <p class="essai-note">
             <a href={signupUrl} data-track="cta_signup_blog">Ou commence l'essai gratuit</a><span class="pt">·</span>{' '}30 jours · Sans engagement
@@ -412,31 +546,20 @@ const croix =
         </p>
       </aside>
 
-      {faq && faq.length > 0 && (
-        <section class="questions" aria-labelledby="faq-title" data-blog-zone="faq">
-          <h2 id="faq-title">Questions fréquentes</h2>
-          <div class="liste">
-            {faq.map((item) => (
-              <details class="qa">
-                <summary>
-                  <span class="qa-t" set:html={nouer(miniMarkdownToHtml(item.question))} />
-                  <Fragment set:html={croix} />
-                </summary>
-                <div class="qa-in" set:html={nouer(miniMarkdownToHtml(item.answer))} />
-              </details>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Bloc auteur — signal E-E-A-T : sur des sujets « argent/santé », Google
-           valorise l'expertise identifiable de l'auteur. L'information existait
-           déjà (frontmatter `author`/`authorRole`) mais n'apparaissait que dans
-           une ligne de métadonnées grise sous le titre. */}
+      {/* Bloc auteur — signal E-E-A-T : sur des sujets « argent/santé », Google valorise
+          l'expertise identifiable de l'auteur. */}
       <aside class="signature" aria-label="À propos de l'auteur">
-        <span class="initiales">
-          {author.replace(/^Dr\.?\s*/i, '').split(/\s+/).map((n) => n[0]).slice(0, 2).join('')}
-        </span>
+        {/* Le portrait de l'auteur (décor : son nom suit), les initiales pour un auteur sans portrait. */}
+        {portrait ? (
+          <picture class="portrait">
+            <source type="image/avif" srcset={portrait[0].srcSet.attribute} sizes="56px" />
+            <img src={portrait[1].src} srcset={portrait[1].srcSet.attribute} sizes="56px" alt="" width="56" height="56" loading="lazy" decoding="async" />
+          </picture>
+        ) : (
+          <span class="initiales">
+            {author.replace(/^Dr\.?\s*/i, '').split(/\s+/).map((n) => n[0]).slice(0, 2).join('')}
+          </span>
+        )}
         <div class="signature-texte">
           <p class="nom">{author}</p>
           {authorRole && <p class="role">{authorRole}</p>}
@@ -447,8 +570,8 @@ const croix =
         </div>
       </aside>
 
-      {/* Partage : liens simples, aucun script tiers (un guide fiscal se
-           transfère surtout entre confrères par messagerie). */}
+      {/* Partage : liens simples, aucun script tiers (un guide fiscal se transfère surtout
+          entre confrères par messagerie). */}
       <div class="partage" data-blog-zone="partage">
         <span class="partage-nom">Partager cet article</span>
         <a
@@ -486,33 +609,10 @@ const croix =
           <li><a href="/tarifs" data-track="cta_pricing_blog_more" class="lien"><span class="sr">→</span>{' '}<Fragment set:html={flecheDroite} />Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel, essai 30 jours</a></li>
         </ul>
       </aside>
-
-      {related.length > 0 && (
-        <section class="connexes" aria-labelledby="related-title" data-blog-zone="connexes">
-          <h2 id="related-title">Articles connexes</h2>
-          {/* Vignette portrait ancrée en haut : les covers sont toutes en
-              portrait avec le titre dessiné en haut. */}
-          <div class="cartes">
-            {related.map((r, i) => (
-              <a href={`/blog/${r.id}`} data-ph="blog_related" data-ph-rank={i + 1} class="carte">
-                {relatedCovers.get(r.id) && (
-                  <img src={relatedCovers.get(r.id)} alt="" loading="lazy" width="96" height="120" />
-                )}
-                <div>
-                  <p class="carte-titre" set:html={nouer(echapper(r.data.title))} />
-                  <p class="carte-duree">{r.data.readTime} de lecture</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-
     </article>
-    </div>
 
-    {/* Pendant téléphone et tablette du lien du sommaire collant (et seul lien de
-         remontée sur les articles courts, qui n'ont pas de sommaire). */}
+    {/* Retour en haut, en bas de page : sous 1 040 px (la pastille du sommaire est partie avec
+        le texte) et sans rail ; le rail a le sien. */}
     <div class="remonter">
       <a
         href="#top"
@@ -522,398 +622,17 @@ const croix =
         Retour en haut
       </a>
     </div>
+
+    {/* Téléphone et tablette : la pastille « Sommaire », ronde, en bas à droite (au-dessus de la
+        bulle de chat de 640 à 1 039 px), après un
+        écran de défilement et tant que le texte est à l'écran. Un lien d'ancre vers la liste
+        du pli, qui s'ouvre seul (le navigateur ouvre un <details> qui contient la cible). */}
+    {showToc && (
+      <a href="#sommaire-liste" class="som-pastille">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 5h8M13 12h8M13 19h8M3 5h4M3 12h4M3 19h4"/></svg>
+        <span class="sr">Sommaire</span>
+      </a>
+    )}
   </main>
   <Footer />
 </BaseLayout>
-
-<style>
-  /* Un mot et sa ponctuation (`nouer`) : ensemble sur la ligne ; s'ils sont plus
-     larges que leur bloc (texte grossi), ils se dénouent au lieu de déborder. */
-  .page :global(.num) { display: inline-block; max-width: 100%; white-space: normal; }
-  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-  /* ───────── La page ─────────
-     Le ciel en haut (fil d'Ariane, titre, couverture), une feuille sable sur
-     toute la largeur pour le texte, puis le ciel clair d'une feuille « air »
-     pour ce qui suit la lecture, et l'eau du pied de page.
-     Aucun élément n'a été ajouté pour la mise en page : chaque bloc de l'article
-     prend toute la largeur et se donne ses marges, calculées ici.
-     --hero : largeur du contenu ; --som : place du sommaire collant (à partir de
-     1280 px, articles longs) ; --mes : colonne de lecture ; --g et --d : marges
-     de gauche et de droite. Leur pourcentage se lit là où la valeur sert : à
-     n'employer que sur un bloc dont le parent fait toute la largeur de la page. */
-  .page {
-    --hero: 52rem; --som: 0rem; --mes: 36rem;
-    --large: calc(var(--hero) + var(--som));
-    --g: max(var(--gut), env(safe-area-inset-left, 0px), calc((100% - var(--large)) / 2));
-    --d: max(var(--gut), env(safe-area-inset-right, 0px), calc((100% - var(--large)) / 2));
-    position: relative; margin-bottom: -1px; padding: 96px 0 142px;
-    background: linear-gradient(var(--sky-1) 0, var(--sky) 460px);
-    font-size: 1.0625rem; overflow-wrap: break-word;
-  }
-  /* L'eau du pied de page : les deux dernières vagues de la scène de fin de
-     /tarifs, immobiles. La dernière a la couleur du haut du pied (--deep). */
-  .page::before, .page::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none; --p: 300px; --th: 40px; }
-  .page::before { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
-  .page::after { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
-
-  /* ───────── Le haut : fil d'Ariane, retour ───────── */
-  .fil { margin: 0 var(--d) 0 var(--g); font-size: 0.90625rem; color: var(--ink-2); }
-  .fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
-  /* Une cible de 44 px de haut, sans changer la hauteur de la ligne. */
-  .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.4); text-underline-offset: 4px; }
-  .fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
-  .fil [aria-current] { font-weight: var(--tb); color: var(--ink); }
-  .retour { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; margin: 4px var(--d) 8px var(--g); border-radius: 6px; font-size: 0.96875rem; font-weight: var(--tb); color: var(--ink); text-decoration: none; }
-  .retour:hover { color: var(--brand); }
-  .retour :global(svg) { flex: none; }
-
-  /* ───────── Le sommaire ─────────
-     Téléphone et tablette : une fiche repliée, au-dessus de l'article, qui
-     s'ouvre comme un pli (la croix tourne et jaunit). À partir de 1280 px : une
-     fiche collante à gauche, dans la même cellule de grille que l'article, qui
-     lui laisse la place (--som). */
-  .grille { display: grid; grid-template-columns: minmax(0, 1fr); }
-  .toc { position: relative; margin: 0 var(--d) 22px var(--g); padding: 0 20px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
-  /* La case : invisible mais focusable (c'est elle, le contrôle). */
-  .toc-case { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .toc-titre { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 58px; border-radius: var(--r-sm); font-size: 1.0625rem; font-weight: var(--tb); color: var(--ink); cursor: pointer; }
-  .toc-titre :global(svg) { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 50%; background: var(--sky); transition: rotate 200ms var(--ease), background-color 200ms var(--ease); }
-  .toc-case:checked ~ .toc-titre :global(svg) { rotate: 45deg; background: var(--sun); }
-  .toc-case:focus-visible ~ .toc-titre { outline: 3px solid var(--focus); outline-offset: 3px; }
-  .toc-nav { display: none; padding-bottom: 16px; }
-  .toc-case:checked ~ .toc-nav { display: block; }
-  .toc-nom, .toc-haut { display: none; }
-  .toc ol { margin: 0; padding: 0; list-style: none; font-size: 0.96875rem; line-height: 1.35; }
-  .toc ol a { display: block; padding: 12px 0; border-radius: 8px; font-weight: 560; color: var(--ink); text-decoration: none; }
-  .toc ol a.sous { margin-left: 4px; padding-left: 14px; border-left: 2px solid var(--line); border-radius: 0; font-weight: var(--tw); color: var(--ink-2); }
-  .toc ol a:hover { color: var(--brand); }
-
-  /* ───────── L'en-tête de l'article ───────── */
-  .article { display: grid; grid-template-columns: minmax(0, 1fr); }
-  .article > * { min-width: 0; }
-  .tete { padding: 0 var(--d) 0 calc(var(--g) + var(--som)); }
-  .marques { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 14px; }
-  /* La série : une pastille blanche, comme « FAQ » en tête de /faq. La zone de
-     toucher dépasse la pastille (44 px de haut). */
-  .serie { position: relative; display: inline-flex; align-items: center; padding: 4px 13px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); text-decoration: none; }
-  .serie::after { content: ""; position: absolute; inset: -8px 0; }
-  .serie:hover { background: var(--sky-soft); }
-  .episode { font-size: 0.90625rem; color: var(--ink-2); }
-  .tete h1 { --corps: clamp(min(1.875rem, 8.2vw), 4.1vw, 2.875rem); margin: 0; line-height: 1.08; text-wrap-style: balance; overflow-wrap: break-word; }
-  .infos { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 16px; margin-top: 16px; font-size: 0.9375rem; color: var(--ink-2); }
-  .auteur { font-weight: var(--tb); color: var(--ink); }
-
-  /* La couverture : une carte au bord blanc. Sous le titre jusqu'à 700 px. */
-  .couverture { box-sizing: border-box; justify-self: center; width: min(28rem, calc(100% - var(--g) - var(--d))); height: auto; margin-top: 26px; border: 6px solid var(--paper); border-radius: var(--r-lg); box-shadow: var(--clay); }
-  .planches { margin: 30px var(--d) 0 calc(var(--g) + var(--som)); }
-  /* L'îlot garde son code et ses classes. Deux réglages par-dessus : le compteur
-     (« 1 / 15 ») était à 4,13:1 sur le ciel ; les flèches gardent leurs 32 px à
-     l'œil (plus grandes, elles couvraient le texte des planches) et leur zone
-     de toucher passe à 44 px. */
-  .planches :global(p) { color: var(--ink-2); }
-  .planches :global(button)::after { content: ""; position: absolute; inset: -7px; }
-
-  /* ───────── Le corps : la feuille de lecture ─────────
-     Une feuille sable à coins ronds, sur toute la largeur. En bas, les coins
-     ronds de la feuille « air » suivante sont peints par `::after` : ce qui
-     suit l'article est posé sur le fond de la page, de la même couleur.
-     Interligne : 1,6 sur les lignes courtes du téléphone (42 caractères), 1,7
-     à partir de 700 px (lignes de 68 caractères). */
-  .corps { position: relative; margin-top: 28px; padding: 42px var(--d) 60px calc(var(--g) + var(--som)); border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); color: var(--ink-2); font-size: 1.0625rem; line-height: 1.6; overflow-wrap: break-word; }
-  .corps::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 40px; border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sky); }
-  /* La colonne de lecture, centrée sous le titre. */
-  .corps > :global(*) { max-width: var(--mes); margin-left: auto; margin-right: auto; }
-  .corps > :global(:first-child) { margin-top: 0; }
-  /* Le dernier bloc du texte (avant le repère de fin de lecture). */
-  .corps > :global(:nth-last-child(2)) { margin-bottom: 0; }
-  .corps :global(p) { margin-top: 0; margin-bottom: 1.15em; }
-  /* Pas d'équilibrage des lignes ici (les <h2> de la DA le demandent) : il
-     renvoyait le « : » ou le « ? » d'un intertitre en début de ligne. Ces
-     titres sortent du Markdown, sans `nouer`. */
-  .corps :global(h2), .corps :global(h3) { font-family: var(--display); font-weight: var(--dw); color: var(--ink); text-wrap-style: auto; }
-  .corps :global(h2) { margin-top: 2.1em; margin-bottom: 0.62em; font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.022em; }
-  .corps :global(h3) { margin-top: 1.75em; margin-bottom: 0.5em; font-size: 1.1875rem; line-height: 1.28; letter-spacing: -0.014em; }
-  .corps :global(h4) { margin-top: 1.5em; margin-bottom: 0.4em; font-size: 1em; font-weight: var(--tb); line-height: 1.4; color: var(--ink); }
-  .corps :global(strong), .corps :global(b) { font-weight: var(--tb); color: var(--ink); }
-  .corps :global(a) { color: var(--brand); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
-  .corps :global(a:hover) { color: var(--ink); }
-  .corps :global(ul), .corps :global(ol) { margin-top: 0; margin-bottom: 1.15em; padding-left: 1.4em; }
-  .corps :global(ul) { list-style: disc; }
-  .corps :global(ol) { list-style: decimal; }
-  .corps :global(li) { margin: 0.42em 0; padding-left: 0.2em; }
-  .corps :global(li > ul), .corps :global(li > ol) { margin: 0.42em 0 0; }
-  .corps :global(ul > li)::marker { color: var(--w4); }
-  .corps :global(ol > li)::marker { font-weight: var(--tb); color: var(--brand); font-variant-numeric: tabular-nums; }
-  /* Citation : une fiche ciel. */
-  .corps :global(blockquote) { margin-top: 1.5em; margin-bottom: 1.5em; padding: 18px 22px; border-radius: var(--r-md); background: var(--sky); color: var(--ink); font-weight: 500; }
-  .corps :global(blockquote > :last-child) { margin-bottom: 0; }
-  .corps :global(code) { padding: 0.12em 0.4em; border-radius: 7px; background: var(--sky-soft); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.875em; color: var(--ink); overflow-wrap: anywhere; }
-  .corps :global(pre) { margin-top: 1.5em; margin-bottom: 1.5em; padding: 16px 18px; overflow-x: auto; border-radius: var(--r-md); background: var(--ink); color: var(--paper); font-size: 0.9375rem; line-height: 1.55; }
-  .corps :global(pre code) { padding: 0; background: none; color: inherit; font-size: 1em; overflow-wrap: normal; }
-  .corps :global(hr) { height: 2px; margin-top: 2.2em; margin-bottom: 2.2em; border: 0; border-radius: 2px; background: var(--line); }
-  .corps :global(img) { height: auto; border-radius: var(--r-md); }
-
-  /* Tableaux. Les cellules ne se coupent pas (« 1 065 » sur deux lignes, sur un
-     chiffre fiscal, est inacceptable) : un tableau plus large que sa place
-     défile de côté dans sa fiche, la page jamais. Les deux ombres de bord
-     n'apparaissent que du côté où il reste des colonnes à faire défiler (fonds
-     « local » : ils défilent avec le contenu et couvrent l'ombre en bout de
-     course). Chiffres tabulaires : par une face de police à part, voir plus
-     bas (§ 9.ep).
-     Place : un tableau part du bord gauche du texte et peut dépasser la colonne
-     de lecture à droite, jusqu'au bord du contenu. */
-  .corps > :global(table) { --retrait: calc((100% - min(100%, var(--mes))) / 2); max-width: calc(100% - var(--retrait)); margin-left: var(--retrait); margin-right: 0; }
-  /* Téléphone : la fiche déborde de 10 px de chaque côté de la colonne (le texte
-     des cellules reste presque à l'aplomb du texte) et les cellules se
-     resserrent : autant de tableaux qu'avant tiennent sans défiler à 390 px. */
-  @media (max-width: 559px) {
-    .corps > :global(table) { max-width: calc(100% + 20px); margin-left: -10px; margin-right: -10px; }
-  }
-  /* À partir de 700 px (la colonne de lecture est alors plus étroite que le
-     contenu) : un tableau plus étroit que la colonne reste à l'aplomb du texte,
-     un tableau plus large se centre sur elle et la dépasse des deux côtés,
-     jusqu'aux bords du contenu. Sans élément autour du tableau : son bord
-     gauche est posé au milieu (la marge droite négative lui rend la largeur),
-     puis il recule de la moitié de sa propre largeur, ou de la moitié de la
-     colonne si c'est plus (`translate` : les pourcentages sont les siens). */
-  @supports (translate: 0px) {
-    @media (min-width: 700px) {
-      .corps > :global(table) { max-width: 100%; margin-left: 50%; margin-right: -50%; translate: min(-50%, calc(var(--mes) / -2)); }
-    }
-  }
-  .corps :global(table) {
-    display: block; width: fit-content; margin-top: 1.6em; margin-bottom: 1.6em; overflow-x: auto; overscroll-behavior-x: contain;
-    border-collapse: collapse; border-radius: 18px; box-shadow: var(--clay-sm);
-    background:
-      linear-gradient(to right, var(--paper) 40%, rgba(255, 255, 255, 0)) 0 0 / 56px 100% no-repeat local,
-      linear-gradient(to left, var(--paper) 40%, rgba(255, 255, 255, 0)) 100% 0 / 56px 100% no-repeat local,
-      linear-gradient(to right, rgba(20, 37, 79, 0.34), rgba(20, 37, 79, 0)) 0 0 / 28px 100% no-repeat scroll,
-      linear-gradient(to left, rgba(20, 37, 79, 0.34), rgba(20, 37, 79, 0)) 100% 0 / 28px 100% no-repeat scroll,
-      var(--paper);
-    font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; line-height: 1.45;
-  }
-  /* Chiffres de même chasse dans les tableaux, sans toucher à l'espace. La
-     fonction « tnum » de la police élargit aussi l'espace (645 unités au lieu
-     de 450 sur 2000). Chromium l'applique, le moteur de Safari garde l'espace
-     ordinaire : on ne peut donc pas demander les chiffres tabulaires sur la
-     cellule et compenser l'espace (l'ancien réglage, un espacement des mots
-     négatif, collait les mots dans Safari ; § 9.ep). Cette face reprend le
-     même fichier, limitée aux caractères que « tnum » remplace, espace
-     exceptée (chiffres, ponctuation des nombres, opérateurs, monnaies) : eux
-     seuls sortent tabulaires, dans tous les moteurs. Sans prise en charge du
-     descripteur, les chiffres gardent leur chasse ordinaire. */
-  @font-face {
-    font-family: "Google Sans Flex Chiffres";
-    font-style: normal;
-    font-weight: 400 800;
-    font-display: swap;
-    src: url("../../assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2") format("woff2");
-    font-feature-settings: "tnum";
-    unicode-range: U+23-25, U+2B-2C, U+2E, U+30-3E, U+A2-A4, U+A7, U+AC, U+B1, U+D7, U+F7, U+20AC, U+2212;
-  }
-  .corps :global(th), .corps :global(td) { padding: 10px 12px; text-align: left; vertical-align: top; white-space: nowrap; }
-  .corps :global(th) { padding-top: 13px; font-weight: var(--tb); color: var(--ink); }
-  .corps :global(td) { border-top: 1px solid var(--line); }
-  .corps :global(thead + tbody tr:first-child td) { border-top: 2px solid rgba(20, 37, 79, 0.18); }
-  .corps :global(tr:last-child td) { padding-bottom: 13px; }
-  .corps :global(th:first-child), .corps :global(td:first-child) { padding-left: 14px; }
-  .corps :global(th:last-child), .corps :global(td:last-child) { padding-right: 14px; }
-  @media (max-width: 559px) {
-    .corps :global(th), .corps :global(td) { padding-left: 8px; padding-right: 8px; }
-    .corps :global(th:first-child), .corps :global(td:first-child) { padding-left: 14px; }
-    .corps :global(th:last-child), .corps :global(td:last-child) { padding-right: 14px; }
-  }
-
-  /* Encadrés (`:::essentiel`, `:::tip`, `:::warning`) : des fiches rondes et
-     mates. Le genre se lit à la couleur et au signe de la pastille, à cheval
-     sur le bord haut : une liste (l'essentiel), une ampoule (le conseil), un
-     point d'exclamation (l'alerte). */
-  .corps :global(.callout) { position: relative; margin-top: 2.3em; margin-bottom: 1.9em; padding: 26px 20px 20px; border-radius: var(--r-md); }
-  .corps :global(.callout)::before { content: ""; position: absolute; top: -15px; left: 18px; width: 32px; height: 32px; border-radius: 50%; background: var(--teinte) var(--signe) center / 18px 18px no-repeat; box-shadow: 0 0 0 4px var(--sand); }
-  .corps :global(.callout > :first-child) { margin-top: 0; }
-  .corps :global(.callout > :last-child) { margin-bottom: 0; }
-  .corps :global(.callout-essentiel) { --teinte: var(--brand); --signe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M7 5h8M7 9h8M7 13h8M3 5h.01M3 9h.01M3 13h.01'/%3E%3C/svg%3E"); background: var(--paper); box-shadow: var(--clay-sm); }
-  .corps :global(.callout-tip) { --teinte: var(--ok); --signe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18' fill='none' stroke='%23fff' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.6 11.6C5.3 10.8 4.5 9.4 4.5 7.9a4.5 4.5 0 0 1 9 0c0 1.5-.8 2.9-2.1 3.7v1.1H6.6zM7.2 15.4h3.6'/%3E%3C/svg%3E"); background: var(--ok-bg); }
-  .corps :global(.callout-warning) { --teinte: var(--wait); --signe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M9 4v6.2M9 13.8h.01'/%3E%3C/svg%3E"); background: var(--wait-bg); }
-
-  /* Contrastes forcés : la pastille garde sa couleur et son signe (sinon les
-     trois genres d'encadré ne se distinguent plus). Impression sans les fonds :
-     un cadre, et la pastille s'imprime quand même. */
-  @media (forced-colors: active) {
-    .corps :global(.callout)::before { forced-color-adjust: none; box-shadow: 0 0 0 4px Canvas; }
-  }
-  @media print {
-    .corps :global(.callout) { border: 1px solid var(--line); }
-    .corps :global(.callout)::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  }
-
-  /* ───────── Après la lecture ───────── */
-  .essai, .questions, .signature, .partage, .suite, .connexes { margin-left: calc(var(--g) + var(--som)); margin-right: var(--d); }
-
-  /* L'appel à l'essai : l'eau profonde, le bouton jaune (l'offre annuelle de /tarifs). */
-  .essai { --focus: #FFFFFF; margin-top: 8px; padding: 32px 24px 26px; border-radius: 30px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); text-align: center; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
-  .essai p { margin: 0; }
-  .essai .essai-titre { overflow-wrap: anywhere; font-family: var(--display); font-size: clamp(1.4375rem, 3vw, 1.875rem); font-weight: var(--dw); line-height: 1.15; letter-spacing: -0.022em; text-wrap-style: balance; }
-  .essai .essai-def { max-width: 40rem; margin: 12px auto 0; font-size: 1rem; line-height: 1.6; color: var(--on-deep-2); }
-  .essai .btn { margin-top: 22px; padding: 8px 26px; font-size: 1.0625rem; text-align: center; }
-  .essai .essai-note { margin-top: 16px; font-size: 0.9375rem; color: var(--on-deep-2); }
-  .essai .essai-note + .essai-note { margin-top: 0; }
-  /* Une zone de toucher de 44 px de haut qui ne change pas l'interligne. Sur
-     téléphone le lien d'inscription prend sa ligne, et le point médian qui le
-     suit est masqué à l'œil (il commencerait la ligne suivante). */
-  .essai-note a { display: block; width: fit-content; margin: -11px auto; padding: 11px 0; border-radius: 6px; font-weight: var(--tb); color: var(--paper); text-decoration: underline; text-underline-offset: 4px; }
-  .essai-note .pt { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .essai .essai-note { line-height: 1.9; }
-
-  /* Les questions de l'article : les plis de la DA (`.qa`, da.css). */
-  .questions, .connexes { margin-top: 64px; }
-  .questions h2, .connexes h2 { --corps: clamp(min(1.625rem, 8.2vw), 3.2vw, 2.25rem); margin: 0 0 20px; }
-  .liste .qa:last-child { margin-bottom: 0; }
-  .qa-t { min-width: 0; font-size: 1.125rem; overflow-wrap: anywhere; }
-  /* Téléphone : un corps plus petit et pas d'équilibrage (il coupait « a- / t-elle »
-     et donnait des questions de quatre lignes dans une boîte de 252 px). */
-  @media (max-width: 559px) {
-    .qa-t { font-size: 1.0625rem; text-wrap-style: auto; }
-  }
-  .qa-in { max-width: 42rem; font-size: 1.03125rem; line-height: 1.6; color: var(--ink-2); overflow-wrap: anywhere; }
-
-  /* L'auteur : une fiche blanche. */
-  .signature { display: flex; flex-direction: column; gap: 14px; margin-top: 56px; padding: 24px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
-  .initiales { display: flex; flex: none; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(var(--deep), var(--deep-2)); font-family: var(--display); font-size: 1.125rem; font-weight: var(--dw); color: var(--paper); }
-  .signature-texte { min-width: 0; }
-  .signature p { margin: 0; }
-  .nom { font-weight: var(--tb); color: var(--ink); }
-  .role, .signature .mot { font-size: 0.9375rem; color: var(--ink-2); }
-  .signature .mot { margin-top: 8px; line-height: 1.6; }
-  /* Le HTML n'a pas d'espace entre la phrase et le lien (déjà avant) : le lien
-     prend sa ligne, à toutes les largeurs (6 px sous la phrase ; sa zone de
-     toucher garde ses 11 px au-dessus et au-dessous). */
-  .mot .lien { display: block; width: fit-content; margin: -5px 0 -11px; }
-
-  /* Le partage : trois petits boutons blancs, comme « Connexion » dans le tiroir. */
-  .partage { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 30px; font-size: 0.9375rem; }
-  .partage-nom { margin-right: 6px; font-weight: var(--tb); color: var(--ink); }
-  /* Téléphone : le libellé sur sa ligne, les trois boutons ensemble dessous. */
-  @media (max-width: 559px) {
-    .partage-nom { flex-basis: 100%; margin-right: 0; }
-  }
-  .reseau { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); background: var(--paper); box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 3px 0 var(--edge); font-weight: var(--tb); color: var(--ink); text-decoration: none; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
-  .reseau:hover { background: var(--sky-soft); }
-  .reseau:active { translate: 0 3px; box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12); }
-
-  /* Pour aller plus loin : une fiche blanche, trois liens fléchés. */
-  .suite { margin-top: 44px; padding: 24px 24px 16px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
-  .suite h2 { margin: 0 0 6px; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
-  .suite ul { margin: 0; padding: 0; list-style: none; }
-  .suite .lien { display: flex; align-items: flex-start; gap: 9px; margin: 0; font-size: 1rem; line-height: 1.4; }
-  .suite .lien :global(svg) { flex: none; margin-top: 3px; color: var(--brand); }
-
-  /* Les articles connexes : des cartes, la vignette à gauche. */
-  .cartes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .carte { display: flex; overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
-  .carte:hover { translate: 0 -3px; }
-  .carte img { flex: none; align-self: stretch; width: 96px; height: auto; min-height: 120px; object-fit: cover; object-position: top; }
-  .carte > div { align-self: center; min-width: 0; padding: 14px 18px 14px 16px; overflow-wrap: anywhere; }
-  .carte p { margin: 0; }
-  .carte-titre { font-size: 1rem; font-weight: var(--tb); line-height: 1.3; text-wrap-style: pretty; }
-  .carte .carte-duree { margin-top: 5px; font-size: 0.84375rem; color: var(--ink-3); }
-
-  .remonter { margin-top: 44px; text-align: center; }
-  .remonter .lien { display: inline-flex; align-items: center; gap: 7px; }
-
-  /* ───────── Largeurs ───────── */
-  /* Petits téléphones : à 17 px il ne restait que 32 caractères par ligne. */
-  @media (max-width: 359px) {
-    .page, .corps { font-size: 1rem; }
-  }
-  @media (min-width: 560px) {
-    .signature { flex-direction: row; align-items: flex-start; gap: 18px; padding: 26px 28px; }
-    .essai { margin-top: 20px; padding: 40px 36px 30px; }
-    .essai-note a { display: inline-block; width: auto; margin: -11px 0; }
-    /* Deux lignes de liens qui se suivent : 16 px de plus entre elles, sinon la
-       zone de toucher du second (50 px de haut) recouvrait le bas du texte du
-       premier et captait une partie de ses clics. */
-    .essai .essai-note:has(a) + .essai-note { margin-top: 16px; }
-    .essai-note .pt { position: static; width: auto; height: auto; margin: 0 0 0 0.3em; overflow: visible; clip-path: none; }
-    .suite { padding: 26px 28px 18px; }
-  }
-  @media (min-width: 640px) {
-    .cartes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-  }
-  /* À partir de 700 px : le titre à gauche, la couverture à droite, dans la
-     même cellule (le titre lui réserve sa place à droite). Le texte grandit. */
-  @media (min-width: 700px) {
-    .page { --cw: clamp(12.5rem, 27vw, 18.75rem); padding-top: 104px; }
-    .retour { margin-top: 8px; margin-bottom: 12px; }
-    .illustree .tete { grid-area: 1 / 1; align-self: center; padding-right: calc(var(--d) + var(--cw) + 40px); }
-    .couverture { grid-area: 1 / 1; align-self: center; justify-self: end; width: var(--cw); margin: 0 var(--d) 0 0; }
-    .corps { margin-top: 44px; padding-top: 64px; padding-bottom: 116px; font-size: 1.125rem; line-height: 1.7; }
-    .corps :global(h2) { font-size: 1.6875rem; }
-    .corps :global(h3) { font-size: 1.3125rem; }
-    .corps :global(.callout) { padding: 28px 26px 22px; }
-    .corps :global(.callout)::before { left: 24px; }
-  }
-  @media (min-width: 900px) {
-    /* Tableaux : corps et cellules plus larges à partir de 900 px seulement
-       (à 768 px, un tableau de quatre colonnes défilait pour 25 px). */
-    .corps :global(table) { font-size: 0.9375rem; }
-    .corps :global(th), .corps :global(td) { padding-left: 14px; padding-right: 14px; }
-    .corps :global(th:first-child), .corps :global(td:first-child) { padding-left: 18px; }
-    .corps :global(th:last-child), .corps :global(td:last-child) { padding-right: 18px; }
-    .page { padding-top: 124px; padding-bottom: 196px; }
-    .page::before, .page::after { --p: 440px; --th: 54px; }
-    .page::before { height: 112px; }
-    .page::after { height: 60px; }
-  }
-  /* Sommaire collant : il flotte au-dessus des feuilles, à gauche. */
-  @media (min-width: 1280px) {
-    .guidee { --som: 18rem; }
-    .guidee .toc, .guidee .article { grid-area: 1 / 1; }
-    /* Quand la liste dépasse, une ombre en haut et en bas dit qu'il y a une
-       suite (fonds « local » et « scroll », comme sur les tableaux). */
-    .toc {
-      position: sticky; top: 92px; z-index: 2; box-sizing: border-box; align-self: start; justify-self: start; width: 15rem; max-height: calc(100vh - 7.5rem); margin: 0 0 0 var(--g); padding: 18px 10px 14px 18px; overflow-y: auto; overscroll-behavior: contain; border-radius: var(--r-md); scrollbar-width: thin;
-      background:
-        linear-gradient(var(--paper) 40%, rgba(255, 255, 255, 0)) 0 0 / 100% 48px no-repeat local,
-        linear-gradient(to top, var(--paper) 40%, rgba(255, 255, 255, 0)) 0 100% / 100% 48px no-repeat local,
-        linear-gradient(rgba(20, 37, 79, 0.2), rgba(20, 37, 79, 0)) 0 0 / 100% 20px no-repeat scroll,
-        linear-gradient(to top, rgba(20, 37, 79, 0.2), rgba(20, 37, 79, 0)) 0 100% / 100% 20px no-repeat scroll,
-        var(--paper);
-    }
-    /* Plus de vingt entrées (trois articles) : seules les sections restent
-       affichées dans la fiche collante ; les liens des sous-sections restent
-       dans le HTML, et dans le pli sous 1280 px. */
-    .toc.longue ol a.sous { display: none; }
-    .toc-case, .toc-titre { display: none; }
-    .toc-nav { display: block; padding: 0; }
-    .toc-nom { display: block; margin: 0 0 8px; font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
-    .toc ol { font-size: 0.875rem; }
-    .toc ol a { padding: 5px 0; }
-    .toc ol a.sous { font-size: 0.8125rem; }
-    .toc-haut { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-top: 8px; border-radius: 6px; font-size: 0.8125rem; font-weight: var(--tb); color: var(--ink); text-decoration: none; }
-    .toc-haut:hover { color: var(--brand); }
-    .guidee .remonter { display: none; }
-    /* Deux bords gauches au lieu de trois : le sommaire, puis le titre, le texte
-       et ce qui suit la lecture, tous au même aplomb. Un tableau part de ce bord
-       et va jusqu'au bord droit du contenu s'il le faut. */
-    .guidee .corps > :global(*) { margin-left: 0; }
-    .guidee .corps > :global(table) { max-width: 100%; margin-left: 0; margin-right: 0; translate: none; }
-    /* Tant que la bannière cookies est affichée (en bas à gauche, là où le
-       sommaire colle), il s'arrête au-dessus d'elle au lieu de passer dessous.
-       Plancher de 12 rem : dans une fenêtre très basse, il n'en restait qu'une
-       entrée visible. */
-    :global(.da:has(#cookie-banner:not([hidden]))) .toc { max-height: max(12rem, calc(100vh - 25rem)); }
-  }
-
-  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur
-     forme aux fiches ; le décor du bas disparaît. */
-  @media (forced-colors: active) {
-    .toc, .serie, .couverture, .essai, .signature, .reseau, .suite, .carte,
-    .corps :global(table), .corps :global(blockquote), .corps :global(.callout) { border: 1px solid CanvasText; }
-    .page::before, .page::after, .corps::after { display: none; }
-    /* Un <svg> garde son fond : sur la pastille ciel, le trait (couleur du
-       système) ne se voyait plus en thème sombre. */
-    .toc-titre :global(svg) { background: none; }
-  }
-</style>

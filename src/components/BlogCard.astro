@@ -1,10 +1,12 @@
 ---
 /**
- * Carte d'article des pages de liste du blog (/blog et /blog/serie/*).
+ * Ligne d'article des pages de liste du blog (/blog et /blog/serie/*).
  *
- * Habillée dans la DA 2026 en phase 5c (MIGRATION.md § 9.ej) : une fiche blanche
- * en relief, la couverture dedans, à coins ronds. Lien, titre (et son niveau),
- * extrait, date, durée, série et numéro : ceux d'avant, dans le même ordre.
+ * Habillée dans la DA 2026 en phase 5c (MIGRATION.md § 9.ej), puis mise en
+ * lignes sur une feuille au § 9.fk : l'affiche en vignette à gauche, la série et
+ * le numéro en petites capitales, le titre, l'extrait (masqué au téléphone, il
+ * reste dans le HTML), date et durée. Lien, titre (et son niveau), extrait,
+ * date, durée, série et numéro : ceux d'avant, dans le même ordre.
  * Aucune classe utilitaire : les styles sont dans `src/styles/blog-liste.css`,
  * la feuille des quatre pages de liste.
  *
@@ -12,12 +14,12 @@
  * une série en CSS.
  *
  * Format des couvertures : toutes en PORTRAIT (2:3, 3:4 ou 4:5), titre dessiné en
- * haut. Le cadre est 4:5, ancré sur le haut : une 4:5 s'affiche entière, une 2:3
- * ne perd que le bas. Sur téléphone, la carte passe à l'horizontale (vignette à
- * gauche) : une couverture 4:5 pleine largeur ferait ~430 px de haut par carte.
+ * haut. Sur téléphone, un carré de 64 px recadré sur le dessin (le titre dessiné,
+ * illisible à cette taille, sort du cadre) ; à partir de 640 px, un cadre 4:5 de
+ * 96 px (104 px à partir de 1024 px), ancré sur le haut. `sizes` dit ces largeurs.
  */
 import { blogSeries } from '@/lib/blog-series';
-import { nouer, echapper } from '@/lib/typo';
+import { nouer, echapper, nouerNombres } from '@/lib/typo';
 
 interface Props {
   /** Niveau du titre de carte : 3 quand la grille est sous un h2 de section (/blog). */
@@ -29,7 +31,7 @@ interface Props {
   readTime: string;
   seriesId: string;
   episodeNumber?: number;
-  cover?: { src: string; width: number; height: number; srcSmall?: string };
+  cover?: { src: string; width: number; height: number; srcset?: string };
   /** Charge la couverture en priorité (première carte de la grille) plutôt qu'en différé. */
   eager?: boolean;
 }
@@ -51,8 +53,8 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
       <div class="bl-vignette">
         <img
           src={cover.src}
-          srcset={cover.srcSmall ? `${cover.srcSmall} 320w, ${cover.src} ${cover.width}w` : undefined}
-          sizes={cover.srcSmall ? '(min-width: 1024px) 270px, (min-width: 640px) 45vw, 112px' : undefined}
+          srcset={cover.srcset}
+          sizes={cover.srcset ? '(min-width: 1024px) 104px, (min-width: 640px) 96px, 64px' : undefined}
           alt=""
           width={cover.width}
           height={cover.height}
@@ -69,7 +71,7 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
         )}
       </div>
       <Heading set:html={nouer(echapper(title))} />
-      <p class="bl-extrait" set:html={nouer(echapper(description))} />
+      <p class="bl-extrait" set:html={nouer(nouerNombres(echapper(description)))} />
       <div class="bl-infos">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
         <span>{readTime}</span>

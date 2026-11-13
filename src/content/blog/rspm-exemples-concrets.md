@@ -74,9 +74,11 @@ Tout passe par **medecins-remplacants.urssaf.fr**. Tu y crées ton espace, tu y 
 
 **3. Impôt sur le revenu**\
 • Base imposable micro-BNC = 19 000 × 66 % = **12 540 €**\
-• Barème 2026, applicable aux revenus 2025 (1 part) :\
-  - 0 % jusqu'à 11 600 € → 0 €\
-  - 11 % sur la part 11 601 → 12 540 (= 940 €) → 103,40 €\
+• Barème 2026, applicable aux revenus 2025 (1 part) :
+
+  - 0 % jusqu'à 11 600 € → 0 €
+  - 11 % sur la part 11 601 → 12 540 (= 940 €) → 103,40 €
+
 • Application de la décote → **IR net = 0 €**
 
 ✅ **Super net = 16 278 €**
@@ -102,9 +104,11 @@ Tout passe par **medecins-remplacants.urssaf.fr**. Tu y crées ton espace, tu y 
 
 **3. Impôt sur le revenu**\
 • Base imposable micro-BNC = 38 000 × 66 % = **25 080 €**\
-• Barème 2026, applicable aux revenus 2025 (1 part) :\
-  - 0 % jusqu'à 11 600 € → 0 €\
-  - 11 % sur la part 11 601 → 25 080 (= 13 480 €) → 1 482,80 €\
+• Barème 2026, applicable aux revenus 2025 (1 part) :
+
+  - 0 % jusqu'à 11 600 € → 0 €
+  - 11 % sur la part 11 601 → 25 080 (= 13 480 €) → 1 482,80 €
+
 • Décote = 226,03 €\
 • → **IR net ≈ 1 257 €**
 
