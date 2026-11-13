@@ -17,6 +17,7 @@ import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
 import '@/styles/blog-article.css';
 import { entreesSommaire } from '@/lib/article-sommaire';
 import { EMO_SRC } from '@/lib/rehype-article.mjs';
+import { donneesPartage, nomImagePartage } from '@/lib/image-partage.mjs';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -147,7 +148,8 @@ const { loading: _lazy, ...coverAttrs } = coverImage?.attributes ?? {};
    flou (31 articles sur 48 avaient une affiche de moins de 1 200 px, 11 vers 450 px).
    C'est l'og:image, la twitter:image et la première image du JSON-LD Article ; suivent
    les recadrages de l'affiche en 16:9, 4:3 et 1:1, comme le recommande Google. */
-const imagePartage = { url: `${SITE_URL}/blog/partage/${slug}.jpg`, width: 1200, height: 630 };
+const partage = donneesPartage(posts).get(slug)!;
+const imagePartage = { url: `${SITE_URL}/blog/partage/${nomImagePartage(slug, partage)}.jpg`, width: 1200, height: 630 };
 const ldImages = [
   imagePartage,
   ...(await Promise.all([16 / 9, 4 / 3, 1].map((r) => croppedCover(cover, r, 'jpg')))).filter(

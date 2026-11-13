@@ -1,38 +1,26 @@
 /**
- * /blog/partage/<slug>.jpg — l'image de partage de chaque article (MIGRATION.md § 9.fl).
+ * /blog/partage/<slug>-<empreinte>.jpg — l'image de partage de chaque article (MIGRATION.md § 9.fl).
  *
  * Fabriquée à la construction par `src/lib/image-partage.mjs` (1 200 × 630 px, JPEG) :
  * un nouvel article a la sienne sans rien faire. Le gabarit d'article la donne en
- * `og:image`, en `twitter:image` et en première image du JSON-LD `Article`. Un point de
- * terminaison n'entre pas dans le sitemap (seules les pages y sont).
+ * `og:image`, en `twitter:image` et en première image du JSON-LD `Article`, à la même
+ * adresse (`nomImagePartage`, même calcul des deux côtés). Un point de terminaison
+ * n'entre pas dans le sitemap (seules les pages y sont).
  *
- * La pose de la mascotte suit le rang de l'article dans sa série (ordre des épisodes,
- * puis des dates) : deux articles voisins n'ont pas la même.
+ * L'empreinte change avec le titre, la pastille, la pose ou le dessin de l'image : un
+ * aperçu de lien déjà vu (LinkedIn, Facebook, WhatsApp) ne garde pas l'ancienne.
  */
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
-import { blogSeries } from '@/lib/blog-series';
-import { imagePartage } from '@/lib/image-partage.mjs';
+import { donneesPartage, imagePartage, nomImagePartage } from '@/lib/image-partage.mjs';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('blog');
-  const rangs = new Map<string, number>();
-  for (const s of new Set(posts.map((p) => p.data.seriesId))) {
-    posts
-      .filter((p) => p.data.seriesId === s)
-      .sort((a, b) => (a.data.episodeNumber ?? 0) - (b.data.episodeNumber ?? 0) || a.data.pubDate.getTime() - b.data.pubDate.getTime())
-      .forEach((p, i) => rangs.set(p.id, i));
-  }
-  return posts.map((p) => ({
-    params: { slug: p.id },
-    props: {
-      titre: p.data.title,
-      serie: p.data.seriesId,
-      nomSerie: blogSeries.find((s) => s.id === p.data.seriesId)?.name ?? p.data.category,
-      numero: p.data.seriesId === 'divers' ? null : (p.data.categoryNumber ?? null),
-      rang: rangs.get(p.id) ?? 0,
-    },
-  }));
+  const donnees = donneesPartage(posts);
+  return posts.map((p) => {
+    const d = donnees.get(p.id)!;
+    return { params: { slug: nomImagePartage(p.id, d) }, props: d };
+  });
 }) satisfies GetStaticPaths;
 
 export const GET: APIRoute = async ({ props }) => {

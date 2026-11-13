@@ -16,16 +16,24 @@
  * jamais servis : ils sont lus par chemin depuis la racine du projet, pas importés (un
  * import les copierait dans le build).
  *
- * Le titre est composé ligne à ligne : le moins de lignes possible dans la colonne, puis
- * les lignes les plus égales ; un mot court (la, du, les, à, ton…) reste avec le mot qui le
- * suit, un nombre avec son unité, une ponctuation haute avec son mot ; jamais un mot seul
- * sur la dernière ligne quand le titre en a trois ou plus ; jamais de coupure à un trait
- * d'union. Deux tailles (72 px jusqu'à quatre lignes, 60 px au-delà). Un caractère que la
- * police n'a pas (émoji) est retiré du titre : sans police de secours sur la machine de
- * construction, il sortirait en carré vide.
+ * Le titre est coupé en lignes ici (Pango ne fait que les poser, sur des lignes de base
+ * régulières) : le moins de lignes possible dans la colonne, puis les lignes les plus égales ;
+ * un mot court (la, du, les, à, ton…) reste avec le mot qui le suit, un nombre avec son unité,
+ * une ponctuation haute avec son mot ; jamais un mot seul sur la dernière ligne quand le titre
+ * en a trois ou plus ; jamais de coupure à un trait d'union. Trois tailles (72, 60 et 50 px) :
+ * la plus grande qui tient en trois lignes sans défaut, sinon en quatre ; la hauteur du titre
+ * est bornée (il ne descend jamais sur les vagues ni sur la marque). Un titre qui ne tient pas,
+ * même en 50 px, est coupé à un mot, suivi de « … », avec un avertissement à la construction
+ * (l'og:title garde le titre entier). Un caractère que la police n'a pas (émoji) est retiré du
+ * titre : sans police de secours sur la machine de construction, il sortirait en carré vide.
+ *
+ * L'adresse de l'image porte une empreinte (`nomImagePartage`) : de son texte, de la pose et
+ * de ce fichier. Un aperçu de lien (LinkedIn, Facebook, WhatsApp) garde l'image d'une adresse des
+ * jours durant ; un titre retouché, ou un dessin changé ici, donne une nouvelle adresse.
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import sharp from 'sharp';
 
 export const LARGEUR = 1200;
@@ -39,11 +47,11 @@ for (const f of [police(560), police(720)]) {
 }
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const N = ' ';
+const N = '\u00A0';
 /** Typographie de l'image seulement (le titre de la page ne change pas). */
 const typo = (s) =>
   s
-    .replace(/\p{Extended_Pictographic}️?/gu, '')
+    .replace(/\p{Extended_Pictographic}\uFE0F?/gu, '')
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/'/g, '’')
@@ -73,6 +81,26 @@ const POSES = [
 /** Mots qui ne finissent pas une ligne : ils restent avec le mot suivant. */
 const LIANTS = new Set(['le', 'la', 'les', 'l’', 'de', 'des', 'du', 'd’', 'un', 'une', 'à', 'au', 'aux', 'et', 'ou', 'en', 'ton', 'ta', 'tes', 'ce', 'ces', 'son', 'sa', 'ses', 'par', 'pour', 'sur', 'dans', 'avec', 'sans', 'vs', 'ni', 'te', 'se', 'me', 'ne', 'il', 'on', 'tu', 'qu’il', 'qu’on']);
 
+/**
+ * Ce que montre l'image de chaque article, et donc son empreinte : Map slug → { titre, serie, libelle, rang }.
+ * `libelle` est celui de la pastille de l'article (« Fiche Fiscalité #4 », « Guide et Conseil ») ; `rang`, le rang de
+ * l'article dans sa série (ordre des épisodes, puis des dates) : deux articles voisins n'ont pas la même pose.
+ * @param {Array<{ id: string, data: { title: string, seriesId: string, category: string, categoryNumber?: string, episodeNumber?: number, pubDate: Date } }>} posts
+ */
+export function donneesPartage(posts) {
+  const out = new Map();
+  for (const s of new Set(posts.map((p) => p.data.seriesId))) {
+    posts
+      .filter((p) => p.data.seriesId === s)
+      .sort((a, b) => (a.data.episodeNumber ?? 0) - (b.data.episodeNumber ?? 0) || a.data.pubDate.getTime() - b.data.pubDate.getTime())
+      .forEach((p, i) => out.set(p.id, { titre: p.data.title, serie: p.data.seriesId, libelle: p.data.category + (p.data.categoryNumber ? ` ${p.data.categoryNumber}` : ''), rang: i }));
+  }
+  return out;
+}
+const SOURCE = fs.readFileSync(path.join(RACINE, 'src/lib/image-partage.mjs'), 'utf8');
+/** Le nom de l'image d'un article, sans extension : <slug>-<empreinte> (même calcul pour le point de terminaison et le gabarit). */
+export const nomImagePartage = (slug, d) => `${slug}-${createHash('sha1').update(JSON.stringify(d) + SOURCE).digest('hex').slice(0, 8)}`;
+
 async function texte(markup, poids, corps, largeur) {
   const buf = await sharp({
     text: { text: markup, font: `GSF Hippodoc ${poids} ${corps}`, fontfile: police(poids), width: largeur, dpi: 72, rgba: true, wrap: 'word', align: 'left' },
@@ -99,32 +127,42 @@ function groupes(titre) {
   return out;
 }
 
-/** La meilleure coupe des groupes en lignes de largeur ≤ L (null si un groupe ne tient pas).
+/** La meilleure coupe des groupes en au plus `maxL` lignes de largeur ≤ L (null si rien ne tient).
     Critères, dans l'ordre : pas de mot seul sur la dernière ligne (titre de trois mots ou
     plus), le moins de lignes, pas de ligne de moins de 40 % de la plus longue, la plus
-    longue ligne la plus courte (au pas de 8 px), puis les lignes les plus égales. */
-function couper(ws, larg, esp, L) {
+    longue ligne la plus courte (au pas de 8 px), puis les lignes les plus égales. Les coupes
+    sont énumérées par leurs points de coupure (au plus maxL − 1 parmi n − 1) : quelques
+    milliers d'essais pour un titre de 40 mots, au lieu de 2^(n−1). */
+function couper(ws, larg, esp, L, maxL) {
   const n = larg.length;
   const nbMots = ws.join(' ').split(/[ \u00a0]/).length;
   const avant = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] < b[i]; return false; };
+  const largeurDe = (de, a) => { let t = esp * (a - de - 1); for (let i = de; i < a; i++) t += larg[i]; return t; };
   let meilleure = null;
-  for (let masque = 0; masque < 1 << (n - 1); masque++) {
-    const lignes = [];
-    let cur = [0];
-    for (let i = 1; i < n; i++) {
-      if (masque & (1 << (i - 1))) { lignes.push(cur); cur = [i]; } else cur.push(i);
+  const essayer = (coupures) => {
+    const bornes = [0, ...coupures, n];
+    const lignes = [], w = [];
+    for (let k = 0; k < bornes.length - 1; k++) {
+      const l = largeurDe(bornes[k], bornes[k + 1]);
+      if (l > L) return;
+      w.push(l);
+      lignes.push(Array.from({ length: bornes[k + 1] - bornes[k] }, (_, i) => bornes[k] + i));
     }
-    lignes.push(cur);
-    const w = lignes.map((l) => l.reduce((t, i) => t + larg[i], 0) + esp * (l.length - 1));
     const max = Math.max(...w), min = Math.min(...w);
-    if (max > L) continue;
     const derniere = lignes[lignes.length - 1];
     const orpheline = nbMots >= 3 && lignes.length > 1 && derniere.length === 1 && !ws[derniere[0]].includes(N);
     const courte = lignes.length > 1 && min < 0.4 * max;
     const inegal = w.reduce((t, x) => t + (max - x) ** 2, 0);
     const cout = [orpheline ? 1 : 0, lignes.length, courte ? 1 : 0, Math.ceil(max / 8), inegal];
     if (!meilleure || avant(cout, meilleure.cout)) meilleure = { cout, lignes, orpheline, courte };
-  }
+  };
+  // Toutes les suites croissantes de 0 à maxL − 1 coupures parmi les positions 1 … n − 1.
+  const suite = (depuis, reste, prises) => {
+    essayer(prises);
+    if (!reste) return;
+    for (let i = depuis; i < n; i++) suite(i + 1, reste - 1, [...prises, i]);
+  };
+  suite(1, Math.min(maxL, n) - 1, []);
   return meilleure;
 }
 
@@ -135,32 +173,46 @@ async function largeur(markup, poids, corps) {
   return cacheLargeurs.get(k);
 }
 
-/** Le titre composé : une image par ligne, posées l'une sous l'autre. */
-async function titreCompose(titre, encre, tailles, L) {
-  const ws = groupes(titre);
+/** Le titre composé, d'un seul appel à Pango (lignes séparées par « \n », interligne fixe) : les lignes de base
+    sont régulières, qu'une ligne ait ou non une lettre haute ou un accent. `hMax` : la hauteur disponible. */
+async function titreCompose(titre, encre, tailles, L, hMax) {
   const ls = (c) => `letter_spacing="${Math.round(-0.03 * c * 1024)}"`;
-  const essais = [];
-  for (const c of tailles) {
+  const essai = async (ws, c) => {
     const larg = [];
     for (const m of ws) larg.push(await largeur(`<span ${ls(c)}>${esc(m)}</span>`, 720, c));
     const esp = (await largeur(`<span ${ls(c)}>a a</span>`, 720, c)) - (await largeur(`<span ${ls(c)}>aa</span>`, 720, c));
-    const coupe = couper(ws, larg, esp, L);
-    if (coupe) essais.push({ c, coupe });
-  }
+    // Lignes qui tiennent dans la hauteur : la première et les jambages de la dernière comptent pour 1,45 c (accents
+    // et lettres basses compris), chaque ligne de plus pour un pas ; quatre au plus.
+    const pas = Math.round(c * 1.08);
+    const maxL = Math.max(1, Math.min(4, Math.floor((hMax - 1.45 * c) / pas) + 1));
+    const coupe = couper(ws, larg, esp, L, maxL);
+    return coupe ? { c, pas, coupe, ws } : null;
+  };
+  const ws = groupes(titre);
+  const essais = [];
+  for (const c of tailles) { const e = await essai(ws, c); if (e) essais.push(e); }
   // La plus grande taille qui tient en trois lignes, sans mot seul ni ligne trop courte ;
-  // sinon en trois lignes sans mot seul ; en quatre ; sans mot seul ; sinon la plus grande.
-  const choix =
-    essais.find((e) => !e.coupe.orpheline && !e.coupe.courte && e.coupe.lignes.length <= 3) ??
-    essais.find((e) => !e.coupe.orpheline && e.coupe.lignes.length <= 3) ??
-    essais.find((e) => !e.coupe.orpheline && e.coupe.lignes.length <= 4) ??
-    essais.find((e) => !e.coupe.orpheline) ??
-    essais[0];
-  if (!choix) throw new Error(`image de partage : titre trop long pour la colonne (${titre})`);
-  const { c, coupe } = choix;
-  const imgs = [];
-  for (const l of coupe.lignes) imgs.push(await texte(`<span foreground="${encre}" ${ls(c)}>${esc(l.map((j) => ws[j]).join(' '))}</span>`, 720, c, 8000));
-  const pas = Math.round(c * 1.08);
-  return { imgs, pas, h: pas * (imgs.length - 1) + imgs[imgs.length - 1].h };
+  // sinon en trois lignes sans mot seul ; en quatre sans mot seul ; sinon la plus grande qui tient.
+  // La plus petite taille (50 px) est un secours : seulement pour un titre qui ne tient en quatre
+  // lignes ni en 72 ni en 60 px (un titre court ne descend jamais à 50 px).
+  const secours = tailles[tailles.length - 1];
+  const cascade = (es) =>
+    es.find((e) => !e.coupe.orpheline && !e.coupe.courte && e.coupe.lignes.length <= 3) ??
+    es.find((e) => !e.coupe.orpheline && e.coupe.lignes.length <= 3) ??
+    es.find((e) => !e.coupe.orpheline) ??
+    es[0];
+  let choix = cascade(essais.filter((e) => e.c !== secours)) ?? cascade(essais.filter((e) => e.c === secours));
+  if (!choix) {
+    // Rien ne tient, même à la plus petite taille : le titre est coupé à un groupe de mots, suivi de « … ».
+    const c = tailles[tailles.length - 1];
+    for (let k = ws.length - 1; k > 0 && !choix; k--) choix = await essai([...ws.slice(0, k - 1), ws[k - 1] + N + '…'], c);
+    if (!choix) throw new Error(`image de partage : titre impossible à composer (${titre})`);
+    console.warn(`image de partage : titre trop long, coupé dans l'image (${titre})`);
+  }
+  const { c, pas, coupe } = choix;
+  const lignes = coupe.lignes.map((l) => l.map((j) => choix.ws[j]).join(' '));
+  const img = await texte(`<span foreground="${encre}" ${ls(c)} line_height="${pas * 1024}">${lignes.map(esc).join('\n')}</span>`, 720, c, 8000);
+  return { img, h: img.h, n: lignes.length };
 }
 
 function vague(y, amp, couleur, W, phase = 0) {
@@ -183,12 +235,23 @@ async function mascotte(pose, hauteur, largeurMax) {
 }
 
 /**
- * @param {{ titre: string, serie: string, nomSerie: string, numero?: string | null, rang: number }} a
- *   `serie` : seriesId ; `nomSerie` : le nom affiché de la série ; `numero` : « #4 » ;
- *   `rang` : rang de l'article dans sa série (la pose en dépend).
+ * @param {{ titre: string, serie: string, libelle: string, rang: number }} a  (voir `donneesPartage`)
  * @returns {Promise<Buffer>} le JPEG.
  */
+/* Garde : la police est bien celle du site. Si Pango ne la lisait pas (fontconfig absent, fichier illisible), il
+   prendrait sans rien dire une police du système : « Hippodoc » en 720 à 100 px mesure 471 px avec la nôtre, 446
+   avec la police de secours de cette machine. Un écart de plus de 2,5 % arrête la construction. */
+const LARGEUR_TEMOIN = 471;
+let temoin = null;
+async function verifierPolice() {
+  temoin ??= texte('Hippodoc', 720, 100, 8000).then(({ w }) => {
+    if (Math.abs(w - LARGEUR_TEMOIN) > LARGEUR_TEMOIN * 0.025) throw new Error(`image de partage : la police du site n'est pas celle que Pango emploie (« Hippodoc » mesure ${w} px au lieu de ${LARGEUR_TEMOIN})`);
+  });
+  return temoin;
+}
+
 export async function imagePartage(a) {
+  await verifierPolice();
   const W = LARGEUR, H = HAUTEUR;
   const th = THEMES[THEME_DE_SERIE[a.serie] ?? 'eau'];
   const pose = POSES[a.rang % POSES.length];
@@ -202,14 +265,14 @@ export async function imagePartage(a) {
   const col = Math.min(mx - marge - Math.round(W * 0.025), Math.round(W * 0.6));
   const cx = mx + mas.w / 2, cy = my + mas.h * 0.36, r = Math.max(mas.w * 0.62, H * 0.36);
 
-  const lib = a.nomSerie + (a.numero ? ` · ${a.numero}` : '');
-  const pt = await texte(`<span foreground="${th.pastilleTexte}">${esc(lib)}</span>`, 560, Math.round(H * 0.05), col);
+  const pt = await texte(`<span foreground="${th.pastilleTexte}">${esc(a.libelle)}</span>`, 560, Math.round(H * 0.05), col);
   const ppx = Math.round(H * 0.034), ppy = Math.round(H * 0.018);
   const pw = pt.w + 2 * ppx, ph = pt.h + 2 * ppy;
-  const tt = await titreCompose(a.titre, th.encre, [0.115, 0.095].map((x) => Math.round(H * x)), col);
   const ecart = Math.round(H * 0.05);
-  const bloc = ph + ecart + tt.h;
   const zoneHaut = H * 0.1, zoneBas = H * 0.78;
+  // Le bloc (pastille, écart, titre) tient entre 8 % de la hauteur et le haut des vagues (78 %).
+  const tt = await titreCompose(a.titre, th.encre, [0.115, 0.095, 0.08].map((x) => Math.round(H * x)), col, zoneBas - Math.round(H * 0.08) - ph - ecart);
+  const bloc = ph + ecart + tt.h;
   const yP = Math.max(Math.round(H * 0.08), Math.round(zoneHaut + (zoneBas - zoneHaut - bloc) / 2));
   const yT = yP + ph + ecart;
   const marque = await texte(`<span foreground="${th.marque[0]}">Hippo</span><span foreground="${th.marque[1]}">doc</span>`, 720, Math.round(H * 0.06), col);
@@ -228,7 +291,7 @@ ${vague(H - H * 0.13, H * 0.03, th.vagues[0], W, 0)}
       { input: mas.buf, left: mx, top: my },
       { input: Buffer.from(devant), left: 0, top: 0 },
       { input: pt.buf, left: marge + ppx, top: yP + ppy },
-      ...tt.imgs.map((im, i) => ({ input: im.buf, left: marge, top: yT + i * tt.pas })),
+      { input: tt.img.buf, left: marge, top: yT },
       { input: marque.buf, left: marge, top: H - Math.round(H * 0.085) - marque.h },
     ])
     .flatten({ background: th.fond[1] })
