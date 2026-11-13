@@ -10862,6 +10862,48 @@ défilement de côté (52 pages, 6 largeurs, plis fermés et ouverts : 624 état
 `src/pages/blog/partage/[slug].jpg.ts`, `src/styles/blog-article.css`, `src/styles/blog-liste.css`,
 `MIGRATION.md`, `CLAUDE.md`.
 
+### 9.fn Fenêtre produit : sans « Compte de démonstration », année 2026, un onglet « Tes déclarations » (13 novembre 2026)
+
+Trois décisions du propriétaire sur le bloc sous le premier écran.
+
+- **Mention retirée.** « Compte de démonstration · » sort du pied de la fenêtre (« c'est
+  évident ») ; reste « Recalculé après chaque journée enregistrée ». Le contrôle de
+  `verify-site.mjs` qui exigeait la mention une fois est retiré. Les chiffres restent
+  fictifs (`src/data/demoAccueil.ts`), comme avant.
+- **Année 2026 au lieu de 2025** (`DEMO_ANNEE.an`) : « Année 2026 » sur la fiche du
+  premier écran, la fenêtre produit et la case « Année 2026, à mettre de côté » ;
+  « Super-Net 2026 » dans la case jaune. Les montants ne changent pas.
+- **Quatrième onglet, « Tes déclarations »** (« Déclas » sur téléphone ; `data-ph`
+  `landing_apercu_declaration`, même convention que les trois autres). Contenu nouveau,
+  proche de l'application sans la copier (refonte à venir, dit le propriétaire) : les
+  cases pré-remplies d'un remplaçant en micro-BNC, au PAMC, 100 % conventionné, le cas
+  de l'exemple de la fiche RO-014 du guide des déclarations :
+  - « Revenus 2026 », « 4 cases », « pré-remplies à partir de tes journées » ;
+  - Impôts, 2042-C PRO : 5HQ « Recettes, micro-BNC », 90 005 € ;
+  - URSSAF, DSFU, volet PAMC : DSCS « Recettes brutes », 90 005 € ; DSAV « Part
+    conventionnée », 90 005 € ; DSDE « Revenu brut social », « À laisser vide » ;
+  - à partir de 780 px seulement : « L'abattement de 34 % est appliqué par
+    l'administration : rien à calculer. »
+  Les montants viennent de `DEMO_ANNEE.encaisse`. À savoir : 90 005 € dépasse le seuil
+  du micro-BNC 2026 (83 600 €) ; c'est admis une première année (le régime micro se
+  perd après deux années de dépassement consécutives), mais un lecteur attentif peut
+  le relever. Baisser l'encaissé du jeu changerait aussi le Super-Net de tout l'accueil :
+  non fait, à décider.
+- **Onglets sur téléphone** : à quatre, des libellés passaient sur deux lignes à
+  390 px. Sous 720 px, chaque onglet prend la largeur de son libellé ; marges et corps
+  réduits sous 410 et sous 360 px. Mesuré : une ligne par libellé à 320, 340, 360, 375,
+  390, 410, 430, 500 et 719 px. De 720 à 799 px, marges de 16 px (la barre dépassait
+  d'un pixel à 720 px).
+- **Hauteur** : les quatre vues ont la même hauteur à 320 (525 px), 360, 390 (504),
+  430, 720, 768, 860, 1 024 et 1 440 px (662). La note de l'abattement est masquée sous
+  780 px et les cases sont plus basses de 720 à 779 px : la vue y dépassait de 14, puis
+  27 px. Aucun débordement horizontal.
+- Feuille commune inchangée (`_astro_assets.BdxOyZgM.css`) ; `verify-site.mjs` attend
+  maintenant 4 onglets et 4 panneaux.
+
+**Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/data/demoAccueil.ts`,
+`scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

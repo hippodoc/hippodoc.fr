@@ -1,18 +1,23 @@
 ---
 /**
- * La fenêtre produit de l'accueil : trois vues de l'application, à onglets
- * (DA 2026, phase 3, MIGRATION.md § 9). Zéro JS.
+ * La fenêtre produit de l'accueil : quatre vues de l'application, à onglets
+ * (DA 2026, phase 3, MIGRATION.md § 9 ; vue « déclaration » ajoutée en § 9.fn).
+ * Zéro JS.
  *
- * - Onglets : trois boutons radio dans un <fieldset> (légende masquée à l'œil).
+ * - Onglets : quatre boutons radio dans un <fieldset> (légende masquée à l'œil).
  *   Tab entre dans le groupe, les flèches changent de vue, comme tout groupe de
  *   radios. La feuille affiche le panneau de la radio cochée avec `:has()`.
  *   Sans `:has()` (navigateurs d'avant fin 2023), la barre d'onglets est retirée
- *   et les trois vues s'affichent l'une sous l'autre.
- * - Les trois panneaux sont toujours dans le HTML.
+ *   et les quatre vues s'affichent l'une sous l'autre.
+ * - Les quatre panneaux sont toujours dans le HTML.
  * - Aucune balise de titre ici : la fenêtre précède le <h2> du bloc.
  * - Chiffres : src/data/demoAccueil.ts, un seul jeu pour toute l'accueil. La
- *   mention « Compte de démonstration » est dans le pied de la fenêtre, visible
- *   sous les trois vues ; elle n'est répétée nulle part ailleurs sur la page.
+ *   page ne porte plus de mention « Compte de démonstration » (retirée à la
+ *   demande du propriétaire, § 9.fn : un aperçu se lit comme tel).
+ * - Vue « déclaration » : les cases que l'application pré-remplit pour un
+ *   remplaçant en micro-BNC, au PAMC, 100 % conventionné (le cas de
+ *   l'exemple de la fiche RO-014 du guide des déclarations) : 5HQ = DSCS = DSAV = encaissé,
+ *   DSDE vide. Proche de l'application, pas sa copie (refonte à venir).
  * - Vue « journées » : la liste est le contenu, à toutes les largeurs. À partir
  *   de 860 px un calendrier du mois entier la remplace à l'œil ; il est masqué
  *   aux lecteurs d'écran, qui gardent la liste complète. En dessous, la liste
@@ -51,6 +56,7 @@ const VUES = [
   { id: 'super-net', court: 'Super-Net', long: 'Ce qu’il te reste' },
   { id: 'journees', court: 'Journées', long: 'Tes journées' },
   { id: 'a-recevoir', court: 'À recevoir', long: 'Ce qu’on te doit' },
+  { id: 'declaration', court: 'Déclas', long: 'Tes déclarations' },
 ];
 
 const annee = `Année ${DEMO_ANNEE.an}`;
@@ -89,6 +95,22 @@ const cases = [
 /* Vue « à recevoir » : ce qui est dû, puis ce qui est prévu. */
 const aVenir = DEMO_JOURNEES.filter((j) => j.etat !== 'paye');
 const nbEnAttente = DEMO_EN_ATTENTE.length;
+
+/* Vue « déclaration » : les cases pré-remplies, formulaire par formulaire. */
+const encaisse = euros(DEMO_ANNEE.encaisse);
+const formulaires = [
+  { qui: 'Impôts', nom: '2042-C PRO', cases: [{ code: '5HQ', libelle: 'Recettes, micro-BNC', valeur: encaisse }] },
+  {
+    qui: 'URSSAF',
+    nom: 'DSFU, volet PAMC',
+    cases: [
+      { code: 'DSCS', libelle: 'Recettes brutes', valeur: encaisse },
+      { code: 'DSAV', libelle: 'Part conventionnée', valeur: encaisse },
+      { code: 'DSDE', libelle: 'Revenu brut social', valeur: 'À laisser vide', vide: true },
+    ],
+  },
+];
+const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
 ---
 
 <div class="stage">
@@ -173,7 +195,33 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
     </div>
   </div>
 
-  <p class="stage-foot">Compte de démonstration · Recalculé après chaque journée enregistrée</p>
+  {/* Vue 4 : les déclarations, case par case */}
+  <div class="panel p4">
+    <div class="decla">
+      <div class="decla-tete">
+        <p class="decla-sum">
+          <span>Revenus {DEMO_ANNEE.an}</span>
+          <b class="v aff">{nbCases} cases</b>
+          <span>pré-remplies à partir de tes journées</span>
+        </p>
+        <p class="decla-note">L’abattement de 34 % est appliqué par l’administration : rien à calculer.</p>
+      </div>
+      <div class="formulaires">
+        {formulaires.map((f) => (
+          <div class="form">
+            <p class="form-t"><span class="qui">{f.qui}</span> {f.nom}</p>
+            <dl>
+              {f.cases.map((c) => (
+                <div class:list={['case', c.vide && 'vide']}><dt><b class="code">{c.code}</b> {c.libelle}</dt><dd class="num">{c.valeur}</dd></div>
+              ))}
+            </dl>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <p class="stage-foot">Recalculé après chaque journée enregistrée</p>
 </div>
 
 <style>
@@ -191,6 +239,10 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
   .tab:hover { color: var(--ink); }
   .tab .long { display: none; }
+  /* Quatre onglets sur téléphone (§ 9.fn) : chacun prend la place de son
+     libellé, sur une ligne de 320 à 719 px (mesuré à 320, 360, 390 et 430 px). */
+  @media (max-width: 719px) { .tab { flex: 1 1 auto; padding: 4px 8px; } }
+  @media (max-width: 409px) { .stage-bar { gap: 2px; padding: 8px 6px; } .tab { padding: 4px 6px; font-size: 14px; } }
   .tab:has(input:checked) { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), var(--clay-sm); }
   .tab:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
   /* Contrastes forcés : le fond et l'ombre disparaissent, un contour dit quel onglet est ouvert. */
@@ -202,7 +254,8 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   .panel { display: none; box-sizing: border-box; min-height: 396px; padding: 22px 18px 26px; }
   .stage:has(#apercu-super-net:checked) .p1,
   .stage:has(#apercu-journees:checked) .p2,
-  .stage:has(#apercu-a-recevoir:checked) .p3 { display: block; }
+  .stage:has(#apercu-a-recevoir:checked) .p3,
+  .stage:has(#apercu-declaration:checked) .p4 { display: block; }
   /* Sans `:has()`, rien ne relie l'onglet à son panneau : pas d'onglets, les
      trois vues l'une sous l'autre. */
   @supports not selector(:has(*)) {
@@ -217,6 +270,8 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
     .panel { min-height: 454px; padding: 36px 40px 40px; }
     .stage-foot { padding: 14px 40px; }
   }
+  /* Quatre libellés longs : à 720 px, ils dépassaient la barre d'un pixel. */
+  @media (min-width: 720px) and (max-width: 799px) { .tab { padding-inline: 16px; } }
   @media (min-width: 860px) { .panel { min-height: 550px; } }
   /* De 400 à 719 px le Super-Net grossit avec la fenêtre : son panneau dépassait
      les deux autres de 1 à 7 px. */
@@ -227,8 +282,8 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
      partagent la place selon leur libellé, la jauge s'affine, les corps baissent
      d'un cran. */
   @media (max-width: 359px) {
-    .stage-bar { gap: 2px; padding: 8px 6px; }
-    .tab { flex: 1 1 auto; padding: 4px 6px; font-size: 14.5px; }
+    .stage-bar { gap: 0; padding: 8px 4px; }
+    .tab { padding: 4px 5px; font-size: 13px; }
     .panel { padding-inline: 14px; }
     .stage-foot { padding-inline: 14px; }
   }
@@ -334,11 +389,54 @@ const nbEnAttente = DEMO_EN_ATTENTE.length;
   }
   @media (min-width: 860px) { .due { min-height: 474px; } }
 
+  /* Vue 4 : les déclarations. Une case de formulaire : son code dans un cadre,
+     comme sur le cerfa, son libellé, sa valeur. */
+  .decla { display: grid; gap: 16px; }
+  .decla-tete > p { margin: 0; }
+  .decla-sum { display: flex; flex-direction: column; gap: 2px; }
+  .decla-sum .v { --corps: clamp(28px, 7vw, 66px); }
+  .decla-sum span { font-size: 15px; color: var(--ink-2); }
+  @media (min-width: 720px) { .decla-sum span { font-size: 16px; } }
+  .decla .decla-note { display: none; margin-top: 18px; font-size: 15px; line-height: 1.45; color: var(--ink-2); }
+  .formulaires { display: grid; gap: 14px; }
+  .form-t { display: flex; align-items: baseline; gap: 8px; margin: 0 0 4px; font-size: 14px; font-weight: var(--tb); color: var(--ink); }
+  .form-t .qui { font-weight: var(--tw); color: var(--ink-3); }
+  .form dl { margin: 0; }
+  .case { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; border-top: 1px solid var(--line); font-size: 15.5px; color: var(--ink-2); }
+  .case dt, .case dd { margin: 0; }
+  .case dt { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .case dd { font-weight: var(--tb); color: var(--ink); }
+  .case.vide dd { font-weight: var(--tw); color: var(--ink-3); }
+  .code { flex: none; min-width: 48px; padding: 3px 6px; border: 1.5px solid var(--ink); border-radius: 6px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.04em; text-align: center; color: var(--ink); }
+  .case.vide .code { border-style: dashed; border-color: var(--ink-3); color: var(--ink-2); }
+  @media (max-width: 359px) {
+    .case { font-size: 14.5px; gap: 8px; }
+    .case dt { gap: 8px; }
+    .code { min-width: 42px; font-size: 12px; }
+  }
+  @media (min-width: 720px) {
+    .case { font-size: 17px; }
+    .form-t { font-size: 15px; }
+  }
+  /* La note n'a la place qu'à côté des formulaires : sous 780 px, la vue
+     dépassait les trois autres de 14 px. */
+  @media (min-width: 780px) {
+    .decla .decla-note { display: block; }
+    .case { min-height: 52px; }
+    .formulaires { gap: 20px; }
+    .decla { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; align-items: center; min-height: 360px; }
+  }
+  @media (min-width: 860px) {
+    .decla { min-height: 474px; }
+    .case { min-height: 60px; }
+  }
+
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. */
   @media (prefers-reduced-motion: no-preference) {
     .stage:has(#apercu-super-net:checked) .p1,
     .stage:has(#apercu-journees:checked) .p2,
-    .stage:has(#apercu-a-recevoir:checked) .p3 { animation: apercu-fade 300ms var(--ease) both; }
+    .stage:has(#apercu-a-recevoir:checked) .p3,
+    .stage:has(#apercu-declaration:checked) .p4 { animation: apercu-fade 300ms var(--ease) both; }
     /* La fenêtre monte en place quand elle entre à l'écran (navigateurs qui
        savent lier une animation au défilement ; les autres l'affichent telle quelle).
        ⚠️ Deux règles, deux sélecteurs : écrites ensemble, la minification du build
