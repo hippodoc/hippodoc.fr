@@ -9613,6 +9613,238 @@ placée dans la fenêtre.
 
 `src/styles/guide.css`, `src/styles/calculette.css`, `MIGRATION.md`, `CLAUDE.md`.
 
+### 9.ez `verify-site.mjs` : les réponses de la FAQ comparées au schéma sur toutes les pages (13 novembre 2026)
+
+Le contrôle « 4 septies » compare le schéma `FAQPage` au texte visible. Depuis § 9.ex il
+comparait les questions partout et les réponses sur l'accueil seulement : étendue telle
+quelle, la comparaison des réponses sortait 69 écarts, laissés à trier. Ils sont triés,
+la comparaison est corrigée et active sur les 58 pages qui portent un `FAQPage`
+(391 réponses). **Aucun texte visible ni aucun JSON-LD n'a changé** : seul le script de
+vérification change, le build est le même.
+
+**1. Le tri des 69 écarts**
+
+| Cause | Nombre | Pages | Nature |
+|---|---|---|---|
+| Un « < » de texte pris pour une balise | 5 | quatre articles, la calculette | faux positif |
+| Balisage de la source du guide, rendu à l'écran | 38 | guide 27, `2042-c-pro` 1, `dsfu-pamc` 4, `medecin-remplacant` 6 | faux positif |
+| Liste à l'écran, mise à plat à la main dans le schéma | 12 | `/faq` | écart de texte |
+| Renvoi interne (« QT-014 ») rendu en lien nommé, énumération mise en liste | 14 | guide 9, `2042-c-pro` 4, `dsfu-pamc` 1 | écart de texte |
+
+- **« < » de texte** (5). Une réponse comme « Matériel < 500 € HT : … Matériel > 500 € »
+  sort `&lt;` dans la page et « < » dans le schéma. L'ancienne comparaison ne décodait
+  pas `&lt;` / `&gt;`, et retirait de la réponse tout ce qui allait d'un « < » au « > »
+  suivant (`/<[^>]+>/`). Pages : `/blog/frais-professionnels-deductibles`,
+  `/blog/inbox-zero-remplacant`, `/blog/micro-bnc-exemples-concrets`,
+  `/blog/remplacement-salarie-guide-complet`, `/guide-declarations/calculette`.
+- **Balisage de la source du guide** (38). Le schéma du guide reprend `reponse` telle
+  qu'elle est écrite dans `src/data/boussoleData.ts`, avec le balisage que
+  `FormattedText.tsx` rend à l'écran : `**gras**`, `*italique*`, code entre accents
+  graves, marqueurs ⚠️ et 💡 (rendus en icône), puce de début de ligne. Mots et
+  ponctuation sont les mêmes des deux côtés.
+- **`/faq`** (12) et **guide** (14, soit 9 questions dont 5 reprises sur une page
+  fille) : le texte diffère vraiment, liste au point 3.
+
+**2. La comparaison, après**
+
+- Entités décodées en une seule passe, `&lt;` et `&gt;` compris (l'ancienne décodait
+  `&amp;` avant les autres : « `&amp;lt;` » serait devenu « < »).
+- Texte de la page : sans `<head>`, `<script>`, `<style>`, `<svg>`, `<template>`,
+  `<noscript>` ni commentaires, puis sans les balises. Une valeur d'attribut qui contient
+  « > » ne coupe plus la balise.
+- Réponse du schéma : c'est du texte. Seules de vraies balises en sont retirées, celles
+  que Google lit dans une réponse (`<p>`, `<ul>`, `<li>`, `<a>`, `<strong>`…) ; aucune
+  réponse n'en porte aujourd'hui.
+- Pages dont le schéma reprend la source du guide (`/guide-declarations` et ses pages
+  filles, pas la calculette) : le balisage de `FormattedText.tsx` est retiré de la
+  réponse, et la puce « • » des deux côtés. Rien d'autre n'y est toléré, et aucun
+  balisage n'est toléré ailleurs (un `**` ajouté à une réponse de `/tarifs` échoue).
+- Le contrôle prouve une inclusion : tout le texte de la réponse du schéma est à
+  l'écran, d'un seul tenant, espaces mises à part. Il ne prouve pas l'inverse : une
+  phrase ajoutée à l'écran après la fin de la réponse passe. Quatre réponses de `/faq`
+  finissent ainsi par une phrase à lien que le schéma n'a pas (revenus PDSA,
+  rétrocessions versées, cotisations URSSAF, régime fiscal) : à trancher avec le point 3
+  si `aPlain` est repris.
+- Le message d'erreur montre le premier écart : les derniers mots communs, la suite dans
+  le schéma, la suite dans la page.
+
+Essais par mutation sur le build, tous vus : un mot changé à l'écran (accueil, article,
+article à « < », `/faq`, guide, page fille), un mot ajouté dans une réponse à puces du
+guide, une virgule retirée à l'écran, un mot changé dans le schéma, un `**` ajouté dans
+le schéma de `/tarifs`.
+
+**3. Les 26 écarts de texte, à trancher par le propriétaire**
+
+Non corrigés dans cette entrée : contenu verbatim, période d'observation SEO.
+`verify-site.mjs` échouait sur ces 26 réponses, et sur elles seules. Tranché le même
+jour : schéma aligné sur l'écran, § 9.fa.
+
+`/faq` (12). À l'écran la réponse contient une liste ; `aPlain` (le schéma) la met à plat
+à la main dans `src/pages/faq.astro`.
+
+| Question | Ce qui diffère (schéma / écran) |
+|---|---|
+| Comment j'enregistre mes journées d'activité ? | « la date…, le lieu…, le montant encaissé (…). » / trois puces « 📅 La date », « 🏥 Le lieu », « 💰 Le montant encaissé » (émojis masqués à l'œil, classe `sr`) |
+| Je peux gérer un cabinet propre en plus de mes remplacements ? | « remplacement… ; vacation… ; cabinet propre…. » / trois puces à majuscule, sans « ; » ni point |
+| Comment j'enregistre mes revenus salariés ? | « le type…, le montant net imposable, la période concernée. » / trois puces à majuscule ; et l'écran finit par « … ta fiscalité — comment choisir. » (lien), absent du schéma |
+| Qu'est-ce que les rétrocessions versées ? | un point après « de ton BNC » et après « ton revenu imposable » / deux puces sans point |
+| Le calendrier, il affiche quoi exactement ? | « vert = journées payées, orange = …, bleu = …, gris = …. » / « 🟢 Vert : », « 🟠 Orange : », « 🔵 Bleu : », « ⚫ Gris : » en puces |
+| Mes cotisations URSSAF, elles se calculent toutes seules ? | « … 21,2% ; PAMC (…) … détaillées. » / deux puces sans « ; » ni point |
+| Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ? | « … déductibles ; régime réel — … réelles. » / puces « Micro-BNC », « Régime réel », sans « ; » ni point |
+| C'est quoi le Super-Net ? | « cotisations sociales (…), impôt sur le revenu (…), charges professionnelles (…). » / trois puces à majuscule ; et l'écran finit par « … tu gagnes vraiment — le calcul expliqué. » (lien), absent du schéma |
+| J'exporte facilement mes données pour ma compta ? | « tes journées…, les montants…, le détail…, tes revenus…, le statut de paiement (…). » / cinq puces à majuscule |
+| Je peux générer des factures et des contrats ? | « factures d'honoraires… ; contrats de remplacement… intégrée. » / deux puces à majuscule, sans « ; » ni point final |
+| Je peux stocker mes documents administratifs ? | « ta licence…, tes contrats signés, tes attestations…, ton diplôme… » / quatre puces à majuscule |
+| Comment te contacter ? | « … on te répond vite : contact@hippodoc.fr. On est… » / l'adresse est un bouton, sans point après elle |
+
+Guide des déclarations (9 questions, 14 réponses avec les pages filles). Le schéma porte
+l'identifiant interne d'une fiche ; l'écran le remplace par un lien nommé.
+
+| Question | Pages | Ce qui diffère (schéma / écran) |
+|---|---|---|
+| Les IJ Madelin (prévoyance privée) sont-elles imposables et soumises à cotisations sociales ? | guide | « (PC-014) » / « (Astuce · Tableau récap des IJ) » |
+| Puis-je changer de régime fiscal (Micro-BNC ou Réel) ? | guide, `2042-c-pro` | « voir QT-014 » / « voir Question · Le choix du régime fiscal » |
+| Comment déclarer si mon CA est en ZFU et Micro-BNC (remplaçant) ? | guide, `2042-c-pro` | « détail QT-049. » / « détail Question · Comment proratiser le plafond…. » |
+| Où déclarer mes IJ Madelin sur la DSFU (volet PAMC) ? | guide | « (PC-014) » / « (Astuce · Tableau récap des IJ) » |
+| La France Rurale Revitalisée (FRR) remplace-t-elle la ZRR ? | guide, `2042-c-pro` | « détail QT-049. » / « détail Question · Comment proratiser le plafond…. » |
+| Comment compter les 60 jours de PDSA pour l'exonération ? | guide, `2042-c-pro` | « (PC-003) » / « (Astuce · PDSA en pratique) » |
+| C'est quoi la « Contribution Additionnelle Maladie » (CAM 3,25 %) sur mon avis URSSAF ? | guide | deux énumérations à virgules et point final / deux listes à puces sans virgules ni point ; « voir PC-015 » / « voir Astuce · DPC » ; « cf. CASE-006 » / « cf. Case · DSAV » |
+| IJ CPAM hors ALD : pourquoi plus en case 1AJ en 2026 ? | guide | « voir QT-041 » / « voir Question · IJ CPAM hors ALD en micro-BNC » |
+| Pourquoi la case DSFA est-elle vide quand je suis au BNC réel ? | guide, `dsfu-pamc` | « voir QT-020 » / « voir Question · Comment déclarer si mon CA est… » ; « règles RO-006 / RO-015 » / « Règle d'or · Exonération ZFU / PDSA / Règle d'or · RSPM + PDSA » |
+
+Deux manières de les fermer, au choix du propriétaire : aligner le schéma sur l'écran
+(`aPlain` de `/faq` ; dans le guide, dériver la réponse du schéma du rendu, renvois
+nommés compris), ou l'inverse. L'une et l'autre touchent un JSON-LD ou un texte en
+période d'observation.
+
+**4. Vu en passant, non corrigé**
+
+- **Le schéma du guide envoie le balisage tel quel** : `**`, accents graves, ⚠️, 💡 et
+  puces sont dans `acceptedAnswer.text` (35 des 49 réponses du guide portent un `**`).
+  Ce n'est pas un écart de texte, la comparaison le neutralise ; c'est une question de
+  propreté du JSON-LD, à traiter avec les renvois du point 3 si le schéma est repris.
+- **Une énumération coupée dans une parenthèse** : dans la réponse sur la CAM,
+  `detectEnumeration` (`FormattedText.tsx`) coupe « le DPC (qui est conventionné, voir
+  PC-015) » à la virgule, d'où deux puces à l'écran, « le DPC (qui est conventionné » et
+  « voir Astuce · DPC) ». Défaut d'affichage, texte visible : à corriger sur décision.
+  Corrigé en § 9.fb.
+
+**Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Scripts de tri et de mutation :
+dossier de travail, hors dépôt.
+
+### 9.fa FAQ et guide des déclarations : le schéma `FAQPage` aligné sur l'écran (13 novembre 2026)
+
+Décision du propriétaire sur les 26 écarts de § 9.ez : **aligner le schéma sur l'écran**,
+pour les deux lots. Seul le JSON-LD change ; aucun texte visible n'est touché.
+`verify-site.mjs` passe à 0 erreur, contrôle des réponses actif sur toutes les pages.
+
+**Modification de contenu (JSON-LD), à connaître pendant la période d'observation** :
+26 `acceptedAnswer.text` sur quatre pages. Comparé au build d'avant, par script : seuls
+`/faq`, `/guide-declarations`, `/guide-declarations/2042-c-pro` et
+`/guide-declarations/dsfu-pamc` changent, et dans chacun seul le bloc `FAQPage` ; les
+questions, leur ordre et le reste du schéma sont identiques ; 12 + 9 + 4 + 1 réponses
+changent, celles de § 9.ez et aucune autre. Les 66 autres pages et tous les fichiers de
+`_astro/` sont identiques à l'octet (mêmes noms : aucun îlot ne change).
+
+**`/faq` (12 réponses)** : `aPlain` réécrit à la main dans `src/pages/faq.astro`, pour dire
+ce que `aHtml` affiche.
+
+- Une liste à l'écran : un élément par ligne dans le schéma, avec sa majuscule, sans les
+  « , », « ; », « = » ni le point que la mise à plat avait ajoutés. Texte brut, pas de
+  HTML dans le schéma (comme les listes du guide).
+- Les émojis des listes à pictogrammes (📅 🏥 💰, 🟢 🟠 🔵 ⚫) sont dans le schéma : ils
+  sont dans le texte de la page (élément `sr`, masqué à l'œil, le pictogramme est
+  dessiné en SVG), et le contrôle compare au texte de la page.
+- Deux réponses finissent à l'écran par un lien dans la dernière phrase : le schéma dit
+  maintenant « … pour optimiser ta fiscalité — comment choisir. » (revenus salariés) et
+  « … combien tu gagnes vraiment — le calcul expliqué. » (Super-Net), sans le lien.
+- « Comment te contacter ? » : l'adresse sur sa ligne, sans point après.
+- Non ajoutées : les quatre phrases à lien qui suivent la fin d'une réponse à l'écran
+  (revenus PDSA, rétrocessions versées, cotisations URSSAF, régime fiscal). Elles
+  n'étaient pas dans les 26 écarts : le schéma s'arrête avant elles, comme avant.
+
+**Guide des déclarations (9 questions, 14 réponses)** : le schéma ne reprend plus
+`reponse` telle quelle mais `reponsePourSchema(reponse)` (`src/lib/guide/reponse-schema.ts`),
+dans `src/pages/guide-declarations/index.astro` et `src/layouts/GuideSousPage.astro`.
+La fonction refait les deux réécritures de `FormattedText.tsx`, par le même code, et
+rien d'autre :
+
+- un renvoi interne devient ce que le lien affiche, lu dans le rendu d'`InlineRef` :
+  « QT-014 » → « Question · Le choix du régime fiscal », « PC-014 » → « Astuce · Tableau
+  récap des IJ », « QT-049 » → « Question · Comment proratiser le plafond… », « PC-003 »
+  → « Astuce · PDSA en pratique », « QT-041 » → « Question · IJ CPAM hors ALD en
+  micro-BNC », « QT-020 » → « Question · Comment déclarer si mon CA est… », « RO-006 » et
+  « RO-015 » → « Règle d'or · Exonération ZFU / PDSA » et « Règle d'or · RSPM + PDSA »,
+  « PC-015 » → « Astuce · DPC », « CASE-006 » → « Case · DSAV ». Un renvoi situé dans un
+  gras, un code ou une citation reste un identifiant, comme à l'écran ;
+- une énumération que l'écran met en liste (réponse sur la CAM, deux fois) : une puce
+  « • » par élément, sans virgules ni point final, d'après `enumerationsRendues`
+  (nouvel export de `FormattedText.tsx`, qu'aucun îlot n'appelle).
+
+Les 40 autres réponses du guide sortent identiques à l'octet : le balisage de l'auteur
+(`**`, accents graves, ⚠️, 💡, puces) reste dans le schéma, hors de la décision.
+
+**Reste ouvert**
+
+- **La réponse sur la CAM reprend un défaut d'affichage** : l'écran coupe « le DPC (qui
+  est conventionné, voir PC-015) » en deux puces (§ 9.ez, point 4), le schéma aussi
+  désormais. Quand `detectEnumeration` sera corrigée, le schéma suivra sans y toucher :
+  les deux passent par elle. Corrigée le même jour, § 9.fb.
+- **Le balisage brut dans le schéma du guide** (§ 9.ez, point 4) : inchangé.
+- **Les quatre phrases à lien de fin de réponse de `/faq`** : à l'écran seulement.
+
+**Vérification** : build (70 pages), `verify-site.mjs` à 0 erreur ; comparaison du build
+à celui d'avant (ci-dessus) ; essais par mutation de § 9.ez refaits, tous vus.
+**Non vérifié** : l'outil de test des résultats enrichis de Google, sur un aperçu Vercel.
+
+**Fichiers** : `src/pages/faq.astro`, `src/lib/guide/reponse-schema.ts` (nouveau),
+`src/components/guide/FormattedText.tsx`, `src/pages/guide-declarations/index.astro`,
+`src/layouts/GuideSousPage.astro`, `CLAUDE.md`.
+
+### 9.fb Guide des déclarations : une énumération n'est plus coupée dans une parenthèse (13 novembre 2026)
+
+Demande du propriétaire : corriger la mise en liste de la réponse sur la CAM (§ 9.ez,
+point 4). **Modification de texte visible**, sur deux pages.
+
+**Le défaut.** `detectEnumeration` (`src/components/guide/FormattedText.tsx`) met en
+puces un paragraphe de la forme « X : A, B, C ». Elle coupait à chaque virgule, y
+compris dans une parenthèse : « le DPC (qui est conventionné, voir PC-015) » sortait en
+deux puces, « le DPC (qui est conventionné » et « voir Astuce · DPC) ».
+
+**La correction.** La coupe passe par `couperEnumeration`, qui ignore les virgules et les
+« + » situés dans une parenthèse. La règle des trois éléments est inchangée : une
+énumération qui n'en a plus trois une fois ses parenthèses respectées reste une phrase.
+
+**Ce qui change, relevé par script.** Les deux versions de la fonction ont été passées
+sur les 1 440 textes de `boussoleData.ts` et `glossaireDeclarationsData.ts` : 15 mises en
+liste avant, 14 après, trois textes concernés. Puis le texte visible de toutes les pages
+du build a été comparé à celui d'avant : deux fichiers changent sur 869, aucun fichier de
+`_astro/` (le composant n'est dans aucun îlot).
+
+| Page | Passage | Avant | Après |
+|---|---|---|---|
+| `/guide-declarations` | question sur la CAM, « Ce qu'elle ne touche PAS » | cinq puces, dont « le DPC (qui est conventionné » et « voir Astuce · DPC) » | quatre puces, dont « le DPC (qui est conventionné, voir Astuce · DPC) » |
+| `/guide-declarations/medecin-remplacant` | conseil n° 2, « En BNC réel : » | quatre puces : « remplir la 2035 », « déduire tes charges réelles (véhicule », « repas », « matériel) et reporter le bénéfice en 5QC » | une phrase : « En BNC réel : remplir la 2035, déduire tes charges réelles (véhicule, repas, matériel) et reporter le bénéfice en 5QC. » |
+
+- Le second passage n'était pas dans la demande : même défaut, même fonction, il ne se
+  corrige pas l'un sans l'autre. Il n'a plus que deux éléments hors parenthèses, donc
+  plus de liste ; virgules et point final reviennent.
+- Le troisième texte (description du profil « Médecin avec arrêt / IJ », « IJ CPAM
+  (maternité, paternité, maladie) ») n'est rendu par ce composant sur aucune page du
+  build : rien ne change à l'écran.
+- JSON-LD : seule la réponse sur la CAM du `FAQPage` de `/guide-declarations` change, et
+  d'elle-même (`reponsePourSchema` passe par la même fonction, § 9.fa) : le schéma dit
+  « • le DPC (qui est conventionné, voir Astuce · DPC) ». Aucun autre bloc ne change.
+- La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) n'est pas touchée : c'est
+  une correction d'affichage, pas une revue éditoriale.
+
+**Vérification** : build (70 pages), `verify-site.mjs` à 0 erreur. Aucune feuille de
+style ni aucun script ne change : pas de passage dans le moteur de Safari ni de test
+d'îlot. **Non vérifié** : rendu à l'œil dans un navigateur (le HTML des deux passages a
+été relu).
+
+**Fichier** : `src/components/guide/FormattedText.tsx`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

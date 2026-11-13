@@ -802,50 +802,119 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
    Google l'exige, et le défaut est silencieux : la page d'accueil portait deux
    copies manuscrites des mêmes questions — une pour l'affichage, une pour le
    JSON-LD — que rien ne forçait à rester identiques. Elles sont désormais dérivées
-   d'une source unique ; ce contrôle empêche qu'on recommence. */
+   d'une source unique ; ce contrôle empêche qu'on recommence.
+   Questions et réponses, sur toutes les pages (§ 9.ez ; les réponses n'étaient
+   comparées que sur l'accueil depuis § 9.ex). */
+
+// Entités, décodées en UNE passe : « &amp;lt; » est le texte « &lt; », pas « < ».
+// ⚠️ Les numériques aussi : Astro échappe l'apostrophe en `&#x27;` (hexadécimal) et non
+// `&#39;`. Deux versions de ce contrôle ont produit 16 faux positifs sur
+// /guide-declarations avant que ce soit vu. Et `&lt;` / `&gt;` : un « < » de texte
+// (« DSAU < 1 », « < 38 000 € ») sort échappé dans la page, tel quel dans le schéma.
+const ENTITES_FAQ = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', rsquo: '’' };
+const decoderEntites = (s) =>
+  s.replace(/&(#x[0-9a-f]{1,6}|#\d{1,7}|[a-z]+);/gi, (tout, e) => {
+    if (e[0] !== '#') return ENTITES_FAQ[e.toLowerCase()] ?? tout;
+    const code = /^#x/i.test(e) ? parseInt(e.slice(2), 16) : Number(e.slice(1));
+    return code <= 0x10ffff ? String.fromCodePoint(code) : tout;
+  });
+// On retire TOUTE espace des deux côtés avant de comparer : un texte peut contenir du
+// balisage interne (mise en gras via FormattedText), et remplacer une balise par une
+// espace couperait un mot en deux. Première version de ce contrôle : 16 faux positifs
+// sur /guide-declarations.
+const compacterFaq = (s) => decoderEntites(s).replace(/\s+/g, '');
+// Texte de la page : sans l'en-tête du document ni les blocs qui ne s'affichent pas,
+// puis sans les balises. Dans le HTML servi, tout « < » de texte est échappé : ce qui
+// reste entre chevrons est une balise (valeurs d'attributs entre guillemets comprises).
+const texteVisibleFaq = (html) =>
+  html
+    .replace(/<(head|script|style|svg|template|noscript)\b[\s\S]*?<\/\1>/gi, ' ')
+    .replace(/<!--[\s\S]*?-->|<\/?[a-zA-Z](?:"[^"]*"|'[^']*'|[^'">])*>|<![^>]*>/g, ' ');
+// Réponse du schéma : du texte. Seules de vraies balises en sont retirées, celles que
+// Google lit dans une réponse (aucune aujourd'hui). `/<[^>]+>/` y prenait un « < » de
+// texte pour une balise et avalait la suite jusqu'au « > » suivant.
+const BALISE_DE_REPONSE = /<\/?(?:h[1-6]|br|ol|ul|li|a|p|div|b|strong|i|em)(?:\s[^<>]*)?\/?>/gi;
+/* Le guide des déclarations écrit ses réponses dans le balisage que
+   `src/components/guide/FormattedText.tsx` rend à l'écran, et son schéma reprend cette
+   source telle quelle. Ce balisage n'est pas du texte, il est retiré de la réponse avant
+   de comparer : `**gras**`, `*italique*`, `code` entre accents graves (MARKDOWN_PATTERN,
+   même expression), les marqueurs de bloc ⚠️ ✅ 💡 (splitOnMarkers : rendus en icône) et
+   la puce de début de ligne, « - » ou « • » (splitParagraphLines : rendue « • », retirée
+   des deux côtés). Rien d'autre : un renvoi interne (« QT-014 », rendu « Question · … »)
+   ou une énumération que l'écran met en liste en lui ôtant ses virgules restent des
+   écarts de texte. Ailleurs, aucun balisage n'est toléré dans une réponse. */
+const SCHEMA_EN_SOURCE_DU_GUIDE = (page) =>
+  page.startsWith('/guide-declarations') && page !== '/guide-declarations/calculette';
+const sansBalisageDuGuide = (s) =>
+  s
+    .replace(/\*\*([^*]+?)\*\*|\*(?!\s)([^*\n]+?)(?<!\s)\*|`([^`]+?)`/g, (_, gras, italique, code) => gras ?? italique ?? code)
+    .replace(/⚠️|✅|💡/g, ' ')
+    .replace(/^[ \t]*[•-]\s+/gm, '')
+    .replace(/•/g, ' ');
+// Pour le message d'erreur : le premier endroit où la réponse du schéma quitte le texte
+// de la page. La réponse suit sa question : on cherche, après chaque passage de la
+// question dans la page, le plus long début de la réponse (compté en mots), et on garde
+// le plus long. Chercher dans toute la page montrait parfois une autre réponse, qui
+// commençait par les mêmes mots.
+function lecteurDEcartsFaq(texte) {
+  const position = [];
+  let compact = '';
+  for (let i = 0; i < texte.length; i++) {
+    if (!/\s/.test(texte[i])) { compact += texte[i]; position.push(i); }
+  }
+  return (question, reponse) => {
+    const q = question.replace(/\s+/g, '');
+    const mots = reponse.trim().split(/\s+/);
+    const debut = (n) => mots.slice(0, n).join('');
+    const zones = []; // [début, fin] dans `compact`
+    const portee = debut(mots.length).length + 400;
+    for (let i = q ? compact.indexOf(q) : -1; i >= 0; i = compact.indexOf(q, i + 1)) zones.push([i + q.length, i + q.length + portee]);
+    if (!zones.length) zones.push([0, compact.length]); // question absente de la page : toute la page
+    let n = 0;
+    let fin = zones[0][0];
+    for (const [depart, arrivee] of zones) {
+      const zone = compact.slice(depart, arrivee);
+      let bas = 0;
+      for (let haut = mots.length; bas < haut; ) {
+        const milieu = (bas + haut + 1) >> 1;
+        if (zone.includes(debut(milieu))) bas = milieu; else haut = milieu - 1;
+      }
+      if (bas > n) { n = bas; fin = depart + zone.indexOf(debut(bas)) + debut(bas).length; }
+    }
+    const ici = position[fin] ?? texte.length;
+    const aLaPage = texte.slice(ici, ici + 70).replace(/\s+/g, ' ').trim();
+    const suite = mots.slice(n, n + 8).join(' ');
+    return n === 0
+      ? `dès le premier mot : le schéma commence par « ${suite} », la page par « ${aLaPage} »`
+      : `après « …${mots.slice(Math.max(0, n - 5), n).join(' ')} » : le schéma continue par « ${suite} », la page par « ${aLaPage} »`;
+  };
+}
+
 for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
   if (!html.includes('"FAQPage"') && !html.includes("'FAQPage'")) continue;
   const page = f.replace(/\/index\.html$/, '') || '/';
-  // Texte rendu, entités décodées. On retire TOUTE espace des deux côtés avant de
-  // comparer : une question peut contenir du balisage interne (mise en gras via
-  // FormattedText), et remplacer une balise par une espace couperait un mot en deux.
-  // Première version de ce contrôle : 16 faux positifs sur /guide-declarations.
-  // ⚠️ Décoder les entités NUMÉRIQUES aussi : Astro échappe l'apostrophe en
-  // `&#x27;` (hexadécimal) et non `&#39;`. Deux versions de ce contrôle ont produit
-  // 16 faux positifs sur /guide-declarations avant que ce soit vu.
-  const compacter = (s) =>
-    s
-      .replace(/&#x27;|&#39;|&rsquo;/gi, "'")
-      .replace(/&#x22;|&#34;|&quot;/gi, '"')
-      .replace(/&#x26;|&#38;|&amp;/gi, '&')
-      .replace(/&nbsp;/gi, ' ')
-      .replace(/&#x([0-9a-f]+);/gi, (_, c) => String.fromCodePoint(parseInt(c, 16)))
-      .replace(/&#(\d+);/g, (_, c) => String.fromCodePoint(Number(c)))
-      .replace(/\s+/g, '');
-  const visible = compacter(
-    html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ')
-  );
+  const source = SCHEMA_EN_SOURCE_DU_GUIDE(page);
+  const texte = decoderEntites(texteVisibleFaq(html));
+  const visible = compacterFaq(texte);
+  const visibleSansPuces = source ? visible.replace(/•/g, '') : visible;
+  let premierEcart = null; // construit à la première réponse en écart
   for (const [, bloc] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     let parsed;
     try { parsed = JSON.parse(bloc); } catch { continue; }
     if (parsed['@type'] !== 'FAQPage') continue;
     for (const q of parsed.mainEntity ?? []) {
       const question = String(q.name ?? '').trim();
-      if (question && !visible.includes(compacter(question))) {
+      if (question && !visible.includes(compacterFaq(question))) {
         fail(`${page} : la question « ${question.slice(0, 60)}… » est dans le JSON-LD FAQPage mais absente du texte visible`);
       }
-      // La réponse aussi, sur l'accueil (§ 9.ex) : le contrôle ne comparait que les
-      // questions, un mot changé dans une réponse visible passait (essai par mutation).
-      // Balises de la réponse du schéma retirées, comme celles de la page.
-      // Accueil seulement pour l'instant : étendue telle quelle aux autres pages, la
-      // comparaison sort 69 écarts (/faq, guide des déclarations et ses pages
-      // filles, calculette, quatre articles), 64 une fois les « < » des réponses
-      // décodés (/faq 12, guide 52) : des réponses mises en liste à l'écran et à
-      // plat dans le schéma, à trier entre vrais écarts et faux positifs.
-      const reponse = page === '/' ? compacter(String(q.acceptedAnswer?.text ?? '').replace(/<[^>]+>/g, ' ')) : '';
-      if (reponse && !visible.includes(reponse)) {
-        fail(`${page} : la réponse à « ${question.slice(0, 60)}… » du JSON-LD FAQPage n'est pas, mot pour mot, dans le texte visible`);
+      // La réponse aussi : un mot changé dans une réponse visible passait (essai par
+      // mutation, § 9.ex).
+      const brute = decoderEntites(String(q.acceptedAnswer?.text ?? '').replace(BALISE_DE_REPONSE, ' '));
+      const reponse = source ? sansBalisageDuGuide(brute) : brute;
+      if (reponse.trim() && !visibleSansPuces.includes(reponse.replace(/\s+/g, ''))) {
+        premierEcart ??= lecteurDEcartsFaq(source ? texte.replace(/•/g, ' ') : texte);
+        fail(`${page} : la réponse à « ${question.slice(0, 60)}… » du JSON-LD FAQPage n'est pas, mot pour mot, dans le texte visible. Premier écart ${premierEcart(question, reponse)}`);
       }
     }
   }

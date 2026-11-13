@@ -55,6 +55,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { SITE_URL } from '@/lib/site';
 import { questionsFAQ } from '@/data/boussoleData';
+import { reponsePourSchema } from '@/lib/guide/reponse-schema';
 import { GUIDE_DECLARATIONS_LAST_UPDATED_ISO } from '@/lib/guide/lastUpdated';
 
 import HeroSection from '@/components/guide/HeroSection.astro';
@@ -86,7 +87,7 @@ const faqSchema = {
   mainEntity: questionsFAQ.map((q) => ({
     '@type': 'Question',
     name: q.question,
-    acceptedAnswer: { '@type': 'Answer', text: q.reponse },
+    acceptedAnswer: { '@type': 'Answer', text: reponsePourSchema(q.reponse) },
   })),
 };
 

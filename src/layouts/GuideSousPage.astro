@@ -25,6 +25,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { SITE_URL } from '@/lib/site';
 import { GUIDE_DECLARATIONS_LAST_UPDATED, GUIDE_DECLARATIONS_LAST_UPDATED_ISO } from '@/lib/guide/lastUpdated';
+import { reponsePourSchema } from '@/lib/guide/reponse-schema';
 
 interface Props {
   title: string;
@@ -77,7 +78,8 @@ const webPageSchema = {
 
 /* Le FAQPage n'est déclaré que si la page rend réellement les questions en
    clair : `verify-site.mjs` échoue si une question du JSON-LD est absente du
-   texte visible. */
+   texte visible, ou si une réponse n'y est pas mot pour mot (d'où
+   `reponsePourSchema`, qui nomme les renvois comme l'écran). */
 const faqSchema = faq.length
   ? {
       '@context': 'https://schema.org',
@@ -85,7 +87,7 @@ const faqSchema = faq.length
       mainEntity: faq.map((q) => ({
         '@type': 'Question',
         name: q.question,
-        acceptedAnswer: { '@type': 'Answer', text: q.reponse },
+        acceptedAnswer: { '@type': 'Answer', text: reponsePourSchema(q.reponse) },
       })),
     }
   : null;
