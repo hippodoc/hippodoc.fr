@@ -11529,8 +11529,10 @@ Classement des 48 articles (slug = fichier de `src/content/blog/`), contrôlé c
    thème, pris dans les jetons de la DA : sable (Débuter et s'organiser), ciel (Statut, contrats et
    revenus), nuit (Cotisations et protection : `--ink` vers `#1B3167`, texte blanc), eau profonde
    (Impôts et déclarations), vert pâle (Budget et patrimoine : `--ok-bg`, vagues de la même
-   teinte). Aucun jaune. Les quatre poses tournent dans l'ordre de la page du thème (deux voisins
-   n'ont pas la même). Toutes les adresses changent (empreinte).
+   teinte). Aucun jaune. Les quatre poses tournent dans le thème, du plus ancien article au plus
+   récent (l'ordre de sa page, à l'envers : deux voisins n'ont pas la même, et un nouvel article
+   prend le dernier rang sans changer l'image des autres ; corrigé après relecture, voir plus
+   bas). Toutes les adresses changent (empreinte).
 8. **Sitemap** : +5 adresses (68 → 73 ; 70 → 75 pages construites).
 9. **`llms.txt`** : une section par thème (son introduction, le lien de sa page, ses articles dans
    l'ordre de sa page), à la place du rangement par série ; chaque article une fois. RSS et
@@ -11578,44 +11580,47 @@ Classement des 48 articles (slug = fichier de `src/content/blog/`), contrôlé c
 (registre `src/lib/blog-themes.ts`, recopiés ici en entier). Règles suivies : tutoiement, phrases
 courtes, aucun chiffre, taux, seuil ni date (seuls les noms de formulaire 2035 et 2042-C PRO), ne
 nommer que ce que les articles du thème traitent (titres, descriptions et intertitres des 48 relus),
-pas de répétition mot pour mot entre l'introduction et la description (trois mots communs au plus,
-vérifié par script). Titres de 49 à 58 signes, descriptions de 150 à 152 signes, introductions de 60
-à 75 mots en deux ou trois phrases.
+pas de répétition mot pour mot entre l'introduction et la description (trois mots de suite en commun
+au plus, comptés sans la ponctuation et apostrophes coupées : « (PEA, » vaut « PEA » ; vérifié par
+script). Titres de 49 à 58 signes, descriptions de 142 à 151 signes, introductions de 65 à 77 mots
+en deux à quatre phrases. Corrigés après relecture (trois introductions disaient une chose fausse ou
+contredisaient un article du thème ; voir « Corrections après relecture », plus bas) : les textes
+ci-dessous sont ceux d'après.
 
 **Débuter et s'organiser** (`debuter-organiser`, fond sable)
 
 - Titre : « Débuter et s'organiser comme médecin remplaçant | Hippodoc »
-- Description : « Premier remplacement de médecin : inscriptions à faire avant, checklist du premier jour, où chercher des remplas, prise en main du logiciel du cabinet. »
+- Description : « Premier remplacement de médecin : RCP et Ordre avant, URSSAF et CARMF ensuite, checklist du premier jour, où chercher des remplas, logiciel du cabinet. »
 - Ligne de contexte : « Les démarches, les outils et les réflexes de tes premiers remplacements. »
-- Introduction : « Ta licence ou ta thèse en poche, ton premier remplacement approche. Tu trouves ici les démarches à faire avant (Ordre, CPAM, URSSAF, CARMF, assurance RCP), la checklist du jour J, où trouver des remplacements et comment t'y retrouver dans le logiciel métier d'un nouveau cabinet. Puis le quotidien : tes outils, tes messages en attente, les pièges des débuts et le doute qui va avec. »
+- Introduction : « Ta licence ou ta thèse en poche, ton premier remplacement approche. Tes démarches, dans l'ordre : l'assurance RCP et l'Ordre avant de commencer, la CPAM dès le premier remplacement, l'URSSAF et la CARMF dans les semaines qui suivent. Puis la checklist du jour J, où trouver des remplacements, le logiciel métier d'un nouveau cabinet. Et le quotidien : tes outils, tes messages en attente, les pièges des débuts et le doute qui va avec. »
 
 **Statut, contrats et revenus** (`statut-contrats-revenus`, fond ciel)
 
 - Titre : « Statut, contrats et revenus du médecin remplaçant »
-- Description : « Médecin remplaçant libéral ou salarié : licence et contrat de remplacement, rétrocession d'honoraires, facture au remplacé, revenus par mode d'exercice. »
+- Description : « Médecin remplaçant libéral ou salarié : licence et contrat de remplacement, rétrocession d'honoraires, facture au remplacé, revenus selon le statut. »
 - Ligne de contexte : « Sous quel statut tu remplaces, ce que tu signes et ce que tu gagnes. »
-- Introduction : « Libéral ou salarié, remplacement ou collaboration : tout part du cadre dans lequel tu exerces. Tu trouves ici la licence de remplacement, le contrat à relire avant de signer, la rétrocession et la façon de la négocier, la facture à envoyer au médecin remplacé et ce que change la facturation électronique. Et pour choisir : ce que rapporte chaque mode d'exercice, le nombre de jours qui te suffit, et le risque de requalification d'un remplacement trop régulier. »
+- Introduction : « Libéral ou salarié, remplacement ou collaboration : tout part du cadre dans lequel tu exerces. Au programme : la licence de remplacement, le contrat à relire avant de signer, la rétrocession et la façon de la négocier, la facture à envoyer au médecin remplacé et ce que change la facturation électronique. Et pour choisir : ce que rapportent le libéral, le salariat et l'intérim, le nombre de jours qui te suffit, et le risque de requalification d'un remplacement trop régulier. »
 
 **Cotisations et protection** (`cotisations-protection`, fond nuit)
 
 - Titre : « Cotisations et protection du médecin remplaçant | Hippodoc »
 - Description : « Cotisations du médecin remplaçant : URSSAF, RSPM ou régime PAMC, CARMF, régularisation et modulation, prévoyance Madelin, congé maternité ou paternité. »
 - Ligne de contexte : « Ce que tu verses à l'URSSAF et à la CARMF, et ce qui te protège en retour. »
-- Introduction : « L'URSSAF et la CARMF appellent tes cotisations avant de connaître ton revenu, puis régularisent : c'est l'effet ciseaux, et il se prépare. Tu trouves ici le choix entre RSPM et régime PAMC avec des exemples chiffrés, l'affiliation à la CARMF, ce qui sépare les cotisations de l'impôt, la prévoyance (avec ou sans Madelin) et ton congé maternité ou paternité de remplaçant. »
+- Introduction : « L'URSSAF et la CARMF calculent une partie de tes cotisations sur tes revenus passés, puis régularisent. Après une bonne année, la régularisation et le provisionnel relevé tombent ensemble : c'est l'effet ciseaux, et il se prépare. Tu trouves ici le choix entre RSPM et régime PAMC avec des exemples chiffrés, l'affiliation à la CARMF, ce qui sépare les cotisations de l'impôt, la prévoyance (avec ou sans Madelin) et ton congé de maternité ou de paternité. »
 
 **Impôts et déclarations** (`impots-declarations`, fond eau)
 
 - Titre : « Impôts et déclarations du médecin remplaçant | Hippodoc »
 - Description : « Impôts du médecin remplaçant : micro-BNC ou réel, déclarations 2035 et 2042-C PRO, frais réels déductibles, CFE, exonérations PDSA et FRR, calendrier. »
 - Ligne de contexte : « Déclarer tes revenus, déduire tes frais, ne rater aucune échéance. »
-- Introduction : « Micro-BNC ou régime réel : ce choix décide de ce que tu déclares et de ce que tu peux déduire. Tu trouves ici la 2035 ligne à ligne et son report sur la 2042-C PRO, la déclaration de l'interne qui remplace, les frais réels du libéral comme du salarié (voiture, repas, chèques-vacances) et la CFE. Puis les allègements d'impôt (gardes de PDSA, zones FRR, outre-mer) et le calendrier de toutes tes échéances. »
+- Introduction : « Micro-BNC ou régime réel : ce choix décide de ce que tu déclares et de ce que tu peux déduire. Viennent ensuite la 2035 ligne à ligne et son report sur la 2042-C PRO, la déclaration de l'interne qui remplace, les frais réels du libéral comme du salarié (voiture, repas), les chèques-vacances et la CFE. Puis les allègements d'impôt (gardes de PDSA, zones FRR, outre-mer) et le calendrier de tes échéances. »
 
 **Budget et patrimoine** (`budget-patrimoine`, fond vert)
 
 - Titre : « Budget et patrimoine du médecin remplaçant | Hippodoc »
-- Description : « Budget du médecin remplaçant : partir du Super-Net, épargne de précaution, régularisations à prévoir, puis investir en PEA, assurance vie, PER ou CTO. »
+- Description : « Super-Net, budget et placements du médecin remplaçant : régularisations à prévoir, épargne de précaution, puis PEA, PER, CTO ou assurance vie. »
 - Ligne de contexte : « Ce qu'il te reste vraiment, et ce que tu en fais. »
-- Introduction : « Ton chiffre d'affaires n'est pas ce que tu peux dépenser : il faut d'abord en retirer les cotisations, l'impôt et les régularisations à venir. Ce qui reste, c'est ton Super-Net. Tu trouves ici comment bâtir ton budget à partir de lui, quelle épargne de précaution garder, puis où placer le reste (PEA, assurance vie, PER ou compte-titres) et pourquoi le temps compte autant que le montant. »
+- Introduction : « Ton chiffre d'affaires n'est pas ce que tu peux dépenser : retires-en les cotisations et l'impôt, ce qui reste est ton Super-Net. Tu trouves ici comment bâtir ton budget à partir de lui, les régularisations à mettre de côté quand tes revenus montent, l'épargne de précaution à garder, puis où placer le reste (PEA, assurance vie, PER ou compte-titres) et pourquoi le temps compte autant que le montant. »
 
 S'y ajoutent, sans texte nouveau : le nom de chaque thème dans les puces, le fil d'Ariane et la
 pastille de l'image de partage ; « classés par thème » au lieu de « classés par série » sous l'index
@@ -11705,27 +11710,177 @@ colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 r
 - `.bl .bl-carte .chip { padding: 0 }` pèse plus qu'une règle de marque : la marge du point est
   écrite avec le même chemin (`.bl .bl-carte .bl-marques-suite > *`), après elle.
 
-**Ce qui reste (faiblesses et suivis) :**
+**Ce qui reste (faiblesses et suivis)** (mis à jour après relecture, voir plus bas) :
 
 1. La une de `/blog` garde sa pastille de série (« Guides & Conseils ») au milieu de lignes
    étiquetées par thème ; le cahier la voulait inchangée. Une ligne de `index.astro` pour lui donner
-   le thème, si le propriétaire le veut.
-2. Sur une page de thème, une ligne sans numéro (série « divers ») commence par son titre ; à côté
-   d'une ligne numérotée (ordinateur, deux colonnes), les titres ne sont pas à la même hauteur.
-3. `/blog` au téléphone : la une descend de 52 px (six puces au lieu de quatre) et les lignes
-   numérotées prennent une ligne de plus (moyenne 114 → 123 px à 393).
-4. Pages de thème au téléphone : aucun titre d'article au premier écran (808 à 887 px), comme les
-   séries (925 à 992).
+   le thème (`themeDe(featured.data.theme)?.nom`), si le propriétaire le veut.
+2. ~~Titres de lignes voisines à des hauteurs différentes~~ : corrigé après relecture (sous-grille).
+3. `/blog` au téléphone : la une descend de 52 px (six puces au lieu de quatre) et 24 lignes sur
+   47 ont une étiquette de deux lignes (thème, puis « Fiche Fiscalité #16 ») : ligne moyenne
+   113 → 122 px à 393 (PR 1 → thèmes), 115 → 129 px à 360.
+4. Pages de thème au téléphone : aucun titre d'article au premier écran (808 à 910 px à 393 × 692),
+   comme les séries (925 à 992).
 5. `blog_theme_viewed` et la propriété `theme` : à créer dans les insights PostHog.
 6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel ; les aperçus de lien (WhatsApp,
    LinkedIn) des nouvelles images une fois en ligne ; Search Console (les fils d'Ariane des 48
    articles changent de position 3).
+7. Search Console, deux à trois mois après la mise en ligne : pages de série et pages de thème
+   visent les mêmes recherches (Fiches Fiscalité partage 10 articles sur 16 avec Impôts et
+   déclarations ; Fiches Pratiques, 6 sur 8 avec Débuter et s'organiser). Regarder quelle page
+   sort sur « fiscalité médecin remplaçant » et « débuter remplacement médecin » ; si une série
+   prend la place de son thème, décider alors (`noindex` ou redirection vers le thème).
+8. Fusion avec § 9.fo (les affiches, sur la branche de la PR 1) : voir « Corrections après
+   relecture », point « Conflits ».
 
 **Fichiers** : `src/lib/blog-themes.ts`, `src/content.config.ts`, les 48 `src/content/blog/*.md`
 (frontmatter), `src/pages/blog/theme/[theme].astro`, `src/pages/blog/index.astro`,
 `src/pages/blog/[slug].astro`, `src/components/BlogCard.astro`, `src/components/BlogAppel.astro`,
 `src/styles/blog-liste.css`, `src/lib/page-analytics.ts`, `src/lib/image-partage.mjs`,
 `astro.config.mjs`, `src/pages/llms.txt.ts`, `scripts/verify-site.mjs`, `MIGRATION.md`, `CLAUDE.md`.
+
+#### Corrections après relecture (13 novembre 2026)
+
+Trois relectures indépendantes de la PR des thèmes : contenu et SEO, design et lecteur, code et
+Safari (7,5 / 10 chacune). Chaque défaut a été vérifié avant d'être corrigé ; un défaut contraire
+à une décision du cahier est écarté, sauf s'il casse quelque chose de mesurable.
+
+**Corrigé :**
+
+1. **Trois introductions disaient une chose fausse ou contredisaient un article du thème**
+   (`src/lib/blog-themes.ts` ; textes d'après recopiés plus haut, « Contenu ajouté »).
+   - *Débuter et s'organiser* : « les démarches à faire avant (Ordre, CPAM, URSSAF, CARMF,
+     assurance RCP) » et, dans la description, « inscriptions à faire avant ». La checklist
+     administrative dit : RCP, Ordre (ou licence) et carte CPS avant ; la CPAM dès le premier
+     remplacement ; l'URSSAF dans les 8 jours ; la CARMF dans le mois. Devient : « l'assurance RCP
+     et l'Ordre avant de commencer, la CPAM dès le premier remplacement, l'URSSAF et la CARMF dans
+     les semaines qui suivent » (description : « RCP et Ordre avant, URSSAF et CARMF ensuite »).
+   - *Cotisations et protection* : « appellent tes cotisations avant de connaître ton revenu, puis
+     régularisent : c'est l'effet ciseaux ». L'article de l'effet ciseaux répond « Non » à « La
+     CARMF régularise-t-elle comme l'URSSAF ? » (complémentaire et ASV sans régularisation) et
+     définit l'effet ciseaux comme la régularisation et le provisionnel relevé qui tombent ensemble
+     après une bonne année. Devient : les mots de `super-net-budget` (« calculent une partie de tes
+     cotisations sur tes revenus passés, puis régularisent ») et de l'article.
+   - *Budget et patrimoine* : le Super-Net y était ce qui reste après « les cotisations, l'impôt et
+     les régularisations à venir ». Trois articles du thème le définissent après cotisations et
+     impôt ; les régularisations se mettent de côté ensuite. Devient : « retires-en les cotisations
+     et l'impôt, ce qui reste est ton Super-Net », puis les régularisations à mettre de côté.
+   - Moins graves : Statut promettait « ce que rapporte chaque mode d'exercice » (les articles
+     chiffrent le libéral, le salariat et l'intérim, pas les huit modes) ; Impôts rangeait les
+     chèques-vacances dans « les frais réels du libéral comme du salarié » (ils ne se déduisent
+     qu'au régime réel, et ne sont pas des frais réels) et promettait « toutes tes échéances ».
+   - Répétitions : la règle « trois mots communs au plus » était vérifiée avec la ponctuation (« (PEA, »
+     ≠ « PEA, ») : Budget en avait 5, Cotisations 4. Mesurée maintenant sans ponctuation et apostrophes
+     coupées : 3 au plus. La description de Budget commençait par le titre exact de `super-net-budget`
+     (même recherche visée) : changée. « Tu trouves ici » ouvrait les cinq introductions : deux.
+   - Toujours sans chiffre, taux, seuil ni date (contrôlé par script).
+2. **Image de partage stable** (`src/lib/image-partage.mjs`). Les poses tournaient du plus récent au
+   plus ancien : chaque parution décalait le rang, donc la pose et l'adresse de l'image, de tout le
+   thème (simulé : 10/10, 11/11, 7/7, 15/15 et 5/5 adresses changées). Elles tournent du plus ancien
+   au plus récent : un nouvel article prend le dernier rang, 0 adresse existante ne change (simulé
+   dans les cinq thèmes, 48 noms reconstitués égaux à ceux du `dist`), et deux voisins de la page
+   gardent des poses différentes (planches regardées). Seule exception : un article publié à la date
+   d'un article du même thème peut décaler ceux de cette date. Les 48 adresses changent une fois de
+   plus dans cette PR, où elles changeaient déjà.
+3. **Titres de lignes voisines alignés** (`blog-liste.css`). Quand deux étiquettes voisines n'avaient
+   pas le même nombre de lignes (le thème, « Fiche Fiscalité #16 », ou rien), les titres ne partaient
+   pas à la même hauteur : 40 rangées décalées sur `/blog` et 20 et 31 sur Statut et Impôts, cumulées
+   sur 17 largeurs, de 17 à 35 px. À partir de 640 px, les deux lignes d'une rangée partagent quatre
+   pistes (sous-grille) : étiquette (calée contre le titre), titre, extrait, date (en bas). 0 rangée
+   décalée partout, Chromium et WebKitGTK 2.52 ; hauteur moyenne des lignes inchangée à 6 px près.
+   Effet visible : les extraits voisins partent aussi à la même hauteur (sous un titre plus court, la
+   place vide est entre le titre et l'extrait, plus entre l'extrait et la date). Portée : `/blog` et
+   pages de thème (`.bl:not([data-blog-serie])`) ; sans sous-grille, la ligne d'avant.
+4. **Puces des thèmes en rangées égales**, sur `/blog` comme sur les pages de thème : deux colonnes
+   jusqu'à 699 px (2 + 2 + 2), trois à partir de 700 px (3 + 3 ; de 700 à 767 px, un nom peut prendre
+   deux lignes, la puce garde 44 px). Avant : 2 + 1 + 2 + 1 à 560 px sur `/blog` (206 px de haut, 152
+   maintenant), 3 + 2 + 1 à 700 et 768 px, 4 + 2 et 5 + 1 à l'ordinateur (« Budget et patrimoine »
+   seul). Le nom et son compte en lignes égales (`text-wrap-style: balance`) : « (10) », « (15) »,
+   « (5) » ne restent plus seuls à 393 px. Deux classes (`.bl-series.bl-themes`) : les règles des
+   séries à partir de 560 px sont écrites plus bas dans la feuille.
+5. **Finitions de la feuille** : l'introduction des pages de thème sans mot seul en fin de dernière
+   ligne (`text-wrap-style: pretty` : « régulier. », « échéances. » réglés) ; « Fiche Fiscalité #14 »
+   insécable.
+6. **Aucune affiche chargée en priorité sur les pages de thème** : `eager` retiré (la première
+   affiche n'est pas l'élément LCP, qui est l'introduction, et elle est sous le premier écran du
+   téléphone). Même choix que § 9.fo pour les séries.
+7. **`verify-site.mjs`, quatre trous bouchés** (contrôle « 4 sexdecies ») : le fil d'Ariane de la
+   page de thème elle-même (écran : Accueil, Blog, son nom en `aria-current` ; `BreadcrumbList` :
+   trois positions, la troisième est la page) ; une seule puce en `aria-current`, la sienne ; ses
+   lignes dans l'ordre de `/blog` ; l'étiquette de chaque ligne de `/blog` = le nom du thème de son
+   article. En l'écrivant, le contrôle d'ordre a d'abord échoué sur Cotisations : la une de `/blog`
+   (le congé maternité, `featured`) est sortie de l'ordre de `/blog` ; elle n'est donc pas comparée
+   (les autres lignes, si). **24 mutations** sur une copie du `dist` (les 16 d'avant, 8 nouvelles :
+   fil d'Ariane de la page par une série ou au nom d'un autre thème, `BreadcrumbList` par une série,
+   `aria-current` sur une autre puce, deux puces marquées, lignes et schéma à l'envers, ligne de
+   `/blog` au thème d'un autre ou sans thème) : les 24 échouent ; la copie remise repasse.
+8. **`BlogCard.astro`** : prop `theme` typée (`ThemeSlug`) ; commentaire « quatre pages de liste »
+   corrigé.
+
+**Écarté (et pourquoi) :**
+
+- *La une de `/blog` dit encore la série* (deux relectures) : le cahier la fige. À décider par le
+  propriétaire (une ligne, point 1 de « Ce qui reste »).
+- *`articleSection` garde la catégorie de série* (« Fiche Fiscalité ») alors que le fil d'Ariane dit
+  le thème : rien d'incohérent pour un moteur (rubrique de forme d'un côté, chemin de l'autre), et ce
+  serait un changement de JSON-LD de plus sur 48 articles. Suivi possible dans une PR suivante.
+- *La licence de remplacement dans « Statut, contrats et revenus »* : classement du cahier.
+- *Étiquette courte au téléphone* (« #16 » seul, « Fiche Fiscalité » masqué) : à côté du nom du
+  thème, « #16 » se lirait « 16ᵉ article du thème », alors que c'est la 16ᵉ fiche fiscalité ; le cahier
+  garde la numérotation. Le coût reste noté (point 3 de « Ce qui reste »).
+- *Premier écran du téléphone sans article* (puces sous la liste) : le cahier fait les pages de thème
+  sur le modèle exact des séries ; gain nul à 360 × 640. Noté (point 4).
+- *Fonds sable et vert proches* (ΔE 8,2) : ils se distinguent côte à côte, et par leurs vagues ; le
+  vert plus franc proposé (`#C2E6CF`) n'est pas un jeton de la DA, que le cahier impose. Au
+  propriétaire de choisir.
+- *Vide sous la première colonne de l'index du bas de `/blog`* (≥ 1 280 px) : placer les fiches à la
+  main ferait zigzaguer le clavier ; bas de page, faible priorité.
+- *Image de partage propre aux pages de thème* : `/blog` et les séries montrent la même image
+  générique ; à faire pour les trois ensemble, dans une PR suivante.
+- *Squelette commun aux pages de série et de thème* (composant) : il toucherait
+  `serie/[series].astro`, que § 9.fo modifie aussi ; à faire après la fusion des deux chantiers, avec
+  la preuve « séries identiques octet pour octet ».
+- *Conflits avec § 9.fo* : ce n'est pas un défaut de code à corriger ici (voir ci-dessous).
+
+**Conflits avec § 9.fo (les affiches).** Le risque annoncé à la construction (la numérotation) n'était
+pas le bon : § 9.fo est numéroté après § 9.fp. Ce sont trois fichiers de code. `git merge-tree` entre
+cette branche et la branche de la PR 1 (tête `aca92f1`, § 9.fo partie A) : conflits dans
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/styles/blog-liste.css`,
+`MIGRATION.md` et `CLAUDE.md` (les mêmes cinq fichiers avant et après ces corrections ; la page de
+thème, le registre, l'image de partage et `verify-site.mjs` fusionnent sans conflit). Cette branche
+n'est pas rebasée sur § 9.fo : le chantier continue (une partie B change encore `BlogCard` et la
+feuille), et les preuves de cette PR se font contre la PR 1 figée. À la fusion, dans l'ordre que
+choisira le chef d'orchestre :
+- `blog-liste.css` : § 9.fo met les lignes en une colonne de 640 à 1 023 px et centre le texte sur
+  l'affiche de 144 px ; la sous-grille du point 3 ne sert alors qu'à partir de 1 024 px (deux
+  colonnes) et doit être réconciliée avec ce centrage (borner son `@media` à 1 024 px, et choisir
+  entre texte centré et titres alignés), puis remesurée ;
+- `BlogCard.astro` : garder les props de § 9.fo (`bords`, nouvelles `sizes`) et celles des thèmes
+  (`etiquette`, `theme`, `category`, `categoryNumber`) ;
+- `index.astro` : garder la une de § 9.fo et les puces, étiquettes et l'index des thèmes ;
+- `theme/[theme].astro` n'a plus `eager` (point 6) : il suit déjà les séries de § 9.fo ;
+- puis toutes les preuves : `verify-site.mjs`, `preuve.cjs`, `preuve-corps.cjs`, pixels des séries,
+  pages hors blog.
+
+**Preuves après corrections** (construction propre, cache vidé ; contre la PR 1 servie sur 4350) :
+- `verify-site.mjs` passe : 73 pages, 5 814 liens internes, les 7 avertissements de la PR 1 ; feuille
+  commune `_astro_assets.BdxOyZgM.css`, inchangée ; 75 pages construites.
+- `preuve-corps.cjs` : 48 articles, mots, titres et ancres, liens du corps différents : 0, 0, 0.
+- `preuve.cjs` (52 pages, 11 clés) : même bilan qu'avant (`corps`, `faq`, `images`, `ids` identiques
+  sur 52 ; les trois séries identiques sur les 11 clés) ; `classer.cjs` : **0 écart non expliqué**.
+- Pages hors blog : les 19 identiques à la PR 1 au nom du script de PostHog près (le même qu'avant).
+- Pages de série : captures pleine page identiques au pixel à la PR 1, à 360, 393, 560, 640, 700,
+  768, 820, 1 024 et 1 512 px.
+- Mesures (Chromium, réseau bloqué hors du site, 17 largeurs de 320 à 1 920 px, `/blog`, cinq pages de
+  thème, deux séries) : aucun défilement de côté, 0 rangée décalée, puces en 2 + 2 + 2 ou 3 + 3 sur les
+  thèmes (séries inchangées), aucun compte seul, aucun mot seul en fin d'introduction. WebKitGTK 2.52
+  (`/blog`, deux pages de thème, une série ; 1 512, 1 024, 820, 700, 600, 393 px) : mêmes résultats,
+  sous-grille lue, `pretty` lu.
+- Lighthouse mobile (`npx serve`, deux à cinq passes) : Impôts 99 et 97, Statut 98, 93, 98, 97, 98
+  (le 93 : un temps de blocage de 295 ms, isolé), `/blog` 98 et 99 ; accessibilité, bonnes pratiques
+  et SEO à 100 ; CLS 0.
+- Les 48 images de partage regardées (planches, dans l'ordre des pages) : poses voisines différentes,
+  42 à 62 Ko.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

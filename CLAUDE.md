@@ -444,7 +444,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     build) ; une garde arrête la construction si Pango en prend une autre. Aucun jaune ;
     mascotte entière ; un titre trop long est réduit (50 px), puis coupé d'un « … ». Depuis
     § 9.fp, la pastille dit le thème et le fond est celui du thème (`partage` du registre :
-    sable, ciel, nuit, eau, vert ; palettes dans `image-partage.mjs`).
+    sable, ciel, nuit, eau, vert ; palettes dans `image-partage.mjs`). Les poses tournent dans
+    le thème du plus ancien au plus récent : publier un article ne change ni la pose ni
+    l'adresse de l'image des autres (il prend le dernier rang). Ne pas revenir au plus récent
+    d'abord : chaque parution déplaçait toutes les images du thème.
   - Auteur : table `AUTEURS` de `src/lib/site.ts` (nom du frontmatter → fiche de
     `/qui-sommes-nous` et portrait) ; un auteur absent n'a ni lien ni `@id`.
 - **Les affiches** (§ 9.fo ; le propriétaire : « pas trop grande mais pas trop petite ») : une
@@ -499,9 +502,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   événements de l'article ; `data-blog-theme` sur `<main>` (page de thème) et sur `<article>`.
   `verify-site.mjs` (« 4 sexdecies ») échoue si un article n'a pas de thème valide, si son fil
   d'Ariane ne passe pas par la page de son thème en position 3, si une page de thème ne liste
-  pas exactement ses articles, si un article est listé par zéro ou deux pages de thème, si le
-  sitemap n'a pas exactement `NB_THEMES` (5) pages de thème, si les puces de `/blog` ne les lient
-  pas. Un sixième thème se décide : registre, `NB_THEMES`, textes à faire relire (MIGRATION.md).
+  pas exactement ses articles (dans l'ordre de `/blog`), si son propre fil d'Ariane n'est pas
+  Accueil › Blog › elle, si une autre puce que la sienne porte `aria-current`, si un article est
+  listé par zéro ou deux pages de thème, si une ligne de `/blog` n'a pas le nom de son thème pour
+  étiquette, si le sitemap n'a pas exactement `NB_THEMES` (5) pages de thème, si les puces de
+  `/blog` ne les lient pas. Un sixième thème se décide : registre, `NB_THEMES`, textes à faire
+  relire (MIGRATION.md). Textes du registre : aucun chiffre, et pas plus de trois mots de suite
+  communs entre introduction et description (comptés sans la ponctuation).
+  Sur `/blog` et les pages de thème, à partir de 640 px, les deux lignes d'une rangée partagent
+  quatre pistes (sous-grille : étiquette, titre, extrait, date ; § 9.fp, corrections) : sans elle,
+  des étiquettes de hauteurs différentes décalaient les titres voisins. Les pages de série n'en ont
+  pas besoin (étiquette d'une ligne) et n'y sont pas soumises. Puces des thèmes : deux colonnes
+  jusqu'à 699 px, trois au-delà (`.bl-series.bl-themes`, deux classes : les règles des séries à
+  partir de 560 px viennent après dans la feuille).
   ⚠️ Toute retouche de `src/lib/page-analytics.ts` renomme le script d'entrée de PostHog, donc
   change la balise `<script>` de toutes les pages (§ 9.fp) : prouver « pages inchangées » à ce
   nom près.
