@@ -1,0 +1,682 @@
+/* ==========================================================================
+   Page d'article du blog : le nouveau système de lecture (novembre 2026, MIGRATION.md § 9.fj).
+   « La fiche pratique » : un article se lit comme une fiche qu'on consulte entre deux patients.
+   La réponse d'abord (« L'essentiel » en tête, carte blanche à coches), puis des repères partout
+   (rail numéroté qui suit la lecture, filet et place de chaque partie, marques d'état dessinées).
+   Sur une feuille sable aux coins ronds posée sous le ciel : le rail à gauche, le texte au centre
+   (624 px, 19 px), la carte d'essai collante à droite. Le bleu de marque et l'encre portent tout ;
+   les couleurs d'état n'apparaissent que là où il y a un état ; le jaune ne sert qu'au bouton.
+
+   Feuille de la page d'article seule (importée par src/pages/blog/[slug].astro). Écrite dans un
+   fichier de src/styles : Tailwind ne la lit pas, la feuille commune du site ne change pas. Le
+   corps de l'article sort du Markdown sans l'attribut de portée d'Astro : tout est préfixé par
+   `.fiche` (le <main>). Le balisage dessiné ici (.em, .fl, .lignes, .t-*, .callout-*, .tbl, .kv,
+   .sources-pli, .nb) est posé au rendu par src/lib/rehype-article.mjs.
+
+   Règle des émojis (§ 9.fj) : le caractère reste toujours dans le texte. Rien dans les titres, le
+   sommaire et l'appel à l'essai ; un dessin seulement là où l'émoji porte un sens, dans une liste
+   (marque d'état, touche, flèche, légende du calendrier fiscal) ; tout le reste masqué. Le masquage
+   est celui de la classe `sr` du site (hors du flux, rogné), jamais une taille de police nulle. Un
+   dessin ne peut pas venir d'un élément masqué : il est porté par l'élément de liste ou le titre.
+   ========================================================================== */
+
+/* ───────── Jetons de la page ───────── */
+.fiche {
+  --rail: 216px; --droite: 248px; --ecart: 56px; --ecart-g: 72px; --txt: 624px;
+  --haut-colle: 100px;
+  /* Dessins au trait (masques : la couleur vient de background-color). */
+  --i-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  --i-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.8' stroke-linecap='round'%3E%3Cpath d='M17 7 7 17M7 7l10 10'/%3E%3C/svg%3E");
+  --i-triangle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.6 2.6 19.8h18.8z'/%3E%3Cpath d='M12 9.6v4.4M12 16.9h.01'/%3E%3C/svg%3E");
+  --i-cal: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='4' rx='3'/%3E%3Cpath d='M8 2v4M16 2v4M3 10h18'/%3E%3C/svg%3E");
+  --i-horloge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
+  --i-steth: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 2v2M5 2v2M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1'/%3E%3Cpath d='M8 15a6 6 0 0 0 12 0v-3'/%3E%3Ccircle cx='20' cy='10' r='2'/%3E%3C/svg%3E");
+  --i-liste: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 17 2 2 4-4M3 7l2 2 4-4M13 6h8M13 12h8M13 18h8'/%3E%3C/svg%3E");
+  --i-fleche: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E");
+  --i-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 6 6 6-6 6'/%3E%3C/svg%3E");
+  /* Étiquettes d'encadré : dessins en couleur (fond d'image, pas de masque : le même pseudo-élément porte le mot). */
+  --l-ampoule: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230059B3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4'/%3E%3C/svg%3E");
+  --l-triangle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23874C00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3ZM12 9v4M12 17h.01'/%3E%3C/svg%3E");
+  --l-liste: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230059B3' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 17 2 2 4-4M3 7l2 2 4-4M13 6h8M13 12h8M13 18h8'/%3E%3C/svg%3E");
+  --l-tete: url("../assets/blog-article/tete.webp");
+}
+
+/* ───────── La page : une grille ─────────
+   Téléphone : une colonne (gouttière de 20 px). Ordinateur : rail, texte, colonne de droite.
+   <article> et son <header> ne font pas de boîte (display: contents) : leurs enfants se placent
+   directement dans la grille du <main>. Le HTML et son ordre ne changent pas. Rangées : 1 fil,
+   2 série, 3 titre, 4 ligne de confiance et vignette, 5 écart, 6 sommaire, 7 corps, 8 planches,
+   9 questions, 10 connexes, 11 essai, 12 auteur, 13 partage, 14 suite, 15 écart, 16 retour en haut. */
+.fiche {
+  --gut: 20px;
+  display: grid;
+  grid-template-columns: [plein-start] var(--gut) [rail-start texte-start titre-start] minmax(0, 1fr) [rail-end texte-end titre-end droite-start droite-end] var(--gut) [plein-end];
+  grid-template-rows: repeat(4, auto) 26px repeat(9, auto) 32px auto;
+  position: relative; margin-bottom: -1px; padding: 92px 0 96px;
+  background: linear-gradient(var(--sky-1) 0, var(--sky) 460px);
+  font-size: 1.0625rem; color: var(--ink); overflow-wrap: break-word;
+}
+.fiche .article, .fiche .tete { display: contents; }
+.fiche > *, .fiche .article > *, .fiche .tete > * { grid-column: texte; min-width: 0; }
+/* La feuille de lecture : une feuille sable aux coins ronds, de la tête du texte à la fin de l'article. */
+.fiche .article::before { content: ""; grid-column: plein; grid-row: 5 / 16; border-radius: var(--r-xl); background: var(--sand); }
+.fiche .fil { grid-row: 1; }
+.fiche .retour { display: none; }
+.fiche .marques { grid-row: 2; }
+.fiche .aff { grid-row: 3; }
+.fiche .infos { grid-row: 4; }
+.fiche .couverture { grid-row: 4; }
+.fiche .som { grid-row: 6; }
+.fiche .corps { grid-row: 7; }
+.fiche .planches { grid-row: 8; }
+.fiche .questions { grid-row: 9; }
+.fiche .connexes { grid-row: 10; }
+.fiche .essai { grid-row: 11; }
+.fiche .signature { grid-row: 12; }
+.fiche .partage { grid-row: 13; }
+.fiche .suite { grid-row: 14; }
+.fiche .remonter { grid-row: 16; }
+.fiche .lecture-fil, .fiche .som-pastille { grid-row: 1; }
+
+/* Masqué à l'œil, gardé dans le texte (classe `sr` du site) : les flèches que la police n'a pas,
+   les émojis du corps, du sommaire et de l'appel à l'essai, les marques tapées des listes. */
+.fiche .sr, .fiche .em-cache, .fiche .corps .em, .fiche .corps .fl-m, .fiche .corps .fl-m2 {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+/* Un mot et sa ponctuation (`nouer` du gabarit), un nombre et son unité (`.nb` du plugin) : ensemble sur la ligne. */
+.fiche .num { display: inline-block; max-width: 100%; white-space: normal; }
+.fiche .nb { white-space: nowrap; }
+.fiche :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* L'eau du pied de page : les deux dernières vagues de /tarifs. */
+.fiche::before, .fiche::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none; --p: 300px; --th: 40px; }
+.fiche::before { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+.fiche::after { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+/* ───────── Le ciel : fil d'Ariane, série, titre, ligne de confiance, vignette ───────── */
+.fiche .fil { margin-bottom: 14px; font-size: 0.875rem; color: var(--ink-2); }
+.fiche .fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
+.fiche .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.35); text-underline-offset: 4px; }
+.fiche .fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
+/* La page en cours répète le titre juste dessous : elle reste dans le fil pour les lecteurs d'écran. */
+.fiche .fil [aria-current] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.fiche .fil li:nth-last-child(2) { display: none; }
+
+.fiche .marques { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 12px; }
+.fiche .serie { position: relative; display: inline-flex; align-items: center; padding: 3px 12px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.875rem; font-weight: var(--tb); line-height: 1.45; color: var(--brand); text-decoration: none; }
+.fiche .serie::after { content: ""; position: absolute; inset: -9px 0; }
+.fiche .serie:hover { background: var(--sky-soft); }
+.fiche .episode { font-size: 0.875rem; color: var(--ink-2); }
+
+.fiche .aff { --corps: 1.875rem; margin: 0; font-size: var(--corps); font-weight: var(--dw); line-height: 1.1; letter-spacing: -0.03em; color: var(--ink); text-wrap-style: balance; }
+
+/* La ligne de confiance : date, durée, auteur, chacun précédé d'un petit dessin. */
+.fiche .infos { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; align-self: center; margin-top: 16px; margin-bottom: 24px; font-size: 0.875rem; line-height: 1.4; color: var(--ink-2); }
+.fiche .infos > * { display: inline-block; }
+.fiche .infos > *::before { content: ""; display: inline-block; width: 15px; height: 15px; margin-right: 6px; vertical-align: -2px; background: var(--brand); -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; }
+.fiche .infos .publie, .fiche .infos .maj { order: 1; --i: var(--i-cal); }
+.fiche .infos .duree { order: 2; --i: var(--i-horloge); }
+.fiche .infos .auteur { order: 3; --i: var(--i-steth); font-weight: var(--tb); color: var(--ink); }
+/* Mise à jour : la date de publication reste dans le texte, la ligne n'affiche que la plus récente. */
+.fiche .infos.a-jour .publie { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.fiche .illustree .infos { padding-right: 84px; }
+
+/* La couverture en vignette : l'affiche reste, en petit, posée sur le ciel. */
+.fiche .couverture { box-sizing: border-box; justify-self: end; align-self: end; width: 64px; height: auto; aspect-ratio: 4 / 5; margin-top: 12px; margin-bottom: 16px; object-fit: cover; object-position: top; border: 3px solid var(--paper); border-radius: 12px; box-shadow: var(--clay-sm); }
+
+/* ───────── Le sommaire ─────────
+   Téléphone et tablette : une ligne « Sommaire » en pli natif, en tête de la feuille. Ordinateur : le rail. */
+.fiche .som { margin: 0 0 18px; border-block: 1px solid var(--line); }
+.fiche .som-tete { display: flex; align-items: center; gap: 12px; min-height: 52px; font-size: 1rem; font-weight: var(--tb); color: var(--ink); cursor: pointer; list-style: none; }
+.fiche .som-tete::-webkit-details-marker { display: none; }
+.fiche .som-tete::before { content: ""; flex: none; width: 20px; height: 20px; background: var(--brand); -webkit-mask: var(--i-liste) center / contain no-repeat; mask: var(--i-liste) center / contain no-repeat; }
+.fiche .som-tete-nom { flex: 1; }
+.fiche .som-chevron { flex: none; color: var(--ink-2); transition: rotate 200ms var(--ease); }
+.fiche .som[open] .som-chevron { rotate: 180deg; }
+.fiche .som-nom { display: none; }
+.fiche .som-nav { padding-bottom: 12px; }
+/* La pastille mène à la liste : elle s'arrête sous l'en-tête, la ligne « Sommaire » visible au-dessus. */
+.fiche #sommaire-liste { scroll-margin-top: 150px; }
+.fiche .som-liste { margin: 0; padding: 0; list-style: none; counter-reset: som; font-size: 0.96875rem; line-height: 1.35; }
+.fiche .som-liste > li.partie { counter-increment: som; }
+.fiche .som-liste a { position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr); align-items: baseline; box-sizing: border-box; min-height: 44px; padding: 11px 0; border-radius: 6px; color: var(--ink-2); font-weight: 520; text-decoration: none; }
+.fiche .som-liste a::before { content: counter(som, decimal-leading-zero); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; font-weight: var(--tb); color: var(--ink-3); }
+/* Numéros de l'auteur : une entrée numérotée garde son numéro ; en mode auteur, une entrée sans numéro n'en a pas.
+   Une sous-partie (« 4.2 », ou « 1. » sous une partie) se met en retrait et ne compte pas. */
+.fiche .som-liste a[data-no]::before { content: attr(data-no); }
+.fiche .som-auteur .som-liste a:not([data-no])::before { content: ""; }
+.fiche .som-liste > li.sous-partie { counter-increment: none; }
+.fiche .som-liste > li.sous-partie > a { padding-left: 16px; }
+.fiche .som-liste a:hover { color: var(--brand); }
+.fiche .som-haut { display: none; }
+
+/* Fil de lecture : 3 px dans le bas de la pastille de l'en-tête, d'un bord à l'autre de la pastille.
+   La ligne de temps du corps (--lecture) est déclarée sur <body> : la bulle de chat, hors de la page,
+   la lit aussi (plus bas). */
+.fiche .lecture-fil { display: none; }
+@keyframes fiche-lecture { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes fiche-lecture-fin { from { opacity: 1; } to { opacity: 0; } }
+@supports (animation-timeline: view()) and (timeline-scope: --lecture) {
+  .da:has(.fiche .corps) { timeline-scope: --lecture; }
+  .fiche .corps { view-timeline-name: --lecture; view-timeline-axis: block; }
+  /* Logé dans le bas de la pastille de l'en-tête (60 px de haut à 10 px du bord), au-dessus d'elle : il ne passe
+     jamais sur le texte. Vide hors de l'animation (une ligne de temps inactive n'affiche rien), il s'efface quand le
+     texte sort de l'écran. */
+  .fiche .lecture-fil { display: block; position: fixed; z-index: 51; top: calc(63px + env(safe-area-inset-top, 0px)); left: calc(max(12px, (100% - 1120px) / 2) + 30px); right: calc(max(12px, (100% - 1120px) / 2) + 30px + var(--removed-body-scroll-bar-size, 0px)); height: 3px; border-radius: 3px; background: var(--brand); transform: scaleX(0); transform-origin: 0 50%; pointer-events: none; animation: fiche-lecture linear both, fiche-lecture-fin linear both; }
+  .fiche div.lecture-fil { animation-timeline: --lecture, --lecture; animation-range: contain 0% contain 100%, exit 0% exit 12%; }
+  .da:has(.hd-toggle:checked) .fiche .lecture-fil { display: none; }
+}
+
+/* Pastille « Sommaire » (téléphone et tablette) : après un écran de défilement, tant que le texte
+   est à l'écran ; en bas à gauche, loin de la bulle de chat. Sans animation liée au défilement : absente. */
+.fiche .som-pastille { display: none; }
+@property --som-ici { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --som-fini { syntax: "<number>"; inherits: false; initial-value: 0; }
+@keyframes som-ici { from { --som-ici: 0; visibility: hidden; } to { --som-ici: 1; visibility: visible; } }
+@keyframes som-fini { from { --som-fini: 0; } to { --som-fini: 1; visibility: hidden; } }
+@supports (animation-timeline: view()) and (timeline-scope: --lecture) {
+  .fiche .som-pastille {
+    --vu: calc(var(--som-ici) - var(--som-fini));
+    /* Un rond de papier de 44 px, le mot « Sommaire » pour les lecteurs d'écran. */
+    display: inline-flex; align-items: center; justify-content: center; position: fixed; z-index: 48; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); color: var(--brand); text-decoration: none;
+    box-shadow: 0 0 0 1px var(--line), 0 4px 14px rgba(20, 37, 79, 0.10);
+    opacity: var(--vu); translate: 0 calc((1 - var(--vu)) * 12px);
+    animation: som-ici linear both, som-fini linear both;
+  }
+  .fiche a.som-pastille { animation-timeline: scroll(root block), --lecture; animation-range: 70vh 100vh, exit 0% exit 30%; }
+  .fiche .som-pastille:hover { background: var(--sky-soft); }
+}
+@media (prefers-reduced-motion: reduce) { .fiche .som-pastille { translate: none; } }
+
+/* La bulle de chat sur téléphone (CLAUDE.md, « Bulle de chat sur téléphone ») : sur un article, elle
+   n'arrive qu'à la fin du texte. Pendant la lecture, elle couvrait un à trois mots en bout de ligne.
+   Quand la fin du corps entre dans l'écran, elle paraît sur 120 px de défilement. Écrite avec
+   l'identifiant seul, comme /essai : elle l'emporte sur la plage du site (poids nul). Sans lignes de
+   temps liées à un élément, la règle du site s'applique (bulle après 144 px). Deux règles, deux
+   sélecteurs : réunies, la minification fusionne l'animation et sa ligne de temps. */
+@supports (animation-timeline: view()) and (timeline-scope: --lecture) {
+  @media (max-width: 639.98px) {
+    #crisp-launcher { animation: fiche-bulle linear both; }
+    body #crisp-launcher { animation-timeline: --lecture; animation-range: exit 0px exit 120px; }
+  }
+}
+@keyframes fiche-bulle { from { visibility: hidden; opacity: 0; } to { visibility: visible; opacity: 1; } }
+
+/* ───────── Le corps : texte courant ─────────
+   17 px et interligne 1,55 sur téléphone (41 caractères), 19 px et 1,6 sur ordinateur (67 à 69). */
+.fiche .corps { padding: 6px 0 0; font-size: 1.0625rem; line-height: 1.55; color: var(--ink); }
+.fiche .corps[data-blog-zone] > :first-child { margin-top: 0; }
+.fiche .corps[data-blog-zone] > :nth-last-child(2) { margin-bottom: 0; }
+.fiche .corps [data-blog-fin] { display: block; height: 0; }
+.fiche .corps p { margin: 0 0 1.2em; text-wrap-style: pretty; }
+.fiche .corps strong, .fiche .corps b { font-weight: 640; color: var(--ink); }
+/* La police n'a pas d'italique : l'accent est droit, d'une graisse au-dessus. */
+.fiche .corps em { font-style: normal; font-weight: 560; }
+.fiche .corps a { color: var(--brand); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; text-decoration-color: rgba(0, 89, 179, 0.4); }
+.fiche .corps a:hover { text-decoration-color: currentColor; }
+.fiche .corps hr { height: 1px; margin: 2.2em 0; border: 0; background: var(--line); }
+.fiche .corps img { max-width: 100%; height: auto; border-radius: var(--r-md); }
+.fiche .corps code { padding: 0.1em 0.35em; border-radius: 6px; background: var(--sky-soft); font-size: 0.875em; overflow-wrap: anywhere; }
+.fiche .corps blockquote { margin: 1.6em 0; padding: 2px 0 2px 18px; border-left: 3px solid var(--brand); color: var(--ink); }
+.fiche .corps blockquote > :last-child { margin-bottom: 0; }
+
+/* ───────── Titres ─────────
+   Devant chaque partie du plan, un seul signe, constant : un filet court de marque (38 × 3 px), et à
+   sa droite la place de la partie dans le plan (« 04 / 10 »), écrite par deux compteurs (le total vient
+   du gabarit, `counter-reset` sur le corps ; même compte que le rail). Pas de repère quand l'auteur a
+   numéroté ses parties (`.numerote`) : son numéro, en bleu, est en tête du titre. Une sous-partie
+   (`t-sous`) n'a ni filet ni repère, elle est plus petite. Un titre d'encadré se fond dans son encadré. */
+.fiche .corps h2, .fiche .corps h3 { font-family: var(--display); font-weight: var(--dw); color: var(--ink); text-wrap-style: balance; scroll-margin-top: 96px; }
+.fiche .corps h2 { --t: 1.5625rem; position: relative; margin: 44px 0 12px; font-size: var(--t); line-height: 1.16; letter-spacing: -0.026em; }
+.fiche .corps h3 { margin: 32px 0 10px; font-size: 1.1875rem; line-height: 1.25; letter-spacing: -0.014em; }
+.fiche .corps h4 { margin: 24px 0 8px; font-size: 1em; font-weight: var(--tb); }
+.fiche .corps > h2[data-np]::before { content: ""; display: block; width: 38px; height: 3px; margin-bottom: 14px; border-radius: 2px; background: var(--brand); }
+.fiche .corps > h2[data-np]:not(.t-sous) { counter-increment: np-pos; }
+.fiche .corps:not(.numerote) > h2[data-np]:not(.t-sous)::before {
+  content: counter(np-pos, decimal-leading-zero) " / " counter(np-tot, decimal-leading-zero);
+  width: auto; height: auto; padding-left: 50px; border-radius: 0;
+  background: linear-gradient(var(--brand), var(--brand)) 0 50% / 38px 3px no-repeat;
+  font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; font-weight: 640; letter-spacing: 0.04em; line-height: 1rem; color: var(--ink-2);
+}
+.fiche .corps > h2.t-sous { --t: 1.3125rem; margin: 36px 0 10px; line-height: 1.2; letter-spacing: -0.02em; }
+.fiche .corps > h2.t-sous::before { content: none; }
+/* Numéros écrits par l'auteur (« 1. », « 4.1 », « Étape 1 ») : en bleu de marque. Une touche 1️⃣ qui
+   numérote seule son titre : son chiffre, écrit par la feuille devant le texte (l'émoji est masqué). */
+.fiche .corps .t-no { color: var(--brand); }
+.fiche .corps .t-txt[data-touche]::before { content: attr(data-touche) "."; margin-right: 0.28em; color: var(--brand); }
+
+/* ───────── Listes ─────────
+   Le repère sort du texte et se range dans une marge de 28 px ; 8 px entre deux éléments. La marque
+   tapée par l'auteur (•, →, ✅…) est masquée ; un dessin prend sa place, porté par l'élément :
+   un rond bleu (puce, et tout émoji de décor), une flèche (→, 👉), une marque d'état dans un rond,
+   le chiffre d'une touche, ou l'un des quatre pictogrammes de la légende du calendrier fiscal. */
+.fiche .corps ul, .fiche .corps ol { margin: 0 0 1.2em; padding: 0; list-style: none; }
+.fiche .corps li { position: relative; margin: 0 0 8px; padding-left: 28px; }
+.fiche .corps li:last-child { margin-bottom: 0; }
+.fiche .corps li > ul, .fiche .corps li > ol { margin: 8px 0 0; }
+.fiche .corps li > p { margin-bottom: 0.5em; }
+/* Puce : un petit rond bleu. */
+.fiche .corps ul:not(.kv) > li:not([data-etat], [data-touche])::before { content: ""; position: absolute; left: 7px; top: calc(0.5lh - 3.5px); width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
+.fiche .corps li > ul > li:not([data-etat], [data-touche])::before { width: 6px; height: 6px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--brand); }
+/* Flèche (« → », 👉 en marque) : une petite flèche bleue. */
+.fiche .corps ul.fl > li:is([data-m="fleche"], :has(> .fl-m .em[data-em-role="main"], > strong:first-child > .fl-m .em[data-em-role="main"])):not([data-etat], [data-touche])::before { left: 2px; top: calc(0.5lh - 8px); width: 16px; height: 16px; border-radius: 0; background: var(--brand); -webkit-mask: var(--i-fleche) center / contain no-repeat; mask: var(--i-fleche) center / contain no-repeat; box-shadow: none; }
+/* Marques d'état : coche, croix, triangle dans un rond de 22 px, aux seuls jetons de la DA. Oui : vert d'état ;
+   attention : ambre d'état ; non : croix d'encre sur fond neutre (la DA n'a pas de rouge, la forme porte le sens). */
+.fiche .corps li[data-etat] { padding-left: 32px; }
+.fiche .corps :is(ul, ol) > li[data-etat]::before { content: ""; position: absolute; left: 0; top: calc(0.5lh - 11px); width: 22px; height: 22px; border-radius: 50%; background: var(--ok-bg); }
+.fiche .corps :is(ul, ol) > li[data-etat]::after { content: ""; position: absolute; left: 5px; top: calc(0.5lh - 6px); width: 12px; height: 12px; background: var(--ok); -webkit-mask: var(--i-check) center / contain no-repeat; mask: var(--i-check) center / contain no-repeat; }
+.fiche .corps :is(ul, ol) > li[data-etat="non"]::before { background: var(--line); }
+.fiche .corps :is(ul, ol) > li[data-etat="non"]::after { background: var(--ink-2); -webkit-mask-image: var(--i-x); mask-image: var(--i-x); }
+.fiche .corps :is(ul, ol) > li[data-etat="attention"]::before { background: var(--wait-bg); }
+.fiche .corps :is(ul, ol) > li[data-etat="attention"]::after { left: 4px; top: calc(0.5lh - 7.5px); width: 14px; height: 14px; background: var(--wait); -webkit-mask-image: var(--i-triangle); mask-image: var(--i-triangle); }
+/* Touche 1️⃣ en marque : son chiffre dans un rond. */
+.fiche .corps li[data-touche] { padding-left: 32px; }
+.fiche .corps :is(ul, ol) > li[data-touche]::before { content: attr(data-touche); position: absolute; left: 0; top: calc(0.5lh - 11px); display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--plan-bg); color: var(--plan); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1; }
+/* Légende (calendrier fiscal : « 💸 : Tu paies »…) et listes de l'article qui l'emploie : l'émoji y dit
+   quelque chose, il devient son dessin. Quatre dessins, formes opposées pour payer (la flèche sort) et
+   recevoir (la flèche entre). Ailleurs, ces émojis sont du décor : une puce. */
+.fiche .corps ul.fl-legende > li { padding-left: 30px; }
+.fiche .corps:has(.fl-legende) ul.fl > li:not([data-etat], [data-touche]):has(> .fl-m .em:is([data-em-picto="banknote"], [data-em-picto="mailbox"], [data-em-picto="send"], [data-em-picto="lightbulb"])) { padding-left: 30px; }
+.fiche .corps:has(.fl-legende) ul.fl > li:not([data-etat], [data-touche]):has(> .fl-m .em:is([data-em-picto="banknote"], [data-em-picto="mailbox"], [data-em-picto="send"], [data-em-picto="lightbulb"]))::before { left: 0; top: calc(0.5lh - 10px); width: 20px; height: 20px; border-radius: 0; box-shadow: none; background: var(--brand); -webkit-mask: var(--picto) center / contain no-repeat; mask: var(--picto) center / contain no-repeat; }
+.fiche .corps li:has(> .fl-m .em[data-em-picto="banknote"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 10.2A6.3 6.3 0 1 0 14 19.8M2.5 13.6h7.5M2.5 16.6h6.5'/%3E%3Cpath d='M15.5 8.5 21 3M16 3h5v5'/%3E%3C/svg%3E"); }
+.fiche .corps li:has(> .fl-m .em[data-em-picto="mailbox"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 10.2A6.3 6.3 0 1 0 14 19.8M2.5 13.6h7.5M2.5 16.6h6.5'/%3E%3Cpath d='M21 3l-5.5 5.5M15.5 3.5v5h5'/%3E%3C/svg%3E"); }
+.fiche .corps li:has(> .fl-m .em[data-em-picto="send"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z'/%3E%3Cpath d='m21.854 2.147-10.94 10.939'/%3E%3C/svg%3E"); }
+.fiche .corps li:has(> .fl-m .em[data-em-picto="lightbulb"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/%3E%3Cpath d='M9 18h6M10 22h4'/%3E%3C/svg%3E"); }
+
+.fiche .corps .fl-aeree > li { margin-bottom: 14px; }
+.fiche .corps p.fl-intitule { margin-bottom: 10px; font-weight: 640; }
+.fiche .corps .colle { margin-bottom: 0; }
+.fiche .corps .colle + :is(ul, ol) { margin-top: 0; }
+.fiche .corps ul.fl + p.colle, .fiche .corps .colle + p { margin-top: 0; }
+.fiche .corps li.fl-total { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.fiche .corps li.fl-total::before { top: calc(10px + 0.5lh - 3.5px); }
+
+/* Étapes : les listes numérotées. Numéro dans un rond de 28 px, un trait de 2 px relie les ronds. */
+.fiche .corps ol { counter-reset: etape; }
+.fiche .corps ol > li { counter-increment: etape; min-height: 28px; margin: 0; padding: 0 0 16px 42px; }
+.fiche .corps ol > li:last-child { padding-bottom: 0; }
+.fiche .corps ol > li:not([data-etat], [data-touche])::before { content: counter(etape); position: absolute; left: 0; top: calc(0.5lh - 14px); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--plan-bg); color: var(--plan); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; font-weight: var(--tb); line-height: 1; }
+.fiche .corps ol > li[data-no]::before { content: attr(data-no); font-size: 0.75rem; }
+.fiche .corps ol > li:not(:last-child, [data-etat])::after { content: ""; position: absolute; left: 13px; top: calc(0.5lh + 16px); bottom: 2px; width: 2px; border-radius: 2px; background: var(--plan-bg); }
+
+/* Lignes (paragraphes découpés) : l'intitulé en gras. */
+.fiche .corps .lignes .lg-titre { font-weight: 640; }
+
+/* Blocs de chiffres : libellé à gauche, valeur à droite en chiffres tabulaires, sous un filet ; le signe
+   qui les sépare (« : », « = », « → ») en encre discrète. */
+.fiche .corps ul.kv { margin: 0 0 1.4em; padding: 4px 0; }
+.fiche .corps ul.kv > li { display: flow-root; margin: 0; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.fiche .corps ul.kv > li::before { content: none; }
+.fiche .corps ul.kv > li:last-child { border-bottom: 0; }
+.fiche .corps ul.kv > li.kv-ligne:last-child { border-top: 1.5px solid rgba(20, 37, 79, 0.28); border-bottom: 0; font-weight: 640; }
+.fiche .corps .kv-s { color: var(--ink-3); }
+.fiche .corps .kv-v { float: right; margin-left: 16px; font-family: "Google Sans Flex Chiffres", var(--text); font-weight: 640; color: var(--ink); }
+.fiche .corps ul.fl.kv > li { padding-left: 0; }
+.fiche .corps ul.fl.kv > li[data-m]::before, .fiche .corps ul.fl.kv > li[data-m]::after { content: none; }
+
+/* ───────── Encadrés : plats, une étiquette ─────────
+   L'essentiel : la carte blanche de tête, à coches. Conseil : ciel doux, ampoule. Hippodoc : tête de la
+   mascotte. Alerte : sable chaud, triangle. Le titre d'un encadré seul sous son titre (.t-encadre) en
+   devient le haut. Un <div role="note"> (src/lib/remark-callouts.mjs), plus un <aside>. */
+.fiche .corps .callout { position: relative; margin: 28px 0; padding: 18px 20px; border-radius: 18px; font-size: 1rem; line-height: 1.55; }
+.fiche .corps .callout > :first-child { margin-top: 0; }
+.fiche .corps .callout > :last-child { margin-bottom: 0; }
+.fiche .corps .callout p { margin-bottom: 0.9em; }
+.fiche .corps .callout-tip { background: var(--sky-soft); }
+.fiche .corps .callout-warning { background: var(--wait-bg); }
+.fiche .corps .callout-essentiel { padding: 20px 22px 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--line), var(--clay-sm); }
+/* Étiquette : le premier passage en gras (p.callout-titre), ou un mot posé par la feuille. */
+.fiche .corps .callout > p.callout-titre { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.fiche .corps .callout > p.callout-titre strong, .fiche .corps .callout-sans-titre::before {
+  font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.3;
+}
+.fiche .corps .callout-essentiel > p.callout-titre strong, .fiche .corps .callout-tip > p.callout-titre strong { color: var(--brand); }
+.fiche .corps .callout-warning > p.callout-titre strong { color: var(--wait); }
+.fiche .corps .callout > p.callout-titre::before { content: ""; flex: none; width: 18px; height: 18px; background: var(--l-ampoule) center / contain no-repeat; }
+.fiche .corps .callout-essentiel > p.callout-titre::before { background-image: var(--l-liste); }
+.fiche .corps .callout-warning > p.callout-titre::before { background-image: var(--l-triangle); }
+.fiche .corps .callout-hippo > p.callout-titre::before { width: 26px; height: 26px; margin: -4px 0; border-radius: 50%; background: var(--paper) var(--l-tete) center 3px / 22px no-repeat; }
+.fiche .corps .callout-sans-titre::before { content: "Conseil"; display: block; margin-bottom: 8px; padding-left: 26px; background: var(--l-ampoule) 0 50% / 18px no-repeat; color: var(--brand); }
+.fiche .corps .callout-warning.callout-sans-titre::before { content: "Attention"; background-image: var(--l-triangle); color: var(--wait); }
+.fiche .corps .callout-hippo.callout-sans-titre::before { content: "Le conseil Hippodoc"; padding-left: 32px; background: var(--l-tete) 0 50% / 24px no-repeat; }
+/* Points de « L'essentiel » : une coche blanche dans un rond bleu. */
+.fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche]) { padding-left: 30px; }
+.fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche])::before { left: 0; top: calc(0.5lh - 9px); width: 18px; height: 18px; border-radius: 50%; background: var(--brand); box-shadow: none; -webkit-mask: none; mask: none; }
+.fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche])::after { content: ""; position: absolute; left: 4px; top: calc(0.5lh - 5px); width: 10px; height: 10px; background: var(--paper); -webkit-mask: var(--i-check) center / contain no-repeat; mask: var(--i-check) center / contain no-repeat; }
+.fiche .corps .callout-essentiel ul > li + li { margin-top: 10px; }
+
+/* Titre d'encadré : fondu dans son encadré. */
+.fiche .corps :is(h2, h3).t-encadre { display: flex; align-items: center; gap: 10px; margin: 32px 0 0; padding: 18px 22px 4px; border-radius: 18px 18px 0 0; font-size: 1.0625rem; line-height: 1.3; letter-spacing: -0.01em; background: var(--sky-soft); }
+.fiche .corps :is(h2, h3).t-encadre + .callout { margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; padding-top: 6px; }
+.fiche .corps :is(h2, h3).t-encadre:has(+ .callout-warning) { background: var(--wait-bg); }
+.fiche .corps :is(h2, h3).t-encadre:has(+ .callout-essentiel) { background: var(--paper); box-shadow: 0 -1px 0 0 var(--line), 1px 0 0 0 var(--line), -1px 0 0 0 var(--line); }
+.fiche .corps :is(h2, h3).t-encadre::before { content: ""; flex: none; width: 20px; height: 20px; background: var(--l-ampoule) center / contain no-repeat; }
+.fiche .corps :is(h2, h3).t-encadre:has(+ .callout-warning)::before { background-image: var(--l-triangle); }
+.fiche .corps :is(h2, h3).t-encadre:is(.t-hippo, :has(+ .callout-hippo))::before { width: 28px; height: 28px; margin: -4px 0; border-radius: 50%; background: var(--paper) var(--l-tete) center 3px / 23px no-repeat; }
+
+/* ───────── Tableaux ─────────
+   Un cadre à coins de 16 px, en-tête sur ciel doux, nombres à droite en chiffres tabulaires. */
+@font-face {
+  font-family: "Google Sans Flex Chiffres";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2") format("woff2");
+  font-feature-settings: "tnum";
+  unicode-range: U+23-25, U+2B-2C, U+2E, U+30-3E, U+A2-A4, U+A7, U+AC, U+B1, U+D7, U+F7, U+20AC, U+2212;
+}
+.fiche .corps[data-blog-zone] .tbl { display: block; margin: 28px 0; overflow-x: auto; overscroll-behavior-x: contain; border-radius: 16px; background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.fiche .corps table { width: 100%; border-collapse: collapse; font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.9375rem; line-height: 1.4; }
+.fiche .corps th, .fiche .corps td { padding: 10px 12px; text-align: left; vertical-align: top; }
+.fiche .corps th { background: var(--sky-soft); font-size: 0.875rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+.fiche .corps td { border-top: 1px solid var(--line); color: var(--ink); }
+.fiche .corps :is(th, td):first-child { padding-left: 16px; }
+.fiche .corps :is(th, td):last-child { padding-right: 16px; }
+.fiche .corps .tbl-num { text-align: right; white-space: nowrap; }
+.fiche .corps tr.tbl-total td, .fiche .corps tr.tbl-fort td { border-top: 1.5px solid rgba(20, 37, 79, 0.3); font-weight: 640; }
+.fiche .corps tr.tbl-fort { background: rgba(237, 243, 254, 0.5); }
+
+/* ───────── Sources ─────────
+   Un pli natif (option sourcesPli du plugin) : fermé sous 700 px, une ligne de 52 px entre deux filets ;
+   ouvert à partir de 700 px par ::details-content (sans prise en charge, le pli reste un pli). Le texte
+   est toujours dans le HTML. */
+.fiche .corps .sources-pli { margin: 48px 0 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.fiche .corps .sources-pli > summary { display: flex; align-items: center; gap: 10px; min-height: 52px; cursor: pointer; list-style: none; }
+.fiche .corps .sources-pli > summary::-webkit-details-marker { display: none; }
+.fiche .corps .sources-pli > summary:focus-visible { outline-offset: -3px; }
+.fiche .corps .sources-pli > summary::after { content: ""; flex: none; width: 18px; height: 18px; margin-left: auto; background: var(--ink-2); -webkit-mask: var(--i-chevron) center / contain no-repeat; mask: var(--i-chevron) center / contain no-repeat; rotate: 90deg; transition: rotate 200ms var(--ease); }
+.fiche .corps .sources-pli[open] > summary::after { rotate: -90deg; }
+.fiche .corps .sources-pli h2 { margin: 0; padding: 0; font-family: var(--text); font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; color: var(--ink-2); }
+.fiche .corps .sources-pli h2 .t-date { font-weight: var(--tw); color: var(--ink-2); }
+.fiche .corps .sources-pli > :not(summary) { font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.fiche .corps .sources-pli > :last-child { margin-bottom: 16px; }
+.fiche .corps .sources-pli ul:not(.kv) > li:not([data-etat], [data-touche])::before { left: 9px; background: var(--ink-3); width: 5px; height: 5px; top: calc(0.5lh - 2.5px); }
+.fiche .corps .sources a { color: var(--ink-2); text-decoration-color: rgba(58, 75, 120, 0.4); }
+.fiche .corps .sources :is(strong, b) { color: var(--ink-2); }
+@media (min-width: 700px) {
+  .fiche .corps .sources-pli { border-bottom: 0; }
+  .fiche .corps .sources-pli > summary { min-height: 0; padding: 20px 0 12px; cursor: default; pointer-events: none; }
+  .fiche .corps .sources-pli > summary::after { content: none; }
+  .fiche .corps .sources-pli > :last-child { margin-bottom: 0; }
+  @supports selector(::details-content) {
+    .fiche .corps .sources-pli::details-content { content-visibility: visible; display: contents; }
+  }
+}
+@supports not selector(::details-content) {
+  @media (min-width: 700px) {
+    .fiche .corps .sources-pli > summary { min-height: 52px; padding: 0; cursor: pointer; pointer-events: auto; }
+    .fiche .corps .sources-pli > summary::after { content: ""; }
+  }
+}
+
+/* ───────── Après le texte ───────── */
+/* Carrousel de planches (4 articles) : après le texte, avant les questions. */
+.fiche .planches { margin-top: 36px; }
+.fiche .planches p { color: var(--ink-2); }
+.fiche .planches img { max-height: min(70vh, 520px); width: auto; max-width: 100%; margin-inline: auto; object-fit: contain; }
+.fiche .planches button::after { content: ""; position: absolute; inset: -7px; }
+
+.fiche .questions { margin-top: 40px; }
+.fiche .questions h2, .fiche .connexes h2 { margin: 0 0 14px; font-family: var(--display); font-size: 1.375rem; font-weight: var(--dw); line-height: 1.2; letter-spacing: -0.022em; color: var(--ink); }
+/* FAQ : une feuille blanche à lignes. */
+.fiche .liste { overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.fiche .liste .qa { margin: 0; padding: 0 18px; border-radius: 0; background: none; box-shadow: none; }
+.fiche .liste .qa + .qa { border-top: 1px solid var(--line); }
+.fiche .liste .qa > summary { min-height: 54px; gap: 14px; padding: 10px 0; border-radius: 0; }
+.fiche .liste .qa > summary:focus-visible { outline-offset: -3px; }
+.fiche .liste .qa > summary:hover .qa-t { color: var(--brand); }
+.fiche .qa-t { min-width: 0; font-size: 0.96875rem; font-weight: 640; line-height: 1.35; overflow-wrap: anywhere; text-wrap-style: pretty; }
+.fiche .liste .qa > summary > svg { width: 28px; height: 28px; padding: 6px; background: var(--sky-soft); color: var(--brand); }
+.fiche .liste .qa[open] > summary > svg { background: var(--brand); color: var(--paper); }
+.fiche .qa-in { padding-bottom: 16px; }
+.fiche .qa-in, .fiche .qa-in p { font-size: 0.96875rem; line-height: 1.55; color: var(--ink-2); }
+
+/* Articles liés : des lignes, petite vignette. */
+.fiche .connexes { margin-top: 32px; }
+.fiche .cartes { overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+.fiche .carte { display: flex; align-items: center; gap: 14px; padding: 9px 16px; color: var(--ink); text-decoration: none; }
+.fiche .carte + .carte { border-top: 1px solid var(--line); }
+.fiche .carte:hover { background: var(--sky-soft); }
+.fiche .carte:focus-visible { outline-offset: -3px; }
+.fiche .carte img { flex: none; width: 40px; height: 50px; object-fit: cover; object-position: top; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
+.fiche .carte > div { min-width: 0; }
+.fiche .carte p { margin: 0; }
+.fiche .carte-titre { font-size: 0.9375rem; font-weight: 620; line-height: 1.3; text-wrap-style: pretty; }
+.fiche .carte .carte-duree { margin-top: 1px; font-size: 0.875rem; color: var(--ink-3); }
+
+/* L'appel à l'essai : une carte blanche, la mascotte à gauche du titre, la phrase, le bouton jaune.
+   Tout est aligné à gauche : la carte se lit comme une fiche, pas comme une affiche. */
+.fiche .essai { --focus: var(--ink); position: relative; display: flow-root; margin-top: 40px; padding: 18px 20px 14px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm), 0 0 0 1px var(--line); color: var(--ink); }
+/* La mascotte flotte à gauche du titre : un titre court se lit à côté d'elle, un titre long l'entoure puis reprend toute la largeur. */
+.fiche .essai::before { content: ""; float: left; width: 50px; height: 58px; margin: -4px 12px 2px -2px; background: url("../assets/blog-article/buste.webp") center bottom / contain no-repeat; pointer-events: none; }
+.fiche .essai p { margin: 0; }
+.fiche .essai .essai-titre { font-family: var(--display); font-size: 1.0625rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.012em; text-wrap-style: balance; }
+.fiche .essai .essai-def { clear: left; margin-top: 12px; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); text-wrap-style: pretty; }
+.fiche .essai .btn { display: flex; box-sizing: border-box; width: 100%; min-height: 48px; margin-top: 14px; padding: 0 12px; font-size: 0.96875rem; white-space: nowrap; }
+.fiche .essai .essai-note { margin-top: 10px; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
+.fiche .essai .essai-note + .essai-note { margin-top: 0; }
+.fiche .essai-note a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0 -12px; border-radius: 6px; font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+.fiche .essai-note .pt { margin: 0 0.3em; }
+
+/* L'auteur : une carte compacte. */
+.fiche .signature { display: flex; gap: 14px; align-items: flex-start; margin-top: 28px; }
+.fiche .initiales { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(var(--deep), var(--deep-2)); font-size: 0.9375rem; font-weight: var(--dw); color: var(--paper); }
+.fiche .signature-texte { min-width: 0; }
+.fiche .signature p { margin: 0; }
+.fiche .nom { font-weight: var(--tb); color: var(--ink); }
+.fiche .role, .fiche .signature .mot { font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); }
+.fiche .signature .mot { margin-top: 4px; }
+.fiche .mot .lien { display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0 -12px 0.3em; font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Partage : trois petits boutons. */
+.fiche .partage { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 20px; font-size: 0.875rem; }
+.fiche .partage-nom { flex-basis: 100%; margin-bottom: 2px; font-weight: var(--tb); color: var(--ink-2); }
+@media (min-width: 560px) { .fiche .partage-nom { flex-basis: auto; margin: 0 6px 0 0; } }
+.fiche .reseau { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: var(--r-pill); background: var(--paper); box-shadow: 0 0 0 1px var(--line); font-weight: var(--tb); color: var(--ink); text-decoration: none; }
+.fiche .reseau:hover { background: var(--sky-soft); }
+
+/* Pour aller plus loin : trois lignes fléchées. */
+.fiche .suite { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line); }
+.fiche .suite h2 { margin: 0 0 4px; font-family: var(--text); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.3; color: var(--ink-2); }
+.fiche .suite ul { margin: 0; padding: 0; list-style: none; }
+.fiche .suite .lien { display: flex; align-items: center; gap: 9px; box-sizing: border-box; min-height: 44px; padding: 6px 0; font-size: 0.9375rem; line-height: 1.35; font-weight: 560; color: var(--ink); text-decoration: none; }
+.fiche .suite .lien:hover { color: var(--brand); }
+.fiche .suite .lien svg { flex: none; color: var(--brand); }
+
+.fiche .remonter { margin-top: 20px; text-align: center; }
+.fiche.guidee .remonter { display: none; }
+.fiche .remonter .lien { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); text-decoration: none; }
+
+/* Téléphone : la fin de page tient en 2,5 écrans. Articles liés en rangée de cartes qui défile de côté,
+   partage sur une ligne, questions resserrées. */
+@media (max-width: 559px) {
+  /* La carte suivante dépasse du bord : les six restent visibles, sans lien caché. */
+  .fiche .cartes { display: flex; gap: 10px; margin: 0 calc(-1 * var(--gut)); padding: 2px var(--gut) 12px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); border-radius: 0; background: none; box-shadow: none; scrollbar-width: none; }
+  .fiche .cartes::-webkit-scrollbar { display: none; }
+  .fiche .carte { flex: 0 0 min(76%, 280px); box-sizing: border-box; align-items: flex-start; gap: 12px; padding: 12px 14px 12px 12px; scroll-snap-align: start; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+  .fiche .carte + .carte { border-top: 0; }
+  .fiche .carte:focus-visible { outline-offset: 2px; }
+  .fiche .carte img { width: 44px; height: 55px; border-radius: 8px; }
+  .fiche .carte-titre { font-size: 0.9375rem; line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+  .fiche .carte .carte-duree { margin-top: 4px; font-size: 0.875rem; }
+  .fiche .liste .qa > summary { min-height: 50px; padding: 8px 0; }
+  .fiche .qa-t { font-size: 0.9375rem; line-height: 1.32; }
+  .fiche .partage { gap: 0 6px; margin-top: 12px; font-size: 0.875rem; }
+  .fiche .partage-nom { margin: 0 4px 0 0; }
+  .fiche .reseau { padding: 0 12px; }
+  .fiche .questions { margin-top: 32px; }
+  .fiche .connexes { margin-top: 28px; }
+  .fiche .suite { margin-top: 14px; }
+  .fiche { padding-bottom: 82px; grid-template-rows: repeat(4, auto) 26px repeat(9, auto) 24px auto; }
+  .fiche .signature .mot { line-height: 1.45; }
+}
+
+/* ───────── Largeurs ───────── */
+@media (max-width: 379px) {
+  .fiche .corps .tbl:not([data-large]) table :is(th, td) { padding-inline: 6px; }
+  .fiche .corps .tbl:not([data-large]) table :is(th, td):first-child { padding-left: 10px; }
+  .fiche .corps .tbl:not([data-large]) table :is(th, td):last-child { padding-right: 10px; }
+}
+@media (max-width: 359px) {
+  .fiche, .fiche .corps { font-size: 1rem; }
+  .fiche .aff { --corps: 1.75rem; }
+}
+@media (max-width: 559px) {
+  /* Tableaux étroits : resserrés, pour que la dernière colonne (souvent la réponse) tienne à 360 px. */
+  .fiche .corps .tbl:not([data-large]) table { font-size: 0.875rem; }
+  .fiche .corps .tbl:not([data-large]) :is(th, td) { padding-inline: 8px; }
+  .fiche .corps .tbl:not([data-large]) :is(th, td):first-child { padding-left: 12px; }
+  .fiche .corps .tbl:not([data-large]) :is(th, td):last-child { padding-right: 12px; }
+  .fiche .corps .tbl:not([data-large]) th.tbl-num { white-space: normal; }
+  /* Tableaux larges : une fiche par ligne, le titre de la ligne, puis les paires « titre de colonne … valeur » ;
+     deux paires courtes (« Impôt Non », « Cotisations Oui ») partagent une ligne. Les en-têtes restent dans le
+     tableau pour les lecteurs d'écran (masqués à l'œil) ; les étiquettes de la feuille ne sont pas lues. */
+  .fiche .corps .tbl[data-large] table, .fiche .corps .tbl[data-large] tbody, .fiche .corps .tbl[data-large] tr, .fiche .corps .tbl[data-large] td { display: block; }
+  .fiche .corps .tbl[data-large] thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .fiche .corps .tbl[data-large] tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; padding: 12px 16px; }
+  .fiche .corps .tbl[data-large] td { grid-column: 1 / -1; }
+  .fiche .corps .tbl[data-large] td[data-court] { grid-column: auto; }
+  .fiche .corps .tbl[data-large] tbody tr:first-child td:first-child::before { content: attr(data-th); content: attr(data-th) / ""; display: block; margin-bottom: 2px; font-size: 0.875rem; font-weight: 520; color: var(--ink-3); }
+  .fiche .corps .tbl[data-large] tr + tr { border-top: 1px solid var(--line); }
+  .fiche .corps .tbl[data-large] td { display: flex; justify-content: space-between; gap: 16px; padding: 3px 0; border: 0; text-align: right; }
+  .fiche .corps .tbl[data-large] td::before { content: attr(data-th); content: attr(data-th) / ""; flex: 0 1 auto; max-width: 55%; font-size: 0.875rem; font-weight: 520; line-height: 1.45; color: var(--ink-3); text-align: left; }
+  .fiche .corps .tbl[data-large] td:first-child { display: block; grid-column: 1 / -1; padding-bottom: 6px; font-weight: 640; text-align: left; }
+  .fiche .corps .tbl[data-large] td:first-child::before { content: none; }
+  .fiche .corps .tbl[data-large] tr.tbl-fort, .fiche .corps .tbl[data-large] tr.tbl-total { border-top: 1.5px solid rgba(20, 37, 79, 0.3); }
+  .fiche .corps .tbl[data-large] tr.tbl-fort td, .fiche .corps .tbl[data-large] tr.tbl-total td { border: 0; }
+}
+@media (min-width: 560px) {
+  .fiche { --gut: clamp(24px, 6vw, 48px); }
+  .fiche .infos { padding-right: 96px; }
+  .fiche .couverture { width: 76px; }
+  .fiche .essai { padding: 20px 24px 16px; }
+}
+/* Tablette : une colonne de 624 px, centrée. */
+@media (min-width: 700px) {
+  .fiche { grid-template-columns: [plein-start] minmax(var(--gut), 1fr) [rail-start texte-start titre-start] minmax(0, 624px) [rail-end texte-end titre-end droite-start droite-end] minmax(var(--gut), 1fr) [plein-end]; padding-top: 112px; padding-bottom: 150px; }
+  .fiche .aff { --corps: clamp(2.25rem, 4.6vw, 2.875rem); line-height: 1.08; }
+  .fiche .corps { font-size: clamp(1.0625rem, 1.0077rem + 0.2247vw, 1.1875rem); line-height: 1.6; }
+  .fiche .corps h2 { --t: 1.75rem; margin-top: 56px; margin-bottom: 14px; }
+  .fiche .corps > h2[data-np]::before { margin-bottom: 16px; }
+  .fiche .corps > h2.t-sous { --t: 1.375rem; margin-top: 40px; }
+  .fiche .corps h3 { margin-top: 36px; font-size: 1.3125rem; }
+  .fiche .corps :is(h2, h3).t-encadre { font-size: 1.125rem; }
+  .fiche .infos { font-size: 0.9375rem; }
+  .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 150px; }
+  .fiche .couverture { grid-row: 2 / 5; align-self: center; width: 120px; margin: 0; border-width: 4px; border-radius: 14px; box-shadow: var(--clay); }
+  .fiche .questions h2, .fiche .connexes h2 { font-size: 1.625rem; }
+  .fiche .som { margin-bottom: 26px; }
+  .fiche .corps .callout { padding: 22px 24px; }
+  .fiche .corps :is(h2, h3).t-encadre { padding: 20px 24px 4px; }
+  .fiche .corps .callout-essentiel { padding: 24px 26px; }
+  .fiche .qa-t { font-size: 1.0625rem; }
+}
+@media (min-width: 900px) {
+  .fiche { padding-bottom: 200px; }
+  .fiche::before, .fiche::after { --p: 440px; --th: 54px; }
+  .fiche::before { height: 112px; }
+  .fiche::after { height: 60px; }
+}
+
+/* ───────── Ordinateur, à partir de 1 040 px : le rail et le texte ───────── */
+@media (min-width: 1040px) {
+  .fiche {
+    --gut: 40px;
+    grid-template-columns: [plein-start] minmax(var(--gut), 1fr) [rail-start] 200px [rail-end] 72px [texte-start titre-start] minmax(0, 624px) [texte-end titre-end droite-start droite-end] minmax(var(--gut), 1fr) [plein-end];
+    grid-template-rows: repeat(4, auto) 48px repeat(9, auto) 72px auto;
+    padding-top: 120px;
+  }
+  .fiche:not(.guidee) { grid-template-columns: [plein-start] minmax(var(--gut), 1fr) [rail-start texte-start titre-start] minmax(0, 624px) [rail-end texte-end titre-end droite-start droite-end] minmax(var(--gut), 1fr) [plein-end]; }
+  .fiche .fil { margin-bottom: 18px; }
+  .fiche .marques { margin-bottom: 14px; }
+  .fiche .infos { margin-top: 20px; margin-bottom: 36px; }
+  .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 170px; }
+  .fiche .couverture { width: 132px; border-radius: 16px; }
+  .fiche .corps h2 { --t: 1.8125rem; margin-top: 64px; }
+  .fiche .corps > h2.t-sous { --t: 1.5rem; margin-top: 44px; }
+  /* Encadrés : le corps des encadrés suit celui du texte (17 px, 18 px pour « L'essentiel »). */
+  .fiche .corps .callout { padding: 24px 28px; font-size: 1.0625rem; line-height: 1.55; }
+  .fiche .corps .callout-essentiel { padding: 24px 28px 26px; font-size: 1.125rem; }
+  .fiche .corps :is(h2, h3).t-encadre { padding: 22px 28px 4px; }
+
+  /* Le rail : collant à gauche du texte, toujours ouvert. */
+  .fiche .som { grid-column: rail; grid-row: 6 / 15; align-self: start; position: sticky; top: var(--haut-colle); box-sizing: border-box; max-height: calc(100vh - var(--haut-colle) - 24px); margin: 0; padding: 4px 8px 12px 0; overflow-y: auto; overscroll-behavior: contain; border: 0; scrollbar-width: thin; }
+  @supports selector(::details-content) {
+    .fiche .som::details-content { content-visibility: visible; display: contents; }
+    .fiche .som > .som-tete { display: none; }
+    .fiche .som-nom { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+    .fiche .som-nom::before { content: ""; width: 16px; height: 16px; background: var(--ink-2); -webkit-mask: var(--i-liste) center / contain no-repeat; mask: var(--i-liste) center / contain no-repeat; }
+  }
+  .fiche .som-nav { padding: 0; }
+  .fiche .som-liste { font-size: 0.875rem; line-height: 1.38; box-shadow: inset 2px 0 0 var(--line); }
+  .fiche .som-liste a { grid-template-columns: 28px minmax(0, 1fr); min-height: 0; padding: 7px 0 7px 14px; border-radius: 0; font-weight: 500; }
+  .fiche .som-liste a:focus-visible { outline-width: 2px; outline-offset: -2px; border-radius: 4px; }
+  .fiche .som-liste > li.sous-partie > a { grid-template-columns: 32px minmax(0, 1fr); padding-left: 30px; }
+  .fiche .som-liste a::before { white-space: nowrap; font-size: 0.875rem; }
+  /* Plan de plus de 14 parties avec des sous-parties : le rail ne montre que les parties. */
+  .fiche .som-dense .som-liste > li.sous-partie { display: none; }
+  /* Long plan (plus de 12 entrées) : entrées resserrées, et un fondu en bas dit que le rail défile. */
+  .fiche .som-long .som-liste a { padding-block: 4px; }
+  .fiche .som-long { -webkit-mask-image: linear-gradient(#000 calc(100% - 32px), transparent); mask-image: linear-gradient(#000 calc(100% - 32px), transparent); padding-bottom: 32px; }
+  .fiche .som-haut { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; margin-top: 12px; padding-left: 14px; border-radius: 6px; font-size: 0.8125rem; font-weight: var(--tb); color: var(--ink-2); text-decoration: none; }
+  .fiche .som-haut:hover { color: var(--brand); }
+  .fiche .lecture-fil, .fiche .som-pastille { display: none !important; }
+  /* Sous la bannière cookies (en bas à gauche), le rail s'arrête au-dessus d'elle. */
+  .da:has(#cookie-banner:not([hidden])) .fiche .som { max-height: max(12rem, calc(100vh - 25rem)); }
+}
+/* Repère de la partie en cours : natif (Chrome 140 et suivants)… La couleur et le trait seulement :
+   une graisse qui change referait passer une entrée à la ligne. */
+@media (min-width: 1040px) {
+  .fiche .som-liste { scroll-target-group: auto; }
+}
+.fiche .som-liste a:target-current { color: var(--ink); box-shadow: inset 3px 0 0 var(--brand); }
+.fiche .som-liste a:target-current::before { color: var(--brand); }
+/* …et repli (Safari 26, Firefox 159) : les lignes de temps posées au rendu (feuille dans la page). */
+@property --som-a { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --som-b { syntax: "<number>"; inherits: false; initial-value: 0; }
+@keyframes som-a { from { --som-a: 0; } to { --som-a: 1; } }
+@keyframes som-b { from { --som-b: 0; } to { --som-b: 1; } }
+@supports (animation-timeline: view()) and (timeline-scope: --x) and (not (scroll-target-group: auto)) {
+  @media (min-width: 1040px) {
+    /* Même seuil que le repère natif de Chrome : une partie s'allume quand son titre passe la moitié haute de l'écran. */
+    .fiche .corps h2 { view-timeline-axis: block; view-timeline-inset: 45% 0px; }
+    .fiche .corps [data-blog-fin] { view-timeline-axis: block; view-timeline-inset: 45% 0px; }
+    .fiche .som-liste li.partie > a { --on: calc(var(--som-a) - var(--som-b)); color: color-mix(in srgb, var(--ink) calc(var(--on) * 100%), var(--ink-2)); box-shadow: inset calc(var(--on) * 3px) 0 0 var(--brand); animation: som-a steps(1, start) both, som-b steps(1, start) both; }
+    .fiche .som-liste li.partie > a[style] { animation-timeline: var(--ta), var(--tb); animation-range: exit-crossing 0% exit-crossing 100%; }
+  }
+}
+
+/* ───────── Ordinateur large, à partir de 1 360 px : trois zones ───────── */
+@media (min-width: 1360px) {
+  .fiche.guidee, .fiche {
+    grid-template-columns: [plein-start] minmax(var(--gut), 1fr) [rail-start] var(--rail) [rail-end] var(--ecart-g) [texte-start titre-start] var(--txt) [texte-end] var(--ecart) [droite-start] var(--droite) [droite-end titre-end] minmax(var(--gut), 1fr) [plein-end];
+  }
+  .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 0; }
+  .fiche .aff { --corps: 3rem; }
+  .fiche .couverture { grid-column: droite; justify-self: start; }
+  /* La carte d'essai : collante, dans la colonne de droite. */
+  .fiche .essai { grid-column: droite; grid-row: 6 / 15; align-self: start; position: sticky; top: calc(var(--haut-colle) + 44px); margin: 44px 0 56px; padding: 18px 18px 14px; }
+  .fiche .essai .btn { font-size: 0.9375rem; }
+  .fiche .connexes { margin-top: 48px; }
+}
+
+/* Fenêtre basse : la carte ne colle plus (elle sortait de l'écran sous 760 px de haut). */
+@media (min-width: 1360px) and (max-height: 760px) { .fiche .essai { position: static; } }
+
+/* Mouvement réduit : rien ne glisse. */
+@media (prefers-reduced-motion: reduce) {
+  .fiche .som-chevron, .fiche .corps .sources-pli > summary::after { transition: none; }
+}
+
+/* Contrastes forcés : un contour rend leur forme aux cartes, les dessins gardent leur couleur. */
+@media (forced-colors: active) {
+  .fiche .serie, .fiche .couverture, .fiche .essai, .fiche .liste, .fiche .cartes, .fiche .reseau,
+  .fiche .corps .callout, .fiche .corps .tbl, .fiche .corps :is(h2, h3).t-encadre { border: 1px solid CanvasText; }
+  .fiche::before, .fiche::after, .fiche .article::before { display: none; }
+  .fiche .corps li::before, .fiche .corps li::after, .fiche .infos > *::before, .fiche .corps > h2[data-np]::before { forced-color-adjust: none; }
+}
+
+@media print {
+  .fiche .som, .fiche .som-pastille, .fiche .lecture-fil, .fiche .essai, .fiche .partage, .fiche .remonter { display: none !important; }
+  .fiche .corps .sources-pli::details-content { content-visibility: visible; }
+}
