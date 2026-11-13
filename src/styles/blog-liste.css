@@ -117,7 +117,7 @@
 .bl-carte .bl-marques-suite { column-gap: 20px; overflow: hidden; }
 .bl .bl-carte .bl-marques-suite > * { position: relative; margin-left: -20px; padding-left: 20px; }
 .bl-marques-suite > *::before { content: "·"; content: "·" / ""; position: absolute; left: 8px; font-weight: var(--tb); letter-spacing: 0; color: var(--ink-2); }
-.bl-rang { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.04em; color: var(--ink-2); }
+.bl-rang { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.04em; color: var(--ink-2); white-space: nowrap; }
 .bl-infos > * + *::before { content: "·"; content: "·" / ""; margin: 0 8px; }
 
 /* L'affiche (§ 9.fo). Jamais rognée, jamais déformée : entière, à son format, à
@@ -249,8 +249,10 @@
 /* La série : une pastille blanche, comme en tête des articles. */
 .bl-pastille { display: inline-flex; align-items: center; padding: 4px 13px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
 .bl-presentation .bl-intro .lead { margin-top: 4px; }
-/* Page de thème (§ 9.fp) : la ligne de contexte, courte, en lignes égales (pas de mot seul sur la seconde). */
+/* Page de thème (§ 9.fp) : la ligne de contexte, courte, en lignes égales (pas de mot seul sur la seconde) ;
+   l'introduction sans mot seul sur sa dernière ligne (« régulier. », « échéances. »). */
 .bl[data-blog-theme] .bl-intro .lead { text-wrap-style: balance; }
+.bl[data-blog-theme] .bl-texte p { text-wrap-style: pretty; }
 /* Le texte de la série : une fiche blanche, une colonne de lecture. */
 .bl-texte { max-width: 40rem; padding: 20px 20px 22px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
 .bl-texte strong { font-weight: var(--tb); color: var(--ink); }
@@ -276,12 +278,28 @@
   .bl-series { display: flex; flex-wrap: wrap; gap: 8px; }
   .bl-series a { flex: 1 1 auto; flex-wrap: nowrap; padding: 4px 10px; white-space: nowrap; }
 }
-/* Les thèmes (§ 9.fp) : six puces aux noms longs. Au téléphone, deux colonnes égales,
-   chaque nom sur deux lignes au plus : trois rangées, à toutes les largeurs (une puce
-   par rangée, à la suite, en prenait cinq ou six). */
+/* Les thèmes (§ 9.fp) : six puces aux noms longs, toujours en rangées égales, sur /blog
+   comme sur les pages de thème. Jusqu'à 699 px, deux colonnes égales (trois rangées), chaque
+   nom sur deux lignes au plus ; à partir de 700 px, trois colonnes à la largeur de leurs
+   puces, qui se resserrent s'il le faut (deux rangées ; de 700 à 767 px, un nom peut y prendre
+   deux lignes, la puce garde 44 px). À la suite, elles faisaient 2 + 1 + 2 + 1 à 560 px
+   (quatre rangées), 3 + 2 + 1 à 768 px, 5 + 1 sur les pages de thème à l'ordinateur
+   (« Budget et patrimoine » seul). Le nom et son compte en lignes égales : le compte ne
+   reste pas seul sur la seconde (« (10) » à 393 px). */
+.bl-themes a { text-wrap-style: balance; }
 @media (max-width: 399.98px) {
   .bl-themes { display: grid; gap: 8px; }
   .bl-themes a { flex-wrap: wrap; padding: 4px 8px; white-space: normal; }
+}
+/* Deux classes : ces règles passent avant celles des séries à partir de 560 px (`.bl-series`,
+   rangée à la suite, puces d'une ligne), écrites plus bas. */
+@media (min-width: 560px) and (max-width: 699.98px) {
+  .bl-series.bl-themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bl-series.bl-themes a { white-space: normal; }
+}
+@media (min-width: 700px) {
+  .bl-series.bl-themes { display: grid; grid-template-columns: repeat(3, minmax(0, max-content)); }
+  .bl-series.bl-themes a { white-space: normal; }
 }
 /* Un filet entre deux lignes ; la liste ouverte (« Voir les N autres articles »)
    continue la feuille, filet compris. */
@@ -362,6 +380,28 @@
   /* Page de série : le titre à gauche, la fiche du texte à droite. */
   .bl-presentation { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; gap: 56px; margin-top: 26px; }
   .bl-texte { max-width: none; }
+}
+/* /blog et pages de thème (§ 9.fp), là où les lignes vont par deux (à partir de 1 024 px ;
+   une seule colonne de lignes de 640 à 1 023 px depuis § 9.fo, rien à y aligner) :
+   l'étiquette d'une ligne (le thème, le numéro de la fiche, ou rien) n'a pas la même hauteur
+   d'une ligne à sa voisine, et leurs titres ne partaient pas à la même hauteur (avant les
+   affiches de § 9.fo, jusqu'à 9 rangées sur 23, de 17 à 35 px, sur /blog ; 2 sur 5 et 3 sur 7
+   sur deux pages de thème). Les deux lignes d'une rangée partagent donc quatre pistes
+   (sous-grille) : étiquette, titre, extrait, date. L'étiquette est calée en bas de la sienne,
+   contre le titre ; la date reste en bas de la ligne. Les pages de série, dont l'étiquette
+   tient toujours sur une ligne, ne sont pas touchées. Sans sous-grille (navigateur ancien),
+   la ligne reste celle des affiches. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 1024px) {
+    .bl:not([data-blog-serie]) .bl-carte { display: grid; grid-row: span 4; grid-template-rows: subgrid; }
+    .bl:not([data-blog-serie]) .bl-carte > a { grid-row: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: subgrid; row-gap: 0; }
+    .bl:not([data-blog-serie]) .bl-vignette { grid-row: 1 / -1; align-self: start; }
+    .bl:not([data-blog-serie]) .bl-carte-texte { grid-row: 1 / -1; grid-column: -2 / -1; display: grid; grid-template-rows: subgrid; }
+    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-marques { grid-row: 1; align-self: end; }
+    .bl:not([data-blog-serie]) .bl-carte-texte > :is(h2, h3) { grid-row: 2; }
+    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-extrait { grid-row: 3; align-self: start; }
+    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-infos { grid-row: 4; align-self: end; }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
