@@ -10511,7 +10511,7 @@ iOS.
    lecteur d'écran) ; inchangé ici (§ 9.fk).
 6. Avant la mise en ligne : un relevé Search Console (pages du blog, requêtes, extraits), pour
    comparer après ; puis surveiller deux semaines.
-7. Thèmes du blog : une seconde PR, après celle-ci.
+7. Thèmes du blog : une seconde PR, après celle-ci (faite : § 9.fp).
 8. Déclarer `sharp` dans `package.json` (version du verrou) à la prochaine mise à jour des paquets
    (§ 9.fm).
 
@@ -11441,6 +11441,291 @@ fichiers presque identiques dans le `srcset` de l'image en grand (sources de 902
 **Fichiers (corrections)** : `src/lib/affiche-bords.mjs` (retiré), `src/lib/blog-covers.ts`,
 `src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/pages/blog/[slug].astro`,
 `src/styles/blog-liste.css`, `src/styles/blog-article.css`, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fp Blog : les thèmes (13 novembre 2026)
+
+Seconde PR du blog, construite sur la première (§ 9.fj à 9.fm). Le propriétaire : « ok pour les
+thèmes, fais la deuxième PR après », puis, pour tout ce chantier, « je te fais full confiance, je
+veux tes choix ». Les choix ci-dessous sont décidés.
+
+**Pourquoi.** Les trois séries classent par forme et par époque (les fiches numérotées d'Instagram
+de l'automne 2025, et « divers », affiché « Guides & Conseils », pour le reste), pas par sujet : un
+article sur l'impôt pouvait être dans les trois. Pages de série : 62 vues en 90 jours, 24
+visiteurs ; après `/blog`, 10 % des lecteurs ouvrent une page de série (PostHog). Recherches tapées
+dans `/blog` : facture, PAMC, acomptes, CARMF, ANCV, CPS, interne, PDSA, indemnités,
+« contribution économique ». Le corpus d'audience n'était pas fourni.
+
+**Les cinq thèmes**, dans l'ordre d'une carrière (ordre d'affichage partout) ; adresses figées dès
+la mise en ligne :
+
+| Ordre | Thème | Adresse | Articles |
+|---|---|---|---|
+| 1 | Débuter et s'organiser | `/blog/theme/debuter-organiser` | 10 |
+| 2 | Statut, contrats et revenus | `/blog/theme/statut-contrats-revenus` | 11 |
+| 3 | Cotisations et protection | `/blog/theme/cotisations-protection` | 7 |
+| 4 | Impôts et déclarations | `/blog/theme/impots-declarations` | 15 |
+| 5 | Budget et patrimoine | `/blog/theme/budget-patrimoine` | 5 |
+
+Classement des 48 articles (slug = fichier de `src/content/blog/`), contrôlé contre les fichiers
+(48 classés, aucun manquant, aucun en trop, aucun en double) :
+
+- **Débuter et s'organiser** : checklist-administrative-medecin-remplacant,
+  checklist-premier-jour-remplacement, checklist-ultime-medecin-remplacant,
+  trouver-facilement-tes-remplacements-medicaux, maitrise-ton-logiciel-metier-en-30-min,
+  outils-numeriques-indispensables-cabinet, inbox-zero-remplacant, pieges-debut-carriere-remplacant,
+  realites-remplacement-medical, syndrome-imposteur-5-astuces.
+- **Statut, contrats et revenus** : choix-mode-exercice, salariat-vs-liberal,
+  remplacement-salarie-guide-complet, remplacement-regulier-requalification,
+  retrocession-honoraires-medecin-remplacant, salaires-medecins-remplacants,
+  signer-contrat-remplacement, obtenir-sa-licence-de-remplacement,
+  facturation-electronique-medecin-remplacant, generer-facture-remplacement,
+  medecin-remplacant-travailler-6-mois-par-an.
+- **Cotisations et protection** : tout-comprendre-urssaf, tout-comprendre-carmf,
+  effet-ciseaux-regularisation-urssaf-medecin, cotisations-sociales-vs-impots, rspm-exemples-concrets,
+  prevoyance-madelin-medecin, conge-maternite-paternite.
+- **Impôts et déclarations** : calendrier-fiscal-remplacant, cfe-medecin-remplacant,
+  regime-fiscal-micro-bnc-vs-reel, remplir-declaration-2035, guide-impots-internes-remplacants,
+  frais-professionnels-deductibles, frais-pros-medecin-liberal-2026,
+  frais-pros-medecins-salaries-internes-2026, salariat-10-pourcent-ou-frais-reels,
+  voiture-bareme-kilometrique-ou-frais-reels-medecin, cheques-vacances-medecin-liberal,
+  pdsa-exoneration-gardes-regulees, zones-frr-exoneration-impot-medecin,
+  medecin-outre-mer-avantages-fiscaux, micro-bnc-exemples-concrets.
+- **Budget et patrimoine** : base-financiere-rempla, super-net-budget,
+  simulateur-super-net-combien-reste, enveloppes-investissement-pea-assurance-vie-per-cto,
+  interets-composes-meilleur-remplacement.
+
+**Ce qui est construit :**
+
+1. **Donnée.** Champ `theme` obligatoire dans le frontmatter (`z.enum` des cinq slugs,
+   `src/content.config.ts`) : un article sans thème, ou avec un thème inconnu, arrête la
+   construction (essayé sur une copie du dépôt : `InvalidContentEntryDataError`). Ajouté aux 48
+   fichiers, une ligne sous `seriesId:` : 48 lignes ajoutées, aucune retirée, aucun mot du texte ni
+   aucune date touchés. Registre : `src/lib/blog-themes.ts` (slug, nom, titre et description de la
+   page, ligne de contexte, introduction, fond de l'image de partage ; l'ordre du tableau est
+   l'ordre d'affichage), sur le modèle de `blog-series-slugs.ts`.
+2. **Pages de thème** (`src/pages/blog/theme/[theme].astro`), sur le modèle des pages de série :
+   même ciel, même feuille (`blog-liste.css`), mêmes lignes (`BlogCard.astro`), même fin de page.
+   Fil d'Ariane Accueil › Blog › Thème (et `BreadcrumbList`) ; `<h1>` = le nom ; la ligne de
+   contexte et le compte ; l'introduction sur une fiche ; les puces « Tous les articles » et des
+   cinq thèmes (celle de la page en `aria-current="page"`) ; les lignes dans l'ordre de `/blog`
+   (`byNewest`) ; l'appel au simulateur. Schéma `CollectionPage` et sa liste, comme les séries.
+   `data-blog-theme` et `data-blog-total` sur `<main>`.
+3. **`/blog`.** Les puces des thèmes (avec leur compte) remplacent celles des séries ; chaque ligne
+   dit son thème, et le numéro de la fiche à côté. La une, la recherche, l'ordre et les attributs
+   de mesure ne changent pas.
+4. **Pages de série** : en ligne, inchangées (prouvé plus bas), dans le sitemap. Elles sortent de
+   la navigation de `/blog` ; chaque article y mène toujours par sa pastille de série.
+5. **Page d'article** : fil d'Ariane Accueil › Blog › Thème › Article, à l'écran et dans le
+   `BreadcrumbList` (position 3 : la page de thème). La pastille de série et « Épisode N » ne
+   changent pas. `data-blog-theme` sur `<article>`, à côté de `data-blog-series`.
+6. **Mesure** (`src/lib/page-analytics.ts`, seul JS touché) : `blog_series_viewed` inchangé ;
+   nouvel événement `blog_theme_viewed` (`theme_id`, `total_articles`) sur les pages de thème, sur
+   le modèle de `mesurerSerie` ; propriété `theme` à côté de `category` et `series_id` sur les
+   événements de l'article (le même jeu de propriétés sert à la lecture, au défilement, à la fin
+   de texte, aux clics, au partage et aux questions). Appel des pages de thème :
+   `data-track="cta_simulateur_blog_theme"` et `cta_signup_blog_theme` (modèle
+   `cta_<destination>_<emplacement>`). Aucun script ajouté.
+7. **Image de partage** (`src/lib/image-partage.mjs`) : la pastille dit le thème ; un fond par
+   thème, pris dans les jetons de la DA : sable (Débuter et s'organiser), ciel (Statut, contrats et
+   revenus), nuit (Cotisations et protection : `--ink` vers `#1B3167`, texte blanc), eau profonde
+   (Impôts et déclarations), vert pâle (Budget et patrimoine : `--ok-bg`, vagues de la même
+   teinte). Aucun jaune. Les quatre poses tournent dans l'ordre de la page du thème (deux voisins
+   n'ont pas la même). Toutes les adresses changent (empreinte).
+8. **Sitemap** : +5 adresses (68 → 73 ; 70 → 75 pages construites).
+9. **`llms.txt`** : une section par thème (son introduction, le lien de sa page, ses articles dans
+   l'ordre de sa page), à la place du rangement par série ; chaque article une fois. RSS et
+   `/blog/recherche.json` inchangés.
+10. **`verify-site.mjs`** : contrôle « 4 sexdecies » (plus bas). Rien d'existant n'est assoupli ;
+    les pages de thème ne comptent pas comme des articles (comme les séries).
+
+**Décisions prises en construisant :**
+
+- **Étiquette des lignes.** Sur `/blog` : le thème en petites capitales (comme la série avant),
+  puis le numéro de la fiche avec le libellé de la pastille de l'article (« Fiche Fiscalité #4 »,
+  24 articles) ; « #4 » seul ne disait plus de quelle série. Sur une page de thème : le numéro seul
+  (le thème est celui de la page). Sur les pages de série : inchangée. Au téléphone, thème et
+  numéro tiennent rarement sur une ligne : le point qui les sépare est dans la marge gauche de la
+  seconde marque, rognée quand elle commence une ligne (aucune ligne ne commence par « · »).
+- **L'index du bas de `/blog`** est rangé par thème (cinq fiches dans l'ordre des thèmes, les
+  articles dans l'ordre de `/blog`, « Les 48 articles, classés par thème. ») : il liait les pages
+  de série, que le point 4 sort de la navigation de `/blog`. Écart au « rien d'autre ne change » du
+  cahier, imposé par ce point 4. À partir de 1 024 px, trois colonnes à la suite (`columns`) :
+  cinq fiches de 5 à 15 titres, une grille laissait des trous.
+- **La une n'est pas touchée** (cahier) : elle garde sa pastille de série (aujourd'hui « Guides &
+  Conseils », sur le congé maternité). Voir « Ce qui reste ».
+- **Pas de pastille au-dessus du `<h1>`** des pages de thème : sur les séries, elle redisait le nom,
+  que le fil d'Ariane et le titre disent déjà.
+- **Puces des thèmes au téléphone** : six noms longs ; deux colonnes égales, le nom et son compte
+  dans un même élément (`bl-puce`) pour que le compte suive le dernier mot : trois rangées à 360 et
+  393 px (148 px de haut ; 96 px pour les quatre puces de séries).
+- **`lastmod` des pages de thème** : la date de publication la plus récente de leurs articles, la
+  règle des pages de série (§ 9.bi). Le cahier disait « `updatedDate` sinon `pubDate` » en
+  renvoyant à cette même logique : la logique des séries l'emporte, la page n'affiche que des dates
+  de publication (corriger un article ne la change pas). Dates : 2026-03-18, 2026-09-20,
+  2026-10-05, 2026-10-05, 2026-04-21 (dans l'ordre des thèmes). Vérifiées par `verify-site.mjs` (7 f).
+- **Titres de page** : « <thème> du médecin remplaçant | Hippodoc » (« comme médecin remplaçant »
+  pour Débuter) ; celui de Statut, contrats et revenus ferait 60 signes avec la marque : il s'en
+  passe, comme les titres d'article longs (§ 9.bi).
+- **Ligne de contexte** en lignes égales (`text-wrap-style: balance`, pages de thème seulement) :
+  « fais. » restait seul au téléphone.
+- **Écart imposé par le code : le nom du script de PostHog change sur toutes les pages.**
+  `page-analytics.ts` est dans le module `analytics-init`, chargé par le script d'entrée de
+  PostHog ; le nom du module change, donc le contenu du script d'entrée, donc son empreinte, donc
+  la balise `<script src>` de chaque page. Le script d'entrée est identique au nom du module près
+  (vérifié) ; les 19 pages hors blog sont identiques à la PR 1 à ce nom près.
+
+**Contenu ajouté, à relire par le propriétaire.** Les seuls textes nouveaux de la PR, par thème
+(registre `src/lib/blog-themes.ts`, recopiés ici en entier). Règles suivies : tutoiement, phrases
+courtes, aucun chiffre, taux, seuil ni date (seuls les noms de formulaire 2035 et 2042-C PRO), ne
+nommer que ce que les articles du thème traitent (titres, descriptions et intertitres des 48 relus),
+pas de répétition mot pour mot entre l'introduction et la description (trois mots communs au plus,
+vérifié par script). Titres de 49 à 58 signes, descriptions de 150 à 152 signes, introductions de 60
+à 75 mots en deux ou trois phrases.
+
+**Débuter et s'organiser** (`debuter-organiser`, fond sable)
+
+- Titre : « Débuter et s'organiser comme médecin remplaçant | Hippodoc »
+- Description : « Premier remplacement de médecin : inscriptions à faire avant, checklist du premier jour, où chercher des remplas, prise en main du logiciel du cabinet. »
+- Ligne de contexte : « Les démarches, les outils et les réflexes de tes premiers remplacements. »
+- Introduction : « Ta licence ou ta thèse en poche, ton premier remplacement approche. Tu trouves ici les démarches à faire avant (Ordre, CPAM, URSSAF, CARMF, assurance RCP), la checklist du jour J, où trouver des remplacements et comment t'y retrouver dans le logiciel métier d'un nouveau cabinet. Puis le quotidien : tes outils, tes messages en attente, les pièges des débuts et le doute qui va avec. »
+
+**Statut, contrats et revenus** (`statut-contrats-revenus`, fond ciel)
+
+- Titre : « Statut, contrats et revenus du médecin remplaçant »
+- Description : « Médecin remplaçant libéral ou salarié : licence et contrat de remplacement, rétrocession d'honoraires, facture au remplacé, revenus par mode d'exercice. »
+- Ligne de contexte : « Sous quel statut tu remplaces, ce que tu signes et ce que tu gagnes. »
+- Introduction : « Libéral ou salarié, remplacement ou collaboration : tout part du cadre dans lequel tu exerces. Tu trouves ici la licence de remplacement, le contrat à relire avant de signer, la rétrocession et la façon de la négocier, la facture à envoyer au médecin remplacé et ce que change la facturation électronique. Et pour choisir : ce que rapporte chaque mode d'exercice, le nombre de jours qui te suffit, et le risque de requalification d'un remplacement trop régulier. »
+
+**Cotisations et protection** (`cotisations-protection`, fond nuit)
+
+- Titre : « Cotisations et protection du médecin remplaçant | Hippodoc »
+- Description : « Cotisations du médecin remplaçant : URSSAF, RSPM ou régime PAMC, CARMF, régularisation et modulation, prévoyance Madelin, congé maternité ou paternité. »
+- Ligne de contexte : « Ce que tu verses à l'URSSAF et à la CARMF, et ce qui te protège en retour. »
+- Introduction : « L'URSSAF et la CARMF appellent tes cotisations avant de connaître ton revenu, puis régularisent : c'est l'effet ciseaux, et il se prépare. Tu trouves ici le choix entre RSPM et régime PAMC avec des exemples chiffrés, l'affiliation à la CARMF, ce qui sépare les cotisations de l'impôt, la prévoyance (avec ou sans Madelin) et ton congé maternité ou paternité de remplaçant. »
+
+**Impôts et déclarations** (`impots-declarations`, fond eau)
+
+- Titre : « Impôts et déclarations du médecin remplaçant | Hippodoc »
+- Description : « Impôts du médecin remplaçant : micro-BNC ou réel, déclarations 2035 et 2042-C PRO, frais réels déductibles, CFE, exonérations PDSA et FRR, calendrier. »
+- Ligne de contexte : « Déclarer tes revenus, déduire tes frais, ne rater aucune échéance. »
+- Introduction : « Micro-BNC ou régime réel : ce choix décide de ce que tu déclares et de ce que tu peux déduire. Tu trouves ici la 2035 ligne à ligne et son report sur la 2042-C PRO, la déclaration de l'interne qui remplace, les frais réels du libéral comme du salarié (voiture, repas, chèques-vacances) et la CFE. Puis les allègements d'impôt (gardes de PDSA, zones FRR, outre-mer) et le calendrier de toutes tes échéances. »
+
+**Budget et patrimoine** (`budget-patrimoine`, fond vert)
+
+- Titre : « Budget et patrimoine du médecin remplaçant | Hippodoc »
+- Description : « Budget du médecin remplaçant : partir du Super-Net, épargne de précaution, régularisations à prévoir, puis investir en PEA, assurance vie, PER ou CTO. »
+- Ligne de contexte : « Ce qu'il te reste vraiment, et ce que tu en fais. »
+- Introduction : « Ton chiffre d'affaires n'est pas ce que tu peux dépenser : il faut d'abord en retirer les cotisations, l'impôt et les régularisations à venir. Ce qui reste, c'est ton Super-Net. Tu trouves ici comment bâtir ton budget à partir de lui, quelle épargne de précaution garder, puis où placer le reste (PEA, assurance vie, PER ou compte-titres) et pourquoi le temps compte autant que le montant. »
+
+S'y ajoutent, sans texte nouveau : le nom de chaque thème dans les puces, le fil d'Ariane et la
+pastille de l'image de partage ; « classés par thème » au lieu de « classés par série » sous l'index
+de `/blog` ; le libellé de la pastille d'article (« Fiche Fiscalité #4 ») sur les lignes de `/blog`
+et des pages de thème. **Contenu modifié : aucun** (aucun mot d'article ni de page existante).
+
+**Le contrôle de `verify-site.mjs`** (« 4 sexdecies », et le point 7 f pour les `lastmod`). Il
+échoue si un article n'a pas de thème connu (`data-blog-theme` de son `<article>`, comparé au
+registre, lu par expression régulière, et au frontmatter) ; si son fil d'Ariane, à l'écran ou dans
+le `BreadcrumbList`, ne mène pas à la page de son thème en position 3 (au nom du registre) puis à
+lui-même en position 4 ; si une page de thème ne liste pas exactement ses articles, une fois chacun
+(ses lignes `data-ph="blog_card"` et la liste de son `CollectionPage`, dans le même ordre), ou n'a
+pas `data-blog-theme` sur `<main>` ; si un article est listé par aucune page de thème ou par deux ;
+si le sitemap n'a pas exactement les pages de thème du registre, au nombre de `NB_THEMES` (5 : un
+sixième thème se décide) ; si les puces « Thèmes du blog » de `/blog` ne les lient pas toutes ; si
+le `lastmod` d'une page de thème n'est pas la publication la plus récente de ses articles.
+`PAGES_SANS_ENTETE`, les contrôles d'en-tête et de pied, `PLANCHER_FAQ` (aucune FAQ sur les pages de
+thème) : intacts. **Il mord** : 16 mutations sur une copie du `dist` (jamais le dépôt), les 16
+échouent (article sans thème, au thème d'un autre, au thème inconnu ; fil d'Ariane par la série ou
+sans le thème, à l'écran et dans le schéma ; ligne retirée, ajoutée ailleurs, en double ; schéma de
+la page amputé ; `<main>` sans attribut ; page de thème hors du sitemap ; sixième page dans le
+sitemap ; lien retiré des puces de `/blog` ; `lastmod` faux). La copie remise repasse. Il passe :
+73 pages, 5 814 liens internes (5 434 avant : les pages de thème, leurs puces et leurs lignes), les
+7 avertissements de la PR 1, les mêmes.
+
+**Écarts voulus, comptés** (`preuve.cjs` contre la PR 1, 52 pages, 11 clés ; chacun classé par
+script, `classer.cjs` : partir de la PR 1, appliquer les seuls écarts voulus, exiger l'égalité ;
+**0 écart non expliqué**) :
+
+| Pages | Clés différentes | Nature (toutes voulues) |
+|---|---|---|
+| 3 pages de série | aucune (11 / 11 identiques) | — |
+| 48 articles | `tete` | `og:image` et `twitter:image` : nouvelle adresse de l'image de partage (`/blog/partage/<slug>-<8 signes>.jpg`) ; le reste égal |
+| 48 articles | `jsonld` | `Article.image[0]` (même adresse) ; `BreadcrumbList` position 3 : la page du thème au lieu de la série ; le reste égal |
+| 48 articles | `liens` | le lien de série du fil d'Ariane devient le lien du thème (un pour un, même place) |
+| 48 articles | `mesure` | `data-blog-theme` ajouté après `data-blog-series` |
+| 48 articles | `main`, `mainSac` | le nom de la série devient le nom du thème dans le fil d'Ariane |
+| `/blog` | `titres` | les 3 fiches de l'index (séries) deviennent 5 (thèmes) ; les autres titres égaux, dans l'ordre |
+| `/blog` | `liens`, `main`, `mainSac` | puces : « Tous les articles (48) » égale, puis les 5 thèmes avec leur compte ; 47 lignes : mêmes adresses, même ordre, même texte hors étiquette, étiquette = thème (+ numéro de fiche pour 24) ; index : mêmes 48 liens d'articles, rangés par thème dans l'ordre de `/blog` |
+
+Identiques sur les 52 pages : `corps`, `faq`, `images`, `ids` ; `titres` sur 51 ; `/blog` garde sa
+`tete`, son `jsonld` et sa `mesure`. `preuve-corps.cjs` (corps des 48 articles) : mots, titres et
+ancres, liens différents : 0, 0, 0 ; un seul `<h1>` partout.
+
+**Pages hors blog et fichiers** (comparaison fichier par fichier des deux `dist`) : les 19 pages HTML
+hors blog sont identiques à la PR 1 au nom du script de PostHog près (une l'est octet pour octet).
+Feuille commune : `_astro_assets.BdxOyZgM.css`, inchangée. Fichiers changés en dehors des pages du
+blog : le script d'entrée de PostHog et le module `analytics-init` (renommés ; le premier identique
+au nom du second près ; le second passe de 7 169 à 7 439 octets), la feuille des listes (renommée :
+14,4 → 15,2 Ko, 3,7 → 3,9 Ko compressée), `sitemap-0.xml`, `llms.txt`, les 48 images de partage
+(renommées). Rien d'autre. **Pages de série** : HTML identique à la PR 1 aux deux noms près (script
+et feuille), et captures pleine page identiques au pixel près à 360, 393, 820 et 1 512 px.
+
+**Mesures** (Chromium) :
+
+| Page, largeur | Ligne d'article (petite / moyenne / grande) | Puces | Premier titre d'article |
+|---|---|---|---|
+| `/blog`, 393 | 97 / 114 / 135 → 97 / 123 / 135 px | 96 → 148 px | 973 → 1 042 px (la une : 515 → 567) |
+| `/blog`, 360 | 97 / 116 / 135 → 97 / 130 / 152 px | 148 → 148 px | — |
+| `/blog`, 820 | 203 / 227 / 252 → 203 / 244 / 288 px | 98 → 98 px | — |
+| `/blog`, 1 512 | 179 / 201 / 203 px, inchangé | 44 → 98 px (deux rangées) | — |
+| pages de thème, 393 | 96 à 135 px | 148 px | 808 à 887 px (séries : 925 à 992) |
+| pages de thème, 1 512 | 179 à 203 px | 98 px | 700 à 728 px (dans le premier écran ; séries : 776 à 804) |
+
+Les lignes de `/blog` grandissent au téléphone : sur les 24 qui ont un numéro de fiche, le thème et
+le numéro prennent deux lignes (WebKitGTK : les 24 aussi). Aucun défilement de côté à 320, 360,
+393, 600, 820, 1 024, 1 280, 1 512 et 1 920 px, plis fermés et ouverts, sur `/blog`, les cinq pages
+de thème, une page de série et un article par thème. Lighthouse mobile (`npx serve`, qui compresse ;
+trois passes alternées) : Impôts et déclarations 96 / 100 / 99, Débuter et s'organiser 97 / 99 / 97,
+`/blog` 98 / 98 / 98 (PR 1 : 98 / 97 / 98) ; accessibilité, bonnes pratiques et SEO à 100 ; CLS 0 ;
+LCP (l'introduction, un texte) 1,82 à 2,63 s sur les pages de thème, 2,30 à 2,34 s sur `/blog` (PR 1 :
+2,34 à 2,41 s). WebKitGTK 2.52 (une page de thème, une autre, `/blog`, à 1 512, 393 et 360 px) :
+aucun débordement, point rogné en début de ligne, ligne de contexte équilibrée, index en trois
+colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 regardées (planches) ;
+45 à 61 Ko ; titres lisibles, aucun jaune, mascotte entière ; cinq fonds distincts.
+
+**Pièges rencontrés :**
+
+- Le HTML n'a pas d'espace entre les éléments du fil d'Ariane ni entre les marques d'une ligne : un
+  texte extrait par `textContent` les colle (« Blog›Fiches Fiscalité› »). Les scripts de preuve en
+  tiennent compte.
+- Le nom du script de PostHog (voir « Décisions ») : toute retouche de `page-analytics.ts` change la
+  balise `<script>` de toutes les pages. Une preuve « pages hors blog identiques » se fait à ce nom
+  près, et elle seule.
+- Un `astro sync` lancé sur une copie du dépôt dont `node_modules` est un lien écrit dans le cache
+  du dépôt (`node_modules/.astro`) : le vider avant la construction suivante.
+- `.bl .bl-carte .chip { padding: 0 }` pèse plus qu'une règle de marque : la marge du point est
+  écrite avec le même chemin (`.bl .bl-carte .bl-marques-suite > *`), après elle.
+
+**Ce qui reste (faiblesses et suivis) :**
+
+1. La une de `/blog` garde sa pastille de série (« Guides & Conseils ») au milieu de lignes
+   étiquetées par thème ; le cahier la voulait inchangée. Une ligne de `index.astro` pour lui donner
+   le thème, si le propriétaire le veut.
+2. Sur une page de thème, une ligne sans numéro (série « divers ») commence par son titre ; à côté
+   d'une ligne numérotée (ordinateur, deux colonnes), les titres ne sont pas à la même hauteur.
+3. `/blog` au téléphone : la une descend de 52 px (six puces au lieu de quatre) et les lignes
+   numérotées prennent une ligne de plus (moyenne 114 → 123 px à 393).
+4. Pages de thème au téléphone : aucun titre d'article au premier écran (808 à 887 px), comme les
+   séries (925 à 992).
+5. `blog_theme_viewed` et la propriété `theme` : à créer dans les insights PostHog.
+6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel ; les aperçus de lien (WhatsApp,
+   LinkedIn) des nouvelles images une fois en ligne ; Search Console (les fils d'Ariane des 48
+   articles changent de position 3).
+
+**Fichiers** : `src/lib/blog-themes.ts`, `src/content.config.ts`, les 48 `src/content/blog/*.md`
+(frontmatter), `src/pages/blog/theme/[theme].astro`, `src/pages/blog/index.astro`,
+`src/pages/blog/[slug].astro`, `src/components/BlogCard.astro`, `src/components/BlogAppel.astro`,
+`src/styles/blog-liste.css`, `src/lib/page-analytics.ts`, `src/lib/image-partage.mjs`,
+`astro.config.mjs`, `src/pages/llms.txt.ts`, `scripts/verify-site.mjs`, `MIGRATION.md`, `CLAUDE.md`.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

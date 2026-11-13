@@ -92,8 +92,8 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   elle s'efface tant qu'un champ de texte a le focus (`:read-write:focus`). Ces deux
   règles d'arrivée ont un poids nul (`:where`) : une page qui veut sa propre plage
   l'écrit avec `#crisp-launcher` seul, comme `/essai` (380 à 420 px) et les articles du
-  blog (après la carte d'essai, § 9.fm) ; `/guide` cache la bulle sous 768 px, `/blog` et les
-  séries sous 640 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
+  blog (après la carte d'essai, § 9.fm) ; `/guide` cache la bulle sous 768 px, `/blog`, les
+  séries et les thèmes sous 640 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
   Elle passe toujours sur le bord droit des contenus pendant le défilement : rien
   d'important ne se cale à moins de 72 px du bord droit dans un élément fixe ou collant
   en bas d'écran.
@@ -347,8 +347,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 ## Blog
 
 - **La source de vérité est CE dépôt** : `src/content/blog/*.md` (48 articles au 10 novembre 2026), schéma dans
-  `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL).
-  Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
+  `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL), avec
+  son `theme` (obligatoire : sans lui, ou avec un thème inconnu, la construction s'arrête ;
+  voir « Thèmes », plus bas). Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
   demande alors, en avertissement, de relever `PLANCHER_FAQ` (§ 9.fc).
 - ⚠️ `scripts/generate-blog-content.mjs` a servi à la migration initiale depuis
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
@@ -441,7 +442,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     lien gardent l'image d'une adresse des jours durant). Police TTF de construction dans
     `src/assets/fonts/partage/`, lue par chemin, jamais importée (elle serait copiée dans le
     build) ; une garde arrête la construction si Pango en prend une autre. Aucun jaune ;
-    mascotte entière ; un titre trop long est réduit (50 px), puis coupé d'un « … ».
+    mascotte entière ; un titre trop long est réduit (50 px), puis coupé d'un « … ». Depuis
+    § 9.fp, la pastille dit le thème et le fond est celui du thème (`partage` du registre :
+    sable, ciel, nuit, eau, vert ; palettes dans `image-partage.mjs`).
   - Auteur : table `AUTEURS` de `src/lib/site.ts` (nom du frontmatter → fiche de
     `/qui-sommes-nous` et portrait) ; un auteur absent n'a ni lien ni `@id`.
 - **Les affiches** (§ 9.fo ; le propriétaire : « pas trop grande mais pas trop petite ») : une
@@ -465,7 +468,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   signale son `loading="lazy"`, gardé pour le téléphone, sans effet sur la note.
   Deux articles ont la même affiche (`facturation-electronique-medecin-remplacant`,
   `generer-facture-remplacement`) : décision de contenu laissée au propriétaire.
-- **`/blog` et les séries** (§ 9.fk, § 9.fo) : des lignes sur une feuille blanche (`BlogCard.astro`,
+- **`/blog`, les séries et les thèmes** (§ 9.fk, § 9.fo, § 9.fp) : des lignes sur une feuille blanche (`BlogCard.astro`,
   `src/styles/blog-liste.css`), l'affiche à gauche, entière, dans une case de 26,5 % de la largeur
   de l'écran au téléphone (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393), 144 px à
   partir de 640 px ; une colonne de lignes jusqu'à 1 023 px, deux au-delà. La une : au téléphone,
@@ -482,6 +485,26 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   de haut centrée dans une case de 96 px ; avec 3 ou 5 articles, le dernier prend le rang entier.
   `srcset` 132, 240, 320 px ; dimensions déclarées : celles du fichier de 132 px (le format juste dès
   le premier rendu).
+- **Thèmes** (§ 9.fp) : cinq, par sujet, dans l'ordre d'une carrière ; la navigation de
+  `/blog`. Registre `src/lib/blog-themes.ts` (slug, nom, titre et description de page, ligne de
+  contexte, introduction, fond de l'image de partage ; l'ordre du tableau est l'ordre
+  d'affichage) ; champ `theme` obligatoire du frontmatter (`z.enum`). Pages
+  `/blog/theme/<slug>` (`src/pages/blog/theme/[theme].astro`, modèle des pages de série :
+  `blog-liste.css`, `BlogCard.astro` ; adresses figées). Fil d'Ariane de l'article : Accueil ›
+  Blog › Thème › Article (écran et `BreadcrumbList`) ; la pastille de série reste et mène à sa
+  page. Les trois pages de série restent en ligne et dans le sitemap, hors de la navigation de
+  `/blog`. Lignes (`BlogCard`, prop `etiquette`) : la série sur les pages de série, le thème et le
+  numéro de fiche (« Fiche Fiscalité #4 ») sur `/blog`, le numéro seul sur une page de thème.
+  Mesure : `blog_theme_viewed` (`theme_id`, `total_articles`), propriété `theme` sur les
+  événements de l'article ; `data-blog-theme` sur `<main>` (page de thème) et sur `<article>`.
+  `verify-site.mjs` (« 4 sexdecies ») échoue si un article n'a pas de thème valide, si son fil
+  d'Ariane ne passe pas par la page de son thème en position 3, si une page de thème ne liste
+  pas exactement ses articles, si un article est listé par zéro ou deux pages de thème, si le
+  sitemap n'a pas exactement `NB_THEMES` (5) pages de thème, si les puces de `/blog` ne les lient
+  pas. Un sixième thème se décide : registre, `NB_THEMES`, textes à faire relire (MIGRATION.md).
+  ⚠️ Toute retouche de `src/lib/page-analytics.ts` renomme le script d'entrée de PostHog, donc
+  change la balise `<script>` de toutes les pages (§ 9.fp) : prouver « pages inchangées » à ce
+  nom près.
 - Écarts au contenu d'un article : « Contenu modifié » dans MIGRATION.md (§ 9.fj pour les
   antislashs : une ligne vide avant et après une liste, sinon « \ » s'affiche).
 - Frontmatter `faq`/`relatedArticles`/`slides`/`cta` rendus par `src/pages/blog/[slug].astro`
@@ -619,7 +642,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (70 pages au 10 novembre 2026, dont 68 dans le sitemap : une de plus par
+1. `npm run build` (75 pages au 13 novembre 2026, dont 73 dans le sitemap : une de plus par
    nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).
