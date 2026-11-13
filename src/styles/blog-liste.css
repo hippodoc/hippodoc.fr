@@ -347,4 +347,6 @@
   .bl-champ input, .bl-resultats, .bl-vide, .bl-series a, .bl-etiquette, .bl-une, .bl-grille, .bl-appel, .bl-serie, .bl-serie h3 span, .bl-pastille, .bl-texte, .bl-une .chip { border: 1px solid CanvasText; }
   .bl-series a[aria-current] { border-width: 3px; }
   .bl::before, .bl::after { display: none; }
+  /* Les bandes de bord prolongent l'affiche (aucun texte) : elles restent, comme l'image. */
+  .bl-vignette img, .bl-une img { forced-color-adjust: none; }
 }

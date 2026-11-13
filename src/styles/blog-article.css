@@ -777,6 +777,8 @@
   .fiche .serie, .fiche .couverture, .fiche .essai, .fiche .liste, .fiche .cartes, .fiche .reseau,
   .fiche .corps .callout, .fiche .corps .tbl, .fiche .corps :is(h2, h3).t-encadre { border: 1px solid CanvasText; }
   .fiche::before, .fiche::after, .fiche .article::before { display: none; }
+  /* Articles connexes : les bandes de bord prolongent l'affiche (aucun texte) ; elles restent, comme l'image. */
+  .fiche .carte img { forced-color-adjust: none; }
   .fiche .corps li::before, .fiche .corps li::after, .fiche .infos > *::before, .fiche .corps > h2[data-np]::before { forced-color-adjust: none; }
   /* Sauf ce qui tomberait sous le contraste dans ce mode : la croix « non » et le repère prennent les couleurs
      du système ; la partie en cours du rail (une ombre, retirée ici) prend un trait. */
