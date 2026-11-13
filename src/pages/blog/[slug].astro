@@ -16,7 +16,7 @@ import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
    par src/lib/rehype-article.mjs. */
 import '@/styles/blog-article.css';
 import { entreesSommaire } from '@/lib/article-sommaire';
-import { EMO_SRC } from '@/lib/rehype-article.mjs';
+import { EMO_SRC } from '@/lib/article-emojis.mjs';
 import { donneesPartage, nomImagePartage } from '@/lib/image-partage.mjs';
 
 export async function getStaticPaths() {
@@ -40,7 +40,9 @@ const posts = await getCollection('blog');
    base » sous « Combien ça coûte ? ») sont en retrait, hors du compte des parties. */
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const plan = entrees.filter((e) => e.depth === 2 && !e.encadre && !e.sources);
-const principal = plan.filter((e) => !e.sous);
+/* Les parties comptées : ni les sous-parties, ni un titre hors du compte (« Légende » du
+   calendrier fiscal : dans le sommaire, sans numéro, sans repère au-dessus du titre). */
+const principal = plan.filter((e) => !e.sous && !e.horsCompte);
 const showToc = plan.length >= 3;
 /* Numéros. Dans le texte, au-dessus de chaque titre de partie, sa place dans le plan
    (« 04 / 10 », compteurs CSS, le total donné ici) ; pas quand l'auteur a numéroté des
@@ -391,7 +393,7 @@ const croix =
                 const h = toc.find((x) => x.slug === e.slug)!;
                 const l = libelle(h);
                 return (
-                  <li class:list={['partie', e.sous && 'sous-partie']}>
+                  <li class:list={['partie', e.sous && 'sous-partie', e.horsCompte && 'hors-compte']}>
                     <a
                       href={`#${e.slug}`}
                       data-no={e.numero && (modeAuteur || e.sous) ? e.numero : undefined}

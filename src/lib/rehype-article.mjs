@@ -1,8 +1,8 @@
 // Balisage du corps des articles du blog, posé AU RENDU (MIGRATION.md § 9.fj).
 // Le Markdown n'est pas touché, aucun mot ni aucune espace n'est ajouté ou retiré : le plugin
-// enveloppe (émojis, marques de liste, lignes, numéros de titre), reclasse (un paragraphe de lignes
-// marquées devient une liste) et étiquette (classes et attributs). La feuille du gabarit
-// (src/styles/blog-article.css) dessine à partir de ce balisage.
+// enveloppe (émojis, marques de liste, lignes, numéros de titre, groupes insécables), reclasse (un
+// paragraphe de lignes marquées devient une liste) et étiquette (classes et attributs). La feuille du
+// gabarit (src/styles/blog-article.css) dessine à partir de ce balisage.
 //
 // Branché dans astro.config.mjs comme plugin rehype, avec les options de src/lib/article-options.mjs
 // et l'empreinte de ses fichiers (sans elle, Astro resservirait le HTML d'avant une retouche du plugin).
@@ -10,42 +10,28 @@
 // lui-même, en premier, le calcul d'Astro (rehypeHeadingIds). Les ancres sont posées avant toute
 // retouche, et le second passage d'Astro les garde telles quelles.
 //
-// Ce que le plugin pose (comptes au 13 novembre 2026, 48 articles) :
-//   émojis      span.em[data-em-role, data-em-pos, data-em-etat, data-em-n, data-em-picto] (1 074) ;
-//   listes      ul.fl / ol.fl (fausses listes faites de lignes), li[data-m, data-m2, data-etat, data-touche],
-//               .fl-m et .fl-m2 (la marque tapée), .fl-unie, .fl-legende, .fl-total, p.fl-intitule, .colle ;
+// Ce que le plugin pose, et que la feuille lit (rien d'autre ne reste dans le HTML : les attributs de
+// travail sont retirés à la fin, § 9) :
+//   émojis      span.em (masqué à l'œil ; aria-hidden pour le décor, option decorMuet) ;
+//   listes      role="list" sur toutes les listes du corps (la feuille retire leurs puces) ; ul.fl / ol.fl
+//               (fausses listes faites de lignes), li[data-m="fleche"], li[data-etat], li[data-touche],
+//               li[data-picto] (légende du calendrier fiscal), li[data-no], .fl-m et .fl-m2 (la marque
+//               tapée, masquée), .fl-legende, .fl-total, .fl-aeree, p.fl-intitule, .colle ;
 //   lignes      p.lignes > span.lg (paragraphe découpé par des <br>, qui restent), .lg-titre ;
-//   titres      span.t-txt, .t-num[data-no, data-no-forme], .t-no, .t-pt, .t-sous, .t-encadre, .t-sources,
-//               .t-date, .t-hippo, data-n (rang), data-np (rang dans le plan) ;
-//   encadrés    .callout-titre, .callout-seul, .callout-sans-titre, .callout-hippo ;
-//   tableaux    div.tbl[data-cols, data-large, data-num…], th[scope=col], td[data-th, data-court], .tbl-num,
-//               tr.tbl-total, tr.tbl-fort ;
-//   chiffres    ul.kv > li.kv-ligne > .kv-l, .kv-s, .kv-v ;  sources  .sources ;  nombres  span.nb.
+//   titres      span.t-txt[data-touche], .t-no, .t-sous, .t-encadre, .t-sources, .t-date, .t-hippo, .t-hors
+//               (hors du compte du plan : « Légende »), data-np (rang dans le plan) ;
+//   encadrés    .callout-titre, .callout-titre-long, .callout-sans-titre, .callout-hippo ;
+//   tableaux    div.tbl[data-large], th[scope=col], td[data-th, data-court], .tbl-num, tr.tbl-total,
+//               tr.tbl-fort ; rôles ARIA explicites sur les tableaux larges (mis en fiches sous 560 px) ;
+//   chiffres    ul.kv > li.kv-ligne > .kv-l, .kv-s, .kv-v ;  sources  .sources, details.sources-pli ;
+//   nombres     span.nb (un nombre et son unité, un mot et sa ponctuation haute, « micro-BNC »…).
 import { rehypeHeadingIds } from '@astrojs/markdown-remark';
-import { PICTO_PAR_EMOJI } from './article-emojis.mjs';
+import { EMO_SRC, roleEmoji, pictoEmoji } from './article-emojis.mjs';
 
-// ───────── Émojis : même définition que le recensement de l'audit du blog (MIGRATION.md § 9.fj) ─────────
-export const EMO_SRC = '(?:\\p{Extended_Pictographic}(?:\\uFE0F|\\u200D\\p{Extended_Pictographic}|[\\u{1F3FB}-\\u{1F3FF}])*|[\\u{1F1E6}-\\u{1F1FF}]{2}|[0-9#*]\\uFE0F?\\u20E3)';
 const EMO = () => new RegExp(EMO_SRC, 'gu');
 const RE_EMO_TETE = new RegExp('^' + EMO_SRC, 'u');
-const RE_TOUCHE = /^([0-9#*])️?⃣$/u;
-const sansVariante = (e) => e.replace(/️/g, '');
-const ETATS = { '✅': 'oui', '☑': 'oui', '✔': 'oui', '❌': 'non', '⛔': 'non', '🚫': 'non', '🛑': 'non', '⚠': 'attention', '❗': 'attention' };
-const MAINS = new Set(['👉', '👇', '➡']);
-const NOTES = new Set(['💡', '📌', '📍', '🧠', '💬']);
-/** Rôle d'un émoji, d'après son dessin seul. */
-export function roleEmoji(e) {
-  const k = sansVariante(e);
-  const t = e.match(RE_TOUCHE);
-  if (t) return { role: 'touche', n: t[1] };
-  if (k === '🔟') return { role: 'touche', n: '10' };
-  if (ETATS[k]) return { role: 'etat', etat: ETATS[k] };
-  if (MAINS.has(k)) return { role: 'main' };
-  if (NOTES.has(k)) return { role: 'note' };
-  if (k === '🦛') return { role: 'mascotte' };
-  return { role: 'decor' };
-}
-export const pictoEmoji = (e) => PICTO_PAR_EMOJI[sansVariante(e)] ?? null;
+/** Les quatre pictogrammes que la feuille dessine (légende du calendrier fiscal). */
+const PICTOS_DESSINES = new Set(['banknote', 'mailbox', 'send', 'lightbulb']);
 
 // ───────── Marques de fausse liste ─────────
 const PUCES = '•·▪◦●';
@@ -56,11 +42,16 @@ const RE_NUMERO = /^(?:\d{1,2}[.)]\s|0\d\s[—–-]\s)/u;
 const RE_MARQUE = new RegExp('^((?:' + EMO_SRC + ')|[' + PUCES + TIRETS + FLECHES + '✓-]|\\d{1,2}[.)]|0\\d\\s[—–-])', 'u');
 const RE_MARQUE2_EMOJI = new RegExp('^(\\s*)(' + EMO_SRC + ')', 'u');
 const RE_MARQUE2_FLECHE = new RegExp('^(\\s*)([' + FLECHES + '])', 'u');
+/** Un signe qui fait d'une ligne seule un élément de liste (« • → Total IR… », « → hippodoc.fr ») ; pas un tiret
+    (« — Dr X », une attribution), pas un numéro. */
+const SIGNES_SEULS = PUCES + FLECHES + '✓';
+/** Titre des sources : « Sources (vérifiées au…) », « Sources et hypothèses », « Sources & disclaimer ». */
+export const RE_SOURCES = /^sources(?:\s*(?:\(|&|:|et\b)|$)/i;
 const genreSigne = (s) => (PUCES.includes(s) ? 'puce' : FLECHES.includes(s) ? 'fleche' : s === '✓' ? 'coche' : 'tiret');
 // Ligne de total prise dans une liste : « • → Total cotisations : 13 474 € », « • → Super net = … ».
 const RE_TOTAL = /^(?:[=→➝]\s*)?(?:total|sous-total)\b/iu;
 // Ligne « libellé : nombre » (règle R12 du recensement).
-const RE_LIBELLE_NOMBRE = /^(?:\P{L}*)?[^:=→]{2,45}\s?(?::|=|→)\s?(?:≈|~|env\.?|environ)?\s?[+−-]?\d[\d   .,]*\s?(?:€|%|k€)(?:\s?\/\s?\p{L}+)?(?:\s?\([^)]{0,40}\))?\.?(?:\s\p{Extended_Pictographic}️?)?$/u;
+const RE_LIBELLE_NOMBRE = /^(?:\P{L}*)?[^:=→]{2,45}\s?(?::|=|→)\s?(?:≈|~|env\.?|environ)?\s?[+−-]?\d[\d\u00A0\u202F .,]*\s?(?:€|%|k€)(?:\s?\/\s?\p{L}+)?(?:\s?\([^)]{0,40}\))?\.?(?:\s\p{Extended_Pictographic}\uFE0F?)?$/u;
 
 // ───────── Petits outils hast ─────────
 const el = (tagName, properties = {}, children = []) => ({ type: 'element', tagName, properties, children });
@@ -102,11 +93,12 @@ function envelopper(t, debut, fin, fabrique) {
   return { element: e, apres: apres ? { noeud: apres, parent: t.parent } : null };
 }
 
-export const OPTIONS_PAR_DEFAUT = { sections: false, sourcesPli: false, essentielEnTete: false, decorMuet: false };
+export const OPTIONS_PAR_DEFAUT = { sourcesPli: false, essentielEnTete: false, decorMuet: false, stats: false };
 
 /**
  * Plugin rehype. Options (toutes à faux par défaut, voir src/lib/article-options.mjs) :
- *   sections, sourcesPli, essentielEnTete, decorMuet.
+ *   sourcesPli, essentielEnTete, decorMuet ; stats (les comptes de chaque règle, dans file.data.balisage.stats,
+ *   pour un script de relevé : jamais dans le cache d'Astro).
  * `filtre(chemin)` : limite le plugin à certains fichiers (par défaut src/content/blog/).
  */
 export function rehypeArticle(options = {}) {
@@ -121,8 +113,6 @@ export function rehypeArticle(options = {}) {
     ancresAstro(tree, file);
     const stats = {};
     const compte = (k, n = 1) => { stats[k] = (stats[k] || 0) + n; };
-    const journal = {};
-    const noter = (k, v) => { (journal[k] ||= []).push(v); };
 
     // ═════════ 2. Blocs : paragraphes découpés, fausses listes, lignes ═════════
     /** Découpe une suite de nœuds en lignes, aux <br>. Les blancs collés aux <br> sont retirés (ils sont remis en sortie). */
@@ -170,8 +160,7 @@ export function rehypeArticle(options = {}) {
         // phrase d'emphase, sauf si elle est numérotée (« 2. Lisse sur 12 mois. »).
         const kv = RE_LIBELLE_NOMBRE.test(l.t);
         const titreDeLignes = !kv && (l.finDeuxPoints || (l.gras && !pleines[1]?.gras && (/^\d{1,2}[.)]\s/.test(l.t) || !/[.!…]$/.test(l.t))));
-        if (l === pleines[0] && pleines.length > 1 && titreDeLignes) { ajouterClasse(span, 'lg-titre'); compte('lignes : intitulés (lg-titre)'); noter('lg-titre', l.t.slice(0, 50) + ' ‖ ' + pleines[1].t.slice(0, 40)); }
-        else if (l !== pleines[0] && l !== pleines[pleines.length - 1] && l.intitule) noter('ligne du milieu en gras ou à deux-points (non marquée)', l.t.slice(0, 70));
+        if (l === pleines[0] && pleines.length > 1 && titreDeLignes) { ajouterClasse(span, 'lg-titre'); compte('lignes : intitulés (lg-titre)'); }
         enfants.push(span);
       });
       const bloc = el(tag, proprietes, enfants);
@@ -195,17 +184,19 @@ export function rehypeArticle(options = {}) {
       const m = t0?.noeud.value.match(RE_MARQUE);
       if (!m) return li;
       const { apres } = envelopper(t0, 0, m[1].length, (dedans) => el('span', { className: ['fl-m'] }, [dedans]));
-      li.properties.dataM = l.emoji ? 'emoji' : l.numero ? 'num' : genreSigne(l.signe);
+      // 👉 en marque se dessine comme « → » : la même flèche.
+      li.properties.dataM = l.emoji ? (roleEmoji(l.emoji).role === 'main' ? 'fleche' : 'emoji') : l.numero ? 'num' : genreSigne(l.signe);
       if (l.numero) li.properties.dataNo = m[1].replace(/[^\d]/g, '');
       let etat = l.emoji ? roleEmoji(l.emoji).etat : null;
-      // Seconde marque : un émoji après la première marque (« • 🚗 », « →✅ », « ✅ ⏰ »), ou une flèche après une puce (« • → Total »).
+      // Seconde marque : un émoji après la première marque (« • 🚗 », « →✅ », « ✅ ⏰ »), ou une flèche après une puce
+      // ou un émoji (« • → Total », « 🧮 → Revenu imposable… ») : masquée comme la première.
       const suite = apres && apres.noeud.value.trim() ? apres : ts[1] ?? null;
       if (suite) {
-        const m2 = suite.noeud.value.match(RE_MARQUE2_EMOJI) || (l.signe && PUCES.includes(l.signe) ? suite.noeud.value.match(RE_MARQUE2_FLECHE) : null);
+        const m2 = suite.noeud.value.match(RE_MARQUE2_EMOJI) || (l.emoji || (l.signe && PUCES.includes(l.signe)) ? suite.noeud.value.match(RE_MARQUE2_FLECHE) : null);
         if (m2) {
           envelopper(suite, m2[1].length, m2[0].length, (dedans) => el('span', { className: ['fl-m2'] }, [dedans]));
           li.properties.dataM2 = RE_EMO_TETE.test(m2[2]) ? 'emoji' : 'fleche';
-          compte('listes : lignes à deux marques (.fl-m2)'); noter('fl-m2', l.t.slice(0, 60));
+          compte('listes : lignes à deux marques (.fl-m2)');
           if (!etat && RE_EMO_TETE.test(m2[2])) etat = roleEmoji(m2[2]).etat ?? null;
         }
       }
@@ -215,7 +206,7 @@ export function rehypeArticle(options = {}) {
       const touche = l.emoji ? roleEmoji(l.emoji).n : null;
       if (touche) { li.properties.dataTouche = touche; compte('listes : marques en touche (data-touche)'); }
       const reste = norm(texteDe(li)).replace(new RegExp('^(?:(?:' + EMO_SRC + ')|[' + PUCES + TIRETS + FLECHES + '✓-]|\\s)+', 'u'), '');
-      if (RE_TOTAL.test(reste)) { ajouterClasse(li, 'fl-total'); compte('listes : lignes de total (.fl-total)'); noter('fl-total', l.t.slice(0, 80)); }
+      if (RE_TOTAL.test(reste)) { ajouterClasse(li, 'fl-total'); compte('listes : lignes de total (.fl-total)'); }
       return li;
     }
     function fausseListe(lignes, ctx, separateurs = null) {
@@ -245,12 +236,15 @@ export function rehypeArticle(options = {}) {
       // Garde-fous du recensement : une ligne numérotée tout en gras est un intitulé ; une ligne à émoji, en gras ou
       // finissant par « : », suivie d'une ligne à signe (« • »), est un intitulé.
       const intituleAvantPuces = (i) => lignes[i + 1] && lignes[i + 1].signe && lignes[i].intitule && !lignes[i].signe;
+      // Une suite de lignes marquées devient une liste dès deux lignes ; une ligne seule, si elle commence par une
+      // puce ou une flèche (base-financiere-rempla : « → Tout ce qui doit tourner quoi qu'il arrive. »).
       const suites = []; let cur = [];
+      const garder = () => { if (cur.length >= 2 || (cur.length === 1 && SIGNES_SEULS.includes(lignes[cur[0]].signe || '-'))) suites.push(cur); cur = []; };
       lignes.forEach((l, i) => {
         const ok = l.marque && !(l.numero && l.gras) && !(l.emoji && intituleAvantPuces(i));
-        if (ok) cur.push(i); else { if (cur.length >= 2) suites.push(cur); cur = []; }
+        if (ok) cur.push(i); else garder();
       });
-      if (cur.length >= 2) suites.push(cur);
+      garder();
       if (!suites.length) {
         // R12 : un bloc de chiffres sans marque devient une liste <ul class="kv">, une ligne par élément.
         const pleines = lignes.filter((l) => !l.vide);
@@ -271,7 +265,7 @@ export function rehypeArticle(options = {}) {
         if (avantListe && ls[ls.length - 1].intitule) intitule = ls.pop();
         if (ls.length === 1) morceaux.push(el('p', {}, ls[0].noeuds));
         else if (ls.length > 1) morceaux.push(blocLignes('p', {}, ls));
-        if (intitule) { morceaux.push(el('p', { className: ['fl-intitule'] }, intitule.noeuds)); compte('listes : intitulés (.fl-intitule)'); noter('fl-intitule', intitule.t.slice(0, 70)); }
+        if (intitule) { morceaux.push(el('p', { className: ['fl-intitule'] }, intitule.noeuds)); compte('listes : intitulés (.fl-intitule)'); }
       };
       let i = 0;
       for (const s of suites) {
@@ -304,7 +298,6 @@ export function rehypeArticle(options = {}) {
           const ps = run.filter((n) => estEl(n, 'p'));
           const seps = []; run.forEach((n) => { if (estEl(n, 'p')) seps.push([]); else seps[seps.length - 1].push(n); });
           const lignes = ps.map((p) => lignesDe(p.children)[0]);
-          noter('fl-aeree', lignes.map((l) => l.t.slice(0, 46)).join(' / '));
           out.push(fausseListe(lignes, ctx, seps.slice(0, -1)));
         } else out.push(...run);
         run = [];
@@ -325,7 +318,14 @@ export function rehypeArticle(options = {}) {
       for (const n of parent.children) {
         if (!estEl(n)) { out.push(n); continue; }
         if (n.tagName === 'p') {
-          if (n.children.some((c) => estEl(c, 'br'))) out.push(...paragrapheDecoupe(n, ctx)); else { compte('paragraphes d’une seule ligne'); out.push(n); }
+          if (n.children.some((c) => estEl(c, 'br'))) out.push(...paragrapheDecoupe(n, ctx));
+          else {
+            // Un paragraphe d'une ligne qui commence par une puce ou une flèche : une liste d'un élément (« • → Total IR
+            // ≈ 3 004 € » sortait collé à la marge, sa puce et sa flèche tapées, à côté de puces dessinées).
+            const l = lignesDe(n.children)[0];
+            if (l.signe && SIGNES_SEULS.includes(l.signe)) { out.push(fausseListe([l], ctx)); compte('listes : lignes seules devenues listes'); }
+            else { compte('paragraphes d’une seule ligne'); out.push(n); }
+          }
         } else if (n.tagName === 'ul' || n.tagName === 'ol') {
           for (const li of n.children.filter((c) => estEl(c, 'li'))) {
             if (li.children.some(estBloc)) traiterBlocs(li, ctx);
@@ -344,31 +344,31 @@ export function rehypeArticle(options = {}) {
     traiterBlocs(tree, { encadre: null });
 
     // ═════════ 3. Titres ═════════
+    // Un émoji enveloppé : `data-em-role` et `data-em-n` servent au plugin seul (retirés à la fin, § 9).
     const fabriqueEm = (e, pos) => {
       const r = roleEmoji(e);
-      const p = { className: ['em'], dataEmRole: r.role, dataEmPos: pos };
-      if (r.etat) p.dataEmEtat = r.etat;
+      const p = { className: ['em'], dataEmRole: r.role };
       if (r.n) p.dataEmN = r.n;
-      const pic = pictoEmoji(e);
-      if (pic) p.dataEmPicto = pic;
       if (opt.decorMuet && r.role === 'decor') p.ariaHidden = 'true';
       compte('émojis enveloppés (.em)'); compte('émojis : pos=' + pos); compte('émojis : role=' + r.role);
       if (r.etat) compte('émojis : etat=' + r.etat);
-      compte(pic ? 'émojis : avec data-em-picto' : 'émojis : sans data-em-picto');
       return el('span', p, [txt(e)]);
     };
     const titres = [];
     {
       let n2 = 0, np = 0, n3 = 0;
       const blocs = elementsDe(tree);
+      // Les sources sont la dernière partie (47 articles sur 48) : seul le dernier h2 peut l'être. Un titre « Sources de
+      // revenus… » au milieu d'un article reste une partie du plan.
+      const dernierH2 = blocs.findLast((b) => estEl(b, 'h2'));
       blocs.forEach((h, i) => {
         if (!estTitre(h)) return;
         compte('titres (h2 et h3)');
         const brut = norm(texteDe(h));
         const sansEmoji = norm(brut.replace(EMO(), ''));
-        const infos = { slug: String(h.properties?.id ?? ''), depth: Number(h.tagName[1]), numero: null, encadre: false, sources: false, hippo: false, n: null, np: null };
+        const infos = { slug: String(h.properties?.id ?? ''), depth: Number(h.tagName[1]), numero: null, encadre: false, sources: false, hippo: false, horsCompte: false, n: null, np: null };
         // R7 et sections au nom d'Hippodoc : d'après le TEXTE du titre.
-        if (/^sources\b/i.test(sansEmoji)) { infos.sources = true; ajouterClasse(h, 't-sources'); compte('titres : t-sources'); }
+        if (h === dernierH2 && RE_SOURCES.test(sansEmoji)) { infos.sources = true; ajouterClasse(h, 't-sources'); compte('titres : t-sources'); }
         if (/hippodoc/i.test(sansEmoji)) { infos.hippo = true; ajouterClasse(h, 't-hippo'); compte('titres : t-hippo'); }
         // R5 : un titre, un encadré, puis un autre titre ou la fin.
         const suivant = blocs[i + 1], apres = blocs[i + 2];
@@ -409,14 +409,13 @@ export function rehypeArticle(options = {}) {
           const mn = reste.match(/^(\d{1,2}\.\d{1,2}|\d{1,2}[.)])(?=\s)/) || reste.match(/^([ÉE]tape\s+\d{1,2})(?=\s|$)/u);
           if (mn) {
             const etape = /^[ÉE]/u.test(mn[1]);
-            const pt = mn[1].match(/^(\d{1,2})([.)])$/);
-            corps.push(el('span', { className: ['t-no'] }, pt ? [txt(pt[1]), el('span', { className: ['t-pt'] }, [txt(pt[2])])] : [txt(mn[1])]));
+            corps.push(el('span', { className: ['t-no'] }, [txt(mn[1])]));
             reste = reste.slice(mn[1].length);
             formes.push(etape ? 'etape' : /\d\.\d/.test(mn[1]) ? 'decimal' : 'chiffre');
             if (!infos.numero) infos.numero = etape ? mn[1].replace(/\D/g, '') : mn[1].replace(/[.)]$/, '');
           }
           if (reste) corps.push(txt(reste));
-          if (formes.length) { ajouterClasse(h, 't-num'); h.properties.dataNo = infos.numero; h.properties.dataNoForme = formes.join(' '); compte('titres : t-num'); formes.forEach((f) => compte('titres : numéro en forme « ' + f + ' »')); }
+          if (formes.length) { h.properties.dataNo = infos.numero; h.properties.dataNoForme = formes.join(' '); compte('titres : numérotés par l’auteur'); formes.forEach((f) => compte('titres : numéro en forme « ' + f + ' »')); }
           const tTxt = el('span', { className: ['t-txt'] }, corps);
           // Titre numéroté par une touche seule (« 1️⃣ Tu crées la facture ») : le chiffre sur le texte du titre, que la
           // feuille écrit devant lui. Avec « Étape 1 » en plus, c'est « Étape 1 » qui numérote : rien à écrire.
@@ -429,7 +428,7 @@ export function rehypeArticle(options = {}) {
           }
           h.children = [...tete, tTxt, ...queue];
           compte('titres : texte enveloppé (.t-txt)');
-        } else { noter('titres composés (laissés tels quels)', brut); }
+        }
         titres.push(infos);
       });
     }
@@ -468,15 +467,59 @@ export function rehypeArticle(options = {}) {
       });
     };
     // Légende : une liste dont chaque ligne est « émoji : libellé court » (calendrier fiscal : « 💸 : Tu paies »).
-    // Ses émojis disent quelque chose : la feuille les dessine (quatre pictogrammes), au lieu d'une puce.
-    const marquerLegendes = (n) => {
-      for (const c of n.children || []) {
-        if (!estEl(c)) continue;
-        if ((c.tagName === 'ul' || c.tagName === 'ol') && aClasse(c, 'fl')) {
-          const lis = c.children.filter((x) => estEl(x, 'li'));
-          if (lis.length >= 2 && lis.every((li) => /^:\s*\S.{0,28}$/u.test(norm(texteDe(li).replace(EMO(), ''))))) { ajouterClasse(c, 'fl-legende'); compte('listes : légendes (.fl-legende)'); }
+    // Ses émojis disent quelque chose, dans la légende et dans toutes les listes de l'article : l'élément de liste
+    // porte leur pictogramme (data-picto, la feuille en dessine quatre) au lieu d'une puce, et ils restent annoncés
+    // (pas d'aria-hidden : sans eux, un lecteur d'écran lisait « : Tu paies » et perdait la marque des mois).
+    // Le titre posé juste au-dessus de la légende (« Légende ») n'est pas une partie : hors du compte du plan.
+    const marquerLegendes = () => {
+      const legendes = [];
+      const chercher = (n) => {
+        for (const c of n.children || []) {
+          if (!estEl(c)) continue;
+          if ((c.tagName === 'ul' || c.tagName === 'ol') && aClasse(c, 'fl')) {
+            const lis = c.children.filter((x) => estEl(x, 'li'));
+            if (lis.length >= 2 && lis.every((li) => /^:\s*\S.{0,28}$/u.test(norm(texteDe(li).replace(EMO(), ''))))) { ajouterClasse(c, 'fl-legende'); legendes.push(c); compte('listes : légendes (.fl-legende)'); }
+          }
+          chercher(c);
         }
-        marquerLegendes(c);
+      };
+      chercher(tree);
+      if (!legendes.length) return;
+      // L'émoji en marque d'un élément de liste (dans son .fl-m), ou null.
+      const marqueDe = (li) => { const m = li.children.find((x) => aClasse(x, 'fl-m')); const e = m && m.children.find((x) => aClasse(x, 'em')); return e || null; };
+      const sens = new Set();
+      for (const l of legendes) for (const li of l.children.filter((x) => estEl(x, 'li'))) { const e = marqueDe(li); if (e) sens.add(texteDe(e).replace(/\uFE0F/g, '')); }
+      const voir = (n) => {
+        for (const c of n.children || []) {
+          if (!estEl(c)) continue;
+          if (estEl(c, 'li') && aClasse(n, 'fl')) {
+            const e = marqueDe(c);
+            const k = e && texteDe(e).replace(/\uFE0F/g, '');
+            if (k && sens.has(k)) {
+              delete e.properties.ariaHidden;
+              const pic = pictoEmoji(k);
+              if (pic && PICTOS_DESSINES.has(pic) && !c.properties.dataEtat && !c.properties.dataTouche) { c.properties.dataPicto = pic; compte('listes : pictogrammes de légende (data-picto)'); }
+            }
+          }
+          voir(c);
+        }
+      };
+      voir(tree);
+      const blocs = elementsDe(tree);
+      for (const l of legendes) {
+        const i = blocs.indexOf(l);
+        const h = blocs[i - 1];
+        if (i < 1 || !estEl(h, 'h2') || !h.properties.dataNp || !(i + 1 >= blocs.length || estTitre(blocs[i + 1]))) continue;
+        // Le titre de la légende sort du plan : plus de rang, et les parties suivantes remontent d'un rang.
+        const rang = Number(h.properties.dataNp);
+        delete h.properties.dataNp;
+        ajouterClasse(h, 't-hors');
+        for (const b of blocs) if (estEl(b, 'h2') && Number(b.properties.dataNp) > rang) b.properties.dataNp = String(Number(b.properties.dataNp) - 1);
+        for (const t of titres) {
+          if (t.slug === String(h.properties.id ?? '')) { t.np = null; t.horsCompte = true; }
+          else if (Number(t.np) > rang) t.np = String(Number(t.np) - 1);
+        }
+        compte('titres : hors du compte du plan (.t-hors)');
       }
     };
 
@@ -493,7 +536,13 @@ export function rehypeArticle(options = {}) {
           let titreDedans = false;
           if (estEl(p0, 'p') && dedans.length > 1) {
             const pleins = p0.children.filter((c) => !estBlanc(c));
-            if (pleins.length === 1 && estEl(pleins[0], 'strong')) { ajouterClasse(p0, 'callout-titre'); titreDedans = true; compte('encadrés : titre dedans (.callout-titre)'); }
+            if (pleins.length === 1 && estEl(pleins[0], 'strong')) {
+              ajouterClasse(p0, 'callout-titre'); titreDedans = true; compte('encadrés : titre dedans (.callout-titre)');
+              // Une étiquette (« L'essentiel », « Attention ») sort en petites capitales ; un titre (« Ce que ça veut dire
+              // concrètement : »), en gras ordinaire.
+              const t = norm(texteDe(p0));
+              if ([...t].length > 24 || /:$/.test(t)) { ajouterClasse(p0, 'callout-titre-long'); compte('encadrés : titres longs (.callout-titre-long)'); }
+            }
           }
           const titreDessus = estTitre(blocs[i - 1]);
           if (titreDessus) compte('encadrés : précédés d’un titre de section');
@@ -507,7 +556,7 @@ export function rehypeArticle(options = {}) {
 
     // ═════════ 5. Tableaux ═════════
     {
-      const estNombre = (s) => /^[\s≈~<>+−-]*\d[\d   .,]*\s?(?:€|%|k€|ans?|jours?|mois|km|h|pts?|×)?(?:\s*[\/à-]\s*\d[\d   .,]*\s?(?:€|%|k€)?)?(?:\s?\/\s?\p{L}+)?$/u.test(s.trim());
+      const estNombre = (s) => /^[\s≈~<>+−-]*\d[\d\u00A0\u202F .,]*\s?(?:€|%|k€|ans?|jours?|mois|km|h|pts?|×)?(?:\s*[\/à-]\s*\d[\d\u00A0\u202F .,]*\s?(?:€|%|k€)?)?(?:\s?\/\s?\p{L}+)?$/u.test(s.trim());
       const vide = (s) => !s.trim() || /^[—–-]$/.test(s.trim());
       const envelopperTableaux = (parent) => {
         parent.children = parent.children.map((t) => {
@@ -523,7 +572,17 @@ export function rehypeArticle(options = {}) {
           const props = { className: ['tbl'], dataCols: String(cols), dataLignes: String(rangs.length), dataSomme: String(somme) };
           compte('tableaux (.tbl)');
           // R10 : somme, colonne par colonne, de la cellule la plus longue, au-dessus de 44 caractères.
-          if (somme > 44) { props.dataLarge = ''; compte('tableaux : data-large'); }
+          if (somme > 44) {
+            props.dataLarge = ''; compte('tableaux : data-large');
+            // Mis en fiches sous 560 px (display: block, grid), un tableau perdait ses rôles dans WebKit : ils sont
+            // écrits (attributs seuls, le texte ne change pas).
+            t.properties = { ...(t.properties || {}), role: 'table' };
+            for (const g of t.children.filter((c) => estEl(c, 'thead') || estEl(c, 'tbody') || estEl(c, 'tfoot'))) g.properties = { ...(g.properties || {}), role: 'rowgroup' };
+            rangs.forEach((tr, k) => {
+              tr.properties = { ...(tr.properties || {}), role: 'row' };
+              cellules[k].forEach((c) => { c.properties = { ...(c.properties || {}), role: estEl(c, 'th') ? (k ? 'rowheader' : 'columnheader') : 'cell' }; });
+            });
+          }
           // Sur un tableau large, chaque cellule du corps porte le titre de sa colonne (data-th).
           // La feuille l'affiche devant la valeur sur téléphone (une fiche par ligne) ; le texte de la page ne change pas.
           if (somme > 44 && cellules.length > 1) {
@@ -578,6 +637,8 @@ export function rehypeArticle(options = {}) {
         for (const t of ts) {
           const d0 = debut; debut += t.noeud.value.length;
           if (dejaEm(t.parent)) continue;
+          // Le « ↩ » d'une note de bas de page est tout le texte de son lien : il reste visible.
+          if (estEl(t.parent, 'a') && 'dataFootnoteBackref' in (t.parent.properties || {})) continue;
           const v = t.noeud.value; const re = EMO(); let r; const morceaux = []; let dernier = 0;
           while ((r = re.exec(v))) {
             const avant = plein.slice(0, d0 + r.index), apres = plein.slice(d0 + r.index + r[0].length);
@@ -648,9 +709,36 @@ export function rehypeArticle(options = {}) {
           conteneur.children = [...e.slice(0, a), ...(blancTete ? [txt(blancTete)] : []), el('span', { className: ['kv-l'] }, libelle), ...(blancAvant ? [txt(blancAvant)] : []), el('span', { className: ['kv-s'] }, [txt(c.value[pos])]), ...(blancApres ? [txt(blancApres)] : []), el('span', { className: ['kv-v'] }, valeur), ...(queue ? [queue] : []), ...e.slice(b)];
           return true;
         }
+        // Sinon, le séparateur est dans le gras du début, suivi d'autre chose (« **Total cotisations : 13 474 €** (26,9 %
+        // du CA) ») : le gras est coupé en deux au séparateur, sans changer un caractère, et la valeur rejoint la colonne.
+        const g = e[a];
+        if (b - a > 1 && (estEl(g, 'strong') || estEl(g, 'b')) && !classesDe(g).length) {
+          const kids = g.children;
+          for (let j = 0; j < kids.length; j++) {
+            const c = kids[j];
+            if (c.type !== 'text') continue;
+            const depart = j === 0 ? c.value.search(/[\p{L}\d]/u) : 0;
+            if (depart < 0) continue;
+            const k = c.value.slice(depart).search(/[:=→]/u);
+            if (k < 0) continue;
+            const pos = depart + k;
+            const avant = c.value.slice(0, pos), apres = c.value.slice(pos + 1);
+            const av = avant.trimEnd(), blancAvant = avant.slice(av.length);
+            const blancApres = apres.match(/^\s*/)[0], ap = apres.slice(blancApres.length);
+            const gauche = el(g.tagName, {}, [...kids.slice(0, j), ...(av ? [txt(av)] : [])]);
+            const droite = el(g.tagName, {}, [...(ap ? [txt(ap)] : []), ...kids.slice(j + 1)]);
+            if (!norm(texteDe(gauche)) || !norm(texteDe(droite))) return false;
+            const valeur = [droite, ...e.slice(a + 1, b)];
+            let queue = null;
+            const dernier = valeur[valeur.length - 1];
+            if (dernier?.type === 'text') { const m = dernier.value.match(/\s+$/); if (m) { queue = txt(m[0]); valeur[valeur.length - 1] = txt(dernier.value.slice(0, -m[0].length)); } }
+            conteneur.children = [...e.slice(0, a), el('span', { className: ['kv-l'] }, [gauche]), ...(blancAvant ? [txt(blancAvant)] : []), el('span', { className: ['kv-s'] }, [txt(c.value[pos])]), ...(blancApres ? [txt(blancApres)] : []), el('span', { className: ['kv-v'] }, valeur.filter((n) => n.type !== 'text' || n.value)), ...(queue ? [queue] : []), ...e.slice(b)];
+            return true;
+          }
+        }
         return false;
       };
-      const voir = (n) => { for (const c of n.children || []) { if (aClasse(c, 'kv-ligne')) { if (decouper(c)) compte('chiffres : lignes découpées (.kv-l, .kv-v)'); else noter('kv non découpée', norm(texteDe(c)).slice(0, 70)); } else if (estEl(c)) voir(c); } };
+      const voir = (n) => { for (const c of n.children || []) { if (aClasse(c, 'kv-ligne')) { if (decouper(c)) compte('chiffres : lignes découpées (.kv-l, .kv-v)'); } else if (estEl(c)) voir(c); } };
       voir(tree);
     }
 
@@ -665,7 +753,6 @@ export function rehypeArticle(options = {}) {
         const blancApres = tree.children[i + 1]?.type === 'text' && estBlanc(tree.children[i + 1]) ? 1 : 0;
         tree.children.splice(i, 1 + blancApres);
         tree.children.splice(tree.children.indexOf(blocs[0]), 0, e, txt('\n'));
-        ajouterClasse(e, 'essentiel-deplace');
         compte('option essentielEnTete : encadrés déplacés');
       }
     }
@@ -685,45 +772,24 @@ export function rehypeArticle(options = {}) {
         compte('option sourcesPli : sections mises en pli');
       }
     }
-    if (opt.sections) {
-      // Chaque h2 et son contenu dans <section class="sec" data-sec="…"> ; l'introduction dans <div class="sec-intro">.
-      const out = []; let cur = null;
-      const fermer = () => {
-        if (!cur) return;
-        const blancs = [];
-        while (cur.children.length && estBlanc(cur.children[cur.children.length - 1])) blancs.unshift(cur.children.pop());
-        out.push(cur, ...blancs); cur = null;
-      };
-      for (const n of tree.children) {
-        const h = estEl(n, 'h2') ? n : aClasse(n, 'sources-pli') ? elementsDe(elementsDe(n)[0] ?? n)[0] : null;
-        if (h && estEl(h, 'h2')) {
-          fermer();
-          const genre = aClasse(h, 't-sources') ? 'sources' : aClasse(h, 't-encadre') ? 'encadre' : aClasse(h, 't-hippo') ? 'hippo' : 'normal';
-          cur = el('section', { className: ['sec'], dataSec: genre }, [n]);
-          if (aClasse(h, 't-hippo')) ajouterClasse(cur, 'sec-hippo');
-          compte('option sections : sections'); compte('option sections : data-sec=' + genre);
-          continue;
-        }
-        if (!cur) { if (estBlanc(n)) { out.push(n); continue; } cur = el('div', { className: ['sec-intro'] }, []); compte('option sections : introductions (.sec-intro)'); }
-        cur.children.push(n);
-      }
-      fermer();
-      tree.children = out;
-    }
 
     // ═════════ 8 bis. Rang des titres du plan, légendes (fonctions plus haut) ═════════
+    marquerLegendes();
     marquerSousParties();
-    marquerLegendes(tree);
 
     // ═════════ 8 ter. Nombres et ponctuation hautes : jamais coupés en fin de ligne ═════════
     // Un nombre, ses milliers, son unité (€, %, k€, M€) et le signe qui suit, un mot et son « ? ! : ; » »,
-    // un guillemet ouvrant et son mot : enveloppés dans <span class="nb"> (white-space: nowrap dans la feuille).
-    // Aucun caractère ne change. Les morceaux sans espace ne sont pas enveloppés (rien à protéger), ni ceux de
-    // plus de 28 caractères (ils déborderaient à 360 px).
+    // un guillemet ouvrant et son mot, un nom à trait d'union (« micro-BNC », « 2042-C PRO », « n° 2025-1044 ») :
+    // enveloppés dans <span class="nb"> (white-space: nowrap dans la feuille). Puis un élément en ligne (gras, lien…)
+    // et la ponctuation haute qui le suit (« **CARMF** ; »), un guillemet ouvrant et l'élément qui le suit. Aucun
+    // caractère ne change. Les morceaux sans espace ni trait d'union ne sont pas enveloppés (rien à protéger), ni ceux
+    // de plus de 28 caractères (ils déborderaient à 360 px).
     {
       const ESP = '[ \\u00A0\\u202F]';
+      const PONCT = '(?:' + ESP + '[?!:;»](?=[\\s"\')\\].,]|$))*';
       const RE_NB = new RegExp(
-        '(?:« )?(?:[≈~]' + ESP + '?)?(?:\\d{1,3}(?:' + ESP + '\\d{3})+(?:,\\d+)?|\\d+(?:[.,]\\d+)?)(?:' + ESP + '?(?:k€|M€|€|%)(?:' + ESP + '?\\/' + ESP + '?(?:an|mois|jour|h)\\b)?)?(?:' + ESP + '[?!:;»](?=[\\s"\')\\].,]|$))*'
+        '(?:[Mm]icro-BNC|\\d{4}-\\d+|\\d{4}-C(?: PRO)?)' + PONCT
+        + '|(?:« )?(?:[≈~]' + ESP + '?)?(?:\\d{1,3}(?:' + ESP + '\\d{3})+(?:,\\d+)?|\\d+(?:[.,]\\d+)?)(?:' + ESP + '?(?:k€|M€|€|%)(?:' + ESP + '?\\/' + ESP + '?(?:an|mois|jour|h)\\b)?)?(?:' + ESP + '[?!:;»](?=[\\s"\')\\].,]|$))*'
         + '|(?:« )?[^\\s«]+(?:' + ESP + '[?!:;»](?=[\\s"\')\\].,]|$))+'
         + '|« [^\\s«]+', 'gu');
       const dansExclu = (pile) => pile.some((n) => estEl(n) && (['code', 'pre', 'script', 'style'].includes(n.tagName) || aClasse(n, 'em') || aClasse(n, 'fl-m') || aClasse(n, 'fl-m2') || aClasse(n, 'nb')));
@@ -737,7 +803,7 @@ export function rehypeArticle(options = {}) {
           const v = c.value; let dernier = 0, m; RE_NB.lastIndex = 0; let touche = false;
           while ((m = RE_NB.exec(v))) {
             const g = m[0];
-            if (!/\s/u.test(g) || g.length > 28) continue;
+            if (!/[\s-]/u.test(g) || g.length > 28) continue;
             if (m.index > dernier) sortie.push(txt(v.slice(dernier, m.index)));
             sortie.push(el('span', { className: ['nb'] }, [txt(g)]));
             dernier = m.index + g.length; touche = true; compte('nb : groupes noués');
@@ -748,13 +814,68 @@ export function rehypeArticle(options = {}) {
         noeud.children = sortie;
       };
       parcourir(tree, []);
+      // Un élément en ligne et sa ponctuation, un guillemet et son élément : le nœud de texte voisin ne voit pas l'élément.
+      const RE_PONCT_TETE = /^(?:[ \u00A0\u202F][?!:;»](?=[\s"')\].,]|$))+/u;
+      const nouable = (n) => estEl(n) && ['strong', 'b', 'em', 'a', 'code', 'span'].includes(n.tagName) && (n.tagName !== 'span' || aClasse(n, 'nb')) && !n.children.some((c) => estEl(c, 'br')) && [...texteDe(n)].length <= 26;
+      const lier = (noeud) => {
+        if (!noeud.children || dansExclu([noeud])) return;
+        noeud.children.forEach(lier);
+        const k = noeud.children;
+        for (let i = 1; i < k.length; i++) {
+          const t = k[i], g = k[i - 1];
+          const m = t.type === 'text' ? t.value.match(RE_PONCT_TETE) : null;
+          if (!m) continue;
+          const reste = t.value.slice(m[0].length);
+          if (nouable(g)) {
+            k.splice(i - 1, 2, el('span', { className: ['nb'] }, [g, txt(m[0])]), ...(reste ? [txt(reste)] : []));
+            compte('nb : élément et ponctuation noués');
+            continue;
+          }
+          // Un gras trop long pour tenir sur une ligne (« **3. Tu paies moins d'impôt et de cotisations** : ») : son
+          // dernier mot passe dans un second gras, noué avec la ponctuation. Le texte et sa graisse ne changent pas.
+          const der = estEl(g) && ['strong', 'b', 'em'].includes(g.tagName) && !classesDe(g).length ? g.children[g.children.length - 1] : null;
+          const mot = der?.type === 'text' ? der.value.match(/(\S+)$/) : null;
+          if (!mot || !mot.index || [...mot[1]].length > 20) continue;
+          g.children[g.children.length - 1] = txt(der.value.slice(0, mot.index));
+          k.splice(i, 1, el('span', { className: ['nb'] }, [el(g.tagName, {}, [txt(mot[1])]), txt(m[0])]), ...(reste ? [txt(reste)] : []));
+          compte('nb : dernier mot d’un gras et ponctuation noués');
+        }
+        for (let i = 0; i < k.length - 1; i++) {
+          const t = k[i], g = k[i + 1];
+          if (t.type !== 'text' || !nouable(g) || !/(?:^|\s)« $/u.test(t.value)) continue;
+          const avant = t.value.slice(0, -2);
+          k.splice(i, 2, ...(avant ? [txt(avant)] : []), el('span', { className: ['nb'] }, [txt('« '), g]));
+          compte('nb : guillemet et élément noués');
+        }
+      };
+      lier(tree);
     }
 
-    // ═════════ 9. Ce que le gabarit peut lire : render(post).remarkPluginFrontmatter.balisage ═════════
+    // ═════════ 9. Listes : rôle et numéro de départ ; attributs de travail retirés ═════════
+    // La feuille retire les puces (list-style: none) et les dessine en ::before vide : WebKit n'annonce alors plus une
+    // <ul> comme une liste. role="list" la lui rend (attribut seul). Une liste numérotée qui reprend (« start ») fait
+    // partir le compteur de la feuille du bon numéro. Les attributs qui ne servent qu'au plugin sont retirés : la
+    // feuille ne les lit pas (environ 1 Ko par article).
+    {
+      const TRAVAIL = ['dataEmRole', 'dataEmN', 'dataFl', 'dataFlN', 'dataKvN', 'dataLignes', 'dataSomme', 'dataCols', 'dataNum', 'dataNoForme', 'dataN', 'dataM2', 'dataPc'];
+      const voir = (n) => {
+        if (estEl(n)) {
+          if (n.tagName === 'ul' || n.tagName === 'ol') n.properties = { ...(n.properties || {}), role: 'list' };
+          const depart = Number(n.properties?.start);
+          if (n.tagName === 'ol' && depart > 1) { n.properties.style = `counter-reset: etape ${depart - 1}`; compte('listes : numérotées qui reprennent (start)'); }
+          if (/^h[23]$/.test(n.tagName)) delete n.properties.dataNo;
+          for (const k of TRAVAIL) delete n.properties[k];
+        }
+        for (const c of n.children || []) voir(c);
+      };
+      voir(tree);
+    }
+
+    // ═════════ 10. Ce que le gabarit peut lire : render(post).remarkPluginFrontmatter.balisage ═════════
     file.data ??= {};
     file.data.astro ??= {};
     file.data.astro.frontmatter ??= {};
-    file.data.astro.frontmatter.balisage = { titres, stats };
-    file.data.balisage = { titres, stats, journal };
+    file.data.astro.frontmatter.balisage = { titres };
+    file.data.balisage = opt.stats ? { titres, stats } : { titres };
   };
 }

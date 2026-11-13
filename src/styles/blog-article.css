@@ -149,6 +149,9 @@
 .fiche .som-auteur .som-liste a:not([data-no])::before { content: ""; }
 .fiche .som-liste > li.sous-partie { counter-increment: none; }
 .fiche .som-liste > li.sous-partie > a { padding-left: 16px; }
+/* Un titre hors du compte (« Légende ») : une entrée sans numéro, qui ne compte pas. */
+.fiche .som-liste > li.hors-compte { counter-increment: none; }
+.fiche .som-liste > li.hors-compte > a::before { content: ""; }
 .fiche .som-liste a:hover { color: var(--brand); }
 .fiche .som-haut { display: none; }
 
@@ -240,7 +243,7 @@
   background: linear-gradient(var(--brand), var(--brand)) 0 50% / 38px 3px no-repeat;
   font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; font-weight: 640; letter-spacing: 0.04em; line-height: 1rem; color: var(--ink-2);
 }
-.fiche .corps > h2.t-sous { --t: 1.3125rem; margin: 36px 0 10px; line-height: 1.2; letter-spacing: -0.02em; }
+.fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.3125rem; margin: 36px 0 10px; line-height: 1.2; letter-spacing: -0.02em; }
 .fiche .corps > h2.t-sous::before { content: none; }
 /* Numéros écrits par l'auteur (« 1. », « 4.1 », « Étape 1 ») : en bleu de marque. Une touche 1️⃣ qui
    numérote seule son titre : son chiffre, écrit par la feuille devant le texte (l'émoji est masqué). */
@@ -260,8 +263,8 @@
 /* Puce : un petit rond bleu. */
 .fiche .corps ul:not(.kv) > li:not([data-etat], [data-touche])::before { content: ""; position: absolute; left: 7px; top: calc(0.5lh - 3.5px); width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
 .fiche .corps li > ul > li:not([data-etat], [data-touche])::before { width: 6px; height: 6px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--brand); }
-/* Flèche (« → », 👉 en marque) : une petite flèche bleue. */
-.fiche .corps ul.fl > li:is([data-m="fleche"], :has(> .fl-m .em[data-em-role="main"], > strong:first-child > .fl-m .em[data-em-role="main"])):not([data-etat], [data-touche])::before { left: 2px; top: calc(0.5lh - 8px); width: 16px; height: 16px; border-radius: 0; background: var(--brand); -webkit-mask: var(--i-fleche) center / contain no-repeat; mask: var(--i-fleche) center / contain no-repeat; box-shadow: none; }
+/* Flèche (« → », 👉 en marque, `data-m="fleche"` du plugin) : une petite flèche bleue. */
+.fiche .corps ul.fl > li[data-m="fleche"]:not([data-etat], [data-touche])::before { left: 2px; top: calc(0.5lh - 8px); width: 16px; height: 16px; border-radius: 0; background: var(--brand); -webkit-mask: var(--i-fleche) center / contain no-repeat; mask: var(--i-fleche) center / contain no-repeat; box-shadow: none; }
 /* Marques d'état : coche, croix, triangle dans un rond de 22 px, aux seuls jetons de la DA. Oui : vert d'état ;
    attention : ambre d'état ; non : croix d'encre sur fond neutre (la DA n'a pas de rouge, la forme porte le sens). */
 .fiche .corps li[data-etat] { padding-left: 32px; }
@@ -275,15 +278,14 @@
 .fiche .corps li[data-touche] { padding-left: 32px; }
 .fiche .corps :is(ul, ol) > li[data-touche]::before { content: attr(data-touche); position: absolute; left: 0; top: calc(0.5lh - 11px); display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--plan-bg); color: var(--plan); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1; }
 /* Légende (calendrier fiscal : « 💸 : Tu paies »…) et listes de l'article qui l'emploie : l'émoji y dit
-   quelque chose, il devient son dessin. Quatre dessins, formes opposées pour payer (la flèche sort) et
-   recevoir (la flèche entre). Ailleurs, ces émojis sont du décor : une puce. */
-.fiche .corps ul.fl-legende > li { padding-left: 30px; }
-.fiche .corps:has(.fl-legende) ul.fl > li:not([data-etat], [data-touche]):has(> .fl-m .em:is([data-em-picto="banknote"], [data-em-picto="mailbox"], [data-em-picto="send"], [data-em-picto="lightbulb"])) { padding-left: 30px; }
-.fiche .corps:has(.fl-legende) ul.fl > li:not([data-etat], [data-touche]):has(> .fl-m .em:is([data-em-picto="banknote"], [data-em-picto="mailbox"], [data-em-picto="send"], [data-em-picto="lightbulb"]))::before { left: 0; top: calc(0.5lh - 10px); width: 20px; height: 20px; border-radius: 0; box-shadow: none; background: var(--brand); -webkit-mask: var(--picto) center / contain no-repeat; mask: var(--picto) center / contain no-repeat; }
-.fiche .corps li:has(> .fl-m .em[data-em-picto="banknote"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 10.2A6.3 6.3 0 1 0 14 19.8M2.5 13.6h7.5M2.5 16.6h6.5'/%3E%3Cpath d='M15.5 8.5 21 3M16 3h5v5'/%3E%3C/svg%3E"); }
-.fiche .corps li:has(> .fl-m .em[data-em-picto="mailbox"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 10.2A6.3 6.3 0 1 0 14 19.8M2.5 13.6h7.5M2.5 16.6h6.5'/%3E%3Cpath d='M21 3l-5.5 5.5M15.5 3.5v5h5'/%3E%3C/svg%3E"); }
-.fiche .corps li:has(> .fl-m .em[data-em-picto="send"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z'/%3E%3Cpath d='m21.854 2.147-10.94 10.939'/%3E%3C/svg%3E"); }
-.fiche .corps li:has(> .fl-m .em[data-em-picto="lightbulb"]) { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/%3E%3Cpath d='M9 18h6M10 22h4'/%3E%3C/svg%3E"); }
+   quelque chose, il devient son dessin (`data-picto`, posé par le plugin). Quatre dessins, formes opposées
+   pour payer (la flèche sort) et recevoir (la flèche entre). Ailleurs, ces émojis sont du décor : une puce. */
+.fiche .corps ul.fl > li[data-picto]:not([data-etat], [data-touche]) { padding-left: 30px; }
+.fiche .corps ul.fl > li[data-picto]:not([data-etat], [data-touche])::before { left: 0; top: calc(0.5lh - 10px); width: 20px; height: 20px; border-radius: 0; box-shadow: none; background: var(--brand); -webkit-mask: var(--picto) center / contain no-repeat; mask: var(--picto) center / contain no-repeat; }
+.fiche .corps li[data-picto="banknote"] { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 10.2A6.3 6.3 0 1 0 14 19.8M2.5 13.6h7.5M2.5 16.6h6.5'/%3E%3Cpath d='M15.5 8.5 21 3M16 3h5v5'/%3E%3C/svg%3E"); }
+.fiche .corps li[data-picto="mailbox"] { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 10.2A6.3 6.3 0 1 0 14 19.8M2.5 13.6h7.5M2.5 16.6h6.5'/%3E%3Cpath d='M21 3l-5.5 5.5M15.5 3.5v5h5'/%3E%3C/svg%3E"); }
+.fiche .corps li[data-picto="send"] { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z'/%3E%3Cpath d='m21.854 2.147-10.94 10.939'/%3E%3C/svg%3E"); }
+.fiche .corps li[data-picto="lightbulb"] { --picto: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/%3E%3Cpath d='M9 18h6M10 22h4'/%3E%3C/svg%3E"); }
 
 .fiche .corps .fl-aeree > li { margin-bottom: 14px; }
 .fiche .corps p.fl-intitule { margin-bottom: 10px; font-weight: 640; }
@@ -291,7 +293,7 @@
 .fiche .corps .colle + :is(ul, ol) { margin-top: 0; }
 .fiche .corps ul.fl + p.colle, .fiche .corps .colle + p { margin-top: 0; }
 .fiche .corps li.fl-total { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
-.fiche .corps li.fl-total::before { top: calc(10px + 0.5lh - 3.5px); }
+.fiche .corps ul:not(.kv) > li.fl-total:not([data-etat], [data-touche])::before { top: calc(10px + 0.5lh - 3.5px); }
 
 /* Étapes : les listes numérotées. Numéro dans un rond de 28 px, un trait de 2 px relie les ronds. */
 .fiche .corps ol { counter-reset: etape; }
@@ -327,12 +329,15 @@
 .fiche .corps .callout-tip { background: var(--sky-soft); }
 .fiche .corps .callout-warning { background: var(--wait-bg); }
 .fiche .corps .callout-essentiel { padding: 20px 22px 22px; background: var(--paper); box-shadow: 0 0 0 1px var(--line), var(--clay-sm); }
-/* Étiquette : le premier passage en gras (p.callout-titre), ou un mot posé par la feuille. */
+/* Étiquette : le premier passage en gras (p.callout-titre), ou un mot posé par la feuille. Un titre long
+   (`callout-titre-long` : plus de 24 signes, ou un deux-points final) n'est pas une étiquette : gras ordinaire. */
 .fiche .corps .callout > p.callout-titre { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .fiche .corps .callout > p.callout-titre strong, .fiche .corps .callout-sans-titre::before {
   font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.3;
 }
+.fiche .corps .callout > p.callout-titre-long strong { font-size: inherit; font-weight: 700; letter-spacing: -0.005em; text-transform: none; line-height: 1.4; }
 .fiche .corps .callout-essentiel > p.callout-titre strong, .fiche .corps .callout-tip > p.callout-titre strong { color: var(--brand); }
+.fiche .corps .callout > p.callout-titre-long strong { color: var(--ink); }
 .fiche .corps .callout-warning > p.callout-titre strong { color: var(--wait); }
 .fiche .corps .callout > p.callout-titre::before { content: ""; flex: none; width: 18px; height: 18px; background: var(--l-ampoule) center / contain no-repeat; }
 .fiche .corps .callout-essentiel > p.callout-titre::before { background-image: var(--l-liste); }
@@ -341,6 +346,7 @@
 .fiche .corps .callout-sans-titre::before { content: "Conseil"; display: block; margin-bottom: 8px; padding-left: 26px; background: var(--l-ampoule) 0 50% / 18px no-repeat; color: var(--brand); }
 .fiche .corps .callout-warning.callout-sans-titre::before { content: "Attention"; background-image: var(--l-triangle); color: var(--wait); }
 .fiche .corps .callout-hippo.callout-sans-titre::before { content: "Le conseil Hippodoc"; padding-left: 32px; background: var(--l-tete) 0 50% / 24px no-repeat; }
+.fiche .corps .callout-essentiel.callout-sans-titre::before { content: "L’essentiel"; background-image: var(--l-liste); }
 /* Points de « L'essentiel » : une coche blanche dans un rond bleu. */
 .fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche]) { padding-left: 30px; }
 .fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche])::before { left: 0; top: calc(0.5lh - 9px); width: 18px; height: 18px; border-radius: 50%; background: var(--brand); box-shadow: none; -webkit-mask: none; mask: none; }
@@ -560,7 +566,7 @@
   .fiche .corps { font-size: clamp(1.0625rem, 1.0077rem + 0.2247vw, 1.1875rem); line-height: 1.6; }
   .fiche .corps h2 { --t: 1.75rem; margin-top: 56px; margin-bottom: 14px; }
   .fiche .corps > h2[data-np]::before { margin-bottom: 16px; }
-  .fiche .corps > h2.t-sous { --t: 1.375rem; margin-top: 40px; }
+  .fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.375rem; margin-top: 40px; }
   .fiche .corps h3 { margin-top: 36px; font-size: 1.3125rem; }
   .fiche .corps :is(h2, h3).t-encadre { font-size: 1.125rem; }
   .fiche .infos { font-size: 0.9375rem; }
@@ -595,7 +601,7 @@
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 170px; }
   .fiche .couverture { width: 132px; border-radius: 16px; }
   .fiche .corps h2 { --t: 1.8125rem; margin-top: 64px; }
-  .fiche .corps > h2.t-sous { --t: 1.5rem; margin-top: 44px; }
+  .fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.5rem; margin-top: 44px; }
   /* Encadrés : le corps des encadrés suit celui du texte (17 px, 18 px pour « L'essentiel »). */
   .fiche .corps .callout { padding: 24px 28px; font-size: 1.0625rem; line-height: 1.55; }
   .fiche .corps .callout-essentiel { padding: 24px 28px 26px; font-size: 1.125rem; }

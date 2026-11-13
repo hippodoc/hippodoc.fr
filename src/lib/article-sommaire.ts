@@ -6,10 +6,10 @@
 // `balisage` vient du plugin src/lib/rehype-article.mjs. Il sert pour `encadre` (un titre suivi d'un seul
 // encadré ne se devine pas d'après le texte du titre), pour `sous` (rang 2) et pour les rangs `n` et `np`.
 // Sans lui, le reste est recalculé ici d'après le texte, avec les mêmes critères que le plugin.
-import { EMO_SRC, roleEmoji, pictoEmoji } from './rehype-article.mjs';
+import { EMO_SRC, roleEmoji, pictoEmoji } from './article-emojis.mjs';
 
 export interface TitreAstro { depth: number; slug: string; text: string }
-export interface TitreBalise { slug: string; depth: number; numero: string | null; encadre: boolean; sources: boolean; hippo: boolean; n: string | null; np: string | null; sous?: boolean }
+export interface TitreBalise { slug: string; depth: number; numero: string | null; encadre: boolean; sources: boolean; hippo: boolean; horsCompte?: boolean; n: string | null; np: string | null; sous?: boolean }
 export interface DonneesBalisage { titres: TitreBalise[] }
 export interface EntreeSommaire {
   /** Ancre du titre, telle qu'Astro la calcule (inchangée). */
@@ -44,18 +44,24 @@ export interface EntreeSommaire {
   np: string | null;
   /** Sous-partie numérotée du plan (rang 2, classe t-sous) : en retrait, hors du compte des parties. */
   sous: boolean;
+  /** Titre hors du compte du plan (classe t-hors : « Légende », posé sur une légende) : dans le sommaire, sans numéro. */
+  horsCompte: boolean;
 }
 
 const RE_TETE = new RegExp('^(?:\\s*' + EMO_SRC + ')+\\s*', 'u');
 const RE_QUEUE = new RegExp('\\s*(?:' + EMO_SRC + '\\s*)+[\\s.!?]*$', 'u');
 const RE_UN = new RegExp(EMO_SRC, 'u');
 const RE_NUMERO = /^(\d{1,2}\.\d{1,2}|\d{1,2}[.)])\s+/;
+/** Titre des sources : le motif de RE_SOURCES du plugin (src/lib/rehype-article.mjs), qui ne le pose que sur le dernier h2. */
+const RE_SOURCES = /^sources(?:\s*(?:\(|&|:|et\b)|$)/i;
 const RE_ETAPE = /^[ÉE]tape\s+(\d{1,2})\s*(?:[:—–-]\s*)?/u;
 
 export function entreesSommaire(headings: TitreAstro[], balisage?: DonneesBalisage | null): EntreeSommaire[] {
   const parSlug = new Map((balisage?.titres ?? []).map((t) => [t.slug, t]));
+  // Avec le balisage, seuls les titres du corps que le plugin a vus : pas le titre caché des notes de bas de page
+  // (« Footnotes », que GFM ajoute dans une <section>), qui serait entré dans le plan et dans son total.
   return headings
-    .filter((h) => h.depth === 2 || h.depth === 3)
+    .filter((h) => (h.depth === 2 || h.depth === 3) && (!balisage || parSlug.has(h.slug)))
     .map((h) => {
       const tete = h.text.match(RE_TETE)?.[0] ?? '';
       let reste = h.text.slice(tete.length);
@@ -81,11 +87,12 @@ export function entreesSommaire(headings: TitreAstro[], balisage?: DonneesBalisa
         etat: r?.etat ?? null,
         numero: s?.numero ?? numeroEcrit,
         encadre: s?.encadre ?? false,
-        sources: s?.sources ?? /^sources\b/i.test(texte),
+        sources: s?.sources ?? RE_SOURCES.test(texte),
         hippo: s?.hippo ?? /hippodoc/i.test(texte),
         n: s?.n ?? null,
         np: s?.np ?? null,
         sous: s?.sous ?? false,
+        horsCompte: s?.horsCompte ?? false,
       };
     });
 }

@@ -1,6 +1,33 @@
-// Table tirée de l'audit du blog (novembre 2026, MIGRATION.md § 9.fj), noms du jeu lucide (paquet lucide-react).
-// Le plugin src/lib/rehype-article.mjs en tire l'attribut data-em-picto ; la feuille de l'article n'en dessine
-// que quatre (légende du calendrier fiscal : banknote, mailbox, send, lightbulb).
+// Émojis des articles du blog (novembre 2026, MIGRATION.md § 9.fj) : leur définition, leur rôle, leur pictogramme.
+// Lu par le plugin src/lib/rehype-article.mjs (au rendu), par src/lib/article-sommaire.ts et par le gabarit
+// src/pages/blog/[slug].astro (sommaire, appel à l'essai). Les caractères invisibles sont écrits en échappement
+// (\uFE0F, \u20E3) : un éditeur qui les normaliserait changerait le comportement sans que rien ne se voie.
+
+// ───────── Définition : la même que le recensement de l'audit du blog ─────────
+export const EMO_SRC = '(?:\\p{Extended_Pictographic}(?:\\uFE0F|\\u200D\\p{Extended_Pictographic}|[\\u{1F3FB}-\\u{1F3FF}])*|[\\u{1F1E6}-\\u{1F1FF}]{2}|[0-9#*]\\uFE0F?\\u20E3)';
+const RE_TOUCHE = /^([0-9#*])\uFE0F?\u20E3$/u;
+export const sansVariante = (e) => e.replace(/\uFE0F/g, '');
+const ETATS = { '\u2705': 'oui', '\u2611': 'oui', '\u2714': 'oui', '\u274C': 'non', '\u26D4': 'non', '\u{1F6AB}': 'non', '\u{1F6D1}': 'non', '\u26A0': 'attention', '\u2757': 'attention' };
+const MAINS = new Set(['\u{1F449}', '\u{1F447}', '\u27A1']);
+const NOTES = new Set(['\u{1F4A1}', '\u{1F4CC}', '\u{1F4CD}', '\u{1F9E0}', '\u{1F4AC}']);
+/** Rôle d'un émoji, d'après son dessin seul : touche (1️⃣, avec son chiffre), etat (oui, non, attention : ✅ ❌ ⚠️),
+    main (👉), note (💡 📌), mascotte (🦛) ou decor. */
+export function roleEmoji(e) {
+  const k = sansVariante(e);
+  const t = e.match(RE_TOUCHE);
+  if (t) return { role: 'touche', n: t[1] };
+  if (k === '\u{1F51F}') return { role: 'touche', n: '10' };
+  if (ETATS[k]) return { role: 'etat', etat: ETATS[k] };
+  if (MAINS.has(k)) return { role: 'main' };
+  if (NOTES.has(k)) return { role: 'note' };
+  if (k === '\u{1F99B}') return { role: 'mascotte' };
+  return { role: 'decor' };
+}
+
+// ───────── Pictogrammes ─────────
+// Table tirée de l'audit, noms du jeu lucide (paquet lucide-react). La feuille de l'article n'en dessine que
+// quatre, ceux de la légende du calendrier fiscal (banknote, mailbox, send, lightbulb) : le plugin les pose en
+// data-picto sur l'élément de liste.
 // Émoji (sans sélecteur de variante U+FE0F) → nom du pictogramme lucide. 169 émojis, 143 pictogrammes.
 // Sans équivalent (absents de la table) : la mascotte 🦛, les touches chiffrées 1️⃣… et 9 émojis rares.
 export const PICTO_PAR_EMOJI = {
@@ -174,5 +201,4 @@ export const PICTO_PAR_EMOJI = {
  "🚦": "traffic-cone",
  "🚪": "door-open"
 };
-// Équivalent « approché » (même idée, autre dessin), relevé par l'audit.
-export const PICTO_APPROCHE = ["💸","🔹","🧐","😉","🔢","🏖","🧰","📑","👨‍⚕","😅","🤒","🔸","🏃","😌","🥰","😎","🍼","⚕","👨‍👩‍👧","🤔","👨‍⚖","🗂","🥼","🤰","👴","💥","💑","🙋","🆘","❤‍🔥","👩‍⚕","🔮","🧓","🆕","📐","🚦"];
+export const pictoEmoji = (e) => PICTO_PAR_EMOJI[sansVariante(e)] ?? null;

@@ -44,11 +44,17 @@ const LASTMOD = new Map([...BLOG_LASTMOD, ...Object.entries(STATIC_LASTMOD), ...
    tant que le fichier Markdown et la configuration ne changent pas : une retouche des seuls
    plugins ne referait donc rien, et le site servirait l'ancien balisage. L'empreinte de leurs
    fichiers est passée dans les options du plugin, donc dans la configuration : toute retouche
-   de l'un d'eux vide ce cache. Un fichier ajouté aux plugins s'ajoute à cette liste. */
+   de l'un d'eux vide ce cache. Les fichiers sont lus dans le dossier (tout `rehype-*`,
+   `remark-*` et `article-*` en .mjs de src/lib : un module ajouté au plugin y entre sans
+   rien faire), avec la version des paquets qu'ils emploient (package-lock.json). */
+const verrou = JSON.parse(readFileSync('./package-lock.json', 'utf8'));
 const EMPREINTE_ARTICLE = createHash('sha1')
   .update(
-    ['rehype-article.mjs', 'article-emojis.mjs', 'article-options.mjs', 'remark-callouts.mjs']
+    readdirSync('./src/lib')
+      .filter((f) => /^(rehype-|remark-|article-).*\.mjs$/.test(f))
+      .sort()
       .map((f) => readFileSync(`./src/lib/${f}`, 'utf8'))
+      .concat(['remark-directive', '@astrojs/markdown-remark'].map((p) => `${p}@${verrou.packages?.[`node_modules/${p}`]?.version}`))
       .join('\n')
   )
   .digest('hex')
