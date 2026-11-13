@@ -20,7 +20,7 @@ import '@/styles/blog-liste.css';
 import { SITE_URL, CALENDLY_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
-import { resolveCover, resolveCovers } from '@/lib/blog-covers';
+import { resolveCover, resolveCovers, srcsetAffiche, bordsAffiche } from '@/lib/blog-covers';
 import { byNewest, byEpisode } from '@/lib/blog-sort';
 import { nouer, echapper, nouerNombres } from '@/lib/typo';
 
@@ -44,21 +44,18 @@ const autres = rest.slice(8);
 const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
 
 /* La cover « à la une ». Servie en 1200 px fixes, elle faisait chuter le LCP à
-   4,1 s (perf 97 → 87). Depuis le § 9.fk, elle est en vignette portrait 4:5 :
-   84 px de large au téléphone, 180 px à partir de 768 px. Au téléphone, elle est
-   dans le premier écran (à droite du titre) : le srcset lui donne des fichiers à
-   sa taille (180 et 360 px), sinon elle tirait le fichier de 480 px pendant que
-   la police arrivait, et le LCP (le titre) reculait. Le `src` et ses dimensions
-   restent la variante de 720 px d'avant (les robots qui ne lisent pas le srcset). */
+   4,1 s (perf 97 → 87). Depuis le § 9.fk, elle est en vignette portrait 4:5 ;
+   depuis le § 9.fo, l'affiche entière (jamais rognée), nettement plus grande que
+   celle des lignes : 36 % de la largeur de l'écran au téléphone (120 à 152 px,
+   141 px à 393), sous le titre, à gauche de l'extrait ; 240 px à partir de 768 px.
+   Le srcset lui donne des fichiers à sa taille (180 à 480 px) : au téléphone, elle
+   tirait sinon le fichier de 720 px pendant que la police arrivait. Le `src` et ses
+   dimensions restent la variante de 720 px d'avant (les robots qui ne lisent pas le
+   srcset). Descripteurs `w` = largeurs RÉELLES des fichiers (une affiche source de
+   450 px n'a pas de variante de 720 px), dédoublonnées. */
 const featuredCover = await resolveCover(featured.data.cover, 720);
-const featuredVariants = (
-  await Promise.all([180, 360, 720].map((w) => resolveCover(featured.data.cover, w)))
-).filter((v): v is NonNullable<typeof v> => v !== null);
-// Descripteurs `w` = largeurs RÉELLES des fichiers (une cover source de 450 px
-// n'a pas de variante de 720 px), dédoublonnées.
-const featuredSrcset = featuredVariants.length
-  ? [...new Map(featuredVariants.map((v) => [v.width, v.src])).entries()].map(([w, src]) => `${src} ${w}w`).join(', ')
-  : undefined;
+const featuredSrcset = await srcsetAffiche(featured.data.cover, [180, 240, 360, 480, 720]);
+const featuredBords = await bordsAffiche(featured.data.cover);
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -95,9 +92,9 @@ const blogSchema = {
   <Fragment slot="head">
     {/* Ordinateur : la cover « À la une » est dans le premier écran (à gauche du
         titre) mais reste en lazy pour le téléphone. On la précharge donc à partir
-        de 768 px seulement (§ 9.bi), à la largeur qu'elle y a (180 px, § 9.fk). */}
+        de 768 px seulement (§ 9.bi), à la largeur qu'elle y a (240 px, § 9.fo). */}
     {featuredSrcset && (
-      <link rel="preload" as="image" media="(min-width: 768px)" imagesrcset={featuredSrcset} imagesizes="180px" fetchpriority="high" />
+      <link rel="preload" as="image" media="(min-width: 768px)" imagesrcset={featuredSrcset} imagesizes="240px" fetchpriority="high" />
     )}
     {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
     <meta name="theme-color" content="#C9DEFF" />
@@ -182,19 +179,20 @@ const blogSchema = {
           </div>
 
           {/* L'image vient APRÈS le texte dans le DOM, et reprend la colonne de gauche
-               sur ordinateur (`order`). Sur téléphone, elle est à droite du titre,
-               84 px de large ; le titre reste le LCP et l'image se charge en différé.
-               À partir de 768 px, 180 px (`sizes` et préchargement, § 9.fk). */}
+               sur ordinateur (`order`). Sur téléphone, elle est sous le titre, à gauche
+               de l'extrait (36 % de l'écran) ; le titre reste le LCP et l'image se charge
+               en différé. À partir de 768 px, 240 px (`sizes` et préchargement, § 9.fo). */}
           {featuredCover && (
             <img
               src={featuredCover.src}
               srcset={featuredSrcset}
-              sizes="(min-width: 768px) 180px, 84px"
+              sizes="(min-width: 768px) 240px, (min-width: 423px) 152px, 36vw"
               alt=""
               width={featuredCover.width}
               height={featuredCover.height}
               loading="lazy"
               decoding="async"
+              style={featuredBords}
             />
           )}
         </a>

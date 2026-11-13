@@ -13,10 +13,12 @@
  * La classe `blog-card s-<seriesId>` est conservée : elle reste utile pour cibler
  * une série en CSS.
  *
- * Format des couvertures : toutes en PORTRAIT (2:3, 3:4 ou 4:5), titre dessiné en
- * haut. Sur téléphone, un carré de 64 px recadré sur le dessin (le titre dessiné,
- * illisible à cette taille, sort du cadre) ; à partir de 640 px, un cadre 4:5 de
- * 96 px (104 px à partir de 1024 px), ancré sur le haut. `sizes` dit ces largeurs.
+ * Les affiches (§ 9.fo) : toutes en PORTRAIT (2:3, 0,75, 0,79 ou 0,805), titre dessiné
+ * en haut. Elles ne se rognent jamais : montrées entières dans un cadre 4:5, calées en
+ * haut, sur un fond pris aux couleurs de leurs bords (`bords`, calculé à la construction
+ * par `src/lib/affiche-bords.mjs`). Cadre de 26,5 % de la largeur de l'écran au
+ * téléphone (88 à 112 px : 95 px à 360, 104 px à 393), 144 px à partir de 640 px.
+ * `sizes` dit ces largeurs ; `src` et dimensions déclarées sont ceux d'avant.
  */
 import { blogSeries } from '@/lib/blog-series';
 import { nouer, echapper, nouerNombres } from '@/lib/typo';
@@ -31,7 +33,7 @@ interface Props {
   readTime: string;
   seriesId: string;
   episodeNumber?: number;
-  cover?: { src: string; width: number; height: number; srcset?: string };
+  cover?: { src: string; width: number; height: number; srcset?: string; bords?: string };
   /** Charge la couverture en priorité (première carte de la grille) plutôt qu'en différé. */
   eager?: boolean;
 }
@@ -54,12 +56,13 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
         <img
           src={cover.src}
           srcset={cover.srcset}
-          sizes={cover.srcset ? '(min-width: 1024px) 104px, (min-width: 640px) 96px, 64px' : undefined}
+          sizes={cover.srcset ? '(min-width: 640px) 144px, (min-width: 423px) 112px, 26.5vw' : undefined}
           alt=""
           width={cover.width}
           height={cover.height}
           loading={eager ? 'eager' : 'lazy'}
           fetchpriority={eager ? 'high' : undefined}
+          style={cover.bords}
         />
       </div>
     )}

@@ -8,6 +8,7 @@
  * d'`astro:assets` (WebP + dimensions).
  */
 import { getImage } from 'astro:assets';
+import { bordsAffiche } from '@/lib/affiche-bords.mjs';
 
 const blogImages = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/blog/**/*.{png,jpg,jpeg,webp}',
@@ -18,13 +19,26 @@ export interface ResolvedCover {
   src: string;
   width: number;
   height: number;
-  /** `srcset` des lignes de liste (vignette de 64 à 104 px, § 9.fk) : 160 et 320 px, puis
-      le fichier principal ; largeurs réelles, dédoublonnées. */
+  /** `srcset` des lignes de liste (§ 9.fo : affiche de 88 à 112 px au téléphone, 144 px au-delà) :
+      160, 240, 320 et 400 px, puis le fichier principal ; largeurs réelles, dédoublonnées. */
   srcset?: string;
+  /** Couleurs de bord de l'affiche (`--bord-g`, `--bord-d`), à poser en style sur l'image : elles
+      remplissent le cadre 4:5 autour d'une affiche montrée entière (§ 9.fo, `affiche-bords.mjs`). */
+  bords?: string;
 }
 
-/** Variantes des lignes de liste : 64 px × densité 2,5 (téléphone), 104 px × densité 3. */
-const CARD_WIDTHS = [160, 320];
+/** Variantes des lignes de liste : 104 px × densité 2 et 3 (téléphone), 112 px × 3, 144 px × 1 et 2. */
+const CARD_WIDTHS = [160, 240, 320, 400];
+
+/** Variantes d'une affiche, bornées à la source et dédoublonnées, en `srcset` (`… 160w, … 240w`). */
+export async function srcsetAffiche(publicPath: string, largeurs: number[]): Promise<string | undefined> {
+  const variantes = (await Promise.all(largeurs.map((w) => resolveCover(publicPath, w))))
+    .filter((v): v is ResolvedCover => v !== null);
+  if (!variantes.length) return undefined;
+  return [...new Map(variantes.map((v) => [v.width, v.src])).entries()].map(([w, src]) => `${src} ${w}w`).join(', ');
+}
+
+export { bordsAffiche };
 
 /** Renvoie la cover optimisée, ou null si l'asset est introuvable. */
 export async function resolveCover(
@@ -55,7 +69,7 @@ export async function resolveCovers(
     const variantes = [...(await Promise.all(CARD_WIDTHS.map((w) => resolveCover(post.data.cover, w)))), cover]
       .filter((v): v is ResolvedCover => v !== null);
     const srcset = [...new Map(variantes.map((v) => [v.width, v.src])).entries()].map(([w, src]) => `${src} ${w}w`).join(', ');
-    map.set(post.id, { ...cover, srcset });
+    map.set(post.id, { ...cover, srcset, bords: await bordsAffiche(post.data.cover) });
   }
   return map;
 }
