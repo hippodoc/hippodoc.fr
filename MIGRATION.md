@@ -8563,7 +8563,8 @@ retiré. La boussole reste neutralisée sans trait d'attente tant qu'elle n'est 
 Numéro : la demande renvoie à un § 9.ev (« Vu en passant, non corrigé ») et à un en-tête
 tenu à la fenêtre (`position: fixed`). Ni l'un ni l'autre n'est sur cette branche ni sur
 `main` (dernière entrée : § 9.et ; l'en-tête y est encore `position: sticky`). Les numéros
-9.eu et 9.ev sont laissés à ce travail-là. Aucun contenu touché : deux feuilles de style.
+9.eu et 9.ev sont laissés à ce travail-là. Aucun contenu touché : deux feuilles de style,
+et une phrase de CLAUDE.md.
 
 **Le défaut**
 
@@ -8690,16 +8691,19 @@ placée dans la fenêtre.
   bande réduite : sa cible reprend la différence en marge, comme `.calc-colonne`.
 - L'en-tête n'est pas corrigé sur cette branche : ses liens, dans la bande de 84 px, ont
   le même défaut. Ces règles n'en dépendent pas.
-- CLAUDE.md n'est pas modifié (demande : deux feuilles et cette entrée). Sa phrase « Une
-  barre collante se double d'un `scroll-padding-top` sur `<html>` » gagnerait une suite :
-  la bande se réduit au `top` de la barre tant que le focus est dedans. Il dit aussi
-  WebKitGTK et Selenium installés : ils ne l'étaient pas dans ce conteneur
-  (`apt-get install webkit2gtk-driver`, `pip install selenium`).
+- CLAUDE.md, « Ordre des feuilles sur les pages d'outils » : la phrase « Une barre
+  collante se double d'un `scroll-padding-top` sur `<html>` » reçoit sa suite (bande
+  réduite au `top` de la barre tant que le focus est dedans, marge reprise par la cible
+  d'un défilement lancé depuis la barre, clic par coordonnées pour mesurer). Ajoutée à la
+  demande du propriétaire, après l'ouverture de la demande de fusion.
+- CLAUDE.md dit WebKitGTK et Selenium installés : ils ne l'étaient pas dans ce conteneur
+  (`apt-get install webkit2gtk-driver`, `pip install selenium`). Non corrigé : cela
+  dépend de l'environnement, pas du dépôt.
 - Scripts et relevés : dossier de travail de la session, hors dépôt.
 
 **Fichiers**
 
-`src/styles/guide.css`, `src/styles/calculette.css`, `MIGRATION.md`.
+`src/styles/guide.css`, `src/styles/calculette.css`, `MIGRATION.md`, `CLAUDE.md`.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
