@@ -9075,6 +9075,9 @@ programme, comme le fait le clavier, fait remonter la page : 393 px sur le guide
 390 px de large, 421 à 1440, 418 sur la calculette à 1440. Ces barres doivent rester
 dans le flux : le correctif de l'en-tête ne s'y transpose pas tel quel.
 
+Corrigé depuis, dans les deux feuilles : § 9.ey (hippodoc/hippodoc.fr#145, fusionnée sur
+`main` avant ce lot ; note ajoutée à la fusion de `main` dans cette branche).
+
 **Non testé**
 
 - Aucun vrai Safari ni iPhone. Le verrou du défilement n'a pas pu être essayé dans le
