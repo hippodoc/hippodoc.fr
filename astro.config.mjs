@@ -6,6 +6,9 @@ import vercel from '@astrojs/vercel';
 import { unified } from '@astrojs/markdown-remark';
 import remarkDirective from 'remark-directive';
 import { remarkCallouts } from './src/lib/remark-callouts.mjs';
+import { rehypeArticle } from './src/lib/rehype-article.mjs';
+import { OPTIONS_ARTICLE } from './src/lib/article-options.mjs';
+import { createHash } from 'node:crypto';
 import blogMeta from './src/generated/blog-meta.json' with { type: 'json' };
 import { STATIC_LASTMOD } from './src/lib/pages-lastmod.ts';
 import { seriesPath } from './src/lib/blog-series-slugs.ts';
@@ -36,6 +39,21 @@ for (const fichier of readdirSync('./src/content/blog').filter((f) => f.endsWith
 
 const LASTMOD = new Map([...BLOG_LASTMOD, ...Object.entries(STATIC_LASTMOD), ...LIST_LASTMOD]);
 
+/* Empreinte du rendu des articles (MIGRATION.md § 9.fj). Astro garde en cache le HTML rendu
+   de chaque article (node_modules/.astro, que Vercel garde aussi entre deux constructions)
+   tant que le fichier Markdown et la configuration ne changent pas : une retouche des seuls
+   plugins ne referait donc rien, et le site servirait l'ancien balisage. L'empreinte de leurs
+   fichiers est passée dans les options du plugin, donc dans la configuration : toute retouche
+   de l'un d'eux vide ce cache. Un fichier ajouté aux plugins s'ajoute à cette liste. */
+const EMPREINTE_ARTICLE = createHash('sha1')
+  .update(
+    ['rehype-article.mjs', 'article-emojis.mjs', 'article-options.mjs', 'remark-callouts.mjs']
+      .map((f) => readFileSync(`./src/lib/${f}`, 'utf8'))
+      .join('\n')
+  )
+  .digest('hex')
+  .slice(0, 12);
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.hippodoc.fr',
@@ -62,7 +80,13 @@ export default defineConfig({
   markdown: {
     // Astro 7 : le processeur unified (remark) n'est plus celui par défaut ;
     // requis ici pour remark-directive + callouts (:::warning etc.).
-    processor: unified({ remarkPlugins: [remarkDirective, remarkCallouts] }),
+    processor: unified({
+      remarkPlugins: [remarkDirective, remarkCallouts],
+      /* Balisage du corps des articles posé au rendu (émojis, fausses listes, lignes,
+         titres, encadrés, tableaux, sources, nombres) : src/lib/rehype-article.mjs,
+         options dans src/lib/article-options.mjs. Le Markdown n'est pas touché. */
+      rehypePlugins: [[rehypeArticle, { ...OPTIONS_ARTICLE, empreinte: EMPREINTE_ARTICLE }]],
+    }),
   },
   build: {
     inlineStylesheets: 'auto',
