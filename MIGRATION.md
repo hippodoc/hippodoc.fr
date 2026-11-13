@@ -9457,6 +9457,123 @@ octets, une seule règle différente. Lighthouse mobile local, médiane de 3 : `
 `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
 `accueil2/corrections/`, hors dépôt.
 
+### 9.ey `verify-site.mjs` : les réponses de la FAQ comparées au schéma sur toutes les pages (13 novembre 2026)
+
+Le contrôle « 4 septies » compare le schéma `FAQPage` au texte visible. Depuis § 9.ex il
+comparait les questions partout et les réponses sur l'accueil seulement : étendue telle
+quelle, la comparaison des réponses sortait 69 écarts, laissés à trier. Ils sont triés,
+la comparaison est corrigée et active sur les 58 pages qui portent un `FAQPage`
+(391 réponses). **Aucun texte visible ni aucun JSON-LD n'a changé** : seul le script de
+vérification change, le build est le même.
+
+**1. Le tri des 69 écarts**
+
+| Cause | Nombre | Pages | Nature |
+|---|---|---|---|
+| Un « < » de texte pris pour une balise | 5 | quatre articles, la calculette | faux positif |
+| Balisage de la source du guide, rendu à l'écran | 38 | guide 27, `2042-c-pro` 1, `dsfu-pamc` 4, `medecin-remplacant` 6 | faux positif |
+| Liste à l'écran, mise à plat à la main dans le schéma | 12 | `/faq` | écart de texte |
+| Renvoi interne (« QT-014 ») rendu en lien nommé, énumération mise en liste | 14 | guide 9, `2042-c-pro` 4, `dsfu-pamc` 1 | écart de texte |
+
+- **« < » de texte** (5). Une réponse comme « Matériel < 500 € HT : … Matériel > 500 € »
+  sort `&lt;` dans la page et « < » dans le schéma. L'ancienne comparaison ne décodait
+  pas `&lt;` / `&gt;`, et retirait de la réponse tout ce qui allait d'un « < » au « > »
+  suivant (`/<[^>]+>/`). Pages : `/blog/frais-professionnels-deductibles`,
+  `/blog/inbox-zero-remplacant`, `/blog/micro-bnc-exemples-concrets`,
+  `/blog/remplacement-salarie-guide-complet`, `/guide-declarations/calculette`.
+- **Balisage de la source du guide** (38). Le schéma du guide reprend `reponse` telle
+  qu'elle est écrite dans `src/data/boussoleData.ts`, avec le balisage que
+  `FormattedText.tsx` rend à l'écran : `**gras**`, `*italique*`, code entre accents
+  graves, marqueurs ⚠️ et 💡 (rendus en icône), puce de début de ligne. Mots et
+  ponctuation sont les mêmes des deux côtés.
+- **`/faq`** (12) et **guide** (14, soit 9 questions dont 5 reprises sur une page
+  fille) : le texte diffère vraiment, liste au point 3.
+
+**2. La comparaison, après**
+
+- Entités décodées en une seule passe, `&lt;` et `&gt;` compris (l'ancienne décodait
+  `&amp;` avant les autres : « `&amp;lt;` » serait devenu « < »).
+- Texte de la page : sans `<head>`, `<script>`, `<style>`, `<svg>`, `<template>`,
+  `<noscript>` ni commentaires, puis sans les balises. Une valeur d'attribut qui contient
+  « > » ne coupe plus la balise.
+- Réponse du schéma : c'est du texte. Seules de vraies balises en sont retirées, celles
+  que Google lit dans une réponse (`<p>`, `<ul>`, `<li>`, `<a>`, `<strong>`…) ; aucune
+  réponse n'en porte aujourd'hui.
+- Pages dont le schéma reprend la source du guide (`/guide-declarations` et ses pages
+  filles, pas la calculette) : le balisage de `FormattedText.tsx` est retiré de la
+  réponse, et la puce « • » des deux côtés. Rien d'autre n'y est toléré, et aucun
+  balisage n'est toléré ailleurs (un `**` ajouté à une réponse de `/tarifs` échoue).
+- Le contrôle prouve une inclusion : tout le texte de la réponse du schéma est à
+  l'écran, d'un seul tenant, espaces mises à part. Il ne prouve pas l'inverse : une
+  phrase ajoutée à l'écran après la fin de la réponse passe. Quatre réponses de `/faq`
+  finissent ainsi par une phrase à lien que le schéma n'a pas (revenus PDSA,
+  rétrocessions versées, cotisations URSSAF, régime fiscal) : à trancher avec le point 3
+  si `aPlain` est repris.
+- Le message d'erreur montre le premier écart : les derniers mots communs, la suite dans
+  le schéma, la suite dans la page.
+
+Essais par mutation sur le build, tous vus : un mot changé à l'écran (accueil, article,
+article à « < », `/faq`, guide, page fille), un mot ajouté dans une réponse à puces du
+guide, une virgule retirée à l'écran, un mot changé dans le schéma, un `**` ajouté dans
+le schéma de `/tarifs`.
+
+**3. Les 26 écarts de texte, à trancher par le propriétaire**
+
+Non corrigés : contenu verbatim, période d'observation SEO. `verify-site.mjs` échoue sur
+ces 26 réponses, et sur elles seules, tant qu'elles ne sont pas tranchées.
+
+`/faq` (12). À l'écran la réponse contient une liste ; `aPlain` (le schéma) la met à plat
+à la main dans `src/pages/faq.astro`.
+
+| Question | Ce qui diffère (schéma / écran) |
+|---|---|
+| Comment j'enregistre mes journées d'activité ? | « la date…, le lieu…, le montant encaissé (…). » / trois puces « 📅 La date », « 🏥 Le lieu », « 💰 Le montant encaissé » (émojis masqués à l'œil, classe `sr`) |
+| Je peux gérer un cabinet propre en plus de mes remplacements ? | « remplacement… ; vacation… ; cabinet propre…. » / trois puces à majuscule, sans « ; » ni point |
+| Comment j'enregistre mes revenus salariés ? | « le type…, le montant net imposable, la période concernée. » / trois puces à majuscule ; et l'écran finit par « … ta fiscalité — comment choisir. » (lien), absent du schéma |
+| Qu'est-ce que les rétrocessions versées ? | un point après « de ton BNC » et après « ton revenu imposable » / deux puces sans point |
+| Le calendrier, il affiche quoi exactement ? | « vert = journées payées, orange = …, bleu = …, gris = …. » / « 🟢 Vert : », « 🟠 Orange : », « 🔵 Bleu : », « ⚫ Gris : » en puces |
+| Mes cotisations URSSAF, elles se calculent toutes seules ? | « … 21,2% ; PAMC (…) … détaillées. » / deux puces sans « ; » ni point |
+| Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ? | « … déductibles ; régime réel — … réelles. » / puces « Micro-BNC », « Régime réel », sans « ; » ni point |
+| C'est quoi le Super-Net ? | « cotisations sociales (…), impôt sur le revenu (…), charges professionnelles (…). » / trois puces à majuscule ; et l'écran finit par « … tu gagnes vraiment — le calcul expliqué. » (lien), absent du schéma |
+| J'exporte facilement mes données pour ma compta ? | « tes journées…, les montants…, le détail…, tes revenus…, le statut de paiement (…). » / cinq puces à majuscule |
+| Je peux générer des factures et des contrats ? | « factures d'honoraires… ; contrats de remplacement… intégrée. » / deux puces à majuscule, sans « ; » ni point final |
+| Je peux stocker mes documents administratifs ? | « ta licence…, tes contrats signés, tes attestations…, ton diplôme… » / quatre puces à majuscule |
+| Comment te contacter ? | « … on te répond vite : contact@hippodoc.fr. On est… » / l'adresse est un bouton, sans point après elle |
+
+Guide des déclarations (9 questions, 14 réponses avec les pages filles). Le schéma porte
+l'identifiant interne d'une fiche ; l'écran le remplace par un lien nommé.
+
+| Question | Pages | Ce qui diffère (schéma / écran) |
+|---|---|---|
+| Les IJ Madelin (prévoyance privée) sont-elles imposables et soumises à cotisations sociales ? | guide | « (PC-014) » / « (Astuce · Tableau récap des IJ) » |
+| Puis-je changer de régime fiscal (Micro-BNC ou Réel) ? | guide, `2042-c-pro` | « voir QT-014 » / « voir Question · Le choix du régime fiscal » |
+| Comment déclarer si mon CA est en ZFU et Micro-BNC (remplaçant) ? | guide, `2042-c-pro` | « détail QT-049. » / « détail Question · Comment proratiser le plafond…. » |
+| Où déclarer mes IJ Madelin sur la DSFU (volet PAMC) ? | guide | « (PC-014) » / « (Astuce · Tableau récap des IJ) » |
+| La France Rurale Revitalisée (FRR) remplace-t-elle la ZRR ? | guide, `2042-c-pro` | « détail QT-049. » / « détail Question · Comment proratiser le plafond…. » |
+| Comment compter les 60 jours de PDSA pour l'exonération ? | guide, `2042-c-pro` | « (PC-003) » / « (Astuce · PDSA en pratique) » |
+| C'est quoi la « Contribution Additionnelle Maladie » (CAM 3,25 %) sur mon avis URSSAF ? | guide | deux énumérations à virgules et point final / deux listes à puces sans virgules ni point ; « voir PC-015 » / « voir Astuce · DPC » ; « cf. CASE-006 » / « cf. Case · DSAV » |
+| IJ CPAM hors ALD : pourquoi plus en case 1AJ en 2026 ? | guide | « voir QT-041 » / « voir Question · IJ CPAM hors ALD en micro-BNC » |
+| Pourquoi la case DSFA est-elle vide quand je suis au BNC réel ? | guide, `dsfu-pamc` | « voir QT-020 » / « voir Question · Comment déclarer si mon CA est… » ; « règles RO-006 / RO-015 » / « Règle d'or · Exonération ZFU / PDSA / Règle d'or · RSPM + PDSA » |
+
+Deux manières de les fermer, au choix du propriétaire : aligner le schéma sur l'écran
+(`aPlain` de `/faq` ; dans le guide, dériver la réponse du schéma du rendu, renvois
+nommés compris), ou l'inverse. L'une et l'autre touchent un JSON-LD ou un texte en
+période d'observation.
+
+**4. Vu en passant, non corrigé**
+
+- **Le schéma du guide envoie le balisage tel quel** : `**`, accents graves, ⚠️, 💡 et
+  puces sont dans `acceptedAnswer.text` (35 des 49 réponses du guide portent un `**`).
+  Ce n'est pas un écart de texte, la comparaison le neutralise ; c'est une question de
+  propreté du JSON-LD, à traiter avec les renvois du point 3 si le schéma est repris.
+- **Une énumération coupée dans une parenthèse** : dans la réponse sur la CAM,
+  `detectEnumeration` (`FormattedText.tsx`) coupe « le DPC (qui est conventionné, voir
+  PC-015) » à la virgule, d'où deux puces à l'écran, « le DPC (qui est conventionné » et
+  « voir Astuce · DPC) ». Défaut d'affichage, texte visible : à corriger sur décision.
+
+**Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Scripts de tri et de mutation :
+dossier de travail, hors dépôt.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

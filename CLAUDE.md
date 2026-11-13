@@ -253,8 +253,16 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   CARMF, 2035, 2042-C PRO, DSFU, RSPM, PAMC, Micro-BNC, rétrocession, contrat et licence
   de remplacement), et, dans le panneau `data-panel="remplacant"` de « Pour qui », celle
   de « 2035 », « 2042-C PRO », « DSFU », « contrat de remplacement » et « serveur officiel
-  URSSAF » (§ 9.ex). L'égalité FAQ visible / `FAQPage` porte sur les questions partout,
-  et aussi sur les réponses sur l'accueil seulement (ailleurs, 64 écarts à trier).
+  URSSAF » (§ 9.ex). L'égalité FAQ visible / `FAQPage` porte sur les questions et sur les
+  réponses, sur toutes les pages (§ 9.ey). ⚠️ `verify-site.mjs` échoue pour l'instant sur
+  26 réponses, et sur elles seules : `/faq` 12 (listes à l'écran, à plat dans le schéma),
+  guide des déclarations et deux pages filles 14 (renvois « QT-014 » rendus en liens
+  nommés). Ce sont de vrais écarts de texte, listés en § 9.ey, en attente de la décision
+  du propriétaire : ne corriger ni le texte ni le JSON-LD pour les faire passer, et ne
+  pas assouplir la comparaison. Toute autre erreur est nouvelle. Dans le guide, le
+  balisage de `FormattedText.tsx` (`**`, `*`, accents graves, ⚠️ ✅ 💡, puces) est retiré
+  de la réponse du schéma avant de comparer : une syntaxe ajoutée à ce composant s'ajoute
+  à `sansBalisageDuGuide`.
 - **Chiffres** : journées et lieux du bloc fondateur relevés en base par `count(*)`
   (MIGRATION.md § 9.u), datés dans l'en-tête de `Fondateur.astro` et dans MIGRATION.md
   § 9.ec (la date n'est plus affichée sur la page), jamais écrits à la main. Le compte de la
