@@ -5,7 +5,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BlogSlides from '@/components/BlogSlides.tsx';
-import { SITE_URL, APP_URL, LOGO_URL, CALENDLY_URL, PRODUCT_DEFINITION } from '@/lib/site';
+import { SITE_URL, APP_URL, LOGO_URL, CALENDLY_URL, PRODUCT_DEFINITION, AUTEURS } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
 import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
@@ -18,6 +18,7 @@ import '@/styles/blog-article.css';
 import { entreesSommaire } from '@/lib/article-sommaire';
 import { EMO_SRC } from '@/lib/article-emojis.mjs';
 import { donneesPartage, nomImagePartage } from '@/lib/image-partage.mjs';
+import portraitRyan from '@/assets/founders/ryan-goburdhun.jpeg';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -69,11 +70,16 @@ const RE_EMO = new RegExp(EMO_SRC, 'gu');
 const masquerEmojis = (html: string) => html.replace(RE_EMO, (m) => `<span class="em-cache" aria-hidden="true">${m}</span>`);
 /* Repère de la partie en cours, repli pour les moteurs sans `scroll-target-group` (Safari 26,
    Firefox 159) : une ligne de temps par titre du plan, nommée ici ; chaque lien suit la sienne et
-   celle de la partie suivante. Une petite feuille écrite au rendu, aucun script. */
+   celle de la partie suivante. Une petite feuille écrite au rendu, aucun script, sous la largeur
+   du rail seulement (ailleurs, le moteur calculait des lignes de temps pour un rail absent).
+   Comme le repère natif de Chrome : la première partie est allumée dès le haut de la page (son
+   lien, `som-debut`, ne suit que la ligne de la partie suivante), la dernière le reste jusqu'au
+   bas (`som-fin` : elle ne suit que la sienne). Une ligne de temps `none` ne convient pas :
+   WebKit applique quand même l'état final de l'animation. */
 const nomLigne = (i: number) => `--p${i}`;
 const lignes = plan.map((e, i) => `[id="${e.slug.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]{view-timeline-name:${nomLigne(i)}}`).join('');
 const feuilleRepere = showToc
-  ? `@supports (animation-timeline: view()) and (not (scroll-target-group: auto)){.fiche{timeline-scope:${[...plan.map((_, i) => nomLigne(i)), '--pfin'].join(',')}}${lignes}.fiche [data-blog-fin]{view-timeline-name:--pfin}}`
+  ? `@supports (animation-timeline: view()) and (not (scroll-target-group: auto)){@media (min-width:1040px){.fiche{timeline-scope:${plan.map((_, i) => nomLigne(i)).join(',')}}${lignes}}}`
   : '';
 /* Plan long (plus de 14 parties) qui a des sous-parties : le rail de l'ordinateur ne montre que les
    parties (frais-pros-medecin-liberal-2026 : 11 entrées sur 22, il tient dans un écran de 800 px) ;
@@ -82,10 +88,14 @@ const dense = plan.length > 14 && plan.some((e) => e.sous);
 const auRail = dense ? principal : plan;
 const lignesDuLien = (slug: string) => {
   const i = plan.findIndex((e) => e.slug === slug);
-  if (i < 0) return undefined;
+  if (i < 0) return { style: undefined, debut: false, fin: false };
   const k = auRail.findIndex((e) => e.slug === slug);
   const suivante = k >= 0 ? auRail[k + 1] : plan[i + 1];
-  return `--ta:${nomLigne(i)};--tb:${suivante ? nomLigne(plan.indexOf(suivante)) : '--pfin'}`;
+  return {
+    style: `--ta:${nomLigne(i)};--tb:${suivante ? nomLigne(plan.indexOf(suivante)) : nomLigne(i)}`,
+    debut: k === 0,
+    fin: !suivante,
+  };
 };
 
 const {
@@ -134,7 +144,8 @@ async function croppedCover(publicPath: string, ratio: number, format: 'jpg' | '
    confiance, 132 × 165 px sur ordinateur (elle repoussait le texte à 1,5 écran sur
    téléphone). Candidats du srcset : 160, 264 et 400 px (deux fois la plus grande
    vignette, et un peu plus), bornés à la largeur de la source et dédoublonnés. Le `src`
-   reste la variante de 900 px d'avant (les robots qui ne lisent pas le srcset). */
+   reste celui d'avant (900 px, ou la largeur de l'affiche quand elle est plus petite :
+   les robots qui ne lisent pas le srcset). */
 const coverImage = await resolveBlogImage(cover, 900);
 const coverVariants = (
   await Promise.all([160, 264, 400].map((w) => resolveBlogImage(cover, w)))
@@ -178,9 +189,11 @@ const related = (relatedArticles ?? [])
   .filter((p) => p !== undefined)
   .slice(0, 6);
 
+/* Vignettes des articles connexes : 40 × 50 px (44 × 55 au téléphone) ; 132 px de large
+   suffisent à trois fois cette taille (288 px servaient l'ancienne vignette de 96 px). */
 const relatedCovers = new Map<string, string>();
 for (const r of related) {
-  const img = await resolveBlogImage(r.data.cover, 288);
+  const img = await resolveBlogImage(r.data.cover, 132);
   if (img) relatedCovers.set(r.id, img.src);
 }
 
@@ -188,11 +201,24 @@ for (const r of related) {
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-/* JSON-LD. L'auteur renvoie à sa fiche de /qui-sommes-nous (même `@id` que la Person de
-   cette page, § 9.fj) : les 48 articles se rattachent à elle au lieu de redéclarer une
-   personne sans identifiant. Le nom ne change pas. */
-const AUTEUR_ANCRE = '/qui-sommes-nous#ryan-goburdhun';
-const authorSchema = { '@type': 'Person', '@id': `${SITE_URL}${AUTEUR_ANCRE}`, name: author, url: `${SITE_URL}/qui-sommes-nous` };
+/* JSON-LD. Un auteur connu (table AUTEURS de site.ts) renvoie à sa fiche de /qui-sommes-nous
+   (même `@id` que la Person de cette page, § 9.fj) : les 48 articles se rattachent à elle au
+   lieu de redéclarer une personne sans identifiant. Le nom ne change pas. Un auteur absent
+   de la table n'a ni lien ni identifiant (il ne prend pas ceux d'un autre). */
+const fiche = AUTEURS[author];
+const authorSchema = fiche
+  ? { '@type': 'Person', '@id': `${SITE_URL}${fiche.ancre}`, name: author, url: `${SITE_URL}${fiche.ancre.split('#')[0]}` }
+  : { '@type': 'Person', name: author };
+/* Portrait de l'auteur (bloc auteur) : 56 px, et son double, comme sur l'accueil (mêmes fichiers). */
+const portrait = fiche?.portrait === 'ryan'
+  ? await Promise.all((['avif', 'webp'] as const).map((format) => getImage({ src: portraitRyan, format, width: 56, widths: [56, 112] })))
+  : null;
+/* « Fiche Fiscalité #4 » puis « Épisode 4 » : le même numéro deux fois. Quand la pastille le
+   porte, « Épisode N » reste dans le texte, masqué à l'œil (classe `sr`). */
+const episodeRepete = !!categoryNumber && episodeNumber !== undefined && categoryNumber.replace(/\D/g, '') === String(episodeNumber);
+/* Appel à l'essai : un titre long (plus de 90 signes, deux articles) passe d'un cran plus petit. */
+const ctaTitre = cta ?? 'Prêt à simplifier ta gestion de remplaçant ?';
+const ctaLong = [...stripMiniMarkdown(ctaTitre).replace(new RegExp(EMO_SRC, 'gu'), '').trim()].length > 90;
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -253,8 +279,6 @@ const misAJour = updatedDate && updatedDate.getTime() > pubDate.getTime() ? upda
 /* Habillage DA 2026 (phase 5c, MIGRATION.md § 9.ej). Les caractères que la police
    du site n'a pas (les flèches) sont dessinés ; le caractère reste dans le texte,
    masqué à l'œil (classe `sr`). */
-const flecheGauche =
-  '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg>';
 const flecheDroite =
   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
 /* Un mot et la ponctuation qui le suit après une espace (? ! : ; / »), ou le
@@ -296,12 +320,13 @@ const croix =
   <Fragment slot="head">
     {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
     <meta name="theme-color" content="#C9DEFF" />
+    {/* Le repère de la partie en cours, repli sans scroll-target-group (feuille écrite au rendu ;
+        dans <head> : une feuille n'a pas sa place dans <main>). */}
+    {feuilleRepere && <style is:inline set:html={feuilleRepere} />}
   </Fragment>
   {/* La pastille survole le ciel du haut de la page, qui lui réserve la place. */}
   <Header />
   <main id="top" class:list={['page', 'fiche', 'da-bloc', showToc && 'guidee']}>
-    {/* Le repère de la partie en cours, repli sans scroll-target-group (feuille écrite au rendu). */}
-    {feuilleRepere && <style is:inline set:html={feuilleRepere} />}
     {/* Fil de lecture (téléphone et tablette) : 3 px dans le bas de la pastille de l'en-tête, calé sur le corps. */}
     <div class="lecture-fil" aria-hidden="true"></div>
 
@@ -321,8 +346,7 @@ const croix =
       </ol>
     </nav>
 
-    {/* Masqué à l'écran (le fil d'Ariane porte le même lien), gardé dans la page. */}
-    <a href="/blog" class="retour"><span class="sr">←</span>{' '}<Fragment set:html={flecheGauche} />Retour au blog</a>
+    {/* « Retour au blog » est retiré (§ 9.fj) : le fil d'Ariane porte le même lien, juste au-dessus. */}
 
     {/* Métadonnées d'instrumentation, injectées au build : `page-analytics.ts` les
        lit pour blog_article_viewed / blog_scroll_depth / blog_read_completed. Les
@@ -345,7 +369,7 @@ const croix =
             </a>
           )}
           {episodeNumber !== undefined && seriesId !== 'divers' && (
-            <span class="episode">Épisode {episodeNumber}</span>
+            <span class:list={['episode', episodeRepete && 'sr']}>Épisode {episodeNumber}</span>
           )}
         </div>
         <h1 class="aff" set:html={nouer(echapper(title))} />
@@ -353,7 +377,7 @@ const croix =
             auteur). Le nom de l'auteur mène à sa fiche (§ 9.fj). Quand l'article a été mis
             à jour, la date de publication reste dans la page, masquée à l'œil. */}
         <div class:list={['infos', misAJour && 'a-jour']}>
-          <a href={AUTEUR_ANCRE} class="auteur">{author}</a>
+          {fiche ? <a href={fiche.ancre} class="auteur">{author}</a> : <span class="auteur">{author}</span>}
           <time class="publie" datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
           {misAJour && (
             <span class="maj">Mis à jour le <time datetime={misAJour.toISOString()}>{formatDate(misAJour)}</time></span>
@@ -386,18 +410,22 @@ const croix =
             <span class="som-tete-nom">Sommaire</span>
             <svg class="som-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </summary>
-          <nav aria-label="Sommaire de l'article" class="som-nav">
+          {/* role explicite : le mode lecture de Firefox (Readability) écarte une navigation ainsi
+              marquée, et le texte de l'article y commence par « L'essentiel », pas par le plan. */}
+          <nav aria-label="Sommaire de l'article" class="som-nav" role="navigation">
             <p class="som-nom">Sommaire</p>
             <ol role="list" id="sommaire-liste" class="som-liste">
               {plan.map((e) => {
                 const h = toc.find((x) => x.slug === e.slug)!;
                 const l = libelle(h);
+                const repere = lignesDuLien(e.slug);
                 return (
                   <li class:list={['partie', e.sous && 'sous-partie', e.horsCompte && 'hors-compte']}>
                     <a
                       href={`#${e.slug}`}
                       data-no={e.numero && (modeAuteur || e.sous) ? e.numero : undefined}
-                      style={lignesDuLien(e.slug)}
+                      class:list={[repere.debut && 'som-debut', repere.fin && 'som-fin']}
+                      style={repere.style}
                     >{l.avant && <span class="em-cache" aria-hidden="true">{l.avant}</span>}<span class="som-txt" set:html={masquerEmojis(nouer(echapper(l.milieu)))} />{l.apres && <span class="em-cache" aria-hidden="true">{l.apres}</span>}</a>
                   </li>
                 );
@@ -464,7 +492,7 @@ const croix =
             {related.map((r, i) => (
               <a href={`/blog/${r.id}`} data-ph="blog_related" data-ph-rank={i + 1} class="carte">
                 {relatedCovers.get(r.id) && (
-                  <img src={relatedCovers.get(r.id)} alt="" loading="lazy" width="96" height="120" />
+                  <img src={relatedCovers.get(r.id)} alt="" loading="lazy" width="44" height="55" />
                 )}
                 <div>
                   <p class="carte-titre" set:html={nouer(echapper(r.data.title))} />
@@ -488,7 +516,7 @@ const croix =
         aria-label="Essayer Hippodoc"
         data-blog-zone="cta"
       >
-        <p class="essai-titre" set:html={masquerEmojis(nouer(miniMarkdownToHtml(cta ?? 'Prêt à simplifier ta gestion de remplaçant ?')))} />
+        <p class:list={['essai-titre', ctaLong && 'essai-titre-long']} set:html={masquerEmojis(nouer(miniMarkdownToHtml(ctaTitre)))} />
         <p class="essai-def" set:html={nouer(echapper(PRODUCT_DEFINITION))} />
         <a
           href={ctaHref ?? signupUrl}
@@ -521,9 +549,17 @@ const croix =
       {/* Bloc auteur — signal E-E-A-T : sur des sujets « argent/santé », Google valorise
           l'expertise identifiable de l'auteur. */}
       <aside class="signature" aria-label="À propos de l'auteur">
-        <span class="initiales">
-          {author.replace(/^Dr\.?\s*/i, '').split(/\s+/).map((n) => n[0]).slice(0, 2).join('')}
-        </span>
+        {/* Le portrait de l'auteur (décor : son nom suit), les initiales pour un auteur sans portrait. */}
+        {portrait ? (
+          <picture class="portrait">
+            <source type="image/avif" srcset={portrait[0].srcSet.attribute} sizes="56px" />
+            <img src={portrait[1].src} srcset={portrait[1].srcSet.attribute} sizes="56px" alt="" width="56" height="56" loading="lazy" decoding="async" />
+          </picture>
+        ) : (
+          <span class="initiales">
+            {author.replace(/^Dr\.?\s*/i, '').split(/\s+/).map((n) => n[0]).slice(0, 2).join('')}
+          </span>
+        )}
         <div class="signature-texte">
           <p class="nom">{author}</p>
           {authorRole && <p class="role">{authorRole}</p>}
@@ -575,8 +611,8 @@ const croix =
       </aside>
     </article>
 
-    {/* Retour en haut : masqué quand le rail ou la pastille existent (tous les articles
-        aujourd'hui), gardé pour un article sans sommaire. */}
+    {/* Retour en haut, en bas de page : sous 1 040 px (la pastille du sommaire est partie avec
+        le texte) et sans rail ; le rail a le sien. */}
     <div class="remonter">
       <a
         href="#top"

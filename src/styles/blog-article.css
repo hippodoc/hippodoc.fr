@@ -61,7 +61,6 @@
 /* La feuille de lecture : une feuille sable aux coins ronds, de la tête du texte à la fin de l'article. */
 .fiche .article::before { content: ""; grid-column: plein; grid-row: 5 / 16; border-radius: var(--r-xl); background: var(--sand); }
 .fiche .fil { grid-row: 1; }
-.fiche .retour { display: none; }
 .fiche .marques { grid-row: 2; }
 .fiche .aff { grid-row: 3; }
 .fiche .infos { grid-row: 4; }
@@ -94,7 +93,9 @@
 .fiche::after { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
 
 /* ───────── Le ciel : fil d'Ariane, série, titre, ligne de confiance, vignette ───────── */
-.fiche .fil { margin-bottom: 14px; font-size: 0.875rem; color: var(--ink-2); }
+.fiche .fil { margin-bottom: 21px; font-size: 0.875rem; color: var(--ink-2); }
+/* 21 px : la zone de toucher d'un lien du fil (12 px sous sa ligne) et celle de la pastille de série (9 px
+   au-dessus d'elle) ne se recouvrent pas. */
 .fiche .fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
 .fiche .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.35); text-underline-offset: 4px; }
 .fiche .fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
@@ -137,8 +138,9 @@
 .fiche .som[open] .som-chevron { rotate: 180deg; }
 .fiche .som-nom { display: none; }
 .fiche .som-nav { padding-bottom: 12px; }
-/* La pastille mène à la liste : elle s'arrête sous l'en-tête, la ligne « Sommaire » visible au-dessus. */
-.fiche #sommaire-liste { scroll-margin-top: 150px; }
+/* La pastille mène à la liste : elle s'arrête sous l'en-tête, la ligne « Sommaire » visible au-dessus
+   (66 px de plus que le `scroll-padding-top` du site, 84 px : les deux s'ajoutent). */
+.fiche #sommaire-liste { scroll-margin-top: 66px; }
 .fiche .som-liste { margin: 0; padding: 0; list-style: none; counter-reset: som; font-size: 0.96875rem; line-height: 1.35; }
 .fiche .som-liste > li.partie { counter-increment: som; }
 .fiche .som-liste a { position: relative; display: grid; grid-template-columns: 30px minmax(0, 1fr); align-items: baseline; box-sizing: border-box; min-height: 44px; padding: 11px 0; border-radius: 6px; color: var(--ink-2); font-weight: 520; text-decoration: none; }
@@ -156,14 +158,16 @@
 .fiche .som-haut { display: none; }
 
 /* Fil de lecture : 3 px dans le bas de la pastille de l'en-tête, d'un bord à l'autre de la pastille.
-   La ligne de temps du corps (--lecture) est déclarée sur <body> : la bulle de chat, hors de la page,
-   la lit aussi (plus bas). */
+   Les lignes de temps du corps (--lecture) et de la carte d'essai (--essai) sont déclarées sur <body> :
+   la bulle de chat, hors de la page, les lit aussi (plus bas). La feuille n'est servie qu'aux articles :
+   `body` suffit (un `:has()` sur le corps coûtait au calcul des styles avant la première peinture). */
 .fiche .lecture-fil { display: none; }
 @keyframes fiche-lecture { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes fiche-lecture-fin { from { opacity: 1; } to { opacity: 0; } }
 @supports (animation-timeline: view()) and (timeline-scope: --lecture) {
-  .da:has(.fiche .corps) { timeline-scope: --lecture; }
+  body { timeline-scope: --lecture, --essai; }
   .fiche .corps { view-timeline-name: --lecture; view-timeline-axis: block; }
+  .fiche .essai { view-timeline-name: --essai; view-timeline-axis: block; }
   /* Logé dans le bas de la pastille de l'en-tête (60 px de haut à 10 px du bord), au-dessus d'elle : il ne passe
      jamais sur le texte. Vide hors de l'animation (une ligne de temps inactive n'affiche rien), il s'efface quand le
      texte sort de l'écran. */
@@ -173,7 +177,12 @@
 }
 
 /* Pastille « Sommaire » (téléphone et tablette) : après un écran de défilement, tant que le texte
-   est à l'écran ; en bas à gauche, loin de la bulle de chat. Sans animation liée au défilement : absente. */
+   est à l'écran. Sous 640 px, en bas à droite : la bulle de chat n'y arrive qu'après la carte d'essai
+   (plus bas), et la pastille y couvre des fins de ligne, dans un texte en drapeau ; à gauche, elle
+   cachait le début des lignes (là où l'œil revient). De 640 à 1 039 px, la bulle est là dès
+   l'arrivée : la pastille se pose au-dessus d'elle, sur le même axe (elle ne touche plus le texte à
+   partir de 728 px). Elle part dès que la fin du corps entre dans l'écran (8 % de sa sortie : elle ne
+   passe pas sur le pli des sources). Sans animation liée au défilement : absente. */
 .fiche .som-pastille { display: none; }
 @property --som-ici { syntax: "<number>"; inherits: false; initial-value: 0; }
 @property --som-fini { syntax: "<number>"; inherits: false; initial-value: 0; }
@@ -183,26 +192,33 @@
   .fiche .som-pastille {
     --vu: calc(var(--som-ici) - var(--som-fini));
     /* Un rond de papier de 44 px, le mot « Sommaire » pour les lecteurs d'écran. */
-    display: inline-flex; align-items: center; justify-content: center; position: fixed; z-index: 48; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); color: var(--brand); text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center; position: fixed; z-index: 48; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); box-sizing: border-box; width: 44px; height: 44px; border-radius: 50%; background: var(--paper); color: var(--brand); text-decoration: none;
+    /* Cachée hors de l'animation (animations coupées par l'utilisateur, ligne de temps inactive) : pas de
+       lien invisible sous le doigt ni au clavier. som-ici la montre, som-fini la recache. */
+    visibility: hidden;
     box-shadow: 0 0 0 1px var(--line), 0 4px 14px rgba(20, 37, 79, 0.10);
     opacity: var(--vu); translate: 0 calc((1 - var(--vu)) * 12px);
     animation: som-ici linear both, som-fini linear both;
   }
-  .fiche a.som-pastille { animation-timeline: scroll(root block), --lecture; animation-range: 70vh 100vh, exit 0% exit 30%; }
+  .fiche a.som-pastille { animation-timeline: scroll(root block), --lecture; animation-range: 70vh 100vh, exit 0% exit 8%; }
   .fiche .som-pastille:hover { background: var(--sky-soft); }
+  @media (min-width: 640px) { .fiche .som-pastille { right: max(22px, env(safe-area-inset-right, 0px)); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); } }
 }
 @media (prefers-reduced-motion: reduce) { .fiche .som-pastille { translate: none; } }
 
 /* La bulle de chat sur téléphone (CLAUDE.md, « Bulle de chat sur téléphone ») : sur un article, elle
-   n'arrive qu'à la fin du texte. Pendant la lecture, elle couvrait un à trois mots en bout de ligne.
-   Quand la fin du corps entre dans l'écran, elle paraît sur 120 px de défilement. Écrite avec
-   l'identifiant seul, comme /essai : elle l'emporte sur la plage du site (poids nul). Sans lignes de
-   temps liées à un élément, la règle du site s'applique (bulle après 144 px). Deux règles, deux
-   sélecteurs : réunies, la minification fusionne l'animation et sa ligne de temps. */
+   n'arrive qu'après le texte, une fois passée la carte d'essai. Pendant la lecture, elle couvrait un à
+   trois mots en bout de ligne ; à la fin du corps, elle se posait sur le pli des sources, puis sur les
+   « + » des questions et le bout du bouton d'essai (un appui y ouvrait le chat). Elle paraît de 60 à
+   180 px de défilement après que le bas de la carte d'essai est entré dans l'écran ; jusque-là, la
+   carte porte le contact (« Prendre 15 min avec Ryan »). Écrite avec l'identifiant seul, comme
+   /essai : elle l'emporte sur la plage du site (poids nul). Sans lignes de temps liées à un élément,
+   la règle du site s'applique (bulle après 144 px). Deux règles, deux sélecteurs : réunies, la
+   minification fusionne l'animation et sa ligne de temps. */
 @supports (animation-timeline: view()) and (timeline-scope: --lecture) {
   @media (max-width: 639.98px) {
     #crisp-launcher { animation: fiche-bulle linear both; }
-    body #crisp-launcher { animation-timeline: --lecture; animation-range: exit 0px exit 120px; }
+    body #crisp-launcher { animation-timeline: --essai; animation-range: exit 60px exit 180px; }
   }
 }
 @keyframes fiche-bulle { from { visibility: hidden; opacity: 0; } to { visibility: visible; opacity: 1; } }
@@ -231,14 +247,17 @@
    du gabarit, `counter-reset` sur le corps ; même compte que le rail). Pas de repère quand l'auteur a
    numéroté ses parties (`.numerote`) : son numéro, en bleu, est en tête du titre. Une sous-partie
    (`t-sous`) n'a ni filet ni repère, elle est plus petite. Un titre d'encadré se fond dans son encadré. */
-.fiche .corps h2, .fiche .corps h3 { font-family: var(--display); font-weight: var(--dw); color: var(--ink); text-wrap-style: balance; scroll-margin-top: 96px; }
+.fiche .corps h2, .fiche .corps h3 { font-family: var(--display); font-weight: var(--dw); color: var(--ink); text-wrap-style: balance; scroll-margin-top: 12px; }
 .fiche .corps h2 { --t: 1.5625rem; position: relative; margin: 44px 0 12px; font-size: var(--t); line-height: 1.16; letter-spacing: -0.026em; }
 .fiche .corps h3 { margin: 32px 0 10px; font-size: 1.1875rem; line-height: 1.25; letter-spacing: -0.014em; }
 .fiche .corps h4 { margin: 24px 0 8px; font-size: 1em; font-weight: var(--tb); }
 .fiche .corps > h2[data-np]::before { content: ""; display: block; width: 38px; height: 3px; margin-bottom: 14px; border-radius: 2px; background: var(--brand); }
 .fiche .corps > h2[data-np]:not(.t-sous) { counter-increment: np-pos; }
 .fiche .corps:not(.numerote) > h2[data-np]:not(.t-sous)::before {
+  /* Texte de remplacement vide (seconde déclaration ; la première pour les moteurs qui ne le lisent pas) :
+     le repère n'entre pas dans le nom du titre (« 01 / 15 Ta première année… »). */
   content: counter(np-pos, decimal-leading-zero) " / " counter(np-tot, decimal-leading-zero);
+  content: counter(np-pos, decimal-leading-zero) " / " counter(np-tot, decimal-leading-zero) / "";
   width: auto; height: auto; padding-left: 50px; border-radius: 0;
   background: linear-gradient(var(--brand), var(--brand)) 0 50% / 38px 3px no-repeat;
   font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; font-weight: 640; letter-spacing: 0.04em; line-height: 1rem; color: var(--ink-2);
@@ -248,7 +267,7 @@
 /* Numéros écrits par l'auteur (« 1. », « 4.1 », « Étape 1 ») : en bleu de marque. Une touche 1️⃣ qui
    numérote seule son titre : son chiffre, écrit par la feuille devant le texte (l'émoji est masqué). */
 .fiche .corps .t-no { color: var(--brand); }
-.fiche .corps .t-txt[data-touche]::before { content: attr(data-touche) "."; margin-right: 0.28em; color: var(--brand); }
+.fiche .corps .t-txt[data-touche]::before { content: attr(data-touche) "."; content: attr(data-touche) "." / ""; margin-right: 0.28em; color: var(--brand); }
 
 /* ───────── Listes ─────────
    Le repère sort du texte et se range dans une marge de 28 px ; 8 px entre deux éléments. La marque
@@ -260,11 +279,16 @@
 .fiche .corps li:last-child { margin-bottom: 0; }
 .fiche .corps li > ul, .fiche .corps li > ol { margin: 8px 0 0; }
 .fiche .corps li > p { margin-bottom: 0.5em; }
+/* La hauteur de ligne de l'élément de liste, en px, pour caler un rond sur sa première ligne. `lh` dans un
+   ::before qui change de corps (le chiffre d'une étape, d'une touche) prendrait la ligne du ::before :
+   les ronds sortaient 6 px au-dessus du texte. Une propriété enregistrée se calcule sur l'élément. */
+@property --lig { syntax: "<length>"; inherits: true; initial-value: 26px; }
+.fiche .corps li { --lig: 1lh; --decale: 0px; }
 /* Puce : un petit rond bleu. */
-.fiche .corps ul:not(.kv) > li:not([data-etat], [data-touche])::before { content: ""; position: absolute; left: 7px; top: calc(0.5lh - 3.5px); width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
+.fiche .corps ul:not(.kv) > li:not([data-etat], [data-touche])::before { content: ""; position: absolute; left: 7px; top: calc(var(--decale, 0px) + 0.5lh - 3.5px); width: 7px; height: 7px; border-radius: 50%; background: var(--brand); }
 .fiche .corps li > ul > li:not([data-etat], [data-touche])::before { width: 6px; height: 6px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--brand); }
 /* Flèche (« → », 👉 en marque, `data-m="fleche"` du plugin) : une petite flèche bleue. */
-.fiche .corps ul.fl > li[data-m="fleche"]:not([data-etat], [data-touche])::before { left: 2px; top: calc(0.5lh - 8px); width: 16px; height: 16px; border-radius: 0; background: var(--brand); -webkit-mask: var(--i-fleche) center / contain no-repeat; mask: var(--i-fleche) center / contain no-repeat; box-shadow: none; }
+.fiche .corps ul.fl > li[data-m="fleche"]:not([data-etat], [data-touche])::before { left: 2px; top: calc(var(--decale, 0px) + 0.5lh - 8px); width: 16px; height: 16px; border-radius: 0; background: var(--brand); -webkit-mask: var(--i-fleche) center / contain no-repeat; mask: var(--i-fleche) center / contain no-repeat; box-shadow: none; }
 /* Marques d'état : coche, croix, triangle dans un rond de 22 px, aux seuls jetons de la DA. Oui : vert d'état ;
    attention : ambre d'état ; non : croix d'encre sur fond neutre (la DA n'a pas de rouge, la forme porte le sens). */
 .fiche .corps li[data-etat] { padding-left: 32px; }
@@ -276,7 +300,7 @@
 .fiche .corps :is(ul, ol) > li[data-etat="attention"]::after { left: 4px; top: calc(0.5lh - 7.5px); width: 14px; height: 14px; background: var(--wait); -webkit-mask-image: var(--i-triangle); mask-image: var(--i-triangle); }
 /* Touche 1️⃣ en marque : son chiffre dans un rond. */
 .fiche .corps li[data-touche] { padding-left: 32px; }
-.fiche .corps :is(ul, ol) > li[data-touche]::before { content: attr(data-touche); position: absolute; left: 0; top: calc(0.5lh - 11px); display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--plan-bg); color: var(--plan); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1; }
+.fiche .corps :is(ul, ol) > li[data-touche]::before { content: attr(data-touche); content: attr(data-touche) / ""; position: absolute; left: 0; top: calc(var(--lig) / 2 - 11px); display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--plan-bg); color: var(--plan); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1; }
 /* Légende (calendrier fiscal : « 💸 : Tu paies »…) et listes de l'article qui l'emploie : l'émoji y dit
    quelque chose, il devient son dessin (`data-picto`, posé par le plugin). Quatre dessins, formes opposées
    pour payer (la flèche sort) et recevoir (la flèche entre). Ailleurs, ces émojis sont du décor : une puce. */
@@ -292,14 +316,13 @@
 .fiche .corps .colle { margin-bottom: 0; }
 .fiche .corps .colle + :is(ul, ol) { margin-top: 0; }
 .fiche .corps ul.fl + p.colle, .fiche .corps .colle + p { margin-top: 0; }
-.fiche .corps li.fl-total { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
-.fiche .corps ul:not(.kv) > li.fl-total:not([data-etat], [data-touche])::before { top: calc(10px + 0.5lh - 3.5px); }
+.fiche .corps li.fl-total { --decale: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
 
 /* Étapes : les listes numérotées. Numéro dans un rond de 28 px, un trait de 2 px relie les ronds. */
 .fiche .corps ol { counter-reset: etape; }
 .fiche .corps ol > li { counter-increment: etape; min-height: 28px; margin: 0; padding: 0 0 16px 42px; }
 .fiche .corps ol > li:last-child { padding-bottom: 0; }
-.fiche .corps ol > li:not([data-etat], [data-touche])::before { content: counter(etape); position: absolute; left: 0; top: calc(0.5lh - 14px); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--plan-bg); color: var(--plan); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; font-weight: var(--tb); line-height: 1; }
+.fiche .corps ol > li:not([data-etat], [data-touche])::before { content: counter(etape); position: absolute; left: 0; top: calc(var(--lig) / 2 - 14px); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--plan-bg); color: var(--plan); font-family: "Google Sans Flex Chiffres", var(--text); font-size: 0.875rem; font-weight: var(--tb); line-height: 1; }
 .fiche .corps ol > li[data-no]::before { content: attr(data-no); font-size: 0.75rem; }
 .fiche .corps ol > li:not(:last-child, [data-etat])::after { content: ""; position: absolute; left: 13px; top: calc(0.5lh + 16px); bottom: 2px; width: 2px; border-radius: 2px; background: var(--plan-bg); }
 
@@ -316,13 +339,15 @@
 .fiche .corps .kv-s { color: var(--ink-3); }
 .fiche .corps .kv-v { float: right; margin-left: 16px; font-family: "Google Sans Flex Chiffres", var(--text); font-weight: 640; color: var(--ink); }
 .fiche .corps ul.fl.kv > li { padding-left: 0; }
+/* Sur une colonne large, la valeur restait à 520 px de son libellé : le bloc est borné (28 rem). */
+@media (min-width: 700px) { .fiche .corps ul.kv { max-width: 28rem; } }
 .fiche .corps ul.fl.kv > li[data-m]::before, .fiche .corps ul.fl.kv > li[data-m]::after { content: none; }
 
 /* ───────── Encadrés : plats, une étiquette ─────────
    L'essentiel : la carte blanche de tête, à coches. Conseil : ciel doux, ampoule. Hippodoc : tête de la
    mascotte. Alerte : sable chaud, triangle. Le titre d'un encadré seul sous son titre (.t-encadre) en
    devient le haut. Un <div role="note"> (src/lib/remark-callouts.mjs), plus un <aside>. */
-.fiche .corps .callout { position: relative; margin: 28px 0; padding: 18px 20px; border-radius: 18px; font-size: 1rem; line-height: 1.55; }
+.fiche .corps .callout { position: relative; margin: 28px 0; padding: 18px 20px; border-radius: 18px; line-height: 1.55; }
 .fiche .corps .callout > :first-child { margin-top: 0; }
 .fiche .corps .callout > :last-child { margin-bottom: 0; }
 .fiche .corps .callout p { margin-bottom: 0.9em; }
@@ -347,10 +372,9 @@
 .fiche .corps .callout-warning.callout-sans-titre::before { content: "Attention"; background-image: var(--l-triangle); color: var(--wait); }
 .fiche .corps .callout-hippo.callout-sans-titre::before { content: "Le conseil Hippodoc"; padding-left: 32px; background: var(--l-tete) 0 50% / 24px no-repeat; }
 .fiche .corps .callout-essentiel.callout-sans-titre::before { content: "L’essentiel"; background-image: var(--l-liste); }
-/* Points de « L'essentiel » : une coche blanche dans un rond bleu. */
-.fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche]) { padding-left: 30px; }
-.fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche])::before { left: 0; top: calc(0.5lh - 9px); width: 18px; height: 18px; border-radius: 50%; background: var(--brand); box-shadow: none; -webkit-mask: none; mask: none; }
-.fiche .corps .callout-essentiel ul > li:not([data-etat], [data-touche])::after { content: ""; position: absolute; left: 4px; top: calc(0.5lh - 5px); width: 10px; height: 10px; background: var(--paper); -webkit-mask: var(--i-check) center / contain no-repeat; mask: var(--i-check) center / contain no-repeat; }
+/* Points de « L'essentiel » : la puce ronde du corps, pas une coche. Un point sur cinq est une mise en
+   garde (« Un contrat validé par l'Ordre ne te protège pas du fisc ») : une coche y disait « validé », alors
+   que plus bas la coche verte veut dire « oui » (règle des émojis : la forme porte le sens). */
 .fiche .corps .callout-essentiel ul > li + li { margin-top: 10px; }
 
 /* Titre d'encadré : fondu dans son encadré. */
@@ -387,7 +411,10 @@
 /* ───────── Sources ─────────
    Un pli natif (option sourcesPli du plugin) : fermé sous 700 px, une ligne de 52 px entre deux filets ;
    ouvert à partir de 700 px par ::details-content (sans prise en charge, le pli reste un pli). Le texte
-   est toujours dans le HTML. */
+   est toujours dans le HTML. Ouvert ainsi, le <summary> n'est plus un bouton : `display: contents` le
+   retire du parcours au clavier (il restait un arrêt de tabulation dont la touche Entrée basculait un état
+   invisible, et son anneau coupait le « S »). Un lecteur d'écran peut encore l'annoncer « réduit » :
+   le pli est fermé pour le navigateur, seul son contenu est affiché. */
 .fiche .corps .sources-pli { margin: 48px 0 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .fiche .corps .sources-pli > summary { display: flex; align-items: center; gap: 10px; min-height: 52px; cursor: pointer; list-style: none; }
 .fiche .corps .sources-pli > summary::-webkit-details-marker { display: none; }
@@ -408,6 +435,8 @@
   .fiche .corps .sources-pli > :last-child { margin-bottom: 0; }
   @supports selector(::details-content) {
     .fiche .corps .sources-pli::details-content { content-visibility: visible; display: contents; }
+    .fiche .corps .sources-pli > summary { display: contents; }
+    .fiche .corps .sources-pli > summary > h2 { padding: 20px 0 12px; }
   }
 }
 @supports not selector(::details-content) {
@@ -459,6 +488,8 @@
 .fiche .essai::before { content: ""; float: left; width: 50px; height: 58px; margin: -4px 12px 2px -2px; background: url("../assets/blog-article/buste.webp") center bottom / contain no-repeat; pointer-events: none; }
 .fiche .essai p { margin: 0; }
 .fiche .essai .essai-titre { font-family: var(--display); font-size: 1.0625rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.012em; text-wrap-style: balance; }
+/* Un titre de plus de 90 signes (deux articles) : un cran plus petit. */
+.fiche .essai .essai-titre-long { font-size: 0.9375rem; font-weight: 640; line-height: 1.35; }
 .fiche .essai .essai-def { clear: left; margin-top: 12px; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); text-wrap-style: pretty; }
 .fiche .essai .btn { display: flex; box-sizing: border-box; width: 100%; min-height: 48px; margin-top: 14px; padding: 0 12px; font-size: 0.96875rem; white-space: nowrap; }
 .fiche .essai .essai-note { margin-top: 10px; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
@@ -466,8 +497,10 @@
 .fiche .essai-note a { display: inline-flex; align-items: center; min-height: 44px; margin: -10px 0 -12px; border-radius: 6px; font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
 .fiche .essai-note .pt { margin: 0 0.3em; }
 
-/* L'auteur : une carte compacte. */
+/* L'auteur : une carte compacte, son portrait rond de 56 px (celui de l'accueil). */
 .fiche .signature { display: flex; gap: 14px; align-items: flex-start; margin-top: 28px; }
+.fiche .portrait { flex: none; }
+.fiche .portrait img { display: block; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1px var(--line); }
 .fiche .initiales { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(var(--deep), var(--deep-2)); font-size: 0.9375rem; font-weight: var(--dw); color: var(--paper); }
 .fiche .signature-texte { min-width: 0; }
 .fiche .signature p { margin: 0; }
@@ -487,12 +520,11 @@
 .fiche .suite { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line); }
 .fiche .suite h2 { margin: 0 0 4px; font-family: var(--text); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.3; color: var(--ink-2); }
 .fiche .suite ul { margin: 0; padding: 0; list-style: none; }
-.fiche .suite .lien { display: flex; align-items: center; gap: 9px; box-sizing: border-box; min-height: 44px; padding: 6px 0; font-size: 0.9375rem; line-height: 1.35; font-weight: 560; color: var(--ink); text-decoration: none; }
+.fiche .suite .lien { display: flex; align-items: center; gap: 9px; box-sizing: border-box; min-height: 44px; margin: 0; padding: 6px 0; font-size: 0.9375rem; line-height: 1.35; font-weight: 560; color: var(--ink); text-decoration: none; }
 .fiche .suite .lien:hover { color: var(--brand); }
 .fiche .suite .lien svg { flex: none; color: var(--brand); }
 
 .fiche .remonter { margin-top: 20px; text-align: center; }
-.fiche.guidee .remonter { display: none; }
 .fiche .remonter .lien { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); text-decoration: none; }
 
 /* Téléphone : la fin de page tient en 2,5 écrans. Articles liés en rangée de cartes qui défile de côté,
@@ -536,19 +568,25 @@
   .fiche .corps .tbl:not([data-large]) :is(th, td):first-child { padding-left: 12px; }
   .fiche .corps .tbl:not([data-large]) :is(th, td):last-child { padding-right: 12px; }
   .fiche .corps .tbl:not([data-large]) th.tbl-num { white-space: normal; }
-  /* Tableaux larges : une fiche par ligne, le titre de la ligne, puis les paires « titre de colonne … valeur » ;
-     deux paires courtes (« Impôt Non », « Cotisations Oui ») partagent une ligne. Les en-têtes restent dans le
-     tableau pour les lecteurs d'écran (masqués à l'œil) ; les étiquettes de la feuille ne sont pas lues. */
+  /* Tableaux larges : une fiche par ligne, le titre de la ligne, puis les paires « titre de colonne … valeur ».
+     La valeur est un bloc aligné à droite, son titre flotte à gauche : une valeur faite de texte et de gras
+     (« d × 0,316 + 1 065 ») reste d'un seul tenant (en flex, chaque morceau devenait un élément écarté des
+     autres). Deux colonnes courtes (« Impôt Non », « Cotisations Oui ») partagent une ligne, chaque valeur
+     serrée contre son titre et 24 px entre les deux paires ; une cellule courte sans voisine courte prend toute
+     la ligne, comme les autres. Les en-têtes restent dans le tableau pour les lecteurs d'écran (masqués à
+     l'œil ; le plugin écrit les rôles du tableau) ; les étiquettes de la feuille ne sont pas lues. */
   .fiche .corps .tbl[data-large] table, .fiche .corps .tbl[data-large] tbody, .fiche .corps .tbl[data-large] tr, .fiche .corps .tbl[data-large] td { display: block; }
   .fiche .corps .tbl[data-large] thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  .fiche .corps .tbl[data-large] tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; padding: 12px 16px; }
-  .fiche .corps .tbl[data-large] td { grid-column: 1 / -1; }
-  .fiche .corps .tbl[data-large] td[data-court] { grid-column: auto; }
-  .fiche .corps .tbl[data-large] tbody tr:first-child td:first-child::before { content: attr(data-th); content: attr(data-th) / ""; display: block; margin-bottom: 2px; font-size: 0.875rem; font-weight: 520; color: var(--ink-3); }
+  .fiche .corps .tbl[data-large] tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; padding: 12px 16px; }
+  .fiche .corps .tbl[data-large] td { grid-column: 1 / -1; padding: 3px 0; border: 0; text-align: right; }
+  .fiche .corps .tbl[data-large] tbody tr:first-child td:first-child::before { content: attr(data-th); content: attr(data-th) / ""; display: block; float: none; max-width: none; margin: 0 0 2px; font-size: 0.875rem; font-weight: 520; color: var(--ink-3); }
   .fiche .corps .tbl[data-large] tr + tr { border-top: 1px solid var(--line); }
-  .fiche .corps .tbl[data-large] td { display: flex; justify-content: space-between; gap: 16px; padding: 3px 0; border: 0; text-align: right; }
-  .fiche .corps .tbl[data-large] td::before { content: attr(data-th); content: attr(data-th) / ""; flex: 0 1 auto; max-width: 55%; font-size: 0.875rem; font-weight: 520; line-height: 1.45; color: var(--ink-3); text-align: left; }
-  .fiche .corps .tbl[data-large] td:first-child { display: block; grid-column: 1 / -1; padding-bottom: 6px; font-weight: 640; text-align: left; }
+  .fiche .corps .tbl[data-large] td::before { content: attr(data-th); content: attr(data-th) / ""; float: left; max-width: 55%; margin-right: 16px; font-size: 0.875rem; font-weight: 520; line-height: 1.45; color: var(--ink-3); text-align: left; }
+  .fiche .corps .tbl[data-large] td[data-court] { grid-column: auto; text-align: left; }
+  .fiche .corps .tbl[data-large] td[data-court]::before { float: none; margin-right: 8px; }
+  .fiche .corps .tbl[data-large] td[data-court]:not(td[data-court] + td):not(:has(+ td[data-court])) { grid-column: 1 / -1; text-align: right; }
+  .fiche .corps .tbl[data-large] td[data-court]:not(td[data-court] + td):not(:has(+ td[data-court]))::before { float: left; margin-right: 16px; }
+  .fiche .corps .tbl[data-large] td:first-child { grid-column: 1 / -1; padding-bottom: 6px; font-weight: 640; text-align: left; }
   .fiche .corps .tbl[data-large] td:first-child::before { content: none; }
   .fiche .corps .tbl[data-large] tr.tbl-fort, .fiche .corps .tbl[data-large] tr.tbl-total { border-top: 1.5px solid rgba(20, 37, 79, 0.3); }
   .fiche .corps .tbl[data-large] tr.tbl-fort td, .fiche .corps .tbl[data-large] tr.tbl-total td { border: 0; }
@@ -572,7 +610,7 @@
   .fiche .infos { font-size: 0.9375rem; }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 150px; }
   .fiche .couverture { grid-row: 2 / 5; align-self: center; width: 120px; margin: 0; border-width: 4px; border-radius: 14px; box-shadow: var(--clay); }
-  .fiche .questions h2, .fiche .connexes h2 { font-size: 1.625rem; }
+  .fiche .questions h2, .fiche .connexes h2 { font-size: 1.5rem; }
   .fiche .som { margin-bottom: 26px; }
   .fiche .corps .callout { padding: 22px 24px; }
   .fiche .corps :is(h2, h3).t-encadre { padding: 20px 24px 4px; }
@@ -594,21 +632,22 @@
     grid-template-rows: repeat(4, auto) 48px repeat(9, auto) 72px auto;
     padding-top: 120px;
   }
-  .fiche:not(.guidee) { grid-template-columns: [plein-start] minmax(var(--gut), 1fr) [rail-start texte-start titre-start] minmax(0, 624px) [rail-end texte-end titre-end droite-start droite-end] minmax(var(--gut), 1fr) [plein-end]; }
-  .fiche .fil { margin-bottom: 18px; }
   .fiche .marques { margin-bottom: 14px; }
   .fiche .infos { margin-top: 20px; margin-bottom: 36px; }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 170px; }
   .fiche .couverture { width: 132px; border-radius: 16px; }
   .fiche .corps h2 { --t: 1.8125rem; margin-top: 64px; }
   .fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.5rem; margin-top: 44px; }
-  /* Encadrés : le corps des encadrés suit celui du texte (17 px, 18 px pour « L'essentiel »). */
+  /* Encadrés : 17 px pour un corps de 19 (un vrai cran ; plus bas, ils suivent le corps) ; « L'essentiel »,
+     la réponse, à la taille du corps. */
   .fiche .corps .callout { padding: 24px 28px; font-size: 1.0625rem; line-height: 1.55; }
-  .fiche .corps .callout-essentiel { padding: 24px 28px 26px; font-size: 1.125rem; }
+  .fiche .corps .callout-essentiel { padding: 24px 28px 26px; font-size: inherit; }
   .fiche .corps :is(h2, h3).t-encadre { padding: 22px 28px 4px; }
 
-  /* Le rail : collant à gauche du texte, toujours ouvert. */
-  .fiche .som { grid-column: rail; grid-row: 6 / 15; align-self: start; position: sticky; top: var(--haut-colle); box-sizing: border-box; max-height: calc(100vh - var(--haut-colle) - 24px); margin: 0; padding: 4px 8px 12px 0; overflow-y: auto; overscroll-behavior: contain; border: 0; scrollbar-width: thin; }
+  /* Le rail : collant à gauche du texte, toujours ouvert. Il défile quand il est plus haut que la fenêtre ;
+     « Retour en haut » reste alors collé à son bas (sur le sable), et une entrée qui prend le focus s'arrête
+     au-dessus de lui (scroll-padding-bottom). */
+  .fiche .som { grid-column: rail; grid-row: 6 / 15; align-self: start; position: sticky; top: var(--haut-colle); box-sizing: border-box; max-height: calc(100vh - var(--haut-colle) - 24px); margin: 0; padding: 4px 8px 0 0; overflow-y: auto; overscroll-behavior: contain; scroll-padding-bottom: 88px; border: 0; scrollbar-width: thin; }
   @supports selector(::details-content) {
     .fiche .som::details-content { content-visibility: visible; display: contents; }
     .fiche .som > .som-tete { display: none; }
@@ -623,14 +662,46 @@
   .fiche .som-liste a::before { white-space: nowrap; font-size: 0.875rem; }
   /* Plan de plus de 14 parties avec des sous-parties : le rail ne montre que les parties. */
   .fiche .som-dense .som-liste > li.sous-partie { display: none; }
-  /* Long plan (plus de 12 entrées) : entrées resserrées, et un fondu en bas dit que le rail défile. */
+  /* Long plan (plus de 12 entrées) : entrées resserrées. */
   .fiche .som-long .som-liste a { padding-block: 4px; }
-  .fiche .som-long { -webkit-mask-image: linear-gradient(#000 calc(100% - 32px), transparent); mask-image: linear-gradient(#000 calc(100% - 32px), transparent); padding-bottom: 32px; }
-  .fiche .som-haut { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; margin-top: 12px; padding-left: 14px; border-radius: 6px; font-size: 0.875rem; font-weight: var(--tb); color: var(--ink-2); text-decoration: none; }
+  .fiche .som-haut { position: sticky; bottom: 0; display: flex; align-items: center; gap: 6px; box-sizing: border-box; min-height: 48px; margin: 0; padding: 12px 0 12px 14px; border-radius: 0; background: var(--sand); font-size: 0.875rem; font-weight: var(--tb); color: var(--ink-2); text-decoration: none; }
   .fiche .som-haut:hover { color: var(--brand); }
+  .fiche .som-haut:focus-visible { outline-width: 2px; outline-offset: -2px; border-radius: 4px; }
+  /* Fondu au-dessus de « Retour en haut » tant qu'il reste des entrées sous lui (plus bas : il ne paraît que si
+     le rail défile vraiment, et s'efface au bout de la liste). */
+  .fiche .som-haut::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 32px; background: linear-gradient(rgba(251, 246, 234, 0), var(--sand)); opacity: var(--som-reste); pointer-events: none; }
   .fiche .lecture-fil, .fiche .som-pastille { display: none !important; }
   /* Sous la bannière cookies (en bas à gauche), le rail s'arrête au-dessus d'elle. */
   .da:has(#cookie-banner:not([hidden])) .fiche .som { max-height: max(12rem, calc(100vh - 25rem)); }
+  /* Le bas de page a son « Retour en haut » seulement sans rail (le rail a le sien). */
+  .fiche.guidee .remonter { display: none; }
+}
+/* Article sans sommaire (moins de trois parties) entre 1 040 et 1 359 px : pas de colonne de rail, le texte
+   centré. À partir de 1 360 px, la grille des trois zones vaut pour tous (bornée ici : écrite sans borne, cette
+   règle, plus lourde, l'emportait sur celle de 1 360 px, et la carte d'essai tombait dans la marge). */
+@media (min-width: 1040px) and (max-width: 1359.98px) {
+  .fiche:not(.guidee) { grid-template-columns: [plein-start] minmax(var(--gut), 1fr) [rail-start texte-start titre-start] minmax(0, 624px) [rail-end texte-end titre-end droite-start droite-end] minmax(var(--gut), 1fr) [plein-end]; }
+}
+/* Fondu du rail : une animation liée à son propre défilement. Un rail qui ne défile pas n'a pas de ligne de
+   temps active, l'animation ne s'applique pas : --som-reste reste à 0, pas de fondu. Sinon, le fondu suit ce
+   qui reste caché (plein au-delà de 24 px, rien au bout de la liste ; un débord d'un pixel, d'arrondi, ne se
+   voit pas). Deux règles, deux sélecteurs (la minification fusionnerait l'animation et sa ligne de temps). */
+@property --som-reste { syntax: "<number>"; inherits: true; initial-value: 0; }
+@keyframes som-reste { from { --som-reste: 1; } to { --som-reste: 0; } }
+@supports (animation-timeline: scroll()) {
+  @media (min-width: 1040px) {
+    .fiche .som { animation: som-reste linear both; }
+    .fiche details.som { animation-timeline: scroll(self block); animation-range: calc(100% - 24px) 100%; }
+  }
+}
+/* Fenêtre basse (portable de 700 px de haut) : entrées resserrées, pour que le rail tienne plus souvent sans
+   défiler. Au doigt (tablette en paysage) : des entrées de 44 px. */
+@media (min-width: 1040px) and (max-height: 760px) {
+  .fiche .som-liste a { padding-block: 4px; }
+  .fiche .som-nom { margin-bottom: 6px; }
+}
+@media (min-width: 1040px) and (pointer: coarse) {
+  .fiche .som-liste a, .fiche .som-haut { min-height: 44px; }
 }
 /* Repère de la partie en cours : natif (Chrome 140 et suivants)… La couleur et le trait seulement :
    une graisse qui change referait passer une entrée à la ligne. */
@@ -644,13 +715,22 @@
 @property --som-b { syntax: "<number>"; inherits: false; initial-value: 0; }
 @keyframes som-a { from { --som-a: 0; } to { --som-a: 1; } }
 @keyframes som-b { from { --som-b: 0; } to { --som-b: 1; } }
+@property --som-on { syntax: "<number>"; inherits: true; initial-value: 0; }
 @supports (animation-timeline: view()) and (timeline-scope: --x) and (not (scroll-target-group: auto)) {
   @media (min-width: 1040px) {
     /* Même seuil que le repère natif de Chrome : une partie s'allume quand son titre passe la moitié haute de l'écran. */
+    /* La première partie est allumée dès le haut (`som-debut` : --som-a vaut 1, seule la partie suivante
+       l'éteint), la dernière jusqu'au bas (`som-fin` : rien ne l'éteint) ; le numéro passe au bleu, comme
+       dans Chrome. --som-on est enregistrée (héritée) : le ::before du lien reçoit la valeur du lien. */
     .fiche .corps h2 { view-timeline-axis: block; view-timeline-inset: 45% 0px; }
-    .fiche .corps [data-blog-fin] { view-timeline-axis: block; view-timeline-inset: 45% 0px; }
-    .fiche .som-liste li.partie > a { --on: calc(var(--som-a) - var(--som-b)); color: color-mix(in srgb, var(--ink) calc(var(--on) * 100%), var(--ink-2)); box-shadow: inset calc(var(--on) * 3px) 0 0 var(--brand); animation: som-a steps(1, start) both, som-b steps(1, start) both; }
+    .fiche .som-liste li.partie > a { --som-on: calc(var(--som-a) - var(--som-b)); color: color-mix(in srgb, var(--ink) calc(var(--som-on) * 100%), var(--ink-2)); box-shadow: inset calc(var(--som-on) * 3px) 0 0 var(--brand); animation: som-a steps(1, start) both, som-b steps(1, start) both; }
     .fiche .som-liste li.partie > a[style] { animation-timeline: var(--ta), var(--tb); animation-range: exit-crossing 0% exit-crossing 100%; }
+    .fiche .som-liste li.partie > a.som-debut { --som-a: 1; animation: som-b steps(1, start) both; }
+    .fiche .som-liste li.partie > a.som-debut[style] { animation-timeline: var(--tb); }
+    .fiche .som-liste li.partie > a.som-fin { animation: som-a steps(1, start) both; }
+    .fiche .som-liste li.partie > a.som-fin[style] { animation-timeline: var(--ta); }
+    .fiche .som-liste li.partie > a.som-debut.som-fin { --som-a: 1; animation: none; }
+    .fiche .som-liste li.partie > a::before { color: color-mix(in srgb, var(--brand) calc(var(--som-on) * 100%), var(--ink-3)); }
   }
 }
 
@@ -661,9 +741,13 @@
   }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 0; }
   .fiche .aff { --corps: 3rem; }
-  .fiche .couverture { grid-column: droite; justify-self: start; }
-  /* La carte d'essai : collante, dans la colonne de droite. */
-  .fiche .essai { grid-column: droite; grid-row: 6 / 15; align-self: start; position: sticky; top: calc(var(--haut-colle) + 44px); margin: 44px 0 56px; padding: 18px 18px 14px; }
+  /* La vignette : son bas sur celui de la ligne de confiance (même marge basse). */
+  .fiche .couverture { grid-column: droite; justify-self: start; align-self: end; margin-bottom: 36px; }
+  /* La carte d'essai : collante, dans la colonne de droite ; au repos, son haut sur celui de « L'essentiel »,
+     collée, sur celui du rail. La mascotte sur sa ligne, au-dessus du titre : dans 248 px, un titre qui
+     l'entourait sortait en escalier, des mots seuls sur une ligne. */
+  .fiche .essai { grid-column: droite; grid-row: 6 / 15; align-self: start; position: sticky; top: var(--haut-colle); margin: 6px 0 56px; padding: 18px 18px 14px; }
+  .fiche .essai::before { float: none; display: block; margin: -4px 0 8px -2px; }
   .fiche .essai .btn { font-size: 0.9375rem; }
   .fiche .connexes { margin-top: 48px; }
 }
@@ -682,6 +766,19 @@
   .fiche .corps .callout, .fiche .corps .tbl, .fiche .corps :is(h2, h3).t-encadre { border: 1px solid CanvasText; }
   .fiche::before, .fiche::after, .fiche .article::before { display: none; }
   .fiche .corps li::before, .fiche .corps li::after, .fiche .infos > *::before, .fiche .corps > h2[data-np]::before { forced-color-adjust: none; }
+  /* Sauf ce qui tomberait sous le contraste dans ce mode : la croix « non » et le repère prennent les couleurs
+     du système ; la partie en cours du rail (une ombre, retirée ici) prend un trait. */
+  .fiche .corps :is(ul, ol) > li[data-etat="non"]::before { background: Canvas; box-shadow: inset 0 0 0 1.5px CanvasText; }
+  .fiche .corps :is(ul, ol) > li[data-etat="non"]::after { background: CanvasText; }
+  .fiche .corps:not(.numerote) > h2[data-np]:not(.t-sous)::before { forced-color-adjust: auto; color: CanvasText; background: linear-gradient(CanvasText, CanvasText) 0 50% / 38px 3px no-repeat; }
+}
+@media (forced-colors: active) {
+  .fiche .som-liste a:target-current { border-left: 3px solid Highlight; }
+}
+@supports (animation-timeline: view()) and (timeline-scope: --x) and (not (scroll-target-group: auto)) {
+  @media (forced-colors: active) and (min-width: 1040px) {
+    .fiche .som-liste li.partie > a { border-left: calc(var(--som-on) * 3px) solid Highlight; }
+  }
 }
 
 @media print {
