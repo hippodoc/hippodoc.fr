@@ -249,6 +249,8 @@
 /* La série : une pastille blanche, comme en tête des articles. */
 .bl-pastille { display: inline-flex; align-items: center; padding: 4px 13px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
 .bl-presentation .bl-intro .lead { margin-top: 4px; }
+/* Page de thème (§ 9.fp) : la ligne de contexte, courte, en lignes égales (pas de mot seul sur la seconde). */
+.bl[data-blog-theme] .bl-intro .lead { text-wrap-style: balance; }
 /* Le texte de la série : une fiche blanche, une colonne de lecture. */
 .bl-texte { max-width: 40rem; padding: 20px 20px 22px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
 .bl-texte strong { font-weight: var(--tb); color: var(--ink); }
