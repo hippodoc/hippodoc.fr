@@ -307,12 +307,37 @@ export function formatInline(text: string, options: { auto?: boolean } = {}): Re
   return parts.length > 0 ? parts : [text];
 }
 
+/**
+ * Coupe une énumération sur ses virgules et ses « + », sauf dans une parenthèse : « le DPC
+ * (qui est conventionné, voir PC-015) » est un seul élément. Coupé à chaque virgule, il
+ * sortait en deux puces, « le DPC (qui est conventionné » et « voir … ) » (MIGRATION.md
+ * § 9.fb).
+ */
+function couperEnumeration(liste: string): string[] {
+  const items: string[] = [];
+  let courant = '';
+  let profondeur = 0;
+  for (const c of liste) {
+    if (c === '(') profondeur++;
+    else if (c === ')') profondeur = Math.max(0, profondeur - 1);
+    if (profondeur === 0 && (c === ',' || c === '+')) {
+      items.push(courant);
+      courant = '';
+    } else {
+      courant += c;
+    }
+  }
+  items.push(courant);
+  return items.map(s => s.trim()).filter(Boolean);
+}
+
 /** Detect if a segment contains an enumeration pattern like "X : A, B, C, D" */
 function detectEnumeration(text: string): { before: string; items: string[] } | null {
   // Pattern: "Something : item1, item2, item3 + item4" with at least 3 comma-separated items
   const match = text.match(/^(.*?\s*:\s*)([A-ZÀ-Ÿa-zà-ÿ0-9\s/()&''\-]+(?:,\s*[A-ZÀ-Ÿa-zà-ÿ0-9\s/()&''\-]+){2,}(?:\s*\+\s*[A-ZÀ-Ÿa-zà-ÿ0-9\s/()&''\-]+)*)\.?$/);
   if (match) {
-    const items = match[2].split(/,\s*|\s*\+\s*/).map(s => s.trim()).filter(Boolean);
+    // Hors parenthèses seulement : une énumération qui n'a plus trois éléments reste une phrase.
+    const items = couperEnumeration(match[2]);
     if (items.length >= 3) {
       return { before: match[1], items };
     }

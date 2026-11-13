@@ -9724,6 +9724,7 @@ période d'observation.
   `detectEnumeration` (`FormattedText.tsx`) coupe « le DPC (qui est conventionné, voir
   PC-015) » à la virgule, d'où deux puces à l'écran, « le DPC (qui est conventionné » et
   « voir Astuce · DPC) ». Défaut d'affichage, texte visible : à corriger sur décision.
+  Corrigé en § 9.fb.
 
 **Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Scripts de tri et de mutation :
 dossier de travail, hors dépôt.
@@ -9785,7 +9786,7 @@ Les 40 autres réponses du guide sortent identiques à l'octet : le balisage de 
 - **La réponse sur la CAM reprend un défaut d'affichage** : l'écran coupe « le DPC (qui
   est conventionné, voir PC-015) » en deux puces (§ 9.ez, point 4), le schéma aussi
   désormais. Quand `detectEnumeration` sera corrigée, le schéma suivra sans y toucher :
-  les deux passent par elle.
+  les deux passent par elle. Corrigée le même jour, § 9.fb.
 - **Le balisage brut dans le schéma du guide** (§ 9.ez, point 4) : inchangé.
 - **Les quatre phrases à lien de fin de réponse de `/faq`** : à l'écran seulement.
 
@@ -9796,6 +9797,50 @@ Les 40 autres réponses du guide sortent identiques à l'octet : le balisage de 
 **Fichiers** : `src/pages/faq.astro`, `src/lib/guide/reponse-schema.ts` (nouveau),
 `src/components/guide/FormattedText.tsx`, `src/pages/guide-declarations/index.astro`,
 `src/layouts/GuideSousPage.astro`, `CLAUDE.md`.
+
+### 9.fb Guide des déclarations : une énumération n'est plus coupée dans une parenthèse (13 novembre 2026)
+
+Demande du propriétaire : corriger la mise en liste de la réponse sur la CAM (§ 9.ez,
+point 4). **Modification de texte visible**, sur deux pages.
+
+**Le défaut.** `detectEnumeration` (`src/components/guide/FormattedText.tsx`) met en
+puces un paragraphe de la forme « X : A, B, C ». Elle coupait à chaque virgule, y
+compris dans une parenthèse : « le DPC (qui est conventionné, voir PC-015) » sortait en
+deux puces, « le DPC (qui est conventionné » et « voir Astuce · DPC) ».
+
+**La correction.** La coupe passe par `couperEnumeration`, qui ignore les virgules et les
+« + » situés dans une parenthèse. La règle des trois éléments est inchangée : une
+énumération qui n'en a plus trois une fois ses parenthèses respectées reste une phrase.
+
+**Ce qui change, relevé par script.** Les deux versions de la fonction ont été passées
+sur les 1 440 textes de `boussoleData.ts` et `glossaireDeclarationsData.ts` : 15 mises en
+liste avant, 14 après, trois textes concernés. Puis le texte visible de toutes les pages
+du build a été comparé à celui d'avant : deux fichiers changent sur 869, aucun fichier de
+`_astro/` (le composant n'est dans aucun îlot).
+
+| Page | Passage | Avant | Après |
+|---|---|---|---|
+| `/guide-declarations` | question sur la CAM, « Ce qu'elle ne touche PAS » | cinq puces, dont « le DPC (qui est conventionné » et « voir Astuce · DPC) » | quatre puces, dont « le DPC (qui est conventionné, voir Astuce · DPC) » |
+| `/guide-declarations/medecin-remplacant` | conseil n° 2, « En BNC réel : » | quatre puces : « remplir la 2035 », « déduire tes charges réelles (véhicule », « repas », « matériel) et reporter le bénéfice en 5QC » | une phrase : « En BNC réel : remplir la 2035, déduire tes charges réelles (véhicule, repas, matériel) et reporter le bénéfice en 5QC. » |
+
+- Le second passage n'était pas dans la demande : même défaut, même fonction, il ne se
+  corrige pas l'un sans l'autre. Il n'a plus que deux éléments hors parenthèses, donc
+  plus de liste ; virgules et point final reviennent.
+- Le troisième texte (description du profil « Médecin avec arrêt / IJ », « IJ CPAM
+  (maternité, paternité, maladie) ») n'est rendu par ce composant sur aucune page du
+  build : rien ne change à l'écran.
+- JSON-LD : seule la réponse sur la CAM du `FAQPage` de `/guide-declarations` change, et
+  d'elle-même (`reponsePourSchema` passe par la même fonction, § 9.fa) : le schéma dit
+  « • le DPC (qui est conventionné, voir Astuce · DPC) ». Aucun autre bloc ne change.
+- La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) n'est pas touchée : c'est
+  une correction d'affichage, pas une revue éditoriale.
+
+**Vérification** : build (70 pages), `verify-site.mjs` à 0 erreur. Aucune feuille de
+style ni aucun script ne change : pas de passage dans le moteur de Safari ni de test
+d'îlot. **Non vérifié** : rendu à l'œil dans un navigateur (le HTML des deux passages a
+été relu).
+
+**Fichier** : `src/components/guide/FormattedText.tsx`.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
