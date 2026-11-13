@@ -6,27 +6,32 @@
  *
  * Sources dans src/assets/accueil/, en WebP sans perte, rognées au ras du
  * personnage (le bas est coupé net : à poser au bord bas d'un bloc qui rogne) :
- *  - `f-tablette`, `f-pointe`, `f-presente`, `f-pouce` : mascotte féminine,
- *    détourée sans perte ;
+ *  - `f-tablette`, `f-presente`, `f-pouce` : mascotte féminine, détourée sans
+ *    perte ;
+ *  - `pointe` : mascotte masculine qui pointe vers la droite (« Pour qui »),
+ *    fichier d'origine du site (1004 × 1063 px), remis le 13 novembre 2026 ;
  *  - `dos` : mascotte masculine vue de dos (scène finale), détourée sans perte
  *    depuis le fichier haute définition fourni par le propriétaire le
  *    13 novembre 2026 (651 × 1056 px, § 9.fe) : c'est sa plus grande taille.
- * Un seul personnage par bloc : la mascotte masculine a le premier écran (son
- * buste, dans Hero.astro) et la scène finale, la féminine tout le reste. Les
- * poses masculines « pouce » et « pointe » ne sont plus utilisées (fichiers
- * retirés du dépôt).
+ * Un seul personnage par bloc, et les blocs alternent, lui puis elle : premier
+ * écran (lui, son buste, dans Hero.astro), « Sous la surface » (elle, tablette et
+ * pouce levé), « Pour qui » (lui, qui pointe), tarifs (elle, qui présente),
+ * scène finale (lui, de dos) : trois images chacun (§ 9.fg). La pose
+ * masculine « pouce » n'est pas utilisée (fichier retiré du dépôt) ; la
+ * féminine « pointe » ne sert plus qu'au guide des déclarations
+ * (`src/components/guide/HeroSection.astro`).
  *
  * La classe et l'attribut de portée du parent arrivent sur le <picture> : c'est
  * lui que le parent dimensionne et place, l'image le remplit.
  */
 import { getImage } from 'astro:assets';
 import fTablette from '@/assets/accueil/mascotte-f-tablette.webp';
-import fPointe from '@/assets/accueil/mascotte-f-pointe.webp';
+import pointe from '@/assets/accueil/mascotte-pointe.webp';
 import fPresente from '@/assets/accueil/mascotte-f-presente.webp';
 import fPouce from '@/assets/accueil/mascotte-f-pouce.webp';
 import dos from '@/assets/accueil/mascotte-dos.webp';
 
-const SOURCES = { dos, 'f-tablette': fTablette, 'f-pointe': fPointe, 'f-presente': fPresente, 'f-pouce': fPouce };
+const SOURCES = { dos, pointe, 'f-tablette': fTablette, 'f-presente': fPresente, 'f-pouce': fPouce };
 
 interface Props {
   pose: keyof typeof SOURCES;
