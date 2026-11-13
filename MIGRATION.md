@@ -10199,6 +10199,31 @@ d'essai finit à 26 px du bord droit.
 
 **Fichiers** : `src/styles/da.css`, `MIGRATION.md`.
 
+### 9.fg Accueil : lui et elle en alternance, trois images chacun (13 novembre 2026)
+
+Remarque rapportée par le propriétaire : la mascotte féminine est trop présente sur
+l'accueil. Relevé : elle 4 images (tablette et pouce levé dans « Sous la surface »,
+« Pour qui », tarifs), lui 2 (premier écran, scène finale), et quatre images d'elle
+d'affilée en lisant la page.
+
+- Règle gardée : un seul personnage par bloc (changer seulement la case jaune aurait mis
+  lui et elle dans le même bloc). Les blocs alternent désormais : lui (premier écran),
+  elle (« Sous la surface »), lui (« Pour qui »), elle (tarifs), lui (scène finale) ;
+  trois images chacun.
+- « Pour qui » : la pose féminine qui pointe est remplacée par la pose masculine qui
+  pointe, même geste et même direction. Le fichier est celui que le site employait avant
+  la phase 3 (`src/assets/accueil/mascotte-pointe.webp`, 1004 × 1063 px, retiré en
+  a1237e6, remis tel quel depuis l'historique) ; mêmes largeurs servies.
+- `mascotte-f-pointe.webp` reste : le premier écran du guide des déclarations
+  (`src/components/guide/HeroSection.astro`) l'emploie.
+- Effet mesuré : même largeur affichée (133 px sur téléphone, 310 px à l'ordinateur),
+  4 et 10 px de moins en hauteur ; hauteur de la section inchangée (1 154 et 1 660 px).
+  Aucun texte, lien ni attribut ne change ; feuille commune inchangée.
+
+**Fichiers** : `src/assets/accueil/mascotte-pointe.webp`,
+`src/components/accueil/PourQui.astro`, `src/components/accueil/Mascotte.astro`
+(commentaires et sources), `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
