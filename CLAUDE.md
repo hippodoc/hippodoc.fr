@@ -69,6 +69,31 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
   l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
   en-tête se déclare dans `PAGES_SANS_ENTETE`.
+  ⚠️ À l'écran, l'en-tête est tenu à la fenêtre (`position: fixed` sous `@media screen`,
+  § 9.ev), pas collé dans le flux : ne pas le remettre en `sticky`. Un élément collé dont
+  un contrôle se trouve dans la bande de `scroll-padding-top` fait remonter la page à
+  chaque focus qui ne vient pas d'un appui direct (le `<label>` du menu qui donne le focus
+  à sa case, Tab) : le navigateur fait défiler pour sortir le contrôle de la bande, et il
+  n'en sort jamais. Les barres collantes du guide et de la calculette avaient ce défaut :
+  elles restent collantes, et leur bande se réduit tant que le focus est dedans (§ 9.ey).
+  Son bord droit est `var(--removed-body-scroll-bar-size, 0px)`, pas `0`
+  (§ 9.ex) : quand une liste de Radix verrouille le défilement (simulateur, calculette),
+  `<body>` reçoit une marge de la largeur de la barre retirée, et un élément tenu à la
+  fenêtre qui ne la suit pas saute de 7,5 px. Un nouvel élément `fixed` qui touche le bord
+  droit fait de même, et se vérifie barres de défilement affichées (Playwright les masque :
+  `ignoreDefaultArgs: ['--hide-scrollbars']`). Tiroir ouvert, `<html>` passe en `overflow: hidden` sous 960 px et au doigt
+  seulement (`pointer: coarse`) : à la souris, retirer la barre de défilement refait la
+  mise en page, et `scrollbar-gutter: stable` change la largeur de référence des `vw`.
+- **Bulle de chat sur téléphone** (`da.css`, § 9.ew). Sous 640 px elle n'arrive qu'après
+  le haut de page (invisible à 0, pleine à 144 px de défilement ou au bout de la page,
+  par une animation liée au défilement ; sans elle, bulle dès l'arrivée) ; sous 960 px
+  elle s'efface tant qu'un champ de texte a le focus (`:read-write:focus`). Ces deux
+  règles d'arrivée ont un poids nul (`:where`) : une page qui veut sa propre plage
+  l'écrit avec `#crisp-launcher` seul, comme `/essai` (380 à 420 px) ; `/guide` cache la
+  bulle sous 768 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
+  Elle passe toujours sur le bord droit des contenus pendant le défilement : rien
+  d'important ne se cale à moins de 72 px du bord droit dans un élément fixe ou collant
+  en bas d'écran.
 - **Premier bloc d'une page** : un ciel (`linear-gradient(var(--sky-1) 0, var(--sky) 460px)`)
   qui passe sous la pastille de l'en-tête et lui réserve le haut par son remplissage
   (100 à 148 px selon la largeur, voir `.tete` de `/tarifs`). L'ancienne forme de
@@ -77,6 +102,56 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
+- **Accueil épurée** (novembre 2026, MIGRATION.md § 9.eu) : chaque chose est dite une fois.
+  Ordre : premier écran, « Sous la surface », « Pour qui », fondateur et film,
+  témoignages (ciel), syndicats et partenaires (sable), tarifs, questions, guides, scène
+  finale. Ne pas remettre ce qui a été retiré sans le décider (textes archivés en § 9.eu).
+  - Les étapes ne sont racontées que dans « Pour qui » : une seule forme pour les quatre
+    profils (titre, phrase `acc`, précision `det` ; `verify-site.mjs` échoue si une étape
+    n'a pas les trois). Sous 640 px, elles se feuillettent de côté comme les témoignages,
+    et les quatre panneaux occupent la même case de grille (même hauteur de section pour
+    tous les profils). Les trois cases de « Sous la surface » n'ont qu'une ligne chacune.
+  - Feuilles à lignes (questions, guides, partenaires et soutiens) : une feuille blanche
+    qui rogne (`overflow: hidden`), un filet entre deux lignes, la ligne teintée au
+    survol, l'anneau de focus tracé à l'intérieur (`outline-offset` négatif, sinon la
+    feuille le rogne). `.qa` (da.css) reste une fiche, partagée avec `/faq`, `/tarifs` et
+    les plis des tarifs : les règles de la feuille des questions sont dans
+    `Questions.astro`.
+  - Les règles communes aux feuilles de l'accueil (remplissage 44 et 72 px sous 560 px,
+    60 et 92 px de 560 à 899 px, 76 et 112 px à partir de 900 px, chapô en 17 px sur
+    téléphone, marge sous l'en-tête 22, 30 et 36 px) sont répétées dans le `<style>` de
+    chaque composant, jamais dans `da.css`. Sans le palier du milieu, `da.css` donne plus
+    d'air à la tablette qu'à l'ordinateur (§ 9.ex).
+  - Film : sous 700 px, le cadre est une vignette tant que le `<video>` n'a pas
+    l'attribut `controls` ET que le sablier est masqué
+    (`.film:not(:has(video[controls], #film-play-attente:not([hidden])))`). Le script du
+    film, non modifié, retire `controls` au chargement, affiche le sablier à l'appui et
+    rend `controls` à la lecture : le cadre grandit dès l'appui (à la lecture seulement,
+    le saut comptait dans le CLS sur un réseau lent, § 9.ex). Toucher à ce que le script
+    fait de `controls` ou de `hidden` sur le sablier change donc la mise en page. Sans
+    `:has()` ou sans script, le cadre est grand d'emblée ; sans script, l'invitation à
+    lire est retirée (`@media (scripting: none)`) pour laisser les contrôles natifs.
+    De 560 à 699 px, le portrait et les chiffres gardent la grille du téléphone (même
+    seuil que la vignette).
+  - Pause du décor : `body:has(.pause:checked)`, une seule pour les deux scènes et les
+    bulles. Ne pas donner la classe `pause` à autre chose sur l'accueil. Une fois le
+    décor arrêté par l'une des deux cases, l'autre est masquée
+    (`body:has(.hero .pause:checked)`, `body:has(.end .pause:checked)`) : sans script, deux
+    cases ne se suivent pas. Les classes `hero` et `end` des deux scènes ne se renomment
+    donc pas sans ces règles.
+  - Soutiens (`Partenaires.astro`) : chaque soutien est une colonne, ses logos au-dessus
+    de sa légende. Ne pas ranger les logos sur une ligne et les légendes sur une autre :
+    la légende de La French Care se lisait sous Bpifrance (§ 9.ex).
+  - Un nombre et son signe, un mot et sa ponctuation tiennent ensemble sans changer un
+    caractère du texte : `<span class="nb">` au rendu, ou `nouer()` de `src/lib/typo.ts`
+    (définition du produit).
+  - Questions : huit (`src/data/faqAccueil.ts`). Les `id` `super-net` et `retrocessions`
+    sont retirés et ne se réutilisent pas (séries PostHog arrêtées).
+  - ⚠️ Astro ajoute son attribut de portée à chaque maillon d'un sélecteur : `.a .b + .b >
+    x` pèse donc plus que `.a .b > x:hover`. Un raccourci (`background`) posé dans le
+    premier efface la couleur de survol du second : y écrire les propriétés longues.
+  - Sitemap : `/` a sa date, `ACCUEIL_LAST_UPDATED_ISO` (`src/lib/pages-lastmod.ts`), à
+    mettre à jour à chaque retouche de texte de l'accueil.
 - **Pages intérieures** (phases 5b à 5d) : `da-fond`, un bloc « ciel » puis des feuilles
   `.band`, aucune classe Tailwind ; styles dans le `<style>` de la page (une feuille à
   part, `tarifs.*.css`… : la feuille commune ne grossit pas), ou dans une feuille de
@@ -178,9 +253,17 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   police suivante de la pile : Arial par la face de repli, sinon la police du système.
 - **Mesure** : chaque section porte `data-landing-section`. `SECTIONS_LANDING`
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
-  commit ; verify-site garde aussi les `data-track`, les ancres `#sous-la-surface`,
-  `#parcours`, `#pricing` (les trois cibles du menu, sur toutes les pages) et
-  `#film-presentation`, un plancher de mots et l'égalité FAQ visible / `FAQPage`.
+  commit quand une section apparaît ou disparaît ; `SECTIONS_LANDING` suit l'ordre de la
+  page (vérifié), `SECTIONS` garde son rang historique. verify-site garde aussi les
+  `data-track`, les ancres `#sous-la-surface`, `#parcours`, `#pricing` (les trois cibles
+  du menu, sur toutes les pages) et `#film-presentation`, l'égalité FAQ visible /
+  `FAQPage`, un plancher de mots (2 680 depuis l'épure, à abaisser sciemment seulement) et
+  la présence des termes porteurs dans le texte rendu (« médecin remplaçant », URSSAF,
+  CARMF, 2035, 2042-C PRO, DSFU, RSPM, PAMC, Micro-BNC, rétrocession, contrat et licence
+  de remplacement), et, dans le panneau `data-panel="remplacant"` de « Pour qui », celle
+  de « 2035 », « 2042-C PRO », « DSFU », « contrat de remplacement » et « serveur officiel
+  URSSAF » (§ 9.ex). L'égalité FAQ visible / `FAQPage` porte sur les questions partout,
+  et aussi sur les réponses sur l'accueil seulement (ailleurs, 64 écarts à trier).
 - **Chiffres** : journées et lieux du bloc fondateur relevés en base par `count(*)`
   (MIGRATION.md § 9.u), datés dans l'en-tête de `Fondateur.astro` et dans MIGRATION.md
   § 9.ec (la date n'est plus affichée sur la page), jamais écrits à la main. Le compte de la

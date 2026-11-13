@@ -14,7 +14,15 @@
  *   mouvement (elles restent alors hors du cadre).
  * - Le bloc suivant est « Pour qui » (PourQui.astro), la première feuille
  *   claire : elle remonte de 40 px sur le bas de ce bloc, d'où les 148 px
- *   laissés sous la phrase des régimes.
+ *   laissés sous la phrase des régimes (100 px sur téléphone, 120 px de 560 à
+ *   899 px).
+ * - Le titre et sa phrase (épure de novembre 2026) : le titre prend toute la
+ *   largeur ; dessous, la phrase à gauche et la mascotte à la tablette dans sa
+ *   propre colonne, à droite. Elle ne peut plus passer sur le texte (elle le
+ *   recouvrait de 324 à 376 px et de 448 à 540 px de large).
+ * - Le bloc rogne ce qui dépasse sans devenir une zone de défilement : avec
+ *   une zone de défilement, les animations d'entrée de la fenêtre et des cases
+ *   (liées au défilement de la page) ne se jouaient jamais.
  */
 import '@/styles/da.css';
 import FenetreProduit from './FenetreProduit.astro';
@@ -34,11 +42,9 @@ import Mascotte from './Mascotte.astro';
     <FenetreProduit />
 
     <div class="below-head">
-      <div class="bh-copy">
-        <h2 id="sous-la-surface-titre">Sous la surface, Hippodoc calcule URSSAF, CARMF et&nbsp;impôts</h2>
-        <p>Tu factures. Hippodoc calcule le reste. Voici ce qui tourne en dessous pendant que tu soignes.</p>
-      </div>
-      <Mascotte pose="f-tablette" class="bh-mascot" largeurs={[150, 250, 300, 500]} sizes="(min-width: 900px) 250px, 150px" />
+      <h2 id="sous-la-surface-titre">Sous la surface, Hippodoc calcule URSSAF, CARMF et&nbsp;impôts</h2>
+      <p>Tu factures. Hippodoc calcule le reste.</p>
+      <Mascotte pose="f-tablette" class="bh-mascot" largeurs={[150, 250, 300, 500]} sizes="(min-width: 900px) 250px, (min-width: 560px) 150px, 100px" />
     </div>
 
     <TroisCases />
@@ -48,7 +54,8 @@ import Mascotte from './Mascotte.astro';
 </section>
 
 <style>
-  .deep { --focus: #FFFFFF; position: relative; overflow: hidden; padding: 8px 0 148px; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--paper); }
+  /* `clip`, pas une zone de défilement : voir l'en-tête du fichier. */
+  .deep { --focus: #FFFFFF; position: relative; overflow: clip; padding: 8px 0 148px; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--paper); }
   /* Le blanc de l'anneau de focus vaut sur l'eau ; la fenêtre et les cases sont claires. */
   .deep :global(.stage), .deep :global(.cell) { --focus: var(--ink); }
 
@@ -61,35 +68,48 @@ import Mascotte from './Mascotte.astro';
   .bubbles i:nth-child(5) { left: 79%; --t: 20s; --d: -14s; }
   .bubbles i:nth-child(6) { left: 93%; width: 18px; height: 18px; --t: 26s; --d: -8s; }
 
-  /* Le titre, sous la fenêtre, et la mascotte qui dépasse derrière les cases */
-  .below-head { position: relative; display: grid; align-items: end; gap: 8px 40px; padding-top: 84px; }
-  .bh-copy { display: flex; flex-direction: column; gap: 16px; max-width: 760px; padding-bottom: 8px; }
-  .bh-copy h2 { margin: 0; }
-  .bh-copy p { max-width: 36rem; margin: 0; font-size: 19px; line-height: 1.55; color: var(--on-deep-2); }
-  /* La mascotte dépasse derrière les cases : sa tablette et ses mains restent
-     au-dessus du bord (les 78 % du haut de l'image). */
-  .bh-mascot { justify-self: end; width: 150px; margin: -34px 6px -56px 0; }
+  /* Le titre, sous la fenêtre : il prend toute la largeur. Dessous, la phrase à
+     gauche et la mascotte dans sa colonne, à droite ; son bas glisse derrière
+     les cases (sa tablette et ses mains restent au-dessus du bord : les 78 % du
+     haut de l'image). */
+  .below-head { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 100px; align-items: start; gap: 14px 12px; padding-top: 52px; }
+  .below-head h2 { grid-column: 1 / -1; margin: 0; }
+  .below-head p { max-width: 36rem; margin: 0; font-size: 17px; line-height: 1.55; color: var(--on-deep-2); text-wrap-style: balance; }
+  .bh-mascot { grid-column: 2; width: 100px; margin: 0 0 -38px; }
 
-  .regime { position: relative; max-width: 820px; margin: 64px 0 0; padding-top: 24px; border-top: 1px solid var(--line-deep); font-size: 16.5px; color: var(--on-deep-2); }
+  .regime { position: relative; max-width: 820px; margin: 32px 0 0; padding-top: 24px; border-top: 1px solid var(--line-deep); font-size: 16.5px; color: var(--on-deep-2); }
   .regime b { color: var(--paper); }
 
-  /* Téléphone : intervalles resserrés (la page est longue). */
+  /* Téléphone : 100 px sous la phrase des régimes (la feuille suivante en recouvre 40). */
   @media (max-width: 559px) {
-    .deep { padding-bottom: 116px; }
-    .below-head { padding-top: 60px; }
-    .regime { margin-top: 44px; }
+    .deep { padding-bottom: 100px; }
+  }
+  /* À partir de 560 px : le titre et la phrase à gauche, calés en bas ; la
+     mascotte sur toute la hauteur, à droite. */
+  @media (min-width: 560px) {
+    .below-head { grid-template-columns: minmax(0, 1fr) 150px; grid-template-rows: 1fr auto; align-items: end; column-gap: 28px; padding-top: 64px; }
+    .below-head h2 { grid-column: 1; }
+    .below-head p { padding-bottom: 32px; font-size: 19px; }
+    .bh-mascot { grid-row: 1 / span 2; width: 150px; margin-bottom: -56px; }
+    .regime { margin-top: 56px; }
+  }
+  /* Palier du milieu : moins de bleu vide sous la phrase des régimes. */
+  @media (min-width: 560px) and (max-width: 899px) {
+    .deep { padding-bottom: 120px; }
   }
   @media (min-width: 900px) {
-    .below-head { grid-template-columns: minmax(0, 1fr) 250px; padding-top: 104px; }
-    .bh-copy { padding-bottom: 56px; }
-    .bh-mascot { width: 250px; margin: 0 0 -94px; }
+    .below-head { grid-template-columns: minmax(0, 1fr) 250px; gap: 16px 40px; padding-top: 96px; }
+    .below-head h2 { max-width: 760px; }
+    .below-head p { padding-bottom: 60px; }
+    .bh-mascot { width: 250px; margin-bottom: -94px; }
   }
 
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. La case
-     « pause » du premier écran (Hero.astro) arrête aussi les bulles. */
+     « pause » du premier écran (Hero.astro) arrête aussi les bulles, comme
+     celle de la scène finale : une seule pause pour la page. */
   @media (prefers-reduced-motion: no-preference) {
     .bubbles i { animation: surface-rise var(--t, 16s) linear var(--d, 0s) infinite; }
-    :global(body:has(.hero .pause:checked)) .bubbles i { animation-play-state: paused; }
+    :global(body:has(.pause:checked)) .bubbles i { animation-play-state: paused; }
   }
   @keyframes surface-rise { from { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { transform: translateY(-1500px); opacity: 0; } }
 </style>

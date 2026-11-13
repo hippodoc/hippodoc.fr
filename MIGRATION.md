@@ -8558,6 +8558,908 @@ chaîne d'éléments des clics mesurés), les 35 Ko de la boussole ne se chargen
 son approche, et tout ce que cette entrée et § 9.er disent de cette marge décrit un essai
 retiré. La boussole reste neutralisée sans trait d'attente tant qu'elle n'est pas hydratée.
 
+### 9.eu Accueil : l'épure (12 novembre 2026)
+
+Demande du propriétaire, deux jours après la mise en ligne de § 9.eb : la page est « encore
+trop chargée visuellement », il faut « beaucoup trop scroller » sur téléphone, et le profil
+« Remplaçant » de « Pour qui » n'a pas la forme des trois autres. Carte blanche pour
+« gratter dans le texte ». La période d'observation SEO de § 9.eb courait jusqu'à début
+décembre : sa décision prime, chaque coupe a été pesée (ce qui porte une requête, les liens
+internes, la FAQ et son `FAQPage` restent).
+
+Parti pris : chaque chose est dite une fois, à l'endroit où elle sert. La direction
+artistique, le décor, les animations, le premier écran et la scène finale ne changent pas.
+Construit en deux lots sur `claude/compassionate-lovelace-cbn1qs` (`e35bfe4` : « Sous la
+surface » et « Pour qui » ; `6342b68` et le commit de cette entrée : le reste). Un troisième
+lot, à part parce qu'il touche `da.css` (commune aux 70 pages), a suivi : § 9.ev (menu
+mobile) et § 9.ew (bulle de chat). Puis les corrections des quatre relectures : § 9.ex.
+`origin/main` n'a pas avancé (`481f3f2`). Zéro JS de plus, aucune dépendance ; dans ces
+deux premiers lots, `da.css`, `Header.astro` et `Footer.astro` ne sont pas touchés.
+
+**Résultat mesuré** (`mesure.cjs`, Chromium, build servi en local ; « avant » : build de
+`main`)
+
+| | Avant | Après | Cible du plan |
+|---|---|---|---|
+| Hauteur à 390 × 844 | 16 156 px, 19,1 écrans | 10 834 px, 12,8 écrans (−33 %) | ≈ 10 700 px, 12,7 écrans |
+| Début des tarifs à 390 px | écran 12,0 | écran 7,4 | ≈ écran 7,2 |
+| Hauteur à 1440 × 900 | 12 785 px, 14,2 écrans | 11 789 px, 13,1 écrans (−8 %) | ≈ 11 400 px |
+| Mots visibles à 390 px | 1 340 | 1 097 | ≈ 1 100 |
+| Mots dans le HTML (comptage de `verify-site.mjs`) | 3 214 | 2 978 | ≈ 2 970 |
+| Sections de mesure | 11 | 11 | 11 |
+| Boutons d'inscription, liens de rendez-vous | 5 et la pastille, 3 | 5 et la pastille, 3 | inchangés |
+| Plis natifs | 13 | 11 | 11 |
+
+Par section, hauteur en px et mots visibles, avant → après :
+
+| Section | 390 px | Cible à 390 px | 1440 px | Mots visibles à 390 px |
+|---|---|---|---|---|
+| hero | 908 → 908 | 908 | 1 089 → 1 089 | 56 → 54 |
+| features | 3 533 → 1 642 | ≈ 1 700 | 2 540 → 2 332 | 304 → 139 |
+| practice-journeys | 1 911 (Remplaçant), 2 260 à 2 323 (autres) → 1 154 pour les quatre | ≈ 1 140 | 1 306 → 1 660 (Remplaçant) | 216 → 278 |
+| founder, hors film | 1 029 → 740 | ≈ 740 | 753 → 725 | 83 → 83 |
+| presentation-video | 837 → 297 | ≈ 310 | 569 → 480 | 56 → 43 |
+| testimonials | 615 → 599 | ≈ 600 | 1 004 → 968 | 158 → 158 |
+| partners | 1 505 → 1 111 | ≈ 950 | 1 229 → 932 | 85 → 77 |
+| pricing | 1 763 → 1 250 | ≈ 1 270 | 1 183 → 974 | 149 → 107 |
+| faq | 1 570 → 1 032 | ≈ 1 030 | 1 012 → 725 | 135 → 98 |
+| guides | 1 125 → 743 | ≈ 710 | 841 → 644 | 98 → 60 |
+| final-cta | 670 → 670 | 670 | 940 → 940 | 12 dans le HTML |
+
+Précision sur les « mots visibles » (relecture, § 9.ex) : c'est l'`innerText` de `<main>`,
+qui compte les cartes hors champ des rangées à feuilleter. À 390 px, 229 des 1 097 mots
+sont dans une rangée, au-delà de sa première carte (150 dans « Pour qui », 79 dans les
+témoignages ; 79 avant, les témoignages seuls). Mots affichés sans geste de côté, sans
+pli ni onglet, hors décor : 867, contre 1 223 avant. C'est le plan (« ≈ 260 mots, dont
+≈ 95 sans geste de côté » pour « Pour qui »). Les phrases qui portent « contrat de
+remplacement », « serveur officiel URSSAF » et « 2035 ou 2042-C PRO … DSFU » sont dans
+les cartes 3, 5 et 6 du profil Remplaçant : rendues (ni masquées ni repliées), mais
+derrière un geste sur téléphone ; à 1440 px, tout est affiché comme avant.
+
+Un seul écart de plus de 15 % avec les cibles : `partners` à 390 px (+17 %). Le plan
+comptait une ligne pour l'étiquette de la feuille et pour la description de chaque
+partenaire ; dans 310 px de large elles en prennent deux (« Le logement des internes en
+médecine » fait 245 px en 14,5 px, il en reste 214 à côté du logo et de la flèche). À
+1440 px, `practice-journeys` s'allonge pour le profil Remplaçant, affiché par défaut : il
+porte maintenant ses sept étapes entières (le plan le prévoyait).
+
+Autres largeurs, page entière, avant → après : 320 px 17 553 → 11 959 ; 360 px 16 812 →
+11 311 ; 430 px 15 563 → 10 564 ; 640 px 15 309 → 12 103 ; 768 px 13 842 → 11 490 ; 900 px
+13 588 → 12 607 ; 1024 px 12 854 → 11 944.
+
+**1. Ce qui change, section par section**
+
+- **Ordre** : les témoignages passent avant les syndicats et partenaires (un confrère l'a
+  construit, des confrères s'en servent, puis les syndicats et leurs 6 mois d'essai, qui
+  mènent aux prix). Les fonds sont échangés : `Temoignages` prend le ciel (`air`),
+  `Partenaires` le sable. Seul déplacement de la page.
+- **Premier écran** (`Hero.astro`), trois retouches. Sous 900 px, le papier « Échéance
+  CARMF » n'est plus affiché : à droite de la scène, il passait sous la bulle de chat
+  quand le bas de la scène était au bas de l'écran, et son dernier mot trempait dans la
+  vague sous 360 px. Restent le papier « Appel URSSAF » à gauche (entier à toutes les
+  largeurs) et la pastille Super-Net à droite. Le libellé « URSSAF, CARMF, impôts » de la
+  fiche de droite (à partir de 1 180 px) tient sur une ligne. La pause du décor vaut pour
+  toute la page : cochée dans le premier écran ou dans la scène finale, elle arrête les
+  deux scènes et les bulles de « Sous la surface » (`body:has(.pause:checked)`, sous
+  `@supports` : un navigateur sans `:has()` garde la pause par scène).
+- **« Sous la surface »** (lot 1) : trois cases courtes (numéro, titre, une ligne ; la
+  case jaune garde « Super-Net 2025 », « 59 543 € » et la phrase des 90 005 €). Les deux
+  extraits d'écran des cases 1 et 2 ne sont plus affichés sous 900 px. La mascotte à la
+  tablette a sa colonne de grille : elle ne recouvre plus le texte.
+- **« Pour qui »** (lot 1) : une seule forme d'étape pour les quatre profils (pastille,
+  titre, phrase, précision en pastille bleu pâle), le profil Remplaçant porte les sept
+  étapes de `ETAPES_REMPLACANT` en entier. Sous 640 px, les étapes sont une rangée à
+  feuilleter de côté, sur le modèle des témoignages, et la section a la même hauteur pour
+  les quatre profils.
+- **Fondateur** : sous 560 px, le portrait à gauche et les trois chiffres en colonne à sa
+  droite, puis le titre, le paragraphe (17 px) et le bouton. L'ordre du HTML ne change pas
+  (`.who-copy` s'efface, la grille place les chiffres). Aucun mot touché.
+- **Film** : sous 700 px, le cadre est une vignette (150 × 267 px au plus) à gauche du
+  titre et de la définition du produit. Il reprend sa taille (300 × 533 px) quand le film
+  démarre, sans script de plus : le script existant rend l'attribut `controls` à la
+  lecture, et la feuille lit `.film:has(video[controls])`. Le script n'est pas touché
+  (même empreinte, 3 289 octets). À l'ordinateur, le cadre fait 270 px de large (320).
+- **Syndicats et partenaires** : tuiles plus basses (zone du logo 58 px sur téléphone, 88 à
+  l'ordinateur) ; sous la fiche des 6 mois, une seule feuille blanche à la place de quatre
+  objets : le titre des partenaires en étiquette, leurs deux lignes, un filet, « Soutenu
+  par », les trois logos sur une rangée sans plaque et leurs deux légendes. Deux colonnes à
+  partir de 900 px.
+- **Tarifs** : le titre « Inclus dans toutes les offres » et cinq lignes passent en tête
+  du pli « Détail des offres » ; la ligne de l'hébergement reste visible, seule, avec sa
+  coche. Sous 700 px, les offres Mensuel et Interne sont en grille (le nom et les lignes à
+  gauche, le prix à droite) : de la carte annuelle au prix de l'offre interne, les trois
+  prix tiennent dans un écran de téléphone.
+- **Questions** : huit au lieu de dix, dans une seule feuille blanche à lignes.
+- **Guides** : une feuille à six lignes à la place de six cartes, flèche à l'encre sans
+  pastille jaune ; deux colonnes à partir de 900 px (outils à gauche, articles à droite).
+- **Scène finale** : rien, hors la pause commune.
+
+**2. Textes retirés, mot pour mot**
+
+« Sous la surface » (`SousLaSurface.astro`, `TroisCases.astro`) :
+
+- « Voici ce qui tourne en dessous pendant que tu soignes. » (fin de la phrase sous le H2,
+  qui devient « Tu factures. Hippodoc calcule le reste. »).
+
+« Pour qui » (`PourQui.astro`) :
+
+- « : tu verras exactement ce qu’Hippodoc fait pour toi » (fin du chapô, qui devient
+  « Choisis ton mode d’exercice. ») ;
+- « Crée ton compte et retrouve ce parcours appliqué à tes propres chiffres. » ;
+- « Sans engagement » sous le bouton (remplacé, voir 4 : l'offre annuelle engage 12 mois).
+
+Film (`Fondateur.astro`) :
+
+- « URSSAF, CARMF, impôts, Super-Net : tu vois enfin ce qu'il te reste vraiment. »
+  (quatrième version de la promesse du premier écran).
+
+Syndicats (`Partenaires.astro`) :
+
+- « pour accompagner leurs adhérents dans leurs premiers remplacements » (fin du chapô,
+  qui devient « Ces syndicats d'internes ont signé une convention avec Hippodoc. »).
+
+Tarifs (`Tarifs.astro`) :
+
+- « 29 € facturés chaque mois » (carte mensuelle ; redisait « 29 € par mois ») ;
+- « · En savoir plus » (libellé du pli, qui devient « Compatible RSPM »).
+
+Questions (`Questions.astro`, `src/data/faqAccueil.ts`) :
+
+- le chapô « Celles qu’on nous pose avant de se lancer. » ;
+- « Rien à préparer. En visio, ou il t'appelle. » dans la carte de rendez-vous (dit mot
+  pour mot dans le paragraphe du fondateur) ;
+- deux questions et leurs réponses, les deux moins ouvertes (13 et 15 personnes en 87
+  jours), qui redisaient des fonctions montrées plus haut. `/faq` traite les deux sujets
+  dans son registre parlé (« C'est quoi le Super-Net ? », « Je peux relancer un médecin
+  qui ne m'a pas payé ? »). Leur texte de l'accueil, pour le remettre si besoin :
+  - `super-net`, « Comment estimer mon revenu net après impôts en tant que médecin ? » —
+    « Avec le **Super-Net** d'Hippodoc, tu vois ton **vrai revenu** après **URSSAF**,
+    **CARMF** et **impôts**. Tout est calculé selon ta situation réelle (**régime
+    fiscal**, **famille**, **revenus salariés**), sans mauvaise surprise en fin d'année.
+    Tu peux l'essayer tout de suite, sans compte, avec le [simulateur de
+    revenus](/simulateur). »
+  - `retrocessions`, « Comment suivre mes paiements en attente de rétrocession ? » —
+    « Hippodoc distingue automatiquement les journées **payées** de celles **en
+    attente**. Tu visualises d'un coup d'œil les montants à percevoir, avec des
+    **alertes** pour les **paiements tardifs**. Tu peux même envoyer des **relances**
+    directement depuis l'application. »
+
+Guides (`Guides.astro`), la seconde ligne des trois articles, dont le titre dit déjà le
+sujet :
+
+- « Remplacer le même médecin chaque semaine peut être requalifié en collaboration. » ;
+- « Affiliation dès le premier rempla, calcul sur ton revenu et non sur ton CA » ;
+- « Interne ayant fait des remplas en 2025 ? Salaire CHU + rétrocessions BNC ».
+
+**3. Textes déplacés** (dits une seule fois au lieu de deux, ou repliés)
+
+- Les sept étapes du remplaçant (`src/data/etapesRemplacant.ts`, inchangé). Avant : titre
+  et phrase dans les trois cases, titre et précision dans le profil Remplaçant. Après :
+  plus rien dans les cases ; titre, phrase et précision dans le profil Remplaçant, affiché
+  par défaut. Les sept titres : « Tu centralises tes journées », « Tu suis tes
+  rétrocessions au centime », « Tes factures et tes contrats, prêts en 2 clics », « Tes
+  charges déductibles ne se perdent plus », « URSSAF et CARMF anticipées », « Ta
+  déclaration, case par case », « Ton Super-Net, le seul chiffre qui compte ». Les sept
+  phrases, mot pour mot : « Tous tes cabinets dans un calendrier, synchronisé avec Google
+  Agenda. » ; « Payée, en attente, planifiée : plus jamais un virement oublié. » ;
+  « Honoraires conformes, IBAN pré-rempli, contrat de remplacement généré. » ;
+  « Kilomètres, matériel, formation, RCP : catégorisés et prêts pour la déclaration. » ;
+  « Cotisations calculées via le serveur officiel URSSAF, échéancier à jour après chaque
+  journée. » ; « 2035 ou 2042-C PRO pré-remplies avec tes chiffres, aide DSFU URSSAF
+  incluse. » ; « Brut → cotisations → impôt → ce qui te reste vraiment dans la poche. ».
+  Les sept précisions ne bougent pas. Les trois autres profils sont inchangés.
+- Tarifs : « Inclus dans toutes les offres » et ses cinq premières lignes (« Super-Net
+  calculé en temps réel », « Calcul URSSAF, CARMF et impôts en temps réel »,
+  « Déclarations fiscales guidées », « Planning centralisé avec synchro Google »,
+  « Génération rapide de contrats et de factures ») passent de sous les cartes au début
+  du pli « Détail des offres », devant les neuf lignes qui y étaient déjà. « Données
+  sécurisées et hébergées dans l’Union européenne » reste visible sous les cartes.
+- Témoignages et syndicats : échangés, textes non touchés.
+
+**4. Textes nouveaux** (quatre, à valider par le propriétaire ; tous du lot 1)
+
+- Case 1, sous « Ton activité » : « Tes journées, tes rétrocessions, tes factures et tes
+  contrats. »
+- Case 2, sous « Tes obligations » : « Tes charges déductibles, l’URSSAF et la CARMF, ta
+  déclaration. »
+- Sous-titre de l'onglet Remplaçant : « remplacements en libéral » (le plan disait
+  « cabinet libéral » : un remplaçant exerce aussi en maison de santé ou en SOS Médecins).
+- Sous le bouton de « Pour qui » : « Rien n’est débité pendant l’essai » (les mots du
+  chapô des tarifs, à la place de « Sans engagement »).
+- Non affichés : les noms accessibles des quatre rangées d'étapes, « Parcours
+  Remplaçant », « Parcours Interne », « Parcours Vacataire », « Parcours Mixte ».
+
+Le lot 2 n'ajoute aucun mot.
+
+**5. Textes gardés dont le statut change**
+
+- Les deux extraits d'écran des cases 1 et 2 sont un décor (`aria-hidden`), affichés à
+  partir de 900 px seulement. Ils restent dans le HTML.
+- La ligne d'en-tête de chaque panneau de « Pour qui » reste dans le HTML, affichée
+  seulement dans le repli sans `:has()`.
+- Le papier « Échéance CARMF » du premier écran (décor, `aria-hidden`) reste dans le HTML,
+  affiché à partir de 900 px seulement.
+- « Données sécurisées et hébergées dans l’Union européenne » était une ligne de liste,
+  c'est un paragraphe.
+- La mascotte au doigt pointé de la case 1 est retirée (image, pas texte).
+
+**6. SEO** (accueil du build comparée à celle de `main`, par script)
+
+- Identiques : `<title>`, meta description, canonique, `og:title`, H1, les neuf H2 (mêmes
+  textes ; « Ce qu’en disent nos utilisateurs » passe avant « Aux côtés des internes,
+  partout en France »), les blocs JSON-LD `Organization`, `SoftwareApplication`,
+  `WebSite` et `VideoObject`, les cinq scripts de la page.
+- H3 : 49 → 47 (les deux questions retirées ; aucun nouveau).
+- `FAQPage` : 10 → 8 questions, dérivé de `FAQ_ACCUEIL` ; les huit gardées sont
+  identiques (question, réponse, ordre).
+- Liens : 85 → 84. Le lien retiré est `/simulateur` dans la réponse `super-net` ; la page
+  reste liée depuis le premier écran, les guides et le pied. 23 pages internes liées
+  avant, 23 après. Le libellé des trois liens d'articles des guides est plus court : leur
+  seconde ligne, retirée (point 2), faisait partie du lien. Restent « Remplacement
+  régulier : le risque de requalification », « CARMF : cotisations 2026 du médecin
+  remplaçant », « Impôts 2026 des internes qui remplacent » ; `href` et `data-ph`
+  inchangés.
+- Mots : 3 214 → 2 978 au comptage de `verify-site.mjs`. `MOTS_ACCUEIL_MIN` passe de
+  2 931 à **2 680** (90 % du relevé), abaissé sciemment, raison et date en commentaire.
+- Termes porteurs : contrôle nouveau dans `verify-site.mjs`. Chacun doit rester dans le
+  texte rendu du `<body>` (JSON-LD exclu) : « médecin remplaçant » (9 occurrences),
+  « URSSAF » (22, 24 avant), « CARMF » (17, 19 avant), « 2035 » (6), « 2042-C PRO » (4),
+  « DSFU » (6), « RSPM » (10), « PAMC » (5), « Micro-BNC » (6), « rétrocession » (5, 7
+  avant), « contrat de remplacement » (3), « licence de remplacement » (1). Vérifié qu'il
+  échoue quand on retire un terme du HTML.
+- Sitemap : `/` a sa propre date, `ACCUEIL_LAST_UPDATED_ISO` (`src/lib/pages-lastmod.ts`),
+  posée au 12 novembre 2026 ; `/faq` garde le 10 novembre. Seuls écarts hors `_astro`
+  entre ce build et celui de `main` : `sitemap-0.xml` (cette date) et `sitemap-index.xml`.
+- Hors de l'accueil : le HTML des 69 autres pages et de la 404 est identique à celui de
+  `main`, à l'octet ; la feuille commune garde son nom au commit de cette entrée
+  (`_astro_assets.QWDU2rDT.css` ; elle en change avec § 9.ev, § 9.ew et § 9.ex, qui
+  touchent `da.css`).
+
+**7. Mesure**
+
+- `SECTIONS_LANDING` (`verify-site.mjs`) : mêmes onze identifiants, `testimonials` avant
+  `partners`. Contrôle nouveau : l'ordre des `data-landing-section` de la page doit être
+  celui du tableau. `SECTIONS` (`landing-analytics.ts`) ne change pas : son rang est
+  historique.
+- Deux séries s'arrêtent : `landing_faq_super-net` et `landing_faq_retrocessions`. Ne pas
+  réutiliser ces deux `id`.
+- L'entonnoir par position n'est plus comparable pour `testimonials` et `partners`, et
+  toutes les sections sont atteintes plus tôt (page plus courte d'un tiers sur
+  téléphone) : comparer les taux de `landing_section_viewed` avant et après en le sachant.
+- Tous les `data-track` (9), `data-calendly` (3), `data-profile`, `data-panel` et les 57
+  autres `data-ph` gardent leur nom et leur ordre. Au commit de cette entrée, seule
+  l'identité des attributs était prouvée (PostHog injoignable depuis le bac à sable).
+  Observés depuis, à la relecture (§ 9.ex) : envois vers `t.hippodoc.fr` interceptés en
+  local dans Chromium, référence et build, à 390 et 1440 px. `landing_viewed`,
+  `$pageview`, `landing_scroll_depth` (25, 50, 75, 100) et `landing_section_viewed` pour
+  les onze sections et le pied, avec les mêmes `section_order` qu'avant ; clics réels sur
+  les 69 cibles (`landing_cta_clicked` et son `cta_id`, `landing_journey_*`,
+  `calendly_clicked`, un `$autocapture` par `data-ph`) ; `landing_video_play` et
+  `landing_video_pause`. PostHog réel : toujours non joint.
+- Trois effets à connaître, sans rien de cassé. Le texte capté par l'autocapture
+  (`$el_text`) change pour cinq éléments : l'onglet Remplaçant (« Remplaçant
+  remplacements en libéral »), le pli « Compatible RSPM », les trois liens d'articles des
+  guides ; un insight filtré sur `data-ph` n'est pas touché, un insight filtré sur le
+  texte le serait. `landing_scroll_depth` est atteint plus tôt (page plus courte d'un
+  tiers sur téléphone). `testimonials` est émis avant `partners`.
+
+**8. Défauts corrigés au passage**
+
+Lot 1 : la forme du profil Remplaçant ; la mascotte à la tablette sur le texte ; les
+onglets de « Pour qui » de hauteurs inégales ; le saut de hauteur au changement de
+profil ; la fenêtre produit plus haute à l'onglet « Tes journées » ; les animations
+d'entrée de la fenêtre et des cases jamais jouées (`overflow: clip`) ; le bouton de « Pour
+qui » sur deux lignes sous 328 px ; le sélecteur non collant sur un écran d'ordinateur bas.
+
+Lot 2 :
+
+- « 24 200 » et « 2 714 » se touchaient sous 400 px : chiffres en colonne.
+- Légende du portrait sur deux lignes sous 345 px : une ligne à toutes les largeurs.
+- Cartes de témoignages de hauteurs inégales entre rangées de 640 à 920 px : rangées
+  égales de 640 à 1 099 px.
+- Mots seuls en fin de ligne : lignes équilibrées sur les chapôs, les descriptions des
+  partenaires, les titres et secondes lignes des guides ; `pretty` sur les listes.
+- « Commencer 30 jours gratuits » passait sur deux lignes à 320 px dans le moteur de
+  Safari (il tenait à 1 px près dans Chromium) : 15 px sous 340 px.
+- « Prendre 15 min avec Ryan » sur deux lignes dans la carte de rendez-vous à 320 px.
+- De 700 à 1 023 px, la carte mensuelle a une ligne de moins que la carte interne :
+  sa hauteur est rendue sous sa dernière ligne, les deux boutons restent alignés.
+
+**9. Écarts au plan, et pourquoi**
+
+- Premier écran : le plan des décisions demandait de ne garder que la pastille Super-Net
+  si les deux papiers restaient à moitié cachés. Regardé à 320, 360, 390, 430 et 768 px :
+  « Appel URSSAF » est entier partout, seul « Échéance CARMF » passait sous la bulle.
+  Un seul papier est retiré.
+- Fondateur : portrait de 200 px de large (168 au plan) et de la hauteur des chiffres. La
+  légende sur une ligne fait 207 px : sous un portrait de 168 px elle recouvrait le
+  troisième chiffre. Sous 375 px elle dépasse quand même du portrait : les chiffres
+  s'arrêtent au-dessus d'elle.
+- Film : sous 375 px, le titre passe au-dessus de la vignette et de la définition (la
+  colonne du texte fait 143 px à 320 px).
+- Tarifs : la grille des offres Mensuel et Interne vaut sous 700 px, pas seulement sous
+  560 px (de 560 à 699 px, les cartes sont déjà l'une sous l'autre).
+- Soutiens : les `<li>` gardent « logos d'un soutien, sa légende » dans le HTML ; la
+  feuille range les logos puis les légendes (`order`, `display: contents`). L'arbre
+  d'accessibilité de Chromium garde la liste et ses deux éléments.
+- Pause commune : c'est un « ou » entre deux cases, sans script. Qui met en pause en haut
+  et veut relancer en bas doit remonter décocher la case du haut (celle du bas ne relance
+  pas). Jugé préférable à deux pauses indépendantes : une pause suffit pour toute la page.
+- Remplissages des feuilles appliqués à la lettre du plan (44 et 72 px sous 560 px, 76 et
+  112 px à partir de 900 px) : de 560 à 899 px, `da.css` garde 88 et 128 px, une tablette
+  a donc un peu plus d'air qu'un ordinateur.
+- H3 : le plan annonçait 46 → 44 ; le relevé donne 49 → 47 (même écart de deux).
+
+**10. Vérifications**
+
+- Build : 70 pages. `verify-site.mjs` : 0 erreur (3 avertissements sans rapport :
+  `/essai` et `/transmissions` hors sitemap, `lastmod` partagés).
+- Balayage de 176 largeurs, de 320 à 1 500 px (Chromium) : aucun débord de page, aucun
+  contenu rogné dans les feuilles, légende du portrait sur une ligne et jamais sur un
+  chiffre, pastille du film dans son cadre et de 44 px de haut, boutons sur une ligne,
+  prix jamais sur le texte des cartes, tuiles et témoignages de même hauteur, lignes des
+  feuilles de 44 px au moins.
+- Film, Chromium (390, 320, 640, 768 et 1440 px) : la lecture démarre au toucher ou au
+  clic ; sous 700 px le cadre passe de la vignette à 300 × 533 px (280 × 498 à 320 px), au
+  même bord haut ; au-delà rien ne bouge.
+- Moteur de Safari (WebKitGTK 2.52, fenêtre de 1440 px et cadres de 320, 360, 390, 430 et
+  768 px) : mêmes mises en page qu'avec Chromium, aucun débord, `:has()`, `balance` et
+  `pretty` reconnus, pause commune vérifiée. La vignette reprend sa taille quand le
+  script rend `controls`.
+- Survol, focus au clavier (anneau tracé à l'intérieur des lignes), ouverture d'une
+  question au clavier, plis des tarifs : regardés à 390 et 1440 px. Contrastes forcés :
+  regardés à 1440 px (les feuilles gardent un contour, les lignes un trait).
+- Lighthouse mobile, local, médiane de trois passages sur `/`, avant (`main`) → après :
+  performance 100 → 100, accessibilité 100 → 100, bonnes pratiques 96 → 96 (seul échec :
+  PostHog injoignable depuis le bac à sable), SEO 100 → 100 ; décalage de mise en page
+  0 → 0 ; temps de blocage 38 → 24 ms. Première peinture et LCP simulés : 1,06 s → 1,21 s.
+  Les valeurs observées sont égales (0,14 à 0,20 s avant, 0,15 à 0,22 s après) : l'écart
+  vient du modèle, qui compte un aller-retour de plus quand un fichier dépasse 14,6 Ko
+  transférés. La feuille de l'accueil passe de 12,5 à 14,4 Ko en gzip (74,7 → 90,6 Ko
+  bruts ; `npx serve` sert en gzip). En Brotli, ce que sert Vercel : 10,2 → 11,7 Ko, sous
+  le seuil. À confirmer sur l'aperçu Vercel.
+
+**11. Non testé**
+
+- Aucun vrai Safari ni iPhone (WebKitGTK n'est ni l'un ni l'autre : polices, barres
+  d'iOS, tactile).
+- La lecture du film dans le moteur de Safari : WebKitGTK n'a pas de décodeur H.264 dans
+  ce bac à sable (erreur 4, sur `main` aussi). Seul le mécanisme de la vignette y est
+  vérifié, par le chemin d'erreur du script et par un événement `playing` simulé.
+- Navigateurs sans `:has()` (Firefox avant 121, Safari avant 15.4) : le cadre du film
+  reste grand et la pause reste par scène, par construction ; non regardé dans un tel
+  navigateur.
+- Lecteur d'écran réel, zoom à 200 %, espacements imposés par le visiteur.
+- Aperçu Vercel, et Lighthouse sur `/simulateur` et un article (pages non touchées).
+
+**12. Ce qui n'est pas fait**
+
+- Le lot à part, qui touche `da.css` : le menu mobile qui fait remonter la page à
+  l'ouverture et à la fermeture du tiroir (fait depuis : § 9.ev), et la bulle de chat
+  qui recouvre des montants sur téléphone (traité depuis pour le haut de page et la
+  saisie : § 9.ew).
+- Relevés et laissés : taille de police du navigateur ignorée sur l'accueil (corps en
+  px) ; bannière cookies sur la fiche « Avril 2026 » à l'ordinateur ; logos en deux
+  densités seulement ; arrêt de tabulation sans effet sur les rangées à partir de 640 px.
+  De 560 à 699 px, le bloc fondateur gardait son grand portrait seul sur sa ligne :
+  fait depuis, § 9.ex.
+- Les réponses que la FAQ n'a pas (ce qui se passe au bout des 30 jours, faut-il encore
+  un comptable, l'interne peut-il commencer tout de suite) : il faut les faits du
+  propriétaire.
+- `<title>` et meta description : lot séparé, après la fenêtre d'observation.
+
+**13. À faire le jour de la mise en ligne**
+
+- Mettre `ACCUEIL_LAST_UPDATED_ISO` au jour réel (`src/lib/pages-lastmod.ts`), puis
+  reconstruire et relancer `verify-site.mjs`. Elle vaut le 13 novembre 2026 depuis
+  § 9.ex (jour du dernier commit de la branche) : si la fusion a lieu plus tard, le
+  sitemap annoncerait pour « / » une date antérieure au changement. `/faq` ne bouge pas.
+- Annoter PostHog : épure de l'accueil, deux séries `landing_faq_*` arrêtées,
+  `testimonials` et `partners` échangés, page plus courte d'un tiers sur téléphone
+  (`landing_scroll_depth` atteint plus tôt), `$el_text` changé pour cinq éléments (point 7).
+- Sur l'aperçu Vercel (Brotli, HTTP/2) : regarder la première peinture de « / ». La
+  feuille propre à l'accueil pèse 14,9 Ko en gzip après § 9.ex (12,5 avant l'épure,
+  14,4 après les trois lots ; 12,1 Ko en Brotli) et franchit le seuil d'un aller-retour
+  du modèle de Lighthouse en local (première peinture simulée 1,06 s → 1,21 s, valeurs
+  observées égales, notes inchangées). Si elle recule en vrai, alléger cette feuille
+  (règles répétées dans chaque composant).
+- Puis quatre semaines sans toucher au texte, aux titres ni aux liens de la page.
+
+**Fichiers**
+
+`src/pages/index.astro` ; `src/components/accueil/` : `Hero`, `SousLaSurface`,
+`TroisCases`, `FenetreProduit`, `PourQui`, `Fondateur`, `Temoignages`, `Partenaires`,
+`Tarifs`, `Questions`, `Guides`, `SceneFinale` ; `src/data/faqAccueil.ts`,
+`parcoursAccueil.ts`, `etapesRemplacant.ts` ; `src/lib/pages-lastmod.ts` ;
+`scripts/verify-site.mjs` ; `CLAUDE.md`. Scripts et relevés : dossiers de travail
+`accueil2/lot1/` et `accueil2/lot2/`, hors dépôt.
+
+### 9.ev En-tête : le menu ne fait plus remonter la page (12 novembre 2026)
+
+Troisième lot du chantier de § 9.eu, à part parce qu'il touche `da.css` : la feuille
+commune change de nom, donc le HTML des 70 pages. Défaut relevé par l'audit de l'accueil
+(point 14 du plan), présent sur toutes les pages depuis la phase 5a. `origin/main` n'a
+pas avancé (`481f3f2`). Aucun mot, aucun script, aucun attribut : `Header.astro` et
+`ScriptTiroir.astro` ne sont pas touchés.
+
+**Le défaut, mesuré avant** (build de `fbddb87`, page défilée à mi-hauteur)
+
+| Geste | Chromium, 390 × 844, tactile | Moteur de Safari (WebKitGTK, 447 px) |
+|---|---|---|
+| Appui sur le bouton du menu | la page remonte de 454 px | de 75 px |
+| Appui sur la croix, ou sur le voile | encore 454 px | encore 75 px |
+| Sur `/guide-declarations` | 485 px à chaque geste | 137 px |
+| Tab jusqu'à la case du menu (clavier, 390 px) | 454 px | non isolé |
+| Tab dans les liens de la pastille (1440 px) | 452 px **par lien** (1 808 px après quatre Tab) | 66 px par lien (§ 9.ew) |
+
+Mêmes chiffres sur `/`, `/tarifs`, `/simulateur` et `/faq` dans les deux moteurs (et
+`/blog` dans Chromium), animations réduites ou non. Un clic sur une ancre du menu
+arrivait au bon endroit : le défaut ne touchait que les gestes qui ne naviguent pas.
+
+**La cause.** L'appui sur le bouton (un `<label>`) donne le focus à la case
+`#mobile-menu-toggle`. Elle est en haut de la fenêtre, dans la bande que
+`scroll-padding-top` de `<html>` réserve à la pastille (84 px ; 146 sur le guide, 140
+sur la calculette). Le navigateur fait défiler pour la sortir de cette bande : au milieu
+de la fenêtre dans Chromium (d'où 454 px), au ras de la bande dans le moteur de Safari
+(84 − 9 = 75 px). Mais l'en-tête était collé (`position: sticky`) : la case suit la
+fenêtre, elle n'en sort jamais, et chaque nouveau focus refait le même trajet. Tout lien
+de la pastille est dans le même cas au clavier.
+
+**Le correctif** (`src/styles/da.css`, deux règles de plus, rien de retiré)
+
+- À l'écran (`@media screen`), l'en-tête est tenu à la fenêtre : `position: fixed`,
+  `left: 0`, `right: 0`, `margin: 0`. Un élément tenu à la fenêtre ne fait pas défiler
+  la page. Même place qu'avant : 10 px du haut (plus l'encoche), toute la largeur ;
+  il ne prenait déjà aucune place dans le flux (10 + 60 − 70 = 0).
+  À l'impression, la règle d'origine reste seule : tenu à la fenêtre, l'en-tête
+  s'imprimerait en haut de chaque feuille.
+- Tiroir ouvert, la page ne défile plus sous le doigt :
+  `html:has(#mobile-menu-toggle:checked) { overflow: hidden }`, sous 960 px de large
+  (une case restée cochée dans une fenêtre qu'on élargit ne fige pas la page) et pour un
+  pointeur tactile seulement (`pointer: coarse`).
+
+Pourquoi « tactile seulement » : dans une fenêtre d'ordinateur étroite, la barre de
+défilement prend 15 px. La retirer refaisait la mise en page sous le voile ; lui garder
+sa place (`scrollbar-gutter: stable`) change la largeur de référence des tailles fluides
+(`vw`) : 4 px de hauteur en moins sur `/tarifs` à 800 px, 11 sur l'accueil. Essayé,
+mesuré, retiré. À la souris, la page défile donc encore sous le tiroir, comme avant.
+
+**Vérifié après** (build servi en local, « avant » : build de `fbddb87`)
+
+- Chromium tactile, 320 × 568, 390 × 844, 430 × 932 et 768 × 1024, six pages
+  (`/`, `/tarifs`, `/simulateur`, `/guide-declarations`, `/blog`, `/faq`), animations
+  réduites ou non : ouverture, fermeture par la croix, seconde ouverture, fermeture par
+  le voile, 0 px à chaque geste (48 parcours). Moteur de Safari, cinq pages : 0 px.
+- Les trois ancres du menu (`#sous-la-surface`, `#parcours`, `#pricing`), depuis
+  l'accueil défilée à mi-hauteur et depuis `/tarifs`, aux quatre tailles et dans les
+  deux moteurs : le tiroir se ferme, la case est décochée, la cible arrive à 84 px du
+  haut, sous la pastille (70 px), comme avant.
+- Clavier, 390 px : focus sur la case, Espace ouvre, Tab parcourt les neuf liens du
+  tiroir, Espace ferme, 0 px ; l'anneau de 3 px reste sur le bouton puis sur la croix.
+  1440 px : six Tab dans la pastille, 0 px.
+- Verrou (gestes tactiles réels, 390 × 844, 844 × 390 et 320 × 480) : tiroir ouvert, un
+  glissement sur le voile ou dans le tiroir ne déplace plus la page (285 px avant) ; le
+  menu du tiroir défile quand il dépasse (476 px de contenu dans 185 px en paysage), son
+  dernier lien s'atteint ; tiroir fermé, la page est au même endroit et défile.
+- Fenêtre d'ordinateur de 800 px, barre de défilement classique : tiroir ouvert, largeur
+  et hauteur de la page inchangées ; élargie à 1 200 px case cochée, la page défile.
+- Rien d'autre ne bouge à l'écran : quinze pages (accueil, `/tarifs`, `/faq`,
+  `/qui-sommes-nous`, `/blog`, un article, `/simulateur`, le guide des déclarations et
+  une page fille, la calculette, `/mentions-legales`, `/comparatif`, `/guide`, `/essai`,
+  la 404) à 390 et 1440 px, en pleine page, premier écran, tiers et mi-hauteur, plus
+  quatre pages en média d'impression : 140 captures identiques au pixel. Le premier bloc
+  de chaque page commence à 0 px avant comme après ; la barre de recherche du guide reste
+  à 70 px du haut, celle de la calculette à 76 px (ordinateur). Seule mesure qui change :
+  la boîte de `<body>` commence à 0 px au lieu de 10 (la marge haute de l'en-tête ne la
+  traverse plus) ; son fond est celui de la fenêtre, rien ne se déplace.
+  Menu « Ressources » au survol (1024 et 1440 px, haut de page et page défilée) et
+  tiroir ouvert (390 et 768 px), quatre pages : 23 captures identiques sur 24 ; la
+  dernière (guide, 390 px) diffère de six pixels d'un ou deux niveaux, sous le voile.
+  PDF de quatre pages : même nombre de feuilles (12, 11, 1, 5).
+- Moteur de Safari, sept pages à 447 et 1440 px, premier écran et mi-hauteur : 27
+  captures identiques sur 28 ; la dernière diffère aussi entre deux passes du même build
+  (barre d'une rangée à feuilleter).
+- HTML : 70 pages sur 70 ne diffèrent que par le nom de la feuille commune, une
+  occurrence par page (`_astro_assets.QWDU2rDT.css` → `_astro_assets.vwVYL-zs.css`) ;
+  `/transmissions`, qui ne la lie pas, est identique. Feuille commune comparée règle par
+  règle : deux règles de plus, aucune autre différence (78 642 → 78 824 octets). Aucun
+  autre fichier du build ne change. Build 70 pages, `verify-site.mjs` 0 erreur.
+
+**Vu en passant, non corrigé** (hors de ce lot : `guide.css` et `calculette.css`, pas la
+feuille commune)
+
+La barre de recherche collante du guide et la barre collante de la calculette ont la
+même mécanique : collées dans le flux, sous la marge de défilement de leur page. Un
+appui à la souris ou au doigt ne déplace rien (mesuré : 0 px). Un focus donné par
+programme, comme le fait le clavier, fait remonter la page : 393 px sur le guide à
+390 px de large, 421 à 1440, 418 sur la calculette à 1440. Ces barres doivent rester
+dans le flux : le correctif de l'en-tête ne s'y transpose pas tel quel.
+
+Corrigé depuis, dans les deux feuilles : § 9.ey (hippodoc/hippodoc.fr#145, fusionnée sur
+`main` avant ce lot ; note ajoutée à la fusion de `main` dans cette branche).
+
+**Non testé**
+
+- Aucun vrai Safari ni iPhone. Le verrou du défilement n'a pas pu être essayé dans le
+  moteur de Safari : WebKitGTK n'a pas de pointeur tactile ici, la règle ne s'y applique
+  pas. Sur iOS, si `overflow: hidden` sur `<html>` ne retient pas le défilement, le
+  comportement est celui d'avant.
+- Encoche (`env(safe-area-inset-top)`), zoom par pincement, clavier virtuel ouvert.
+- Navigateurs sans `:has()` : pas de verrou, par construction.
+- Tab au clavier dans le moteur de Safari : mesuré depuis, voir § 9.ew.
+
+**Fichiers** : `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/lot3/`, hors dépôt.
+
+### 9.ew Bulle de chat sur téléphone : elle arrive après le haut de page et s'efface pendant la saisie (13 novembre 2026)
+
+Suite de § 9.ev, même lot (point 15 du plan de § 9.eu), commit à part. `da.css` seul :
+la feuille commune change de nom une seconde fois. Aucun mot, aucun script, aucun
+attribut ; `ThirdPartyScripts.astro` n'est pas touché. **Deux comportements changent
+sur téléphone : à valider par le propriétaire** (le commit se retire seul).
+
+**Ce que j'ai regardé** (Chromium tactile, 390 × 844, build de § 9.ev)
+
+La bulle fait 56 px, à 16 px du bord droit et du bas. Le contenu d'une page s'arrête à
+16 ou 20 px du même bord : tout ce qui est calé à droite passe dessous au fil du
+défilement, sur 28 à 52 px de large, le temps de 50 à 120 px de défilement. Relevé par
+script, pas de 24 px : 60 textes ou contrôles sur l'accueil (dont les montants de la
+fenêtre produit, « 29 € » et « 10 € » des tarifs), 71 sur le simulateur, 82 sur la
+calculette (dont les boutons d'aide « ? », recouverts sur 38 px de 44), 127 sur un
+article. Un geste les dégage : c'est le lot de toute bulle fixe sur un téléphone, et
+aucun réglage de taille ou de place ne le supprime (48 px à 8 px du bord recouvrirait
+encore une quarantaine de pixels de contenu, par le calcul). Aucun élément fixe ou
+collant en bas d'écran dans les outils ; le
+tiroir d'aide du simulateur passe devant la bulle.
+
+Deux cas ne se dégagent pas d'eux-mêmes :
+
+1. **Le haut de page, à l'arrivée.** Sur l'accueil, la bulle se pose sur la fiche
+   « Super-Net » du premier écran, la seule étiquette gardée sur téléphone (§ 9.eu) :
+   pour une fenêtre de 740 à 848 px de haut à 390 px de large (720 à 828 à 412 px, 700 à
+   808 à 320 px), jusqu'à 46 × 35 px du montant « 59 543 € » (105 px de large). Ce sont
+   les hauteurs d'un téléphone Android dans Chrome et des navigateurs intégrés aux
+   applications ; Safari sur iPhone, barres affichées (390 × 664), y échappe. Sur le
+   simulateur, le « € » et le bout droit du deuxième champ ; sur la calculette, le
+   chevron de la première liste.
+2. **Un champ en cours de saisie** placé au niveau de la bulle : son bout droit et son
+   « € » restent dessous. Sur la plupart des téléphones le clavier recouvre alors la
+   bulle ; pas avec un clavier externe, ni dans un navigateur qui réduit la page à
+   l'ouverture du clavier (Firefox pour Android).
+
+**Le correctif** (`src/styles/da.css`, à la suite des règles de la bulle)
+
+- Sous 960 px, tant qu'un champ qui se saisit a le focus, la bulle s'efface :
+  `.da:has(:read-write:focus) #crisp-launcher { display: none }`. `:read-write` ne
+  retient que les champs de texte : la case du menu, les onglets et la pause de
+  l'accueil (cases et boutons radio), les listes et les boutons gardent la bulle.
+- Sous 640 px, la bulle n'arrive qu'une fois la page partie : invisible et sans clic tout
+  en haut, elle paraît à 96 px de défilement, pleine à 144 px. Une animation liée au
+  défilement (`animation-timeline: scroll(root)`), sans script : la mécanique que
+  `/essai` a depuis la phase 5b pour la même raison (380 à 420 px, sous 560 px), que
+  `/essai` garde (les règles nouvelles ont un poids nul, `:where`). `/guide` cache
+  toujours la bulle sous 768 px (§ 9.dk).
+  La plage s'arrête à 144 px ou au bout de la page, au plus court
+  (`animation-range: 0 min(144px, 100%)`) : une page qui défile de moins de 144 px montre
+  la bulle en bas, une page qui ne défile pas la montre d'emblée. Un navigateur qui ne
+  sait pas lier une animation au défilement, ou qui ne lit pas cette plage (Firefox,
+  Safari avant la version 26), garde la bulle dès l'arrivée, comme avant.
+- Taille, place, couleurs, texte et mécanique de la bulle inchangés ; rien ne change à
+  partir de 640 px pour l'arrivée, de 960 px pour la saisie.
+
+Ce qui ne change pas : au fil du défilement, la bulle passe encore sur le bord droit des
+contenus.
+
+**Vérifié** (build servi en local ; « avant » : build de `fbddb87`)
+
+- Arrivée, Chromium tactile à 320, 390, 430 et 639 px, animations réduites ou non, et
+  moteur de Safari à 447 px : invisible à 0, 60 et 96 px de défilement, à moitié à
+  120 px, pleine et cliquable à 144 px, de nouveau invisible de retour en haut. À 640,
+  768 et 1440 px : visible partout, comme avant. Tout en haut, un appui à sa place
+  atteint ce qui est dessous.
+- Premier écran de l'accueil, sept largeurs de 320 à 430 px, hauteurs de 520 à 960 px
+  par pas de 4 px : plus rien sous la bulle (avant : 28 à 38 hauteurs touchées par
+  largeur).
+- Saisie, Chromium à 390 et 768 px, moteur de Safari à 447 px : un champ du simulateur,
+  de la calculette, la recherche du guide (et celle du blog dans Chromium) retirent la
+  bulle, elle revient à la sortie du champ ; à 1440 px elle reste. Tiroir fermé avec le
+  focus resté sur sa case, focus sur un onglet (et, dans Chromium, sur la pause et sur un
+  pli) : la bulle reste.
+- Le clic ouvre toujours le chat (la bulle se retire, `l.js` de Crisp est demandé).
+  Première visite : la bulle attend la réponse à la bannière, puis suit la règle.
+- Cas limites, dans les deux moteurs : la 404 dans une fenêtre plus haute qu'elle, bulle
+  visible ; dans une fenêtre où elle défile de 60 ou 71 px, invisible en haut, pleine en
+  bas. Page la plus courte du site sous 640 px : `/essai`, 1 591 px à 390 px de large.
+- `/essai` (Chromium) : mêmes états qu'avant à 390 et 559 px (invisible jusqu'à 380 px,
+  pleine à 420 px). Seul changement : de 560 à 639 px, elle suit la règle commune.
+- Rien d'autre ne bouge : les quinze pages de § 9.ev à 390 et 1440 px, 140 captures.
+  114 sont identiques au pixel au build de départ ; les 26 autres sont le premier écran
+  et le haut de page de treize pages à 390 px, et ne diffèrent que dans le carré de la
+  bulle (86 × 86 px avec son ombre). Moteur de Safari : 27 captures sur 28 identiques
+  (animations coupées ; la dernière est l'aléa de § 9.ev).
+- Menu mobile de § 9.ev repassé sur ce build : 0 px à chaque geste, trois ancres bonnes,
+  dans les deux moteurs.
+- HTML : 70 pages ne diffèrent du build de départ que par le nom de la feuille commune
+  (`_astro_assets.QWDU2rDT.css` → `_astro_assets.BdeproSM.css`), une occurrence par
+  page. Feuille commune : cinq règles de plus qu'au départ (deux de § 9.ev, trois ici),
+  aucune autre différence (78 642 → 79 348 octets). Le minificateur double la règle de
+  saisie d'une forme `:-moz-read-write`, dans une règle à part. Build 70 pages,
+  `verify-site.mjs` 0 erreur.
+- Lighthouse mobile local, médiane de 3, avant → après : `/` 100, 100, 96, 100 des deux
+  côtés, première peinture 1,21 s → 1,20 s, décalage 0 ; `/simulateur` 99, 100, 96, 100
+  des deux côtés.
+
+**Complément à § 9.ev** : la fenêtre du moteur de Safari n'avait pas le focus du
+système dans les premiers essais (`document.hasFocus()` faux sous Xvfb, `:focus` ne
+s'y applique pas). Repassés fenêtre active : mêmes chiffres pour le menu (75 px par
+geste avant, 0 après), et le clavier y est maintenant mesuré : 66 px par lien de la
+pastille avant (128 sur le guide), à 447 comme à 1440 px, 0 après.
+
+**Non testé**
+
+- Aucun vrai téléphone : ni Chrome sur Android, ni Safari sur iPhone, ni le clavier
+  virtuel. La plage `min(144px, 100%)` est lue par Chromium et par WebKitGTK 2.52 ; je
+  n'ai pas vérifié depuis quelle version de Safari.
+- Firefox (pas installé ici) : la bulle y reste dès l'arrivée par construction ;
+  l'effacement à la saisie n'y est pas essayé.
+- Lecteur d'écran : tout en haut d'une page, sur téléphone, la bulle n'est pas
+  annoncée tant que la page n'a pas défilé.
+- Hors téléphone, rien ne change (relecture, § 9.ex) : à l'ordinateur la bulle se pose
+  encore sur l'étiquette « Échéance CARMF » du premier écran de l'accueil et, vers
+  1 200 px de large, sur le bord des montants de la fiche (146 tailles de fenêtre sur
+  1 155 essayées de 900 à 1 920 px, autant sur le build de `main`) ; à 640 px couché,
+  elle frôle un texte ou le bouton « Simuler mon Super-Net ». Non traité : le point 15
+  du plan portait sur le téléphone.
+- Événements PostHog (`t.hippodoc.fr` injoignable).
+
+**Fichiers** : `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/lot3/`, hors dépôt.
+
+### 9.ex Accueil : corrections après les quatre relectures (13 novembre 2026)
+
+Quatre relectures indépendantes du build de § 9.ew (`e3b1339`) : design, SEO et mesure,
+défauts, textes. Aucun constat bloquant. Trente-trois constats, dont quatre importants
+(un cité par trois relecteurs). Chacun a été reproduit avant d'être corrigé ou écarté.
+Deux commits de code : l'accueil (composants, `verify-site.mjs`, date du sitemap), puis
+`da.css` à part (une règle, la feuille commune change de nom sur les 70 pages). Aucun
+mot du texte de l'accueil ne change : le texte du `<body>` est identique au caractère à
+celui du build de § 9.ew, espaces insécables comprises (comparé par script). Zéro JS de
+plus ; le script du film et celui du tiroir ne sont pas touchés.
+
+**1. Les quatre constats importants**
+
+1. **Soutiens : chaque légende sous ses logos** (`Partenaires.astro`). Depuis l'épure, la
+   feuille rangeait les trois logos sur une ligne puis les deux légendes à la suite :
+   « Membre de La French Care » commençait sous le logo Bpifrance (à 1440 px, Bpifrance
+   de 913 à 1 001 px, légende de 918 à 1 096 px), à toutes les largeurs. On lisait
+   « Bpifrance, membre de La French Care », alors que la Région et Bpifrance sont une
+   seule aide, Innov'Up (§ 9.dq). Chaque soutien redevient une colonne : ses logos, sa
+   légende dessous, au même bord gauche ; les trois logos posés sur une même ligne, les
+   deux légendes à la même hauteur ; l'écart entre les deux soutiens (26 à 34 px) est
+   plus grand que l'écart entre les deux logos d'Innov'Up (14 à 26 px). Là où la feuille
+   est étroite (sous 480 px, et de 900 à 1 179 px dans la colonne de droite), « Membre
+   de La French Care » passe sur deux lignes sous son logo ; sous 360 px, les deux
+   soutiens sont l'un sous l'autre. Le HTML ne change pas. De 900 à 1 023 px, les logos
+   gardent leur taille de téléphone (ils reprennent la grande à 1 024 px, 900 avant).
+2. **En-tête : la pastille ne saute plus quand une liste verrouille le défilement**
+   (`da.css`, effet de bord de § 9.ev). Sur `/simulateur` et la calculette, une liste
+   déroulante de Radix verrouille le défilement : la barre de défilement disparaît et
+   `<body>` reçoit une marge droite de sa largeur. Le contenu ne bouge pas ; l'en-tête,
+   tenu à la fenêtre depuis § 9.ev, s'élargissait de 15 px et la pastille sautait de
+   7,5 px à 1440 px (bord droit +15 px à 1 024 px), puis revenait à la fermeture. Avec
+   des barres de défilement classiques seulement (Windows, Linux, macOS réglé sur
+   « toujours ») : les captures de § 9.ev tournaient barres masquées. Correctif :
+   `right: var(--removed-body-scroll-bar-size, 0px)` à la place de `right: 0` (la
+   variable est posée sur `<body>` par le verrou ; sans verrou, 0).
+3. **Film sur téléphone : le cadre grandit dès l'appui** (`Fondateur.astro`). La vignette
+   reprenait sa taille à l'événement `playing` (le script rend alors `controls`). Sur un
+   réseau lent, plus de 500 ms après l'appui : le saut (le texte passe dessous, la
+   section suivante descend de 464 px) était compté comme décalage de mise en page,
+   0,53 en 4G lente et 0,55 en 3G, deux fois le seuil « mauvais » du CLS ; entre-temps,
+   une vignette avec un sablier. La feuille lit maintenant aussi le sablier que le script
+   affiche à l'appui : `.film:has(video[controls], #film-play-attente:not([hidden]))`.
+   Le script n'est pas modifié (même empreinte).
+4. **Date de l'accueil dans le sitemap** : `ACCUEIL_LAST_UPDATED_ISO` passe du 12 au
+   13 novembre 2026, jour du dernier commit. Elle reste à poser au jour réel de la
+   fusion (§ 9.eu, point 13).
+
+**2. Les constats mineurs corrigés**
+
+- **Cases 1 et 2 de « Sous la surface », de 360 à 429 px** (`TroisCases.astro`) : à
+  21 px, « Tes obligations » (147 px) passait sur deux lignes et « Ton activité » sur
+  une ; les deux lignes de texte ne partaient pas de la même hauteur et la case 1
+  finissait sur 68 px de vide. Titres des trois cases en 18 px et remplissage latéral des
+  cases 1 et 2 à 12 px sur cette plage (jusqu'à 411 px dans Chromium, 419 px dans le
+  moteur de Safari, où la police sort un peu plus large : la plage va à 429 px).
+- **Palier du milieu, de 560 à 899 px** (les sept feuilles et « Sous la surface ») : le
+  remplissage des feuilles valait 44 et 72 px sur téléphone, 88 et 128 px sur tablette
+  (`da.css`), 76 et 112 px à l'ordinateur. Palier ajouté dans chaque composant : 60 et
+  92 px, marge sous l'en-tête de feuille 30 px, bas de « Sous la surface » 120 px (148).
+- **Bloc fondateur, de 560 à 699 px** (`Fondateur.astro`) : le portrait de 380 px seul
+  sur sa ligne, 200 px de vide à sa droite. La grille compacte du téléphone (portrait à
+  gauche, trois chiffres en colonne) va maintenant jusqu'à 699 px, le seuil de la
+  vignette du film, avec un portrait carré de 240 px sur cette plage. L'attribut `sizes`
+  du portrait suit (240 px de 560 à 899 px, 200 px au plus en dessous : il annonçait
+  encore 380 px sur téléphone).
+- **Sélecteur de « Pour qui », de 360 à 374 px** (`PourQui.astro`) : la colonne des
+  profils prend un peu de la place de la mascotte (110 px au lieu de 121 à 360 px), les
+  quatre précisions tiennent sur une ligne et les profils font 56 px au lieu de 69. La
+  section n'est plus plus haute à 360 px (1 253 px) qu'à 359 ou 375. La mascotte reste :
+  le relecteur proposait de la retirer jusqu'à 369 px.
+- **Mots seuls** : `text-wrap-style: balance` sur les titres des étapes de « Pour qui »
+  et sur la pastille « 120 € de moins par an que le mensuel » ; `pretty` sur les
+  précisions des étapes et sur les citations des témoignages. Un mot à traits d'union
+  d'une question (« gère-t-il ») ne se coupe plus (`<span class="nb">`).
+- **Signes seuls en début de ligne** (« 10 / € par mois », « 34 / % », « médecins
+  remplaçants / : il centralise ») : un nombre et son signe dans les réponses de la FAQ
+  et les précisions de « Pour qui », un mot et ses deux-points dans la définition du
+  produit, sont noués dans un `<span>` qui ne se coupe pas. Aucun caractère du texte ne
+  change (dix balises `<span>` de plus dans la page, c'est tout).
+- **Rangées à feuilleter** : là où l'indice de défilement dessiné existe, la barre du
+  navigateur est retirée (`scrollbar-width: none`) ; il y avait les deux à la fois dans
+  une fenêtre étroite à barres classiques, et pendant le geste au doigt.
+- **Contrastes forcés** : un contour pour les cartes de la rangée et la carte d'appel de
+  « Pour qui », la fiche du sélecteur, la fiche blanche à partir de 640 px, les trois
+  cases, les tuiles des syndicats.
+- **Pause du décor** : une fois le décor arrêté par l'une des deux cases, l'autre n'est
+  plus affichée. Elle montrait « pause » devant un décor déjà arrêté, et la cocher puis
+  la décocher ne relançait rien. Il ne reste que la case qui relance.
+- **Sans JavaScript, le film se lance** : l'invitation à lire (le bouton et son affiche)
+  couvrait les contrôles natifs et rien ne la retirait ; défaut antérieur à l'épure.
+  `@media (scripting: none) { .film-play { display: none } }` : le cadre montre le
+  lecteur natif. Un navigateur qui ne connaît pas cette requête garde l'état d'avant.
+- **Nom du bouton du film** : « Lire le film de présentation, une minute » devient
+  « 1 min, lire le film de présentation ». Sous 700 px, « 1 min » est le seul texte
+  visible du bouton : le nom accessible doit le contenir (WCAG 2.5.3, commande vocale).
+  Seul attribut de texte modifié du lot ; à valider par le propriétaire.
+- **Texte agrandi par le visiteur** : un mot plus large que sa case passe à la ligne au
+  lieu d'être rogné dans les cases 1 et 2 (`overflow-wrap: anywhere`).
+- **`verify-site.mjs`**, trois contrôles durcis après les essais par mutation du
+  relecteur. La forme des étapes de « Pour qui » se découpe sur `data-panel` (découpé
+  sur la chaîne exacte `<div class="panel"`, il passait à vide dès qu'une classe
+  s'ajoutait) et échoue s'il ne lit pas quatre panneaux. Les termes que l'épure a fait
+  passer de « Sous la surface » au profil Remplaçant (« 2035 », « 2042-C PRO »,
+  « DSFU », « contrat de remplacement », « serveur officiel URSSAF ») doivent rester
+  dans CE panneau : sur la page entière, seul « licence de remplacement » ne vivait
+  qu'à un endroit, les autres survivaient ailleurs. L'égalité FAQ visible / `FAQPage`
+  compare aussi les réponses, sur l'accueil. Essais par mutation refaits sur le build :
+  six mutations, six échecs attendus, 0 erreur sans mutation.
+
+**3. Mesures** (Chromium, build servi en local ; « avant » : build de § 9.ew)
+
+| | Avant | Après |
+|---|---|---|
+| Page à 390 px (`mesure.cjs`) | 10 834 px, 12,8 écrans | 10 813 px, 12,8 écrans |
+| Page à 1440 px (`mesure.cjs`) | 11 789 px | 11 789 px |
+| Mots visibles à 390 px, mots du HTML | 1 097, 2 743 dans `<main>` | inchangés |
+| Page à 320 px | 11 934 px | 11 964 px |
+| Page à 360 px | 11 286 px | 11 213 px |
+| Page à 560 px | 11 334 px | 10 519 px |
+| Page à 600 px | 11 193 px | 10 377 px |
+| Page à 640 px | 12 107 px | 11 255 px |
+| Page à 768 px | 11 471 px | 10 924 px |
+| Page à 900 et 1 024 px | 12 654 et 11 968 px | inchangées |
+
+Par section, avant → après : `features` 1 642 → 1 612 px à 390 px (cases 244 → 217 px),
+1 660 → 1 630 à 360 px, 1 656 → 1 628 à 768 px ; `practice-journeys` 1 253 → 1 201 px à
+360 px, 1 914 → 1 836 à 768 px ; `founder` (film compris) 1 443 → 1 074 px à 560 px,
+1 414 → 1 045 à 600 px, 1 210 → 1 146 à 768 px ; `partners` 1 111 → 1 120 px à 390 px
+(la seconde légende sur deux lignes), 1 233 → 1 264 à 320 px (soutiens l'un sous
+l'autre), 920 → 833 à 768 px, 932 → 932 à 1440 px ; `pricing` 1 146 → 1 076, `faq`
+926 → 862, `guides` 780 → 702, `testimonials` 877 → 799 à 768 px. La marche de 559 à
+560 px passe de +1 293 px à +486 px ; celle de 639 à 640 px reste (+1 084 px : la
+rangée de « Pour qui » redevient une liste, c'est le plan).
+
+Film, 390 × 844 tactile, réseau bridé, appui sur la vignette : cadre à 300 × 533 px
+150 ms après l'appui aux trois réseaux ; décalage compté dans le CLS 0,532 → 0 en 4G
+lente (lecture après 837 ms), 0,547 → 0 en 3G (1 791 ms), 0 → 0 en 4G rapide.
+Pastille de l'en-tête à l'ouverture d'une liste, barres classiques : `/simulateur` à
+1440 px [152,5 ; 1 272,5] → [160 ; 1 280] avant, immobile après ; à 1 024 px bord droit
++15 px avant, immobile après ; calculette à 1 280 px, de même.
+
+Poids : feuille propre à l'accueil 90 611 → 94 980 octets (14,9 Ko en gzip, 12,1 Ko en
+Brotli) ; HTML de l'accueil 136 996 → 137 248 octets ; feuille commune 79 348 → 79 386
+octets, une seule règle différente. Lighthouse mobile local, médiane de 3 : `/` 100,
+100, 96, 100, première peinture simulée 1 206 ms, décalage 0 ; `/simulateur` 99, 100,
+96, 100 : comme avant.
+
+**4. Constats écartés ou laissés, et pourquoi**
+
+- **Cartes de la rangée de « Pour qui » à 78 % de la fenêtre** (au lieu de 74 %) :
+  essayé. Le gain n'existe que de 375 à 411 px (25 px, une ligne de moins sur les cartes
+  les plus hautes) et la carte suivante ne dépasse plus que de 54 px au lieu de 69 à
+  390 px. La consigne voulait qu'elle dépasse franchement ; gardé à 74 %. À valider par
+  le propriétaire sur les captures : 15 cartes sur 25 ont 60 px ou plus de blanc entre
+  la phrase et la précision à 390 px.
+- **Hauteur de « Pour qui » selon le profil à partir de 640 px** (1 660 px pour
+  Remplaçant, 1 496 à 1 545 pour les autres à 1440 px ; le sélecteur collant remonte
+  quand on change de profil depuis le bas de la liste) : laissé. Le plan ne demande la
+  case commune que sous 640 px ; l'étendre à la liste ajoute environ 164 px de blanc
+  dans la fiche des trois autres profils.
+- **Échelle typographique** (dix tailles de corps entre 13 et 17,5 px) : lot à part,
+  après la fenêtre d'observation ; le plan l'avait écarté.
+- **Texte seul doublé** (réglage « aA » de Safari, zoom du texte de Firefox), pas le
+  zoom de page : dans la case jaune, « 59 543 € » reste rogné de 18 px avec la mascotte
+  dessus ; la légende du portrait (sur une ligne) recouvre un libellé ; la pastille de
+  l'en-tête dépasse de la fenêtre et le bouton du menu sort de 17 px (27 px restent
+  touchables), sans défilement possible depuis § 9.ev. Seules les cases 1 et 2 sont
+  corrigées. Va avec « taille de police du navigateur ignorée (corps en px) », déjà
+  relevé en § 9.eu.
+- **Ancre `#sous-la-surface`** : elle arrive sur la fenêtre produit, le titre de la
+  section est dessous (hors écran sur une fenêtre basse). Structure d'origine, non
+  touchée.
+- **Bulle de chat hors téléphone** : voir § 9.ew, « Non testé ».
+- **Apostrophes droites** dans 37 blocs de texte gardés, à côté des quatre textes
+  nouveaux à apostrophe courbe : rien dans ce chantier (textes gardés mot pour mot).
+- **Égalité FAQ visible / `FAQPage` sur les autres pages** : étendue telle quelle, la
+  comparaison des réponses sort 64 écarts (`/faq` 12, guide des déclarations et ses
+  pages filles 52), des réponses mises en liste à l'écran et à plat dans le schéma. Non
+  triés : hors de ce chantier, tâche à part.
+- **« Sans engagement » hors de l'accueil** : le tableau de l'accueil dit « Engagement :
+  12 mois » pour l'offre annuelle ; `/conditions-utilisations` dit « abonnement mensuel
+  ou annuel payant, sans engagement de durée », et la formule couvre les deux offres sur
+  `/essai`, `/qui-sommes-nous`, les articles, la calculette et le guide des
+  déclarations. Question pour le propriétaire (l'annuel engage-t-il 12 mois ?), puis
+  correction dans un lot à part.
+
+**5. À valider par le propriétaire**
+
+- Le nom du bouton du film (point 2).
+- La pause : une seule case affichée une fois le décor arrêté.
+- Sur les téléphones de 360 à 429 px, les titres des trois cases en 18 px (21 ailleurs).
+- La rangée de « Pour qui » telle quelle (point 4).
+
+**6. Vérifications**
+
+- Build 70 pages, `verify-site.mjs` 0 erreur (trois avertissements sans rapport).
+- Texte de l'accueil : identique au caractère à celui du build de § 9.ew ; titres,
+  liens, `data-*`, `id`, JSON-LD et scripts identiques ; seul attribut différent, le nom
+  du bouton du film ; dix `<span>` de plus.
+- Hors de l'accueil : les 69 autres pages ne diffèrent du build de `main` que par le nom
+  de la feuille commune, une occurrence par page (`_astro_assets.QWDU2rDT.css` →
+  `_astro_assets.Dv6AFUqB.css`) ; `/transmissions` identique. Sans le changement de
+  `da.css`, la feuille commune garde le nom de § 9.ew (`BdeproSM`) : les composants de
+  l'accueil n'y ajoutent rien. Sitemap : seule la date de « / » change.
+- Chromium, balayage de 278 largeurs de 320 à 1 500 px : aucun débord, chaque légende au
+  bord gauche de ses logos et dans la feuille, titres des cases 1 et 2 sur le même
+  nombre de lignes, quatre profils égaux, légende du portrait hors des chiffres.
+- Captures regardées : soutiens à 320, 360, 390, 768, 900, 1 024 et 1440 px ; cases à
+  360, 390 et 412 px ; sélecteur à 359, 360, 374 et 375 px ; fondateur à 560, 600 et
+  699 px ; film (vignette, attente, lecture) à 390 et 320 px ; page entière à 390 et
+  768 px ; contrastes forcés à 390 px ; film sans JavaScript.
+- En-tête : à sa place sur neuf pages à 390 et 1440 px, barres superposées ou
+  classiques (36 mesures) ; immobile à l'ouverture d'une liste sur `/simulateur` et la
+  calculette.
+- Pause : cocher l'une ou l'autre case arrête les deux scènes et les six bulles et
+  masque l'autre case ; la décocher relance tout et la rend (390 et 1440 px).
+- Sans JavaScript (Chromium) : l'élément au-dessus de la barre de contrôle du film est
+  le `<video>`, à 390 et 1440 px.
+- Moteur de Safari (WebKitGTK 2.52, fenêtre de 1440 px, cadres de 320, 360, 374, 390,
+  412, 600, 768 et 1 024 px) : mêmes mises en page, aucun débord ; légendes sous leurs
+  logos ; titres des cases 1 et 2 sur une ligne à 360, 400, 412, 414, 419, 420, 428, 429
+  et 430 px (deux lignes à 412 px tant que la plage s'arrêtait à 411 px, d'où son
+  élargissement à 429 px) ; quatre profils de 56 px à 360 et 374 px ; le
+  cadre du film grandit quand le sablier s'affiche ; la pause masque l'autre case ;
+  l'en-tête s'arrête à 15 px du bord quand la variable du verrou est posée ; la liste
+  de sélecteurs dans `:has()`, `scrollbar-width`, `balance` et `pretty` reconnus.
+
+**Non testé**
+
+- Aucun vrai Safari ni iPhone ; pas de Firefox.
+- Lecture du film dans le moteur de Safari (pas de décodeur H.264 ici) : le sablier y
+  est affiché par script d'essai, pas par un appui.
+- Le verrou de Radix dans le moteur de Safari : seule la variable posée à la main y est
+  essayée (WebKitGTK superpose ses barres de défilement ici).
+- `@media (scripting: none)` : essayé dans Chromium seulement.
+- Lecteur d'écran réel ; contrastes forcés à 390 px seulement, dans Chromium.
+- PostHog réel et aperçu Vercel.
+
+**Fichiers** : `src/components/accueil/` (`Partenaires`, `Fondateur`, `PourQui`,
+`TroisCases`, `SousLaSurface`, `Temoignages`, `Tarifs`, `Questions`, `Guides`, `Hero`,
+`SceneFinale`), `src/lib/pages-lastmod.ts`, `scripts/verify-site.mjs`,
+`src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/corrections/`, hors dépôt.
+
 ### 9.ey Barres collantes du guide et de la calculette : le focus ne fait plus remonter la page (13 novembre 2026)
 
 Numéro : § 9.eu à § 9.ex sont pris par la demande de fusion de l'accueil épurée

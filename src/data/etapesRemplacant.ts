@@ -5,10 +5,12 @@
  * l'historique git). Ne rien y réécrire : tout changement de texte se déclare dans
  * MIGRATION.md § 9.
  *
- * Deux blocs de la nouvelle accueil (DA 2026) s'en servent :
- *  - « Sous la surface » (TroisCases.astro) : `titre` et `accroche`, en trois
- *    cases (étapes 1 à 3, 4 à 6, puis 7) ;
- *  - « Pour qui », onglet Remplaçant : `titre` et `detail`.
+ * Un seul bloc de l'accueil s'en sert depuis l'épure de novembre 2026 :
+ * « Pour qui » (PourQui.astro, par parcoursAccueil.ts), où le profil Remplaçant
+ * affiche les sept étapes entières (titre, phrase d'accroche, ligne de détail)
+ * et le profil Vacataire les quatre dernières. Jusque-là, les trois cases de
+ * « Sous la surface » en portaient le titre et l'accroche, et l'onglet
+ * Remplaçant le titre et le détail : les mêmes étapes étaient dites deux fois.
  */
 export interface EtapeRemplacant {
   titre: string;

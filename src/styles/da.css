@@ -279,6 +279,38 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 /* L'en-tête couvre toute la largeur, la pastille 1120 px au plus : hors de la
    pastille, du voile et du tiroir, les clics traversent vers la page. */
 :where(.da) .hd { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 50; height: 60px; margin: 10px 0 -70px; pointer-events: none; -webkit-tap-highlight-color: transparent; }
+/* À l'écran, l'en-tête est sorti du flux et tenu à la fenêtre (§ 9.ev). Collé
+   dans le flux, il faisait remonter la page à chaque appui sur le bouton du
+   menu : l'appui donne le focus à la case du tiroir, qui se trouve sous la
+   marge de défilement de <html> (84 px, plus sur le guide et la calculette) ;
+   le navigateur fait défiler pour l'en sortir, la case suit la fenêtre et n'en
+   sort jamais (454 px de remontée dans Chromium à 390 × 844, 75 px dans le
+   moteur de Safari, à l'ouverture comme à la fermeture, et autant au clavier
+   pour tout lien de la pastille). Un élément tenu à la fenêtre ne fait pas
+   défiler la page. Même place à l'écran : 10 px du haut, toute la largeur, et
+   aucune place prise dans le flux, comme avant (10 + 60 − 70 = 0).
+   À l'impression la règle d'au-dessus reste seule : tenu à la fenêtre,
+   l'en-tête s'imprimerait en haut de chaque feuille.
+   Bord droit (§ 9.ex) : quand une liste ou un tiroir de Radix verrouille le
+   défilement (simulateur, calculette), la barre de défilement disparaît et
+   <body> reçoit une marge droite de sa largeur, donnée par
+   `--removed-body-scroll-bar-size` (15 px avec des barres classiques). Le
+   contenu ne bouge pas ; un élément tenu à la fenêtre, si : la pastille sautait
+   de 7,5 px à chaque ouverture de liste. L'en-tête s'arrête donc à la même
+   marge. Sans verrou, la variable n'existe pas : 0. */
+@media screen {
+  :where(.da) .hd { position: fixed; right: var(--removed-body-scroll-bar-size, 0px); left: 0; margin: 0; }
+}
+/* Tiroir ouvert, la page ne défile plus sous le doigt. Deux bornes. Au doigt
+   seulement : là, la barre de défilement se pose sur la page, la retirer ne
+   change rien à la mise en page ; dans une fenêtre d'ordinateur étroite elle
+   prend 15 px, et la retirer (ou lui garder sa gouttière, qui change la
+   largeur de référence des tailles fluides) refaisait la mise en page sous le
+   voile. Et aux largeurs où le tiroir existe : une case restée cochée dans
+   une fenêtre qu'on élargit ne doit pas figer la page. */
+@media screen and (max-width: 959.98px) and (pointer: coarse) {
+  html:has(#mobile-menu-toggle:checked) { overflow: hidden; }
+}
 :where(.da) .hd-bar, :where(.da) .hd-overlay, :where(.da) .hd-drawer { pointer-events: auto; }
 /* Le fond de la pastille. Sous 900 px, pas de flou d'arrière-plan : il coûte
    cher au défilement sur téléphone (§ 9.dn). Sans flou, un fond même à 94 %
@@ -469,3 +501,40 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
    Anneau double : 3 px de blanc (visible sur le sombre), puis 2 px d'encre
    (visibles sur le clair). */
 .da #crisp-launcher:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; box-shadow: 0 0 0 7px var(--ink); }
+/* Sur téléphone, la bulle laisse la place à ce qu'elle recouvrait (§ 9.ew).
+   Elle garde sa taille et sa place : 56 px à 16 px du bord, sur une page dont
+   le contenu s'arrête à 16 ou 20 px du même bord. Tout ce qui est calé à
+   droite passe donc dessous au fil du défilement, le temps d'un geste. Deux
+   cas ne passaient pas tout seuls.
+   1. Un champ en cours de saisie : son bout droit et son « € » restaient
+   dessous. Tant qu'un champ qui se saisit a le focus (`:read-write` : ni une
+   case, ni un bouton, donc pas la case du menu ni les onglets de l'accueil),
+   la bulle s'efface ; elle revient quand on en sort. */
+@media (max-width: 959.98px) {
+  .da:has(:read-write:focus) #crisp-launcher { display: none; }
+}
+/* 2. Le haut de page, à l'arrivée : sur l'accueil, la bulle se posait sur la
+   fiche « Super-Net » du premier écran (jusqu'à la moitié du montant, pour une
+   fenêtre de 740 à 850 px de haut à 390 px de large) ; sur le simulateur, sur
+   le « € » du deuxième champ. Elle n'arrive donc qu'une fois la page partie :
+   invisible et sans clic tout en haut, elle paraît à 96 px de défilement et
+   elle est pleine à 144 px. Sous 640 px de large seulement : une tablette n'a
+   pas ce défaut.
+   La plage s'arrête à 144 px ou au bout de la page, au plus court : une page
+   qui défile de moins de 144 px montre quand même la bulle en bas, une page
+   qui ne défile pas la montre d'emblée. Un navigateur qui ne sait pas lier
+   une animation au défilement, ou qui ne lit pas cette plage, garde la bulle
+   dès l'arrivée, comme avant (la condition porte sur les deux).
+   ⚠️ Deux règles, deux sélecteurs : écrite avec le raccourci, la ligne de
+   temps y est rangée à la minification et toute la déclaration tombe.
+   ⚠️ Poids volontairement nul (`:where`) : `/essai` avait déjà cette
+   mécanique, avec sa propre plage (380 à 420 px, la bulle y attend que la
+   fiche soit passée) ; ses règles, écrites avec l'identifiant seul, doivent
+   l'emporter sur celles-ci. */
+@supports (animation-timeline: scroll()) and (animation-range: 0 min(144px, 100%)) {
+  @media (max-width: 639.98px) {
+    :where(.da #crisp-launcher) { animation: da-bulle-arrive linear both; }
+    :where(.da) button:where(#crisp-launcher) { animation-timeline: scroll(root block); animation-range: 0 min(144px, 100%); }
+  }
+}
+@keyframes da-bulle-arrive { 0%, 66.667% { visibility: hidden; opacity: 0; } 100% { visibility: visible; opacity: 1; } }

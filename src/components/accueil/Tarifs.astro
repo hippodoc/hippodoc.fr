@@ -1,7 +1,8 @@
 ---
 /**
  * Tarifs (DA 2026, phase 3, MIGRATION.md § 9). Feuille « ciel », entre les
- * témoignages et les questions. Remplace home/PricingSection.astro et reprend
+ * syndicats et les questions (entre les témoignages et les questions jusqu'à
+ * l'épure de novembre 2026). Remplace home/PricingSection.astro et reprend
  * de home/CtaBanner.astro le seul bloc RSPM (deux composants supprimés en
  * phase 4a, à lire dans l'historique git).
  *
@@ -13,9 +14,18 @@
  *   reste sur le <details> de l'offre interne, `landing_pricing_comparison_toggle`
  *   sur le <summary> du détail des offres. `landing_pricing_rspm_toggle` est nouveau.
  * - Trois plis natifs, zéro JS : l'offre interne (dans sa carte, qui s'allonge
- *   seule à l'ouverture), « Détail des offres » (les neuf autres lignes
- *   « inclus », le tableau avec « Engagement : 12 mois », le lien vers /tarifs)
- *   et le RSPM. Tout leur texte est dans le HTML.
+ *   seule à l'ouverture), « Détail des offres » (« Inclus dans toutes les
+ *   offres » et ses quatorze lignes, le tableau avec « Engagement : 12 mois »,
+ *   le lien vers /tarifs) et le RSPM. Tout leur texte est dans le HTML.
+ * - Épure de novembre 2026 (MIGRATION.md § 9.eu) : le titre « Inclus dans
+ *   toutes les offres » et ses cinq premières lignes, jusque-là affichés sous
+ *   les cartes, ouvrent maintenant le pli « Détail des offres » (ils redisaient
+ *   les fonctions montrées plus haut). Seule la ligne de l'hébergement reste
+ *   visible, avec sa coche. « 29 € facturés chaque mois » (redit « 29 € par
+ *   mois ») et « · En savoir plus » (libellé du pli RSPM) sont retirés. Sous
+ *   700 px, les cartes Mensuel et Interne sont en grille : le nom et les
+ *   lignes à gauche, le prix à droite, le bouton dessous ; les trois prix
+ *   tiennent dans un écran de téléphone.
  * - Hébergement : « Union européenne » (décision du propriétaire). C'est la
  *   seule mention de l'hébergement sur l'accueil.
  * - Caractères absents de la police (« ✓ », « → ») : dessinés en SVG, le
@@ -46,20 +56,19 @@ import '@/styles/da.css';
 import { APP_URL } from '@/lib/site';
 import Mascotte from './Mascotte.astro';
 
-/* « Inclus dans toutes les offres » (ancien home/PricingSection.astro). Six lignes
-   visibles ; « contrats » et « factures avec notes » n'en font plus qu'une,
-   « hébergées en France » devient « dans l'Union européenne », « Abonnement
-   100 % déductible » passe dans la mention du bas. */
+/* « Inclus dans toutes les offres » (ancien home/PricingSection.astro) ;
+   « contrats » et « factures avec notes » n'en font plus qu'une, « hébergées
+   en France » devient « dans l'Union européenne », « Abonnement 100 %
+   déductible » passe dans la mention du bas. La ligne de l'hébergement reste
+   visible sous les cartes ; les quatorze autres sont dans « Détail des
+   offres » (les cinq premières y sont entrées à l'épure de novembre 2026). */
+const hebergement = 'Données sécurisées et hébergées dans l’Union européenne';
 const inclus = [
   'Super-Net calculé en temps réel',
   'Calcul URSSAF, CARMF et impôts en temps réel',
   'Déclarations fiscales guidées',
   'Planning centralisé avec synchro Google',
   'Génération rapide de contrats et de factures',
-  'Données sécurisées et hébergées dans l’Union européenne',
-];
-/* Les neuf autres lignes de la même liste, mot pour mot, dans « Détail des offres ». */
-const inclusSuite = [
   'Dashboard clair et intuitif',
   'Micro-BNC et régime réel intégrés',
   'RSPM et PAMC pris en charge',
@@ -118,7 +127,6 @@ const rspm = [
       <article class="offer">
         <h3 id="offre-mensuel">Mensuel</h3>
         <p class="price"><b class="aff num">29 €</b>{' '}<span>par mois</span></p>
-        <p>29&nbsp;€ facturés chaque mois</p>
         <p>Sans engagement</p>
         <a
           class="btn btn-line"
@@ -159,14 +167,7 @@ const rspm = [
       </article>
     </div>
 
-    <div class="incl">
-      <h3>Inclus dans toutes les offres</h3>
-      <ul class="checks" role="list">
-        {inclus.map((texte) => (
-          <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>{texte}</li>
-        ))}
-      </ul>
-    </div>
+    <p class="ue"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>{hebergement}</p>
 
     <div class="plis">
       <details class="qa">
@@ -175,8 +176,9 @@ const rspm = [
           <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
         </summary>
         <div class="qa-in">
+          <h3 class="incl-t">Inclus dans toutes les offres</h3>
           <ul class="checks" role="list">
-            {inclusSuite.map((texte) => (
+            {inclus.map((texte) => (
               <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>{texte}</li>
             ))}
           </ul>
@@ -210,7 +212,7 @@ const rspm = [
 
       <details class="qa">
         <summary data-ph="landing_pricing_rspm_toggle">
-          <span class="qa-t">Compatible RSPM&nbsp;· En savoir plus</span>
+          <span class="qa-t">Compatible RSPM</span>
           <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
         </summary>
         <div class="qa-in rspm">
@@ -237,7 +239,21 @@ const rspm = [
   .num { white-space: nowrap; }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
+  /* Règles communes aux feuilles de l'épure (remplissage, chapô, marge sous
+     l'en-tête), écrites ici et non dans da.css, commune à toutes les pages. */
   .band-head { margin-bottom: 36px; }
+  .lead { text-wrap-style: balance; }
+  @media (max-width: 559px) {
+    .tf { padding: 44px 0 72px; }
+    .lead { font-size: 17px; }
+  }
+  @media (min-width: 560px) and (max-width: 899px) {
+    .tf { padding: 60px 0 92px; }
+    .band-head { margin-bottom: 30px; }
+  }
+  @media (min-width: 900px) {
+    .tf { padding: 76px 0 112px; }
+  }
   /* La mascotte qui présente les offres : à partir de 1024 px (voir plus bas). */
   .guide { display: none; }
 
@@ -253,7 +269,7 @@ const rspm = [
   .offer.main .price b { color: var(--paper); }
   /* Un surlignage, pas une pastille : sur deux lignes (320 px), chaque ligne
      garde son trait jaune arrondi au lieu de former un pavé. */
-  .offer.main .save { line-height: 1.75; }
+  .offer.main .save { line-height: 1.75; text-wrap-style: balance; }
   .save span { padding: 3px 9px; border-radius: 9px; background: var(--sun); color: var(--ink); font-size: 14.5px; font-weight: var(--tb); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
   /* Les boutons au pied des cartes, sur une même ligne, libellé sur une ligne. */
   .offer > .btn, .offer > details { margin-top: auto; }
@@ -270,18 +286,18 @@ const rspm = [
   .more b { color: var(--ink); }
   .more ul { margin: -4px 0 0; padding-left: 1.2em; list-style: disc; color: var(--ink-2); }
 
-  /* Inclus dans toutes les offres */
-  .incl { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
-  .incl h3 { margin: 0 0 16px; font-family: var(--text); font-size: 16.5px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
-  .checks { display: grid; gap: 10px 40px; margin: 0; padding: 0; list-style: none; font-size: 16.5px; color: var(--ink-2); }
-  .checks li { display: flex; align-items: flex-start; gap: 10px; }
-  .checks svg { flex: none; margin-top: 5px; color: var(--brand); }
+  /* L'hébergement : la seule ligne « inclus » restée visible, avec sa coche. */
+  .ue { display: flex; align-items: flex-start; gap: 10px; margin: 26px 0 0; font-size: 16px; color: var(--ink-2); text-wrap-style: balance; }
+  .ue svg, .checks svg { flex: none; margin-top: 4px; color: var(--brand); }
+  /* Inclus dans toutes les offres : en tête du pli « Détail des offres ». */
+  .incl-t { margin: 0; font-family: var(--text); font-size: 16px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
+  .checks { display: grid; gap: 10px 40px; margin: -8px 0 0; padding: 0; list-style: none; font-size: 16px; color: var(--ink-2); }
+  .checks li { display: flex; align-items: flex-start; gap: 10px; text-wrap-style: pretty; }
 
   /* Les deux plis : détail des offres, RSPM */
-  .plis { margin-top: 32px; }
+  .plis { margin-top: 20px; }
   .plis .qa:last-child { margin-bottom: 0; }
   .qa-in { display: flex; flex-direction: column; gap: 22px; }
-  .qa-in .checks { padding-top: 4px; }
   /* Le tableau. Sous 560 px, chaque ligne devient une grille de deux colonnes :
      l'intitulé sur toute la largeur, les deux valeurs dessous, sous « Mensuel »
      et « Annuel » (trois colonnes ne tiennent pas dans 236 px). L'intitulé de la
@@ -316,18 +332,39 @@ const rspm = [
 
   /* Téléphone : cartes moins hautes, intervalles resserrés (la page est longue). */
   @media (max-width: 559px) {
-    .band-head { margin-bottom: 26px; }
+    .band-head { margin-bottom: 22px; }
     .plans { gap: 12px; }
-    .offer { gap: 4px; padding: 22px 24px 24px; }
+    .offer { gap: 4px; padding: 20px 24px 24px; }
     .price b { --corps: 54px; }
     .offer > p:last-of-type { margin-bottom: 14px; }
-    .incl { margin-top: 30px; padding-top: 24px; }
-    .plis { margin-top: 26px; }
+    .ue { margin-top: 22px; }
+    .plis { margin-top: 18px; }
+  }
+  /* Sous 700 px (une carte par ligne), les offres Mensuel et Interne sont en
+     grille : le nom et les lignes à gauche, le prix à droite, « par mois »
+     sous le chiffre, puis le bouton sur toute la largeur. L'offre annuelle
+     garde sa carte entière. Avec elle, les trois prix tiennent dans un écran
+     de téléphone. L'ordre du HTML ne change pas. */
+  @media (max-width: 699px) {
+    .offer:not(.main) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 2px 14px; padding-top: 18px; }
+    .offer:not(.main) > * { grid-column: 1; }
+    .offer:not(.main) h3 { padding-top: 5px; text-wrap-style: balance; }
+    .offer:not(.main) .price { grid-column: 2; grid-row: 1 / span 3; flex-direction: column; align-items: flex-end; gap: 0; line-height: 1.3; }
+    .offer:not(.main) .price b { --corps: 38px; }
+    .offer:not(.main) .price span { font-size: 14.5px; }
+    .offer:not(.main) > .btn, .offer:not(.main) > details { grid-column: 1 / -1; }
+    .offer:not(.main) > p:last-of-type { margin-bottom: 14px; }
   }
   /* Petits téléphones : « Commencer 30 jours gratuits » tient sur une ligne. */
   @media (max-width: 374px) {
-    .offer { padding: 24px 22px; }
+    .offer { padding: 20px 22px 24px; }
+    .offer:not(.main) { padding-top: 18px; }
     .offer > .btn, .offer summary { padding-inline: 8px; font-size: 15.5px; }
+  }
+  /* Sous 340 px, il tenait à 1 px près dans Chromium et passait sur deux
+     lignes dans le moteur de Safari, dont la police sort un peu plus large. */
+  @media (max-width: 339px) {
+    .offer > .btn, .offer summary { padding-inline: 4px; font-size: 15px; }
   }
   @media (min-width: 640px) {
     .checks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -342,6 +379,11 @@ const rspm = [
     .offer.main > .btn { grid-column: 2; grid-row: 1 / span 4; margin: 0; padding-inline: 20px; }
     .offer.main > p:last-of-type { margin-bottom: 0; }
     .offer:not(.main) > .btn, .offer summary { padding-inline: 8px; }
+    /* L'offre mensuelle a une ligne de moins que l'offre interne (« 29 €
+       facturés chaque mois » est retiré) : sa hauteur est rendue sous sa
+       dernière ligne, pour que les deux cartes et leurs boutons restent alignés
+       (une ligne de 16 px à 1,55 d'interligne, et l'écart de 6 px). */
+    .offer:not(.main):not(.interne) > p:last-of-type { margin-bottom: calc(18px + 1.55em + 6px); }
   }
   @media (min-width: 900px) {
     .checks { grid-template-columns: repeat(3, minmax(0, 1fr)); }

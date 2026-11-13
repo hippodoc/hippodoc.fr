@@ -17,6 +17,10 @@
  * - Les quatre vagues sont celles de Hero.astro (mêmes dessins, mêmes vitesses).
  * - Pause du décor (WCAG 2.2.2) : la même case à cocher que le premier écran,
  *   sans JS. Elle arrête ce qui bouge sans fin ici (l'eau, le balancement).
+ *   Depuis l'épure de novembre 2026 (MIGRATION.md § 9.eu), la pause vaut pour
+ *   toute la page : cochée ici ou dans le premier écran, elle arrête les deux
+ *   scènes. Pour relancer, on décoche la case qu'on a cochée : l'autre n'est
+ *   plus affichée tant que le décor est arrêté (§ 9.ex).
  * - Rien ne bouge si le visiteur a demandé moins d'animations.
  */
 import '@/styles/da.css';
@@ -106,6 +110,12 @@ import Mascotte from './Mascotte.astro';
     .pause:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 2.2v11.6L13.5 8z' fill='%23fff'/%3E%3C/svg%3E"); }
     .pause:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
     .pause:checked ~ .wave::before, .pause:checked ~ .hippo { animation-play-state: paused; }
+    /* La case du premier écran arrête aussi cette scène (voir Hero.astro). */
+    @supports selector(:has(a)) {
+      :global(body:has(.pause:checked)) .wave::before, :global(body:has(.pause:checked)) .hippo { animation-play-state: paused; }
+      /* Décor arrêté depuis le premier écran : il ne reste que sa case, celle qui relance. */
+      :global(body:has(.hero .pause:checked)) .pause { display: none; }
+    }
     .wave::before { animation: fin-drift var(--t, 46s) linear infinite; }
     .w2::before, .w4::before { animation-direction: reverse; }
     .hippo { animation: fin-bob 5s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate; }

@@ -1,9 +1,21 @@
 ---
 /**
  * Syndicats d'internes, partenaires et soutiens (DA 2026, phase 3,
- * MIGRATION.md § 9). Feuille « ciel », juste après le bloc fondateur : qui a
- * construit l'outil, puis qui le soutient.
+ * MIGRATION.md § 9). Feuille « sable », entre les témoignages et les tarifs
+ * (épure de novembre 2026, MIGRATION.md § 9.eu : les syndicats et leurs 6 mois
+ * d'essai mènent aux prix ; avant, feuille « ciel » juste après le fondateur).
  *
+ * - Épure de novembre 2026 : les quatre tuiles sont plus basses, et sous la
+ *   fiche des 6 mois il n'y a plus qu'UNE feuille blanche à la place de quatre
+ *   objets (deux cartes de partenaires, deux plaques de soutiens) : le titre
+ *   des partenaires en étiquette, leurs deux lignes, un filet, puis « Soutenu
+ *   par » et les soutiens, sans plaque. Deux colonnes à partir de 900 px.
+ *   Chaque soutien est une colonne : ses logos, sa légende dessous, calée à
+ *   leur bord gauche. « Lauréat Innov'Up » se lit donc sous la Région et
+ *   Bpifrance, « Membre de La French Care » sous son logo : rangées à part
+ *   (tous les logos, puis les deux légendes à la suite), la seconde légende
+ *   commençait sous Bpifrance (§ 9.ex). Fin du chapô retirée (« pour
+ *   accompagner leurs adhérents dans leurs premiers remplacements »).
  * - Décision du propriétaire (10 novembre 2026) : les syndicats d'internes ont
  *   une vraie place, pas une ligne discrète. Seuls les partenariats SIGNÉS sont
  *   affichés : SILR, CRP-IMG, SIOI, AIMGL (Limoges), HomeDoc, Doctripper. Deux
@@ -31,7 +43,7 @@
  *   `data-ph="landing_partner_*"` de l'ancienne section sont gardés,
  *   `landing_partner_homedoc` est nouveau sur l'accueil.
  * - Soutiens : Région Île-de-France et Bpifrance sont UNE seule aide
- *   (Innov'Up, § 9.dq), d'où leurs deux logos sur la même plaque.
+ *   (Innov'Up, § 9.dq), d'où leurs deux logos au-dessus de la même légende.
  * - Logos : les fichiers de public/lovable-uploads/, copiés dans
  *   src/assets/accueil/partenaires/ pour passer par astro:assets (AVIF et
  *   WebP). Plusieurs ont un fond blanc opaque : tous sont posés sur du blanc.
@@ -62,8 +74,8 @@ import frenchCare from '@/assets/accueil/partenaires/french-care.png';
 
 /* `largeur` : la largeur d'affichage la plus grande, en px (un fichier à cette
    largeur, un au double). `h` et `l` : la part de la zone du logo qu'il peut
-   occuper, en hauteur et en largeur (zone de 112 px de haut sur ordinateur,
-   84 px sur téléphone). */
+   occuper, en hauteur et en largeur (zone de 88 px de haut sur ordinateur,
+   58 px sur téléphone). */
 const syndicats = [
   { ph: 'silr', nom: 'SILR', complet: 'Syndicat des Internes du Languedoc-Roussillon', ville: 'Montpellier', logo: silr, largeur: 112, h: 100, l: 100, url: 'https://www.silr.fr/le-silr/nos-partenaires/' },
   { ph: 'crp_img', nom: 'CRP-IMG', complet: 'Internes de médecine générale de Poitiers', ville: 'Poitiers', logo: crpImg, largeur: 168, h: 100, l: 76, url: 'https://www.isnar-img.com/villes/poitiers-crp-img/' },
@@ -77,11 +89,11 @@ const partenaires = [
 ];
 ---
 
-<section data-landing-section="partners" class="band air da-bloc pt" aria-labelledby="partenaires-titre">
+<section data-landing-section="partners" class="band da-bloc pt" aria-labelledby="partenaires-titre">
   <div class="wrap">
     <div class="band-head">
       <h2 id="partenaires-titre">Aux côtés des internes, partout en France</h2>
-      <p class="lead">Ces syndicats d'internes ont signé une convention avec Hippodoc pour accompagner leurs adhérents dans leurs premiers remplacements.</p>
+      <p class="lead">Ces syndicats d'internes ont signé une convention avec Hippodoc.</p>
     </div>
 
     <ul class="synd" role="list">
@@ -102,114 +114,183 @@ const partenaires = [
     </ul>
     <p class="plus"><b class="aff num">6 mois</b>{' '}<span>d’essai gratuit au lieu de 30 jours, pour les adhérents de ces syndicats,{' '}<span class="code">grâce à un code fourni par leur syndicat.</span></span></p>
 
-    <h3>Et des partenaires pensés pour les jeunes médecins</h3>
-    <ul class="parts" role="list">
-      {partenaires.map((p) => (
-        <li>
-          <a class="part" href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${p.ph}`}>
-            <span class="logo">
-              <Picture src={p.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={p.largeur} widths={[p.largeur, 2 * p.largeur]} sizes={`${p.largeur}px`} alt="" loading="lazy" decoding="async" />
-            </span>
-            <span class="txt"><b>{p.nom}</b>{' '}<span>{p.texte}</span></span>
-          </a>
-        </li>
-      ))}
-    </ul>
+    <div class="feuille">
+      <div class="jeunes">
+        <h3>Et des partenaires pensés pour les jeunes médecins</h3>
+        <ul class="parts" role="list">
+          {partenaires.map((p) => (
+            <li>
+              <a class="part" href={p.url} target="_blank" rel="noopener noreferrer" data-ph={`landing_partner_${p.ph}`}>
+                <span class="logo">
+                  <Picture src={p.logo} formats={['avif', 'webp']} fallbackFormat="webp" width={p.largeur} widths={[p.largeur, 2 * p.largeur]} sizes={`${p.largeur}px`} alt="" loading="lazy" decoding="async" />
+                </span>
+                <span class="txt"><b>{p.nom}</b>{' '}<span>{p.texte}</span></span>
+                <svg class="fl" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 14.5 14.5 5.5M7 5.5h7.5V13"/></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-    <div class="backers">
-      <p class="backers-t">Soutenu par</p>
-      <ul role="list">
-        <li>
-          <span class="plaque">
-            <Picture src={regionIdf} formats={['avif', 'webp']} fallbackFormat="webp" width={105} widths={[105, 210]} sizes="105px" alt="Région Île-de-France" style="--h:26px" loading="lazy" decoding="async" />
-            <Picture src={bpifrance} formats={['avif', 'webp']} fallbackFormat="webp" width={88} widths={[88, 176]} sizes="88px" alt="Bpifrance" style="--h:28px" loading="lazy" decoding="async" />
-          </span>
-          <span>Lauréat Innov'Up</span>
-        </li>
-        <li>
-          <span class="plaque">
-            <Picture src={frenchCare} formats={['avif', 'webp']} fallbackFormat="webp" width={39} widths={[39, 78]} sizes="39px" alt="La French Care" style="--h:66px" loading="lazy" decoding="async" />
-          </span>
-          <span>Membre de La French Care</span>
-        </li>
-      </ul>
+      <div class="backers">
+        <p class="backers-t">Soutenu par</p>
+        <ul role="list">
+          <li>
+            <span class="plaque">
+              <Picture src={regionIdf} formats={['avif', 'webp']} fallbackFormat="webp" width={105} widths={[105, 210]} sizes="105px" alt="Région Île-de-France" style="--h:26px" loading="lazy" decoding="async" />
+              <Picture src={bpifrance} formats={['avif', 'webp']} fallbackFormat="webp" width={88} widths={[88, 176]} sizes="88px" alt="Bpifrance" style="--h:28px" loading="lazy" decoding="async" />
+            </span>
+            <span class="leg">Lauréat Innov'Up</span>
+          </li>
+          <li>
+            <span class="plaque">
+              <Picture src={frenchCare} formats={['avif', 'webp']} fallbackFormat="webp" width={39} widths={[39, 78]} sizes="39px" alt="La French Care" style="--h:66px" loading="lazy" decoding="async" />
+            </span>
+            <span class="leg">Membre de La French Care</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
   .synd, .parts, .backers ul { margin: 0; padding: 0; list-style: none; }
+  .num { white-space: nowrap; }
 
-  /* Les quatre syndicats, en grand */
-  .synd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-  .tile { display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; box-sizing: border-box; padding: 18px 12px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-align: center; text-decoration: none; transition: translate 200ms var(--ease); }
-  .tile:hover, .part:hover { translate: 0 -3px; }
-  .tile .logo { display: flex; align-items: center; justify-content: center; width: 100%; height: 76px; margin-bottom: 12px; }
+  /* Règles communes aux feuilles de l'épure (remplissage, chapô, marge sous
+     l'en-tête), écrites ici et non dans da.css, commune à toutes les pages. */
+  .lead { text-wrap-style: balance; }
+  @media (max-width: 559px) {
+    .pt { padding: 44px 0 72px; }
+    .band-head { margin-bottom: 22px; }
+    .lead { font-size: 17px; }
+  }
+  /* Palier du milieu : sans lui, da.css donnait plus d'air à la tablette (88 et
+     128 px) qu'à l'ordinateur. */
+  @media (min-width: 560px) and (max-width: 899px) {
+    .pt { padding: 60px 0 92px; }
+    .band-head { margin-bottom: 30px; }
+  }
+  @media (min-width: 900px) {
+    .pt { padding: 76px 0 112px; }
+    .band-head { margin-bottom: 36px; }
+  }
+
+  /* Les quatre syndicats : deux par ligne sur téléphone, quatre à partir de 640 px. */
+  .synd { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 2px; height: 100%; box-sizing: border-box; padding: 14px 10px 15px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-align: center; text-decoration: none; transition: translate 200ms var(--ease); }
+  .tile:hover { translate: 0 -3px; }
+  .tile .logo { display: flex; align-items: center; justify-content: center; width: 100%; height: 58px; margin-bottom: 8px; }
   /* <picture> s'efface : c'est l'image qui se cale dans la boîte du logo. */
   .logo :global(picture), .plaque :global(picture) { display: contents; }
   /* Sans cela, chaque <source> compterait pour un élément de la rangée (et son écart). */
   .logo :global(source), .plaque :global(source) { display: none; }
   .logo :global(img) { display: block; width: auto; max-width: var(--l, 100%); height: auto; max-height: var(--h, 100%); object-fit: contain; }
-  .nom { font-size: 19px; font-weight: var(--tb); line-height: 1.25; }
-  .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; color: var(--ink-2); }
+  .nom { font-size: 17px; font-weight: var(--tb); line-height: 1.25; }
+  .ville { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; color: var(--ink-2); }
   .ville svg { flex: none; color: var(--brand); }
   /* L'essai de 6 mois des adhérents : une fiche bleu profond sous les tuiles,
      le chiffre en grand, puis deux phrases courtes (l'offre, le code). */
-  .plus { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin: 14px 0 0; padding: 18px 22px 20px; border-radius: 26px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); font-size: 17px; line-height: 1.4; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
-  .plus b { --corps: 40px; flex: none; }
+  .plus { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 20px; margin: 12px 0 0; padding: 15px 20px 17px; border-radius: 24px; background: linear-gradient(var(--deep), #1F4FAF); color: var(--paper); font-size: 16px; line-height: 1.4; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.22), inset 0 -5px 0 rgba(10, 25, 70, 0.22), 0 22px 44px -22px rgba(13, 40, 105, 0.6); }
+  .plus b { --corps: 34px; flex: none; }
   .plus span { flex: 1 1 15rem; color: var(--on-deep-2); text-wrap-style: balance; }
   /* Le code : fin de la phrase, toujours sur sa propre ligne. Lignes équilibrées
      au-dessus : plus de « syndicats. » seul sur la sienne (900 px). */
   .plus .code { display: block; }
-  .num { white-space: nowrap; }
 
-  /* Les deux partenaires */
-  h3 { margin: 60px 0 20px; font-size: clamp(22px, 2.2vw, 26px); }
-  .parts { display: grid; gap: 14px; }
-  .part { display: flex; align-items: center; gap: 16px; height: 100%; box-sizing: border-box; padding: 16px 20px 18px 16px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
-  .part .logo { display: flex; flex: none; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 18px; background: var(--sky-soft); }
-  .part .logo :global(img) { max-width: 54px; max-height: 54px; }
-  .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-  .txt b { font-size: 18px; }
-  .txt span { font-size: 15.5px; color: var(--ink-2); }
+  /* Une seule feuille blanche : les deux partenaires, puis les soutiens. */
+  .feuille { --survol: #F4F7FE; margin-top: 12px; overflow: hidden; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
+  /* Le titre des partenaires, en étiquette. */
+  .feuille h3, .backers-t { margin: 0; font-family: var(--text); font-size: 16px; font-weight: 660; line-height: 1.35; letter-spacing: 0; color: var(--ink-2); text-wrap-style: balance; }
+  .feuille h3 { padding: 18px 20px 6px; }
+  /* Deux lignes, séparées par un filet qui s'arrête aux marges de la feuille ;
+     au survol, toute la ligne se teinte et la flèche part vers le site. */
+  .parts li { margin: 0 20px; }
+  .parts li + li { border-top: 1px solid var(--line); }
+  .part { display: flex; align-items: center; gap: 14px; min-height: 68px; box-sizing: border-box; margin: 0 -20px; padding: 10px 20px; color: var(--ink); text-decoration: none; transition: background-color 160ms var(--ease); }
+  .part:hover { background: var(--survol); }
+  .part:focus-visible { outline-offset: -4px; border-radius: 18px; }
+  .part .logo { display: flex; flex: none; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; background: var(--sky-soft); }
+  .part .logo :global(img) { max-width: 38px; max-height: 38px; }
+  .txt { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+  .txt b { font-size: 17px; line-height: 1.3; }
+  .txt span { font-size: 14.5px; line-height: 1.4; color: var(--ink-2); text-wrap-style: balance; }
+  .fl { flex: none; color: var(--ink); transition: translate 200ms var(--ease); }
+  .part:hover .fl { translate: 2px -2px; }
 
-  /* Les soutiens institutionnels, plus discrets (ils ne sont plus répétés dans le pied de l'accueil) */
-  .backers { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 36px; margin-top: 60px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 15.5px; color: var(--ink-2); }
-  .backers-t { margin: 0; }
-  .backers ul { display: flex; flex-wrap: wrap; gap: 14px 36px; }
-  .backers li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  /* Les soutiens, sans plaque. Chaque soutien est une colonne : ses logos sur
+     une rangée, sa légende dessous, au même bord gauche. Les trois logos sont
+     posés sur une même ligne (la rangée a la hauteur du plus haut, `--rang`) :
+     chaque légende est au pied de ses logos, et les deux commencent à la même
+     hauteur. L'écart entre deux soutiens est plus grand que l'écart entre deux logos
+     d'un même soutien. La seconde colonne cède de la place : sa légende passe
+     sur deux lignes là où la feuille est étroite. */
+  .backers { --rang: 53px; margin: 6px 20px 0; padding: 14px 0 16px; border-top: 1px solid var(--line); color: var(--ink-2); }
+  .backers ul { display: flex; align-items: flex-start; gap: 12px 26px; margin-top: 6px; }
+  .backers li { display: flex; flex: none; flex-direction: column; gap: 5px; min-width: 0; }
+  .backers li + li { flex: 0 1 auto; }
   /* Chaque logo a sa hauteur (`--h`) : rognés au ras du dessin, ils n'ont pas tous le même rapport. */
-  .plaque { display: inline-flex; flex: none; align-items: center; gap: 18px; box-sizing: border-box; min-height: 84px; padding: 9px 18px; border-radius: 20px; background: var(--paper); box-shadow: var(--clay-sm); }
-  .plaque :global(img) { display: block; flex: none; width: auto; height: var(--h); }
+  .plaque { display: flex; align-items: flex-end; gap: 20px; height: var(--rang); }
+  .plaque :global(img) { display: block; flex: none; width: auto; height: calc(var(--h) * 0.8); }
+  .leg { font-size: 13px; line-height: 1.35; text-wrap-style: balance; }
 
-  /* Téléphone : plaques et intervalles resserrés (la page est longue) ; sous
-     380 px, la plaque aux deux logos et sa légende tiennent sur une ligne. */
-  @media (max-width: 639px) {
-    h3 { margin: 38px 0 16px; }
-    .backers { gap: 12px 24px; margin-top: 34px; padding-top: 22px; }
-    .backers ul { gap: 12px 24px; }
-    .plaque { min-height: 64px; padding: 7px 14px; border-radius: 16px; }
-    .plaque :global(img) { height: calc(var(--h) * 0.8); }
+  /* Feuille étroite (téléphone, et colonne des soutiens de 900 à 1 179 px) :
+     « Membre de La French Care » sur deux lignes, sous son logo. */
+  @media (max-width: 479px), (min-width: 900px) and (max-width: 1179px) {
+    .backers li + li .leg { max-width: 7.6em; }
   }
   @media (max-width: 379px) {
-    .plaque { gap: 12px; padding-inline: 12px; }
+    .backers ul { column-gap: 20px; }
+    .plaque { column-gap: 14px; }
+  }
+  /* Petits téléphones : les deux soutiens l'un sous l'autre, chaque légende sur une ligne. */
+  @media (max-width: 359px) {
+    .backers ul { flex-direction: column; row-gap: 14px; margin-top: 10px; }
+    .backers li + li .leg { max-width: none; }
+    .plaque { height: auto; }
   }
   @media (min-width: 640px) {
-    .synd { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .parts { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; gap: 18px; }
+    .synd { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .plus { margin-top: 14px; }
+    .feuille { margin-top: 14px; }
+    .leg { font-size: 14.5px; }
   }
+  /* Ordinateur : la feuille sur deux colonnes, les partenaires à gauche, les
+     soutiens à droite, un filet entre les deux. */
   @media (min-width: 900px) {
-    .plus { gap: 4px 28px; margin-top: 18px; padding: 22px 34px 24px; border-radius: 30px; font-size: 19px; }
-    .plus b { --corps: 52px; }
+    .plus { gap: 4px 28px; margin-top: 18px; padding: 20px 34px 22px; border-radius: 30px; font-size: 18px; }
+    .plus b { --corps: 48px; }
     .synd { gap: 18px; }
-    .tile { padding: 24px 20px 26px; border-radius: 36px; }
-    .tile .logo { height: 112px; margin-bottom: 16px; }
+    .tile { gap: 3px; padding: 20px 20px 22px; border-radius: 32px; }
+    .tile .logo { height: 88px; margin-bottom: 12px; }
     .nom { font-size: 21px; }
+    .ville { font-size: 15px; }
+    .feuille { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); margin-top: 18px; border-radius: 30px; }
+    .feuille h3 { padding: 24px 32px 8px; }
+    .jeunes { padding-bottom: 10px; }
+    .parts li { margin: 0 32px; }
+    .part { min-height: 76px; margin: 0 -32px; padding: 12px 32px; }
+    .part .logo { width: 52px; height: 52px; }
+    .part .logo :global(img) { max-width: 42px; max-height: 42px; }
+    .txt b { font-size: 18px; }
+    .txt span { font-size: 16px; }
+    .backers { display: flex; flex-direction: column; justify-content: center; margin: 24px 0; padding: 0 32px; border-top: 0; border-left: 1px solid var(--line); }
+    .backers ul { column-gap: 30px; margin-top: 12px; }
+    .backers li { gap: 8px; }
   }
-  /* Contrastes forcés (Windows) : sans fond, un contour rend sa forme à la fiche. */
-  @media (forced-colors: active) { .plus { border: 1px solid CanvasText; } }
+  /* Les logos à leur taille dès que la colonne des soutiens les contient. */
+  @media (min-width: 1024px) {
+    .backers { --rang: 66px; }
+    .backers ul { column-gap: 34px; }
+    .plaque { gap: 26px; }
+    .plaque :global(img) { height: var(--h); }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend sa forme
+     à la fiche, à la feuille et aux tuiles. */
+  @media (forced-colors: active) { .plus, .feuille, .tile { border: 1px solid CanvasText; } }
   @media (prefers-reduced-motion: reduce) {
-    .tile, .part { transition: none; }
-    .tile:hover, .part:hover { translate: none; }
+    .tile, .part, .fl { transition: none; }
+    .tile:hover, .part:hover .fl { translate: none; }
   }
 </style>

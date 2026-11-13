@@ -22,6 +22,17 @@
  *   police (MIGRATION.md § 9, phase 2).
  * - Le bloc suivant est « Sous la surface » (SousLaSurface.astro) : la dernière
  *   vague a la couleur du haut de ce bloc, l'eau s'y prolonge sans couture.
+ * - Épure de novembre 2026 (MIGRATION.md § 9.eu), trois retouches seulement.
+ *   Sous 900 px, le papier « Échéance CARMF » n'est plus affiché : à droite de
+ *   la scène, il passait sous la bulle de chat, et son dernier mot trempait dans
+ *   la vague sous 360 px. Restent le papier « Appel URSSAF » à gauche et la
+ *   pastille Super-Net à droite. Le libellé « URSSAF, CARMF, impôts » de la
+ *   fiche de droite tient sur une ligne. Et la pause vaut pour toute la page :
+ *   cochée ici ou dans la scène finale (SceneFinale.astro), elle arrête les
+ *   deux scènes et les bulles de « Sous la surface ». Une fois le décor arrêté
+ *   par l'une des deux cases, l'autre n'est plus affichée (§ 9.ex) : sans
+ *   script, deux cases ne peuvent pas se suivre, et celle qui restait montrait
+ *   « pause » devant un décor déjà arrêté, sans pouvoir le relancer.
  */
 import '@/styles/da.css';
 import { APP_URL } from '@/lib/site';
@@ -105,7 +116,7 @@ const extrait = [13, 15, 20].map(journee);
     <div class="float r" aria-hidden="true">
       <div class="float-t">Année {DEMO_ANNEE.an}</div>
       <div class="row"><span>Encaissé</span><b class="num">{euros(DEMO_ANNEE.encaisse)}</b></div>
-      <div class="row"><span>URSSAF, CARMF, impôts</span><span class="num">− {euros(DEMO_A_METTRE_DE_COTE)}</span></div>
+      <div class="row"><span class="num">URSSAF, CARMF, impôts</span><span class="num">− {euros(DEMO_A_METTRE_DE_COTE)}</span></div>
       <div class="row sum"><span>Super-Net</span><span class="v num hl">{euros(DEMO_SUPER_NET)}</span></div>
     </div>
   </div>
@@ -236,7 +247,9 @@ const extrait = [13, 15, 20].map(journee);
   .slip { position: absolute; bottom: 50px; padding: 8px 12px 38px; border-radius: 10px; background: var(--paper); color: var(--ink); font-size: 13.5px; font-weight: var(--tb); white-space: nowrap; box-shadow: 0 8px 14px -8px rgba(13, 40, 105, 0.45); }
   .slip.a { left: 14px; rotate: -7deg; }
   .slip.b { right: 12px; bottom: 46px; rotate: 6deg; }
-  .slip.c, .slip.d { display: none; }
+  /* Sous 900 px, un seul papier, à gauche : celui de droite passait sous la
+     bulle de chat (en-tête du fichier). Les quatre reviennent à l'ordinateur. */
+  .slip.b, .slip.c, .slip.d { display: none; }
   .float { display: none; }
   /* À 56 px du centre, sauf si elle sortait de l'écran (sous 380 px de large) :
      son bord droit reste alors à 5 px du bord. */
@@ -253,7 +266,7 @@ const extrait = [13, 15, 20].map(journee);
     .hippo { width: 440px; margin-left: -220px; bottom: 30px; }
     .slip { bottom: 76px; font-size: 15px; padding: 10px 14px 58px; border-radius: 12px; }
     .slip.a { left: 8%; }
-    .slip.b { right: 3%; bottom: 70px; }
+    .slip.b { display: block; right: 3%; bottom: 70px; }
     .slip.c { display: block; left: 25%; bottom: 72px; rotate: 5deg; }
     .slip.d { display: block; right: 25%; bottom: 74px; rotate: -6deg; }
     .tag { display: none; }
@@ -287,6 +300,15 @@ const extrait = [13, 15, 20].map(journee);
     .pause:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 2.2v11.6L13.5 8z' fill='%23fff'/%3E%3C/svg%3E"); }
     .pause:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
     .pause:checked ~ .sun, .pause:checked ~ .wave::before, .pause:checked ~ picture .hippo, .pause:checked ~ .tag, .pause:checked ~ .float { animation-play-state: paused; }
+    /* Une seule pause pour la page : la case de la scène finale arrête aussi
+       cette scène. Règle à part, sous `@supports` : un navigateur sans `:has()`
+       garde la règle du dessus (une liste de sélecteurs qui contient un
+       sélecteur inconnu est rejetée en entier). */
+    @supports selector(:has(a)) {
+      :global(body:has(.pause:checked)) .sun, :global(body:has(.pause:checked)) .wave::before, :global(body:has(.pause:checked)) .hippo, :global(body:has(.pause:checked)) .tag, :global(body:has(.pause:checked)) .float { animation-play-state: paused; }
+      /* Décor arrêté depuis la scène finale : il ne reste que sa case, celle qui relance. */
+      :global(body:has(.end .pause:checked)) .pause { display: none; }
+    }
     .sun { animation: hero-sunrise 1600ms var(--ease) both; }
     .wave::before { animation: hero-drift var(--t, 46s) linear infinite; }
     .w2::before, .w4::before { animation-direction: reverse; }

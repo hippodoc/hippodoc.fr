@@ -1,7 +1,11 @@
 ---
 /**
  * Témoignages (DA 2026, phase 3, MIGRATION.md § 9). Quatre cartes, feuille
- * « sable », entre les partenaires et les tarifs.
+ * « ciel », entre le fondateur et les partenaires (épure de novembre 2026,
+ * MIGRATION.md § 9.eu : un confrère l'a construit, des confrères s'en servent,
+ * puis les syndicats ; avant, feuille « sable » entre les partenaires et les
+ * tarifs. L'alternance sable / ciel est gardée : Partenaires.astro a pris le
+ * sable).
  *
  * - Décision du propriétaire (10 novembre 2026) : les témoignages sont réels et
  *   reviennent sur l'accueil, MOT POUR MOT. Aucun n'est inventé ni réécrit.
@@ -46,7 +50,7 @@ const temoignages = [
 <section
   data-landing-section="testimonials"
   id="testimonials"
-  class="band da-bloc tm"
+  class="band air da-bloc tm"
   aria-labelledby="temoignages-titre"
 >
   <div class="wrap">
@@ -81,6 +85,20 @@ const temoignages = [
   .guillemets { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; margin-bottom: 4px; border-radius: 50%; background: var(--sun); color: var(--ink); box-shadow: 0 4px 0 var(--sun-edge); rotate: -4deg; }
   .guillemets svg { width: 26px; height: auto; }
   .band-head.mid { max-width: 640px; }
+  /* Règles communes aux feuilles de l'épure (remplissage, marge sous l'en-tête),
+     écrites ici et non dans da.css, qui est commune à toutes les pages. */
+  @media (max-width: 559px) {
+    .band-head { margin-bottom: 22px; }
+  }
+  /* Palier du milieu (de 560 à 639 px, le bas resserré de la rangée l'emporte, plus bas). */
+  @media (min-width: 560px) and (max-width: 899px) {
+    .tm { padding: 60px 0 92px; }
+    .band-head { margin-bottom: 30px; }
+  }
+  @media (min-width: 900px) {
+    .tm { padding: 76px 0 112px; }
+    .band-head { margin-bottom: 36px; }
+  }
 
   /* Sur téléphone : une rangée qui défile de côté, carte par carte. Elle sort
      des marges de la page pour que les cartes glissent jusqu'au bord. */
@@ -96,10 +114,12 @@ const temoignages = [
   /* Deux règles, deux sélecteurs pour l'animation : voir FenetreProduit.astro. */
   @media (max-width: 639px) {
     /* Le bas du bloc est resserré : sous la rangée, il restait près de 100 px de vide. */
-    .tm { padding-bottom: 76px; }
+    .tm { padding-bottom: 72px; }
     @supports (animation-timeline: scroll()) and (timeline-scope: --t) {
       .tm { timeline-scope: --temoignages; }
-      .rail { scroll-timeline-name: --temoignages; scroll-timeline-axis: x; }
+      /* L'indice dessiné remplace la barre du navigateur : pas les deux à la fois. */
+      .rail { scroll-timeline-name: --temoignages; scroll-timeline-axis: x; scrollbar-width: none; }
+      .rail::-webkit-scrollbar { display: none; }
       .fil { display: block; }
       .fil i { animation: temoignages-fil linear both; }
       span.fil i { animation-timeline: --temoignages; }
@@ -109,14 +129,22 @@ const temoignages = [
   .cards li { display: flex; flex: none; width: min(76vw, 340px); scroll-snap-align: start; }
   .card { display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; margin: 0; padding: 22px 22px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay-sm); }
   blockquote { flex: 1; margin: 0; }
-  blockquote p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--ink); }
+  blockquote p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--ink); text-wrap-style: pretty; }
   figcaption { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
   .av { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--sky); font-size: 15px; font-weight: var(--tb); letter-spacing: 0.02em; }
   .qui { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
   .qui b { font-size: 16px; }
   .qui span { font-size: 14.5px; color: var(--ink-2); }
 
+  @media (max-width: 559px) {
+    .tm { padding-top: 44px; }
+  }
   /* Au-delà : deux cartes par ligne, plus rien ne défile. */
+  @media (min-width: 640px) and (max-width: 1099px) {
+    /* Rangées de même hauteur : une citation plus longue d'une ligne allongeait
+       sa seule rangée (de 640 à 920 px). */
+    .cards { grid-auto-rows: 1fr; }
+  }
   @media (min-width: 640px) {
     .rail { margin: 0; overflow: visible; }
     .rail:focus-visible { outline-offset: 6px; }
