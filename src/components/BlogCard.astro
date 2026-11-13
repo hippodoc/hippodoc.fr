@@ -31,7 +31,7 @@ interface Props {
   readTime: string;
   seriesId: string;
   episodeNumber?: number;
-  cover?: { src: string; width: number; height: number; srcSmall?: string };
+  cover?: { src: string; width: number; height: number; srcset?: string };
   /** Charge la couverture en priorité (première carte de la grille) plutôt qu'en différé. */
   eager?: boolean;
 }
@@ -53,8 +53,8 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
       <div class="bl-vignette">
         <img
           src={cover.src}
-          srcset={cover.srcSmall ? `${cover.srcSmall} 320w, ${cover.src} ${cover.width}w` : undefined}
-          sizes={cover.srcSmall ? '(min-width: 1024px) 104px, (min-width: 640px) 96px, 64px' : undefined}
+          srcset={cover.srcset}
+          sizes={cover.srcset ? '(min-width: 1024px) 104px, (min-width: 640px) 96px, 64px' : undefined}
           alt=""
           width={cover.width}
           height={cover.height}

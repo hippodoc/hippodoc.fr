@@ -18,12 +18,13 @@ export interface ResolvedCover {
   src: string;
   width: number;
   height: number;
-  /** Variante étroite pour le `srcset` des lignes de liste (vignette de 64 à 104 px, § 9.fk). */
-  srcSmall?: string;
+  /** `srcset` des lignes de liste (vignette de 64 à 104 px, § 9.fk) : 160 et 320 px, puis
+      le fichier principal ; largeurs réelles, dédoublonnées. */
+  srcset?: string;
 }
 
-/** Largeur de la variante étroite : 104 px affichés au plus × densité 3. */
-const CARD_SMALL_WIDTH = 320;
+/** Variantes des lignes de liste : 64 px × densité 2,5 (téléphone), 104 px × densité 3. */
+const CARD_WIDTHS = [160, 320];
 
 /** Renvoie la cover optimisée, ou null si l'asset est introuvable. */
 export async function resolveCover(
@@ -51,8 +52,10 @@ export async function resolveCovers(
   for (const post of posts) {
     const cover = await resolveCover(post.data.cover, width);
     if (!cover) continue;
-    const small = await resolveCover(post.data.cover, CARD_SMALL_WIDTH);
-    map.set(post.id, { ...cover, srcSmall: small?.src });
+    const variantes = [...(await Promise.all(CARD_WIDTHS.map((w) => resolveCover(post.data.cover, w)))), cover]
+      .filter((v): v is ResolvedCover => v !== null);
+    const srcset = [...new Map(variantes.map((v) => [v.width, v.src])).entries()].map(([w, src]) => `${src} ${w}w`).join(', ');
+    map.set(post.id, { ...cover, srcset });
   }
   return map;
 }

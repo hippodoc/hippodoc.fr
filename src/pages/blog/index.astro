@@ -45,16 +45,19 @@ const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
 
 /* La cover « à la une ». Servie en 1200 px fixes, elle faisait chuter le LCP à
    4,1 s (perf 97 → 87). Depuis le § 9.fk, elle est en vignette portrait 4:5 :
-   84 px de large au téléphone, 180 px à partir de 768 px (180 × densité 2 :
-   480 ; 720 pour une densité 3 ou plus). */
+   84 px de large au téléphone, 180 px à partir de 768 px. Au téléphone, elle est
+   dans le premier écran (à droite du titre) : le srcset lui donne des fichiers à
+   sa taille (180 et 360 px), sinon elle tirait le fichier de 480 px pendant que
+   la police arrivait, et le LCP (le titre) reculait. Le `src` et ses dimensions
+   restent la variante de 720 px d'avant (les robots qui ne lisent pas le srcset). */
 const featuredCover = await resolveCover(featured.data.cover, 720);
-const featuredCoverSmall = await resolveCover(featured.data.cover, 480);
+const featuredVariants = (
+  await Promise.all([180, 360, 720].map((w) => resolveCover(featured.data.cover, w)))
+).filter((v): v is NonNullable<typeof v> => v !== null);
 // Descripteurs `w` = largeurs RÉELLES des fichiers (une cover source de 450 px
-// n'a qu'une variante utile).
-const featuredSrcset = featuredCover
-  ? featuredCoverSmall && featuredCoverSmall.width < featuredCover.width
-    ? `${featuredCoverSmall.src} ${featuredCoverSmall.width}w, ${featuredCover.src} ${featuredCover.width}w`
-    : `${featuredCover.src} ${featuredCover.width}w`
+// n'a pas de variante de 720 px), dédoublonnées.
+const featuredSrcset = featuredVariants.length
+  ? [...new Map(featuredVariants.map((v) => [v.width, v.src])).entries()].map(([w, src]) => `${src} ${w}w`).join(', ')
   : undefined;
 
 const formatDate = (d: Date) =>
