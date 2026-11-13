@@ -10153,6 +10153,31 @@ de la DA 2026 (§ 9.eb). Le texte visible de `/faq` n'a pas changé ce jour-là.
 
 **Fichiers** : `src/lib/pages-lastmod.ts`, `MIGRATION.md`.
 
+### 9.fe Scène finale : le hippo de dos en haute définition (13 novembre 2026)
+
+Demande du propriétaire : le hippo vu de dos de la scène finale de l'accueil n'était pas
+net. Le fichier d'origine (`src/assets/accueil/mascotte-dos.webp`, 431 × 727 px, 32 Ko)
+était déjà affiché à 2 fois sa taille sur les écrans haute densité (268 px CSS à
+l'ordinateur, donc 536 px réels demandés).
+
+- Le fichier est remplacé par celui que le propriétaire a fourni (1200 × 1200 px, fond
+  transparent), détouré à sa boîte utile sans perte : 651 × 1056 px, WebP sans perte
+  (349 Ko en source ; le build n'en sert que des déclinaisons de 5 à 41 Ko). Même pose,
+  même cadrage, plus net.
+- `SceneFinale.astro` : la plus grande déclinaison passe de 431 à 536 px (deux fois la
+  largeur affichée à l'ordinateur), pour que les écrans haute densité la reçoivent nette.
+  Largeurs affichées inchangées (172 et 268 px).
+- Effet visible : la nouvelle image est un peu plus large que haute que l'ancienne
+  (0,62 contre 0,59) : à largeur égale, le personnage est moins haut de 11 px sur
+  téléphone et de 17 px à l'ordinateur, ancré au même endroit. Comparé en capture, la
+  tête reste centrée sur le soleil.
+- Aucun texte, titre, lien ni attribut ne change (le texte de remplacement est
+  inchangé) : la période d'observation de l'accueil n'est pas concernée.
+
+**Fichiers** : `src/assets/accueil/mascotte-dos.webp`,
+`src/components/accueil/SceneFinale.astro`, `src/components/accueil/Mascotte.astro`
+(commentaire), `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
