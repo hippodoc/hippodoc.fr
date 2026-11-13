@@ -4,11 +4,14 @@
  * a la sienne sans rien faire. C'est l'`og:image`, la `twitter:image` et la première image
  * du JSON-LD `Article` (les recadrages de l'affiche suivent).
  *
- * Dans la DA 2026 : fond de la série (ciel pour les Fiches Fiscalité, sable pour les Fiches
- * Pratiques, eau profonde pour les Guides & Conseils), pastille de série, titre de l'article,
- * mascotte de l'accueil entière sur un halo, marque, vagues. Aucun jaune (il est réservé au
- * bouton d'essai). Quatre poses de la mascotte tournent dans une série, dans l'ordre des
- * épisodes ; celle qui montre du doigt est retournée vers le titre.
+ * Dans la DA 2026 : fond du thème de l'article (§ 9.fp ; de la série avant), pastille du
+ * thème, titre de l'article, mascotte de l'accueil entière sur un halo, marque, vagues. Cinq
+ * fonds, un par thème, pris dans les jetons de la DA (`partage` dans src/lib/blog-themes.ts) :
+ * sable (Débuter et s'organiser), ciel (Statut, contrats et revenus), nuit (Cotisations et
+ * protection), eau profonde (Impôts et déclarations), vert (Budget et patrimoine). Aucun
+ * jaune (il est réservé au bouton d'essai). Quatre poses de la mascotte tournent dans un
+ * thème, dans l'ordre de sa page (le plus récent d'abord) : deux voisins n'ont pas la même ;
+ * celle qui montre du doigt est retournée vers le titre.
  *
  * sharp seul (déjà installé avec Astro, qui s'en sert pour ses images) ; le texte est
  * composé par Pango avec la police du site en TTF, deux graisses fixes (560 et 720), dans
@@ -35,6 +38,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import sharp from 'sharp';
+import { BLOG_THEMES } from './blog-themes.ts';
+import { byNewest } from './blog-sort.ts';
 
 export const LARGEUR = 1200;
 export const HAUTEUR = 630;
@@ -63,13 +68,15 @@ const typo = (s) =>
     .replace(/ (\S{1,3})$/u, `${N}$1`);
 
 /* Jetons de la DA (src/styles/da.css) : --sky-1, --sky-2, --sky, --sand, --deep, --deep-2,
-   --ink, --ink-2, --brand, --brand-2. Les vagues sont celles du pied de page. */
-const THEMES = {
+   --ink, --ink-2, --brand, --brand-2, --on-deep-3, --ok-bg (le vert pâle des coches), --w1 à --w4.
+   Les vagues sont celles du pied de page, ou leurs teintes sur un fond sable, nuit ou vert. */
+const FONDS = {
   ciel: { fond: ['#C9DEFF', '#E4EEFF'], encre: '#14254F', pastille: '#FFFFFF', pastilleTexte: '#14254F', halo: '#FFFFFF', haloOp: [0.35, 0.6], vagues: ['#A9CBF8', '#7FAEF0', '#4F88DE'], marque: ['#0059B3', '#1A8CFF'] },
   sable: { fond: ['#FBF6EA', '#F6EEDB'], encre: '#14254F', pastille: '#DCE9FF', pastilleTexte: '#14254F', halo: '#DCE9FF', haloOp: [0.5, 1], vagues: ['#E9DDC0', '#DCCBA5', '#C9B488'], marque: ['#0059B3', '#1A8CFF'] },
   eau: { fond: ['#2A60C4', '#163A88'], encre: '#FFFFFF', pastille: 'rgba(255,255,255,0.16)', pastilleTexte: '#FFFFFF', halo: '#FFFFFF', haloOp: [0.06, 0.1], vagues: ['#3D75D2', '#2A60C4', '#1F4FAF'], marque: ['#FFFFFF', '#B9CCF0'] },
+  nuit: { fond: ['#14254F', '#1B3167'], encre: '#FFFFFF', pastille: 'rgba(255,255,255,0.14)', pastilleTexte: '#FFFFFF', halo: '#4F88DE', haloOp: [0.12, 0.2], vagues: ['#1F3A78', '#163A88', '#2A60C4'], marque: ['#FFFFFF', '#B9CCF0'] },
+  vert: { fond: ['#DFF3E7', '#EEF8F2'], encre: '#14254F', pastille: '#FFFFFF', pastilleTexte: '#14254F', halo: '#FFFFFF', haloOp: [0.4, 0.7], vagues: ['#C5E7D2', '#A6D9BA', '#82C59E'], marque: ['#0059B3', '#1A8CFF'] },
 };
-const THEME_DE_SERIE = { 'fiche-fiscalite': 'ciel', 'fiche-pratique': 'sable', divers: 'eau' };
 /* Poses en pied (le buste de l'accueil, coupé à la poitrine, n'est pas repris : la
    mascotte est toujours entière). `retourner` : elle désigne la gauche, où est le titre. */
 const POSES = [
@@ -82,18 +89,18 @@ const POSES = [
 const LIANTS = new Set(['le', 'la', 'les', 'l’', 'de', 'des', 'du', 'd’', 'un', 'une', 'à', 'au', 'aux', 'et', 'ou', 'en', 'ton', 'ta', 'tes', 'ce', 'ces', 'son', 'sa', 'ses', 'par', 'pour', 'sur', 'dans', 'avec', 'sans', 'vs', 'ni', 'te', 'se', 'me', 'ne', 'il', 'on', 'tu', 'qu’il', 'qu’on']);
 
 /**
- * Ce que montre l'image de chaque article, et donc son empreinte : Map slug → { titre, serie, libelle, rang }.
- * `libelle` est celui de la pastille de l'article (« Fiche Fiscalité #4 », « Guide et Conseil ») ; `rang`, le rang de
- * l'article dans sa série (ordre des épisodes, puis des dates) : deux articles voisins n'ont pas la même pose.
- * @param {Array<{ id: string, data: { title: string, seriesId: string, category: string, categoryNumber?: string, episodeNumber?: number, pubDate: Date } }>} posts
+ * Ce que montre l'image de chaque article, et donc son empreinte : Map slug → { titre, theme, libelle, fond, rang }.
+ * `libelle` est le nom du thème de l'article (« Impôts et déclarations », § 9.fp) ; `fond`, sa palette ; `rang`, le
+ * rang de l'article dans la page de son thème (le plus récent d'abord) : deux articles voisins n'ont pas la même pose.
+ * @param {Array<{ id: string, data: { title: string, theme: string, pubDate: Date, episodeNumber?: number } }>} posts
  */
 export function donneesPartage(posts) {
   const out = new Map();
-  for (const s of new Set(posts.map((p) => p.data.seriesId))) {
+  for (const t of BLOG_THEMES) {
     posts
-      .filter((p) => p.data.seriesId === s)
-      .sort((a, b) => (a.data.episodeNumber ?? 0) - (b.data.episodeNumber ?? 0) || a.data.pubDate.getTime() - b.data.pubDate.getTime())
-      .forEach((p, i) => out.set(p.id, { titre: p.data.title, serie: p.data.seriesId, libelle: p.data.category + (p.data.categoryNumber ? ` ${p.data.categoryNumber}` : ''), rang: i }));
+      .filter((p) => p.data.theme === t.slug)
+      .sort(byNewest)
+      .forEach((p, i) => out.set(p.id, { titre: p.data.title, theme: t.slug, libelle: t.nom, fond: t.partage, rang: i }));
   }
   return out;
 }
@@ -235,7 +242,7 @@ async function mascotte(pose, hauteur, largeurMax) {
 }
 
 /**
- * @param {{ titre: string, serie: string, libelle: string, rang: number }} a  (voir `donneesPartage`)
+ * @param {{ titre: string, theme: string, libelle: string, fond: string, rang: number }} a  (voir `donneesPartage`)
  * @returns {Promise<Buffer>} le JPEG.
  */
 /* Garde : la police est bien celle du site. Si Pango ne la lisait pas (fontconfig absent, fichier illisible), il
@@ -253,7 +260,7 @@ async function verifierPolice() {
 export async function imagePartage(a) {
   await verifierPolice();
   const W = LARGEUR, H = HAUTEUR;
-  const th = THEMES[THEME_DE_SERIE[a.serie] ?? 'eau'];
+  const th = FONDS[a.fond] ?? FONDS.eau;
   const pose = POSES[a.rang % POSES.length];
   const marge = Math.round(W * 0.06);
   // La mascotte entière : 76 % de la hauteur (82 % en pied), les pieds posés sur la
@@ -265,7 +272,7 @@ export async function imagePartage(a) {
   const col = Math.min(mx - marge - Math.round(W * 0.025), Math.round(W * 0.6));
   const cx = mx + mas.w / 2, cy = my + mas.h * 0.36, r = Math.max(mas.w * 0.62, H * 0.36);
 
-  const pt = await texte(`<span foreground="${th.pastilleTexte}">${esc(a.libelle)}</span>`, 560, Math.round(H * 0.05), col);
+  const pt = await texte(`<span foreground="${th.pastilleTexte}">${esc(typo(a.libelle))}</span>`, 560, Math.round(H * 0.05), col);
   const ppx = Math.round(H * 0.034), ppy = Math.round(H * 0.018);
   const pw = pt.w + 2 * ppx, ph = pt.h + 2 * ppy;
   const ecart = Math.round(H * 0.05);
