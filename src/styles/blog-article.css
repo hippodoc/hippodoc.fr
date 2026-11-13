@@ -620,7 +620,7 @@
   /* Long plan (plus de 12 entrées) : entrées resserrées, et un fondu en bas dit que le rail défile. */
   .fiche .som-long .som-liste a { padding-block: 4px; }
   .fiche .som-long { -webkit-mask-image: linear-gradient(#000 calc(100% - 32px), transparent); mask-image: linear-gradient(#000 calc(100% - 32px), transparent); padding-bottom: 32px; }
-  .fiche .som-haut { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; margin-top: 12px; padding-left: 14px; border-radius: 6px; font-size: 0.8125rem; font-weight: var(--tb); color: var(--ink-2); text-decoration: none; }
+  .fiche .som-haut { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; margin-top: 12px; padding-left: 14px; border-radius: 6px; font-size: 0.875rem; font-weight: var(--tb); color: var(--ink-2); text-decoration: none; }
   .fiche .som-haut:hover { color: var(--brand); }
   .fiche .lecture-fil, .fiche .som-pastille { display: none !important; }
   /* Sous la bannière cookies (en bas à gauche), le rail s'arrête au-dessus d'elle. */
