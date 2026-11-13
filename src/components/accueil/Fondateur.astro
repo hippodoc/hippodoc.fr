@@ -24,7 +24,7 @@
  * - Film : le lecteur de l'ancien home/PresentationVideoSection.astro (supprimé
  *   en phase 4a, à lire dans l'historique git) : <video preload="none">, aucun
  *   octet de vidéo avant le clic, mêmes identifiants, et son script, recopié à
- *   l'octet. `PRODUCT_DEFINITION` reste dans ce sous-bloc.
+ *   l'octet. `PRODUCT_DEFINITION` est passée à la FAQ de l'accueil (§ 9.fh).
  *   Depuis le 10 novembre 2026 (MIGRATION.md § 9.ec), le film est vertical
  *   (9:16, 57 secondes) et servi par le site : public/hippodoc-film-v21.mp4,
  *   720 × 1280, H.264 et AAC, 7,1 Mo, ré-encodé depuis le fichier du
@@ -62,15 +62,16 @@
  *   même seuil que la vignette du film (le portrait de 380 px seul sur sa
  *   ligne laissait 200 px de vide à sa droite). Sans script, l'invitation à
  *   lire est retirée (`@media (scripting: none)`) : elle couvrait les contrôles
- *   natifs, le film ne pouvait pas être lancé. Le nom du bouton commence par
- *   son texte visible (« 1 min »). La définition du produit garde ses
- *   caractères : un mot et les deux-points qui le suivent sont noués
- *   (`nouer`, src/lib/typo.ts), les deux-points ne passent plus seuls à la ligne.
+ *   natifs, le film ne pouvait pas être lancé.
+ * - Le film, revu (§ 9.fh) : à droite à partir de 700 px (le portrait du
+ *   dessus est à gauche) ; titre « Découvre Hippodoc en vidéo » et une phrase
+ *   courte à la place de la définition du produit, passée à la FAQ ; invitation
+ *   « Voir la vidéo · 1 min » centrée au pied de l'affiche (« 1 min » seul dans
+ *   la vignette). Le nom du bouton commence par son texte visible.
  */
 import '@/styles/da.css';
 import { getImage } from 'astro:assets';
-import { CALENDLY_URL, PRODUCT_DEFINITION } from '@/lib/site';
-import { echapper, nouer } from '@/lib/typo';
+import { CALENDLY_URL } from '@/lib/site';
 import portrait from '@/assets/founders/ryan-goburdhun.jpeg';
 import affiche from '@/assets/accueil/film-affiche.jpg';
 
@@ -139,9 +140,10 @@ const chiffres = [
 
     <div class="film" data-landing-section="presentation-video" id="film-presentation">
       <div class="film-copy">
-        <h3>Hippodoc en une minute</h3>
-        {/* GEO : définition produit reprise mot pour mot (site.ts) */}
-        <p class="def" set:html={nouer(echapper(PRODUCT_DEFINITION))} />
+        <h3>Découvre Hippodoc en vidéo</h3>
+        {/* La définition du produit (PRODUCT_DEFINITION, site.ts) a quitté ce
+            bloc pour la dernière question de la FAQ de l'accueil (§ 9.fh). */}
+        <p class="def">De ta journée de remplacement à ce qu’il te reste{'\u00a0'}: tout Hippodoc en une minute.</p>
       </div>
       <div class="film-frame">
         <video
@@ -159,7 +161,7 @@ const chiffres = [
             lecteur natif dessine un bouton trop discret : mesuré sur 120 jours,
             9,4 % de ceux qui voyaient le film le lançaient. `preload="none"` est
             gardé, d'où l'état d'attente : sans lui, on croit que rien ne se passe. */}
-        <button type="button" id="film-play" class="film-play" aria-label="1 min, lire le film de présentation">
+        <button type="button" id="film-play" class="film-play" aria-label="Voir la vidéo, 1 min : présentation d’Hippodoc">
           <picture class="affiche">
             <source type="image/avif" srcset={afficheAvif.srcSet.attribute} sizes={SIZES_AFFICHE} />
             <img src={afficheWebp.src} srcset={afficheWebp.srcSet.attribute} sizes={SIZES_AFFICHE} alt="" width="360" height="640" loading="lazy" decoding="async" />
@@ -167,7 +169,7 @@ const chiffres = [
           <span class="pill">
             <svg id="film-play-icone" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4.5 2.5v11l9-5.5z"/></svg>
             <svg id="film-play-attente" hidden xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-            1 min
+            <span><span class="pill-long">Voir la vidéo ·&nbsp;</span>1&nbsp;min</span>
           </span>
         </button>
       </div>
@@ -285,13 +287,18 @@ const chiffres = [
   /* L'affiche remplit le bouton, donc le cadre ; elle part avec lui quand le film démarre. */
   .affiche img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
   .film-play:focus-visible { outline-offset: -7px; }
-  .pill { position: absolute; left: 16px; bottom: 18px; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px 0 16px; border-radius: var(--r-pill); background: var(--sun); font-size: 16px; font-weight: var(--tb); box-shadow: 0 4px 0 var(--sun-edge); transition: translate 120ms var(--ease), background-color 160ms var(--ease); }
+  /* L'invitation : centrée au pied de l'affiche, sous son message (le haut et
+     le milieu de l'affiche portent le mot et la phrase du film). « Voir la
+     vidéo » dit ce que c'est ; sous 700 px, dans la vignette, seule la durée
+     reste (§ 9.fh). */
+  .pill { position: absolute; left: 0; right: 0; bottom: 20px; width: fit-content; margin-inline: auto; white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px 0 16px; border-radius: var(--r-pill); background: var(--sun); font-size: 16px; font-weight: var(--tb); box-shadow: 0 4px 0 var(--sun-edge); transition: translate 120ms var(--ease), background-color 160ms var(--ease); }
   /* Sous 700 px, cadre en grand (pas de `:has()`, pas de script, ou lecture
      refusée) : il fait 533 px de haut et dépasse de l'écran quand le titre du
      film est sous l'en-tête. La pastille passe en haut, centrée, dans le bleu
      vide de l'affiche (MIGRATION.md § 9.ec). */
   @media (max-width: 699px) {
-    .pill { left: 0; right: 0; top: 20px; bottom: auto; width: fit-content; margin-inline: auto; }
+    .pill-long { display: none; }
+    .pill { top: 20px; bottom: auto; }
     /* La vignette (voir l'en-tête du fichier) : tant que le film n'a pas
        démarré. 150 px de large au plus, moins sur un petit téléphone ; la
        pastille au pied, 44 px de haut. Le titre et la définition à sa droite.
@@ -299,9 +306,9 @@ const chiffres = [
        sur place, depuis le haut de la vignette, au lieu de partir dessous. */
     @supports selector(:has(a)) {
       .film:has(video[controls], #film-play-attente:not([hidden])) .film-frame { order: -1; }
-      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) { grid-template-columns: clamp(118px, 38.5vw, 150px) minmax(0, 1fr); gap: 16px; }
-      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-frame { grid-area: 1 / 1; width: 100%; margin: 0; border-radius: 22px; box-shadow: var(--clay-sm); }
-      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-copy { grid-area: 1 / 2; gap: 8px; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) { grid-template-columns: minmax(0, 1fr) clamp(118px, 38.5vw, 150px); gap: 16px; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-frame { grid-area: 1 / 2; width: 100%; margin: 0; border-radius: 22px; box-shadow: var(--clay-sm); }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-copy { grid-area: 1 / 1; gap: 8px; }
       .film:not(:has(video[controls], #film-play-attente:not([hidden]))) h3 { font-size: 22px; text-wrap-style: balance; }
       .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .def { font-size: 14.5px; line-height: 1.5; text-wrap-style: pretty; }
       .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .pill { top: auto; bottom: 12px; gap: 8px; min-height: 44px; padding: 0 16px 0 12px; font-size: 15px; }
@@ -315,8 +322,8 @@ const chiffres = [
       .film:not(:has(video[controls], #film-play-attente:not([hidden]))) { gap: 12px 14px; }
       .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-copy { display: contents; }
       .film:not(:has(video[controls], #film-play-attente:not([hidden]))) h3 { grid-area: 1 / 1 / auto / -1; }
-      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-frame { grid-area: 2 / 1; }
-      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .def { grid-area: 2 / 2; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-frame { grid-area: 2 / 2; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .def { grid-area: 2 / 1; }
     }
   }
   /* Sans script, rien ne retire l'invitation : elle couvrirait les contrôles
@@ -400,18 +407,18 @@ const chiffres = [
     .who { grid-template-columns: 240px minmax(0, 1fr); align-items: start; gap: 40px; }
     .who-photo { margin-top: 8px; }
     .who-photo img { border-radius: 28px; }
-    .film { grid-template-columns: 240px minmax(0, 1fr); gap: 40px; }
+    .film { grid-template-columns: minmax(0, 1fr) 240px; gap: 40px; }
   }
-  /* À partir de 700 px, le film reprend les deux colonnes du dessus : son cadre
-     sous le portrait, son texte sous celui du fondateur, au même bord gauche.
-     Dans le code, le texte reste avant le cadre (ordre de lecture du téléphone). */
+  /* À partir de 700 px, le film répond au bloc du dessus en miroir : le
+     portrait est à gauche, le film à droite, son texte à gauche (§ 9.fh). Dans
+     le code, le texte reste avant le cadre (ordre de lecture du téléphone). */
   @media (min-width: 700px) {
-    .film-frame { grid-area: 1 / 1; width: 100%; }
-    .film-copy { grid-area: 1 / 2; }
+    .film-frame { grid-area: 1 / 2; width: 100%; }
+    .film-copy { grid-area: 1 / 1; }
     /* ⚠️ `text-wrap-style`, pas le raccourci : Tailwind lit ce fichier et le mot
        du raccourci ajouterait une classe à la feuille globale de tout le site. */
     .film-copy h3 { text-wrap-style: balance; }
-    .def { text-wrap-style: pretty; }
+    .def { font-size: 17px; text-wrap-style: pretty; }
   }
   /* De 700 à 1179 px, la colonne du texte est étroite : les trois chiffres y
      restent sur une ligne dans un corps plus petit. Au-delà, ils se suivent. */
@@ -424,7 +431,11 @@ const chiffres = [
     .film { margin-top: 56px; }
   }
   @media (min-width: 900px) {
-    .who, .film { grid-template-columns: 380px minmax(0, 1fr); gap: 96px; }
+    .who { grid-template-columns: 380px minmax(0, 1fr); gap: 96px; }
+    .film { grid-template-columns: minmax(0, 1fr) 380px; gap: 96px; }
+    /* Le texte du film au corps du texte du fondateur, juste au-dessus. */
+    .film-copy { gap: 14px; }
+    .def { max-width: 30rem; font-size: 18px; }
     /* 270 px de large, 480 de haut (320 sur 569 avant l'épure) : entier, avec
        son titre, dans un écran de 700 px de haut. Centré dans la colonne du
        portrait (380 px). */

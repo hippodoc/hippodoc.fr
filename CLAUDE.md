@@ -132,7 +132,10 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
     `:has()` ou sans script, le cadre est grand d'emblée ; sans script, l'invitation à
     lire est retirée (`@media (scripting: none)`) pour laisser les contrôles natifs.
     De 560 à 699 px, le portrait et les chiffres gardent la grille du téléphone (même
-    seuil que la vignette).
+    seuil que la vignette). Le film est en miroir du portrait (§ 9.fh) : le portrait à
+    gauche, le film à droite, à toutes les largeurs (vignette à droite sur téléphone).
+    Son invitation, « Voir la vidéo · 1 min », est centrée au pied de l'affiche ; sous
+    700 px, « 1 min » seul. Le nom du bouton commence par « Voir la vidéo ».
   - Pause du décor : `body:has(.pause:checked)`, une seule pour les deux scènes et les
     bulles. Ne pas donner la classe `pause` à autre chose sur l'accueil. Une fois le
     décor arrêté par l'une des deux cases, l'autre est masquée
@@ -145,8 +148,10 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   - Un nombre et son signe, un mot et sa ponctuation tiennent ensemble sans changer un
     caractère du texte : `<span class="nb">` au rendu, ou `nouer()` de `src/lib/typo.ts`
     (définition du produit).
-  - Questions : huit (`src/data/faqAccueil.ts`). Les `id` `super-net` et `retrocessions`
-    sont retirés et ne se réutilisent pas (séries PostHog arrêtées).
+  - Questions : neuf (`src/data/faqAccueil.ts`), la dernière, « Qu'est-ce qu'Hippodoc ? »,
+    porte `PRODUCT_DEFINITION` mot pour mot (§ 9.fh ; ce n'est plus le sous-titre du film).
+    Les `id` `super-net` et `retrocessions` sont retirés et ne se réutilisent pas (séries
+    PostHog arrêtées).
   - ⚠️ Astro ajoute son attribut de portée à chaque maillon d'un sélecteur : `.a .b + .b >
     x` pèse donc plus que `.a .b > x:hover`. Un raccourci (`background`) posé dans le
     premier efface la couleur de survol du second : y écrire les propriétés longues.
@@ -281,7 +286,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   autre `<details>`, que le schéma n'a pas, dans l'élément qui contient les plis du
   schéma ; un second bloc `FAQPage` dans la page, une question deux fois dans le schéma,
   un `FAQPage` ailleurs qu'à la racine d'un JSON-LD (`@graph`, tableau) ou illisible ; un
-  compte de pages ou de questions sous `PLANCHER_FAQ` (58 pages, 391 questions : une page
+  compte de pages ou de questions sous `PLANCHER_FAQ` (58 pages, 392 questions : une page
   qui perd son schéma, une rubrique retirée du schéma et restée à l'écran). Ce plancher
   se relève à chaque article ou question ajoutés (un avertissement le demande) et ne
   s'abaisse que si la disparition est voulue.

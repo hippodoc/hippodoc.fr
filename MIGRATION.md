@@ -10224,6 +10224,40 @@ d'affilée en lisant la page.
 `src/components/accueil/PourQui.astro`, `src/components/accueil/Mascotte.astro`
 (commentaires et sources), `MIGRATION.md`.
 
+### 9.fh Accueil : le film en miroir du portrait, un titre et un bouton qui disent « vidéo » (13 novembre 2026)
+
+Demande du propriétaire, qui lève pour ce bloc le gel des textes de l'accueil (« fais tout
+maintenant »). Trois défauts : le film était à gauche, sous le portrait lui-même à gauche ;
+on ne comprenait pas que c'était une vidéo (titre « Hippodoc en une minute », pastille
+« 1 min » en coin) ; le sous-titre était la définition du produit, une liste de mots.
+
+- Mise en page (`Fondateur.astro`) : à partir de 700 px, le film passe à droite et son
+  texte à gauche, en miroir du portrait ; sous 700 px, la vignette passe aussi à droite.
+  L'ordre du code ne change pas (texte, puis film). Corps du texte du film : 17 px de
+  700 à 899 px, 18 px à partir de 900 px (15,5 avant), comme le texte du fondateur.
+- Invitation à lire : centrée au pied de l'affiche (en bas à gauche avant), libellé
+  « Voir la vidéo · 1 min » ; sous 700 px, dans la vignette, « 1 min » seul. Nom du
+  bouton : « Voir la vidéo, 1 min : présentation d’Hippodoc » (avant : « 1 min, lire le
+  film de présentation »). Script du film inchangé (mêmes identifiants).
+- Textes. Titre `<h3>` : « Hippodoc en une minute » devient « Découvre Hippodoc en
+  vidéo ». Sous-titre : la définition du produit (`PRODUCT_DEFINITION`) est remplacée par
+  une phrase nouvelle, « De ta journée de remplacement à ce qu’il te reste : tout
+  Hippodoc en une minute. » Le schéma `VideoObject` garde le nom du film, « Hippodoc en
+  une minute » (attribut `title` du `<video>`).
+- La définition n'est pas perdue : elle devient la neuvième question de la FAQ de
+  l'accueil, « Qu'est-ce qu'Hippodoc ? », réponse `PRODUCT_DEFINITION` mot pour mot
+  (`src/data/faqAccueil.ts`, `id` `definition`, mesure `landing_faq_definition`),
+  placée en dernier (les cinq premières suivent la demande mesurée). Elle entre donc
+  aussi dans le schéma `FAQPage`. `PLANCHER_FAQ` passe de 391 à 392 questions.
+- Vérifié : build, `verify-site.mjs` à 0 erreur ; à 390, 600, 768 et 1440 px, film à
+  droite, texte au bord gauche du portrait, aucun débordement, neuf questions ; au doigt
+  à 390 px, le film se lance et le cadre grandit (300 × 533 px). Feuille commune
+  inchangée.
+
+**Fichiers** : `src/components/accueil/Fondateur.astro`, `src/data/faqAccueil.ts`,
+`src/pages/index.astro` (commentaire), `scripts/verify-site.mjs` (`PLANCHER_FAQ`),
+`CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

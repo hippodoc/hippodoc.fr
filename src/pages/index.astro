@@ -70,8 +70,9 @@ const faqPageSchema = {
 // VideoObject. Depuis le 10 novembre 2026 (MIGRATION.md § 9.ec) : film vertical
 // de 57 secondes, servi par le site. contentUrl = public/hippodoc-film-v21.mp4
 // (le `src` du <video>, cf. accueil/Fondateur.astro), thumbnailUrl =
-// public/hippodoc-film-v21-poster.jpg (le film à 8,5 s). `name` suit le titre
-// visible du bloc ; `description` attend la phase 4c (§ 9.eb), « sous-titré »
+// public/hippodoc-film-v21-poster.jpg (le film à 8,5 s). `name` est le titre du
+// film (attribut `title` du <video>) ; le titre visible du bloc est devenu
+// « Découvre Hippodoc en vidéo » (§ 9.fh) ; `description` attend la phase 4c (§ 9.eb), « sous-titré »
 // en est seulement retiré (le film porte ses textes à l'écran, pas des
 // sous-titres). `uploadDate` : le jour de la mise en ligne du film, à remettre
 // au jour réel de la fusion (§ 9.ec).

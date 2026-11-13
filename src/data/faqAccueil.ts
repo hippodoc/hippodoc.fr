@@ -19,6 +19,8 @@
  * `landing_faq_1`…`landing_faq_10` gardent leur ancienne signification.
  */
 
+import { PRODUCT_DEFINITION } from '@/lib/site';
+
 export interface FaqAccueilItem {
   /** Slug stable — sert à `data-ph="landing_faq_<id>"`. Ne jamais le renommer. */
   id: string;
@@ -41,6 +43,11 @@ export interface FaqAccueilItem {
  * Leur texte est archivé mot pour mot dans MIGRATION.md § 9.eu ; les séries
  * `landing_faq_super-net` et `landing_faq_retrocessions` s'arrêtent. Ne pas
  * réutiliser ces deux `id` pour une autre question.
+ *
+ * Neuvième question, ajoutée le 13 novembre 2026 (§ 9.fh) : `definition`, la
+ * définition du produit (`PRODUCT_DEFINITION`, mot pour mot), qui était le
+ * sous-titre du film. Placée en dernier : les cinq premières suivent la demande
+ * mesurée.
  */
 export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
@@ -82,6 +89,11 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
     id: 'contrats',
     question: 'Peut-on générer des contrats de remplacement médical ?',
     answerHtml: `Oui, Hippodoc permet de générer des <strong>contrats de remplacement</strong> conformes aux exigences de l'<strong>Ordre des médecins</strong>. Tu renseignes les informations (dates, lieu d'exercice, conditions) et le <strong>contrat PDF</strong> est généré avec <strong>signature électronique</strong> intégrée. Ce qu'il faut vérifier avant de signer : <a href="/blog/signer-contrat-remplacement">signer un contrat de remplacement</a>.`,
+  },
+  {
+    id: 'definition',
+    question: "Qu'est-ce qu'Hippodoc ?",
+    answerHtml: PRODUCT_DEFINITION,
   },
 ];
 
