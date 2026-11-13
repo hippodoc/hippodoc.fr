@@ -10,8 +10,11 @@
  * sable (Débuter et s'organiser), ciel (Statut, contrats et revenus), nuit (Cotisations et
  * protection), eau profonde (Impôts et déclarations), vert (Budget et patrimoine). Aucun
  * jaune (il est réservé au bouton d'essai). Quatre poses de la mascotte tournent dans un
- * thème, dans l'ordre de sa page (le plus récent d'abord) : deux voisins n'ont pas la même ;
- * celle qui montre du doigt est retournée vers le titre.
+ * thème, du plus ancien article au plus récent (l'ordre de sa page, à l'envers) : deux voisins
+ * de la page n'ont pas la même, et un nouvel article prend le dernier rang, sans changer la pose
+ * ni l'adresse de l'image des autres (sauf s'il porte la date d'un article du même thème : seuls
+ * ceux de cette date peuvent alors changer de rang). Celle qui montre du doigt est retournée
+ * vers le titre.
  *
  * sharp seul (déjà installé avec Astro, qui s'en sert pour ses images) ; le texte est
  * composé par Pango avec la police du site en TTF, deux graisses fixes (560 et 720), dans
@@ -91,7 +94,9 @@ const LIANTS = new Set(['le', 'la', 'les', 'l’', 'de', 'des', 'du', 'd’', 'u
 /**
  * Ce que montre l'image de chaque article, et donc son empreinte : Map slug → { titre, theme, libelle, fond, rang }.
  * `libelle` est le nom du thème de l'article (« Impôts et déclarations », § 9.fp) ; `fond`, sa palette ; `rang`, le
- * rang de l'article dans la page de son thème (le plus récent d'abord) : deux articles voisins n'ont pas la même pose.
+ * rang de l'article dans son thème, du plus ancien au plus récent (l'ordre de sa page, à l'envers) : deux articles
+ * voisins n'ont pas la même pose, et publier un article ne change pas le rang des autres (il prend le dernier ; le
+ * plus récent d'abord, chaque parution décalait tout le thème, donc l'adresse de toutes ses images).
  * @param {Array<{ id: string, data: { title: string, theme: string, pubDate: Date, episodeNumber?: number } }>} posts
  */
 export function donneesPartage(posts) {
@@ -99,7 +104,7 @@ export function donneesPartage(posts) {
   for (const t of BLOG_THEMES) {
     posts
       .filter((p) => p.data.theme === t.slug)
-      .sort(byNewest)
+      .sort((a, b) => byNewest(b, a))
       .forEach((p, i) => out.set(p.id, { titre: p.data.title, theme: t.slug, libelle: t.nom, fond: t.partage, rang: i }));
   }
   return out;
