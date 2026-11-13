@@ -72,7 +72,7 @@
 .bl-resultats li + li { border-top: 1px solid var(--line); }
 .bl-resultats a { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 12px 14px; border-radius: 14px; font-size: 1rem; font-weight: 560; line-height: 1.35; color: var(--ink); text-decoration: none; }
 .bl-resultats a:hover { background: var(--sky-soft); color: var(--ink); }
-.bl-resultats a span + span { flex: none; font-size: 0.84375rem; font-weight: var(--tw); color: var(--ink-3); }
+.bl-resultats a span + span { flex: none; font-size: 0.875rem; font-weight: var(--tw); color: var(--ink-3); }
 .bl-vide { margin-top: 6px; padding: 16px 20px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
 .bl-vide p { margin: 0; }
 
@@ -94,10 +94,12 @@
 .bl-marques { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .bl-etiquette { display: inline-block; padding: 3px 10px; border-radius: var(--r-pill); background: var(--ink); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.35; color: var(--paper); white-space: nowrap; }
 .bl-carte .bl-marques { gap: 0 8px; line-height: 1.35; }
-.bl .bl-carte .chip { padding: 0; background: none; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand); }
-.bl-numero { font-size: 0.75rem; font-weight: var(--tb); letter-spacing: 0.04em; color: var(--ink-3); }
+/* Tailles : `--ink-3` jamais sous 14 px ; les petites capitales à 13 px, comme « SOMMAIRE » des articles,
+   et le numéro qui les suit à la même taille, en `--ink-2`. */
+.bl .bl-carte .chip { padding: 0; background: none; font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand); }
+.bl-numero { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.04em; color: var(--ink-2); }
 .bl-numero::before { content: "·"; content: "·" / ""; margin-right: 8px; }
-.bl-infos { display: flex; flex-wrap: wrap; align-items: center; font-size: 0.84375rem; color: var(--ink-3); }
+.bl-infos { display: flex; flex-wrap: wrap; align-items: center; font-size: 0.875rem; color: var(--ink-3); }
 .bl-infos > * + *::before { content: "·"; content: "·" / ""; margin: 0 8px; }
 
 /* L'article à la une : une fiche, l'affiche en petit (84 px à droite du titre ;
@@ -135,7 +137,7 @@
 /* Un nombre et son unité tiennent ensemble dans les extraits (« 3 900 € »,
    `nouerNombres`, src/lib/typo.ts). */
 .bl .nb { white-space: nowrap; }
-.bl-carte .bl-infos { margin-top: auto; padding-top: 5px; font-size: 0.8125rem; }
+.bl-carte .bl-infos { margin-top: auto; padding-top: 5px; font-size: 0.875rem; }
 
 /* « Voir les N autres articles » : un bouton ; ouvert, il disparaît et la
    feuille continue sans rupture. */
@@ -174,7 +176,7 @@
    et la durée reste sur la ligne de base de la première ligne. */
 .bl-serie li a { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; align-content: center; column-gap: 14px; min-height: 44px; padding: 9px 0; border-radius: 6px; font-size: 0.9375rem; line-height: 1.35; color: var(--ink); text-decoration: none; }
 .bl-serie li a:hover { color: var(--brand); }
-.bl-serie li a > span + span { font-size: 0.84375rem; color: var(--ink-3); }
+.bl-serie li a > span + span { font-size: 0.875rem; color: var(--ink-3); }
 
 /* ───────── Pages de série : fil d'Ariane, titre, texte de la série ───────── */
 .bl-fil { font-size: 0.90625rem; color: var(--ink-2); }
@@ -205,6 +207,13 @@
   .bl-extrait { overflow-wrap: anywhere; }
   .bl .bl-extrait .num { white-space: normal; }
   .bl-serie li a > span:first-child { overflow-wrap: anywhere; }
+}
+/* Petit téléphone (moins de 400 px) : dans deux colonnes égales, « Tous les articles (48) » passait à la
+   ligne dans sa pastille. Les pastilles prennent leur largeur (le texte d'une ligne), se rangent à la suite
+   et s'étirent pour remplir la ligne : deux lignes de deux à 360 px, trois au pire (texte grossi). */
+@media (max-width: 399.98px) {
+  .bl-series { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bl-series a { flex: 1 1 auto; flex-wrap: nowrap; padding: 4px 10px; white-space: nowrap; }
 }
 /* Téléphone : l'extrait n'est pas affiché (la ligne tient en 96 à 132 px), la
    feuille rogne la teinte de survol à ses coins ; l'anneau de focus est tracé
