@@ -78,6 +78,16 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   au clavier. Tiroir ouvert, `<html>` passe en `overflow: hidden` sous 960 px et au doigt
   seulement (`pointer: coarse`) : à la souris, retirer la barre de défilement refait la
   mise en page, et `scrollbar-gutter: stable` change la largeur de référence des `vw`.
+- **Bulle de chat sur téléphone** (`da.css`, § 9.ew). Sous 640 px elle n'arrive qu'après
+  le haut de page (invisible à 0, pleine à 144 px de défilement ou au bout de la page,
+  par une animation liée au défilement ; sans elle, bulle dès l'arrivée) ; sous 960 px
+  elle s'efface tant qu'un champ de texte a le focus (`:read-write:focus`). Ces deux
+  règles d'arrivée ont un poids nul (`:where`) : une page qui veut sa propre plage
+  l'écrit avec `#crisp-launcher` seul, comme `/essai` (380 à 420 px) ; `/guide` cache la
+  bulle sous 768 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
+  Elle passe toujours sur le bord droit des contenus pendant le défilement : rien
+  d'important ne se cale à moins de 72 px du bord droit dans un élément fixe ou collant
+  en bas d'écran.
 - **Premier bloc d'une page** : un ciel (`linear-gradient(var(--sky-1) 0, var(--sky) 460px)`)
   qui passe sous la pastille de l'en-tête et lui réserve le haut par son remplissage
   (100 à 148 px selon la largeur, voir `.tete` de `/tarifs`). L'ancienne forme de

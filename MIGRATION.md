@@ -8906,7 +8906,8 @@ Lot 2 :
 
 - Le lot à part, qui touche `da.css` : le menu mobile qui fait remonter la page à
   l'ouverture et à la fermeture du tiroir (fait depuis : § 9.ev), et la bulle de chat
-  qui recouvre des montants sur téléphone.
+  qui recouvre des montants sur téléphone (traité depuis pour le haut de page et la
+  saisie : § 9.ew).
 - Relevés et laissés : taille de police du navigateur ignorée sur l'accueil (corps en
   px) ; bannière cookies sur la fiche « Avril 2026 » à l'ordinateur ; logos en deux
   densités seulement ; arrêt de tabulation sans effet sur les rangées à partir de 640 px ;
@@ -8947,8 +8948,8 @@ pas avancé (`481f3f2`). Aucun mot, aucun script, aucun attribut : `Header.astro
 | Appui sur le bouton du menu | la page remonte de 454 px | de 75 px |
 | Appui sur la croix, ou sur le voile | encore 454 px | encore 75 px |
 | Sur `/guide-declarations` | 485 px à chaque geste | 137 px |
-| Tab jusqu'à la case du menu (clavier, 390 px) | 454 px | non mesuré |
-| Tab dans les liens de la pastille (1440 px) | 452 px **par lien** (1 808 px après quatre Tab) | non mesuré |
+| Tab jusqu'à la case du menu (clavier, 390 px) | 454 px | non isolé |
+| Tab dans les liens de la pastille (1440 px) | 452 px **par lien** (1 808 px après quatre Tab) | 66 px par lien (§ 9.ew) |
 
 Mêmes chiffres sur `/`, `/tarifs`, `/simulateur` et `/faq` dans les deux moteurs (et
 `/blog` dans Chromium), animations réduites ou non. Un clic sur une ancre du menu
@@ -9041,7 +9042,125 @@ dans le flux : le correctif de l'en-tête ne s'y transpose pas tel quel.
   comportement est celui d'avant.
 - Encoche (`env(safe-area-inset-top)`), zoom par pincement, clavier virtuel ouvert.
 - Navigateurs sans `:has()` : pas de verrou, par construction.
-- Tab au clavier dans le moteur de Safari (seuls les clics y sont mesurés).
+- Tab au clavier dans le moteur de Safari : mesuré depuis, voir § 9.ew.
+
+**Fichiers** : `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/lot3/`, hors dépôt.
+
+### 9.ew Bulle de chat sur téléphone : elle arrive après le haut de page et s'efface pendant la saisie (13 novembre 2026)
+
+Suite de § 9.ev, même lot (point 15 du plan de § 9.eu), commit à part. `da.css` seul :
+la feuille commune change de nom une seconde fois. Aucun mot, aucun script, aucun
+attribut ; `ThirdPartyScripts.astro` n'est pas touché. **Deux comportements changent
+sur téléphone : à valider par le propriétaire** (le commit se retire seul).
+
+**Ce que j'ai regardé** (Chromium tactile, 390 × 844, build de § 9.ev)
+
+La bulle fait 56 px, à 16 px du bord droit et du bas. Le contenu d'une page s'arrête à
+16 ou 20 px du même bord : tout ce qui est calé à droite passe dessous au fil du
+défilement, sur 28 à 52 px de large, le temps de 50 à 120 px de défilement. Relevé par
+script, pas de 24 px : 60 textes ou contrôles sur l'accueil (dont les montants de la
+fenêtre produit, « 29 € » et « 10 € » des tarifs), 71 sur le simulateur, 82 sur la
+calculette (dont les boutons d'aide « ? », recouverts sur 38 px de 44), 127 sur un
+article. Un geste les dégage : c'est le lot de toute bulle fixe sur un téléphone, et
+aucun réglage de taille ou de place ne le supprime (48 px à 8 px du bord recouvrirait
+encore une quarantaine de pixels de contenu, par le calcul). Aucun élément fixe ou
+collant en bas d'écran dans les outils ; le
+tiroir d'aide du simulateur passe devant la bulle.
+
+Deux cas ne se dégagent pas d'eux-mêmes :
+
+1. **Le haut de page, à l'arrivée.** Sur l'accueil, la bulle se pose sur la fiche
+   « Super-Net » du premier écran, la seule étiquette gardée sur téléphone (§ 9.eu) :
+   pour une fenêtre de 740 à 848 px de haut à 390 px de large (720 à 828 à 412 px, 700 à
+   808 à 320 px), jusqu'à 46 × 35 px du montant « 59 543 € » (105 px de large). Ce sont
+   les hauteurs d'un téléphone Android dans Chrome et des navigateurs intégrés aux
+   applications ; Safari sur iPhone, barres affichées (390 × 664), y échappe. Sur le
+   simulateur, le « € » et le bout droit du deuxième champ ; sur la calculette, le
+   chevron de la première liste.
+2. **Un champ en cours de saisie** placé au niveau de la bulle : son bout droit et son
+   « € » restent dessous. Sur la plupart des téléphones le clavier recouvre alors la
+   bulle ; pas avec un clavier externe, ni dans un navigateur qui réduit la page à
+   l'ouverture du clavier (Firefox pour Android).
+
+**Le correctif** (`src/styles/da.css`, à la suite des règles de la bulle)
+
+- Sous 960 px, tant qu'un champ qui se saisit a le focus, la bulle s'efface :
+  `.da:has(:read-write:focus) #crisp-launcher { display: none }`. `:read-write` ne
+  retient que les champs de texte : la case du menu, les onglets et la pause de
+  l'accueil (cases et boutons radio), les listes et les boutons gardent la bulle.
+- Sous 640 px, la bulle n'arrive qu'une fois la page partie : invisible et sans clic tout
+  en haut, elle paraît à 96 px de défilement, pleine à 144 px. Une animation liée au
+  défilement (`animation-timeline: scroll(root)`), sans script : la mécanique que
+  `/essai` a depuis la phase 5b pour la même raison (380 à 420 px, sous 560 px), que
+  `/essai` garde (les règles nouvelles ont un poids nul, `:where`). `/guide` cache
+  toujours la bulle sous 768 px (§ 9.dk).
+  La plage s'arrête à 144 px ou au bout de la page, au plus court
+  (`animation-range: 0 min(144px, 100%)`) : une page qui défile de moins de 144 px montre
+  la bulle en bas, une page qui ne défile pas la montre d'emblée. Un navigateur qui ne
+  sait pas lier une animation au défilement, ou qui ne lit pas cette plage (Firefox,
+  Safari avant la version 26), garde la bulle dès l'arrivée, comme avant.
+- Taille, place, couleurs, texte et mécanique de la bulle inchangés ; rien ne change à
+  partir de 640 px pour l'arrivée, de 960 px pour la saisie.
+
+Ce qui ne change pas : au fil du défilement, la bulle passe encore sur le bord droit des
+contenus.
+
+**Vérifié** (build servi en local ; « avant » : build de `fbddb87`)
+
+- Arrivée, Chromium tactile à 320, 390, 430 et 639 px, animations réduites ou non, et
+  moteur de Safari à 447 px : invisible à 0, 60 et 96 px de défilement, à moitié à
+  120 px, pleine et cliquable à 144 px, de nouveau invisible de retour en haut. À 640,
+  768 et 1440 px : visible partout, comme avant. Tout en haut, un appui à sa place
+  atteint ce qui est dessous.
+- Premier écran de l'accueil, sept largeurs de 320 à 430 px, hauteurs de 520 à 960 px
+  par pas de 4 px : plus rien sous la bulle (avant : 28 à 38 hauteurs touchées par
+  largeur).
+- Saisie, Chromium à 390 et 768 px, moteur de Safari à 447 px : un champ du simulateur,
+  de la calculette, la recherche du guide (et celle du blog dans Chromium) retirent la
+  bulle, elle revient à la sortie du champ ; à 1440 px elle reste. Tiroir fermé avec le
+  focus resté sur sa case, focus sur un onglet (et, dans Chromium, sur la pause et sur un
+  pli) : la bulle reste.
+- Le clic ouvre toujours le chat (la bulle se retire, `l.js` de Crisp est demandé).
+  Première visite : la bulle attend la réponse à la bannière, puis suit la règle.
+- Cas limites, dans les deux moteurs : la 404 dans une fenêtre plus haute qu'elle, bulle
+  visible ; dans une fenêtre où elle défile de 60 ou 71 px, invisible en haut, pleine en
+  bas. Page la plus courte du site sous 640 px : `/essai`, 1 591 px à 390 px de large.
+- `/essai` (Chromium) : mêmes états qu'avant à 390 et 559 px (invisible jusqu'à 380 px,
+  pleine à 420 px). Seul changement : de 560 à 639 px, elle suit la règle commune.
+- Rien d'autre ne bouge : les quinze pages de § 9.ev à 390 et 1440 px, 140 captures.
+  114 sont identiques au pixel au build de départ ; les 26 autres sont le premier écran
+  et le haut de page de treize pages à 390 px, et ne diffèrent que dans le carré de la
+  bulle (86 × 86 px avec son ombre). Moteur de Safari : 27 captures sur 28 identiques
+  (animations coupées ; la dernière est l'aléa de § 9.ev).
+- Menu mobile de § 9.ev repassé sur ce build : 0 px à chaque geste, trois ancres bonnes,
+  dans les deux moteurs.
+- HTML : 70 pages ne diffèrent du build de départ que par le nom de la feuille commune
+  (`_astro_assets.QWDU2rDT.css` → `_astro_assets.BdeproSM.css`), une occurrence par
+  page. Feuille commune : cinq règles de plus qu'au départ (deux de § 9.ev, trois ici),
+  aucune autre différence (78 642 → 79 348 octets). Le minificateur double la règle de
+  saisie d'une forme `:-moz-read-write`, dans une règle à part. Build 70 pages,
+  `verify-site.mjs` 0 erreur.
+- Lighthouse mobile local, médiane de 3, avant → après : `/` 100, 100, 96, 100 des deux
+  côtés, première peinture 1,21 s → 1,20 s, décalage 0 ; `/simulateur` 99, 100, 96, 100
+  des deux côtés.
+
+**Complément à § 9.ev** : la fenêtre du moteur de Safari n'avait pas le focus du
+système dans les premiers essais (`document.hasFocus()` faux sous Xvfb, `:focus` ne
+s'y applique pas). Repassés fenêtre active : mêmes chiffres pour le menu (75 px par
+geste avant, 0 après), et le clavier y est maintenant mesuré : 66 px par lien de la
+pastille avant (128 sur le guide), à 447 comme à 1440 px, 0 après.
+
+**Non testé**
+
+- Aucun vrai téléphone : ni Chrome sur Android, ni Safari sur iPhone, ni le clavier
+  virtuel. La plage `min(144px, 100%)` est lue par Chromium et par WebKitGTK 2.52 ; je
+  n'ai pas vérifié depuis quelle version de Safari.
+- Firefox (pas installé ici) : la bulle y reste dès l'arrivée par construction ;
+  l'effacement à la saisie n'y est pas essayé.
+- Lecteur d'écran : tout en haut d'une page, sur téléphone, la bulle n'est pas
+  annoncée tant que la page n'a pas défilé.
+- Événements PostHog (`t.hippodoc.fr` injoignable).
 
 **Fichiers** : `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
 `accueil2/lot3/`, hors dépôt.
