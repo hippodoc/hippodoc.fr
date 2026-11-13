@@ -10258,6 +10258,25 @@ on ne comprenait pas que c'était une vidéo (titre « Hippodoc en une minute »
 `src/pages/index.astro` (commentaire), `scripts/verify-site.mjs` (`PLANCHER_FAQ`),
 `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.fi Premier écran : la pastille Super-Net ne touche plus le visage du hippo (13 novembre 2026)
+
+Remarque du propriétaire sur téléphone. Sous 900 px, la pastille « Super-Net 59 543 € »
+commençait à 54 px du centre de la mascotte, dont la joue s'arrête à 76 px : elle mordait
+le visage d'une vingtaine de pixels.
+
+- `Hero.astro`, sous 900 px seulement : bord gauche à 80 px du centre
+  (`margin-left: min(80px, 50vw - 106px)`), pastille plus petite (chiffre de 17 à 22 px
+  selon la largeur, 24 avant ; libellé 12 px, 13 avant ; marges intérieures réduites),
+  même hauteur (pour ne pas descendre vers la bulle de chat). Bord droit à 8 px au moins
+  de l'écran.
+- Mesuré, bord gauche par rapport au centre (avant, après) : 375 px 51, 78 ; 390 px 54,
+  78 ; 430 px 54, 78 ; 768 px 54, 78 ; 360 px 44, 72 ; 320 px 24, 52 (sous 375 px, faute
+  de place, elle recouvre encore un peu la joue). Aucun débordement de 320 à 1000 px ;
+  à partir de 900 px rien ne change.
+- Aucun texte ne change ; feuille commune inchangée.
+
+**Fichiers** : `src/components/accueil/Hero.astro`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
