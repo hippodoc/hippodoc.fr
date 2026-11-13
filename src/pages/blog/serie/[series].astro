@@ -141,8 +141,10 @@ const breadcrumbSchema = {
     {/* Feuille sable : les cartes de la série, puis l'appel au simulateur. */}
     <div class="band bl-fin">
       <div class="wrap">
+        {/* Aucune affiche chargée en priorité (§ 9.fo) : la première n'est l'élément LCP à aucun
+            format (c'est le texte de la série), et, plus grande, elle partait avec la police. */}
         <div class="bl-grille">
-          {posts.map((post, i) => (
+          {posts.map((post) => (
             <BlogCard
               slug={post.id}
               title={post.data.title}
@@ -152,7 +154,6 @@ const breadcrumbSchema = {
               seriesId={post.data.seriesId}
               episodeNumber={post.data.episodeNumber}
               cover={covers.get(post.id)}
-              eager={i === 0}
             />
           ))}
         </div>
