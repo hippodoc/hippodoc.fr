@@ -10178,6 +10178,27 @@ l'ordinateur, donc 536 px réels demandés).
 `src/components/accueil/SceneFinale.astro`, `src/components/accueil/Mascotte.astro`
 (commentaire), `MIGRATION.md`.
 
+### 9.ff En-tête : le mot-symbole à la même distance du bord que le bouton d'essai (13 novembre 2026)
+
+Demande du propriétaire (« ce qui te semble le mieux, le plus agréable ») après une revue de
+la pastille de l'en-tête. Relevé à 1440, 1280, 1024 et 960 px : liens à 30 px d'écart,
+centres des textes alignés à 0,3 px, bouton d'essai à 8 px du bord (pilule dans une
+pilule), menu à égale distance du mot et du bloc de droite. Un seul écart : à partir de
+960 px, le mot « Hippodoc » commençait à 20 px du bord gauche, alors que le texte du bouton
+d'essai finit à 26 px du bord droit.
+
+- `src/styles/da.css`, dans le `@media (min-width: 960px)` de l'en-tête : `.hd-bar` passe à
+  `padding-left: 22px` (16 px avant, plus les 4 px de `.hd-brand`) : le mot est à 26 px du
+  bord, comme le texte du bouton. Sous 960 px rien ne change : le mot y est à 20 px du
+  bord, comme l'icône du menu à droite.
+- Effet mesuré (après, avant) : mot à 26 px du bord (20) ; écart mot-menu 135 px (138),
+  menu-« Connexion » 123 px (126), à 1440 px ; à 960 px, 43 px (46) et 31 px (34). Aucun
+  débordement de 390 à 1440 px.
+- Feuille commune : son nom change, donc le HTML de toutes les pages, au nom de la feuille
+  près. Aucun texte, lien ni attribut ne change.
+
+**Fichiers** : `src/styles/da.css`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
