@@ -91,7 +91,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   elle s'efface tant qu'un champ de texte a le focus (`:read-write:focus`). Ces deux
   règles d'arrivée ont un poids nul (`:where`) : une page qui veut sa propre plage
   l'écrit avec `#crisp-launcher` seul, comme `/essai` (380 à 420 px) et les articles du
-  blog (à la fin du texte, § 9.fj) ; `/guide` cache la bulle sous 768 px, `/blog` et les
+  blog (après la carte d'essai, § 9.fm) ; `/guide` cache la bulle sous 768 px, `/blog` et les
   séries sous 640 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
   Elle passe toujours sur le bord droit des contenus pendant le défilement : rien
   d'important ne se cale à moins de 72 px du bord droit dans un élément fixe ou collant
@@ -213,7 +213,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `font-variant-numeric: tabular-nums` élargit aussi l'espace dans Chromium (fonction
   `tnum` de la police), pas dans Safari : ne jamais compenser par `word-spacing` ; pour
   des chiffres alignés au milieu de mots, la face « Google Sans Flex Chiffres » de
-  `src/pages/blog/[slug].astro` (tableaux d'articles). Un interlettrage négatif (`.aff`,
+  `src/styles/blog-article.css` (tableaux et chiffres des articles). Un interlettrage négatif (`.aff`,
   titres) sur un nombre à espace fine (U+202F, `Intl.NumberFormat`) : Chromium ne
   l'applique pas, Safari colle les milliers ; poser `letter-spacing: 0` sur le nombre
   (`.sim-supernet-montant`). Un fond translucide sans flou laisse lire le texte qui passe
@@ -352,45 +352,66 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 - Encadrés : directives `:::warning` / `:::tip` / `:::essentiel` (plugin
   `src/lib/remark-callouts.mjs`), rendus en `<div class="callout …" role="note">`, jamais en
   `<aside>` : le mode lecture de Firefox et les extracteurs des IA jettent les `<aside>`
-  (« L'essentiel » : 0 article sur 48 gardé, § 9.fj). Seul l'appel à l'essai reste un
-  `<aside>` (`verify-site.mjs` le lit).
-- **Page d'article** (§ 9.fj) : gabarit `src/pages/blog/[slug].astro`, feuille
-  `src/styles/blog-article.css` (tout sous `.fiche`, le `<main>` ; plus de `<style>` scopé).
-  Le corps se repère par `data-blog-zone="corps"`, sa fin par `[data-blog-fin]`.
+  (« L'essentiel » : 0 article sur 48 gardé, § 9.fj). Hors du corps, l'appel à l'essai (que
+  `verify-site.mjs` lit), le bloc auteur et « Pour aller plus loin » restent des `<aside>`.
+- **Page d'article** (§ 9.fj, corrections § 9.fm) : gabarit `src/pages/blog/[slug].astro`,
+  feuille `src/styles/blog-article.css` (tout sous `.fiche`, le `<main>` ; aucun `<style>`
+  scopé ; la petite feuille du repli du rail, écrite au rendu, va dans `<head>`). Le corps se
+  repère par `data-blog-zone="corps"`, sa fin par `[data-blog-fin]`.
   - **Balisage au rendu** : `src/lib/rehype-article.mjs` (branché dans `astro.config.mjs`)
     enveloppe, reclasse et étiquette le HTML de l'article ; il n'ajoute ni ne retire aucun
     mot ni aucune espace, le Markdown n'est pas touché. Options : `src/lib/article-options.mjs`
-    (`sourcesPli`, `essentielEnTete`, `decorMuet`). Rôles des émojis : `article-emojis.mjs` ;
-    plan du sommaire : `article-sommaire.ts`.
+    (`sourcesPli`, `essentielEnTete`, `decorMuet`, `stats`). Émojis (définition, rôles,
+    pictogrammes) : `article-emojis.mjs`, que le gabarit importe (pas le plugin) ; plan du
+    sommaire : `article-sommaire.ts`. Les attributs de travail du plugin sont retirés à la fin
+    (liste `TRAVAIL`) : un attribut que la feuille doit lire n'y entre pas. Une ligne seule qui
+    commence par « • » ou « → » devient une liste d'un élément ; toutes les listes du corps
+    portent `role="list"` (la feuille retire leurs puces : sinon WebKit ne les annonce plus).
   - ⚠️ **Empreinte** : Astro garde le HTML rendu des articles dans `node_modules/.astro` (Vercel
     aussi) tant que Markdown et configuration ne changent pas. `astro.config.mjs` passe au
-    plugin l'empreinte de `rehype-article.mjs`, `article-emojis.mjs`, `article-options.mjs`
-    et `remark-callouts.mjs` : un nouveau fichier de plugin s'ajoute à cette liste, sinon
-    ses retouches ne sortent pas.
+    plugin l'empreinte de tous les `rehype-*`, `remark-*` et `article-*` en `.mjs` de
+    `src/lib` (lus dans le dossier) et de la version de `remark-directive` et
+    `@astrojs/markdown-remark` : un module de plugin nommé autrement n'y entre pas.
   - **Émojis** (le caractère reste dans le HTML) : masqués dans les titres, le sommaire,
     l'appel à l'essai, en tête ou en fin de ligne et en cours de phrase ; un dessin
     seulement là où ils portent un sens, dans une liste : coche `--ok`, triangle `--wait`,
-    croix `--ink-2` sur `--line` (pas de rouge), chiffre des touches, flèche, légende du
-    calendrier fiscal ; autre émoji de liste : puce `--brand`. Masquage de la classe `sr`
-    (rognage), **jamais `font-size: 0`** ; décor en `aria-hidden`. Un élément rogné rogne son
-    `::before` : le dessin est porté par l'élément de liste ou le titre (`data-touche`).
+    croix `--ink-2` sur `--line` (pas de rouge), chiffre des touches, flèche (« → », 👉 :
+    `data-m="fleche"`), légende du calendrier fiscal (`data-picto`, et ces émojis restent
+    annoncés) ; autre émoji de liste : puce `--brand`. Masquage de la classe `sr` (rognage),
+    **jamais `font-size: 0`** ; décor en `aria-hidden`. Un élément rogné rogne son `::before` :
+    le dessin est porté par l'élément de liste ou le titre (`data-touche`). « L'essentiel » :
+    des puces, pas des coches (un point sur cinq est une mise en garde ; la coche dit « oui »).
   - **Titres et sommaire** : filet et repère « 04 / 10 » par compteurs CSS (absent quand
-    l'auteur a numéroté son plan) ; sous-parties `t-sous`. Sommaire = le plan seul : rail
-    collant à partir de 1 040 px, partie en cours par `:target-current` (seul dans sa règle :
-    un navigateur qui ne le connaît pas jette toute la liste de sélecteurs ; lightningcss
-    avertit à la construction, c'est attendu) et repli par lignes de temps de vue écrites au
-    rendu ; sur téléphone, pli, fil de lecture et
-    pastille de 44 px. Plan de plus de 14 entrées avec sous-parties : rail réduit aux parties.
+    l'auteur a numéroté son plan), texte de remplacement vide (`content: … / ""`, après la
+    même déclaration sans lui) : un mot écrit par la feuille n'entre pas dans le nom du titre.
+    Sous-parties `t-sous` ; un titre posé sur une légende (`t-hors`) sort du compte. Sommaire
+    = le plan seul : rail collant à partir de 1 040 px, partie en cours par `:target-current`
+    (seul dans sa règle : un navigateur qui ne le connaît pas jette toute la liste de
+    sélecteurs ; lightningcss avertit à la construction, c'est attendu) et repli par lignes de
+    temps de vue (`som-debut`, `som-fin` : jamais `animation-timeline: none`, WebKit applique
+    alors l'état final). Un rail qui défile : « Retour en haut » collé à son bas, un fondu lié à
+    son propre défilement (`scroll(self)`, aucun s'il ne défile pas). Téléphone : pli, fil de
+    lecture et pastille de 44 px en bas à droite (au-dessus de la bulle à partir de 640 px) ;
+    la bulle n'arrive qu'après la carte d'essai (ligne de temps `--essai`).
   - ⚠️ Poids : une variante d'élément de liste s'écrit avec le même chemin que la règle de
     base (`.corps :is(ul, ol) > li[data-etat="non"]`), sinon la règle de base gagne.
+  - ⚠️ `lh` dans un `::before` qui change de corps (chiffre d'une étape) vaut la ligne du
+    `::before`, pas celle de l'élément : passer par `--lig` (propriété enregistrée, `1lh`
+    calculé sur le `li`). Une liste qui reprend (`start`) reçoit son `counter-reset` du plugin.
   - **Couverture** : une vignette (64 × 80 px au téléphone, 132 × 165 px sur ordinateur),
-    `srcset` 160, 264, 400 px ; le `src` reste la variante de 900 px.
-  - **Image de partage** (§ 9.fl) : `/blog/partage/<slug>.jpg`, 1 200 × 630, fabriquée à la
-    construction (`src/pages/blog/partage/[slug].jpg.ts`, `src/lib/image-partage.mjs`) :
-    `og:image`, `twitter:image` et première image du JSON-LD `Article`. Rien à faire pour un
-    nouvel article. Police TTF de construction dans `src/assets/fonts/partage/`, lue par
-    chemin, jamais importée (elle serait copiée dans le build). Aucun jaune ; mascotte entière.
-  - Auteur : le nom mène à `/qui-sommes-nous#ryan-goburdhun`, même `@id` dans le JSON-LD.
+    `srcset` 160, 264, 400 px ; le `src` reste celui d'avant (900 px, ou la largeur de
+    l'affiche quand elle est plus petite).
+  - **Image de partage** (§ 9.fl) : `/blog/partage/<slug>-<empreinte>.jpg`, 1 200 × 630,
+    fabriquée à la construction (`src/pages/blog/partage/[slug].jpg.ts`,
+    `src/lib/image-partage.mjs`) : `og:image`, `twitter:image` et première image du JSON-LD
+    `Article`. Rien à faire pour un nouvel article. L'empreinte suit le titre, la pastille, la
+    pose et le code de l'image : un titre retouché donne une nouvelle adresse (les aperçus de
+    lien gardent l'image d'une adresse des jours durant). Police TTF de construction dans
+    `src/assets/fonts/partage/`, lue par chemin, jamais importée (elle serait copiée dans le
+    build) ; une garde arrête la construction si Pango en prend une autre. Aucun jaune ;
+    mascotte entière ; un titre trop long est réduit (50 px), puis coupé d'un « … ».
+  - Auteur : table `AUTEURS` de `src/lib/site.ts` (nom du frontmatter → fiche de
+    `/qui-sommes-nous` et portrait) ; un auteur absent n'a ni lien ni `@id`.
 - **`/blog` et les séries** (§ 9.fk) : des lignes sur une feuille blanche (`BlogCard.astro`,
   `src/styles/blog-liste.css`), l'affiche en vignette (carré de 64 px au téléphone, 96 puis
   104 px) : `sizes` et `srcset` (160 et 320 px, une : 180 et 360 px) suivent ces largeurs, la
@@ -541,7 +562,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
    `npx serve` sert en HTTP/1.1 : sur les pages à deux feuilles bloquantes (outils, guide,
    comparatif, pages légales), FCP et LCP y sortent 0,15 à 0,3 s plus hauts que sur Vercel
    (HTTP/2, où l'écart disparaît). Ne pas le lire comme une régression (§ 9.en).
-4. Moteur de Safari (WebKitGTK 2.52 installé ; Selenium ne l'est plus : piloter
+4. Moteur de Safari (WebKitGTK 2.52 installé ; si Selenium manque, piloter
    `/usr/bin/WebKitWebDriver` par son protocole HTTP, mêmes capacités), dès qu'une feuille change :
    servir `dist` en local, puis
    `WEBKIT_DISABLE_COMPOSITING_MODE=1 xvfb-run -a -s "-screen 0 1600x1400x24" python3 -I script.py`.
