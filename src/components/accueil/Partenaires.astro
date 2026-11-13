@@ -9,10 +9,12 @@
  *   fiche des 6 mois il n'y a plus qu'UNE feuille blanche à la place de quatre
  *   objets (deux cartes de partenaires, deux plaques de soutiens) : le titre
  *   des partenaires en étiquette, leurs deux lignes, un filet, puis « Soutenu
- *   par », les trois logos sur une rangée sans plaque et leurs deux légendes
- *   dessous. Deux colonnes à partir de 900 px. Le HTML garde l'ordre « logos
- *   d'un soutien, sa légende » : c'est la feuille qui range les logos puis les
- *   légendes (`order`, les <li> s'effacent). Fin du chapô retirée (« pour
+ *   par » et les soutiens, sans plaque. Deux colonnes à partir de 900 px.
+ *   Chaque soutien est une colonne : ses logos, sa légende dessous, calée à
+ *   leur bord gauche. « Lauréat Innov'Up » se lit donc sous la Région et
+ *   Bpifrance, « Membre de La French Care » sous son logo : rangées à part
+ *   (tous les logos, puis les deux légendes à la suite), la seconde légende
+ *   commençait sous Bpifrance (§ 9.ex). Fin du chapô retirée (« pour
  *   accompagner leurs adhérents dans leurs premiers remplacements »).
  * - Décision du propriétaire (10 novembre 2026) : les syndicats d'internes ont
  *   une vraie place, pas une ligne discrète. Seuls les partenariats SIGNÉS sont
@@ -41,7 +43,7 @@
  *   `data-ph="landing_partner_*"` de l'ancienne section sont gardés,
  *   `landing_partner_homedoc` est nouveau sur l'accueil.
  * - Soutiens : Région Île-de-France et Bpifrance sont UNE seule aide
- *   (Innov'Up, § 9.dq), d'où leurs deux logos sur la même plaque.
+ *   (Innov'Up, § 9.dq), d'où leurs deux logos au-dessus de la même légende.
  * - Logos : les fichiers de public/lovable-uploads/, copiés dans
  *   src/assets/accueil/partenaires/ pour passer par astro:assets (AVIF et
  *   WebP). Plusieurs ont un fond blanc opaque : tous sont posés sur du blanc.
@@ -164,6 +166,12 @@ const partenaires = [
     .band-head { margin-bottom: 22px; }
     .lead { font-size: 17px; }
   }
+  /* Palier du milieu : sans lui, da.css donnait plus d'air à la tablette (88 et
+     128 px) qu'à l'ordinateur. */
+  @media (min-width: 560px) and (max-width: 899px) {
+    .pt { padding: 60px 0 92px; }
+    .band-head { margin-bottom: 30px; }
+  }
   @media (min-width: 900px) {
     .pt { padding: 76px 0 112px; }
     .band-head { margin-bottom: 36px; }
@@ -211,21 +219,36 @@ const partenaires = [
   .fl { flex: none; color: var(--ink); transition: translate 200ms var(--ease); }
   .part:hover .fl { translate: 2px -2px; }
 
-  /* Les soutiens : les trois logos sur une rangée, sans plaque, leurs deux
-     légendes dessous. Chaque <li> s'efface (son logo et sa légende deviennent
-     des éléments de la rangée) : la feuille range les logos d'abord, un retour
-     à la ligne (le pseudo-élément), puis les légendes. */
-  .backers { margin: 6px 20px 0; padding: 14px 0 16px; border-top: 1px solid var(--line); color: var(--ink-2); }
-  .backers ul { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 22px; margin-top: 8px; }
-  .backers ul::before { content: ""; order: 2; flex-basis: 100%; height: 0; }
-  .backers li { display: contents; }
+  /* Les soutiens, sans plaque. Chaque soutien est une colonne : ses logos sur
+     une rangée, sa légende dessous, au même bord gauche. Les trois logos sont
+     posés sur une même ligne (la rangée a la hauteur du plus haut, `--rang`) :
+     chaque légende est au pied de ses logos, et les deux commencent à la même
+     hauteur. L'écart entre deux soutiens est plus grand que l'écart entre deux logos
+     d'un même soutien. La seconde colonne cède de la place : sa légende passe
+     sur deux lignes là où la feuille est étroite. */
+  .backers { --rang: 53px; margin: 6px 20px 0; padding: 14px 0 16px; border-top: 1px solid var(--line); color: var(--ink-2); }
+  .backers ul { display: flex; align-items: flex-start; gap: 12px 26px; margin-top: 6px; }
+  .backers li { display: flex; flex: none; flex-direction: column; gap: 5px; min-width: 0; }
+  .backers li + li { flex: 0 1 auto; }
   /* Chaque logo a sa hauteur (`--h`) : rognés au ras du dessin, ils n'ont pas tous le même rapport. */
-  .plaque { order: 1; display: inline-flex; flex: none; align-items: center; gap: 22px; }
+  .plaque { display: flex; align-items: flex-end; gap: 20px; height: var(--rang); }
   .plaque :global(img) { display: block; flex: none; width: auto; height: calc(var(--h) * 0.8); }
-  .leg { order: 3; font-size: 13px; line-height: 1.35; }
+  .leg { font-size: 13px; line-height: 1.35; text-wrap-style: balance; }
 
+  /* Feuille étroite (téléphone, et colonne des soutiens de 900 à 1 179 px) :
+     « Membre de La French Care » sur deux lignes, sous son logo. */
+  @media (max-width: 479px), (min-width: 900px) and (max-width: 1179px) {
+    .backers li + li .leg { max-width: 7.6em; }
+  }
   @media (max-width: 379px) {
-    .backers ul, .plaque { column-gap: 16px; }
+    .backers ul { column-gap: 20px; }
+    .plaque { column-gap: 14px; }
+  }
+  /* Petits téléphones : les deux soutiens l'un sous l'autre, chaque légende sur une ligne. */
+  @media (max-width: 359px) {
+    .backers ul { flex-direction: column; row-gap: 14px; margin-top: 10px; }
+    .backers li + li .leg { max-width: none; }
+    .plaque { height: auto; }
   }
   @media (min-width: 640px) {
     .synd { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
@@ -253,12 +276,19 @@ const partenaires = [
     .txt b { font-size: 18px; }
     .txt span { font-size: 16px; }
     .backers { display: flex; flex-direction: column; justify-content: center; margin: 24px 0; padding: 0 32px; border-top: 0; border-left: 1px solid var(--line); }
-    .backers ul { gap: 12px 28px; margin-top: 16px; }
-    .plaque { gap: 28px; }
+    .backers ul { column-gap: 30px; margin-top: 12px; }
+    .backers li { gap: 8px; }
+  }
+  /* Les logos à leur taille dès que la colonne des soutiens les contient. */
+  @media (min-width: 1024px) {
+    .backers { --rang: 66px; }
+    .backers ul { column-gap: 34px; }
+    .plaque { gap: 26px; }
     .plaque :global(img) { height: var(--h); }
   }
-  /* Contrastes forcés (Windows) : sans fond, un contour rend sa forme à la fiche. */
-  @media (forced-colors: active) { .plus, .feuille { border: 1px solid CanvasText; } }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend sa forme
+     à la fiche, à la feuille et aux tuiles. */
+  @media (forced-colors: active) { .plus, .feuille, .tile { border: 1px solid CanvasText; } }
   @media (prefers-reduced-motion: reduce) {
     .tile, .part, .fl { transition: none; }
     .tile:hover, .part:hover .fl { translate: none; }

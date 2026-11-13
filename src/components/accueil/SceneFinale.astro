@@ -19,7 +19,8 @@
  *   sans JS. Elle arrête ce qui bouge sans fin ici (l'eau, le balancement).
  *   Depuis l'épure de novembre 2026 (MIGRATION.md § 9.eu), la pause vaut pour
  *   toute la page : cochée ici ou dans le premier écran, elle arrête les deux
- *   scènes. Pour relancer, on décoche la case qu'on a cochée.
+ *   scènes. Pour relancer, on décoche la case qu'on a cochée : l'autre n'est
+ *   plus affichée tant que le décor est arrêté (§ 9.ex).
  * - Rien ne bouge si le visiteur a demandé moins d'animations.
  */
 import '@/styles/da.css';
@@ -112,6 +113,8 @@ import Mascotte from './Mascotte.astro';
     /* La case du premier écran arrête aussi cette scène (voir Hero.astro). */
     @supports selector(:has(a)) {
       :global(body:has(.pause:checked)) .wave::before, :global(body:has(.pause:checked)) .hippo { animation-play-state: paused; }
+      /* Décor arrêté depuis le premier écran : il ne reste que sa case, celle qui relance. */
+      :global(body:has(.hero .pause:checked)) .pause { display: none; }
     }
     .wave::before { animation: fin-drift var(--t, 46s) linear infinite; }
     .w2::before, .w4::before { animation-direction: reverse; }

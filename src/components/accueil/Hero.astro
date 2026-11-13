@@ -29,7 +29,10 @@
  *   pastille Super-Net à droite. Le libellé « URSSAF, CARMF, impôts » de la
  *   fiche de droite tient sur une ligne. Et la pause vaut pour toute la page :
  *   cochée ici ou dans la scène finale (SceneFinale.astro), elle arrête les
- *   deux scènes et les bulles de « Sous la surface ».
+ *   deux scènes et les bulles de « Sous la surface ». Une fois le décor arrêté
+ *   par l'une des deux cases, l'autre n'est plus affichée (§ 9.ex) : sans
+ *   script, deux cases ne peuvent pas se suivre, et celle qui restait montrait
+ *   « pause » devant un décor déjà arrêté, sans pouvoir le relancer.
  */
 import '@/styles/da.css';
 import { APP_URL } from '@/lib/site';
@@ -303,6 +306,8 @@ const extrait = [13, 15, 20].map(journee);
        sélecteur inconnu est rejetée en entier). */
     @supports selector(:has(a)) {
       :global(body:has(.pause:checked)) .sun, :global(body:has(.pause:checked)) .wave::before, :global(body:has(.pause:checked)) .hippo, :global(body:has(.pause:checked)) .tag, :global(body:has(.pause:checked)) .float { animation-play-state: paused; }
+      /* Décor arrêté depuis la scène finale : il ne reste que sa case, celle qui relance. */
+      :global(body:has(.end .pause:checked)) .pause { display: none; }
     }
     .sun { animation: hero-sunrise 1600ms var(--ease) both; }
     .wave::before { animation: hero-drift var(--t, 46s) linear infinite; }

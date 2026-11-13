@@ -46,26 +46,40 @@
  *   chiffres, recadré), puis le titre, le paragraphe et le bouton : l'ordre du
  *   HTML ne change pas (`.who-copy` s'efface, la grille place les chiffres).
  *   Sous 700 px, le cadre du film est une vignette à gauche du titre et de la
- *   définition ; il reprend sa taille quand le film démarre, sans script de
- *   plus : le script existant rend l'attribut `controls` à la lecture, et la
- *   feuille lit `.film:has(video[controls])`. La vignette est donc la forme
- *   des navigateurs qui ont `:has()` ET du script ; sans l'un des deux, le
- *   cadre est grand d'emblée, comme avant. La phrase « URSSAF, CARMF, impôts,
- *   Super-Net : tu vois enfin ce qu'il te reste vraiment. » est retirée (elle
- *   redisait le premier écran). À l'ordinateur, le cadre fait 270 px de large.
+ *   définition ; il reprend sa taille dès l'appui, sans script de plus. Le
+ *   script existant, à l'appui, affiche le sablier (`#film-play-attente` perd
+ *   `hidden`), puis rend l'attribut `controls` à la lecture : la feuille lit
+ *   les deux (`.film:has(video[controls], #film-play-attente:not([hidden]))`).
+ *   Lire `controls` seul faisait grandir le cadre au démarrage de la lecture :
+ *   sur un réseau lent, plus d'une demi-seconde après l'appui, la page sautait
+ *   et le saut comptait dans le CLS (0,53 en 4G lente, § 9.ex). La vignette est
+ *   donc la forme des navigateurs qui ont `:has()` ET du script ; sans l'un des
+ *   deux, le cadre est grand d'emblée, comme avant. La phrase « URSSAF, CARMF,
+ *   impôts, Super-Net : tu vois enfin ce qu'il te reste vraiment. » est retirée
+ *   (elle redisait le premier écran). À l'ordinateur, le cadre fait 270 px.
+ * - Corrections après relectures (§ 9.ex). De 560 à 699 px, le portrait
+ *   (240 px) et les trois chiffres restent côte à côte, comme sur téléphone :
+ *   même seuil que la vignette du film (le portrait de 380 px seul sur sa
+ *   ligne laissait 200 px de vide à sa droite). Sans script, l'invitation à
+ *   lire est retirée (`@media (scripting: none)`) : elle couvrait les contrôles
+ *   natifs, le film ne pouvait pas être lancé. Le nom du bouton commence par
+ *   son texte visible (« 1 min »). La définition du produit garde ses
+ *   caractères : un mot et les deux-points qui le suivent sont noués
+ *   (`nouer`, src/lib/typo.ts), les deux-points ne passent plus seuls à la ligne.
  */
 import '@/styles/da.css';
 import { getImage } from 'astro:assets';
 import { CALENDLY_URL, PRODUCT_DEFINITION } from '@/lib/site';
+import { echapper, nouer } from '@/lib/typo';
 import portrait from '@/assets/founders/ryan-goburdhun.jpeg';
 import affiche from '@/assets/accueil/film-affiche.jpg';
 
 /* Fichier de public/, même adresse que `contentUrl` du schéma VideoObject. */
 const VIDEO_URL = '/hippodoc-film-v21.mp4';
 
-/* Portrait : 380 px de large au plus, moins sur téléphone ; 240 px à côté du texte de 700 à 899 px. */
+/* Portrait : 380 px de large à partir de 900 px ; 240 px de 560 à 899 px ; 200 px au plus sur téléphone (53 % de la largeur). */
 const LARGEURS = [240, 380, 570, 760];
-const SIZES = '(min-width: 900px) 380px, (min-width: 700px) 240px, (min-width: 430px) 380px, calc(100vw - 40px)';
+const SIZES = '(min-width: 900px) 380px, (min-width: 560px) 240px, min(200px, 53vw)';
 const [avif, webp] = await Promise.all(
   (['avif', 'webp'] as const).map((format) => getImage({ src: portrait, format, width: 380, widths: LARGEURS }))
 );
@@ -127,7 +141,7 @@ const chiffres = [
       <div class="film-copy">
         <h3>Hippodoc en une minute</h3>
         {/* GEO : définition produit reprise mot pour mot (site.ts) */}
-        <p class="def">{PRODUCT_DEFINITION}</p>
+        <p class="def" set:html={nouer(echapper(PRODUCT_DEFINITION))} />
       </div>
       <div class="film-frame">
         <video
@@ -145,7 +159,7 @@ const chiffres = [
             lecteur natif dessine un bouton trop discret : mesuré sur 120 jours,
             9,4 % de ceux qui voyaient le film le lançaient. `preload="none"` est
             gardé, d'où l'état d'attente : sans lui, on croit que rien ne se passe. */}
-        <button type="button" id="film-play" class="film-play" aria-label="Lire le film de présentation, une minute">
+        <button type="button" id="film-play" class="film-play" aria-label="1 min, lire le film de présentation">
           <picture class="affiche">
             <source type="image/avif" srcset={afficheAvif.srcSet.attribute} sizes={SIZES_AFFICHE} />
             <img src={afficheWebp.src} srcset={afficheWebp.srcSet.attribute} sizes={SIZES_AFFICHE} alt="" width="360" height="640" loading="lazy" decoding="async" />
@@ -234,7 +248,7 @@ const chiffres = [
 </script>
 
 <style>
-  .num { white-space: nowrap; }
+  .num, .def :global(.num) { white-space: nowrap; }
 
   .who { display: grid; align-items: center; gap: 44px; }
   .who-photo { position: relative; width: min(100%, 380px); margin: 0; }
@@ -284,13 +298,13 @@ const chiffres = [
        Une fois le film lancé, le cadre passe au-dessus du texte : il grandit
        sur place, depuis le haut de la vignette, au lieu de partir dessous. */
     @supports selector(:has(a)) {
-      .film:has(video[controls]) .film-frame { order: -1; }
-      .film:not(:has(video[controls])) { grid-template-columns: clamp(118px, 38.5vw, 150px) minmax(0, 1fr); gap: 16px; }
-      .film:not(:has(video[controls])) .film-frame { grid-area: 1 / 1; width: 100%; margin: 0; border-radius: 22px; box-shadow: var(--clay-sm); }
-      .film:not(:has(video[controls])) .film-copy { grid-area: 1 / 2; gap: 8px; }
-      .film:not(:has(video[controls])) h3 { font-size: 22px; text-wrap-style: balance; }
-      .film:not(:has(video[controls])) .def { font-size: 14.5px; line-height: 1.5; text-wrap-style: pretty; }
-      .film:not(:has(video[controls])) .pill { top: auto; bottom: 12px; gap: 8px; min-height: 44px; padding: 0 16px 0 12px; font-size: 15px; }
+      .film:has(video[controls], #film-play-attente:not([hidden])) .film-frame { order: -1; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) { grid-template-columns: clamp(118px, 38.5vw, 150px) minmax(0, 1fr); gap: 16px; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-frame { grid-area: 1 / 1; width: 100%; margin: 0; border-radius: 22px; box-shadow: var(--clay-sm); }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-copy { grid-area: 1 / 2; gap: 8px; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) h3 { font-size: 22px; text-wrap-style: balance; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .def { font-size: 14.5px; line-height: 1.5; text-wrap-style: pretty; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .pill { top: auto; bottom: 12px; gap: 8px; min-height: 44px; padding: 0 16px 0 12px; font-size: 15px; }
     }
   }
   /* Petits téléphones : la colonne du texte est étroite. Le titre passe
@@ -298,13 +312,16 @@ const chiffres = [
      dessous, côte à côte (`.film-copy` s'efface, la grille place ses enfants). */
   @media (max-width: 374px) {
     @supports selector(:has(a)) {
-      .film:not(:has(video[controls])) { gap: 12px 14px; }
-      .film:not(:has(video[controls])) .film-copy { display: contents; }
-      .film:not(:has(video[controls])) h3 { grid-area: 1 / 1 / auto / -1; }
-      .film:not(:has(video[controls])) .film-frame { grid-area: 2 / 1; }
-      .film:not(:has(video[controls])) .def { grid-area: 2 / 2; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) { gap: 12px 14px; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-copy { display: contents; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) h3 { grid-area: 1 / 1 / auto / -1; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .film-frame { grid-area: 2 / 1; }
+      .film:not(:has(video[controls], #film-play-attente:not([hidden]))) .def { grid-area: 2 / 2; }
     }
   }
+  /* Sans script, rien ne retire l'invitation : elle couvrirait les contrôles
+     natifs du lecteur, et le film ne pourrait pas être lancé. */
+  @media (scripting: none) { .film-play { display: none; } }
   .film-play:hover .pill { background: var(--sun-hover); }
   .film-play:active .pill { translate: 0 4px; box-shadow: 0 0 0 transparent; }
   .pill svg[hidden] { display: none; }
@@ -321,16 +338,20 @@ const chiffres = [
   @media (max-width: 559px) {
     .fd { padding: 44px 0 72px; }
   }
+  @media (min-width: 560px) and (max-width: 899px) {
+    .fd { padding: 60px 0 92px; }
+  }
   @media (min-width: 900px) {
     .fd { padding: 76px 0 112px; }
   }
-  /* Téléphone : le portrait à gauche, les trois chiffres en colonne à sa droite,
-     puis le titre, le paragraphe et le bouton sur toute la largeur. `.who-copy`
-     s'efface : ses enfants sont placés par la grille de `.who`, l'ordre du HTML
-     ne change pas. Le portrait prend la hauteur des chiffres (recadré, le
-     visage reste au centre) : les deux colonnes finissent ensemble à toutes
-     les largeurs, que les libellés tiennent sur une ligne ou sur trois. */
-  @media (max-width: 559px) {
+  /* Sous 700 px (le seuil de la vignette du film) : le portrait à gauche, les
+     trois chiffres en colonne à sa droite, puis le titre, le paragraphe et le
+     bouton sur toute la largeur. `.who-copy` s'efface : ses enfants sont placés
+     par la grille de `.who`, l'ordre du HTML ne change pas. Le portrait prend
+     la hauteur des chiffres (recadré, le visage reste au centre) : les deux
+     colonnes finissent ensemble à toutes les largeurs, que les libellés
+     tiennent sur une ligne ou sur trois. */
+  @media (max-width: 699px) {
     .who { grid-template-columns: min(200px, 53vw) minmax(0, 1fr); align-items: stretch; gap: 0 16px; }
     .who-photo { grid-area: 1 / 1; width: auto; min-height: 168px; }
     .who-photo picture { position: absolute; inset: 0; }
@@ -357,7 +378,19 @@ const chiffres = [
     .facts ul { gap: 10px; }
     .fact b { --corps: 28px; }
   }
-  @media (min-width: 560px) {
+  /* De 560 à 699 px : la même grille, un portrait de 240 px, carré, et des
+     chiffres un peu plus grands ; le paragraphe reprend son corps. */
+  @media (min-width: 560px) and (max-width: 699px) {
+    .who { grid-template-columns: 240px minmax(0, 1fr); column-gap: 32px; }
+    .who-photo { min-height: 240px; }
+    .who-photo figcaption { left: 12px; padding: 8px 16px; font-size: 15px; }
+    .who-copy h2 { margin-top: 44px; }
+    .who-copy .lead { font-size: 19px; }
+    .facts ul { gap: 16px; }
+    .fact b { --corps: 36px; }
+    .fact span { font-size: 15px; }
+  }
+  @media (min-width: 700px) {
     .facts ul { column-gap: 24px; }
     .fact b { --corps: 42px; }
     .fact span { font-size: 15.5px; }

@@ -35,9 +35,11 @@ export const GUIDE_SOUS_PAGES_LAST_UPDATED_ISO = '2026-08-23';
 export const ACCUEIL_DA_LAST_UPDATED_ISO = '2026-11-10';
 
 /** Accueil : épure de novembre 2026 (MIGRATION.md § 9.eu), textes coupés,
- *  huit questions au lieu de dix, sections déplacées. Date de la construction ;
- *  à remettre au jour réel de la mise en ligne. */
-export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-12';
+ *  huit questions au lieu de dix, sections déplacées. Date du dernier commit
+ *  de la branche (corrections après relectures, § 9.ex) ; ⚠️ à remettre au
+ *  jour réel de la mise en ligne : le sitemap ne doit pas annoncer pour « / »
+ *  une date antérieure au changement. */
+export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-13';
 
 /** /tarifs : tarif des internes et essai de 6 mois des syndicats partenaires
  *  ajoutés le 11 novembre 2026 (MIGRATION.md § 9.ed). */

@@ -247,6 +247,10 @@ const rspm = [
     .tf { padding: 44px 0 72px; }
     .lead { font-size: 17px; }
   }
+  @media (min-width: 560px) and (max-width: 899px) {
+    .tf { padding: 60px 0 92px; }
+    .band-head { margin-bottom: 30px; }
+  }
   @media (min-width: 900px) {
     .tf { padding: 76px 0 112px; }
   }
@@ -265,7 +269,7 @@ const rspm = [
   .offer.main .price b { color: var(--paper); }
   /* Un surlignage, pas une pastille : sur deux lignes (320 px), chaque ligne
      garde son trait jaune arrondi au lieu de former un pavé. */
-  .offer.main .save { line-height: 1.75; }
+  .offer.main .save { line-height: 1.75; text-wrap-style: balance; }
   .save span { padding: 3px 9px; border-radius: 9px; background: var(--sun); color: var(--ink); font-size: 14.5px; font-weight: var(--tb); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
   /* Les boutons au pied des cartes, sur une même ligne, libellé sur une ligne. */
   .offer > .btn, .offer > details { margin-top: auto; }

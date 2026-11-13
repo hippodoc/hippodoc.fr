@@ -90,6 +90,11 @@ const temoignages = [
   @media (max-width: 559px) {
     .band-head { margin-bottom: 22px; }
   }
+  /* Palier du milieu (de 560 à 639 px, le bas resserré de la rangée l'emporte, plus bas). */
+  @media (min-width: 560px) and (max-width: 899px) {
+    .tm { padding: 60px 0 92px; }
+    .band-head { margin-bottom: 30px; }
+  }
   @media (min-width: 900px) {
     .tm { padding: 76px 0 112px; }
     .band-head { margin-bottom: 36px; }
@@ -112,7 +117,9 @@ const temoignages = [
     .tm { padding-bottom: 72px; }
     @supports (animation-timeline: scroll()) and (timeline-scope: --t) {
       .tm { timeline-scope: --temoignages; }
-      .rail { scroll-timeline-name: --temoignages; scroll-timeline-axis: x; }
+      /* L'indice dessiné remplace la barre du navigateur : pas les deux à la fois. */
+      .rail { scroll-timeline-name: --temoignages; scroll-timeline-axis: x; scrollbar-width: none; }
+      .rail::-webkit-scrollbar { display: none; }
       .fil { display: block; }
       .fil i { animation: temoignages-fil linear both; }
       span.fil i { animation-timeline: --temoignages; }
@@ -122,7 +129,7 @@ const temoignages = [
   .cards li { display: flex; flex: none; width: min(76vw, 340px); scroll-snap-align: start; }
   .card { display: flex; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; margin: 0; padding: 22px 22px 20px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay-sm); }
   blockquote { flex: 1; margin: 0; }
-  blockquote p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--ink); }
+  blockquote p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--ink); text-wrap-style: pretty; }
   figcaption { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
   .av { display: flex; flex: none; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--sky); font-size: 15px; font-weight: var(--tb); letter-spacing: 0.02em; }
   .qui { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }

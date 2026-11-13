@@ -14,7 +14,8 @@
  *   mouvement (elles restent alors hors du cadre).
  * - Le bloc suivant est « Pour qui » (PourQui.astro), la première feuille
  *   claire : elle remonte de 40 px sur le bas de ce bloc, d'où les 148 px
- *   laissés sous la phrase des régimes (100 px sur téléphone).
+ *   laissés sous la phrase des régimes (100 px sur téléphone, 120 px de 560 à
+ *   899 px).
  * - Le titre et sa phrase (épure de novembre 2026) : le titre prend toute la
  *   largeur ; dessous, la phrase à gauche et la mascotte à la tablette dans sa
  *   propre colonne, à droite. Elle ne peut plus passer sur le texte (elle le
@@ -91,6 +92,10 @@ import Mascotte from './Mascotte.astro';
     .below-head p { padding-bottom: 32px; font-size: 19px; }
     .bh-mascot { grid-row: 1 / span 2; width: 150px; margin-bottom: -56px; }
     .regime { margin-top: 56px; }
+  }
+  /* Palier du milieu : moins de bleu vide sous la phrase des régimes. */
+  @media (min-width: 560px) and (max-width: 899px) {
+    .deep { padding-bottom: 120px; }
   }
   @media (min-width: 900px) {
     .below-head { grid-template-columns: minmax(0, 1fr) 250px; gap: 16px 40px; padding-top: 96px; }

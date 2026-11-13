@@ -389,8 +389,20 @@ if (radiosProfil.length !== PROFILS_POUR_QUI.length || radiosProfil.filter((r) =
 // sortait dans une autre forme que les trois autres (défaut signalé par le
 // propriétaire). Chaque étape porte un titre, une phrase (`acc`) et une précision
 // (`det`) ; chaque onglet, une précision sous son nom (`h`).
-for (const panneau of pourQui.split(/<div class="panel"/).slice(1)) {
-  const profil = panneau.match(/data-panel="([^"]+)"/)?.[1];
+// Le découpage se fait sur `data-panel`, pas sur la classe du panneau : découpé sur
+// la chaîne exacte `<div class="panel"`, le contrôle passait à vide dès qu'une classe
+// s'ajoutait au panneau (essai par mutation, § 9.ex). Il échoue aussi s'il ne lit pas
+// un panneau par profil.
+const panneauxPourQui = {};
+for (const morceau of pourQui.split(/(?=<div\b[^>]*\sdata-panel=")/).slice(1)) {
+  const profil = morceau.match(/data-panel="([^"]+)"/)?.[1];
+  // Le dernier panneau s'arrête avant l'appel (« Prêt·e à voir ton Super-Net ? »).
+  panneauxPourQui[profil] = morceau.split(/<div class="go"/)[0];
+}
+if (Object.keys(panneauxPourQui).length !== PROFILS_POUR_QUI.length || PROFILS_POUR_QUI.some((p) => !panneauxPourQui[p])) {
+  fail(`accueil, « Pour qui » : ${PROFILS_POUR_QUI.length} panneaux data-panel attendus (${PROFILS_POUR_QUI.join(', ')}) — lu ${Object.keys(panneauxPourQui).join(', ') || 'aucun'} ; le contrôle de la forme des étapes ne porterait sur rien`);
+}
+for (const [profil, panneau] of Object.entries(panneauxPourQui)) {
   const etapes = panneau.match(/<li\b[^>]*>[\s\S]*?<\/li>/g) ?? [];
   const entieres = etapes.filter((e) => /<h3\b[^>]*>[^<]+<\/h3>/.test(e) && /<p class="acc"[^>]*>\s*[^<\s]/.test(e) && /<p class="det"[^>]*>\s*[^<\s]/.test(e));
   if (etapes.length < 6 || entieres.length !== etapes.length) {
@@ -513,13 +525,16 @@ if (motsAccueil < MOTS_ACCUEIL_MIN) {
 // Termes porteurs (épure de novembre 2026) : alléger la page ne doit pas lui
 // retirer les mots par lesquels on la cherche. Chacun doit rester dans le texte
 // rendu du <body> (balises retirées, scripts et JSON-LD exclus : un terme qui ne
-// survivrait que dans un schéma ne compte pas). « contrat de remplacement » et
-// « licence de remplacement » vivent dans les étapes de « Pour qui », « 2035 »,
-// « 2042-C PRO » et « DSFU » aussi : un profil vidé ou replié à la demande les
-// ferait tomber.
+// survivrait que dans un schéma ne compte pas). Sur la page entière, seul
+// « licence de remplacement » ne vit qu'à un endroit (profil Interne de « Pour
+// qui ») : les onze autres sont dits ailleurs aussi, et ce contrôle-ci ne verrait
+// pas un profil vidé (essai par mutation, § 9.ex). D'où le second contrôle : les
+// termes que l'épure a fait passer de « Sous la surface » au profil Remplaçant,
+// affiché par défaut, doivent rester dans CE panneau.
 {
-  const rendu = texteAccueil.slice(texteAccueil.indexOf('Aller au contenu principal'))
-    .replace(/&nbsp;|&#160;|\u00a0|\u202f/g, ' ').replace(/&#39;|&apos;|’/g, "'").replace(/\s+/g, ' ');
+  const lisible = (html) => html.replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;|&#160;|\u00a0|\u202f/g, ' ').replace(/&#39;|&#x27;|&apos;|’/g, "'").replace(/\s+/g, ' ');
+  const rendu = lisible(texteAccueil.slice(texteAccueil.indexOf('Aller au contenu principal')));
   const TERMES_ACCUEIL = [
     'médecin remplaçant', 'URSSAF', 'CARMF', '2035', '2042-C PRO', 'DSFU', 'RSPM', 'PAMC',
     'Micro-BNC', 'rétrocession', 'contrat de remplacement', 'licence de remplacement',
@@ -527,6 +542,12 @@ if (motsAccueil < MOTS_ACCUEIL_MIN) {
   const perdus = TERMES_ACCUEIL.filter((t) => !rendu.includes(t));
   if (perdus.length) {
     fail(`accueil : terme(s) porteur(s) absent(s) du texte rendu : ${perdus.map((t) => `« ${t} »`).join(', ')} — une coupe a emporté un mot par lequel la page est cherchée (MIGRATION.md § 9.eu)`);
+  }
+  const TERMES_REMPLACANT = ['2035', '2042-C PRO', 'DSFU', 'contrat de remplacement', 'serveur officiel URSSAF'];
+  const panneauRemplacant = lisible(panneauxPourQui.remplacant ?? '');
+  const perdusRemplacant = TERMES_REMPLACANT.filter((t) => !panneauRemplacant.includes(t));
+  if (perdusRemplacant.length) {
+    fail(`accueil, « Pour qui », profil Remplaçant : terme(s) absent(s) de ses étapes : ${perdusRemplacant.map((t) => `« ${t} »`).join(', ')} — l'épure les a fait passer de « Sous la surface » à ce profil, le seul affiché sans choisir d'onglet (MIGRATION.md § 9.eu)`);
   }
 }
 // Police de la DA (phase 4a) : un seul fichier, sous-ensemble latin. Un caractère
@@ -813,6 +834,18 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
       const question = String(q.name ?? '').trim();
       if (question && !visible.includes(compacter(question))) {
         fail(`${page} : la question « ${question.slice(0, 60)}… » est dans le JSON-LD FAQPage mais absente du texte visible`);
+      }
+      // La réponse aussi, sur l'accueil (§ 9.ex) : le contrôle ne comparait que les
+      // questions, un mot changé dans une réponse visible passait (essai par mutation).
+      // Balises de la réponse du schéma retirées, comme celles de la page.
+      // Accueil seulement pour l'instant : étendue telle quelle aux autres pages, la
+      // comparaison sort 69 écarts (/faq, guide des déclarations et ses pages
+      // filles, calculette, quatre articles), 64 une fois les « < » des réponses
+      // décodés (/faq 12, guide 52) : des réponses mises en liste à l'écran et à
+      // plat dans le schéma, à trier entre vrais écarts et faux positifs.
+      const reponse = page === '/' ? compacter(String(q.acceptedAnswer?.text ?? '').replace(/<[^>]+>/g, ' ')) : '';
+      if (reponse && !visible.includes(reponse)) {
+        fail(`${page} : la réponse à « ${question.slice(0, 60)}… » du JSON-LD FAQPage n'est pas, mot pour mot, dans le texte visible`);
       }
     }
   }

@@ -55,10 +55,12 @@ const [avif, webp] = await Promise.all(
       {FAQ_ACCUEIL.map((item) => (
         <details class="qa">
           <summary data-ph={`landing_faq_${item.id}`}>
-            <h3>{insecables(item.question)}</h3>
+            {/* Un mot à traits d'union (« gère-t-il ») ne se coupe pas : il passait à la ligne après « gère-t- » à 320 px. */}
+            <h3>{insecables(item.question).split(/([\wÀ-ÿ]+(?:-[\wÀ-ÿ]+)+)/).map((m, i) => (i % 2 ? <span class="nb">{m}</span> : m))}</h3>
             <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
           </summary>
-          <div class="qa-in"><p set:html={insecables(item.answerHtml)} /></div>
+          {/* Un nombre et son signe (« 10 € », « 34 % ») tiennent ensemble, sans changer un caractère du texte. */}
+          <div class="qa-in"><p set:html={insecables(item.answerHtml).replace(/\d+ [€%]/g, '<span class="nb">$&</span>')} /></div>
         </details>
       ))}
     </div>
@@ -77,10 +79,14 @@ const [avif, webp] = await Promise.all(
 </section>
 
 <style>
+  .nb, .qa-in :global(.nb) { white-space: nowrap; }
   /* Règles communes aux feuilles de l'épure (remplissage), écrites ici et non
      dans da.css, commune à toutes les pages. */
   @media (max-width: 559px) {
     .fq { padding: 44px 0 72px; }
+  }
+  @media (min-width: 560px) and (max-width: 899px) {
+    .fq { padding: 60px 0 92px; }
   }
   @media (min-width: 900px) {
     .fq { padding: 76px 0 112px; }
