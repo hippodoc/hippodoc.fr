@@ -320,6 +320,22 @@ function detectEnumeration(text: string): { before: string; items: string[] } | 
   return null;
 }
 
+/**
+ * Les paragraphes que `renderSegment` met en liste (« X : A, B, C » rendu en puces), dans
+ * l'ordre du texte, avec ce qu'il en affiche. Mêmes découpes et mêmes conditions que lui.
+ * Sert au schéma FAQPage du guide (`src/lib/guide/reponse-schema.ts`), qui doit dire ce que
+ * l'écran dit ; n'est appelée par aucun îlot.
+ */
+export function enumerationsRendues(text: string): { para: string; before: string; items: string[] }[] {
+  return splitOnMarkers(text).flatMap((segment) =>
+    splitIntoParagraphs(segment.content).flatMap((para) => {
+      const { hasBullets, lines } = splitParagraphLines(para);
+      const enumeration = !hasBullets && lines.length === 1 ? detectEnumeration(para) : null;
+      return enumeration ? [{ para, ...enumeration }] : [];
+    })
+  );
+}
+
 function WarningBlock({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex gap-2.5 p-2.5 rounded-lg bg-amber-50/80 border border-amber-200/60 dark:bg-amber-950/20 dark:border-amber-800/40">

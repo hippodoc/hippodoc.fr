@@ -67,6 +67,10 @@ const DESSINS: Record<string, keyof typeof TRACES> = {
   documents: 'papier', mobile: 'mobile', securite: 'verrou', tarifs: 'carte', contact: 'bouee',
 };
 
+/* `aPlain` est la réponse du schéma FAQPage : elle dit ce que `aHtml` affiche, mot pour
+   mot, ponctuation comprise (`verify-site.mjs`, contrôle « 4 septies », MIGRATION.md
+   § 9.fa). Une liste : un élément par ligne (`\n`), sans virgule ni point ajoutés, avec
+   l'émoji de son élément `sr`. Les deux se modifient ensemble. */
 type Question = { q: string; aHtml: string; aPlain: string };
 type Section = { id: string; icon: string; title: string; questions: Question[] };
 
@@ -86,7 +90,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Et c'est tout. Hippodoc fait le reste : <strong>calculs, classement, statistiques</strong>.</p>`,
         aPlain:
-          "En moins de 30 secondes. Tu renseignes : la date (ou la période), le lieu d'exercice (cabinet, centre médical, structure…), le montant encaissé (la rétrocession se calcule automatiquement selon le taux défini). Et c'est tout. Hippodoc fait le reste : calculs, classement, statistiques.",
+          "En moins de 30 secondes. Tu renseignes :\n📅 La date (ou la période)\n🏥 Le lieu d'exercice (cabinet, centre médical, structure…)\n💰 Le montant encaissé (la rétrocession se calcule automatiquement selon le taux défini)\nEt c'est tout. Hippodoc fait le reste : calculs, classement, statistiques.",
       },
       {
         q: 'Je travaille dans plusieurs structures, c\'est gérable ?',
@@ -105,7 +109,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Chaque structure a ses propres règles de calcul, <strong>tout est automatique</strong>.</p>`,
         aPlain:
-          "Oui. Hippodoc gère les 3 types de structures : remplacement chez un titulaire — rétrocession classique (70% par défaut) ; vacation en centre médical — honoraires reversés par la structure ; cabinet propre — 100% de tes recettes, paiement direct patients. Chaque structure a ses propres règles de calcul, tout est automatique.",
+          "Oui. Hippodoc gère les 3 types de structures :\nRemplacement chez un titulaire — rétrocession classique (70% par défaut)\nVacation en centre médical — honoraires reversés par la structure\nCabinet propre — 100% de tes recettes, paiement direct patients\nChaque structure a ses propres règles de calcul, tout est automatique.",
       },
       {
         q: 'Et si je fais plusieurs journées au même endroit ?',
@@ -137,7 +141,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Tu choisis ensuite entre <strong>abattement 10%</strong> ou <strong>frais réels</strong> pour optimiser ta fiscalité — <a href="/blog/salariat-10-pourcent-ou-frais-reels">comment choisir</a>.</p>`,
         aPlain:
-          "Dans l'onglet Revenus salariés. Tu renseignes : le type (gardes, urgences, centre de santé…), le montant net imposable, la période concernée. Tu choisis ensuite entre abattement 10% ou frais réels pour optimiser ta fiscalité.",
+          "Dans l'onglet Revenus salariés. Tu renseignes :\nLe type (gardes, urgences, centre de santé…)\nLe montant net imposable\nLa période concernée\nTu choisis ensuite entre abattement 10% ou frais réels pour optimiser ta fiscalité — comment choisir.",
       },
       {
         q: "C'est quoi les revenus PDSA / exonérés ?",
@@ -155,7 +159,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Hippodoc calcule tout automatiquement et l'intègre dans ton <strong>Super-Net</strong>. Côté remplaçant, voir <a href="/blog/retrocession-honoraires-medecin-remplacant">comment se négocie une rétrocession</a>.</p>`,
         aPlain:
-          "Si tu es titulaire installé et que tu accueilles des remplaçants, tu encaisses leurs honoraires puis tu leur reverses leur part : c'est la rétrocession versée. La rétrocession versée est une charge déductible de ton BNC. La part gardée (recette totale − rétrocédé) est ton revenu imposable. Hippodoc calcule tout automatiquement et l'intègre dans ton Super-Net.",
+          "Si tu es titulaire installé et que tu accueilles des remplaçants, tu encaisses leurs honoraires puis tu leur reverses leur part : c'est la rétrocession versée.\nLa rétrocession versée est une charge déductible de ton BNC\nLa part gardée (recette totale − rétrocédé) est ton revenu imposable\nHippodoc calcule tout automatiquement et l'intègre dans ton Super-Net.",
       },
     ],
   },
@@ -182,7 +186,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Tu peux aussi créer des <strong>récurrences</strong> (ex : "tous les mercredis au centre médical").</p>`,
         aPlain:
-          'Tout ce dont tu as besoin en un coup d\'œil : vert = journées payées, orange = en attente de paiement, bleu = planifiées (pas encore effectuées), gris = indisponibilités (congés, formation…). Tu peux aussi créer des récurrences (ex : "tous les mercredis au centre médical").',
+          'Tout ce dont tu as besoin en un coup d\'œil :\n🟢 Vert : journées payées\n🟠 Orange : en attente de paiement\n🔵 Bleu : planifiées (pas encore effectuées)\n⚫ Gris : indisponibilités (congés, formation…)\nTu peux aussi créer des récurrences (ex : "tous les mercredis au centre médical").',
       },
     ],
   },
@@ -231,7 +235,7 @@ const faqSections: Section[] = [
           </ul>
           <p>La CARMF est aussi intégrée dans le calcul. Pour comprendre chaque cotisation : <a href="/blog/tout-comprendre-urssaf">l'URSSAF</a> et <a href="/blog/tout-comprendre-carmf">la CARMF</a> expliquées.</p>`,
         aPlain:
-          "Hippodoc calcule automatiquement tes cotisations sociales grâce à une connexion directe aux serveurs officiels de l'URSSAF. Selon ton régime : RSPM (régime simplifié des remplaçants, ouvert jusqu'à 19 000 € d'honoraires) — cotisations simplifiées à 13,5% ou 21,2% ; PAMC (régime classique) — barème complet avec toutes les cotisations détaillées. La CARMF est aussi intégrée dans le calcul.",
+          "Hippodoc calcule automatiquement tes cotisations sociales grâce à une connexion directe aux serveurs officiels de l'URSSAF. Selon ton régime :\nRSPM (régime simplifié des remplaçants, ouvert jusqu'à 19 000 € d'honoraires) — cotisations simplifiées à 13,5% ou 21,2%\nPAMC (régime classique) — barème complet avec toutes les cotisations détaillées\nLa CARMF est aussi intégrée dans le calcul.",
       },
       {
         q: 'Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ?',
@@ -242,7 +246,7 @@ const faqSections: Section[] = [
           </ul>
           <p>En général, le Micro-BNC est avantageux si tes charges, <strong>cotisations URSSAF et CARMF comprises</strong>, sont <strong>inférieures à 34%</strong> de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes. La règle complète : <a href="/blog/regime-fiscal-micro-bnc-vs-reel">micro-BNC ou réel</a>.</p>`,
         aPlain:
-          "Hippodoc intègre un simulateur fiscal qui compare les deux régimes avec tes données réelles : Micro-BNC — abattement forfaitaire de 34%, pas de charges déductibles ; régime réel — tu déduis tes charges professionnelles réelles. En général, le Micro-BNC est avantageux si tes charges, cotisations URSSAF et CARMF comprises, sont inférieures à 34% de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes.",
+          "Hippodoc intègre un simulateur fiscal qui compare les deux régimes avec tes données réelles :\nMicro-BNC — abattement forfaitaire de 34%, pas de charges déductibles\nRégime réel — tu déduis tes charges professionnelles réelles\nEn général, le Micro-BNC est avantageux si tes charges, cotisations URSSAF et CARMF comprises, sont inférieures à 34% de ton chiffre d'affaires. Le simulateur te donne la réponse en quelques secondes.",
       },
       {
         q: "C'est quoi le Super-Net ?",
@@ -254,7 +258,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Il prend en compte <strong>tous tes revenus</strong> : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment — <a href="/blog/simulateur-super-net-combien-reste">le calcul expliqué</a>.</p>`,
         aPlain:
-          "Le Super-Net, c'est ton vrai revenu disponible après : cotisations sociales (URSSAF + CARMF), impôt sur le revenu (barème progressif, quotient familial), charges professionnelles (si régime réel). Il prend en compte tous tes revenus : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment.",
+          "Le Super-Net, c'est ton vrai revenu disponible après :\nCotisations sociales (URSSAF + CARMF)\nImpôt sur le revenu (barème progressif, quotient familial)\nCharges professionnelles (si régime réel)\nIl prend en compte tous tes revenus : libéraux, salariés, PDSA, part gardée des rétrocessions. C'est le chiffre le plus important pour savoir combien tu gagnes vraiment — le calcul expliqué.",
       },
       {
         q: 'Je peux anticiper mes charges et prévoir mon budget ?',
@@ -283,7 +287,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Parfait pour ton <strong>comptable, ton AGA ou ta déclaration URSSAF</strong>.</p>`,
         aPlain:
-          "Oui. En CSV, Excel ou PDF, avec : tes journées avec dates et lieux d'exercice, les montants bruts et nets encaissés, le détail des rétrocessions (reçues et versées), tes revenus salariés et exonérés, le statut de paiement (payé / en attente). Parfait pour ton comptable, ton AGA ou ta déclaration URSSAF.",
+          "Oui. En CSV, Excel ou PDF, avec :\nTes journées avec dates et lieux d'exercice\nLes montants bruts et nets encaissés\nLe détail des rétrocessions (reçues et versées)\nTes revenus salariés et exonérés\nLe statut de paiement (payé / en attente)\nParfait pour ton comptable, ton AGA ou ta déclaration URSSAF.",
       },
       {
         q: 'Je peux générer des factures et des contrats ?',
@@ -293,7 +297,7 @@ const faqSections: Section[] = [
             <li><strong>Contrats de remplacement</strong> conformes au CNOM, avec signature électronique intégrée</li>
           </ul>`,
         aPlain:
-          "Oui. Hippodoc te génère : factures d'honoraires en PDF, prêtes à envoyer (avec RPPS, IBAN, détail des journées) ; contrats de remplacement conformes au CNOM, avec signature électronique intégrée.",
+          "Oui. Hippodoc te génère :\nFactures d'honoraires en PDF, prêtes à envoyer (avec RPPS, IBAN, détail des journées)\nContrats de remplacement conformes au CNOM, avec signature électronique intégrée",
       },
       {
         q: 'Je peux stocker mes documents administratifs ?',
@@ -306,7 +310,7 @@ const faqSections: Section[] = [
           </ul>
           <p>Tout est <strong>centralisé, sécurisé</strong>, et accessible en 2 clics.</p>`,
         aPlain:
-          "Oui. Tu peux uploader : ta licence de remplacement, tes contrats signés, tes attestations d'assurance (RCP), ton diplôme, justificatifs divers, etc. Tout est centralisé, sécurisé, et accessible en 2 clics.",
+          "Oui. Tu peux uploader :\nTa licence de remplacement\nTes contrats signés\nTes attestations d'assurance (RCP)\nTon diplôme, justificatifs divers, etc.\nTout est centralisé, sécurisé, et accessible en 2 clics.",
       },
     ],
   },
@@ -431,7 +435,7 @@ const faqSections: Section[] = [
             <p>On est une petite équipe. On lit <strong>tous les messages</strong>, et on fait évoluer l'app avec <strong>vos retours terrain</strong>.</p>
           </div>`,
         aPlain:
-          "Une question, un bug, une suggestion ? Écris-nous, on te répond vite : contact@hippodoc.fr. On est une petite équipe. On lit tous les messages, et on fait évoluer l'app avec vos retours terrain.",
+          "Une question, un bug, une suggestion ? Écris-nous, on te répond vite :\ncontact@hippodoc.fr\nOn est une petite équipe. On lit tous les messages, et on fait évoluer l'app avec vos retours terrain.",
       },
     ],
   },

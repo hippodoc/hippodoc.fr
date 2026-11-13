@@ -9672,8 +9672,9 @@ le schéma de `/tarifs`.
 
 **3. Les 26 écarts de texte, à trancher par le propriétaire**
 
-Non corrigés : contenu verbatim, période d'observation SEO. `verify-site.mjs` échoue sur
-ces 26 réponses, et sur elles seules, tant qu'elles ne sont pas tranchées.
+Non corrigés dans cette entrée : contenu verbatim, période d'observation SEO.
+`verify-site.mjs` échouait sur ces 26 réponses, et sur elles seules. Tranché le même
+jour : schéma aligné sur l'écran, § 9.fa.
 
 `/faq` (12). À l'écran la réponse contient une liste ; `aPlain` (le schéma) la met à plat
 à la main dans `src/pages/faq.astro`.
@@ -9726,6 +9727,75 @@ période d'observation.
 
 **Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Scripts de tri et de mutation :
 dossier de travail, hors dépôt.
+
+### 9.fa FAQ et guide des déclarations : le schéma `FAQPage` aligné sur l'écran (13 novembre 2026)
+
+Décision du propriétaire sur les 26 écarts de § 9.ez : **aligner le schéma sur l'écran**,
+pour les deux lots. Seul le JSON-LD change ; aucun texte visible n'est touché.
+`verify-site.mjs` passe à 0 erreur, contrôle des réponses actif sur toutes les pages.
+
+**Modification de contenu (JSON-LD), à connaître pendant la période d'observation** :
+26 `acceptedAnswer.text` sur quatre pages. Comparé au build d'avant, par script : seuls
+`/faq`, `/guide-declarations`, `/guide-declarations/2042-c-pro` et
+`/guide-declarations/dsfu-pamc` changent, et dans chacun seul le bloc `FAQPage` ; les
+questions, leur ordre et le reste du schéma sont identiques ; 12 + 9 + 4 + 1 réponses
+changent, celles de § 9.ez et aucune autre. Les 66 autres pages et tous les fichiers de
+`_astro/` sont identiques à l'octet (mêmes noms : aucun îlot ne change).
+
+**`/faq` (12 réponses)** : `aPlain` réécrit à la main dans `src/pages/faq.astro`, pour dire
+ce que `aHtml` affiche.
+
+- Une liste à l'écran : un élément par ligne dans le schéma, avec sa majuscule, sans les
+  « , », « ; », « = » ni le point que la mise à plat avait ajoutés. Texte brut, pas de
+  HTML dans le schéma (comme les listes du guide).
+- Les émojis des listes à pictogrammes (📅 🏥 💰, 🟢 🟠 🔵 ⚫) sont dans le schéma : ils
+  sont dans le texte de la page (élément `sr`, masqué à l'œil, le pictogramme est
+  dessiné en SVG), et le contrôle compare au texte de la page.
+- Deux réponses finissent à l'écran par un lien dans la dernière phrase : le schéma dit
+  maintenant « … pour optimiser ta fiscalité — comment choisir. » (revenus salariés) et
+  « … combien tu gagnes vraiment — le calcul expliqué. » (Super-Net), sans le lien.
+- « Comment te contacter ? » : l'adresse sur sa ligne, sans point après.
+- Non ajoutées : les quatre phrases à lien qui suivent la fin d'une réponse à l'écran
+  (revenus PDSA, rétrocessions versées, cotisations URSSAF, régime fiscal). Elles
+  n'étaient pas dans les 26 écarts : le schéma s'arrête avant elles, comme avant.
+
+**Guide des déclarations (9 questions, 14 réponses)** : le schéma ne reprend plus
+`reponse` telle quelle mais `reponsePourSchema(reponse)` (`src/lib/guide/reponse-schema.ts`),
+dans `src/pages/guide-declarations/index.astro` et `src/layouts/GuideSousPage.astro`.
+La fonction refait les deux réécritures de `FormattedText.tsx`, par le même code, et
+rien d'autre :
+
+- un renvoi interne devient ce que le lien affiche, lu dans le rendu d'`InlineRef` :
+  « QT-014 » → « Question · Le choix du régime fiscal », « PC-014 » → « Astuce · Tableau
+  récap des IJ », « QT-049 » → « Question · Comment proratiser le plafond… », « PC-003 »
+  → « Astuce · PDSA en pratique », « QT-041 » → « Question · IJ CPAM hors ALD en
+  micro-BNC », « QT-020 » → « Question · Comment déclarer si mon CA est… », « RO-006 » et
+  « RO-015 » → « Règle d'or · Exonération ZFU / PDSA » et « Règle d'or · RSPM + PDSA »,
+  « PC-015 » → « Astuce · DPC », « CASE-006 » → « Case · DSAV ». Un renvoi situé dans un
+  gras, un code ou une citation reste un identifiant, comme à l'écran ;
+- une énumération que l'écran met en liste (réponse sur la CAM, deux fois) : une puce
+  « • » par élément, sans virgules ni point final, d'après `enumerationsRendues`
+  (nouvel export de `FormattedText.tsx`, qu'aucun îlot n'appelle).
+
+Les 40 autres réponses du guide sortent identiques à l'octet : le balisage de l'auteur
+(`**`, accents graves, ⚠️, 💡, puces) reste dans le schéma, hors de la décision.
+
+**Reste ouvert**
+
+- **La réponse sur la CAM reprend un défaut d'affichage** : l'écran coupe « le DPC (qui
+  est conventionné, voir PC-015) » en deux puces (§ 9.ez, point 4), le schéma aussi
+  désormais. Quand `detectEnumeration` sera corrigée, le schéma suivra sans y toucher :
+  les deux passent par elle.
+- **Le balisage brut dans le schéma du guide** (§ 9.ez, point 4) : inchangé.
+- **Les quatre phrases à lien de fin de réponse de `/faq`** : à l'écran seulement.
+
+**Vérification** : build (70 pages), `verify-site.mjs` à 0 erreur ; comparaison du build
+à celui d'avant (ci-dessus) ; essais par mutation de § 9.ez refaits, tous vus.
+**Non vérifié** : l'outil de test des résultats enrichis de Google, sur un aperçu Vercel.
+
+**Fichiers** : `src/pages/faq.astro`, `src/lib/guide/reponse-schema.ts` (nouveau),
+`src/components/guide/FormattedText.tsx`, `src/pages/guide-declarations/index.astro`,
+`src/layouts/GuideSousPage.astro`, `CLAUDE.md`.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
