@@ -130,8 +130,11 @@ const breadcrumbSchema = {
     {/* Feuille sable : les lignes du thème, puis l'appel au simulateur. */}
     <div class="band bl-fin">
       <div class="wrap">
+        {/* Aucune affiche chargée en priorité (§ 9.fp, corrections) : la première n'est pas
+            l'élément LCP (c'est l'introduction du thème, un texte), et au téléphone elle est
+            sous le premier écran ; elle partait avec la police et la feuille, sans rien gagner. */}
         <div class="bl-grille">
-          {posts.map((post, i) => (
+          {posts.map((post) => (
             <BlogCard
               slug={post.id}
               title={post.data.title}
@@ -144,7 +147,6 @@ const breadcrumbSchema = {
               category={post.data.category}
               categoryNumber={post.data.categoryNumber}
               cover={covers.get(post.id)}
-              eager={i === 0}
             />
           ))}
         </div>

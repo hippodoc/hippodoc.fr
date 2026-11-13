@@ -9,7 +9,7 @@
  * date, durée, série et numéro : ceux d'avant, dans le même ordre (sur /blog, le
  * thème a pris la place de la série en § 9.fp, voir plus bas).
  * Aucune classe utilitaire : les styles sont dans `src/styles/blog-liste.css`,
- * la feuille des quatre pages de liste.
+ * la feuille des pages de liste (/blog, séries, thèmes).
  *
  * La classe `blog-card s-<seriesId>` est conservée : elle reste utile pour cibler
  * une série en CSS.
@@ -29,7 +29,7 @@
  * `src` et dimensions déclarées sont ceux d'avant.
  */
 import { blogSeries } from '@/lib/blog-series';
-import { themeDe } from '@/lib/blog-themes';
+import { themeDe, type ThemeSlug } from '@/lib/blog-themes';
 import { nouer, echapper, nouerNombres } from '@/lib/typo';
 import { largeurDansCadre } from '@/lib/blog-covers';
 
@@ -47,7 +47,7 @@ interface Props {
   /** Ce que dit la tête de ligne : la série (pages de série), le thème et le numéro (/blog), le numéro seul (pages de thème). */
   etiquette?: 'serie' | 'theme' | 'numero';
   /** Slug du thème de l'article (étiquette « theme »). */
-  theme?: string;
+  theme?: ThemeSlug;
   /** Libellé et numéro de la pastille de l'article (« Fiche Fiscalité », « #4 »). */
   category?: string;
   categoryNumber?: string;
