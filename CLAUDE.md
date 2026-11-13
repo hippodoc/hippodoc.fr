@@ -74,8 +74,9 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   un contrôle se trouve dans la bande de `scroll-padding-top` fait remonter la page à
   chaque focus qui ne vient pas d'un appui direct (le `<label>` du menu qui donne le focus
   à sa case, Tab) : le navigateur fait défiler pour sortir le contrôle de la bande, et il
-  n'en sort jamais. Les barres collantes du guide et de la calculette ont encore ce défaut
-  au clavier. Son bord droit est `var(--removed-body-scroll-bar-size, 0px)`, pas `0`
+  n'en sort jamais. Les barres collantes du guide et de la calculette avaient ce défaut :
+  elles restent collantes, et leur bande se réduit tant que le focus est dedans (§ 9.ey).
+  Son bord droit est `var(--removed-body-scroll-bar-size, 0px)`, pas `0`
   (§ 9.ex) : quand une liste de Radix verrouille le défilement (simulateur, calculette),
   `<body>` reçoit une marge de la largeur de la barre retirée, et un élément tenu à la
   fenêtre qui ne la suit pas saute de 7,5 px. Un nouvel élément `fixed` qui touche le bord
