@@ -1550,7 +1550,15 @@ for (const f of pagesHtml) {
        ou ne porte pas `data-blog-theme` à son nom ;
      - un article n'est listé par aucune page de thème, ou par deux ;
      - le sitemap n'a pas exactement les pages de thème du registre, au nombre de NB_THEMES ;
-     - les puces « Thèmes du blog » de /blog ne lient pas chacune d'elles.
+     - les puces « Thèmes du blog » de /blog ne lient pas chacune d'elles ;
+     et, depuis les corrections après relecture de § 9.fp :
+     - le fil d'Ariane d'une page de thème (à l'écran : Accueil, Blog, puis son nom sans lien, en
+       aria-current ; BreadcrumbList : trois positions, la troisième est la page elle-même) ;
+     - ses puces « Thèmes du blog » ne marquent pas sa propre puce, et elle seule, d'aria-current ;
+     - ses lignes ne sont pas dans l'ordre de /blog (`byNewest` : les lignes de /blog filtrées par
+       thème ; la une, sortie de l'ordre par `featured`, n'y est pas comparée) ;
+     - une ligne de /blog n'a pas pour étiquette (la première marque, `.chip`) le nom du thème de
+       son article.
    Cinq thèmes : un sixième se décide (NB_THEMES), il ne s'ajoute pas en passant. */
 const NB_THEMES = 5;
 const srcThemes = readFileSync(resolve(root, 'src/lib/blog-themes.ts'), 'utf8');
@@ -1620,9 +1628,43 @@ for (const [s, themes] of listePar) {
   if (themes.length !== 1) fail(`thèmes : /blog/${s} est listé par ${themes.length} page(s) de thème (${themes.join(', ') || 'aucune'}), il en faut une`);
 }
 // /blog : les puces des thèmes lient chacune des pages.
-const pucesBlog = readFileSync(resolve(dist, 'blog/index.html'), 'utf8').match(/<nav aria-label="Thèmes du blog"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
+const htmlBlog = readFileSync(resolve(dist, 'blog/index.html'), 'utf8');
+const pucesBlog = htmlBlog.match(/<nav aria-label="Thèmes du blog"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
 for (const t of slugsThemes) {
   if (!pucesBlog.includes(`href="/blog/theme/${t}"`)) fail(`thèmes : /blog ne lie pas /blog/theme/${t} dans ses puces « Thèmes du blog »`);
+}
+// /blog : chaque ligne a pour étiquette le nom du thème de son article ; l'ordre de /blog (la une, puis les lignes).
+const lignesBlog = [...htmlBlog.matchAll(/<a href="\/blog\/([a-z0-9-]+)" data-ph="blog_card">([\s\S]*?)<\/a>/g)];
+for (const [, s, contenu] of lignesBlog) {
+  const etiquette = decoder((contenu.match(/<span class="chip[^"]*">([\s\S]*?)<\/span>/)?.[1] ?? '').replace(/<[^>]+>/g, '').trim());
+  const attendu = nomsThemes.get(themeDeLArticle.get(s));
+  if (!attendu || etiquette !== attendu) fail(`thèmes : sur /blog, la ligne de /blog/${s} a pour étiquette « ${etiquette || 'rien'} », son thème est « ${attendu ?? '?'} »`);
+}
+const uneBlog = htmlBlog.match(/<a href="\/blog\/([a-z0-9-]+)" data-ph="blog_index_featured"/)?.[1];
+const ordreBlog = lignesBlog.map((m) => m[1]);
+if ([uneBlog, ...ordreBlog].filter(Boolean).length !== themeDeLArticle.size) fail(`thèmes : /blog montre ${ordreBlog.length + (uneBlog ? 1 : 0)} article(s) (la une et les lignes), il en a ${themeDeLArticle.size}`);
+// Pages de thème : leur fil d'Ariane, leur puce marquée, l'ordre de leurs lignes.
+for (const theme of slugsThemes) {
+  const fichier = resolve(dist, 'blog/theme', theme, 'index.html');
+  if (!existsSync(fichier)) continue;
+  const html = readFileSync(fichier, 'utf8');
+  const chemin = `/blog/theme/${theme}`;
+  const nom = nomsThemes.get(theme);
+  const fil = html.match(/<nav aria-label="Fil d(?:'|&#39;|&#x27;)Ariane"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
+  const liens = [...fil.matchAll(/<a href="([^"]*)"[^>]*>/g)].map((m) => m[1]);
+  const courant = decoder((fil.match(/<li aria-current="page"[^>]*>([\s\S]*?)<\/li>/)?.[1] ?? '').replace(/<[^>]+>/g, '').trim());
+  if (liens.join(' ') !== '/ /blog' || courant !== nom) fail(`thèmes : ${chemin} : le fil d'Ariane doit être Accueil › Blog › « ${nom} » (lu : ${liens.join(' › ') || 'rien'} › « ${courant || 'rien'} »)`);
+  const fils = ldDe(html).filter((b) => b['@type'] === 'BreadcrumbList');
+  const el = [...(fils[0]?.itemListElement ?? [])].sort((a, b) => a.position - b.position);
+  if (fils.length !== 1 || el.length !== 3 || el.some((e, i) => e.position !== i + 1) || el[0].item !== SITE || el[1].item !== `${SITE}/blog` || el[2].item !== `${SITE}${chemin}` || el[2].name !== nom) {
+    fail(`thèmes : ${chemin} : le BreadcrumbList doit avoir trois positions, Accueil, Blog, puis la page elle-même (« ${nom} »)`);
+  }
+  const puces = html.match(/<nav aria-label="Thèmes du blog"[^>]*>([\s\S]*?)<\/nav>/)?.[1] ?? '';
+  const marquees = [...puces.matchAll(/<a\b[^>]*>/g)].map((m) => m[0]).filter((a) => /aria-current=/.test(a));
+  if (marquees.length !== 1 || !marquees[0].includes(`href="${chemin}"`)) fail(`thèmes : ${chemin} : dans « Thèmes du blog », seule sa propre puce porte aria-current (lu : ${marquees.length} puce(s) marquée(s))`);
+  const lignes = [...html.matchAll(/<a href="\/blog\/([a-z0-9-]+)" data-ph="blog_card"/g)].map((m) => m[1]).filter((s) => s !== uneBlog);
+  const ordre = ordreBlog.filter((s) => themeDeLArticle.get(s) === theme);
+  if (lignes.join() !== ordre.join()) fail(`thèmes : ${chemin} : les lignes ne sont pas dans l'ordre de /blog (attendu : ${ordre.slice(0, 3).join(', ')}… ; lu : ${lignes.slice(0, 3).join(', ')}…)`);
 }
 if (slugsThemes.length) console.log(`Thèmes : ${pagesThemes.length} pages dans le sitemap, ${themeDeLArticle.size} articles, chacun listé par la page de son thème et une seule, fil d'Ariane par son thème`);
 
