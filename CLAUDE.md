@@ -415,10 +415,31 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     mascotte entière ; un titre trop long est réduit (50 px), puis coupé d'un « … ».
   - Auteur : table `AUTEURS` de `src/lib/site.ts` (nom du frontmatter → fiche de
     `/qui-sommes-nous` et portrait) ; un auteur absent n'a ni lien ni `@id`.
-- **`/blog` et les séries** (§ 9.fk) : des lignes sur une feuille blanche (`BlogCard.astro`,
-  `src/styles/blog-liste.css`), l'affiche en vignette (carré de 64 px au téléphone, 96 puis
-  104 px) : `sizes` et `srcset` (160 et 320 px, une : 180 et 360 px) suivent ces largeurs, la
-  une est dans le premier écran du téléphone. Extrait masqué au téléphone (dans le HTML).
+- **Les affiches** (§ 9.fo ; le propriétaire : « pas trop grande mais pas trop petite ») : une
+  affiche ne se rogne jamais là où elle a du texte ou la scène, et jamais en haut (son titre).
+  Les 48 ont cinq formats (2:3, 0,75, 0,79, 0,805) : aucun cadre commun ne les garde toutes.
+  Dans les listes (`/blog`, séries, une, articles connexes) : un cadre 4:5, l'affiche entière
+  (`object-fit: contain`, calée en haut) sur les couleurs de ses bords. `src/lib/affiche-bords.mjs`
+  (sharp, à la construction, mémoïsé) les rend en `--bord-g` et `--bord-d` (8 couleurs de haut en
+  bas), posées en `style` sur l'`<img>` ; la feuille en fait deux dégradés (moitié gauche, moitié
+  droite) en fond de l'image. Un nouvel emplacement d'affiche reçoit le même cadre et le même fond.
+  Une taille se mesure, jamais à l'œil : la plus grande qui tient les bornes (3 articles entiers
+  visibles à tout moment sous l'en-tête à 360 × 640 et 393 × 692, titre en 4 lignes au plus, date et
+  durée sur une ligne, `/blog` sous 7 880 px à 393) ; essais et chiffres en § 9.fo. Les images
+  des listes ne se chargent pas en priorité (le LCP y est un texte). Deux articles ont la même
+  affiche (`facturation-electronique-medecin-remplacant`, `generer-facture-remplacement`) :
+  décision de contenu laissée au propriétaire.
+- **`/blog` et les séries** (§ 9.fk, § 9.fo) : des lignes sur une feuille blanche (`BlogCard.astro`,
+  `src/styles/blog-liste.css`), l'affiche à gauche, entière : 26,5 % de la largeur de l'écran au
+  téléphone (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393), 144 px à partir de
+  640 px ; une colonne de lignes jusqu'à 1 023 px, deux au-delà. La une : 36 % de l'écran au
+  téléphone, sous son titre (qui garde sa place dans le premier écran), 240 px à gauche à partir
+  de 768 px. `sizes`, `srcset` (160 à 400 px ; une : 180 à 720 px) et le préchargement de la une
+  suivent ces largeurs ; `src` et dimensions déclarées sont ceux d'avant. Extrait masqué au
+  téléphone (dans le HTML).
+- **Articles connexes** (§ 9.fo, fin de la page d'article) : sous 700 px, une rangée de cartes qui
+  défile, affiche de 112 px, titre en 5 lignes au plus (aucun des 223 titres coupé à 360 px) ; au-delà,
+  la carte de `/blog` en feuille à deux colonnes, affiche de 96 px.
 - Écarts au contenu d'un article : « Contenu modifié » dans MIGRATION.md (§ 9.fj pour les
   antislashs : une ligne vide avant et après une liste, sinon « \ » s'affiche).
 - Frontmatter `faq`/`relatedArticles`/`slides`/`cta` rendus par `src/pages/blog/[slug].astro`

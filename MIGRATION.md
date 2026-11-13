@@ -10904,6 +10904,188 @@ Trois décisions du propriétaire sur le bloc sous le premier écran.
 **Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/data/demoAccueil.ts`,
 `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.fo Blog : les affiches visibles partout (13 novembre 2026)
+
+Suite de § 9.fj et § 9.fk. La refonte avait mis les affiches en vignettes : 64 × 80 px en tête de
+l'article au téléphone, et, sur `/blog` et les séries, un carré de 64 px rogné au centre (le titre de
+l'affiche sortait du cadre). Le propriétaire (médecin, pas développeur) : « C'est super, mais c'est
+dommage que les illustrations soient si petites. Ou alors qu'on ne puisse pas les voir si on clique
+dessus. » Puis, avec une capture de `/blog` sur iPhone : « Mais aussi là, dans la liste, elles sont
+toutes petites et coupées. Or je pense qu'elles peuvent donner envie de cliquer sur un article en soi.
+Mais là, on ne voit rien. » Enfin : « Il faut juste trouver le bon compromis. Pas trop grande mais pas
+trop petite. » Il a écrit « je te fais full confiance, je veux tes choix » : les choix ci-dessous sont
+décidés. Les affiches sont ses fiches Instagram (mascotte en scène, titre, parfois des chiffres) : la
+marque du blog, l'appel à la lecture.
+
+La règle des affiches :
+
+1. **Une affiche ne se rogne jamais** là où elle a du texte ou la scène, et jamais en haut (son titre).
+2. **Le bon compromis, ni trop grande, ni trop petite** : il se mesure, il ne se devine pas.
+3. **D'un appui, en grand**, dans l'article (partie B, plus bas).
+
+#### A. Les listes : `/blog`, les séries, la une, les articles connexes
+
+**Le cadre (règle 1).** Les 48 affiches ont cinq formats : 2:3 (28), 0,746 à 0,751 (4), 0,792 (2), 0,805
+(14) ; regardées une à une sur une planche. Aucun cadre commun ne les garde toutes en rognant : un cadre
+4:5 calé en haut coupe le bas des 2:3 (16,6 % de la hauteur : « CE QUE TU NE DÉCIDES PAS, TU LE
+PORTES. », « 70 % », « 85 % », « ERREUR majoration », « 2035 BNC ») ; un cadre 2:3 coupe les côtés des
+0,805, dont les titres vont d'un bord à l'autre (« LA DOUBLE VIE FISCALE », « L'EFFET CISEAUX », « 8 ANS
+D'IMPÔTS ALLÉGÉS ») ; un cadre 3:4 coupe un peu des deux. L'affiche est donc montrée **entière**
+(`object-fit: contain`), **calée en haut**, dans un **cadre 4:5** : pour une même hauteur de ligne, c'est
+le cadre qui montre chaque affiche au plus grand (une 2:3 garde toute la hauteur, une 0,805 toute la
+largeur), et celui de la vignette d'article. Le vide (8,3 % de chaque côté d'une 2:3, 3 % d'une 0,75,
+moins d'un pixel sous une 0,805) prend **les couleurs des bords de l'affiche** :
+`src/lib/affiche-bords.mjs` (sharp, à la construction, mémoïsé, 2 s pour les 48) réduit une bande de
+2 % de la largeur de chaque bord à 8 couleurs de haut en bas, rendues en `style="--bord-g:…;--bord-d:…"`
+sur l'`<img>` ; la feuille en fait deux dégradés verticaux, l'un sur la moitié gauche du cadre, l'autre
+sur la moitié droite, peints en fond de l'image (sans élément de plus). Sans ces couleurs, la
+déclaration est ignorée et le ciel doux du cadre reste. Le fichier est en `.mjs` (hors de portée de
+Tailwind) et son nom n'entre pas dans l'empreinte du cache des articles. Planche des 48 affiches telles
+qu'elles sortent dans la liste, contrôlée par script (393 × 692 et 1 512 × 800) : 48 sur 48 entières,
+calées en haut, cadres 4:5, couleurs de bord posées ; aucune bande ne se lit comme une bande.
+
+**La largeur au téléphone (règle 2).** Essais par CSS injectée sur la construction de `main`, sans
+reconstruire, à 393 × 692 (téléphone médian des lecteurs) et 360 × 640, l'en-tête fixe déduit de la zone
+visible (622 et 570 px). Bornes : l'affiche se reconnaît (hauteur des capitales de son titre à l'écran,
+6 affiches) ; titre de l'article en 4 lignes au plus, date et durée gardées ; `/blog` à 393 px pas plus
+long que la liste d'avant la refonte (7 880 px) ; **3 articles entiers visibles à tout moment du
+défilement** (lu au plus strict, par pas de 4 px ; lu écran par écran, le choix est le même).
+
+| Affiche | Ligne | `/blog` à 393 | 3 entiers à 393 | `/blog` à 360 | 3 entiers à 360 |
+|---|---|---|---|---|---|
+| carré de 64 px rogné (avant) | 97–135 px | 6 672 px | toujours | 6 968 px | toujours |
+| 88 px | 135 px | 6 839 px | toujours | 7 114 px | toujours |
+| 96 px | — | — | — | 7 206 px | 93 % du temps (date sur 2 lignes) |
+| **104 px** | 155 px | 6 999 px | **toujours** | 7 280 px | 68 % |
+| 112 px | 165 px | 7 079 px | 77 % | — | — |
+| 120 px | 175 px | 7 159 px | 55 % | 7 454 px | 25 % (10 titres de 4 lignes) |
+| 136 px | 195 px | 7 319 px | 19 % (3 titres de 4 lignes, date sur 2 lignes) | 7 594 px | jamais ; 2 titres de 5 lignes |
+
+Capitales du titre de l'affiche à l'écran, à 104 px : 7,4 px (« OBTENIR SA », 2:3), 6,9 (« SUPER-NET »),
+7,8 (« RÉGIME RSPM », 0,75), 5,7 (« LA DOUBLE VIE FISCALE », 0,805), 5,6 (« REQUALIFIÉ : TAXÉ… »), 3,8
+(« INBOX ZÉRO DU REMPLA ») ; à 88 px, 6,2 et 4,7 pour les grands et les moyens. Les grands titres se
+lisent, les moyens se devinent, les petits non (la scène fait reconnaître l'affiche). Avant : coupés.
+
+**Choix : 26,5 % de la largeur de l'écran** (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393,
+112 px au plus) : la plus grande largeur qui tient toutes les bornes aux deux formats (lignes de 140 et
+151 px, sous le quart de la zone visible ; à 360, au-delà de 99 px, « 20 septembre 2026 · 10 min »,
+185 px, passait à la ligne). Une part de l'écran plutôt que deux paliers : les deux formats ont le même
+rapport hauteur/largeur. Lignes : 10 px de remplissage en haut et en bas, 12 de côté (12 et 14 avant),
+texte centré sur la hauteur de l'affiche.
+
+**Ordinateur et tablette** (bornes : affiche de 140 à 180 px, titres en 4 lignes au plus, `/blog` à
+1 512 × 800 sous 4 997 px, 3 articles entiers à tout moment). Deux colonnes à 1 280 et 1 512 × 800 :
+140 et 150 px tiennent (4 entiers), 160 non (2 entiers par moments), 180 non. Une seule colonne à
+1 512 px dépassait 4 997 px. En tablette, deux colonnes avec 140 px laissaient des titres de cinq lignes
+(six à 640 px sur `main`) : **une colonne de 640 à 1 023 px** (820 × 1 180 et 768 × 1 024 : 3 entiers
+toujours). À 1 024 × 768 (tablette couchée), une colonne n'en garde que 2 : **deux colonnes à partir de
+1 024 px**, où 144 px tient et 150 non. **Choix : 144 px à partir de 640 px** (144 × 180, des pixels
+entiers).
+
+**La une.** Son affiche nettement plus grande, sans repousser son titre (sur `main`, la première ligne de
+« Derniers articles » est déjà sous le premier écran du téléphone ; le titre de la une, lui, y est).
+Téléphone : le titre en pleine largeur, à sa place (573–653 px à 393, inchangé ; 654–735 à 360 au lieu de
+682–789), puis l'affiche (36 % de l'écran : 141 × 177 px à 393, 1,36 fois celle des lignes) à gauche de
+l'extrait (5 lignes), de la date et de la durée (l'une sous l'autre). Le bloc de texte passe en
+`display: contents` sous 768 px ; le HTML ne change pas. À partir de 768 px : 240 px à gauche (180 avant),
+la une entière dans le premier écran à 1 512 × 800 (418–734 px).
+
+**Les articles connexes** (seule partie de la page d'article touchée ici). Sous 700 px, la rangée qui
+défile (elle commençait sous 560 px) : affiche de **112 px** (40 × 50 px rognée avant ; au moins 96
+demandés), titre en cinq lignes au plus. Sur les 223 cartes des 48 articles : 104 px avec quatre lignes
+coupaient 18 titres à 360 px (17 sur `main`, trois lignes), 104 et 112 px avec cinq lignes n'en coupent
+aucun, 120 px en coupe 4 : 112 px est la largeur qui garde la rangée nette (cinq lignes et la durée
+tiennent dans la hauteur de l'affiche). À partir de 700 px, la carte de `/blog` : une feuille blanche à
+**deux colonnes de lignes**, affiche de 96 px ; six articles en trois rangs, la section garde la hauteur
+de l'ancienne liste (456 → 477 px au plus). Essayé avant : une colonne avec 48, 64 et 72 px (+60 à
++240 px de page).
+
+**Images.** `srcset` des lignes : 160, 240, 320, 400 px et le fichier principal (160 et 320 avant) ;
+une : 180, 240, 360, 480, 720 ; connexes : 132, 240, 320. `sizes` et le préchargement de la une (à partir
+de 768 px, 240 px) disent les vraies largeurs. Les `src` et les dimensions déclarées ne changent pas.
+48 fichiers ajoutés au build (les variantes de 240 px), aucun retiré. Sur les séries, la première affiche
+n'est plus chargée en priorité (`loading="eager"`, `fetchpriority="high"` retirés) : elle n'est l'élément
+LCP à aucun format (le texte de la série l'est) et, plus lourde, elle partait avec la police.
+
+**Une même affiche pour deux articles** : `facturation-electronique-medecin-remplacant` et
+`generer-facture-remplacement` ont la même affiche (« T'AS REMPLACÉ, T'AS FACTURÉ »,
+`facture-generation-cover.png`). Rien n'est changé : décision de contenu pour le propriétaire.
+
+**Écarts, comptés** (contre `main`) : `preuve.cjs` (52 pages, 11 clés) : **52 pages identiques sur les
+11 clés**, images comprises (alt, dimensions, adresse sans empreinte) ; `preuve-corps.cjs` (48 articles)
+: 0 écart de mots, titres, ancres, liens. HTML brut, comparé attribut par attribut (71 pages) : 19 pages
+identiques octet pour octet ; ailleurs, seulement : `srcset`, `sizes` et `style` ajoutés sur les 223
+affiches des connexes (48 articles) ; `srcset` et `sizes` changés, `style` ajouté sur les 96 affiches des
+listes (4 pages) ; le préchargement de la une (`imagesrcset`, `imagesizes`) ; `loading` et
+`fetchpriority` de la première affiche des 3 séries ; le nom de la feuille de page (52). Aucun autre écart
+(script : le HTML, ces attributs retirés, est identique octet pour octet).
+`verify-site.mjs` n'est pas modifié et passe (68 pages, 5 434 liens internes, les 7 avertissements de
+`main`). Feuille commune : `_astro_assets.BdxOyZgM.css`, même nom. Aucun script ajouté.
+
+**Mesures** (Chromium, liste fermée ; séries : Fiches Fiscalité, Fiches Pratiques, Guides & Conseils) :
+
+| Format | `/blog` | Séries | Ligne d'article |
+|---|---|---|---|
+| 360 × 640 | 6 968 → 7 176 px (avant la refonte : 8 185) | 4 450 / 3 651 / 5 432 → 4 826 / 3 839 / 5 993 | 97–135 → 139–140 px |
+| 393 × 692 | 6 672 → 7 043 px (avant la refonte : 7 880) | 4 295 / 3 533 / 5 296 → 4 904 / 3 829 / 6 181 | 97–135 → 150–151 px |
+| 820 × 1 180 | 5 871 → 6 846 px (avant la refonte : 7 847) | 4 002 / 3 224 / 4 916 → 5 843 / 4 096 / 7 703 | 203–252 → 228–229 px |
+| 1 024 × 768 | 4 647 → 4 826 px | 3 496 / 2 824 / 4 414 → 3 703 / 2 927 / 4 675 | 202–228 → 228–229 px |
+| 1 280, 1 512, 1 920 | 4 469 → 4 648 px (avant la refonte : 4 997) | 3 387 / 2 687 / 4 203 → 3 594 / 2 790 / 4 538 | 179–203 → 228–229 px |
+
+Aucun défilement de côté (`/blog` et séries à 9 formats, 48 articles à 5 formats). Poids : HTML de
+`/blog` 22,7 → 27,6 Ko compressé (couleurs de bord, ≈ 140 signes par affiche, et deux tailles de plus
+dans les `srcset`) ; séries +0,8 à +2,8 Ko ; article +0,9 Ko. Feuille des listes 3,7 → 3,8 Ko
+compressée ; feuille d'article inchangée à 0,1 Ko près. Pages d'article (médiane des 48) : +56 px au
+téléphone (rangée des connexes 163 → 218 px), +21 px au-delà.
+
+Lighthouse mobile (réglages par défaut, serveur qui compresse, passes alternées avec `main` servi de
+même) : `/blog` 96, 96, 96 (`main` 98, 97, 98), LCP 2,67 à 2,71 s (2,32 à 2,55) ; Fiches Fiscalité 95, 99,
+95, 97, 96 (`main` 99, 99, 97, 99, 96) ; Guides & Conseils 95, 95, 99, 99, 96 (`main` 95, 96, 95, 97, 95).
+Accessibilité, bonnes pratiques et SEO à 100, CLS 0 partout ; l'élément LCP reste un texte (le titre de
+`/blog`, le texte de la série). Le coût vient du poids des affiches : la une et les premières lignes
+partent dès l'arrivée (seuil du chargement différé de Chrome) : environ 100 → 200 Ko d'images sur
+`/blog`, 259 → 399 Ko sur Guides & Conseils. Avec la première affiche des séries chargée en priorité,
+Guides & Conseils tombait à 94 deux passes sur trois : d'où son retrait.
+
+Recherche de `/blog` : « DSFU » trouve les 2 mêmes articles, un mot absent montre le message « Pas
+encore d'article », comme sur `main`. WebKitGTK 2.52 (`/blog`, Fiches Fiscalité, la CARMF, à 1 512, 393
+et 360 px, dans un cadre sous 447 px) : mêmes tailles que Chromium (affiches 95,4 × 119,2, 104,1 × 130,2
+et 144 × 180 ; une 129,6 × 162, 141,5 × 176,8 et 240 × 300 ; connexes 112 × 140 et 96 × 120), lignes
+de 139–140, 150–151 et 228–229 px, dates sur une ligne (47 sur 47), aucun titre de connexe coupé, fond de
+bord lu sur toutes les affiches, aucun défilement de côté. Contrastes forcés : Chromium retirait les
+dégradés (bandes blanches) ; les images portent `forced-color-adjust: none` (elles prolongent l'image,
+sans texte). Ce n'est ni Safari ni un iPhone.
+
+**Ce qui reste faible :**
+
+- Lighthouse garde sa borne (95 et plus à chaque passe) mais perd de la marge : médiane 96 contre 97 à 99
+  sur `main` (`/blog`, Fiches Fiscalité). Pistes non prises : une qualité d'image plus basse (environ
+  −20 % de poids, image moins nette), un nouveau format (AVIF, écarté).
+- HTML de `/blog` : +4,9 Ko compressé (couleurs de bord et `srcset`).
+- La densité est tenue aux deux formats de référence. Un téléphone plus court (iPhone SE dans Safari,
+  environ 375 × 550 visibles) ne montre par moments que 2 articles entiers ; à 640 × 960, 2 articles
+  entiers sur 11 % des positions (20 % sur `main`).
+- Les petits titres d'affiche (« INBOX ZÉRO DU REMPLA », 3,8 px de capitales à 104 px) ne se lisent
+  pas : c'est la scène qui fait reconnaître ces affiches.
+- Sur un bord très détaillé, la bande est un dégradé lisse : à juger sur un vrai téléphone.
+- La une au téléphone : l'extrait, dans une colonne d'environ 150 px, montre moins de texte qu'avant
+  (5 lignes courtes contre 3 longues) ; tout le texte reste dans le HTML.
+- Séries en tablette (une colonne) : Guides & Conseils passe de 4 916 à 7 703 px à 820 px ; le cahier ne
+  bornait que `/blog`.
+- Connexes sur ordinateur : 15 articles en ont 3 ou 5 ; le dernier rang de la feuille n'a alors qu'une
+  case.
+- Non vérifié : Safari réel et iPhone, Firefox, VoiceOver, aperçu Vercel en HTTP/2 et réseau bridé.
+
+**Fichiers (partie A)** : `src/lib/affiche-bords.mjs` (nouveau), `src/lib/blog-covers.ts`,
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/pages/blog/serie/[series].astro`,
+`src/styles/blog-liste.css`, `src/pages/blog/[slug].astro` et `src/styles/blog-article.css` (articles
+connexes seulement), `MIGRATION.md`, `CLAUDE.md`.
+
+#### B. La page d'article
+
+(À écrire avec la partie B : la vignette qui s'ouvre en grand d'un appui, sa taille, la règle 1 dans la
+vignette.)
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
