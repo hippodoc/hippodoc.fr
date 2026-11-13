@@ -346,23 +346,19 @@ if (!srcsetPrecharge || !srcsetAvif) {
 }
 // « Sous la surface » (DA 2026, phase 3) : la fenêtre produit à onglets.
 // - `id="sous-la-surface"` est la cible du lien « Comment ça marche » du menu ;
-// - les trois vues doivent toutes être dans le HTML (trois radios, dont une seule
-//   cochée, et trois panneaux) : une vue générée à la demande ne serait lue par
-//   aucun moteur ;
-// - les chiffres de la page sont ceux d'un compte fictif : la mention « Compte de
-//   démonstration » doit y figurer, une seule fois (décision du propriétaire).
+// - les quatre vues doivent toutes être dans le HTML (quatre radios, dont une
+//   seule cochée, et quatre panneaux) : une vue générée à la demande ne serait lue
+//   par aucun moteur (vue « déclaration » ajoutée en § 9.fj) ;
+// - la mention « Compte de démonstration », exigée jusqu'au 13 novembre 2026, a
+//   été retirée à la demande du propriétaire (§ 9.fj) : plus de contrôle.
 const sousLaSurface = accueil.match(/<section\b[^>]*data-landing-section="features"[\s\S]*?<\/section>/)?.[0] ?? '';
 if (!/^<section\b[^>]*\sid="sous-la-surface"/.test(sousLaSurface)) {
   fail('accueil : la section data-landing-section="features" ne porte plus id="sous-la-surface"');
 }
 const radiosApercu = [...sousLaSurface.matchAll(/<input\b[^>]*type="radio"[^>]*name="apercu"[^>]*>/g)].map((m) => m[0]);
 const panneauxApercu = sousLaSurface.match(/class="panel p\d"/g) ?? [];
-if (radiosApercu.length !== 3 || panneauxApercu.length !== 3 || radiosApercu.filter((r) => /\schecked\b/.test(r)).length !== 1) {
-  fail(`accueil : la fenêtre produit doit avoir 3 onglets (un seul coché) et 3 panneaux dans le HTML — trouvé ${radiosApercu.length} onglet(s), ${panneauxApercu.length} panneau(x)`);
-}
-const mentionsDemo = (accueil.match(/Compte de démonstration/g) ?? []).length;
-if (mentionsDemo !== 1) {
-  fail(`accueil : « Compte de démonstration » doit figurer une fois, dans le pied de la fenêtre produit — trouvé ${mentionsDemo} fois`);
+if (radiosApercu.length !== 4 || panneauxApercu.length !== 4 || radiosApercu.filter((r) => /\schecked\b/.test(r)).length !== 1) {
+  fail(`accueil : la fenêtre produit doit avoir 4 onglets (un seul coché) et 4 panneaux dans le HTML — trouvé ${radiosApercu.length} onglet(s), ${panneauxApercu.length} panneau(x)`);
 }
 // « Pour qui » (DA 2026, phase 3) : le sélecteur de profil, sans JS.
 // - `id="parcours"` est la cible du lien « Pour qui » du menu, sur TOUT le site ;

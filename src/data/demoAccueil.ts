@@ -2,21 +2,22 @@
  * Compte de démonstration de l'accueil (DA 2026, MIGRATION.md § 9).
  *
  * UN SEUL jeu de chiffres, FICTIF, pour tout ce que l'accueil montre de
- * l'application : les fiches du premier écran (Hero.astro), les trois vues de la
+ * l'application : les fiches du premier écran (Hero.astro), les quatre vues de la
  * fenêtre produit (FenetreProduit.astro) et les trois grandes cases
  * (TroisCases.astro). Les totaux sont CALCULÉS ici, jamais recopiés : deux blocs
  * ne peuvent plus afficher deux montants différents pour la même chose.
  *
- * Ce ne sont pas les chiffres d'un vrai compte. La page le dit une seule fois,
- * dans le pied de la fenêtre produit (« Compte de démonstration »).
+ * Ce ne sont pas les chiffres d'un vrai compte. La page ne le dit plus (mention
+ * « Compte de démonstration » retirée à la demande du propriétaire, MIGRATION.md
+ * § 9.fj : un aperçu d'application se lit comme tel).
  * Seule l'arithmétique est contrôlée : la vraisemblance fiscale du jeu « année »
  * (cotisations et impôt pour ce niveau d'honoraires) n'a pas été recoupée avec
  * le simulateur.
  */
 
-/** Année close : ce qui a été encaissé, et ce qui en part. */
+/** L'année du compte (2026 depuis § 9.fj, 2025 avant) : ce qui a été encaissé, et ce qui en part. */
 export const DEMO_ANNEE = {
-  an: 2025,
+  an: 2026,
   encaisse: 90005,
   urssaf: 6386,
   carmf: 11752,
