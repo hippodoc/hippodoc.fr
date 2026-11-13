@@ -9845,6 +9845,297 @@ d'îlot. **Non vérifié** : rendu à l'œil dans un navigateur (le HTML des deu
 
 **Fichier** : `src/components/guide/FormattedText.tsx`.
 
+### 9.fc `verify-site.mjs` : le schéma `FAQPage` comparé pli par pli, une égalité au lieu d'une inclusion (13 novembre 2026)
+
+Une relecture indépendante de § 9.ez et § 9.fa a montré que le contrôle « 4 septies » ne
+prouvait qu'une **inclusion** : la réponse du schéma, espaces retirées, devait se trouver
+quelque part dans le texte de la page. Ses 21 mutations ciblées, rejouées ici avec le
+script de `main` : 16 passaient en code 0 (réponses de deux questions échangées, réponse
+réduite à « Oui. », réponse vide, phrase ajoutée à l'écran, réponse masquée…). Le contrôle
+compare désormais chaque réponse au pli qui la porte. Sa première version a été relue
+deux fois, puis corrigée (point 7) : ce qui suit décrit le contrôle corrigé.
+
+**Aucun contenu ne change** : ni texte visible, ni JSON-LD, ni donnée. Seuls
+`scripts/verify-site.mjs`, `CLAUDE.md` et ce journal changent. Le build est identique à
+l'octet à celui de `main` : 869 fichiers, mêmes sommes sha256, l'arbre de `main` (5be2da2)
+rebâti pour la comparaison. `verify-site.mjs` finit à 0 erreur sur ce build.
+
+**1. Le relevé, avant d'écrire une règle**
+
+Sur le build de `main`, 58 pages portent un `FAQPage`, 391 questions en tout. Pour chacune
+(script de relevé, hors dépôt ; refait à la reprise, résultat identique) :
+
+| Mesure | Résultat |
+|---|---|
+| La question dans le texte de la page | 1 fois pour 329 questions ; de 2 à 15 fois pour 62 (61 dans le guide des déclarations, dont les renvois citent les questions, 1 sur `/simulateur`) |
+| La question comme titre d'un pli | 391 sur 391 : texte entier d'un élément du `<summary>` d'un seul `<details>` (le `<summary>` lui-même 347 fois, `.qa-q` 32 fois sur `/faq`, `.qa-t` 12 fois) |
+| Devant la question, dans le `<summary>` | rien 359 fois ; le numéro de `/faq`, 1 ou 2 chiffres, 32 fois |
+| Entre la fin de la question et la réponse | rien 379 fois ; 1 signe 12 fois (le « + » du `<summary>`, calculette et simulateur) |
+| Le conteneur de la réponse | `.qa-in` 325 fois, `.gd-reponse` 66 fois (guide) ; aucun pli sans conteneur |
+| Le texte du conteneur | égal à la réponse du schéma 387 fois ; la réponse suivie d'une phrase à lien 4 fois (`/faq`, point 3) |
+| Le reste du pli | rien 325 fois ; dans le guide, étiquettes et « Voir aussi » après la réponse, 66 fois sur 66 |
+| Masqué (attribut `hidden`, `display:none` ou `visibility:hidden` en ligne) | aucun |
+| Séparation des mots, questions et réponses | aucun écart. Une espace du schéma là où l'écran n'a qu'une balise en ligne : 124 fois, toutes dans le guide (puces, renvois). Une balise en ligne sans espace au schéma (milieu de mot, ponctuation) : 828 fois |
+| Autre `<details>`, hors schéma, dans l'élément qui contient les plis du schéma | aucun, sur 58 pages |
+| `<details>` à conteneur `.qa-in` hors schéma, ailleurs dans la page | 11 sur 3 pages : accueil (2, plis des tarifs), `/simulateur` (8, guide de l'outil), `/guide-declarations` (1, rappel). `.qa` est une fiche partagée, pas la marque d'une FAQ |
+| Longueur des réponses, hors espaces | de 92 à 2 058 signes |
+
+**2. Ce que le contrôle prouve maintenant**
+
+Pour chaque question d'un `FAQPage`, sur toutes les pages :
+
+1. **La réponse existe** : ni absente, ni vide. Un `FAQPage` sans question échoue aussi.
+2. **La question est le titre d'un pli.** Elle est le texte entier d'un élément du premier
+   `<summary>` d'un `<details>`, que rien ne précède dans le pli (ni texte, ni autre
+   `<summary>` : le navigateur prend le premier pour titre et affiche le reste avec la
+   réponse). La réponse comparée est celle de ce pli (de chaque pli, si la question est
+   affichée deux fois). Entre la question et le conteneur de la réponse, et devant la
+   question dans le `<summary>`, un repère au plus : trois signes, sans lettre (ni
+   chiffre après la question). **Il n'y a pas de repli** : une question du schéma qui
+   n'est le titre d'aucun pli, ou un pli sans conteneur reconnu, est une erreur, parce
+   que la réponse ne serait comparée à rien (point 7).
+3. **Le texte du conteneur est ÉGAL à la réponse du schéma**, du premier au dernier
+   signe, espaces mises à part : tronquée, allongée, échangée, elle échoue. Rien d'autre
+   dans le pli après le conteneur, sauf, dans le guide, les étiquettes et les « Voir
+   aussi » (`HORS_REPONSE_DU_PLI`). Un écart connu se déclare dans `EXCEPTIONS_FAQ`
+   (point 3).
+4. **Les mots se séparent aux mêmes endroits**, dans la question comme dans la réponse,
+   et dans la phrase d'une exception : pas d'espace à l'écran là où le schéma n'en a pas,
+   une espace ou une balise de bloc là où il en a une. Hors du guide, une balise en ligne
+   seule ne vaut pas une espace (« mot<strong>suite » se lit collé) ; dans le guide elle
+   est admise (puces, renvois).
+5. **Rien n'est masqué**, pour ce qu'un contrôle statique voit : ni le conteneur, ni un
+   ancêtre, ni un élément de la réponse ou de la question qui porte du texte n'a
+   l'attribut `hidden` ou un style en ligne `display:none`, `visibility:hidden` ou
+   `collapse`, `content-visibility:hidden` (valeur entre guillemets doubles, simples ou
+   sans guillemets), et aucun n'est un élément dont le navigateur n'affiche pas le
+   contenu (`<dialog>` sans `open`, `<canvas>`, `<datalist>`, `<video>`, `<audio>`,
+   `<iframe>`, `<object>`). Un `<details>` fermé n'est pas masqué. Un élément masqué qui
+   ne porte aucun texte (case à cocher d'une interaction en CSS seul) ne compte pas.
+6. **Sens inverse** : dans l'élément qui contient un pli du schéma, tout autre
+   `<details>`, à toute profondeur, est une question du schéma (sauf dans une réponse :
+   il est comparé avec elle).
+7. **Le schéma est là, une fois** : une page qui cite `FAQPage` en a un bloc, un seul,
+   lisible à la racine d'un JSON-LD, quels que soient les attributs de sa balise
+   `<script>` ; un `FAQPage` rangé ailleurs (`@graph`, tableau) ou illisible échoue ;
+   aucune question n'y figure deux fois. Le compte ne passe pas sous `PLANCHER_FAQ`
+   (58 pages, 391 questions), ce qui voit une page qui perd son schéma et une rubrique
+   retirée du schéma mais restée à l'écran. Au-dessus du plancher (nouvel article,
+   nouvelle question), un avertissement demande de le relever.
+
+Le message d'erreur nomme la question et garde le premier écart : derniers mots communs,
+suite dans le schéma, suite dans la page. Les 391 réponses d'aujourd'hui sont toutes
+comparées par égalité.
+
+**3. Exceptions déclarées (décision du propriétaire)**
+
+Quatre réponses de `/faq` finissent à l'écran par une phrase à lien que le schéma n'a
+pas (§ 9.fa, « Non ajoutées »). L'égalité les révèle. Elles ne sont pas corrigées :
+elles sont déclarées dans `EXCEPTIONS_FAQ` (page, question, texte affiché à la suite de
+la réponse, raison), sortent en avertissement à chaque passage, et font échouer le
+contrôle dès qu'elles ne correspondent plus à rien (question retirée, phrase modifiée,
+déplacée, retirée de l'écran ou ajoutée au schéma). Une exception ne couvre que son
+texte, mot pour mot, espaces comprises, à la suite de la réponse.
+
+| Question (`/faq`) | À l'écran, après la réponse du schéma | Lien |
+|---|---|---|
+| C'est quoi les revenus PDSA / exonérés ? | « Le détail : ce qui est exonéré et comment le déclarer. » | `/blog/pdsa-exoneration-gardes-regulees` |
+| Qu'est-ce que les rétrocessions versées ? | « Côté remplaçant, voir comment se négocie une rétrocession. » | `/blog/retrocession-honoraires-medecin-remplacant` |
+| Mes cotisations URSSAF, elles se calculent toutes seules ? | « Pour comprendre chaque cotisation : l'URSSAF et la CARMF expliquées. » | `/blog/tout-comprendre-urssaf`, `/blog/tout-comprendre-carmf` |
+| Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ? | « La règle complète : micro-BNC ou réel. » | `/blog/regime-fiscal-micro-bnc-vs-reel` |
+
+Pour chacune, trois issues : la laisser déclarée, ajouter la phrase au schéma (`aPlain`),
+ou la sortir de la réponse affichée. Les deux dernières touchent un JSON-LD ou un texte
+en période d'observation.
+
+**4. Ce que le contrôle ne prouve pas**
+
+Chaque ligne a été essayée par mutation (point 5) : elle passe en code 0.
+
+- **Masqué par une feuille de style** (classe `sr`, `hidden` de Tailwind…) ou par un
+  autre style en ligne (`opacity:0`, hauteur nulle).
+- **Le balisage admis dans le schéma**, retiré avant de comparer, comme avant : une balise
+  de `BALISE_DE_REPONSE` (`<b>`, `<p>`, `<a>`…) sur toutes les pages ; `**`, `*`, accents
+  graves et ⚠️ ✅ 💡 dans le guide (`sansBalisageDuGuide`). Voulu : un `<b>` ou un `**`
+  ajouté dans une réponse du schéma passe.
+- **Les marqueurs du guide** : ni lequel c'est, ni sa place ne sont comparés à l'icône
+  que l'écran affiche. Un ⚠️ retiré du schéma, changé en ✅ ou déplacé d'une phrase à la
+  suivante passe. Les deux côtés sortent de la même source par le même découpage
+  (`splitOnMarkers`) ; les comparer demanderait de lier le contrôle aux noms de classes
+  des icônes.
+- **Les espaces** : leur nombre et leur nature (insécable, retour à la ligne). Hors du
+  guide, rien ne dit donc où le schéma va à la ligne ; dans le guide, la puce « • » est
+  comparée comme un signe (une liste mise à plat échoue). Dans le guide encore, une
+  espace ajoutée ou retirée là où l'écran n'a qu'une balise en ligne entre deux signes.
+  Le trait d'union conditionnel (U+00AD, « &shy; ») est ignoré des deux côtés : il ne
+  s'affiche pas.
+- **Un repère qui dirait quelque chose** : trois signes sans lettre entre la question et
+  la réponse (« ✗ », « ≠ », « ?! ») passent comme le « + » d'un `<summary>` ou un
+  chevron. La marge est gardée pour qu'un changement de signe dans le dessin du pli ne
+  fasse pas échouer le contrôle.
+- **Ce qui s'affiche autour d'un pli sans être dedans** : une phrase juste avant ou juste
+  après le `<details>` ; la même question reprise ailleurs dans la page hors d'un pli (un
+  titre suivi d'une autre réponse) ; une question affichée hors de l'élément qui
+  contient les plis du schéma. Un bloc entier ou une page entière absents du schéma ne
+  sont vus que par le plancher, donc pas si autant de questions sont ajoutées ailleurs
+  dans le même changement, ni tant que le plancher n'a pas été relevé après un ajout.
+- **Ce qui n'est pas du texte** : des mots dessinés dans un `<svg>` ou portés par une
+  image (`alt`) au milieu d'une réponse.
+- **Dans le guide, le texte des étiquettes et des « Voir aussi »** d'un pli : hors
+  réponse, admis sans comparaison.
+- Ce que Google affiche : non vérifié ici (outil de test des résultats enrichis).
+
+**Ce qu'il refuse alors que le texte est le même** (voulu, à savoir avant de changer un
+gabarit) :
+
+- une FAQ sous un autre balisage que `<details>` et un conteneur connu (pli devenu
+  `<div>`, conteneur renommé) : le gabarit se déclare d'abord dans le contrôle ;
+- une FAQ dans un élément `hidden` (panneau d'onglet inactif, `hidden="until-found"`),
+  alors qu'un `<details>` fermé passe ;
+- dans le guide, une puce que l'écran affiche et que le schéma n'a pas, ou une puce
+  passée en feuille de style : `reponsePourSchema` ou `sansBalisageDuGuide` s'adaptent
+  dans le même changement ;
+- une entité nommée hors de la table du contrôle (Latin-1 et typographie courante) ;
+- une question deux fois dans le schéma, même avec la même réponse.
+
+**5. Essais par mutation**
+
+Chaque mutation modifie un fichier d'une copie par liens du build, puis `verify-site.mjs`
+est lancé : « vue » si le code de sortie n'est pas 0. Trois scripts sont comparés : celui
+de `main`, celui de la première version de ce contrôle durci (commit 7b708c1, l'état
+relu), et le script corrigé après relecture. Quatre bancs, 932 mutations :
+
+| Banc | Mutations | Doivent échouer | Vues : `main` | 7b708c1 | corrigé | Doivent passer | Refusées : `main` | 7b708c1 | corrigé |
+|---|---|---|---|---|---|---|---|---|---|
+| Constructeur (dont les 21 ciblées de la relecture de § 9.ez) | 363 | 356 | 121 | 343 | 345 | 7 | 0 | 0 | 0 |
+| Relecteur adverse | 519 | 443 | 181 | 412 | 438 | 76 | 8 | 18 | 6 |
+| Relecteur de code | 23 | 19 | 2 | 12 | 17 | 4 | 0 | 0 | 0 |
+| Correcteur (règles ajoutées à la correction) | 27 | 18 | 5 | 10 | 18 | 9 | 2 | 2 | 0 |
+| Total | 932 | 836 | 309 | 777 | 818 | 96 | 10 | 20 | 6 |
+
+Le banc du constructeur, par lot (vues avec `main`, 7b708c1, corrigé) : les 21 mutations
+ciblées 5, 19, 19 ; les 30 mutations simples (un mot changé à l'écran ou dans le schéma)
+30, 30, 30 ; les autres contrôles de l'accueil 6, 6, 6 ; une mutation par règle, avec
+témoins et limites, 12, 58, 60 sur 76 ; le balayage tiré au sort (4 mutations par page à
+`FAQPage`, graine fixe) 68, 230, 230 sur 230.
+
+Les 21 mutations ciblées :
+
+| Mutation | `main` | Corrigé |
+|---|---|---|
+| Réponses de deux questions échangées dans le schéma (`/faq`, accueil, guide) | passent (3) | vues (3) |
+| Réponse réduite à sa première phrase (`/faq`, article) | passent (2) | vues (2) |
+| Réponse remplacée par « Oui. » (`/tarifs`) | passe | vue |
+| Réponse vide (`/faq`, accueil) | passent (2) | vues (2) |
+| Une espace retirée entre deux mots du schéma (`/faq`) | passe | vue |
+| Question retirée du schéma, restée à l'écran (`/faq`) | passe | vue |
+| Phrase ajoutée à l'écran avant la réponse, après la réponse (`/faq`) | passent (2) | vues (2) |
+| Phrase ajoutée à l'écran au milieu de la réponse (`/faq`) | vue | vue |
+| Réponse masquée à l'écran, `hidden` et `display:none` (`/faq`) | passe | vue |
+| Guide : liste mise à plat dans le schéma, puces et retours retirés | passe | vue |
+| Hors guide : `**` ajoutés dans le schéma (`/faq`) | vue | vue |
+| Majuscule changée, virgule retirée, émoji retiré dans le schéma (`/faq`) | vues (3) | vues (3) |
+| Guide : `**` ajoutés autour d'un mot du schéma | passe | **passe** : balisage du guide, retiré avant de comparer (voulu) |
+| Balise `<b>` ajoutée dans le schéma (`/faq`) | passe | **passe** : balise admise dans une réponse (voulu) |
+
+Le banc du relecteur adverse, par famille, pour les mutations qui doivent échouer (vues
+avec `main`, 7b708c1, corrigé) : réponses échangées 0, 16, 16 sur 16 ; troncatures 3, 22,
+22 sur 22 ; allongements 9, 10, 10 sur 10 ; réponse absente ou sans texte 0, 13, 13 sur
+13 ; réponse déplacée 0, 6, 6 sur 6 ; mot inséré à l'écran 0, 10, 14 sur 17 ; question
+renommée, répétée ou sortie de son pli 7, 10, 21 sur 21 ; masquage 1, 16, 21 sur 21 ;
+bloc `FAQPage` ou question en double 4, 7, 11 sur 11 ; forme de `mainEntity` 2, 6, 6 sur
+6 ; caractères proches (apostrophe, tirets, espace dans un nombre…) 22, 30, 30 sur 30 ;
+guide 7, 7, 7 sur 9 ; exceptions 2, 16, 18 sur 18 ; sens inverse 0, 2, 2 sur 2 ; balisage
+ajouté au schéma hors du guide 3, 3, 3 sur 3 ; fichier abîmé ou absent 6, 6, 6 sur 6 ;
+balayage d'un signe sur chacune des 58 pages 115, 232, 232 sur 232.
+
+**Les 18 mutations qui passent encore alors que quelque chose est faux**, toutes écrites
+au point 4 : `**` du guide et balise `<b>` dans le schéma (voulus) ; réponse masquée par
+une classe ; par `opacity:0` ; mot ajouté dans les étiquettes d'un pli du guide ; phrase
+ajoutée dans ses « Voir aussi » ; marqueur ⚠️ retiré, changé en ✅, déplacé (3) ; retours
+à la ligne du schéma remplacés par des espaces ; espace insécable changée en espace
+simple ; dans le guide, espace retirée après une puce ; `<details>` ajouté hors de
+l'élément qui contient les plis ; phrase juste avant un pli, juste après un pli (2) ;
+texte dessiné dans un `<svg>` au milieu d'une réponse ; question reprise dans un titre
+ailleurs dans la page, suivie d'une autre réponse ; « ✗ » entre la question et la réponse.
+
+**Les 6 changements notés « légitimes » que le contrôle refuse** : FAQ dans un panneau
+`hidden`, `hidden="until-found"`, puce affichée que le schéma n'a pas, puce passée en
+feuille de style (quatre refus voulus, écrits au point 4) ; un repère « (!) » qui, avec
+le « + » du `<summary>`, fait quatre signes ; une question répétée dans le schéma (les
+deux derniers n'étaient pas des changements légitimes). Les 90 autres passent : balises
+en ligne ajoutées à l'écran (`<strong>`, `<a>`, `<ins>`, `<del>`…), retours à la ligne,
+indentation, entités nommées ou numériques, JSON-LD réindenté, `<details open>`, élément
+masqué sans texte, liste ajoutée des deux côtés dans le guide.
+
+Les sept témoins du constructeur, où rien n'est faux, passent : `<details>` ouvert ; la
+même question affichée deux fois avec la même réponse ; un repère « › » après la
+question ; un numéro « 12. » devant elle ; une question ajoutée à l'écran et au schéma
+(avec l'avertissement du plancher) ; `aria-hidden` et une classe « hidden-x » sur le
+conteneur ; un `<details>` dans une réponse dont le schéma porte aussi le texte.
+
+**6. Seuils et constantes, et d'où ils viennent**
+
+| Constante | Valeur | Origine |
+|---|---|---|
+| `CONTENEURS_DE_REPONSE` | `.qa-in`, `.gd-reponse` | relevé : 325 et 66 plis, aucun autre |
+| `HORS_REPONSE_DU_PLI` | `.gd-etiquettes`, `.gd-croises`, dans le guide seulement | relevé : 66 plis du guide sur 66, aucun ailleurs |
+| `SEUIL_REPERE` | 3 signes, sans lettre ; sans chiffre après la question | relevé : au plus 2 signes devant la question (numéro de `/faq`), 1 après (« + ») ; un signe de marge, choisi et non mesuré. La première version admettait trois signes quelconques : « Oui », « Non », « Si » y tenaient |
+| Balise en ligne admise pour une espace du schéma | dans le guide seulement | relevé : 124 cas, tous dans le guide |
+| `PLANCHER_FAQ` | 58 pages, 391 questions | compte du build du 13 novembre 2026 |
+| `EXCEPTIONS_FAQ` | 4 entrées | relevé : les 4 conteneurs qui ne sont pas égaux au schéma |
+| `ENTITES_FAQ` | les 96 entités de Latin-1 et 58 autres (base, typographie, flèches, signes) | les sources écrivent déjà `&nbsp;` à la main ; `&eacute;`, `&euro;`, `&laquo;`, `&mdash;`, `&hellip;`, `&thinsp;` sortaient en écart de texte (déjà sur `main`) |
+| `CONTENU_NON_AFFICHE` | `<canvas>`, `<datalist>`, `<video>`, `<audio>`, `<iframe>`, `<object>`, `<noembed>`, `<noframes>` ; `<dialog>` sans `open` | essais de la relecture, rendu regardé dans Chromium par le relecteur |
+
+`BALISE_DE_REPONSE` et `sansBalisageDuGuide` admettent le même balisage qu'avant. Deux
+détails changent sans rien admettre de plus : la puce de début de ligne du guide reste
+dans la comparaison (elle en était retirée des deux côtés), et une balise en ligne du
+schéma ne laisse plus d'espace à sa place (« <b>Totalement</b>. » se lit « Totalement. »,
+sinon la comparaison des frontières de mots y voyait une espace de trop).
+
+**7. Relecture et correction**
+
+La première version du contrôle durci (7b708c1) a été relue deux fois, séparément : par
+un relecteur adverse (519 mutations à lui) et par un relecteur de code (23 mutations).
+Chaque constat a été reproduit avant d'être corrigé.
+
+| Constat | Mutations | Suite |
+|---|---|---|
+| Le repli « hors d'un pli reconnu » gardait le défaut d'origine : un titre changé d'un seul côté sur tout un bloc, ou un conteneur renommé, faisait retomber sur une inclusion, avec un avertissement et le code 0 ; une réponse réduite à « Non. » passait alors | 17 | **Règle** : le repli est retiré. Question hors d'un pli ou pli sans conteneur : erreur |
+| Du texte placé dans le `<details>` avant le `<summary>`, ou un autre `<summary>` devant celui de la question, n'était comparé à rien ; le navigateur l'affiche avec la réponse | 5 | **Règle** : la question est dans le premier `<summary>`, que rien ne précède |
+| Un bloc `FAQPage` en double passait, et l'avertissement conseillait de relever le plancher ; un second bloc dans une balise `<script>` à autres attributs n'était pas lu ; une question répétée passait | 4 | **Règles** : un seul bloc par page, tous les blocs JSON-LD lus, pas de question en double, `FAQPage` hors racine ou illisible en erreur |
+| Masquages non lus : style sans guillemets, `hidden` collé à l'attribut précédent, contenu d'un `<dialog>` fermé, d'un `<canvas>`, d'un `<datalist>` | 5 | **Règle** : attributs lus comme le navigateur les lit ; éléments au contenu non affiché |
+| La phrase d'une exception était comparée sans ses espaces | 2 | **Règle** : frontières de mots comparées sur la réponse suivie de la phrase |
+| Refus à tort : `<ins>` et `<del>` lus comme des séparations de mots ; élément masqué sans texte dans une réponse | 5 | **Corrigé** : liste des balises en ligne complétée ; un élément masqué ne compte que s'il porte du texte |
+| Refus à tort, déjà sur `main` : entités nommées autres que sept d'entre elles | 7 | **Corrigé** : table des entités ; trait d'union conditionnel ignoré |
+| Plantage sans liste d'erreurs si `mainEntity` est une question seule, contient `null`, ou si un bloc JSON-LD vaut `null` | 4 | **Corrigé** : erreurs lisibles |
+| Marqueur ⚠️ changé en ✅ ou déplacé dans le schéma du guide | 2 | **Limite** écrite (point 4) |
+| Phrase juste avant ou juste après un pli ; texte dans un `<svg>` ; question reprise dans un titre ailleurs | 4 | **Limites** écrites (point 4) |
+| « ✗ » entre la question et la réponse ; proposition de réduire le repère au chiffre et au « + » relevés | 1 | **Limite** écrite, seuil gardé : le resserrer ferait échouer un changement de signe dans le dessin du pli (témoin « › ») |
+| FAQ dans un panneau `hidden`, puces du guide | 4 | **Refus voulus**, écrits (point 4) |
+| Plantage si une page attendue manque dans `dist` (`/tarifs`, `/faq`, un article) | 2 | **Non corrigé** : lectures d'autres contrôles, déjà sur `main`, hors de ce chantier ; le code de sortie n'est pas 0 et l'erreur nomme le fichier |
+| La branche `place: 'avant'` des exceptions ne servait à rien | — | **Retirée** : une exception est le texte affiché à la suite de la réponse |
+| Messages : nom de la question toujours suivi de « … » ; avertissement du repli sans nom de question | — | **Corrigé** : « … » seulement si le nom est coupé ; chaque question est nommée |
+
+**Durée** de `verify-site.mjs` sur le build intact, quinze passages alternés : médiane
+1,48 s avec le script de `main`, 1,57 s avec 7b708c1, 1,57 s avec le script corrigé
+(de 1,25 à 1,60 s, de 1,44 à 1,77 s, de 1,43 à 1,76 s). Le contrôle durci coûte environ
+0,1 s ; la correction n'y ajoute rien de mesurable.
+
+**Vérification** : build (70 pages) puis `verify-site.mjs` : 0 erreur, 7 avertissements
+(les 3 d'avant et les 4 exceptions) ; build identique à l'octet à celui de `main`
+(869 fichiers, mêmes sommes sha256, l'arbre de `main` rebâti pour la comparaison) ; les
+932 mutations rejouées une à une avec le script corrigé, les 569 des relecteurs et du
+correcteur aussi avec le script de `main` (les 363 du constructeur l'avaient été par
+lui). Hors du bloc « 4 septies », `verify-site.mjs` est identique à celui de `main`.
+**Non vérifié** : l'outil de test des résultats enrichis de Google ; aucun navigateur
+n'a été lancé pour ce chantier, hors l'essai de rendu du relecteur (rien ne change à
+l'écran) ; les mutations portent sur le HTML du build, aucune sur une source suivie d'un
+vrai build.
+
+**Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Relevé, bancs et cas de mutation :
+dossier de travail, hors dépôt.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

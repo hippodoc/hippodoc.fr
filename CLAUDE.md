@@ -262,19 +262,61 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   CARMF, 2035, 2042-C PRO, DSFU, RSPM, PAMC, Micro-BNC, rétrocession, contrat et licence
   de remplacement), et, dans le panneau `data-panel="remplacant"` de « Pour qui », celle
   de « 2035 », « 2042-C PRO », « DSFU », « contrat de remplacement » et « serveur officiel
-  URSSAF » (§ 9.ex). L'égalité FAQ visible / `FAQPage` porte sur les questions et sur les
-  réponses, sur toutes les pages (§ 9.ez) : la réponse du schéma doit être dans le texte de
-  la page mot pour mot, ponctuation comprise (espaces et retours à la ligne mis à part).
-  Ne pas assouplir la comparaison pour faire passer un écart. Le schéma a été aligné sur
-  l'écran en § 9.fa, d'où deux règles. Sur `/faq`, `aPlain` s'écrit à la main et dit ce que
-  `aHtml` affiche : une liste donne un élément par ligne, sans ponctuation ajoutée, émojis
-  des éléments `sr` compris ; les deux se modifient ensemble. Dans le guide des
-  déclarations, le schéma passe par `reponsePourSchema` (`src/lib/guide/reponse-schema.ts`),
-  qui nomme les renvois (« QT-014 ») et met les énumérations en liste comme
-  `FormattedText.tsx` ; le balisage de ce composant (`**`, `*`, accents graves, ⚠️ ✅ 💡,
-  puces) reste dans le schéma et le contrôle le retire avant de comparer : une syntaxe ou
-  une réécriture ajoutée au composant s'ajoute à `sansBalisageDuGuide` (verify-site) ou à
-  `reponsePourSchema`.
+  URSSAF » (§ 9.ex). L'égalité FAQ visible / `FAQPage` (contrôle « 4 septies », § 9.ez,
+  durci en § 9.fc) se prouve pli par pli, sur toutes les pages. Le contrôle EXIGE que
+  chaque question du schéma soit le titre d'un `<details>` (le texte entier d'un élément
+  de son premier `<summary>`, que rien ne précède dans le pli), et que le texte du
+  conteneur de ce pli (`.qa-in` ; `.gd-reponse` dans le guide) soit ÉGAL à la réponse du
+  schéma, du premier au dernier signe : ponctuation, puces du guide et séparation des
+  mots comprises, pour la question comme pour la réponse (nombre d'espaces et retours à
+  la ligne mis à part).
+  Échouent : une réponse vide, échangée avec une autre, tronquée, allongée à l'écran ;
+  une réponse ou une question masquée (attribut `hidden`, style en ligne `display:none`
+  ou `visibility:hidden`, contenu d'un `<dialog>` fermé, d'un `<canvas>`…) ; un mot
+  glissé entre la question et sa réponse, devant la question dans son `<summary>`, ou
+  dans le pli avant le `<summary>` (seul un repère est admis autour de la question :
+  trois signes au plus, sans lettre, ni chiffre après elle — le « + » d'un `<summary>`,
+  le numéro de `/faq`) ; une question du schéma qui n'est le titre d'aucun pli, un pli
+  sans conteneur reconnu (pas de repli : la réponse ne serait comparée à rien) ; un
+  autre `<details>`, que le schéma n'a pas, dans l'élément qui contient les plis du
+  schéma ; un second bloc `FAQPage` dans la page, une question deux fois dans le schéma,
+  un `FAQPage` ailleurs qu'à la racine d'un JSON-LD (`@graph`, tableau) ou illisible ; un
+  compte de pages ou de questions sous `PLANCHER_FAQ` (58 pages, 391 questions : une page
+  qui perd son schéma, une rubrique retirée du schéma et restée à l'écran). Ce plancher
+  se relève à chaque article ou question ajoutés (un avertissement le demande) et ne
+  s'abaisse que si la disparition est voulue.
+  Le contrôle ne voit pas : une réponse masquée par une feuille de style (classe) ou un
+  autre style en ligne (`opacity`) ; ce qui s'affiche autour d'un pli sans être dedans
+  (une phrase juste avant ou juste après le `<details>`, la même question reprise
+  ailleurs hors d'un pli, une question hors de l'élément qui contient les plis du
+  schéma) ; des mots dessinés dans un `<svg>` ou une image au milieu d'une réponse ; un
+  repère qui dirait quelque chose (« ✗ », « ≠ ») ; la nature des espaces (insécable,
+  retour à la ligne : hors du guide, rien ne dit où le schéma va à la ligne) ; dans le
+  guide, une espace là où l'écran n'a qu'une balise en ligne (puce, renvoi), le texte des
+  étiquettes et des « Voir aussi » d'un pli, et lequel des marqueurs ⚠️ ✅ 💡 le schéma
+  porte, et où ; le balisage admis dans le schéma (une balise `<b>`, `<p>`… partout ;
+  `**`, `*`, accents graves dans le guide).
+  Il refuse, à texte égal, et c'est voulu : une FAQ sous un autre balisage (pli devenu
+  `<div>`, conteneur renommé : déclarer d'abord le gabarit dans `CONTENEURS_DE_REPONSE`) ;
+  une FAQ dans un élément `hidden` (panneau d'onglet inactif, `hidden="until-found"`),
+  alors qu'un `<details>` fermé passe ; une entité nommée hors de sa table (Latin-1 et
+  typographie).
+  Une FAQ s'écrit donc dans ce gabarit (`<details class="qa">`, question dans `.qa-t`,
+  réponse dans `.qa-in`). Un écart voulu se déclare dans `EXCEPTIONS_FAQ` (page, question,
+  texte affiché à la suite de la réponse, raison) : il sort en avertissement à chaque
+  passage, échoue dès qu'il ne correspond plus à rien, et c'est une décision de
+  contenu, à lister pour le propriétaire (quatre aujourd'hui : les phrases à lien qui
+  finissent quatre réponses de `/faq`). Ne pas assouplir la comparaison pour faire passer
+  un écart. Le schéma a été aligné sur l'écran en § 9.fa, d'où deux règles. Sur `/faq`,
+  `aPlain` s'écrit à la main et dit ce que `aHtml` affiche : une liste donne un élément
+  par ligne, sans ponctuation ajoutée, émojis des éléments `sr` compris ; les deux se
+  modifient ensemble. Dans le guide des déclarations, le schéma passe par
+  `reponsePourSchema` (`src/lib/guide/reponse-schema.ts`), qui nomme les renvois
+  (« QT-014 ») et met les énumérations en liste comme `FormattedText.tsx` ; le balisage de
+  ce composant (`**`, `*`, accents graves, ⚠️ ✅ 💡) reste dans le schéma et le contrôle le
+  retire avant de comparer, la puce de début de ligne (« - » ou « • ») vaut la puce
+  affichée : une syntaxe ou une réécriture ajoutée au composant s'ajoute à
+  `sansBalisageDuGuide` (verify-site) ou à `reponsePourSchema`.
 - **Chiffres** : journées et lieux du bloc fondateur relevés en base par `count(*)`
   (MIGRATION.md § 9.u), datés dans l'en-tête de `Fondateur.astro` et dans MIGRATION.md
   § 9.ec (la date n'est plus affichée sur la page), jamais écrits à la main. Le compte de la
@@ -294,6 +336,8 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 - **La source de vérité est CE dépôt** : `src/content/blog/*.md` (48 articles au 10 novembre 2026), schéma dans
   `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL).
+  Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
+  demande alors, en avertissement, de relever `PLANCHER_FAQ` (§ 9.fc).
 - ⚠️ `scripts/generate-blog-content.mjs` a servi à la migration initiale depuis
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
   (ex. les blocs « L'essentiel »). Ne le relancer que pour ré-importer sciemment.
