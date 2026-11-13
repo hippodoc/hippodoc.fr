@@ -803,7 +803,7 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
    copies manuscrites des mêmes questions — une pour l'affichage, une pour le
    JSON-LD — que rien ne forçait à rester identiques. Elles sont désormais dérivées
    d'une source unique ; ce contrôle empêche qu'on recommence.
-   Questions et réponses, sur toutes les pages (§ 9.ey ; les réponses n'étaient
+   Questions et réponses, sur toutes les pages (§ 9.ez ; les réponses n'étaient
    comparées que sur l'accueil depuis § 9.ex). */
 
 // Entités, décodées en UNE passe : « &amp;lt; » est le texte « &lt; », pas « < ».

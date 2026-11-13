@@ -9457,7 +9457,160 @@ octets, une seule règle différente. Lighthouse mobile local, médiane de 3 : `
 `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
 `accueil2/corrections/`, hors dépôt.
 
-### 9.ey `verify-site.mjs` : les réponses de la FAQ comparées au schéma sur toutes les pages (13 novembre 2026)
+### 9.ey Barres collantes du guide et de la calculette : le focus ne fait plus remonter la page (13 novembre 2026)
+
+Numéro : § 9.eu à § 9.ex sont pris par la demande de fusion de l'accueil épurée
+(hippodoc/hippodoc.fr#144, pas encore sur `main` à cette date), dont § 9.ev tient l'en-tête
+à la fenêtre (`position: fixed`) et renvoie ici par « Vu en passant, non corrigé ». Cette
+entrée a d'abord été numérotée 9.ew, faute de voir cette branche ; renumérotée avant
+fusion. Sur `main`, l'en-tête est encore `position: sticky`. Aucun contenu touché : deux
+feuilles de style, et une phrase de CLAUDE.md.
+
+**Le défaut**
+
+La barre de recherche de `/guide-declarations` (`.gd-rech`, collée à 70 px) et la barre
+d'outils de la calculette (`.calc-barre`, collée à 76 px à partir de 640 px) sont dans le
+flux et suivent la fenêtre. Leurs contrôles sont dans la bande que `scroll-padding-top` de
+`<html>` réserve en haut (146 px et 140 px). À tout focus qui fait défiler, le navigateur
+cherche à sortir le contrôle de la bande ; la barre suit, il n'y arrive pas.
+
+Relevé sur le build de `main`, page à mi-hauteur :
+
+| | Chromium | WebKitGTK 2.52 |
+|---|---|---|
+| guide, `focus()`, Tab ou Maj+Tab sur le champ, 390 px | −393 px | −54 px |
+| guide, même essai, 1440 px | −421 px | −54 px |
+| guide, Tab ou `focus()` sur « Effacer la recherche » | −393 / −421 px | −66 px |
+| guide, Tab vers le premier résultat (barre resserrée) | −4 px | −4 px |
+| guide, **clic de souris dans le champ, puis saisie** | 0 puis −270 px | −270 px à la saisie |
+| calculette, `focus()`, Tab ou Maj+Tab sur un bouton, 820 px | −558 px | −60 px |
+| calculette, même essai, 1440 px | −418 px | −60 px |
+| calculette, **exemple choisi dans le menu**, à la souris comme au clavier | −558 / −418 px | −60 px (clavier, barre tout juste collée) |
+
+Les deux lignes en gras n'étaient pas dans la demande : le défaut ne demandait pas le
+clavier. La saisie fait défiler pour montrer le curseur ; à la fermeture du menu « Charger
+un exemple », Radix rend le focus au bouton par `focus()`. Chromium recentre le contrôle
+(d'où 400 px), WebKit l'aligne au plus près (d'où 60 px). Avec `scroll-behavior: auto`
+forcé par le script, Chromium fait deux sauts sur le champ (−786 et −842 px) ; avec le
+défilement doux du site, un seul : les chiffres de la demande.
+
+**Le correctif**
+
+`src/styles/guide.css` :
+
+```css
+html:has(.da-fond):has(.gd-rech-champ > :focus) { scroll-padding-top: 70px; }
+html:has(.da-fond):has(.gd-rech-liste :focus) { scroll-padding-top: 134px; }
+```
+
+`src/styles/calculette.css`, dans le `@media (min-width: 640px)` de la barre :
+
+```css
+html:has(.da-fond):has(.calc-barre :focus) { scroll-padding-top: 76px; }
+html:has(.calc-barre :focus) .calc .calc-colonne { scroll-margin-top: 96px; }
+```
+
+Tant que le focus est dans la barre, la bande s'arrête au `top` de la barre (le bas de la
+pastille de l'en-tête) : le contrôle n'y est plus, rien ne défile. Dès que le focus sort,
+la règle ne s'applique plus et la bande entière revient avant le défilement suivant. Les
+valeurs sont celles du `top` de chaque barre, sans `env(safe-area-inset-top)` puisque ces
+`top` n'en ont pas : la bande ne peut pas repasser sur le contrôle. Poids : (0,3,1), plus
+que la règle de la bande (0,2,1) et que celle de `da.css` (0,1,1), quel que soit l'ordre
+des feuilles (CLAUDE.md, « Ordre des feuilles sur les pages d'outils »).
+
+Deux défilements par script partent pendant que le focus est encore dans la barre, d'où
+les deux autres règles :
+
+- Calculette, « Voir mes résultats ↓ » (bouton de la barre, sous 1 024 px) appelle
+  `scrollIntoView({ block: 'start' })` sur `#calculette-results`. Sans compensation, la
+  fiche s'arrêtait à 108 px, sous la barre, au lieu de 172. La fiche reprend donc en marge
+  les 64 px retirés à la bande (32 + 64) sous la même condition : 172 px, au clic comme à
+  la touche Entrée, dans les deux moteurs.
+- Guide, choix d'un résultat : `navigate()` appelle `scrollIntoView({ block: 'center' })`
+  100 ms après le clic, alors que le bouton du résultat a encore le focus (la liste ne
+  disparaît qu'après les 150 ms du délai de saisie). Avec une seule règle
+  `:has(.gd-rech :focus)` à 70 px, premier essai, la cible se centrait 38 px plus haut.
+  Sur un résultat, la bande s'arrête donc au bas de la barre resserrée (134 px = 70 + 8 +
+  48 + 8), juste au-dessus de la liste : le premier résultat (à 142 px) n'y est plus, et
+  la cible se centre 6 px plus haut qu'avant (centre à 493 px au lieu de 499 à 390 px de
+  large, 521 au lieu de 527 à 1440). C'est le seul écart avec `main` sur le contenu.
+
+Piste écartée : une marge de défilement sur les contrôles. Ils sont tout entiers dans la
+bande ; une `scroll-margin-top` négative qui les en sortirait dépasse leur hauteur et
+donne un rectangle retourné, dont le traitement n'est pas défini. Décaler le rectangle
+(marge négative en haut, positive en bas) le garde entier, mais fait défiler la page
+quand la barre, pas encore collée, est dans les 68 px du bas de la fenêtre, et décale
+les résultats dans le défilement propre de leur liste. Non retenue.
+
+**Relevé après correctif**
+
+Chromium 390×844, 820×1180, 1440×900 ; WebKitGTK aux mêmes tailles (390 et 820 dans un
+`<iframe>` de même origine, largeur réelle mesurée, `document.hasFocus()` vrai et `:focus`
+appliqué). Page à mi-hauteur, barre collée ; calculette à 390 px : barre dans le flux,
+placée dans la fenêtre.
+
+- Les deux barres, chaque contrôle, `focus()`, Tab et Maj+Tab : **0 px** partout, dans les
+  deux moteurs. Guide : champ, « Effacer la recherche », premier et deuxième résultats.
+  Calculette : « Voir mes résultats ↓ », « Charger un exemple », « Réinitialiser ».
+- Saisie dans le champ après un clic de souris : 0 px. Exemple choisi dans le menu, à la
+  souris et au clavier : 0 px au retour du focus.
+- Contenu, identique à `main` ligne pour ligne (29 essais sur 47 dans Chromium, 27 sur 41
+  dans WebKit ; les autres sont les corrections ci-dessus, l'écart de 6 px et, dans
+  WebKit, le retour légitime du bouton décrit plus bas, 32 px plus bas qu'avant) :
+  ancres `#profils`, `#regle-RO-014`, `#case-5HQ` à 146 et 154 px ; clic sur un lien
+  d'ancre, le focus étant dans le champ : 146 px ; Tab qui sort de la barre vers un
+  contrôle placé à 100 px du haut, sous la barre : il est ramené à 146 px (guide) et
+  140 px (calculette), de même par `focus()` ; Maj+Tab : positions identiques.
+- Build : seules les deux feuilles changent (`QuestionCard.*.css`, 49 798 → 49 939
+  octets, et `calculette.*.css`, 29 955 → 30 094), quatre règles ajoutées, le reste
+  identique octet pour octet. La feuille commune garde son nom. Le HTML des cinq pages
+  qui lient ces feuilles (hub, trois pages filles, calculette) est identique au nom de la
+  feuille près ; les 65 autres pages sont identiques. `verify-site.mjs` : 0 erreur.
+
+**Pour qui refait ces mesures**
+
+- `locator.click()` de Playwright fait défiler lui-même l'élément hors de la bande avant
+  de cliquer : sur un bouton de la barre il reproduit le saut à lui seul, correctif ou
+  non. Cliquer par coordonnées (`page.mouse.click`).
+- WebKit n'ancre pas le défilement. Charger un exemple raccourcit le formulaire de 580 à
+  950 px : page à mi-hauteur, le bouton sort de l'écran (relevé à −265 et −376 px) et le
+  retour du focus le ramène à sa place, à 80 px (la page s'arrête 32 px plus bas
+  qu'avant : centrage sous une bande de 76 px au lieu de 140). Ce défilement-là est
+  légitime ; le défaut se mesure barre tout juste collée (−60 px avant, 0 px après).
+- Les voisins de tabulation se cherchent parmi les éléments qui prennent réellement le
+  focus : les liens du menu de l'en-tête ont une boîte mais ne le prennent pas.
+
+**Limites, non testé**
+
+- Firefox, un vrai Safari, un iPhone. WebKitGTK n'est pas Safari : au clic de souris,
+  Safari ne donne pas le focus à un bouton ; la bande y reste alors entière, ce qui est
+  le comportement d'avant.
+- Sans `:has()` (Safari avant 15.4, Firefox avant 121), ces règles sont ignorées comme
+  l'était déjà la règle de la bande : rien ne change.
+- Un futur défilement par script lancé depuis un contrôle d'une de ces barres part avec la
+  bande réduite : sa cible reprend la différence en marge, comme `.calc-colonne`.
+- L'en-tête n'est pas corrigé sur cette branche : ses liens, dans la bande de 84 px, ont
+  le même défaut. Il l'est dans hippodoc/hippodoc.fr#144 (§ 9.ev). Ces règles n'en
+  dépendent pas : sur un build des deux branches fusionnées (en-tête tenu à la fenêtre),
+  Chromium donne encore 0 px sur tous les contrôles des deux barres aux trois largeurs, et
+  les 47 essais du contenu sont identiques à ceux de cette branche seule. Les deux
+  demandes insèrent leur entrée au même endroit de ce fichier : la seconde fusionnée aura
+  ce conflit à résoudre, en gardant les deux textes.
+- CLAUDE.md, « Ordre des feuilles sur les pages d'outils » : la phrase « Une barre
+  collante se double d'un `scroll-padding-top` sur `<html>` » reçoit sa suite (bande
+  réduite au `top` de la barre tant que le focus est dedans, marge reprise par la cible
+  d'un défilement lancé depuis la barre, clic par coordonnées pour mesurer). Ajoutée à la
+  demande du propriétaire, après l'ouverture de la demande de fusion.
+- CLAUDE.md dit WebKitGTK et Selenium installés : ils ne l'étaient pas dans ce conteneur
+  (`apt-get install webkit2gtk-driver`, `pip install selenium`). Non corrigé : cela
+  dépend de l'environnement, pas du dépôt.
+- Scripts et relevés : dossier de travail de la session, hors dépôt.
+
+**Fichiers**
+
+`src/styles/guide.css`, `src/styles/calculette.css`, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.ez `verify-site.mjs` : les réponses de la FAQ comparées au schéma sur toutes les pages (13 novembre 2026)
 
 Le contrôle « 4 septies » compare le schéma `FAQPage` au texte visible. Depuis § 9.ex il
 comparait les questions partout et les réponses sur l'accueil seulement : étendue telle

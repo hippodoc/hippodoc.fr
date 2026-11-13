@@ -76,11 +76,21 @@
    l'en-tête un tiers de l'écran ; à partir de 640 px elle colle sous la pastille
    de l'en-tête, et le défilement (focus au clavier, ancres) lui réserve sa
    hauteur. Cette feuille est liée AVANT la feuille commune, où
-   `html:has(.da-fond)` pose 84 px : d'où le second `:has()`. */
+   `html:has(.da-fond)` pose 84 px : d'où le second `:has()`.
+   Ses propres boutons sont dans cette bande, et la barre suit la fenêtre : au
+   focus (Tab, `focus()`, retour du focus à la fermeture du menu des exemples),
+   le navigateur faisait défiler pour les en sortir, sans jamais y arriver, et
+   la page remontait de 400 px. Tant que le focus est dans la barre, la bande
+   s'arrête donc à son `top` (76 px) ; dès qu'il en sort, les 140 px reviennent
+   avant le défilement. « Voir mes résultats » fait défiler pendant que le
+   focus est encore sur lui : la fiche des résultats reprend alors en marge les
+   64 px retirés à la bande (32 + 64), et s'arrête toujours à 172 px. */
 .calc .calc-barre { position: static; min-height: 52px; padding: 4px 6px 4px 18px; border-radius: 26px; background: var(--paper); box-shadow: var(--float); }
 @media (min-width: 640px) {
   .calc .calc-barre { position: sticky; top: 76px; }
   html:has(.da-fond):has(.calc-barre) { scroll-padding-top: calc(140px + env(safe-area-inset-top, 0px)); }
+  html:has(.da-fond):has(.calc-barre :focus) { scroll-padding-top: 76px; }
+  html:has(.calc-barre :focus) .calc .calc-colonne { scroll-margin-top: 96px; }
 }
 /* Téléphone : les trois actions passent sous le libellé, et à la ligne s'il le faut. */
 .calc .calc-barre > div { flex-wrap: wrap; justify-content: flex-end; }

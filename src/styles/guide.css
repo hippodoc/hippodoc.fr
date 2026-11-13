@@ -53,6 +53,19 @@
    `html:has(.da-fond)` pose 84 px : à poids égal elle perdait, d'où le second
    `:has()`. */
 html:has(.da-fond):has(.gd-rech) { scroll-padding-top: calc(146px + env(safe-area-inset-top, 0px)); }
+/* Sauf pour la barre elle-même : collée dans le flux, elle suit la fenêtre, et
+   ses contrôles sont dans cette bande. Au focus (Tab, `focus()`, saisie), le
+   navigateur faisait défiler pour les en sortir, sans jamais y arriver : la
+   page remontait de 400 px. Tant que le focus est dans le champ ou sur
+   « Effacer », la bande s'arrête donc au `top` de la barre (70 px, le bas de
+   la pastille) ; sur un résultat, au bas de la barre resserrée (70 + 8 + 48
+   + 8), au-dessus de la liste. Dès que le focus sort de la barre, les 146 px
+   reviennent avant le défilement : ancres et contrôles du contenu s'arrêtent
+   dessous comme avant. Le choix d'un résultat fait défiler pendant que le
+   focus est encore dessus : d'où une bande presque entière dans ce cas
+   (cible centrée 6 px plus haut, au lieu de 38). */
+html:has(.da-fond):has(.gd-rech-champ > :focus) { scroll-padding-top: 70px; }
+html:has(.da-fond):has(.gd-rech-liste :focus) { scroll-padding-top: 134px; }
 .gd .da-bloc, .gd-echeance { font-size: 1.0625rem; }
 .gd .lead { font-size: 1.1875rem; }
 .gd .btn { gap: 9px; padding-block: 8px; font-size: 1.0625rem; text-align: center; }

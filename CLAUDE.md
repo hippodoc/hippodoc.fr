@@ -187,7 +187,15 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `.calc .x { display: … }` bat un utilitaire Tailwind gardé dans le .tsx (`lg:hidden`,
   `sticky`) : la borner par `@media` à la plage où l'utilitaire ne s'applique pas.
   Une barre collante se double d'un `scroll-padding-top` sur `<html>` (sa hauteur),
-  sinon ancres et focus au clavier arrivent dessous.
+  sinon ancres et focus au clavier arrivent dessous. Ses propres contrôles sont alors
+  dans cette bande, et la barre suit la fenêtre : à tout focus qui fait défiler (Tab,
+  `focus()`, saisie, retour du focus à la fermeture d'un menu Radix), la page remontait
+  (§ 9.ey). Tant que le focus est dans la barre, la bande se réduit donc à son `top`
+  (`html:has(.da-fond):has(.calc-barre :focus)`), et la cible d'un défilement par script
+  lancé depuis la barre reprend la différence en `scroll-margin-top`, sous la même
+  condition (`.calc-colonne`) : une nouvelle barre collante reçoit les deux. Pour le
+  mesurer, cliquer par coordonnées (`page.mouse.click`) : `locator.click()` de Playwright
+  fait défiler lui-même le bouton hors de la bande.
 - ⚠️ **Pièges du moteur de Safari** (§ 9.ep, § 9.eq). Le site se conçoit dans Chromium : ces
   écarts ne s'y voient pas, ils se vérifient dans WebKit (« Vérification avant push »).
   Un cadre `aspect-ratio` posé hors du flux (`position: absolute`) y prend la hauteur de
@@ -254,10 +262,10 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   de remplacement), et, dans le panneau `data-panel="remplacant"` de « Pour qui », celle
   de « 2035 », « 2042-C PRO », « DSFU », « contrat de remplacement » et « serveur officiel
   URSSAF » (§ 9.ex). L'égalité FAQ visible / `FAQPage` porte sur les questions et sur les
-  réponses, sur toutes les pages (§ 9.ey). ⚠️ `verify-site.mjs` échoue pour l'instant sur
+  réponses, sur toutes les pages (§ 9.ez). ⚠️ `verify-site.mjs` échoue pour l'instant sur
   26 réponses, et sur elles seules : `/faq` 12 (listes à l'écran, à plat dans le schéma),
   guide des déclarations et deux pages filles 14 (renvois « QT-014 » rendus en liens
-  nommés). Ce sont de vrais écarts de texte, listés en § 9.ey, en attente de la décision
+  nommés). Ce sont de vrais écarts de texte, listés en § 9.ez, en attente de la décision
   du propriétaire : ne corriger ni le texte ni le JSON-LD pour les faire passer, et ne
   pas assouplir la comparaison. Toute autre erreur est nouvelle. Dans le guide, le
   balisage de `FormattedText.tsx` (`**`, `*`, accents graves, ⚠️ ✅ 💡, puces) est retiré
