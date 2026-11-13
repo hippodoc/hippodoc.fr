@@ -49,7 +49,8 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 **Toutes les pages sont dans la nouvelle direction artistique** depuis la phase 5d :
 l'accueil (MIGRATION.md § 9.eb), l'en-tête, le pied, la police, la bannière cookies et la
 bulle de chat (phase 5a, § 9.ed), `/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai`
-(5b, § 9.ee), `/blog`, les pages de série et les 48 articles (5c, § 9.ej), `/simulateur`
+(5b, § 9.ee), `/blog`, les pages de série et les 48 articles (5c, § 9.ej ; refaits en
+§ 9.fj à 9.fl), `/simulateur`
 (§ 9.ek), le guide des déclarations et la calculette (§ 9.el), `/guide`, `/comparatif`,
 les quatre pages légales et la 404 (§ 9.em). Une nouvelle page se fait dans la DA, sans
 classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
@@ -89,8 +90,9 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   par une animation liée au défilement ; sans elle, bulle dès l'arrivée) ; sous 960 px
   elle s'efface tant qu'un champ de texte a le focus (`:read-write:focus`). Ces deux
   règles d'arrivée ont un poids nul (`:where`) : une page qui veut sa propre plage
-  l'écrit avec `#crisp-launcher` seul, comme `/essai` (380 à 420 px) ; `/guide` cache la
-  bulle sous 768 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
+  l'écrit avec `#crisp-launcher` seul, comme `/essai` (380 à 420 px) et les articles du
+  blog (à la fin du texte, § 9.fj) ; `/guide` cache la bulle sous 768 px, `/blog` et les
+  séries sous 640 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
   Elle passe toujours sur le bord droit des contenus pendant le défilement : rien
   d'important ne se cale à moins de 72 px du bord droit dans un élément fixe ou collant
   en bas d'écran.
@@ -161,7 +163,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `.band`, aucune classe Tailwind ; styles dans le `<style>` de la page (une feuille à
   part, `tarifs.*.css`… : la feuille commune ne grossit pas), ou dans une feuille de
   `src/styles/` quand plusieurs pages ou un îlot la partagent (`blog-liste.css`,
-  `simulateur.css`, `guide.css`, `calculette.css`, `legal.css`). Les quatre pages légales
+  `blog-article.css`, `simulateur.css`, `guide.css`, `calculette.css`, `legal.css`). Les quatre pages légales
   passent par `src/layouts/PageLegale.astro` (emplacement `tete` : le `<h1>` et sa
   ligne ; le texte sans classe, habillé par élément par `legal.css`, typographie de
   lecture du gabarit d'article). ⚠️ Dans un `<style>` scopé, une remise à zéro du genre
@@ -253,9 +255,10 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   en-tête, pied), un caractère hors sous-ensemble (→, ✓, émoji) se dessine en SVG, et reste
   dans le texte dans un élément de classe `sr` (masqué à l'œil) : `verify-site.mjs` échoue
   sinon sur l'accueil. Les pages intérieures font de même pour les flèches de leurs
-  gabarits. Dans les textes des données et des articles (guide des déclarations, îlots,
-  Markdown), ces caractères restent tels quels (→ ↓ ≈ ≠ ≥ ᵉ, émojis…) et sortent dans la
-  police suivante de la pile : Arial par la face de repli, sinon la police du système.
+  gabarits. Dans les textes des données (guide des déclarations, îlots), ces caractères
+  restent tels quels (→ ↓ ≈ ≠ ≥ ᵉ, émojis…) et sortent dans la police suivante de la
+  pile : Arial par la face de repli, sinon la police du système. Les émojis des articles du
+  blog restent dans le Markdown et le HTML, masqués ou dessinés au rendu (« Blog », plus bas).
 - **Mesure** : chaque section porte `data-landing-section`. `SECTIONS_LANDING`
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
   commit quand une section apparaît ou disparaît ; `SECTIONS_LANDING` suit l'ordre de la
@@ -347,9 +350,53 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
   (ex. les blocs « L'essentiel »). Ne le relancer que pour ré-importer sciemment.
 - Encadrés : directives `:::warning` / `:::tip` / `:::essentiel` (plugin
-  `src/lib/remark-callouts.mjs` ; depuis la phase 5c, les styles des encadrés et de tout le
-  corps d'article sont dans le `<style>` scopé de `src/pages/blog/[slug].astro`, plus dans
-  global.css ; le corps se repère par `data-blog-zone="corps"`).
+  `src/lib/remark-callouts.mjs`), rendus en `<div class="callout …" role="note">`, jamais en
+  `<aside>` : le mode lecture de Firefox et les extracteurs des IA jettent les `<aside>`
+  (« L'essentiel » : 0 article sur 48 gardé, § 9.fj). Seul l'appel à l'essai reste un
+  `<aside>` (`verify-site.mjs` le lit).
+- **Page d'article** (§ 9.fj) : gabarit `src/pages/blog/[slug].astro`, feuille
+  `src/styles/blog-article.css` (tout sous `.fiche`, le `<main>` ; plus de `<style>` scopé).
+  Le corps se repère par `data-blog-zone="corps"`, sa fin par `[data-blog-fin]`.
+  - **Balisage au rendu** : `src/lib/rehype-article.mjs` (branché dans `astro.config.mjs`)
+    enveloppe, reclasse et étiquette le HTML de l'article ; il n'ajoute ni ne retire aucun
+    mot ni aucune espace, le Markdown n'est pas touché. Options : `src/lib/article-options.mjs`
+    (`sourcesPli`, `essentielEnTete`, `decorMuet`). Rôles des émojis : `article-emojis.mjs` ;
+    plan du sommaire : `article-sommaire.ts`.
+  - ⚠️ **Empreinte** : Astro garde le HTML rendu des articles dans `node_modules/.astro` (Vercel
+    aussi) tant que Markdown et configuration ne changent pas. `astro.config.mjs` passe au
+    plugin l'empreinte de `rehype-article.mjs`, `article-emojis.mjs`, `article-options.mjs`
+    et `remark-callouts.mjs` : un nouveau fichier de plugin s'ajoute à cette liste, sinon
+    ses retouches ne sortent pas.
+  - **Émojis** (le caractère reste dans le HTML) : masqués dans les titres, le sommaire,
+    l'appel à l'essai, en tête ou en fin de ligne et en cours de phrase ; un dessin
+    seulement là où ils portent un sens, dans une liste : coche `--ok`, triangle `--wait`,
+    croix `--ink-2` sur `--line` (pas de rouge), chiffre des touches, flèche, légende du
+    calendrier fiscal ; autre émoji de liste : puce `--brand`. Masquage de la classe `sr`
+    (rognage), **jamais `font-size: 0`** ; décor en `aria-hidden`. Un élément rogné rogne son
+    `::before` : le dessin est porté par l'élément de liste ou le titre (`data-touche`).
+  - **Titres et sommaire** : filet et repère « 04 / 10 » par compteurs CSS (absent quand
+    l'auteur a numéroté son plan) ; sous-parties `t-sous`. Sommaire = le plan seul : rail
+    collant à partir de 1 040 px, partie en cours par `:target-current` (seul dans sa règle :
+    un navigateur qui ne le connaît pas jette toute la liste de sélecteurs ; lightningcss
+    avertit à la construction, c'est attendu) et repli par lignes de temps de vue écrites au
+    rendu ; sur téléphone, pli, fil de lecture et
+    pastille de 44 px. Plan de plus de 14 entrées avec sous-parties : rail réduit aux parties.
+  - ⚠️ Poids : une variante d'élément de liste s'écrit avec le même chemin que la règle de
+    base (`.corps :is(ul, ol) > li[data-etat="non"]`), sinon la règle de base gagne.
+  - **Couverture** : une vignette (64 × 80 px au téléphone, 132 × 165 px sur ordinateur),
+    `srcset` 160, 264, 400 px ; le `src` reste la variante de 900 px.
+  - **Image de partage** (§ 9.fl) : `/blog/partage/<slug>.jpg`, 1 200 × 630, fabriquée à la
+    construction (`src/pages/blog/partage/[slug].jpg.ts`, `src/lib/image-partage.mjs`) :
+    `og:image`, `twitter:image` et première image du JSON-LD `Article`. Rien à faire pour un
+    nouvel article. Police TTF de construction dans `src/assets/fonts/partage/`, lue par
+    chemin, jamais importée (elle serait copiée dans le build). Aucun jaune ; mascotte entière.
+  - Auteur : le nom mène à `/qui-sommes-nous#ryan-goburdhun`, même `@id` dans le JSON-LD.
+- **`/blog` et les séries** (§ 9.fk) : des lignes sur une feuille blanche (`BlogCard.astro`,
+  `src/styles/blog-liste.css`), l'affiche en vignette (carré de 64 px au téléphone, 96 puis
+  104 px) : `sizes` et `srcset` (160 et 320 px, une : 180 et 360 px) suivent ces largeurs, la
+  une est dans le premier écran du téléphone. Extrait masqué au téléphone (dans le HTML).
+- Écarts au contenu d'un article : « Contenu modifié » dans MIGRATION.md (§ 9.fj pour les
+  antislashs : une ligne vide avant et après une liste, sinon « \ » s'affiche).
 - Frontmatter `faq`/`relatedArticles`/`slides`/`cta` rendus par `src/pages/blog/[slug].astro`
   (FAQ visible + FAQPage JSON-LD ; slides = îlot embla `BlogSlides.tsx`).
 - Dates : `pubDate`/`updatedDate` alimentent le `lastmod` du sitemap via
@@ -494,7 +541,8 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
    `npx serve` sert en HTTP/1.1 : sur les pages à deux feuilles bloquantes (outils, guide,
    comparatif, pages légales), FCP et LCP y sortent 0,15 à 0,3 s plus hauts que sur Vercel
    (HTTP/2, où l'écart disparaît). Ne pas le lire comme une régression (§ 9.en).
-4. Moteur de Safari (WebKitGTK 2.52 et Selenium installés), dès qu'une feuille change :
+4. Moteur de Safari (WebKitGTK 2.52 installé ; Selenium ne l'est plus : piloter
+   `/usr/bin/WebKitWebDriver` par son protocole HTTP, mêmes capacités), dès qu'une feuille change :
    servir `dist` en local, puis
    `WEBKIT_DISABLE_COMPOSITING_MODE=1 xvfb-run -a -s "-screen 0 1600x1400x24" python3 -I script.py`.
    Dans le script : `Options().binary_location = '/usr/lib/x86_64-linux-gnu/webkit2gtk-4.1/MiniBrowser'`,
