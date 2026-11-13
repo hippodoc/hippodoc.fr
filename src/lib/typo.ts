@@ -34,6 +34,16 @@ export const nouer = (html: string) =>
     )
     .join('');
 
+/**
+ * Extraits des pages de liste du blog (§ 9.fk) : un nombre ne se coupe pas.
+ * « 3 900 € », « 11 379 € », « 547 € », « 20 % » tiennent dans un
+ * <span class="nb"> (blanc insécable par la feuille), sans changer un caractère.
+ * À appliquer à du texte échappé, avant `nouer` (qui laisse les balises telles
+ * quelles).
+ */
+export const nouerNombres = (html: string) =>
+  html.replace(/\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?:,\d+)?(?:[ \u00a0\u202f]?(?:€|%))?|\d+(?:,\d+)?[ \u00a0\u202f](?:€|%)/g, '<span class="nb">$&</span>');
+
 /** Un titre est du texte, pas du HTML : il est échappé avant d'être noué. */
 export const echapper = (texte: string) =>
   texte.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

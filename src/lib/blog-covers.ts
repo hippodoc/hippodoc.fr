@@ -18,11 +18,11 @@ export interface ResolvedCover {
   src: string;
   width: number;
   height: number;
-  /** Variante étroite pour le `srcset` des cartes (vignette mobile de 112 px). */
+  /** Variante étroite pour le `srcset` des lignes de liste (vignette de 64 à 104 px, § 9.fk). */
   srcSmall?: string;
 }
 
-/** Largeur de la variante étroite des cartes : 112 px affichés × densité 3. */
+/** Largeur de la variante étroite : 104 px affichés au plus × densité 3. */
 const CARD_SMALL_WIDTH = 320;
 
 /** Renvoie la cover optimisée, ou null si l'asset est introuvable. */

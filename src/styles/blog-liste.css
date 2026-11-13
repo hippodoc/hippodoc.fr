@@ -18,6 +18,11 @@
    - Les résultats de la recherche sont créés par le script de /blog, avec ses
      classes utilitaires d'origine (script inchangé) : les règles d'ici pèsent
      plus lourd qu'elles.
+   - Depuis le § 9.fk (novembre 2026), les articles sont des lignes sur une
+     feuille blanche, l'affiche en vignette : une ligne tient en 96 à 132 px
+     de haut au téléphone (181 à 246 px avant), « À la une » en 0,4 écran
+     (1,1 avant). L'extrait reste dans le HTML ; il n'est pas affiché au
+     téléphone.
    ========================================================================== */
 
 .bl { position: relative; margin-bottom: -1px; font-size: 1.0625rem; overflow-wrap: break-word; }
@@ -81,49 +86,63 @@
 .bl-series a[aria-current]:active { box-shadow: 0 0 0 transparent; }
 .bl-series span { font-weight: var(--tw); }
 
-/* Marques d'une carte : la série en pastille, le numéro, « À la une ». */
+/* Marques : « À la une » et la série en pastilles sur la une ; dans une ligne
+   d'article, la série et le numéro en petites capitales (« FICHES FISCALITÉ
+   · #4 »). Date et durée séparées par un point. Les « · » sont écrits par la
+   feuille et ne sont pas lus (texte de remplacement vide, après une
+   déclaration sans lui pour les navigateurs qui ne le lisent pas). */
 .bl-marques { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .bl-etiquette { display: inline-block; padding: 3px 10px; border-radius: var(--r-pill); background: var(--ink); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.35; color: var(--paper); white-space: nowrap; }
-.bl-numero { font-size: 0.84375rem; color: var(--ink-3); }
-.bl-infos { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 14px; font-size: 0.84375rem; color: var(--ink-3); }
+.bl-carte .bl-marques { gap: 0 8px; line-height: 1.35; }
+.bl .bl-carte .chip { padding: 0; background: none; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand); }
+.bl-numero { font-size: 0.75rem; font-weight: var(--tb); letter-spacing: 0.04em; color: var(--ink-3); }
+.bl-numero::before { content: "·"; content: "·" / ""; margin-right: 8px; }
+.bl-infos { display: flex; flex-wrap: wrap; align-items: center; font-size: 0.84375rem; color: var(--ink-3); }
+.bl-infos > * + *::before { content: "·"; content: "·" / ""; margin: 0 8px; }
 
-/* L'article à la une : une grande fiche, la couverture dedans. Le texte
-   d'abord dans le HTML ; à partir de 768 px l'image reprend la gauche. */
-.bl-une { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 30px; padding: 10px; border-radius: 30px; background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
+/* L'article à la une : une fiche, l'affiche en petit (84 px à droite du titre ;
+   180 px à gauche à partir de 768 px). Le texte d'abord dans le HTML. */
+.bl-une { display: grid; grid-template-columns: minmax(0, 1fr) 84px; align-items: start; margin-top: 26px; padding: 8px; border-radius: var(--r-lg); background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
 .bl-une:hover { translate: 0 -3px; }
-.bl-une-texte { display: flex; flex-direction: column; justify-content: center; padding: 14px 12px 20px; }
-.bl-une h2 { --corps: clamp(1.5rem, 3.1vw, 2.125rem); margin: 14px 0 0; line-height: 1.12; text-wrap-style: balance; }
-.bl-une-extrait { margin: 12px 0 0; font-size: 1.0625rem; line-height: 1.55; color: var(--ink-2); }
-.bl-une .bl-infos { justify-content: flex-start; margin-top: 16px; font-size: 0.90625rem; }
-.bl-une img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; border-radius: 22px; object-fit: cover; object-position: top; }
+.bl-une-texte { display: flex; flex-direction: column; justify-content: center; padding: 14px 14px 16px; }
+.bl-une h2 { --corps: clamp(1.5rem, 2.6vw, 2.125rem); margin: 12px 0 0; line-height: 1.12; text-wrap-style: balance; }
+.bl-une-extrait { display: -webkit-box; margin: 10px 0 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.bl-une .bl-infos { margin-top: 12px; font-size: 0.90625rem; }
+.bl-une img { display: block; width: 84px; height: auto; aspect-ratio: 4 / 5; margin: 14px 14px 0 0; border-radius: 12px; object-fit: cover; object-position: top; }
 
 /* ───────── Les feuilles ───────── */
 .bl-titre { --corps: clamp(min(1.75rem, 8.2vw), 3.4vw, 2.5rem); margin: 0 0 24px; }
 .bl-titre:has(+ .bl-sous-titre) { margin-bottom: 8px; }
 .bl-sous-titre { margin: 0 0 24px; color: var(--ink-2); }
 
-/* Les cartes : des fiches blanches en relief. Téléphone : à l'horizontale, la
-   vignette à gauche. À partir de 640 px : la couverture en haut, deux par
-   ligne, puis quatre à partir de 1024 px. */
-.bl-grille { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.bl-carte { border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
-.bl-carte:hover { translate: 0 -3px; }
-.bl-carte > a { box-sizing: border-box; display: flex; height: 100%; padding: 10px; border-radius: 24px; color: var(--ink); text-decoration: none; }
-.bl-vignette { flex: none; align-self: flex-start; width: 112px; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 15px; background: var(--sky-soft); }
-.bl-vignette img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.bl-carte-texte { display: flex; flex: 1; flex-direction: column; min-width: 0; padding: 4px 6px 2px 14px; }
-.bl-carte h2, .bl-carte h3 { margin: 8px 0 0; font-family: var(--text); font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.28; letter-spacing: 0; text-wrap-style: pretty; }
-/* L'extrait : deux lignes sur téléphone, trois au-delà. Ici le mot et sa
+/* Les articles : des lignes sur une feuille blanche, un filet entre deux
+   lignes (comme les feuilles à lignes de l'accueil), la ligne teintée au
+   survol. L'affiche en vignette à gauche : sur téléphone, un carré de 64 px
+   recadré sur le dessin (le titre dessiné, illisible à cette taille, sort du
+   cadre) ; à partir de 640 px, l'affiche entière en portrait, deux colonnes. */
+.bl-grille { display: grid; grid-template-columns: minmax(0, 1fr); border-radius: var(--r-lg); background: var(--paper); box-shadow: var(--clay-sm); }
+.bl-carte > a { box-sizing: border-box; display: flex; gap: 12px; height: 100%; padding: 12px 14px; color: var(--ink); text-decoration: none; }
+.bl-carte > a:hover { background: var(--sky-soft); }
+.bl-vignette { flex: none; align-self: center; width: 64px; aspect-ratio: 1; overflow: hidden; border-radius: 12px; background: var(--sky-soft); }
+.bl-vignette img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 74%; }
+.bl-carte-texte { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.bl-carte h2, .bl-carte h3 { margin: 4px 0 0; font-family: var(--text); font-size: 1rem; font-weight: var(--tb); line-height: 1.28; letter-spacing: 0; text-wrap-style: pretty; }
+/* L'extrait : masqué au téléphone, deux lignes au-delà. Ici le mot et sa
    ponctuation restent en ligne (insécables) : un bloc en ligne gênerait la
    coupe avec points de suspension. */
 .bl-extrait { display: -webkit-box; margin: 6px 0 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; font-size: 0.9375rem; line-height: 1.45; color: var(--ink-2); }
 .bl .bl-extrait .num { display: inline; white-space: nowrap; }
-.bl-carte .bl-infos { margin-top: auto; padding-top: 10px; }
+/* Un nombre et son unité tiennent ensemble dans les extraits (« 3 900 € »,
+   `nouerNombres`, src/lib/typo.ts). */
+.bl .nb { white-space: nowrap; }
+.bl-carte .bl-infos { margin-top: auto; padding-top: 5px; font-size: 0.8125rem; }
 
 /* « Voir les N autres articles » : un bouton ; ouvert, il disparaît et la
-   grille continue sans rupture. */
+   feuille continue sans rupture. */
 .bl-suite { margin-top: 28px; }
-.bl-suite[open] { margin-top: 12px; }
+.bl-suite[open] { margin-top: 0; }
+.bl-grille:has(+ .bl-suite[open]) { border-radius: var(--r-lg) var(--r-lg) 0 0; }
+.bl-suite[open] > .bl-grille { border-radius: 0 0 var(--r-lg) var(--r-lg); }
 .bl-suite > summary { display: flex; gap: 8px; width: fit-content; max-width: 100%; margin: 0 auto; padding: 8px 24px; list-style: none; text-align: center; }
 .bl-suite > summary::-webkit-details-marker { display: none; }
 .bl-suite[open] > summary { display: none; }
@@ -178,17 +197,26 @@
 .bl-presentation + .bl-series { margin-top: 28px; }
 
 /* ───────── Largeurs ───────── */
-/* Petits téléphones : la vignette cède de la place au titre. */
+/* Petits téléphones et texte grossi. */
 @media (max-width: 359px) {
-  .bl-vignette { width: 88px; }
-  .bl-carte-texte { padding-left: 12px; }
-  .bl-carte h2, .bl-carte h3 { font-size: 1rem; }
   /* Texte grossi à 200 % : un mot et sa ponctuation se dénouent dans l'extrait,
      un mot plus large que sa place se coupe dans l'index, au lieu de faire
      défiler la page de côté. */
   .bl-extrait { overflow-wrap: anywhere; }
   .bl .bl-extrait .num { white-space: normal; }
   .bl-serie li a > span:first-child { overflow-wrap: anywhere; }
+}
+/* Téléphone : l'extrait n'est pas affiché (la ligne tient en 96 à 132 px), la
+   feuille rogne la teinte de survol à ses coins ; l'anneau de focus est tracé
+   à l'intérieur de la ligne. La bulle de chat passait sur la fin des titres :
+   les pages de liste la masquent, comme /guide sous 768 px. */
+@media (max-width: 639px) {
+  .bl-grille { overflow: hidden; }
+  .bl-carte + .bl-carte, .bl-suite[open] > .bl-grille > .bl-carte:first-child { border-top: 1px solid var(--line); }
+  .bl-carte > a { align-items: center; min-height: 96px; }
+  .bl-carte > a:focus-visible { outline-offset: -3px; }
+  .bl-extrait { display: none; }
+  #crisp-launcher { display: none; }
 }
 /* Téléphone, pages de série : le texte de la série se resserre, la première
    carte remonte d'autant. */
@@ -205,24 +233,29 @@
   .bl-serie { padding: 24px 26px 12px; }
   .bl-texte { padding: 26px 28px 28px; font-size: 1.0625rem; line-height: 1.65; }
 }
+/* À partir de 640 px : deux colonnes de lignes sur la feuille, l'affiche
+   entière (96 px de large, 104 px à partir de 1024 px) et l'extrait sur deux
+   lignes. La teinte de survol déborde de 14 px de chaque côté du texte. */
 @media (min-width: 640px) {
-  .bl-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .bl-suite[open] { margin-top: 18px; }
-  .bl-carte > a { flex-direction: column; padding: 8px; }
-  .bl-vignette { align-self: stretch; width: auto; border-radius: 17px; }
-  .bl-carte-texte { padding: 14px 10px 8px; }
-  .bl-carte h2, .bl-carte h3 { font-size: 1.125rem; }
-  .bl-extrait { -webkit-line-clamp: 3; line-clamp: 3; margin-top: 8px; }
-  .bl-carte .bl-infos { padding-top: 14px; }
+  .bl-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; padding: 4px 32px; }
+  .bl-carte { border-top: 1px solid var(--line); }
+  .bl-carte:nth-child(-n+2) { border-top: 0; }
+  .bl-carte > a { gap: 20px; margin: 0 -14px; padding: 24px 14px; border-radius: 16px; }
+  .bl-vignette { align-self: flex-start; width: 96px; aspect-ratio: 4 / 5; }
+  .bl-vignette img { object-position: top; }
+  .bl-carte h2, .bl-carte h3 { margin-top: 6px; font-size: 1.1875rem; line-height: 1.3; }
+  .bl-carte .bl-infos { padding-top: 10px; }
+  .bl-grille:has(+ .bl-suite[open]) { padding-bottom: 0; }
+  .bl-suite[open] > .bl-grille { padding-top: 0; }
+  .bl-suite[open] > .bl-grille > .bl-carte { border-top: 1px solid var(--line); }
 }
-/* Tablette : le compte à droite du titre ; la couverture de la une à gauche,
-   340 px de large (la largeur annoncée par `sizes` et par le préchargement). */
+/* Tablette : le compte à droite du titre ; l'affiche de la une à gauche,
+   180 px de large (la largeur annoncée par `sizes` et par le préchargement). */
 @media (min-width: 768px) {
   .wrap > .bl-intro { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 24px; }
-  .bl-une { grid-template-columns: 340px minmax(0, 1fr); }
-  .bl-une img { order: -1; }
+  .bl-une { grid-template-columns: 180px minmax(0, 1fr); align-items: center; }
+  .bl-une img { order: -1; width: 180px; margin: 0; border-radius: 20px; }
   .bl-une-texte { padding: 20px 30px 20px 34px; }
-  .bl-une-extrait { font-size: 1.125rem; }
   .bl-appel { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px 36px; }
 }
 @media (min-width: 900px) {
@@ -231,12 +264,11 @@
   .bl::before, .bl::after { --p: 440px; --th: 54px; }
   .bl::before { height: 112px; }
   .bl::after { height: 60px; }
-  .bl-une-texte { padding: 24px 44px 24px 48px; }
   .bl-appel { padding: 38px 44px; }
 }
 @media (min-width: 1024px) {
-  .bl-grille { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-  .bl-suite[open] { margin-top: 16px; }
+  .bl-grille { gap: 0 56px; padding: 4px 40px; }
+  .bl-vignette { width: 104px; }
   .bl-index { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
   .bl-serie { padding: 22px 22px 10px; }
   /* Page de série : le titre à gauche, la fiche du texte à droite. */
@@ -245,13 +277,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bl-une, .bl-carte, .bl-series a { transition: none; }
-  .bl-une:hover, .bl-carte:hover { translate: none; }
+  .bl-une, .bl-series a { transition: none; }
+  .bl-une:hover { translate: none; }
 }
 /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
    aux fiches et aux pastilles ; le décor du bas disparaît. */
 @media (forced-colors: active) {
-  .bl-champ input, .bl-resultats, .bl-vide, .bl-series a, .bl-etiquette, .bl-une, .bl-carte, .bl-appel, .bl-serie, .bl-serie h3 span, .bl-pastille, .bl-texte, .bl .chip { border: 1px solid CanvasText; }
+  .bl-champ input, .bl-resultats, .bl-vide, .bl-series a, .bl-etiquette, .bl-une, .bl-grille, .bl-appel, .bl-serie, .bl-serie h3 span, .bl-pastille, .bl-texte, .bl-une .chip { border: 1px solid CanvasText; }
   .bl-series a[aria-current] { border-width: 3px; }
   .bl::before, .bl::after { display: none; }
 }
