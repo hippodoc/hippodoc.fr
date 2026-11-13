@@ -1,0 +1,159 @@
+---
+/**
+ * Page de thème du blog — `/blog/theme/<slug>` (MIGRATION.md § 9.fp).
+ *
+ * Les thèmes classent les articles par sujet (registre : `src/lib/blog-themes.ts`) ; ils
+ * sont la navigation de /blog depuis § 9.fp. Les pages de série restent en ligne,
+ * inchangées, liées depuis la pastille de chaque article.
+ *
+ * Sur le modèle des pages de série (`serie/[series].astro`) : le même ciel, le fil
+ * d'Ariane, le titre et le texte de la page sur une fiche, les puces des thèmes, puis la
+ * feuille des lignes d'article (`BlogCard.astro`, numéro de fiche seul : le thème est
+ * celui de la page) et l'appel au simulateur. Même feuille (`src/styles/blog-liste.css`),
+ * même schéma (`CollectionPage` et sa liste, `BreadcrumbList`). Pas de pastille au-dessus
+ * du titre : elle redisait le nom, que le fil d'Ariane et le titre disent déjà.
+ *
+ * Deux segments d'URL (`blog/theme/x`) : aucune collision avec `blog/[slug].astro` ni avec
+ * un futur article.
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import BlogCard from '@/components/BlogCard.astro';
+import BlogAppel from '@/components/BlogAppel.astro';
+import '@/styles/blog-liste.css';
+import { SITE_URL } from '@/lib/site';
+import { BLOG_THEMES, themePath } from '@/lib/blog-themes';
+import { resolveCovers } from '@/lib/blog-covers';
+import { byNewest } from '@/lib/blog-sort';
+import { nouer, echapper } from '@/lib/typo';
+
+export async function getStaticPaths() {
+  return BLOG_THEMES.map((theme) => ({ params: { theme: theme.slug }, props: { theme } }));
+}
+
+const { theme } = Astro.props;
+
+/* L'ordre de /blog : le plus récent d'abord. */
+const posts = (await getCollection('blog')).filter((p) => p.data.theme === theme.slug).sort(byNewest);
+
+const covers = await resolveCovers(posts);
+
+const path = themePath(theme.slug);
+const { titre: title, description } = theme;
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${SITE_URL}${path}#collection`,
+  name: title,
+  description,
+  url: `${SITE_URL}${path}`,
+  inLanguage: 'fr-FR',
+  isPartOf: { '@id': `${SITE_URL}/blog#blog` },
+  publisher: { '@id': `${SITE_URL}/#organization` },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: posts.length,
+    itemListElement: posts.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${SITE_URL}/blog/${p.id}`,
+      name: p.data.title,
+    })),
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+    { '@type': 'ListItem', position: 3, name: theme.nom, item: `${SITE_URL}${path}` },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description} path={path} jsonLd={[collectionSchema, breadcrumbSchema]} bodyClass="da-fond">
+  <Fragment slot="head">
+    {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  {/* La pastille survole le ciel du premier bloc, qui lui réserve le haut. */}
+  <Header />
+  <main class="bl da-bloc" data-blog-theme={theme.slug} data-blog-total={posts.length}>
+    <div class="bl-tete">
+      <div class="wrap">
+        <nav aria-label="Fil d'Ariane" class="bl-fil">
+          <ol role="list">
+            <li><a href="/">Accueil</a></li>
+            <li aria-hidden="true">›</li>
+            <li><a href="/blog">Blog</a></li>
+            <li aria-hidden="true">›</li>
+            <li aria-current="page">{theme.nom}</li>
+          </ol>
+        </nav>
+
+        {/* Le titre à gauche, l'introduction du thème à droite sur une fiche (l'un sous
+             l'autre jusqu'à 1024 px), comme sur les pages de série. */}
+        <div class="bl-presentation">
+          <header class="bl-intro">
+            <h1 class="aff">{theme.nom}</h1>
+            <p class="lead" set:html={nouer(echapper(theme.contexte))} />
+            <p class="bl-compte">
+              {posts.length} article{posts.length > 1 ? 's' : ''}
+            </p>
+          </header>
+
+          {/* L'introduction : ce que le lecteur trouve dans le thème, avec ses mots. */}
+          <div class="bl-texte">
+            <p set:html={nouer(echapper(theme.introduction))} />
+          </div>
+        </div>
+
+        <!-- Navigation entre thèmes : chaque page reste à un clic des autres -->
+        <nav aria-label="Thèmes du blog" class="bl-series bl-themes">
+          <a href="/blog">
+            Tous les articles
+          </a>
+          {BLOG_THEMES.map((t) => (
+            <a href={themePath(t.slug)} aria-current={t.slug === theme.slug ? 'page' : undefined}>
+              {t.nom}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </div>
+
+    {/* Feuille sable : les lignes du thème, puis l'appel au simulateur. */}
+    <div class="band bl-fin">
+      <div class="wrap">
+        <div class="bl-grille">
+          {posts.map((post, i) => (
+            <BlogCard
+              slug={post.id}
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              readTime={post.data.readTime}
+              seriesId={post.data.seriesId}
+              episodeNumber={post.data.episodeNumber}
+              etiquette="numero"
+              category={post.data.category}
+              categoryNumber={post.data.categoryNumber}
+              cover={covers.get(post.id)}
+              eager={i === 0}
+            />
+          ))}
+        </div>
+
+        <div class="bl-appel-place">
+          <BlogAppel emplacement="blog_theme" />
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
