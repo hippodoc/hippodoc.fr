@@ -8558,13 +8558,14 @@ chaîne d'éléments des clics mesurés), les 35 Ko de la boussole ne se chargen
 son approche, et tout ce que cette entrée et § 9.er disent de cette marge décrit un essai
 retiré. La boussole reste neutralisée sans trait d'attente tant qu'elle n'est pas hydratée.
 
-### 9.ew Barres collantes du guide et de la calculette : le focus ne fait plus remonter la page (13 novembre 2026)
+### 9.ey Barres collantes du guide et de la calculette : le focus ne fait plus remonter la page (13 novembre 2026)
 
-Numéro : la demande renvoie à un § 9.ev (« Vu en passant, non corrigé ») et à un en-tête
-tenu à la fenêtre (`position: fixed`). Ni l'un ni l'autre n'est sur cette branche ni sur
-`main` (dernière entrée : § 9.et ; l'en-tête y est encore `position: sticky`). Les numéros
-9.eu et 9.ev sont laissés à ce travail-là. Aucun contenu touché : deux feuilles de style,
-et une phrase de CLAUDE.md.
+Numéro : § 9.eu à § 9.ex sont pris par la demande de fusion de l'accueil épurée
+(hippodoc/hippodoc.fr#144, pas encore sur `main` à cette date), dont § 9.ev tient l'en-tête
+à la fenêtre (`position: fixed`) et renvoie ici par « Vu en passant, non corrigé ». Cette
+entrée a d'abord été numérotée 9.ew, faute de voir cette branche ; renumérotée avant
+fusion. Sur `main`, l'en-tête est encore `position: sticky`. Aucun contenu touché : deux
+feuilles de style, et une phrase de CLAUDE.md.
 
 **Le défaut**
 
@@ -8690,7 +8691,12 @@ placée dans la fenêtre.
 - Un futur défilement par script lancé depuis un contrôle d'une de ces barres part avec la
   bande réduite : sa cible reprend la différence en marge, comme `.calc-colonne`.
 - L'en-tête n'est pas corrigé sur cette branche : ses liens, dans la bande de 84 px, ont
-  le même défaut. Ces règles n'en dépendent pas.
+  le même défaut. Il l'est dans hippodoc/hippodoc.fr#144 (§ 9.ev). Ces règles n'en
+  dépendent pas : sur un build des deux branches fusionnées (en-tête tenu à la fenêtre),
+  Chromium donne encore 0 px sur tous les contrôles des deux barres aux trois largeurs, et
+  les 47 essais du contenu sont identiques à ceux de cette branche seule. Les deux
+  demandes insèrent leur entrée au même endroit de ce fichier : la seconde fusionnée aura
+  ce conflit à résoudre, en gardant les deux textes.
 - CLAUDE.md, « Ordre des feuilles sur les pages d'outils » : la phrase « Une barre
   collante se double d'un `scroll-padding-top` sur `<html>` » reçoit sa suite (bande
   réduite au `top` de la barre tant que le focus est dedans, marge reprise par la cible

@@ -116,7 +116,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   sinon ancres et focus au clavier arrivent dessous. Ses propres contrôles sont alors
   dans cette bande, et la barre suit la fenêtre : à tout focus qui fait défiler (Tab,
   `focus()`, saisie, retour du focus à la fermeture d'un menu Radix), la page remontait
-  (§ 9.ew). Tant que le focus est dans la barre, la bande se réduit donc à son `top`
+  (§ 9.ey). Tant que le focus est dans la barre, la bande se réduit donc à son `top`
   (`html:has(.da-fond):has(.calc-barre :focus)`), et la cible d'un défilement par script
   lancé depuis la barre reprend la différence en `scroll-margin-top`, sous la même
   condition (`.calc-colonne`) : une nouvelle barre collante reçoit les deux. Pour le
