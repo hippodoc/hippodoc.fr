@@ -1,7 +1,7 @@
 /* ==========================================================================
    Page d'article du blog : le nouveau système de lecture (novembre 2026, MIGRATION.md § 9.fj).
    « La fiche pratique » : un article se lit comme une fiche qu'on consulte entre deux patients.
-   La réponse d'abord (« L'essentiel » en tête, carte blanche à coches), puis des repères partout
+   La réponse d'abord (« L'essentiel » en tête, carte blanche à puces), puis des repères partout
    (rail numéroté qui suit la lecture, filet et place de chaque partie, marques d'état dessinées).
    Sur une feuille sable aux coins ronds posée sous le ciel : le rail à gauche, le texte au centre
    (624 px, 19 px), la carte d'essai collante à droite. Le bleu de marque et l'encre portent tout ;
@@ -344,7 +344,7 @@
 .fiche .corps ul.fl.kv > li[data-m]::before, .fiche .corps ul.fl.kv > li[data-m]::after { content: none; }
 
 /* ───────── Encadrés : plats, une étiquette ─────────
-   L'essentiel : la carte blanche de tête, à coches. Conseil : ciel doux, ampoule. Hippodoc : tête de la
+   L'essentiel : la carte blanche de tête, à puces (pas de coches : un point sur cinq est une mise en garde). Conseil : ciel doux, ampoule. Hippodoc : tête de la
    mascotte. Alerte : sable chaud, triangle. Le titre d'un encadré seul sous son titre (.t-encadre) en
    devient le haut. Un <div role="note"> (src/lib/remark-callouts.mjs), plus un <aside>. */
 .fiche .corps .callout { position: relative; margin: 28px 0; padding: 18px 20px; border-radius: 18px; line-height: 1.55; }
