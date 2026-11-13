@@ -56,10 +56,10 @@ export const BLOG_THEMES: BlogTheme[] = [
     nom: "Débuter et s'organiser",
     titre: "Débuter et s'organiser comme médecin remplaçant | Hippodoc",
     description:
-      "Premier remplacement de médecin : inscriptions à faire avant, checklist du premier jour, où chercher des remplas, prise en main du logiciel du cabinet.",
+      "Premier remplacement de médecin : RCP et Ordre avant, URSSAF et CARMF ensuite, checklist du premier jour, où chercher des remplas, logiciel du cabinet.",
     contexte: 'Les démarches, les outils et les réflexes de tes premiers remplacements.',
     introduction:
-      "Ta licence ou ta thèse en poche, ton premier remplacement approche. Tu trouves ici les démarches à faire avant (Ordre, CPAM, URSSAF, CARMF, assurance RCP), la checklist du jour J, où trouver des remplacements et comment t'y retrouver dans le logiciel métier d'un nouveau cabinet. Puis le quotidien : tes outils, tes messages en attente, les pièges des débuts et le doute qui va avec.",
+      "Ta licence ou ta thèse en poche, ton premier remplacement approche. Tes démarches, dans l'ordre : l'assurance RCP et l'Ordre avant de commencer, la CPAM dès le premier remplacement, l'URSSAF et la CARMF dans les semaines qui suivent. Puis la checklist du jour J, où trouver des remplacements, le logiciel métier d'un nouveau cabinet. Et le quotidien : tes outils, tes messages en attente, les pièges des débuts et le doute qui va avec.",
     partage: 'sable',
   },
   {
@@ -67,10 +67,10 @@ export const BLOG_THEMES: BlogTheme[] = [
     nom: 'Statut, contrats et revenus',
     titre: 'Statut, contrats et revenus du médecin remplaçant',
     description:
-      "Médecin remplaçant libéral ou salarié : licence et contrat de remplacement, rétrocession d'honoraires, facture au remplacé, revenus par mode d'exercice.",
+      "Médecin remplaçant libéral ou salarié : licence et contrat de remplacement, rétrocession d'honoraires, facture au remplacé, revenus selon le statut.",
     contexte: 'Sous quel statut tu remplaces, ce que tu signes et ce que tu gagnes.',
     introduction:
-      "Libéral ou salarié, remplacement ou collaboration : tout part du cadre dans lequel tu exerces. Tu trouves ici la licence de remplacement, le contrat à relire avant de signer, la rétrocession et la façon de la négocier, la facture à envoyer au médecin remplacé et ce que change la facturation électronique. Et pour choisir : ce que rapporte chaque mode d'exercice, le nombre de jours qui te suffit, et le risque de requalification d'un remplacement trop régulier.",
+      "Libéral ou salarié, remplacement ou collaboration : tout part du cadre dans lequel tu exerces. Au programme : la licence de remplacement, le contrat à relire avant de signer, la rétrocession et la façon de la négocier, la facture à envoyer au médecin remplacé et ce que change la facturation électronique. Et pour choisir : ce que rapportent le libéral, le salariat et l'intérim, le nombre de jours qui te suffit, et le risque de requalification d'un remplacement trop régulier.",
     partage: 'ciel',
   },
   {
@@ -81,7 +81,7 @@ export const BLOG_THEMES: BlogTheme[] = [
       "Cotisations du médecin remplaçant : URSSAF, RSPM ou régime PAMC, CARMF, régularisation et modulation, prévoyance Madelin, congé maternité ou paternité.",
     contexte: "Ce que tu verses à l'URSSAF et à la CARMF, et ce qui te protège en retour.",
     introduction:
-      "L'URSSAF et la CARMF appellent tes cotisations avant de connaître ton revenu, puis régularisent : c'est l'effet ciseaux, et il se prépare. Tu trouves ici le choix entre RSPM et régime PAMC avec des exemples chiffrés, l'affiliation à la CARMF, ce qui sépare les cotisations de l'impôt, la prévoyance (avec ou sans Madelin) et ton congé maternité ou paternité de remplaçant.",
+      "L'URSSAF et la CARMF calculent une partie de tes cotisations sur tes revenus passés, puis régularisent. Après une bonne année, la régularisation et le provisionnel relevé tombent ensemble : c'est l'effet ciseaux, et il se prépare. Tu trouves ici le choix entre RSPM et régime PAMC avec des exemples chiffrés, l'affiliation à la CARMF, ce qui sépare les cotisations de l'impôt, la prévoyance (avec ou sans Madelin) et ton congé de maternité ou de paternité.",
     partage: 'nuit',
   },
   {
@@ -92,7 +92,7 @@ export const BLOG_THEMES: BlogTheme[] = [
       "Impôts du médecin remplaçant : micro-BNC ou réel, déclarations 2035 et 2042-C PRO, frais réels déductibles, CFE, exonérations PDSA et FRR, calendrier.",
     contexte: 'Déclarer tes revenus, déduire tes frais, ne rater aucune échéance.',
     introduction:
-      "Micro-BNC ou régime réel : ce choix décide de ce que tu déclares et de ce que tu peux déduire. Tu trouves ici la 2035 ligne à ligne et son report sur la 2042-C PRO, la déclaration de l'interne qui remplace, les frais réels du libéral comme du salarié (voiture, repas, chèques-vacances) et la CFE. Puis les allègements d'impôt (gardes de PDSA, zones FRR, outre-mer) et le calendrier de toutes tes échéances.",
+      "Micro-BNC ou régime réel : ce choix décide de ce que tu déclares et de ce que tu peux déduire. Viennent ensuite la 2035 ligne à ligne et son report sur la 2042-C PRO, la déclaration de l'interne qui remplace, les frais réels du libéral comme du salarié (voiture, repas), les chèques-vacances et la CFE. Puis les allègements d'impôt (gardes de PDSA, zones FRR, outre-mer) et le calendrier de tes échéances.",
     partage: 'eau',
   },
   {
@@ -100,10 +100,10 @@ export const BLOG_THEMES: BlogTheme[] = [
     nom: 'Budget et patrimoine',
     titre: 'Budget et patrimoine du médecin remplaçant | Hippodoc',
     description:
-      "Budget du médecin remplaçant : partir du Super-Net, épargne de précaution, régularisations à prévoir, puis investir en PEA, assurance vie, PER ou CTO.",
+      "Super-Net, budget et placements du médecin remplaçant : régularisations à prévoir, épargne de précaution, puis PEA, PER, CTO ou assurance vie.",
     contexte: "Ce qu'il te reste vraiment, et ce que tu en fais.",
     introduction:
-      "Ton chiffre d'affaires n'est pas ce que tu peux dépenser : il faut d'abord en retirer les cotisations, l'impôt et les régularisations à venir. Ce qui reste, c'est ton Super-Net. Tu trouves ici comment bâtir ton budget à partir de lui, quelle épargne de précaution garder, puis où placer le reste (PEA, assurance vie, PER ou compte-titres) et pourquoi le temps compte autant que le montant.",
+      "Ton chiffre d'affaires n'est pas ce que tu peux dépenser : retires-en les cotisations et l'impôt, ce qui reste est ton Super-Net. Tu trouves ici comment bâtir ton budget à partir de lui, les régularisations à mettre de côté quand tes revenus montent, l'épargne de précaution à garder, puis où placer le reste (PEA, assurance vie, PER ou compte-titres) et pourquoi le temps compte autant que le montant.",
     partage: 'vert',
   },
 ];
