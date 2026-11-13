@@ -804,119 +804,530 @@ for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
    JSON-LD — que rien ne forçait à rester identiques. Elles sont désormais dérivées
    d'une source unique ; ce contrôle empêche qu'on recommence.
    Questions et réponses, sur toutes les pages (§ 9.ez ; les réponses n'étaient
-   comparées que sur l'accueil depuis § 9.ex). */
+   comparées que sur l'accueil depuis § 9.ex).
+
+   Depuis § 9.fc, la réponse n'est plus cherchée « quelque part dans la page » (une
+   inclusion : deux réponses échangées, une réponse réduite à « Oui. » passaient). Sur le
+   build du 13 novembre 2026, les 391 questions des 58 schémas sont chacune le texte entier
+   d'un élément du <summary> d'un seul <details>, et leur réponse est dans un conteneur
+   connu de ce pli (`.qa-in` 325 fois, `.gd-reponse` 66 fois). Le contrôle exige cette
+   structure. Pour chaque question du schéma :
+     1. la réponse existe : ni absente, ni vide ;
+     2. la question est le titre d'un pli : le texte entier d'un élément du premier
+        <summary> d'un <details>, que rien ne précède dans le pli. Entre elle et le
+        conteneur de la réponse, et devant elle dans le <summary>, un repère au plus
+        (SEUIL_REPERE signes, sans lettre : « + », un numéro). Une question qui n'est le
+        titre d'aucun pli, un pli sans conteneur reconnu : une erreur, la réponse ne serait
+        comparée à rien (il n'y a plus de repli sur « la réponse suit sa question ») ;
+     3. le texte du conteneur est ÉGAL à la réponse du schéma, du premier au dernier
+        signe (espaces mises à part), sauf exception déclarée dans EXCEPTIONS_FAQ ; le
+        pli ne contient rien d'autre après lui, sauf, dans le guide, les blocs de
+        HORS_REPONSE_DU_PLI ;
+     4. les mots se séparent aux mêmes endroits des deux côtés, dans la question comme
+        dans la réponse (et dans la phrase d'une exception) ;
+     5. ni le conteneur, ni un ancêtre, ni un élément de la réponse ou de la question qui
+        porte du texte n'est masqué : attribut `hidden`, style en ligne `display:none` /
+        `visibility:hidden`, élément dont le navigateur n'affiche pas le contenu (<dialog>
+        fermé, <canvas>, <datalist>…) ;
+     6. sens inverse : dans l'élément qui contient un pli du schéma, tout autre <details>
+        est lui aussi une question du schéma.
+   Et pour l'ensemble : une page qui cite « FAQPage » en a un bloc, un seul, lisible à la
+   racine d'un JSON-LD (quels que soient les attributs de sa balise <script>), sans
+   question répétée ; le nombre de pages à FAQPage et de questions ne passe pas sous
+   PLANCHER_FAQ.
+   Ce que le contrôle ne voit pas (essais par mutation, § 9.fc) :
+     - une réponse masquée par une règle de feuille de style (classe `sr`, `hidden` de
+       Tailwind…) ou par un autre style en ligne (`opacity:0`, hauteur nulle). Un
+       <details> fermé n'est pas masqué ;
+     - le balisage admis dans le schéma, retiré avant de comparer : une balise de
+       BALISE_DE_REPONSE (`<b>` ajouté dans une réponse) partout ; `**`, `*`, accents
+       graves et ⚠️ ✅ 💡 dans le guide (sansBalisageDuGuide). Voulu. Pour les trois
+       marqueurs, ni lequel c'est ni sa place ne sont comparés à l'icône affichée : un ⚠️
+       devenu ✅ dans le schéma, ou déplacé d'une phrase, passe ;
+     - dans le guide, une espace ajoutée ou retirée là où l'écran n'a qu'une balise en
+       ligne entre deux signes (puce, renvoi) : les deux lectures y sont admises ;
+       partout, le nombre et la nature des espaces (insécable, retour à la ligne) : hors
+       du guide, rien ne dit donc où le schéma va à la ligne (dans le guide, la puce
+       « • » est comparée comme un signe) ;
+     - un repère qui dirait quelque chose : trois signes sans lettre entre la question et
+       sa réponse (« ✗ », « ≠ », « ?! ») passent comme le « + » d'un <summary> ;
+     - ce qui s'affiche autour d'un pli sans être dedans : une phrase juste avant ou juste
+       après le <details> ; la même question reprise ailleurs dans la page hors d'un pli
+       (un titre suivi d'une autre réponse) ; une question affichée hors de l'élément qui
+       contient les plis du schéma ; un bloc entier de questions ou une page entière
+       absents du schéma tant que le total reste au-dessus du plancher ;
+     - ce qui n'est pas du texte : des mots dessinés dans un <svg> ou portés par une image
+       au milieu d'une réponse ;
+     - dans le guide, le texte des étiquettes et des renvois « Voir aussi » d'un pli.
+   Ce qu'il refuse alors que le texte est le même, à savoir avant de changer un gabarit :
+     - une FAQ sous un autre balisage que <details> + conteneur connu (pli devenu <div>,
+       conteneur renommé) : le déclarer ici d'abord ;
+     - une FAQ dans un élément `hidden` (panneau d'onglet inactif, `hidden="until-found"`),
+       alors qu'un <details> fermé passe ;
+     - dans le guide, une puce affichée que le schéma n'a pas, ou une puce passée en
+       feuille de style : adapter `reponsePourSchema` ou `sansBalisageDuGuide` ;
+     - une entité nommée hors de la table ENTITES_FAQ. */
 
 // Entités, décodées en UNE passe : « &amp;lt; » est le texte « &lt; », pas « < ».
 // ⚠️ Les numériques aussi : Astro échappe l'apostrophe en `&#x27;` (hexadécimal) et non
 // `&#39;`. Deux versions de ce contrôle ont produit 16 faux positifs sur
 // /guide-declarations avant que ce soit vu. Et `&lt;` / `&gt;` : un « < » de texte
 // (« DSAU < 1 », « < 38 000 € ») sort échappé dans la page, tel quel dans le schéma.
-const ENTITES_FAQ = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', rsquo: '’' };
+// Entités nommées (§ 9.fc) : celles de Latin-1 (« &eacute; », « &laquo; », « &nbsp; »…, dans
+// l'ordre des codes 160 à 255) et la typographie courante. La casse compte (« &Eacute; » est
+// « É »), sauf pour les quatre que HTML admet aussi en capitales. Une entité hors de cette
+// table (« &NotEqual; », une lettre grecque) n'est pas décodée : elle sort en écart de texte.
+const ENTITES_FAQ = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", AMP: '&', LT: '<', GT: '>', QUOT: '"',
+  OElig: 'Œ', oelig: 'œ', Scaron: 'Š', scaron: 'š', Yuml: 'Ÿ', circ: 'ˆ', tilde: '˜',
+  ensp: '\u2002', emsp: '\u2003', thinsp: '\u2009', hairsp: '\u200a', zwnj: '\u200c', zwj: '\u200d', lrm: '\u200e', rlm: '\u200f',
+  ndash: '–', mdash: '—', lsquo: '‘', rsquo: '’', sbquo: '‚', ldquo: '“', rdquo: '”', bdquo: '„',
+  dagger: '†', Dagger: '‡', bull: '•', hellip: '…', permil: '‰', prime: '′', Prime: '″', lsaquo: '‹', rsaquo: '›',
+  oline: '‾', frasl: '⁄', euro: '€', trade: '™', larr: '←', uarr: '↑', rarr: '→', darr: '↓', harr: '↔',
+  minus: '−', ne: '≠', le: '≤', ge: '≥', asymp: '≈', infin: '∞', radic: '√', sum: '∑',
+};
+('nbsp iexcl cent pound curren yen brvbar sect uml copy ordf laquo not shy reg macr deg plusmn sup2 sup3 acute micro para middot cedil sup1 ordm raquo frac14 frac12 frac34 iquest ' +
+  'Agrave Aacute Acirc Atilde Auml Aring AElig Ccedil Egrave Eacute Ecirc Euml Igrave Iacute Icirc Iuml ETH Ntilde Ograve Oacute Ocirc Otilde Ouml times Oslash Ugrave Uacute Ucirc Uuml Yacute THORN szlig ' +
+  'agrave aacute acirc atilde auml aring aelig ccedil egrave eacute ecirc euml igrave iacute icirc iuml eth ntilde ograve oacute ocirc otilde ouml divide oslash ugrave uacute ucirc uuml yacute thorn yuml')
+  .split(' ').forEach((nom, i) => { ENTITES_FAQ[nom] = String.fromCodePoint(160 + i); });
+// Le trait d'union conditionnel (U+00AD, « &shy; ») ne s'affiche pas : une césure proposée
+// au navigateur dans un mot long n'est pas un écart. Il est retiré des deux côtés.
 const decoderEntites = (s) =>
-  s.replace(/&(#x[0-9a-f]{1,6}|#\d{1,7}|[a-z]+);/gi, (tout, e) => {
-    if (e[0] !== '#') return ENTITES_FAQ[e.toLowerCase()] ?? tout;
+  s.replace(/&(#x[0-9a-f]{1,6}|#\d{1,7}|[a-z][a-z0-9]*);/gi, (tout, e) => {
+    if (e[0] !== '#') return Object.hasOwn(ENTITES_FAQ, e) ? ENTITES_FAQ[e] : tout;
     const code = /^#x/i.test(e) ? parseInt(e.slice(2), 16) : Number(e.slice(1));
     return code <= 0x10ffff ? String.fromCodePoint(code) : tout;
-  });
-// On retire TOUTE espace des deux côtés avant de comparer : un texte peut contenir du
-// balisage interne (mise en gras via FormattedText), et remplacer une balise par une
-// espace couperait un mot en deux. Première version de ce contrôle : 16 faux positifs
-// sur /guide-declarations.
+  }).replace(/\u00ad/g, '');
+// On compare sans AUCUNE espace, des deux côtés : un texte peut contenir du balisage
+// interne (mise en gras via FormattedText), et remplacer une balise par une espace
+// couperait un mot en deux. Première version de ce contrôle : 16 faux positifs sur
+// /guide-declarations. Les frontières de mots sont vérifiées à part (point 4).
 const compacterFaq = (s) => decoderEntites(s).replace(/\s+/g, '');
-// Texte de la page : sans l'en-tête du document ni les blocs qui ne s'affichent pas,
-// puis sans les balises. Dans le HTML servi, tout « < » de texte est échappé : ce qui
-// reste entre chevrons est une balise (valeurs d'attributs entre guillemets comprises).
-const texteVisibleFaq = (html) =>
-  html
-    .replace(/<(head|script|style|svg|template|noscript)\b[\s\S]*?<\/\1>/gi, ' ')
-    .replace(/<!--[\s\S]*?-->|<\/?[a-zA-Z](?:"[^"]*"|'[^']*'|[^'">])*>|<![^>]*>/g, ' ');
+
+/* Lecture d'une page : son texte sans espaces (`compact`), ses éléments avec la plage
+   de `compact` que chacun couvre, et ce qui sépare un signe du précédent (`ecart` :
+   2 = une espace ou une balise de bloc, 1 = une balise en ligne seule, absent = rien).
+   Sans le <head> ni les blocs qui ne s'affichent pas. Dans le HTML servi, tout « < » de
+   texte est échappé : ce qui reste entre chevrons est une balise (valeurs d'attributs
+   entre guillemets comprises, une valeur qui contient « > » ne coupe pas la balise).
+   Une balise fermante sans ouvrante est ignorée ; un élément resté ouvert se ferme avec
+   son parent. */
+const BALISES_VIDES = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
+const BALISES_SANS_TEXTE = { head: /<\/head\s*>/gi, script: /<\/script\s*>/gi, style: /<\/style\s*>/gi, svg: /<\/svg\s*>/gi, template: /<\/template\s*>/gi, noscript: /<\/noscript\s*>/gi };
+// Toute autre balise sépare deux mots (bloc, <br>, cellule, élément de liste). Les balises
+// que le navigateur rend dans la ligne y sont toutes (§ 9.fc : `<ins>` et `<del>` manquaient,
+// un mot corrigé devant une virgule sortait en écart de frontière).
+const BALISES_EN_LIGNE = new Set([
+  'a', 'abbr', 'acronym', 'audio', 'b', 'bdi', 'bdo', 'big', 'button', 'canvas', 'cite', 'code', 'data', 'del', 'dfn', 'em', 'embed', 'font', 'i', 'iframe', 'img', 'input', 'ins',
+  'kbd', 'label', 'map', 'mark', 'meter', 'nobr', 'object', 'output', 'picture', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'select', 'slot', 'small', 'source', 'span',
+  'strike', 'strong', 'sub', 'sup', 'svg', 'textarea', 'time', 'track', 'tt', 'u', 'var', 'video', 'wbr',
+]);
+const JETON_HTML = /<!--[\s\S]*?-->|<!(?:"[^"]*"|'[^']*'|[^'">])*>|<(\/?)([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^'">])*)>/g;
+function lirePageFaq(html) {
+  const els = []; // { nom, attrs, parent, d, f } — dans l'ordre du document
+  const morceaux = [];
+  const ecart = new Map();
+  const pile = [];
+  let n = 0;
+  let attente = 0;
+  let dernier = 0;
+  const texte = (brut) => {
+    const t = decoderEntites(brut);
+    const mot = /\S+/g;
+    let fin = 0;
+    for (let m; (m = mot.exec(t)); fin = mot.lastIndex) {
+      if (m.index > fin) attente = 2;
+      if (attente) ecart.set(n, attente);
+      attente = 0;
+      morceaux.push(m[0]);
+      n += m[0].length;
+    }
+    if (fin < t.length) attente = 2;
+  };
+  JETON_HTML.lastIndex = 0;
+  for (let m; (m = JETON_HTML.exec(html)); ) {
+    if (m.index > dernier) texte(html.slice(dernier, m.index));
+    dernier = JETON_HTML.lastIndex;
+    if (!m[2]) continue; // commentaire, doctype : ni texte ni séparation
+    const nom = m[2].toLowerCase();
+    attente = Math.max(attente, BALISES_EN_LIGNE.has(nom) ? 1 : 2);
+    if (m[1]) {
+      let k = pile.length - 1;
+      while (k >= 0 && els[pile[k]].nom !== nom) k--;
+      if (k >= 0) {
+        for (let j = pile.length - 1; j >= k; j--) els[pile[j]].f = n;
+        pile.length = k;
+      }
+      continue;
+    }
+    const autoFermante = /\/\s*$/.test(m[3]);
+    const fermeture = BALISES_SANS_TEXTE[nom];
+    if (fermeture) {
+      if (autoFermante) continue;
+      fermeture.lastIndex = dernier;
+      if (!fermeture.exec(html)) { dernier = html.length; break; }
+      JETON_HTML.lastIndex = dernier = fermeture.lastIndex;
+      continue;
+    }
+    const vide = BALISES_VIDES.has(nom) || autoFermante;
+    els.push({ nom, attrs: m[3], parent: pile.length ? pile[pile.length - 1] : -1, d: n, f: vide ? n : -1 });
+    if (!vide) pile.push(els.length - 1);
+  }
+  if (dernier < html.length) texte(html.slice(dernier));
+  for (const i of pile) els[i].f = n;
+  return { els, compact: morceaux.join(''), ecart };
+}
+// Les descendants d'un élément le suivent dans `els`, d'un seul tenant : ce sont les
+// suivants dont le parent n'est pas avant lui.
+const finDeDescendance = (els, k) => {
+  let j = k + 1;
+  while (j < els.length && els[j].parent >= k) j++;
+  return j;
+};
+// Les attributs d'une balise, comme le navigateur les lit : valeur entre guillemets doubles,
+// simples ou sans guillemets, attribut collé au précédent, le premier d'un nom répété.
+const attributsFaq = (e) => {
+  const a = new Map();
+  for (const m of e.attrs.matchAll(/([^\s"'=<>/]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'<>]+)))?/g)) {
+    const nom = m[1].toLowerCase();
+    if (!a.has(nom)) a.set(nom, m[2] ?? m[3] ?? m[4] ?? '');
+  }
+  return a;
+};
+const classesFaq = (e) => (attributsFaq(e).get('class') ?? '').split(/\s+/);
+// Pour les messages : le texte d'une plage, une espace là où la page en a une.
+// `des` = 1 : une espace aussi là où seule une balise en ligne sépare deux signes.
+const texteLisibleFaq = (lu, d, f, des = 2) => {
+  let s = '';
+  for (let i = d; i < f; i++) s += (i > d && (lu.ecart.get(i) ?? 0) >= des ? ' ' : '') + lu.compact[i];
+  return s;
+};
+// Ce qu'un contrôle statique voit d'un élément masqué : l'attribut `hidden` (pas la
+// classe du même nom, ni `aria-hidden`), le style en ligne, et les éléments dont le
+// navigateur n'affiche pas le contenu (un <dialog> sans `open`, le contenu de repli d'un
+// <canvas>, un <datalist>…). Pas les feuilles de style.
+// `(?<![\w-])` : `backface-visibility: hidden` ne masque rien ; `content-visibility: hidden`, si.
+const CONTENU_NON_AFFICHE = new Set(['audio', 'canvas', 'datalist', 'iframe', 'noembed', 'noframes', 'object', 'video']);
+const masqueFaq = (e) => {
+  const a = attributsFaq(e);
+  return a.has('hidden') ||
+    /(?<![\w-])(?:display\s*:\s*none|(?:content-)?visibility\s*:\s*(?:hidden|collapse))/i.test(decoderEntites(a.get('style') ?? '')) ||
+    CONTENU_NON_AFFICHE.has(e.nom) || (e.nom === 'dialog' && !a.has('open'));
+};
+
 // Réponse du schéma : du texte. Seules de vraies balises en sont retirées, celles que
 // Google lit dans une réponse (aucune aujourd'hui). `/<[^>]+>/` y prenait un « < » de
 // texte pour une balise et avalait la suite jusqu'au « > » suivant.
-const BALISE_DE_REPONSE = /<\/?(?:h[1-6]|br|ol|ul|li|a|p|div|b|strong|i|em)(?:\s[^<>]*)?\/?>/gi;
+// Une balise de bloc sépare deux mots, elle laisse une espace ; une balise en ligne non
+// (« <b>Totalement</b>. » se lit « Totalement. ») : depuis § 9.fc les frontières de mots
+// sont comparées, une espace de trop devant le point y ferait un écart.
+const BALISE_DE_REPONSE = /<\/?(h[1-6]|br|ol|ul|li|a|p|div|b|strong|i|em)(?:\s[^<>]*)?\/?>/gi;
+const sansBalisesDeReponse = (s) => s.replace(BALISE_DE_REPONSE, (_, nom) => (/^(?:a|b|strong|i|em)$/i.test(nom) ? '' : ' '));
 /* Le guide des déclarations écrit ses réponses dans le balisage que
    `src/components/guide/FormattedText.tsx` rend à l'écran, et son schéma reprend cette
    source telle quelle. Ce balisage n'est pas du texte, il est retiré de la réponse avant
    de comparer : `**gras**`, `*italique*`, `code` entre accents graves (MARKDOWN_PATTERN,
-   même expression), les marqueurs de bloc ⚠️ ✅ 💡 (splitOnMarkers : rendus en icône) et
-   la puce de début de ligne, « - » ou « • » (splitParagraphLines : rendue « • », retirée
-   des deux côtés). Rien d'autre : un renvoi interne (« QT-014 », rendu « Question · … »)
-   ou une énumération que l'écran met en liste en lui ôtant ses virgules restent des
-   écarts de texte. Ailleurs, aucun balisage n'est toléré dans une réponse. */
+   même expression) et les marqueurs de bloc ⚠️ ✅ 💡 (splitOnMarkers : rendus en icône).
+   La puce de début de ligne, « - » ou « • », devient « • », le signe que l'écran affiche
+   (splitParagraphLines) : depuis § 9.fc elle reste dans la comparaison, des deux côtés
+   (elle en était retirée, et une liste mise à plat dans le schéma passait). Rien
+   d'autre : un renvoi interne (« QT-014 », rendu « Question · … ») ou une énumération que
+   l'écran met en liste en lui ôtant ses virgules restent des écarts de texte. Ailleurs,
+   aucun balisage n'est toléré dans une réponse. */
 const SCHEMA_EN_SOURCE_DU_GUIDE = (page) =>
   page.startsWith('/guide-declarations') && page !== '/guide-declarations/calculette';
 const sansBalisageDuGuide = (s) =>
   s
     .replace(/\*\*([^*]+?)\*\*|\*(?!\s)([^*\n]+?)(?<!\s)\*|`([^`]+?)`/g, (_, gras, italique, code) => gras ?? italique ?? code)
     .replace(/⚠️|✅|💡/g, ' ')
-    .replace(/^[ \t]*[•-]\s+/gm, '')
-    .replace(/•/g, ' ');
+    .replace(/^[ \t]*[•-]\s+/gm, '• ');
+
+/* Où la réponse se lit dans un pli : le premier élément du <details> qui porte une de ces
+   classes. `.qa-in` : plis de la DA (`.qa` de da.css : accueil, /faq, /tarifs, /simulateur,
+   /comparatif, calculette, articles). `.gd-reponse` : questions du guide des déclarations. */
+const CONTENEURS_DE_REPONSE = ['qa-in', 'gd-reponse'];
+/* Ce qu'un pli peut contenir après la réponse sans que le schéma le porte : dans le
+   guide, et là seulement, les étiquettes de la question (statut, mots-clés) et ses
+   renvois « Voir aussi » (66 plis sur 66 au relevé). Ce n'est pas la réponse. Tout autre
+   texte échoue. */
+const HORS_REPONSE_DU_PLI = ['gd-etiquettes', 'gd-croises'];
+/* Ce que l'écran peut porter autour de la question sans que le schéma le dise : un
+   repère, pas un mot. Relevé du 13 novembre 2026, 391 réponses.
+   Entre la fin de la question et le début de sa réponse : rien 379 fois, 1 signe 12 fois
+   (le « + » du <summary>, calculette et simulateur). Avant la question, dans le
+   <summary> : rien 359 fois, le numéro de `/faq` 32 fois (1 ou 2 chiffres).
+   D'où la règle : SEUIL_REPERE signes au plus (hors espaces), soit le plus long relevé
+   (2) et un de marge (un numéro à trois chiffres, « 1. », « + − »), sans aucune lettre ;
+   et sans chiffre après la question. Une longueur seule ne suffisait pas : « Oui »,
+   « Non » et « Si » tiennent en trois signes, et glissés entre la question et la réponse
+   ils la contredisent. */
+const SEUIL_REPERE = 3;
+const estRepereFaq = (signes, chiffresAdmis) =>
+  signes.length <= SEUIL_REPERE && !(chiffresAdmis ? /\p{L}/u : /[\p{L}\p{N}]/u).test(signes);
+/* Plancher : le nombre de pages qui portent un FAQPage et le nombre de leurs questions ne
+   baissent pas sans qu'on le décide. Le reste du contrôle part du schéma : une page qui
+   perd tout son FAQPage, ou un bloc entier de questions retiré du schéma et resté à
+   l'écran (une rubrique de `/faq`, un groupe du guide), n'y laisse rien à comparer.
+   Compte du 13 novembre 2026. Au-dessus (nouvel article, nouvelle question) : un
+   avertissement, relever le plancher. En dessous : une erreur, ne l'abaisser que si la
+   disparition est voulue. */
+const PLANCHER_FAQ = { pages: 58, questions: 391 };
+/* Écarts connus entre l'écran et le schéma, déclarés un par un. Chaque passage sort un
+   avertissement par exception ; une exception qui ne correspond plus à rien (page ou
+   question disparue, texte qui n'est plus à l'écran) fait échouer le contrôle : on la
+   retire. Une exception ne couvre que son texte, mot pour mot, à sa place : à la suite de
+   la réponse du schéma, dans son conteneur (les quatre écarts connus sont de cette forme).
+   En ajouter une est une décision de contenu : elle se liste dans MIGRATION.md pour le
+   propriétaire. */
+const EXCEPTIONS_FAQ = [
+  {
+    page: '/faq',
+    question: "C'est quoi les revenus PDSA / exonérés ?",
+    texte: 'Le détail : ce qui est exonéré et comment le déclarer.',
+    raison: 'phrase à lien vers /blog/pdsa-exoneration-gardes-regulees, à l\'écran seulement (§ 9.fa, § 9.fc)',
+  },
+  {
+    page: '/faq',
+    question: "Qu'est-ce que les rétrocessions versées ?",
+    texte: 'Côté remplaçant, voir comment se négocie une rétrocession.',
+    raison: 'phrase à lien vers /blog/retrocession-honoraires-medecin-remplacant, à l\'écran seulement (§ 9.fa, § 9.fc)',
+  },
+  {
+    page: '/faq',
+    question: 'Mes cotisations URSSAF, elles se calculent toutes seules ?',
+    texte: "Pour comprendre chaque cotisation : l'URSSAF et la CARMF expliquées.",
+    raison: 'phrase à liens vers /blog/tout-comprendre-urssaf et /blog/tout-comprendre-carmf, à l\'écran seulement (§ 9.fa, § 9.fc)',
+  },
+  {
+    page: '/faq',
+    question: 'Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ?',
+    texte: 'La règle complète : micro-BNC ou réel.',
+    raison: 'phrase à lien vers /blog/regime-fiscal-micro-bnc-vs-reel, à l\'écran seulement (§ 9.fa, § 9.fc)',
+  },
+];
+
 // Pour le message d'erreur : le premier endroit où la réponse du schéma quitte le texte
-// de la page. La réponse suit sa question : on cherche, après chaque passage de la
-// question dans la page, le plus long début de la réponse (compté en mots), et on garde
-// le plus long. Chercher dans toute la page montrait parfois une autre réponse, qui
-// commençait par les mêmes mots.
-function lecteurDEcartsFaq(texte) {
-  const position = [];
-  let compact = '';
-  for (let i = 0; i < texte.length; i++) {
-    if (!/\s/.test(texte[i])) { compact += texte[i]; position.push(i); }
-  }
-  return (question, reponse) => {
-    const q = question.replace(/\s+/g, '');
-    const mots = reponse.trim().split(/\s+/);
-    const debut = (n) => mots.slice(0, n).join('');
-    const zones = []; // [début, fin] dans `compact`
-    const portee = debut(mots.length).length + 400;
-    for (let i = q ? compact.indexOf(q) : -1; i >= 0; i = compact.indexOf(q, i + 1)) zones.push([i + q.length, i + q.length + portee]);
-    if (!zones.length) zones.push([0, compact.length]); // question absente de la page : toute la page
-    let n = 0;
-    let fin = zones[0][0];
-    for (const [depart, arrivee] of zones) {
-      const zone = compact.slice(depart, arrivee);
-      let bas = 0;
-      for (let haut = mots.length; bas < haut; ) {
-        const milieu = (bas + haut + 1) >> 1;
-        if (zone.includes(debut(milieu))) bas = milieu; else haut = milieu - 1;
-      }
-      if (bas > n) { n = bas; fin = depart + zone.indexOf(debut(bas)) + debut(bas).length; }
+// affiché à partir de `debut` (derniers mots communs, suite dans le schéma, suite dans la
+// page).
+function premierEcartFaq(lu, reponse, debut, fin) {
+  const mots = reponse.trim().split(/\s+/);
+  const rep = mots.join('');
+  let commun = 0;
+  while (commun < rep.length && debut + commun < fin && rep[commun] === lu.compact[debut + commun]) commun++;
+  let n = 0;
+  let signes = 0; // les n premiers mots, entiers, sont communs
+  while (n < mots.length && signes + mots[n].length <= commun) signes += mots[n++].length;
+  const ici = debut + signes;
+  const aLaPage = ici < fin ? `« ${texteLisibleFaq(lu, ici, Math.min(fin, ici + 70))} »` : null;
+  const auSchema = n < mots.length ? `« ${mots.slice(n, n + 8).join(' ')} »` : null;
+  if (n === 0) return `dès le premier mot : le schéma commence par ${auSchema}, la page par ${aLaPage ?? '« » (rien)'}`;
+  return `après « …${mots.slice(Math.max(0, n - 5), n).join(' ')} » : ${auSchema ? `le schéma continue par ${auSchema}` : 'le schéma s\'arrête là'}, ${aLaPage ? `la page ${auSchema ? '' : 'continue '}par ${aLaPage}` : 'la réponse affichée s\'arrête là'}`;
+}
+// Point 4. Les signes sont les mêmes des deux côtés ; les mots se séparent-ils aux mêmes
+// endroits ? `texte` (question ou réponse du schéma) se lit à l'écran à partir de `base`.
+// Là où le schéma n'a pas d'espace, l'écran n'en a pas non plus (une balise en ligne au
+// milieu d'un mot, ou collée à une ponctuation, n'en est pas une : 828 fois au relevé).
+// Là où le schéma a une espace, l'écran a une espace ou une balise de bloc ; une balise
+// en ligne seule (« mot<strong>suite ») ne sépare rien à l'écran, c'est un écart. Sauf
+// dans le guide (`enLigneSepare`), où une puce et un renvoi sont des éléments en ligne
+// que la feuille écarte de leur voisin (124 fois au relevé, toutes dans le guide).
+// Relevé : aucun écart sur les 391 questions et les 391 réponses, ponctuation comprise.
+function ecartDeFrontiereFaq(lu, texte, base, enLigneSepare) {
+  const t = texte.trim();
+  let k = 0;
+  let espace = false;
+  for (let i = 0; i < t.length; i++) {
+    if (/\s/.test(t[i])) { espace = true; continue; }
+    const g = k ? lu.ecart.get(base + k) ?? 0 : -1; // premier signe : rien à comparer
+    if (g >= 0 && (espace ? g === 0 || (g === 1 && !enLigneSepare) : g === 2)) {
+      const avant = t.slice(Math.max(0, i - 30), i).trimEnd().split(/\s+/).pop();
+      const apres = t.slice(i, i + 30).split(/\s+/)[0];
+      if (!espace) return `le schéma écrit « ${avant}${apres} » sans espace, la page « ${avant} ${apres} »`;
+      return `le schéma écrit « ${avant} ${apres} », la page « ${avant}${apres} », ${g ? 'avec une balise en ligne pour toute séparation' : 'sans espace'}`;
     }
-    const ici = position[fin] ?? texte.length;
-    const aLaPage = texte.slice(ici, ici + 70).replace(/\s+/g, ' ').trim();
-    const suite = mots.slice(n, n + 8).join(' ');
-    return n === 0
-      ? `dès le premier mot : le schéma commence par « ${suite} », la page par « ${aLaPage} »`
-      : `après « …${mots.slice(Math.max(0, n - 5), n).join(' ')} » : le schéma continue par « ${suite} », la page par « ${aLaPage} »`;
-  };
+    espace = false;
+    k++;
+  }
+  return null;
+}
+/* Examen d'un pli : la réponse `reponse` (texte du schéma, `rep` sans espaces) contre le
+   <details> `det`, dont l'élément `el` du <summary> est la question `question`. Rend les
+   défauts trouvés (phrases qui complètent « la réponse à « … » … »). `guide` : la page
+   est du guide des déclarations (blocs admis après la réponse, puces et renvois). */
+function examinerPliFaq(lu, { det, som, el }, question, reponse, rep, exception, guide) {
+  const { els, compact } = lu;
+  const finQuestion = els[el].f;
+  const finDuPli = finDeDescendance(els, det);
+  let cont = -1;
+  for (let j = det + 1; j < finDuPli && cont < 0; j++) {
+    if (classesFaq(els[j]).some((c) => CONTENEURS_DE_REPONSE.includes(c))) cont = j;
+  }
+  if (cont < 0) {
+    // Pas de repli sur « la réponse suit sa question » : c'était une inclusion, une réponse
+    // tronquée y passait (§ 9.fc). Un pli sans conteneur reconnu n'est comparé à rien.
+    return { defauts: [`du JSON-LD FAQPage n'est comparée à rien : son pli n'a pas de conteneur ${CONTENEURS_DE_REPONSE.map((x) => `.${x}`).join(' ou ')}. Un nouveau gabarit de réponse se déclare dans CONTENEURS_DE_REPONSE (verify-site.mjs)`] };
+  }
+  const c = els[cont];
+  const defauts = [];
+  // Point 5 : masqué.
+  const masques = [];
+  for (let k = cont; k >= 0; k = els[k].parent) if (masqueFaq(els[k])) masques.push(els[k]);
+  for (let k = el; k >= 0 && k !== det; k = els[k].parent) if (masqueFaq(els[k])) masques.push(els[k]);
+  // Un élément masqué sans texte ne retire rien à la réponse (case à cocher d'une
+  // interaction en CSS seul, image d'un pixel).
+  for (const racine of [el, cont]) {
+    for (let j = racine + 1, fin = finDeDescendance(els, racine); j < fin; j++) if (els[j].f > els[j].d && masqueFaq(els[j])) masques.push(els[j]);
+  }
+  if (masques.length) {
+    defauts.push(`est dans le JSON-LD FAQPage mais masquée à l'écran, elle ou sa question, en tout ou partie : ${masques.map((e) => `<${e.nom}${e.attrs}>`.replace(/\s+/g, ' ').slice(0, 110)).join(', ')}`);
+  }
+  // Point 2 : la question est le titre du pli, la réponse commence juste après elle.
+  // Le titre d'un <details> est son premier <summary> enfant ; tout ce qui le précède dans
+  // le pli (du texte, un autre <summary>) s'affiche avec la réponse, pli ouvert.
+  let premierSommaire = det + 1;
+  while (premierSommaire < finDuPli && !(els[premierSommaire].parent === det && els[premierSommaire].nom === 'summary')) premierSommaire++;
+  if (premierSommaire !== som || els[som].d !== els[det].d) {
+    defauts.push(`du JSON-LD FAQPage répond à une question qui n'est pas le premier contenu de son <details> : ${premierSommaire !== som ? 'un autre <summary> la précède, c\'est lui que le navigateur prend pour titre' : `« ${texteLisibleFaq(lu, els[det].d, Math.min(els[som].d, els[det].d + 80))} » précède son <summary>, et s'affiche avec la réponse`}`);
+  }
+  if (!estRepereFaq(compact.slice(els[som].d, els[el].d), true)) {
+    defauts.push(`du JSON-LD FAQPage répond à une question que l'écran fait précéder de « ${texteLisibleFaq(lu, els[som].d, Math.min(els[el].d, els[som].d + 80), 1)} » dans son <summary> : un repère seulement (${SEUIL_REPERE} signes au plus, sans lettre : un numéro)`);
+  }
+  if (!estRepereFaq(compact.slice(finQuestion, c.d), false)) {
+    defauts.push(`du JSON-LD FAQPage ne suit pas sa question à l'écran : « ${texteLisibleFaq(lu, finQuestion, Math.min(c.d, finQuestion + 80), 1)} » les sépare, un repère seulement (${SEUIL_REPERE} signes au plus, ni lettre ni chiffre : le « + » d'un <summary>)`);
+  }
+  const frontiereDeQuestion = ecartDeFrontiereFaq(lu, question, els[el].d, guide);
+  if (frontiereDeQuestion) defauts.push(`du JSON-LD FAQPage répond à une question qui ne sépare pas les mots comme l'écran : ${frontiereDeQuestion}`);
+  // Point 3 : rien d'autre dans le pli après le conteneur…
+  let admis = 0;
+  for (let j = finDeDescendance(els, cont); j < finDuPli; ) {
+    const hors = guide && classesFaq(els[j]).some((x) => HORS_REPONSE_DU_PLI.includes(x));
+    if (hors) admis += els[j].f - els[j].d;
+    j = hors ? finDeDescendance(els, j) : j + 1;
+  }
+  if (els[det].f - c.f !== admis) {
+    defauts.push(`du JSON-LD FAQPage n'a pas tout ce que son pli affiche : du texte suit la réponse hors de son conteneur (« ${texteLisibleFaq(lu, c.f, Math.min(els[det].f, c.f + 80))} »)`);
+  }
+  // … et le conteneur dit la réponse, ni plus ni moins.
+  const affiche = compact.slice(c.d, c.f);
+  let exceptionVue = false;
+  if (affiche === rep && exception) {
+    defauts.push(`: exception périmée dans EXCEPTIONS_FAQ — « ${exception.texte} » n'est plus à l'écran après la réponse, qui est égale au schéma : retirer l'exception`);
+  } else if (affiche !== rep + (exception ? compacterFaq(exception.texte) : '')) {
+    defauts.push(`du JSON-LD FAQPage n'est pas, mot pour mot, la réponse affichée sous cette question${exception ? ` (l'exception déclarée, « ${exception.texte} » après la réponse, ne couvre pas cet écart)` : ''}. Premier écart ${premierEcartFaq(lu, reponse, c.d, c.f)}`);
+  } else {
+    exceptionVue = Boolean(exception);
+    // Les mots de la phrase d'une exception se séparent eux aussi comme à l'écran, et elle
+    // est séparée de la réponse.
+    const frontiere = ecartDeFrontiereFaq(lu, exception ? `${reponse} ${exception.texte}` : reponse, c.d, guide);
+    if (frontiere) defauts.push(`du JSON-LD FAQPage ne sépare pas les mots comme l'écran : ${frontiere}`);
+  }
+  return { defauts, exceptionVue };
 }
 
+// Tout bloc JSON-LD de la page, quels que soient les autres attributs de sa balise et ses
+// guillemets : un second FAQPage rangé dans `<script type="application/ld+json" id="…">`
+// n'était pas lu (§ 9.fc).
+const SCRIPT_JSON_LD = /<script\b[^>]*?\btype\s*=\s*(?:"application\/ld\+json"|'application\/ld\+json'|application\/ld\+json(?=[\s>]))[^>]*>([\s\S]*?)<\/script\s*>/gi;
+const exceptionsFaqRencontrees = new Set();
+const compteFaq = { pages: 0, questions: 0 };
 for (const f of fichiersDist.filter((x) => x.endsWith('.html'))) {
   const html = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8');
   if (!html.includes('"FAQPage"') && !html.includes("'FAQPage'")) continue;
   const page = f.replace(/\/index\.html$/, '') || '/';
   const source = SCHEMA_EN_SOURCE_DU_GUIDE(page);
-  const texte = decoderEntites(texteVisibleFaq(html));
-  const visible = compacterFaq(texte);
-  const visibleSansPuces = source ? visible.replace(/•/g, '') : visible;
-  let premierEcart = null; // construit à la première réponse en écart
-  for (const [, bloc] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+  const lu = lirePageFaq(html);
+  const { els, compact } = lu;
+  // Les plis de la page : texte de chaque élément d'un <summary> → son <details>.
+  const plis = new Map();
+  els.forEach((e, k) => {
+    if (e.nom !== 'summary' || e.parent < 0 || els[e.parent].nom !== 'details') return;
+    for (let j = k, fin = finDeDescendance(els, k); j < fin; j++) {
+      const titre = compact.slice(els[j].d, els[j].f);
+      if (!titre) continue;
+      if (!plis.has(titre)) plis.set(titre, []);
+      if (!plis.get(titre).some((p) => p.det === e.parent)) plis.get(titre).push({ det: e.parent, som: k, el: j });
+    }
+  });
+  const plisDuSchema = new Set();
+  const questionsVues = new Set();
+  let schemas = 0;
+  for (const [, bloc] of html.matchAll(SCRIPT_JSON_LD)) {
     let parsed;
-    try { parsed = JSON.parse(bloc); } catch { continue; }
-    if (parsed['@type'] !== 'FAQPage') continue;
-    for (const q of parsed.mainEntity ?? []) {
+    try { parsed = JSON.parse(bloc); } catch { parsed = null; }
+    if (parsed?.['@type'] !== 'FAQPage') {
+      // Seul un bloc dont FAQPage est le type, à la racine, est comparé. Rangé ailleurs
+      // (`@graph`, tableau) ou illisible, il ne le serait à rien.
+      if (/["']FAQPage["']/.test(bloc)) fail(`${page} : un bloc JSON-LD cite « FAQPage » sans que ce soit son type à la racine (rangé dans un @graph ou un tableau, ou JSON illisible) — ses questions ne sont comparées à rien`);
+      continue;
+    }
+    schemas++;
+    // `mainEntity` : un tableau de questions ; schema.org admet aussi une question seule.
+    const questions = [].concat(parsed.mainEntity ?? []);
+    if (!questions.length) fail(`${page} : le JSON-LD FAQPage n'a aucune question`);
+    compteFaq.questions += questions.length;
+    for (const q of questions) {
+      if (!q || typeof q !== 'object') { fail(`${page} : une entrée de mainEntity du JSON-LD FAQPage n'est pas une question`); continue; }
       const question = String(q.name ?? '').trim();
-      if (question && !visible.includes(compacterFaq(question))) {
-        fail(`${page} : la question « ${question.slice(0, 60)}… » est dans le JSON-LD FAQPage mais absente du texte visible`);
-      }
-      // La réponse aussi : un mot changé dans une réponse visible passait (essai par
-      // mutation, § 9.ex).
-      const brute = decoderEntites(String(q.acceptedAnswer?.text ?? '').replace(BALISE_DE_REPONSE, ' '));
+      if (!question) { fail(`${page} : une question du JSON-LD FAQPage n'a pas de texte`); continue; }
+      const nom = `« ${question.length > 60 ? `${question.slice(0, 60)}…` : question} »`;
+      const exception = EXCEPTIONS_FAQ.find((x) => x.page === page && x.question === question);
+      if (exception) exceptionsFaqRencontrees.add(exception);
+      const titre = compacterFaq(question);
+      if (questionsVues.has(titre)) fail(`${page} : la question ${nom} figure deux fois dans le JSON-LD FAQPage de la page`);
+      questionsVues.add(titre);
+      const candidats = plis.get(titre) ?? [];
+      for (const p of candidats) plisDuSchema.add(p.det);
+      // Point 1. La réponse existe.
+      const brute = decoderEntites(sansBalisesDeReponse(String(q.acceptedAnswer?.text ?? '')));
       const reponse = source ? sansBalisageDuGuide(brute) : brute;
-      if (reponse.trim() && !visibleSansPuces.includes(reponse.replace(/\s+/g, ''))) {
-        premierEcart ??= lecteurDEcartsFaq(source ? texte.replace(/•/g, ' ') : texte);
-        fail(`${page} : la réponse à « ${question.slice(0, 60)}… » du JSON-LD FAQPage n'est pas, mot pour mot, dans le texte visible. Premier écart ${premierEcart(question, reponse)}`);
+      const rep = reponse.replace(/\s+/g, '');
+      if (!rep) fail(`${page} : la réponse à ${nom} est absente ou vide dans le JSON-LD FAQPage`);
+      // Point 2. La question est le titre d'un pli. Sinon sa réponse n'est comparée à rien :
+      // une erreur, pas un repli sur « la réponse suit sa question » (§ 9.fc — un titre
+      // changé d'un seul côté sur tout un bloc y faisait passer des réponses tronquées).
+      if (!candidats.length) {
+        fail(`${page} : la question ${nom} du JSON-LD FAQPage ${compact.includes(titre) ? 'est affichée, mais pas comme titre d\'un <details> (le texte entier d\'un élément de son <summary>)' : 'est absente du texte visible'} — sa réponse n'est comparée à rien. Si le titre affiché a changé, aligner le schéma`);
+        continue;
+      }
+      if (!rep) continue;
+      // Chaque pli qui porte la question est examiné (un seul par question aujourd'hui) :
+      // la même question affichée deux fois avec deux réponses, c'est un écart.
+      for (const pli of candidats) {
+        const examen = examinerPliFaq(lu, pli, decoderEntites(question), reponse, rep, exception, source);
+        for (const d of examen.defauts) fail(`${page} : la réponse à ${nom} ${d}`);
+        if (examen.exceptionVue) {
+          warn(`${page} : exception déclarée (EXCEPTIONS_FAQ) — à l'écran, la réponse à « ${question} » se poursuit par « ${exception.texte} », que le schéma FAQPage n'a pas : ${exception.raison}`);
+        }
       }
     }
+  }
+  // Un seul FAQPage par page : deux blocs, même identiques, sont deux déclarations des
+  // mêmes questions (et le compte du plancher s'en trouverait gonflé).
+  if (schemas > 1) fail(`${page} : ${schemas} blocs JSON-LD FAQPage dans la page, un seul attendu`);
+  if (schemas) compteFaq.pages++;
+  else fail(`${page} : la page cite « FAQPage » mais aucun bloc JSON-LD de ce type n'est lisible à la racine d'un <script type="application/ld+json"> — ses questions ne sont comparées à rien`);
+  // Point 6, sens inverse : dans un bloc de plis du schéma (l'élément qui les contient),
+  // tout <details> est au schéma, à quelque profondeur qu'il soit. Sauf dans un pli du
+  // schéma : il fait alors partie de sa réponse, comparée avec elle.
+  const blocsFaq = new Set([...plisDuSchema].map((d) => els[d].parent));
+  els.forEach((e, k) => {
+    if (e.nom !== 'details' || plisDuSchema.has(k)) return;
+    let a = e.parent;
+    while (a >= 0 && !blocsFaq.has(a) && !plisDuSchema.has(a)) a = els[a].parent;
+    if (a < 0 || plisDuSchema.has(a)) return;
+    const som = els.findIndex((x, j) => j > k && x.parent === k && x.nom === 'summary');
+    fail(`${page} : « ${som < 0 ? '(pli sans <summary>)' : texteLisibleFaq(lu, els[som].d, els[som].f, 1).slice(0, 80)} » est une question affichée parmi celles du schéma FAQPage, mais absente du schéma`);
+  });
+}
+for (const x of EXCEPTIONS_FAQ) {
+  if (!exceptionsFaqRencontrees.has(x)) fail(`${x.page} : exception périmée dans EXCEPTIONS_FAQ — la question « ${x.question} » n'est plus dans le schéma FAQPage de cette page : retirer l'exception`);
+}
+{
+  const compte = `${compteFaq.pages} pages portent un FAQPage, ${compteFaq.questions} questions en tout (plancher : ${PLANCHER_FAQ.pages} pages, ${PLANCHER_FAQ.questions} questions)`;
+  if (compteFaq.pages < PLANCHER_FAQ.pages || compteFaq.questions < PLANCHER_FAQ.questions) {
+    fail(`FAQPage : ${compte} — un schéma ou des questions ont disparu. Si c'est voulu, abaisser PLANCHER_FAQ (verify-site.mjs)`);
+  } else if (compteFaq.pages > PLANCHER_FAQ.pages || compteFaq.questions > PLANCHER_FAQ.questions) {
+    warn(`FAQPage : ${compte} — si ce sont bien de nouvelles pages ou de nouvelles questions, relever PLANCHER_FAQ (verify-site.mjs) à ces nombres`);
   }
 }
 
