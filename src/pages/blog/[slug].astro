@@ -142,13 +142,18 @@ const coverSrcset = [...new Map(coverVariants.map((v) => [Number(v.attributes.wi
 /* `loading="lazy"` retiré des attributs de getImage : Astro ne dédoublonne pas un
    attribut étalé puis redéfini, et le navigateur garde le premier (lazy). */
 const { loading: _lazy, ...coverAttrs } = coverImage?.attributes ?? {};
-/* Image de partage : paysage 1,91:1 en JPEG (les aperçus LinkedIn, WhatsApp,
-   Facebook et X recadraient au centre la cover portrait et coupaient le titre).
-   Images du JSON-LD Article : 16:9, 4:3 et 1:1, comme le recommande Google. */
-const ogCover = await croppedCover(cover, 1200 / 630, 'jpg');
-const ldImages = (
-  await Promise.all([16 / 9, 4 / 3, 1].map((r) => croppedCover(cover, r, 'jpg')))
-).filter((v): v is NonNullable<typeof v> => v !== null);
+/* Image de partage (§ 9.fl) : fabriquée à la construction, 1 200 × 630 px, dans la DA
+   (src/pages/blog/partage/[slug].jpg.ts). Elle remplace le recadrage de l'affiche, souvent
+   flou (31 articles sur 48 avaient une affiche de moins de 1 200 px, 11 vers 450 px).
+   C'est l'og:image, la twitter:image et la première image du JSON-LD Article ; suivent
+   les recadrages de l'affiche en 16:9, 4:3 et 1:1, comme le recommande Google. */
+const imagePartage = { url: `${SITE_URL}/blog/partage/${slug}.jpg`, width: 1200, height: 630 };
+const ldImages = [
+  imagePartage,
+  ...(await Promise.all([16 / 9, 4 / 3, 1].map((r) => croppedCover(cover, r, 'jpg')))).filter(
+    (v): v is NonNullable<typeof v> => v !== null
+  ),
+];
 
 const resolvedSlides = slides
   ? (
@@ -191,7 +196,7 @@ const articleSchema = {
   '@id': `${SITE_URL}${path}#article`,
   headline: title,
   description,
-  image: ldImages.length ? ldImages.map((i) => i.url) : `${SITE_URL}/lovable-uploads/og-image.png`,
+  image: ldImages.map((i) => i.url),
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
   inLanguage: 'fr-FR',
@@ -276,9 +281,9 @@ const croix =
   title={titreComplet}
   description={description}
   path={path}
-  ogImage={ogCover?.url}
-  ogImageWidth={ogCover?.width}
-  ogImageHeight={ogCover?.height}
+  ogImage={imagePartage.url}
+  ogImageWidth={imagePartage.width}
+  ogImageHeight={imagePartage.height}
   ogImageAlt={title}
   ogType="article"
   jsonLd={jsonLd}
