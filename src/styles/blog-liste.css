@@ -384,23 +384,33 @@
 /* /blog et pages de thème (§ 9.fp), là où les lignes vont par deux (à partir de 1 024 px ;
    une seule colonne de lignes de 640 à 1 023 px depuis § 9.fo, rien à y aligner) :
    l'étiquette d'une ligne (le thème, le numéro de la fiche, ou rien) n'a pas la même hauteur
-   d'une ligne à sa voisine, et leurs titres ne partaient pas à la même hauteur (avant les
-   affiches de § 9.fo, jusqu'à 9 rangées sur 23, de 17 à 35 px, sur /blog ; 2 sur 5 et 3 sur 7
-   sur deux pages de thème). Les deux lignes d'une rangée partagent donc quatre pistes
-   (sous-grille) : étiquette, titre, extrait, date. L'étiquette est calée en bas de la sienne,
-   contre le titre ; la date reste en bas de la ligne. Les pages de série, dont l'étiquette
-   tient toujours sur une ligne, ne sont pas touchées. Sans sous-grille (navigateur ancien),
-   la ligne reste celle des affiches. */
+   d'une ligne à sa voisine, et leurs titres ne partaient pas à la même hauteur (3 à 10
+   rangées sur 23 sur /blog, mesuré sur les affiches seules). Les deux lignes d'une rangée
+   partagent donc quatre pistes (sous-grille) : étiquette, titre, extrait, date.
+   Le texte reste centré sur l'affiche (règle des lignes de § 9.fo) : l'étiquette est calée
+   en bas de sa piste, contre le titre, la date en haut de la sienne, et l'affiche au milieu
+   de la ligne. La place que l'affiche laisse au texte se partage alors à parts égales entre
+   les quatre pistes, et autant au-dessus du texte qu'au-dessous. Une piste vide la prenait
+   toute : sans étiquette dans les deux lignes (pages de thème), le titre descendait de 25 à
+   37 px ; le `::before` vide, posé dans la piste de l'étiquette, l'empêche d'être vide.
+   Chaque élément du texte a sa colonne écrite (la première) : sinon, placé à la ligne 1 sans
+   colonne, l'étiquette passait dans une seconde colonne, à côté du `::before`, et les lignes
+   grandissaient. Écart des milieux du texte et de l'affiche : 15 px au plus (la ligne sans
+   étiquette à côté d'une ligne qui en a une), contre 37 px sans ces trois règles. Les pages
+   de série, dont l'étiquette tient toujours sur une ligne, ne sont pas touchées. Sans
+   sous-grille (navigateur ancien), la ligne reste celle des affiches. */
 @supports (grid-template-rows: subgrid) {
   @media (min-width: 1024px) {
     .bl:not([data-blog-serie]) .bl-carte { display: grid; grid-row: span 4; grid-template-rows: subgrid; }
     .bl:not([data-blog-serie]) .bl-carte > a { grid-row: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: subgrid; row-gap: 0; }
-    .bl:not([data-blog-serie]) .bl-vignette { grid-row: 1 / -1; align-self: start; }
+    .bl:not([data-blog-serie]) .bl-vignette { grid-row: 1 / -1; align-self: center; }
     .bl:not([data-blog-serie]) .bl-carte-texte { grid-row: 1 / -1; grid-column: -2 / -1; display: grid; grid-template-rows: subgrid; }
+    .bl:not([data-blog-serie]) .bl-carte-texte > * { grid-column: 1; }
+    .bl:not([data-blog-serie]) .bl-carte-texte::before { content: ""; grid-area: 1 / 1; }
     .bl:not([data-blog-serie]) .bl-carte-texte > .bl-marques { grid-row: 1; align-self: end; }
     .bl:not([data-blog-serie]) .bl-carte-texte > :is(h2, h3) { grid-row: 2; }
     .bl:not([data-blog-serie]) .bl-carte-texte > .bl-extrait { grid-row: 3; align-self: start; }
-    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-infos { grid-row: 4; align-self: end; }
+    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-infos { grid-row: 4; align-self: start; }
   }
 }
 
