@@ -12934,6 +12934,24 @@ premières années n'est pas calculée. La deuxième année n'a pas de bloc « c
 (ses cotisations provisionnelles reposent sur les revenus de la première, que le simulateur ne
 demande pas).
 
+### 9.fy Premier écran : « Satisfait ou remboursé. » au lieu de « Créé par un médecin remplaçant. » (14 novembre 2026)
+
+Décision du propriétaire : sous les boutons du premier écran, « Créé par un médecin
+remplaçant. » pouvait faire « projet perso » à un médecin qui découvre la page ; l'histoire du
+fondateur reste racontée plus bas (bloc fondateur et film). La ligne fine devient
+« Satisfait ou remboursé. Déjà 900+ médecins inscrits. ».
+
+- **Contenu modifié**, première phrase seulement ; même coupe qu'avant (une phrase par ligne
+  sous 480 px, une ligne au-delà). Date de l'accueil dans le sitemap : 14 novembre 2026.
+- ⚠️ **TODO(owner)** : la garantie n'est écrite ni dans les conditions d'utilisation
+  (`/conditions-utilisations`), ni dans `/tarifs`, ni dans la FAQ. Le propriétaire doit en
+  fixer les règles (durée après le premier paiement, remboursement entier ou au prorata,
+  formules concernées, manière de le demander) et les faire écrire dans les conditions
+  d'utilisation ; à rapprocher de l'harmonisation de leur § 5.1 (« sans engagement de durée »,
+  alors que l'annuel engage pour l'année).
+
+**Fichiers** : `src/components/accueil/Hero.astro`, `src/lib/pages-lastmod.ts`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
