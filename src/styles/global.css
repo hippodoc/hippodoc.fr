@@ -87,9 +87,9 @@
    (`ui/skeleton.tsx`) prend ses images clés `shimmer` dans tailwind.config.ts :
    celles d'ici, de même nom, étaient déjà recouvertes par elles. */
 
-/* Depuis la phase 5d, les halos des pages ont disparu : la règle ne vise plus que
-   le texte flouté du simulateur (`blur-[6px]`, GuidePatrimonialTeaser.tsx). Gardée
-   telle quelle. Son histoire :
+/* Depuis la phase 5d, les halos des pages ont disparu, et depuis le § 9.fs le texte
+   flouté du simulateur (`blur-[6px]`, GuidePatrimonialTeaser.tsx, retiré) : plus
+   rien ne l'emploie. Gardée telle quelle (inoffensive). Son histoire :
    Halos décoratifs flous (`blur-3xl`, `blur-[120px]`…) sur leur propre calque GPU
    (27/09/2026, MIGRATION.md § 9.dn). Sans calque, Safari recalcule le flou à chaque
    image où la zone qu'il couvre est redessinée — ici en continu, à cause des reflets

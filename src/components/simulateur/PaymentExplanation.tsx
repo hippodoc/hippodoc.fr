@@ -158,7 +158,7 @@ function PaymentContent({
                 </tr>
                 <tr className="total">
                   <td>
-                    <span className="sim-fort">📌 Total foyer</span>
+                    <span className="sim-fort">Total foyer</span>
                   </td>
                   <td className="text-right">
                     <span>~{tauxFoyer}%</span>

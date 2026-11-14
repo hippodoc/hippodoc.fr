@@ -137,7 +137,7 @@
 .sim .sim-profils-titre { font-size: 1rem; font-weight: var(--tb); color: var(--ink); }
 .sim .sim-profil { padding: 16px 14px; border-radius: 22px; background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
 .sim .sim-profil:hover { translate: 0 -2px; }
-.sim .sim-profil:focus-visible, .sim button:where(.sim-porte, .sim-plafond-tete):focus-visible, .sim [data-state] > button:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; }
+.sim .sim-profil:focus-visible, .sim button:where(.sim-plafond-tete):focus-visible, .sim [data-state] > button:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; }
 .sim .sim-profil-nom { font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.25; color: var(--ink); overflow-wrap: anywhere; }
 .sim .sim-profil-desc { margin-top: 3px; font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); overflow-wrap: anywhere; }
 
@@ -271,17 +271,19 @@
 .sim .sim-tableau tr.total td { background: var(--sky-soft); }
 .sim .sim-tableau td.mode { font-size: 0.8125rem; color: var(--ink-3); }
 
-/* « Et maintenant ? » */
-.sim .sim-surtitre { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
-.sim .sim-porte { min-height: 68px; padding: 12px 16px; border-radius: 22px; background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
-.sim .sim-porte:hover { translate: 0 -2px; }
-.sim .sim-porte-nom { font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
-.sim .sim-porte-sous { font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); }
-
-/* Guide patrimonial : l'aperçu flouté et son bouton */
-.sim .sim-trait { border-radius: 6px; background: var(--sky); }
-.sim .sim-trait.clair { border-radius: 16px; background: var(--sky-soft); }
-.sim .sim-voile { background: linear-gradient(to top, #FFFFFF 0, rgba(255, 255, 255, 0.92) 55%, rgba(255, 255, 255, 0) 100%); }
+/* La suite du résultat (MIGRATION.md § 9.fs) : surtitre, titre, trois promesses, un bouton. */
+.sim .sim-surtitre { margin: 0; font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.sim .sim-suite { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.sim .sim-suite .sim-fiche-titre { max-width: 34rem; text-wrap-style: balance; }
+.sim .sim-suite-liste { display: grid; gap: 14px; margin: 8px 0 6px; padding: 0; list-style: none; }
+.sim .sim-suite-liste li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-suite-liste li > svg { flex: none; margin-top: 1px; color: var(--brand); }
+.sim .sim-suite-liste strong { color: var(--ink); }
+.sim .sim-suite-btn { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; text-decoration: none; }
+@media (min-width: 760px) {
+  .sim .sim-suite-liste { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .sim .sim-suite-liste li { flex-direction: column; gap: 8px; }
+}
 
 /* Plafond du Micro-BNC dépassé */
 .sim .sim-plafond { border-radius: 22px; background: var(--wait-bg); color: var(--wait); }
@@ -425,13 +427,13 @@ astro-island[ssr] #simulateur-form::before { content: ""; display: block; positi
 @keyframes sim-attente-fige { to { background: rgba(0, 89, 179, 0.5); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .sim :is(.sim-btn, .sim-profil, .sim-porte) { transition: none; }
+  .sim :is(.sim-btn, .sim-profil) { transition: none; }
 }
 
 /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
    aux fiches, aux champs, aux pastilles et aux boutons. */
 @media (forced-colors: active) {
-  .sim :is(.sim-fiche, .sim-panneau, .sim-note, .sim-puce, .sim-btn, .sim-profil, .sim-profils-tete, .sim-porte, .sim-supernet, .sim-conclusion, .sim-colonne, .sim-verdict, .sim-plafond, .sim-rangee, .sim-coche, .sim-tableau),
+  .sim :is(.sim-fiche, .sim-panneau, .sim-note, .sim-puce, .sim-btn, .sim-profil, .sim-profils-tete, .sim-supernet, .sim-conclusion, .sim-colonne, .sim-verdict, .sim-plafond, .sim-rangee, .sim-coche, .sim-tableau),
   .sim input, .sim button[role="combobox"], .sim.sim-bulle, .sim.sim-tiroir, .sim.sim-pop { border: 1px solid CanvasText; }
   .sim .sim-point { forced-color-adjust: none; }
 }

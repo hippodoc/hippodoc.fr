@@ -2,12 +2,12 @@ import { lazy, Suspense } from "react";
 import { BreakEvenAnalysis } from "./BreakEvenAnalysis";
 import { ConclusionCard } from "./ConclusionCard";
 import { PaymentExplanation } from "./PaymentExplanation";
-import { GuidePatrimonialTeaser } from "./GuidePatrimonialTeaser";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Info, RotateCcw, Scale, Lightbulb, Compass, PiggyBank, ArrowDown } from "lucide-react";
+import { Info, RotateCcw, Scale, Lightbulb, CalendarClock, Receipt, FileText, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { APP_URL } from "@/lib/site";
+import { insertPublicEvent } from "@/lib/supabase-public";
 import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 
@@ -47,10 +47,6 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
     return null;
   }
 
-  const scrollToGuide = () => {
-    document.getElementById('guide-patrimonial')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
   return (
     <div
       className="sim-resultats space-y-6 md:space-y-8"
@@ -59,7 +55,10 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
       <div className="sim-resultats-tete">
         <h2 className="sim-titre">Comparaison des régimes fiscaux</h2>
         <p className="sim-chapo">
-          Analyse détaillée pour t'aider à choisir le meilleur régime
+          Analyse détaillée pour t'aider à choisir le meilleur régime.{' '}
+          {comparison.isRSPMUsed
+            ? "Cotisations au RSPM, l'offre simplifiée des remplaçants."
+            : "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf."}
         </p>
       </div>
 
@@ -159,45 +158,47 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
         </div>
       </Accordion>
 
-      {/* ✅ CTA "Et maintenant ?" — Standalone léger */}
-      <div className="space-y-3">
-        <p className="sim-surtitre text-center">
-          Et maintenant ?
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-          <button
-            onClick={scrollToGuide}
-            className="sim-porte group flex items-center gap-3 text-left"
-          >
-            <div className="sim-rond shrink-0">
-              <Compass className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="sim-porte-nom">Guide Patrimonial</p>
-              <p className="sim-porte-sous">Optimise ton Super-Net</p>
-            </div>
-            <ArrowDown className="sim-encre3 h-4 w-4 ml-auto" />
-          </button>
-
-          <button
-            onClick={() => { window.location.href = `${APP_URL}/analyses/budget`; }}
-            className="sim-porte group flex items-center gap-3 text-left"
-          >
-            <div className="sim-rond shrink-0">
-              <PiggyBank className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="sim-porte-nom">Planifier mon budget</p>
-              <p className="sim-porte-sous">Organise tes dépenses</p>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Guide Patrimonial Premium - teaser (variant public uniquement) */}
-      <div className="pt-4" id="guide-patrimonial">
-        <GuidePatrimonialTeaser />
-      </div>
+      {/* La suite du résultat (MIGRATION.md § 9.fs) : un seul appel, lié à ce que le médecin
+          vient de voir (cotisations à prévoir, charges, régime), avec trois promesses reprises
+          mot pour mot des étapes du remplaçant de l'accueil (src/data/etapesRemplacant.ts).
+          Remplace « Et maintenant ? » (deux boutons : l'un descendait juste en dessous, l'autre
+          envoyait vers une page de l'app réservée aux comptes) et l'aperçu flouté du guide
+          patrimonial. L'événement anonyme garde son nom, `cta_patrimonial_guide`, pour la
+          continuité de la table `simulateur_public_events`. */}
+      <section className="sim-fiche sim-suite" aria-labelledby="sim-suite-titre">
+        <p className="sim-surtitre">Et toute l'année ?</p>
+        <h3 id="sim-suite-titre" className="sim-fiche-titre grand">
+          Ce calcul, Hippodoc le tient à jour après chaque journée de remplacement
+        </h3>
+        <ul className="sim-suite-liste">
+          <li>
+            <CalendarClock className="h-5 w-5" aria-hidden="true" />
+            <span><strong>URSSAF et CARMF anticipées.</strong> Cotisations calculées via le serveur officiel URSSAF, échéancier à jour après chaque journée.</span>
+          </li>
+          <li>
+            <Receipt className="h-5 w-5" aria-hidden="true" />
+            <span><strong>Tes charges déductibles ne se perdent plus.</strong> Kilomètres, matériel, formation, RCP : catégorisés et prêts pour la déclaration.</span>
+          </li>
+          <li>
+            <FileText className="h-5 w-5" aria-hidden="true" />
+            <span><strong>Ta déclaration, case par case.</strong> 2035 ou 2042-C PRO pré-remplies avec tes chiffres, aide DSFU URSSAF incluse.</span>
+          </li>
+        </ul>
+        <a
+          href={`${APP_URL}/auth?tab=signup`}
+          data-track="cta_signup_simulateur_resultat"
+          className="sim-btn sim-btn-soleil sim-suite-btn"
+          onClick={() => {
+            insertPublicEvent('simulateur_public_events', {
+              event_type: 'cta_patrimonial_guide',
+              session_id: (typeof window !== 'undefined' && window.localStorage.getItem('hippodoc-anon-session-id')) || 'unknown',
+            });
+          }}
+        >
+          Essai gratuit 30 jours
+          <ArrowRight aria-hidden="true" />
+        </a>
+      </section>
 
       {/* Disclaimer global unifié */}
       <div className={cn('sim-fiche sim-limites')}>
@@ -237,7 +238,7 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
                 </a>
               </div>
               <p className="sim-petit pt-1">
-                💡 Hippodoc t'aide à y voir plus clair, mais seul un professionnel 
+                Hippodoc t'aide à y voir plus clair, mais seul un professionnel 
                 pourra te conseiller de manière définitive.
               </p>
             </div>

@@ -449,7 +449,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Crédits d'impôt (post-impôt) */}
           {optim && ((optim.creditFormation && optim.creditFormation > 0) || (optim.creditImpotAutre && optim.creditImpotAutre > 0) || (optim.creditEmploiDomicile && optim.creditEmploiDomicile > 0) || (optim.creditGardeEnfants && optim.creditGardeEnfants > 0)) && (
             <div className="sim-note ok">
-              <strong>💡 Crédits d'impôt appliqués</strong>
+              <strong>Crédits d'impôt appliqués</strong>
               <p className="mt-1">
                 {[
                   optim.creditFormation ? `Formation : −${formatMontant(optim.creditFormation)}` : '',
@@ -521,7 +521,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* ✅ Encart plafonnement QF si appliqué */}
           {plafonnementApplique && (
             <div className="sim-note attn">
-              <strong>⚠️ Plafonnement appliqué</strong>
+              <strong>Plafonnement appliqué</strong>
               <p className="mt-1">
                 L'avantage fiscal lié à tes enfants est limité à {formatMontant(plafondUtilise || 0)}.
                 <br />
@@ -593,7 +593,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           
           {/* Avertissement */}
           <div className="sim-note attn">
-            <strong>⚠️ Estimation indicative</strong>
+            <strong>Estimation indicative</strong>
             <p className="mt-1">
               Les vrais taux sont calculés par la DGFiP avec des règles supplémentaires (revenus communs, arrondis officiels, etc.).
             </p>
@@ -742,7 +742,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Déductibilité : au réel seulement (en micro-BNC, l'abattement de 34 % en tient lieu). */}
           {type === 'reel' ? (
             <div className="sim-note info">
-              <strong>💡 Déductibles du revenu libéral</strong>
+              <strong>Déductibles du revenu libéral</strong>
               <p className="mt-1">
                 Ces cotisations réduisent ton revenu imposable, sauf la part non déductible de la CSG-CRDS (2,9 points sur 9,7).
               </p>
@@ -790,7 +790,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Explication contextuelle selon régime */}
           {type === 'micro-bnc' ? (
             <div className="sim-note attn">
-              <strong>⚠️ Non déductibles en Micro-BNC</strong>
+              <strong>Non déductibles en Micro-BNC</strong>
               <p className="mt-1">
                 L'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges réelles pour
                 l'impôt. Tu les paies quand même : elles sont retirées de ton Super-Net.
@@ -798,7 +798,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             </div>
           ) : (
             <div className="sim-note ok">
-              <strong>✅ Déductibles en Régime Réel</strong>
+              <strong>Déductibles en Régime Réel</strong>
               <p className="mt-1">
                 Ces charges réduisent directement ton revenu imposable, diminuant ainsi ton impôt.
               </p>
@@ -1033,7 +1033,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                 variant="outline" 
                 className="sim-puce attn grande cursor-help"
               >
-                ⚠️ Vérifiez
+                <AlertTriangle className="h-3 w-3" aria-hidden="true" />
+                Vérifie
               </Badge>
             </PremiumTooltip>
           </div>
@@ -1053,18 +1054,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <CardTitle className="sim-regime-nom">{title}</CardTitle>
-                  {/* Badge RSPM/PAMC - ✅ Utilise result.isRSPM (état réel) et non isRSPMUsed (intention) */}
-                  {result.isRSPM !== undefined && (
-                    <Badge 
-                      variant="outline" 
-                      className={result.isRSPM 
-                        ? "sim-puce info" 
-                        : "sim-puce neutre"
-                      }
-                    >
-                      {result.isRSPM ? '🎓 RSPM' : '🩺 PAMC'}
-                    </Badge>
-                  )}
+                  {/* Le régime social (RSPM ou PAMC), le même pour les deux fiches, est dit une
+                      fois sous le titre des résultats (SimulateurResults), plus sur chaque fiche. */}
                 </div>
                 <p className="sim-regime-desc">{description}</p>
               </div>
@@ -1242,7 +1233,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                   Avantage fiscal DOM : {domTomInfo.territoire}
                 </h3>
                 <Badge className="sim-puce ok">
-                  🏝️ DOM-TOM
+                  DOM
                 </Badge>
               </div>
               <p className="sim-texte mb-2">
