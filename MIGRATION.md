@@ -13086,6 +13086,44 @@ capital est augmenté.
 
 **Fichiers** : `src/pages/mentions-legales.astro`, `MIGRATION.md`.
 
+### 9.gc Politique de confidentialité et charte RGPD : faits vérifiés, minimum, sans adresse personnelle (14 novembre 2026)
+
+Demande du propriétaire : des pages légales minimales, exactes, qu'on ne puisse pas lui
+reprocher. Audit fait sur pièces : code de l'application (dépôt Lovable, lecture seule),
+projet Supabase, DNS et en-têtes.
+
+- **Adresse personnelle retirée** : la politique (§ 7.2) et la charte (§ 5) donnaient le
+  domicile du président comme adresse postale. Remplacé par le siège (60 rue François Ier).
+- **Politique de confidentialité**, contenu modifié :
+  - hébergement : Supabase, serveurs à Paris (projet en région eu-west-3), au lieu de « au
+    sein de l'Union européenne » ;
+  - prestataires, d'après le code de l'application : Supabase, Stripe, **Resend** (emails),
+    **Crisp** (chat), PostHog (« serveurs dans l'Union européenne » : « Royaume-Uni » retiré),
+    Google Analytics 4 et **pixel Meta** (avec consentement), **connexion Google**, **Mapbox**
+    (recherche d'adresses), Sentry (point d'envoi `ingest.de.sentry.io`). Ajoutés : Resend,
+    Crisp, pixel Meta, connexion Google, Mapbox. Retiré : « éventuellement d'autres
+    entreprises ». « signent des contrats » remplacé par « dans le cadre de leurs engagements
+    contractuels » ;
+  - transferts hors UE : un paragraphe factuel (prestataires concernés, garanties) au lieu de
+    « nous vérifions régulièrement » ;
+  - équipe interne : « personnes habilitées », sans liste de services ;
+  - violation de données : la règle du RGPD (CNIL, puis personnes si risque élevé) au lieu de
+    « nous vous en informerons dans les meilleurs délais » ;
+  - données de santé : la règle (ne pas saisir de données de santé identifiant un patient)
+    sans la phrase « Nous ne sommes pas certifiés HDS ».
+  - Inchangés : bases légales, durées de conservation, droits, cookies et le bouton
+    d'opposition à la mesure d'audience (§ 8.3), CNIL.
+- **Charte RGPD réécrite courte** (six sections) : retirés les engagements qu'on ne peut pas
+  prouver (formation du personnel, procès-verbaux internes, clauses des contrats de travail,
+  analyses d'impact, registre décrit en détail). Gardé : principes, hébergement à Paris,
+  prestataires (renvoi à la politique), droits, violation de données, contact et CNIL.
+- **Conditions d'utilisation non modifiées** : c'est un contrat accepté par les inscrits ;
+  son art. 11 prévoit d'informer les utilisateurs 30 jours avant une modification. Une
+  nouvelle version est à préparer avec les règles de « Satisfait ou remboursé » (§ 9.fy) et
+  l'art. 5.1 (« sans engagement de durée » face à l'annuel), puis à annoncer par email.
+
+**Fichiers** : `src/pages/politique-confidentialite.astro`, `src/pages/rgpd.astro`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

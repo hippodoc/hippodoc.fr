@@ -9,7 +9,7 @@ const path = "/politique-confidentialite";
 <PageLegale {title} {description} {path}>
   <Fragment slot="tete">
     <h1 class="aff">Politique de <span class="num">Confidentialité –</span> Hippodoc</h1>
-    <div class="lg-date">Dernière mise à jour : 21 avril 2025</div>
+    <div class="lg-date">Dernière mise à jour : 14 novembre 2026</div>
   </Fragment>
 
   <section>
@@ -51,7 +51,7 @@ const path = "/politique-confidentialite";
 
     <h3>2.3. Données relatives à la santé</h3>
     <p>
-      Nous ne sommes pas certifiés Hébergeur de Données de Santé (HDS). Conformément à nos Conditions Générales, vous vous engagez à ne pas saisir ou transmettre des données de santé patient sur la Plateforme. Toute information médicale que vous enregistrez doit être anonymisée et dépourvue de tout élément permettant d'identifier un patient.
+      La Plateforme sert à la gestion administrative de votre activité : elle n'est pas destinée aux données de santé des patients. Conformément à nos Conditions Générales, vous vous engagez à ne pas y saisir ou transmettre de données de santé permettant d'identifier un patient.
     </p>
   </section>
 
@@ -110,19 +110,12 @@ const path = "/politique-confidentialite";
     <h2>5. Hébergement et Transferts de Données</h2>
     <h3>5.1. Hébergement dans l'Union Européenne</h3>
     <p>
-      Nous utilisons Supabase pour stocker et gérer certaines données (ex. base de données) ; Supabase dispose de serveurs situés au sein de l'Union Européenne. Vos données sont donc hébergées sur le territoire de l'UE.
+      Les données de l'application sont hébergées par Supabase, sur des serveurs situés à Paris (France).
     </p>
 
-    <h3>5.2. Garanties en cas de transferts hors UE</h3>
+    <h3>5.2. Transferts hors de l'Union européenne</h3>
     <p>
-      En principe, nous évitons tout transfert de données hors de l'UE. Toutefois, si certains de nos prestataires (Stripe, par exemple) ou leurs sous-traitants devaient transférer des données en dehors de l'UE, ces transferts seraient encadrés par :
-    </p>
-    <ul>
-      <li>L'adoption des Clauses Contractuelles Types de la Commission européenne, ou</li>
-      <li>Toute autre garantie reconnue par la réglementation (ex. Règles d'Entreprise Contraignantes).</li>
-    </ul>
-    <p>
-      Nous vérifions régulièrement la conformité de nos prestataires à ces exigences.
+      Certains prestataires (Stripe, Google, Meta, Mapbox, Crisp ou leurs propres sous-traitants) peuvent traiter des données hors de l'Union européenne. Ces transferts sont encadrés par les garanties prévues par le RGPD : clauses contractuelles types de la Commission européenne ou décision d'adéquation.
     </p>
   </section>
 
@@ -130,7 +123,7 @@ const path = "/politique-confidentialite";
     <h2>6. Destinataires des Données</h2>
     <h3>6.1. Équipe interne</h3>
     <p>
-      Seuls les membres habilités de l'équipe HIPPODOC (technique, marketing, comptabilité, etc.) peuvent accéder à vos données, dans la stricte limite de leurs attributions.
+      Seules les personnes habilitées d'HIPPODOC peuvent accéder à vos données, dans la limite de ce que leur mission exige.
     </p>
 
     <h3>6.2. Sous-traitants et prestataires</h3>
@@ -138,15 +131,18 @@ const path = "/politique-confidentialite";
       Nous faisons appel à des prestataires pour :
     </p>
     <ul>
-      <li>Paiement : Stripe (traitement de vos transactions bancaires).</li>
-      <li>Hébergement / Base de données : Supabase.</li>
-      <li>Analyse d'audience et mesure de performance produit : PostHog (serveurs EU, Royaume-Uni). Pour des raisons techniques (contournement des bloqueurs de publicité), le trafic PostHog est acheminé via notre sous-domaine <code>t.hippodoc.fr</code> (proxy first-party). Les données restent hébergées sur les serveurs PostHog EU et aucun cookie tiers cross-domain n'est déposé. PostHog nous aide à comprendre l'utilisation de la Plateforme pour l'améliorer. Aucune donnée médicale, fiscale ou de paiement n'est transmise à PostHog.</li>
-      <li>Mesure d'audience web : Google Analytics 4 (Google Ireland Limited).</li>
-      <li>Suivi des erreurs applicatives : Sentry (serveurs EU).</li>
-      <li>Maintenance et support technique : Éventuellement d'autres entreprises avec lesquelles nous concluons des accords de sous-traitance.</li>
+      <li>Hébergement des données : Supabase (serveurs à Paris).</li>
+      <li>Paiement : Stripe.</li>
+      <li>Envoi des emails : Resend.</li>
+      <li>Messagerie d'assistance (chat) : Crisp.</li>
+      <li>Analyse d'audience et mesure de performance produit : PostHog (serveurs dans l'Union européenne). Pour des raisons techniques (contournement des bloqueurs de publicité), le trafic PostHog est acheminé via notre sous-domaine <code>t.hippodoc.fr</code> (proxy first-party). Les données restent hébergées sur les serveurs PostHog EU et aucun cookie tiers cross-domain n'est déposé. PostHog nous aide à comprendre l'utilisation de la Plateforme pour l'améliorer. Aucune donnée médicale, fiscale ou de paiement n'est transmise à PostHog.</li>
+      <li>Mesure des campagnes, uniquement avec votre consentement : Google Analytics 4 (Google Ireland Limited) et pixel Meta (Meta Platforms Ireland Limited).</li>
+      <li>Connexion avec un compte Google, si vous la choisissez : Google.</li>
+      <li>Recherche d'adresses lors de la saisie d'un lieu : Mapbox.</li>
+      <li>Suivi des erreurs applicatives : Sentry (serveurs dans l'Union européenne).</li>
     </ul>
     <p>
-      Ces prestataires agissent conformément à nos instructions et signent des contrats garantissant la confidentialité et la sécurité de vos données.
+      Ces prestataires traitent les données pour notre compte, selon nos instructions et dans le cadre de leurs engagements contractuels de protection des données.
     </p>
 
     <h3>6.3. Autorités compétentes</h3>
@@ -176,7 +172,7 @@ const path = "/politique-confidentialite";
         E-mail : <a href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a>
       </li>
       <li>
-        Courrier postal : 4 square de l'avenue du Bois, 75116 Paris, France
+        Courrier postal : HIPPODOC, 60 rue François Ier, 75008 Paris, France
       </li>
     </ul>
     <p>
@@ -240,7 +236,7 @@ const path = "/politique-confidentialite";
   <section>
     <h2>9. Sécurité des Données</h2>
     <p>
-      Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles (chiffrement, protocoles HTTPS, pare-feu, contrôle d'accès, etc.) pour protéger vos données contre les accès non autorisés, la perte, l'altération ou la divulgation. En cas d'incident de sécurité impactant vos données personnelles, nous vous en informerons dans les meilleurs délais et prendrons les mesures nécessaires pour y remédier, conformément à la réglementation applicable.
+      Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles (chiffrement, protocoles HTTPS, pare-feu, contrôle d'accès, etc.) pour protéger vos données contre les accès non autorisés, la perte, l'altération ou la divulgation. En cas de violation de données présentant un risque, nous la notifions à la CNIL et, si le risque est élevé, nous en informons les personnes concernées, comme le prévoit le RGPD.
     </p>
   </section>
 
