@@ -674,7 +674,8 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   lisent, ne recalculer aucun de ces montants dans un composant. « Recommandé » et la conclusion
   partagent `SEUIL_EQUIVALENCE_ANNUEL` (600 €/an). Marge sur 1 000 € (`calculerMarge`) et point de
   bascule se calculent après l'affichage, l'un après l'autre ; en attente, leur phrase a sa forme
-  finale (« … € ») pour que rien ne saute.
+  finale (« … € ») pour que rien ne saute. Dans les fiches, les cotisations sont en deux lignes,
+  Urssaf et CARMF (une seule, Urssaf, au RSPM), aux montants de la conclusion (§ 9.ge).
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la
@@ -688,7 +689,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   prudence). ASV proportionnelle : remplace la part forfaitaire seule (l'ajustement reste), si elle
   coûte moins (`economieAsvDe`). Les suggestions de la conclusion appellent ces mêmes fonctions :
   le taux et le montant annoncés sont ceux qu'applique la case ; ne pas les recalculer à part.
-  « Estimer mes charges » (§ 9.ga) : pli sous le champ des charges (`EstimateurCharges.tsx`),
+  « Estimer mes charges » (§ 9.gd) : pli sous le champ des charges (`EstimateurCharges.tsx`),
   barème kilométrique (arrêté du 27 mars 2023) et limites des repas (BOFiP, 2025 et 2026) dans
   `src/lib/simulateur/fraisPros.ts` ; aucun montant pré-rempli ailleurs. Un nouveau barème
   kilométrique ou de nouvelles limites de repas (chaque février) : mettre à jour ce module et les

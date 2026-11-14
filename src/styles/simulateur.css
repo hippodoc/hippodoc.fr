@@ -339,7 +339,7 @@
 .sim .sim-premiere-texte { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
 .sim .sim-premiere-texte p { margin: 0; text-wrap-style: pretty; }
 .sim .sim-premiere-texte .sim-fort { color: var(--ink); }
-/* « Estimer mes charges » (§ 9.ga) : un pli du formulaire ; dedans, trois groupes ciel doux
+/* « Estimer mes charges » (§ 9.gd) : un pli du formulaire ; dedans, trois groupes ciel doux
    (voiture, repas, l'année ; `role="group"` et un titre, pas de <legend> : WebKit le sortait
    du cadre dans un fieldset en grille), un champ par ligne (libellé au-dessus, case blanche), puis le
    total et le bouton qui le reporte dans le champ des charges. */

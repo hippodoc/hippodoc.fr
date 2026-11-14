@@ -347,7 +347,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
             />
           </div>
 
-          {/* Aide « Estimer mes charges » (§ 9.ga) : le total se reporte dans le champ ci-dessus */}
+          {/* Aide « Estimer mes charges » (§ 9.gd) : le total se reporte dans le champ ci-dessus */}
           <EstimateurCharges
             annee={form.watch('annee') || 2026}
             periode={periode === 'mensuel' ? 'mensuel' : 'annuel'}
