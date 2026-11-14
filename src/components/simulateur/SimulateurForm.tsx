@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useImperativeHandle, useState, useEffect, useRef } from "react";
-import { Calculator, Info, Stethoscope, MapPin, Briefcase, Heart, Wallet, Users, Settings, ChevronDown, Plus, Shield, PiggyBank, GraduationCap, Home, Map } from "lucide-react";
+import { Calculator, Info, Stethoscope, UserCheck, MapPin, Briefcase, Heart, Wallet, Users, Settings, ChevronDown, Plus, Shield, PiggyBank, GraduationCap, Home, Map } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -76,6 +76,8 @@ export const SIMULATEUR_DEFAULTS = {
     fraisGardeEnfants: 0,
     nombreEnfantsGarde: 0,
     chequesVacances: 0,
+    // Exercice : remplaçant par défaut (le public du site) ; les profils d'installés le précisent.
+    typeExercice: 'remplacant',
     // Phase 3
     tauxRid: '25%',
     situationCarmf: 'affilie_3ans_plus' as const,
@@ -105,7 +107,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     
     const form = useForm<SimulateurFormData>({
       resolver: zodResolver(simulateurSchema),
-      defaultValues: defaultValues || SIMULATEUR_DEFAULTS,
+      // Défauts COMPLETS, complétés par ceux de l'appelant : un champ sans valeur laissait
+      // sa liste déroulante sur l'intitulé (« Régime ») au lieu de « Auto ».
+      defaultValues: { ...SIMULATEUR_DEFAULTS, ...(defaultValues || {}) },
     });
     // Valeurs posées par le dernier chargement (défauts, puis profil type) : un champ du
     // foyer qui en diffère a été modifié à la main.
@@ -143,7 +147,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // La dispense CARMF n'a aucun effet en RSPM : la RID reste obligatoire et
     // doit pouvoir être paramétrée (157€ ou 626€ en 2026).
     const annualRecettes = periode === 'mensuel' ? (recettesBrutes || 0) * 12 : (recettesBrutes || 0);
-    const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && annualRecettes < 38000);
+    // Même règle que le moteur (usePublicodesSimulation) : en Auto, le RSPM est retenu pour
+    // un remplaçant jusqu'à 19 000 € de recettes (seuil d'entrée du régime).
+    const typeExercice = form.watch('typeExercice');
+    const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes <= 19000);
     const showRidToggle = isRspmEffectif;
 
     // Exposer la méthode reset via la ref - avec préservation des champs personnels
@@ -479,7 +486,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       </Badge>
                     )}
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Célibataire" />
@@ -651,7 +658,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                         </PremiumTooltip>
                       </div>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Type de revenu" />
@@ -690,7 +697,50 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
             title="Paramètres de calcul" 
           />
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Exercice : remplaçant ou installé (RSPM, CURPS, dispense CARMF, déductions S1) */}
+            <FormField
+              control={form.control}
+              name="typeExercice"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center gap-1">
+                  <FormLabel className="flex items-center gap-1 text-sm">
+                    <UserCheck className="h-3.5 w-3.5" />
+                    Exercice
+                  </FormLabel>
+                  <PremiumTooltip
+                      title="Remplaçant ou installé"
+                      content={
+                        <div className="space-y-2">
+                          <p className="text-xs">
+                            <strong>Remplaçant</strong> : tu exerces seulement en remplacement (rétrocessions). Tu peux opter pour le RSPM jusqu'à 19 000 € de recettes, tu ne paies pas la CURPS, et la CARMF peut te dispenser d'affiliation sous 15 000 € de revenu net.
+                          </p>
+                          <p className="text-xs">
+                            <strong>Installé</strong> : tu exerces en ton nom (cabinet, collaboration). Le RSPM ne t'est pas ouvert.
+                          </p>
+                        </div>
+                      }
+                    >
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </PremiumTooltip>
+                  </div>
+                  <Select onValueChange={field.onChange} value={field.value ?? 'remplacant'}>
+                    <FormControl>
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder="Exercice" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="sim sim-pop">
+                      <SelectItem value="remplacant">Remplaçant</SelectItem>
+                      <SelectItem value="installe">Installé</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage role="alert" />
+                </FormItem>
+              )}
+            />
+
             {/* Année fiscale */}
             <FormField
               control={form.control}
@@ -718,7 +768,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
                   </div>
-                  <Select onValueChange={(v) => field.onChange(parseInt(v))} defaultValue={String(field.value)}>
+                  <Select onValueChange={(v) => field.onChange(parseInt(v))} value={String(field.value)}>
                     <FormControl>
                       <SelectTrigger className="h-9">
                         <SelectValue placeholder="2026" />
@@ -767,7 +817,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
                   </div>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-9">
                         <SelectValue placeholder="France métro" />
@@ -841,7 +891,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
                   </div>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-9">
                         <SelectValue placeholder="Secteur" />
@@ -884,7 +934,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </div>
                           </TipBox>
                           <TipBox variant="tip">
-                            <p>💡 <strong>Auto = recommandé</strong>. Le simulateur choisit le bon régime selon ton CA.</p>
+                            <p>💡 <strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM entre 19 000 et 38 000 € ? Choisis RSPM.</p>
                           </TipBox>
                         </div>
                       }
@@ -892,7 +942,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                     </PremiumTooltip>
                   </div>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-9">
                         <SelectValue placeholder="Régime" />
@@ -957,7 +1007,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 <div className="space-y-1">
                                   <p><strong>Affilié</strong> : cotisations complètes (base + complémentaire + invalidité-décès)</p>
                                   <p><strong>&lt; 2 ans, &lt;40 ans</strong> : exonéré de complémentaire les 2 premières années</p>
-                                  <p><strong>Dispensé</strong> : sur demande à la CARMF (revenus faibles, démarche non automatique)</p>
+                                  <p><strong>Dispensé</strong> : remplaçant dont le revenu net reste sous 15 000 €, sur demande à la CARMF (ni trimestres de retraite, ni couverture invalidité-décès)</p>
                                 </div>
                               </TipBox>
                               <TipBox variant="tip">
@@ -968,18 +1018,18 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
                         </div>
-                        <Select onValueChange={field.onChange} defaultValue={field.value || 'affilie_3ans_plus'}>
+                        <Select onValueChange={field.onChange} value={field.value || 'affilie_3ans_plus'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Affilié (cas général)" /></SelectTrigger></FormControl>
                           <SelectContent className="sim sim-pop">
                             <SelectItem value="affilie_3ans_plus">Affilié (cas général)</SelectItem>
                             <SelectItem value="affilie_jeune">Jeune affilié (&lt; 2 ans, &lt; 40 ans)</SelectItem>
-                            <SelectItem value="dispense">Dispensé (sur demande)</SelectItem>
+                            <SelectItem value="dispense">Dispensé (remplaçant, revenu net &lt; 15 000 €)</SelectItem>
                           </SelectContent>
                         </Select>
                         <div className="text-xs mt-1.5 px-1">
                           {field.value === 'affilie_3ans_plus' && <p className="text-muted-foreground">Cotisations complètes : base + complémentaire + invalidité-décès</p>}
                           {field.value === 'affilie_jeune' && <p className="sim-ok">✅ Exonéré de complémentaire les 2 premières années — cotisations réduites</p>}
-                          {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation appelée par la CARMF (PAMC : dispense sur demande, revenus faibles).</p>}
+                          {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation CARMF (retraite de base, complémentaire, ASV, invalidité-décès). Possible seulement pour un remplaçant dont le revenu net reste sous 15 000 € : au-delà, le simulateur ne l'applique pas.</p>}
                           {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (157€ ou 626€/an selon le taux ci-dessous).</p>}
                         </div>
                         <FormMessage role="alert" />
@@ -1011,7 +1061,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </PremiumTooltip>
                           </div>
                           <FormControl>
-                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value || '25%'} className="flex gap-4">
+                            <RadioGroup onValueChange={field.onChange} value={field.value || '25%'} className="flex gap-4">
                               <div className="flex items-center gap-2"><RadioGroupItem value="25%" id="rid-25" /><label htmlFor="rid-25" className="text-sm cursor-pointer">25% (157€/an)</label></div>
                               <div className="flex items-center gap-2"><RadioGroupItem value="100%" id="rid-100" /><label htmlFor="rid-100" className="text-sm cursor-pointer">100% (626€/an)</label></div>
                             </RadioGroup>
@@ -1276,7 +1326,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
                         </div>
-                        <Select onValueChange={field.onChange} defaultValue={field.value || 'aucune'}>
+                        <Select onValueChange={field.onChange} value={field.value || 'aucune'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Aucune" /></SelectTrigger></FormControl>
                           <SelectContent className="sim sim-pop">
                             <SelectItem value="aucune">Aucune</SelectItem>
@@ -1331,7 +1381,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                           </PremiumTooltip>
                         </div>
-                        <Select onValueChange={field.onChange} defaultValue={field.value || 'aucun'}>
+                        <Select onValueChange={field.onChange} value={field.value || 'aucun'}>
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Aucun" /></SelectTrigger></FormControl>
                           <SelectContent className="sim sim-pop"><SelectItem value="aucun">Aucun</SelectItem><SelectItem value="micro">Micro-foncier (abattement 30%)</SelectItem><SelectItem value="reel">Régime réel</SelectItem></SelectContent>
                         </Select>

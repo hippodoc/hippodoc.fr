@@ -9,8 +9,20 @@ import { getDomTomInfo } from '@/lib/dom-tom';
 import { getMicroBncCeiling } from '@/lib/baremes-ir';
 import { normalizeCarmfStatus } from '@/lib/carmfStatus';
 
-// Seuil RSPM : en dessous de 38 000 € de recettes, le mode Auto retient le RSPM (voir la FAQ de /simulateur).
-const SEUIL_RSPM = 38000;
+/**
+ * RSPM (régime simplifié des professions médicales, CSS art. L642-4-2 et D642-4-1) : une
+ * OPTION, ouverte aux remplaçants (et régulateurs, étudiants remplaçants…) sans autre
+ * activité libérale, dont les recettes brutes ne dépassent pas 19 000 €. On le perd après
+ * deux années de suite au-dessus de 19 000 € ou une seule au-dessus de 38 000 €. Pour une
+ * année type (recettes stables), il ne tient donc que jusqu'à 19 000 € : c'est le seuil du
+ * mode Auto. Au-dessus, un remplaçant déjà au RSPM peut le choisir à la main jusqu'à
+ * 38 000 €. Avant novembre 2026, le mode Auto le retenait jusqu'à 38 000 €, pour tous,
+ * installés compris.
+ */
+const SEUIL_RSPM_ENTREE = 19000;
+
+/** Dispense d'affiliation CARMF : remplaçant, revenu net d'activité indépendante < 15 000 €. */
+const SEUIL_DISPENSE_CARMF = 15000;
 
 /** Part non déductible de la CSG-CRDS des indépendants : (2,4 % + 0,5 %) / 9,7 %. */
 const PART_CSG_CRDS_NON_DEDUCTIBLE = 2.9 / 9.7;
@@ -41,7 +53,7 @@ const annualiser = (formData: SimulateurFormData, v: number | undefined): number
 const shouldUseRspm = (formData: SimulateurFormData, recettesAnnuelles: number): boolean => {
   if (formData.regimeSocial === 'rspm') return true;
   if (formData.regimeSocial === 'pamc') return false;
-  return recettesAnnuelles < SEUIL_RSPM;
+  return formData.typeExercice !== 'installe' && recettesAnnuelles <= SEUIL_RSPM_ENTREE;
 };
 
 const DEPARTEMENTS_OUTRE_MER: Record<string, ParametresUrssaf['departementOutreMer']> = {
@@ -63,9 +75,9 @@ async function cotisationsPamc(
   recettesAnnuelles: number,
   chargesAnnuelles: number,
   liberalExonere: number,
-): Promise<CotisationsUrssaf | null> {
+): Promise<{ cotisations: CotisationsUrssaf; source: 'urssaf' | 'secours' } | null> {
   try {
-    return await calculerCotisationsUrssaf({
+    const cotisations = await calculerCotisationsUrssaf({
       annee: formData.annee || 2026,
       recettes: recettesAnnuelles,
       charges: chargesAnnuelles,
@@ -75,6 +87,7 @@ async function cotisationsPamc(
       ratioNonConventionne: formData.ratioNonConventionne || 0,
       departementOutreMer: DEPARTEMENTS_OUTRE_MER[formData.lieuExercice || 'metropole'],
     });
+    return { cotisations: ajusterCarmf(cotisations, formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles), source: 'urssaf' };
   } catch (err) {
     console.warn('[Simulateur] API Urssaf indisponible, repli sur calculate-urssaf', err);
   }
@@ -82,7 +95,8 @@ async function cotisationsPamc(
   const { data, error } = await invokeCalculateUrssaf({ formData, regimeFiscal, liberalExonere });
   if (error || !data || (data as { fallbackMode?: boolean }).fallbackMode) return null;
   const r = data as SimulationResult;
-  return {
+  // La fonction Supabase applique elle-même les statuts CARMF (jeune affilié, dispense).
+  return { source: 'secours', cotisations: {
     total: r.cotisationsTotales,
     csgCrdsNonDeductible: (r.cotisationsDetail?.csgCrds || 0) * PART_CSG_CRDS_NON_DEDUCTIBLE,
     detail: {
@@ -94,7 +108,50 @@ async function cotisationsPamc(
       csgCrds: r.cotisationsDetail?.csgCrds || 0,
       formation: r.cotisationsDetail?.formation || 0,
     },
-  };
+  } };
+}
+
+/**
+ * Statut CARMF, que le modèle Urssaf ne connaît pas (« La CARMF en 2026 », p. 24 et 27) :
+ * - jeune affilié : la retraite complémentaire des deux premières années n'est pas due
+ *   (sauf début d'activité après 40 ans). Les autres cotisations de ces années sont
+ *   provisionnelles puis régularisées sur les revenus réels : le montant final est gardé.
+ * - dispensé : pas d'affiliation à la CARMF du tout (retraite de base, complémentaire, ASV,
+ *   invalidité-décès), sur demande, pour un remplaçant dont le revenu net d'activité
+ *   indépendante est inférieur à 15 000 €. Hors de ces conditions, la dispense est ignorée.
+ */
+function ajusterCarmf(
+  c: CotisationsUrssaf,
+  formData: SimulateurFormData,
+  regimeFiscal: 'reel' | 'micro-bnc',
+  recettesAnnuelles: number,
+  chargesAnnuelles: number,
+): CotisationsUrssaf {
+  const statut = normalizeCarmfStatus(formData.situationCarmf);
+  if (statut === 'affilie_jeune') {
+    const retire = c.detail.retraiteComplementaire;
+    return { ...c, total: c.total - retire, detail: { ...c.detail, retraite: c.detail.retraite - retire, retraiteComplementaire: 0 } };
+  }
+  if (statut === 'dispense' && dispenseCarmfPossible(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles, c.total)) {
+    const retire = c.detail.retraite;
+    return { ...c, total: c.total - retire, detail: { ...c.detail, retraite: 0, retraiteComplementaire: 0, retraiteRid: 0 } };
+  }
+  return c;
+}
+
+/** Conditions de la dispense d'affiliation CARMF (revenu net estimé avant ou après cotisations CARMF). */
+export function dispenseCarmfPossible(
+  formData: Pick<SimulateurFormData, 'typeExercice'>,
+  regimeFiscal: 'reel' | 'micro-bnc',
+  recettesAnnuelles: number,
+  chargesAnnuelles: number,
+  cotisationsTotales: number,
+): boolean {
+  if (formData.typeExercice === 'installe') return false;
+  const revenuNet = regimeFiscal === 'micro-bnc'
+    ? recettesAnnuelles * 0.66
+    : recettesAnnuelles - chargesAnnuelles - cotisationsTotales;
+  return revenuNet < SEUIL_DISPENSE_CARMF;
 }
 
 /**
@@ -120,7 +177,8 @@ export async function simulerRegime(
 
   let cotisationsPamcRegime: CotisationsUrssaf | null = null;
   if (!useRspm) {
-    cotisationsPamcRegime = await cotisationsPamc(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles, liberalExonere);
+    const pamc = await cotisationsPamc(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles, liberalExonere);
+    cotisationsPamcRegime = pamc?.cotisations ?? null;
     if (!cotisationsPamcRegime) {
       throw new Error('Le service de calcul URSSAF est temporairement indisponible. Réessaie dans quelques minutes.');
     }
