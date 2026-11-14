@@ -11,9 +11,10 @@
  * feuille des pages de liste.
  *
  * Thèmes (§ 9.fp) : les puces des cinq thèmes remplacent celles des séries, chaque
- * ligne dit son thème (et le numéro de la fiche, à côté), et l'index du bas range les
- * articles par thème. La une, la recherche, l'ordre et les attributs de mesure ne
- * changent pas. Les pages de série restent en ligne, liées depuis chaque article.
+ * ligne dit son thème, et l'index du bas range les articles par thème. La une, la
+ * recherche, l'ordre et les attributs de mesure ne changent pas. Depuis § 9.fq, la
+ * série ne s'affiche plus nulle part : ni numéro de fiche sur les lignes, ni pastille
+ * sur la une ; ses pages sont redirigées (vercel.json).
  */
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
@@ -23,7 +24,6 @@ import BlogCard from '@/components/BlogCard.astro';
 import BlogAppel from '@/components/BlogAppel.astro';
 import '@/styles/blog-liste.css';
 import { SITE_URL, CALENDLY_URL } from '@/lib/site';
-import { blogSeries } from '@/lib/blog-series';
 import { BLOG_THEMES, themePath } from '@/lib/blog-themes';
 import { resolveCover, resolveCovers, srcsetAffiche, largeurDansCadre } from '@/lib/blog-covers';
 import { byNewest } from '@/lib/blog-sort';
@@ -46,7 +46,6 @@ const rest = posts.filter((p) => p !== featured);
    n'en montrait que 9 en cartes, le reste n'existant qu'en liste de titres. */
 const recents = rest.slice(0, 8);
 const autres = rest.slice(8);
-const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
 
 /* La cover « à la une ». Servie en 1200 px fixes, elle faisait chuter le LCP à
    4,1 s (perf 97 → 87). Depuis le § 9.fk, elle est en vignette portrait ; depuis
@@ -183,7 +182,6 @@ const blogSchema = {
           <div class="bl-une-texte">
             <div class="bl-marques">
               <span class="bl-etiquette">À la une</span>
-              {featuredSeries && <span class="chip plan">{featuredSeries.name}</span>}
             </div>
             <h2 set:html={nouer(echapper(featured.data.title))} />
             <p class="bl-une-extrait" set:html={nouer(nouerNombres(echapper(featured.data.description)))} />
@@ -228,11 +226,7 @@ const blogSchema = {
               pubDate={post.data.pubDate}
               readTime={post.data.readTime}
               seriesId={post.data.seriesId}
-              episodeNumber={post.data.episodeNumber}
-              etiquette="theme"
               theme={post.data.theme}
-              category={post.data.category}
-              categoryNumber={post.data.categoryNumber}
               cover={covers.get(post.id)}
             />
           ))}
@@ -258,11 +252,7 @@ const blogSchema = {
                   pubDate={post.data.pubDate}
                   readTime={post.data.readTime}
                   seriesId={post.data.seriesId}
-                  episodeNumber={post.data.episodeNumber}
-                  etiquette="theme"
                   theme={post.data.theme}
-                  category={post.data.category}
-                  categoryNumber={post.data.categoryNumber}
                   cover={covers.get(post.id)}
                 />
               ))}

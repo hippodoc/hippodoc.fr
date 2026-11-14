@@ -45,8 +45,10 @@
    Téléphone : une colonne (gouttière de 20 px). Ordinateur : rail, texte, colonne de droite.
    <article> et son <header> ne font pas de boîte (display: contents) : leurs enfants se placent
    directement dans la grille du <main>. Le HTML et son ordre ne changent pas. Rangées : 1 fil,
-   2 série, 3 titre, 4 ligne de confiance et vignette, 5 écart, 6 sommaire, 7 corps, 8 planches,
-   9 questions, 10 connexes, 11 essai, 12 auteur, 13 partage, 14 suite, 15 écart, 16 retour en haut. */
+   2 vide (la pastille de série, retirée en § 9.fq ; la rangée reste, à 0 px, pour ne pas
+   renuméroter les autres), 3 titre, 4 ligne de confiance et vignette, 5 écart, 6 sommaire,
+   7 corps, 8 planches, 9 questions, 10 connexes, 11 essai, 12 auteur, 13 partage, 14 suite,
+   15 écart, 16 retour en haut. */
 .fiche {
   --gut: 20px;
   display: grid;
@@ -61,7 +63,6 @@
 /* La feuille de lecture : une feuille sable aux coins ronds, de la tête du texte à la fin de l'article. */
 .fiche .article::before { content: ""; grid-column: plein; grid-row: 5 / 16; border-radius: var(--r-xl); background: var(--sand); }
 .fiche .fil { grid-row: 1; }
-.fiche .marques { grid-row: 2; }
 .fiche .aff { grid-row: 3; }
 .fiche .infos { grid-row: 4; }
 .fiche .couverture { grid-row: 4; }
@@ -92,22 +93,16 @@
 .fiche::before { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
 .fiche::after { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
 
-/* ───────── Le ciel : fil d'Ariane, série, titre, ligne de confiance, vignette ───────── */
+/* ───────── Le ciel : fil d'Ariane, titre, ligne de confiance, vignette ───────── */
 .fiche .fil { margin-bottom: 21px; font-size: 0.875rem; color: var(--ink-2); }
-/* 21 px : la zone de toucher d'un lien du fil (12 px sous sa ligne) et celle de la pastille de série (9 px
-   au-dessus d'elle) ne se recouvrent pas. */
+/* 21 px : la zone de toucher d'un lien du fil (12 px sous sa ligne) ne touchait pas celle de la pastille de
+   série (9 px au-dessus d'elle). La pastille est retirée (§ 9.fq) : le titre suit le fil à la même distance. */
 .fiche .fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
 .fiche .fil a { display: inline-flex; align-items: center; min-height: 44px; margin: -12px 0; border-radius: 6px; color: inherit; text-decoration: underline; text-decoration-color: rgba(58, 75, 120, 0.35); text-underline-offset: 4px; }
 .fiche .fil a:hover { color: var(--ink); text-decoration-color: currentColor; }
 /* La page en cours répète le titre juste dessous : elle reste dans le fil pour les lecteurs d'écran. */
 .fiche .fil [aria-current] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .fiche .fil li:nth-last-child(2) { display: none; }
-
-.fiche .marques { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 12px; }
-.fiche .serie { position: relative; display: inline-flex; align-items: center; padding: 3px 12px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.875rem; font-weight: var(--tb); line-height: 1.45; color: var(--brand); text-decoration: none; }
-.fiche .serie::after { content: ""; position: absolute; inset: -9px 0; }
-.fiche .serie:hover { background: var(--sky-soft); }
-.fiche .episode { font-size: 0.875rem; color: var(--ink-2); }
 
 .fiche .aff { --corps: 1.875rem; margin: 0; font-size: var(--corps); font-weight: var(--dw); line-height: 1.1; letter-spacing: -0.03em; color: var(--ink); text-wrap-style: balance; }
 
@@ -670,8 +665,13 @@
   .fiche .corps h3 { margin-top: 36px; font-size: 1.3125rem; }
   .fiche .corps :is(h2, h3).t-encadre { font-size: 1.125rem; }
   .fiche .infos { font-size: 0.9375rem; }
-  .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 150px; }
-  .fiche .couverture { grid-row: 2 / 5; align-self: center; margin: 0; border-radius: 14px; }
+  .fiche .illustree :is(.aff, .infos) { padding-right: 150px; }
+  /* La vignette : son bas sur celui de la ligne de confiance (même marge basse), comme à partir de 1 360 px.
+     Elle était centrée sur la pastille de série, le titre et la ligne de confiance ; sans la pastille
+     (§ 9.fq), centrée, elle descendait de 19 px et sa loupe mordait sur la feuille sable (la moitié des
+     articles de 700 à 1 039 px). Rangée 2 comprise : quand elle est plus haute que le titre et la ligne de
+     confiance, c'est la rangée vide qui grandit, et le texte descend d'un bloc, contre elle. */
+  .fiche .couverture { grid-row: 2 / 5; align-self: end; margin: 0 0 24px; border-radius: 14px; }
   .fiche .couverture img { height: 150px; border-width: 4px; box-shadow: var(--clay); }
   .fiche .couverture::after { right: -9px; bottom: -9px; width: 32px; height: 32px; background-size: 18px; }
   .fiche .grande:popover-open { --zg: 32px; }
@@ -697,10 +697,9 @@
     grid-template-rows: repeat(4, auto) 48px repeat(9, auto) 72px auto;
     padding-top: 120px;
   }
-  .fiche .marques { margin-bottom: 14px; }
   .fiche .infos { margin-top: 20px; margin-bottom: 36px; }
-  .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 170px; }
-  .fiche .couverture { border-radius: 16px; }
+  .fiche .illustree :is(.aff, .infos) { padding-right: 170px; }
+  .fiche .couverture { margin-bottom: 36px; border-radius: 16px; }
   .fiche .couverture img { height: 165px; }
   .fiche .corps h2 { --t: 1.8125rem; margin-top: 64px; }
   .fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.5rem; margin-top: 44px; }
@@ -805,10 +804,11 @@
   .fiche.guidee, .fiche {
     grid-template-columns: [plein-start] minmax(var(--gut), 1fr) [rail-start] var(--rail) [rail-end] var(--ecart-g) [texte-start titre-start] var(--txt) [texte-end] var(--ecart) [droite-start] var(--droite) [droite-end titre-end] minmax(var(--gut), 1fr) [plein-end];
   }
-  .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 0; }
+  .fiche .illustree :is(.aff, .infos) { padding-right: 0; }
   .fiche .aff { --corps: 3rem; }
   /* La vignette : son bas sur celui de la ligne de confiance (même marge basse). 144 px : la place libre
-     au-dessus d'elle, à côté de la série et du titre (le seul titre d'une ligne descend de 15 px). */
+     au-dessus d'elle, à côté du titre (et de la série, jusqu'à § 9.fq ; le seul titre d'une ligne descendait
+     de 15 px). */
   .fiche .couverture { grid-column: droite; justify-self: start; align-self: end; margin-bottom: 36px; }
   .fiche .couverture img { height: 180px; }
   /* La carte d'essai : collante, dans la colonne de droite ; au repos, son haut sur celui de « L'essentiel »,
@@ -839,7 +839,7 @@
 
 /* Contrastes forcés : un contour rend leur forme aux cartes, les dessins gardent leur couleur. */
 @media (forced-colors: active) {
-  .fiche .serie, .fiche .couverture img, .fiche .essai, .fiche .liste, .fiche .cartes, .fiche .reseau,
+  .fiche .couverture img, .fiche .essai, .fiche .liste, .fiche .cartes, .fiche .reseau,
   .fiche .corps .callout, .fiche .corps .tbl, .fiche .corps :is(h2, h3).t-encadre { border: 1px solid CanvasText; }
   .fiche::before, .fiche::after, .fiche .article::before { display: none; }
   /* La pastille de la loupe garde son dessin. */

@@ -111,6 +111,10 @@ Remarques :
 | `/hippo-wall-street` | `/transmissions` |
 | `/instagram`, `/i` | `/essai` |
 | `/remplacements` (exact) | `/` |
+| `/blog/serie` (exact) | `/blog` |
+| `/blog/serie/fiches-fiscalite` | `/blog/theme/impots-declarations` (§ 9.fq : pages de série retirées, exception voulue aux URL figées) |
+| `/blog/serie/fiches-pratiques` | `/blog/theme/debuter-organiser` (§ 9.fq) |
+| `/blog/serie/guides-conseils` | `/blog` (§ 9.fq) |
 | `/dashboard`, `/auth(/*)`, `/reset-password`, `/subscription-required`, `/payment-success`, `/montants-en-attente`, `/previsionnel` | `https://app.hippodoc.fr/<même chemin>` |
 | `/activite/*`, `/revenus/*`, `/depenses/*`, `/analyses/*`, `/compte/*`, `/calendrier(/*)`, `/remplacements/*`, `/statistiques(/*)`, `/mon-espace(/*)`, `/documents(/*)`, `/paiements/*`, `/forum(/*)`, `/ressources/*`, `/dashboard-blog(/*)`, `/admin(/*)` | `https://app.hippodoc.fr/<même chemin>` |
 | `/simulateur/` et tout slash final | `/simulateur` (`"trailingSlash": false`) |
@@ -11714,9 +11718,9 @@ colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 r
 
 **Ce qui reste (faiblesses et suivis)** (mis à jour après relecture, voir plus bas) :
 
-1. La une de `/blog` garde sa pastille de série (« Guides & Conseils ») au milieu de lignes
-   étiquetées par thème ; le cahier la voulait inchangée. Une ligne de `index.astro` pour lui donner
-   le thème (`themeDe(featured.data.theme)?.nom`), si le propriétaire le veut.
+1. ~~La une de `/blog` garde sa pastille de série (« Guides & Conseils ») au milieu de lignes
+   étiquetées par thème ; le cahier la voulait inchangée.~~ Réglé en § 9.fq : la pastille est
+   retirée (la une ne dit plus que « À la une »).
 2. ~~Titres de lignes voisines à des hauteurs différentes~~ : corrigé après relecture (sous-grille).
 3. `/blog` au téléphone : la une descend de 52 px (six puces au lieu de quatre) et 24 lignes sur
    47 ont une étiquette de deux lignes (thème, puis « Fiche Fiscalité #16 ») : ligne moyenne
@@ -11728,8 +11732,9 @@ colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 r
 6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel ; les aperçus de lien (WhatsApp,
    LinkedIn) des nouvelles images une fois en ligne ; Search Console (les fils d'Ariane des 48
    articles changent de position 3).
-7. Search Console, deux à trois mois après la mise en ligne : pages de série et pages de thème
-   visent les mêmes recherches (Fiches Fiscalité partage 10 articles sur 16 avec Impôts et
+7. (Réglé en § 9.fq : les pages de série sont redirigées, deux vers leur thème.) Search Console,
+   deux à trois mois après la mise en ligne : pages de série et pages de thème visent les mêmes
+   recherches (Fiches Fiscalité partage 10 articles sur 16 avec Impôts et
    déclarations ; Fiches Pratiques, 6 sur 8 avec Débuter et s'organiser). Regarder quelle page
    sort sur « fiscalité médecin remplaçant » et « débuter remplacement médecin » ; si une série
    prend la place de son thème, décider alors (`noindex` ou redirection vers le thème).
@@ -12041,7 +12046,8 @@ la construction des affiches, `wt-zoom/dist`, servie sur 4370 ; la branche est s
    affiches ; trois ou quatre thèmes hors de l'écran) ; (b) la une avant les puces au téléphone (elle
    remonterait d'environ 160 px ; les puces passeraient sous elle, hors du premier écran, et l'ordre
    du HTML ou du clavier changerait) ; (c) accepter. Gains calculés, non construits.
-2. Densité : 92 % à 360 × 640 (plus haut, accepté) ; à 1 024 × 768 (tablette couchée), 90,5 % pli
+2. Densité : 92 % à 360 × 640 (plus haut, accepté ; 98,7 % pli ouvert et 100 % pli fermé depuis
+   § 9.fq, sans le numéro de fiche) ; à 1 024 × 768 (tablette couchée), 90,5 % pli
    fermé, 97,2 % pli ouvert (100 % sur les affiches seules) : 6 étiquettes sur 8 y prennent deux
    lignes (colonne d'environ 240 px). Mesuré aussi sans la sous-grille : 90,5 %, et 14 rangées
    décalées. 820 × 1 180, 768 × 1 024, 1 280 × 800, 1 512 × 800 : 100 %.
@@ -12052,7 +12058,214 @@ la construction des affiches, `wt-zoom/dist`, servie sur 4370 ; la branche est s
    1 024, 4 648 → 4 573 px à 1 280 et au-delà, sous la borne de 4 997 px).
 5. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel en HTTP/2 sur réseau bridé.
 
-### 9.fq Simulateur : audit du calcul, Micro-BNC et réel comparés sur la même base (14 novembre 2026)
+### 9.fq Blog : les séries quittent l'écran, leurs pages sont redirigées (14 novembre 2026)
+
+Décision du propriétaire, sur trois points (« go ») : depuis § 9.fp, le blog est rangé par thème ;
+l'ancien classement par série (Fiches Fiscalité, Fiches Pratiques, Guides & Conseils ; `seriesId` =
+`fiche-fiscalite`, `fiche-pratique`, `divers`) restait visible et faisait doublon, et « Guides &
+Conseils » n'était que la case « divers ». Les pages de série : 62 vues en 90 jours.
+
+1. **Retirer les séries de l'écran** : il ne reste que le thème.
+2. **Rediriger les trois pages de série** en 301 (`vercel.json`).
+3. **Garder l'invisible** : `seriesId` et le numéro dans le frontmatter et le schéma, les attributs
+   `data-blog-series` de l'article, `page-analytics.ts` intouché ; seule exception, `articleSection`
+   du JSON-LD `Article` devient le nom du thème.
+
+**Retiré de l'écran** (compté par script sur le HTML construit, `classer-html.mjs`) :
+
+| Où | Quoi | Nombre | Mots |
+|---|---|---|---|
+| 48 articles, tête | pastille de série, lien vers sa page : « Guide et Conseil » (24), « Fiche Fiscalité #N » (16), « Fiche Pratique #N » (8) | 48 | 144 |
+| 24 articles numérotés, tête | « Épisode N », masqué à l'œil (classe `sr`), lu par les lecteurs d'écran | 24 | 48 |
+| `/blog`, la une | pastille « Guides & Conseils » (« À la une » reste) | 1 | 3 |
+| `/blog`, lignes | numéro de fiche après le thème : « Fiche Fiscalité #N » (16), « Fiche Pratique #N » (8) ; l'étiquette ne dit plus que le thème | 24 | 72 |
+| 5 pages de thème, lignes | numéro de fiche seul (plus aucune étiquette : le thème est celui de la page) | 24 | 72 |
+| **Total** | | **121** | **339** |
+
+Et les trois pages de série entières (822, 484 et 1 108 mots dans `<main>` : leurs lignes, que
+`/blog` et les thèmes portent aussi, et leurs textes propres, `SERIES_INTROS` : 114, 131 et 118
+mots, archivés dans git à `38bd441`, `src/lib/blog-series-slugs.ts`). Le fil d'Ariane de l'article
+(Accueil › Blog › Thème › Article) ne change pas. **Contenu modifié : aucun mot d'article.**
+
+**Redirections** (`vercel.json`, juste après la règle `/blog/serie` → `/blog` qui existait ; aucune
+règle placée avant ne les capte : la règle d'hôte ne vise que le domaine nu, `/index.html` et
+`/:path*/index.html` ne visent que ces fins d'adresse ; contrôlé par `verify-site.mjs`) :
+
+| Ancienne adresse | Nouvelle |
+|---|---|
+| `/blog/serie/fiches-fiscalite` | `/blog/theme/impots-declarations` |
+| `/blog/serie/fiches-pratiques` | `/blog/theme/debuter-organiser` |
+| `/blog/serie/guides-conseils` | `/blog` |
+
+`permanent: true`, comme toutes les règles du site : Vercel répond 308 (permanente), que Google traite
+comme une 301. **Exception voulue à l'invariant « URLs publiques figées »** de CLAUDE.md, consignée
+là-bas et dans la table du § 5. Les adresses de thème restent figées (deux pages de série y mènent).
+
+**Ce qui reste, invisible** : `seriesId`, `category`, `categoryNumber`, `episodeNumber` dans les 48
+fichiers et dans `content.config.ts` (rien n'y change) ; `data-blog-category`, `data-blog-series`,
+`data-blog-episode` sur `<article>` (les propriétés `category`, `series_id`, `episode_number` des
+événements PostHog continuent, et `hd_derniere_serie`) ; la classe `s-<seriesId>` des lignes ;
+`src/lib/blog-series.ts` (généré, lu par l'index de recherche). Ailleurs, recherché par script dans
+tout le build : `/blog/recherche.json` garde le nom de la série (`se`, que le script de `/blog`
+n'affiche pas, et dans le texte cherché : « fiche fiscalité » trouve toujours ces articles) ;
+`llms.txt` était déjà rangé par thème (§ 9.fp) et ne cite aucune série ; `BlogAppel.astro` n'affiche
+rien de la série (son emplacement `blog_serie` est retiré du type). Les 24 affiches numérotées portent
+« Fiche Fiscalité #4 » **dessiné dans l'image** : non touché.
+
+**Deux écarts au « rien d'autre », voulus :**
+
+- **`articleSection`** (JSON-LD `Article`, 48 articles) : le nom du thème au lieu de la catégorie
+  (« Fiche Fiscalité » → « Impôts et déclarations » 10 fois, → « Cotisations et protection » 5 fois…,
+  « Guide et Conseil » vers les cinq thèmes, « Fiche Pratique » vers deux). C'est l'exception décidée.
+- **`<category>` du flux RSS** (48 entrées) : même changement, même raison (un lecteur de flux
+  l'affiche comme une étiquette). Choix fait ici, à défaire d'une ligne (`src/pages/rss.xml.ts`) si
+  le propriétaire préfère.
+
+**La tête de l'article sans la pastille.** Au téléphone, tout remonte de 38 px (la pastille et sa
+marge), rien d'autre ne bouge. De 700 à 1 359 px, la vignette était **centrée** sur la pastille, le
+titre et la ligne de confiance : sans la pastille, centrée sur le titre et la ligne de confiance, elle
+descendait de 19 px, et sa loupe mordait sur la feuille sable dans la moitié des articles (mesuré sur
+les 48). Elle a maintenant **son bas sur celui de la ligne de confiance** (même marge basse, 24 puis
+36 px), la règle d'au-delà de 1 360 px : la loupe est à 15 px de la feuille (27 px à partir de
+1 040 px) dans tous les articles. Quand la vignette est plus haute que le titre et la ligne de
+confiance (un titre d'une ligne : « Inbox zéro du remplaçant »), c'est la rangée vide de l'ancienne
+pastille qui grandit : le texte descend d'un bloc, contre la vignette, et l'air est au-dessus du titre
+(le cas existait à partir de 1 360 px). Mesures (Chromium, 48 articles ; `tete-article.cjs`) :
+
+| Largeur | Loupe → feuille sable, avant (min / méd. / max) | Après | Début du texte (min / méd. / max) | Titre |
+|---|---|---|---|---|
+| 360, 393, 560 | 9 / 9 / 9 px | 9 / 9 / 9 px | −38 px | −38 px |
+| 700 | −9 / 17 / 36 | 15 / 15 / 15 | −39 / −27 / +24 | −38 / −27 / +32 |
+| 820 | −9 / 18 / 39 | 15 / 15 / 15 | −38 / −30 / +24 | −38 / −31 / +31 |
+| 1 040 à 1 359 | 16 / 54 / 79 | 27 / 27 / 27 | −41 / −40 / −15 | −40 / −40 / −16 |
+| 1 360, 1 512 | 27 / 27 / 27 | 27 / 27 / 27 | −40 / −5 / 0 | −40 / −5 / +31 |
+
+Le texte commence plus haut qu'avant dans les 48 articles sous 700 px et de 1 040 à 1 359 px ; Inbox
+zéro fait exception de 700 à 1 039 px (24 px plus bas) et à partir de 1 360 px (au même endroit).
+L'écart entre le titre et la ligne de confiance ne grandit plus : 16 px de 700 à 1 039 px, 20 px
+au-delà, dans tous les articles (il montait à 18 et 28 px dans quelques-uns) ; inchangé sous 700 px.
+
+**Code retiré** : `src/pages/blog/serie/[series].astro` ; `src/lib/blog-series-slugs.ts` (adresses,
+textes des pages) ; `byEpisode` (`src/lib/blog-sort.ts`, l'ordre de lecture des séries) ; les
+`lastmod` des séries (`astro.config.mjs`) ; dans `BlogCard.astro`, les props `etiquette`,
+`episodeNumber`, `category`, `categoryNumber` (il reste `theme`) ; dans `[slug].astro`, la pastille,
+« Épisode N » et leur calcul ; `blog_serie` du type de `BlogAppel.astro`.
+
+**CSS mort retiré**, et prouvé mort : le HTML de la branche, rendu avec la feuille de `main` puis
+avec la sienne, donne les mêmes pixels (pleine page) sur `/blog` (pli fermé et ouvert) et les cinq
+pages de thème, à 320, 360, 393, 420, 560, 600, 699, 700, 820, 1 024, 1 280 et 1 512 px (100
+comparaisons sur 100) ; sur deux articles, mêmes pixels sous 700 px et à 1 512 px, et les seuls écarts
+de 700 à 1 280 px sont la vignette ci-dessus (`css-mort.cjs`).
+
+- `blog-liste.css` (16 676 → 15 129 octets, 194 → 180 règles) : `.bl-numero` et son point,
+  `.bl-marques-suite` (trois règles) et `.bl-rang`, `.bl-pastille`, `.bl-texte strong`, `.bl-texte a`
+  (trois règles : l'introduction d'un thème est du texte brut), les règles de la navigation des séries
+  que `.bl-themes` recouvrait déjà (moins de 400 px ; `display: flex` et `white-space: nowrap` à
+  partir de 560 px), les `gap` des marques (un seul élément), `.bl-pastille` et `.bl-une .chip` en
+  contrastes forcés. La sous-grille de 1 024 px vise `.bl` au lieu de `.bl:not([data-blog-serie])` :
+  aucune autre règle ne pose ces propriétés sur ces éléments, le poids plus faible ne change rien
+  (pixels identiques).
+- `blog-article.css` (51 355 → 50 755 octets, 439 → 433 règles) : `.marques`, `.serie` (et son
+  `::after`, son survol), `.episode`, `.marques` dans les trois `padding-right` et en contrastes
+  forcés. La rangée 2 de la grille de l'article reste, vide (0 px), pour ne pas renuméroter les
+  quinze autres.
+- Feuille commune : `_astro_assets.BdxOyZgM.css`, même nom (aucun mot des commentaires ne crée de
+  règle Tailwind).
+
+**`verify-site.mjs`** : rien d'assoupli. Nouveau contrôle « 4 septdecies » : échoue si un fichier du
+build (HTML, XML, texte, JSON) cite `/blog/serie…` (relative ou absolue), si le sitemap en contient
+une, si une des trois anciennes adresses est encore construite, n'est pas la source exacte d'une
+règle permanente vers sa destination (une page construite et dans le sitemap) ou est captée par une
+règle placée avant elle (motifs `:x`, `:x*`, `:x+`), si la tête d'un article garde une marque de série
+(`marques`, `serie`, `episode`) ou dit, hors du titre, sa catégorie ou « Épisode », si `articleSection`
+n'est pas le nom du thème, si la une de `/blog` dit autre chose que « À la une », si une ligne d'une
+page de thème a une étiquette, si une `<category>` du flux n'est pas le thème de l'article. « 4
+sexdecies » durci : l'étiquette ENTIÈRE d'une ligne de `/blog` doit être le nom du thème (avant : sa
+première marque). Le `lastmod` des séries (6 f) et leur exclusion de la liste des articles (une page
+de série reconstruite serait contrôlée comme un article, et échouerait) sont retirés. **Il mord** :
+16 mutations sur une copie du build (jamais le dépôt), les 16 échouent (lien relatif dans un article,
+adresse absolue dans `llms.txt`, adresse dans le sitemap, page de série reconstruite, redirection
+retirée, mauvaise destination, non permanente, règle `/blog/:reste*` placée avant, pastille remise
+sans lien, « Épisode 4 » masqué, catégorie dans la tête, `articleSection` d'avant, numéro remis sur
+une ligne de `/blog`, pastille sur la une, étiquette sur une ligne de thème, catégorie RSS d'avant) ;
+le témoin passe.
+
+**Preuves** (contre `main` à `38bd441`, construit cache vidé : `series/dist-main`) :
+
+- `npm run build` : 75 → **72 pages** ; sitemap 73 → **70 adresses**. `verify-site.mjs` passe :
+  70 pages, 5 862 → 5 532 liens internes (ceux des pages de série et des pastilles), les mêmes 7
+  avertissements.
+- Corps des 48 articles (`preuve-corps.cjs`) : mots, titres et ancres, liens différents : 0, 0, 0 ;
+  un seul `<h1>` partout.
+- Tout le build, fichier par fichier (`classer-html.mjs` : partir de `main`, appliquer les seuls
+  écarts voulus, exiger l'égalité octet pour octet) : **0 écart non expliqué**. 1 183 → 1 180
+  fichiers. Identiques octet pour octet : les 19 pages HTML hors blog et 1 103 autres fichiers
+  (scripts, dont celui de PostHog, images, `llms.txt`, `recherche.json`, images de partage).
+  Égaux après les écarts voulus : 48 articles (bloc de la pastille, `articleSection`, nom de la
+  feuille), `/blog` (pastille de la une, 24 numéros, classe des 47 étiquettes), 5 pages de thème (24
+  étiquettes), `sitemap-0.xml` (3 adresses), `rss.xml` (48 catégories). Retirés : les 3 pages de
+  série ; renommées : les deux feuilles ci-dessus.
+- JSON-LD (`jsonld.mjs`) : 73 pages, 263 blocs ; 215 identiques, les 48 autres ne diffèrent que par
+  `articleSection`.
+
+**Mesures** (Chromium ; `densite.cjs`, `une.cjs`, `centrage.cjs`) :
+
+| `/blog` | Avant | Après |
+|---|---|---|
+| 360 × 640 : lignes (min / moy. / max), pli ouvert | 140 / 145,5 / 166 px | 139 / 142,1 / 148 px |
+| 360 × 640 : 3 articles entiers sous l'en-tête, pli fermé / ouvert | 91,9 / 92,2 % | **100 / 98,7 %** |
+| 360 × 640 : étiquettes sur deux lignes (47 lignes) | 33 | 17 (« Statut, contrats et revenus », « Cotisations et protection ») |
+| 393 × 692 : lignes ; 3 entiers | 150 à 151 px ; 100 % | inchangé ; 100 % |
+| 393 × 692 : étiquettes sur deux lignes | 32 | 11 |
+| 402 × 680 : 3 entiers | 96,2 / 96,4 % | inchangé |
+| 1 024 × 768 : 3 entiers, pli fermé / ouvert | 90,5 / 97,2 % | **100 / 100 %** |
+| Une, titre (393 × 692) | 652 à 720 px (sort de l'écran) | 625 à 692 px (entier) |
+| Une, affiche (393 × 692 ; 402 × 680) | 589 à 719 px, 79 % visible ; 65 % | inchangé |
+| Hauteur de la page, pli fermé (360 ; 393) | 7 361 ; 7 190 px | 7 300 ; 7 190 px |
+| 1 024 et 1 512 px, écart des milieux du texte et de l'affiche (95 lignes, avec les thèmes) | méd. 3,2, max 15 px | méd. 5,3 à 8,4, max 11,5 px |
+
+Pages de thème au téléphone : lignes inchangées (139-140 px à 360, 150-151 à 393 : l'affiche les
+fait), premier titre de ligne 0 à 9 px plus haut. Aucun défilement de côté (`/blog`, deux pages de
+thème, trois articles, plis ouverts, de 320 à 1 920 px).
+
+Lighthouse mobile (`serve`, qui compresse ; passes alternées) : `/blog` 98, 97, 99, 97, 97, 97
+(`main` : 99, 99, 97, 97, 97, 98) ; l'article CARMF 98, 98 (`main` : 98, 99) ; accessibilité, bonnes
+pratiques et SEO à 100 ; CLS 0 ; LCP (le titre de `/blog`, un paragraphe de l'article) de 1,96 à
+2,55 s (`main` : 1,81 à 2,55 s). WebKitGTK 2.52 (`/blog`, CARMF, Inbox zéro ; 1 512 et 820 px, 393 et 360 px dans
+un cadre ; `main` et branche) : aucun défilement de côté, aucune marque de série, la une ne dit que « À
+la une » ; lignes de `/blog` 150-151 px à 393, 139 à 145 px à 360 (140 à 162 avant) ; à 820 px, la
+loupe à 15 px de la feuille sable dans les deux articles (Inbox zéro : −9 px avant) ; mêmes positions
+qu'avec Chromium à quelques pixels près. Ce n'est ni Safari ni un iPhone.
+
+Captures (avant / après) : `/blog` au téléphone (haut et liste), page Impôts et déclarations, article
+CARMF au téléphone, `/blog` à 1 512 px (haut et liste) ; scripts et résultats dans le dossier de
+travail `series/`.
+
+**Ce qui reste faible :**
+
+1. **Code de mesure mort, laissé** (`src/lib/page-analytics.ts`) : `mesurerSerie` et l'événement
+   `blog_series_viewed` (et le test de l'adresse `/blog/serie/`) ne partent plus, les pages étant
+   redirigées ; `cta_simulateur_blog_serie` et `cta_signup_blog_serie` non plus. Le retirer renomme le
+   script de PostHog sur toutes les pages (§ 9.fp) : à faire à la prochaine retouche voulue de ce
+   fichier. Les insights PostHog sur ces événements s'arrêtent au jour de la mise en ligne.
+2. Les affiches numérotées gardent « Fiche Fiscalité #4 » dessiné dans l'image.
+3. Tête d'article, titre d'une ligne (Inbox zéro) : de 700 à 1 359 px, de l'air au-dessus du titre, et
+   le texte 24 px plus bas qu'avant.
+4. La une de `/blog` au téléphone : son affiche n'est toujours pas entière dans le premier écran
+   (79 % à 393 × 692, 65 % à 402 × 680 ; § 9.fp, à décider) ; son titre l'est désormais.
+5. Les redirections ne marchent que sur Vercel (404 en local, attendu) : après la mise en ligne,
+   vérifier les trois adresses (code 308, destination). Search Console : les trois pages sortiront de
+   l'index peu à peu ; leurs liens entrants passent aux thèmes et à `/blog`.
+6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel.
+
+**Fichiers** : `vercel.json`, `astro.config.mjs`, `src/pages/blog/[slug].astro`,
+`src/pages/blog/index.astro`, `src/pages/blog/theme/[theme].astro`, `src/pages/blog/serie/[series].astro`
+(retiré), `src/lib/blog-series-slugs.ts` (retiré), `src/lib/blog-sort.ts`, `src/lib/blog-themes.ts`
+(commentaire), `src/pages/rss.xml.ts`, `src/components/BlogCard.astro`, `src/components/BlogAppel.astro`,
+`src/styles/blog-liste.css`, `src/styles/blog-article.css`, `scripts/verify-site.mjs`, `MIGRATION.md`,
+`CLAUDE.md`.
+
+### 9.fr Simulateur : audit du calcul, Micro-BNC et réel comparés sur la même base (14 novembre 2026)
 
 Le propriétaire : « on n'a vraiment pas le droit de se tromper […] audite en profondeur, de bout
 en bout, ce simulateur dans toutes les situations possibles […] et applique les corrections

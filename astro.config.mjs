@@ -11,7 +11,6 @@ import { OPTIONS_ARTICLE } from './src/lib/article-options.mjs';
 import { createHash } from 'node:crypto';
 import blogMeta from './src/generated/blog-meta.json' with { type: 'json' };
 import { STATIC_LASTMOD } from './src/lib/pages-lastmod.ts';
-import { seriesPath } from './src/lib/blog-series-slugs.ts';
 import { themePath } from './src/lib/blog-themes.ts';
 import { readdirSync, readFileSync } from 'node:fs';
 import pkg from './package.json' with { type: 'json' };
@@ -24,21 +23,20 @@ const BLOG_LASTMOD = new Map(
 /* Pages statiques : elles n'avaient aucun `lastmod`, alors que /guide-declarations
    affiche « Mis à jour le … » et porte `dateModified`. Table dans
    src/lib/pages-lastmod.ts, partagée avec les pages elles-mêmes. */
-/* Pages de liste (§ 9.bi) : /blog, les pages de série et les pages de thème (§ 9.fp)
-   changent à chaque PUBLICATION. Leur lastmod = date de publication la plus récente
-   de leurs articles (pubDate, pas updatedDate : corriger un article ne change pas la
-   liste, qui n'affiche que les dates de publication). */
+/* Pages de liste (§ 9.bi) : /blog et les pages de thème (§ 9.fp ; les pages de série
+   aussi, jusqu'à leur redirection en § 9.fq) changent à chaque PUBLICATION. Leur
+   lastmod = date de publication la plus récente de leurs articles (pubDate, pas
+   updatedDate : corriger un article ne change pas la liste, qui n'affiche que les
+   dates de publication). */
 const LIST_LASTMOD = new Map();
 const plusRecente = (a, b) => (!a || b > a ? b : a);
 for (const fichier of readdirSync('./src/content/blog').filter((f) => f.endsWith('.md'))) {
   const slug = fichier.replace(/\.md$/, '');
   const pub = blogMeta[slug]?.pubDate;
   const source = readFileSync(`./src/content/blog/${fichier}`, 'utf8');
-  const serie = source.match(/^seriesId: "?([a-z-]+)"?$/m)?.[1];
   const theme = source.match(/^theme: "?([a-z-]+)"?$/m)?.[1];
   if (!pub) continue;
   LIST_LASTMOD.set('/blog', plusRecente(LIST_LASTMOD.get('/blog'), pub));
-  if (serie) LIST_LASTMOD.set(seriesPath(serie), plusRecente(LIST_LASTMOD.get(seriesPath(serie)), pub));
   if (theme) LIST_LASTMOD.set(themePath(theme), plusRecente(LIST_LASTMOD.get(themePath(theme)), pub));
 }
 

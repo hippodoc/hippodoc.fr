@@ -1,19 +1,19 @@
 /* ==========================================================================
-   Pages de liste du blog dans la DA 2026 : /blog et /blog/serie/* (phase 5c,
-   MIGRATION.md § 9.ej). Seul l'habillage a changé : textes, titres, liens,
-   ordre des blocs, JSON-LD et attributs de mesure sont ceux d'avant. Les pages
-   de thème (/blog/theme/*, § 9.fp) sont faites sur le modèle des pages de
-   série, avec cette feuille.
+   Pages de liste du blog dans la DA 2026 : /blog et /blog/theme/* (phase 5c,
+   MIGRATION.md § 9.ej ; thèmes, § 9.fp). Seul l'habillage a changé : textes,
+   titres, liens, ordre des blocs, JSON-LD et attributs de mesure sont ceux
+   d'avant. Les pages de thème ont été faites sur le modèle des pages de série,
+   retirées en § 9.fq (redirigées, vercel.json).
 
-   Une feuille à part, importée par les trois gabarits (`pages/blog/index.astro`,
-   `pages/blog/serie/[series].astro`, `pages/blog/theme/[theme].astro`) et servie
-   à ces neuf pages seules : une seule requête en plus de la feuille commune, la
-   même d'une page de liste à l'autre. En <style> scopés, les cartes (partagées)
-   et chaque page auraient eu chacune la leur.
+   Une feuille à part, importée par les deux gabarits (`pages/blog/index.astro`,
+   `pages/blog/theme/[theme].astro`) et servie à ces six pages seules : une
+   seule requête en plus de la feuille commune, la même d'une page de liste à
+   l'autre. En <style> scopés, les cartes (partagées) et chaque page auraient eu
+   chacune la leur.
 
    - Tout est préfixé `bl-` ; les primitives viennent de da.css (`.wrap`,
      `.band`, `.lead`, `.btn`, `.chip`, `.lien`, `.aff`).
-   - Le ciel en haut (titre, recherche, séries, article à la une), une feuille
+   - Le ciel en haut (titre, recherche, thèmes, article à la une), une feuille
      sable (les cartes, l'appel au simulateur), une feuille ciel (l'index, sur
      /blog), puis les deux vagues du pied de page, comme sous les articles.
    - Corps de texte en rem : ils suivent la taille de police du navigateur.
@@ -49,7 +49,7 @@
 /* La dernière feuille laisse la place des vagues sous son contenu. */
 .bl .bl-fin { padding-bottom: 150px; }
 
-/* ───────── Le ciel : titre, recherche, séries, article à la une ─────────
+/* ───────── Le ciel : titre, recherche, thèmes, article à la une ─────────
    Le bloc passe sous la pastille de l'en-tête, il lui réserve le haut. En bas,
    l'air et les 40 px que recouvre la feuille suivante. */
 .bl-tete { padding: 100px 0 80px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
@@ -81,8 +81,9 @@
 .bl-vide { margin-top: 6px; padding: 16px 20px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
 .bl-vide p { margin: 0; }
 
-/* Les séries : des pastilles blanches qu'on enfonce ; la page en cours est sur
-   l'eau profonde. Sur téléphone, deux par ligne. */
+/* Les puces (des thèmes depuis § 9.fp ; la classe `bl-series` garde le nom des
+   séries) : des pastilles blanches qu'on enfonce ; la page en cours est sur l'eau
+   profonde. Sur téléphone, deux par ligne. */
 .bl-series { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
 .bl-series a { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0 0.3em; min-height: 44px; padding: 4px 10px; border-radius: 22px; background: var(--paper); box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 3px 0 var(--edge); font-size: 0.875rem; font-weight: var(--tb); line-height: 1.2; color: var(--ink); text-align: center; text-decoration: none; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
 .bl-series a:hover { background: var(--sky-soft); }
@@ -94,30 +95,18 @@
 .bl-themes .bl-puce { font-weight: inherit; }
 .bl-themes .bl-puce span { font-weight: var(--tw); }
 
-/* Marques : « À la une » et la série en pastilles sur la une ; dans une ligne
-   d'article, la série et le numéro en petites capitales (« FICHES FISCALITÉ
-   · #4 »). Date et durée séparées par un point. Les « · » sont écrits par la
-   feuille et ne sont pas lus (texte de remplacement vide, après une
-   déclaration sans lui pour les navigateurs qui ne le lisent pas). */
-.bl-marques { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+/* Marques : « À la une » en pastille sur la une ; dans une ligne d'article de
+   /blog, le thème en petites capitales (« IMPÔTS ET DÉCLARATIONS »), seul depuis
+   § 9.fq (ni la série, ni le numéro de la fiche ; rien sur une page de thème).
+   Date et durée séparées par un point, écrit par la feuille et non lu (texte de
+   remplacement vide, après une déclaration sans lui pour les navigateurs qui ne
+   le lisent pas). */
+.bl-marques { display: flex; flex-wrap: wrap; align-items: center; }
 .bl-etiquette { display: inline-block; padding: 3px 10px; border-radius: var(--r-pill); background: var(--ink); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.35; color: var(--paper); white-space: nowrap; }
-.bl-carte .bl-marques { gap: 0 8px; line-height: 1.35; }
-/* Tailles : `--ink-3` jamais sous 14 px ; les petites capitales à 13 px, comme « SOMMAIRE » des articles,
-   et le numéro qui les suit à la même taille, en `--ink-2`. */
+.bl-carte .bl-marques { line-height: 1.35; }
+/* Tailles : `--ink-3` jamais sous 14 px ; les petites capitales à 13 px, comme « SOMMAIRE » des articles. */
 .bl .bl-carte .chip { padding: 0; background: none; font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand); }
-.bl-numero { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.04em; color: var(--ink-2); }
-.bl-numero::before { content: "·"; content: "·" / ""; margin-right: 8px; }
 .bl-infos { display: flex; flex-wrap: wrap; align-items: center; font-size: 0.875rem; color: var(--ink-3); }
-/* Sur /blog et les pages de thème (§ 9.fp) : le thème, puis le numéro de la fiche
-   (« Fiche Fiscalité #4 », le libellé de la pastille de l'article), même corps que le
-   numéro des pages de série. Le point qui les sépare est dans la marge gauche de chaque
-   marque, qu'elle reprend par une marge négative : la marque qui commence une ligne a
-   son point hors du cadre, rogné. Quand le thème et le numéro ne tiennent pas sur une
-   ligne (téléphone, thème long), la seconde ligne ne commence pas par un point. */
-.bl-carte .bl-marques-suite { column-gap: 20px; overflow: hidden; }
-.bl .bl-carte .bl-marques-suite > * { position: relative; margin-left: -20px; padding-left: 20px; }
-.bl-marques-suite > *::before { content: "·"; content: "·" / ""; position: absolute; left: 8px; font-weight: var(--tb); letter-spacing: 0; color: var(--ink-2); }
-.bl-rang { font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.04em; color: var(--ink-2); white-space: nowrap; }
 .bl-infos > * + *::before { content: "·"; content: "·" / ""; margin: 0 8px; }
 
 /* L'affiche (§ 9.fo). Jamais rognée, jamais déformée : entière, à son format, à
@@ -220,7 +209,8 @@
 .bl-appel .btn { padding: 8px 26px; text-align: center; }
 .bl-appel-lien { display: inline-flex; align-items: center; min-height: 44px; border-radius: 6px; font-size: 1rem; font-weight: var(--tb); color: var(--paper); text-decoration: underline; text-underline-offset: 4px; }
 
-/* L'index de /blog : une fiche par série, tous les titres. */
+/* L'index de /blog : une fiche par thème (par série avant § 9.fp : la classe
+   `bl-serie` garde ce nom), tous les titres. */
 .bl-index { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 14px; }
 .bl-serie { padding: 20px 20px 10px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); }
 .bl-serie h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-family: var(--text); font-size: 1.1875rem; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
@@ -237,7 +227,8 @@
 .bl-serie li a:hover { color: var(--brand); }
 .bl-serie li a > span + span { font-size: 0.875rem; color: var(--ink-3); }
 
-/* ───────── Pages de série : fil d'Ariane, titre, texte de la série ───────── */
+/* ───────── Pages de thème : fil d'Ariane, titre, introduction ─────────
+   (faites sur le modèle des pages de série, retirées en § 9.fq) */
 .bl-fil { font-size: 0.90625rem; color: var(--ink-2); }
 .bl-fil ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; margin: 0; padding: 0; list-style: none; }
 /* Une cible de 44 px de haut, sans changer la hauteur de la ligne. */
@@ -246,19 +237,14 @@
 .bl-fil [aria-current] { font-weight: var(--tb); color: var(--ink); }
 .bl-presentation { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 20px; }
 .bl-presentation .bl-intro { justify-items: start; }
-/* La série : une pastille blanche, comme en tête des articles. */
-.bl-pastille { display: inline-flex; align-items: center; padding: 4px 13px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }
 .bl-presentation .bl-intro .lead { margin-top: 4px; }
 /* Page de thème (§ 9.fp) : la ligne de contexte, courte, en lignes égales (pas de mot seul sur la seconde) ;
    l'introduction sans mot seul sur sa dernière ligne (« régulier. », « échéances. »). */
 .bl[data-blog-theme] .bl-intro .lead { text-wrap-style: balance; }
 .bl[data-blog-theme] .bl-texte p { text-wrap-style: pretty; }
-/* Le texte de la série : une fiche blanche, une colonne de lecture. */
+/* L'introduction du thème : une fiche blanche, une colonne de lecture (texte brut,
+   échappé au rendu : ni gras ni lien). */
 .bl-texte { max-width: 40rem; padding: 20px 20px 22px; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 1rem; line-height: 1.6; color: var(--ink-2); }
-.bl-texte strong { font-weight: var(--tb); color: var(--ink); }
-.bl-texte a { font-weight: 560; color: var(--brand); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
-.bl-texte a:hover { color: var(--ink); }
-.bl-texte strong a { font-weight: inherit; }
 .bl-presentation + .bl-series { margin-top: 28px; }
 
 /* ───────── Largeurs ───────── */
@@ -270,13 +256,6 @@
   .bl-extrait { overflow-wrap: anywhere; }
   .bl .bl-extrait .num { white-space: normal; }
   .bl-serie li a > span:first-child { overflow-wrap: anywhere; }
-}
-/* Petit téléphone (moins de 400 px) : dans deux colonnes égales, « Tous les articles (48) » passait à la
-   ligne dans sa pastille. Les pastilles prennent leur largeur (le texte d'une ligne), se rangent à la suite
-   et s'étirent pour remplir la ligne : deux lignes de deux à 360 px, trois au pire (texte grossi). */
-@media (max-width: 399.98px) {
-  .bl-series { display: flex; flex-wrap: wrap; gap: 8px; }
-  .bl-series a { flex: 1 1 auto; flex-wrap: nowrap; padding: 4px 10px; white-space: nowrap; }
 }
 /* Les thèmes (§ 9.fp) : six puces aux noms longs, toujours en rangées égales, sur /blog
    comme sur les pages de thème. Jusqu'à 699 px, deux colonnes égales (trois rangées), chaque
@@ -291,8 +270,9 @@
   .bl-themes { display: grid; gap: 8px; }
   .bl-themes a { flex-wrap: wrap; padding: 4px 8px; white-space: normal; }
 }
-/* Deux classes : ces règles passent avant celles des séries à partir de 560 px (`.bl-series`,
-   rangée à la suite, puces d'une ligne), écrites plus bas. */
+/* Deux classes : ces règles passaient avant celles de la navigation des séries à partir de
+   560 px (à la suite, puces d'une ligne), retirées en § 9.fq avec leurs pages, comme celles
+   du petit téléphone (moins de 400 px), que `.bl-themes` recouvrait déjà en entier. */
 @media (min-width: 560px) and (max-width: 699.98px) {
   .bl-series.bl-themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bl-series.bl-themes a { white-space: normal; }
@@ -316,8 +296,8 @@
   .bl-extrait { display: none; }
   #crisp-launcher { display: none; }
 }
-/* Téléphone, pages de série : le texte de la série se resserre, la première
-   carte remonte d'autant. */
+/* Téléphone, pages de thème : l'introduction se resserre, la première ligne
+   remonte d'autant. */
 @media (max-width: 559px) {
   .bl-presentation { gap: 16px; }
   .bl-texte { padding: 16px; font-size: 0.9375rem; line-height: 1.5; }
@@ -325,8 +305,7 @@
 }
 @media (min-width: 560px) {
   .bl-tete { padding: 108px 0 96px; }
-  .bl-series { display: flex; flex-wrap: wrap; }
-  .bl-series a { flex-wrap: nowrap; padding: 0 18px; border-radius: var(--r-pill); font-size: 0.96875rem; white-space: nowrap; }
+  .bl-series a { flex-wrap: nowrap; padding: 0 18px; border-radius: var(--r-pill); font-size: 0.96875rem; }
   .bl-appel { padding: 34px 36px; }
   .bl-serie { padding: 24px 26px 12px; }
   .bl-texte { padding: 26px 28px 28px; font-size: 1.0625rem; line-height: 1.65; }
@@ -377,16 +356,17 @@
   .bl-index-themes { display: block; columns: 3; column-gap: 16px; }
   .bl-index-themes > .bl-serie { break-inside: avoid; margin-bottom: 16px; }
   .bl-serie { padding: 22px 22px 10px; }
-  /* Page de série : le titre à gauche, la fiche du texte à droite. */
+  /* Page de thème : le titre à gauche, la fiche de l'introduction à droite. */
   .bl-presentation { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; gap: 56px; margin-top: 26px; }
   .bl-texte { max-width: none; }
 }
 /* /blog et pages de thème (§ 9.fp), là où les lignes vont par deux (à partir de 1 024 px ;
    une seule colonne de lignes de 640 à 1 023 px depuis § 9.fo, rien à y aligner) :
-   l'étiquette d'une ligne (le thème, le numéro de la fiche, ou rien) n'a pas la même hauteur
-   d'une ligne à sa voisine, et leurs titres ne partaient pas à la même hauteur (3 à 10
-   rangées sur 23 sur /blog, mesuré sur les affiches seules). Les deux lignes d'une rangée
-   partagent donc quatre pistes (sous-grille) : étiquette, titre, extrait, date.
+   l'étiquette d'une ligne (le thème et le numéro de la fiche jusqu'à § 9.fq, le thème seul
+   depuis sur /blog, rien sur une page de thème) n'avait pas la même hauteur d'une ligne à sa
+   voisine, et leurs titres ne partaient pas à la même hauteur (3 à 10 rangées sur 23 sur
+   /blog, mesuré sur les affiches seules). Les deux lignes d'une rangée partagent donc quatre
+   pistes (sous-grille) : étiquette, titre, extrait, date.
    Le texte reste centré sur l'affiche (règle des lignes de § 9.fo) : l'étiquette est calée
    en bas de sa piste, contre le titre, la date en haut de la sienne, et l'affiche au milieu
    de la ligne. La place que l'affiche laisse au texte se partage alors à parts égales entre
@@ -396,21 +376,23 @@
    Chaque élément du texte a sa colonne écrite (la première) : sinon, placé à la ligne 1 sans
    colonne, l'étiquette passait dans une seconde colonne, à côté du `::before`, et les lignes
    grandissaient. Écart des milieux du texte et de l'affiche : 15 px au plus (la ligne sans
-   étiquette à côté d'une ligne qui en a une), contre 37 px sans ces trois règles. Les pages
-   de série, dont l'étiquette tient toujours sur une ligne, ne sont pas touchées. Sans
-   sous-grille (navigateur ancien), la ligne reste celle des affiches. */
+   étiquette à côté d'une ligne qui en a une), contre 37 px sans ces trois règles. Sans
+   sous-grille (navigateur ancien), la ligne reste celle des affiches. Les règles visaient
+   `.bl:not([data-blog-serie])` (les pages de série en étaient exclues) : `.bl` depuis
+   § 9.fq, sans conflit de poids (aucune autre règle ne pose ces propriétés sur ces
+   éléments). */
 @supports (grid-template-rows: subgrid) {
   @media (min-width: 1024px) {
-    .bl:not([data-blog-serie]) .bl-carte { display: grid; grid-row: span 4; grid-template-rows: subgrid; }
-    .bl:not([data-blog-serie]) .bl-carte > a { grid-row: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: subgrid; row-gap: 0; }
-    .bl:not([data-blog-serie]) .bl-vignette { grid-row: 1 / -1; align-self: center; }
-    .bl:not([data-blog-serie]) .bl-carte-texte { grid-row: 1 / -1; grid-column: -2 / -1; display: grid; grid-template-rows: subgrid; }
-    .bl:not([data-blog-serie]) .bl-carte-texte > * { grid-column: 1; }
-    .bl:not([data-blog-serie]) .bl-carte-texte::before { content: ""; grid-area: 1 / 1; }
-    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-marques { grid-row: 1; align-self: end; }
-    .bl:not([data-blog-serie]) .bl-carte-texte > :is(h2, h3) { grid-row: 2; }
-    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-extrait { grid-row: 3; align-self: start; }
-    .bl:not([data-blog-serie]) .bl-carte-texte > .bl-infos { grid-row: 4; align-self: start; }
+    .bl .bl-carte { display: grid; grid-row: span 4; grid-template-rows: subgrid; }
+    .bl .bl-carte > a { grid-row: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: subgrid; row-gap: 0; }
+    .bl .bl-vignette { grid-row: 1 / -1; align-self: center; }
+    .bl .bl-carte-texte { grid-row: 1 / -1; grid-column: -2 / -1; display: grid; grid-template-rows: subgrid; }
+    .bl .bl-carte-texte > * { grid-column: 1; }
+    .bl .bl-carte-texte::before { content: ""; grid-area: 1 / 1; }
+    .bl .bl-carte-texte > .bl-marques { grid-row: 1; align-self: end; }
+    .bl .bl-carte-texte > :is(h2, h3) { grid-row: 2; }
+    .bl .bl-carte-texte > .bl-extrait { grid-row: 3; align-self: start; }
+    .bl .bl-carte-texte > .bl-infos { grid-row: 4; align-self: start; }
   }
 }
 
@@ -421,7 +403,7 @@
 /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
    aux fiches et aux pastilles ; le décor du bas disparaît. */
 @media (forced-colors: active) {
-  .bl-champ input, .bl-resultats, .bl-vide, .bl-series a, .bl-etiquette, .bl-une, .bl-grille, .bl-appel, .bl-serie, .bl-serie h3 span, .bl-pastille, .bl-texte, .bl-une .chip { border: 1px solid CanvasText; }
+  .bl-champ input, .bl-resultats, .bl-vide, .bl-series a, .bl-etiquette, .bl-une, .bl-grille, .bl-appel, .bl-serie, .bl-serie h3 span, .bl-texte { border: 1px solid CanvasText; }
   .bl-series a[aria-current] { border-width: 3px; }
   .bl::before, .bl::after { display: none; }
 }

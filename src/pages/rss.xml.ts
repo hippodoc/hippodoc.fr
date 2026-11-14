@@ -7,12 +7,15 @@
  * site) sans option à ne pas oublier.
  *
  * Contenu : titre et description du frontmatter, jamais le corps — le flux
- * signale les articles, la lecture se fait sur le site.
+ * signale les articles, la lecture se fait sur le site. `<category>` : le nom du
+ * thème de l'article (§ 9.fq ; le libellé de sa série avant, « Fiche Fiscalité »),
+ * comme `articleSection` dans le JSON-LD de l'article.
  */
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE_URL } from '@/lib/site';
 import { byNewest } from '@/lib/blog-sort';
+import { themeDe } from '@/lib/blog-themes';
 
 const echapper = (t: string) =>
   t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -30,7 +33,7 @@ export const GET: APIRoute = async () => {
       <guid isPermaLink="true">${url}</guid>
       <description>${echapper(p.data.description)}</description>
       <pubDate>${p.data.pubDate.toUTCString()}</pubDate>
-      <category>${echapper(p.data.category)}</category>
+      <category>${echapper(themeDe(p.data.theme)!.nom)}</category>
     </item>`;
     })
     .join('\n');

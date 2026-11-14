@@ -6,13 +6,14 @@
  * « Guides & Conseils »). Un article sur l'impôt pouvait être dans les trois. Les thèmes
  * classent par sujet, dans l'ordre d'une carrière ; chaque article en a un, et un seul
  * (champ `theme` du frontmatter, obligatoire : `src/content.config.ts` refuse un article
- * sans thème ou avec un thème inconnu). Les séries restent : leur numérotation (« Fiche
- * Fiscalité #4 ») est dessinée sur les affiches, et leurs pages restent en ligne.
+ * sans thème ou avec un thème inconnu). Les séries restent dans le frontmatter et dans les
+ * attributs de mesure, et leur numérotation (« Fiche Fiscalité #4 ») est dessinée sur les
+ * affiches ; depuis § 9.fq, le site ne les affiche plus, et leurs pages sont redirigées.
  *
  * L'ordre du tableau est l'ordre d'affichage partout (/blog, pages de thème, llms.txt).
  *
  * ⚠️ URLs publiques figées : un slug ne se renomme plus une fois en ligne
- * (`/blog/theme/<slug>`, comme les pages de série).
+ * (`/blog/theme/<slug>` ; deux pages de série y sont redirigées en 301, vercel.json, § 9.fq).
  *
  * Les textes (titre et description de la page, ligne de contexte, introduction) sont les
  * seuls textes nouveaux de § 9.fp, recopiés dans MIGRATION.md pour relecture : sans

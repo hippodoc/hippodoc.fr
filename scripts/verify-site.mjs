@@ -748,8 +748,8 @@ const articles = fichiersDist.filter(
     f.startsWith('/blog/') &&
     f.endsWith('/index.html') &&
     f !== '/blog/index.html' &&            // l'index du blog n'est pas un article
-    !f.startsWith('/blog/serie/') &&       // ni les pages de série
-    !f.startsWith('/blog/theme/')          // ni les pages de thème (§ 9.fp)
+    !f.startsWith('/blog/theme/')          // ni les pages de thème (§ 9.fp ; les pages de série,
+                                           // aussi exclues ici, ne se construisent plus : § 9.fq)
 );
 let articlesSansMeta = 0, articlesSansFin = 0;
 for (const f of articles) {
@@ -1558,7 +1558,8 @@ for (const f of pagesHtml) {
      - ses lignes ne sont pas dans l'ordre de /blog (`byNewest` : les lignes de /blog filtrées par
        thème ; la une, sortie de l'ordre par `featured`, n'y est pas comparée) ;
      - une ligne de /blog n'a pas pour étiquette (la première marque, `.chip`) le nom du thème de
-       son article.
+       son article ; depuis § 9.fq, l'étiquette ENTIÈRE (le texte de `.bl-marques`) doit être ce
+       nom : la série ou le numéro de la fiche (« Fiche Fiscalité #4 ») n'y reviennent pas.
    Cinq thèmes : un sixième se décide (NB_THEMES), il ne s'ajoute pas en passant. */
 const NB_THEMES = 5;
 const srcThemes = readFileSync(resolve(root, 'src/lib/blog-themes.ts'), 'utf8');
@@ -1639,6 +1640,10 @@ for (const [, s, contenu] of lignesBlog) {
   const etiquette = decoder((contenu.match(/<span class="chip[^"]*">([\s\S]*?)<\/span>/)?.[1] ?? '').replace(/<[^>]+>/g, '').trim());
   const attendu = nomsThemes.get(themeDeLArticle.get(s));
   if (!attendu || etiquette !== attendu) fail(`thèmes : sur /blog, la ligne de /blog/${s} a pour étiquette « ${etiquette || 'rien'} », son thème est « ${attendu ?? '?'} »`);
+  // § 9.fq : rien d'autre que le thème dans l'étiquette (le bloc `.bl-marques` de la ligne, entier).
+  const marques = contenu.match(/<div class="bl-marques[^"]*">([\s\S]*?)<\/div>/)?.[1];
+  const toute = decoder((marques ?? '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+  if (marques === undefined || toute !== attendu) fail(`séries : sur /blog, l'étiquette de la ligne de /blog/${s} dit « ${toute || 'rien'} », elle ne doit dire que son thème (« ${attendu ?? '?'} », § 9.fq)`);
 }
 const uneBlog = htmlBlog.match(/<a href="\/blog\/([a-z0-9-]+)" data-ph="blog_index_featured"/)?.[1];
 const ordreBlog = lignesBlog.map((m) => m[1]);
@@ -1667,6 +1672,83 @@ for (const theme of slugsThemes) {
   if (lignes.join() !== ordre.join()) fail(`thèmes : ${chemin} : les lignes ne sont pas dans l'ordre de /blog (attendu : ${ordre.slice(0, 3).join(', ')}… ; lu : ${lignes.slice(0, 3).join(', ')}…)`);
 }
 if (slugsThemes.length) console.log(`Thèmes : ${pagesThemes.length} pages dans le sitemap, ${themeDeLArticle.size} articles, chacun listé par la page de son thème et une seule, fil d'Ariane par son thème`);
+
+/* 4 septdecies. Les séries ne s'affichent plus (MIGRATION.md § 9.fq).
+   Décision du propriétaire (14 novembre 2026) : le thème est le seul classement affiché ; les trois
+   pages de série sont redirigées en 301 (vercel.json). `seriesId`, la catégorie et le numéro restent
+   dans le frontmatter et dans les attributs de mesure de l'article (`data-blog-series`,
+   `data-blog-category`, `data-blog-episode` : contrôlés plus haut). Le contrôle échoue si :
+     - un fichier du build (HTML, XML, texte, JSON) lie ou cite une adresse /blog/serie… (relative
+       ou absolue), le sitemap compris ;
+     - une des trois anciennes adresses est encore construite, n'est pas la source exacte d'une
+       redirection permanente de vercel.json vers sa destination décidée (une page construite et
+       dans le sitemap), ou si une règle placée avant elle la capte (motifs `:x`, `:x*`, `:x+`) ;
+     - la tête d'un article (`<header class="tete">`) garde une marque de série (`marques`, `serie`,
+       `episode`), ou dit, hors du titre, sa catégorie (« Fiche Fiscalité ») ou « Épisode » ;
+     - `articleSection` du schéma `Article` n'est pas le nom du thème de l'article ;
+     - les marques de la une de /blog disent autre chose que « À la une » ;
+     - une ligne d'une page de thème a une étiquette (`.bl-marques`) ;
+     - une `<category>` du flux RSS n'est pas le nom du thème de son article.
+   L'étiquette des lignes de /blog (le thème, seul) est vérifiée en « 4 sexdecies ». */
+const SERIES_REDIRIGEES = {
+  '/blog/serie/fiches-fiscalite': '/blog/theme/impots-declarations',
+  '/blog/serie/fiches-pratiques': '/blog/theme/debuter-organiser',
+  '/blog/serie/guides-conseils': '/blog',
+};
+const citeSerie = /[^\s"'<>]{0,40}\/blog\/serie(?![\w-])[^\s"'<>]{0,40}/;
+let fichiersSansSerie = 0;
+for (const f of fichiersDist.filter((x) => /\.(html|xml|txt|json)$/.test(x))) {
+  const m = readFileSync(resolve(dist, f.replace(/^\//, '')), 'utf8').match(citeSerie);
+  if (m) fail(`séries : ${f} cite encore une page de série (« ${m[0]} ») ; elles sont redirigées (vercel.json, § 9.fq)`);
+  else fichiersSansSerie++;
+}
+for (const u of urls.filter((x) => citeSerie.test(x))) fail(`séries : le sitemap contient ${u} (redirigée, § 9.fq)`);
+const motifVercel = (source) => new RegExp('^' + source.split('/').slice(1).map((seg) =>
+  /^:\w+\*$/.test(seg) ? '(?:/.*)?' : /^:\w+\+$/.test(seg) ? '/.+' : /^:\w+$/.test(seg) ? '/[^/]+' : '/' + seg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('') + '$');
+const reglesVercel = vercelJson.redirects ?? [];
+for (const [ancienne, destination] of Object.entries(SERIES_REDIRIGEES)) {
+  if (cheminsServis.has(ancienne)) fail(`séries : ${ancienne} est encore construite ; elle est redirigée, plus servie (§ 9.fq)`);
+  const i = reglesVercel.findIndex((r) => !r.has && r.source === ancienne);
+  if (i < 0) { fail(`séries : vercel.json n'a pas de redirection pour ${ancienne} (→ ${destination}, § 9.fq)`); continue; }
+  const r = reglesVercel[i];
+  if (r.destination !== destination || r.permanent !== true) fail(`séries : vercel.json redirige ${ancienne} vers ${r.destination} (${r.permanent === true ? '301' : 'non permanente'}) ; attendu ${destination} en 301 (§ 9.fq)`);
+  if (!cheminsServis.has(destination) || !cheminsSitemap.has(destination)) fail(`séries : la destination ${destination} de ${ancienne} n'est pas une page construite et dans le sitemap`);
+  const avant = reglesVercel.slice(0, i).find((x) => !x.has && motifVercel(x.source).test(ancienne));
+  if (avant) fail(`séries : dans vercel.json, la règle « ${avant.source} », placée avant, capte ${ancienne}`);
+}
+const texteDe = (h) => decoder(h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+let tetesSansSerie = 0;
+for (const [slug, theme] of themeAttendu) {
+  const fichier = resolve(dist, 'blog', slug, 'index.html');
+  if (!existsSync(fichier)) continue; // déjà signalé en « 4 sexdecies »
+  const html = readFileSync(fichier, 'utf8');
+  const tete = html.match(/<header class="tete"[^>]*>([\s\S]*?)<\/header>/)?.[1];
+  const categorie = decoder(html.match(/<article\b[^>]*\bdata-blog-category="([^"]*)"/)?.[1] ?? '');
+  if (tete === undefined) { fail(`séries : /blog/${slug} : tête d'article (<header class="tete">) introuvable`); continue; }
+  const horsTitre = texteDe(tete.replace(/<h1\b[\s\S]*?<\/h1>/, ''));
+  if (/\bclass="(?:[^"]* )?(?:marques|serie|episode)(?: [^"]*)?"/.test(tete) || (categorie && horsTitre.includes(categorie)) || horsTitre.includes('Épisode')) {
+    fail(`séries : /blog/${slug} : la tête de l'article montre encore sa série (pastille, « ${categorie} » ou « Épisode », § 9.fq)`);
+  } else tetesSansSerie++;
+  const article = ldDe(html).find((b) => b['@type'] === 'Article');
+  const nom = nomsThemes.get(theme);
+  if (!article || article.articleSection !== nom) fail(`séries : /blog/${slug} : articleSection « ${article?.articleSection ?? 'absent'} », attendu le nom de son thème, « ${nom} » (§ 9.fq)`);
+}
+const une = htmlBlog.match(/<a href="\/blog\/[a-z0-9-]+" data-ph="blog_index_featured"[^>]*>([\s\S]*?)<\/a>/)?.[1] ?? '';
+const marquesUne = texteDe(une.match(/<div class="bl-marques[^"]*">([\s\S]*?)<\/div>/)?.[1] ?? '');
+if (marquesUne !== 'À la une') fail(`séries : la une de /blog dit « ${marquesUne || 'rien'} » dans ses marques ; seulement « À la une » (§ 9.fq)`);
+for (const theme of slugsThemes) {
+  const fichier = resolve(dist, 'blog/theme', theme, 'index.html');
+  if (!existsSync(fichier)) continue;
+  const etiquetees = [...readFileSync(fichier, 'utf8').matchAll(/<a href="\/blog\/([a-z0-9-]+)" data-ph="blog_card">([\s\S]*?)<\/a>/g)].filter(([, , c]) => /class="bl-marques/.test(c)).map(([, s]) => s);
+  if (etiquetees.length) fail(`séries : /blog/theme/${theme} : ${etiquetees.length} ligne(s) avec une étiquette (${etiquetees.slice(0, 3).join(', ')}) ; le thème est celui de la page (§ 9.fq)`);
+}
+const rssSeries = existsSync(resolve(dist, 'rss.xml')) ? readFileSync(resolve(dist, 'rss.xml'), 'utf8') : '';
+const itemsRss = [...rssSeries.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, it]) => [it.match(/<link>[^<]*\/blog\/([a-z0-9-]+)<\/link>/)?.[1], decoder(it.match(/<category>([\s\S]*?)<\/category>/)?.[1] ?? '')]);
+for (const [slug, cat] of itemsRss) {
+  const nom = nomsThemes.get(themeAttendu.get(slug));
+  if (!nom || cat !== nom) fail(`séries : rss.xml : <category> de /blog/${slug} « ${cat || 'absente'} », attendu son thème « ${nom ?? '?'} » (§ 9.fq)`);
+}
+console.log(`Séries : ${fichiersSansSerie} fichiers du build sans adresse de série, ${Object.keys(SERIES_REDIRIGEES).length} redirections en place, ${tetesSansSerie} têtes d'article sans série, ${itemsRss.length} entrées RSS par thème`);
 
 /* 5. robots.txt & llms.txt présents dans dist */
 for (const f of ['robots.txt', 'llms.txt']) {
@@ -1815,17 +1897,15 @@ for (const f of blogFiles) {
     if (/T\d/.test(val) && !/(Z|[+-]\d\d:?\d\d)$/.test(val)) fail(`blog/${f} : ${cle} « ${val} » a une heure sans fuseau (ajouter Z)`);
   }
 }
-// (f) pages de liste (/blog, séries, thèmes) : lastmod = publication la plus récente de leurs articles
+// (f) pages de liste (/blog, thèmes ; les séries jusqu'à § 9.fq) : lastmod = publication la plus
+// récente de leurs articles
 const listes = new Map();
 for (const f of blogFiles) {
   const src = readFileSync(resolve(root, 'src/content/blog', f), 'utf8');
   const pub = src.match(/^pubDate:\s*"?([\d-]{10})/m)?.[1];
-  const serie = src.match(/^seriesId:\s*"?([a-z-]+)"?$/m)?.[1];
-  const slugSerie = serie && readFileSync(resolve(root, 'src/lib/blog-series-slugs.ts'), 'utf8')
-    .match(new RegExp(`['"]?${serie}['"]?\\s*:\\s*['"]([a-z-]+)['"]`))?.[1];
-  // Pages de thème (§ 9.fp) : même règle que les séries.
+  // Pages de thème (§ 9.fp) : la règle des anciennes pages de série.
   const theme = src.match(/^theme:\s*"?([a-z0-9-]+)"?$/m)?.[1];
-  for (const cle of ['/blog', slugSerie && `/blog/serie/${slugSerie}`, theme && `/blog/theme/${theme}`].filter(Boolean)) {
+  for (const cle of ['/blog', theme && `/blog/theme/${theme}`].filter(Boolean)) {
     if (pub && (!listes.get(cle) || pub > listes.get(cle))) listes.set(cle, pub);
   }
 }
