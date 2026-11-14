@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { PUISSANCES, fraisKilometriques, fraisRepas, limitesRepas, type PuissanceFiscale } from "@/lib/simulateur/fraisPros";
 
 /**
- * « Estimer mes charges » (MIGRATION.md § 9.fz) : sous le champ des charges, une liste courte de
+ * « Estimer mes charges » (MIGRATION.md § 9.ga) : sous le champ des charges, une liste courte de
  * ce qu'un médecin peut déduire au réel. Deux lignes calculées par les barèmes officiels
  * (kilomètres, repas : `fraisPros.ts`), les autres saisies ; le total se reporte dans le champ.
  * Aucun montant pré-rempli. L'état reste quand le pli se ferme (le panneau seul est démonté).
