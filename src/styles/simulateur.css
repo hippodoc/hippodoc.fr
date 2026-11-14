@@ -339,6 +339,37 @@
 .sim .sim-premiere-texte { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
 .sim .sim-premiere-texte p { margin: 0; text-wrap-style: pretty; }
 .sim .sim-premiere-texte .sim-fort { color: var(--ink); }
+/* « Estimer mes charges » (§ 9.ga) : un pli du formulaire ; dedans, trois groupes ciel doux
+   (voiture, repas, l'année ; `role="group"` et un titre, pas de <legend> : WebKit le sortait
+   du cadre dans un fieldset en grille), un champ par ligne (libellé au-dessus, case blanche), puis le
+   total et le bouton qui le reporte dans le champ des charges. */
+.sim .sim-estim { margin-top: -4px; }
+.sim .sim-estim-panneau { display: grid; gap: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.sim .sim-estim-panneau p { margin: 0; }
+.sim .sim-estim-intro, .sim .sim-estim-hors { font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-estim-groupe { display: grid; gap: 12px; min-width: 0; padding: 16px; border-radius: 20px; background: var(--sky-soft); }
+.sim .sim-estim-titre { font-size: 1rem; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-estim-groupe input:where(:not([type="checkbox"], [type="radio"])),
+.sim .sim-estim-groupe button[role="combobox"] { background: var(--paper); }
+.sim .sim-estim-ligne { display: grid; gap: 6px; min-width: 0; }
+.sim .sim-estim-aide { font-size: 0.8125rem; line-height: 1.45; color: var(--ink-3); }
+.sim .sim-estim-coche { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+.sim .sim-estim-calcul { font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-estim-calcul strong, .sim .sim-estim-total strong { color: var(--ink); }
+.sim .sim-estim-total { display: grid; gap: 10px; justify-items: start; padding: 16px; border-radius: 20px; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); font-size: 1rem; line-height: 1.5; color: var(--ink); }
+.sim .sim-estim-bouton { min-height: 48px; padding: 10px 20px; border-radius: var(--r-pill); background: var(--ink); color: var(--paper); font-size: 0.9375rem; font-weight: var(--tb); white-space: normal; text-align: center; }
+.sim .sim-estim-bouton:hover { background: var(--ink-2); }
+.sim .sim-estim-bouton:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; box-shadow: none; }
+.sim .sim-estim-bouton:disabled { opacity: 0.45; }
+.sim .sim-estim-statut { font-size: 0.875rem; font-weight: 560; color: var(--ok); }
+.sim .sim-estim-statut:empty { display: none; }
+.sim .sim-estim-sources { font-size: 0.8125rem; line-height: 1.5; color: var(--ink-3); }
+.sim .sim-estim-sources a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 640px) {
+  /* Libellé à gauche, case à droite ; l'aide sous le libellé. */
+  .sim .sim-estim-ligne { grid-template-columns: minmax(0, 1fr) 180px; align-items: center; column-gap: 16px; }
+  .sim .sim-estim-ligne > .sim-estim-aide { grid-column: 1; }
+}
 @media (max-width: 479px) {
   .sim .sim-premiere-tableau table { font-size: 0.8125rem; }
   .sim .sim-premiere-tableau th { font-size: 0.75rem; }

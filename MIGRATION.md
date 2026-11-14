@@ -12981,6 +12981,77 @@ Contenu modifié (texte juridique, `src/pages/mentions-legales.astro`) :
 **Fichiers** : `src/pages/mentions-legales.astro`, `src/pages/conditions-utilisations.astro`,
 `src/pages/politique-confidentialite.astro`, `MIGRATION.md`.
 
+### 9.ga Simulateur : « Estimer mes charges » (14 novembre 2026)
+
+Le propriétaire : « les internes ou les jeunes médecins ont du mal à savoir combien de charges pro
+ils peuvent avoir […] une sorte de mini calculette de charges pro rapide ». Proposition acceptée
+(« go ») : une aide dans le formulaire, pas un nouvel outil.
+
+**Ce qui s'ajoute.** Sous les champs « Tes revenus libéraux » et « Tes charges réelles », un pli
+« Estimer mes charges » (« Estimer mes charges (trajets, repas, assurance…) » à partir de 640 px ;
+pastille « Aide »), fermé par défaut. `src/components/simulateur/EstimateurCharges.tsx`, calculs
+dans `src/lib/simulateur/fraisPros.ts`. Trois groupes :
+- **Voiture** : kilomètres professionnels de l'année, puissance fiscale (case P.6 de la carte
+  grise, 5 CV par défaut), voiture 100 % électrique, péages et parkings. Barème kilométrique des
+  automobiles : CGI, ann. IV, art. 6 B, rédaction issue de l'arrêté du 27 mars 2023 (BOFiP
+  BOI-BAREME-000001 ; service-public.fr F1989, mise à jour du 15 avril 2026, le cite toujours),
+  ouvert aux BNC (BOI-BNC-BASE-40-60-40-20, § 1) ; + 20 % pour une voiture électrique. Le dernier
+  publié, retenu pour 2025 et 2026 (celui des revenus 2026 paraîtra en 2027).
+- **Repas** : nombre de repas pris sur le lieu d'exercice, prix moyen. Déduction par repas : le
+  prix, plafonné, moins la valeur du repas pris au domicile (BOI-BNC-BASE-40-60-60, I-B) : 21,10 €
+  et 5,45 € en 2025, 21,40 € et 5,50 € en 2026 (BOFiP, versions du 19 février 2025 et du
+  18 février 2026, ACTU-2025-00025 et ACTU-2026-00008). Exemple du BOFiP (repas de 25 €) rendu :
+  15,65 € et 15,90 €.
+- **Dans l'année** : montants saisis, sans valeur pré-remplie (une assurance ou un comptable
+  coûtent du simple au triple) : cotisation à l'Ordre, assurance responsabilité civile
+  professionnelle, comptable ou association de gestion agréée, logiciels et abonnements, téléphone
+  et internet (part pro), matériel médical, formation et congrès, autres ; pour un installé, loyer
+  ou redevance du cabinet et secrétariat ; pour un remplaçant, hébergement lors des remplacements
+  et « Part reversée au médecin remplacé » (seulement si les recettes saisies sont les honoraires
+  encaissés par le remplaçant, comme le dit l'article « frais pros du médecin libéral »).
+Puis le total (« Total estimé : X € par an, soit P % de tes recettes. Le Micro-BNC en compte 34 %,
+soit Y €, à leur place. ») et un bouton « Reporter X € dans mes charges », qui remplit le champ
+(par mois si la période est mensuelle ; l'interface ne la propose pas aujourd'hui) et l'annonce
+(« X € reportés dans « Tes charges réelles ». », `role="status"`). Les saisies restent quand le
+pli se ferme.
+
+**Textes.** Intro : « Ce que tu paies pour exercer, sur une année. Ces charges se déduisent au
+régime réel ; en Micro-BNC, l'abattement de 34 % les remplace. Le simulateur compare les deux. »
+Aides : « Trajets vers tes lieux d'exercice, visites, gardes. Trajet domicile-cabinet : 40 km au
+plus par trajet, sauf circonstances particulières. » (comme nos articles) ; « Le barème couvre
+carburant, entretien, assurance et usure de la voiture ; péages et parkings s'y ajoutent. » ;
+« Seulement ceux que la distance t'empêche de prendre chez toi, ticket à l'appui. » ; « Un
+équipement de plus de 500 € HT s'amortit sur plusieurs années : n'en compte que la part de
+l'année. » ; « Seulement si tes recettes saisies sont les honoraires que tu encaisses toi-même. Si
+le médecin remplacé encaisse et te reverse ta part, laisse vide. » ; « Ne compte pas ici tes
+cotisations Urssaf et CARMF ni la CSG (le simulateur les calcule), ton impôt, ni tes versements PER
+ou Madelin (dans les options avancées). » Sources, au pied : « Barème kilométrique : arrêté du
+27 mars 2023, le dernier publié. Repas : limites 2026 du BOFiP. Pour aller plus loin : les frais
+pros du médecin libéral et barème kilométrique ou frais réels. » (liens vers les deux articles,
+nouvel onglet : les saisies du simulateur restent). Mode d'emploi, point « Tes charges réelles »,
+phrase ajoutée : « Tu ne les connais pas ? « Estimer mes charges », juste dessous, les additionne
+ligne par ligne (kilomètres au barème officiel, repas, assurance, comptable…) et reporte le total
+dans le champ. »
+
+**Mesure.** `public_simulator_charges_helper_opened` à l'ouverture,
+`public_simulator_charges_helper_applied` au report (total arrondi à la centaine, nombre de lignes
+remplies) ; `data-ph` `simulateur_estimer_charges` et `simulateur_estimer_charges_reporter`.
+
+**Contrôles.** Barème : les cinq puissances à 1, 4 999, 5 000, 5 001, 12 000, 20 000, 20 001 et
+35 000 km, thermique et électrique, égaux à la table du BOFiP ; exemples de nos articles rendus
+(12 000 km en 5 CV : 5 679 € ; 5 000 km en électrique : 3 816 €). Repas : exemples du BOFiP, prix
+sous la valeur du foyer, au-dessus du plafond, sans prix : aucun échec. Chromium à 390 et 1 280 px :
+ouverture au clavier (`aria-expanded`), total juste (6 266 € pour 8 000 km en 5 CV, 200 € de péages,
+60 repas à 16 €, 335 €, 250 € et 600 €), barème qui suit la puissance, report dans le champ, saisies
+gardées à la fermeture, résultats calculés sur ces charges, aucun débordement. WebKitGTK à 1 300 et
+390 px : mêmes valeurs, aucun débordement ; un `<legend>` y sortait du cadre de son groupe
+(fieldset en grille) : les groupes sont des `role="group"` nommés par leur titre. Construction :
+72 pages, `verify-site.mjs` sans erreur, feuille commune inchangée (`_astro_assets.HrxwAN9D.css`).
+
+**Limites.** Une estimation : le prix moyen des repas est plafonné en moyenne, pas repas par repas ;
+les deux-roues et les frais réels de voiture (au lieu du barème) ne sont pas proposés ; l'option
+pour le barème se prend pour l'année entière et tous les véhicules (BOI-BNC-BASE-40-60-40-20).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
