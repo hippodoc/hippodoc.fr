@@ -13176,6 +13176,67 @@ l'arrondi mensuel près ; RSPM à 15 000 € : une ligne, 2 182 € (2 025 € +
 (390 px) complet, fermé par Échap ; aucun débordement. Construction : `verify-site.mjs` sans erreur,
 feuille commune inchangée.
 
+### 9.gf Simulateur : profils types refaits, calés sur l'usage (14 novembre 2026)
+
+Le propriétaire : « est-ce que, pour toi, ils sont tous pertinents ? […] tu as carte blanche ».
+
+**Ce que disaient les chiffres** (table Supabase `simulateur_public_events`, simulations du
+12 février au 13 novembre 2026). Les profils servent peu : 228 simulations sur 2 393.
+Utilisations : Remplaçant S1 64, Interne remplaçant 61, Remplaçant mixte 30, Spécialiste S2 22,
+Installé généraliste 20, Remplaçant famille 16, Spécialiste S1 10, Parent isolé 5. Saisies libres,
+une par visiteur (563) : recettes de 19 000 € ou moins 8 % (médiane 12 500 €), de 19 000 à
+50 000 € 16 % (médiane 38 947 €), de 50 000 à 83 600 € 27 % (médiane 70 000 €), de 83 600 à
+150 000 € 24 % (médiane 115 200 €), de 150 000 à 250 000 € 16 %, au-delà 8,5 % (secteur 2 : 58 %
+de cette tranche) ; parent isolé : moins de 1 % ; 45 % des simulations sans aucune charge, et
+quand il y en a, 5 à 17 % des recettes selon la tranche.
+
+**Ce qui n'allait pas.** « Interne remplaçant » forçait le RSPM à 25 000 €, au-dessus du seuil de
+19 000 € : 40 892 € de Super-Net, contre 36 986 € en mode Auto, qui choisit le PAMC à ce niveau.
+Sept profils sur huit dépassaient le plafond du micro (83 600 €), dont le plus choisi (Remplaçant
+S1, 120 000 €) : la question du micro ou du réel ne s'y posait plus. Trois profils ne différaient
+que par la situation familiale, un champ du formulaire, que le simulateur garde d'ailleurs quand
+on change de profil après l'avoir modifiée.
+
+**Les sept profils** (`ProfilsTypesPublic.tsx`), dans l'ordre d'un parcours, tous en mode Auto :
+- **Interne qui remplace** (`interne-mixte`) : « Quelques remplacements en plus de l'internat » ;
+  12 500 € de recettes, 1 300 € de charges, 28 000 € de salaire, 1re année. RSPM choisi d'office,
+  bloc de première année.
+- **Jeune remplaçant** (`remplacant-debut`, nouveau) : « Première année en libéral » ; 40 000 €,
+  2 000 €, 1re année. Bloc de première année, PAMC.
+- **Remplaçant régulier** (`remplacant-s1`, « Populaire ») : « Toute l'année, peu de frais » ;
+  70 000 €, 5 000 €. Le Micro-BNC garde 1 287 € par an d'avance.
+- **Remplaçant qui roule beaucoup** (`remplacant-deplacements`, nouveau) : « Trajets et nuits
+  d'hôtel : des frais élevés » ; 60 000 €, 15 000 €. Le réel garde 4 052 € par an d'avance :
+  l'abattement de 34 % du micro tient lieu des charges et des cotisations, que le réel déduit
+  toutes deux.
+- **Remplaçant et salarié** (`remplacant-mixte`) : « Remplacements et poste salarié » ; 40 000 €,
+  2 500 €, 30 000 € de salaire. Les deux régimes se valent.
+- **Installé généraliste** (`installe-generaliste`) : « Cabinet établi, secteur 1 » ; inchangé
+  (160 000 €, 48 000 €, en couple, 2 enfants).
+- **Spécialiste secteur 2** (`specialiste-s2`) : « Honoraires libres, cabinet établi » ; inchangé
+  (280 000 €, 98 000 €, en couple, 2 enfants).
+Les identifiants gardés ne changent pas (suivi `profil_type_id`). Nouvelle pastille « 1re année »
+sur les profils de première année. Espaces insécables : « secteur 1 », « secteur 2 ».
+
+Archivés (texte d'avant ; identifiants retirés, à ne pas réutiliser : `remplacant-famille`,
+`specialiste-s1`, `parent-isole`) : « Interne remplaçant — Internat + gardes ponctuelles »
+(25 000 €, 2 500 €, salaires 28 000 €, RSPM forcé) ; « Remplaçant S1 — Activité soutenue,
+secteur 1 » (120 000 €, 21 600 €) ; « Remplaçant mixte — Libéral + hôpital, jeune parent »
+(90 000 €, 16 200 €, salaires 45 000 €, en couple, 1 enfant) ; « Remplaçant famille — Haute
+activité, conjoint salarié » (140 000 €, 25 200 €, conjoint 35 000 €, 2 enfants) ; « Installé
+généraliste — Cabinet établi, charges élevées » ; « Spécialiste S1 — MEP conventionné, famille
+nombreuse » (220 000 €, 77 000 €, 3 enfants) ; « Spécialiste S2 — Honoraires libres, haut de
+gamme » ; « Parent isolé — Demi-part supplémentaire » (100 000 €, 18 000 €). Mode d'emploi, point
+« Pour démarrer en un clic » : « pré-remplir le formulaire avec des données réalistes (interne,
+remplaçant, installé, spécialiste…) » devient « pré-remplir le formulaire avec une situation
+fréquente, calée sur les simulations faites ici (interne, première année, remplaçant régulier ou
+qui roule beaucoup, installé…) ».
+
+**Contrôles.** Chromium, à 390 et 1 280 px, chacun des sept profils : champs remplis, résultats
+attendus (bloc de première année pour les deux profils de début, RSPM pour l'interne et lui seul,
+réel recommandé pour le remplaçant qui roule beaucoup, l'installé et le spécialiste, micro pour le
+remplaçant régulier), aucun débordement. `verify-site.mjs` sans erreur, feuille commune inchangée.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

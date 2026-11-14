@@ -676,6 +676,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   bascule se calculent après l'affichage, l'un après l'autre ; en attente, leur phrase a sa forme
   finale (« … € ») pour que rien ne saute. Dans les fiches, les cotisations sont en deux lignes,
   Urssaf et CARMF (une seule, Urssaf, au RSPM), aux montants de la conclusion (§ 9.ge).
+  Profils types (§ 9.gf) : sept, en mode Auto, calés sur les simulations réelles (table Supabase
+  `simulateur_public_events`) ; un profil garde son identifiant (`profil_type_id`), un identifiant
+  retiré ne se réutilise pas.
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la
