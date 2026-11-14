@@ -64,11 +64,11 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
   // ============ MESSAGE PRINCIPAL ============
   const regimeLabel = recommande === 'micro-bnc' ? 'Le Micro-BNC' : 'Le régime réel';
   const message = !microBnc
-    ? "Le Micro-BNC n'a pas pu être calculé : seul le régime réel est affiché."
+    ? "Le Micro-BNC n'a pas pu être calculé\u00a0: seul le régime réel est affiché."
     : ecartAnnuel < 1
       ? "Les deux régimes te laissent la même somme."
       : equivalents
-        ? `Les deux régimes se valent : ${euros(ecartMensuel)}/mois d'écart en faveur ${recommande === 'micro-bnc' ? 'du Micro-BNC' : 'du régime réel'} (${euros(ecartAnnuel)}/an).`
+        ? `Les deux régimes se valent\u00a0: ${euros(ecartMensuel)}/mois d'écart en faveur ${recommande === 'micro-bnc' ? 'du Micro-BNC' : 'du régime réel'} (${euros(ecartAnnuel)}/an).`
         : `${regimeLabel} te fait garder ${euros(ecartMensuel)}/mois de plus (${euros(ecartAnnuel)}/an).`;
 
   // ============ POURQUOI ============
@@ -89,10 +89,10 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
     if (memeImpot) {
       // Impôt identique (nul des deux côtés, par exemple) : les déductions ne départagent rien.
       if (cotisationsDiffèrent) {
-        pourquoi = `Ton impôt est le même dans les deux régimes : l'écart vient de tes cotisations, ${sens} de ${euros(ecartCotisations)} au réel, où elles se calculent sur ${(formData.annee || 2026) >= 2025 ? 'tes recettes moins tes charges, abattues de 26\u00a0%' : 'ton bénéfice'}.`;
+        pourquoi = `Ton impôt est le même dans les deux régimes\u00a0: l'écart vient de tes cotisations, ${sens} de ${euros(ecartCotisations)} au réel, où elles se calculent sur ${(formData.annee || 2026) >= 2025 ? 'tes recettes moins tes charges, abattues de 26\u00a0%' : 'ton bénéfice'}.`;
       }
     } else {
-      pourquoi = `Au réel, tu déduis ${euros(d.reel)} de tes recettes avant l'impôt (${pct(d.reel)})${zone} ; le Micro-BNC en retire ${euros(d.micro)} d'office (${d.microMinimum ? 'le minimum de 305\u00a0€' : '34\u00a0%'}).`;
+      pourquoi = `Au réel, tu déduis ${euros(d.reel)} de tes recettes avant l'impôt (${pct(d.reel)})${zone}\u00a0; le Micro-BNC en retire ${euros(d.micro)} d'office (${d.microMinimum ? 'le minimum de 305\u00a0€' : '34\u00a0%'}).`;
       if (cotisationsDiffèrent) pourquoi += ` Au réel, tes cotisations sont aussi ${sens} de ${euros(ecartCotisations)}.`;
     }
   }
@@ -106,18 +106,18 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
   if (microBnc && equivalents) {
     gestion = {
       titre: 'Ce qui change',
-      texte: "Seulement la gestion. En micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le jour. Au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses ; les honoraires d'un comptable sont une charge, ajoute-les pour comparer.",
+      texte: "Seulement la gestion. En micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le jour. Au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses\u00a0; les honoraires d'un comptable sont une charge, ajoute-les pour comparer.",
     };
   } else if (microBnc && recommande === 'reel' && !depassePlafond) {
     gestion = {
       titre: 'Passer au réel',
-      texte: "Il suffit de déposer ta déclaration 2035 dans les délais : l'option vaut un an et se renouvelle d'elle-même.",
+      texte: "Il suffit de déposer ta déclaration 2035 dans les délais\u00a0: l'option vaut un an et se renouvelle d'elle-même.",
     };
   }
 
   // ============ À PRÉVOIR CHAQUE MOIS ============
   // Cotisations et impôt de l'activité libérale du régime retenu, par destinataire : l'Urssaf
-  // (au RSPM, retraite CARMF comprise), la CARMF (au RSPM, l'invalidité-décès seule) et
+  // (au RSPM, tout), la CARMF (en PAMC) et
   // l'impôt de l'activité libérale (`impotDuMedecin` : sa part du foyer ; celle des salaires
   // est retenue par l'employeur). Le total est la somme des parts arrondies : rien à recompter.
   const retenu = recommande === 'micro-bnc' && microBnc ? microBnc : reel;
@@ -126,7 +126,10 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
     revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? revenusConjointAnnuels,
     situationFamiliale: formData.situationFamiliale,
   });
-  const carmfMois = Math.round(Math.max(0, retenu.cotisationsDetail?.retraite ?? 0) / 12);
+  // Au RSPM, tout se paie à l'Urssaf, invalidité-décès de la CARMF comprise (« Remplaçants
+  // régulateurs RSPM », CARMF, février 2026 : « Toutes les cotisations, y compris celles de la
+  // Carmf, seront payées auprès de l'URSSAF ») : une seule part, Urssaf (§ 9.fw).
+  const carmfMois = comparison.isRSPMUsed ? 0 : Math.round(Math.max(0, retenu.cotisationsDetail?.retraite ?? 0) / 12);
   const urssafMois = Math.round(Math.max(0, retenu.cotisationsTotales) / 12) - carmfMois;
   const impotMois = Math.round(impotLiberal / 12);
   const totalMois = urssafMois + carmfMois + impotMois;

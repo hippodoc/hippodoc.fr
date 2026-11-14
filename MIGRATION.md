@@ -12712,6 +12712,48 @@ charges en 2026, sans surcharge, vaut 39 960 € aujourd'hui (ancien calcul, par
 74 % du revenu brut) ; comparer aussi l'assiette de la CSG-CRDS (50 449 € aujourd'hui, 39 960 € avec
 la réforme).
 
+### 9.fw Simulateur : RSPM, Safari, contrôle du modèle Urssaf, allocations familiales des DOM (14 novembre 2026)
+
+Le propriétaire : « donc là tout est parfait, qu'importe la situation, les options, etc. ? » ; la
+réponse listait ce qui ne l'était pas ; « oui go » sur quatre suites.
+
+**RSPM.** Taux en vigueur : 13,5 % jusqu'à 19 000 € (CSS art. D642-4-2, version du 14 juin 2021,
+répartition : maladie 0,50 %, indemnités journalières 1,45 %, retraite de base 38,80 %,
+complémentaire 11,95 %, CSG-CRDS 47,30 %), 21,2 % au-delà (D642-4-3, même date) ; option ouverte
+jusqu'à 19 000 € de rémunération « avant abattement prévu à l'article 102 ter » (D642-4-1, 2023) ;
+l'invalidité-décès de la CARMF en sus. Le simulateur les applique aux honoraires bruts, comme nos
+articles du blog et les guides de 2026. Point non tranché : l'article L642-4-2, réécrit par la loi
+n° 2025-199 (art. 5) et en vigueur depuis le 1er janvier 2026, applique le taux global « au montant
+de leur rémunération après application de l'abattement prévu à l'article 102 ter du code général des
+impôts » ; la version d'avant 2026 n'a pas pu être lue (Légifrance sert la version courante), et le
+site de l'Urssaf pour les remplaçants (service-simplifie-medecin.urssaf.fr) répondait 503. Indice
+pour les honoraires bruts : 47,30 % de 13,5 % des recettes font 6,39 % des recettes, soit 9,7 %
+(CSG-CRDS) de 66 % des recettes. À confirmer sur un relevé de l'Urssaf (montant appelé pour un
+montant déclaré). Calcul inchangé.
+« Remplaçants régulateurs RSPM » (CARMF, février 2026) : « Toutes les cotisations, y compris celles
+de la Carmf, seront payées auprès de l'URSSAF ». « À mettre de côté » au RSPM : une seule part,
+Urssaf (la CARMF y figurait pour l'invalidité-décès).
+
+**Safari.** Parcours refait dans WebKitGTK 2.52 (installé dans le conteneur pour l'occasion) :
+conclusion à 1 300 px et à 390 px (cadre de même origine), fiche et anneau : même mise en page que
+Chromium (grille des étiquettes à partir de 640 px, barre proportionnelle aux parts, aucun
+débordement). Un défaut vu à 390 px, dans les deux moteurs : un « ; » rejeté en début de ligne.
+Les phrases de la conclusion ont désormais une espace insécable avant « ; » et « : » (aucun mot
+changé).
+
+**Contrôle du modèle Urssaf.** `scripts/controle-modele-urssaf.mjs` interroge l'API sur un cas de
+référence (remplaçant de secteur 1, 60 000 € de recettes, 6 000 € de charges, 2026), sans surcharge,
+et échoue si l'une des valeurs témoins change (assiette 39 960 €, assiette de la CSG-CRDS 50 449 €,
+tranche 1 à 8,23 %, complémentaire 4 076 €, total 15 503 €) ; il vérifie aussi que les surcharges
+restent lues. Un workflow GitHub hebdomadaire qui l'aurait lancé et ouvert une issue en cas d'échec
+a été refusé par l'environnement de travail : à mettre en place par le propriétaire s'il le
+souhaite (fichier proposé dans la conversation), sinon à lancer à la main (CLAUDE.md).
+
+**Allocations familiales des DOM.** CSS art. D613-1 (en vigueur depuis le 25 mai 2020) : taux nul
+jusqu'à 110 % du PASS, croissant jusqu'à 140 %, 3,10 % au-delà, sans exception pour l'outre-mer.
+Le modèle de l'API l'applique ; `modele-ti` (3,10 % d'office dans les DOM) ne cite pas de source.
+Le calcul de l'API est donc gardé, à raison : l'écart ouvert au § 9.fv est tranché.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

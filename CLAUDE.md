@@ -655,7 +655,15 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   contribution additionnelle 3,25 %), d'après le paquet `modele-ti` de l'Urssaf ; complémentaire
   CARMF à 11,8 % en 2026 (« La CARMF en 2026 »). Contrôles : exemple CARMF 2026 (revenu de
   30 000 €) exact, calcul indépendant au centime près sur huit profils. Un nouveau millésime :
-  revoir PASS, taux et la liste de ces surcharges.
+  revoir PASS, taux et la liste de ces surcharges. `node scripts/controle-modele-urssaf.mjs`
+  échoue dès que le modèle de l'API change (assiette, assiette de la CSG-CRDS, tranche 1,
+  complémentaire) : à lancer quand `urssaf.ts` change et au moins chaque mois (§ 9.fw) ; s'il
+  échoue, la réforme est peut-être entrée dans l'API et les surcharges la comptent deux fois.
+  RSPM (§ 9.fw) : 13,5 % jusqu'à 19 000 €, 21,2 % au-delà (CSS D642-4-2 et D642-4-3, inchangés
+  depuis 2021), sur les honoraires bruts, plus l'invalidité-décès ; tout se paie à l'Urssaf.
+  L'article L642-4-2 en vigueur depuis 2026 dit « rémunération après application de
+  l'abattement prévu à l'article 102 ter du CGI » : point non tranché, à confirmer auprès de
+  l'Urssaf (son site des remplaçants ne répondait pas).
   Le Super-Net retire les charges payées dans les deux régimes, Micro-BNC compris. Les règles
   se vérifient sur Légifrance, le BOFiP et la CARMF ; le revenu imposable d'un remplaçant doit
   rester égal au « net imposable » du modèle Urssaf (contrôle croisé, § 9.fr).
@@ -717,7 +725,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
    `npx serve` sert en HTTP/1.1 : sur les pages à deux feuilles bloquantes (outils, guide,
    comparatif, pages légales), FCP et LCP y sortent 0,15 à 0,3 s plus hauts que sur Vercel
    (HTTP/2, où l'écart disparaît). Ne pas le lire comme une régression (§ 9.en).
-4. Moteur de Safari (WebKitGTK 2.52 installé ; si Selenium manque, piloter
+3 bis. Si `src/lib/simulateur/urssaf.ts` a changé : `node scripts/controle-modele-urssaf.mjs`.
+4. Moteur de Safari (WebKitGTK 2.52 ; absent d'un conteneur neuf :
+   `apt-get install -y webkit2gtk-driver`, puis `pip install selenium` ; si Selenium manque, piloter
    `/usr/bin/WebKitWebDriver` par son protocole HTTP, mêmes capacités), dès qu'une feuille change :
    servir `dist` en local, puis
    `WEBKIT_DISABLE_COMPOSITING_MODE=1 xvfb-run -a -s "-screen 0 1600x1400x24" python3 -I script.py`.
