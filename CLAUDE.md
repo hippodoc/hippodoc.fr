@@ -402,26 +402,37 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   - ⚠️ `lh` dans un `::before` qui change de corps (chiffre d'une étape) vaut la ligne du
     `::before`, pas celle de l'élément : passer par `--lig` (propriété enregistrée, `1lh`
     calculé sur le `li`). Une liste qui reprend (`start`) reçoit son `counter-reset` du plugin.
-  - **Couverture** (§ 9.fj, § 9.fo) : une vignette, l'affiche entière dans le cadre 4:5 des
-    listes (règle des affiches, plus bas), 76 × 95 px au téléphone, 88 px de 560 à 699 px, 120
-    et 132 px de 700 à 1 359 px, 144 × 180 px au-delà. Ces tailles sont les plus grandes qui ne
-    font pas descendre la première ligne du texte de plus de 16 px, mesurées sur les 48 articles
-    à chaque palier (méthode en § 9.fo) : on ne les agrandit pas sans refaire la mesure. `srcset` 160, 264, 400 px ; le `src` reste celui
-    d'avant (900 px, ou la largeur de l'affiche quand elle est plus petite).
+  - **Couverture** (§ 9.fj, § 9.fo) : une vignette, l'affiche entière, à son format (règle des
+    affiches, plus bas), à la hauteur d'une case 4:5 de 76 px au téléphone (95 px de haut), 88 px
+    de 560 à 699 px, 120 et 132 px de 700 à 1 359 px, 144 px au-delà (180 px de haut) ; une 2:3 y
+    est moins large que la case. Ces tailles sont les plus grandes qui ne font pas descendre la
+    première ligne du texte de plus de 16 px, mesurées sur les 48 articles à chaque palier (méthode
+    en § 9.fo ; la vignette à côté du titre a été essayée : +32 à +118 px) : on ne les agrandit pas
+    sans refaire la mesure. `srcset` 160, 264, 288, 400 px ; `sizes` = largeur dessinée de CETTE
+    affiche à chaque palier ; le `src` reste celui d'avant (900 px, ou la largeur de l'affiche quand
+    elle est plus petite).
     La vignette est un `<button popovertarget="affiche-grande">` (`aria-label` « Agrandir
     l'affiche », `data-ph="blog_cover_zoom"`) : d'un appui, l'affiche en grand dans un
-    popover natif (`<div popover="auto" class="grande">`, aucun script), à la plus grande
-    taille qui tient dans l'écran (rapport `--r` écrit au rendu), sous une bande de 52 px où
-    se tient « Fermer » (`autofocus`). Échap, un appui hors de l'image et « Fermer » ferment ;
-    le focus revient à la vignette (pas après un appui dehors : c'est la règle du popover). La
-    boîte du popover est l'image seule : un élément ajouté dedans élargit la zone qui ne ferme
-    pas. Sa grande image est en `loading="lazy"` dans le popover fermé : elle n'est demandée
-    qu'à l'ouverture (`srcset` 600, 900, 1 200 px et la source ; `sizes` en `min()` des deux
-    bornes de la fenêtre). La loupe (pastille dessinée par `::after`) et le curseur ne
-    s'affichent que sous `@supports selector(:popover-open)` ; sans popover, la vignette reste
-    une vignette et le popover reste caché (`.grande { display: none }`). Au doigt sous 960 px,
-    la page ne défile pas sous l'affiche ouverte, comme sous le tiroir. Le popover n'est pas
-    modal : Tab depuis « Fermer » en sort (vers le sommaire).
+    popover natif (`<div popover="auto" class="grande" role="dialog" aria-modal="true">`, aucun
+    script), à la plus grande taille qui tient dans l'écran (rapport `--r` écrit au rendu), sous
+    une bande de 52 px où se tient « Fermer » (`autofocus`) ; fenêtre basse (`max-height: 500px`,
+    téléphone couché), « Fermer » à droite de l'image. L'image est dans un second bouton de
+    fermeture (« Fermer l'affiche », curseur `zoom-out`) : la boîte du popover est ce bouton.
+    Échap, un appui sur l'image, un appui à côté et « Fermer » ferment ; le focus revient à la
+    vignette (pas après un appui à côté : c'est la règle du popover). Tant qu'elle est ouverte,
+    `<body>` est en `visibility: hidden` (le popover en `visible`) et `<html>` en `overflow:
+    hidden`, à toutes les largeurs : le clavier reste dans l'affiche (Tab : « Fermer », l'image,
+    le navigateur), un lecteur d'écran n'y lit qu'elle, la page ne défile ni au doigt ni à la
+    molette ; la barre de défilement qui disparaît change la mise en page d'une page qu'on ne voit
+    pas (aucun saut mesuré à la fermeture). Le fond (`::backdrop`) est donc opaque : la page masquée,
+    un fond translucide laissait voir celui du canevas (le ciel sur 520 px, puis l'eau profonde), avec
+    une marche derrière l'image. Sa grande image est en `loading="lazy"` dans le popover
+    fermé : elle n'est demandée qu'à l'ouverture (`srcset` 600, 900, 1 200 px et la source ;
+    `sizes` en `min()` des deux bornes de la fenêtre, fenêtre basse en tête) ; d'ici là, un aplat
+    clair. La loupe (pastille dessinée par `::after`) et le curseur ne s'affichent que sous
+    `@supports selector(:popover-open)` ; sans popover (Safari avant 17, Firefox avant 125), le
+    popover reste caché (`.grande { display: none }`), et la vignette reste un bouton nommé qui ne
+    fait rien (au clavier et au lecteur d'écran ; aucune règle sans script ne le retire).
   - **Image de partage** (§ 9.fl) : `/blog/partage/<slug>-<empreinte>.jpg`, 1 200 × 630,
     fabriquée à la construction (`src/pages/blog/partage/[slug].jpg.ts`,
     `src/lib/image-partage.mjs`) : `og:image`, `twitter:image` et première image du JSON-LD
@@ -434,30 +445,45 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   - Auteur : table `AUTEURS` de `src/lib/site.ts` (nom du frontmatter → fiche de
     `/qui-sommes-nous` et portrait) ; un auteur absent n'a ni lien ni `@id`.
 - **Les affiches** (§ 9.fo ; le propriétaire : « pas trop grande mais pas trop petite ») : une
-  affiche ne se rogne jamais là où elle a du texte ou la scène, et jamais en haut (son titre).
-  Les 48 ont cinq formats (2:3, 0,75, 0,79, 0,805) : aucun cadre commun ne les garde toutes.
-  Dans les listes (`/blog`, séries, une, articles connexes) et la vignette d'article : un cadre
-  4:5, l'affiche entière (`object-fit: contain`, calée en haut) sur les couleurs de ses bords. `src/lib/affiche-bords.mjs`
-  (sharp, à la construction, mémoïsé) les rend en `--bord-g` et `--bord-d` (8 couleurs de haut en
-  bas), posées en `style` sur l'`<img>` ; la feuille en fait deux dégradés (moitié gauche, moitié
-  droite) en fond de l'image. Un nouvel emplacement d'affiche reçoit le même cadre et le même fond.
+  affiche ne se rogne jamais, ni ne se déforme. Les 47 affiches (48 articles) ont quatre formats
+  (2:3, 0,75, 0,79, 0,805) : aucun cadre commun ne les garde toutes en rognant. Dans les listes
+  (`/blog`, séries, une, articles connexes) et la vignette d'article : une case 4:5, l'affiche
+  entière, à son format, à la hauteur de la case (`height` écrite, `width: auto`, `max-width: none` :
+  le socle de Tailwind borne les images à leur boîte), centrée ; le vide d'une affiche plus étroite
+  (une 2:3 : 17 % de la largeur) est le blanc de la feuille. Des bandes aux couleurs des bords, essayées
+  d'abord (`affiche-bords.mjs`, retiré), se voyaient comme des bords flous : ne pas y revenir. Une
+  0,805 dépasse sa case d'environ un pixel. `sizes` dit la largeur dessinée de chaque affiche
+  (`largeurDansCadre()`, `src/lib/blog-covers.ts`). Les dimensions déclarées sont celles du fichier
+  `src` (le format juste dès le premier rendu : la largeur en découle). Un nouvel emplacement
+  d'affiche reçoit la même règle.
   Une taille se mesure, jamais à l'œil : la plus grande qui tient les bornes (3 articles entiers
   visibles à tout moment sous l'en-tête à 360 × 640 et 393 × 692, titre en 4 lignes au plus, date et
   durée sur une ligne, `/blog` sous 7 880 px à 393) ; essais et chiffres en § 9.fo. Les images
-  des listes ne se chargent pas en priorité (le LCP y est un texte). Deux articles ont la même
-  affiche (`facturation-electronique-medecin-remplacant`, `generer-facture-remplacement`) :
-  décision de contenu laissée au propriétaire.
+  des listes ne se chargent pas en priorité. Élément LCP : un texte au téléphone (le titre de
+  `/blog`, le texte d'une série) ; à partir de 768 px, sur `/blog`, souvent l'affiche de la une
+  (une 0,805 : 242 × 300 px), servie par son préchargement (`fetchpriority="high"`) ; PageSpeed
+  signale son `loading="lazy"`, gardé pour le téléphone, sans effet sur la note. Fusion avec la
+  branche des thèmes (§ 9.fn) : à faire ; fichiers en conflit et points à remesurer (densité à
+  360 px) en § 9.fo, « Fusion avec § 9.fn ».
+  Deux articles ont la même affiche (`facturation-electronique-medecin-remplacant`,
+  `generer-facture-remplacement`) : décision de contenu laissée au propriétaire.
 - **`/blog` et les séries** (§ 9.fk, § 9.fo) : des lignes sur une feuille blanche (`BlogCard.astro`,
-  `src/styles/blog-liste.css`), l'affiche à gauche, entière : 26,5 % de la largeur de l'écran au
-  téléphone (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393), 144 px à partir de
-  640 px ; une colonne de lignes jusqu'à 1 023 px, deux au-delà. La une : 36 % de l'écran au
-  téléphone, sous son titre (qui garde sa place dans le premier écran), 240 px à gauche à partir
-  de 768 px. `sizes`, `srcset` (160 à 400 px ; une : 180 à 720 px) et le préchargement de la une
-  suivent ces largeurs ; `src` et dimensions déclarées sont ceux d'avant. Extrait masqué au
-  téléphone (dans le HTML).
+  `src/styles/blog-liste.css`), l'affiche à gauche, entière, dans une case de 26,5 % de la largeur
+  de l'écran au téléphone (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393), 144 px à
+  partir de 640 px ; une colonne de lignes jusqu'à 1 023 px, deux au-delà. La une : au téléphone,
+  l'affiche à droite de la pastille et du titre (titre à 20 px), à la taille des lignes, dans le
+  premier écran (393 × 692, 402 × 680) ; dessous, l'extrait (3 lignes) puis date et durée. À
+  partir de 768 px, case de 240 px à gauche. `srcset` : 160, 200, 240, 320, 400 px et le fichier de
+  640 px (une : 160 à 720 px) ; `sizes` et le préchargement de la une disent la largeur dessinée de
+  chaque affiche ; `src` et dimensions déclarées sont ceux d'avant. Extrait masqué au téléphone
+  (dans le HTML).
 - **Articles connexes** (§ 9.fo, fin de la page d'article) : sous 700 px, une rangée de cartes qui
-  défile, affiche de 112 px, titre en 5 lignes au plus (aucun des 223 titres coupé à 360 px) ; au-delà,
-  la carte de `/blog` en feuille à deux colonnes, affiche de 96 px.
+  défile, affiche de 140 px de haut à son format (112 px de large pour une 0,805, 93 pour une 2:3 :
+  la colonne épouse l'affiche), texte centré sur sa hauteur, titre en 5 lignes au plus (aucun des 223
+  titres coupé à 360 px) ; au-delà, la carte de `/blog` en feuille à deux colonnes, affiche de 120 px
+  de haut centrée dans une case de 96 px ; avec 3 ou 5 articles, le dernier prend le rang entier.
+  `srcset` 132, 240, 320 px ; dimensions déclarées : celles du fichier de 132 px (le format juste dès
+  le premier rendu).
 - Écarts au contenu d'un article : « Contenu modifié » dans MIGRATION.md (§ 9.fj pour les
   antislashs : une ligne vide avant et après une liste, sinon « \ » s'affiche).
 - Frontmatter `faq`/`relatedArticles`/`slides`/`cta` rendus par `src/pages/blog/[slug].astro`
