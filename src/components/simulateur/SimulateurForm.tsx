@@ -239,11 +239,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             Total de tous tes honoraires encaissés en libéral sur l'année : consultations, actes techniques, dépassements, PDSA…
                           </p>
                           <TipBox variant="info">
-                            <p className="font-medium">📝 Où trouver ce montant ?</p>
+                            <p className="font-medium">Où trouver ce montant ?</p>
                             <p className="mt-0.5">Sur ton relevé SNIR (Sécu), ta comptabilité, ou le total de tes rétrocessions reçues.</p>
                           </TipBox>
                           <TipBox variant="tip">
-                            <p>💡 Saisis ici le total de tes honoraires, y compris la part PDSA. Ensuite, indique le montant PDSA dans le champ ci-dessous → il sera automatiquement exonéré d'IR.</p>
+                            <p>Saisis ici le total de tes honoraires, y compris la part PDSA. Ensuite, indique le montant PDSA dans le champ ci-dessous → il sera automatiquement exonéré d'IR.</p>
                           </TipBox>
                         </div>
                       }
@@ -370,15 +370,15 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               Si tu cumules une activité salariée (gardes hospitalières, urgences, centre de santé, vacations…), saisis ici ton <strong>net imposable annuel</strong>.
                             </p>
                             <TipBox variant="warning">
-                              <p className="font-medium">⚠️ Net imposable ≠ Net à payer</p>
+                              <p className="font-medium">Net imposable ≠ Net à payer</p>
                               <p className="mt-0.5">Le net à payer est APRÈS le prélèvement à la source. Ici, il faut le montant AVANT (plus élevé).</p>
                             </TipBox>
                             <TipBox variant="info">
-                              <p className="font-medium">📝 Où le trouver ?</p>
+                              <p className="font-medium">Où le trouver ?</p>
                               <p className="mt-0.5">Fiche de paie → ligne "Net imposable" ou "Cumul net imposable" en décembre.</p>
                             </TipBox>
                             <TipBox variant="tip">
-                              <p>💡 L'abattement de 10% pour frais professionnels est appliqué automatiquement par le simulateur.</p>
+                              <p>L'abattement de 10% pour frais professionnels est appliqué automatiquement par le simulateur.</p>
                             </TipBox>
                           </div>
                         }
@@ -428,11 +428,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               Rémunérations de tes gardes de nuit, week-end et jours fériés dans le cadre de la PDSA (gardes régulées par l'ARS).
                             </p>
                             <TipBox variant="tip">
-                              <p className="font-medium">✅ Exonéré d'impôt sur le revenu</p>
+                              <p className="font-medium">Exonéré d'impôt sur le revenu</p>
                               <p className="mt-0.5">Art. 151 ter du CGI : les astreintes et majorations de la PDSA, en zone sous-dotée, dans la limite de 60 jours de permanence par an. Saisis ici cette part exonérée seulement.</p>
                             </TipBox>
                             <TipBox variant="warning">
-                              <p>⚠️ Reste soumis aux cotisations sociales (URSSAF/CARMF). Seul l'IR est exonéré.</p>
+                              <p>Reste soumis aux cotisations sociales (URSSAF/CARMF). Seul l'IR est exonéré.</p>
                             </TipBox>
                           </div>
                         }
@@ -529,7 +529,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             Chaque enfant à charge augmente ton quotient familial → baisse ton taux d'imposition.
                           </p>
                           <TipBox variant="info">
-                            <p className="font-medium mb-1">📊 Parts par enfant :</p>
+                            <p className="font-medium mb-1">Parts par enfant :</p>
                             <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
                               <span>1er enfant</span><span className="font-semibold">+0,5 part</span>
                               <span>2ème enfant</span><span className="font-semibold">+0,5 part</span>
@@ -537,7 +537,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </div>
                           </TipBox>
                           <TipBox variant="tip">
-                            <p>💡 Garde alternée ? Saisis des demi-parts (ex: 1 enfant en alternée = 0.5). Le plafonnement du QF est calculé automatiquement.</p>
+                            <p>Garde alternée ? Saisis des demi-parts (ex: 1 enfant en alternée = 0.5). Le plafonnement du QF est calculé automatiquement.</p>
                           </TipBox>
                         </div>
                       }
@@ -588,11 +588,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               En déclaration commune (mariage/PACS), l'impôt est calculé sur l'ensemble des revenus du foyer. Saisir les revenus de ton conjoint améliore la précision.
                             </p>
                             <TipBox variant="warning">
-                              <p className="font-medium">⚠️ Net imposable, pas net à payer</p>
+                              <p className="font-medium">Net imposable, pas net à payer</p>
                               <p className="mt-0.5">Si salarié : cumul "Net imposable" sur la fiche de paie de décembre.</p>
                             </TipBox>
                             <TipBox variant="tip">
-                              <p>💡 Affecte ton taux d'imposition via le quotient familial, mais PAS ton Super-Net (qui reste ton revenu à toi seul).</p>
+                              <p>Affecte ton taux d'imposition via le quotient familial, mais PAS ton Super-Net (qui reste ton revenu à toi seul).</p>
                             </TipBox>
                           </div>
                         }
@@ -667,16 +667,16 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </FormControl>
                         <SelectContent className="sim sim-pop">
                           <SelectItem value="salarie">
-                            💼 Salarié / Retraite (abattement 10%)
+                            Salarié / Retraite (abattement 10%)
                           </SelectItem>
                           <SelectItem value="liberal_micro">
-                            📄 Libéral Micro-BNC (abattement 34%)
+                            Libéral Micro-BNC (abattement 34%)
                           </SelectItem>
                           <SelectItem value="liberal_reel">
-                            📊 Libéral Réel (bénéfice fiscal)
+                            Libéral Réel (bénéfice fiscal)
                           </SelectItem>
                           <SelectItem value="autre">
-                            📋 Autre (revenus fonciers, etc.)
+                            Autre (revenus fonciers, etc.)
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -763,7 +763,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             Saisis tes revenus de l'année concernée. Le barème IR appliqué correspond à celui de la déclaration N+1.
                           </p>
                           <TipBox variant="info">
-                            <p>📅 Ex&nbsp;: revenus 2025 → barème déclaration 2026.</p>
+                            <p>Ex&nbsp;: revenus 2025 → barème déclaration 2026.</p>
                             <p className="mt-1">Revenus 2026 : la loi de finances 2027 n'étant pas encore votée, le simulateur applique le barème des revenus 2025.</p>
                           </TipBox>
                         </div>
@@ -808,12 +808,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </p>
                           <TipBox variant="tip">
                             <div className="space-y-1">
-                              <p>🌴 <strong>Guadeloupe, Martinique, Réunion</strong> → 30% (max {formatPlafond(DOM_TOM_CONFIG.guadeloupe)})</p>
-                              <p>🌴 <strong>Guyane, Mayotte</strong> → 40% (max {formatPlafond(DOM_TOM_CONFIG.guyane)})</p>
+                              <p><strong>Guadeloupe, Martinique, Réunion</strong> → 30% (max {formatPlafond(DOM_TOM_CONFIG.guadeloupe)})</p>
+                              <p><strong>Guyane, Mayotte</strong> → 40% (max {formatPlafond(DOM_TOM_CONFIG.guyane)})</p>
                             </div>
                           </TipBox>
                           <TipBox variant="info">
-                            <p>💡 L'abattement s'applique automatiquement à l'impôt calculé.</p>
+                            <p>L'abattement s'applique automatiquement à l'impôt calculé.</p>
                           </TipBox>
                         </div>
                       }
@@ -829,29 +829,28 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     </FormControl>
                     <SelectContent className="sim sim-pop">
                       <SelectItem value="metropole">
-                        {DOM_TOM_CONFIG.metropole.emoji} France métro
+                        France métro
                       </SelectItem>
                       <SelectItem value="guadeloupe">
-                        {DOM_TOM_CONFIG.guadeloupe.emoji} Guadeloupe
+                        Guadeloupe
                       </SelectItem>
                       <SelectItem value="martinique">
-                        {DOM_TOM_CONFIG.martinique.emoji} Martinique
+                        Martinique
                       </SelectItem>
                       <SelectItem value="guyane">
-                        {DOM_TOM_CONFIG.guyane.emoji} Guyane
+                        Guyane
                       </SelectItem>
                       <SelectItem value="reunion">
-                        {DOM_TOM_CONFIG.reunion.emoji} Réunion
+                        Réunion
                       </SelectItem>
                       <SelectItem value="mayotte">
-                        {DOM_TOM_CONFIG.mayotte.emoji} Mayotte
+                        Mayotte
                       </SelectItem>
                     </SelectContent>
                   </Select>
                   {/* Badge territoire DOM-TOM détecté */}
                   {domTomInfo && (
                     <div className="sim-note ok flex items-center gap-2 mt-2">
-                      <span className="text-sm">{domTomInfo.emoji}</span>
                       <p className="text-xs">
                         Abattement {formatTauxAbattement(domTomInfo)} (max {formatPlafond(domTomInfo)})
                       </p>
@@ -883,11 +882,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             <strong>Secteur 2</strong> = honoraires libres (dépassements autorisés).
                           </p>
                           <TipBox variant="tip">
-                            <p className="font-medium">✅ Avantages Secteur 1</p>
+                            <p className="font-medium">Avantages Secteur 1</p>
                             <p className="mt-0.5">Participation CPAM aux cotisations (ASV, maladie) + déductions spécifiques pour les installés : forfait 2%, déduction 3%, barème Groupe III.</p>
                           </TipBox>
                           <TipBox variant="warning">
-                            <p>⚠️ Secteur 2 : pas de participation CPAM, pas de déductions S1.</p>
+                            <p>Secteur 2 : pas de participation CPAM, pas de déductions S1.</p>
                           </TipBox>
                         </div>
                       }
@@ -938,7 +937,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </div>
                           </TipBox>
                           <TipBox variant="tip">
-                            <p>💡 <strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM entre 19 000 et 38 000 € ? Choisis RSPM.</p>
+                            <p><strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM entre 19 000 et 38 000 € ? Choisis RSPM.</p>
                           </TipBox>
                         </div>
                       }
@@ -953,9 +952,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="sim sim-pop">
-                      <SelectItem value="auto">🔄 Auto</SelectItem>
-                      <SelectItem value="rspm">🎓 RSPM</SelectItem>
-                      <SelectItem value="pamc">🩺 PAMC</SelectItem>
+                      <SelectItem value="auto">Auto</SelectItem>
+                      <SelectItem value="rspm">RSPM</SelectItem>
+                      <SelectItem value="pamc">PAMC</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage role="alert" />
@@ -1015,7 +1014,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 </div>
                               </TipBox>
                               <TipBox variant="tip">
-                                <p>💡 La CARMF est calculée automatiquement par le simulateur.</p>
+                                <p>La CARMF est calculée automatiquement par le simulateur.</p>
                               </TipBox>
                             </div>
                           }>
@@ -1032,7 +1031,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </Select>
                         <div className="text-xs mt-1.5 px-1">
                           {field.value === 'affilie_3ans_plus' && <p className="text-muted-foreground">Cotisations complètes : base + complémentaire + invalidité-décès</p>}
-                          {field.value === 'affilie_jeune' && <p className="sim-ok">✅ Exonéré de complémentaire les 2 premières années — cotisations réduites</p>}
+                          {field.value === 'affilie_jeune' && <p className="sim-ok">Exonéré de complémentaire les 2 premières années — cotisations réduites</p>}
                           {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation CARMF (retraite de base, complémentaire, ASV, invalidité-décès). Possible seulement pour un remplaçant dont le revenu net reste sous 15 000 € : au-delà, le simulateur ne l'applique pas.</p>}
                           {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (157€ ou 626€/an selon le taux ci-dessous).</p>}
                         </div>
@@ -1057,7 +1056,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                   </div>
                                 </TipBox>
                                 <TipBox variant="tip">
-                                  <p>💡 100% recommandé si tu as des enfants ou un emprunt immobilier.</p>
+                                  <p>100% recommandé si tu as des enfants ou un emprunt immobilier.</p>
                                 </TipBox>
                               </div>
                             }>
@@ -1074,7 +1073,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </FormItem>
                       )} />
                     )}
-                    {!showRidToggle && <p className="text-xs text-muted-foreground px-1">ℹ️ Les cotisations CARMF (dont la RID) sont intégrées automatiquement dans le calcul PAMC.</p>}
+                    {!showRidToggle && <p className="text-xs text-muted-foreground px-1">Les cotisations CARMF (dont la RID) sont intégrées automatiquement dans le calcul PAMC.</p>}
                   </AccordionContent>
                 </AccordionItem>
 
@@ -1118,13 +1117,13 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                   <p className="font-semibold">Déduction forfaitaire de 2%</p>
                                   <p className="text-xs">Frais de représentation, réception et prospection. Réservée aux médecins <strong>Secteur 1</strong> en <strong>BNC réel</strong>.</p>
                                   <TipBox variant="info">
-                                    <p>📊 Formule : 2% × CA conventionné × (1 - ratio non conv.)</p>
+                                    <p>Formule : 2% × CA conventionné × (1 - ratio non conv.)</p>
                                   </TipBox>
                                   <TipBox variant="tip">
-                                    <p>💡 Alternative : tu peux déduire ces frais au réel s'ils dépassent 2% de ton CA.</p>
+                                    <p>Alternative : tu peux déduire ces frais au réel s'ils dépassent 2% de ton CA.</p>
                                   </TipBox>
                                   <TipBox variant="warning">
-                                    <p>⚠️ Sans effet en Micro-BNC (l'abattement de 34% couvre déjà tout).</p>
+                                    <p>Sans effet en Micro-BNC (l'abattement de 34% couvre déjà tout).</p>
                                   </TipBox>
                                 </div>
                               }>
@@ -1147,7 +1146,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 <p className="font-semibold">Part d'activité hors convention</p>
                                 <p className="text-xs">Si une partie de ton activité est hors nomenclature (esthétique, expertise, médecine du travail…), les déductions S1 ne s'appliquent que sur la part conventionnée.</p>
                                 <TipBox variant="info">
-                                  <p className="font-medium">📊 Exemple concret :</p>
+                                  <p className="font-medium">Exemple concret :</p>
                                   <p className="mt-0.5">CA = 80 000€, 20% non conv. → déductions S1 sur 64 000€ seulement.</p>
                                 </TipBox>
                               </div>
@@ -1197,7 +1196,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 </div>
                               </TipBox>
                               <TipBox variant="warning">
-                                <p>⚠️ En Micro-BNC, seul le PER est déductible (pas le Madelin).</p>
+                                <p>En Micro-BNC, seul le PER est déductible (pas le Madelin).</p>
                               </TipBox>
                             </div>
                           }>
@@ -1227,16 +1226,16 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           En plus de tes charges. Déduit du revenu imposable (PER) ou du BNC réel (Madelin).
                           {depasseCap && saisie > 0 && (
                             <span className="block mt-1 sim-attn">
-                              ⚠️ Au-dessus du plafond estimé (environ {perPlafond.toLocaleString('fr-FR')}€, CGI art. {typeCotisation === 'madelin' ? '154 bis' : '163 quatervicies'}) : seul le plafond est déduit.
+                              Au-dessus du plafond estimé (environ {perPlafond.toLocaleString('fr-FR')}€, CGI art. {typeCotisation === 'madelin' ? '154 bis' : '163 quatervicies'}) : seul le plafond est déduit.
                             </span>
                           )}
                           {madelinEnMicro && (
                             <span className="block mt-1 sim-attn">
-                              ℹ️ Madelin : déduit au Régime Réel seulement (CGI art. 154 bis). La fiche Micro-BNC ne le compte pas.
+                              Madelin : déduit au Régime Réel seulement (CGI art. 154 bis). La fiche Micro-BNC ne le compte pas.
                             </span>
                           )}
                           {!madelinEnMicro && !depasseCap && isMicroLikely && typeCotisation === 'per' && saisie > 0 && (
-                            <span className="block mt-1 sim-ok">✓ PER : déduit du revenu global, en Micro-BNC comme au Régime Réel.</span>
+                            <span className="block mt-1 sim-ok">PER : déduit du revenu global, en Micro-BNC comme au Régime Réel.</span>
                           )}
                         </FormDescription>
                         <FormMessage role="alert" />
@@ -1259,12 +1258,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               <p className="font-semibold">Chèques-vacances pour indépendants</p>
                               <p className="text-xs">Tu achètes des chèques-vacances via l'ANCV → tu les déduis de ton BNC réel → tu les utilises pour tes vacances, restos, loisirs, culture.</p>
                               <TipBox variant="tip">
-                                <p className="font-medium">✅ Double avantage</p>
+                                <p className="font-medium">Double avantage</p>
                                 <p className="mt-0.5">Déduction de ton bénéfice + pouvoir d'achat vacances. Plafond {annee} = 1 SMIC mensuel brut au 1er janvier ({plafondLabel}).</p>
                                 <p className="mt-1">Les premiers euros, jusqu'à 30 % du SMIC mensuel ({plafondSocialLabel}), sont aussi exonérés de cotisations URSSAF et CARMF (pas de CSG-CRDS) : quelques dizaines d'euros, que le simulateur ne compte pas.</p>
                               </TipBox>
                               <TipBox variant="warning">
-                                <p>⚠️ BNC réel uniquement, sans effet en Micro-BNC. Si tu as des salariés, tu dois aussi leur proposer le dispositif (Code du tourisme, art. L411-1).</p>
+                                <p>BNC réel uniquement, sans effet en Micro-BNC. Si tu as des salariés, tu dois aussi leur proposer le dispositif (Code du tourisme, art. L411-1).</p>
                               </TipBox>
                             </div>
                           }>
@@ -1272,14 +1271,14 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </PremiumTooltip>
                         </div>
                         <div className="relative"><FormControl><Input type="number" step="1" min={0} max={plafondCV} placeholder="Ex: 1 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
-                        <FormDescription className="text-xs">En plus de tes charges. Max {plafondLabel} ({annee}) — BNC réel uniquement. <span className="sim-attn">⚠️ Sans effet en Micro-BNC.</span></FormDescription>
+                        <FormDescription className="text-xs">En plus de tes charges. Max {plafondLabel} ({annee}) — BNC réel uniquement. <span className="sim-attn">Sans effet en Micro-BNC.</span></FormDescription>
                         <FormMessage role="alert" />
                       </FormItem>
                       );
                     }} />
                     {deductionsS1Ouvertes && (
                       <div className="sim-note ok">
-                        <p className="text-xs"><strong>✅ Déductions Secteur 1 automatiques</strong> (BNC réel, installé) : 3 % des honoraires conventionnels + groupe III (barème des omnipraticiens, 3 050 € au-delà de 30 450 €).</p>
+                        <p className="text-xs"><strong>Déductions Secteur 1 automatiques</strong> (BNC réel, installé) : 3 % des honoraires conventionnels + groupe III (barème des omnipraticiens, 3 050 € au-delà de 30 450 €).</p>
                       </div>
                     )}
                   </AccordionContent>
@@ -1315,20 +1314,20 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               <p className="font-semibold">Exonération d'impôt en zone prioritaire</p>
                               <p className="text-xs">Si tu t'es installé dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur le revenu, de façon dégressive (pas de cotisations en moins).</p>
                               <TipBox variant="info">
-                                <p className="font-medium mb-1">🏙️ ZFU-TE (installations jusqu'en 2025) et QPV (installations 2026 à 2030) :</p>
+                                <p className="font-medium mb-1">ZFU-TE (installations jusqu'en 2025) et QPV (installations 2026 à 2030) :</p>
                                 <div className="space-y-0.5 mb-2">
                                   <p>Années 1 à 5 → <strong>100 %</strong> exonéré</p>
                                   <p>Année 6 → <strong>60 %</strong> · Année 7 → <strong>40 %</strong> · Année 8 → <strong>20 %</strong></p>
                                   <p>Micro-BNC et réel. ZFU-TE : 50 000 € de bénéfice exonéré par an au plus.</p>
                                 </div>
-                                <p className="font-medium mb-1">🌾 France ruralités revitalisation (FRR, ex-ZRR) :</p>
+                                <p className="font-medium mb-1">France ruralités revitalisation (FRR, ex-ZRR) :</p>
                                 <div className="space-y-0.5 mb-2">
                                   <p>Années 1 à 5 → <strong>100 %</strong> exonéré</p>
                                   <p>Année 6 → <strong>75 %</strong> · Année 7 → <strong>50 %</strong> · Année 8 → <strong>25 %</strong></p>
                                   <p>FRR (socle) et ex-ZRR : régime réel seulement. FRR+ (communes les plus fragiles, installations depuis 2025) : micro-BNC ou réel.</p>
                                 </div>
                                 <p className="sim-filet text-[11px] pt-1.5 mt-1.5">
-                                  CGI art. 44 octies A (ZFU-TE), 44 octies B (QPV), 44 quindecies et 44 quindecies A (FRR), dans la limite des aides de minimis. ⚠️ L'année d'installation, le plafond ZFU-TE est proratisé : sécurise auprès de ton SIE ou de ton AGA.
+                                  CGI art. 44 octies A (ZFU-TE), 44 octies B (QPV), 44 quindecies et 44 quindecies A (FRR), dans la limite des aides de minimis. L'année d'installation, le plafond ZFU-TE est proratisé : sécurise auprès de ton SIE ou de ton AGA.
                                 </p>
                               </TipBox>
 
@@ -1344,16 +1343,16 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             {/* ZFU-TE : dispositif clos au 31.12.2025 — caché pour les nouvelles installations 2026+.
                                 Logique centralisée dans simulateurSchema.isZoneExoneneeAvailable (CGI Art. 44 octies A). */}
                             {(isZoneExoneneeAvailable('zfu', annee, anneeInstallationZone) || zoneExoneree === 'zfu') && (
-                              <SelectItem value="zfu">🏙️ ZFU-TE{annee >= 2026 ? ' (installations ≤ 2025)' : ''}</SelectItem>
+                              <SelectItem value="zfu">ZFU-TE{annee >= 2026 ? ' (installations ≤ 2025)' : ''}</SelectItem>
                             )}
-                            <SelectItem value="qpv">🏙️ QPV (installations 2026-2030)</SelectItem>
-                            <SelectItem value="zfrr">🌾 FRR socle ou ex-ZRR (réel)</SelectItem>
-                            <SelectItem value="zfrr_plus">🌾 FRR+ (micro ou réel)</SelectItem>
+                            <SelectItem value="qpv">QPV (installations 2026-2030)</SelectItem>
+                            <SelectItem value="zfrr">FRR socle ou ex-ZRR (réel)</SelectItem>
+                            <SelectItem value="zfrr_plus">FRR+ (micro ou réel)</SelectItem>
                           </SelectContent>
                         </Select>
                         {annee >= 2026 && (
                           <FormDescription className="text-xs text-muted-foreground">
-                            ℹ️ ZFU-TE : dispositif clos au 31.12.2025 (CGI art. 44 octies A), remplacé pour les installations de 2026 à 2030 par le régime QPV (art. 44 octies B). Les installations antérieures conservent leur exonération dégressive jusqu'au terme.
+                            ZFU-TE : dispositif clos au 31.12.2025 (CGI art. 44 octies A), remplacé pour les installations de 2026 à 2030 par le régime QPV (art. 44 octies B). Les installations antérieures conservent leur exonération dégressive jusqu'au terme.
                           </FormDescription>
                         )}
                         <FormMessage role="alert" />
@@ -1365,7 +1364,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <FormItem>
                           <FormLabel className="text-sm">Année d'installation dans la zone</FormLabel>
                           <FormControl><Input type="number" step="1" min={2000} max={2030} placeholder="Ex: 2022" {...field} value={field.value || ''} onChange={(e) => field.onChange(parseInt(e.target.value) || undefined)} onFocus={(e) => e.target.select()} /></FormControl>
-                          <FormDescription className="text-xs">Taux d'exonération dégressif selon l'ancienneté. ⚠️ L'année d'installation et l'année de basculement de palier (5 ans + 1) → plafond proratisé temporis (CGI Art. 49 K annexe III ; CE 18/07/2018 n° 412142) : notre calcul affiche le plafond plein par simplification, sécurise auprès de ton SIE/AGA.</FormDescription>
+                          <FormDescription className="text-xs">Taux d'exonération dégressif selon l'ancienneté. L'année d'installation et l'année de basculement de palier (5 ans + 1) → plafond proratisé temporis (CGI Art. 49 K annexe III ; CE 18/07/2018 n° 412142) : notre calcul affiche le plafond plein par simplification, sécurise auprès de ton SIE/AGA.</FormDescription>
                           <FormMessage role="alert" />
                         </FormItem>
 
@@ -1387,7 +1386,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 </div>
                               </TipBox>
                               <TipBox variant="tip">
-                                <p>💡 Déficit foncier imputable sur le revenu global jusqu'à 10 700€/an → réduit ton impôt.</p>
+                                <p>Déficit foncier imputable sur le revenu global jusqu'à 10 700€/an → réduit ton impôt.</p>
                               </TipBox>
                             </div>
                           }>
@@ -1408,7 +1407,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <div className="relative"><FormControl><Input type="number" step="0.01" placeholder="Ex: 12 000" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} className="pr-8" /></FormControl><span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span></div>
                           <FormDescription className="text-xs">Loyers bruts (≤ 15 000€ pour micro-foncier)</FormDescription>
                           {form.watch('revenusFonciersBruts') > 15000 && (
-                            <p className="text-xs sim-attn">⚠️ Au-delà de 15 000€/an, le micro-foncier n'est plus applicable. Passe en régime réel.</p>
+                            <p className="text-xs sim-attn">Au-delà de 15 000€/an, le micro-foncier n'est plus applicable. Passe en régime réel.</p>
                           )}
                           <FormMessage role="alert" />
                         </FormItem>
@@ -1469,7 +1468,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 </div>
                               </TipBox>
                               <TipBox variant="tip">
-                                <p>💡 S'applique identiquement en Micro-BNC et Réel (crédit personnel, pas professionnel).</p>
+                                <p>S'applique identiquement en Micro-BNC et Réel (crédit personnel, pas professionnel).</p>
                               </TipBox>
                             </div>
                           }>
@@ -1485,7 +1484,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             return `Dépenses annuelles. Plafond : ${plafond.toLocaleString('fr-FR')}€ → crédit max : ${creditMax.toLocaleString('fr-FR')}€`;
                           })()}
                           {(field.value || 0) > Math.min(12000 + (form.getValues('enfants') || 0) * 1500, 15000) && (
-                            <span className="block mt-1 sim-attn">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
+                            <span className="block mt-1 sim-attn">Montant supérieur au plafond — sera plafonné dans le calcul.</span>
                           )}
                         </FormDescription>
                         <FormMessage role="alert" />
@@ -1506,7 +1505,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 <p>Plafond : <strong>3 500€ par enfant</strong> (crédit max : 1 750€/enfant)</p>
                               </TipBox>
                               <TipBox variant="warning">
-                                <p>⚠️ Non cumulable avec emploi à domicile pour le même enfant (garde à domicile = emploi à domicile).</p>
+                                <p>Non cumulable avec emploi à domicile pour le même enfant (garde à domicile = emploi à domicile).</p>
                               </TipBox>
                             </div>
                           }>
@@ -1531,7 +1530,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               return `Plafond : ${plafond.toLocaleString('fr-FR')}€ (${nbEnfants} enfant${nbEnfants > 1 ? 's' : ''} × 3 500€) → crédit max : ${creditMax.toLocaleString('fr-FR')}€`;
                             })()}
                             {(field.value || 0) > 3500 * (form.getValues('nombreEnfantsGarde') || 0) && (
-                              <span className="block mt-1 sim-attn">⚠️ Montant supérieur au plafond — sera plafonné dans le calcul.</span>
+                              <span className="block mt-1 sim-attn">Montant supérieur au plafond — sera plafonné dans le calcul.</span>
                             )}
                           </FormDescription>
                           <FormMessage role="alert" />

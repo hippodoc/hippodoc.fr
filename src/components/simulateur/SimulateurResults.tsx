@@ -59,7 +59,10 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
       <div className="sim-resultats-tete">
         <h2 className="sim-titre">Comparaison des régimes fiscaux</h2>
         <p className="sim-chapo">
-          Analyse détaillée pour t'aider à choisir le meilleur régime
+          Analyse détaillée pour t'aider à choisir le meilleur régime.{' '}
+          {comparison.isRSPMUsed
+            ? "Cotisations au RSPM, l'offre simplifiée des remplaçants."
+            : "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf."}
         </p>
       </div>
 
@@ -237,7 +240,7 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
                 </a>
               </div>
               <p className="sim-petit pt-1">
-                💡 Hippodoc t'aide à y voir plus clair, mais seul un professionnel 
+                Hippodoc t'aide à y voir plus clair, mais seul un professionnel 
                 pourra te conseiller de manière définitive.
               </p>
             </div>

@@ -12403,6 +12403,46 @@ dispense, PDSA, PER, Madelin, plafonds, chèques-vacances, salaires, conjoint de
 mensuel, 2025, DOM, zones, crédits remboursés) ; 0 échec.
 Parcours dans Chromium (formulaire et 8 profils types). `npm run build`, `verify-site.mjs` passent.
 
+### 9.fs Simulateur : sans émojis, « Six repères pour 2026 » (14 novembre 2026)
+
+Le propriétaire, après la mise en ligne du § 9.fr : des émojis « qui font un peu cheap » dans les
+champs et les résultats (« 🩺 PAMC ») ; « Trois mots à connaître », « de gros pavés » que
+« personne ne va lire » : « on peut faire beaucoup mieux pour éveiller l'intérêt et apporter de
+la valeur ».
+
+**Émojis.** Retirés de tous les textes visibles de l'îlot (listes : « 🔄 Auto », « 🎓 RSPM »,
+« 🩺 PAMC », drapeau et palmiers des lieux, types de revenu du conjoint, zones ; intitulés des
+infobulles « 💡 », « ⚠️ », « ✅ », « 📊 », « 📝 » ; « 🏝️ DOM-TOM » devient « DOM » ; « ⚠️ Vérifiez »
+devient l'icône d'alerte et « Vérifie »). Les icônes de lucide et les couleurs des encadrés portent
+déjà le sens. Contrôle : aucun émoji dans le texte de l'îlot, formulaire et résultats affichés.
+Le badge RSPM ou PAMC, le même sur les deux fiches, n'est plus sur les fiches : le régime social est
+dit une fois, sous le titre des résultats (« Cotisations au RSPM, l'offre simplifiée des
+remplaçants. » ou « Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de
+l'Urssaf. »). Le champ `emoji` de `src/lib/dom-tom.ts` n'est plus lu par le simulateur.
+
+**« Six repères pour 2026 »** remplacent « Trois mots à connaître » et l'exemple chiffré : un
+chiffre, son nom, une phrase, en six fiches (deux colonnes au téléphone, trois à partir de 760 px).
+Les montants viennent du code (`getMicroBncCeiling`, `getDeclarationParams`,
+`getPlafondEpargneRetraite`) : plafond du Micro-BNC (83 600 €), abattement de 34 %, seuil du RSPM
+(19 000 €), « 0 € de forfaits du secteur 1 pour un remplaçant » (en jaune : l'idée reçue que le
+§ 9.fr a corrigée), plafond des chèques-vacances (1 823 €), plancher du PER (4 710 €). Le mot
+« rétrocessions » reste sur la page (fiche du RSPM). Feuille commune inchangée.
+
+Textes retirés (archive) :
+- **Rétrocession** — « La part des honoraires qu'un médecin remplaçant perçoit du titulaire du
+  cabinet (ou de la structure) qu'il remplace, en échange des actes réalisés. C'est la base de tes
+  "revenus libéraux" dans le simulateur. »
+- **URSSAF** — « L'organisme qui collecte tes cotisations sociales de travailleur indépendant :
+  maladie-maternité, allocations familiales, retraite de base, CSG-CRDS et formation
+  professionnelle. Le simulateur les calcule automatiquement, en RSPM (taux simplifiés) ou en
+  PAMC (barème classique). »
+- **Super-Net** — « Ce qu'il te reste vraiment en poche : tes revenus, moins tes charges
+  professionnelles, moins tes cotisations sociales (URSSAF/CARMF), moins ton impôt sur le revenu.
+  C'est le chiffre affiché en tête de chaque carte de résultat. » (dit aussi par la FAQ et le
+  mode d'emploi, toujours en place).
+- **Exemple chiffré (illustration simplifiée)** — un remplaçant au RSPM à 30 000 € de
+  rétrocessions : cotisations par tranches (2 565 € + 2 332 €), RID, bénéfice micro de 19 800 €.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

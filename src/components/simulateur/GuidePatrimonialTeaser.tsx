@@ -75,7 +75,7 @@ export function GuidePatrimonialTeaser() {
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
           <p className="sim-petit droit mt-3">
-            ✨ Inclus dans l'essai gratuit de 30 jours
+            Inclus dans l'essai gratuit de 30 jours
           </p>
         </div>
       </div>
