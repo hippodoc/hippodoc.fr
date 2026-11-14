@@ -748,8 +748,8 @@ const articles = fichiersDist.filter(
     f.startsWith('/blog/') &&
     f.endsWith('/index.html') &&
     f !== '/blog/index.html' &&            // l'index du blog n'est pas un article
-    !f.startsWith('/blog/serie/') &&       // ni les pages de série
-    !f.startsWith('/blog/theme/')          // ni les pages de thème (§ 9.fp)
+    !f.startsWith('/blog/theme/')          // ni les pages de thème (§ 9.fp ; les pages de série,
+                                           // aussi exclues ici, ne se construisent plus : § 9.fq)
 );
 let articlesSansMeta = 0, articlesSansFin = 0;
 for (const f of articles) {
@@ -1815,17 +1815,15 @@ for (const f of blogFiles) {
     if (/T\d/.test(val) && !/(Z|[+-]\d\d:?\d\d)$/.test(val)) fail(`blog/${f} : ${cle} « ${val} » a une heure sans fuseau (ajouter Z)`);
   }
 }
-// (f) pages de liste (/blog, séries, thèmes) : lastmod = publication la plus récente de leurs articles
+// (f) pages de liste (/blog, thèmes ; les séries jusqu'à § 9.fq) : lastmod = publication la plus
+// récente de leurs articles
 const listes = new Map();
 for (const f of blogFiles) {
   const src = readFileSync(resolve(root, 'src/content/blog', f), 'utf8');
   const pub = src.match(/^pubDate:\s*"?([\d-]{10})/m)?.[1];
-  const serie = src.match(/^seriesId:\s*"?([a-z-]+)"?$/m)?.[1];
-  const slugSerie = serie && readFileSync(resolve(root, 'src/lib/blog-series-slugs.ts'), 'utf8')
-    .match(new RegExp(`['"]?${serie}['"]?\\s*:\\s*['"]([a-z-]+)['"]`))?.[1];
-  // Pages de thème (§ 9.fp) : même règle que les séries.
+  // Pages de thème (§ 9.fp) : la règle des anciennes pages de série.
   const theme = src.match(/^theme:\s*"?([a-z0-9-]+)"?$/m)?.[1];
-  for (const cle of ['/blog', slugSerie && `/blog/serie/${slugSerie}`, theme && `/blog/theme/${theme}`].filter(Boolean)) {
+  for (const cle of ['/blog', theme && `/blog/theme/${theme}`].filter(Boolean)) {
     if (pub && (!listes.get(cle) || pub > listes.get(cle))) listes.set(cle, pub);
   }
 }

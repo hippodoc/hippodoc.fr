@@ -1,24 +1,21 @@
 ---
 /**
- * Ligne d'article des pages de liste du blog (/blog et /blog/serie/*).
+ * Ligne d'article des pages de liste du blog (/blog et /blog/theme/*).
  *
  * Habillée dans la DA 2026 en phase 5c (MIGRATION.md § 9.ej), puis mise en
- * lignes sur une feuille au § 9.fk : l'affiche en vignette à gauche, la série et
- * le numéro en petites capitales, le titre, l'extrait (masqué au téléphone, il
- * reste dans le HTML), date et durée. Lien, titre (et son niveau), extrait,
- * date, durée, série et numéro : ceux d'avant, dans le même ordre (sur /blog, le
- * thème a pris la place de la série en § 9.fp, voir plus bas).
+ * lignes sur une feuille au § 9.fk : l'affiche en vignette à gauche, l'étiquette
+ * en petites capitales, le titre, l'extrait (masqué au téléphone, il reste dans
+ * le HTML), date et durée. Lien, titre (et son niveau), extrait, date et durée :
+ * ceux d'avant, dans le même ordre.
  * Aucune classe utilitaire : les styles sont dans `src/styles/blog-liste.css`,
- * la feuille des pages de liste (/blog, séries, thèmes).
+ * la feuille des pages de liste (/blog, thèmes).
  *
- * La classe `blog-card s-<seriesId>` est conservée : elle reste utile pour cibler
- * une série en CSS.
+ * La classe `blog-card s-<seriesId>` est conservée (§ 9.fq : la série ne s'affiche
+ * plus, elle reste dans le frontmatter et dans le HTML).
  *
- * Étiquette (§ 9.fp, `etiquette`) : la série et son numéro en tête de ligne sur les
- * pages de série (« FICHES FISCALITÉ · #4 », inchangé) ; sur /blog, le thème puis le
- * numéro de la fiche (« IMPÔTS ET DÉCLARATIONS · Fiche Fiscalité #4 », le libellé de la
- * pastille de l'article) ; sur une page de thème, le numéro seul (le thème est celui de
- * la page). Un article sans numéro (série « divers ») n'a que son thème, ou rien.
+ * Étiquette (§ 9.fp, § 9.fq) : sur /blog, le nom du thème de l'article ; sur une page
+ * de thème, rien (le thème est celui de la page). La série et le numéro de la fiche
+ * (« Fiche Fiscalité #4 ») ne s'affichent plus (§ 9.fq) : le thème les remplace.
  *
  * Les affiches (§ 9.fo) : toutes en PORTRAIT (quatre formats : 2:3, 0,75, 0,79,
  * 0,805), titre dessiné en haut. Elles ne se rognent jamais : chacune est montrée
@@ -28,7 +25,6 @@
  * `sizes` dit la largeur dessinée de CETTE affiche (une 2:3 : 83 % de la case) ;
  * `src` et dimensions déclarées sont ceux d'avant.
  */
-import { blogSeries } from '@/lib/blog-series';
 import { themeDe, type ThemeSlug } from '@/lib/blog-themes';
 import { nouer, echapper, nouerNombres } from '@/lib/typo';
 import { largeurDansCadre } from '@/lib/blog-covers';
@@ -42,20 +38,13 @@ interface Props {
   pubDate: Date;
   readTime: string;
   seriesId: string;
-  episodeNumber?: number;
   cover?: { src: string; width: number; height: number; srcset?: string };
-  /** Ce que dit la tête de ligne : la série (pages de série), le thème et le numéro (/blog), le numéro seul (pages de thème). */
-  etiquette?: 'serie' | 'theme' | 'numero';
-  /** Slug du thème de l'article (étiquette « theme »). */
+  /** Slug du thème de l'article, dit en tête de ligne (/blog) ; absent sur une page de thème. */
   theme?: ThemeSlug;
-  /** Libellé et numéro de la pastille de l'article (« Fiche Fiscalité », « #4 »). */
-  category?: string;
-  categoryNumber?: string;
 }
 
 const {
-  headingLevel = 2, slug, title, description, pubDate, readTime, seriesId, episodeNumber, cover,
-  etiquette = 'serie', theme, category, categoryNumber,
+  headingLevel = 2, slug, title, description, pubDate, readTime, seriesId, cover, theme,
 } = Astro.props;
 
 /* La largeur dessinée de l'affiche dans sa case (144 px, 112 px, 26,5 % de l'écran). */
@@ -63,10 +52,7 @@ const sizes = cover?.srcset
   ? `(min-width: 640px) ${largeurDansCadre(144, cover.width, cover.height)}px, (min-width: 423px) ${largeurDansCadre(112, cover.width, cover.height)}px, ${Math.round(26.5 * 1.25 * (cover.width / cover.height) * 100) / 100}vw`
   : undefined;
 
-const series = blogSeries.find((s) => s.id === seriesId);
-const leTheme = etiquette === 'theme' && theme ? themeDe(theme) : undefined;
-/* Le numéro de la fiche, comme sur la pastille de l'article : seulement pour les deux séries numérotées. */
-const rang = etiquette !== 'serie' && seriesId !== 'divers' && category && categoryNumber ? `${category} ${categoryNumber}` : undefined;
+const leTheme = theme ? themeDe(theme) : undefined;
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -89,17 +75,9 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
       </div>
     )}
     <div class="bl-carte-texte">
-      {etiquette === 'serie' ? (
+      {leTheme && (
         <div class="bl-marques">
-          {series && <span class="chip plan">{series.name}</span>}
-          {episodeNumber !== undefined && seriesId !== 'divers' && (
-            <span class="bl-numero">#{episodeNumber}</span>
-          )}
-        </div>
-      ) : (leTheme || rang) && (
-        <div class="bl-marques bl-marques-suite">
-          {leTheme && <span class="chip plan">{leTheme.nom}</span>}
-          {rang && <span class="bl-rang">{rang}</span>}
+          <span class="chip plan">{leTheme.nom}</span>
         </div>
       )}
       <Heading set:html={nouer(echapper(title))} />

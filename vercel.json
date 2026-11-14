@@ -12,6 +12,9 @@
     { "source": "/index.html", "destination": "/", "permanent": true },
     { "source": "/:path*/index.html", "destination": "/:path*", "permanent": true },
     { "source": "/blog/serie", "destination": "/blog", "permanent": true },
+    { "source": "/blog/serie/fiches-fiscalite", "destination": "/blog/theme/impots-declarations", "permanent": true },
+    { "source": "/blog/serie/fiches-pratiques", "destination": "/blog/theme/debuter-organiser", "permanent": true },
+    { "source": "/blog/serie/guides-conseils", "destination": "/blog", "permanent": true },
 
     { "source": "/landing", "destination": "/", "permanent": true },
     { "source": "/hippo-wall-street", "destination": "/transmissions", "permanent": true },

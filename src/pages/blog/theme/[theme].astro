@@ -3,15 +3,15 @@
  * Page de thème du blog — `/blog/theme/<slug>` (MIGRATION.md § 9.fp).
  *
  * Les thèmes classent les articles par sujet (registre : `src/lib/blog-themes.ts`) ; ils
- * sont la navigation de /blog depuis § 9.fp. Les pages de série restent en ligne,
- * inchangées, liées depuis la pastille de chaque article.
+ * sont la navigation de /blog depuis § 9.fp, et le seul classement affiché depuis § 9.fq
+ * (les pages de série sont redirigées vers un thème ou vers /blog, vercel.json).
  *
- * Sur le modèle des pages de série (`serie/[series].astro`) : le même ciel, le fil
- * d'Ariane, le titre et le texte de la page sur une fiche, les puces des thèmes, puis la
- * feuille des lignes d'article (`BlogCard.astro`, numéro de fiche seul : le thème est
- * celui de la page) et l'appel au simulateur. Même feuille (`src/styles/blog-liste.css`),
- * même schéma (`CollectionPage` et sa liste, `BreadcrumbList`). Pas de pastille au-dessus
- * du titre : elle redisait le nom, que le fil d'Ariane et le titre disent déjà.
+ * Faite sur le modèle des anciennes pages de série : le ciel, le fil d'Ariane, le titre
+ * et le texte de la page sur une fiche, les puces des thèmes, puis la feuille des lignes
+ * d'article (`BlogCard.astro`, sans étiquette : le thème est celui de la page) et l'appel
+ * au simulateur. Feuille `src/styles/blog-liste.css` ; schéma `CollectionPage` et sa
+ * liste, `BreadcrumbList`. Pas de pastille au-dessus du titre : elle redirait le nom,
+ * que le fil d'Ariane et le titre disent déjà.
  *
  * Deux segments d'URL (`blog/theme/x`) : aucune collision avec `blog/[slug].astro` ni avec
  * un futur article.
@@ -97,7 +97,7 @@ const breadcrumbSchema = {
         </nav>
 
         {/* Le titre à gauche, l'introduction du thème à droite sur une fiche (l'un sous
-             l'autre jusqu'à 1024 px), comme sur les pages de série. */}
+             l'autre jusqu'à 1024 px). */}
         <div class="bl-presentation">
           <header class="bl-intro">
             <h1 class="aff">{theme.nom}</h1>
@@ -142,10 +142,6 @@ const breadcrumbSchema = {
               pubDate={post.data.pubDate}
               readTime={post.data.readTime}
               seriesId={post.data.seriesId}
-              episodeNumber={post.data.episodeNumber}
-              etiquette="numero"
-              category={post.data.category}
-              categoryNumber={post.data.categoryNumber}
               cover={covers.get(post.id)}
             />
           ))}

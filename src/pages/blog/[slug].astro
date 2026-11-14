@@ -6,8 +6,6 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import BlogSlides from '@/components/BlogSlides.tsx';
 import { SITE_URL, APP_URL, LOGO_URL, CALENDLY_URL, PRODUCT_DEFINITION, AUTEURS } from '@/lib/site';
-import { blogSeries } from '@/lib/blog-series';
-import { seriesPath } from '@/lib/blog-series-slugs';
 import { themeDe, themePath } from '@/lib/blog-themes';
 import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
 /* Nouveau système de lecture (novembre 2026, MIGRATION.md § 9.fj). Toute la feuille de la
@@ -100,16 +98,17 @@ const lignesDuLien = (slug: string) => {
 };
 
 const {
-  title, description, pubDate, updatedDate, author, authorRole, category, categoryNumber,
+  title, description, pubDate, updatedDate, author, authorRole, category,
   seriesId, episodeNumber, readTime, cover, cta, ctaHref, faq, relatedArticles, slides, theme: themeId,
 } = post.data;
 const signupUrl = `${APP_URL}/auth?tab=signup`;
 
 const slug = post.id;
 const path = `/blog/${slug}`;
-const series = blogSeries.find((s) => s.id === seriesId);
-/* Le thème (§ 9.fp) : le troisième maillon du fil d'Ariane, à l'écran et dans le schéma. Le champ
-   est obligatoire (content.config.ts) : chaque article en a un. La série garde sa pastille. */
+/* Le thème (§ 9.fp) : le troisième maillon du fil d'Ariane, à l'écran et dans le schéma, et la
+   section de l'article dans le schéma (§ 9.fq). Le champ est obligatoire (content.config.ts) :
+   chaque article en a un. La série ne s'affiche plus (§ 9.fq) : ni pastille, ni « Épisode N » ;
+   elle reste dans le frontmatter et dans les attributs de mesure de <article>. */
 const theme = themeDe(themeId)!;
 
 /* Images : covers + slides optimisées via astro:assets (les originaux
@@ -249,9 +248,6 @@ const authorSchema = fiche
 const portrait = fiche?.portrait === 'ryan'
   ? await Promise.all((['avif', 'webp'] as const).map((format) => getImage({ src: portraitRyan, format, width: 56, widths: [56, 112] })))
   : null;
-/* « Fiche Fiscalité #4 » puis « Épisode 4 » : le même numéro deux fois. Quand la pastille le
-   porte, « Épisode N » reste dans le texte, masqué à l'œil (classe `sr`). */
-const episodeRepete = !!categoryNumber && episodeNumber !== undefined && categoryNumber.replace(/\D/g, '') === String(episodeNumber);
 /* Appel à l'essai : un titre long (plus de 90 signes, deux articles) passe d'un cran plus petit. */
 const ctaTitre = cta ?? 'Prêt à simplifier ta gestion de remplaçant ?';
 const ctaLong = [...stripMiniMarkdown(ctaTitre).replace(new RegExp(EMO_SRC, 'gu'), '').trim()].length > 90;
@@ -266,7 +262,7 @@ const articleSchema = {
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
   inLanguage: 'fr-FR',
-  articleSection: category,
+  articleSection: theme.nom,
   author: authorSchema,
   publisher: {
     '@type': 'Organization',
@@ -283,8 +279,7 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE_URL },
     { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-    /* Niveau thème (§ 9.fp ; la série avant, § 9.be) : la page de thème de l'article. La page de
-       série reste liée par la pastille de l'article. */
+    /* Niveau thème (§ 9.fp ; la série avant, § 9.be) : la page de thème de l'article. */
     { '@type': 'ListItem', position: 3, name: theme.nom, item: `${SITE_URL}${themePath(theme.slug)}` },
     { '@type': 'ListItem', position: 4, name: title, item: `${SITE_URL}${path}` },
   ],
@@ -385,7 +380,8 @@ const croix =
        lit pour blog_article_viewed / blog_scroll_depth / blog_read_completed. Les
        valeurs viennent du frontmatter, donc identiques à l'historique PostHog
        (category « Fiche Fiscalité », series_id « fiche-fiscalite »…) ; le thème
-       (`theme`, § 9.fp) s'y ajoute.
+       (`theme`, § 9.fp) s'y ajoute. Catégorie, série et épisode restent ici depuis
+       § 9.fq, où ils ont quitté l'écran : les séries de PostHog continuent.
        La page est une grille (le <main>) : <article> et son <header> n'y font pas de
        boîte, leurs enfants s'y placent directement (blog-article.css). */}
     <article
@@ -397,16 +393,6 @@ const croix =
       data-blog-episode={episodeNumber ?? 0}
     >
       <header class="tete">
-        <div class="marques">
-          {series && (
-            <a href={seriesPath(series.id)} class="serie">
-              {category}{categoryNumber ? ` ${categoryNumber}` : ''}
-            </a>
-          )}
-          {episodeNumber !== undefined && seriesId !== 'divers' && (
-            <span class:list={['episode', episodeRepete && 'sr']}>Épisode {episodeNumber}</span>
-          )}
-        </div>
         <h1 class="aff" set:html={nouer(echapper(title))} />
         {/* La ligne de confiance : les mêmes mots, réordonnés par la feuille (date, durée,
             auteur). Le nom de l'auteur mène à sa fiche (§ 9.fj). Quand l'article a été mis
