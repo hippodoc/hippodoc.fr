@@ -12149,18 +12149,37 @@ simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil
 simulateur est égal, à 1 € près, au « net imposable » du modèle de l'Urssaf, en micro et au réel
 (45 000, 70 000, 120 000 et 160 000 € de recettes).
 
-**À décider (propriétaire).** (a) Chèques-vacances ANCV : aucune doctrine fiscale publiée sur leur
-déduction pour l'exploitant lui-même (seule l'ANCV l'affirme) ; option gardée. (b) Invalidité-décès
-au RSPM : 626 € / 157 € gardés (« La CARMF en 2026 » et modèle Urssaf) ; le dépliant RSPM de la
-CARMF de février 2026 dit 631 € / 158 €. (c) La fonction Supabase `calculate-urssaf` de l'app garde
-les défauts du point 6 : à corriger dans le dépôt de l'app. (d) Non modélisés : groupe III indisponible
+**Décisions du propriétaire (14 novembre 2026).** (a) Chèques-vacances ANCV : option gardée, textes
+alignés (étape 4). (b) Invalidité-décès au RSPM : 626 € / 157 € gardés (« La CARMF en 2026 » et
+modèle Urssaf ; le dépliant RSPM de février 2026 dit 631 € / 158 €). (c) La fonction Supabase
+`calculate-urssaf` de l'app garde les défauts du point 6 : le propriétaire la corrige dans le dépôt
+de l'app. (d) Vérification WebKit non faite : accepté. (e) Non modélisés : groupe III indisponible
 la première année d'installation (notre guide), barèmes du groupe III des spécialistes (mêmes
 montants au-delà de 32 000 à 64 000 €), déficit BNC imputable sur le revenu global, CEHR.
 
+**Étape 4 : ce que le simulateur dit en plus.**
+19. **À prévoir chaque mois** (sous la conclusion) : cotisations et impôt de l'activité libérale du
+    régime retenu, divisés par 12, et leur part des recettes. L'impôt du foyer est réparti au prorata
+    des revenus imposables (la part des salaires est prélevée à la source par l'employeur).
+20. **Point de bascule des charges** (sous la conclusion, recettes sous le plafond du Micro-BNC) :
+    « Le régime réel passerait devant au-delà d'environ X € de charges par an » ou « Le Micro-BNC ne
+    passerait devant que sous environ X € », ou « Même sans aucune charge, le régime réel resterait
+    devant ». `calculerPointDeBascule()` : fausse position (Illinois) sur l'écart réel − micro, qui
+    croît avec les charges ; chaque point au réel recalculé de bout en bout (2 à 5 appels au modèle
+    Urssaf, sans repli sur Supabase ; moins d'une seconde) ; arrondi à 100 € ; aucune phrase si les
+    deux régimes sont identiques. Calculé après l'affichage, dans un état à part (dans `results`, il
+    aurait relancé le défilement et l'événement `simulation_result` de SimulateurApp). Vérifié sur
+    7 profils : écart de 30 €/an au plus au point annoncé, signe inversé à ± 1 000 €.
+21. Conclusion « se valent » : elle dit en faveur de quel régime penche l'écart.
+22. **Chèques-vacances** : plafond 2026 donné comme officiel (SMIC mensuel brut au 1er janvier,
+    1 823 €), et non plus « projeté » ; exonération de cotisations jusqu'à 30 % du SMIC (547 €)
+    mentionnée, non comptée ; obligation de proposer le dispositif aux salariés.
+
 **Feuilles.** La feuille commune ne change pas (vérifié contre le build de `main` : seules
 `/simulateur` et la calculette diffèrent, la seconde par le nom de son script, qui embarque
-`baremes-ir.ts`). Une règle dans `simulateur.css` (`.sim-params`, trois colonnes à partir de
-1 024 px). Non vérifié dans WebKit.
+`baremes-ir.ts`). Dans `simulateur.css` : `.sim-params` (trois colonnes à partir de 1 024 px) et
+`.sim-conclusion-detail` (les deux lignes sous la conclusion, alignées sur son texte à partir de
+480 px). Non vérifié dans WebKit.
 
 **Vérifié.** Banc d'essai hors dépôt (80 situations : recettes de 15 000 à 200 000 €, charges,
 quatre situations familiales, enfants, DOM) : Super-Net = recettes + salaires − charges −

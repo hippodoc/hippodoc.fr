@@ -227,6 +227,14 @@
 .sim .sim-conclusion.attn .sim-conclusion-signe { background: var(--wait-bg); }
 /* 12 rem au moins pour la phrase : sur téléphone, la pastille passe dessous. */
 .sim .sim-conclusion-texte { flex: 1 1 12rem; font-size: 1.125rem; font-weight: var(--tb); line-height: 1.35; color: inherit; text-wrap-style: pretty; }
+/* Sous la conclusion : ce qu'il faut prévoir chaque mois, puis le point de bascule des charges
+   (MIGRATION.md § 9.fq). Alignées sur le texte, après la pastille de 46 px et l'écart de 12 px. */
+.sim .sim-conclusion-detail { margin-top: 12px; color: inherit; font-size: 0.9375rem; line-height: 1.45; }
+.sim .sim-conclusion-detail p { margin: 0; text-wrap-style: pretty; }
+.sim .sim-conclusion-detail p + p { margin-top: 6px; }
+@media (min-width: 480px) {
+  .sim .sim-conclusion-detail { padding-left: 58px; }
+}
 .sim .sim-conclusion.gain .sim-puce.encre { background: var(--sun); color: var(--ink); }
 
 /* L'anneau de répartition : un filet d'encre autour de chaque secteur (le jaune

@@ -1248,6 +1248,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       const annee = form.watch('annee') || 2026;
                       const plafondCV = getDeclarationParams(annee).plafondChequesVacances;
                       const plafondLabel = `${plafondCV.toLocaleString('fr-FR')}€/an`;
+                      const plafondSocialLabel = `${getDeclarationParams(annee).plafondSocialChequesVacances.toLocaleString('fr-FR')}€`;
                       return (
                       <FormItem>
                         <div className="flex items-center gap-2">
@@ -1259,13 +1260,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               <p className="text-xs">Tu achètes des chèques-vacances via l'ANCV → tu les déduis de ton BNC réel → tu les utilises pour tes vacances, restos, loisirs, culture.</p>
                               <TipBox variant="tip">
                                 <p className="font-medium">✅ Double avantage</p>
-                                <p className="mt-0.5">Déduction fiscale + pouvoir d'achat vacances. Plafond {annee} = 1 SMIC mensuel ({plafondLabel}).</p>
-                                {annee >= 2026 && (
-                                  <p className="mt-1 text-[11px] italic">ℹ️ Plafond 2026 = 1 823 € (projeté, à confirmer après publication officielle du SMIC 2026).</p>
-                                )}
+                                <p className="mt-0.5">Déduction de ton bénéfice + pouvoir d'achat vacances. Plafond {annee} = 1 SMIC mensuel brut au 1er janvier ({plafondLabel}).</p>
+                                <p className="mt-1">Les premiers euros, jusqu'à 30 % du SMIC mensuel ({plafondSocialLabel}), sont aussi exonérés de cotisations URSSAF et CARMF (pas de CSG-CRDS) : quelques dizaines d'euros, que le simulateur ne compte pas.</p>
                               </TipBox>
                               <TipBox variant="warning">
-                                <p>⚠️ BNC réel uniquement. Sans effet en Micro-BNC. Art. L411-5 Code du tourisme.</p>
+                                <p>⚠️ BNC réel uniquement, sans effet en Micro-BNC. Si tu as des salariés, tu dois aussi leur proposer le dispositif (Code du tourisme, art. L411-1).</p>
                               </TipBox>
                             </div>
                           }>

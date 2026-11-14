@@ -867,16 +867,13 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       if (optim.chequesVacances && optim.chequesVacances > 0) {
         const plafondCV = getDeclarationParams(annee).plafondChequesVacances;
         const plafondLabel = `${plafondCV.toLocaleString('fr-FR')} € pour ${annee}`;
-        const mentionProjete = annee >= 2026
-          ? ` (projeté, à confirmer après publication officielle du SMIC ${annee})`
-          : '';
         detailItems.push({
           icon: Leaf,
           label: "Chèques-vacances ANCV",
           value: optim.chequesVacances,
           colorClass: "sim-eau",
           negative: true,
-          tooltip: `Chèques-vacances ANCV déductibles du BNC réel (Art. L411-5 Code du tourisme). Plafond annuel = 1 SMIC mensuel : ${plafondLabel}${mentionProjete}.`
+          tooltip: `Chèques-vacances ANCV déductibles du BNC réel, dans la limite d'un SMIC mensuel brut au 1er janvier : ${plafondLabel}.`
         });
       }
     }

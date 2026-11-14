@@ -28,6 +28,8 @@ const RegimeComparisonCards = lazy(() =>
 
 export interface SimulateurResultsProps {
   comparison: RegimeComparison;
+  /** Point de bascule des charges (`calculerPointDeBascule`) : en attente tant qu'il vaut `undefined`. */
+  bascule?: number | null | 'attente';
   formData: SimulateurFormData;
   periode: 'annuel' | 'mensuel';
   onNewSimulation?: () => void;
@@ -38,7 +40,7 @@ export interface SimulateurResultsProps {
   isPublic?: boolean;
 }
 
-export function SimulateurResults({ comparison, formData, periode, onNewSimulation }: SimulateurResultsProps) {
+export function SimulateurResults({ comparison, bascule, formData, periode, onNewSimulation }: SimulateurResultsProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) {
@@ -84,7 +86,7 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
 
 
       {/* ✅ CONCLUSION — En premier, toujours visible */}
-      <ConclusionCard comparison={comparison} formData={formData} />
+      <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} />
 
       {/* ✅ APPROFONDIR — Accordion unifié avec 2 items */}
       <Accordion type="single" collapsible className="space-y-0">

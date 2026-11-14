@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { invokeCalculateUrssaf } from '@/lib/supabase-public';
 import type { SimulateurFormData } from '@/components/simulateur/simulateurSchema';
 import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/lib/simulation-types';
@@ -75,6 +75,7 @@ async function cotisationsPamc(
   recettesAnnuelles: number,
   chargesAnnuelles: number,
   liberalExonere: number,
+  secours = true,
 ): Promise<{ cotisations: CotisationsUrssaf; source: 'urssaf' | 'secours' } | null> {
   try {
     // Au réel, le forfait 2 % des médecins installés en secteur 1 reste déduit de l'assiette
@@ -97,6 +98,7 @@ async function cotisationsPamc(
     return { cotisations: ajusterCarmf(cotisations, formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles), source: 'urssaf' };
   } catch (err) {
     console.warn('[Simulateur] API Urssaf indisponible, repli sur calculate-urssaf', err);
+    if (!secours) return null;
   }
 
   const { data, error } = await invokeCalculateUrssaf({ formData, regimeFiscal, liberalExonere });
@@ -169,6 +171,8 @@ export async function simulerRegime(
   formData: SimulateurFormData,
   regimeFiscal: 'reel' | 'micro-bnc',
   useRspm: boolean,
+  /** Faux : pas de repli sur la fonction Supabase (calculs annexes, qui doivent rester cohérents). */
+  secours = true,
 ): Promise<SimulationResult | null> {
   const recettesAnnuelles = annualiser(formData, formData.recettesBrutes);
   const chargesAnnuelles = annualiser(formData, formData.chargesHorsCotisations);
@@ -184,7 +188,7 @@ export async function simulerRegime(
 
   let cotisationsPamcRegime: CotisationsUrssaf | null = null;
   if (!useRspm) {
-    const pamc = await cotisationsPamc(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles, liberalExonere);
+    const pamc = await cotisationsPamc(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles, liberalExonere, secours);
     cotisationsPamcRegime = pamc?.cotisations ?? null;
     if (!cotisationsPamcRegime) {
       throw new Error('Le service de calcul URSSAF est temporairement indisponible. Réessaie dans quelques minutes.');
@@ -271,9 +275,80 @@ export async function simulerRegime(
   };
 }
 
+/**
+ * Point de bascule : les charges annuelles pour lesquelles Micro-BNC et réel laissent le même
+ * Super-Net, les autres données restant celles de la simulation.
+ *
+ * En Micro-BNC, ni l'impôt ni les cotisations ne dépendent des charges : son Super-Net baisse
+ * d'un euro par euro de charge. Au réel, il baisse moins (charges déduites de l'impôt et, hors
+ * RSPM, des cotisations). L'écart f(C) = réel − micro croît donc avec les charges ; sa racine
+ * se cherche par fausse position (méthode d'Illinois), chaque point au réel étant recalculé de
+ * bout en bout (cotisations Urssaf comprises), sans repli sur la fonction Supabase.
+ *
+ * Renvoie le montant arrondi à 100 €, `null` si le réel l'emporte même sans aucune charge, ou
+ * `undefined` si le calcul n'aboutit pas (API indisponible, cas hors bornes).
+ */
+export async function calculerPointDeBascule(
+  formData: SimulateurFormData,
+  useRspm: boolean,
+  reel: SimulationResult,
+  micro: SimulationResult,
+): Promise<number | null | undefined> {
+  const recettes = annualiser(formData, formData.recettesBrutes);
+  const chargesSaisies = annualiser(formData, formData.chargesHorsCotisations);
+  const parPeriode = (c: number) => (formData.periode === 'mensuel' ? c / 12 : c);
+  const microA = (c: number) => micro.superNet + chargesSaisies - c;
+  const f = async (c: number): Promise<number> => {
+    const r = await simulerRegime({ ...formData, chargesHorsCotisations: parPeriode(c) }, 'reel', useRspm, false);
+    if (!r) throw new Error('bascule : calcul au réel impossible');
+    return r.superNet - microA(c);
+  };
+
+  try {
+    const f0 = reel.superNet - micro.superNet;
+    // Régimes identiques (impôt nul des deux côtés au RSPM, par exemple) : pas de bascule à dire.
+    if (Math.abs(f0) < 1) return undefined;
+    let a: number, fa: number, b: number, fb: number;
+    if (f0 > 0) {
+      // Réel devant : la bascule est en dessous des charges saisies.
+      const fZero = chargesSaisies === 0 ? f0 : await f(0);
+      if (fZero >= 0) return null;
+      a = 0; fa = fZero; b = chargesSaisies; fb = f0;
+    } else {
+      // Micro devant : la bascule est au-dessus. On élargit jusqu'à changer de signe.
+      a = chargesSaisies; fa = f0; b = chargesSaisies; fb = f0;
+      let pas = Math.max(5000, recettes * 0.1);
+      while (fb < 0) {
+        a = b; fa = fb;
+        b = Math.min(recettes, b + pas);
+        fb = await f(b);
+        pas *= 2;
+        if (b >= recettes && fb < 0) return undefined;
+      }
+    }
+    // Fausse position (Illinois) : 4 évaluations au plus, précision de l'ordre de 50 €.
+    let cote = 0;
+    for (let i = 0; i < 4 && b - a > 100; i++) {
+      const c = b - fb * (b - a) / (fb - fa);
+      const fc = await f(c);
+      if (Math.abs(fc) < 25) return Math.round(c / 100) * 100;
+      if (fc > 0) { b = c; fb = fc; if (cote === 1) fa /= 2; cote = 1; }
+      else { a = c; fa = fc; if (cote === -1) fb /= 2; cote = -1; }
+    }
+    return Math.round((b - fb * (b - a) / (fb - fa)) / 100) * 100;
+  } catch (err) {
+    console.warn('[Simulateur] point de bascule non calculé', err);
+    return undefined;
+  }
+}
+
 export function usePublicodesSimulation() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** Point de bascule de la dernière simulation (voir `calculerPointDeBascule`). État à part : le
+   *  mettre dans `results` relancerait le défilement et l'événement de SimulateurApp. */
+  const [bascule, setBascule] = useState<number | null | 'attente' | undefined>(undefined);
+  const simulationEnCours = useRef(0);
   const [results, setResults] = useState<RegimeComparison>({
     reel: null,
     microBnc: null,
@@ -285,6 +360,8 @@ export function usePublicodesSimulation() {
   const simulate = async (formData: SimulateurFormData) => {
     setLoading(true);
     setError(null);
+    setBascule(undefined);
+    const numero = ++simulationEnCours.current;
 
     try {
       const recettesAnnuelles = annualiser(formData, formData.recettesBrutes);
@@ -327,6 +404,15 @@ export function usePublicodesSimulation() {
         lieuExercice: formData.lieuExercice,
         isRSPMUsed: useRspm,
       });
+
+      // Point de bascule, après l'affichage, seulement si le Micro-BNC reste ouvert (recettes
+      // sous le plafond) : au-delà, la question ne se pose plus d'une année sur l'autre.
+      if (resultMicroBnc && recettesAnnuelles <= getMicroBncCeiling(formData.annee || 2026)) {
+        setBascule('attente');
+        void calculerPointDeBascule(formData, useRspm, resultReel, resultMicroBnc).then((c) => {
+          if (simulationEnCours.current === numero) setBascule(c);
+        });
+      }
       // Pas de sauvegarde d'historique : le site public est anonyme. Le funnel analytics
       // anonyme est géré par SimulateurApp.tsx (insertPublicEvent).
     } catch (err) {
@@ -347,6 +433,8 @@ export function usePublicodesSimulation() {
   };
 
   const reset = () => {
+    simulationEnCours.current++;
+    setBascule(undefined);
     setResults({
       reel: null,
       microBnc: null,
@@ -357,5 +445,5 @@ export function usePublicodesSimulation() {
     setError(null);
   };
 
-  return { loading, error, results, simulate, reset };
+  return { loading, error, results, bascule, simulate, reset };
 }
