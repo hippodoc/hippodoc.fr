@@ -10,6 +10,8 @@ import { Info, RotateCcw, Scale, Lightbulb, CalendarClock, Receipt, FileText, Ar
 import { cn } from "@/lib/utils";
 import { APP_URL } from "@/lib/site";
 import { insertPublicEvent } from "@/lib/supabase-public";
+import { trackEvent } from "@/lib/analytics";
+import { superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 
@@ -26,6 +28,54 @@ const RegimeComparisonCards = lazy(() =>
 );
 
 
+/** Ce qu'on garde d'un essai pour le comparer au suivant (§ 9.gg). */
+export interface Essai {
+  /** Super-Net du médecin dans le régime recommandé : celui de sa fiche. */
+  superNet: number;
+  recommande: 'micro-bnc' | 'reel';
+  /** Recettes et charges annuelles saisies. */
+  recettes: number;
+  charges: number;
+  /** Toute la saisie : deux essais identiques ne se comparent pas. */
+  signature: string;
+}
+
+export function essaiDe(comparison: RegimeComparison, formData: SimulateurFormData): Essai | null {
+  const retenu = comparison.recommande === 'micro-bnc' ? comparison.microBnc : comparison.reel;
+  if (!retenu || !comparison.recommande) return null;
+  const annuel = (v: number | undefined) => (formData.periode === 'mensuel' ? (v || 0) * 12 : (v || 0));
+  return {
+    superNet: superNetDuMedecin(retenu, {
+      revenusSalariesAnnuels: comparison.revenusSalariesAnnuels ?? 0,
+      revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? 0,
+      situationFamiliale: formData.situationFamiliale,
+    }),
+    recommande: comparison.recommande,
+    recettes: annuel(formData.recettesBrutes),
+    charges: annuel(formData.chargesHorsCotisations),
+    signature: JSON.stringify(formData),
+  };
+}
+
+const eurosEntiers = (v: number) =>
+  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
+const nomRegime = (r: 'micro-bnc' | 'reel') => (r === 'micro-bnc' ? 'Micro-BNC' : 'régime réel');
+
+/** Phrase de l'écart avec l'essai précédent, ou null (pas d'essai précédent, ou le même). */
+function phraseEcart(avant: Essai | null | undefined, apres: Essai | null): string | null {
+  if (!avant || !apres || avant.signature === apres.signature) return null;
+  const changements: string[] = [];
+  if (Math.round(avant.recettes) !== Math.round(apres.recettes)) changements.push(`recettes de ${eurosEntiers(avant.recettes)} à ${eurosEntiers(apres.recettes)}`);
+  if (Math.round(avant.charges) !== Math.round(apres.charges)) changements.push(`charges de ${eurosEntiers(avant.charges)} à ${eurosEntiers(apres.charges)}`);
+  const quoi = changements.length > 0 ? changements.join(', ') : 'autre situation';
+  const delta = Math.round(apres.superNet - avant.superNet);
+  const montant = delta === 0 ? 'même Super-Net' : `${delta > 0 ? '+' : '−'}${eurosEntiers(Math.abs(delta))} par an de Super-Net`;
+  const regime = avant.recommande !== apres.recommande
+    ? `, et le régime recommandé passe du ${nomRegime(avant.recommande)} au ${nomRegime(apres.recommande)}`
+    : '';
+  return `Par rapport à ton essai précédent (${quoi})\u00a0: ${montant}${regime}.`;
+}
+
 export interface SimulateurResultsProps {
   comparison: RegimeComparison;
   /** Point de bascule des charges (`calculerPointDeBascule`) : en attente tant qu'il vaut `undefined`. */
@@ -40,24 +90,35 @@ export interface SimulateurResultsProps {
    * (ConseilsPersonnalises, app authentifiée) n'est pas porté ici.
    */
   isPublic?: boolean;
+  /** L'essai d'avant, pour en dire l'écart (§ 9.gg). */
+  essaiPrecedent?: Essai | null;
 }
 
-export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation }: SimulateurResultsProps) {
+export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation, essaiPrecedent }: SimulateurResultsProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) {
     return null;
   }
+  const essai = essaiDe(comparison, formData);
+  const ecart = phraseEcart(essaiPrecedent, essai);
 
   return (
     <div
       className="sim-resultats space-y-6 md:space-y-8"
     >
-      {/* Titre de la section */}
+      {/* Titre de la section (§ 9.gg) : le rappel de la saisie, utile quand on enchaîne les
+          essais (3,8 calculs par visiteur), et l'écart avec l'essai d'avant. Remplace « Analyse
+          détaillée pour t'aider à choisir le meilleur régime. » */}
       <div className="sim-resultats-tete">
-        <h2 className="sim-titre">Comparaison des régimes fiscaux</h2>
+        <h2 className="sim-titre">Ton résultat</h2>
+        <p className="sim-rappel">
+          Pour {eurosEntiers(essai?.recettes ?? 0)} de recettes et{' '}
+          {(essai?.charges ?? 0) > 0 ? `${eurosEntiers(essai?.charges ?? 0)} de charges` : 'aucune charge'}
+          {' · '}{formData.typeExercice === 'installe' ? 'installé' : 'remplaçant'}, secteur{'\u00a0'}{formData.secteurConventionnel === 'secteur_2' ? '2' : '1'}
+        </p>
+        {ecart && <p className="sim-ecart">{ecart}</p>}
         <p className="sim-chapo">
-          Analyse détaillée pour t'aider à choisir le meilleur régime.{' '}
           {comparison.isRSPMUsed
             ? "Cotisations au RSPM, l'offre simplifiée des remplaçants."
             : (formData.annee || 2026) >= 2025
@@ -180,6 +241,7 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
           data-track="cta_signup_simulateur_resultat"
           className="sim-btn sim-btn-soleil sim-suite-btn"
           onClick={() => {
+            trackEvent('public_simulator_cta_clicked', { cta_type: 'signup', emplacement: 'resultat' });
             insertPublicEvent('simulateur_public_events', {
               event_type: 'cta_patrimonial_guide',
               session_id: (typeof window !== 'undefined' && window.localStorage.getItem('hippodoc-anon-session-id')) || 'unknown',

@@ -112,6 +112,34 @@
 .sim .sim-pli:hover .sim-chevron, .sim .sim-profils-tete:hover .sim-chevron { background: var(--sky-1); }
 .sim .sim-pli-in { border-top: 1px solid var(--line); }
 .sim .sim-fiche-options { padding-block: 14px; }
+/* Détail ligne par ligne d'une fiche de régime (§ 9.gg) : replié au téléphone. */
+.sim .sim-fiche-detail { margin-top: 8px; border-top: 1px solid var(--line); }
+.sim .sim-fiche-detail > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding-top: 6px; font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); cursor: pointer; list-style: none; }
+.sim .sim-fiche-detail > summary::-webkit-details-marker { display: none; }
+.sim .sim-fiche-detail > summary:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; border-radius: 8px; }
+.sim .sim-fiche-detail > summary:hover .sim-chevron { background: var(--sky-1); }
+.sim .sim-fiche-detail[open] > summary .sim-chevron { rotate: 180deg; }
+/* « Ta situation » (§ 9.gg) : le foyer et les paramètres de calcul repliés en une ligne ; le
+   bouton les déplie (les deux fiches d'avant, dans `.sim-situation-detail`). */
+.sim .sim-situation { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; padding-block: 18px; }
+.sim .sim-situation-tete { display: flex; align-items: flex-start; gap: 12px; flex: 1 1 260px; min-width: 0; }
+.sim .sim-situation-texte { min-width: 0; }
+.sim .sim-situation .sim-fiche-titre { line-height: 36px; }
+.sim .sim-situation-resume { margin: 2px 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); overflow-wrap: anywhere; }
+.sim .sim-situation-bouton { flex: none; gap: 8px; min-height: 48px; padding: 4px 4px 4px 16px; border-radius: var(--r-pill); background: none; color: var(--ink); font-size: 0.9375rem; font-weight: var(--tb); }
+.sim .sim-situation-bouton:hover { background: var(--sky-soft); color: var(--ink); }
+.sim .sim-situation-bouton:hover .sim-chevron { background: var(--sky-1); }
+.sim .sim-situation-bouton:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; box-shadow: none; }
+.sim .sim-situation-detail { display: grid; gap: 14px; }
+/* Au téléphone, le bouton passe sous le résumé : son mot s'aligne sur le texte (pastille de 36 px,
+   écart de 12 px, moins son remplissage de 16 px). */
+@media (max-width: 639px) {
+  .sim .sim-situation-bouton { margin-left: 32px; }
+}
+/* Charges vides, recettes saisies (§ 9.gg) : une invitation à les estimer. */
+.sim .sim-charges-vides { margin: 6px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--sky-soft); font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
+.sim .sim-charges-vides-lien { padding: 0; border: 0; background: none; font: inherit; font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.sim .sim-charges-vides-lien:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; border-radius: 4px; }
 .sim .sim-rangee { border: 0; border-radius: 18px; background: var(--sky-soft); }
 .sim .sim-rangee > h3 > button { min-height: 52px; gap: 10px; color: var(--ink); text-align: left; }
 .sim .sim-rangee > h3 > button > span { min-width: 0; font-size: 0.9375rem; }
@@ -172,6 +200,10 @@
 .sim .sim-resultats-tete { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 20px; text-align: center; }
 .sim .sim-titre { --corps: clamp(min(1.75rem, 9vw), 3.4vw, 2.5rem); margin: 0; }
 .sim .sim-chapo { margin: 0; font-size: 1.0625rem; color: var(--ink-2); }
+/* En-tête des résultats (§ 9.gg) : le rappel de la saisie, puis l'écart avec l'essai d'avant. */
+.sim .sim-rappel { margin: 0; font-size: 1.0625rem; font-weight: var(--tb); color: var(--ink); text-wrap-style: balance; }
+.sim .sim-ecart { margin: 0; max-width: 40rem; padding: 8px 14px; border-radius: 14px; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); font-size: 0.9375rem; line-height: 1.45; color: var(--ink); text-wrap-style: pretty; }
+.sim .sim-resultats-tete .sim-chapo { font-size: 0.9375rem; }
 
 /* Les deux régimes */
 .sim .sim-regime { padding: 0; }
@@ -264,6 +296,16 @@
 }
 /* Les chiffres du mois : le total en grand, la barre Urssaf, CARMF, impôt, la légende. */
 .sim .sim-conclusion-mois p { margin: 0; }
+/* Le pont vers Hippodoc, sous « à mettre de côté » (§ 9.gg) : une phrase et un bouton plein,
+   blanc sur la conclusion bleu nuit, encre sur la conclusion blanche. Pas de jaune (réservé). */
+.sim .sim-conclusion-mois .sim-conclusion-suite { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.sim .sim-conclusion.gain .sim-conclusion-suite { border-top-color: rgba(255, 255, 255, 0.24); }
+.sim .sim-conclusion-suite > span { flex: 1 1 16rem; text-wrap-style: pretty; }
+.sim .sim-conclusion-cta { display: inline-flex; flex: none; align-items: center; gap: 8px; min-height: 44px; padding: 8px 18px; border-radius: var(--r-pill); background: var(--ink); color: var(--paper); font-size: 0.9375rem; font-weight: var(--tb); text-decoration: none; }
+.sim .sim-conclusion-cta:hover { background: var(--ink-2); color: var(--paper); }
+.sim .sim-conclusion.gain .sim-conclusion-cta { background: var(--paper); color: var(--ink); }
+.sim .sim-conclusion.gain .sim-conclusion-cta:hover { background: var(--sky-soft); color: var(--ink); }
+.sim .sim-conclusion-cta:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 3px; }
 .sim .sim-mois-tete { font-size: 0.75rem; font-weight: var(--tb); line-height: 1.4; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-3); }
 .sim .sim-conclusion.gain .sim-mois-tete { color: var(--on-deep-2); }
 .sim .sim-conclusion-mois .sim-mois-total { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin-top: 2px; }

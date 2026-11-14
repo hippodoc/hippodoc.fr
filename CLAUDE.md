@@ -679,6 +679,12 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Profils types (§ 9.gf) : sept, en mode Auto, calés sur les simulations réelles (table Supabase
   `simulateur_public_events`) ; un profil garde son identifiant (`profil_type_id`), un identifiant
   retiré ne se réutilise pas.
+  Parcours (§ 9.gg) : sous les revenus, « Ta situation » résume le foyer et les paramètres de
+  calcul en une ligne ; « Modifier » ouvre leurs deux fiches (repliées, leurs champs gardent leurs
+  valeurs ; une erreur dedans les ouvre). Un nouveau champ de situation entre dans le résumé et
+  dans `CHAMPS_SITUATION`. Résultats : « Ton résultat », rappel de la saisie et écart de
+  Super-Net avec l'essai précédent (`essaiDe`, `superNetDuMedecin`) ; lien d'essai dans la
+  conclusion (`emplacement: 'conclusion'`) ; détail des fiches replié sous 768 px.
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la

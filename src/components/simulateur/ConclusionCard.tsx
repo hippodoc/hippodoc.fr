@@ -1,5 +1,8 @@
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Scale, AlertTriangle, FileQuestion, PiggyBank, CalendarClock } from "lucide-react";
+import { Trophy, Scale, AlertTriangle, FileQuestion, PiggyBank, CalendarClock, ArrowRight } from "lucide-react";
+import { APP_URL } from "@/lib/site";
+import { trackEvent } from "@/lib/analytics";
+import { insertPublicEvent } from "@/lib/supabase-public";
 import { SEUIL_EQUIVALENCE_ANNUEL, type RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
 import { deductionsComparees } from "@/lib/simulateur/deductions";
@@ -274,7 +277,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
         </p>
         {pourcentage !== null && !equivalents && (
           <Badge variant="outline" className="sim-puce encre grande shrink-0">
-            +{pourcentage.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}{' '}% Super-Net
+            +{pourcentage.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}{'\u00a0'}% de Super-Net
           </Badge>
         )}
       </div>
@@ -309,6 +312,27 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
           </>
         )}
         {phraseMarge && <p className="sim-mois-marge">{phraseMarge}</p>}
+        {/* § 9.gg : le pont vers Hippodoc, là où naît la question « et le reste de l'année ? ».
+            Sous le résultat, il n'y avait qu'un appel, 2 700 px plus bas au téléphone (3 clics
+            en 3 mois). */}
+        <p className="sim-conclusion-suite">
+          <span>Ce montant change à chaque journée travaillée. Hippodoc le tient à jour au fil de l'année.</span>
+          <a
+            href={`${APP_URL}/auth?tab=signup`}
+            className="sim-conclusion-cta"
+            data-track="cta_signup_simulateur_conclusion"
+            onClick={() => {
+              trackEvent('public_simulator_cta_clicked', { cta_type: 'signup', emplacement: 'conclusion' });
+              insertPublicEvent('simulateur_public_events', {
+                event_type: 'cta_conclusion',
+                session_id: (typeof window !== 'undefined' && window.localStorage.getItem('hippodoc-anon-session-id')) || 'unknown',
+              });
+            }}
+          >
+            Essai gratuit 30 jours
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </p>
       </div>
 
       {/* Alertes en pills compacts */}
