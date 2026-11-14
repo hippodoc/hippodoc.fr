@@ -205,20 +205,46 @@
 .sim .sim-ecart { margin: 0; max-width: 40rem; padding: 8px 14px; border-radius: 14px; background: var(--paper); box-shadow: inset 0 0 0 1.5px var(--line); font-size: 0.9375rem; line-height: 1.45; color: var(--ink); text-wrap-style: pretty; }
 .sim .sim-resultats-tete .sim-chapo { font-size: 0.9375rem; }
 
-/* Les deux régimes */
-.sim .sim-regime { padding: 0; }
-.sim .sim-regime-tete { padding: 24px 22px 14px; }
-.sim .sim-regime-corps { padding: 0 22px 24px; }
-.sim .sim-regime-nom { font-family: var(--display); font-size: 1.5rem; font-weight: var(--dw); line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); }
-.sim .sim-regime-desc { margin-top: 2px; font-size: 0.9375rem; color: var(--ink-2); }
-/* Le Super-Net : sur du jaune dans la fiche du régime recommandé. */
-.sim .sim-supernet { padding: 18px 20px 20px; border-radius: 24px; background: var(--sky-soft); }
-.sim .sim-supernet.soleil { background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1); }
-.sim .sim-supernet > div:first-child, .sim .sim-supernet .items-baseline { flex-wrap: wrap; gap: 6px 10px; }
-.sim .sim-supernet .items-baseline { gap: 0 4px; }
-.sim .sim-supernet-nom { font-size: 1rem; font-weight: var(--tb); color: var(--ink); }
-/* Le plancher suit la largeur de l'écran : avec un texte grossi à 200 %, le montant
-   (insécable) ne pousse pas la fiche hors d'un téléphone. */
+/* Les deux régimes, en une fiche (§ 9.gh) : deux tuiles côte à côte à toutes les largeurs, le
+   Super-Net sur du jaune dans celle du régime recommandé ; dessous, l'anneau de ce régime, puis
+   le détail de chacun (deux colonnes à partir de 768 px). La pastille « Recommandé » (ou
+   « Vérifie ») mord sur le haut de la tuile : les deux noms restent à la même hauteur. */
+.sim .sim-comparaison { display: grid; gap: 18px; }
+.sim .sim-tuiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.sim .sim-tuile { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 20px 14px 16px; border-radius: 22px; background: var(--sky-soft); }
+.sim .sim-tuile.recommande { background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1); }
+.sim .sim-tuile-marque { position: absolute; top: -12px; left: 12px; max-width: calc(100% - 24px); }
+.sim .sim-tuile-marque .sim-puce { padding: 4px 10px; font-size: 0.8125rem; }
+.sim .sim-tuile p { margin: 0; }
+.sim .sim-tuile .sim-tuile-nom { margin: 0; display: flex; align-items: center; gap: 6px; font-family: var(--display); font-size: 1.125rem; font-weight: var(--dw); line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); overflow-wrap: anywhere; }
+.sim .sim-tuile-nom > svg { flex: none; }
+.sim .sim-tuile .sim-tuile-desc { margin-top: 2px; font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); }
+.sim .sim-tuile .sim-tuile-label { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 0.875rem; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-tuile-montant { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 4px; }
+.sim .sim-tuile .sim-tuile-soit { margin-top: 4px; font-size: 0.8125rem; line-height: 1.4; color: var(--ink-2); }
+.sim .sim-tuile.recommande :is(.sim-tuile-desc, .sim-tuile-soit, .sim-supernet-par, .sim-aide) { color: var(--ink); }
+/* Les rangées des deux tuiles se suivent (nom, description, « Super-Net », montant, « soit ») :
+   « Régime Réel » sur deux lignes au téléphone ne décale plus le montant voisin. */
+@supports (grid-template-rows: subgrid) {
+  .sim .sim-tuiles { grid-template-rows: repeat(5, auto); }
+  .sim .sim-tuile { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+}
+.sim .sim-comparaison-anneau { display: grid; justify-items: center; gap: 2px; }
+.sim .sim-comparaison .sim-comparaison-sous { margin: 0; font-size: 0.875rem; font-weight: var(--tb); color: var(--ink-2); text-align: center; }
+.sim .sim-details-regimes { display: grid; }
+@media (min-width: 640px) {
+  .sim .sim-tuiles { gap: 16px; }
+  .sim .sim-tuile { padding: 22px 20px 18px; }
+  .sim .sim-tuile .sim-tuile-nom { font-size: 1.375rem; }
+  .sim .sim-tuile .sim-tuile-desc { font-size: 0.9375rem; }
+  .sim .sim-tuile .sim-tuile-soit { font-size: 0.9375rem; }
+  /* L'anneau à gauche de sa légende, en colonne. */
+  .sim .sim-comparaison .sim-anneau { flex-direction: row; gap: 20px; }
+  .sim .sim-comparaison .sim-anneau-legende { flex-direction: column; align-items: flex-start; }
+}
+@media (min-width: 768px) {
+  .sim .sim-details-regimes { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; align-items: start; }
+}
 .sim .sim-supernet-montant { --corps: clamp(min(2.25rem, 10.5vw), 10vw, 3rem); color: var(--ink); white-space: nowrap; letter-spacing: 0; }
 /* Interlettrage du montant. Les milliers sont séparés par une espace fine
    insécable (U+202F, posée par `Intl.NumberFormat`). Chromium n'applique aucun
@@ -229,9 +255,8 @@
    garde celui de `.aff` (même formule que da.css) : rien ne bouge dans Chromium
    pour un montant d'au moins 1 000 €. */
 .sim .sim-supernet-euro { margin-left: 0.16em; letter-spacing: min(calc(0.66px - 0.059 * var(--corps)), calc(2.43px - 0.0851 * var(--corps))); }
+.sim .sim-tuile .sim-supernet-montant { --corps: clamp(1.375rem, 6.2vw, 2.5rem); }
 .sim .sim-supernet-par { font-size: min(1rem, 7vw); font-weight: var(--tb); color: var(--ink-2); }
-.sim .sim-supernet-soit { margin-top: 5px; font-size: 0.9375rem; color: var(--ink-2); }
-.sim .sim-supernet.soleil :is(.sim-supernet-par, .sim-supernet-soit, .sim-aide) { color: var(--ink); }
 /* Le détail : une ligne par poste, un filet entre deux. */
 .sim .sim-ligne-detail { gap: 12px; min-height: 44px; margin: 0; padding: 7px 0; border-top: 1px solid var(--line); }
 .sim .sim-ligne-detail:first-child { border-top: 0; }
@@ -366,7 +391,7 @@
 .sim .sim-surtitre { margin: 0; font-size: 0.8125rem; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
 .sim .sim-suite { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .sim .sim-suite .sim-fiche-titre { max-width: 34rem; text-wrap-style: balance; }
-.sim .sim-suite-liste { display: grid; gap: 14px; margin: 8px 0 6px; padding: 0; list-style: none; }
+.sim .sim-suite-liste { display: grid; gap: 10px; margin: 6px 0 6px; padding: 0; list-style: none; }
 .sim .sim-suite-liste li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
 .sim .sim-suite-liste li > svg { flex: none; margin-top: 1px; color: var(--brand); }
 .sim .sim-suite-liste strong { color: var(--ink); }
@@ -381,6 +406,18 @@
 .sim .sim-premiere-texte { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
 .sim .sim-premiere-texte p { margin: 0; text-wrap-style: pretty; }
 .sim .sim-premiere-texte .sim-fort { color: var(--ink); }
+/* « RSPM ou PAMC ? » (§ 9.gh) : sous la conclusion d'une simulation au RSPM, la même saisie en
+   PAMC ; « À savoir pour ta situation » : la phrase des 1 000 € et les pistes, une par ligne. */
+.sim .sim-rspm, .sim .sim-a-savoir { display: grid; gap: 10px; }
+.sim .sim-rspm .sim-surtitre { display: inline-flex; align-items: center; gap: 6px; }
+.sim .sim-rspm .sim-surtitre svg { color: var(--brand); }
+.sim .sim-rspm-texte { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-rspm-texte p { margin: 0; text-wrap-style: pretty; }
+.sim .sim-rspm-texte strong { color: var(--ink); }
+.sim .sim-a-savoir-liste { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.sim .sim-a-savoir-liste li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); text-wrap-style: pretty; }
+.sim .sim-a-savoir-liste li > svg { flex: none; margin-top: 4px; color: var(--brand); }
+.sim .sim-a-savoir-liste li + li { padding-top: 12px; border-top: 1px solid var(--line); }
 /* « Estimer mes charges » (§ 9.gd) : un pli du formulaire ; dedans, trois groupes ciel doux
    (voiture, repas, l'année ; `role="group"` et un titre, pas de <legend> : WebKit le sortait
    du cadre dans un fieldset en grille), un champ par ligne (libellé au-dessus, case blanche), puis le
@@ -432,12 +469,11 @@
 .sim .sim-plafond-corps { padding: 2px 16px 16px; font-size: 0.9375rem; line-height: 1.5; }
 .sim .sim-plafond-cas { padding: 10px 12px; border-radius: 14px; background: rgba(255, 255, 255, 0.62); font-size: 0.8125rem; line-height: 1.4; }
 
-/* Limites de la simulation */
-.sim .sim-limites-filet { display: none; }
-/* Texte grossi : la colonne de texte cède, et une pastille peut passer sur deux lignes. */
-.sim .sim-limites .flex > div { min-width: 0; }
-.sim .sim-limites .sim-puce { border-radius: 16px; white-space: normal; }
-.sim .sim-limites-titre { margin: 0; font-size: 1.0625rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink); }
+/* Limites de la simulation (§ 9.gh) : une phrase sous la bande Hippodoc, plus une fiche. */
+.sim .sim-limites-ligne { display: flex; align-items: flex-start; gap: 8px; max-width: 44rem; margin: 0 auto; padding-inline: 4px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); text-wrap-style: pretty; }
+.sim .sim-limites-ligne > svg { flex: none; margin-top: 3px; }
+.sim .sim-limites-ligne a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.sim .sim-limites-ligne a:hover { color: var(--brand); }
 .sim .sim-attente { padding: 0; }
 .sim .sim-alerte { border: 0; border-radius: 22px; background: var(--wait-bg); color: var(--wait); }
 .sim .sim-alerte > svg { color: var(--wait); }
@@ -511,18 +547,12 @@
   .sim .sim-rangee > h3 > button > span > span:last-child { flex: 1 1 100%; max-width: none; margin-left: 24px; text-align: left; }
   .sim .sim-rangee > h3 > button > span > span:last-child:empty { display: none; }
   .sim .sim-fiche { padding: 20px 16px; border-radius: 24px; }
-  .sim .sim-regime { padding: 0; }
-  .sim .sim-regime-tete { padding: 20px 16px 12px; }
-  .sim .sim-regime-corps { padding: 0 16px 20px; }
-  .sim .sim-supernet { padding: 16px; }
+  .sim .sim-tuile { padding-inline: 12px; }
 }
 @media (min-width: 640px) {
   .sim .sim-fiche { padding: 28px; }
-  .sim .sim-regime { padding: 0; }
   .sim .sim-fiche-options { padding-block: 16px; }
   .sim .sim-fiche-plis { padding-block: 6px; }
-  .sim .sim-regime-tete { padding: 28px 28px 16px; }
-  .sim .sim-regime-corps { padding: 0 28px 28px; }
 }
 /* Paramètres de calcul : cinq champs depuis le champ « Exercice » (MIGRATION.md § 9.fr),
    trois colonnes à partir de 1 024 px au lieu des quatre de `lg:grid-cols-4`. */
@@ -571,7 +601,7 @@ astro-island[ssr] #simulateur-form::before { content: ""; display: block; positi
 /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend leur forme
    aux fiches, aux champs, aux pastilles et aux boutons. */
 @media (forced-colors: active) {
-  .sim :is(.sim-fiche, .sim-panneau, .sim-note, .sim-puce, .sim-btn, .sim-profil, .sim-profils-tete, .sim-supernet, .sim-conclusion, .sim-colonne, .sim-verdict, .sim-plafond, .sim-rangee, .sim-coche, .sim-tableau),
+  .sim :is(.sim-fiche, .sim-panneau, .sim-note, .sim-puce, .sim-btn, .sim-profil, .sim-profils-tete, .sim-tuile, .sim-conclusion, .sim-colonne, .sim-verdict, .sim-plafond, .sim-rangee, .sim-coche, .sim-tableau),
   .sim input, .sim button[role="combobox"], .sim.sim-bulle, .sim.sim-tiroir, .sim.sim-pop { border: 1px solid CanvasText; }
   .sim .sim-point { forced-color-adjust: none; }
 }

@@ -57,7 +57,7 @@ const cvPlafond2024 = getDeclarationParams(2024).plafondChequesVacances;
 const cvPlafond2025 = getDeclarationParams(2025).plafondChequesVacances;
 const cvPlafond2026 = getDeclarationParams(2026).plafondChequesVacances;
 
-const trustBadges = ['URSSAF 2026', 'Barème fiscal 2026', 'Sans inscription'];
+const trustBadges = ['RSPM et PAMC', 'URSSAF 2026', 'Barème fiscal 2026', 'Sans inscription'];
 
 /* Six repères (MIGRATION.md § 9.fs) : chaque montant vient du code du simulateur. Les règles
    sont celles vérifiées à l'audit de novembre 2026 (Légifrance, BOFiP, CARMF, Urssaf). */
@@ -200,7 +200,7 @@ const fleche =
           <h1 class="aff">Simulateur <span class="num"><span class="hl">Super-Net</span> :</span> ton revenu net de médecin</h1>
 
           <p class="lead">
-            Renseigne ta situation en 2 min, découvre <strong>ce qu'il te reste vraiment</strong> après charges, cotisations et impôt, et laisse le simulateur te montrer <strong>le régime le plus rentable</strong> entre Micro-BNC et Réel.
+            Renseigne ta situation en 2 min, découvre <strong>ce qu'il te reste vraiment</strong> après charges, cotisations et impôt, et laisse le simulateur te montrer <strong>le régime le plus rentable</strong> entre Micro-BNC et Réel, au RSPM comme en PAMC.
           </p>
 
           <div class="gages">
@@ -413,9 +413,11 @@ const fleche =
               <li><strong>Ton résultat</strong> — En tête, le rappel de ta saisie, et dès ton deuxième essai, ce que ton Super-Net gagne ou perd par rapport au précédent.</li>
               <li><strong>La conclusion</strong> — Le régime qui te laisse le plus, de combien par mois, et pourquoi. Sous 50 € par mois d'écart, les deux se valent : la conclusion dit alors ce qui change dans ta gestion.</li>
               <li><strong>Le point de bascule</strong> — Le niveau de charges à partir duquel l'autre régime passerait devant.</li>
-              <li><strong>À mettre de côté chaque mois</strong> — Tes cotisations (Urssaf, CARMF) et l'impôt de ton activité libérale, puis ce qu'il te resterait de 1 000 € de recettes en plus.</li>
+              <li><strong>À mettre de côté chaque mois</strong> — Tes cotisations (Urssaf, CARMF) et l'impôt de ton activité libérale.</li>
+              <li><strong>RSPM ou PAMC ?</strong> — Si tu es au RSPM : ce que la même saisie te laisserait en PAMC, et lequel des deux te laisse le plus.</li>
               <li><strong>Ta première année</strong> — Si tu l'as indiquée : ce qui est prélevé cette année, ce qui est dû pour l'année et ce qui sera appelé l'année suivante.</li>
-              <li><strong>Les 2 fiches</strong> — Micro-BNC et Régime Réel, avec le même chiffre en tête : ton Super-Net, par mois et par an. Dessous, le détail ligne par ligne (charges, cotisations Urssaf et CARMF, revenu imposable, impôt), replié au téléphone.</li>
+              <li><strong>Les deux régimes</strong> — Micro-BNC et Régime Réel côte à côte, avec ton Super-Net par an et par mois, et où vont tes revenus au régime recommandé. Dessous, le détail ligne par ligne de chacun (charges, cotisations Urssaf et CARMF, revenu imposable, impôt), replié au téléphone.</li>
+              <li><strong>À savoir pour ta situation</strong> — Ce qu'il te resterait de 1 000 € de recettes en plus, et les pistes qui te concernent : charges à vérifier, réductions de la CARMF.</li>
               <li><strong>Pour aller plus loin</strong> — Ce que chaque régime déduit de tes recettes, et comment ton impôt sera prélevé (acomptes, première année).</li>
             </ul>
           </div>

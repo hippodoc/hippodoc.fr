@@ -13325,6 +13325,119 @@ ouvert à 1 280 px ; aucun débordement. Essais des § 9.gd, 9.ge et 9.gf repass
 aucun débordement, « Modifier » aligné sur le résumé. `verify-site.mjs` sans erreur, feuille
 commune inchangée (`_astro_assets.HrxwAN9D.css`).
 
+### 9.gh Simulateur : le RSPM visible, un résultat plus léger (14 novembre 2026)
+
+Le propriétaire, second regard « fresh eye » : « pas trop dense visuellement, agréable, et que ça
+apporte de la valeur », et « bcp sont au RSPM donc ne pas le voir peut freiner nan ? », puis « go ».
+
+**Ce que disait l'usage** (table Supabase `simulateur_public_events`, 14 août au 13 novembre 2026,
+mêmes bornes qu'au § 9.gg). 91 calculs sur 851 (11 %), 34 visiteurs sur 226 (15 %), ont des
+recettes de 19 000 € ou moins : la plage où le mode Auto retient le RSPM pour un remplaçant (31 de
+ces calculs sont sous 3 000 €, peut-être des montants mensuels). Le profil « Interne qui remplace »
+a servi 19 fois. Le simulateur choisissait le RSPM sans le montrer : le résumé disait « Régime
+social automatique », et rien ne comparait au PAMC. Résultats mesurés sur la production avant ce
+changement : 3 393 px au téléphone pour 70 000 € de recettes et 5 000 € de charges (2 276 px à
+1 280 px), 3 967 px pour l'interne au RSPM (2 734 px) ; les deux fiches de régime, 1 030 px au
+téléphone, presque identiques (même Super-Net à quelques pour cent, deux anneaux voisins).
+
+**Ce qui change.**
+- **Le régime social, dit dans le résumé** (`SimulateurForm.tsx`) : en mode Auto, « Régime social :
+  RSPM (recettes jusqu'à 19 000 €) », « Régime social : PAMC (le RSPM s'arrête à 19 000 € de
+  recettes) », « Régime social : RSPM ou PAMC selon tes recettes » (recettes vides), « Régime
+  social : PAMC » (installé) ; choisi à la main, « RSPM (choisi) » ou « PAMC (choisi) ». La ligne
+  suit la saisie des recettes.
+- **« RSPM ou PAMC ? »** (`RspmOuPamc.tsx`, nouveau), sous la conclusion d'une simulation au RSPM :
+  surtitre « Ton régime social », puis « Tu es au RSPM, l'offre simplifiée des remplaçants : un
+  taux global sur tes recettes (13,5 % jusqu'à 19 000 €, 21,2 % au-delà), et tout se déclare et se
+  paie à l'Urssaf. En PAMC, avec des cotisations Urssaf et CARMF calculées sur ton bénéfice, tu
+  garderais X € par an, contre Y € au RSPM. » et le verdict : « Les deux se valent, à Z € près. »
+  (sous `SEUIL_EQUIVALENCE_ANNUEL`), « Le RSPM te laisse Z € de plus par an. » ou « Le PAMC te
+  laisserait Z € de plus par an. ». X est le meilleur des deux régimes fiscaux de la même saisie en
+  PAMC (`calculerAlternativePamc`, `usePublicodesSimulation.ts`), calculé après l'affichage, après la
+  marge et le point de bascule ; en attente, « … € ». Y est le Super-Net de la tuile du régime
+  retenu (`superNetDuMedecin`) ; Z, la différence des deux montants affichés, arrondis à l'euro.
+  En échec : « La comparaison avec le PAMC n'a pas pu être calculée : relance la simulation dans un
+  instant. ». Exemples : interne qui remplace, 32 055 € en PAMC contre 34 217 € au RSPM ; 12 000 €
+  de recettes, 5 792 € contre 9 223 € ; 17 000 €, 10 757 € contre 14 548 €.
+- **Une fiche « Les deux régimes »** (`RegimeComparisonCards.tsx`) au lieu de deux : deux tuiles côte
+  à côte à toutes les largeurs (nom, description, Super-Net, par an et par mois, part des
+  recettes), le jaune et « Recommandé » sur celle qui l'emporte (« Vérifie » sur le Micro-BNC au-delà
+  du plafond) ; dessous, « Où vont tes revenus, au Micro-BNC » (ou « au régime réel ») et un seul
+  anneau, celui du régime recommandé (du régime en tête quand les deux se valent) ; puis deux plis,
+  « Détail : Micro-BNC » et « Détail : Régime Réel », côte à côte et ouverts à partir de 768 px,
+  repliés au téléphone. Les rangées des deux tuiles se suivent (sous-grille) : « Régime Réel » sur
+  deux lignes au téléphone ne décale plus le montant voisin. 675 px au téléphone au lieu de 1 030.
+- **La conclusion resserrée** (`ConclusionCard.tsx`, prop `partie`) : n'y restent que les mises en
+  garde (au plus deux pastilles). La phrase des 1 000 € et les pistes (charges faibles,
+  complémentaire de la 3e année, réductions de la CARMF) passent dans **« À savoir pour ta
+  situation »**, une fiche sous les deux régimes, une piste par ligne. Avant, trois pastilles au
+  plus, mises en garde comprises : une piste pouvait manquer.
+- **La bande Hippodoc** (« Ce calcul, Hippodoc le tient à jour après chaque journée de
+  remplacement ») sans surtitre ni phrases : les trois titres seuls, le bouton.
+- **Les limites en une ligne** : « Simulation indicative : elle ne remplace pas l'avis d'un
+  expert-comptable ou de ton AGA. À comparer avec le simulateur de l'Urssaf. » (lien vers
+  mon-entreprise.urssaf.fr), au lieu d'une fiche de 411 px au téléphone.
+- **Chapô des résultats en PAMC** : « Cotisations PAMC, par le modèle de l'Urssaf, sur la nouvelle
+  assiette sociale des revenus 2025 et suivants. »
+- **Page** (`simulateur.astro`) : pastille « RSPM et PAMC » en tête des quatre ; introduction « …
+  entre Micro-BNC et Réel, au RSPM comme en PAMC. » ; mode d'emploi, point 5 : « À mettre de côté
+  chaque mois » perd la phrase des 1 000 €, ajout de « RSPM ou PAMC ? — Si tu es au RSPM : ce que
+  la même saisie te laisserait en PAMC, et lequel des deux te laisse le plus. », « Les 2 fiches »
+  devient « Les deux régimes — Micro-BNC et Régime Réel côte à côte, avec ton Super-Net par an et
+  par mois, et où vont tes revenus au régime recommandé. Dessous, le détail ligne par ligne de
+  chacun (charges, cotisations Urssaf et CARMF, revenu imposable, impôt), replié au téléphone. »,
+  ajout de « À savoir pour ta situation — Ce qu'il te resterait de 1 000 € de recettes en plus, et
+  les pistes qui te concernent : charges à vérifier, réductions de la CARMF. ».
+- **Arrondis** : le Super-Net d'une tuile finit son compteur sur le montant arrondi à l'euro (il
+  s'arrêtait à l'euro inférieur : 39 447 € à côté d'un « soit 3 287 € /mois » et d'une conclusion
+  calculés sur 39 448 €) ; l'écart annuel de la conclusion est la différence des deux Super-Net
+  arrondis (il pouvait s'écarter d'un euro de ce que les tuiles laissent calculer).
+
+Archivés (textes d'avant) : « Régime social automatique » (résumé) ; « Régime social : RSPM » et
+« Régime social : PAMC » (choix à la main) ; chapô PAMC « Cotisations au régime des praticiens
+conventionnés (PAMC), selon le modèle de l'Urssaf et sur la nouvelle assiette sociale des revenus
+2025 et suivants. » ; introduction « …entre Micro-BNC et Réel. » ; fiche « Limites de cette
+simulation » : « Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte tes
+spécificités fiscales individuelles, les évolutions réglementaires, ou les optimisations
+spécifiques à ta situation. », « Pour une analyse personnalisée, consulte : », pastilles
+« Expert-comptable », « Avocat fiscaliste », « CGP indépendant », « Simulateur URSSAF ↗ », et « Hippodoc
+t'aide à y voir plus clair, mais seul un professionnel pourra te conseiller de manière
+définitive. » ; bande Hippodoc : surtitre « Et toute l'année ? » et les phrases « Cotisations
+calculées via le serveur officiel URSSAF, échéancier à jour après chaque journée. »,
+« Kilomètres, matériel, formation, RCP : catégorisés et prêts pour la déclaration. », « 2035 ou
+2042-C PRO pré-remplies avec tes chiffres, aide DSFU URSSAF incluse. » ; fiches : pli « Détail
+ligne par ligne », carte d'erreur « Erreur de calcul » et « Une erreur est survenue lors du calcul
+du régime Micro-BNC. » (devenue « Calcul indisponible pour le moment. ») ; mode d'emploi : « Les 2
+fiches — Micro-BNC et Régime Réel, avec le même chiffre en tête : ton Super-Net, par mois et par
+an. Dessous, le détail ligne par ligne (charges, cotisations Urssaf et CARMF, revenu imposable,
+impôt), replié au téléphone. » et « …l'impôt de ton activité libérale, puis ce qu'il te resterait
+de 1 000 € de recettes en plus. ».
+
+**Feuille commune.** Trois utilitaires de Tailwind n'étaient plus employés que par les anciennes
+fiches (`-top-3`, `overflow-visible`, `sm:gap-6`) : ils sortent de la feuille commune, qui change de
+nom (`_astro_assets.HrxwAN9D.css` → `_astro_assets.BK0lnVyo.css`, aucune autre règle ne change).
+Les 71 autres pages du build sont identiques à la production à ce nom près (comparaison du HTML
+entier, sitemap, `/essai` et `/404`) ; le texte de `/simulateur` ne change que des lignes listées
+plus haut.
+
+**Mesures.** Résultats au téléphone (390 px) : 2 592 px au lieu de 3 393 pour 70 000 € et
+5 000 € ; 3 507 au lieu de 3 967 pour l'interne au RSPM, fiche « RSPM ou PAMC ? » (323 px)
+comprise. À 1 280 px : 2 142 au lieu de 2 276 ; 2 836 au lieu de 2 734 pour l'interne (la fiche
+RSPM, 219 px, n'existait pas).
+
+**Contrôles.** Chromium à 390 et 1 280 px : résumé du régime social à 0, 12 000 et 40 000 € ;
+deux tuiles, noms et montants à la même hauteur, au plus une « Recommandé », aucun débordement,
+anneau et légende du régime recommandé, plis repliés à 390 px et ouverts à 1 280 px ; « RSPM ou
+PAMC ? » rempli (aucun « … € » restant) pour l'interne qui remplace, absent en PAMC ; « À savoir »
+rempli. Sur six saisies (70 000/5 000, 60 000/15 000, 95 000/9 000, 12 000/1 000, 17 000/0,
+160 000/48 000) : l'écart annuel de la conclusion est la différence des tuiles, celui de « RSPM ou
+PAMC ? » la différence des deux montants qu'il cite, le RSPM cité est la tuile, « soit … /mois »
+est le douzième arrondi. Essais des § 9.gd, 9.ge, 9.gf et 9.gg repassés (profils, « Estimer mes
+charges », cotisations par organisme et leurs bulles, résumé de la situation) ; le seul écart, le
+résumé attendu « Régime social automatique », est voulu. WebKitGTK à 1 300 et 390 px : tuiles
+alignées (sous-grille), mêmes hauteurs, aucun débordement, plis selon la largeur. `verify-site.mjs`
+sans erreur.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

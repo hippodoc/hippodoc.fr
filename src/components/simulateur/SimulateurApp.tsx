@@ -67,7 +67,7 @@ function getReferrerSource(): string {
 }
 
 export default function SimulateurApp() {
-  const { loading, error, results, bascule, marge, simulate, reset } = usePublicodesSimulation();
+  const { loading, error, results, bascule, marge, alternativePamc, simulate, reset } = usePublicodesSimulation();
   const resultsRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const formDataRef = useRef<SimulateurFormData | null>(null);
@@ -225,6 +225,7 @@ export default function SimulateurApp() {
             onNewSimulation={handleReset}
             isPublic={true}
             essaiPrecedent={essais.precedent}
+            alternativePamc={alternativePamc}
           />
         </div>
       )}

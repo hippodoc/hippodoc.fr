@@ -5,6 +5,7 @@ import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/lib/sim
 import { calculateRspmBreakdown } from '@/lib/simulateur/useRspmCalculation';
 import { reformeAssiette, assietteMicro, assietteReformee, revenuConventionne, economieAsvProportionnelle, complementaireCarmf, calculerCotisationsUrssaf, type CotisationsUrssaf, type ParametresUrssaf } from '@/lib/simulateur/urssaf';
 import { calculateFiscalParts } from '@/lib/fiscalParts';
+import { superNetDuMedecin } from '@/lib/simulateur/impotMedecin';
 import { getDomTomInfo } from '@/lib/dom-tom';
 import { getMicroBncCeiling } from '@/lib/baremes-ir';
 import { normalizeCarmfStatus } from '@/lib/carmfStatus';
@@ -497,6 +498,33 @@ export async function calculerProvisionnelPremiereAnnee(
   }
 }
 
+/**
+ * Alternative PAMC d'une simulation au RSPM (§ 9.gh) : le meilleur Super-Net du médecin en PAMC
+ * (Micro-BNC ou réel), même saisie, pour répondre à « RSPM ou PAMC ? ». Calculée après
+ * l'affichage, sans repli sur la fonction Supabase ; `null` si le calcul n'aboutit pas.
+ */
+export async function calculerAlternativePamc(
+  formData: SimulateurFormData,
+): Promise<{ superNet: number; recommande: 'micro-bnc' | 'reel' } | null> {
+  try {
+    const fd = { ...formData, regimeSocial: 'pamc' as const };
+    const reel = await simulerRegime(fd, 'reel', false, false);
+    const micro = await simulerRegime(fd, 'micro-bnc', false, false);
+    if (!reel) return null;
+    const foyer = {
+      revenusSalariesAnnuels: annualiser(formData, formData.revenusSalaries),
+      revenusConjointAnnuels: annualiser(formData, formData.revenusConjoint),
+      situationFamiliale: formData.situationFamiliale,
+    };
+    const sReel = superNetDuMedecin(reel, foyer);
+    const sMicro = micro ? superNetDuMedecin(micro, foyer) : -Infinity;
+    return sMicro > sReel ? { superNet: sMicro, recommande: 'micro-bnc' } : { superNet: sReel, recommande: 'reel' };
+  } catch (err) {
+    console.warn('[Simulateur] alternative PAMC non calculée', err);
+    return null;
+  }
+}
+
 /** Recettes ajoutées pour la marge (« 1 000 € de plus dans l'année »). */
 export const MARGE_RECETTES = 1000;
 
@@ -533,6 +561,8 @@ export function usePublicodesSimulation() {
   const [bascule, setBascule] = useState<number | null | 'attente' | undefined>(undefined);
   /** Ce qui resterait de 1 000 € de recettes en plus (voir `calculerMarge`), même logique d'état. */
   const [marge, setMarge] = useState<number | 'attente' | undefined>(undefined);
+  /** Au RSPM, le meilleur Super-Net en PAMC (`calculerAlternativePamc`), même logique d'état. */
+  const [alternativePamc, setAlternativePamc] = useState<{ superNet: number; recommande: 'micro-bnc' | 'reel' } | null | 'attente' | undefined>(undefined);
   const simulationEnCours = useRef(0);
   const [results, setResults] = useState<RegimeComparison>({
     reel: null,
@@ -547,6 +577,7 @@ export function usePublicodesSimulation() {
     setError(null);
     setBascule(undefined);
     setMarge(undefined);
+    setAlternativePamc(undefined);
     const numero = ++simulationEnCours.current;
 
     try {
@@ -602,13 +633,21 @@ export function usePublicodesSimulation() {
       const retenu = recommande === 'micro-bnc' && resultMicroBnc ? resultMicroBnc : resultReel;
       setMarge('attente');
       if (avecBascule) setBascule('attente');
+      if (useRspm) setAlternativePamc('attente');
       void (async () => {
         const m = await calculerMarge(formData, useRspm, recommande, retenu);
         if (simulationEnCours.current !== numero) return;
         setMarge(m);
-        if (!avecBascule || !resultMicroBnc) return;
-        const c = await calculerPointDeBascule(formData, useRspm, resultReel, resultMicroBnc);
-        if (simulationEnCours.current === numero) setBascule(c);
+        if (avecBascule && resultMicroBnc) {
+          const c = await calculerPointDeBascule(formData, useRspm, resultReel, resultMicroBnc);
+          if (simulationEnCours.current !== numero) return;
+          setBascule(c);
+        }
+        // Au RSPM : la même saisie en PAMC, en dernier (deux appels au modèle de l'Urssaf).
+        if (useRspm) {
+          const a = await calculerAlternativePamc(formData);
+          if (simulationEnCours.current === numero) setAlternativePamc(a);
+        }
       })();
       // Pas de sauvegarde d'historique : le site public est anonyme. Le funnel analytics
       // anonyme est géré par SimulateurApp.tsx (insertPublicEvent).
@@ -633,6 +672,7 @@ export function usePublicodesSimulation() {
     simulationEnCours.current++;
     setBascule(undefined);
     setMarge(undefined);
+    setAlternativePamc(undefined);
     setResults({
       reel: null,
       microBnc: null,
@@ -643,5 +683,5 @@ export function usePublicodesSimulation() {
     setError(null);
   };
 
-  return { loading, error, results, bascule, marge, simulate, reset };
+  return { loading, error, results, bascule, marge, alternativePamc, simulate, reset };
 }
