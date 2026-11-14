@@ -688,6 +688,11 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   prudence). ASV proportionnelle : remplace la part forfaitaire seule (l'ajustement reste), si elle
   coûte moins (`economieAsvDe`). Les suggestions de la conclusion appellent ces mêmes fonctions :
   le taux et le montant annoncés sont ceux qu'applique la case ; ne pas les recalculer à part.
+  « Estimer mes charges » (§ 9.fz) : pli sous le champ des charges (`EstimateurCharges.tsx`),
+  barème kilométrique (arrêté du 27 mars 2023) et limites des repas (BOFiP, 2025 et 2026) dans
+  `src/lib/simulateur/fraisPros.ts` ; aucun montant pré-rempli ailleurs. Un nouveau barème
+  kilométrique ou de nouvelles limites de repas (chaque février) : mettre à jour ce module et les
+  textes qui les citent (pied du pli, articles du blog).
 - `/guide-declarations/calculette` → `src/components/calculette/CalculetteApp.tsx`,
   100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage. Habillage DA
   (§ 9.el) : `.calc` de `src/styles/calculette.css` (page seule), posée sur la racine de

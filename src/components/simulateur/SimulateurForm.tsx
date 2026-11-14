@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PremiumTooltip } from "@/components/simulateur/PremiumTooltip";
+import { EstimateurCharges } from "@/components/simulateur/EstimateurCharges";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { simulateurSchema, isZoneExoneneeAvailable, type SimulateurFormData } from "./simulateurSchema";
@@ -345,6 +346,15 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               )}
             />
           </div>
+
+          {/* Aide « Estimer mes charges » (§ 9.fz) : le total se reporte dans le champ ci-dessus */}
+          <EstimateurCharges
+            annee={form.watch('annee') || 2026}
+            periode={periode === 'mensuel' ? 'mensuel' : 'annuel'}
+            typeExercice={typeExercice === 'installe' ? 'installe' : 'remplacant'}
+            recettesAnnuelles={annualRecettes}
+            onReporter={(montant) => form.setValue('chargesHorsCotisations', montant, { shouldDirty: true, shouldValidate: true })}
+          />
 
           {/* Collapsible : Revenus complémentaires (optionnel) */}
           <Collapsible 
