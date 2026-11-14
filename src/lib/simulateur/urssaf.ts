@@ -13,6 +13,25 @@
  * L'API répond aux requêtes de hippodoc.fr (en-tête CORS vérifié) ; aucune clé n'est
  * nécessaire. Ce module ne calcule PAS l'impôt : seulement les cotisations, que le moteur
  * local (`calculateRspmBreakdown`) reçoit ensuite pour l'impôt et le Super-Net.
+ *
+ * Réforme de l'assiette sociale, revenus 2025 et suivants (MIGRATION.md § 9.fv). Le modèle de
+ * l'API (`modele-social`) ne l'applique pas encore : il calcule l'assiette comme avant (revenu
+ * net, CSG-CRDS sur revenu + cotisations). L'Urssaf l'a écrite dans un autre modèle,
+ * `modele-ti` (variation « après réforme », date ≥ 2025) ; ce module en reprend les règles
+ * pour un médecin, en donnant à l'API ce qui change, rien de plus :
+ * - l'assiette unique (« revenu brut social » abattu de 26 %, borné entre 1,76 % et 130 % du
+ *   PASS ; en micro, les recettes après l'abattement de 34 %), pour les cotisations ET la
+ *   CSG-CRDS, sans réintégration des cotisations ;
+ * - le taux de la tranche 1 de la retraite de base (8,73 % au lieu de 8,23 %) ;
+ * - le barème maladie (taux progressif jusqu'à 8,5 % à 3 PASS, 6,5 % au-delà ; 8,5 % dans les
+ *   DOM), remis en un taux moyen sur l'assiette (en secteur 1, l'Assurance maladie en prend en
+ *   charge tout sauf 0,1 %, calculé par le modèle à partir de ce même taux) ;
+ * - la contribution additionnelle sur la part non conventionnée : 3,25 %.
+ * Et, ce que ni l'un ni l'autre modèle n'a encore : la complémentaire CARMF à 11,8 % en 2026
+ * (« La CARMF en 2026 », p. 22 ; 10,2 % en 2024 et 2025). Les participations de l'Assurance
+ * maladie, l'ASV, l'invalidité-décès, les indemnités journalières, les allocations familiales,
+ * la CURPS et la formation professionnelle restent calculées par le modèle, sur la nouvelle
+ * assiette.
  */
 
 const API_URL = 'https://mon-entreprise.urssaf.fr/api/v1/evaluate';
@@ -71,6 +90,64 @@ export interface ParametresUrssaf {
 
 const texte = (s: string) => `'${s}'`;
 
+/** PASS annuel (CSS art. D242-17) : 2024 à 2026. */
+const PASS: Record<number, number> = { 2024: 46368, 2025: 47100, 2026: 48060 };
+const passDe = (annee: number) => PASS[annee] ?? PASS[2026];
+
+/** Réforme de l'assiette sociale : revenus 2025 et suivants. */
+export const reformeAssiette = (annee: number) => annee >= 2025;
+
+/**
+ * Assiette unique d'un médecin au réel (`modele-ti`, `assiette CSG-CRDS`, après réforme) :
+ * revenu brut (recettes − charges hors prélèvements sociaux), moins un abattement de 26 % arrondi
+ * à l'euro, borné entre 1,76 % et 130 % du PASS. Jamais négative.
+ */
+export function assietteReformee(revenuBrut: number, annee: number): number {
+  const pass = passDe(annee);
+  const abattement = Math.round(Math.min(Math.max(0.26 * revenuBrut, 0.0176 * pass), 1.3 * pass));
+  return Math.max(0, Math.round(revenuBrut - abattement));
+}
+
+/** Assiette en micro-BNC : les recettes après l'abattement de 34 % (305 € au moins). */
+export function assietteMicro(recettes: number): number {
+  return Math.max(0, Math.round(recettes - Math.min(recettes, Math.max(305, 0.34 * recettes))));
+}
+
+/**
+ * « taux progressif » de publicodes : sous le premier plafond, le premier taux ; entre deux
+ * plafonds, interpolation linéaire ; au-delà du dernier, le dernier taux. Plafonds en part du PASS.
+ */
+export function tauxProgressif(assiette: number, pass: number, tranches: Array<[number, number]>): number {
+  const x = assiette / pass;
+  if (x <= tranches[0][0]) return tranches[0][1];
+  for (let i = 1; i < tranches.length; i++) {
+    const [p0, t0] = tranches[i - 1];
+    const [p1, t1] = tranches[i];
+    if (x <= p1) return t0 + ((t1 - t0) * (x - p0)) / (p1 - p0);
+  }
+  return tranches[tranches.length - 1][1];
+}
+
+/**
+ * Taux maladie-maternité moyen après réforme (`modele-ti`, `maladie-maternité . avant
+ * exonérations`) : barème à deux tranches, la première jusqu'à 3 PASS à un taux progressif (0 %
+ * jusqu'à 20 % du PASS, 1,5 % à 40 %, 4 % à 60 %, 6,5 % à 110 %, 7,7 % à 200 %, 8,5 % à 300 % ;
+ * 8,5 % dans les DOM), la seconde à 6,5 %. Taux arrondi à deux décimales, comme le modèle.
+ */
+export function tauxMaladieReforme(assiette: number, annee: number, outreMer: boolean): number {
+  if (assiette <= 0) return 0;
+  const pass = passDe(annee);
+  const t1 = outreMer ? 0.085 : Math.round(tauxProgressif(assiette, pass, [
+    [0.2, 0], [0.4, 0.015], [0.6, 0.04], [1.1, 0.065], [2, 0.077], [3, 0.085],
+  ]) * 10000) / 10000;
+  const montant = t1 * Math.min(assiette, 3 * pass) + 0.065 * Math.max(0, assiette - 3 * pass);
+  return montant / assiette;
+}
+
+/** Complémentaire CARMF : 11,8 % en 2026 (« La CARMF en 2026 », p. 22), 10,2 % avant. */
+const tauxComplementaireCarmf = (annee: number) => (annee >= 2026 ? 0.118 : 0.102);
+const pourcent = (taux: number) => `${(taux * 100).toFixed(4)} %`;
+
 /** Situation publicodes d'un médecin en entreprise individuelle à l'IR. Exportée pour les tests. */
 export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
   const s: Record<string, string> = {
@@ -95,6 +172,28 @@ export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
   }
   if (p.departementOutreMer) {
     s['établissement . commune . département'] = texte(p.departementOutreMer);
+  }
+
+  // Réforme de l'assiette sociale (revenus 2025 et suivants) : voir l'en-tête du module.
+  if (reformeAssiette(p.annee)) {
+    const I = 'dirigeant . indépendant';
+    const assiette = p.regime === 'micro-bnc'
+      ? assietteMicro(p.recettes)
+      : assietteReformee(p.recettes - p.charges, p.annee);
+    const mayotte = p.departementOutreMer === 'Mayotte';
+    s[`${I} . assiette des cotisations`] = `${assiette} €/an`;
+    // Mayotte : pas de CSG-CRDS, et sa maladie a ses propres règles (laissées au modèle).
+    if (!mayotte) {
+      s[`${C} . CSG-CRDS . assiette`] = `${assiette} €/an`;
+      s[`${I} . PL . maladie . taux`] = pourcent(tauxMaladieReforme(assiette, p.annee, Boolean(p.departementOutreMer)));
+      s[`${I} . assiette minimale . maladie`] = '0 €/an';
+    }
+    s[`${I} . PL . CNAVPL . retraite . tranche T1 . taux`] = '8.73 %';
+    s[`${I} . PL . PAMC . maladie . contribution additionnelle . taux`] = '3.25 %';
+    if (p.annee >= 2026) {
+      const complementaire = Math.round(Math.min(assiette, 3.5 * passDe(p.annee)) * tauxComplementaireCarmf(p.annee));
+      s[`${I} . PL . CARMF . retraite complémentaire`] = `${complementaire} €/an`;
+    }
   }
   return s;
 }

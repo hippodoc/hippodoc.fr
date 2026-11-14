@@ -589,7 +589,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                 <>
                   {(detail.retraiteRid ?? 0) > 0 && (
                     <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF RID :</span>
+                      <span className="text-muted-foreground">CARMF invalidité-décès :</span>
                       <span className="font-medium">{formatMontant(detail.retraiteRid || 0)}</span>
                     </div>
                   )}
@@ -597,6 +597,14 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                     <div className="flex justify-between gap-4">
                       <span className="text-muted-foreground">CARMF complémentaire :</span>
                       <span className="font-medium">{formatMontant(detail.retraiteComplementaire || 0)}</span>
+                    </div>
+                  )}
+                  {/* Le reste de la CARMF : retraite de base et ASV (sans cette ligne, le détail ne
+                      faisait pas le total, § 9.fv). */}
+                  {detail.retraite - (detail.retraiteRid ?? 0) - (detail.retraiteComplementaire ?? 0) >= 1 && (
+                    <div className="flex justify-between gap-4">
+                      <span className="text-muted-foreground">CARMF retraite de base et ASV :</span>
+                      <span className="font-medium">{formatMontant(detail.retraite - (detail.retraiteRid ?? 0) - (detail.retraiteComplementaire ?? 0))}</span>
                     </div>
                   )}
                   {(detail.retraiteRid ?? 0) === 0 && (detail.retraiteComplementaire ?? 0) === 0 && detail.retraite === 0 && (
@@ -634,7 +642,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               )}
               {detail.formation > 0 && (
                 <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">Formation :</span>
+                  <span className="text-muted-foreground">Formation et CURPS :</span>
                   <span className="font-medium">{formatMontant(detail.formation)}</span>
                 </div>
               )}

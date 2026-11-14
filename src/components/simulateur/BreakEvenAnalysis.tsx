@@ -254,8 +254,9 @@ export function BreakEvenAnalysis({ formData, reelResult, microBncResult, recett
       {/* Les cotisations aussi diffèrent en PAMC (au RSPM, elles sont les mêmes) */}
       {!isRSPM && Math.abs(ecartCotisations) >= 100 && (
         <p className="sim-texte">
-          Tes cotisations changent aussi : au réel, elles se calculent sur ton bénéfice ; en micro, sur
-          tes recettes après l'abattement de 34{'\u00a0'}%. Ici, elles sont {ecartCotisations > 0 ? 'plus basses' : 'plus élevées'} de{' '}
+          Tes cotisations changent aussi : au réel, elles se calculent sur {(formData.annee || 2026) >= 2025
+            ? <>tes recettes moins tes charges, abattues de 26{'\u00a0'}%</>
+            : 'ton bénéfice'} ; en micro, sur tes recettes après l'abattement de 34{'\u00a0'}%. Ici, elles sont {ecartCotisations > 0 ? 'plus basses' : 'plus élevées'} de{' '}
           <strong className="sim-encre">{formatMontant(Math.abs(ecartCotisations))}</strong> au réel.
         </p>
       )}
