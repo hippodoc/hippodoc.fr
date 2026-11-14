@@ -78,6 +78,7 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
         isRSPMUsed={comparison.isRSPMUsed}
         situationFamiliale={formData.situationFamiliale}
         annee={formData.annee}
+        plafondMicro={comparison.plafondMicro}
       />
       </Suspense>
 
@@ -140,8 +141,10 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
                     : (reel.impotDetails?.revenuImposableConjoint ?? 0)
                 }
                 revenuBrutMedecin={
+                  // En micro-BNC, le bénéfice est celui de l'abattement de 34 % : charges et
+                  // cotisations n'y sont pas déduites (elles sont pourtant payées).
                   recommande === 'micro-bnc'
-                    ? (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0) - (microBnc?.chargesReelles ?? 0) - (microBnc?.cotisationsTotales ?? 0) + (comparison.revenusSalariesAnnuels ?? 0)
+                    ? (microBnc?.impotDetails?.revenuImposableLiberal ?? 0) + (comparison.revenusSalariesAnnuels ?? 0)
                     : (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0) - (reel.chargesReelles ?? 0) - reel.cotisationsTotales + (comparison.revenusSalariesAnnuels ?? 0)
                 }
                 revenusConjointBrut={comparison.revenusConjointAnnuels}

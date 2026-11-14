@@ -35,6 +35,7 @@ interface RegimeComparisonCardsProps {
   isRSPMUsed?: boolean;  // ✅ Indique si RSPM a été utilisé
   situationFamiliale?: string;  // ✅ Pour le calcul du taux individualisé
   annee?: number;  // ✅ Année fiscale sélectionnée (pour tooltip ANCV dynamique)
+  plafondMicro?: number;  // Plafond de recettes du Micro-BNC pour l'année simulée
 }
 
 // Palette de la DA : trois bleus de l'eau pour ce qui part (du plus clair au
@@ -138,7 +139,7 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
   return <>{count.toLocaleString('fr-FR')}</>;
 }
 
-export function RegimeComparisonCards({ reel, microBnc, recommande, economie, periode, recettesAnnuelles, revenusSalariesAnnuels = 0, revenusConjointAnnuels = 0, liberalExonereAnnuel = 0, domTomInfo, lieuExercice, isRSPMUsed, situationFamiliale = 'marie_pacse', annee = 2026 }: RegimeComparisonCardsProps) {
+export function RegimeComparisonCards({ reel, microBnc, recommande, economie, periode, recettesAnnuelles, revenusSalariesAnnuels = 0, revenusConjointAnnuels = 0, liberalExonereAnnuel = 0, domTomInfo, lieuExercice, isRSPMUsed, situationFamiliale = 'marie_pacse', annee = 2026, plafondMicro = 83600 }: RegimeComparisonCardsProps) {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   
   const formatMontant = (montant: number) => {
@@ -151,7 +152,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
   };
 
   const periodeSuffix = periode === 'mensuel' ? '/mois' : '/an';
-  const PLAFOND_MICRO_BNC = 83600;
+  const PLAFOND_MICRO_BNC = plafondMicro;
+  const plafondTexte = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(PLAFOND_MICRO_BNC);
   // `recettesAnnuelles && ...` vaut 0 (et non false) quand les recettes sont
   // nulles : JSX afficherait alors littéralement « 0 » à la place du bloc.
   const depassePlafond = Boolean(recettesAnnuelles && recettesAnnuelles > PLAFOND_MICRO_BNC);
@@ -192,7 +194,11 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       // Pour le médecin libéral : BNC net = CA - charges - cotisations (pas le revenu imposable après abattement)
       // Pour le médecin salarié : salaire brut (AVANT abattement 10%)
       // Pour le conjoint salarié : salaire brut (AVANT abattement 10%)
-      const bncNet = (recettesAnnuelles || 0) - (result.chargesReelles || 0) - (result.cotisationsTotales ?? 0);
+      // En micro-BNC, le bénéfice est celui de l'abattement de 34 % (charges et cotisations
+      // n'y sont pas déduites) ; au réel, recettes − charges − cotisations.
+      const bncNet = type === 'micro-bnc'
+        ? (result.impotDetails?.revenuImposableLiberal ?? 0)
+        : (recettesAnnuelles || 0) - (result.chargesReelles || 0) - (result.cotisationsTotales ?? 0);
       const salaireBrutMedecin = revenusSalariesAnnuels || 0;
       const brutMedecin = bncNet + salaireBrutMedecin;
       const brutConjoint = revenusConjointAnnuels;
@@ -733,13 +739,22 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             </span>
           </div>
           
-          {/* ✅ Encart pédagogique sur la déductibilité du CA libéral */}
-          <div className="sim-note info">
-            <strong>💡 Déductibles du CA libéral</strong>
-            <p className="mt-1">
-              Ces cotisations réduisent ton revenu imposable, diminuant ainsi ton impôt final.
-            </p>
-          </div>
+          {/* Déductibilité : au réel seulement (en micro-BNC, l'abattement de 34 % en tient lieu). */}
+          {type === 'reel' ? (
+            <div className="sim-note info">
+              <strong>💡 Déductibles du revenu libéral</strong>
+              <p className="mt-1">
+                Ces cotisations réduisent ton revenu imposable, sauf la part non déductible de la CSG-CRDS (2,9 points sur 9,7).
+              </p>
+            </div>
+          ) : (
+            <div className="sim-note neutre">
+              <strong>Non déduites en Micro-BNC</strong>
+              <p className="mt-1">
+                L'abattement forfaitaire de 34 % tient lieu de toutes tes déductions, cotisations comprises.
+              </p>
+            </div>
+          )}
           
           {/* Note régime */}
           <p className="text-[10px] text-muted-foreground italic">
@@ -777,8 +792,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             <div className="sim-note attn">
               <strong>⚠️ Non déductibles en Micro-BNC</strong>
               <p className="mt-1">
-                L'abattement forfaitaire de 34 % (CGI Art. 102 ter) remplace tes charges réelles.
-                Elles sont saisies à titre d'information mais n'impactent ni l'impôt ni le Super-Net.
+                L'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges réelles pour
+                l'impôt. Tu les paies quand même : elles sont retirées de ton Super-Net.
               </p>
             </div>
           ) : (
@@ -999,7 +1014,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               texteVisible
               content={
                 <p className="text-sm">
-                  Vos recettes dépassent 83 600€. Vérifiez si vous avez aussi dépassé ce seuil l'année dernière.
+                  Tes recettes dépassent {plafondTexte}{' '}€. Vérifie si tu as aussi dépassé ce seuil l'année dernière.
                 </p>
               }
             >
@@ -1046,17 +1061,6 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           </CardHeader>
 
           <CardContent className="sim-regime-corps space-y-4">
-            {/* Phase 5 Bug #17 — Avertissement marge conservatrice 20 % en Micro-BNC */}
-            {type === 'micro-bnc' && !showWarning && (
-              <div className="sim-note attn flex items-start gap-2">
-                <AlertTriangle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                <p className="sim-note-in">
-                  <strong>Estimation optimiste.</strong> En Micro-BNC, l'abattement forfaitaire 34 % suppose
-                  que tes charges réelles ne dépassent pas ce seuil. Si tu as beaucoup de frais
-                  (cabinet, matériel, déplacements), prévois <strong>~20 % de marge</strong> sur ce Super-Net.
-                </p>
-              </div>
-            )}
 
             {/* Le Super-Net : sur du jaune dans la fiche recommandée (le halo flou
                 d'avant est retiré, il débordait de la fiche sur téléphone). */}
@@ -1081,7 +1085,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                             {hasRevenusConjoint 
                               ? `L'impôt utilisé est ta part estimée (taux ~${tauxMedecin}%), basée sur le taux individualisé DGFiP (défaut depuis sept. 2025).`
                               : type === 'micro-bnc' 
-                                ? "En Micro-BNC, l'abattement forfaitaire 34 % (CGI Art. 102 ter) remplace tes charges réelles : elles ne sont ni déduites du Super-Net ni affichées ici. C'est une comparaison fiscale stricte — pense à les soustraire mentalement de ton reste à vivre."
+                                ? "En Micro-BNC, l'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges pour l'impôt. Tu les paies quand même : elles sont retirées du Super-Net, comme au Régime Réel."
                                 : "En Régime Réel, charges et cotisations sont déductibles du revenu imposable."
                             }
                           </p>
@@ -1273,7 +1277,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             <CollapsibleContent>
               <div className="sim-plafond-corps space-y-3">
                 <p>
-                  Le plafond Micro-BNC est de <strong>83 600 €/an</strong>. 
+                  Le plafond Micro-BNC est de <strong>{plafondTexte}{' '}€/an</strong>.
                   Si vous le dépassez <strong>2 années consécutives</strong>, vous passerez 
                   automatiquement en Régime Réel au <strong>1er janvier</strong> de l'année suivante.
                 </p>

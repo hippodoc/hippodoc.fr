@@ -21,11 +21,17 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
     ? formData.recettesBrutes * 12 
     : formData.recettesBrutes;
 
-  // MICRO-BNC : Abattement forfaitaire 34% (SEULE déduction fiscale)
-  const abattementMicro = recettesAnnuelles * 0.34;
+  // MICRO-BNC : Abattement forfaitaire 34% (SEULE déduction fiscale), minimum 305 €,
+  // sur les recettes imposables (la part PDSA exonérée n'entre pas dans le bénéfice).
+  const pdsaAnnuel = formData.periode === 'mensuel'
+    ? (formData.revenusExoneresPdsa || 0) * 12
+    : (formData.revenusExoneresPdsa || 0);
+  const recettesImposables = Math.max(0, recettesAnnuelles - pdsaAnnuel);
+  const abattementMicro = Math.min(recettesImposables, Math.max(305, recettesImposables * 0.34));
   
-  // RÉGIME RÉEL : Utiliser les données du moteur (inclut toutes les optimisations Phase 1/2/3)
-  const cotisationsReel = reelResult.cotisationsTotales;
+  // RÉGIME RÉEL : Utiliser les données du moteur (inclut toutes les optimisations Phase 1/2/3).
+  // Cotisations : la part déductible (sans la CSG-CRDS non déductible).
+  const cotisationsReel = reelResult.impotDetails?.cotisationsDeduites ?? reelResult.cotisationsTotales;
   const chargesProAnnuelles = reelResult.chargesReelles || (formData.periode === 'mensuel' 
     ? formData.chargesHorsCotisations * 12 
     : formData.chargesHorsCotisations);
@@ -40,12 +46,12 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
   ) : 0;
   
   const totalDeductionsReel = chargesProAnnuelles + cotisationsReel + optimisationsTotal;
-  const pourcentageReel = recettesAnnuelles > 0 
-    ? (totalDeductionsReel / recettesAnnuelles) * 100 
+  const pourcentageReel = recettesImposables > 0 
+    ? (totalDeductionsReel / recettesImposables) * 100 
     : 0;
 
   // ✅ Utiliser les revenus imposables du moteur (déjà corrects)
-  const beneficeImposableLiberalMicro = recettesAnnuelles - abattementMicro;
+  const beneficeImposableLiberalMicro = recettesImposables - abattementMicro;
   const beneficeImposableLiberalReel = reelResult.impotDetails?.revenuImposableLiberal ?? (recettesAnnuelles - totalDeductionsReel);
   
   // Revenu salarié imposable — abattement 10 % year-aware (plancher 504 € / plafond 14 426 € en 2025-2026, Art. 83 CGI)
@@ -174,7 +180,7 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
               <span className="sim-montant">{formatMontant(chargesProAnnuelles)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="sim-texte">+ Cotisations</span>
+              <span className="sim-texte">+ Cotisations déductibles</span>
               <span className="sim-montant">{formatMontant(cotisationsReel)}</span>
             </div>
             {optim && optim.forfait2pct && optim.forfait2pct > 0 && (
@@ -233,7 +239,7 @@ function BreakEvenContent({ formData, reelResult, microBncResult, revenusSalarie
         {equilibre ? (
           <div className="sim-verdict">
             <p className="sim-texte sim-fort text-center">
-              Les deux régimes sont quasi équivalents à ce niveau de charges
+              À ce niveau de charges, les deux régimes déduisent presque autant
             </p>
           </div>
         ) : (

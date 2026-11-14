@@ -136,7 +136,7 @@ export const simulateurSchema = z.object({
     .default(0),
 
   // 🎯 Type d'exercice (gate déductions S1/Forfait 2 % aux installés — cf. fiscalEligibility)
-  typeExercice: z.string().nullable().optional(),
+  typeExercice: z.enum(["remplacant", "installe"]).nullable().optional(),
 
   // Chèques-vacances ANCV (déductible BNC réel, max 1 SMIC mensuel — varie par année)
   // Le cap effectif est appliqué côté moteur via `capChequesVacances(montant, annee)` :

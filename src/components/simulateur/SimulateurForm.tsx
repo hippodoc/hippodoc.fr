@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import { forwardRef, useImperativeHandle, useState, useEffect, useRef } from "react";
 import { Calculator, Info, Stethoscope, MapPin, Briefcase, Heart, Wallet, Users, Settings, ChevronDown, Plus, Shield, PiggyBank, GraduationCap, Home, Map } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -107,6 +107,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
       resolver: zodResolver(simulateurSchema),
       defaultValues: defaultValues || SIMULATEUR_DEFAULTS,
     });
+    // Valeurs posées par le dernier chargement (défauts, puis profil type) : un champ du
+    // foyer qui en diffère a été modifié à la main.
+    const valeursChargees = useRef<Partial<SimulateurFormData>>({ ...SIMULATEUR_DEFAULTS, ...(defaultValues || {}) });
 
     // Watch lieu d'exercice pour affichage DOM-TOM
     const lieuExercice = form.watch('lieuExercice');
@@ -149,28 +152,18 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         // Récupérer les valeurs actuelles pour préserver les champs personnels
         const currentValues = form.getValues();
         
-        // Préserver TOUS les champs personnels si modifiés par l'utilisateur
-        // Ces champs représentent la situation du foyer fiscal, pas le profil professionnel
+        // Préserver les champs du foyer que l'UTILISATEUR a modifiés à la main depuis le
+        // dernier chargement (valeur différente de celle posée par ce chargement). La
+        // situation d'un profil type n'est donc plus reportée sur le suivant (avant
+        // novembre 2026, enchaîner « Remplaçant famille » puis « Parent isolé » donnait un
+        // parent isolé marié, avec 35 000 € de revenus de conjoint).
         const preservedPersonalFields: Partial<SimulateurFormData> = {};
-        
-        // Préserver situationFamiliale si modifié (différent du défaut 'celibataire')
-        if (currentValues.situationFamiliale && currentValues.situationFamiliale !== 'celibataire') {
-          preservedPersonalFields.situationFamiliale = currentValues.situationFamiliale;
-        }
-        
-        // Préserver enfants si l'utilisateur a saisi une valeur > 0
-        if (currentValues.enfants && currentValues.enfants > 0) {
-          preservedPersonalFields.enfants = currentValues.enfants;
-        }
-        
-        // Préserver revenusConjoint si l'utilisateur a saisi une valeur > 0
-        if (currentValues.revenusConjoint && currentValues.revenusConjoint > 0) {
-          preservedPersonalFields.revenusConjoint = currentValues.revenusConjoint;
-        }
-        
-        // Préserver typeRevenuConjoint si modifié (différent de la valeur par défaut 'salarie')
-        if (currentValues.typeRevenuConjoint && currentValues.typeRevenuConjoint !== 'salarie') {
-          preservedPersonalFields.typeRevenuConjoint = currentValues.typeRevenuConjoint;
+        const champsFoyer = ['situationFamiliale', 'enfants', 'revenusConjoint', 'typeRevenuConjoint'] as const;
+        for (const champ of champsFoyer) {
+          const actuelle = currentValues[champ];
+          if (actuelle !== undefined && actuelle !== valeursChargees.current[champ]) {
+            (preservedPersonalFields as Record<string, unknown>)[champ] = actuelle;
+          }
         }
         
         // Fusionner : profil type + champs personnels préservés
@@ -183,6 +176,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         };
         
         form.reset(mergedValues);
+        valeursChargees.current = mergedValues;
         
         // Auto-expand si revenus complémentaires pré-remplis
         if (mergedValues.revenusSalaries || mergedValues.revenusExoneresPdsa) {

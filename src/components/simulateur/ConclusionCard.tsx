@@ -4,12 +4,17 @@ import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation"
 import type { SimulateurFormData } from "./simulateurSchema";
 import type { LucideIcon } from "lucide-react";
 
-// ============ CONSTANTES SEUILS ============
-const PLAFOND_MICRO_BNC = 83600;
-const SEUIL_APPROCHE_PLAFOND = 71000;
-const SEUIL_ECART_FAIBLE = 1000;
-const SEUIL_ECART_NEGLIGEABLE = 500;
-const SEUIL_ECART_MODERE = 2000;
+// ============ SEUILS ============
+/**
+ * En dessous de 50 €/mois (600 €/an) d'écart, les deux régimes « se valent » : c'est
+ * l'ordre de grandeur de ce que le simulateur ne voit pas (arrondis de l'administration,
+ * charges approchées, cotisations régularisées). Le montant est TOUJOURS affiché, même
+ * dans ce cas (audit de novembre 2026 : « écart négligeable » s'affichait sans montant,
+ * y compris pour 1 000 €/mois d'écart au-delà du plafond du Micro-BNC).
+ */
+const SEUIL_EQUIVALENCE_ANNUEL = 600;
+/** Au-delà de 85 % du plafond du Micro-BNC, on prévient qu'il approche. */
+const RATIO_APPROCHE_PLAFOND = 0.85;
 const SEUIL_CHARGES_FAIBLES_RATIO = 0.05;
 
 // ============ TYPES ============
@@ -25,13 +30,8 @@ interface ContextAlert {
 }
 
 // ============ HELPERS ============
-const formatMontant = (montant: number): string => {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(Math.abs(montant));
-};
+const euros = (montant: number): string =>
+  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.abs(montant));
 
 // ============ COMPOSANT PRINCIPAL ============
 export function ConclusionCard({ comparison, formData }: ConclusionCardProps) {
@@ -40,120 +40,91 @@ export function ConclusionCard({ comparison, formData }: ConclusionCardProps) {
   if (!reel || !recommande) return null;
 
   // ============ CALCULS ============
-  const recettesAnnuelles = formData.periode === 'mensuel' 
-    ? formData.recettesBrutes * 12 
-    : formData.recettesBrutes;
-  const chargesAnnuelles = formData.periode === 'mensuel'
-    ? formData.chargesHorsCotisations * 12
-    : formData.chargesHorsCotisations;
+  const annuel = (v: number | undefined) => (formData.periode === 'mensuel' ? (v || 0) * 12 : (v || 0));
+  const recettesAnnuelles = annuel(formData.recettesBrutes);
+  const chargesAnnuelles = annuel(formData.chargesHorsCotisations);
   const ratioCharges = recettesAnnuelles > 0 ? chargesAnnuelles / recettesAnnuelles : 0;
+  const revenusSalariesAnnuels = annuel(formData.revenusSalaries);
+  const revenusConjointAnnuels = annuel(formData.revenusConjoint);
+  const plafond = comparison.plafondMicro ?? 83600;
 
-  const revenusSalariesAnnuels = (formData.revenusSalaries || 0) * (formData.periode === 'mensuel' ? 12 : 1);
-  const revenusConjointAnnuels = (formData.revenusConjoint || 0) * (formData.periode === 'mensuel' ? 12 : 1);
+  const ecartMensuel = Math.round(economie / 12);
+  const ecartAnnuel = Math.round(economie);
+  const equivalents = !microBnc || economie < SEUIL_EQUIVALENCE_ANNUEL;
 
   // ============ CONDITIONS ============
-  const approchePlafond = recettesAnnuelles > SEUIL_APPROCHE_PLAFOND && recettesAnnuelles <= PLAFOND_MICRO_BNC;
-  const depassePlafond = recettesAnnuelles > PLAFOND_MICRO_BNC;
-  const ecartFaible = economie < SEUIL_ECART_FAIBLE;
-  const ecartNegligeable = economie < SEUIL_ECART_NEGLIGEABLE;
-  const ecartModere = economie >= SEUIL_ECART_FAIBLE && economie < SEUIL_ECART_MODERE;
-  const chargesFaibles = recommande === 'reel' && ratioCharges < SEUIL_CHARGES_FAIBLES_RATIO;
-  const aRevenusMixtes = revenusSalariesAnnuels > 0;
-  const revenusSalariesMajoritaires = revenusSalariesAnnuels > recettesAnnuelles;
-  const aRevenusConjoint = revenusConjointAnnuels > 0;
-  const hasSignificantEconomie = economie >= SEUIL_ECART_FAIBLE;
+  const depassePlafond = recettesAnnuelles > plafond;
+  const approchePlafond = !depassePlafond && recettesAnnuelles > plafond * RATIO_APPROCHE_PLAFOND;
+  const chargesFaibles = recommande === 'reel' && !equivalents && ratioCharges < SEUIL_CHARGES_FAIBLES_RATIO;
 
-  // ============ CALCUL POURCENTAGE ÉCONOMIE ============
-  const calculatePercentage = (): number | null => {
-    if (!microBnc || !reel) return null;
-    const loserSuperNet = recommande === 'micro-bnc' ? reel.superNet : microBnc.superNet;
-    if (loserSuperNet === 0) return null;
-    return (economie / loserSuperNet) * 100;
-  };
-  const percentageEconomie = calculatePercentage();
+  // Écart en % du Super-Net du régime le moins favorable (même base que les fiches).
+  const perdant = recommande === 'micro-bnc' ? reel : microBnc;
+  const pourcentage = perdant && perdant.superNet > 0 ? (economie / perdant.superNet) * 100 : null;
 
   // ============ MESSAGE PRINCIPAL ============
-  const getMessage = (): string => {
-    if (ecartNegligeable) {
-      return "Écart négligeable : choisis selon ta préférence de gestion.";
-    }
-    if (ecartFaible) {
-      return "Les deux régimes sont quasi équivalents à ce niveau de charges.";
-    }
-    const regimeLabel = recommande === 'micro-bnc' ? 'Micro-BNC' : 'Régime Réel';
-    return `Le ${regimeLabel} te fait garder ${formatMontant(economie)} de plus par an.`;
-  };
+  const regimeLabel = recommande === 'micro-bnc' ? 'Le Micro-BNC' : 'Le régime réel';
+  const message = !microBnc
+    ? "Le Micro-BNC n'a pas pu être calculé : seul le régime réel est affiché."
+    : ecartAnnuel < 1
+      ? "Les deux régimes te laissent la même somme. Choisis selon ta préférence de gestion."
+      : equivalents
+        ? `Les deux régimes se valent : ${euros(ecartMensuel)}/mois d'écart (${euros(ecartAnnuel)}/an). Choisis selon ta préférence de gestion.`
+        : `${regimeLabel} te fait garder ${euros(ecartMensuel)}/mois de plus (${euros(ecartAnnuel)}/an).`;
 
   // ============ ALERTES CONTEXTUELLES ============
-  const getAlerts = (): ContextAlert[] => {
-    const alerts: ContextAlert[] = [];
-    
-    if (depassePlafond) {
-      alerts.push({
-        type: 'danger',
-        icon: AlertTriangle,
-        message: "Plafond Micro-BNC dépassé (83 600€) : passage automatique au Réel si 2ème année consécutive."
-      });
-    } else if (approchePlafond && recommande === 'micro-bnc') {
-      alerts.push({
-        type: 'warning',
-        icon: AlertTriangle,
-        message: "CA proche du plafond Micro-BNC (83 600€). Anticipe le passage au Réel."
-      });
-    }
-    
-    if (ecartModere) {
-      alerts.push({
-        type: 'info',
-        icon: Scale,
-        message: "Écart modéré : un expert-comptable pourra affiner."
-      });
-    }
-    
-    if (chargesFaibles) {
-      alerts.push({
-        type: 'info',
-        icon: FileQuestion,
-        message: "Charges faibles déclarées. Vérifie que tu n'as rien oublié."
-      });
-    }
-    
-    if (aRevenusMixtes) {
-      const message = revenusSalariesMajoritaires
-        ? "Revenus salariés majoritaires → impact TMI significatif."
-        : "Revenus salariés pris en compte dans l'IR.";
-      alerts.push({ type: 'info', icon: Briefcase, message });
-    }
-    
-    if (aRevenusConjoint) {
-      const montantFormate = new Intl.NumberFormat('fr-FR', { 
-        style: 'currency', currency: 'EUR', maximumFractionDigits: 0 
-      }).format(revenusConjointAnnuels);
-      alerts.push({
-        type: 'info',
-        icon: Heart,
-        message: `Conjoint (${montantFormate}) inclus dans le calcul IR.`
-      });
-    }
-    
-    return alerts.slice(0, 3);
-  };
+  const alerts: ContextAlert[] = [];
+  const plafondTexte = euros(plafond);
 
-  const alerts = getAlerts();
-  const hasWarnings = alerts.some(a => a.type === 'warning' || a.type === 'danger');
+  if (depassePlafond) {
+    alerts.push({
+      type: recommande === 'micro-bnc' && !equivalents ? 'danger' : 'warning',
+      icon: AlertTriangle,
+      message: `Recettes au-dessus de ${plafondTexte} : le Micro-BNC ne reste ouvert que si tes recettes de l'une des deux années précédentes étaient sous ce seuil. Deux années de suite au-dessus, tu passes au réel.`,
+    });
+  } else if (approchePlafond && recommande === 'micro-bnc') {
+    alerts.push({
+      type: 'warning',
+      icon: AlertTriangle,
+      message: `Recettes proches du plafond du Micro-BNC (${plafondTexte}). Deux années de suite au-dessus, tu passes au réel.`,
+    });
+  }
+
+  if (chargesFaibles) {
+    alerts.push({
+      type: 'info',
+      icon: FileQuestion,
+      message: "Charges faibles déclarées. Vérifie que tu n'as rien oublié.",
+    });
+  }
+
+  if (revenusSalariesAnnuels > 0) {
+    alerts.push({
+      type: 'info',
+      icon: Briefcase,
+      message: revenusSalariesAnnuels > recettesAnnuelles
+        ? "Revenus salariés majoritaires → impact TMI significatif."
+        : "Revenus salariés pris en compte dans l'IR.",
+    });
+  }
+
+  if (revenusConjointAnnuels > 0) {
+    alerts.push({
+      type: 'info',
+      icon: Heart,
+      message: `Conjoint (${euros(revenusConjointAnnuels)}) inclus dans le calcul IR.`,
+    });
+  }
+
+  const shownAlerts = alerts.slice(0, 3);
+  const hasWarnings = shownAlerts.some(a => a.type === 'warning' || a.type === 'danger');
 
   // ============ STYLES ============
-  const getMainIcon = () => {
-    if (hasWarnings) return { Icon: AlertTriangle, color: "sim-attn" };
-    if (hasSignificantEconomie) return { Icon: Trophy, color: "sim-encre" };
-    return { Icon: Scale, color: "sim-marque" };
-  };
-
-  const getBgClass = () => {
-    if (hasWarnings) return "attn";
-    if (hasSignificantEconomie) return "gain";
-    return "egal";
-  };
+  const { Icon: MainIcon, color: iconColor } = hasWarnings
+    ? { Icon: AlertTriangle, color: "sim-attn" }
+    : !equivalents
+      ? { Icon: Trophy, color: "sim-encre" }
+      : { Icon: Scale, color: "sim-marque" };
+  const bgClass = hasWarnings ? "attn" : !equivalents ? "gain" : "egal";
 
   const getAlertPillStyle = (type: 'warning' | 'info' | 'danger') => {
     switch (type) {
@@ -163,35 +134,26 @@ export function ConclusionCard({ comparison, formData }: ConclusionCardProps) {
     }
   };
 
-  const { Icon: MainIcon, color: iconColor } = getMainIcon();
-
   // ============ RENDER ============
   return (
-    <div
-      className={`sim-conclusion ${getBgClass()}`}
-    >
+    <div className={`sim-conclusion ${bgClass}`}>
       {/* Ligne principale : icône + message + badge */}
       <div className="flex items-center gap-3 flex-wrap">
         <span className="sim-conclusion-signe"><MainIcon className={`h-5 w-5 shrink-0 ${iconColor}`} /></span>
         <p className="sim-conclusion-texte flex-1 min-w-0">
-          {getMessage()}
+          {message}
         </p>
-        {percentageEconomie !== null && hasSignificantEconomie && (
+        {pourcentage !== null && !equivalents && (
           <Badge variant="outline" className="sim-puce encre grande shrink-0">
-            +{percentageEconomie.toFixed(1)}% Super-Net
-          </Badge>
-        )}
-        {percentageEconomie !== null && !hasSignificantEconomie && !ecartNegligeable && (
-          <Badge variant="outline" className="sim-puce neutre grande shrink-0">
-            ~{percentageEconomie.toFixed(1)}%
+            +{pourcentage.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}{' '}% Super-Net
           </Badge>
         )}
       </div>
 
       {/* Alertes en pills compacts */}
-      {alerts.length > 0 && (
+      {shownAlerts.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
-          {alerts.map((alert, index) => {
+          {shownAlerts.map((alert, index) => {
             const AlertIcon = alert.icon;
             return (
               <span

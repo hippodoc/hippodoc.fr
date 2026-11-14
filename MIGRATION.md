@@ -12052,6 +12052,68 @@ la construction des affiches, `wt-zoom/dist`, servie sur 4370 ; la branche est s
    1 024, 4 648 → 4 573 px à 1 280 et au-delà, sous la borne de 4 997 px).
 5. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel en HTTP/2 sur réseau bridé.
 
+### 9.fq Simulateur : audit du calcul, Micro-BNC et réel comparés sur la même base (14 novembre 2026)
+
+Le propriétaire : « on n'a vraiment pas le droit de se tromper […] audite en profondeur, de bout
+en bout, ce simulateur dans toutes les situations possibles […] et applique les corrections
+nécessaires ». Point de départ : « écart négligeable » affiché alors que les deux fiches
+différaient de plus de 1 000 €/mois. Section en cours : la vérification réglementaire sur sources
+officielles (déductions du secteur 1 pour les remplaçants, RSPM, CARMF, zones, crédit formation)
+n'est pas finie ; les corrections qui en dépendent ne sont pas encore faites.
+
+**Défauts trouvés et corrigés (première étape).**
+1. **Le Super-Net du Micro-BNC ne retirait pas les charges.** L'abattement de 34 % remplace les
+   charges pour l'impôt, mais elles sont payées : le Micro-BNC gagnait d'office leur montant, et
+   la recommandation en dépendait. Exemples (célibataire, secteur 1) : 60 000 € de recettes et
+   15 000 € de charges, « Micro +764 €/mois » avant, « Réel +470 €/mois » après ; 120 000 € et
+   21 600 € (profil « Remplaçant S1 »), « Micro +1 332 €/mois » sur les fiches avant, « Réel
+   +401 €/mois » après. Le moteur reçoit les charges payées (`chargesDecaissees`) et les retire
+   dans les deux régimes. L'encadré « Estimation optimiste, prévois ~20 % de marge » (fiche Micro),
+   qui compensait ce défaut, est retiré ; les infobulles qui disaient les charges « sans effet sur
+   le Super-Net » en Micro-BNC sont corrigées.
+2. **Au-delà du plafond du Micro-BNC, l'écart était forcé à 0**, et 0 s'affichait « Écart
+   négligeable : choisis selon ta préférence de gestion » (7 profils types sur 8). Le Micro-BNC
+   n'est pas fermé d'office l'année du dépassement (l'éligibilité se juge sur les recettes des deux
+   années précédentes, CGI art. 102 ter) : l'écart est calculé et affiché, avec l'avertissement du
+   plafond. Plafond de l'année lu par `getMicroBncCeiling()` partout (il était écrit en dur à
+   83 600 € dans deux composants, 77 700 € attendus pour 2025).
+3. **Conclusion** (`ConclusionCard.tsx`) : l'écart est toujours chiffré, en €/mois et en €/an.
+   Sous 50 €/mois (600 €/an, l'ordre de grandeur de ce que le simulateur ne voit pas) : « Les deux
+   régimes se valent : X €/mois d'écart (Y €/an) ». Pastille « Écart modéré » retirée.
+4. **Décote non appliquée** par le moteur local (RSPM) : impôt des petits revenus surestimé.
+   Ordre de l'article 197 rétabli : barème et plafonnement du quotient familial, réduction DOM,
+   décote, puis crédits (les crédits passaient avant la réduction DOM).
+5. **CSG-CRDS non déductible** (2,4 + 0,5 points sur 9,7) déduite en entier au réel par la fonction
+   Supabase : elle est réintégrée au bénéfice (le modèle de l'Urssaf fait de même pour le revenu
+   imposable). Abattement minimal de 305 € du Micro-BNC ajouté.
+6. **Cotisations PAMC : la fonction Supabase `calculate-urssaf` ne transmettait au modèle Urssaf
+   ni le secteur** (un secteur 2 calculé comme un secteur 1 : 18 369 € au lieu de 25 062 € pour
+   70 000 € de recettes et 5 000 € de charges), **ni l'année** (2025 aux règles 2026), ni la part
+   non conventionnée, ni le statut de remplaçant (CURPS). Vérifié en interrogeant directement le
+   modèle (`mon-entreprise.urssaf.fr/api/v1/evaluate`, qui accepte les requêtes de hippodoc.fr).
+   Le simulateur l'interroge désormais lui-même (`src/lib/simulateur/urssaf.ts`, une seconde
+   tentative sur 429) et ne se replie sur la fonction Supabase qu'en cas d'échec. L'impôt est
+   calculé par le moteur local pour les deux régimes sociaux (une seule implémentation, testée).
+   ⚠️ La fonction Supabase (dépôt de l'app, hors de ce dépôt) garde ces défauts : l'app est
+   probablement concernée.
+7. **Profils types** : enchaîner deux profils reportait la situation familiale du premier sur le
+   second (« Parent isolé » devenait marié avec 35 000 € de revenus de conjoint). Seuls les champs
+   du foyer modifiés à la main sont maintenant conservés.
+8. Montant PER/Madelin affiché : le montant déduit (plafonné), plus la saisie. Assiette du taux
+   individualisé et du prélèvement en Micro-BNC : le bénéfice après abattement.
+
+**Textes de la page modifiés** (`src/pages/simulateur.astro`, mode d'emploi, hors FAQ du schéma) :
+point 2 (charges « déduites de l'impôt en Régime Réel uniquement […] retirées de ton Super-Net
+dans les deux régimes ») ; point 7 (étapes 2 et 3, encadré « Micro vs Réel en bref »). Ancien texte
+de l'encadré : « En Micro-BNC, tes charges sont remplacées par un abattement de 34% — c'est plus
+simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil. »
+
+**Vérifié.** Banc d'essai hors dépôt (80 situations : recettes de 15 000 à 200 000 €, charges,
+quatre situations familiales, enfants, DOM) : Super-Net = recettes + salaires − charges −
+cotisations − impôt dans les deux régimes ; impôt égal à un barème réécrit indépendamment
+(quotient familial, plafonnement, parent isolé, DOM, décote) ; bénéfice Micro-BNC ; 0 échec.
+Parcours dans Chromium (formulaire et 8 profils types). `npm run build`, `verify-site.mjs` passent.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

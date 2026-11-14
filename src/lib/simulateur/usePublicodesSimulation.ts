@@ -3,121 +3,153 @@ import { invokeCalculateUrssaf } from '@/lib/supabase-public';
 import type { SimulateurFormData } from '@/components/simulateur/simulateurSchema';
 import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/lib/simulation-types';
 import { calculateRspmBreakdown } from '@/lib/simulateur/useRspmCalculation';
-import { buildRspmChargesArgs } from '@/lib/rspmHelpers';
+import { calculerCotisationsUrssaf, type CotisationsUrssaf, type ParametresUrssaf } from '@/lib/simulateur/urssaf';
 import { calculateFiscalParts } from '@/lib/fiscalParts';
 import { getDomTomInfo } from '@/lib/dom-tom';
 import { getMicroBncCeiling } from '@/lib/baremes-ir';
 import { normalizeCarmfStatus } from '@/lib/carmfStatus';
 
-// Seuil RSPM 2025-2026 (inchangé) : en dessous de 38 000€, cotisations simplifiées (13,5% puis 21,2%)
+// Seuil RSPM : en dessous de 38 000 € de recettes, le mode Auto retient le RSPM (voir la FAQ de /simulateur).
 const SEUIL_RSPM = 38000;
+
+/** Part non déductible de la CSG-CRDS des indépendants : (2,4 % + 0,5 %) / 9,7 %. */
+const PART_CSG_CRDS_NON_DEDUCTIBLE = 2.9 / 9.7;
 
 export interface RegimeComparison {
   reel: SimulationResult | null;
   microBnc: SimulationResult | null;
   recommande: 'reel' | 'micro-bnc' | null;
+  /** Écart annuel de Super-Net entre les deux régimes, en valeur absolue. */
   economie: number;
+  /** Super-Net Micro-BNC − Super-Net réel (signé). */
   difference: number;
+  /** Plafond de recettes du Micro-BNC pour l'année simulée. */
+  plafondMicro?: number;
   recettesAnnuelles?: number;
   revenusSalariesAnnuels?: number;
-  revenusConjointAnnuels?: number;  // ✅ Revenu du conjoint (pour affichage)
-  liberalExonereAnnuel?: number;  // ✅ Revenus PDSA exonérés IR
+  revenusConjointAnnuels?: number;
+  liberalExonereAnnuel?: number;  // Revenus PDSA exonérés IR
   domTomInfo?: DomTomResultInfo | null;
   lieuExercice?: LieuExercice;
-  isRSPMUsed?: boolean;  // ✅ Indique si RSPM a été utilisé pour les calculs
+  isRSPMUsed?: boolean;
 }
 
-/**
- * Détermine si on doit utiliser le calcul RSPM local
- */
+const annualiser = (formData: SimulateurFormData, v: number | undefined): number =>
+  formData.periode === 'mensuel' ? (v || 0) * 12 : (v || 0);
+
+/** Détermine si on doit utiliser le calcul RSPM local. */
 const shouldUseRspm = (formData: SimulateurFormData, recettesAnnuelles: number): boolean => {
   if (formData.regimeSocial === 'rspm') return true;
   if (formData.regimeSocial === 'pamc') return false;
-  // Mode 'auto': basé sur le seuil de 38k
   return recettesAnnuelles < SEUIL_RSPM;
 };
 
+const DEPARTEMENTS_OUTRE_MER: Record<string, ParametresUrssaf['departementOutreMer']> = {
+  guadeloupe: 'Guadeloupe',
+  martinique: 'Martinique',
+  guyane: 'Guyane',
+  reunion: 'La Réunion',
+  mayotte: 'Mayotte',
+};
+
 /**
- * Calcul local RSPM - réutilise exactement calculateRspmBreakdown
- * Taux progressifs : 13,5% (0-19k) + 21,2% (>19k) + RID CARMF
+ * Cotisations PAMC : modèle Urssaf interrogé directement ; en cas d'échec, repli sur la
+ * fonction Supabase (qui ignore le secteur, l'année et le statut de remplaçant : c'est un
+ * secours, pas une alternative).
  */
-const simulateRspmLocally = (
+async function cotisationsPamc(
   formData: SimulateurFormData,
-  regimeFiscal: 'reel' | 'micro-bnc'
-): SimulationResult | null => {
-  // Phase 3 Obs D — Madelin n'est PAS déductible en micro-BNC (CGI Art. 154 bis).
-  // En réel, les deux (PER & Madelin) restent déductibles → cap PER géré dans useRspmCalculation.
-  const cotisationsVolontairesEffectives =
+  regimeFiscal: 'reel' | 'micro-bnc',
+  recettesAnnuelles: number,
+  chargesAnnuelles: number,
+  liberalExonere: number,
+): Promise<CotisationsUrssaf | null> {
+  try {
+    return await calculerCotisationsUrssaf({
+      annee: formData.annee || 2026,
+      recettes: recettesAnnuelles,
+      charges: chargesAnnuelles,
+      regime: regimeFiscal,
+      secteur: formData.secteurConventionnel || 'secteur_1',
+      remplacant: formData.typeExercice === 'remplacant',
+      ratioNonConventionne: formData.ratioNonConventionne || 0,
+      departementOutreMer: DEPARTEMENTS_OUTRE_MER[formData.lieuExercice || 'metropole'],
+    });
+  } catch (err) {
+    console.warn('[Simulateur] API Urssaf indisponible, repli sur calculate-urssaf', err);
+  }
+
+  const { data, error } = await invokeCalculateUrssaf({ formData, regimeFiscal, liberalExonere });
+  if (error || !data || (data as { fallbackMode?: boolean }).fallbackMode) return null;
+  const r = data as SimulationResult;
+  return {
+    total: r.cotisationsTotales,
+    csgCrdsNonDeductible: (r.cotisationsDetail?.csgCrds || 0) * PART_CSG_CRDS_NON_DEDUCTIBLE,
+    detail: {
+      maladie: r.cotisationsDetail?.maladie || 0,
+      allocationsFamiliales: r.cotisationsDetail?.allocationsFamiliales || 0,
+      retraite: r.cotisationsDetail?.retraite || 0,
+      retraiteComplementaire: r.cotisationsDetail?.retraiteComplementaire || 0,
+      retraiteRid: r.cotisationsDetail?.retraiteRid || 0,
+      csgCrds: r.cotisationsDetail?.csgCrds || 0,
+      formation: r.cotisationsDetail?.formation || 0,
+    },
+  };
+}
+
+/**
+ * Un régime fiscal, de bout en bout : cotisations (RSPM local ou modèle Urssaf), puis
+ * impôt et Super-Net par le moteur local, le même pour les deux régimes sociaux.
+ */
+export async function simulerRegime(
+  formData: SimulateurFormData,
+  regimeFiscal: 'reel' | 'micro-bnc',
+  useRspm: boolean,
+): Promise<SimulationResult | null> {
+  const recettesAnnuelles = annualiser(formData, formData.recettesBrutes);
+  const chargesAnnuelles = annualiser(formData, formData.chargesHorsCotisations);
+  const liberalExonere = annualiser(formData, formData.revenusExoneresPdsa);
+  const revenusSalariesAnnuels = annualiser(formData, formData.revenusSalaries);
+  const revenusConjointAnnuels = annualiser(formData, formData.revenusConjoint);
+
+  // Madelin n'est pas déductible en micro-BNC (CGI art. 154 bis) ; le PER l'est (163 quatervicies).
+  const cotisationsVolontaires =
     regimeFiscal === 'micro-bnc' && formData.typeCotisationsVolontaires === 'madelin'
       ? 0
       : (formData.cotisationsVolontaires || 0);
-  // Annualiser les montants
-  const recettesAnnuelles = formData.periode === 'mensuel'
-    ? formData.recettesBrutes * 12
-    : formData.recettesBrutes;
-  const chargesAnnuelles = formData.periode === 'mensuel'
-    ? (formData.chargesHorsCotisations || 0) * 12
-    : (formData.chargesHorsCotisations || 0);
-  const liberalExonere = formData.periode === 'mensuel'
-    ? (formData.revenusExoneresPdsa || 0) * 12
-    : (formData.revenusExoneresPdsa || 0);
-  const revenusSalariesAnnuels = formData.periode === 'mensuel'
-    ? (formData.revenusSalaries || 0) * 12
-    : (formData.revenusSalaries || 0);
-  // ✅ Annualiser les revenus du conjoint (si marié/pacsé)
-  const revenusConjointAnnuels = formData.periode === 'mensuel'
-    ? (formData.revenusConjoint || 0) * 12
-    : (formData.revenusConjoint || 0);
 
-  // Calculer parts fiscales selon situation familiale (logique centralisée)
-  const partsFiscales = calculateFiscalParts(formData.situationFamiliale, formData.enfants);
-
-  // Construire profil minimal pour calculateRspmBreakdown
-  const profileMinimal = {
-    regime_fiscal: regimeFiscal,
-    situation_familiale: formData.situationFamiliale,
-    taux_rid_rspm: formData.tauxRid || '25%',  // Phase 3: use form toggle
-    parts_fiscales: partsFiscales,
-    charges_reelles_percent: 30,  // Fallback si pas de charges réelles
-    nombre_enfants_charge: formData.enfants,  // Pour plafond emploi domicile
-  };
-
-  // 🎯 Convention A — En micro-BNC, le simulateur public n'a PAS de champ dédié pour
-  // les rétrocessions versées : `chargesAnnuelles` représente uniquement loyer + matériel
-  // + RCP (cf. tooltip formulaire L289 "abattement 34 % remplace ces charges"). On les
-  // ignore donc en micro-BNC pour ne pas pré-déduire à tort avant l'abattement.
-  // En réel : on les transmet normalement comme charges déductibles.
-  const simArgs = buildRspmChargesArgs(regimeFiscal, chargesAnnuelles, 0);
-
-  // 🎯 Phase 1 Bug #2 — En réel, le simulateur a TOUJOURS la valeur (champ obligatoire).
-  // On force l'override pour que `0 €` saisi explicitement signifie "0 charge réelle"
-  // et non "info absente → fallback 30 %". buildRspmChargesArgs renvoie `undefined`
-  // quand total = 0 (préservé pour les autres callers historiques).
-  if (regimeFiscal === 'reel') {
-    simArgs.chargesLiberalesReelles = chargesAnnuelles;
+  let cotisationsPamcRegime: CotisationsUrssaf | null = null;
+  if (!useRspm) {
+    cotisationsPamcRegime = await cotisationsPamc(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles, liberalExonere);
+    if (!cotisationsPamcRegime) {
+      throw new Error('Le service de calcul URSSAF est temporairement indisponible. Réessaie dans quelques minutes.');
+    }
   }
 
-  // 🎯 Phase 1 Bug #1 — Convention `calculateRspmBreakdown` (useRspmCalculation L440) :
-  // `yearlyLiberalTotal` doit être la portion IMPOSABLE seule (PDSA exonéré exclu).
-  // Le formulaire demande à l'utilisateur le total honoraires (PDSA inclus) puis la
-  // part PDSA — on retranche donc ici pour respecter la convention.
-  const yearlyLiberalImposable = Math.max(0, recettesAnnuelles - liberalExonere);
+  const partsFiscales = calculateFiscalParts(formData.situationFamiliale, formData.enfants);
 
-  // Appeler le calcul RSPM existant (taux progressifs 13,5%/21,2%)
-  const rspmResult = calculateRspmBreakdown({
-    yearlyLiberalTotal: yearlyLiberalImposable,
+  const breakdown = calculateRspmBreakdown({
+    // Portion IMPOSABLE des recettes : la part PDSA exonérée (art. 151 ter) est passée à part.
+    yearlyLiberalTotal: Math.max(0, recettesAnnuelles - liberalExonere),
     yearlyLiberalExonere: liberalExonere,
     yearlySalariedTotal: revenusSalariesAnnuels,
     yearlyConjointTotal: revenusConjointAnnuels,
     typeRevenuConjoint: formData.typeRevenuConjoint || 'salarie',
-    profile: profileMinimal as any,
-    chargesLiberalesReelles: simArgs.chargesLiberalesReelles,
-    retrocessionsVerseesMicroBnc: simArgs.retrocessionsVerseesMicroBnc,
-    // Phase 1
+    profile: {
+      regime_fiscal: regimeFiscal,
+      situation_familiale: formData.situationFamiliale,
+      taux_rid_rspm: formData.tauxRid || '25%',
+      parts_fiscales: partsFiscales,
+      charges_reelles_percent: 30,
+      type_exercice: formData.typeExercice === 'remplacant' ? 'remplacant_exclusif' : 'installe',
+    },
+    // Au réel, les charges saisies sont déduites (0 saisi = 0 charge, pas le repli de 30 %).
+    // En micro-BNC, l'abattement de 34 % les remplace pour l'impôt ; elles restent payées.
+    chargesLiberalesReelles: regimeFiscal === 'reel' ? chargesAnnuelles : undefined,
+    chargesDecaissees: chargesAnnuelles,
     secteurConventionnel: formData.secteurConventionnel,
     forfait2pct: formData.forfait2pct || false,
-    cotisationsVolontaires: cotisationsVolontairesEffectives,
-    // Phase 2
+    cotisationsVolontaires,
     zoneExoneree: formData.zoneExoneree || 'aucune',
     anneeInstallationZone: formData.anneeInstallationZone,
     anneeFiscale: formData.annee || 2026,
@@ -128,62 +160,50 @@ const simulateRspmLocally = (
     heuresFormation: formData.heuresFormation || 0,
     creditImpotAutre: formData.creditImpotAutre || 0,
     chequesVacances: formData.chequesVacances || 0,
-    // Phase 3
     tauxRid: formData.tauxRid || '25%',
-    situationCarmf: normalizeCarmfStatus(formData.situationCarmf), // 🎯 V11 garde-fou
+    situationCarmf: normalizeCarmfStatus(formData.situationCarmf),
     ratioNonConventionne: formData.ratioNonConventionne || 0,
-    // Crédits personnels
     fraisEmploiDomicile: formData.fraisEmploiDomicile || 0,
     fraisGardeEnfants: formData.fraisGardeEnfants || 0,
     nombreEnfantsGarde: formData.nombreEnfantsGarde || 0,
-    // DOM-TOM — Abattement IR (CGI art. 197-I-3)
     lieuExercice: formData.lieuExercice,
+    cotisationsSocialesOverride: cotisationsPamcRegime?.total,
+    cotisationsNonDeductibles: cotisationsPamcRegime?.csgCrdsNonDeductible,
   });
 
-  if (!rspmResult) return null;
+  if (!breakdown) return null;
 
-  // Construire domTomInfo pour l'affichage du badge pédagogique
   const domInfo = getDomTomInfo(formData.lieuExercice);
-  const domTomInfoResult = domInfo ? {
-    territoire: domInfo.nom,
-    tauxAbattement: domInfo.tauxAbattement,
-    plafond: domInfo.plafond,
-  } : null;
+  const cotisationsTotales = cotisationsPamcRegime ? cotisationsPamcRegime.total : breakdown.cotisationsTotales;
 
-  // Adapter au format SimulationResult attendu
   return {
-    netAvantImpot: rspmResult.netAvantImpot,
-    superNet: rspmResult.superNet,
-    impot: rspmResult.impot,
-    cotisationsTotales: rspmResult.cotisationsTotales,
-    revenuImposableTotal: rspmResult.revenuImposableTotal,
+    netAvantImpot: recettesAnnuelles - cotisationsTotales,
+    superNet: breakdown.superNet,
+    impot: breakdown.impot,
+    cotisationsTotales,
+    revenuImposableTotal: breakdown.revenuImposableTotal,
     impotDetails: {
-      ...rspmResult.impotDetails,
-      revenuImposableLiberal: rspmResult.impotDetails?.revenuImposableLiberal || 0,
-      revenuImposableSalarie: rspmResult.impotDetails?.revenuImposableSalarie || 0,
-      revenuImposableConjoint: rspmResult.impotDetails?.revenuImposableConjoint || 0,
+      ...breakdown.impotDetails,
+      revenuImposableLiberal: breakdown.impotDetails?.revenuImposableLiberal || 0,
+      revenuImposableSalarie: breakdown.impotDetails?.revenuImposableSalarie || 0,
+      revenuImposableConjoint: breakdown.impotDetails?.revenuImposableConjoint || 0,
       revenusSalariesBrut: revenusSalariesAnnuels,
       revenusConjointBrut: revenusConjointAnnuels,
       modeFraisSalaries: 'abattement_10',
-      deductionAppliquee: rspmResult.impotDetails?.deductionSalarie || 0,
+      deductionAppliquee: breakdown.impotDetails?.deductionSalarie || 0,
       parts: partsFiscales,
       regimeFiscal,
     },
-    // 🎯 Phase 4C — Bug #12 (Option A) : en Micro-BNC, l'abattement 34 % (CGI Art. 102 ter)
-    // remplace forfaitairement les charges réelles. On ne les soustrait PAS du Super-Net
-    // fiscal et on ne les ré-additionne pas non plus (rspmResult.superNet ne les a déjà
-    // jamais déduites — voir buildRspmChargesArgs). Parité stricte avec urssaf-mapping.ts.
-    superNetFiscal: rspmResult.superNet,
-    // En Micro-BNC, on n'expose pas les charges réelles côté résultats : elles sont
-    // fiscalement absorbées par l'abattement et ne doivent pas être ré-soustraites en aval.
-    chargesReelles: regimeFiscal === 'micro-bnc' ? 0 : chargesAnnuelles,
-    optimisationsAppliquees: rspmResult.optimisationsAppliquees as any,
-    cotisationsDetail: rspmResult.cotisationsDetail,
+    superNetFiscal: breakdown.superNet + chargesAnnuelles,
+    // Charges payées, dans les deux régimes : déduites de l'impôt au réel seulement.
+    chargesReelles: chargesAnnuelles,
+    optimisationsAppliquees: breakdown.optimisationsAppliquees as SimulationResult['optimisationsAppliquees'],
+    cotisationsDetail: cotisationsPamcRegime ? cotisationsPamcRegime.detail : breakdown.cotisationsDetail,
     missingVariables: {},
-    isRSPM: true,
-    domTomInfo: domTomInfoResult,
+    isRSPM: useRspm,
+    domTomInfo: domInfo ? { territoire: domInfo.nom, tauxAbattement: domInfo.tauxAbattement, plafond: domInfo.plafond } : null,
   };
-};
+}
 
 export function usePublicodesSimulation() {
   const [loading, setLoading] = useState(false);
@@ -196,159 +216,56 @@ export function usePublicodesSimulation() {
     difference: 0,
   });
 
-  const simulateRegime = async (
-    formData: SimulateurFormData,
-    regimeFiscal: 'reel' | 'micro-bnc',
-    useRspm: boolean
-  ): Promise<SimulationResult | null> => {
-    try {
-      // Phase 3 Obs D — Madelin n'est pas déductible en micro-BNC. On nettoie le formData
-      // envoyé à l'edge URSSAF pour éviter la déduction côté serveur (parité avec le
-      // calcul local RSPM ci-dessus).
-      const formDataForRegime: SimulateurFormData =
-        regimeFiscal === 'micro-bnc' && formData.typeCotisationsVolontaires === 'madelin'
-          ? { ...formData, cotisationsVolontaires: 0 }
-          : formData;
-
-      // ===== CALCUL LOCAL RSPM (cotisations simplifiées 13,5%/21,2%) =====
-      if (useRspm) {
-        
-        const rspmResult = simulateRspmLocally(formData, regimeFiscal);
-        
-        // ✅ Si RSPM échoue, fallback vers PAMC avec warning
-        if (!rspmResult) {
-          console.warn(`[Simulateur] Calcul RSPM échoué pour ${regimeFiscal}, fallback vers PAMC`);
-          // Appel API URSSAF comme fallback
-          const liberalExonere = formData.periode === 'mensuel'
-            ? (formData.revenusExoneresPdsa || 0) * 12
-            : (formData.revenusExoneresPdsa || 0);
-
-          const { data, error } = await invokeCalculateUrssaf({ formData: formDataForRegime, regimeFiscal, liberalExonere });
-
-          if (error || !data) {
-            console.error(`Erreur fallback PAMC ${regimeFiscal}:`, error);
-            return null;
-          }
-          // ✅ Marquer explicitement que RSPM n'a PAS été utilisé
-          return { ...(data as SimulationResult), isRSPM: false };
-        }
-        
-        
-        return rspmResult;
-      }
-
-      // ===== APPEL API URSSAF (PAMC - régime classique) =====
-      const liberalExonere = formData.periode === 'mensuel'
-        ? (formData.revenusExoneresPdsa || 0) * 12
-        : (formData.revenusExoneresPdsa || 0);
-
-      const { data, error } = await invokeCalculateUrssaf({
-        formData: formDataForRegime,
-        regimeFiscal,
-        liberalExonere,
-      });
-
-      if (error) {
-        console.error(`Erreur Edge Function ${regimeFiscal}:`, error);
-        throw new Error(error.message || 'Erreur lors du calcul URSSAF');
-      }
-
-      if (!data) {
-        throw new Error('Aucune donnée retournée par l\'Edge Function');
-      }
-
-      // ✅ Détecter le mode fallback (API URSSAF down, pas de cache)
-      if ((data as { fallbackMode?: boolean }).fallbackMode) {
-        console.warn(`[Simulateur] API URSSAF en fallback pour ${regimeFiscal}`);
-        throw new Error('Le service de calcul URSSAF est temporairement indisponible. Réessaie dans quelques minutes.');
-      }
-
-      return { ...(data as SimulationResult), isRSPM: false };
-    } catch (err) {
-      console.error(`Erreur simulation ${regimeFiscal}:`, err);
-      return null;
-    }
-  };
-
   const simulate = async (formData: SimulateurFormData) => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      // Calculer les recettes annuelles pour info contextuelle
-      const recettesAnnuelles = formData.periode === 'mensuel' 
-        ? formData.recettesBrutes * 12 
-        : formData.recettesBrutes;
-      
-      // ✅ Calculer les revenus salariés annuels
-      const revenusSalariesAnnuels = formData.periode === 'mensuel'
-        ? (formData.revenusSalaries || 0) * 12
-        : (formData.revenusSalaries || 0);
-      
-      // ✅ Calculer les revenus du conjoint annuels
-      const revenusConjointAnnuels = formData.periode === 'mensuel'
-        ? (formData.revenusConjoint || 0) * 12
-        : (formData.revenusConjoint || 0);
-      
-      // ✅ Déterminer si on utilise RSPM (calcul local) ou PAMC (API URSSAF)
+      const recettesAnnuelles = annualiser(formData, formData.recettesBrutes);
       const useRspm = shouldUseRspm(formData, recettesAnnuelles);
-      
-      // Toujours calculer les deux régimes pour comparaison complète
-      const resultReel = await simulateRegime(formData, 'reel', useRspm);
-      const resultMicroBnc = await simulateRegime(formData, 'micro-bnc', useRspm);
-      
+
+      const [resultReel, resultMicroBnc] = await Promise.all([
+        simulerRegime(formData, 'reel', useRspm),
+        simulerRegime(formData, 'micro-bnc', useRspm),
+      ]);
+
       if (!resultReel) {
         throw new Error('Échec du calcul pour le régime réel');
       }
-      
-      // 🎯 Phase 5 Bug #16 — Plafond Micro-BNC (CGI Art. 102 ter).
-      // Au-delà du plafond annuel (83 600 € en 2026), le Micro-BNC est juridiquement
-      // inaccessible : la recommandation est forcée au Réel, peu importe le calcul brut.
-      const microBncCeiling = getMicroBncCeiling(formData.annee || 2026);
-      const depassePlafondMicroBnc = recettesAnnuelles > microBncCeiling;
 
+      // Le régime le plus favorable, sur le Super-Net (ce qui reste après charges,
+      // cotisations et impôt, dans les deux régimes). Au-delà du plafond, le Micro-BNC
+      // n'est pas fermé d'office pour l'année simulée (CGI art. 102 ter : l'éligibilité se
+      // juge sur les recettes des deux années précédentes) : la comparaison est donc faite
+      // et affichée, avec l'avertissement de la conclusion. Avant novembre 2026, l'écart
+      // était forcé à 0 au-delà du plafond, et la conclusion affichait « Écart négligeable ».
       let difference = 0;
       let recommande: 'reel' | 'micro-bnc' = 'reel';
-      let economie = 0;
-
       if (resultMicroBnc) {
         difference = resultMicroBnc.superNet - resultReel.superNet;
-        if (depassePlafondMicroBnc) {
-          // Bug #16 : Micro-BNC interdit au-dessus du seuil → forcer Réel et neutraliser
-          // l'économie affichée (la « gain » Micro-BNC n'a juridiquement pas lieu d'être).
-          recommande = 'reel';
-          economie = 0;
-        } else {
-          recommande = difference > 0 ? 'micro-bnc' : 'reel';
-          economie = Math.abs(difference);
-        }
+        recommande = difference > 0 ? 'micro-bnc' : 'reel';
       }
-      
-      // ✅ Calculer le montant PDSA annualisé
-      const liberalExonereAnnuel = formData.periode === 'mensuel'
-        ? (formData.revenusExoneresPdsa || 0) * 12
-        : (formData.revenusExoneresPdsa || 0);
 
       setResults({
         reel: resultReel,
         microBnc: resultMicroBnc,
         recommande,
-        economie,
+        economie: Math.abs(difference),
         difference,
+        plafondMicro: getMicroBncCeiling(formData.annee || 2026),
         recettesAnnuelles,
-        revenusSalariesAnnuels,
-        revenusConjointAnnuels,  // ✅ Exposer le revenu du conjoint
-        liberalExonereAnnuel,  // ✅ Exposer les revenus PDSA
+        revenusSalariesAnnuels: annualiser(formData, formData.revenusSalaries),
+        revenusConjointAnnuels: annualiser(formData, formData.revenusConjoint),
+        liberalExonereAnnuel: annualiser(formData, formData.revenusExoneresPdsa),
         domTomInfo: resultReel.domTomInfo || null,
         lieuExercice: formData.lieuExercice,
-        isRSPMUsed: useRspm,  // ✅ Indique si RSPM a été utilisé
+        isRSPMUsed: useRspm,
       });
-      // Note : pas de sauvegarde d'historique ici — le site public est anonyme-only
-      // (pas de session Supabase). Le funnel analytics anonyme est géré côté
-      // SimulateurApp.tsx via insertPublicEvent('simulateur_public_events', ...).
+      // Pas de sauvegarde d'historique : le site public est anonyme. Le funnel analytics
+      // anonyme est géré par SimulateurApp.tsx (insertPublicEvent).
     } catch (err) {
       console.error('Erreur simulation:', err);
-      
+
       let errorMessage = 'Impossible de calculer les estimations pour le moment.';
       if (err instanceof Error) {
         if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
