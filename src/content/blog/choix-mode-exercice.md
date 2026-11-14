@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "statut-contrats-revenus"
 episodeNumber: 1
 readTime: "7 min"
 cta: "Prêt à suivre ce que te rapporte vraiment chaque mode d'exercice ?"

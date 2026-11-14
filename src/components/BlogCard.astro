@@ -6,12 +6,19 @@
  * lignes sur une feuille au § 9.fk : l'affiche en vignette à gauche, la série et
  * le numéro en petites capitales, le titre, l'extrait (masqué au téléphone, il
  * reste dans le HTML), date et durée. Lien, titre (et son niveau), extrait,
- * date, durée, série et numéro : ceux d'avant, dans le même ordre.
+ * date, durée, série et numéro : ceux d'avant, dans le même ordre (sur /blog, le
+ * thème a pris la place de la série en § 9.fp, voir plus bas).
  * Aucune classe utilitaire : les styles sont dans `src/styles/blog-liste.css`,
- * la feuille des quatre pages de liste.
+ * la feuille des pages de liste (/blog, séries, thèmes).
  *
  * La classe `blog-card s-<seriesId>` est conservée : elle reste utile pour cibler
  * une série en CSS.
+ *
+ * Étiquette (§ 9.fp, `etiquette`) : la série et son numéro en tête de ligne sur les
+ * pages de série (« FICHES FISCALITÉ · #4 », inchangé) ; sur /blog, le thème puis le
+ * numéro de la fiche (« IMPÔTS ET DÉCLARATIONS · Fiche Fiscalité #4 », le libellé de la
+ * pastille de l'article) ; sur une page de thème, le numéro seul (le thème est celui de
+ * la page). Un article sans numéro (série « divers ») n'a que son thème, ou rien.
  *
  * Les affiches (§ 9.fo) : toutes en PORTRAIT (quatre formats : 2:3, 0,75, 0,79,
  * 0,805), titre dessiné en haut. Elles ne se rognent jamais : chacune est montrée
@@ -22,6 +29,7 @@
  * `src` et dimensions déclarées sont ceux d'avant.
  */
 import { blogSeries } from '@/lib/blog-series';
+import { themeDe, type ThemeSlug } from '@/lib/blog-themes';
 import { nouer, echapper, nouerNombres } from '@/lib/typo';
 import { largeurDansCadre } from '@/lib/blog-covers';
 
@@ -36,10 +44,18 @@ interface Props {
   seriesId: string;
   episodeNumber?: number;
   cover?: { src: string; width: number; height: number; srcset?: string };
+  /** Ce que dit la tête de ligne : la série (pages de série), le thème et le numéro (/blog), le numéro seul (pages de thème). */
+  etiquette?: 'serie' | 'theme' | 'numero';
+  /** Slug du thème de l'article (étiquette « theme »). */
+  theme?: ThemeSlug;
+  /** Libellé et numéro de la pastille de l'article (« Fiche Fiscalité », « #4 »). */
+  category?: string;
+  categoryNumber?: string;
 }
 
 const {
   headingLevel = 2, slug, title, description, pubDate, readTime, seriesId, episodeNumber, cover,
+  etiquette = 'serie', theme, category, categoryNumber,
 } = Astro.props;
 
 /* La largeur dessinée de l'affiche dans sa case (144 px, 112 px, 26,5 % de l'écran). */
@@ -48,6 +64,9 @@ const sizes = cover?.srcset
   : undefined;
 
 const series = blogSeries.find((s) => s.id === seriesId);
+const leTheme = etiquette === 'theme' && theme ? themeDe(theme) : undefined;
+/* Le numéro de la fiche, comme sur la pastille de l'article : seulement pour les deux séries numérotées. */
+const rang = etiquette !== 'serie' && seriesId !== 'divers' && category && categoryNumber ? `${category} ${categoryNumber}` : undefined;
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -70,12 +89,19 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
       </div>
     )}
     <div class="bl-carte-texte">
-      <div class="bl-marques">
-        {series && <span class="chip plan">{series.name}</span>}
-        {episodeNumber !== undefined && seriesId !== 'divers' && (
-          <span class="bl-numero">#{episodeNumber}</span>
-        )}
-      </div>
+      {etiquette === 'serie' ? (
+        <div class="bl-marques">
+          {series && <span class="chip plan">{series.name}</span>}
+          {episodeNumber !== undefined && seriesId !== 'divers' && (
+            <span class="bl-numero">#{episodeNumber}</span>
+          )}
+        </div>
+      ) : (leTheme || rang) && (
+        <div class="bl-marques bl-marques-suite">
+          {leTheme && <span class="chip plan">{leTheme.nom}</span>}
+          {rang && <span class="bl-rang">{rang}</span>}
+        </div>
+      )}
       <Heading set:html={nouer(echapper(title))} />
       <p class="bl-extrait" set:html={nouer(nouerNombres(echapper(description)))} />
       <div class="bl-infos">

@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#6"
 seriesId: "fiche-fiscalite"
+theme: "impots-declarations"
 episodeNumber: 6
 readTime: "7 min"
 cover: "/blog/remplir-declaration-2035-cover.png"

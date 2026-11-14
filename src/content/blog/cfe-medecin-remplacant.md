@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#12"
 seriesId: "fiche-fiscalite"
+theme: "impots-declarations"
 episodeNumber: 12
 readTime: "10 min"
 cover: "/blog/cfe-medecin-remplacant-cover.jpg"

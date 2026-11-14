@@ -8,6 +8,7 @@ import BlogSlides from '@/components/BlogSlides.tsx';
 import { SITE_URL, APP_URL, LOGO_URL, CALENDLY_URL, PRODUCT_DEFINITION, AUTEURS } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
+import { themeDe, themePath } from '@/lib/blog-themes';
 import { miniMarkdownToHtml, stripMiniMarkdown } from '@/lib/blog-format';
 /* Nouveau système de lecture (novembre 2026, MIGRATION.md § 9.fj). Toute la feuille de la
    page est dans un fichier de src/styles : Tailwind ne la lit pas, et le corps de l'article,
@@ -100,13 +101,16 @@ const lignesDuLien = (slug: string) => {
 
 const {
   title, description, pubDate, updatedDate, author, authorRole, category, categoryNumber,
-  seriesId, episodeNumber, readTime, cover, cta, ctaHref, faq, relatedArticles, slides,
+  seriesId, episodeNumber, readTime, cover, cta, ctaHref, faq, relatedArticles, slides, theme: themeId,
 } = post.data;
 const signupUrl = `${APP_URL}/auth?tab=signup`;
 
 const slug = post.id;
 const path = `/blog/${slug}`;
 const series = blogSeries.find((s) => s.id === seriesId);
+/* Le thème (§ 9.fp) : le troisième maillon du fil d'Ariane, à l'écran et dans le schéma. Le champ
+   est obligatoire (content.config.ts) : chaque article en a un. La série garde sa pastille. */
+const theme = themeDe(themeId)!;
 
 /* Images : covers + slides optimisées via astro:assets (les originaux
    viennent de public/blog/ de la SPA source, copiés dans src/assets/blog). */
@@ -279,9 +283,10 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Accueil', item: SITE_URL },
     { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-    /* Niveau série : aucun article ne renvoyait vers sa page de série (§ 9.be). */
-    ...(series ? [{ '@type': 'ListItem', position: 3, name: series.name, item: `${SITE_URL}${seriesPath(series.id)}` }] : []),
-    { '@type': 'ListItem', position: series ? 4 : 3, name: title, item: `${SITE_URL}${path}` },
+    /* Niveau thème (§ 9.fp ; la série avant, § 9.be) : la page de thème de l'article. La page de
+       série reste liée par la pastille de l'article. */
+    { '@type': 'ListItem', position: 3, name: theme.nom, item: `${SITE_URL}${themePath(theme.slug)}` },
+    { '@type': 'ListItem', position: 4, name: title, item: `${SITE_URL}${path}` },
   ],
 };
 
@@ -368,12 +373,8 @@ const croix =
         <li aria-hidden="true">›</li>
         <li><a href="/blog">Blog</a></li>
         <li aria-hidden="true">›</li>
-        {series && (
-          <>
-            <li><a href={seriesPath(series.id)}>{series.name}</a></li>
-            <li aria-hidden="true">›</li>
-          </>
-        )}
+        <li><a href={themePath(theme.slug)}>{theme.nom}</a></li>
+        <li aria-hidden="true">›</li>
         <li aria-current="page" set:html={nouer(echapper(title))} />
       </ol>
     </nav>
@@ -383,7 +384,8 @@ const croix =
     {/* Métadonnées d'instrumentation, injectées au build : `page-analytics.ts` les
        lit pour blog_article_viewed / blog_scroll_depth / blog_read_completed. Les
        valeurs viennent du frontmatter, donc identiques à l'historique PostHog
-       (category « Fiche Fiscalité », series_id « fiche-fiscalite »…).
+       (category « Fiche Fiscalité », series_id « fiche-fiscalite »…) ; le thème
+       (`theme`, § 9.fp) s'y ajoute.
        La page est une grille (le <main>) : <article> et son <header> n'y font pas de
        boîte, leurs enfants s'y placent directement (blog-article.css). */}
     <article
@@ -391,6 +393,7 @@ const croix =
       data-blog-slug={slug}
       data-blog-category={category}
       data-blog-series={seriesId}
+      data-blog-theme={theme.slug}
       data-blog-episode={episodeNumber ?? 0}
     >
       <header class="tete">

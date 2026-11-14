@@ -51,6 +51,8 @@ export function initPageAnalytics(emettre: Emetteur, chemin: string, posthog?: P
   // Pages de série : postérieures à la migration, sans équivalent historique —
   // l'événement est donc nouveau (§ 9.bf).
   if (chemin.startsWith('/blog/serie/')) return mesurerSerie(emettre);
+  // Pages de thème (§ 9.fp) : nouvelles elles aussi, sur le modèle des séries.
+  if (chemin.startsWith('/blog/theme/')) return mesurerTheme(emettre);
   // Un article : /blog/<slug>.
   if (chemin.startsWith('/blog/')) return mesurerArticle(emettre, posthog);
 }
@@ -161,6 +163,15 @@ function mesurerSerie(emettre: Emetteur): void {
   });
 }
 
+function mesurerTheme(emettre: Emetteur): void {
+  const main = safe(() => document.querySelector<HTMLElement>('main[data-blog-theme]'), null);
+  if (!main) return;
+  emettre('blog_theme_viewed', {
+    theme_id: main.dataset.blogTheme ?? '',
+    total_articles: safe(() => Number(main.dataset.blogTotal) || 0, 0),
+  });
+}
+
 /** Destinations qui valent conversion depuis un article : outils, offre, app. */
 const DESTINATIONS_CTA = /^\/(simulateur|tarifs|essai|guide-declarations|comparatif)(\/|$)|^https:\/\/app\.hippodoc\.fr\//;
 
@@ -174,6 +185,8 @@ function mesurerArticle(emettre: Emetteur, posthog?: PostHogLike): void {
     slug: article.dataset.blogSlug ?? '',
     category: article.dataset.blogCategory ?? '',
     series_id: article.dataset.blogSeries ?? '',
+    // Thème de l'article (§ 9.fp), à côté de la série : sur tous les événements de l'article.
+    theme: article.dataset.blogTheme ?? '',
     episode_number: safe(() => Number(article.dataset.blogEpisode) || 0, 0),
   };
 

@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "statut-contrats-revenus"
 readTime: "16 min"
 cover: "/blog/requalification-remplacement-cover.jpg"
 tags:

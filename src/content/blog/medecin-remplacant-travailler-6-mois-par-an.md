@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "statut-contrats-revenus"
 readTime: "8 min"
 cover: "/blog/bosser-6-mois-vivre-12-cover.jpg"
 tags:

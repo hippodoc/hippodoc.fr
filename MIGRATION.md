@@ -10511,7 +10511,7 @@ iOS.
    lecteur d'écran) ; inchangé ici (§ 9.fk).
 6. Avant la mise en ligne : un relevé Search Console (pages du blog, requêtes, extraits), pour
    comparer après ; puis surveiller deux semaines.
-7. Thèmes du blog : une seconde PR, après celle-ci.
+7. Thèmes du blog : une seconde PR, après celle-ci (faite : § 9.fp).
 8. Déclarer `sharp` dans `package.json` (version du verrou) à la prochaine mise à jour des paquets
    (§ 9.fm).
 
@@ -11372,7 +11372,7 @@ l'état final ; la construction d'avant les corrections est gardée pour compare
   (point 1) ; les fichiers ne sont pas touchés.
 
 **Fusion avec les thèmes (§ 9.fp, d'abord numérotée § 9.fn, numéro pris entre-temps sur `main` par la
-fenêtre produit) — à faire, pas ici** (S1, majeur). La branche des thèmes
+fenêtre produit) — faite depuis en § 9.fp (« Rebase sur les affiches »), pas ici** (S1, majeur). La branche des thèmes
 (`claude/loving-carson-pgk851-themes`) n'est pas rebasée sur celle-ci ; elle devra l'être avant la mise en
 ligne, par le chef d'orchestre. `git merge-tree --write-tree --name-only` entre cette branche et celle des
 thèmes (14 novembre, lecture seule) : **conflits dans `CLAUDE.md`, `MIGRATION.md`,
@@ -11441,6 +11441,616 @@ fichiers presque identiques dans le `srcset` de l'image en grand (sources de 902
 **Fichiers (corrections)** : `src/lib/affiche-bords.mjs` (retiré), `src/lib/blog-covers.ts`,
 `src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/pages/blog/[slug].astro`,
 `src/styles/blog-liste.css`, `src/styles/blog-article.css`, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fp Blog : les thèmes (13 novembre 2026)
+
+Seconde PR du blog, construite sur la première (§ 9.fj à 9.fm), puis rebasée sur les affiches
+(§ 9.fo ; voir « Rebase sur les affiches », en fin de section). Numérotée § 9.fn à la construction ;
+`main` a pris ce numéro entre-temps (la fenêtre produit). Le propriétaire : « ok pour les
+thèmes, fais la deuxième PR après », puis, pour tout ce chantier, « je te fais full confiance, je
+veux tes choix ». Les choix ci-dessous sont décidés.
+
+**Pourquoi.** Les trois séries classent par forme et par époque (les fiches numérotées d'Instagram
+de l'automne 2025, et « divers », affiché « Guides & Conseils », pour le reste), pas par sujet : un
+article sur l'impôt pouvait être dans les trois. Pages de série : 62 vues en 90 jours, 24
+visiteurs ; après `/blog`, 10 % des lecteurs ouvrent une page de série (PostHog). Recherches tapées
+dans `/blog` : facture, PAMC, acomptes, CARMF, ANCV, CPS, interne, PDSA, indemnités,
+« contribution économique ». Le corpus d'audience n'était pas fourni.
+
+**Les cinq thèmes**, dans l'ordre d'une carrière (ordre d'affichage partout) ; adresses figées dès
+la mise en ligne :
+
+| Ordre | Thème | Adresse | Articles |
+|---|---|---|---|
+| 1 | Débuter et s'organiser | `/blog/theme/debuter-organiser` | 10 |
+| 2 | Statut, contrats et revenus | `/blog/theme/statut-contrats-revenus` | 11 |
+| 3 | Cotisations et protection | `/blog/theme/cotisations-protection` | 7 |
+| 4 | Impôts et déclarations | `/blog/theme/impots-declarations` | 15 |
+| 5 | Budget et patrimoine | `/blog/theme/budget-patrimoine` | 5 |
+
+Classement des 48 articles (slug = fichier de `src/content/blog/`), contrôlé contre les fichiers
+(48 classés, aucun manquant, aucun en trop, aucun en double) :
+
+- **Débuter et s'organiser** : checklist-administrative-medecin-remplacant,
+  checklist-premier-jour-remplacement, checklist-ultime-medecin-remplacant,
+  trouver-facilement-tes-remplacements-medicaux, maitrise-ton-logiciel-metier-en-30-min,
+  outils-numeriques-indispensables-cabinet, inbox-zero-remplacant, pieges-debut-carriere-remplacant,
+  realites-remplacement-medical, syndrome-imposteur-5-astuces.
+- **Statut, contrats et revenus** : choix-mode-exercice, salariat-vs-liberal,
+  remplacement-salarie-guide-complet, remplacement-regulier-requalification,
+  retrocession-honoraires-medecin-remplacant, salaires-medecins-remplacants,
+  signer-contrat-remplacement, obtenir-sa-licence-de-remplacement,
+  facturation-electronique-medecin-remplacant, generer-facture-remplacement,
+  medecin-remplacant-travailler-6-mois-par-an.
+- **Cotisations et protection** : tout-comprendre-urssaf, tout-comprendre-carmf,
+  effet-ciseaux-regularisation-urssaf-medecin, cotisations-sociales-vs-impots, rspm-exemples-concrets,
+  prevoyance-madelin-medecin, conge-maternite-paternite.
+- **Impôts et déclarations** : calendrier-fiscal-remplacant, cfe-medecin-remplacant,
+  regime-fiscal-micro-bnc-vs-reel, remplir-declaration-2035, guide-impots-internes-remplacants,
+  frais-professionnels-deductibles, frais-pros-medecin-liberal-2026,
+  frais-pros-medecins-salaries-internes-2026, salariat-10-pourcent-ou-frais-reels,
+  voiture-bareme-kilometrique-ou-frais-reels-medecin, cheques-vacances-medecin-liberal,
+  pdsa-exoneration-gardes-regulees, zones-frr-exoneration-impot-medecin,
+  medecin-outre-mer-avantages-fiscaux, micro-bnc-exemples-concrets.
+- **Budget et patrimoine** : base-financiere-rempla, super-net-budget,
+  simulateur-super-net-combien-reste, enveloppes-investissement-pea-assurance-vie-per-cto,
+  interets-composes-meilleur-remplacement.
+
+**Ce qui est construit :**
+
+1. **Donnée.** Champ `theme` obligatoire dans le frontmatter (`z.enum` des cinq slugs,
+   `src/content.config.ts`) : un article sans thème, ou avec un thème inconnu, arrête la
+   construction (essayé sur une copie du dépôt : `InvalidContentEntryDataError`). Ajouté aux 48
+   fichiers, une ligne sous `seriesId:` : 48 lignes ajoutées, aucune retirée, aucun mot du texte ni
+   aucune date touchés. Registre : `src/lib/blog-themes.ts` (slug, nom, titre et description de la
+   page, ligne de contexte, introduction, fond de l'image de partage ; l'ordre du tableau est
+   l'ordre d'affichage), sur le modèle de `blog-series-slugs.ts`.
+2. **Pages de thème** (`src/pages/blog/theme/[theme].astro`), sur le modèle des pages de série :
+   même ciel, même feuille (`blog-liste.css`), mêmes lignes (`BlogCard.astro`), même fin de page.
+   Fil d'Ariane Accueil › Blog › Thème (et `BreadcrumbList`) ; `<h1>` = le nom ; la ligne de
+   contexte et le compte ; l'introduction sur une fiche ; les puces « Tous les articles » et des
+   cinq thèmes (celle de la page en `aria-current="page"`) ; les lignes dans l'ordre de `/blog`
+   (`byNewest`) ; l'appel au simulateur. Schéma `CollectionPage` et sa liste, comme les séries.
+   `data-blog-theme` et `data-blog-total` sur `<main>`.
+3. **`/blog`.** Les puces des thèmes (avec leur compte) remplacent celles des séries ; chaque ligne
+   dit son thème, et le numéro de la fiche à côté. La une, la recherche, l'ordre et les attributs
+   de mesure ne changent pas.
+4. **Pages de série** : en ligne, inchangées (prouvé plus bas), dans le sitemap. Elles sortent de
+   la navigation de `/blog` ; chaque article y mène toujours par sa pastille de série.
+5. **Page d'article** : fil d'Ariane Accueil › Blog › Thème › Article, à l'écran et dans le
+   `BreadcrumbList` (position 3 : la page de thème). La pastille de série et « Épisode N » ne
+   changent pas. `data-blog-theme` sur `<article>`, à côté de `data-blog-series`.
+6. **Mesure** (`src/lib/page-analytics.ts`, seul JS touché) : `blog_series_viewed` inchangé ;
+   nouvel événement `blog_theme_viewed` (`theme_id`, `total_articles`) sur les pages de thème, sur
+   le modèle de `mesurerSerie` ; propriété `theme` à côté de `category` et `series_id` sur les
+   événements de l'article (le même jeu de propriétés sert à la lecture, au défilement, à la fin
+   de texte, aux clics, au partage et aux questions). Appel des pages de thème :
+   `data-track="cta_simulateur_blog_theme"` et `cta_signup_blog_theme` (modèle
+   `cta_<destination>_<emplacement>`). Aucun script ajouté.
+7. **Image de partage** (`src/lib/image-partage.mjs`) : la pastille dit le thème ; un fond par
+   thème, pris dans les jetons de la DA : sable (Débuter et s'organiser), ciel (Statut, contrats et
+   revenus), nuit (Cotisations et protection : `--ink` vers `#1B3167`, texte blanc), eau profonde
+   (Impôts et déclarations), vert pâle (Budget et patrimoine : `--ok-bg`, vagues de la même
+   teinte). Aucun jaune. Les quatre poses tournent dans le thème, du plus ancien article au plus
+   récent (l'ordre de sa page, à l'envers : deux voisins n'ont pas la même, et un nouvel article
+   prend le dernier rang sans changer l'image des autres ; corrigé après relecture, voir plus
+   bas). Toutes les adresses changent (empreinte).
+8. **Sitemap** : +5 adresses (68 → 73 ; 70 → 75 pages construites).
+9. **`llms.txt`** : une section par thème (son introduction, le lien de sa page, ses articles dans
+   l'ordre de sa page), à la place du rangement par série ; chaque article une fois. RSS et
+   `/blog/recherche.json` inchangés.
+10. **`verify-site.mjs`** : contrôle « 4 sexdecies » (plus bas). Rien d'existant n'est assoupli ;
+    les pages de thème ne comptent pas comme des articles (comme les séries).
+
+**Décisions prises en construisant :**
+
+- **Étiquette des lignes.** Sur `/blog` : le thème en petites capitales (comme la série avant),
+  puis le numéro de la fiche avec le libellé de la pastille de l'article (« Fiche Fiscalité #4 »,
+  24 articles) ; « #4 » seul ne disait plus de quelle série. Sur une page de thème : le numéro seul
+  (le thème est celui de la page). Sur les pages de série : inchangée. Au téléphone, thème et
+  numéro tiennent rarement sur une ligne : le point qui les sépare est dans la marge gauche de la
+  seconde marque, rognée quand elle commence une ligne (aucune ligne ne commence par « · »).
+- **L'index du bas de `/blog`** est rangé par thème (cinq fiches dans l'ordre des thèmes, les
+  articles dans l'ordre de `/blog`, « Les 48 articles, classés par thème. ») : il liait les pages
+  de série, que le point 4 sort de la navigation de `/blog`. Écart au « rien d'autre ne change » du
+  cahier, imposé par ce point 4. À partir de 1 024 px, trois colonnes à la suite (`columns`) :
+  cinq fiches de 5 à 15 titres, une grille laissait des trous.
+- **La une n'est pas touchée** (cahier) : elle garde sa pastille de série (aujourd'hui « Guides &
+  Conseils », sur le congé maternité). Voir « Ce qui reste ».
+- **Pas de pastille au-dessus du `<h1>`** des pages de thème : sur les séries, elle redisait le nom,
+  que le fil d'Ariane et le titre disent déjà.
+- **Puces des thèmes au téléphone** : six noms longs ; deux colonnes égales, le nom et son compte
+  dans un même élément (`bl-puce`) pour que le compte suive le dernier mot : trois rangées à 360 et
+  393 px (148 px de haut ; 96 px pour les quatre puces de séries).
+- **`lastmod` des pages de thème** : la date de publication la plus récente de leurs articles, la
+  règle des pages de série (§ 9.bi). Le cahier disait « `updatedDate` sinon `pubDate` » en
+  renvoyant à cette même logique : la logique des séries l'emporte, la page n'affiche que des dates
+  de publication (corriger un article ne la change pas). Dates : 2026-03-18, 2026-09-20,
+  2026-10-05, 2026-10-05, 2026-04-21 (dans l'ordre des thèmes). Vérifiées par `verify-site.mjs` (7 f).
+- **Titres de page** : « <thème> du médecin remplaçant | Hippodoc » (« comme médecin remplaçant »
+  pour Débuter) ; celui de Statut, contrats et revenus ferait 60 signes avec la marque : il s'en
+  passe, comme les titres d'article longs (§ 9.bi).
+- **Ligne de contexte** en lignes égales (`text-wrap-style: balance`, pages de thème seulement) :
+  « fais. » restait seul au téléphone.
+- **Écart imposé par le code : le nom du script de PostHog change sur toutes les pages.**
+  `page-analytics.ts` est dans le module `analytics-init`, chargé par le script d'entrée de
+  PostHog ; le nom du module change, donc le contenu du script d'entrée, donc son empreinte, donc
+  la balise `<script src>` de chaque page. Le script d'entrée est identique au nom du module près
+  (vérifié) ; les 19 pages hors blog sont identiques à la PR 1 à ce nom près.
+
+**Contenu ajouté, à relire par le propriétaire.** Les seuls textes nouveaux de la PR, par thème
+(registre `src/lib/blog-themes.ts`, recopiés ici en entier). Règles suivies : tutoiement, phrases
+courtes, aucun chiffre, taux, seuil ni date (seuls les noms de formulaire 2035 et 2042-C PRO), ne
+nommer que ce que les articles du thème traitent (titres, descriptions et intertitres des 48 relus),
+pas de répétition mot pour mot entre l'introduction et la description (trois mots de suite en commun
+au plus, comptés sans la ponctuation et apostrophes coupées : « (PEA, » vaut « PEA » ; vérifié par
+script). Titres de 49 à 58 signes, descriptions de 142 à 151 signes, introductions de 65 à 77 mots
+en deux à quatre phrases. Corrigés après relecture (trois introductions disaient une chose fausse ou
+contredisaient un article du thème ; voir « Corrections après relecture », plus bas) : les textes
+ci-dessous sont ceux d'après.
+
+**Débuter et s'organiser** (`debuter-organiser`, fond sable)
+
+- Titre : « Débuter et s'organiser comme médecin remplaçant | Hippodoc »
+- Description : « Premier remplacement de médecin : RCP et Ordre avant, URSSAF et CARMF ensuite, checklist du premier jour, où chercher des remplas, logiciel du cabinet. »
+- Ligne de contexte : « Les démarches, les outils et les réflexes de tes premiers remplacements. »
+- Introduction : « Ta licence ou ta thèse en poche, ton premier remplacement approche. Tes démarches, dans l'ordre : l'assurance RCP et l'Ordre avant de commencer, la CPAM dès le premier remplacement, l'URSSAF et la CARMF dans les semaines qui suivent. Puis la checklist du jour J, où trouver des remplacements, le logiciel métier d'un nouveau cabinet. Et le quotidien : tes outils, tes messages en attente, les pièges des débuts et le doute qui va avec. »
+
+**Statut, contrats et revenus** (`statut-contrats-revenus`, fond ciel)
+
+- Titre : « Statut, contrats et revenus du médecin remplaçant »
+- Description : « Médecin remplaçant libéral ou salarié : licence et contrat de remplacement, rétrocession d'honoraires, facture au remplacé, revenus selon le statut. »
+- Ligne de contexte : « Sous quel statut tu remplaces, ce que tu signes et ce que tu gagnes. »
+- Introduction : « Libéral ou salarié, remplacement ou collaboration : tout part du cadre dans lequel tu exerces. Au programme : la licence de remplacement, le contrat à relire avant de signer, la rétrocession et la façon de la négocier, la facture à envoyer au médecin remplacé et ce que change la facturation électronique. Et pour choisir : ce que rapportent le libéral, le salariat et l'intérim, le nombre de jours qui te suffit, et le risque de requalification d'un remplacement trop régulier. »
+
+**Cotisations et protection** (`cotisations-protection`, fond nuit)
+
+- Titre : « Cotisations et protection du médecin remplaçant | Hippodoc »
+- Description : « Cotisations du médecin remplaçant : URSSAF, RSPM ou régime PAMC, CARMF, régularisation et modulation, prévoyance Madelin, congé maternité ou paternité. »
+- Ligne de contexte : « Ce que tu verses à l'URSSAF et à la CARMF, et ce qui te protège en retour. »
+- Introduction : « L'URSSAF et la CARMF calculent une partie de tes cotisations sur tes revenus passés, puis régularisent. Après une bonne année, la régularisation et le provisionnel relevé tombent ensemble : c'est l'effet ciseaux, et il se prépare. Tu trouves ici le choix entre RSPM et régime PAMC avec des exemples chiffrés, l'affiliation à la CARMF, ce qui sépare les cotisations de l'impôt, la prévoyance (avec ou sans Madelin) et ton congé de maternité ou de paternité. »
+
+**Impôts et déclarations** (`impots-declarations`, fond eau)
+
+- Titre : « Impôts et déclarations du médecin remplaçant | Hippodoc »
+- Description : « Impôts du médecin remplaçant : micro-BNC ou réel, déclarations 2035 et 2042-C PRO, frais réels déductibles, CFE, exonérations PDSA et FRR, calendrier. »
+- Ligne de contexte : « Déclarer tes revenus, déduire tes frais, ne rater aucune échéance. »
+- Introduction : « Micro-BNC ou régime réel : ce choix décide de ce que tu déclares et de ce que tu peux déduire. Viennent ensuite la 2035 ligne à ligne et son report sur la 2042-C PRO, la déclaration de l'interne qui remplace, les frais réels du libéral comme du salarié (voiture, repas), les chèques-vacances et la CFE. Puis les allègements d'impôt (gardes de PDSA, zones FRR, outre-mer) et le calendrier de tes échéances. »
+
+**Budget et patrimoine** (`budget-patrimoine`, fond vert)
+
+- Titre : « Budget et patrimoine du médecin remplaçant | Hippodoc »
+- Description : « Super-Net, budget et placements du médecin remplaçant : régularisations à prévoir, épargne de précaution, puis PEA, PER, CTO ou assurance vie. »
+- Ligne de contexte : « Ce qu'il te reste vraiment, et ce que tu en fais. »
+- Introduction : « Ton chiffre d'affaires n'est pas ce que tu peux dépenser : retires-en les cotisations et l'impôt, ce qui reste est ton Super-Net. Tu trouves ici comment bâtir ton budget à partir de lui, les régularisations à mettre de côté quand tes revenus montent, l'épargne de précaution à garder, puis où placer le reste (PEA, assurance vie, PER ou compte-titres) et pourquoi le temps compte autant que le montant. »
+
+S'y ajoutent, sans texte nouveau : le nom de chaque thème dans les puces, le fil d'Ariane et la
+pastille de l'image de partage ; « classés par thème » au lieu de « classés par série » sous l'index
+de `/blog` ; le libellé de la pastille d'article (« Fiche Fiscalité #4 ») sur les lignes de `/blog`
+et des pages de thème. **Contenu modifié : aucun** (aucun mot d'article ni de page existante).
+
+**Le contrôle de `verify-site.mjs`** (« 4 sexdecies », et le point 7 f pour les `lastmod`). Il
+échoue si un article n'a pas de thème connu (`data-blog-theme` de son `<article>`, comparé au
+registre, lu par expression régulière, et au frontmatter) ; si son fil d'Ariane, à l'écran ou dans
+le `BreadcrumbList`, ne mène pas à la page de son thème en position 3 (au nom du registre) puis à
+lui-même en position 4 ; si une page de thème ne liste pas exactement ses articles, une fois chacun
+(ses lignes `data-ph="blog_card"` et la liste de son `CollectionPage`, dans le même ordre), ou n'a
+pas `data-blog-theme` sur `<main>` ; si un article est listé par aucune page de thème ou par deux ;
+si le sitemap n'a pas exactement les pages de thème du registre, au nombre de `NB_THEMES` (5 : un
+sixième thème se décide) ; si les puces « Thèmes du blog » de `/blog` ne les lient pas toutes ; si
+le `lastmod` d'une page de thème n'est pas la publication la plus récente de ses articles.
+`PAGES_SANS_ENTETE`, les contrôles d'en-tête et de pied, `PLANCHER_FAQ` (aucune FAQ sur les pages de
+thème) : intacts. **Il mord** : 16 mutations sur une copie du `dist` (jamais le dépôt), les 16
+échouent (article sans thème, au thème d'un autre, au thème inconnu ; fil d'Ariane par la série ou
+sans le thème, à l'écran et dans le schéma ; ligne retirée, ajoutée ailleurs, en double ; schéma de
+la page amputé ; `<main>` sans attribut ; page de thème hors du sitemap ; sixième page dans le
+sitemap ; lien retiré des puces de `/blog` ; `lastmod` faux). La copie remise repasse. Il passe :
+73 pages, 5 814 liens internes (5 434 avant : les pages de thème, leurs puces et leurs lignes), les
+7 avertissements de la PR 1, les mêmes.
+
+**Écarts voulus, comptés** (`preuve.cjs` contre la PR 1, 52 pages, 11 clés ; chacun classé par
+script, `classer.cjs` : partir de la PR 1, appliquer les seuls écarts voulus, exiger l'égalité ;
+**0 écart non expliqué**) :
+
+| Pages | Clés différentes | Nature (toutes voulues) |
+|---|---|---|
+| 3 pages de série | aucune (11 / 11 identiques) | — |
+| 48 articles | `tete` | `og:image` et `twitter:image` : nouvelle adresse de l'image de partage (`/blog/partage/<slug>-<8 signes>.jpg`) ; le reste égal |
+| 48 articles | `jsonld` | `Article.image[0]` (même adresse) ; `BreadcrumbList` position 3 : la page du thème au lieu de la série ; le reste égal |
+| 48 articles | `liens` | le lien de série du fil d'Ariane devient le lien du thème (un pour un, même place) |
+| 48 articles | `mesure` | `data-blog-theme` ajouté après `data-blog-series` |
+| 48 articles | `main`, `mainSac` | le nom de la série devient le nom du thème dans le fil d'Ariane |
+| `/blog` | `titres` | les 3 fiches de l'index (séries) deviennent 5 (thèmes) ; les autres titres égaux, dans l'ordre |
+| `/blog` | `liens`, `main`, `mainSac` | puces : « Tous les articles (48) » égale, puis les 5 thèmes avec leur compte ; 47 lignes : mêmes adresses, même ordre, même texte hors étiquette, étiquette = thème (+ numéro de fiche pour 24) ; index : mêmes 48 liens d'articles, rangés par thème dans l'ordre de `/blog` |
+
+Identiques sur les 52 pages : `corps`, `faq`, `images`, `ids` ; `titres` sur 51 ; `/blog` garde sa
+`tete`, son `jsonld` et sa `mesure`. `preuve-corps.cjs` (corps des 48 articles) : mots, titres et
+ancres, liens différents : 0, 0, 0 ; un seul `<h1>` partout.
+
+**Pages hors blog et fichiers** (comparaison fichier par fichier des deux `dist`) : les 19 pages HTML
+hors blog sont identiques à la PR 1 au nom du script de PostHog près (une l'est octet pour octet).
+Feuille commune : `_astro_assets.BdxOyZgM.css`, inchangée. Fichiers changés en dehors des pages du
+blog : le script d'entrée de PostHog et le module `analytics-init` (renommés ; le premier identique
+au nom du second près ; le second passe de 7 169 à 7 439 octets), la feuille des listes (renommée :
+14,4 → 15,2 Ko, 3,7 → 3,9 Ko compressée), `sitemap-0.xml`, `llms.txt`, les 48 images de partage
+(renommées). Rien d'autre. **Pages de série** : HTML identique à la PR 1 aux deux noms près (script
+et feuille), et captures pleine page identiques au pixel près à 360, 393, 820 et 1 512 px.
+
+**Mesures** (Chromium) :
+
+| Page, largeur | Ligne d'article (petite / moyenne / grande) | Puces | Premier titre d'article |
+|---|---|---|---|
+| `/blog`, 393 | 97 / 114 / 135 → 97 / 123 / 135 px | 96 → 148 px | 973 → 1 042 px (la une : 515 → 567) |
+| `/blog`, 360 | 97 / 116 / 135 → 97 / 130 / 152 px | 148 → 148 px | — |
+| `/blog`, 820 | 203 / 227 / 252 → 203 / 244 / 288 px | 98 → 98 px | — |
+| `/blog`, 1 512 | 179 / 201 / 203 px, inchangé | 44 → 98 px (deux rangées) | — |
+| pages de thème, 393 | 96 à 135 px | 148 px | 808 à 887 px (séries : 925 à 992) |
+| pages de thème, 1 512 | 179 à 203 px | 98 px | 700 à 728 px (dans le premier écran ; séries : 776 à 804) |
+
+Les lignes de `/blog` grandissent au téléphone : sur les 24 qui ont un numéro de fiche, le thème et
+le numéro prennent deux lignes (WebKitGTK : les 24 aussi). Aucun défilement de côté à 320, 360,
+393, 600, 820, 1 024, 1 280, 1 512 et 1 920 px, plis fermés et ouverts, sur `/blog`, les cinq pages
+de thème, une page de série et un article par thème. Lighthouse mobile (`npx serve`, qui compresse ;
+trois passes alternées) : Impôts et déclarations 96 / 100 / 99, Débuter et s'organiser 97 / 99 / 97,
+`/blog` 98 / 98 / 98 (PR 1 : 98 / 97 / 98) ; accessibilité, bonnes pratiques et SEO à 100 ; CLS 0 ;
+LCP (l'introduction, un texte) 1,82 à 2,63 s sur les pages de thème, 2,30 à 2,34 s sur `/blog` (PR 1 :
+2,34 à 2,41 s). WebKitGTK 2.52 (une page de thème, une autre, `/blog`, à 1 512, 393 et 360 px) :
+aucun débordement, point rogné en début de ligne, ligne de contexte équilibrée, index en trois
+colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 regardées (planches) ;
+45 à 61 Ko ; titres lisibles, aucun jaune, mascotte entière ; cinq fonds distincts.
+
+**Pièges rencontrés :**
+
+- Le HTML n'a pas d'espace entre les éléments du fil d'Ariane ni entre les marques d'une ligne : un
+  texte extrait par `textContent` les colle (« Blog›Fiches Fiscalité› »). Les scripts de preuve en
+  tiennent compte.
+- Le nom du script de PostHog (voir « Décisions ») : toute retouche de `page-analytics.ts` change la
+  balise `<script>` de toutes les pages. Une preuve « pages hors blog identiques » se fait à ce nom
+  près, et elle seule.
+- Un `astro sync` lancé sur une copie du dépôt dont `node_modules` est un lien écrit dans le cache
+  du dépôt (`node_modules/.astro`) : le vider avant la construction suivante.
+- `.bl .bl-carte .chip { padding: 0 }` pèse plus qu'une règle de marque : la marge du point est
+  écrite avec le même chemin (`.bl .bl-carte .bl-marques-suite > *`), après elle.
+
+**Ce qui reste (faiblesses et suivis)** (mis à jour après relecture, voir plus bas) :
+
+1. La une de `/blog` garde sa pastille de série (« Guides & Conseils ») au milieu de lignes
+   étiquetées par thème ; le cahier la voulait inchangée. Une ligne de `index.astro` pour lui donner
+   le thème (`themeDe(featured.data.theme)?.nom`), si le propriétaire le veut.
+2. ~~Titres de lignes voisines à des hauteurs différentes~~ : corrigé après relecture (sous-grille).
+3. `/blog` au téléphone : la une descend de 52 px (six puces au lieu de quatre) et 24 lignes sur
+   47 ont une étiquette de deux lignes (thème, puis « Fiche Fiscalité #16 ») : ligne moyenne
+   113 → 122 px à 393 (PR 1 → thèmes), 115 → 129 px à 360. Sur les affiches (§ 9.fo), ce sont les
+   deux points les plus faibles : voir « Rebase sur les affiches », « Ce qui reste faible ».
+4. Pages de thème au téléphone : aucun titre d'article au premier écran (808 à 910 px à 393 × 692),
+   comme les séries (925 à 992). Sur les affiches : 835 à 937 px (séries : 943).
+5. `blog_theme_viewed` et la propriété `theme` : à créer dans les insights PostHog.
+6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel ; les aperçus de lien (WhatsApp,
+   LinkedIn) des nouvelles images une fois en ligne ; Search Console (les fils d'Ariane des 48
+   articles changent de position 3).
+7. Search Console, deux à trois mois après la mise en ligne : pages de série et pages de thème
+   visent les mêmes recherches (Fiches Fiscalité partage 10 articles sur 16 avec Impôts et
+   déclarations ; Fiches Pratiques, 6 sur 8 avec Débuter et s'organiser). Regarder quelle page
+   sort sur « fiscalité médecin remplaçant » et « débuter remplacement médecin » ; si une série
+   prend la place de son thème, décider alors (`noindex` ou redirection vers le thème).
+8. ~~Fusion avec § 9.fo (les affiches)~~ : faite le 14 novembre (« Rebase sur les affiches », en fin
+   de section).
+
+**Fichiers** : `src/lib/blog-themes.ts`, `src/content.config.ts`, les 48 `src/content/blog/*.md`
+(frontmatter), `src/pages/blog/theme/[theme].astro`, `src/pages/blog/index.astro`,
+`src/pages/blog/[slug].astro`, `src/components/BlogCard.astro`, `src/components/BlogAppel.astro`,
+`src/styles/blog-liste.css`, `src/lib/page-analytics.ts`, `src/lib/image-partage.mjs`,
+`astro.config.mjs`, `src/pages/llms.txt.ts`, `scripts/verify-site.mjs`, `MIGRATION.md`, `CLAUDE.md`.
+
+#### Corrections après relecture (13 novembre 2026)
+
+Trois relectures indépendantes de la PR des thèmes : contenu et SEO, design et lecteur, code et
+Safari (7,5 / 10 chacune). Chaque défaut a été vérifié avant d'être corrigé ; un défaut contraire
+à une décision du cahier est écarté, sauf s'il casse quelque chose de mesurable.
+
+**Corrigé :**
+
+1. **Trois introductions disaient une chose fausse ou contredisaient un article du thème**
+   (`src/lib/blog-themes.ts` ; textes d'après recopiés plus haut, « Contenu ajouté »).
+   - *Débuter et s'organiser* : « les démarches à faire avant (Ordre, CPAM, URSSAF, CARMF,
+     assurance RCP) » et, dans la description, « inscriptions à faire avant ». La checklist
+     administrative dit : RCP, Ordre (ou licence) et carte CPS avant ; la CPAM dès le premier
+     remplacement ; l'URSSAF dans les 8 jours ; la CARMF dans le mois. Devient : « l'assurance RCP
+     et l'Ordre avant de commencer, la CPAM dès le premier remplacement, l'URSSAF et la CARMF dans
+     les semaines qui suivent » (description : « RCP et Ordre avant, URSSAF et CARMF ensuite »).
+   - *Cotisations et protection* : « appellent tes cotisations avant de connaître ton revenu, puis
+     régularisent : c'est l'effet ciseaux ». L'article de l'effet ciseaux répond « Non » à « La
+     CARMF régularise-t-elle comme l'URSSAF ? » (complémentaire et ASV sans régularisation) et
+     définit l'effet ciseaux comme la régularisation et le provisionnel relevé qui tombent ensemble
+     après une bonne année. Devient : les mots de `super-net-budget` (« calculent une partie de tes
+     cotisations sur tes revenus passés, puis régularisent ») et de l'article.
+   - *Budget et patrimoine* : le Super-Net y était ce qui reste après « les cotisations, l'impôt et
+     les régularisations à venir ». Trois articles du thème le définissent après cotisations et
+     impôt ; les régularisations se mettent de côté ensuite. Devient : « retires-en les cotisations
+     et l'impôt, ce qui reste est ton Super-Net », puis les régularisations à mettre de côté.
+   - Moins graves : Statut promettait « ce que rapporte chaque mode d'exercice » (les articles
+     chiffrent le libéral, le salariat et l'intérim, pas les huit modes) ; Impôts rangeait les
+     chèques-vacances dans « les frais réels du libéral comme du salarié » (ils ne se déduisent
+     qu'au régime réel, et ne sont pas des frais réels) et promettait « toutes tes échéances ».
+   - Répétitions : la règle « trois mots communs au plus » était vérifiée avec la ponctuation (« (PEA, »
+     ≠ « PEA, ») : Budget en avait 5, Cotisations 4. Mesurée maintenant sans ponctuation et apostrophes
+     coupées : 3 au plus. La description de Budget commençait par le titre exact de `super-net-budget`
+     (même recherche visée) : changée. « Tu trouves ici » ouvrait les cinq introductions : deux.
+   - Toujours sans chiffre, taux, seuil ni date (contrôlé par script).
+2. **Image de partage stable** (`src/lib/image-partage.mjs`). Les poses tournaient du plus récent au
+   plus ancien : chaque parution décalait le rang, donc la pose et l'adresse de l'image, de tout le
+   thème (simulé : 10/10, 11/11, 7/7, 15/15 et 5/5 adresses changées). Elles tournent du plus ancien
+   au plus récent : un nouvel article prend le dernier rang, 0 adresse existante ne change (simulé
+   dans les cinq thèmes, 48 noms reconstitués égaux à ceux du `dist`), et deux voisins de la page
+   gardent des poses différentes (planches regardées). Seule exception : un article publié à la date
+   d'un article du même thème peut décaler ceux de cette date. Les 48 adresses changent une fois de
+   plus dans cette PR, où elles changeaient déjà.
+3. **Titres de lignes voisines alignés** (`blog-liste.css`). Quand deux étiquettes voisines n'avaient
+   pas le même nombre de lignes (le thème, « Fiche Fiscalité #16 », ou rien), les titres ne partaient
+   pas à la même hauteur : 40 rangées décalées sur `/blog` et 20 et 31 sur Statut et Impôts, cumulées
+   sur 17 largeurs, de 17 à 35 px. À partir de 640 px, les deux lignes d'une rangée partagent quatre
+   pistes (sous-grille) : étiquette (calée contre le titre), titre, extrait, date (en bas). 0 rangée
+   décalée partout, Chromium et WebKitGTK 2.52 ; hauteur moyenne des lignes inchangée à 6 px près.
+   Effet visible : les extraits voisins partent aussi à la même hauteur (sous un titre plus court, la
+   place vide est entre le titre et l'extrait, plus entre l'extrait et la date). Portée : `/blog` et
+   pages de thème (`.bl:not([data-blog-serie])`) ; sans sous-grille, la ligne d'avant.
+4. **Puces des thèmes en rangées égales**, sur `/blog` comme sur les pages de thème : deux colonnes
+   jusqu'à 699 px (2 + 2 + 2), trois à partir de 700 px (3 + 3 ; de 700 à 767 px, un nom peut prendre
+   deux lignes, la puce garde 44 px). Avant : 2 + 1 + 2 + 1 à 560 px sur `/blog` (206 px de haut, 152
+   maintenant), 3 + 2 + 1 à 700 et 768 px, 4 + 2 et 5 + 1 à l'ordinateur (« Budget et patrimoine »
+   seul). Le nom et son compte en lignes égales (`text-wrap-style: balance`) : « (10) », « (15) »,
+   « (5) » ne restent plus seuls à 393 px. Deux classes (`.bl-series.bl-themes`) : les règles des
+   séries à partir de 560 px sont écrites plus bas dans la feuille.
+5. **Finitions de la feuille** : l'introduction des pages de thème sans mot seul en fin de dernière
+   ligne (`text-wrap-style: pretty` : « régulier. », « échéances. » réglés) ; « Fiche Fiscalité #14 »
+   insécable.
+6. **Aucune affiche chargée en priorité sur les pages de thème** : `eager` retiré (la première
+   affiche n'est pas l'élément LCP, qui est l'introduction, et elle est sous le premier écran du
+   téléphone). Même choix que § 9.fo pour les séries.
+7. **`verify-site.mjs`, quatre trous bouchés** (contrôle « 4 sexdecies ») : le fil d'Ariane de la
+   page de thème elle-même (écran : Accueil, Blog, son nom en `aria-current` ; `BreadcrumbList` :
+   trois positions, la troisième est la page) ; une seule puce en `aria-current`, la sienne ; ses
+   lignes dans l'ordre de `/blog` ; l'étiquette de chaque ligne de `/blog` = le nom du thème de son
+   article. En l'écrivant, le contrôle d'ordre a d'abord échoué sur Cotisations : la une de `/blog`
+   (le congé maternité, `featured`) est sortie de l'ordre de `/blog` ; elle n'est donc pas comparée
+   (les autres lignes, si). **24 mutations** sur une copie du `dist` (les 16 d'avant, 8 nouvelles :
+   fil d'Ariane de la page par une série ou au nom d'un autre thème, `BreadcrumbList` par une série,
+   `aria-current` sur une autre puce, deux puces marquées, lignes et schéma à l'envers, ligne de
+   `/blog` au thème d'un autre ou sans thème) : les 24 échouent ; la copie remise repasse.
+8. **`BlogCard.astro`** : prop `theme` typée (`ThemeSlug`) ; commentaire « quatre pages de liste »
+   corrigé.
+
+**Écarté (et pourquoi) :**
+
+- *La une de `/blog` dit encore la série* (deux relectures) : le cahier la fige. À décider par le
+  propriétaire (une ligne, point 1 de « Ce qui reste »).
+- *`articleSection` garde la catégorie de série* (« Fiche Fiscalité ») alors que le fil d'Ariane dit
+  le thème : rien d'incohérent pour un moteur (rubrique de forme d'un côté, chemin de l'autre), et ce
+  serait un changement de JSON-LD de plus sur 48 articles. Suivi possible dans une PR suivante.
+- *La licence de remplacement dans « Statut, contrats et revenus »* : classement du cahier.
+- *Étiquette courte au téléphone* (« #16 » seul, « Fiche Fiscalité » masqué) : à côté du nom du
+  thème, « #16 » se lirait « 16ᵉ article du thème », alors que c'est la 16ᵉ fiche fiscalité ; le cahier
+  garde la numérotation. Le coût reste noté (point 3 de « Ce qui reste »).
+- *Premier écran du téléphone sans article* (puces sous la liste) : le cahier fait les pages de thème
+  sur le modèle exact des séries ; gain nul à 360 × 640. Noté (point 4).
+- *Fonds sable et vert proches* (ΔE 8,2) : ils se distinguent côte à côte, et par leurs vagues ; le
+  vert plus franc proposé (`#C2E6CF`) n'est pas un jeton de la DA, que le cahier impose. Au
+  propriétaire de choisir.
+- *Vide sous la première colonne de l'index du bas de `/blog`* (≥ 1 280 px) : placer les fiches à la
+  main ferait zigzaguer le clavier ; bas de page, faible priorité.
+- *Image de partage propre aux pages de thème* : `/blog` et les séries montrent la même image
+  générique ; à faire pour les trois ensemble, dans une PR suivante.
+- *Squelette commun aux pages de série et de thème* (composant) : il toucherait
+  `serie/[series].astro`, que § 9.fo modifie aussi ; à faire après la fusion des deux chantiers, avec
+  la preuve « séries identiques octet pour octet ».
+- *Conflits avec § 9.fo* : ce n'est pas un défaut de code à corriger ici (voir ci-dessous).
+
+**Conflits avec § 9.fo (les affiches).** (Écrit avant le rebase, qui les a résolus : voir « Rebase sur
+les affiches », plus bas.) Le risque annoncé à la construction (la numérotation) n'était pas le bon :
+la section des affiches venait après celle des thèmes. Ce sont trois fichiers de code. `git merge-tree` entre
+cette branche et la branche de la PR 1 (tête `aca92f1`, § 9.fo partie A) : conflits dans
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/styles/blog-liste.css`,
+`MIGRATION.md` et `CLAUDE.md` (les mêmes cinq fichiers avant et après ces corrections ; la page de
+thème, le registre, l'image de partage et `verify-site.mjs` fusionnent sans conflit). Cette branche
+n'est pas rebasée sur § 9.fo : le chantier continue (une partie B change encore `BlogCard` et la
+feuille), et les preuves de cette PR se font contre la PR 1 figée. À la fusion, dans l'ordre que
+choisira le chef d'orchestre :
+- `blog-liste.css` : § 9.fo met les lignes en une colonne de 640 à 1 023 px et centre le texte sur
+  l'affiche de 144 px ; la sous-grille du point 3 ne sert alors qu'à partir de 1 024 px (deux
+  colonnes) et doit être réconciliée avec ce centrage (borner son `@media` à 1 024 px, et choisir
+  entre texte centré et titres alignés), puis remesurée ;
+- `BlogCard.astro` : garder les props de § 9.fo (`bords`, nouvelles `sizes`) et celles des thèmes
+  (`etiquette`, `theme`, `category`, `categoryNumber`) ;
+- `index.astro` : garder la une de § 9.fo et les puces, étiquettes et l'index des thèmes ;
+- `theme/[theme].astro` n'a plus `eager` (point 6) : il suit déjà les séries de § 9.fo ;
+- puis toutes les preuves : `verify-site.mjs`, `preuve.cjs`, `preuve-corps.cjs`, pixels des séries,
+  pages hors blog.
+
+**Preuves après corrections** (construction propre, cache vidé ; contre la PR 1 servie sur 4350) :
+- `verify-site.mjs` passe : 73 pages, 5 814 liens internes, les 7 avertissements de la PR 1 ; feuille
+  commune `_astro_assets.BdxOyZgM.css`, inchangée ; 75 pages construites.
+- `preuve-corps.cjs` : 48 articles, mots, titres et ancres, liens du corps différents : 0, 0, 0.
+- `preuve.cjs` (52 pages, 11 clés) : même bilan qu'avant (`corps`, `faq`, `images`, `ids` identiques
+  sur 52 ; les trois séries identiques sur les 11 clés) ; `classer.cjs` : **0 écart non expliqué**.
+- Pages hors blog : les 19 identiques à la PR 1 au nom du script de PostHog près (le même qu'avant).
+- Pages de série : captures pleine page identiques au pixel à la PR 1, à 360, 393, 560, 640, 700,
+  768, 820, 1 024 et 1 512 px.
+- Mesures (Chromium, réseau bloqué hors du site, 17 largeurs de 320 à 1 920 px, `/blog`, cinq pages de
+  thème, deux séries) : aucun défilement de côté, 0 rangée décalée, puces en 2 + 2 + 2 ou 3 + 3 sur les
+  thèmes (séries inchangées), aucun compte seul, aucun mot seul en fin d'introduction. WebKitGTK 2.52
+  (`/blog`, deux pages de thème, une série ; 1 512, 1 024, 820, 700, 600, 393 px) : mêmes résultats,
+  sous-grille lue, `pretty` lu.
+- Lighthouse mobile (`npx serve`, deux à cinq passes) : Impôts 99 et 97, Statut 98, 93, 98, 97, 98
+  (le 93 : un temps de blocage de 295 ms, isolé), `/blog` 98 et 99 ; accessibilité, bonnes pratiques
+  et SEO à 100 ; CLS 0.
+- Les 48 images de partage regardées (planches, dans l'ordre des pages) : poses voisines différentes,
+  42 à 62 Ko.
+
+#### Rebase sur les affiches (§ 9.fo, 14 novembre 2026)
+
+Les affiches (§ 9.fo, PR #155, branche `claude/loving-carson-pgk851`) passent avant les thèmes. Cette
+branche est rebasée sur leur tête (`731f2e0`, elle-même sur `main` `f53b865`), pour devenir la PR
+suivante. Rien n'est poussé. Sauvegarde de la branche d'avant : `sauvegarde-themes-avant-rebase`
+(`b190745`).
+
+**Renumérotation.** `main` a pris § 9.fn (la fenêtre produit, #154) : les thèmes deviennent § 9.fp,
+partout. `git filter-branch` sur les 16 commits, avant le rebase : « 9.fn » → « 9.fp » dans les
+fichiers (39 lignes de 15 fichiers ; la base n'en contenait aucun, tous désignaient les thèmes) et
+dans les messages. Vérifié par script : entre la sauvegarde et la branche renumérotée, seules ces
+39 lignes diffèrent, au numéro près ; après le rebase, les « 9.fn » de l'arbre sont ceux de la tête
+des affiches (la fenêtre produit, et l'ancien numéro des thèmes cité dans § 9.fo), plus cinq lignes
+de cette sous-partie, qui racontent la renumérotation ; aucun des 16 messages renumérotés n'en
+contient (seul le message du commit de cette sous-partie le cite, pour la fenêtre produit ; script
+`themes/rebase/verif-9fn.sh` du dossier de travail). Une phrase devenue fausse au passage (« § 9.fo
+est numéroté après § 9.fp », dans « Conflits avec § 9.fo ») est réécrite.
+
+**Conflits, et ce qui a été gardé** (les deux chantiers gardent leur contenu) :
+
+- `BlogCard.astro` (commit des pages de thème) : les props des thèmes (`etiquette`, `theme`,
+  `category`, `categoryNumber`) et le `sizes` par affiche de § 9.fo (`largeurDansCadre`,
+  `loading="lazy"`, sans priorité) ; `eager` retiré, comme des deux côtés. En tête du fichier, le
+  paragraphe « Étiquette » des thèmes, puis « Les affiches » de § 9.fo (l'ancien « Format des
+  couvertures », périmé, retiré).
+- `blog/index.astro` (commit « /blog navigue par thème ») : les imports des deux côtés (`BLOG_THEMES`,
+  `themePath` ; `srcsetAffiche`, `largeurDansCadre`) ; `seriesPath` et `byEpisode` n'ont plus
+  d'appelant. La une de § 9.fo (`srcset`, `sizes`, préchargement) est intacte : HTML identique
+  octet pour octet à celui des affiches.
+- `blog-liste.css` (commits des pages de thème et de la sous-grille) : les règles de l'affiche, de la
+  une et de la mise en page de § 9.fo font foi (une colonne de lignes de 640 à 1 023 px, deux à
+  partir de 1 024 px) ; s'y ajoutent les puces, les étiquettes et l'index des thèmes. Le filet entre
+  deux lignes de § 9.fo est écrit après les puces. La sous-grille des thèmes (titres de deux lignes
+  voisines alignés) ne sert que là où il y a deux colonnes : déplacée après le bloc de 1 024 px et
+  bornée à `min-width: 1024px`.
+- `MIGRATION.md` : § 9.fn (fenêtre produit), § 9.fo (affiches), § 9.fp (thèmes), dans cet ordre.
+  `CLAUDE.md` : les puces « Les affiches » et « Articles connexes » de § 9.fo ; « `/blog` et les
+  séries » devient « `/blog`, les séries et les thèmes », avec le texte des affiches (l'ancien
+  « carré de 64 px » retiré) ; puis la puce « Thèmes », mise à jour (sous-grille à partir de
+  1 024 px, densité, la une).
+- Sans conflit : `verify-site.mjs` (les changements de `main` #154, quatre onglets de la fenêtre
+  produit, et le contrôle « 4 sexdecies » des thèmes coexistent), `[slug].astro`, la page de thème,
+  le registre, l'image de partage, le sitemap, `llms.txt`. Le commit des pages de thème passe encore
+  `eager={i === 0}` à une carte qui n'a plus cette prop (ignorée) ; le commit qui le retirait le
+  retire toujours.
+- Les pages de thème suivent exactement la règle des affiches de `/blog` : affiche entière, à son
+  format, même case, mêmes `srcset` et `sizes`, `loading="lazy"`, aucune priorité (contrôlé, plus bas).
+
+**Un commit de plus : la sous-grille garde le texte centré sur l'affiche.** Telle que rebasée, elle
+alignait les titres (0 rangée décalée à partir de 1 024 px, contre 3 à 10 sur 23 sur `/blog` des
+affiches seules) mais décentrait le texte sur l'affiche de 144 px, règle des lignes de § 9.fo :
+jusqu'à 9,8 px sur `/blog`, et 24,8 à 37,1 px sur les pages de thème, où une piste d'étiquette vide
+(deux lignes sans numéro de fiche) prenait toute la place libre et poussait le titre vers le bas.
+Trois essais, par feuille injectée et mesurés (`rangees.cjs`) : six pistes (deux pistes vides en haut
+et en bas) font grandir les lignes de 20 à 47 px, rejeté ; des pistes de taille plafonnée envoient
+toute la place au-dessus du texte (74 px), rejeté ; **retenu** : un `::before` vide dans la piste de
+l'étiquette (elle n'est jamais vide), la date calée en haut de sa piste, l'affiche au milieu de la
+ligne, et la colonne écrite pour chaque élément du texte (sans elle, le placement automatique mettait
+l'étiquette dans une seconde colonne, à côté du `::before`, et les lignes grandissaient jusqu'à
+351 px). La place libre se partage alors entre les quatre pistes, autant au-dessus du texte
+qu'au-dessous.
+
+| Construction rebasée, à partir de 1 024 px | Rangées décalées | Écart des milieux texte / affiche (médiane, max) | Lignes |
+|---|---|---|---|
+| affiches seules (`/blog`) | 3 à 10 sur 23 | 0 / 0 px | 228 px |
+| thèmes rebasés, sous-grille telle quelle | 0 | `/blog` 3,2 / 9,8 ; thèmes jusqu'à 24,8 / 37,1 px | 228 à 244 px |
+| **retenu** | **0** | **`/blog` 1,0 à 3,2 / 9,8 ; thèmes 3,2 à 8,4 / 15,0 px** | **228 à 244 px** (244 : à 1 024 px seulement, sur `/blog`) |
+
+L'écart qui reste est celui d'une ligne sans étiquette à côté d'une ligne qui en a une : son titre
+est aligné sur celui de sa voisine. Les pages de série n'y sont pas soumises (identiques au pixel,
+plus bas). De 640 à 1 023 px, rien ne change : une colonne, texte centré, lignes de 228 px, comme les
+affiches.
+
+**La densité à 360 px (décision : accepter 92 %).** Avec les étiquettes des thèmes, 24 lignes de
+`/blog` sur 47 ont une étiquette de deux lignes au téléphone (le thème, puis « Fiche Fiscalité #16 ») :
+
+| `/blog`, 3 articles entiers sous l'en-tête | Affiches seules | Thèmes rebasés |
+|---|---|---|
+| 360 × 640, pli fermé / ouvert | 100 / 100 % (lignes de 139 à 140 px) | **91,9 / 92,2 %** (lignes de 140 à 166 px) |
+| 393 × 692 | 100 / 100 % | 100 / 100 % (lignes de 150 à 151 px) |
+| 402 × 680 (l'iPhone du propriétaire) | 96,2 / 96,4 % | 96,2 / 96,4 % |
+| pages de thème, 360 × 640 et 393 × 692 | — | 100 % (étiquette d'une ligne : le numéro seul) |
+
+Essayé, une seule chose, en CSS seule, sans changer l'ordre ni les mots du HTML : l'étiquette sur
+une ligne au téléphone. Mesure d'abord : à 360 px, la colonne de texte fait 189 px et l'étiquette en
+demande 320 à 365 (il en manque 131 à 176 ; aucune des 24 ne tient, ni à 320, 375, 393 ou 412 px).
+Forcée sur une ligne (`nowrap`), la densité revient à 100 %, mais les 24 étiquettes sont coupées, et
+le numéro de fiche disparaît entièrement sur 8 d'entre elles à 360 px (3 à 393 px). Rejeté : rien ne
+doit se couper. Réduire le corps jusqu'à tenir demanderait 7 px. Les 92 % sont donc acceptés : à
+360 × 640, il arrive (8 % des positions du défilement) qu'on ne voie que deux articles entiers et
+une partie du troisième. Scripts : `themes/rebase/densite/` (densite.cjs, largeurs-etiquettes.cjs,
+coupe.cjs, essai-une-ligne.css).
+
+**Preuves, sur la construction finale** (cache `node_modules/.astro` vidé avant la première ; contre
+la construction des affiches, `wt-zoom/dist`, servie sur 4370 ; la branche est servie sur 4360) :
+
+- `npm run build` : 75 pages. `verify-site.mjs` passe : 73 pages, 5 862 liens internes (5 814 sur les
+  thèmes avant le rebase, plus les 48 `src` de l'affiche en grand de § 9.fo), les 7 avertissements des
+  affiches. Feuille commune `_astro_assets.BdxOyZgM.css`, même nom ; feuille de l'article
+  `_slug_.CORJJGdu.css`, même nom que sur les affiches.
+- `preuve-corps.cjs` (48 articles) : mots, titres et ancres, liens du corps différents : 0, 0, 0 ;
+  un seul `<h1>` partout.
+- `preuve.cjs` (52 pages, 11 clés) : page par page, le même profil d'écarts que contre la PR 1 avant
+  le rebase (`corps`, `faq`, `images`, `ids` identiques sur 52 ; les trois séries identiques sur les
+  11 clés ; écarts des thèmes sur les 48 articles et `/blog`). `classer.cjs` : 48 articles aux écarts
+  voulus (tête, JSON-LD, liens, mesure, texte de `<main>`), `/blog` conforme (puces, 47 lignes dont 24
+  avec numéro de fiche, index en cinq fiches), **0 écart non expliqué**.
+- Fichiers (`diff-dist.mjs`) : les 19 pages HTML hors blog identiques aux affiches au nom du script
+  de PostHog près (une octet pour octet) ; les trois séries identiques aux deux noms près (script de
+  PostHog, feuille des listes), et **au pixel** en pleine page à 360, 393, 640, 820, 1 024, 1 280 et
+  1 512 px. Scripts : seuls le script d'entrée de PostHog et `analytics-init` changent de nom (le
+  premier identique au nom du second près) ; ce sont les noms qu'ils avaient sur les thèmes avant le
+  rebase, donc le même contenu. Les pages de thème ont les scripts d'une page de série, aucun attribut
+  `on…`. Changent aussi, comme avant : `sitemap-0.xml`, `llms.txt`, les 48 images de partage.
+- Règle des affiches : sur les cinq pages de thème, 48 affiches sur 48 chargées, entières, à leur
+  format, à la hauteur de leur case, `loading="lazy"`, sans priorité, avec les mêmes `src`,
+  `srcset`, `sizes` et dimensions, et le même fichier choisi par le navigateur, que la même affiche
+  dans `/blog` des affiches (393 × 692 et 1 512 × 800, `mesures/affiches.cjs`) ; `/blog` : 47 lignes
+  sur 47 identiques. Article : vignette et popover identiques octet pour octet sur les 48 articles ;
+  l'affiche s'ouvre en grand, focus sur « Fermer » (captures, 393 et 1 512 px).
+- Aucun défilement de côté : `/blog` et les cinq pages de thème, plis ouverts, à 320, 360, 393, 560,
+  700, 768, 1 024, 1 280 et 1 920 px.
+- Lighthouse mobile (`npx serve`, qui compresse ; trois passes alternées avec les affiches servies de
+  même) : `/blog` 97, 97, 97 (affiches 97, 97, 97) ; Impôts et déclarations 97, 96, 97 ; Statut,
+  contrats et revenus 97, 97, 96 (Fiches Fiscalité sur les affiches : 95, 96, 99) ; accessibilité,
+  bonnes pratiques et SEO à 100 ; CLS 0. LCP : un texte (le titre de `/blog`, l'introduction du
+  thème), 2,40 à 2,64 s.
+- WebKitGTK 2.52 (méthode de CLAUDE.md ; `/blog`, Impôts, Statut ; 1 512 et 1 024 px, 393 et 360 px
+  dans un cadre) : sous-grille lue ; 0 rangée décalée ; écart des milieux 15,3 px au plus ; lignes de
+  228 px (1 024 px, `/blog` : 228 à 239), 150 px à 393, 139 à 161 px à 360 ; affiches toutes chargées,
+  à la hauteur de leur case, à leur format ; aucun défilement de côté. Ce n'est ni Safari ni un iPhone.
+- Scripts et résultats : `themes/rebase/` (preuves, mesures, densite, lighthouse, webkit, captures).
+
+**Ce qui reste faible** (après le rebase) :
+
+1. **La une de `/blog` au téléphone sort du premier écran.** Les six puces des thèmes font trois
+   rangées de 44 px (148 px, 96 avant) : la une descend de 52 px. Son affiche, que § 9.fo avait mise
+   dans le premier écran après le retour du propriétaire, n'y est plus entière, et la fin de son
+   titre passe sous l'écran :
+
+   | Format | Affiche de la une, affiches seules | Thèmes rebasés | Bas du titre (affiches → thèmes) |
+   |---|---|---|---|
+   | 393 × 692 | 537 à 667 px, 100 % visible | 589 à 719 px, 79 % | 668 → 720 px |
+   | 402 × 680 (son iPhone) | 100 % | 65 % | 670 → 724 px |
+   | 390 × 664 | 98 % | 58 % | 668 → 720 px |
+   | 375 × 667 | 100 % | 63 % | 690 → 742 px |
+   | 360 × 640 | 18 % | 18 % (inchangé) | 771 px |
+   | 412 × 732, 430 × 739 | 100 % | 100 % | — |
+
+   Non corrigé ici : aucune règle de feuille ne rend 46 px sans toucher aux puces (44 px de haut au
+   moins, pour le doigt) ni à l'ordre de la page. À décider : (a) les puces des thèmes sur une seule
+   rangée qui défile de côté au téléphone (la une remonterait de 104 px, au-dessus de sa place des
+   affiches ; trois ou quatre thèmes hors de l'écran) ; (b) la une avant les puces au téléphone (elle
+   remonterait d'environ 160 px ; les puces passeraient sous elle, hors du premier écran, et l'ordre
+   du HTML ou du clavier changerait) ; (c) accepter. Gains calculés, non construits.
+2. Densité : 92 % à 360 × 640 (plus haut, accepté) ; à 1 024 × 768 (tablette couchée), 90,5 % pli
+   fermé, 97,2 % pli ouvert (100 % sur les affiches seules) : 6 étiquettes sur 8 y prennent deux
+   lignes (colonne d'environ 240 px). Mesuré aussi sans la sous-grille : 90,5 %, et 14 rangées
+   décalées. 820 × 1 180, 768 × 1 024, 1 280 × 800, 1 512 × 800 : 100 %.
+3. À partir de 1 024 px, le texte n'est plus centré au pixel sur l'affiche (15 px au plus, plus haut),
+   le prix de titres alignés.
+4. `/blog` s'allonge au téléphone : 7 140 → 7 361 px à 360 et 6 984 → 7 190 px à 393, pli fermé
+   (sous les 7 880 px de la borne des affiches) ; plus court à partir de 1 024 px (4 826 → 4 729 px à
+   1 024, 4 648 → 4 573 px à 1 280 et au-delà, sous la borne de 4 997 px).
+5. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel en HTTP/2 sur réseau bridé.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

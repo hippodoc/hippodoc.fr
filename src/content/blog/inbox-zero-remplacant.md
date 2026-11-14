@@ -6,6 +6,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "debuter-organiser"
 episodeNumber: 11
 readTime: "10 min"
 cover: "/blog/inbox-zero-remplacant-cover.jpg"

@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "statut-contrats-revenus"
 episodeNumber: 3
 readTime: "4 min"
 cover: "/blog/facture-generation-cover.png"

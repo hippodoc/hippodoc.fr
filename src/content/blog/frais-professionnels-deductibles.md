@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#5"
 seriesId: "fiche-fiscalite"
+theme: "impots-declarations"
 episodeNumber: 5
 readTime: "7 min"
 cover: "/blog/frais-professionnels-deductibles-cover.png"
