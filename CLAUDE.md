@@ -462,9 +462,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   des listes ne se chargent pas en priorité. Élément LCP : un texte au téléphone (le titre de
   `/blog`, le texte d'une série) ; à partir de 768 px, sur `/blog`, souvent l'affiche de la une
   (une 0,805 : 242 × 300 px), servie par son préchargement (`fetchpriority="high"`) ; PageSpeed
-  signale son `loading="lazy"`, gardé pour le téléphone, sans effet sur la note. Fusion avec la
-  branche des thèmes (§ 9.fn) : à faire ; fichiers en conflit et points à remesurer (densité à
-  360 px) en § 9.fo, « Fusion avec § 9.fn ».
+  signale son `loading="lazy"`, gardé pour le téléphone, sans effet sur la note.
   Deux articles ont la même affiche (`facturation-electronique-medecin-remplacant`,
   `generer-facture-remplacement`) : décision de contenu laissée au propriétaire.
 - **`/blog` et les séries** (§ 9.fk, § 9.fo) : des lignes sur une feuille blanche (`BlogCard.astro`,

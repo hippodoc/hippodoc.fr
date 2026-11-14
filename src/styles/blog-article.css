@@ -164,9 +164,12 @@
    clavier ne sort plus de l'affiche (Tab va de « Fermer » à l'image, puis au navigateur), un lecteur d'écran
    n'y lit plus qu'elle (le popover n'est pas modal de lui-même). Et la page ne défile plus sous elle, au
    doigt comme à la molette : la barre de défilement qui disparaît change la mise en page d'une page qu'on
-   ne voit pas, et revient à la fermeture. Sans `:popover-open` ou sans `:has()`, ces règles sont ignorées. */
-html:has(.fiche .grande:popover-open) { overflow: hidden; }
-html:has(.fiche .grande:popover-open) body { visibility: hidden; }
+   ne voit pas, et revient à la fermeture. Sans `:popover-open` ou sans `:has()`, ces règles sont ignorées.
+   À l'écran seulement : à l'impression, l'affiche est retirée (`@media print`, plus bas), la page doit rester. */
+@media screen {
+  html:has(.fiche .grande:popover-open) { overflow: hidden; }
+  html:has(.fiche .grande:popover-open) body { visibility: hidden; }
+}
 
 /* ───────── Le sommaire ─────────
    Téléphone et tablette : une ligne « Sommaire » en pli natif, en tête de la feuille. Ordinateur : le rail. */
@@ -524,6 +527,8 @@ html:has(.fiche .grande:popover-open) body { visibility: hidden; }
 .fiche .carte:focus-visible { outline-offset: -3px; }
 .fiche .carte img { justify-self: center; width: auto; max-width: none; height: 120px; border-radius: 10px; }
 .fiche .carte > div { min-width: 0; }
+/* Une affiche introuvable à la construction : la carte n'a pas d'image, le texte prend toute la ligne. */
+.fiche .carte:not(:has(img)) { grid-template-columns: minmax(0, 1fr); }
 .fiche .carte p { margin: 0; }
 .fiche .carte-titre { font-size: 0.9375rem; font-weight: 620; line-height: 1.3; text-wrap-style: pretty; }
 .fiche .carte .carte-duree { margin-top: 1px; font-size: 0.875rem; color: var(--ink-3); }

@@ -11424,6 +11424,19 @@ la fusion :
 - Non vérifié : Safari réel et iPhone, Firefox, VoiceOver, un vieux navigateur sans popover (raisonné sur
   la feuille), aperçu Vercel en HTTP/2 sur réseau bridé.
 
+**Après les deux vérifications finales** (14 novembre 2026 ; navigateur : « prête », conformité :
+« conforme », aucun défaut bloquant ni majeur). Trois défauts mineurs corrigés :
+- imprimer un article avec l'affiche ouverte donnait des pages blanches (la page masquée, l'affiche
+  retirée à l'impression) : les deux règles qui masquent la page sont sous `@media screen` ;
+- une carte d'article connexe sans image (affiche introuvable à la construction, cas qui n'arrive pas
+  aujourd'hui) gardait la colonne de 96 px de l'image et écrasait son titre : une seule colonne dans ce
+  cas (`.carte:not(:has(img))`) ;
+- CLAUDE.md citait § 9.fn, absent de `main` : la note de fusion ne vit plus qu'ici.
+Laissés tels quels : à 360 × 640, l'affiche de la une commence à 619 px (même position sur `main`, pas
+une régression) ; les affiches de 450 px restent douces en grand sur tablette (voir plus haut) ; cinq
+fichiers presque identiques dans le `srcset` de l'image en grand (sources de 902 à 908 px, à côté du
+900 px).
+
 **Fichiers (corrections)** : `src/lib/affiche-bords.mjs` (retiré), `src/lib/blog-covers.ts`,
 `src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/pages/blog/[slug].astro`,
 `src/styles/blog-liste.css`, `src/styles/blog-article.css`, `MIGRATION.md`, `CLAUDE.md`.
