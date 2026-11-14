@@ -67,7 +67,7 @@ function getReferrerSource(): string {
 }
 
 export default function SimulateurApp() {
-  const { loading, error, results, bascule, simulate, reset } = usePublicodesSimulation();
+  const { loading, error, results, bascule, marge, simulate, reset } = usePublicodesSimulation();
   const resultsRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const formDataRef = useRef<SimulateurFormData | null>(null);
@@ -214,6 +214,7 @@ export default function SimulateurApp() {
           <SimulateurResults
             comparison={results}
             bascule={bascule}
+            marge={marge}
             formData={formDataRef.current}
             periode={formDataRef.current.periode}
             onNewSimulation={handleReset}

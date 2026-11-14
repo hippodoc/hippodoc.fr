@@ -12,11 +12,9 @@ import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation"
 import type { SimulateurFormData } from "./simulateurSchema";
 
 /**
- * Chargement différé — `RegimeComparisonCards` est le SEUL consommateur de
- * recharts (5,2 Mo installés) dans tout le site, pour un unique camembert de
- * 100x100 px à trois parts. Importé statiquement, il pesait sur le chunk initial
- * de /simulateur (552 Ko) alors que ce bloc n'apparaît qu'APRÈS soumission du
- * formulaire.
+ * Chargement différé — `RegimeComparisonCards` n'apparaît qu'APRÈS soumission du
+ * formulaire. Il portait recharts (un camembert de 100x100 px par fiche, retiré en
+ * § 9.ft) : importé statiquement, il pesait sur le chunk initial de /simulateur.
  *
  * Sans risque au rendu serveur : à ce moment `results.recommande` est faux, donc
  * SimulateurResults n'est pas rendu et le `lazy` n'est jamais évalué.
@@ -30,6 +28,8 @@ export interface SimulateurResultsProps {
   comparison: RegimeComparison;
   /** Point de bascule des charges (`calculerPointDeBascule`) : en attente tant qu'il vaut `undefined`. */
   bascule?: number | null | 'attente';
+  /** Ce qui resterait de 1 000 € de recettes en plus (`calculerMarge`) : en attente tant qu'il vaut `'attente'`. */
+  marge?: number | 'attente';
   formData: SimulateurFormData;
   periode: 'annuel' | 'mensuel';
   onNewSimulation?: () => void;
@@ -40,7 +40,7 @@ export interface SimulateurResultsProps {
   isPublic?: boolean;
 }
 
-export function SimulateurResults({ comparison, bascule, formData, periode, onNewSimulation }: SimulateurResultsProps) {
+export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation }: SimulateurResultsProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) {
@@ -61,6 +61,10 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
             : "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf."}
         </p>
       </div>
+
+      {/* Le verdict d'abord (MIGRATION.md § 9.ft) : le régime qui l'emporte et de combien, ce qui
+          est à prévoir chaque mois, puis le détail des deux régimes. Il était sous les fiches. */}
+      <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} marge={marge} />
 
       {/* Cartes de comparaison */}
       <Suspense fallback={<div className="min-h-[220px]" aria-hidden="true" />}>
@@ -84,12 +88,10 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
       </Suspense>
 
 
-      {/* ✅ CONCLUSION — En premier, toujours visible */}
-      <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} />
-
-      {/* ✅ APPROFONDIR — Accordion unifié avec 2 items */}
+      {/* Approfondir : deux plis (le premier n'a de sens que si le Micro-BNC a été calculé) */}
       <Accordion type="single" collapsible className="space-y-0">
         <div className="sim-fiche sim-fiche-plis">
+          {microBnc && (
           <AccordionItem value="comprendre" className="sim-pli-ligne">
             <AccordionTrigger className="sim-pli-titre hover:no-underline">
               <span className="flex items-center gap-3">
@@ -103,15 +105,16 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
               </span>
             </AccordionTrigger>
             <AccordionContent className="sim-pli-corps">
-              <BreakEvenAnalysis 
+              <BreakEvenAnalysis
                 formData={formData}
                 reelResult={reel}
                 microBncResult={microBnc}
-                revenusSalariesAnnuels={comparison.revenusSalariesAnnuels || 0}
-                embedded
+                recettesImposables={Math.max(0, (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0))}
+                isRSPM={comparison.isRSPMUsed}
               />
             </AccordionContent>
           </AccordionItem>
+          )}
 
           <AccordionItem value="prelevement" className="sim-pli-ligne border-0">
             <AccordionTrigger className="sim-pli-titre hover:no-underline">
@@ -126,32 +129,13 @@ export function SimulateurResults({ comparison, bascule, formData, periode, onNe
               </span>
             </AccordionTrigger>
             <AccordionContent className="sim-pli-corps">
-              <PaymentExplanation 
+              <PaymentExplanation
                 annee={formData.annee}
-                hasRevenusSalaries={(comparison.revenusSalariesAnnuels ?? 0) > 0}
-                hasRevenusConjoint={(comparison.revenusConjointAnnuels ?? 0) > 0}
-                impotEstime={recommande === 'micro-bnc' ? (microBnc?.impot ?? 0) : (reel.impot ?? 0)}
-                revenuImposableMedecin={
-                  recommande === 'micro-bnc' 
-                    ? (microBnc?.impotDetails?.revenuImposableLiberal ?? 0) + (microBnc?.impotDetails?.revenuImposableSalarie ?? 0)
-                    : (reel.impotDetails?.revenuImposableLiberal ?? 0) + (reel.impotDetails?.revenuImposableSalarie ?? 0)
-                }
-                revenuImposableConjoint={
-                  recommande === 'micro-bnc' 
-                    ? (microBnc?.impotDetails?.revenuImposableConjoint ?? 0)
-                    : (reel.impotDetails?.revenuImposableConjoint ?? 0)
-                }
-                revenuBrutMedecin={
-                  // En micro-BNC, le bénéfice est celui de l'abattement de 34 % : charges et
-                  // cotisations n'y sont pas déduites (elles sont pourtant payées).
-                  recommande === 'micro-bnc'
-                    ? (microBnc?.impotDetails?.revenuImposableLiberal ?? 0) + (comparison.revenusSalariesAnnuels ?? 0)
-                    : (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0) - (reel.chargesReelles ?? 0) - reel.cotisationsTotales + (comparison.revenusSalariesAnnuels ?? 0)
-                }
-                revenusConjointBrut={comparison.revenusConjointAnnuels}
-                partsFiscales={recommande === 'micro-bnc' ? (microBnc?.impotDetails?.parts ?? 2) : (reel.impotDetails?.parts ?? 2)}
+                resultat={recommande === 'micro-bnc' && microBnc ? microBnc : reel}
+                revenusSalariesAnnuels={comparison.revenusSalariesAnnuels ?? 0}
+                revenusConjointAnnuels={comparison.revenusConjointAnnuels ?? 0}
                 situationFamiliale={formData.situationFamiliale}
-                embedded
+                isRSPM={comparison.isRSPMUsed}
               />
             </AccordionContent>
           </AccordionItem>

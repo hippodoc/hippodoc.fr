@@ -21,6 +21,16 @@ import { normalizeCarmfStatus } from '@/lib/carmfStatus';
  */
 const SEUIL_RSPM_ENTREE = 19000;
 
+/**
+ * En dessous de 50 €/mois (600 €/an) d'écart, les deux régimes « se valent » : c'est
+ * l'ordre de grandeur de ce que le simulateur ne voit pas (arrondis de l'administration,
+ * charges approchées, cotisations régularisées). Le montant est TOUJOURS affiché, même
+ * dans ce cas (audit de novembre 2026 : « écart négligeable » s'affichait sans montant,
+ * y compris pour 1 000 €/mois d'écart au-delà du plafond du Micro-BNC). Sous ce seuil,
+ * aucune fiche ne porte « Recommandé ».
+ */
+export const SEUIL_EQUIVALENCE_ANNUEL = 600;
+
 /** Dispense d'affiliation CARMF : remplaçant, revenu net d'activité indépendante < 15 000 €. */
 const SEUIL_DISPENSE_CARMF = 15000;
 
@@ -342,12 +352,42 @@ export async function calculerPointDeBascule(
   }
 }
 
+/** Recettes ajoutées pour la marge (« 1 000 € de plus dans l'année »). */
+export const MARGE_RECETTES = 1000;
+
+/**
+ * Ce qu'il resterait de `MARGE_RECETTES` € de recettes en plus dans l'année, charges
+ * inchangées, dans le régime fiscal retenu et le même régime social (§ 9.ft) : la différence
+ * de Super-Net, cotisations Urssaf comprises (un appel au modèle en PAMC, aucun au RSPM).
+ * `undefined` si le calcul n'aboutit pas ou sort de [0, 1 000 €] (un seuil franchi, comme la
+ * dispense CARMF : une phrase moyenne n'aurait plus de sens).
+ */
+export async function calculerMarge(
+  formData: SimulateurFormData,
+  useRspm: boolean,
+  regime: 'reel' | 'micro-bnc',
+  base: SimulationResult,
+): Promise<number | undefined> {
+  try {
+    const plus = formData.periode === 'mensuel' ? MARGE_RECETTES / 12 : MARGE_RECETTES;
+    const r = await simulerRegime({ ...formData, recettesBrutes: (formData.recettesBrutes || 0) + plus }, regime, useRspm, false);
+    if (!r) return undefined;
+    const reste = r.superNet - base.superNet;
+    return reste >= 0 && reste <= MARGE_RECETTES ? reste : undefined;
+  } catch (err) {
+    console.warn('[Simulateur] marge non calculée', err);
+    return undefined;
+  }
+}
+
 export function usePublicodesSimulation() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   /** Point de bascule de la dernière simulation (voir `calculerPointDeBascule`). État à part : le
    *  mettre dans `results` relancerait le défilement et l'événement de SimulateurApp. */
   const [bascule, setBascule] = useState<number | null | 'attente' | undefined>(undefined);
+  /** Ce qui resterait de 1 000 € de recettes en plus (voir `calculerMarge`), même logique d'état. */
+  const [marge, setMarge] = useState<number | 'attente' | undefined>(undefined);
   const simulationEnCours = useRef(0);
   const [results, setResults] = useState<RegimeComparison>({
     reel: null,
@@ -361,6 +401,7 @@ export function usePublicodesSimulation() {
     setLoading(true);
     setError(null);
     setBascule(undefined);
+    setMarge(undefined);
     const numero = ++simulationEnCours.current;
 
     try {
@@ -405,14 +446,21 @@ export function usePublicodesSimulation() {
         isRSPMUsed: useRspm,
       });
 
-      // Point de bascule, après l'affichage, seulement si le Micro-BNC reste ouvert (recettes
-      // sous le plafond) : au-delà, la question ne se pose plus d'une année sur l'autre.
-      if (resultMicroBnc && recettesAnnuelles <= getMicroBncCeiling(formData.annee || 2026)) {
-        setBascule('attente');
-        void calculerPointDeBascule(formData, useRspm, resultReel, resultMicroBnc).then((c) => {
-          if (simulationEnCours.current === numero) setBascule(c);
-        });
-      }
+      // Après l'affichage, l'un après l'autre (le modèle Urssaf limite le débit) : la marge sur
+      // 1 000 € de plus, puis le point de bascule, seulement si le Micro-BNC reste ouvert
+      // (recettes sous le plafond) : au-delà, la question ne se pose plus d'une année sur l'autre.
+      const avecBascule = Boolean(resultMicroBnc) && recettesAnnuelles <= getMicroBncCeiling(formData.annee || 2026);
+      const retenu = recommande === 'micro-bnc' && resultMicroBnc ? resultMicroBnc : resultReel;
+      setMarge('attente');
+      if (avecBascule) setBascule('attente');
+      void (async () => {
+        const m = await calculerMarge(formData, useRspm, recommande, retenu);
+        if (simulationEnCours.current !== numero) return;
+        setMarge(m);
+        if (!avecBascule || !resultMicroBnc) return;
+        const c = await calculerPointDeBascule(formData, useRspm, resultReel, resultMicroBnc);
+        if (simulationEnCours.current === numero) setBascule(c);
+      })();
       // Pas de sauvegarde d'historique : le site public est anonyme. Le funnel analytics
       // anonyme est géré par SimulateurApp.tsx (insertPublicEvent).
     } catch (err) {
@@ -421,9 +469,9 @@ export function usePublicodesSimulation() {
       let errorMessage = 'Impossible de calculer les estimations pour le moment.';
       if (err instanceof Error) {
         if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-          errorMessage = 'Problème de connexion. Vérifiez votre connexion internet.';
+          errorMessage = 'Problème de connexion. Vérifie ta connexion internet.';
         } else if (err.message.includes('URSSAF') || err.message.includes('Edge Function')) {
-          errorMessage = 'Le service de calcul est temporairement indisponible. Veuillez réessayer dans quelques instants.';
+          errorMessage = 'Le service de calcul est temporairement indisponible. Réessaie dans quelques instants.';
         }
       }
       setError(errorMessage);
@@ -435,6 +483,7 @@ export function usePublicodesSimulation() {
   const reset = () => {
     simulationEnCours.current++;
     setBascule(undefined);
+    setMarge(undefined);
     setResults({
       reel: null,
       microBnc: null,
@@ -445,5 +494,5 @@ export function usePublicodesSimulation() {
     setError(null);
   };
 
-  return { loading, error, results, bascule, simulate, reset };
+  return { loading, error, results, bascule, marge, simulate, reset };
 }

@@ -1,73 +1,57 @@
-import { useState } from "react";
-import { 
-  Collapsible, 
-  CollapsibleContent, 
-  CollapsibleTrigger 
-} from "@/components/ui/collapsible";
-import { 
-  Landmark, 
-  Briefcase, 
-  Heart, 
-  Calendar, 
+import {
+  Landmark,
+  Briefcase,
+  Heart,
+  Calendar,
   Clock,
-  ChevronDown,
   Lightbulb,
   ExternalLink,
   CheckCircle2,
   AlertTriangle
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { calculateIndividualizedTax } from "@/lib/individualizedTax";
+import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
+import type { SimulationResult } from "@/lib/simulation-types";
 
+/**
+ * Le pli « Comment l'impôt sera prélevé » (rendu seul dans un pli de SimulateurResults ; la
+ * variante en carte repliable, inemployée, est retirée en § 9.ft). Les acomptes viennent de
+ * `impotDuMedecin`, le calcul de la conclusion et des fiches : avant novembre 2026, ce pli
+ * prenait l'impôt du foyer entier (salaires compris) et disait qu'une première année n'a
+ * aucune cotisation à payer, ce qui est faux (MIGRATION.md § 9.ft).
+ */
 interface PaymentExplanationProps {
   annee: number;
-  hasRevenusSalaries: boolean;
-  hasRevenusConjoint: boolean;
-  impotEstime: number;
-  revenuImposableMedecin?: number;
-  revenuImposableConjoint?: number;
-  revenuBrutMedecin?: number;
-  revenusConjointBrut?: number;
-  partsFiscales?: number;
+  /** Résultat du régime retenu par la conclusion. */
+  resultat: SimulationResult;
+  revenusSalariesAnnuels?: number;
+  revenusConjointAnnuels?: number;
   situationFamiliale?: string;
-  embedded?: boolean;
+  /** Cotisations au RSPM (déclarées et payées chaque mois ou trimestre). */
+  isRSPM?: boolean;
 }
 
-function PaymentContent({
+export function PaymentExplanation({
   annee,
-  hasRevenusSalaries,
-  hasRevenusConjoint,
-  impotEstime,
-  revenuImposableMedecin,
-  revenuImposableConjoint,
-  revenuBrutMedecin,
-  revenusConjointBrut,
-  partsFiscales = 2,
-  situationFamiliale = 'marie_pacse'
-}: Omit<PaymentExplanationProps, 'embedded'>) {
-  const taxResult = hasRevenusConjoint 
-    ? calculateIndividualizedTax(
-        revenuImposableMedecin || 0,
-        revenuImposableConjoint || 0,
-        revenuBrutMedecin || revenuImposableMedecin || 0,
-        revenusConjointBrut || revenuImposableConjoint || 0,
-        impotEstime,
-        partsFiscales,
-        situationFamiliale
-      )
-    : null;
-  
-  const impotEstimeMedecin = taxResult?.impotMedecin ?? impotEstime ?? 0;
-  const impotEstimeConjoint = taxResult?.impotConjoint ?? 0;
-  const tauxMedecin = taxResult?.tauxMedecin ?? 0;
-  const tauxConjoint = taxResult?.tauxConjoint ?? 0;
-  const tauxFoyer = taxResult?.tauxFoyer ?? 0;
-  
-  const safeImpotEstime = impotEstime ?? 0;
+  resultat,
+  revenusSalariesAnnuels = 0,
+  revenusConjointAnnuels = 0,
+  situationFamiliale = 'celibataire',
+  isRSPM = false,
+}: PaymentExplanationProps) {
+  const hasRevenusSalaries = revenusSalariesAnnuels > 0;
+  const hasRevenusConjoint = revenusConjointAnnuels > 0;
+  const impot = impotDuMedecin(resultat, { revenusSalariesAnnuels, revenusConjointAnnuels, situationFamiliale });
+  const { tauxMedecin, tauxConjoint, tauxFoyer, acomptesLiberaux, creditsImpot } = impot;
+  const typeConjoint = resultat.impotDetails?.typeRevenuConjoint ?? 'salarie';
+
+  const impotEstimeMedecin = impot.impotMedecin;
+  const impotEstimeConjoint = impot.impotConjoint;
+  const safeImpotEstime = resultat.impot ?? 0;
   const mensuelMedecin = Math.round(impotEstimeMedecin / 12);
   const mensuelConjoint = Math.round(impotEstimeConjoint / 12);
   const mensuelTotal = Math.round(safeImpotEstime / 12);
+  const acompteMensuel = Math.round(acomptesLiberaux / 12);
+  const pourcent = (t: number) => `${t.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}\u00a0%`;
 
   return (
     <div className="space-y-5">
@@ -86,11 +70,30 @@ function PaymentContent({
           </div>
           <div className="flex items-center gap-2">
             <span className="sim-encre3">→</span>
-            <span>
-              Montant estimé : <strong className="sim-encre">~{mensuelMedecin.toLocaleString('fr-FR')} €/mois</strong>
-              <span className="sim-encre3 ml-1">({impotEstimeMedecin.toLocaleString('fr-FR')} €/an)</span>
-            </span>
+            {acomptesLiberaux > 0 ? (
+              <span>
+                Pour ces revenus : <strong className="sim-encre">~{acompteMensuel.toLocaleString('fr-FR')} €/mois</strong>
+                <span className="sim-encre3 ml-1">({acomptesLiberaux.toLocaleString('fr-FR')} €/an)</span>
+              </span>
+            ) : (
+              <span>Pour ces revenus : aucun acompte, ton impôt estimé est nul.</span>
+            )}
           </div>
+          {hasRevenusSalaries && (
+            <div className="flex items-center gap-2">
+              <span className="sim-encre3">→</span>
+              <span>L'impôt de tes salaires est retenu par ton employeur, à part.</span>
+            </div>
+          )}
+          {creditsImpot > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="sim-encre3">→</span>
+              <span>
+                Tes crédits d'impôt ({creditsImpot.toLocaleString('fr-FR')} €) ne baissent pas tes acomptes : ils te sont
+                remboursés après ta déclaration, avec une avance en début d'année si tu en avais déjà déclaré l'année précédente.
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -124,7 +127,7 @@ function PaymentContent({
                     </div>
                   </td>
                   <td className="text-right">
-                    <span>~{tauxMedecin}%</span>
+                    <span>~{pourcent(tauxMedecin)}</span>
                   </td>
                   <td className="text-right hidden sm:table-cell">
                     ~{impotEstimeMedecin.toLocaleString('fr-FR')} €
@@ -133,7 +136,7 @@ function PaymentContent({
                     ~{mensuelMedecin.toLocaleString('fr-FR')} €
                   </td>
                   <td className="mode text-right hidden sm:table-cell">
-                    acomptes
+                    {hasRevenusSalaries ? 'acomptes et salaire' : 'acomptes'}
                   </td>
                 </tr>
                 <tr>
@@ -144,7 +147,7 @@ function PaymentContent({
                     </div>
                   </td>
                   <td className="text-right">
-                    <span>~{tauxConjoint}%</span>
+                    <span>~{pourcent(tauxConjoint)}</span>
                   </td>
                   <td className="text-right hidden sm:table-cell">
                     ~{impotEstimeConjoint.toLocaleString('fr-FR')} €
@@ -153,7 +156,7 @@ function PaymentContent({
                     ~{mensuelConjoint.toLocaleString('fr-FR')} €
                   </td>
                   <td className="mode text-right hidden sm:table-cell">
-                    sur salaire
+                    {typeConjoint === 'salarie' ? 'sur salaire' : typeConjoint === 'autre' ? '' : 'acomptes'}
                   </td>
                 </tr>
                 <tr className="total">
@@ -161,7 +164,7 @@ function PaymentContent({
                     <span className="sim-fort">Total foyer</span>
                   </td>
                   <td className="text-right">
-                    <span>~{tauxFoyer}%</span>
+                    <span>~{pourcent(tauxFoyer)}</span>
                   </td>
                   <td className="sim-fort text-right hidden sm:table-cell">
                     {safeImpotEstime.toLocaleString('fr-FR')} €
@@ -235,13 +238,19 @@ function PaymentContent({
             <span className="sim-encre3">•</span>
             <span><strong>Sept → Déc {annee}</strong> : mis à jour avec {annee - 1}</span>
           </div>
+          <p>Tes revenus {annee} ne changent tes acomptes qu'à partir de septembre {annee + 1}, après ta déclaration.</p>
         </div>
 
         <div className="sim-note attn flex items-start gap-2 mb-2">
           <Lightbulb className="h-4 w-4 flex-shrink-0 mt-0.5" />
           <p className="sim-note-in">
-            <strong>1ère année d'installation ?</strong> Tu n'as ni acomptes URSSAF/CARMF (pas de N-1) ni acomptes IR
-            tant que tu n'as pas déclaré — ton Super-Net mensuel est temporairement plus élevé. Mets de côté ~30-45 % pour anticiper la régularisation.
+            <strong>Première année d'activité ?</strong>{' '}
+            {isRSPM
+              ? "Au RSPM, tes cotisations suivent tes recettes, déclarées chaque mois ou chaque trimestre : pas de rattrapage. "
+              : "Pendant tes deux premières années, l'Urssaf et la CARMF appellent des cotisations provisionnelles sur une base forfaitaire, puis les régularisent quand ton revenu réel est connu : plus tu gagnes, plus le rattrapage est fort. Une estimation de ton revenu, déclarée à l'Urssaf, le réduit. "}
+            Côté impôt, aucun acompte tant que tu n'as pas déclaré de revenu libéral, sauf si tu en demandes un dans ton espace
+            impots.gouv.fr. Sinon, de septembre à décembre de l'année suivante, tu paies le solde de cette première année et
+            tes premiers acomptes en même temps. Mets de côté chaque mois le montant indiqué en tête des résultats.
           </p>
         </div>
         
@@ -261,49 +270,5 @@ function PaymentContent({
         </div>
       </div>
     </div>
-  );
-}
-
-export function PaymentExplanation(props: PaymentExplanationProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const { embedded = false, ...contentProps } = props;
-
-  // Mode embedded : contenu direct sans Card/Collapsible
-  if (embedded) {
-    return <PaymentContent {...contentProps} />;
-  }
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <Card className="sim-fiche overflow-hidden">
-        <CollapsibleTrigger asChild>
-          <CardHeader className="pb-3 cursor-pointer hover:bg-muted/30 transition-colors">
-            <CardTitle className="flex items-center gap-3">
-              <div className="sim-rond">
-                <Lightbulb className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Comment cet impôt sera prélevé ?
-                </h3>
-                <p className="text-xs text-muted-foreground font-normal mt-0.5">
-                  Prélèvement à la source et régularisation
-                </p>
-              </div>
-              <ChevronDown className={cn(
-                "h-5 w-5 text-muted-foreground transition-transform duration-200",
-                isOpen && "rotate-180"
-              )} />
-            </CardTitle>
-          </CardHeader>
-        </CollapsibleTrigger>
-
-        <CollapsibleContent>
-          <CardContent className="pb-6">
-            <PaymentContent {...contentProps} />
-          </CardContent>
-        </CollapsibleContent>
-      </Card>
-    </Collapsible>
   );
 }

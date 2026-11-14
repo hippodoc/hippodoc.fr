@@ -1,18 +1,13 @@
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Scale, AlertTriangle, FileQuestion, Briefcase, Heart } from "lucide-react";
-import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
+import { Trophy, Scale, AlertTriangle, FileQuestion } from "lucide-react";
+import { SEUIL_EQUIVALENCE_ANNUEL, type RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
+import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
+import { deductionsComparees } from "@/lib/simulateur/deductions";
+import { MARGE_RECETTES } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 import type { LucideIcon } from "lucide-react";
 
 // ============ SEUILS ============
-/**
- * En dessous de 50 €/mois (600 €/an) d'écart, les deux régimes « se valent » : c'est
- * l'ordre de grandeur de ce que le simulateur ne voit pas (arrondis de l'administration,
- * charges approchées, cotisations régularisées). Le montant est TOUJOURS affiché, même
- * dans ce cas (audit de novembre 2026 : « écart négligeable » s'affichait sans montant,
- * y compris pour 1 000 €/mois d'écart au-delà du plafond du Micro-BNC).
- */
-const SEUIL_EQUIVALENCE_ANNUEL = 600;
 /** Au-delà de 85 % du plafond du Micro-BNC, on prévient qu'il approche. */
 const RATIO_APPROCHE_PLAFOND = 0.85;
 const SEUIL_CHARGES_FAIBLES_RATIO = 0.05;
@@ -24,6 +19,8 @@ interface ConclusionCardProps {
   /** Charges annuelles où les deux régimes se valent ; `null` : le réel l'emporte même sans
    *  charge ; `'attente'` : en cours de calcul ; `undefined` : pas de phrase. */
   bascule?: number | null | 'attente';
+  /** Ce qui resterait de 1 000 € de recettes en plus ; `'attente'` : en cours ; `undefined` : rien. */
+  marge?: number | 'attente';
 }
 
 interface ContextAlert {
@@ -37,7 +34,7 @@ const euros = (montant: number): string =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.abs(montant));
 
 // ============ COMPOSANT PRINCIPAL ============
-export function ConclusionCard({ comparison, formData, bascule }: ConclusionCardProps) {
+export function ConclusionCard({ comparison, formData, bascule, marge }: ConclusionCardProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) return null;
@@ -69,38 +66,100 @@ export function ConclusionCard({ comparison, formData, bascule }: ConclusionCard
   const message = !microBnc
     ? "Le Micro-BNC n'a pas pu être calculé : seul le régime réel est affiché."
     : ecartAnnuel < 1
-      ? "Les deux régimes te laissent la même somme. Choisis selon ta préférence de gestion."
+      ? "Les deux régimes te laissent la même somme."
       : equivalents
-        ? `Les deux régimes se valent : ${euros(ecartMensuel)}/mois d'écart en faveur ${recommande === 'micro-bnc' ? 'du Micro-BNC' : 'du régime réel'} (${euros(ecartAnnuel)}/an). Choisis selon ta préférence de gestion.`
+        ? `Les deux régimes se valent : ${euros(ecartMensuel)}/mois d'écart en faveur ${recommande === 'micro-bnc' ? 'du Micro-BNC' : 'du régime réel'} (${euros(ecartAnnuel)}/an).`
         : `${regimeLabel} te fait garder ${euros(ecartMensuel)}/mois de plus (${euros(ecartAnnuel)}/an).`;
 
+  // ============ POURQUOI ============
+  // Ce que chaque régime retire des recettes avant l'impôt (`deductionsComparees`, tiré du
+  // moteur), puis, en PAMC, l'écart de cotisations : elles se calculent sur le bénéfice au réel
+  // et sur les recettes après abattement en micro (au RSPM, elles sont les mêmes).
+  const recettesImposables = Math.max(0, recettesAnnuelles - (comparison.liberalExonereAnnuel ?? 0));
+  let pourquoi: string | null = null;
+  if (microBnc && ecartAnnuel >= 1 && recettesImposables > 0) {
+    const d = deductionsComparees(reel, microBnc, recettesImposables, formData.typeCotisationsVolontaires);
+    const pct = (v: number) => `${Math.round((v / recettesImposables) * 100)}\u00a0%`;
+    const zone = d.zoneReelSeul > 0 ? `, dont ${euros(d.zoneReelSeul)} d'exonération de zone, qui ne joue qu'au réel` : '';
+    const impotNet = (r: typeof reel) => r.impot - (r.impotDetails?.restitutionCredits ?? 0);
+    const memeImpot = Math.abs(impotNet(reel) - impotNet(microBnc)) < 1;
+    const ecartCotisations = Math.round(microBnc.cotisationsTotales - reel.cotisationsTotales);
+    const sens = ecartCotisations > 0 ? 'plus basses' : 'plus élevées';
+    const cotisationsDiffèrent = !comparison.isRSPMUsed && Math.abs(ecartCotisations) >= 100;
+    if (memeImpot) {
+      // Impôt identique (nul des deux côtés, par exemple) : les déductions ne départagent rien.
+      if (cotisationsDiffèrent) {
+        pourquoi = `Ton impôt est le même dans les deux régimes : l'écart vient de tes cotisations, ${sens} de ${euros(ecartCotisations)} au réel, où elles se calculent sur ton bénéfice.`;
+      }
+    } else {
+      pourquoi = `Au réel, tu déduis ${euros(d.reel)} de tes recettes avant l'impôt (${pct(d.reel)})${zone} ; le Micro-BNC en retire ${euros(d.micro)} d'office (${d.microMinimum ? 'le minimum de 305\u00a0€' : '34\u00a0%'}).`;
+      if (cotisationsDiffèrent) pourquoi += ` Au réel, tes cotisations sont aussi ${sens} de ${euros(ecartCotisations)}.`;
+    }
+  }
+
+  // ============ CE QUI CHANGE ============
+  // Quand les deux régimes se valent, ce qui les départage est la gestion (CGI art. 102 ter, 4,
+  // et art. 99). Quand le réel l'emporte et que le Micro-BNC reste ouvert, comment y passer :
+  // l'option résulte du dépôt de la 2035 dans le délai, vaut un an et se reconduit tacitement
+  // (BOI-BNC-DECLA-10-10, § 130 à 140).
+  let gestion: string | null = null;
+  if (microBnc && equivalents) {
+    gestion = "Ce qui les départage alors, c'est la gestion : en micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le jour ; au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses. Les honoraires d'un comptable sont une charge : ajoute-les pour comparer.";
+  } else if (microBnc && recommande === 'reel' && !depassePlafond) {
+    gestion = "Pour être au réel, il suffit de déposer ta déclaration 2035 dans les délais : l'option vaut un an et se renouvelle d'elle-même.";
+  }
+
   // ============ À PRÉVOIR CHAQUE MOIS ============
-  // Cotisations et impôt de l'activité libérale du régime retenu. L'impôt du foyer est réparti au
-  // prorata des revenus imposables : la part des salaires (les tiens ou ceux du conjoint) est
-  // prélevée à la source par l'employeur.
+  // Cotisations et impôt de l'activité libérale du régime retenu, par destinataire : l'Urssaf
+  // (au RSPM, retraite CARMF comprise), la CARMF (au RSPM, l'invalidité-décès seule) et
+  // l'impôt de l'activité libérale (`impotDuMedecin` : sa part du foyer ; celle des salaires
+  // est retenue par l'employeur). Le total est la somme des parts arrondies : rien à recompter.
   const retenu = recommande === 'micro-bnc' && microBnc ? microBnc : reel;
-  const imposableTotal = retenu.revenuImposableTotal || 0;
-  const imposableLiberal = retenu.impotDetails?.revenuImposableLiberal || 0;
-  const impotLiberal = imposableTotal > 0 ? retenu.impot * Math.min(1, imposableLiberal / imposableTotal) : 0;
-  const aPrevoirAnnuel = retenu.cotisationsTotales + impotLiberal;
-  const partRecettes = recettesAnnuelles > 0 ? Math.round((aPrevoirAnnuel / recettesAnnuelles) * 100) : 0;
-  const aPrevoir = `À prévoir pour tes cotisations et l'impôt de ton activité libérale : ${euros(aPrevoirAnnuel / 12)}/mois (${partRecettes}\u00a0% de tes recettes).`;
+  const { impotLiberal } = impotDuMedecin(retenu, {
+    revenusSalariesAnnuels: comparison.revenusSalariesAnnuels ?? revenusSalariesAnnuels,
+    revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? revenusConjointAnnuels,
+    situationFamiliale: formData.situationFamiliale,
+  });
+  const carmfMois = Math.round(Math.max(0, retenu.cotisationsDetail?.retraite ?? 0) / 12);
+  const urssafMois = Math.round(Math.max(0, retenu.cotisationsTotales) / 12) - carmfMois;
+  const impotMois = Math.round(impotLiberal / 12);
+  const totalMois = urssafMois + carmfMois + impotMois;
+  const partRecettes = recettesAnnuelles > 0 ? Math.round((totalMois * 12 / recettesAnnuelles) * 100) : 0;
+  const destinataires = [
+    `${euros(urssafMois)} d'Urssaf`,
+    carmfMois > 0 ? `${euros(carmfMois)} de CARMF` : null,
+    impotMois > 0 ? `${euros(impotMois)} d'impôt` : null,
+  ].filter(Boolean) as string[];
+  const enUneListe = destinataires.length > 1
+    ? `${destinataires.slice(0, -1).join(', ')} et ${destinataires[destinataires.length - 1]}`
+    : destinataires[0];
+  const aPrevoir = `À mettre de côté chaque mois pour ton activité libérale : ${euros(totalMois)} (${partRecettes}\u00a0% de tes recettes), soit ${enUneListe}.`;
 
   // ============ POINT DE BASCULE ============
   const enMensuel = formData.periode === 'mensuel';
-  const charges = (montant: number) => enMensuel
-    ? `${euros(montant / 12)} de charges par mois`
-    : `${euros(montant)} de charges par an`;
   const declare = enMensuel ? euros(chargesAnnuelles / 12) : euros(chargesAnnuelles);
+  // En attente, la phrase a déjà sa forme finale, le montant en « … » : les fiches, dessous, ne
+  // sautent pas à l'arrivée du calcul (22 à 44 px au téléphone avec une phrase d'attente).
+  const charges = (montant: number | null) => {
+    const m = montant === null ? '…\u00a0€' : euros(enMensuel ? montant / 12 : montant);
+    return `${m} de charges par ${enMensuel ? 'mois' : 'an'}`;
+  };
   let phraseBascule: string | null = null;
-  if (bascule === 'attente') {
-    phraseBascule = 'Calcul du point de bascule entre les deux régimes…';
+  const basculeEnAttente = bascule === 'attente';
+  if (basculeEnAttente || typeof bascule === 'number') {
+    const c = charges(typeof bascule === 'number' ? bascule : null);
+    phraseBascule = recommande === 'micro-bnc'
+      ? `Le régime réel passerait devant au-delà d'environ ${c} (tu en déclares ${declare}).`
+      : `Le Micro-BNC ne passerait devant que sous environ ${c} (tu en déclares ${declare}).`;
   } else if (bascule === null) {
     phraseBascule = 'Même sans aucune charge, le régime réel resterait devant.';
-  } else if (typeof bascule === 'number') {
-    phraseBascule = recommande === 'micro-bnc'
-      ? `Le régime réel passerait devant au-delà d'environ ${charges(bascule)} (tu en déclares ${declare}).`
-      : `Le Micro-BNC ne passerait devant que sous environ ${charges(bascule)} (tu en déclares ${declare}).`;
+  }
+
+  // ============ 1 000 € DE PLUS ============
+  let phraseMarge: string | null = null;
+  if (marge === 'attente' || typeof marge === 'number') {
+    const reste = typeof marge === 'number' ? euros(Math.round(marge / 10) * 10) : '…\u00a0€';
+    phraseMarge = `${euros(MARGE_RECETTES)} de recettes en plus dans l'année t'en laisseraient environ ${reste}, après cotisations et impôt.`;
   }
 
   // ============ ALERTES CONTEXTUELLES ============
@@ -129,23 +188,9 @@ export function ConclusionCard({ comparison, formData, bascule }: ConclusionCard
     });
   }
 
-  if (revenusSalariesAnnuels > 0) {
-    alerts.push({
-      type: 'info',
-      icon: Briefcase,
-      message: revenusSalariesAnnuels > recettesAnnuelles
-        ? "Revenus salariés majoritaires → impact TMI significatif."
-        : "Revenus salariés pris en compte dans l'IR.",
-    });
-  }
-
-  if (revenusConjointAnnuels > 0) {
-    alerts.push({
-      type: 'info',
-      icon: Heart,
-      message: `Conjoint (${euros(revenusConjointAnnuels)}) inclus dans le calcul IR.`,
-    });
-  }
+  // Les pastilles « Revenus salariés pris en compte dans l'IR » et « Conjoint inclus dans le
+  // calcul IR » sont retirées (§ 9.ft) : elles redisaient la saisie, et les fiches portent ces
+  // lignes (« Revenus salariés », « Mon impôt (estimé) »).
 
   const shownAlerts = alerts.slice(0, 3);
   const hasWarnings = shownAlerts.some(a => a.type === 'warning' || a.type === 'danger');
@@ -182,10 +227,19 @@ export function ConclusionCard({ comparison, formData, bascule }: ConclusionCard
         )}
       </div>
 
-      {/* À prévoir chaque mois, puis point de bascule des charges */}
-      <div className="sim-conclusion-detail" aria-live="polite">
+      {/* Pourquoi, point de bascule des charges, ce qui change (§ 9.ft) */}
+      {(pourquoi || phraseBascule || gestion) && (
+        <div className="sim-conclusion-detail" aria-live="polite" aria-busy={basculeEnAttente}>
+          {pourquoi && <p>{pourquoi}</p>}
+          {phraseBascule && <p>{phraseBascule}</p>}
+          {gestion && <p>{gestion}</p>}
+        </div>
+      )}
+
+      {/* Les chiffres du mois : à mettre de côté, puis 1 000 € de plus */}
+      <div className="sim-conclusion-detail sim-conclusion-mois" aria-live="polite" aria-busy={marge === 'attente'}>
         <p>{aPrevoir}</p>
-        {phraseBascule && <p>{phraseBascule}</p>}
+        {phraseMarge && <p>{phraseMarge}</p>}
       </div>
 
       {/* Alertes en pills compacts */}
