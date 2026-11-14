@@ -76,3 +76,13 @@ export function impotDuMedecin(result: SimulationResult, foyer: FoyerDuMedecin):
     creditsImpot: Math.round(creditsImpot),
   };
 }
+
+/**
+ * Super-Net du médecin, celui des fiches : celui du moteur (ses revenus, charges payées,
+ * cotisations, crédits remboursés), avec sa part de l'impôt du foyer au lieu de l'impôt entier
+ * quand le conjoint a des revenus. Sert aux fiches et à l'écart entre deux essais (§ 9.gg).
+ */
+export function superNetDuMedecin(result: SimulationResult, foyer: FoyerDuMedecin): number {
+  if (!((foyer.revenusConjointAnnuels ?? 0) > 0)) return result.superNet ?? 0;
+  return (result.superNet ?? 0) + (result.impot ?? 0) - impotDuMedecin(result, foyer).impotMedecin;
+}

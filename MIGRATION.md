@@ -13237,6 +13237,94 @@ attendus (bloc de première année pour les deux profils de début, RSPM pour l'
 réel recommandé pour le remplaçant qui roule beaucoup, l'installé et le spécialiste, micro pour le
 remplaçant régulier), aucun débordement. `verify-site.mjs` sans erreur, feuille commune inchangée.
 
+### 9.gg Simulateur : un chiffre plus vite, un résultat qui mène à Hippodoc (14 novembre 2026)
+
+Le propriétaire : « en tant que fresh eye, challenge de bout en bout mon simulateur », puis « go »
+sur les recommandations. L'envoi du résultat par e-mail, proposé aussi, n'est pas fait : il
+demande un service d'envoi et une table de contacts (décision du propriétaire).
+
+**Ce que disait l'usage** (PostHog et table Supabase `simulateur_public_events`, 14 août au
+13 novembre 2026, robots exclus). 429 visiteurs de `/simulateur` (57 % au téléphone), 226
+lancent un calcul (53 % ; 51 % au téléphone, 55 % à l'ordinateur), 851 calculs (3,8 par
+personne). Vers Hippodoc : 4 clics sur « Commencer gratuitement » en bas de page
+(`public_simulator_cta_clicked`), 3 clics sur « Essai gratuit 30 jours » sous le résultat
+(2 visiteurs ; Supabase seulement, `cta_patrimonial_guide` : ce lien n'émettait rien dans
+PostHog), 3 sur « Prendre 15 min avec Ryan » ; 6 inscriptions ensuite, dont 1 au téléphone
+(peut-être sous-comptées : l'inscription se fait sur app.hippodoc.fr). 45 % des simulations sans
+aucune charge. Mesures sur la production : 10 champs visibles avant « Simuler », le bouton à
+2 092 px au téléphone (1 475 px à 1 280 px) ; résultats de 3 700 px environ au téléphone ; le seul
+appel vers Hippodoc à environ 2 700 px sous le début de la conclusion.
+
+**Ce qui change.**
+- **« Ta situation », en une ligne** (`SimulateurForm.tsx`). Les fiches « Ta situation fiscale »
+  et « Paramètres de calcul » (situation familiale, enfants, revenus du conjoint, exercice, début
+  d'activité, année, lieu, secteur, régime social) sont repliées derrière une fiche résumé :
+  « Ta situation », puis par exemple « Célibataire, sans enfant · Remplaçant, plus de 2 ans
+  d'activité · Secteur 1, France métropolitaine · Revenus 2026 · Régime social automatique »
+  (« conjoint : X € » quand il est saisi ; « Régime social : RSPM » ou « : PAMC » quand il est
+  forcé), et un bouton « Modifier » (« Masquer » une fois ouvert ; nom « Modifier ta
+  situation »). Repliés, les champs gardent leurs valeurs ; une erreur dans l'un d'eux ouvre la
+  situation. Un profil type met le résumé à jour. Au téléphone, « Simuler » passe de 2 092 à
+  1 412 px, à 1 280 px de 1 475 à 1 161 px ; 2 champs visibles au lieu de 10.
+- **Charges vides, recettes saisies** : sous le champ, « Aucune charge ? Même un remplaçant paie
+  l'Ordre, une assurance, ses trajets. Les estimer » ; le lien ouvre « Estimer mes charges »
+  (désormais piloté par le formulaire) et porte le focus sur son premier champ.
+- **En-tête des résultats** (`SimulateurResults.tsx`) : « Ton résultat », puis le rappel de la
+  saisie (« Pour 70 000 € de recettes et 5 000 € de charges · remplaçant, secteur 1 » ; « aucune
+  charge » si elles sont nulles) ; dès le deuxième essai, l'écart : « Par rapport à ton essai
+  précédent (charges de 5 000 € à 9 000 €) : −3 407 € par an de Super-Net, et le régime
+  recommandé passe du Micro-BNC au régime réel. » (recettes et charges nommées quand elles
+  changent, sinon « autre situation » ; aucun écart pour une saisie identique). Le Super-Net
+  comparé est celui de la fiche du régime recommandé (`superNetDuMedecin`, nouveau dans
+  `impotMedecin.ts`, que les fiches lisent aussi).
+- **La conclusion mène à Hippodoc** (`ConclusionCard.tsx`) : sous « à mettre de côté » et la
+  phrase des 1 000 €, « Ce montant change à chaque journée travaillée. Hippodoc le tient à jour au
+  fil de l'année. » et un bouton « Essai gratuit 30 jours » (même adresse que celui de « Et toute
+  l'année ? », gardé plus bas). Pas de jaune (réservé) : blanc sur la conclusion bleu nuit, encre
+  sur la blanche.
+- **Fiches** (`RegimeComparisonCards.tsx`) : le détail ligne par ligne est dans un pli natif
+  « Détail ligne par ligne », ouvert à partir de 768 px, replié au téléphone. Pastille de la
+  conclusion : « +3,3 % de Super-Net ».
+- **Mots** : « Tes revenus libéraux » devient « Tes recettes libérales », avec « Honoraires ou
+  rétrocessions encaissés sur l'année » (« sur le mois » en mensuel) au lieu de « Montant
+  annuel » ; introduction de la page : « après charges et impôts » devient « après charges,
+  cotisations et impôt » ; pastille « Calcul instantané » (1,4 à 2,4 s mesurées) devient « Sans
+  inscription ».
+- **Ordre de la page** : « Comprendre ton résultat » (articles) passe avant l'appel final « Prêt
+  à piloter ton activité de médecin ? », dans le même bloc de fin (le halo du soleil reste après
+  le dernier lien).
+- **Mode d'emploi** : point 1, « Tes revenus libéraux » devient « Tes recettes libérales » ; point
+  2, ajout « Ta situation, en une ligne — Sous tes revenus, un résumé : ton foyer, ton exercice,
+  ton secteur, ton lieu, l'année et le régime social. Ses valeurs par défaut valent pour la
+  plupart des remplaçants ; « Modifier » ouvre les champs de ce point et du suivant. » ; point 5,
+  ajout « Ton résultat — En tête, le rappel de ta saisie, et dès ton deuxième essai, ce que ton
+  Super-Net gagne ou perd par rapport au précédent. », « La conclusion, en tête » devient « La
+  conclusion », et « Les 2 fiches » finit par « …, impôt), replié au téléphone. » ; point 6,
+  « Tes revenus libéraux » devient « Tes recettes libérales ».
+
+Archivés (textes d'avant) : titre « Comparaison des régimes fiscaux » et chapô « Analyse détaillée
+pour t'aider à choisir le meilleur régime. » ; pastille « +3,3 % Super-Net » ; libellé « Tes
+revenus libéraux » et description « Montant annuel » (« Montant mensuel ») ; « après charges et
+impôts » ; « Calcul instantané ».
+
+**Mesure.** `public_simulator_cta_clicked` reçoit `emplacement` : `conclusion` (nouveau lien,
+`data-track="cta_signup_simulateur_conclusion"`, et `event_type: 'cta_conclusion'` dans Supabase)
+et `resultat` (le lien de « Et toute l'année ? », qui n'émettait jusqu'ici que dans Supabase) ;
+celui du bas de page reste sans emplacement. `public_simulator_charges_helper_opened` reçoit
+`depuis: 'charges_vides'` quand l'aide est ouverte par l'invitation. `data-ph` :
+`simulateur_situation_modifier`, `simulateur_charges_vides_estimer`.
+
+**Contrôles.** Chromium à 390 et 1 280 px : résumé par défaut et après le profil « Installé
+généraliste » (« Marié(e) ou pacsé(e), 2 enfants · Installé… ») ; « Modifier » ouvre les champs
+(`aria-expanded`), secteur 2 repris dans le résumé, « Masquer » les replie ; invitation des
+charges vides, focus dans l'aide ; rappel de la saisie, aucun écart au premier essai, écart et
+changement de régime au deuxième, aucun écart pour la même saisie relancée ; lien de la
+conclusion vers `https://app.hippodoc.fr/auth?tab=signup` ; détail des fiches replié à 390 px,
+ouvert à 1 280 px ; aucun débordement. Essais des § 9.gd, 9.ge et 9.gf repassés (profils,
+« Estimer mes charges », cotisations par organisme). WebKitGTK à 1 300 et 390 px : mêmes états,
+aucun débordement, « Modifier » aligné sur le résumé. `verify-site.mjs` sans erreur, feuille
+commune inchangée (`_astro_assets.HrxwAN9D.css`).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

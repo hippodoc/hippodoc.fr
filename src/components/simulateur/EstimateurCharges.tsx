@@ -62,6 +62,8 @@ export function EstimateurCharges({
   typeExercice,
   recettesAnnuelles,
   onReporter,
+  ouvert: ouvertPilote,
+  onOuvertChange,
 }: {
   annee: number;
   periode: 'annuel' | 'mensuel';
@@ -69,9 +71,14 @@ export function EstimateurCharges({
   recettesAnnuelles: number;
   /** Reçoit le montant à mettre dans le champ des charges (annuel ou mensuel, comme le champ). */
   onReporter: (montant: number) => void;
+  /** Ouverture pilotée par le formulaire (§ 9.gg : l'invitation sous un champ de charges vide). */
+  ouvert?: boolean;
+  onOuvertChange?: (ouvert: boolean) => void;
 }) {
   const id = useId();
-  const [ouvert, setOuvert] = useState(false);
+  const [ouvertLocal, setOuvertLocal] = useState(false);
+  const ouvert = ouvertPilote ?? ouvertLocal;
+  const setOuvert = onOuvertChange ?? setOuvertLocal;
   const [km, setKm] = useState('');
   const [puissance, setPuissance] = useState<PuissanceFiscale>('5');
   const [electrique, setElectrique] = useState(false);

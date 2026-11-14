@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Info, Wallet, Landmark, Shield, Briefcase, Trophy, Calculator, FileText, AlertTriangle, MapPin, Heart, Percent, Building, GraduationCap, Leaf, Home, Stethoscope } from "lucide-react";
+import { ChevronDown, TrendingUp, Info, Wallet, Landmark, Shield, Briefcase, Trophy, Calculator, FileText, AlertTriangle, MapPin, Heart, Percent, Building, GraduationCap, Leaf, Home, Stethoscope } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SimulationResult } from "@/lib/simulation-types";
 import { PremiumTooltip } from "@/components/simulateur/PremiumTooltip";
 import { useState, useEffect } from "react";
-import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
+import { impotDuMedecin, superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import { getDeclarationParams } from "@/lib/declarationParams";
 import { abattement10Salaire, getBaremeIR } from "@/lib/baremes-ir";
 import { SEUIL_EQUIVALENCE_ANNUEL } from "@/lib/simulateur/usePublicodesSimulation";
@@ -138,6 +138,10 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
 
 export function RegimeComparisonCards({ reel, microBnc, recommande, economie, periode, recettesAnnuelles, revenusSalariesAnnuels = 0, revenusConjointAnnuels = 0, liberalExonereAnnuel = 0, domTomInfo, lieuExercice, isRSPMUsed, situationFamiliale = 'marie_pacse', annee = 2026, plafondMicro = 83600 }: RegimeComparisonCardsProps) {
   
+  // Détail des fiches ouvert d'emblée à partir de 768 px (§ 9.gg). Les fiches ne se rendent
+  // qu'après un calcul, dans le navigateur : la fenêtre est connue.
+  const [detailOuvertParDefaut] = useState(() => typeof window === 'undefined' || window.matchMedia('(min-width: 768px)').matches);
+
   const formatMontant = (montant: number) => {
     const value = periode === 'mensuel' ? montant / 12 : montant;
     return new Intl.NumberFormat('fr-FR', {
@@ -179,9 +183,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
     // Super-Net du médecin : celui du moteur (ses revenus, charges payées, cotisations,
     // crédits remboursés), avec sa part de l'impôt du foyer au lieu de l'impôt entier. Le
     // calcul d'avant reprenait les recettes à la main et oubliait PDSA et crédits remboursés.
-    const superNetMedecinReel = hasRevenusConjoint
-      ? (result.superNet ?? 0) + (result.impot ?? 0) - impotMedecin
-      : (result.superNet ?? 0);
+    const superNetMedecinReel = superNetDuMedecin(result, { revenusSalariesAnnuels, revenusConjointAnnuels, situationFamiliale });
 
     // Detail items with icons and JSX tooltip content
     const detailItems: Array<{
@@ -1033,7 +1035,13 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               total={revenusTotaux}
             />
 
-            {/* Détails avec icônes et animations staggered */}
+            {/* Le détail ligne par ligne (§ 9.gg) : ouvert à partir de 768 px, replié au téléphone,
+                où les deux fiches faisaient 1 536 px sous la conclusion qui dit déjà l'essentiel. */}
+            <details className="sim-fiche-detail" open={detailOuvertParDefaut}>
+              <summary className="sim-fiche-detail-titre">
+                <span>Détail ligne par ligne</span>
+                <ChevronDown className="sim-chevron h-5 w-5" aria-hidden="true" />
+              </summary>
             <div className="space-y-1.5 pt-2">
               {detailItems.map((item, i) => (
                 <div
@@ -1076,6 +1084,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                 </div>
               ))}
             </div>
+            </details>
 
             </CardContent>
         </Card>

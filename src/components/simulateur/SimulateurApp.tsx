@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { RotateCcw, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProfilsTypesPublic } from "./ProfilsTypesPublic";
 import { SimulateurForm } from "./SimulateurForm";
-import { SimulateurResults } from "./SimulateurResults";
+import { SimulateurResults, essaiDe, type Essai } from "./SimulateurResults";
 import { usePublicodesSimulation } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 import { trackEvent } from "@/lib/analytics";
@@ -74,6 +74,8 @@ export default function SimulateurApp() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formRef = useRef<any>(null);
   const selectedProfilIdRef = useRef<string | null>(null);
+  // § 9.gg : l'essai en cours et le précédent, pour dire l'écart de Super-Net entre les deux.
+  const [essais, setEssais] = useState<{ courant: Essai | null; precedent: Essai | null }>({ courant: null, precedent: null });
 
   // Analytics : arrivée sur le simulateur public (une fois par mount)
   useEffect(() => {
@@ -135,6 +137,9 @@ export default function SimulateurApp() {
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
+
+      const essai = formDataRef.current ? essaiDe(results, formDataRef.current) : null;
+      if (essai) setEssais((h) => ({ precedent: h.courant, courant: essai }));
 
       const sid = getOrCreateSessionId();
       insertPublicEvent("simulateur_public_events", {
@@ -219,6 +224,7 @@ export default function SimulateurApp() {
             periode={formDataRef.current.periode}
             onNewSimulation={handleReset}
             isPublic={true}
+            essaiPrecedent={essais.precedent}
           />
         </div>
       )}

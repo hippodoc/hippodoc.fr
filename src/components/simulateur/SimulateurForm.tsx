@@ -17,6 +17,7 @@ import { DOM_TOM_CONFIG, getDomTomInfo, formatTauxAbattement, formatPlafond, typ
 import { getDeclarationParams } from "@/lib/declarationParams";
 import { getPlafondEpargneRetraite } from "@/lib/baremes-ir";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 interface SimulateurFormProps {
   onSubmit: (data: SimulateurFormData) => void;
@@ -108,6 +109,11 @@ const SectionHeader = ({
 export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
   ({ onSubmit, loading = false, defaultValues, hasProfileData = false }, ref) => {
     const [isRevenusComplementairesOpen, setIsRevenusComplementairesOpen] = useState(false);
+    // § 9.gg : la situation (foyer et paramètres de calcul) est repliée en une ligne ; ses valeurs
+    // par défaut valent pour la plupart des visiteurs. L'aide « Estimer mes charges » est pilotée
+    // d'ici, pour que l'invitation sous un champ de charges vide puisse l'ouvrir.
+    const [situationOuverte, setSituationOuverte] = useState(false);
+    const [estimateurOuvert, setEstimateurOuvert] = useState(false);
     const [isOptionsAvanceesOpen, setIsOptionsAvanceesOpen] = useState(false);
     
     const form = useForm<SimulateurFormData>({
@@ -158,6 +164,34 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Même règle que le moteur (usePublicodesSimulation) : en Auto, le RSPM est retenu pour
     // un remplaçant jusqu'à 19 000 € de recettes (seuil d'entrée du régime).
     const typeExercice = form.watch('typeExercice');
+    const enfants = form.watch('enfants') || 0;
+    const anneeSaisie = form.watch('annee') || 2026;
+    const chargesSaisies = form.watch('chargesHorsCotisations') || 0;
+    const resumeSituation = [
+      [
+        ({ celibataire: 'Célibataire', marie_pacse: 'Marié(e) ou pacsé(e)', veuf: 'Veuf(ve)', parent_isole: 'Parent isolé' } as Record<string, string>)[situationFamiliale] ?? 'Célibataire',
+        enfants > 0 ? `${enfants}\u00a0enfant${enfants > 1 ? 's' : ''}` : 'sans enfant',
+        ...(situationFamiliale === 'marie_pacse' && (revenusConjoint || 0) > 0
+          ? [`conjoint\u00a0: ${new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(revenusConjoint)}\u00a0€`] : []),
+      ].join(', '),
+      [
+        typeExercice === 'installe' ? 'Installé' : 'Remplaçant',
+        debutActivite === 'premiere' ? "1re année d'activité" : debutActivite === 'deuxieme' ? "2e année d'activité" : "plus de 2 ans d'activité",
+      ].join(', '),
+      [
+        secteurConventionnel === 'secteur_2' ? 'Secteur\u00a02' : 'Secteur\u00a01',
+        getDomTomInfo(lieuExercice)?.nom ?? 'France métropolitaine',
+      ].join(', '),
+      `Revenus ${anneeSaisie}`,
+      regimeSocial === 'rspm' ? 'Régime social\u00a0: RSPM' : regimeSocial === 'pamc' ? 'Régime social\u00a0: PAMC' : 'Régime social automatique',
+    ];
+    // Un champ en erreur dans la situation repliée : la situation s'ouvre, sinon l'erreur reste
+    // invisible (le formulaire ne pourrait pas y porter le focus).
+    const CHAMPS_SITUATION = ['situationFamiliale', 'enfants', 'revenusConjoint', 'typeRevenuConjoint', 'typeExercice',
+      'debutActivite', 'annee', 'lieuExercice', 'secteurConventionnel', 'regimeSocial'] as const;
+    const surSaisieInvalide = (erreurs: Record<string, unknown>) => {
+      if (CHAMPS_SITUATION.some((c) => c in erreurs)) setSituationOuverte(true);
+    };
     // Forfait 2 %, 3 % et groupe III : médecins installés en secteur 1 seulement.
     const deductionsS1Ouvertes = secteurConventionnel === 'secteur_1' && typeExercice === 'installe';
     const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes <= 19000);
@@ -228,7 +262,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="sim-form">
+      <form onSubmit={form.handleSubmit(onSubmit, surSaisieInvalide)} className="sim-form">
         
         {/* ═══════════════════════════════════════════════════════════════════
             SECTION 1 : TES REVENUS (Essentiel)
@@ -249,7 +283,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                 <FormItem>
                   <div className="flex items-center gap-2">
                   <FormLabel className="flex items-center gap-2">
-                    Tes revenus libéraux
+                    Tes recettes libérales
                   </FormLabel>
                   <PremiumTooltip
                       title="Revenus libéraux"
@@ -288,7 +322,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       </span>
                     </div>
                   <FormDescription className="text-xs">
-                    Montant {periode === 'mensuel' ? 'mensuel' : 'annuel'}
+                    Honoraires ou rétrocessions encaissés sur {periode === 'mensuel' ? 'le mois' : "l'année"}
                   </FormDescription>
                   <FormMessage role="alert" />
                 </FormItem>
@@ -341,6 +375,26 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   <FormDescription className="text-xs text-muted-foreground">
                     Dépenses pro (loyer, matériel, RCP…) · <span className="italic">hors cotisations sociales et déductions fiscales</span>
                   </FormDescription>
+                  {/* § 9.gg : 45 % des simulations partaient sans aucune charge, ce qui avantage le
+                      Micro-BNC à tort. Recettes saisies, charges vides : une invitation à les estimer. */}
+                  {(recettesBrutes || 0) > 0 && chargesSaisies === 0 && !estimateurOuvert && (
+                    <p className="sim-charges-vides">
+                      Aucune charge{'\u00a0'}? Même un remplaçant paie l'Ordre, une assurance, ses trajets.{' '}
+                      <button
+                        type="button"
+                        className="sim-charges-vides-lien"
+                        data-ph="simulateur_charges_vides_estimer"
+                        onClick={() => {
+                          trackEvent('public_simulator_charges_helper_opened', { depuis: 'charges_vides' });
+                          setEstimateurOuvert(true);
+                          // Le bouton disparaît avec l'invitation : le focus va au premier champ de l'aide.
+                          requestAnimationFrame(() => document.querySelector<HTMLInputElement>('.sim-estim-panneau input')?.focus());
+                        }}
+                      >
+                        Les estimer
+                      </button>
+                    </p>
+                  )}
                   <FormMessage role="alert" />
                 </FormItem>
               )}
@@ -354,6 +408,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
             typeExercice={typeExercice === 'installe' ? 'installe' : 'remplacant'}
             recettesAnnuelles={annualRecettes}
             onReporter={(montant) => form.setValue('chargesHorsCotisations', montant, { shouldDirty: true, shouldValidate: true })}
+            ouvert={estimateurOuvert}
+            onOuvertChange={setEstimateurOuvert}
           />
 
           {/* Collapsible : Revenus complémentaires (optionnel) */}
@@ -493,6 +549,35 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
           </Collapsible>
         </div>
 
+        {/* § 9.gg : ta situation (foyer, exercice, secteur, lieu, année, régime), repliée en une
+            ligne. Ses champs (sections 2 et 3) ne s'affichent qu'à la demande ; repliés, leurs
+            valeurs restent dans le formulaire et partent avec la simulation. */}
+        <div className="sim-fiche sim-situation">
+          <div className="sim-situation-tete">
+            <div className="sim-rond">
+              <Users className="h-4 w-4" />
+            </div>
+            <div className="sim-situation-texte">
+              <h3 className="sim-fiche-titre">Ta situation</h3>
+              <p className="sim-situation-resume">{resumeSituation.join(' · ')}</p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            className="sim-situation-bouton"
+            aria-expanded={situationOuverte}
+            aria-controls="sim-situation-detail"
+            onClick={() => setSituationOuverte(!situationOuverte)}
+            data-ph="simulateur_situation_modifier"
+          >
+            {situationOuverte ? 'Masquer' : 'Modifier'}<span className="sr-only"> ta situation</span>
+            <ChevronDown className={cn("sim-chevron h-5 w-5 transition-transform duration-200", situationOuverte && "rotate-180")} aria-hidden="true" />
+          </Button>
+        </div>
+
+        {situationOuverte && (
+        <div id="sim-situation-detail" className="sim-situation-detail">
         {/* ═══════════════════════════════════════════════════════════════════
             SECTION 2 : TA SITUATION FISCALE
         ═══════════════════════════════════════════════════════════════════ */}
@@ -1037,6 +1122,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
             />
           </div>
         </div>
+
+        </div>
+        )}
 
         {/* ═══════════════════════════════════════════════════════════════════
             SECTION 4 : OPTIONS AVANCÉES (Fusionnée CARMF + Optimisation)
