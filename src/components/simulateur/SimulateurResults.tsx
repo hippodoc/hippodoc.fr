@@ -2,12 +2,12 @@ import { lazy, Suspense } from "react";
 import { BreakEvenAnalysis } from "./BreakEvenAnalysis";
 import { ConclusionCard } from "./ConclusionCard";
 import { PremiereAnneeCard } from "./PremiereAnneeCard";
+import { RspmOuPamc } from "./RspmOuPamc";
 import { debutActiviteDe } from "@/lib/simulateur/usePublicodesSimulation";
 import { PaymentExplanation } from "./PaymentExplanation";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Info, RotateCcw, Scale, Lightbulb, CalendarClock, Receipt, FileText, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { APP_URL } from "@/lib/site";
 import { insertPublicEvent } from "@/lib/supabase-public";
 import { trackEvent } from "@/lib/analytics";
@@ -92,9 +92,11 @@ export interface SimulateurResultsProps {
   isPublic?: boolean;
   /** L'essai d'avant, pour en dire l'écart (§ 9.gg). */
   essaiPrecedent?: Essai | null;
+  /** Au RSPM, le meilleur Super-Net en PAMC (§ 9.gh) : en attente tant qu'il vaut `'attente'`. */
+  alternativePamc?: { superNet: number; recommande: 'micro-bnc' | 'reel' } | null | 'attente';
 }
 
-export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation, essaiPrecedent }: SimulateurResultsProps) {
+export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation, essaiPrecedent, alternativePamc }: SimulateurResultsProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) {
@@ -122,7 +124,7 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
           {comparison.isRSPMUsed
             ? "Cotisations au RSPM, l'offre simplifiée des remplaçants."
             : (formData.annee || 2026) >= 2025
-              ? "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf et sur la nouvelle assiette sociale des revenus 2025 et suivants."
+              ? "Cotisations PAMC, par le modèle de l'Urssaf, sur la nouvelle assiette sociale des revenus 2025 et suivants."
               : "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf."}
         </p>
       </div>
@@ -130,6 +132,9 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
       {/* Le verdict d'abord (MIGRATION.md § 9.ft) : le régime qui l'emporte et de combien, ce qui
           est à prévoir chaque mois, puis le détail des deux régimes. Il était sous les fiches. */}
       <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} marge={marge} />
+
+      {/* RSPM ou PAMC ? (§ 9.gh) : au RSPM, la même saisie en PAMC */}
+      <RspmOuPamc comparison={comparison} formData={formData} alternativePamc={alternativePamc} />
 
       {/* Première année d'activité (§ 9.fx) : ce qui part cette année, et ce qui viendra ensuite */}
       {debutActiviteDe(formData) === 'premiere' && <PremiereAnneeCard comparison={comparison} formData={formData} />}
@@ -154,6 +159,10 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
         plafondMicro={comparison.plafondMicro}
       />
       </Suspense>
+
+      {/* À savoir pour ta situation (§ 9.gh) : la phrase des 1 000 € et les pistes (charges
+          faibles, réductions de la CARMF, complémentaire de la 3e année), sorties de la conclusion */}
+      <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} marge={marge} partie="a-savoir" />
 
 
       {/* Approfondir : deux plis (le premier n'a de sens que si le Micro-BNC a été calculé) */}
@@ -218,22 +227,23 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
           patrimonial. L'événement anonyme garde son nom, `cta_patrimonial_guide`, pour la
           continuité de la table `simulateur_public_events`. */}
       <section className="sim-fiche sim-suite" aria-labelledby="sim-suite-titre">
-        <p className="sim-surtitre">Et toute l'année ?</p>
-        <h3 id="sim-suite-titre" className="sim-fiche-titre grand">
+        {/* § 9.gh : en bande. Le lien d'essai est aussi dans la conclusion ; les phrases des trois
+            promesses (archivées au § 9.gh) sont retirées, leurs titres restent mot pour mot. */}
+        <h3 id="sim-suite-titre" className="sim-fiche-titre">
           Ce calcul, Hippodoc le tient à jour après chaque journée de remplacement
         </h3>
         <ul className="sim-suite-liste">
           <li>
             <CalendarClock className="h-5 w-5" aria-hidden="true" />
-            <span><strong>URSSAF et CARMF anticipées.</strong> Cotisations calculées via le serveur officiel URSSAF, échéancier à jour après chaque journée.</span>
+            <span><strong>URSSAF et CARMF anticipées.</strong></span>
           </li>
           <li>
             <Receipt className="h-5 w-5" aria-hidden="true" />
-            <span><strong>Tes charges déductibles ne se perdent plus.</strong> Kilomètres, matériel, formation, RCP : catégorisés et prêts pour la déclaration.</span>
+            <span><strong>Tes charges déductibles ne se perdent plus.</strong></span>
           </li>
           <li>
             <FileText className="h-5 w-5" aria-hidden="true" />
-            <span><strong>Ta déclaration, case par case.</strong> 2035 ou 2042-C PRO pré-remplies avec tes chiffres, aide DSFU URSSAF incluse.</span>
+            <span><strong>Ta déclaration, case par case.</strong></span>
           </li>
         </ul>
         <a
@@ -253,51 +263,14 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
         </a>
       </section>
 
-      {/* Disclaimer global unifié */}
-      <div className={cn('sim-fiche sim-limites')}>
-        <div className="sim-limites-filet" />
-        
-        <div className="space-y-4">
-          <div className="flex items-start gap-3">
-            <Info className="sim-marque h-5 w-5 flex-shrink-0 mt-0.5" />
-            <div className="space-y-3">
-              <h4 className="sim-limites-titre">
-                Limites de cette simulation
-              </h4>
-              <p className="sim-texte">
-                Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte 
-                tes spécificités fiscales individuelles, les évolutions réglementaires, 
-                ou les optimisations spécifiques à ta situation.
-              </p>
-              <p className="sim-texte sim-fort">
-                Pour une analyse personnalisée, consulte :
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <span className="sim-puce neutre grande">
-                  Expert-comptable
-                </span>
-                <span className="sim-puce neutre grande">
-                  Avocat fiscaliste
-                </span>
-                <span className="sim-puce neutre grande">
-                  CGP indépendant
-                </span>
-                <a 
-                  href="https://mon-entreprise.urssaf.fr" 
-                  target="_blank" rel="noopener noreferrer" 
-                  className="sim-puce info grande lien"
-                >
-                  Simulateur URSSAF ↗
-                </a>
-              </div>
-              <p className="sim-petit pt-1">
-                Hippodoc t'aide à y voir plus clair, mais seul un professionnel 
-                pourra te conseiller de manière définitive.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Limites (§ 9.gh) : une phrase au lieu d'une fiche de 411 px au téléphone. */}
+      <p className="sim-limites-ligne">
+        <Info className="h-4 w-4" aria-hidden="true" />
+        <span>
+          Simulation indicative{'\u00a0'}: elle ne remplace pas l'avis d'un expert-comptable ou de ton AGA. À comparer avec le{' '}
+          <a href="https://mon-entreprise.urssaf.fr" target="_blank" rel="noopener noreferrer">simulateur de l'Urssaf</a>.
+        </span>
+      </p>
 
       {/* Action principale */}
       {onNewSimulation && (

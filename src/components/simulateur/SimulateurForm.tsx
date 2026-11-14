@@ -183,7 +183,14 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         getDomTomInfo(lieuExercice)?.nom ?? 'France métropolitaine',
       ].join(', '),
       `Revenus ${anneeSaisie}`,
-      regimeSocial === 'rspm' ? 'Régime social\u00a0: RSPM' : regimeSocial === 'pamc' ? 'Régime social\u00a0: PAMC' : 'Régime social automatique',
+      // § 9.gh : le régime social qui s'appliquera, dit en clair (le mot RSPM n'apparaissait nulle
+      // part avant le résultat). Auto : RSPM pour un remplaçant jusqu'à 19 000 € de recettes.
+      regimeSocial === 'rspm' ? 'Régime social\u00a0: RSPM (choisi)'
+        : regimeSocial === 'pamc' ? 'Régime social\u00a0: PAMC (choisi)'
+        : typeExercice === 'installe' ? 'Régime social\u00a0: PAMC'
+        : annualRecettes <= 0 ? 'Régime social\u00a0: RSPM ou PAMC selon tes recettes'
+        : annualRecettes <= 19000 ? 'Régime social\u00a0: RSPM (recettes jusqu\'à 19\u00a0000\u00a0€)'
+        : 'Régime social\u00a0: PAMC (le RSPM s\'arrête à 19\u00a0000\u00a0€ de recettes)',
     ];
     // Un champ en erreur dans la situation repliée : la situation s'ouvre, sinon l'erreur reste
     // invisible (le formulaire ne pourrait pas y porter le focus).

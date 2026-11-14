@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, TrendingUp, Info, Wallet, Landmark, Shield, Briefcase, Trophy, Calculator, FileText, AlertTriangle, MapPin, Heart, Percent, Building, GraduationCap, Leaf, Home, Stethoscope } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -122,7 +121,9 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
       
       // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      setCount(Math.floor(easeOutQuart * end));
+      // L'arrivée est le montant arrondi à l'euro, comme partout ailleurs (« soit … /mois »,
+      // RSPM ou PAMC, conclusion) : `Math.floor` laissait 34 216 € quand le reste disait 34 217 €.
+      setCount(progress < 1 ? Math.floor(easeOutQuart * end) : Math.round(end));
       
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
@@ -164,7 +165,9 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
   const hasRevenusConjoint = revenusConjointAnnuels > 0;
   const revenusTotaux = (recettesAnnuelles || 0) + revenusSalariesAnnuels;
 
-  const renderCard = (type: 'reel' | 'micro-bnc', result: SimulationResult, estDevant: boolean, showWarning: boolean = false) => {
+  // § 9.gh : une seule fiche « Les deux régimes » ; cette fonction en rend un morceau par régime :
+  // la tuile du Super-Net, l'anneau (régime recommandé seulement) ou le détail ligne par ligne.
+  const renderCard = (type: 'reel' | 'micro-bnc', result: SimulationResult, estDevant: boolean, showWarning: boolean = false, partie: 'tuile' | 'anneau' | 'detail' = 'tuile') => {
     // Le badge « Recommandé » et le Super-Net sur jaune ne vont qu'au régime qui l'emporte
     // vraiment : sous le seuil d'équivalence, les deux se valent (la conclusion le dit).
     const isRecommended = estDevant && economie >= SEUIL_EQUIVALENCE_ANNUEL;
@@ -897,151 +900,25 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       tooltipContent: hasRevenusConjoint ? getImpotMedecinTooltipContent() : getImpotTooltipContent()
     });
 
-    const cardClassName = isRecommended
-      ? "sim-fiche sim-regime recommande relative overflow-visible"
-      : "sim-fiche sim-regime relative overflow-hidden";
+    if (partie === 'anneau') {
+      return (
+        <AnneauRepartition
+          charges={result.chargesReelles || 0}
+          cotisations={result.cotisationsTotales}
+          impot={hasRevenusConjoint ? impotMedecin : result.impot}
+          superNet={superNetMedecinReel}
+          total={revenusTotaux}
+        />
+      );
+    }
 
-    return (
-      <div
-        className="relative"
-      >
-        {/* Badge recommandé flottant */}
-        {isRecommended && (
-          <div 
-            className="absolute -top-3 -right-2 z-10"
-          >
-            <Badge className="sim-puce encre grande">
-              <Trophy className="h-3.5 w-3.5 mr-1.5" />
-              Recommandé
-            </Badge>
-          </div>
-        )}
-
-        {/* Badge warning */}
-        {showWarning && !isRecommended && (
-          <div 
-            className="absolute -top-3 -right-2 z-10"
-          >
-            <PremiumTooltip
-              title="Plafond Micro-BNC"
-              texteVisible
-              content={
-                <p className="text-sm">
-                  Tes recettes dépassent {plafondTexte}{' '}€. Vérifie si tu as aussi dépassé ce seuil l'année dernière.
-                </p>
-              }
-            >
-              <Badge 
-                variant="outline" 
-                className="sim-puce attn grande cursor-help"
-              >
-                <AlertTriangle className="h-3 w-3" aria-hidden="true" />
-                Vérifie
-              </Badge>
-            </PremiumTooltip>
-          </div>
-        )}
-
-        <Card className={cardClassName}>
-          <CardHeader className="sim-regime-tete">
-            <div className="flex items-center gap-3">
-              {/* Icon badge */}
-              <div className={`sim-rond grand ${
-                isRecommended 
-                  ? 'plein' 
-                  : ''
-              }`}>
-                <Icon className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <CardTitle className="sim-regime-nom">{title}</CardTitle>
-                  {/* Le régime social (RSPM ou PAMC), le même pour les deux fiches, est dit une
-                      fois sous le titre des résultats (SimulateurResults), plus sur chaque fiche. */}
-                </div>
-                <p className="sim-regime-desc">{description}</p>
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="sim-regime-corps space-y-4">
-
-            {/* Le Super-Net : sur du jaune dans la fiche recommandée (le halo flou
-                d'avant est retiré, il débordait de la fiche sur téléphone). */}
-            <div className="relative">
-              <div className={`sim-supernet relative ${
-                isRecommended
-                  ? 'soleil'
-                  : ''
-              }`}>
-                <div className="flex items-center justify-between mb-2">
-                <span className="sim-supernet-nom flex items-center gap-1.5">
-                    {superNetLabel}
-                    <PremiumTooltip
-                      title="Super-Net"
-                      content={
-                        <div className="space-y-2">
-                          <p className="font-medium">Calcul du Super-Net :</p>
-                          <p className="sim-formule">
-                            CA - Impôt{hasRevenusConjoint ? " (ta part)" : ""} - Cotisations - Charges
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {hasRevenusConjoint 
-                              ? `L'impôt utilisé est ta part estimée (taux ~${tauxMedecin.toLocaleString('fr-FR')}\u00a0%), basée sur le taux individualisé DGFiP (défaut depuis sept. 2025).`
-                              : type === 'micro-bnc' 
-                                ? "En Micro-BNC, l'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges pour l'impôt. Tu les paies quand même : elles sont retirées du Super-Net, comme au Régime Réel."
-                                : "En Régime Réel, charges et cotisations sont déductibles du revenu imposable."
-                            }
-                          </p>
-                        </div>
-                      }
-                    >
-                      <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
-                    </PremiumTooltip>
-                  </span>
-                  {revenusTotaux > 0 && (
-                    <Badge variant="secondary" className="sim-puce blanche grande">
-                      {Math.round(((superNetMedecinReel || 0) / revenusTotaux) * 100)}% {hasRevenusSalaries ? 'des revenus' : 'du CA'}
-                    </Badge>
-                  )}
-                </div>
-                
-                <div
-                  className="flex flex-col"
-                >
-                  <div className="flex items-baseline gap-1">
-                    <span className="aff sim-supernet-montant">
-                      <CountUp end={periode === 'mensuel' ? superNetMedecinReel / 12 : superNetMedecinReel} />
-                      <span className="sim-supernet-euro">€</span>
-                    </span>
-                    <span className="sim-supernet-par">{periodeSuffix}</span>
-                  </div>
-                  <span className="sim-supernet-soit">
-                    {periode === 'mensuel' 
-                      ? `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(superNetMedecinReel)} /an`
-                      : `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(superNetMedecinReel / 12))} /mois`
-                    }
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Où partent les revenus (anneau rétabli au § 9.fu, en SVG) */}
-            <AnneauRepartition
-              charges={result.chargesReelles || 0}
-              cotisations={result.cotisationsTotales}
-              impot={hasRevenusConjoint ? impotMedecin : result.impot}
-              superNet={superNetMedecinReel}
-              total={revenusTotaux}
-            />
-
-            {/* Le détail ligne par ligne (§ 9.gg) : ouvert à partir de 768 px, replié au téléphone,
-                où les deux fiches faisaient 1 536 px sous la conclusion qui dit déjà l'essentiel. */}
-            <details className="sim-fiche-detail" open={detailOuvertParDefaut}>
-              <summary className="sim-fiche-detail-titre">
-                <span>Détail ligne par ligne</span>
-                <ChevronDown className="sim-chevron h-5 w-5" aria-hidden="true" />
-              </summary>
+    if (partie === 'detail') {
+      return (
+        <details className="sim-fiche-detail" open={detailOuvertParDefaut}>
+          <summary className="sim-fiche-detail-titre">
+            <span>Détail{'\u00a0'}: {title}</span>
+            <ChevronDown className="sim-chevron h-5 w-5" aria-hidden="true" />
+          </summary>
             <div className="space-y-1.5 pt-2">
               {detailItems.map((item, i) => (
                 <div
@@ -1084,10 +961,80 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                 </div>
               ))}
             </div>
-            </details>
+        </details>
+      );
+    }
 
-            </CardContent>
-        </Card>
+    // La tuile : le régime, son Super-Net (sur jaune pour le régime recommandé), par mois et en part.
+    return (
+      <div className={`sim-tuile${isRecommended ? ' recommande' : ''}`}>
+        {(isRecommended || showWarning) && (
+          <div className="sim-tuile-marque">
+            {isRecommended ? (
+              <Badge className="sim-puce encre">
+                <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+                Recommandé
+              </Badge>
+            ) : (
+                <PremiumTooltip
+                  title="Plafond Micro-BNC"
+                  texteVisible
+                  content={
+                    <p className="text-sm">
+                      Tes recettes dépassent {plafondTexte}{' '}€. Vérifie si tu as aussi dépassé ce seuil l'année dernière.
+                    </p>
+                  }
+                >
+                  <Badge 
+                    variant="outline" 
+                    className="sim-puce attn grande cursor-help"
+                  >
+                    <AlertTriangle className="h-3 w-3" aria-hidden="true" />
+                    Vérifie
+                  </Badge>
+                </PremiumTooltip>
+            )}
+          </div>
+        )}
+        <h4 className="sim-tuile-nom"><Icon className="h-4 w-4" aria-hidden="true" />{title}</h4>
+        <p className="sim-tuile-desc">{description}</p>
+        <p className="sim-tuile-label">
+          {superNetLabel}
+            <PremiumTooltip
+              title="Super-Net"
+              content={
+                <div className="space-y-2">
+                  <p className="font-medium">Calcul du Super-Net :</p>
+                  <p className="sim-formule">
+                    CA - Impôt{hasRevenusConjoint ? " (ta part)" : ""} - Cotisations - Charges
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {hasRevenusConjoint 
+                      ? `L'impôt utilisé est ta part estimée (taux ~${tauxMedecin.toLocaleString('fr-FR')}\u00a0%), basée sur le taux individualisé DGFiP (défaut depuis sept. 2025).`
+                      : type === 'micro-bnc' 
+                        ? "En Micro-BNC, l'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges pour l'impôt. Tu les paies quand même : elles sont retirées du Super-Net, comme au Régime Réel."
+                        : "En Régime Réel, charges et cotisations sont déductibles du revenu imposable."
+                    }
+                  </p>
+                </div>
+              }
+            >
+              <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
+            </PremiumTooltip>
+        </p>
+        <p className="sim-tuile-montant">
+          <span className="aff sim-supernet-montant">
+            <CountUp end={periode === 'mensuel' ? superNetMedecinReel / 12 : superNetMedecinReel} />
+            <span className="sim-supernet-euro">€</span>
+          </span>
+          <span className="sim-supernet-par">{periodeSuffix}</span>
+        </p>
+        <p className="sim-tuile-soit">
+          {periode === 'mensuel'
+            ? `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(superNetMedecinReel)} /an`
+            : `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(superNetMedecinReel / 12))} /mois`}
+          {revenusTotaux > 0 && <> · {Math.round(((superNetMedecinReel || 0) / revenusTotaux) * 100)}{'\u00a0'}% {hasRevenusSalaries ? 'des revenus' : 'du CA'}</>}
+        </p>
       </div>
     );
   };
@@ -1138,37 +1085,35 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       {/* Plafond du Micro-BNC dépassé : dit une fois, dans la conclusion au-dessus des fiches
           (règle des deux années précédentes), et rappelé par « Vérifie » sur la fiche Micro-BNC.
           L'encadré repliable d'ici le disait une troisième fois (MIGRATION.md § 9.ft). */}
-      {/* Cartes de comparaison */}
-      <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-        {microBnc ? (
-          renderCard('micro-bnc', microBnc, recommande === 'micro-bnc', depassePlafond)
-        ) : (
-          <div
-          >
-            <Card className="sim-fiche sim-regime relative">
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="sim-rond grand">
-                    <Calculator className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <CardTitle className="sim-regime-nom">Micro-BNC</CardTitle>
-                    <p className="text-sm text-muted-foreground">Erreur de calcul</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="sim-panneau">
-                  <p className="text-sm text-muted-foreground">
-                    Une erreur est survenue lors du calcul du régime Micro-BNC.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-        {renderCard('reel', reel, recommande === 'reel')}
-      </div>
+      {/* Les deux régimes, en une fiche (§ 9.gh) : deux tuiles côte à côte, l'anneau du régime
+          recommandé (les deux anneaux d'avant étaient presque identiques), puis le détail de
+          chacun. Les deux fiches faisaient 1 030 px au téléphone. */}
+      <section className="sim-fiche sim-comparaison" aria-labelledby="sim-comparaison-titre">
+        <h3 id="sim-comparaison-titre" className="sim-fiche-titre">Les deux régimes</h3>
+        <div className="sim-tuiles">
+          {microBnc ? (
+            renderCard('micro-bnc', microBnc, recommande === 'micro-bnc', depassePlafond, 'tuile')
+          ) : (
+            <div className="sim-tuile">
+              <h4 className="sim-tuile-nom"><Calculator className="h-4 w-4" aria-hidden="true" />Micro-BNC</h4>
+              <p className="sim-tuile-desc">Calcul indisponible pour le moment.</p>
+            </div>
+          )}
+          {renderCard('reel', reel, recommande === 'reel', false, 'tuile')}
+        </div>
+        <div className="sim-comparaison-anneau">
+          <p className="sim-comparaison-sous">
+            Où vont tes revenus, {recommande === 'micro-bnc' && microBnc ? 'au Micro-BNC' : 'au régime réel'}
+          </p>
+          {recommande === 'micro-bnc' && microBnc
+            ? renderCard('micro-bnc', microBnc, true, false, 'anneau')
+            : renderCard('reel', reel, true, false, 'anneau')}
+        </div>
+        <div className="sim-details-regimes">
+          {microBnc && renderCard('micro-bnc', microBnc, recommande === 'micro-bnc', depassePlafond, 'detail')}
+          {renderCard('reel', reel, recommande === 'reel', false, 'detail')}
+        </div>
+      </section>
     </div>
   );
 }

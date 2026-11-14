@@ -685,6 +685,21 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   dans `CHAMPS_SITUATION`. Résultats : « Ton résultat », rappel de la saisie et écart de
   Super-Net avec l'essai précédent (`essaiDe`, `superNetDuMedecin`) ; lien d'essai dans la
   conclusion (`emplacement: 'conclusion'`) ; détail des fiches replié sous 768 px.
+  Ordre des résultats (§ 9.gh) : en-tête, conclusion (mises en garde seules), « RSPM ou PAMC ? »
+  (au RSPM : `RspmOuPamc.tsx`, la même saisie en PAMC par `calculerAlternativePamc`, après la marge
+  et la bascule), première année, « Les deux régimes » (une fiche : deux tuiles en sous-grille,
+  l'anneau du régime recommandé, deux plis de détail), « À savoir pour ta situation » (phrase des
+  1 000 € et pistes : `ConclusionCard` avec `partie="a-savoir"`), plis, bande Hippodoc, limites en
+  une ligne. Le résumé de la situation dit le régime social que le mode Auto retiendra. Un écart
+  affiché se lit sur les montants affichés : différence des montants arrondis à l'euro, jamais
+  l'écart arrondi d'un coup (conclusion, « RSPM ou PAMC ? ») ; le compteur d'une tuile finit sur
+  `Math.round`. Une nouvelle piste de type `info` va dans « À savoir », une mise en garde dans la
+  conclusion.
+  ⚠️ Les essais en navigateur sur le serveur local écrivent dans la table Supabase
+  `simulateur_public_events` (aucun filtre de domaine ; le 14 novembre 2026, plusieurs centaines de
+  lignes de test, `referrer_source` vide ou `direct`), et peut-être dans PostHog : couper ces
+  requêtes dans le script (`page.route(/supabase\.co|t\.hippodoc\.fr/, (r) => r.abort())` ; le
+  calcul passe par l'API de l'Urssaf, il n'en a pas besoin).
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la

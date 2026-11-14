@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Scale, AlertTriangle, FileQuestion, PiggyBank, CalendarClock, ArrowRight } from "lucide-react";
+import { Trophy, Scale, AlertTriangle, FileQuestion, PiggyBank, CalendarClock, ArrowRight, TrendingUp } from "lucide-react";
 import { APP_URL } from "@/lib/site";
 import { trackEvent } from "@/lib/analytics";
 import { insertPublicEvent } from "@/lib/supabase-public";
@@ -24,6 +24,9 @@ interface ConclusionCardProps {
   bascule?: number | null | 'attente';
   /** Ce qui resterait de 1 000 € de recettes en plus ; `'attente'` : en cours ; `undefined` : rien. */
   marge?: number | 'attente';
+  /** § 9.gh : `conclusion` (le verdict, le mois, l'essai ; les avertissements du plafond) ou
+   *  `a-savoir` (les pistes et la phrase des 1 000 €, dans une fiche sous la comparaison). */
+  partie?: 'conclusion' | 'a-savoir';
 }
 
 interface ContextAlert {
@@ -37,7 +40,7 @@ const euros = (montant: number): string =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.abs(montant));
 
 // ============ COMPOSANT PRINCIPAL ============
-export function ConclusionCard({ comparison, formData, bascule, marge }: ConclusionCardProps) {
+export function ConclusionCard({ comparison, formData, bascule, marge, partie = 'conclusion' }: ConclusionCardProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) return null;
@@ -52,7 +55,11 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
   const plafond = comparison.plafondMicro ?? 83600;
 
   const ecartMensuel = Math.round(economie / 12);
-  const ecartAnnuel = Math.round(economie);
+  // L'écart annuel affiché se lit sur les tuiles (§ 9.gh) : la différence des deux Super-Net
+  // arrondis chacun à l'euro. L'écart arrondi d'un coup pouvait s'en écarter d'un euro.
+  const ecartAnnuel = microBnc
+    ? Math.abs(Math.round(microBnc.superNet ?? 0) - Math.round(reel?.superNet ?? 0))
+    : Math.round(economie);
   const equivalents = !microBnc || economie < SEUIL_EQUIVALENCE_ANNUEL;
 
   // ============ CONDITIONS ============
@@ -247,7 +254,10 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
   // calcul IR » sont retirées (§ 9.ft) : elles redisaient la saisie, et les fiches portent ces
   // lignes (« Revenus salariés », « Mon impôt (estimé) »).
 
-  const shownAlerts = alerts.slice(0, 3);
+  // § 9.gh : les avertissements (plafond du Micro-BNC) qualifient le verdict et restent dans la
+  // conclusion ; les pistes (`info`) vont dans « À savoir pour ta situation ».
+  const shownAlerts = alerts.filter((a) => a.type !== 'info').slice(0, 2);
+  const alertesInfo = alerts.filter((a) => a.type === 'info');
   const hasWarnings = shownAlerts.some(a => a.type === 'warning' || a.type === 'danger');
 
   // ============ STYLES ============
@@ -265,6 +275,33 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
       default: return "info";
     }
   };
+
+  // ============ À SAVOIR (§ 9.gh) ============
+  if (partie === 'a-savoir') {
+    if (!phraseMarge && alertesInfo.length === 0) return null;
+    return (
+      <section className="sim-fiche sim-a-savoir" aria-labelledby="sim-a-savoir-titre">
+        <h3 id="sim-a-savoir-titre" className="sim-fiche-titre">À savoir pour ta situation</h3>
+        <ul className="sim-a-savoir-liste">
+          {phraseMarge && (
+            <li aria-live="polite" aria-busy={marge === 'attente'}>
+              <TrendingUp className="h-4 w-4" aria-hidden="true" />
+              <span>{phraseMarge}</span>
+            </li>
+          )}
+          {alertesInfo.map((alerte, i) => {
+            const Icone = alerte.icon;
+            return (
+              <li key={i}>
+                <Icone className="h-4 w-4" aria-hidden="true" />
+                <span>{alerte.message}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    );
+  }
 
   // ============ RENDER ============
   return (
@@ -294,7 +331,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
 
       {/* Les chiffres du mois : le total à mettre de côté, sa répartition en barre, puis
           ce qu'il resterait de 1 000 € de plus. */}
-      <div className="sim-conclusion-detail sim-conclusion-mois" aria-live="polite" aria-busy={marge === 'attente'}>
+      <div className="sim-conclusion-detail sim-conclusion-mois">
         <p className="sim-mois-tete">À mettre de côté chaque mois pour ton activité libérale</p>
         <p className="sim-mois-total">
           <strong>{euros(totalMois)}</strong> <span>{partRecettes}{'\u00a0'}% de tes recettes</span>
@@ -311,7 +348,6 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
             </ul>
           </>
         )}
-        {phraseMarge && <p className="sim-mois-marge">{phraseMarge}</p>}
         {/* § 9.gg : le pont vers Hippodoc, là où naît la question « et le reste de l'année ? ».
             Sous le résultat, il n'y avait qu'un appel, 2 700 px plus bas au téléphone (3 clics
             en 3 mois). */}
