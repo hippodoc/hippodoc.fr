@@ -12728,8 +12728,18 @@ de leur rémunération après application de l'abattement prévu à l'article 10
 impôts » ; la version d'avant 2026 n'a pas pu être lue (Légifrance sert la version courante), et le
 site de l'Urssaf pour les remplaçants (service-simplifie-medecin.urssaf.fr) répondait 503. Indice
 pour les honoraires bruts : 47,30 % de 13,5 % des recettes font 6,39 % des recettes, soit 9,7 %
-(CSG-CRDS) de 66 % des recettes. À confirmer sur un relevé de l'Urssaf (montant appelé pour un
-montant déclaré). Calcul inchangé.
+(CSG-CRDS) de 66 % des recettes. Calcul inchangé.
+Tranché ensuite, sur une source du propriétaire : un cabinet comptable (Auctus, « RSPM médecin
+remplaçant : taux et sortie », 22 octobre 2026) applique les taux aux rétrocessions brutes
+(10 000 € → 1 350 €, 19 000 € → 2 565 €, 30 000 € → 2 565 € + 11 000 × 21,2 % = 4 897 €, plus
+l'invalidité-décès), note que D642-4-1 à D642-4-3 « n'ont pas changé » et que les taux restent
+ceux-là « au 15 octobre 2026 », d'après la page de l'Urssaf sur l'offre des médecins remplaçants
+(mise à jour le 28 septembre 2026 ; urssaf.fr refuse les lectures automatiques, elle n'a pas pu
+être ouverte ici). La CARMF (« Radiation du RSPM », 31 mars 2026) situe le seuil à 19 000 € de
+chiffre d'affaires, « correspondant à un bénéfice non commercial (micro-BNC) inférieur à
+12 500 € », et confirme que « l'ensemble des charges sociales, y compris celles dues à la CARMF,
+est recouvré par l'Urssaf ». Le simulateur calcule comme ces exemples. À revoir si un décret
+modifie D642-4-1 à D642-4-3 (un projet ouvrirait le RSPM jusqu'à 80 000 € de chiffre d'affaires).
 « Remplaçants régulateurs RSPM » (CARMF, février 2026) : « Toutes les cotisations, y compris celles
 de la Carmf, seront payées auprès de l'URSSAF ». « À mettre de côté » au RSPM : une seule part,
 Urssaf (la CARMF y figurait pour l'invalidité-décès).

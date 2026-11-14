@@ -662,8 +662,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   RSPM (§ 9.fw) : 13,5 % jusqu'à 19 000 €, 21,2 % au-delà (CSS D642-4-2 et D642-4-3, inchangés
   depuis 2021), sur les honoraires bruts, plus l'invalidité-décès ; tout se paie à l'Urssaf.
   L'article L642-4-2 en vigueur depuis 2026 dit « rémunération après application de
-  l'abattement prévu à l'article 102 ter du CGI » : point non tranché, à confirmer auprès de
-  l'Urssaf (son site des remplaçants ne répondait pas).
+  l'abattement prévu à l'article 102 ter du CGI » ; l'Urssaf applique toujours les taux aux
+  rétrocessions brutes (10 000 € → 1 350 €, d'après sa page du 28 septembre 2026, citée le
+  22 octobre 2026 ; § 9.fw). À revoir si un décret change D642-4-1 à D642-4-3.
   Le Super-Net retire les charges payées dans les deux régimes, Micro-BNC compris. Les règles
   se vérifient sur Légifrance, le BOFiP et la CARMF ; le revenu imposable d'un remplaçant doit
   rester égal au « net imposable » du modèle Urssaf (contrôle croisé, § 9.fr).
