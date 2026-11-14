@@ -651,6 +651,13 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Le Super-Net retire les charges payées dans les deux régimes, Micro-BNC compris. Les règles
   se vérifient sur Légifrance, le BOFiP et la CARMF ; le revenu imposable d'un remplaçant doit
   rester égal au « net imposable » du modèle Urssaf (contrôle croisé, § 9.fr).
+  Résultats (§ 9.ft) : la conclusion en tête, puis les fiches. L'impôt du médecin (sa part en
+  couple, celle de son activité libérale, ses acomptes) vient de `src/lib/simulateur/impotMedecin.ts`,
+  ce que chaque régime déduit de `src/lib/simulateur/deductions.ts` : conclusion, fiches et plis les
+  lisent, ne recalculer aucun de ces montants dans un composant. « Recommandé » et la conclusion
+  partagent `SEUIL_EQUIVALENCE_ANNUEL` (600 €/an). Marge sur 1 000 € (`calculerMarge`) et point de
+  bascule se calculent après l'affichage, l'un après l'autre ; en attente, leur phrase a sa forme
+  finale (« … € ») pour que rien ne saute.
 - `/guide-declarations/calculette` → `src/components/calculette/CalculetteApp.tsx`,
   100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage. Habillage DA
   (§ 9.el) : `.calc` de `src/styles/calculette.css` (page seule), posée sur la racine de

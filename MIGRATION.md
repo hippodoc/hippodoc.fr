@@ -12476,6 +12476,126 @@ des fonctions absentes du simulateur public.
   pages ne diffèrent que par ce nom de fichier (vérifié contre le build du commit précédent). La
   règle de `global.css` qui visait le flou est gardée (commentaire mis à jour).
 
+### 9.ft Simulateur : les résultats, verdict d'abord, chiffres réconciliés, ce qu'il faut savoir (14 novembre 2026)
+
+Le propriétaire, après le § 9.fs : « est-ce que dans les résultats tu trouves qu'on est optimal,
+pertinent, clair, utile, et complet […] ? », puis « yes go je te fais full confiance » sur un plan
+en trois parties : clarté, exactitude, valeur.
+
+**Clarté.**
+- La conclusion passe **avant** les deux fiches (elle était dessous) : le régime qui l'emporte et de
+  combien, puis le détail.
+- L'écart n'est dit qu'une fois : les pieds des fiches « Économie de X €/an par rapport au Régime
+  Réel » et « Moins avantageux de X €/an » sont retirés (la conclusion le dit, en mois et en an).
+- « Recommandé » et le Super-Net sur jaune ne vont qu'au régime qui l'emporte de 600 €/an au moins
+  (`SEUIL_EQUIVALENCE_ANNUEL`, déplacé dans `usePublicodesSimulation.ts`, le même seuil que la
+  conclusion) : sous ce seuil, la conclusion dit « Les deux régimes se valent » et aucune fiche
+  n'est « recommandée » (elles l'étaient, pour 19 €/mois d'écart).
+- Fiches allégées : les anneaux de répartition (identiques d'une fiche à l'autre) et la ligne
+  « 1 part fiscale » sont retirés (les parts restent dans l'infobulle de l'impôt). `recharts` n'a
+  plus d'emploi : retiré des dépendances.
+- L'encadré repliable « Plafond Micro-BNC dépassé » est retiré : la conclusion le dit, avec la règle
+  juste (les deux années précédentes), et « Vérifie » reste sur la fiche. Il disait « vous » et
+  « 2ème année au-dessus : Régime Réel au 1er janv. », ce qui se lisait comme le 1er janvier de
+  cette deuxième année.
+- Retirées aussi de la conclusion, les pastilles « Revenus salariés pris en compte dans l'IR » (ou
+  « Revenus salariés majoritaires → impact TMI significatif ») et « Conjoint (X €) inclus dans le
+  calcul IR » : elles redisaient la saisie.
+
+**Exactitude.**
+- **Un seul calcul de l'impôt du médecin** (`src/lib/simulateur/impotMedecin.ts`) pour la
+  conclusion, les fiches et le pli « Comment l'impôt sera prélevé », qui donnaient trois chiffres :
+  la part du médecin au taux individualisé quand le conjoint a des revenus (déjà le cas des fiches),
+  la part de son activité libérale (ses salaires sont retenus par l'employeur), et les acomptes, sur
+  l'impôt **avant** crédits et réductions (CGI art. 204 H : le taux ne les compte pas ; ils sont
+  remboursés après la déclaration, avec une avance en début d'année, art. 1665 bis). L'assiette du
+  médecin est désormais son bénéfice imposable du moteur (elle était recalculée « recettes −
+  charges − cotisations », sans les forfaits du secteur 1 ni la CSG-CRDS non déductible) ; son
+  Super-Net en couple est celui du moteur avec sa part de l'impôt (le calcul d'avant oubliait PDSA
+  et crédits remboursés).
+- **« À mettre de côté chaque mois »** (remplace « À prévoir pour tes cotisations et l'impôt… ») :
+  le total et sa répartition, Urssaf, CARMF et impôt de l'activité libérale. CARMF = retraite de
+  base, complémentaire, invalidité-décès et ASV en PAMC ; au RSPM, l'invalidité-décès seule (le reste
+  est payé à l'Urssaf). Le total est la somme des parts arrondies.
+- **Pli « Comment l'impôt sera prélevé »** : le montant des acomptes était l'impôt du foyer entier,
+  salaires compris ; il est celui de `impotDuMedecin`, « Pour ces revenus », ou « aucun acompte, ton
+  impôt estimé est nul ». Ajouts : l'impôt des salaires retenu par l'employeur, les crédits d'impôt
+  qui ne baissent pas les acomptes, « Tes revenus 2026 ne changent tes acomptes qu'à partir de
+  septembre 2027, après ta déclaration. » Taux au format français (« 14,5 % », pas « 14.5% »).
+  Texte retiré, faux : « **1ère année d'installation ?** Tu n'as ni acomptes URSSAF/CARMF (pas de
+  N-1) ni acomptes IR tant que tu n'as pas déclaré — ton Super-Net mensuel est temporairement plus
+  élevé. Mets de côté ~30-45 % pour anticiper la régularisation. » Les deux premières années, Urssaf
+  et CARMF appellent des cotisations provisionnelles sur une base forfaitaire, puis les régularisent
+  (service-public.fr, F39739) ; au RSPM, les cotisations suivent les recettes déclarées chaque mois
+  ou trimestre. Le nouveau texte dit cela, puis l'impôt : pas d'acompte avant la première
+  déclaration (sauf demande sur impots.gouv.fr), puis solde de la première année et premiers
+  acomptes ensemble de septembre à décembre de l'année suivante.
+- **Pli « Comprendre la différence »** : les montants viennent de `src/lib/simulateur/deductions.ts`,
+  tiré du moteur. Le PER et l'exonération de zone étaient comptés au réel seulement, alors qu'ils
+  jouent aussi en micro (sauf la FRR « socle », réel seulement, qui reste comptée au réel) ; le
+  bénéfice du micro était recalculé à côté du moteur, salaires ajoutés. Les colonnes donnent
+  désormais le « Bénéfice imposable » de l'activité, et une ligne dit ce qui vient ensuite dans les
+  deux régimes (PER, zone). Lignes ajoutées : Madelin, chèques-vacances ; « Déductions S1 » devient
+  « Forfait 3 % et groupe III » ; « (48.5%) » devient « (49 %) ». En PAMC, une phrase explique que
+  les cotisations diffèrent aussi (sur le bénéfice au réel, sur les recettes après abattement en
+  micro). La note « À noter » n'est plus doublée d'une infobulle qui disait la même chose.
+- Encart DOM des fiches : « réduction d'impôt de 30 % […] sur tes revenus » devient « Ton impôt est
+  réduit de 30 %, dans la limite de 2 450 € (CGI, art. 197) » ; « Cotisations URSSAF estimées au
+  taux métropole. Écart réel < 3 % pour les médecins PAMC en DOM. » devient, en PAMC, « Cotisations
+  calculées par le modèle de l'Urssaf, qui tient compte de ton département. » (le département lui
+  est transmis depuis le § 9.fr ; il ne change rien hors Mayotte), au RSPM « Au RSPM, le simulateur
+  applique les taux de la métropole. »
+- Messages d'erreur au tutoiement (« Vérifie ta connexion internet. », « Réessaie dans quelques
+  instants. »).
+
+**Valeur** (dans la conclusion, chaque phrase tirée du calcul) :
+- **Pourquoi** : « Au réel, tu déduis X € de tes recettes avant l'impôt (Y %) ; le Micro-BNC en
+  retire Z € d'office (34 %). », puis, en PAMC et à partir de 100 € d'écart, « Au réel, tes
+  cotisations sont aussi plus basses (ou plus élevées) de W €. ». Quand l'impôt est le même des deux
+  côtés (zone exonérée, petits revenus), seule la phrase des cotisations : « Ton impôt est le même
+  dans les deux régimes : l'écart vient de tes cotisations […] ».
+- **Ce qui change** : quand les deux se valent, « Ce qui les départage alors, c'est la gestion : en
+  micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le
+  jour ; au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses. Les
+  honoraires d'un comptable sont une charge : ajoute-les pour comparer. » (CGI art. 102 ter, 4 ;
+  BOI-BNC-DECLA-20-30 ; CGI art. 99). Il remplace « Choisis selon ta préférence de gestion. ». Quand
+  le réel l'emporte sous le plafond : « Pour être au réel, il suffit de déposer ta déclaration 2035
+  dans les délais : l'option vaut un an et se renouvelle d'elle-même. » (BOI-BNC-DECLA-10-10,
+  § 130 à 140).
+- **1 000 € de plus** : « 1 000 € de recettes en plus dans l'année t'en laisseraient environ X €,
+  après cotisations et impôt. » (`calculerMarge` : régime fiscal retenu, même régime social, charges
+  inchangées ; un appel au modèle Urssaf en PAMC, calculé après l'affichage, avant le point de
+  bascule). Pas de phrase si le résultat sort de 0 à 1 000 € : un seuil est franchi. Cas relevé :
+  un médecin installé en secteur 1 dont les recettes passent 120 150 € (250 % du PASS) voit ses
+  cotisations monter d'environ 1 000 € d'un coup dans le modèle Urssaf.
+- En attente, la bascule et la marge ont déjà leur phrase finale, le montant en « … € » : les fiches
+  ne sautent plus à l'arrivée du calcul (22 à 44 px au téléphone avec une phrase d'attente), et la
+  zone est `aria-busy` pendant ce temps. Un filet sépare le raisonnement (pourquoi, bascule, ce qui
+  change) des chiffres du mois.
+
+**Page.** « Comprendre les résultats » (mode d'emploi, point 5) suit le nouvel ordre : la
+conclusion en tête (et pourquoi), le point de bascule, ce qu'il faut mettre de côté et les 1 000 €
+de plus, les deux fiches, les plis. Texte d'avant : « **Les 2 fiches** — Micro-BNC et Régime Réel,
+avec le même chiffre en tête : ton Super-Net, par mois et par an. Dessous, le détail ligne par ligne
+(charges, cotisations, revenu imposable, impôt). / **La conclusion** — Le régime qui te laisse le
+plus, et de combien par mois. Sous 50 € par mois d'écart, les deux se valent : choisis selon ta
+préférence de gestion. / **À prévoir chaque mois** — Tes cotisations et l'impôt de ton activité
+libérale, à mettre de côté. / **Le point de bascule** — […] / **Pour aller plus loin** — Pourquoi
+l'un déduit plus que l'autre, et comment ton impôt sera prélevé (acomptes, prélèvement à la
+source). »
+
+**Vérifications.** Banc de 24 situations (remplaçant et installé, secteurs 1 et 2, RSPM et PAMC,
+mensuel, salaires, couple, crédits d'impôt, PDSA, PER, Madelin, chèques-vacances, jeune affilié,
+dispense CARMF, DOM, FRR et QPV, recettes de 800 €) : déductions du micro = max(305 €, 34 %),
+déductions du réel = somme de leurs lignes, impôt du médecin et acomptes recalculés à part, somme
+des parts « à mettre de côté » = total, CARMF entre 0 et le total des cotisations ; textes de la
+conclusion et des plis rendus et relus. Navigateur (Chromium, 390 et 1 280 px) : aucune erreur de
+page, aucun débordement, 0 px de décalage à l'arrivée des calculs. Feuille commune : elle change de
+nom (`DV3-EFCM` → `HrxwAN9D`), sept règles en moins, aucune en plus (`h-[100px]`, `text-[7px]`,
+`sm:h-5`, `sm:w-5`, `ease-out` des anneaux ; `pb-6` des variantes en carte de deux plis,
+inemployées et retirées) ; les autres pages ne diffèrent de la production que par ce nom
+(vérifié sur l'accueil, `/tarifs`, `/faq`, `/blog`, un article, une page légale, la calculette).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

@@ -227,13 +227,16 @@
 .sim .sim-conclusion.attn .sim-conclusion-signe { background: var(--wait-bg); }
 /* 12 rem au moins pour la phrase : sur téléphone, la pastille passe dessous. */
 .sim .sim-conclusion-texte { flex: 1 1 12rem; font-size: 1.125rem; font-weight: var(--tb); line-height: 1.35; color: inherit; text-wrap-style: pretty; }
-/* Sous la conclusion : ce qu'il faut prévoir chaque mois, puis le point de bascule des charges
-   (MIGRATION.md § 9.fr). Alignées sur le texte, après la pastille de 46 px et l'écart de 12 px. */
+/* Sous la conclusion : le pourquoi, le point de bascule et ce qui change, puis, sous un filet,
+   les chiffres du mois (MIGRATION.md § 9.fr, § 9.ft). Alignés sur le texte, après la pastille
+   de 46 px et l'écart de 12 px : en marge, pour que le filet commence avec le texte. */
 .sim .sim-conclusion-detail { margin-top: 12px; color: inherit; font-size: 0.9375rem; line-height: 1.45; }
 .sim .sim-conclusion-detail p { margin: 0; text-wrap-style: pretty; }
 .sim .sim-conclusion-detail p + p { margin-top: 6px; }
+.sim .sim-conclusion-mois { padding-top: 12px; border-top: 1px solid var(--line); }
+.sim .sim-conclusion.gain .sim-conclusion-mois { border-top-color: rgba(255, 255, 255, 0.24); }
 @media (min-width: 480px) {
-  .sim .sim-conclusion-detail { padding-left: 58px; }
+  .sim .sim-conclusion-detail { margin-left: 58px; }
 }
 .sim .sim-conclusion.gain .sim-puce.encre { background: var(--sun); color: var(--ink); }
 
