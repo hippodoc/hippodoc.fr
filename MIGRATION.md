@@ -11371,7 +11371,8 @@ l'état final ; la construction d'avant les corrections est gardée pour compare
 - *Rogner les colonnes noires des trois fichiers source* (D3) : sans bande, elles ne se voient plus
   (point 1) ; les fichiers ne sont pas touchés.
 
-**Fusion avec § 9.fn (les thèmes) — à faire, pas ici** (S1, majeur). La branche des thèmes
+**Fusion avec les thèmes (§ 9.fp, d'abord numérotée § 9.fn, numéro pris entre-temps sur `main` par la
+fenêtre produit) — à faire, pas ici** (S1, majeur). La branche des thèmes
 (`claude/loving-carson-pgk851-themes`) n'est pas rebasée sur celle-ci ; elle devra l'être avant la mise en
 ligne, par le chef d'orchestre. `git merge-tree --write-tree --name-only` entre cette branche et celle des
 thèmes (14 novembre, lecture seule) : **conflits dans `CLAUDE.md`, `MIGRATION.md`,
@@ -11387,7 +11388,7 @@ la fusion :
    cette branche n'a qu'une colonne de lignes. Choisir alors entre le texte centré sur l'affiche (ici) et
    des titres alignés d'une colonne à l'autre (thèmes), puis remesurer.
 3. **La borne de densité, à remesurer.** Avec les étiquettes des thèmes simulées sur cette construction
-   (balisage et règles de § 9.fn, `zoom/corrections/densite3.cjs`) : 3 articles entiers à tout moment à
+   (balisage et règles des thèmes, `zoom/corrections/densite3.cjs`) : 3 articles entiers à tout moment à
    393 × 692, mais 92 % du temps seulement à 360 × 640 (lignes de 140 à 166 px : l'étiquette « Thème ·
    Fiche Fiscalité #16 » passe sur deux lignes pour 24 des 47). Deux voies : écrire le numéro de fiche sur
    la ligne de la date sous 400 px (mêmes mots, étiquette d'une ligne), ou accepter 92 % et l'écrire ici.
@@ -11431,7 +11432,7 @@ la fusion :
 - une carte d'article connexe sans image (affiche introuvable à la construction, cas qui n'arrive pas
   aujourd'hui) gardait la colonne de 96 px de l'image et écrasait son titre : une seule colonne dans ce
   cas (`.carte:not(:has(img))`) ;
-- CLAUDE.md citait § 9.fn, absent de `main` : la note de fusion ne vit plus qu'ici.
+- CLAUDE.md citait la section des thèmes, absente de `main` : la note de fusion ne vit plus qu'ici.
 Laissés tels quels : à 360 × 640, l'affiche de la une commence à 619 px (même position sur `main`, pas
 une régression) ; les affiches de 450 px restent douces en grand sur tablette (voir plus haut) ; cinq
 fichiers presque identiques dans le `srcset` de l'image en grand (sources de 902 à 908 px, à côté du
