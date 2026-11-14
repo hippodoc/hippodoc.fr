@@ -13,13 +13,17 @@
  * La classe `blog-card s-<seriesId>` est conservée : elle reste utile pour cibler
  * une série en CSS.
  *
- * Format des couvertures : toutes en PORTRAIT (2:3, 3:4 ou 4:5), titre dessiné en
- * haut. Sur téléphone, un carré de 64 px recadré sur le dessin (le titre dessiné,
- * illisible à cette taille, sort du cadre) ; à partir de 640 px, un cadre 4:5 de
- * 96 px (104 px à partir de 1024 px), ancré sur le haut. `sizes` dit ces largeurs.
+ * Les affiches (§ 9.fo) : toutes en PORTRAIT (quatre formats : 2:3, 0,75, 0,79,
+ * 0,805), titre dessiné en haut. Elles ne se rognent jamais : chacune est montrée
+ * entière, à son format, à la hauteur d'une case 4:5 (le vide d'une affiche plus
+ * étroite est le blanc de la feuille). Case de 26,5 % de la largeur de l'écran au
+ * téléphone (88 à 112 px : 95 px à 360, 104 px à 393), 144 px à partir de 640 px.
+ * `sizes` dit la largeur dessinée de CETTE affiche (une 2:3 : 83 % de la case) ;
+ * `src` et dimensions déclarées sont ceux d'avant.
  */
 import { blogSeries } from '@/lib/blog-series';
 import { nouer, echapper, nouerNombres } from '@/lib/typo';
+import { largeurDansCadre } from '@/lib/blog-covers';
 
 interface Props {
   /** Niveau du titre de carte : 3 quand la grille est sous un h2 de section (/blog). */
@@ -32,13 +36,16 @@ interface Props {
   seriesId: string;
   episodeNumber?: number;
   cover?: { src: string; width: number; height: number; srcset?: string };
-  /** Charge la couverture en priorité (première carte de la grille) plutôt qu'en différé. */
-  eager?: boolean;
 }
 
 const {
-  headingLevel = 2, slug, title, description, pubDate, readTime, seriesId, episodeNumber, cover, eager = false,
+  headingLevel = 2, slug, title, description, pubDate, readTime, seriesId, episodeNumber, cover,
 } = Astro.props;
+
+/* La largeur dessinée de l'affiche dans sa case (144 px, 112 px, 26,5 % de l'écran). */
+const sizes = cover?.srcset
+  ? `(min-width: 640px) ${largeurDansCadre(144, cover.width, cover.height)}px, (min-width: 423px) ${largeurDansCadre(112, cover.width, cover.height)}px, ${Math.round(26.5 * 1.25 * (cover.width / cover.height) * 100) / 100}vw`
+  : undefined;
 
 const series = blogSeries.find((s) => s.id === seriesId);
 
@@ -54,12 +61,11 @@ const Heading = headingLevel === 3 ? 'h3' : 'h2';
         <img
           src={cover.src}
           srcset={cover.srcset}
-          sizes={cover.srcset ? '(min-width: 1024px) 104px, (min-width: 640px) 96px, 64px' : undefined}
+          sizes={sizes}
           alt=""
           width={cover.width}
           height={cover.height}
-          loading={eager ? 'eager' : 'lazy'}
-          fetchpriority={eager ? 'high' : undefined}
+          loading="lazy"
         />
       </div>
     )}

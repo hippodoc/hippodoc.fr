@@ -19,10 +19,13 @@
      classes utilitaires d'origine (script inchangé) : les règles d'ici pèsent
      plus lourd qu'elles.
    - Depuis le § 9.fk (novembre 2026), les articles sont des lignes sur une
-     feuille blanche, l'affiche en vignette : une ligne tient en 96 à 132 px
-     de haut au téléphone (181 à 246 px avant), « À la une » en 0,4 écran
-     (1,1 avant). L'extrait reste dans le HTML ; il n'est pas affiché au
-     téléphone.
+     feuille blanche, l'affiche à gauche. L'extrait reste dans le HTML ; il
+     n'est pas affiché au téléphone.
+   - Depuis le § 9.fo, l'affiche n'est jamais rognée et sa taille est le
+     compromis mesuré (« ni trop grande, ni trop petite ») : la plus grande qui
+     garde 3 articles entiers à l'écran à tout moment du défilement, titres en
+     4 lignes au plus, date et durée sur une ligne, /blog moins long que la
+     liste d'avant la refonte. Voir « L'affiche », plus bas.
    ========================================================================== */
 
 .bl { position: relative; margin-bottom: -1px; font-size: 1.0625rem; overflow-wrap: break-word; }
@@ -102,15 +105,43 @@
 .bl-infos { display: flex; flex-wrap: wrap; align-items: center; font-size: 0.875rem; color: var(--ink-3); }
 .bl-infos > * + *::before { content: "·"; content: "·" / ""; margin: 0 8px; }
 
-/* L'article à la une : une fiche, l'affiche en petit (84 px à droite du titre ;
-   180 px à gauche à partir de 768 px). Le texte d'abord dans le HTML. */
-.bl-une { display: grid; grid-template-columns: minmax(0, 1fr) 84px; align-items: start; margin-top: 26px; padding: 8px; border-radius: var(--r-lg); background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
+/* L'affiche (§ 9.fo). Jamais rognée, jamais déformée : entière, à son format, à
+   la hauteur d'une case 4:5 (`--l` de large, `--l` × 1,25 de haut). Les 47
+   affiches ont quatre formats (2:3, 0,75, 0,79, 0,805) : aucun cadre commun ne les
+   garde toutes en rognant, en bas pour une 2:3 dans un cadre 4:5 (« CE QUE TU NE
+   DÉCIDES PAS, TU LE PORTES. », « 70 % », « 85 % »), sur les côtés pour une 0,805
+   dans un cadre 2:3 (les titres vont d'un bord à l'autre). Une 2:3 prend 83 % de
+   la largeur de la case, centrée : le vide est le blanc de la feuille. Des bandes
+   aux couleurs des bords de l'affiche, essayées d'abord, se voyaient comme des
+   bords flous (§ 9.fo, corrections). Une 0,805 dépasse la case de 0,6 % (moins
+   d'un pixel), sans rien rogner ni déformer (`max-width: none` : le socle de
+   Tailwind borne les images à leur boîte). */
+.bl-vignette img, .bl-une img { display: block; width: auto; max-width: none; height: 100%; }
+
+/* L'article à la une : une fiche. Au téléphone (moins de 768 px), l'affiche à
+   droite de la pastille et du titre, à la taille de celle des lignes, dans le
+   premier écran (sous le titre, elle en sortait : 393 × 692, 402 × 680) ; dessous,
+   en pleine largeur, l'extrait (3 lignes), puis la date et la durée sur une ligne.
+   Le titre à 20 px tient en 3 lignes à côté d'elle (à 21 px, l'interlettrage de
+   la DA, qui suit le corps, en faisait 4 à 393 px : le titre sortait de l'écran). Le bloc de texte ne fait plus
+   boîte (`display: contents`) : ses éléments se rangent dans la grille de la
+   fiche. À partir de 768 px, l'affiche à gauche (case de 240 px : nettement plus
+   grande que celle des lignes), le texte à droite. Le texte d'abord dans le
+   HTML. */
+.bl-une { display: grid; align-items: start; margin-top: 26px; border-radius: var(--r-lg); background: var(--paper); box-shadow: var(--clay); color: var(--ink); text-decoration: none; transition: translate 200ms var(--ease); }
 .bl-une:hover { translate: 0 -3px; }
-.bl-une-texte { display: flex; flex-direction: column; justify-content: center; padding: 14px 14px 16px; }
-.bl-une h2 { --corps: clamp(1.5rem, 2.6vw, 2.125rem); margin: 12px 0 0; line-height: 1.12; text-wrap-style: balance; }
-.bl-une-extrait { display: -webkit-box; margin: 10px 0 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
-.bl-une .bl-infos { margin-top: 12px; font-size: 0.90625rem; }
-.bl-une img { display: block; width: 84px; height: auto; aspect-ratio: 4 / 5; margin: 14px 14px 0 0; border-radius: 12px; object-fit: cover; object-position: top; }
+.bl-une h2 { --corps: clamp(1.5rem, 2.6vw, 2.125rem); line-height: 1.12; text-wrap-style: balance; }
+.bl-une-extrait { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.bl-une .bl-infos { font-size: 0.90625rem; }
+@media (max-width: 767.98px) {
+  .bl-une { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto 1fr auto auto; column-gap: 14px; padding: 22px 20px; }
+  .bl-une-texte { display: contents; }
+  .bl-une .bl-marques { grid-column: 1; grid-row: 1; }
+  .bl-une h2 { --corps: 1.25rem; grid-column: 1; grid-row: 2; margin: 12px 0 0; }
+  .bl-une img { grid-column: 2; grid-row: 1 / span 3; height: calc(clamp(88px, 26.5vw, 112px) * 1.25); border-radius: 12px; }
+  .bl-une-extrait { grid-column: 1 / -1; grid-row: 4; margin: 14px 0 0; -webkit-line-clamp: 3; line-clamp: 3; }
+  .bl-une .bl-infos { grid-column: 1 / -1; grid-row: 5; margin-top: 12px; }
+}
 
 /* ───────── Les feuilles ───────── */
 .bl-titre { --corps: clamp(min(1.75rem, 8.2vw), 3.4vw, 2.5rem); margin: 0 0 24px; }
@@ -119,14 +150,27 @@
 
 /* Les articles : des lignes sur une feuille blanche, un filet entre deux
    lignes (comme les feuilles à lignes de l'accueil), la ligne teintée au
-   survol. L'affiche en vignette à gauche : sur téléphone, un carré de 64 px
-   recadré sur le dessin (le titre dessiné, illisible à cette taille, sort du
-   cadre) ; à partir de 640 px, l'affiche entière en portrait, deux colonnes. */
+   survol, le texte centré sur la hauteur de l'affiche. L'affiche à gauche,
+   entière (§ 9.fo). Sa largeur, choisie par la mesure (MIGRATION.md § 9.fo),
+   est la plus grande qui tient toutes les bornes :
+   - téléphone : 26,5 % de la largeur de l'écran (88 à 112 px ; 95 px à 360,
+     104 px à 393). Au-delà, à 360 × 640 comme à 393 × 692, la ligne passe
+     au-dessus du quart de la hauteur visible sous l'en-tête et il arrive qu'on
+     ne voie plus que 2 articles entiers ; à 360, la date (« 20 septembre 2026
+     · 10 min », 185 px) passerait à la ligne ;
+   - à partir de 640 px : 144 px. À 150 px, la tablette couchée (1 024 × 768)
+     ne garde plus 3 articles entiers ; 144 × 180 tombe juste en pixels.
+   Une colonne de lignes de 640 à 1 023 px (en deux colonnes, l'affiche de 144 px
+   laissait des titres de cinq lignes), deux à partir de 1 024 px (en une seule,
+   /blog dépassait la liste d'avant la refonte à 1 512 px, et la tablette couchée
+   ne gardait que 2 articles entiers). */
 .bl-grille { display: grid; grid-template-columns: minmax(0, 1fr); border-radius: var(--r-lg); background: var(--paper); box-shadow: var(--clay-sm); }
-.bl-carte > a { box-sizing: border-box; display: flex; gap: 12px; height: 100%; padding: 12px 14px; color: var(--ink); text-decoration: none; }
+.bl-carte > a { box-sizing: border-box; display: flex; align-items: center; gap: 12px; height: 100%; padding: 10px 12px; color: var(--ink); text-decoration: none; }
 .bl-carte > a:hover { background: var(--sky-soft); }
-.bl-vignette { flex: none; align-self: center; width: 64px; aspect-ratio: 1; overflow: hidden; border-radius: 12px; background: var(--sky-soft); }
-.bl-vignette img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 74%; }
+/* La case de l'affiche : largeur et hauteur écrites (pas d'`aspect-ratio`, que
+   Safari lit mal sur un cadre), l'affiche centrée, à la hauteur de la case. */
+.bl-vignette { --l: clamp(88px, 26.5vw, 112px); flex: none; display: flex; justify-content: center; width: var(--l); height: calc(var(--l) * 1.25); }
+.bl-vignette img { border-radius: 12px; }
 .bl-carte-texte { display: flex; flex: 1; flex-direction: column; min-width: 0; }
 .bl-carte h2, .bl-carte h3 { margin: 4px 0 0; font-family: var(--text); font-size: 1rem; font-weight: var(--tb); line-height: 1.28; letter-spacing: 0; text-wrap-style: pretty; }
 /* L'extrait : masqué au téléphone, deux lignes au-delà. Ici le mot et sa
@@ -215,14 +259,17 @@
   .bl-series { display: flex; flex-wrap: wrap; gap: 8px; }
   .bl-series a { flex: 1 1 auto; flex-wrap: nowrap; padding: 4px 10px; white-space: nowrap; }
 }
-/* Téléphone : l'extrait n'est pas affiché (la ligne tient en 96 à 132 px), la
-   feuille rogne la teinte de survol à ses coins ; l'anneau de focus est tracé
-   à l'intérieur de la ligne. La bulle de chat passait sur la fin des titres :
-   les pages de liste la masquent, comme /guide sous 768 px. */
+/* Un filet entre deux lignes ; la liste ouverte (« Voir les N autres articles »)
+   continue la feuille, filet compris. */
+.bl-carte + .bl-carte, .bl-suite[open] > .bl-grille > .bl-carte:first-child { border-top: 1px solid var(--line); }
+
+/* Téléphone : l'extrait n'est pas affiché (la ligne a la hauteur de l'affiche :
+   140 px à 360, 151 px à 393), la feuille rogne la teinte de survol à ses
+   coins ; l'anneau de focus est tracé à l'intérieur de la ligne. La bulle de
+   chat passait sur la fin des titres : les pages de liste la masquent, comme
+   /guide sous 768 px. */
 @media (max-width: 639px) {
   .bl-grille { overflow: hidden; }
-  .bl-carte + .bl-carte, .bl-suite[open] > .bl-grille > .bl-carte:first-child { border-top: 1px solid var(--line); }
-  .bl-carte > a { align-items: center; min-height: 96px; }
   .bl-carte > a:focus-visible { outline-offset: -3px; }
   .bl-extrait { display: none; }
   #crisp-launcher { display: none; }
@@ -242,29 +289,30 @@
   .bl-serie { padding: 24px 26px 12px; }
   .bl-texte { padding: 26px 28px 28px; font-size: 1.0625rem; line-height: 1.65; }
 }
-/* À partir de 640 px : deux colonnes de lignes sur la feuille, l'affiche
-   entière (96 px de large, 104 px à partir de 1024 px) et l'extrait sur deux
-   lignes. La teinte de survol déborde de 14 px de chaque côté du texte. */
+/* À partir de 640 px : une colonne de lignes sur la feuille, l'affiche de
+   144 px et l'extrait sur deux lignes. La teinte de survol déborde de 14 px de
+   chaque côté du texte. */
 @media (min-width: 640px) {
-  .bl-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; padding: 4px 32px; }
-  .bl-carte { border-top: 1px solid var(--line); }
-  .bl-carte:nth-child(-n+2) { border-top: 0; }
+  .bl-grille { padding: 4px 32px; }
   .bl-carte > a { gap: 20px; margin: 0 -14px; padding: 24px 14px; border-radius: 16px; }
-  .bl-vignette { align-self: flex-start; width: 96px; aspect-ratio: 4 / 5; }
-  .bl-vignette img { object-position: top; }
+  .bl-vignette { --l: 144px; }
   .bl-carte h2, .bl-carte h3 { margin-top: 6px; font-size: 1.1875rem; line-height: 1.3; }
   .bl-carte .bl-infos { padding-top: 10px; }
   .bl-grille:has(+ .bl-suite[open]) { padding-bottom: 0; }
   .bl-suite[open] > .bl-grille { padding-top: 0; }
-  .bl-suite[open] > .bl-grille > .bl-carte { border-top: 1px solid var(--line); }
 }
-/* Tablette : le compte à droite du titre ; l'affiche de la une à gauche,
-   180 px de large (la largeur annoncée par `sizes` et par le préchargement). */
+/* Tablette : le compte à droite du titre ; l'affiche de la une à gauche, à son
+   format, 300 px de haut (case de 240 px : la largeur dessinée est celle
+   qu'annoncent `sizes` et le préchargement ; la colonne la suit), le texte à
+   droite. */
 @media (min-width: 768px) {
   .wrap > .bl-intro { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: 24px; }
-  .bl-une { grid-template-columns: 180px minmax(0, 1fr); align-items: center; }
-  .bl-une img { order: -1; width: 180px; margin: 0; border-radius: 20px; }
-  .bl-une-texte { padding: 20px 30px 20px 34px; }
+  .bl-une { grid-template-columns: auto minmax(0, 1fr); align-items: center; padding: 8px; }
+  .bl-une img { order: -1; height: 300px; border-radius: 20px; }
+  .bl-une-texte { display: flex; flex-direction: column; justify-content: center; padding: 20px 30px 20px 34px; }
+  .bl-une h2 { margin: 12px 0 0; }
+  .bl-une-extrait { margin: 10px 0 0; -webkit-line-clamp: 3; line-clamp: 3; }
+  .bl-une .bl-infos { margin-top: 12px; }
   .bl-appel { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px 36px; }
 }
 @media (min-width: 900px) {
@@ -275,9 +323,12 @@
   .bl::after { height: 60px; }
   .bl-appel { padding: 38px 44px; }
 }
+/* À partir de 1 024 px : deux colonnes de lignes. Pas de filet au-dessus de la
+   deuxième ligne de la feuille ; la liste ouverte en garde deux. */
 @media (min-width: 1024px) {
-  .bl-grille { gap: 0 56px; padding: 4px 40px; }
-  .bl-vignette { width: 104px; }
+  .bl-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 56px; padding: 4px 40px; }
+  .bl-grille > .bl-carte:nth-child(2) { border-top: 0; }
+  .bl-suite[open] > .bl-grille > .bl-carte:nth-child(2) { border-top: 1px solid var(--line); }
   .bl-index { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
   .bl-serie { padding: 22px 22px 10px; }
   /* Page de série : le titre à gauche, la fiche du texte à droite. */

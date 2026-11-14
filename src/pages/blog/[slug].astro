@@ -140,22 +140,46 @@ async function croppedCover(publicPath: string, ratio: number, format: 'jpg' | '
   return { url: `${SITE_URL}${img.src}`, width, height };
 }
 
-/* Couverture : une vignette (§ 9.fj), 64 × 80 px sur téléphone à côté de la ligne de
-   confiance, 132 × 165 px sur ordinateur (elle repoussait le texte à 1,5 écran sur
-   téléphone). Candidats du srcset : 160, 264 et 400 px (deux fois la plus grande
-   vignette, et un peu plus), bornés à la largeur de la source et dédoublonnés. Le `src`
-   reste celui d'avant (900 px, ou la largeur de l'affiche quand elle est plus petite :
-   les robots qui ne lisent pas le srcset). */
+/* Couverture : une vignette (§ 9.fj), agrandie là où c'était gratuit (§ 9.fo) : la hauteur
+   d'une case 4:5 de 76 px sur téléphone à côté de la ligne de confiance (95 px de haut), 88
+   de 560 à 699 px, 120 puis 132 px sur tablette et petit ordinateur (inchangés), 144 px à
+   partir de 1 360 px (180 px de haut). L'affiche y est entière, à son format (règle des
+   affiches, § 9.fo) : une 2:3 est moins large que la case. Candidats du srcset : 160, 264,
+   288 et 400 px (deux fois les vignettes de 132 et 144 px, et un peu plus), bornés à la
+   largeur de la source et dédoublonnés. Le `src` reste celui d'avant (900 px, ou la largeur
+   de l'affiche quand elle est plus petite : les robots qui ne lisent pas le srcset). */
 const coverImage = await resolveBlogImage(cover, 900);
 const coverVariants = (
-  await Promise.all([160, 264, 400].map((w) => resolveBlogImage(cover, w)))
+  await Promise.all([160, 264, 288, 400].map((w) => resolveBlogImage(cover, w)))
 ).filter((v): v is NonNullable<typeof v> => v !== null);
-const coverSrcset = [...new Map(coverVariants.map((v) => [Number(v.attributes.width), v.src])).entries()]
-  .map(([w, src]) => `${src} ${w}w`)
-  .join(', ');
+const srcsetDe = (variantes: { src: string; attributes: Record<string, any> }[]) =>
+  [...new Map(variantes.map((v) => [Number(v.attributes.width), v.src])).entries()]
+    .map(([w, src]) => `${src} ${w}w`)
+    .join(', ');
+const coverSrcset = srcsetDe(coverVariants);
 /* `loading="lazy"` retiré des attributs de getImage : Astro ne dédoublonne pas un
    attribut étalé puis redéfini, et le navigateur garde le premier (lazy). */
 const { loading: _lazy, ...coverAttrs } = coverImage?.attributes ?? {};
+/* L'affiche en grand (§ 9.fo) : la vignette l'ouvre d'un appui, dans un popover natif (aucun
+   script). L'image y est la plus grande qui tient dans l'écran, bornée par la largeur et par la
+   hauteur de la fenêtre (rapport `--r` de l'affiche, écrit ici). Elle est en chargement différé
+   dans un popover fermé, que le navigateur ne dessine pas : elle n'est demandée qu'à
+   l'ouverture. Candidats : 600, 900, 1 200 px et la largeur de la source, bornés à celle-ci et
+   dédoublonnés (une affiche de 450 px n'a qu'un fichier, celui du `src`). Le `sizes` dit la
+   largeur dessinée : la moins grande des deux bornes (marges de 16 px, 32 px à partir de
+   700 px, et 52 px au-dessus pour le bouton « Fermer » ; fenêtre basse, téléphone couché :
+   marges de 16 px, « Fermer » à droite de l'image, 52 px de chaque côté). */
+const largeurSource = blogAsset(cover)?.width ?? 900;
+const grandeVariants = (
+  await Promise.all([600, 900, 1200, largeurSource].map((w) => resolveBlogImage(cover, w)))
+).filter((v): v is NonNullable<typeof v> => v !== null);
+const grandeSrcset = srcsetDe(grandeVariants);
+const rapport = coverImage ? Math.round((Number(coverAttrs.width) / Number(coverAttrs.height)) * 10000) / 10000 : 1;
+const grandeSizes = `(max-height: 500px) min(calc(100vw - 136px), calc((100vh - 32px) * ${rapport})), (min-width: 700px) min(calc(100vw - 64px), calc((100vh - 116px) * ${rapport})), min(calc(100vw - 32px), calc((100vh - 84px) * ${rapport}))`;
+/* La vignette : largeur dessinée de l'affiche, à la hauteur de la case moins son bord de papier
+   (3 px, 4 px à partir de 700 px), pour chaque palier. */
+const largeurVignette = (hauteur: number) => `${Math.round(hauteur * rapport)}px`;
+const coverSizes = `(min-width: 1360px) ${largeurVignette(172)}, (min-width: 1040px) ${largeurVignette(157)}, (min-width: 700px) ${largeurVignette(142)}, (min-width: 560px) ${largeurVignette(104)}, ${largeurVignette(89)}`;
 /* Image de partage (§ 9.fl) : fabriquée à la construction, 1 200 × 630 px, dans la DA
    (src/pages/blog/partage/[slug].jpg.ts). Elle remplace le recadrage de l'affiche, souvent
    flou (31 articles sur 48 avaient une affiche de moins de 1 200 px, 11 vers 450 px).
@@ -189,12 +213,20 @@ const related = (relatedArticles ?? [])
   .filter((p) => p !== undefined)
   .slice(0, 6);
 
-/* Vignettes des articles connexes : 40 × 50 px (44 × 55 au téléphone) ; 132 px de large
-   suffisent à trois fois cette taille (288 px servaient l'ancienne vignette de 96 px). */
-const relatedCovers = new Map<string, string>();
+/* Affiches des articles connexes (§ 9.fo) : entières, à leur format, jamais rognées, à la
+   hauteur d'une case 4:5 de 112 px de large dans la rangée qui défile (sous 700 px), de 96 px
+   dans la feuille à deux colonnes au-delà. Le `src` reste le fichier de 132 px d'avant ; le
+   srcset ajoute 240 et 320 px (densités 2 et 3), bornés à la source. Dimensions déclarées :
+   celles de ce fichier (44 × 55 avant, un 4:5 que n'avaient pas 170 affiches sur 223 : l'image
+   prend sa largeur de son format, il doit être juste dès le premier rendu). */
+const relatedCovers = new Map<string, { src: string; srcset: string; width: number; height: number; sizes: string }>();
 for (const r of related) {
-  const img = await resolveBlogImage(r.data.cover, 132);
-  if (img) relatedCovers.set(r.id, img.src);
+  const variantes = (await Promise.all([132, 240, 320].map((w) => resolveBlogImage(r.data.cover, w))))
+    .filter((v): v is NonNullable<typeof v> => v !== null);
+  if (!variantes.length) continue;
+  const width = Number(variantes[0].attributes.width), height = Number(variantes[0].attributes.height);
+  const dessinee = (hauteur: number) => `${Math.round((hauteur * width) / height)}px`;
+  relatedCovers.set(r.id, { src: variantes[0].src, srcset: srcsetDe(variantes), width, height, sizes: `(max-width: 699px) ${dessinee(140)}, ${dessinee(120)}` });
 }
 
 /* Dates */
@@ -386,19 +418,53 @@ const croix =
         </div>
       </header>
 
-      {/* Couverture : une vignette, 64 × 80 px sur téléphone à droite de la ligne de
-          confiance, 132 × 165 px sur ordinateur. Ce n'est plus l'élément principal de la
-          page : pas de `fetchpriority`. */}
+      {/* Couverture : une vignette, 95 px de haut sur téléphone à droite de la ligne de
+          confiance, 180 px sur grand écran. Ce n'est plus l'élément principal de la
+          page : pas de `fetchpriority`. Un bouton : d'un appui, l'affiche en grand (§ 9.fo).
+          La loupe du coin est dessinée par la feuille, seulement là où le popover existe ;
+          ailleurs, la vignette reste une vignette. */}
       {coverImage && (
-        <img
-          src={coverImage.src}
-          {...coverAttrs}
-          loading="eager"
-          srcset={coverSrcset || undefined}
-          sizes="(min-width: 1040px) 132px, (min-width: 700px) 120px, (min-width: 560px) 76px, 64px"
-          alt={title}
+        <button
+          type="button"
           class="couverture"
-        />
+          popovertarget="affiche-grande"
+          aria-label="Agrandir l'affiche"
+          data-ph="blog_cover_zoom"
+        >
+          <img
+            src={coverImage.src}
+            {...coverAttrs}
+            loading="eager"
+            srcset={coverSrcset || undefined}
+            sizes={coverSizes}
+            alt={title}
+          />
+        </button>
+      )}
+      {/* L'affiche en grand : un popover natif (« auto ») sur un fond sombre. « Fermer » prend le
+          focus à l'ouverture ; Échap, un appui sur l'image (un second bouton de fermeture) ou à côté
+          ferment aussi, et le focus revient à la vignette (sauf après un appui à côté). Tant qu'il est
+          ouvert, la page est masquée (feuille) : le clavier reste dans l'affiche, d'où `aria-modal`. */}
+      {coverImage && (
+        <div id="affiche-grande" popover="auto" class="grande" role="dialog" aria-modal="true" aria-label="L'affiche en grand">
+          <button type="button" class="grande-fermer" popovertarget="affiche-grande" popovertargetaction="hide" autofocus>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            <span class="sr">Fermer</span>
+          </button>
+          <button type="button" class="grande-image" popovertarget="affiche-grande" popovertargetaction="hide" aria-label="Fermer l'affiche">
+            <img
+              src={coverImage.src}
+              srcset={grandeSrcset || undefined}
+              sizes={grandeSizes}
+              alt={title}
+              width={coverAttrs.width}
+              height={coverAttrs.height}
+              loading="lazy"
+              decoding="async"
+              style={`--r:${rapport}`}
+            />
+          </button>
+        </div>
       )}
 
       {/* Le sommaire : un seul <details>. Téléphone et tablette : un pli fermé en tête de
@@ -492,7 +558,15 @@ const croix =
             {related.map((r, i) => (
               <a href={`/blog/${r.id}`} data-ph="blog_related" data-ph-rank={i + 1} class="carte">
                 {relatedCovers.get(r.id) && (
-                  <img src={relatedCovers.get(r.id)} alt="" loading="lazy" width="44" height="55" />
+                  <img
+                    src={relatedCovers.get(r.id)!.src}
+                    srcset={relatedCovers.get(r.id)!.srcset}
+                    sizes={relatedCovers.get(r.id)!.sizes}
+                    alt=""
+                    loading="lazy"
+                    width={relatedCovers.get(r.id)!.width}
+                    height={relatedCovers.get(r.id)!.height}
+                  />
                 )}
                 <div>
                   <p class="carte-titre" set:html={nouer(echapper(r.data.title))} />

@@ -10904,6 +10904,544 @@ Trois décisions du propriétaire sur le bloc sous le premier écran.
 **Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/data/demoAccueil.ts`,
 `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.fo Blog : les affiches visibles partout (13 novembre 2026)
+
+Suite de § 9.fj et § 9.fk. La refonte avait mis les affiches en vignettes : 64 × 80 px en tête de
+l'article au téléphone, et, sur `/blog` et les séries, un carré de 64 px rogné au centre (le titre de
+l'affiche sortait du cadre). Le propriétaire (médecin, pas développeur) : « C'est super, mais c'est
+dommage que les illustrations soient si petites. Ou alors qu'on ne puisse pas les voir si on clique
+dessus. » Puis, avec une capture de `/blog` sur iPhone : « Mais aussi là, dans la liste, elles sont
+toutes petites et coupées. Or je pense qu'elles peuvent donner envie de cliquer sur un article en soi.
+Mais là, on ne voit rien. » Enfin : « Il faut juste trouver le bon compromis. Pas trop grande mais pas
+trop petite. » Il a écrit « je te fais full confiance, je veux tes choix » : les choix ci-dessous sont
+décidés. Les affiches sont ses fiches Instagram (mascotte en scène, titre, parfois des chiffres) : la
+marque du blog, l'appel à la lecture.
+
+La règle des affiches :
+
+1. **Une affiche ne se rogne jamais** là où elle a du texte ou la scène, et jamais en haut (son titre).
+2. **Le bon compromis, ni trop grande, ni trop petite** : il se mesure, il ne se devine pas.
+3. **D'un appui, en grand**, dans l'article (partie B, plus bas).
+
+**État final.** Cette section décrit le code tel qu'il est après les corrections du 14 novembre, qui
+ont suivi trois relectures (« Corrections après relecture », en fin de section). L'affiche est montrée
+entière, à son format, à la hauteur d'une case 4:5, sans rien autour. La première version de la branche
+entourait les affiches de bandes aux couleurs de leurs bords (`src/lib/affiche-bords.mjs`) : retirée. Ses
+chiffres ne restent que là où ils sont marqués « première version ».
+
+#### A. Les listes : `/blog`, les séries, la une, les articles connexes
+
+**Le cadre (règle 1).** Les 47 affiches (48 articles : deux partagent la leur) ont quatre formats : 2:3
+(28 articles), 0,746 à 0,751 (4), 0,792 (2), 0,805 (14) ; regardées une à une sur une planche. Aucun
+cadre commun ne les garde toutes en rognant : un cadre 4:5 calé en haut coupe le bas des 2:3 (16,6 % de
+la hauteur : « CE QUE TU NE DÉCIDES PAS, TU LE PORTES. », « 70 % », « 85 % », « ERREUR majoration »,
+« 2035 BNC ») ; un cadre 2:3 coupe les côtés des 0,805, dont les titres vont d'un bord à l'autre (« LA
+DOUBLE VIE FISCALE », « L'EFFET CISEAUX », « 8 ANS D'IMPÔTS ALLÉGÉS ») ; un cadre 3:4 coupe un peu des
+deux. L'affiche est donc montrée **entière, à son format, à la hauteur d'une case 4:5**, centrée dans la
+case (`height` écrite, `width: auto`, `max-width: none` : le socle de Tailwind borne les images à leur
+boîte). Pour une même hauteur de ligne, c'est la case qui montre chaque affiche au plus grand (une 2:3
+garde toute la hauteur, une 0,805 toute la largeur), et c'est celle de la vignette d'article. Le vide
+d'une affiche plus étroite que sa case (8,3 % de chaque côté d'une 2:3, 3 % d'une 0,75) est le blanc de
+la feuille. Une 0,805 dépasse sa case d'environ un pixel (0,5 px de chaque côté), sans rien rogner ni
+déformer. **Première version**, retirée après relecture : ce vide prenait les couleurs des bords de
+l'affiche (sharp à la construction, 8 couleurs par bord, posées en `style` sur l'`<img>`, deux dégradés
+en fond). Sur un écran à haute densité, une dizaine des 2:3 avaient des bords flous, avec des taches de
+couleur à mi-hauteur : des bandes qui se voyaient comme des bandes. Planche des 48 affiches telles
+qu'elles sortent dans `/blog`, contrôlée par script (`zoom/corrections/planche-c.cjs`, à 393 × 692 en
+densité 3 et à 1 512 × 800 en densité 2) : 48 sur 48 chargées, à leur format (écart de rapport au plus
+0,6 %), à la hauteur de leur case, aucun fond peint.
+
+**La largeur au téléphone (règle 2).** Essais par CSS injectée sur la construction de `main`, sans
+reconstruire, à 393 × 692 (téléphone médian des lecteurs) et 360 × 640, l'en-tête fixe déduit de la zone
+visible (622 et 570 px). Bornes : l'affiche se reconnaît (hauteur des capitales de son titre à l'écran,
+6 affiches) ; titre de l'article en 4 lignes au plus, date et durée gardées ; `/blog` à 393 px pas plus
+long que la liste d'avant la refonte (7 880 px) ; **3 articles entiers visibles à tout moment du
+défilement** (lu au plus strict, par pas de 4 px ; lu écran par écran, le choix est le même).
+
+| Affiche | Ligne | `/blog` à 393 | 3 entiers à 393 | `/blog` à 360 | 3 entiers à 360 |
+|---|---|---|---|---|---|
+| carré de 64 px rogné (avant) | 97–135 px | 6 672 px | toujours | 6 968 px | toujours |
+| 88 px | 135 px | 6 839 px | toujours | 7 114 px | toujours |
+| 96 px | — | — | — | 7 206 px | 93 % du temps (date sur 2 lignes) |
+| **104 px** | 155 px | 6 999 px | **toujours** | 7 280 px | 68 % |
+| 112 px | 165 px | 7 079 px | 77 % | — | — |
+| 120 px | 175 px | 7 159 px | 55 % | 7 454 px | 25 % (10 titres de 4 lignes) |
+| 136 px | 195 px | 7 319 px | 19 % (3 titres de 4 lignes, date sur 2 lignes) | 7 594 px | jamais ; 2 titres de 5 lignes |
+
+Capitales du titre de l'affiche à l'écran, à 104 px : 7,4 px (« OBTENIR SA », 2:3), 6,9 (« SUPER-NET »),
+7,8 (« RÉGIME RSPM », 0,75), 5,7 (« LA DOUBLE VIE FISCALE », 0,805), 5,6 (« REQUALIFIÉ : TAXÉ… »), 3,8
+(« INBOX ZÉRO DU REMPLA ») ; à 88 px, 6,2 et 4,7 pour les grands et les moyens. Les grands titres se
+lisent, les moyens se devinent, les petits non (la scène fait reconnaître l'affiche). Avant : coupés.
+
+**Choix : 26,5 % de la largeur de l'écran** (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393,
+112 px au plus) : la plus grande largeur qui tient toutes les bornes aux deux formats (lignes de 140 et
+151 px, sous le quart de la zone visible ; à 360, au-delà de 99 px, « 20 septembre 2026 · 10 min »,
+185 px, passait à la ligne). Une part de l'écran plutôt que deux paliers : les deux formats ont le même
+rapport hauteur/largeur. Lignes : 10 px de remplissage en haut et en bas, 12 de côté (12 et 14 avant),
+texte centré sur la hauteur de l'affiche.
+
+**Ordinateur et tablette** (bornes : affiche de 140 à 180 px, titres en 4 lignes au plus, `/blog` à
+1 512 × 800 sous 4 997 px, 3 articles entiers à tout moment). Deux colonnes à 1 280 et 1 512 × 800 :
+140 et 150 px tiennent (4 entiers), 160 non (2 entiers par moments), 180 non. Une seule colonne à
+1 512 px dépassait 4 997 px. En tablette, deux colonnes avec 140 px laissaient des titres de cinq lignes
+(six à 640 px sur `main`) : **une colonne de 640 à 1 023 px** (820 × 1 180 et 768 × 1 024 : 3 entiers
+toujours). À 1 024 × 768 (tablette couchée), une colonne n'en garde que 2 : **deux colonnes à partir de
+1 024 px**, où 144 px tient et 150 non. **Choix : 144 px à partir de 640 px** (144 × 180, des pixels
+entiers).
+
+**La une.** Le cahier voulait son affiche nettement plus grande que celles des lignes, sans repousser la
+liste. Au téléphone, l'affiche de la une et son titre doivent tenir dans le premier écran (sur `main`,
+l'affiche de 84 px y est, la première ligne de « Derniers articles » non) : à 393 × 692, la fiche
+commence à 515 px et l'écran finit à 692 ; une affiche « nettement plus grande » n'y tient pas à côté du
+titre. **Première version** : le titre en pleine largeur, puis l'affiche (36 % de l'écran, 141 × 177 px
+à 393) à gauche de l'extrait ; elle sortait du premier écran (13 % visible à 393 × 692, 5 % à 402 × 680,
+le format de l'iPhone du propriétaire). **Choix, après relecture : l'affiche dans le premier écran
+l'emporte**, c'est elle qui donne envie de lire. Sous 768 px, elle est à droite de la pastille et du
+titre, à la taille de celle des lignes (case de `clamp(88px, 26.5vw, 112px)`) ; le titre passe à 20 px
+(3 lignes ; à 21 px, l'interlettrage de la DA, qui suit le corps, en faisait 4 à 393 px et le titre
+sortait de l'écran) ; dessous, sur toute la largeur, l'extrait (3 lignes) puis « date · durée » sur une
+ligne. Le bloc de texte passe en `display: contents` sous 768 px ; le HTML ne change pas. Mesuré dans
+Chromium (`zoom/relectures/lecteur-design/scripts/premier-ecran.cjs`) : affiche entière à 393 × 692 (105
+× 130 px, de 537 à 667) et à 402 × 680 ; 98 % à 390 × 664 ; titre dans l'écran à ces trois formats. À
+375 × 553 et 360 × 640, ni `main` (15 et 20 %) ni la branche (13 et 18 %) ne montrent l'affiche de la
+une, dont le titre est sous l'écran. À partir de 768 px : case de 240 px à gauche (180 avant), nettement
+plus grande que les 144 px des lignes ; la une entière dans le premier écran à 1 512 × 800.
+
+**Les articles connexes** (seule partie de la page d'article touchée par la partie A). Sous 700 px, la
+rangée qui défile (elle commençait sous 560 px) : affiche de **140 px de haut**, à son format (112 px de
+large pour une 0,805, 93 px pour une 2:3 ; 44 × 55 px rognée avant ; au moins 96 px demandés), titre en
+cinq lignes au plus, texte centré sur la hauteur de l'affiche ; chaque carte est seule, la colonne de
+l'affiche épouse son format. Sur les 223 cartes des 48 articles : une case de 104 px avec quatre lignes
+coupait 18 titres à 360 px (17 sur `main`, trois lignes), 104 et 112 px avec cinq lignes n'en coupent
+aucun, 120 px en coupe 4 : 112 px est la largeur qui garde la rangée nette (cinq lignes et la durée
+tiennent dans la hauteur de l'affiche). À partir de 700 px, la carte de `/blog` : une feuille blanche à
+**deux colonnes de lignes**, affiche de 120 px de haut centrée dans une case de 96 px (les titres d'une
+colonne restent alignés) ; six articles en trois rangs, la section garde la hauteur de l'ancienne liste
+(456 → 477 px au plus) ; avec 3 ou 5 articles (15 articles), le dernier prend le rang entier. Essayé
+avant : une colonne avec 48, 64 et 72 px (+60 à +240 px de page).
+
+**Images.** `srcset` des lignes : 160, 200, 240, 320, 400 px et le fichier principal de 640 px (160 et
+320 avant) ; une : 160, 200, 240, 320, 400, 480 et 720 px (180, 360 et 720 avant) ; connexes : 132, 240,
+320 px (132 seul avant). `sizes` dit la **largeur dessinée de chaque affiche**, pas celle de sa case
+(une 2:3 : 83 % de la case ; `largeurDansCadre()`, `src/lib/blog-covers.ts`) ; le préchargement de la
+une (à partir de 768 px) aussi. La variante de 200 px sert les écrans de densité 1,75 à 2, dont celui de
+Lighthouse. Les `src` ne changent pas. Les dimensions déclarées ne changent pas, sauf celles des
+connexes : celles du fichier de 132 px (44 × 55 avant, un 4:5 que n'avaient pas 170 affiches sur 223 ;
+l'image prend sa largeur de son format, qui doit être juste dès le premier rendu ; aucun décalage
+mesuré). Sur les séries, la première affiche n'est plus chargée en priorité (`loading="eager"`,
+`fetchpriority="high"` retirés) : elle n'est l'élément LCP à aucun format (le texte de la série l'est)
+et, plus lourde, elle partait avec la police. Fichiers d'images du build : voir
+« Écarts de la branche », plus bas.
+
+**Une même affiche pour deux articles** : `facturation-electronique-medecin-remplacant` et
+`generer-facture-remplacement` ont la même affiche (« T'AS REMPLACÉ, T'AS FACTURÉ »,
+`facture-generation-cover.png`). Rien n'est changé : décision de contenu pour le propriétaire.
+
+**Mesures** (Chromium, liste fermée ; séries : Fiches Fiscalité, Fiches Pratiques, Guides & Conseils ;
+`zoom/corrections/hauteurs.cjs`) :
+
+| Format | `/blog` | Séries | Ligne d'article |
+|---|---|---|---|
+| 360 × 640 | 6 968 → 7 140 px (avant la refonte : 8 185) | 4 450 / 3 651 / 5 432 → 4 827 / 3 840 / 5 994 | 97–135 → 139–140 px |
+| 393 × 692 | 6 672 → 6 984 px (avant la refonte : 7 880) | 4 295 / 3 533 / 5 296 → 4 904 / 3 829 / 6 181 | 97–135 → 150–151 px |
+| 820 × 1 180 | 5 871 → 6 846 px (avant la refonte : 7 847) | 4 002 / 3 224 / 4 916 → 5 843 / 4 096 / 7 703 | 203–252 → 228–229 px |
+| 1 024 × 768 | 4 647 → 4 826 px | 3 496 / 2 824 / 4 414 → 3 703 / 2 927 / 4 675 | 202–228 → 228–229 px |
+| 1 280, 1 512, 1 920 | 4 469 → 4 648 px (avant la refonte : 4 997) | 3 387 / 2 687 / 4 203 → 3 594 / 2 790 / 4 538 | 179–203 → 228–229 px |
+
+Première version (la une sous son titre) : `/blog` à 7 176 px à 360 et 7 043 px à 393 ; le reste est
+inchangé. Densité (`zoom/corrections/densite3.cjs`) : 3 articles entiers à tout moment du défilement, pli
+fermé et ouvert, à 360 × 640 et 393 × 692. Aucun défilement de côté (`/blog` et séries à 9 formats, 48
+articles à 5 formats).
+
+Poids, compressé (gzip) : HTML de `/blog` 22,7 → 24,3 Ko (deux tailles de plus dans chaque `srcset` ; 27,6
+Ko dans la première version, avec les couleurs de bord), séries +0,3 à +1,0 Ko. Feuille des listes 3,7 Ko,
+inchangée à 0,1 Ko près. Images chargées par Lighthouse (densité 1,75) : `/blog` 99 → 141 Ko (203 Ko dans
+la première version), Fiches Fiscalité 182 → 210 Ko, Guides & Conseils 259 → 256 Ko.
+
+Lighthouse mobile (réglages par défaut, serveurs qui compressent, 5 passes alternées avec `main` servi de
+même, `zoom/corrections/lh-c.txt`) :
+
+| Page | `main` | Branche | LCP médian |
+|---|---|---|---|
+| `/blog` | 98, 98, 98, 100, 99 | 99, 97, 97, 99, 97 | 2,29 → 2,50 s |
+| Fiches Fiscalité | 96, 97, 96, 96, 96 | 96, 96, 96, 99, 98 | 2,65 → 2,62 s |
+| Guides & Conseils | 99, 96, 95, 97, 93 | 96, 95, 99, 95, 96 | 2,73 → 2,68 s |
+
+Accessibilité, bonnes pratiques et SEO à 100, CLS 0 à chaque passe. Au téléphone, l'élément LCP reste un
+texte (le titre de `/blog`, le texte de la série). À partir de 768 px, sur `/blog`, c'est souvent
+l'affiche de la une (une 0,805 : 242 × 300 px, plus que le titre ; c'était déjà elle de 768 à 1 023 px sur
+`main`), servie par son préchargement (`fetchpriority="high"`) ; PageSpeed signale son `loading="lazy"`,
+gardé pour le téléphone, sans effet sur la note. Première version : `/blog` 96 à chaque passe (LCP 2,67 à
+2,71 s) ; une relecture a vu Guides & Conseils à 91 une fois sur 8 et Fiches Fiscalité à 92.
+
+Recherche de `/blog` (`zoom/recherche.cjs`, refaite après corrections) : « DSFU » trouve les 2 mêmes
+articles ; un mot absent montre « Aucun article trouvé. » et le bloc « Pas encore d'article sur ce
+sujet… », comme sur `main`. WebKitGTK 2.52 (`zoom/corrections/webkit-c.py`,
+`/blog` à 1 512 et à 393 px dans un cadre ; la première version aussi à 360 px, sur Fiches Fiscalité et
+les connexes de la CARMF, mêmes cases) : 48 affiches à leur format (écart de rapport au plus 0,5 %), à la
+hauteur de leur case, aucun fond peint, aucun défilement de côté ; la une 105 × 130 px de 535 à 665 à
+393 px (titre de 597 à 663), 242 × 300 px à 1 512. Ce n'est ni Safari ni un iPhone. Contrastes forcés :
+les fiches gardent leur contour ; les affiches, sans fond, n'ont plus rien à protéger (la première version
+devait garder ses dégradés par `forced-color-adjust: none`).
+
+Ce qui reste faible : voir la liste d'ensemble, à la fin de la section.
+
+**Fichiers (partie A)** : `src/lib/affiche-bords.mjs` (nouveau, puis retiré après relecture),
+`src/lib/blog-covers.ts`, `src/components/BlogCard.astro`, `src/pages/blog/index.astro`,
+`src/pages/blog/serie/[series].astro`, `src/styles/blog-liste.css`, `src/pages/blog/[slug].astro` et
+`src/styles/blog-article.css` (articles connexes seulement), `MIGRATION.md`, `CLAUDE.md`.
+
+#### B. La page d'article : la vignette, et l'affiche en grand d'un appui
+
+Le premier message du propriétaire : « C'est super, mais c'est dommage que les illustrations soient si
+petites. Ou alors qu'on ne puisse pas les voir si on clique dessus. » Le gain de § 9.fj se garde : le
+texte de l'article reste dans le premier écran du téléphone (première ligne du texte, sur `main`, à
+499 px en médiane et 532 au plus à 393 × 692).
+
+**Règle 1 dans la vignette.** Sur `main`, la vignette rognait le bas des affiches 2:3 (`cover` dans un
+cadre 4:5 : « CE QUE TU NE DÉCIDES PAS, TU LE PORTES. » était coupé). Elle suit la règle des listes :
+l'affiche entière, à son format, à la hauteur de la case (une 2:3 y est moins large), rien autour. Le bord
+de papier, les coins et l'ombre de § 9.fj sont portés par l'image. Première version : `object-fit:
+contain` dans le cadre 4:5, sur les couleurs des bords de l'affiche ; retirée avec celles des listes.
+
+**Plus grande là où c'est gratuit.** Borne : la première ligne du texte ne descend pas de plus de
+16 px, sur aucun des 48 articles (lue article par article, plus stricte que « médiane et maximum » :
+à 820 px, une vignette de 152 px garde la médiane et le maximum de `main` mais fait passer 10 titres
+sur une ligne de plus, +41 à +54 px pour eux ; refusé). Méthode : CSS injectée sur la construction de
+`main`, sans reconstruire (`zoom/b/essai-vignette.cjs`), largeur de la vignette et retrait du texte à
+côté d'elle (largeur + 20 px au téléphone, + 30 px, + 38 px) ; la première ligne est celle de
+`vitrine.cjs` (premier paragraphe ou élément de liste du corps).
+
+| Palier (format mesuré) | Largeurs essayées | Ce qui se passe | Retenu |
+|---|---|---|---|
+| moins de 560 px (360 × 640, 393 × 692) | 64, 68, 72, 76, 80, 84 | la vignette fixe la hauteur de la ligne de confiance : +1,25 px par px de large, pour les 48 | **case de 76 px, 95 px de haut** (+15 px) |
+| 560 à 699 px (640 × 960, en plus) | 76 à 104 | idem | **case de 88 px, 110 px de haut** (+15 px) |
+| 700 à 1 039 px (820 × 1 180) | 120 à 152 | le titre se retire d'autant : dès 124 px, un titre passe sur une ligne de plus (+41 px) | **120 px, inchangé** |
+| 1 040 à 1 359 px (1 280 × 800) | 132 à 160 | dès 136 px, quatre titres passent sur une ligne de plus (+50 px) | **132 px, inchangé** |
+| 1 360 px et plus (1 512 × 800, 1 920 × 1 080) | 132 à 248 | la vignette, dans la colonne de droite, a la place de la série et du titre au-dessus d'elle : rien ne bouge jusqu'à 144 px, sauf le seul titre d'une ligne (+15 px) ; à 152 px, +5 px pour 41 articles et +25 pour lui | **case de 144 px, 180 px de haut** |
+
+Résultat sur la construction (48 articles, `zoom/b/premiere-ligne.txt`) : 360 × 640 : médiane 532 →
+547, maximum 565 → 580 ; 393 × 692 : 499 → 514 et 532 → 547 (+15 px pour chaque article) ;
+640 × 960 : 514 → 529 ; 820 × 1 180 et 1 280 × 800 : aucun écart ; 1 512 × 800 et 1 920 × 1 080 :
+médiane 490 et maximum 541 inchangés, +15 px pour un seul article (`inbox-zero-remplacant`, titre
+d'une ligne), 0 pour les 47 autres. Aucun défilement de côté. Ces mesures valent pour l'état final : la
+case fixe la hauteur, et l'affiche, à son format, n'est pas plus large qu'elle, à un pixel près
+(première ligne des 48 articles remesurée après corrections à 360, 393 et 1 512 px : identique). Le
+`sizes` dit la largeur
+dessinée de l'affiche à chaque palier ; `srcset` 160, 264, 288 et 400 px (sans 288, une case de 144 px
+en densité 2 tirait le fichier de 400 px : +28 Ko à l'ouverture d'un article).
+
+**L'affiche en grand, d'un appui** (aucun script, CLAUDE.md « Zéro JS client »). La vignette devient
+un `<button type="button" popovertarget="affiche-grande">`, nommé « Agrandir l'affiche »
+(`aria-label` : le titre de l'article est juste à côté), mesuré par l'autocapture de PostHog
+(`data-ph="blog_cover_zoom"`). Elle ouvre un popover natif (`<div popover="auto" class="grande"
+role="dialog" aria-modal="true" aria-label="L'affiche en grand">`, Chrome 114, Safari 17, Firefox 125) :
+
+- l'affiche entière, à la plus grande taille qui tient dans l'écran : sa largeur est la plus petite
+  de la largeur de la fenêtre (moins 16 px de chaque côté, 32 px à partir de 700 px) et de la hauteur
+  (en `dvh`, moins ces marges et une bande de 52 px en haut) fois le rapport de l'affiche (`--r`,
+  écrit au rendu) ; centrée sous cette bande. Fenêtre basse (moins de 500 px de haut, téléphone
+  couché) : « Fermer » passe à droite de l'image, en haut, et la bande de 52 px est rendue à l'image
+  (à 844 × 390 : 288 × 358 px pour une 0,805, 221 × 274 dans la première version) ;
+- un fond sombre et opaque (`::backdrop`, l'encre de la DA, écrite en clair : un `::backdrop` ne lit pas
+  toujours les jetons de la page ; aucun jaune) ;
+- « Fermer » : un rond de papier de 44 px au-dessus du coin droit de l'image, une croix en SVG, le mot
+  dans un élément `sr` ; il prend le focus à l'ouverture (`autofocus`) ;
+- l'image est dans un second bouton de fermeture (« Fermer l'affiche », curseur `zoom-out`) : la boîte du
+  popover est ce bouton. Fermeture par « Fermer » (`popovertargetaction="hide"`), un appui sur l'image,
+  Échap, ou un appui à côté (fermeture « auto »). Le focus revient à la vignette, sauf après un appui à
+  côté : le popover ne rend le focus que quand on le ferme depuis lui (règle du navigateur) ;
+- tant que l'affiche est ouverte, `<body>` est en `visibility: hidden` (le popover en `visible` ; la mise
+  en page ne change pas) et `<html>` en `overflow: hidden`, à toutes les largeurs : le clavier reste dans
+  l'affiche, un lecteur d'écran n'y lit qu'elle (d'où `aria-modal`), la page ne défile ni au doigt ni à la
+  molette. La barre de défilement qui disparaît change la mise en page d'une page qu'on ne voit pas, et
+  revient à la fermeture : aucun saut mesuré. Le fond est opaque pour la même raison : la page masquée,
+  un fond translucide laissait voir celui du canevas (le ciel sur 520 px, puis l'eau profonde), avec une
+  marche entre les deux derrière l'image ;
+- en attendant la grande image, sa place est un aplat clair uni sur le fond (première version : les deux
+  dégradés des couleurs de bord, avec une couture au milieu) ;
+- le signe qu'on peut agrandir : une pastille de papier et sa loupe (SVG en fond, bleu de marque), au
+  coin bas de la vignette (en bas : le titre de l'affiche est en haut), visible sans survol ; curseur
+  `zoom-in` ; anneau de focus de la DA. La loupe et le curseur sont sous `@supports
+  selector(:popover-open)`. Sans popover (Safari avant 17, Firefox avant 125), le popover reste caché
+  (`.grande { display: none }`, que seul `:popover-open` défait) et la vignette reste une vignette à
+  l'œil, sans promesse ; mais elle reste un bouton nommé qui ne fait rien, au clavier et au lecteur
+  d'écran (aucune règle sans script ne le retire ; accepté).
+
+**Aucun coût au chargement.** La grande image est en `loading="lazy"` dans le popover fermé, que le
+navigateur ne dessine pas : elle n'est demandée qu'à l'ouverture. `srcset` 600, 900, 1 200 px et la
+largeur de la source, bornés à la source et dédoublonnés (une affiche de 450 px n'a qu'un fichier,
+celui du `src`) ; `sizes` en `min()` des deux bornes (lu juste par Chromium et WebKitGTK : le fichier
+choisi correspond à la largeur dessinée). 87 fichiers ajoutés au build (36 à 600 px, 16 à 1 200 px,
+35 à la largeur de la source ; 13,6 Mo, lus seulement à l'ouverture). Le `src` de la grande image est
+celui de la vignette (900 px, ou la source plus petite).
+
+**Contenu ajouté** (flagué ici, CLAUDE.md « Contenu français verbatim ») : « Fermer » (texte du
+bouton, masqué à l'œil), et trois noms de la page, en `aria-label` : « Agrandir l'affiche » (la
+vignette), « L'affiche en grand » (le popover), « Fermer l'affiche » (l'image ouverte, second bouton de
+fermeture). La seconde `<img>` reprend le texte de remplacement de la vignette (le titre).
+
+**Essais, Chromium** (`zoom/corrections/popover-essai.cjs`, sur l'état final) : quatre affiches (une de
+450 px, `tout-comprendre-carmf` ; une 2:3 de 1 024 px, `inbox-zero-remplacant` ; une 0,805,
+`cfe-medecin-remplacant`, la plus large des quatre formats, il n'y a pas d'affiche 0,88 ; une 0,75,
+`salaires-medecins-remplacants`), à 393 × 692 au doigt (`hasTouch`, `touchscreen.tap`, densité 3), à
+844 × 390 et 820 × 1 180 au doigt, à 1 512 × 800 à la souris, barres de défilement affichées :
+
+- 16 sur 16 : aucune requête de la grande image avant l'ouverture, une seule à l'ouverture ; rien n'a le
+  focus au chargement (l'`autofocus` d'un popover fermé n'est pas pris) ;
+- ouverture : 16 sur 16, focus sur « Fermer », page masquée ; l'image entière dans la fenêtre, à son
+  rapport (361 × 542 et 361 × 448 à 393 ; 239 × 358 et 288 × 358 à 844 × 390 ; 709 × 1 064 et 756 × 939 à
+  820 ; 456 × 684 et 551 × 684 à 1 512, pour la 2:3 et la 0,805) ; « Fermer » dans la fenêtre ; aucun
+  défilement de côté ;
+- Échap, appui sur l'image, « Fermer » : 16 sur 16 ferment, focus rendu à la vignette ; appui à côté :
+  16 sur 16 ferment, focus non rendu (voir plus haut) ;
+- clavier : Entrée sur la vignette ouvre, focus visible sur « Fermer » ; Tab va à l'image, puis au
+  navigateur, puis revient à « Fermer » (il ne passe plus derrière le fond : dans la première version, il
+  allait au sommaire, sous le fond, et la page défilait derrière) ; Entrée sur « Fermer » ferme et rend
+  le focus ;
+- défilement : aucun saut à l'ouverture ni à la fermeture (`zoom/corrections/saut.cjs`, clics par
+  coordonnées : deux articles, trois positions, 1 512, 820, 844 × 390 et 393 px) ; la molette ne fait
+  plus défiler la page cachée ; CLS 0.
+
+**WebKitGTK 2.52** (`zoom/corrections/webkit-c.py`, méthode de CLAUDE.md ; 1 512 px, et 393 px dans un
+`<iframe>` ; refait sur la construction finale) : popover pris en charge ; vignettes de 65 × 95 et
+78 × 95 à 393, 123 × 180 et 146 × 180 à 1 512 (la 2:3 et la 0,805), loupe et curseur ; aucune grande image
+avant l'ouverture, une à l'ouverture ; image entière dans la fenêtre (361 × 542 et 361 × 448 à 393 ;
+497 × 746 et 601 × 746 à 1 512) ; page masquée ; focus sur « Fermer » (anneau visible même après un clic,
+contrairement à Chromium) ; Échap, appui sur l'image, appui à côté, « Fermer » ferment ; focus rendu, sauf
+après un appui à côté ; Tab reste dans l'affiche ; fond d'une seule couleur (deux tons dans la première
+version des corrections, voir plus bas). Ce n'est ni Safari ni un iPhone.
+
+**Lighthouse mobile** (serveurs qui compressent, 3 passes alternées avec `main`,
+`zoom/corrections/lh-c.txt`) : CARMF 98, 98, 98 (`main` 99, 99, 98), Inbox zéro 98, 100, 98 (`main` 97,
+99, 98) ; accessibilité, bonnes pratiques et SEO à 100 ; CLS 0 ; élément LCP inchangé (un texte de
+« L'essentiel »), LCP médian 2,12 → 2,18 s et 2,23 → 2,19 s ; seule la vignette est chargée (images : 26
+et 22 Ko, comme sur `main`). Sur ordinateur (1 280, 1 512, 1 920 px), l'élément LCP reste un texte (le
+titre, un paragraphe ou un élément de liste), le même que sur `main` (la vignette de 144 px n'y passe pas
+devant ; mesuré sur la première version, même taille).
+
+Ce qui reste faible : voir la liste d'ensemble, à la fin de la section.
+
+#### Écarts de la branche (A et B), comptés contre `main` (état final)
+
+- `preuve-corps.cjs` (48 articles) : 0 écart de mots, de titres, d'ancres et de liens du corps ; un
+  seul `<h1>` partout.
+- `preuve.cjs` (52 pages, 11 clés) : `/blog` et les 3 séries identiques sur les 11 clés ; les 48
+  articles identiques sur la tête, le JSON-LD, les titres, les liens, le corps et la FAQ ; sur chacun,
+  les écarts voulus : le texte de `<main>` gagne « Fermer » (même nombre de mots : le mot se colle, dans
+  `textContent`, à « lecture » et « Sommaire », comme ceux-ci l'étaient déjà), une `<img>` de plus (la
+  grande, même texte de remplacement et mêmes dimensions déclarées que la vignette), les dimensions
+  vraies des affiches des connexes, un attribut de mesure de plus (`data-ph=blog_cover_zoom`), un
+  identifiant de plus (`affiche-grande`).
+- HTML brut, attribut par attribut (`zoom/corrections/ecarts-c.cjs`, 71 pages) : 19 pages identiques
+  octet pour octet ; ailleurs, seulement :
+
+  | Écart | Nombre | Pages |
+  |---|---|---|
+  | affiches des connexes : `srcset` et `sizes` ajoutés, `width` et `height` changés | 223 chacun | 48 |
+  | affiches des listes : `srcset` et `sizes` changés | 96 chacun | 4 |
+  | préchargement de la une : `imagesrcset`, `imagesizes` changés | 1 chacun | 1 |
+  | première affiche des séries : `loading` changé, `fetchpriority` retiré | 3 chacun | 3 |
+  | vignette : bouton autour de l'image (`popovertarget`, `aria-label`, `data-ph`) | 48 | 48 |
+  | vignette : `class` passée de l'image au bouton, `srcset` et `sizes` changés | 48 chacun | 48 |
+  | popover après la vignette (une `<img>`, deux boutons, le texte « Fermer », le nom « Fermer l'affiche ») | 48 | 48 |
+  | nom de la feuille de page (empreinte ; celle des listes s'appelle `blog-liste.*.css`, `blog-covers.*.css` sur `main`) | 52 | 52 |
+
+  Aucun `style` ajouté hors du popover (la première version en posait un sur chaque affiche). Aucun autre
+  écart : le HTML, ces éléments et ces attributs retirés, est identique octet pour octet.
+- `verify-site.mjs`, non modifié : passe (68 pages, 5 482 liens internes : 48 de plus que sur `main`, le
+  `src` de la grande image de chaque article ; les 7 avertissements de `main`).
+- Feuille commune : `_astro_assets.BdxOyZgM.css`, même nom, identique. Aucun script ajouté : les 29
+  fichiers `.js` et les scripts en ligne des 71 pages sont identiques à `main`, aucun attribut `on…`.
+- Poids, compressé : feuille de l'article 9,9 → 10,5 Ko ; HTML d'un article +0,4 à +0,8 Ko (médiane
+  +0,5 ; +1,2 à +1,4 Ko dans la première version) ; `/blog` et séries : partie A.
+- Images : 229 fichiers ajoutés au build (16,6 Mo, lus à la demande) : 47 de 200 px, 47 de 240 px (listes
+  et une), 47 de 288 px (vignette), 1 de 480 px (une), et 87 pour l'affiche en grand (36 de 600 px, 16
+  de 1 200 px, 35 à la largeur de la source) ; 2 retirés (les variantes de 180 et 360 px de la une).
+- Fichiers hors HTML (sitemap, `recherche.json`, `llms.txt`, images de partage) : identiques à `main`.
+- Première ligne du texte des 48 articles (`zoom/corrections/premiere-*.jsonl`) : identique à la mesure
+  de la partie B (+15 px au téléphone, 0 au-delà sauf `inbox-zero-remplacant` à 1 512, +15 px).
+- Hauteur des pages d'article (48 articles, `zoom/reprise/hauteur-articles.cjs`) : +71 px en médiane à
+  393 × 692 (+70 à +91 : connexes et vignette), +21 px à 1 512 × 800 (+14 à +90).
+
+**Fichiers (partie B)** : `src/pages/blog/[slug].astro` (la vignette, le popover, leurs `srcset`),
+`src/styles/blog-article.css` (vignette, loupe, popover, contrastes forcés, impression), `MIGRATION.md`,
+`CLAUDE.md` (« Zéro JS client » : le popover parmi les interactions natives ; puce « Couverture » ;
+la règle des affiches étendue à la vignette).
+
+#### Corrections après relecture (14 novembre 2026)
+
+Trois relectures indépendantes de la branche (A et B) : design et lecteur (7,5 / 10, 11 défauts), SEO,
+preuves et code (8 / 10, 7 défauts), technique, accessibilité, Safari et vitesse (7,5 / 10, 7 défauts).
+Chaque défaut a été reproduit avant d'être corrigé ; un défaut contraire au cahier n'est corrigé que s'il
+casse quelque chose de mesurable, et l'arbitrage est écrit ici. Les parties A et B, plus haut, décrivent
+l'état final ; la construction d'avant les corrections est gardée pour comparer
+(`zoom/corrections/dist-avant`). Repères : D1 à D11 (design), S1 à S7 (SEO), T1 à T7 (technique).
+
+**Corrigé :**
+
+1. **Les bandes de couleur se voyaient comme des bandes** (D2, majeur). Sur un écran à haute densité
+   (1 512 px en densité 2 ; 402 px en densité 3, le téléphone du propriétaire), une dizaine des 28
+   affiches 2:3 avaient des bords flous, avec des taches de couleur à mi-hauteur (intérêts composés, 4
+   enveloppes, Super-Net, salariat 10 %…) : un dégradé ne prolonge pas un dessin détaillé. Le cahier
+   voulait des bandes « qui ne se voient pas comme des bandes » : la méthode ne tenait pas sa propre
+   condition. **Arbitrage : l'affiche est montrée entière, à son format, à la hauteur de la case 4:5,
+   centrée ; le vide est le blanc de la feuille** (partie A, « Le cadre »). La règle 1 tient mieux : rien
+   de rogné, rien de déformé, rien d'inventé autour. La case garde ses mesures : hauteur des lignes,
+   colonne de texte, densité et longueur des pages ne bougent pas. `src/lib/affiche-bords.mjs` est
+   retiré, et avec lui les `style="--bord-g:…;--bord-d:…"` (−3,3 Ko compressés sur `/blog`).
+   Disparaissent avec les bandes :
+   - le liseré bicolore de 1 à 2 px au bas des affiches 0,805, dont la une (D4) ;
+   - la bande assombrie par les colonnes noires de trois fichiers source (D3 :
+     `signer-contrat-remplacement`, `checklist-administrative-medecin-remplacant`,
+     `remplir-declaration-2035`, 1 ou 2 px de noir au bord). Les fichiers ne sont pas touchés : ce noir
+     fait 0,2 px à l'écran dans une liste, et il est posé sur le fond sombre dans l'affiche en grand ;
+   - les commentaires faux sur le repli des couleurs (T5 : sans elles, toute la déclaration
+     `background` devenait invalide, fond transparent), et la garde oubliée sur la une (S6 :
+     `bordsAffiche()` d'une affiche introuvable arrêtait la construction de `/blog`).
+2. **Au téléphone, plus aucune affiche dans le premier écran de `/blog`** (D1, majeur). **Arbitrage :
+   l'affiche dans le premier écran l'emporte sur « nettement plus grande »** (partie A, « La une ») :
+   à droite de la pastille et du titre, à la taille des lignes ; titre à 20 px ; extrait sur toute la
+   largeur, « date · durée » sur une ligne (elles étaient l'une sous l'autre, sans point, et l'extrait se
+   coupait au milieu de « CARMF »). Affiche entière à 393 × 692 et 402 × 680, 98 % à 390 × 664 ; la fiche
+   passe de 353 à 295 px de haut, la liste remonte de 1 014 à 955 px (939 sur `main`). À partir de 768 px,
+   rien ne change.
+3. **Au clavier, le focus sortait de l'affiche ouverte et se perdait derrière le fond** (T1, majeur).
+   Tant que l'affiche est ouverte : `<body>` en `visibility: hidden`, le popover en `visible`, `<html>`
+   en `overflow: hidden` à toutes les largeurs (avant : au doigt sous 960 px seulement), et
+   `aria-modal="true"` sur le dialogue (partie B). Tab ne sort plus de l'affiche ; un lecteur d'écran n'y
+   trouve plus qu'elle ; la molette ne fait plus défiler la page cachée ; aucun saut, CLS 0.
+4. **Un appui sur l'image ouverte ne la fermait pas** (D6, mineur). L'image est dans un second bouton de
+   fermeture (« Fermer l'affiche », curseur `zoom-out`) : au téléphone, la place « à côté » n'était que de
+   16 px sur les côtés. Le focus revient à la vignette. **Contenu ajouté** : « Fermer l'affiche »
+   (`aria-label`).
+5. **Pendant le chargement de la grande image, deux aplats et une couture** (D5, mineur) : un aplat clair
+   uni sur le fond sombre (l'image a son format exact : les couleurs de bord n'y servaient à rien).
+6. **Téléphone couché : l'affiche « en grand » restait petite** (D10, mineur). Sous 500 px de haut,
+   « Fermer » passe à droite de l'image, et la bande de 52 px est rendue à l'image : à 844 × 390,
+   221 × 274 → 288 × 358 px pour une 0,805, 239 × 358 pour une 2:3. Le `sizes` de la grande image a la
+   même règle en tête.
+7. **Articles connexes** (D8 et S7, mineurs). Au téléphone, le texte est centré sur la hauteur de
+   l'affiche (il était collé en haut), et la colonne de l'affiche épouse son format. Sur ordinateur,
+   l'affiche est centrée dans une case de 96 px ; avec 3 ou 5 articles (15 articles), le dernier prend le
+   rang entier. Dimensions déclarées : celles du fichier (132 × 198 pour une 2:3 ; 44 × 55 avant, un 4:5
+   faux pour 170 des 223).
+8. **Le poids des images et du HTML ; Lighthouse sur les séries** (T2, majeur ; S3 et T3, mineurs).
+   `sizes` dit la largeur dessinée de chaque affiche, et non celle de sa case (une 2:3 : 83 %) ; les
+   lignes ont une variante de 200 px de plus (écrans de densité 1,75 à 2, dont celui de Lighthouse) ; la
+   une du téléphone est plus petite ; les couleurs de bord sont retirées. La vignette d'article a un
+   candidat de 288 px (T3 : à 144 px de case en densité 2, elle tirait le fichier de 400 px, +28 Ko) et un
+   `sizes` à sa largeur dessinée. Résultat (tableaux des parties A et B) : 95 ou plus à chaque passe sur
+   les cinq pages mesurées (Guides & Conseils : 95 au plus bas, 93 sur `main` ; Fiches Fiscalité : 96) ;
+   images de `/blog` 203 → 141 Ko (99 sur `main`), HTML 27,6 → 24,3 Ko (22,7). Le LCP de labo de `/blog`
+   au téléphone reste au-dessus de `main` (S3) : voir « Ce qui reste faible ».
+9. **Code** (S5 et T6, mineurs). Un seul calcul de `srcset` dans `blog-covers.ts` (`srcsetAffiche`,
+   appelé par `resolveCovers`), un seul dans le gabarit d'article (`srcsetDe`, appelé aussi par les
+   connexes) ; `largeurDansCadre()` pour les `sizes` ; un seul chemin d'import ; la prop `eager` de
+   `BlogCard` retirée (plus aucun appelant).
+10. **Documentation** (S2 et S4, mineurs) : « quatre formats » (et non cinq), « 47 affiches pour 48
+    articles », les comptes de fichiers d'images, l'élément LCP de `/blog` sur ordinateur (l'affiche de
+    la une, pas le titre), le commentaire de la une (« 160 à 720 px »).
+11. **Le fond de l'affiche en grand avait une marche** (trouvé en refaisant les captures pour le
+    propriétaire, après les deux commits de corrections). La page étant masquée, le fond à 90 % laissait
+    voir celui du canevas : le ciel sur les 520 premiers pixels, puis l'eau profonde ; à l'ouverture en
+    haut d'un article, une ligne plus claire coupait le fond derrière l'image (vu dans Chromium et
+    WebKitGTK). Le fond est maintenant opaque (même encre). Une seule déclaration change dans
+    `blog-article.css` ; la construction ne diffère de la précédente que par elle et par le nom de la
+    feuille de l'article (48 pages) ; preuves, `verify-site.mjs` et WebKitGTK refaits.
+
+**Écarté (et pourquoi) :**
+
+- *La vignette d'article plus grande, à côté du titre* (D7). Mesurée sur les 48 articles à 393 × 692 et
+  360 × 640, de 76 à 104 px (`zoom/corrections/d7-*.jsonl`) : le titre se retire d'autant et passe sur une
+  ligne de plus ; le texte descend de 32 à 118 px, pour 39 à 47 articles au-delà de la borne de 16 px.
+  Elle reste à 95 px de haut. Au téléphone, la même affiche a donc une case de 104 px dans `/blog` et de
+  76 px dans l'article : à montrer au propriétaire, avec l'affiche en grand d'un appui.
+- *Pages de série plus longues en tablette* (D9). Le cahier ne bornait que `/blog` : à faire valider
+  (Guides & Conseils 4 916 → 7 703 px à 820 × 1 180 ; une affiche de 120 px de 640 à 1 023 px en
+  retirerait environ 17 %).
+- *Deux articles, une affiche* (D11) : décision de contenu, inchangée.
+- *Sans popover, la vignette reste un bouton qui ne fait rien* (T4). Sans script, aucune règle ne le
+  retire du clavier ni de l'arbre d'accessibilité ; accepté (Safari avant 17, Firefox avant 125), écrit
+  dans CLAUDE.md.
+- *À 320 px, date et durée sur deux lignes plus souvent* (T7 : 17 lignes contre 6 sur `main`). Rien
+  n'est cassé ; à 320 px, la case vaut déjà son minimum de 88 px (26,5 % donnerait 85), et la date la plus
+  longue (185 px) ne tiendrait pas dans la colonne de 170 px que laisserait `clamp(80px, …)`.
+- *Qualité d'image plus basse, 4 couleurs de bord au lieu de 8* (S3, T2) : sans objet après le point 8.
+- *Rogner les colonnes noires des trois fichiers source* (D3) : sans bande, elles ne se voient plus
+  (point 1) ; les fichiers ne sont pas touchés.
+
+**Fusion avec les thèmes (§ 9.fp, d'abord numérotée § 9.fn, numéro pris entre-temps sur `main` par la
+fenêtre produit) — à faire, pas ici** (S1, majeur). La branche des thèmes
+(`claude/loving-carson-pgk851-themes`) n'est pas rebasée sur celle-ci ; elle devra l'être avant la mise en
+ligne, par le chef d'orchestre. `git merge-tree --write-tree --name-only` entre cette branche et celle des
+thèmes (14 novembre, lecture seule) : **conflits dans `CLAUDE.md`, `MIGRATION.md`,
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro` et `src/styles/blog-liste.css`** ;
+`src/pages/blog/[slug].astro` se fusionne seul ; `blog-article.css` n'est pas touché par les thèmes. À
+la fusion :
+1. `BlogCard.astro` : garder le `sizes` par affiche de cette branche (`largeurDansCadre`, sans `bords` ni
+   `style`, retirés) et les props des thèmes (`etiquette`, `theme`, `category`, `categoryNumber`) ;
+   `eager` est retirée des deux côtés. `index.astro` : la une de cette branche, et les puces, étiquettes et
+   l'index des thèmes ; la page de thème reprend la feuille et la carte des listes.
+2. `blog-liste.css` : les règles de l'affiche et de la une d'ici. La sous-grille des thèmes (deux lignes
+   d'une rangée sur quatre pistes, dès 640 px) ne sert qu'à partir de 1 024 px : de 640 à 1 023 px,
+   cette branche n'a qu'une colonne de lignes. Choisir alors entre le texte centré sur l'affiche (ici) et
+   des titres alignés d'une colonne à l'autre (thèmes), puis remesurer.
+3. **La borne de densité, à remesurer.** Avec les étiquettes des thèmes simulées sur cette construction
+   (balisage et règles des thèmes, `zoom/corrections/densite3.cjs`) : 3 articles entiers à tout moment à
+   393 × 692, mais 92 % du temps seulement à 360 × 640 (lignes de 140 à 166 px : l'étiquette « Thème ·
+   Fiche Fiscalité #16 » passe sur deux lignes pour 24 des 47). Deux voies : écrire le numéro de fiche sur
+   la ligne de la date sous 400 px (mêmes mots, étiquette d'une ligne), ou accepter 92 % et l'écrire ici.
+4. Ajouter les cinq pages de thème à `preuve.cjs`, puis refaire `verify-site.mjs`, `preuve-corps.cjs`,
+   `preuve.cjs`, les pages hors blog, Lighthouse et WebKitGTK.
+
+**Ce qui reste faible** (liste d'ensemble, parties A et B, après corrections) :
+
+- `/blog` au téléphone : LCP de labo 2,50 s en médiane contre 2,29 s sur `main` (note 97 contre 98,
+  jamais sous 97) ; c'est le poids des affiches (99 → 141 Ko au premier chargement, densité 1,75).
+  Mesuré en HTTP/1.1 local : à refaire sur un aperçu Vercel (HTTP/2) en réseau bridé.
+- La une au téléphone n'est plus « nettement plus grande » que les lignes (point 2) : à montrer au
+  propriétaire.
+- Une affiche 2:3 est moins large que sa case : dans une liste, elle paraît plus petite qu'une 0,805 de
+  même hauteur (c'est son format).
+- Au téléphone, l'affiche a une case de 104 px dans `/blog` et de 76 px dans l'article (« Écarté »). La
+  vignette du téléphone a coûté 15 px (le texte commence à 514 px au lieu de 499, médiane à 393 × 692) ;
+  tablette et petit ordinateur n'ont pas grandi (aucune place gratuite).
+- La densité de 3 articles entiers n'est tenue qu'aux deux formats de référence : un téléphone plus court
+  (iPhone SE dans Safari, environ 375 × 550 visibles) n'en montre par moments que 2 ; à 640 × 960, 2
+  entiers sur 11 % des positions (20 % sur `main`) ; après la fusion avec les thèmes, 92 % du temps à
+  360 × 640 (voir plus haut).
+- Les petits titres d'affiche (« INBOX ZÉRO DU REMPLA », 3,8 px de capitales à 104 px) ne se lisent pas
+  en liste : c'est la scène qui fait reconnaître ces affiches.
+- Séries en tablette (une colonne) : Guides & Conseils passe de 4 916 à 7 703 px à 820 px (« Écarté »).
+- Après un appui à côté de l'image, le focus ne revient pas à la vignette (règle du popover). Sans
+  popover, la vignette est un bouton qui ne fait rien.
+- Les 11 affiches de 450 px sont agrandies (1,57 fois en largeur CSS à 820 px, 2,4 fois en pixels réels
+  sur un téléphone de densité 3) : nettes à l'œil sur les captures, mais plus douces que les autres. La
+  source ne peut pas mieux faire.
+- À décider par le propriétaire : la une au téléphone à la taille des lignes, l'affiche à son format sans
+  bandes (captures dans `zoom/captures/pour-le-proprietaire/`), la longueur des séries en tablette,
+  l'affiche commune à deux articles.
+- Non vérifié : Safari réel et iPhone, Firefox, VoiceOver, un vieux navigateur sans popover (raisonné sur
+  la feuille), aperçu Vercel en HTTP/2 sur réseau bridé.
+
+**Après les deux vérifications finales** (14 novembre 2026 ; navigateur : « prête », conformité :
+« conforme », aucun défaut bloquant ni majeur). Trois défauts mineurs corrigés :
+- imprimer un article avec l'affiche ouverte donnait des pages blanches (la page masquée, l'affiche
+  retirée à l'impression) : les deux règles qui masquent la page sont sous `@media screen` ;
+- une carte d'article connexe sans image (affiche introuvable à la construction, cas qui n'arrive pas
+  aujourd'hui) gardait la colonne de 96 px de l'image et écrasait son titre : une seule colonne dans ce
+  cas (`.carte:not(:has(img))`) ;
+- CLAUDE.md citait la section des thèmes, absente de `main` : la note de fusion ne vit plus qu'ici.
+Laissés tels quels : à 360 × 640, l'affiche de la une commence à 619 px (même position sur `main`, pas
+une régression) ; les affiches de 450 px restent douces en grand sur tablette (voir plus haut) ; cinq
+fichiers presque identiques dans le `srcset` de l'image en grand (sources de 902 à 908 px, à côté du
+900 px).
+
+**Fichiers (corrections)** : `src/lib/affiche-bords.mjs` (retiré), `src/lib/blog-covers.ts`,
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/pages/blog/[slug].astro`,
+`src/styles/blog-liste.css`, `src/styles/blog-article.css`, `MIGRATION.md`, `CLAUDE.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
