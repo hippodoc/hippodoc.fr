@@ -58,7 +58,9 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
           Analyse détaillée pour t'aider à choisir le meilleur régime.{' '}
           {comparison.isRSPMUsed
             ? "Cotisations au RSPM, l'offre simplifiée des remplaçants."
-            : "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf."}
+            : (formData.annee || 2026) >= 2025
+              ? "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf et sur la nouvelle assiette sociale des revenus 2025 et suivants."
+              : "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf."}
         </p>
       </div>
 

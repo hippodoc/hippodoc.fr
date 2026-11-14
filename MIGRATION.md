@@ -12648,6 +12648,70 @@ Vérifié le 14 novembre 2026 :
 - L'application (app.hippodoc.fr, dépôt à part) appelle le même modèle par sa fonction
   `calculate-urssaf` : même constat.
 
+### 9.fv Simulateur : la réforme de l'assiette sociale appliquée aux cotisations PAMC (14 novembre 2026)
+
+Suite du § 9.fu. Le propriétaire : « tu as ma bénédiction pour faire ce qui te paraît le plus solide
+et cohérent ». Utiliser `modele-ti` (le modèle de l'Urssaf qui applique la réforme) dans le
+simulateur demandait de l'installer et de l'exécuter, ce que l'environnement de travail a refusé
+(deux fois, même avec l'accord du propriétaire) : il n'a été lu que comme données. Le simulateur
+garde donc l'API qu'il interrogeait, et `src/lib/simulateur/urssaf.ts` lui donne, pour les revenus
+2025 et suivants, ce que la réforme change, d'après les règles de `modele-ti` :
+- l'assiette des cotisations et celle de la CSG-CRDS : au réel, revenu brut (recettes − charges,
+  forfait 2 % compris) moins 26 % arrondi, borné entre 1,76 % et 130 % du PASS (845,86 € et
+  62 478 € en 2026) ; en micro, les recettes après l'abattement de 34 % (305 € au moins) ; sans
+  réintégration des cotisations dans celle de la CSG-CRDS ;
+- le taux de la tranche 1 de la retraite de base : 8,73 % ;
+- le taux maladie : barème à deux tranches (progressif jusqu'à 8,5 % à 3 PASS, 6,5 % au-delà ;
+  8,5 % dans les DOM), passé au modèle en taux moyen sur l'assiette, et plus d'assiette minimale ;
+  en secteur 1, l'Assurance maladie en prend toujours en charge tout sauf 0,1 % (calcul du modèle) ;
+- la contribution additionnelle sur la part non conventionnée : 3,25 % ;
+- la complémentaire CARMF à 11,8 % en 2026, que ni l'un ni l'autre modèle n'a encore (« La CARMF en
+  2026 », p. 22 ; 10,2 % pour les revenus 2025).
+Le reste (participations de l'Assurance maladie, ASV, invalidité-décès, indemnités journalières,
+allocations familiales, CURPS, formation professionnelle) est calculé par le modèle, sur la
+nouvelle assiette. Mayotte : seule l'assiette des cotisations change (pas de CSG-CRDS, maladie
+propre). La fonction Supabase n'est plus un repli pour ces années (elle calcule l'ancienne assiette).
+
+**Contrôles.**
+- L'interpolation du « taux progressif » écrite ici rend au centième de point celle du modèle (six
+  assiettes, barème maladie d'avant la réforme).
+- Les surcharges sont lues par le modèle (assiette, assiette de la CSG-CRDS, 8,73 %, taux maladie,
+  complémentaire).
+- Exemple de la CARMF pour 2026, revenu de 30 000 €, secteur 1 : retraite de base 2 535 €
+  (2 619 + 561 − 645), complémentaire 3 540 €, ASV 2 317 € (1 917 + 400), invalidité-décès 626 € :
+  les quatre montants sont rendus à l'euro.
+- Un calcul indépendant, écrit à part des règles de la réforme, rend le total à 1 € près sur huit
+  profils (secteurs 1 et 2, remplaçant et installé, réel et micro, 37 000 € à 162 800 € d'assiette).
+  Un écart reste, hors réforme : les allocations familiales dans les DOM (hors Mayotte), à 3,1 %
+  sans taux réduit dans `modele-ti`, au taux réduit dans le modèle de l'API, qui est gardé
+  (1 147 € pour un secteur 2 en Guadeloupe à 37 000 € d'assiette) ; à trancher sur source.
+- Banc de 24 situations du § 9.ft : aucun échec. Exemple : remplaçant de secteur 1 à 60 000 € de
+  recettes et 6 000 € de charges, au réel, 15 324 € de cotisations en 2026 (15 503 € avant) :
+  CSG-CRDS 3 876 € au lieu de 4 894 €, retraite en hausse (tranche 1 et complémentaire) ; le
+  Micro-BNC garde 184 €/an d'avance (223 € avant).
+
+**Textes.** Sous le titre des résultats : « Cotisations au régime des praticiens conventionnés
+(PAMC), selon le modèle de l'Urssaf et sur la nouvelle assiette sociale des revenus 2025 et
+suivants. » Phrases « au réel, elles se calculent sur ton bénéfice » : « sur tes recettes moins tes
+charges, abattues de 26 % » (pli « Comprendre la différence », conclusion quand l'impôt est le même).
+Mode d'emploi, point 6 : « URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) +
+CARMF (retraite complémentaire, invalidité-décès, ASV) […] (voir point 5) » devient « URSSAF
+(maladie, allocations familiales, CSG-CRDS, formation professionnelle) + CARMF (retraite de base,
+retraite complémentaire, invalidité-décès, ASV) […] (voir point 4). Depuis les revenus 2025, elles
+se calculent sur une assiette unique : tes recettes moins tes charges, abattues de 26 % (en
+Micro-BNC, tes recettes après l'abattement de 34 %). » (la retraite de base des médecins est
+appelée par la CARMF ; la situation CARMF est au point 4). Infobulle des cotisations d'une fiche :
+la ligne « CARMF retraite de base et ASV » manquait (le détail ne faisait pas le total) ; « CARMF
+RID » devient « CARMF invalidité-décès », « Formation » devient « Formation et CURPS ».
+
+**Reste à faire, hors de ce dépôt.** L'application (app.hippodoc.fr) calcule par la fonction
+`calculate-urssaf`, donc sur l'ancienne assiette. Et quand l'Urssaf mettra la réforme dans le modèle
+de son API, ces surcharges devront être retirées (sinon l'abattement serait compté deux fois) :
+contrôle simple, l'assiette des cotisations rendue par l'API pour 60 000 € de recettes et 6 000 € de
+charges en 2026, sans surcharge, vaut 39 960 € aujourd'hui (ancien calcul, par coïncidence égal à
+74 % du revenu brut) ; comparer aussi l'assiette de la CSG-CRDS (50 449 € aujourd'hui, 39 960 € avec
+la réforme).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

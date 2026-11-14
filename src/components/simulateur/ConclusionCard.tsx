@@ -89,7 +89,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
     if (memeImpot) {
       // Impôt identique (nul des deux côtés, par exemple) : les déductions ne départagent rien.
       if (cotisationsDiffèrent) {
-        pourquoi = `Ton impôt est le même dans les deux régimes : l'écart vient de tes cotisations, ${sens} de ${euros(ecartCotisations)} au réel, où elles se calculent sur ton bénéfice.`;
+        pourquoi = `Ton impôt est le même dans les deux régimes : l'écart vient de tes cotisations, ${sens} de ${euros(ecartCotisations)} au réel, où elles se calculent sur ${(formData.annee || 2026) >= 2025 ? 'tes recettes moins tes charges, abattues de 26\u00a0%' : 'ton bénéfice'}.`;
       }
     } else {
       pourquoi = `Au réel, tu déduis ${euros(d.reel)} de tes recettes avant l'impôt (${pct(d.reel)})${zone} ; le Micro-BNC en retire ${euros(d.micro)} d'office (${d.microMinimum ? 'le minimum de 305\u00a0€' : '34\u00a0%'}).`;

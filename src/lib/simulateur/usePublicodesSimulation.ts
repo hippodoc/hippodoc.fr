@@ -3,7 +3,7 @@ import { invokeCalculateUrssaf } from '@/lib/supabase-public';
 import type { SimulateurFormData } from '@/components/simulateur/simulateurSchema';
 import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/lib/simulation-types';
 import { calculateRspmBreakdown } from '@/lib/simulateur/useRspmCalculation';
-import { calculerCotisationsUrssaf, type CotisationsUrssaf, type ParametresUrssaf } from '@/lib/simulateur/urssaf';
+import { reformeAssiette, calculerCotisationsUrssaf, type CotisationsUrssaf, type ParametresUrssaf } from '@/lib/simulateur/urssaf';
 import { calculateFiscalParts } from '@/lib/fiscalParts';
 import { getDomTomInfo } from '@/lib/dom-tom';
 import { getMicroBncCeiling } from '@/lib/baremes-ir';
@@ -107,8 +107,10 @@ async function cotisationsPamc(
     });
     return { cotisations: ajusterCarmf(cotisations, formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles), source: 'urssaf' };
   } catch (err) {
-    console.warn('[Simulateur] API Urssaf indisponible, repli sur calculate-urssaf', err);
-    if (!secours) return null;
+    console.warn('[Simulateur] API Urssaf indisponible', err);
+    // Pas de repli à partir des revenus 2025 : la fonction Supabase calcule l'assiette d'avant
+    // la réforme (MIGRATION.md § 9.fv). Mieux vaut le message « réessaie » qu'un chiffre faux.
+    if (!secours || reformeAssiette(formData.annee || 2026)) return null;
   }
 
   const { data, error } = await invokeCalculateUrssaf({ formData, regimeFiscal, liberalExonere });

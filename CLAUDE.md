@@ -647,7 +647,15 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   `src/lib/baremes-ir.ts`) dans les deux régimes sociaux. Cotisations : RSPM local (mode Auto :
   remplaçant jusqu'à 19 000 €) ; PAMC par l'API publique du modèle Urssaf
   (`src/lib/simulateur/urssaf.ts`, appelée depuis le navigateur), repli seulement sur l'Edge
-  Function Supabase `calculate-urssaf` (qui ignore secteur, année et statut de remplaçant).
+  Function Supabase `calculate-urssaf` (qui ignore secteur, année et statut de remplaçant ; aucun
+  repli pour les revenus 2025 et suivants, qu'elle calcule sur l'ancienne assiette). Réforme de
+  l'assiette sociale (revenus 2025+, § 9.fv) : le modèle de l'API ne l'applique pas ; `urssaf.ts`
+  lui donne la nouvelle assiette (revenu brut − 26 % borné ; micro : recettes − 34 %) pour les
+  cotisations et la CSG-CRDS, et les taux qui changent (retraite de base T1 8,73 %, barème maladie,
+  contribution additionnelle 3,25 %), d'après le paquet `modele-ti` de l'Urssaf ; complémentaire
+  CARMF à 11,8 % en 2026 (« La CARMF en 2026 »). Contrôles : exemple CARMF 2026 (revenu de
+  30 000 €) exact, calcul indépendant au centime près sur huit profils. Un nouveau millésime :
+  revoir PASS, taux et la liste de ces surcharges.
   Le Super-Net retire les charges payées dans les deux régimes, Micro-BNC compris. Les règles
   se vérifient sur Légifrance, le BOFiP et la CARMF ; le revenu imposable d'un remplaçant doit
   rester égal au « net imposable » du modèle Urssaf (contrôle croisé, § 9.fr).
