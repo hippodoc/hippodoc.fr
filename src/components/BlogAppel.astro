@@ -1,6 +1,6 @@
 ---
 /**
- * Appel à l'action des pages de liste du blog (/blog, /blog/serie/*, /blog/theme/*), dans la
+ * Appel à l'action des pages de liste du blog (/blog, /blog/theme/*), dans la
  * DA 2026 (phase 5c, MIGRATION.md § 9.ej) : une fiche « eau profonde », le bouton
  * jaune du Super-Net.
  *
@@ -8,14 +8,14 @@
  * (ce composant-là ne sert plus qu'à /guide, qui garde son habillage). Deux liens
  * statiques, aucun JS. Styles dans `src/styles/blog-liste.css`.
  *
- * `emplacement` distingue l'index, les pages de série et les pages de thème (§ 9.fp)
- * dans `data-track`, sur le modèle `cta_<destination>_<emplacement>` des autres CTA du
- * site.
+ * `emplacement` distingue l'index et les pages de thème (§ 9.fp) dans `data-track`, sur
+ * le modèle `cta_<destination>_<emplacement>` des autres CTA du site. `blog_serie` est
+ * parti avec les pages de série (§ 9.fq).
  */
 import { APP_URL } from '@/lib/site';
 
 interface Props {
-  emplacement: 'blog_index' | 'blog_serie' | 'blog_theme';
+  emplacement: 'blog_index' | 'blog_theme';
 }
 
 const { emplacement } = Astro.props;
