@@ -149,11 +149,13 @@
    rendu), centrée sous une bande de 52 px où se tient « Fermer ». La boîte du popover est l'image seule,
    dans un second bouton de fermeture : un appui sur l'image la ferme (curseur `zoom-out`), un appui à côté
    tombe sur le fond, et la ferme aussi (fermeture « auto »). Le fond, sombre, est pris à l'encre de la DA
-   (écrit en clair : un ::backdrop ne lit pas toujours les jetons de la page). En attendant la grande image,
+   (écrit en clair : un ::backdrop ne lit pas toujours les jetons de la page), opaque : la page est masquée
+   tant que l'affiche est ouverte (plus bas), et un fond translucide laissait voir celui du canevas, le ciel
+   sur 520 px puis l'eau profonde, avec une marche entre les deux. En attendant la grande image,
    sa place est un aplat clair sur ce fond (pas les couleurs des bords : l'image a son format exact). */
 .fiche .grande { display: none; }
 .fiche .grande:popover-open { --zg: 16px; --focus: #FFFFFF; display: block; position: fixed; inset: calc(var(--zg) + 52px) var(--zg) var(--zg); box-sizing: border-box; width: fit-content; height: fit-content; max-width: none; max-height: none; margin: auto; padding: 0; border: 0; overflow: visible; background: none; color: var(--ink); visibility: visible; }
-.fiche .grande::backdrop { background: rgba(11, 23, 52, 0.9); }
+.fiche .grande::backdrop { background: rgb(11, 23, 52); }
 .fiche .grande-image { display: block; margin: 0; padding: 0; border: 0; border-radius: 16px; background: none; color: inherit; font: inherit; cursor: zoom-out; -webkit-tap-highlight-color: transparent; }
 .fiche .grande img { display: block; width: min(100vw - 2 * var(--zg), (100vh - 2 * var(--zg) - 52px) * var(--r)); width: min(100vw - 2 * var(--zg), (100dvh - 2 * var(--zg) - 52px) * var(--r)); height: auto; max-width: none; border-radius: 16px; background: rgba(255, 255, 255, 0.08); box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55); }
 .fiche .grande-fermer { position: absolute; right: 0; bottom: calc(100% + 8px); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: var(--paper); color: var(--ink); cursor: pointer; box-shadow: var(--clay-sm); -webkit-tap-highlight-color: transparent; }
