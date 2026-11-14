@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forwardRef, useImperativeHandle, useState, useEffect, useRef } from "react";
-import { Calculator, Info, Stethoscope, UserCheck, MapPin, Briefcase, Heart, Wallet, Users, Settings, ChevronDown, Plus, Shield, PiggyBank, GraduationCap, Home, Map } from "lucide-react";
+import { Calculator, Info, Stethoscope, UserCheck, CalendarClock, MapPin, Briefcase, Heart, Wallet, Users, Settings, ChevronDown, Plus, Shield, PiggyBank, GraduationCap, Home, Map } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -82,6 +82,10 @@ export const SIMULATEUR_DEFAULTS = {
     tauxRid: '25%',
     situationCarmf: 'affilie_3ans_plus' as const,
     ratioNonConventionne: 0,
+    // § 9.fx : début d'activité et réductions de la CARMF accordées sur demande.
+    debutActivite: 'non' as const,
+    dispenseComplementaire: false,
+    asvProportionnelle: false,
 } satisfies Partial<SimulateurFormData>;
 
 // Composant réutilisable pour les en-têtes de section
@@ -142,6 +146,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const recettesBrutes = form.watch('recettesBrutes');
     const periode = form.watch('periode');
     const situationCarmf = form.watch('situationCarmf');
+    // § 9.fx : début d'activité et réductions de la CARMF sur demande.
+    const debutActivite = form.watch('debutActivite') ?? 'non';
+    const dispenseComplementaire = form.watch('dispenseComplementaire');
+    const asvProportionnelle = form.watch('asvProportionnelle');
     // Le toggle RID s'affiche dès qu'on est en RSPM (effectif ou auto < 38k€).
     // La dispense CARMF n'a aucun effet en RSPM : la RID reste obligatoire et
     // doit pouvoir être paramétrée (157€ ou 626€ en 2026).
@@ -153,6 +161,18 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const deductionsS1Ouvertes = secteurConventionnel === 'secteur_1' && typeExercice === 'installe';
     const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes <= 19000);
     const showRidToggle = isRspmEffectif;
+    // Les réductions sur demande : en PAMC, affilié à la CARMF, après les deux premières années
+    // (la complémentaire n'y est pas due et l'ASV y est forfaitaire).
+    const reductionsCarmfOuvertes = !isRspmEffectif && situationCarmf !== 'dispense' && debutActivite === 'non';
+
+    // Ancienne valeur « jeune affilié » (les deux premières années) : elle passe dans « Début
+    // d'activité », que le moteur lit à sa place.
+    useEffect(() => {
+      if (situationCarmf === 'affilie_jeune') {
+        form.setValue('situationCarmf', 'affilie_3ans_plus');
+        if ((form.getValues('debutActivite') ?? 'non') === 'non') form.setValue('debutActivite', 'deuxieme');
+      }
+    }, [situationCarmf, form]);
 
     // Exposer la méthode reset via la ref - avec préservation des champs personnels
     useImperativeHandle(ref, () => ({
@@ -744,6 +764,50 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               )}
             />
 
+            {/* Début d'activité (§ 9.fx) : 1re ou 2e année d'activité libérale */}
+            <FormField
+              control={form.control}
+              name="debutActivite"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center gap-1">
+                  <FormLabel className="flex items-center gap-1 text-sm">
+                    <CalendarClock className="h-3.5 w-3.5" />
+                    Début d'activité
+                  </FormLabel>
+                  <PremiumTooltip
+                      title="Début d'activité libérale"
+                      content={
+                        <div className="space-y-2">
+                          <p className="text-xs">
+                            <strong>1re et 2e années</strong> : la complémentaire de la CARMF n'est pas due (si tu as commencé après 40 ans, elle se calcule sur tes revenus d'activité indépendante d'il y a deux ans, souvent nuls), et l'ASV d'ajustement porte sur une base forfaitaire (9 131 € en 2026). La complémentaire arrive la 3e année.
+                          </p>
+                          <p className="text-xs">
+                            <strong>1re année</strong> : l'Urssaf et la CARMF appellent des cotisations provisionnelles sur cette base forfaitaire, puis régularisent l'année suivante, et l'impôt de l'année n'est prélevé que l'an prochain. Les résultats montrent ce qui part cette année et ce qui viendra ensuite.
+                          </p>
+                        </div>
+                      }
+                    >
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </PremiumTooltip>
+                  </div>
+                  <Select onValueChange={field.onChange} value={field.value ?? 'non'}>
+                    <FormControl>
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder="Début d'activité" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="sim sim-pop">
+                      <SelectItem value="non">Plus de 2 ans d'activité</SelectItem>
+                      <SelectItem value="premiere">1re année d'activité</SelectItem>
+                      <SelectItem value="deuxieme">2e année d'activité</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage role="alert" />
+                </FormItem>
+              )}
+            />
+
             {/* Année fiscale */}
             <FormField
               control={form.control}
@@ -990,8 +1054,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <span className="font-semibold text-foreground">Retraite & CARMF</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {situationCarmf === 'dispense' && 'Dispensé'}
-                        {situationCarmf === 'affilie_jeune' && 'Jeune affilié'}
-                        {situationCarmf === 'affilie_3ans_plus' && 'Affilié (cas général)'}
+                        {situationCarmf !== 'dispense' && (dispenseComplementaire || asvProportionnelle) && 'Réductions demandées'}
+                        {situationCarmf !== 'dispense' && !dispenseComplementaire && !asvProportionnelle && 'Affilié (cas général)'}
                       </span>
                     </span>
                   </AccordionTrigger>
@@ -1008,8 +1072,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               <p className="text-xs">La CARMF (Caisse Autonome de Retraite des Médecins de France) gère ta retraite de base, ta complémentaire et ton invalidité-décès.</p>
                               <TipBox variant="info">
                                 <div className="space-y-1">
-                                  <p><strong>Affilié</strong> : cotisations complètes (base + complémentaire + invalidité-décès)</p>
-                                  <p><strong>&lt; 2 ans, &lt;40 ans</strong> : exonéré de complémentaire les 2 premières années</p>
+                                  <p><strong>Affilié</strong> : retraite de base, complémentaire, ASV et invalidité-décès</p>
+                                  <p><strong>Les deux premières années</strong> : complémentaire non due, à indiquer dans « Début d'activité »</p>
                                   <p><strong>Dispensé</strong> : remplaçant dont le revenu net reste sous 15 000 €, sur demande à la CARMF (ni trimestres de retraite, ni couverture invalidité-décès)</p>
                                 </div>
                               </TipBox>
@@ -1025,13 +1089,11 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <FormControl><SelectTrigger className="h-9"><SelectValue placeholder="Affilié (cas général)" /></SelectTrigger></FormControl>
                           <SelectContent className="sim sim-pop">
                             <SelectItem value="affilie_3ans_plus">Affilié (cas général)</SelectItem>
-                            <SelectItem value="affilie_jeune">Jeune affilié (&lt; 2 ans, &lt; 40 ans)</SelectItem>
                             <SelectItem value="dispense">Dispensé (remplaçant, revenu net &lt; 15 000 €)</SelectItem>
                           </SelectContent>
                         </Select>
                         <div className="text-xs mt-1.5 px-1">
-                          {field.value === 'affilie_3ans_plus' && <p className="text-muted-foreground">Cotisations complètes : base + complémentaire + invalidité-décès</p>}
-                          {field.value === 'affilie_jeune' && <p className="sim-ok">Exonéré de complémentaire les 2 premières années — cotisations réduites</p>}
+                          {field.value !== 'dispense' && <p className="text-muted-foreground">Retraite de base, complémentaire, ASV et invalidité-décès{debutActivite !== 'non' ? " (sans complémentaire les deux premières années)" : ''}</p>}
                           {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation CARMF (retraite de base, complémentaire, ASV, invalidité-décès). Possible seulement pour un remplaçant dont le revenu net reste sous 15 000 € : au-delà, le simulateur ne l'applique pas.</p>}
                           {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (157€ ou 626€/an selon le taux ci-dessous).</p>}
                         </div>
@@ -1074,6 +1136,67 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       )} />
                     )}
                     {!showRidToggle && <p className="text-xs text-muted-foreground px-1">Les cotisations CARMF (dont la RID) sont intégrées automatiquement dans le calcul PAMC.</p>}
+                    {reductionsCarmfOuvertes && (
+                      <>
+                        <FormField control={form.control} name="dispenseComplementaire" render={({ field }) => (
+                          <FormItem className="sim-coche flex items-start gap-3">
+                            <FormControl><input type="checkbox" checked={Boolean(field.value)} onChange={field.onChange} className="sim-case" /></FormControl>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                              <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                                Dispense partielle de la complémentaire (sur demande)
+                              </FormLabel>
+                              <PremiumTooltip title="Dispense de la complémentaire" content={
+                                  <div className="space-y-2">
+                                    <p className="text-xs">La CARMF réduit ta complémentaire, sur demande, selon tes revenus imposables de toute nature de l'année précédente (barème 2026, revenus 2025) :</p>
+                                    <TipBox variant="info">
+                                      <div className="space-y-0.5">
+                                        <p>Jusqu'à 6 100 € : 100 %</p>
+                                        <p>De 6 101 à 14 300 € : 75 %</p>
+                                        <p>De 14 301 à 23 100 € : 50 %</p>
+                                        <p>De 23 101 à 32 500 € : 25 %</p>
+                                      </div>
+                                    </TipBox>
+                                    <TipBox variant="warning">
+                                      <p>La part dispensée ne donne pas de points de retraite.</p>
+                                    </TipBox>
+                                  </div>
+                                }>
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                                </PremiumTooltip>
+                              </div>
+                              <FormDescription className="text-xs mt-0.5">Revenus imposables jusqu'à 32 500 € : 25 à 100 % de la complémentaire en moins. Le simulateur les estime sur l'année saisie.</FormDescription>
+                            </div>
+                          </FormItem>
+                        )} />
+                        <FormField control={form.control} name="asvProportionnelle" render={({ field }) => (
+                          <FormItem className="sim-coche flex items-start gap-3">
+                            <FormControl><input type="checkbox" checked={Boolean(field.value)} onChange={field.onChange} className="sim-case" /></FormControl>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                              <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                                ASV proportionnelle (sur demande)
+                              </FormLabel>
+                              <PremiumTooltip title="ASV proportionnelle" content={
+                                  <div className="space-y-2">
+                                    <p className="text-xs">Si ton revenu conventionné est sous 63 900 €, la CARMF peut remplacer la part forfaitaire de l'ASV (1 917 € en secteur 1, 5 751 € en secteur 2, en 2026) par 3 % de ce revenu en secteur 1, 9 % en secteur 2. La part d'ajustement reste due.</p>
+                                    <TipBox variant="info">
+                                      <p>À demander au plus tard fin février de l'année, dans l'espace eCARMF.</p>
+                                    </TipBox>
+                                    <TipBox variant="warning">
+                                      <p>Les points de retraite suivent la cotisation versée : moins de cotisation, moins de points.</p>
+                                    </TipBox>
+                                  </div>
+                                }>
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                                </PremiumTooltip>
+                              </div>
+                              <FormDescription className="text-xs mt-0.5">Revenu conventionné sous 63 900 € : 3 % de ce revenu en secteur 1 (9 % en secteur 2) au lieu du forfait.</FormDescription>
+                            </div>
+                          </FormItem>
+                        )} />
+                      </>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
 

@@ -329,6 +329,22 @@
 .sim .sim-suite-liste li > svg { flex: none; margin-top: 1px; color: var(--brand); }
 .sim .sim-suite-liste strong { color: var(--ink); }
 .sim .sim-suite-btn { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; text-decoration: none; }
+/* Première année d'activité (§ 9.fx) : un tableau à quatre colonnes (prélevé cette année, dû,
+   à payer plus tard), puis le calendrier en phrases. Au téléphone, chiffres plus petits pour
+   tenir dans 390 px sans défiler. */
+.sim .sim-premiere { display: grid; gap: 12px; }
+.sim .sim-premiere .sim-surtitre { display: inline-flex; align-items: center; gap: 6px; }
+.sim .sim-premiere .sim-surtitre svg { color: var(--brand); }
+.sim .sim-premiere-tableau td:first-child { color: var(--ink); font-weight: var(--tb); }
+.sim .sim-premiere-texte { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-premiere-texte p { margin: 0; text-wrap-style: pretty; }
+.sim .sim-premiere-texte .sim-fort { color: var(--ink); }
+@media (max-width: 479px) {
+  .sim .sim-premiere-tableau table { font-size: 0.8125rem; }
+  .sim .sim-premiere-tableau th { font-size: 0.75rem; }
+  .sim .sim-premiere-tableau :is(th, td) { padding-inline: 6px; }
+  .sim .sim-premiere-tableau :is(th, td):first-child { padding-left: 10px; }
+}
 @media (min-width: 760px) {
   .sim .sim-suite-liste { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
   .sim .sim-suite-liste li { flex-direction: column; gap: 8px; }

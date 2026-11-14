@@ -1,6 +1,8 @@
 import { lazy, Suspense } from "react";
 import { BreakEvenAnalysis } from "./BreakEvenAnalysis";
 import { ConclusionCard } from "./ConclusionCard";
+import { PremiereAnneeCard } from "./PremiereAnneeCard";
+import { debutActiviteDe } from "@/lib/simulateur/usePublicodesSimulation";
 import { PaymentExplanation } from "./PaymentExplanation";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -67,6 +69,9 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
       {/* Le verdict d'abord (MIGRATION.md § 9.ft) : le régime qui l'emporte et de combien, ce qui
           est à prévoir chaque mois, puis le détail des deux régimes. Il était sous les fiches. */}
       <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} marge={marge} />
+
+      {/* Première année d'activité (§ 9.fx) : ce qui part cette année, et ce qui viendra ensuite */}
+      {debutActiviteDe(formData) === 'premiere' && <PremiereAnneeCard comparison={comparison} formData={formData} />}
 
       {/* Cartes de comparaison */}
       <Suspense fallback={<div className="min-h-[220px]" aria-hidden="true" />}>

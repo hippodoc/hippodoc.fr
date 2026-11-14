@@ -70,6 +70,12 @@ export const simulateurSchema = z.object({
   // SECTION PHASE 3 — RID, Situation CARMF, Ratio non-conventionné
   tauxRid: z.enum(['25%', '100%']).default('25%'),
   situationCarmf: z.enum(['dispense', 'affilie_jeune', 'affilie_3ans_plus']).default('affilie_3ans_plus'),
+  // Début d'activité libérale (§ 9.fx) : 1re ou 2e année d'affiliation. Remplace « jeune affilié »
+  // (`situationCarmf: 'affilie_jeune'`, gardé pour les anciennes valeurs : il vaut 2e année).
+  debutActivite: z.enum(['non', 'premiere', 'deuxieme']).default('non'),
+  // Réductions de la CARMF accordées sur demande (§ 9.fx).
+  dispenseComplementaire: z.boolean().default(false),
+  asvProportionnelle: z.boolean().default(false),
   ratioNonConventionne: z.number().min(0).max(100).default(0),
 
   // ═══════════════════════════════════════════════════════════

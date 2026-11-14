@@ -32,6 +32,8 @@
  * maladie, l'ASV, l'invalidité-décès, les indemnités journalières, les allocations familiales,
  * la CURPS et la formation professionnelle restent calculées par le modèle, sur la nouvelle
  * assiette.
+ *
+ * Début d'activité et ASV proportionnelle (MIGRATION.md § 9.fx) : voir `situationMedecin`.
  */
 
 const API_URL = 'https://mon-entreprise.urssaf.fr/api/v1/evaluate';
@@ -66,6 +68,10 @@ export interface CotisationsUrssaf {
     retraite: number;
     retraiteComplementaire: number;
     retraiteRid: number;
+    /** Retraite de base (participation de l'Assurance maladie déduite en secteur 1). */
+    retraiteBase: number;
+    /** Allocations supplémentaires de vieillesse (ASV), part du médecin. */
+    asv: number;
     csgCrds: number;
     /** Formation professionnelle et CURPS. */
     formation: number;
@@ -86,6 +92,14 @@ export interface ParametresUrssaf {
   ratioNonConventionne: number;
   /** Département d'outre-mer, ou rien en métropole. */
   departementOutreMer?: 'Guadeloupe' | 'Martinique' | 'Guyane' | 'La Réunion' | 'Mayotte';
+  /** 1re ou 2e année d'affiliation à la CARMF : complémentaire non due, ASV d'ajustement sur la
+   *  base forfaitaire (CARMF, « Vos cotisations en début d'activité », 2026). */
+  debutActivite?: 'premiere' | 'deuxieme';
+  /** ASV proportionnelle demandée (appliquée si elle coûte moins que le forfait : revenu
+   *  conventionné sous 63 900 € en 2026). */
+  asvProportionnelle?: boolean;
+  /** Cotisations provisionnelles d'une 1re année : tout sur la base forfaitaire (19 % du PASS). */
+  provisionnel?: boolean;
 }
 
 const texte = (s: string) => `'${s}'`;
@@ -144,8 +158,48 @@ export function tauxMaladieReforme(assiette: number, annee: number, outreMer: bo
   return montant / assiette;
 }
 
+/** Base forfaitaire des deux premières années d'activité : 19 % du PASS, arrondie (9 131 € en
+ *  2026 ; CARMF, « Vos cotisations en début d'activité » ; modèle Urssaf, « début activité »). */
+export const baseForfaitaireDebut = (annee: number) => Math.round(0.19 * passDe(annee));
+
+/** Taux de l'ASV d'ajustement : 4 % en 2026, 3,8 % avant (CARMF ; modèle Urssaf). */
+const tauxAsvAjustement = (annee: number) => (annee >= 2026 ? 0.04 : 0.038);
+
+/** Part forfaitaire de l'ASV, avant la prise en charge du secteur 1 (modèle Urssaf ; CARMF). */
+const forfaitAsv = (annee: number) => (annee >= 2026 ? 5751 : 5556);
+
+/** Taux de l'ASV proportionnelle, avant la prise en charge du secteur 1 (3 % au médecin). */
+const TAUX_ASV_PROPORTIONNELLE = 0.09;
+
+/** Part de l'ASV payée par le médecin : un tiers en secteur 1 (l'Assurance maladie prend en
+ *  charge les deux tiers, forfait et ajustement), tout en secteur 2. */
+const partAsvDuMedecin = (secteur?: 'secteur_1' | 'secteur_2') => (secteur === 'secteur_2' ? 1 : 1 / 3);
+
+/** Revenu conventionné : l'assiette, moins la part non conventionnée (comme le modèle Urssaf,
+ *  « PAMC . revenus activité conventionnée »). */
+export const revenuConventionne = (assiette: number, ratioNonConventionne: number) =>
+  assiette * (1 - Math.min(100, Math.max(0, ratioNonConventionne || 0)) / 100);
+
+/**
+ * ASV proportionnelle, sur demande (CARMF, « Réductions de cotisations », 2026) : « Les médecins
+ * dont le revenu conventionné 2024 est inférieur à 63 900 € peuvent demander que soit substituée
+ * à la cotisation forfaitaire ASV 2026, une cotisation proportionnelle à ces revenus, à hauteur de
+ * 3 % pour les médecins en secteur 1 et 9 % pour les médecins en secteur 2. » Elle remplace la
+ * part forfaitaire seulement ; la part d'ajustement reste due. Le seuil est le revenu où les deux
+ * se valent (9 % de 63 900 € = 5 751 €, le forfait de 2026) : l'option est ouverte tant qu'elle
+ * coûte moins que le forfait. Renvoie ce qu'elle fait gagner au médecin (€/an), 0 si elle n'est
+ * pas ouverte.
+ */
+export function economieAsvProportionnelle(annee: number, conventionne: number, secteur?: 'secteur_1' | 'secteur_2'): number {
+  return Math.max(0, forfaitAsv(annee) - TAUX_ASV_PROPORTIONNELLE * conventionne) * partAsvDuMedecin(secteur);
+}
+
 /** Complémentaire CARMF : 11,8 % en 2026 (« La CARMF en 2026 », p. 22), 10,2 % avant. */
 const tauxComplementaireCarmf = (annee: number) => (annee >= 2026 ? 0.118 : 0.102);
+
+/** Complémentaire CARMF sur une assiette (plafonnée à 3,5 PASS). */
+export const complementaireCarmf = (assiette: number, annee: number) =>
+  Math.round(Math.min(assiette, 3.5 * passDe(annee)) * tauxComplementaireCarmf(annee));
 const pourcent = (taux: number) => `${(taux * 100).toFixed(4)} %`;
 
 /** Situation publicodes d'un médecin en entreprise individuelle à l'IR. Exportée pour les tests. */
@@ -175,11 +229,19 @@ export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
   }
 
   // Réforme de l'assiette sociale (revenus 2025 et suivants) : voir l'en-tête du module.
-  if (reformeAssiette(p.annee)) {
-    const I = 'dirigeant . indépendant';
-    const assiette = p.regime === 'micro-bnc'
+  // Cotisations provisionnelles d'une 1re année : toutes sur la base forfaitaire, et l'entreprise
+  // créée cette année (pas de CURPS l'année de la création, dans le modèle).
+  const I = 'dirigeant . indépendant';
+  const debut = Boolean(p.debutActivite) || Boolean(p.provisionnel);
+  if (p.provisionnel) s['entreprise . date de création'] = `01/01/${p.annee}`;
+  let assiette: number | null = null;
+  if (p.provisionnel) assiette = baseForfaitaireDebut(p.annee);
+  else if (reformeAssiette(p.annee)) {
+    assiette = p.regime === 'micro-bnc'
       ? assietteMicro(p.recettes)
       : assietteReformee(p.recettes - p.charges, p.annee);
+  }
+  if (assiette !== null) {
     const mayotte = p.departementOutreMer === 'Mayotte';
     s[`${I} . assiette des cotisations`] = `${assiette} €/an`;
     // Mayotte : pas de CSG-CRDS, et sa maladie a ses propres règles (laissées au modèle).
@@ -190,9 +252,27 @@ export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
     }
     s[`${I} . PL . CNAVPL . retraite . tranche T1 . taux`] = '8.73 %';
     s[`${I} . PL . PAMC . maladie . contribution additionnelle . taux`] = '3.25 %';
-    if (p.annee >= 2026) {
-      const complementaire = Math.round(Math.min(assiette, 3.5 * passDe(p.annee)) * tauxComplementaireCarmf(p.annee));
-      s[`${I} . PL . CARMF . retraite complémentaire`] = `${complementaire} €/an`;
+  }
+  // CURPS : pas due l'année de la création (`modele-ti` : « date de création ≤ début d'année » ;
+  // l'ancien modèle la compte, 46 € pour un installé en 2026).
+  if (p.debutActivite === 'premiere' || p.provisionnel) {
+    s[`${I} . PL . PAMC . CURPS`] = '0 €/an';
+  }
+  // Complémentaire CARMF : non due les deux premières années ; 11,8 % à partir de 2026.
+  if (debut) {
+    s[`${I} . PL . CARMF . retraite complémentaire`] = '0 €/an';
+  } else if (assiette !== null && p.annee >= 2026) {
+    s[`${I} . PL . CARMF . retraite complémentaire`] = `${complementaireCarmf(assiette, p.annee)} €/an`;
+  }
+  // ASV : les deux premières années, l'ajustement porte sur la base forfaitaire (365 € en 2026) ;
+  // sinon, sur demande et si elle coûte moins, la cotisation proportionnelle de 9 % remplace la
+  // part forfaitaire (l'ajustement reste calculé par le modèle).
+  if (debut) {
+    s[`${I} . PL . CARMF . ASV . ajustement`] = `${Math.round(baseForfaitaireDebut(p.annee) * tauxAsvAjustement(p.annee))} €/an`;
+  } else if (p.asvProportionnelle && assiette !== null && p.secteur) {
+    const conventionne = revenuConventionne(assiette, p.ratioNonConventionne);
+    if (economieAsvProportionnelle(p.annee, conventionne, p.secteur) > 0) {
+      s[`${I} . PL . CARMF . ASV . forfaitaire`] = `${Math.round(TAUX_ASV_PROPORTIONNELLE * conventionne)} €/an`;
     }
   }
   return s;
@@ -232,6 +312,8 @@ export async function calculerCotisationsUrssaf(p: ParametresUrssaf): Promise<Co
       retraite: retraiteBase + complementaire + invalidite + asv - exonerations,
       retraiteComplementaire: complementaire,
       retraiteRid: invalidite,
+      retraiteBase,
+      asv,
       csgCrds,
       formation: formation + contributionsSpeciales,
     },

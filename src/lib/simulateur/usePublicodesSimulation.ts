@@ -3,7 +3,7 @@ import { invokeCalculateUrssaf } from '@/lib/supabase-public';
 import type { SimulateurFormData } from '@/components/simulateur/simulateurSchema';
 import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/lib/simulation-types';
 import { calculateRspmBreakdown } from '@/lib/simulateur/useRspmCalculation';
-import { reformeAssiette, calculerCotisationsUrssaf, type CotisationsUrssaf, type ParametresUrssaf } from '@/lib/simulateur/urssaf';
+import { reformeAssiette, assietteMicro, assietteReformee, revenuConventionne, economieAsvProportionnelle, complementaireCarmf, calculerCotisationsUrssaf, type CotisationsUrssaf, type ParametresUrssaf } from '@/lib/simulateur/urssaf';
 import { calculateFiscalParts } from '@/lib/fiscalParts';
 import { getDomTomInfo } from '@/lib/dom-tom';
 import { getMicroBncCeiling } from '@/lib/baremes-ir';
@@ -34,6 +34,29 @@ export const SEUIL_EQUIVALENCE_ANNUEL = 600;
 /** Dispense d'affiliation CARMF : remplaçant, revenu net d'activité indépendante < 15 000 €. */
 const SEUIL_DISPENSE_CARMF = 15000;
 
+/**
+ * Début d'activité retenu : le champ `debutActivite`, ou l'ancienne valeur « jeune affilié » de
+ * la situation CARMF (les deux premières années), qui vaut 2e année.
+ */
+export function debutActiviteDe(formData: Pick<SimulateurFormData, 'debutActivite' | 'situationCarmf'>): 'premiere' | 'deuxieme' | undefined {
+  if (formData.debutActivite === 'premiere' || formData.debutActivite === 'deuxieme') return formData.debutActivite;
+  return normalizeCarmfStatus(formData.situationCarmf) === 'affilie_jeune' ? 'deuxieme' : undefined;
+}
+
+/**
+ * Barème des dispenses de la complémentaire CARMF, sur demande (CARMF, « Dispenses pour
+ * insuffisance de revenus », barème 2026, « revenus imposables de toute nature » du médecin de
+ * 2025) : 100 % jusqu'à 6 100 €, 75 % jusqu'à 14 300 €, 50 % jusqu'à 23 100 €, 25 % jusqu'à
+ * 32 500 €. La part dispensée ne donne pas de points de retraite.
+ */
+export function tauxDispenseComplementaire(revenusImposables: number): number {
+  if (revenusImposables <= 6100) return 1;
+  if (revenusImposables <= 14300) return 0.75;
+  if (revenusImposables <= 23100) return 0.5;
+  if (revenusImposables <= 32500) return 0.25;
+  return 0;
+}
+
 /** Part non déductible de la CSG-CRDS des indépendants : (2,4 % + 0,5 %) / 9,7 %. */
 const PART_CSG_CRDS_NON_DEDUCTIBLE = 2.9 / 9.7;
 
@@ -54,6 +77,9 @@ export interface RegimeComparison {
   domTomInfo?: DomTomResultInfo | null;
   lieuExercice?: LieuExercice;
   isRSPMUsed?: boolean;
+  /** 1re année d'activité en PAMC : cotisations provisionnelles appelées sur la base forfaitaire
+   *  (`calculerProvisionnelPremiereAnnee`) ; `null` si le calcul n'a pas abouti. */
+  provisionnelPremiereAnnee?: { urssaf: number; carmf: number } | null;
 }
 
 const annualiser = (formData: SimulateurFormData, v: number | undefined): number =>
@@ -88,22 +114,17 @@ async function cotisationsPamc(
   secours = true,
 ): Promise<{ cotisations: CotisationsUrssaf; source: 'urssaf' | 'secours' } | null> {
   try {
-    // Au réel, le forfait 2 % des médecins installés en secteur 1 reste déduit de l'assiette
-    // sociale (il n'est pas réintégré au revenu brut social du cadre 8 de la 2035, à la
-    // différence du 3 % et du groupe III) : il s'ajoute aux charges transmises au modèle.
-    const forfait2Social = regimeFiscal === 'reel' && formData.typeExercice === 'installe'
-      && formData.secteurConventionnel !== 'secteur_2' && formData.forfait2pct
-      ? recettesAnnuelles * 0.02
-      : 0;
     const cotisations = await calculerCotisationsUrssaf({
       annee: formData.annee || 2026,
       recettes: recettesAnnuelles,
-      charges: chargesAnnuelles + forfait2Social,
+      charges: chargesSociales(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles),
       regime: regimeFiscal,
       secteur: formData.secteurConventionnel || 'secteur_1',
       remplacant: formData.typeExercice === 'remplacant',
       ratioNonConventionne: formData.ratioNonConventionne || 0,
       departementOutreMer: DEPARTEMENTS_OUTRE_MER[formData.lieuExercice || 'metropole'],
+      debutActivite: debutActiviteDe(formData),
+      asvProportionnelle: Boolean(formData.asvProportionnelle) && economieAsvDe(formData, regimeFiscal) > 0,
     });
     return { cotisations: ajusterCarmf(cotisations, formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles), source: 'urssaf' };
   } catch (err) {
@@ -126,6 +147,8 @@ async function cotisationsPamc(
       retraite: r.cotisationsDetail?.retraite || 0,
       retraiteComplementaire: r.cotisationsDetail?.retraiteComplementaire || 0,
       retraiteRid: r.cotisationsDetail?.retraiteRid || 0,
+      retraiteBase: 0,
+      asv: 0,
       csgCrds: r.cotisationsDetail?.csgCrds || 0,
       formation: r.cotisationsDetail?.formation || 0,
     },
@@ -133,13 +156,63 @@ async function cotisationsPamc(
 }
 
 /**
+ * Charges retenues pour l'assiette sociale. Au réel, le forfait 2 % des médecins installés en
+ * secteur 1 reste déduit de l'assiette sociale (il n'est pas réintégré au revenu brut social du
+ * cadre 8 de la 2035, à la différence du 3 % et du groupe III) : il s'ajoute aux charges.
+ */
+function chargesSociales(
+  formData: SimulateurFormData,
+  regimeFiscal: 'reel' | 'micro-bnc',
+  recettesAnnuelles: number,
+  chargesAnnuelles: number,
+): number {
+  const forfait2 = regimeFiscal === 'reel' && formData.typeExercice === 'installe'
+    && formData.secteurConventionnel !== 'secteur_2' && formData.forfait2pct;
+  return chargesAnnuelles + (forfait2 ? recettesAnnuelles * 0.02 : 0);
+}
+
+/** Assiette des cotisations de l'année simulée (réforme : revenus 2025 et suivants). */
+function assietteDe(formData: SimulateurFormData, regimeFiscal: 'reel' | 'micro-bnc'): number {
+  const recettes = annualiser(formData, formData.recettesBrutes);
+  const charges = chargesSociales(formData, regimeFiscal, recettes, annualiser(formData, formData.chargesHorsCotisations));
+  return regimeFiscal === 'micro-bnc' ? assietteMicro(recettes) : assietteReformee(recettes - charges, formData.annee || 2026);
+}
+
+/**
+ * Complémentaire CARMF hors début d'activité, à ces revenus : ce qui s'ajoutera à partir de la
+ * 3e année d'affiliation (calculée sur les revenus de l'avant-dernière année ; CARMF, « Vos
+ * cotisations en début d'activité », 2026). Même calcul que les cotisations du cas général.
+ */
+export function complementaireCarmfPleine(formData: SimulateurFormData, regimeFiscal: 'reel' | 'micro-bnc'): number {
+  const annee = formData.annee || 2026;
+  // Avant la réforme, l'assiette est celle du modèle, que ce calcul local ne connaît pas.
+  if (!reformeAssiette(annee)) return 0;
+  return complementaireCarmf(assietteDe(formData, regimeFiscal), annee);
+}
+
+/**
+ * Ce que l'ASV proportionnelle ferait gagner au médecin (€/an), sur l'assiette des cotisations
+ * de l'année simulée ; 0 si elle n'est pas ouverte : les deux premières années (l'ASV y est sur
+ * la base forfaitaire), ou un revenu conventionné de 63 900 € ou plus en 2026 (la CARMF regarde
+ * celui de l'avant-dernière année). Le même calcul sert au moteur et à la suggestion.
+ */
+export function economieAsvDe(formData: SimulateurFormData, regimeFiscal: 'reel' | 'micro-bnc'): number {
+  // Pas d'ASV proportionnelle avant la réforme (`situationMedecin` ne l'applique qu'à la nouvelle
+  // assiette), ni les deux premières années.
+  if (debutActiviteDe(formData) || !reformeAssiette(formData.annee || 2026)) return 0;
+  const conventionne = revenuConventionne(assietteDe(formData, regimeFiscal), formData.ratioNonConventionne);
+  return economieAsvProportionnelle(formData.annee || 2026, conventionne, formData.secteurConventionnel);
+}
+
+/**
  * Statut CARMF, que le modèle Urssaf ne connaît pas (« La CARMF en 2026 », p. 24 et 27) :
- * - jeune affilié : la retraite complémentaire des deux premières années n'est pas due
- *   (sauf début d'activité après 40 ans). Les autres cotisations de ces années sont
- *   provisionnelles puis régularisées sur les revenus réels : le montant final est gardé.
+ * - les deux premières années (`debutActivite`) : la complémentaire n'est pas due et l'ASV
+ *   d'ajustement porte sur la base forfaitaire, transmis au modèle par `situationMedecin` ;
  * - dispensé : pas d'affiliation à la CARMF du tout (retraite de base, complémentaire, ASV,
  *   invalidité-décès), sur demande, pour un remplaçant dont le revenu net d'activité
- *   indépendante est inférieur à 15 000 €. Hors de ces conditions, la dispense est ignorée.
+ *   indépendante est inférieur à 15 000 €. Hors de ces conditions, la dispense est ignorée ;
+ * La dispense partielle de la complémentaire, qui dépend du revenu imposable, est appliquée
+ * par `simulerRegime`, après le calcul de l'impôt.
  */
 function ajusterCarmf(
   c: CotisationsUrssaf,
@@ -149,15 +222,36 @@ function ajusterCarmf(
   chargesAnnuelles: number,
 ): CotisationsUrssaf {
   const statut = normalizeCarmfStatus(formData.situationCarmf);
-  if (statut === 'affilie_jeune') {
-    const retire = c.detail.retraiteComplementaire;
-    return { ...c, total: c.total - retire, detail: { ...c.detail, retraite: c.detail.retraite - retire, retraiteComplementaire: 0 } };
-  }
   if (statut === 'dispense' && dispenseCarmfPossible(formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles, c.total)) {
     const retire = c.detail.retraite;
-    return { ...c, total: c.total - retire, detail: { ...c.detail, retraite: 0, retraiteComplementaire: 0, retraiteRid: 0 } };
+    return { ...c, total: c.total - retire, detail: { ...c.detail, retraite: 0, retraiteComplementaire: 0, retraiteRid: 0, retraiteBase: 0, asv: 0 } };
   }
   return c;
+}
+
+/**
+ * Revenus du médecin pour le barème des dispenses de la complémentaire : son bénéfice libéral
+ * imposable, ses salaires après abattement et les revenus fonciers saisis (la CARMF compte les
+ * « revenus imposables de toute nature », pas ceux du conjoint). Par prudence, les bénéfices
+ * exonérés d'impôt (zone, permanence des soins) y sont ajoutés : le revenu fiscal de référence les
+ * réintègre, et une dispense annoncée à tort coûterait plus cher qu'une dispense sous-estimée.
+ * Estimés sur l'année simulée, sans dispense ; la CARMF regarde l'année précédente. Le même calcul
+ * sert au moteur et à la suggestion de la conclusion.
+ */
+export function revenusImposablesDuMedecin(
+  r: {
+    impotDetails?: { revenuImposableLiberal?: number; revenuImposableSalarie?: number } | null;
+    optimisationsAppliquees?: { revenuFoncier?: number | string; exonerationZone?: number | string } | null;
+  },
+  liberalExonere = 0,
+): number {
+  const nombre = (v: number | string | undefined) => Number(v ?? 0) || 0;
+  return Math.max(0,
+    (r.impotDetails?.revenuImposableLiberal ?? 0)
+    + (r.impotDetails?.revenuImposableSalarie ?? 0)
+    + nombre(r.optimisationsAppliquees?.revenuFoncier)
+    + nombre(r.optimisationsAppliquees?.exonerationZone)
+    + Math.max(0, liberalExonere));
 }
 
 /** Conditions de la dispense d'affiliation CARMF (revenu net estimé avant ou après cotisations CARMF). */
@@ -209,7 +303,7 @@ export async function simulerRegime(
 
   const partsFiscales = calculateFiscalParts(formData.situationFamiliale, formData.enfants);
 
-  const breakdown = calculateRspmBreakdown({
+  const impotAvec = (cotisations: CotisationsUrssaf | null) => calculateRspmBreakdown({
     // Portion IMPOSABLE des recettes : la part PDSA exonérée (art. 151 ter) est passée à part.
     yearlyLiberalTotal: Math.max(0, recettesAnnuelles - liberalExonere),
     yearlyLiberalExonere: liberalExonere,
@@ -249,9 +343,27 @@ export async function simulerRegime(
     fraisGardeEnfants: formData.fraisGardeEnfants || 0,
     nombreEnfantsGarde: formData.nombreEnfantsGarde || 0,
     lieuExercice: formData.lieuExercice,
-    cotisationsSocialesOverride: cotisationsPamcRegime?.total,
-    cotisationsNonDeductibles: cotisationsPamcRegime?.csgCrdsNonDeductible,
+    cotisationsSocialesOverride: cotisations?.total,
+    cotisationsNonDeductibles: cotisations?.csgCrdsNonDeductible,
   });
+  let breakdown = impotAvec(cotisationsPamcRegime);
+
+  // Dispense partielle de la complémentaire CARMF, sur demande (§ 9.fx) : le taux du barème se
+  // lit sur les revenus imposables calculés sans elle (ceux que la conclusion lit pour la
+  // suggérer), puis l'impôt est recalculé avec la complémentaire réduite.
+  const complementaire = cotisationsPamcRegime?.detail.retraiteComplementaire ?? 0;
+  if (cotisationsPamcRegime && breakdown && formData.dispenseComplementaire && complementaire > 0) {
+    const retire = Math.round(complementaire * tauxDispenseComplementaire(revenusImposablesDuMedecin(breakdown, liberalExonere)));
+    if (retire > 0) {
+      const d = cotisationsPamcRegime.detail;
+      cotisationsPamcRegime = {
+        ...cotisationsPamcRegime,
+        total: cotisationsPamcRegime.total - retire,
+        detail: { ...d, retraite: d.retraite - retire, retraiteComplementaire: d.retraiteComplementaire - retire },
+      };
+      breakdown = impotAvec(cotisationsPamcRegime);
+    }
+  }
 
   if (!breakdown) return null;
 
@@ -354,6 +466,37 @@ export async function calculerPointDeBascule(
   }
 }
 
+/**
+ * Cotisations provisionnelles d'une 1re année d'activité en PAMC : l'Urssaf et la CARMF les
+ * appellent sur une base forfaitaire de 19 % du PASS (9 131 € en 2026), puis les régularisent sur
+ * le revenu réel l'année suivante (CARMF, « Vos cotisations en début d'activité » : 3 437 € en
+ * secteur 1, 7 710 € en secteur 2, en 2026 ; service-public.fr, F39739). Calculées par le modèle
+ * de l'Urssaf, entreprise créée dans l'année (pas de CURPS), complémentaire non due. `null` si le
+ * calcul n'aboutit pas.
+ */
+export async function calculerProvisionnelPremiereAnnee(
+  formData: SimulateurFormData,
+): Promise<{ urssaf: number; carmf: number } | null> {
+  try {
+    const c = await calculerCotisationsUrssaf({
+      annee: formData.annee || 2026,
+      recettes: annualiser(formData, formData.recettesBrutes),
+      charges: 0,
+      regime: 'reel',
+      secteur: formData.secteurConventionnel || 'secteur_1',
+      remplacant: formData.typeExercice === 'remplacant',
+      ratioNonConventionne: formData.ratioNonConventionne || 0,
+      departementOutreMer: DEPARTEMENTS_OUTRE_MER[formData.lieuExercice || 'metropole'],
+      debutActivite: 'premiere',
+      provisionnel: true,
+    });
+    return { urssaf: Math.round(c.total - c.detail.retraite), carmf: Math.round(c.detail.retraite) };
+  } catch (err) {
+    console.warn('[Simulateur] cotisations provisionnelles non calculées', err);
+    return null;
+  }
+}
+
 /** Recettes ajoutées pour la marge (« 1 000 € de plus dans l'année »). */
 export const MARGE_RECETTES = 1000;
 
@@ -410,9 +553,12 @@ export function usePublicodesSimulation() {
       const recettesAnnuelles = annualiser(formData, formData.recettesBrutes);
       const useRspm = shouldUseRspm(formData, recettesAnnuelles);
 
-      const [resultReel, resultMicroBnc] = await Promise.all([
+      // 1re année en PAMC : les cotisations provisionnelles, en même temps (un appel de plus).
+      const premiereAnneePamc = debutActiviteDe(formData) === 'premiere' && !useRspm;
+      const [resultReel, resultMicroBnc, provisionnel] = await Promise.all([
         simulerRegime(formData, 'reel', useRspm),
         simulerRegime(formData, 'micro-bnc', useRspm),
+        premiereAnneePamc ? calculerProvisionnelPremiereAnnee(formData) : Promise.resolve(undefined),
       ]);
 
       if (!resultReel) {
@@ -446,6 +592,7 @@ export function usePublicodesSimulation() {
         domTomInfo: resultReel.domTomInfo || null,
         lieuExercice: formData.lieuExercice,
         isRSPMUsed: useRspm,
+        provisionnelPremiereAnnee: provisionnel,
       });
 
       // Après l'affichage, l'un après l'autre (le modèle Urssaf limite le débit) : la marge sur

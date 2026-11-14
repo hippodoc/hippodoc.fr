@@ -675,6 +675,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   partagent `SEUIL_EQUIVALENCE_ANNUEL` (600 €/an). Marge sur 1 000 € (`calculerMarge`) et point de
   bascule se calculent après l'affichage, l'un après l'autre ; en attente, leur phrase a sa forme
   finale (« … € ») pour que rien ne saute.
+  Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
+  `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
+  `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la
+  base forfaitaire (19 % du PASS), pas de CURPS la 1re ; les cotisations affichées sont celles payées
+  pour l'année (tableau de la CARMF), et la conclusion annonce la complémentaire de la 3e année
+  (`complementaireCarmfPleine`). 1re année en PAMC : cotisations provisionnelles calculées par le
+  modèle (`calculerProvisionnelPremiereAnnee`, entreprise créée dans l'année ; témoins CARMF 2026 :
+  3 437 € en secteur 1, 7 710 € en secteur 2), bloc `PremiereAnneeCard` (prélevé, dû, à payer
+  l'année suivante). Dispense partielle de la complémentaire : appliquée par `simulerRegime` après
+  l'impôt, au taux du barème lu sur `revenusImposablesDuMedecin` (bénéfices exonérés comptés, par
+  prudence). ASV proportionnelle : remplace la part forfaitaire seule (l'ajustement reste), si elle
+  coûte moins (`economieAsvDe`). Les suggestions de la conclusion appellent ces mêmes fonctions :
+  le taux et le montant annoncés sont ceux qu'applique la case ; ne pas les recalculer à part.
 - `/guide-declarations/calculette` → `src/components/calculette/CalculetteApp.tsx`,
   100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage. Habillage DA
   (§ 9.el) : `.calc` de `src/styles/calculette.css` (page seule), posée sur la racine de
