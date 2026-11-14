@@ -11372,7 +11372,7 @@ l'état final ; la construction d'avant les corrections est gardée pour compare
   (point 1) ; les fichiers ne sont pas touchés.
 
 **Fusion avec les thèmes (§ 9.fp, d'abord numérotée § 9.fn, numéro pris entre-temps sur `main` par la
-fenêtre produit) — à faire, pas ici** (S1, majeur). La branche des thèmes
+fenêtre produit) — faite depuis en § 9.fp (« Rebase sur les affiches »), pas ici** (S1, majeur). La branche des thèmes
 (`claude/loving-carson-pgk851-themes`) n'est pas rebasée sur celle-ci ; elle devra l'être avant la mise en
 ligne, par le chef d'orchestre. `git merge-tree --write-tree --name-only` entre cette branche et celle des
 thèmes (14 novembre, lecture seule) : **conflits dans `CLAUDE.md`, `MIGRATION.md`,
@@ -11444,7 +11444,9 @@ fichiers presque identiques dans le `srcset` de l'image en grand (sources de 902
 
 ### 9.fp Blog : les thèmes (13 novembre 2026)
 
-Seconde PR du blog, construite sur la première (§ 9.fj à 9.fm). Le propriétaire : « ok pour les
+Seconde PR du blog, construite sur la première (§ 9.fj à 9.fm), puis rebasée sur les affiches
+(§ 9.fo ; voir « Rebase sur les affiches », en fin de section). Numérotée § 9.fn à la construction ;
+`main` a pris ce numéro entre-temps (la fenêtre produit). Le propriétaire : « ok pour les
 thèmes, fais la deuxième PR après », puis, pour tout ce chantier, « je te fais full confiance, je
 veux tes choix ». Les choix ci-dessous sont décidés.
 
@@ -11718,9 +11720,10 @@ colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 r
 2. ~~Titres de lignes voisines à des hauteurs différentes~~ : corrigé après relecture (sous-grille).
 3. `/blog` au téléphone : la une descend de 52 px (six puces au lieu de quatre) et 24 lignes sur
    47 ont une étiquette de deux lignes (thème, puis « Fiche Fiscalité #16 ») : ligne moyenne
-   113 → 122 px à 393 (PR 1 → thèmes), 115 → 129 px à 360.
+   113 → 122 px à 393 (PR 1 → thèmes), 115 → 129 px à 360. Sur les affiches (§ 9.fo), ce sont les
+   deux points les plus faibles : voir « Rebase sur les affiches », « Ce qui reste faible ».
 4. Pages de thème au téléphone : aucun titre d'article au premier écran (808 à 910 px à 393 × 692),
-   comme les séries (925 à 992).
+   comme les séries (925 à 992). Sur les affiches : 835 à 937 px (séries : 943).
 5. `blog_theme_viewed` et la propriété `theme` : à créer dans les insights PostHog.
 6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel ; les aperçus de lien (WhatsApp,
    LinkedIn) des nouvelles images une fois en ligne ; Search Console (les fils d'Ariane des 48
@@ -11730,8 +11733,8 @@ colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 r
    déclarations ; Fiches Pratiques, 6 sur 8 avec Débuter et s'organiser). Regarder quelle page
    sort sur « fiscalité médecin remplaçant » et « débuter remplacement médecin » ; si une série
    prend la place de son thème, décider alors (`noindex` ou redirection vers le thème).
-8. Fusion avec § 9.fo (les affiches, sur la branche de la PR 1) : voir « Corrections après
-   relecture », point « Conflits ».
+8. ~~Fusion avec § 9.fo (les affiches)~~ : faite le 14 novembre (« Rebase sur les affiches », en fin
+   de section).
 
 **Fichiers** : `src/lib/blog-themes.ts`, `src/content.config.ts`, les 48 `src/content/blog/*.md`
 (frontmatter), `src/pages/blog/theme/[theme].astro`, `src/pages/blog/index.astro`,
@@ -11842,8 +11845,9 @@ Safari (7,5 / 10 chacune). Chaque défaut a été vérifié avant d'être corrig
   la preuve « séries identiques octet pour octet ».
 - *Conflits avec § 9.fo* : ce n'est pas un défaut de code à corriger ici (voir ci-dessous).
 
-**Conflits avec § 9.fo (les affiches).** Le risque annoncé à la construction (la numérotation) n'était
-pas le bon : § 9.fo est numéroté après § 9.fp. Ce sont trois fichiers de code. `git merge-tree` entre
+**Conflits avec § 9.fo (les affiches).** (Écrit avant le rebase, qui les a résolus : voir « Rebase sur
+les affiches », plus bas.) Le risque annoncé à la construction (la numérotation) n'était pas le bon :
+la section des affiches venait après celle des thèmes. Ce sont trois fichiers de code. `git merge-tree` entre
 cette branche et la branche de la PR 1 (tête `aca92f1`, § 9.fo partie A) : conflits dans
 `src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/styles/blog-liste.css`,
 `MIGRATION.md` et `CLAUDE.md` (les mêmes cinq fichiers avant et après ces corrections ; la page de
@@ -11881,6 +11885,172 @@ choisira le chef d'orchestre :
   et SEO à 100 ; CLS 0.
 - Les 48 images de partage regardées (planches, dans l'ordre des pages) : poses voisines différentes,
   42 à 62 Ko.
+
+#### Rebase sur les affiches (§ 9.fo, 14 novembre 2026)
+
+Les affiches (§ 9.fo, PR #155, branche `claude/loving-carson-pgk851`) passent avant les thèmes. Cette
+branche est rebasée sur leur tête (`731f2e0`, elle-même sur `main` `f53b865`), pour devenir la PR
+suivante. Rien n'est poussé. Sauvegarde de la branche d'avant : `sauvegarde-themes-avant-rebase`
+(`b190745`).
+
+**Renumérotation.** `main` a pris § 9.fn (la fenêtre produit, #154) : les thèmes deviennent § 9.fp,
+partout. `git filter-branch` sur les 16 commits, avant le rebase : « 9.fn » → « 9.fp » dans les
+fichiers (39 lignes de 15 fichiers ; la base n'en contenait aucun, tous désignaient les thèmes) et
+dans les messages. Vérifié par script : entre la sauvegarde et la branche renumérotée, seules ces
+39 lignes diffèrent, au numéro près ; après le rebase, les « 9.fn » de l'arbre sont ceux de la tête
+des affiches (la fenêtre produit, et l'ancien numéro des thèmes cité dans § 9.fo), plus cinq lignes
+de cette sous-partie, qui racontent la renumérotation ; aucun des 16 messages renumérotés n'en
+contient (seul le message du commit de cette sous-partie le cite, pour la fenêtre produit ; script
+`themes/rebase/verif-9fn.sh` du dossier de travail). Une phrase devenue fausse au passage (« § 9.fo
+est numéroté après § 9.fp », dans « Conflits avec § 9.fo ») est réécrite.
+
+**Conflits, et ce qui a été gardé** (les deux chantiers gardent leur contenu) :
+
+- `BlogCard.astro` (commit des pages de thème) : les props des thèmes (`etiquette`, `theme`,
+  `category`, `categoryNumber`) et le `sizes` par affiche de § 9.fo (`largeurDansCadre`,
+  `loading="lazy"`, sans priorité) ; `eager` retiré, comme des deux côtés. En tête du fichier, le
+  paragraphe « Étiquette » des thèmes, puis « Les affiches » de § 9.fo (l'ancien « Format des
+  couvertures », périmé, retiré).
+- `blog/index.astro` (commit « /blog navigue par thème ») : les imports des deux côtés (`BLOG_THEMES`,
+  `themePath` ; `srcsetAffiche`, `largeurDansCadre`) ; `seriesPath` et `byEpisode` n'ont plus
+  d'appelant. La une de § 9.fo (`srcset`, `sizes`, préchargement) est intacte : HTML identique
+  octet pour octet à celui des affiches.
+- `blog-liste.css` (commits des pages de thème et de la sous-grille) : les règles de l'affiche, de la
+  une et de la mise en page de § 9.fo font foi (une colonne de lignes de 640 à 1 023 px, deux à
+  partir de 1 024 px) ; s'y ajoutent les puces, les étiquettes et l'index des thèmes. Le filet entre
+  deux lignes de § 9.fo est écrit après les puces. La sous-grille des thèmes (titres de deux lignes
+  voisines alignés) ne sert que là où il y a deux colonnes : déplacée après le bloc de 1 024 px et
+  bornée à `min-width: 1024px`.
+- `MIGRATION.md` : § 9.fn (fenêtre produit), § 9.fo (affiches), § 9.fp (thèmes), dans cet ordre.
+  `CLAUDE.md` : les puces « Les affiches » et « Articles connexes » de § 9.fo ; « `/blog` et les
+  séries » devient « `/blog`, les séries et les thèmes », avec le texte des affiches (l'ancien
+  « carré de 64 px » retiré) ; puis la puce « Thèmes », mise à jour (sous-grille à partir de
+  1 024 px, densité, la une).
+- Sans conflit : `verify-site.mjs` (les changements de `main` #154, quatre onglets de la fenêtre
+  produit, et le contrôle « 4 sexdecies » des thèmes coexistent), `[slug].astro`, la page de thème,
+  le registre, l'image de partage, le sitemap, `llms.txt`. Le commit des pages de thème passe encore
+  `eager={i === 0}` à une carte qui n'a plus cette prop (ignorée) ; le commit qui le retirait le
+  retire toujours.
+- Les pages de thème suivent exactement la règle des affiches de `/blog` : affiche entière, à son
+  format, même case, mêmes `srcset` et `sizes`, `loading="lazy"`, aucune priorité (contrôlé, plus bas).
+
+**Un commit de plus : la sous-grille garde le texte centré sur l'affiche.** Telle que rebasée, elle
+alignait les titres (0 rangée décalée à partir de 1 024 px, contre 3 à 10 sur 23 sur `/blog` des
+affiches seules) mais décentrait le texte sur l'affiche de 144 px, règle des lignes de § 9.fo :
+jusqu'à 9,8 px sur `/blog`, et 24,8 à 37,1 px sur les pages de thème, où une piste d'étiquette vide
+(deux lignes sans numéro de fiche) prenait toute la place libre et poussait le titre vers le bas.
+Trois essais, par feuille injectée et mesurés (`rangees.cjs`) : six pistes (deux pistes vides en haut
+et en bas) font grandir les lignes de 20 à 47 px, rejeté ; des pistes de taille plafonnée envoient
+toute la place au-dessus du texte (74 px), rejeté ; **retenu** : un `::before` vide dans la piste de
+l'étiquette (elle n'est jamais vide), la date calée en haut de sa piste, l'affiche au milieu de la
+ligne, et la colonne écrite pour chaque élément du texte (sans elle, le placement automatique mettait
+l'étiquette dans une seconde colonne, à côté du `::before`, et les lignes grandissaient jusqu'à
+351 px). La place libre se partage alors entre les quatre pistes, autant au-dessus du texte
+qu'au-dessous.
+
+| Construction rebasée, à partir de 1 024 px | Rangées décalées | Écart des milieux texte / affiche (médiane, max) | Lignes |
+|---|---|---|---|
+| affiches seules (`/blog`) | 3 à 10 sur 23 | 0 / 0 px | 228 px |
+| thèmes rebasés, sous-grille telle quelle | 0 | `/blog` 3,2 / 9,8 ; thèmes jusqu'à 24,8 / 37,1 px | 228 à 244 px |
+| **retenu** | **0** | **`/blog` 1,0 à 3,2 / 9,8 ; thèmes 3,2 à 8,4 / 15,0 px** | **228 à 244 px** (244 : à 1 024 px seulement, sur `/blog`) |
+
+L'écart qui reste est celui d'une ligne sans étiquette à côté d'une ligne qui en a une : son titre
+est aligné sur celui de sa voisine. Les pages de série n'y sont pas soumises (identiques au pixel,
+plus bas). De 640 à 1 023 px, rien ne change : une colonne, texte centré, lignes de 228 px, comme les
+affiches.
+
+**La densité à 360 px (décision : accepter 92 %).** Avec les étiquettes des thèmes, 24 lignes de
+`/blog` sur 47 ont une étiquette de deux lignes au téléphone (le thème, puis « Fiche Fiscalité #16 ») :
+
+| `/blog`, 3 articles entiers sous l'en-tête | Affiches seules | Thèmes rebasés |
+|---|---|---|
+| 360 × 640, pli fermé / ouvert | 100 / 100 % (lignes de 139 à 140 px) | **91,9 / 92,2 %** (lignes de 140 à 166 px) |
+| 393 × 692 | 100 / 100 % | 100 / 100 % (lignes de 150 à 151 px) |
+| 402 × 680 (l'iPhone du propriétaire) | 96,2 / 96,4 % | 96,2 / 96,4 % |
+| pages de thème, 360 × 640 et 393 × 692 | — | 100 % (étiquette d'une ligne : le numéro seul) |
+
+Essayé, une seule chose, en CSS seule, sans changer l'ordre ni les mots du HTML : l'étiquette sur
+une ligne au téléphone. Mesure d'abord : à 360 px, la colonne de texte fait 189 px et l'étiquette en
+demande 320 à 365 (il en manque 131 à 176 ; aucune des 24 ne tient, ni à 320, 375, 393 ou 412 px).
+Forcée sur une ligne (`nowrap`), la densité revient à 100 %, mais les 24 étiquettes sont coupées, et
+le numéro de fiche disparaît entièrement sur 8 d'entre elles à 360 px (3 à 393 px). Rejeté : rien ne
+doit se couper. Réduire le corps jusqu'à tenir demanderait 7 px. Les 92 % sont donc acceptés : à
+360 × 640, il arrive (8 % des positions du défilement) qu'on ne voie que deux articles entiers et
+une partie du troisième. Scripts : `themes/rebase/densite/` (densite.cjs, largeurs-etiquettes.cjs,
+coupe.cjs, essai-une-ligne.css).
+
+**Preuves, sur la construction finale** (cache `node_modules/.astro` vidé avant la première ; contre
+la construction des affiches, `wt-zoom/dist`, servie sur 4370 ; la branche est servie sur 4360) :
+
+- `npm run build` : 75 pages. `verify-site.mjs` passe : 73 pages, 5 862 liens internes (5 814 sur les
+  thèmes avant le rebase, plus les 48 `src` de l'affiche en grand de § 9.fo), les 7 avertissements des
+  affiches. Feuille commune `_astro_assets.BdxOyZgM.css`, même nom ; feuille de l'article
+  `_slug_.CORJJGdu.css`, même nom que sur les affiches.
+- `preuve-corps.cjs` (48 articles) : mots, titres et ancres, liens du corps différents : 0, 0, 0 ;
+  un seul `<h1>` partout.
+- `preuve.cjs` (52 pages, 11 clés) : page par page, le même profil d'écarts que contre la PR 1 avant
+  le rebase (`corps`, `faq`, `images`, `ids` identiques sur 52 ; les trois séries identiques sur les
+  11 clés ; écarts des thèmes sur les 48 articles et `/blog`). `classer.cjs` : 48 articles aux écarts
+  voulus (tête, JSON-LD, liens, mesure, texte de `<main>`), `/blog` conforme (puces, 47 lignes dont 24
+  avec numéro de fiche, index en cinq fiches), **0 écart non expliqué**.
+- Fichiers (`diff-dist.mjs`) : les 19 pages HTML hors blog identiques aux affiches au nom du script
+  de PostHog près (une octet pour octet) ; les trois séries identiques aux deux noms près (script de
+  PostHog, feuille des listes), et **au pixel** en pleine page à 360, 393, 640, 820, 1 024, 1 280 et
+  1 512 px. Scripts : seuls le script d'entrée de PostHog et `analytics-init` changent de nom (le
+  premier identique au nom du second près) ; ce sont les noms qu'ils avaient sur les thèmes avant le
+  rebase, donc le même contenu. Les pages de thème ont les scripts d'une page de série, aucun attribut
+  `on…`. Changent aussi, comme avant : `sitemap-0.xml`, `llms.txt`, les 48 images de partage.
+- Règle des affiches : sur les cinq pages de thème, 48 affiches sur 48 chargées, entières, à leur
+  format, à la hauteur de leur case, `loading="lazy"`, sans priorité, avec les mêmes `src`,
+  `srcset`, `sizes` et dimensions, et le même fichier choisi par le navigateur, que la même affiche
+  dans `/blog` des affiches (393 × 692 et 1 512 × 800, `mesures/affiches.cjs`) ; `/blog` : 47 lignes
+  sur 47 identiques. Article : vignette et popover identiques octet pour octet sur les 48 articles ;
+  l'affiche s'ouvre en grand, focus sur « Fermer » (captures, 393 et 1 512 px).
+- Aucun défilement de côté : `/blog` et les cinq pages de thème, plis ouverts, à 320, 360, 393, 560,
+  700, 768, 1 024, 1 280 et 1 920 px.
+- Lighthouse mobile (`npx serve`, qui compresse ; trois passes alternées avec les affiches servies de
+  même) : `/blog` 97, 97, 97 (affiches 97, 97, 97) ; Impôts et déclarations 97, 96, 97 ; Statut,
+  contrats et revenus 97, 97, 96 (Fiches Fiscalité sur les affiches : 95, 96, 99) ; accessibilité,
+  bonnes pratiques et SEO à 100 ; CLS 0. LCP : un texte (le titre de `/blog`, l'introduction du
+  thème), 2,40 à 2,64 s.
+- WebKitGTK 2.52 (méthode de CLAUDE.md ; `/blog`, Impôts, Statut ; 1 512 et 1 024 px, 393 et 360 px
+  dans un cadre) : sous-grille lue ; 0 rangée décalée ; écart des milieux 15,3 px au plus ; lignes de
+  228 px (1 024 px, `/blog` : 228 à 239), 150 px à 393, 139 à 161 px à 360 ; affiches toutes chargées,
+  à la hauteur de leur case, à leur format ; aucun défilement de côté. Ce n'est ni Safari ni un iPhone.
+- Scripts et résultats : `themes/rebase/` (preuves, mesures, densite, lighthouse, webkit, captures).
+
+**Ce qui reste faible** (après le rebase) :
+
+1. **La une de `/blog` au téléphone sort du premier écran.** Les six puces des thèmes font trois
+   rangées de 44 px (148 px, 96 avant) : la une descend de 52 px. Son affiche, que § 9.fo avait mise
+   dans le premier écran après le retour du propriétaire, n'y est plus entière, et la fin de son
+   titre passe sous l'écran :
+
+   | Format | Affiche de la une, affiches seules | Thèmes rebasés | Bas du titre (affiches → thèmes) |
+   |---|---|---|---|
+   | 393 × 692 | 537 à 667 px, 100 % visible | 589 à 719 px, 79 % | 668 → 720 px |
+   | 402 × 680 (son iPhone) | 100 % | 65 % | 670 → 724 px |
+   | 390 × 664 | 98 % | 58 % | 668 → 720 px |
+   | 375 × 667 | 100 % | 63 % | 690 → 742 px |
+   | 360 × 640 | 18 % | 18 % (inchangé) | 771 px |
+   | 412 × 732, 430 × 739 | 100 % | 100 % | — |
+
+   Non corrigé ici : aucune règle de feuille ne rend 46 px sans toucher aux puces (44 px de haut au
+   moins, pour le doigt) ni à l'ordre de la page. À décider : (a) les puces des thèmes sur une seule
+   rangée qui défile de côté au téléphone (la une remonterait de 104 px, au-dessus de sa place des
+   affiches ; trois ou quatre thèmes hors de l'écran) ; (b) la une avant les puces au téléphone (elle
+   remonterait d'environ 160 px ; les puces passeraient sous elle, hors du premier écran, et l'ordre
+   du HTML ou du clavier changerait) ; (c) accepter. Gains calculés, non construits.
+2. Densité : 92 % à 360 × 640 (plus haut, accepté) ; à 1 024 × 768 (tablette couchée), 90,5 % pli
+   fermé, 97,2 % pli ouvert (100 % sur les affiches seules) : 6 étiquettes sur 8 y prennent deux
+   lignes (colonne d'environ 240 px). Mesuré aussi sans la sous-grille : 90,5 %, et 14 rangées
+   décalées. 820 × 1 180, 768 × 1 024, 1 280 × 800, 1 512 × 800 : 100 %.
+3. À partir de 1 024 px, le texte n'est plus centré au pixel sur l'affiche (15 px au plus, plus haut),
+   le prix de titres alignés.
+4. `/blog` s'allonge au téléphone : 7 140 → 7 361 px à 360 et 6 984 → 7 190 px à 393, pli fermé
+   (sous les 7 880 px de la borne des affiches) ; plus court à partir de 1 024 px (4 826 → 4 729 px à
+   1 024, 4 648 → 4 573 px à 1 280 et au-delà, sous la borne de 4 997 px).
+5. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel en HTTP/2 sur réseau bridé.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

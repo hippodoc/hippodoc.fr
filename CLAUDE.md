@@ -509,10 +509,22 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   `/blog` ne les lient pas. Un sixième thème se décide : registre, `NB_THEMES`, textes à faire
   relire (MIGRATION.md). Textes du registre : aucun chiffre, et pas plus de trois mots de suite
   communs entre introduction et description (comptés sans la ponctuation).
-  Sur `/blog` et les pages de thème, à partir de 640 px, les deux lignes d'une rangée partagent
-  quatre pistes (sous-grille : étiquette, titre, extrait, date ; § 9.fp, corrections) : sans elle,
-  des étiquettes de hauteurs différentes décalaient les titres voisins. Les pages de série n'en ont
-  pas besoin (étiquette d'une ligne) et n'y sont pas soumises. Puces des thèmes : deux colonnes
+  Les pages de thème suivent la règle des affiches de `/blog` (affiche entière, à son format, même
+  case, mêmes `srcset` et `sizes`, aucune priorité). Sur `/blog` et les pages de thème, à partir de
+  1 024 px (deux colonnes de lignes, § 9.fo), les deux lignes d'une rangée partagent quatre pistes
+  (sous-grille : étiquette, titre, extrait, date ; § 9.fp) : sans elle, des étiquettes de hauteurs
+  différentes décalaient les titres voisins. Le texte reste centré sur l'affiche (15 px d'écart au
+  plus) par trois règles qui vont ensemble : un `::before` vide dans la piste de l'étiquette (une
+  piste vide prenait toute la place libre), la date calée en haut de sa piste, l'affiche au milieu ;
+  et chaque élément du texte a sa colonne écrite (un nouvel élément aussi : sans elle, le placement
+  automatique ouvre une seconde colonne et les lignes grandissent). Les pages de série n'en ont pas
+  besoin (étiquette d'une ligne) et n'y sont pas soumises (identiques au pixel). Au téléphone,
+  l'étiquette « Thème · Fiche … #N » de `/blog` prend deux lignes (24 lignes sur 47 ; elle demande
+  320 à 365 px, la colonne en a 189 à 360 px) : 3 articles entiers 92 % du temps à 360 × 640 au lieu
+  de 100 %, accepté (forcée sur une ligne, elle se coupe) ; 100 % à 393 × 692. Les six puces font
+  trois rangées au téléphone : la une de `/blog` descend de 52 px et son affiche n'est plus entière
+  dans le premier écran à 393 × 692 et 402 × 680 (§ 9.fp, « Rebase sur les affiches » : à décider).
+  Puces des thèmes : deux colonnes
   jusqu'à 699 px, trois au-delà (`.bl-series.bl-themes`, deux classes : les règles des séries à
   partir de 560 px viennent après dans la feuille).
   ⚠️ Toute retouche de `src/lib/page-analytics.ts` renomme le script d'entrée de PostHog, donc
