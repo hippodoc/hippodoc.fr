@@ -262,7 +262,7 @@ const fleche =
                 <strong>Revenus complémentaires</strong> (dépliable) :
                 <ul>
                   <li><em>Revenus salariés</em> — Net imposable annuel si tu cumules hôpital ou gardes salariées. L'abattement de 10% est appliqué automatiquement.</li>
-                  <li><em>Revenus PDSA</em> — Gardes de nuit et week-end régulées par l'ARS. Exonérés d'impôt sur le revenu (art. 151 ter CGI), mais restent soumis aux cotisations sociales.</li>
+                  <li><em>Revenus PDSA</em> — Gardes de nuit et week-end régulées par l'ARS. Astreintes et majorations exonérées d'impôt sur le revenu en zone sous-dotée, dans la limite de 60 jours par an (art. 151 ter CGI), mais soumises aux cotisations sociales.</li>
                 </ul>
               </li>
             </ul>
@@ -292,7 +292,7 @@ const fleche =
             <ul>
               <li><strong>Année</strong> — Détermine les barèmes IR appliqués (2025 ou 2026).</li>
               <li><strong>Lieu d'exercice</strong> — Métropole ou DOM-TOM. Les territoires ultramarins bénéficient d'un abattement automatique sur l'IR (30% Guadeloupe/Martinique/Réunion, 40% Guyane/Mayotte).</li>
-              <li><strong>Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu, déductions supplémentaires : 2% + 3% + Groupe III) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
+              <li><strong>Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu ; déductions supplémentaires 2% + 3% + Groupe III pour les installés) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
               <li><strong>Régime social</strong> — Auto (recommandé, le simulateur choisit selon ton CA), RSPM (simplifié, ouvert jusqu'à 19 000 €) ou PAMC (classique).</li>
             </ul>
           </div>
@@ -316,9 +316,9 @@ const fleche =
             <div>
               <p class="st">Déductions Secteur 1</p>
               <ul>
-                <li><strong>Forfait 2%</strong> — Frais de représentation, réception et prospection déduits automatiquement de tes honoraires, sans justificatif. <em>Secteur 1 uniquement.</em></li>
-                <li><strong>Déduction 3% conventionnelle</strong> — Un abattement supplémentaire sur tes honoraires conventionnés, plafonné par la Sécu. <em>Secteur 1 uniquement.</em></li>
-                <li><strong>Barème Groupe III</strong> — Une déduction fixe calculée selon ta tranche de revenus (de 770 € à 3 050 €), en plus des 2% et 3%. <em>Secteur 1 uniquement.</em></li>
+                <li><strong>Forfait 2%</strong> — Frais de représentation, réception et prospection déduits automatiquement de tes honoraires, sans justificatif. <em>Installés en secteur 1 uniquement (pas les remplaçants).</em></li>
+                <li><strong>Déduction 3% conventionnelle</strong> — 3 % de tes honoraires conventionnels, en plus. <em>Installés en secteur 1 uniquement.</em></li>
+                <li><strong>Barème Groupe III</strong> — Une déduction fixe selon tes honoraires conventionnels (de 770 € à 3 050 €, 3 050 € au-delà de 30 450 €), en plus des 2% et 3%. <em>Installés en secteur 1 uniquement.</em></li>
                 <li><strong>Ratio honoraires non conventionnés</strong> — Si une partie de tes honoraires est hors convention, les déductions S1 sont réduites proportionnellement.</li>
               </ul>
             </div>
@@ -333,15 +333,14 @@ const fleche =
             <div>
               <p class="st">Fiscalité immobilière &amp; zones</p>
               <ul>
-                <li><strong>Zones exonérées (ZFU-TE / ZFRR)</strong> — Si tu exerces dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur 8 ans (100 % les 5 premières années). Dégressivité différente selon la zone : <strong>ZFU-TE</strong> <Fragment set:html={fleche} /> 60 % / 40 % / 20 % (clos au 31.12.2025) ; <strong>ZFRR</strong> <Fragment set:html={fleche} /> 75 % / 50 % / 25 %. Plafond commun : 50 000 € de bénéfice exonéré/an.</li>
+                <li><strong>Zones exonérées (ZFU-TE, QPV, FRR)</strong> — Si tu t'es installé dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur 8 ans (100 % les 5 premières années). Dégressivité selon la zone : <strong>ZFU-TE</strong> (installations jusqu'en 2025, plafond de 50 000 € de bénéfice exonéré par an) et <strong>QPV</strong> (installations de 2026 à 2030) <Fragment set:html={fleche} /> 60 % / 40 % / 20 % ; <strong>FRR</strong> (ex-ZRR) <Fragment set:html={fleche} /> 75 % / 50 % / 25 %. La FRR socle exige le Régime Réel ; ZFU-TE, QPV et FRR+ valent aussi en Micro-BNC.</li>
                 <li><strong>Revenus fonciers</strong> — Si tu as des revenus locatifs : micro-foncier (abattement 30%) ou régime réel (avec possibilité de déduire un déficit foncier jusqu'à −10 700 €/an de ton revenu global).</li>
               </ul>
             </div>
             <div>
               <p class="st">Crédits d'impôt</p>
               <ul>
-                <li><strong>Formation dirigeant</strong> — Heures de formation × SMIC horaire, plafonné à 40h (soit environ 475 €). Réduit directement ton impôt.</li>
-                <li><strong>Emploi à domicile</strong> — 50% des dépenses (ménage, garde, jardinage…), plafond de 12 000 à 15 000 €.</li>
+                <li><strong>Emploi à domicile</strong> — 50% des dépenses (ménage, garde, jardinage…), plafond de 12 000 à 15 000 €. Comme tout crédit d'impôt, la part qui dépasse ton impôt t'est remboursée.</li>
                 <li><strong>Garde d'enfant &lt; 6 ans (hors domicile)</strong> — 50% des frais de crèche ou assistante maternelle, plafond de 3 500 € par enfant.</li>
                 <li><strong>Autres crédits</strong> — Un champ libre pour tout autre crédit d'impôt dont tu bénéficies.</li>
               </ul>
@@ -375,10 +374,10 @@ const fleche =
               <li><strong>Tes revenus libéraux</strong> — Le total de tout ce que tu as encaissé dans l'année (honoraires, actes, dépassements).</li>
               <li><strong>− Tes charges</strong> — En <em>Régime Réel</em>, on soustrait tes dépenses professionnelles réelles (loyer, matériel, véhicule…). En <em>Micro-BNC</em>, l'État applique à la place un abattement forfaitaire de 34% (tes charges, payées, restent retirées du Super-Net). <Fragment set:html={fleche} /> Ça donne ton <strong>bénéfice</strong>.</li>
               <li><strong>− Cotisations sociales</strong> — URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) + CARMF (retraite complémentaire, invalidité-décès, ASV). Le simulateur les calcule automatiquement selon tes revenus et ta situation CARMF (voir point 5). Elles sont déductibles en <em>Régime Réel</em> (sauf une part de la CSG-CRDS) ; en <em>Micro-BNC</em>, l'abattement de 34% en tient lieu.</li>
-              <li><strong>− Déductions fiscales</strong> — Si tu es en Secteur 1 : forfait 2%, déduction 3%, barème Groupe III. Puis PER, Madelin, chèques-vacances, zones exonérées… <Fragment set:html={fleche} /> Ça donne ton <strong>revenu imposable libéral</strong>.</li>
+              <li><strong>− Déductions fiscales</strong> — Si tu es installé en Secteur 1 : forfait 2%, déduction 3%, barème Groupe III. Puis PER, Madelin, chèques-vacances, zones exonérées… <Fragment set:html={fleche} /> Ça donne ton <strong>revenu imposable libéral</strong>.</li>
               <li><strong>+ Autres revenus du foyer</strong> — On ajoute les salaires (après abattement 10%), les revenus du conjoint, les revenus fonciers. <Fragment set:html={fleche} /> Ça donne le <strong>revenu fiscal du foyer</strong>.</li>
               <li><strong>÷ Parts fiscales</strong> — On divise par ton nombre de parts (selon ta situation familiale et tes enfants) pour obtenir le quotient familial, puis on applique le barème progressif (11%, 30%, 41%, 45%).</li>
-              <li><strong>− Crédits d'impôt</strong> — Formation dirigeant, emploi à domicile, garde d'enfant… Ils viennent réduire directement ton impôt. <Fragment set:html={fleche} /> Ça donne ton <strong>impôt final</strong>.</li>
+              <li><strong>− Crédits d'impôt</strong> — Emploi à domicile, garde d'enfant… Ils viennent réduire directement ton impôt. <Fragment set:html={fleche} /> Ça donne ton <strong>impôt final</strong>.</li>
               <li><strong>= Super-Net</strong> — Revenus − Charges − Cotisations − Impôt = <strong>ce qu'il te reste vraiment</strong>.</li>
             </ol>
             <div class="bref">

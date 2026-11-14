@@ -63,8 +63,10 @@ interface RspmCalculationInput {
   secteurConventionnel?: 'secteur_1' | 'secteur_2';
   forfait2pct?: boolean;
   cotisationsVolontaires?: number;
+  /** `per` : PER déduit du revenu global (163 quatervicies) ; `madelin` : déduit du BNC réel (154 bis). */
+  typeCotisationsVolontaires?: 'per' | 'madelin';
   // Phase 2 — Zones exonérées, Revenus fonciers, Crédits d'impôt
-  zoneExoneree?: 'aucune' | 'zfu' | 'zfrr';
+  zoneExoneree?: 'aucune' | 'zfu' | 'zfrr' | 'zfrr_plus' | 'qpv';
   anneeInstallationZone?: number;
   anneeFiscale?: number;
   regimeFoncier?: 'aucun' | 'micro' | 'reel';
@@ -214,13 +216,15 @@ interface RspmBreakdown {
     abattementDomMontant?: number;
     /** Décote appliquée (CGI art. 197-I-4), si elle a joué. */
     decote?: number;
+    /** Crédits d'impôt remboursés (part qui dépasse l'impôt). */
+    restitutionCredits?: number;
     lieuExercice?: string;
     chargesReellesPercent?: number;
   };
 }
 
 // ✅ Import centralisé des barèmes IR (source unique de vérité)
-import { BAREME_IMPOT_2025, PLAFOND_ABATTEMENT_10, PLANCHER_ABATTEMENT_10, getTranchesIR, calculateRawTaxPerPart as centralCalculateRawTax, getTMI as centralGetTMI, calculateDeductionsS1, getTauxExonerationZone, calculateRevenuFoncierImposable, calculateCreditFormation, getPerCap, applyDecote, calculateCEHR } from '@/lib/baremes-ir';
+import { BAREME_IMPOT_2025, PLAFOND_ABATTEMENT_10, PLANCHER_ABATTEMENT_10, getTranchesIR, calculateRawTaxPerPart as centralCalculateRawTax, getTMI as centralGetTMI, calculateDeductionsS1, getTauxExonerationZone, calculateRevenuFoncierImposable, calculateCreditFormation, getPerCap, getPlafondEpargneRetraite, applyDecote, calculateCEHR } from '@/lib/baremes-ir';
 export { BAREME_IMPOT_2025 } from '@/lib/baremes-ir';
 
 /**
@@ -426,6 +430,7 @@ export const calculateRspmBreakdown = ({
   cotisationsSocialesOverride,
   cotisationsNonDeductibles = 0,
   chargesDecaissees,
+  typeCotisationsVolontaires = 'per',
 }: RspmCalculationInput): RspmBreakdown | null => {
   const secteur = secteurConventionnel || 'secteur_1';
   // Phase 3: ratio conventionné
@@ -493,8 +498,12 @@ export const calculateRspmBreakdown = ({
       regime_fiscal: profile.regime_fiscal,
       forfait_2pct: forfait2pct,
     };
+    // Forfait 2 % : « calculé sur le montant des recettes brutes, y compris les honoraires
+    // de dépassement » (BOI-BNC-SECT-40 § 120) : toutes les recettes, sans prorata de la
+    // part non conventionnée (le prorata ne vaut que pour le 3 % et le groupe III, assis
+    // sur les seuls honoraires conventionnels, hors PDSA exonérée).
     const forfait2Montant = canApplyForfait2pct(eligibilityInputPure)
-      ? yearlyLiberalImposable * 0.02 * ratioConventionne
+      ? (yearlyLiberalImposable + yearlyLiberalExonere) * 0.02
       : 0;
     
     // 🎯 Override : si cotisations PAMC fournies (mode hybride API URSSAF + IR local),
@@ -535,11 +544,23 @@ export const calculateRspmBreakdown = ({
     const chequesVacancesDeductionPure = (profile.regime_fiscal === 'reel')
       ? capChequesVacances(chequesVacances || 0, anneeFiscale).capped
       : 0;
-    // Phase 2 Bug #4 : cap PER/Madelin (CGI Art. 163 quatervicies / 154 bis).
-    const perCapPure = getPerCap(beneficeFiscal, anneeFiscale).plafond;
+    // Plafond de l'épargne retraite : 163 quatervicies (PER, revenu global, PASS N-1) ou
+    // 154 bis (Madelin, BNC réel : 10 % + 15 % entre 1 et 8 PASS). Le Madelin n'est pas
+    // déductible en micro-BNC (l'appelant le met déjà à 0).
+    const assietteEpargneRetraite = Math.max(0, beneficeFiscal - deductionsS1Total - chequesVacancesDeductionPure);
+    const perCapPure = getPlafondEpargneRetraite(
+      profile.regime_fiscal === 'reel' && typeCotisationsVolontaires === 'madelin' ? 'madelin' : 'per',
+      assietteEpargneRetraite,
+      anneeFiscale,
+    );
     const cotisationsVolontairesAppliqueesPure = Math.min(Math.max(0, cotisationsVolontaires), perCapPure);
     let revenuImposableLiberal = Math.max(0, beneficeFiscal - deductionsS1Total - cotisationsVolontairesAppliqueesPure - chequesVacancesDeductionPure);
-    const tauxExonerationPure = getTauxExonerationZone(zoneExoneree, anneeInstallationZone || 0, anneeFiscale);
+    // Zones : la FRR « socle » et l'ex-ZRR exigent un régime réel (CGI art. 44 quindecies
+    // et 44 quindecies A, I-B) ; ZFU-TE, régime QPV et FRR « plus » acceptent le micro-BNC.
+    const zoneApplicable = !(zoneExoneree === 'zfrr' && profile.regime_fiscal === 'micro-bnc');
+    const tauxExonerationPure = zoneApplicable
+      ? getTauxExonerationZone(zoneExoneree, anneeInstallationZone || 0, anneeFiscale)
+      : 0;
     let exonerationMontantCalcPure = 0;
     if (tauxExonerationPure > 0) {
       exonerationMontantCalcPure = revenuImposableLiberal * tauxExonerationPure;
@@ -592,7 +613,9 @@ export const calculateRspmBreakdown = ({
   const { impot: impotBrutPure, details: impotCalcDetails } = calculateImpotWithDetails(revenuGlobalImposable, partsFiscales, situationFamiliale, anneeFiscale);
 
   // ✅ Phase 2 : Crédits d'impôt
-  const creditFormationPure = creditFormationDirigeant ? calculateCreditFormation(heuresFormation) : 0;
+  // Crédit d'impôt formation des dirigeants (art. 244 quater M) : heures suivies jusqu'au
+  // 31/12/2024 seulement, article abrogé par la loi de finances 2026.
+  const creditFormationPure = creditFormationDirigeant && anneeFiscale <= 2024 ? calculateCreditFormation(heuresFormation) : 0;
   // ✅ Emploi à domicile : 50% des dépenses, plafond 12k + 1500/enfant (max 15k)
   // Source de vérité : inférence depuis parts_fiscales (CGI Art. 194), pas le champ orphelin nombre_enfants_charge
   const nbEnfantsForCreditPure = inferEnfantsFromParts(profile.parts_fiscales ?? 1, profile.situation_familiale ?? 'celibataire');
@@ -615,6 +638,9 @@ export const calculateRspmBreakdown = ({
   const estCouple = situationFamiliale === 'marie_pacse' || situationFamiliale === 'marie-pacse';
   const { impotApresDecote, decoteAppliquee } = applyDecote(impotApresDom, estCouple ? 2 : 1, anneeFiscale);
   const impot = Math.round(Math.max(0, impotApresDecote - totalCreditsPure));
+  // Crédits d'impôt (emploi à domicile, garde d'enfants…) : la part qui dépasse l'impôt est
+  // remboursée par le fisc. Elle s'ajoute au Super-Net (avant novembre 2026, elle était perdue).
+  const restitutionCredits = Math.round(Math.max(0, totalCreditsPure - impotApresDecote));
 
   // 6. Super-Net (incluant PDSA exonéré dans les revenus totaux) : ce qui reste après
   // charges, cotisations et impôt. Les charges payées sortent du compte dans les DEUX
@@ -635,7 +661,7 @@ export const calculateRspmBreakdown = ({
   const cotisationsPourSuperNet = cotisationsSocialesOverride !== undefined
     ? cotisationsSocialesOverride
     : (cotisationsUrssaf + cotisationsCarmf);
-  const superNet = totalRevenus - cotisationsPourSuperNet - impot - chargesEffectives;
+  const superNet = totalRevenus - cotisationsPourSuperNet - impot - chargesEffectives + restitutionCredits;
   const superNetPercentage = totalRevenus > 0 ? (superNet / totalRevenus) * 100 : 0;
   const tauxEffectif = revenuGlobalImposable > 0 ? (impot / revenuGlobalImposable) * 100 : 0;
 
@@ -718,6 +744,7 @@ export const calculateRspmBreakdown = ({
       cotisationsVolontairesDeduites: cotisationsVolontairesAppliqueesPure > 0 ? cotisationsVolontairesAppliqueesPure : undefined,
       abattementDomMontant: abattementDomPure,
       decote: decoteAppliquee > 0 ? Math.round(decoteAppliquee) : undefined,
+      restitutionCredits: restitutionCredits > 0 ? restitutionCredits : undefined,
       lieuExercice,
     },
   };

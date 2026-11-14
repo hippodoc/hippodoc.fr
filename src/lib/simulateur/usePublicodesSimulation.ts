@@ -77,10 +77,17 @@ async function cotisationsPamc(
   liberalExonere: number,
 ): Promise<{ cotisations: CotisationsUrssaf; source: 'urssaf' | 'secours' } | null> {
   try {
+    // Au réel, le forfait 2 % des médecins installés en secteur 1 reste déduit de l'assiette
+    // sociale (il n'est pas réintégré au revenu brut social du cadre 8 de la 2035, à la
+    // différence du 3 % et du groupe III) : il s'ajoute aux charges transmises au modèle.
+    const forfait2Social = regimeFiscal === 'reel' && formData.typeExercice === 'installe'
+      && formData.secteurConventionnel !== 'secteur_2' && formData.forfait2pct
+      ? recettesAnnuelles * 0.02
+      : 0;
     const cotisations = await calculerCotisationsUrssaf({
       annee: formData.annee || 2026,
       recettes: recettesAnnuelles,
-      charges: chargesAnnuelles,
+      charges: chargesAnnuelles + forfait2Social,
       regime: regimeFiscal,
       secteur: formData.secteurConventionnel || 'secteur_1',
       remplacant: formData.typeExercice === 'remplacant',
@@ -208,6 +215,7 @@ export async function simulerRegime(
     secteurConventionnel: formData.secteurConventionnel,
     forfait2pct: formData.forfait2pct || false,
     cotisationsVolontaires,
+    typeCotisationsVolontaires: formData.typeCotisationsVolontaires || 'per',
     zoneExoneree: formData.zoneExoneree || 'aucune',
     anneeInstallationZone: formData.anneeInstallationZone,
     anneeFiscale: formData.annee || 2026,

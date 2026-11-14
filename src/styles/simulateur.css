@@ -376,6 +376,11 @@
   .sim .sim-regime-tete { padding: 28px 28px 16px; }
   .sim .sim-regime-corps { padding: 0 28px 28px; }
 }
+/* Paramètres de calcul : cinq champs depuis le champ « Exercice » (MIGRATION.md § 9.fq),
+   trois colonnes à partir de 1 024 px au lieu des quatre de `lg:grid-cols-4`. */
+@media (min-width: 1024px) {
+  .sim .sim-params { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 
 /* Avant l'hydratation (MIGRATION.md § 9.er, § 9.et). Astro garde l'attribut `ssr` sur
    <astro-island> tant que React n'a pas pris l'îlot : le HTML a l'air prêt, rien ne

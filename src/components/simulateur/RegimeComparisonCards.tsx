@@ -934,7 +934,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         });
       }
       // Crédits d'impôt (info line)
-      const totalCredits = (optim.creditFormation || 0) + (optim.creditImpotAutre || 0);
+      const totalCredits = (optim.creditFormation || 0) + (optim.creditImpotAutre || 0)
+        + (optim.creditEmploiDomicile || 0) + (optim.creditGardeEnfants || 0);
       if (totalCredits > 0) {
         detailItems.push({
           icon: GraduationCap,
@@ -942,9 +943,22 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           value: totalCredits,
           colorClass: "sim-eau",
           negative: true,
-          tooltip: "Crédits d'impôt soustraits directement de l'impôt brut (formation dirigeant, autres). Ne réduisent pas le revenu imposable."
+          tooltip: "Crédits d'impôt (emploi à domicile, garde d'enfants, autres) soustraits directement de l'impôt. Ne réduisent pas le revenu imposable ; la part qui dépasse l'impôt est remboursée."
         });
       }
+    }
+
+    // Crédits d'impôt qui dépassent l'impôt : remboursés, ils s'ajoutent au Super-Net.
+    const restitution = result.impotDetails?.restitutionCredits || 0;
+    if (restitution > 0) {
+      detailItems.push({
+        icon: GraduationCap,
+        label: "Crédits d'impôt remboursés",
+        value: restitution,
+        colorClass: "sim-marque",
+        negative: false,
+        tooltip: "La part de tes crédits d'impôt (emploi à domicile, garde d'enfants…) qui dépasse ton impôt t'est remboursée par le fisc : elle s'ajoute à ton Super-Net.",
+      });
     }
 
     // ========================================

@@ -44,6 +44,7 @@ export interface ImpotDetails {
   plafondUtilise?: number;           // Montant du plafond (ex: 3582€ pour 2 enfants)
   cotisationsDeduites?: number;      // Cotisations déduites au réel (sans la CSG-CRDS non déductible)
   decote?: number;                   // Décote appliquée (CGI art. 197-I-4)
+  restitutionCredits?: number;       // Crédits d'impôt remboursés (part qui dépasse l'impôt)
 }
 
 export interface DomTomResultInfo {

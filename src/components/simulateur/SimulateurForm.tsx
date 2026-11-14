@@ -14,7 +14,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { simulateurSchema, isZoneExoneneeAvailable, type SimulateurFormData } from "./simulateurSchema";
 import { DOM_TOM_CONFIG, getDomTomInfo, formatTauxAbattement, formatPlafond, type LieuExercice } from "@/lib/dom-tom";
 import { getDeclarationParams } from "@/lib/declarationParams";
-import { calculateCreditFormation, SMIC_HORAIRE_2025, getPerCap } from "@/lib/baremes-ir";
+import { getPlafondEpargneRetraite } from "@/lib/baremes-ir";
 import { cn } from "@/lib/utils";
 
 interface SimulateurFormProps {
@@ -137,7 +137,6 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Phase 2 watches
     const zoneExoneree = form.watch('zoneExoneree');
     const regimeFoncier = form.watch('regimeFoncier');
-    const creditFormationDirigeant = form.watch('creditFormationDirigeant');
     // Phase 3 watches
     const regimeSocial = form.watch('regimeSocial');
     const recettesBrutes = form.watch('recettesBrutes');
@@ -150,6 +149,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Même règle que le moteur (usePublicodesSimulation) : en Auto, le RSPM est retenu pour
     // un remplaçant jusqu'à 19 000 € de recettes (seuil d'entrée du régime).
     const typeExercice = form.watch('typeExercice');
+    // Forfait 2 %, 3 % et groupe III : médecins installés en secteur 1 seulement.
+    const deductionsS1Ouvertes = secteurConventionnel === 'secteur_1' && typeExercice === 'installe';
     const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes <= 19000);
     const showRidToggle = isRspmEffectif;
 
@@ -428,7 +429,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </p>
                             <TipBox variant="tip">
                               <p className="font-medium">✅ Exonéré d'impôt sur le revenu</p>
-                              <p className="mt-0.5">Art. 151 ter du CGI — dans la limite de 60 jours de permanence par an.</p>
+                              <p className="mt-0.5">Art. 151 ter du CGI : les astreintes et majorations de la PDSA, en zone sous-dotée, dans la limite de 60 jours de permanence par an. Saisis ici cette part exonérée seulement.</p>
                             </TipBox>
                             <TipBox variant="warning">
                               <p>⚠️ Reste soumis aux cotisations sociales (URSSAF/CARMF). Seul l'IR est exonéré.</p>
@@ -697,7 +698,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
             title="Paramètres de calcul" 
           />
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Cinq champs : trois colonnes à partir de 1 024 px (simulateur.css, `.sim-params`).
+              `lg:grid-cols-4` reste dans la liste pour ne pas changer la feuille commune. */}
+          <div className="sim-params grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Exercice : remplaçant ou installé (RSPM, CURPS, dispense CARMF, déductions S1) */}
             <FormField
               control={form.control}
@@ -761,6 +764,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </p>
                           <TipBox variant="info">
                             <p>📅 Ex&nbsp;: revenus 2025 → barème déclaration 2026.</p>
+                            <p className="mt-1">Revenus 2026 : la loi de finances 2027 n'étant pas encore votée, le simulateur applique le barème des revenus 2025.</p>
                           </TipBox>
                         </div>
                       }
@@ -880,7 +884,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </p>
                           <TipBox variant="tip">
                             <p className="font-medium">✅ Avantages Secteur 1</p>
-                            <p className="mt-0.5">Participation CPAM aux cotisations (ASV, maladie) + déductions spécifiques : forfait 2%, déduction 3%, barème Groupe III.</p>
+                            <p className="mt-0.5">Participation CPAM aux cotisations (ASV, maladie) + déductions spécifiques pour les installés : forfait 2%, déduction 3%, barème Groupe III.</p>
                           </TipBox>
                           <TipBox variant="warning">
                             <p>⚠️ Secteur 2 : pas de participation CPAM, pas de déductions S1.</p>
@@ -1083,10 +1087,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {(() => {
                           const count = [
-                            forfait2pct && secteurConventionnel === 'secteur_1',
+                            forfait2pct && deductionsS1Ouvertes,
                             cotisationsVolontaires > 0,
                             form.getValues('chequesVacances') > 0,
-                            form.getValues('ratioNonConventionne') > 0 && secteurConventionnel === 'secteur_1',
+                            form.getValues('ratioNonConventionne') > 0 && deductionsS1Ouvertes,
                           ].filter(Boolean).length;
                           return count > 0 ? `${count} active${count > 1 ? 's' : ''}` : '';
                         })()}
@@ -1095,7 +1099,12 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   </AccordionTrigger>
                   <AccordionContent className="space-y-3 pb-3">
                     <p className="text-xs text-muted-foreground px-1">Ces déductions <strong className="text-foreground/70">s'ajoutent</strong> à tes charges ci-dessus. Ne les inclus pas dans le champ « Charges réelles ».</p>
-                    {secteurConventionnel === 'secteur_1' && (
+                    {!deductionsS1Ouvertes && secteurConventionnel === 'secteur_1' && (
+                      <div className="sim-note neutre">
+                        <p className="text-xs"><strong>Remplaçant : pas de forfait 2 %, de 3 % ni de groupe III.</strong> Ces déductions sont réservées aux médecins personnellement conventionnés en secteur 1, donc installés (BOFiP, BOI-BNC-SECT-40). Choisis « Installé » dans « Exercice » si c'est ton cas.</p>
+                      </div>
+                    )}
+                    {deductionsS1Ouvertes && (
                       <FormField control={form.control} name="forfait2pct" render={({ field }) => (
                         <FormItem className="sim-coche flex items-start gap-3">
                           <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="sim-case" /></FormControl>
@@ -1127,7 +1136,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </FormItem>
                       )} />
                     )}
-                    {secteurConventionnel === 'secteur_1' && (
+                    {deductionsS1Ouvertes && (
                       <FormField control={form.control} name="ratioNonConventionne" render={({ field }) => (
                         <FormItem>
                           <div className="flex items-center gap-2">
@@ -1158,16 +1167,18 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         const c = form.watch('chargesHorsCotisations') || 0;
                         return periode === 'mensuel' ? c * 12 : c;
                       })();
-                      const isMicroLikely = yearlyCA <= 83600;
-                      const beneficeEstime = isMicroLikely
-                        ? yearlyCA * 0.66
-                        : Math.max(0, yearlyCA - yearlyCharges);
+                      // Aperçu du plafond (le calcul exact, régime par régime, est fait par le moteur) :
+                      // PER (163 quatervicies) sur le bénéfice micro (66 % des recettes) ; Madelin
+                      // (154 bis, réel) sur un bénéfice réel estimé après cotisations (~75 %).
                       const anneeForm = form.watch('annee') || 2026;
-                      const perPlafond = getPerCap(beneficeEstime, anneeForm).plafond;
+                      const typeCotisation = form.watch('typeCotisationsVolontaires') || 'per';
+                      const perPlafond = typeCotisation === 'madelin'
+                        ? getPlafondEpargneRetraite('madelin', Math.max(0, yearlyCA - yearlyCharges) * 0.75, anneeForm)
+                        : getPlafondEpargneRetraite('per', yearlyCA * 0.66, anneeForm);
                       const saisie = field.value || 0;
                       const depasseCap = saisie > perPlafond;
-                      const typeCotisation = form.watch('typeCotisationsVolontaires') || 'per';
-                      const madelinEnMicro = isMicroLikely && typeCotisation === 'madelin';
+                      const madelinEnMicro = typeCotisation === 'madelin';
+                      const isMicroLikely = typeCotisation === 'per';
                       return (
                       <FormItem>
                         <div className="flex items-center gap-2">
@@ -1181,7 +1192,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                 <div className="space-y-0.5">
                                   <p><strong>PER</strong> : déductible du revenu global (micro ET réel)</p>
                                   <p><strong>Madelin</strong> : déductible du BNC réel uniquement</p>
-                                  <p className="mt-1">Plafond PER 2026 : 10% du bénéfice (min ~4 637€, max ~37 094€)</p>
+                                  <p className="mt-1">Plafond PER : 10 % de tes revenus professionnels de l'année précédente (en 2026 : 4 710 € au moins, 37 680 € au plus).</p>
+                                  <p>Plafond Madelin : 10 % du bénéfice, plus 15 % de la part entre 48 060 € et 384 480 € (2026).</p>
                                 </div>
                               </TipBox>
                               <TipBox variant="warning">
@@ -1215,16 +1227,16 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           En plus de tes charges. Déduit du revenu imposable (PER) ou du BNC réel (Madelin).
                           {depasseCap && saisie > 0 && (
                             <span className="block mt-1 sim-attn">
-                              ⚠️ Plafond légal {perPlafond.toLocaleString('fr-FR')}€ atteint — seuls {perPlafond.toLocaleString('fr-FR')}€ seront déduits (CGI Art. 163 quatervicies).
+                              ⚠️ Au-dessus du plafond estimé (environ {perPlafond.toLocaleString('fr-FR')}€, CGI art. {typeCotisation === 'madelin' ? '154 bis' : '163 quatervicies'}) : seul le plafond est déduit.
                             </span>
                           )}
                           {madelinEnMicro && (
                             <span className="block mt-1 sim-attn">
-                              ⚠️ Madelin sélectionné — non déduit en Micro-BNC (Art. 154 bis CGI). Bascule sur PER ou passe en BNC réel.
+                              ℹ️ Madelin : déduit au Régime Réel seulement (CGI art. 154 bis). La fiche Micro-BNC ne le compte pas.
                             </span>
                           )}
                           {!madelinEnMicro && !depasseCap && isMicroLikely && typeCotisation === 'per' && saisie > 0 && (
-                            <span className="block mt-1 sim-ok">✓ PER en Micro-BNC : déduction du revenu global appliquée.</span>
+                            <span className="block mt-1 sim-ok">✓ PER : déduit du revenu global, en Micro-BNC comme au Régime Réel.</span>
                           )}
                         </FormDescription>
                         <FormMessage role="alert" />
@@ -1266,9 +1278,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       </FormItem>
                       );
                     }} />
-                    {secteurConventionnel === 'secteur_1' && (
+                    {deductionsS1Ouvertes && (
                       <div className="sim-note ok">
-                        <p className="text-xs"><strong>✅ Déductions Secteur 1 automatiques</strong> (BNC réel) : 3% + barème Groupe III appliquées automatiquement.</p>
+                        <p className="text-xs"><strong>✅ Déductions Secteur 1 automatiques</strong> (BNC réel, installé) : 3 % des honoraires conventionnels + groupe III (barème des omnipraticiens, 3 050 € au-delà de 30 450 €).</p>
                       </div>
                     )}
                   </AccordionContent>
@@ -1283,7 +1295,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {(() => {
                           const parts = [];
-                          if (zoneExoneree !== 'aucune') parts.push(zoneExoneree === 'zfu' ? 'ZFU' : 'ZFRR');
+                          if (zoneExoneree !== 'aucune') parts.push({ zfu: 'ZFU', qpv: 'QPV', zfrr: 'FRR', zfrr_plus: 'FRR+' }[zoneExoneree] ?? 'Zone');
                           if (regimeFoncier !== 'aucun') parts.push(regimeFoncier === 'micro' ? 'Foncier micro' : 'Foncier réel');
                           return parts.length > 0 ? parts.join(' · ') : '';
                         })()}
@@ -1302,22 +1314,22 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <PremiumTooltip title="Zones exonérées" content={
                             <div className="space-y-2">
                               <p className="font-semibold">Exonération d'impôt en zone prioritaire</p>
-                              <p className="text-xs">Si tu exerces en zone franche urbaine (ZFU-TE, CGI Art. 44 octies A) ou en zone France ruralités revitalisation (ZFRR, CGI Art. 44 quindecies), une partie de tes bénéfices est exonérée d'IR avec des taux de dégressivité différents.</p>
+                              <p className="text-xs">Si tu t'es installé dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur le revenu, de façon dégressive (pas de cotisations en moins).</p>
                               <TipBox variant="info">
-                                <p className="font-medium mb-1">🏙️ ZFU-TE (dispositif clos au 31.12.2025) :</p>
+                                <p className="font-medium mb-1">🏙️ ZFU-TE (installations jusqu'en 2025) et QPV (installations 2026 à 2030) :</p>
                                 <div className="space-y-0.5 mb-2">
                                   <p>Années 1 à 5 → <strong>100 %</strong> exonéré</p>
                                   <p>Année 6 → <strong>60 %</strong> · Année 7 → <strong>40 %</strong> · Année 8 → <strong>20 %</strong></p>
-                                  <p>Plafond : 50 000 € de bénéfice exonéré/an</p>
+                                  <p>Micro-BNC et réel. ZFU-TE : 50 000 € de bénéfice exonéré par an au plus.</p>
                                 </div>
-                                <p className="font-medium mb-1">🌾 ZFRR :</p>
+                                <p className="font-medium mb-1">🌾 France ruralités revitalisation (FRR, ex-ZRR) :</p>
                                 <div className="space-y-0.5 mb-2">
                                   <p>Années 1 à 5 → <strong>100 %</strong> exonéré</p>
                                   <p>Année 6 → <strong>75 %</strong> · Année 7 → <strong>50 %</strong> · Année 8 → <strong>25 %</strong></p>
-                                  <p>Plafond : 50 000 € de bénéfice exonéré/an</p>
+                                  <p>FRR (socle) et ex-ZRR : régime réel seulement. FRR+ (communes les plus fragiles, installations depuis 2025) : micro-BNC ou réel.</p>
                                 </div>
                                 <p className="sim-filet text-[11px] pt-1.5 mt-1.5">
-                                  ⚠️ <strong>Prorata du plafond</strong> : l'année d'installation et l'année de basculement de palier (100 % → 60 %), le plafond annuel est proratisé au nombre de mois d'exonération effective (CGI Art. 44 octies A I + Art. 49 K annexe III CGI ; CE 18 juillet 2018, n° 412142). Sécurise auprès de ton SIE/AGA.
+                                  CGI art. 44 octies A (ZFU-TE), 44 octies B (QPV), 44 quindecies et 44 quindecies A (FRR), dans la limite des aides de minimis. ⚠️ L'année d'installation, le plafond ZFU-TE est proratisé : sécurise auprès de ton SIE ou de ton AGA.
                                 </p>
                               </TipBox>
 
@@ -1335,12 +1347,14 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             {(isZoneExoneneeAvailable('zfu', annee, anneeInstallationZone) || zoneExoneree === 'zfu') && (
                               <SelectItem value="zfu">🏙️ ZFU-TE{annee >= 2026 ? ' (installations ≤ 2025)' : ''}</SelectItem>
                             )}
-                            <SelectItem value="zfrr">🌾 ZFRR</SelectItem>
+                            <SelectItem value="qpv">🏙️ QPV (installations 2026-2030)</SelectItem>
+                            <SelectItem value="zfrr">🌾 FRR socle ou ex-ZRR (réel)</SelectItem>
+                            <SelectItem value="zfrr_plus">🌾 FRR+ (micro ou réel)</SelectItem>
                           </SelectContent>
                         </Select>
                         {annee >= 2026 && (
                           <FormDescription className="text-xs text-muted-foreground">
-                            ℹ️ ZFU-TE : dispositif clos au 31.12.2025 (CGI Art. 44 octies A). Plus disponible pour les nouvelles installations à partir de 2026. Les installations antérieures conservent leur exonération dégressive jusqu'au terme.
+                            ℹ️ ZFU-TE : dispositif clos au 31.12.2025 (CGI art. 44 octies A), remplacé pour les installations de 2026 à 2030 par le régime QPV (art. 44 octies B). Les installations antérieures conservent leur exonération dégressive jusqu'au terme.
                           </FormDescription>
                         )}
                         <FormMessage role="alert" />
@@ -1422,56 +1436,22 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <span className="font-semibold text-foreground">Crédits d'impôt</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {(() => {
-                          const credForm = creditFormationDirigeant ? calculateCreditFormation(form.getValues('heuresFormation') || 0) : 0;
                           const credAutre = form.getValues('creditImpotAutre') || 0;
                           const fraisED = form.getValues('fraisEmploiDomicile') || 0;
                           const fraisGE = form.getValues('fraisGardeEnfants') || 0;
                           const nbGarde = form.getValues('nombreEnfantsGarde') || 0;
                           const credED = fraisED > 0 ? Math.round(Math.min(fraisED, Math.min(12000 + (form.getValues('enfants') || 0) * 1500, 15000)) * 0.5) : 0;
                           const credGE = fraisGE > 0 && nbGarde > 0 ? Math.round(Math.min(fraisGE, 3500 * nbGarde) * 0.5) : 0;
-                          const total = credForm + credAutre + credED + credGE;
+                          const total = credAutre + credED + credGE;
                           return total > 0 ? `${total.toLocaleString('fr-FR')}€` : '';
                         })()}
                       </span>
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="space-y-3 pb-3">
-                    <FormField control={form.control} name="creditFormationDirigeant" render={({ field }) => (
-                      <FormItem className="sim-coche flex items-start gap-3">
-                        <FormControl><input type="checkbox" checked={field.value} onChange={field.onChange} className="sim-case" /></FormControl>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                          <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">Crédit formation dirigeant
-                          </FormLabel>
-                          <PremiumTooltip title="Crédit formation dirigeant" content={
-                              <div className="space-y-2">
-                                <p className="font-semibold">Crédit d'impôt pour formation</p>
-                                <p className="text-xs">Tu suis une formation pro (DPC, congrès, DIU…) → tu récupères un crédit d'impôt calculé sur le nombre d'heures.</p>
-                                <TipBox variant="info">
-                                  <p>📊 Calcul : heures × SMIC horaire ({SMIC_HORAIRE_2025.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €) = crédit. Max 40h = {calculateCreditFormation(40)} €/an.</p>
-                                </TipBox>
-                                <TipBox variant="tip">
-                                  <p>💡 ≠ déduction : un crédit d'impôt se soustrait directement de l'impôt dû. Si l'impôt est inférieur au crédit, le fisc te rembourse la différence !</p>
-                                </TipBox>
-                              </div>
-                            }>
-                              <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
-                            </PremiumTooltip>
-                          </div>
-                          <FormDescription className="text-xs mt-0.5">Heures × SMIC (plafond 40h = ~475€)</FormDescription>
-                        </div>
-                      </FormItem>
-                    )} />
-                    {creditFormationDirigeant && (
-                      <FormField control={form.control} name="heuresFormation" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm">Nombre d'heures de formation</FormLabel>
-                          <FormControl><Input type="number" step="1" min={0} max={40} placeholder="Ex: 20" {...field} value={field.value === 0 ? '' : field.value} onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)} onFocus={(e) => e.target.select()} /></FormControl>
-                          <FormDescription className="text-xs">Max 40h/an — Crédit = {calculateCreditFormation(field.value || 0)}€</FormDescription>
-                          <FormMessage role="alert" />
-                        </FormItem>
-                      )} />
-                    )}
+                    {/* Crédit d'impôt formation des dirigeants retiré (novembre 2026) : il ne vaut que
+                        pour les heures suivies jusqu'au 31/12/2024 (CGI art. 244 quater M, abrogé par
+                        la loi de finances 2026). Le simulateur couvre 2025 et 2026. */}
 
                     {/* ─── Emploi à domicile ─── */}
                     <FormField control={form.control} name="fraisEmploiDomicile" render={({ field }) => (

@@ -353,6 +353,7 @@ export function calculateDeductionsS1(honorairesConventionnes: number): {
  * Source : arrêtés ministériels DSS.
  */
 export const PASS_BY_YEAR: Record<number, number> = {
+  2023: 43992,
   2024: 46368,
   2025: 47100,
   2026: 48060, // valeur officielle confirmée — PDF CARMF 2026 p. 28 + communiqué assiette sociale 11/03/2026
@@ -384,6 +385,32 @@ export function getPerCap(beneficeFiscal: number, annee: number = 2026): {
   return { plancher, plafond };
 }
 
+/**
+ * Plafond de déduction de l'épargne retraite, selon le cadre (audit de novembre 2026,
+ * Légifrance au 14/11/2026) :
+ * - `per` : PER individuel déduit du revenu global (CGI art. 163 quatervicies), en
+ *   micro-BNC comme au réel. 10 % des revenus professionnels de l'année PRÉCÉDENTE,
+ *   retenus dans la limite de 8 PASS, plancher 10 % du PASS, avec le PASS de l'année
+ *   précédente (2026 : plancher 4 710 €, maximum 37 680 €). Le simulateur prend les
+ *   revenus de l'année simulée pour ceux de l'année précédente (année type).
+ * - `madelin` : Madelin ou PER déduit du BNC réel (CGI art. 154 bis, II-1°). 10 % du
+ *   bénéfice dans la limite de 8 PASS, plus 15 % de la fraction entre 1 et 8 PASS,
+ *   plancher 10 % du PASS, avec le PASS de l'année d'imposition.
+ * `assiette` : revenu professionnel imposable avant déduction de ces versements.
+ */
+export function getPlafondEpargneRetraite(
+  type: 'per' | 'madelin',
+  assiette: number,
+  annee: number = 2026,
+): number {
+  const pass = type === 'per' ? getPass(annee - 1) : getPass(annee);
+  const base = Math.min(Math.max(0, assiette), 8 * pass);
+  const plafond = type === 'per'
+    ? 0.10 * base
+    : 0.10 * base + 0.15 * Math.max(0, base - pass);
+  return Math.round(Math.max(0.10 * pass, plafond));
+}
+
 // ═══════════════════════════════════════════════════════════
 // PHASE 2 — ZONES EXONÉRÉES (ZFU-TE / ZFRR)
 // ═══════════════════════════════════════════════════════════
@@ -400,7 +427,7 @@ export function getPerCap(beneficeFiscal: number, annee: number = 2026): {
  * Source : CGI art. 44 octies A (ZFU) / art. 44 quindecies (ZFRR)
  */
 export function getTauxExonerationZone(
-  zone: 'aucune' | 'zfu' | 'zfrr',
+  zone: 'aucune' | 'zfu' | 'zfrr' | 'zfrr_plus' | 'qpv',
   anneeInstallation: number,
   anneeFiscale: number = 2025
 ): number {
@@ -408,7 +435,9 @@ export function getTauxExonerationZone(
   
   const anciennete = anneeFiscale - anneeInstallation + 1; // année 1 = année d'installation
   
-  if (zone === 'zfu') {
+  // ZFU-TE (44 octies A) et régime QPV (44 octies B, créations 2026-2030) : exonération
+  // totale jusqu'au 59e mois, puis imposition à 40, 60 et 80 %.
+  if (zone === 'zfu' || zone === 'qpv') {
     if (anciennete <= 5) return 1.0;
     if (anciennete === 6) return 0.60;
     if (anciennete === 7) return 0.40;
@@ -416,7 +445,8 @@ export function getTauxExonerationZone(
     return 0; // > 8 ans : plus d'exonération
   }
   
-  if (zone === 'zfrr') {
+  // FRR « socle » ou ex-ZRR (zfrr) et FRR « plus » (zfrr_plus) : mêmes taux.
+  if (zone === 'zfrr' || zone === 'zfrr_plus') {
     if (anciennete <= 5) return 1.0;
     if (anciennete === 6) return 0.75;
     if (anciennete === 7) return 0.50;
