@@ -13076,6 +13076,16 @@ Suite de § 9.fz, à la demande du propriétaire (« fais ton audit complet »).
 
 **Fichiers** : `src/pages/mentions-legales.astro`, `MIGRATION.md`.
 
+### 9.gb Mentions légales : capital social retiré (14 novembre 2026)
+
+Décision du propriétaire, prise après avoir été informé que la LCEN (art. 6 III) et le Code
+de commerce (art. R123-237) demandent d'afficher le capital social d'une société inscrite au
+RCS. La section « Éditeur » dit « HIPPODOC, société par actions simplifiée à associé unique
+(SASU) », sans « au capital de 1 € ». À rétablir si le propriétaire change d'avis ou si le
+capital est augmenté.
+
+**Fichiers** : `src/pages/mentions-legales.astro`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
