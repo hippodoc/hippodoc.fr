@@ -12764,6 +12764,176 @@ jusqu'à 110 % du PASS, croissant jusqu'à 140 %, 3,10 % au-delà, sans exceptio
 Le modèle de l'API l'applique ; `modele-ti` (3,10 % d'office dans les DOM) ne cite pas de source.
 Le calcul de l'API est donc gardé, à raison : l'écart ouvert au § 9.fv est tranché.
 
+### 9.fx Simulateur : première année d'activité, dispense partielle de la complémentaire, ASV proportionnelle (14 novembre 2026)
+
+Le propriétaire, après la liste des cas non couverts du § 9.fw : « ok go je te fais confiance /
+pense à tout, fais ça proprement / sois minutieux ». Trois cas ajoutés : la première (et la
+deuxième) année d'activité, et les deux réductions de la CARMF accordées sur demande aux revenus
+modestes.
+
+**Sources.** CARMF, « Vos cotisations en début d'activité » (2026) : tableau « 1re année
+d'affiliation en 2026 (médecin de moins de 40 ans) et 2e année d'affiliation en 2026 » : base
+(provisionnel) 772 € en secteur 1, 968 € en secteur 2 ; complémentaire 0 € ; ASV, part forfaitaire
+1 917 € et 5 751 €, part d'ajustement 122 € et 365 € ; invalidité-décès 626 € ; total 3 437 € et
+7 710 €. « Les cotisations des deux premières années d'affiliation ne sont pas dues, sauf si vous
+êtes âgé de plus de 40 ans au début de votre activité libérale. Dans ce cas, la cotisation est
+proportionnelle aux revenus nets d'activité indépendante de 2024 plafonnés, sans régularisation
+ultérieure ». « La part d'ajustement est assise pour les deux premières années civiles
+d'affiliation, sur les mêmes bases forfaitaires retenues pour le régime de base (9 131 € en 1re et
+2e année en 2026) soit des cotisations de 365 € ». ASV : « Les médecins dont le revenu conventionné
+2024 est inférieur à 63 900 € peuvent demander que soit substituée à la cotisation forfaitaire ASV
+2026, une cotisation proportionnelle à ces revenus, à hauteur de 3 % pour les médecins en secteur 1
+et 9 % pour les médecins en secteur 2 » ; « les points de retraite sont attribués en fonction de la
+cotisation effectivement versée » ; demande au plus tard le 28 février, dans eCARMF. CARMF,
+« Dispenses pour insuffisance de revenus » (2026) : « Une dispense partielle ou totale de la
+cotisation [du régime complémentaire] […] peut être accordée sur demande, compte tenu de vos
+revenus imposables de toute nature, au titre de l'année précédente. Les cotisations ou fractions de
+cotisations ayant fait l'objet d'une dispense ne donnent pas lieu à acquisition de points » ;
+barème 2026 (revenus imposables du médecin de 2025) : jusqu'à 6 100 €, 100 % ; de 6 101 € à
+14 300 €, 75 % ; de 14 301 € à 23 100 €, 50 % ; de 23 101 € à 32 500 €, 25 %. Urssaf : modèle
+`modele-ti` (règles « début activité ») et modèle de l'API ; service-public.fr, F39739.
+
+**Début d'activité.** Nouveau champ du formulaire, « Début d'activité » (« Plus de 2 ans
+d'activité », « 1re année d'activité », « 2e année d'activité »), à côté de l'exercice. Il remplace
+l'option « Jeune affilié (< 2 ans, < 40 ans) » de la situation CARMF, qui retirait la
+complémentaire et rien d'autre ; une ancienne valeur enregistrée vaut « 2e année » (moteur et
+formulaire). Les deux premières années, le modèle reçoit : complémentaire à 0 €, ASV d'ajustement
+sur la base forfaitaire (365 € en 2026, 122 € à la charge d'un secteur 1) et, la 1re année, pas de
+CURPS (`modele-ti` : pas de CURPS l'année de la création ; l'ancien modèle la comptait, 46 € pour un
+installé). Les cotisations affichées sont celles que l'on paie pour l'année, comme dans le tableau
+de la CARMF (retraite de base sur le revenu réel, une fois régularisée). La complémentaire se
+calcule sur les revenus de l'avant-dernière année : les deux années exonérées sont celles dont la
+base précède l'installation, et les revenus de la 1re année serviront de base à la complémentaire de
+la 3e. La conclusion le dit donc, en PAMC hors dispense, les deux premières années : « Tes deux
+premières années, la complémentaire de la CARMF n'est pas due. Elle arrive la 3e année, calculée
+sur tes revenus de l'avant-dernière année : environ X €/an à ces revenus. » (X : le montant du cas
+général au même revenu, rendu à l'euro près par le modèle en 2025 et en 2026). Après 40 ans, la
+complémentaire de ces deux années porte sur les revenus d'activité indépendante d'il y a deux ans,
+souvent nuls : le simulateur la compte à 0 €, et l'infobulle et le mode d'emploi le disent.
+
+**Première année : ce qui part, ce qui est dû, ce qui reste.** Avec « 1re année d'activité », un
+bloc s'ajoute sous la conclusion : « Première année d'activité / Ce qui part cette année, et ce qui
+viendra ensuite », et un tableau (« Prélevé en 2026 », « Dû pour 2026 », « À payer en 2027 » ;
+lignes Urssaf, CARMF en PAMC, Impôt, Total). Prélevé : en PAMC, les cotisations provisionnelles,
+calculées par le modèle sur la base forfaitaire de 19 % du PASS (9 131 € en 2026), entreprise créée
+dans l'année ; au RSPM, les cotisations de l'année (déclarées au fil des recettes) ; impôt 0 €. Dû :
+les cotisations de l'année et l'impôt de l'activité libérale, les mêmes que la conclusion. Contrôles :
+CARMF provisionnelle 3 437 € en secteur 1 et 7 710 € en secteur 2, égales au tableau de la CARMF ;
+Urssaf provisionnelle 1 073 € en secteur 1 (CSG-CRDS 9,7 % de 9 131 € = 886 €, maladie 9 €,
+indemnités journalières sur 40 % du PASS 58 €, formation 120 €) et 1 064 € en secteur 2, égales au
+calcul à la main. Textes du bloc : « L'Urssaf et la CARMF appellent d'abord des cotisations sur une
+base forfaitaire de 9 131 € (19 % du plafond de la Sécurité sociale), puis les régularisent sur ton
+revenu réel l'année suivante, après ta déclaration de revenus : X € à payer à ce moment-là. Une
+estimation de ton revenu, déclarée à l'Urssaf, réduit cet écart. » (« L'Urssaf appelle … les
+régularise » si la CARMF est dispensée ; « X € te seront remboursés » si l'écart est négatif) ; au
+RSPM : « Au RSPM, tes cotisations suivent tes recettes, déclarées chaque mois ou chaque trimestre :
+rien à rattraper. » ; « Aucun acompte d'impôt cette année, sauf si tu en demandes un sur
+impots.gouv.fr : l'impôt de 2026 (X €) sera prélevé l'an prochain, de septembre à décembre, en plus
+de tes premiers acomptes. » ou « À ces revenus, ton impôt de 2026 est nul : rien à prévoir de ce
+côté l'an prochain. » ; « Garde X € de côté chaque mois sur un compte à part : c'est ce qui sera
+appelé en 2027. » Exemple : remplaçant de secteur 1, 60 000 € de recettes, 6 000 € de charges :
+4 510 € prélevés en 2026, 15 116 € dus pour 2026, 10 606 € à payer en 2027 (884 € par mois).
+
+**Dispense partielle de la complémentaire.** Case « Dispense partielle de la complémentaire (sur
+demande) », dans « Retraite & CARMF », en PAMC, affilié, après les deux premières années. Le taux du
+barème se lit sur les revenus du médecin calculés sans la dispense (bénéfice libéral imposable,
+salaires après abattement, revenus fonciers saisis ; pas ceux du conjoint), puis l'impôt est
+recalculé avec la complémentaire réduite. Par prudence, les bénéfices exonérés d'impôt (zone,
+permanence des soins) y sont comptés : le revenu fiscal de référence les réintègre, et sans eux un
+installé en zone exonérée se voyait proposer une dispense de 100 % (25 % avec eux). La CARMF regarde
+l'année précédente : le simulateur l'estime sur l'année saisie (il le dit).
+
+**ASV proportionnelle.** Case « ASV proportionnelle (sur demande) », mêmes conditions. Elle remplace
+la part forfaitaire seulement : le seuil de 63 900 € est le revenu où 9 % font le forfait de 2026
+(5 751 €), et la part d'ajustement (4 %) reste due. Le modèle reçoit la part forfaitaire à 9 % du
+revenu conventionné (vérifié sur l'API : l'ajustement reste calculé), seulement quand elle coûte
+moins que le forfait. Revenu conventionné : l'assiette moins la part non conventionnée, comme le
+modèle. La CARMF regarde l'avant-dernière année : même estimation.
+
+**Suggestions de la conclusion.** En PAMC, affilié, après les deux premières années, quand la case
+n'est pas cochée : « Sur demande, la CARMF réduit ta complémentaire de X % à ces revenus : Y €/an de
+moins, sans points de retraite pour cette part. » ; « Sur demande avant fin février, la part
+forfaitaire de ton ASV peut devenir proportionnelle à ton revenu conventionné : Y €/an de moins, avec
+moins de points de retraite. » (à partir de 100 €/an). Les deux se calculent par les fonctions du
+moteur (`revenusImposablesDuMedecin`, `economieAsvDe`) : le pourcentage et le montant annoncés sont
+ceux qu'applique la case cochée (vérifié au centime pour la complémentaire, à l'euro pour l'ASV).
+
+**Textes du formulaire.** Infobulle de « Début d'activité » : « 1re et 2e années : la complémentaire
+de la CARMF n'est pas due (si tu as commencé après 40 ans, elle se calcule sur tes revenus d'activité
+indépendante d'il y a deux ans, souvent nuls), et l'ASV d'ajustement porte sur une base forfaitaire
+(9 131 € en 2026). La complémentaire arrive la 3e année. » / « 1re année : l'Urssaf et la CARMF
+appellent des cotisations provisionnelles sur cette base forfaitaire, puis régularisent l'année
+suivante, et l'impôt de l'année n'est prélevé que l'an prochain. Les résultats montrent ce qui part
+cette année et ce qui viendra ensuite. » Situation CARMF : l'option « Jeune affilié (< 2 ans,
+< 40 ans) » est retirée ; résumé « Jeune affilié » retiré, « Réductions demandées » quand une case
+est cochée ; infobulle « Affilié : cotisations complètes (base + complémentaire + invalidité-décès) »
+devient « Affilié : retraite de base, complémentaire, ASV et invalidité-décès », « < 2 ans, <40 ans :
+exonéré de complémentaire les 2 premières années » devient « Les deux premières années :
+complémentaire non due, à indiquer dans « Début d'activité » » ; sous le choix, « Cotisations
+complètes : base + complémentaire + invalidité-décès » et « Exonéré de complémentaire les 2 premières
+années — cotisations réduites » deviennent « Retraite de base, complémentaire, ASV et
+invalidité-décès » (suivi de « (sans complémentaire les deux premières années) » les deux premières
+années). Cases : descriptions « Revenus imposables jusqu'à 32 500 € : 25 à 100 % de la complémentaire
+en moins. Le simulateur les estime sur l'année saisie. » et « Revenu conventionné sous 63 900 € : 3 %
+de ce revenu en secteur 1 (9 % en secteur 2) au lieu du forfait. » ; infobulles : le barème, « La
+part dispensée ne donne pas de points de retraite. » ; « Si ton revenu conventionné est sous
+63 900 €, la CARMF peut remplacer la part forfaitaire de l'ASV (1 917 € en secteur 1, 5 751 € en
+secteur 2, en 2026) par 3 % de ce revenu en secteur 1, 9 % en secteur 2. La part d'ajustement reste
+due. », « À demander au plus tard fin février de l'année, dans l'espace eCARMF. », « Les points de
+retraite suivent la cotisation versée : moins de cotisation, moins de points. »
+
+**Mode d'emploi** (`/simulateur`). Ajouts : « Début d'activité — Première année, deuxième année, ou
+plus. Les deux premières années, la complémentaire de la CARMF n'est pas due (si tu as commencé
+après 40 ans, elle se calcule sur tes revenus d'activité indépendante d'il y a deux ans, souvent
+nuls) et l'ASV d'ajustement porte sur une base forfaitaire ; la complémentaire arrive la 3e année. La
+première année, les résultats montrent ce qui est prélevé tout de suite (cotisations provisionnelles
+sur une base forfaitaire, pas d'acompte d'impôt) et ce qui sera appelé l'année suivante. » ; « Ta
+première année — Si tu l'as indiquée : ce qui est prélevé cette année, ce qui est dû pour l'année et
+ce qui sera appelé l'année suivante. » ; « Dispense partielle de la complémentaire — Sur demande,
+selon tes revenus imposables de toute nature de l'année précédente : 100 % jusqu'à 6 100 €, 75 %
+jusqu'à 14 300 €, 50 % jusqu'à 23 100 €, 25 % jusqu'à 32 500 € (barème 2026). La part dispensée ne
+donne pas de points de retraite. » ; « ASV proportionnelle — Sous 63 900 € de revenu conventionné, la
+part forfaitaire de l'ASV peut être remplacée par 3 % de ce revenu en secteur 1 (9 % en secteur 2),
+sur demande avant la fin février ; la part d'ajustement reste due. Moins de cotisation, moins de
+points de retraite. » Modifiés : « Dispensé — Sur demande à la CARMF, pour un remplaçant dont le
+revenu net reste sous 15 000 € : ni cotisations CARMF, ni trimestres de retraite, ni couverture
+invalidité-décès. » ; « Taux RID — Au RSPM, l'invalidité-décès peut être cotisée à 25 %
+(couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le simulateur
+retient 25 %. » Archivés (textes d'avant) : « Affilié < 2 ans, < 40 ans — Si tu viens de t'installer
+et que tu as moins de 40 ans, tu es exonéré de la cotisation complémentaire pendant tes 2 premières
+années. Tes cotisations sont donc réduites (montants forfaitaires). C'est un vrai coup de pouce au
+démarrage. » ; « Dispensé — Sur demande à la CARMF, généralement pour des revenus faibles (démarche
+non automatique, à effectuer auprès de la caisse). » ; « Taux RID — L'invalidité-décès peut être
+cotisée à 25% (couverture minimale) ou 100% (couverture complète). Par défaut, le simulateur utilise
+100%. » (le défaut du formulaire était déjà 25 %).
+
+**Contrôles.** Banc de ce chantier : provisionnels (ci-dessus) ; dû des deux premières années
+(complémentaire 0 €, ASV 2 039 € en secteur 1 à 60 000 €), égal pour l'ancienne valeur « jeune
+affilié » ; dispense partielle sur huit profils (réel et micro, salaires, foncier, zone exonérée,
+permanence des soins) : retrait égal au barème appliqué aux revenus sans dispense, total et Super-Net
+cohérents, pastille au même taux et au même montant ; ASV proportionnelle sur cinq profils (secteurs 1
+et 2, part non conventionnée de 20 %, forfait 2 %, revenus au-dessus du seuil) : montant égal au
+calcul à la main, gain égal à celui annoncé ; complémentaire de la 3e année égale à celle du cas
+général (2025 et 2026, trois profils, réel et micro) ; rendus (bloc de 1re année, RSPM, CARMF
+dispensée, 2e année) et cohérence du bloc (prélevé + à payer = dû ; dû = 12 × « à mettre de côté »
+de la conclusion) : aucun échec. Banc des 24 situations du § 9.ft : aucun échec. Contrôle du modèle
+Urssaf : inchangé. Construction : 72 pages, `verify-site.mjs` sans erreur, feuille commune inchangée
+(`_astro_assets.HrxwAN9D.css`). Chromium à 390 et 1 280 px, WebKitGTK à 1 300 et 390 px : aucun
+débordement de page ni du tableau.
+
+**Limites, dites.** Les revenus que la CARMF regarde (année précédente pour la dispense,
+avant-dernière pour l'ASV et la complémentaire) sont estimés sur l'année saisie, revenus stables
+supposés ; c'est déjà le cas de la complémentaire de 2026, calculée ici sur la nouvelle assiette des
+revenus de 2026 (§ 9.fv), quand la CARMF l'appelle sur les revenus de 2024 : « La réforme entrera
+donc en vigueur pour le régime de base à partir de 2026 et, pour les régimes complémentaire et ASV, à
+partir de 2027 (la cotisation d'ajustement du régime ASV restera calculée sur la base des revenus
+conventionnels) » (CARMF, actualité sur la réforme de l'assiette sociale, 2026). Le revenu
+conventionné (ajustement et ASV proportionnelle) est estimé par l'assiette, comme dans le modèle de
+l'Urssaf. Après 40 ans avec des revenus d'activité indépendante deux ans avant, la complémentaire des deux
+premières années n'est pas calculée. La deuxième année n'a pas de bloc « ce qui part, ce qui reste »
+(ses cotisations provisionnelles reposent sur les revenus de la première, que le simulateur ne
+demande pas).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

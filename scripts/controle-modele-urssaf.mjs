@@ -8,7 +8,8 @@
  * deux fois. Ce script interroge l'API sur un cas de référence, SANS surcharge, et échoue dès
  * qu'une valeur témoin a changé ; il vérifie aussi que les surcharges sont toujours acceptées.
  *
- * Lancé chaque semaine par `.github/workflows/controle-modele-urssaf.yml`, et à la main :
+ * À lancer à la main quand `urssaf.ts` change, et au moins chaque mois (le workflow hebdomadaire
+ * proposé au § 9.fw n'a pas été mis en place) :
  *   node scripts/controle-modele-urssaf.mjs
  * S'il échoue : relire les règles du modèle, puis retirer ou adapter les surcharges de
  * `situationMedecin` et mettre à jour les valeurs témoins ci-dessous.

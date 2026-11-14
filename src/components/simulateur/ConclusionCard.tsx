@@ -1,9 +1,9 @@
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Scale, AlertTriangle, FileQuestion } from "lucide-react";
+import { Trophy, Scale, AlertTriangle, FileQuestion, PiggyBank, CalendarClock } from "lucide-react";
 import { SEUIL_EQUIVALENCE_ANNUEL, type RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
 import { deductionsComparees } from "@/lib/simulateur/deductions";
-import { MARGE_RECETTES } from "@/lib/simulateur/usePublicodesSimulation";
+import { MARGE_RECETTES, debutActiviteDe, tauxDispenseComplementaire, revenusImposablesDuMedecin, economieAsvDe, complementaireCarmfPleine } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 import type { LucideIcon } from "lucide-react";
 
@@ -193,6 +193,51 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
       icon: FileQuestion,
       message: "Charges faibles déclarées. Vérifie que tu n'as rien oublié.",
     });
+  }
+
+  // Les deux premières années, la complémentaire de la CARMF n'est pas due ; elle arrive la 3e,
+  // calculée sur les revenus de l'avant-dernière année (§ 9.fx). Le dire, avec son montant à ces
+  // revenus : les cotisations affichées en sont plus basses que celles des années suivantes.
+  if (!comparison.isRSPMUsed && formData.situationCarmf !== 'dispense' && debutActiviteDe(formData)
+      && (retenu.cotisationsDetail?.retraite ?? 0) > 0) {
+    const aVenir = complementaireCarmfPleine(formData, retenu === microBnc ? 'micro-bnc' : 'reel');
+    if (aVenir > 0) {
+      alerts.push({
+        type: 'info',
+        icon: CalendarClock,
+        message: `Tes deux premières années, la complémentaire de la CARMF n'est pas due. Elle arrive la 3e année, calculée sur tes revenus de l'avant-dernière année\u00a0: environ ${euros(aVenir)}/an à ces revenus.`,
+      });
+    }
+  }
+
+  // Réductions de la CARMF accordées sur demande, ouvertes et pas demandées (§ 9.fx) : en PAMC,
+  // affilié, après les deux premières années. Revenus estimés sur l'année simulée (la CARMF
+  // regarde l'année précédente pour la complémentaire, l'avant-dernière pour l'ASV).
+  const detailCotisations = retenu.cotisationsDetail;
+  if (!comparison.isRSPMUsed && formData.situationCarmf !== 'dispense' && !debutActiviteDe(formData)) {
+    const complementaire = detailCotisations?.retraiteComplementaire ?? 0;
+    if (!formData.dispenseComplementaire && complementaire > 0) {
+      // Même lecture que le moteur (`simulerRegime`) : le pourcentage suggéré est celui appliqué.
+      const taux = tauxDispenseComplementaire(revenusImposablesDuMedecin(retenu, comparison.liberalExonereAnnuel ?? 0));
+      if (taux > 0) {
+        alerts.push({
+          type: 'info',
+          icon: PiggyBank,
+          message: `Sur demande, la CARMF réduit ta complémentaire de ${Math.round(taux * 100)}\u00a0% à ces revenus\u00a0: ${euros(complementaire * taux)}/an de moins, sans points de retraite pour cette part.`,
+        });
+      }
+    }
+    const asv = detailCotisations?.asv ?? 0;
+    if (!formData.asvProportionnelle && asv > 0) {
+      const economieAsv = economieAsvDe(formData, retenu === microBnc ? 'micro-bnc' : 'reel');
+      if (recettesImposables > 0 && economieAsv >= 100) {
+        alerts.push({
+          type: 'info',
+          icon: PiggyBank,
+          message: `Sur demande avant fin février, la part forfaitaire de ton ASV peut devenir proportionnelle à ton revenu conventionné\u00a0: ${euros(economieAsv)}/an de moins, avec moins de points de retraite.`,
+        });
+      }
+    }
   }
 
   // Les pastilles « Revenus salariés pris en compte dans l'IR » et « Conjoint inclus dans le

@@ -80,6 +80,8 @@ export interface SimulationResult {
     retraite: number;  // CARMF total (RID + complémentaire)
     retraiteRid?: number;  // RID seul (pour affichage détaillé)
     retraiteComplementaire?: number;  // Régime complémentaire CARMF
+    retraiteBase?: number;  // Retraite de base CARMF (PAMC)
+    asv?: number;  // ASV, part du médecin (PAMC)
     csgCrds: number;
     formation: number;
   };
