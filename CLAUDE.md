@@ -22,7 +22,9 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 ## Invariants (ne pas casser)
 
 - **URLs publiques figées** — jamais renommer/supprimer une route existante (équité
-  d'indexation). Politique : **pas de slash final** (`trailingSlash: 'never'`,
+  d'indexation). Une seule exception, décidée par le propriétaire : les trois pages de série
+  (`/blog/serie/*`), retirées et redirigées en 301 vers un thème ou `/blog` (§ 9.fq) ;
+  `verify-site.mjs` (« 4 septdecies ») garde ces trois redirections. Politique : **pas de slash final** (`trailingSlash: 'never'`,
   `"trailingSlash": false` dans vercel.json). Les redirections 301 vivent dans
   `vercel.json` et ne s'appliquent QUE sur Vercel (404 locaux attendus sur /dashboard etc.).
 - **Contenu français verbatim** — le wording produit/articles ne se « réécrit » pas.
@@ -50,10 +52,9 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
 **Toutes les pages sont dans la nouvelle direction artistique** depuis la phase 5d :
 l'accueil (MIGRATION.md § 9.eb), l'en-tête, le pied, la police, la bannière cookies et la
 bulle de chat (phase 5a, § 9.ed), `/tarifs`, `/faq`, `/qui-sommes-nous` et `/essai`
-(5b, § 9.ee), `/blog`, les pages de série et les 48 articles (5c, § 9.ej ; refaits en
-§ 9.fj à 9.fl), `/simulateur`
-(§ 9.ek), le guide des déclarations et la calculette (§ 9.el), `/guide`, `/comparatif`,
-les quatre pages légales et la 404 (§ 9.em). Une nouvelle page se fait dans la DA, sans
+(5b, § 9.ee), `/blog`, les pages de série (retirées en § 9.fq) et les 48 articles
+(5c, § 9.ej ; refaits en § 9.fj à 9.fl), `/simulateur` (§ 9.ek), le guide des déclarations
+et la calculette (§ 9.el), `/guide`, `/comparatif`, les quatre pages légales et la 404 (§ 9.em). Une nouvelle page se fait dans la DA, sans
 classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
 
 - **Feuille** : `src/styles/da.css` (police, jetons, `.btn`, `.wrap`, feuilles `.band`,
@@ -92,8 +93,8 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   elle s'efface tant qu'un champ de texte a le focus (`:read-write:focus`). Ces deux
   règles d'arrivée ont un poids nul (`:where`) : une page qui veut sa propre plage
   l'écrit avec `#crisp-launcher` seul, comme `/essai` (380 à 420 px) et les articles du
-  blog (après la carte d'essai, § 9.fm) ; `/guide` cache la bulle sous 768 px, `/blog`, les
-  séries et les thèmes sous 640 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
+  blog (après la carte d'essai, § 9.fm) ; `/guide` cache la bulle sous 768 px, `/blog` et
+  les thèmes sous 640 px. Un premier écran de téléphone n'a donc plus à compter avec elle.
   Elle passe toujours sur le bord droit des contenus pendant le défilement : rien
   d'important ne se cale à moins de 72 px du bord droit dans un élément fixe ou collant
   en bas d'écran.
@@ -409,7 +410,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     est moins large que la case. Ces tailles sont les plus grandes qui ne font pas descendre la
     première ligne du texte de plus de 16 px, mesurées sur les 48 articles à chaque palier (méthode
     en § 9.fo ; la vignette à côté du titre a été essayée : +32 à +118 px) : on ne les agrandit pas
-    sans refaire la mesure. `srcset` 160, 264, 288, 400 px ; `sizes` = largeur dessinée de CETTE
+    sans refaire la mesure. Depuis § 9.fq (pastille de série retirée), de 700 à 1 359 px, son bas est
+    sur celui de la ligne de confiance (même marge basse), comme au-delà : centrée, elle descendait et
+    sa loupe mordait sur la feuille sable ; un titre d'une ligne laisse de l'air au-dessus de lui (la
+    rangée vide de la pastille grandit). `srcset` 160, 264, 288, 400 px ; `sizes` = largeur dessinée de CETTE
     affiche à chaque palier ; le `src` reste celui d'avant (900 px, ou la largeur de l'affiche quand
     elle est plus petite).
     La vignette est un `<button popovertarget="affiche-grande">` (`aria-label` « Agrandir
@@ -453,7 +457,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 - **Les affiches** (§ 9.fo ; le propriétaire : « pas trop grande mais pas trop petite ») : une
   affiche ne se rogne jamais, ni ne se déforme. Les 47 affiches (48 articles) ont quatre formats
   (2:3, 0,75, 0,79, 0,805) : aucun cadre commun ne les garde toutes en rognant. Dans les listes
-  (`/blog`, séries, une, articles connexes) et la vignette d'article : une case 4:5, l'affiche
+  (`/blog`, thèmes, une, articles connexes) et la vignette d'article : une case 4:5, l'affiche
   entière, à son format, à la hauteur de la case (`height` écrite, `width: auto`, `max-width: none` :
   le socle de Tailwind borne les images à leur boîte), centrée ; le vide d'une affiche plus étroite
   (une 2:3 : 17 % de la largeur) est le blanc de la feuille. Des bandes aux couleurs des bords, essayées
@@ -466,12 +470,12 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   visibles à tout moment sous l'en-tête à 360 × 640 et 393 × 692, titre en 4 lignes au plus, date et
   durée sur une ligne, `/blog` sous 7 880 px à 393) ; essais et chiffres en § 9.fo. Les images
   des listes ne se chargent pas en priorité. Élément LCP : un texte au téléphone (le titre de
-  `/blog`, le texte d'une série) ; à partir de 768 px, sur `/blog`, souvent l'affiche de la une
+  `/blog`, l'introduction d'une page de thème) ; à partir de 768 px, sur `/blog`, souvent l'affiche de la une
   (une 0,805 : 242 × 300 px), servie par son préchargement (`fetchpriority="high"`) ; PageSpeed
   signale son `loading="lazy"`, gardé pour le téléphone, sans effet sur la note.
   Deux articles ont la même affiche (`facturation-electronique-medecin-remplacant`,
   `generer-facture-remplacement`) : décision de contenu laissée au propriétaire.
-- **`/blog`, les séries et les thèmes** (§ 9.fk, § 9.fo, § 9.fp) : des lignes sur une feuille blanche (`BlogCard.astro`,
+- **`/blog` et les thèmes** (§ 9.fk, § 9.fo, § 9.fp, § 9.fq) : des lignes sur une feuille blanche (`BlogCard.astro`,
   `src/styles/blog-liste.css`), l'affiche à gauche, entière, dans une case de 26,5 % de la largeur
   de l'écran au téléphone (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393), 144 px à
   partir de 640 px ; une colonne de lignes jusqu'à 1 023 px, deux au-delà. La une : au téléphone,
@@ -492,20 +496,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   `/blog`. Registre `src/lib/blog-themes.ts` (slug, nom, titre et description de page, ligne de
   contexte, introduction, fond de l'image de partage ; l'ordre du tableau est l'ordre
   d'affichage) ; champ `theme` obligatoire du frontmatter (`z.enum`). Pages
-  `/blog/theme/<slug>` (`src/pages/blog/theme/[theme].astro`, modèle des pages de série :
-  `blog-liste.css`, `BlogCard.astro` ; adresses figées). Fil d'Ariane de l'article : Accueil ›
-  Blog › Thème › Article (écran et `BreadcrumbList`) ; la pastille de série reste et mène à sa
-  page. Les trois pages de série restent en ligne et dans le sitemap, hors de la navigation de
-  `/blog`. Lignes (`BlogCard`, prop `etiquette`) : la série sur les pages de série, le thème et le
-  numéro de fiche (« Fiche Fiscalité #4 ») sur `/blog`, le numéro seul sur une page de thème.
+  `/blog/theme/<slug>` (`src/pages/blog/theme/[theme].astro`, `blog-liste.css`, `BlogCard.astro` ;
+  adresses figées : deux pages de série y sont redirigées). Fil d'Ariane de l'article : Accueil ›
+  Blog › Thème › Article (écran et `BreadcrumbList`) ; `articleSection` du schéma `Article` et
+  `<category>` du flux RSS : le nom du thème (§ 9.fq). Lignes (`BlogCard`, prop `theme`) : le nom
+  du thème sur `/blog`, aucune étiquette sur une page de thème (c'est celui de la page).
   Mesure : `blog_theme_viewed` (`theme_id`, `total_articles`), propriété `theme` sur les
   événements de l'article ; `data-blog-theme` sur `<main>` (page de thème) et sur `<article>`.
   `verify-site.mjs` (« 4 sexdecies ») échoue si un article n'a pas de thème valide, si son fil
   d'Ariane ne passe pas par la page de son thème en position 3, si une page de thème ne liste
   pas exactement ses articles (dans l'ordre de `/blog`), si son propre fil d'Ariane n'est pas
   Accueil › Blog › elle, si une autre puce que la sienne porte `aria-current`, si un article est
-  listé par zéro ou deux pages de thème, si une ligne de `/blog` n'a pas le nom de son thème pour
-  étiquette, si le sitemap n'a pas exactement `NB_THEMES` (5) pages de thème, si les puces de
+  listé par zéro ou deux pages de thème, si une ligne de `/blog` n'a pas pour étiquette le nom de
+  son thème, et lui seul (§ 9.fq), si le sitemap n'a pas exactement `NB_THEMES` (5) pages de thème, si les puces de
   `/blog` ne les lient pas. Un sixième thème se décide : registre, `NB_THEMES`, textes à faire
   relire (MIGRATION.md). Textes du registre : aucun chiffre, et pas plus de trois mots de suite
   communs entre introduction et description (comptés sans la ponctuation).
@@ -517,16 +520,34 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   plus) par trois règles qui vont ensemble : un `::before` vide dans la piste de l'étiquette (une
   piste vide prenait toute la place libre), la date calée en haut de sa piste, l'affiche au milieu ;
   et chaque élément du texte a sa colonne écrite (un nouvel élément aussi : sans elle, le placement
-  automatique ouvre une seconde colonne et les lignes grandissent). Les pages de série n'en ont pas
-  besoin (étiquette d'une ligne) et n'y sont pas soumises (identiques au pixel). Au téléphone,
-  l'étiquette « Thème · Fiche … #N » de `/blog` prend deux lignes (24 lignes sur 47 ; elle demande
-  320 à 365 px, la colonne en a 189 à 360 px) : 3 articles entiers 92 % du temps à 360 × 640 au lieu
-  de 100 %, accepté (forcée sur une ligne, elle se coupe) ; 100 % à 393 × 692. Les six puces font
-  trois rangées au téléphone : la une de `/blog` descend de 52 px et son affiche n'est plus entière
-  dans le premier écran à 393 × 692 et 402 × 680 (§ 9.fp, « Rebase sur les affiches » : à décider).
-  Puces des thèmes : deux colonnes
-  jusqu'à 699 px, trois au-delà (`.bl-series.bl-themes`, deux classes : les règles des séries à
-  partir de 560 px viennent après dans la feuille).
+  automatique ouvre une seconde colonne et les lignes grandissent). Au téléphone, le nom du thème
+  prend deux lignes pour « Statut, contrats et revenus » et « Cotisations et protection » à 360 px
+  (17 lignes sur 47 ; 11 à 393 px) : 3 articles entiers 98,7 % du temps à 360 × 640 pli ouvert,
+  100 % pli fermé et à 393 × 692 (92 % avant § 9.fq, quand le numéro de fiche suivait le thème).
+  Les six puces font trois rangées au téléphone : la une de `/blog` descend de 52 px et son affiche
+  n'est plus entière dans le premier écran à 393 × 692 et 402 × 680 (§ 9.fp, « Rebase sur les
+  affiches » : à décider ; son titre y tient depuis § 9.fq). Puces des thèmes : deux colonnes
+  jusqu'à 699 px, trois au-delà (`.bl-series.bl-themes`, deux classes : elles passaient avant les
+  règles des puces de séries, retirées en § 9.fq avec leurs pages).
+- **Les séries ne s'affichent plus** (§ 9.fq, décision du propriétaire du 14 novembre 2026) : le
+  thème est le seul classement à l'écran. Ni pastille de série ni « Épisode N » en tête d'article,
+  ni pastille sur la une de `/blog`, ni numéro de fiche (« Fiche Fiscalité #4 ») sur les lignes ;
+  les pages `/blog/serie/*` ne se construisent plus (`[series].astro` et `blog-series-slugs.ts`
+  retirés) et sont redirigées dans `vercel.json` : `fiches-fiscalite` → `/blog/theme/impots-declarations`,
+  `fiches-pratiques` → `/blog/theme/debuter-organiser`, `guides-conseils` → `/blog` (Vercel répond
+  308, comme à toutes les règles `permanent`). Restent, invisibles : `seriesId`, `category`,
+  `categoryNumber`, `episodeNumber` (frontmatter et schéma), `data-blog-series`,
+  `data-blog-category` et `data-blog-episode` sur `<article>` (séries de PostHog), la classe
+  `s-<seriesId>` des lignes, le nom de la série dans `/blog/recherche.json` (recherche), et le
+  numéro dessiné sur les affiches. `blog_series_viewed` (`mesurerSerie` de `page-analytics.ts`) est du
+  code mort, laissé : le retirer renomme le script de PostHog sur toutes les pages (plus bas).
+  `verify-site.mjs` (« 4 septdecies ») échoue si un fichier du build (HTML, XML, texte, JSON) cite
+  `/blog/serie…`, si le sitemap en contient une, si une des trois redirections manque, change de
+  destination, n'est plus permanente ou est captée par une règle placée avant elle, si une page de
+  série est encore construite, si la tête d'un article garde une marque de série (ou dit, hors du
+  titre, sa catégorie ou « Épisode »), si `articleSection` n'est pas le nom du thème, si la une de
+  `/blog` dit autre chose que « À la une », si une ligne d'une page de thème a une étiquette, si une
+  `<category>` du flux RSS n'est pas le thème de l'article.
   ⚠️ Toute retouche de `src/lib/page-analytics.ts` renomme le script d'entrée de PostHog, donc
   change la balise `<script>` de toutes les pages (§ 9.fp) : prouver « pages inchangées » à ce
   nom près.
@@ -667,7 +688,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (75 pages au 13 novembre 2026, dont 73 dans le sitemap : une de plus par
+1. `npm run build` (72 pages au 14 novembre 2026, dont 70 dans le sitemap : une de plus par
    nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).
