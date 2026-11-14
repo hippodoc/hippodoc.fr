@@ -125,14 +125,15 @@
 .fiche .illustree .infos { padding-right: 96px; }
 
 /* La couverture en vignette (§ 9.fj, § 9.fo) : l'affiche, en petit, posée sur le ciel. Un bouton (la
-   cible de l'appui, sans fond ni bord) autour de l'image, qui porte le cadre. Agrandie là où c'était
-   gratuit, mesuré sur les 48 articles (la première ligne du texte descend de 16 px au plus) : 76 px au
-   téléphone (64 avant, +15 px), 88 px de 560 à 699 px, 144 px à partir de 1 360 px ; 120 et 132 px
-   inchangés entre les deux (un titre de plus passait alors sur une ligne de plus). Règle des affiches :
-   l'affiche est entière, calée en haut, dans le cadre 4:5 ; le vide d'une affiche plus étroite prend
-   les couleurs de ses bords (`--bord-g`, `--bord-d`, posées en style à la construction). */
+   cible de l'appui, sans fond ni bord) autour de l'image, qui porte le bord de papier. Agrandie là où
+   c'était gratuit, mesuré sur les 48 articles (la première ligne du texte descend de 16 px au plus) : la
+   hauteur d'une case 4:5 de 76 px au téléphone (95 px de haut ; 64 × 80 avant, +15 px), 88 px de 560 à
+   699 px, 144 px à partir de 1 360 px ; 120 et 132 px inchangés entre les deux (un titre de plus passait
+   alors sur une ligne de plus). Règle des affiches : l'affiche est entière, à son format, à la hauteur
+   de la case (une 2:3 y est moins large) ; rien ne remplit le vide (`max-width: none` : le socle de
+   Tailwind borne les images à leur boîte). */
 .fiche .couverture { position: relative; display: block; justify-self: end; align-self: end; margin-top: 12px; margin-bottom: 16px; padding: 0; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; -webkit-tap-highlight-color: transparent; }
-.fiche .couverture img { display: block; box-sizing: border-box; width: 76px; height: auto; min-height: 0; aspect-ratio: 4 / 5; object-fit: contain; object-position: 50% 0; border: 3px solid var(--paper); border-radius: inherit; box-shadow: var(--clay-sm); background: linear-gradient(var(--bord-g)) left / 50.5% 100% no-repeat, linear-gradient(var(--bord-d)) right / 50.5% 100% no-repeat, var(--sky-soft); }
+.fiche .couverture img { display: block; box-sizing: border-box; width: auto; max-width: none; height: 95px; border: 3px solid var(--paper); border-radius: inherit; box-shadow: var(--clay-sm); }
 /* Le signe qu'on peut agrandir : une pastille de papier et sa loupe, au coin bas de la vignette (le titre de
    l'affiche est en haut), visible sans survol (au doigt il n'y en a pas). Seulement là où le popover existe :
    ailleurs, la vignette reste une vignette, sans promesse. */
@@ -145,20 +146,25 @@
 /* L'affiche en grand (§ 9.fo) : un popover natif, ouvert par la vignette, sans script. Fermé, il n'est pas
    dessiné (et sans prise en charge du popover, il reste caché : la première règle). Ouvert : l'affiche
    entière, la plus grande qui tient dans l'écran (largeur et hauteur de la fenêtre, rapport `--r` écrit au
-   rendu), centrée sous une bande de 52 px où se tient « Fermer ». La boîte du popover est l'image seule :
-   un appui à côté tombe sur le fond, et le ferme (fermeture « auto »). Le fond, sombre, est pris à l'encre
-   de la DA (écrit en clair : un ::backdrop ne lit pas toujours les jetons de la page). */
+   rendu), centrée sous une bande de 52 px où se tient « Fermer ». La boîte du popover est l'image seule,
+   dans un second bouton de fermeture : un appui sur l'image la ferme (curseur `zoom-out`), un appui à côté
+   tombe sur le fond, et la ferme aussi (fermeture « auto »). Le fond, sombre, est pris à l'encre de la DA
+   (écrit en clair : un ::backdrop ne lit pas toujours les jetons de la page). En attendant la grande image,
+   sa place est un aplat clair sur ce fond (pas les couleurs des bords : l'image a son format exact). */
 .fiche .grande { display: none; }
-.fiche .grande:popover-open { --zg: 16px; --focus: #FFFFFF; display: block; position: fixed; inset: calc(var(--zg) + 52px) var(--zg) var(--zg); box-sizing: border-box; width: fit-content; height: fit-content; max-width: none; max-height: none; margin: auto; padding: 0; border: 0; overflow: visible; background: none; color: var(--ink); }
+.fiche .grande:popover-open { --zg: 16px; --focus: #FFFFFF; display: block; position: fixed; inset: calc(var(--zg) + 52px) var(--zg) var(--zg); box-sizing: border-box; width: fit-content; height: fit-content; max-width: none; max-height: none; margin: auto; padding: 0; border: 0; overflow: visible; background: none; color: var(--ink); visibility: visible; }
 .fiche .grande::backdrop { background: rgba(11, 23, 52, 0.9); }
-.fiche .grande img { display: block; width: min(100vw - 2 * var(--zg), (100vh - 2 * var(--zg) - 52px) * var(--r)); width: min(100vw - 2 * var(--zg), (100dvh - 2 * var(--zg) - 52px) * var(--r)); height: auto; max-width: none; border-radius: 16px; background: linear-gradient(var(--bord-g)) left / 50.5% 100% no-repeat, linear-gradient(var(--bord-d)) right / 50.5% 100% no-repeat, var(--sky-soft); box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55); }
+.fiche .grande-image { display: block; margin: 0; padding: 0; border: 0; border-radius: 16px; background: none; color: inherit; font: inherit; cursor: zoom-out; -webkit-tap-highlight-color: transparent; }
+.fiche .grande img { display: block; width: min(100vw - 2 * var(--zg), (100vh - 2 * var(--zg) - 52px) * var(--r)); width: min(100vw - 2 * var(--zg), (100dvh - 2 * var(--zg) - 52px) * var(--r)); height: auto; max-width: none; border-radius: 16px; background: rgba(255, 255, 255, 0.08); box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.55); }
 .fiche .grande-fermer { position: absolute; right: 0; bottom: calc(100% + 8px); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: var(--paper); color: var(--ink); cursor: pointer; box-shadow: var(--clay-sm); -webkit-tap-highlight-color: transparent; }
 .fiche .grande-fermer:hover { background: var(--sky-soft); }
-/* Au doigt, sous 960 px : la page ne défile plus sous l'affiche (comme sous le tiroir du menu). À la souris, la
-   barre de défilement reste : la retirer referait la mise en page. */
-@media (max-width: 959.98px) and (pointer: coarse) {
-  html:has(.fiche .grande:popover-open) { overflow: hidden; }
-}
+/* Tant que l'affiche est ouverte, la page est masquée (`visibility`, qui ne change pas la mise en page) : le
+   clavier ne sort plus de l'affiche (Tab va de « Fermer » à l'image, puis au navigateur), un lecteur d'écran
+   n'y lit plus qu'elle (le popover n'est pas modal de lui-même). Et la page ne défile plus sous elle, au
+   doigt comme à la molette : la barre de défilement qui disparaît change la mise en page d'une page qu'on
+   ne voit pas, et revient à la fermeture. Sans `:popover-open` ou sans `:has()`, ces règles sont ignorées. */
+html:has(.fiche .grande:popover-open) { overflow: hidden; }
+html:has(.fiche .grande:popover-open) body { visibility: hidden; }
 
 /* ───────── Le sommaire ─────────
    Téléphone et tablette : une ligne « Sommaire » en pli natif, en tête de la feuille. Ordinateur : le rail. */
@@ -502,18 +508,19 @@
 .fiche .qa-in, .fiche .qa-in p { font-size: 0.96875rem; line-height: 1.55; color: var(--ink-2); }
 
 /* Articles liés (§ 9.fo) : la carte de /blog. Une feuille blanche à deux colonnes de lignes, un filet
-   entre deux rangs, l'affiche à gauche (96 px) ; sous 700 px, une rangée de cartes qui défile de côté
-   (plus bas). L'affiche n'est jamais rognée : entière dans un cadre 4:5, calée en haut, sur les
-   couleurs de ses bords (`--bord-g`, `--bord-d`, posées en style sur l'image à la construction,
-   `src/lib/affiche-bords.mjs`) ; sans elles, un ciel doux. Six lignes en trois rangs : la feuille
-   garde la hauteur de l'ancienne liste à une colonne (vignettes de 40 × 50 px, rognées). */
+   entre deux rangs, l'affiche à gauche, dans une case de 96 px ; sous 700 px, une rangée de cartes qui
+   défile de côté (plus bas). L'affiche n'est jamais rognée : entière, à son format, à la hauteur de la
+   case (120 px), centrée dedans. Six lignes en trois rangs : la feuille garde la hauteur de l'ancienne
+   liste à une colonne (vignettes de 40 × 50 px, rognées). */
 .fiche .connexes { margin-top: 32px; }
 .fiche .cartes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 6px; overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
-.fiche .carte { display: flex; align-items: center; gap: 14px; padding: 12px 10px; color: var(--ink); text-decoration: none; }
+.fiche .carte { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; column-gap: 14px; padding: 12px 10px; color: var(--ink); text-decoration: none; }
 .fiche .carte:nth-child(n+3) { border-top: 1px solid var(--line); }
+/* Trois ou cinq articles : le dernier prend le rang entier (sinon une case seule). */
+.fiche .carte:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .fiche .carte:hover { background: var(--sky-soft); }
 .fiche .carte:focus-visible { outline-offset: -3px; }
-.fiche .carte img { flex: none; width: 96px; height: auto; min-height: 0; aspect-ratio: 4 / 5; object-fit: contain; object-position: 50% 0; border-radius: 10px; background: linear-gradient(var(--bord-g)) left / 50.5% 100% no-repeat, linear-gradient(var(--bord-d)) right / 50.5% 100% no-repeat, var(--sky-soft); }
+.fiche .carte img { justify-self: center; width: auto; max-width: none; height: 120px; border-radius: 10px; }
 .fiche .carte > div { min-width: 0; }
 .fiche .carte p { margin: 0; }
 .fiche .carte-titre { font-size: 0.9375rem; font-weight: 620; line-height: 1.3; text-wrap-style: pretty; }
@@ -567,17 +574,19 @@
 
 /* Articles liés, sous 700 px : une rangée de cartes qui défile de côté (la feuille à deux colonnes y
    laissait des titres trop étroits). La carte suivante dépasse du bord : les six restent visibles, sans
-   lien caché. L'affiche fait 112 px de large (au moins 96 px demandés) : la plus grande qui garde la
+   lien caché. La case de l'affiche fait 112 px de large (au moins 96 px demandés) : la plus grande qui garde la
    rangée nette, aucun des 223 titres coupé à 360 et à 393 px avec cinq lignes (à 120 px, 4 coupés à
    360 px ; avec quatre lignes, 18 coupés dès 104 px). Cinq lignes de titre et la durée tiennent dans la
-   hauteur de l'affiche (140 px) : la carte ne grandit pas pour elles. */
+   hauteur de l'affiche (140 px) : la carte ne grandit pas pour elles ; le texte est centré sur cette
+   hauteur, comme dans les lignes de /blog. Chaque carte est seule : la colonne de l'affiche épouse son
+   format (une 2:3 : 93 px), sans case à aligner d'une carte à l'autre. */
 @media (max-width: 699.98px) {
   .fiche .cartes { display: flex; gap: 10px; margin: 0 calc(-1 * var(--gut)); padding: 2px var(--gut) 12px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gut); border-radius: 0; background: none; box-shadow: none; scrollbar-width: none; }
   .fiche .cartes::-webkit-scrollbar { display: none; }
-  .fiche .carte { flex: 0 0 min(82%, 300px); box-sizing: border-box; align-items: flex-start; gap: 12px; padding: 12px 14px 12px 12px; scroll-snap-align: start; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
+  .fiche .carte { flex: 0 0 min(82%, 300px); box-sizing: border-box; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; padding: 12px 14px 12px 12px; scroll-snap-align: start; border-radius: var(--r-md); background: var(--paper); box-shadow: 0 0 0 1px var(--line); }
   .fiche .cartes > .carte { border-top: 0; }
   .fiche .carte:focus-visible { outline-offset: 2px; }
-  .fiche .carte img { width: 112px; }
+  .fiche .carte img { height: 140px; }
   .fiche .carte-titre { font-size: 0.9375rem; line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
   .fiche .carte .carte-duree { margin-top: 4px; font-size: 0.875rem; }
 }
@@ -640,7 +649,7 @@
   .fiche { --gut: clamp(24px, 6vw, 48px); }
   .fiche .infos { padding-right: 96px; }
   .fiche .illustree .infos { padding-right: 108px; }
-  .fiche .couverture img { width: 88px; }
+  .fiche .couverture img { height: 110px; }
   .fiche .essai { padding: 20px 24px 16px; }
 }
 /* Tablette : une colonne de 624 px, centrée. */
@@ -656,7 +665,7 @@
   .fiche .infos { font-size: 0.9375rem; }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 150px; }
   .fiche .couverture { grid-row: 2 / 5; align-self: center; margin: 0; border-radius: 14px; }
-  .fiche .couverture img { width: 120px; border-width: 4px; box-shadow: var(--clay); }
+  .fiche .couverture img { height: 150px; border-width: 4px; box-shadow: var(--clay); }
   .fiche .couverture::after { right: -9px; bottom: -9px; width: 32px; height: 32px; background-size: 18px; }
   .fiche .grande:popover-open { --zg: 32px; }
   .fiche .questions h2, .fiche .connexes h2 { font-size: 1.5rem; }
@@ -685,7 +694,7 @@
   .fiche .infos { margin-top: 20px; margin-bottom: 36px; }
   .fiche .illustree :is(.marques, .aff, .infos) { padding-right: 170px; }
   .fiche .couverture { border-radius: 16px; }
-  .fiche .couverture img { width: 132px; }
+  .fiche .couverture img { height: 165px; }
   .fiche .corps h2 { --t: 1.8125rem; margin-top: 64px; }
   .fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.5rem; margin-top: 44px; }
   /* Encadrés : 17 px pour un corps de 19 (un vrai cran ; plus bas, ils suivent le corps) ; « L'essentiel »,
@@ -794,7 +803,7 @@
   /* La vignette : son bas sur celui de la ligne de confiance (même marge basse). 144 px : la place libre
      au-dessus d'elle, à côté de la série et du titre (le seul titre d'une ligne descend de 15 px). */
   .fiche .couverture { grid-column: droite; justify-self: start; align-self: end; margin-bottom: 36px; }
-  .fiche .couverture img { width: 144px; }
+  .fiche .couverture img { height: 180px; }
   /* La carte d'essai : collante, dans la colonne de droite ; au repos, son haut sur celui de « L'essentiel »,
      collée, sur celui du rail. La mascotte sur sa ligne, au-dessus du titre : dans 248 px, un titre qui
      l'entourait sortait en escalier, des mots seuls sur une ligne. */
@@ -807,6 +816,15 @@
 /* Fenêtre basse : la carte ne colle plus (elle sortait de l'écran sous 760 px de haut). */
 @media (min-width: 1360px) and (max-height: 760px) { .fiche .essai { position: static; } }
 
+/* L'affiche en grand, fenêtre basse (téléphone couché) : « Fermer » passe à droite de l'image, en haut, et la
+   bande de 52 px au-dessus d'elle est rendue à l'image (221 × 274 px à 844 × 390 avant, 288 × 358 px pour une
+   0,805). Le `sizes` de la grande image a la même règle en tête. */
+@media (max-height: 500px) {
+  .fiche .grande:popover-open { --zg: 16px; inset: var(--zg) calc(var(--zg) + 52px); }
+  .fiche .grande img { width: min(100vw - 2 * var(--zg) - 104px, (100vh - 2 * var(--zg)) * var(--r)); width: min(100vw - 2 * var(--zg) - 104px, (100dvh - 2 * var(--zg)) * var(--r)); }
+  .fiche .grande-fermer { top: 0; right: auto; bottom: auto; left: calc(100% + 8px); }
+}
+
 /* Mouvement réduit : rien ne glisse. */
 @media (prefers-reduced-motion: reduce) {
   .fiche .som-chevron, .fiche .corps .sources-pli > summary::after { transition: none; }
@@ -817,9 +835,8 @@
   .fiche .serie, .fiche .couverture img, .fiche .essai, .fiche .liste, .fiche .cartes, .fiche .reseau,
   .fiche .corps .callout, .fiche .corps .tbl, .fiche .corps :is(h2, h3).t-encadre { border: 1px solid CanvasText; }
   .fiche::before, .fiche::after, .fiche .article::before { display: none; }
-  /* Affiches (vignette, en grand, articles connexes) : les bandes de bord prolongent l'affiche (aucun texte) ;
-     elles restent, comme l'image, et la pastille de la loupe garde son dessin. */
-  .fiche .carte img, .fiche .couverture img, .fiche .grande img, .fiche .couverture::after { forced-color-adjust: none; }
+  /* La pastille de la loupe garde son dessin. */
+  .fiche .couverture::after { forced-color-adjust: none; }
   .fiche .grande-fermer { border: 1px solid ButtonText; }
   .fiche .corps li::before, .fiche .corps li::after, .fiche .infos > *::before, .fiche .corps > h2[data-np]::before { forced-color-adjust: none; }
   /* Sauf ce qui tomberait sous le contraste dans ce mode : la croix « non » et le repère prennent les couleurs
