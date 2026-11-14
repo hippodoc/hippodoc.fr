@@ -13052,6 +13052,30 @@ gardées à la fermeture, résultats calculés sur ces charges, aucun débordeme
 les deux-roues et les frais réels de voiture (au lieu du barème) ne sont pas proposés ; l'option
 pour le barème se prend pour l'année entière et tous les véhicules (BOI-BNC-BASE-40-60-40-20).
 
+### 9.ga Mentions légales : TVA, Lovable retiré, hébergement audité (14 novembre 2026)
+
+Suite de § 9.fz, à la demande du propriétaire (« fais ton audit complet »). Relevé :
+
+- **www.hippodoc.fr** : CNAME `…vercel-dns-017.com`, adresses 216.198.79.1 et 64.29.17.1
+  enregistrées au nom de Vercel, Inc. (RIPE/ARIN), en-tête `server: Vercel`. **Vercel est
+  bien l'hébergeur du site** : gardé.
+- **hippodoc.fr** (sans www) : même adresse Vercel, redirige vers www. DNS du domaine chez
+  OVH (`anycast.me`) : un registre, pas un hébergeur, non cité.
+- **app.hippodoc.fr** : adresse 185.158.133.1, la valeur que la documentation de Lovable
+  donne pour un domaine personnalisé, derrière Cloudflare. Les fichiers de l'interface sont
+  donc servis par Lovable. **Lovable retiré de la page** (décision du propriétaire) : la page
+  cite pour l'application l'hébergeur de ses données, Supabase (projet en région eu-west-3,
+  Paris), qui stocke les contenus des utilisateurs, ce que vise la LCEN (art. 6 I 2).
+- **t.hippodoc.fr** (mesure PostHog) : relais `europehog.com` (Cloudflare) ; décrit dans la
+  politique de confidentialité, pas un hébergement du site.
+- **TVA intracommunautaire FR08943434738** : valide dans VIES le 14 novembre 2026 (« SAS
+  Hippodoc », 60 rue François Ier, Paris) ; inscription TVA France active dans Stripe.
+  Ajoutée à la section « Éditeur ». Constat au passage : la dernière facture Stripe ne
+  porte ni numéro de TVA ni TVA (`account_tax_ids` vide, `taxes` vide) ; à voir avec le
+  comptable.
+
+**Fichiers** : `src/pages/mentions-legales.astro`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
