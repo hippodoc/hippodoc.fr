@@ -93,7 +93,7 @@ export const simulateurSchema = z.object({
   // ═══════════════════════════════════════════════════════════
 
   // Zone exonérée (ZFU-TE ou ZFRR)
-  zoneExoneree: z.enum(['aucune', 'zfu', 'zfrr']).default('aucune'),
+  zoneExoneree: z.enum(['aucune', 'zfu', 'qpv', 'zfrr', 'zfrr_plus']).default('aucune'),
   // Année d'installation dans la zone (pour calcul dégressif)
   anneeInstallationZone: z.number().int().min(2000).max(2030).optional(),
 
@@ -136,7 +136,7 @@ export const simulateurSchema = z.object({
     .default(0),
 
   // 🎯 Type d'exercice (gate déductions S1/Forfait 2 % aux installés — cf. fiscalEligibility)
-  typeExercice: z.string().nullable().optional(),
+  typeExercice: z.enum(["remplacant", "installe"]).nullable().optional(),
 
   // Chèques-vacances ANCV (déductible BNC réel, max 1 SMIC mensuel — varie par année)
   // Le cap effectif est appliqué côté moteur via `capChequesVacances(montant, annee)` :
@@ -198,6 +198,19 @@ export const simulateurSchema = z.object({
 }, {
   message: "Renseigne à la fois les frais ET le nombre d'enfants gardés (ou laisse les deux à zéro).",
   path: ['fraisGardeEnfants'],
+}).refine((data) => {
+  // Dates d'entrée des dispositifs (Légifrance au 14/11/2026) : ZFU-TE fermée aux créations
+  // après 2025 (44 octies A) ; régime QPV pour 2026-2030 (44 octies B) ; FRR « plus » à
+  // partir de 2025 (44 quindecies A, I-A).
+  const a = data.anneeInstallationZone;
+  if (!a) return true;
+  if (data.zoneExoneree === 'zfu') return a <= 2025;
+  if (data.zoneExoneree === 'qpv') return a >= 2026 && a <= 2030;
+  if (data.zoneExoneree === 'zfrr_plus') return a >= 2025;
+  return true;
+}, {
+  message: "Ce dispositif ne couvre pas cette année d'installation (ZFU-TE : jusqu'en 2025 ; QPV : 2026 à 2030 ; FRR+ : depuis 2025).",
+  path: ['anneeInstallationZone'],
 });
 
 /**
@@ -210,11 +223,11 @@ export const simulateurSchema = z.object({
  * @returns false si la zone n'est plus proposable pour cette année / installation
  */
 export function isZoneExoneneeAvailable(
-  zone: 'aucune' | 'zfu' | 'zfrr',
+  zone: 'aucune' | 'zfu' | 'qpv' | 'zfrr' | 'zfrr_plus',
   annee: number,
   anneeInstallationZone?: number
 ): boolean {
-  if (zone === 'aucune' || zone === 'zfrr') return true;
+  if (zone === 'aucune' || zone === 'zfrr' || zone === 'zfrr_plus' || zone === 'qpv') return true;
   if (zone === 'zfu') {
     // ZFU-TE : nouvelle installation impossible à partir de 2026
     if (annee >= 2026 && (anneeInstallationZone === undefined || anneeInstallationZone >= 2026)) {

@@ -12265,6 +12265,144 @@ travail `series/`.
 `src/styles/blog-liste.css`, `src/styles/blog-article.css`, `scripts/verify-site.mjs`, `MIGRATION.md`,
 `CLAUDE.md`.
 
+### 9.fr Simulateur : audit du calcul, Micro-BNC et réel comparés sur la même base (14 novembre 2026)
+
+Le propriétaire : « on n'a vraiment pas le droit de se tromper […] audite en profondeur, de bout
+en bout, ce simulateur dans toutes les situations possibles […] et applique les corrections
+nécessaires ». Point de départ : « écart négligeable » affiché alors que les deux fiches
+différaient de plus de 1 000 €/mois. Règles vérifiées sur Légifrance, le BOFiP, la CARMF (« La
+CARMF en 2026 ») et le modèle de l'Urssaf, au 14 novembre 2026 (étapes 2 et 3, plus bas).
+
+**Défauts trouvés et corrigés (première étape).**
+1. **Le Super-Net du Micro-BNC ne retirait pas les charges.** L'abattement de 34 % remplace les
+   charges pour l'impôt, mais elles sont payées : le Micro-BNC gagnait d'office leur montant, et
+   la recommandation en dépendait. Exemples (célibataire, secteur 1) : 60 000 € de recettes et
+   15 000 € de charges, « Micro +764 €/mois » avant, « Réel +470 €/mois » après ; 120 000 € et
+   21 600 € (profil « Remplaçant S1 »), « Micro +1 332 €/mois » sur les fiches avant, « Réel
+   +401 €/mois » après. Le moteur reçoit les charges payées (`chargesDecaissees`) et les retire
+   dans les deux régimes. L'encadré « Estimation optimiste, prévois ~20 % de marge » (fiche Micro),
+   qui compensait ce défaut, est retiré ; les infobulles qui disaient les charges « sans effet sur
+   le Super-Net » en Micro-BNC sont corrigées.
+2. **Au-delà du plafond du Micro-BNC, l'écart était forcé à 0**, et 0 s'affichait « Écart
+   négligeable : choisis selon ta préférence de gestion » (7 profils types sur 8). Le Micro-BNC
+   n'est pas fermé d'office l'année du dépassement (l'éligibilité se juge sur les recettes des deux
+   années précédentes, CGI art. 102 ter) : l'écart est calculé et affiché, avec l'avertissement du
+   plafond. Plafond de l'année lu par `getMicroBncCeiling()` partout (il était écrit en dur à
+   83 600 € dans deux composants, 77 700 € attendus pour 2025).
+3. **Conclusion** (`ConclusionCard.tsx`) : l'écart est toujours chiffré, en €/mois et en €/an.
+   Sous 50 €/mois (600 €/an, l'ordre de grandeur de ce que le simulateur ne voit pas) : « Les deux
+   régimes se valent : X €/mois d'écart (Y €/an) ». Pastille « Écart modéré » retirée.
+4. **Décote non appliquée** par le moteur local (RSPM) : impôt des petits revenus surestimé.
+   Ordre de l'article 197 rétabli : barème et plafonnement du quotient familial, réduction DOM,
+   décote, puis crédits (les crédits passaient avant la réduction DOM).
+5. **CSG-CRDS non déductible** (2,4 + 0,5 points sur 9,7) déduite en entier au réel par la fonction
+   Supabase : elle est réintégrée au bénéfice (le modèle de l'Urssaf fait de même pour le revenu
+   imposable). Abattement minimal de 305 € du Micro-BNC ajouté.
+6. **Cotisations PAMC : la fonction Supabase `calculate-urssaf` ne transmettait au modèle Urssaf
+   ni le secteur** (un secteur 2 calculé comme un secteur 1 : 18 369 € au lieu de 25 062 € pour
+   70 000 € de recettes et 5 000 € de charges), **ni l'année** (2025 aux règles 2026), ni la part
+   non conventionnée, ni le statut de remplaçant (CURPS). Vérifié en interrogeant directement le
+   modèle (`mon-entreprise.urssaf.fr/api/v1/evaluate`, qui accepte les requêtes de hippodoc.fr).
+   Le simulateur l'interroge désormais lui-même (`src/lib/simulateur/urssaf.ts`, une seconde
+   tentative sur 429) et ne se replie sur la fonction Supabase qu'en cas d'échec. L'impôt est
+   calculé par le moteur local pour les deux régimes sociaux (une seule implémentation, testée).
+   ⚠️ La fonction Supabase (dépôt de l'app, hors de ce dépôt) garde ces défauts : l'app est
+   probablement concernée.
+7. **Profils types** : enchaîner deux profils reportait la situation familiale du premier sur le
+   second (« Parent isolé » devenait marié avec 35 000 € de revenus de conjoint). Seuls les champs
+   du foyer modifiés à la main sont maintenant conservés.
+8. Montant PER/Madelin affiché : le montant déduit (plafonné), plus la saisie. Assiette du taux
+   individualisé et du prélèvement en Micro-BNC : le bénéfice après abattement.
+
+**Textes de la page modifiés** (`src/pages/simulateur.astro`, mode d'emploi, hors FAQ du schéma) :
+point 2 (charges « déduites de l'impôt en Régime Réel uniquement […] retirées de ton Super-Net
+dans les deux régimes ») ; point 7 (étapes 2 et 3, encadré « Micro vs Réel en bref »). Ancien texte
+de l'encadré : « En Micro-BNC, tes charges sont remplacées par un abattement de 34% — c'est plus
+simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil. »
+
+**Étape 2 : régimes sociaux.**
+9. **RSPM** (CSS art. L642-4-2, D642-4-1 à D642-4-3) : une option, réservée aux remplaçants
+   (régulateurs, étudiants remplaçants…) sans autre activité libérale, ouverte jusqu'à 19 000 € de
+   recettes brutes ; perdue après deux années de suite au-dessus de 19 000 € ou une au-dessus de
+   38 000 €. Le mode Auto le retenait jusqu'à 38 000 €, installés compris : il le retient pour un
+   remplaçant jusqu'à 19 000 € (seul seuil tenable d'une année sur l'autre) ; au-delà, choix manuel.
+   Taux 13,5 % puis 21,2 % par tranche, mêmes cotisations en micro et au réel : conformes.
+10. **Champ « Exercice »** (remplaçant, par défaut ; installé) dans « Paramètres de calcul » : RSPM,
+    CURPS (non due par les remplaçants, modèle Urssaf), dispense CARMF, déductions du secteur 1.
+    Profils types renseignés (quatre remplaçants, trois installés ; « Parent isolé » : défaut).
+11. **CARMF en PAMC** : jeune affilié = retraite complémentaire non due les deux premières années
+    (« La CARMF en 2026 », p. 27) ; dispense d'affiliation = aucune cotisation CARMF, pour un
+    remplaçant dont le revenu net reste sous 15 000 € (p. 24), ignorée au-delà (texte du formulaire).
+12. **Listes déroulantes** non pilotées (`defaultValue`) : après un profil type, elles affichaient
+    l'ancienne valeur (« Célibataire », « Secteur 1 ») alors que le calcul utilisait celle du profil.
+
+**Étape 3 : règles fiscales.**
+13. **Forfait 2 %, 3 % et groupe III réservés aux installés.** BOI-BNC-SECT-40 (2021, § 290) : les
+    remplaçants, « n'étant pas personnellement adhérents à la convention nationale, sont exclus du
+    champ d'application du régime spécial des médecins conventionnés » ; version en vigueur, § 100 :
+    « uniquement réservés aux médecins conventionnés du secteur I ». Même règle dans notre guide
+    (fiche RO-008). Le simulateur les appliquait à tout le monde : pour un remplaçant, le réel était
+    surestimé de 5 % des recettes + 3 050 € de déductions. Barème du groupe III : colonne
+    « omnipraticiens » de BOI-BAREME-000025, conforme. Forfait 2 % sur toutes les recettes, PDSA et
+    part non conventionnée comprises (§ 120), et déduit de l'assiette sociale (cadre 8 de la 2035).
+14. **Crédit d'impôt formation des dirigeants retiré** : heures suivies jusqu'au 31/12/2024
+    seulement, article 244 quater M abrogé par la LF 2026 (formulaire, moteur, page).
+15. **Zones** : ZFU-TE (jusqu'en 2025), nouveau régime QPV (art. 44 octies B, installations 2026 à
+    2030) et FRR « plus » valent aussi en micro-BNC ; FRR socle et ex-ZRR : réel seulement. Le
+    plafond de 50 000 € ne vaut que pour la ZFU-TE (l'infobulle le donnait aussi à la ZFRR).
+16. **Épargne retraite** : PER (163 quatervicies) plafonné sur le PASS de l'année précédente
+    (plancher 4 710 € en 2026) ; Madelin (154 bis) : 10 % du bénéfice + 15 % entre 1 et 8 PASS
+    (le simulateur n'appliquait que 10 %).
+17. **Crédits d'impôt** supérieurs à l'impôt : la part restituée s'ajoute au Super-Net (elle était
+    perdue, ce qui faussait la comparaison quand un seul régime payait de l'impôt).
+18. Textes : PDSA (astreintes et majorations, zone sous-dotée, 60 jours), année 2026 (barème des
+    revenus 2025, LF 2027 non votée), secteur 1 (« pour les installés »).
+
+**Contrôle croisé** : pour un remplaçant (sans déduction du secteur 1), le revenu imposable du
+simulateur est égal, à 1 € près, au « net imposable » du modèle de l'Urssaf, en micro et au réel
+(45 000, 70 000, 120 000 et 160 000 € de recettes).
+
+**Décisions du propriétaire (14 novembre 2026).** (a) Chèques-vacances ANCV : option gardée, textes
+alignés (étape 4). (b) Invalidité-décès au RSPM : 626 € / 157 € gardés (« La CARMF en 2026 » et
+modèle Urssaf ; le dépliant RSPM de février 2026 dit 631 € / 158 €). (c) La fonction Supabase
+`calculate-urssaf` de l'app garde les défauts du point 6 : le propriétaire la corrige dans le dépôt
+de l'app. (d) Vérification WebKit non faite : accepté. (e) Non modélisés : groupe III indisponible
+la première année d'installation (notre guide), barèmes du groupe III des spécialistes (mêmes
+montants au-delà de 32 000 à 64 000 €), déficit BNC imputable sur le revenu global, CEHR.
+
+**Étape 4 : ce que le simulateur dit en plus.**
+19. **À prévoir chaque mois** (sous la conclusion) : cotisations et impôt de l'activité libérale du
+    régime retenu, divisés par 12, et leur part des recettes. L'impôt du foyer est réparti au prorata
+    des revenus imposables (la part des salaires est prélevée à la source par l'employeur).
+20. **Point de bascule des charges** (sous la conclusion, recettes sous le plafond du Micro-BNC) :
+    « Le régime réel passerait devant au-delà d'environ X € de charges par an » ou « Le Micro-BNC ne
+    passerait devant que sous environ X € », ou « Même sans aucune charge, le régime réel resterait
+    devant ». `calculerPointDeBascule()` : fausse position (Illinois) sur l'écart réel − micro, qui
+    croît avec les charges ; chaque point au réel recalculé de bout en bout (2 à 5 appels au modèle
+    Urssaf, sans repli sur Supabase ; moins d'une seconde) ; arrondi à 100 € ; aucune phrase si les
+    deux régimes sont identiques. Calculé après l'affichage, dans un état à part (dans `results`, il
+    aurait relancé le défilement et l'événement `simulation_result` de SimulateurApp). Vérifié sur
+    7 profils : écart de 30 €/an au plus au point annoncé, signe inversé à ± 1 000 €.
+21. Conclusion « se valent » : elle dit en faveur de quel régime penche l'écart.
+22. **Chèques-vacances** : plafond 2026 donné comme officiel (SMIC mensuel brut au 1er janvier,
+    1 823 €), et non plus « projeté » ; exonération de cotisations jusqu'à 30 % du SMIC (547 €)
+    mentionnée, non comptée ; obligation de proposer le dispositif aux salariés.
+
+**Feuilles.** La feuille commune ne change pas (vérifié contre le build de `main` : seules
+`/simulateur` et la calculette diffèrent, la seconde par le nom de son script, qui embarque
+`baremes-ir.ts`). Dans `simulateur.css` : `.sim-params` (trois colonnes à partir de 1 024 px) et
+`.sim-conclusion-detail` (les deux lignes sous la conclusion, alignées sur son texte à partir de
+480 px). Non vérifié dans WebKit.
+
+**Vérifié.** Banc d'essai hors dépôt (80 situations : recettes de 15 000 à 200 000 €, charges,
+quatre situations familiales, enfants, DOM) : Super-Net = recettes + salaires − charges −
+cotisations − impôt dans les deux régimes ; impôt égal à un barème réécrit indépendamment
+(quotient familial, plafonnement, parent isolé, DOM, décote) ; bénéfice Micro-BNC ; bénéfice réel ;
+puis 50 situations d'options (exercice, RSPM forcé, secteur 2, part non conventionnée, jeune affilié,
+dispense, PDSA, PER, Madelin, plafonds, chèques-vacances, salaires, conjoint de chaque type, foncier,
+mensuel, 2025, DOM, zones, crédits remboursés) ; 0 échec.
+Parcours dans Chromium (formulaire et 8 profils types). `npm run build`, `verify-site.mjs` passent.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

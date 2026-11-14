@@ -28,6 +28,8 @@ const RegimeComparisonCards = lazy(() =>
 
 export interface SimulateurResultsProps {
   comparison: RegimeComparison;
+  /** Point de bascule des charges (`calculerPointDeBascule`) : en attente tant qu'il vaut `undefined`. */
+  bascule?: number | null | 'attente';
   formData: SimulateurFormData;
   periode: 'annuel' | 'mensuel';
   onNewSimulation?: () => void;
@@ -38,7 +40,7 @@ export interface SimulateurResultsProps {
   isPublic?: boolean;
 }
 
-export function SimulateurResults({ comparison, formData, periode, onNewSimulation }: SimulateurResultsProps) {
+export function SimulateurResults({ comparison, bascule, formData, periode, onNewSimulation }: SimulateurResultsProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) {
@@ -78,12 +80,13 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
         isRSPMUsed={comparison.isRSPMUsed}
         situationFamiliale={formData.situationFamiliale}
         annee={formData.annee}
+        plafondMicro={comparison.plafondMicro}
       />
       </Suspense>
 
 
       {/* ✅ CONCLUSION — En premier, toujours visible */}
-      <ConclusionCard comparison={comparison} formData={formData} />
+      <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} />
 
       {/* ✅ APPROFONDIR — Accordion unifié avec 2 items */}
       <Accordion type="single" collapsible className="space-y-0">
@@ -140,8 +143,10 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
                     : (reel.impotDetails?.revenuImposableConjoint ?? 0)
                 }
                 revenuBrutMedecin={
+                  // En micro-BNC, le bénéfice est celui de l'abattement de 34 % : charges et
+                  // cotisations n'y sont pas déduites (elles sont pourtant payées).
                   recommande === 'micro-bnc'
-                    ? (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0) - (microBnc?.chargesReelles ?? 0) - (microBnc?.cotisationsTotales ?? 0) + (comparison.revenusSalariesAnnuels ?? 0)
+                    ? (microBnc?.impotDetails?.revenuImposableLiberal ?? 0) + (comparison.revenusSalariesAnnuels ?? 0)
                     : (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0) - (reel.chargesReelles ?? 0) - reel.cotisationsTotales + (comparison.revenusSalariesAnnuels ?? 0)
                 }
                 revenusConjointBrut={comparison.revenusConjointAnnuels}

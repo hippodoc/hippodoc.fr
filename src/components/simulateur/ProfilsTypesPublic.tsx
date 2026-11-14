@@ -35,7 +35,7 @@ const PUBLIC_PROFILES: PublicProfil[] = [
       chargesHorsCotisations: 2500, revenusSalaries: 28000,
       revenusConjoint: 0, revenusExoneresPdsa: 0, lieuExercice: 'metropole',
       situationFamiliale: 'celibataire', enfants: 0,
-      secteurConventionnel: 'secteur_1', regimeSocial: 'rspm',
+      typeExercice: 'remplacant', secteurConventionnel: 'secteur_1', regimeSocial: 'rspm',
     }
   },
   {
@@ -49,7 +49,7 @@ const PUBLIC_PROFILES: PublicProfil[] = [
       chargesHorsCotisations: 21600, revenusSalaries: 0,
       revenusConjoint: 0, revenusExoneresPdsa: 0, lieuExercice: 'metropole',
       situationFamiliale: 'celibataire', enfants: 0,
-      secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
+      typeExercice: 'remplacant', secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
     }
   },
   {
@@ -62,7 +62,7 @@ const PUBLIC_PROFILES: PublicProfil[] = [
       chargesHorsCotisations: 16200, revenusSalaries: 45000,
       revenusConjoint: 0, revenusExoneresPdsa: 0, lieuExercice: 'metropole',
       situationFamiliale: 'marie_pacse', enfants: 1,
-      secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
+      typeExercice: 'remplacant', secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
     }
   },
   {
@@ -75,7 +75,7 @@ const PUBLIC_PROFILES: PublicProfil[] = [
       chargesHorsCotisations: 25200, revenusSalaries: 0,
       revenusConjoint: 35000, revenusExoneresPdsa: 0, lieuExercice: 'metropole',
       situationFamiliale: 'marie_pacse', enfants: 2,
-      secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
+      typeExercice: 'remplacant', secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
     }
   },
   {
@@ -88,7 +88,7 @@ const PUBLIC_PROFILES: PublicProfil[] = [
       chargesHorsCotisations: 48000, revenusSalaries: 0,
       revenusConjoint: 0, revenusExoneresPdsa: 0, lieuExercice: 'metropole',
       situationFamiliale: 'marie_pacse', enfants: 2,
-      secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
+      typeExercice: 'installe', secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
     }
   },
   {
@@ -101,7 +101,7 @@ const PUBLIC_PROFILES: PublicProfil[] = [
       chargesHorsCotisations: 77000, revenusSalaries: 0,
       revenusConjoint: 0, revenusExoneresPdsa: 0, lieuExercice: 'metropole',
       situationFamiliale: 'marie_pacse', enfants: 3,
-      secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
+      typeExercice: 'installe', secteurConventionnel: 'secteur_1', regimeSocial: 'pamc',
     }
   },
   {
@@ -114,7 +114,7 @@ const PUBLIC_PROFILES: PublicProfil[] = [
       chargesHorsCotisations: 98000, revenusSalaries: 0,
       revenusConjoint: 0, revenusExoneresPdsa: 0, lieuExercice: 'metropole',
       situationFamiliale: 'marie_pacse', enfants: 2,
-      secteurConventionnel: 'secteur_2', regimeSocial: 'pamc',
+      typeExercice: 'installe', secteurConventionnel: 'secteur_2', regimeSocial: 'pamc',
     }
   },
   {

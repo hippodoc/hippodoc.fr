@@ -3,10 +3,11 @@
  * Simulateur Super-Net — portage de src/pages/simulateur-public.tsx (SPA source).
  * Chrome (Header/Footer/Hero/Guide explicatif/Disclaimer/CTA) rendu en HTML
  * statique ici ; formulaire + résultats interactifs délégués à l'îlot React
- * SimulateurApp (src/components/simulateur/SimulateurApp.tsx). La branche
- * PAMC (CA ≥ 38 000 €) appelle l'Edge Function calculate-urssaf via
- * invokeCalculateUrssaf() (src/lib/supabase-public.ts) ; la branche RSPM
- * (< 38 000 €) est calculée 100 % côté client (useRspmCalculation.ts).
+ * SimulateurApp (src/components/simulateur/SimulateurApp.tsx). Branche PAMC :
+ * cotisations par le modèle officiel de l'Urssaf (src/lib/simulateur/urssaf.ts, repli
+ * sur l'Edge Function calculate-urssaf) ; branche RSPM (remplaçant, mode Auto jusqu'à
+ * 19 000 €) calculée côté client. L'impôt est calculé côté client dans les deux cas
+ * (useRspmCalculation.ts). Audit de novembre 2026 : MIGRATION.md § 9.fr.
  *
  * JSON-LD ajouté en août 2026 (voir MIGRATION.md § 9.ae) : la page n'en avait
  * pas, par parité avec la SPA source. Écart assumé — l'outil jumeau
@@ -73,7 +74,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Que se passe-t-il au-delà de 38 000 € de recettes ?',
-    a: "Le régime social change. Le RSPM (taux simplifiés) est ouvert jusqu'à 19 000 € d'honoraires ; on le perd au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. Pour une année type, le simulateur retient le RSPM en dessous de 38 000 € et le PAMC (barème classique) au-delà. En mode Auto, recommandé, le simulateur choisit lui-même selon ton chiffre d'affaires ; tu peux aussi forcer l'un ou l'autre.",
+    a: "Le régime social change. Le RSPM (taux simplifiés) est ouvert jusqu'à 19 000 € d'honoraires ; on le perd au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. Le RSPM est une option réservée aux remplaçants (et aux régulateurs) sans autre activité libérale. Pour une année type, aux recettes stables, il ne tient que jusqu'à 19 000 € : en mode Auto, recommandé, le simulateur le retient pour un remplaçant jusqu'à ce seuil, et le PAMC (barème classique) au-delà. Déjà au RSPM et entre 19 000 et 38 000 € ? Choisis-le à la main.",
   },
   {
     q: 'Compare-t-il le Micro-BNC et le Régime Réel ?',
@@ -255,13 +256,13 @@ const fleche =
                 <strong>Tes revenus libéraux</strong> — Total <em>annuel</em> de tous tes honoraires encaissés (consultations, actes techniques, dépassements, PDSA). Retrouve-le sur ton relevé SNIR ou ta comptabilité.
               </li>
               <li>
-                <strong>Tes charges réelles</strong> — Dépenses professionnelles déductibles : loyer, matériel, RCP, comptable, véhicule, formations. <strong>Hors cotisations sociales</strong> (URSSAF et CARMF sont calculées automatiquement). Utilisé en Régime Réel uniquement — en Micro-BNC, un abattement forfaitaire de 34% les remplace.
+                <strong>Tes charges réelles</strong> — Dépenses professionnelles déductibles : loyer, matériel, RCP, comptable, véhicule, formations. <strong>Hors cotisations sociales</strong> (URSSAF et CARMF sont calculées automatiquement). Déduites de l'impôt en Régime Réel uniquement — en Micro-BNC, un abattement forfaitaire de 34% les remplace pour l'impôt. Payées dans les deux cas, elles sont retirées de ton Super-Net dans les deux régimes.
               </li>
               <li>
                 <strong>Revenus complémentaires</strong> (dépliable) :
                 <ul>
                   <li><em>Revenus salariés</em> — Net imposable annuel si tu cumules hôpital ou gardes salariées. L'abattement de 10% est appliqué automatiquement.</li>
-                  <li><em>Revenus PDSA</em> — Gardes de nuit et week-end régulées par l'ARS. Exonérés d'impôt sur le revenu (art. 151 ter CGI), mais restent soumis aux cotisations sociales.</li>
+                  <li><em>Revenus PDSA</em> — Gardes de nuit et week-end régulées par l'ARS. Astreintes et majorations exonérées d'impôt sur le revenu en zone sous-dotée, dans la limite de 60 jours par an (art. 151 ter CGI), mais soumises aux cotisations sociales.</li>
                 </ul>
               </li>
             </ul>
@@ -291,7 +292,7 @@ const fleche =
             <ul>
               <li><strong>Année</strong> — Détermine les barèmes IR appliqués (2025 ou 2026).</li>
               <li><strong>Lieu d'exercice</strong> — Métropole ou DOM-TOM. Les territoires ultramarins bénéficient d'un abattement automatique sur l'IR (30% Guadeloupe/Martinique/Réunion, 40% Guyane/Mayotte).</li>
-              <li><strong>Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu, déductions supplémentaires : 2% + 3% + Groupe III) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
+              <li><strong>Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu ; déductions supplémentaires 2% + 3% + Groupe III pour les installés) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
               <li><strong>Régime social</strong> — Auto (recommandé, le simulateur choisit selon ton CA), RSPM (simplifié, ouvert jusqu'à 19 000 €) ou PAMC (classique).</li>
             </ul>
           </div>
@@ -315,9 +316,9 @@ const fleche =
             <div>
               <p class="st">Déductions Secteur 1</p>
               <ul>
-                <li><strong>Forfait 2%</strong> — Frais de représentation, réception et prospection déduits automatiquement de tes honoraires, sans justificatif. <em>Secteur 1 uniquement.</em></li>
-                <li><strong>Déduction 3% conventionnelle</strong> — Un abattement supplémentaire sur tes honoraires conventionnés, plafonné par la Sécu. <em>Secteur 1 uniquement.</em></li>
-                <li><strong>Barème Groupe III</strong> — Une déduction fixe calculée selon ta tranche de revenus (de 770 € à 3 050 €), en plus des 2% et 3%. <em>Secteur 1 uniquement.</em></li>
+                <li><strong>Forfait 2%</strong> — Frais de représentation, réception et prospection déduits automatiquement de tes honoraires, sans justificatif. <em>Installés en secteur 1 uniquement (pas les remplaçants).</em></li>
+                <li><strong>Déduction 3% conventionnelle</strong> — 3 % de tes honoraires conventionnels, en plus. <em>Installés en secteur 1 uniquement.</em></li>
+                <li><strong>Barème Groupe III</strong> — Une déduction fixe selon tes honoraires conventionnels (de 770 € à 3 050 €, 3 050 € au-delà de 30 450 €), en plus des 2% et 3%. <em>Installés en secteur 1 uniquement.</em></li>
                 <li><strong>Ratio honoraires non conventionnés</strong> — Si une partie de tes honoraires est hors convention, les déductions S1 sont réduites proportionnellement.</li>
               </ul>
             </div>
@@ -326,21 +327,20 @@ const fleche =
               <ul>
                 <li><strong>PER (Plan d'Épargne Retraite)</strong> — Tes versements sont déductibles de ton revenu imposable. Fonctionne en <em>Micro-BNC et en Réel</em>.</li>
                 <li><strong>Madelin (prévoyance/retraite)</strong> — Cotisations complémentaires déductibles de ton bénéfice. <em>Régime Réel uniquement.</em></li>
-                <li><strong>Chèques-vacances ANCV</strong> — Déductibles de ton BNC dans la limite d'1 SMIC mensuel par an : <strong>{cvPlafond2024.toLocaleString('fr-FR')} € en 2024</strong>, <strong>{cvPlafond2025.toLocaleString('fr-FR')} € officiel en 2025</strong>, <strong>{cvPlafond2026.toLocaleString('fr-FR')} € projeté en 2026</strong> (à confirmer après publication du SMIC 2026). <em>Régime Réel uniquement</em> (sans effet en Micro-BNC).</li>
+                <li><strong>Chèques-vacances ANCV</strong> — Déductibles de ton BNC dans la limite d'1 SMIC mensuel par an : <strong>{cvPlafond2024.toLocaleString('fr-FR')} € en 2024</strong>, <strong>{cvPlafond2025.toLocaleString('fr-FR')} € en 2025</strong>, <strong>{cvPlafond2026.toLocaleString('fr-FR')} € en 2026</strong> (SMIC au 1er janvier). <em>Régime Réel uniquement</em> (sans effet en Micro-BNC). Si tu as des salariés, tu dois aussi leur proposer le dispositif.</li>
               </ul>
             </div>
             <div>
               <p class="st">Fiscalité immobilière &amp; zones</p>
               <ul>
-                <li><strong>Zones exonérées (ZFU-TE / ZFRR)</strong> — Si tu exerces dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur 8 ans (100 % les 5 premières années). Dégressivité différente selon la zone : <strong>ZFU-TE</strong> <Fragment set:html={fleche} /> 60 % / 40 % / 20 % (clos au 31.12.2025) ; <strong>ZFRR</strong> <Fragment set:html={fleche} /> 75 % / 50 % / 25 %. Plafond commun : 50 000 € de bénéfice exonéré/an.</li>
+                <li><strong>Zones exonérées (ZFU-TE, QPV, FRR)</strong> — Si tu t'es installé dans une zone prioritaire, une partie de ton bénéfice est exonérée d'impôt sur 8 ans (100 % les 5 premières années). Dégressivité selon la zone : <strong>ZFU-TE</strong> (installations jusqu'en 2025, plafond de 50 000 € de bénéfice exonéré par an) et <strong>QPV</strong> (installations de 2026 à 2030) <Fragment set:html={fleche} /> 60 % / 40 % / 20 % ; <strong>FRR</strong> (ex-ZRR) <Fragment set:html={fleche} /> 75 % / 50 % / 25 %. La FRR socle exige le Régime Réel ; ZFU-TE, QPV et FRR+ valent aussi en Micro-BNC.</li>
                 <li><strong>Revenus fonciers</strong> — Si tu as des revenus locatifs : micro-foncier (abattement 30%) ou régime réel (avec possibilité de déduire un déficit foncier jusqu'à −10 700 €/an de ton revenu global).</li>
               </ul>
             </div>
             <div>
               <p class="st">Crédits d'impôt</p>
               <ul>
-                <li><strong>Formation dirigeant</strong> — Heures de formation × SMIC horaire, plafonné à 40h (soit environ 475 €). Réduit directement ton impôt.</li>
-                <li><strong>Emploi à domicile</strong> — 50% des dépenses (ménage, garde, jardinage…), plafond de 12 000 à 15 000 €.</li>
+                <li><strong>Emploi à domicile</strong> — 50% des dépenses (ménage, garde, jardinage…), plafond de 12 000 à 15 000 €. Comme tout crédit d'impôt, la part qui dépasse ton impôt t'est remboursée.</li>
                 <li><strong>Garde d'enfant &lt; 6 ans (hors domicile)</strong> — 50% des frais de crèche ou assistante maternelle, plafond de 3 500 € par enfant.</li>
                 <li><strong>Autres crédits</strong> — Un champ libre pour tout autre crédit d'impôt dont tu bénéficies.</li>
               </ul>
@@ -372,16 +372,16 @@ const fleche =
             <p>Le Super-Net, c'est ce qu'il te reste <strong>vraiment</strong> en poche après tout. Voici le calcul, étape par étape :</p>
             <ol>
               <li><strong>Tes revenus libéraux</strong> — Le total de tout ce que tu as encaissé dans l'année (honoraires, actes, dépassements).</li>
-              <li><strong>− Tes charges</strong> — En <em>Régime Réel</em>, on soustrait tes dépenses professionnelles réelles (loyer, matériel, véhicule…). En <em>Micro-BNC</em>, l'État applique un abattement forfaitaire de 34%. <Fragment set:html={fleche} /> Ça donne ton <strong>bénéfice</strong>.</li>
-              <li><strong>− Cotisations sociales</strong> — URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) + CARMF (retraite complémentaire, invalidité-décès, ASV). Le simulateur les calcule automatiquement selon tes revenus et ta situation CARMF (voir point 5).</li>
-              <li><strong>− Déductions fiscales</strong> — Si tu es en Secteur 1 : forfait 2%, déduction 3%, barème Groupe III. Puis PER, Madelin, chèques-vacances, zones exonérées… <Fragment set:html={fleche} /> Ça donne ton <strong>revenu imposable libéral</strong>.</li>
+              <li><strong>− Tes charges</strong> — En <em>Régime Réel</em>, on soustrait tes dépenses professionnelles réelles (loyer, matériel, véhicule…). En <em>Micro-BNC</em>, l'État applique à la place un abattement forfaitaire de 34% (tes charges, payées, restent retirées du Super-Net). <Fragment set:html={fleche} /> Ça donne ton <strong>bénéfice</strong>.</li>
+              <li><strong>− Cotisations sociales</strong> — URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) + CARMF (retraite complémentaire, invalidité-décès, ASV). Le simulateur les calcule automatiquement selon tes revenus et ta situation CARMF (voir point 5). Elles sont déductibles en <em>Régime Réel</em> (sauf une part de la CSG-CRDS) ; en <em>Micro-BNC</em>, l'abattement de 34% en tient lieu.</li>
+              <li><strong>− Déductions fiscales</strong> — Si tu es installé en Secteur 1 : forfait 2%, déduction 3%, barème Groupe III. Puis PER, Madelin, chèques-vacances, zones exonérées… <Fragment set:html={fleche} /> Ça donne ton <strong>revenu imposable libéral</strong>.</li>
               <li><strong>+ Autres revenus du foyer</strong> — On ajoute les salaires (après abattement 10%), les revenus du conjoint, les revenus fonciers. <Fragment set:html={fleche} /> Ça donne le <strong>revenu fiscal du foyer</strong>.</li>
               <li><strong>÷ Parts fiscales</strong> — On divise par ton nombre de parts (selon ta situation familiale et tes enfants) pour obtenir le quotient familial, puis on applique le barème progressif (11%, 30%, 41%, 45%).</li>
-              <li><strong>− Crédits d'impôt</strong> — Formation dirigeant, emploi à domicile, garde d'enfant… Ils viennent réduire directement ton impôt. <Fragment set:html={fleche} /> Ça donne ton <strong>impôt final</strong>.</li>
+              <li><strong>− Crédits d'impôt</strong> — Emploi à domicile, garde d'enfant… Ils viennent réduire directement ton impôt. <Fragment set:html={fleche} /> Ça donne ton <strong>impôt final</strong>.</li>
               <li><strong>= Super-Net</strong> — Revenus − Charges − Cotisations − Impôt = <strong>ce qu'il te reste vraiment</strong>.</li>
             </ol>
             <div class="bref">
-              <strong>Micro vs Réel en bref :</strong> En Micro-BNC, tes charges sont remplacées par un abattement de 34% — c'est plus simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil. Le simulateur compare les deux pour toi.
+              <strong>Micro vs Réel en bref :</strong> En Micro-BNC, un abattement de 34% remplace, pour l'impôt, tes charges ET tes cotisations, que le Régime Réel déduit. Tes charges, elles, sont payées dans les deux régimes. Le simulateur compare les deux pour toi, sur ce qu'il te reste vraiment.
             </div>
           </div>
         </details>
@@ -412,7 +412,7 @@ const fleche =
       <div class="wrap">
         <!-- Définitions rapides + exemple chiffré (contenu rédigé pour cette page,
              factuellement cohérent avec le guide ci-dessus — sourcé uniquement sur
-             les constantes du moteur de calcul porté : SEUIL_RSPM=38000€ (mode Auto),
+             les constantes du moteur de calcul porté : RSPM en mode Auto jusqu'à 19 000€ (remplaçant),
              abattement micro-BNC 34%, taux RSPM 13,5%/21,2%, tranche RSPM 19 000€). -->
         <section aria-labelledby="definitions-title">
           <h2 id="definitions-title" class="mots-t">
@@ -442,7 +442,7 @@ const fleche =
           <div class="exemple">
             <p class="sur">Exemple chiffré (illustration simplifiée)</p>
             <p>
-              Un médecin remplaçant, au RSPM l'an dernier avec moins de 19 000 €, facture cette année <strong>30 000 €</strong> de rétrocessions, sans autre revenu. Il reste au RSPM cette année, et l'an prochain aussi : c'est sa première année au-dessus de 19 000 €, et il reste sous <strong>38 000 €</strong> (une sortie ne jouerait de toute façon qu'au 1<sup>er</sup> janvier suivant). Ses cotisations sociales suivent donc le barème simplifié à deux tranches : <strong>13,5 %</strong> sur les 19 000 premiers euros (2 565 €), puis <strong>21,2 %</strong> sur les 11 000 € restants (2 332 €) — soit environ <strong>4 897 €</strong> de cotisations URSSAF, plus la RID CARMF (157 € ou 626 € selon le taux choisi). Côté fiscal, en Micro-BNC, l'abattement forfaitaire de <strong>34 %</strong> ramène directement son bénéfice imposable à <strong>19 800 €</strong> (66 % de 30 000 €), avant application du barème de l'impôt sur le revenu. Le simulateur calcule ensuite l'IR précis selon la situation familiale, puis affiche le Super-Net final — et fait le même calcul en Régime Réel pour comparer.
+              Un médecin remplaçant, au RSPM l'an dernier avec moins de 19 000 €, facture cette année <strong>30 000 €</strong> de rétrocessions, sans autre revenu. Il reste au RSPM cette année, et l'an prochain aussi : c'est sa première année au-dessus de 19 000 €, et il reste sous <strong>38 000 €</strong> (une sortie ne jouerait de toute façon qu'au 1<sup>er</sup> janvier suivant). Ses cotisations sociales suivent donc le barème simplifié à deux tranches : <strong>13,5 %</strong> sur les 19 000 premiers euros (2 565 €), puis <strong>21,2 %</strong> sur les 11 000 € restants (2 332 €) — soit environ <strong>4 897 €</strong> de cotisations URSSAF, plus la RID CARMF (157 € ou 626 € selon le taux choisi) ; dans le simulateur, il choisit « RSPM » (en mode Auto, le RSPM n'est retenu que jusqu'à 19 000 €). Côté fiscal, en Micro-BNC, l'abattement forfaitaire de <strong>34 %</strong> ramène directement son bénéfice imposable à <strong>19 800 €</strong> (66 % de 30 000 €), avant application du barème de l'impôt sur le revenu. Le simulateur calcule ensuite l'IR précis selon la situation familiale, puis affiche le Super-Net final — et fait le même calcul en Régime Réel pour comparer.
             </p>
           </div>
         </section>

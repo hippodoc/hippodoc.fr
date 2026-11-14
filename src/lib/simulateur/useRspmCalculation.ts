@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { getDomTomInfo } from '@/lib/dom-tom';
 import { abattement10Salaire, getBaremeIR } from '@/lib/baremes-ir';
 import { inferEnfantsFromParts } from '@/lib/fiscalParts';
@@ -64,8 +63,10 @@ interface RspmCalculationInput {
   secteurConventionnel?: 'secteur_1' | 'secteur_2';
   forfait2pct?: boolean;
   cotisationsVolontaires?: number;
+  /** `per` : PER déduit du revenu global (163 quatervicies) ; `madelin` : déduit du BNC réel (154 bis). */
+  typeCotisationsVolontaires?: 'per' | 'madelin';
   // Phase 2 — Zones exonérées, Revenus fonciers, Crédits d'impôt
-  zoneExoneree?: 'aucune' | 'zfu' | 'zfrr';
+  zoneExoneree?: 'aucune' | 'zfu' | 'zfrr' | 'zfrr_plus' | 'qpv';
   anneeInstallationZone?: number;
   anneeFiscale?: number;
   regimeFoncier?: 'aucun' | 'micro' | 'reel';
@@ -95,6 +96,20 @@ interface RspmCalculationInput {
    * En RSPM, ce paramètre est IGNORÉ (les cotisations RSPM internes sont correctes).
    */
   cotisationsSocialesOverride?: number;
+  /**
+   * Part des cotisations qui n'est PAS déductible du revenu imposable (CSG-CRDS non
+   * déductible : 2,4 % + 0,5 % de l'assiette). Réintégrée au bénéfice au régime réel.
+   * Sans effet en micro-BNC (aucune cotisation n'y est déduite).
+   */
+  cotisationsNonDeductibles?: number;
+  /**
+   * Charges professionnelles PAYÉES dans l'année, quel que soit le régime. Au réel, elles
+   * sont aussi déduites de l'impôt ; en micro-BNC, l'abattement de 34 % les remplace pour
+   * l'impôt, mais elles sortent quand même du compte : le Super-Net les retranche dans les
+   * deux régimes. Sans cette valeur, le Super-Net Micro-BNC ignorait les charges et le
+   * Micro-BNC gagnait d'office leur montant (audit de novembre 2026).
+   */
+  chargesDecaissees?: number;
 }
 
 // Détail d'une tranche d'imposition
@@ -199,13 +214,17 @@ interface RspmBreakdown {
     chequesVacancesDeduction?: number;
     cotisationsVolontairesDeduites?: number;
     abattementDomMontant?: number;
+    /** Décote appliquée (CGI art. 197-I-4), si elle a joué. */
+    decote?: number;
+    /** Crédits d'impôt remboursés (part qui dépasse l'impôt). */
+    restitutionCredits?: number;
     lieuExercice?: string;
     chargesReellesPercent?: number;
   };
 }
 
 // ✅ Import centralisé des barèmes IR (source unique de vérité)
-import { BAREME_IMPOT_2025, PLAFOND_ABATTEMENT_10, PLANCHER_ABATTEMENT_10, getTranchesIR, calculateRawTaxPerPart as centralCalculateRawTax, getTMI as centralGetTMI, calculateDeductionsS1, getTauxExonerationZone, calculateRevenuFoncierImposable, calculateCreditFormation, getPerCap, applyDecote, calculateCEHR } from '@/lib/baremes-ir';
+import { BAREME_IMPOT_2025, PLAFOND_ABATTEMENT_10, PLANCHER_ABATTEMENT_10, getTranchesIR, calculateRawTaxPerPart as centralCalculateRawTax, getTMI as centralGetTMI, calculateDeductionsS1, getTauxExonerationZone, calculateRevenuFoncierImposable, calculateCreditFormation, getPerCap, getPlafondEpargneRetraite, applyDecote, calculateCEHR } from '@/lib/baremes-ir';
 export { BAREME_IMPOT_2025 } from '@/lib/baremes-ir';
 
 /**
@@ -373,361 +392,6 @@ const calculateImpot = (revenuImposable: number, partsFiscales: number, annee: n
 };
 
 /**
- * Hook centralisé pour le calcul RSPM
- * Utilisé par YearlyDashboardCard, historique.tsx, et EventDetailsModal
- */
-export const useRspmCalculation = ({
-  yearlyLiberalTotal,
-  yearlyLiberalExonere = 0,
-  yearlySalariedTotal = 0,
-  yearlySalariedExonere = 0,
-  yearlyConjointTotal = 0,
-  typeRevenuConjoint = 'salarie',
-  profile,
-  modeFraisSalaries,
-  fraisReelsAnnuel = 0,
-  chargesLiberalesReelles,
-  retrocessionsVerseesMicroBnc = 0,
-  secteurConventionnel,
-  forfait2pct = false,
-  cotisationsVolontaires = 0,
-  zoneExoneree = 'aucune',
-  anneeInstallationZone,
-  anneeFiscale = 2026,
-  regimeFoncier = 'aucun',
-  revenusFonciersBruts = 0,
-  revenuFoncierNet = 0,
-  creditFormationDirigeant = false,
-  heuresFormation = 0,
-  creditImpotAutre = 0,
-  chequesVacances = 0,
-  tauxRid,
-  situationCarmf = 'affilie_3ans_plus',
-  ratioNonConventionne = 0,
-  fraisEmploiDomicile = 0,
-  fraisGardeEnfants = 0,
-  nombreEnfantsGarde = 0,
-  lieuExercice,
-}: RspmCalculationInput): RspmBreakdown | null => {
-  
-  return useMemo(() => {
-    if (!profile || yearlyLiberalTotal === 0) return null;
-
-    const secteur = secteurConventionnel || 'secteur_1';
-    // Phase 3: ratio conventionné (pour prorata S1 et forfait 2%)
-    const ratioConventionne = 1 - (ratioNonConventionne || 0) / 100;
-
-    // 🎯 CONVENTION A — Audit pré-prod final 2026
-    // Sémantique stricte : en micro-BNC, lecture prioritaire de `retrocessionsVerseesMicroBnc` ;
-    // fallback sur `chargesLiberalesReelles` (legacy) avec warn DEV. En réel, ignoré.
-    let retroDeduiteMicroBnc = 0;
-    if (profile.regime_fiscal === 'micro-bnc') {
-      if (retrocessionsVerseesMicroBnc > 0) {
-        retroDeduiteMicroBnc = retrocessionsVerseesMicroBnc;
-      } else if (chargesLiberalesReelles && chargesLiberalesReelles > 0) {
-        retroDeduiteMicroBnc = chargesLiberalesReelles;
-        if (typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production') {
-          console.warn(
-            '[useRspmCalculation hook] micro-BNC: chargesLiberalesReelles utilisé comme retro (fallback). ' +
-            'Préférer le param dédié `retrocessionsVerseesMicroBnc` (Convention A 2026).'
-          );
-        }
-      }
-    }
-    const baseImposableMicroBnc = Math.max(0, yearlyLiberalTotal - retroDeduiteMicroBnc);
-
-    // 1. Cotisations URSSAF - Calcul PROGRESSIF RSPM
-    // Assiette sociale = recettes (− rétrocessions en micro-BNC) + PDSA exonéré (Art. 151 ter, soumis aux cotisations).
-    const revenuLiberalPourCotisations = baseImposableMicroBnc + yearlyLiberalExonere;
-    const rspmDetail = calculateCotisationsRspm(revenuLiberalPourCotisations);
-    const cotisationsUrssaf = rspmDetail.total;
-
-    // 2. RID selon le choix — Phase 3: toggle explicite ou profil
-    // Note : la RID est OBLIGATOIRE pour tout médecin actif inscrit à l'Ordre.
-    // En RSPM, le statut "dispense CARMF" ne s'applique PAS à la RID
-    // (la dispense ne concerne que la complémentaire vieillesse en PAMC).
-    // CARMF 2026 — PDF officiel « La CARMF en 2026 » p. 29-30 : RID = 626 € (100 %) / 157 € (25 %)
-    let cotisationsCarmfRid = 626; // Par défaut 100% (taux plein)
-    const ridChoice = tauxRid || profile.taux_rid_rspm;
-    if (ridChoice === '25%') {
-      cotisationsCarmfRid = 157;
-    }
-
-
-    // En RSPM, la complémentaire CARMF est déjà incluse dans les cotisations URSSAF (13,5%/21,2%)
-    // Seul le RID est payé directement à la CARMF
-    const cotisationsCarmf = cotisationsCarmfRid;
-
-    // 3. Total cotisations
-    const cotisationsTotales = cotisationsUrssaf + cotisationsCarmf;
-
-    // 4. CA libéral imposable = yearlyLiberalTotal tel quel
-    // Convention : yearlyLiberalTotal est déjà la portion imposable (les appelants excluent le PDSA exonéré avant de passer la valeur)
-    const yearlyLiberalImposable = yearlyLiberalTotal;
-
-    // 5. Bénéfice fiscal (selon régime) - basé sur le CA IMPOSABLE
-    let beneficeFiscal = 0;
-    const eligibilityInput = {
-      type_exercice: profile.type_exercice,
-      secteur_conventionnel: secteur,
-      regime_fiscal: profile.regime_fiscal,
-      forfait_2pct: forfait2pct,
-    };
-    const forfait2Montant = canApplyForfait2pct(eligibilityInput)
-      ? yearlyLiberalImposable * 0.02 * ratioConventionne
-      : 0;
-    
-    if (profile.regime_fiscal === 'micro-bnc') {
-      // 🎯 Conv. A micro-BNC : versé déduit AVANT abattement 34 % (CGI Art. 102 ter).
-      // `baseImposableMicroBnc` = yearlyLiberalImposable − rétrocessions versées.
-      beneficeFiscal = baseImposableMicroBnc * 0.66;
-    } else {
-      // Phase 1 Bug #2 : `undefined` = info absente (fallback 30 %), `0` = info explicite (charges nulles).
-      if (chargesLiberalesReelles !== undefined) {
-        const ratioImposable = yearlyLiberalTotal > 0 ? yearlyLiberalImposable / yearlyLiberalTotal : 1;
-        const chargesImposables = chargesLiberalesReelles * ratioImposable;
-        beneficeFiscal = Math.max(0, yearlyLiberalImposable - chargesImposables - forfait2Montant - cotisationsTotales);
-      } else {
-        const chargesPercent = profile.charges_reelles_percent || 30;
-        beneficeFiscal = Math.max(0, yearlyLiberalImposable * (1 - chargesPercent / 100) - forfait2Montant - cotisationsTotales);
-      }
-    }
-
-    let deductionsS1Total = 0;
-    if (canApplyDeductionsS1(eligibilityInput)) {
-      const { totalDeductionS1 } = calculateDeductionsS1(yearlyLiberalImposable * ratioConventionne);
-      deductionsS1Total = totalDeductionS1;
-    }
-    
-    // ✅ Phase 2 : Exonération zone (ZFU-TE / ZFRR)
-    // Chèques-vacances ANCV : déductibles en réel uniquement, plafond annuel 1 SMIC mensuel
-    // (2024 = 1 766€, 2025 = 1 802€, 2026 = 1 823€) — cap dynamique via declarationParams
-    const chequesVacancesDeduction = (profile.regime_fiscal === 'reel')
-      ? capChequesVacances(chequesVacances || 0, anneeFiscale).capped
-      : 0;
-    // Phase 2 Bug #4 : cap PER/Madelin (CGI Art. 163 quatervicies / 154 bis).
-    const perCap = getPerCap(beneficeFiscal, anneeFiscale).plafond;
-    const cotisationsVolontairesAppliquees = Math.min(Math.max(0, cotisationsVolontaires), perCap);
-    let revenuImposableLiberal = Math.max(0, beneficeFiscal - deductionsS1Total - cotisationsVolontairesAppliquees - chequesVacancesDeduction);
-    const tauxExoneration = getTauxExonerationZone(zoneExoneree, anneeInstallationZone || 0, anneeFiscale);
-    let exonerationMontantCalc = 0;
-    if (tauxExoneration > 0) {
-      exonerationMontantCalc = revenuImposableLiberal * tauxExoneration;
-      // Plafond ZFU-TE : 50 000€ de bénéfice exonéré par an (Art. 44 octies A CGI)
-      if (zoneExoneree === 'zfu') exonerationMontantCalc = Math.min(exonerationMontantCalc, 50000);
-      revenuImposableLiberal = Math.max(0, revenuImposableLiberal - exonerationMontantCalc);
-    }
-
-    // 5.5. Calcul du revenu imposable SALARIÉ (abattement 10% OU frais réels)
-    const revenuSalarieImposable = yearlySalariedTotal - yearlySalariedExonere;
-    let deductionSalarie = 0;
-    if (modeFraisSalaries === 'frais_reels' && fraisReelsAnnuel > 0) {
-      // Frais réels déclarés
-      deductionSalarie = fraisReelsAnnuel;
-    } else {
-      // Abattement 10% avec plancher 504€ et plafond 14 426€
-      deductionSalarie = revenuSalarieImposable > 0 ? abattement10Salaire(revenuSalarieImposable, anneeFiscale) : 0;
-    }
-    const revenuImposableSalarie = Math.max(0, revenuSalarieImposable - deductionSalarie);
-
-    // 5.6. Calcul du revenu imposable CONJOINT selon le type de revenu
-    const revenusConjointImposable = yearlyConjointTotal || 0;
-    let revenuImposableConjoint: number;
-    
-    switch (typeRevenuConjoint) {
-      case 'salarie':
-      default:
-        // Abattement 10% avec plancher 504€ et plafond 14 426€
-        const abattementConjoint = revenusConjointImposable > 0 ? abattement10Salaire(revenusConjointImposable, anneeFiscale) : 0;
-        revenuImposableConjoint = Math.max(0, revenusConjointImposable - abattementConjoint);
-        break;
-        
-      case 'liberal_micro':
-        // Abattement 34% (Micro-BNC)
-        revenuImposableConjoint = revenusConjointImposable * 0.66;
-        break;
-        
-      case 'liberal_reel':
-      case 'autre':
-        // Pas d'abattement : montant = bénéfice fiscal déjà calculé
-        revenuImposableConjoint = revenusConjointImposable;
-        break;
-    }
-
-    // 6. ✅ Phase 2 : Revenus fonciers
-    const revenuFoncierImposable = calculateRevenuFoncierImposable(regimeFoncier, revenusFonciersBruts, revenuFoncierNet);
-
-    // 7. Impôt selon barème progressif avec détails (FOYER COMPLET) + plafonnement QF
-    const revenuGlobalImposable = Math.max(0, revenuImposableLiberal + revenuImposableSalarie + revenuImposableConjoint + revenuFoncierImposable);
-    const partsFiscales = profile.parts_fiscales || 1;
-    const situationFamiliale = profile.situation_familiale as 'celibataire' | 'marie_pacse' | 'veuf' | 'parent_isole' || 'celibataire';
-    const { impot: impotBrut, details: impotCalcDetails } = calculateImpotWithDetails(revenuGlobalImposable, partsFiscales, situationFamiliale, anneeFiscale);
-
-    // 8. ✅ Phase 2 : Crédits d'impôt (soustraits de l'impôt, jamais négatif)
-    const creditFormation = creditFormationDirigeant ? calculateCreditFormation(heuresFormation) : 0;
-    // ✅ Emploi à domicile : 50% des dépenses, plafond 12k + 1500/enfant (max 15k standard)
-    // Source de vérité : inférence depuis parts_fiscales (CGI Art. 194), pas le champ orphelin nombre_enfants_charge
-    const nbEnfantsForCredit = inferEnfantsFromParts(profile.parts_fiscales ?? 1, profile.situation_familiale ?? 'celibataire');
-    const plafondEmploiDomicile = Math.min(12000 + nbEnfantsForCredit * 1500, 15000);
-    const creditEmploiDomicile = Math.min(fraisEmploiDomicile || 0, plafondEmploiDomicile) * 0.5;
-    // ✅ Garde enfant < 6 ans : 50% des dépenses, plafond 3500€/enfant
-    const plafondGardeEnfants = 3500 * (nombreEnfantsGarde || 0);
-    const creditGardeEnfants = Math.min(fraisGardeEnfants || 0, plafondGardeEnfants) * 0.5;
-    const totalCredits = creditFormation + (creditImpotAutre || 0) + creditEmploiDomicile + creditGardeEnfants;
-    let impotAvantDom = Math.max(0, impotBrut - totalCredits);
-
-    // ✅ DOM-TOM : Abattement IR (CGI art. 197-I-3)
-    // Guadeloupe/Martinique/Réunion : -30%, plafond 2 450 €
-    // Guyane/Mayotte : -40%, plafond 4 050 €
-    const domInfo = getDomTomInfo(lieuExercice);
-    if (domInfo) {
-      const abattementDom = Math.min(impotAvantDom * domInfo.tauxAbattement, domInfo.plafond);
-      impotAvantDom = Math.max(0, impotAvantDom - abattementDom);
-    }
-    const impot = impotAvantDom;
-
-    // 9. Super-Net = Total revenus (incluant PDSA exonéré) - cotisations - impôt - charges déductibles
-    // 🎯 Convention A — En micro-BNC, charges classiques absorbées par l'abattement 34 %
-    // (déjà comptées dans `beneficeFiscal`). Ne PAS les soustraire à nouveau.
-    // Les rétrocessions micro-BNC sont déjà déduites en amont (`baseImposableMicroBnc`).
-    const totalRevenus = revenuLiberalPourCotisations + yearlySalariedTotal;
-    // 🎯 Audit juillet 2026 (parité PAMC) — Symétrie fiscal ↔ cash du repli `charges_reelles_percent` :
-    // quand aucune charge n'est connue (`undefined`), le bénéfice fiscal est réduit du pourcentage
-    // du profil ; ce même montant doit sortir du cash, sinon le ratio Super-Net est artificiellement
-    // gonflé (cas « 64 % »). Un `0` explicite reste un 0 (aucune charge, aucune sortie).
-    const chargesEffectives = profile.regime_fiscal === 'micro-bnc'
-      ? 0
-      : (chargesLiberalesReelles !== undefined
-          ? chargesLiberalesReelles
-          : Math.max(0, yearlyLiberalImposable * ((profile.charges_reelles_percent || 30) / 100)));
-    const superNet = totalRevenus - cotisationsUrssaf - cotisationsCarmf - impot - chargesEffectives;
-
-    const superNetPercentage = totalRevenus > 0 ? (superNet / totalRevenus) * 100 : 0;
-
-    // 9. Taux effectif
-    const tauxEffectif = revenuGlobalImposable > 0 ? (impot / revenuGlobalImposable) * 100 : 0;
-
-    // ✅ Construire les optimisations appliquées pour affichage
-    const exonerationMontant = Math.round(exonerationMontantCalc);
-    
-    const optimisationsAppliquees: Record<string, number | string | undefined> = {};
-    if (forfait2Montant > 0) optimisationsAppliquees.forfait2pct = Math.round(forfait2Montant);
-    if (deductionsS1Total > 0) optimisationsAppliquees.deductionsS1 = Math.round(deductionsS1Total);
-    if (cotisationsVolontaires > 0) optimisationsAppliquees.cotisationsVolontaires = cotisationsVolontaires;
-    if (chequesVacancesDeduction > 0) optimisationsAppliquees.chequesVacances = chequesVacancesDeduction;
-    if (exonerationMontant > 0) {
-      optimisationsAppliquees.exonerationZone = exonerationMontant;
-      optimisationsAppliquees.tauxExonerationZone = tauxExoneration;
-    }
-    if (revenuFoncierImposable !== 0) {
-      optimisationsAppliquees.revenuFoncier = Math.round(revenuFoncierImposable);
-      optimisationsAppliquees.revenuFoncierType = regimeFoncier as 'micro' | 'reel';
-      if (regimeFoncier === 'micro') optimisationsAppliquees.revenuFoncierBrut = revenusFonciersBruts;
-    }
-    if (creditFormation > 0) optimisationsAppliquees.creditFormation = Math.round(creditFormation);
-    if ((creditImpotAutre || 0) > 0) optimisationsAppliquees.creditImpotAutre = creditImpotAutre;
-    if (creditEmploiDomicile > 0) optimisationsAppliquees.creditEmploiDomicile = Math.round(creditEmploiDomicile);
-    if (creditGardeEnfants > 0) optimisationsAppliquees.creditGardeEnfants = Math.round(creditGardeEnfants);
-    if ((ratioNonConventionne || 0) > 0) optimisationsAppliquees.ratioNonConventionne = ratioNonConventionne;
-
-    return {
-      cotisationsTotales,
-      cotisationsUrssaf,
-      cotisationsCarmf,
-      netAvantImpot: yearlyLiberalTotal + yearlyLiberalExonere - cotisationsTotales,
-      revenuImposableTotal: revenuGlobalImposable,
-      impot,
-      superNet,
-      superNetPercentage,
-      cotisationsDetail: {
-        maladie: 0,
-        allocationsFamiliales: 0,
-        retraite: cotisationsCarmf,
-        retraiteRid: cotisationsCarmfRid,
-        retraiteComplementaire: 0,
-        csgCrds: 0,
-        formation: 0,
-      },
-      revenuLiberal: revenuLiberalPourCotisations,
-      cotisationsRspmDetail: rspmDetail,
-      optimisationsAppliquees: Object.keys(optimisationsAppliquees).length > 0 ? optimisationsAppliquees : undefined,
-      impotDetails: {
-        quotientFamilial: impotCalcDetails.quotientFamilial,
-        partsFiscales,
-        tmi: impotCalcDetails.tmi,
-        tauxEffectif,
-        impotParPart: impotCalcDetails.impotParPart,
-        tranches: impotCalcDetails.tranches,
-        revenuImposableLiberal,
-        revenuImposableSalarie,
-        revenuImposableConjoint,
-        typeRevenuConjoint,
-        revenuBrutConjoint: revenusConjointImposable,
-        revenuBrutSalarie: revenuSalarieImposable,
-        deductionSalarie,
-        hasAnyFraisReels: modeFraisSalaries === 'frais_reels' && fraisReelsAnnuel > 0,
-        regimeFiscal: profile.regime_fiscal || 'micro-bnc',
-        modeFraisSalaries: modeFraisSalaries || 'abattement_10',
-        plafonnementApplique: impotCalcDetails.plafonnementApplique,
-        avantageEnfantsInitial: impotCalcDetails.avantageEnfantsInitial,
-        avantageEnfantsFinal: impotCalcDetails.avantageEnfantsFinal,
-        plafondUtilise: impotCalcDetails.plafondUtilise,
-        situationFamiliale,
-        // Champs bruts pour breakdown pédagogique
-        revenuBrutLiberal: yearlyLiberalImposable,
-        retrocessionsVersees: retroDeduiteMicroBnc > 0 ? retroDeduiteMicroBnc : undefined,
-        chargesLiberales: profile.regime_fiscal !== 'micro-bnc' ? (chargesLiberalesReelles || 0) : undefined,
-        chargesReellesPercent: profile.regime_fiscal !== 'micro-bnc' && chargesLiberalesReelles === undefined ? (profile.charges_reelles_percent || 30) : undefined,
-        forfait2Montant: forfait2Montant > 0 ? forfait2Montant : undefined,
-        cotisationsDeduites: profile.regime_fiscal !== 'micro-bnc' ? cotisationsTotales : undefined,
-        deductionsS1: deductionsS1Total > 0 ? deductionsS1Total : undefined,
-        chequesVacancesDeduction: chequesVacancesDeduction > 0 ? chequesVacancesDeduction : undefined,
-        cotisationsVolontairesDeduites: cotisationsVolontairesAppliquees > 0 ? cotisationsVolontairesAppliquees : undefined,
-        abattementDomMontant: domInfo ? Math.min(Math.max(0, impotBrut - totalCredits) * domInfo.tauxAbattement, domInfo.plafond) : 0,
-        lieuExercice,
-      },
-    };
-  }, [
-    profile,
-    yearlyLiberalTotal,
-    yearlyLiberalExonere,
-    yearlySalariedTotal,
-    yearlySalariedExonere,
-    yearlyConjointTotal,
-    typeRevenuConjoint,
-    profile?.situation_familiale,
-    profile?.parts_fiscales,
-    profile?.regime_fiscal,
-    profile?.charges_reelles_percent,
-    profile?.taux_rid_rspm,
-    modeFraisSalaries,
-    fraisReelsAnnuel,
-    chargesLiberalesReelles,
-    retrocessionsVerseesMicroBnc,
-    chequesVacances,
-    secteurConventionnel,
-    forfait2pct,
-    cotisationsVolontaires,
-    zoneExoneree,
-    anneeInstallationZone,
-    anneeFiscale,
-    regimeFoncier,
-    revenusFonciersBruts,
-    revenuFoncierNet,
-    creditFormationDirigeant,
-    heuresFormation,
-    creditImpotAutre,
-    tauxRid,
-    situationCarmf,
-    ratioNonConventionne,
-    fraisEmploiDomicile,
-    fraisGardeEnfants,
-    nombreEnfantsGarde,
-    lieuExercice,
-  ]);
-};
-
-/**
  * Fonction pure pour calcul ponctuel (sans hook)
  * Utile pour les calculs inline dans validateRemplacement
  */
@@ -764,6 +428,9 @@ export const calculateRspmBreakdown = ({
   nombreEnfantsGarde = 0,
   lieuExercice,
   cotisationsSocialesOverride,
+  cotisationsNonDeductibles = 0,
+  chargesDecaissees,
+  typeCotisationsVolontaires = 'per',
 }: RspmCalculationInput): RspmBreakdown | null => {
   const secteur = secteurConventionnel || 'secteur_1';
   // Phase 3: ratio conventionné
@@ -831,8 +498,12 @@ export const calculateRspmBreakdown = ({
       regime_fiscal: profile.regime_fiscal,
       forfait_2pct: forfait2pct,
     };
+    // Forfait 2 % : « calculé sur le montant des recettes brutes, y compris les honoraires
+    // de dépassement » (BOI-BNC-SECT-40 § 120) : toutes les recettes, sans prorata de la
+    // part non conventionnée (le prorata ne vaut que pour le 3 % et le groupe III, assis
+    // sur les seuls honoraires conventionnels, hors PDSA exonérée).
     const forfait2Montant = canApplyForfait2pct(eligibilityInputPure)
-      ? yearlyLiberalImposable * 0.02 * ratioConventionne
+      ? (yearlyLiberalImposable + yearlyLiberalExonere) * 0.02
       : 0;
     
     // 🎯 Override : si cotisations PAMC fournies (mode hybride API URSSAF + IR local),
@@ -841,18 +512,22 @@ export const calculateRspmBreakdown = ({
     const cotisationsPourBenefice = cotisationsSocialesOverride !== undefined
       ? cotisationsSocialesOverride
       : cotisationsTotales;
+    // La CSG-CRDS non déductible (2,4 % + 0,5 %) est payée mais pas déduite : on la
+    // réintègre au bénéfice (ce que fait le modèle de l'Urssaf pour le revenu imposable).
+    const cotisationsDeductibles = Math.max(0, cotisationsPourBenefice - (cotisationsNonDeductibles || 0));
     if (profile.regime_fiscal === 'micro-bnc') {
-      // 🎯 Conv. A micro-BNC : versé déduit AVANT abattement 34 % (CGI Art. 102 ter).
-      beneficeFiscal = baseImposableMicroBnc * 0.66;
+      // 🎯 Conv. A micro-BNC : versé déduit AVANT abattement 34 % (CGI Art. 102 ter),
+      // abattement minimal de 305 €.
+      beneficeFiscal = Math.max(0, baseImposableMicroBnc - Math.max(305, baseImposableMicroBnc * 0.34));
     } else {
       // Phase 1 Bug #2 : `undefined` = info absente (fallback 30 %), `0` = info explicite (charges nulles).
       if (chargesLiberalesReelles !== undefined) {
         const ratioImposable = yearlyLiberalTotal > 0 ? yearlyLiberalImposable / yearlyLiberalTotal : 1;
         const chargesImposables = chargesLiberalesReelles * ratioImposable;
-        beneficeFiscal = Math.max(0, yearlyLiberalImposable - chargesImposables - forfait2Montant - cotisationsPourBenefice);
+        beneficeFiscal = Math.max(0, yearlyLiberalImposable - chargesImposables - forfait2Montant - cotisationsDeductibles);
       } else {
         const chargesPercent = profile.charges_reelles_percent || 30;
-        beneficeFiscal = Math.max(0, yearlyLiberalImposable * (1 - chargesPercent / 100) - forfait2Montant - cotisationsPourBenefice);
+        beneficeFiscal = Math.max(0, yearlyLiberalImposable * (1 - chargesPercent / 100) - forfait2Montant - cotisationsDeductibles);
       }
     }
 
@@ -869,11 +544,23 @@ export const calculateRspmBreakdown = ({
     const chequesVacancesDeductionPure = (profile.regime_fiscal === 'reel')
       ? capChequesVacances(chequesVacances || 0, anneeFiscale).capped
       : 0;
-    // Phase 2 Bug #4 : cap PER/Madelin (CGI Art. 163 quatervicies / 154 bis).
-    const perCapPure = getPerCap(beneficeFiscal, anneeFiscale).plafond;
+    // Plafond de l'épargne retraite : 163 quatervicies (PER, revenu global, PASS N-1) ou
+    // 154 bis (Madelin, BNC réel : 10 % + 15 % entre 1 et 8 PASS). Le Madelin n'est pas
+    // déductible en micro-BNC (l'appelant le met déjà à 0).
+    const assietteEpargneRetraite = Math.max(0, beneficeFiscal - deductionsS1Total - chequesVacancesDeductionPure);
+    const perCapPure = getPlafondEpargneRetraite(
+      profile.regime_fiscal === 'reel' && typeCotisationsVolontaires === 'madelin' ? 'madelin' : 'per',
+      assietteEpargneRetraite,
+      anneeFiscale,
+    );
     const cotisationsVolontairesAppliqueesPure = Math.min(Math.max(0, cotisationsVolontaires), perCapPure);
     let revenuImposableLiberal = Math.max(0, beneficeFiscal - deductionsS1Total - cotisationsVolontairesAppliqueesPure - chequesVacancesDeductionPure);
-    const tauxExonerationPure = getTauxExonerationZone(zoneExoneree, anneeInstallationZone || 0, anneeFiscale);
+    // Zones : la FRR « socle » et l'ex-ZRR exigent un régime réel (CGI art. 44 quindecies
+    // et 44 quindecies A, I-B) ; ZFU-TE, régime QPV et FRR « plus » acceptent le micro-BNC.
+    const zoneApplicable = !(zoneExoneree === 'zfrr' && profile.regime_fiscal === 'micro-bnc');
+    const tauxExonerationPure = zoneApplicable
+      ? getTauxExonerationZone(zoneExoneree, anneeInstallationZone || 0, anneeFiscale)
+      : 0;
     let exonerationMontantCalcPure = 0;
     if (tauxExonerationPure > 0) {
       exonerationMontantCalcPure = revenuImposableLiberal * tauxExonerationPure;
@@ -926,7 +613,9 @@ export const calculateRspmBreakdown = ({
   const { impot: impotBrutPure, details: impotCalcDetails } = calculateImpotWithDetails(revenuGlobalImposable, partsFiscales, situationFamiliale, anneeFiscale);
 
   // ✅ Phase 2 : Crédits d'impôt
-  const creditFormationPure = creditFormationDirigeant ? calculateCreditFormation(heuresFormation) : 0;
+  // Crédit d'impôt formation des dirigeants (art. 244 quater M) : heures suivies jusqu'au
+  // 31/12/2024 seulement, article abrogé par la loi de finances 2026.
+  const creditFormationPure = creditFormationDirigeant && anneeFiscale <= 2024 ? calculateCreditFormation(heuresFormation) : 0;
   // ✅ Emploi à domicile : 50% des dépenses, plafond 12k + 1500/enfant (max 15k)
   // Source de vérité : inférence depuis parts_fiscales (CGI Art. 194), pas le champ orphelin nombre_enfants_charge
   const nbEnfantsForCreditPure = inferEnfantsFromParts(profile.parts_fiscales ?? 1, profile.situation_familiale ?? 'celibataire');
@@ -936,33 +625,43 @@ export const calculateRspmBreakdown = ({
   const plafondGardeEnfantsPure = 3500 * (nombreEnfantsGarde || 0);
   const creditGardeEnfantsPure = Math.min(fraisGardeEnfants || 0, plafondGardeEnfantsPure) * 0.5;
   const totalCreditsPure = creditFormationPure + (creditImpotAutre || 0) + creditEmploiDomicilePure + creditGardeEnfantsPure;
-  let impotAvantDomPure = Math.max(0, impotBrutPure - totalCreditsPure);
 
-  // ✅ DOM-TOM : Abattement IR (CGI art. 197-I-3)
+  // Ordre de l'article 197 du CGI : barème et plafonnement du quotient familial (fait
+  // ci-dessus), puis réduction DOM (197-I-3), puis décote (197-I-4), puis réductions et
+  // crédits d'impôt. La décote n'était pas appliquée avant l'audit de novembre 2026 :
+  // l'impôt des petits revenus (RSPM surtout) était surestimé.
   const domInfoPure = getDomTomInfo(lieuExercice);
-  if (domInfoPure) {
-    const abattementDomPure = Math.min(impotAvantDomPure * domInfoPure.tauxAbattement, domInfoPure.plafond);
-    impotAvantDomPure = Math.max(0, impotAvantDomPure - abattementDomPure);
-  }
-  const impot = impotAvantDomPure;
+  const abattementDomPure = domInfoPure
+    ? Math.min(impotBrutPure * domInfoPure.tauxAbattement, domInfoPure.plafond)
+    : 0;
+  const impotApresDom = Math.max(0, impotBrutPure - abattementDomPure);
+  const estCouple = situationFamiliale === 'marie_pacse' || situationFamiliale === 'marie-pacse';
+  const { impotApresDecote, decoteAppliquee } = applyDecote(impotApresDom, estCouple ? 2 : 1, anneeFiscale);
+  const impot = Math.round(Math.max(0, impotApresDecote - totalCreditsPure));
+  // Crédits d'impôt (emploi à domicile, garde d'enfants…) : la part qui dépasse l'impôt est
+  // remboursée par le fisc. Elle s'ajoute au Super-Net (avant novembre 2026, elle était perdue).
+  const restitutionCredits = Math.round(Math.max(0, totalCreditsPure - impotApresDecote));
 
-  // 6. Super-Net (incluant PDSA exonéré dans les revenus totaux)
-  // 🎯 Convention A — En micro-BNC, charges classiques absorbées par l'abattement 34 %
-  // (déjà comptées dans `beneficeFiscal`). Ne PAS les soustraire à nouveau.
-  // 🎯 Mode hybride : si override cotisations API fourni, l'utiliser pour le Super-Net
-  // afin de rester cohérent avec l'IR recalculé localement.
+  // 6. Super-Net (incluant PDSA exonéré dans les revenus totaux) : ce qui reste après
+  // charges, cotisations et impôt. Les charges payées sortent du compte dans les DEUX
+  // régimes (`chargesDecaissees`) : l'abattement de 34 % du micro-BNC ne joue que sur
+  // l'impôt. 🎯 Mode hybride : si override cotisations API fourni, l'utiliser pour le
+  // Super-Net afin de rester cohérent avec l'IR recalculé localement.
   const totalRevenus = revenuLiberalPourCotisations + yearlySalariedTotal;
-  // 🎯 Audit juillet 2026 (parité PAMC) — voir hook ci-dessus : symétrie fiscal ↔ cash du repli
-  // `charges_reelles_percent` quand aucune charge n'est connue (`undefined`).
-  const chargesEffectives = profile.regime_fiscal === 'micro-bnc'
-    ? 0
-    : (chargesLiberalesReelles !== undefined
-        ? chargesLiberalesReelles
-        : Math.max(0, yearlyLiberalImposable * ((profile.charges_reelles_percent || 30) / 100)));
+  // Sans `chargesDecaissees` (appelants historiques) : au réel, les charges déduites ou le
+  // repli `charges_reelles_percent` (symétrie fiscal ↔ cash, audit juillet 2026) ; en
+  // micro-BNC, rien, faute de les connaître.
+  const chargesEffectives = chargesDecaissees !== undefined
+    ? Math.max(0, chargesDecaissees)
+    : profile.regime_fiscal === 'micro-bnc'
+      ? 0
+      : (chargesLiberalesReelles !== undefined
+          ? chargesLiberalesReelles
+          : Math.max(0, yearlyLiberalImposable * ((profile.charges_reelles_percent || 30) / 100)));
   const cotisationsPourSuperNet = cotisationsSocialesOverride !== undefined
     ? cotisationsSocialesOverride
     : (cotisationsUrssaf + cotisationsCarmf);
-  const superNet = totalRevenus - cotisationsPourSuperNet - impot - chargesEffectives;
+  const superNet = totalRevenus - cotisationsPourSuperNet - impot - chargesEffectives + restitutionCredits;
   const superNetPercentage = totalRevenus > 0 ? (superNet / totalRevenus) * 100 : 0;
   const tauxEffectif = revenuGlobalImposable > 0 ? (impot / revenuGlobalImposable) * 100 : 0;
 
@@ -972,7 +671,8 @@ export const calculateRspmBreakdown = ({
   const optimisationsAppliqueesPure: Record<string, number | string | undefined> = {};
   if (forfait2Montant > 0) optimisationsAppliqueesPure.forfait2pct = Math.round(forfait2Montant);
   if (deductionsS1Total > 0) optimisationsAppliqueesPure.deductionsS1 = Math.round(deductionsS1Total);
-  if (cotisationsVolontaires > 0) optimisationsAppliqueesPure.cotisationsVolontaires = cotisationsVolontaires;
+  // Le montant DÉDUIT (plafonné), pas la saisie : c'est lui qui entre dans le calcul.
+  if (cotisationsVolontairesAppliqueesPure > 0) optimisationsAppliqueesPure.cotisationsVolontaires = Math.round(cotisationsVolontairesAppliqueesPure);
   if (chequesVacancesDeductionPure > 0) optimisationsAppliqueesPure.chequesVacances = chequesVacancesDeductionPure;
   if (exonerationMontantPure > 0) {
     optimisationsAppliqueesPure.exonerationZone = exonerationMontantPure;
@@ -1038,11 +738,13 @@ export const calculateRspmBreakdown = ({
       chargesLiberales: profile.regime_fiscal !== 'micro-bnc' ? (chargesLiberalesReelles || 0) : undefined,
       chargesReellesPercent: profile.regime_fiscal !== 'micro-bnc' && chargesLiberalesReelles === undefined ? (profile.charges_reelles_percent || 30) : undefined,
       forfait2Montant: forfait2Montant > 0 ? forfait2Montant : undefined,
-      cotisationsDeduites: profile.regime_fiscal !== 'micro-bnc' ? cotisationsPourBenefice : undefined,
+      cotisationsDeduites: profile.regime_fiscal !== 'micro-bnc' ? cotisationsDeductibles : undefined,
       deductionsS1: deductionsS1Total > 0 ? deductionsS1Total : undefined,
       chequesVacancesDeduction: chequesVacancesDeductionPure > 0 ? chequesVacancesDeductionPure : undefined,
       cotisationsVolontairesDeduites: cotisationsVolontairesAppliqueesPure > 0 ? cotisationsVolontairesAppliqueesPure : undefined,
-      abattementDomMontant: domInfoPure ? Math.min(Math.max(0, impotBrutPure - totalCreditsPure) * domInfoPure.tauxAbattement, domInfoPure.plafond) : 0,
+      abattementDomMontant: abattementDomPure,
+      decote: decoteAppliquee > 0 ? Math.round(decoteAppliquee) : undefined,
+      restitutionCredits: restitutionCredits > 0 ? restitutionCredits : undefined,
       lieuExercice,
     },
   };

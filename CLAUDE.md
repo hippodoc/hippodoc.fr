@@ -642,10 +642,15 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Habillage DA (§ 9.ek) :
   classes `sim-*` de `src/styles/simulateur.css` (page seule), posées aussi sur les bulles
   et listes que Radix rend hors de l'îlot ; `src/components/ui/` est partagé avec la
-  calculette et le guide, ne pas le modifier pour le simulateur. Branche RSPM (< 38 k€) :
-  calcul 100 % local (`src/lib/simulateur/`, `src/lib/baremes-ir.ts`…). Branche PAMC :
-  POST vers l'Edge Function Supabase publique `calculate-urssaf` via
-  `src/lib/supabase-public.ts` (clé anon publique dans `.env`, RLS côté serveur).
+  calculette et le guide, ne pas le modifier pour le simulateur. Calcul (audit de novembre
+  2026, § 9.fr) : impôt et Super-Net par le moteur local (`calculateRspmBreakdown`,
+  `src/lib/baremes-ir.ts`) dans les deux régimes sociaux. Cotisations : RSPM local (mode Auto :
+  remplaçant jusqu'à 19 000 €) ; PAMC par l'API publique du modèle Urssaf
+  (`src/lib/simulateur/urssaf.ts`, appelée depuis le navigateur), repli seulement sur l'Edge
+  Function Supabase `calculate-urssaf` (qui ignore secteur, année et statut de remplaçant).
+  Le Super-Net retire les charges payées dans les deux régimes, Micro-BNC compris. Les règles
+  se vérifient sur Légifrance, le BOFiP et la CARMF ; le revenu imposable d'un remplaçant doit
+  rester égal au « net imposable » du modèle Urssaf (contrôle croisé, § 9.fr).
 - `/guide-declarations/calculette` → `src/components/calculette/CalculetteApp.tsx`,
   100 % local (moteur `src/lib/calc/dsPamc.ts`), persistance localStorage. Habillage DA
   (§ 9.el) : `.calc` de `src/styles/calculette.css` (page seule), posée sur la racine de
