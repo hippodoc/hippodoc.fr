@@ -37,6 +37,77 @@ interface RegimeComparisonCardsProps {
   plafondMicro?: number;  // Plafond de recettes du Micro-BNC pour l'année simulée
 }
 
+// Anneau de répartition des revenus (§ 9.fu) : où partent les recettes, charges,
+// cotisations, impôt, et ce qu'il reste (le Super-Net, en jaune comme sur la fiche).
+// Dessiné en SVG : la bibliothèque recharts, qui le dessinait avant le § 9.ft, n'est plus
+// chargée pour lui. Même taille (100 px, anneau de 30 à 46 px de rayon), mêmes couleurs.
+const ANNEAU_COULEURS = {
+  charges: '#8DB9F2',
+  cotisations: '#4F88DE',
+  impot: '#1F4FA8',
+  superNet: '#FFD84A',
+};
+const ANNEAU_RAYON = 38;
+const ANNEAU_TOUR = 2 * Math.PI * ANNEAU_RAYON;
+const ANNEAU_JOUR = (2 / 360) * ANNEAU_TOUR;
+
+function AnneauRepartition({ charges, cotisations, impot, superNet, total }: {
+  charges: number; cotisations: number; impot: number; superNet: number; total: number;
+}) {
+  if (total <= 0) return null;
+  const parts = [
+    { nom: 'Charges', valeur: charges, couleur: ANNEAU_COULEURS.charges },
+    { nom: 'Cotisations', valeur: cotisations, couleur: ANNEAU_COULEURS.cotisations },
+    { nom: 'Impôt', valeur: impot, couleur: ANNEAU_COULEURS.impot },
+    { nom: 'Super-Net', valeur: superNet, couleur: ANNEAU_COULEURS.superNet },
+  ].filter((p) => p.valeur > 0);
+  const somme = parts.reduce((a, p) => a + p.valeur, 0);
+  const jour = parts.length > 1 ? ANNEAU_JOUR : 0;
+  let depart = 0;
+  const arcs = parts.map((p) => {
+    const longueur = (p.valeur / somme) * ANNEAU_TOUR;
+    const arc = { ...p, trait: Math.max(0, longueur - jour), decalage: -depart };
+    depart += longueur;
+    return arc;
+  });
+  const enEuros = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(total);
+
+  return (
+    <div className="sim-anneau">
+      <div className="sim-anneau-dessin">
+        <svg viewBox="0 0 100 100" width="100" height="100" aria-hidden="true">
+          {arcs.map((a) => (
+            <circle
+              key={a.nom}
+              cx="50"
+              cy="50"
+              r={ANNEAU_RAYON}
+              fill="none"
+              stroke={a.couleur}
+              strokeWidth="16"
+              strokeDasharray={`${a.trait} ${ANNEAU_TOUR}`}
+              strokeDashoffset={a.decalage}
+              transform="rotate(-90 50 50)"
+            />
+          ))}
+        </svg>
+        <p className="sim-anneau-centre">
+          <span>Revenus</span>
+          <strong>{enEuros}</strong>
+        </p>
+      </div>
+      <ul className="sim-anneau-legende">
+        {parts.map((p) => (
+          <li key={p.nom}>
+            <span className="sim-anneau-point" style={{ backgroundColor: p.couleur }} aria-hidden="true" />
+            {p.nom} <strong>{Math.round((p.valeur / total) * 100)}{'\u00a0'}%</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // Composant CountUp simple
 function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -949,6 +1020,15 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                 </div>
               </div>
             </div>
+
+            {/* Où partent les revenus (anneau rétabli au § 9.fu, en SVG) */}
+            <AnneauRepartition
+              charges={result.chargesReelles || 0}
+              cotisations={result.cotisationsTotales}
+              impot={hasRevenusConjoint ? impotMedecin : result.impot}
+              superNet={superNetMedecinReel}
+              total={revenusTotaux}
+            />
 
             {/* Détails avec icônes et animations staggered */}
             <div className="space-y-1.5 pt-2">

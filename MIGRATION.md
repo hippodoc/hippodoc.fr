@@ -12596,6 +12596,58 @@ nom (`DV3-EFCM` → `HrxwAN9D`), sept règles en moins, aucune en plus (`h-[100p
 inemployées et retirées) ; les autres pages ne diffèrent de la production que par ce nom
 (vérifié sur l'accueil, `/tarifs`, `/faq`, `/blog`, un article, une page légale, la calculette).
 
+### 9.fu Simulateur : conclusion lisible, anneau rétabli ; la réforme de l'assiette sociale, à intégrer (14 novembre 2026)
+
+Le propriétaire, sur la conclusion du § 9.ft : « pas hyper agréable à lire […] un peu brut » ;
+« je trouvais que c'était sympa le camembert » ; puis : « t'as vérifié que tu utilises bien le
+nouveau système de calcul de l'Urssaf (RBS) ? Qu'on est bien à jour et cohérent partout ? »
+
+**Conclusion.** Le raisonnement passe sous des étiquettes (« Pourquoi », « Point de bascule »,
+« Ce qui change » quand les régimes se valent, « Passer au réel » quand le réel l'emporte),
+l'étiquette au-dessus au téléphone, à gauche à partir de 640 px. Sous le filet, « À mettre de côté
+chaque mois pour ton activité libérale » : le total en grand, sa part des recettes, une barre
+Urssaf, CARMF, impôt et sa légende, puis la phrase des 1 000 € de plus. Textes retouchés pour
+l'étiquette : « Ce qui les départage alors, c'est la gestion : en micro, […] ; au réel, […]. Les
+honoraires d'un comptable sont une charge : ajoute-les pour comparer. » devient « Seulement la
+gestion. En micro, […]. Au réel, […] ; les honoraires d'un comptable sont une charge, ajoute-les
+pour comparer. » ; « Pour être au réel, il suffit de déposer ta déclaration 2035 dans les délais
+[…] » devient « Il suffit de déposer ta déclaration 2035 dans les délais […] » ; la phrase « À
+mettre de côté chaque mois pour ton activité libérale : X € (Y % de tes recettes), soit A €
+d'Urssaf, B € de CARMF et C € d'impôt. » devient le bloc chiffré (mêmes montants). Le plafond du
+Micro-BNC dépassé alors que le réel l'emporte n'est plus une alerte (pastille d'information, la
+conclusion garde sa couleur) : il ne change pas le conseil.
+
+**Anneau.** L'anneau de répartition des fiches (charges, cotisations, impôt, Super-Net), retiré au
+§ 9.ft, est rétabli à la demande du propriétaire, dessiné en SVG (`AnneauRepartition`, styles
+`.sim-anneau*` de `simulateur.css`) : mêmes taille et couleurs, sans recharts. « Reste à vivre »
+devient « Super-Net » (le nom du chiffre en tête de la fiche).
+
+Feuille commune inchangée (`HrxwAN9D`) : aucune classe utilitaire nouvelle.
+
+**La réforme de l'assiette sociale (« revenu brut social »), pas encore dans nos cotisations.**
+Vérifié le 14 novembre 2026 :
+- La réforme s'applique aux praticiens et auxiliaires médicaux conventionnés à compter des
+  revenus 2025 (impots.gouv.fr, « La réforme de l'assiette sociale » ; CARMF, « Changement
+  d'assiette sociale », 11 mars 2026) : assiette unique = recettes − charges hors prélèvements
+  sociaux, abattue de 26 % (plancher 1,76 % du PASS, plafond 130 % : 829 € et 61 230 € en 2025) ; en
+  micro, l'abattement fiscal (34 %) à la place ; la CSG-CRDS sur la même assiette, sans
+  réintégration des cotisations ; retraite de base, tranche 1 à 8,73 % ; maladie à 8,5 % (reste à
+  charge de 0,1 % en secteur 1). « La CARMF en 2026 » (p. 22) : complémentaire à 11,8 %, ASV
+  forfaitaire 1 917 € (S1) ou 5 751 € (S2) et proportionnelle 4 %.
+- Le modèle que le simulateur interroge (API `mon-entreprise.urssaf.fr/api/v1`, paquet
+  `modele-social`, même dans sa dernière version 11.1.0) calcule encore l'ancienne assiette en
+  2025 et 2026 : assiette = revenu professionnel net, CSG-CRDS sur revenu + cotisations ;
+  complémentaire CARMF à 10,2 %. Ordre de grandeur, en donnant au modèle la nouvelle assiette :
+  −818 €/an pour un remplaçant de secteur 1 à 60 000 € de recettes et 6 000 € de charges, −1 657 €
+  à 100 000 €, +1 355 € pour un secteur 2 à 120 000 € (avant la complémentaire à 11,8 %).
+- L'Urssaf publie un autre paquet, `modele-ti` 0.1.0 (juillet 2026), qui applique la réforme
+  (variation « après réforme » à partir de 2025, abattement de 26 % borné, micro sur les recettes
+  abattues, participations de l'Assurance maladie) ; il garde lui aussi la complémentaire à 10,2 %.
+  L'essayer demande de l'exécuter dans l'environnement de travail, ce qui y a été refusé : la
+  décision revient au propriétaire. Rien n'a changé dans le calcul pour l'instant.
+- L'application (app.hippodoc.fr, dépôt à part) appelle le même modèle par sa fonction
+  `calculate-urssaf` : même constat.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
