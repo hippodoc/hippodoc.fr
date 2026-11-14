@@ -12952,6 +12952,35 @@ fondateur reste racontée plus bas (bloc fondateur et film). La ligne fine devie
 
 **Fichiers** : `src/components/accueil/Hero.astro`, `src/lib/pages-lastmod.ts`, `MIGRATION.md`.
 
+### 9.fz Mentions légales refaites, sobres (14 novembre 2026)
+
+Demande du propriétaire : une page légale sobre, sans ce qui inquiète sans rien apporter.
+Contenu modifié (texte juridique, `src/pages/mentions-legales.astro`) :
+
+- **Éditeur** d'après l'extrait Kbis : HIPPODOC, SASU au capital de 1 €, 60 rue François Ier,
+  75008 Paris, **RCS Paris 943 434 738** (la page disait « en cours d'immatriculation »).
+  Le capital social reste : la loi l'exige (LCEN art. 6 III ; Code de commerce
+  art. R123-237). Rien d'autre du Kbis n'est publié (date de naissance, domicile).
+- **Hébergement**, vérifié le 14 novembre 2026 (en-têtes des serveurs, projet Supabase,
+  pages légales des hébergeurs) : site sur **Vercel Inc.** (440 N Barranca Avenue #4133,
+  Covina, CA 91723, États-Unis) ; application sur **Lovable Labs Sweden AB** (Regeringsgatan 25,
+  111 53 Stockholm) ; données chez **Supabase Pte. Ltd** (65 Chulia Street #38-02/03, OCBC
+  Centre, Singapour 049513), serveurs à Paris (région eu-west-3). La page ne citait que
+  Supabase, à son ancienne adresse (« Supabase, Inc., 970 Toa Payoh North »).
+- **Retiré** : l'encadré « Absence de certification HDS » (la règle reste écrite dans les
+  conditions d'utilisation, art. 6, et la politique de confidentialité), les « Crédits »
+  (React, Tailwind…), la section des estimations (art. 7.2 des conditions d'utilisation),
+  la juridiction compétente, la phrase « marques déposées » (aucun dépôt n'est attesté :
+  à rétablir si la marque est déposée). Cookies et données : un renvoi à la politique de
+  confidentialité et à la charte RGPD.
+- Numéro RCS ajouté aussi dans les conditions d'utilisation (art. 1) et la politique de
+  confidentialité (préambule).
+- ⚠️ TODO(owner) : numéro de TVA intracommunautaire à ajouter si la société y est
+  assujettie ; marque déposée ou non.
+
+**Fichiers** : `src/pages/mentions-legales.astro`, `src/pages/conditions-utilisations.astro`,
+`src/pages/politique-confidentialite.astro`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
