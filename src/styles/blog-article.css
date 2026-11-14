@@ -666,7 +666,12 @@
   .fiche .corps :is(h2, h3).t-encadre { font-size: 1.125rem; }
   .fiche .infos { font-size: 0.9375rem; }
   .fiche .illustree :is(.aff, .infos) { padding-right: 150px; }
-  .fiche .couverture { grid-row: 2 / 5; align-self: center; margin: 0; border-radius: 14px; }
+  /* La vignette : son bas sur celui de la ligne de confiance (même marge basse), comme à partir de 1 360 px.
+     Elle était centrée sur la pastille de série, le titre et la ligne de confiance ; sans la pastille
+     (§ 9.fq), centrée, elle descendait de 19 px et sa loupe mordait sur la feuille sable (la moitié des
+     articles de 700 à 1 039 px). Rangée 2 comprise : quand elle est plus haute que le titre et la ligne de
+     confiance, c'est la rangée vide qui grandit, et le texte descend d'un bloc, contre elle. */
+  .fiche .couverture { grid-row: 2 / 5; align-self: end; margin: 0 0 24px; border-radius: 14px; }
   .fiche .couverture img { height: 150px; border-width: 4px; box-shadow: var(--clay); }
   .fiche .couverture::after { right: -9px; bottom: -9px; width: 32px; height: 32px; background-size: 18px; }
   .fiche .grande:popover-open { --zg: 32px; }
@@ -694,7 +699,7 @@
   }
   .fiche .infos { margin-top: 20px; margin-bottom: 36px; }
   .fiche .illustree :is(.aff, .infos) { padding-right: 170px; }
-  .fiche .couverture { border-radius: 16px; }
+  .fiche .couverture { margin-bottom: 36px; border-radius: 16px; }
   .fiche .couverture img { height: 165px; }
   .fiche .corps h2 { --t: 1.8125rem; margin-top: 64px; }
   .fiche .corps > h2:is(.t-sous, .t-hors) { --t: 1.5rem; margin-top: 44px; }
