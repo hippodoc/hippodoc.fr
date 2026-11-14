@@ -20,7 +20,7 @@ import '@/styles/blog-liste.css';
 import { SITE_URL, CALENDLY_URL } from '@/lib/site';
 import { blogSeries } from '@/lib/blog-series';
 import { seriesPath } from '@/lib/blog-series-slugs';
-import { resolveCover, resolveCovers, srcsetAffiche, bordsAffiche } from '@/lib/blog-covers';
+import { resolveCover, resolveCovers, srcsetAffiche, largeurDansCadre } from '@/lib/blog-covers';
 import { byNewest, byEpisode } from '@/lib/blog-sort';
 import { nouer, echapper, nouerNombres } from '@/lib/typo';
 
@@ -44,18 +44,23 @@ const autres = rest.slice(8);
 const featuredSeries = blogSeries.find((s) => s.id === featured.data.seriesId);
 
 /* La cover « à la une ». Servie en 1200 px fixes, elle faisait chuter le LCP à
-   4,1 s (perf 97 → 87). Depuis le § 9.fk, elle est en vignette portrait 4:5 ;
-   depuis le § 9.fo, l'affiche entière (jamais rognée), nettement plus grande que
-   celle des lignes : 36 % de la largeur de l'écran au téléphone (120 à 152 px,
-   141 px à 393), sous le titre, à gauche de l'extrait ; 240 px à partir de 768 px.
-   Le srcset lui donne des fichiers à sa taille (180 à 480 px) : au téléphone, elle
-   tirait sinon le fichier de 720 px pendant que la police arrivait. Le `src` et ses
-   dimensions restent la variante de 720 px d'avant (les robots qui ne lisent pas le
-   srcset). Descripteurs `w` = largeurs RÉELLES des fichiers (une affiche source de
-   450 px n'a pas de variante de 720 px), dédoublonnées. */
+   4,1 s (perf 97 → 87). Depuis le § 9.fk, elle est en vignette portrait ; depuis
+   le § 9.fo, l'affiche entière, à son format (jamais rognée), à la hauteur d'une
+   case 4:5 : au téléphone, celle des lignes (26,5 % de l'écran), à droite du titre,
+   dans le premier écran ; 240 px de case à partir de 768 px. Le srcset lui donne des
+   fichiers à sa taille (160 à 720 px, ceux des lignes et deux de plus pour
+   l'ordinateur) : au téléphone, elle tirait sinon le fichier de 720 px pendant que
+   la police arrivait. Le `src` et ses dimensions restent la variante de 720 px
+   d'avant (les robots qui ne lisent pas le srcset). Descripteurs `w` = largeurs
+   RÉELLES des fichiers (une affiche source de 450 px n'a pas de variante de 720 px),
+   dédoublonnées. `sizes` et préchargement disent la largeur dessinée de CETTE
+   affiche. */
 const featuredCover = await resolveCover(featured.data.cover, 720);
-const featuredSrcset = await srcsetAffiche(featured.data.cover, [180, 240, 360, 480, 720]);
-const featuredBords = await bordsAffiche(featured.data.cover);
+const featuredSrcset = await srcsetAffiche(featured.data.cover, [160, 200, 240, 320, 400, 480, 720]);
+const featuredOrdinateur = featuredCover ? `${largeurDansCadre(240, featuredCover.width, featuredCover.height)}px` : '240px';
+const featuredSizes = featuredCover
+  ? `(min-width: 768px) ${featuredOrdinateur}, (min-width: 423px) ${largeurDansCadre(112, featuredCover.width, featuredCover.height)}px, ${Math.round(26.5 * 1.25 * (featuredCover.width / featuredCover.height) * 100) / 100}vw`
+  : undefined;
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -92,9 +97,12 @@ const blogSchema = {
   <Fragment slot="head">
     {/* Ordinateur : la cover « À la une » est dans le premier écran (à gauche du
         titre) mais reste en lazy pour le téléphone. On la précharge donc à partir
-        de 768 px seulement (§ 9.bi), à la largeur qu'elle y a (240 px, § 9.fo). */}
+        de 768 px seulement (§ 9.bi), à la largeur qu'elle y a (case de 240 px,
+        § 9.fo). Elle y est souvent l'élément LCP (une affiche 0,805 : 240 × 300 px,
+        plus que le titre) ; PageSpeed signale son `loading="lazy"`, gardé pour le
+        téléphone : sans effet, l'image part avec le préchargement. */}
     {featuredSrcset && (
-      <link rel="preload" as="image" media="(min-width: 768px)" imagesrcset={featuredSrcset} imagesizes="240px" fetchpriority="high" />
+      <link rel="preload" as="image" media="(min-width: 768px)" imagesrcset={featuredSrcset} imagesizes={featuredOrdinateur} fetchpriority="high" />
     )}
     {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
     <meta name="theme-color" content="#C9DEFF" />
@@ -179,20 +187,20 @@ const blogSchema = {
           </div>
 
           {/* L'image vient APRÈS le texte dans le DOM, et reprend la colonne de gauche
-               sur ordinateur (`order`). Sur téléphone, elle est sous le titre, à gauche
-               de l'extrait (36 % de l'écran) ; le titre reste le LCP et l'image se charge
-               en différé. À partir de 768 px, 240 px (`sizes` et préchargement, § 9.fo). */}
+               sur ordinateur (`order`). Sur téléphone, elle est à droite du titre, à la
+               taille des lignes, dans le premier écran ; le titre reste le LCP et l'image
+               se charge en différé. À partir de 768 px, case de 240 px (`sizes` et
+               préchargement, § 9.fo). */}
           {featuredCover && (
             <img
               src={featuredCover.src}
               srcset={featuredSrcset}
-              sizes="(min-width: 768px) 240px, (min-width: 423px) 152px, 36vw"
+              sizes={featuredSizes}
               alt=""
               width={featuredCover.width}
               height={featuredCover.height}
               loading="lazy"
               decoding="async"
-              style={featuredBords}
             />
           )}
         </a>

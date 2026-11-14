@@ -8,7 +8,6 @@
  * d'`astro:assets` (WebP + dimensions).
  */
 import { getImage } from 'astro:assets';
-import { bordsAffiche } from '@/lib/affiche-bords.mjs';
 
 const blogImages = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/blog/**/*.{png,jpg,jpeg,webp}',
@@ -19,18 +18,18 @@ export interface ResolvedCover {
   src: string;
   width: number;
   height: number;
-  /** `srcset` des lignes de liste (§ 9.fo : affiche de 88 à 112 px au téléphone, 144 px au-delà) :
-      160, 240, 320 et 400 px, puis le fichier principal ; largeurs réelles, dédoublonnées. */
+  /** `srcset` des lignes de liste (§ 9.fo) : `CARD_WIDTHS`, puis le fichier principal ; largeurs
+      réelles, dédoublonnées. */
   srcset?: string;
-  /** Couleurs de bord de l'affiche (`--bord-g`, `--bord-d`), à poser en style sur l'image : elles
-      remplissent le cadre 4:5 autour d'une affiche montrée entière (§ 9.fo, `affiche-bords.mjs`). */
-  bords?: string;
 }
 
-/** Variantes des lignes de liste : 104 px × densité 2 et 3 (téléphone), 112 px × 3, 144 px × 1 et 2. */
-const CARD_WIDTHS = [160, 240, 320, 400];
+/** Variantes des lignes de liste (§ 9.fo, corrections). L'affiche est dessinée à son format dans une
+    case 4:5 de 88 à 112 px au téléphone, 144 px au-delà : une affiche 2:3 n'y prend que 83 % de la
+    largeur. 160 : 144 px × 1 ; 200 : Lighthouse et les écrans de densité 1,75 à 2 (104 à 112 px) ;
+    240 : 112 px × 2 ; 320 : 104 px × 3, 144 px × 2 ; 400 : 112 px × 3. */
+const CARD_WIDTHS = [160, 200, 240, 320, 400];
 
-/** Variantes d'une affiche, bornées à la source et dédoublonnées, en `srcset` (`… 160w, … 240w`). */
+/** Variantes d'une affiche, bornées à la source et dédoublonnées, en `srcset` (`… 160w, … 200w`). */
 export async function srcsetAffiche(publicPath: string, largeurs: number[]): Promise<string | undefined> {
   const variantes = (await Promise.all(largeurs.map((w) => resolveCover(publicPath, w))))
     .filter((v): v is ResolvedCover => v !== null);
@@ -38,7 +37,14 @@ export async function srcsetAffiche(publicPath: string, largeurs: number[]): Pro
   return [...new Map(variantes.map((v) => [v.width, v.src])).entries()].map(([w, src]) => `${src} ${w}w`).join(', ');
 }
 
-export { bordsAffiche };
+/**
+ * Largeur dessinée d'une affiche dans une case 4:5 de largeur `cadre` (§ 9.fo) : l'affiche y est
+ * montrée entière, à son format, à la hauteur de la case (`cadre` × 1,25). Une 2:3 y prend 83 % de
+ * la largeur, une 0,805 un peu plus que la case (0,6 %). Sert aux `sizes`.
+ */
+export function largeurDansCadre(cadre: number, largeur: number, hauteur: number): number {
+  return Math.round(cadre * 1.25 * (largeur / hauteur));
+}
 
 /** Renvoie la cover optimisée, ou null si l'asset est introuvable. */
 export async function resolveCover(
@@ -66,10 +72,7 @@ export async function resolveCovers(
   for (const post of posts) {
     const cover = await resolveCover(post.data.cover, width);
     if (!cover) continue;
-    const variantes = [...(await Promise.all(CARD_WIDTHS.map((w) => resolveCover(post.data.cover, w)))), cover]
-      .filter((v): v is ResolvedCover => v !== null);
-    const srcset = [...new Map(variantes.map((v) => [v.width, v.src])).entries()].map(([w, src]) => `${src} ${w}w`).join(', ');
-    map.set(post.id, { ...cover, srcset, bords: await bordsAffiche(post.data.cover) });
+    map.set(post.id, { ...cover, srcset: await srcsetAffiche(post.data.cover, [...CARD_WIDTHS, width]) });
   }
   return map;
 }
