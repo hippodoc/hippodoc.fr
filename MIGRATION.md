@@ -12403,7 +12403,7 @@ dispense, PDSA, PER, Madelin, plafonds, chèques-vacances, salaires, conjoint de
 mensuel, 2025, DOM, zones, crédits remboursés) ; 0 échec.
 Parcours dans Chromium (formulaire et 8 profils types). `npm run build`, `verify-site.mjs` passent.
 
-### 9.fs Simulateur : sans émojis, « Six repères pour 2026 » (14 novembre 2026)
+### 9.fs Simulateur : sans émojis, « Six repères pour 2026 », ce qui suit les résultats revu (14 novembre 2026)
 
 Le propriétaire, après la mise en ligne du § 9.fr : des émojis « qui font un peu cheap » dans les
 champs et les résultats (« 🩺 PAMC ») ; « Trois mots à connaître », « de gros pavés » que
@@ -12442,6 +12442,39 @@ Textes retirés (archive) :
   mode d'emploi, toujours en place).
 - **Exemple chiffré (illustration simplifiée)** — un remplaçant au RSPM à 30 000 € de
   rétrocessions : cotisations par tranches (2 565 € + 2 332 €), RID, bénéfice micro de 19 800 €.
+
+**Tout ce qui suit les résultats, revu** (le propriétaire : « réfléchis sur tous les autres blocs
+en dessous des résultats […] cohérent, pertinent, sans redondance, clair […] carte blanche »).
+Avant : seize blocs après la conclusion, dont trois appels à l'inscription, deux « Limites de
+cette simulation » mot pour mot, deux définitions du Super-Net, et un mode d'emploi qui décrivait
+des fonctions absentes du simulateur public.
+- **Dans l'outil.** « Et maintenant ? » retiré (deux boutons : « Guide Patrimonial », qui
+  descendait au bloc juste en dessous, et « Planifier mon budget », qui envoyait vers une page de
+  l'app réservée aux comptes). L'aperçu flouté du « Guide Patrimonial Personnalisé » retiré
+  (`GuidePatrimonialTeaser.tsx` supprimé : faux texte flouté, quatre piliers sans lien avec le
+  résultat). À leur place, une fiche : « Et toute l'année ? — Ce calcul, Hippodoc le tient à jour
+  après chaque journée de remplacement », trois promesses reprises mot pour mot de
+  `src/data/etapesRemplacant.ts` (URSSAF et CARMF anticipées, charges déductibles, déclaration case
+  par case), bouton « Essai gratuit 30 jours » (`data-track="cta_signup_simulateur_resultat"` ;
+  l'événement anonyme garde son nom, `cta_patrimonial_guide`, pour la continuité de
+  `simulateur_public_events`). Restent : les deux plis (« Comprendre la différence », « Comment
+  l'impôt sera prélevé »), « Limites de cette simulation » et « Nouvelle simulation ».
+- **Sur la page.** Ordre : l'outil et la prise de rendez-vous (inchangés), les six repères (feuille
+  sable), le mode d'emploi (feuille ciel ; il était sable), les questions (sable), la fin : les
+  feuilles alternent toujours. Le bloc statique « Limites de cette simulation » est retiré : l'outil
+  l'affiche sous les résultats, la ligne d'avis du mode d'emploi et la cinquième question de la FAQ
+  le disent aussi. Mode d'emploi en 7 points (8 avant) : « C'est quoi le Super-Net ? » retiré (la
+  première question de la FAQ, mot pour mot ou presque) ; « Paramètres de calcul » gagne
+  « Exercice » et la règle Auto du RSPM ; « Comprendre les résultats » décrit ce que la page affiche
+  (fiches, conclusion, à prévoir, bascule, plis), au lieu de « « Approfondir » » et du
+  « mini-donut » ; « Conseils personnalisés & profils types » devient « Profils types » : « 4
+  piliers », « règle 50/30/20 » et « estimation charges sociales… CFE » sont des fonctions de
+  l'app, absentes du simulateur public (textes d'avant dans l'historique git).
+- **Feuille commune** : elle change de nom (`BdxOyZgM` → `DV3-EFCM`), sept règles en moins, aucune
+  en plus : les utilitaires que seuls « Et maintenant ? » et l'aperçu flouté employaient
+  (`blur-[6px]`, `max-w-2xl`, `ml-2`, `sm:grid-cols-4`, `w-2/3`, `w-3/4`, `w-5/6`). Les 72 autres
+  pages ne diffèrent que par ce nom de fichier (vérifié contre le build du commit précédent). La
+  règle de `global.css` qui visait le flou est gardée (commentaire mis à jour).
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
