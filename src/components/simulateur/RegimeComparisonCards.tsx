@@ -560,126 +560,111 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       );
     };
     
-    // ✅ Tooltip JSX "Cotisations sociales" - Détail URSSAF + CARMF + déductibilité
-    const getCotisationsTooltipContent = () => {
-      const detail = result.cotisationsDetail;
-      const isRSPM = result.isRSPM;
+    // Cotisations, par organisme (§ 9.ge). En PAMC, une ligne Urssaf et une ligne CARMF, aux
+    // montants de la conclusion (CARMF = retraite du détail, Urssaf = le reste) ; une CARMF nulle
+    // (dispense) n'a pas de ligne. Au RSPM, une seule ligne : tout se paie à l'Urssaf, part de la
+    // CARMF comprise (§ 9.fw). Rien ne se recalcule ici : les montants viennent du moteur.
+    const detail = result.cotisationsDetail;
+    const isRSPM = Boolean(result.isRSPM);
+    const carmfLigne = isRSPM ? 0 : Math.round(Math.max(0, detail?.retraite ?? 0));
+    const urssafLigne = Math.round(Math.max(0, result.cotisationsTotales)) - carmfLigne;
 
+    const ligneCotisation = (libelle: string, montant: number) => (
+      <div key={libelle} className="flex justify-between gap-4">
+        <span className="text-muted-foreground">{libelle}{'\u00a0'}:</span>
+        <span className="font-medium">{formatMontant(montant)}</span>
+      </div>
+    );
+    // Les lignes d'un organisme ; un reste d'au moins 1 € (arrondis, exonération) a sa ligne, pour
+    // que le détail fasse toujours le sous-total.
+    const lignesCotisations = (lignes: Array<[string, number]>, sousTotal: number, libelleReste: string) => {
+      const visibles = lignes.filter(([, v]) => Math.round(v) !== 0);
+      const reste = Math.round(sousTotal - visibles.reduce((t, [, v]) => t + v, 0));
+      return (
+        <div className="space-y-1 text-xs">
+          {visibles.map(([l, v]) => ligneCotisation(l, v))}
+          {Math.abs(reste) >= 1 && ligneCotisation(libelleReste, reste)}
+        </div>
+      );
+    };
+    const enTeteCotisations = (titre: string) => (
+      <div className="flex items-center gap-2 flex-wrap">
+        <Shield className="sim-marque h-4 w-4" />
+        <span className="font-semibold text-sm">{titre}</span>
+        <Badge variant="outline" className={cn("sim-puce petite", isRSPM ? "info" : "neutre")}>
+          {isRSPM ? 'RSPM' : 'PAMC'}
+        </Badge>
+      </div>
+    );
+    const totalCotisations = (montant: number) => (
+      <div className="flex justify-between gap-4 pt-1.5 border-t border-border/40">
+        <span className="text-xs font-medium">Total{'\u00a0'}:</span>
+        <span className="text-xs font-bold">{formatMontant(montant)}</span>
+      </div>
+    );
+    // Déductibilité : au réel seulement (en micro-BNC, l'abattement de 34 % en tient lieu).
+    const deductibiliteCotisations = (avecCsg: boolean) => type === 'reel' ? (
+      <div className="sim-note info">
+        <strong>Déductibles du revenu libéral</strong>
+        <p className="mt-1">
+          {avecCsg
+            ? "Ces cotisations réduisent ton revenu imposable, sauf la part non déductible de la CSG-CRDS (2,9 points sur 9,7)."
+            : "Ces cotisations réduisent ton revenu imposable."}
+        </p>
+      </div>
+    ) : (
+      <div className="sim-note neutre">
+        <strong>Non déduites en Micro-BNC</strong>
+        <p className="mt-1">
+          L'abattement forfaitaire de 34 % tient lieu de toutes tes déductions, cotisations comprises.
+        </p>
+      </div>
+    );
+
+    const getUrssafTooltipContent = () => (
+      <div className="space-y-2.5">
+        {enTeteCotisations(isRSPM ? 'Cotisations Urssaf (RSPM)' : 'Cotisations Urssaf')}
+        {isRSPM
+          ? lignesCotisations([
+              ['Cotisation RSPM (taux global)', urssafLigne - (detail?.retraiteRid ?? detail?.retraite ?? 0)],
+              ['Invalidité-décès (part de la CARMF)', detail?.retraiteRid ?? detail?.retraite ?? 0],
+            ], urssafLigne, 'Autres contributions')
+          : lignesCotisations([
+              ['Maladie, indemnités journalières', detail?.maladie ?? 0],
+              ['Allocations familiales', detail?.allocationsFamiliales ?? 0],
+              ['CSG-CRDS', detail?.csgCrds ?? 0],
+              ['Formation et CURPS', detail?.formation ?? 0],
+            ], urssafLigne, 'Autres contributions')}
+        {totalCotisations(urssafLigne)}
+        {deductibiliteCotisations(true)}
+        <p className="text-[10px] text-muted-foreground italic">
+          {isRSPM
+            ? "Au RSPM, tout se paie à l'Urssaf, part de la CARMF comprise : taux global selon tes recettes, plus l'invalidité-décès."
+            : carmfLigne === 0
+              ? "Calculées par le modèle de l'Urssaf. CARMF : dispense d'affiliation, aucune cotisation."
+              : "Calculées par le modèle de l'Urssaf. La retraite est appelée par la CARMF : ligne suivante."}
+        </p>
+      </div>
+    );
+
+    const getCarmfTooltipContent = () => {
+      const base = detail?.retraiteBase ?? 0;
+      const asv = detail?.asv ?? 0;
+      // Sans détail de la base et de l'ASV (ancien calcul de secours), le reste les regroupe.
+      const libelleReste = base === 0 && asv === 0 ? 'Retraite de base et ASV' : 'Exonération';
       return (
         <div className="space-y-2.5">
-          {/* Header avec badge régime */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Shield className="sim-marque h-4 w-4" />
-            <span className="font-semibold text-sm">Cotisations sociales</span>
-            <Badge variant="outline" className={cn(
-              "sim-puce petite",
-              isRSPM 
-                ? "info" 
-                : "neutre"
-            )}>
-              {isRSPM ? 'RSPM' : 'PAMC'}
-            </Badge>
-          </div>
-          
-          {/* Détail des cotisations */}
-          {detail && (
-            <div className="space-y-1 text-xs">
-              {/* Affichage détaillé CARMF si on a le split RID/Complémentaire */}
-              {(detail.retraiteRid !== undefined || detail.retraiteComplementaire !== undefined) ? (
-                <>
-                  {(detail.retraiteRid ?? 0) > 0 && (
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF invalidité-décès :</span>
-                      <span className="font-medium">{formatMontant(detail.retraiteRid || 0)}</span>
-                    </div>
-                  )}
-                  {(detail.retraiteComplementaire ?? 0) > 0 && (
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF complémentaire :</span>
-                      <span className="font-medium">{formatMontant(detail.retraiteComplementaire || 0)}</span>
-                    </div>
-                  )}
-                  {/* Le reste de la CARMF : retraite de base et ASV (sans cette ligne, le détail ne
-                      faisait pas le total, § 9.fv). */}
-                  {detail.retraite - (detail.retraiteRid ?? 0) - (detail.retraiteComplementaire ?? 0) >= 1 && (
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF retraite de base et ASV :</span>
-                      <span className="font-medium">{formatMontant(detail.retraite - (detail.retraiteRid ?? 0) - (detail.retraiteComplementaire ?? 0))}</span>
-                    </div>
-                  )}
-                  {(detail.retraiteRid ?? 0) === 0 && (detail.retraiteComplementaire ?? 0) === 0 && detail.retraite === 0 && (
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF :</span>
-                      <span className="font-medium">0 €</span>
-                    </div>
-                  )}
-                </>
-              ) : (
-                detail.retraite > 0 && (
-                  <div className="flex justify-between gap-4">
-                    <span className="text-muted-foreground">CARMF (retraite) :</span>
-                    <span className="font-medium">{formatMontant(detail.retraite)}</span>
-                  </div>
-                )
-              )}
-              {detail.csgCrds > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">CSG-CRDS :</span>
-                  <span className="font-medium">{formatMontant(detail.csgCrds)}</span>
-                </div>
-              )}
-              {detail.maladie > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">Maladie :</span>
-                  <span className="font-medium">{formatMontant(detail.maladie)}</span>
-                </div>
-              )}
-              {detail.allocationsFamiliales > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">Alloc. familiales :</span>
-                  <span className="font-medium">{formatMontant(detail.allocationsFamiliales)}</span>
-                </div>
-              )}
-              {detail.formation > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">Formation et CURPS :</span>
-                  <span className="font-medium">{formatMontant(detail.formation)}</span>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Total avec séparateur */}
-          <div className="flex justify-between gap-4 pt-1.5 border-t border-border/40">
-            <span className="text-xs font-medium">Total :</span>
-            <span className="text-xs font-bold">
-              {formatMontant(result.cotisationsTotales)}
-            </span>
-          </div>
-          
-          {/* Déductibilité : au réel seulement (en micro-BNC, l'abattement de 34 % en tient lieu). */}
-          {type === 'reel' ? (
-            <div className="sim-note info">
-              <strong>Déductibles du revenu libéral</strong>
-              <p className="mt-1">
-                Ces cotisations réduisent ton revenu imposable, sauf la part non déductible de la CSG-CRDS (2,9 points sur 9,7).
-              </p>
-            </div>
-          ) : (
-            <div className="sim-note neutre">
-              <strong>Non déduites en Micro-BNC</strong>
-              <p className="mt-1">
-                L'abattement forfaitaire de 34 % tient lieu de toutes tes déductions, cotisations comprises.
-              </p>
-            </div>
-          )}
-          
-          {/* Note régime */}
+          {enTeteCotisations('Cotisations CARMF')}
+          {lignesCotisations([
+            ['Retraite de base', base],
+            ['Retraite complémentaire', detail?.retraiteComplementaire ?? 0],
+            ['ASV (allocations supplémentaires de vieillesse)', asv],
+            ['Invalidité-décès', detail?.retraiteRid ?? 0],
+          ], carmfLigne, libelleReste)}
+          {totalCotisations(carmfLigne)}
+          {deductibiliteCotisations(false)}
           <p className="text-[10px] text-muted-foreground italic">
-            {isRSPM 
-              ? "Régime simplifié : taux forfaitaires appliqués selon ton CA"
-              : "Cotisations calculées selon le barème URSSAF en vigueur"
-            }
+            En secteur 1, l'Assurance maladie prend en charge une partie de la retraite de base et les deux tiers de l'ASV : les montants sont nets de cette prise en charge.
           </p>
         </div>
       );
@@ -741,16 +726,26 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
     }
 
     // ========================================
-    // 2. COTISATIONS SOCIALES (déduction #2 du CA) ← DÉPLACÉ ICI
+    // 2. COTISATIONS, PAR ORGANISME (déduction #2 du CA ; § 9.ge)
     // ========================================
-    detailItems.push({ 
-      icon: Shield, 
-      label: "Cotisations sociales", 
-      value: result.cotisationsTotales, 
+    detailItems.push({
+      icon: Shield,
+      label: isRSPM ? "Cotisations Urssaf (RSPM)" : "Cotisations Urssaf",
+      value: urssafLigne,
       colorClass: "sim-eau",
       negative: true,
-      tooltipContent: getCotisationsTooltipContent()
+      tooltipContent: getUrssafTooltipContent()
     });
+    if (carmfLigne > 0) {
+      detailItems.push({
+        icon: Shield,
+        label: "Cotisations CARMF",
+        value: carmfLigne,
+        colorClass: "sim-eau",
+        negative: true,
+        tooltipContent: getCarmfTooltipContent()
+      });
+    }
 
     // ========================================
     // 2.5. OPTIMISATIONS FISCALES (Phase 1/2/3) — lignes conditionnelles

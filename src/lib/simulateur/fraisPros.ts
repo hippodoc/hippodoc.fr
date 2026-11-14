@@ -1,5 +1,5 @@
 /**
- * Aide à l'estimation des charges professionnelles (simulateur, MIGRATION.md § 9.ga).
+ * Aide à l'estimation des charges professionnelles (simulateur, MIGRATION.md § 9.gd).
  *
  * Deux barèmes officiels, le reste est saisi par le médecin (aucun montant « type » : une
  * assurance ou un comptable coûtent du simple au triple selon les cas).
