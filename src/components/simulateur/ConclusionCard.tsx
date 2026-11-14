@@ -102,11 +102,17 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
   // et art. 99). Quand le réel l'emporte et que le Micro-BNC reste ouvert, comment y passer :
   // l'option résulte du dépôt de la 2035 dans le délai, vaut un an et se reconduit tacitement
   // (BOI-BNC-DECLA-10-10, § 130 à 140).
-  let gestion: string | null = null;
+  let gestion: { titre: string; texte: string } | null = null;
   if (microBnc && equivalents) {
-    gestion = "Ce qui les départage alors, c'est la gestion : en micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le jour ; au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses. Les honoraires d'un comptable sont une charge : ajoute-les pour comparer.";
+    gestion = {
+      titre: 'Ce qui change',
+      texte: "Seulement la gestion. En micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le jour. Au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses ; les honoraires d'un comptable sont une charge, ajoute-les pour comparer.",
+    };
   } else if (microBnc && recommande === 'reel' && !depassePlafond) {
-    gestion = "Pour être au réel, il suffit de déposer ta déclaration 2035 dans les délais : l'option vaut un an et se renouvelle d'elle-même.";
+    gestion = {
+      titre: 'Passer au réel',
+      texte: "Il suffit de déposer ta déclaration 2035 dans les délais : l'option vaut un an et se renouvelle d'elle-même.",
+    };
   }
 
   // ============ À PRÉVOIR CHAQUE MOIS ============
@@ -125,15 +131,12 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
   const impotMois = Math.round(impotLiberal / 12);
   const totalMois = urssafMois + carmfMois + impotMois;
   const partRecettes = recettesAnnuelles > 0 ? Math.round((totalMois * 12 / recettesAnnuelles) * 100) : 0;
-  const destinataires = [
-    `${euros(urssafMois)} d'Urssaf`,
-    carmfMois > 0 ? `${euros(carmfMois)} de CARMF` : null,
-    impotMois > 0 ? `${euros(impotMois)} d'impôt` : null,
-  ].filter(Boolean) as string[];
-  const enUneListe = destinataires.length > 1
-    ? `${destinataires.slice(0, -1).join(', ')} et ${destinataires[destinataires.length - 1]}`
-    : destinataires[0];
-  const aPrevoir = `À mettre de côté chaque mois pour ton activité libérale : ${euros(totalMois)} (${partRecettes}\u00a0% de tes recettes), soit ${enUneListe}.`;
+  // Les parts dans l'ordre de la barre ; une part nulle (CARMF dispensée, impôt nul) n'y est pas.
+  const partsMois = [
+    { nom: 'Urssaf', cle: 'u', mois: urssafMois },
+    { nom: 'CARMF', cle: 'c', mois: carmfMois },
+    { nom: 'Impôt', cle: 'i', mois: impotMois },
+  ].filter((p) => p.mois > 0);
 
   // ============ POINT DE BASCULE ============
   const enMensuel = formData.periode === 'mensuel';
@@ -168,7 +171,8 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
 
   if (depassePlafond) {
     alerts.push({
-      type: recommande === 'micro-bnc' && !equivalents ? 'danger' : 'warning',
+      // Le réel l'emporte : le plafond ne change pas le conseil, c'est une information.
+      type: recommande === 'reel' ? 'info' : !equivalents ? 'danger' : 'warning',
       icon: AlertTriangle,
       message: `Recettes au-dessus de ${plafondTexte} : le Micro-BNC ne reste ouvert que si tes recettes de l'une des deux années précédentes étaient sous ce seuil. Deux années de suite au-dessus, tu passes au réel.`,
     });
@@ -227,19 +231,36 @@ export function ConclusionCard({ comparison, formData, bascule, marge }: Conclus
         )}
       </div>
 
-      {/* Pourquoi, point de bascule des charges, ce qui change (§ 9.ft) */}
+      {/* Le raisonnement, ligne par ligne sous une étiquette (§ 9.fu) : pourquoi, point de
+          bascule des charges, ce qui change. */}
       {(pourquoi || phraseBascule || gestion) && (
-        <div className="sim-conclusion-detail" aria-live="polite" aria-busy={basculeEnAttente}>
-          {pourquoi && <p>{pourquoi}</p>}
-          {phraseBascule && <p>{phraseBascule}</p>}
-          {gestion && <p>{gestion}</p>}
-        </div>
+        <dl className="sim-conclusion-detail sim-conclusion-raisons" aria-live="polite" aria-busy={basculeEnAttente}>
+          {pourquoi && <div><dt>Pourquoi</dt><dd>{pourquoi}</dd></div>}
+          {phraseBascule && <div><dt>Point de bascule</dt><dd>{phraseBascule}</dd></div>}
+          {gestion && <div><dt>{gestion.titre}</dt><dd>{gestion.texte}</dd></div>}
+        </dl>
       )}
 
-      {/* Les chiffres du mois : à mettre de côté, puis 1 000 € de plus */}
+      {/* Les chiffres du mois : le total à mettre de côté, sa répartition en barre, puis
+          ce qu'il resterait de 1 000 € de plus. */}
       <div className="sim-conclusion-detail sim-conclusion-mois" aria-live="polite" aria-busy={marge === 'attente'}>
-        <p>{aPrevoir}</p>
-        {phraseMarge && <p>{phraseMarge}</p>}
+        <p className="sim-mois-tete">À mettre de côté chaque mois pour ton activité libérale</p>
+        <p className="sim-mois-total">
+          <strong>{euros(totalMois)}</strong> <span>{partRecettes}{'\u00a0'}% de tes recettes</span>
+        </p>
+        {partsMois.length > 0 && (
+          <>
+            <div className="sim-mois-barre" aria-hidden="true">
+              {partsMois.map((p) => <span key={p.cle} className={p.cle} style={{ flexGrow: p.mois }} />)}
+            </div>
+            <ul className="sim-mois-parts">
+              {partsMois.map((p) => (
+                <li key={p.cle}><span className={`sim-mois-point ${p.cle}`} aria-hidden="true" />{p.nom} <strong>{euros(p.mois)}</strong></li>
+              ))}
+            </ul>
+          </>
+        )}
+        {phraseMarge && <p className="sim-mois-marge">{phraseMarge}</p>}
       </div>
 
       {/* Alertes en pills compacts */}

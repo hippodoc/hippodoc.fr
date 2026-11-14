@@ -206,6 +206,23 @@
 /* Le nom d'un poste peut se couper (texte grossi) : c'est lui qui cède, pas la fiche. */
 .sim .sim-ligne-detail > div { min-width: 0; }
 .sim .sim-ligne-nom { min-width: 0; font-size: 0.9375rem; line-height: 1.3; color: var(--ink-2); overflow-wrap: anywhere; }
+/* Anneau de répartition des revenus d'une fiche (§ 9.fu) : 100 px, légende dessous. Le trait
+   se dessine en 0,8 s à l'arrivée (rien sous prefers-reduced-motion). */
+.sim .sim-anneau { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 0 4px; }
+.sim .sim-anneau-dessin { position: relative; width: 100px; height: 100px; flex: none; }
+.sim .sim-anneau-dessin svg { display: block; }
+.sim .sim-anneau-dessin circle { animation: sim-anneau-trace 800ms cubic-bezier(0, 0, 0.2, 1) both; }
+@keyframes sim-anneau-trace { from { stroke-dasharray: 0 240; } }
+.sim .sim-anneau-centre { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0; line-height: 1.15; text-align: center; pointer-events: none; }
+.sim .sim-anneau-centre span { font-size: 0.625rem; color: var(--ink-3); }
+.sim .sim-anneau-centre strong { font-size: 0.75rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sim .sim-anneau-legende { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin: 0; padding: 0; list-style: none; font-size: 0.8125rem; color: var(--ink-2); }
+.sim .sim-anneau-legende li { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.sim .sim-anneau-legende strong { color: var(--ink); }
+.sim .sim-anneau-point { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sim .sim-anneau-dessin circle { animation: none; }
+}
 .sim .sim-ligne-valeur { font-size: min(1rem, 7vw); font-weight: var(--tb); color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .sim .sim-aide { flex: none; color: var(--ink-3); }
 /* Le « i » d'une aide est un bouton (PremiumTooltip.tsx) : il épouse son icône,
@@ -233,8 +250,37 @@
 .sim .sim-conclusion-detail { margin-top: 12px; color: inherit; font-size: 0.9375rem; line-height: 1.45; }
 .sim .sim-conclusion-detail p { margin: 0; text-wrap-style: pretty; }
 .sim .sim-conclusion-detail p + p { margin-top: 6px; }
-.sim .sim-conclusion-mois { padding-top: 12px; border-top: 1px solid var(--line); }
+.sim .sim-conclusion-mois { padding-top: 14px; border-top: 1px solid var(--line); }
 .sim .sim-conclusion.gain .sim-conclusion-mois { border-top-color: rgba(255, 255, 255, 0.24); }
+/* Le raisonnement sous étiquettes (§ 9.fu) : l'étiquette au-dessus au téléphone, à gauche à
+   partir de 640 px. */
+.sim .sim-conclusion-raisons > div + div { margin-top: 10px; }
+.sim .sim-conclusion-raisons dt { font-size: 0.75rem; font-weight: var(--tb); line-height: 1.4; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-3); }
+.sim .sim-conclusion-raisons dd { margin: 0; text-wrap-style: pretty; }
+.sim .sim-conclusion.gain .sim-conclusion-raisons dt { color: var(--on-deep-2); }
+@media (min-width: 640px) {
+  .sim .sim-conclusion-raisons > div { display: grid; grid-template-columns: 9.5rem 1fr; gap: 16px; }
+  .sim .sim-conclusion-raisons dt { padding-top: 0.15em; }
+}
+/* Les chiffres du mois : le total en grand, la barre Urssaf, CARMF, impôt, la légende. */
+.sim .sim-conclusion-mois p { margin: 0; }
+.sim .sim-mois-tete { font-size: 0.75rem; font-weight: var(--tb); line-height: 1.4; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-3); }
+.sim .sim-conclusion.gain .sim-mois-tete { color: var(--on-deep-2); }
+.sim .sim-conclusion-mois .sim-mois-total { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin-top: 2px; }
+.sim .sim-mois-total strong { font-size: 1.75rem; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.sim .sim-mois-total span { font-size: 0.9375rem; opacity: 0.85; }
+.sim .sim-mois-barre { display: flex; gap: 3px; height: 10px; margin-top: 10px; }
+.sim .sim-mois-barre span { min-width: 6px; border-radius: 5px; flex-basis: 0; }
+.sim .sim-mois-parts { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 0.9375rem; }
+.sim .sim-mois-parts li { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.sim .sim-mois-point { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.sim :is(.sim-mois-barre span, .sim-mois-point).u { background: #8DB9F2; }
+.sim :is(.sim-mois-barre span, .sim-mois-point).c { background: #4F88DE; }
+.sim :is(.sim-mois-barre span, .sim-mois-point).i { background: #1F4FA8; }
+.sim .sim-conclusion.gain :is(.sim-mois-barre span, .sim-mois-point).u { background: #FFFFFF; }
+.sim .sim-conclusion.gain :is(.sim-mois-barre span, .sim-mois-point).c { background: #A9CBF7; }
+.sim .sim-conclusion.gain :is(.sim-mois-barre span, .sim-mois-point).i { background: #5E97E8; }
+.sim .sim-conclusion-mois .sim-mois-marge { margin-top: 12px; }
 @media (min-width: 480px) {
   .sim .sim-conclusion-detail { margin-left: 58px; }
 }
