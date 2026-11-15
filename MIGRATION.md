@@ -14244,6 +14244,90 @@ sitemap : quatre dates d'articles, et `/simulateur` qui reçoit la sienne).
 (avant ou après l'abattement de 26 %) ; l'écart entre l'invalidité-décès du régime classique
 (626 € au minimum) et celle de l'offre simplifiée (631 €), tel que les documents de 2026 le donnent.
 
+### 9.gq Nouvel article : les aides à l'installation en 2026, et article zones FRR corrigé sur les remplaçants (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article` (§ 9.gl), précédent § 9.as.
+
+**Fichier et affiche.** `src/content/blog/aides-installation-medecin-2026.md` ; affiche
+`src/assets/blog/aides-installation-medecin-2026-cover.jpg`, 1 611 × 2 000 (0,8055, portrait),
+réenregistrée sans métadonnées (`sharp`, qualité 90, 445 Ko), empreinte unique dans
+`src/assets/blog/`. Texte lisible, sans faute.
+
+**Thème** : `statut-contrats-revenus`. L'installation est un choix de statut et de cadre
+d'exercice ; l'article prolonge `choix-mode-exercice` et `salariat-vs-liberal`, du même
+thème. (`impots-declarations` se défendait pour la partie fiscale ; l'article FRR y reste.)
+
+**Frontmatter.** `title` « Aides à l'installation médecin : le vrai bilan 2026 » (51 signes,
+`<title>` « … | Hippodoc ») et `description` écrits ici ; `seriesId: "divers"`,
+`episodeNumber: 16` ; `readTime` 29 min (4 576 mots ÷ 160) ; `cta` « Prêt à comparer deux
+communes sur ce qui te reste vraiment ? » + `ctaHref: "/simulateur"` ; FAQ de 6 questions
+écrite ici d'après le texte (`PLANCHER_FAQ` relevé à 59 pages, 398 questions) ;
+`relatedArticles` : zones-frr, micro-BNC ou réel, choix du mode d'exercice, Urssaf, CARMF,
+effet ciseaux.
+
+**Écarts au texte fourni** (le propriétaire a donné « carte blanche » le 15/11 pour le rendre
+cohérent avec le blog et le vérifier) :
+- **tutoiement** partout (le texte vouvoyait) ; titre `#` sorti du corps ; date « Mis à jour
+  le 15 novembre 2026 » (au lieu du 25 octobre) ;
+- ajouts : « L'essentiel » (5 puces), FAQ, deux `:::tip` (l'astuce régime réel, l'encart
+  Hippodoc, lien relatif `/`), sigles définis (ZIP, ZAC, ASV, CFE, URPS, rescrit, 2035,
+  déclaration contrôlée) ; « Sources » devenu `## 📚 Sources (vérifiées au 15 novembre 2026)`,
+  dernier titre, en liste ;
+- **corrections factuelles** après les relectures du standard `hippodoc-exigence` (interne
+  novice, fiscaliste, correcteur, deux passes ; chaque « faux » revérifié) :
+  - recettes hors zone détaillées par cas : ZFRR cabinet fixe (25 %, part hors zone imposée),
+    ZFRR non sédentaire (totale jusqu'à 25 %, proportionnelle au-delà), ZFRR+ (au prorata),
+    quartier prioritaire (BOFiP BOI-BIC-CHAMP-80-10-75-20, § 150 à 230) ;
+  - aide aux créateurs réservée à certains publics depuis 2020, pas « depuis 2026 » (LFSS
+    2020, art. 274) ; demande dans les 60 jours suivant le début d'activité (décret
+    n° 2026-69) ;
+  - revenus forfaitaires des débuts : 9 131 € (19 % du PASS) et 19 224 € pour la maladie
+    (40 %) (entreprendre.service-public.gouv.fr F39739) ;
+  - contrat de début d'exercice (art. L1435-4-2 CSP) : réservé aux remplaçants et étudiants
+    (le texte l'ouvrait aux installés) et en abrogation différée par la LFSS 2026 (Légifrance,
+    statut « ABROGE_DIFF ») ;
+  - PLFSS 2027 : Sénat depuis le 9/11, vote prévu le 18/11, « mission de solidarité
+    territoriale » (PJL Sénat n° 138, art. 21) ; Assemblée : rejet le 23 octobre ;
+  - OBO : flat tax sur la plus-value, bénéfices remontés après IS ;
+  - un remplaçant qui s'installe dans la commune classée où il remplaçait poursuit son
+    activité (BOFiP -30, § 70, ex. 3) ; jamais exonéré et installé ailleurs : la doctrine ne
+    tranche pas nettement, rescrit conseillé.
+
+**Maillage.** Liens posés sur des mots du texte : « zones France ruralités revitalisation » →
+`/blog/zones-frr-exoneration-impot-medecin`, « micro-BNC » → `/blog/regime-fiscal-micro-bnc-vs-reel`,
+« ton Super-Net » → `/simulateur`. Entrant dans le texte : l'article FRR (plus bas). Entrant par `relatedArticles`
+(en tête) : `choix-mode-exercice`, `salariat-vs-liberal`,
+`remplacement-regulier-requalification`, `zones-frr-exoneration-impot-medecin`.
+
+**La une.** `featured: true` retiré de `conge-maternite-paternite` (il y était « à retirer à
+la prochaine publication », § 9.dy) : la une revient au plus récent, cet article. À remettre
+si le propriétaire préfère.
+
+**Correction factuelle de `zones-frr-exoneration-impot-medecin`** (`updatedDate`
+2026-11-15, reportée dans `blog-meta.json`). L'article disait qu'un remplaçant ne peut pas
+bénéficier de l'exonération FRR « en tant que remplaçant » et qu'un collaborateur doit avoir
+une patientèle propre (rescrit ZRR BOI-RES-BIC-000030). C'est dépassé : le BOFiP
+BOI-BIC-CHAMP-80-10-75-30 du 29 juillet 2026 (§ 220 et 230) admet remplaçants et
+collaborateurs aux conditions de droit commun, « quels que soient les liens de dépendance »,
+et le § 70 (ex. 3) dit qu'un remplaçant qui s'installe dans la commune classée où il
+remplaçait poursuit son activité, sans nouvelle période. Description, FAQ, puce de
+« L'essentiel », section « Le piège » réécrite (avec un lien dans le texte vers le nouvel
+article) et puce de sources remplacées, accord du propriétaire (« je te fais confiance »).
+
+**Vérifications.** Construction : 73 pages, 71 dans le sitemap, `lastmod` 2026-11-15 ;
+`verify-site.mjs` passe. Feuille commune inchangée (`_astro_assets.BqFlQkaI.css`, comme
+`main`). Pages changées contre `main` : le nouvel article, `/blog`, les pages de thème
+`statut-contrats-revenus` et `impots-declarations` (description de l'article FRR),
+`/qui-sommes-nous`, et les quatre articles du maillage. Lighthouse mobile de l'article : 97
+/ 100 / 100 / 100, CLS 0. Comparaison mot à mot au texte fourni : sans objet (texte remanié
+avec accord, écarts listés ci-dessus).
+⚠️ **Construction locale sur Mac** : la garde de police de l'image de partage
+(`src/lib/image-partage.mjs`, « Hippodoc » à 471 px) arrête la construction, sur `main`
+aussi : le Pango livré avec `sharp` 0.35.3 pour darwin-arm64 ne trouve pas de configuration
+fontconfig, puis ne lit pas la graisse numérique 720. Pour vérifier, la garde a été
+neutralisée le temps de la construction, sans commit ; l'image de partage est à contrôler sur
+l'aperçu Vercel (Linux).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
