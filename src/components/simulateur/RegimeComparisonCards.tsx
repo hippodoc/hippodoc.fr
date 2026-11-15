@@ -134,8 +134,24 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, [end, duration]);
-  
-  return <>{nombreFr(count)}</>;
+
+  // § 9.gm : l'élément porte d'emblée le montant final, qui fait sa largeur ; tant que le compteur
+  // tourne, ce montant est transparent et le nombre qui défile est dessiné par-dessus, calé à droite
+  // contre « € », hors du flux (`.sim-compteur-en-cours::after`, simulateur.css, qui lit
+  // `data-valeur`). Sa largeur ne compte plus dans la mise en page. Avant, elle changeait à chaque
+  // image : « € » et « /an » bougeaient (60 à 100 petits décalages comptés par calcul, sur
+  // ordinateur) et au téléphone « /an » passait à la ligne puis en revenait (les tuiles grandissaient
+  // et rapetissaient de 22 px, jusqu'à huit fois). Le texte de l'élément, celui que lisent un lecteur
+  // d'écran et une copie, est le montant final. Un nombre en cours plus large que lui (10 999 contre
+  // 11 318 : les chiffres n'ont pas tous la même chasse) déborde à gauche, dans la marge de la tuile,
+  // le temps de quelques images.
+  const final = Math.round(end);
+  const enCours = count !== final;
+  return (
+    <span className={enCours ? "sim-compteur sim-compteur-en-cours" : "sim-compteur"} data-valeur={enCours ? nombreFr(count) : undefined}>
+      {nombreFr(final)}
+    </span>
+  );
 }
 
 export function RegimeComparisonCards({ reel, microBnc, recommande, economie, periode, recettesAnnuelles, revenusSalariesAnnuels = 0, revenusConjointAnnuels = 0, liberalExonereAnnuel = 0, domTomInfo, lieuExercice, isRSPMUsed, situationFamiliale = 'marie_pacse', annee = 2026, plafondMicro = 83600 }: RegimeComparisonCardsProps) {

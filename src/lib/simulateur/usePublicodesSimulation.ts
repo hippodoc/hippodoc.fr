@@ -629,7 +629,11 @@ export function usePublicodesSimulation() {
       // Après l'affichage, l'un après l'autre (le modèle Urssaf limite le débit) : la marge sur
       // 1 000 € de plus, puis le point de bascule, seulement si le Micro-BNC reste ouvert
       // (recettes sous le plafond) : au-delà, la question ne se pose plus d'une année sur l'autre.
-      const avecBascule = Boolean(resultMicroBnc) && recettesAnnuelles <= getMicroBncCeiling(formData.annee || 2026);
+      // Deux régimes au même Super-Net : `calculerPointDeBascule` ne rend rien (aucune phrase). On le
+      // sait dès maintenant : pas de phrase d'attente, qui disparaissait une à trois secondes plus
+      // tard et faisait remonter tout ce qui la suit (§ 9.gm).
+      const avecBascule = Boolean(resultMicroBnc) && recettesAnnuelles <= getMicroBncCeiling(formData.annee || 2026)
+        && Math.abs(resultReel.superNet - (resultMicroBnc?.superNet ?? 0)) >= 1;
       const retenu = recommande === 'micro-bnc' && resultMicroBnc ? resultMicroBnc : resultReel;
       setMarge('attente');
       if (avecBascule) setBascule('attente');

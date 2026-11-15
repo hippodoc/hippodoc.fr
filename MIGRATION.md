@@ -13734,6 +13734,170 @@ conversation : dans `~/.claude/uploads/<session>/`, à leur taille d'origine.
 
 **Fichiers** : `.claude/skills/nouvel-article/SKILL.md` (nouveau), `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.gm Simulateur : le CLS, des résultats qui arrivent sans rien pousser (15 novembre 2026)
+
+Demande du propriétaire : réduire le décalage cumulé de mise en page (CLS) de `/simulateur`,
+la seule page du site au-dessus du seuil de Google (0,1) dans les données réelles. Aucun mot
+de la page ni de l'îlot ne change ; aucun calcul ne change.
+
+**Ce que disaient les données réelles** (PostHog, `$web_vitals`, hôte www.hippodoc.fr,
+28 jours jusqu'au 15 novembre 2026). Téléphone : 75e centile 0,112, 9 mesures sur 22 au-dessus
+de 0,1, la pire à 0,76 (Opera, 411 × 753, un seul décalage). Ordinateur : 75e centile 0,059,
+9 mesures sur 66 au-dessus de 0,1 (pire 0,275). Les autres pages : 0 ou presque. Sur les
+31 mesures au-dessus de 0,05, 30 suivent une simulation (`public_simulator_used` plus tôt dans
+la session) ; une seule est au chargement (1 920 × 929, 0,115). Sur ordinateur, la fenêtre de
+session la plus lourde compte souvent 43 à 125 décalages : une suite de petits décalages
+image par image. PostHog ne dit ni l'élément ni l'instant : les entrées sont enregistrées
+vides (`{}`), et posthog-js ne rend le CLS qu'à la fermeture de la page (`onCLS` sans
+`reportAllChanges`). D'où la reproduction.
+
+**Méthode.** Build de `main` et build corrigé servis en local (HTTP/1.1, gzip), Chromium par
+Playwright, réseau ralenti par le protocole des outils de développement (latence 150 ms,
+1,6 Mbit/s), processeur ralenti quatre fois au téléphone. L'API du modèle de l'Urssaf est
+interceptée : réponses réelles (gardées en cache) rendues après 800 ms, l'ordre de grandeur
+d'un téléphone. `PerformanceObserver` sur `layout-shift` : élément, rectangles avant et
+après, instant, geste récent ; CLS = la plus lourde fenêtre de session (moins de 1 s entre deux
+décalages, 5 s au plus), décalages qui suivent un geste de moins de 500 ms exclus, comme
+web-vitals. Parcours : arrivée et lecture ; saisie (70 000 € de recettes, 5 000 € de charges)
+puis « Simuler », le bouton à 35 % ou à 12 % de la hauteur de la fenêtre ; profil type
+« Remplaçant régulier » (grille des profils ouverte) ; trois essais enchaînés (70 000 €, puis
+15 000 € au RSPM, puis 45 000 € en PAMC) ; aides et plis après le résultat. Scripts de travail
+hors dépôt. Les mêmes parcours, rejoués sur le build corrigé, servent de preuve.
+
+**Les causes, une à une, et ce qui les règle.**
+1. **Le bloc des profils types disparaît au-dessus du formulaire à l'arrivée des résultats**
+   (`!results.recommande`), une à trois secondes après le clic : le formulaire, sous les
+   yeux, remonte de 84 px (bloc replié) ou d'environ 700 px au téléphone (grille ouverte après
+   le choix d'un profil, elle le reste). Mesuré : 0,042 (390 × 844), 0,026 (1 280 × 800),
+   0,43 en un seul décalage (411 × 753, grille ouverte) ; au RSPM, calcul local, 0,88 à
+   1 280 px, exclu seulement parce que le résultat arrivait 73 ms après le clic (un
+   téléphone lent dépasse les 500 ms). Réglé sans changer ce qui s'affiche : au clic, la page
+   note où est le formulaire ; après le rendu où le bloc disparaît, elle remonte d'autant dans la
+   même image (`useLayoutEffect` de `SimulateurApp`, `scrollBy` immédiat), et le formulaire
+   reste où il était à l'écran. Bloc au-dessus de l'écran : rien ne bouge. Très grand écran où
+   il se voyait encore : c'est le haut de page qui descend à sa place, moins grand que le
+   formulaire (2 400 × 1 161, la fenêtre d'une mesure réelle : 0,016 → 0,0005). Formulaire qui
+   commence dans la moitié basse de la fenêtre : pas de compensation (le visiteur regarde le
+   haut de page, qui ne bouge pas). Chromium n'ancre pas le défilement ici : essayé, le bloc
+   retiré à la main, la page ne bouge pas et un décalage de 0,0995 est compté ; retiré puis
+   compensé dans la même tâche, aucun.
+2. **La carte d'attente est plus courte que l'écran** : la prise de rendez-vous et la feuille
+   suivante restent visibles sous elle, et le résultat (2 000 à 3 500 px) les pousse vers le
+   bas d'un coup. Mesuré, le bouton à 12 % de la fenêtre : 0,41 (390 × 844), 0,34 (411 × 753),
+   0,28 (1 280 × 800). Réglé : la carte fait au moins un écran (`.sim-attente-fiche`,
+   `min-height: 100vh`) et le résultat la remplace à la même place ; rien de ce qui suit l'îlot
+   n'est à l'écran tant qu'elle est là. Même place gardée sous une alerte d'erreur sans
+   résultat dessous (`.sim-place-erreur`) : API de l'Urssaf en panne, `main` comptait 0,149 à
+   l'erreur puis 0,41 à « Réessayer », le build corrigé rien.
+3. **Le bloc des deux régimes arrivait après les résultats** (`lazy`, chargé au premier
+   affichage) : sa place d'attente de 220 px devenait 650 à 820 px, et « À savoir », les plis
+   et la suite descendaient d'autant sous les yeux (visible sur ordinateur). Réglé : le
+   chargement part au clic sur « Simuler » (`chargerCartesDesRegimes`, toujours un `import()`,
+   un seul fichier, une seule fois ; il ne sert pas au premier geste, CLAUDE.md), en même
+   temps que le calcul, et les résultats ne s'affichent qu'avec lui (la carte d'attente reste
+   jusque-là). `Suspense` et sa place `min-h-[220px]` sont retirés. Effet de bord, voulu : si
+   ce fichier ne charge pas, le résultat s'affiche sans ce bloc ; sur `main`, l'erreur de
+   chargement faisait tomber tout l'îlot (« Failed to fetch dynamically imported module »,
+   formulaire et résultats disparus, CLS mesuré de 1,0).
+4. **La phrase de l'écart avec l'essai précédent** (§ 9.gg) arrivait un rendu après les
+   résultats (posée par un effet) : la conclusion descendait de 22 à 44 px. Mesuré au
+   troisième essai : 0,015 (390 × 844), 0,005 (1 280 × 800). Réglé : un état dérivé, calculé
+   pendant le rendu où arrivent les résultats ; même règle qu'avant (l'essai précédent est
+   celui des derniers résultats affichés, « Nouvelle simulation » ne l'efface pas).
+5. **Le compteur du Super-Net des tuiles** changeait de largeur à chaque image : « € » et
+   « /an » bougeaient (les 43 à 125 petits décalages des fenêtres relevées sur ordinateur :
+   41 à 61 par calcul, en 0,8 à 1,4 s, mesurés à 1 440 × 900 et 1 920 × 1 080) et, de 360 à
+   390 px, « /an » passait à la ligne puis en revenait : les tuiles grandissaient et
+   rapetissaient de 22 px, jusqu'à 17 fois en 0,7 s (relevé dans Chromium et dans WebKit). Réglé : l'élément porte
+   d'emblée le montant final, qui fait sa largeur ; tant que le compteur tourne, ce montant
+   est transparent et le nombre qui défile est dessiné par `::after` (`data-valeur`), calé à
+   droite contre « € », hors du flux. Le texte de l'élément, celui que lisent un lecteur
+   d'écran et une copie, est le montant final (avant, l'un ou l'autre pouvait tomber sur un
+   nombre en cours). Moins de mouvement demandé, ou contrastes forcés : le montant final
+   d'emblée. Un nombre en cours plus large que le montant final (10 439 contre 11 318 : les
+   chiffres de Google Sans Flex n'ont pas tous la même chasse, le 0 fait 0,65 em, le 1
+   0,37 em) déborde à gauche dans la marge de la tuile, le temps de quelques images (images
+   à 390 et 1 280 px : il reste dans la tuile). Essayé d'abord : un gabarit du montant final
+   dans la même case que le nombre en cours ; un nombre en cours plus large élargissait encore
+   la case, et « /an » changeait encore de ligne.
+6. **« RSPM ou PAMC ? »** (§ 9.gh) : le verdict s'ajoute quand la comparaison arrive, une
+   ligne de plus (22 px) qui pousse le bloc des deux régimes. Réglé par une **place gardée**
+   (`PlaceGardee.tsx`) : le gabarit de la forme la plus longue de la phrase (le verdict du
+   PAMC, avec le montant le plus large possible), rendu sans être vu ni lu
+   (`visibility: hidden`, `aria-hidden`), occupe la même case de grille que le texte ; la case
+   a la taille du plus grand des deux, avant comme après.
+7. **Point de bascule et 1 000 € de plus** : « … € » est plus court que le montant qui arrive ;
+   aucun changement de ligne n'a été relevé sur les cas essayés, mais rien ne l'empêchait.
+   Même place gardée (le point de bascule ne dépasse ni les recettes ni les charges déclarées ;
+   ce qui reste de 1 000 € ne dépasse pas 1 000 €). Le montant le plus large d'un nombre de
+   chiffres donné : un 4 en tête, puis des 0 (`montantLePlusLarge`). Et quand les deux régimes
+   laissent le même Super-Net, plus de phrase d'attente du point de bascule
+   (`usePublicodesSimulation.ts`) : `calculerPointDeBascule` n'en rend aucune, elle
+   disparaissait une à trois secondes plus tard ; le résultat final est le même.
+
+**Résultat** (CLS par parcours, `main` puis build corrigé ; même machine, même cache de l'API) :
+
+| Parcours | 390 × 844, processeur ×4 | 411 × 753, processeur ×4 | 1 280 × 800 |
+|---|---|---|---|
+| Arrivée et lecture, sans geste | 0 → 0 | — | 0,0014 → 0,0014 |
+| Saisie, bouton à 35 % | 0,042 → 0,0017 | 0,048 → 0,0020 | 0,026 → 0,0014 |
+| Saisie, bouton à 12 % | 0,41 → 0,0017 | 0,34 → 0,0020 | 0,28 → 0,0014 |
+| Profil type (grille ouverte) | 0,42 → 0,0059 | 0,43 → 0,0062 | 0,10 → 0,0014 |
+| Trois essais enchaînés (70 000, 15 000, 45 000 €) | 0,042 → 0,0017 | 0,048 → 0,0020 | 0,026 → 0,0014 |
+
+Trois essais enchaînés dans une fenêtre plus haute : 0,028 → 0,0010 (1 440 × 900),
+0,019 → 0,0009 (1 920 × 1 080). Aides en tiroir et plis après le résultat : aucun décalage
+compté (tous dans les 500 ms du geste), sur les deux builds. Ce qui reste : le libellé du
+bouton, « Calcul en cours... » puis « Simuler », recentré à l'arrivée du résultat (0,002 à
+0,006, plus haut quand la compensation du point 1 a lieu dans la même image) ; l'arrivée de la
+police au chargement (0,0014 à 1 280 px, en-tête et haut de page, la même sur `main` et sur
+tout le site) ; le bord gauche du nombre dessiné par le compteur (environ 0,001 par calcul sur
+ordinateur) ; dans « RSPM ou PAMC ? », la fin de la phrase qui glisse sur sa propre ligne quand
+« … € » devient un montant (0,0001). Non traités : le libellé du bouton (changer son balisage
+changerait la chaîne d'éléments des clics mesurés par PostHog, pour 0,006 au plus) ; un point
+de bascule ou une marge qui finissent sans valeur (panne de l'API, seuil franchi) retirent
+encore leur ligne (rare, non reproduit).
+
+**Ce qui ne change pas.**
+- HTML : les 72 pages du build identiques à celles de `main` aux noms de fichiers près. La
+  feuille commune perd une règle, `.min-h-\[220px\]` (la place d'attente retirée), n'en gagne
+  aucune (comparée règle par règle), et change donc de nom sur toutes les pages
+  (`_astro_assets.ZOq3y5lQ.css` → `….BqFlQkaI.css`) ; sur `/simulateur`, le script de l'îlot
+  et la feuille de la page. Le HTML rendu de l'îlot est le même. Scripts : `SimulateurApp`,
+  `RegimeComparisonCards` et `usePublicodesSimulation` changent (+0,5 Ko gzip au total).
+- Texte affiché des résultats (`innerText`, une fois tous les calculs arrivés) : identique au
+  caractère près, et hauteur finale de chaque bloc identique, dans 60 cas (12 saisies de
+  800 € à 230 000 €, RSPM et PAMC, à 360, 390, 411, 768 et 1 280 px). Les gabarits ne laissent
+  donc pas de ligne vide dans ces cas.
+- Calculs : aucun (la seule ligne de logique est la condition de la phrase d'attente du point
+  de bascule, point 7). Mesure : même suite d'événements PostHog sur un même parcours (profil
+  type, simulation, lien d'essai de la conclusion, nouvelle simulation, simulation au RSPM),
+  124 propriétés comparées ; deux écarts sur `public_simulator_started`
+  (`$active_feature_flags`, `$feature_flag_payloads`), qui varient aussi entre deux relevés
+  de `main` (la réponse des drapeaux arrive avant ou après l'événement, § 9.er). Un seul ajout
+  dans une chaîne d'éléments : le bouton « Réessayer », quand il n'y a pas de résultat dessous,
+  est dans `div.sim-place-erreur`. `insertPublicEvent` n'est pas touché.
+
+**Vérifié.** `npm run build` : 72 pages ; `node scripts/verify-site.mjs` : 0 erreur (les
+7 avertissements habituels). Lighthouse mobile, bridage simulé, deux passes alternées :
+`/simulateur` 100 et 98 sur `main`, 98 et 100 ici (LCP 1,5 à 2,3 s des deux côtés : bruit),
+`/` 99, `/blog/frais-pros-medecin-liberal-2026` 99 ; accessibilité, bonnes pratiques et SEO à
+100. WebKitGTK 2.52 à 1 300 px et à 390 px (cadre de même origine), PAMC et RSPM : un seul état
+des hauteurs après l'affichage (2 à 17 sur `main`), « € », « /an » et les tuiles exactement à la
+même place que sur `main`, carte d'attente d'un écran, compteur dessiné par `::after` (texte de
+remplacement vide lu). Chemins d'échec : API en panne puis « Réessayer », fichier du bloc des
+régimes refusé (voir plus haut).
+
+**Limites.** Mesuré en local (HTTP/1.1, réseau bridé par Chromium, API servie depuis un cache
+après 800 ms) ; ni Vercel ni un vrai téléphone. Le CLS réel est à revérifier dans PostHog une à
+deux semaines après la mise en ligne : 75e centile par appareil sur `/simulateur`, part des
+mesures au-dessus de 0,1, et nombre d'entrées des fenêtres sur ordinateur (il doit tomber).
+
+**Fichiers** : `src/components/simulateur/SimulateurApp.tsx`, `SimulateurResults.tsx`,
+`RegimeComparisonCards.tsx`, `ConclusionCard.tsx`, `RspmOuPamc.tsx`, `PlaceGardee.tsx`
+(nouveau), `src/lib/simulateur/usePublicodesSimulation.ts`, `src/styles/simulateur.css`,
+`CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
