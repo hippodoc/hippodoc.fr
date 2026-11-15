@@ -199,6 +199,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       tooltip?: string;
       tooltipContent?: React.ReactNode;
       isInfoLine?: boolean;
+      /** Sous-total (§ 9.gn) : la somme des montants affichés de `parts`, arrondis un à un. */
+      parts?: number[];
       badge?: string;  // ✅ Badge optionnel (ex: "Exonéré IR")
     }> = [];
 
@@ -751,6 +753,15 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         negative: true,
         tooltipContent: getCarmfTooltipContent()
       });
+      // Le total des deux, pour ne pas l'additionner de tête (§ 9.gn). Au RSPM, une seule ligne.
+      detailItems.push({
+        icon: Shield,
+        label: "Total des cotisations",
+        value: urssafLigne + carmfLigne,
+        parts: [urssafLigne, carmfLigne],
+        colorClass: "sim-eau",
+        negative: true,
+      });
     }
 
     // ========================================
@@ -924,7 +935,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               {detailItems.map((item, i) => (
                 <div
                   key={item.label}
-                  className="sim-ligne-detail flex items-center justify-between"
+                  className={`sim-ligne-detail${item.parts ? ' sous-total' : ''} flex items-center justify-between`}
                 >
                   <div className="flex items-center gap-2">
                     <item.icon className={`h-4 w-4 ${item.colorClass}`} />
@@ -957,7 +968,9 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                     {/* Pas de signe devant un montant nul : « -0 € » s'affichait pour un impôt de quelques centimes (§ 9.gi). */}
                     {item.isInfoLine 
                       ? '' 
-                      : `${item.negative && Math.round(periode === 'mensuel' ? item.value / 12 : item.value) !== 0 ? '-' : ''}${formatMontant(item.value)}`
+                      : item.parts
+                        ? `-${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(item.parts.reduce((t, v) => t + Math.round(periode === 'mensuel' ? v / 12 : v), 0))}`
+                        : `${item.negative && Math.round(periode === 'mensuel' ? item.value / 12 : item.value) !== 0 ? '-' : ''}${formatMontant(item.value)}`
                     }
                   </span>
                 </div>
