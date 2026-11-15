@@ -15,8 +15,8 @@ import { GUIDE_REMPLACANT_LAST_UPDATED_ISO } from './pages-lastmod';
 export const GUIDE_REMPLACANT = {
   pdf: '/guide/guide-du-remplacant-2026-2027.pdf',
   edition: '2026-2027',
-  pages: 26,
-  /** Date « À jour au » imprimée dans le PDF (p. 2 et 26) — définie dans pages-lastmod.ts. */
+  pages: 35,
+  /** Date « À jour au » imprimée dans le PDF (p. 2 et 34) — définie dans pages-lastmod.ts. */
   misAJourIso: GUIDE_REMPLACANT_LAST_UPDATED_ISO,
-  misAJourTexte: '26 septembre 2026',
+  misAJourTexte: '15 novembre 2026',
 } as const;

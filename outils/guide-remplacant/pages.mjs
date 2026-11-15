@@ -174,9 +174,9 @@ ${kv('Tu passes 19 000 € de rétros', 'Le RSPM, le régime simplifié, a des r
 <li><div class="eh"><b>Une licence ne suffit pas pour remplacer.</b>[[p:licence]]</div><p class="et">Interne, il faut aussi une autorisation de l’Ordre et un contrat écrit, même pour un jour.</p></li>
 <li><div class="eh"><b>Ce que tu encaisses n’est pas ce que tu gagnes.</b>[[p:profils]]</div><p class="et">Sur 100 € de rétrocession, il t’en reste de 58 à 72 € dans nos trois profils : ton Super-Net.</p></li>
 <li><div class="eh"><b>35 % de chaque virement, de côté.</b>[[p:reserve]]</div><p class="et">Sur un compte à part : ta réserve pour les cotisations et l’impôt.</p></li>
-<li><div class="eh"><b>RSPM ou PAMC : choisis avant le 1er rempla.</b>[[p:regime]]</div><p class="et">Le RSPM, le régime simplifié, est souvent moins cher, mais il a des seuils.</p></li>
+<li><div class="eh"><b>RSPM ou PAMC : choisis avant le 1er rempla.</b>[[p:regime]]</div><p class="et">Le RSPM, régime simplifié, est souvent moins cher, mais il a des seuils. Sinon, c’est le PAMC, le régime classique.</p></li>
 <li><div class="eh"><b>En PAMC, l’année 2 pique.</b>[[p:annee2]]</div><p class="et">D’abord des forfaits, des montants fixes ; le rattrapage arrive en 2e année.</p></li>
-<li><div class="eh"><b>Aucun impôt prélevé la 1re année, sauf si tu agis.</b>[[p:septembre]]</div><p class="et">Crée ton acompte dès ta 1re rétro, sinon tout tombe en septembre de l’année suivante.</p></li>
+<li><div class="eh"><b>Pas d’impôt prélevé au début, sauf si tu agis.</b>[[p:septembre]]</div><p class="et">Sans acompte, rien n’est prélevé avant septembre de l’année suivante : crée-le dès ta 1re rétro.</p></li>
 <li><div class="eh"><b>Une prévoyance se prend tôt.</b>[[p:prevoyance]]</div><p class="et">La CPAM ne paie tes arrêts qu’après un an de libéral&nbsp;[[p:arret]].</p></li>
 </ol></div>`,
   }),
@@ -189,7 +189,7 @@ ${kv('Tu passes 19 000 € de rétros', 'Le RSPM, le régime simplifié, a des r
 <div class="fi"><p class="fq">Avant ton 1er rempla</p><p class="ft">Les démarches</p><p class="fd">Licence, assurance RCP, CPAM (l’Assurance maladie), URSSAF, CARMF, compte dédié. Trois à quatre semaines&nbsp;[[p:demarches]].</p></div>
 <div class="fi"><p class="fq">Année 1</p><p class="ft">Des forfaits, et pas d’impôt prélevé</p><p class="fd">L’URSSAF et la CARMF prélèvent des forfaits, des montants fixes, faute de connaître ton revenu. Rien n’est prélevé pour l’impôt sur tes remplas, sauf si tu crées un acompte. <b>Tu mets 35 % de côté.</b></p></div>
 <div class="fi fort"><p class="fq">Année 2</p><p class="ft">Le rattrapage</p><p class="fd">Au printemps, tu déclares tes revenus de l’année 1. Ensuite, l’URSSAF et la CARMF font le rattrapage, et l’impôt de l’année 1 est prélevé à partir de septembre&nbsp;[[p:annee2]].</p></div>
-<div class="fi"><p class="fq">Année 3</p><p class="ft">Le rythme de croisière</p><p class="fd">La retraite complémentaire de la CARMF démarre (11,8 % de ton revenu, si tu as commencé avant 40 ans). Tes prélèvements suivent ton vrai revenu, avec un à deux ans de décalage&nbsp;[[p:carmf]].</p></div>
+<div class="fi"><p class="fq">Année 3</p><p class="ft">Le rythme de croisière</p><p class="fd">La retraite complémentaire de la CARMF démarre : 11,8 % de ton revenu (dès l’année 1 si tu as débuté à 40 ans ou plus). Tes prélèvements suivent ton vrai revenu, avec un à deux ans de décalage&nbsp;[[p:carmf]].</p></div>
 </div></div>`,
   }),
 
@@ -215,7 +215,7 @@ ${alerte('piege', '<span class="lab">L’intérim en établissement, pas tout de
 <li><div class="eh"><b>Ta licence de remplacement</b><span class="etiq">Semestres validés</span></div><p class="et">Interne : au conseil de l’Ordre de ta fac. Thésé : ton inscription à l’Ordre&nbsp;[[p:licence]].</p></li>
 <li><div class="eh"><b>Ta responsabilité civile (RCP)</b><span class="etiq">Avant le 1er rempla</span></div><p class="et">Obligatoire. Celle du remplacé ne te couvre pas : fais confirmer la tienne par écrit.</p></li>
 <li><div class="eh"><b>La CPAM</b><span class="etiq">Avant le 1er rempla</span></div><p class="et">Inscris-toi en ligne auprès de la caisse de ton lieu de résidence. Ensuite, signale-lui chaque rempla.</p></li>
-<li><div class="eh"><b>L’URSSAF : RSPM ou PAMC</b><span class="etiq">Avant le 1er rempla</span></div><p class="et"><b>RSPM</b> : sur urssaf.fr, service simplifié des médecins. <b>PAMC</b> : sur formalites.entreprises.gouv.fr, sous 8 jours après ton début. Lequel ?&nbsp;[[p:regime]]</p></li>
+<li><div class="eh"><b>L’URSSAF : RSPM ou PAMC</b><span class="etiq">Dès le 1er rempla</span></div><p class="et"><b>RSPM</b> : sur urssaf.fr, service simplifié des médecins. <b>PAMC</b> : sur formalites.entreprises.gouv.fr, sous 8 jours après ton début. Lequel ?&nbsp;[[p:regime]]</p></li>
 <li><div class="eh"><b>La CARMF, ta caisse de retraite</b><span class="etiq">Le 1er mois</span></div><p class="et">En PAMC, sur son site. Au RSPM, l’affiliation est automatique.</p></li>
 <li><div class="eh"><b>Ton compte et ton espace impôts</b><span class="etiq">Dès le début</span></div><p class="et">Un compte pour tes remplas&nbsp;[[p:reserve]] et, sur impots.gouv.fr, ton <b>espace professionnel</b>&nbsp;[[p:oublis]].</p></li>
 </ol></div>`,
@@ -231,7 +231,7 @@ ${alerte('piege', '<span class="lab">L’intérim en établissement, pas tout de
 </div>
 <div class="c plein"><span class="etiq ink">Tu es thésé</span>
 <p style="margin-top:16px"><b>L’inscription à l’Ordre</b> se demande dès 4 mois avant ton diplôme. Une fois inscrit, plus d’autorisation au cas par cas.</p>
-<p><b>En attendant la décision</b> (3 mois au plus), tu remplaces sous licence, avec autorisation, si ta demande date d’un mois au plus après ton diplôme.</p>
+<p><b>En attendant la décision</b>, tu remplaces sous licence, avec autorisation, si ta demande date d’un mois au plus après ton diplôme.</p>
 </div>
 ${alerte('piege', '<span class="lab">Ta licence expire chaque année</span>, à la date écrite dessus. Renouvelle-la avant, avec ton nouveau certificat de scolarité.')}`,
   }),
@@ -259,7 +259,7 @@ ${alerte('piege', '<span class="lab">Ta licence expire chaque année</span>, à 
     titre: 'Le contrat : <span class="eau">5 points à verrouiller</span>',
     chapo: 'Écrit, quelle que soit la durée du rempla, et communiqué au conseil de l’Ordre avant qu’il commence.',
     corps: `<div class="c plein">
-${kv('Qui, où, quand', 'Ton identité et celle du remplacé, ton numéro de licence ou RPPS, les dates, les horaires, les gardes, les visites, les frais.')}
+${kv('Qui, où, quand', 'Ton identité et celle du remplacé, ton numéro de licence ou RPPS&nbsp;[[p:glossaire]], les dates, les horaires, les gardes, les visites, les frais.')}
 ${kv('La rétrocession', 'En pourcentage des honoraires. Écris le sort des gardes et des actes techniques.')}
 ${kv('Le paiement', 'Le délai et le mode de versement, noir sur blanc : c’est ce qui t’évite les relances.')}
 ${kv('S’installer à côté', 'La clause de non-réinstallation te l’interdit. Depuis le 30 juillet 2026, elle n’existe que si le contrat la prévoit : négocie sa durée et sa zone.')}
@@ -315,7 +315,7 @@ ${kv('Pour l’impôt', 'Tu es imposé l’année où l’argent arrive sur ton 
 <div class="fa-l"><span><span class="nota">3</span>Honoraires encaissés pendant le remplacement</span><b>7 500 €</b></div>
 <div class="fa-l"><span>Rétrocession prévue au contrat</span><b>80 %</b></div>
 <div class="fa-l fa-tot"><span>Montant à me verser</span><b>6 000 €</b></div>
-<p class="fa-pied"><span class="nota">4</span>TVA non applicable, article 261-4-1° du CGI. Virement sous 15 jours.</p>
+<p class="fa-pied"><span class="nota">4</span>Exonération de TVA, article 261-4-1° du CGI. Virement sous 15 jours.</p>
 </div>
 <div class="fa-notes">
 <p><span class="nota">1</span><span>Un numéro qui se suit, et la date : tu retrouves tout.</span></p>
@@ -384,15 +384,15 @@ ${pile([['co', 152, '−152 €'], ['im', 50, ''], ['fr', 30, ''], ['s', 368, '3
     titre: 'RSPM ou PAMC : <span class="eau">combien ?</span>',
     chapo: 'Tes cotisations de l’année, pour 15 000 € de rétros en secteur 1.',
     corps: `<div class="c"><div class="barres">
-<div class="br"><span class="bl">RSPM<small>invalidité-décès à 25 %</small></span><span class="bb"><i style="width:${(2180 / 5830 * 100).toFixed(1)}%"></i></span><b>2 180 €</b></div>
-<div class="br"><span class="bl">RSPM<small>invalidité-décès à 100 %</small></span><span class="bb"><i style="width:${(2660 / 5830 * 100).toFixed(1)}%"></i></span><b>2 660 €</b></div>
+<div class="br"><span class="bl">RSPM<small>invalidité-décès au quart</small></span><span class="bb"><i style="width:${(2180 / 5830 * 100).toFixed(1)}%"></i></span><b>2 180 €</b></div>
+<div class="br"><span class="bl">RSPM<small>invalidité-décès pleine</small></span><span class="bb"><i style="width:${(2660 / 5830 * 100).toFixed(1)}%"></i></span><b>2 660 €</b></div>
 <div class="br"><span class="bl">PAMC<small>tes 2 premières années</small></span><span class="bb"><i class="f" style="width:${(4650 / 5830 * 100).toFixed(1)}%"></i></span><b>4 650 €</b></div>
 <div class="br"><span class="bl">PAMC<small>dès la 3e année</small></span><span class="bb"><i class="f" style="width:100%"></i></span><b>5 830 €</b></div>
 </div>
-<p class="note" style="margin-top:12px">Au RSPM, l’invalidité-décès à 100 % (631 €) paie 4 fois plus d’indemnités en arrêt qu’à 25 % (158 €)&nbsp;[[p:arret]].</p></div>
+<p class="note" style="margin-top:10px">Les montants PAMC comptent 2 040 € d’ASV. Dispensé (revenu net d’il y a deux ans sous 15 000 €), tu paies vers 2 610 €, puis 3 780 €&nbsp;[[p:carmf-demander]].</p></div>
 <div class="c plein"><p class="ct">Au-delà de 19 000 € : la règle entière</p>
 ${kv('Pour entrer', '19 000 € de rétrocessions par an, au plus.')}
-${kv('Si tu dépasses', 'Tu y restes cette année-là, à 21,2 % au-delà.')}
+${kv('Si tu dépasses', 'Tu y restes, à 21,2 % au-delà.')}
 ${kv('Tu en sors', 'Au 1er janvier qui suit une année au-dessus de 38 000 €, ou ta 2e année de suite au-dessus de 19 000 €.')}
 <p class="ret"><span class="lab">À surveiller : </span>un projet de décret voudrait ouvrir le RSPM jusqu’à 80 000 €. Rien n’est publié au 15 novembre 2026.</p>
 </div>`,
@@ -423,9 +423,9 @@ ${kv('Tu en sors', 'Au 1er janvier qui suit une année au-dessus de 38 000 €, 
     titre: 'La CARMF <span class="eau">en clair</span>',
     chapo: 'Ta caisse de retraite. En PAMC, quatre cotisations (2026, secteur 1). Au RSPM, tout passe par l’URSSAF, sans ASV.',
     corps: `<div class="rang">
-<div class="c tuile"><p class="ct">Retraite de base</p><p class="mid">8,73 %</p><p class="note">jusqu’au PASS (48 060 €), plus 1,87 % sur tout ton revenu.</p></div>
-<div class="c tuile"><p class="ct">Complémentaire</p><p class="mid">11,8 %</p><p class="note">de ton revenu. Rien les 2 premières années, si tu démarres avant 40 ans.</p></div>
-<div class="c tuile"><p class="ct">ASV</p><p class="mid">1 917 €</p><p class="note">+ 1,33 % : une retraite en plus. L’Assurance maladie paie les deux tiers de la cotisation.</p></div>
+<div class="c tuile"><p class="ct">Retraite de base</p><p class="mid">8,73 %</p><p class="note">jusqu’à 48 060 €, plus 1,87 % sur tout ton revenu. La CPAM en paie une part.</p></div>
+<div class="c tuile"><p class="ct">Complémentaire</p><p class="mid">11,8 %</p><p class="note">de ton revenu. Rien les 2&nbsp;premières années, si tu démarres avant 40&nbsp;ans.</p></div>
+<div class="c tuile"><p class="ct">ASV</p><p class="mid">1 917 €</p><p class="note">+ 1,33 % de ton revenu : ta part d’une retraite en plus. La CPAM paie les deux autres tiers.</p></div>
 <div class="c tuile"><p class="ct">Invalidité-décès</p><p class="mid">626 €</p><p class="note">sous 48 060 € de revenu. Elle ouvre tes indemnités&nbsp;[[p:arret]].</p></div>
 </div>
 <div class="c plein"><p class="ct">Comment elle te prélève, en PAMC</p>
@@ -439,11 +439,11 @@ ${kv('Mai à août', 'Le solde, à payer avant le 31 août, avec ta retraite de 
     titre: 'CARMF : ce que tu peux <span class="eau">demander</span>',
     chapo: 'Personne ne te les proposera : demande-les, avec ton avis d’impôt, dans les délais.',
     corps: `<div class="c plein">
-${kv('ASV, au début', 'Dispense si ton revenu libéral d’il y a deux ans était sous 15 000 €, souvent le cas au début. Demande-la tout de suite.')}
-${kv('ASV, ensuite', 'Une cotisation proportionnelle à ton revenu, s’il était sous 63 900 € il y a deux ans. Avant le 28 février.')}
+${kv('ASV : dispense', 'Si ton revenu libéral net d’il y a deux ans était sous 15 000 €, souvent le cas au début. Demande-la tout de suite.')}
+${kv('ASV : réduction', 'Une cotisation proportionnelle à ton revenu, s’il était sous 63 900 € il y a deux ans. Avant le 28 février.')}
 ${kv('Complémentaire', 'Réduite de 25 à 100 % si tes revenus imposables de l’an passé, salaires compris, sont sous 32 500 €. Dans les 3 mois après l’appel de janvier.')}
-${kv('Dispense totale', 'Que des remplas, sans CFE (impôt local&nbsp;[[p:oublis]]), sous 15 000 € par an : plus d’affiliation.')}
-${kv('Revenu en baisse', 'Un calcul sur tes revenus estimés de l’année, plutôt que sur ceux d’il y a deux ans.')}
+${kv('Dispense totale', 'Que des remplas, sans CFE (impôt local&nbsp;[[p:oublis]]), revenu net sous 15 000 € : aucune affiliation.')}
+${kv('Revenu en baisse', 'Ta retraite de base, sur tes revenus estimés de l’année ; le reste, sur ceux d’il y a deux ans.')}
 </div>
 ${alerte('piege', '<span class="lab">Ce que tu perds.</span> Une cotisation dispensée ne donne aucun point de retraite. Sans affiliation : ni invalidité-décès, ni indemnités&nbsp;CARMF.')}`,
   }),
@@ -485,14 +485,14 @@ ${alerte('piege', '<span class="lab">Ce que tu perds.</span> Une cotisation disp
     id: 'septembre', profond: true, rep: rep(3, 'Sous la surface · piège 2 sur 2'),
     bulles: [[968, 96, 34], [1018, 176, 18], [24, 1120, 22]],
     titre: 'Le piège <span class="eau">de septembre</span>',
-    chapo: 'Le prélèvement à la source ne connaît pas encore tes remplas. Sans action de ta part, rien n’est prélevé sur eux ta 1re année.',
+    chapo: 'Le prélèvement à la source ne connaît pas encore tes remplas : sans action, rien n’est prélevé sur eux avant septembre de ton année 2.',
     corps: `<div class="c"><div class="frise">
 <div class="fi"><p class="fq">Année 1</p><p class="ft">Rien de prélevé</p><p class="fd">Tu remplaces, tu encaisses. Aucun acompte sur tes remplas.</p></div>
 <div class="fi"><p class="fq">Printemps de l’année 2</p><p class="ft">Ta déclaration</p><p class="fd">Tu déclares tes revenus de l’année 1.</p></div>
 <div class="fi fort"><p class="fq">De septembre à décembre</p><p class="ft">Le double prélèvement</p><p class="fd">Le solde de l’année 1 est prélevé, en 4 fois au-delà de 300 €. Les acomptes sur tes remplas démarrent en même temps. Interne : le taux sur ton salaire monte aussi.</p></div>
 </div></div>
 <div class="c plein"><p class="ct">La parade, en 3 minutes</p>
-<p>Dès ta 1re rétro, dans ton espace particulier sur impots.gouv.fr : « Prélèvement à la source », « Gérer vos acomptes », « Créer un acompte ». Indique ton bénéfice estimé (en micro-BNC, 66 % de tes rétros) : l’acompte part chaque mois.</p>
+<p>Dès ta 1re rétro, dans ton espace particulier (pas le professionnel) sur impots.gouv.fr : « Prélèvement à la source », « Gérer vos acomptes », « Créer un acompte ». Indique ton bénéfice estimé (en micro-BNC, 66 % de tes rétros) : l’acompte part chaque mois.</p>
 <p class="ret"><span class="lab">Chaque janvier, </span>vérifie que ton acompte est toujours là, et ajuste-le à tes remplas prévus.</p>
 </div>`,
   }),
@@ -507,7 +507,7 @@ ${alerte('piege', '<span class="lab">Ce que tu perds.</span> Une cotisation disp
 <div class="case"><span class="case-n">DSCS</span><span>Toutes tes recettes brutes.</span></div>
 <div class="case"><span class="case-n">DSAV</span><span>Tes rétrocessions brutes, souvent le même montant qu’en DSCS. <b>Pas préremplie</b> : à toi de l’écrire.</span></div>
 <div class="case"><span class="case-n">DSAW</span><span>Zéro, pour un remplaçant : c’est la consigne de la notice.</span></div>
-<div class="case"><span class="case-n">DSDE</span><span>Au réel seulement : le revenu brut social de ta 2035 (déposée en mai), sans retirer l’abattement de 26 %.</span></div>
+<div class="case"><span class="case-n">DSDE</span><span>Au réel seulement : le revenu brut social de ta 2035 (déposée en mai), tel quel. L’URSSAF en retire elle-même 26 %.</span></div>
 <p class="ret"><span class="lab">Pas de volet social à l’écran ? </span>Coche la case PAMC. Toutes les cases, avec des exemples remplis : <a class="lien" href="${U('/guide-declarations')}">le guide des déclarations</a>.</p>
 </div>`,
   }),
@@ -517,8 +517,8 @@ ${alerte('piege', '<span class="lab">Ce que tu perds.</span> Une cotisation disp
     titre: 'Trois choses <span class="eau">qu’on oublie</span>',
     corps: `<div class="c"><p class="ct">La CFE, un impôt local</p>
 ${kv('L’année où tu démarres', 'Rien à payer, mais une déclaration avant le 31 décembre : le formulaire 1447-C-SD.')}
-${kv('Ensuite', 'Chaque 15 décembre, là où tu as le plus remplacé.')}
-${kv('Rien à payer', 'Si tes recettes ne dépassent pas 5 000 € (celles d’il y a deux ans, ou ta 1re année sur 12 mois).')}
+${kv('Ensuite', 'Tu la paies chaque 15 décembre, là où tu as le plus remplacé.')}
+${kv('Rien à payer', 'Si tes recettes ne dépassent pas 5 000 € (celles d’il y a deux ans ; la 1re année, ramenées à 12 mois).')}
 <p class="note" style="margin-top:12px">L’avis n’arrive qu’en ligne, dans ton espace professionnel. Interne : due si tu remplaces habituellement.</p></div>
 <div class="c"><p class="ct">La facture électronique</p><p>Depuis le 1er septembre 2026, tu dois pouvoir en recevoir, pour tes achats pros. Tes rétrocessions en sont exclues.</p></div>
 <div class="c plein"><p class="ct">La TVA</p><p>Aucune sur tes rétrocessions : les soins en sont exonérés. Écris-le sur ta facture&nbsp;[[p:facture]].</p></div>`,
@@ -553,7 +553,7 @@ ${pile([['co', 17300], ['im', 6960], ['fr', 5000], ['s', 40740, '58 %']])}
 <div style="margin-top:14px">
 ${kv('Jours 1 à 3', 'Personne : c’est le délai de carence.')}
 ${kv('Jours 4 à 90', 'La CPAM, après 12 mois d’affiliation en libéral : jusqu’à 197,51 € par jour.')}
-${kv('Dès le 91e jour', 'La CARMF : 65,84 € à 197,51 € par jour selon tes revenus, si tu es à jour. Au RSPM : 65,84 €, ou 16,46 € à 25 %&nbsp;[[p:combien]].')}
+${kv('Dès le 91e jour', 'La CARMF : 65,84 € à 197,51 € par jour selon tes revenus, si tu es à jour. Au RSPM : 65,84 €, ou 16,46 € si tu as choisi le quart&nbsp;[[p:combien]].')}
 </div>
 <p class="ret"><span class="lab">Le chômage ? </span>Arrêter tes remplas n’ouvre en pratique aucune allocation.</p>
 </div>
@@ -617,13 +617,13 @@ ${kv('Chaque trimestre', 'RSPM : ta déclaration et ton paiement à l’URSSAF (
 <p><b>CPAM</b> Ta caisse d’Assurance maladie.</p>
 <p><b>CPS</b> Ta carte de professionnel de santé.</p>
 <p><b>Forfaits</b> Les cotisations des débuts, calculées sur un revenu fixe.</p>
-<p><b>Invalidité-décès</b> La cotisation CARMF qui t’indemnise dès le 91e jour d’arrêt.</p>
+<p><b>Invalidité-décès</b> La cotisation CARMF qui couvre l’arrêt dès le 91e jour, l’invalidité et le décès.</p>
 <p><b>Micro-BNC</b> Le régime d’impôt simple : impôt sur 66 % de tes recettes.</p>
-<p><b>PAMC</b> Le régime social classique des libéraux.</p>
+<p><b>PAMC</b> Le régime social classique des soignants libéraux conventionnés.</p>
 <p><b>RCP</b> Responsabilité civile professionnelle, obligatoire.</p>
 <p><b>Secteur 1</b> Tarifs de la Sécurité sociale, sans dépassement d’honoraires.</p>
 <p><b>Rattrapage</b> Le recalcul de tes cotisations sur ton vrai revenu.</p>
-<p><b>RPPS</b> Ton numéro au Répertoire des professionnels de santé.</p>
+<p><b>RPPS</b> Ton numéro au Répertoire partagé des professionnels de santé.</p>
 <p><b>RSPM</b> Régime simplifié des professions médicales.</p>
 <p><b>Super-Net</b> Ce qui te reste vraiment après charges, cotisations et impôt.</p>
 <p><b>Tranche marginale</b> Le taux de ta tranche d’impôt la plus haute.</p>
@@ -669,10 +669,10 @@ ${kv('Chaque trimestre', 'RSPM : ta déclaration et ton paiement à l’URSSAF (
     titre: 'D’où viennent <span class="eau">ces chiffres</span>',
     corps: `<div class="c plein src">
 ${kv('Ordre', 'Code de la santé publique : L4131-2, D4131-2 et D4131-3-2 (licence, autorisation, inscription), R4127-65, R4127-86 et R4127-91 (contrat, non-réinstallation : décret n° 2026-691 du 27 juillet 2026), L1142-2 et L1142-25 (RCP). Docteurs juniors : instruction DGOS du 21 mai 2026. Intérim : décret n° 2025-1147.')}
-${kv('URSSAF', 'Code de la sécurité sociale : L642-4-2, D642-4-1 à D642-4-3 (RSPM), L131-6-2 (revenus estimés). urssaf.fr, service simplifié des médecins. Notice PAMC 2026.')}
+${kv('URSSAF', 'Code de la sécurité sociale : D642-4-1 à D642-4-3 (RSPM), L131-6-2 (revenus estimés). urssaf.fr, service simplifié des médecins. Notice PAMC 2026.')}
 ${kv('CARMF', 'Cotisations 2026 en début et en cours d’activité, réductions 2026, dépliants « Début d’exercice libéral » et « Remplaçants » (février 2026), carmf.fr.')}
 ${kv('Assurance maladie', 'Indemnités journalières des libéraux, inscription des remplaçants, ameli.fr.')}
-${kv('Impôts', 'Code général des impôts : 102 ter (micro-BNC), 261-4-1° (TVA), 289 (factures), 1647 D (CFE). BOFiP, brochure de l’impôt 2026, prélèvement à la source, impots.gouv.fr.')}
+${kv('Impôts', 'Code général des impôts : 102 ter (micro-BNC), 204 G (acomptes), 261-4-1° (TVA), 289 (factures), 1478 et 1647 D (CFE). BOFiP, brochure de l’impôt 2026, impots.gouv.fr.')}
 ${kv('Les montants', 'Moteur du simulateur d’Hippodoc : barème 2026, modèle de l’URSSAF, taux 2026 de la CARMF. Arrondis à 10 € (à l’euro pour la journée).')}
 <p class="ret"><span class="lab">Information générale, à jour au 15 novembre 2026. </span>Les taux changent chaque année et chaque situation est unique : pour ton cas, vois avec ton conseil de l’Ordre, l’URSSAF, la CARMF ou un expert-comptable.</p>
 </div>`,

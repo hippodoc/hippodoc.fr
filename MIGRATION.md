@@ -14977,6 +14977,61 @@ Essais des § 9.gh, 9.go et 9.gp repassés (deux attentes mises à jour : résum
 WebKitGTK : réponse « Oui », résumé et fiche. `verify-site.mjs` sans erreur ; feuille commune
 inchangée ; comparé à la production, seul `/simulateur` diffère (la bulle du régime social).
 
+### 9.ha Le guide du remplaçant, refait de zéro dans la DA 2026 (15 novembre 2026)
+
+**Contenu modifié** (à relire par le propriétaire) : le PDF offert sur `/guide` (§ 9.di), refait
+entièrement à sa demande (« pas dans notre nouvelle DA », « notre PDF vitrine », « hyper utile,
+stylé, moderne, intuitif, complet, à jour, cohérent »). 35 pages au lieu de 26, même adresse et
+même nom de fichier (`public/guide/guide-du-remplacant-2026-2027.pdf`) : les liens déjà envoyés
+par ManyChat restent bons.
+
+**Le générateur** : `outils/guide-remplacant/` (README). Le contenu est dans `pages.mjs`, la
+feuille dans `guide.css` (jetons de la DA seulement), et `construire.mjs` fabrique le PDF
+(Playwright) avec ses contrôles : débordement, mot seul, taille de texte, police, liens. `--site`
+dépose le PDF, la couverture, les trois aperçus et l'image de partage dans le site. Le dossier est
+hors de `src/` : Tailwind ne le lit pas, la feuille commune ne change pas.
+
+**Les choix.**
+- Format 4:5 (1080 × 1350 px par page), celui des carrousels : 64 % des téléchargements viennent
+  d'un téléphone (PostHog, 26 septembre au 15 novembre 2026, France). Texte courant de 28,5 px,
+  notes de 26 px au moins.
+- Le parcours de la DA : ciel en couverture et aux ouvertures, sable pour expliquer, eau profonde
+  pour « Ta journée à 600 € » (ouverture de la partie 3) et les deux pièges (l'année 2, septembre),
+  scène de fin. Jaune réservé au Super-Net et au bouton. Mascotte sur la couverture, les ouvertures
+  des parties 1, 2 et 4 (lui, elle, lui) et la fin.
+- Quatre parties dans l'ordre d'une carrière : avant le premier rempla, pendant les remplas, sous
+  la surface (cotisations, impôts, Super-Net), garder la tête hors de l'eau (protection,
+  calendrier, routine). Nouveautés : la frise des trois premières années, les 10 questions avant
+  de dire oui, la facture annotée, la déclaration case par case (5HQ, DSCS, DSAV, DSAW, DSDE),
+  les réductions de la CARMF à demander, la prévoyance (renvoi au kit du dimanche), « Pour aller
+  plus loin » (simulateur, guide des déclarations, calculette, blog, kits).
+- Navigation : sommaire et renvois « p. N » cliquables, signets du PDF, liens vers le site avec
+  `utm_source=guide-pdf`.
+- Technique : ni ombre floue ni transparence (Aperçu et l'iPhone les rendent mal) ; décors
+  rendus en JPEG opaques ; police figée en six graisses statiques (`assets/police/`), sans quoi
+  Chromium l'embarque en Type 3 (2,4 Mo au lieu de 1,3 Mo).
+
+**Les chiffres.** Tous calculés par le moteur du simulateur (`simulerRegime`, modèle de
+l'URSSAF, barème 2026), sur les profils types de `/simulateur` quand ils existent : détail dans
+`outils/guide-remplacant/verification/README.md`. Les règles : cinq tableaux de vérification
+(Ordre, URSSAF, CARMF, impôts, protection), chaque affirmation avec ses citations exactes.
+
+**Les relectures** (standard `hippodoc-exigence`) : interne novice, juriste santé, fiscaliste
+santé, directeur artistique, correcteur ; puis une repasse ciblée. Ce qu'elles ont changé :
+`verification/README.md`.
+
+**La page `/guide`** suit le PDF : sommaire en quatre parties, « L'essentiel en 7 règles » repris
+mot pour mot (au lieu de 6), 35 pages, date « À jour au 15 novembre 2026 » (`pages-lastmod.ts`),
+couverture, trois aperçus (p. 4, 15, 29) et image de partage (gabarit « bannière » de la DA)
+refaits. `apercu-6-regles.png` devient `apercu-7-regles.png`.
+
+**À trancher par le propriétaire** : le mot-clé des kits (« commente le mot indiqué » : le guide
+ne cite aucun mot) ; l'ordre de citation du CGI sur la facture en 2027 (la TVA passe au CIBS, le
+CGI reste citable jusqu'au 30 juin 2028). La phrase « signale-lui chaque rempla » (CPAM) est
+gardée : la convention ne prévoit qu'un enregistrement, mais ameli, l'ARS et des caisses
+demandent chaque période (le juriste a retiré son point à la repasse). Les pages qui citent
+ameli.fr sont à relire à la main : le site refuse les lectures automatiques.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

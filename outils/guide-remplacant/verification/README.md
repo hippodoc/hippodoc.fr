@@ -27,6 +27,7 @@ micro-BNC, métropole. Arrondis à 10 € dans le guide.
 | Combien il te reste | Jeune remplaçant, 40 000 €, 1re année PAMC | cotisations 7 683 €, impôt 1 468 €, Super-Net 28 849 € ; même revenu dès la 3e année : 25 504 € |
 | Combien il te reste | Remplaçant régulier, 70 000 €, 5 000 € de frais | cotisations 17 302 €, impôt 6 964 €, Super-Net 40 734 € (réel : 39 448 €) |
 | Ton impôt, en une formule | Interne, 10 000 € de remplas, RSPM | salaire imposable 22 000 € : 1 055 € d'impôt en plus ; 36 000 € : 1 980 € |
+| RSPM ou PAMC : combien, avec la dispense d'ASV | 15 000 €, PAMC, ASV dispensée (revenu net d'il y a deux ans sous 15 000 €) | 1re et 2e années : vers 2 610 € ; dès la 3e : vers 3 780 € (l'ASV pèse 2 040 € dans les montants PAMC) |
 | La règle des 35 % | Cotisations + impôt / recettes | interne au RSPM, 15 000 € : 25 % (tranche à 11 %) à 34 % (tranche à 30 %) ; PAMC 60 000 € : 34 % ; PAMC 15 000 € dès la 3e année : 39 % |
 
 Note : pour l'interne, « l'impôt en plus » est la différence d'impôt du foyer avec et sans les
@@ -57,7 +58,10 @@ enseigne (« ta tranche marginale »).
   le diplôme ; gardes à 100 % = un usage, pas une règle (seule l'astreinte revient de droit à
   celui qui fait la garde).
 - **CPAM** : inscription en ligne auprès de la caisse du lieu de résidence avant le premier
-  jour, puis chaque remplacement signalé.
+  jour, puis chaque remplacement signalé (la convention ne prévoit qu'un enregistrement ; ameli,
+  l'ARS et des caisses demandent chaque période : formulation gardée).
+- **Autorisation d'un interne** : « en attendant la décision », sans délai (D4131-2 : « jusqu'à
+  ce qu'il soit statué » ; les 3 mois de L4112-3 ne courent que d'un dossier complet).
 
 ## Zones grises, formulations prudentes
 
@@ -72,6 +76,20 @@ enseigne (« ta tranche marginale »).
 - PLF et PLFSS 2027 : non votés. Le guide utilise le barème 2026 et les taux 2026.
 - Mois de la régularisation URSSAF : aucune source officielle ne le fixe ; le guide dit « après
   ta déclaration ».
+
+## Les relectures (standard `hippodoc-exigence`)
+
+| Regard | Premier passage | Repasse ciblée |
+|---|---|---|
+| A. Interne novice | sigles non définis à leur première occurrence, deux mots pour une notion (« régularisation » et « rattrapage », « provisionnel » et « forfaits »), le calcul de « Ta journée à 600 € » à refaire de tête | 3 points nouveaux, tous corrigés : la note de l'ASV (p. 17), « si tu as commencé avant 40 ans » (p. 5, qui laissait croire que la complémentaire ne concernait qu'eux), « PASS » (p. 19) ; plus 12 gênes de formulation |
+| B1. Juriste santé | 7 points (décret n° 2026-691, licence, inscription CPAM, intérim, gardes) | publiable après 3 pinaillages, corrigés : « Dès le 1er rempla » (URSSAF, p. 7), la parenthèse « 3 mois au plus » retirée (p. 8 : le délai ne court que d'un dossier complet), trois définitions du glossaire (PAMC, RPPS, invalidité-décès) ; point « signale-lui chaque rempla » retiré |
+| B2. Fiscaliste santé | facture non obligatoire, seuil du micro-BNC, CFE, chemin de l'acompte, DSAW | publiable après la note de l'ASV (p. 17), corrigée |
+| C. Directeur artistique | typographie, couleurs, ouverture de la partie 3, variété des mises en page | corrections faites, pas de repasse demandée |
+| D. Correcteur-cohérence | contradiction RSPM entre p. 16 et p. 19, un « vous », sigles CPAM, CPS, DES, CGI | corrections faites |
+
+Dans le guide, « rattrapage » et « forfaits » sont les seuls mots pour ces deux notions ; le
+Super-Net est défini à sa première occurrence (« ce qui te reste vraiment après charges,
+cotisations et impôt »).
 
 ## Ce qui reste à signaler au propriétaire
 

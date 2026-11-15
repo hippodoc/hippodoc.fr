@@ -253,24 +253,17 @@ ${typoHtml(corps)}
     const { GUIDE_SITE } = await import(pathToFileURL(path.join(ICI, 'pages.mjs')).href + `?site=${Date.now()}`);
     fs.copyFileSync(pdf, path.join(RACINE, 'public', GUIDE_SITE.pdf));
     fs.copyFileSync(path.join(ICI, 'assets', 'partage.jpg'), path.join(RACINE, 'public', 'guide', 'partage.jpg'));
-    const ctx2 = await browser.newContext({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: 1 });
-    const p2 = await ctx2.newPage();
-    await p2.goto(pathToFileURL(fichierHtml).href, { waitUntil: 'load' });
-    await p2.evaluate(() => document.fonts.ready);
     for (const [id, nom, largeur] of GUIDE_SITE.images) {
-      // Rendu à la taille voulue (pas une réduction d'image) : le texte reste net.
-      await p2.setViewportSize({ width: 1080, height: 1350 });
-      const el = await p2.$(`#${id}`);
-      const facteur = largeur / 1080;
-      const c3 = await browser.newContext({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: facteur });
+      // Rendu à la largeur voulue (pas une réduction d'image) : le texte reste net.
+      const c3 = await browser.newContext({ viewport: { width: 1080, height: 1350 }, deviceScaleFactor: largeur / 1080 });
       const p3 = await c3.newPage();
-      await p3.goto(pathToFileURL(fichierHtml).href + `#${id}`, { waitUntil: 'load' });
+      await p3.goto(pathToFileURL(fichierHtml).href, { waitUntil: 'load' });
       await p3.evaluate(() => document.fonts.ready);
-      await (await p3.$(`#${id}`)).screenshot({ path: path.join(RACINE, 'src', 'assets', 'guide', nom), animations: 'disabled' });
-      await c3.close();
+      const el = await p3.$(`#${id}`);
       if (!el) throw new Error(`page #${id} introuvable`);
+      await el.screenshot({ path: path.join(RACINE, 'src', 'assets', 'guide', nom), animations: 'disabled' });
+      await c3.close();
     }
-    await ctx2.close();
     console.log(`  site : public/${GUIDE_SITE.pdf}, public/guide/partage.jpg, ${GUIDE_SITE.images.map((x) => 'src/assets/guide/' + x[1]).join(', ')}`);
   }
   console.log(`${tous.length ? 'KO' : 'OK'} ${path.relative(process.cwd(), pdf)} : ${rapport.pages} pages, ${(fs.statSync(pdf).size / 1024).toFixed(0)} Ko`);
