@@ -15430,6 +15430,57 @@ commune inchangée. Hauteurs de l'accueil, de « Pour qui » et de `/tarifs` ide
 **Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/components/accueil/Tarifs.astro`,
 `src/pages/tarifs.astro`, `src/data/etapesRemplacant.ts`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.hh Tarifs de l'accueil : le « Détail des offres » rangé comme /tarifs (15 novembre 2026)
+
+Demande du propriétaire, capture à l'appui : le pli « Détail des offres » du bloc tarifs de
+l'accueil était « moche et pas harmonieux ». Constat : quatorze lignes en vrac sur trois
+colonnes de hauteurs inégales (des libellés sur deux lignes, d'autres sur une, une dernière
+rangée à moitié vide), puis un tableau deux fois moins large que le pli (46 rem), sans
+l'offre des internes alors que les cartes juste au-dessus en montrent trois, dans l'ordre
+Mensuel, Annuel (les cartes : Annuel d'abord), et qui redisait les cartes (prix par mois,
+économie) ou rien (« Essai gratuit » et « Toutes les fonctionnalités », coche partout).
+
+**La forme de /tarifs** (§ 9.gs), dont le bloc de l'accueil est la version courte :
+- « Inclus dans toutes les offres », puis une rangée par famille (« Revenus et
+  cotisations », « Déclarations et compta », « Quotidien du remplaçant », « Entraide,
+  support et données »), un filet au-dessus de chacune ; sous 640 px, le titre de la
+  famille au-dessus de ses lignes ; de 640 à 899 px, les lignes sur deux colonnes de texte ;
+  à partir de 900 px, le titre à gauche (250 px) et les lignes à droite, comme sur /tarifs.
+- Les lignes sont celles de /tarifs, mot pour mot, d'une seule source :
+  `src/data/inclusOffres.ts` (`FAMILLES_INCLUS`), qu'importent les deux pages. Le HTML de
+  `/tarifs` est identique octet pour octet à celui de `main`.
+- Dernière rangée, « Facturation et engagement » : le tableau, Annuel puis Mensuel (l'ordre
+  des cartes), deux lignes, « Facturation » (« 228 € une fois par an », « Mensuelle ») et
+  « Engagement » (« 12 mois », « Aucun »), valeurs du tableau d'avant mot pour mot. À partir
+  de 900 px, sa première colonne fait 290 px (le titre de famille et son écart) : « Annuel »
+  et « Mensuel » tombent sur les deux colonnes de lignes au-dessus (mesuré, Chromium et
+  WebKit). Sous 560 px, chaque ligne en grille (l'intitulé, puis les deux valeurs dessous),
+  comme avant ; « par an » lié par une espace insécable.
+
+**Contenu modifié** (à relire par le propriétaire) :
+- les lignes du pli deviennent celles de /tarifs : « Génération rapide de contrats et de
+  factures » redevient deux lignes, « Génération rapide de contrats » et « Génération
+  rapide de factures avec notes » ; « Données sécurisées et hébergées dans l'Union
+  européenne » y entre (elle reste aussi, seule, sous les cartes) ; les quatre titres de
+  famille entrent sur l'accueil ;
+- retirés du tableau : « Prix par mois » (29 €, 19 €), « Économie » (« −34 % (120 €/an) »),
+  « Essai gratuit » et « Toutes les fonctionnalités » (coches) : les prix et les 120 € sont
+  sur les cartes, l'essai de 30 jours dans le chapô, « toutes les offres » dans le titre des
+  inclus. « −34 % » ne figure plus sur l'accueil (il reste sur /tarifs et dans sa FAQ) ;
+- l'intitulé de la première colonne, « Caractéristiques » (affiché à partir de 560 px),
+  devient « Facturation et engagement ».
+
+**Vérifications** : `verify-site.mjs` sans erreur, mêmes onze avertissements que `main` (le
+contrôle « Engagement : 12 mois » passe ; 3 205 mots sur l'accueil, 3 203 avant, plancher
+2 680) ; comparé au build de `main` (`e8a109e`), seuls `index.html` et sa feuille changent ;
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). axe-core : aucune violation, pli
+ouvert, à 320, 390, 768 et 1 440 px ; aucun débordement de page. WebKitGTK : grille des
+familles, colonnes de texte, tableau en grille sous 560 px, à 320, 390, 768, 1 024 et
+1 440 px.
+
+**Fichiers** : `src/data/inclusOffres.ts` (nouveau), `src/components/accueil/Tarifs.astro`,
+`src/pages/tarifs.astro`, `src/lib/pages-lastmod.ts`, `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

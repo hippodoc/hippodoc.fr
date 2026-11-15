@@ -6,6 +6,7 @@ import { getImage } from 'astro:assets';
 import presente from '@/assets/accueil/mascotte-f-presente.webp';
 import { SITE_URL, APP_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { echapper, nouer } from '@/lib/typo';
+import { FAMILLES_INCLUS } from '@/data/inclusOffres';
 
 /**
  * NOUVELLE page (n'existe pas dans la SPA source) — cible « hippodoc prix »,
@@ -57,49 +58,10 @@ const signupUrl = `${APP_URL}/auth?tab=signup`;
 const signupAnnuel = `${signupUrl}&plan=yearly`;
 const signupMensuel = `${signupUrl}&plan=monthly`;
 
-/* « Inclus dans toutes les offres » : les lignes de FeaturesListModal.tsx, mot
-   pour mot, rangées en quatre familles (§ 9.gs). Seuls les titres des familles
-   sont nouveaux. « Abonnement 100 % déductible » n'y est plus : la règle
-   entière est dans les garanties. */
-const familles = [
-  {
-    titre: 'Revenus et cotisations',
-    lignes: [
-      'Super-Net calculé en temps réel',
-      'Calcul URSSAF, CARMF et impôts en temps réel',
-      'RSPM et PAMC pris en charge',
-      'Gestion activité mixte libéral et salariat',
-      'PDSA et revenus exonérés intégrés',
-    ],
-  },
-  {
-    titre: 'Déclarations et compta',
-    lignes: [
-      'Déclarations fiscales guidées',
-      'Micro-BNC et régime réel intégrés',
-      'Suivi des charges et amortissements',
-      'Statistiques et exports comptables instantanés',
-    ],
-  },
-  {
-    titre: 'Quotidien du remplaçant',
-    lignes: [
-      'Dashboard clair et intuitif',
-      'Planning centralisé, export Google Agenda',
-      'Génération rapide de contrats',
-      'Génération rapide de factures avec notes',
-    ],
-  },
-  {
-    titre: 'Entraide, support et données',
-    lignes: [
-      "Forum privé d'entraide entre médecins",
-      'Support réactif et humain',
-      "Données sécurisées et hébergées dans l'Union européenne",
-    ],
-  },
-];
-
+/* « Inclus dans toutes les offres » : quatre familles, mot pour mot, dans
+   src/data/inclusOffres.ts (une source avec le détail des offres de l'accueil,
+   § 9.hh). */
+const familles = FAMILLES_INCLUS;
 /* Les quatre garanties, sous les offres : ce que les visiteurs venaient
    chercher dans les plis (résiliation, carte bancaire, déduction). Phrases
    déjà publiées : le chapô des tarifs de l'accueil, deux réponses de la FAQ de
