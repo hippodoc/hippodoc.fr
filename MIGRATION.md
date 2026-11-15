@@ -14517,6 +14517,83 @@ reste, Échap la ferme. Bulle RID remesurée à 320, 360, 820 et 1 280 px (ligne
 28 px, aucun débordement). Essais des § 9.gh, 9.go et 9.gp repassés. `verify-site.mjs` sans
 erreur ; feuille commune inchangée ; comparé à la production, seul `/simulateur` diffère.
 
+### 9.gs Nouvel article : comptable, logiciel ou tableur (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, avec pour la première fois la **passe « agréable à
+lire »** que le propriétaire a demandée à chaque article (règle ajoutée à la procédure dans
+cette PR, § « La passe agréable à lire » de son étape 5).
+
+**Fichier et affiche.** `src/content/blog/comptable-logiciel-tableur-medecin-remplacant.md` ;
+affiche `src/assets/blog/comptable-logiciel-tableur-medecin-remplacant-cover.jpg`,
+1 611 × 2 000 (0,8055, portrait), réenregistrée sans métadonnées (`sharp`, qualité 90,
+532 Ko), empreinte unique. Texte lisible ; sur l'ardoise, « MA COMPTA - CASTING » (tiret
+court), sans conséquence.
+
+**Thème** : `impots-declarations`, celui de `regime-fiscal-micro-bnc-vs-reel` et
+`remplir-declaration-2035`, que l'article prolonge (registre, régime, 2035, volet social).
+Aucun article ne traitait déjà « faut-il un comptable » (recherche dans titres et
+descriptions).
+
+**Frontmatter.** `title` « Comptable, logiciel ou tableur pour un remplaçant » (49 signes,
+« | Hippodoc » ajouté) : le titre fourni, « … : de quoi un médecin remplaçant a vraiment
+besoin », faisait 79 signes. `description`, `cta` (« Prêt à garder tes rétros et tes
+dépenses au même endroit ? », bouton vers l'essai) et FAQ de 5 questions écrits ici d'après
+le texte (`PLANCHER_FAQ` relevé à 60 pages, 403 questions). `episodeNumber: 17` (série
+`divers`) : à date égale, il passe devant l'article des aides, donc **à la une** de `/blog`.
+`readTime` 15 min.
+
+**Écarts au texte fourni** (carte blanche du 15/11 : harmoniser et corriger après
+vérification) :
+- ligne « À jour au 1er novembre 2026 » sortie du corps ; date de fin et des sources au
+  15 novembre 2026 (vérifiées ce jour) ; « Sources » en titre, dernier `##`, en liste ;
+- **mise en forme** : « L'essentiel » (repris d'« En résumé »), astuce en `:::tip` (le 💡
+  sort), trois `:::warning` sur des passages existants (prorata de l'année de création,
+  valider sa déclaration avant la date limite, reconduction tacite de la lettre de
+  mission), liste « Avant de signer » numérotée et remontée sous « Combien coûte », gras
+  dosé (26 pour 1 000 mots), titre « Trois idées reçues » devenu « Des idées reçues »
+  (« trois » revenait cinq fois) ;
+- **« En résumé »** réécrit en trois phrases (il recopiait « L'essentiel ») ;
+- **clarté** (relecture interne novice) : définitions ajoutées (comptable = expert-comptable,
+  logiciel ou appli, abattement, 2035, amortissement, quote-part, RSPM « change ta façon de
+  payer l'URSSAF, pas ton impôt », association agréée, société d'exercice, lettre de mission,
+  TTC) ; seuil du micro reformulé en une règle ; « tableau » → « tableur » ;
+- **ton** : une phrase positive sur le comptable (« te fait aussi gagner du temps et te
+  conseille au moment des grands choix ») ; « adhésion obligatoire » sur un devis devenu
+  « si un devis inclut une adhésion, elle est facultative » ;
+- **corrections factuelles** (relecture expert-comptable, deux passes) :
+  - **case « DSAQ » retirée** : absente de la notice 2042-C-PRO des PAMC (revenus 2025) ;
+    le volet social ne garde que DSAV, DSAW, DSCS et DSAU et renvoie à
+    `/guide-declarations` pour le déclarant 2 et les années mixtes (RSPM, DSCI/DSCJ) ;
+  - la 2035 relève de l'art. 97 du CGI (articles 97 et 99) ;
+  - économie de cotisations : « des cotisations en moins, calculées elles aussi sur ce
+    bénéfice » (et non « un peu ») ;
+  - erreur du comptable : conciliation au conseil régional de l'Ordre (décret 2012-432,
+    art. 159), pas une « saisine » qui indemniserait ;
+  - préavis : lettre reçue « au plus tard » le 30 septembre ; prorata : « comme 100 000 € »
+    (et non « près de ») ;
+  - OGA : « vérifiait la cohérence de tes déclarations », majoration de 25 % réduite à 10 %
+    en dernier lieu ; conservation dix ans « pour toutes les pièces encore à conserver au
+    1er janvier 2027 » (loi n° 2026-534, art. 36, II), simplifié à l'écran en « depuis la loi du
+    25 juin 2026 » (relecture interne novice) ; phrase sur la fin de l'agrément des OGA retirée
+    (bruit pour un débutant ; elle reste dans les sources).
+  Vérifiés justes : seuil 83 600 € (2026-2028), abattement 34 % (305 € minimum), prorata
+  (BOFiP § 134-135), art. 102 ter, option réel, fin de la majoration et de l'art. 199 quater
+  B (LF 2025, art. 11), cases DSDE/DSDF, correction en ligne du 29 juillet au 30 novembre
+  2026, L102 B et L169.
+
+**Liens.** Dans le texte : « micro-BNC » → `/blog/regime-fiscal-micro-bnc-vs-reel`, « la
+déposer toi-même » → `/blog/remplir-declaration-2035`, « notre guide des déclarations » →
+`/guide-declarations`, « Super-Net » → `/simulateur`, « hippodoc.fr » → `/`. Entrant (en tête
+des `relatedArticles`) : `regime-fiscal-micro-bnc-vs-reel`, `remplir-declaration-2035`,
+`calendrier-fiscal-remplacant`.
+
+**Vérifications.** 74 pages, 72 dans le sitemap (`lastmod` 2026-11-15) ; `verify-site.mjs`
+passe (avertissement attendu : aucun lien entrant dans le texte). Feuille commune inchangée
+(`_astro_assets.BqFlQkaI.css`). Pages changées contre `main` : le nouvel article, `/blog`, la
+page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile : 97 /
+100 / 100 / 100, CLS 0. Même contournement local de la garde de police de l'image de partage
+qu'en § 9.gq (sans commit) : image à contrôler sur l'aperçu Vercel.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
