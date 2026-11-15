@@ -46,6 +46,12 @@ export const FAQ_LAST_UPDATED_ISO = '2026-11-13';
  *  ajoutés le 11 novembre 2026 (MIGRATION.md § 9.ed). */
 export const TARIFS_LAST_UPDATED_ISO = '2026-11-11';
 
+/** /simulateur : dernière vérification des barèmes et des règles sur les sources officielles
+ *  (Urssaf, CARMF, Légifrance, barème de l'impôt), affichée sous les repères de la page et
+ *  portée par son JSON-LD (MIGRATION.md § 9.gp). À relever quand une règle ou un barème du
+ *  simulateur est revérifié, jamais à la date d'un simple habillage. */
+export const SIMULATEUR_LAST_UPDATED_ISO = '2026-11-15';
+
 export const STATIC_LASTMOD: Record<string, string> = {
   '/guide-declarations': GUIDE_DECLARATIONS_LAST_UPDATED_ISO,
   '/guide-declarations/dsfu-pamc': GUIDE_SOUS_PAGES_LAST_UPDATED_ISO,
@@ -59,4 +65,5 @@ export const STATIC_LASTMOD: Record<string, string> = {
   '/': ACCUEIL_LAST_UPDATED_ISO,
   '/faq': FAQ_LAST_UPDATED_ISO,
   '/tarifs': TARIFS_LAST_UPDATED_ISO,
+  '/simulateur': SIMULATEUR_LAST_UPDATED_ISO,
 };

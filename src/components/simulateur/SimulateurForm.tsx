@@ -160,7 +160,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const asvProportionnelle = form.watch('asvProportionnelle');
     // Le toggle RID s'affiche dès qu'on est en RSPM (effectif ou auto < 38k€).
     // La dispense CARMF n'a aucun effet en RSPM : la RID reste obligatoire et
-    // doit pouvoir être paramétrée (157€ ou 626€ en 2026).
+    // doit pouvoir être paramétrée (158 € ou 631 € en 2026).
     const annualRecettes = periode === 'mensuel' ? (recettesBrutes || 0) * 12 : (recettesBrutes || 0);
     // Même règle que le moteur (usePublicodesSimulation) : en Auto, le RSPM est retenu pour
     // un remplaçant jusqu'à 19 000 € de recettes (seuil d'entrée du régime).
@@ -1201,7 +1201,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <div className="text-xs mt-1.5 px-1">
                           {field.value !== 'dispense' && <p className="text-muted-foreground">Retraite de base, complémentaire, ASV et invalidité-décès{debutActivite !== 'non' ? " (sans complémentaire les deux premières années)" : ''}</p>}
                           {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation CARMF (retraite de base, complémentaire, ASV, invalidité-décès). Possible seulement pour un remplaçant dont le revenu net reste sous 15 000 € : au-delà, le simulateur ne l'applique pas.</p>}
-                          {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (157€ ou 626€/an selon le taux ci-dessous).</p>}
+                          {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (158 € ou 631 € par an selon le taux ci-dessous).</p>}
                         </div>
                         <FormMessage role="alert" />
                       </FormItem>
@@ -1216,13 +1216,22 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <PremiumTooltip title="Cotisation RID" content={
                               <div className="space-y-2">
                                 <p className="font-semibold">Régime Invalidité-Décès CARMF</p>
-                                <p className="text-xs">Assurance obligatoire dès que tu es affilié à la CARMF. Te couvre en cas d'invalidité ou de décès (capital versé aux ayants droit).</p>
-                                <TipBox variant="info">
-                                  <div className="space-y-0.5">
-                                    <p><strong>25%</strong> = couverture minimale → 157€/an</p>
-                                    <p><strong>100%</strong> = couverture complète → 626€/an</p>
-                                  </div>
-                                </TipBox>
+                                <p className="text-xs">Assurance obligatoire dès que tu es affilié à la CARMF. Elle te couvre en cas d'arrêt de travail long, d'invalidité ou de décès.</p>
+                                {/* Ce que chaque niveau coûte et couvre (§ 9.gp) : CARMF, dépliant « Remplaçants,
+                                    régulateurs adhérents au RSPM », édition 2026 ; cotisations confirmées par
+                                    l'Urssaf (« Le service simplifié pour les médecins », 13 novembre 2026). */}
+                                <table className="sim-rid">
+                                  <thead>
+                                    <tr><th scope="col"><span className="sr-only">Ce qui est couvert</span></th><th scope="col">À 25{'\u00a0'}%</th><th scope="col">À 100{'\u00a0'}%</th></tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr><th scope="row">Cotisation par an</th><td>158{'\u00a0'}€</td><td>631{'\u00a0'}€</td></tr>
+                                    <tr><th scope="row">Arrêt de travail, par jour à partir du 91e</th><td>16,46{'\u00a0'}€</td><td>65,84{'\u00a0'}€</td></tr>
+                                    <tr><th scope="row">Invalidité totale, rente par an</th><td>5{'\u00a0'}915,50{'\u00a0'}€</td><td>23{'\u00a0'}662{'\u00a0'}€</td></tr>
+                                    <tr><th scope="row">Décès, indemnité</th><td>17{'\u00a0'}875{'\u00a0'}€</td><td>71{'\u00a0'}500{'\u00a0'}€</td></tr>
+                                  </tbody>
+                                </table>
+                                <p className="text-xs text-muted-foreground">Prestations 2026 de la CARMF pour un médecin de moins de 62 ans. Tu choisis ton niveau à ta première déclaration de l'année.</p>
                                 <TipBox variant="tip">
                                   <p>100% recommandé si tu as des enfants ou un emprunt immobilier.</p>
                                 </TipBox>
@@ -1233,8 +1242,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </div>
                           <FormControl>
                             <RadioGroup onValueChange={field.onChange} value={field.value || '25%'} className="flex gap-4">
-                              <div className="flex items-center gap-2"><RadioGroupItem value="25%" id="rid-25" /><label htmlFor="rid-25" className="text-sm cursor-pointer">25% (157€/an)</label></div>
-                              <div className="flex items-center gap-2"><RadioGroupItem value="100%" id="rid-100" /><label htmlFor="rid-100" className="text-sm cursor-pointer">100% (626€/an)</label></div>
+                              <div className="flex items-center gap-2"><RadioGroupItem value="25%" id="rid-25" /><label htmlFor="rid-25" className="text-sm cursor-pointer">25% (158€/an)</label></div>
+                              <div className="flex items-center gap-2"><RadioGroupItem value="100%" id="rid-100" /><label htmlFor="rid-100" className="text-sm cursor-pointer">100% (631€/an)</label></div>
                             </RadioGroup>
                           </FormControl>
                           <FormMessage role="alert" />

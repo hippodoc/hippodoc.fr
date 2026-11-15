@@ -768,7 +768,24 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   solde avant fin août) se relisent dans son appel de chaque année. Détail des régimes : en
   PAMC, « Total des cotisations » sous Urssaf et CARMF (somme des montants affichés, `parts`).
   RID au RSPM : 25 % par défaut, comme le simulateur de l'Urssaf (le médecin choisit à son premier
-  paiement de l'année).
+  paiement de l'année). Montants (§ 9.gp) : 158 € à 25 %, 631 € à 100 % (urssaf.fr, « Le service
+  simplifié pour les médecins » ; CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM »),
+  pas le quart et le plein du minimum du régime classique (626 € en 2026). La bulle du choix
+  (`sim-rid`) donne ce que chaque niveau couvre (indemnités par jour d'arrêt, rente, indemnité
+  décès) : chiffres de ce dépliant, à relire chaque année avec les montants, ici et dans les quatre
+  articles qui les citent (`rspm-exemples-concrets`, `guide-impots-internes-remplacants`,
+  `tout-comprendre-carmf`, `tout-comprendre-urssaf`).
+  Estimation des revenus (§ 9.gp) : l'Urssaf recalcule les cotisations de l'année sur une
+  estimation, sur demande (« Documents et démarches », « Réévaluer vos cotisations ») ; la loi en
+  vigueur (CSS L131-6-2) ne prévoit plus de majoration pour une estimation trop basse, ne pas le
+  récrire ; la « modulation des cotisations » n'est pas ouverte aux praticiens. Le montant à saisir
+  dans ce formulaire ne s'affiche pas tant qu'une source ne dit pas s'il s'entend avant ou après
+  l'abattement de 26 %.
+  Ligne de confiance (§ 9.gp) : sous les repères, « Barèmes 2026 vérifiés le … sur les sources
+  officielles » et quatre liens. La date est `SIMULATEUR_LAST_UPDATED_ISO`
+  (`src/lib/pages-lastmod.ts` ; aussi le `lastmod` de `/simulateur` et le `dateModified` de son
+  JSON-LD) : elle ne se relève qu'après avoir relu les barèmes sur ces sources et lancé
+  `controle-modele-urssaf.mjs`, jamais pour un habillage.
   Règle entière (§ 9.go) : un chiffre ou un seuil ne s'affiche jamais sans le reste de sa règle
   (le propriétaire : « red flag », le lecteur croit qu'on ne la connaît pas). RSPM : entrée jusqu'à
   19 000 € (CSS D642-4-1) ; sortie au 1er janvier qui suit une année au-dessus de 38 000 €, ou la

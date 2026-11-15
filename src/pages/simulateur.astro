@@ -44,6 +44,7 @@ import SimulateurApp from '@/components/simulateur/SimulateurApp.tsx';
 import { APP_URL, CALENDLY_URL, SITE_URL } from '@/lib/site';
 import { getDeclarationParams } from '@/lib/declarationParams';
 import { getMicroBncCeiling, getPlafondEpargneRetraite } from '@/lib/baremes-ir';
+import { SIMULATEUR_LAST_UPDATED_ISO } from '@/lib/pages-lastmod';
 
 const title = 'Simulateur revenus médecin gratuit | Hippodoc';
 const description =
@@ -62,6 +63,16 @@ const trustBadges = ['RSPM et PAMC', 'URSSAF 2026', 'Barème fiscal 2026', 'Sans
 /* Six repères (MIGRATION.md § 9.fs) : chaque montant vient du code du simulateur. Les règles
    sont celles vérifiées à l'audit de novembre 2026 (Légifrance, BOFiP, CARMF, Urssaf). */
 const ANNEE_REPERES = 2026;
+/* Ligne de confiance sous les repères (§ 9.gp) : date de la dernière vérification des barèmes
+   (`pages-lastmod.ts`, aussi dans le sitemap et le JSON-LD) et sources officielles. */
+const DATE_VERIFICATION = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  .format(new Date(`${SIMULATEUR_LAST_UPDATED_ISO}T00:00:00Z`));
+const SOURCES_BAREMES: { nom: string; href: string }[] = [
+  { nom: 'Urssaf', href: 'https://www.urssaf.fr/accueil/outils-documentation/taux-baremes/taux-cotisations-pam.html' },
+  { nom: 'CARMF', href: 'https://www.carmf.fr/page.php?page=cdrom/coti/coti-cours.htm' },
+  { nom: 'Service-Public', href: 'https://www.service-public.fr/particuliers/vosdroits/F1419' },
+  { nom: 'Légifrance', href: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000047733374' },
+];
 const euros = (n: number) => `${new Intl.NumberFormat('fr-FR').format(n)}\u00a0€`;
 const REPERES: { chiffre: string; titre: string; texte: string; soleil?: boolean }[] = [
   {
@@ -135,6 +146,7 @@ const webAppSchema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   inLanguage: 'fr',
+  dateModified: SIMULATEUR_LAST_UPDATED_ISO,
 };
 
 const faqSchema = {
@@ -275,6 +287,12 @@ const fleche =
               </div>
             ))}
           </div>
+          <p class="reperes-sources">
+            Barèmes {ANNEE_REPERES} vérifiés le {DATE_VERIFICATION} sur les sources officielles{'\u00a0'}:{' '}
+            {SOURCES_BAREMES.map((s, i) => (
+              <Fragment><a href={s.href} target="_blank" rel="noopener noreferrer">{s.nom}</a>{i < SOURCES_BAREMES.length - 1 ? ', ' : '.'}</Fragment>
+            ))}
+          </p>
         </section>
 
       </div>
@@ -365,7 +383,7 @@ const fleche =
                 <li><strong>Dispense partielle de la complémentaire</strong> — Sur demande, selon tes revenus imposables de toute nature de l'année précédente : 100 % jusqu'à 6 100 €, 75 % jusqu'à 14 300 €, 50 % jusqu'à 23 100 €, 25 % jusqu'à 32 500 € (barème 2026). La part dispensée ne donne pas de points de retraite.</li>
                 <li><strong>ASV proportionnelle</strong> — Sous 63 900 € de revenu conventionné, la part forfaitaire de l'ASV peut être remplacée par 3 % de ce revenu en secteur 1 (9 % en secteur 2), sur demande avant la fin février ; la part d'ajustement reste due. Moins de cotisation, moins de points de retraite.</li>
                 <li><strong>Dispensé</strong> — Sur demande à la CARMF, pour un remplaçant dont le revenu net reste sous 15 000 € : ni cotisations CARMF, ni trimestres de retraite, ni couverture invalidité-décès.</li>
-                <li><strong>Taux RID</strong> — Au RSPM, l'invalidité-décès peut être cotisée à 25 % (couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le simulateur retient 25 %.</li>
+                <li><strong>Taux RID</strong> — Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an) ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par jour à partir du 91e jour. Par défaut, le simulateur retient 25 %.</li>
               </ul>
             </div>
             <div>
@@ -636,6 +654,10 @@ const fleche =
   .reperes-tete { margin: 0 auto 28px; max-width: 40rem; text-align: center; }
   .reperes-tete h2 { margin: 0 0 10px; }
   .reperes-tete .lead { margin: 0 auto; }
+  /* Ligne de confiance (§ 9.gp) : date de vérification et sources, sous les six repères. */
+  .reperes-sources { margin: 22px auto 0; max-width: 44rem; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); text-align: center; text-wrap-style: pretty; }
+  .reperes-sources a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  .reperes-sources a:hover { color: var(--brand); }
   .reperes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .repere { display: flex; flex-direction: column; gap: 6px; padding: 20px 18px 22px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay); }
   .repere > * { margin: 0; }
