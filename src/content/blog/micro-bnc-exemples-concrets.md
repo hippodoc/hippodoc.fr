@@ -26,6 +26,7 @@ faq:
   - question: "Comment est calculé l'impôt en micro-BNC ?"
     answer: "En micro-BNC, tu bénéficies d'un **abattement forfaitaire de 34%**. Tu es imposé sur seulement 66% de ton CA, sans justificatifs de charges requis. Barème progressif : 0%, 11%, 30%..."
 relatedArticles:
+  - "micro-bnc-seuil-premiere-annee-prorata"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "rspm-exemples-concrets"
   - "frais-professionnels-deductibles"

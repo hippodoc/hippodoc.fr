@@ -25,6 +25,7 @@ faq:
   - question: "L’adhésion à une association agréée est-elle encore utile ?"
     answer: "La majoration du bénéfice de ceux qui n’adhéraient pas à une association agréée (un organisme de gestion qui vérifiait la cohérence de leurs déclarations), 25 % à l’origine puis 10 % en dernier lieu, a été **abrogée à compter des revenus 2023**, et la réduction d’impôt pour frais de comptabilité et d’adhésion a été **supprimée** par la loi de finances pour 2025 (dernière application aux revenus 2024). L’adhésion est facultative : demande ce que l’association t’apporte concrètement."
 relatedArticles:
+  - "micro-bnc-seuil-premiere-annee-prorata"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "remplir-declaration-2035"
   - "micro-bnc-exemples-concrets"

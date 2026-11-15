@@ -14784,6 +14784,71 @@ débordement. Lighthouse en local : accueil 99, 100, 100, 100 ; `/faq` 100, 100,
 son schéma), la feuille de l'accueil et, dans le sitemap, les dates de `/` et `/faq`
 (`ACCUEIL_LAST_UPDATED_ISO`, `FAQ_LAST_UPDATED_ISO` : 15 novembre 2026) ; la feuille commune et
 les 72 autres pages sont identiques.
+### 9.gx Nouvel article : le seuil du micro-BNC l'année du démarrage (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, passe « agréable à lire » comprise (§ 9.gs).
+
+**Fichier et affiche.** `src/content/blog/micro-bnc-seuil-premiere-annee-prorata.md` ;
+affiche `src/assets/blog/micro-bnc-seuil-premiere-annee-prorata-cover.webp`, 1 121 × 1 403
+(0,799, portrait), fournie en WebP et réenregistrée en WebP sans métadonnées (`sharp`,
+qualité 90, 203 Ko) : première affiche WebP du blog (`blog-covers.ts` les lit déjà). Sous les
+1 080 px du format idéal, au-dessus des 900 px qui rendraient flou. Empreinte unique.
+
+**Thème** : `impots-declarations`, avec `regime-fiscal-micro-bnc-vs-reel` et
+`micro-bnc-exemples-concrets`. Sujet distinct (le prorata de la première année), lié dans les
+deux sens.
+
+**Frontmatter.** `title` du propriétaire (58 signes, sans suffixe). `description`, `cta`
+(« Prêt à suivre tes encaissements mois par mois ? ») et FAQ de 5 questions écrits ici
+d'après le texte (`PLANCHER_FAQ` : 62 pages, 414 questions). `episodeNumber: 19` : à la une.
+`readTime` 10 min.
+
+**Écarts au texte fourni** (carte blanche du 15/11) :
+- ligne « À jour au 13 novembre 2026 » sortie ; date de fin et des sources au 15 novembre
+  2026 ; « Sources » en titre, en liste, détaillée par paragraphe du BOFiP ;
+- **mise en forme** : « L'essentiel » (5 puces, distinct d'« En résumé »), deux
+  `:::warning` (exception des activités intermittentes, « passer au réel sans le savoir »),
+  encadré Hippodoc en `:::tip`, formule du seuil en gras sur sa ligne, note d'arrondi
+  sortie de l'en-tête du tableau, gras (21 pour 1 000 mots) ;
+- **clarté** (relecture interne novice, deux passes) : « pas de panique » remonté dans
+  l'introduction ; « le fisc retire d'office 34 % » (lu comme un prélèvement) → « compte
+  d'office 34 % de tes recettes comme des frais : tu n'es imposé que sur le reste » ; une
+  seule méthode de calcul en avant (l'autre en une phrase) ; références (§) renvoyées aux
+  sources ; Camille : « première année au-dessus du seuil » (au lieu de « de
+  dépassement », qui semblait contredire « pas de dépassement possible ») ; parenthèses
+  86 762 € et 119 280 € retirées ; « Ce que tu fais ce soir » rendu faisable le soir même
+  (noter ce qui est déjà reçu, refaire le compte au 31 décembre) et repère mensuel
+  expliqué ; « En résumé » réécrit en trois phrases ; réel, 2035, BNC et immobilisations
+  définis ;
+- **corrections factuelles** (relecture fiscaliste, deux passes) :
+  - citation exacte de l'art. 102 ter (« ajusté s'il y a lieu au prorata du temps
+    d'activité ») ;
+  - recettes du remplaçant : rétrocessions **plus gardes, astreintes et autres recettes
+    libérales** (§ 40, § 170) ; un chèque reçu en décembre compte en décembre (« libre
+    disposition », § 40) ;
+  - « restent au micro, quoi qu'il arrive » → « sauf si tu choisis toi-même le réel » (§ 134 :
+    « à défaut d'option ») ;
+  - le seuil de la troisième année n'est 83 600 € que jusqu'en 2028 (§ 110) ;
+  - le réel peut coûter **plus d'impôt et de cotisations** (assiette commune, CSS art.
+    L131-6), pas seulement « un peu plus d'impôt » ;
+  - exception du § 138 : activités « intermittentes ou saisonnières » (une première
+    réécriture l'avait restreinte aux saisonnières, corrigé) ;
+  - repère « au-delà d'environ 6 967 € par mois » (6 966 × 12 reste sous le seuil) ;
+  - « Démarré le 1er novembre » (et non « en novembre ») dans la description.
+  Vérifiés justes : seuils 83 600 € et 77 700 €, 34 % et 305 €, les 12 lignes du tableau
+  (2026 non bissextile), Camille (61 jours, 13 971 €, 86 762 €), l'exemple officiel du
+  1er août (153 jours, 50 000 €, 85 000 €), § 100, 110, 132 à 138, rétrocessions au § 80.
+
+**Liens.** Dans le texte : micro-BNC → `/blog/regime-fiscal-micro-bnc-vs-reel`, 2035 →
+`/blog/remplir-declaration-2035`, comptable → `/blog/comptable-logiciel-tableur-medecin-remplacant`,
+Hippodoc → `/`, Super-Net → `/simulateur`. Entrant (en tête des `relatedArticles`) :
+`regime-fiscal-micro-bnc-vs-reel`, `micro-bnc-exemples-concrets`,
+`comptable-logiciel-tableur-medecin-remplacant`.
+
+**Vérifications.** 76 pages, 74 dans le sitemap (`lastmod` 2026-11-15) ; `verify-site.mjs`
+passe. Feuille commune inchangée. Pages changées contre `main` : le nouvel article, `/blog`,
+la page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile :
+97-98 / 100 / 100 / 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
