@@ -473,11 +473,15 @@ export const calculateRspmBreakdown = ({
   // Note : la RID est OBLIGATOIRE pour tout médecin actif inscrit à l'Ordre.
   // En RSPM, le statut "dispense CARMF" ne s'applique PAS à la RID
   // (la dispense ne concerne que la complémentaire vieillesse en PAMC).
-  // CARMF 2026 — PDF officiel « La CARMF en 2026 » p. 29-30 : RID = 626 € (100 %) / 157 € (25 %)
-  let cotisationsCarmfRid = 626; // Par défaut 100% (taux plein)
+  // Forfait de l'offre simplifiée (§ 9.gp) : 631 € (100 %) ou 158 € (25 %). Sources : urssaf.fr,
+  // « Le service simplifié pour les médecins », mise à jour le 13 novembre 2026 (« une cotisation
+  // annuelle forfaitaire RID de 158 € ou 631 € ») ; CARMF, dépliant « Remplaçants, régulateurs
+  // adhérents au RSPM », édition 2026. Avant : 626 € et 157 €, déduits de la cotisation minimale
+  // du régime classique en 2026 (626 €), que ni l'Urssaf ni ce dépliant n'appliquent au RSPM.
+  let cotisationsCarmfRid = 631; // Par défaut 100% (taux plein)
   const ridChoice = tauxRid || profile.taux_rid_rspm;
   if (ridChoice === '25%') {
-    cotisationsCarmfRid = 157;
+    cotisationsCarmfRid = 158;
   }
 
 

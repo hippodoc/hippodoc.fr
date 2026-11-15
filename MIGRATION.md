@@ -14117,6 +14117,133 @@ WebKitGTK à 1 300 et 390 px : frise, fiche miroir, exemple, aucun débordement 
 fait 1 px). `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparées à la production,
 les 71 autres pages du build sont identiques.
 
+### 9.gp Simulateur : l'invalidité-décès du RSPM à 158 € et 631 €, ce qu'elle couvre, et une ligne de confiance (15 novembre 2026)
+
+Après § 9.go et l'avis rendu sur le simulateur d'un concurrent, trois propositions faites au
+propriétaire, qui a répondu « Go pour les trois, je te fais confiance » : passer l'invalidité-décès
+du RSPM à 158 € et 631 € ; dire dans la bulle du choix ce que chaque niveau couvre ; creuser le
+montant à déclarer à l'Urssaf pour faire recalculer ses cotisations, et poser une ligne de confiance
+(date de vérification des barèmes et sources).
+
+**1. Invalidité-décès du RSPM : 158 € (25 %) et 631 € (100 %).** Le simulateur et quatre articles
+disaient 157 € et 626 € (§ 9.fr : le quart et le plein de la cotisation minimale du régime classique
+en 2026, 626 €). Deux documents officiels de 2026 donnent autre chose pour l'offre simplifiée, et
+aucun ne donne 157 € :
+- urssaf.fr, « Le service simplifié pour les médecins », mise à jour le 13 novembre 2026 : « Lors de
+  votre première déclaration, une cotisation annuelle forfaitaire RID de 158 € ou 631 € sera
+  ajoutée. » ;
+- CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM », édition de février 2026 : mêmes
+  montants, et les prestations de chaque niveau.
+
+Le régime classique, lui, reste à 626 € au minimum en 2026 (carmf.fr, « Vos cotisations en cours
+d'activité », relue ce jour) : l'écart de 5 € entre les deux est celui des documents, il n'est pas
+corrigé ici. Effet sur un résultat au RSPM : 1 € de cotisations de plus par an à 25 %, 5 € à 100 %
+(15 000 € de recettes : 2 183 € au lieu de 2 182 €).
+Modifié : `useRspmCalculation.ts` (631 et 158) ; `SimulateurForm.tsx` (libellés « 25% (158€/an) »,
+« 100% (631€/an) », phrase de la dispense « elle reste obligatoire (158 € ou 631 € par an selon le
+taux ci-dessous) ») ; mode d'emploi de la page (plus bas) ; quatre articles (« Contenu modifié »).
+
+**2. La bulle du choix dit ce que chaque niveau couvre.** Bulle « Cotisation RID »
+(`SimulateurForm.tsx`, classe `sim-rid` dans `simulateur.css`) : un tableau de trois colonnes,
+chiffres du dépliant de la CARMF cité, prestations 2026 pour un médecin de moins de 62 ans :
+
+| | À 25 % | À 100 % |
+|---|---|---|
+| Cotisation par an | 158 € | 631 € |
+| Arrêt de travail, par jour à partir du 91e | 16,46 € | 65,84 € |
+| Invalidité totale, rente par an | 5 915,50 € | 23 662 € |
+| Décès, indemnité | 17 875 € | 71 500 € |
+
+puis « Prestations 2026 de la CARMF pour un médecin de moins de 62 ans. Tu choisis ton niveau à ta
+première déclaration de l'année. » Le conseil « 100% recommandé si tu as des enfants ou un emprunt
+immobilier. » est gardé. Textes remplacés, archivés : « Assurance obligatoire dès que tu es affilié
+à la CARMF. Te couvre en cas d'invalidité ou de décès (capital versé aux ayants droit). » (devient
+« Assurance obligatoire dès que tu es affilié à la CARMF. Elle te couvre en cas d'arrêt de travail
+long, d'invalidité ou de décès. ») ; « 25% = couverture minimale → 157€/an », « 100% = couverture
+complète → 626€/an ». Mode d'emploi, « Taux RID », avant : « Au RSPM, l'invalidité-décès peut être
+cotisée à 25 % (couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le
+simulateur retient 25 %. » ; après : « Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an)
+ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par
+jour à partir du 91e jour. Par défaut, le simulateur retient 25 %. » Ces prestations se relisent
+dans le dépliant de chaque année.
+
+**3. Une erreur corrigée dans le pli « Quand et comment tu paies ».** Depuis § 9.gn (en ligne du
+15 novembre 2026, § 9.gn puis § 9.go), l'astuce disait : « Revenus qui changent beaucoup ? L'Urssaf
+et la CARMF (retraite de base) calculent tes cotisations sur ton revenu estimé de l'année, si tu le
+demandes (une estimation trop basse peut être majorée), et tu peux moduler tes acomptes d'impôt. »
+La parenthèse était fausse : l'article L131-6-2 du code de la sécurité sociale, dans sa version en
+vigueur (depuis le 28 décembre 2023), prévoit le calcul « sur la base de l'assiette de cotisations
+estimée pour l'année en cours », sur demande, et ne prévoit plus de majoration quand l'estimation
+se révèle trop basse. Nouvelle astuce : « Revenus qui changent beaucoup ? L'Urssaf recalcule tes
+cotisations de l'année sur une estimation de tes revenus, si tu le demandes dans ton espace en
+ligne (« Documents et démarches », puis « Réévaluer vos cotisations ») ; la CARMF fait de même pour
+ta retraite de base, sur demande. Et tu peux moduler tes acomptes d'impôt. » Le chemin est celui
+de l'Urssaf (« Comment adapter le montant de vos cotisations ? », mise à jour le 9 avril 2026). La
+« modulation des cotisations » que l'Urssaf propose aux artisans et commerçants n'est pas ouverte
+aux praticiens : le mot n'est pas employé pour les cotisations.
+
+**Le montant à saisir n'est pas affiché.** L'idée était de donner au médecin le chiffre à recopier
+dans le formulaire de l'Urssaf. Le champ s'appelle « Revenus estimés » ; aucun texte officiel
+lisible sans compte ne dit s'il s'entend avant ou après l'abattement de 26 % de la nouvelle
+assiette (la loi dit « assiette de cotisations estimée »). Un chiffre faux d'un quart serait pire
+que pas de chiffre : rien n'est affiché tant que l'aide dépliée du formulaire n'a pas été lue (une
+capture d'écran de l'espace du propriétaire suffirait).
+
+**4. Ligne de confiance.** Sous les six repères de `/simulateur` : « Barèmes 2026 vérifiés le
+15 novembre 2026 sur les sources officielles : Urssaf, CARMF, Service-Public, Légifrance. »
+(quatre liens : taux des cotisations des praticiens, cotisations de la CARMF, barème de l'impôt,
+article D642-4-1 du code de la sécurité sociale). La date vient de `SIMULATEUR_LAST_UPDATED_ISO`
+(`src/lib/pages-lastmod.ts`), qui donne aussi à `/simulateur` son `lastmod` dans le sitemap (la page
+n'en avait pas) et le `dateModified` de son JSON-LD `WebApplication`. Elle se relève quand un
+barème ou une règle du simulateur est revérifié, jamais pour un habillage. Relu ce jour pour la
+porter : urssaf.fr, taux des praticiens (page du 20 mars 2026 : CSG-CRDS 9,70 %, CURPS 0,50 % dans
+la limite de 240 €, CFP 0,25 % du plafond, barème maladie) ; carmf.fr (base 8,73 % jusqu'à
+48 060 € puis 1,87 %, complémentaire 11,80 %, invalidité-décès de 626 € à 1 010 €) ;
+service-public.fr, fiche F1419, vérifiée le 12 novembre 2026 (tranches à 11 600, 29 579, 84 577 et
+181 917 €) ; Légifrance, D642-4-1 en vigueur ; `node scripts/controle-modele-urssaf.mjs` sans
+écart. Tout concorde avec le code.
+
+**Contenu modifié** (quatre articles, `updatedDate` et `blog-meta.json` au 15 novembre 2026 ;
+adresses inchangées) :
+- `rspm-exemples-concrets` : « **+ RID** (invalidité-décès) forfaitaire : **157 €** (25 %) ou
+  **626 €** (100 %) — barème CARMF 2026 » devient « … **158 €** (25 %) ou **631 €** (100 %) —
+  montants 2026 de l'offre simplifiée » ; hypothèses « RID = 25 % (158 €) » ; exemple à 19 000 € :
+  total des cotisations 2 723 € (2 722 €), net et Super-Net 16 277 € (16 278 €) ; exemple à
+  38 000 € : total 6 751 € (6 750 €), net 31 249 € (31 250 €), Super-Net ≈ 29 992 € (≈ 29 993 €) ;
+  tableau comparatif 2 723 € et 6 751 € (gains arrondis inchangés, ≈ 4 220 € et ≈ 4 190 €) ; réponse
+  de FAQ « cotisations 2 723 € (14,3 %) […] Super-Net 16 277 € » ; sources : la sortie du
+  dispositif cite l'Urssaf (« Sortie du service ») au lieu de la « section des art. D. 642-4-x »,
+  où elle n'est pas (§ 9.go) ; « Invalidité-décès : barème CARMF 2026, classe A à 626 € ; l'option
+  à 25 % en est le quart. » devient « Invalidité-décès de l'offre simplifiée : 158 € ou 631 €
+  (URSSAF, page citée, mise à jour le 13 novembre 2026 ; CARMF, dépliant « Remplaçants, régulateurs
+  adhérents au RSPM », édition 2026). »
+- `guide-impots-internes-remplacants` : « **157 €** pour une couverture à 25 % », « **626 €** pour
+  une couverture à 100 % » deviennent 158 € et 631 € ; source « Invalidité-décès de l'offre
+  simplifiée (157 € ou 626 €) : barème CARMF 2026, carmf.fr. » remplacée par l'Urssaf (page citée)
+  et le dépliant de la CARMF.
+- `tout-comprendre-carmf` : « Au RSPM : un forfait que tu choisis, **157 €** (couverture à 25 %) ou
+  **626 €** (couverture complète). » devient 158 € et 631 € ; même correction dans la réponse de FAQ
+  (« un forfait au choix : 158 € ou 631 € »). Le régime classique (626 € à 1 010 €) n'est pas touché.
+- `tout-comprendre-urssaf` : « **157 €/an** pour une couverture à 25% ou **626 €/an** pour une
+  couverture à 100% (barème CARMF 2026) » devient « **158 €/an** […] **631 €/an** […] (montants 2026
+  de l'offre simplifiée ; voir la CARMF) » ; source « Invalidité-décès au RSPM : carmf.fr, « Vos
+  cotisations en cours d'activité » (classe à 626 € en 2026). » remplacée par l'Urssaf (page
+  citée) et le dépliant de la CARMF.
+
+**Contrôles.** Chromium à 390 et 1 280 px : au RSPM, 15 000 € de recettes donnent 2 183 € de
+cotisations à 25 % et 2 656 € à 100 % (2 025 € + 158 € ou 631 €) ; libellés ; tableau de la bulle
+lu cellule par cellule ; bulle et tiroir sans débordement à 320, 360, 820 et 1 280 px ; ligne de
+confiance sur deux lignes à partir de 600 px, trois en dessous, aucun lien coupé, de 320 à
+1 440 px ; astuce sans « majorée ». Essais des § 9.gh et 9.go repassés sans erreur. WebKitGTK à
+1 300 px et en cadre de 360 px : mêmes mesures, colonnes alignées. `verify-site.mjs` sans erreur,
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). Comparés à la production : 72 fichiers
+identiques, 7 différents, tous attendus (`/simulateur`, les quatre articles, les deux fichiers du
+sitemap : quatre dates d'articles, et `/simulateur` qui reçoit la sienne).
+
+**Reste ouvert, pour le propriétaire.** Le montant à saisir dans « Réévaluer vos cotisations »
+(avant ou après l'abattement de 26 %) ; l'écart entre l'invalidité-décès du régime classique
+(626 € au minimum) et celle de l'offre simplifiée (631 €), tel que les documents de 2026 le donnent.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
