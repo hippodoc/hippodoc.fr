@@ -135,7 +135,7 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
     return () => cancelAnimationFrame(animationFrame);
   }, [end, duration]);
 
-  // § 9.gl : l'élément porte d'emblée le montant final, qui fait sa largeur ; tant que le compteur
+  // § 9.gm : l'élément porte d'emblée le montant final, qui fait sa largeur ; tant que le compteur
   // tourne, ce montant est transparent et le nombre qui défile est dessiné par-dessus, calé à droite
   // contre « € », hors du flux (`.sim-compteur-en-cours::after`, simulateur.css, qui lit
   // `data-valeur`). Sa largeur ne compte plus dans la mise en page. Avant, elle changeait à chaque

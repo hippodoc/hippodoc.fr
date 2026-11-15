@@ -21,7 +21,7 @@ import type { RegimeComparisonCards } from "./RegimeComparisonCards";
  * formulaire. Il portait recharts (un camembert de 100x100 px par fiche, retiré en
  * § 9.ft) : importé statiquement, il pesait sur le chunk initial de /simulateur.
  *
- * § 9.gl : le chargement part au clic sur « Simuler » (`SimulateurApp`), en même temps que le
+ * § 9.gm : le chargement part au clic sur « Simuler » (`SimulateurApp`), en même temps que le
  * calcul, et les résultats ne s'affichent qu'avec ce bloc. Chargé par `lazy` une fois les
  * résultats affichés, il arrivait après eux : sa place d'attente (220 px) devenait 650 à 820 px,
  * et tout ce qui suit (« À savoir », les plis) descendait d'autant sous les yeux.
@@ -148,7 +148,7 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
       {/* Première année d'activité (§ 9.fx) : ce qui part cette année, et ce qui viendra ensuite */}
       {debutActiviteDe(formData) === 'premiere' && <PremiereAnneeCard comparison={comparison} formData={formData} />}
 
-      {/* Cartes de comparaison (chargées avant l'affichage des résultats, § 9.gl) */}
+      {/* Cartes de comparaison (chargées avant l'affichage des résultats, § 9.gm) */}
       {Cartes && (
       <Cartes
         reel={reel}

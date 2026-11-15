@@ -176,7 +176,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge, partie = 
   const declare = enMensuel ? euros(chargesAnnuelles / 12) : euros(chargesAnnuelles);
   // En attente, la phrase a déjà sa forme finale, le montant en « … » : les fiches, dessous, ne
   // sautent pas à l'arrivée du calcul (22 à 44 px au téléphone avec une phrase d'attente).
-  // § 9.gl : « … € » est plus court que le montant qui arrive, et la phrase pouvait encore gagner
+  // § 9.gm : « … € » est plus court que le montant qui arrive, et la phrase pouvait encore gagner
   // une ligne. Elle garde la place de sa forme la plus longue (`PlaceGardee`) : le même texte avec le
   // montant le plus large possible. Le point de bascule ne dépasse ni les recettes ni les charges
   // déclarées (`calculerPointDeBascule`) ; 100 € de plus pour l'arrondi.
@@ -195,7 +195,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge, partie = 
   const gabaritBascule = phraseDeBascule(euros(montantLePlusLarge(enMensuel ? basculeMaximale / 12 : basculeMaximale)));
 
   // ============ 1 000 € DE PLUS ============
-  // § 9.gl : même place gardée ; ce qui reste de 1 000 € de plus ne dépasse pas 1 000 €.
+  // § 9.gm : même place gardée ; ce qui reste de 1 000 € de plus ne dépasse pas 1 000 €.
   const phraseDeMarge = (reste: string) => `${euros(MARGE_RECETTES)} de recettes en plus dans l'année t'en laisseraient environ ${reste}, après cotisations et impôt.`;
   let phraseMarge: string | null = null;
   if (marge === 'attente' || typeof marge === 'number') {

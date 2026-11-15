@@ -35,7 +35,7 @@ export function RspmOuPamc({
   });
   const enAttente = alternativePamc === 'attente';
 
-  // § 9.gl : la phrase arrive en deux temps (« … € » pendant le calcul, puis le montant et le
+  // § 9.gm : la phrase arrive en deux temps (« … € » pendant le calcul, puis le montant et le
   // verdict, qui ajoutait une ligne et poussait de 22 px tout ce qui suit, le bloc des deux régimes
   // compris). Elle garde la place de sa forme la plus longue : le verdict du PAMC, avec le montant le
   // plus large possible (un Super-Net ne dépasse pas les recettes et les salaires).

@@ -13661,7 +13661,7 @@ connexion (`MESURE_ENTETE_PIED` mis à jour).
 **Fichiers** : `src/components/Header.astro`, `src/components/ScriptTiroir.astro`,
 `src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
-### 9.gl Simulateur : le CLS, des résultats qui arrivent sans rien pousser (15 novembre 2026)
+### 9.gm Simulateur : le CLS, des résultats qui arrivent sans rien pousser (15 novembre 2026)
 
 Demande du propriétaire : réduire le décalage cumulé de mise en page (CLS) de `/simulateur`,
 la seule page du site au-dessus du seuil de Google (0,1) dans les données réelles. Aucun mot

@@ -631,7 +631,7 @@ export function usePublicodesSimulation() {
       // (recettes sous le plafond) : au-delà, la question ne se pose plus d'une année sur l'autre.
       // Deux régimes au même Super-Net : `calculerPointDeBascule` ne rend rien (aucune phrase). On le
       // sait dès maintenant : pas de phrase d'attente, qui disparaissait une à trois secondes plus
-      // tard et faisait remonter tout ce qui la suit (§ 9.gl).
+      // tard et faisait remonter tout ce qui la suit (§ 9.gm).
       const avecBascule = Boolean(resultMicroBnc) && recettesAnnuelles <= getMicroBncCeiling(formData.annee || 2026)
         && Math.abs(resultReel.superNet - (resultMicroBnc?.superNet ?? 0)) >= 1;
       const retenu = recommande === 'micro-bnc' && resultMicroBnc ? resultMicroBnc : resultReel;

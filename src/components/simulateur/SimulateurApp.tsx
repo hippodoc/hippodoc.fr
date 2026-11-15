@@ -67,7 +67,7 @@ function getReferrerSource(): string {
 }
 
 /**
- * L'attente du calcul (MIGRATION.md § 9.gl) : une fiche au moins aussi haute que l'écran
+ * L'attente du calcul (MIGRATION.md § 9.gm) : une fiche au moins aussi haute que l'écran
  * (`.sim-attente-fiche`), que le résultat remplace à la même place. Tant qu'elle est là, rien de ce
  * qui suit l'îlot (la prise de rendez-vous, les repères) n'est à l'écran : rien ne saute quand le
  * calcul arrive. Plus courte, elle laissait voir la prise de rendez-vous, que le résultat poussait
@@ -103,13 +103,13 @@ export default function SimulateurApp() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formRef = useRef<any>(null);
   const selectedProfilIdRef = useRef<string | null>(null);
-  /** Haut du formulaire dans la page au moment du clic sur « Simuler » (§ 9.gl, plus bas). */
+  /** Haut du formulaire dans la page au moment du clic sur « Simuler » (§ 9.gm, plus bas). */
   const hautFormulaireAuCalcul = useRef<number | null>(null);
   /** Le bloc des deux régimes, chargé au premier calcul : `undefined` tant qu'il ne l'est pas,
-   *  `null` si son fichier n'a pas pu être chargé (§ 9.gl). */
+   *  `null` si son fichier n'a pas pu être chargé (§ 9.gm). */
   const [cartes, setCartes] = useState<{ Cartes: CartesDesRegimes | null } | undefined>(undefined);
   // § 9.gg : l'essai en cours et le précédent, pour dire l'écart de Super-Net entre les deux.
-  // § 9.gl : tenus à jour PENDANT le rendu où arrivent les résultats (un état dérivé, que React
+  // § 9.gm : tenus à jour PENDANT le rendu où arrivent les résultats (un état dérivé, que React
   // recalcule avant d'afficher). Posés par un effet, ils arrivaient un rendu plus tard : la phrase
   // de l'écart s'ajoutait sous le titre déjà affiché et poussait la conclusion de 22 à 44 px.
   const [essais, setEssais] = useState<{ pour: RegimeComparison; courant: Essai | null; precedent: Essai | null }>(() => ({ pour: results, courant: null, precedent: null }));
@@ -148,7 +148,7 @@ export default function SimulateurApp() {
   );
 
   /**
-   * Lance un calcul (« Simuler », « Réessayer »). § 9.gl : relève d'abord où est le formulaire dans
+   * Lance un calcul (« Simuler », « Réessayer »). § 9.gm : relève d'abord où est le formulaire dans
    * la page (voir l'effet de mise en page plus bas), et charge le bloc des deux régimes en même temps
    * que le calcul (une seule fois ; les calculs suivants le trouvent prêt).
    */
@@ -189,7 +189,7 @@ export default function SimulateurApp() {
     [lancer]
   );
 
-  // § 9.gl : à l'arrivée des résultats, le bloc des profils types disparaît au-dessus du formulaire
+  // § 9.gm : à l'arrivée des résultats, le bloc des profils types disparaît au-dessus du formulaire
   // (84 px replié ; jusqu'à 700 px au téléphone quand sa grille est restée ouverte après le choix
   // d'un profil). La page remonte d'autant, dans la même image (effet de mise en page : avant que le
   // navigateur ne peigne) : le formulaire reste où il était à l'écran. Quand le bloc était au-dessus
@@ -252,7 +252,7 @@ export default function SimulateurApp() {
       {/* Loading */}
       {loading && <CarteAttente />}
 
-      {/* Error. § 9.gl : sans résultat dessous, l'alerte garde la place de l'attente
+      {/* Error. § 9.gm : sans résultat dessous, l'alerte garde la place de l'attente
           (`.sim-place-erreur`) : sinon, la prise de rendez-vous remontait d'un écran sous les yeux. */}
       {error && !loading && (
         <div className={results.recommande ? undefined : "sim-place-erreur"}>
@@ -280,7 +280,7 @@ export default function SimulateurApp() {
           l'en-tête et se lisait au travers ; il reste maintenant entier dessous. */}
       {results.recommande && !loading && formDataRef.current && (
         <div ref={resultsRef} className="scroll-mt-20">
-          {/* § 9.gl : tant que le bloc des deux régimes n'est pas chargé, l'attente reste à sa
+          {/* § 9.gm : tant que le bloc des deux régimes n'est pas chargé, l'attente reste à sa
               place ; le résultat s'affiche en une fois. */}
           {cartes ? (
             <SimulateurResults

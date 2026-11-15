@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 /**
- * Place gardée (MIGRATION.md § 9.gl). Un texte qui change après l'affichage des résultats (un
+ * Place gardée (MIGRATION.md § 9.gm). Un texte qui change après l'affichage des résultats (un
  * montant « … € » qui arrive) garde la place de sa forme la plus longue :
  * le gabarit, rendu sans être vu ni lu (`visibility: hidden`, `aria-hidden`), occupe la même case
  * de grille que le texte (`.sim-place`, simulateur.css). La case a la taille du plus grand des deux,
