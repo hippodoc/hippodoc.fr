@@ -14977,6 +14977,166 @@ Essais des § 9.gh, 9.go et 9.gp repassés (deux attentes mises à jour : résum
 WebKitGTK : réponse « Oui », résumé et fiche. `verify-site.mjs` sans erreur ; feuille commune
 inchangée ; comparé à la production, seul `/simulateur` diffère (la bulle du régime social).
 
+### 9.ha Images de partage : une par page, dans la DA 2026 (15 novembre 2026)
+
+**Le constat.** Le propriétaire : les aperçus des liens vers le site (Facebook, WhatsApp…) sont
+« outdated ». Avant : 17 pages (accueil, tarifs, FAQ, blog et thèmes, comparatif, guide des
+déclarations et ses pages, calculette, qui-sommes-nous, pages légales) partageaient
+`/lovable-uploads/og-image.png`, une capture du tableau de bord de l'ancienne app (chiffres
+illisibles en vignette, barre de gauche coupée, aucun message, texte alternatif « Le cockpit
+financier des médecins ») ; `/simulateur`, une capture de l'ancien site (ancien menu, « Micro-BNC vs
+Régime Réel », vouvoiement) au format 1 964 × 1 287, recadré par Facebook et LinkedIn ; `/guide`, un
+visuel de l'ancienne charte (bleu marine, Inter). Seuls les articles avaient la leur (§ 9.fl).
+
+**Ce qui change.**
+- **Accueil** : le gabarit « bannière » du skill de la DA (`hippodoc-da`, `gabarits/banniere.html`,
+  1 200 × 630) : ciel, soleil, eau, le buste ; la plaque Hippodoc, « Logiciel de gestion pour médecin
+  remplaçant » (la ligne au-dessus du `<h1>`) en surtitre de 28 px, « Sors la tête de l'eau ». Rendu
+  une fois (Playwright, densité 1), en JPEG : `public/partage/accueil-f5111c3b.jpg` (63 Ko ;
+  l'empreinte est celle du fichier). Maquette validée par le propriétaire, option « a » : la vignette
+  carrée de WhatsApp, découpée au milieu, montre « la tête … eau » et la moitié de la mascotte ; les
+  grands aperçus (Facebook, LinkedIn, iMessage, grand aperçu WhatsApp) montrent l'image entière. Pas
+  de chiffre sur l'image : la DA l'interdit dans une bannière (elle s'affiche souvent en tout petit).
+  C'est aussi l'image des pages sans entrée (404).
+- **Les 21 autres pages** : une image chacune, fabriquée à la construction par le générateur des
+  articles (`src/lib/image-partage.mjs`), d'après le registre `src/lib/partage-pages.ts`
+  (`PARTAGE_PAGES` : pastille, titre, fond, pose), au point de terminaison
+  `src/pages/partage/[nom].jpg.ts` : `/partage/<chemin à plat>-<empreinte>.jpg`. Fond selon le
+  propos, comme sur le site : ciel pour une annonce (tarifs, qui sommes-nous, essai, blog), sable
+  pour une explication (FAQ, guides, comparatif, pages légales), eau profonde pour ce qu'Hippodoc
+  calcule (simulateur, calculette) ; une page de thème prend le fond de ses articles. La pose dit la
+  page (réflexion pour la FAQ et le comparatif, calcul pour la calculette et les impôts, pouce pour le
+  Super-Net, checklist pour les guides, « par ici » pour les fiches de cases, bras croisés pour qui
+  sommes-nous et les pages légales, salut pour l'essai, lecture pour le blog) ; lui et elle
+  alternent ; aucune pose n'est retournée (une pose qui regarde vers la droite n'y est pas).
+- **Le générateur** reçoit deux options, pour les pages seulement : `pose` (le nom d'une pose,
+  cherchée dans `src/assets/accueil` puis `src/assets/partage`) et `garde` (la part du haut gardée
+  d'une pose en pied ou assise). Le bas de la mascotte d'une page passe sous la première vague de
+  devant (`pied` 0,95) : rien ne flotte, une pose en pied est coupée aux genoux par l'eau ou le sable,
+  comme par le bord du cadre dans la DA (`en-pied`). Une hauteur plus petite (0,66) pour les poses
+  larges (« par ici », lecture), qui ramenaient le titre à trois ou quatre lignes. Les douze poses de
+  la bibliothèque de la DA employées sont copiées dans `src/assets/partage/` (lues par chemin,
+  jamais importées : rien n'est servi). Le dessin des articles ne change pas : les 53 images, rendues
+  avec l'ancien et le nouveau code, sont identiques au pixel près (écart maximal 0, quatre poses
+  essayées) ; leur adresse change (l'empreinte comprend le code du générateur), comme prévu en
+  § 9.fl : Facebook ou WhatsApp reprennent la même image à une nouvelle adresse.
+- **BaseLayout** : par défaut, l'image de la page (`imagePartagePage(path)`), ses dimensions et son
+  texte alternatif (« titre (pastille, Hippodoc) », ou `alt` de l'entrée) ; `og:image:type` et
+  `twitter:image:alt` ajoutés. Les props `ogImage` de l'accueil, du simulateur et du guide, et
+  `ogImageAlt` du comparatif, sont retirées (le registre les remplace) ; seuls les articles passent
+  encore la leur.
+- **Inchangés** : `og-image.png` reste l'image de l'`Organization` et la `screenshot` de
+  `SoftwareApplication` (c'est bien une capture de l'app) ; `public/guide/partage.jpg` reste l'image
+  du schéma `Book` de `/guide`. `public/lovable-uploads/Hero-simulateur.png`, que plus rien ne citait,
+  est supprimé.
+
+**Textes des images (à relire par le propriétaire).** Repris de la page, sauf mention :
+
+| Page | Pastille | Titre |
+| --- | --- | --- |
+| `/` | « Logiciel de gestion pour médecin remplaçant » (`<h1>`) | « Sors la tête de l'eau » (`<h1>`) |
+| `/simulateur` | « Simulateur gratuit » (**écrit** ; « gratuit » vient du `<title>`) | « Super-Net : ton revenu net de médecin » (`<h1>` sans « Simulateur ») |
+| `/tarifs` | « Tarifs » (menu) | « Un outil pro, à un prix humain » (fin du `<h1>`, capitale ajoutée) |
+| `/faq` | « FAQ » (menu) | « Toutes tes questions sur Hippodoc » (`<h1>`) |
+| `/qui-sommes-nous` | « Qui sommes-nous » (pied, sans « ? ») | `<h1>` entier |
+| `/essai` | « Remplacer, c'est bien. » | « Savoir ce que ça te rapporte vraiment, c'est mieux. » (le `<h1>` en deux : en titre, il se coupait après « c'est ») |
+| `/comparatif` | « Comparatif des logiciels » (pied) | « Indy, Pennylane, Hiway Care ou Hippodoc ? » (`<h1>`) |
+| `/guide` | « PDF gratuit · Édition 2026-2027 » (`<title>` et édition) | « Le guide du médecin remplaçant » (`<h1>` sans l'édition) |
+| `/guide-declarations` | « Guide des déclarations » (menu) | `<h1>` |
+| trois fiches du guide | « Guide des déclarations » | leur `<h1>` |
+| `/guide-declarations/calculette` | « Calculette fiscale » (menu) | « Ta 2042-C PRO et ta DSFU pré-remplies en 2 minutes » (chapô ; le `<h1>`, « HippoCalc », ne dit rien seul) |
+| `/blog` | « Blog » (menu) | `<h1>` |
+| pages de thème | « Blog » | le nom du thème |
+| pages légales | « Informations légales » (**écrit**) | leur `<h1>`, en casse de phrase, sans « – Hippodoc » |
+
+Textes alternatifs : « titre (pastille, Hippodoc) » ; pour `/essai`, le `<h1>` entier suivi de « 30
+jours gratuits sur Hippodoc ».
+
+**Garde-fou.** `verify-site.mjs`, « 4 octodecies » : chaque page du sitemap a une `og:image` à
+empreinte sous `/partage/` ou `/blog/partage/`, la même en `twitter:image`, avec `og:image:alt`,
+`twitter:image:alt` et `og:image:type` `image/jpeg` ; le fichier fait 1 200 × 630 px en JPEG, moins
+de 300 Ko (au-delà, WhatsApp peut ne pas afficher l'aperçu) ; deux pages n'ont pas la même image
+(une page sans entrée dans `PARTAGE_PAGES` prend celle de l'accueil : le contrôle échoue) ; `/` a
+l'image de l'accueil ; aucun fichier de `dist/partage/` n'est orphelin. Essayé : `/faq` remise sur
+l'image de l'accueil, puis sur `og-image.png` : trois et deux échecs, nommés. Une nouvelle page
+s'ajoute donc au registre. Planche de toutes les images sans construire :
+`node scripts/apercu-partage.mjs [sortie.png]`.
+
+**Contrôles.** Les 22 images regardées une à une (trois passes : pose assise qui flottait, pieds
+posés sur la vague, titres en quatre lignes, corrigés). Comparé au build de `main` : 78 pages, aucune
+différence hors des balises `og:image*` et `twitter:image*` et de l'adresse des images des articles ;
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). Poids : 40 à 63 Ko par image.
+`verify-site.mjs` sans erreur.
+
+**Après la mise en ligne.** Facebook garde l'aperçu d'une adresse de page des jours durant : pour les
+liens déjà partagés, « Scrape Again » dans l'outil de débogage du partage de Meta
+(developers.facebook.com/tools/debug), et le Post Inspector de LinkedIn ; l'accueil d'abord, puis
+`/simulateur`, `/guide` et `/essai` (où mènent `/instagram` et `/i`).
+
+**Ouvert (décision du propriétaire).** Le texte sous l'image vient du `<title>` et de la description :
+l'accueil dit encore « Hippodoc — Cockpit financier des médecins | Super-Net », et `/essai`, « Le
+cockpit financier des médecins remplaçants ». Ils ne collent plus à l'accroche du site ; les changer
+touche au référencement : non fait (fait en § 9.hb).
+
+**Ouvert (décision du propriétaire).** `/transmissions` (page autonome de la newsletter « Les
+Transmissions du lundi », `public/transmissions/index.html`, noindex, hors du sitemap : le contrôle
+ne la voit pas) partage encore `og-image.png`, la capture de l'app Hippodoc. Elle n'est pas
+d'Hippodoc mais de la newsletter des marchés, qui a sa propre direction artistique : son image se
+fait dans celle-ci, pas dans la DA d'Hippodoc. Non fait.
+
+### 9.hb Accueil : nouveau titre ; « cockpit financier » retiré des descriptions (15 novembre 2026)
+
+Suite de § 9.ha : le texte sous l'image d'un lien partagé vient du `<title>`, qui disait encore
+l'ancienne formule. Décision du propriétaire.
+
+**Contenu modifié.**
+- `<title>` de l'accueil (donc `og:title` et `twitter:title`). Avant : « Hippodoc — Cockpit financier
+  des médecins | Super-Net ». Après : « Logiciel de gestion pour médecin remplaçant | Hippodoc »
+  (54 caractères ; la ligne au-dessus du `<h1>`, mot pour mot ; mot-clé d'abord). Aucune autre page
+  n'a ce titre ; `/tarifs` vise « Tarif logiciel médecin remplaçant ». Description inchangée. Avant de
+  valider, le propriétaire devait regarder, dans la Search Console, si des clics venaient de
+  « super-net » ou de « cockpit » sur `/`.
+- JSON-LD `WebSite` de l'accueil, `description`. Avant : « Le cockpit financier des médecins qui
+  calcule tout pour vous : revenus, cotisations, impôts et Super-Net. » Après : la phrase sous le
+  `<h1>`, mot pour mot (« URSSAF, CARMF, impôts : Hippodoc calcule tout après chaque journée de
+  remplacement, et te montre ce qu'il te reste vraiment. »).
+- JSON-LD `Organization` (toutes les pages, `src/lib/site.ts`). `alternateName` : « Hippodoc - Le
+  cockpit financier des médecins remplaçants » devient « Hippodoc - Logiciel de gestion pour médecin
+  remplaçant ». `description` : « Hippodoc - Le cockpit financier des médecins remplaçants qui
+  calcule tout pour vous. Revenus, contrats, planning et Super-Net. » devient `PRODUCT_DEFINITION`
+  (mot pour mot). `slogan` : « Le cockpit financier des médecins remplaçants qui calcule tout pour
+  vous » devient « Sors la tête de l'eau » (le `<h1>`).
+- JSON-LD `SoftwareApplication`, `description` : « Le cockpit financier des médecins remplaçants : »
+  devient « Logiciel de gestion pour médecin remplaçant : » (la suite inchangée).
+- `llms.txt` : « Cockpit financier pour médecins en France » devient « Logiciel de gestion pour
+  médecins en France » ; ligne de l'accueil : « Présentation du cockpit financier des médecins
+  remplaçants » devient « Présentation du logiciel de gestion des médecins remplaçants ».
+- `/essai`, la ligne sous le `<h1>` : « Le cockpit financier des médecins remplaçants » devient « Le
+  logiciel des médecins remplaçants » (la formule de la DA). « Le logiciel de gestion des médecins
+  remplaçants », essayé d'abord, passait sur deux lignes à 390 px (l'ancienne en tenait une) ; la
+  forme retenue tient sur une ligne de 320 à 1 280 px, jamais plus haute que l'ancienne (une ligne de
+  moins de 320 à 375 px : le haut de la page remonte de 25 px).
+
+**À l'écran aussi (validé par le propriétaire dans un second temps).** Plus aucun « cockpit » dans le
+site construit (articles compris).
+- Pied, sous la marque (toutes les pages) : « Le cockpit financier des médecins. » devient « Le
+  logiciel des médecins remplaçants. »
+- `/tarifs`, chapô de la scène de fin : « Le cockpit financier des médecins remplaçants qui calcule
+  tout pour toi. » devient « Le logiciel des médecins remplaçants qui calcule tout pour toi. »
+- 404, carte « Retour à l'accueil » : « Le cockpit financier des médecins remplaçants. » devient « Le
+  logiciel des médecins remplaçants. »
+- `/comparatif`, fiche d'Hippodoc (`tagline`, aussi dans le JSON-LD de la page) : « Le cockpit
+  financier des médecins » devient « Logiciel des médecins remplaçants » (sans article, comme les
+  accroches des trois autres outils ; avec l'article, elle passait sur deux lignes à 390 px). Profil
+  de l'interne : « Hippodoc en cockpit principal. » devient « Hippodoc comme outil principal. »
+- `/essai`, sous la marque, plus bas : « Le cockpit du médecin remplaçant » devient « Le logiciel du
+  médecin remplaçant » (le singulier d'avant, pour ne pas répéter la ligne du haut).
+
+**Contrôles.** Hauteur de chaque phrase et de la page, nouveau texte contre l'ancien, à 320, 360, 390,
+600, 960, 1 024, 1 180 et 1 440 px, police chargée : pied, `/essai` et `/comparatif` identiques
+partout ; `/tarifs` une ligne de moins à partir de 600 px (−29 px), la 404 une ligne de moins dans
+la carte à partir de 960 px (page inchangée). `verify-site.mjs` sans erreur.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
