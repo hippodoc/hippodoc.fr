@@ -695,11 +695,25 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   l'écart arrondi d'un coup (conclusion, « RSPM ou PAMC ? ») ; le compteur d'une tuile finit sur
   `Math.round`. Une nouvelle piste de type `info` va dans « À savoir », une mise en garde dans la
   conclusion.
-  ⚠️ Les essais en navigateur sur le serveur local écrivent dans la table Supabase
-  `simulateur_public_events` (aucun filtre de domaine ; le 14 novembre 2026, plusieurs centaines de
-  lignes de test, `referrer_source` vide ou `direct`), et peut-être dans PostHog : couper ces
-  requêtes dans le script (`page.route(/supabase\.co|t\.hippodoc\.fr/, (r) => r.abort())` ; le
+  Mesure (§ 9.gi) : `insertPublicEvent` (`src/lib/supabase-public.ts`) n'écrit dans
+  `simulateur_public_events` que sur hippodoc.fr. Des essais locaux y avaient écrit 584 lignes le
+  14 novembre 2026, retirées (sauvegarde hors du dépôt). PostHog n'a rien reçu de ces essais
+  (aucun événement de localhost:4321). Dans un script d'essai sur la production, couper
+  quand même ces requêtes (`page.route(/supabase\.co|t\.hippodoc\.fr/, (r) => r.abort())` ; le
   calcul passe par l'API de l'Urssaf, il n'en a pas besoin).
+  RSPM (§ 9.gi) : c'est une option (CSS L642-4-2, D642-4-1 « peuvent opter ») ; « RSPM ou PAMC ? »
+  dit « Le simulateur retient le RSPM » (« Tu as choisi le RSPM » s'il est choisi à la main) et
+  « sans elle, tu es en PAMC ». Ne pas écrire « Tu es au RSPM ».
+  Couple (§ 9.gi) : quand le conjoint a des revenus, la conclusion dit l'écart du foyer (« à ton
+  foyer »), qui décide du régime ; les tuiles, le Super-Net du médecin (sa part de l'impôt). Quand
+  les deux écarts diffèrent (médecin qui gagne moins que son conjoint), une phrase sous les tuiles
+  le dit. La pastille « +X % de Super-Net » se calcule sur les tuiles.
+  Espace des milliers (§ 9.gi) : l'espace fine de `Intl.NumberFormat` (U+202F) ne fait que 0,11 em
+  dans Google Sans Flex (« 21504 € ») ; les nombres affichés du simulateur passent par
+  `formatNombre` et `nombreFr` (`src/lib/simulateur/nombres.ts`), qui posent U+00A0. Un nouveau
+  montant y passe aussi (ne plus écrire `new Intl.NumberFormat` ni `toLocaleString('fr-FR')` dans
+  `src/components/simulateur/`). Une face de police qui élargit U+202F a été essayée : WebKit
+  agrandit alors de 2 à 4 px les lignes serrées qui contiennent un nombre.
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la

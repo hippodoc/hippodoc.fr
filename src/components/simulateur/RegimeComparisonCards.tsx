@@ -10,6 +10,7 @@ import { abattement10Salaire, getBaremeIR } from "@/lib/baremes-ir";
 import { SEUIL_EQUIVALENCE_ANNUEL } from "@/lib/simulateur/usePublicodesSimulation";
 
 import type { LieuExercice } from "@/lib/dom-tom";
+import { formatNombre, nombreFr } from "@/lib/simulateur/nombres";
 
 interface DomTomResultInfo {
   territoire: string;
@@ -69,7 +70,7 @@ function AnneauRepartition({ charges, cotisations, impot, superNet, total }: {
     depart += longueur;
     return arc;
   });
-  const enEuros = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(total);
+  const enEuros = formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(total);
 
   return (
     <div className="sim-anneau">
@@ -134,7 +135,7 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
     return () => cancelAnimationFrame(animationFrame);
   }, [end, duration]);
   
-  return <>{count.toLocaleString('fr-FR')}</>;
+  return <>{nombreFr(count)}</>;
 }
 
 export function RegimeComparisonCards({ reel, microBnc, recommande, economie, periode, recettesAnnuelles, revenusSalariesAnnuels = 0, revenusConjointAnnuels = 0, liberalExonereAnnuel = 0, domTomInfo, lieuExercice, isRSPMUsed, situationFamiliale = 'marie_pacse', annee = 2026, plafondMicro = 83600 }: RegimeComparisonCardsProps) {
@@ -145,7 +146,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
   const formatMontant = (montant: number) => {
     const value = periode === 'mensuel' ? montant / 12 : montant;
-    return new Intl.NumberFormat('fr-FR', {
+    return formatNombre('fr-FR', {
       style: 'currency',
       currency: 'EUR',
       maximumFractionDigits: 0,
@@ -154,7 +155,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
   const periodeSuffix = periode === 'mensuel' ? '/mois' : '/an';
   const PLAFOND_MICRO_BNC = plafondMicro;
-  const plafondTexte = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(PLAFOND_MICRO_BNC);
+  const plafondTexte = formatNombre('fr-FR', { maximumFractionDigits: 0 }).format(PLAFOND_MICRO_BNC);
   // `recettesAnnuelles && ...` vaut 0 (et non false) quand les recettes sont
   // nulles : JSX afficherait alors littéralement « 0 » à la place du bloc.
   const depassePlafond = Boolean(recettesAnnuelles && recettesAnnuelles > PLAFOND_MICRO_BNC);
@@ -476,7 +477,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               </div>
               <span className="text-[10px] text-muted-foreground">
                 {/* Affichage seul : une décimale au plus, à la française. Le calcul rend le taux brut (3.7918173598553344). */}
-                Taux effectif : {(tauxEffectif ?? (revenuTotal > 0 ? Math.round((result.impot / revenuTotal) * 100) : 0)).toLocaleString('fr-FR', { maximumFractionDigits: 1 })}{'\u00a0'}%
+                Taux effectif : {nombreFr(tauxEffectif ?? (revenuTotal > 0 ? Math.round((result.impot / revenuTotal) * 100) : 0), { maximumFractionDigits: 1 })}{'\u00a0'}%
               </span>
             </div>
           )}
@@ -528,7 +529,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               <div className="flex items-center gap-1.5">
                 <div className="sim-point a" />
                 <span className="text-muted-foreground">
-                  Toi (~{tauxMedecin.toLocaleString('fr-FR')}{'\u00a0'}%) :
+                  Toi (~{nombreFr(tauxMedecin)}{'\u00a0'}%) :
                 </span>
               </div>
               <span className="font-medium">{formatMontant(impotMedecin)}</span>
@@ -537,7 +538,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               <div className="flex items-center gap-1.5">
                 <div className="sim-point c" />
                 <span className="text-muted-foreground">
-                  Conjoint (~{tauxConjoint.toLocaleString('fr-FR')}{'\u00a0'}%) :
+                  Conjoint (~{nombreFr(tauxConjoint)}{'\u00a0'}%) :
                 </span>
               </div>
               <span className="font-medium">{formatMontant(impotConjoint)}</span>
@@ -549,7 +550,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {tauxFoyer > 0 && (
               <div className="flex justify-between gap-4 text-muted-foreground">
                 <span className="text-[10px]">Taux foyer unique :</span>
-                <span className="text-[10px]">~{tauxFoyer.toLocaleString('fr-FR')}{'\u00a0'}%</span>
+                <span className="text-[10px]">~{nombreFr(tauxFoyer)}{'\u00a0'}%</span>
               </div>
             )}
         </div>
@@ -784,7 +785,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       // Chèques-vacances ANCV — tooltip dynamique selon l'année sélectionnée
       if (optim.chequesVacances && optim.chequesVacances > 0) {
         const plafondCV = getDeclarationParams(annee).plafondChequesVacances;
-        const plafondLabel = `${plafondCV.toLocaleString('fr-FR')} € pour ${annee}`;
+        const plafondLabel = `${nombreFr(plafondCV)} € pour ${annee}`;
         detailItems.push({
           icon: Leaf,
           label: "Chèques-vacances ANCV",
@@ -953,9 +954,10 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                     )}
                   </div>
                   <span className={`sim-ligne-valeur ${item.negative ? item.colorClass : ''}`}>
+                    {/* Pas de signe devant un montant nul : « -0 € » s'affichait pour un impôt de quelques centimes (§ 9.gi). */}
                     {item.isInfoLine 
                       ? '' 
-                      : `${item.negative ? '-' : ''}${formatMontant(item.value)}`
+                      : `${item.negative && Math.round(periode === 'mensuel' ? item.value / 12 : item.value) !== 0 ? '-' : ''}${formatMontant(item.value)}`
                     }
                   </span>
                 </div>
@@ -1010,7 +1012,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {hasRevenusConjoint 
-                      ? `L'impôt utilisé est ta part estimée (taux ~${tauxMedecin.toLocaleString('fr-FR')}\u00a0%), basée sur le taux individualisé DGFiP (défaut depuis sept. 2025).`
+                      ? `L'impôt utilisé est ta part estimée (taux ~${nombreFr(tauxMedecin)}\u00a0%), basée sur le taux individualisé DGFiP (défaut depuis sept. 2025).`
                       : type === 'micro-bnc' 
                         ? "En Micro-BNC, l'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges pour l'impôt. Tu les paies quand même : elles sont retirées du Super-Net, comme au Régime Réel."
                         : "En Régime Réel, charges et cotisations sont déductibles du revenu imposable."
@@ -1031,13 +1033,26 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         </p>
         <p className="sim-tuile-soit">
           {periode === 'mensuel'
-            ? `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(superNetMedecinReel)} /an`
-            : `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(superNetMedecinReel / 12))} /mois`}
+            ? `soit ${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(superNetMedecinReel)} /an`
+            : `soit ${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(superNetMedecinReel / 12))} /mois`}
           {revenusTotaux > 0 && <> · {Math.round(((superNetMedecinReel || 0) / revenusTotaux) * 100)}{'\u00a0'}% {hasRevenusSalaries ? 'des revenus' : 'du CA'}</>}
         </p>
       </div>
     );
   };
+
+  // Couple dont le conjoint a des revenus (§ 9.gi) : les tuiles montrent le Super-Net du
+  // médecin (sa part de l'impôt), la conclusion l'écart du foyer, qui décide du régime. Quand
+  // l'impôt du conjoint change d'un régime à l'autre (médecin qui gagne moins que son conjoint),
+  // les deux écarts diffèrent : une phrase sous les tuiles le dit, avec l'écart du foyer.
+  const foyerMedecin = { revenusSalariesAnnuels, revenusConjointAnnuels, situationFamiliale };
+  const ecartTuiles = microBnc
+    ? Math.abs(Math.round(superNetDuMedecin(microBnc, foyerMedecin)) - Math.round(superNetDuMedecin(reel, foyerMedecin)))
+    : 0;
+  const ecartFoyer = microBnc ? Math.abs(Math.round(microBnc.superNet ?? 0) - Math.round(reel.superNet ?? 0)) : 0;
+  const noteFoyer = hasRevenusConjoint && microBnc && ecartTuiles !== ecartFoyer
+    ? `Chaque Super-Net compte ta part de l'impôt du foyer, au taux individualisé. L'écart de la conclusion, ${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(ecartFoyer)} par an, est celui de ton foyer\u00a0: d'un régime à l'autre, l'impôt de ton conjoint change aussi.`
+    : null;
 
   return (
     <div className="space-y-6">
@@ -1061,13 +1076,13 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
               </div>
               <p className="sim-texte mb-2">
                 Ton impôt est réduit de <strong>{Math.round(domTomInfo.tauxAbattement * 100)}{'\u00a0'}%</strong>, dans la limite de{' '}
-                <strong>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(domTomInfo.plafond)}</strong> (CGI, art. 197).
+                <strong>{formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(domTomInfo.plafond)}</strong> (CGI, art. 197).
               </p>
               {domTomInfo.abattementApplique && domTomInfo.abattementApplique > 0 && (
                 <div className="sim-note ok flex items-center gap-2 mt-2">
                   <TrendingUp className="h-4 w-4" />
                   <span className="sim-note-in sim-fort">
-                    Économie réalisée : {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(domTomInfo.abattementApplique))}
+                    Économie réalisée : {formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(domTomInfo.abattementApplique))}
                   </span>
                 </div>
               )}
@@ -1101,6 +1116,12 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           )}
           {renderCard('reel', reel, recommande === 'reel', false, 'tuile')}
         </div>
+        {noteFoyer && (
+          <p className="sim-comparaison-note">
+            <Info className="h-4 w-4" aria-hidden="true" />
+            <span>{noteFoyer}</span>
+          </p>
+        )}
         <div className="sim-comparaison-anneau">
           <p className="sim-comparaison-sous">
             Où vont tes revenus, {recommande === 'micro-bnc' && microBnc ? 'au Micro-BNC' : 'au régime réel'}

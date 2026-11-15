@@ -230,6 +230,9 @@
   .sim .sim-tuile { display: grid; grid-row: span 5; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
 }
 .sim .sim-comparaison-anneau { display: grid; justify-items: center; gap: 2px; }
+/* En couple, quand l'écart des tuiles (part du médecin) n'est pas celui du foyer (§ 9.gi). */
+.sim .sim-comparaison .sim-comparaison-note { display: flex; align-items: flex-start; gap: 8px; margin: -6px 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); text-wrap-style: pretty; }
+.sim .sim-comparaison-note > svg { flex: none; margin-top: 3px; color: var(--brand); }
 .sim .sim-comparaison .sim-comparaison-sous { margin: 0; font-size: 0.875rem; font-weight: var(--tb); color: var(--ink-2); text-align: center; }
 .sim .sim-details-regimes { display: grid; }
 @media (min-width: 640px) {

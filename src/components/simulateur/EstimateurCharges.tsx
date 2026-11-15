@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { PUISSANCES, fraisKilometriques, fraisRepas, limitesRepas, type PuissanceFiscale } from "@/lib/simulateur/fraisPros";
+import { formatNombre } from "@/lib/simulateur/nombres";
 
 /**
  * « Estimer mes charges » (MIGRATION.md § 9.gd) : sous le champ des charges, une liste courte de
@@ -49,7 +50,7 @@ const LIGNES: Ligne[] = [
 ];
 
 const euros = (v: number, decimales = 0) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: decimales, maximumFractionDigits: decimales }).format(v);
+  formatNombre('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: decimales, maximumFractionDigits: decimales }).format(v);
 
 const nombre = (s: string) => {
   const v = parseFloat(s.replace(',', '.'));

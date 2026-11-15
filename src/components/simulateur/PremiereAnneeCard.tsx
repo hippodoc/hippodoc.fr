@@ -3,6 +3,7 @@ import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation"
 import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
 import { baseForfaitaireDebut } from "@/lib/simulateur/urssaf";
 import type { SimulateurFormData } from "./simulateurSchema";
+import { formatNombre } from "@/lib/simulateur/nombres";
 
 /**
  * Première année d'activité (MIGRATION.md § 9.fx) : ce qui part cette année, ce qui est dû pour
@@ -22,7 +23,7 @@ export function PremiereAnneeCard({ comparison, formData }: { comparison: Regime
   const retenu = recommande === 'micro-bnc' && microBnc ? microBnc : reel;
   const rspm = Boolean(comparison.isRSPMUsed);
   const euros = (v: number) =>
-    new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
+    formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
 
   const carmfDu = rspm ? 0 : Math.max(0, retenu.cotisationsDetail?.retraite ?? 0);
   const urssafDu = Math.max(0, retenu.cotisationsTotales) - carmfDu;

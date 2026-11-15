@@ -33,6 +33,10 @@ export async function invokeCalculateUrssaf(body: unknown): Promise<{ data: unkn
 
 /** Insert anonyme fire-and-forget dans une table publique (RLS insert-only). */
 export function insertPublicEvent(table: string, row: Record<string, unknown>): void {
+  // Seul le site en ligne écrit (MIGRATION.md § 9.gi) : des essais sur un serveur local avaient
+  // ajouté 584 lignes à simulateur_public_events le 14 novembre 2026. Un aperçu Vercel n'écrit pas
+  // non plus.
+  if (typeof location === 'undefined' || !/(^|\.)hippodoc\.fr$/.test(location.hostname)) return;
   try {
     void fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
       method: 'POST',

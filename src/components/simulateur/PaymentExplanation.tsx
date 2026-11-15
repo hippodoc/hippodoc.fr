@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
 import type { SimulationResult } from "@/lib/simulation-types";
+import { nombreFr } from "@/lib/simulateur/nombres";
 
 /**
  * Le pli « Comment l'impôt sera prélevé » (rendu seul dans un pli de SimulateurResults ; la
@@ -51,7 +52,7 @@ export function PaymentExplanation({
   const mensuelConjoint = Math.round(impotEstimeConjoint / 12);
   const mensuelTotal = Math.round(safeImpotEstime / 12);
   const acompteMensuel = Math.round(acomptesLiberaux / 12);
-  const pourcent = (t: number) => `${t.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}\u00a0%`;
+  const pourcent = (t: number) => `${nombreFr(t, { maximumFractionDigits: 1 })}\u00a0%`;
 
   return (
     <div className="space-y-5">
@@ -72,8 +73,8 @@ export function PaymentExplanation({
             <span className="sim-encre3">→</span>
             {acomptesLiberaux > 0 ? (
               <span>
-                Pour ces revenus : <strong className="sim-encre">~{acompteMensuel.toLocaleString('fr-FR')} €/mois</strong>
-                <span className="sim-encre3 ml-1">({acomptesLiberaux.toLocaleString('fr-FR')} €/an)</span>
+                Pour ces revenus : <strong className="sim-encre">~{nombreFr(acompteMensuel)} €/mois</strong>
+                <span className="sim-encre3 ml-1">({nombreFr(acomptesLiberaux)} €/an)</span>
               </span>
             ) : (
               <span>Pour ces revenus : aucun acompte, ton impôt estimé est nul.</span>
@@ -89,7 +90,7 @@ export function PaymentExplanation({
             <div className="flex items-center gap-2">
               <span className="sim-encre3">→</span>
               <span>
-                Tes crédits d'impôt ({creditsImpot.toLocaleString('fr-FR')} €) ne baissent pas tes acomptes : ils te sont
+                Tes crédits d'impôt ({nombreFr(creditsImpot)} €) ne baissent pas tes acomptes : ils te sont
                 remboursés après ta déclaration, avec une avance en début d'année si tu en avais déjà déclaré l'année précédente.
               </span>
             </div>
@@ -130,10 +131,10 @@ export function PaymentExplanation({
                     <span>~{pourcent(tauxMedecin)}</span>
                   </td>
                   <td className="text-right hidden sm:table-cell">
-                    ~{impotEstimeMedecin.toLocaleString('fr-FR')} €
+                    ~{nombreFr(impotEstimeMedecin)} €
                   </td>
                   <td className="sim-fort text-right">
-                    ~{mensuelMedecin.toLocaleString('fr-FR')} €
+                    ~{nombreFr(mensuelMedecin)} €
                   </td>
                   <td className="mode text-right hidden sm:table-cell">
                     {hasRevenusSalaries ? 'acomptes et salaire' : 'acomptes'}
@@ -150,10 +151,10 @@ export function PaymentExplanation({
                     <span>~{pourcent(tauxConjoint)}</span>
                   </td>
                   <td className="text-right hidden sm:table-cell">
-                    ~{impotEstimeConjoint.toLocaleString('fr-FR')} €
+                    ~{nombreFr(impotEstimeConjoint)} €
                   </td>
                   <td className="sim-fort text-right">
-                    ~{mensuelConjoint.toLocaleString('fr-FR')} €
+                    ~{nombreFr(mensuelConjoint)} €
                   </td>
                   <td className="mode text-right hidden sm:table-cell">
                     {typeConjoint === 'salarie' ? 'sur salaire' : typeConjoint === 'autre' ? '' : 'acomptes'}
@@ -167,10 +168,10 @@ export function PaymentExplanation({
                     <span>~{pourcent(tauxFoyer)}</span>
                   </td>
                   <td className="sim-fort text-right hidden sm:table-cell">
-                    {safeImpotEstime.toLocaleString('fr-FR')} €
+                    {nombreFr(safeImpotEstime)} €
                   </td>
                   <td className="sim-fort text-right">
-                    {mensuelTotal.toLocaleString('fr-FR')} €
+                    {nombreFr(mensuelTotal)} €
                   </td>
                   <td className="hidden sm:table-cell"></td>
                 </tr>

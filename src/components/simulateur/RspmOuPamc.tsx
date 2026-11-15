@@ -2,6 +2,7 @@ import { Scale } from "lucide-react";
 import { SEUIL_EQUIVALENCE_ANNUEL, type RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import { superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import type { SimulateurFormData } from "./simulateurSchema";
+import { formatNombre } from "@/lib/simulateur/nombres";
 
 /**
  * « RSPM ou PAMC ? » (MIGRATION.md § 9.gh) : sous la conclusion d'une simulation au RSPM, le
@@ -9,7 +10,9 @@ import type { SimulateurFormData } from "./simulateurSchema";
  * (`calculerAlternativePamc`). La question des remplaçants sous 19 000 € de recettes, que le
  * simulateur tranchait seul (mode Auto) sans la montrer. Les montants comparés sont ceux des
  * fiches (`superNetDuMedecin`) ; « se valent » sous `SEUIL_EQUIVALENCE_ANNUEL`, comme la conclusion.
- * Taux du RSPM : CSS D642-4-2 et D642-4-3 (§ 9.fw).
+ * Taux du RSPM : CSS D642-4-2 et D642-4-3 (§ 9.fw). Le RSPM est une option (CSS L642-4-2 et
+ * D642-4-1, « peuvent opter ») : sans elle, un remplaçant est en PAMC. La fiche le dit (§ 9.gi) ;
+ * en mode Auto, c'est le simulateur qui le retient, pas forcément le médecin.
  */
 export function RspmOuPamc({
   comparison,
@@ -23,7 +26,7 @@ export function RspmOuPamc({
   const retenu = comparison.recommande === 'micro-bnc' ? comparison.microBnc : comparison.reel;
   if (!comparison.isRSPMUsed || !retenu || alternativePamc === undefined) return null;
   const euros = (v: number) =>
-    new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
+    formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
   const rspm = superNetDuMedecin(retenu, {
     revenusSalariesAnnuels: comparison.revenusSalariesAnnuels ?? 0,
     revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? 0,
@@ -57,7 +60,7 @@ export function RspmOuPamc({
       <h3 id="sim-rspm-titre" className="sim-fiche-titre">RSPM ou PAMC{' '}?</h3>
       <div className="sim-rspm-texte" aria-live="polite" aria-busy={enAttente}>
         <p>
-          Tu es au RSPM, l'offre simplifiée des remplaçants{' '}: un taux global sur tes recettes (13,5{' '}% jusqu'à 19{' '}000{' '}€, 21,2{' '}% au-delà), et tout se déclare et se paie à l'Urssaf.
+          {formData.regimeSocial === 'rspm' ? 'Tu as choisi le RSPM' : 'Le simulateur retient le RSPM'}, l'offre simplifiée des remplaçants{' '}: un taux global sur tes recettes (13,5{' '}% jusqu'à 19{' '}000{' '}€, 21,2{' '}% au-delà), et tout se déclare et se paie à l'Urssaf. C'est une option à demander à l'Urssaf{' '}: sans elle, tu es en PAMC.
         </p>
         {comparaison}
       </div>
