@@ -15111,12 +15111,25 @@ l'ancienne formule. Décision du propriétaire.
   forme retenue tient sur une ligne de 320 à 1 280 px, jamais plus haute que l'ancienne (une ligne de
   moins de 320 à 375 px : le haut de la page remonte de 25 px).
 
-**Restent, à l'écran (décision à prendre).** « Le cockpit financier des médecins. » sous la marque du
-pied (toutes les pages) ; le chapô de la scène de fin de `/tarifs` ; la phrase de la 404 ; la fiche
-d'Hippodoc dans `/comparatif` (`tagline`, et « Hippodoc en cockpit principal ») ; « Le cockpit du
-médecin remplaçant » plus bas dans `/essai`.
+**À l'écran aussi (validé par le propriétaire dans un second temps).** Plus aucun « cockpit » dans le
+site construit (articles compris).
+- Pied, sous la marque (toutes les pages) : « Le cockpit financier des médecins. » devient « Le
+  logiciel des médecins remplaçants. »
+- `/tarifs`, chapô de la scène de fin : « Le cockpit financier des médecins remplaçants qui calcule
+  tout pour toi. » devient « Le logiciel des médecins remplaçants qui calcule tout pour toi. »
+- 404, carte « Retour à l'accueil » : « Le cockpit financier des médecins remplaçants. » devient « Le
+  logiciel des médecins remplaçants. »
+- `/comparatif`, fiche d'Hippodoc (`tagline`, aussi dans le JSON-LD de la page) : « Le cockpit
+  financier des médecins » devient « Logiciel des médecins remplaçants » (sans article, comme les
+  accroches des trois autres outils ; avec l'article, elle passait sur deux lignes à 390 px). Profil
+  de l'interne : « Hippodoc en cockpit principal. » devient « Hippodoc comme outil principal. »
+- `/essai`, sous la marque, plus bas : « Le cockpit du médecin remplaçant » devient « Le logiciel du
+  médecin remplaçant » (le singulier d'avant, pour ne pas répéter la ligne du haut).
 
-**Contrôles.** `verify-site.mjs` sans erreur.
+**Contrôles.** Hauteur de chaque phrase et de la page, nouveau texte contre l'ancien, à 320, 360, 390,
+600, 960, 1 024, 1 180 et 1 440 px, police chargée : pied, `/essai` et `/comparatif` identiques
+partout ; `/tarifs` une ligne de moins à partir de 600 px (−29 px), la 404 une ligne de moins dans
+la carte à partir de 960 px (page inchangée). `verify-site.mjs` sans erreur.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
