@@ -1,33 +1,93 @@
-import { lazy, Suspense } from "react";
 import { BreakEvenAnalysis } from "./BreakEvenAnalysis";
 import { ConclusionCard } from "./ConclusionCard";
+import { PremiereAnneeCard } from "./PremiereAnneeCard";
+import { RspmOuPamc } from "./RspmOuPamc";
+import { debutActiviteDe } from "@/lib/simulateur/usePublicodesSimulation";
 import { PaymentExplanation } from "./PaymentExplanation";
-import { GuidePatrimonialTeaser } from "./GuidePatrimonialTeaser";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Info, RotateCcw, Scale, Lightbulb, Compass, PiggyBank, ArrowDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Info, RotateCcw, Scale, Lightbulb, CalendarClock, Receipt, FileText, ArrowRight } from "lucide-react";
 import { APP_URL } from "@/lib/site";
+import { insertPublicEvent } from "@/lib/supabase-public";
+import { trackEvent } from "@/lib/analytics";
+import { superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
+import { formatNombre } from "@/lib/simulateur/nombres";
+import type { RegimeComparisonCards } from "./RegimeComparisonCards";
 
 /**
- * Chargement différé — `RegimeComparisonCards` est le SEUL consommateur de
- * recharts (5,2 Mo installés) dans tout le site, pour un unique camembert de
- * 100x100 px à trois parts. Importé statiquement, il pesait sur le chunk initial
- * de /simulateur (552 Ko) alors que ce bloc n'apparaît qu'APRÈS soumission du
- * formulaire.
+ * Chargement différé — `RegimeComparisonCards` n'apparaît qu'APRÈS soumission du
+ * formulaire. Il portait recharts (un camembert de 100x100 px par fiche, retiré en
+ * § 9.ft) : importé statiquement, il pesait sur le chunk initial de /simulateur.
  *
- * Sans risque au rendu serveur : à ce moment `results.recommande` est faux, donc
- * SimulateurResults n'est pas rendu et le `lazy` n'est jamais évalué.
+ * § 9.gm : le chargement part au clic sur « Simuler » (`SimulateurApp`), en même temps que le
+ * calcul, et les résultats ne s'affichent qu'avec ce bloc. Chargé par `lazy` une fois les
+ * résultats affichés, il arrivait après eux : sa place d'attente (220 px) devenait 650 à 820 px,
+ * et tout ce qui suit (« À savoir », les plis) descendait d'autant sous les yeux.
  */
-const RegimeComparisonCards = lazy(() =>
-  import("./RegimeComparisonCards").then((m) => ({ default: m.RegimeComparisonCards }))
-);
+export type CartesDesRegimes = typeof RegimeComparisonCards;
+let chargementDesCartes: Promise<CartesDesRegimes> | null = null;
+export function chargerCartesDesRegimes(): Promise<CartesDesRegimes> {
+  chargementDesCartes ??= import("./RegimeComparisonCards").then((m) => m.RegimeComparisonCards);
+  return chargementDesCartes;
+}
 
+
+/** Ce qu'on garde d'un essai pour le comparer au suivant (§ 9.gg). */
+export interface Essai {
+  /** Super-Net du médecin dans le régime recommandé : celui de sa fiche. */
+  superNet: number;
+  recommande: 'micro-bnc' | 'reel';
+  /** Recettes et charges annuelles saisies. */
+  recettes: number;
+  charges: number;
+  /** Toute la saisie : deux essais identiques ne se comparent pas. */
+  signature: string;
+}
+
+export function essaiDe(comparison: RegimeComparison, formData: SimulateurFormData): Essai | null {
+  const retenu = comparison.recommande === 'micro-bnc' ? comparison.microBnc : comparison.reel;
+  if (!retenu || !comparison.recommande) return null;
+  const annuel = (v: number | undefined) => (formData.periode === 'mensuel' ? (v || 0) * 12 : (v || 0));
+  return {
+    superNet: superNetDuMedecin(retenu, {
+      revenusSalariesAnnuels: comparison.revenusSalariesAnnuels ?? 0,
+      revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? 0,
+      situationFamiliale: formData.situationFamiliale,
+    }),
+    recommande: comparison.recommande,
+    recettes: annuel(formData.recettesBrutes),
+    charges: annuel(formData.chargesHorsCotisations),
+    signature: JSON.stringify(formData),
+  };
+}
+
+const eurosEntiers = (v: number) =>
+  formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
+const nomRegime = (r: 'micro-bnc' | 'reel') => (r === 'micro-bnc' ? 'Micro-BNC' : 'régime réel');
+
+/** Phrase de l'écart avec l'essai précédent, ou null (pas d'essai précédent, ou le même). */
+function phraseEcart(avant: Essai | null | undefined, apres: Essai | null): string | null {
+  if (!avant || !apres || avant.signature === apres.signature) return null;
+  const changements: string[] = [];
+  if (Math.round(avant.recettes) !== Math.round(apres.recettes)) changements.push(`recettes de ${eurosEntiers(avant.recettes)} à ${eurosEntiers(apres.recettes)}`);
+  if (Math.round(avant.charges) !== Math.round(apres.charges)) changements.push(`charges de ${eurosEntiers(avant.charges)} à ${eurosEntiers(apres.charges)}`);
+  const quoi = changements.length > 0 ? changements.join(', ') : 'autre situation';
+  const delta = Math.round(apres.superNet - avant.superNet);
+  const montant = delta === 0 ? 'même Super-Net' : `${delta > 0 ? '+' : '−'}${eurosEntiers(Math.abs(delta))} par an de Super-Net`;
+  const regime = avant.recommande !== apres.recommande
+    ? `, et le régime recommandé passe du ${nomRegime(avant.recommande)} au ${nomRegime(apres.recommande)}`
+    : '';
+  return `Par rapport à ton essai précédent (${quoi})\u00a0: ${montant}${regime}.`;
+}
 
 export interface SimulateurResultsProps {
   comparison: RegimeComparison;
+  /** Point de bascule des charges (`calculerPointDeBascule`) : en attente tant qu'il vaut `undefined`. */
+  bascule?: number | null | 'attente';
+  /** Ce qui resterait de 1 000 € de recettes en plus (`calculerMarge`) : en attente tant qu'il vaut `'attente'`. */
+  marge?: number | 'attente';
   formData: SimulateurFormData;
   periode: 'annuel' | 'mensuel';
   onNewSimulation?: () => void;
@@ -36,34 +96,61 @@ export interface SimulateurResultsProps {
    * (ConseilsPersonnalises, app authentifiée) n'est pas porté ici.
    */
   isPublic?: boolean;
+  /** L'essai d'avant, pour en dire l'écart (§ 9.gg). */
+  essaiPrecedent?: Essai | null;
+  /** Au RSPM, le meilleur Super-Net en PAMC (§ 9.gh) : en attente tant qu'il vaut `'attente'`. */
+  alternativePamc?: { superNet: number; recommande: 'micro-bnc' | 'reel' } | null | 'attente';
+  /** Le bloc des deux régimes, déjà chargé (`chargerCartesDesRegimes`) ; `null` si son fichier n'a
+   *  pas pu être chargé : le reste du résultat s'affiche sans lui. */
+  Cartes: CartesDesRegimes | null;
 }
 
-export function SimulateurResults({ comparison, formData, periode, onNewSimulation }: SimulateurResultsProps) {
+export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation, essaiPrecedent, alternativePamc, Cartes }: SimulateurResultsProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) {
     return null;
   }
-
-  const scrollToGuide = () => {
-    document.getElementById('guide-patrimonial')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  const essai = essaiDe(comparison, formData);
+  const ecart = phraseEcart(essaiPrecedent, essai);
 
   return (
     <div
-      className="space-y-6 md:space-y-8"
+      className="sim-resultats space-y-6 md:space-y-8"
     >
-      {/* Titre de la section */}
-      <div className="text-center space-y-2">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Comparaison des régimes fiscaux</h2>
-        <p className="text-muted-foreground">
-          Analyse détaillée pour t'aider à choisir le meilleur régime
+      {/* Titre de la section (§ 9.gg) : le rappel de la saisie, utile quand on enchaîne les
+          essais (3,8 calculs par visiteur), et l'écart avec l'essai d'avant. Remplace « Analyse
+          détaillée pour t'aider à choisir le meilleur régime. » */}
+      <div className="sim-resultats-tete">
+        <h2 className="sim-titre">Ton résultat</h2>
+        <p className="sim-rappel">
+          Pour {eurosEntiers(essai?.recettes ?? 0)} de recettes et{' '}
+          {(essai?.charges ?? 0) > 0 ? `${eurosEntiers(essai?.charges ?? 0)} de charges` : 'aucune charge'}
+          {' · '}{formData.typeExercice === 'installe' ? 'installé' : 'remplaçant'}, secteur{'\u00a0'}{formData.secteurConventionnel === 'secteur_2' ? '2' : '1'}
+        </p>
+        {ecart && <p className="sim-ecart">{ecart}</p>}
+        <p className="sim-chapo">
+          {comparison.isRSPMUsed
+            ? "Cotisations au RSPM, l'offre simplifiée des remplaçants."
+            : (formData.annee || 2026) >= 2025
+              ? "Cotisations PAMC, par le modèle de l'Urssaf, sur la nouvelle assiette sociale des revenus 2025 et suivants."
+              : "Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de l'Urssaf."}
         </p>
       </div>
 
-      {/* Cartes de comparaison */}
-      <Suspense fallback={<div className="min-h-[220px]" aria-hidden="true" />}>
-      <RegimeComparisonCards
+      {/* Le verdict d'abord (MIGRATION.md § 9.ft) : le régime qui l'emporte et de combien, ce qui
+          est à prévoir chaque mois, puis le détail des deux régimes. Il était sous les fiches. */}
+      <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} marge={marge} />
+
+      {/* RSPM ou PAMC ? (§ 9.gh) : au RSPM, la même saisie en PAMC */}
+      <RspmOuPamc comparison={comparison} formData={formData} alternativePamc={alternativePamc} />
+
+      {/* Première année d'activité (§ 9.fx) : ce qui part cette année, et ce qui viendra ensuite */}
+      {debutActiviteDe(formData) === 'premiere' && <PremiereAnneeCard comparison={comparison} formData={formData} />}
+
+      {/* Cartes de comparaison (chargées avant l'affichage des résultats, § 9.gm) */}
+      {Cartes && (
+      <Cartes
         reel={reel}
         microBnc={microBnc}
         recommande={recommande}
@@ -78,173 +165,127 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
         isRSPMUsed={comparison.isRSPMUsed}
         situationFamiliale={formData.situationFamiliale}
         annee={formData.annee}
+        plafondMicro={comparison.plafondMicro}
       />
-      </Suspense>
+      )}
+
+      {/* À savoir pour ta situation (§ 9.gh) : la phrase des 1 000 € et les pistes (charges
+          faibles, réductions de la CARMF, complémentaire de la 3e année), sorties de la conclusion */}
+      <ConclusionCard comparison={comparison} formData={formData} bascule={bascule} marge={marge} partie="a-savoir" />
 
 
-      {/* ✅ CONCLUSION — En premier, toujours visible */}
-      <ConclusionCard comparison={comparison} formData={formData} />
-
-      {/* ✅ APPROFONDIR — Accordion unifié avec 2 items */}
+      {/* Approfondir : deux plis (le premier n'a de sens que si le Micro-BNC a été calculé) */}
       <Accordion type="single" collapsible className="space-y-0">
-        <div className="rounded-2xl overflow-hidden bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 shadow-lg">
-          <AccordionItem value="comprendre" className="border-b border-slate-200/30 dark:border-slate-700/30">
-            <AccordionTrigger className="px-4 sm:px-6 py-4 hover:no-underline hover:bg-muted/30 transition-colors">
+        <div className="sim-fiche sim-fiche-plis">
+          {microBnc && (
+          <AccordionItem value="comprendre" className="sim-pli-ligne">
+            <AccordionTrigger className="sim-pli-titre hover:no-underline">
               <span className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-hippo-100 to-hippo-200 dark:from-hippo-800/50 dark:to-hippo-700/50">
-                  <Scale className="h-4 w-4 text-hippo-600 dark:text-hippo-400" />
+                <div className="sim-rond">
+                  <Scale className="h-4 w-4" />
                 </div>
                 <div className="text-left">
-                  <span className="text-sm font-semibold text-foreground">Comprendre la différence</span>
-                  <p className="text-xs text-muted-foreground font-normal mt-0.5">Quel régime te fait déduire le plus ?</p>
+                  <span className="sim-pli-nom">Comprendre la différence</span>
+                  <p className="sim-pli-sous">Quel régime te fait déduire le plus ?</p>
                 </div>
               </span>
             </AccordionTrigger>
-            <AccordionContent className="px-4 sm:px-6 pb-6">
-              <BreakEvenAnalysis 
+            <AccordionContent className="sim-pli-corps">
+              <BreakEvenAnalysis
                 formData={formData}
                 reelResult={reel}
                 microBncResult={microBnc}
-                revenusSalariesAnnuels={comparison.revenusSalariesAnnuels || 0}
-                embedded
+                recettesImposables={Math.max(0, (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0))}
+                isRSPM={comparison.isRSPMUsed}
               />
             </AccordionContent>
           </AccordionItem>
+          )}
 
-          <AccordionItem value="prelevement" className="border-0">
-            <AccordionTrigger className="px-4 sm:px-6 py-4 hover:no-underline hover:bg-muted/30 transition-colors">
+          <AccordionItem value="prelevement" className="sim-pli-ligne border-0">
+            <AccordionTrigger className="sim-pli-titre hover:no-underline">
               <span className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-hippo-100 to-hippo-200 dark:from-hippo-800/50 dark:to-hippo-700/50">
-                  <Lightbulb className="h-4 w-4 text-hippo-600 dark:text-hippo-400" />
+                <div className="sim-rond">
+                  <Lightbulb className="h-4 w-4" />
                 </div>
                 <div className="text-left">
-                  <span className="text-sm font-semibold text-foreground">Comment l'impôt sera prélevé</span>
-                  <p className="text-xs text-muted-foreground font-normal mt-0.5">Prélèvement à la source et régularisation</p>
+                  <span className="sim-pli-nom">Quand et comment tu paies</span>
+                  <p className="sim-pli-sous">
+                    {comparison.isRSPMUsed || formData.situationCarmf === 'dispense' ? 'Urssaf et impôt' : 'Urssaf, CARMF et impôt'}{'\u00a0'}: calendrier et régularisation
+                  </p>
                 </div>
               </span>
             </AccordionTrigger>
-            <AccordionContent className="px-4 sm:px-6 pb-6">
-              <PaymentExplanation 
+            <AccordionContent className="sim-pli-corps">
+              <PaymentExplanation
                 annee={formData.annee}
-                hasRevenusSalaries={(comparison.revenusSalariesAnnuels ?? 0) > 0}
-                hasRevenusConjoint={(comparison.revenusConjointAnnuels ?? 0) > 0}
-                impotEstime={recommande === 'micro-bnc' ? (microBnc?.impot ?? 0) : (reel.impot ?? 0)}
-                revenuImposableMedecin={
-                  recommande === 'micro-bnc' 
-                    ? (microBnc?.impotDetails?.revenuImposableLiberal ?? 0) + (microBnc?.impotDetails?.revenuImposableSalarie ?? 0)
-                    : (reel.impotDetails?.revenuImposableLiberal ?? 0) + (reel.impotDetails?.revenuImposableSalarie ?? 0)
-                }
-                revenuImposableConjoint={
-                  recommande === 'micro-bnc' 
-                    ? (microBnc?.impotDetails?.revenuImposableConjoint ?? 0)
-                    : (reel.impotDetails?.revenuImposableConjoint ?? 0)
-                }
-                revenuBrutMedecin={
-                  recommande === 'micro-bnc'
-                    ? (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0) - (microBnc?.chargesReelles ?? 0) - (microBnc?.cotisationsTotales ?? 0) + (comparison.revenusSalariesAnnuels ?? 0)
-                    : (comparison.recettesAnnuelles ?? 0) - (comparison.liberalExonereAnnuel ?? 0) - (reel.chargesReelles ?? 0) - reel.cotisationsTotales + (comparison.revenusSalariesAnnuels ?? 0)
-                }
-                revenusConjointBrut={comparison.revenusConjointAnnuels}
-                partsFiscales={recommande === 'micro-bnc' ? (microBnc?.impotDetails?.parts ?? 2) : (reel.impotDetails?.parts ?? 2)}
+                resultat={recommande === 'micro-bnc' && microBnc ? microBnc : reel}
+                revenusSalariesAnnuels={comparison.revenusSalariesAnnuels ?? 0}
+                revenusConjointAnnuels={comparison.revenusConjointAnnuels ?? 0}
                 situationFamiliale={formData.situationFamiliale}
-                embedded
+                isRSPM={comparison.isRSPMUsed}
+                carmfDispense={formData.situationCarmf === 'dispense'}
+                debutActivite={debutActiviteDe(formData) ?? 'non'}
+                formData={formData}
+                regime={recommande === 'micro-bnc' && microBnc ? 'micro-bnc' : 'reel'}
               />
             </AccordionContent>
           </AccordionItem>
         </div>
       </Accordion>
 
-      {/* ✅ CTA "Et maintenant ?" — Standalone léger */}
-      <div className="space-y-3">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider text-center">
-          Et maintenant ?
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-          <button
-            onClick={scrollToGuide}
-            className="group flex items-center gap-3 p-3 rounded-xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-white/40 dark:border-gray-700/40 hover:bg-white/80 dark:hover:bg-gray-800/60 hover:shadow-md hover:scale-[1.02] transition-all duration-200 text-left"
-          >
-            <div className="shrink-0 p-2 rounded-lg bg-gradient-to-br from-hippo-400 to-hippo-600 shadow-sm">
-              <Compass className="h-4 w-4 text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">Guide Patrimonial</p>
-              <p className="text-xs text-muted-foreground">Optimise ton Super-Net</p>
-            </div>
-            <ArrowDown className="h-4 w-4 text-muted-foreground ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
+      {/* La suite du résultat (MIGRATION.md § 9.fs) : un seul appel, lié à ce que le médecin
+          vient de voir (cotisations à prévoir, charges, régime), avec trois promesses reprises
+          mot pour mot des étapes du remplaçant de l'accueil (src/data/etapesRemplacant.ts).
+          Remplace « Et maintenant ? » (deux boutons : l'un descendait juste en dessous, l'autre
+          envoyait vers une page de l'app réservée aux comptes) et l'aperçu flouté du guide
+          patrimonial. L'événement anonyme garde son nom, `cta_patrimonial_guide`, pour la
+          continuité de la table `simulateur_public_events`. */}
+      <section className="sim-fiche sim-suite" aria-labelledby="sim-suite-titre">
+        {/* § 9.gh : en bande. Le lien d'essai est aussi dans la conclusion ; les phrases des trois
+            promesses (archivées au § 9.gh) sont retirées, leurs titres restent mot pour mot. */}
+        <h3 id="sim-suite-titre" className="sim-fiche-titre">
+          Ce calcul, Hippodoc le tient à jour après chaque journée de remplacement
+        </h3>
+        <ul className="sim-suite-liste">
+          <li>
+            <CalendarClock className="h-5 w-5" aria-hidden="true" />
+            <span><strong>URSSAF et CARMF anticipées.</strong></span>
+          </li>
+          <li>
+            <Receipt className="h-5 w-5" aria-hidden="true" />
+            <span><strong>Tes charges déductibles ne se perdent plus.</strong></span>
+          </li>
+          <li>
+            <FileText className="h-5 w-5" aria-hidden="true" />
+            <span><strong>Ta déclaration, case par case.</strong></span>
+          </li>
+        </ul>
+        <a
+          href={`${APP_URL}/auth?tab=signup`}
+          data-track="cta_signup_simulateur_resultat"
+          className="sim-btn sim-btn-soleil sim-suite-btn"
+          onClick={() => {
+            trackEvent('public_simulator_cta_clicked', { cta_type: 'signup', emplacement: 'resultat' });
+            insertPublicEvent('simulateur_public_events', {
+              event_type: 'cta_patrimonial_guide',
+              session_id: (typeof window !== 'undefined' && window.localStorage.getItem('hippodoc-anon-session-id')) || 'unknown',
+            });
+          }}
+        >
+          Essai gratuit 30 jours
+          <ArrowRight aria-hidden="true" />
+        </a>
+      </section>
 
-          <button
-            onClick={() => { window.location.href = `${APP_URL}/analyses/budget`; }}
-            className="group flex items-center gap-3 p-3 rounded-xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-white/40 dark:border-gray-700/40 hover:bg-white/80 dark:hover:bg-gray-800/60 hover:shadow-md hover:scale-[1.02] transition-all duration-200 text-left"
-          >
-            <div className="shrink-0 p-2 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-sm">
-              <PiggyBank className="h-4 w-4 text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">Planifier mon budget</p>
-              <p className="text-xs text-muted-foreground">Organise tes dépenses</p>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Guide Patrimonial Premium - teaser (variant public uniquement) */}
-      <div className="pt-4" id="guide-patrimonial">
-        <GuidePatrimonialTeaser />
-      </div>
-
-      {/* Disclaimer global unifié */}
-      <div className={cn(
-        'rounded-2xl overflow-hidden',
-        'bg-white/80 dark:bg-slate-900/80',
-        'backdrop-blur-xl',
-        'border border-slate-200/50 dark:border-slate-700/50',
-        'shadow-lg'
-      )}>
-        <div className="h-1.5 w-full bg-gradient-to-r from-slate-400 to-slate-500" />
-        
-        <div className="p-4 sm:p-6 space-y-4">
-          <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-slate-500 flex-shrink-0 mt-0.5" />
-            <div className="space-y-3">
-              <h4 className="font-semibold text-slate-700 dark:text-slate-300">
-                Limites de cette simulation
-              </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte 
-                tes spécificités fiscales individuelles, les évolutions réglementaires, 
-                ou les optimisations spécifiques à ta situation.
-              </p>
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Pour une analyse personnalisée, consulte :
-              </p>
-              <div className="flex flex-wrap gap-2 text-xs">
-                <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                  Expert-comptable
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                  Avocat fiscaliste
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                  CGP indépendant
-                </span>
-                <a 
-                  href="https://mon-entreprise.urssaf.fr" 
-                  target="_blank" rel="noopener noreferrer" 
-                  className="px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900 transition-colors"
-                >
-                  Simulateur URSSAF ↗
-                </a>
-              </div>
-              <p className="text-xs text-muted-foreground italic pt-1">
-                💡 Hippodoc t'aide à y voir plus clair, mais seul un professionnel 
-                pourra te conseiller de manière définitive.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Limites (§ 9.gh) : une phrase au lieu d'une fiche de 411 px au téléphone. */}
+      <p className="sim-limites-ligne">
+        <Info className="h-4 w-4" aria-hidden="true" />
+        <span>
+          Simulation indicative{'\u00a0'}: elle ne remplace pas l'avis d'un expert-comptable ou de ton AGA. À comparer avec le{' '}
+          <a href="https://mon-entreprise.urssaf.fr" target="_blank" rel="noopener noreferrer">simulateur de l'Urssaf</a>.
+        </span>
+      </p>
 
       {/* Action principale */}
       {onNewSimulation && (
@@ -252,6 +293,7 @@ export function SimulateurResults({ comparison, formData, periode, onNewSimulati
           <Button 
             variant="outline" 
             size="lg"
+            className="sim-btn sim-btn-ligne"
             onClick={onNewSimulation}
           >
             <RotateCcw className="mr-2 h-5 w-5" />

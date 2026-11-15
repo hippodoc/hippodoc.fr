@@ -1,0 +1,119 @@
+---
+/**
+ * Guides et simulateurs (DA 2026, phase 3, MIGRATION.md § 9). Feuille « ciel »,
+ * dernière avant la scène finale. Bloc nouveau : six liens internes, en chemins
+ * relatifs, vers les trois outils en accès libre et trois articles.
+ *
+ * - Mesure : `data-landing-section="guides"` et `id="guides"` (série nouvelle),
+ *   un `data-ph="landing_guide_<nom>"` par lien pour l'autocapture.
+ * - Choix des trois articles (MIGRATION.md § 9.ec, 10 novembre 2026) : par
+ *   l'audience mesurée, liste annoncée au propriétaire et validée par lui.
+ *   Visiteurs sur 90 jours (PostHog) : requalification 293, CARMF 48, impôts
+ *   des internes 35, licence de remplacement 28, effet ciseaux moins de 21.
+ *   La CARMF et les impôts des internes entrent (`landing_guide_carmf`,
+ *   `landing_guide_impots_internes`, séries nouvelles) ; l'effet ciseaux et
+ *   la licence sortent (`landing_guide_effet_ciseaux`, `landing_guide_licence`,
+ *   séries arrêtées). Les deux articles qui entrent sont déjà liés depuis
+ *   une réponse de la FAQ : assumé.
+ * - Titres des articles : leur titre. Les trois outils gardent les textes de
+ *   la maquette validée.
+ * - La flèche est un dessin (la police n'a pas ce caractère).
+ * - Épure de novembre 2026 (MIGRATION.md § 9.eu) : une seule feuille blanche à
+ *   six lignes, séparées par un filet, à la place de six cartes ; la flèche est
+ *   tracée à l'encre, sans pastille (le jaune reste aux boutons d'essai et au
+ *   Super-Net). Les trois articles perdent leur seconde ligne, que leur titre
+ *   disait déjà ; les trois outils gardent la leur. À partir de 900 px, deux
+ *   colonnes dans la feuille : les outils à gauche, les articles à droite
+ *   (l'ordre du HTML ne change pas, la grille se remplit par colonne).
+ */
+import '@/styles/da.css';
+
+/* Espace insécable avant « : » : pas de ponctuation seule en début de ligne.
+   `texte` : la seconde ligne, pour les trois outils seulement. */
+const guides: { ph: string; href: string; titre: string; texte?: string }[] = [
+  { ph: 'simulateur', href: '/simulateur', titre: 'Simulateur Super-Net', texte: 'Ton revenu après URSSAF, CARMF et impôts' },
+  { ph: 'declarations', href: '/guide-declarations', titre: 'Guide des déclarations', texte: '2035, 2042-C PRO, DSFU\u00a0: quoi remplir, et où' },
+  { ph: 'remplacant', href: '/guide', titre: 'Guide du remplaçant', texte: 'Le PDF 2026-2027' },
+  { ph: 'requalification', href: '/blog/remplacement-regulier-requalification', titre: 'Remplacement régulier\u00a0: le risque de requalification' },
+  { ph: 'carmf', href: '/blog/tout-comprendre-carmf', titre: 'CARMF\u00a0: cotisations 2026 du médecin remplaçant' },
+  { ph: 'impots_internes', href: '/blog/guide-impots-internes-remplacants', titre: 'Impôts 2026 des internes qui remplacent' },
+];
+---
+
+<section data-landing-section="guides" id="guides" class="band air da-bloc gd" aria-labelledby="guides-titre">
+  <div class="wrap">
+    <div class="band-head">
+      <h2 id="guides-titre">Guides et simulateurs pour médecins remplaçants</h2>
+      <p class="lead">Pour aller plus loin, en accès libre.</p>
+    </div>
+    <ul class="guides" role="list">
+      {guides.map((g) => (
+        <li>
+          <a class="guide" href={g.href} data-ph={`landing_guide_${g.ph}`}>
+            {/* « Super-Net » ne se coupe pas au trait d'union (la police n'a pas de trait d'union insécable). */}
+            <span class="txt"><b>{g.titre.split('Super-Net').map((m, i) => <Fragment>{i > 0 && <span class="num">Super-Net</span>}{m}</Fragment>)}</b>{g.texte && <Fragment>{' '}<small>{g.texte}</small></Fragment>}</span>
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11h14M12 5l6 6-6 6"/></svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .num { white-space: nowrap; }
+  /* Règles communes aux feuilles de l'épure (remplissage, chapô, marge sous
+     l'en-tête), écrites ici et non dans da.css, commune à toutes les pages. */
+  .lead { text-wrap-style: balance; }
+  @media (max-width: 559px) {
+    .gd { padding: 44px 0 72px; }
+    .band-head { margin-bottom: 22px; }
+    .lead { font-size: 17px; }
+  }
+  @media (min-width: 560px) and (max-width: 899px) {
+    .gd { padding: 60px 0 92px; }
+    .band-head { margin-bottom: 30px; }
+  }
+  @media (min-width: 900px) {
+    .gd { padding: 76px 0 112px; }
+    .band-head { margin-bottom: 36px; }
+  }
+
+  /* Une seule feuille blanche, une ligne par lien, un filet entre deux lignes
+     (il s'arrête aux marges de la feuille, la ligne va d'un bord à l'autre).
+     Au survol, la ligne se teinte et la flèche avance ; l'anneau de focus est
+     tracé à l'intérieur de la ligne (la feuille rogne ce qui dépasse). */
+  .guides { --marge: 20px; --survol: #F4F7FE; display: grid; margin: 0; padding: 0; overflow: hidden; border-radius: 24px; background: var(--paper); box-shadow: var(--clay-sm); list-style: none; }
+  .guides li { display: flex; margin: 0 var(--marge); }
+  .guides li + li { border-top: 1px solid var(--line); }
+  .guide { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; box-sizing: border-box; margin: 0 calc(-1 * var(--marge)); padding: 12px var(--marge); color: var(--ink); text-decoration: none; transition: background-color 160ms var(--ease); }
+  .guide:hover { background: var(--survol); }
+  .guide:focus-visible { outline-offset: -4px; border-radius: 18px; }
+  .txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .guide b { font-size: 17px; line-height: 1.35; text-wrap-style: balance; }
+  .guide small { font-size: 14.5px; line-height: 1.45; color: var(--ink-2); text-wrap-style: balance; }
+  /* La flèche : à l'encre, sans pastille. */
+  .guide svg { flex: none; color: var(--ink); }
+  /* Petits téléphones : un peu plus de place pour le texte. */
+  @media (max-width: 359px) {
+    .guides { --marge: 18px; }
+    .guide { gap: 12px; }
+  }
+  /* Ordinateur : deux colonnes dans la feuille, remplies par colonne. Les
+     trois outils à gauche, les trois articles à droite ; un filet entre les
+     deux colonnes, et plus de filet au-dessus de la première ligne de la
+     seconde. Les lignes d'une même rangée ont la même hauteur. */
+  @media (min-width: 900px) {
+    .guides { --marge: 32px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, auto); grid-auto-flow: column; border-radius: 30px; background-image: linear-gradient(var(--line), var(--line)); background-repeat: no-repeat; background-position: 50% 50%; background-size: 1px calc(100% - 48px); }
+    .guides li:nth-child(4) { border-top: 0; }
+    .guide { min-height: 84px; padding-block: 16px; }
+    .guide b { font-size: 18px; }
+    .guide small { font-size: 16px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .guide svg { transition: translate 200ms var(--ease); }
+    .guide:hover svg { translate: 4px 0; }
+  }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend sa forme à la feuille. */
+  @media (forced-colors: active) { .guides { border: 1px solid CanvasText; } }
+</style>

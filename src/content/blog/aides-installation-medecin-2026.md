@@ -6,9 +6,10 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "statut-contrats-revenus"
 episodeNumber: 16
-readTime: "20 min"
-cover: "/blog/aides-installation-cover.jpg"
+readTime: "29 min"
+cover: "/blog/aides-installation-medecin-2026-cover.jpg"
 tags:
   - "Guide et Conseil"
 cta: "Prêt à comparer deux communes sur ce qui te reste vraiment ?"
@@ -69,7 +70,7 @@ Avant les montants, une question décide de tout : dans quel zonage est ta commu
 
 Le **zonage santé** classe les communes en zone d’intervention prioritaire (ZIP, la plus en tension) ou en zone d’action complémentaire (ZAC). Il est arrêté par ton agence régionale de santé (ARS) et ouvre les aides de l’Assurance Maladie. Il bouge : une nouvelle méthode nationale a été fixée par l’arrêté du 9 mai 2025, et les régions ont publié leurs nouveaux arrêtés entre fin 2025 et l’été 2026. Vérifie sur la carte de ton ARS ou sur rezonemed.ameli.fr, puis sur l’arrêté, qui seul fait foi, et fais confirmer le classement par écrit par ta caisse. Ces zonages sont construits sur l’accès à la médecine générale : un spécialiste peut toucher l’aide en ZIP, mais la carte ne mesure pas la densité de sa propre spécialité.
 
-Le **zonage fiscal** est fixé par l’État : arrêtés pour les zones France ruralités revitalisation (ZFRR, et ZFRR+ pour les communes rurales les plus fragiles), décret pour les quartiers prioritaires. Les anciennes zones de revitalisation rurale qui ont perdu leur classement figurent aussi en annexe de l’arrêté ZFRR (communes « bénéficiant des effets du classement ») et ouvrent le même droit jusqu’en 2029 : ne les écarte pas trop vite. Ce zonage fiscal ouvre l’exonération d’impôt sur le bénéfice, et l’ARS n’en est pas l’interlocutrice : vérifie la liste officielle toi-même. Il te protège aussi : si ta commune sort de la liste après ton installation, tu gardes l’exonération jusqu’à son terme.
+Le **zonage fiscal** est fixé par l’État : arrêtés pour les [zones France ruralités revitalisation](/blog/zones-frr-exoneration-impot-medecin) (ZFRR, et ZFRR+ pour les communes rurales les plus fragiles), décret pour les quartiers prioritaires. Les anciennes zones de revitalisation rurale qui ont perdu leur classement figurent aussi en annexe de l’arrêté ZFRR (communes « bénéficiant des effets du classement ») et ouvrent le même droit jusqu’en 2029 : ne les écarte pas trop vite. Ce zonage fiscal ouvre l’exonération d’impôt sur le bénéfice, et l’ARS n’en est pas l’interlocutrice : vérifie la liste officielle toi-même. Il te protège aussi : si ta commune sort de la liste après ton installation, tu gardes l’exonération jusqu’à son terme.
 
 Une commune peut être dans un zonage sans être dans l’autre.
 
@@ -131,7 +132,7 @@ Avoir bénéficié d’un autre régime de zone dans les **cinq années précéd
 Et une condition qu’on oublie : si tu cesses ton activité en zone pour la transférer dans un lieu non classé moins de cinq ans après ta dernière année exonérée, l’impôt économisé redevient exigible, avec l’intérêt de retard en ZFRR. Rester en ZFRR ou en ZFRR+, ou passer d’un quartier prioritaire à un autre, ne déclenche rien ; passer d’une ZFRR à un quartier prioritaire, ou l’inverse, si. Arrêter le libéral pour devenir salarié ne déclenche rien non plus, faute de transfert : l’administration prend elle-même l’exemple d’un généraliste devenu médecin du travail.
 
 :::tip
-**L’astuce.** Commune en ZFRR classique et tu démarres au micro-BNC ? Opte pour le régime réel (la déclaration contrôlée) **dès ta première année d’activité en zone** : coche-le dès ta déclaration d’activité sur le guichet unique de l’Inpi, et dépose à temps ta première 2035 (la déclaration de résultats des libéraux au réel) : c’est elle qui vaut option. Opter plus tard ne rattrape rien : une activité qui ne remplit pas les conditions dès sa création n’y a jamais droit, même si elle les remplit ensuite. Cinq ans de bénéfice non imposé pèsent souvent plus lourd que l’abattement forfaitaire de 34 % du micro-BNC. L’option vaut un an, se reconduit tacitement, et il faut la garder tant que dure l’exonération.
+**L’astuce.** Commune en ZFRR classique et tu démarres au micro-BNC ? Opte pour le régime réel (la déclaration contrôlée) **dès ta première année d’activité en zone** : coche-le dès ta déclaration d’activité sur le guichet unique de l’Inpi, et dépose à temps ta première 2035 (la déclaration de résultats des libéraux au réel) : c’est elle qui vaut option. Opter plus tard ne rattrape rien : une activité qui ne remplit pas les conditions dès sa création n’y a jamais droit, même si elle les remplit ensuite. Cinq ans de bénéfice non imposé pèsent souvent plus lourd que l’abattement forfaitaire de 34 % du [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel). L’option vaut un an, se reconduit tacitement, et il faut la garder tant que dure l’exonération.
 :::
 
 ## Si tu remplaces déjà en zone, lis ceci avant de choisir ta commune
@@ -191,9 +192,32 @@ Ce n’est pas pour tout le monde : il faut exercer en société, les banques de
 Le chèque de l’Assurance Maladie est devenu simple et modeste. L’exonération d’impôt de zone, elle, est restée massive, et elle existe désormais en ville comme à la campagne, pour toutes les spécialités. Mais elle se joue dès le premier jour : régime, lieu, remplacements passés. Presque tout se décide **avant** la signature du bail.
 
 :::tip
-Pendant que tu montes ton projet, [Hippodoc](/) garde tes remplas, tes rétrocessions et tes revenus au même endroit, et affiche ton Super-Net (ce qui te reste vraiment après charges, cotisations et impôt) en temps réel. C’est le chiffre avec lequel on compare deux communes, pas le montant d’une prime. Essai gratuit 30 jours, sans engagement.
+Pendant que tu montes ton projet, [Hippodoc](/) garde tes remplas, tes rétrocessions et tes revenus au même endroit, et affiche [ton Super-Net](/simulateur) (ce qui te reste vraiment après charges, cotisations et impôt) en temps réel. C’est le chiffre avec lequel on compare deux communes, pas le montant d’une prime. Essai gratuit 30 jours, sans engagement.
 :::
 
 *Information générale à jour au 15 novembre 2026. Ne remplace pas l’avis de ton comptable, de ton ARS ou de ta caisse.*
 
-**Sources** : ameli.fr (aides en zone sous-dense rénovées, nouveau forfait médecin traitant, aides de l’Assurance Maladie ouvertes aux médecins, missions spécifiques valorisées) · convention médicale 2024-2029, art. 21, 24, 26, 34 à 36, 41 et 94 à 96 · carmf.fr, guide du cotisant 2026 · code général des impôts, art. 44 quindecies A, 44 octies B, 93, 197, 1464 D, 1466 A, 1466 G, 1478, 1383 K et 1383 C ter · BOFiP BOI-BIC-CHAMP-80-10-75-10 à -40 du 29 juillet 2026 (recettes hors zone : -20, § 150 à 230 ; remplaçants et collaborateurs : -30, § 70, 220 et 230) · BOI-BNC-BASE-20-20 · entreprendre.service-public.gouv.fr F31139 et F23547 · service-public.gouv.fr F11677 et F39739 · collectivites-locales.gouv.fr · décret n° 2026-69 du 6 février 2026 et art. 23 de la LFSS 2026 · décret n° 2025-231 du 12 mars 2025 (art. D1511-47 du CGCT et D162-1-11-1 du CSS) · arrêté du 9 mai 2025 · arrêtés du 19 juin 2024 modifié et du 9 juillet 2025 · Sénat, séance du 11 juin 2026 · Assemblée nationale, dossier du PLFSS 2027, et Sénat, ordre du jour du 9 au 18 novembre 2026 · instruction DGOS/DGESIP du 21 mai 2026 · carmf.fr, dépliant « Début d’exercice libéral » · ameli.fr, « La maîtrise des dépassements d’honoraires : l’Optam et l’Optam-ACO » · art. L1435-4-2 du CSP (contrat de début d’exercice), abrogation différée par la loi n° 2025-1403 du 30 décembre 2025 (LFSS 2026) · Sénat, projet de loi n° 138 (2026-2027), art. 21 · code de la sécurité sociale, art. L241-19 · LPF, art. L80 B et R*196-1.
+## 📚 Sources (vérifiées au 15 novembre 2026)
+
+- ameli.fr (aides en zone sous-dense rénovées, nouveau forfait médecin traitant, aides de l’Assurance Maladie ouvertes aux médecins, missions spécifiques valorisées)
+- convention médicale 2024-2029, art. 21, 24, 26, 34 à 36, 41 et 94 à 96
+- carmf.fr, guide du cotisant 2026
+- code général des impôts, art. 44 quindecies A, 44 octies B, 93, 197, 1464 D, 1466 A, 1466 G, 1478, 1383 K et 1383 C ter
+- BOFiP BOI-BIC-CHAMP-80-10-75-10 à -40 du 29 juillet 2026 (recettes hors zone : -20, § 150 à 230 ; remplaçants et collaborateurs : -30, § 70, 220 et 230)
+- BOI-BNC-BASE-20-20
+- entreprendre.service-public.gouv.fr F31139 et F23547
+- service-public.gouv.fr F11677 et F39739
+- collectivites-locales.gouv.fr
+- décret n° 2026-69 du 6 février 2026 et art. 23 de la LFSS 2026
+- décret n° 2025-231 du 12 mars 2025 (art. D1511-47 du CGCT et D162-1-11-1 du CSS)
+- arrêté du 9 mai 2025
+- arrêtés du 19 juin 2024 modifié et du 9 juillet 2025
+- Sénat, séance du 11 juin 2026
+- Assemblée nationale, dossier du PLFSS 2027, et Sénat, ordre du jour du 9 au 18 novembre 2026
+- instruction DGOS/DGESIP du 21 mai 2026
+- carmf.fr, dépliant « Début d’exercice libéral »
+- ameli.fr, « La maîtrise des dépassements d’honoraires : l’Optam et l’Optam-ACO »
+- art. L1435-4-2 du CSP (contrat de début d’exercice), abrogation différée par la loi n° 2025-1403 du 30 décembre 2025 (LFSS 2026)
+- Sénat, projet de loi n° 138 (2026-2027), art. 21
+- code de la sécurité sociale, art. L241-19
+- LPF, art. L80 B et R*196-1.

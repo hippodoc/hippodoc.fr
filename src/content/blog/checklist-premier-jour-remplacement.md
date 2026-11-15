@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#4"
 seriesId: "fiche-pratique"
+theme: "debuter-organiser"
 episodeNumber: 4
 readTime: "7 min"
 cover: "/blog/checklist-premier-jour-cover.png"

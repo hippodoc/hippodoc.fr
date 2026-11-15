@@ -7,6 +7,13 @@
  * la date de visite. Comportement identique à `CalendrierSection.astro`
  * (même contrainte de build statique). Bouton `onClick={scrollTo}` → ancre
  * `<a href="#profils">`.
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : même comportement (dans le flux,
+ * entre l'en-tête et <main>, il part avec la page ; libellé de l'échéance
+ * masqué sur téléphone, où il ne reste que son signe ; fin de phrase masquée
+ * sur téléphone). L'en-tête est une pastille qui flotte : le bandeau devient
+ * une pastille lui aussi, sur le ciel, juste dessous. `ton` remplace les trois
+ * dégradés : `alerte` (échéance de paiement), `info` (les deux autres).
  */
 import { Clock, AlertTriangle, Gift } from 'lucide-react';
 
@@ -18,7 +25,7 @@ type SeasonalMsg = {
   linkText?: string;
   linkTarget?: string;
   textAfter?: string;
-  bgClass: string;
+  ton: 'info' | 'alerte';
   badge?: string;
 };
 
@@ -30,7 +37,7 @@ function getSeasonalMessage(): SeasonalMsg | null {
       linkText: 'profil ci-dessous',
       linkTarget: 'profils',
       textAfter: ' pour savoir quelles cases remplir.',
-      bgClass: 'bg-gradient-to-r from-hippo-600 via-hippo-500 to-blue-500 text-white',
+      ton: 'info',
       badge: 'Période de déclaration',
     };
   }
@@ -38,7 +45,7 @@ function getSeasonalMessage(): SeasonalMsg | null {
     return {
       Icon: AlertTriangle,
       text: "L'avis de CFE est disponible. Paiement avant le 15 décembre.",
-      bgClass: 'bg-gradient-to-r from-red-600 to-red-500 text-white',
+      ton: 'alerte',
       badge: 'Échéance CFE',
     };
   }
@@ -46,7 +53,7 @@ function getSeasonalMessage(): SeasonalMsg | null {
     return {
       Icon: Gift,
       text: "Dernière chance pour optimiser ton année : Chèques Vacances ANCV, Madelin, achats de matériel.",
-      bgClass: 'bg-gradient-to-r from-blue-600 to-indigo-500 text-white',
+      ton: 'info',
       badge: "Fin d'année fiscale",
     };
   }
@@ -60,23 +67,23 @@ const Icon = msg?.Icon ?? null;
 ---
 
 {msg && Icon && (
-  <div class={msg.bgClass}>
-    <div class="max-w-5xl mx-auto px-3 sm:px-4 py-1.5 sm:py-2.5 flex items-center justify-center gap-2 sm:gap-2.5 text-xs sm:text-sm">
+  <div class="gd-echeance da-bloc">
+    <div class={`gd-echeance-in ${msg.ton}`}>
       {msg.badge && (
-        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[11px] font-semibold whitespace-nowrap shrink-0">
-          <Icon className="h-4 w-4" />
+        <span class="gd-echeance-nom">
+          <Icon className="gd-ic" />
           {msg.badge}
         </span>
       )}
-      <span class="sm:hidden shrink-0"><Icon className="h-4 w-4" /></span>
-      <span class="font-medium">
+      <span class="gd-echeance-signe"><Icon className="gd-ic" /></span>
+      <span class="gd-echeance-texte">
         {msg.text}
         {msg.linkText && msg.linkTarget && (
-          <a href={`#${msg.linkTarget}`} class="underline font-bold hover:opacity-80 transition-opacity">
+          <a href={`#${msg.linkTarget}`}>
             {msg.linkText}
           </a>
         )}
-        {msg.textAfter && <span class="hidden sm:inline">{msg.textAfter}</span>}
+        {msg.textAfter && <span class="gd-echeance-suite">{msg.textAfter}</span>}
       </span>
     </div>
   </div>

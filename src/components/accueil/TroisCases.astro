@@ -1,0 +1,193 @@
+---
+/**
+ * Les trois cases du bloc « Sous la surface » : ton activité, tes obligations,
+ * et ce qu'il te reste, la seule case jaune de la page (DA 2026, phase 3,
+ * MIGRATION.md § 9 ; épure de novembre 2026). Zéro JS.
+ *
+ * - Trois temps courts. Les cases 1 et 2 portent un numéro, un titre et une
+ *   ligne ; la case 3, le Super-Net. Les sept étapes du remplaçant (titre et
+ *   phrase), qui étaient listées ici, ne sont plus dites qu'une fois, dans
+ *   « Pour qui » (PourQui.astro, profil Remplaçant).
+ * - Les deux lignes des cases 1 et 2 sont des textes nouveaux (MIGRATION.md § 9).
+ * - Chiffres : src/data/demoAccueil.ts, le même jeu que la fenêtre produit.
+ * - Mascotte : la féminine dans tout le bloc (elle tient la tablette près du
+ *   titre, lève le pouce dans la case jaune) : un seul personnage par bloc.
+ * - Les deux extraits d'écran (calendrier d'avril, sommes à mettre de côté)
+ *   redisent la fenêtre produit, juste au-dessus : décor, masqués aux lecteurs
+ *   d'écran, affichés à partir de 900 px seulement.
+ * - Téléphone : les cases 1 et 2 côte à côte à partir de 360 px, la jaune
+ *   dessous sur toute la largeur, la mascotte à droite du chiffre. De 360 à
+ *   429 px, les titres sont en 18 px et les cases 1 et 2 un peu moins
+ *   remplies : « Tes obligations » tient sur une ligne, comme « Ton activité »,
+ *   et les deux lignes de texte partent de la même hauteur (§ 9.ex).
+ */
+import '@/styles/da.css';
+import Mascotte from './Mascotte.astro';
+import {
+  DEMO_ANNEE,
+  DEMO_A_METTRE_DE_COTE,
+  DEMO_ETATS,
+  DEMO_MOIS,
+  DEMO_SUPER_NET,
+  euros,
+  insecable,
+  jourCourt,
+  journee,
+  montantJournee,
+} from '@/data/demoAccueil';
+
+/** Quatre journées du mois, une par état au moins. */
+const extrait = [13, 15, 19, 20].map(journee);
+const aMettreDeCote = [
+  { nom: 'URSSAF', montant: DEMO_ANNEE.urssaf, rang: 1 },
+  { nom: 'CARMF', montant: DEMO_ANNEE.carmf, rang: 2 },
+  { nom: 'Impôts', montant: DEMO_ANNEE.impots, rang: 3 },
+];
+---
+
+<div class="bento">
+  <article class="cell c-sky">
+    <span class="n">1</span>
+    <h3>Ton activité</h3>
+    <p class="ligne">Tes journées, tes rétrocessions, tes factures et tes contrats.</p>
+    <div class="frag" aria-hidden="true">
+      <div class="card">
+        <p class="card-t">{DEMO_MOIS.nom} {DEMO_MOIS.an}</p>
+        {extrait.map((j) => (
+          <div class="day"><span class="w">{jourCourt(j.jour)}</span><span class="p">{j.lieu}</span><span class={`chip sig ${DEMO_ETATS[j.etat].chip} num`}>{montantJournee(j)}</span></div>
+        ))}
+      </div>
+    </div>
+  </article>
+
+  <article class="cell c-white">
+    <span class="n">2</span>
+    <h3>Tes obligations</h3>
+    <p class="ligne">Tes charges déductibles, l’URSSAF et la CARMF, ta déclaration.</p>
+    <div class="frag" aria-hidden="true">
+      <div class="card">
+        <p class="card-t">Année {DEMO_ANNEE.an}, à mettre de côté</p>
+        <ul class="tiles">
+          {aMettreDeCote.map((l) => (
+            <li class="tile"><span><i class={`sw l${l.rang}`}></i>{l.nom}</span><b class="num">{euros(l.montant)}</b></li>
+          ))}
+          <li class="tile sum"><span>En tout</span><b class="num">{euros(DEMO_A_METTRE_DE_COTE)}</b></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="cell c-sun">
+    <div class="sun-copy">
+      <span class="n">3</span>
+      <h3>Ce qu’il te reste</h3>
+      <p class="sun-num"><small>Super-Net {DEMO_ANNEE.an}</small><b class="aff">{euros(DEMO_SUPER_NET)}</b><span>{insecable(euros(DEMO_ANNEE.encaisse))} encaissés, moins les cotisations, moins l’impôt</span></p>
+    </div>
+    <Mascotte pose="f-pouce" class="pouce" largeurs={[150, 230, 300, 460]} sizes="(min-width: 900px) 230px, (min-width: 640px) 170px, 30vw" />
+  </article>
+</div>
+
+<style>
+  .num { white-space: nowrap; }
+
+  /* Téléphone : deux colonnes, la case jaune sur toute la largeur. */
+  .bento { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .cell { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 18px 16px 20px; overflow: hidden; border-radius: 26px; color: var(--ink); box-shadow: var(--clay); }
+  .c-sky { background: var(--sky); }
+  .c-white { background: var(--paper); }
+  .c-sun { grid-column: 1 / -1; background: var(--sun); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5), inset 0 -5px 0 rgba(120, 80, 0, 0.1), 0 22px 44px -22px rgba(13, 40, 105, 0.42); }
+  /* Un mot plus large que sa case passe à la ligne au lieu d'être rogné (texte
+     agrandi par le visiteur). */
+  .cell h3 { margin: 0; font-size: 21px; overflow-wrap: anywhere; }
+  .n { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 15px; font-weight: var(--tb); }
+  .ligne { margin: 0; font-size: 15px; line-height: 1.45; color: var(--ink-2); overflow-wrap: anywhere; text-wrap-style: pretty; }
+  /* Petits téléphones : les cases l'une sous l'autre. */
+  @media (max-width: 359px) {
+    .bento { grid-template-columns: minmax(0, 1fr); }
+  }
+  /* De 360 à 429 px, la plupart des téléphones : à 21 px, « Tes obligations »
+     (147 px) passait sur deux lignes dans sa case, pas « Ton activité », et la
+     case 1 finissait sur un vide (jusqu'à 411 px dans Chromium, 419 px dans le
+     moteur de Safari, dont la police sort un peu plus large). */
+  @media (min-width: 360px) and (max-width: 429px) {
+    .cell h3 { font-size: 18px; }
+    .c-sky, .c-white { padding-inline: 12px; }
+  }
+
+  /* Les deux extraits d'écran, au bas des cases 1 et 2 : décor, à partir de 900 px. */
+  .frag { display: none; }
+  .card { position: relative; padding: 22px 24px 18px; border-radius: 26px 26px 0 0; background: var(--paper); box-shadow: 0 -10px 30px -16px rgba(13, 40, 105, 0.4); }
+  .c-white .card { background: var(--sky-soft); box-shadow: none; }
+  .card-t { margin: 0 0 6px; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
+  .day { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 50px; border-top: 1px solid var(--line); font-size: 15.5px; }
+  .day .w { font-size: 14px; color: var(--ink-3); }
+  .day .p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tiles { margin: 0; padding: 0; list-style: none; }
+  .tile { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-2); }
+  .tile b { font-family: var(--display); font-size: 21px; font-weight: var(--dw); letter-spacing: -0.015em; color: var(--ink); }
+  .tile.sum { border-top: 2px solid var(--ink); color: var(--ink); font-weight: var(--tb); }
+  .sw { display: inline-block; width: 11px; height: 11px; margin-right: 8px; border-radius: 4px; }
+  .l1 { background: #8DB9F2; }
+  .l2 { background: #4F88DE; }
+  .l3 { background: #1F4FA8; }
+
+  /* La case jaune : ce qu'il te reste. Le chiffre à gauche, la mascotte au
+     pouce levé dans sa colonne, à droite, posée sur le bord bas de la case. */
+  .c-sun { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0 10px; padding-bottom: 0; }
+  .sun-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; padding-bottom: 20px; }
+  .sun-num { display: flex; flex-direction: column; gap: 2px; margin: 4px 0 0; }
+  .sun-num small { font-size: 15px; font-weight: var(--tb); }
+  /* Le montant suit la largeur : il tient à gauche de la mascotte à 320 px
+     comme à 430 px, même avec des espacements imposés par le visiteur. */
+  .sun-num b { --corps: clamp(34px, 11.6vw, 132px); line-height: 1; white-space: nowrap; }
+  @media (max-width: 359px) { .sun-num b { --corps: 34px; } }
+  .sun-num span { max-width: 26rem; margin-top: 4px; font-size: 15px; line-height: 1.45; text-wrap-style: pretty; }
+  .c-sun .pouce { width: clamp(84px, 26vw, 124px); margin: 0 -2px -9% 0; }
+
+  /* Tablette : mêmes cases, plus d'air. */
+  @media (min-width: 640px) {
+    .bento { gap: 14px; }
+    .cell { gap: 12px; padding: 26px 26px 28px; border-radius: 30px; }
+    .cell h3 { font-size: 24px; }
+    .n { width: 34px; height: 34px; font-size: 16px; }
+    .ligne { font-size: 16px; }
+    .c-sun { gap: 0 32px; padding-bottom: 0; }
+    .sun-copy { padding-bottom: 28px; }
+    .sun-num b { --corps: clamp(34px, 11vw, 132px); }
+    .sun-num span { font-size: 15.5px; }
+    .c-sun .pouce { width: 170px; margin: 0 20px -8% 0; }
+  }
+
+  /* Ordinateur : le damier, et les extraits d'écran au bas des cases 1 et 2. */
+  @media (min-width: 900px) {
+    .bento { grid-template-columns: 1.12fr 1fr; gap: 18px; }
+    .cell { gap: 14px; padding: 36px 36px 0; border-radius: 36px; }
+    .cell h3 { font-size: clamp(24px, 2.5vw, 32px); }
+    .n { width: 38px; height: 38px; font-size: 17px; }
+    .ligne { max-width: 26rem; font-size: 17px; line-height: 1.5; }
+    .frag { display: block; align-self: stretch; margin: auto 0 0; padding-top: 14px; }
+    .c-sun { gap: 0 40px; }
+    /* Le texte au milieu de la case (la mascotte est plus haute que lui). */
+    .sun-copy { align-self: center; gap: 14px; max-width: 700px; padding-bottom: 36px; }
+    /* De 900 à 1 080 px le montant suit la largeur : à 132 px, il passait sur
+       deux lignes à côté de la mascotte. */
+    .sun-num b { --corps: clamp(46px, calc(15.5vw - 36px), 132px); }
+    .sun-num span { font-size: 15.5px; }
+    .c-sun .pouce { width: 230px; margin: 0 40px -7% 0; }
+  }
+
+  /* Chaque case monte en place quand elle entre à l'écran : seulement si le
+     visiteur n'a pas demandé moins de mouvement, et si le navigateur sait lier
+     une animation au défilement. */
+  @media (prefers-reduced-motion: no-preference) {
+    /* ⚠️ Deux règles, deux sélecteurs : voir FenetreProduit.astro (la minification
+       rangerait la ligne de temps dans le raccourci, que les navigateurs refusent). */
+    @supports (animation-timeline: view()) {
+      .cell { animation: cases-arrive linear both; }
+      article.cell { animation-timeline: view(); animation-range: entry 0% entry 25%; }
+    }
+  }
+  @keyframes cases-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+  /* Contrastes forcés (Windows) : sans fond ni ombre, un contour rend sa forme à chaque case. */
+  @media (forced-colors: active) { .cell { border: 1px solid CanvasText; } }
+</style>

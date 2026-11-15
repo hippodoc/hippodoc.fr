@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#1"
 seriesId: "fiche-pratique"
+theme: "statut-contrats-revenus"
 episodeNumber: 1
 readTime: "6 min"
 cta: "Licence en poche ? Prépare tes premiers remplas"

@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#11"
 seriesId: "fiche-fiscalite"
+theme: "impots-declarations"
 episodeNumber: 11
 readTime: "9 min"
 cover: "/blog/zones-frr-cover.jpg"

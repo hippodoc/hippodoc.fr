@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#7"
 seriesId: "fiche-pratique"
+theme: "debuter-organiser"
 episodeNumber: 7
 readTime: "6 min"
 cta: "Prêt à ajouter Hippodoc à ta boîte à outils ?"

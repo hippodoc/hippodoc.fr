@@ -13,6 +13,7 @@ import { HelpCircle } from 'lucide-react';
  *  - Accordéon Radix (`Accordion`) → `<details>/<summary>` natif.
  *  - Tags cliquables (filtrage par mot-clé) → badges statiques (texte
  *    conservé, plus de filtrage au clic puisque le filtre est retiré).
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : styles dans src/styles/guide.css.
  */
 
 export function TopQuestionsSection() {
@@ -22,16 +23,16 @@ export function TopQuestionsSection() {
     .filter(g => g.items.length > 0);
 
   return (
-    <section id="questions" className="py-12 md:py-16 scroll-mt-20">
-      <div className="max-w-5xl mx-auto px-4">
-        <div className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
-            <HelpCircle className="h-7 w-7 text-hippo-500" /> Questions fréquentes
-            <span className="text-base font-normal text-muted-foreground">({questionsFAQ.length})</span>
+    <section id="questions" className="gd-sec">
+      <div className="wrap">
+        <div className="gd-sec-tete">
+          <h2 className="gd-h2">
+            <HelpCircle className="gd-ic" /> Questions fréquentes
+            <span className="gd-compte">({questionsFAQ.length})</span>
           </h2>
-          <p className="text-muted-foreground mt-1">Les réponses aux questions les plus posées par les médecins libéraux</p>
+          <p className="gd-sous">Les réponses aux questions les plus posées par les médecins libéraux</p>
           {/* Introduction visible — cf. Caseopedia, même raison (MIGRATION.md § 9.am). */}
-          <div className="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <div className="gd-intro">
             <p>
               Ce sont des questions réellement posées, pas des questions inventées pour faire
               nombre : première déclaration d'un interne qui cumule salaire hospitalier et
@@ -48,13 +49,13 @@ export function TopQuestionsSection() {
           </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="gd-groupes">
           {grouped.map(({ theme, items }) => (
             <div key={theme}>
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
+              <h3 className="gd-sur">
                 {questionThemeLabels[theme]} <span>({items.length})</span>
               </h3>
-              <div className="space-y-2">
+              <div className="gd-plis">
                 {items.map(q => (
                   <QuestionCard key={q.id} q={q} />
                 ))}

@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "statut-contrats-revenus"
 episodeNumber: 5
 readTime: "6 min"
 cover: "/blog/salaires-medecins-remplacants-cover.jpg"

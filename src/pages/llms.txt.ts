@@ -4,15 +4,19 @@
  * L'ancien fichier statique (public/llms.txt) ne citait AUCUN article : une seule
  * ligne « Blog », alors que robots.txt accueille explicitement les agents IA. Il
  * se périmait à chaque publication. L'en-tête et les sections Pages / Optional
- * sont repris mot pour mot ; les articles sont listés par série, avec le titre
- * et la description du frontmatter (aucun texte nouveau).
+ * sont repris mot pour mot ; les articles sont listés avec le titre et la
+ * description du frontmatter.
+ *
+ * Depuis § 9.fp, rangés par thème (par série avant) : une section par thème, dans
+ * l'ordre du registre, avec le lien de sa page et son introduction
+ * (src/lib/blog-themes.ts), puis ses articles dans l'ordre de sa page (le plus
+ * récent d'abord). Chaque article y est une fois.
  */
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE_URL } from '@/lib/site';
-import { blogSeries } from '@/lib/blog-series';
-import { seriesPath } from '@/lib/blog-series-slugs';
-import { byNewest, byEpisode } from '@/lib/blog-sort';
+import { BLOG_THEMES, themePath } from '@/lib/blog-themes';
+import { byNewest } from '@/lib/blog-sort';
 
 const EN_TETE = `# Hippodoc
 
@@ -49,12 +53,12 @@ const OPTIONNEL = `## Optional
 
 export const GET: APIRoute = async () => {
   const posts = await getCollection('blog');
-  const sections = blogSeries.map((s) => {
+  const sections = BLOG_THEMES.map((t) => {
     const lignes = posts
-      .filter((p) => p.data.seriesId === s.id)
-      .sort(s.totalEpisodes === null ? byNewest : byEpisode)
+      .filter((p) => p.data.theme === t.slug)
+      .sort(byNewest)
       .map((p) => `- [${p.data.title}](${SITE_URL}/blog/${p.id}): ${p.data.description}`);
-    return `## Blog — ${s.name}\n\nToute la série : ${SITE_URL}${seriesPath(s.id)}\n\n${lignes.join('\n')}`;
+    return `## Blog — ${t.nom}\n\n${t.introduction}\n\nTout le thème : ${SITE_URL}${themePath(t.slug)}\n\n${lignes.join('\n')}`;
   });
   const corps = [EN_TETE, ...sections, OPTIONNEL].join('\n\n') + '\n';
   return new Response(corps, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

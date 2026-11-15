@@ -1,0 +1,129 @@
+/* ==========================================================================
+   Pages légales dans la DA 2026 (phase 5d, MIGRATION.md § 9.em) :
+   /mentions-legales, /politique-confidentialite, /conditions-utilisations, /rgpd.
+   Feuille importée par src/layouts/PageLegale.astro : elle sort dans un fichier
+   servi à ces quatre pages seules.
+
+   Sobre : le ciel pour le titre, une feuille sable sur toute la largeur pour le
+   texte, l'eau du pied de page. Le texte n'a aucune classe : il est habillé par
+   élément, avec la typographie de lecture du gabarit d'article
+   (src/pages/blog/[slug].astro). Tout vit sous `.lg`.
+   Corps en rem : ils suivent la taille de police réglée dans le navigateur.
+   ========================================================================== */
+
+/* --mes : la colonne de lecture (68 à 75 caractères par ligne sur ordinateur) ;
+   --g et --d : les marges qui la centrent, jamais sous la gouttière du site. */
+.lg {
+  --mes: 40rem;
+  --g: max(var(--gut), env(safe-area-inset-left, 0px), calc((100% - var(--mes)) / 2));
+  --d: max(var(--gut), env(safe-area-inset-right, 0px), calc((100% - var(--mes)) / 2));
+  position: relative; display: block; margin-bottom: -1px;
+  background: linear-gradient(var(--sky-1) 0, var(--sky) 460px);
+  font-size: 1.0625rem; overflow-wrap: break-word;
+}
+.lg .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Un mot et le tiret qui le suit restent sur une ligne (un titre ne commence pas
+   une ligne par « – ») ; plus larges que leur bloc (texte grossi), ils se dénouent. */
+.lg .num { display: inline-block; max-width: 100%; white-space: normal; }
+
+/* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le haut. */
+.lg-tete { padding: 116px var(--d) 40px var(--g); }
+.lg-tete > * { margin: 0; }
+.lg-tete h1 { --corps: clamp(min(1.875rem, 8.6vw), 4.1vw, 2.875rem); line-height: 1.08; text-wrap-style: balance; }
+.lg-date { margin-top: 14px; font-size: 0.9375rem; color: var(--ink-2); }
+.lg-tete .lead { max-width: none; margin-top: 18px; font-size: 1.0625rem; line-height: 1.6; }
+.lg-tete .lead strong { color: var(--ink); }
+
+/* La feuille de lecture. En bas, le sable descend jusqu'à l'eau : les deux
+   dernières vagues de la scène de fin de /tarifs, immobiles. La dernière a la
+   couleur du haut du pied de page (--deep). */
+.lg-feuille { position: relative; padding: 44px var(--d) 150px var(--g); border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); color: var(--ink-2); line-height: 1.65; }
+.lg-feuille::before, .lg-feuille::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; pointer-events: none; --p: 300px; --th: 40px; }
+.lg-feuille::before { height: 78px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+.lg-feuille::after { height: 44px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+
+/* Le texte : les intervalles du gabarit d'article. */
+.lg-feuille section + section { margin-top: 2.1em; }
+.lg-feuille p { margin: 0 0 1.05em; }
+.lg-feuille :is(section, div, li, td) > :last-child { margin-bottom: 0; }
+/* Pas d'équilibrage des lignes sur les intertitres (les <h2> de la DA le
+   demandent) : un titre numéroté se lit de gauche à droite, sur toute la ligne. */
+.lg-feuille h2 { margin: 0 0 0.62em; font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.022em; color: var(--ink); text-wrap-style: auto; }
+.lg-feuille h3 { margin: 1.5em 0 0.5em; font-family: var(--text); font-size: 1.125rem; font-weight: var(--tb); line-height: 1.3; letter-spacing: 0; color: var(--ink); }
+.lg-feuille h2 + h3 { margin-top: 0; }
+.lg-feuille :is(strong, b) { color: var(--ink); }
+.lg-feuille a { color: var(--brand); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.lg-feuille a:hover { color: var(--ink); }
+.lg-feuille ul { margin: 0 0 1.05em; padding-left: 1.4em; list-style: disc; }
+.lg-feuille li { margin: 0.42em 0; padding-left: 0.2em; }
+.lg-feuille ul > li::marker { color: var(--w4); }
+.lg-feuille hr { height: 2px; margin: 2.4em 0 1.6em; border: 0; border-radius: 2px; background: var(--line); }
+
+/* Tableau (finalités et bases légales) : deux colonnes de phrases, sur une
+   fiche. Un vrai tableau à toutes les largeurs : la ligne d'en-tête reste
+   dessinée et les lecteurs d'écran gardent lignes et colonnes ; sur téléphone
+   les cellules se resserrent et passent à la ligne. */
+.lg-feuille table { width: 100%; margin: 1.4em 0; border-collapse: separate; border-spacing: 0; border-radius: 18px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.875rem; line-height: 1.45; }
+.lg-feuille :is(th, td) { padding: 10px 12px; text-align: left; vertical-align: top; overflow-wrap: break-word; }
+.lg-feuille th { padding-top: 13px; font-weight: var(--tb); color: var(--ink); }
+.lg-feuille td { border-top: 1px solid var(--line); }
+.lg-feuille thead + tbody tr:first-child td { border-top: 2px solid rgba(20, 37, 79, 0.18); }
+.lg-feuille td:first-child { width: 56%; }
+@media (min-width: 560px) {
+  .lg-feuille table { font-size: 0.9375rem; line-height: 1.5; }
+  .lg-feuille :is(th, td) { padding: 12px 18px; }
+  .lg-feuille th { padding-top: 15px; }
+  .lg-feuille td:first-child { width: 58%; }
+}
+
+/* Encarts : des fiches rondes et mates. Ciel doux (une adresse, des liens, un
+   choix), ambre (l'alerte), bleu (la recommandation). */
+.lg-note { margin: 1.2em 0; padding: 16px 18px; border-radius: var(--r-md); background: var(--sky-soft); font-size: 1rem; line-height: 1.55; }
+.lg-note p { margin-bottom: 0.3em; }
+.lg-note.alerte { background: var(--wait-bg); color: #5F3600; }
+.lg-note.alerte :is(strong, .lg-note-t) { color: #5F3600; }
+.lg-note.info { background: var(--plan-bg); color: var(--ink); }
+.lg-feuille .lg-note-t { margin-bottom: 0.5em; font-weight: var(--tb); color: var(--ink); }
+/* Les liens d'un encart : une flèche dessinée (la police n'a pas ce caractère),
+   une cible de 44 px de haut. */
+.lg-feuille .lg-liens { margin: 0; padding: 0; list-style: none; }
+.lg-liens li { margin: 0; padding: 0; }
+.lg-liens a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: var(--tb); }
+.lg-liens svg { flex: none; }
+/* Le choix de la mesure d'audience : l'état, puis deux boutons de même poids. */
+.lg-choix { padding: 18px; }
+.lg-choix p { margin-bottom: 14px; font-size: 0.9375rem; }
+.lg-boutons { display: flex; flex-wrap: wrap; gap: 12px 10px; padding-bottom: 5px; }
+.lg-boutons .btn { min-height: 46px; padding: 6px 18px; font-size: 0.9375rem; text-align: center; box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 4px 0 var(--edge); }
+.lg-boutons .btn:active { translate: 0 4px; box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12); }
+
+/* La dernière ligne : la date de mise à jour, ou la mention de fin. */
+.lg-feuille .lg-fin { margin: 0; font-size: 0.9375rem; line-height: 1.55; color: var(--ink-3); }
+.lg-maj { margin-top: 2.4em; padding-top: 1.4em; border-top: 2px solid var(--line); font-size: 0.9375rem; color: var(--ink-3); }
+
+@media (max-width: 559px) {
+  .lg-tete { padding: 104px var(--d) 30px var(--g); }
+  .lg-feuille { padding-top: 34px; padding-bottom: 132px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  .lg-feuille h2 { font-size: 1.375rem; }
+  .lg-boutons .btn { flex: 1 1 100%; }
+}
+@media (min-width: 900px) {
+  .lg-tete { padding-top: 148px; padding-bottom: 52px; }
+  .lg-feuille { padding-top: 56px; padding-bottom: 190px; }
+  .lg-feuille::before, .lg-feuille::after { --p: 440px; --th: 54px; }
+  .lg-feuille::before { height: 112px; }
+  .lg-feuille::after { height: 60px; }
+}
+/* Contrastes forcés (Windows) : sans fond, un contour rend leur forme aux
+   fiches ; le décor de l'eau disparaît. Impression : pas de décor non plus. */
+@media (forced-colors: active) {
+  .lg-note, .lg-feuille table { border: 1px solid CanvasText; }
+  .lg-feuille::before, .lg-feuille::after { display: none; }
+}
+@media print {
+  .lg-feuille::before, .lg-feuille::after { display: none; }
+  .lg-feuille { padding-bottom: 0; }
+}
+/* Une fiche d'identité : des lignes « libellé : valeur », serrées. */
+.lg-serre p { margin-bottom: 0.45em; }
+.lg-note p:last-child, .lg-serre p:last-child { margin-bottom: 0; }

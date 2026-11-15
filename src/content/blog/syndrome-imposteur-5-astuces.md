@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "debuter-organiser"
 episodeNumber: 9
 readTime: "6 min"
 cover: "/blog/syndrome-imposteur-cover.jpg"

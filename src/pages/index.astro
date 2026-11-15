@@ -9,21 +9,35 @@
  *  - CalendlyWidget : badge flottant tiers déposé (cf. CtaBanner : CTA devenu mailto).
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
+// En-tête et pied du site (ceux de la DA 2026, communs à toutes les pages depuis
+// la phase 5a, MIGRATION.md § 9.ed). Footer rend aussi le micro-script du tiroir.
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { SITE_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
 import { FAQ_ACCUEIL, reponseTexte } from '@/data/faqAccueil';
 
-import HeroSection from '@/components/home/HeroSection.astro';
-import SocialProofSection from '@/components/home/SocialProofSection.astro';
-import PresentationVideoSection from '@/components/home/PresentationVideoSection.astro';
-import FeaturesSection from '@/components/home/FeaturesSection.astro';
-import CtaBanner from '@/components/home/CtaBanner.astro';
-import JourneySection from '@/components/home/JourneySection.astro';
-import TestimonialsSection from '@/components/home/TestimonialsSection.astro';
-import PartnersSection from '@/components/home/PartnersSection.astro';
-import PricingSection from '@/components/home/PricingSection.astro';
-import FaqSection from '@/components/home/FaqSection.astro';
+// DA 2026, phases 2 et 3 : le premier écran, « Sous la surface » (fenêtre
+// produit à onglets et trois cases courtes), puis les feuilles claires : « Pour
+// qui », le fondateur et le film, les témoignages, les syndicats et partenaires,
+// les tarifs, les questions, les guides, et la scène finale. Depuis l'épure de
+// novembre 2026 (MIGRATION.md § 9.eu), les témoignages passent avant les
+// syndicats : un confrère l'a construit, des confrères s'en servent, puis les
+// syndicats et leurs 6 mois d'essai, qui mènent aux prix. Les anciennes
+// sections (`src/components/home/`) sont supprimées depuis la phase 4a.
+import Hero from '@/components/accueil/Hero.astro';
+import { imagesBuste } from '@/components/accueil/buste';
+import SousLaSurface from '@/components/accueil/SousLaSurface.astro';
+import PourQui from '@/components/accueil/PourQui.astro';
+import Fondateur from '@/components/accueil/Fondateur.astro';
+import Partenaires from '@/components/accueil/Partenaires.astro';
+import Temoignages from '@/components/accueil/Temoignages.astro';
+import Tarifs from '@/components/accueil/Tarifs.astro';
+import Questions from '@/components/accueil/Questions.astro';
+import Guides from '@/components/accueil/Guides.astro';
+import SceneFinale from '@/components/accueil/SceneFinale.astro';
+
+// Mêmes fichiers que le <picture> de Hero.astro (même fabrique, mêmes URL).
+const buste = await imagesBuste();
 
 const title = 'Hippodoc — Cockpit financier des médecins | Super-Net';
 const description =
@@ -39,12 +53,13 @@ const websiteSchema = {
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 
-// 11 questions/réponses — verbatim, identiques à celles rendues par FaqSection.astro.
+// 8 questions/réponses (10 jusqu'à l'épure de novembre 2026, MIGRATION.md § 9.eu) —
+// verbatim, identiques à celles rendues par accueil/Questions.astro.
 const faqPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   // Dérivé de la source unique : le schéma ne peut plus diverger du texte visible,
-  // ce que Google exige. Auparavant les 10 questions étaient recopiées à la main ici.
+  // ce que Google exige. Auparavant les questions étaient recopiées à la main ici.
   mainEntity: FAQ_ACCUEIL.map((item) => ({
     '@type': 'Question',
     name: item.question,
@@ -52,20 +67,27 @@ const faqPageSchema = {
   })),
 };
 
-// VideoObject — mêmes valeurs que la source (src/pages/landing/index.tsx) ;
-// contentUrl = vidéo auto-hébergée Supabase Storage (cf. PresentationVideoSection.astro),
-// thumbnailUrl = poster de la source servi depuis public/.
+// VideoObject. Depuis le 10 novembre 2026 (MIGRATION.md § 9.ec) : film vertical
+// de 57 secondes, servi par le site. contentUrl = public/hippodoc-film-v21.mp4
+// (le `src` du <video>, cf. accueil/Fondateur.astro), thumbnailUrl =
+// public/hippodoc-film-v21-poster.jpg (le film à 8,5 s). `name` est le titre du
+// film (attribut `title` du <video>) ; le titre visible du bloc est devenu
+// « Découvre Hippodoc en vidéo » (§ 9.fh) ; `description` attend la phase 4c (§ 9.eb), « sous-titré »
+// en est seulement retiré (le film porte ses textes à l'écran, pas des
+// sous-titres). `uploadDate` : le jour de la mise en ligne du film, à remettre
+// au jour réel de la fusion (§ 9.ec).
 const videoSchema = {
   '@context': 'https://schema.org',
   '@type': 'VideoObject',
-  name: 'Hippodoc en 90 secondes',
+  name: 'Hippodoc en une minute',
   description:
-    "Film de présentation sous-titré d'Hippodoc : tu factures, Hippodoc calcule le reste — URSSAF, CARMF, impôts et Super-Net pour les médecins remplaçants, installés, collaborateurs ou salariés.",
-  thumbnailUrl: [`${SITE_URL}/hippodoc-presentation-st-poster.jpg`],
-  uploadDate: '2026-08-04T09:00:00+02:00',
-  duration: 'PT1M33S',
-  contentUrl:
-    'https://zlqlijendlquvwnodeqq.supabase.co/storage/v1/object/public/public-assets/hippodoc-presentation-st.mp4',
+    "Film de présentation d'Hippodoc : tu factures, Hippodoc calcule le reste — URSSAF, CARMF, impôts et Super-Net pour les médecins remplaçants, installés, collaborateurs ou salariés.",
+  thumbnailUrl: [`${SITE_URL}/hippodoc-film-v21-poster.jpg`],
+  uploadDate: '2026-11-11T00:00:00+01:00',
+  duration: 'PT57S',
+  contentUrl: `${SITE_URL}/hippodoc-film-v21.mp4`,
+  width: 720,
+  height: 1280,
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 ---
@@ -77,16 +99,20 @@ const videoSchema = {
   ogImage="https://www.hippodoc.fr/lovable-uploads/og-image.png"
   ogImageAlt="Hippodoc — Le cockpit financier des médecins"
   jsonLd={[SOFTWARE_APPLICATION_SCHEMA, websiteSchema, faqPageSchema, videoSchema]}
+  bodyClass="da-fond"
 >
   <Fragment slot="head">
-    <!-- Préchargement de l'image LCP du Hero (AVIF) — mirroré depuis index.html de la source. -->
+    <!-- Barre du navigateur mobile : le ciel de la DA (jeton sky-1). -->
+    <meta name="theme-color" content="#C9DEFF" />
+    <!-- Préchargement du buste de la mascotte, l'image du premier écran. Pas de `href` :
+         un navigateur qui lit l'AVIF mais pas `imagesrcset` (Safari 16.4 à 17.1)
+         téléchargerait une largeur que le <picture> ne choisira peut-être pas. -->
     <link
       rel="preload"
       as="image"
       type="image/avif"
-      href="/lovable-uploads/hero-dashboard-4-960.avif"
-      imagesrcset="/lovable-uploads/hero-dashboard-4-640.avif 640w, /lovable-uploads/hero-dashboard-4-960.avif 960w, /lovable-uploads/hero-dashboard-4.avif 1920w"
-      imagesizes="(max-width: 768px) 100vw, 50vw"
+      imagesrcset={buste.avif.srcSet.attribute}
+      imagesizes={buste.sizes}
       fetchpriority="high"
     />
   </Fragment>
@@ -99,21 +125,23 @@ const videoSchema = {
   </a>
 
   <div class="min-h-screen bg-gradient-to-b from-hippo-50 to-white">
+    {/* La pastille survole le ciel du premier écran, qui lui réserve le haut. */}
     <Header />
 
     <main id="contenu-principal" tabindex="-1" class="flex-1">
-      <HeroSection />
-      <SocialProofSection />
-      <PresentationVideoSection />
-      <FeaturesSection />
-      <CtaBanner />
-      <JourneySection />
-      <TestimonialsSection />
-      <PartnersSection />
-      <PricingSection />
-      <FaqSection />
+      <Hero />
+      <SousLaSurface />
+      <PourQui />
+      <Fondateur />
+      <Temoignages />
+      <Partenaires />
+      <Tarifs />
+      <Questions />
+      <Guides />
+      <SceneFinale />
     </main>
 
-    <Footer />
+    {/* Les trois logos des soutiens sont dans le bloc Partenaires : le pied ne les répète pas. */}
+    <Footer soutiens={false} />
   </div>
 </BaseLayout>

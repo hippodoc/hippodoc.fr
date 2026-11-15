@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { THEME_SLUGS } from './lib/blog-themes';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
@@ -13,6 +14,10 @@ const blog = defineCollection({
     category: z.string(),
     categoryNumber: z.string().optional(),
     seriesId: z.enum(['fiche-pratique', 'fiche-fiscalite', 'divers']),
+    /* Le thème de l'article (MIGRATION.md § 9.fp) : obligatoire, un des cinq slugs de
+       src/lib/blog-themes.ts. Un article sans thème, ou avec un thème inconnu, arrête la
+       construction : il n'aurait ni page de thème, ni fil d'Ariane complet. */
+    theme: z.enum(THEME_SLUGS),
     episodeNumber: z.number().optional(),
     readTime: z.string(),
     /** Article mis « à la une » sur /blog (sinon : le plus récent, cf. blog-sort.ts). */

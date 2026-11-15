@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "statut-contrats-revenus"
 episodeNumber: 4
 readTime: "5 min"
 cover: "/blog/salariat-vs-liberal-cover.jpg"
@@ -25,6 +26,7 @@ faq:
   - question: "Un médecin libéral est-il indemnisé en arrêt maladie ?"
     answer: "Oui : la CPAM verse des indemnités du **4e au 90e jour** d'arrêt, jusqu'à **197,51 € par jour** en 2026, si tu es affilié depuis **au moins 12 mois**. À partir du **91e jour**, c'est la CARMF qui indemnise. Pendant ta première année de libéral, tu n'as donc pas d'indemnités de la CPAM."
 relatedArticles:
+  - "aides-installation-medecin-2026"
   - "choix-mode-exercice"
   - "remplacement-salarie-guide-complet"
   - "salaires-medecins-remplacants"

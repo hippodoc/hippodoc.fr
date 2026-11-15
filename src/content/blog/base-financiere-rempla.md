@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "budget-patrimoine"
 episodeNumber: 7
 readTime: "5 min"
 cover: "/blog/base-financiere-rempla-cover.jpg"

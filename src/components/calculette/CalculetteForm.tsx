@@ -24,7 +24,7 @@ function Notice({
   tone, icon: Icon, children,
 }: { tone: NoticeTone; icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
   return (
-    <div className={`rounded-xl border ${NOTICE_STYLES[tone]} px-4 py-3 text-xs flex items-start gap-2.5`}>
+    <div className={`calc-note rounded-xl border ${NOTICE_STYLES[tone]} px-4 py-3 text-xs flex items-start gap-2.5`}>
       <Icon className="h-4 w-4 shrink-0 mt-0.5" />
       <div className="leading-relaxed">{children}</div>
     </div>
@@ -120,7 +120,7 @@ function FieldRow({ field }: { field: FieldConfig }) {
             <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label={`Aide pour ${field.label}`}>
               <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
             </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">{field.hint}</TooltipContent>
+            <TooltipContent className="calc calc-bulle max-w-xs text-xs">{field.hint}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
@@ -385,7 +385,7 @@ export function CalculetteForm() {
   return (
     <div className="space-y-5">
       {/* Profil & régime */}
-      <Card className="bg-white dark:bg-card border border-[#e8ecf1] dark:border-border/60 rounded-xl shadow-sm shadow-slate-100/50 dark:shadow-none">
+      <Card className="calc-fiche">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg font-semibold tracking-tight">Ton profil</CardTitle>
           <CardDescription className="text-xs">On adapte les blocs à ta situation.</CardDescription>
@@ -399,7 +399,7 @@ export function CalculetteForm() {
                   <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide profil">
                     <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm text-xs space-y-1.5">
+                  <TooltipContent className="calc calc-bulle max-w-sm text-xs space-y-1.5">
                     <p>• <strong>Remplaçant, interne ou vacataire</strong> — libéral non-installé, sans patientèle propre. Inclut PH/assistant/attaché qui fait du libéral à côté (le salaire CHU va en 1AJ de la 2042).</p>
                     <p>• <strong>Cabinet installé — secteur 1 conventionné</strong> — tarifs opposables. Donne accès aux forfaits S1 (2 %, 3 %, Groupe III). Coche « dépassements autorisés » si tu factures aussi des DP / actes hors nomenclature.</p>
                     <p>• <strong>Installé secteur 2</strong> (avec ou sans OPTAM) — dépassements autorisés, DSAU recalculée dynamiquement.</p>
@@ -414,7 +414,7 @@ export function CalculetteForm() {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={(v) => field.onChange(v as ProfilCalculette)}>
                   <SelectTrigger id="calc-profil" className="h-10"><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="calc calc-pop">
                     {PROFILS_VISIBLES.map((p) => (
                       <SelectItem key={p} value={p}>{PROFIL_LABELS[p]}</SelectItem>
                     ))}
@@ -431,7 +431,7 @@ export function CalculetteForm() {
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger id="calc-regime-fiscal" className="h-10"><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="calc calc-pop">
                     <SelectItem value="reel">Réel — Déclaration contrôlée (2035)</SelectItem>
                     <SelectItem value="micro_bnc">Micro-BNC (abattement 34 %)</SelectItem>
                   </SelectContent>
@@ -447,7 +447,7 @@ export function CalculetteForm() {
               render={({ field }) => (
                 <Select value={String(field.value)} onValueChange={(v) => field.onChange(parseInt(v, 10))}>
                   <SelectTrigger id="calc-annee" className="h-10"><SelectValue /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="calc calc-pop">
                     <SelectItem value="2024">Revenus 2024 (déclaration 2025)</SelectItem>
                     <SelectItem value="2025">Revenus 2025 (déclaration 2026)</SelectItem>
                     <SelectItem value="2026">Revenus 2026 (déclaration 2027)</SelectItem>
@@ -490,7 +490,7 @@ export function CalculetteForm() {
                   <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide déclarant">
                     <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-xs text-xs space-y-1">
+                  <TooltipContent className="calc calc-bulle max-w-xs text-xs space-y-1">
                     <p><strong>Déclarant 1</strong> : la personne dont le nom apparaît en premier sur la déclaration commune.</p>
                     <p><strong>Déclarant 2</strong> : conjoint(e) ou partenaire de PACS.</p>
                     <p className="text-muted-foreground">Seul le report sur la 2042 et la DSFU change (5HQ→5IQ, DSCS→DSDS, etc.). La liasse 2035 reste identique.</p>
@@ -530,7 +530,7 @@ export function CalculetteForm() {
                   <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide régime social">
                     <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm text-xs space-y-1.5">
+                  <TooltipContent className="calc calc-bulle max-w-sm text-xs space-y-1.5">
                     <p><strong>PAMC</strong> (Praticien Auxiliaire Médical Conventionné) : régime par défaut. Tu remplis la <strong>DSFU (ex DS-PAMC)</strong>. Obligatoire pour les installés (S1/S2) et collaborateurs.</p>
                     <p><strong>RSPM</strong> (Régime Simplifié des Professions Médicales) : sur option, réservé aux <strong>remplaçants</strong>, ouvert jusqu'à 19 000 € d'honoraires par an ; perdu au 1<sup>er</sup> janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. Pas de DSFU : cotisations via <strong>DRI-PAMC</strong> (13,5 % ≤ 19 k€, 21,2 % au-delà) + CARMF RID.</p>
                     <p className="text-muted-foreground pt-1 border-t border-border/40">Bascule en PAMC l'année <strong>suivant</strong> le dépassement (CSS Art. L646-1) — d'où le bouton « Forcer » pour la 1<sup>re</sup> année titulaire restée en RSPM transitoire.</p>
@@ -600,7 +600,7 @@ export function CalculetteForm() {
                 <HelpCircle className="h-3.5 w-3.5" />
               </button>
             </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">
+            <TooltipContent className="calc calc-bulle max-w-xs text-xs">
               Concerne tous les salaires : hospitalier, centre de santé, gardes aux urgences salariées, attaché, PH, assistant, interne CHU… Tes <em>frais réels salariés</em> vs abattement 10&nbsp;% se gèrent séparément.
             </TooltipContent>
           </Tooltip>
@@ -693,7 +693,7 @@ export function CalculetteForm() {
       )}
 
       {isMicro && (
-        <Card className="bg-white dark:bg-card border border-[#e8ecf1] dark:border-border/60 rounded-xl shadow-sm shadow-slate-100/50 dark:shadow-none">
+        <Card className="calc-fiche">
           <CardHeader>
             <CardTitle className="text-lg font-semibold tracking-tight flex items-center gap-2">
               <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">M</span>
@@ -733,7 +733,7 @@ export function CalculetteForm() {
       {/* === BRANCHE RÉEL === */}
       {!isMicro && (
         <>
-          <Card className="bg-white dark:bg-card border border-[#e8ecf1] dark:border-border/60 rounded-xl shadow-sm shadow-slate-100/50 dark:shadow-none">
+          <Card className="calc-fiche">
             <CardHeader>
               <CardTitle className="text-lg font-semibold tracking-tight flex items-center gap-2">
                 <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-slate-100 dark:bg-muted text-slate-600 dark:text-muted-foreground text-xs font-semibold">1</span>
@@ -747,7 +747,7 @@ export function CalculetteForm() {
           </Card>
 
           {showExonerations && (
-            <Card className="bg-white dark:bg-card border border-[#e8ecf1] dark:border-border/60 rounded-xl shadow-sm shadow-slate-100/50 dark:shadow-none">
+            <Card className="calc-fiche">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold tracking-tight flex items-center gap-2">
                   <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-slate-100 dark:bg-muted text-slate-600 dark:text-muted-foreground text-xs font-semibold">E</span>
@@ -764,7 +764,7 @@ export function CalculetteForm() {
       )}
 
       {/* Bloc 2 — Données complémentaires (commun) */}
-      <Card className="bg-white dark:bg-card border border-[#e8ecf1] dark:border-border/60 rounded-xl shadow-sm shadow-slate-100/50 dark:shadow-none">
+      <Card className="calc-fiche">
         <CardHeader>
           <CardTitle className="text-lg font-semibold tracking-tight flex items-center gap-2">
             <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-slate-100 dark:bg-muted text-slate-600 dark:text-muted-foreground text-xs font-semibold">2</span>
@@ -818,7 +818,7 @@ export function CalculetteForm() {
       {/* Bloc 3 — Cadre 8 (réel uniquement, masqué pour remplaçants, replié) */}
       {showCadre8 && (
         <Collapsible>
-          <Card className="bg-white dark:bg-card border border-[#e8ecf1] dark:border-border/60 rounded-xl shadow-sm shadow-slate-100/50 dark:shadow-none">
+          <Card className="calc-fiche">
             <CollapsibleTrigger className="w-full text-left">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 group">
                 <div>
@@ -911,7 +911,7 @@ function ZoneExoMicroBlock() {
               <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide ZFU/ZFRR">
                 <HelpCircle className="h-3.5 w-3.5 text-emerald-700/70 dark:text-emerald-300/70 hover:text-emerald-900 dark:hover:text-emerald-100 transition" />
               </TooltipTrigger>
-              <TooltipContent className="max-w-sm text-xs space-y-1.5">
+              <TooltipContent className="calc calc-bulle max-w-sm text-xs space-y-1.5">
                 <p><strong>5HP / 5IP</strong> = recettes en zone × 0,66 × <strong>taux dégressif</strong>, plafonné.</p>
                 <p><strong>5HQ / 5IQ</strong> = recettes brutes restantes (le fisc applique le 34 %).</p>
                 <p><strong>Plafonds</strong> : 50 000 €/an ZFU-TE · 300 000 €/3 ans glissants ZFRR.</p>
@@ -938,7 +938,7 @@ function ZoneExoMicroBlock() {
             render={({ field }) => (
               <Select value={field.value ?? 'aucune'} onValueChange={(v) => field.onChange(v as 'aucune' | 'zfu' | 'zfrr')}>
                 <SelectTrigger id="calc-zone" className="h-9 text-sm"><SelectValue /></SelectTrigger>
-                <SelectContent>
+                <SelectContent className="calc calc-pop">
                   <SelectItem value="aucune">Aucune</SelectItem>
                   <SelectItem value="zfu">🏙️ ZFU-TE (Art. 44 octies A) — clos au 31/12/2025</SelectItem>
                   <SelectItem value="zfrr" disabled={profil === 'remplacant'}>
@@ -1002,7 +1002,7 @@ function ZoneExoMicroBlock() {
                   <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label="Aide mois d'installation">
                     <HelpCircle className="h-3.5 w-3.5 text-emerald-700/70 dark:text-emerald-300/70" />
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-sm text-xs space-y-1.5">
+                  <TooltipContent className="calc calc-bulle max-w-sm text-xs space-y-1.5">
                     <p>L'année 1 du dispositif ZFU, le <strong>plafond annuel</strong> (50 000 €) est ajusté <strong>en mois entiers</strong> (BOFiP BOI-BIC-CHAMP-80-10-20-20 §80) — toute fraction de mois compte pour un mois entier.</p>
                     <p>Exemple : installation en <strong>septembre</strong> ⇒ plafond ajusté = 50 000 × 4/12 ≈ <strong>16 667 €</strong>.</p>
                     <p className="text-amber-700 dark:text-amber-300">⚠️ Le bénéfice exonéré lui-même n'est pas prorata-isé : seul le plafond l'est.</p>
@@ -1022,7 +1022,7 @@ function ZoneExoMicroBlock() {
                   <SelectTrigger id="calc-mois-installation" className="h-9 text-sm">
                     <SelectValue placeholder="Janvier (plafond plein 50 000 €)" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="calc calc-pop">
                     {MOIS_FR.map((m) => (
                       <SelectItem key={m.v} value={String(m.v)}>{m.label}</SelectItem>
                     ))}
@@ -1121,7 +1121,7 @@ function NestedFieldRow({ name, label, hint }: SousPosteConfig) {
             <TooltipTrigger type="button" className="-m-1.5 p-1.5" aria-label={`Aide pour ${label}`}>
               <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground transition" />
             </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">{hint}</TooltipContent>
+            <TooltipContent className="calc calc-bulle max-w-xs text-xs">{hint}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
@@ -1231,7 +1231,7 @@ function AssistanceSecteur1Card() {
 
   return (
     <Collapsible>
-      <Card className="bg-white dark:bg-card border border-[#e8ecf1] dark:border-border/60 rounded-xl shadow-sm shadow-slate-100/50 dark:shadow-none">
+      <Card className="calc-fiche">
         <CollapsibleTrigger className="w-full text-left">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 group">
             <div>

@@ -71,17 +71,19 @@ export const termHref = (termId: string) => `#${termAnchor(termId)}`;
 
 // =====================================================================
 // Styles de badges (cohérents avec GlossaireSection / TopQuestionsSection)
+// DA 2026 (phase 5d, MIGRATION.md § 9.el) : toutes les références sont des
+// pastilles ciel doux (guide.css, `.gd-ref`) ; l'icône dit le type.
 // =====================================================================
 
 export const FICHE_TYPE_STYLES: Record<FicheRef['type'], { icon: React.ElementType; label: string; className: string }> = {
-  regle: { icon: Zap, label: "Règle d'or", className: 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200/80 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800/50' },
-  pepite: { icon: Gem, label: 'Astuce', className: 'bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-200/80 dark:bg-purple-900/40 dark:text-purple-300 dark:border-purple-800/50' },
-  'zone-grise': { icon: Scale, label: 'Débattu', className: 'bg-slate-200 text-foreground border-slate-300 hover:bg-slate-300/80 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600' },
+  regle: { icon: Zap, label: "Règle d'or", className: 'regle' },
+  pepite: { icon: Gem, label: 'Astuce', className: 'astuce' },
+  'zone-grise': { icon: Scale, label: 'Débattu', className: 'debat' },
 };
 
-export const QUESTION_BADGE_CLASS = 'bg-indigo-100 text-indigo-700 border-indigo-200 hover:bg-indigo-200/80 dark:bg-indigo-900/40 dark:text-indigo-300 dark:border-indigo-800/50';
-export const CASE_BADGE_CLASS = 'bg-cyan-100 text-cyan-700 border-cyan-200 hover:bg-cyan-200/80 dark:bg-cyan-900/40 dark:text-cyan-300 dark:border-cyan-800/50';
-export const TERM_BADGE_CLASS = 'bg-hippo-50 text-hippo-700 border-hippo-200 hover:bg-hippo-100 dark:bg-hippo-900/30 dark:text-hippo-300 dark:border-hippo-800/50';
+export const QUESTION_BADGE_CLASS = 'question';
+export const CASE_BADGE_CLASS = 'case';
+export const TERM_BADGE_CLASS = 'terme';
 
 // =====================================================================
 // Composant unique de rendu des liens croisés (Voir aussi)
@@ -116,21 +118,21 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
 
   const Row: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) =>
     compact ? (
-      <div className="flex items-start gap-1.5 mt-2 flex-wrap">
-        <span className="text-[10px] text-muted-foreground mt-1">{label}</span>
+      <div className="gd-voir">
+        <span className="gd-voir-nom">{label}</span>
         {children}
       </div>
     ) : (
       <div>
-        <div className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1.5 font-semibold">{label}</div>
-        <div className="flex items-center gap-1.5 flex-wrap">{children}</div>
+        <div className="gd-sur petit">{label}</div>
+        <div className="gd-refs">{children}</div>
       </div>
     );
 
   return (
-    <div className={compact ? '' : 'mt-3 pt-3 border-t border-slate-200/60 dark:border-slate-700/40 space-y-2'}>
+    <div className={compact ? '' : 'gd-croises'}>
       {!compact && (
-        <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">Voir aussi</div>
+        <div className="gd-sur petit">Voir aussi</div>
       )}
 
       {fiches.length > 0 && (
@@ -143,10 +145,10 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
                 key={f.id}
                 href={resolve(ficheAnchor(f.id))}
                 title={`${style.label} — ${f.titre}`}
-                className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${style.className}`}
+                className={`gd-ref ${style.className}`}
               >
-                <Icon className="h-2.5 w-2.5 shrink-0" />
-                <span className="truncate max-w-[220px]">{f.titre}</span>
+                <Icon className="gd-ic" />
+                <span className="gd-ref-nom">{f.titre}</span>
               </a>
             );
           })}
@@ -160,10 +162,10 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
               key={q.id}
               href={resolve(questionAnchor(q.id))}
               title={q.question}
-              className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${QUESTION_BADGE_CLASS}`}
+              className={`gd-ref ${QUESTION_BADGE_CLASS}`}
             >
-              <HelpCircle className="h-2.5 w-2.5 shrink-0" />
-              <span className="truncate max-w-[220px]">{q.question}</span>
+              <HelpCircle className="gd-ic" />
+              <span className="gd-ref-nom">{q.question}</span>
             </a>
           ))}
         </Row>
@@ -176,11 +178,11 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
               key={c.code}
               href={resolve(caseAnchor(c.code))}
               title={`${c.code} — ${c.nom} (${c.formulaire})`}
-              className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${CASE_BADGE_CLASS}`}
+              className={`gd-ref ${CASE_BADGE_CLASS}`}
             >
-              <FileText className="h-2.5 w-2.5 shrink-0" />
-              <span className="font-mono font-bold">{c.code}</span>
-              <span className="truncate max-w-[160px] opacity-80">— {c.nom}</span>
+              <FileText className="gd-ic" />
+              <span className="gd-code">{c.code}</span>
+              <span className="gd-ref-nom court">— {c.nom}</span>
             </a>
           ))}
         </Row>
@@ -193,10 +195,10 @@ export const CrossLinks: React.FC<CrossLinksProps> = ({
               key={t.id}
               href={resolve(termAnchor(t.id))}
               title={`Définition : ${t.term}`}
-              className={`group inline-flex items-center gap-1 max-w-full text-[10px] px-1.5 py-0.5 rounded-md border transition-colors ${TERM_BADGE_CLASS}`}
+              className={`gd-ref ${TERM_BADGE_CLASS}`}
             >
-              <BookA className="h-2.5 w-2.5 shrink-0" />
-              <span className="truncate max-w-[200px]">{t.term}</span>
+              <BookA className="gd-ic" />
+              <span className="gd-ref-nom">{t.term}</span>
             </a>
           ))}
         </Row>
@@ -271,13 +273,13 @@ export const InlineRef: React.FC<{ token: string }> = ({ token }) => {
     <a
       href={href}
       title={`${meta.fullPrefix} — ${fullTitle}`}
-      className="group inline-flex items-center gap-1 align-baseline rounded-md border border-hippo-200/60 dark:border-hippo-700/50 bg-hippo-50/60 dark:bg-hippo-900/30 px-1.5 py-0.5 text-[0.78em] leading-tight text-hippo-700 dark:text-hippo-300 hover:bg-hippo-100 dark:hover:bg-hippo-800/50 hover:text-hippo-800 dark:hover:text-hippo-200 transition-colors no-underline"
+      className="gd-ref enligne"
     >
-      <Icon className="h-3 w-3 shrink-0" aria-hidden="true" />
-      <span className="font-medium">{meta.typeLabel}</span>
-      <span className="opacity-60">·</span>
+      <Icon className="gd-ic" aria-hidden="true" />
+      <span className="gd-ref-type">{meta.typeLabel}</span>
+      <span className="gd-ref-sep">·</span>
       <span>{shortLabel}</span>
-      <ArrowUpRight className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-70 transition-opacity" aria-hidden="true" />
+      <ArrowUpRight className="gd-ic gd-ref-va" aria-hidden="true" />
     </a>
   );
 };

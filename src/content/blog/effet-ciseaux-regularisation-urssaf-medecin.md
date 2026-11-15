@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#13"
 seriesId: "fiche-fiscalite"
+theme: "cotisations-protection"
 episodeNumber: 13
 readTime: "9 min"
 cover: "/blog/effet-ciseaux-cover.jpg"

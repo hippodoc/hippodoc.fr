@@ -7,6 +7,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "impots-declarations"
 episodeNumber: 7
 readTime: "12 min"
 cover: "/blog/frais-pros-medecins-salaries-internes-2026-cover.jpg"

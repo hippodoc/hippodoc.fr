@@ -37,7 +37,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.84.0",
-    "recharts": "^2.15.4",
     "remark-directive": "^4.0.0",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.1",
@@ -45,7 +44,6 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.15",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.5.4",

@@ -6,6 +6,7 @@ author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
 seriesId: "divers"
+theme: "budget-patrimoine"
 episodeNumber: 12
 readTime: "12 min"
 cover: "/blog/enveloppes-investissement-cover.jpg"

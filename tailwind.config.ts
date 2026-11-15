@@ -1,31 +1,56 @@
 import type { Config } from "tailwindcss";
-// @ts-ignore
-import { default as flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette";
+import defaultTheme from "tailwindcss/defaultTheme";
+
+/* Ce qui reste de Tailwind depuis la phase 5d (MIGRATION.md § 9.em) : les pages
+   et leurs composants sont dans la DA, sans classe utilitaire. Tailwind sert
+   encore le socle (preflight), les composants partagés `src/components/ui/`
+   (shadcn), les .tsx des îlots (simulateur, calculette, guide des
+   déclarations : logique et habillage y sont mêlés, ils gardent des
+   utilitaires), le carrousel du blog, BlogReadMore.astro, la bannière cookies
+   de ThirdPartyScripts.astro et trois classes de src/pages/index.astro. D'où
+   ce qui est gardé ici :
+   les couleurs `hippo` et les jetons shadcn, les rayons, les deux animations de
+   l'accordéon. Retirés en 5d, preuve d'inemploi à l'appui : le conteneur
+   (`container`), quatorze animations et treize de leurs images clés, le plugin
+   typography (`prose`), et le plugin qui exposait chaque couleur de Tailwind en
+   variable CSS (263 variables dans la feuille commune, aucune lue).
+   Phase 6 (§ 9.eo) : les variantes du mode sombre ne sont plus écrites (voir
+   `content.transform`), et le paquet du plugin typography, qui n'était plus
+   chargé, est désinstallé. */
 
 export default {
+	/* Le site n'a pas de mode sombre : rien ne pose jamais la classe `dark`
+	   (aucune source ne la nomme hors des préfixes de classes, aucun HTML ni JS
+	   du build non plus ; sonner ne pose qu'un attribut `data-theme`). Les
+	   classes `dark:…` des îlots et de `src/components/ui/` viennent de
+	   l'application d'origine : elles restent dans les .tsx, mais Tailwind ne les
+	   voit plus (voir `content.transform`), donc n'écrit plus leurs règles
+	   (99 règles, 7,9 Ko de la feuille commune ; MIGRATION.md § 9.eo).
+	   `darkMode: class` est gardé : sans lui, si le filtre sautait, ces règles
+	   reviendraient sous `prefers-color-scheme` et s'appliqueraient pour de bon. */
 	darkMode: ["class"],
-	content: [
-		"./src/**/*.{astro,ts,tsx,md,mdx}",
-	],
-	/* Encadrés d'articles : les classes `callout callout-<type>` sont posées par
-	   `src/lib/remark-callouts.mjs` via une chaîne interpolée, dans un .mjs hors du
-	   glob ci-dessus. Tailwind ne les voyait donc nulle part et purgeait les règles
-	   `.callout*` de global.css : les encadrés sortaient sans fond ni bordure. */
-	safelist: ["callout", "callout-warning", "callout-tip", "callout-essentiel"],
+	content: {
+		files: ["./src/**/*.{astro,ts,tsx,md,mdx}"],
+		/* Retire du texte que lit Tailwind tout mot qui contient le préfixe
+		   « dark » suivi de deux-points. Le fichier, lui, n'est pas modifié. */
+		transform: (contenu: string) => contenu.replace(/[^\s"'`]*\bdark:[^\s"'`]*/g, ''),
+	},
 	prefix: "",
+	/* `.container` : plus aucun élément ne porte la classe, mais le mot revient
+	   dans les sources (noms de variables), et Tailwind en tirait la règle. */
+	corePlugins: { container: false },
 	theme: {
-		container: {
-			center: true,
-			padding: {
-				DEFAULT: '1rem',
-				sm: '1.5rem',
-				lg: '2rem',
-			},
-			screens: {
-				'2xl': '1400px'
-			}
-		},
 		extend: {
+			/* Police du site (phase 5a, MIGRATION.md § 9.ed) : Google Sans Flex sur
+			   toutes les pages, par la règle `html` du socle de Tailwind. Les trois
+			   @font-face (la police, et deux faces de repli à métriques ajustées :
+			   400 à 599, 600 à 800) sont dans src/styles/da.css ; BaseLayout
+			   précharge le woff2. Un caractère absent du fichier (flèche, coche,
+			   émoji, ≈ ≠) sort dans la suite de la liste : Arial par la face de
+			   repli, puis la liste de Tailwind par défaut. */
+			fontFamily: {
+				sans: ['"Google Sans Flex"', '"Google Sans Flex Fallback"', ...defaultTheme.fontFamily.sans],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -96,104 +121,19 @@ export default {
 						height: '0'
 					}
 				},
-				'pulse-subtle': {
-					'0%, 100%': { opacity: '1' },
-					'50%': { opacity: '0.8' },
-				},
-				'fade-in': {
-					'0%': { opacity: '0', transform: 'translateY(20px)' },
-					'100%': { opacity: '1', transform: 'translateY(0)' },
-				},
-				'slide-up': {
-					'0%': { opacity: '0', transform: 'translateY(20px)' },
-					'100%': { opacity: '1', transform: 'translateY(0)' },
-				},
-				'heartbeat': {
-					'0%, 100%': { transform: 'scale(1)' },
-					'14%': { transform: 'scale(1.1)' },
-					'28%': { transform: 'scale(1)' },
-					'42%': { transform: 'scale(1.1)' },
-					'56%': { transform: 'scale(1)' },
-				},
-				'gentle-bounce': {
-					'0%, 100%': { transform: 'translateY(0px)' },
-					'50%': { transform: 'translateY(-2px)' },
-				},
-				'gradient-xy': {
-					'0%, 100%': {
-						'background-position': '0% 50%',
-						'background-size': '400% 400%'
-					},
-					'50%': {
-						'background-position': '100% 50%',
-						'background-size': '400% 400%'
-					}
-				},
-				'spin-once': {
-					'0%': { transform: 'rotate(0deg)' },
-					'100%': { transform: 'rotate(360deg)' }
-				},
-				'glow-pulse': {
-					'0%, 100%': { boxShadow: '0 0 20px rgba(26, 140, 255, 0.4)' },
-					'50%': { boxShadow: '0 0 40px rgba(26, 140, 255, 0.8)' }
-				},
-				'slideInLeft': {
-					from: { opacity: '0', transform: 'translateX(-20px)' },
-					to: { opacity: '1', transform: 'translateX(0)' }
-				},
+				/* Le reflet du squelette de chargement du simulateur
+				   (`before:animate-[shimmer_1.5s_infinite]`, ui/skeleton.tsx) : la
+				   classe arbitraire nomme ces images clés, Tailwind les émet avec elle. */
 				'shimmer': {
 					'0%': { backgroundPosition: '-1000px 0' },
 					'100%': { backgroundPosition: '1000px 0' }
-				},
-				'pulseRing': {
-					'0%, 100%': { opacity: '1', transform: 'scale(1)' },
-					'50%': { opacity: '0.5', transform: 'scale(1.05)' }
-				},
-				'bounceSubtle': {
-					'0%, 100%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-4px)' }
-				},
-				'shakeMicro': {
-					'0%, 100%': { transform: 'translateX(0)' },
-					'25%': { transform: 'translateX(-2px)' },
-					'75%': { transform: 'translateX(2px)' }
-				},
-				'marquee': {
-					'0%': { transform: 'translateX(0)' },
-					'100%': { transform: 'translateX(-50%)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-				'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
-				'fade-in': 'fade-in 0.6s ease-out forwards',
-				'slide-up': 'slide-up 0.5s ease-out forwards',
-				'heartbeat': 'heartbeat 2s ease-in-out infinite',
-				'gentle-bounce': 'gentle-bounce 2s ease-in-out infinite',
-				'gradient-xy': 'gradient-xy 4s ease infinite',
-				'spin-once': 'spin-once 0.6s ease-out',
-				'glow-pulse': 'glow-pulse 1.5s ease-in-out infinite',
-				'slide-in-left': 'slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-				'shimmer': 'shimmer 2s linear infinite',
-				'pulse-ring': 'pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-				'bounce-subtle': 'bounceSubtle 0.6s ease-out',
-				'shake-micro': 'shakeMicro 0.5s ease-in-out',
-				'marquee': 'marquee 25s linear infinite',
+				'accordion-up': 'accordion-up 0.2s ease-out'
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography"), addVariablesForColors],
+	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
-// This plugin adds each Tailwind color as a global CSS variable, e.g. var(--hippo-500).
-function addVariablesForColors({ addBase, theme }: any) {
-  let allColors = flattenColorPalette(theme("colors"));
-  let newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-  );
-
-  addBase({
-    ":root": newVars,
-  });
-}

@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#6"
 seriesId: "fiche-pratique"
+theme: "debuter-organiser"
 episodeNumber: 6
 readTime: "5 min"
 cta: "Le logiciel métier maîtrisé ? Simplifie aussi ta gestion"

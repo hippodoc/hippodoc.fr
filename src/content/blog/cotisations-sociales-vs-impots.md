@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#2"
 seriesId: "fiche-fiscalite"
+theme: "cotisations-protection"
 episodeNumber: 2
 readTime: "5 min"
 cover: "/blog/cotisations-sociales-vs-impots-cover.png"

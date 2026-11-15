@@ -111,6 +111,10 @@ Remarques :
 | `/hippo-wall-street` | `/transmissions` |
 | `/instagram`, `/i` | `/essai` |
 | `/remplacements` (exact) | `/` |
+| `/blog/serie` (exact) | `/blog` |
+| `/blog/serie/fiches-fiscalite` | `/blog/theme/impots-declarations` (§ 9.fq : pages de série retirées, exception voulue aux URL figées) |
+| `/blog/serie/fiches-pratiques` | `/blog/theme/debuter-organiser` (§ 9.fq) |
+| `/blog/serie/guides-conseils` | `/blog` (§ 9.fq) |
 | `/dashboard`, `/auth(/*)`, `/reset-password`, `/subscription-required`, `/payment-success`, `/montants-en-attente`, `/previsionnel` | `https://app.hippodoc.fr/<même chemin>` |
 | `/activite/*`, `/revenus/*`, `/depenses/*`, `/analyses/*`, `/compte/*`, `/calendrier(/*)`, `/remplacements/*`, `/statistiques(/*)`, `/mon-espace(/*)`, `/documents(/*)`, `/paiements/*`, `/forum(/*)`, `/ressources/*`, `/dashboard-blog(/*)`, `/admin(/*)` | `https://app.hippodoc.fr/<même chemin>` |
 | `/simulateur/` et tout slash final | `/simulateur` (`"trailingSlash": false`) |
@@ -5096,41 +5100,2089 @@ ne regardait que la requête (`?…`), jamais le fragment.
   concernés (fondateur). Changer le Site URL Supabase vers l'app : seulement après avoir
   relevé les modèles d'e-mail.
 
-### 9.eb Nouvel article `aides-installation-medecin-2026` et correction de `zones-frr-exoneration-impot-medecin` (15 novembre 2026)
+### 9.eb DA 2026 : nouvelle page d'accueil (10 novembre 2026)
 
-**Nouvel article.** Texte fourni par le fondateur, qui a ensuite donné « carte blanche » pour
-le rendre cohérent avec le blog. Écarts au texte source, tous voulus :
-- **tutoiement** (le texte vouvoyait ; le blog et le standard Hippodoc tutoient) ;
-- date « Mis à jour le 15 novembre 2026 » (publication du jour, au lieu du 25 octobre) ;
-- ajout d'un bloc « L'essentiel », d'une FAQ de six questions (FAQPage JSON-LD), de deux
-  `:::tip` (l'astuce régime réel, l'encart Hippodoc) ;
-- corrections après les relectures du standard `hippodoc-exigence` (interne novice,
-  fiscaliste, correcteur ; deux passes) : règle des 25 % de recettes hors zone détaillée
-  par cas (ZFRR cabinet fixe / ZFRR non sédentaire / ZFRR+ au prorata / quartier prioritaire,
-  BOFiP BOI-BIC-CHAMP-80-10-75-20 § 150 à 230) ; aide aux créateurs réservée à certains
-  publics depuis 2020 (pas « depuis 2026 »), demande sous 60 jours après le début
-  d'activité ; revenus forfaitaires des débuts 9 131 € et 19 224 € (maladie, F39739) ;
-  contrat de début d'exercice (art. L1435-4-2 CSP) en abrogation différée par la LFSS 2026
-  et réservé aux remplaçants et étudiants (le texte source l'ouvrait aussi aux installés) ;
-  PLFSS 2027 mis à jour (Sénat depuis le 9/11, vote prévu le 18/11, « mission de
-  solidarité territoriale », PJL Sénat n° 138, art. 21) ; OBO : flat tax sur la plus-value ;
-  sigles définis (ZIP, ZAC, ASV, CFE, URPS, rescrit, 2035).
-Frontmatter : titre SEO « Aides à l'installation médecin : le vrai bilan 2026 »,
-`episodeNumber: 16` (série `divers`), `readTime` 20 min, `ctaHref: /simulateur`. Cover
-`src/assets/blog/aides-installation-cover.jpg` (illustration fournie, 1611 × 2000).
+Nouvelle direction artistique, « le monde d'Hippodoc » : un ciel du matin, une eau en
+pâte à modeler, tout en rond, le jaune réservé à « ce qu'il te reste ». Elle s'applique
+à **l'accueil seule**. Les autres pages gardent Tailwind, `Header.astro` et
+`Footer.astro` jusqu'à la phase 5a (en-tête, pied et police sur tout le site, dans les
+sept jours qui suivent la mise en ligne).
 
-- **Une** : `featured: true` retiré de `conge-maternite-paternite` (cf. § 9.dy) ; la une
-  revient au mécanisme par défaut, l'article le plus récent.
+Travail fait sur une branche longue, en quatre phases (fondations, premier écran,
+sections, bascule), relues à chaque étape. Cette entrée décrit l'état final ; le détail
+des étapes est dans l'historique git (commits « DA 2026 »).
 
-**Correction de `zones-frr-exoneration-impot-medecin`** (`updatedDate` 2026-11-15). L'article
-disait qu'un remplaçant ne peut pas bénéficier de l'exonération FRR « en tant que
-remplaçant » et qu'un collaborateur doit avoir une patientèle propre (rescrit ZRR
-BOI-RES-BIC-000030). C'est dépassé : le BOFiP BOI-BIC-CHAMP-80-10-75-30 du 29 juillet 2026
-(§ 220 et 230) admet remplaçants et collaborateurs aux conditions de droit commun, « quels que
-soient les liens de dépendance », et le § 70 (ex. 3) dit qu'un remplaçant qui s'installe
-dans la commune classée où il remplaçait poursuit son activité, sans nouvelle période.
-Description, FAQ, puce de « L'essentiel », section « Le piège » réécrite et puce de sources
-remplacées ; lien dans le texte et en tête des `relatedArticles` vers le nouvel article.
+**Ce qui change, page par page**
+
+- `/` : toute la page (habillage, structure, textes, H1). `title`, description et
+  données structurées : voir « Ce qui ne change pas ».
+- `/faq` : deux réponses (essai des syndicats, tarif interne). `/tarifs` : une réponse
+  (essai et carte bancaire) et une ligne de la liste « Inclus dans toutes les offres »
+  (hébergement). `/guide-declarations` : la ligne fine sous les boutons du bloc d'appel
+  (hébergement). Textes plus bas.
+- Les 66 autres pages : aucun texte, aucune balise. Leur HTML diffère de `main` par
+  deux noms de fichiers à empreinte, la feuille de style globale (plus légère, voir
+  « Nettoyage ») et le script PostHog (le tableau `SECTIONS` a trois lignes de plus).
+  Rendu identique au pixel, vérifié.
+
+**Ce qui ne change pas (prévu en phase 4c, après la fenêtre d'observation)**
+
+- `title` (« Hippodoc — Cockpit financier des médecins | Super-Net »), description,
+  schémas `WebSite`, `SoftwareApplication`, `VideoObject`, image de partage.
+- ⚠️ Écart assumé d'ici là : le `title` et la description parlent de « cockpit
+  financier » et de médecins « installés, collaborateurs », que la page ne vise plus ;
+  le H1 dit « Logiciel de gestion pour médecin remplaçant ». Google peut réécrire le
+  titre affiché. À surveiller dans la Search Console.
+- Le schéma `FAQPage` suit le texte visible, comme avant : 10 questions au lieu de 11,
+  deux réponses retouchées (voir « Textes de l'accueil »).
+
+#### Architecture
+
+- **Police** : Google Sans Flex, un seul fichier auto-hébergé,
+  `src/assets/fonts/google-sans-flex-latin-wght400-800-rond100.woff2`, **41 936 octets**.
+  Source : dépôt `google/fonts`, `ofl/googlesansflex/GoogleSansFlex[ROND,opsz,slnt,wdth,wght].ttf`
+  (version 5.000, sha256 `a9ac7707…783a77ba`). **Licence SIL OFL 1.1**, sans nom réservé :
+  `OFL.txt` joint, champs de copyright et de licence gardés dans le fichier. Fabriqué
+  avec fonttools 4.68 : `varLib.instancer` (wght 400 à 800, `ROND=100`, `opsz=18`,
+  `wdth=100`, `slnt=0`), puis `subset` sur la plage « latin » de Google Fonts (228
+  caractères). Importé depuis `src/assets` (nom à empreinte), préchargé avec
+  `crossorigin` : une seule requête woff2. Avec l'axe `opsz`, il pèserait 116 496 octets.
+- **Sans taille optique**, les grands corps sortent 3 à 9 % plus larges que sur la
+  maquette. Corrigé par l'interlettrage, calculé sur le corps : titre du premier écran,
+  `h2`, classe `.aff` (grands montants), mot de la scène finale. Largeurs à 1 à 3 px de
+  la maquette rendue avec sa police.
+- **Repli à métriques ajustées** (`Google Sans Flex Fallback`), deux faces : graisses
+  400 à 599 sur Arial (`size-adjust` 101,19 %), 600 à 800 sur Arial Bold (102,22 %).
+  « Nunito », cité par la maquette, n'est pas repris.
+- **`src/styles/da.css`** : `@font-face`, jetons, `.wrap`, `.btn`, `.chip`, `.sig`,
+  feuilles `.band`, plis `.qa`, lien `.lien`, en-tête `hd-*`, pied `ft-*`, habillage de
+  la bannière cookies et de la bulle de chat. Importée par les composants `da/` et
+  `accueil/` seulement.
+- **`.da` et `.da-bloc`** : `.da`, posée sur `<body>` (prop `bodyClass` de BaseLayout,
+  vide par défaut, seule modification de ce fichier), ne porte que les jetons et le fond
+  de page. La typographie, les règles `h2`/`h3`/`strong` et l'anneau de focus sont
+  portés par les blocs marqués `.da-bloc`. Raison : posées sur `<body>`, ces règles
+  changeaient par héritage tout ce qui n'était pas encore migré. La classe n'a pas été
+  remontée sur `<body>` à la fin (rien à y gagner).
+- **Composants** : `src/components/accueil/` (`Hero`, `SousLaSurface`,
+  `FenetreProduit`, `TroisCases`, `PourQui`, `Fondateur`, `Partenaires`, `Temoignages`,
+  `Tarifs`, `Questions`, `Guides`, `SceneFinale`, `Mascotte`, `buste.ts`), styles dans
+  le `<style>` scopé de chacun, aucune classe Tailwind. Données : `src/data/demoAccueil.ts`
+  (compte de démonstration), `etapesRemplacant.ts`, `parcoursAccueil.ts`, `faqAccueil.ts`.
+  `src/lib/typo.ts` : espaces insécables devant la ponctuation haute, à l'affichage.
+- **En-tête et pied** : `src/components/da/HeaderDA.astro` et `FooterDA.astro`, copies
+  rhabillées de `Header.astro` et `Footer.astro` (pastille flottante, pied « eau
+  profonde »). Mêmes liens, mêmes `data-ph`, même tiroir mobile (case
+  `#mobile-menu-toggle`, dont dépend la bannière cookies). Bascule menu / tiroir à
+  960 px (1 024 auparavant). ⚠️ **Double maintenance jusqu'à la phase 5a** : voir
+  « Garde-fous ».
+- **Micro-script du tiroir** : identique au caractère près à celui de `Header.astro`,
+  mais rendu après le pied par `src/components/da/ScriptTiroirDA.astro`. Dans l'en-tête,
+  ce script en ligne faisait peindre la page en deux temps (deux candidats LCP). Toute
+  page qui utilise `HeaderDA` doit rendre `ScriptTiroirDA`.
+- **Logo en lettres** (décision du propriétaire) : dans la pastille, le tiroir, le pied
+  et la scène finale, le mot seul, « Hippo » (`#0059B3`) puis « doc » (`#1A8CFF`), sans
+  l'icône au trait. Favicon, image de partage et application inchangés.
+- **Images** : toutes par `astro:assets` (AVIF et WebP, plusieurs largeurs), sources
+  dans `src/assets/accueil/`. Buste du premier écran préchargé (`imagesrcset`), les
+  autres en chargement paresseux. Mascottes : la masculine au premier écran et à la
+  scène finale, la féminine ailleurs (décision du propriétaire : alterner). Logos des
+  partenaires : copies dans `src/assets/accueil/partenaires/`, rognées au ras du dessin ;
+  celui du CRP-IMG est aplati sur blanc (il portait un voile semi-transparent). L'affiche
+  du film est une image dans le bouton de lecture (plus d'attribut `poster`, qui
+  téléchargeait 60 Ko à l'ouverture) ; `public/hippodoc-presentation-st-poster.jpg`
+  reste pour le `thumbnailUrl` du `VideoObject`.
+- **Zéro JS ajouté.** Deux scripts en ligne déplacés sans changer d'un caractère (tiroir,
+  lecteur du film), un supprimé (compteur animé de « En chiffres »). Onglets, profils,
+  plis, pause du décor : radios, cases à cocher, `:has()`, `<details>`.
+
+#### La page, bloc par bloc
+
+| Bloc | `id` | `data-landing-section` | Série PostHog |
+|---|---|---|---|
+| Premier écran | `hero` | `hero` | continue |
+| « Sous la surface » : fenêtre produit, trois cases | `sous-la-surface` | `features` | continue |
+| « Pour qui » | `parcours` | `practice-journeys` | continue |
+| Fondateur | (aucun) | `founder` | nouvelle |
+| Film, sous-bloc du fondateur | `film-presentation` | `presentation-video` | continue |
+| Syndicats, partenaires, soutiens | (aucun) | `partners` | continue |
+| Témoignages | `testimonials` | `testimonials` | continue |
+| Tarifs | `pricing` | `pricing` | continue |
+| Questions | `questions` | `faq` | continue |
+| Guides | `guides` | `guides` | nouvelle |
+| Scène finale | (aucun) | `final-cta` | nouvelle |
+
+Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`social-proof`), les
+12 fonctionnalités, le bandeau du milieu de page (`mid-page-cta`).
+
+- **Premier écran.** Une seule balise H1, deux lignes dessinées, un deux-points dans le
+  texte mais pas à l'écran. Coupures de lignes écrites à des seuils fixes (titre,
+  accroche, ligne fine) pour qu'elles soient les mêmes avec la police et avec son
+  repli. Décor animé (soleil, eau, mascotte, fiches) sous
+  `prefers-reduced-motion: no-preference`.
+- **Pause du décor** (WCAG 2.2.2), absente de la maquette, validée par le propriétaire
+  avec le premier écran : une case à cocher en bas à gauche de la scène, sans JS. Celle
+  du premier écran arrête aussi les bulles de « Sous la surface » ; la scène finale a la
+  sienne.
+- **Bannière cookies**, sur l'accueil seulement (`da.css`), validée de la même façon :
+  en bas à gauche à partir de 900 px (centrée, elle tombait sur le visage de la
+  mascotte). `ThirdPartyScripts.astro` n'est pas touché.
+- **Fenêtre produit** : trois vues en onglets (radios dans un `<fieldset>`), les trois
+  toujours dans le HTML. Sans `:has()`, elles s'affichent l'une sous l'autre. Un seul
+  jeu de chiffres, fictif, dans `src/data/demoAccueil.ts`, totaux calculés ; **une seule
+  mention « Compte de démonstration »** sur la page (décision du propriétaire). L'état
+  d'une journée ne tient pas à la seule couleur (coche, horloge, tilde).
+- **« Pour qui »** : quatre profils au lieu de cinq (décision du propriétaire :
+  remplaçant, interne, vacataire, mixte ; « collaborateur » et « installé » quittent
+  l'accueil). Même mécanisme à radios, rhabillé ; les quatre parcours sont dans le HTML.
+- **Fondateur et film** : portrait, paragraphe de l'ancienne carte de fin de FAQ, lien
+  de rendez-vous, trois chiffres ; puis le lecteur du film, tel quel
+  (`<video preload="none">`, mêmes identifiants, script identique à l'octet).
+  `PRODUCT_DEFINITION` y figure mot pour mot.
+- **Syndicats** : quatre grandes tuiles sous leur propre titre (décision du
+  propriétaire : une vraie place). Seuls les partenariats signés : SILR, CRP-IMG, SIOI,
+  AIMGL (Limoges), HomeDoc, Doctripper. ⚠️ AIMGL (Lille) et RAOUL (Nancy) sont en
+  cours : ne pas les afficher avant signature. Soutiens : Région Île-de-France et
+  Bpifrance sur une même plaque (une seule aide, Innov'Up, § 9.dq), La French Care.
+- **Témoignages** : quatre des quinze de l'ancienne section, mot pour mot, sans
+  étoiles (aucune note recueillie, § 9.dq). Défilement de côté sous 640 px.
+- **Tarifs** : trois cartes (annuel, mensuel, interne). L'offre interne s'ouvre dans sa
+  carte (`<details>`). « Détail des offres » (un vrai `<table>`, une fois dans le HTML)
+  et le bloc RSPM sont des plis sous les cartes.
+- **Questions** : 10 questions de `src/data/faqAccueil.ts`, un `<details>` chacune, puis
+  la carte de rendez-vous.
+- **Guides** : six liens internes, `/simulateur`, `/guide-declarations`, `/guide`,
+  `/blog/remplacement-regulier-requalification`,
+  `/blog/effet-ciseaux-regularisation-urssaf-medecin`,
+  `/blog/obtenir-sa-licence-de-remplacement`. Les articles proposés par la maquette
+  étaient déjà liés ailleurs sur la page.
+- **Scène finale** : la phrase de l'ancien bandeau, un seul bouton. Pas de lien de
+  rendez-vous (§ 9.r : zéro clic en 150 jours sous un bouton principal).
+- **Menu** : « Comment ça marche » (`/#sous-la-surface`), « Pour qui », « Tarifs »,
+  « Ressources ». « Découvrir » (le film) sort du menu de l'accueil ; il reste sur les
+  autres pages jusqu'à la phase 5a, et l'ancre `#film-presentation` existe toujours.
+
+#### Textes de l'accueil
+
+**Nouveaux, mot pour mot**
+
+- Premier écran. H1 : « Logiciel de gestion pour médecin remplaçant », espace,
+  deux-points, espace, « Sors la tête de l’eau ». Paragraphe : « URSSAF, CARMF, impôts :
+  Hippodoc calcule tout après chaque journée de remplacement, et te montre ce qu’il te
+  reste vraiment » (sans point final). Boutons : « Essayer 30 jours gratuitement »,
+  « Simuler mon Super-Net ». Ligne fine : « Rien n’est débité pendant l’essai. Créé par
+  un médecin remplaçant. Déjà 900+ médecins inscrits. » Texte alternatif : « La mascotte
+  Hippodoc, un hippopotame bleu à lunettes en blouse blanche, la tête et les épaules
+  hors de l’eau ». Nom du bouton de pause : « Mettre le décor animé en pause ».
+- Premier écran, décor masqué aux lecteurs d'écran (chiffres du compte de
+  démonstration) : « Appel URSSAF », « Échéance CARMF », « Déclaration 2035 », « DSFU » ;
+  « Super-Net », « 59 543 € » ; « Avril 2026 », « lun. 13 · Valérie J. », « 1 955 € »,
+  « mer. 15 · Dujardin S. », « 2 625 € », « lun. 20 · Cabinet M. », « ~1 200 € » ;
+  « Année 2025 », « Encaissé », « 90 005 € », « URSSAF, CARMF, impôts », « − 30 462 € ».
+- Menu : « Comment ça marche ».
+- « Sous la surface ». H2 : « Sous la surface, Hippodoc calcule URSSAF, CARMF et
+  impôts ». Après « Tu factures. Hippodoc calcule le reste. » : « Voici ce qui tourne en
+  dessous pendant que tu soignes. » Fin de la phrase des régimes : « Remplaçant, interne,
+  vacataire ou activité mixte. »
+- Fenêtre produit. Légende masquée : « Aperçu de l’application ». Onglets, sous 720 px
+  puis au-delà : « Super-Net » / « Ce qu’il te reste », « Journées » / « Tes journées »,
+  « À recevoir » / « Ce qu’on te doit ». Jauge : « Jauge : 66 % de l’encaissé reste
+  au-dessus de la ligne d’eau, 34 % part en URSSAF, CARMF et impôts », « 66 % ». Vue 1 :
+  « Année 2025 », « Encaissé », « 90 005 € », « URSSAF », « − 6 386 € », « CARMF »,
+  « − 11 752 € », « Impôts », « − 12 324 € », « Super-Net », « 59 543 € », « 66 % de
+  l’encaissé, une fois tout payé ». Vue 2 : « Avril 2026 », légende « Payé », « En
+  attente », « Planifié », puis « mer. 1 », « Dujardin S. », « 2 250 € » ; « ven. 3 »,
+  « Valérie J. », « 1 785 € » ; « lun. 6 », « Valérie J. », « 2 210 € » ; « mar. 7 »,
+  « Dujardin S. », « 1 425 € » ; « mer. 8 », « Dujardin S. », « 2 550 € » ; « ven. 10 »,
+  « DPC » ; « lun. 13 », « Valérie J. », « 1 955 € » ; « mer. 15 », « Dujardin S. »,
+  « 2 625 € » ; « dim. 19 », « Cabinet M. », « 1 500 € » ; « lun. 20 », « Cabinet M. »,
+  « ~1 200 € » ; « mer. 22 », « Cabinet M. », « ~1 200 € » ; « jeu. 23 », « au dim. 26 »,
+  « WE prolongé » ; après chaque montant, pour les lecteurs d'écran, « , payé », « , en
+  attente » ou « , planifié » ; calendrier masqué aux lecteurs d'écran (« lun. » à
+  « dim. », du 30 mars au 3 mai). Vue 3 : « À recevoir », « 4 125 € », « 2 paiements en
+  attente », puis les journées des 15, 19, 20 et 22 avec « En attente » ou « Planifié ».
+  Pied : « Compte de démonstration · Recalculé après chaque journée enregistrée ».
+- Trois cases : « 1 », « Ton activité » ; « 2 », « Tes obligations » ; « 3 », « Ce qu’il
+  te reste ». Case 1, extrait masqué aux lecteurs d'écran (il répète la vue 2) : « Avril
+  2026 » et les journées des 13, 15, 19 et 20. Case 2 : « Année 2025, à mettre de côté », « URSSAF », « 6 386 € »,
+  « CARMF », « 11 752 € », « Impôts », « 12 324 € », « En tout », « 30 462 € ». Case 3 :
+  « Super-Net 2025 », « 59 543 € », « 90 005 € encaissés, moins les cotisations, moins
+  l’impôt ».
+- « Pour qui », profil nouveau : « Vacataire », « centre / maison de santé ». Étape 1 :
+  « Tes vacations dans le même calendrier » ; « Centre de santé, maison de santé,
+  cabinet : autant de lieux que tu veux, chacun avec ses règles de calcul. » ;
+  « Récurrences possibles, par exemple tous les mercredis au centre médical. » Étape 2 :
+  « Tes honoraires suivis, structure par structure » ; « La structure te verse tes
+  honoraires : payés, en attente, planifiés. » ; « PDSA suivie de la même façon. » Les
+  quatre autres étapes du vacataire sont celles du remplaçant.
+- Fondateur. H2 : « Un médecin remplaçant derrière Hippodoc ». Légende : « Ryan, médecin
+  remplaçant ». Texte alternatif : « Ryan Goburdhun, médecin remplaçant et fondateur
+  d’Hippodoc ». Sous les chiffres : « journées et lieux au 10 novembre 2026 ».
+- Syndicats : « 6 mois d’essai gratuit au lieu de 30 jours, pour les adhérents de ces
+  syndicats, grâce à un code fourni par leur syndicat. »
+- Tarifs. H2 : « Tarifs : un outil pro, à un prix humain ». Dessous : « 30 jours
+  gratuits. Ta carte bancaire est demandée à l’inscription, mais rien n’est débité
+  pendant l’essai. » Cartes : « par mois », « 120 € de moins par an que le mensuel »,
+  « Interne et docteur junior », « Jusqu’à la fin de l’internat », « Voir l’offre
+  interne ». Pli de l'offre : « Internes et docteurs juniors, jusqu’à la fin de
+  l’internat ». Mention du bas : « Abonnement 100 % déductible au régime réel. »
+  Masqués à l'œil, dans le tableau : « Oui », « Aucune ».
+- Questions. H2 : « Questions fréquentes ». Dessous : « Celles qu’on nous pose avant de
+  se lancer. »
+- Guides. H2 : « Guides et simulateurs pour médecins remplaçants ». Dessous : « Pour
+  aller plus loin, en accès libre. » Cartes : « Simulateur Super-Net », « Ton revenu
+  après URSSAF, CARMF et impôts » ; « Guide des déclarations », « 2035, 2042-C PRO,
+  DSFU : quoi remplir, et où » ; « Guide du remplaçant », « Le PDF 2026-2027 ».
+
+**Repris d'une autre page du site, mot pour mot**
+
+- De `/qui-sommes-nous` : « Aux côtés des internes, partout en France » ; « Ces
+  syndicats d'internes ont signé une convention avec Hippodoc pour accompagner leurs
+  adhérents dans leurs premiers remplacements. » ; « Et des partenaires pensés pour les
+  jeunes médecins » ; « Le logement des internes en médecine » ; « Plateforme de
+  remplacements médicaux » ; noms, villes et liens des syndicats ; « Lauréat Innov'Up »,
+  « Membre de La French Care ».
+- Des trois articles des guides : leur `title` et le début de leur `description`
+  (« Remplacer le même médecin chaque semaine peut être requalifié en collaboration. » ;
+  « Bonne année, puis appel de cotisations qui double ? » ; « Conditions, pièces du
+  dossier, envoi au CDOM »).
+
+**Repris de l'ancienne accueil, mot pour mot** (comparés par script au HTML produit)
+
+- Les 7 étapes du remplaçant, les 6 de l'interne, les 6 du mixte ; l'appel du bloc
+  « Pour qui » ; le paragraphe sur Ryan et « Prendre 15 min avec Ryan » ; « Hippodoc en
+  90 secondes » et sa phrase ; les libellés des chiffres ; quatre témoignages ; les
+  offres, la liste « Inclus dans toutes les offres » (six lignes visibles, neuf dans le
+  pli), le tableau, le texte de l'offre interne ; le bloc RSPM ; 10 questions et leurs
+  réponses (deux réponses retouchées, voir plus bas) ; « Soutenu par » ; « On soigne
+  mieux quand on comprend ce qu’on gagne ».
+
+**Retouchés**
+
+- Chiffres du fondateur : « 19 400 » devient « 24 200 », « 2 379 » devient « 2 714 »
+  (voir « Nettoyage et bascule »).
+- « Quel que soit ton mode d’exercice, Hippodoc te suit. », « Choisis ton mode
+  d’exercice : tu verras exactement ce qu’Hippodoc fait pour toi. », « Ce qu’en disent
+  nos utilisateurs », « ce qu’on gagne » : apostrophe typographique.
+- « Ton cas n'est pas listé — interne en fin de cursus, exercice mixte, installation en
+  cours ? Prends 15 min avec Ryan… » devient « Ton cas n'est pas listé ? Prends 15 min
+  avec Ryan, médecin remplaçant : il te dira franchement si Hippodoc t'apporte quelque
+  chose. » (coupe, aucun mot ajouté).
+- « Sans engagement · Déjà 900+ médecins » devient « Sans engagement ».
+- Témoignages : guillemets français autour des citations ; « Dr Anaïs V. » devient
+  « Anaïs V. » (elle est interne). Les trois autres attributions sont celles du site
+  (« Dr Sofiane B., Médecin (SOS Médecins + cabinet) », « Dr Sarah M., Urgentiste
+  (activité mixte) », « Dr Émilien C., Médecin généraliste »). **Rien n'est inventé** :
+  ni ville, ni spécialité.
+- Textes alternatifs des logos de syndicats : le nom complet seul.
+- Tarifs : « Données sécurisées et hébergées en France » devient « Données sécurisées
+  et hébergées dans l’Union européenne » (décision du propriétaire, comme les pages
+  légales) ; « Génération rapide de contrats » et « Génération rapide de factures avec
+  notes » deviennent « Génération rapide de contrats et de factures » ; « Abonnement
+  100 % déductible » devient la mention citée plus haut ; « Tous nos prix sont TTC ·
+  Sans frais cachés » devient « Tous nos prix sont TTC, sans frais cachés. » ; « Interne »
+  et « Encore en formation » deviennent « Interne et docteur junior » et « Jusqu’à la fin
+  de l’internat » ; « 10€/mois », « 29€ » barré et « +30j gratuit » deviennent « 10 € par
+  mois » et « 30 jours gratuits » ; « Annuel 💎 » et « 📊 Détail des offres » perdent leur
+  émoji ; montants et taux écrits avec une espace insécable.
+- Pli de l'offre interne : « Vous êtes encore en internat ? … Hippodoc vous accompagne
+  avec un tarif adapté. » devient « Tu es encore en internat ? … Hippodoc t'accompagne
+  avec un tarif adapté. » ; « Pendant toute la durée de votre internat » devient
+  « Internes et docteurs juniors, jusqu’à la fin de l’internat » ; « réponse sous 24h
+  avec ton code promo personnalisé ! » devient « on te répond très vite avec ton code
+  promo personnalisé ! ».
+- Question « Combien coûte Hippodoc ? » : « L'**essai est gratuit pendant 30 jours**,
+  sans carte bancaire. » devient « L'**essai est gratuit pendant 30 jours** : ta carte
+  bancaire est demandée à l'inscription, mais rien n'est débité pendant l'essai. » ;
+  « Des **tarifs réduits** existent pour les internes et les médecins en fin
+  d'internat : … » devient « Les **internes et les docteurs juniors** paient **10 € par
+  mois** jusqu'à la fin de l'internat : le détail est dans la section tarifs juste
+  au-dessus. »
+- Question « Je suis interne… » : « Un **tarif réduit** s'applique pendant toute ta
+  formation (voir les tarifs). » devient « Internes et docteurs juniors paient **10 € par
+  mois** jusqu'à la fin de l'internat (voir les tarifs). »
+- Pied de l'accueil : la flèche « → » de trois liens d'articles est dessinée (elle
+  n'est pas dans la police) et sort du libellé.
+
+**Retirés de l'accueil**
+
+- Ancien premier écran : « Plus de 900 médecins nous font confiance » ; H1 « Ton
+  activité médicale, sous contrôle. » ; « Le cockpit financier des médecins qui calcule
+  tout pour toi. » ; « Commencer l'essai gratuit », « Simuler mes revenus gratuitement » ;
+  les pastilles « Essai gratuit 30j », « Toutes les fonctionnalités », « Annulable à tout
+  moment » ; cinq captures d'écran, leurs étiquettes et textes alternatifs ; le bandeau
+  « Soutenu par » à huit logos ; « Votre vrai revenu », « clair · super-net · précis ».
+- « En chiffres » : « Pensé pour le terrain. », « Hippodoc accompagne chaque jour des
+  médecins dans leur activité. », les tuiles « 623 Documents générés », le nombre
+  d'articles et « 100 % Données hébergées en France », le compteur animé.
+- « Fonctionnalités » : « Gestion automatisée complète », « Le système nerveux de ton
+  organisation. », les 12 fonctionnalités et leurs descriptions, le schéma en orbite.
+- Parcours : les profils « Collaborateur » et « Installé » (14 étapes), la mention
+  « Bêta », « Parcours · 5 profils », les trois réassurances (« Forum modéré par des
+  médecins », « Blog fiscal mis à jour chaque mois », « Support réactif »), « Pensé par
+  un médecin, pour tous les médecins — de l'internat à la retraite. ».
+- Film : la pastille « Nouveau · Film de présentation ».
+- Témoignages : 11 sur 15, « Découvre pourquoi plus de 900 médecins font confiance à
+  Hippodoc », les étoiles.
+- Partenaires : « Nos partenaires institutionnels », « Hippodoc est soutenu par des
+  acteurs de référence de l'innovation et de la santé en France. », « Syndicats
+  d'internes & partenaires de l'écosystème médical » et sa phrase, les textes
+  alternatifs « … partenaire Hippodoc gestion médicale ».
+- Tarifs : « Exercer, c'est bien. Savoir ce que ça te rapporte, c'est mieux. » ; « 30
+  jours gratuits • Sans engagement • Résiliable à tout moment » (l'offre annuelle
+  engage 12 mois : dans les tarifs, « Sans engagement » n'est plus écrit que sur la
+  carte mensuelle ; il reste sous le bouton du bloc « Pour qui », voir « Reste
+  ouvert ») ;
+  « FLEXIBLE », « POPULAIRE », « Offre spéciale » ; « Économisez 120€/an (-34%) » ;
+  « Meilleure offre : 19€/mois au lieu de 29€ (-34%) » ; la version téléphone du
+  tableau (doublon).
+- Bandeau du milieu de page : « Déjà 900+ médecins nous font confiance », « Des
+  centaines de médecins ont retrouvé le pouvoir de décider… », les quatre garanties
+  (dont « Données chiffrées : personne n'y a accès, pas même nous. »), l'image de la
+  carte Super-Net, « Essai gratuit 30 jours ».
+- Questions : « Questions fréquentes sur la gestion médicale », « Tout ce que tu dois
+  savoir pour bien gérer ton activité de médecin », les numéros, et la question
+  « Comment fonctionne la collaboration libérale sur Hippodoc ? » avec sa réponse
+  (décision du propriétaire sur les profils ; elle disait « gère nativement » d'un
+  module signalé « Bêta »). Pour la rétablir : remettre l'entrée dans
+  `src/data/faqAccueil.ts` (historique git), le schéma suit.
+- Toute mention « sans carte bancaire » : elle était fausse (la carte est demandée à
+  l'inscription, rien n'est débité pendant l'essai). Cherché sur tout le site : les
+  trois occurrences étaient sur l'accueil.
+- Pied de l'accueil : « Ils soutiennent Hippodoc » et ses trois logos (ils sont dans le
+  bloc des partenaires) ; les liens « LinkedIn », « Facebook », « Instagram » en toutes
+  lettres (les trois pastilles rondes y mènent, avec leur `data-ph`).
+
+#### Textes des autres pages
+
+- **`/faq`, « Y a un essai gratuit ? »** (texte et `FAQPage`), ajout en fin de réponse :
+  « Tu adhères à un syndicat d'internes partenaire (SILR, CRP-IMG, SIOI, AIMGL
+  Limoges) ? Ton essai dure **6 mois**, gratuitement, grâce à un code fourni par ton
+  syndicat. »
+- **`/faq`, « Il y a des tarifs pour les internes ? »** (texte et `FAQPage`) : « Oui.
+  Internes et docteurs juniors paient **10 € par mois au lieu de 29 €** jusqu'à la fin
+  de l'internat, sur justificatif (carte d'étudiant, attestation d'inscription ou
+  certificat de scolarité). » (auparavant « Oui. Pendant tout ton internat, Hippodoc te
+  coûte **10 € par mois au lieu de 29 €**, sur justificatif (…). ») ; « on t'envoie ton
+  code promo sous 24 h. » devient « on t'envoie ton code promo très vite. » ; « Certains
+  syndicats d'internes partenaires donnent aussi droit à un **essai prolongé**. »
+  devient « Les adhérents des syndicats d'internes partenaires (SILR, CRP-IMG, SIOI,
+  AIMGL Limoges) ont aussi **6 mois d'essai gratuit** au lieu de 30 jours, grâce à un
+  code fourni par leur syndicat. »
+- **`/tarifs`, « Comment fonctionne l'essai gratuit de 30 jours ? »** (texte et
+  `FAQPage`) : « Tu crées ton compte sur app.hippodoc.fr, tu choisis l'offre mensuelle
+  ou annuelle à l'inscription, et tu profites de 30 jours d'essai gratuit avec toutes
+  les fonctionnalités. Ta carte bancaire est demandée, mais rien n'est débité pendant
+  l'essai. » (auparavant « …et tu profites de 30 jours d'essai gratuit avec toutes les
+  fonctionnalités. À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour
+  continuer. »).
+- **`/tarifs`, liste « Inclus dans toutes les offres »** : « Données sécurisées et
+  hébergées en France » devient « Données sécurisées et hébergées dans l'Union
+  européenne ».
+- **`/guide-declarations`, ligne fine du bloc d'appel**
+  (`src/components/guide/PremiumCtaSection.astro`) : « 30 jours offerts · Sans
+  engagement · Données hébergées en France » devient « 30 jours offerts · Sans
+  engagement · Données hébergées dans l'Union européenne ». La date « Mis à jour le »
+  de la page n'est pas avancée : ce n'est pas une revue du guide.
+- Ces deux lignes appliquent la décision du propriétaire (« Union européenne »
+  partout, comme les pages légales, `/faq` et `/qui-sommes-nous`). « hébergées en
+  France » n'est plus écrit nulle part : cherché dans `src/`, `public/`, `llms.txt` et
+  le PDF du guide ; `verify-site.mjs` échoue s'il revient sur une page.
+- Faits confirmés par le propriétaire, à redire tels quels ailleurs : la carte est
+  demandée à l'inscription et rien n'est débité pendant l'essai ; internes et docteurs
+  juniors paient 10 € par mois jusqu'à la fin de l'internat ; les adhérents de tous les
+  syndicats d'internes partenaires ont 6 mois d'essai au lieu de 30 jours, par un code
+  que fournit leur syndicat ; les données sont hébergées dans l'Union européenne ;
+  908 comptes inscrits au 10 novembre 2026 (« 900+ » est exact).
+- ⚠️ **Deux autres faits n'ont qu'une trace écrite**, à faire relire par le
+  propriétaire avant la fusion. Ils viennent de ses réponses du 10 novembre 2026
+  (nuit), consignées dans le brouillon de cette entrée par le commit « DA 2026,
+  phase 3 : offre choisie à l'inscription, pli interne au tutoiement, réponse rapide »
+  (`git show` de ce commit sur `MIGRATION.md`), en ces termes : « l'offre se choisit à
+  l'inscription » ; « Confirmé aussi : pas de cumul de remises ; tout interne paie 10 €
+  par mois, l'adhésion à un syndicat partenaire donne seulement 6 mois d'essai au lieu
+  d'un. » Le premier est publié sur `/tarifs` (texte et `FAQPage`), où il remplace
+  « À la fin de l'essai, tu choisis l'offre mensuelle ou annuelle pour continuer. » Le
+  second répondait à la question posée au lot précédent sur les deux codes (tarif
+  interne, essai de 6 mois) : « un adhérent interne cumule-t-il les deux ? » ; il n'est
+  écrit nulle part sur le site.
+- `/tarifs`, `/essai`, `/qui-sommes-nous`, `/comparatif`, `llms.txt` relus : rien n'y
+  contredit ces faits. `/comparatif` dit « Carte requise. », `/faq` dit « On te demande
+  ta CB (mais aucun prélèvement avant la fin de l'essai) » : justes, non touchés.
+
+#### Mesure PostHog : ce qui continue, commence, s'arrête
+
+- **Continue** : `hero`, `features`, `practice-journeys`, `presentation-video`,
+  `partners`, `testimonials`, `pricing`, `faq` ; `cta_signup_hero`, `cta_simulator`,
+  `cta_signup_journey_section`, `cta_signup_pricing` (plan, période, promo),
+  `cta_signup_header*` ; `landing_journey_*` pour `remplacant`, `interne`, `mixte` ;
+  `landing_video_*` ; `landing_special_offer_intern`,
+  `landing_pricing_comparison_toggle` ; `landing_faq_<id>` (10), `landing_faq_all` ;
+  `landing_partner_silr`, `_crp_img`, `_sioi`, `_aimgl`, `_doctripper` ;
+  `data-calendly="pour_qui"` et `"faq_accueil"` ; tous les `landing_footer_*` et ceux
+  de l'en-tête.
+- **Commence** : sections `founder`, `guides`, `final-cta` ; `cta_signup_final` ;
+  `data-calendly="fondateur"` (à réévaluer à 60 jours) ; profil `vacataire`
+  (`landing_journey_profile_vacataire`) ; `landing_apercu_super_net`, `_journees`,
+  `_a_recevoir` ; `landing_pricing_rspm_toggle` ; six `landing_guide_*` (`simulateur`,
+  `declarations`, `remplacant`, `requalification`, `effet_ciseaux`, `licence`) ;
+  `landing_nav_comment_ca_marche` et `landing_mobile_nav_comment_ca_marche` ;
+  `landing_partner_homedoc` sur l'accueil.
+- **S'arrête** : sections `social-proof` et `mid-page-cta` ; `cta_signup_cta_banner` ;
+  `landing_journey_profile_collaborateur` et `_installe` ; `landing_faq_collaboration` ;
+  sur l'accueil seulement, `landing_nav_decouvrir` et `landing_mobile_nav_decouvrir`
+  (ils continuent sur les autres pages jusqu'à la phase 5a).
+- **`SECTIONS`** (`src/lib/landing-analytics.ts`) garde ses onze lignes d'origine, dont
+  `social-proof` et `mid-page-cta`, pour que le rang des autres ne glisse pas.
+  `founder`, `guides` et `final-cta` s'ajoutent en fin : leur `section_order` (12, 13,
+  14) dit qu'ils sont arrivés en dernier, pas leur place sur la page.
+- ⚠️ **Séries qui continuent mais ne disent plus la même chose** (à annoter) :
+  - `features` est maintenant le deuxième bloc : son taux de vue monte d'un coup ;
+  - le film est le cinquième bloc (il était le troisième) : `presentation-video` et
+    `landing_video_section_viewed` baissent d'un coup ;
+  - les partenaires passent avant les témoignages ;
+  - un choix de profil fait au clavier est maintenant compté
+    (`landing_journey_profile_selected`) ;
+  - **autocapture en double** : chaque choix de profil ou d'onglet à la souris envoie
+    deux `$autocapture` porteurs du `data-ph` (un `click`, un `change`), contre un sur
+    `main`. Un insight qui les compte doit filtrer `$event_type = click`. L'événement
+    dédié `landing_journey_profile_selected` reste à un par choix ;
+  - la page n'a plus la même longueur (4 % plus courte sur téléphone, 6 % plus longue
+    sur tablette) ni les mêmes blocs aux mêmes endroits : `landing_scroll_depth` et le
+    taux de vue des blocs du bas ne se comparent pas à l'avant.
+- Vérifié dans le navigateur en décodant les envois (voir « Mesures »). L'autocapture
+  des `data-ph` (onglets, plis, guides, menu) n'a pas été observée dans le navigateur
+  de test : seuls les événements nommés l'ont été.
+
+#### Garde-fous (`scripts/verify-site.mjs`)
+
+- **`SECTIONS_LANDING`** : les onze valeurs du tableau ci-dessus ; chacune doit aussi
+  figurer dans `SECTIONS` (le script lit `landing-analytics.ts`).
+- **Par bloc** : `cta_signup_hero` et `cta_simulator` dans le premier écran,
+  préchargement du buste égal au `srcset` AVIF ; `id="sous-la-surface"`, trois onglets
+  dont un coché, trois panneaux, « Compte de démonstration » une seule fois ;
+  `id="parcours"`, quatre radios, libellés `data-profile`, panneaux,
+  `cta_signup_journey_section`, `data-calendly="pour_qui"` ; `data-calendly="fondateur"` ;
+  `id="film-presentation"` et le `<video>` dans `presentation-video` ; `id="pricing"`,
+  deux `cta_signup_pricing` avec leurs attributs, `<details>` de l'offre interne,
+  « Engagement … 12 mois », « Union européenne » présent et « hébergées en France »
+  absent ; autant de `<summary data-ph="landing_faq_…">` que de questions dans
+  `FAQPage` ; `landing_faq_all`, `data-calendly="faq_accueil"` ; six liens internes dans
+  les guides ; `cta_signup_final` sans lien de rendez-vous.
+- **Plancher de mots** : 2 931 (90 % du relevé de fin de phase 3 ; la page en porte
+  3 215).
+- **Caractères hors police** (ajouté en phase 4a) : le texte dessiné de l'accueil ne
+  contient aucun caractère hors de la plage `unicode-range` de `da.css` (flèches
+  refusées : la plage en cite deux que la police n'a pas). Le texte masqué à l'œil
+  (classe `sr`) est ignoré : c'est là que restent « → » et « ✓ », dessinés en SVG.
+- **`lastmod` de l'accueil** (ajouté en phase 4a) : `pages-lastmod.ts` peut recevoir une
+  entrée pour « / ». Avant, elle aurait été ignorée (le motif exigeait un caractère
+  après le slash) et jamais comparée (le sitemap écrit l'accueil sans slash final).
+- **Contrôle « 4 quater bis », en-tête et pied en double** : compare dans l'ordre,
+  entre l'accueil et `/tarifs`, chaque lien, bouton ou `<label>` porteur d'un `href`,
+  d'un `data-ph`, d'un `data-track` ou de `data-cookie-prefs`, libellé compris, et
+  vérifie que le micro-script du tiroir est sur l'accueil après `</main>`, identique à
+  celui de `Header.astro`, et absent de `<header>`. Les écarts voulus sont dans
+  `ECARTS_ENTETE_PIED_DA` (13 lignes : « Découvrir » et « Comment ça marche », les trois
+  flèches du pied, les trois liens de réseaux en toutes lettres). **À retirer en
+  phase 5a.**
+- **Hébergement, sur tout le site** : aucune page du build ne doit contenir
+  « hébergées en France » (contrôle posé dans la boucle des liens internes, qui lit
+  chaque fichier HTML de `dist`).
+- Le contrôle « 4 decies » (compteurs animés) est retiré : il n'y a plus de compteur.
+- Chaque garde a été essayée en cassant le HTML.
+
+#### Écarts assumés par rapport à la maquette validée
+
+- La maquette n'avait ni menu mobile, ni Connexion sur téléphone, ni menu Ressources,
+  ni pied complet, ni attribut de mesure : repris de l'existant.
+- Elle n'avait ni bloc « Pour qui », ni témoignages, ni bloc de partenaires, et 6
+  questions : ces blocs sont dessinés dans son vocabulaire, sans modèle à comparer.
+- **Longueur sur téléphone** : 15 797 px à 390 px, contre 11 163 px pour la maquette
+  (et 16 494 px pour l'ancienne accueil). Décision du propriétaire : tout le contenu
+  reste, les intervalles sont resserrés sur téléphone, rien n'est retiré.
+- Anneau de focus en encre ou en blanc : celui de la maquette (`#1A8CFF`) ne fait que
+  2,46:1 sur le ciel. Contrastes calculés pour chaque paire de jetons utilisée : tous
+  au-dessus de 4,5:1 pour le texte (le plus bas : 4,73:1) et de 3:1 pour le focus.
+- Vue « à recevoir » recalculée (celle de la maquette ne se recoupait pas avec les deux
+  autres) ; calendrier sur cinq semaines ; fenêtre de hauteur constante.
+- Pas de `nowrap` ni de points de suspension sur un texte lu : avec des espacements
+  imposés par le visiteur (WCAG 1.4.12), un libellé passe à la ligne.
+- Tarifs : offre interne en pli (le bouton de la maquette menait à `/tarifs`, qui n'en
+  parle pas) ; une seule phrase sous le titre ; trois colonnes à partir de 1 024 px.
+- Scène finale : un bouton au lieu de deux ; à partir de 900 px le mot « Hippodoc » est
+  remonté (sur la maquette, la moitié basse des lettres était sous l'eau).
+- Sous 360 px : corps et boutons du premier écran un cran en dessous, pour que les deux
+  boutons restent au-dessus de la bannière cookies à la première visite.
+
+#### Pièges rencontrés (à ne pas refaire)
+
+- ⚠️ **Tailwind lit tout le fichier `.astro`**, `<style>` et commentaires compris. Le
+  mot `backdrop-filter` dans un commentaire, le raccourci `text-wrap` et la courbe
+  `ease-in-out` dans un `<style>` ont chacun ajouté une règle à la feuille globale :
+  nouvelle empreinte, HTML des 70 pages modifié. Écrire `text-wrap-style`,
+  `cubic-bezier(0.42, 0, 0.58, 1)`, et vérifier le nom de `BaseLayout.*.css` après
+  chaque build. (Les fichiers `.css` ne sont pas lus.)
+- ⚠️ **Minification** : `animation` et `animation-timeline: view()` dans la même règle
+  sont fusionnés en une déclaration que les navigateurs refusent, sans erreur. La ligne
+  de temps s'écrit dans une seconde règle, sous un autre sélecteur.
+- ⚠️ **Script en ligne au milieu du flux** : il coupe le premier rendu en deux (voir
+  « Micro-script du tiroir »).
+- ⚠️ **Typographie posée sur `<body>`** : `:where()` laisse gagner les classes, pas
+  l'héritage (voir « `.da` et `.da-bloc` »).
+- ⚠️ **Après toute retouche d'un texte ou d'un corps du premier écran**, refaire le
+  balayage repli contre police (woff2 bloqué, puis chargé, de 320 à 1 600 px) : une
+  ligne de plus à l'arrivée de la police déplace toute la scène.
+- ⚠️ **Capture pleine page** : les blocs animés à l'entrée dans l'écran et la scène
+  finale (`content-visibility`) y sortent vides. Capturer écran par écran.
+
+#### Nettoyage et bascule (phase 4a)
+
+- **`src/components/home/` supprimé** (11 composants) : plus aucun n'était importé,
+  vérifié nom par nom dans `src/` et `scripts/`. `/essai` et `/qui-sommes-nous` n'en
+  utilisaient aucun.
+- **Feuille globale** : Tailwind ne lit plus ces fichiers. `BaseLayout.*.css` passe de
+  183 554 à **158 392 octets** (28,2 → 25,3 Ko gzip), 310 classes en moins. Preuve que
+  les autres pages n'y perdent rien : aucune des 310 classes n'apparaît dans un
+  attribut `class` du build ni dans un script ; les 69 pages hors accueil ne diffèrent
+  du commit précédent que par le nom de la feuille ; rendu comparé au pixel à 390 et
+  1 440 px, 139 captures sur 140 identiques au premier passage, la dernière
+  (`/comparatif` à 1 440 px, 7 px) identique aux trois rejeux. L'accueil aussi est
+  identique au pixel avant et après.
+- **21 images supprimées** de `public/lovable-uploads/` (2,0 Mo) : les 19 `hero-*`,
+  `super-net-card-salaire.png`, `6ddc3383-….png`. Seuls les composants supprimés les
+  citaient. ⚠️ Ces adresses étaient publiques : un lien externe vers l'une d'elles
+  renverrait une 404, ce que ce dépôt ne permet pas de vérifier. Commit séparé, qui se
+  retire seul. `og-image.png` et l'affiche du film ne sont pas touchés.
+- **Chiffres du bloc fondateur, relevés en base le 10 novembre 2026** (accord du
+  propriétaire). Même définition qu'au 15 août (§ 9.u) : `count(*)` de `remplacements`
+  (**24 252**, écrit « 24 200 », à la centaine inférieure comme « 19 400 ») et de
+  `medecins_remplaces` (**2 714**, écrit tel quel comme « 2 379 »), projet Supabase
+  « Hippodoc - SAAS FINANCE », lecture seule, aucune donnée personnelle lue. « 900+ » :
+  908 comptes, confirmés par le propriétaire.
+- **Image de partage : inchangée.** Le plan prévoyait une image propre à l'accueil ;
+  la décision du propriétaire sur le logo dit « image de partage inchangée pour
+  l'instant ». Essai fait : une capture 1 200 × 630 du premier écran coupe la mascotte
+  aux oreilles et garde l'en-tête et la bulle de chat. Une image fidèle demande une
+  composition à part, à faire avec le `title` en phase 4c.
+- **CLAUDE.md** mis à jour : section « Accueil — DA 2026 », exceptions JS, version
+  d'Astro, nombre de pages.
+
+#### Mesures, `main` → branche
+
+- **Build** : 70 pages, `verify-site.mjs` 68 URLs, 0 erreur, 3 avertissements (les
+  mêmes que sur `main`), à chaque commit.
+- **Accueil, fichiers** : HTML 339,0 → 140,8 Ko (46,4 → 31,0 Ko gzip). CSS bloquant :
+  une feuille de 28,2 Ko gzip et 4,7 Ko de styles en ligne → deux feuilles, 25,3 et
+  16,4 Ko gzip (**41,7 Ko**, le plan en attendait 33 après nettoyage). Balises
+  `<script>` : 11 → 10. Mots dans le HTML brut : 4 134 → 3 215.
+- **Autres pages** : feuille globale 28,2 → 25,3 Ko gzip, rien d'autre.
+- **Longueur de l'accueil** (après défilement complet) : 18 067 → 17 290 px à 320 px ;
+  16 494 → **15 797 px** à 390 px (−4,2 %) ; 13 292 → 14 085 px à 768 px (+6,0 %) ;
+  12 717 → 12 635 px à 1 440 px. Aucun défilement horizontal.
+- **Lighthouse mobile en local** (12.8.2, pages servies en gzip, 5 passages alternés
+  `main` / branche, médianes) :
+
+  | Page | Performance | LCP | TBT | CLS | Poids | Requêtes |
+  |---|---|---|---|---|---|---|
+  | `/` | 96 → **98** (90 à 97, puis 98 à 99) | 2,72 → 2,26 s | 52 → 27 ms | 0 → 0 | 445 → 223 Ko | 25 → 22 |
+  | `/simulateur` | 93 → 92 (90 à 95, puis 87 à 98) | 2,33 → 2,08 s | 264 → 245 ms | 0 → 0 | 309 → 306 Ko | 26 → 26 |
+  | `/blog/tout-comprendre-urssaf` | 99 → 99 | 2,04 → 2,03 s | 49 → 35 ms | 0 → 0 | 174 → 172 Ko | 12 → 12 |
+
+  Accessibilité 100, bonnes pratiques 96, SEO 100 sur les trois pages, des deux côtés.
+  ⚠️ `/simulateur` est sous les 95 de CLAUDE.md, sur `main` comme sur la branche
+  (hydratation de l'îlot) : l'écart d'un point est dans le bruit, la page ne change que
+  par le nom de sa feuille. Le FCP simulé oscille entre deux valeurs (1,1 ou 1,5 à
+  1,9 s) sur les trois pages et des deux côtés : effet de seuil du modèle, pas du lot.
+  Élément LCP de l'accueil : le titre du premier écran.
+- **CLS de l'accueil** : 0 quand la police arrive à temps. Police retardée de 2 s :
+  0,0003 à 0,0043 selon la taille d'écran (critère du plan : sous 0,02). En arrivant
+  sur une ancre avec une police retardée, un bloc peut bouger de 24 à 30 px (0,03 au
+  pire, sous 0,1). Mesures des phases 2 et 3, non refaites en phase 4a (le rendu de
+  l'accueil y est resté identique au pixel).
+- **Événements, sur le build final** (Chromium, 1 440 px, envois décodés, rien n'est
+  parti vers PostHog) : chaque section vue une fois avec son rang (`hero` 1, `features`
+  4, `practice-journeys` 6, `founder` 12, `presentation-video` 3, `partners` 8,
+  `testimonials` 7, `pricing` 9, `faq` 10, `guides` 13, `final-cta` 14, `footer` 11) ;
+  `landing_cta_clicked` pour `cta_signup_header`, `cta_signup_hero`, `cta_simulator`,
+  `cta_signup_journey_section`, `cta_signup_pricing` (`yearly`, `monthly`),
+  `cta_signup_final` ; un `landing_journey_profile_selected` par profil ;
+  `calendly_clicked` pour `pour_qui`, `fondateur`, `faq_accueil` ; `landing_video_play`.
+  Non rejoués ici : les deux CTA de l'en-tête mobile.
+- **Captures regardées** après nettoyage, écran par écran, à 390 et 1 440 px : page
+  complète, aucune image manquante, aucune erreur de script.
+
+#### Non testé
+
+- **Safari et Firefox** : aucun des deux moteurs n'était sur la machine. À regarder en
+  priorité : `:has()` sur les radios (onglets, profils), la pastille floutée au-dessus
+  de l'eau qui bouge (§ 9.dn), les animations liées au défilement (absentes de Firefox :
+  l'indice de défilement des témoignages ne s'affiche pas et la mascotte des tarifs
+  passe sous l'en-tête, prévu), `content-visibility`, le tableau en grille sous 560 px,
+  `box-decoration-break`, `text-wrap-style`.
+- **Android** : sans Arial, le repli de police est Roboto, sans ajustement ; les seuils
+  de coupure du premier écran n'y garantissent rien tant que la police n'est pas là.
+- **Lecteur d'écran réel** (VoiceOver, NVDA, TalkBack) : seul l'arbre d'accessibilité
+  de Chromium a été relu. **Vrai téléphone** : aucun.
+- Aperçu Vercel : Lighthouse n'y a pas été lancé (mesures locales seulement).
+
+#### À faire le jour de la mise en ligne
+
+1. Pousser la branche, puis attendre l'aperçu Vercel de son dernier commit. Les
+   commits de la phase 4a n'étaient pas poussés quand cette entrée a été écrite : un
+   aperçu plus ancien ne montre ni les chiffres du 10 novembre ni la feuille allégée.
+2. Regarder cet aperçu-là sur Safari (iPhone et Mac), Firefox et un Android.
+3. `git fetch origin`, puis comparer et rebaser contre `origin/main`, jamais contre le
+   `main` local, qui peut être en retard (le 10 novembre, celui de la machine de
+   travail avait trois commits de retard : 92 fichiers d'écart au lieu de 82). Si
+   `origin/main` a avancé : rebaser, puis `npm run build` et
+   `node scripts/verify-site.mjs` : 0 erreur.
+4. Prendre la lettre de cette entrée (la première libre après § 9.ea) et remplacer
+   « 9.eb » dans son titre (fait le 10 novembre 2026). Les commentaires du code citent « MIGRATION.md § 9 » sans
+   lettre.
+5. Dater les pages dont le texte change, dans `src/lib/pages-lastmod.ts`, à la date
+   réelle de mise en ligne (note dans le fichier) : « / », et aussi `/faq` et
+   `/tarifs`, qui n'avaient pas de `lastmod`. `/guide-declarations` garde sa date de
+   revue. Si la mise en ligne n'est pas le 10 novembre, refaire les deux `count(*)` et
+   corriger chiffres et date dans `accueil/Fondateur.astro`. Build et contrôle à
+   nouveau.
+6. Fusionner, puis annoter PostHog le jour même : « nouvelle accueil », avec les
+   séries qui s'arrêtent, commencent ou changent de sens (liste plus haut).
+7. Relever la Search Console de l'accueil (requêtes, impressions, positions sur 3
+   mois) : c'est la référence de la fenêtre d'observation.
+8. Sous sept jours : phase 5a (en-tête, pied et police sur tout le site). Puis trois à
+   quatre semaines sans toucher `title`, description, H1, texte ni lien interne d'une
+   page indexée.
+
+#### Reste ouvert
+
+- **Témoignages** : statut, ville et accord de Sofiane B., Anaïs V., Sarah M. et
+  Émilien C. ; « Dr » devant les trois autres à confirmer ; « SOS Médecins » nomme une
+  structure tierce.
+- **À confirmer par le propriétaire** : « Abonnement 100 % déductible au régime réel. »
+  (les trois derniers mots sont ajoutés : en micro-BNC rien ne se déduit) ; les deux
+  étapes nouvelles du vacataire ; la liste des six guides (`/comparatif` n'a qu'un lien
+  depuis l'accueil, dans le pied) ; le retrait de la question sur la collaboration ;
+  les deux faits qui n'ont qu'une trace écrite (« l'offre se choisit à l'inscription »,
+  « pas de cumul de remises » : voir « Textes des autres pages »).
+- **H1 de l'accueil, à trancher avant la fusion** : il change dès la mise en ligne
+  (« Ton activité médicale, sous contrôle. » devient « Logiciel de gestion pour médecin
+  remplaçant : Sors la tête de l'eau »), comme le plan le prévoit depuis la phase 2 et
+  comme le premier écran a été validé, alors que `title` et description attendent la
+  phase 4c. Garder l'ancien H1 jusque-là voudrait dire changer le titre dessiné du
+  premier écran.
+- **« Sans engagement »** sous le bouton du bloc « Pour qui » (repris de l'ancienne
+  accueil) : ce bouton mène à une inscription où l'on choisit aussi l'offre annuelle,
+  qui engage 12 mois. Même formule sous des boutons d'essai de `/essai`,
+  `/qui-sommes-nous`, `/comparatif`, `/guide-declarations`, de la calculette et des
+  articles : non touchée, à faire confirmer ou préciser (« en mensuel »).
+- **Phase 4c** : `title`, description, `WebSite.description`, `VideoObject.description`,
+  première ligne de `llms.txt`, image de partage de l'accueil.
+- **Phase 5a** : `HeaderDA` et `FooterDA` remplacent `Header` et `Footer`, le contrôle
+  « 4 quater bis » part. À traiter alors, au clavier : le menu Ressources n'a ni
+  `aria-expanded` ni fermeture par Échap, le tiroir ne retient pas le focus (comportement
+  hérité de `Header.astro` ; c'est du JS en plus, à inscrire dans l'invariant « zéro JS »).
+- **Ailleurs sur le site** : `/tarifs` ne parle ni du tarif interne ni des 6 mois ; le
+  PDF du guide (page 25) dit « pendant tout ton internat », sans les docteurs juniors.
+  À corriger avant la phase 5a ou après la fenêtre d'observation, pas pendant.
+- **Images supprimées** : les 21 adresses de `public/lovable-uploads/` répondent 404.
+  Si l'une d'elles sert ailleurs (signature d'e-mail, publication), restaurer ce
+  fichier.
+- **Compte de démonstration** : un calendrier « Avril 2026 » à côté d'un relevé « Année
+  2025 », sur une page mise en ligne en novembre. Vraisemblance fiscale non recoupée
+  avec le simulateur.
+- **Images** : demander au CRP-IMG un logo propre et plus grand (source de 300 px) ; la
+  mascotte de dos ne fait que 431 px de large. Trois fichiers de `src/assets/`
+  (`cnom-logo.jpg`, `cnom-logo-adjoint.jpg`, `google-calendar-logo.png`) et quinze de
+  `public/lovable-uploads/` n'étaient déjà cités nulle part sur `main` : non touchés.
+- **Premier écran** : entre 906 et 1 026 px de large, le titre tient sur une ligne avec
+  la police et sur deux avec le repli (la scène bouge si la police arrive tard). La
+  bannière cookies, en bas à gauche, recouvre la fiche décorative « Avril 2026 » de
+  1 180 à 1 700 px de large jusqu'au choix du visiteur.
+- **Film** : quand la lecture démarre, le focus retombe sur `<body>` ; pas de piste
+  `<track>` (script et balise non touchés).
+- `hippodoc-corpus/`, que CLAUDE.md demande de lire, n'est pas dans le dépôt.
+
+### 9.ec Accueil : cinq retouches le soir de la mise en ligne (10 novembre 2026)
+
+Retouches décidées par le propriétaire quelques heures après la fusion de § 9.eb, donc
+pendant la fenêtre d'observation (§ 9.eb, « À faire le jour de la mise en ligne »,
+point 8) : du texte et des liens internes de l'accueil changent. `title`, description
+et texte du H1 : inchangés. Un commit par retouche. Build et `verify-site.mjs` à
+0 erreur à chaque commit, `BaseLayout.DakHsQiB.css` garde son nom.
+
+**1. Premier écran : « l'eau » en bleu** (`accueil/Hero.astro`)
+
+- Le dernier mot du grand titre, apostrophe comprise, passe de l'encre (`--ink`,
+  `#14254F`) au bleu de la vague du premier plan (`--w4`, `#2A60C4`, même valeur que
+  `--deep`). Texte du H1 inchangé, au caractère près : « Logiciel de gestion pour
+  médecin remplaçant : Sors la tête de l'eau ». Pas de jaune (réservé à « ce qu'il te
+  reste »).
+- Contraste sur le ciel : 4,31:1 en haut (`--sky-1`), 5,04:1 au milieu (`--sky-2`),
+  pour un texte de 44 à 116 px en graisse 720 (seuil des grands textes : 3:1).
+  `--deep-2` (`#163A88`) ferait 7,71:1 mais ne se distingue presque plus de l'encre :
+  non retenu.
+- Coupes et interlettrage : le mot est dans un `<span>` qui ne porte que la couleur.
+  Balayage de 320 à 1 600 px (651 largeurs, police chargée puis woff2 bloqué) comparé
+  à `main` : mêmes lignes, mêmes hauteurs, largeur du titre à 0,02 px près. L'écart
+  connu entre 906 et 1 026 px (§ 9.eb, « Reste ouvert ») n'a pas bougé.
+
+**2. Premier écran : ligne fine sous les boutons** (`accueil/Hero.astro`)
+
+- Avant : « Rien n'est débité pendant l'essai. Créé par un médecin remplaçant. Déjà
+  900+ médecins inscrits. »
+- Après : « Créé par un médecin remplaçant. Déjà 900+ médecins inscrits. »
+- La mention de la carte bancaire reste dans les tarifs (« Ta carte bancaire est
+  demandée à l'inscription, mais rien n'est débité pendant l'essai. ») et dans la FAQ :
+  non touchées.
+- Coupes : une seule espace écrite (`.f1`) au lieu de trois. Sous 480 px d'écran, une
+  phrase par ligne (deux lignes, à 320 px aussi) ; une ligne à partir de 480 px (700
+  auparavant). La ligne entière fait 413 px avec la police et 409 px avec le repli,
+  pour 434 px de place à 480 px. Balayage refait de 320 à 1 600 px : la ligne fine
+  coupe pareil avec la police et avec le repli à toutes les largeurs ; mot-clé, titre
+  et accroche inchangés. La règle d'interligne resserré sous 360 px (faite pour trois
+  lignes) est retirée : regardé à 320 × 568 px, la ligne reste à gauche de la bulle
+  de chat.
+
+**3. Bloc fondateur : la date du relevé n'est plus affichée** (`accueil/Fondateur.astro`)
+
+- Avant, sous les trois chiffres : « journées et lieux au 10 novembre 2026 ». Après :
+  rien (ligne retirée, avec sa règle de style). Les trois chiffres et leurs libellés
+  restent : « 900+ Médecins inscrits », « 24 200 Journées enregistrées », « 2 714
+  Lieux d'exercice référencés ».
+- **Date du relevé, à tenir ici et dans l'en-tête de `Fondateur.astro`** : journées
+  (24 252, écrit « 24 200 ») et lieux (2 714) relevés le **10 novembre 2026** par
+  `count(*)` (§ 9.eb, § 9.u) ; « 900+ » : 908 comptes confirmés par le propriétaire
+  le même jour. La règle ne change pas : à chaque mise à jour, refaire les relevés et
+  corriger la date aux deux endroits.
+- ⚠️ CLAUDE.md dit encore « datés sur la page » (section « Accueil — DA 2026 »,
+  « Chiffres ») : faux depuis cette retouche. Non modifié ici (les consignes du dépôt
+  ne se changent que sur demande du propriétaire). Ligne proposée : « datés dans
+  l'en-tête de `Fondateur.astro` et dans MIGRATION.md § 9.ec, jamais écrits à la
+  main ».
+
+**4. Guides : la CARMF et les impôts des internes entrent, l'effet ciseaux et la licence
+sortent** (`accueil/Guides.astro`)
+
+- **Annoncé, puis livré.** La proposition faite au propriétaire le 10 novembre était :
+  « [L'effet ciseaux,] je le remplacerais par la CARMF, et la licence par les impôts des
+  internes ». Sa réponse : « go », « concernant les pages du 5 je te fais confiance ».
+  Un premier commit (`68afac9`) faisait autre chose sans le dire : la CARMF à la place
+  de la licence, l'effet ciseaux gardé comme « pari éditorial ». C'était choisir à sa
+  place. Le commit suivant remet **la liste annoncée**, décrite ici.
+- Ordre : Simulateur Super-Net (`/simulateur`), Guide des déclarations
+  (`/guide-declarations`), Guide du remplaçant (`/guide`), « Remplacement régulier : le
+  risque de requalification », **« CARMF : cotisations 2026 du médecin remplaçant »**
+  (`/blog/tout-comprendre-carmf`), **« Impôts 2026 des internes qui remplacent »**
+  (`/blog/guide-impots-internes-remplacants`).
+- Sortent (par rapport à § 9.eb) : « Licence de remplacement interne : dossier et
+  délais », « Conditions, pièces du dossier, envoi au CDOM »
+  (`/blog/obtenir-sa-licence-de-remplacement`) ; « Régularisation URSSAF : l'effet
+  ciseaux expliqué », « Bonne année, puis appel de cotisations qui double ? »
+  (`/blog/effet-ciseaux-regularisation-urssaf-medecin`). Aucun des deux n'a plus de lien
+  depuis l'accueil ; ils en gardent depuis d'autres pages (8 pour la licence, 15 pour
+  l'effet ciseaux, comptées dans le build, hors page de l'article).
+- Textes ajoutés : le titre de chaque article, tel quel, et le début de sa description,
+  comme pour les autres articles du bloc : « Affiliation dès le premier rempla, calcul
+  sur ton revenu et non sur ton CA » ; « Interne ayant fait des remplas en 2025 ?
+  Salaire CHU + rétrocessions BNC ». Rien d'autre ne change dans le bloc.
+- **Pourquoi** : visiteurs sur 90 jours (PostHog, relevé du 10 novembre) : simulateur
+  385, requalification 293, guide des déclarations 256, guide 115, CARMF 48, impôts des
+  internes 35, licence 28, effet ciseaux moins de 21.
+- **Réserve du propriétaire**, à garder en tête : une faible audience peut aussi venir
+  d'articles qui n'ont jamais été mis en avant. Elle vaut pour les deux articles qui
+  sortent comme pour les deux qui entrent, et 90 jours de visites ne la tranchent pas.
+  Ce bloc est la première mise en avant : les clics de `landing_guide_*` diront ce qui
+  prend. Garder l'effet ciseaux à la place d'un des deux entrants tient en une ligne de
+  `Guides.astro` : à lui de dire.
+- **Mesure** : `landing_guide_licence` et `landing_guide_effet_ciseaux` **s'arrêtent**
+  (séries ouvertes le jour même par § 9.eb, quelques heures de données) ;
+  `landing_guide_carmf` et `landing_guide_impots_internes` **commencent**. Les quatre
+  autres continuent, au même rang. À annoter dans PostHog.
+- Les deux articles qui entrent étaient déjà liés depuis une réponse de la FAQ de
+  l'accueil : deux liens vers chacun sur la page, assumé (l'ancien critère « pas déjà
+  lié » cède à l'audience).
+  La liste des six guides n'est plus « à confirmer » (§ 9.eb, « Reste ouvert »).
+
+**5. Film : nouveau film vertical, servi par le site** (`accueil/Fondateur.astro`,
+`src/pages/index.astro`, `public/`)
+
+- ⚠️ **Périmètre, à confirmer par le propriétaire avant fusion.** Son « go » citait les
+  points 1, 2, 3 et 5 de la liste du 10 novembre (l'eau, la ligne fine, la date, les
+  guides). Le film en était le point 4 : c'est lui qui l'avait proposé (« mettre la
+  vidéo au format 9:16 »), la réponse disait « j'y ajouterais la vidéo […] si tu me
+  les envoies », et il a joint le fichier à son « go ». Le remplacement du film repose
+  donc sur cet envoi. **N'ont pas été annoncés** : le film servi par le site plutôt que
+  par Supabase (7 Mo par lecture complète servis par Vercel) et 7,1 Mo de binaires
+  ajoutés à l'historique git.
+- **Le film** (fichier du propriétaire, `hippodoc-film-v21-site.mp4`) : 1080 × 1920
+  (9:16), 56,6 s, H.264 et AAC, 24,4 Mo. Animation sans prise de vue, sur fond bleu
+  nuit, bleu ou blanc : la semaine du remplaçant (« T'enchaînes les remplas toute la
+  semaine… et ton week-end ? »), puis le contrat, le planning, la saisie d'une journée,
+  ce qu'il reste après URSSAF, CARMF et impôts, la facture de rétrocession, les
+  paiements en attente, l'année, la déclaration de revenus, et la fin : « Toi, tu
+  soignes. Hippodoc s'occupe du reste. » Le propos est écrit à l'écran, en grands
+  titres qui s'affichent mot à mot ; pas de bandeau de sous-titres.
+- **Bande son : une voix, sur de la musique.** Transcrite le 11 novembre par un modèle
+  automatique lancé sur la machine (Whisper « small », rien n'est envoyé ailleurs),
+  puis comparée aux textes relevés sur 71 images du film. **Transcription automatique,
+  non écoutée par une personne** : à confirmer à l'oreille par le propriétaire. La
+  voix dit presque partout ce qui s'écrit. Trois passages diffèrent : la voix dit
+  « Encore en train de bidouiller ton Excel ? » quand l'écran affiche « Samedi :
+  Excel. Dimanche : encore Excel. » ; « Maintenant, tes week-ends, t'as officiellement
+  mieux à faire. » quand l'écran affiche « Samedi : enfin libre. Dimanche : aussi
+  libre. » ; et la fin, « Allez, essaie-le 30 jours gratuits », n'est à l'écran que
+  par le bouton « Essai gratuit 30 jours ». Le film se suit sans le son, mais ses
+  textes ne sont pas des sous-titres au sens strict : la mention « sous-titré » est
+  retirée (voir « Textes » et « Schéma »).
+- **Version web** : `public/hippodoc-film-v21.mp4`, **7 057 291 octets**, 720 × 1280,
+  H.264 High 3.1 à 30 i/s (890 kb/s), AAC stéréo 96 kb/s, `moov` en tête (lecture
+  progressive). Commande : `ffmpeg -i <source> -vf scale=720:1280:flags=lanczos -c:v
+  libx264 -preset slow -crf 21 -profile:v high -level 3.1 -pix_fmt yuv420p -c:a aac
+  -b:a 96k -ac 2 -movflags +faststart -map_metadata -1`. SSIM 0,9955 contre la source
+  ramenée à 720 px ; images comparées côte à côte sur les plans à petit texte (saisie
+  de la journée, facture) : pas de différence visible.
+- **Hébergement** : le film n'est plus lu chez Supabase mais sur le site (en-tête de
+  cache d'un jour dans `vercel.json`, avec l'affiche). L'ancien film
+  (`…/public-assets/hippodoc-presentation-st.mp4`, 16:9, 93 s) n'est plus cité par
+  l'accueil ; **rien n'est supprimé chez Supabase**. `public/hippodoc-presentation-st-poster.jpg`
+  reste en place (adresse déjà publiée dans le schéma), sans plus être cité.
+- **Affiche** : le film à 8,5 s (« Hippodoc te rend tes soirées et tes week-ends. »,
+  fond bleu), 1080 × 1920, 68 146 octets, en deux copies : `src/assets/accueil/film-affiche.jpg`
+  (astro:assets, AVIF et WebP en 320, 640 et 960 px, chargement paresseux) et
+  `public/hippodoc-film-v21-poster.jpg` (schéma).
+- **Poids ajouté au dépôt** : 7 125 437 octets dans `public/` (film 7 057 291, affiche
+  68 146) et 8 111 de plus pour l'affiche de `src/assets/` : **7,1 Mo**, binaires, que
+  git ne compresse pas. Un prochain film ajoutera le sien à l'historique.
+- **Cadre** : vertical, 9:16, coins de 30 px. Sous 700 px : centré sous le texte,
+  300 px de large au plus (533 px de haut). De 700 à 899 px : 240 px, dans la colonne
+  du portrait. À partir de 900 px : 320 × 569 px, centré dans la colonne du portrait
+  (380 px), le texte du film dans la colonne du texte du fondateur, au même bord
+  gauche. Dans le code, le texte reste avant le cadre.
+- **Pastille de lecture sur téléphone** (correction du 11 novembre). La pastille jaune
+  « 1 min », seul signe que le cadre est un film, était en bas à gauche d'un cadre de
+  533 px de haut : sur un écran de 390 × 844 px, titre du film sous l'en-tête, elle
+  tombait à 861 px, hors écran (890 px sur un écran de 320 × 568 px), et le haut du
+  cadre ressemblait à une image. Sous 700 px, elle est maintenant **en haut du cadre,
+  centrée**, dans le bleu vide de l'affiche (20 px sous le bord). CSS seul, le script
+  n'est pas touché. Mesuré à 320, 360, 390, 560 et 699 px : la pastille est à l'écran
+  dès que 70 px du cadre y sont. À partir de 700 px, rien ne change (le cadre tient
+  entier à l'écran, pastille en bas à gauche).
+- **Inchangé** : `<video preload="none">`, le bouton de lecture et son script (un mot
+  d'un commentaire mis à jour), `id="film-presentation"`,
+  `data-landing-section="presentation-video"`, les événements `landing_video_*`. Aucun
+  JS ajouté. Vérifié au navigateur : aucune requête mp4 avant le clic, lecture, pause
+  et reprise au toucher, `ended` à 56,6 s, aucune erreur de script.
+- ⚠️ **Mesure** : `video_id` reste `hippodoc-presentation-st` dans
+  `src/lib/landing-analytics.ts` (fichier non touché : son empreinte change le HTML de
+  toutes les pages). **`landing_video_play` ne distingue les deux films que par la date** :
+  rejoué en interceptant les envois, il part avec `duration_seconds` 0 et
+  `percent_watched` 0 (`preload="none"` : la durée n'est pas connue au moment de la
+  lecture ; pareil sur `main`). Seuls `landing_video_progress`, `landing_video_pause`
+  et `landing_video_completed` portent 57 (93 pour l'ancien film). Les jalons en
+  pourcentage ne sont pas comparables d'un film à l'autre. **Annotation PostHog
+  obligatoire le jour de la mise en ligne.** Renommer `video_id` ouvrirait une série
+  neuve, mais change le HTML des 70 pages : au propriétaire de trancher.
+- **Textes** (avant → après) :
+  - titre du bloc (`<h3>`) : « Hippodoc en 90 secondes » → « Hippodoc en une minute » ;
+  - pastille du bouton : « 90 s » → « 1 min » ;
+  - nom du bouton (`aria-label`) : « Lire le film de présentation, 90 secondes » →
+    « Lire le film de présentation, une minute » ;
+  - `title` du `<video>` : « Hippodoc en 90 secondes — film de présentation
+    (sous-titré) » → « Hippodoc en une minute — film de présentation » (« (sous-titré) »
+    retiré le 11 novembre : voir « Bande son ». Si le propriétaire, après écoute, tient
+    les textes à l'écran pour des sous-titres, la mention se remet telle quelle).
+- **Schéma `VideoObject`** : `name` « Hippodoc en 90 secondes » → « Hippodoc en une
+  minute » (devenu faux, suit le titre visible) ; `contentUrl` →
+  `https://www.hippodoc.fr/hippodoc-film-v21.mp4` ; `thumbnailUrl` →
+  `https://www.hippodoc.fr/hippodoc-film-v21-poster.jpg` ; `duration` `PT1M33S` →
+  `PT57S` ; `uploadDate` `2026-08-04T09:00:00+02:00` → `2026-11-11T00:00:00+01:00`
+  (le jour seul compte ; rien n'était poussé le 10 à minuit, la mise en ligne tombe
+  au plus tôt le 11 : **à remettre au jour réel de la fusion** si elle glisse encore) ;
+  `width` 720 et `height` 1280 ajoutés. `description` : un seul mot retiré, « Film de
+  présentation sous-titré d'Hippodoc : […] » → « Film de présentation d'Hippodoc :
+  […] » (voir « Bande son »). Le reste n'est **pas touché** (phase 4c, § 9.eb) : « tu
+  factures, Hippodoc calcule le reste » n'est pas une phrase du nouveau film, et
+  « installés, collaborateurs ou salariés » n'y figurent pas. Une nouvelle description
+  demande une formulation du propriétaire : rien n'est inventé ici.
+- **`verify-site.mjs`** : le contrôle « 4 nonies » ne cite plus Supabase, et vérifie en
+  plus que `VideoObject.contentUrl` est l'adresse du `<video>` et que `thumbnailUrl`
+  est un fichier servi par le site (le contrôle des liens voit déjà le `src`).
+
+**Vérifié** : build de 70 pages et `verify-site.mjs` à 0 erreur après chaque commit ;
+`BaseLayout.DakHsQiB.css` inchangée ; captures regardées à 390 et 1 440 px (premier
+écran, bloc fondateur avant et après le clic sur lecture, guides), et le cadre du film
+à 320, 390, 699, 700, 768 et 1 024 px. Lecture lancée au toucher sur la pastille à 320
+et 390 px, à la souris à 1 440 px : aucune requête mp4 avant, le film joue, aucune
+erreur de script. Lighthouse local (serveur sans compression) : mêmes notes avant et
+après, même poids de page (698 Ko), aucun octet du film au chargement.
+
+**Relecture du 11 novembre** (trois commits de correction) : la liste des guides
+remise à celle qui avait été annoncée (point 4) ; la pastille de lecture en haut du
+cadre sur téléphone, « (sous-titré) » retiré, date du schéma et description de la
+mesure corrigées (point 5).
+
+**Au propriétaire, avant fusion** : confirmer le remplacement du film et son
+hébergement par le site (point 5, « Périmètre ») ; écouter le film (« Bande son ») ;
+lire le film sur un iPhone réel, dans Safari et dans le navigateur d'Instagram, sur
+l'aperçu Vercel ; remettre `uploadDate` au jour de la fusion ; annoter PostHog ; dire
+s'il veut la ligne proposée pour CLAUDE.md (point 3).
+
+**Non fait, à savoir** : Safari, Firefox et vrai téléphone non testés (lecture en ligne
+du mp4 sur iOS comprise) ; bande son transcrite par un modèle, non écoutée ; CLAUDE.md
+non modifié ; `title` et description de la page inchangés.
+
+### 9.ed Phase 5a : en-tête, pied et police de la DA sur tout le site (11 novembre 2026)
+
+Suite de § 9.eb. Les 68 pages intérieures prennent l'en-tête en pastille, le pied « eau
+profonde », la police, la bannière cookies et la bulle de chat de l'accueil. Leur contenu
+garde ses classes Tailwind et ses couleurs (phases 5b à 5d). Contrôlé sur les 71 HTML du
+build, comparés à `main` : hors en-tête et pied, texte, liens, `title`, description,
+canonique, H1, JSON-LD, `data-ph` et `data-track` sont identiques, `/tarifs` exceptée
+(point 5). L'accueil est identique au pixel près (six captures, 390 et 1 440 px). Aucun JS
+ajouté. Build et `verify-site.mjs` à 0 erreur à chaque commit. Trois relectures (outils,
+contenu, technique) ont suivi ; ce qu'elles ont fait corriger est signalé « relecture ».
+
+**1. Un seul en-tête, un seul pied**
+
+- `src/components/Header.astro` et `Footer.astro` SONT désormais les composants de la DA
+  (ex-`da/HeaderDA.astro`, `da/FooterDA.astro`) ; le dossier `components/da/` disparaît.
+  BaseLayout pose `da` sur le `<body>` de toutes les pages (jetons) et importe `da.css` ;
+  le fond de page de la DA passe sous `da-fond` (accueil seule).
+- Micro-script du tiroir : `src/components/ScriptTiroir.astro`, rendu par `Footer.astro`
+  après `</footer>`, une fois par page. Inchangé au caractère près (même empreinte
+  SHA-256, espaces réduits, que dans l'ancien `Header.astro` : `10a3011d…`).
+- **Ce qui change dans le menu des pages intérieures** : « Découvrir »
+  (`/#film-presentation`, `landing_nav_decouvrir`, `landing_mobile_nav_decouvrir`) devient
+  « Comment ça marche » (`/#sous-la-surface`, `landing_nav_comment_ca_marche`,
+  `landing_mobile_nav_comment_ca_marche`), comme sur l'accueil depuis § 9.eb. **Ces deux
+  séries PostHog `…_decouvrir` s'arrêtent** ; l'ancre `#film-presentation` reste sur
+  l'accueil. Tous les autres `data-ph` et `data-track` sont repris tels quels.
+- **Ce qui change dans le pied des pages intérieures** : les liens en toutes lettres
+  « LinkedIn », « Facebook », « Instagram » (sans `data-ph`) ne sont plus répétés (les
+  trois pastilles rondes restent, avec leur `data-ph`) ; la flèche « → » des trois liens
+  d'articles sort du libellé (dessin) ; logo en lettres, sans l'icône.
+  `public/lovable-uploads/hippodoc-logo-96.webp` n'est plus référencé (laissé en place,
+  phase 6).
+- `verify-site.mjs`, contrôle « 4 quater bis » : la comparaison accueil / `/tarifs` devient
+  une garde. Liste figée des `data-ph` et `data-track` de l'en-tête et du pied
+  (`MESURE_ENTETE_PIED`, 30 repères) ; chaque page du build a l'en-tête et le pied avec les
+  mêmes liens que l'accueil, ou se déclare dans `PAGES_SANS_ENTETE` (`/essai`,
+  `/transmissions`) ; micro-script une seule fois, après le pied, à l'empreinte figée.
+- Variables `--landing-glass*` de `global.css` retirées (seul l'ancien en-tête les lisait).
+
+**2. Pages intérieures : la pastille sur une bande de ciel**
+
+- Variante `flux` : l'en-tête garde 80 px en haut de la page (72 à 76 px avant), puis la
+  pastille reste collée à 10 px du haut. Derrière elle, une bande de ciel de 80 px qui
+  s'éteint vers le bas (`.hd-ciel`, élément décoratif rendu avant l'en-tête) : elle part
+  avec la page, elle n'est pas collante. Le pied prend des coins ronds en haut.
+- **Jonction avec la page (relecture).** La bande s'éteint sur le fond de `<body>`. Quand
+  le premier bloc d'une page a son propre fond, ce fond commençait net à 80 px : une ligne
+  sur toute la largeur (écart entre les lignes 79 et 80 : 27 niveaux sur `/comparatif`, 22
+  sur `/qui-sommes-nous`, 10 sur `/simulateur`, 6 à 7 sur `/faq`, les quatre pages légales
+  et la 404). Ces neuf blocs prennent la classe `da-sous-entete` (`da.css`) : le bloc
+  remonte sous l'en-tête, rend les 80 px à son contenu et peint lui-même la bande
+  par-dessus son fond. Après : plus aucune couture sur les 71 pages ; position du `h1`, du
+  pied et hauteur de page identiques à 390, 768 et 1 440 px (seule la 404, plus courte que
+  l'écran, perd 80 px de vide). La classe est aussi sur le héros de `/guide-declarations`,
+  où elle n'agit que les mois sans bandeau saisonnier (vérifié en retirant le bandeau).
+- **Pastille pleine sous 900 px (relecture)** sur les pages intérieures : à 94 % sans
+  flou, on lisait au travers le texte des outils et du blog. L'accueil garde 94 %. Autour
+  de la pastille (10 px au-dessus, 12 px de chaque côté), le contenu qui défile reste
+  visible, y compris au-dessus de la barre de recherche de `/guide-declarations` : c'est
+  le principe d'une pastille flottante.
+- **`/simulateur` (relecture)** : après un calcul la page défile jusqu'aux résultats, et
+  le bouton « Simuler » s'arrêtait exactement derrière la pastille. `scroll-mt-20` sur le
+  bloc des résultats : bouton entier de 96 à 144 px, titre à 176 px, à 390, 768 et
+  1 440 px.
+- Recette (15 pages × 390, 768 et 1 440 px) : aucun `h1` sous la pastille ; ancres du menu
+  testées depuis `/blog`, la calculette et une page légale (cible à 84 px, pastille à
+  70 px) ; tiroir mobile ouvert et refermé sur `/faq` et `/guide-declarations`.
+- `/guide` : le bandeau bleu remontait de 72 / 76 px sous l'ancien en-tête ; il remonte de
+  80 px (`-mt-20`, `pt-28`, `md:pt-36`), mêmes distances sous l'en-tête.
+- `/guide-declarations` : la barre de recherche collante passe de `top-16` à `top-[70px]`,
+  au ras de la pastille. Avant : 8 à 12 px de la barre sous l'en-tête, dont 2 à 6 px du
+  champ. Après : 0.
+- Calculette : sa barre « Cases 2035 » (`sticky top-16`) ne colle pas, ni avant ni après
+  (`<main>` a `overflow-hidden`). Non touché. Sommaire collant des articles (`xl:top-24`) :
+  26 px sous la pastille.
+
+**3. Police : Google Sans Flex partout**
+
+- `fontFamily.sans` (`tailwind.config.ts`) : la police, son repli à métriques ajustées,
+  puis la liste par défaut de Tailwind. Le woff2 (41 936 octets) est préchargé par
+  BaseLayout sur toutes les pages. Les graisses Tailwind (400 à 800) tombent dans la plage
+  du fichier ; l'italique est penché par le navigateur (pas de fichier italique).
+- **Signes absents du fichier**, dans le contenu des pages (hors en-tête et pied) : → (546
+  fois, 59 pages), ≈ (117, 22 pages), ← (49), ≠ (48, 8 pages), ᵉ et ʳ (37), ≥ et ≤ (19),
+  ✓ et ✔ (38), ₂, Σ, ↓, et les émojis. Ils sortent dans la police suivante de la pile :
+  Arial par la face de repli (Mac, Windows, iOS), sinon la police du système (Android).
+  Le plus visible : « Essai gratuit 30 jours → » sur le bouton de `/essai`, flèche plus
+  maigre que le texte. La police source n'a **aucune flèche** : impossible de les ajouter
+  au fichier ; `unicode-range` déclarait à tort U+2191 et U+2193, retirés. ≈ ≠ ≤ ≥ ₂
+  existent dans la source ; fichier non refait (il ne se régénère pas à l'octet près :
+  41 880 octets contre 41 936, à contrôler au pixel avant de le remplacer).
+- Balayage de 70 pages × 6 largeurs (320 à 1 440 px), simulateur calculé et exemple de
+  calculette chargé, comparé à `main` : aucun nouveau défilement horizontal, aucun élément
+  hors écran, aucun libellé tronqué en plus ; aucun bouton, onglet, en-tête de tableau ni
+  libellé de champ sur une ligne de plus. 281 retours à la ligne en plus, tous dans des
+  liens de texte courant et des titres. Rien à corriger du fait de la police.
+- **Relecture, trois effets de la police.** (a) Tableaux d'articles (15 articles) : avec
+  `tabular-nums`, la police élargit aussi l'espace (4,52 px en 14 px au lieu de 3,16) ;
+  `word-spacing: -0.097em` sur `.prose table` (`global.css`) la ramène à sa largeur, les
+  chiffres restent alignés. Les 86 milliers de ces tableaux sont saisis avec une espace
+  ordinaire. (b) H1 de `/guide-declarations` à 1 440 px : « claires » partait seul à la
+  ligne ; `whitespace-nowrap` sur « enfin claires » (tient sur une ligne jusqu'à 320 px).
+  (c) Non touché : la colonne de texte des articles (`max-w-[68ch]`) passe de 688 à
+  702 px à 1 440 px, le « 0 » de la police étant plus large ; à resserrer en phase 5c.
+- **Corrigé au passage (existait avant)** : `/simulateur`, une fois le calcul affiché, un
+  halo décoratif faisait défiler la page de côté sur téléphone (425 px pour 390) ;
+  `overflow-x-clip` sur `<main>`.
+
+**4. Bannière cookies et bulle de chat** : même habillage que sur l'accueil sur toutes les
+pages, `/essai` comprise (règles `.da #cookie-banner`, `.da #crisp-launcher`, inchangées).
+Relecture : à partir de 1 280 px la bannière, rangée en bas à gauche, recouvrait quatre
+liens du sommaire collant des 19 articles qui en ont un. Tant qu'elle est affichée, le
+sommaire s'arrête au-dessus d'elle (`max-height`, règle `:has()` dans `da.css`, sans JS) :
+0 recouvrement à 1 280 × 720, 1 440 × 900 et 1 920 × 1 080.
+
+**5. Trois corrections de contenu autorisées par le propriétaire, une quatrième à valider**
+
+- **/tarifs**, nouveau bloc sous les deux offres, mot pour mot. Titre : « Internes et
+  docteurs juniors ». Texte : « Tu paies **10 € par mois** jusqu'à la fin de l'internat,
+  sur justificatif : écris-nous à contact@hippodoc.fr. » puis « Tu adhères à un syndicat
+  d'internes partenaire ? Ton essai gratuit dure **6 mois** au lieu de 30 jours, grâce à un
+  code fourni par ton syndicat. » « Sur justificatif » et l'adresse viennent de `/faq`
+  (§ 9.eb). Rien sur le cumul (décision 15b, pas encore relue). FAQ de la page, JSON-LD,
+  title et description inchangés. `lastmod` de `/tarifs` : 11 novembre 2026.
+- **CLAUDE.md** : chiffres du bloc fondateur « datés dans l'en-tête de `Fondateur.astro`
+  et dans MIGRATION.md § 9.ec » (ligne proposée en § 9.ec) ; section DA réécrite (un seul
+  en-tête, police globale, `da-fond`) ; `hippodoc-corpus/` : « Il n'est pas dans ce
+  dépôt ».
+- **`src/lib/landing-analytics.ts`** : le commentaire disait le film « servi depuis
+  Supabase Storage ». Il dit maintenant qu'il est servi par le site depuis § 9.ec.
+  Commentaire seul, script inchangé.
+- **À valider : `/tarifs`, deux espaces rendues (relecture).** Un retour à la ligne collé
+  à une balise en ligne disparaît au build. La phrase sous le H1 se lisait « sans
+  engagement, ou19 € par mois », le bandeau du bas « Consulte la FAQ ouécris-nous ». Les
+  deux espaces reviennent ; le texte source n'a pas changé, seules les coupures de ligne
+  de `tarifs.astro`. Commit séparé (`/tarifs : deux espaces avalées au rendu`), à retirer
+  s'il ne convient pas.
+
+**6. Mesures** (build de `main` avant la phase → cette branche)
+
+- Feuille commune : 158 392 → 174 197 octets (25 361 → 29 633 gzip). Elle s'appelle
+  désormais `_astro_assets.*.css` (`BaseLayout.*.css` avant). Feuille de l'accueil :
+  94 251 → 74 615 (16 509 → 12 304 gzip).
+- Par page, HTML + CSS, gzip : accueil 72 722 → 72 792 octets ; `/simulateur` 52 385 →
+  55 561 ; article `frais-pros-medecin-liberal-2026` 59 893 → 62 609. HTML brut des pages
+  intérieures : −11,6 Ko chacune. Plus la police à la première visite d'une page
+  intérieure : 41 936 octets.
+- Lighthouse 13.6 mobile, local, 5 passes alternées, refaites après les corrections de
+  la relecture (performance, de la plus basse à la plus haute) : accueil 100 → 100 ;
+  `/simulateur` 95 à 99 → 98 à 99 ; article 97 à 99 → 97 à 98. Ni gain ni perte au-delà du
+  bruit. Accessibilité 100, SEO 100, bonnes pratiques 96 des deux côtés (le bac à sable
+  bloque `t.hippodoc.fr`), CLS 0 partout. LCP : accueil 1,21 → 1,06 s ; `/simulateur`
+  0,91 s des deux côtés (une passe de `main` à 1,88 s, aucune sur la branche) ; article
+  2,24 à 2,36 s → 2,41 à 2,43 s.
+- CLS à l'arrivée de la police (woff2 retardé de 1,5 s, repli Liberation Sans ajusté),
+  sept pages intérieures : à 390 px, de 0,000 à 0,055 (`/guide-declarations` 0,055,
+  `/simulateur` 0,036, `/tarifs` 0,008, article 0,000) ; à 1 440 px, 0,007 au plus.
+  Chargement normal (police préchargée) : 0.
+
+**Reste ouvert**
+
+- Non testé : Safari, Firefox, un vrai téléphone. Sur Android (pas d'Arial), le repli
+  n'est pas ajusté : le CLS réel à l'arrivée de la police n'y est pas mesuré, et les signes
+  absents du fichier (point 3) y sortent dans la police du système.
+- **Phase 5b, `/tarifs` en premier** : deux boutons principaux de styles différents dans
+  le même écran (« Essai gratuit 30j » jaune en relief dans la pastille, « Commencer
+  l'essai gratuit » bleu plat dans la carte Annuel), plus le bleu nuit de la bannière et de
+  la bulle. C'est le seul endroit où le nouvel en-tête et l'ancien corps jurent.
+- (corrigé le 11 novembre 2026, § 9.ef) **Boussole de `/guide-declarations`, à 390 px** (existait avant, aggravé de 6 px) : après
+  le choix d'un profil, le titre de l'étape arrive à 96 px, sous la barre de recherche
+  collante (70 à 115 px ; 64 à 109 avant, titre alors à moitié caché). Aucun défilement
+  n'est demandé à ce moment-là (`handleSelectProfil`), c'est l'ancrage du navigateur qui
+  place la page. À corriger dans l'îlot (`BoussoleWizard.tsx`), hors phase 5a.
+- Vus pendant la recette, existaient avant, non touchés :
+  - (corrigé le 11 novembre 2026, à la demande du propriétaire : les lignes sources sont
+    recollées, onze espaces rétablies, aucun mot changé ; la onzième est « l'honoraire. Indemnités »
+    sur `/guide-declarations/dsfu-pamc`) dix espaces avalées autour d'une balise en ligne, même cause que sur `/tarifs` :
+    `/guide-declarations/2042-c-pro` (« auréel », « en5QC », « voirla déclaration »,
+    « laDSFU », « auxrégimes zonés »), `/guide-declarations/dsfu-pamc`
+    (« tescotisations », « tesrecettes brutes »), `/guide-declarations/medecin-remplacant`
+    (« Lesimulateurle calcule », « lapage DSFU ») ;
+  - `/simulateur` à 390 px, bloc « Exemple chiffré » : trois montants coupés en fin de
+    ligne (« 30 / 000 € », « 19 000 / premiers euros », « 11 / 000 € restants »). Les
+    espaces de milliers y sont sécables depuis toujours ; la nouvelle police a déplacé les
+    coupures. Les rendre insécables est une modification de contenu ;
+  - défilement horizontal sous 360 px sur deux articles (`conge-maternite-paternite`, une
+    URL dans un `<code>` ; `frais-pros-medecin-liberal-2026` à 320 px).
+- Le jour de la mise en ligne : annoter PostHog (fin des séries `…_nav_decouvrir`, début de
+  `landing_nav_comment_ca_marche` sur toutes les pages) et vérifier qu'aucun insight ne
+  filtre encore sur `landing_nav_decouvrir` ou `landing_mobile_nav_decouvrir`.
+
+### 9.ee Phase 5b : les pages intérieures dans la DA (11 novembre 2026)
+
+> **Avant fusion (11 novembre 2026), deux retouches sur `/essai` (page noindex, hors période d'observation).** (1) Retiré : la note « 4.9/5 » et ses cinq étoiles, qui n'étaient adossées à aucune source. « +900 médecins nous font confiance » reste. (2) Bannière cookies sur téléphone, cette page seulement : texte et boutons inchangés, boutons côte à côte, 96 px de haut au lieu de 113 ; sur un écran de moins de 780 px de haut, les trois vignettes d'atouts (« Super-Net », « Statistiques », « Planning ») s'effacent tant que la bannière est affichée, puis reviennent. Mesuré : bouton d'inscription entièrement visible au-dessus de la bannière à 390 × 664 et 360 × 740 ; à 320 × 568 il reste sous le premier écran.
+
+
+Suite de § 9.ed. Période d'observation SEO : sur une page rhabillée, seul l'habillage
+change. Un lot par page.
+
+**`/tarifs`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 10 titres (niveau et texte),
+  les 6 liens du `<main>` et les 54 de la page (adresse et libellé, dans l'ordre), les
+  3 ancres (`internes-title`, `inclus-title`, `faq-tarifs-title`), les 4 blocs JSON-LD,
+  les 32 éléments de la page qui portent un attribut de mesure (dont `cta_signup_tarifs_mensuel`, `_annuel`,
+  `_bottom`), les 4 scripts, et le texte du `<main>` : 506 mots, mêmes suites de texte
+  entre balises de bloc, espaces comprises. Les 70 autres HTML du build sont identiques,
+  au nom de la feuille commune près. Aucun JS ajouté. `lastmod` de `/tarifs` non touché.
+- **Habillage** (`src/pages/tarifs.astro`, aucune classe Tailwind) : page entièrement dans
+  la DA, comme l'accueil (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color` du
+  ciel). Un bloc « ciel » : titre, puis trois fiches en relief dans l'ordre du HTML
+  (mensuel, annuel en bleu profond avec le bouton jaune, internes) ; une feuille sable :
+  les 17 inclus sur une fiche blanche, en colonnes ; une feuille ciel : les 5 questions en
+  plis `.qa` ; une fin : le soleil de l'accueil sur l'eau du pied de page, immobile.
+  Mascotte « qui présente » derrière la fiche des internes à partir de 1 024 px : les
+  fichiers de l'accueil, hors du flux, et elle plonge derrière la fiche quand l'en-tête
+  approche (même mécanique CSS).
+- **Dans le HTML, sans toucher au texte** : « ✓ » est dessiné en SVG, le caractère reste
+  dans le texte, masqué à l'œil (`sr`) ; des `<span class="num">` gardent sur une ligne un
+  prix ou un mot et le « : » ou le « ? » qui le suit ; « 10 € par mois » de la phrase des
+  internes est écrit en grand, seul sur sa ligne (même `<strong>`, même phrase) ;
+  `role="list"` sur les listes ; une image décorative (`alt=""`).
+- **Feuilles** : commune 174 197 → 173 841 octets (trois utilitaires que seule `/tarifs`
+  employait disparaissent, rien n'est ajouté ; son nom change, donc le `<link>` de toutes
+  les pages) ; feuille de l'accueil inchangée à l'octet ; nouvelle `tarifs.*.css`,
+  9 710 octets (2 433 gzip), servie à `/tarifs` seule. HTML de `/tarifs` : 13 975 →
+  14 117 octets gzip. Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  l'accueil ; 25 largeurs de 320 à 1 920 px sans défilement horizontal, chaque bouton sur
+  une ligne ; contrastes AA (le plus bas : 4,73:1, texte clair de l'offre annuelle) ;
+  clavier, plis, tiroir, bannière cookies, contrastes forcés. Lighthouse mobile, quatre
+  mesures : performance 96 à 100 (99 à 100 sur `main`, écart de mesure sur le temps de
+  blocage), accessibilité 100, SEO 100.
+- **Piège relevé** : rendre `accueil/Mascotte.astro` depuis `/tarifs` sortait son `<style>`
+  de la feuille de l'accueil (elle changeait de nom, et le HTML de l'accueil gagnait un
+  `<style>` en ligne). Le `<picture>` est écrit dans la page, par `getImage`, aux mêmes
+  largeurs.
+- **À valider** : l'ordre visuel des offres suit le HTML (mensuel, annuel, internes),
+  alors que l'accueil montre l'annuel en premier ; l'inverser à l'écran sans toucher au
+  HTML séparerait l'ordre de lecture de l'ordre affiché.
+
+**`/faq`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 11 titres du contenu (un H1,
+  un H2 par rubrique ; les questions restent des libellés), les 13 liens du contenu et
+  les 61 de la page (adresse et libellé, dans l'ordre), les 10 ancres de rubrique, les
+  3 blocs JSON-LD (les 32 questions du `FAQPage`), les 29 éléments porteurs d'un attribut
+  de mesure, les 4 scripts, et le texte : 1 625 mots, mêmes suites de texte entre balises
+  de bloc. Chaque rubrique reste un `<section id>` qui contient ses `<details>` dans
+  l'ordre (`faq_question_opened`). Les autres HTML du build sont identiques, au nom de la
+  feuille commune près. Aucun JS ajouté. La page n'avait ni sommaire ni `data-ph`.
+- **Habillage** (`src/pages/faq.astro`, aucune classe Tailwind, réponses comprises) : page
+  entièrement dans la DA (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color`). Un
+  ciel : fil d'Ariane, pastille « FAQ », titre à gauche, mascotte à la tablette debout
+  derrière la première feuille (les fichiers de l'accueil, à toutes les largeurs). Puis
+  une feuille par rubrique, sable et ciel en alternance : son nom et son dessin à gauche
+  (collant sur ordinateur, il suit la lecture d'une longue réponse), ses questions en
+  plis `.qa` à droite ; l'un sous l'autre sous 900 px. La fin : la question en grand,
+  le bouton jaune vers `/#pricing`, « Nous contacter », et le soleil sur l'eau du pied.
+- **Dans le HTML, sans toucher au texte** : un `<main>` (la page n'en avait pas) ; les
+  émojis sont dessinés en SVG, ou portés par les pastilles d'état de l'accueil pour les
+  quatre couleurs du calendrier, et restent dans le texte, masqués à l'œil (`sr`) ; des
+  `<span class="num">` gardent sur une ligne un mot et le « ? », le « : », le « ! » ou
+  le « / » qui le suit ; l'adresse de « Comment te contacter ? » est un bouton blanc ;
+  une image décorative (`alt=""`).
+- **Feuilles** : commune 173 841 → 172 720 octets (13 utilitaires que seule `/faq`
+  employait disparaissent, rien n'est ajouté ; son nom change) ; feuilles de l'accueil et
+  de `/tarifs` inchangées à l'octet ; nouvelle `faq.*.css`, 9 493 octets (2 391 gzip).
+  HTML de `/faq` : 21 688 → 21 367 octets gzip. Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px contre `main`, contre l'accueil et
+  contre `/tarifs`, plis fermés et ouverts ; 25 largeurs de 320 à 1 920 px, toutes
+  réponses ouvertes : aucun défilement horizontal, aucune ponctuation seule en début de
+  ligne, 14 px au moins entre le texte et la mascotte ; contrastes AA (le plus bas :
+  4,99:1, « Hippodoc » du titre) ; clavier, ancre `#tarifs`, tiroir, bannière cookies,
+  contrastes forcés. Lighthouse mobile, trois mesures : performance 99 à 100 (100 sur
+  `main` ; LCP 1,1 s contre 0,9 s, la feuille de la page est une requête de plus),
+  accessibilité 100, SEO 100.
+- **Longueur** : la page est plus haute, plis fermés (5 373 px contre 4 024 à 1 440 px,
+  6 434 contre 5 238 à 390 px) : chaque question est une fiche, chaque rubrique une
+  feuille.
+
+**`/qui-sommes-nous`**
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, canonique, robots, balises sociales, H1, les 20 titres de la page (niveau
+  et texte), les 16 liens du `<main>` et les 64 de la page (adresse et libellé, dans
+  l'ordre), les 8 ancres (`histoire`, `equipe`, `ryan-goburdhun`, `thomas-payet`,
+  `engagements`, `soutiens`, `internes`, `chiffres`), les 5 blocs JSON-LD, les 40 éléments
+  porteurs d'un attribut de mesure (`landing_partner_*`, `landing_about_*`,
+  `cta_signup_qui_sommes_nous`, `data-calendly="qui_sommes_nous"`), les 4 scripts, les
+  textes alternatifs, et le texte : 713 mots, mêmes suites de texte entre balises de bloc.
+  Les autres HTML du build sont identiques, au nom de la feuille commune près. Aucun JS
+  ajouté. Les chiffres restent ceux de la page (« 17 000+ » journées, quand l'accueil
+  dit « 24 200 »).
+- **Habillage** (`src/pages/qui-sommes-nous.astro`, aucune classe Tailwind) : page
+  entièrement dans la DA (`bodyClass="da-fond"`, en-tête `flottante`, `theme-color`).
+  Huit blocs, dans l'ordre d'avant : un ciel (fil d'Ariane, pastille, titre, le portrait
+  penché du bloc fondateur de l'accueil et sa légende sur une étiquette d'encre) ; une
+  feuille sable (le récit, titre à gauche ; la citation sur une fiche bleu profond, sous
+  les guillemets jaunes des témoignages) ; une feuille ciel (l'équipe, deux fiches) ; une
+  feuille sable (les trois promesses, mascotte au pouce levé derrière les fiches) ; l'eau
+  profonde de « Sous la surface » (les soutiens, sur des fiches blanches) ; une feuille
+  ciel (syndicats et partenaires : les tuiles de `accueil/Partenaires.astro`) ; une feuille
+  sable (la définition, les quatre chiffres sur une fiche) ; la fin de `/tarifs` et `/faq`
+  (bouton jaune, trois portes de contact, soleil sur l'eau du pied).
+- **Dans le HTML, sans toucher au texte** : logos des syndicats, des partenaires et des
+  soutiens pris dans `src/assets/accueil/partenaires/` (fonds ramenés au blanc, rognés au
+  ras du dessin, AVIF et WebP) aux largeurs de l'accueil, à la place des fichiers de
+  `public/lovable-uploads/` ; leurs textes alternatifs restent ceux de la page. Portrait,
+  vignettes de l'équipe et photo de The Pitch : mêmes fichiers qu'avant. Dessins au trait
+  écrits dans la page (plus de `pages/Icon.astro` ici) ; la flèche du bouton de fin,
+  décorative, disparaît ; deux `<span class="num">` ; `role="list"` ; une image
+  décorative de plus (la mascotte, `alt=""`).
+- **Feuilles** : commune 172 720 → 171 013 octets (les utilitaires que seule cette page
+  employait disparaissent, rien n'est ajouté ; son nom change) ; feuilles de l'accueil,
+  de `/tarifs` et de `/faq` inchangées à l'octet ; nouvelle `qui-sommes-nous.*.css`,
+  20 214 octets (3 890 gzip). HTML : 17 569 → 17 488 octets gzip. Aucune image de plus
+  dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  l'accueil ; 28 largeurs de 320 à 1 920 px sans défilement horizontal ; contrastes AA
+  mesurés sur le rendu (le plus bas : 4,96:1, le chapeau des soutiens sur l'eau) ;
+  clavier, ancre `#thomas-payet`, contrastes forcés. Lighthouse mobile : performance 98
+  (99 sur `main`, LCP 2,3 s des deux côtés), accessibilité 100, SEO 100. Hauteur :
+  7 039 px contre 6 259 à 1 440 px, 9 255 contre 9 223 à 390 px.
+
+**`/essai`** (page de campagne, `noindex`, toujours sans l'en-tête ni le pied du site)
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` : `title`,
+  description, `noindex, nofollow`, balises sociales, H1, les 3 titres, les 12 liens
+  (adresse, libellé, `aria-label`, dans l'ordre), le bloc JSON-LD, `cta_signup_essai`,
+  les 3 scripts, et les mots de la page dans l'ordre, textes alternatifs compris. Les
+  autres HTML du build sont identiques, au nom de la feuille commune près. Aucun JS
+  ajouté. Les chiffres restent ceux de la page (« +900 », « 4.9/5 »).
+- **Un écart, voulu** : le logo est le mot seul, comme partout depuis la phase 5a. En
+  haut de page, « Hippodoc » est donc du texte, là où une image (l'icône au trait)
+  portait ce mot en texte alternatif ; en bas, c'est le buste de la mascotte qui porte
+  le texte alternatif « Hippodoc », à la place de la seconde icône.
+  `src/assets/hippodoc-logo.png` n'est plus employé (fichier laissé en place).
+- **Habillage** (`src/pages/essai.astro`, aucune classe Tailwind) : le ciel du premier
+  écran de l'accueil (`bodyClass="da-fond"`, `theme-color`) ; titre en grand, « vraiment »
+  sur du jaune (le Super-Net) ; trois petites fiches, la preuve sociale en ligne fine,
+  la fiche d'inscription et son bouton jaune épais ; puis la scène de l'accueil, immobile
+  (soleil, quatre couches d'eau, le buste de la mascotte : les fichiers de l'accueil, par
+  `accueil/buste.ts`), et le pied de la page dans l'eau profonde. Une colonne centrée ; à
+  partir de 1 024 px, le texte à gauche et la fiche d'inscription à droite, dans l'ordre
+  du HTML : le bouton d'inscription est à 464 px du haut à 1 440 px (770 avant), et à
+  748 px à 390 px (747 avant).
+- **Dans le HTML, sans toucher au texte** : un `<main>` (la page n'en avait pas) ; « 🎁 »
+  et « → » dessinés en SVG, le caractère reste dans le texte, masqué à l'œil (`sr`) ; les
+  points médians du pied aussi (il en restait un seul en bout de ligne) ; le « $ » du
+  dessin Super-Net devient un « € » ; le retour à la ligne du titre est rendu par un bloc
+  (derrière un `<br>`, le navigateur n'équilibre pas les lignes).
+- **Feuilles** : commune 171 013 → 167 613 octets (rien n'est ajouté ; son nom change) ;
+  autres feuilles inchangées à l'octet ; nouvelle `essai.*.css`, 13 368 octets (2 663
+  gzip). HTML : 11 367 → 10 897 octets gzip. Une image de moins dans le build.
+- **Contrôles** : captures à 320, 390, 768, 1 024 et 1 440 px contre `main` et contre
+  le premier écran de l'accueil ; 28 largeurs sans défilement horizontal, boutons sur
+  une ligne ; texte grossi à 200 % ; contrastes AA mesurés sur le rendu (le plus bas en
+  texte courant : 5,09:1 ; « doc » du logo, 22 px en gras : 3,31:1 pour un seuil de
+  3:1, comme dans l'en-tête du site) ; clavier, contrastes forcés. Lighthouse mobile : performance 100,
+  accessibilité 100, comme sur `main`.
+- **Vu, non traité** (déjà vrai sur `main`) : à la première visite sur téléphone, la
+  bannière cookies recouvre le bouton d'inscription ; le lien Instagram a un
+  `aria-label` qui ne reprend pas son libellé visible.
+
+**Après les trois relectures (direction artistique, invariance SEO, accessibilité)**
+
+Ce qui suit remplace, là où il diffère, ce qui est écrit plus haut pour chaque page.
+Preuve refaite contre le build de `main` sur les quatre pages : texte, titres, liens,
+ancres, JSON-LD, attributs de mesure et scripts identiques ; les 73 autres fichiers
+texte du build ne diffèrent que par le nom de la feuille commune.
+
+- **Deux écarts dans le HTML, tracés** : le `<head>` des quatre pages gagne
+  `<meta name="theme-color" content="#C9DEFF">` (le seul ajout ; il vient avec le fond
+  de la DA, l'accueil le portait déjà). Sur `/essai`, le logo du haut n'est plus du
+  texte : le mot est dessiné par la feuille de style dans un élément `role="img"` nommé
+  « Hippodoc », comme l'image qu'il remplace. Le texte de `/essai` est donc celui
+  d'avant au mot près (125 mots), l'écart « voulu » noté plus haut n'existe plus.
+- **Scène de fin** (`/tarifs`, `/faq`, `/qui-sommes-nous`) : le halo du soleil était
+  peint par-dessus les derniers boutons. Le texte passe devant le décor et le halo
+  commence 20 px après le dernier lien, à toutes les largeurs.
+- **`/faq`** : quatre feuilles au lieu de dix (sable : activité, revenus, planning ;
+  eau profonde : paiements, cotisations, documents ; ciel : mobile, sécurité ; sable :
+  tarifs, aide), les rubriques se suivent dans leur feuille. Chaque rubrique reste un
+  `<section id>` avec ses `<details>` ; la feuille est un `<div>` sans texte. Mascotte
+  au pouce levé à « Besoin d'aide ? » (fichiers de l'accueil). Plis moins hauts sur
+  téléphone. Hauteur, plis fermés : 5 725 px à 390 px (6 434 avant, 5 238 sur `main`),
+  6 676 px à 320 px (7 229 avant). À 320 px le chapô prend toute la largeur, la
+  mascotte se tient dessous. Le nom de rubrique collant existait déjà : le relevé
+  inverse venait d'une capture pleine page, où rien ne colle.
+- **`/tarifs`** : la mascotte sert aussi sous 1 024 px, à droite du titre « Inclus dans
+  toutes les offres », derrière la liste (second `<picture>` décoratif, masqué au-delà).
+  Plus de ligne réservée sous le prix (elle trouait l'offre annuelle) ; la note des
+  internes suit son texte ; titre des questions collant ; à 320 px le titre finit sur
+  « en annuel » (un `<span class="num">` de plus). Grille des offres bornée et prix des
+  internes sécable : plus de défilement horizontal avec les espacements de WCAG 1.4.12.
+  Contrastes forcés : les coches de l'offre annuelle reprennent la couleur du texte.
+- **`/qui-sommes-nous`** : chiffres plus petits sur téléphone et à 1 024 px, fiche non
+  rognée (« 17 000+ » était coupé avec les espacements 1.4.12) ; fiches de l'équipe à
+  leur hauteur ; légende du portrait contenue dans la photo, sur deux lignes ; portrait
+  centré sur téléphone ; lien « Meilisearch » avec une zone de toucher de 38 px (18 avant).
+- **`/essai`** : sur téléphone, ce qui précède la fiche d'inscription est resserré. Le
+  bouton est à 573–627 px du haut à 390 px de large (694–748 avant) : au-dessus de la
+  bannière cookies de première visite sur un écran de 780 px de haut. À 320 px les trois
+  atouts sont des pastilles d'une ligne ; coins de 24 px ; les fiches passent l'une sous
+  l'autre quand le texte grossit. **À valider** : sur téléphone, la bulle de chat
+  n'apparaît qu'après 380 px de défilement (animation CSS liée au défilement, sans
+  script ; navigateur sans cette fonction : bulle dès le haut, comme avant). Elle ne
+  touche plus ni le bouton ni le texte de la fiche, mais elle est absente du premier
+  écran.
+- **Titres** : deux jetons dans `da.css`, `--h1-page` (58 px au plus, les quatre pages)
+  et `--h2-fin` (52 px au plus : le titre de fin ne dépasse plus le `<h1>`). Mots en
+  couleur des `<h1>` : le bleu de « l'eau » de l'accueil (`--w4`, 4,3:1 sur le ciel, grand
+  texte).
+- **Texte en rem** sur les quatre pages (la DA pose ses corps en px : ils ne suivaient
+  plus la taille de police du navigateur). Avec une taille doublée, le texte courant
+  double et aucune page ne défile de côté de 320 à 1 280 px. L'accueil, l'en-tête et le
+  pied restent en px : à reprendre à part si on le souhaite.
+- **Feuilles** : commune 167 613 → 167 711 octets (les deux jetons, rien d'autre) ;
+  feuille de l'accueil inchangée à l'octet ; `tarifs` 11 633, `faq` 11 603,
+  `qui-sommes-nous` 20 972, `essai` 14 585 octets (2,7 à 4,1 Ko gzip). Cette seconde
+  feuille est une requête bloquante de plus par page : laissée en l'état, Lighthouse
+  mobile donne performance 98 à 100, accessibilité 100 sur les quatre pages.
+- **Non traité** : l'accueil a le même halo par-dessus son bouton de fin (hors du lot) ;
+  `/_astro/hippodoc-logo.*.webp` n'est plus produit (une copie en cache de l'ancienne
+  `/essai` afficherait un logo cassé).
+
+### 9.ef Boussole de `/guide-declarations` : le titre de l'étape reste sous la barre de recherche (11 novembre 2026)
+
+Suite de § 9.ed, « Reste ouvert ». Aucun texte, titre, lien ni JSON-LD ne change : le
+HTML de `/guide-declarations` est identique à celui de `main`, au nom du fichier JS de
+l'îlot près ; la feuille de styles commune garde son empreinte.
+
+- **Avant** : trois défilements différents selon le chemin. Choix d'un profil : aucun
+  (l'ancrage du navigateur plaçait la page). « Continuer », « Retour », stepper,
+  « Recommencer » : `#profils` en haut de l'écran, demandé avant le rendu de la nouvelle
+  étape. Checklist : deux défilements en concurrence (`#profils` par `goToStep`, la racine
+  de `ChecklistResult` 50 ms après).
+- **Après** : un seul défilement, dans un effet de `BoussoleWizard.tsx` sur
+  `[currentStep, scrollTick]`, donc après le rendu de la nouvelle étape, quel que soit le
+  chemin. Cible : le haut de la carte du parcours (« Étape n / m » sur téléphone, puis le
+  titre), placé 12 px sous la barre de recherche, dont le bas est mesuré sur place
+  (`top` + hauteur de `[role=search]` : 115 px aujourd'hui ; 80 px si la barre est absente).
+  La page ne bouge pas si le haut de la carte est déjà sous la barre et le titre dans les
+  deux tiers hauts de l'écran. Le défilement n'impose plus `behavior: 'smooth'` : la règle
+  `scroll-behavior` de `global.css` décide, donc pas d'animation sous
+  `prefers-reduced-motion`. `ChecklistResult.tsx` ne défile plus au montage (sa classe
+  `scroll-mt-32` reste, pour ne pas changer la feuille commune).
+- **Mesuré** (Playwright, Chromium, build servi en local, les 12 profils cliqués l'un après
+  l'autre, bouton centré à l'écran avant le clic ; barre de 70 à 115 px) :
+
+| Écran | Avant : haut de « Étape n / m » le plus haut | Après |
+|---|---|---|
+| 390 × 844 | −156 px (titre de −27 à −3 px) ; 5 profils sur 12 sous 115 px | 140 px au moins, titre entre 238 et 547 px |
+| 360 × 640 | −376 px ; 10 profils sur 12 sous 115 px | 140 px pour les 12, titre entre 238 et 317 px |
+| 1 440 × 900 | page immobile, titre entre 308 et 518 px | identique, page immobile |
+
+- Parcours complet (premier profil, « Voir ma checklist », « Retour », checklist,
+  « Recommencer », « Aucun profil », choix d'un régime), à 390 × 844 avec et sans
+  `prefers-reduced-motion` et à 1 440 × 900 : « Étape 3 / 3 » à 140 px sur téléphone
+  (95 px avant, sous la barre), titre de la checklist à 269 px ; à 1 440 px, titre de la
+  checklist à 250 px (224 avant). Aucune erreur de page ni de console.
+- **Ce qui change sur grand écran** : « Retour », le stepper et « Recommencer » ne
+  ramènent plus `#profils` en haut de l'écran quand l'étape est déjà bien placée ; quand
+  ils défilent, c'est la carte qui vient sous la barre (le titre « Trouve ta situation »
+  passe au-dessus).
+- Non testé : Safari, Firefox, un vrai téléphone (clavier ouvert, barre d'adresse
+  rétractable).
+
+### 9.eg /guide-declarations : gras inversé et astérisques dans les textes du guide (11 novembre 2026)
+
+Correction de rendu, dans `src/components/guide/FormattedText.tsx` seulement. Aucun texte
+de `src/data/boussoleData.ts` n'est modifié.
+
+- **Le défaut** : dans certains textes, le gras sortait inversé et des `**` restaient dans
+  le HTML servi (« Cas particulier RSPM », périmètre de DSCN / chèques ANCV).
+- **Trois causes**, toutes dans le composant :
+  1. le texte est découpé (émoji marqueur ⚠️ ✅ 💡, fin de phrase, saut de ligne) avant la
+     lecture du gras : un `**…**` qui enjambe la découpe (`**⚠️ Cas particulier RSPM**`)
+     laissait un `**` seul de chaque côté, et toutes les paires suivantes se décalaient.
+     Chaque morceau est maintenant refermé et le suivant rouvert (`equilibrerGras`) ;
+  2. une seule expression lisait à la fois le balisage de l'auteur et les termes mis en
+     gras d'office : une citation « … » contenant un `**gras**` ou un `*italique*`
+     l'avalait avec ses astérisques. `formatInline` travaille en deux passes : balisage
+     de l'auteur d'abord, termes ensuite sur le texte nu ;
+  3. les bornes de mot (`\w`, `\b`) ignorent les lettres accentuées en JavaScript : un
+     terme était reconnu au milieu d'un mot. Bornes en `\p{L}`.
+- **Effet sur la page**, mesuré par script contre le build d'avant, balises retirées :
+  le texte est identique à 10 astérisques près, tous disparus (87 → 77 ; les 77 restants
+  ne passent pas par ce composant, voir plus bas). Hors balises de mise en avant, la seule
+  différence de structure est un paragraphe `<p>**</p>` qui disparaît. Aucune autre page
+  du build ne change (le fichier JS de l'îlot `BoussoleWizard` change de nom).
+- **Gras déplacé** : « Cas particulier RSPM », « aucune régularisation URSSAF ni CARMF »,
+  « tranches progressives », « Périmètre exact de DSCN », « uniquement la valeur faciale
+  des chèques », « frais d'ouverture du compte ANCV », « frais d'envoi/port »,
+  « commission ANCV », « L30 « Autres frais divers de gestion » » sont en gras comme écrit
+  dans la source ; le texte entre eux ne l'est plus. La citation du guide UNASA (« Les
+  médecins conventionnés du secteur 1… ») sort en italique, sans ses astérisques.
+- **Mots coupés** : « TR » dans « TRÈS », « 6 an » dans « 6 années », « 3 an » dans
+  « 3 années » ne sont plus en gras ; « Art. 163 quatervicies » (6 fois) garde
+  « Art. 163 » en gras, sans « quater ».
+- **Non traité ici** : 77 astérisques restent visibles sur la page, dans sept paragraphes
+  que d'autres composants rendent tels quels, sans passer par `FormattedText` (six
+  positions A et B des zones grises, `FichesPratiquesSection.tsx`, et une définition sur
+  les rétrocessions), plus « Cerfa 15945*08 », légitime.
+- Vérifié : `verify-site.mjs` à 0 erreur ; dans Chromium, les deux îlots s'hydratent sans
+  erreur de console, le wizard va jusqu'à la checklist (57 gras, aucun astérisque).
+
+
+### 9.eh /guide-declarations : gras des positions A/B et des définitions courtes (11 novembre 2026)
+
+Suite de § 9.eg, correction de rendu. Sept paragraphes affichaient encore des `**` tels
+quels, parce que leur texte sortait brut : les positions A et B des zones grises
+(`FichesPratiquesSection.tsx`) et la définition courte des termes du glossaire
+(`GlossaireSection.tsx`). Ils passent maintenant par `formatInline`. Aucun texte de
+`src/data/boussoleData.ts` n'est modifié.
+
+- **Texte de la page**, par script contre le build d'avant, balises retirées : identique à
+  76 astérisques près, tous disparus (77 → 1 ; il reste « Cerfa 15945*08 », légitime).
+  Structure hors `<strong>` / `<em>` identique. Aucune autre page ni aucun fichier JS ne
+  change.
+- **Gras d'office** : dans les positions A/B, `formatInline` met aussi en gras les sigles,
+  cases et montants, comme partout ailleurs sur la page (« URSSAF », « 5HQ », « 34 % »…),
+  y compris dans les positions qui n'avaient pas d'astérisques. Les définitions courtes
+  du glossaire, elles, ne rendent que le balisage de l'auteur
+  (`formatInline(texte, { auto: false })`) : sans cela, toutes recevaient du gras d'office
+  (110 gras de plus). Bilan sur la page : 4 394 → 4 518 `<strong>`.
+- `verify-site.mjs` à 0 erreur. Les deux composants sont statiques (hors îlot) ; le
+  wizard, qui partage `formatInline`, revérifié dans Chromium (checklist, aucune erreur).
+
+### 9.ei Espaces avalées autour d'une balise en ligne : correction de rendu et contrôle (11 novembre 2026)
+
+Correction de rendu, pas de contenu : aucun mot n'a changé. Au build, Astro supprime un
+retour à la ligne collé à une balise en ligne (`<strong>`, `<a>`, `<em>`), avant ou après
+elle ; le mot et la balise sortent collés.
+
+- **Onze espaces rétablies** (commit `0f91ecc`), en recollant les lignes sources :
+  `/guide-declarations/2042-c-pro` (« au réel », « en 5QC », « voir la déclaration »,
+  « la DSFU », « aux régimes zonés »), `/guide-declarations/dsfu-pamc` (« tes
+  cotisations », « tes recettes brutes », « l'honoraire. Indemnités »),
+  `/guide-declarations/medecin-remplacant` (« Le simulateur le calcule », des deux côtés
+  du lien ; « la page DSFU »). Les deux de `/tarifs` l'étaient déjà (§ 9.ed, point 5).
+- **`verify-site.mjs`, contrôle « 4 septies bis »** : échoue quand une lettre ou un chiffre
+  est collé à l'extérieur d'une balise `<strong>`, `<a>`, `<em>` ou `<b>` dont l'intérieur
+  ne commence pas (ou ne finit pas) par une espace, sur toutes les pages du build. Rejoué
+  sur les sources d'avant `0f91ecc` : les onze sortent en erreur. Une balise qui coupe un
+  mot exprès se déclare dans `MOTS_COUPES_EXPRES`.
+- `src/lib/pages-lastmod.ts` non touché : `lastmod` des trois pages inchangé.
+- Les mots coupés par un gras de `FormattedText` (« quater**vicies** », « TRÈS »,
+  « 6 années », « 3 années ») ont été corrigés entre-temps (§ 9.eg) : ils n'ont plus
+  d'exception. Il n'en reste qu'une, « impôt(s) » sur `/blog/tout-comprendre-carmf`.
+
+### 9.ej Phase 5c : le blog dans la DA (11 novembre 2026)
+
+> **Numérotation.** Cette entrée a été écrite sous le numéro § 9.ef ; elle a pris § 9.ej à la fusion de `main`, où § 9.ef à § 9.ei étaient déjà attribués (guide des déclarations).
+
+
+Suite de § 9.ee. Période d'observation SEO, et le blog est la porte d'entrée depuis
+Google : seul l'habillage change, sur `/blog`, les trois pages de série et les 48 articles
+(`src/pages/blog/[slug].astro`, `index.astro`, `serie/[series].astro`, `BlogCard.astro`,
+nouveau `BlogAppel.astro`, nouvelle feuille `src/styles/blog-liste.css`). Aucun `.md`
+touché, aucun JS ajouté, `lastmod` non touchés.
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main` sur les 71 HTML.
+  Les 19 pages hors blog : identiques à l'octet, au nom de la feuille commune près. Les 48
+  articles : `title`, description, canonique, robots, balises sociales, 192 blocs JSON-LD,
+  H1, 919 titres (niveau, texte, `id`), 4 085 liens (adresse, libellé, `rel`, `target`,
+  dans l'ordre), 986 `id`, 2 401 éléments de mesure (`data-blog-*`, `data-track`,
+  `data-ph`, `data-calendly`), 463 images (`src`, `alt`, dimensions, `srcset`), scripts,
+  îlot des slides, ordre des blocs, suites de texte (100 056 mots) ; le HTML du corps,
+  issu du Markdown, est le même à l'octet (526 004 octets). `/blog` et les séries : mêmes
+  clés (11 blocs JSON-LD, 117 titres, 395 liens, 108 images avec `sizes` et `loading`,
+  5 129 mots), tous les attributs des éléments de `<main>` hors `class`, en-tête et pied.
+  Recherche de `/blog` : mêmes fichiers JS, mêmes identifiants, rien ne se charge avant le
+  focus (essayée à 390 et 1 440 px, avant et après).
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` et en-tête `flottante` (comme en § 9.ee) ; une feuille de page en plus de la
+  feuille commune ; `sizes` de la couverture des articles (sa largeur réelle : 200 à
+  300 px à côté du titre) ; une clé de style scopé dans les `props` de l'îlot des slides ;
+  `role="list"` sur les listes sans puce ; « ← » et « → » dessinés en SVG (le caractère
+  reste dans le texte, classe `sr`) ; des `<span class="num">` (`nouer`) qui gardent sur
+  une ligne un mot et le « ? », « : », « ! », « ; », « / » ou guillemet qui le touche, et
+  les formes inversées (« a-t-elle ») : titres, fil d'Ariane, sommaire, questions, cartes,
+  jamais le corps ; la croix des plis à la place du chevron ; la classe `longue` du
+  sommaire de trois articles.
+- **Habillage** (aucune classe utilitaire dans les gabarits). Articles : le ciel (fil
+  d'Ariane, série en pastille, titre, couverture en carte à droite du titre dès 700 px),
+  une feuille sable pour le texte, colonne de 36 rem (17 px et interligne 1,6 sur
+  téléphone, 16 px sous 360 px, 18 px et 1,7 dès 700 px : 68 caractères par ligne en
+  médiane à 1 440 px, 60 à 74 pour neuf lignes sur dix, 95 sur `main` ; 43 à 390 px),
+  encadrés en fiches avec un signe par genre, tableaux en fiche (cellules insécables,
+  défilement dans la fiche, ombre du côté où il reste des colonnes ; un tableau étroit à
+  l'aplomb du texte, un tableau large centré sur la colonne), sommaire en pli sur
+  téléphone et en fiche collante à gauche dès 1 280 px (le texte est alors à l'aplomb du
+  titre), puis sur une feuille ciel l'appel à l'essai, les questions en plis `.qa`,
+  l'auteur, le partage, les articles connexes, et deux vagues au-dessus du pied. Liste et
+  séries : recherche et séries en pastilles, article à la une en grande fiche, cartes en
+  fiches (vignette à gauche sur téléphone, quatre par ligne dès 1 024 px), index en une
+  fiche par série. Les pastilles de série n'ont plus qu'une teinte.
+- **Feuilles** : commune 167 711 → 147 529 octets (25,8 Ko gzip, son nom change) :
+  `.prose`, `.callout*`, `.blog-*`, `.series-badge` quittent `global.css`. Articles :
+  `_slug_.*.css`, 25 337 octets (5,0 Ko gzip). Liste et séries : 13 222 octets (3,4 Ko
+  gzip). `verify-site.mjs` repère le corps par `data-blog-zone="corps"`.
+- **Après trois relectures** (lecture, invariance SEO, accessibilité), corrigé : interligne
+  et marges du téléphone (les 48 articles font +5,4 % de haut que sur `main` à 390 px, au
+  lieu de +8,9 % ; +0,1 % à 320 px) ; plus d'équilibrage des intertitres, qui renvoyait
+  « : » ou « ? » en début de ligne (0 cas dès 768 px, 6 à 390 px contre 8 sur `main`) ;
+  cellules resserrées sur téléphone (6 tableaux sur 20 défilent à 390 px, comme sur
+  `main` ; aucun dès 744 px) ; les deux liens de l'appel se recouvraient dès 560 px sur
+  dix articles (15 % du lien d'inscription partait vers Calendly) ; compteur des slides à
+  4,13:1 sur le ciel ; questions, partage et lien de l'auteur sur téléphone ; texte de la
+  série resserré (la première carte remonte de 110 à 140 px) ; sommaire collant (ombre
+  quand la liste dépasse, sous-sections masquées au-delà de vingt entrées, plancher sous
+  la bannière cookies) ; cibles de 44 px (index, sommaire replié, flèches des slides) ;
+  contrastes forcés (croix des plis, aussi sur `/faq` ; signe des encadrés) et impression
+  des encadrés ; `/blog` à 320 px avec le texte à 200 %.
+- **Contrôles** : les 52 pages à 22 largeurs de 320 à 1 920 px (aucun défilement
+  horizontal, tableaux à leur place), texte à 200 %, contrastes AA sur tout le texte,
+  captures à 390, 768 et 1 440 px. Lighthouse mobile, article le plus lu, médiane de
+  trois : performance 97 avant et après ces corrections, accessibilité 100, SEO 100 ;
+  `/blog` 100.
+- **À décider** : la feuille de page est une requête bloquante de plus (FCP +0,15 s en
+  local sur `/blog` et les articles, LCP des articles et scores inchangés) ; la mettre
+  en ligne dans le HTML des 52 pages l'éviterait.
+- **Vu, non traité** : le point médian de « Ou commence l'essai gratuit· 30 jours » est
+  masqué à l'œil sous 560 px (dix articles, le lien y prend sa ligne). À 768 px, 40
+  extraits de cartes sur 47 sont coupés par les trois lignes, contre 33 sur `main`. Les 6
+  intertitres encore coupés avant un signe à 390 px sont dans le corps, que rien ne
+  retouche. Pas de repère de la section en cours dans le sommaire : `:target-current`
+  le ferait sans script dans Chrome, mais le minifieur du build ne le connaît pas
+  (avertissement). Les pages restent plus hautes à 1 440 px (+21 % : colonne plus étroite,
+  corps plus grand). Déjà sur `main` : 92 en performance sur l'article à slides
+  `interets-composes-meilleur-remplacement`, `td-has-header` sur deux articles à
+  tableaux. `CLAUDE.md` dit encore que les styles `.callout-*` sont dans `global.css` et
+  que l'accueil est la seule page dans la DA. `blog-series.ts` (généré) garde ses classes
+  de dégradé, que plus rien n'affiche.
+
+### 9.ek Phase 5d : `/simulateur` dans la DA (11 novembre 2026)
+
+Suite de § 9.ej. Période d'observation SEO : seul l'habillage change, sur la page
+(`src/pages/simulateur.astro`) et sur l'îlot React (`src/components/simulateur/*.tsx`,
+nouvelle feuille `src/styles/simulateur.css`). Aucun calcul n'est touché : `src/lib/` et
+`src/components/ui/` n'ont pas une ligne de diff, aucun JS ajouté, `lastmod` non touché.
+
+- **Ce qui ne change pas**, prouvé par script contre le build de `main`. Les 70 autres
+  HTML : identiques à l'octet, au nom de la feuille commune près ; les 6 autres fichiers
+  texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`, index de recherche) aussi. `/simulateur` :
+  `title`, description, canonique, robots, balises sociales, 4 blocs JSON-LD, H1,
+  17 titres (niveau, texte, `id`), 57 liens dont 9 dans `<main>` (adresse, libellé, `rel`,
+  `target`, dans l'ordre), 13 `id`, 45 éléments de mesure (`cta_signup_simulateur_bottom`,
+  `cta_pricing_simulateur_bottom`, `data-calendly="simulateur_resultat"`,
+  `blog_readmore_simulateur`), 11 scripts, l'îlot (même composant, `client:visible`), les
+  13 plis, l'ordre des sections, et le texte : 2 259 mots (2 141 dans `<main>`, 57 dans
+  l'îlot rendu côté serveur), mêmes 172 suites de texte entre balises de bloc ; mêmes
+  28 champs et boutons dans l'îlot (`name`, `type`, `placeholder`, `role`).
+- **Aucun calcul ne change**, prouvé par script (Playwright, écrit et lancé sur le build
+  de `main` avant toute modification, rejoué après) : 12 jeux de valeurs, 7 en RSPM
+  (calcul local : simple, mixte avec PDSA, couple et deux enfants, 2025 en secteur 2 à La
+  Réunion avec RID à 100 % et PER, parent isolé au seuil avec ZFRR, foncier et crédits
+  d'impôt, RSPM forcé au-dessus du plafond micro avec conjoint libéral, 12 000 € avec
+  chèques-vacances et Madelin) et 5 en PAMC. Relevé par `textContent`, sans aucune classe :
+  le texte de l'îlot, chaque pli ouvert à son tour, chaque bulle d'aide des résultats.
+  1 679 nombres, 36 678 caractères, 89 plis, 201 bulles : identiques au caractère près.
+  **Limite** : l'Edge Function `calculate-urssaf` est injoignable d'ici (le proxy refuse
+  le tunnel). La branche PAMC est donc rejouée avec une réponse de la forme
+  `SimulationResult` calculée à partir du corps de la requête, la même avant et après :
+  cela prouve que les 10 corps de requête envoyés sont identiques et que l'affichage
+  d'une même réponse l'est aussi, pas le calcul du serveur (qui n'est pas dans ce dépôt).
+  Les 24 insertions d'analytics (`simulateur_public_events`) sont interceptées, donc
+  rien n'est parti en base, et leur contenu est identique.
+- **Dans les `.tsx`**, relu ligne à ligne après effacement des valeurs de `className` :
+  il ne reste que des tables de classes (couleurs des lignes, des pastilles, des
+  encarts), les quatre couleurs du camembert, le halo flou de la fiche recommandée
+  (retiré : c'est lui qui faisait défiler la page de côté, § 9.ed), un `<span>` autour
+  de l'icône de la conclusion, et des `className` ajoutés ou retirés. États, effets,
+  gestionnaires, appels réseau, `localStorage` : aucune ligne.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille de page
+  en plus de la feuille commune ; une clé de style scopé dans les `props` de l'îlot ; une
+  image décorative (`alt=""`, la mascotte) ; l'icône du titre, la flèche du bouton de fin
+  et deux halos, décoratifs, disparaissent ; « → », « ↗ », « 💡 » et le « + » des plis
+  dessinés en SVG, le caractère reste dans le texte, masqué à l'œil (`sr`) ; des
+  `<span class="num">` qui gardent sur une ligne « Super-Net : », « chiffre ? », un mot
+  composé d'une question (« prend-il », « Micro-BNC »).
+- **Habillage de la page** (aucune classe utilitaire). Le ciel : titre à gauche,
+  « Super-Net » sur du jaune, trois gages en pastilles, puis l'îlot et la fiche du
+  rendez-vous ; mascotte au pouce levé dès 1 024 px, debout derrière le haut de l'îlot
+  (les fichiers de l'accueil). Une feuille sable : le mode d'emploi en huit plis `.qa`,
+  titre collant à gauche. Une feuille ciel : les trois mots en fiches (le Super-Net sur
+  une fiche jaune), l'exemple chiffré, les limites. Une feuille sable : les cinq
+  questions en plis. La fin : l'appel à l'essai (bouton jaune), la fiche « Comprendre ton
+  résultat », le soleil sur l'eau du pied. `BlogReadMore.astro`, partagé avec le guide
+  des déclarations, n'est pas modifié : la page recouvre son habillage.
+- **Habillage de l'îlot** (`simulateur.css`, classes `sim-*`). Les composants de `ui/`
+  sont partagés avec la calculette et le guide : ils ne sont pas modifiés. Leurs jetons
+  (`--border`, `--muted-foreground`, `--primary`, `--radius`…) reçoivent les couleurs de
+  la DA sous `.sim` ; champs, listes et boutons radio sont habillés par leur rôle ; les
+  bulles, le tiroir d'aide du téléphone et les listes déroulantes, que Radix rend dans
+  `<body>`, portent `.sim` eux aussi. Formulaire : une fiche en relief par section, champs
+  ciel doux de 50 px, plis à pastille, bouton « Simuler » jaune épais. Résultats : deux
+  fiches, le Super-Net du régime recommandé sur du jaune (l'autre sur ciel doux),
+  camembert aux bleus de l'eau et au jaune du soleil (les couleurs de la jauge de
+  l'accueil), une ligne par poste ; la conclusion sur l'eau profonde avec le gain en
+  pastille jaune ; tableau du couple, comparaison des déductions et prélèvement en fiches
+  ciel doux ; états (favorable, attention, information) par les jetons `--ok`, `--wait`,
+  `--plan`. Bulles d'aide sur fond blanc (elles étaient noires, à 10 px), tiroir blanc.
+  Les utilitaires Tailwind qui restent dans les `.tsx` ne règlent que la mise en page.
+- **Feuilles** : commune 147 529 → 129 500 octets (23,7 Ko gzip ; 204 règles en moins,
+  aucune ajoutée ; son nom change, donc le `<link>` de toutes les pages) ; les sept autres
+  feuilles identiques à l'octet ; nouvelle `simulateur.*.css`, 30 916 octets (6,1 Ko gzip). HTML de
+  `/simulateur` : 25 878 → 25 184 octets gzip. JS : mêmes fichiers, `SimulateurApp`
+  136,8 → 122,9 Ko, `RegimeComparisonCards` 395,8 → 389,6 Ko (chaînes de classes plus
+  courtes). Aucune image de plus dans le build.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs`, dans cinq états (page vierge, résultat RSPM, tous les plis du formulaire
+  ouverts, résultat PAMC en couple avec plafond dépassé, bulle et liste ouvertes) ;
+  24 largeurs de 320 à 1 920 px dans quatre états : aucun défilement horizontal, aucune
+  erreur de console ; texte à 200 % : aucun défilement de 320 à 1 280 px (14 largeurs).
+  Lighthouse mobile en local, mesures alternées avant et après : sur les trois premières,
+  performance médiane 95 sur `main` (95, 89, 99) et 93 après (93, 97, 89) ; sur neuf, 92
+  sur `main` (87 à 99) et 95 après (89 à 97). L'écart d'une mesure à l'autre vient du
+  temps de blocage (hydratation de l'îlot : 120 à 500 ms des deux côtés, médiane 342 ms
+  avant, 254 ms après) ; l'objectif de 95 n'est donc tenu qu'en médiane longue, sur
+  `main` comme ici. Accessibilité 100, SEO 100, bonnes pratiques 96 avant et après.
+- **À valider** : le jaune du Super-Net ne sert que dans la fiche du régime recommandé ;
+  « Économie de … » reste en vert (état favorable) ; la conclusion passe en bleu profond.
+  La page est plus haute (8 302 px contre 7 158 à 390 px, 6 125 contre 5 353 à 1 440 px).
+- **À décider** : la feuille de page est une requête bloquante de plus (comme en
+  § 9.ej) : FCP et LCP simulés passent de 0,9 à 1,2 s en local, à chaque mesure.
+- **Vu, non traité** (déjà sur `main`, relève de la logique) : `SimulateurApp` passe au
+  formulaire des valeurs par défaut partielles ; la liste « Régime » s'affiche donc vide
+  (le choix de la RID n'apparaît qu'après avoir choisi « Auto » ou « RSPM ») et le pli
+  « Fiscalité immobilière & zones » annonce « ZFRR · Foncier réel » sur un formulaire
+  vierge. `CotisationsDetailChart.tsx` n'est rendu nulle part : laissé tel quel. Les
+  émojis des textes de l'îlot et le « → » de `BlogReadMore` restent des caractères (ils
+  sortent dans la police de repli). Les bonnes pratiques Lighthouse restent à 96, avant comme après : trois
+  requêtes sortantes sont refusées par le bac à sable de mesure (erreurs de console).
+
+### 9.el Phase 5d : le guide des déclarations et la calculette dans la DA (11 novembre 2026)
+
+Suite de § 9.ek. Période d'observation SEO : seul l'habillage change, sur
+`/guide-declarations` (le hub), ses trois pages filles (`2042-c-pro`, `dsfu-pamc`,
+`medecin-remplacant`) et `/guide-declarations/calculette`. Aucun calcul n'est touché :
+`src/lib/`, `src/data/` et `src/components/ui/` n'ont pas une ligne de diff, aucun JS
+ajouté, `lastmod` non touché. Deux feuilles nouvelles : `src/styles/guide.css` (hub et
+pages filles) et `src/styles/calculette.css` (la calculette seule).
+
+- **Ce qui ne change pas**, prouvé par script contre le build du commit précédent (§ 9.ek).
+  Les 66 autres HTML : identiques à l'octet, au nom de la feuille commune près ; les
+  6 autres fichiers texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`, index de
+  recherche) aussi ; les huit autres feuilles identiques à l'octet. Sur les cinq pages du
+  lot : `title`, description, canonique, robots, balises sociales, JSON-LD (4 blocs par
+  page), H1, titres (niveau, texte, `id`), liens (adresse, libellé, `rel`, `target`,
+  mesure, dans l'ordre), `id`, ancres internes, attributs `title`, éléments de mesure
+  (`guide_declarations_cta_essai`, `guide_declarations_cta_simulateur`,
+  `calculette_2042_dspamc_cta_click`, `blog_readmore_*`), scripts, îlots (même composant,
+  `client:visible`), plis, ordre des sections, et le texte, suite par suite entre balises
+  de bloc. Hub : 131 titres, 1 427 liens dont 1 379 dans `<main>`, 259 `id`, 229 ancres,
+  220 plis, 46 943 mots, 3 555 suites de texte. Calculette : 14 titres, 54 liens, 39 `id`,
+  7 plis, 1 085 mots, 94 champs, boutons et plis de l'îlot rendu côté serveur. 2042-C-PRO :
+  11 titres, 161 liens, 3 491 mots. DSFU : 13 titres, 231 liens, 6 901 mots. Médecin
+  remplaçant : 11 titres, 205 liens, 4 300 mots.
+- **Sept espaces rétablies** (correction de rendu, comme en § 9.ei : aucun mot ne change,
+  mêmes caractères hors espaces). Un retour à la ligne collé à une balise en ligne faisait
+  disparaître l'espace, et le contrôle « 4 septies bis » ne voit que les lettres et les
+  chiffres collés : « Goburdhun,médecin remplaçant » et « Autres pages du guide :DSFU
+  (ex DS-PAMC) ·2042-C-PRO… » sur les trois pages filles (`GuideSousPage.astro`),
+  « dépassements.DSAV » sur `/guide-declarations/dsfu-pamc`. Le compte de mots de ces
+  pages monte de 5 ou 6 : des mots qui étaient collés.
+- **Aucun calcul ne change** (calculette), prouvé par script Playwright, écrit et lancé sur
+  le build de `main` avant toute modification, rejoué après sur le build final : 26 jeux de
+  valeurs. Les 14 exemples du menu « Charger un exemple », 9 sauvegardes posées dans
+  `localStorage` avant le chargement (réel secteur 1 avec exonérations, IJ, cadre 8 et
+  assistance ; micro-BNC au RSPM à 37 999,99 € ; secteur 2 en ZFU ; dépassements
+  autorisés et chèques-vacances déjà déduits ; RBS négatif et déficit ; ancien profil
+  « mixte » migré ; plafond micro ; deux sauvegardes invalides, nettoyées), 3 saisies au
+  clavier (virgule française, liste de profil, montant négatif). Relevé sans aucune
+  classe (champs et listes par `id`, texte par `textContent`) : texte de l'îlot, panneau
+  des résultats, valeurs des champs, tous les plis ouverts, « Tout afficher », déclarant 2,
+  contenu de `localStorage`, puis rechargement de la page et nouveau relevé, et pour une
+  saisie la boîte « Réinitialiser » jusqu'au bout. 3 678 nombres, 92 195 caractères, 88 plis,
+  387 valeurs de champs, 24 sauvegardes : identiques au caractère près. **Persistance
+  intacte** : même JSON écrit, mêmes valeurs restaurées, mêmes sauvegardes invalides
+  supprimées.
+- **La boussole** : 17 parcours complets, à 1 280 px et à 390 px (les 12 profils, dont deux
+  avec deux chemins, et trois parcours « Aucun ne me correspond »), relevés avant et
+  après : titre de l'étape, texte, fil d'étapes (libellé, étape en cours, verrouillage),
+  boutons, bulle « Comment savoir ? », recherche de profil, checklist toutes sections et
+  tous plis ouverts, puis Retour, fil d'étapes, « Modifier », « Effacer » ou
+  « Recommencer ». 175 relevés et 4 190 boutons par largeur : identiques. Après chaque
+  changement d'étape, le titre n'est jamais sous la barre de recherche.
+- **Barre de recherche et bandeau d'échéance** : même comportement, relevé à 390 et
+  1 280 px. Barre `sticky` à 70 px du haut, collée à 70 px au milieu comme en bas de page,
+  même champ (libellé long, puis « Rechercher… » après 320 px de défilement), 8 requêtes et
+  48 résultats identiques, clic sur un résultat : recherche vidée, cible atteinte, les trois
+  classes posées puis retirées. Bandeau : même texte, dans le flux, il part avec la page.
+  La variante d'avril à juin (lien vers la boussole, fin de phrase masquée sur
+  téléphone) a été construite à part pour être regardée ; celle de décembre a le même
+  habillage, elle n'a pas été construite.
+- **Dans les `.tsx`**, relus après effacement des valeurs de `className` : il ne reste que
+  des tables de classes (catégories, types, états), la croix des plis à la place du
+  chevron (`Croix.tsx`, décor), un `<span>` autour de la flèche des actions, des
+  `className` ajoutés ou retirés, et un liseré décoratif retiré dans `CalculetteApp`.
+  États, effets, gestionnaires, schéma, moteur, sauvegarde : aucune ligne.
+  `FormattedText.tsx` n'est pas modifié du tout (des corrections y sont en cours
+  ailleurs) : `guide.css` recouvre ses utilitaires.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille en plus
+  de la feuille commune ; une clé de style scopé dans les `props` de l'îlot de la
+  calculette ; une image décorative sur le hub (`alt=""`, la mascotte, fichiers de
+  l'accueil) ; trois halos décoratifs en moins sur la calculette ; « → », « ← », « ↓ » et
+  le « + » des plis dessinés en SVG, le caractère reste dans le texte, masqué à l'œil ;
+  des `<span>` qui gardent sur une ligne un mot et le « : » qui le suit (titres des pages
+  filles, « Fiscal ≠ social : »). Le `prefix` des îlots (compteur interne d'Astro) change.
+- **Habillage du hub.** `<main class="gd">` porte le ciel : le titre à gauche (« enfin
+  claires » dans le bleu de l'eau), le bouton « Trouver ma situation » en jaune, la barre
+  de recherche en pastille qui flotte (comme l'en-tête, même largeur), puis les quatre
+  pages détaillées en fiches en relief. Le bandeau d'échéance reste entre l'en-tête et
+  `<main>` : une pastille sur le ciel, ambre pour une échéance de paiement. Quatre
+  feuilles, une par étape (sable, ciel, sable, ciel), le numéro dans une pastille encre :
+  le rappel fiscal / social en pli `.qa` ouvert ; la boussole en grande fiche (fil d'étapes
+  en pastilles, choix en fiches ciel doux cerclées d'encre une fois choisies, bouton vers
+  la checklist en jaune) ; le parcours en trois fiches ; cases, fiches, questions, termes,
+  bugs et courriers en plis `.qa` denses (la croix de la DA). États par les jetons de la
+  DA : fiscal en bleu, social en vert, attention en ambre ; l'alerte, que la DA n'avait
+  pas, est un rose foncé (`--stop`, 6,0:1). La fin : l'appel à l'essai sur l'eau profonde,
+  le Super-Net sur du jaune, les articles, l'avertissement, le soleil sur l'eau du pied.
+  Mascotte qui montre du doigt dès 1 024 px, derrière la barre de recherche ; elle se
+  baisse quand la barre se resserre (`:has()` sur un état que l'îlot pose déjà).
+- **Pages filles** (`GuideSousPage.astro`) : le ciel (fil d'Ariane, titre, signature,
+  chapô), trois feuilles par page, la fin (articles, « Le guide complet » avec son bouton
+  jaune, avertissement, soleil). Sur la page du remplaçant, « Le net : ce qui te reste »
+  est la fiche jaune.
+- **Calculette** : le ciel (« Hippo » en encre, « Calc » dans le bleu de l'eau, l'aperçu
+  fictif en fiche penchée, l'îlot, l'appel à l'essai sur l'eau profonde avec son bouton
+  jaune), une feuille sable (les sept questions en plis `.qa`), la fin (avertissement,
+  soleil). Îlot : `.calc` sur la racine et sur ce que Radix rend dans `<body>` (bulles,
+  listes, menu des exemples, boîtes de confirmation) ; une fiche en relief par section,
+  champs ciel doux de 48 px, barre d'outils en pastille collée sous l'en-tête, résultats
+  dans une fiche. Les `.tsx` gardent leurs utilitaires : `calculette.css` donne les jetons
+  des composants partagés, habille par rôle, et recouvre les 108 utilitaires de couleur
+  présents, par famille. Tout est sous `@media screen` : l'impression garde ses règles.
+- **Feuilles et poids** : commune 129 500 → 103 136 octets (23,7 → 20,3 Ko gzip ; 361 règles
+  en moins, aucune ajoutée ; son nom change, donc le `<link>` de toutes les pages) ;
+  feuille du guide 48 260 octets (9,6 Ko gzip, nommée `QuestionCard.*.css` par le build :
+  c'est le morceau partagé par les quatre pages) ; `calculette.*.css` 23 894 octets (5,5 Ko
+  gzip). HTML du hub : 2 488 520 → 1 872 047 octets (238 → 213 Ko gzip) ; DSFU 375 → 297 Ko,
+  remplaçant 278 → 217 Ko, 2042-C-PRO 220 → 175 Ko, calculette 112 → 110 Ko. JS :
+  `BoussoleWizard` 44,0 → 34,4 Ko, `CalculetteApp` 200,5 → 199,1 Ko. Aucune image de plus.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs` (pages entières, et par états : boussole à chaque étape, checklist, un pli
+  ouvert de chaque sorte, recherche ouverte, barre collée ; calculette vide, réel, micro,
+  tout ouvert, menu, bulle, liste, boîte de confirmation). 24 largeurs de 320 à 1 920 px ×
+  5 pages, dans ces états : aucun défilement horizontal, aucune erreur de console ; texte à
+  200 % (taille de la racine doublée) : aucun défilement de 320 à 1 280 px (11 largeurs).
+  Lighthouse mobile en local, trois mesures alternées : hub 96 sur `main` (96, 88, 96) et
+  98 après (95, 98, 98) ; calculette 96 (97, 96, 94) et 98 (98, 98, 99) ; 2042-C-PRO 100 et
+  100. Accessibilité 100, SEO 100, bonnes pratiques 96 avant et après (trois requêtes
+  sortantes refusées par le bac à sable de mesure).
+- **À valider** : le jaune du hub (bouton « Trouver ma situation », bouton vers la
+  checklist, Super-Net de l'appel à l'essai) ; la fiche jaune « Le net » ; l'alerte en
+  rose foncé ; les références croisées toutes en ciel doux (l'icône seule dit le type) ;
+  la mascotte du hub, retournée pour désigner le titre. Les pages sont plus hautes : le hub
+  de 8 % à 1 440 px (24 375 → 26 329 px) et de 12 % à 390 px (40 598 → 45 372 px), la
+  calculette de 9 à 11 %, les pages filles de 14 % sur téléphone et de 38 % à 1 440 px
+  (corps plus grand, feuilles et scène de fin).
+- **À décider** : la feuille de page est une requête bloquante de plus (comme en § 9.ej
+  et § 9.ek) : FCP et LCP simulés passent de 1,5 à 1,8 s sur le hub, de 0,9 à 1,2 s sur la
+  calculette et les pages filles, à chaque mesure.
+- **Vu, non traité** (déjà sur `main`, relève de la logique). Boussole, « Aucun ne me
+  correspond » puis « SELARL / SEL » : l'étape « régime social » s'affiche alors que le
+  PAMC est forcé, et y répondre renvoie à l'étape 1 (le fil d'étapes est recalculé après
+  le choix). Calculette, « Estimation indicative de l'impôt » : la tranche marginale
+  s'affiche « 3000 % » (taux déjà en pour cent, multiplié par 100). Sur 320 px, le libellé
+  d'une case des résultats est coupé après quelques lettres (« CA… »), comme avant. Les
+  émojis et les signes ≠ ≥ → des données restent des caractères (police de repli). Les
+  classes de couleur de `GLOSSAIRE_CATEGORIES` (`src/data/`) ne servent plus.
+
+### 9.em Phase 5d : `/guide`, `/comparatif`, les pages légales et la 404 dans la DA ; ménage de Tailwind (11 novembre 2026)
+
+Suite de § 9.ek et § 9.el : les sept dernières pages. **Toutes les pages du site sont
+maintenant dans la DA.** Période d'observation SEO : seul l'habillage change, sur `/guide`
+(le guide du remplaçant en PDF), `/comparatif`, `/mentions-legales`,
+`/politique-confidentialite`, `/conditions-utilisations`, `/rgpd` et la 404. Aucun JS
+ajouté, `src/lib/` et les îlots pas touchés, `lastmod` non touché.
+
+- **Ce qui ne change pas**, prouvé par script. Les sept pages étaient identiques entre
+  `main` et le commit précédent (§ 9.el) : le build de `main` sert de référence. Les
+  64 autres HTML : identiques à l'octet au commit précédent, au nom de la feuille commune
+  près ; les 6 autres fichiers texte du build (sitemaps, RSS, `llms.txt`, `robots.txt`,
+  index de recherche) aussi ; les dix autres feuilles identiques à l'octet ; aucune image
+  de plus. Sur chaque page du lot : `title`, description, canonique, robots, balises
+  sociales, JSON-LD, H1, titres (niveau, texte, `id`), liens (adresse, libellé, `rel`,
+  `target`, `type`, mesure, dans l'ordre), `id`, images (adresse, `alt`, dimensions,
+  `srcset`), éléments de mesure (`data-ph`, `data-track`, `data-guide-download`,
+  `data-guide-share`, `data-mesure`), scripts, plis, tableaux cellule par cellule, ordre
+  des blocs, et le texte, suite par suite entre balises de bloc. `/guide` : 8 titres,
+  56 liens, 8 images, 652 mots. `/comparatif` : 5 JSON-LD, 19 titres, 64 liens, 8 plis, le
+  tableau, 1 713 mots. Mentions légales 772 mots, confidentialité 2 020, conditions 1 228,
+  RGPD 1 355, 404 196.
+- **Écarts dans le HTML, tracés** : `<meta name="theme-color" content="#C9DEFF">`,
+  `da-fond` sur `<body>` et en-tête « flottante » (comme en § 9.ee) ; une feuille en plus
+  de la feuille commune ; `role="list"` sur les listes dont la puce est retirée ; halos
+  et liserés décoratifs en moins, le décor de la fin en plus (`aria-hidden`). Pages
+  légales : un `<main>` en plus (elles n'avaient pas de région principale). `/guide` : la
+  règle qui masque la bulle de chat sur téléphone (§ 9.dk) passe du `<style>` en ligne à
+  la feuille de la page. Les flèches « → », les trois points « ⋯ » et la pastille « ● »
+  sont dessinés, le caractère reste dans le texte, masqué à l'œil. Des `<span>` gardent
+  sur une ligne un mot et le tiret qui le suit (titres des pages légales : la ligne
+  commençait par « – »).
+- **`/guide`** : le ciel (pastille « PDF gratuit · 26 pages · Édition », titre avec
+  l'édition dans le bleu de l'eau, bouton de téléchargement jaune, la couverture en carte
+  au bord blanc ; sur téléphone toujours titre, bouton, couverture, le bouton à 373 px
+  du haut à 390 px de large, 386 avant) ; une feuille sable (les six règles en fiches, numéro en
+  pastille encre) ; une feuille ciel (le sommaire : titre et chapô à gauche, les neuf
+  chapitres sur une fiche) ; une feuille sable (l'aperçu : trois pages en cartes, rangée
+  qui défile de côté sur téléphone) ; la fin (la fiche de l'auteur, le second bouton sur
+  l'eau profonde, l'appel au simulateur, le soleil sur l'eau du pied).
+  `BlogCtaBand.astro`, qui ne sert plus qu'ici, est rhabillé : bouton blanc, le jaune
+  est pris par le téléchargement juste au-dessus.
+- **`/comparatif`** : le ciel (fil d'Ariane, pastille, titre aux quatre noms dans leur
+  couleur de marque, les cinq ancres en pastilles) ; six feuilles, sable et ciel en
+  alternance (quatre verdicts, quatre solutions, le tableau, quatre profils, les tarifs,
+  les questions en plis `.qa` avec le titre à gauche) ; la fin (appel à l'essai, bouton
+  jaune, note « À propos de ce comparatif », soleil). La fiche et la colonne d'Hippodoc
+  n'ont qu'un liseré et une teinte : le comparatif reste factuel. **Le tableau** reste un
+  seul `<table>`, dans une fiche : sur téléphone il défile de côté dans sa fiche (la page
+  jamais), la colonne des fonctionnalités reste en place (collante), le nom du groupe
+  aussi, et une ombre à droite dit qu'il reste des colonnes ; on voit deux éditeurs à la
+  fois à 390 px, un et demi à 320 px ; plus de défilement à partir de 740 px environ.
+  `pages/Icon.astro` n'a plus de classe par défaut (il ne sert plus qu'ici).
+- **Pages légales** : un gabarit, `src/layouts/PageLegale.astro`, et une feuille,
+  `src/styles/legal.css`. Sobres : le titre sur le ciel, le texte sur une feuille sable
+  dans une colonne de 40 rem, l'eau du pied. Le texte n'a plus aucune classe : il est
+  habillé par élément, avec la typographie de lecture du gabarit d'article (§ 9.ej).
+  Encarts en fiches rondes (ciel doux, ambre pour l'alerte HDS, bleu pour la
+  recommandation) ; le tableau des finalités sur une fiche, une finalité par bloc sous
+  560 px ; les deux boutons de la mesure d'audience en boutons de la DA, de même poids
+  (`data-mesure` et `#mesure-etat` inchangés).
+- **404** : le ciel, « introuvable » dans le bleu de l'eau, les quatre destinations en
+  fiches en relief, l'eau du pied.
+- **Ménage** (`global.css`, `tailwind.config.ts`), chaque retrait prouvé par script avant
+  d'être fait : le nom cherché dans `src/` et dans tout le build (HTML, CSS, JS), puis la
+  feuille commune comparée règle par règle avant et après. Retirés : les images clés
+  `fadeIn`, `slideInLeft`, `pulseRing`, `bounceSubtle` et les six couleurs `--series-*` de
+  `global.css` ; dans la config, le conteneur (`corePlugins.container` coupé : la classe
+  n'est portée par aucun élément, mais le mot revient dans les sources et Tailwind en
+  tirait la règle), quatorze animations dont aucune classe `animate-*` n'existe, le plugin
+  typography (`prose` nulle part) et le plugin qui exposait chaque couleur de Tailwind en
+  variable CSS : 263 variables dans la feuille commune, aucune lue (`var()`,
+  `getPropertyValue`, nom composé en JS). Les 20 jetons shadcn gardent leur valeur.
+  Deux pièges, vus à la comparaison des règles : les images clés `shimmer` de
+  `global.css` étaient recouvertes par celles de la config, de même nom, que le squelette
+  de chargement du simulateur emploie (`animate-[shimmer_…]`) : ce sont celles de la
+  config qui restent ; et `fadeIn` est aussi le nom d'images clés que le tiroir d'aide du
+  simulateur (vaul) apporte lui-même, dans une feuille injectée après celle du site : la
+  nôtre ne servait à rien. Effet sur la feuille commune, exactement : 10 règles retirées
+  (les quatre images clés, `.container`), `:root` de 283 à 20 variables, aucune règle
+  ajoutée, aucune valeur changée. **Gardé** : la règle `will-change` des éléments floutés
+  (elle vise encore le texte flouté du simulateur), `shimmer`, l'accordéon, les couleurs
+  `hippo` et les jetons shadcn (îlots, `ui/`, bannière cookies). Les pages hors lot,
+  capturées en entier à 1 440 et 390 px avant et après (64 pages, 128 comparaisons) : les
+  mêmes au pixel.
+- **Feuilles et poids** : commune 103 136 → 87 083 octets (20,3 → 16,7 Ko gzip ; 173 règles
+  en moins depuis § 9.el, son nom change, donc le `<link>` de toutes les pages) ;
+  `guide.*.css` 13,5 Ko (3,0 gzip), `comparatif.*.css` 18,0 Ko (3,6), `PageLegale.*.css`
+  6,5 Ko (2,0), `404.*.css` 4,5 Ko (1,4). HTML : `/comparatif` 115,6 → 105,5 Ko, les six
+  autres pages de 1 à 2,5 Ko de moins chacune.
+- **Contrôles** : captures à 320, 390, 768 et 1 440 px, côte à côte avec `main` et avec
+  `/tarifs` ; le tableau à trois positions de défilement ; 25 largeurs de 280 à 1 920 px
+  × 7 pages, plis ouverts : aucun défilement horizontal, aucune erreur de console, y
+  compris avec le texte à 200 % (taille de la racine doublée). Lighthouse mobile en local,
+  trois mesures alternées : `/guide` 85 sur `main` et 89 après (LCP 4,2 → 3,7 s, la
+  couverture), `/comparatif` 98 et 98, `/mentions-legales` 99 et 100. Accessibilité 100,
+  SEO 100 (404 : noindex, voulu), bonnes pratiques 96 avant et après (requêtes sortantes
+  refusées par le bac à sable de mesure).
+- **À valider** : le jaune du bouton de téléchargement de `/guide` (deux fois : en haut
+  et en bas) et le bouton blanc de « Simule ton Super-Net » à côté ; les noms des
+  éditeurs en couleur de marque sur le ciel (3,8:1 pour Hippodoc, 4,0:1 pour Indy :
+  conforme en grand texte seulement, ce qu'est le titre) ; le liseré bleu pour seule
+  marque d'Hippodoc dans le comparatif ; le `<main>` ajouté aux pages légales. Les pages
+  sont plus hautes : `/guide` de 9 % à 1 440 px et de 12 % à 390 px, `/comparatif` de 10
+  et 12 %, les pages légales de 19 à 23 % sur téléphone et de 25 à 30 % à 1 440 px (corps
+  de 17 px au lieu de 16, interligne de lecture, colonne de 40 rem).
+- **À décider** : l'en-tête « flux », la bande `.hd-ciel`, `.da-sous-entete` et le pied
+  arrondi des pages sans `da-fond` (`da.css`, `Header.astro`) ne servent plus à aucune
+  page. Laissés en place : le ménage demandé portait sur `global.css` et la config.
+  `@tailwindcss/typography` reste dans `package.json`. `src/pages/index.astro` garde
+  trois classes utilitaires (lien d'évitement, conteneurs).
+- **Vu, non traité** : sur téléphone, l'en-tête du tableau (les noms des éditeurs) part
+  avec la page quand on descend, comme avant ; les précisions « i » du tableau sont des
+  attributs `title` (survol), sans équivalent au toucher, comme avant, et la phrase
+  « Survole les ⓘ » le dit ; les émojis ⚠️ et 💡 des mentions légales restent des
+  caractères.
+
+### 9.en Phase 5d : corrections après les trois relectures (11 novembre 2026)
+
+Trois relecteurs ont repris § 9.ek à § 9.em : calculs et fonctionnement, invariance SEO,
+direction artistique et accessibilité. Chaque point a été vérifié sur le build avant
+d'être corrigé ou écarté. Période d'observation SEO : aucun mot de contenu, `title`,
+description, H1, titre, lien, ancre, `id` d'ancre, `alt` ni JSON-LD ne change ; `src/lib/`
+n'est pas touché ; aucun JS ajouté ; aucun état, gestionnaire, appel réseau ni accès à
+`localStorage` nouveau dans les îlots.
+
+- **Ancres de `/guide-declarations` sous la barre de recherche** (important). Les
+  1 357 liens à ancre de la page arrivaient à 84 px du haut, sous la barre collante (70 à
+  134 px). Cause : `html:has(.gd-rech) { scroll-padding-top: 146px }` ne s'appliquait
+  jamais. Sur les pages d'outils, la feuille de la page est liée AVANT la feuille commune,
+  où `html:has(.da-fond)` pose 84 px avec le même poids : la dernière gagnait. Sélecteur
+  alourdi (`html:has(.da-fond):has(.gd-rech)`). Mesuré à 1 366 et 390 px : `#case-5HQ`,
+  `#cases` et `#glossaire-lettre-C` arrivent à 146 px, la barre finit à 126 px.
+- **Séparateur « Résultats » de la calculette affiché sur ordinateur** (important).
+  `.calc .calc-separe { display: flex }` battait l'utilitaire `lg:hidden` du bloc : la
+  règle est bornée à `max-width: 1023.98px`. `display` mesuré : `flex` à 320, 390 et
+  700 px, `none` à 1 024 et 1 366 px. Balayage des utilitaires de masquage gardés dans les
+  .tsx (simulateur, calculette, guide, comparatif, confidentialité ; 390, 700, 800, 1 100
+  et 1 366 px) : aucun autre n'est battu par une classe de la DA.
+- **Barre d'outils de la calculette** (important). Fond opaque (le formulaire se lisait au
+  travers). Elle ne colle plus sur téléphone, où elle prenait avec l'en-tête jusqu'à un
+  tiers de l'écran : collante à partir de 640 px seulement, comme une ligne de 52 px, et
+  `<html>` lui réserve alors sa hauteur (`scroll-padding-top` de 140 px, même précaution
+  de poids). Maj+Tab sur tout le formulaire à 320, 390, 700, 1 024 et 1 366 px, défilement
+  posé avant chaque mesure : aucun contrôle ne prend le focus sous la barre ou sous
+  l'en-tête. « Voir mes résultats » arrête la fiche à 172 px du haut, comme avant (la
+  marge de défilement de la colonne compense : 88 px sur téléphone, 32 px au-delà).
+  Ceci remplace, en § 9.el, « la barre d'outils colle sous l'en-tête ».
+- **Libellés des cases de résultat coupés** (important). « CA t… », « BNC a… » à 320 px,
+  sans `title` : le libellé passe à la ligne et se lit en entier à toutes les largeurs ;
+  sous 480 px, le code et le libellé prennent la largeur, le montant et « Copier »
+  passent dessous, à droite. Plus aucun libellé coupé à 320, 390 et 1 440 px (9 sur 9).
+- **Notifications de la calculette** (important). Elles étaient restées dans l'habit de
+  sonner (police du système, rayon de 8 px) : fiche blanche de la DA, Google Sans Flex,
+  encre, rayon de 22 px, icône dans le bleu de la marque. Habillage seul, dans
+  `calculette.css` (la feuille de sonner est écrite sous `:where()`).
+- **Champs du simulateur sans nom accessible** (important, déjà sur `main`). Sur treize
+  champs à suffixe (€, %), `FormControl` enveloppait le `<div>` du suffixe : l'`id`,
+  `aria-invalid` et `aria-describedby` tombaient sur ce `<div>`, le `<label>` ne nommait
+  rien. `FormControl` enveloppe maintenant le champ. Les 27 messages d'erreur portent
+  `role="alert"`. Vérifié, tous plis du formulaire ouverts : 21 champs visibles, 0 sans
+  nom ; soumission vide : champ `aria-invalid="true"`, décrit par le message, message
+  annoncé.
+- **Aides « i » du simulateur inatteignables** (important, déjà sur `main`). Le
+  déclencheur était un `<svg>` (ordinateur) ou un `<div>` (téléphone). C'est un
+  `<button type="button">` dans `PremiumTooltip.tsx`, pour ses 27 emplois : il prend le
+  focus, la bulle s'ouvre au focus, il s'appelle « Aide : » suivi du titre de l'aide
+  (`aria-label`, pas de texte visible ; la pastille « Vérifiez », qui a son texte, n'en
+  reçoit pas). Il épouse son icône (rien ne bouge) et sa cible déborde : 24 px à la
+  souris, 44 px au doigt. Dans le formulaire, les 22 aides sortent de leur `<label>`
+  (un bouton n'a pas sa place dans le libellé d'un autre champ) : le libellé et l'aide
+  sont côte à côte dans un `<div>`. Le bouton de fermeture du tiroir d'aide s'appelle
+  « Fermer ». Aucun état ni gestionnaire nouveau : le `onClick` du `<div>` passe au
+  bouton. Tabulation : l'aide précède son champ.
+- **Précisions « i » du comparatif** (important). Elles ne s'affichaient ni au toucher ni
+  au clavier, alors que la page dit « Survole les ⓘ ». Une fiche en CSS seul (`::after`,
+  texte de l'attribut `title`) s'ouvre au focus et, sur écran tactile, au toucher ; elle
+  se place par rapport à la cellule collante et reste dans la partie visible du tableau
+  (5 précisions sur 5 à 320, 390 et 1 440 px, aucune hors du tableau). À la souris, le
+  navigateur montre toujours `title`. Le conteneur qui défile reçoit `tabindex="0"`,
+  `role="region"` et `aria-label="Tableau comparatif"` (les mots de la pastille de la
+  section). Ceci remplace, en § 9.em, le « Vu, non traité » sur les précisions.
+- **Mineurs corrigés**, en CSS sauf mention. Calculette : les chevrons des trois plis
+  (5 à 10 px de large) ne se laissent plus écraser et prennent la pastille des plis de la
+  DA (32 px) ; les deux liens du pied des résultats sont soulignés, en 14 px, 24 px de
+  cible, et le « | » orphelin est masqué sous 480 px ; « Tout copier » et « Imprimer »
+  44 px de haut, interrupteur et « Forcer PAMC » 44 px au doigt. Simulateur : un filet
+  d'encre autour de chaque secteur de l'anneau (le jaune du reste à vivre faisait 1,4:1
+  sur la fiche) et libellé central à 10 px au lieu de 7 ; à 320 px, le rappel d'une rangée
+  d'options (« ZFRR · Foncier réel ») passe sous son nom, le chevron n'est plus rogné.
+  Bloc d'essai bleu du guide et de la calculette : voile de la pastille de 14 à 8 %,
+  contraste mesuré au pixel de 4,44 à 5,06:1 au moins (guide) et de 4,48 à 5,11:1
+  (calculette). Comparatif : « Fonctionnalité » tient sur une ligne à 320 et 390 px.
+  Guide : champ de recherche opaque (plus de texte en fantôme derrière « Rechercher… ») ;
+  renvois `.gd-ref` 44 px au doigt (30 px à l'œil, rangées à 8 px), nœuds du parcours et
+  barres d'étape de la boussole à 44 px ; `aria-pressed` sur les choix multiples de
+  « Situations particulières » (`BoussoleWizard.tsx`, un attribut).
+- **Tableau des finalités de `/politique-confidentialite`**. Sous 560 px, la ligne
+  d'en-tête (« Finalité », « Base Légale ») n'était plus dessinée et le tableau, en
+  `display: block`, perdait lignes et colonnes pour les lecteurs d'écran. Il reste un
+  vrai tableau à toutes les largeurs, cellules resserrées sur téléphone (pas de
+  défilement horizontal de 280 à 1 920 px). Ceci remplace, en § 9.em, « une finalité par
+  bloc sous 560 px ».
+- **Écartés, et pourquoi.** Le taux non arrondi de la bulle « Impôt sur ton activité »
+  (« 0.8213716108452951% ») : identique sur `main`, et aucun affichage de nombre ne bouge
+  pendant la période d'observation ; à traiter à part. Les boutons « Copier » de
+  28 × 28 px et les outils de la barre : leur cible faisait déjà 44 px (un `::after`, que
+  la mesure de la boîte ne voit pas). Le menu « Charger un exemple » plus haut que
+  l'écran : mesuré à 390 px, il tient dans l'écran (223 à 814 px sur 844) et défile, sa
+  hauteur est bornée depuis § 9.el, et la barre ne collant plus sur téléphone il ne
+  recouvre plus l'en-tête ; ses descriptions ne sont pas coupées à deux lignes, c'est sur
+  elles qu'on choisit un exemple. `role="status"` sur les résultats du simulateur : le
+  bloc entier (2 500 à 4 100 caractères) serait lu d'une traite, ou rien, la région
+  n'existant pas avant le calcul ; il faudrait un message court, donc du texte et de la
+  logique. Boussole : le focus qui retombe sur `<body>` après un choix, la liste de
+  recherche sans flèches, le champ « Trouve ton profil… » nommé par son seul
+  `placeholder` relèvent de la logique de l'îlot (et d'autres corrections sont en cours
+  sur `src/components/guide/`) : **dette d'accessibilité**, avec la région des résultats.
+  L'intervalle de 8 px entre l'en-tête et la barre de recherche reste : ce sont deux
+  pastilles flottantes, la page se lit autour comme autour de l'en-tête.
+- **Notés, sans correction.** Lighthouse en local : `npx serve` sert en HTTP/1.1, et la
+  deuxième feuille bloquante des pages du lot y coûte 0,15 à 0,3 s de FCP et de LCP
+  (`/simulateur` 0,90 → 1,20 s) ; rejoué en HTTP/2, le protocole de Vercel, l'écart
+  disparaît (consigné dans CLAUDE.md). La feuille du guide (48,4 Ko, 9,7 Ko gzip) est
+  chargée en entier par ses trois pages filles, qui n'en lisent qu'une partie (CSS
+  bloquante 21,9 → 23,6 Ko brotli, poids total de la page en baisse) : laissée d'un seul
+  tenant. Les îlots du simulateur et de la calculette reçoivent une prop
+  `data-astro-cid-*` (`props="{}"` devenait `{"data-astro-cid-…":[0,true]}` en § 9.ek et
+  § 9.el) : Astro la passe à tout composant rendu dans une page à `<style>` scopé, les
+  composants ne lisent aucune prop, leur HTML est le même. La mascotte de `/simulateur`
+  et celle de `/guide-declarations` (`<picture>`, `alt=""`, `loading="lazy"`) sont les
+  seuls éléments porteurs d'URL ajoutés à ces pages par la phase 5d ; la balise
+  `theme-color` vient avec `da-fond` sur les 13 pages ; les quatre pages légales ont
+  gagné leur `<main>` (§ 9.em).
+- **Ce qui change dans le HTML**, build du commit précédent contre celui-ci, par script :
+  878 fichiers des deux côtés, 11 HTML modifiés. Neuf ne changent que par le nom d'une
+  feuille ou d'un script (guide et ses trois pages filles, calculette, quatre pages
+  légales). `/comparatif` : les trois attributs du conteneur du tableau. `/simulateur`
+  (HTML de l'îlot rendu au build) : 7 boutons d'aide et 7 `<div>` de rangée en plus,
+  5 `<label>` déplacés, les attributs `id`, `aria-invalid` et `aria-describedby` de deux
+  champs passés du `<div>` au champ. Sur ces deux pages : texte identique, mot à mot et
+  collé, titres, liens, images, `alt`, balises du `<head>` et JSON-LD identiques. Les
+  59 autres pages : identiques à l'octet, feuille commune comprise
+  (`_astro_assets.CvdXYDEr.css`, nom inchangé).
+- **Calculs rejoués**, nombres identiques au build de `main`. Simulateur : 12 jeux de
+  valeurs, 1 812 nombres, 36 678 caractères de texte d'îlot, 89 plis, 197 bulles, les
+  10 corps de requête PAMC et 24 événements : 0 écart. Calculette : 26 jeux (14 exemples,
+  9 sauvegardes restaurées, 3 saisies au clavier), 3 678 nombres, 387 valeurs de champs,
+  24 sauvegardes `localStorage` : 0 écart. Guide : 17 parcours de la boussole à 1 280 et
+  390 px (175 relevés d'étape, 4 190 boutons) et la recherche : 0 écart, et le titre
+  d'une étape ne passe jamais sous la barre. Le relevé des bulles du simulateur lit
+  désormais la bulle qui vient de s'ouvrir : sur `main`, celle de la pastille
+  « Vérifiez » reste ouverte après le survol et l'ancien relevé la relisait à la place
+  des suivantes (4 jeux sur 12) ; `main` et la branche ont été relevés avec la même
+  lecture.
+- **Feuilles** : `simulateur.*.css` 30,9 → 31,7 Ko (6,1 → 6,3 gzip), `calculette.*.css`
+  23,9 → 26,0 Ko (5,5 → 5,9), feuille du guide 48,3 → 48,4 Ko, `comparatif.*.css`
+  18,0 → 19,3 Ko (3,6 → 3,8), `PageLegale.*.css` 6,5 → 5,9 Ko. `SimulateurApp.*.js`
+  122,9 → 124,6 Ko (les 22 rangées et le bouton).
+- **Contrôles** : `npm run build` (70 pages), `verify-site.mjs` à 0 erreur ; 6 pages ×
+  13 largeurs de 280 à 1 920 px, plis ouverts et résultats affichés : aucun défilement
+  horizontal, aucune erreur de page ; captures à 320, 390 et 1 440 px (barre, résultats,
+  plis, menu, notification, formulaire, bulle au clavier, tiroir, anneau, tableau, ancre).
+  Lighthouse mobile en local sur `/simulateur`, trois mesures alternées, même serveur
+  sans compression : performance 94, 95 et 93 avant, 95, 95 et 95 après (TBT 190 à 230 ms
+  avant, 170 à 200 ms après). Accessibilité 100 et SEO 100 sur `/simulateur`, la
+  calculette et `/comparatif` ; bonnes pratiques 96, comme avant (requêtes sortantes
+  refusées par le bac à sable de mesure).
+- **À valider** : les noms « Aide : … » des boutons d'aide, « Fermer » et « Tableau
+  comparatif » (des `aria-label`, lus mais pas affichés) ; le filet autour des secteurs
+  de l'anneau ; la barre d'outils de la calculette qui ne colle plus sur téléphone.
 
 ## 10. TODO(owner) — faits manquants / décisions
 
@@ -5154,6 +7206,7127 @@ remplacées ; lien dans le texte et en tête des `relatedArticles` vers le nouve
       confirmer le chiffre « 900+ inscrits » (repris sur tout le site) et le
       partenariat AIMGL.
 - (liste complétée en fin de migration)
+
+### 9.eo Phase 6 : ménage du code mort (11 novembre 2026)
+
+Le propriétaire a donné carte blanche pour retirer ce qui ne sert plus. Règle suivie : on ne
+retire que ce dont on prouve qu'aucune source et aucun fichier du build ne le nomme, et on
+prouve après coup que rien n'a bougé. Période d'observation SEO : aucun `title`, description,
+titre, texte, lien, JSON-LD, `data-ph`, `data-track` ni `data-landing-section` ne change ;
+`src/lib/` et `public/` ne sont pas touchés ; la logique des îlots non plus ; aucun JS ajouté.
+Les scripts de preuve nommés plus bas sont des scripts de session, hors dépôt.
+
+**Retiré**
+
+- **L'ancienne forme de l'en-tête.** `Header.astro` n'a plus de prop `variante` : les quinze
+  gabarits passaient tous `flottante`, ils rendent `<Header />`. Avec elle partent, dans
+  `da.css` : `.hd--flux`, la bande `.hd-ciel`, le jeton `--ciel-bande`, `.da-sous-entete`, et
+  les coins ronds du pied des pages sans `.da-fond`. Vérifié avant : aucun HTML, JS ni CSS
+  du build ne nomme ces classes hors de la feuille commune, `verify-site.mjs` et
+  `public/transmissions` non plus, et les 70 pages ont `<body class="da da-fond">`.
+  9 règles et un jeton, 1 169 octets.
+- **Les variantes du mode sombre.** Le site n'en a pas : aucune source ne nomme `dark` hors
+  des préfixes de classes, aucun HTML du build ne porte la classe, et le seul JS qui parle
+  de thème sombre est sonner (les avis de la calculette), qui pose un attribut
+  `data-theme` et pas une classe. Les 99 règles `.dark\:…:is(.dark *)` de la feuille commune
+  (7 911 octets) ne pouvaient donc s'appliquer à rien. Solution de configuration, sans
+  toucher aux `.tsx` : `content.transform` de `tailwind.config.ts` retire du texte que lit
+  Tailwind tout mot qui contient `dark:`. Les 259 classes `dark:…` restent dans les îlots
+  et dans `src/components/ui/` (elles viennent de l'application), sans règle derrière.
+  `darkMode: class` est gardé : si le filtre sautait, les règles reviendraient sous la
+  classe (inerte) et non sous `prefers-color-scheme` (qui s'appliquerait).
+- **Deux règles nées d'un mot de commentaire** (le piège décrit dans CLAUDE.md) : `.ring`
+  (« poser un ring highlight », `BoussoleSearchIsland.tsx`) et `.overflow-x-auto`
+  (`comparatif.astro`). Commentaires reformulés, 342 octets.
+- **Un composant** : `src/components/simulateur/CotisationsDetailChart.tsx`, importé nulle
+  part (signalé en § 9.ek). Sept utilitaires n'existaient que pour lui (507 octets).
+  ⚠️ L'audit des fichiers inatteignables, plus haut dans ce document, l'avait gardé
+  exprès (« ressemble à une fonctionnalité désactivée, à trancher ») : supprimé ici sur
+  la carte blanche du propriétaire. Pour le reprendre :
+  `git checkout c9b383b -- src/components/simulateur/CotisationsDetailChart.tsx`.
+- **Sept images de `src/assets/`.** Quatre n'étaient importées par rien et n'entraient pas
+  dans le build : `cnom-logo.jpg`, `cnom-logo-adjoint.jpg`, `google-calendar-logo.png`,
+  `hippodoc-logo.png` (589 Ko). Trois étaient dans `src/assets/blog/`, donc atteintes par
+  le glob du blog, mais citées par aucun frontmatter ni aucune donnée :
+  `conge-maternite-paternite-cover.png` (ancienne cover, remplacée par
+  `remplacante-enceinte-cover.jpg`), `frais-pros-medecins-salaries-internes-2026-slide-18.png`
+  (la diapositive 18 n'est plus dans l'article) et `temp-contract.png`. Le build copiait
+  leurs originaux dans `dist/_astro/` (3,3 Mo) sans qu'aucune page, aucun flux ni aucun JS
+  les nomme. ⚠️ Ces trois adresses à empreinte (`/_astro/<nom>.<empreinte>.png`) répondaient
+  200 sur le site en ligne et répondront 404 : aucune page ne les a jamais liées (les
+  pages servent des dérivés webp et jpg, d'autres adresses).
+- **Le paquet `@tailwindcss/typography`** (`devDependencies`) : le plugin n'était plus
+  chargé depuis § 9.em. Build identique octet pour octet avant et après.
+
+**Mesuré, laissé en place, et pourquoi**
+
+- *Variables de couleurs en `:root` posées par un plugin* : il n'y en a plus (retirées en
+  § 9.em). `:root` ne porte que les 20 jetons shadcn (511 octets).
+- *Jetons shadcn* : les 20 sont lus par au moins une règle de la feuille commune, et chacune
+  de ces règles est une classe de `src/components/ui/` nommée dans le JS du build. Rien à
+  retirer.
+- *Couleurs `hippo`* : les dix teintes ont chacune au moins une classe portée par le build
+  (800 et 900 n'en ont plus qu'une, les autres étaient des `dark:`). Rien à retirer.
+  `hippo-950`, que quatre classes `dark:` nomment, n'a jamais existé dans la configuration.
+- *Images clés* : les sept de la feuille commune (`pulse`, `spin`, `enter`, `exit`,
+  `shimmer`, `accordion-up`, `accordion-down`) et `da-pli` sont toutes nommées par une règle.
+- *Règles de `global.css`* : toutes servent. `scroll-padding-top: 96px` sur `<html>` est
+  recouvert partout par `html:has(.da-fond)` (84 px), mais reste la valeur des navigateurs
+  sans `:has()`. Le fond de `<body>` (`bg-background`) est recouvert sur les 70 pages par
+  `.da-fond` : 40 octets, gardés pour une page qui n'aurait pas `da-fond`. La règle
+  `will-change` vise toujours `blur-[6px]` du simulateur.
+- *Utilitaires que le build ne nomme nulle part* (ni attribut `class` d'un HTML, ni chaîne
+  d'un JS) : il en reste 88, 6 263 octets sur 77 154.
+  - 75 classes, 5 036 octets : les neuf squelettes de chargement de
+    `src/components/ui/skeleton.tsx` que rien n'importe (`DashboardCardSkeleton`,
+    `ChartSkeleton`, `ReplacementItemCardSkeleton`… venus de l'application ; seul `Skeleton`
+    sert, au simulateur). La consigne de ce lot interdisait de modifier `ui/` au-delà des
+    classes `dark:`. **À trancher par le propriétaire** : retirer ces neuf exports (240
+    lignes) rendrait 5 Ko.
+  - 6 classes, 810 octets : le champ `color` des séries (`from-blue-700 to-cyan-700`…) de
+    `src/lib/blog-series.ts`, que plus aucun gabarit ne lit. `src/lib/` n'est pas touché
+    dans cette phase.
+  - `filter` (185 octets, la méthode `.filter(` du JS), `paused` (36, une valeur CSS de
+    l'accueil), `flex-grow` (23, une propriété CSS), `bg-blue-100`, `tracking-widest`,
+    `opacity-60`, `mt-auto` (173 à eux quatre, champs ou exports inutilisés de fichiers
+    vivants) : 417 octets. Les faire taire demanderait une `blocklist`, qui empêcherait
+    aussi de s'en servir un jour sans le savoir. Risque pour presque rien : laissés.
+- *Module orphelin de `src/lib/`* : `src/lib/calc/declaration2035Inputs.ts` (4 187 octets)
+  n'est importé par rien (gardé exprès par le même audit, avec le composant ci-dessus).
+  Laissé : `src/lib/` n'est pas touché. **À trancher par le propriétaire.**
+- *`public/`* : rien de supprimé (adresses publiques). 31 fichiers, 3,7 Mo sur 12,3, ne
+  sont nommés par aucune source ni aucun fichier du build (`vercel.json`, qui règle leur
+  cache, ne compte pas comme un usage) :
+  - à la racine : `icon-192.png`, `icon-512.png` (le site n'a pas de `manifest`),
+    `hippodoc-presentation-st-poster.jpg` (affiche de l'ancien film, quittée le 10 novembre) ;
+  - `lovable-uploads/`, logos passés dans `src/assets/accueil/` : `aimgl-logo-160.webp`,
+    `silr-logo-160.webp`, `sioi-logo.jpg`, `crp-img-logo.png`, `doctripper-logo.png`,
+    `homedoc-logo-160.webp`, `bpi-112.webp`, `french-care-160.webp`, `region-idf-112.webp`,
+    `hippodoc-logo-96.webp` (ces dix étaient encore dans le HTML d'une page le 11 novembre
+    2026 : des pages en cache et Google les demandent encore), et leurs sources
+    `aimgl-logo.png`, `silr-logo.jpg`, `logo-region-idf.png` ;
+  - `lovable-uploads/`, images venues de la SPA que ce dépôt n'a jamais citées (regardées
+    une à une) : `0de70a76-….png` (la mascotte, doublon du logo `1a136973-….png` qui sert),
+    `c4df22cf-….png` (doublon de `icon-512.png`), quatre captures du tableau de bord de
+    l'application (`0fd2c2a3`, `344502fe`, `d4ba736d`, `3575b114`), `4332de9f` et son
+    doublon `ea61c5fb` (statistiques par médecin), `2bfc231b` (calendrier), les logos
+    Bpifrance (`16d4c030`), Google Agenda (`68383614`), Ordre des médecins (`686e20c5`) et
+    La French Care (`43467e81`), `fbacc978` (une icône d'image cassée de 60 px) et
+    `super-net-card-preview.png` (carte Super-Net de l'application).
+  Ce qui peut encore pointer dessus : l'application et ses courriels (ces adresses étaient
+  celles de la SPA sur le même domaine), des aperçus de partage, des pages en cache. Non
+  vérifiable depuis ce dépôt ; les journaux d'accès de Vercel le diraient.
+
+**Poids** (build de `main` `c9b383b` → cette branche)
+
+| | Avant | Après |
+|---|---|---|
+| Feuille commune (`_astro_assets.*.css`) | 87 083 octets, 16 748 gzip | 77 154 octets, 15 271 gzip |
+| Les 14 autres feuilles | 321 845 octets | identiques octet pour octet |
+| JS (29 fichiers) | 1 762 823 octets, 524 758 gzip | identiques octet pour octet |
+| `dist/` | 878 fichiers, 107,2 Mo | 875 fichiers, 103,9 Mo |
+| `src/assets/` | 127 fichiers, 46,3 Mo | 120 fichiers, 42,4 Mo |
+
+Feuille commune, règle par règle (`compare-css.cjs`) : 118 règles retirées (99 `dark:`,
+10 de l'ancien en-tête dont `.da` réécrite sans son jeton, 9 utilitaires), aucune autre
+ajoutée, ordre des règles restantes conservé.
+
+**Preuves** (11 novembre 2026)
+
+- *HTML* (`compare-html.py`, contre `ref-dist-6`) : les 70 pages sont identiques à celles
+  de `main` une fois remplacé le nom de la feuille commune (`_astro_assets.CvdXYDEr.css` →
+  `_astro_assets.B7wEZqJv.css`), seul écart ; `/transmissions` est identique octet pour
+  octet. Aucun attribut retiré : la classe `hd--flux` et l'élément `.hd-ciel` n'étaient
+  rendus sur aucune page. Contrôle séparé de `title`, description, canonique, `robots`,
+  balises `og:` et `twitter:`, H1 à H6, texte visible, liens (adresse, libellé, `rel`,
+  `target`), JSON-LD, `data-ph`, `data-track*`, `data-landing-section`, `id` et images :
+  0 écart sur 194 021 mots, 7 272 liens, 1 475 titres, 257 blocs JSON-LD, 2 327 `data-ph`.
+  Sitemap, flux RSS, `llms.txt`, `robots.txt` et `recherche.json` identiques.
+- *Captures* (`captures.cjs`, Chromium, animations coupées, réseau externe coupé, bannière
+  cookies et bulle de chat visibles) : les 68 pages du sitemap, `/essai` et la 404, pleine
+  page à 1 440 et 390 px, soit 314 tranches de 6 000 px au plus : toutes identiques au
+  pixel à la référence. La méthode voit un écart d'un cran de couleur (essai : `--sun`
+  passé de `#ffd84a` à `#ffd84b`, trois tranches sur trois signalées).
+- *Îlots* (`etats.cjs`, mêmes largeurs) : résultats du simulateur pour 30 000 / 3 000, avec
+  la liste déroulante de Radix ouverte ; calculette avec l'exemple « Remplaçant pur, 60 k€ »
+  chargé, avec le menu des exemples ouvert et l'avis de sonner ; boussole à l'étape 3 sur 5.
+  29 captures identiques au pixel, textes des îlots identiques, aucune erreur JS.
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages, 5 388
+  liens internes), à chacun des trois commits.
+
+**Non testé.** Le moteur de Safari : la passe WebKit prévue en appoint n'a pas pu être
+lancée dans cette session. Ce que ce lot retire ne dépend pas du moteur (des règles dont le
+sélecteur ne trouve aucun élément, des fichiers que rien ne charge), et les règles qui
+restent sont les mêmes, dans le même ordre. Pas de Lighthouse : aucune page ne charge plus
+qu'avant, la feuille commune perd 1,5 Ko une fois compressée. Firefox non plus.
+
+### 9.ep Phase 6 : passage dans le moteur de Safari, corrections (12 novembre 2026)
+
+Tout le site avait été conçu et vérifié dans Chromium seulement. Deux audits (pages
+statiques, outils) l'ont passé dans WebKitGTK 2.52, le moteur de Safari, à côté de
+Chromium. Cette entrée consigne ce qui a été corrigé, ce qui est proposé sans être fait et
+ce qui reste. Règles de la période d'observation : habillage seul (CSS et configuration du
+build), aucun mot, aucun lien, aucune ligne de logique des îlots, aucun JS client de plus.
+Chaque défaut a été reproduit sur le build de la branche avant d'être corrigé ; les deux
+défauts des vieux Safari, que le moteur installé ne montre pas, sont dits à part.
+
+**Corrigé**
+
+- **Mascottes deux fois trop hautes dans Safari** (`/faq` à toutes les largeurs, `/tarifs`
+  et les offres de l'accueil à partir de 1 024 px). Le moteur de Safari donne à un cadre
+  `aspect-ratio` posé hors du flux la hauteur de son contenu (l'image entière) au lieu de
+  celle de son rapport : la mascotte du haut de `/faq` montait sur le titre, celle du bas
+  recouvrait « Besoin d'aide ? », celle de `/tarifs` passait derrière la pastille dès le haut
+  de page, celle de l'accueil débordait sur les témoignages. `min-height: 0` sur les quatre
+  cadres (`tarifs.astro` `.guide.haut`, `accueil/Tarifs.astro` `.guide`, `faq.astro`
+  `.guide` et `.pouce`). Mesuré dans WebKit, avant → après : 250 × 465 → 250 × 242
+  (`/tarifs` 1 440), 215 × 400 → 215 × 208 (`/tarifs` 1 024), 250 × 425 → 250 × 331 et
+  160 × 286 → 160 × 183 (`/faq` 1 440), 117 × 199 → 117 × 155 (`/faq` 390), 92 × 156 →
+  92 × 122 (`/faq` 320), 242 × 451 → 242 × 235 (accueil 1 440) : les tailles de Chromium,
+  au pixel. Rien ne change dans Chromium. Deux cadres du même genre avaient été oubliés
+  (`/simulateur`, `/guide-declarations`) : corrigés en § 9.eq.
+- **Mots collés dans les tableaux d'articles** (Safari, 15 articles). Le tableau demandait
+  les chiffres tabulaires et retirait 0,097 em à chaque espace (§ 9.ed). La fonction `tnum`
+  de la police remplace aussi l'espace par une espace plus large (645 unités au lieu de 450
+  sur 2 000, lu dans le fichier) : Chromium l'applique, d'où la compensation ; le moteur de
+  Safari garde l'espace ordinaire, et la compensation y collait les mots (« 3CVetmoins »).
+  Le tableau ne demande plus les chiffres tabulaires : il prend une seconde face de la même
+  police, « Google Sans Flex Chiffres » (`[slug].astro`), limitée par `unicode-range` aux
+  caractères que `tnum` remplace, espace exceptée (chiffres, `. , : ;`, opérateurs, signes
+  monétaires, `# % §`), et qui porte `font-feature-settings: "tnum"`. Les chiffres restent
+  de même chasse, l'espace reste celle du texte, dans les deux moteurs, sans compensation.
+  Même fichier woff2 : une seule requête, comme avant. Mesuré (premier tableau de
+  `/blog/frais-pros-medecin-liberal-2026`, 1 440 px) : WebKit 565,3 → 581,3 px ; Chromium
+  581,1 → 579,5 px. Dans Chromium, les 40 tableaux relevés (15 articles, 2 largeurs)
+  perdent 0 à 2 px de large, aucune hauteur de page ne change.
+- **Pastille de l'en-tête : le texte de la page se lisait au travers.** Sous 900 px (deux
+  moteurs), elle n'a pas de flou (§ 9.dn) et son fond était à 94 % : un titre passait en
+  lettres nettes derrière le logo. Le fond est plein (`#fff`). À partir de 900 px, le
+  verre reste : flou inchangé, fond passé de 86 à 92 % (à 86 %, un titre gras laissait un
+  nuage gris derrière le menu ; l'audit mesure 3 à 14 niveaux sur 255 à 86 %, 2 à 8 à
+  92 %). Le verre est posé sous `@supports` : un navigateur sans flou d'arrière-plan garde
+  le fond plein.
+- **Safari avant 18 : la pastille sans flou** (iPad en paysage, Mac ; vu par émulation, le
+  moteur lancé avec `--features=-CSSUnprefixedBackdropFilter`). La source écrivait bien
+  `-webkit-backdrop-filter`, mais le build ne le contenait plus : Astro construit en
+  « esnext » et le minificateur (lightningcss), sans navigateur cible, retirait le préfixe.
+  `astro.config.mjs` lui donne ses cibles : `vite.build.cssTarget` = Safari et iOS 16.4,
+  Chrome et Edge 111, Firefox 121. Le préfixe revient (12 occurrences dans le build).
+- **Safari avant 26.2 : liens sans soulignement** (non vu : aucun vieux Safari ici ; établi
+  sur le CSS du build et les tables de compatibilité de MDN). Le même minificateur
+  fusionnait `text-decoration: underline` et `text-decoration-thickness` en
+  `text-decoration: underline 2px`, forme que Safari ne lit que depuis 26.2 : la
+  déclaration entière y est rejetée (liens `.lien`, corps des articles et des pages légales,
+  fils d'Ariane…). Avec les cibles, les deux propriétés restent séparées et la forme à
+  couleur est doublée de `-webkit-text-decoration`. Dans le WebKit installé, les
+  soulignements calculés sont les mêmes avant et après sur `/faq`, un article,
+  `/mentions-legales` et `/comparatif`.
+- **Ce que les cibles changent d'autre dans le CSS du build** (feuilles comparées
+  déclaration par déclaration) : des préfixes rendus (`-webkit-user-select`,
+  `-webkit-mask` pour Chrome avant 120, `-webkit-box-decoration-break`,
+  `-webkit-print-color-adjust`, `-webkit-text-decoration-color`,
+  `-webkit-backdrop-filter` des utilitaires Tailwind) et deux variables internes du
+  minificateur à côté de `color-scheme`. Aucun sélecteur ne change. Firefox est visé à 121
+  et non 114 : en dessous (pas de `:has()`), le minificateur réécrivait six listes de
+  sélecteurs en `:is(…)`. Un de ces préfixes se voit dans Safari, et deux effets de bord
+  n'étaient pas dits : § 9.eq.
+- **Super-Net du simulateur : « 24044 € » dans Safari.** Les milliers sont séparés par une
+  espace fine insécable (U+202F). Chromium n'applique aucun interlettrage à une suite de
+  chiffres qui en contient une ; le moteur de Safari applique celui de `.aff` (-2,2 px à
+  48 px) à chaque caractère, espace comprise. `simulateur.css` : le montant est posé sans
+  interlettrage, le signe « € » garde celui de `.aff`. Largeur de « 24 044 € » à 1 440 px :
+  WebKit 177,6 → 190,7 px ; Chromium 189,5 → 189,5 px (capture identique au pixel). Seul
+  effet dans Chromium : un Super-Net inférieur à 1 000 € perd son interlettrage négatif.
+  Cherché ailleurs : aucun nombre à espace fine sous un interlettrage non nul dans le HTML
+  des 70 pages, ni dans les résultats du simulateur (deux plis ouverts) et le guide des
+  déclarations. La calculette en a deux, que cette recherche (une valeur saisie, plis
+  fermés) n'avait pas vus : § 9.eq.
+- **Flèches natives des champs de montant du simulateur** (mineur, deux moteurs) : dessinées
+  en permanence dans WebKitGTK, au survol dans Chromium, avec un pas d'un centime. Retirées
+  (`appearance: textfield`). Hauteur des champs (50 px), saisie et calcul inchangés.
+
+**Proposé, non fait (décision du propriétaire)**
+
+- *Îlot pas encore hydraté.* Entre l'affichage et l'hydratation (0,1 à 0,3 s en local ;
+  0,8 → 2,5 s sur un réseau bridé, jusqu'à 4,5 s en « 4G lente », mesures de l'audit), les
+  outils ont l'air prêts mais rien ne répond : clics perdus, montants tapés effacés à
+  l'hydratation, « Simuler » qui recharge la page. C'est le candidat le plus sérieux pour
+  le signalement « les listes ne s'ouvrent pas » retiré depuis. Un état d'attente en CSS
+  seul existe, essayé par l'audit par injection dans les deux moteurs, sans script et sans
+  décalage de mise en page : tant que `<astro-island>` porte l'attribut `ssr`, curseur
+  d'attente, contrôles neutralisés (`pointer-events: none`), bouton atténué et une barre de
+  progression qui n'apparaît qu'après 0,4 s. À reporter dans `simulateur.css`,
+  `calculette.css` et `guide.css`. Restent hors habillage : la saisie au clavier, et la
+  durée de la fenêtre elle-même. Rejoué en § 9.eq, avec deux réglages à faire avant de
+  l'appliquer.
+- *Un fichier JS de l'îlot qui ne charge pas* : l'îlot reste inerte toute la visite, sans
+  message. `posthog-js` (30 % du JS de l'îlot) est une dépendance statique des trois
+  outils par `src/lib/analytics.ts`. En habillage seul, on ne peut qu'afficher un message
+  après 10 s (du texte en plus : à valider) ; la vraie correction change un import.
+- *Aides « i » et « ? » au toucher* (simulateur à partir de 768 px, calculette partout) :
+  les bulles Radix ne s'ouvrent qu'au survol ou au clavier. Il faut changer le composant.
+- *Colonne des résultats de la calculette*, plus haute que l'écran alors qu'elle colle : une
+  hauteur maximale avec défilement interne est une piste, non essayée (ombres, impression).
+
+**Laissé, avec la raison**
+
+- Les deux faces de repli de la police : Safari ne lit `size-adjust` que depuis 17 et pas
+  les trois `*-override` ; le saut à l'arrivée du woff2 (préchargé) y est un peu plus grand.
+- `/guide-declarations` : premier affichage plus tardif dans WebKit (0,9 à 1 s en local
+  contre 0,2 à 0,3 s), le moteur ne peignant qu'une fois analysé le document de 1,8 Mo.
+- Sans équivalent dans un Safari de deux ans, sans correction nécessaire : animations liées
+  au défilement (Safari 26), toutes sous `@supports`, les éléments sont alors fixes et
+  visibles ; `text-wrap-style` (coupures ordinaires) ; `content-visibility` et
+  `scrollbar-width` (ignorés).
+
+**Preuves** (12 novembre 2026 ; scripts de session, hors dépôt)
+
+- *HTML* contre le build de `main` : 70 pages identiques au nom des feuilles près,
+  `/transmissions` identique octet pour octet ; 0 écart sur `title`, description,
+  canonique, `robots`, H1 à H6, texte, liens, JSON-LD, `data-ph`, `data-track`,
+  `data-landing-section` (194 021 mots, 7 272 liens, 1 475 titres, 257 blocs JSON-LD).
+  JS identique octet pour octet (29 fichiers). CSS : 398 999 → 401 921 octets, feuille
+  commune 77 154 → 78 642 (gzip 15 241 → 15 334).
+- *Chromium, avant / après* : les 68 pages du sitemap, `/essai` et la 404 à 1 440 et
+  390 px, 314 tranches. 166 identiques au pixel ; 115 ne diffèrent que dans la pastille ;
+  33 diffèrent aussi dans un tableau d'article ou son ombre, et nulle part ailleurs. Îlots
+  (résultats du simulateur, exemple de la calculette, boussole, listes de Radix) : 29
+  captures, écarts dans le seul rectangle de la pastille.
+- *WebKit, avant / après* : chaque défaut corrigé a sa capture avant et après (mascottes,
+  tableaux, pastille aux trois configurations, Super-Net, champs). Passe de mesure sur
+  21 pages à 1 440 et 390 px (dont les outils au repos, le guide des déclarations et deux
+  pages légales) : aucune hauteur de page ne change, aucun débordement ; seuls changent de
+  taille les quatre cadres des mascottes et les cellules des tableaux de l'article long.
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages,
+  5 388 liens internes). Lighthouse en local : `/` 99 / 100 / 96 / 100, `/simulateur`
+  98 / 100 / 96 / 100, l'article aux tableaux 98 / 100 / 96 / 100 (performance,
+  accessibilité, bonnes pratiques, SEO), décalage de mise en page 0 ; l'article donnait
+  les mêmes notes avant.
+
+**Non testé.** Safari réel, sur iPhone, iPad ou Mac : tout est mesuré dans WebKitGTK sous
+Linux (même moteur, autres polices système, ni barres d'iOS ni toucher). Aucun vieux
+Safari : le flou préfixé est vu par un drapeau d'émulation, les soulignements ne sont pas
+vus. La face « Chiffres » repose sur le descripteur `font-feature-settings` de
+`@font-face` (Safari 10 selon MDN) : s'il manquait, les chiffres des tableaux
+reprendraient leur chasse ordinaire, sans autre effet. Firefox : non testé. La branche
+PAMC du simulateur (appel Supabase) n'est pas joignable d'ici.
+
+### 9.eq Phase 6 : corrections après les trois relectures (12 novembre 2026)
+
+Trois relecteurs ont repris § 9.eo et § 9.ep : invariance du HTML, régression dans
+Chromium, contre-visite dans WebKit. Chaque constat a été vérifié sur le code et le build
+avant d'être corrigé ou écarté. Mêmes règles : habillage seul, aucun mot, aucune ligne de
+logique, aucun JS de plus. Une seule correction de code ; le reste précise § 9.ep ou
+attend une décision.
+
+**Corrigé**
+
+- **Mascottes de `/simulateur` et de `/guide-declarations` trop hautes dans Safari**
+  (important, à partir de 1 024 px ; en dessous, elles ne sont pas affichées). § 9.ep
+  avait corrigé quatre cadres `aspect-ratio` hors du flux sur six. Les deux oubliés
+  gardaient le défaut : la mascotte du simulateur sortait entière au lieu d'être coupée à
+  mi-corps par l'îlot, celle du guide des déclarations dépassait de 95 px. `min-height: 0`
+  sur `.guide` (`simulateur.astro`) et `.gd .gd-guide` (`guide.css`). Reproduit dans
+  WebKit avant correction, puis mesuré après, à 1 440, 1 180 et 1 024 px : 190 × 339,5 →
+  190 × 177,5 et 264 × 288,6 → 264 × 193,8, les tailles de Chromium ; les hauteurs de page
+  ne changent pas. Barre de recherche resserrée (page défilée) : la mascotte du guide reste
+  cachée, comme avant. Dans Chromium, rien ne change (40 tranches identiques au pixel, voir
+  les preuves). Relevé dans WebKit sur les 70 pages, à 1 440, 1 024 et 447 px : plus aucun
+  cadre à rapport fixe dont la hauteur s'écarte de son rapport (108, 108 et 105 cadres
+  affichés).
+
+**Vérifié, laissé à la décision du propriétaire**
+
+- *Îlot pas encore hydraté* (important, « proposé, non fait » de § 9.ep). Le défaut est
+  toujours là, rejoué dans WebKit à 1 440 px, le JS retenu 3 s par fichier (hydratation
+  après 9,4 s) : « 30000 » tapé dans le premier champ est effacé à l'hydratation, le clic
+  sur une liste ne fait rien, le curseur reste une main. Non corrigé ici : la correction
+  proposée ajoute un état visible que personne n'a validé, et le signalement qui l'avait
+  motivée a été retiré. Elle a été rejouée par injection, même montage : le clic ne donne
+  plus le focus au champ, rien ne se tape, curseur d'attente, bouton à 75 %, barre visible
+  après 0,4 s ; à l'hydratation tout revient, champ et liste répondent ; la hauteur de page
+  ne bouge pas. Le clavier passe toujours (trois Tab atteignent un champ), comme annoncé.
+  Deux réglages à faire avant de l'appliquer : sur `/simulateur`, la barre (posée 10 px
+  au-dessus de l'îlot, devant lui) traverse la mascotte, qui se tient juste derrière ce
+  bord ; sur `/guide-declarations`, la boussole est à 1 900 px du haut (2 700 px à 447 px
+  de large) et son îlot, hydraté seulement quand il arrive à l'écran, porte encore `ssr` à
+  ce moment : le délai de 0,4 s étant écoulé depuis longtemps, la barre s'y afficherait
+  d'emblée à chaque arrivée, le temps de charger le JS, même sur un bon réseau. Non
+  rejoué : la calculette, Chromium, le toucher.
+- *Trois adresses de `/_astro` qui passeront de 200 à 404* (originaux des trois images de
+  blog retirées en § 9.eo) et *`CotisationsDetailChart.tsx` supprimé* contre la note qui
+  le gardait « à trancher » : le relecteur confirme qu'aucun fichier du build ni de l'arbre
+  de `main` ne les nomme, et que les 29 fichiers JS sont identiques octet pour octet. Rien
+  n'a été restauré. Pour revenir en arrière : `git checkout c9b383b -- <chemin>`.
+- *Pastille de l'en-tête à 92 %* à partir de 900 px : question de goût. Le relecteur la
+  juge pareille au premier écran, un peu plus pâle sur du contenu. Pour un verre plus
+  coloré : 88 à 90 % dans `da.css` (règle `.hd-bar` sous `@supports`).
+
+**Précisions sur § 9.ep**
+
+- *Noms des feuilles.* Les cibles du minificateur réécrivent toutes les feuilles : 14 sur
+  15 changent de nom par rapport à `main` (seule celle de la 404 garde le sien), pas
+  seulement la feuille commune. Les pages qu'aucune correction ne visait ont donc deux
+  adresses de feuille qui changent au lieu d'une ; rien d'autre ne change dans leur HTML.
+  Chaque visiteur retélécharge ces feuilles une fois.
+- *Deux effets de bord inertes du minificateur* dans la feuille commune :
+  `:where(.da .da-bloc)` reçoit deux variables que rien ne lit (`--lightningcss-light`,
+  `--lightningcss-dark`), et `.sig.ok::before` / `.sig.wait::before` portent
+  `-webkit-mask` deux fois de suite (le second n'était pas dit). Aucune valeur calculée ne
+  change.
+- *Un préfixe rendu qui se voit dans Safari* : avec `-webkit-box-decoration-break: clone`,
+  l'étiquette jaune « 120 € de moins par an que le mensuel » de l'accueil garde ses coins
+  ronds et ses marges sur chaque ligne quand elle passe sur deux lignes (320 px de large,
+  ou texte grossi). Avant, elle était coupée net à la césure. Conforme à Chromium.
+- *Nombres à espace fine sous un interlettrage.* La calculette en a deux, plis « Comprendre
+  ton RBS » et « Estimation de ton assiette sociale » ouverts (exemple « Remplaçant pur,
+  60 k€ ») : « 56 300 € » et « ≈ 41 662 € », 30 px, interlettrage de -0,75 px. Relevé
+  refait dans WebKit : l'espace des milliers y fait 3 px, le nombre reste lisible. Sans
+  rapport avec les -2,2 px du Super-Net ; laissé.
+- *Super-Net et texte grossi dans Safari.* Avec le zoom du texte seul (réglage de Safari
+  sur Mac, × 2) sur un écran étroit, le montant, plus large de 22 à 26 px depuis sa
+  correction, pousse la fiche jaune hors de l'écran (bord droit à 403 px pour 390 ; 381
+  avant ; mesures du relecteur). La page débordait déjà. Ce zoom multiplie la taille après
+  le `clamp()` : un plafond en `vw` n'y peut rien. Laissé : réglage rare, et le montant se
+  lit enfin.
+
+**Relevé par les relecteurs, hors de ce lot** (déjà là sur `main`, dans les deux moteurs
+sauf mention)
+
+- La bulle « Impôt sur ton activité » du simulateur affiche un taux non arrondi (« Taux
+  effectif : 3.7918173598553344% », `RegimeComparisonCards.tsx`). C'est du texte d'îlot :
+  pas touché pendant la période d'observation. À corriger après.
+- La calculette imprimée sort toute la page autour des résultats (en-tête, bloc d'essai,
+  FAQ, scène de fin, pied, bulle de chat) : 4 pages A4. Le site n'a aucune règle
+  d'impression qui masque l'en-tête ou le pied, sur aucune page : c'est un choix à faire,
+  pas un oubli de ce lot.
+- Texte grossi à 200 % par le zoom du texte seul de Safari : le menu de la pastille passe
+  sur deux lignes et en sort, le titre « HippoCalc » passe sous la fiche inclinée. Le zoom
+  ordinaire de la page n'est pas concerné.
+- Safari ne donne pas le focus au clavier à un tableau d'article qui défile de côté (6
+  tableaux sur 20 à 390 px) ; Chromium le fait de lui-même. Il faudrait un `tabindex` sur
+  le tableau : un changement de HTML, après la période d'observation.
+
+**Preuves** (12 novembre 2026 ; scripts de session, hors dépôt)
+
+- *Build* : deux feuilles changent, d'une déclaration chacune (`min-height:0`) : celle de
+  `/simulateur` (32 118 → 32 131 octets) et celle du guide des déclarations (48 469 →
+  48 482). La feuille commune garde son nom. Cinq pages changent, de la seule adresse de
+  leur feuille (`/simulateur`, `/guide-declarations` et ses trois pages filles). Tout le
+  reste du build est identique octet pour octet à celui de § 9.ep (JS : 29 fichiers).
+- *HTML* contre le build de `main` : 70 pages identiques au nom des feuilles près,
+  `/transmissions` identique octet pour octet ; 0 écart sur `title`, description,
+  canonique, `robots`, H1 à H6, texte, liens, JSON-LD, `data-ph`, `data-track`,
+  `data-landing-section` (194 021 mots, 7 272 liens, 1 475 titres, 257 blocs JSON-LD).
+- *Chromium, avant / après* : `/simulateur`, `/guide-declarations`, ses trois pages filles
+  et la calculette à 1 440, 1 024 et 390 px, pleine page : 40 tranches sur 40 identiques au
+  pixel, hauteurs de page égales, cadres à 190 × 177,5 et 264 × 193,8 avant comme après.
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages,
+  5 388 liens internes).
+
+**Non testé.** Safari réel (iPhone, iPad, Mac) : tout est mesuré dans WebKitGTK 2.52 sous
+Linux. Lighthouse : non relancé (une déclaration de plus dans deux feuilles de page).
+Firefox : non testé. Les mesures attribuées au relecteur (texte grossi, impression, focus
+des tableaux, étiquette sur deux lignes) n'ont pas été refaites ici.
+
+### 9.er Phase 7 : des outils qui répondent, la fenêtre morte avant l'hydratation (12 novembre 2026)
+
+> **Corrigé par § 9.et, le même jour.** Après trois relectures, trois des quatre pas décrits
+> ici ont été retirés : les préchargements (b), qui faisaient reculer la première peinture
+> dès que le réseau est bridé ; la sortie de `posthog-js` du graphe des îlots (a), qui ne
+> gagne rien sans eux ; le moteur de recherche chargé après l'hydratation (d), qui, sans
+> eux, retardait la première liste de résultats. `interactivity: inert` est retiré de
+> l'état d'attente (régression au clavier). Restent : la boussole hydratée un écran plus
+> tôt (c) et l'état d'attente. Le texte ci-dessous est gardé comme trace de ce qui a été
+> essayé et mesuré ; ses colonnes « après », ses noms de fichiers à empreinte, sa liste
+> d'ajouts au HTML et son relevé de mesure sont ceux du build d'alors (commit `72254ed`),
+> plus ceux du site : l'état réel est en § 9.et.
+
+Le défaut, relevé par l'audit de la phase 6 (§ 9.ep, § 9.eq) et antérieur à la refonte : le
+simulateur, la calculette et le guide des déclarations sont rendus au build puis hydratés.
+Entre l'affichage et l'hydratation, tout a l'air prêt et rien ne répond : un clic est perdu,
+un montant déjà tapé est effacé à l'hydratation, « Simuler » envoie le formulaire en natif et
+recharge la page. Ce lot raccourcit ce moment, puis le rend visible. Aucun calcul n'est
+touché, aucun mot n'est ajouté à une page, aucune dépendance n'entre.
+
+**Mesure, avant**
+
+Un script rejoué à l'identique à la fin (`mesure-cr.cjs`, Chromium par Playwright ;
+`mesure-wk.py`, WebKitGTK ; scripts de travail, hors dépôt, comme les autres cités ici), sur le build de `main` (`771de40`) servi en local (HTTP/1.1,
+gzip). Par page, par réseau (sans bridage, « 4G rapide » 9 Mbit/s et 165 ms, « 4G lente »
+1,6 Mbit/s et 562 ms, réglages des outils de développement) : première peinture, instant où
+`<astro-island>` perd `ssr`, instant où la page reçoit le premier clic (ou la première
+frappe) qui a un effet, fichiers JS demandés avant, profondeur de la chaîne « demandé par ».
+Médiane de cinq chargements à froid, un navigateur neuf à chaque fois, fenêtre de
+1 440 × 900. En 4G lente : `/simulateur` peint à 1,54 s et répond à 3,94 s (2,4 s de
+fenêtre morte) ; la calculette, 1,55 s et 4,01 s ; la recherche du guide, 1,63 s et 4,25 s.
+Cause : 11 à 19 fichiers JS (234 à 271 Ko transférés) découverts en deux ou trois vagues, sans
+préchargement, dont `posthog-js` (76,6 Ko gzip), que chaque îlot importait par
+`src/lib/analytics.ts`.
+
+**Ce qui a été fait, par ordre de rendement, chaque pas mesuré**
+
+- **(a) Les îlots n'attendent plus `posthog-js`.** `src/lib/analytics.ts` ne l'importe
+  plus : `trackEvent()` émet par l'instance que `PostHog.astro` lui donne
+  (`brancherMesure(posthog)`, une fois, après `init()` et `register_once`), et met en
+  file ce qui est émis avant (cent événements au plus). La file est rejouée dans l'ordre,
+  un tour après `init()` : posthog-js émet sa page vue initiale par un minuteur d'une
+  milliseconde, la file passe derrière. Pas de seconde instance : `posthog-js` n'est que
+  dans `module.*.js`, identique à l'octet à celui de `main`. Le graphe d'un îlot passe de
+  238 à 162 Ko gzip (simulateur), 250 à 174 (calculette). Seul, ce pas gagne peu (0,1 à
+  0,3 s en 4G lente ; **faux**, § 9.et : rien de mesurable, 3 919 ms contre 3 938) : la
+  bibliothèque part quand même, par le script de `PostHog.astro`, et prend sa part du débit. Il vaut par le pas suivant. Effet de bord corrigé : n'étant
+  plus partagé, `posthog-js` était fondu par le bundler dans le script de
+  `PostHog.astro` (3 Ko → 79 Ko), qui partait alors avant la première peinture, sur les
+  70 pages (+30 à +40 ms de première peinture en 4G lente sur les deux pages mesurées).
+  `astro.config.mjs` lui rend
+  son fichier (`environments.client.build.rolldownOptions.output.codeSplitting`) : le
+  script d'entrée reste à 3 Ko, la bibliothèque part après lui, comme sur `main`.
+  Gain annexe : si `posthog-js` ne charge pas, les outils marchent (avant, l'îlot ne
+  s'hydratait jamais).
+- **(b) Les fichiers des îlots sont préchargés.** `src/lib/precharge-ilots.mjs`,
+  intégration Astro : à la fin du build, elle lit dans le HTML produit les `component-url`
+  et `renderer-url` de chaque `<astro-island>`, suit les imports statiques des fichiers de
+  `_astro/` et remplace la balise `<template data-precharge-ilots="…"></template>` que la
+  page a posée par un `<link rel="modulepreload">` par fichier. Aucun nom n'est écrit à la
+  main : une empreinte qui change est relue au build suivant. Elle passe avant la copie
+  vers `.vercel/output/static` (vérifié : mêmes liens des deux côtés). Trois placements
+  essayés sur `/simulateur`, 4G lente, cinq chargements (première peinture / hydraté / clic
+  pris, référence 1 540 / 3 867 / 3 961 ms) :
+  - dans le `<head>` : 1 892 / 2 999 / 3 085. L'hydratation gagne 0,87 s, la première
+    peinture en perd 0,35 (0,44 sur la calculette, 0,59 sur le guide) : les fichiers
+    disputent le débit aux feuilles de style. Écarté ;
+  - dans le `<head>` avec `fetchpriority="low"` : 1 616 / 3 618 / 3 689. La peinture est
+    presque gardée, mais Chromium ne charge alors ces fichiers qu'un par un tant qu'elle
+    n'a pas eu lieu : le gain fond à 0,25 s. Écarté ;
+  - dans le `<body>`, après le pied de page : 1 632 / 3 081 / 3 183. Quand le navigateur
+    lit les liens, les feuilles ont pris leur avance. **Retenu.**
+  Sur `/guide-declarations`, dont le HTML pèse 215 Ko gzip, la fin de page arrive trop
+  tard pour la recherche : ses fichiers sont préchargés juste après son îlot (25 Ko de
+  HTML avant eux, comme sur les deux autres pages), ceux de la boussole en fin de page.
+  Lighthouse ne voit aucune différence entre ces placements (première peinture et LCP à
+  1,20 s partout) ; c'est la mesure en réseau bridé qui tranche.
+- **(c) Directives d'hydratation.** Simulateur et calculette : `client:visible`,
+  `client:load` et `client:idle` comparés sur les trois réseaux, cinq chargements chacun.
+  En 4G lente : hydraté à 3 081, 3 081 et 3 073 ms (simulateur), 3 000, 3 006 et 2 994
+  (calculette) ; sans bridage, `client:load` gagne 35 ms. Temps de blocage de Lighthouse :
+  238, 214 et 301 ms (simulateur), 249, 335 et 250 (calculette), dans le bruit de la
+  machine. Rien de mesurable : **`client:visible` est gardé**, le HTML ne change pas.
+  Boussole du guide : avec ses fichiers préchargés, elle est hydratée 0,2 s avant que le
+  visiteur y arrive à la molette (3 000 px/s), quel que soit le réseau ; sur un saut (le
+  bouton « Trouver ma situation » du haut de page mène à `#profils`), il restait 0,2 s
+  de processeur après l'arrivée (0,3 à 0,45 s, processeur ralenti quatre fois). `client:visible={{ rootMargin: "100%" }}`
+  l'hydrate un écran avant qu'elle entre dans la fenêtre : prête à l'arrivée dans tous
+  les cas mesurés, y compris processeur ralenti quatre fois. À 1 440 × 900, elle est à
+  moins d'un écran du bas de la fenêtre : elle s'hydrate au chargement ; sur un
+  téléphone, pas avant un écran de défilement.
+- **(d) Un module lourd sorti du chemin.** La recherche du guide importait toutes les
+  données du guide (100 Ko gzip) pour s'hydrater, alors qu'elle n'en a besoin qu'à la
+  première frappe. Son moteur est déplacé tel quel dans
+  `src/components/guide/rechercheGuide.ts` (mêmes champs, même ordre, dix résultats),
+  que l'îlot charge par `import()` juste après s'être hydraté. Son graphe, rendu React
+  compris, passe de 156 à 56 Ko gzip. Tant que le module n'est pas là, une frappe ne donne ni liste ni « Aucun
+  résultat » ; la liste sort à son arrivée. Le bloc des résultats du simulateur
+  (`RegimeComparisonCards`, 102 Ko) était déjà chargé à la demande. Non fait : le
+  fichier partagé `site` (47 Ko : formulaires, validation, listes Radix) et `tooltip`
+  (18 Ko) servent dès l'hydratation.
+
+**L'état d'attente, en CSS seul**
+
+Astro garde `ssr` sur `<astro-island>` jusqu'à l'hydratation. Tant qu'il y est, à la fin
+de `simulateur.css`, `calculette.css` et `guide.css` :
+
+- les contrôles de l'îlot (`button`, `input`, `select`, `textarea`, `summary`, `label`,
+  `[role="button"]`, `[tabindex]`) ne prennent ni clic ni toucher (`pointer-events:
+  none`) ; `interactivity: inert` les sort aussi du parcours clavier dans Chromium 135 et
+  suivants. Les liens de l'îlot restent des liens ;
+- le curseur attend (`progress`) ;
+- après 0,5 s, un trait de 3 px qui glisse, au bleu de la marque : sur le bord haut de
+  la première fiche du formulaire (simulateur), de la fiche « Ton profil » (calculette),
+  sous le champ de recherche (guide). Le trait ne prend aucune place (posé dans le flux,
+  marge basse de -3 px, ou hors flux dans le champ de recherche). Sans mouvement sous
+  `prefers-reduced-motion`.
+
+Les deux défauts connus de l'essai de l'audit sont réglés. Sur `/simulateur`, le trait
+n'est plus au-dessus de l'îlot : il est 84 px sous son bord haut, la mascotte s'arrête
+67 px au-dessus (photos à 1 440 et 1 024 px). Sur `/guide-declarations`, la boussole est
+neutralisée sans trait ; avec (c), elle est de toute façon hydratée avant l'arrivée.
+
+Vérifié dans Chromium (JS retenu par interception, puis relâché) sur les quatre îlots :
+curseur, contrôles neutralisés, trait à 0 puis à 1 après le délai ; géométrie des fiches
+et hauteur de page identiques à la référence dans le même état ; un clic puis « 30000 »
+tapé : rien n'est saisi, le focus reste sur la page ; clic sur « Simuler » : pas d'envoi,
+l'adresse ne bouge pas ; toucher à 390 px : rien ne s'ouvre ; Tab passe par-dessus les
+contrôles de l'îlot et continue après lui, Maj+Tab revient ; après l'hydratation, plus
+rien n'est neutralisé, la saisie est gardée, la liste s'ouvre. Le trait selon le réseau,
+relevé à chaque image : jamais affiché sans bridage ni en 4G rapide, affiché 0,6 à 1 s en
+4G lente. Dans WebKit : mêmes effets au pointeur, trait affiché ; `interactivity` n'y est
+pas lu, Tab atteint donc les contrôles et en ressort (18 Tab pour traverser le
+simulateur, 56 la calculette).
+
+**Tableau avant / après** (médianes de cinq chargements à froid ; millisecondes)
+
+| Page | Moteur, réseau | 1re peinture | Hydraté | Clic pris | Fenêtre morte | JS avant hydratation | Cascade |
+|---|---|---|---|---|---|---|---|
+| `/simulateur` | Chromium, sans bridage | 168 → 180 | 297 → 165 | 369 → 266 | 201 → 86 | 19 fichiers, 245 Ko → 17 fichiers, 168 Ko | 3 → 1 |
+| `/simulateur` | Chromium, 4G rapide | 536 → 560 | 1144 → 836 | 1216 → 952 | 680 → 392 | 19 fichiers, 245 Ko → 17 fichiers, 168 Ko | 3 → 1 |
+| `/simulateur` | Chromium, 4G lente | 1540 → 1596 | 3866 → 3079 | 3935 → 3169 | 2395 → 1573 | 19 fichiers, 245 Ko → 17 fichiers, 168 Ko | 3 → 1 |
+| `/simulateur` | WebKit, sans bridage | 312 → 328 | 466 → 416 | 660 → 656 | 348 → 328 | 19 fichiers, 245 Ko → 18 fichiers, 242 Ko | — → — |
+| calculette | Chromium, sans bridage | 192 → 192 | 279 → 156 | 417 → 346 | 225 → 154 | 17 fichiers, 257 Ko → 16 fichiers, 254 Ko | 2 → 2 |
+| calculette | Chromium, 4G rapide | 548 → 572 | 1135 → 780 | 1271 → 913 | 723 → 341 | 17 fichiers, 257 Ko → 14 fichiers, 178 Ko | 2 → 1 |
+| calculette | Chromium, 4G lente | 1552 → 1612 | 3875 → 2994 | 4006 → 3134 | 2454 → 1522 | 17 fichiers, 257 Ko → 14 fichiers, 178 Ko | 2 → 1 |
+| calculette | WebKit, sans bridage | 350 → 326 | 467 → 412 | 784 → 788 | 434 → 462 | 17 fichiers, 257 Ko → 16 fichiers, 254 Ko | — → — |
+| guide, recherche | Chromium, sans bridage | 204 → 240 | 340 → 273 | 487 → 564 | 283 → 324 | 11 fichiers, 234 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, recherche | Chromium, 4G rapide | 588 → 620 | 1171 → 790 | 1369 → 920 | 781 → 300 | 12 fichiers, 237 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, recherche | Chromium, 4G lente | 1632 → 1648 | 4015 → 2836 | 4254 → 4102 | 2622 → 2454 | 11 fichiers, 234 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, recherche | WebKit, sans bridage | 883 → 915 | 1022 → 1004 | 1250 → 1258 | 367 → 343 | 12 fichiers, 237 Ko → 17 fichiers, 193 Ko | — → — |
+| guide, boussole (saut immédiat) | Chromium, sans bridage | 216 → 200 | 430 → 229 | 515 → 296 | 299 → 96 | 17 fichiers, 268 Ko → 17 fichiers, 193 Ko | 3 → 1 |
+| guide, boussole (saut immédiat) | Chromium, 4G rapide | 584 → 580 | 1303 → 1045 | 1343 → 1060 | 759 → 480 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut immédiat) | Chromium, 4G lente | 1636 → 1648 | 4517 → 4086 | 4560 → 4132 | 2924 → 2484 | 17 fichiers, 268 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut immédiat) | WebKit, sans bridage | 887 → 930 | 1082 → 1044 | 1731 → 1712 | 844 → 782 | 18 fichiers, 271 Ko → 17 fichiers, 193 Ko | — → — |
+| guide, boussole (saut après chargement) * | Chromium, sans bridage | 216 → 208 | 91 → -1600 | 120 → 9 | 120 → 9 | 18 fichiers, 271 Ko → 18 fichiers, 268 Ko | 2 → 2 |
+| guide, boussole (saut après chargement) * | Chromium, 4G rapide | 608 → 592 | 411 → -1724 | 422 → 12 | 422 → 12 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut après chargement) * | Chromium, 4G lente | 1636 → 1648 | 1377 → -1993 | 1416 → 8 | 1416 → 8 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (saut après chargement) * | WebKit, sans bridage | 925 → 881 | 139 → 55 | 705 → 683 | 705 → 683 | 18 fichiers, 271 Ko → 20 fichiers, 272 Ko | — → — |
+| guide, boussole (molette, 3 000 px/s) * | Chromium, sans bridage | 216 → 192 | -168 → -2497 | 4 → 4 | 4 → 4 | 18 fichiers, 271 Ko → 17 fichiers, 193 Ko | 2 → 1 |
+| guide, boussole (molette, 3 000 px/s) * | Chromium, 4G rapide | 596 → 592 | 165 → -2542 | 205 → 6 | 205 → 6 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (molette, 3 000 px/s) * | Chromium, 4G lente | 1640 → 1656 | 1127 → -2852 | 1141 → 4 | 1141 → 4 | 18 fichiers, 271 Ko → 19 fichiers, 269 Ko | 2 → 2 |
+| guide, boussole (molette, 3 000 px/s) * | WebKit, sans bridage | 912 → 942 | -461 → -1426 | 698 → 689 | 698 → 689 | 18 fichiers, 271 Ko → 20 fichiers, 272 Ko | — → — |
+
+\* Boussole après chargement ou à la molette : « hydraté » et « clic pris » sont comptés depuis
+l'arrivée du visiteur sur la boussole (négatif : prête avant qu'il arrive). « JS avant
+hydratation » compte tous les fichiers de `_astro/` demandés avant, ceux de la mesure compris.
+
+Lecture. « Fenêtre morte » : du premier affichage au premier clic pris. En 4G lente, les
+trois outils répondent 0,8 à 1,2 s plus tôt (le champ de recherche du guide dès
+« hydraté », 2,84 s au lieu de 4,02 ; une saisie n'y est plus effacée ensuite) ; la
+boussole est prête quand le visiteur y arrive, dans les trois réseaux, au lieu de 0,1 à
+1,4 s après. Ce qui recule :
+
+- la première peinture, de 0,02 à 0,06 s en 4G bridée sur les trois pages (le
+  préchargement prend un peu du débit des feuilles de style ; **incomplet**, § 9.et : ce
+  chiffre vient d'un scénario qui clique pendant le chargement, en HTTP/1.1 ; en HTTP/2
+  le recul est de 0,2 s, et la police arrive après l'affichage dans les deux cas) ; sans bridage, elle ne
+  bouge pas (0 à 12 ms ; sur le guide, 188 à 244 ms des deux côtés dans les scénarios de
+  la boussole, le scénario de la recherche tapant au clavier pendant le chargement) ;
+- sur le guide sans bridage, la liste des résultats de la recherche sort 0,08 s plus
+  tard (564 ms contre 487) : le module des données arrive après l'hydratation, et la
+  boussole s'hydrate au même moment à cette taille de fenêtre. En 4G, elle sort plus tôt.
+
+Dans WebKit (sans bridage seulement), le pilote met 0,25 à 0,6 s par clic : « clic pris »
+y est grossier, « hydraté » est exact, et gagne 0,02 à 0,09 s. Le scénario de la molette
+n'y est pas comparable à Chromium (le défilement piloté y est bien plus lent que
+3 000 px/s).
+
+Deux corrections du script en cours de route, appliquées des deux côtés. Le saut vers la
+boussole est instantané (`behavior: 'instant'`) : la page a un défilement doux, et les
+premiers clics partaient pendant l'animation. Dans le scénario de la recherche, le champ
+est vidé par sa propre sélection, plus par Ctrl+A : le champ neutralisé ne prenant pas
+le focus, Ctrl+A sélectionnait les 1,8 Mo de la page et retardait lui-même l'hydratation
+de 0,3 s. La référence a été rejouée pour ce scénario dans Chromium et en entier dans
+WebKit ; ses autres scénarios Chromium, que la correction ne touche pas, datent de la
+passe précédente (même script pour eux, même serveur).
+
+**Lighthouse mobile** (médiane de trois passes, deux séries en alternance référence /
+build, même serveur)
+
+| Page | Référence (performance, LCP, blocage) | Build (performance, LCP, blocage) |
+|---|---|---|
+| `/` | 100 et 100 · 1 052 et 1 052 ms · 24 et 2 ms | 100 et 100 · 1 052 et 1 054 ms · 32 et 39 ms |
+| `/simulateur` | 98 et 98 · 1 202 et 1 204 ms · 147 et 152 ms | 98 et 98 · 1 203 et 1 202 ms · 144 et 175 ms |
+| `/blog/frais-pros-medecin-liberal-2026` | 98 et 97 · 2 403 et 2 422 ms · 37 et 75 ms | 98 et 98 · 2 404 et 2 431 ms · 25 et 58 ms |
+
+Accessibilité 100, bonnes pratiques 96, SEO 100 sur les trois pages, des deux côtés. Rien
+ne recule au-delà du bruit d'une passe à l'autre.
+
+Un premier état d'attente coûtait à `/simulateur` environ 40 ms de temps de blocage
+(processeur ralenti quatre fois par Lighthouse) et un à deux points : 96 ou 97 contre 98,
+sur quatre séries. Cherché par variantes, six passes chacune : le build sans l'état
+d'attente rendait le temps de la référence (151 contre 157 ms), le build sans les
+préchargements ne le rendait pas (230 ms). Les préchargements ne coûtent donc rien à
+Lighthouse ; c'était le trait, dont le glissement (une animation de fond, calculée à
+chaque image) tournait dès l'affichage, encore invisible. Il démarre maintenant avec le
+trait, après 0,5 s : les chiffres ci-dessus sont ceux du build final. Le bruit de la
+machine reste fort d'une passe à l'autre (100 à 290 ms de blocage sur la même page).
+
+**Ajouts au HTML, un par un** (période d'observation SEO ; liste exacte par
+`invariance7.py`, build contre `ref-dist-7`)
+
+- **Sur les 70 pages** : le nom du script de `PostHog.astro` change
+  (`PostHog.astro_astro_type_script_index_0_lang.D-OG_3oS.js` → `….DwdnB0sC.js`). Rien
+  d'autre sur 64 d'entre elles.
+- **Sur les quatre pages du guide des déclarations** (le hub et ses trois pages filles) :
+  le nom de la feuille du guide (`QuestionCard.BitHE1NA.css` → `….0sFLbjMO.css`).
+- **`/simulateur`** : nom de la feuille (`simulateur.DyZySLzp.css` → `….B_IDJn-V.css`),
+  du fichier de l'îlot (`component-url` : `SimulateurApp.C0aBMWk0.js` → `….CeVPZew1.js`) et
+  du script de page ; **15 `<link rel="modulepreload">`** ajoutés dans le `<body>`, après
+  le pied de page.
+- **`/guide-declarations/calculette`** : nom de la feuille (`calculette.B1_8-bMq.css` →
+  `….Cuuglc0m.css`), du fichier de l'îlot (`CalculetteApp.Bee9n-an.js` → `….B33wKo7r.js`)
+  et du script de page ; **12 `<link rel="modulepreload">`** dans le `<body>`, après le
+  pied de page.
+- **`/guide-declarations`** : nom des fichiers des deux îlots
+  (`BoussoleSearchIsland.dVAs37l4.js` → `….CXUiv3KO.js`, `BoussoleWizard.IqDNcLdm.js` →
+  `….BbvxH8SF.js`) ; **9 `<link rel="modulepreload">`** juste après la barre de recherche,
+  **7** après le pied de page ; **attribut `opts` de l'`<astro-island>` de la boussole** :
+  `{"name":"BoussoleWizard","value":true}` → `{"name":"BoussoleWizard","value":{"rootMargin":"100%"}}`.
+- Aucun autre écart : sur les 71 fichiers HTML du build, `<title>`, metas, canonique,
+  titres H1 à H6 (1 475), liens (7 272), JSON-LD (257 blocs), `data-ph` (2 327),
+  `data-track` (436), images et texte (193 420 mots) sont identiques à la référence,
+  page par page ; 1 fichier est identique à l'octet (`/transmissions`), 67 aux noms de
+  fichiers près, 3 portent les ajouts ci-dessus. Le HTML rendu par les îlots est le même.
+- Côté fichiers : deux fichiers JS de plus (`rechercheGuide`, et `search`, une icône que
+  le bundler a séparée), 31 au lieu de 29 ; `module.D6cv-y7S.js` (posthog-js) identique à
+  l'octet.
+
+**Mesure (PostHog)**
+
+Relevé des envois à `t.hippodoc.fr` (interceptés, décodés) sur un parcours complet de
+chaque outil, référence deux fois puis build (`releve-mesure.cjs`, `compare-mesure.py` :
+les propriétés qui changent entre deux relevés de la référence, identifiants et instants,
+sont écartées ; toutes les autres sont comparées, événement par événement, dans l'ordre).
+Simulateur (profil type, deux simulations, nouvelle simulation, appel à l'essai) :
+17 événements ; calculette (exemple, copie d'une case, tout copier, imprimer, estimation
+d'impôt, appel à l'essai, rechargement) : 18 ; guide (recherche, boussole, remise à
+zéro) : 12. Même suite, mêmes noms, mêmes propriétés (2 837 comparées), une seule
+page vue par chargement, `posthog-js` dans un seul fichier. Deux écarts, expliqués :
+
+- l'événement d'arrivée d'un îlot (`public_simulator_started`,
+  `calculette_2042_dspamc_view`) part maintenant juste après la page vue, donc parfois
+  avant que posthog-js ait reçu sa configuration distante : il ne porte alors pas cinq
+  propriétés d'état que la bibliothèque ajoute d'elle-même (`$active_feature_flags`,
+  `$feature_flag_payloads`, `$autocapture_disabled_server_side`,
+  `$dead_clicks_enabled_server_side`, `$web_vitals_enabled_server_side`), comme la page
+  vue ne les porte pas. Ce n'est pas propre au build : la bibliothèque retenue 2,5 s, la
+  référence les perd aussi, et les deux relevés sont identiques. Le nom, les propriétés
+  passées par le code et les `hd_*` ne changent pas ;
+- dans la chaîne d'éléments des clics capturés dans la boussole, l'attribut `opts` de
+  `<astro-island>` porte la marge d'hydratation (voir la liste ci-dessus).
+
+Ce qui est nouveau : un îlot peut répondre avant que posthog-js soit là. Ses événements
+nommés sont alors mis en file et partent à son arrivée ; un clic fait dans ce court
+moment n'a pas de capture automatique (avant, l'îlot était inerte : ce clic n'existait
+pas). L'horodatage d'un événement rejoué est celui du rejeu, pas de l'émission : lui
+donner l'instant d'origine ferait ajouter deux propriétés par posthog-js.
+
+**Preuves**
+
+- Calculs : trois cas du simulateur en calcul local (30 000 / 3 000, 900 / 100,
+  37 500 / 12 000), un cas PAMC (80 000 / 10 000 : la fonction Supabase est injoignable
+  d'ici, les deux builds affichent le même état d'erreur) et deux exemples de la
+  calculette : texte de l'îlot, montants et champs identiques au caractère près
+  (`calculs.cjs`).
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur, 68 pages,
+  5 431 liens (50 de plus : les préchargements, dont il vérifie la cible).
+- `verify-site.mjs`, contrôle 5 (nouveau) : aucun îlot n'importe `posthog-js` ;
+  `posthog-js` tient dans un fichier à part ; les trois pages d'outils préchargent tous
+  les fichiers de leurs îlots, dans le `<body>` ; aucune balise `data-precharge-ilots`
+  n'est restée. Le contrôle échoue comme attendu sur un build abîmé à la main (trois
+  erreurs sur trois).
+- Feuille commune inchangée (`_astro_assets.QWDU2rDT.css`) : seules les feuilles des
+  trois outils changent de nom.
+- Après l'hydratation, rien ne change à l'œil : huit vues (les quatre îlots, à 1 440 et
+  390 px, Chromium) identiques au pixel à la référence.
+
+**Si un fichier JS ne charge jamais**
+
+Essayé en refusant `react-dom` (simulateur) et `CalculetteApp` (calculette). L'îlot garde
+`ssr` : le visiteur voit le formulaire, le trait qui glisse sans fin, un curseur
+d'attente ; rien ne se clique, rien ne se saisit. Avant ce lot, la page avait l'air
+prête : il pouvait taper un montant, et « Simuler » rechargeait la page. L'outil est
+inerte dans les deux cas ; maintenant cela se voit. Proposé, non fait (texte à valider
+par le propriétaire) : après une dizaine de secondes, remplacer le trait par une phrase
+et un lien pour recharger la page.
+
+**Limites, non testé**
+
+- Le clavier : hors Chromium 135 et suivants, Tab atteint encore les contrôles avant
+  l'hydratation ; une saisie y est effacée, « Entrée » dans un champ envoie le formulaire
+  en natif. Le CSS seul ne ferme pas ce chemin.
+- Astro retire `ssr` juste avant que React ait fini d'hydrater (hydratation en
+  transition) : il reste quelques dizaines de millisecondes, jusqu'à 0,2 s relevé sur
+  cette machine, où un contrôle n'est plus neutralisé et ne répond pas encore.
+- Les mesures sont faites en local, en HTTP/1.1 (six connexions), réseau bridé par les
+  outils de développement de Chromium. Sur Vercel (HTTP/2), l'ordre et le partage du
+  débit diffèrent : les gains devraient être du même ordre, ils n'y ont pas été mesurés.
+  WebKit : sans bridage seulement, et WebKitGTK n'est ni Safari ni un iPhone ; son pilote
+  ne simule pas le toucher (le toucher est essayé dans Chromium émulé).
+- Non testé : Firefox ; un vrai téléphone ; `npm run dev` ; la branche PAMC du
+  simulateur avec la fonction Supabase.
+
+**Fichiers**
+
+`src/lib/analytics.ts`, `src/components/PostHog.astro`, `astro.config.mjs`,
+`src/lib/precharge-ilots.mjs` (nouveau), `src/pages/simulateur.astro`,
+`src/pages/guide-declarations/calculette.astro`, `src/pages/guide-declarations/index.astro`,
+`src/components/guide/BoussoleSearchIsland.tsx`, `src/components/guide/rechercheGuide.ts`
+(nouveau), `src/styles/simulateur.css`, `src/styles/calculette.css`, `src/styles/guide.css`,
+`scripts/verify-site.mjs`, `CLAUDE.md`.
+
+### 9.es Phase 7 : des outils qui répondent, les aides au doigt, un taux, l'impression (12 novembre 2026)
+
+> **Complété par § 9.et** : une bulle haute ne dépasse plus pendant son ouverture, une
+> bulle ouverte ne s'imprime plus, et deux défauts antérieurs que ce lot n'a pas vus y
+> sont consignés (deux aides hors de la fenêtre à 390 px, bulles refermées par le
+> défilement au clavier). Les chiffres d'hydratation, de mesure et d'invariance « contre
+> le build d'avant » ci-dessous valent pour le build d'alors (commit `0be0b5c`).
+
+Suite de § 9.er. Trois défauts relevés par l'audit de la phase 6, tous antérieurs à la
+refonte : les bulles d'aide ne s'ouvrent pas au doigt ; un taux sort non arrondi dans une
+bulle du simulateur ; la calculette s'imprime sur quatre pages et plus, avec l'en-tête, la
+FAQ et le pied. Aucun calcul n'est touché, aucune dépendance n'entre, le HTML du build ne
+change pas (`origin/main` n'a pas avancé : `771de40`).
+
+**A. Les aides s'ouvrent au doigt**
+
+*Le défaut, reproduit.* Chromium piloté avec un écran tactile (`hasTouch`, appuis par
+`touchscreen.tap`), sur le build d'avant : simulateur à 1 024 et 820 px, 83 aides « i »
+sur 83 muettes ; calculette à 390, 820 et 1 024 px, 46 aides sur 46 muettes (34 « ? »,
+11 libellés de cases des résultats, la pastille « RSPM · sans DSFU ») ; boussole du guide,
+1 sur 1. Sous 768 px, le simulateur passait déjà par un tiroir (`PremiumTooltip.tsx`),
+qui s'ouvre. Cause : la bulle de Radix écarte les pointeurs tactiles, s'ouvre au focus
+que l'appui donne au bouton, et se referme au clic du même appui.
+
+*La correction, en un seul endroit* : `src/components/ui/tooltip.tsx`, que seuls les
+trois outils utilisent (`PremiumTooltip.tsx` pour le simulateur, `CalculetteForm.tsx`,
+`CalculetteResults.tsx`, `BoussoleWizard.tsx` ; aucune autre page). Aucun appelant ne
+change.
+
+- À la souris et au clavier, rien d'autre que Radix : ouverture au survol et au focus,
+  fermeture en quittant, au clic, à Échap.
+- Au doigt, un appui ouvre la bulle et la retient (« épinglée ») : elle ne suit plus les
+  fermetures de Radix (défilement, perte du survol, autre bulle). Elle se ferme à un
+  second appui, à un appui ailleurs, à Échap, ou quand le focus part vers un autre
+  contrôle. Un défilement au doigt n'est pas un appui (le navigateur annule le pointeur) :
+  la bulle reste. Est « au doigt » : un appui dont le pointeur est un doigt ou un stylet
+  (portable tactile compris), ou tout clic quand le pointeur principal ne survole pas
+  (`(hover: none)` ou `(pointer: coarse)`, lu par `useSyncExternalStore` après le montage,
+  jamais au rendu).
+- Le tiroir du simulateur sous 768 px est gardé tel quel. Au-dessus, la tablette reçoit
+  la bulle épinglée.
+- Accessibilité. Le déclencheur est un bouton nommé. Les douze déclencheurs qui n'en
+  étaient pas (un `<span>` : libellés de cases, pastille RSPM) reçoivent après le montage
+  `role="button"`, `tabindex="0"`, et Entrée et Espace : ils n'étaient pas atteignables au
+  clavier, ils le sont (douze arrêts de tabulation de plus dans les résultats de la
+  calculette). Sur un appareil tactile, le déclencheur porte `aria-expanded` (faux, puis
+  vrai) en plus du `aria-describedby` de Radix ; le texte d'une bulle épinglée est aussi
+  posé dans une zone `role="status"` (`#aide-annonce`, une par page, ajoutée à `<body>`
+  après le montage, vidée à la fermeture). Le focus reste sur le déclencheur.
+- Trois bulles sortaient de la fenêtre, à la souris comme au doigt : « Zones exonérées »
+  du simulateur (500 px de haut : 23 px coupés en haut d'une fenêtre de 900 px, davantage
+  sur une tablette), « Aide profil » de la calculette à 390 px (14 px), la bulle de la
+  boussole à 390 px (44 px à gauche). Les trois feuilles donnent à la bulle la place que
+  Radix lui mesure (`--radix-tooltip-content-available-height`, et `-width` pour la
+  boussole, qui s'ouvre sur le côté) ; au-delà, elle défile dedans.
+
+*Vérifié sur le build final* (scripts de travail, hors dépôt : `tactile.cjs`,
+`souris.cjs`, `divers.cjs`, `wk-aides.py`). Les aides sont comptées en parcourant tous
+les états : simulateur, quatre jeux de saisies (dont un couple avec toutes les options,
+un régime RSPM forcé à 90 000 €, un Micro-BNC plus avantageux), formulaire et résultats,
+plis ouverts, soit 97 aides (22 du formulaire, 75 des résultats) ; calculette, les trois
+profils, les deux régimes et les quatorze exemples, soit 46 ; boussole, 1.
+
+| Outil, largeur | Aides | S'ouvrent à l'appui | Restent ouvertes | Second appui | Appui ailleurs | Échap | Dans la fenêtre |
+|---|---|---|---|---|---|---|---|
+| Simulateur, 1 024 px | 97 | 97 (bulle) | 97 | 97 | 97 | 97 | 97 |
+| Simulateur, 820 px | 97 | 97 (bulle) | 97 | 97 | 97 | 97 | 97 |
+| Simulateur, 390 px | 97 | 97 (tiroir) | 97 | bouton « Fermer » : 97 | 97 | 97 | tiroir |
+| Calculette, 390 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Calculette, 820 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Calculette, 1 024 px | 46 | 46 | 46 | 46 | 46 | 46 | 46 |
+| Boussole, 390 et 820 px | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+
+Sur chaque bulle : `aria-expanded` vrai ouverte et faux fermée, zone d'annonce égale au
+texte puis vidée. En plus (`divers.cjs`, 34 contrôles, aucun échec) : la page défile au
+doigt bulle ouverte (376 px) et la bulle reste, encore ouverte six secondes plus tard ;
+bulle ouverte, un appui sur une liste l'ouvre et un choix s'y fait, un pli bascule, le
+menu « Charger un exemple » s'ouvre, un champ prend le focus, « Simuler » lance le
+calcul, et la bulle se ferme à chaque fois ; un appui sur une seconde aide ferme la
+première ; arbre d'accessibilité de Chromium : bouton nommé, déplié faux puis vrai,
+description égale au texte de la bulle ; Tab quitte le déclencheur et ferme la bulle ;
+clavier sur tablette : le focus ouvre, Entrée garde ouvert, Entrée ferme, Échap ferme ;
+un doigt sur un appareil qui survole ouvre et retient ; une bulle plus haute que la place
+défile sous le doigt et reste ouverte.
+
+*À la souris et au clavier* (1 440 × 900, les 130 aides des trois premiers jeux, build
+d'avant contre build final, même script) : survol ouvre 130 sur 130 des deux côtés, clic
+ferme, quitter ferme, Échap ferme, Tab sort et ferme. Focus clavier : 118 aides avant, 130
+après (les douze libellés). Photos de la fenêtre bulle ouverte, au survol et au focus,
+260 paires : 114 identiques au pixel ; 95 à un écart d'au plus 7/255 sur 1 à 91 pixels
+(deux passes du même build donnent 26 paires de ce genre, à 6/255 au plus) ; 21 à un écart
+petit (moins de 400 pixels), dont le « 30 % » de la calculette visible derrière la
+bulle (voir B) ; 30 nettes, toutes expliquées : les douze libellés au focus (la bulle s'y
+ouvre maintenant), les huit clichés des bulles « Impôt sur le revenu » (le taux, voir B),
+les deux de « Zones exonérées » (plus coupée), sept clichés où la page entière est
+décalée de 1 à 5 px (quatre aides, la première essayée après un chargement ; trois
+d'entre elles le sont aussi entre deux passes du même build), et la bulle de la boussole
+au survol (fondu en cours, 20/255 au plus ; identique au focus).
+WebKitGTK, souris et clavier : 34 aides (7, 26 et 1), survol, clic, sortie, focus, Échap,
+toutes dans la fenêtre.
+
+**B. Deux nombres mal affichés** (texte affiché seul, calcul intact)
+
+- Simulateur, bulle « Impôt sur le revenu » (`RegimeComparisonCards.tsx`). Le calcul rend
+  le taux effectif brut. Avant : « Taux effectif : 3.7918173598553344% ». Après :
+  « Taux effectif : 3,8 % » (une décimale au plus, virgule, espace insécable avant %).
+  Relevés sur trois jeux : 4.555555555555555% → 4,6 % ; 3.7918173598553344% → 3,8 % ;
+  10.22517730496454% → 10,2 % ; 8.624507374151872% → 8,6 %. Quand le calcul ne rend pas
+  de taux, la même ligne en affiche un arrondi à l'entier : « Taux effectif : 4% »
+  devient « Taux effectif : 4 % » (même formule, non observé ici : c'est la branche PAMC,
+  dont la fonction Supabase est injoignable).
+  Recherche des autres nombres bruts : 71 textes lus sur trois jeux (résultats, chaque
+  pli ouvert, les 61 bulles des résultats). Aucun autre nombre à plus de deux décimales.
+  Laissés tels quels (arrondis, mais écrits avec un point) : « +13.0% Super-Net »,
+  « (41.0%) », « +1.0 part(s) », « 1.5 parts fiscales ».
+- Calculette, pli « Estimation indicative de l'impôt sur le revenu »
+  (`IrEstimateCard.tsx`), trouvé en relisant les pages imprimées. `getTMI()` rend un
+  pourcentage (30) et l'affichage le multipliait par cent. Avant : « Tranche marginale
+  (TMI) 3000 % ». Après : « Tranche marginale (TMI) 30 % ». `src/lib/baremes-ir.ts`
+  n'est pas touché.
+
+**C. La calculette s'imprime sur une page**
+
+`@media print` à la fin de `src/styles/calculette.css` (servie à cette page seule ; le
+reste de la feuille est sous `@media screen`). Retirés de la feuille imprimée :
+l'en-tête, le pied, la bannière cookies, la bulle de chat (`#crisp-launcher`, et
+`.crisp-client`, que le script de Crisp pose), les avis éphémères, le lien de retour, les
+pastilles, l'accroche et l'aperçu du haut de page, l'appel à l'essai, la FAQ, le décor de
+fin ; les fonds et les ombres. Restent le titre, les résultats et l'avertissement de fin.
+Le formulaire, la barre collante et les boutons d'action portaient déjà `print:hidden`.
+Résultats sur deux colonnes, corps à 13,5 px pour 16, fiches jamais coupées
+(`break-inside`), libellés jamais tronqués ; ne s'impriment pas les boutons de copie, les
+flèches des plis et la ligne de liens « Pas sûr d'une case ? ».
+
+Mesuré par `page.pdf()` de Chromium (A4, marges de 10 mm, sans puis avec les fonds) sur
+29 cas : les quatorze exemples, plis de détail fermés puis ouverts (ce que fait le bouton
+« Imprimer »), et la page sans saisie.
+
+| | Avant | Après |
+|---|---|---|
+| Pages (A4, état par défaut ou plis de détail ouverts) | 4 (16 cas), 5 (10 cas), 6 (3 cas) | 1 (29 cas) |
+| En-tête, pied, FAQ, appel à l'essai imprimés | 29 cas | 0 |
+| Bannière cookies ou bulle de chat, répétée sur chaque page | 29 cas | 0 |
+| Éléments collants ou fixes sous `@media print` | 2 par cas | 0 |
+
+Hors de ces 29 cas (relevé de la relecture, § 9.et) : avec l'interrupteur « Tout
+afficher », deux pages en A4 pour les exemples 11 et 12, deux en format Letter pour les
+exemples 7 à 12 ; rien n'est coupé ni perdu, la feuille passe à la page suivante. Une
+bulle d'aide restée ouverte s'imprimait par-dessus les résultats : corrigé en § 9.et.
+
+Rien de coupé : les 965 nombres des résultats lus à l'écran sont dans le texte du PDF,
+sauf le « (2042 » de la ligne de liens retirée ; sous `emulateMedia({ media: 'print' })`,
+à la largeur utile d'un A4, aucun élément des résultats ne déborde et aucun n'est rogné.
+
+**Preuves communes**
+
+- Calculs : trois cas du simulateur en calcul local, un cas PAMC (même état d'erreur) et
+  deux exemples de la calculette : texte de l'îlot identique au caractère près à celui du
+  build de `main` (`ref-dist-7`). Les deux nombres de B sont dans une bulle et dans un pli
+  fermés pendant ce relevé.
+- Mesure : sur les trois parcours de § 9.er, 17, 18 et 12 événements, même suite, mêmes
+  noms, 2 827 propriétés comparées, identiques au build d'avant ; contre `main`, les deux
+  écarts de § 9.er et rien d'autre. Un écart nouveau, sur un appareil tactile seulement :
+  dans la chaîne d'éléments du clic capturé sur une aide, le bouton porte
+  `aria-expanded` (parcours au doigt relevé avant et après : 8 événements des deux côtés,
+  394 propriétés comparées, seul `$elements_chain` diffère sur les quatre clics).
+- HTML : contre le build d'avant, 65 fichiers identiques à l'octet, 6 aux noms de fichiers
+  près (simulateur, calculette, le guide et ses trois pages filles), aucun autre écart :
+  aucun attribut n'est ajouté au HTML du build (`aria-expanded`, `role` et `tabindex`
+  arrivent après le montage). Contre `ref-dist-7` : titres, metas, liens, JSON-LD,
+  `data-ph`, `data-track`, texte identiques sur 71 fichiers ; seuls écarts, ceux de
+  § 9.er. Feuille commune inchangée (`_astro_assets.QWDU2rDT.css`). `tooltip.*.js` passe
+  de 17,8 à 18,9 Ko gzip (50,1 à 53,3 Ko bruts).
+- `npm run build` : 70 pages ; `verify-site.mjs` : 0 erreur (68 pages, 5 431 liens).
+- Hydratation (scripts de § 9.er rejoués sur le build final, cinq chargements à froid) :
+  rien ne recule. En 4G lente, hydraté puis clic pris : `/simulateur` 3 079 → 3 071 et
+  3 169 → 3 154 ms ; calculette 2 994 → 2 998 et 3 134 → 3 137 ; recherche du guide
+  2 836 → 2 814 et 4 102 → 4 051 ; boussole au saut immédiat 4 086 → 4 076 et
+  4 132 → 4 110. Sans bridage, la boussole au saut immédiat prend le clic à 332 ms
+  contre 296, les autres scénarios à 30 à 90 ms de moins : bruit de la machine, dans les
+  deux sens. JS avant l'hydratation : 1 Ko de plus (`tooltip.*.js`).
+- Lighthouse mobile, médiane de trois passes (performance, accessibilité, bonnes
+  pratiques, SEO) : accueil 99, 100, 96, 100, LCP 1 053 ms ; `/simulateur` 99, 100, 96,
+  100, LCP 1 202 ms, blocage 128 ms ; article 98, 100, 96, 100, LCP 2 402 ms ;
+  calculette 96, 100, 96, 100, LCP 1 203 ms, blocage 210 ms.
+
+**Limites, non testé**
+
+- Un vrai téléphone, une vraie tablette, Safari sur iOS : le toucher est émulé dans
+  Chromium (le pilote de WebKitGTK ne le simule pas). Safari ne donne pas le focus à un
+  bouton touché : la bulle y est ouverte par le clic seul, chemin couvert par l'essai du
+  portable tactile, pas par un essai dans Safari.
+- Un lecteur d'écran : l'arbre d'accessibilité et la zone d'annonce sont lus par script,
+  aucune synthèse vocale n'a été écoutée.
+- La branche PAMC du simulateur (fonction Supabase injoignable d'ici) : ses bulles ne
+  sont pas affichées, donc pas essayées.
+- L'impression : PDF de Chromium seulement (pas Firefox, pas Safari, pas d'imprimante) ;
+  la bulle de chat de Crisp une fois ouverte (script extérieur, injoignable d'ici) est
+  visée par son nom de classe, sans essai.
+- Firefox ; `npm run dev`.
+
+**Fichiers**
+
+`src/components/ui/tooltip.tsx`, `src/components/simulateur/RegimeComparisonCards.tsx`,
+`src/components/calculette/IrEstimateCard.tsx`, `src/styles/simulateur.css`,
+`src/styles/calculette.css`, `src/styles/guide.css`, `CLAUDE.md`.
+
+### 9.et Phase 7 : corrections après les trois relectures (12 novembre 2026)
+
+Trois relecteurs indépendants (fonctionnement ; invariance et performance ; attaque) ont
+repris § 9.er et § 9.es : 25 constats. Chacun a été rejoué contre le code et le build
+avant d'agir. Le résultat tient en trois lignes : une régression au clavier est corrigée ;
+trois des quatre gains de chargement de § 9.er sont **retirés**, parce qu'ils se payaient
+ailleurs (première peinture, police, première liste de résultats) ; restent l'état
+d'attente, la boussole hydratée un écran plus tôt, et tout § 9.es, avec quelques
+corrections.
+`origin/main` n'a pas avancé (`771de40`). Aucun calcul touché, aucun mot ajouté, aucune
+dépendance.
+
+**1. Bloquant, corrigé : le clavier sautait les outils (`interactivity: inert`)**
+
+Un îlot `client:visible` qui n'est pas encore entré dans la fenêtre garde `ssr` sans
+limite de temps. La règle `interactivity: inert` de l'état d'attente s'y appliquait donc
+aussi longtemps, page au repos, sans panne ni réseau lent : dans Chrome et Edge 135 et
+suivants, Tab sautait tous ses contrôles, qui sortaient aussi de l'arbre d'accessibilité
+et de la recherche dans la page. Sur `main`, Tab entrait dans l'îlot, ce qui le faisait
+défiler et s'hydrater.
+
+Rejoué (`tab.cjs`, Chromium 153, page chargée, 2,5 s d'attente, 70 Tab ; arrêts dans un
+îlot, puis boutons, listes et champs de l'arbre d'accessibilité) :
+
+| Page, fenêtre | `main` | Build d'avant (`0be0b5c`) | Corrigé |
+|---|---|---|---|
+| `/simulateur`, 683 × 316, 640 × 360 et 320 × 568 | 19 arrêts dès le 4e Tab ; 14 boutons, 5 listes, 3 champs | 14 arrêts, le premier au 57e Tab (après un tour de page) ; 3 boutons, 0 liste, 0 champ | 19 dès le 4e ; 14, 5, 3 |
+| calculette, 640 × 360 | 58 arrêts ; 33, 3, 22 | 21 arrêts ; 3, 0, 0 | 58 ; 33, 3, 22 |
+| `/guide-declarations`, 720 × 450 et 390 × 844 | 17 arrêts ; 23 boutons, 2 champs | 1 arrêt ; 3 boutons, 0 ou 1 champ | 17 ; 23, 2 |
+| `/guide-declarations`, 1 366 × 633 | 17 arrêts dès le 18e Tab ; 24 boutons, 2 champs | 16 arrêts, le premier au 24e (champ de recherche sauté) ; 4 boutons, 0 champ | 17 dès le 18e ; 24, 2 |
+| `/simulateur` et calculette, 1 440 × 900 | 19 et 54 arrêts | 19 et 54 | 19 et 54 |
+
+Correction : la ligne `astro-island[ssr] … { interactivity: inert; }` est retirée des trois
+feuilles. Le pointeur reste neutralisé (`pointer-events: none`). Le clavier redevient
+celui de `main` pendant l'attente : Tab atteint les contrôles, une saisie y est effacée à
+l'hydratation, « Entrée » dans un champ du simulateur envoie le formulaire en natif.
+C'était déjà le cas dans Safari et Firefox, qui ne lisent pas cette propriété. La même
+correction règle la boussole sautée quand Tab est tenu (autre constat).
+
+**2. Les préchargements sont retirés**
+
+Le brief le prévoyait : « un préchargement qui ferait reculer le LCP […] se retire ».
+§ 9.er avait conclu, en HTTP/1.1 local et sur un scénario qui clique pendant le
+chargement, à un recul de 0,02 à 0,06 s de la première peinture. Deux relecteurs ont
+mesuré plus, et autrement ; rejoué ici.
+
+*HTTP/2 local* (serveur Node sur TLS, même bridage de Chromium, chargement sans aucun
+geste, trois chargements à froid par côté, en alternance ; `passif.cjs`). Première
+peinture (le LCP lui est égal) / police reçue / îlot hydraté, en millisecondes :
+
+| Page, réseau | `main` | Build d'avant | Build d'avant, liens retirés |
+|---|---|---|---|
+| `/simulateur`, 4G lente | 1 600 / 1 556 / 3 938 | 1 816 / 2 424 / 2 592 | 1 592 / 1 542 / 3 919 |
+| `/simulateur`, 4G rapide | 500 / 424 / 1 093 | 688 / 598 / 681 | 500 / 425 / 1 091 |
+| calculette, 4G lente | 1 604 / 1 549 / 3 681 | 1 800 / 2 399 / 2 602 | 1 612 / 1 550 / 3 735 |
+| calculette, 4G rapide | 508 / 424 / 977 | 700 / 585 / 698 | 512 / 428 / 979 |
+
+La première peinture et le LCP reculaient de 0,2 s sur les deux réseaux. En 4G rapide,
+la première peinture tombait au moment exact de l'hydratation (688 et 681 ms, 700 et
+698) : les fichiers arrivés tôt, React hydratait avant le premier affichage et le
+retenait. Ce n'est pas une affaire de priorités du serveur. En 4G lente, la police
+arrivait 0,6 s après l'affichage (texte affiché dans la police de repli, puis changé).
+Limite de l'essai : le bridage de Chromium ne modélise pas les priorités qu'un serveur
+HTTP/2 applique ; le comportement de Vercel n'a pas pu être mesuré d'ici.
+
+*HTTP/1.1 local* (relevés de la relecture, cinq chargements par côté, non rejoués ici) :
+en 4G lente la police finissait à 1 565 puis 1 724 ms sur `/simulateur`, soit 0,13 à
+0,2 s après la première peinture au lieu d'avant ; la mascotte du premier écran à 2 307
+puis 3 274 ms ; sur la calculette à 390 px, le changement de police déplaçait le
+formulaire (décalage de 0,123, voir « antérieurs ») ; `posthog-js` arrivait 0,5 à 1,5 s
+plus tard, donc la page vue aussi ; en 2G (250 kbit/s), la première peinture reculait de
+0,3 à 0,65 s. Lighthouse à bridage appliqué, en HTTP/2 : performance 96 puis 90 sur
+`/simulateur`, 94 puis 88 sur la calculette. Le Lighthouse habituel (bridage simulé) ne
+voit rien de tout cela : 98 des deux côtés.
+
+Les variantes essayées par la relecture ne sauvent rien : liens en fin de `<head>`,
+même résultat que dans le `<body>` ; `fetchpriority="low"`, première peinture gardée en
+HTTP/1.1 mais gain réduit à 0,25 s, et aucun effet en HTTP/2. Le gain ne vient que d'un
+départ plus tôt, donc en même temps que les feuilles de style et la police : il n'est
+pas gratuit. Piste non essayée, pour qui voudrait y revenir : ne lancer les fichiers
+qu'une fois les feuilles reçues (une directive d'hydratation à soi, qui pose les liens
+depuis le script de l'îlot), mesuré sur un aperçu Vercel ; le gain attendu est de
+l'ordre de celui de `fetchpriority="low"` en HTTP/1.1 (0,25 s en 4G lente).
+
+Retiré : `src/lib/precharge-ilots.mjs`, son appel dans `astro.config.mjs`, les balises
+`<template data-precharge-ilots>` des trois pages, le contrôle 5 de `verify-site.mjs`.
+
+**3. `posthog-js` revient dans le graphe des îlots**
+
+Sans les liens, l'en avoir sorti ne gagne rien : hydraté à 3 919 ms contre 3 938 sur
+`main`, 1 091 contre 1 093, 3 735 contre 3 681, 979 contre 977 (tableau ci-dessus,
+troisième colonne). La bibliothèque part quand même, par le script de `PostHog.astro`,
+et prend la même part du débit ; la profondeur de la cascade ne change pas. Restaient ses
+coûts : une file d'attente dont le contenu se perd si le visiteur part avant l'arrivée
+de la bibliothèque, cinq propriétés d'état absentes de l'événement d'arrivée, un fichier
+de plus sur les 70 pages (`analytics.*.js`, 166 octets), le nom du script de mesure
+changé sur les 70 pages, un réglage de découpe dans la configuration. Une relecture a
+aussi relevé 35 à 85 ms de temps de blocage de plus sur la calculette dans Lighthouse,
+sans que ce soient les liens ni l'état d'attente.
+
+Retiré : `src/lib/analytics.ts`, `src/components/PostHog.astro` et `astro.config.mjs`
+sont de nouveau ceux de `main`, à l'octet. Conséquence : 65 fichiers HTML sur 71 sont
+identiques à `main` à l'octet (1 avant) ; le relevé de mesure du simulateur et de la
+calculette est identique à celui de `main` sans aucun écart ; Lighthouse sur la
+calculette : 96 sur `main`, 98 ici, blocage 210 puis 178 ms (quatre passes alternées).
+
+**4. Le moteur de recherche du guide redevient un import statique**
+
+Chargé par `import()` après l'hydratation (§ 9.er, d), il laissait le champ prendre la
+saisie plus tôt, mais demandait ses données un aller-retour plus tard. Avec les liens,
+elles arrivaient en parallèle ; sans eux, la première liste de résultats reculait.
+Mesuré sur le build sans les liens (`mesure-cr.cjs`, cinq chargements, 1 440 × 900,
+champ hydraté / première liste) : sans bridage 318 / 444 ms sur `main`, 288 / 492 ;
+4G rapide 1 160 / 1 217, puis 1 142 / 1 392 ; 4G lente 4 023 / 4 083, puis
+3 798 / 4 828. En 4G lente, le champ gagnait 0,2 s et la liste en perdait 0,75 ; la
+boussole, sur un saut immédiat, était prête à 5 051 ms au lieu de 4 573.
+
+Retiré : `BoussoleSearchIsland.tsx` est de nouveau celui de `main` (son fichier du build
+a la même empreinte), `rechercheGuide.ts` est supprimé. Les deux constats sur ce module
+(rien ne s'affiche pendant qu'il charge ; rien ne se passe s'il ne charge pas) tombent
+avec lui. Essayé avant de retirer : relancer `import()` à la frappe suivante ne
+redemande pas le fichier dans Chromium (une seule demande réseau, l'échec est gardé).
+
+**5. Ce qui reste de § 9.er**
+
+- *La boussole hydratée un écran avant d'entrer dans la fenêtre*
+  (`client:visible={{ rootMargin: "100%" }}`). Deux cas, selon la hauteur de la fenêtre
+  (la boussole est à 1 752 px du haut de la page à 1 366 et 1 440 px de large, à
+  2 797 px à 390).
+  - *Fenêtre de moins de 876 px de haut* (portables courants, téléphones) : elle ne
+    s'hydrate pas au chargement, mais un écran plus tôt pendant le défilement. Mesuré sur
+    le vrai bouton « Trouver ma situation » du haut de page (défilement doux de 0,75 à
+    0,95 s), cliqué 1,5 s après le chargement, trois chargements par côté en alternance
+    (`saut.cjs`) ; boussole hydratée par rapport à l'arrêt du défilement, `main` puis
+    build : à 1 366 × 768, 0,40 puis 0,49 s avant sans bridage, 0,05 puis 0,13 s avant
+    en 4G rapide, 0,93 puis 0,83 s après en 4G lente ; à 390 × 844, 0,50 puis 0,60 s
+    avant, 0,14 puis 0,25 s avant, 0,84 puis 0,72 s après. Gain : 0,1 s. Au chargement,
+    rien ne change (à 390 × 844 en 4G lente : champ hydraté à 4 029 puis 4 013 ms,
+    `posthog-js` à 4 171 puis 4 155).
+  - *Fenêtre de 876 px de haut et plus* (1 440 × 900) : la boussole est à moins d'un
+    écran du bas de la fenêtre, elle s'hydrate au chargement. Clic pris, compté depuis
+    l'arrivée sur la boussole (`mesure-cr.cjs`, saut instantané), `main` puis build :
+    saut après chargement 96 puis 9 ms sans bridage, 425 puis 9 en 4G rapide, 1 410
+    puis 11 en 4G lente ; à la molette 4 puis 6, 205 puis 6, 1 147 puis 5. Sur un saut
+    immédiat (avant la fin du chargement), rien ne change : 414 puis 401, 1 334 puis
+    1 406, 4 573 puis 4 589. Son prix, payé au chargement : six fichiers de plus (35 Ko) ;
+    le champ de recherche hydraté 0,02 à 0,05 s plus tard sans bridage et en 4G rapide
+    (318 puis 371 ms et 1 160 puis 1 185 en cliquant pendant le chargement, première
+    liste 444 puis 538 et 1 217 puis 1 234 ; sans geste, 244 puis 263 et 1 100 puis
+    1 151) ; en 4G lente, 0,25 s plus tôt en HTTP/1.1 (4 007 puis 3 747) et 0,13 s plus
+    tard en HTTP/2 (3 615 puis 3 745) ; `posthog-js`, donc la page vue, 0,12 s plus tard
+    en 4G rapide et 0,3 s en 4G lente en HTTP/1.1 (950 puis 1 070 ms, 4 156 puis 4 456),
+    sans écart en HTTP/2 (881 puis 859, 2 822 puis 2 789) ni sans bridage (331 puis
+    263).
+  Première peinture, police, mascotte : identiques dans tous les cas (tableaux plus
+  bas). § 9.er écrivait « à 1 440 × 900 elle s'hydrate au chargement » sans dire que
+  cela tient à la hauteur de la fenêtre. À valider par le propriétaire : c'est le seul
+  réglage de chargement gardé ; il vaut 0,1 s sur la plupart des écrans, davantage sur
+  un grand écran, à ce prix.
+- *L'état d'attente*, sans `interactivity`. Trois réglages :
+  - le trait n'apparaît qu'après 0,8 s (0,5 avant), en 0,25 s : quand l'hydratation
+    tombait 0,5 à 0,7 s après l'affichage, il clignotait le temps de trois à huit images
+    (relevé de la relecture). Relevé sur le build, image par image, trois chargements par
+    cas (`trait.cjs`) : jamais affiché sans bridage ni en 4G rapide (hydraté 0,05 à
+    0,17 s et 0,5 à 0,7 s après la première peinture), affiché 1,3 à 1,5 s en 4G lente ;
+  - le glissement s'arrête après 25 passages (30 s), le trait reste, fixe. Il tournait
+    sans fin : aussi pour un îlot hors de l'écran, et pour toujours si un fichier manque
+    (360 recalculs de style en 6 s, relevé de la relecture). Vérifié en avançant
+    l'horloge des animations : plus aucune en cours, fond uni ;
+  - en contrastes forcés, le navigateur retirait le dégradé : le trait ne se voyait
+    pas. Il prend la couleur du texte (`CanvasText`, `forced-color-adjust: none`), fixe.
+
+**6. Petites corrections dans § 9.es**
+
+- *Bulle « Zones exonérées »* (`simulateur.css`). La bulle porte `duration-300` : sa
+  hauteur maximale, que Radix ne donne qu'après mesure, était animée, et la bulle
+  dépassait encore du haut de la fenêtre pendant 0,3 s. `transition: none` sur
+  `.sim.sim-bulle` (son entrée est une animation, pas une transition). Relevé image par
+  image à 1 440 × 900 : haut à 16 px dès la première image, jamais au-dessus (73 images
+  dans Chromium, 146 dans WebKit).
+- *Impression de la calculette* (`calculette.css`). Une bulle d'aide ouverte s'imprimait
+  par-dessus les résultats ; au doigt elle reste ouverte tant qu'on ne touche pas la
+  page. `[data-radix-popper-content-wrapper]` rejoint la liste de ce qui ne s'imprime
+  pas. Essayé : tablette tactile, appui sur une aide, `emulateMedia('print')` : bulle
+  en `display: none` ; de retour à l'écran, elle est là.
+- *« Une page dans les 29 cas »* (§ 9.es) valait pour l'état par défaut et les plis de
+  détail ouverts, en A4. Avec « Tout afficher », deux pages en A4 pour les exemples 11
+  et 12, deux en Letter pour les exemples 7 à 12 (relevé de la relecture) : phrase
+  corrigée en § 9.es et dans CLAUDE.md, pas de changement de code.
+
+**7. Constats notés, non corrigés**
+
+Antérieurs, identiques sur `main`, hors du périmètre du brief (relevés de la relecture,
+non rejoués ici) :
+
+- Calculette à 390 px, cases remplies : la fiche « Cadre 8 » déborde de la fenêtre, les
+  deux aides « ? » de DE et DB sortent à droite (421 à 465 px dans une fenêtre de 390)
+  et ne peuvent être ni touchées ni survolées ; la liste « Profil d'exercice » dépasse
+  de 37 px. Le « 46 aides sur 46 à 390 px » de § 9.es vaut pour le parcours essayé
+  (profils, régimes, exemples), pas pour cet état : 54 sur 56 au doigt.
+- Au clavier, une bulle sur quatre environ s'ouvre au focus puis se referme aussitôt :
+  Tab fait défiler la page, et Radix ferme la bulle au défilement (simulateur à
+  1 024 px : 21 sur 73, sur `main` comme sur le build). Le « focus clavier : 130 sur
+  130 » de § 9.es compte l'ouverture, pas la tenue.
+- Calculette sous 412 px : la ligne de pastilles du haut de page ne passe pas à la ligne
+  au même endroit dans la police de repli. Quand la police arrive après l'affichage, le
+  formulaire se déplace (décalage de 0,123). Sur `main` comme ici, la police arrive
+  avant ou avec la première peinture dans tous les cas mesurés (rejoué : décalage à
+  1 614 puis 1 607 ms pour une première peinture à 1 612 puis 1 608) : le décalage est
+  compté, pas vu.
+- Avant l'hydratation, hors pointeur : Tab atteint le champ, la saisie est effacée,
+  « Entrée » envoie le formulaire du simulateur en natif et recharge la page (tous
+  navigateurs désormais, comme sur `main`). Piste sans script, non essayée :
+  `method="dialog"` sur le `<form>` du simulateur (hors d'un `<dialog>`, l'envoi natif
+  ne fait rien). Non retenue ici : attribut de plus dans le HTML et dans la chaîne
+  d'éléments de chaque clic mesuré dans le formulaire, non essayable dans Firefox.
+
+À valider par le propriétaire (texte à écrire) :
+
+- JavaScript coupé, ou fichier JS qui ne charge jamais : le visiteur voit le formulaire,
+  le trait (qui glisse 30 s, puis reste), un curseur d'attente, sans un mot. Proposé en
+  § 9.er, toujours non fait : une phrase et un lien de rechargement après une dizaine de
+  secondes, et une ligne `<noscript>`.
+
+Sans objet depuis les retraits : `posthog-js` plus tardif sur les pages d'outils ; le
+fichier `analytics.*.js` de plus sur les 70 pages ; les 37 Ko et 8 requêtes de
+préchargement de la boussole pour tous (restent 35 Ko dans une fenêtre haute, voir 5) ; la
+simulation non comptée si le visiteur part avant l'arrivée de `posthog-js` ; les 15
+fichiers téléchargés pour rien sans JavaScript ; les noms de fichiers à empreinte
+périmés de § 9.er (ils datent du commit `72254ed`, c'est dit en tête de § 9.er).
+
+**Tableau avant / après, build final** (`mesure-cr.cjs`, médianes de cinq chargements à
+froid, Chromium, 1 440 × 900, millisecondes ; référence puis build, non alternés)
+
+| Page | Réseau | 1re peinture | Hydraté | Clic pris | Fenêtre morte |
+|---|---|---|---|---|---|
+| `/simulateur` | sans bridage | 132 → 156 | 197 → 190 | 266 → 280 | 134 → 124 |
+| `/simulateur` | 4G rapide | 520 → 552 | 1 225 → 1 212 | 1 290 → 1 295 | 770 → 743 |
+| `/simulateur` | 4G lente | 1 536 → 1 548 | 3 873 → 3 868 | 3 944 → 3 961 | 2 408 → 2 413 |
+| calculette | sans bridage | 128 → 152 | 194 → 194 | 312 → 352 | 184 → 200 |
+| calculette | 4G rapide | 540 → 548 | 1 102 → 1 113 | 1 222 → 1 269 | 682 → 721 |
+| calculette | 4G lente | 1 560 → 1 564 | 3 875 → 3 858 | 4 011 → 4 007 | 2 451 → 2 443 |
+| guide, recherche | sans bridage | 140 → 172 | 318 → 371 | 444 → 538 | 304 → 366 |
+| guide, recherche | 4G rapide | 608 → 628 | 1 160 → 1 185 | 1 217 → 1 234 | 609 → 606 |
+| guide, recherche | 4G lente | 1 636 → 1 648 | 4 023 → 3 782 | 4 083 → 3 892 | 2 447 → 2 244 |
+| guide, boussole (saut immédiat) | sans bridage | 144 → 160 | 313 → 329 | 414 → 401 | 270 → 241 |
+| guide, boussole (saut immédiat) | 4G rapide | 604 → 620 | 1 301 → 1 356 | 1 334 → 1 406 | 730 → 786 |
+| guide, boussole (saut immédiat) | 4G lente | 1 636 → 1 648 | 4 532 → 4 561 | 4 573 → 4 589 | 2 937 → 2 941 |
+| guide, boussole (saut après chargement) * | sans bridage | 140 → 160 | 50 → −1 596 | 96 → 9 | 96 → 9 |
+| guide, boussole (saut après chargement) * | 4G rapide | 580 → 628 | 405 → −1 448 | 425 → 9 | 425 → 9 |
+| guide, boussole (saut après chargement) * | 4G lente | 1 632 → 1 648 | 1 380 → −1 554 | 1 410 → 11 | 1 410 → 11 |
+| guide, boussole (molette, 3 000 px/s) * | sans bridage | 136 → 176 | −205 → −2 437 | 4 → 6 | 4 → 6 |
+| guide, boussole (molette, 3 000 px/s) * | 4G rapide | 596 → 624 | 161 → −2 265 | 205 → 6 | 205 → 6 |
+| guide, boussole (molette, 3 000 px/s) * | 4G lente | 1 632 → 1 648 | 1 134 → −2 416 | 1 147 → 5 | 1 147 → 5 |
+
+\* Comptés depuis l'arrivée du visiteur sur la boussole (négatif : prête avant).
+
+Le simulateur et la calculette répondent quand ils répondaient sur `main` : la fenêtre
+morte n'est pas raccourcie (0,1 à 0,2 s sans bridage, 0,7 s en 4G rapide, 2,4 s en 4G
+lente), elle est signalée. Seule la boussole gagne.
+La première peinture de ce tableau sort 0,01 à 0,04 s plus haute côté build : les deux
+côtés y sont mesurés l'un après l'autre, à 25 minutes d'écart. En alternance et sans
+geste, elle ne bouge pas : sans bridage 136 puis 132 ms (`/simulateur`), 148 puis 136
+(calculette), 156 puis 144 (guide), cinq chargements par côté ; en 4G, tableau suivant.
+
+**Chargement sans geste, build final contre `main`** (`passif.cjs`, trois chargements
+par côté, en alternance ; première peinture / police / hydraté, millisecondes)
+
+| Page, réseau | HTTP/1.1 | HTTP/2 |
+|---|---|---|
+| `/simulateur`, 4G lente | 1 624 / 1 565 / 3 876 → 1 624 / 1 566 / 3 879 | 1 600 / 1 548 / 3 926 → 1 604 / 1 548 / 3 920 |
+| `/simulateur`, 4G rapide | 496 / 420 / 1 178 → 496 / 421 / 1 182 | 500 / 424 / 1 101 → 512 / 427 / 1 114 |
+| calculette, 4G lente | 1 604 / 1 566 / 3 941 → 1 628 / 1 565 / 3 929 | 1 608 / 1 541 / 3 686 → 1 608 / 1 555 / 3 696 |
+| calculette, 4G rapide | 516 / 423 / 1 083 → 516 / 421 / 1 095 | 520 / 424 / 984 → 524 / 428 / 983 |
+| guide, 4G lente | 1 636 / 1 882 / 4 007 → 1 636 / 1 882 / 3 747 | 1 680 / 1 648 / 3 615 → 1 680 / 1 647 / 3 745 |
+| guide, 4G rapide | 592 / 452 / 1 100 → 608 / 451 / 1 151 | 600 / 445 / 1 054 → 592 / 443 / 1 083 |
+
+Mascotte du premier écran : 2 324 puis 2 323 ms (`/simulateur`, 4G lente, HTTP/1.1),
+2 223 puis 2 214 (guide). Décalage de mise en page : le même des deux côtés, partout.
+
+**Lighthouse mobile** (bridage simulé, médiane de quatre passes, côtés alternés ;
+performance, LCP, temps de blocage ; `main` puis build)
+
+| Page | `main` | Build |
+|---|---|---|
+| `/` | 100 · 1 052 ms · 50 ms | 100 · 1 054 ms · 20 ms |
+| `/simulateur` | 98 · 1 202 ms · 134 ms | 98 · 1 202 ms · 154 ms |
+| `/blog/frais-pros-medecin-liberal-2026` | 96 · 2 701 ms · 38 ms | 96 · 2 702 ms · 27 ms |
+| `/guide-declarations/calculette` | 96 · 1 202 ms · 210 ms | 98 · 1 202 ms · 178 ms |
+| `/guide-declarations` | 95 · 2 107 ms · 138 ms | 96 · 2 102 ms · 136 ms |
+
+Accessibilité 100, bonnes pratiques 96, SEO 100 sur les cinq pages, des deux côtés ;
+décalage de mise en page nul. Le temps de blocage varie de 125 à 230 ms d'une passe à
+l'autre sur une même page : aucun écart au-delà de ce bruit. Poids et requêtes : ceux de
+`main` à 2 Ko près.
+
+**Ajouts au HTML, liste à jour** (remplace celle de § 9.er ; `invariance7.py`, build
+contre `ref-dist-7`)
+
+- **65 fichiers HTML sur 71 identiques à `main` à l'octet.**
+- **5 aux noms de fichiers près** : `/simulateur` (feuille `simulateur.*.css`, fichier de
+  l'îlot `SimulateurApp.*.js`), `/guide-declarations/calculette` (`calculette.*.css`,
+  `CalculetteApp.*.js`), les trois pages filles du guide (feuille `QuestionCard.*.css`).
+- **1 avec un autre écart**, `/guide-declarations` : la feuille, le fichier
+  `BoussoleWizard.*.js`, et l'attribut `opts` de l'`<astro-island>` de la boussole,
+  `{"name":"BoussoleWizard","value":true}` →
+  `{"name":"BoussoleWizard","value":{"rootMargin":"100%"}}`.
+- Aucun `<link rel="modulepreload">`, aucun autre attribut. `<title>`, metas, canonique,
+  titres (1 475), liens (7 272), JSON-LD (257), `data-ph` (2 327), `data-track` (436),
+  images et texte (193 420 mots) identiques page par page.
+- Fichiers : 29 fichiers JS, comme sur `main` ; sept changent de nom (`SimulateurApp`,
+  `CalculetteApp`, `BoussoleWizard`, `RegimeComparisonCards`, `individualizedTax`, `site`,
+  `tooltip`), avec les trois feuilles ci-dessus ; les autres sont ceux de `main`, dont
+  `BoussoleSearchIsland`, le script de mesure et `posthog-js`. Feuille commune inchangée (`_astro_assets.QWDU2rDT.css`).
+
+**Mesure (PostHog)**, relevé de § 9.er rejoué (`releve-mesure.cjs`, `main` deux fois puis
+build) : simulateur 17 événements, 1 232 propriétés comparées, identique ; calculette
+18 événements, 812 propriétés, identique ; guide 12 événements, 578 propriétés, un seul
+écart : dans la chaîne d'éléments de quatre clics capturés dans la boussole, l'attribut
+`opts` de `<astro-island>` (ci-dessus). Les deux écarts de § 9.er sur l'événement
+d'arrivée n'existent plus. Reste celui de § 9.es, sur un appareil tactile seulement
+(`aria-expanded` dans la chaîne d'éléments du clic sur une aide).
+
+**Preuves, build final**
+
+- `npm run build` : 70 pages ; `node scripts/verify-site.mjs` : 0 erreur (68 pages,
+  5 388 liens : les 43 liens de préchargement en moins). Le build final est identique à
+  l'octet à celui qui a été mesuré.
+- Calculs : trois cas du simulateur en calcul local, un cas PAMC (même état d'erreur des
+  deux côtés) et deux exemples de la calculette, identiques au caractère près à
+  `ref-dist-7`.
+- Points touchés, Chromium (`points.cjs`, 20 contrôles, aucun échec) : bulle « Zones
+  exonérées » image par image ; recherche du guide (« csg », 10 résultats) ; état
+  d'attente sur les trois pages, JS de l'îlot retenu puis relâché (trait invisible à
+  0,45 s, visible à 1,35 s, curseur d'attente, un clic ne donne pas le focus et rien
+  n'est saisi, plus rien après l'hydratation) ; contrastes forcés ; moins de mouvement ;
+  arrêt du glissement après 30 s ; impression avec une bulle épinglée au doigt.
+- WebKitGTK (`wk-points.py`, 12 contrôles, aucun échec) : bulle « Zones exonérées »
+  image par image ; état d'attente sur les trois pages (îlot privé de son fichier) :
+  curseur, pointeur neutralisé, trait visible, un clic puis une frappe ne saisissent
+  rien, Tab atteint les contrôles (17, 46 et 17 arrêts en 60 Tab) ; recherche du guide.
+- Aides au doigt, scripts de § 9.es rejoués sur le build final (Chromium tactile) :
+  simulateur à 1 024 px 83 aides sur 83, calculette à 390 px 46 sur 46, boussole à
+  390 px 1 sur 1 ; chacune s'ouvre à l'appui, tient, se ferme au second appui, à l'appui
+  ailleurs et à Échap, et reste dans la fenêtre. À la souris et au clavier, simulateur à 1 440 px : 83 sur 83
+  (survol, clic, sortie, focus, Échap, Tab), comme en § 9.es.
+- Clavier, les dix cas du tableau du point 1 : arrêts et arbre d'accessibilité égaux à
+  ceux de `main`.
+- Hydratation dans WebKitGTK (`mesure-wk.py`, sans bridage, cinq chargements, fenêtre de
+  1 440 × 862 ; première peinture / hydraté / clic pris, `main` puis build) :
+  `/simulateur` 358 / 498 / 700 → 346 / 473 / 705 ; calculette 326 / 443 / 806 →
+  365 / 499 / 834 ; recherche du guide 1 004 / 1 129 / 1 365 → 904 / 1 042 / 1 250 ;
+  boussole au saut immédiat, hydratée à 1 218 → 1 075 ms ; au saut après chargement,
+  141 ms après l'arrivée contre 171 (fenêtre de 862 px : pas hydratée au chargement) ;
+  à la molette, 1 417 ms avant l'arrivée contre 458. Le pilote met 0,25 à 0,6 s par
+  clic : « clic pris » y est grossier. Écarts de 0,05 s dans les deux sens : bruit.
+
+**Limites, non testé**
+
+- Vercel : rien n'y a été mesuré. Les deux protocoles sont essayés en local, réseau
+  bridé par Chromium, qui ne modélise pas les priorités d'un serveur HTTP/2.
+- WebKit : sans bridage ; WebKitGTK n'est ni Safari ni un iPhone ; son pilote ne simule
+  pas le toucher (essayé dans Chromium émulé) et n'imprime pas (l'impression est
+  essayée dans Chromium seul).
+- Firefox ; un vrai téléphone ; un lecteur d'écran (l'arbre d'accessibilité est lu par
+  script) ; `npm run dev` ; la branche PAMC du simulateur avec la fonction Supabase.
+- Les relevés repris des relecteurs et non rejoués ici sont dits tels dans le texte.
+- Scripts et relevés : dossier de travail `phase7/corrections/`, hors dépôt.
+
+**Fichiers**
+
+Retirés ou rendus à `main` : `src/lib/precharge-ilots.mjs`,
+`src/components/guide/rechercheGuide.ts`, `src/lib/analytics.ts`,
+`src/components/PostHog.astro`, `astro.config.mjs`, `scripts/verify-site.mjs`,
+`src/pages/simulateur.astro`, `src/pages/guide-declarations/calculette.astro`,
+`src/components/guide/BoussoleSearchIsland.tsx`. Modifiés :
+`src/pages/guide-declarations/index.astro`, `src/styles/simulateur.css`,
+`src/styles/calculette.css`, `src/styles/guide.css`, `CLAUDE.md`.
+
+**Dernier réglage avant la demande de fusion : la marge de la boussole est retirée.**
+`<BoussoleWizard client:visible={{ rootMargin: "100%" }} />` redevient
+`<BoussoleWizard client:visible />`, comme sur `main`. Raison : le gain n'existait que dans
+une fenêtre de 876 px de haut et plus (boussole prête à l'arrivée, 1,4 s gagnée en 4G
+lente), et le contrôle final a mesuré, sur un réseau à 1,6 Mbit/s et 150 ms de latence, un
+champ de recherche prêt 0,55 s plus tard (1,49 s puis 2,04 s, cinq chargements sur cinq) ;
+dans une fenêtre plus basse, ni gain ni perte. Un gain qui dépend de l'écran et coûte
+ailleurs ne se garde pas. Conséquences : l'attribut `opts` de l'`<astro-island>` de la
+boussole est celui de `main` (plus d'écart dans le HTML de `/guide-declarations` ni dans la
+chaîne d'éléments des clics mesurés), les 35 Ko de la boussole ne se chargent plus qu'à
+son approche, et tout ce que cette entrée et § 9.er disent de cette marge décrit un essai
+retiré. La boussole reste neutralisée sans trait d'attente tant qu'elle n'est pas hydratée.
+
+### 9.eu Accueil : l'épure (12 novembre 2026)
+
+Demande du propriétaire, deux jours après la mise en ligne de § 9.eb : la page est « encore
+trop chargée visuellement », il faut « beaucoup trop scroller » sur téléphone, et le profil
+« Remplaçant » de « Pour qui » n'a pas la forme des trois autres. Carte blanche pour
+« gratter dans le texte ». La période d'observation SEO de § 9.eb courait jusqu'à début
+décembre : sa décision prime, chaque coupe a été pesée (ce qui porte une requête, les liens
+internes, la FAQ et son `FAQPage` restent).
+
+Parti pris : chaque chose est dite une fois, à l'endroit où elle sert. La direction
+artistique, le décor, les animations, le premier écran et la scène finale ne changent pas.
+Construit en deux lots sur `claude/compassionate-lovelace-cbn1qs` (`e35bfe4` : « Sous la
+surface » et « Pour qui » ; `6342b68` et le commit de cette entrée : le reste). Un troisième
+lot, à part parce qu'il touche `da.css` (commune aux 70 pages), a suivi : § 9.ev (menu
+mobile) et § 9.ew (bulle de chat). Puis les corrections des quatre relectures : § 9.ex.
+`origin/main` n'a pas avancé (`481f3f2`). Zéro JS de plus, aucune dépendance ; dans ces
+deux premiers lots, `da.css`, `Header.astro` et `Footer.astro` ne sont pas touchés.
+
+**Résultat mesuré** (`mesure.cjs`, Chromium, build servi en local ; « avant » : build de
+`main`)
+
+| | Avant | Après | Cible du plan |
+|---|---|---|---|
+| Hauteur à 390 × 844 | 16 156 px, 19,1 écrans | 10 834 px, 12,8 écrans (−33 %) | ≈ 10 700 px, 12,7 écrans |
+| Début des tarifs à 390 px | écran 12,0 | écran 7,4 | ≈ écran 7,2 |
+| Hauteur à 1440 × 900 | 12 785 px, 14,2 écrans | 11 789 px, 13,1 écrans (−8 %) | ≈ 11 400 px |
+| Mots visibles à 390 px | 1 340 | 1 097 | ≈ 1 100 |
+| Mots dans le HTML (comptage de `verify-site.mjs`) | 3 214 | 2 978 | ≈ 2 970 |
+| Sections de mesure | 11 | 11 | 11 |
+| Boutons d'inscription, liens de rendez-vous | 5 et la pastille, 3 | 5 et la pastille, 3 | inchangés |
+| Plis natifs | 13 | 11 | 11 |
+
+Par section, hauteur en px et mots visibles, avant → après :
+
+| Section | 390 px | Cible à 390 px | 1440 px | Mots visibles à 390 px |
+|---|---|---|---|---|
+| hero | 908 → 908 | 908 | 1 089 → 1 089 | 56 → 54 |
+| features | 3 533 → 1 642 | ≈ 1 700 | 2 540 → 2 332 | 304 → 139 |
+| practice-journeys | 1 911 (Remplaçant), 2 260 à 2 323 (autres) → 1 154 pour les quatre | ≈ 1 140 | 1 306 → 1 660 (Remplaçant) | 216 → 278 |
+| founder, hors film | 1 029 → 740 | ≈ 740 | 753 → 725 | 83 → 83 |
+| presentation-video | 837 → 297 | ≈ 310 | 569 → 480 | 56 → 43 |
+| testimonials | 615 → 599 | ≈ 600 | 1 004 → 968 | 158 → 158 |
+| partners | 1 505 → 1 111 | ≈ 950 | 1 229 → 932 | 85 → 77 |
+| pricing | 1 763 → 1 250 | ≈ 1 270 | 1 183 → 974 | 149 → 107 |
+| faq | 1 570 → 1 032 | ≈ 1 030 | 1 012 → 725 | 135 → 98 |
+| guides | 1 125 → 743 | ≈ 710 | 841 → 644 | 98 → 60 |
+| final-cta | 670 → 670 | 670 | 940 → 940 | 12 dans le HTML |
+
+Précision sur les « mots visibles » (relecture, § 9.ex) : c'est l'`innerText` de `<main>`,
+qui compte les cartes hors champ des rangées à feuilleter. À 390 px, 229 des 1 097 mots
+sont dans une rangée, au-delà de sa première carte (150 dans « Pour qui », 79 dans les
+témoignages ; 79 avant, les témoignages seuls). Mots affichés sans geste de côté, sans
+pli ni onglet, hors décor : 867, contre 1 223 avant. C'est le plan (« ≈ 260 mots, dont
+≈ 95 sans geste de côté » pour « Pour qui »). Les phrases qui portent « contrat de
+remplacement », « serveur officiel URSSAF » et « 2035 ou 2042-C PRO … DSFU » sont dans
+les cartes 3, 5 et 6 du profil Remplaçant : rendues (ni masquées ni repliées), mais
+derrière un geste sur téléphone ; à 1440 px, tout est affiché comme avant.
+
+Un seul écart de plus de 15 % avec les cibles : `partners` à 390 px (+17 %). Le plan
+comptait une ligne pour l'étiquette de la feuille et pour la description de chaque
+partenaire ; dans 310 px de large elles en prennent deux (« Le logement des internes en
+médecine » fait 245 px en 14,5 px, il en reste 214 à côté du logo et de la flèche). À
+1440 px, `practice-journeys` s'allonge pour le profil Remplaçant, affiché par défaut : il
+porte maintenant ses sept étapes entières (le plan le prévoyait).
+
+Autres largeurs, page entière, avant → après : 320 px 17 553 → 11 959 ; 360 px 16 812 →
+11 311 ; 430 px 15 563 → 10 564 ; 640 px 15 309 → 12 103 ; 768 px 13 842 → 11 490 ; 900 px
+13 588 → 12 607 ; 1024 px 12 854 → 11 944.
+
+**1. Ce qui change, section par section**
+
+- **Ordre** : les témoignages passent avant les syndicats et partenaires (un confrère l'a
+  construit, des confrères s'en servent, puis les syndicats et leurs 6 mois d'essai, qui
+  mènent aux prix). Les fonds sont échangés : `Temoignages` prend le ciel (`air`),
+  `Partenaires` le sable. Seul déplacement de la page.
+- **Premier écran** (`Hero.astro`), trois retouches. Sous 900 px, le papier « Échéance
+  CARMF » n'est plus affiché : à droite de la scène, il passait sous la bulle de chat
+  quand le bas de la scène était au bas de l'écran, et son dernier mot trempait dans la
+  vague sous 360 px. Restent le papier « Appel URSSAF » à gauche (entier à toutes les
+  largeurs) et la pastille Super-Net à droite. Le libellé « URSSAF, CARMF, impôts » de la
+  fiche de droite (à partir de 1 180 px) tient sur une ligne. La pause du décor vaut pour
+  toute la page : cochée dans le premier écran ou dans la scène finale, elle arrête les
+  deux scènes et les bulles de « Sous la surface » (`body:has(.pause:checked)`, sous
+  `@supports` : un navigateur sans `:has()` garde la pause par scène).
+- **« Sous la surface »** (lot 1) : trois cases courtes (numéro, titre, une ligne ; la
+  case jaune garde « Super-Net 2025 », « 59 543 € » et la phrase des 90 005 €). Les deux
+  extraits d'écran des cases 1 et 2 ne sont plus affichés sous 900 px. La mascotte à la
+  tablette a sa colonne de grille : elle ne recouvre plus le texte.
+- **« Pour qui »** (lot 1) : une seule forme d'étape pour les quatre profils (pastille,
+  titre, phrase, précision en pastille bleu pâle), le profil Remplaçant porte les sept
+  étapes de `ETAPES_REMPLACANT` en entier. Sous 640 px, les étapes sont une rangée à
+  feuilleter de côté, sur le modèle des témoignages, et la section a la même hauteur pour
+  les quatre profils.
+- **Fondateur** : sous 560 px, le portrait à gauche et les trois chiffres en colonne à sa
+  droite, puis le titre, le paragraphe (17 px) et le bouton. L'ordre du HTML ne change pas
+  (`.who-copy` s'efface, la grille place les chiffres). Aucun mot touché.
+- **Film** : sous 700 px, le cadre est une vignette (150 × 267 px au plus) à gauche du
+  titre et de la définition du produit. Il reprend sa taille (300 × 533 px) quand le film
+  démarre, sans script de plus : le script existant rend l'attribut `controls` à la
+  lecture, et la feuille lit `.film:has(video[controls])`. Le script n'est pas touché
+  (même empreinte, 3 289 octets). À l'ordinateur, le cadre fait 270 px de large (320).
+- **Syndicats et partenaires** : tuiles plus basses (zone du logo 58 px sur téléphone, 88 à
+  l'ordinateur) ; sous la fiche des 6 mois, une seule feuille blanche à la place de quatre
+  objets : le titre des partenaires en étiquette, leurs deux lignes, un filet, « Soutenu
+  par », les trois logos sur une rangée sans plaque et leurs deux légendes. Deux colonnes à
+  partir de 900 px.
+- **Tarifs** : le titre « Inclus dans toutes les offres » et cinq lignes passent en tête
+  du pli « Détail des offres » ; la ligne de l'hébergement reste visible, seule, avec sa
+  coche. Sous 700 px, les offres Mensuel et Interne sont en grille (le nom et les lignes à
+  gauche, le prix à droite) : de la carte annuelle au prix de l'offre interne, les trois
+  prix tiennent dans un écran de téléphone.
+- **Questions** : huit au lieu de dix, dans une seule feuille blanche à lignes.
+- **Guides** : une feuille à six lignes à la place de six cartes, flèche à l'encre sans
+  pastille jaune ; deux colonnes à partir de 900 px (outils à gauche, articles à droite).
+- **Scène finale** : rien, hors la pause commune.
+
+**2. Textes retirés, mot pour mot**
+
+« Sous la surface » (`SousLaSurface.astro`, `TroisCases.astro`) :
+
+- « Voici ce qui tourne en dessous pendant que tu soignes. » (fin de la phrase sous le H2,
+  qui devient « Tu factures. Hippodoc calcule le reste. »).
+
+« Pour qui » (`PourQui.astro`) :
+
+- « : tu verras exactement ce qu’Hippodoc fait pour toi » (fin du chapô, qui devient
+  « Choisis ton mode d’exercice. ») ;
+- « Crée ton compte et retrouve ce parcours appliqué à tes propres chiffres. » ;
+- « Sans engagement » sous le bouton (remplacé, voir 4 : l'offre annuelle engage 12 mois).
+
+Film (`Fondateur.astro`) :
+
+- « URSSAF, CARMF, impôts, Super-Net : tu vois enfin ce qu'il te reste vraiment. »
+  (quatrième version de la promesse du premier écran).
+
+Syndicats (`Partenaires.astro`) :
+
+- « pour accompagner leurs adhérents dans leurs premiers remplacements » (fin du chapô,
+  qui devient « Ces syndicats d'internes ont signé une convention avec Hippodoc. »).
+
+Tarifs (`Tarifs.astro`) :
+
+- « 29 € facturés chaque mois » (carte mensuelle ; redisait « 29 € par mois ») ;
+- « · En savoir plus » (libellé du pli, qui devient « Compatible RSPM »).
+
+Questions (`Questions.astro`, `src/data/faqAccueil.ts`) :
+
+- le chapô « Celles qu’on nous pose avant de se lancer. » ;
+- « Rien à préparer. En visio, ou il t'appelle. » dans la carte de rendez-vous (dit mot
+  pour mot dans le paragraphe du fondateur) ;
+- deux questions et leurs réponses, les deux moins ouvertes (13 et 15 personnes en 87
+  jours), qui redisaient des fonctions montrées plus haut. `/faq` traite les deux sujets
+  dans son registre parlé (« C'est quoi le Super-Net ? », « Je peux relancer un médecin
+  qui ne m'a pas payé ? »). Leur texte de l'accueil, pour le remettre si besoin :
+  - `super-net`, « Comment estimer mon revenu net après impôts en tant que médecin ? » —
+    « Avec le **Super-Net** d'Hippodoc, tu vois ton **vrai revenu** après **URSSAF**,
+    **CARMF** et **impôts**. Tout est calculé selon ta situation réelle (**régime
+    fiscal**, **famille**, **revenus salariés**), sans mauvaise surprise en fin d'année.
+    Tu peux l'essayer tout de suite, sans compte, avec le [simulateur de
+    revenus](/simulateur). »
+  - `retrocessions`, « Comment suivre mes paiements en attente de rétrocession ? » —
+    « Hippodoc distingue automatiquement les journées **payées** de celles **en
+    attente**. Tu visualises d'un coup d'œil les montants à percevoir, avec des
+    **alertes** pour les **paiements tardifs**. Tu peux même envoyer des **relances**
+    directement depuis l'application. »
+
+Guides (`Guides.astro`), la seconde ligne des trois articles, dont le titre dit déjà le
+sujet :
+
+- « Remplacer le même médecin chaque semaine peut être requalifié en collaboration. » ;
+- « Affiliation dès le premier rempla, calcul sur ton revenu et non sur ton CA » ;
+- « Interne ayant fait des remplas en 2025 ? Salaire CHU + rétrocessions BNC ».
+
+**3. Textes déplacés** (dits une seule fois au lieu de deux, ou repliés)
+
+- Les sept étapes du remplaçant (`src/data/etapesRemplacant.ts`, inchangé). Avant : titre
+  et phrase dans les trois cases, titre et précision dans le profil Remplaçant. Après :
+  plus rien dans les cases ; titre, phrase et précision dans le profil Remplaçant, affiché
+  par défaut. Les sept titres : « Tu centralises tes journées », « Tu suis tes
+  rétrocessions au centime », « Tes factures et tes contrats, prêts en 2 clics », « Tes
+  charges déductibles ne se perdent plus », « URSSAF et CARMF anticipées », « Ta
+  déclaration, case par case », « Ton Super-Net, le seul chiffre qui compte ». Les sept
+  phrases, mot pour mot : « Tous tes cabinets dans un calendrier, synchronisé avec Google
+  Agenda. » ; « Payée, en attente, planifiée : plus jamais un virement oublié. » ;
+  « Honoraires conformes, IBAN pré-rempli, contrat de remplacement généré. » ;
+  « Kilomètres, matériel, formation, RCP : catégorisés et prêts pour la déclaration. » ;
+  « Cotisations calculées via le serveur officiel URSSAF, échéancier à jour après chaque
+  journée. » ; « 2035 ou 2042-C PRO pré-remplies avec tes chiffres, aide DSFU URSSAF
+  incluse. » ; « Brut → cotisations → impôt → ce qui te reste vraiment dans la poche. ».
+  Les sept précisions ne bougent pas. Les trois autres profils sont inchangés.
+- Tarifs : « Inclus dans toutes les offres » et ses cinq premières lignes (« Super-Net
+  calculé en temps réel », « Calcul URSSAF, CARMF et impôts en temps réel »,
+  « Déclarations fiscales guidées », « Planning centralisé avec synchro Google »,
+  « Génération rapide de contrats et de factures ») passent de sous les cartes au début
+  du pli « Détail des offres », devant les neuf lignes qui y étaient déjà. « Données
+  sécurisées et hébergées dans l’Union européenne » reste visible sous les cartes.
+- Témoignages et syndicats : échangés, textes non touchés.
+
+**4. Textes nouveaux** (quatre, à valider par le propriétaire ; tous du lot 1)
+
+- Case 1, sous « Ton activité » : « Tes journées, tes rétrocessions, tes factures et tes
+  contrats. »
+- Case 2, sous « Tes obligations » : « Tes charges déductibles, l’URSSAF et la CARMF, ta
+  déclaration. »
+- Sous-titre de l'onglet Remplaçant : « remplacements en libéral » (le plan disait
+  « cabinet libéral » : un remplaçant exerce aussi en maison de santé ou en SOS Médecins).
+- Sous le bouton de « Pour qui » : « Rien n’est débité pendant l’essai » (les mots du
+  chapô des tarifs, à la place de « Sans engagement »).
+- Non affichés : les noms accessibles des quatre rangées d'étapes, « Parcours
+  Remplaçant », « Parcours Interne », « Parcours Vacataire », « Parcours Mixte ».
+
+Le lot 2 n'ajoute aucun mot.
+
+**5. Textes gardés dont le statut change**
+
+- Les deux extraits d'écran des cases 1 et 2 sont un décor (`aria-hidden`), affichés à
+  partir de 900 px seulement. Ils restent dans le HTML.
+- La ligne d'en-tête de chaque panneau de « Pour qui » reste dans le HTML, affichée
+  seulement dans le repli sans `:has()`.
+- Le papier « Échéance CARMF » du premier écran (décor, `aria-hidden`) reste dans le HTML,
+  affiché à partir de 900 px seulement.
+- « Données sécurisées et hébergées dans l’Union européenne » était une ligne de liste,
+  c'est un paragraphe.
+- La mascotte au doigt pointé de la case 1 est retirée (image, pas texte).
+
+**6. SEO** (accueil du build comparée à celle de `main`, par script)
+
+- Identiques : `<title>`, meta description, canonique, `og:title`, H1, les neuf H2 (mêmes
+  textes ; « Ce qu’en disent nos utilisateurs » passe avant « Aux côtés des internes,
+  partout en France »), les blocs JSON-LD `Organization`, `SoftwareApplication`,
+  `WebSite` et `VideoObject`, les cinq scripts de la page.
+- H3 : 49 → 47 (les deux questions retirées ; aucun nouveau).
+- `FAQPage` : 10 → 8 questions, dérivé de `FAQ_ACCUEIL` ; les huit gardées sont
+  identiques (question, réponse, ordre).
+- Liens : 85 → 84. Le lien retiré est `/simulateur` dans la réponse `super-net` ; la page
+  reste liée depuis le premier écran, les guides et le pied. 23 pages internes liées
+  avant, 23 après. Le libellé des trois liens d'articles des guides est plus court : leur
+  seconde ligne, retirée (point 2), faisait partie du lien. Restent « Remplacement
+  régulier : le risque de requalification », « CARMF : cotisations 2026 du médecin
+  remplaçant », « Impôts 2026 des internes qui remplacent » ; `href` et `data-ph`
+  inchangés.
+- Mots : 3 214 → 2 978 au comptage de `verify-site.mjs`. `MOTS_ACCUEIL_MIN` passe de
+  2 931 à **2 680** (90 % du relevé), abaissé sciemment, raison et date en commentaire.
+- Termes porteurs : contrôle nouveau dans `verify-site.mjs`. Chacun doit rester dans le
+  texte rendu du `<body>` (JSON-LD exclu) : « médecin remplaçant » (9 occurrences),
+  « URSSAF » (22, 24 avant), « CARMF » (17, 19 avant), « 2035 » (6), « 2042-C PRO » (4),
+  « DSFU » (6), « RSPM » (10), « PAMC » (5), « Micro-BNC » (6), « rétrocession » (5, 7
+  avant), « contrat de remplacement » (3), « licence de remplacement » (1). Vérifié qu'il
+  échoue quand on retire un terme du HTML.
+- Sitemap : `/` a sa propre date, `ACCUEIL_LAST_UPDATED_ISO` (`src/lib/pages-lastmod.ts`),
+  posée au 12 novembre 2026 ; `/faq` garde le 10 novembre. Seuls écarts hors `_astro`
+  entre ce build et celui de `main` : `sitemap-0.xml` (cette date) et `sitemap-index.xml`.
+- Hors de l'accueil : le HTML des 69 autres pages et de la 404 est identique à celui de
+  `main`, à l'octet ; la feuille commune garde son nom au commit de cette entrée
+  (`_astro_assets.QWDU2rDT.css` ; elle en change avec § 9.ev, § 9.ew et § 9.ex, qui
+  touchent `da.css`).
+
+**7. Mesure**
+
+- `SECTIONS_LANDING` (`verify-site.mjs`) : mêmes onze identifiants, `testimonials` avant
+  `partners`. Contrôle nouveau : l'ordre des `data-landing-section` de la page doit être
+  celui du tableau. `SECTIONS` (`landing-analytics.ts`) ne change pas : son rang est
+  historique.
+- Deux séries s'arrêtent : `landing_faq_super-net` et `landing_faq_retrocessions`. Ne pas
+  réutiliser ces deux `id`.
+- L'entonnoir par position n'est plus comparable pour `testimonials` et `partners`, et
+  toutes les sections sont atteintes plus tôt (page plus courte d'un tiers sur
+  téléphone) : comparer les taux de `landing_section_viewed` avant et après en le sachant.
+- Tous les `data-track` (9), `data-calendly` (3), `data-profile`, `data-panel` et les 57
+  autres `data-ph` gardent leur nom et leur ordre. Au commit de cette entrée, seule
+  l'identité des attributs était prouvée (PostHog injoignable depuis le bac à sable).
+  Observés depuis, à la relecture (§ 9.ex) : envois vers `t.hippodoc.fr` interceptés en
+  local dans Chromium, référence et build, à 390 et 1440 px. `landing_viewed`,
+  `$pageview`, `landing_scroll_depth` (25, 50, 75, 100) et `landing_section_viewed` pour
+  les onze sections et le pied, avec les mêmes `section_order` qu'avant ; clics réels sur
+  les 69 cibles (`landing_cta_clicked` et son `cta_id`, `landing_journey_*`,
+  `calendly_clicked`, un `$autocapture` par `data-ph`) ; `landing_video_play` et
+  `landing_video_pause`. PostHog réel : toujours non joint.
+- Trois effets à connaître, sans rien de cassé. Le texte capté par l'autocapture
+  (`$el_text`) change pour cinq éléments : l'onglet Remplaçant (« Remplaçant
+  remplacements en libéral »), le pli « Compatible RSPM », les trois liens d'articles des
+  guides ; un insight filtré sur `data-ph` n'est pas touché, un insight filtré sur le
+  texte le serait. `landing_scroll_depth` est atteint plus tôt (page plus courte d'un
+  tiers sur téléphone). `testimonials` est émis avant `partners`.
+
+**8. Défauts corrigés au passage**
+
+Lot 1 : la forme du profil Remplaçant ; la mascotte à la tablette sur le texte ; les
+onglets de « Pour qui » de hauteurs inégales ; le saut de hauteur au changement de
+profil ; la fenêtre produit plus haute à l'onglet « Tes journées » ; les animations
+d'entrée de la fenêtre et des cases jamais jouées (`overflow: clip`) ; le bouton de « Pour
+qui » sur deux lignes sous 328 px ; le sélecteur non collant sur un écran d'ordinateur bas.
+
+Lot 2 :
+
+- « 24 200 » et « 2 714 » se touchaient sous 400 px : chiffres en colonne.
+- Légende du portrait sur deux lignes sous 345 px : une ligne à toutes les largeurs.
+- Cartes de témoignages de hauteurs inégales entre rangées de 640 à 920 px : rangées
+  égales de 640 à 1 099 px.
+- Mots seuls en fin de ligne : lignes équilibrées sur les chapôs, les descriptions des
+  partenaires, les titres et secondes lignes des guides ; `pretty` sur les listes.
+- « Commencer 30 jours gratuits » passait sur deux lignes à 320 px dans le moteur de
+  Safari (il tenait à 1 px près dans Chromium) : 15 px sous 340 px.
+- « Prendre 15 min avec Ryan » sur deux lignes dans la carte de rendez-vous à 320 px.
+- De 700 à 1 023 px, la carte mensuelle a une ligne de moins que la carte interne :
+  sa hauteur est rendue sous sa dernière ligne, les deux boutons restent alignés.
+
+**9. Écarts au plan, et pourquoi**
+
+- Premier écran : le plan des décisions demandait de ne garder que la pastille Super-Net
+  si les deux papiers restaient à moitié cachés. Regardé à 320, 360, 390, 430 et 768 px :
+  « Appel URSSAF » est entier partout, seul « Échéance CARMF » passait sous la bulle.
+  Un seul papier est retiré.
+- Fondateur : portrait de 200 px de large (168 au plan) et de la hauteur des chiffres. La
+  légende sur une ligne fait 207 px : sous un portrait de 168 px elle recouvrait le
+  troisième chiffre. Sous 375 px elle dépasse quand même du portrait : les chiffres
+  s'arrêtent au-dessus d'elle.
+- Film : sous 375 px, le titre passe au-dessus de la vignette et de la définition (la
+  colonne du texte fait 143 px à 320 px).
+- Tarifs : la grille des offres Mensuel et Interne vaut sous 700 px, pas seulement sous
+  560 px (de 560 à 699 px, les cartes sont déjà l'une sous l'autre).
+- Soutiens : les `<li>` gardent « logos d'un soutien, sa légende » dans le HTML ; la
+  feuille range les logos puis les légendes (`order`, `display: contents`). L'arbre
+  d'accessibilité de Chromium garde la liste et ses deux éléments.
+- Pause commune : c'est un « ou » entre deux cases, sans script. Qui met en pause en haut
+  et veut relancer en bas doit remonter décocher la case du haut (celle du bas ne relance
+  pas). Jugé préférable à deux pauses indépendantes : une pause suffit pour toute la page.
+- Remplissages des feuilles appliqués à la lettre du plan (44 et 72 px sous 560 px, 76 et
+  112 px à partir de 900 px) : de 560 à 899 px, `da.css` garde 88 et 128 px, une tablette
+  a donc un peu plus d'air qu'un ordinateur.
+- H3 : le plan annonçait 46 → 44 ; le relevé donne 49 → 47 (même écart de deux).
+
+**10. Vérifications**
+
+- Build : 70 pages. `verify-site.mjs` : 0 erreur (3 avertissements sans rapport :
+  `/essai` et `/transmissions` hors sitemap, `lastmod` partagés).
+- Balayage de 176 largeurs, de 320 à 1 500 px (Chromium) : aucun débord de page, aucun
+  contenu rogné dans les feuilles, légende du portrait sur une ligne et jamais sur un
+  chiffre, pastille du film dans son cadre et de 44 px de haut, boutons sur une ligne,
+  prix jamais sur le texte des cartes, tuiles et témoignages de même hauteur, lignes des
+  feuilles de 44 px au moins.
+- Film, Chromium (390, 320, 640, 768 et 1440 px) : la lecture démarre au toucher ou au
+  clic ; sous 700 px le cadre passe de la vignette à 300 × 533 px (280 × 498 à 320 px), au
+  même bord haut ; au-delà rien ne bouge.
+- Moteur de Safari (WebKitGTK 2.52, fenêtre de 1440 px et cadres de 320, 360, 390, 430 et
+  768 px) : mêmes mises en page qu'avec Chromium, aucun débord, `:has()`, `balance` et
+  `pretty` reconnus, pause commune vérifiée. La vignette reprend sa taille quand le
+  script rend `controls`.
+- Survol, focus au clavier (anneau tracé à l'intérieur des lignes), ouverture d'une
+  question au clavier, plis des tarifs : regardés à 390 et 1440 px. Contrastes forcés :
+  regardés à 1440 px (les feuilles gardent un contour, les lignes un trait).
+- Lighthouse mobile, local, médiane de trois passages sur `/`, avant (`main`) → après :
+  performance 100 → 100, accessibilité 100 → 100, bonnes pratiques 96 → 96 (seul échec :
+  PostHog injoignable depuis le bac à sable), SEO 100 → 100 ; décalage de mise en page
+  0 → 0 ; temps de blocage 38 → 24 ms. Première peinture et LCP simulés : 1,06 s → 1,21 s.
+  Les valeurs observées sont égales (0,14 à 0,20 s avant, 0,15 à 0,22 s après) : l'écart
+  vient du modèle, qui compte un aller-retour de plus quand un fichier dépasse 14,6 Ko
+  transférés. La feuille de l'accueil passe de 12,5 à 14,4 Ko en gzip (74,7 → 90,6 Ko
+  bruts ; `npx serve` sert en gzip). En Brotli, ce que sert Vercel : 10,2 → 11,7 Ko, sous
+  le seuil. À confirmer sur l'aperçu Vercel.
+
+**11. Non testé**
+
+- Aucun vrai Safari ni iPhone (WebKitGTK n'est ni l'un ni l'autre : polices, barres
+  d'iOS, tactile).
+- La lecture du film dans le moteur de Safari : WebKitGTK n'a pas de décodeur H.264 dans
+  ce bac à sable (erreur 4, sur `main` aussi). Seul le mécanisme de la vignette y est
+  vérifié, par le chemin d'erreur du script et par un événement `playing` simulé.
+- Navigateurs sans `:has()` (Firefox avant 121, Safari avant 15.4) : le cadre du film
+  reste grand et la pause reste par scène, par construction ; non regardé dans un tel
+  navigateur.
+- Lecteur d'écran réel, zoom à 200 %, espacements imposés par le visiteur.
+- Aperçu Vercel, et Lighthouse sur `/simulateur` et un article (pages non touchées).
+
+**12. Ce qui n'est pas fait**
+
+- Le lot à part, qui touche `da.css` : le menu mobile qui fait remonter la page à
+  l'ouverture et à la fermeture du tiroir (fait depuis : § 9.ev), et la bulle de chat
+  qui recouvre des montants sur téléphone (traité depuis pour le haut de page et la
+  saisie : § 9.ew).
+- Relevés et laissés : taille de police du navigateur ignorée sur l'accueil (corps en
+  px) ; bannière cookies sur la fiche « Avril 2026 » à l'ordinateur ; logos en deux
+  densités seulement ; arrêt de tabulation sans effet sur les rangées à partir de 640 px.
+  De 560 à 699 px, le bloc fondateur gardait son grand portrait seul sur sa ligne :
+  fait depuis, § 9.ex.
+- Les réponses que la FAQ n'a pas (ce qui se passe au bout des 30 jours, faut-il encore
+  un comptable, l'interne peut-il commencer tout de suite) : il faut les faits du
+  propriétaire.
+- `<title>` et meta description : lot séparé, après la fenêtre d'observation.
+
+**13. À faire le jour de la mise en ligne**
+
+- Mettre `ACCUEIL_LAST_UPDATED_ISO` au jour réel (`src/lib/pages-lastmod.ts`), puis
+  reconstruire et relancer `verify-site.mjs`. Elle vaut le 13 novembre 2026 depuis
+  § 9.ex (jour du dernier commit de la branche) : si la fusion a lieu plus tard, le
+  sitemap annoncerait pour « / » une date antérieure au changement. `/faq` ne bouge pas.
+- Annoter PostHog : épure de l'accueil, deux séries `landing_faq_*` arrêtées,
+  `testimonials` et `partners` échangés, page plus courte d'un tiers sur téléphone
+  (`landing_scroll_depth` atteint plus tôt), `$el_text` changé pour cinq éléments (point 7).
+- Sur l'aperçu Vercel (Brotli, HTTP/2) : regarder la première peinture de « / ». La
+  feuille propre à l'accueil pèse 14,9 Ko en gzip après § 9.ex (12,5 avant l'épure,
+  14,4 après les trois lots ; 12,1 Ko en Brotli) et franchit le seuil d'un aller-retour
+  du modèle de Lighthouse en local (première peinture simulée 1,06 s → 1,21 s, valeurs
+  observées égales, notes inchangées). Si elle recule en vrai, alléger cette feuille
+  (règles répétées dans chaque composant).
+- Puis quatre semaines sans toucher au texte, aux titres ni aux liens de la page.
+
+**Fichiers**
+
+`src/pages/index.astro` ; `src/components/accueil/` : `Hero`, `SousLaSurface`,
+`TroisCases`, `FenetreProduit`, `PourQui`, `Fondateur`, `Temoignages`, `Partenaires`,
+`Tarifs`, `Questions`, `Guides`, `SceneFinale` ; `src/data/faqAccueil.ts`,
+`parcoursAccueil.ts`, `etapesRemplacant.ts` ; `src/lib/pages-lastmod.ts` ;
+`scripts/verify-site.mjs` ; `CLAUDE.md`. Scripts et relevés : dossiers de travail
+`accueil2/lot1/` et `accueil2/lot2/`, hors dépôt.
+
+### 9.ev En-tête : le menu ne fait plus remonter la page (12 novembre 2026)
+
+Troisième lot du chantier de § 9.eu, à part parce qu'il touche `da.css` : la feuille
+commune change de nom, donc le HTML des 70 pages. Défaut relevé par l'audit de l'accueil
+(point 14 du plan), présent sur toutes les pages depuis la phase 5a. `origin/main` n'a
+pas avancé (`481f3f2`). Aucun mot, aucun script, aucun attribut : `Header.astro` et
+`ScriptTiroir.astro` ne sont pas touchés.
+
+**Le défaut, mesuré avant** (build de `fbddb87`, page défilée à mi-hauteur)
+
+| Geste | Chromium, 390 × 844, tactile | Moteur de Safari (WebKitGTK, 447 px) |
+|---|---|---|
+| Appui sur le bouton du menu | la page remonte de 454 px | de 75 px |
+| Appui sur la croix, ou sur le voile | encore 454 px | encore 75 px |
+| Sur `/guide-declarations` | 485 px à chaque geste | 137 px |
+| Tab jusqu'à la case du menu (clavier, 390 px) | 454 px | non isolé |
+| Tab dans les liens de la pastille (1440 px) | 452 px **par lien** (1 808 px après quatre Tab) | 66 px par lien (§ 9.ew) |
+
+Mêmes chiffres sur `/`, `/tarifs`, `/simulateur` et `/faq` dans les deux moteurs (et
+`/blog` dans Chromium), animations réduites ou non. Un clic sur une ancre du menu
+arrivait au bon endroit : le défaut ne touchait que les gestes qui ne naviguent pas.
+
+**La cause.** L'appui sur le bouton (un `<label>`) donne le focus à la case
+`#mobile-menu-toggle`. Elle est en haut de la fenêtre, dans la bande que
+`scroll-padding-top` de `<html>` réserve à la pastille (84 px ; 146 sur le guide, 140
+sur la calculette). Le navigateur fait défiler pour la sortir de cette bande : au milieu
+de la fenêtre dans Chromium (d'où 454 px), au ras de la bande dans le moteur de Safari
+(84 − 9 = 75 px). Mais l'en-tête était collé (`position: sticky`) : la case suit la
+fenêtre, elle n'en sort jamais, et chaque nouveau focus refait le même trajet. Tout lien
+de la pastille est dans le même cas au clavier.
+
+**Le correctif** (`src/styles/da.css`, deux règles de plus, rien de retiré)
+
+- À l'écran (`@media screen`), l'en-tête est tenu à la fenêtre : `position: fixed`,
+  `left: 0`, `right: 0`, `margin: 0`. Un élément tenu à la fenêtre ne fait pas défiler
+  la page. Même place qu'avant : 10 px du haut (plus l'encoche), toute la largeur ;
+  il ne prenait déjà aucune place dans le flux (10 + 60 − 70 = 0).
+  À l'impression, la règle d'origine reste seule : tenu à la fenêtre, l'en-tête
+  s'imprimerait en haut de chaque feuille.
+- Tiroir ouvert, la page ne défile plus sous le doigt :
+  `html:has(#mobile-menu-toggle:checked) { overflow: hidden }`, sous 960 px de large
+  (une case restée cochée dans une fenêtre qu'on élargit ne fige pas la page) et pour un
+  pointeur tactile seulement (`pointer: coarse`).
+
+Pourquoi « tactile seulement » : dans une fenêtre d'ordinateur étroite, la barre de
+défilement prend 15 px. La retirer refaisait la mise en page sous le voile ; lui garder
+sa place (`scrollbar-gutter: stable`) change la largeur de référence des tailles fluides
+(`vw`) : 4 px de hauteur en moins sur `/tarifs` à 800 px, 11 sur l'accueil. Essayé,
+mesuré, retiré. À la souris, la page défile donc encore sous le tiroir, comme avant.
+
+**Vérifié après** (build servi en local, « avant » : build de `fbddb87`)
+
+- Chromium tactile, 320 × 568, 390 × 844, 430 × 932 et 768 × 1024, six pages
+  (`/`, `/tarifs`, `/simulateur`, `/guide-declarations`, `/blog`, `/faq`), animations
+  réduites ou non : ouverture, fermeture par la croix, seconde ouverture, fermeture par
+  le voile, 0 px à chaque geste (48 parcours). Moteur de Safari, cinq pages : 0 px.
+- Les trois ancres du menu (`#sous-la-surface`, `#parcours`, `#pricing`), depuis
+  l'accueil défilée à mi-hauteur et depuis `/tarifs`, aux quatre tailles et dans les
+  deux moteurs : le tiroir se ferme, la case est décochée, la cible arrive à 84 px du
+  haut, sous la pastille (70 px), comme avant.
+- Clavier, 390 px : focus sur la case, Espace ouvre, Tab parcourt les neuf liens du
+  tiroir, Espace ferme, 0 px ; l'anneau de 3 px reste sur le bouton puis sur la croix.
+  1440 px : six Tab dans la pastille, 0 px.
+- Verrou (gestes tactiles réels, 390 × 844, 844 × 390 et 320 × 480) : tiroir ouvert, un
+  glissement sur le voile ou dans le tiroir ne déplace plus la page (285 px avant) ; le
+  menu du tiroir défile quand il dépasse (476 px de contenu dans 185 px en paysage), son
+  dernier lien s'atteint ; tiroir fermé, la page est au même endroit et défile.
+- Fenêtre d'ordinateur de 800 px, barre de défilement classique : tiroir ouvert, largeur
+  et hauteur de la page inchangées ; élargie à 1 200 px case cochée, la page défile.
+- Rien d'autre ne bouge à l'écran : quinze pages (accueil, `/tarifs`, `/faq`,
+  `/qui-sommes-nous`, `/blog`, un article, `/simulateur`, le guide des déclarations et
+  une page fille, la calculette, `/mentions-legales`, `/comparatif`, `/guide`, `/essai`,
+  la 404) à 390 et 1440 px, en pleine page, premier écran, tiers et mi-hauteur, plus
+  quatre pages en média d'impression : 140 captures identiques au pixel. Le premier bloc
+  de chaque page commence à 0 px avant comme après ; la barre de recherche du guide reste
+  à 70 px du haut, celle de la calculette à 76 px (ordinateur). Seule mesure qui change :
+  la boîte de `<body>` commence à 0 px au lieu de 10 (la marge haute de l'en-tête ne la
+  traverse plus) ; son fond est celui de la fenêtre, rien ne se déplace.
+  Menu « Ressources » au survol (1024 et 1440 px, haut de page et page défilée) et
+  tiroir ouvert (390 et 768 px), quatre pages : 23 captures identiques sur 24 ; la
+  dernière (guide, 390 px) diffère de six pixels d'un ou deux niveaux, sous le voile.
+  PDF de quatre pages : même nombre de feuilles (12, 11, 1, 5).
+- Moteur de Safari, sept pages à 447 et 1440 px, premier écran et mi-hauteur : 27
+  captures identiques sur 28 ; la dernière diffère aussi entre deux passes du même build
+  (barre d'une rangée à feuilleter).
+- HTML : 70 pages sur 70 ne diffèrent que par le nom de la feuille commune, une
+  occurrence par page (`_astro_assets.QWDU2rDT.css` → `_astro_assets.vwVYL-zs.css`) ;
+  `/transmissions`, qui ne la lie pas, est identique. Feuille commune comparée règle par
+  règle : deux règles de plus, aucune autre différence (78 642 → 78 824 octets). Aucun
+  autre fichier du build ne change. Build 70 pages, `verify-site.mjs` 0 erreur.
+
+**Vu en passant, non corrigé** (hors de ce lot : `guide.css` et `calculette.css`, pas la
+feuille commune)
+
+La barre de recherche collante du guide et la barre collante de la calculette ont la
+même mécanique : collées dans le flux, sous la marge de défilement de leur page. Un
+appui à la souris ou au doigt ne déplace rien (mesuré : 0 px). Un focus donné par
+programme, comme le fait le clavier, fait remonter la page : 393 px sur le guide à
+390 px de large, 421 à 1440, 418 sur la calculette à 1440. Ces barres doivent rester
+dans le flux : le correctif de l'en-tête ne s'y transpose pas tel quel.
+
+Corrigé depuis, dans les deux feuilles : § 9.ey (hippodoc/hippodoc.fr#145, fusionnée sur
+`main` avant ce lot ; note ajoutée à la fusion de `main` dans cette branche).
+
+**Non testé**
+
+- Aucun vrai Safari ni iPhone. Le verrou du défilement n'a pas pu être essayé dans le
+  moteur de Safari : WebKitGTK n'a pas de pointeur tactile ici, la règle ne s'y applique
+  pas. Sur iOS, si `overflow: hidden` sur `<html>` ne retient pas le défilement, le
+  comportement est celui d'avant.
+- Encoche (`env(safe-area-inset-top)`), zoom par pincement, clavier virtuel ouvert.
+- Navigateurs sans `:has()` : pas de verrou, par construction.
+- Tab au clavier dans le moteur de Safari : mesuré depuis, voir § 9.ew.
+
+**Fichiers** : `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/lot3/`, hors dépôt.
+
+### 9.ew Bulle de chat sur téléphone : elle arrive après le haut de page et s'efface pendant la saisie (13 novembre 2026)
+
+Suite de § 9.ev, même lot (point 15 du plan de § 9.eu), commit à part. `da.css` seul :
+la feuille commune change de nom une seconde fois. Aucun mot, aucun script, aucun
+attribut ; `ThirdPartyScripts.astro` n'est pas touché. **Deux comportements changent
+sur téléphone : à valider par le propriétaire** (le commit se retire seul).
+
+**Ce que j'ai regardé** (Chromium tactile, 390 × 844, build de § 9.ev)
+
+La bulle fait 56 px, à 16 px du bord droit et du bas. Le contenu d'une page s'arrête à
+16 ou 20 px du même bord : tout ce qui est calé à droite passe dessous au fil du
+défilement, sur 28 à 52 px de large, le temps de 50 à 120 px de défilement. Relevé par
+script, pas de 24 px : 60 textes ou contrôles sur l'accueil (dont les montants de la
+fenêtre produit, « 29 € » et « 10 € » des tarifs), 71 sur le simulateur, 82 sur la
+calculette (dont les boutons d'aide « ? », recouverts sur 38 px de 44), 127 sur un
+article. Un geste les dégage : c'est le lot de toute bulle fixe sur un téléphone, et
+aucun réglage de taille ou de place ne le supprime (48 px à 8 px du bord recouvrirait
+encore une quarantaine de pixels de contenu, par le calcul). Aucun élément fixe ou
+collant en bas d'écran dans les outils ; le
+tiroir d'aide du simulateur passe devant la bulle.
+
+Deux cas ne se dégagent pas d'eux-mêmes :
+
+1. **Le haut de page, à l'arrivée.** Sur l'accueil, la bulle se pose sur la fiche
+   « Super-Net » du premier écran, la seule étiquette gardée sur téléphone (§ 9.eu) :
+   pour une fenêtre de 740 à 848 px de haut à 390 px de large (720 à 828 à 412 px, 700 à
+   808 à 320 px), jusqu'à 46 × 35 px du montant « 59 543 € » (105 px de large). Ce sont
+   les hauteurs d'un téléphone Android dans Chrome et des navigateurs intégrés aux
+   applications ; Safari sur iPhone, barres affichées (390 × 664), y échappe. Sur le
+   simulateur, le « € » et le bout droit du deuxième champ ; sur la calculette, le
+   chevron de la première liste.
+2. **Un champ en cours de saisie** placé au niveau de la bulle : son bout droit et son
+   « € » restent dessous. Sur la plupart des téléphones le clavier recouvre alors la
+   bulle ; pas avec un clavier externe, ni dans un navigateur qui réduit la page à
+   l'ouverture du clavier (Firefox pour Android).
+
+**Le correctif** (`src/styles/da.css`, à la suite des règles de la bulle)
+
+- Sous 960 px, tant qu'un champ qui se saisit a le focus, la bulle s'efface :
+  `.da:has(:read-write:focus) #crisp-launcher { display: none }`. `:read-write` ne
+  retient que les champs de texte : la case du menu, les onglets et la pause de
+  l'accueil (cases et boutons radio), les listes et les boutons gardent la bulle.
+- Sous 640 px, la bulle n'arrive qu'une fois la page partie : invisible et sans clic tout
+  en haut, elle paraît à 96 px de défilement, pleine à 144 px. Une animation liée au
+  défilement (`animation-timeline: scroll(root)`), sans script : la mécanique que
+  `/essai` a depuis la phase 5b pour la même raison (380 à 420 px, sous 560 px), que
+  `/essai` garde (les règles nouvelles ont un poids nul, `:where`). `/guide` cache
+  toujours la bulle sous 768 px (§ 9.dk).
+  La plage s'arrête à 144 px ou au bout de la page, au plus court
+  (`animation-range: 0 min(144px, 100%)`) : une page qui défile de moins de 144 px montre
+  la bulle en bas, une page qui ne défile pas la montre d'emblée. Un navigateur qui ne
+  sait pas lier une animation au défilement, ou qui ne lit pas cette plage (Firefox,
+  Safari avant la version 26), garde la bulle dès l'arrivée, comme avant.
+- Taille, place, couleurs, texte et mécanique de la bulle inchangés ; rien ne change à
+  partir de 640 px pour l'arrivée, de 960 px pour la saisie.
+
+Ce qui ne change pas : au fil du défilement, la bulle passe encore sur le bord droit des
+contenus.
+
+**Vérifié** (build servi en local ; « avant » : build de `fbddb87`)
+
+- Arrivée, Chromium tactile à 320, 390, 430 et 639 px, animations réduites ou non, et
+  moteur de Safari à 447 px : invisible à 0, 60 et 96 px de défilement, à moitié à
+  120 px, pleine et cliquable à 144 px, de nouveau invisible de retour en haut. À 640,
+  768 et 1440 px : visible partout, comme avant. Tout en haut, un appui à sa place
+  atteint ce qui est dessous.
+- Premier écran de l'accueil, sept largeurs de 320 à 430 px, hauteurs de 520 à 960 px
+  par pas de 4 px : plus rien sous la bulle (avant : 28 à 38 hauteurs touchées par
+  largeur).
+- Saisie, Chromium à 390 et 768 px, moteur de Safari à 447 px : un champ du simulateur,
+  de la calculette, la recherche du guide (et celle du blog dans Chromium) retirent la
+  bulle, elle revient à la sortie du champ ; à 1440 px elle reste. Tiroir fermé avec le
+  focus resté sur sa case, focus sur un onglet (et, dans Chromium, sur la pause et sur un
+  pli) : la bulle reste.
+- Le clic ouvre toujours le chat (la bulle se retire, `l.js` de Crisp est demandé).
+  Première visite : la bulle attend la réponse à la bannière, puis suit la règle.
+- Cas limites, dans les deux moteurs : la 404 dans une fenêtre plus haute qu'elle, bulle
+  visible ; dans une fenêtre où elle défile de 60 ou 71 px, invisible en haut, pleine en
+  bas. Page la plus courte du site sous 640 px : `/essai`, 1 591 px à 390 px de large.
+- `/essai` (Chromium) : mêmes états qu'avant à 390 et 559 px (invisible jusqu'à 380 px,
+  pleine à 420 px). Seul changement : de 560 à 639 px, elle suit la règle commune.
+- Rien d'autre ne bouge : les quinze pages de § 9.ev à 390 et 1440 px, 140 captures.
+  114 sont identiques au pixel au build de départ ; les 26 autres sont le premier écran
+  et le haut de page de treize pages à 390 px, et ne diffèrent que dans le carré de la
+  bulle (86 × 86 px avec son ombre). Moteur de Safari : 27 captures sur 28 identiques
+  (animations coupées ; la dernière est l'aléa de § 9.ev).
+- Menu mobile de § 9.ev repassé sur ce build : 0 px à chaque geste, trois ancres bonnes,
+  dans les deux moteurs.
+- HTML : 70 pages ne diffèrent du build de départ que par le nom de la feuille commune
+  (`_astro_assets.QWDU2rDT.css` → `_astro_assets.BdeproSM.css`), une occurrence par
+  page. Feuille commune : cinq règles de plus qu'au départ (deux de § 9.ev, trois ici),
+  aucune autre différence (78 642 → 79 348 octets). Le minificateur double la règle de
+  saisie d'une forme `:-moz-read-write`, dans une règle à part. Build 70 pages,
+  `verify-site.mjs` 0 erreur.
+- Lighthouse mobile local, médiane de 3, avant → après : `/` 100, 100, 96, 100 des deux
+  côtés, première peinture 1,21 s → 1,20 s, décalage 0 ; `/simulateur` 99, 100, 96, 100
+  des deux côtés.
+
+**Complément à § 9.ev** : la fenêtre du moteur de Safari n'avait pas le focus du
+système dans les premiers essais (`document.hasFocus()` faux sous Xvfb, `:focus` ne
+s'y applique pas). Repassés fenêtre active : mêmes chiffres pour le menu (75 px par
+geste avant, 0 après), et le clavier y est maintenant mesuré : 66 px par lien de la
+pastille avant (128 sur le guide), à 447 comme à 1440 px, 0 après.
+
+**Non testé**
+
+- Aucun vrai téléphone : ni Chrome sur Android, ni Safari sur iPhone, ni le clavier
+  virtuel. La plage `min(144px, 100%)` est lue par Chromium et par WebKitGTK 2.52 ; je
+  n'ai pas vérifié depuis quelle version de Safari.
+- Firefox (pas installé ici) : la bulle y reste dès l'arrivée par construction ;
+  l'effacement à la saisie n'y est pas essayé.
+- Lecteur d'écran : tout en haut d'une page, sur téléphone, la bulle n'est pas
+  annoncée tant que la page n'a pas défilé.
+- Hors téléphone, rien ne change (relecture, § 9.ex) : à l'ordinateur la bulle se pose
+  encore sur l'étiquette « Échéance CARMF » du premier écran de l'accueil et, vers
+  1 200 px de large, sur le bord des montants de la fiche (146 tailles de fenêtre sur
+  1 155 essayées de 900 à 1 920 px, autant sur le build de `main`) ; à 640 px couché,
+  elle frôle un texte ou le bouton « Simuler mon Super-Net ». Non traité : le point 15
+  du plan portait sur le téléphone.
+- Événements PostHog (`t.hippodoc.fr` injoignable).
+
+**Fichiers** : `src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/lot3/`, hors dépôt.
+
+### 9.ex Accueil : corrections après les quatre relectures (13 novembre 2026)
+
+Quatre relectures indépendantes du build de § 9.ew (`e3b1339`) : design, SEO et mesure,
+défauts, textes. Aucun constat bloquant. Trente-trois constats, dont quatre importants
+(un cité par trois relecteurs). Chacun a été reproduit avant d'être corrigé ou écarté.
+Deux commits de code : l'accueil (composants, `verify-site.mjs`, date du sitemap), puis
+`da.css` à part (une règle, la feuille commune change de nom sur les 70 pages). Aucun
+mot du texte de l'accueil ne change : le texte du `<body>` est identique au caractère à
+celui du build de § 9.ew, espaces insécables comprises (comparé par script). Zéro JS de
+plus ; le script du film et celui du tiroir ne sont pas touchés.
+
+**1. Les quatre constats importants**
+
+1. **Soutiens : chaque légende sous ses logos** (`Partenaires.astro`). Depuis l'épure, la
+   feuille rangeait les trois logos sur une ligne puis les deux légendes à la suite :
+   « Membre de La French Care » commençait sous le logo Bpifrance (à 1440 px, Bpifrance
+   de 913 à 1 001 px, légende de 918 à 1 096 px), à toutes les largeurs. On lisait
+   « Bpifrance, membre de La French Care », alors que la Région et Bpifrance sont une
+   seule aide, Innov'Up (§ 9.dq). Chaque soutien redevient une colonne : ses logos, sa
+   légende dessous, au même bord gauche ; les trois logos posés sur une même ligne, les
+   deux légendes à la même hauteur ; l'écart entre les deux soutiens (26 à 34 px) est
+   plus grand que l'écart entre les deux logos d'Innov'Up (14 à 26 px). Là où la feuille
+   est étroite (sous 480 px, et de 900 à 1 179 px dans la colonne de droite), « Membre
+   de La French Care » passe sur deux lignes sous son logo ; sous 360 px, les deux
+   soutiens sont l'un sous l'autre. Le HTML ne change pas. De 900 à 1 023 px, les logos
+   gardent leur taille de téléphone (ils reprennent la grande à 1 024 px, 900 avant).
+2. **En-tête : la pastille ne saute plus quand une liste verrouille le défilement**
+   (`da.css`, effet de bord de § 9.ev). Sur `/simulateur` et la calculette, une liste
+   déroulante de Radix verrouille le défilement : la barre de défilement disparaît et
+   `<body>` reçoit une marge droite de sa largeur. Le contenu ne bouge pas ; l'en-tête,
+   tenu à la fenêtre depuis § 9.ev, s'élargissait de 15 px et la pastille sautait de
+   7,5 px à 1440 px (bord droit +15 px à 1 024 px), puis revenait à la fermeture. Avec
+   des barres de défilement classiques seulement (Windows, Linux, macOS réglé sur
+   « toujours ») : les captures de § 9.ev tournaient barres masquées. Correctif :
+   `right: var(--removed-body-scroll-bar-size, 0px)` à la place de `right: 0` (la
+   variable est posée sur `<body>` par le verrou ; sans verrou, 0).
+3. **Film sur téléphone : le cadre grandit dès l'appui** (`Fondateur.astro`). La vignette
+   reprenait sa taille à l'événement `playing` (le script rend alors `controls`). Sur un
+   réseau lent, plus de 500 ms après l'appui : le saut (le texte passe dessous, la
+   section suivante descend de 464 px) était compté comme décalage de mise en page,
+   0,53 en 4G lente et 0,55 en 3G, deux fois le seuil « mauvais » du CLS ; entre-temps,
+   une vignette avec un sablier. La feuille lit maintenant aussi le sablier que le script
+   affiche à l'appui : `.film:has(video[controls], #film-play-attente:not([hidden]))`.
+   Le script n'est pas modifié (même empreinte).
+4. **Date de l'accueil dans le sitemap** : `ACCUEIL_LAST_UPDATED_ISO` passe du 12 au
+   13 novembre 2026, jour du dernier commit. Elle reste à poser au jour réel de la
+   fusion (§ 9.eu, point 13).
+
+**2. Les constats mineurs corrigés**
+
+- **Cases 1 et 2 de « Sous la surface », de 360 à 429 px** (`TroisCases.astro`) : à
+  21 px, « Tes obligations » (147 px) passait sur deux lignes et « Ton activité » sur
+  une ; les deux lignes de texte ne partaient pas de la même hauteur et la case 1
+  finissait sur 68 px de vide. Titres des trois cases en 18 px et remplissage latéral des
+  cases 1 et 2 à 12 px sur cette plage (jusqu'à 411 px dans Chromium, 419 px dans le
+  moteur de Safari, où la police sort un peu plus large : la plage va à 429 px).
+- **Palier du milieu, de 560 à 899 px** (les sept feuilles et « Sous la surface ») : le
+  remplissage des feuilles valait 44 et 72 px sur téléphone, 88 et 128 px sur tablette
+  (`da.css`), 76 et 112 px à l'ordinateur. Palier ajouté dans chaque composant : 60 et
+  92 px, marge sous l'en-tête de feuille 30 px, bas de « Sous la surface » 120 px (148).
+- **Bloc fondateur, de 560 à 699 px** (`Fondateur.astro`) : le portrait de 380 px seul
+  sur sa ligne, 200 px de vide à sa droite. La grille compacte du téléphone (portrait à
+  gauche, trois chiffres en colonne) va maintenant jusqu'à 699 px, le seuil de la
+  vignette du film, avec un portrait carré de 240 px sur cette plage. L'attribut `sizes`
+  du portrait suit (240 px de 560 à 899 px, 200 px au plus en dessous : il annonçait
+  encore 380 px sur téléphone).
+- **Sélecteur de « Pour qui », de 360 à 374 px** (`PourQui.astro`) : la colonne des
+  profils prend un peu de la place de la mascotte (110 px au lieu de 121 à 360 px), les
+  quatre précisions tiennent sur une ligne et les profils font 56 px au lieu de 69. La
+  section n'est plus plus haute à 360 px (1 253 px) qu'à 359 ou 375. La mascotte reste :
+  le relecteur proposait de la retirer jusqu'à 369 px.
+- **Mots seuls** : `text-wrap-style: balance` sur les titres des étapes de « Pour qui »
+  et sur la pastille « 120 € de moins par an que le mensuel » ; `pretty` sur les
+  précisions des étapes et sur les citations des témoignages. Un mot à traits d'union
+  d'une question (« gère-t-il ») ne se coupe plus (`<span class="nb">`).
+- **Signes seuls en début de ligne** (« 10 / € par mois », « 34 / % », « médecins
+  remplaçants / : il centralise ») : un nombre et son signe dans les réponses de la FAQ
+  et les précisions de « Pour qui », un mot et ses deux-points dans la définition du
+  produit, sont noués dans un `<span>` qui ne se coupe pas. Aucun caractère du texte ne
+  change (dix balises `<span>` de plus dans la page, c'est tout).
+- **Rangées à feuilleter** : là où l'indice de défilement dessiné existe, la barre du
+  navigateur est retirée (`scrollbar-width: none`) ; il y avait les deux à la fois dans
+  une fenêtre étroite à barres classiques, et pendant le geste au doigt.
+- **Contrastes forcés** : un contour pour les cartes de la rangée et la carte d'appel de
+  « Pour qui », la fiche du sélecteur, la fiche blanche à partir de 640 px, les trois
+  cases, les tuiles des syndicats.
+- **Pause du décor** : une fois le décor arrêté par l'une des deux cases, l'autre n'est
+  plus affichée. Elle montrait « pause » devant un décor déjà arrêté, et la cocher puis
+  la décocher ne relançait rien. Il ne reste que la case qui relance.
+- **Sans JavaScript, le film se lance** : l'invitation à lire (le bouton et son affiche)
+  couvrait les contrôles natifs et rien ne la retirait ; défaut antérieur à l'épure.
+  `@media (scripting: none) { .film-play { display: none } }` : le cadre montre le
+  lecteur natif. Un navigateur qui ne connaît pas cette requête garde l'état d'avant.
+- **Nom du bouton du film** : « Lire le film de présentation, une minute » devient
+  « 1 min, lire le film de présentation ». Sous 700 px, « 1 min » est le seul texte
+  visible du bouton : le nom accessible doit le contenir (WCAG 2.5.3, commande vocale).
+  Seul attribut de texte modifié du lot ; à valider par le propriétaire.
+- **Texte agrandi par le visiteur** : un mot plus large que sa case passe à la ligne au
+  lieu d'être rogné dans les cases 1 et 2 (`overflow-wrap: anywhere`).
+- **`verify-site.mjs`**, trois contrôles durcis après les essais par mutation du
+  relecteur. La forme des étapes de « Pour qui » se découpe sur `data-panel` (découpé
+  sur la chaîne exacte `<div class="panel"`, il passait à vide dès qu'une classe
+  s'ajoutait) et échoue s'il ne lit pas quatre panneaux. Les termes que l'épure a fait
+  passer de « Sous la surface » au profil Remplaçant (« 2035 », « 2042-C PRO »,
+  « DSFU », « contrat de remplacement », « serveur officiel URSSAF ») doivent rester
+  dans CE panneau : sur la page entière, seul « licence de remplacement » ne vivait
+  qu'à un endroit, les autres survivaient ailleurs. L'égalité FAQ visible / `FAQPage`
+  compare aussi les réponses, sur l'accueil. Essais par mutation refaits sur le build :
+  six mutations, six échecs attendus, 0 erreur sans mutation.
+
+**3. Mesures** (Chromium, build servi en local ; « avant » : build de § 9.ew)
+
+| | Avant | Après |
+|---|---|---|
+| Page à 390 px (`mesure.cjs`) | 10 834 px, 12,8 écrans | 10 813 px, 12,8 écrans |
+| Page à 1440 px (`mesure.cjs`) | 11 789 px | 11 789 px |
+| Mots visibles à 390 px, mots du HTML | 1 097, 2 743 dans `<main>` | inchangés |
+| Page à 320 px | 11 934 px | 11 964 px |
+| Page à 360 px | 11 286 px | 11 213 px |
+| Page à 560 px | 11 334 px | 10 519 px |
+| Page à 600 px | 11 193 px | 10 377 px |
+| Page à 640 px | 12 107 px | 11 255 px |
+| Page à 768 px | 11 471 px | 10 924 px |
+| Page à 900 et 1 024 px | 12 654 et 11 968 px | inchangées |
+
+Par section, avant → après : `features` 1 642 → 1 612 px à 390 px (cases 244 → 217 px),
+1 660 → 1 630 à 360 px, 1 656 → 1 628 à 768 px ; `practice-journeys` 1 253 → 1 201 px à
+360 px, 1 914 → 1 836 à 768 px ; `founder` (film compris) 1 443 → 1 074 px à 560 px,
+1 414 → 1 045 à 600 px, 1 210 → 1 146 à 768 px ; `partners` 1 111 → 1 120 px à 390 px
+(la seconde légende sur deux lignes), 1 233 → 1 264 à 320 px (soutiens l'un sous
+l'autre), 920 → 833 à 768 px, 932 → 932 à 1440 px ; `pricing` 1 146 → 1 076, `faq`
+926 → 862, `guides` 780 → 702, `testimonials` 877 → 799 à 768 px. La marche de 559 à
+560 px passe de +1 293 px à +486 px ; celle de 639 à 640 px reste (+1 084 px : la
+rangée de « Pour qui » redevient une liste, c'est le plan).
+
+Film, 390 × 844 tactile, réseau bridé, appui sur la vignette : cadre à 300 × 533 px
+150 ms après l'appui aux trois réseaux ; décalage compté dans le CLS 0,532 → 0 en 4G
+lente (lecture après 837 ms), 0,547 → 0 en 3G (1 791 ms), 0 → 0 en 4G rapide.
+Pastille de l'en-tête à l'ouverture d'une liste, barres classiques : `/simulateur` à
+1440 px [152,5 ; 1 272,5] → [160 ; 1 280] avant, immobile après ; à 1 024 px bord droit
++15 px avant, immobile après ; calculette à 1 280 px, de même.
+
+Poids : feuille propre à l'accueil 90 611 → 94 980 octets (14,9 Ko en gzip, 12,1 Ko en
+Brotli) ; HTML de l'accueil 136 996 → 137 248 octets ; feuille commune 79 348 → 79 386
+octets, une seule règle différente. Lighthouse mobile local, médiane de 3 : `/` 100,
+100, 96, 100, première peinture simulée 1 206 ms, décalage 0 ; `/simulateur` 99, 100,
+96, 100 : comme avant.
+
+**4. Constats écartés ou laissés, et pourquoi**
+
+- **Cartes de la rangée de « Pour qui » à 78 % de la fenêtre** (au lieu de 74 %) :
+  essayé. Le gain n'existe que de 375 à 411 px (25 px, une ligne de moins sur les cartes
+  les plus hautes) et la carte suivante ne dépasse plus que de 54 px au lieu de 69 à
+  390 px. La consigne voulait qu'elle dépasse franchement ; gardé à 74 %. À valider par
+  le propriétaire sur les captures : 15 cartes sur 25 ont 60 px ou plus de blanc entre
+  la phrase et la précision à 390 px.
+- **Hauteur de « Pour qui » selon le profil à partir de 640 px** (1 660 px pour
+  Remplaçant, 1 496 à 1 545 pour les autres à 1440 px ; le sélecteur collant remonte
+  quand on change de profil depuis le bas de la liste) : laissé. Le plan ne demande la
+  case commune que sous 640 px ; l'étendre à la liste ajoute environ 164 px de blanc
+  dans la fiche des trois autres profils.
+- **Échelle typographique** (dix tailles de corps entre 13 et 17,5 px) : lot à part,
+  après la fenêtre d'observation ; le plan l'avait écarté.
+- **Texte seul doublé** (réglage « aA » de Safari, zoom du texte de Firefox), pas le
+  zoom de page : dans la case jaune, « 59 543 € » reste rogné de 18 px avec la mascotte
+  dessus ; la légende du portrait (sur une ligne) recouvre un libellé ; la pastille de
+  l'en-tête dépasse de la fenêtre et le bouton du menu sort de 17 px (27 px restent
+  touchables), sans défilement possible depuis § 9.ev. Seules les cases 1 et 2 sont
+  corrigées. Va avec « taille de police du navigateur ignorée (corps en px) », déjà
+  relevé en § 9.eu.
+- **Ancre `#sous-la-surface`** : elle arrive sur la fenêtre produit, le titre de la
+  section est dessous (hors écran sur une fenêtre basse). Structure d'origine, non
+  touchée.
+- **Bulle de chat hors téléphone** : voir § 9.ew, « Non testé ».
+- **Apostrophes droites** dans 37 blocs de texte gardés, à côté des quatre textes
+  nouveaux à apostrophe courbe : rien dans ce chantier (textes gardés mot pour mot).
+- **Égalité FAQ visible / `FAQPage` sur les autres pages** : étendue telle quelle, la
+  comparaison des réponses sort 64 écarts (`/faq` 12, guide des déclarations et ses
+  pages filles 52), des réponses mises en liste à l'écran et à plat dans le schéma. Non
+  triés : hors de ce chantier, tâche à part.
+- **« Sans engagement » hors de l'accueil** : le tableau de l'accueil dit « Engagement :
+  12 mois » pour l'offre annuelle ; `/conditions-utilisations` dit « abonnement mensuel
+  ou annuel payant, sans engagement de durée », et la formule couvre les deux offres sur
+  `/essai`, `/qui-sommes-nous`, les articles, la calculette et le guide des
+  déclarations. Question pour le propriétaire (l'annuel engage-t-il 12 mois ?), puis
+  correction dans un lot à part.
+
+**5. À valider par le propriétaire**
+
+- Le nom du bouton du film (point 2).
+- La pause : une seule case affichée une fois le décor arrêté.
+- Sur les téléphones de 360 à 429 px, les titres des trois cases en 18 px (21 ailleurs).
+- La rangée de « Pour qui » telle quelle (point 4).
+
+**6. Vérifications**
+
+- Build 70 pages, `verify-site.mjs` 0 erreur (trois avertissements sans rapport).
+- Texte de l'accueil : identique au caractère à celui du build de § 9.ew ; titres,
+  liens, `data-*`, `id`, JSON-LD et scripts identiques ; seul attribut différent, le nom
+  du bouton du film ; dix `<span>` de plus.
+- Hors de l'accueil : les 69 autres pages ne diffèrent du build de `main` que par le nom
+  de la feuille commune, une occurrence par page (`_astro_assets.QWDU2rDT.css` →
+  `_astro_assets.Dv6AFUqB.css`) ; `/transmissions` identique. Sans le changement de
+  `da.css`, la feuille commune garde le nom de § 9.ew (`BdeproSM`) : les composants de
+  l'accueil n'y ajoutent rien. Sitemap : seule la date de « / » change.
+- Chromium, balayage de 278 largeurs de 320 à 1 500 px : aucun débord, chaque légende au
+  bord gauche de ses logos et dans la feuille, titres des cases 1 et 2 sur le même
+  nombre de lignes, quatre profils égaux, légende du portrait hors des chiffres.
+- Captures regardées : soutiens à 320, 360, 390, 768, 900, 1 024 et 1440 px ; cases à
+  360, 390 et 412 px ; sélecteur à 359, 360, 374 et 375 px ; fondateur à 560, 600 et
+  699 px ; film (vignette, attente, lecture) à 390 et 320 px ; page entière à 390 et
+  768 px ; contrastes forcés à 390 px ; film sans JavaScript.
+- En-tête : à sa place sur neuf pages à 390 et 1440 px, barres superposées ou
+  classiques (36 mesures) ; immobile à l'ouverture d'une liste sur `/simulateur` et la
+  calculette.
+- Pause : cocher l'une ou l'autre case arrête les deux scènes et les six bulles et
+  masque l'autre case ; la décocher relance tout et la rend (390 et 1440 px).
+- Sans JavaScript (Chromium) : l'élément au-dessus de la barre de contrôle du film est
+  le `<video>`, à 390 et 1440 px.
+- Moteur de Safari (WebKitGTK 2.52, fenêtre de 1440 px, cadres de 320, 360, 374, 390,
+  412, 600, 768 et 1 024 px) : mêmes mises en page, aucun débord ; légendes sous leurs
+  logos ; titres des cases 1 et 2 sur une ligne à 360, 400, 412, 414, 419, 420, 428, 429
+  et 430 px (deux lignes à 412 px tant que la plage s'arrêtait à 411 px, d'où son
+  élargissement à 429 px) ; quatre profils de 56 px à 360 et 374 px ; le
+  cadre du film grandit quand le sablier s'affiche ; la pause masque l'autre case ;
+  l'en-tête s'arrête à 15 px du bord quand la variable du verrou est posée ; la liste
+  de sélecteurs dans `:has()`, `scrollbar-width`, `balance` et `pretty` reconnus.
+
+**Non testé**
+
+- Aucun vrai Safari ni iPhone ; pas de Firefox.
+- Lecture du film dans le moteur de Safari (pas de décodeur H.264 ici) : le sablier y
+  est affiché par script d'essai, pas par un appui.
+- Le verrou de Radix dans le moteur de Safari : seule la variable posée à la main y est
+  essayée (WebKitGTK superpose ses barres de défilement ici).
+- `@media (scripting: none)` : essayé dans Chromium seulement.
+- Lecteur d'écran réel ; contrastes forcés à 390 px seulement, dans Chromium.
+- PostHog réel et aperçu Vercel.
+
+**Fichiers** : `src/components/accueil/` (`Partenaires`, `Fondateur`, `PourQui`,
+`TroisCases`, `SousLaSurface`, `Temoignages`, `Tarifs`, `Questions`, `Guides`, `Hero`,
+`SceneFinale`), `src/lib/pages-lastmod.ts`, `scripts/verify-site.mjs`,
+`src/styles/da.css`, `CLAUDE.md`. Scripts et relevés : dossier de travail
+`accueil2/corrections/`, hors dépôt.
+
+### 9.ey Barres collantes du guide et de la calculette : le focus ne fait plus remonter la page (13 novembre 2026)
+
+Numéro : § 9.eu à § 9.ex sont pris par la demande de fusion de l'accueil épurée
+(hippodoc/hippodoc.fr#144, pas encore sur `main` à cette date), dont § 9.ev tient l'en-tête
+à la fenêtre (`position: fixed`) et renvoie ici par « Vu en passant, non corrigé ». Cette
+entrée a d'abord été numérotée 9.ew, faute de voir cette branche ; renumérotée avant
+fusion. Sur `main`, l'en-tête est encore `position: sticky`. Aucun contenu touché : deux
+feuilles de style, et une phrase de CLAUDE.md.
+
+**Le défaut**
+
+La barre de recherche de `/guide-declarations` (`.gd-rech`, collée à 70 px) et la barre
+d'outils de la calculette (`.calc-barre`, collée à 76 px à partir de 640 px) sont dans le
+flux et suivent la fenêtre. Leurs contrôles sont dans la bande que `scroll-padding-top` de
+`<html>` réserve en haut (146 px et 140 px). À tout focus qui fait défiler, le navigateur
+cherche à sortir le contrôle de la bande ; la barre suit, il n'y arrive pas.
+
+Relevé sur le build de `main`, page à mi-hauteur :
+
+| | Chromium | WebKitGTK 2.52 |
+|---|---|---|
+| guide, `focus()`, Tab ou Maj+Tab sur le champ, 390 px | −393 px | −54 px |
+| guide, même essai, 1440 px | −421 px | −54 px |
+| guide, Tab ou `focus()` sur « Effacer la recherche » | −393 / −421 px | −66 px |
+| guide, Tab vers le premier résultat (barre resserrée) | −4 px | −4 px |
+| guide, **clic de souris dans le champ, puis saisie** | 0 puis −270 px | −270 px à la saisie |
+| calculette, `focus()`, Tab ou Maj+Tab sur un bouton, 820 px | −558 px | −60 px |
+| calculette, même essai, 1440 px | −418 px | −60 px |
+| calculette, **exemple choisi dans le menu**, à la souris comme au clavier | −558 / −418 px | −60 px (clavier, barre tout juste collée) |
+
+Les deux lignes en gras n'étaient pas dans la demande : le défaut ne demandait pas le
+clavier. La saisie fait défiler pour montrer le curseur ; à la fermeture du menu « Charger
+un exemple », Radix rend le focus au bouton par `focus()`. Chromium recentre le contrôle
+(d'où 400 px), WebKit l'aligne au plus près (d'où 60 px). Avec `scroll-behavior: auto`
+forcé par le script, Chromium fait deux sauts sur le champ (−786 et −842 px) ; avec le
+défilement doux du site, un seul : les chiffres de la demande.
+
+**Le correctif**
+
+`src/styles/guide.css` :
+
+```css
+html:has(.da-fond):has(.gd-rech-champ > :focus) { scroll-padding-top: 70px; }
+html:has(.da-fond):has(.gd-rech-liste :focus) { scroll-padding-top: 134px; }
+```
+
+`src/styles/calculette.css`, dans le `@media (min-width: 640px)` de la barre :
+
+```css
+html:has(.da-fond):has(.calc-barre :focus) { scroll-padding-top: 76px; }
+html:has(.calc-barre :focus) .calc .calc-colonne { scroll-margin-top: 96px; }
+```
+
+Tant que le focus est dans la barre, la bande s'arrête au `top` de la barre (le bas de la
+pastille de l'en-tête) : le contrôle n'y est plus, rien ne défile. Dès que le focus sort,
+la règle ne s'applique plus et la bande entière revient avant le défilement suivant. Les
+valeurs sont celles du `top` de chaque barre, sans `env(safe-area-inset-top)` puisque ces
+`top` n'en ont pas : la bande ne peut pas repasser sur le contrôle. Poids : (0,3,1), plus
+que la règle de la bande (0,2,1) et que celle de `da.css` (0,1,1), quel que soit l'ordre
+des feuilles (CLAUDE.md, « Ordre des feuilles sur les pages d'outils »).
+
+Deux défilements par script partent pendant que le focus est encore dans la barre, d'où
+les deux autres règles :
+
+- Calculette, « Voir mes résultats ↓ » (bouton de la barre, sous 1 024 px) appelle
+  `scrollIntoView({ block: 'start' })` sur `#calculette-results`. Sans compensation, la
+  fiche s'arrêtait à 108 px, sous la barre, au lieu de 172. La fiche reprend donc en marge
+  les 64 px retirés à la bande (32 + 64) sous la même condition : 172 px, au clic comme à
+  la touche Entrée, dans les deux moteurs.
+- Guide, choix d'un résultat : `navigate()` appelle `scrollIntoView({ block: 'center' })`
+  100 ms après le clic, alors que le bouton du résultat a encore le focus (la liste ne
+  disparaît qu'après les 150 ms du délai de saisie). Avec une seule règle
+  `:has(.gd-rech :focus)` à 70 px, premier essai, la cible se centrait 38 px plus haut.
+  Sur un résultat, la bande s'arrête donc au bas de la barre resserrée (134 px = 70 + 8 +
+  48 + 8), juste au-dessus de la liste : le premier résultat (à 142 px) n'y est plus, et
+  la cible se centre 6 px plus haut qu'avant (centre à 493 px au lieu de 499 à 390 px de
+  large, 521 au lieu de 527 à 1440). C'est le seul écart avec `main` sur le contenu.
+
+Piste écartée : une marge de défilement sur les contrôles. Ils sont tout entiers dans la
+bande ; une `scroll-margin-top` négative qui les en sortirait dépasse leur hauteur et
+donne un rectangle retourné, dont le traitement n'est pas défini. Décaler le rectangle
+(marge négative en haut, positive en bas) le garde entier, mais fait défiler la page
+quand la barre, pas encore collée, est dans les 68 px du bas de la fenêtre, et décale
+les résultats dans le défilement propre de leur liste. Non retenue.
+
+**Relevé après correctif**
+
+Chromium 390×844, 820×1180, 1440×900 ; WebKitGTK aux mêmes tailles (390 et 820 dans un
+`<iframe>` de même origine, largeur réelle mesurée, `document.hasFocus()` vrai et `:focus`
+appliqué). Page à mi-hauteur, barre collée ; calculette à 390 px : barre dans le flux,
+placée dans la fenêtre.
+
+- Les deux barres, chaque contrôle, `focus()`, Tab et Maj+Tab : **0 px** partout, dans les
+  deux moteurs. Guide : champ, « Effacer la recherche », premier et deuxième résultats.
+  Calculette : « Voir mes résultats ↓ », « Charger un exemple », « Réinitialiser ».
+- Saisie dans le champ après un clic de souris : 0 px. Exemple choisi dans le menu, à la
+  souris et au clavier : 0 px au retour du focus.
+- Contenu, identique à `main` ligne pour ligne (29 essais sur 47 dans Chromium, 27 sur 41
+  dans WebKit ; les autres sont les corrections ci-dessus, l'écart de 6 px et, dans
+  WebKit, le retour légitime du bouton décrit plus bas, 32 px plus bas qu'avant) :
+  ancres `#profils`, `#regle-RO-014`, `#case-5HQ` à 146 et 154 px ; clic sur un lien
+  d'ancre, le focus étant dans le champ : 146 px ; Tab qui sort de la barre vers un
+  contrôle placé à 100 px du haut, sous la barre : il est ramené à 146 px (guide) et
+  140 px (calculette), de même par `focus()` ; Maj+Tab : positions identiques.
+- Build : seules les deux feuilles changent (`QuestionCard.*.css`, 49 798 → 49 939
+  octets, et `calculette.*.css`, 29 955 → 30 094), quatre règles ajoutées, le reste
+  identique octet pour octet. La feuille commune garde son nom. Le HTML des cinq pages
+  qui lient ces feuilles (hub, trois pages filles, calculette) est identique au nom de la
+  feuille près ; les 65 autres pages sont identiques. `verify-site.mjs` : 0 erreur.
+
+**Pour qui refait ces mesures**
+
+- `locator.click()` de Playwright fait défiler lui-même l'élément hors de la bande avant
+  de cliquer : sur un bouton de la barre il reproduit le saut à lui seul, correctif ou
+  non. Cliquer par coordonnées (`page.mouse.click`).
+- WebKit n'ancre pas le défilement. Charger un exemple raccourcit le formulaire de 580 à
+  950 px : page à mi-hauteur, le bouton sort de l'écran (relevé à −265 et −376 px) et le
+  retour du focus le ramène à sa place, à 80 px (la page s'arrête 32 px plus bas
+  qu'avant : centrage sous une bande de 76 px au lieu de 140). Ce défilement-là est
+  légitime ; le défaut se mesure barre tout juste collée (−60 px avant, 0 px après).
+- Les voisins de tabulation se cherchent parmi les éléments qui prennent réellement le
+  focus : les liens du menu de l'en-tête ont une boîte mais ne le prennent pas.
+
+**Limites, non testé**
+
+- Firefox, un vrai Safari, un iPhone. WebKitGTK n'est pas Safari : au clic de souris,
+  Safari ne donne pas le focus à un bouton ; la bande y reste alors entière, ce qui est
+  le comportement d'avant.
+- Sans `:has()` (Safari avant 15.4, Firefox avant 121), ces règles sont ignorées comme
+  l'était déjà la règle de la bande : rien ne change.
+- Un futur défilement par script lancé depuis un contrôle d'une de ces barres part avec la
+  bande réduite : sa cible reprend la différence en marge, comme `.calc-colonne`.
+- L'en-tête n'est pas corrigé sur cette branche : ses liens, dans la bande de 84 px, ont
+  le même défaut. Il l'est dans hippodoc/hippodoc.fr#144 (§ 9.ev). Ces règles n'en
+  dépendent pas : sur un build des deux branches fusionnées (en-tête tenu à la fenêtre),
+  Chromium donne encore 0 px sur tous les contrôles des deux barres aux trois largeurs, et
+  les 47 essais du contenu sont identiques à ceux de cette branche seule. Les deux
+  demandes insèrent leur entrée au même endroit de ce fichier : la seconde fusionnée aura
+  ce conflit à résoudre, en gardant les deux textes.
+- CLAUDE.md, « Ordre des feuilles sur les pages d'outils » : la phrase « Une barre
+  collante se double d'un `scroll-padding-top` sur `<html>` » reçoit sa suite (bande
+  réduite au `top` de la barre tant que le focus est dedans, marge reprise par la cible
+  d'un défilement lancé depuis la barre, clic par coordonnées pour mesurer). Ajoutée à la
+  demande du propriétaire, après l'ouverture de la demande de fusion.
+- CLAUDE.md dit WebKitGTK et Selenium installés : ils ne l'étaient pas dans ce conteneur
+  (`apt-get install webkit2gtk-driver`, `pip install selenium`). Non corrigé : cela
+  dépend de l'environnement, pas du dépôt.
+- Scripts et relevés : dossier de travail de la session, hors dépôt.
+
+**Fichiers**
+
+`src/styles/guide.css`, `src/styles/calculette.css`, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.ez `verify-site.mjs` : les réponses de la FAQ comparées au schéma sur toutes les pages (13 novembre 2026)
+
+Le contrôle « 4 septies » compare le schéma `FAQPage` au texte visible. Depuis § 9.ex il
+comparait les questions partout et les réponses sur l'accueil seulement : étendue telle
+quelle, la comparaison des réponses sortait 69 écarts, laissés à trier. Ils sont triés,
+la comparaison est corrigée et active sur les 58 pages qui portent un `FAQPage`
+(391 réponses). **Aucun texte visible ni aucun JSON-LD n'a changé** : seul le script de
+vérification change, le build est le même.
+
+**1. Le tri des 69 écarts**
+
+| Cause | Nombre | Pages | Nature |
+|---|---|---|---|
+| Un « < » de texte pris pour une balise | 5 | quatre articles, la calculette | faux positif |
+| Balisage de la source du guide, rendu à l'écran | 38 | guide 27, `2042-c-pro` 1, `dsfu-pamc` 4, `medecin-remplacant` 6 | faux positif |
+| Liste à l'écran, mise à plat à la main dans le schéma | 12 | `/faq` | écart de texte |
+| Renvoi interne (« QT-014 ») rendu en lien nommé, énumération mise en liste | 14 | guide 9, `2042-c-pro` 4, `dsfu-pamc` 1 | écart de texte |
+
+- **« < » de texte** (5). Une réponse comme « Matériel < 500 € HT : … Matériel > 500 € »
+  sort `&lt;` dans la page et « < » dans le schéma. L'ancienne comparaison ne décodait
+  pas `&lt;` / `&gt;`, et retirait de la réponse tout ce qui allait d'un « < » au « > »
+  suivant (`/<[^>]+>/`). Pages : `/blog/frais-professionnels-deductibles`,
+  `/blog/inbox-zero-remplacant`, `/blog/micro-bnc-exemples-concrets`,
+  `/blog/remplacement-salarie-guide-complet`, `/guide-declarations/calculette`.
+- **Balisage de la source du guide** (38). Le schéma du guide reprend `reponse` telle
+  qu'elle est écrite dans `src/data/boussoleData.ts`, avec le balisage que
+  `FormattedText.tsx` rend à l'écran : `**gras**`, `*italique*`, code entre accents
+  graves, marqueurs ⚠️ et 💡 (rendus en icône), puce de début de ligne. Mots et
+  ponctuation sont les mêmes des deux côtés.
+- **`/faq`** (12) et **guide** (14, soit 9 questions dont 5 reprises sur une page
+  fille) : le texte diffère vraiment, liste au point 3.
+
+**2. La comparaison, après**
+
+- Entités décodées en une seule passe, `&lt;` et `&gt;` compris (l'ancienne décodait
+  `&amp;` avant les autres : « `&amp;lt;` » serait devenu « < »).
+- Texte de la page : sans `<head>`, `<script>`, `<style>`, `<svg>`, `<template>`,
+  `<noscript>` ni commentaires, puis sans les balises. Une valeur d'attribut qui contient
+  « > » ne coupe plus la balise.
+- Réponse du schéma : c'est du texte. Seules de vraies balises en sont retirées, celles
+  que Google lit dans une réponse (`<p>`, `<ul>`, `<li>`, `<a>`, `<strong>`…) ; aucune
+  réponse n'en porte aujourd'hui.
+- Pages dont le schéma reprend la source du guide (`/guide-declarations` et ses pages
+  filles, pas la calculette) : le balisage de `FormattedText.tsx` est retiré de la
+  réponse, et la puce « • » des deux côtés. Rien d'autre n'y est toléré, et aucun
+  balisage n'est toléré ailleurs (un `**` ajouté à une réponse de `/tarifs` échoue).
+- Le contrôle prouve une inclusion : tout le texte de la réponse du schéma est à
+  l'écran, d'un seul tenant, espaces mises à part. Il ne prouve pas l'inverse : une
+  phrase ajoutée à l'écran après la fin de la réponse passe. Quatre réponses de `/faq`
+  finissent ainsi par une phrase à lien que le schéma n'a pas (revenus PDSA,
+  rétrocessions versées, cotisations URSSAF, régime fiscal) : à trancher avec le point 3
+  si `aPlain` est repris.
+- Le message d'erreur montre le premier écart : les derniers mots communs, la suite dans
+  le schéma, la suite dans la page.
+
+Essais par mutation sur le build, tous vus : un mot changé à l'écran (accueil, article,
+article à « < », `/faq`, guide, page fille), un mot ajouté dans une réponse à puces du
+guide, une virgule retirée à l'écran, un mot changé dans le schéma, un `**` ajouté dans
+le schéma de `/tarifs`.
+
+**3. Les 26 écarts de texte, à trancher par le propriétaire**
+
+Non corrigés dans cette entrée : contenu verbatim, période d'observation SEO.
+`verify-site.mjs` échouait sur ces 26 réponses, et sur elles seules. Tranché le même
+jour : schéma aligné sur l'écran, § 9.fa.
+
+`/faq` (12). À l'écran la réponse contient une liste ; `aPlain` (le schéma) la met à plat
+à la main dans `src/pages/faq.astro`.
+
+| Question | Ce qui diffère (schéma / écran) |
+|---|---|
+| Comment j'enregistre mes journées d'activité ? | « la date…, le lieu…, le montant encaissé (…). » / trois puces « 📅 La date », « 🏥 Le lieu », « 💰 Le montant encaissé » (émojis masqués à l'œil, classe `sr`) |
+| Je peux gérer un cabinet propre en plus de mes remplacements ? | « remplacement… ; vacation… ; cabinet propre…. » / trois puces à majuscule, sans « ; » ni point |
+| Comment j'enregistre mes revenus salariés ? | « le type…, le montant net imposable, la période concernée. » / trois puces à majuscule ; et l'écran finit par « … ta fiscalité — comment choisir. » (lien), absent du schéma |
+| Qu'est-ce que les rétrocessions versées ? | un point après « de ton BNC » et après « ton revenu imposable » / deux puces sans point |
+| Le calendrier, il affiche quoi exactement ? | « vert = journées payées, orange = …, bleu = …, gris = …. » / « 🟢 Vert : », « 🟠 Orange : », « 🔵 Bleu : », « ⚫ Gris : » en puces |
+| Mes cotisations URSSAF, elles se calculent toutes seules ? | « … 21,2% ; PAMC (…) … détaillées. » / deux puces sans « ; » ni point |
+| Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ? | « … déductibles ; régime réel — … réelles. » / puces « Micro-BNC », « Régime réel », sans « ; » ni point |
+| C'est quoi le Super-Net ? | « cotisations sociales (…), impôt sur le revenu (…), charges professionnelles (…). » / trois puces à majuscule ; et l'écran finit par « … tu gagnes vraiment — le calcul expliqué. » (lien), absent du schéma |
+| J'exporte facilement mes données pour ma compta ? | « tes journées…, les montants…, le détail…, tes revenus…, le statut de paiement (…). » / cinq puces à majuscule |
+| Je peux générer des factures et des contrats ? | « factures d'honoraires… ; contrats de remplacement… intégrée. » / deux puces à majuscule, sans « ; » ni point final |
+| Je peux stocker mes documents administratifs ? | « ta licence…, tes contrats signés, tes attestations…, ton diplôme… » / quatre puces à majuscule |
+| Comment te contacter ? | « … on te répond vite : contact@hippodoc.fr. On est… » / l'adresse est un bouton, sans point après elle |
+
+Guide des déclarations (9 questions, 14 réponses avec les pages filles). Le schéma porte
+l'identifiant interne d'une fiche ; l'écran le remplace par un lien nommé.
+
+| Question | Pages | Ce qui diffère (schéma / écran) |
+|---|---|---|
+| Les IJ Madelin (prévoyance privée) sont-elles imposables et soumises à cotisations sociales ? | guide | « (PC-014) » / « (Astuce · Tableau récap des IJ) » |
+| Puis-je changer de régime fiscal (Micro-BNC ou Réel) ? | guide, `2042-c-pro` | « voir QT-014 » / « voir Question · Le choix du régime fiscal » |
+| Comment déclarer si mon CA est en ZFU et Micro-BNC (remplaçant) ? | guide, `2042-c-pro` | « détail QT-049. » / « détail Question · Comment proratiser le plafond…. » |
+| Où déclarer mes IJ Madelin sur la DSFU (volet PAMC) ? | guide | « (PC-014) » / « (Astuce · Tableau récap des IJ) » |
+| La France Rurale Revitalisée (FRR) remplace-t-elle la ZRR ? | guide, `2042-c-pro` | « détail QT-049. » / « détail Question · Comment proratiser le plafond…. » |
+| Comment compter les 60 jours de PDSA pour l'exonération ? | guide, `2042-c-pro` | « (PC-003) » / « (Astuce · PDSA en pratique) » |
+| C'est quoi la « Contribution Additionnelle Maladie » (CAM 3,25 %) sur mon avis URSSAF ? | guide | deux énumérations à virgules et point final / deux listes à puces sans virgules ni point ; « voir PC-015 » / « voir Astuce · DPC » ; « cf. CASE-006 » / « cf. Case · DSAV » |
+| IJ CPAM hors ALD : pourquoi plus en case 1AJ en 2026 ? | guide | « voir QT-041 » / « voir Question · IJ CPAM hors ALD en micro-BNC » |
+| Pourquoi la case DSFA est-elle vide quand je suis au BNC réel ? | guide, `dsfu-pamc` | « voir QT-020 » / « voir Question · Comment déclarer si mon CA est… » ; « règles RO-006 / RO-015 » / « Règle d'or · Exonération ZFU / PDSA / Règle d'or · RSPM + PDSA » |
+
+Deux manières de les fermer, au choix du propriétaire : aligner le schéma sur l'écran
+(`aPlain` de `/faq` ; dans le guide, dériver la réponse du schéma du rendu, renvois
+nommés compris), ou l'inverse. L'une et l'autre touchent un JSON-LD ou un texte en
+période d'observation.
+
+**4. Vu en passant, non corrigé**
+
+- **Le schéma du guide envoie le balisage tel quel** : `**`, accents graves, ⚠️, 💡 et
+  puces sont dans `acceptedAnswer.text` (35 des 49 réponses du guide portent un `**`).
+  Ce n'est pas un écart de texte, la comparaison le neutralise ; c'est une question de
+  propreté du JSON-LD, à traiter avec les renvois du point 3 si le schéma est repris.
+- **Une énumération coupée dans une parenthèse** : dans la réponse sur la CAM,
+  `detectEnumeration` (`FormattedText.tsx`) coupe « le DPC (qui est conventionné, voir
+  PC-015) » à la virgule, d'où deux puces à l'écran, « le DPC (qui est conventionné » et
+  « voir Astuce · DPC) ». Défaut d'affichage, texte visible : à corriger sur décision.
+  Corrigé en § 9.fb.
+
+**Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Scripts de tri et de mutation :
+dossier de travail, hors dépôt.
+
+### 9.fa FAQ et guide des déclarations : le schéma `FAQPage` aligné sur l'écran (13 novembre 2026)
+
+Décision du propriétaire sur les 26 écarts de § 9.ez : **aligner le schéma sur l'écran**,
+pour les deux lots. Seul le JSON-LD change ; aucun texte visible n'est touché.
+`verify-site.mjs` passe à 0 erreur, contrôle des réponses actif sur toutes les pages.
+
+**Modification de contenu (JSON-LD), à connaître pendant la période d'observation** :
+26 `acceptedAnswer.text` sur quatre pages. Comparé au build d'avant, par script : seuls
+`/faq`, `/guide-declarations`, `/guide-declarations/2042-c-pro` et
+`/guide-declarations/dsfu-pamc` changent, et dans chacun seul le bloc `FAQPage` ; les
+questions, leur ordre et le reste du schéma sont identiques ; 12 + 9 + 4 + 1 réponses
+changent, celles de § 9.ez et aucune autre. Les 66 autres pages et tous les fichiers de
+`_astro/` sont identiques à l'octet (mêmes noms : aucun îlot ne change).
+
+**`/faq` (12 réponses)** : `aPlain` réécrit à la main dans `src/pages/faq.astro`, pour dire
+ce que `aHtml` affiche.
+
+- Une liste à l'écran : un élément par ligne dans le schéma, avec sa majuscule, sans les
+  « , », « ; », « = » ni le point que la mise à plat avait ajoutés. Texte brut, pas de
+  HTML dans le schéma (comme les listes du guide).
+- Les émojis des listes à pictogrammes (📅 🏥 💰, 🟢 🟠 🔵 ⚫) sont dans le schéma : ils
+  sont dans le texte de la page (élément `sr`, masqué à l'œil, le pictogramme est
+  dessiné en SVG), et le contrôle compare au texte de la page.
+- Deux réponses finissent à l'écran par un lien dans la dernière phrase : le schéma dit
+  maintenant « … pour optimiser ta fiscalité — comment choisir. » (revenus salariés) et
+  « … combien tu gagnes vraiment — le calcul expliqué. » (Super-Net), sans le lien.
+- « Comment te contacter ? » : l'adresse sur sa ligne, sans point après.
+- Non ajoutées : les quatre phrases à lien qui suivent la fin d'une réponse à l'écran
+  (revenus PDSA, rétrocessions versées, cotisations URSSAF, régime fiscal). Elles
+  n'étaient pas dans les 26 écarts : le schéma s'arrête avant elles, comme avant.
+
+**Guide des déclarations (9 questions, 14 réponses)** : le schéma ne reprend plus
+`reponse` telle quelle mais `reponsePourSchema(reponse)` (`src/lib/guide/reponse-schema.ts`),
+dans `src/pages/guide-declarations/index.astro` et `src/layouts/GuideSousPage.astro`.
+La fonction refait les deux réécritures de `FormattedText.tsx`, par le même code, et
+rien d'autre :
+
+- un renvoi interne devient ce que le lien affiche, lu dans le rendu d'`InlineRef` :
+  « QT-014 » → « Question · Le choix du régime fiscal », « PC-014 » → « Astuce · Tableau
+  récap des IJ », « QT-049 » → « Question · Comment proratiser le plafond… », « PC-003 »
+  → « Astuce · PDSA en pratique », « QT-041 » → « Question · IJ CPAM hors ALD en
+  micro-BNC », « QT-020 » → « Question · Comment déclarer si mon CA est… », « RO-006 » et
+  « RO-015 » → « Règle d'or · Exonération ZFU / PDSA » et « Règle d'or · RSPM + PDSA »,
+  « PC-015 » → « Astuce · DPC », « CASE-006 » → « Case · DSAV ». Un renvoi situé dans un
+  gras, un code ou une citation reste un identifiant, comme à l'écran ;
+- une énumération que l'écran met en liste (réponse sur la CAM, deux fois) : une puce
+  « • » par élément, sans virgules ni point final, d'après `enumerationsRendues`
+  (nouvel export de `FormattedText.tsx`, qu'aucun îlot n'appelle).
+
+Les 40 autres réponses du guide sortent identiques à l'octet : le balisage de l'auteur
+(`**`, accents graves, ⚠️, 💡, puces) reste dans le schéma, hors de la décision.
+
+**Reste ouvert**
+
+- **La réponse sur la CAM reprend un défaut d'affichage** : l'écran coupe « le DPC (qui
+  est conventionné, voir PC-015) » en deux puces (§ 9.ez, point 4), le schéma aussi
+  désormais. Quand `detectEnumeration` sera corrigée, le schéma suivra sans y toucher :
+  les deux passent par elle. Corrigée le même jour, § 9.fb.
+- **Le balisage brut dans le schéma du guide** (§ 9.ez, point 4) : inchangé.
+- **Les quatre phrases à lien de fin de réponse de `/faq`** : à l'écran seulement.
+
+**Vérification** : build (70 pages), `verify-site.mjs` à 0 erreur ; comparaison du build
+à celui d'avant (ci-dessus) ; essais par mutation de § 9.ez refaits, tous vus.
+**Non vérifié** : l'outil de test des résultats enrichis de Google, sur un aperçu Vercel.
+
+**Fichiers** : `src/pages/faq.astro`, `src/lib/guide/reponse-schema.ts` (nouveau),
+`src/components/guide/FormattedText.tsx`, `src/pages/guide-declarations/index.astro`,
+`src/layouts/GuideSousPage.astro`, `CLAUDE.md`.
+
+### 9.fb Guide des déclarations : une énumération n'est plus coupée dans une parenthèse (13 novembre 2026)
+
+Demande du propriétaire : corriger la mise en liste de la réponse sur la CAM (§ 9.ez,
+point 4). **Modification de texte visible**, sur deux pages.
+
+**Le défaut.** `detectEnumeration` (`src/components/guide/FormattedText.tsx`) met en
+puces un paragraphe de la forme « X : A, B, C ». Elle coupait à chaque virgule, y
+compris dans une parenthèse : « le DPC (qui est conventionné, voir PC-015) » sortait en
+deux puces, « le DPC (qui est conventionné » et « voir Astuce · DPC) ».
+
+**La correction.** La coupe passe par `couperEnumeration`, qui ignore les virgules et les
+« + » situés dans une parenthèse. La règle des trois éléments est inchangée : une
+énumération qui n'en a plus trois une fois ses parenthèses respectées reste une phrase.
+
+**Ce qui change, relevé par script.** Les deux versions de la fonction ont été passées
+sur les 1 440 textes de `boussoleData.ts` et `glossaireDeclarationsData.ts` : 15 mises en
+liste avant, 14 après, trois textes concernés. Puis le texte visible de toutes les pages
+du build a été comparé à celui d'avant : deux fichiers changent sur 869, aucun fichier de
+`_astro/` (le composant n'est dans aucun îlot).
+
+| Page | Passage | Avant | Après |
+|---|---|---|---|
+| `/guide-declarations` | question sur la CAM, « Ce qu'elle ne touche PAS » | cinq puces, dont « le DPC (qui est conventionné » et « voir Astuce · DPC) » | quatre puces, dont « le DPC (qui est conventionné, voir Astuce · DPC) » |
+| `/guide-declarations/medecin-remplacant` | conseil n° 2, « En BNC réel : » | quatre puces : « remplir la 2035 », « déduire tes charges réelles (véhicule », « repas », « matériel) et reporter le bénéfice en 5QC » | une phrase : « En BNC réel : remplir la 2035, déduire tes charges réelles (véhicule, repas, matériel) et reporter le bénéfice en 5QC. » |
+
+- Le second passage n'était pas dans la demande : même défaut, même fonction, il ne se
+  corrige pas l'un sans l'autre. Il n'a plus que deux éléments hors parenthèses, donc
+  plus de liste ; virgules et point final reviennent.
+- Le troisième texte (description du profil « Médecin avec arrêt / IJ », « IJ CPAM
+  (maternité, paternité, maladie) ») n'est rendu par ce composant sur aucune page du
+  build : rien ne change à l'écran.
+- JSON-LD : seule la réponse sur la CAM du `FAQPage` de `/guide-declarations` change, et
+  d'elle-même (`reponsePourSchema` passe par la même fonction, § 9.fa) : le schéma dit
+  « • le DPC (qui est conventionné, voir Astuce · DPC) ». Aucun autre bloc ne change.
+- La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) n'est pas touchée : c'est
+  une correction d'affichage, pas une revue éditoriale.
+
+**Vérification** : build (70 pages), `verify-site.mjs` à 0 erreur. Aucune feuille de
+style ni aucun script ne change : pas de passage dans le moteur de Safari ni de test
+d'îlot. **Non vérifié** : rendu à l'œil dans un navigateur (le HTML des deux passages a
+été relu).
+
+**Fichier** : `src/components/guide/FormattedText.tsx`.
+
+### 9.fc `verify-site.mjs` : le schéma `FAQPage` comparé pli par pli, une égalité au lieu d'une inclusion (13 novembre 2026)
+
+Une relecture indépendante de § 9.ez et § 9.fa a montré que le contrôle « 4 septies » ne
+prouvait qu'une **inclusion** : la réponse du schéma, espaces retirées, devait se trouver
+quelque part dans le texte de la page. Ses 21 mutations ciblées, rejouées ici avec le
+script de `main` : 16 passaient en code 0 (réponses de deux questions échangées, réponse
+réduite à « Oui. », réponse vide, phrase ajoutée à l'écran, réponse masquée…). Le contrôle
+compare désormais chaque réponse au pli qui la porte. Sa première version a été relue
+deux fois, puis corrigée (point 7) : ce qui suit décrit le contrôle corrigé.
+
+**Aucun contenu ne change** : ni texte visible, ni JSON-LD, ni donnée. Seuls
+`scripts/verify-site.mjs`, `CLAUDE.md` et ce journal changent. Le build est identique à
+l'octet à celui de `main` : 869 fichiers, mêmes sommes sha256, l'arbre de `main` (5be2da2)
+rebâti pour la comparaison. `verify-site.mjs` finit à 0 erreur sur ce build.
+
+**1. Le relevé, avant d'écrire une règle**
+
+Sur le build de `main`, 58 pages portent un `FAQPage`, 391 questions en tout. Pour chacune
+(script de relevé, hors dépôt ; refait à la reprise, résultat identique) :
+
+| Mesure | Résultat |
+|---|---|
+| La question dans le texte de la page | 1 fois pour 329 questions ; de 2 à 15 fois pour 62 (61 dans le guide des déclarations, dont les renvois citent les questions, 1 sur `/simulateur`) |
+| La question comme titre d'un pli | 391 sur 391 : texte entier d'un élément du `<summary>` d'un seul `<details>` (le `<summary>` lui-même 347 fois, `.qa-q` 32 fois sur `/faq`, `.qa-t` 12 fois) |
+| Devant la question, dans le `<summary>` | rien 359 fois ; le numéro de `/faq`, 1 ou 2 chiffres, 32 fois |
+| Entre la fin de la question et la réponse | rien 379 fois ; 1 signe 12 fois (le « + » du `<summary>`, calculette et simulateur) |
+| Le conteneur de la réponse | `.qa-in` 325 fois, `.gd-reponse` 66 fois (guide) ; aucun pli sans conteneur |
+| Le texte du conteneur | égal à la réponse du schéma 387 fois ; la réponse suivie d'une phrase à lien 4 fois (`/faq`, point 3) |
+| Le reste du pli | rien 325 fois ; dans le guide, étiquettes et « Voir aussi » après la réponse, 66 fois sur 66 |
+| Masqué (attribut `hidden`, `display:none` ou `visibility:hidden` en ligne) | aucun |
+| Séparation des mots, questions et réponses | aucun écart. Une espace du schéma là où l'écran n'a qu'une balise en ligne : 124 fois, toutes dans le guide (puces, renvois). Une balise en ligne sans espace au schéma (milieu de mot, ponctuation) : 828 fois |
+| Autre `<details>`, hors schéma, dans l'élément qui contient les plis du schéma | aucun, sur 58 pages |
+| `<details>` à conteneur `.qa-in` hors schéma, ailleurs dans la page | 11 sur 3 pages : accueil (2, plis des tarifs), `/simulateur` (8, guide de l'outil), `/guide-declarations` (1, rappel). `.qa` est une fiche partagée, pas la marque d'une FAQ |
+| Longueur des réponses, hors espaces | de 92 à 2 058 signes |
+
+**2. Ce que le contrôle prouve maintenant**
+
+Pour chaque question d'un `FAQPage`, sur toutes les pages :
+
+1. **La réponse existe** : ni absente, ni vide. Un `FAQPage` sans question échoue aussi.
+2. **La question est le titre d'un pli.** Elle est le texte entier d'un élément du premier
+   `<summary>` d'un `<details>`, que rien ne précède dans le pli (ni texte, ni autre
+   `<summary>` : le navigateur prend le premier pour titre et affiche le reste avec la
+   réponse). La réponse comparée est celle de ce pli (de chaque pli, si la question est
+   affichée deux fois). Entre la question et le conteneur de la réponse, et devant la
+   question dans le `<summary>`, un repère au plus : trois signes, sans lettre (ni
+   chiffre après la question). **Il n'y a pas de repli** : une question du schéma qui
+   n'est le titre d'aucun pli, ou un pli sans conteneur reconnu, est une erreur, parce
+   que la réponse ne serait comparée à rien (point 7).
+3. **Le texte du conteneur est ÉGAL à la réponse du schéma**, du premier au dernier
+   signe, espaces mises à part : tronquée, allongée, échangée, elle échoue. Rien d'autre
+   dans le pli après le conteneur, sauf, dans le guide, les étiquettes et les « Voir
+   aussi » (`HORS_REPONSE_DU_PLI`). Un écart connu se déclare dans `EXCEPTIONS_FAQ`
+   (point 3).
+4. **Les mots se séparent aux mêmes endroits**, dans la question comme dans la réponse,
+   et dans la phrase d'une exception : pas d'espace à l'écran là où le schéma n'en a pas,
+   une espace ou une balise de bloc là où il en a une. Hors du guide, une balise en ligne
+   seule ne vaut pas une espace (« mot<strong>suite » se lit collé) ; dans le guide elle
+   est admise (puces, renvois).
+5. **Rien n'est masqué**, pour ce qu'un contrôle statique voit : ni le conteneur, ni un
+   ancêtre, ni un élément de la réponse ou de la question qui porte du texte n'a
+   l'attribut `hidden` ou un style en ligne `display:none`, `visibility:hidden` ou
+   `collapse`, `content-visibility:hidden` (valeur entre guillemets doubles, simples ou
+   sans guillemets), et aucun n'est un élément dont le navigateur n'affiche pas le
+   contenu (`<dialog>` sans `open`, `<canvas>`, `<datalist>`, `<video>`, `<audio>`,
+   `<iframe>`, `<object>`). Un `<details>` fermé n'est pas masqué. Un élément masqué qui
+   ne porte aucun texte (case à cocher d'une interaction en CSS seul) ne compte pas.
+6. **Sens inverse** : dans l'élément qui contient un pli du schéma, tout autre
+   `<details>`, à toute profondeur, est une question du schéma (sauf dans une réponse :
+   il est comparé avec elle).
+7. **Le schéma est là, une fois** : une page qui cite `FAQPage` en a un bloc, un seul,
+   lisible à la racine d'un JSON-LD, quels que soient les attributs de sa balise
+   `<script>` ; un `FAQPage` rangé ailleurs (`@graph`, tableau) ou illisible échoue ;
+   aucune question n'y figure deux fois. Le compte ne passe pas sous `PLANCHER_FAQ`
+   (58 pages, 391 questions), ce qui voit une page qui perd son schéma et une rubrique
+   retirée du schéma mais restée à l'écran. Au-dessus du plancher (nouvel article,
+   nouvelle question), un avertissement demande de le relever.
+
+Le message d'erreur nomme la question et garde le premier écart : derniers mots communs,
+suite dans le schéma, suite dans la page. Les 391 réponses d'aujourd'hui sont toutes
+comparées par égalité.
+
+**3. Exceptions déclarées (décision du propriétaire)**
+
+Quatre réponses de `/faq` finissent à l'écran par une phrase à lien que le schéma n'a
+pas (§ 9.fa, « Non ajoutées »). L'égalité les révèle. Elles ne sont pas corrigées :
+elles sont déclarées dans `EXCEPTIONS_FAQ` (page, question, texte affiché à la suite de
+la réponse, raison), sortent en avertissement à chaque passage, et font échouer le
+contrôle dès qu'elles ne correspondent plus à rien (question retirée, phrase modifiée,
+déplacée, retirée de l'écran ou ajoutée au schéma). Une exception ne couvre que son
+texte, mot pour mot, espaces comprises, à la suite de la réponse.
+
+| Question (`/faq`) | À l'écran, après la réponse du schéma | Lien |
+|---|---|---|
+| C'est quoi les revenus PDSA / exonérés ? | « Le détail : ce qui est exonéré et comment le déclarer. » | `/blog/pdsa-exoneration-gardes-regulees` |
+| Qu'est-ce que les rétrocessions versées ? | « Côté remplaçant, voir comment se négocie une rétrocession. » | `/blog/retrocession-honoraires-medecin-remplacant` |
+| Mes cotisations URSSAF, elles se calculent toutes seules ? | « Pour comprendre chaque cotisation : l'URSSAF et la CARMF expliquées. » | `/blog/tout-comprendre-urssaf`, `/blog/tout-comprendre-carmf` |
+| Quel est le meilleur régime fiscal pour moi : Micro-BNC ou réel ? | « La règle complète : micro-BNC ou réel. » | `/blog/regime-fiscal-micro-bnc-vs-reel` |
+
+Pour chacune, trois issues : la laisser déclarée, ajouter la phrase au schéma (`aPlain`),
+ou la sortir de la réponse affichée. Les deux dernières touchent un JSON-LD ou un texte
+en période d'observation.
+
+**4. Ce que le contrôle ne prouve pas**
+
+Chaque ligne a été essayée par mutation (point 5) : elle passe en code 0.
+
+- **Masqué par une feuille de style** (classe `sr`, `hidden` de Tailwind…) ou par un
+  autre style en ligne (`opacity:0`, hauteur nulle).
+- **Le balisage admis dans le schéma**, retiré avant de comparer, comme avant : une balise
+  de `BALISE_DE_REPONSE` (`<b>`, `<p>`, `<a>`…) sur toutes les pages ; `**`, `*`, accents
+  graves et ⚠️ ✅ 💡 dans le guide (`sansBalisageDuGuide`). Voulu : un `<b>` ou un `**`
+  ajouté dans une réponse du schéma passe.
+- **Les marqueurs du guide** : ni lequel c'est, ni sa place ne sont comparés à l'icône
+  que l'écran affiche. Un ⚠️ retiré du schéma, changé en ✅ ou déplacé d'une phrase à la
+  suivante passe. Les deux côtés sortent de la même source par le même découpage
+  (`splitOnMarkers`) ; les comparer demanderait de lier le contrôle aux noms de classes
+  des icônes.
+- **Les espaces** : leur nombre et leur nature (insécable, retour à la ligne). Hors du
+  guide, rien ne dit donc où le schéma va à la ligne ; dans le guide, la puce « • » est
+  comparée comme un signe (une liste mise à plat échoue). Dans le guide encore, une
+  espace ajoutée ou retirée là où l'écran n'a qu'une balise en ligne entre deux signes.
+  Le trait d'union conditionnel (U+00AD, « &shy; ») est ignoré des deux côtés : il ne
+  s'affiche pas.
+- **Un repère qui dirait quelque chose** : trois signes sans lettre entre la question et
+  la réponse (« ✗ », « ≠ », « ?! ») passent comme le « + » d'un `<summary>` ou un
+  chevron. La marge est gardée pour qu'un changement de signe dans le dessin du pli ne
+  fasse pas échouer le contrôle.
+- **Ce qui s'affiche autour d'un pli sans être dedans** : une phrase juste avant ou juste
+  après le `<details>` ; la même question reprise ailleurs dans la page hors d'un pli (un
+  titre suivi d'une autre réponse) ; une question affichée hors de l'élément qui
+  contient les plis du schéma. Un bloc entier ou une page entière absents du schéma ne
+  sont vus que par le plancher, donc pas si autant de questions sont ajoutées ailleurs
+  dans le même changement, ni tant que le plancher n'a pas été relevé après un ajout.
+- **Ce qui n'est pas du texte** : des mots dessinés dans un `<svg>` ou portés par une
+  image (`alt`) au milieu d'une réponse.
+- **Dans le guide, le texte des étiquettes et des « Voir aussi »** d'un pli : hors
+  réponse, admis sans comparaison.
+- Ce que Google affiche : non vérifié ici (outil de test des résultats enrichis).
+
+**Ce qu'il refuse alors que le texte est le même** (voulu, à savoir avant de changer un
+gabarit) :
+
+- une FAQ sous un autre balisage que `<details>` et un conteneur connu (pli devenu
+  `<div>`, conteneur renommé) : le gabarit se déclare d'abord dans le contrôle ;
+- une FAQ dans un élément `hidden` (panneau d'onglet inactif, `hidden="until-found"`),
+  alors qu'un `<details>` fermé passe ;
+- dans le guide, une puce que l'écran affiche et que le schéma n'a pas, ou une puce
+  passée en feuille de style : `reponsePourSchema` ou `sansBalisageDuGuide` s'adaptent
+  dans le même changement ;
+- une entité nommée hors de la table du contrôle (Latin-1 et typographie courante) ;
+- une question deux fois dans le schéma, même avec la même réponse.
+
+**5. Essais par mutation**
+
+Chaque mutation modifie un fichier d'une copie par liens du build, puis `verify-site.mjs`
+est lancé : « vue » si le code de sortie n'est pas 0. Trois scripts sont comparés : celui
+de `main`, celui de la première version de ce contrôle durci (commit 7b708c1, l'état
+relu), et le script corrigé après relecture. Quatre bancs, 932 mutations :
+
+| Banc | Mutations | Doivent échouer | Vues : `main` | 7b708c1 | corrigé | Doivent passer | Refusées : `main` | 7b708c1 | corrigé |
+|---|---|---|---|---|---|---|---|---|---|
+| Constructeur (dont les 21 ciblées de la relecture de § 9.ez) | 363 | 356 | 121 | 343 | 345 | 7 | 0 | 0 | 0 |
+| Relecteur adverse | 519 | 443 | 181 | 412 | 438 | 76 | 8 | 18 | 6 |
+| Relecteur de code | 23 | 19 | 2 | 12 | 17 | 4 | 0 | 0 | 0 |
+| Correcteur (règles ajoutées à la correction) | 27 | 18 | 5 | 10 | 18 | 9 | 2 | 2 | 0 |
+| Total | 932 | 836 | 309 | 777 | 818 | 96 | 10 | 20 | 6 |
+
+Le banc du constructeur, par lot (vues avec `main`, 7b708c1, corrigé) : les 21 mutations
+ciblées 5, 19, 19 ; les 30 mutations simples (un mot changé à l'écran ou dans le schéma)
+30, 30, 30 ; les autres contrôles de l'accueil 6, 6, 6 ; une mutation par règle, avec
+témoins et limites, 12, 58, 60 sur 76 ; le balayage tiré au sort (4 mutations par page à
+`FAQPage`, graine fixe) 68, 230, 230 sur 230.
+
+Les 21 mutations ciblées :
+
+| Mutation | `main` | Corrigé |
+|---|---|---|
+| Réponses de deux questions échangées dans le schéma (`/faq`, accueil, guide) | passent (3) | vues (3) |
+| Réponse réduite à sa première phrase (`/faq`, article) | passent (2) | vues (2) |
+| Réponse remplacée par « Oui. » (`/tarifs`) | passe | vue |
+| Réponse vide (`/faq`, accueil) | passent (2) | vues (2) |
+| Une espace retirée entre deux mots du schéma (`/faq`) | passe | vue |
+| Question retirée du schéma, restée à l'écran (`/faq`) | passe | vue |
+| Phrase ajoutée à l'écran avant la réponse, après la réponse (`/faq`) | passent (2) | vues (2) |
+| Phrase ajoutée à l'écran au milieu de la réponse (`/faq`) | vue | vue |
+| Réponse masquée à l'écran, `hidden` et `display:none` (`/faq`) | passe | vue |
+| Guide : liste mise à plat dans le schéma, puces et retours retirés | passe | vue |
+| Hors guide : `**` ajoutés dans le schéma (`/faq`) | vue | vue |
+| Majuscule changée, virgule retirée, émoji retiré dans le schéma (`/faq`) | vues (3) | vues (3) |
+| Guide : `**` ajoutés autour d'un mot du schéma | passe | **passe** : balisage du guide, retiré avant de comparer (voulu) |
+| Balise `<b>` ajoutée dans le schéma (`/faq`) | passe | **passe** : balise admise dans une réponse (voulu) |
+
+Le banc du relecteur adverse, par famille, pour les mutations qui doivent échouer (vues
+avec `main`, 7b708c1, corrigé) : réponses échangées 0, 16, 16 sur 16 ; troncatures 3, 22,
+22 sur 22 ; allongements 9, 10, 10 sur 10 ; réponse absente ou sans texte 0, 13, 13 sur
+13 ; réponse déplacée 0, 6, 6 sur 6 ; mot inséré à l'écran 0, 10, 14 sur 17 ; question
+renommée, répétée ou sortie de son pli 7, 10, 21 sur 21 ; masquage 1, 16, 21 sur 21 ;
+bloc `FAQPage` ou question en double 4, 7, 11 sur 11 ; forme de `mainEntity` 2, 6, 6 sur
+6 ; caractères proches (apostrophe, tirets, espace dans un nombre…) 22, 30, 30 sur 30 ;
+guide 7, 7, 7 sur 9 ; exceptions 2, 16, 18 sur 18 ; sens inverse 0, 2, 2 sur 2 ; balisage
+ajouté au schéma hors du guide 3, 3, 3 sur 3 ; fichier abîmé ou absent 6, 6, 6 sur 6 ;
+balayage d'un signe sur chacune des 58 pages 115, 232, 232 sur 232.
+
+**Les 18 mutations qui passent encore alors que quelque chose est faux**, toutes écrites
+au point 4 : `**` du guide et balise `<b>` dans le schéma (voulus) ; réponse masquée par
+une classe ; par `opacity:0` ; mot ajouté dans les étiquettes d'un pli du guide ; phrase
+ajoutée dans ses « Voir aussi » ; marqueur ⚠️ retiré, changé en ✅, déplacé (3) ; retours
+à la ligne du schéma remplacés par des espaces ; espace insécable changée en espace
+simple ; dans le guide, espace retirée après une puce ; `<details>` ajouté hors de
+l'élément qui contient les plis ; phrase juste avant un pli, juste après un pli (2) ;
+texte dessiné dans un `<svg>` au milieu d'une réponse ; question reprise dans un titre
+ailleurs dans la page, suivie d'une autre réponse ; « ✗ » entre la question et la réponse.
+
+**Les 6 changements notés « légitimes » que le contrôle refuse** : FAQ dans un panneau
+`hidden`, `hidden="until-found"`, puce affichée que le schéma n'a pas, puce passée en
+feuille de style (quatre refus voulus, écrits au point 4) ; un repère « (!) » qui, avec
+le « + » du `<summary>`, fait quatre signes ; une question répétée dans le schéma (les
+deux derniers n'étaient pas des changements légitimes). Les 90 autres passent : balises
+en ligne ajoutées à l'écran (`<strong>`, `<a>`, `<ins>`, `<del>`…), retours à la ligne,
+indentation, entités nommées ou numériques, JSON-LD réindenté, `<details open>`, élément
+masqué sans texte, liste ajoutée des deux côtés dans le guide.
+
+Les sept témoins du constructeur, où rien n'est faux, passent : `<details>` ouvert ; la
+même question affichée deux fois avec la même réponse ; un repère « › » après la
+question ; un numéro « 12. » devant elle ; une question ajoutée à l'écran et au schéma
+(avec l'avertissement du plancher) ; `aria-hidden` et une classe « hidden-x » sur le
+conteneur ; un `<details>` dans une réponse dont le schéma porte aussi le texte.
+
+**6. Seuils et constantes, et d'où ils viennent**
+
+| Constante | Valeur | Origine |
+|---|---|---|
+| `CONTENEURS_DE_REPONSE` | `.qa-in`, `.gd-reponse` | relevé : 325 et 66 plis, aucun autre |
+| `HORS_REPONSE_DU_PLI` | `.gd-etiquettes`, `.gd-croises`, dans le guide seulement | relevé : 66 plis du guide sur 66, aucun ailleurs |
+| `SEUIL_REPERE` | 3 signes, sans lettre ; sans chiffre après la question | relevé : au plus 2 signes devant la question (numéro de `/faq`), 1 après (« + ») ; un signe de marge, choisi et non mesuré. La première version admettait trois signes quelconques : « Oui », « Non », « Si » y tenaient |
+| Balise en ligne admise pour une espace du schéma | dans le guide seulement | relevé : 124 cas, tous dans le guide |
+| `PLANCHER_FAQ` | 58 pages, 391 questions | compte du build du 13 novembre 2026 |
+| `EXCEPTIONS_FAQ` | 4 entrées | relevé : les 4 conteneurs qui ne sont pas égaux au schéma |
+| `ENTITES_FAQ` | les 96 entités de Latin-1 et 58 autres (base, typographie, flèches, signes) | les sources écrivent déjà `&nbsp;` à la main ; `&eacute;`, `&euro;`, `&laquo;`, `&mdash;`, `&hellip;`, `&thinsp;` sortaient en écart de texte (déjà sur `main`) |
+| `CONTENU_NON_AFFICHE` | `<canvas>`, `<datalist>`, `<video>`, `<audio>`, `<iframe>`, `<object>`, `<noembed>`, `<noframes>` ; `<dialog>` sans `open` | essais de la relecture, rendu regardé dans Chromium par le relecteur |
+
+`BALISE_DE_REPONSE` et `sansBalisageDuGuide` admettent le même balisage qu'avant. Deux
+détails changent sans rien admettre de plus : la puce de début de ligne du guide reste
+dans la comparaison (elle en était retirée des deux côtés), et une balise en ligne du
+schéma ne laisse plus d'espace à sa place (« <b>Totalement</b>. » se lit « Totalement. »,
+sinon la comparaison des frontières de mots y voyait une espace de trop).
+
+**7. Relecture et correction**
+
+La première version du contrôle durci (7b708c1) a été relue deux fois, séparément : par
+un relecteur adverse (519 mutations à lui) et par un relecteur de code (23 mutations).
+Chaque constat a été reproduit avant d'être corrigé.
+
+| Constat | Mutations | Suite |
+|---|---|---|
+| Le repli « hors d'un pli reconnu » gardait le défaut d'origine : un titre changé d'un seul côté sur tout un bloc, ou un conteneur renommé, faisait retomber sur une inclusion, avec un avertissement et le code 0 ; une réponse réduite à « Non. » passait alors | 17 | **Règle** : le repli est retiré. Question hors d'un pli ou pli sans conteneur : erreur |
+| Du texte placé dans le `<details>` avant le `<summary>`, ou un autre `<summary>` devant celui de la question, n'était comparé à rien ; le navigateur l'affiche avec la réponse | 5 | **Règle** : la question est dans le premier `<summary>`, que rien ne précède |
+| Un bloc `FAQPage` en double passait, et l'avertissement conseillait de relever le plancher ; un second bloc dans une balise `<script>` à autres attributs n'était pas lu ; une question répétée passait | 4 | **Règles** : un seul bloc par page, tous les blocs JSON-LD lus, pas de question en double, `FAQPage` hors racine ou illisible en erreur |
+| Masquages non lus : style sans guillemets, `hidden` collé à l'attribut précédent, contenu d'un `<dialog>` fermé, d'un `<canvas>`, d'un `<datalist>` | 5 | **Règle** : attributs lus comme le navigateur les lit ; éléments au contenu non affiché |
+| La phrase d'une exception était comparée sans ses espaces | 2 | **Règle** : frontières de mots comparées sur la réponse suivie de la phrase |
+| Refus à tort : `<ins>` et `<del>` lus comme des séparations de mots ; élément masqué sans texte dans une réponse | 5 | **Corrigé** : liste des balises en ligne complétée ; un élément masqué ne compte que s'il porte du texte |
+| Refus à tort, déjà sur `main` : entités nommées autres que sept d'entre elles | 7 | **Corrigé** : table des entités ; trait d'union conditionnel ignoré |
+| Plantage sans liste d'erreurs si `mainEntity` est une question seule, contient `null`, ou si un bloc JSON-LD vaut `null` | 4 | **Corrigé** : erreurs lisibles |
+| Marqueur ⚠️ changé en ✅ ou déplacé dans le schéma du guide | 2 | **Limite** écrite (point 4) |
+| Phrase juste avant ou juste après un pli ; texte dans un `<svg>` ; question reprise dans un titre ailleurs | 4 | **Limites** écrites (point 4) |
+| « ✗ » entre la question et la réponse ; proposition de réduire le repère au chiffre et au « + » relevés | 1 | **Limite** écrite, seuil gardé : le resserrer ferait échouer un changement de signe dans le dessin du pli (témoin « › ») |
+| FAQ dans un panneau `hidden`, puces du guide | 4 | **Refus voulus**, écrits (point 4) |
+| Plantage si une page attendue manque dans `dist` (`/tarifs`, `/faq`, un article) | 2 | **Non corrigé** : lectures d'autres contrôles, déjà sur `main`, hors de ce chantier ; le code de sortie n'est pas 0 et l'erreur nomme le fichier |
+| La branche `place: 'avant'` des exceptions ne servait à rien | — | **Retirée** : une exception est le texte affiché à la suite de la réponse |
+| Messages : nom de la question toujours suivi de « … » ; avertissement du repli sans nom de question | — | **Corrigé** : « … » seulement si le nom est coupé ; chaque question est nommée |
+
+**Durée** de `verify-site.mjs` sur le build intact, quinze passages alternés : médiane
+1,48 s avec le script de `main`, 1,57 s avec 7b708c1, 1,57 s avec le script corrigé
+(de 1,25 à 1,60 s, de 1,44 à 1,77 s, de 1,43 à 1,76 s). Le contrôle durci coûte environ
+0,1 s ; la correction n'y ajoute rien de mesurable.
+
+**Vérification** : build (70 pages) puis `verify-site.mjs` : 0 erreur, 7 avertissements
+(les 3 d'avant et les 4 exceptions) ; build identique à l'octet à celui de `main`
+(869 fichiers, mêmes sommes sha256, l'arbre de `main` rebâti pour la comparaison) ; les
+932 mutations rejouées une à une avec le script corrigé, les 569 des relecteurs et du
+correcteur aussi avec le script de `main` (les 363 du constructeur l'avaient été par
+lui). Hors du bloc « 4 septies », `verify-site.mjs` est identique à celui de `main`.
+**Non vérifié** : l'outil de test des résultats enrichis de Google ; aucun navigateur
+n'a été lancé pour ce chantier, hors l'essai de rendu du relecteur (rien ne change à
+l'écran) ; les mutations portent sur le HTML du build, aucune sur une source suivie d'un
+vrai build.
+
+**Fichiers** : `scripts/verify-site.mjs`, `CLAUDE.md`. Relevé, bancs et cas de mutation :
+dossier de travail, hors dépôt.
+
+### 9.fd Sitemap : `/faq` datée du 13 novembre 2026 (13 novembre 2026)
+
+Décision du propriétaire. Le 13 novembre, la PR 146 (§ 9.fa) a réécrit douze réponses du
+schéma `FAQPage` de `/faq` pour qu'elles disent ce que la page affiche ; le `lastmod` de
+la page restait au 10 novembre, date qu'elle partageait avec la mise en ligne de l'accueil
+de la DA 2026 (§ 9.eb). Le texte visible de `/faq` n'a pas changé ce jour-là.
+
+- `src/lib/pages-lastmod.ts` : `/faq` a sa propre constante, `FAQ_LAST_UPDATED_ISO`,
+  au `2026-11-13`. `ACCUEIL_DA_LAST_UPDATED_ISO`, que plus aucune page ne portait, est
+  retirée (aucune autre source ni script ne la lisait). Le commentaire de
+  `ACCUEIL_LAST_UPDATED_ISO` ne dit plus « à remettre au jour réel de la mise en ligne » :
+  c'est fait (PR 144, 13 novembre).
+- Effet sur le build : seule l'entrée `/faq` de `sitemap-0.xml` change de date ; aucune
+  page ne change. `verify-site.mjs` relit cette table et compare le sitemap.
+
+**Fichiers** : `src/lib/pages-lastmod.ts`, `MIGRATION.md`.
+
+### 9.fe Scène finale : le hippo de dos en haute définition (13 novembre 2026)
+
+Demande du propriétaire : le hippo vu de dos de la scène finale de l'accueil n'était pas
+net. Le fichier d'origine (`src/assets/accueil/mascotte-dos.webp`, 431 × 727 px, 32 Ko)
+était déjà affiché à 2 fois sa taille sur les écrans haute densité (268 px CSS à
+l'ordinateur, donc 536 px réels demandés).
+
+- Le fichier est remplacé par celui que le propriétaire a fourni (1200 × 1200 px, fond
+  transparent), détouré à sa boîte utile sans perte : 651 × 1056 px, WebP sans perte
+  (349 Ko en source ; le build n'en sert que des déclinaisons de 5 à 41 Ko). Même pose,
+  même cadrage, plus net.
+- `SceneFinale.astro` : la plus grande déclinaison passe de 431 à 536 px (deux fois la
+  largeur affichée à l'ordinateur), pour que les écrans haute densité la reçoivent nette.
+  Largeurs affichées inchangées (172 et 268 px).
+- Effet visible : la nouvelle image est un peu plus large que haute que l'ancienne
+  (0,62 contre 0,59) : à largeur égale, le personnage est moins haut de 11 px sur
+  téléphone et de 17 px à l'ordinateur, ancré au même endroit. Comparé en capture, la
+  tête reste centrée sur le soleil.
+- Aucun texte, titre, lien ni attribut ne change (le texte de remplacement est
+  inchangé) : la période d'observation de l'accueil n'est pas concernée.
+
+**Fichiers** : `src/assets/accueil/mascotte-dos.webp`,
+`src/components/accueil/SceneFinale.astro`, `src/components/accueil/Mascotte.astro`
+(commentaire), `MIGRATION.md`.
+
+### 9.ff En-tête : le mot-symbole à la même distance du bord que le bouton d'essai (13 novembre 2026)
+
+Demande du propriétaire (« ce qui te semble le mieux, le plus agréable ») après une revue de
+la pastille de l'en-tête. Relevé à 1440, 1280, 1024 et 960 px : liens à 30 px d'écart,
+centres des textes alignés à 0,3 px, bouton d'essai à 8 px du bord (pilule dans une
+pilule), menu à égale distance du mot et du bloc de droite. Un seul écart : à partir de
+960 px, le mot « Hippodoc » commençait à 20 px du bord gauche, alors que le texte du bouton
+d'essai finit à 26 px du bord droit.
+
+- `src/styles/da.css`, dans le `@media (min-width: 960px)` de l'en-tête : `.hd-bar` passe à
+  `padding-left: 22px` (16 px avant, plus les 4 px de `.hd-brand`) : le mot est à 26 px du
+  bord, comme le texte du bouton. Sous 960 px rien ne change : le mot y est à 20 px du
+  bord, comme l'icône du menu à droite.
+- Effet mesuré (après, avant) : mot à 26 px du bord (20) ; écart mot-menu 135 px (138),
+  menu-« Connexion » 123 px (126), à 1440 px ; à 960 px, 43 px (46) et 31 px (34). Aucun
+  débordement de 390 à 1440 px.
+- Feuille commune : son nom change, donc le HTML de toutes les pages, au nom de la feuille
+  près. Aucun texte, lien ni attribut ne change.
+
+**Fichiers** : `src/styles/da.css`, `MIGRATION.md`.
+
+### 9.fg Accueil : lui et elle en alternance, trois images chacun (13 novembre 2026)
+
+Remarque rapportée par le propriétaire : la mascotte féminine est trop présente sur
+l'accueil. Relevé : elle 4 images (tablette et pouce levé dans « Sous la surface »,
+« Pour qui », tarifs), lui 2 (premier écran, scène finale), et quatre images d'elle
+d'affilée en lisant la page.
+
+- Règle gardée : un seul personnage par bloc (changer seulement la case jaune aurait mis
+  lui et elle dans le même bloc). Les blocs alternent désormais : lui (premier écran),
+  elle (« Sous la surface »), lui (« Pour qui »), elle (tarifs), lui (scène finale) ;
+  trois images chacun.
+- « Pour qui » : la pose féminine qui pointe est remplacée par la pose masculine qui
+  pointe, même geste et même direction. Le fichier est celui que le site employait avant
+  la phase 3 (`src/assets/accueil/mascotte-pointe.webp`, 1004 × 1063 px, retiré en
+  a1237e6, remis tel quel depuis l'historique) ; mêmes largeurs servies.
+- `mascotte-f-pointe.webp` reste : le premier écran du guide des déclarations
+  (`src/components/guide/HeroSection.astro`) l'emploie.
+- Effet mesuré : même largeur affichée (133 px sur téléphone, 310 px à l'ordinateur),
+  4 et 10 px de moins en hauteur ; hauteur de la section inchangée (1 154 et 1 660 px).
+  Aucun texte, lien ni attribut ne change ; feuille commune inchangée.
+
+**Fichiers** : `src/assets/accueil/mascotte-pointe.webp`,
+`src/components/accueil/PourQui.astro`, `src/components/accueil/Mascotte.astro`
+(commentaires et sources), `MIGRATION.md`.
+
+### 9.fh Accueil : le film en miroir du portrait, un titre et un bouton qui disent « vidéo » (13 novembre 2026)
+
+Demande du propriétaire, qui lève pour ce bloc le gel des textes de l'accueil (« fais tout
+maintenant »). Trois défauts : le film était à gauche, sous le portrait lui-même à gauche ;
+on ne comprenait pas que c'était une vidéo (titre « Hippodoc en une minute », pastille
+« 1 min » en coin) ; le sous-titre était la définition du produit, une liste de mots.
+
+- Mise en page (`Fondateur.astro`) : à partir de 700 px, le film passe à droite et son
+  texte à gauche, en miroir du portrait ; sous 700 px, la vignette passe aussi à droite.
+  L'ordre du code ne change pas (texte, puis film). Corps du texte du film : 17 px de
+  700 à 899 px, 18 px à partir de 900 px (15,5 avant), comme le texte du fondateur.
+- Invitation à lire : centrée au pied de l'affiche (en bas à gauche avant), libellé
+  « Voir la vidéo · 1 min » ; sous 700 px, dans la vignette, « 1 min » seul. Nom du
+  bouton : « Voir la vidéo, 1 min : présentation d’Hippodoc » (avant : « 1 min, lire le
+  film de présentation »). Script du film inchangé (mêmes identifiants).
+- Textes. Titre `<h3>` : « Hippodoc en une minute » devient « Découvre Hippodoc en
+  vidéo ». Sous-titre : la définition du produit (`PRODUCT_DEFINITION`) est remplacée par
+  une phrase nouvelle, « De ta journée de remplacement à ce qu’il te reste : tout
+  Hippodoc en une minute. » Le schéma `VideoObject` garde le nom du film, « Hippodoc en
+  une minute » (attribut `title` du `<video>`).
+- La définition n'est pas perdue : elle devient la neuvième question de la FAQ de
+  l'accueil, « Qu'est-ce qu'Hippodoc ? », réponse `PRODUCT_DEFINITION` mot pour mot
+  (`src/data/faqAccueil.ts`, `id` `definition`, mesure `landing_faq_definition`),
+  placée en dernier (les cinq premières suivent la demande mesurée). Elle entre donc
+  aussi dans le schéma `FAQPage`. `PLANCHER_FAQ` passe de 391 à 392 questions.
+- Vérifié : build, `verify-site.mjs` à 0 erreur ; à 390, 600, 768 et 1440 px, film à
+  droite, texte au bord gauche du portrait, aucun débordement, neuf questions ; au doigt
+  à 390 px, le film se lance et le cadre grandit (300 × 533 px). Feuille commune
+  inchangée.
+
+**Fichiers** : `src/components/accueil/Fondateur.astro`, `src/data/faqAccueil.ts`,
+`src/pages/index.astro` (commentaire), `scripts/verify-site.mjs` (`PLANCHER_FAQ`),
+`CLAUDE.md`, `MIGRATION.md`.
+
+### 9.fi Premier écran : la pastille Super-Net ne touche plus le visage du hippo (13 novembre 2026)
+
+Remarque du propriétaire sur téléphone. Sous 900 px, la pastille « Super-Net 59 543 € »
+commençait à 54 px du centre de la mascotte, dont la joue s'arrête à 76 px : elle mordait
+le visage d'une vingtaine de pixels.
+
+- `Hero.astro`, sous 900 px seulement : bord gauche à 80 px du centre
+  (`margin-left: min(80px, 50vw - 106px)`), pastille plus petite (chiffre de 17 à 22 px
+  selon la largeur, 24 avant ; libellé 12 px, 13 avant ; marges intérieures réduites),
+  même hauteur (pour ne pas descendre vers la bulle de chat). Bord droit à 8 px au moins
+  de l'écran.
+- Mesuré, bord gauche par rapport au centre (avant, après) : 375 px 51, 78 ; 390 px 54,
+  78 ; 430 px 54, 78 ; 768 px 54, 78 ; 360 px 44, 72 ; 320 px 24, 52 (sous 375 px, faute
+  de place, elle recouvre encore un peu la joue). Aucun débordement de 320 à 1000 px ;
+  à partir de 900 px rien ne change.
+- Aucun texte ne change ; feuille commune inchangée.
+
+**Fichiers** : `src/components/accueil/Hero.astro`, `MIGRATION.md`.
+
+### 9.fj Blog : nouveau système de lecture, la page d'article (13 novembre 2026)
+
+Demande du propriétaire : « un nouveau système de lecture, digne des meilleures références en
+design éditorial, en web design et en SEO. Hyper agréable, aéré, moderne, harmonieux, au niveau de
+notre DA 2026. » Un audit (usage PostHog, recensement du Markdown, lecteur, designer, SEO,
+références), trois directions maquettées et des planches de décision ont précédé. Le propriétaire
+a répondu « je te fais full confiance, je veux tes choix » : les choix ci-dessous sont décidés.
+Les maquettes et l'audit ne sont pas dans le dépôt. `/blog` et les séries : § 9.fk ; images de
+partage : § 9.fl ; corrections après six relectures, le même jour : § 9.fm (ce qui change ici y
+est dit ; les comptes et les mesures de cette section sont ceux d'avant les corrections, sauf
+mention).
+
+**Ce que l'audit a mesuré sur `main`** (téléphone médian des lecteurs : 393 × 692 px ; ordinateur
+médian : 1 512 × 800 px, PostHog sur 90 jours) :
+
+- Aucun des 48 articles ne montrait une ligne de texte au premier écran du téléphone : la première
+  ligne arrivait à 1 101 px en médiane (1 681 au plus), après le fil d'Ariane, « Retour au blog »,
+  le sommaire replié, le titre et l'affiche (les trois quarts d'un écran). Sur ordinateur, 885 px.
+- Après le texte, 4,1 écrans de téléphone en médiane avant le pied (sept blocs de même poids).
+- Sommaire : 0 ouverture sur 494 lectures ; absent des 29 articles courts ; aucun repère de la
+  partie en cours.
+- 1 074 émojis dans les corps (192 différents), dans 475 titres sur 583, sortis dans les émojis
+  colorés du système (la police n'en a pas) ; 213 fausses listes (788 lignes de paragraphe qui
+  commencent par un émoji ou un signe, sans retrait au retour à la ligne).
+- Les 186 encadrés (17,9 % des mots des articles) étaient des `<aside>` : le mode lecture de
+  Firefox et trafilatura (courant dans les outils d'IA) les jettent. « L'essentiel » conservé :
+  0 article sur 48 pour le premier, 1 sur 48 pour le second.
+- Le nom de l'auteur n'était un lien sur aucun article ; 31 articles sur 48 n'avaient pas d'image de
+  partage de 1 200 px (§ 9.fl).
+
+**Les choix** (décidés le 13 novembre 2026) :
+
+1. Base : la direction « fiche pratique ». Grille d'ordinateur : rail numéroté à gauche (216 px),
+   texte de 624 px en 19 px / 1,6 au centre, carte d'essai collante à droite à partir de 1 360 px.
+   Ligne de confiance sous le titre (date, durée de lecture, auteur), « L'essentiel » en carte blanche
+   et en tête (à coches dans la maquette ; des puces depuis § 9.fm), encadrés plats étiquetés, étapes, blocs de chiffres, tableaux larges en fiches
+   sous 560 px, FAQ en feuille à lignes, articles liés en rangée qui défile sur téléphone, auteur
+   compact, fin de page resserrée dans l'ordre du téléphone (FAQ, connexes, essai, auteur, partage,
+   « Pour aller plus loin »).
+2. Titres de partie : un filet de 38 × 3 px en `--brand` au-dessus du h2 et un repère « 04 / 10 »
+   écrit par compteurs CSS ; sous-parties (`t-sous`) sans filet, plus petites, en retrait dans le
+   rail ; titres d'encadré fondus dans leur encadré.
+3. Émojis : « rien dans les titres, un dessin là où l'émoji porte un sens » (règle plus bas).
+4. Couverture : une vignette (64 × 80 px au téléphone, à côté de la ligne de confiance ; 132 × 165 px
+   sur ordinateur), `srcset` 160, 264 et 400 px, `fetchpriority` retiré. Le `src` reste celui de
+   `main` (900 px, ou la largeur de l'affiche quand elle est plus petite : 12 articles).
+5. Image de partage générée : § 9.fl.
+6. Sommaire : le plan seul (parties et sous-parties), sur les 48 articles. À partir de 1 040 px, un
+   rail collant numéroté qui allume la partie en cours, sans script (`scroll-target-group` et
+   `:target-current`, dans sa propre règle ; repli par lignes de temps de vue écrites au rendu pour
+   Safari 26 et Firefox). Sur téléphone : un pli « Sommaire », un fil de lecture de 3 px dans le bas
+   de la pastille de l'en-tête, une pastille ronde de 44 px qui ramène au sommaire.
+8. Bulle de chat sous 640 px : elle n'arrive qu'après le corps (ligne de temps, sans script ; depuis
+   § 9.fm, une fois passée la carte d'essai).
+9. Carrousel de planches (4 articles) : après le texte.
+10. « L'essentiel » remonté en tête dans les 11 articles où il suivait l'introduction.
+11. Sources : pli natif fermé sous 700 px, ouvert au-delà (`::details-content`) ; texte toujours dans
+    le HTML.
+12. Encadrés : `<div class="callout …" role="note">` au lieu d'`<aside>` (`remark-callouts.mjs`).
+    L'`<aside>` de l'appel à l'essai reste (`verify-site.mjs` le lit).
+13. Tableaux : `scope="col"` sur les titres de colonne.
+14. Auteur : le nom, dans la ligne de confiance, devient un lien vers `/qui-sommes-nous#ryan-goburdhun`
+    (l'ancre existe) ; dans le JSON-LD `Article`, `author` gagne `"@id"` (même identifiant que la
+    `Person` de cette page). Le nom et `url` ne changent pas. Le bloc auteur garde « En savoir plus ».
+15. Antislashs : voir « Contenu modifié ».
+
+(Le choix 7 est § 9.fk ; le choix 16, « Ce qui reste », en fin de section.)
+
+**Le balisage au rendu.** `src/lib/rehype-article.mjs`, branché dans `astro.config.mjs`, pose sur le
+HTML de chaque article ce que la feuille dessine. Le Markdown n'est pas touché ; aucun mot ni aucune
+espace n'est ajouté ou retiré : le plugin enveloppe (émojis `span.em`, marques de liste, lignes,
+numéros de titre), reclasse (un paragraphe de lignes marquées devient `ul.fl` ou `ol.fl`) et
+étiquette (`t-sous`, `t-encadre`, `t-sources`, `data-np`, `div.tbl[data-large]`, `td[data-th]`,
+`data-court`, `ul.kv`, `.fl-legende`, `span.nb`…). Compagnons : `article-options.mjs` (options :
+`sourcesPli`, `essentielEnTete`, `decorMuet`, `stats`), `article-emojis.mjs` (définition, rôles et
+pictogrammes des émojis), `article-sommaire.ts` (le plan, ses numéros, le mode « auteur »). La feuille
+est `src/styles/blog-article.css` (importée par le gabarit, hors de portée de Tailwind ; tout est
+préfixé par `.fiche`, le `<main>`) ; le `<style>` scopé de `[slug].astro` est retiré.
+
+- **Empreinte du cache.** Astro garde le HTML rendu des articles dans `node_modules/.astro` (que Vercel
+  garde aussi entre deux constructions) tant que le Markdown et la configuration ne changent pas : une
+  retouche des seuls plugins ne referait rien. `astro.config.mjs` passe au plugin l'empreinte des
+  `rehype-*`, `remark-*` et `article-*` en `.mjs` de `src/lib` (lus dans le dossier depuis § 9.fm)
+  et de la version des paquets qu'ils emploient : toute retouche de l'un d'eux vide ce cache.
+- **Ancres** : le plugin lance d'abord lui-même le calcul des ancres d'Astro (`rehypeHeadingIds`) ;
+  elles sont donc celles d'avant, posées avant toute retouche.
+
+**Règle des émojis** (le caractère reste toujours dans le HTML, Markdown intact) :
+
+- Titres h2 et h3, sommaire, appel à l'essai : émoji masqué.
+- Masquage : celui de la classe `sr` du site (hors du flux, rogné), jamais `font-size: 0` (forme de
+  texte caché citée par les consignes anti-spam ; la feuille n'en contient aucune). Les émojis de
+  décor portent en plus `aria-hidden` (option `decorMuet`) ; ceux qui portent un sens gardent leur
+  annonce.
+- Un dessin seulement là où l'émoji porte un sens, dans une liste, avec les seuls jetons de la DA :
+  oui (✅ ☑️ ✔) coche `--ok` sur `--ok-bg` ; attention (⚠️ ❗) triangle `--wait` sur `--wait-bg` ;
+  non (❌ ⛔ 🚫) croix `--ink-2` sur `--line` (pas de rouge : la forme porte le sens) ; touches 1️⃣ :
+  le chiffre ; 👉 et « → » : une flèche ; légende du calendrier fiscal (« 💸 : Tu paies »…) : ses
+  quatre pictogrammes, aussi dans les listes de cet article. Tout autre émoji de liste : une puce
+  ronde `--brand`. En tête ou fin de ligne, de paragraphe, en cours de phrase, 🦛 : masqués.
+- Un élément rogné rogne aussi son `::before` : le dessin est porté par l'élément de liste ou le
+  titre. Le plugin pose `data-touche="n"` (la feuille écrit le chiffre).
+- Comptes (HTML construit) : 1 074 émojis, tous masqués à l'œil, dont 588 de décor en `aria-hidden` ;
+  216 marques d'état dessinées (173 oui, 25 non, 18 attention), 4 touches de liste, 28 titres à
+  touche, 15 flèches, 32 pictogrammes de légende ; 101 émojis de liste devenus une puce.
+
+**Décisions prises en construisant :**
+
+- Rang 2 (`t-sous`) : un numéro décimal qui n'ouvre pas son groupe (4.2 à 4.8), ou une suite
+  « 1. 2. 3. » sous un titre non numéroté dont la section n'a qu'un bloc. 29 titres dans 5 articles ;
+  le sommaire les met en retrait, hors du compte.
+- Repère « NN / NN » : absent dès qu'une partie du plan porte un numéro d'auteur (« 1. », 1️⃣,
+  « Étape 1 ») : deux numérotations se superposaient. 252 titres le portent, dans 31 articles ; le
+  filet reste partout. Le rail numérote toujours (numéros de l'auteur si la moitié des parties en
+  ont, sinon 01, 02…).
+- Rail réduit aux parties (`som-dense`) quand le plan dépasse 14 entrées avec des sous-parties
+  (le seul `frais-pros-medecin-liberal-2026` : 11 entrées sur 22, il tient dans 800 px de haut) ; le
+  pli du téléphone les montre toutes.
+- Fiches de tableau courtes (`data-court`) décidées par colonne : toutes les fiches d'un tableau ont
+  la même forme (33 cellules).
+- Bulle de chat : la ligne de temps du corps (`--lecture`) est déclarée sur `<body>` (la bulle est
+  hors de `<main>`) ; règles écrites avec `#crisp-launcher` seul, comme `/essai`.
+
+**Contenu modifié (choix 15)** : `micro-bnc-exemples-concrets`, `rspm-exemples-concrets`,
+`tout-comprendre-urssaf`. Treize « \ » s'affichaient (6, 4 et 3) et sept lignes étaient avalées par
+le paragraphe précédent : une ligne vide avant et après chacune des cinq listes, et les « \ » qui ne
+coupaient plus rien retirés. Aucun mot changé, dates des articles inchangées.
+
+**Écarts voulus, comptés** (`preuve.cjs` contre `main`, 52 pages, 11 clés, détail complet ; classés
+par script) :
+
+| Clé | Pages identiques / différentes | Nature (toutes voulues) |
+|---|---|---|
+| `tete` | 4 / 48 | `og:image` et `twitter:image` : l'image de partage (§ 9.fl) ; dimensions déclarées changées sur 31 |
+| `jsonld` | 4 / 48 | `author["@id"]` et la première image (§ 9.fl) ; le reste égal à `main` sur les 48 |
+| `titres` | 4 / 48 | même ensemble de titres et d'ancres ; « Articles connexes » passe avant « Pour aller plus loin » |
+| `liens` | 4 / 48 | 107 perdus : ancres de l'ancien sommaire (entrées h3, titres d'encadré, sources) des 19 articles qui en avaient un. 339 ajoutés : 214 entrées de sommaire (les 29 articles qui n'en avaient pas), 48 pastilles `#sommaire-liste`, 29 « Retour en haut » du rail, 48 liens d'auteur. Aucun lien du corps ne change |
+| `corps` | 38 / 14 | 11 « L'essentiel » remontés (mêmes mots, même nombre) ; 3 articles sans leurs 13 « \ » |
+| `main`, `mainSac` | 4 / 48 | conséquences des lignes ci-dessus (mots du sommaire et de la pastille, blocs déplacés) |
+| `faq`, `images` | 52 / 0 | — (la vignette garde son `src` ; seuls `srcset` et `sizes` changent) |
+| `mesure` | 4 / 48 | mêmes attributs `data-blog-*`, `data-track`, `data-ph`, `data-calendly`, autre ordre |
+| `ids` | 4 / 48 | `toc-toggle` retiré (19) ; `sommaire` et `sommaire-liste` ajoutés (48) |
+
+`/blog` et les trois pages de série : identiques sur les 11 clés. `preuve-corps.cjs` (corps des 48
+articles) : titres et ancres différents 0, liens différents 0, un seul h1 partout ; mots différents :
+les 3 articles aux antislashs, et seulement par les « \ ». Écarts d'affichage, sans changement de
+texte : sommaire sur 48 articles (19 avant), sources en pli sur 47, vignette sur 48 ; « Retour au
+blog » n'est plus affiché (le fil d'Ariane mène déjà au blog ; retiré du HTML en § 9.fm) ; dernier maillon du fil d'Ariane et date de publication d'un article mis à jour
+masqués à l'œil seulement (rognage de la classe `sr`) ; mots écrits par
+la feuille (`content`, lus une fois : `content: attr(data-th) / ""` pour les titres de colonne) :
+repère « NN / NN », chiffres des touches, étiquettes d'encadré (29 encadrés sans titre), titres de
+colonne devant les valeurs sous 560 px (96 cellules), numéros du rail. Balisage sans changement de
+texte : `t-sous` 29, `scope="col"` 61, `data-court` 33, `.nb` 3 408, `div role="note"` 186.
+
+`verify-site.mjs` n'est pas modifié : aucun de ses contrôles ne portait sur une forme changée (il lit
+l'`<aside>` de l'appel à l'essai, qui reste). Il passe : 68 pages, 5 434 liens internes (5 386 sur
+`main` : les 48 liens d'auteur), les mêmes 7 avertissements que `main`. Feuille commune :
+`_astro_assets.BdxOyZgM.css`, même nom que sur `main`. Aucun script ajouté.
+
+**Mesures** (Chromium, 48 articles, `main` contre la construction) :
+
+| Format | Première ligne du texte (médiane / max) | Écrans après le texte (médiane / max ; articles au-dessus de 2,5) |
+|---|---|---|
+| 393 × 692 | 1 101 / 1 681 px → **492 / 525 px** | 4,10 / 4,93 ; 48 → **2,08 / 2,80 ; 4** |
+| 360 × 640 | 1 077 px → 525 / 558 px | 4,59 → 2,38 / 3,13 ; 15 |
+| 1 512 × 800 | 885 / 1 663 px → **487 / 538 px** | 2,83 / 3,18 ; 48 → **1,76 / 2,59 ; 2** |
+| 820 × 1 180, 1 280 × 800, 1 920 × 1 080 | 516, 556, 487 px | 1,38, 2,15, 1,30 |
+
+Aucun défilement de côté à 360, 393, 820, 1 280, 1 512 et 1 920 px, sur les 48 articles. Texte à
+taille nulle : 0 ; émoji visible : 0, à toutes les largeurs. Les 4 articles au-dessus de 2,5 écrans
+à 393 px sont les 4 à carrousel (choix 9 : il compte dans « après le texte », environ 0,7 écran).
+Article par article (393 px : première ligne, après le texte, page entière) : requalification
+1 036 → 525 px, 4,82 → 2,38, 30,7 → 25,5 écrans ; CARMF 1 181 → 492, 4,50 → 2,20, 18,3 → 14,1 ;
+checklist administrative 1 100 → 492, 3,98 → 2,05, 14,1 → 10,9.
+
+Lighthouse mobile (réglages par défaut, `npx serve` qui compresse, trois passes alternées avec
+`main` servi de même) : `tout-comprendre-carmf` 98 / 98 / 98 (`main` 100 / 98 / 98), LCP 2,23 s
+(2,15) ; `remplacement-regulier-requalification` 98 / 98 / 98 (97 / 97 / 97), LCP 2,16 s (2,56).
+Accessibilité, bonnes pratiques et SEO à 100 ; CLS 0. `td-has-header` échoue des deux côtés sur la
+requalification (déjà sur `main`). Feuille de la page : 45,6 Ko, 9,3 Ko compressée (`main` : 25,8 et
+5,2 Ko). Clavier (Tab, 393 et 1 512 px) : chaque élément atteint est à l'écran, avec son anneau.
+Impression A4 de la CARMF : 9 pages (10 sur `main`), sources imprimées.
+
+WebKitGTK 2.52 (WebDriver piloté sans Selenium, absent de la machine) : `::details-content`,
+`animation-timeline: view()` et `timeline-scope` lus, `scroll-target-group` non : le repli
+s'applique ; une seule partie allumée dans le rail, la bonne ; sources ouvertes à 1 512 px ; repère
+écrit ; à 393 px (cadre), fil de lecture et pastille actifs, légende dessinée. Ce n'est ni Safari ni
+iOS.
+
+**Pièges rencontrés :**
+
+- Poids des variantes d'état : `.corps :is(ul, ol) > li[data-etat]::before` battait
+  `.corps li[data-etat="non"]::before` (toutes les croix sortaient en coches). Les variantes
+  s'écrivent avec le même chemin (`:is(ul, ol) > li[…]`). Même piège pour les puces des sources.
+- Un dessin ne peut pas venir d'un émoji masqué par rognage (son `::before` l'est aussi).
+- Espaces autour d'un émoji hors du flux : Chromium et WebKit les fusionnent en une (mesuré) ; pas
+  besoin de `display: none`.
+- La ligne de temps de la bulle se déclare sur `<body>` : déclarée sur `.fiche` (le `<main>`), elle
+  n'aurait pas été à portée de la bulle.
+- Défilement doux du site : la pastille met 1 à 3 s à poser la liste du sommaire ; un test qui lit la
+  position trop tôt la croit ailleurs.
+- Le cache d'Astro (`node_modules/.astro`) : voir « Empreinte » ; le vider avant une première
+  construction après une retouche faite sans elle.
+- lightningcss avertit à la construction qu'il ne connaît pas `:target-current` : la règle est
+  gardée telle quelle, seule dans sa règle (une liste de sélecteurs serait jetée entière par les
+  navigateurs qui ne le lisent pas).
+
+**Ce qui reste faible :**
+
+- Les 4 articles à carrousel dépassent 2,5 écrans après le texte au téléphone (2,72 à 2,80) ; la
+  médiane tient.
+- La pastille « Sommaire » passait sur la marge gauche du texte pendant le défilement (corrigé en
+  § 9.fm : à droite).
+- 4 articles en mode compteur ont quelques parties numérotées par l'auteur : pas de repère
+  au-dessus de leurs titres (le rail les numérote).
+- La croix « non » est discrète (encre sur gris) : à juger sur un vrai téléphone.
+- Feuille de la page : 9,3 Ko compressée (5,2 sur `main`) ; Lighthouse égal ou meilleur.
+- Non vérifié : Safari réel et iOS, Firefox, contrastes forcés à l'écran (règles écrites, non
+  regardées), aperçu Vercel en HTTP/2 et réseau bridé.
+
+**Ce qui reste (suivis séparés, hors de cette refonte) :**
+
+1. Temps de lecture calculé : `readTime` est écrit à la main dans le frontmatter et ne suit pas la
+   longueur réelle.
+2. Huit blocs « Sources » sans aucun lien (dont l'article le plus lu).
+3. Dates incohérentes dans 5 à 10 articles (date de publication, de mise à jour, « vérifié au » des
+   sources) : à relever article par article, sans date de construction (§ 9.ai).
+4. Le nom de l'auteur dans le schéma de l'article est « Dr. Ryan Goburdhun » : Google demande le nom
+   seul, le titre ayant sa propriété (`honorificPrefix`, déjà dans la `Person` de
+   `/qui-sommes-nous`, qui porte le même `@id` et le nom « Ryan Goburdhun »). À accorder sur les 48.
+5. Sur `/blog` et les séries, toute la ligne est un lien (le titre seul serait plus net pour un
+   lecteur d'écran) ; inchangé ici (§ 9.fk).
+6. Avant la mise en ligne : un relevé Search Console (pages du blog, requêtes, extraits), pour
+   comparer après ; puis surveiller deux semaines.
+7. Thèmes du blog : une seconde PR, après celle-ci (faite : § 9.fp).
+8. Déclarer `sharp` dans `package.json` (version du verrou) à la prochaine mise à jour des paquets
+   (§ 9.fm).
+
+**Fichiers** : `src/lib/rehype-article.mjs`, `src/lib/article-options.mjs`,
+`src/lib/article-emojis.mjs`, `src/lib/article-sommaire.ts`, `src/lib/remark-callouts.mjs`,
+`astro.config.mjs`, `src/pages/blog/[slug].astro`, `src/styles/blog-article.css`,
+`src/assets/blog-article/{tete,buste}.webp`, les 3 articles du choix 15, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fk Blog : `/blog` et les pages de série en lignes (13 novembre 2026)
+
+Suite de § 9.fj (choix 7). Sur `main`, une carte d'article faisait 181 à 246 px de haut au téléphone
+(l'affiche en vignette de 112 px, l'extrait sur deux lignes), « À la une » 770 px (1,1 écran, son
+affiche en pleine largeur), et une page de série ne montrait aucun titre d'article au premier
+écran. Trois variantes ont été maquettées (lignes de texte, affiche en vignette, couverture
+générée) ; la retenue est la deuxième.
+
+- Les articles sont des lignes sur une feuille blanche, un filet entre deux lignes, la ligne teintée
+  au survol (comme les feuilles à lignes de l'accueil) ; une colonne au téléphone, deux à partir de
+  640 px (les cartes étaient sur quatre colonnes à partir de 1 024 px).
+- L'affiche en vignette : un carré de 64 px recadré sur le dessin au téléphone (`object-position:
+  50% 74%` : le titre dessiné, illisible à cette taille, sort du cadre) ; l'affiche entière en
+  portrait de 96 px, puis 104 px à partir de 1 024 px.
+- La série et le numéro en petites capitales `--brand` (« FICHES FISCALITÉ · #4 ») au lieu de la
+  pastille ; date et durée séparées par « · ». Les points sont écrits par la feuille, avec un texte
+  de remplacement vide (`content: "·" / ""`, après une déclaration sans lui) : ils ne sont pas lus.
+- L'extrait n'est pas affiché au téléphone (il reste dans le HTML) ; au-delà, deux lignes. Ses
+  nombres tiennent ensemble : `nouerNombres()` (`src/lib/typo.ts`) les met dans un
+  `<span class="nb">` sans changer un caractère.
+- « À la une » compacte : l'affiche à 84 px à droite du titre au téléphone, 180 px à gauche à partir
+  de 768 px ; l'extrait sur trois lignes.
+- La bulle de chat est masquée sous 640 px sur ces quatre pages (elle passait sur la fin des titres
+  des lignes), comme `/guide` sous 768 px.
+- `sizes` et le préchargement de la une disent les vraies largeurs. Le `srcset` de la une gagne 180
+  et 360 px, celui des lignes 160 px : au téléphone, la une est maintenant dans le premier écran et
+  tirait le fichier de 480 px en priorité haute pendant que la police arrivait (Lighthouse mobile de
+  `/blog` 96 / 93 / 94 avant cette retouche). Les `src` et les dimensions déclarées ne changent pas.
+- Les règles de la maquette (une classe de variante sur `<main>`) sont fondues dans
+  `blog-liste.css` : aucun sélecteur de variante dans le dépôt. Preuve que la page est celle de la
+  maquette : styles calculés et boîtes de chaque élément de `<main>` égaux, à 320, 360, 393, 600, 700,
+  820, 1 024, 1 280 et 1 512 px, liste fermée et ouverte, sur les quatre pages (0 écart, hors deux
+  formes équivalentes : `gap: normal` pour `0`, et le texte de remplacement des « · »).
+
+**Écarts** : aucun à la preuve (`preuve.cjs`, 4 pages sur 4 identiques à `main` sur les 11 clés,
+images comprises). La recherche marche (« DSFU » : 2 articles trouvés ; un mot absent montre le
+message « Pas encore d'article ») ; attributs `data-blog-*`, `data-ph` (`blog_card`,
+`blog_index_featured`, `blog_index_show_all`, `blog_search_result`) et `data-calendly` inchangés.
+
+**Mesures** (Chromium ; ligne : plus petite / moyenne / plus grande) :
+
+| Page, largeur | Ligne d'article | « À la une » | Hauteur de la page |
+|---|---|---|---|
+| `/blog`, 393 px | 181 / 192 / 203 → 97 / 111 / 132 px | 770 → 279 px | 7 880 → 6 651 px |
+| `/blog`, 360 px | 181 / 207 / 246 → 97 / 114 / 132 px | 756 → 333 px | 8 185 → 6 895 px |
+| Fiches Fiscalité, 393 px | 181 / 192 / 203 → 97 / 110 / 111 px | — | 5 745 → 4 253 px |
+| Guides & Conseils, 393 px | 181 / 191 / 203 → 97 / 111 / 132 px | — | 7 426 → 5 231 px |
+| `/blog`, 1 512 px | 539 / 558 / 562 → 179 / 198 / 200 px (8 premières : 1 140 → 808 px) | 445 → 241 px | 4 997 → 4 457 px |
+| `/blog`, 820 px | 640 / 662 / 663 → 200 / 224 / 250 px | 445 → 262 px | 7 847 → 5 860 px |
+
+Aucun défilement de côté à 360, 393, 820, 1 280, 1 512 et 1 920 px. Lighthouse mobile (`npx serve`,
+cinq passes alternées) : `/blog` 99 / 98 / 96 / 98 / 99 (`main` 95 / 95 / 94 / 99 / 99), LCP médian
+2,37 s (2,89) ; Fiches Fiscalité 96 / 99 / 97 (99 / 93 / 93). Accessibilité, bonnes pratiques et SEO
+à 100. Feuille des listes : 14,2 Ko, 3,7 Ko compressée (13,3 et 3,4 sur `main`). WebKitGTK : mêmes
+hauteurs à quelques pixels près (polices), petites capitales et points lus, aucun débordement.
+
+**Ce qui reste faible** : à 64 px, l'affiche recadrée montre une scène chargée (plusieurs
+personnages) ; c'est plus un repère de couleur qu'une information. Une ligne dont le titre fait trois
+lignes atteint 132 px au téléphone (cible de la maquette : 96 à 120 px).
+
+**Fichiers** : `src/styles/blog-liste.css`, `src/components/BlogCard.astro`,
+`src/pages/blog/index.astro`, `src/lib/typo.ts`, `src/lib/blog-covers.ts`, `MIGRATION.md`.
+
+### 9.fl Blog : une image de partage par article, fabriquée à la construction (13 novembre 2026)
+
+Suite de § 9.fj (choix 5). L'image de partage (`og:image`, `twitter:image`) était un recadrage
+1,91:1 du haut de l'affiche : 31 articles sur 48 n'avaient pas d'affiche de 1 200 px de large, 11
+une image de 450 px (dont le 2ᵉ et le 6ᵉ article en audience), floue dans un aperçu de lien.
+
+- **`/blog/partage/<slug>-<empreinte>.jpg`** (empreinte depuis § 9.fm), 1 200 × 630 px, JPEG : un
+  point de terminaison statique
+  (`src/pages/blog/partage/[slug].jpg.ts`, `getStaticPaths` et `GET`). Un nouvel article a la sienne
+  sans rien faire. Un point de terminaison n'entre pas dans le sitemap : il garde ses 68 adresses.
+- **Dans la DA** (`src/lib/image-partage.mjs`) : fond de la série (ciel pour les Fiches Fiscalité,
+  sable pour les Fiches Pratiques, eau profonde pour les Guides & Conseils), pastille de série
+  (« Fiche Fiscalité #4 », le libellé de la pastille de l'article depuis § 9.fm), titre, mascotte de l'accueil entière sur un halo, marque, vagues du
+  pied. Aucun jaune. Quatre poses en pied tournent dans une série, dans l'ordre des épisodes (le
+  buste de l'accueil, coupé à la poitrine, n'est pas repris) ; celle qui montre du doigt est
+  retournée vers le titre.
+- **Le titre** est composé ligne à ligne : un mot court (la, du, les, à, ton, te…) reste avec le mot
+  qui le suit, un nombre avec le mot qui le suit (« 8 statuts »), sauf un mot court (« 2026 du
+  médecin » se coupe après « 2026 ») ; jamais un mot seul sur la dernière ligne quand le titre en a
+  trois ou plus ; jamais de coupure à un trait d'union ; puis le moins de lignes, pas de ligne de
+  moins de 40 % de la plus longue, la plus longue la plus courte, les lignes les plus égales. Deux
+  tailles (72 et 60 px) : la plus grande qui tient en trois lignes, sinon en quatre ; 50 px, puis
+  une coupe suivie de « … », pour un titre qui ne tient pas (§ 9.fm). Apostrophes et espaces
+  insécables de la typographie française, dans l'image seulement.
+- **Outils** : sharp seul (installé avec Astro, qui s'en sert pour ses images) ; texte composé par
+  Pango avec la police du site en TTF, deux graisses fixes (560 et 720), dans
+  `src/assets/fonts/partage/` (licence OFL : `src/assets/fonts/OFL.txt`). Lues par chemin depuis la
+  racine du projet, jamais importées : elles ne sont pas copiées dans le build (vérifié : aucun
+  `.ttf` dans `dist` ni dans `.vercel/output`). Un émoji est retiré du titre de l'image : la machine
+  de construction n'a pas de police de secours.
+- **Le gabarit d'article** la donne en `og:image` et `twitter:image` (`og:image:width` 1 200,
+  `og:image:height` 630, `og:image:alt` = le titre, comme avant), et en première image du JSON-LD
+  `Article` ; les recadrages 16:9, 4:3 et 1:1 de l'affiche suivent, comme le recommande Google. Le
+  recadrage 1,91:1 de l'affiche n'est plus fabriqué.
+
+**Contrôles** : les 48 images regardées une à une (titres courts et longs, trois séries) : titres
+lisibles, aucun mot seul en fin de titre, aucun jaune, mascotte entière. Poids : 45 à 63 Ko (moins de
+120 Ko). `verify-site.mjs` vérifie déjà que le fichier de l'`og:image` existe et qu'il a les
+dimensions déclarées (contrôle (d)) : il passe. Construction : 7 s de plus (14 → 21 s en local).
+
+**Écarts** : `tete` différente sur les 48 articles (`og:image`, `twitter:image`, et les dimensions
+déclarées sur les 31 dont l'affiche était étroite) ; JSON-LD : une image de plus, en tête. Comptés
+dans le tableau de § 9.fj.
+
+**À vérifier sur l'aperçu Vercel** : la génération n'a été essayée que sur cette machine. Le sharp
+installé sur Vercel embarque Pango et lit la police par son fichier (`fontfile`). Un fichier de
+police absent arrête la construction (erreur explicite) ; depuis § 9.fm, une police que Pango ne
+prendrait pas aussi (garde : la largeur de « Hippodoc » en 720 à 100 px). Coller un lien d'article
+dans un aperçu (WhatsApp, LinkedIn) une fois en ligne.
+
+**Fichiers** : `src/lib/image-partage.mjs`, `src/pages/blog/partage/[slug].jpg.ts`,
+`src/assets/fonts/partage/gsf-560.ttf`, `src/assets/fonts/partage/gsf-720.ttf`,
+`src/pages/blog/[slug].astro`, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fm Blog : corrections après six relectures (13 novembre 2026)
+
+Suite de § 9.fj à 9.fl. Six relectures indépendantes ont jugé la construction : design (7/10),
+lecteur sur iPhone (7,5/10), contenu et SEO (9/10), technique et accessibilité (7/10), Safari et
+vitesse (8,5/10), code (7,5/10). Elles relevaient un défaut bloquant, treize majeurs et une
+quarantaine de mineurs. Tous les bloquants et les majeurs sont corrigés, et presque tous les
+mineurs ; ceux qui sont écartés le sont plus bas, avec leur raison. Aucun mot du contenu ne
+change.
+
+**Arbitrages** (là où une relecture allait contre un choix de § 9.fj) :
+
+- **« L'essentiel » : des puces, plus des coches.** Le choix 1 disait « à coches ». Or 40 des 194
+  points, dans 32 articles, sont des mises en garde ou des négations (« ✓ Un contrat validé par
+  l'Ordre ne te protège pas du fisc »), et plus bas sur la même page, la coche verte veut dire
+  « oui » (choix 3 : la forme porte le sens). Le choix 3 l'emporte : les points prennent la puce
+  ronde `--brand` du corps. La carte blanche, son étiquette et sa place en tête ne changent pas.
+- **Sources ouvertes au-delà de 700 px** : la relecture technique proposait un pli à toutes les
+  largeurs. Le choix 11 est gardé. Le `<summary>` passe en `display: contents` quand le contenu
+  est ouvert par `::details-content` : il n'est plus un arrêt de tabulation, la touche Entrée ne
+  bascule plus un état invisible, l'anneau ne coupe plus le « S ». Reste : un lecteur d'écran peut
+  encore l'annoncer « réduit » (le pli est fermé pour le navigateur).
+- **Bulle de chat** (choix 8, « à la fin du corps ») : même mécanisme, un peu plus tard. Elle
+  paraît de 60 à 180 px de défilement après que le bas de la carte d'essai est entré dans l'écran
+  (ligne de temps `--essai`). À la fin du corps, elle se posait sur le chevron du pli des
+  sources, puis passait sur les « + » des questions et sur le bout du bouton d'essai : un appui
+  y ouvrait le chat. Jusque-là, la carte porte le contact (« Prendre 15 min avec Ryan »).
+- **Tableaux en fiches** : le design voulait des valeurs d'un seul tenant, alignées à droite ;
+  le lecteur, des paires courtes serrées. Les deux s'appliquent : une ligne pleine garde son titre
+  à gauche et sa valeur à droite ; deux colonnes courtes partagent une ligne, chaque valeur contre
+  son titre, 24 px entre les paires ; une cellule courte sans voisine courte prend la ligne entière.
+
+**La page d'article** (`src/styles/blog-article.css`, `src/pages/blog/[slug].astro`) :
+
+- **Pastille « Sommaire »** (le défaut bloquant) : elle était en bas à gauche, sur le début des
+  lignes (le texte commence à 20 px, le rond couvrait 16 à 60 px). Sous 640 px, elle passe en bas
+  à droite ; de 640 à 1 039 px, au-dessus de la bulle, sur le même axe. Elle part au début de la
+  sortie du corps (8 % au lieu de 30 %). Elle est cachée hors de son animation
+  (`visibility: hidden` de base). Signes du corps qu'elle cache, sommés sur tout le défilement
+  (pas de 40 px, 393 × 692) : CARMF 596 → 197, requalification 1 527 → 618, et plus aucun en
+  début de ligne (317 et 828 avant). À 360 × 640 : 653 → 253.
+- **Ronds des étapes et des touches** : `top: calc(0.5lh - 14px)` dans un `::before` qui change de
+  corps prenait la ligne du `::before` ; les ronds sortaient 6 px au-dessus de leur ligne. La
+  hauteur de ligne passe par `--lig` (propriété enregistrée, `1lh` calculé sur le `li`) : −0,83 et
+  2,17 px dans Chromium, 1,2 px dans WebKit à 19 px.
+- **Rail** : le fondu du bas était décidé par le nombre d'entrées, pas par un débord ; « Retour en
+  haut » était dans le fondu. Maintenant, « Retour en haut » est collé au bas du rail (fond sable),
+  et le fondu au-dessus de lui suit une animation liée au défilement du rail (`scroll(self)`) :
+  aucun si le rail ne défile pas, plein tant qu'il reste plus de 24 px cachés, rien au bout.
+  `scroll-padding-bottom` garde une entrée qui prend le focus au-dessus de lui. Fenêtre de moins
+  de 760 px de haut : entrées resserrées ; au doigt : entrées de 44 px. Rails qui défilent : 9 sur
+  48 à 1 280 × 700 (15 avant), 3 à 1 512 × 800, 0 à 1 920 × 1 080 ; « Retour en haut » coupé : 0.
+- **Repli du repère pour Safari** : comme dans Chrome, la première partie est allumée dès le haut,
+  la dernière jusqu'au bas, et le numéro de la partie en cours passe au bleu. Une ligne de temps
+  `none` ne convenait pas (WebKit applique l'état final de l'animation) : les liens du début et
+  de la fin portent `som-debut` et `som-fin`. Vérifié dans WebKitGTK sur la CARMF et le calendrier.
+  La feuille du repli, écrite au rendu, va dans `<head>` (elle était dans `<main>`) et ne vaut
+  qu'à partir de 1 040 px.
+- **Carte d'essai, à partir de 1 360 px** : la mascotte sur sa ligne, au-dessus du titre (le titre
+  l'entourait en escalier dans 248 px) ; son haut sur celui de « L'essentiel » au repos, sur celui
+  du rail une fois collée (`top: var(--haut-colle)`). Un titre de plus de 90 signes (deux
+  articles) passe en 15 px. Vignette : son bas sur celui de la ligne de confiance.
+- **Article sans sommaire** (moins de trois parties, aucun aujourd'hui) : la règle `.fiche:not(.guidee)`
+  de 1 040 px l'emportait sur la grille des trois zones ; la carte d'essai tombait dans la marge.
+  Elle est bornée à 1 359 px ; vérifié en retirant le sommaire d'un article, à 1 040, 1 360,
+  1 512 et 1 920 px.
+- **Encadrés** : à la taille du corps sous 1 040 px (16 px pour un corps de 17 avant), 17 px pour
+  un corps de 19 au-delà ; « L'essentiel » à la taille du corps partout. Un titre d'encadré long
+  (plus de 24 signes, ou un deux-points final ; 4 encadrés) est en gras ordinaire, pas en petites
+  capitales. Un `:::essentiel` sans titre est étiqueté « L'essentiel ». Titres de fin en 24 px.
+- **Blocs de chiffres** : bornés à 28 rem à partir de 700 px (la valeur était à 520 px de son
+  libellé). La ligne de total dont le séparateur est dans le gras (« **Total cotisations :
+  13 474 €** (26,9 % du CA) », 2 lignes) est coupée au deux-points comme les autres.
+- **Accessibilité** : le repère « 04 / 10 » et le chiffre d'une touche ont un texte de remplacement
+  vide (`content: … / ""`) : ils n'entrent plus dans le nom des 270 titres ni dans les éléments de
+  liste. Contrastes forcés : la croix « non » et le repère prennent les couleurs du système, la
+  partie en cours du rail un trait `Highlight`. Défilement vers un titre : `scroll-margin-top`
+  12 px (il s'ajoutait aux 84 px du site : le titre s'arrêtait à 180 px). Zones de toucher : 21 px
+  sous le fil d'Ariane, liens de « Pour aller plus loin » sans marge négative. `role="navigation"`
+  sur le sommaire : le mode lecture de Firefox commençait l'article par le plan dans 22 articles
+  sur 48 ; avec ce rôle, dans aucun (essai de la relecture SEO, mots du corps gardés : 98,8 %).
+- **Fin de page** : « Retour au blog » est retiré du gabarit (il était en `display: none` ; le fil
+  d'Ariane porte le même lien). « Retour en haut » du bas de page est affiché sous 1 040 px (la
+  pastille est partie avec le texte) et sans rail ; il était masqué partout. « Épisode N » est
+  masqué à l'œil quand la pastille porte déjà « #N » (24 articles). L'auteur a son portrait rond
+  de 56 px (les mêmes fichiers que l'accueil) au lieu de ses initiales. Vignettes des articles
+  connexes : 132 px de large au lieu de 288 (affichées en 40 ou 44 px).
+- **Auteur** : table `AUTEURS` dans `src/lib/site.ts` (nom du frontmatter → ancre et portrait) ; un
+  auteur absent n'a ni lien ni `@id` (il prenait ceux de Ryan).
+
+**Le plugin** (`src/lib/rehype-article.mjs`, `article-emojis.mjs`, `article-sommaire.ts`) :
+
+- Une ligne seule qui commence par « • » ou « → » devient une liste d'un élément : 5 paragraphes
+  (« • → Total IR ≈ 3 004 € » sortait collé à la marge, ses marques tapées visibles) et 3 lignes
+  de `base-financiere-rempla`. Une flèche après un émoji (« 🧮 → … », 2 lignes) est masquée comme
+  après une puce ; 👉 en marque se dessine en flèche (`data-m="fleche"`, sans `:has()`).
+- Légende du calendrier fiscal : ses émojis restent annoncés, dans la légende et dans les listes
+  des mois (26 émojis sortent d'`aria-hidden` : un lecteur d'écran lisait « : Tu paies ») ;
+  l'élément de liste porte le pictogramme (`data-picto`, sans `:has()`). Le titre « Légende »
+  sort du compte du plan (`t-hors`) : plus de repère au-dessus de lui, une entrée sans numéro dans
+  le rail, les mois remontent d'un rang (15 → 14 parties).
+- Sources : seul le dernier h2 peut être le titre des sources, et le motif est resserré
+  (`RE_SOURCES`) : un « Sources de revenus… » au milieu d'un article restait plié et grisé.
+- `role="list"` sur les 324 listes du corps (la feuille retire leurs puces : WebKit ne les
+  annonçait plus comme des listes) ; rôles ARIA écrits sur les 6 tableaux mis en fiches.
+- Groupes insécables (`span.nb`) : 3 408 → 4 151. Un élément en ligne et la ponctuation qui le suit
+  (« **CARMF** ; »), le dernier mot d'un gras trop long et sa ponctuation, « micro-BNC »,
+  « 2042-C PRO », « n° 2025-1044 ». Lignes du corps qui commencent par une ponctuation, à 393 px :
+  3 (dans des sources, après un lien qu'on ne coupe pas), plus les 4 lignes de la légende (« : Tu
+  paies », voulu). La relecture en comptait 11 dans 10 articles.
+- Une liste numérotée qui reprend (`start`) reçoit son `counter-reset` ; les notes de bas de page
+  (aucune aujourd'hui) n'entrent plus dans le plan, et leur « ↩ » reste visible.
+- Nettoyage : option `sections`, journal d'audit et `PICTO_APPROCHE` retirés ; les comptes passent
+  par l'option `stats` (jamais dans le cache) ; les attributs de travail sont retirés à la fin
+  (environ 1 Ko par article) ; les caractères invisibles des expressions sont écrits en
+  échappement ; définition et rôles des émojis dans `article-emojis.mjs`, que le gabarit importe
+  sans tirer le plugin. L'empreinte du cache lit les fichiers dans le dossier et ajoute la version
+  de `remark-directive` et de `@astrojs/markdown-remark`.
+
+**Images de partage** (`src/lib/image-partage.mjs`) :
+
+- L'adresse porte une empreinte (`/blog/partage/<slug>-<8 signes>.jpg`) : du titre, de la
+  pastille, de la pose et du code de l'image. Un aperçu de lien garde l'image d'une adresse des
+  jours durant ; un titre retouché en donne une nouvelle.
+- La pastille reprend le libellé de celle de l'article (« Fiche Fiscalité #4 », « Guide et
+  Conseil »).
+- Le titre est posé d'un seul appel à Pango, sur des lignes de base régulières (une ligne sans
+  lettre haute remontait de 8 px). Les coupes sont énumérées par leurs points de coupure, quatre
+  lignes au plus (l'essai de toutes les coupes prenait 2,6 s pour 40 mots et cassait au-delà de
+  31) ; la hauteur du titre est bornée au-dessus des vagues ; 50 px puis « … » pour un titre qui
+  ne tient pas, avec un avertissement. Essayé avec des titres de 101, 146 et 213 signes.
+- Une garde arrête la construction si Pango ne prend pas la police du site (« Hippodoc » en 720 à
+  100 px : 471 px avec elle, 446 avec la police de secours de la machine).
+
+**`/blog` et les séries** (`src/styles/blog-liste.css`) : `--ink-3` jamais sous 14 px (dates,
+durées, résultats de recherche, index : 13 et 13,5 px avant) ; série en petites capitales à 13 px,
+son numéro à 13 px en `--ink-2`. Sous 400 px, les pastilles de série prennent leur largeur et
+s'étirent (« Tous les articles (48) » passait à la ligne dans sa pastille).
+
+**Écarts, comptés** (`preuve.cjs` contre `main`, 52 pages) : ceux de § 9.fj, plus ceux-ci.
+
+| Clé | Pages identiques / différentes | Nature |
+|---|---|---|
+| `liens` | 4 / 48 | 155 perdus (107 de § 9.fj et les 48 « Retour au blog ») ; 339 ajoutés, comme en § 9.fj |
+| `images` | 4 / 48 | 223 vignettes d'articles connexes déclarées en 44 × 55 au lieu de 96 × 120 (même affiche) ; 48 portraits de l'auteur ajoutés |
+| `main`, `mainSac` | 4 / 48 | en plus : « ← Retour au blog » (48) et les initiales « RG » (48) disparaissent |
+| `tete`, `jsonld` | 4 / 48 | l'adresse de l'image de partage change (empreinte) ; le reste comme en § 9.fj |
+
+Les autres clés sont celles de § 9.fj. `preuve-corps.cjs` : titres et ancres différents 0, liens
+différents 0, mots différents dans les 3 articles aux antislashs seulement. `verify-site.mjs`
+n'est pas modifié et passe (68 pages, 5 434 liens internes, les 7 avertissements de `main`).
+Feuille commune : même nom. Aucun script ajouté.
+
+**Comptes** (HTML construit) : 1 074 émojis, 562 en `aria-hidden` (588 avant : les 26 de la
+légende) ; 216 marques d'état (173, 25, 18) ; 4 touches de liste et 28 de titre ; 26 flèches ;
+32 pictogrammes de légende ; 101 émojis de liste devenus une puce ; 4 151 `span.nb` ; 324 listes en
+`role="list"` ; 186 `role="note"` ; 61 `scope="col"` ; 6 tableaux à rôles écrits ; 29 `t-sous`,
+1 `t-hors` ; 4 titres d'encadré longs ; 0 attribut de travail.
+
+**Mesures** (Chromium, 48 articles) :
+
+| Format | Première ligne (médiane / max) | Écrans après le texte (médiane / max ; au-dessus de 2,5) |
+|---|---|---|
+| 393 × 692 | 492 / 525 → 499 / 532 px | 2,08 / 2,80 ; 4 → 2,24 / 2,97 ; 6 |
+| 360 × 640 | 525 / 558 → 532 / 565 px | 2,38 / 3,13 ; 15 → 2,49 / 3,27 ; 23 |
+| 1 512 × 800 | 487 / 538 → 490 / 541 px | 1,76 / 2,59 ; 2 → 1,81 / 2,64 ; 2 |
+
+La fin de page gagne 0,16 écran au téléphone : « Retour en haut » affiché, liens de « Pour aller
+plus loin » sans marge négative, portrait de 56 px ; la première ligne, 7 px (fil d'Ariane). Aucun
+défilement de côté (52 pages, 6 largeurs, plis fermés et ouverts : 624 états). Lighthouse mobile
+(serveur qui compresse, trois passes) : 98 / 100 / 100 / 100 sur la CARMF, la requalification et
+`/blog`, CLS 0. Feuille de l'article : 48,2 Ko, 9,9 Ko compressée (45,6 et 9,3 avant).
+
+**Écartés, et pourquoi :**
+
+- Bannière cookies plus basse sur l'article (lecteur) : elle est commune au site, son texte ne
+  tient pas sur une ligne à 393 px sans changer ses mots ni passer sous 12 px, et refuser doit
+  rester aussi visible qu'accepter. À 393 × 692, le premier point de « L'essentiel » reste
+  visible ; la bannière part au premier choix.
+- Zone de toucher de la pastille de série (lecteur) : elle fait déjà 44 px (`::after`).
+- Extraits masqués au téléphone sur `/blog` (SEO) : choix 7 ; à suivre (suivi n° 6).
+- Nom de l'auteur dans le schéma (SEO) : hors périmètre (suivi n° 4).
+- `sharp` dans les dépendances de `package.json` (code) : il faudrait mettre à jour le verrou
+  (`npm install`, exclu ici). Il vient avec Astro (dépendance facultative) ; à déclarer à la
+  prochaine mise à jour des paquets (suivi n° 8).
+- Étiquettes en petites capitales à 13 px (« L'essentiel », « Sommaire »…) : ce sont des
+  étiquettes en `--brand` ou `--ink-2`, pas du corps de texte.
+- Pastille dans Safari 26.0 et 26.1 (Safari) : son lien vise la liste du sommaire, dans un
+  `<details>` fermé, que ces versions n'ouvrent pas d'elles-mêmes (Safari 26.2 le fait). Viser le
+  pli lui-même coûterait un appui de plus à tout le monde ; la part de ces deux versions est très
+  faible. Limite notée ci-dessous.
+- `.da:has(.hd-toggle:checked)` du fil de lecture (Safari, coût des styles) : la case du menu est
+  dans l'en-tête, aucun sélecteur de voisinage ne la relie au `<main>`. Les autres `:has()` coûteux
+  sont remplacés par des attributs du plugin.
+- Seuil du titre long de la carte d'essai à 90 signes et non 70 (design) : avec la mascotte
+  au-dessus, les titres de 61 à 71 signes tiennent en trois ou quatre lignes à 17 px.
+
+**Pièges rencontrés :**
+
+- `lh` dans un pseudo-élément qui change de `font-size` : voir les ronds, plus haut.
+- `animation-timeline: none` : WebKit applique l'état final de l'animation ; ne pas s'en servir
+  pour « pas d'animation ».
+- Une ligne de temps `scroll(self)` sur un élément qui ne défile pas est inactive (vérifié dans
+  Chromium et WebKit) : c'est ce qui fait le fondu « seulement s'il défile ». Un débord d'un pixel
+  (arrondi) l'active : la plage `calc(100% - 24px) 100%` rend le fondu proportionnel à ce qui reste.
+- Image de partage : avec une troisième taille, la règle « la plus grande qui tient en trois
+  lignes sans mot seul » choisissait 50 px pour des titres courts ; la petite taille n'est
+  essayée que si 72 et 60 px ne tiennent pas du tout.
+
+**Ce qui reste faible :**
+
+- À 360 × 640, la médiane des écrans après le texte est à 2,49 (la limite de 2,5 vaut à 393).
+- La pastille couvre encore des fins de ligne au téléphone (moins de signes, aucun début de ligne).
+- Lecteur d'écran : les sources ouvertes au-delà de 700 px peuvent être annoncées « réduit ».
+- Safari 26.0 et 26.1 : la pastille ne fait rien (voir « Écartés »).
+- Non vérifié : Safari réel et iPhone, Firefox, VoiceOver (rôles de liste et de tableau écrits,
+  non écoutés), aperçu Vercel en HTTP/2.
+
+**Suivi ajouté** à la liste de § 9.fj : n° 8, déclarer `sharp` dans `package.json`.
+
+**Fichiers** : `src/lib/rehype-article.mjs`, `src/lib/article-emojis.mjs`,
+`src/lib/article-options.mjs`, `src/lib/article-sommaire.ts`, `src/lib/image-partage.mjs`,
+`src/lib/site.ts`, `astro.config.mjs`, `src/pages/blog/[slug].astro`,
+`src/pages/blog/partage/[slug].jpg.ts`, `src/styles/blog-article.css`, `src/styles/blog-liste.css`,
+`MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fn Fenêtre produit : sans « Compte de démonstration », année 2026, un onglet « Tes déclarations » (13 novembre 2026)
+
+Trois décisions du propriétaire sur le bloc sous le premier écran.
+
+- **Mention retirée.** « Compte de démonstration · » sort du pied de la fenêtre (« c'est
+  évident ») ; reste « Recalculé après chaque journée enregistrée ». Le contrôle de
+  `verify-site.mjs` qui exigeait la mention une fois est retiré. Les chiffres restent
+  fictifs (`src/data/demoAccueil.ts`), comme avant.
+- **Année 2026 au lieu de 2025** (`DEMO_ANNEE.an`) : « Année 2026 » sur la fiche du
+  premier écran, la fenêtre produit et la case « Année 2026, à mettre de côté » ;
+  « Super-Net 2026 » dans la case jaune. Les montants ne changent pas.
+- **Quatrième onglet, « Tes déclarations »** (« Déclas » sur téléphone ; `data-ph`
+  `landing_apercu_declaration`, même convention que les trois autres). Contenu nouveau,
+  proche de l'application sans la copier (refonte à venir, dit le propriétaire) : les
+  cases pré-remplies d'un remplaçant en micro-BNC, au PAMC, 100 % conventionné, le cas
+  de l'exemple de la fiche RO-014 du guide des déclarations :
+  - « Revenus 2026 », « 4 cases », « pré-remplies à partir de tes journées » ;
+  - Impôts, 2042-C PRO : 5HQ « Recettes, micro-BNC », 90 005 € ;
+  - URSSAF, DSFU, volet PAMC : DSCS « Recettes brutes », 90 005 € ; DSAV « Part
+    conventionnée », 90 005 € ; DSDE « Revenu brut social », « À laisser vide » ;
+  - à partir de 780 px seulement : « L'abattement de 34 % est appliqué par
+    l'administration : rien à calculer. »
+  Les montants viennent de `DEMO_ANNEE.encaisse`. À savoir : 90 005 € dépasse le seuil
+  du micro-BNC 2026 (83 600 €) ; c'est admis une première année (le régime micro se
+  perd après deux années de dépassement consécutives), mais un lecteur attentif peut
+  le relever. Baisser l'encaissé du jeu changerait aussi le Super-Net de tout l'accueil :
+  non fait, à décider.
+- **Onglets sur téléphone** : à quatre, des libellés passaient sur deux lignes à
+  390 px. Sous 720 px, chaque onglet prend la largeur de son libellé ; marges et corps
+  réduits sous 410 et sous 360 px. Mesuré : une ligne par libellé à 320, 340, 360, 375,
+  390, 410, 430, 500 et 719 px. De 720 à 799 px, marges de 16 px (la barre dépassait
+  d'un pixel à 720 px).
+- **Hauteur** : les quatre vues ont la même hauteur à 320 (525 px), 360, 390 (504),
+  430, 720, 768, 860, 1 024 et 1 440 px (662). La note de l'abattement est masquée sous
+  780 px et les cases sont plus basses de 720 à 779 px : la vue y dépassait de 14, puis
+  27 px. Aucun débordement horizontal.
+- Feuille commune inchangée (`_astro_assets.BdxOyZgM.css`) ; `verify-site.mjs` attend
+  maintenant 4 onglets et 4 panneaux.
+
+**Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/data/demoAccueil.ts`,
+`scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.fo Blog : les affiches visibles partout (13 novembre 2026)
+
+Suite de § 9.fj et § 9.fk. La refonte avait mis les affiches en vignettes : 64 × 80 px en tête de
+l'article au téléphone, et, sur `/blog` et les séries, un carré de 64 px rogné au centre (le titre de
+l'affiche sortait du cadre). Le propriétaire (médecin, pas développeur) : « C'est super, mais c'est
+dommage que les illustrations soient si petites. Ou alors qu'on ne puisse pas les voir si on clique
+dessus. » Puis, avec une capture de `/blog` sur iPhone : « Mais aussi là, dans la liste, elles sont
+toutes petites et coupées. Or je pense qu'elles peuvent donner envie de cliquer sur un article en soi.
+Mais là, on ne voit rien. » Enfin : « Il faut juste trouver le bon compromis. Pas trop grande mais pas
+trop petite. » Il a écrit « je te fais full confiance, je veux tes choix » : les choix ci-dessous sont
+décidés. Les affiches sont ses fiches Instagram (mascotte en scène, titre, parfois des chiffres) : la
+marque du blog, l'appel à la lecture.
+
+La règle des affiches :
+
+1. **Une affiche ne se rogne jamais** là où elle a du texte ou la scène, et jamais en haut (son titre).
+2. **Le bon compromis, ni trop grande, ni trop petite** : il se mesure, il ne se devine pas.
+3. **D'un appui, en grand**, dans l'article (partie B, plus bas).
+
+**État final.** Cette section décrit le code tel qu'il est après les corrections du 14 novembre, qui
+ont suivi trois relectures (« Corrections après relecture », en fin de section). L'affiche est montrée
+entière, à son format, à la hauteur d'une case 4:5, sans rien autour. La première version de la branche
+entourait les affiches de bandes aux couleurs de leurs bords (`src/lib/affiche-bords.mjs`) : retirée. Ses
+chiffres ne restent que là où ils sont marqués « première version ».
+
+#### A. Les listes : `/blog`, les séries, la une, les articles connexes
+
+**Le cadre (règle 1).** Les 47 affiches (48 articles : deux partagent la leur) ont quatre formats : 2:3
+(28 articles), 0,746 à 0,751 (4), 0,792 (2), 0,805 (14) ; regardées une à une sur une planche. Aucun
+cadre commun ne les garde toutes en rognant : un cadre 4:5 calé en haut coupe le bas des 2:3 (16,6 % de
+la hauteur : « CE QUE TU NE DÉCIDES PAS, TU LE PORTES. », « 70 % », « 85 % », « ERREUR majoration »,
+« 2035 BNC ») ; un cadre 2:3 coupe les côtés des 0,805, dont les titres vont d'un bord à l'autre (« LA
+DOUBLE VIE FISCALE », « L'EFFET CISEAUX », « 8 ANS D'IMPÔTS ALLÉGÉS ») ; un cadre 3:4 coupe un peu des
+deux. L'affiche est donc montrée **entière, à son format, à la hauteur d'une case 4:5**, centrée dans la
+case (`height` écrite, `width: auto`, `max-width: none` : le socle de Tailwind borne les images à leur
+boîte). Pour une même hauteur de ligne, c'est la case qui montre chaque affiche au plus grand (une 2:3
+garde toute la hauteur, une 0,805 toute la largeur), et c'est celle de la vignette d'article. Le vide
+d'une affiche plus étroite que sa case (8,3 % de chaque côté d'une 2:3, 3 % d'une 0,75) est le blanc de
+la feuille. Une 0,805 dépasse sa case d'environ un pixel (0,5 px de chaque côté), sans rien rogner ni
+déformer. **Première version**, retirée après relecture : ce vide prenait les couleurs des bords de
+l'affiche (sharp à la construction, 8 couleurs par bord, posées en `style` sur l'`<img>`, deux dégradés
+en fond). Sur un écran à haute densité, une dizaine des 2:3 avaient des bords flous, avec des taches de
+couleur à mi-hauteur : des bandes qui se voyaient comme des bandes. Planche des 48 affiches telles
+qu'elles sortent dans `/blog`, contrôlée par script (`zoom/corrections/planche-c.cjs`, à 393 × 692 en
+densité 3 et à 1 512 × 800 en densité 2) : 48 sur 48 chargées, à leur format (écart de rapport au plus
+0,6 %), à la hauteur de leur case, aucun fond peint.
+
+**La largeur au téléphone (règle 2).** Essais par CSS injectée sur la construction de `main`, sans
+reconstruire, à 393 × 692 (téléphone médian des lecteurs) et 360 × 640, l'en-tête fixe déduit de la zone
+visible (622 et 570 px). Bornes : l'affiche se reconnaît (hauteur des capitales de son titre à l'écran,
+6 affiches) ; titre de l'article en 4 lignes au plus, date et durée gardées ; `/blog` à 393 px pas plus
+long que la liste d'avant la refonte (7 880 px) ; **3 articles entiers visibles à tout moment du
+défilement** (lu au plus strict, par pas de 4 px ; lu écran par écran, le choix est le même).
+
+| Affiche | Ligne | `/blog` à 393 | 3 entiers à 393 | `/blog` à 360 | 3 entiers à 360 |
+|---|---|---|---|---|---|
+| carré de 64 px rogné (avant) | 97–135 px | 6 672 px | toujours | 6 968 px | toujours |
+| 88 px | 135 px | 6 839 px | toujours | 7 114 px | toujours |
+| 96 px | — | — | — | 7 206 px | 93 % du temps (date sur 2 lignes) |
+| **104 px** | 155 px | 6 999 px | **toujours** | 7 280 px | 68 % |
+| 112 px | 165 px | 7 079 px | 77 % | — | — |
+| 120 px | 175 px | 7 159 px | 55 % | 7 454 px | 25 % (10 titres de 4 lignes) |
+| 136 px | 195 px | 7 319 px | 19 % (3 titres de 4 lignes, date sur 2 lignes) | 7 594 px | jamais ; 2 titres de 5 lignes |
+
+Capitales du titre de l'affiche à l'écran, à 104 px : 7,4 px (« OBTENIR SA », 2:3), 6,9 (« SUPER-NET »),
+7,8 (« RÉGIME RSPM », 0,75), 5,7 (« LA DOUBLE VIE FISCALE », 0,805), 5,6 (« REQUALIFIÉ : TAXÉ… »), 3,8
+(« INBOX ZÉRO DU REMPLA ») ; à 88 px, 6,2 et 4,7 pour les grands et les moyens. Les grands titres se
+lisent, les moyens se devinent, les petits non (la scène fait reconnaître l'affiche). Avant : coupés.
+
+**Choix : 26,5 % de la largeur de l'écran** (`clamp(88px, 26.5vw, 112px)` : 95 px à 360, 104 px à 393,
+112 px au plus) : la plus grande largeur qui tient toutes les bornes aux deux formats (lignes de 140 et
+151 px, sous le quart de la zone visible ; à 360, au-delà de 99 px, « 20 septembre 2026 · 10 min »,
+185 px, passait à la ligne). Une part de l'écran plutôt que deux paliers : les deux formats ont le même
+rapport hauteur/largeur. Lignes : 10 px de remplissage en haut et en bas, 12 de côté (12 et 14 avant),
+texte centré sur la hauteur de l'affiche.
+
+**Ordinateur et tablette** (bornes : affiche de 140 à 180 px, titres en 4 lignes au plus, `/blog` à
+1 512 × 800 sous 4 997 px, 3 articles entiers à tout moment). Deux colonnes à 1 280 et 1 512 × 800 :
+140 et 150 px tiennent (4 entiers), 160 non (2 entiers par moments), 180 non. Une seule colonne à
+1 512 px dépassait 4 997 px. En tablette, deux colonnes avec 140 px laissaient des titres de cinq lignes
+(six à 640 px sur `main`) : **une colonne de 640 à 1 023 px** (820 × 1 180 et 768 × 1 024 : 3 entiers
+toujours). À 1 024 × 768 (tablette couchée), une colonne n'en garde que 2 : **deux colonnes à partir de
+1 024 px**, où 144 px tient et 150 non. **Choix : 144 px à partir de 640 px** (144 × 180, des pixels
+entiers).
+
+**La une.** Le cahier voulait son affiche nettement plus grande que celles des lignes, sans repousser la
+liste. Au téléphone, l'affiche de la une et son titre doivent tenir dans le premier écran (sur `main`,
+l'affiche de 84 px y est, la première ligne de « Derniers articles » non) : à 393 × 692, la fiche
+commence à 515 px et l'écran finit à 692 ; une affiche « nettement plus grande » n'y tient pas à côté du
+titre. **Première version** : le titre en pleine largeur, puis l'affiche (36 % de l'écran, 141 × 177 px
+à 393) à gauche de l'extrait ; elle sortait du premier écran (13 % visible à 393 × 692, 5 % à 402 × 680,
+le format de l'iPhone du propriétaire). **Choix, après relecture : l'affiche dans le premier écran
+l'emporte**, c'est elle qui donne envie de lire. Sous 768 px, elle est à droite de la pastille et du
+titre, à la taille de celle des lignes (case de `clamp(88px, 26.5vw, 112px)`) ; le titre passe à 20 px
+(3 lignes ; à 21 px, l'interlettrage de la DA, qui suit le corps, en faisait 4 à 393 px et le titre
+sortait de l'écran) ; dessous, sur toute la largeur, l'extrait (3 lignes) puis « date · durée » sur une
+ligne. Le bloc de texte passe en `display: contents` sous 768 px ; le HTML ne change pas. Mesuré dans
+Chromium (`zoom/relectures/lecteur-design/scripts/premier-ecran.cjs`) : affiche entière à 393 × 692 (105
+× 130 px, de 537 à 667) et à 402 × 680 ; 98 % à 390 × 664 ; titre dans l'écran à ces trois formats. À
+375 × 553 et 360 × 640, ni `main` (15 et 20 %) ni la branche (13 et 18 %) ne montrent l'affiche de la
+une, dont le titre est sous l'écran. À partir de 768 px : case de 240 px à gauche (180 avant), nettement
+plus grande que les 144 px des lignes ; la une entière dans le premier écran à 1 512 × 800.
+
+**Les articles connexes** (seule partie de la page d'article touchée par la partie A). Sous 700 px, la
+rangée qui défile (elle commençait sous 560 px) : affiche de **140 px de haut**, à son format (112 px de
+large pour une 0,805, 93 px pour une 2:3 ; 44 × 55 px rognée avant ; au moins 96 px demandés), titre en
+cinq lignes au plus, texte centré sur la hauteur de l'affiche ; chaque carte est seule, la colonne de
+l'affiche épouse son format. Sur les 223 cartes des 48 articles : une case de 104 px avec quatre lignes
+coupait 18 titres à 360 px (17 sur `main`, trois lignes), 104 et 112 px avec cinq lignes n'en coupent
+aucun, 120 px en coupe 4 : 112 px est la largeur qui garde la rangée nette (cinq lignes et la durée
+tiennent dans la hauteur de l'affiche). À partir de 700 px, la carte de `/blog` : une feuille blanche à
+**deux colonnes de lignes**, affiche de 120 px de haut centrée dans une case de 96 px (les titres d'une
+colonne restent alignés) ; six articles en trois rangs, la section garde la hauteur de l'ancienne liste
+(456 → 477 px au plus) ; avec 3 ou 5 articles (15 articles), le dernier prend le rang entier. Essayé
+avant : une colonne avec 48, 64 et 72 px (+60 à +240 px de page).
+
+**Images.** `srcset` des lignes : 160, 200, 240, 320, 400 px et le fichier principal de 640 px (160 et
+320 avant) ; une : 160, 200, 240, 320, 400, 480 et 720 px (180, 360 et 720 avant) ; connexes : 132, 240,
+320 px (132 seul avant). `sizes` dit la **largeur dessinée de chaque affiche**, pas celle de sa case
+(une 2:3 : 83 % de la case ; `largeurDansCadre()`, `src/lib/blog-covers.ts`) ; le préchargement de la
+une (à partir de 768 px) aussi. La variante de 200 px sert les écrans de densité 1,75 à 2, dont celui de
+Lighthouse. Les `src` ne changent pas. Les dimensions déclarées ne changent pas, sauf celles des
+connexes : celles du fichier de 132 px (44 × 55 avant, un 4:5 que n'avaient pas 170 affiches sur 223 ;
+l'image prend sa largeur de son format, qui doit être juste dès le premier rendu ; aucun décalage
+mesuré). Sur les séries, la première affiche n'est plus chargée en priorité (`loading="eager"`,
+`fetchpriority="high"` retirés) : elle n'est l'élément LCP à aucun format (le texte de la série l'est)
+et, plus lourde, elle partait avec la police. Fichiers d'images du build : voir
+« Écarts de la branche », plus bas.
+
+**Une même affiche pour deux articles** : `facturation-electronique-medecin-remplacant` et
+`generer-facture-remplacement` ont la même affiche (« T'AS REMPLACÉ, T'AS FACTURÉ »,
+`facture-generation-cover.png`). Rien n'est changé : décision de contenu pour le propriétaire.
+
+**Mesures** (Chromium, liste fermée ; séries : Fiches Fiscalité, Fiches Pratiques, Guides & Conseils ;
+`zoom/corrections/hauteurs.cjs`) :
+
+| Format | `/blog` | Séries | Ligne d'article |
+|---|---|---|---|
+| 360 × 640 | 6 968 → 7 140 px (avant la refonte : 8 185) | 4 450 / 3 651 / 5 432 → 4 827 / 3 840 / 5 994 | 97–135 → 139–140 px |
+| 393 × 692 | 6 672 → 6 984 px (avant la refonte : 7 880) | 4 295 / 3 533 / 5 296 → 4 904 / 3 829 / 6 181 | 97–135 → 150–151 px |
+| 820 × 1 180 | 5 871 → 6 846 px (avant la refonte : 7 847) | 4 002 / 3 224 / 4 916 → 5 843 / 4 096 / 7 703 | 203–252 → 228–229 px |
+| 1 024 × 768 | 4 647 → 4 826 px | 3 496 / 2 824 / 4 414 → 3 703 / 2 927 / 4 675 | 202–228 → 228–229 px |
+| 1 280, 1 512, 1 920 | 4 469 → 4 648 px (avant la refonte : 4 997) | 3 387 / 2 687 / 4 203 → 3 594 / 2 790 / 4 538 | 179–203 → 228–229 px |
+
+Première version (la une sous son titre) : `/blog` à 7 176 px à 360 et 7 043 px à 393 ; le reste est
+inchangé. Densité (`zoom/corrections/densite3.cjs`) : 3 articles entiers à tout moment du défilement, pli
+fermé et ouvert, à 360 × 640 et 393 × 692. Aucun défilement de côté (`/blog` et séries à 9 formats, 48
+articles à 5 formats).
+
+Poids, compressé (gzip) : HTML de `/blog` 22,7 → 24,3 Ko (deux tailles de plus dans chaque `srcset` ; 27,6
+Ko dans la première version, avec les couleurs de bord), séries +0,3 à +1,0 Ko. Feuille des listes 3,7 Ko,
+inchangée à 0,1 Ko près. Images chargées par Lighthouse (densité 1,75) : `/blog` 99 → 141 Ko (203 Ko dans
+la première version), Fiches Fiscalité 182 → 210 Ko, Guides & Conseils 259 → 256 Ko.
+
+Lighthouse mobile (réglages par défaut, serveurs qui compressent, 5 passes alternées avec `main` servi de
+même, `zoom/corrections/lh-c.txt`) :
+
+| Page | `main` | Branche | LCP médian |
+|---|---|---|---|
+| `/blog` | 98, 98, 98, 100, 99 | 99, 97, 97, 99, 97 | 2,29 → 2,50 s |
+| Fiches Fiscalité | 96, 97, 96, 96, 96 | 96, 96, 96, 99, 98 | 2,65 → 2,62 s |
+| Guides & Conseils | 99, 96, 95, 97, 93 | 96, 95, 99, 95, 96 | 2,73 → 2,68 s |
+
+Accessibilité, bonnes pratiques et SEO à 100, CLS 0 à chaque passe. Au téléphone, l'élément LCP reste un
+texte (le titre de `/blog`, le texte de la série). À partir de 768 px, sur `/blog`, c'est souvent
+l'affiche de la une (une 0,805 : 242 × 300 px, plus que le titre ; c'était déjà elle de 768 à 1 023 px sur
+`main`), servie par son préchargement (`fetchpriority="high"`) ; PageSpeed signale son `loading="lazy"`,
+gardé pour le téléphone, sans effet sur la note. Première version : `/blog` 96 à chaque passe (LCP 2,67 à
+2,71 s) ; une relecture a vu Guides & Conseils à 91 une fois sur 8 et Fiches Fiscalité à 92.
+
+Recherche de `/blog` (`zoom/recherche.cjs`, refaite après corrections) : « DSFU » trouve les 2 mêmes
+articles ; un mot absent montre « Aucun article trouvé. » et le bloc « Pas encore d'article sur ce
+sujet… », comme sur `main`. WebKitGTK 2.52 (`zoom/corrections/webkit-c.py`,
+`/blog` à 1 512 et à 393 px dans un cadre ; la première version aussi à 360 px, sur Fiches Fiscalité et
+les connexes de la CARMF, mêmes cases) : 48 affiches à leur format (écart de rapport au plus 0,5 %), à la
+hauteur de leur case, aucun fond peint, aucun défilement de côté ; la une 105 × 130 px de 535 à 665 à
+393 px (titre de 597 à 663), 242 × 300 px à 1 512. Ce n'est ni Safari ni un iPhone. Contrastes forcés :
+les fiches gardent leur contour ; les affiches, sans fond, n'ont plus rien à protéger (la première version
+devait garder ses dégradés par `forced-color-adjust: none`).
+
+Ce qui reste faible : voir la liste d'ensemble, à la fin de la section.
+
+**Fichiers (partie A)** : `src/lib/affiche-bords.mjs` (nouveau, puis retiré après relecture),
+`src/lib/blog-covers.ts`, `src/components/BlogCard.astro`, `src/pages/blog/index.astro`,
+`src/pages/blog/serie/[series].astro`, `src/styles/blog-liste.css`, `src/pages/blog/[slug].astro` et
+`src/styles/blog-article.css` (articles connexes seulement), `MIGRATION.md`, `CLAUDE.md`.
+
+#### B. La page d'article : la vignette, et l'affiche en grand d'un appui
+
+Le premier message du propriétaire : « C'est super, mais c'est dommage que les illustrations soient si
+petites. Ou alors qu'on ne puisse pas les voir si on clique dessus. » Le gain de § 9.fj se garde : le
+texte de l'article reste dans le premier écran du téléphone (première ligne du texte, sur `main`, à
+499 px en médiane et 532 au plus à 393 × 692).
+
+**Règle 1 dans la vignette.** Sur `main`, la vignette rognait le bas des affiches 2:3 (`cover` dans un
+cadre 4:5 : « CE QUE TU NE DÉCIDES PAS, TU LE PORTES. » était coupé). Elle suit la règle des listes :
+l'affiche entière, à son format, à la hauteur de la case (une 2:3 y est moins large), rien autour. Le bord
+de papier, les coins et l'ombre de § 9.fj sont portés par l'image. Première version : `object-fit:
+contain` dans le cadre 4:5, sur les couleurs des bords de l'affiche ; retirée avec celles des listes.
+
+**Plus grande là où c'est gratuit.** Borne : la première ligne du texte ne descend pas de plus de
+16 px, sur aucun des 48 articles (lue article par article, plus stricte que « médiane et maximum » :
+à 820 px, une vignette de 152 px garde la médiane et le maximum de `main` mais fait passer 10 titres
+sur une ligne de plus, +41 à +54 px pour eux ; refusé). Méthode : CSS injectée sur la construction de
+`main`, sans reconstruire (`zoom/b/essai-vignette.cjs`), largeur de la vignette et retrait du texte à
+côté d'elle (largeur + 20 px au téléphone, + 30 px, + 38 px) ; la première ligne est celle de
+`vitrine.cjs` (premier paragraphe ou élément de liste du corps).
+
+| Palier (format mesuré) | Largeurs essayées | Ce qui se passe | Retenu |
+|---|---|---|---|
+| moins de 560 px (360 × 640, 393 × 692) | 64, 68, 72, 76, 80, 84 | la vignette fixe la hauteur de la ligne de confiance : +1,25 px par px de large, pour les 48 | **case de 76 px, 95 px de haut** (+15 px) |
+| 560 à 699 px (640 × 960, en plus) | 76 à 104 | idem | **case de 88 px, 110 px de haut** (+15 px) |
+| 700 à 1 039 px (820 × 1 180) | 120 à 152 | le titre se retire d'autant : dès 124 px, un titre passe sur une ligne de plus (+41 px) | **120 px, inchangé** |
+| 1 040 à 1 359 px (1 280 × 800) | 132 à 160 | dès 136 px, quatre titres passent sur une ligne de plus (+50 px) | **132 px, inchangé** |
+| 1 360 px et plus (1 512 × 800, 1 920 × 1 080) | 132 à 248 | la vignette, dans la colonne de droite, a la place de la série et du titre au-dessus d'elle : rien ne bouge jusqu'à 144 px, sauf le seul titre d'une ligne (+15 px) ; à 152 px, +5 px pour 41 articles et +25 pour lui | **case de 144 px, 180 px de haut** |
+
+Résultat sur la construction (48 articles, `zoom/b/premiere-ligne.txt`) : 360 × 640 : médiane 532 →
+547, maximum 565 → 580 ; 393 × 692 : 499 → 514 et 532 → 547 (+15 px pour chaque article) ;
+640 × 960 : 514 → 529 ; 820 × 1 180 et 1 280 × 800 : aucun écart ; 1 512 × 800 et 1 920 × 1 080 :
+médiane 490 et maximum 541 inchangés, +15 px pour un seul article (`inbox-zero-remplacant`, titre
+d'une ligne), 0 pour les 47 autres. Aucun défilement de côté. Ces mesures valent pour l'état final : la
+case fixe la hauteur, et l'affiche, à son format, n'est pas plus large qu'elle, à un pixel près
+(première ligne des 48 articles remesurée après corrections à 360, 393 et 1 512 px : identique). Le
+`sizes` dit la largeur
+dessinée de l'affiche à chaque palier ; `srcset` 160, 264, 288 et 400 px (sans 288, une case de 144 px
+en densité 2 tirait le fichier de 400 px : +28 Ko à l'ouverture d'un article).
+
+**L'affiche en grand, d'un appui** (aucun script, CLAUDE.md « Zéro JS client »). La vignette devient
+un `<button type="button" popovertarget="affiche-grande">`, nommé « Agrandir l'affiche »
+(`aria-label` : le titre de l'article est juste à côté), mesuré par l'autocapture de PostHog
+(`data-ph="blog_cover_zoom"`). Elle ouvre un popover natif (`<div popover="auto" class="grande"
+role="dialog" aria-modal="true" aria-label="L'affiche en grand">`, Chrome 114, Safari 17, Firefox 125) :
+
+- l'affiche entière, à la plus grande taille qui tient dans l'écran : sa largeur est la plus petite
+  de la largeur de la fenêtre (moins 16 px de chaque côté, 32 px à partir de 700 px) et de la hauteur
+  (en `dvh`, moins ces marges et une bande de 52 px en haut) fois le rapport de l'affiche (`--r`,
+  écrit au rendu) ; centrée sous cette bande. Fenêtre basse (moins de 500 px de haut, téléphone
+  couché) : « Fermer » passe à droite de l'image, en haut, et la bande de 52 px est rendue à l'image
+  (à 844 × 390 : 288 × 358 px pour une 0,805, 221 × 274 dans la première version) ;
+- un fond sombre et opaque (`::backdrop`, l'encre de la DA, écrite en clair : un `::backdrop` ne lit pas
+  toujours les jetons de la page ; aucun jaune) ;
+- « Fermer » : un rond de papier de 44 px au-dessus du coin droit de l'image, une croix en SVG, le mot
+  dans un élément `sr` ; il prend le focus à l'ouverture (`autofocus`) ;
+- l'image est dans un second bouton de fermeture (« Fermer l'affiche », curseur `zoom-out`) : la boîte du
+  popover est ce bouton. Fermeture par « Fermer » (`popovertargetaction="hide"`), un appui sur l'image,
+  Échap, ou un appui à côté (fermeture « auto »). Le focus revient à la vignette, sauf après un appui à
+  côté : le popover ne rend le focus que quand on le ferme depuis lui (règle du navigateur) ;
+- tant que l'affiche est ouverte, `<body>` est en `visibility: hidden` (le popover en `visible` ; la mise
+  en page ne change pas) et `<html>` en `overflow: hidden`, à toutes les largeurs : le clavier reste dans
+  l'affiche, un lecteur d'écran n'y lit qu'elle (d'où `aria-modal`), la page ne défile ni au doigt ni à la
+  molette. La barre de défilement qui disparaît change la mise en page d'une page qu'on ne voit pas, et
+  revient à la fermeture : aucun saut mesuré. Le fond est opaque pour la même raison : la page masquée,
+  un fond translucide laissait voir celui du canevas (le ciel sur 520 px, puis l'eau profonde), avec une
+  marche entre les deux derrière l'image ;
+- en attendant la grande image, sa place est un aplat clair uni sur le fond (première version : les deux
+  dégradés des couleurs de bord, avec une couture au milieu) ;
+- le signe qu'on peut agrandir : une pastille de papier et sa loupe (SVG en fond, bleu de marque), au
+  coin bas de la vignette (en bas : le titre de l'affiche est en haut), visible sans survol ; curseur
+  `zoom-in` ; anneau de focus de la DA. La loupe et le curseur sont sous `@supports
+  selector(:popover-open)`. Sans popover (Safari avant 17, Firefox avant 125), le popover reste caché
+  (`.grande { display: none }`, que seul `:popover-open` défait) et la vignette reste une vignette à
+  l'œil, sans promesse ; mais elle reste un bouton nommé qui ne fait rien, au clavier et au lecteur
+  d'écran (aucune règle sans script ne le retire ; accepté).
+
+**Aucun coût au chargement.** La grande image est en `loading="lazy"` dans le popover fermé, que le
+navigateur ne dessine pas : elle n'est demandée qu'à l'ouverture. `srcset` 600, 900, 1 200 px et la
+largeur de la source, bornés à la source et dédoublonnés (une affiche de 450 px n'a qu'un fichier,
+celui du `src`) ; `sizes` en `min()` des deux bornes (lu juste par Chromium et WebKitGTK : le fichier
+choisi correspond à la largeur dessinée). 87 fichiers ajoutés au build (36 à 600 px, 16 à 1 200 px,
+35 à la largeur de la source ; 13,6 Mo, lus seulement à l'ouverture). Le `src` de la grande image est
+celui de la vignette (900 px, ou la source plus petite).
+
+**Contenu ajouté** (flagué ici, CLAUDE.md « Contenu français verbatim ») : « Fermer » (texte du
+bouton, masqué à l'œil), et trois noms de la page, en `aria-label` : « Agrandir l'affiche » (la
+vignette), « L'affiche en grand » (le popover), « Fermer l'affiche » (l'image ouverte, second bouton de
+fermeture). La seconde `<img>` reprend le texte de remplacement de la vignette (le titre).
+
+**Essais, Chromium** (`zoom/corrections/popover-essai.cjs`, sur l'état final) : quatre affiches (une de
+450 px, `tout-comprendre-carmf` ; une 2:3 de 1 024 px, `inbox-zero-remplacant` ; une 0,805,
+`cfe-medecin-remplacant`, la plus large des quatre formats, il n'y a pas d'affiche 0,88 ; une 0,75,
+`salaires-medecins-remplacants`), à 393 × 692 au doigt (`hasTouch`, `touchscreen.tap`, densité 3), à
+844 × 390 et 820 × 1 180 au doigt, à 1 512 × 800 à la souris, barres de défilement affichées :
+
+- 16 sur 16 : aucune requête de la grande image avant l'ouverture, une seule à l'ouverture ; rien n'a le
+  focus au chargement (l'`autofocus` d'un popover fermé n'est pas pris) ;
+- ouverture : 16 sur 16, focus sur « Fermer », page masquée ; l'image entière dans la fenêtre, à son
+  rapport (361 × 542 et 361 × 448 à 393 ; 239 × 358 et 288 × 358 à 844 × 390 ; 709 × 1 064 et 756 × 939 à
+  820 ; 456 × 684 et 551 × 684 à 1 512, pour la 2:3 et la 0,805) ; « Fermer » dans la fenêtre ; aucun
+  défilement de côté ;
+- Échap, appui sur l'image, « Fermer » : 16 sur 16 ferment, focus rendu à la vignette ; appui à côté :
+  16 sur 16 ferment, focus non rendu (voir plus haut) ;
+- clavier : Entrée sur la vignette ouvre, focus visible sur « Fermer » ; Tab va à l'image, puis au
+  navigateur, puis revient à « Fermer » (il ne passe plus derrière le fond : dans la première version, il
+  allait au sommaire, sous le fond, et la page défilait derrière) ; Entrée sur « Fermer » ferme et rend
+  le focus ;
+- défilement : aucun saut à l'ouverture ni à la fermeture (`zoom/corrections/saut.cjs`, clics par
+  coordonnées : deux articles, trois positions, 1 512, 820, 844 × 390 et 393 px) ; la molette ne fait
+  plus défiler la page cachée ; CLS 0.
+
+**WebKitGTK 2.52** (`zoom/corrections/webkit-c.py`, méthode de CLAUDE.md ; 1 512 px, et 393 px dans un
+`<iframe>` ; refait sur la construction finale) : popover pris en charge ; vignettes de 65 × 95 et
+78 × 95 à 393, 123 × 180 et 146 × 180 à 1 512 (la 2:3 et la 0,805), loupe et curseur ; aucune grande image
+avant l'ouverture, une à l'ouverture ; image entière dans la fenêtre (361 × 542 et 361 × 448 à 393 ;
+497 × 746 et 601 × 746 à 1 512) ; page masquée ; focus sur « Fermer » (anneau visible même après un clic,
+contrairement à Chromium) ; Échap, appui sur l'image, appui à côté, « Fermer » ferment ; focus rendu, sauf
+après un appui à côté ; Tab reste dans l'affiche ; fond d'une seule couleur (deux tons dans la première
+version des corrections, voir plus bas). Ce n'est ni Safari ni un iPhone.
+
+**Lighthouse mobile** (serveurs qui compressent, 3 passes alternées avec `main`,
+`zoom/corrections/lh-c.txt`) : CARMF 98, 98, 98 (`main` 99, 99, 98), Inbox zéro 98, 100, 98 (`main` 97,
+99, 98) ; accessibilité, bonnes pratiques et SEO à 100 ; CLS 0 ; élément LCP inchangé (un texte de
+« L'essentiel »), LCP médian 2,12 → 2,18 s et 2,23 → 2,19 s ; seule la vignette est chargée (images : 26
+et 22 Ko, comme sur `main`). Sur ordinateur (1 280, 1 512, 1 920 px), l'élément LCP reste un texte (le
+titre, un paragraphe ou un élément de liste), le même que sur `main` (la vignette de 144 px n'y passe pas
+devant ; mesuré sur la première version, même taille).
+
+Ce qui reste faible : voir la liste d'ensemble, à la fin de la section.
+
+#### Écarts de la branche (A et B), comptés contre `main` (état final)
+
+- `preuve-corps.cjs` (48 articles) : 0 écart de mots, de titres, d'ancres et de liens du corps ; un
+  seul `<h1>` partout.
+- `preuve.cjs` (52 pages, 11 clés) : `/blog` et les 3 séries identiques sur les 11 clés ; les 48
+  articles identiques sur la tête, le JSON-LD, les titres, les liens, le corps et la FAQ ; sur chacun,
+  les écarts voulus : le texte de `<main>` gagne « Fermer » (même nombre de mots : le mot se colle, dans
+  `textContent`, à « lecture » et « Sommaire », comme ceux-ci l'étaient déjà), une `<img>` de plus (la
+  grande, même texte de remplacement et mêmes dimensions déclarées que la vignette), les dimensions
+  vraies des affiches des connexes, un attribut de mesure de plus (`data-ph=blog_cover_zoom`), un
+  identifiant de plus (`affiche-grande`).
+- HTML brut, attribut par attribut (`zoom/corrections/ecarts-c.cjs`, 71 pages) : 19 pages identiques
+  octet pour octet ; ailleurs, seulement :
+
+  | Écart | Nombre | Pages |
+  |---|---|---|
+  | affiches des connexes : `srcset` et `sizes` ajoutés, `width` et `height` changés | 223 chacun | 48 |
+  | affiches des listes : `srcset` et `sizes` changés | 96 chacun | 4 |
+  | préchargement de la une : `imagesrcset`, `imagesizes` changés | 1 chacun | 1 |
+  | première affiche des séries : `loading` changé, `fetchpriority` retiré | 3 chacun | 3 |
+  | vignette : bouton autour de l'image (`popovertarget`, `aria-label`, `data-ph`) | 48 | 48 |
+  | vignette : `class` passée de l'image au bouton, `srcset` et `sizes` changés | 48 chacun | 48 |
+  | popover après la vignette (une `<img>`, deux boutons, le texte « Fermer », le nom « Fermer l'affiche ») | 48 | 48 |
+  | nom de la feuille de page (empreinte ; celle des listes s'appelle `blog-liste.*.css`, `blog-covers.*.css` sur `main`) | 52 | 52 |
+
+  Aucun `style` ajouté hors du popover (la première version en posait un sur chaque affiche). Aucun autre
+  écart : le HTML, ces éléments et ces attributs retirés, est identique octet pour octet.
+- `verify-site.mjs`, non modifié : passe (68 pages, 5 482 liens internes : 48 de plus que sur `main`, le
+  `src` de la grande image de chaque article ; les 7 avertissements de `main`).
+- Feuille commune : `_astro_assets.BdxOyZgM.css`, même nom, identique. Aucun script ajouté : les 29
+  fichiers `.js` et les scripts en ligne des 71 pages sont identiques à `main`, aucun attribut `on…`.
+- Poids, compressé : feuille de l'article 9,9 → 10,5 Ko ; HTML d'un article +0,4 à +0,8 Ko (médiane
+  +0,5 ; +1,2 à +1,4 Ko dans la première version) ; `/blog` et séries : partie A.
+- Images : 229 fichiers ajoutés au build (16,6 Mo, lus à la demande) : 47 de 200 px, 47 de 240 px (listes
+  et une), 47 de 288 px (vignette), 1 de 480 px (une), et 87 pour l'affiche en grand (36 de 600 px, 16
+  de 1 200 px, 35 à la largeur de la source) ; 2 retirés (les variantes de 180 et 360 px de la une).
+- Fichiers hors HTML (sitemap, `recherche.json`, `llms.txt`, images de partage) : identiques à `main`.
+- Première ligne du texte des 48 articles (`zoom/corrections/premiere-*.jsonl`) : identique à la mesure
+  de la partie B (+15 px au téléphone, 0 au-delà sauf `inbox-zero-remplacant` à 1 512, +15 px).
+- Hauteur des pages d'article (48 articles, `zoom/reprise/hauteur-articles.cjs`) : +71 px en médiane à
+  393 × 692 (+70 à +91 : connexes et vignette), +21 px à 1 512 × 800 (+14 à +90).
+
+**Fichiers (partie B)** : `src/pages/blog/[slug].astro` (la vignette, le popover, leurs `srcset`),
+`src/styles/blog-article.css` (vignette, loupe, popover, contrastes forcés, impression), `MIGRATION.md`,
+`CLAUDE.md` (« Zéro JS client » : le popover parmi les interactions natives ; puce « Couverture » ;
+la règle des affiches étendue à la vignette).
+
+#### Corrections après relecture (14 novembre 2026)
+
+Trois relectures indépendantes de la branche (A et B) : design et lecteur (7,5 / 10, 11 défauts), SEO,
+preuves et code (8 / 10, 7 défauts), technique, accessibilité, Safari et vitesse (7,5 / 10, 7 défauts).
+Chaque défaut a été reproduit avant d'être corrigé ; un défaut contraire au cahier n'est corrigé que s'il
+casse quelque chose de mesurable, et l'arbitrage est écrit ici. Les parties A et B, plus haut, décrivent
+l'état final ; la construction d'avant les corrections est gardée pour comparer
+(`zoom/corrections/dist-avant`). Repères : D1 à D11 (design), S1 à S7 (SEO), T1 à T7 (technique).
+
+**Corrigé :**
+
+1. **Les bandes de couleur se voyaient comme des bandes** (D2, majeur). Sur un écran à haute densité
+   (1 512 px en densité 2 ; 402 px en densité 3, le téléphone du propriétaire), une dizaine des 28
+   affiches 2:3 avaient des bords flous, avec des taches de couleur à mi-hauteur (intérêts composés, 4
+   enveloppes, Super-Net, salariat 10 %…) : un dégradé ne prolonge pas un dessin détaillé. Le cahier
+   voulait des bandes « qui ne se voient pas comme des bandes » : la méthode ne tenait pas sa propre
+   condition. **Arbitrage : l'affiche est montrée entière, à son format, à la hauteur de la case 4:5,
+   centrée ; le vide est le blanc de la feuille** (partie A, « Le cadre »). La règle 1 tient mieux : rien
+   de rogné, rien de déformé, rien d'inventé autour. La case garde ses mesures : hauteur des lignes,
+   colonne de texte, densité et longueur des pages ne bougent pas. `src/lib/affiche-bords.mjs` est
+   retiré, et avec lui les `style="--bord-g:…;--bord-d:…"` (−3,3 Ko compressés sur `/blog`).
+   Disparaissent avec les bandes :
+   - le liseré bicolore de 1 à 2 px au bas des affiches 0,805, dont la une (D4) ;
+   - la bande assombrie par les colonnes noires de trois fichiers source (D3 :
+     `signer-contrat-remplacement`, `checklist-administrative-medecin-remplacant`,
+     `remplir-declaration-2035`, 1 ou 2 px de noir au bord). Les fichiers ne sont pas touchés : ce noir
+     fait 0,2 px à l'écran dans une liste, et il est posé sur le fond sombre dans l'affiche en grand ;
+   - les commentaires faux sur le repli des couleurs (T5 : sans elles, toute la déclaration
+     `background` devenait invalide, fond transparent), et la garde oubliée sur la une (S6 :
+     `bordsAffiche()` d'une affiche introuvable arrêtait la construction de `/blog`).
+2. **Au téléphone, plus aucune affiche dans le premier écran de `/blog`** (D1, majeur). **Arbitrage :
+   l'affiche dans le premier écran l'emporte sur « nettement plus grande »** (partie A, « La une ») :
+   à droite de la pastille et du titre, à la taille des lignes ; titre à 20 px ; extrait sur toute la
+   largeur, « date · durée » sur une ligne (elles étaient l'une sous l'autre, sans point, et l'extrait se
+   coupait au milieu de « CARMF »). Affiche entière à 393 × 692 et 402 × 680, 98 % à 390 × 664 ; la fiche
+   passe de 353 à 295 px de haut, la liste remonte de 1 014 à 955 px (939 sur `main`). À partir de 768 px,
+   rien ne change.
+3. **Au clavier, le focus sortait de l'affiche ouverte et se perdait derrière le fond** (T1, majeur).
+   Tant que l'affiche est ouverte : `<body>` en `visibility: hidden`, le popover en `visible`, `<html>`
+   en `overflow: hidden` à toutes les largeurs (avant : au doigt sous 960 px seulement), et
+   `aria-modal="true"` sur le dialogue (partie B). Tab ne sort plus de l'affiche ; un lecteur d'écran n'y
+   trouve plus qu'elle ; la molette ne fait plus défiler la page cachée ; aucun saut, CLS 0.
+4. **Un appui sur l'image ouverte ne la fermait pas** (D6, mineur). L'image est dans un second bouton de
+   fermeture (« Fermer l'affiche », curseur `zoom-out`) : au téléphone, la place « à côté » n'était que de
+   16 px sur les côtés. Le focus revient à la vignette. **Contenu ajouté** : « Fermer l'affiche »
+   (`aria-label`).
+5. **Pendant le chargement de la grande image, deux aplats et une couture** (D5, mineur) : un aplat clair
+   uni sur le fond sombre (l'image a son format exact : les couleurs de bord n'y servaient à rien).
+6. **Téléphone couché : l'affiche « en grand » restait petite** (D10, mineur). Sous 500 px de haut,
+   « Fermer » passe à droite de l'image, et la bande de 52 px est rendue à l'image : à 844 × 390,
+   221 × 274 → 288 × 358 px pour une 0,805, 239 × 358 pour une 2:3. Le `sizes` de la grande image a la
+   même règle en tête.
+7. **Articles connexes** (D8 et S7, mineurs). Au téléphone, le texte est centré sur la hauteur de
+   l'affiche (il était collé en haut), et la colonne de l'affiche épouse son format. Sur ordinateur,
+   l'affiche est centrée dans une case de 96 px ; avec 3 ou 5 articles (15 articles), le dernier prend le
+   rang entier. Dimensions déclarées : celles du fichier (132 × 198 pour une 2:3 ; 44 × 55 avant, un 4:5
+   faux pour 170 des 223).
+8. **Le poids des images et du HTML ; Lighthouse sur les séries** (T2, majeur ; S3 et T3, mineurs).
+   `sizes` dit la largeur dessinée de chaque affiche, et non celle de sa case (une 2:3 : 83 %) ; les
+   lignes ont une variante de 200 px de plus (écrans de densité 1,75 à 2, dont celui de Lighthouse) ; la
+   une du téléphone est plus petite ; les couleurs de bord sont retirées. La vignette d'article a un
+   candidat de 288 px (T3 : à 144 px de case en densité 2, elle tirait le fichier de 400 px, +28 Ko) et un
+   `sizes` à sa largeur dessinée. Résultat (tableaux des parties A et B) : 95 ou plus à chaque passe sur
+   les cinq pages mesurées (Guides & Conseils : 95 au plus bas, 93 sur `main` ; Fiches Fiscalité : 96) ;
+   images de `/blog` 203 → 141 Ko (99 sur `main`), HTML 27,6 → 24,3 Ko (22,7). Le LCP de labo de `/blog`
+   au téléphone reste au-dessus de `main` (S3) : voir « Ce qui reste faible ».
+9. **Code** (S5 et T6, mineurs). Un seul calcul de `srcset` dans `blog-covers.ts` (`srcsetAffiche`,
+   appelé par `resolveCovers`), un seul dans le gabarit d'article (`srcsetDe`, appelé aussi par les
+   connexes) ; `largeurDansCadre()` pour les `sizes` ; un seul chemin d'import ; la prop `eager` de
+   `BlogCard` retirée (plus aucun appelant).
+10. **Documentation** (S2 et S4, mineurs) : « quatre formats » (et non cinq), « 47 affiches pour 48
+    articles », les comptes de fichiers d'images, l'élément LCP de `/blog` sur ordinateur (l'affiche de
+    la une, pas le titre), le commentaire de la une (« 160 à 720 px »).
+11. **Le fond de l'affiche en grand avait une marche** (trouvé en refaisant les captures pour le
+    propriétaire, après les deux commits de corrections). La page étant masquée, le fond à 90 % laissait
+    voir celui du canevas : le ciel sur les 520 premiers pixels, puis l'eau profonde ; à l'ouverture en
+    haut d'un article, une ligne plus claire coupait le fond derrière l'image (vu dans Chromium et
+    WebKitGTK). Le fond est maintenant opaque (même encre). Une seule déclaration change dans
+    `blog-article.css` ; la construction ne diffère de la précédente que par elle et par le nom de la
+    feuille de l'article (48 pages) ; preuves, `verify-site.mjs` et WebKitGTK refaits.
+
+**Écarté (et pourquoi) :**
+
+- *La vignette d'article plus grande, à côté du titre* (D7). Mesurée sur les 48 articles à 393 × 692 et
+  360 × 640, de 76 à 104 px (`zoom/corrections/d7-*.jsonl`) : le titre se retire d'autant et passe sur une
+  ligne de plus ; le texte descend de 32 à 118 px, pour 39 à 47 articles au-delà de la borne de 16 px.
+  Elle reste à 95 px de haut. Au téléphone, la même affiche a donc une case de 104 px dans `/blog` et de
+  76 px dans l'article : à montrer au propriétaire, avec l'affiche en grand d'un appui.
+- *Pages de série plus longues en tablette* (D9). Le cahier ne bornait que `/blog` : à faire valider
+  (Guides & Conseils 4 916 → 7 703 px à 820 × 1 180 ; une affiche de 120 px de 640 à 1 023 px en
+  retirerait environ 17 %).
+- *Deux articles, une affiche* (D11) : décision de contenu, inchangée.
+- *Sans popover, la vignette reste un bouton qui ne fait rien* (T4). Sans script, aucune règle ne le
+  retire du clavier ni de l'arbre d'accessibilité ; accepté (Safari avant 17, Firefox avant 125), écrit
+  dans CLAUDE.md.
+- *À 320 px, date et durée sur deux lignes plus souvent* (T7 : 17 lignes contre 6 sur `main`). Rien
+  n'est cassé ; à 320 px, la case vaut déjà son minimum de 88 px (26,5 % donnerait 85), et la date la plus
+  longue (185 px) ne tiendrait pas dans la colonne de 170 px que laisserait `clamp(80px, …)`.
+- *Qualité d'image plus basse, 4 couleurs de bord au lieu de 8* (S3, T2) : sans objet après le point 8.
+- *Rogner les colonnes noires des trois fichiers source* (D3) : sans bande, elles ne se voient plus
+  (point 1) ; les fichiers ne sont pas touchés.
+
+**Fusion avec les thèmes (§ 9.fp, d'abord numérotée § 9.fn, numéro pris entre-temps sur `main` par la
+fenêtre produit) — faite depuis en § 9.fp (« Rebase sur les affiches »), pas ici** (S1, majeur). La branche des thèmes
+(`claude/loving-carson-pgk851-themes`) n'est pas rebasée sur celle-ci ; elle devra l'être avant la mise en
+ligne, par le chef d'orchestre. `git merge-tree --write-tree --name-only` entre cette branche et celle des
+thèmes (14 novembre, lecture seule) : **conflits dans `CLAUDE.md`, `MIGRATION.md`,
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro` et `src/styles/blog-liste.css`** ;
+`src/pages/blog/[slug].astro` se fusionne seul ; `blog-article.css` n'est pas touché par les thèmes. À
+la fusion :
+1. `BlogCard.astro` : garder le `sizes` par affiche de cette branche (`largeurDansCadre`, sans `bords` ni
+   `style`, retirés) et les props des thèmes (`etiquette`, `theme`, `category`, `categoryNumber`) ;
+   `eager` est retirée des deux côtés. `index.astro` : la une de cette branche, et les puces, étiquettes et
+   l'index des thèmes ; la page de thème reprend la feuille et la carte des listes.
+2. `blog-liste.css` : les règles de l'affiche et de la une d'ici. La sous-grille des thèmes (deux lignes
+   d'une rangée sur quatre pistes, dès 640 px) ne sert qu'à partir de 1 024 px : de 640 à 1 023 px,
+   cette branche n'a qu'une colonne de lignes. Choisir alors entre le texte centré sur l'affiche (ici) et
+   des titres alignés d'une colonne à l'autre (thèmes), puis remesurer.
+3. **La borne de densité, à remesurer.** Avec les étiquettes des thèmes simulées sur cette construction
+   (balisage et règles des thèmes, `zoom/corrections/densite3.cjs`) : 3 articles entiers à tout moment à
+   393 × 692, mais 92 % du temps seulement à 360 × 640 (lignes de 140 à 166 px : l'étiquette « Thème ·
+   Fiche Fiscalité #16 » passe sur deux lignes pour 24 des 47). Deux voies : écrire le numéro de fiche sur
+   la ligne de la date sous 400 px (mêmes mots, étiquette d'une ligne), ou accepter 92 % et l'écrire ici.
+4. Ajouter les cinq pages de thème à `preuve.cjs`, puis refaire `verify-site.mjs`, `preuve-corps.cjs`,
+   `preuve.cjs`, les pages hors blog, Lighthouse et WebKitGTK.
+
+**Ce qui reste faible** (liste d'ensemble, parties A et B, après corrections) :
+
+- `/blog` au téléphone : LCP de labo 2,50 s en médiane contre 2,29 s sur `main` (note 97 contre 98,
+  jamais sous 97) ; c'est le poids des affiches (99 → 141 Ko au premier chargement, densité 1,75).
+  Mesuré en HTTP/1.1 local : à refaire sur un aperçu Vercel (HTTP/2) en réseau bridé.
+- La une au téléphone n'est plus « nettement plus grande » que les lignes (point 2) : à montrer au
+  propriétaire.
+- Une affiche 2:3 est moins large que sa case : dans une liste, elle paraît plus petite qu'une 0,805 de
+  même hauteur (c'est son format).
+- Au téléphone, l'affiche a une case de 104 px dans `/blog` et de 76 px dans l'article (« Écarté »). La
+  vignette du téléphone a coûté 15 px (le texte commence à 514 px au lieu de 499, médiane à 393 × 692) ;
+  tablette et petit ordinateur n'ont pas grandi (aucune place gratuite).
+- La densité de 3 articles entiers n'est tenue qu'aux deux formats de référence : un téléphone plus court
+  (iPhone SE dans Safari, environ 375 × 550 visibles) n'en montre par moments que 2 ; à 640 × 960, 2
+  entiers sur 11 % des positions (20 % sur `main`) ; après la fusion avec les thèmes, 92 % du temps à
+  360 × 640 (voir plus haut).
+- Les petits titres d'affiche (« INBOX ZÉRO DU REMPLA », 3,8 px de capitales à 104 px) ne se lisent pas
+  en liste : c'est la scène qui fait reconnaître ces affiches.
+- Séries en tablette (une colonne) : Guides & Conseils passe de 4 916 à 7 703 px à 820 px (« Écarté »).
+- Après un appui à côté de l'image, le focus ne revient pas à la vignette (règle du popover). Sans
+  popover, la vignette est un bouton qui ne fait rien.
+- Les 11 affiches de 450 px sont agrandies (1,57 fois en largeur CSS à 820 px, 2,4 fois en pixels réels
+  sur un téléphone de densité 3) : nettes à l'œil sur les captures, mais plus douces que les autres. La
+  source ne peut pas mieux faire.
+- À décider par le propriétaire : la une au téléphone à la taille des lignes, l'affiche à son format sans
+  bandes (captures dans `zoom/captures/pour-le-proprietaire/`), la longueur des séries en tablette,
+  l'affiche commune à deux articles.
+- Non vérifié : Safari réel et iPhone, Firefox, VoiceOver, un vieux navigateur sans popover (raisonné sur
+  la feuille), aperçu Vercel en HTTP/2 sur réseau bridé.
+
+**Après les deux vérifications finales** (14 novembre 2026 ; navigateur : « prête », conformité :
+« conforme », aucun défaut bloquant ni majeur). Trois défauts mineurs corrigés :
+- imprimer un article avec l'affiche ouverte donnait des pages blanches (la page masquée, l'affiche
+  retirée à l'impression) : les deux règles qui masquent la page sont sous `@media screen` ;
+- une carte d'article connexe sans image (affiche introuvable à la construction, cas qui n'arrive pas
+  aujourd'hui) gardait la colonne de 96 px de l'image et écrasait son titre : une seule colonne dans ce
+  cas (`.carte:not(:has(img))`) ;
+- CLAUDE.md citait la section des thèmes, absente de `main` : la note de fusion ne vit plus qu'ici.
+Laissés tels quels : à 360 × 640, l'affiche de la une commence à 619 px (même position sur `main`, pas
+une régression) ; les affiches de 450 px restent douces en grand sur tablette (voir plus haut) ; cinq
+fichiers presque identiques dans le `srcset` de l'image en grand (sources de 902 à 908 px, à côté du
+900 px).
+
+**Fichiers (corrections)** : `src/lib/affiche-bords.mjs` (retiré), `src/lib/blog-covers.ts`,
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/pages/blog/[slug].astro`,
+`src/styles/blog-liste.css`, `src/styles/blog-article.css`, `MIGRATION.md`, `CLAUDE.md`.
+
+### 9.fp Blog : les thèmes (13 novembre 2026)
+
+Seconde PR du blog, construite sur la première (§ 9.fj à 9.fm), puis rebasée sur les affiches
+(§ 9.fo ; voir « Rebase sur les affiches », en fin de section). Numérotée § 9.fn à la construction ;
+`main` a pris ce numéro entre-temps (la fenêtre produit). Le propriétaire : « ok pour les
+thèmes, fais la deuxième PR après », puis, pour tout ce chantier, « je te fais full confiance, je
+veux tes choix ». Les choix ci-dessous sont décidés.
+
+**Pourquoi.** Les trois séries classent par forme et par époque (les fiches numérotées d'Instagram
+de l'automne 2025, et « divers », affiché « Guides & Conseils », pour le reste), pas par sujet : un
+article sur l'impôt pouvait être dans les trois. Pages de série : 62 vues en 90 jours, 24
+visiteurs ; après `/blog`, 10 % des lecteurs ouvrent une page de série (PostHog). Recherches tapées
+dans `/blog` : facture, PAMC, acomptes, CARMF, ANCV, CPS, interne, PDSA, indemnités,
+« contribution économique ». Le corpus d'audience n'était pas fourni.
+
+**Les cinq thèmes**, dans l'ordre d'une carrière (ordre d'affichage partout) ; adresses figées dès
+la mise en ligne :
+
+| Ordre | Thème | Adresse | Articles |
+|---|---|---|---|
+| 1 | Débuter et s'organiser | `/blog/theme/debuter-organiser` | 10 |
+| 2 | Statut, contrats et revenus | `/blog/theme/statut-contrats-revenus` | 11 |
+| 3 | Cotisations et protection | `/blog/theme/cotisations-protection` | 7 |
+| 4 | Impôts et déclarations | `/blog/theme/impots-declarations` | 15 |
+| 5 | Budget et patrimoine | `/blog/theme/budget-patrimoine` | 5 |
+
+Classement des 48 articles (slug = fichier de `src/content/blog/`), contrôlé contre les fichiers
+(48 classés, aucun manquant, aucun en trop, aucun en double) :
+
+- **Débuter et s'organiser** : checklist-administrative-medecin-remplacant,
+  checklist-premier-jour-remplacement, checklist-ultime-medecin-remplacant,
+  trouver-facilement-tes-remplacements-medicaux, maitrise-ton-logiciel-metier-en-30-min,
+  outils-numeriques-indispensables-cabinet, inbox-zero-remplacant, pieges-debut-carriere-remplacant,
+  realites-remplacement-medical, syndrome-imposteur-5-astuces.
+- **Statut, contrats et revenus** : choix-mode-exercice, salariat-vs-liberal,
+  remplacement-salarie-guide-complet, remplacement-regulier-requalification,
+  retrocession-honoraires-medecin-remplacant, salaires-medecins-remplacants,
+  signer-contrat-remplacement, obtenir-sa-licence-de-remplacement,
+  facturation-electronique-medecin-remplacant, generer-facture-remplacement,
+  medecin-remplacant-travailler-6-mois-par-an.
+- **Cotisations et protection** : tout-comprendre-urssaf, tout-comprendre-carmf,
+  effet-ciseaux-regularisation-urssaf-medecin, cotisations-sociales-vs-impots, rspm-exemples-concrets,
+  prevoyance-madelin-medecin, conge-maternite-paternite.
+- **Impôts et déclarations** : calendrier-fiscal-remplacant, cfe-medecin-remplacant,
+  regime-fiscal-micro-bnc-vs-reel, remplir-declaration-2035, guide-impots-internes-remplacants,
+  frais-professionnels-deductibles, frais-pros-medecin-liberal-2026,
+  frais-pros-medecins-salaries-internes-2026, salariat-10-pourcent-ou-frais-reels,
+  voiture-bareme-kilometrique-ou-frais-reels-medecin, cheques-vacances-medecin-liberal,
+  pdsa-exoneration-gardes-regulees, zones-frr-exoneration-impot-medecin,
+  medecin-outre-mer-avantages-fiscaux, micro-bnc-exemples-concrets.
+- **Budget et patrimoine** : base-financiere-rempla, super-net-budget,
+  simulateur-super-net-combien-reste, enveloppes-investissement-pea-assurance-vie-per-cto,
+  interets-composes-meilleur-remplacement.
+
+**Ce qui est construit :**
+
+1. **Donnée.** Champ `theme` obligatoire dans le frontmatter (`z.enum` des cinq slugs,
+   `src/content.config.ts`) : un article sans thème, ou avec un thème inconnu, arrête la
+   construction (essayé sur une copie du dépôt : `InvalidContentEntryDataError`). Ajouté aux 48
+   fichiers, une ligne sous `seriesId:` : 48 lignes ajoutées, aucune retirée, aucun mot du texte ni
+   aucune date touchés. Registre : `src/lib/blog-themes.ts` (slug, nom, titre et description de la
+   page, ligne de contexte, introduction, fond de l'image de partage ; l'ordre du tableau est
+   l'ordre d'affichage), sur le modèle de `blog-series-slugs.ts`.
+2. **Pages de thème** (`src/pages/blog/theme/[theme].astro`), sur le modèle des pages de série :
+   même ciel, même feuille (`blog-liste.css`), mêmes lignes (`BlogCard.astro`), même fin de page.
+   Fil d'Ariane Accueil › Blog › Thème (et `BreadcrumbList`) ; `<h1>` = le nom ; la ligne de
+   contexte et le compte ; l'introduction sur une fiche ; les puces « Tous les articles » et des
+   cinq thèmes (celle de la page en `aria-current="page"`) ; les lignes dans l'ordre de `/blog`
+   (`byNewest`) ; l'appel au simulateur. Schéma `CollectionPage` et sa liste, comme les séries.
+   `data-blog-theme` et `data-blog-total` sur `<main>`.
+3. **`/blog`.** Les puces des thèmes (avec leur compte) remplacent celles des séries ; chaque ligne
+   dit son thème, et le numéro de la fiche à côté. La une, la recherche, l'ordre et les attributs
+   de mesure ne changent pas.
+4. **Pages de série** : en ligne, inchangées (prouvé plus bas), dans le sitemap. Elles sortent de
+   la navigation de `/blog` ; chaque article y mène toujours par sa pastille de série.
+5. **Page d'article** : fil d'Ariane Accueil › Blog › Thème › Article, à l'écran et dans le
+   `BreadcrumbList` (position 3 : la page de thème). La pastille de série et « Épisode N » ne
+   changent pas. `data-blog-theme` sur `<article>`, à côté de `data-blog-series`.
+6. **Mesure** (`src/lib/page-analytics.ts`, seul JS touché) : `blog_series_viewed` inchangé ;
+   nouvel événement `blog_theme_viewed` (`theme_id`, `total_articles`) sur les pages de thème, sur
+   le modèle de `mesurerSerie` ; propriété `theme` à côté de `category` et `series_id` sur les
+   événements de l'article (le même jeu de propriétés sert à la lecture, au défilement, à la fin
+   de texte, aux clics, au partage et aux questions). Appel des pages de thème :
+   `data-track="cta_simulateur_blog_theme"` et `cta_signup_blog_theme` (modèle
+   `cta_<destination>_<emplacement>`). Aucun script ajouté.
+7. **Image de partage** (`src/lib/image-partage.mjs`) : la pastille dit le thème ; un fond par
+   thème, pris dans les jetons de la DA : sable (Débuter et s'organiser), ciel (Statut, contrats et
+   revenus), nuit (Cotisations et protection : `--ink` vers `#1B3167`, texte blanc), eau profonde
+   (Impôts et déclarations), vert pâle (Budget et patrimoine : `--ok-bg`, vagues de la même
+   teinte). Aucun jaune. Les quatre poses tournent dans le thème, du plus ancien article au plus
+   récent (l'ordre de sa page, à l'envers : deux voisins n'ont pas la même, et un nouvel article
+   prend le dernier rang sans changer l'image des autres ; corrigé après relecture, voir plus
+   bas). Toutes les adresses changent (empreinte).
+8. **Sitemap** : +5 adresses (68 → 73 ; 70 → 75 pages construites).
+9. **`llms.txt`** : une section par thème (son introduction, le lien de sa page, ses articles dans
+   l'ordre de sa page), à la place du rangement par série ; chaque article une fois. RSS et
+   `/blog/recherche.json` inchangés.
+10. **`verify-site.mjs`** : contrôle « 4 sexdecies » (plus bas). Rien d'existant n'est assoupli ;
+    les pages de thème ne comptent pas comme des articles (comme les séries).
+
+**Décisions prises en construisant :**
+
+- **Étiquette des lignes.** Sur `/blog` : le thème en petites capitales (comme la série avant),
+  puis le numéro de la fiche avec le libellé de la pastille de l'article (« Fiche Fiscalité #4 »,
+  24 articles) ; « #4 » seul ne disait plus de quelle série. Sur une page de thème : le numéro seul
+  (le thème est celui de la page). Sur les pages de série : inchangée. Au téléphone, thème et
+  numéro tiennent rarement sur une ligne : le point qui les sépare est dans la marge gauche de la
+  seconde marque, rognée quand elle commence une ligne (aucune ligne ne commence par « · »).
+- **L'index du bas de `/blog`** est rangé par thème (cinq fiches dans l'ordre des thèmes, les
+  articles dans l'ordre de `/blog`, « Les 48 articles, classés par thème. ») : il liait les pages
+  de série, que le point 4 sort de la navigation de `/blog`. Écart au « rien d'autre ne change » du
+  cahier, imposé par ce point 4. À partir de 1 024 px, trois colonnes à la suite (`columns`) :
+  cinq fiches de 5 à 15 titres, une grille laissait des trous.
+- **La une n'est pas touchée** (cahier) : elle garde sa pastille de série (aujourd'hui « Guides &
+  Conseils », sur le congé maternité). Voir « Ce qui reste ».
+- **Pas de pastille au-dessus du `<h1>`** des pages de thème : sur les séries, elle redisait le nom,
+  que le fil d'Ariane et le titre disent déjà.
+- **Puces des thèmes au téléphone** : six noms longs ; deux colonnes égales, le nom et son compte
+  dans un même élément (`bl-puce`) pour que le compte suive le dernier mot : trois rangées à 360 et
+  393 px (148 px de haut ; 96 px pour les quatre puces de séries).
+- **`lastmod` des pages de thème** : la date de publication la plus récente de leurs articles, la
+  règle des pages de série (§ 9.bi). Le cahier disait « `updatedDate` sinon `pubDate` » en
+  renvoyant à cette même logique : la logique des séries l'emporte, la page n'affiche que des dates
+  de publication (corriger un article ne la change pas). Dates : 2026-03-18, 2026-09-20,
+  2026-10-05, 2026-10-05, 2026-04-21 (dans l'ordre des thèmes). Vérifiées par `verify-site.mjs` (7 f).
+- **Titres de page** : « <thème> du médecin remplaçant | Hippodoc » (« comme médecin remplaçant »
+  pour Débuter) ; celui de Statut, contrats et revenus ferait 60 signes avec la marque : il s'en
+  passe, comme les titres d'article longs (§ 9.bi).
+- **Ligne de contexte** en lignes égales (`text-wrap-style: balance`, pages de thème seulement) :
+  « fais. » restait seul au téléphone.
+- **Écart imposé par le code : le nom du script de PostHog change sur toutes les pages.**
+  `page-analytics.ts` est dans le module `analytics-init`, chargé par le script d'entrée de
+  PostHog ; le nom du module change, donc le contenu du script d'entrée, donc son empreinte, donc
+  la balise `<script src>` de chaque page. Le script d'entrée est identique au nom du module près
+  (vérifié) ; les 19 pages hors blog sont identiques à la PR 1 à ce nom près.
+
+**Contenu ajouté, à relire par le propriétaire.** Les seuls textes nouveaux de la PR, par thème
+(registre `src/lib/blog-themes.ts`, recopiés ici en entier). Règles suivies : tutoiement, phrases
+courtes, aucun chiffre, taux, seuil ni date (seuls les noms de formulaire 2035 et 2042-C PRO), ne
+nommer que ce que les articles du thème traitent (titres, descriptions et intertitres des 48 relus),
+pas de répétition mot pour mot entre l'introduction et la description (trois mots de suite en commun
+au plus, comptés sans la ponctuation et apostrophes coupées : « (PEA, » vaut « PEA » ; vérifié par
+script). Titres de 49 à 58 signes, descriptions de 142 à 151 signes, introductions de 65 à 77 mots
+en deux à quatre phrases. Corrigés après relecture (trois introductions disaient une chose fausse ou
+contredisaient un article du thème ; voir « Corrections après relecture », plus bas) : les textes
+ci-dessous sont ceux d'après.
+
+**Débuter et s'organiser** (`debuter-organiser`, fond sable)
+
+- Titre : « Débuter et s'organiser comme médecin remplaçant | Hippodoc »
+- Description : « Premier remplacement de médecin : RCP et Ordre avant, URSSAF et CARMF ensuite, checklist du premier jour, où chercher des remplas, logiciel du cabinet. »
+- Ligne de contexte : « Les démarches, les outils et les réflexes de tes premiers remplacements. »
+- Introduction : « Ta licence ou ta thèse en poche, ton premier remplacement approche. Tes démarches, dans l'ordre : l'assurance RCP et l'Ordre avant de commencer, la CPAM dès le premier remplacement, l'URSSAF et la CARMF dans les semaines qui suivent. Puis la checklist du jour J, où trouver des remplacements, le logiciel métier d'un nouveau cabinet. Et le quotidien : tes outils, tes messages en attente, les pièges des débuts et le doute qui va avec. »
+
+**Statut, contrats et revenus** (`statut-contrats-revenus`, fond ciel)
+
+- Titre : « Statut, contrats et revenus du médecin remplaçant »
+- Description : « Médecin remplaçant libéral ou salarié : licence et contrat de remplacement, rétrocession d'honoraires, facture au remplacé, revenus selon le statut. »
+- Ligne de contexte : « Sous quel statut tu remplaces, ce que tu signes et ce que tu gagnes. »
+- Introduction : « Libéral ou salarié, remplacement ou collaboration : tout part du cadre dans lequel tu exerces. Au programme : la licence de remplacement, le contrat à relire avant de signer, la rétrocession et la façon de la négocier, la facture à envoyer au médecin remplacé et ce que change la facturation électronique. Et pour choisir : ce que rapportent le libéral, le salariat et l'intérim, le nombre de jours qui te suffit, et le risque de requalification d'un remplacement trop régulier. »
+
+**Cotisations et protection** (`cotisations-protection`, fond nuit)
+
+- Titre : « Cotisations et protection du médecin remplaçant | Hippodoc »
+- Description : « Cotisations du médecin remplaçant : URSSAF, RSPM ou régime PAMC, CARMF, régularisation et modulation, prévoyance Madelin, congé maternité ou paternité. »
+- Ligne de contexte : « Ce que tu verses à l'URSSAF et à la CARMF, et ce qui te protège en retour. »
+- Introduction : « L'URSSAF et la CARMF calculent une partie de tes cotisations sur tes revenus passés, puis régularisent. Après une bonne année, la régularisation et le provisionnel relevé tombent ensemble : c'est l'effet ciseaux, et il se prépare. Tu trouves ici le choix entre RSPM et régime PAMC avec des exemples chiffrés, l'affiliation à la CARMF, ce qui sépare les cotisations de l'impôt, la prévoyance (avec ou sans Madelin) et ton congé de maternité ou de paternité. »
+
+**Impôts et déclarations** (`impots-declarations`, fond eau)
+
+- Titre : « Impôts et déclarations du médecin remplaçant | Hippodoc »
+- Description : « Impôts du médecin remplaçant : micro-BNC ou réel, déclarations 2035 et 2042-C PRO, frais réels déductibles, CFE, exonérations PDSA et FRR, calendrier. »
+- Ligne de contexte : « Déclarer tes revenus, déduire tes frais, ne rater aucune échéance. »
+- Introduction : « Micro-BNC ou régime réel : ce choix décide de ce que tu déclares et de ce que tu peux déduire. Viennent ensuite la 2035 ligne à ligne et son report sur la 2042-C PRO, la déclaration de l'interne qui remplace, les frais réels du libéral comme du salarié (voiture, repas), les chèques-vacances et la CFE. Puis les allègements d'impôt (gardes de PDSA, zones FRR, outre-mer) et le calendrier de tes échéances. »
+
+**Budget et patrimoine** (`budget-patrimoine`, fond vert)
+
+- Titre : « Budget et patrimoine du médecin remplaçant | Hippodoc »
+- Description : « Super-Net, budget et placements du médecin remplaçant : régularisations à prévoir, épargne de précaution, puis PEA, PER, CTO ou assurance vie. »
+- Ligne de contexte : « Ce qu'il te reste vraiment, et ce que tu en fais. »
+- Introduction : « Ton chiffre d'affaires n'est pas ce que tu peux dépenser : retires-en les cotisations et l'impôt, ce qui reste est ton Super-Net. Tu trouves ici comment bâtir ton budget à partir de lui, les régularisations à mettre de côté quand tes revenus montent, l'épargne de précaution à garder, puis où placer le reste (PEA, assurance vie, PER ou compte-titres) et pourquoi le temps compte autant que le montant. »
+
+S'y ajoutent, sans texte nouveau : le nom de chaque thème dans les puces, le fil d'Ariane et la
+pastille de l'image de partage ; « classés par thème » au lieu de « classés par série » sous l'index
+de `/blog` ; le libellé de la pastille d'article (« Fiche Fiscalité #4 ») sur les lignes de `/blog`
+et des pages de thème. **Contenu modifié : aucun** (aucun mot d'article ni de page existante).
+
+**Le contrôle de `verify-site.mjs`** (« 4 sexdecies », et le point 7 f pour les `lastmod`). Il
+échoue si un article n'a pas de thème connu (`data-blog-theme` de son `<article>`, comparé au
+registre, lu par expression régulière, et au frontmatter) ; si son fil d'Ariane, à l'écran ou dans
+le `BreadcrumbList`, ne mène pas à la page de son thème en position 3 (au nom du registre) puis à
+lui-même en position 4 ; si une page de thème ne liste pas exactement ses articles, une fois chacun
+(ses lignes `data-ph="blog_card"` et la liste de son `CollectionPage`, dans le même ordre), ou n'a
+pas `data-blog-theme` sur `<main>` ; si un article est listé par aucune page de thème ou par deux ;
+si le sitemap n'a pas exactement les pages de thème du registre, au nombre de `NB_THEMES` (5 : un
+sixième thème se décide) ; si les puces « Thèmes du blog » de `/blog` ne les lient pas toutes ; si
+le `lastmod` d'une page de thème n'est pas la publication la plus récente de ses articles.
+`PAGES_SANS_ENTETE`, les contrôles d'en-tête et de pied, `PLANCHER_FAQ` (aucune FAQ sur les pages de
+thème) : intacts. **Il mord** : 16 mutations sur une copie du `dist` (jamais le dépôt), les 16
+échouent (article sans thème, au thème d'un autre, au thème inconnu ; fil d'Ariane par la série ou
+sans le thème, à l'écran et dans le schéma ; ligne retirée, ajoutée ailleurs, en double ; schéma de
+la page amputé ; `<main>` sans attribut ; page de thème hors du sitemap ; sixième page dans le
+sitemap ; lien retiré des puces de `/blog` ; `lastmod` faux). La copie remise repasse. Il passe :
+73 pages, 5 814 liens internes (5 434 avant : les pages de thème, leurs puces et leurs lignes), les
+7 avertissements de la PR 1, les mêmes.
+
+**Écarts voulus, comptés** (`preuve.cjs` contre la PR 1, 52 pages, 11 clés ; chacun classé par
+script, `classer.cjs` : partir de la PR 1, appliquer les seuls écarts voulus, exiger l'égalité ;
+**0 écart non expliqué**) :
+
+| Pages | Clés différentes | Nature (toutes voulues) |
+|---|---|---|
+| 3 pages de série | aucune (11 / 11 identiques) | — |
+| 48 articles | `tete` | `og:image` et `twitter:image` : nouvelle adresse de l'image de partage (`/blog/partage/<slug>-<8 signes>.jpg`) ; le reste égal |
+| 48 articles | `jsonld` | `Article.image[0]` (même adresse) ; `BreadcrumbList` position 3 : la page du thème au lieu de la série ; le reste égal |
+| 48 articles | `liens` | le lien de série du fil d'Ariane devient le lien du thème (un pour un, même place) |
+| 48 articles | `mesure` | `data-blog-theme` ajouté après `data-blog-series` |
+| 48 articles | `main`, `mainSac` | le nom de la série devient le nom du thème dans le fil d'Ariane |
+| `/blog` | `titres` | les 3 fiches de l'index (séries) deviennent 5 (thèmes) ; les autres titres égaux, dans l'ordre |
+| `/blog` | `liens`, `main`, `mainSac` | puces : « Tous les articles (48) » égale, puis les 5 thèmes avec leur compte ; 47 lignes : mêmes adresses, même ordre, même texte hors étiquette, étiquette = thème (+ numéro de fiche pour 24) ; index : mêmes 48 liens d'articles, rangés par thème dans l'ordre de `/blog` |
+
+Identiques sur les 52 pages : `corps`, `faq`, `images`, `ids` ; `titres` sur 51 ; `/blog` garde sa
+`tete`, son `jsonld` et sa `mesure`. `preuve-corps.cjs` (corps des 48 articles) : mots, titres et
+ancres, liens différents : 0, 0, 0 ; un seul `<h1>` partout.
+
+**Pages hors blog et fichiers** (comparaison fichier par fichier des deux `dist`) : les 19 pages HTML
+hors blog sont identiques à la PR 1 au nom du script de PostHog près (une l'est octet pour octet).
+Feuille commune : `_astro_assets.BdxOyZgM.css`, inchangée. Fichiers changés en dehors des pages du
+blog : le script d'entrée de PostHog et le module `analytics-init` (renommés ; le premier identique
+au nom du second près ; le second passe de 7 169 à 7 439 octets), la feuille des listes (renommée :
+14,4 → 15,2 Ko, 3,7 → 3,9 Ko compressée), `sitemap-0.xml`, `llms.txt`, les 48 images de partage
+(renommées). Rien d'autre. **Pages de série** : HTML identique à la PR 1 aux deux noms près (script
+et feuille), et captures pleine page identiques au pixel près à 360, 393, 820 et 1 512 px.
+
+**Mesures** (Chromium) :
+
+| Page, largeur | Ligne d'article (petite / moyenne / grande) | Puces | Premier titre d'article |
+|---|---|---|---|
+| `/blog`, 393 | 97 / 114 / 135 → 97 / 123 / 135 px | 96 → 148 px | 973 → 1 042 px (la une : 515 → 567) |
+| `/blog`, 360 | 97 / 116 / 135 → 97 / 130 / 152 px | 148 → 148 px | — |
+| `/blog`, 820 | 203 / 227 / 252 → 203 / 244 / 288 px | 98 → 98 px | — |
+| `/blog`, 1 512 | 179 / 201 / 203 px, inchangé | 44 → 98 px (deux rangées) | — |
+| pages de thème, 393 | 96 à 135 px | 148 px | 808 à 887 px (séries : 925 à 992) |
+| pages de thème, 1 512 | 179 à 203 px | 98 px | 700 à 728 px (dans le premier écran ; séries : 776 à 804) |
+
+Les lignes de `/blog` grandissent au téléphone : sur les 24 qui ont un numéro de fiche, le thème et
+le numéro prennent deux lignes (WebKitGTK : les 24 aussi). Aucun défilement de côté à 320, 360,
+393, 600, 820, 1 024, 1 280, 1 512 et 1 920 px, plis fermés et ouverts, sur `/blog`, les cinq pages
+de thème, une page de série et un article par thème. Lighthouse mobile (`npx serve`, qui compresse ;
+trois passes alternées) : Impôts et déclarations 96 / 100 / 99, Débuter et s'organiser 97 / 99 / 97,
+`/blog` 98 / 98 / 98 (PR 1 : 98 / 97 / 98) ; accessibilité, bonnes pratiques et SEO à 100 ; CLS 0 ;
+LCP (l'introduction, un texte) 1,82 à 2,63 s sur les pages de thème, 2,30 à 2,34 s sur `/blog` (PR 1 :
+2,34 à 2,41 s). WebKitGTK 2.52 (une page de thème, une autre, `/blog`, à 1 512, 393 et 360 px) :
+aucun débordement, point rogné en début de ligne, ligne de contexte équilibrée, index en trois
+colonnes, mêmes hauteurs à quelques pixels près. Images de partage : les 48 regardées (planches) ;
+45 à 61 Ko ; titres lisibles, aucun jaune, mascotte entière ; cinq fonds distincts.
+
+**Pièges rencontrés :**
+
+- Le HTML n'a pas d'espace entre les éléments du fil d'Ariane ni entre les marques d'une ligne : un
+  texte extrait par `textContent` les colle (« Blog›Fiches Fiscalité› »). Les scripts de preuve en
+  tiennent compte.
+- Le nom du script de PostHog (voir « Décisions ») : toute retouche de `page-analytics.ts` change la
+  balise `<script>` de toutes les pages. Une preuve « pages hors blog identiques » se fait à ce nom
+  près, et elle seule.
+- Un `astro sync` lancé sur une copie du dépôt dont `node_modules` est un lien écrit dans le cache
+  du dépôt (`node_modules/.astro`) : le vider avant la construction suivante.
+- `.bl .bl-carte .chip { padding: 0 }` pèse plus qu'une règle de marque : la marge du point est
+  écrite avec le même chemin (`.bl .bl-carte .bl-marques-suite > *`), après elle.
+
+**Ce qui reste (faiblesses et suivis)** (mis à jour après relecture, voir plus bas) :
+
+1. ~~La une de `/blog` garde sa pastille de série (« Guides & Conseils ») au milieu de lignes
+   étiquetées par thème ; le cahier la voulait inchangée.~~ Réglé en § 9.fq : la pastille est
+   retirée (la une ne dit plus que « À la une »).
+2. ~~Titres de lignes voisines à des hauteurs différentes~~ : corrigé après relecture (sous-grille).
+3. `/blog` au téléphone : la une descend de 52 px (six puces au lieu de quatre) et 24 lignes sur
+   47 ont une étiquette de deux lignes (thème, puis « Fiche Fiscalité #16 ») : ligne moyenne
+   113 → 122 px à 393 (PR 1 → thèmes), 115 → 129 px à 360. Sur les affiches (§ 9.fo), ce sont les
+   deux points les plus faibles : voir « Rebase sur les affiches », « Ce qui reste faible ».
+4. Pages de thème au téléphone : aucun titre d'article au premier écran (808 à 910 px à 393 × 692),
+   comme les séries (925 à 992). Sur les affiches : 835 à 937 px (séries : 943).
+5. `blog_theme_viewed` et la propriété `theme` : à créer dans les insights PostHog.
+6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel ; les aperçus de lien (WhatsApp,
+   LinkedIn) des nouvelles images une fois en ligne ; Search Console (les fils d'Ariane des 48
+   articles changent de position 3).
+7. (Réglé en § 9.fq : les pages de série sont redirigées, deux vers leur thème.) Search Console,
+   deux à trois mois après la mise en ligne : pages de série et pages de thème visent les mêmes
+   recherches (Fiches Fiscalité partage 10 articles sur 16 avec Impôts et
+   déclarations ; Fiches Pratiques, 6 sur 8 avec Débuter et s'organiser). Regarder quelle page
+   sort sur « fiscalité médecin remplaçant » et « débuter remplacement médecin » ; si une série
+   prend la place de son thème, décider alors (`noindex` ou redirection vers le thème).
+8. ~~Fusion avec § 9.fo (les affiches)~~ : faite le 14 novembre (« Rebase sur les affiches », en fin
+   de section).
+
+**Fichiers** : `src/lib/blog-themes.ts`, `src/content.config.ts`, les 48 `src/content/blog/*.md`
+(frontmatter), `src/pages/blog/theme/[theme].astro`, `src/pages/blog/index.astro`,
+`src/pages/blog/[slug].astro`, `src/components/BlogCard.astro`, `src/components/BlogAppel.astro`,
+`src/styles/blog-liste.css`, `src/lib/page-analytics.ts`, `src/lib/image-partage.mjs`,
+`astro.config.mjs`, `src/pages/llms.txt.ts`, `scripts/verify-site.mjs`, `MIGRATION.md`, `CLAUDE.md`.
+
+#### Corrections après relecture (13 novembre 2026)
+
+Trois relectures indépendantes de la PR des thèmes : contenu et SEO, design et lecteur, code et
+Safari (7,5 / 10 chacune). Chaque défaut a été vérifié avant d'être corrigé ; un défaut contraire
+à une décision du cahier est écarté, sauf s'il casse quelque chose de mesurable.
+
+**Corrigé :**
+
+1. **Trois introductions disaient une chose fausse ou contredisaient un article du thème**
+   (`src/lib/blog-themes.ts` ; textes d'après recopiés plus haut, « Contenu ajouté »).
+   - *Débuter et s'organiser* : « les démarches à faire avant (Ordre, CPAM, URSSAF, CARMF,
+     assurance RCP) » et, dans la description, « inscriptions à faire avant ». La checklist
+     administrative dit : RCP, Ordre (ou licence) et carte CPS avant ; la CPAM dès le premier
+     remplacement ; l'URSSAF dans les 8 jours ; la CARMF dans le mois. Devient : « l'assurance RCP
+     et l'Ordre avant de commencer, la CPAM dès le premier remplacement, l'URSSAF et la CARMF dans
+     les semaines qui suivent » (description : « RCP et Ordre avant, URSSAF et CARMF ensuite »).
+   - *Cotisations et protection* : « appellent tes cotisations avant de connaître ton revenu, puis
+     régularisent : c'est l'effet ciseaux ». L'article de l'effet ciseaux répond « Non » à « La
+     CARMF régularise-t-elle comme l'URSSAF ? » (complémentaire et ASV sans régularisation) et
+     définit l'effet ciseaux comme la régularisation et le provisionnel relevé qui tombent ensemble
+     après une bonne année. Devient : les mots de `super-net-budget` (« calculent une partie de tes
+     cotisations sur tes revenus passés, puis régularisent ») et de l'article.
+   - *Budget et patrimoine* : le Super-Net y était ce qui reste après « les cotisations, l'impôt et
+     les régularisations à venir ». Trois articles du thème le définissent après cotisations et
+     impôt ; les régularisations se mettent de côté ensuite. Devient : « retires-en les cotisations
+     et l'impôt, ce qui reste est ton Super-Net », puis les régularisations à mettre de côté.
+   - Moins graves : Statut promettait « ce que rapporte chaque mode d'exercice » (les articles
+     chiffrent le libéral, le salariat et l'intérim, pas les huit modes) ; Impôts rangeait les
+     chèques-vacances dans « les frais réels du libéral comme du salarié » (ils ne se déduisent
+     qu'au régime réel, et ne sont pas des frais réels) et promettait « toutes tes échéances ».
+   - Répétitions : la règle « trois mots communs au plus » était vérifiée avec la ponctuation (« (PEA, »
+     ≠ « PEA, ») : Budget en avait 5, Cotisations 4. Mesurée maintenant sans ponctuation et apostrophes
+     coupées : 3 au plus. La description de Budget commençait par le titre exact de `super-net-budget`
+     (même recherche visée) : changée. « Tu trouves ici » ouvrait les cinq introductions : deux.
+   - Toujours sans chiffre, taux, seuil ni date (contrôlé par script).
+2. **Image de partage stable** (`src/lib/image-partage.mjs`). Les poses tournaient du plus récent au
+   plus ancien : chaque parution décalait le rang, donc la pose et l'adresse de l'image, de tout le
+   thème (simulé : 10/10, 11/11, 7/7, 15/15 et 5/5 adresses changées). Elles tournent du plus ancien
+   au plus récent : un nouvel article prend le dernier rang, 0 adresse existante ne change (simulé
+   dans les cinq thèmes, 48 noms reconstitués égaux à ceux du `dist`), et deux voisins de la page
+   gardent des poses différentes (planches regardées). Seule exception : un article publié à la date
+   d'un article du même thème peut décaler ceux de cette date. Les 48 adresses changent une fois de
+   plus dans cette PR, où elles changeaient déjà.
+3. **Titres de lignes voisines alignés** (`blog-liste.css`). Quand deux étiquettes voisines n'avaient
+   pas le même nombre de lignes (le thème, « Fiche Fiscalité #16 », ou rien), les titres ne partaient
+   pas à la même hauteur : 40 rangées décalées sur `/blog` et 20 et 31 sur Statut et Impôts, cumulées
+   sur 17 largeurs, de 17 à 35 px. À partir de 640 px, les deux lignes d'une rangée partagent quatre
+   pistes (sous-grille) : étiquette (calée contre le titre), titre, extrait, date (en bas). 0 rangée
+   décalée partout, Chromium et WebKitGTK 2.52 ; hauteur moyenne des lignes inchangée à 6 px près.
+   Effet visible : les extraits voisins partent aussi à la même hauteur (sous un titre plus court, la
+   place vide est entre le titre et l'extrait, plus entre l'extrait et la date). Portée : `/blog` et
+   pages de thème (`.bl:not([data-blog-serie])`) ; sans sous-grille, la ligne d'avant.
+4. **Puces des thèmes en rangées égales**, sur `/blog` comme sur les pages de thème : deux colonnes
+   jusqu'à 699 px (2 + 2 + 2), trois à partir de 700 px (3 + 3 ; de 700 à 767 px, un nom peut prendre
+   deux lignes, la puce garde 44 px). Avant : 2 + 1 + 2 + 1 à 560 px sur `/blog` (206 px de haut, 152
+   maintenant), 3 + 2 + 1 à 700 et 768 px, 4 + 2 et 5 + 1 à l'ordinateur (« Budget et patrimoine »
+   seul). Le nom et son compte en lignes égales (`text-wrap-style: balance`) : « (10) », « (15) »,
+   « (5) » ne restent plus seuls à 393 px. Deux classes (`.bl-series.bl-themes`) : les règles des
+   séries à partir de 560 px sont écrites plus bas dans la feuille.
+5. **Finitions de la feuille** : l'introduction des pages de thème sans mot seul en fin de dernière
+   ligne (`text-wrap-style: pretty` : « régulier. », « échéances. » réglés) ; « Fiche Fiscalité #14 »
+   insécable.
+6. **Aucune affiche chargée en priorité sur les pages de thème** : `eager` retiré (la première
+   affiche n'est pas l'élément LCP, qui est l'introduction, et elle est sous le premier écran du
+   téléphone). Même choix que § 9.fo pour les séries.
+7. **`verify-site.mjs`, quatre trous bouchés** (contrôle « 4 sexdecies ») : le fil d'Ariane de la
+   page de thème elle-même (écran : Accueil, Blog, son nom en `aria-current` ; `BreadcrumbList` :
+   trois positions, la troisième est la page) ; une seule puce en `aria-current`, la sienne ; ses
+   lignes dans l'ordre de `/blog` ; l'étiquette de chaque ligne de `/blog` = le nom du thème de son
+   article. En l'écrivant, le contrôle d'ordre a d'abord échoué sur Cotisations : la une de `/blog`
+   (le congé maternité, `featured`) est sortie de l'ordre de `/blog` ; elle n'est donc pas comparée
+   (les autres lignes, si). **24 mutations** sur une copie du `dist` (les 16 d'avant, 8 nouvelles :
+   fil d'Ariane de la page par une série ou au nom d'un autre thème, `BreadcrumbList` par une série,
+   `aria-current` sur une autre puce, deux puces marquées, lignes et schéma à l'envers, ligne de
+   `/blog` au thème d'un autre ou sans thème) : les 24 échouent ; la copie remise repasse.
+8. **`BlogCard.astro`** : prop `theme` typée (`ThemeSlug`) ; commentaire « quatre pages de liste »
+   corrigé.
+
+**Écarté (et pourquoi) :**
+
+- *La une de `/blog` dit encore la série* (deux relectures) : le cahier la fige. À décider par le
+  propriétaire (une ligne, point 1 de « Ce qui reste »).
+- *`articleSection` garde la catégorie de série* (« Fiche Fiscalité ») alors que le fil d'Ariane dit
+  le thème : rien d'incohérent pour un moteur (rubrique de forme d'un côté, chemin de l'autre), et ce
+  serait un changement de JSON-LD de plus sur 48 articles. Suivi possible dans une PR suivante.
+- *La licence de remplacement dans « Statut, contrats et revenus »* : classement du cahier.
+- *Étiquette courte au téléphone* (« #16 » seul, « Fiche Fiscalité » masqué) : à côté du nom du
+  thème, « #16 » se lirait « 16ᵉ article du thème », alors que c'est la 16ᵉ fiche fiscalité ; le cahier
+  garde la numérotation. Le coût reste noté (point 3 de « Ce qui reste »).
+- *Premier écran du téléphone sans article* (puces sous la liste) : le cahier fait les pages de thème
+  sur le modèle exact des séries ; gain nul à 360 × 640. Noté (point 4).
+- *Fonds sable et vert proches* (ΔE 8,2) : ils se distinguent côte à côte, et par leurs vagues ; le
+  vert plus franc proposé (`#C2E6CF`) n'est pas un jeton de la DA, que le cahier impose. Au
+  propriétaire de choisir.
+- *Vide sous la première colonne de l'index du bas de `/blog`* (≥ 1 280 px) : placer les fiches à la
+  main ferait zigzaguer le clavier ; bas de page, faible priorité.
+- *Image de partage propre aux pages de thème* : `/blog` et les séries montrent la même image
+  générique ; à faire pour les trois ensemble, dans une PR suivante.
+- *Squelette commun aux pages de série et de thème* (composant) : il toucherait
+  `serie/[series].astro`, que § 9.fo modifie aussi ; à faire après la fusion des deux chantiers, avec
+  la preuve « séries identiques octet pour octet ».
+- *Conflits avec § 9.fo* : ce n'est pas un défaut de code à corriger ici (voir ci-dessous).
+
+**Conflits avec § 9.fo (les affiches).** (Écrit avant le rebase, qui les a résolus : voir « Rebase sur
+les affiches », plus bas.) Le risque annoncé à la construction (la numérotation) n'était pas le bon :
+la section des affiches venait après celle des thèmes. Ce sont trois fichiers de code. `git merge-tree` entre
+cette branche et la branche de la PR 1 (tête `aca92f1`, § 9.fo partie A) : conflits dans
+`src/components/BlogCard.astro`, `src/pages/blog/index.astro`, `src/styles/blog-liste.css`,
+`MIGRATION.md` et `CLAUDE.md` (les mêmes cinq fichiers avant et après ces corrections ; la page de
+thème, le registre, l'image de partage et `verify-site.mjs` fusionnent sans conflit). Cette branche
+n'est pas rebasée sur § 9.fo : le chantier continue (une partie B change encore `BlogCard` et la
+feuille), et les preuves de cette PR se font contre la PR 1 figée. À la fusion, dans l'ordre que
+choisira le chef d'orchestre :
+- `blog-liste.css` : § 9.fo met les lignes en une colonne de 640 à 1 023 px et centre le texte sur
+  l'affiche de 144 px ; la sous-grille du point 3 ne sert alors qu'à partir de 1 024 px (deux
+  colonnes) et doit être réconciliée avec ce centrage (borner son `@media` à 1 024 px, et choisir
+  entre texte centré et titres alignés), puis remesurée ;
+- `BlogCard.astro` : garder les props de § 9.fo (`bords`, nouvelles `sizes`) et celles des thèmes
+  (`etiquette`, `theme`, `category`, `categoryNumber`) ;
+- `index.astro` : garder la une de § 9.fo et les puces, étiquettes et l'index des thèmes ;
+- `theme/[theme].astro` n'a plus `eager` (point 6) : il suit déjà les séries de § 9.fo ;
+- puis toutes les preuves : `verify-site.mjs`, `preuve.cjs`, `preuve-corps.cjs`, pixels des séries,
+  pages hors blog.
+
+**Preuves après corrections** (construction propre, cache vidé ; contre la PR 1 servie sur 4350) :
+- `verify-site.mjs` passe : 73 pages, 5 814 liens internes, les 7 avertissements de la PR 1 ; feuille
+  commune `_astro_assets.BdxOyZgM.css`, inchangée ; 75 pages construites.
+- `preuve-corps.cjs` : 48 articles, mots, titres et ancres, liens du corps différents : 0, 0, 0.
+- `preuve.cjs` (52 pages, 11 clés) : même bilan qu'avant (`corps`, `faq`, `images`, `ids` identiques
+  sur 52 ; les trois séries identiques sur les 11 clés) ; `classer.cjs` : **0 écart non expliqué**.
+- Pages hors blog : les 19 identiques à la PR 1 au nom du script de PostHog près (le même qu'avant).
+- Pages de série : captures pleine page identiques au pixel à la PR 1, à 360, 393, 560, 640, 700,
+  768, 820, 1 024 et 1 512 px.
+- Mesures (Chromium, réseau bloqué hors du site, 17 largeurs de 320 à 1 920 px, `/blog`, cinq pages de
+  thème, deux séries) : aucun défilement de côté, 0 rangée décalée, puces en 2 + 2 + 2 ou 3 + 3 sur les
+  thèmes (séries inchangées), aucun compte seul, aucun mot seul en fin d'introduction. WebKitGTK 2.52
+  (`/blog`, deux pages de thème, une série ; 1 512, 1 024, 820, 700, 600, 393 px) : mêmes résultats,
+  sous-grille lue, `pretty` lu.
+- Lighthouse mobile (`npx serve`, deux à cinq passes) : Impôts 99 et 97, Statut 98, 93, 98, 97, 98
+  (le 93 : un temps de blocage de 295 ms, isolé), `/blog` 98 et 99 ; accessibilité, bonnes pratiques
+  et SEO à 100 ; CLS 0.
+- Les 48 images de partage regardées (planches, dans l'ordre des pages) : poses voisines différentes,
+  42 à 62 Ko.
+
+#### Rebase sur les affiches (§ 9.fo, 14 novembre 2026)
+
+Les affiches (§ 9.fo, PR #155, branche `claude/loving-carson-pgk851`) passent avant les thèmes. Cette
+branche est rebasée sur leur tête (`731f2e0`, elle-même sur `main` `f53b865`), pour devenir la PR
+suivante. Rien n'est poussé. Sauvegarde de la branche d'avant : `sauvegarde-themes-avant-rebase`
+(`b190745`).
+
+**Renumérotation.** `main` a pris § 9.fn (la fenêtre produit, #154) : les thèmes deviennent § 9.fp,
+partout. `git filter-branch` sur les 16 commits, avant le rebase : « 9.fn » → « 9.fp » dans les
+fichiers (39 lignes de 15 fichiers ; la base n'en contenait aucun, tous désignaient les thèmes) et
+dans les messages. Vérifié par script : entre la sauvegarde et la branche renumérotée, seules ces
+39 lignes diffèrent, au numéro près ; après le rebase, les « 9.fn » de l'arbre sont ceux de la tête
+des affiches (la fenêtre produit, et l'ancien numéro des thèmes cité dans § 9.fo), plus cinq lignes
+de cette sous-partie, qui racontent la renumérotation ; aucun des 16 messages renumérotés n'en
+contient (seul le message du commit de cette sous-partie le cite, pour la fenêtre produit ; script
+`themes/rebase/verif-9fn.sh` du dossier de travail). Une phrase devenue fausse au passage (« § 9.fo
+est numéroté après § 9.fp », dans « Conflits avec § 9.fo ») est réécrite.
+
+**Conflits, et ce qui a été gardé** (les deux chantiers gardent leur contenu) :
+
+- `BlogCard.astro` (commit des pages de thème) : les props des thèmes (`etiquette`, `theme`,
+  `category`, `categoryNumber`) et le `sizes` par affiche de § 9.fo (`largeurDansCadre`,
+  `loading="lazy"`, sans priorité) ; `eager` retiré, comme des deux côtés. En tête du fichier, le
+  paragraphe « Étiquette » des thèmes, puis « Les affiches » de § 9.fo (l'ancien « Format des
+  couvertures », périmé, retiré).
+- `blog/index.astro` (commit « /blog navigue par thème ») : les imports des deux côtés (`BLOG_THEMES`,
+  `themePath` ; `srcsetAffiche`, `largeurDansCadre`) ; `seriesPath` et `byEpisode` n'ont plus
+  d'appelant. La une de § 9.fo (`srcset`, `sizes`, préchargement) est intacte : HTML identique
+  octet pour octet à celui des affiches.
+- `blog-liste.css` (commits des pages de thème et de la sous-grille) : les règles de l'affiche, de la
+  une et de la mise en page de § 9.fo font foi (une colonne de lignes de 640 à 1 023 px, deux à
+  partir de 1 024 px) ; s'y ajoutent les puces, les étiquettes et l'index des thèmes. Le filet entre
+  deux lignes de § 9.fo est écrit après les puces. La sous-grille des thèmes (titres de deux lignes
+  voisines alignés) ne sert que là où il y a deux colonnes : déplacée après le bloc de 1 024 px et
+  bornée à `min-width: 1024px`.
+- `MIGRATION.md` : § 9.fn (fenêtre produit), § 9.fo (affiches), § 9.fp (thèmes), dans cet ordre.
+  `CLAUDE.md` : les puces « Les affiches » et « Articles connexes » de § 9.fo ; « `/blog` et les
+  séries » devient « `/blog`, les séries et les thèmes », avec le texte des affiches (l'ancien
+  « carré de 64 px » retiré) ; puis la puce « Thèmes », mise à jour (sous-grille à partir de
+  1 024 px, densité, la une).
+- Sans conflit : `verify-site.mjs` (les changements de `main` #154, quatre onglets de la fenêtre
+  produit, et le contrôle « 4 sexdecies » des thèmes coexistent), `[slug].astro`, la page de thème,
+  le registre, l'image de partage, le sitemap, `llms.txt`. Le commit des pages de thème passe encore
+  `eager={i === 0}` à une carte qui n'a plus cette prop (ignorée) ; le commit qui le retirait le
+  retire toujours.
+- Les pages de thème suivent exactement la règle des affiches de `/blog` : affiche entière, à son
+  format, même case, mêmes `srcset` et `sizes`, `loading="lazy"`, aucune priorité (contrôlé, plus bas).
+
+**Un commit de plus : la sous-grille garde le texte centré sur l'affiche.** Telle que rebasée, elle
+alignait les titres (0 rangée décalée à partir de 1 024 px, contre 3 à 10 sur 23 sur `/blog` des
+affiches seules) mais décentrait le texte sur l'affiche de 144 px, règle des lignes de § 9.fo :
+jusqu'à 9,8 px sur `/blog`, et 24,8 à 37,1 px sur les pages de thème, où une piste d'étiquette vide
+(deux lignes sans numéro de fiche) prenait toute la place libre et poussait le titre vers le bas.
+Trois essais, par feuille injectée et mesurés (`rangees.cjs`) : six pistes (deux pistes vides en haut
+et en bas) font grandir les lignes de 20 à 47 px, rejeté ; des pistes de taille plafonnée envoient
+toute la place au-dessus du texte (74 px), rejeté ; **retenu** : un `::before` vide dans la piste de
+l'étiquette (elle n'est jamais vide), la date calée en haut de sa piste, l'affiche au milieu de la
+ligne, et la colonne écrite pour chaque élément du texte (sans elle, le placement automatique mettait
+l'étiquette dans une seconde colonne, à côté du `::before`, et les lignes grandissaient jusqu'à
+351 px). La place libre se partage alors entre les quatre pistes, autant au-dessus du texte
+qu'au-dessous.
+
+| Construction rebasée, à partir de 1 024 px | Rangées décalées | Écart des milieux texte / affiche (médiane, max) | Lignes |
+|---|---|---|---|
+| affiches seules (`/blog`) | 3 à 10 sur 23 | 0 / 0 px | 228 px |
+| thèmes rebasés, sous-grille telle quelle | 0 | `/blog` 3,2 / 9,8 ; thèmes jusqu'à 24,8 / 37,1 px | 228 à 244 px |
+| **retenu** | **0** | **`/blog` 1,0 à 3,2 / 9,8 ; thèmes 3,2 à 8,4 / 15,0 px** | **228 à 244 px** (244 : à 1 024 px seulement, sur `/blog`) |
+
+L'écart qui reste est celui d'une ligne sans étiquette à côté d'une ligne qui en a une : son titre
+est aligné sur celui de sa voisine. Les pages de série n'y sont pas soumises (identiques au pixel,
+plus bas). De 640 à 1 023 px, rien ne change : une colonne, texte centré, lignes de 228 px, comme les
+affiches.
+
+**La densité à 360 px (décision : accepter 92 %).** Avec les étiquettes des thèmes, 24 lignes de
+`/blog` sur 47 ont une étiquette de deux lignes au téléphone (le thème, puis « Fiche Fiscalité #16 ») :
+
+| `/blog`, 3 articles entiers sous l'en-tête | Affiches seules | Thèmes rebasés |
+|---|---|---|
+| 360 × 640, pli fermé / ouvert | 100 / 100 % (lignes de 139 à 140 px) | **91,9 / 92,2 %** (lignes de 140 à 166 px) |
+| 393 × 692 | 100 / 100 % | 100 / 100 % (lignes de 150 à 151 px) |
+| 402 × 680 (l'iPhone du propriétaire) | 96,2 / 96,4 % | 96,2 / 96,4 % |
+| pages de thème, 360 × 640 et 393 × 692 | — | 100 % (étiquette d'une ligne : le numéro seul) |
+
+Essayé, une seule chose, en CSS seule, sans changer l'ordre ni les mots du HTML : l'étiquette sur
+une ligne au téléphone. Mesure d'abord : à 360 px, la colonne de texte fait 189 px et l'étiquette en
+demande 320 à 365 (il en manque 131 à 176 ; aucune des 24 ne tient, ni à 320, 375, 393 ou 412 px).
+Forcée sur une ligne (`nowrap`), la densité revient à 100 %, mais les 24 étiquettes sont coupées, et
+le numéro de fiche disparaît entièrement sur 8 d'entre elles à 360 px (3 à 393 px). Rejeté : rien ne
+doit se couper. Réduire le corps jusqu'à tenir demanderait 7 px. Les 92 % sont donc acceptés : à
+360 × 640, il arrive (8 % des positions du défilement) qu'on ne voie que deux articles entiers et
+une partie du troisième. Scripts : `themes/rebase/densite/` (densite.cjs, largeurs-etiquettes.cjs,
+coupe.cjs, essai-une-ligne.css).
+
+**Preuves, sur la construction finale** (cache `node_modules/.astro` vidé avant la première ; contre
+la construction des affiches, `wt-zoom/dist`, servie sur 4370 ; la branche est servie sur 4360) :
+
+- `npm run build` : 75 pages. `verify-site.mjs` passe : 73 pages, 5 862 liens internes (5 814 sur les
+  thèmes avant le rebase, plus les 48 `src` de l'affiche en grand de § 9.fo), les 7 avertissements des
+  affiches. Feuille commune `_astro_assets.BdxOyZgM.css`, même nom ; feuille de l'article
+  `_slug_.CORJJGdu.css`, même nom que sur les affiches.
+- `preuve-corps.cjs` (48 articles) : mots, titres et ancres, liens du corps différents : 0, 0, 0 ;
+  un seul `<h1>` partout.
+- `preuve.cjs` (52 pages, 11 clés) : page par page, le même profil d'écarts que contre la PR 1 avant
+  le rebase (`corps`, `faq`, `images`, `ids` identiques sur 52 ; les trois séries identiques sur les
+  11 clés ; écarts des thèmes sur les 48 articles et `/blog`). `classer.cjs` : 48 articles aux écarts
+  voulus (tête, JSON-LD, liens, mesure, texte de `<main>`), `/blog` conforme (puces, 47 lignes dont 24
+  avec numéro de fiche, index en cinq fiches), **0 écart non expliqué**.
+- Fichiers (`diff-dist.mjs`) : les 19 pages HTML hors blog identiques aux affiches au nom du script
+  de PostHog près (une octet pour octet) ; les trois séries identiques aux deux noms près (script de
+  PostHog, feuille des listes), et **au pixel** en pleine page à 360, 393, 640, 820, 1 024, 1 280 et
+  1 512 px. Scripts : seuls le script d'entrée de PostHog et `analytics-init` changent de nom (le
+  premier identique au nom du second près) ; ce sont les noms qu'ils avaient sur les thèmes avant le
+  rebase, donc le même contenu. Les pages de thème ont les scripts d'une page de série, aucun attribut
+  `on…`. Changent aussi, comme avant : `sitemap-0.xml`, `llms.txt`, les 48 images de partage.
+- Règle des affiches : sur les cinq pages de thème, 48 affiches sur 48 chargées, entières, à leur
+  format, à la hauteur de leur case, `loading="lazy"`, sans priorité, avec les mêmes `src`,
+  `srcset`, `sizes` et dimensions, et le même fichier choisi par le navigateur, que la même affiche
+  dans `/blog` des affiches (393 × 692 et 1 512 × 800, `mesures/affiches.cjs`) ; `/blog` : 47 lignes
+  sur 47 identiques. Article : vignette et popover identiques octet pour octet sur les 48 articles ;
+  l'affiche s'ouvre en grand, focus sur « Fermer » (captures, 393 et 1 512 px).
+- Aucun défilement de côté : `/blog` et les cinq pages de thème, plis ouverts, à 320, 360, 393, 560,
+  700, 768, 1 024, 1 280 et 1 920 px.
+- Lighthouse mobile (`npx serve`, qui compresse ; trois passes alternées avec les affiches servies de
+  même) : `/blog` 97, 97, 97 (affiches 97, 97, 97) ; Impôts et déclarations 97, 96, 97 ; Statut,
+  contrats et revenus 97, 97, 96 (Fiches Fiscalité sur les affiches : 95, 96, 99) ; accessibilité,
+  bonnes pratiques et SEO à 100 ; CLS 0. LCP : un texte (le titre de `/blog`, l'introduction du
+  thème), 2,40 à 2,64 s.
+- WebKitGTK 2.52 (méthode de CLAUDE.md ; `/blog`, Impôts, Statut ; 1 512 et 1 024 px, 393 et 360 px
+  dans un cadre) : sous-grille lue ; 0 rangée décalée ; écart des milieux 15,3 px au plus ; lignes de
+  228 px (1 024 px, `/blog` : 228 à 239), 150 px à 393, 139 à 161 px à 360 ; affiches toutes chargées,
+  à la hauteur de leur case, à leur format ; aucun défilement de côté. Ce n'est ni Safari ni un iPhone.
+- Scripts et résultats : `themes/rebase/` (preuves, mesures, densite, lighthouse, webkit, captures).
+
+**Ce qui reste faible** (après le rebase) :
+
+1. **La une de `/blog` au téléphone sort du premier écran.** Les six puces des thèmes font trois
+   rangées de 44 px (148 px, 96 avant) : la une descend de 52 px. Son affiche, que § 9.fo avait mise
+   dans le premier écran après le retour du propriétaire, n'y est plus entière, et la fin de son
+   titre passe sous l'écran :
+
+   | Format | Affiche de la une, affiches seules | Thèmes rebasés | Bas du titre (affiches → thèmes) |
+   |---|---|---|---|
+   | 393 × 692 | 537 à 667 px, 100 % visible | 589 à 719 px, 79 % | 668 → 720 px |
+   | 402 × 680 (son iPhone) | 100 % | 65 % | 670 → 724 px |
+   | 390 × 664 | 98 % | 58 % | 668 → 720 px |
+   | 375 × 667 | 100 % | 63 % | 690 → 742 px |
+   | 360 × 640 | 18 % | 18 % (inchangé) | 771 px |
+   | 412 × 732, 430 × 739 | 100 % | 100 % | — |
+
+   Non corrigé ici : aucune règle de feuille ne rend 46 px sans toucher aux puces (44 px de haut au
+   moins, pour le doigt) ni à l'ordre de la page. À décider : (a) les puces des thèmes sur une seule
+   rangée qui défile de côté au téléphone (la une remonterait de 104 px, au-dessus de sa place des
+   affiches ; trois ou quatre thèmes hors de l'écran) ; (b) la une avant les puces au téléphone (elle
+   remonterait d'environ 160 px ; les puces passeraient sous elle, hors du premier écran, et l'ordre
+   du HTML ou du clavier changerait) ; (c) accepter. Gains calculés, non construits.
+2. Densité : 92 % à 360 × 640 (plus haut, accepté ; 98,7 % pli ouvert et 100 % pli fermé depuis
+   § 9.fq, sans le numéro de fiche) ; à 1 024 × 768 (tablette couchée), 90,5 % pli
+   fermé, 97,2 % pli ouvert (100 % sur les affiches seules) : 6 étiquettes sur 8 y prennent deux
+   lignes (colonne d'environ 240 px). Mesuré aussi sans la sous-grille : 90,5 %, et 14 rangées
+   décalées. 820 × 1 180, 768 × 1 024, 1 280 × 800, 1 512 × 800 : 100 %.
+3. À partir de 1 024 px, le texte n'est plus centré au pixel sur l'affiche (15 px au plus, plus haut),
+   le prix de titres alignés.
+4. `/blog` s'allonge au téléphone : 7 140 → 7 361 px à 360 et 6 984 → 7 190 px à 393, pli fermé
+   (sous les 7 880 px de la borne des affiches) ; plus court à partir de 1 024 px (4 826 → 4 729 px à
+   1 024, 4 648 → 4 573 px à 1 280 et au-delà, sous la borne de 4 997 px).
+5. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel en HTTP/2 sur réseau bridé.
+
+### 9.fq Blog : les séries quittent l'écran, leurs pages sont redirigées (14 novembre 2026)
+
+Décision du propriétaire, sur trois points (« go ») : depuis § 9.fp, le blog est rangé par thème ;
+l'ancien classement par série (Fiches Fiscalité, Fiches Pratiques, Guides & Conseils ; `seriesId` =
+`fiche-fiscalite`, `fiche-pratique`, `divers`) restait visible et faisait doublon, et « Guides &
+Conseils » n'était que la case « divers ». Les pages de série : 62 vues en 90 jours.
+
+1. **Retirer les séries de l'écran** : il ne reste que le thème.
+2. **Rediriger les trois pages de série** en 301 (`vercel.json`).
+3. **Garder l'invisible** : `seriesId` et le numéro dans le frontmatter et le schéma, les attributs
+   `data-blog-series` de l'article, `page-analytics.ts` intouché ; seule exception, `articleSection`
+   du JSON-LD `Article` devient le nom du thème.
+
+**Retiré de l'écran** (compté par script sur le HTML construit, `classer-html.mjs`) :
+
+| Où | Quoi | Nombre | Mots |
+|---|---|---|---|
+| 48 articles, tête | pastille de série, lien vers sa page : « Guide et Conseil » (24), « Fiche Fiscalité #N » (16), « Fiche Pratique #N » (8) | 48 | 144 |
+| 24 articles numérotés, tête | « Épisode N », masqué à l'œil (classe `sr`), lu par les lecteurs d'écran | 24 | 48 |
+| `/blog`, la une | pastille « Guides & Conseils » (« À la une » reste) | 1 | 3 |
+| `/blog`, lignes | numéro de fiche après le thème : « Fiche Fiscalité #N » (16), « Fiche Pratique #N » (8) ; l'étiquette ne dit plus que le thème | 24 | 72 |
+| 5 pages de thème, lignes | numéro de fiche seul (plus aucune étiquette : le thème est celui de la page) | 24 | 72 |
+| **Total** | | **121** | **339** |
+
+Et les trois pages de série entières (822, 484 et 1 108 mots dans `<main>` : leurs lignes, que
+`/blog` et les thèmes portent aussi, et leurs textes propres, `SERIES_INTROS` : 114, 131 et 118
+mots, archivés dans git à `38bd441`, `src/lib/blog-series-slugs.ts`). Le fil d'Ariane de l'article
+(Accueil › Blog › Thème › Article) ne change pas. **Contenu modifié : aucun mot d'article.**
+
+**Redirections** (`vercel.json`, juste après la règle `/blog/serie` → `/blog` qui existait ; aucune
+règle placée avant ne les capte : la règle d'hôte ne vise que le domaine nu, `/index.html` et
+`/:path*/index.html` ne visent que ces fins d'adresse ; contrôlé par `verify-site.mjs`) :
+
+| Ancienne adresse | Nouvelle |
+|---|---|
+| `/blog/serie/fiches-fiscalite` | `/blog/theme/impots-declarations` |
+| `/blog/serie/fiches-pratiques` | `/blog/theme/debuter-organiser` |
+| `/blog/serie/guides-conseils` | `/blog` |
+
+`permanent: true`, comme toutes les règles du site : Vercel répond 308 (permanente), que Google traite
+comme une 301. **Exception voulue à l'invariant « URLs publiques figées »** de CLAUDE.md, consignée
+là-bas et dans la table du § 5. Les adresses de thème restent figées (deux pages de série y mènent).
+
+**Ce qui reste, invisible** : `seriesId`, `category`, `categoryNumber`, `episodeNumber` dans les 48
+fichiers et dans `content.config.ts` (rien n'y change) ; `data-blog-category`, `data-blog-series`,
+`data-blog-episode` sur `<article>` (les propriétés `category`, `series_id`, `episode_number` des
+événements PostHog continuent, et `hd_derniere_serie`) ; la classe `s-<seriesId>` des lignes ;
+`src/lib/blog-series.ts` (généré, lu par l'index de recherche). Ailleurs, recherché par script dans
+tout le build : `/blog/recherche.json` garde le nom de la série (`se`, que le script de `/blog`
+n'affiche pas, et dans le texte cherché : « fiche fiscalité » trouve toujours ces articles) ;
+`llms.txt` était déjà rangé par thème (§ 9.fp) et ne cite aucune série ; `BlogAppel.astro` n'affiche
+rien de la série (son emplacement `blog_serie` est retiré du type). Les 24 affiches numérotées portent
+« Fiche Fiscalité #4 » **dessiné dans l'image** : non touché.
+
+**Deux écarts au « rien d'autre », voulus :**
+
+- **`articleSection`** (JSON-LD `Article`, 48 articles) : le nom du thème au lieu de la catégorie
+  (« Fiche Fiscalité » → « Impôts et déclarations » 10 fois, → « Cotisations et protection » 5 fois…,
+  « Guide et Conseil » vers les cinq thèmes, « Fiche Pratique » vers deux). C'est l'exception décidée.
+- **`<category>` du flux RSS** (48 entrées) : même changement, même raison (un lecteur de flux
+  l'affiche comme une étiquette). Choix fait ici, à défaire d'une ligne (`src/pages/rss.xml.ts`) si
+  le propriétaire préfère.
+
+**La tête de l'article sans la pastille.** Au téléphone, tout remonte de 38 px (la pastille et sa
+marge), rien d'autre ne bouge. De 700 à 1 359 px, la vignette était **centrée** sur la pastille, le
+titre et la ligne de confiance : sans la pastille, centrée sur le titre et la ligne de confiance, elle
+descendait de 19 px, et sa loupe mordait sur la feuille sable dans la moitié des articles (mesuré sur
+les 48). Elle a maintenant **son bas sur celui de la ligne de confiance** (même marge basse, 24 puis
+36 px), la règle d'au-delà de 1 360 px : la loupe est à 15 px de la feuille (27 px à partir de
+1 040 px) dans tous les articles. Quand la vignette est plus haute que le titre et la ligne de
+confiance (un titre d'une ligne : « Inbox zéro du remplaçant »), c'est la rangée vide de l'ancienne
+pastille qui grandit : le texte descend d'un bloc, contre la vignette, et l'air est au-dessus du titre
+(le cas existait à partir de 1 360 px). Mesures (Chromium, 48 articles ; `tete-article.cjs`) :
+
+| Largeur | Loupe → feuille sable, avant (min / méd. / max) | Après | Début du texte (min / méd. / max) | Titre |
+|---|---|---|---|---|
+| 360, 393, 560 | 9 / 9 / 9 px | 9 / 9 / 9 px | −38 px | −38 px |
+| 700 | −9 / 17 / 36 | 15 / 15 / 15 | −39 / −27 / +24 | −38 / −27 / +32 |
+| 820 | −9 / 18 / 39 | 15 / 15 / 15 | −38 / −30 / +24 | −38 / −31 / +31 |
+| 1 040 à 1 359 | 16 / 54 / 79 | 27 / 27 / 27 | −41 / −40 / −15 | −40 / −40 / −16 |
+| 1 360, 1 512 | 27 / 27 / 27 | 27 / 27 / 27 | −40 / −5 / 0 | −40 / −5 / +31 |
+
+Le texte commence plus haut qu'avant dans les 48 articles sous 700 px et de 1 040 à 1 359 px ; Inbox
+zéro fait exception de 700 à 1 039 px (24 px plus bas) et à partir de 1 360 px (au même endroit).
+L'écart entre le titre et la ligne de confiance ne grandit plus : 16 px de 700 à 1 039 px, 20 px
+au-delà, dans tous les articles (il montait à 18 et 28 px dans quelques-uns) ; inchangé sous 700 px.
+
+**Code retiré** : `src/pages/blog/serie/[series].astro` ; `src/lib/blog-series-slugs.ts` (adresses,
+textes des pages) ; `byEpisode` (`src/lib/blog-sort.ts`, l'ordre de lecture des séries) ; les
+`lastmod` des séries (`astro.config.mjs`) ; dans `BlogCard.astro`, les props `etiquette`,
+`episodeNumber`, `category`, `categoryNumber` (il reste `theme`) ; dans `[slug].astro`, la pastille,
+« Épisode N » et leur calcul ; `blog_serie` du type de `BlogAppel.astro`.
+
+**CSS mort retiré**, et prouvé mort : le HTML de la branche, rendu avec la feuille de `main` puis
+avec la sienne, donne les mêmes pixels (pleine page) sur `/blog` (pli fermé et ouvert) et les cinq
+pages de thème, à 320, 360, 393, 420, 560, 600, 699, 700, 820, 1 024, 1 280 et 1 512 px (100
+comparaisons sur 100) ; sur deux articles, mêmes pixels sous 700 px et à 1 512 px, et les seuls écarts
+de 700 à 1 280 px sont la vignette ci-dessus (`css-mort.cjs`).
+
+- `blog-liste.css` (16 676 → 15 129 octets, 194 → 180 règles) : `.bl-numero` et son point,
+  `.bl-marques-suite` (trois règles) et `.bl-rang`, `.bl-pastille`, `.bl-texte strong`, `.bl-texte a`
+  (trois règles : l'introduction d'un thème est du texte brut), les règles de la navigation des séries
+  que `.bl-themes` recouvrait déjà (moins de 400 px ; `display: flex` et `white-space: nowrap` à
+  partir de 560 px), les `gap` des marques (un seul élément), `.bl-pastille` et `.bl-une .chip` en
+  contrastes forcés. La sous-grille de 1 024 px vise `.bl` au lieu de `.bl:not([data-blog-serie])` :
+  aucune autre règle ne pose ces propriétés sur ces éléments, le poids plus faible ne change rien
+  (pixels identiques).
+- `blog-article.css` (51 355 → 50 755 octets, 439 → 433 règles) : `.marques`, `.serie` (et son
+  `::after`, son survol), `.episode`, `.marques` dans les trois `padding-right` et en contrastes
+  forcés. La rangée 2 de la grille de l'article reste, vide (0 px), pour ne pas renuméroter les
+  quinze autres.
+- Feuille commune : `_astro_assets.BdxOyZgM.css`, même nom (aucun mot des commentaires ne crée de
+  règle Tailwind).
+
+**`verify-site.mjs`** : rien d'assoupli. Nouveau contrôle « 4 septdecies » : échoue si un fichier du
+build (HTML, XML, texte, JSON) cite `/blog/serie…` (relative ou absolue), si le sitemap en contient
+une, si une des trois anciennes adresses est encore construite, n'est pas la source exacte d'une
+règle permanente vers sa destination (une page construite et dans le sitemap) ou est captée par une
+règle placée avant elle (motifs `:x`, `:x*`, `:x+`), si la tête d'un article garde une marque de série
+(`marques`, `serie`, `episode`) ou dit, hors du titre, sa catégorie ou « Épisode », si `articleSection`
+n'est pas le nom du thème, si la une de `/blog` dit autre chose que « À la une », si une ligne d'une
+page de thème a une étiquette, si une `<category>` du flux n'est pas le thème de l'article. « 4
+sexdecies » durci : l'étiquette ENTIÈRE d'une ligne de `/blog` doit être le nom du thème (avant : sa
+première marque). Le `lastmod` des séries (6 f) et leur exclusion de la liste des articles (une page
+de série reconstruite serait contrôlée comme un article, et échouerait) sont retirés. **Il mord** :
+16 mutations sur une copie du build (jamais le dépôt), les 16 échouent (lien relatif dans un article,
+adresse absolue dans `llms.txt`, adresse dans le sitemap, page de série reconstruite, redirection
+retirée, mauvaise destination, non permanente, règle `/blog/:reste*` placée avant, pastille remise
+sans lien, « Épisode 4 » masqué, catégorie dans la tête, `articleSection` d'avant, numéro remis sur
+une ligne de `/blog`, pastille sur la une, étiquette sur une ligne de thème, catégorie RSS d'avant) ;
+le témoin passe.
+
+**Preuves** (contre `main` à `38bd441`, construit cache vidé : `series/dist-main`) :
+
+- `npm run build` : 75 → **72 pages** ; sitemap 73 → **70 adresses**. `verify-site.mjs` passe :
+  70 pages, 5 862 → 5 532 liens internes (ceux des pages de série et des pastilles), les mêmes 7
+  avertissements.
+- Corps des 48 articles (`preuve-corps.cjs`) : mots, titres et ancres, liens différents : 0, 0, 0 ;
+  un seul `<h1>` partout.
+- Tout le build, fichier par fichier (`classer-html.mjs` : partir de `main`, appliquer les seuls
+  écarts voulus, exiger l'égalité octet pour octet) : **0 écart non expliqué**. 1 183 → 1 180
+  fichiers. Identiques octet pour octet : les 19 pages HTML hors blog et 1 103 autres fichiers
+  (scripts, dont celui de PostHog, images, `llms.txt`, `recherche.json`, images de partage).
+  Égaux après les écarts voulus : 48 articles (bloc de la pastille, `articleSection`, nom de la
+  feuille), `/blog` (pastille de la une, 24 numéros, classe des 47 étiquettes), 5 pages de thème (24
+  étiquettes), `sitemap-0.xml` (3 adresses), `rss.xml` (48 catégories). Retirés : les 3 pages de
+  série ; renommées : les deux feuilles ci-dessus.
+- JSON-LD (`jsonld.mjs`) : 73 pages, 263 blocs ; 215 identiques, les 48 autres ne diffèrent que par
+  `articleSection`.
+
+**Mesures** (Chromium ; `densite.cjs`, `une.cjs`, `centrage.cjs`) :
+
+| `/blog` | Avant | Après |
+|---|---|---|
+| 360 × 640 : lignes (min / moy. / max), pli ouvert | 140 / 145,5 / 166 px | 139 / 142,1 / 148 px |
+| 360 × 640 : 3 articles entiers sous l'en-tête, pli fermé / ouvert | 91,9 / 92,2 % | **100 / 98,7 %** |
+| 360 × 640 : étiquettes sur deux lignes (47 lignes) | 33 | 17 (« Statut, contrats et revenus », « Cotisations et protection ») |
+| 393 × 692 : lignes ; 3 entiers | 150 à 151 px ; 100 % | inchangé ; 100 % |
+| 393 × 692 : étiquettes sur deux lignes | 32 | 11 |
+| 402 × 680 : 3 entiers | 96,2 / 96,4 % | inchangé |
+| 1 024 × 768 : 3 entiers, pli fermé / ouvert | 90,5 / 97,2 % | **100 / 100 %** |
+| Une, titre (393 × 692) | 652 à 720 px (sort de l'écran) | 625 à 692 px (entier) |
+| Une, affiche (393 × 692 ; 402 × 680) | 589 à 719 px, 79 % visible ; 65 % | inchangé |
+| Hauteur de la page, pli fermé (360 ; 393) | 7 361 ; 7 190 px | 7 300 ; 7 190 px |
+| 1 024 et 1 512 px, écart des milieux du texte et de l'affiche (95 lignes, avec les thèmes) | méd. 3,2, max 15 px | méd. 5,3 à 8,4, max 11,5 px |
+
+Pages de thème au téléphone : lignes inchangées (139-140 px à 360, 150-151 à 393 : l'affiche les
+fait), premier titre de ligne 0 à 9 px plus haut. Aucun défilement de côté (`/blog`, deux pages de
+thème, trois articles, plis ouverts, de 320 à 1 920 px).
+
+Lighthouse mobile (`serve`, qui compresse ; passes alternées) : `/blog` 98, 97, 99, 97, 97, 97
+(`main` : 99, 99, 97, 97, 97, 98) ; l'article CARMF 98, 98 (`main` : 98, 99) ; accessibilité, bonnes
+pratiques et SEO à 100 ; CLS 0 ; LCP (le titre de `/blog`, un paragraphe de l'article) de 1,96 à
+2,55 s (`main` : 1,81 à 2,55 s). WebKitGTK 2.52 (`/blog`, CARMF, Inbox zéro ; 1 512 et 820 px, 393 et 360 px dans
+un cadre ; `main` et branche) : aucun défilement de côté, aucune marque de série, la une ne dit que « À
+la une » ; lignes de `/blog` 150-151 px à 393, 139 à 145 px à 360 (140 à 162 avant) ; à 820 px, la
+loupe à 15 px de la feuille sable dans les deux articles (Inbox zéro : −9 px avant) ; mêmes positions
+qu'avec Chromium à quelques pixels près. Ce n'est ni Safari ni un iPhone.
+
+Captures (avant / après) : `/blog` au téléphone (haut et liste), page Impôts et déclarations, article
+CARMF au téléphone, `/blog` à 1 512 px (haut et liste) ; scripts et résultats dans le dossier de
+travail `series/`.
+
+**Ce qui reste faible :**
+
+1. **Code de mesure mort, laissé** (`src/lib/page-analytics.ts`) : `mesurerSerie` et l'événement
+   `blog_series_viewed` (et le test de l'adresse `/blog/serie/`) ne partent plus, les pages étant
+   redirigées ; `cta_simulateur_blog_serie` et `cta_signup_blog_serie` non plus. Le retirer renomme le
+   script de PostHog sur toutes les pages (§ 9.fp) : à faire à la prochaine retouche voulue de ce
+   fichier. Les insights PostHog sur ces événements s'arrêtent au jour de la mise en ligne.
+2. Les affiches numérotées gardent « Fiche Fiscalité #4 » dessiné dans l'image.
+3. Tête d'article, titre d'une ligne (Inbox zéro) : de 700 à 1 359 px, de l'air au-dessus du titre, et
+   le texte 24 px plus bas qu'avant.
+4. La une de `/blog` au téléphone : son affiche n'est toujours pas entière dans le premier écran
+   (79 % à 393 × 692, 65 % à 402 × 680 ; § 9.fp, à décider) ; son titre l'est désormais.
+5. Les redirections ne marchent que sur Vercel (404 en local, attendu) : après la mise en ligne,
+   vérifier les trois adresses (code 308, destination). Search Console : les trois pages sortiront de
+   l'index peu à peu ; leurs liens entrants passent aux thèmes et à `/blog`.
+6. Non vérifié : Safari réel et iPhone, Firefox, aperçu Vercel.
+
+**Fichiers** : `vercel.json`, `astro.config.mjs`, `src/pages/blog/[slug].astro`,
+`src/pages/blog/index.astro`, `src/pages/blog/theme/[theme].astro`, `src/pages/blog/serie/[series].astro`
+(retiré), `src/lib/blog-series-slugs.ts` (retiré), `src/lib/blog-sort.ts`, `src/lib/blog-themes.ts`
+(commentaire), `src/pages/rss.xml.ts`, `src/components/BlogCard.astro`, `src/components/BlogAppel.astro`,
+`src/styles/blog-liste.css`, `src/styles/blog-article.css`, `scripts/verify-site.mjs`, `MIGRATION.md`,
+`CLAUDE.md`.
+
+### 9.fr Simulateur : audit du calcul, Micro-BNC et réel comparés sur la même base (14 novembre 2026)
+
+Le propriétaire : « on n'a vraiment pas le droit de se tromper […] audite en profondeur, de bout
+en bout, ce simulateur dans toutes les situations possibles […] et applique les corrections
+nécessaires ». Point de départ : « écart négligeable » affiché alors que les deux fiches
+différaient de plus de 1 000 €/mois. Règles vérifiées sur Légifrance, le BOFiP, la CARMF (« La
+CARMF en 2026 ») et le modèle de l'Urssaf, au 14 novembre 2026 (étapes 2 et 3, plus bas).
+
+**Défauts trouvés et corrigés (première étape).**
+1. **Le Super-Net du Micro-BNC ne retirait pas les charges.** L'abattement de 34 % remplace les
+   charges pour l'impôt, mais elles sont payées : le Micro-BNC gagnait d'office leur montant, et
+   la recommandation en dépendait. Exemples (célibataire, secteur 1) : 60 000 € de recettes et
+   15 000 € de charges, « Micro +764 €/mois » avant, « Réel +470 €/mois » après ; 120 000 € et
+   21 600 € (profil « Remplaçant S1 »), « Micro +1 332 €/mois » sur les fiches avant, « Réel
+   +401 €/mois » après. Le moteur reçoit les charges payées (`chargesDecaissees`) et les retire
+   dans les deux régimes. L'encadré « Estimation optimiste, prévois ~20 % de marge » (fiche Micro),
+   qui compensait ce défaut, est retiré ; les infobulles qui disaient les charges « sans effet sur
+   le Super-Net » en Micro-BNC sont corrigées.
+2. **Au-delà du plafond du Micro-BNC, l'écart était forcé à 0**, et 0 s'affichait « Écart
+   négligeable : choisis selon ta préférence de gestion » (7 profils types sur 8). Le Micro-BNC
+   n'est pas fermé d'office l'année du dépassement (l'éligibilité se juge sur les recettes des deux
+   années précédentes, CGI art. 102 ter) : l'écart est calculé et affiché, avec l'avertissement du
+   plafond. Plafond de l'année lu par `getMicroBncCeiling()` partout (il était écrit en dur à
+   83 600 € dans deux composants, 77 700 € attendus pour 2025).
+3. **Conclusion** (`ConclusionCard.tsx`) : l'écart est toujours chiffré, en €/mois et en €/an.
+   Sous 50 €/mois (600 €/an, l'ordre de grandeur de ce que le simulateur ne voit pas) : « Les deux
+   régimes se valent : X €/mois d'écart (Y €/an) ». Pastille « Écart modéré » retirée.
+4. **Décote non appliquée** par le moteur local (RSPM) : impôt des petits revenus surestimé.
+   Ordre de l'article 197 rétabli : barème et plafonnement du quotient familial, réduction DOM,
+   décote, puis crédits (les crédits passaient avant la réduction DOM).
+5. **CSG-CRDS non déductible** (2,4 + 0,5 points sur 9,7) déduite en entier au réel par la fonction
+   Supabase : elle est réintégrée au bénéfice (le modèle de l'Urssaf fait de même pour le revenu
+   imposable). Abattement minimal de 305 € du Micro-BNC ajouté.
+6. **Cotisations PAMC : la fonction Supabase `calculate-urssaf` ne transmettait au modèle Urssaf
+   ni le secteur** (un secteur 2 calculé comme un secteur 1 : 18 369 € au lieu de 25 062 € pour
+   70 000 € de recettes et 5 000 € de charges), **ni l'année** (2025 aux règles 2026), ni la part
+   non conventionnée, ni le statut de remplaçant (CURPS). Vérifié en interrogeant directement le
+   modèle (`mon-entreprise.urssaf.fr/api/v1/evaluate`, qui accepte les requêtes de hippodoc.fr).
+   Le simulateur l'interroge désormais lui-même (`src/lib/simulateur/urssaf.ts`, une seconde
+   tentative sur 429) et ne se replie sur la fonction Supabase qu'en cas d'échec. L'impôt est
+   calculé par le moteur local pour les deux régimes sociaux (une seule implémentation, testée).
+   ⚠️ La fonction Supabase (dépôt de l'app, hors de ce dépôt) garde ces défauts : l'app est
+   probablement concernée.
+7. **Profils types** : enchaîner deux profils reportait la situation familiale du premier sur le
+   second (« Parent isolé » devenait marié avec 35 000 € de revenus de conjoint). Seuls les champs
+   du foyer modifiés à la main sont maintenant conservés.
+8. Montant PER/Madelin affiché : le montant déduit (plafonné), plus la saisie. Assiette du taux
+   individualisé et du prélèvement en Micro-BNC : le bénéfice après abattement.
+
+**Textes de la page modifiés** (`src/pages/simulateur.astro`, mode d'emploi, hors FAQ du schéma) :
+point 2 (charges « déduites de l'impôt en Régime Réel uniquement […] retirées de ton Super-Net
+dans les deux régimes ») ; point 7 (étapes 2 et 3, encadré « Micro vs Réel en bref »). Ancien texte
+de l'encadré : « En Micro-BNC, tes charges sont remplacées par un abattement de 34% — c'est plus
+simple mais souvent moins avantageux si tes charges réelles dépassent ce seuil. »
+
+**Étape 2 : régimes sociaux.**
+9. **RSPM** (CSS art. L642-4-2, D642-4-1 à D642-4-3) : une option, réservée aux remplaçants
+   (régulateurs, étudiants remplaçants…) sans autre activité libérale, ouverte jusqu'à 19 000 € de
+   recettes brutes ; perdue après deux années de suite au-dessus de 19 000 € ou une au-dessus de
+   38 000 €. Le mode Auto le retenait jusqu'à 38 000 €, installés compris : il le retient pour un
+   remplaçant jusqu'à 19 000 € (seul seuil tenable d'une année sur l'autre) ; au-delà, choix manuel.
+   Taux 13,5 % puis 21,2 % par tranche, mêmes cotisations en micro et au réel : conformes.
+10. **Champ « Exercice »** (remplaçant, par défaut ; installé) dans « Paramètres de calcul » : RSPM,
+    CURPS (non due par les remplaçants, modèle Urssaf), dispense CARMF, déductions du secteur 1.
+    Profils types renseignés (quatre remplaçants, trois installés ; « Parent isolé » : défaut).
+11. **CARMF en PAMC** : jeune affilié = retraite complémentaire non due les deux premières années
+    (« La CARMF en 2026 », p. 27) ; dispense d'affiliation = aucune cotisation CARMF, pour un
+    remplaçant dont le revenu net reste sous 15 000 € (p. 24), ignorée au-delà (texte du formulaire).
+12. **Listes déroulantes** non pilotées (`defaultValue`) : après un profil type, elles affichaient
+    l'ancienne valeur (« Célibataire », « Secteur 1 ») alors que le calcul utilisait celle du profil.
+
+**Étape 3 : règles fiscales.**
+13. **Forfait 2 %, 3 % et groupe III réservés aux installés.** BOI-BNC-SECT-40 (2021, § 290) : les
+    remplaçants, « n'étant pas personnellement adhérents à la convention nationale, sont exclus du
+    champ d'application du régime spécial des médecins conventionnés » ; version en vigueur, § 100 :
+    « uniquement réservés aux médecins conventionnés du secteur I ». Même règle dans notre guide
+    (fiche RO-008). Le simulateur les appliquait à tout le monde : pour un remplaçant, le réel était
+    surestimé de 5 % des recettes + 3 050 € de déductions. Barème du groupe III : colonne
+    « omnipraticiens » de BOI-BAREME-000025, conforme. Forfait 2 % sur toutes les recettes, PDSA et
+    part non conventionnée comprises (§ 120), et déduit de l'assiette sociale (cadre 8 de la 2035).
+14. **Crédit d'impôt formation des dirigeants retiré** : heures suivies jusqu'au 31/12/2024
+    seulement, article 244 quater M abrogé par la LF 2026 (formulaire, moteur, page).
+15. **Zones** : ZFU-TE (jusqu'en 2025), nouveau régime QPV (art. 44 octies B, installations 2026 à
+    2030) et FRR « plus » valent aussi en micro-BNC ; FRR socle et ex-ZRR : réel seulement. Le
+    plafond de 50 000 € ne vaut que pour la ZFU-TE (l'infobulle le donnait aussi à la ZFRR).
+16. **Épargne retraite** : PER (163 quatervicies) plafonné sur le PASS de l'année précédente
+    (plancher 4 710 € en 2026) ; Madelin (154 bis) : 10 % du bénéfice + 15 % entre 1 et 8 PASS
+    (le simulateur n'appliquait que 10 %).
+17. **Crédits d'impôt** supérieurs à l'impôt : la part restituée s'ajoute au Super-Net (elle était
+    perdue, ce qui faussait la comparaison quand un seul régime payait de l'impôt).
+18. Textes : PDSA (astreintes et majorations, zone sous-dotée, 60 jours), année 2026 (barème des
+    revenus 2025, LF 2027 non votée), secteur 1 (« pour les installés »).
+
+**Contrôle croisé** : pour un remplaçant (sans déduction du secteur 1), le revenu imposable du
+simulateur est égal, à 1 € près, au « net imposable » du modèle de l'Urssaf, en micro et au réel
+(45 000, 70 000, 120 000 et 160 000 € de recettes).
+
+**Décisions du propriétaire (14 novembre 2026).** (a) Chèques-vacances ANCV : option gardée, textes
+alignés (étape 4). (b) Invalidité-décès au RSPM : 626 € / 157 € gardés (« La CARMF en 2026 » et
+modèle Urssaf ; le dépliant RSPM de février 2026 dit 631 € / 158 €). (c) La fonction Supabase
+`calculate-urssaf` de l'app garde les défauts du point 6 : le propriétaire la corrige dans le dépôt
+de l'app. (d) Vérification WebKit non faite : accepté. (e) Non modélisés : groupe III indisponible
+la première année d'installation (notre guide), barèmes du groupe III des spécialistes (mêmes
+montants au-delà de 32 000 à 64 000 €), déficit BNC imputable sur le revenu global, CEHR.
+
+**Étape 4 : ce que le simulateur dit en plus.**
+19. **À prévoir chaque mois** (sous la conclusion) : cotisations et impôt de l'activité libérale du
+    régime retenu, divisés par 12, et leur part des recettes. L'impôt du foyer est réparti au prorata
+    des revenus imposables (la part des salaires est prélevée à la source par l'employeur).
+20. **Point de bascule des charges** (sous la conclusion, recettes sous le plafond du Micro-BNC) :
+    « Le régime réel passerait devant au-delà d'environ X € de charges par an » ou « Le Micro-BNC ne
+    passerait devant que sous environ X € », ou « Même sans aucune charge, le régime réel resterait
+    devant ». `calculerPointDeBascule()` : fausse position (Illinois) sur l'écart réel − micro, qui
+    croît avec les charges ; chaque point au réel recalculé de bout en bout (2 à 5 appels au modèle
+    Urssaf, sans repli sur Supabase ; moins d'une seconde) ; arrondi à 100 € ; aucune phrase si les
+    deux régimes sont identiques. Calculé après l'affichage, dans un état à part (dans `results`, il
+    aurait relancé le défilement et l'événement `simulation_result` de SimulateurApp). Vérifié sur
+    7 profils : écart de 30 €/an au plus au point annoncé, signe inversé à ± 1 000 €.
+21. Conclusion « se valent » : elle dit en faveur de quel régime penche l'écart.
+22. **Chèques-vacances** : plafond 2026 donné comme officiel (SMIC mensuel brut au 1er janvier,
+    1 823 €), et non plus « projeté » ; exonération de cotisations jusqu'à 30 % du SMIC (547 €)
+    mentionnée, non comptée ; obligation de proposer le dispositif aux salariés.
+
+**Feuilles.** La feuille commune ne change pas (vérifié contre le build de `main` : seules
+`/simulateur` et la calculette diffèrent, la seconde par le nom de son script, qui embarque
+`baremes-ir.ts`). Dans `simulateur.css` : `.sim-params` (trois colonnes à partir de 1 024 px) et
+`.sim-conclusion-detail` (les deux lignes sous la conclusion, alignées sur son texte à partir de
+480 px). Non vérifié dans WebKit.
+
+**Vérifié.** Banc d'essai hors dépôt (80 situations : recettes de 15 000 à 200 000 €, charges,
+quatre situations familiales, enfants, DOM) : Super-Net = recettes + salaires − charges −
+cotisations − impôt dans les deux régimes ; impôt égal à un barème réécrit indépendamment
+(quotient familial, plafonnement, parent isolé, DOM, décote) ; bénéfice Micro-BNC ; bénéfice réel ;
+puis 50 situations d'options (exercice, RSPM forcé, secteur 2, part non conventionnée, jeune affilié,
+dispense, PDSA, PER, Madelin, plafonds, chèques-vacances, salaires, conjoint de chaque type, foncier,
+mensuel, 2025, DOM, zones, crédits remboursés) ; 0 échec.
+Parcours dans Chromium (formulaire et 8 profils types). `npm run build`, `verify-site.mjs` passent.
+
+### 9.fs Simulateur : sans émojis, « Six repères pour 2026 », ce qui suit les résultats revu (14 novembre 2026)
+
+Le propriétaire, après la mise en ligne du § 9.fr : des émojis « qui font un peu cheap » dans les
+champs et les résultats (« 🩺 PAMC ») ; « Trois mots à connaître », « de gros pavés » que
+« personne ne va lire » : « on peut faire beaucoup mieux pour éveiller l'intérêt et apporter de
+la valeur ».
+
+**Émojis.** Retirés de tous les textes visibles de l'îlot (listes : « 🔄 Auto », « 🎓 RSPM »,
+« 🩺 PAMC », drapeau et palmiers des lieux, types de revenu du conjoint, zones ; intitulés des
+infobulles « 💡 », « ⚠️ », « ✅ », « 📊 », « 📝 » ; « 🏝️ DOM-TOM » devient « DOM » ; « ⚠️ Vérifiez »
+devient l'icône d'alerte et « Vérifie »). Les icônes de lucide et les couleurs des encadrés portent
+déjà le sens. Contrôle : aucun émoji dans le texte de l'îlot, formulaire et résultats affichés.
+Le badge RSPM ou PAMC, le même sur les deux fiches, n'est plus sur les fiches : le régime social est
+dit une fois, sous le titre des résultats (« Cotisations au RSPM, l'offre simplifiée des
+remplaçants. » ou « Cotisations au régime des praticiens conventionnés (PAMC), selon le modèle de
+l'Urssaf. »). Le champ `emoji` de `src/lib/dom-tom.ts` n'est plus lu par le simulateur.
+
+**« Six repères pour 2026 »** remplacent « Trois mots à connaître » et l'exemple chiffré : un
+chiffre, son nom, une phrase, en six fiches (deux colonnes au téléphone, trois à partir de 760 px).
+Les montants viennent du code (`getMicroBncCeiling`, `getDeclarationParams`,
+`getPlafondEpargneRetraite`) : plafond du Micro-BNC (83 600 €), abattement de 34 %, seuil du RSPM
+(19 000 €), « 0 € de forfaits du secteur 1 pour un remplaçant » (en jaune : l'idée reçue que le
+§ 9.fr a corrigée), plafond des chèques-vacances (1 823 €), plancher du PER (4 710 €). Le mot
+« rétrocessions » reste sur la page (fiche du RSPM). Feuille commune inchangée.
+
+Textes retirés (archive) :
+- **Rétrocession** — « La part des honoraires qu'un médecin remplaçant perçoit du titulaire du
+  cabinet (ou de la structure) qu'il remplace, en échange des actes réalisés. C'est la base de tes
+  "revenus libéraux" dans le simulateur. »
+- **URSSAF** — « L'organisme qui collecte tes cotisations sociales de travailleur indépendant :
+  maladie-maternité, allocations familiales, retraite de base, CSG-CRDS et formation
+  professionnelle. Le simulateur les calcule automatiquement, en RSPM (taux simplifiés) ou en
+  PAMC (barème classique). »
+- **Super-Net** — « Ce qu'il te reste vraiment en poche : tes revenus, moins tes charges
+  professionnelles, moins tes cotisations sociales (URSSAF/CARMF), moins ton impôt sur le revenu.
+  C'est le chiffre affiché en tête de chaque carte de résultat. » (dit aussi par la FAQ et le
+  mode d'emploi, toujours en place).
+- **Exemple chiffré (illustration simplifiée)** — un remplaçant au RSPM à 30 000 € de
+  rétrocessions : cotisations par tranches (2 565 € + 2 332 €), RID, bénéfice micro de 19 800 €.
+
+**Tout ce qui suit les résultats, revu** (le propriétaire : « réfléchis sur tous les autres blocs
+en dessous des résultats […] cohérent, pertinent, sans redondance, clair […] carte blanche »).
+Avant : seize blocs après la conclusion, dont trois appels à l'inscription, deux « Limites de
+cette simulation » mot pour mot, deux définitions du Super-Net, et un mode d'emploi qui décrivait
+des fonctions absentes du simulateur public.
+- **Dans l'outil.** « Et maintenant ? » retiré (deux boutons : « Guide Patrimonial », qui
+  descendait au bloc juste en dessous, et « Planifier mon budget », qui envoyait vers une page de
+  l'app réservée aux comptes). L'aperçu flouté du « Guide Patrimonial Personnalisé » retiré
+  (`GuidePatrimonialTeaser.tsx` supprimé : faux texte flouté, quatre piliers sans lien avec le
+  résultat). À leur place, une fiche : « Et toute l'année ? — Ce calcul, Hippodoc le tient à jour
+  après chaque journée de remplacement », trois promesses reprises mot pour mot de
+  `src/data/etapesRemplacant.ts` (URSSAF et CARMF anticipées, charges déductibles, déclaration case
+  par case), bouton « Essai gratuit 30 jours » (`data-track="cta_signup_simulateur_resultat"` ;
+  l'événement anonyme garde son nom, `cta_patrimonial_guide`, pour la continuité de
+  `simulateur_public_events`). Restent : les deux plis (« Comprendre la différence », « Comment
+  l'impôt sera prélevé »), « Limites de cette simulation » et « Nouvelle simulation ».
+- **Sur la page.** Ordre : l'outil et la prise de rendez-vous (inchangés), les six repères (feuille
+  sable), le mode d'emploi (feuille ciel ; il était sable), les questions (sable), la fin : les
+  feuilles alternent toujours. Le bloc statique « Limites de cette simulation » est retiré : l'outil
+  l'affiche sous les résultats, la ligne d'avis du mode d'emploi et la cinquième question de la FAQ
+  le disent aussi. Mode d'emploi en 7 points (8 avant) : « C'est quoi le Super-Net ? » retiré (la
+  première question de la FAQ, mot pour mot ou presque) ; « Paramètres de calcul » gagne
+  « Exercice » et la règle Auto du RSPM ; « Comprendre les résultats » décrit ce que la page affiche
+  (fiches, conclusion, à prévoir, bascule, plis), au lieu de « « Approfondir » » et du
+  « mini-donut » ; « Conseils personnalisés & profils types » devient « Profils types » : « 4
+  piliers », « règle 50/30/20 » et « estimation charges sociales… CFE » sont des fonctions de
+  l'app, absentes du simulateur public (textes d'avant dans l'historique git).
+- **Feuille commune** : elle change de nom (`BdxOyZgM` → `DV3-EFCM`), sept règles en moins, aucune
+  en plus : les utilitaires que seuls « Et maintenant ? » et l'aperçu flouté employaient
+  (`blur-[6px]`, `max-w-2xl`, `ml-2`, `sm:grid-cols-4`, `w-2/3`, `w-3/4`, `w-5/6`). Les 72 autres
+  pages ne diffèrent que par ce nom de fichier (vérifié contre le build du commit précédent). La
+  règle de `global.css` qui visait le flou est gardée (commentaire mis à jour).
+
+### 9.ft Simulateur : les résultats, verdict d'abord, chiffres réconciliés, ce qu'il faut savoir (14 novembre 2026)
+
+Le propriétaire, après le § 9.fs : « est-ce que dans les résultats tu trouves qu'on est optimal,
+pertinent, clair, utile, et complet […] ? », puis « yes go je te fais full confiance » sur un plan
+en trois parties : clarté, exactitude, valeur.
+
+**Clarté.**
+- La conclusion passe **avant** les deux fiches (elle était dessous) : le régime qui l'emporte et de
+  combien, puis le détail.
+- L'écart n'est dit qu'une fois : les pieds des fiches « Économie de X €/an par rapport au Régime
+  Réel » et « Moins avantageux de X €/an » sont retirés (la conclusion le dit, en mois et en an).
+- « Recommandé » et le Super-Net sur jaune ne vont qu'au régime qui l'emporte de 600 €/an au moins
+  (`SEUIL_EQUIVALENCE_ANNUEL`, déplacé dans `usePublicodesSimulation.ts`, le même seuil que la
+  conclusion) : sous ce seuil, la conclusion dit « Les deux régimes se valent » et aucune fiche
+  n'est « recommandée » (elles l'étaient, pour 19 €/mois d'écart).
+- Fiches allégées : les anneaux de répartition (identiques d'une fiche à l'autre) et la ligne
+  « 1 part fiscale » sont retirés (les parts restent dans l'infobulle de l'impôt). `recharts` n'a
+  plus d'emploi : retiré des dépendances.
+- L'encadré repliable « Plafond Micro-BNC dépassé » est retiré : la conclusion le dit, avec la règle
+  juste (les deux années précédentes), et « Vérifie » reste sur la fiche. Il disait « vous » et
+  « 2ème année au-dessus : Régime Réel au 1er janv. », ce qui se lisait comme le 1er janvier de
+  cette deuxième année.
+- Retirées aussi de la conclusion, les pastilles « Revenus salariés pris en compte dans l'IR » (ou
+  « Revenus salariés majoritaires → impact TMI significatif ») et « Conjoint (X €) inclus dans le
+  calcul IR » : elles redisaient la saisie.
+
+**Exactitude.**
+- **Un seul calcul de l'impôt du médecin** (`src/lib/simulateur/impotMedecin.ts`) pour la
+  conclusion, les fiches et le pli « Comment l'impôt sera prélevé », qui donnaient trois chiffres :
+  la part du médecin au taux individualisé quand le conjoint a des revenus (déjà le cas des fiches),
+  la part de son activité libérale (ses salaires sont retenus par l'employeur), et les acomptes, sur
+  l'impôt **avant** crédits et réductions (CGI art. 204 H : le taux ne les compte pas ; ils sont
+  remboursés après la déclaration, avec une avance en début d'année, art. 1665 bis). L'assiette du
+  médecin est désormais son bénéfice imposable du moteur (elle était recalculée « recettes −
+  charges − cotisations », sans les forfaits du secteur 1 ni la CSG-CRDS non déductible) ; son
+  Super-Net en couple est celui du moteur avec sa part de l'impôt (le calcul d'avant oubliait PDSA
+  et crédits remboursés).
+- **« À mettre de côté chaque mois »** (remplace « À prévoir pour tes cotisations et l'impôt… ») :
+  le total et sa répartition, Urssaf, CARMF et impôt de l'activité libérale. CARMF = retraite de
+  base, complémentaire, invalidité-décès et ASV en PAMC ; au RSPM, l'invalidité-décès seule (le reste
+  est payé à l'Urssaf). Le total est la somme des parts arrondies.
+- **Pli « Comment l'impôt sera prélevé »** : le montant des acomptes était l'impôt du foyer entier,
+  salaires compris ; il est celui de `impotDuMedecin`, « Pour ces revenus », ou « aucun acompte, ton
+  impôt estimé est nul ». Ajouts : l'impôt des salaires retenu par l'employeur, les crédits d'impôt
+  qui ne baissent pas les acomptes, « Tes revenus 2026 ne changent tes acomptes qu'à partir de
+  septembre 2027, après ta déclaration. » Taux au format français (« 14,5 % », pas « 14.5% »).
+  Texte retiré, faux : « **1ère année d'installation ?** Tu n'as ni acomptes URSSAF/CARMF (pas de
+  N-1) ni acomptes IR tant que tu n'as pas déclaré — ton Super-Net mensuel est temporairement plus
+  élevé. Mets de côté ~30-45 % pour anticiper la régularisation. » Les deux premières années, Urssaf
+  et CARMF appellent des cotisations provisionnelles sur une base forfaitaire, puis les régularisent
+  (service-public.fr, F39739) ; au RSPM, les cotisations suivent les recettes déclarées chaque mois
+  ou trimestre. Le nouveau texte dit cela, puis l'impôt : pas d'acompte avant la première
+  déclaration (sauf demande sur impots.gouv.fr), puis solde de la première année et premiers
+  acomptes ensemble de septembre à décembre de l'année suivante.
+- **Pli « Comprendre la différence »** : les montants viennent de `src/lib/simulateur/deductions.ts`,
+  tiré du moteur. Le PER et l'exonération de zone étaient comptés au réel seulement, alors qu'ils
+  jouent aussi en micro (sauf la FRR « socle », réel seulement, qui reste comptée au réel) ; le
+  bénéfice du micro était recalculé à côté du moteur, salaires ajoutés. Les colonnes donnent
+  désormais le « Bénéfice imposable » de l'activité, et une ligne dit ce qui vient ensuite dans les
+  deux régimes (PER, zone). Lignes ajoutées : Madelin, chèques-vacances ; « Déductions S1 » devient
+  « Forfait 3 % et groupe III » ; « (48.5%) » devient « (49 %) ». En PAMC, une phrase explique que
+  les cotisations diffèrent aussi (sur le bénéfice au réel, sur les recettes après abattement en
+  micro). La note « À noter » n'est plus doublée d'une infobulle qui disait la même chose.
+- Encart DOM des fiches : « réduction d'impôt de 30 % […] sur tes revenus » devient « Ton impôt est
+  réduit de 30 %, dans la limite de 2 450 € (CGI, art. 197) » ; « Cotisations URSSAF estimées au
+  taux métropole. Écart réel < 3 % pour les médecins PAMC en DOM. » devient, en PAMC, « Cotisations
+  calculées par le modèle de l'Urssaf, qui tient compte de ton département. » (le département lui
+  est transmis depuis le § 9.fr ; il ne change rien hors Mayotte), au RSPM « Au RSPM, le simulateur
+  applique les taux de la métropole. »
+- Messages d'erreur au tutoiement (« Vérifie ta connexion internet. », « Réessaie dans quelques
+  instants. »).
+
+**Valeur** (dans la conclusion, chaque phrase tirée du calcul) :
+- **Pourquoi** : « Au réel, tu déduis X € de tes recettes avant l'impôt (Y %) ; le Micro-BNC en
+  retire Z € d'office (34 %). », puis, en PAMC et à partir de 100 € d'écart, « Au réel, tes
+  cotisations sont aussi plus basses (ou plus élevées) de W €. ». Quand l'impôt est le même des deux
+  côtés (zone exonérée, petits revenus), seule la phrase des cotisations : « Ton impôt est le même
+  dans les deux régimes : l'écart vient de tes cotisations […] ».
+- **Ce qui change** : quand les deux se valent, « Ce qui les départage alors, c'est la gestion : en
+  micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le
+  jour ; au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses. Les
+  honoraires d'un comptable sont une charge : ajoute-les pour comparer. » (CGI art. 102 ter, 4 ;
+  BOI-BNC-DECLA-20-30 ; CGI art. 99). Il remplace « Choisis selon ta préférence de gestion. ». Quand
+  le réel l'emporte sous le plafond : « Pour être au réel, il suffit de déposer ta déclaration 2035
+  dans les délais : l'option vaut un an et se renouvelle d'elle-même. » (BOI-BNC-DECLA-10-10,
+  § 130 à 140).
+- **1 000 € de plus** : « 1 000 € de recettes en plus dans l'année t'en laisseraient environ X €,
+  après cotisations et impôt. » (`calculerMarge` : régime fiscal retenu, même régime social, charges
+  inchangées ; un appel au modèle Urssaf en PAMC, calculé après l'affichage, avant le point de
+  bascule). Pas de phrase si le résultat sort de 0 à 1 000 € : un seuil est franchi. Cas relevé :
+  un médecin installé en secteur 1 dont les recettes passent 120 150 € (250 % du PASS) voit ses
+  cotisations monter d'environ 1 000 € d'un coup dans le modèle Urssaf.
+- En attente, la bascule et la marge ont déjà leur phrase finale, le montant en « … € » : les fiches
+  ne sautent plus à l'arrivée du calcul (22 à 44 px au téléphone avec une phrase d'attente), et la
+  zone est `aria-busy` pendant ce temps. Un filet sépare le raisonnement (pourquoi, bascule, ce qui
+  change) des chiffres du mois.
+
+**Page.** « Comprendre les résultats » (mode d'emploi, point 5) suit le nouvel ordre : la
+conclusion en tête (et pourquoi), le point de bascule, ce qu'il faut mettre de côté et les 1 000 €
+de plus, les deux fiches, les plis. Texte d'avant : « **Les 2 fiches** — Micro-BNC et Régime Réel,
+avec le même chiffre en tête : ton Super-Net, par mois et par an. Dessous, le détail ligne par ligne
+(charges, cotisations, revenu imposable, impôt). / **La conclusion** — Le régime qui te laisse le
+plus, et de combien par mois. Sous 50 € par mois d'écart, les deux se valent : choisis selon ta
+préférence de gestion. / **À prévoir chaque mois** — Tes cotisations et l'impôt de ton activité
+libérale, à mettre de côté. / **Le point de bascule** — […] / **Pour aller plus loin** — Pourquoi
+l'un déduit plus que l'autre, et comment ton impôt sera prélevé (acomptes, prélèvement à la
+source). »
+
+**Vérifications.** Banc de 24 situations (remplaçant et installé, secteurs 1 et 2, RSPM et PAMC,
+mensuel, salaires, couple, crédits d'impôt, PDSA, PER, Madelin, chèques-vacances, jeune affilié,
+dispense CARMF, DOM, FRR et QPV, recettes de 800 €) : déductions du micro = max(305 €, 34 %),
+déductions du réel = somme de leurs lignes, impôt du médecin et acomptes recalculés à part, somme
+des parts « à mettre de côté » = total, CARMF entre 0 et le total des cotisations ; textes de la
+conclusion et des plis rendus et relus. Navigateur (Chromium, 390 et 1 280 px) : aucune erreur de
+page, aucun débordement, 0 px de décalage à l'arrivée des calculs. Feuille commune : elle change de
+nom (`DV3-EFCM` → `HrxwAN9D`), sept règles en moins, aucune en plus (`h-[100px]`, `text-[7px]`,
+`sm:h-5`, `sm:w-5`, `ease-out` des anneaux ; `pb-6` des variantes en carte de deux plis,
+inemployées et retirées) ; les autres pages ne diffèrent de la production que par ce nom
+(vérifié sur l'accueil, `/tarifs`, `/faq`, `/blog`, un article, une page légale, la calculette).
+
+### 9.fu Simulateur : conclusion lisible, anneau rétabli ; la réforme de l'assiette sociale, à intégrer (14 novembre 2026)
+
+Le propriétaire, sur la conclusion du § 9.ft : « pas hyper agréable à lire […] un peu brut » ;
+« je trouvais que c'était sympa le camembert » ; puis : « t'as vérifié que tu utilises bien le
+nouveau système de calcul de l'Urssaf (RBS) ? Qu'on est bien à jour et cohérent partout ? »
+
+**Conclusion.** Le raisonnement passe sous des étiquettes (« Pourquoi », « Point de bascule »,
+« Ce qui change » quand les régimes se valent, « Passer au réel » quand le réel l'emporte),
+l'étiquette au-dessus au téléphone, à gauche à partir de 640 px. Sous le filet, « À mettre de côté
+chaque mois pour ton activité libérale » : le total en grand, sa part des recettes, une barre
+Urssaf, CARMF, impôt et sa légende, puis la phrase des 1 000 € de plus. Textes retouchés pour
+l'étiquette : « Ce qui les départage alors, c'est la gestion : en micro, […] ; au réel, […]. Les
+honoraires d'un comptable sont une charge : ajoute-les pour comparer. » devient « Seulement la
+gestion. En micro, […]. Au réel, […] ; les honoraires d'un comptable sont une charge, ajoute-les
+pour comparer. » ; « Pour être au réel, il suffit de déposer ta déclaration 2035 dans les délais
+[…] » devient « Il suffit de déposer ta déclaration 2035 dans les délais […] » ; la phrase « À
+mettre de côté chaque mois pour ton activité libérale : X € (Y % de tes recettes), soit A €
+d'Urssaf, B € de CARMF et C € d'impôt. » devient le bloc chiffré (mêmes montants). Le plafond du
+Micro-BNC dépassé alors que le réel l'emporte n'est plus une alerte (pastille d'information, la
+conclusion garde sa couleur) : il ne change pas le conseil.
+
+**Anneau.** L'anneau de répartition des fiches (charges, cotisations, impôt, Super-Net), retiré au
+§ 9.ft, est rétabli à la demande du propriétaire, dessiné en SVG (`AnneauRepartition`, styles
+`.sim-anneau*` de `simulateur.css`) : mêmes taille et couleurs, sans recharts. « Reste à vivre »
+devient « Super-Net » (le nom du chiffre en tête de la fiche).
+
+Feuille commune inchangée (`HrxwAN9D`) : aucune classe utilitaire nouvelle.
+
+**La réforme de l'assiette sociale (« revenu brut social »), pas encore dans nos cotisations.**
+Vérifié le 14 novembre 2026 :
+- La réforme s'applique aux praticiens et auxiliaires médicaux conventionnés à compter des
+  revenus 2025 (impots.gouv.fr, « La réforme de l'assiette sociale » ; CARMF, « Changement
+  d'assiette sociale », 11 mars 2026) : assiette unique = recettes − charges hors prélèvements
+  sociaux, abattue de 26 % (plancher 1,76 % du PASS, plafond 130 % : 829 € et 61 230 € en 2025) ; en
+  micro, l'abattement fiscal (34 %) à la place ; la CSG-CRDS sur la même assiette, sans
+  réintégration des cotisations ; retraite de base, tranche 1 à 8,73 % ; maladie à 8,5 % (reste à
+  charge de 0,1 % en secteur 1). « La CARMF en 2026 » (p. 22) : complémentaire à 11,8 %, ASV
+  forfaitaire 1 917 € (S1) ou 5 751 € (S2) et proportionnelle 4 %.
+- Le modèle que le simulateur interroge (API `mon-entreprise.urssaf.fr/api/v1`, paquet
+  `modele-social`, même dans sa dernière version 11.1.0) calcule encore l'ancienne assiette en
+  2025 et 2026 : assiette = revenu professionnel net, CSG-CRDS sur revenu + cotisations ;
+  complémentaire CARMF à 10,2 %. Ordre de grandeur, en donnant au modèle la nouvelle assiette :
+  −818 €/an pour un remplaçant de secteur 1 à 60 000 € de recettes et 6 000 € de charges, −1 657 €
+  à 100 000 €, +1 355 € pour un secteur 2 à 120 000 € (avant la complémentaire à 11,8 %).
+- L'Urssaf publie un autre paquet, `modele-ti` 0.1.0 (juillet 2026), qui applique la réforme
+  (variation « après réforme » à partir de 2025, abattement de 26 % borné, micro sur les recettes
+  abattues, participations de l'Assurance maladie) ; il garde lui aussi la complémentaire à 10,2 %.
+  L'essayer demande de l'exécuter dans l'environnement de travail, ce qui y a été refusé : la
+  décision revient au propriétaire. Rien n'a changé dans le calcul pour l'instant.
+- L'application (app.hippodoc.fr, dépôt à part) appelle le même modèle par sa fonction
+  `calculate-urssaf` : même constat.
+
+### 9.fv Simulateur : la réforme de l'assiette sociale appliquée aux cotisations PAMC (14 novembre 2026)
+
+Suite du § 9.fu. Le propriétaire : « tu as ma bénédiction pour faire ce qui te paraît le plus solide
+et cohérent ». Utiliser `modele-ti` (le modèle de l'Urssaf qui applique la réforme) dans le
+simulateur demandait de l'installer et de l'exécuter, ce que l'environnement de travail a refusé
+(deux fois, même avec l'accord du propriétaire) : il n'a été lu que comme données. Le simulateur
+garde donc l'API qu'il interrogeait, et `src/lib/simulateur/urssaf.ts` lui donne, pour les revenus
+2025 et suivants, ce que la réforme change, d'après les règles de `modele-ti` :
+- l'assiette des cotisations et celle de la CSG-CRDS : au réel, revenu brut (recettes − charges,
+  forfait 2 % compris) moins 26 % arrondi, borné entre 1,76 % et 130 % du PASS (845,86 € et
+  62 478 € en 2026) ; en micro, les recettes après l'abattement de 34 % (305 € au moins) ; sans
+  réintégration des cotisations dans celle de la CSG-CRDS ;
+- le taux de la tranche 1 de la retraite de base : 8,73 % ;
+- le taux maladie : barème à deux tranches (progressif jusqu'à 8,5 % à 3 PASS, 6,5 % au-delà ;
+  8,5 % dans les DOM), passé au modèle en taux moyen sur l'assiette, et plus d'assiette minimale ;
+  en secteur 1, l'Assurance maladie en prend toujours en charge tout sauf 0,1 % (calcul du modèle) ;
+- la contribution additionnelle sur la part non conventionnée : 3,25 % ;
+- la complémentaire CARMF à 11,8 % en 2026, que ni l'un ni l'autre modèle n'a encore (« La CARMF en
+  2026 », p. 22 ; 10,2 % pour les revenus 2025).
+Le reste (participations de l'Assurance maladie, ASV, invalidité-décès, indemnités journalières,
+allocations familiales, CURPS, formation professionnelle) est calculé par le modèle, sur la
+nouvelle assiette. Mayotte : seule l'assiette des cotisations change (pas de CSG-CRDS, maladie
+propre). La fonction Supabase n'est plus un repli pour ces années (elle calcule l'ancienne assiette).
+
+**Contrôles.**
+- L'interpolation du « taux progressif » écrite ici rend au centième de point celle du modèle (six
+  assiettes, barème maladie d'avant la réforme).
+- Les surcharges sont lues par le modèle (assiette, assiette de la CSG-CRDS, 8,73 %, taux maladie,
+  complémentaire).
+- Exemple de la CARMF pour 2026, revenu de 30 000 €, secteur 1 : retraite de base 2 535 €
+  (2 619 + 561 − 645), complémentaire 3 540 €, ASV 2 317 € (1 917 + 400), invalidité-décès 626 € :
+  les quatre montants sont rendus à l'euro.
+- Un calcul indépendant, écrit à part des règles de la réforme, rend le total à 1 € près sur huit
+  profils (secteurs 1 et 2, remplaçant et installé, réel et micro, 37 000 € à 162 800 € d'assiette).
+  Un écart reste, hors réforme : les allocations familiales dans les DOM (hors Mayotte), à 3,1 %
+  sans taux réduit dans `modele-ti`, au taux réduit dans le modèle de l'API, qui est gardé
+  (1 147 € pour un secteur 2 en Guadeloupe à 37 000 € d'assiette) ; à trancher sur source.
+- Banc de 24 situations du § 9.ft : aucun échec. Exemple : remplaçant de secteur 1 à 60 000 € de
+  recettes et 6 000 € de charges, au réel, 15 324 € de cotisations en 2026 (15 503 € avant) :
+  CSG-CRDS 3 876 € au lieu de 4 894 €, retraite en hausse (tranche 1 et complémentaire) ; le
+  Micro-BNC garde 184 €/an d'avance (223 € avant).
+
+**Textes.** Sous le titre des résultats : « Cotisations au régime des praticiens conventionnés
+(PAMC), selon le modèle de l'Urssaf et sur la nouvelle assiette sociale des revenus 2025 et
+suivants. » Phrases « au réel, elles se calculent sur ton bénéfice » : « sur tes recettes moins tes
+charges, abattues de 26 % » (pli « Comprendre la différence », conclusion quand l'impôt est le même).
+Mode d'emploi, point 6 : « URSSAF (maladie, allocations familiales, retraite de base, CSG-CRDS) +
+CARMF (retraite complémentaire, invalidité-décès, ASV) […] (voir point 5) » devient « URSSAF
+(maladie, allocations familiales, CSG-CRDS, formation professionnelle) + CARMF (retraite de base,
+retraite complémentaire, invalidité-décès, ASV) […] (voir point 4). Depuis les revenus 2025, elles
+se calculent sur une assiette unique : tes recettes moins tes charges, abattues de 26 % (en
+Micro-BNC, tes recettes après l'abattement de 34 %). » (la retraite de base des médecins est
+appelée par la CARMF ; la situation CARMF est au point 4). Infobulle des cotisations d'une fiche :
+la ligne « CARMF retraite de base et ASV » manquait (le détail ne faisait pas le total) ; « CARMF
+RID » devient « CARMF invalidité-décès », « Formation » devient « Formation et CURPS ».
+
+**Reste à faire, hors de ce dépôt.** L'application (app.hippodoc.fr) calcule par la fonction
+`calculate-urssaf`, donc sur l'ancienne assiette. Et quand l'Urssaf mettra la réforme dans le modèle
+de son API, ces surcharges devront être retirées (sinon l'abattement serait compté deux fois) :
+contrôle simple, l'assiette des cotisations rendue par l'API pour 60 000 € de recettes et 6 000 € de
+charges en 2026, sans surcharge, vaut 39 960 € aujourd'hui (ancien calcul, par coïncidence égal à
+74 % du revenu brut) ; comparer aussi l'assiette de la CSG-CRDS (50 449 € aujourd'hui, 39 960 € avec
+la réforme).
+
+### 9.fw Simulateur : RSPM, Safari, contrôle du modèle Urssaf, allocations familiales des DOM (14 novembre 2026)
+
+Le propriétaire : « donc là tout est parfait, qu'importe la situation, les options, etc. ? » ; la
+réponse listait ce qui ne l'était pas ; « oui go » sur quatre suites.
+
+**RSPM.** Taux en vigueur : 13,5 % jusqu'à 19 000 € (CSS art. D642-4-2, version du 14 juin 2021,
+répartition : maladie 0,50 %, indemnités journalières 1,45 %, retraite de base 38,80 %,
+complémentaire 11,95 %, CSG-CRDS 47,30 %), 21,2 % au-delà (D642-4-3, même date) ; option ouverte
+jusqu'à 19 000 € de rémunération « avant abattement prévu à l'article 102 ter » (D642-4-1, 2023) ;
+l'invalidité-décès de la CARMF en sus. Le simulateur les applique aux honoraires bruts, comme nos
+articles du blog et les guides de 2026. Point non tranché : l'article L642-4-2, réécrit par la loi
+n° 2025-199 (art. 5) et en vigueur depuis le 1er janvier 2026, applique le taux global « au montant
+de leur rémunération après application de l'abattement prévu à l'article 102 ter du code général des
+impôts » ; la version d'avant 2026 n'a pas pu être lue (Légifrance sert la version courante), et le
+site de l'Urssaf pour les remplaçants (service-simplifie-medecin.urssaf.fr) répondait 503. Indice
+pour les honoraires bruts : 47,30 % de 13,5 % des recettes font 6,39 % des recettes, soit 9,7 %
+(CSG-CRDS) de 66 % des recettes. Calcul inchangé.
+Tranché ensuite, sur une source du propriétaire : un cabinet comptable (Auctus, « RSPM médecin
+remplaçant : taux et sortie », 22 octobre 2026) applique les taux aux rétrocessions brutes
+(10 000 € → 1 350 €, 19 000 € → 2 565 €, 30 000 € → 2 565 € + 11 000 × 21,2 % = 4 897 €, plus
+l'invalidité-décès), note que D642-4-1 à D642-4-3 « n'ont pas changé » et que les taux restent
+ceux-là « au 15 octobre 2026 », d'après la page de l'Urssaf sur l'offre des médecins remplaçants
+(mise à jour le 28 septembre 2026 ; urssaf.fr refuse les lectures automatiques, elle n'a pas pu
+être ouverte ici). La CARMF (« Radiation du RSPM », 31 mars 2026) situe le seuil à 19 000 € de
+chiffre d'affaires, « correspondant à un bénéfice non commercial (micro-BNC) inférieur à
+12 500 € », et confirme que « l'ensemble des charges sociales, y compris celles dues à la CARMF,
+est recouvré par l'Urssaf ». Le simulateur calcule comme ces exemples. À revoir si un décret
+modifie D642-4-1 à D642-4-3 (un projet ouvrirait le RSPM jusqu'à 80 000 € de chiffre d'affaires).
+« Remplaçants régulateurs RSPM » (CARMF, février 2026) : « Toutes les cotisations, y compris celles
+de la Carmf, seront payées auprès de l'URSSAF ». « À mettre de côté » au RSPM : une seule part,
+Urssaf (la CARMF y figurait pour l'invalidité-décès).
+
+**Safari.** Parcours refait dans WebKitGTK 2.52 (installé dans le conteneur pour l'occasion) :
+conclusion à 1 300 px et à 390 px (cadre de même origine), fiche et anneau : même mise en page que
+Chromium (grille des étiquettes à partir de 640 px, barre proportionnelle aux parts, aucun
+débordement). Un défaut vu à 390 px, dans les deux moteurs : un « ; » rejeté en début de ligne.
+Les phrases de la conclusion ont désormais une espace insécable avant « ; » et « : » (aucun mot
+changé).
+
+**Contrôle du modèle Urssaf.** `scripts/controle-modele-urssaf.mjs` interroge l'API sur un cas de
+référence (remplaçant de secteur 1, 60 000 € de recettes, 6 000 € de charges, 2026), sans surcharge,
+et échoue si l'une des valeurs témoins change (assiette 39 960 €, assiette de la CSG-CRDS 50 449 €,
+tranche 1 à 8,23 %, complémentaire 4 076 €, total 15 503 €) ; il vérifie aussi que les surcharges
+restent lues. Un workflow GitHub hebdomadaire qui l'aurait lancé et ouvert une issue en cas d'échec
+a été refusé par l'environnement de travail : à mettre en place par le propriétaire s'il le
+souhaite (fichier proposé dans la conversation), sinon à lancer à la main (CLAUDE.md).
+
+**Allocations familiales des DOM.** CSS art. D613-1 (en vigueur depuis le 25 mai 2020) : taux nul
+jusqu'à 110 % du PASS, croissant jusqu'à 140 %, 3,10 % au-delà, sans exception pour l'outre-mer.
+Le modèle de l'API l'applique ; `modele-ti` (3,10 % d'office dans les DOM) ne cite pas de source.
+Le calcul de l'API est donc gardé, à raison : l'écart ouvert au § 9.fv est tranché.
+
+### 9.fx Simulateur : première année d'activité, dispense partielle de la complémentaire, ASV proportionnelle (14 novembre 2026)
+
+Le propriétaire, après la liste des cas non couverts du § 9.fw : « ok go je te fais confiance /
+pense à tout, fais ça proprement / sois minutieux ». Trois cas ajoutés : la première (et la
+deuxième) année d'activité, et les deux réductions de la CARMF accordées sur demande aux revenus
+modestes.
+
+**Sources.** CARMF, « Vos cotisations en début d'activité » (2026) : tableau « 1re année
+d'affiliation en 2026 (médecin de moins de 40 ans) et 2e année d'affiliation en 2026 » : base
+(provisionnel) 772 € en secteur 1, 968 € en secteur 2 ; complémentaire 0 € ; ASV, part forfaitaire
+1 917 € et 5 751 €, part d'ajustement 122 € et 365 € ; invalidité-décès 626 € ; total 3 437 € et
+7 710 €. « Les cotisations des deux premières années d'affiliation ne sont pas dues, sauf si vous
+êtes âgé de plus de 40 ans au début de votre activité libérale. Dans ce cas, la cotisation est
+proportionnelle aux revenus nets d'activité indépendante de 2024 plafonnés, sans régularisation
+ultérieure ». « La part d'ajustement est assise pour les deux premières années civiles
+d'affiliation, sur les mêmes bases forfaitaires retenues pour le régime de base (9 131 € en 1re et
+2e année en 2026) soit des cotisations de 365 € ». ASV : « Les médecins dont le revenu conventionné
+2024 est inférieur à 63 900 € peuvent demander que soit substituée à la cotisation forfaitaire ASV
+2026, une cotisation proportionnelle à ces revenus, à hauteur de 3 % pour les médecins en secteur 1
+et 9 % pour les médecins en secteur 2 » ; « les points de retraite sont attribués en fonction de la
+cotisation effectivement versée » ; demande au plus tard le 28 février, dans eCARMF. CARMF,
+« Dispenses pour insuffisance de revenus » (2026) : « Une dispense partielle ou totale de la
+cotisation [du régime complémentaire] […] peut être accordée sur demande, compte tenu de vos
+revenus imposables de toute nature, au titre de l'année précédente. Les cotisations ou fractions de
+cotisations ayant fait l'objet d'une dispense ne donnent pas lieu à acquisition de points » ;
+barème 2026 (revenus imposables du médecin de 2025) : jusqu'à 6 100 €, 100 % ; de 6 101 € à
+14 300 €, 75 % ; de 14 301 € à 23 100 €, 50 % ; de 23 101 € à 32 500 €, 25 %. Urssaf : modèle
+`modele-ti` (règles « début activité ») et modèle de l'API ; service-public.fr, F39739.
+
+**Début d'activité.** Nouveau champ du formulaire, « Début d'activité » (« Plus de 2 ans
+d'activité », « 1re année d'activité », « 2e année d'activité »), à côté de l'exercice. Il remplace
+l'option « Jeune affilié (< 2 ans, < 40 ans) » de la situation CARMF, qui retirait la
+complémentaire et rien d'autre ; une ancienne valeur enregistrée vaut « 2e année » (moteur et
+formulaire). Les deux premières années, le modèle reçoit : complémentaire à 0 €, ASV d'ajustement
+sur la base forfaitaire (365 € en 2026, 122 € à la charge d'un secteur 1) et, la 1re année, pas de
+CURPS (`modele-ti` : pas de CURPS l'année de la création ; l'ancien modèle la comptait, 46 € pour un
+installé). Les cotisations affichées sont celles que l'on paie pour l'année, comme dans le tableau
+de la CARMF (retraite de base sur le revenu réel, une fois régularisée). La complémentaire se
+calcule sur les revenus de l'avant-dernière année : les deux années exonérées sont celles dont la
+base précède l'installation, et les revenus de la 1re année serviront de base à la complémentaire de
+la 3e. La conclusion le dit donc, en PAMC hors dispense, les deux premières années : « Tes deux
+premières années, la complémentaire de la CARMF n'est pas due. Elle arrive la 3e année, calculée
+sur tes revenus de l'avant-dernière année : environ X €/an à ces revenus. » (X : le montant du cas
+général au même revenu, rendu à l'euro près par le modèle en 2025 et en 2026). Après 40 ans, la
+complémentaire de ces deux années porte sur les revenus d'activité indépendante d'il y a deux ans,
+souvent nuls : le simulateur la compte à 0 €, et l'infobulle et le mode d'emploi le disent.
+
+**Première année : ce qui part, ce qui est dû, ce qui reste.** Avec « 1re année d'activité », un
+bloc s'ajoute sous la conclusion : « Première année d'activité / Ce qui part cette année, et ce qui
+viendra ensuite », et un tableau (« Prélevé en 2026 », « Dû pour 2026 », « À payer en 2027 » ;
+lignes Urssaf, CARMF en PAMC, Impôt, Total). Prélevé : en PAMC, les cotisations provisionnelles,
+calculées par le modèle sur la base forfaitaire de 19 % du PASS (9 131 € en 2026), entreprise créée
+dans l'année ; au RSPM, les cotisations de l'année (déclarées au fil des recettes) ; impôt 0 €. Dû :
+les cotisations de l'année et l'impôt de l'activité libérale, les mêmes que la conclusion. Contrôles :
+CARMF provisionnelle 3 437 € en secteur 1 et 7 710 € en secteur 2, égales au tableau de la CARMF ;
+Urssaf provisionnelle 1 073 € en secteur 1 (CSG-CRDS 9,7 % de 9 131 € = 886 €, maladie 9 €,
+indemnités journalières sur 40 % du PASS 58 €, formation 120 €) et 1 064 € en secteur 2, égales au
+calcul à la main. Textes du bloc : « L'Urssaf et la CARMF appellent d'abord des cotisations sur une
+base forfaitaire de 9 131 € (19 % du plafond de la Sécurité sociale), puis les régularisent sur ton
+revenu réel l'année suivante, après ta déclaration de revenus : X € à payer à ce moment-là. Une
+estimation de ton revenu, déclarée à l'Urssaf, réduit cet écart. » (« L'Urssaf appelle … les
+régularise » si la CARMF est dispensée ; « X € te seront remboursés » si l'écart est négatif) ; au
+RSPM : « Au RSPM, tes cotisations suivent tes recettes, déclarées chaque mois ou chaque trimestre :
+rien à rattraper. » ; « Aucun acompte d'impôt cette année, sauf si tu en demandes un sur
+impots.gouv.fr : l'impôt de 2026 (X €) sera prélevé l'an prochain, de septembre à décembre, en plus
+de tes premiers acomptes. » ou « À ces revenus, ton impôt de 2026 est nul : rien à prévoir de ce
+côté l'an prochain. » ; « Garde X € de côté chaque mois sur un compte à part : c'est ce qui sera
+appelé en 2027. » Exemple : remplaçant de secteur 1, 60 000 € de recettes, 6 000 € de charges :
+4 510 € prélevés en 2026, 15 116 € dus pour 2026, 10 606 € à payer en 2027 (884 € par mois).
+
+**Dispense partielle de la complémentaire.** Case « Dispense partielle de la complémentaire (sur
+demande) », dans « Retraite & CARMF », en PAMC, affilié, après les deux premières années. Le taux du
+barème se lit sur les revenus du médecin calculés sans la dispense (bénéfice libéral imposable,
+salaires après abattement, revenus fonciers saisis ; pas ceux du conjoint), puis l'impôt est
+recalculé avec la complémentaire réduite. Par prudence, les bénéfices exonérés d'impôt (zone,
+permanence des soins) y sont comptés : le revenu fiscal de référence les réintègre, et sans eux un
+installé en zone exonérée se voyait proposer une dispense de 100 % (25 % avec eux). La CARMF regarde
+l'année précédente : le simulateur l'estime sur l'année saisie (il le dit).
+
+**ASV proportionnelle.** Case « ASV proportionnelle (sur demande) », mêmes conditions. Elle remplace
+la part forfaitaire seulement : le seuil de 63 900 € est le revenu où 9 % font le forfait de 2026
+(5 751 €), et la part d'ajustement (4 %) reste due. Le modèle reçoit la part forfaitaire à 9 % du
+revenu conventionné (vérifié sur l'API : l'ajustement reste calculé), seulement quand elle coûte
+moins que le forfait. Revenu conventionné : l'assiette moins la part non conventionnée, comme le
+modèle. La CARMF regarde l'avant-dernière année : même estimation.
+
+**Suggestions de la conclusion.** En PAMC, affilié, après les deux premières années, quand la case
+n'est pas cochée : « Sur demande, la CARMF réduit ta complémentaire de X % à ces revenus : Y €/an de
+moins, sans points de retraite pour cette part. » ; « Sur demande avant fin février, la part
+forfaitaire de ton ASV peut devenir proportionnelle à ton revenu conventionné : Y €/an de moins, avec
+moins de points de retraite. » (à partir de 100 €/an). Les deux se calculent par les fonctions du
+moteur (`revenusImposablesDuMedecin`, `economieAsvDe`) : le pourcentage et le montant annoncés sont
+ceux qu'applique la case cochée (vérifié au centime pour la complémentaire, à l'euro pour l'ASV).
+
+**Textes du formulaire.** Infobulle de « Début d'activité » : « 1re et 2e années : la complémentaire
+de la CARMF n'est pas due (si tu as commencé après 40 ans, elle se calcule sur tes revenus d'activité
+indépendante d'il y a deux ans, souvent nuls), et l'ASV d'ajustement porte sur une base forfaitaire
+(9 131 € en 2026). La complémentaire arrive la 3e année. » / « 1re année : l'Urssaf et la CARMF
+appellent des cotisations provisionnelles sur cette base forfaitaire, puis régularisent l'année
+suivante, et l'impôt de l'année n'est prélevé que l'an prochain. Les résultats montrent ce qui part
+cette année et ce qui viendra ensuite. » Situation CARMF : l'option « Jeune affilié (< 2 ans,
+< 40 ans) » est retirée ; résumé « Jeune affilié » retiré, « Réductions demandées » quand une case
+est cochée ; infobulle « Affilié : cotisations complètes (base + complémentaire + invalidité-décès) »
+devient « Affilié : retraite de base, complémentaire, ASV et invalidité-décès », « < 2 ans, <40 ans :
+exonéré de complémentaire les 2 premières années » devient « Les deux premières années :
+complémentaire non due, à indiquer dans « Début d'activité » » ; sous le choix, « Cotisations
+complètes : base + complémentaire + invalidité-décès » et « Exonéré de complémentaire les 2 premières
+années — cotisations réduites » deviennent « Retraite de base, complémentaire, ASV et
+invalidité-décès » (suivi de « (sans complémentaire les deux premières années) » les deux premières
+années). Cases : descriptions « Revenus imposables jusqu'à 32 500 € : 25 à 100 % de la complémentaire
+en moins. Le simulateur les estime sur l'année saisie. » et « Revenu conventionné sous 63 900 € : 3 %
+de ce revenu en secteur 1 (9 % en secteur 2) au lieu du forfait. » ; infobulles : le barème, « La
+part dispensée ne donne pas de points de retraite. » ; « Si ton revenu conventionné est sous
+63 900 €, la CARMF peut remplacer la part forfaitaire de l'ASV (1 917 € en secteur 1, 5 751 € en
+secteur 2, en 2026) par 3 % de ce revenu en secteur 1, 9 % en secteur 2. La part d'ajustement reste
+due. », « À demander au plus tard fin février de l'année, dans l'espace eCARMF. », « Les points de
+retraite suivent la cotisation versée : moins de cotisation, moins de points. »
+
+**Mode d'emploi** (`/simulateur`). Ajouts : « Début d'activité — Première année, deuxième année, ou
+plus. Les deux premières années, la complémentaire de la CARMF n'est pas due (si tu as commencé
+après 40 ans, elle se calcule sur tes revenus d'activité indépendante d'il y a deux ans, souvent
+nuls) et l'ASV d'ajustement porte sur une base forfaitaire ; la complémentaire arrive la 3e année. La
+première année, les résultats montrent ce qui est prélevé tout de suite (cotisations provisionnelles
+sur une base forfaitaire, pas d'acompte d'impôt) et ce qui sera appelé l'année suivante. » ; « Ta
+première année — Si tu l'as indiquée : ce qui est prélevé cette année, ce qui est dû pour l'année et
+ce qui sera appelé l'année suivante. » ; « Dispense partielle de la complémentaire — Sur demande,
+selon tes revenus imposables de toute nature de l'année précédente : 100 % jusqu'à 6 100 €, 75 %
+jusqu'à 14 300 €, 50 % jusqu'à 23 100 €, 25 % jusqu'à 32 500 € (barème 2026). La part dispensée ne
+donne pas de points de retraite. » ; « ASV proportionnelle — Sous 63 900 € de revenu conventionné, la
+part forfaitaire de l'ASV peut être remplacée par 3 % de ce revenu en secteur 1 (9 % en secteur 2),
+sur demande avant la fin février ; la part d'ajustement reste due. Moins de cotisation, moins de
+points de retraite. » Modifiés : « Dispensé — Sur demande à la CARMF, pour un remplaçant dont le
+revenu net reste sous 15 000 € : ni cotisations CARMF, ni trimestres de retraite, ni couverture
+invalidité-décès. » ; « Taux RID — Au RSPM, l'invalidité-décès peut être cotisée à 25 %
+(couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le simulateur
+retient 25 %. » Archivés (textes d'avant) : « Affilié < 2 ans, < 40 ans — Si tu viens de t'installer
+et que tu as moins de 40 ans, tu es exonéré de la cotisation complémentaire pendant tes 2 premières
+années. Tes cotisations sont donc réduites (montants forfaitaires). C'est un vrai coup de pouce au
+démarrage. » ; « Dispensé — Sur demande à la CARMF, généralement pour des revenus faibles (démarche
+non automatique, à effectuer auprès de la caisse). » ; « Taux RID — L'invalidité-décès peut être
+cotisée à 25% (couverture minimale) ou 100% (couverture complète). Par défaut, le simulateur utilise
+100%. » (le défaut du formulaire était déjà 25 %).
+
+**Contrôles.** Banc de ce chantier : provisionnels (ci-dessus) ; dû des deux premières années
+(complémentaire 0 €, ASV 2 039 € en secteur 1 à 60 000 €), égal pour l'ancienne valeur « jeune
+affilié » ; dispense partielle sur huit profils (réel et micro, salaires, foncier, zone exonérée,
+permanence des soins) : retrait égal au barème appliqué aux revenus sans dispense, total et Super-Net
+cohérents, pastille au même taux et au même montant ; ASV proportionnelle sur cinq profils (secteurs 1
+et 2, part non conventionnée de 20 %, forfait 2 %, revenus au-dessus du seuil) : montant égal au
+calcul à la main, gain égal à celui annoncé ; complémentaire de la 3e année égale à celle du cas
+général (2025 et 2026, trois profils, réel et micro) ; rendus (bloc de 1re année, RSPM, CARMF
+dispensée, 2e année) et cohérence du bloc (prélevé + à payer = dû ; dû = 12 × « à mettre de côté »
+de la conclusion) : aucun échec. Banc des 24 situations du § 9.ft : aucun échec. Contrôle du modèle
+Urssaf : inchangé. Construction : 72 pages, `verify-site.mjs` sans erreur, feuille commune inchangée
+(`_astro_assets.HrxwAN9D.css`). Chromium à 390 et 1 280 px, WebKitGTK à 1 300 et 390 px : aucun
+débordement de page ni du tableau.
+
+**Limites, dites.** Les revenus que la CARMF regarde (année précédente pour la dispense,
+avant-dernière pour l'ASV et la complémentaire) sont estimés sur l'année saisie, revenus stables
+supposés ; c'est déjà le cas de la complémentaire de 2026, calculée ici sur la nouvelle assiette des
+revenus de 2026 (§ 9.fv), quand la CARMF l'appelle sur les revenus de 2024 : « La réforme entrera
+donc en vigueur pour le régime de base à partir de 2026 et, pour les régimes complémentaire et ASV, à
+partir de 2027 (la cotisation d'ajustement du régime ASV restera calculée sur la base des revenus
+conventionnels) » (CARMF, actualité sur la réforme de l'assiette sociale, 2026). Le revenu
+conventionné (ajustement et ASV proportionnelle) est estimé par l'assiette, comme dans le modèle de
+l'Urssaf. Après 40 ans avec des revenus d'activité indépendante deux ans avant, la complémentaire des deux
+premières années n'est pas calculée. La deuxième année n'a pas de bloc « ce qui part, ce qui reste »
+(ses cotisations provisionnelles reposent sur les revenus de la première, que le simulateur ne
+demande pas).
+
+### 9.fy Premier écran : « Satisfait ou remboursé. » au lieu de « Créé par un médecin remplaçant. » (14 novembre 2026)
+
+Décision du propriétaire : sous les boutons du premier écran, « Créé par un médecin
+remplaçant. » pouvait faire « projet perso » à un médecin qui découvre la page ; l'histoire du
+fondateur reste racontée plus bas (bloc fondateur et film). La ligne fine devient
+« Satisfait ou remboursé. Déjà 900+ médecins inscrits. ».
+
+- **Contenu modifié**, première phrase seulement ; même coupe qu'avant (une phrase par ligne
+  sous 480 px, une ligne au-delà). Date de l'accueil dans le sitemap : 14 novembre 2026.
+- ⚠️ **TODO(owner)** : la garantie n'est écrite ni dans les conditions d'utilisation
+  (`/conditions-utilisations`), ni dans `/tarifs`, ni dans la FAQ. Le propriétaire doit en
+  fixer les règles (durée après le premier paiement, remboursement entier ou au prorata,
+  formules concernées, manière de le demander) et les faire écrire dans les conditions
+  d'utilisation ; à rapprocher de l'harmonisation de leur § 5.1 (« sans engagement de durée »,
+  alors que l'annuel engage pour l'année).
+
+**Fichiers** : `src/components/accueil/Hero.astro`, `src/lib/pages-lastmod.ts`, `MIGRATION.md`.
+
+### 9.fz Mentions légales refaites, sobres (14 novembre 2026)
+
+Demande du propriétaire : une page légale sobre, sans ce qui inquiète sans rien apporter.
+Contenu modifié (texte juridique, `src/pages/mentions-legales.astro`) :
+
+- **Éditeur** d'après l'extrait Kbis : HIPPODOC, SASU au capital de 1 €, 60 rue François Ier,
+  75008 Paris, **RCS Paris 943 434 738** (la page disait « en cours d'immatriculation »).
+  Le capital social reste : la loi l'exige (LCEN art. 6 III ; Code de commerce
+  art. R123-237). Rien d'autre du Kbis n'est publié (date de naissance, domicile).
+- **Hébergement**, vérifié le 14 novembre 2026 (en-têtes des serveurs, projet Supabase,
+  pages légales des hébergeurs) : site sur **Vercel Inc.** (440 N Barranca Avenue #4133,
+  Covina, CA 91723, États-Unis) ; application sur **Lovable Labs Sweden AB** (Regeringsgatan 25,
+  111 53 Stockholm) ; données chez **Supabase Pte. Ltd** (65 Chulia Street #38-02/03, OCBC
+  Centre, Singapour 049513), serveurs à Paris (région eu-west-3). La page ne citait que
+  Supabase, à son ancienne adresse (« Supabase, Inc., 970 Toa Payoh North »).
+- **Retiré** : l'encadré « Absence de certification HDS » (la règle reste écrite dans les
+  conditions d'utilisation, art. 6, et la politique de confidentialité), les « Crédits »
+  (React, Tailwind…), la section des estimations (art. 7.2 des conditions d'utilisation),
+  la juridiction compétente, la phrase « marques déposées » (aucun dépôt n'est attesté :
+  à rétablir si la marque est déposée). Cookies et données : un renvoi à la politique de
+  confidentialité et à la charte RGPD.
+- Numéro RCS ajouté aussi dans les conditions d'utilisation (art. 1) et la politique de
+  confidentialité (préambule).
+- ⚠️ TODO(owner) : numéro de TVA intracommunautaire à ajouter si la société y est
+  assujettie ; marque déposée ou non.
+
+**Fichiers** : `src/pages/mentions-legales.astro`, `src/pages/conditions-utilisations.astro`,
+`src/pages/politique-confidentialite.astro`, `MIGRATION.md`.
+
+### 9.ga Mentions légales : TVA, Lovable retiré, hébergement audité (14 novembre 2026)
+
+Suite de § 9.fz, à la demande du propriétaire (« fais ton audit complet »). Relevé :
+
+- **www.hippodoc.fr** : CNAME `…vercel-dns-017.com`, adresses 216.198.79.1 et 64.29.17.1
+  enregistrées au nom de Vercel, Inc. (RIPE/ARIN), en-tête `server: Vercel`. **Vercel est
+  bien l'hébergeur du site** : gardé.
+- **hippodoc.fr** (sans www) : même adresse Vercel, redirige vers www. DNS du domaine chez
+  OVH (`anycast.me`) : un registre, pas un hébergeur, non cité.
+- **app.hippodoc.fr** : adresse 185.158.133.1, la valeur que la documentation de Lovable
+  donne pour un domaine personnalisé, derrière Cloudflare. Les fichiers de l'interface sont
+  donc servis par Lovable. **Lovable retiré de la page** (décision du propriétaire) : la page
+  cite pour l'application l'hébergeur de ses données, Supabase (projet en région eu-west-3,
+  Paris), qui stocke les contenus des utilisateurs, ce que vise la LCEN (art. 6 I 2).
+- **t.hippodoc.fr** (mesure PostHog) : relais `europehog.com` (Cloudflare) ; décrit dans la
+  politique de confidentialité, pas un hébergement du site.
+- **TVA intracommunautaire FR08943434738** : valide dans VIES le 14 novembre 2026 (« SAS
+  Hippodoc », 60 rue François Ier, Paris) ; inscription TVA France active dans Stripe.
+  Ajoutée à la section « Éditeur ». Constat au passage : la dernière facture Stripe ne
+  porte ni numéro de TVA ni TVA (`account_tax_ids` vide, `taxes` vide) ; à voir avec le
+  comptable.
+
+**Fichiers** : `src/pages/mentions-legales.astro`, `MIGRATION.md`.
+
+### 9.gb Mentions légales : capital social retiré (14 novembre 2026)
+
+Décision du propriétaire, prise après avoir été informé que la LCEN (art. 6 III) et le Code
+de commerce (art. R123-237) demandent d'afficher le capital social d'une société inscrite au
+RCS. La section « Éditeur » dit « HIPPODOC, société par actions simplifiée à associé unique
+(SASU) », sans « au capital de 1 € ». À rétablir si le propriétaire change d'avis ou si le
+capital est augmenté.
+
+**Fichiers** : `src/pages/mentions-legales.astro`, `MIGRATION.md`.
+
+### 9.gc Politique de confidentialité et charte RGPD : faits vérifiés, minimum, sans adresse personnelle (14 novembre 2026)
+
+Demande du propriétaire : des pages légales minimales, exactes, qu'on ne puisse pas lui
+reprocher. Audit fait sur pièces : code de l'application (dépôt Lovable, lecture seule),
+projet Supabase, DNS et en-têtes.
+
+- **Adresse personnelle retirée** : la politique (§ 7.2) et la charte (§ 5) donnaient le
+  domicile du président comme adresse postale. Remplacé par le siège (60 rue François Ier).
+- **Politique de confidentialité**, contenu modifié :
+  - hébergement : Supabase, serveurs à Paris (projet en région eu-west-3), au lieu de « au
+    sein de l'Union européenne » ;
+  - prestataires, d'après le code de l'application : Supabase, Stripe, **Resend** (emails),
+    **Crisp** (chat), PostHog (« serveurs dans l'Union européenne » : « Royaume-Uni » retiré),
+    Google Analytics 4 et **pixel Meta** (avec consentement), **connexion Google**, **Mapbox**
+    (recherche d'adresses), Sentry (point d'envoi `ingest.de.sentry.io`). Ajoutés : Resend,
+    Crisp, pixel Meta, connexion Google, Mapbox. Retiré : « éventuellement d'autres
+    entreprises ». « signent des contrats » remplacé par « dans le cadre de leurs engagements
+    contractuels » ;
+  - transferts hors UE : un paragraphe factuel (prestataires concernés, garanties) au lieu de
+    « nous vérifions régulièrement » ;
+  - équipe interne : « personnes habilitées », sans liste de services ;
+  - violation de données : la règle du RGPD (CNIL, puis personnes si risque élevé) au lieu de
+    « nous vous en informerons dans les meilleurs délais » ;
+  - données de santé : la règle (ne pas saisir de données de santé identifiant un patient)
+    sans la phrase « Nous ne sommes pas certifiés HDS ».
+  - Inchangés : bases légales, durées de conservation, droits, cookies et le bouton
+    d'opposition à la mesure d'audience (§ 8.3), CNIL.
+- **Charte RGPD réécrite courte** (six sections) : retirés les engagements qu'on ne peut pas
+  prouver (formation du personnel, procès-verbaux internes, clauses des contrats de travail,
+  analyses d'impact, registre décrit en détail). Gardé : principes, hébergement à Paris,
+  prestataires (renvoi à la politique), droits, violation de données, contact et CNIL.
+- **Conditions d'utilisation non modifiées** : c'est un contrat accepté par les inscrits ;
+  son art. 11 prévoit d'informer les utilisateurs 30 jours avant une modification. Une
+  nouvelle version est à préparer avec les règles de « Satisfait ou remboursé » (§ 9.fy) et
+  l'art. 5.1 (« sans engagement de durée » face à l'annuel), puis à annoncer par email.
+
+**Fichiers** : `src/pages/politique-confidentialite.astro`, `src/pages/rgpd.astro`, `MIGRATION.md`.
+
+### 9.gd Simulateur : « Estimer mes charges » (14 novembre 2026)
+
+Le propriétaire : « les internes ou les jeunes médecins ont du mal à savoir combien de charges pro
+ils peuvent avoir […] une sorte de mini calculette de charges pro rapide ». Proposition acceptée
+(« go ») : une aide dans le formulaire, pas un nouvel outil.
+
+**Ce qui s'ajoute.** Sous les champs « Tes revenus libéraux » et « Tes charges réelles », un pli
+« Estimer mes charges » (« Estimer mes charges (trajets, repas, assurance…) » à partir de 640 px ;
+pastille « Aide »), fermé par défaut. `src/components/simulateur/EstimateurCharges.tsx`, calculs
+dans `src/lib/simulateur/fraisPros.ts`. Trois groupes :
+- **Voiture** : kilomètres professionnels de l'année, puissance fiscale (case P.6 de la carte
+  grise, 5 CV par défaut), voiture 100 % électrique, péages et parkings. Barème kilométrique des
+  automobiles : CGI, ann. IV, art. 6 B, rédaction issue de l'arrêté du 27 mars 2023 (BOFiP
+  BOI-BAREME-000001 ; service-public.fr F1989, mise à jour du 15 avril 2026, le cite toujours),
+  ouvert aux BNC (BOI-BNC-BASE-40-60-40-20, § 1) ; + 20 % pour une voiture électrique. Le dernier
+  publié, retenu pour 2025 et 2026 (celui des revenus 2026 paraîtra en 2027).
+- **Repas** : nombre de repas pris sur le lieu d'exercice, prix moyen. Déduction par repas : le
+  prix, plafonné, moins la valeur du repas pris au domicile (BOI-BNC-BASE-40-60-60, I-B) : 21,10 €
+  et 5,45 € en 2025, 21,40 € et 5,50 € en 2026 (BOFiP, versions du 19 février 2025 et du
+  18 février 2026, ACTU-2025-00025 et ACTU-2026-00008). Exemple du BOFiP (repas de 25 €) rendu :
+  15,65 € et 15,90 €.
+- **Dans l'année** : montants saisis, sans valeur pré-remplie (une assurance ou un comptable
+  coûtent du simple au triple) : cotisation à l'Ordre, assurance responsabilité civile
+  professionnelle, comptable ou association de gestion agréée, logiciels et abonnements, téléphone
+  et internet (part pro), matériel médical, formation et congrès, autres ; pour un installé, loyer
+  ou redevance du cabinet et secrétariat ; pour un remplaçant, hébergement lors des remplacements
+  et « Part reversée au médecin remplacé » (seulement si les recettes saisies sont les honoraires
+  encaissés par le remplaçant, comme le dit l'article « frais pros du médecin libéral »).
+Puis le total (« Total estimé : X € par an, soit P % de tes recettes. Le Micro-BNC en compte 34 %,
+soit Y €, à leur place. ») et un bouton « Reporter X € dans mes charges », qui remplit le champ
+(par mois si la période est mensuelle ; l'interface ne la propose pas aujourd'hui) et l'annonce
+(« X € reportés dans « Tes charges réelles ». », `role="status"`). Les saisies restent quand le
+pli se ferme.
+
+**Textes.** Intro : « Ce que tu paies pour exercer, sur une année. Ces charges se déduisent au
+régime réel ; en Micro-BNC, l'abattement de 34 % les remplace. Le simulateur compare les deux. »
+Aides : « Trajets vers tes lieux d'exercice, visites, gardes. Trajet domicile-cabinet : 40 km au
+plus par trajet, sauf circonstances particulières. » (comme nos articles) ; « Le barème couvre
+carburant, entretien, assurance et usure de la voiture ; péages et parkings s'y ajoutent. » ;
+« Seulement ceux que la distance t'empêche de prendre chez toi, ticket à l'appui. » ; « Un
+équipement de plus de 500 € HT s'amortit sur plusieurs années : n'en compte que la part de
+l'année. » ; « Seulement si tes recettes saisies sont les honoraires que tu encaisses toi-même. Si
+le médecin remplacé encaisse et te reverse ta part, laisse vide. » ; « Ne compte pas ici tes
+cotisations Urssaf et CARMF ni la CSG (le simulateur les calcule), ton impôt, ni tes versements PER
+ou Madelin (dans les options avancées). » Sources, au pied : « Barème kilométrique : arrêté du
+27 mars 2023, le dernier publié. Repas : limites 2026 du BOFiP. Pour aller plus loin : les frais
+pros du médecin libéral et barème kilométrique ou frais réels. » (liens vers les deux articles,
+nouvel onglet : les saisies du simulateur restent). Mode d'emploi, point « Tes charges réelles »,
+phrase ajoutée : « Tu ne les connais pas ? « Estimer mes charges », juste dessous, les additionne
+ligne par ligne (kilomètres au barème officiel, repas, assurance, comptable…) et reporte le total
+dans le champ. »
+
+**Mesure.** `public_simulator_charges_helper_opened` à l'ouverture,
+`public_simulator_charges_helper_applied` au report (total arrondi à la centaine, nombre de lignes
+remplies) ; `data-ph` `simulateur_estimer_charges` et `simulateur_estimer_charges_reporter`.
+
+**Contrôles.** Barème : les cinq puissances à 1, 4 999, 5 000, 5 001, 12 000, 20 000, 20 001 et
+35 000 km, thermique et électrique, égaux à la table du BOFiP ; exemples de nos articles rendus
+(12 000 km en 5 CV : 5 679 € ; 5 000 km en électrique : 3 816 €). Repas : exemples du BOFiP, prix
+sous la valeur du foyer, au-dessus du plafond, sans prix : aucun échec. Chromium à 390 et 1 280 px :
+ouverture au clavier (`aria-expanded`), total juste (6 266 € pour 8 000 km en 5 CV, 200 € de péages,
+60 repas à 16 €, 335 €, 250 € et 600 €), barème qui suit la puissance, report dans le champ, saisies
+gardées à la fermeture, résultats calculés sur ces charges, aucun débordement. WebKitGTK à 1 300 et
+390 px : mêmes valeurs, aucun débordement ; un `<legend>` y sortait du cadre de son groupe
+(fieldset en grille) : les groupes sont des `role="group"` nommés par leur titre. Construction :
+72 pages, `verify-site.mjs` sans erreur, feuille commune inchangée (`_astro_assets.HrxwAN9D.css`).
+
+**Limites.** Une estimation : le prix moyen des repas est plafonné en moyenne, pas repas par repas ;
+les deux-roues et les frais réels de voiture (au lieu du barème) ne sont pas proposés ; l'option
+pour le barème se prend pour l'année entière et tous les véhicules (BOI-BNC-BASE-40-60-40-20).
+
+Numéro : publiée en § 9.ga ; une section des mentions légales, écrite en parallèle, a pris le
+même numéro : celle-ci devient le § 9.gd, rangée après le § 9.gc.
+
+### 9.ge Simulateur : les cotisations des fiches, par organisme (14 novembre 2026)
+
+Le propriétaire : « tu as fait exprès de marquer « cotisations sociales » dans les résultats et de
+ne pas avoir mis Urssaf et CARMF ? ». Non : c'était le libellé d'origine des fiches. La conclusion
+(« À mettre de côté ») et le bloc de première année séparaient déjà Urssaf et CARMF ; les fiches
+gardaient une ligne. Le moteur n'y était pour rien : il rend chaque cotisation (§ 9.fv).
+
+**Ce qui change** (`RegimeComparisonCards.tsx`). La ligne « Cotisations sociales » des deux fiches
+devient, en PAMC, deux lignes : « Cotisations Urssaf » et « Cotisations CARMF », aux montants de la
+conclusion (CARMF : la retraite du détail ; Urssaf : le reste du total) ; une CARMF nulle (dispense
+d'affiliation) n'a pas de ligne, comme dans la conclusion. Au RSPM, une seule ligne, « Cotisations
+Urssaf (RSPM) » : tout s'y paie à l'Urssaf, part de la CARMF comprise (§ 9.fw). L'anneau garde un
+seul segment « Cotisations ».
+
+Infobulles, une par ligne, groupées par organisme, chacune avec son total, qui est le montant de la
+ligne :
+- Urssaf (PAMC) : « Maladie, indemnités journalières », « Allocations familiales », « CSG-CRDS »,
+  « Formation et CURPS » ; note « Calculées par le modèle de l'Urssaf. La retraite est appelée par
+  la CARMF : ligne suivante. » (ou « CARMF : dispense d'affiliation, aucune cotisation. »).
+- Urssaf (RSPM) : « Cotisation RSPM (taux global) », « Invalidité-décès (part de la CARMF) » ; note
+  « Au RSPM, tout se paie à l'Urssaf, part de la CARMF comprise : taux global selon tes recettes,
+  plus l'invalidité-décès. »
+- CARMF : « Retraite de base », « Retraite complémentaire », « ASV (allocations supplémentaires de
+  vieillesse) », « Invalidité-décès » ; note « En secteur 1, l'Assurance maladie prend en charge une
+  partie de la retraite de base et les deux tiers de l'ASV : les montants sont nets de cette prise en
+  charge. »
+- Un reste d'au moins 1 € a sa ligne (« Autres contributions », « Exonération », ou « Retraite de
+  base et ASV » sans le détail de l'ancien calcul de secours) : le détail fait toujours le total.
+- Déductibilité, au réel : Urssaf (RSPM compris, dont le taux global contient de la CSG-CRDS),
+  « Ces cotisations réduisent ton revenu imposable, sauf la part non déductible de la CSG-CRDS
+  (2,9 points sur 9,7). » ; CARMF, « Ces cotisations réduisent ton revenu imposable. » En
+  Micro-BNC, inchangé (« Non déduites en Micro-BNC »).
+
+Archivé (infobulle d'avant) : titre « Cotisations sociales » ; lignes « CARMF invalidité-décès »,
+« CARMF complémentaire », « CARMF retraite de base et ASV », « CARMF » (0 €), « CARMF (retraite) »,
+« CSG-CRDS », « Maladie », « Alloc. familiales », « Formation et CURPS », « Total » ; notes « Régime
+simplifié : taux forfaitaires appliqués selon ton CA » et « Cotisations calculées selon le barème
+URSSAF en vigueur ». Mode d'emploi, « Les 2 fiches » : « le détail ligne par ligne (charges,
+cotisations, revenu imposable, impôt) » devient « (charges, cotisations Urssaf et CARMF, revenu
+imposable, impôt) ».
+
+**Contrôles.** Chromium, remplaçant de secteur 1 à 60 000 € et 6 000 € : Micro-BNC, Urssaf 4 120 €
+(maladie 159 €, CSG-CRDS 3 841 €, formation 120 €) et CARMF 11 091 € (base 3 347 €, complémentaire
+4 673 €, ASV 2 445 €, invalidité-décès 626 €), égaux à la conclusion (344 € et 924 € par mois) à
+l'arrondi mensuel près ; RSPM à 15 000 € : une ligne, 2 182 € (2 025 € + 157 €) ; CARMF dispensée à
+18 000 € : une ligne Urssaf. Chaque infobulle fait son total, égal à la ligne ; tiroir du téléphone
+(390 px) complet, fermé par Échap ; aucun débordement. Construction : `verify-site.mjs` sans erreur,
+feuille commune inchangée.
+
+### 9.gf Simulateur : profils types refaits, calés sur l'usage (14 novembre 2026)
+
+Le propriétaire : « est-ce que, pour toi, ils sont tous pertinents ? […] tu as carte blanche ».
+
+**Ce que disaient les chiffres** (table Supabase `simulateur_public_events`, simulations du
+12 février au 13 novembre 2026). Les profils servent peu : 228 simulations sur 2 393.
+Utilisations : Remplaçant S1 64, Interne remplaçant 61, Remplaçant mixte 30, Spécialiste S2 22,
+Installé généraliste 20, Remplaçant famille 16, Spécialiste S1 10, Parent isolé 5. Saisies libres,
+une par visiteur (563) : recettes de 19 000 € ou moins 8 % (médiane 12 500 €), de 19 000 à
+50 000 € 16 % (médiane 38 947 €), de 50 000 à 83 600 € 27 % (médiane 70 000 €), de 83 600 à
+150 000 € 24 % (médiane 115 200 €), de 150 000 à 250 000 € 16 %, au-delà 8,5 % (secteur 2 : 58 %
+de cette tranche) ; parent isolé : moins de 1 % ; 45 % des simulations sans aucune charge, et
+quand il y en a, 5 à 17 % des recettes selon la tranche.
+
+**Ce qui n'allait pas.** « Interne remplaçant » forçait le RSPM à 25 000 €, au-dessus du seuil de
+19 000 € : 40 892 € de Super-Net, contre 36 986 € en mode Auto, qui choisit le PAMC à ce niveau.
+Sept profils sur huit dépassaient le plafond du micro (83 600 €), dont le plus choisi (Remplaçant
+S1, 120 000 €) : la question du micro ou du réel ne s'y posait plus. Trois profils ne différaient
+que par la situation familiale, un champ du formulaire, que le simulateur garde d'ailleurs quand
+on change de profil après l'avoir modifiée.
+
+**Les sept profils** (`ProfilsTypesPublic.tsx`), dans l'ordre d'un parcours, tous en mode Auto :
+- **Interne qui remplace** (`interne-mixte`) : « Quelques remplacements en plus de l'internat » ;
+  12 500 € de recettes, 1 300 € de charges, 28 000 € de salaire, 1re année. RSPM choisi d'office,
+  bloc de première année.
+- **Jeune remplaçant** (`remplacant-debut`, nouveau) : « Première année en libéral » ; 40 000 €,
+  2 000 €, 1re année. Bloc de première année, PAMC.
+- **Remplaçant régulier** (`remplacant-s1`, « Populaire ») : « Toute l'année, peu de frais » ;
+  70 000 €, 5 000 €. Le Micro-BNC garde 1 287 € par an d'avance.
+- **Remplaçant qui roule beaucoup** (`remplacant-deplacements`, nouveau) : « Trajets et nuits
+  d'hôtel : des frais élevés » ; 60 000 €, 15 000 €. Le réel garde 4 052 € par an d'avance :
+  l'abattement de 34 % du micro tient lieu des charges et des cotisations, que le réel déduit
+  toutes deux.
+- **Remplaçant et salarié** (`remplacant-mixte`) : « Remplacements et poste salarié » ; 40 000 €,
+  2 500 €, 30 000 € de salaire. Les deux régimes se valent.
+- **Installé généraliste** (`installe-generaliste`) : « Cabinet établi, secteur 1 » ; inchangé
+  (160 000 €, 48 000 €, en couple, 2 enfants).
+- **Spécialiste secteur 2** (`specialiste-s2`) : « Honoraires libres, cabinet établi » ; inchangé
+  (280 000 €, 98 000 €, en couple, 2 enfants).
+Les identifiants gardés ne changent pas (suivi `profil_type_id`). Nouvelle pastille « 1re année »
+sur les profils de première année. Espaces insécables : « secteur 1 », « secteur 2 ».
+
+Archivés (texte d'avant ; identifiants retirés, à ne pas réutiliser : `remplacant-famille`,
+`specialiste-s1`, `parent-isole`) : « Interne remplaçant — Internat + gardes ponctuelles »
+(25 000 €, 2 500 €, salaires 28 000 €, RSPM forcé) ; « Remplaçant S1 — Activité soutenue,
+secteur 1 » (120 000 €, 21 600 €) ; « Remplaçant mixte — Libéral + hôpital, jeune parent »
+(90 000 €, 16 200 €, salaires 45 000 €, en couple, 1 enfant) ; « Remplaçant famille — Haute
+activité, conjoint salarié » (140 000 €, 25 200 €, conjoint 35 000 €, 2 enfants) ; « Installé
+généraliste — Cabinet établi, charges élevées » ; « Spécialiste S1 — MEP conventionné, famille
+nombreuse » (220 000 €, 77 000 €, 3 enfants) ; « Spécialiste S2 — Honoraires libres, haut de
+gamme » ; « Parent isolé — Demi-part supplémentaire » (100 000 €, 18 000 €). Mode d'emploi, point
+« Pour démarrer en un clic » : « pré-remplir le formulaire avec des données réalistes (interne,
+remplaçant, installé, spécialiste…) » devient « pré-remplir le formulaire avec une situation
+fréquente, calée sur les simulations faites ici (interne, première année, remplaçant régulier ou
+qui roule beaucoup, installé…) ».
+
+**Contrôles.** Chromium, à 390 et 1 280 px, chacun des sept profils : champs remplis, résultats
+attendus (bloc de première année pour les deux profils de début, RSPM pour l'interne et lui seul,
+réel recommandé pour le remplaçant qui roule beaucoup, l'installé et le spécialiste, micro pour le
+remplaçant régulier), aucun débordement. `verify-site.mjs` sans erreur, feuille commune inchangée.
+
+### 9.gg Simulateur : un chiffre plus vite, un résultat qui mène à Hippodoc (14 novembre 2026)
+
+Le propriétaire : « en tant que fresh eye, challenge de bout en bout mon simulateur », puis « go »
+sur les recommandations. L'envoi du résultat par e-mail, proposé aussi, n'est pas fait : il
+demande un service d'envoi et une table de contacts (décision du propriétaire).
+
+**Ce que disait l'usage** (PostHog et table Supabase `simulateur_public_events`, 14 août au
+13 novembre 2026, robots exclus). 429 visiteurs de `/simulateur` (57 % au téléphone), 226
+lancent un calcul (53 % ; 51 % au téléphone, 55 % à l'ordinateur), 851 calculs (3,8 par
+personne). Vers Hippodoc : 4 clics sur « Commencer gratuitement » en bas de page
+(`public_simulator_cta_clicked`), 3 clics sur « Essai gratuit 30 jours » sous le résultat
+(2 visiteurs ; Supabase seulement, `cta_patrimonial_guide` : ce lien n'émettait rien dans
+PostHog), 3 sur « Prendre 15 min avec Ryan » ; 6 inscriptions ensuite, dont 1 au téléphone
+(peut-être sous-comptées : l'inscription se fait sur app.hippodoc.fr). 45 % des simulations sans
+aucune charge. Mesures sur la production : 10 champs visibles avant « Simuler », le bouton à
+2 092 px au téléphone (1 475 px à 1 280 px) ; résultats de 3 700 px environ au téléphone ; le seul
+appel vers Hippodoc à environ 2 700 px sous le début de la conclusion.
+
+**Ce qui change.**
+- **« Ta situation », en une ligne** (`SimulateurForm.tsx`). Les fiches « Ta situation fiscale »
+  et « Paramètres de calcul » (situation familiale, enfants, revenus du conjoint, exercice, début
+  d'activité, année, lieu, secteur, régime social) sont repliées derrière une fiche résumé :
+  « Ta situation », puis par exemple « Célibataire, sans enfant · Remplaçant, plus de 2 ans
+  d'activité · Secteur 1, France métropolitaine · Revenus 2026 · Régime social automatique »
+  (« conjoint : X € » quand il est saisi ; « Régime social : RSPM » ou « : PAMC » quand il est
+  forcé), et un bouton « Modifier » (« Masquer » une fois ouvert ; nom « Modifier ta
+  situation »). Repliés, les champs gardent leurs valeurs ; une erreur dans l'un d'eux ouvre la
+  situation. Un profil type met le résumé à jour. Au téléphone, « Simuler » passe de 2 092 à
+  1 412 px, à 1 280 px de 1 475 à 1 161 px ; 2 champs visibles au lieu de 10.
+- **Charges vides, recettes saisies** : sous le champ, « Aucune charge ? Même un remplaçant paie
+  l'Ordre, une assurance, ses trajets. Les estimer » ; le lien ouvre « Estimer mes charges »
+  (désormais piloté par le formulaire) et porte le focus sur son premier champ.
+- **En-tête des résultats** (`SimulateurResults.tsx`) : « Ton résultat », puis le rappel de la
+  saisie (« Pour 70 000 € de recettes et 5 000 € de charges · remplaçant, secteur 1 » ; « aucune
+  charge » si elles sont nulles) ; dès le deuxième essai, l'écart : « Par rapport à ton essai
+  précédent (charges de 5 000 € à 9 000 €) : −3 407 € par an de Super-Net, et le régime
+  recommandé passe du Micro-BNC au régime réel. » (recettes et charges nommées quand elles
+  changent, sinon « autre situation » ; aucun écart pour une saisie identique). Le Super-Net
+  comparé est celui de la fiche du régime recommandé (`superNetDuMedecin`, nouveau dans
+  `impotMedecin.ts`, que les fiches lisent aussi).
+- **La conclusion mène à Hippodoc** (`ConclusionCard.tsx`) : sous « à mettre de côté » et la
+  phrase des 1 000 €, « Ce montant change à chaque journée travaillée. Hippodoc le tient à jour au
+  fil de l'année. » et un bouton « Essai gratuit 30 jours » (même adresse que celui de « Et toute
+  l'année ? », gardé plus bas). Pas de jaune (réservé) : blanc sur la conclusion bleu nuit, encre
+  sur la blanche.
+- **Fiches** (`RegimeComparisonCards.tsx`) : le détail ligne par ligne est dans un pli natif
+  « Détail ligne par ligne », ouvert à partir de 768 px, replié au téléphone. Pastille de la
+  conclusion : « +3,3 % de Super-Net ».
+- **Mots** : « Tes revenus libéraux » devient « Tes recettes libérales », avec « Honoraires ou
+  rétrocessions encaissés sur l'année » (« sur le mois » en mensuel) au lieu de « Montant
+  annuel » ; introduction de la page : « après charges et impôts » devient « après charges,
+  cotisations et impôt » ; pastille « Calcul instantané » (1,4 à 2,4 s mesurées) devient « Sans
+  inscription ».
+- **Ordre de la page** : « Comprendre ton résultat » (articles) passe avant l'appel final « Prêt
+  à piloter ton activité de médecin ? », dans le même bloc de fin (le halo du soleil reste après
+  le dernier lien).
+- **Mode d'emploi** : point 1, « Tes revenus libéraux » devient « Tes recettes libérales » ; point
+  2, ajout « Ta situation, en une ligne — Sous tes revenus, un résumé : ton foyer, ton exercice,
+  ton secteur, ton lieu, l'année et le régime social. Ses valeurs par défaut valent pour la
+  plupart des remplaçants ; « Modifier » ouvre les champs de ce point et du suivant. » ; point 5,
+  ajout « Ton résultat — En tête, le rappel de ta saisie, et dès ton deuxième essai, ce que ton
+  Super-Net gagne ou perd par rapport au précédent. », « La conclusion, en tête » devient « La
+  conclusion », et « Les 2 fiches » finit par « …, impôt), replié au téléphone. » ; point 6,
+  « Tes revenus libéraux » devient « Tes recettes libérales ».
+
+Archivés (textes d'avant) : titre « Comparaison des régimes fiscaux » et chapô « Analyse détaillée
+pour t'aider à choisir le meilleur régime. » ; pastille « +3,3 % Super-Net » ; libellé « Tes
+revenus libéraux » et description « Montant annuel » (« Montant mensuel ») ; « après charges et
+impôts » ; « Calcul instantané ».
+
+**Mesure.** `public_simulator_cta_clicked` reçoit `emplacement` : `conclusion` (nouveau lien,
+`data-track="cta_signup_simulateur_conclusion"`, et `event_type: 'cta_conclusion'` dans Supabase)
+et `resultat` (le lien de « Et toute l'année ? », qui n'émettait jusqu'ici que dans Supabase) ;
+celui du bas de page reste sans emplacement. `public_simulator_charges_helper_opened` reçoit
+`depuis: 'charges_vides'` quand l'aide est ouverte par l'invitation. `data-ph` :
+`simulateur_situation_modifier`, `simulateur_charges_vides_estimer`.
+
+**Contrôles.** Chromium à 390 et 1 280 px : résumé par défaut et après le profil « Installé
+généraliste » (« Marié(e) ou pacsé(e), 2 enfants · Installé… ») ; « Modifier » ouvre les champs
+(`aria-expanded`), secteur 2 repris dans le résumé, « Masquer » les replie ; invitation des
+charges vides, focus dans l'aide ; rappel de la saisie, aucun écart au premier essai, écart et
+changement de régime au deuxième, aucun écart pour la même saisie relancée ; lien de la
+conclusion vers `https://app.hippodoc.fr/auth?tab=signup` ; détail des fiches replié à 390 px,
+ouvert à 1 280 px ; aucun débordement. Essais des § 9.gd, 9.ge et 9.gf repassés (profils,
+« Estimer mes charges », cotisations par organisme). WebKitGTK à 1 300 et 390 px : mêmes états,
+aucun débordement, « Modifier » aligné sur le résumé. `verify-site.mjs` sans erreur, feuille
+commune inchangée (`_astro_assets.HrxwAN9D.css`).
+
+### 9.gh Simulateur : le RSPM visible, un résultat plus léger (14 novembre 2026)
+
+Le propriétaire, second regard « fresh eye » : « pas trop dense visuellement, agréable, et que ça
+apporte de la valeur », et « bcp sont au RSPM donc ne pas le voir peut freiner nan ? », puis « go ».
+
+**Ce que disait l'usage** (table Supabase `simulateur_public_events`, 14 août au 13 novembre 2026,
+mêmes bornes qu'au § 9.gg). 91 calculs sur 851 (11 %), 34 visiteurs sur 226 (15 %), ont des
+recettes de 19 000 € ou moins : la plage où le mode Auto retient le RSPM pour un remplaçant (31 de
+ces calculs sont sous 3 000 €, peut-être des montants mensuels). Le profil « Interne qui remplace »
+a servi 19 fois. Le simulateur choisissait le RSPM sans le montrer : le résumé disait « Régime
+social automatique », et rien ne comparait au PAMC. Résultats mesurés sur la production avant ce
+changement : 3 393 px au téléphone pour 70 000 € de recettes et 5 000 € de charges (2 276 px à
+1 280 px), 3 967 px pour l'interne au RSPM (2 734 px) ; les deux fiches de régime, 1 030 px au
+téléphone, presque identiques (même Super-Net à quelques pour cent, deux anneaux voisins).
+
+**Ce qui change.**
+- **Le régime social, dit dans le résumé** (`SimulateurForm.tsx`) : en mode Auto, « Régime social :
+  RSPM (recettes jusqu'à 19 000 €) », « Régime social : PAMC (le RSPM s'arrête à 19 000 € de
+  recettes) », « Régime social : RSPM ou PAMC selon tes recettes » (recettes vides), « Régime
+  social : PAMC » (installé) ; choisi à la main, « RSPM (choisi) » ou « PAMC (choisi) ». La ligne
+  suit la saisie des recettes.
+- **« RSPM ou PAMC ? »** (`RspmOuPamc.tsx`, nouveau), sous la conclusion d'une simulation au RSPM :
+  surtitre « Ton régime social », puis « Tu es au RSPM, l'offre simplifiée des remplaçants : un
+  taux global sur tes recettes (13,5 % jusqu'à 19 000 €, 21,2 % au-delà), et tout se déclare et se
+  paie à l'Urssaf. En PAMC, avec des cotisations Urssaf et CARMF calculées sur ton bénéfice, tu
+  garderais X € par an, contre Y € au RSPM. » et le verdict : « Les deux se valent, à Z € près. »
+  (sous `SEUIL_EQUIVALENCE_ANNUEL`), « Le RSPM te laisse Z € de plus par an. » ou « Le PAMC te
+  laisserait Z € de plus par an. ». X est le meilleur des deux régimes fiscaux de la même saisie en
+  PAMC (`calculerAlternativePamc`, `usePublicodesSimulation.ts`), calculé après l'affichage, après la
+  marge et le point de bascule ; en attente, « … € ». Y est le Super-Net de la tuile du régime
+  retenu (`superNetDuMedecin`) ; Z, la différence des deux montants affichés, arrondis à l'euro.
+  En échec : « La comparaison avec le PAMC n'a pas pu être calculée : relance la simulation dans un
+  instant. ». Exemples : interne qui remplace, 32 055 € en PAMC contre 34 217 € au RSPM ; 12 000 €
+  de recettes, 5 792 € contre 9 223 € ; 17 000 €, 10 757 € contre 14 548 €.
+- **Une fiche « Les deux régimes »** (`RegimeComparisonCards.tsx`) au lieu de deux : deux tuiles côte
+  à côte à toutes les largeurs (nom, description, Super-Net, par an et par mois, part des
+  recettes), le jaune et « Recommandé » sur celle qui l'emporte (« Vérifie » sur le Micro-BNC au-delà
+  du plafond) ; dessous, « Où vont tes revenus, au Micro-BNC » (ou « au régime réel ») et un seul
+  anneau, celui du régime recommandé (du régime en tête quand les deux se valent) ; puis deux plis,
+  « Détail : Micro-BNC » et « Détail : Régime Réel », côte à côte et ouverts à partir de 768 px,
+  repliés au téléphone. Les rangées des deux tuiles se suivent (sous-grille) : « Régime Réel » sur
+  deux lignes au téléphone ne décale plus le montant voisin. 675 px au téléphone au lieu de 1 030.
+- **La conclusion resserrée** (`ConclusionCard.tsx`, prop `partie`) : n'y restent que les mises en
+  garde (au plus deux pastilles). La phrase des 1 000 € et les pistes (charges faibles,
+  complémentaire de la 3e année, réductions de la CARMF) passent dans **« À savoir pour ta
+  situation »**, une fiche sous les deux régimes, une piste par ligne. Avant, trois pastilles au
+  plus, mises en garde comprises : une piste pouvait manquer.
+- **La bande Hippodoc** (« Ce calcul, Hippodoc le tient à jour après chaque journée de
+  remplacement ») sans surtitre ni phrases : les trois titres seuls, le bouton.
+- **Les limites en une ligne** : « Simulation indicative : elle ne remplace pas l'avis d'un
+  expert-comptable ou de ton AGA. À comparer avec le simulateur de l'Urssaf. » (lien vers
+  mon-entreprise.urssaf.fr), au lieu d'une fiche de 411 px au téléphone.
+- **Chapô des résultats en PAMC** : « Cotisations PAMC, par le modèle de l'Urssaf, sur la nouvelle
+  assiette sociale des revenus 2025 et suivants. »
+- **Page** (`simulateur.astro`) : pastille « RSPM et PAMC » en tête des quatre ; introduction « …
+  entre Micro-BNC et Réel, au RSPM comme en PAMC. » ; mode d'emploi, point 5 : « À mettre de côté
+  chaque mois » perd la phrase des 1 000 €, ajout de « RSPM ou PAMC ? — Si tu es au RSPM : ce que
+  la même saisie te laisserait en PAMC, et lequel des deux te laisse le plus. », « Les 2 fiches »
+  devient « Les deux régimes — Micro-BNC et Régime Réel côte à côte, avec ton Super-Net par an et
+  par mois, et où vont tes revenus au régime recommandé. Dessous, le détail ligne par ligne de
+  chacun (charges, cotisations Urssaf et CARMF, revenu imposable, impôt), replié au téléphone. »,
+  ajout de « À savoir pour ta situation — Ce qu'il te resterait de 1 000 € de recettes en plus, et
+  les pistes qui te concernent : charges à vérifier, réductions de la CARMF. ».
+- **Arrondis** : le Super-Net d'une tuile finit son compteur sur le montant arrondi à l'euro (il
+  s'arrêtait à l'euro inférieur : 39 447 € à côté d'un « soit 3 287 € /mois » et d'une conclusion
+  calculés sur 39 448 €) ; l'écart annuel de la conclusion est la différence des deux Super-Net
+  arrondis (il pouvait s'écarter d'un euro de ce que les tuiles laissent calculer).
+
+Archivés (textes d'avant) : « Régime social automatique » (résumé) ; « Régime social : RSPM » et
+« Régime social : PAMC » (choix à la main) ; chapô PAMC « Cotisations au régime des praticiens
+conventionnés (PAMC), selon le modèle de l'Urssaf et sur la nouvelle assiette sociale des revenus
+2025 et suivants. » ; introduction « …entre Micro-BNC et Réel. » ; fiche « Limites de cette
+simulation » : « Cette simulation est fournie à titre indicatif. Elle ne prend pas en compte tes
+spécificités fiscales individuelles, les évolutions réglementaires, ou les optimisations
+spécifiques à ta situation. », « Pour une analyse personnalisée, consulte : », pastilles
+« Expert-comptable », « Avocat fiscaliste », « CGP indépendant », « Simulateur URSSAF ↗ », et « Hippodoc
+t'aide à y voir plus clair, mais seul un professionnel pourra te conseiller de manière
+définitive. » ; bande Hippodoc : surtitre « Et toute l'année ? » et les phrases « Cotisations
+calculées via le serveur officiel URSSAF, échéancier à jour après chaque journée. »,
+« Kilomètres, matériel, formation, RCP : catégorisés et prêts pour la déclaration. », « 2035 ou
+2042-C PRO pré-remplies avec tes chiffres, aide DSFU URSSAF incluse. » ; fiches : pli « Détail
+ligne par ligne », carte d'erreur « Erreur de calcul » et « Une erreur est survenue lors du calcul
+du régime Micro-BNC. » (devenue « Calcul indisponible pour le moment. ») ; mode d'emploi : « Les 2
+fiches — Micro-BNC et Régime Réel, avec le même chiffre en tête : ton Super-Net, par mois et par
+an. Dessous, le détail ligne par ligne (charges, cotisations Urssaf et CARMF, revenu imposable,
+impôt), replié au téléphone. » et « …l'impôt de ton activité libérale, puis ce qu'il te resterait
+de 1 000 € de recettes en plus. ».
+
+**Feuille commune.** Trois utilitaires de Tailwind n'étaient plus employés que par les anciennes
+fiches (`-top-3`, `overflow-visible`, `sm:gap-6`) : ils sortent de la feuille commune, qui change de
+nom (`_astro_assets.HrxwAN9D.css` → `_astro_assets.BK0lnVyo.css`, aucune autre règle ne change).
+Les 71 autres pages du build sont identiques à la production à ce nom près (comparaison du HTML
+entier, sitemap, `/essai` et `/404`) ; le texte de `/simulateur` ne change que des lignes listées
+plus haut.
+
+**Mesures.** Résultats au téléphone (390 px) : 2 592 px au lieu de 3 393 pour 70 000 € et
+5 000 € ; 3 507 au lieu de 3 967 pour l'interne au RSPM, fiche « RSPM ou PAMC ? » (323 px)
+comprise. À 1 280 px : 2 142 au lieu de 2 276 ; 2 836 au lieu de 2 734 pour l'interne (la fiche
+RSPM, 219 px, n'existait pas).
+
+**Contrôles.** Chromium à 390 et 1 280 px : résumé du régime social à 0, 12 000 et 40 000 € ;
+deux tuiles, noms et montants à la même hauteur, au plus une « Recommandé », aucun débordement,
+anneau et légende du régime recommandé, plis repliés à 390 px et ouverts à 1 280 px ; « RSPM ou
+PAMC ? » rempli (aucun « … € » restant) pour l'interne qui remplace, absent en PAMC ; « À savoir »
+rempli. Sur six saisies (70 000/5 000, 60 000/15 000, 95 000/9 000, 12 000/1 000, 17 000/0,
+160 000/48 000) : l'écart annuel de la conclusion est la différence des tuiles, celui de « RSPM ou
+PAMC ? » la différence des deux montants qu'il cite, le RSPM cité est la tuile, « soit … /mois »
+est le douzième arrondi. Essais des § 9.gd, 9.ge, 9.gf et 9.gg repassés (profils, « Estimer mes
+charges », cotisations par organisme et leurs bulles, résumé de la situation) ; le seul écart, le
+résumé attendu « Régime social automatique », est voulu. WebKitGTK à 1 300 et 390 px : tuiles
+alignées (sous-grille), mêmes hauteurs, aucun débordement, plis selon la largeur. `verify-site.mjs`
+sans erreur.
+
+### 9.gi Simulateur : RSPM sur option, écart du foyer, espace des milliers, mesure propre (15 novembre 2026)
+
+Le propriétaire, à « tout est parfait ? » : quatre points relevés, puis « go pour tout ».
+
+**Ce qui change.**
+- **Le RSPM est une option** (CSS L642-4-2 et D642-4-1 : les remplaçants « peuvent opter » pour le
+  dispositif simplifié ; sans l'option, ils sont en PAMC). « RSPM ou PAMC ? » (`RspmOuPamc.tsx`)
+  disait « Tu es au RSPM » ; il dit « Le simulateur retient le RSPM » (« Tu as choisi le RSPM »
+  quand le régime social est choisi à la main), puis, après le taux, « C'est une option à
+  demander à l'Urssaf : sans elle, tu es en PAMC. ». Mode d'emploi : « RSPM ou PAMC ? — Quand le
+  simulateur retient le RSPM, une option à demander à l'Urssaf : ce que la même saisie te
+  laisserait en PAMC, et lequel des deux te laisse le plus. »
+- **En couple, l'écart du foyer** (`ConclusionCard.tsx`, `RegimeComparisonCards.tsx`). Quand le
+  conjoint a des revenus, l'écart de la conclusion est celui du foyer (l'impôt du conjoint
+  compris) : c'est lui qui décide du régime, et la phrase le dit : « Le Micro-BNC fait garder
+  113 €/mois de plus à ton foyer (1 357 €/an). », « Les deux régimes se valent : 27 €/mois d'écart
+  pour ton foyer en faveur du Micro-BNC (326 €/an). », « Les deux régimes laissent la même somme à
+  ton foyer. ». Les tuiles montrent le Super-Net du médecin (sa part de l'impôt, taux
+  individualisé). Quand l'impôt du conjoint change d'un régime à l'autre (médecin qui gagne moins
+  que son conjoint), les deux écarts diffèrent : sous les tuiles, « Chaque Super-Net compte ta part
+  de l'impôt du foyer, au taux individualisé. L'écart de la conclusion, 4 052 € par an, est celui
+  de ton foyer : d'un régime à l'autre, l'impôt de ton conjoint change aussi. ». La pastille
+  « +X % de Super-Net » se calcule sur les tuiles (elle divisait par un Super-Net du foyer qui
+  n'était affiché nulle part).
+- **L'espace des milliers** (`src/lib/simulateur/nombres.ts`, nouveau). `Intl.NumberFormat`
+  sépare les milliers d'une espace fine insécable (U+202F), qui ne fait que 0,11 em dans Google
+  Sans Flex (1,8 px en 16 px) : « 21 504 € » se lisait « 21504 € ». Les nombres affichés du
+  simulateur passent par `formatNombre` et `nombreFr`, qui posent une espace insécable (U+00A0,
+  0,225 em). Essayé d'abord : une face de police tirée du même fichier, limitée à U+202F et
+  agrandie (`size-adjust`) ; Chromium n'en bougeait pas, mais WebKit agrandissait de 2 à 4 px les
+  lignes serrées qui contiennent un nombre (montant des tuiles, total du mois), quels que soient
+  les réglages de métriques (`ascent-override` à 0 % compris). Les plafonds DOM de
+  `src/lib/dom-tom.ts` (partagé) passent par `espaceMilliers` dans le formulaire.
+- **« -0 € »** : une ligne de détail n'a plus de signe devant un montant nul (un impôt de quelques
+  centimes s'affichait « -0 € »).
+- **Mesure** : `insertPublicEvent` (`src/lib/supabase-public.ts`) n'écrit plus que sur
+  hippodoc.fr (ni serveur local, ni aperçu Vercel). Les essais en navigateur des § 9.gd à 9.gh,
+  lancés sur le serveur local, avaient écrit 584 lignes dans `simulateur_public_events` le
+  14 novembre 2026 (293 calculs, 291 résultats, 238 sessions, `referrer_source` `direct` ou
+  `other`, saisies des scripts d'essai). Elles sont supprimées, avec l'accord du propriétaire,
+  après une sauvegarde hors du dépôt ; aucune de ces sessions ne contenait d'événement venu de
+  hippodoc.fr ou de Google. Restent pour ce jour 60 lignes réelles. PostHog n'a rien reçu de ces
+  essais (aucun événement de localhost:4321 ; les événements `screen_opened` et `screen_closed` de
+  localhost:3000, sous Safari, viennent d'un autre environnement). Les chiffres d'usage des § 9.gg
+  et 9.gh (jusqu'au 13 novembre) n'en étaient pas touchés.
+
+Archivés (textes d'avant) : « Tu es au RSPM, l'offre simplifiée des remplaçants : … » ; mode
+d'emploi « RSPM ou PAMC ? — Si tu es au RSPM : ce que la même saisie te laisserait en PAMC, et
+lequel des deux te laisse le plus. » ; en couple, « Le Micro-BNC te fait garder … », « Les deux
+régimes se valent : … d'écart en faveur … » et « Les deux régimes te laissent la même somme. ».
+
+**Contrôles.** Six saisies en couple et seul (médecin 90 000 € et conjoint 30 000 € : aucune
+phrase sous les tuiles, écarts égaux ; médecin 40 000, 60 000/15 000 et 75 000 € avec un conjoint
+qui gagne plus, et 15 000 € au RSPM avec un conjoint à 50 000 € : la phrase, avec l'écart de la
+conclusion ; seul, 70 000/5 000 : rien ne change) ; la pastille égale l'écart des tuiles divisé par
+la tuile la plus basse. Aucune espace fine dans le texte des résultats après un calcul (74 espaces
+insécables) ; WebKitGTK : hauteurs des tuiles inchangées (188 px à 1 300 px). Essais des § 9.gd à
+9.gh repassés, dont l'écart de la conclusion égal à celui des tuiles sur six saisies. Aucune ligne
+écrite dans Supabase par les essais locaux après le changement. `verify-site.mjs` sans erreur.
+
+### 9.gj En-tête et pied rangés d'après l'usage (15 novembre 2026)
+
+Demande du propriétaire : un avis d'expert sur l'en-tête, le pied et les pages proposées,
+puis « go, pense à tout ». Décisions prises sur les clics PostHog des 90 derniers jours
+(site public, `$autocapture` par `data-ph` et par lien) et sur le relevé des en-têtes et
+pieds d'Indy, Pennylane, Notion et Linear.
+
+**Ce que disaient les clics** (ordinateur + téléphone) : Connexion 1 273 sur ordinateur
+(392 personnes) et environ 8 par jour au téléphone ; Tarifs 134 + 102 ; Simulateur, rangé
+dans « Ressources », 102 + 87 ; Pour qui 73 + 22 ; Blog 58 + 27 ; Guide du remplaçant
+43 + 33 (depuis fin septembre) ; Guide des déclarations 46 + 21 ; Qui sommes-nous 15 + 8 ;
+FAQ 8 + 4 ; tout le pied, environ 80 clics. /simulateur est la troisième page visitée
+(385 visiteurs, après l'accueil et les articles) ; /tarifs n'avait que 33 visiteurs (le
+menu menait à /#pricing). Le menu du téléphone s'ouvre 21 fois par jour : avant le
+10 novembre, un bouton « Connexion » était visible sur téléphone (685 clics).
+
+**En-tête** (`src/components/Header.astro`, `src/styles/da.css`) :
+- Menu : « Comment ça marche », « Pour qui », **« Simulateur »** (sorti de « Ressources »),
+  **« Tarifs » vers /tarifs** (au lieu de /#pricing ; l'ancre reste, cible de la FAQ).
+- « Ressources » : guide du remplaçant, guide des déclarations, **calculette fiscale**
+  (aucun menu ne la citait), blog, FAQ ; « Qui sommes-nous » passe dans le pied. Sur
+  ordinateur, un titre et une ligne d'explication par lien (menu de 320 px).
+  **Contenu ajouté** (lignes d'explication, d'après les descriptions des pages) :
+  « PDF offert : licence, contrat, cotisations », « 2035, 2042-C PRO et DSFU expliquées »,
+  « Ta 2035 reportée en 2042-C PRO et DSFU », « Conseils pour médecins remplaçants »,
+  « Toutes les réponses sur Hippodoc ». Libellés : « Guide déclarations » devient « Guide
+  des déclarations » ; « Guide du remplaçant (PDF) » reste tel quel dans le tiroir.
+- **Connexion sur téléphone en un geste** : de 360 à 599 px, une pastille ronde à
+  l'icône de compte, nommée « Connexion », à côté du bouton d'essai ; à partir de 600 px,
+  « Connexion » en toutes lettres (il n'apparaissait qu'à 960 px). De 360 à 389 px, la
+  place est prise sur les marges (pastille d'essai à 13 px de remplissage, mot sans
+  marge) ; sous 360 px (93 visiteurs sur 90 jours), dans le tiroir seulement.
+- De 960 à 1 179 px : écarts de 20 px et corps de 15 px (cinq entrées). Page en cours :
+  `aria-current="page"`, couleur de marque (soulignée en contrastes forcés) ; le bouton
+  « Ressources » prend la couleur sur ses pages et sous-pages (articles, guide).
+
+**Pied** (`src/components/Footer.astro`, `src/styles/da.css`) : la marque (logo, phrase,
+réseaux, soutiens), trois colonnes, une bande légale.
+- « Produit » : Comment ça marche, Pour qui, Simulateur Super-Net, Tarifs, Comparatif des
+  logiciels (« Comparatif outils » avant). « Ressources » : Guide des déclarations, Guide
+  du remplaçant (PDF), Calculette fiscale, Blog, FAQ. « À propos » : Qui sommes-nous ?,
+  contact@hippodoc.fr, 07 56 89 89 61 (« +33 (0)7 56 89 89 61 » avant).
+- Bande légale : Mentions légales, Conditions d'utilisation, Politique de
+  confidentialité, RGPD, Préférences cookies, puis le ©.
+- **Retirés** : les pastilles téléphone et e-mail (doublons de la colonne de contact),
+  l'adresse du siège (dans les mentions légales), la colonne « Contactez-nous », et les
+  trois articles mis en avant (`regime-fiscal-micro-bnc-vs-reel`,
+  `salaires-medecins-remplacants`, `checklist-administrative-medecin-remplacant`), qui
+  semblaient des sous-parties du comparatif. Ils perdent un lien présent sur toutes les
+  pages ; ils restent liés par le blog, leurs thèmes et les articles connexes.
+- Téléphone : marque, puis « Produit » et « Ressources » côte à côte, « À propos » sur
+  toute la largeur. De 640 à 1 179 px : les trois colonnes sous la marque. À partir de
+  1 180 px : la marque à gauche, le © à droite des liens légaux (de 960 à 1 179 px, la
+  marque n'avait que 263 px : la plaque des soutiens se repliait et le © se coupait).
+
+**Mesure** (`MESURE_ENTETE_PIED` de `verify-site.mjs` mis à jour) :
+- Inchangés : `landing_nav_comment_ca_marche`, `landing_nav_pour_qui`,
+  `landing_nav_pricing` (le lien mène maintenant à /tarifs), `landing_login_header`,
+  `landing_resource_guide-remplacant`, `…guide-declarations`, `…blog`, `…faq` (et leurs
+  `landing_mobile_*`), `cta_signup_header*`, `landing_mobile_menu_open`,
+  `landing_footer_home`, `…linkedin`, `…facebook`, `…instagram` ; `landing_footer_phone`
+  et `landing_footer_email` passent des pastilles aux lignes d'« À propos » (même lien).
+- Arrêtés : `landing_resource_simulateur` et `landing_mobile_resource_simulateur`
+  (remplacés par `landing_nav_simulateur` et `landing_mobile_nav_simulateur`),
+  `landing_resource_qui-sommes-nous` et sa version mobile (remplacés par
+  `landing_footer_qui-sommes-nous`).
+- Nouveaux : `landing_resource_calculette` (+ mobile), `landing_login_header_mobile`,
+  `landing_mobile_login` (le bouton Connexion du tiroir n'était pas mesuré), et un
+  `landing_footer_*` sur chaque lien des colonnes et de la bande légale (aucun n'était
+  mesuré).
+
+**Vérifié** :
+- Construction et `verify-site.mjs` : 0 erreur. Feuille commune : seules les règles
+  `hd-*` et `ft-*` changent (comparaison bloc par bloc avec le build de `main` : aucune
+  règle de Tailwind ajoutée ou retirée).
+- En-tête, Chromium, 25 largeurs de 320 à 1 920 px, police chargée et police de secours
+  (woff2 bloquée) : aucun chevauchement, aucun libellé sur deux lignes, aucun
+  débordement. Air de part et d'autre du menu : 18 px à 960, 50 à 1 024, 77 à 1 180 et
+  au-delà.
+- Espacement de texte agrandi (WCAG 1.4.12) de 960 à 1 280 px : aucun chevauchement.
+  Avant `hd-mot`, « Simulateur » débordait sur « Tarifs » à 960 et 1 024 px. À 960 px,
+  « Comment ça marche » passe alors sur trois lignes et sort de la pastille, lisible.
+- Menu « Ressources » : une ligne par explication (58 px), dans la fenêtre à 960 et
+  1 440 px ; page en cours marquée (calculette). Clavier : Tab parcourt le menu, puis
+  « Ressources » et ses cinq liens (à 0 ms entre deux appuis simulés, le menu est sauté,
+  sur `main` comme ici ; dès 30 ms, non).
+- Tiroir : 390 × 844 sans défilement ; 320 × 568, 844 × 390 et 667 × 375, la liste
+  défile et Connexion / Essai restent visibles en bas.
+- Pied, 16 largeurs de 320 à 1 920 px, accueil et /tarifs : aucun débordement ; hauteur
+  au téléphone (390 px) 979 px sur l'accueil (1 011 avant).
+- WebKit (moteur de Safari) à 1 024, 1 180 et 1 440 px (en-tête, menu, pied) et de 320 à
+  600 px en iframe (en-tête) : mêmes résultats que Chromium.
+- Lighthouse, mobile et ordinateur, sur /, /simulateur et un article : 100 dans les
+  quatre catégories.
+
+**Fichiers** : `src/components/Header.astro`, `src/components/Footer.astro`,
+`src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gk Le tiroir mobile refait : la pastille qui s'ouvre, le simulateur en carte (15 novembre 2026)
+
+Avis demandé par le propriétaire sur le menu du téléphone (« fais-le, pense à tout »).
+Constat (comparaison avec Indy et Notion, menus ouverts à 390 × 844) : neuf liens de même
+taille et de même graisse, le simulateur (l'outil le plus cliqué) noyé dans la liste, les
+ressources sans les explications de l'ordinateur, 180 px vides au milieu, l'essai et la
+connexion à égalité, un panneau latéral qui laissait voir un morceau de page et de logo.
+
+**Forme** (`Header.astro`, `da.css`) :
+- En haut, la copie exacte de la pastille : mot au même endroit (0 px d'écart mesuré de
+  320 à 599 px), croix exactement à la place du bouton du menu (0 px d'écart de 320 à
+  959 px). Sous 600 px, la feuille part de la forme de la pastille et s'ouvre vers le bas
+  jusqu'à couvrir l'écran (`clip-path`, 420 ms à l'ouverture, 300 à la fermeture,
+  courbe de § 9.do), 10 et 12 px de voile autour ; de 600 à 959 px, un panneau à droite
+  (400 px au plus), qui glisse comme avant.
+- Le milieu : fond de ciel clair (`--sky-soft`) ; la **carte du simulateur** (ciel et
+  soleil, le motif du Super-Net, flèche dans une pastille blanche) ; une feuille à lignes
+  (« Comment ça marche », « Pour qui », « Tarifs ») ; « Ressources » ; une seconde feuille
+  avec les cinq ressources et leur ligne d'explication (le motif des feuilles à lignes de
+  l'accueil : filet entre deux lignes, ligne teintée au toucher, anneau de focus à
+  l'intérieur, chevron dessiné). Il défile seul ; un fondu de 18 px au-dessus de la bande
+  du bas signale qu'il continue (il ne couvre que la marge une fois au bout).
+- En bas : « Essai gratuit 30 jours » sur toute la largeur (« Essai gratuit 30j » avant),
+  puis « Déjà un compte ? Se connecter ». Fenêtre de moins de 520 px de haut (téléphone
+  couché) : l'essai et « Se connecter » sur une ligne, « Déjà un compte ? » lu mais pas
+  affiché.
+- Animation en cascade conservée (cinq groupes ; sous 600 px, ils descendent de 8 px au
+  rythme de l'ouverture). Mouvements réduits : ouvert d'un coup. Contrastes forcés :
+  contours des feuilles et du tiroir, page en cours soulignée.
+
+**Contenu modifié** : la ligne de la carte, « Gratuit, en 2 minutes : ce qu'il te reste
+vraiment » (d'après la page du simulateur : « Renseigne ta situation en 2 min… ce qu'il te
+reste vraiment », titre « gratuit ») ; « Essai gratuit 30 jours » ; « Déjà un compte ? Se
+connecter » ; les explications des ressources (§ 9.gj) entrent dans le tiroir ; « Guide
+du remplaçant (PDF) » y devient « Guide du remplaçant » (l'explication dit « PDF offert »).
+
+**Micro-script du tiroir** (`ScriptTiroir.astro`) : la touche Échap referme le tiroir et
+rend le focus à la case du menu (anneau sur le bouton). Seul ajout ; `EMPREINTE_SCRIPT_TIROIR`
+mis à jour dans `verify-site.mjs` (empreinte d'avant notée en commentaire).
+
+**Mesure** : mêmes `data-ph` et `data-track` (`landing_mobile_nav_*`,
+`landing_mobile_resource_*`, `cta_signup_header_mobile`, `landing_mobile_login`) ; la carte
+garde `landing_mobile_nav_simulateur`. Ordre : carte, trois lignes, cinq ressources, essai,
+connexion (`MESURE_ENTETE_PIED` mis à jour).
+
+**Vérifié** :
+- Construction et `verify-site.mjs` : 0 erreur ; feuille commune : seules des règles de
+  l'en-tête changent (comparaison bloc par bloc avec `main`, y compris l'intérieur des
+  blocs `@media`).
+- Dix tailles (320 × 568, 360 × 740, 375 × 667, 390 × 844, 430 × 932, 568 × 320, 667 × 375,
+  768 × 1024, 820 × 1180, 959 × 700) : rien ne déborde, le bas reste visible, la liste
+  défile quand il le faut ; à 390 × 844 et au-delà, tout tient sans défiler.
+- Clavier : Espace ouvre, Tab entre dans le tiroir, Échap ferme et rend le focus. Une ancre
+  de l'accueil (« Pour qui ») referme le tiroir et mène à la section ; à 768 px, un appui
+  sur le voile le referme. Espacement de texte agrandi (WCAG 1.4.12) à 320 et 390 px :
+  aucun texte hors du tiroir ni sur un chevron.
+- Animation ralentie dix fois (image par image), mouvements réduits, contrastes forcés.
+- WebKit (moteur de Safari) : 320 et 390 px en iframe, 768 px en fenêtre, mêmes mesures.
+- En-tête aux 25 largeurs de § 9.gj, police chargée et bloquée : inchangé, aucun défaut.
+- Lighthouse mobile sur /, /tarifs, un article et /simulateur : 100 dans les quatre
+  catégories.
+
+**Fichiers** : `src/components/Header.astro`, `src/components/ScriptTiroir.astro`,
+`src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gl Blog : la procédure « nouvel article » (15 novembre 2026)
+
+Le propriétaire demande « la meilleure procédure pour ajouter des articles », pour que chaque
+nouvel article soit « nickel, bien intégré pour le SEO ». Décision : une procédure écrite dans le
+dépôt, `.claude/skills/nouvel-article/SKILL.md`, que toute session suit à l'identique, et une
+session neuve par article (ou par lot). Écartés : continuer dans une conversation unique (trop
+longue, et le conteneur s'efface) ; un formulaire en artefact (il ne dépose pas l'image dans le
+dépôt et ne vérifie rien).
+
+Ce que fait la procédure, en résumé :
+- **Entrées** : le propriétaire joint l'affiche et colle le texte (ou le blog du kit de fiche
+  Hippodoc).
+- **Choix de l'article** : l'adresse (figée dès la mise en ligne), le `<title>` (60 signes au plus,
+  suffixe de marque compris), la description et le thème.
+- **Frontmatter** : série par défaut `divers` (les séries ne s'affichent plus depuis § 9.fq ; une
+  fiche Instagram numérotée garde sa série et son numéro), temps de lecture calculé à 160 mots par
+  minute (médiane du blog), FAQ et liens.
+- **Affiche** : contrôle de la taille (1 080 × 1 350 idéal, signalée sous 900 px de large) et des
+  doublons.
+- **Texte** : verbatim. Une erreur factuelle se signale, sources à l'appui, et ne se corrige
+  qu'avec l'accord du propriétaire, comme en § 9.as.
+- **Fichiers tenus à jour** : `blog-meta.json`, `PLANCHER_FAQ`, les comptes de `CLAUDE.md` et une
+  section de MIGRATION.md par article.
+- **Vérifications** : construction, `verify-site.mjs`, aucun mot perdu, pages changées attendues,
+  captures, Lighthouse.
+- **Mise en ligne** : PR, « go », contrôle en ligne. Les deux gestes du propriétaire lui sont
+  rappelés : demander l'indexation dans Search Console, tester l'aperçu du lien.
+
+Aucun changement du site : la procédure n'est pas lue par la construction (hors de `src/`).
+`CLAUDE.md`, section « Blog », y renvoie.
+
+**Relu avant la fusion, à la demande du propriétaire (« si tu as pensé à tout »).** Une première
+relecture, confrontée au code, a trouvé une erreur : la procédure disait qu'un nouvel article
+passe « à la une ». C'est faux, car `conge-maternite-paternite` porte `featured: true`.
+
+Une relecture indépendante a ensuite suivi la procédure à la lettre, avec un faux article dans
+une copie à part : 5 constructions, chacune suivie de `verify-site.mjs`. Elle a trouvé deux
+défauts qu'aucun contrôle ne signale :
+
+- **Sitemap** : une entrée de `blog-meta.json` sans `updatedDate` sort dans le sitemap sans
+  `lastmod`. `astro.config.mjs` lit `updatedDate`, et le contrôle des dates ne lit que les
+  adresses datées.
+- **Maillage entrant** : un slug ajouté en 7ᵉ position des `relatedArticles` d'un ancien article
+  ne s'affiche jamais (`[slug].astro`, `.slice(0, 6)`). 18 articles sur 48 en ont déjà 6 ou plus.
+
+Elle a aussi relevé :
+
+- **Affiche carrée ou paysage** : elle déborde des cases des listes et recouvre le texte (mesuré
+  à 393 px avec une affiche de 1 350 × 1 080 : image de 163 px dans une case de 104 px). La
+  procédure exige donc un portrait, largeur ÷ hauteur de 0,81 au plus.
+- **`cover` mal écrite** : avec une mauvaise extension, l'article perd son affiche partout, et la
+  construction comme le contrôle passent.
+- **Date de publication passée** : elle change l'adresse de l'image de partage des articles plus
+  récents du même thème.
+- **Texte venu du kit de fiche** :
+  - son titre `#` donne un second `<h1>`, et `verify-site.mjs` échoue ;
+  - ses « Sources » en gras ne déclenchent pas le pli des sources ;
+  - ses liens vers le site sont en adresse absolue.
+- **Mineurs** :
+  - les valeurs exactes de `categoryNumber` (« #16 »), `authorRole`, `cta` et `ctaHref` ;
+  - les liens, sans effet dans les réponses de FAQ ;
+  - `/qui-sommes-nous`, qui change avec le nombre d'articles ;
+  - la normalisation avant de comparer les mots ;
+  - l'avertissement « aucun lien entrant » attendu ;
+  - `.rotate()` et la qualité explicite à l'enregistrement de l'affiche ;
+  - deux règles contradictoires sur `updatedDate` après l'ajout d'un lien. La procédure suit
+    désormais le précédent du § 9.as : `updatedDate` du jour.
+
+Tout est intégré à la procédure. On a vérifié aussi où arrivent les pièces jointes d'une
+conversation : dans `~/.claude/uploads/<session>/`, à leur taille d'origine.
+
+**Fichiers** : `.claude/skills/nouvel-article/SKILL.md` (nouveau), `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gm Simulateur : le CLS, des résultats qui arrivent sans rien pousser (15 novembre 2026)
+
+Demande du propriétaire : réduire le décalage cumulé de mise en page (CLS) de `/simulateur`,
+la seule page du site au-dessus du seuil de Google (0,1) dans les données réelles. Aucun mot
+de la page ni de l'îlot ne change ; aucun calcul ne change.
+
+**Ce que disaient les données réelles** (PostHog, `$web_vitals`, hôte www.hippodoc.fr,
+28 jours jusqu'au 15 novembre 2026). Téléphone : 75e centile 0,112, 9 mesures sur 22 au-dessus
+de 0,1, la pire à 0,76 (Opera, 411 × 753, un seul décalage). Ordinateur : 75e centile 0,059,
+9 mesures sur 66 au-dessus de 0,1 (pire 0,275). Les autres pages : 0 ou presque. Sur les
+31 mesures au-dessus de 0,05, 30 suivent une simulation (`public_simulator_used` plus tôt dans
+la session) ; une seule est au chargement (1 920 × 929, 0,115). Sur ordinateur, la fenêtre de
+session la plus lourde compte souvent 43 à 125 décalages : une suite de petits décalages
+image par image. PostHog ne dit ni l'élément ni l'instant : les entrées sont enregistrées
+vides (`{}`), et posthog-js ne rend le CLS qu'à la fermeture de la page (`onCLS` sans
+`reportAllChanges`). D'où la reproduction.
+
+**Méthode.** Build de `main` et build corrigé servis en local (HTTP/1.1, gzip), Chromium par
+Playwright, réseau ralenti par le protocole des outils de développement (latence 150 ms,
+1,6 Mbit/s), processeur ralenti quatre fois au téléphone. L'API du modèle de l'Urssaf est
+interceptée : réponses réelles (gardées en cache) rendues après 800 ms, l'ordre de grandeur
+d'un téléphone. `PerformanceObserver` sur `layout-shift` : élément, rectangles avant et
+après, instant, geste récent ; CLS = la plus lourde fenêtre de session (moins de 1 s entre deux
+décalages, 5 s au plus), décalages qui suivent un geste de moins de 500 ms exclus, comme
+web-vitals. Parcours : arrivée et lecture ; saisie (70 000 € de recettes, 5 000 € de charges)
+puis « Simuler », le bouton à 35 % ou à 12 % de la hauteur de la fenêtre ; profil type
+« Remplaçant régulier » (grille des profils ouverte) ; trois essais enchaînés (70 000 €, puis
+15 000 € au RSPM, puis 45 000 € en PAMC) ; aides et plis après le résultat. Scripts de travail
+hors dépôt. Les mêmes parcours, rejoués sur le build corrigé, servent de preuve.
+
+**Les causes, une à une, et ce qui les règle.**
+1. **Le bloc des profils types disparaît au-dessus du formulaire à l'arrivée des résultats**
+   (`!results.recommande`), une à trois secondes après le clic : le formulaire, sous les
+   yeux, remonte de 84 px (bloc replié) ou d'environ 700 px au téléphone (grille ouverte après
+   le choix d'un profil, elle le reste). Mesuré : 0,042 (390 × 844), 0,026 (1 280 × 800),
+   0,43 en un seul décalage (411 × 753, grille ouverte) ; au RSPM, calcul local, 0,88 à
+   1 280 px, exclu seulement parce que le résultat arrivait 73 ms après le clic (un
+   téléphone lent dépasse les 500 ms). Réglé sans changer ce qui s'affiche : au clic, la page
+   note où est le formulaire ; après le rendu où le bloc disparaît, elle remonte d'autant dans la
+   même image (`useLayoutEffect` de `SimulateurApp`, `scrollBy` immédiat), et le formulaire
+   reste où il était à l'écran. Bloc au-dessus de l'écran : rien ne bouge. Très grand écran où
+   il se voyait encore : c'est le haut de page qui descend à sa place, moins grand que le
+   formulaire (2 400 × 1 161, la fenêtre d'une mesure réelle : 0,016 → 0,0005). Formulaire qui
+   commence dans la moitié basse de la fenêtre : pas de compensation (le visiteur regarde le
+   haut de page, qui ne bouge pas). Chromium n'ancre pas le défilement ici : essayé, le bloc
+   retiré à la main, la page ne bouge pas et un décalage de 0,0995 est compté ; retiré puis
+   compensé dans la même tâche, aucun.
+2. **La carte d'attente est plus courte que l'écran** : la prise de rendez-vous et la feuille
+   suivante restent visibles sous elle, et le résultat (2 000 à 3 500 px) les pousse vers le
+   bas d'un coup. Mesuré, le bouton à 12 % de la fenêtre : 0,41 (390 × 844), 0,34 (411 × 753),
+   0,28 (1 280 × 800). Réglé : la carte fait au moins un écran (`.sim-attente-fiche`,
+   `min-height: 100vh`) et le résultat la remplace à la même place ; rien de ce qui suit l'îlot
+   n'est à l'écran tant qu'elle est là. Même place gardée sous une alerte d'erreur sans
+   résultat dessous (`.sim-place-erreur`) : API de l'Urssaf en panne, `main` comptait 0,149 à
+   l'erreur puis 0,41 à « Réessayer », le build corrigé rien.
+3. **Le bloc des deux régimes arrivait après les résultats** (`lazy`, chargé au premier
+   affichage) : sa place d'attente de 220 px devenait 650 à 820 px, et « À savoir », les plis
+   et la suite descendaient d'autant sous les yeux (visible sur ordinateur). Réglé : le
+   chargement part au clic sur « Simuler » (`chargerCartesDesRegimes`, toujours un `import()`,
+   un seul fichier, une seule fois ; il ne sert pas au premier geste, CLAUDE.md), en même
+   temps que le calcul, et les résultats ne s'affichent qu'avec lui (la carte d'attente reste
+   jusque-là). `Suspense` et sa place `min-h-[220px]` sont retirés. Effet de bord, voulu : si
+   ce fichier ne charge pas, le résultat s'affiche sans ce bloc ; sur `main`, l'erreur de
+   chargement faisait tomber tout l'îlot (« Failed to fetch dynamically imported module »,
+   formulaire et résultats disparus, CLS mesuré de 1,0).
+4. **La phrase de l'écart avec l'essai précédent** (§ 9.gg) arrivait un rendu après les
+   résultats (posée par un effet) : la conclusion descendait de 22 à 44 px. Mesuré au
+   troisième essai : 0,015 (390 × 844), 0,005 (1 280 × 800). Réglé : un état dérivé, calculé
+   pendant le rendu où arrivent les résultats ; même règle qu'avant (l'essai précédent est
+   celui des derniers résultats affichés, « Nouvelle simulation » ne l'efface pas).
+5. **Le compteur du Super-Net des tuiles** changeait de largeur à chaque image : « € » et
+   « /an » bougeaient (les 43 à 125 petits décalages des fenêtres relevées sur ordinateur :
+   41 à 61 par calcul, en 0,8 à 1,4 s, mesurés à 1 440 × 900 et 1 920 × 1 080) et, de 360 à
+   390 px, « /an » passait à la ligne puis en revenait : les tuiles grandissaient et
+   rapetissaient de 22 px, jusqu'à 17 fois en 0,7 s (relevé dans Chromium et dans WebKit). Réglé : l'élément porte
+   d'emblée le montant final, qui fait sa largeur ; tant que le compteur tourne, ce montant
+   est transparent et le nombre qui défile est dessiné par `::after` (`data-valeur`), calé à
+   droite contre « € », hors du flux. Le texte de l'élément, celui que lisent un lecteur
+   d'écran et une copie, est le montant final (avant, l'un ou l'autre pouvait tomber sur un
+   nombre en cours). Moins de mouvement demandé, ou contrastes forcés : le montant final
+   d'emblée. Un nombre en cours plus large que le montant final (10 439 contre 11 318 : les
+   chiffres de Google Sans Flex n'ont pas tous la même chasse, le 0 fait 0,65 em, le 1
+   0,37 em) déborde à gauche dans la marge de la tuile, le temps de quelques images (images
+   à 390 et 1 280 px : il reste dans la tuile). Essayé d'abord : un gabarit du montant final
+   dans la même case que le nombre en cours ; un nombre en cours plus large élargissait encore
+   la case, et « /an » changeait encore de ligne.
+6. **« RSPM ou PAMC ? »** (§ 9.gh) : le verdict s'ajoute quand la comparaison arrive, une
+   ligne de plus (22 px) qui pousse le bloc des deux régimes. Réglé par une **place gardée**
+   (`PlaceGardee.tsx`) : le gabarit de la forme la plus longue de la phrase (le verdict du
+   PAMC, avec le montant le plus large possible), rendu sans être vu ni lu
+   (`visibility: hidden`, `aria-hidden`), occupe la même case de grille que le texte ; la case
+   a la taille du plus grand des deux, avant comme après.
+7. **Point de bascule et 1 000 € de plus** : « … € » est plus court que le montant qui arrive ;
+   aucun changement de ligne n'a été relevé sur les cas essayés, mais rien ne l'empêchait.
+   Même place gardée (le point de bascule ne dépasse ni les recettes ni les charges déclarées ;
+   ce qui reste de 1 000 € ne dépasse pas 1 000 €). Le montant le plus large d'un nombre de
+   chiffres donné : un 4 en tête, puis des 0 (`montantLePlusLarge`). Et quand les deux régimes
+   laissent le même Super-Net, plus de phrase d'attente du point de bascule
+   (`usePublicodesSimulation.ts`) : `calculerPointDeBascule` n'en rend aucune, elle
+   disparaissait une à trois secondes plus tard ; le résultat final est le même.
+
+**Résultat** (CLS par parcours, `main` puis build corrigé ; même machine, même cache de l'API) :
+
+| Parcours | 390 × 844, processeur ×4 | 411 × 753, processeur ×4 | 1 280 × 800 |
+|---|---|---|---|
+| Arrivée et lecture, sans geste | 0 → 0 | — | 0,0014 → 0,0014 |
+| Saisie, bouton à 35 % | 0,042 → 0,0017 | 0,048 → 0,0020 | 0,026 → 0,0014 |
+| Saisie, bouton à 12 % | 0,41 → 0,0017 | 0,34 → 0,0020 | 0,28 → 0,0014 |
+| Profil type (grille ouverte) | 0,42 → 0,0059 | 0,43 → 0,0062 | 0,10 → 0,0014 |
+| Trois essais enchaînés (70 000, 15 000, 45 000 €) | 0,042 → 0,0017 | 0,048 → 0,0020 | 0,026 → 0,0014 |
+
+Trois essais enchaînés dans une fenêtre plus haute : 0,028 → 0,0010 (1 440 × 900),
+0,019 → 0,0009 (1 920 × 1 080). Aides en tiroir et plis après le résultat : aucun décalage
+compté (tous dans les 500 ms du geste), sur les deux builds. Ce qui reste : le libellé du
+bouton, « Calcul en cours... » puis « Simuler », recentré à l'arrivée du résultat (0,002 à
+0,006, plus haut quand la compensation du point 1 a lieu dans la même image) ; l'arrivée de la
+police au chargement (0,0014 à 1 280 px, en-tête et haut de page, la même sur `main` et sur
+tout le site) ; le bord gauche du nombre dessiné par le compteur (environ 0,001 par calcul sur
+ordinateur) ; dans « RSPM ou PAMC ? », la fin de la phrase qui glisse sur sa propre ligne quand
+« … € » devient un montant (0,0001). Non traités : le libellé du bouton (changer son balisage
+changerait la chaîne d'éléments des clics mesurés par PostHog, pour 0,006 au plus) ; un point
+de bascule ou une marge qui finissent sans valeur (panne de l'API, seuil franchi) retirent
+encore leur ligne (rare, non reproduit).
+
+**Ce qui ne change pas.**
+- HTML : les 72 pages du build identiques à celles de `main` aux noms de fichiers près. La
+  feuille commune perd une règle, `.min-h-\[220px\]` (la place d'attente retirée), n'en gagne
+  aucune (comparée règle par règle), et change donc de nom sur toutes les pages
+  (`_astro_assets.ZOq3y5lQ.css` → `….BqFlQkaI.css`) ; sur `/simulateur`, le script de l'îlot
+  et la feuille de la page. Le HTML rendu de l'îlot est le même. Scripts : `SimulateurApp`,
+  `RegimeComparisonCards` et `usePublicodesSimulation` changent (+0,5 Ko gzip au total).
+- Texte affiché des résultats (`innerText`, une fois tous les calculs arrivés) : identique au
+  caractère près, et hauteur finale de chaque bloc identique, dans 60 cas (12 saisies de
+  800 € à 230 000 €, RSPM et PAMC, à 360, 390, 411, 768 et 1 280 px). Les gabarits ne laissent
+  donc pas de ligne vide dans ces cas.
+- Calculs : aucun (la seule ligne de logique est la condition de la phrase d'attente du point
+  de bascule, point 7). Mesure : même suite d'événements PostHog sur un même parcours (profil
+  type, simulation, lien d'essai de la conclusion, nouvelle simulation, simulation au RSPM),
+  124 propriétés comparées ; deux écarts sur `public_simulator_started`
+  (`$active_feature_flags`, `$feature_flag_payloads`), qui varient aussi entre deux relevés
+  de `main` (la réponse des drapeaux arrive avant ou après l'événement, § 9.er). Un seul ajout
+  dans une chaîne d'éléments : le bouton « Réessayer », quand il n'y a pas de résultat dessous,
+  est dans `div.sim-place-erreur`. `insertPublicEvent` n'est pas touché.
+
+**Vérifié.** `npm run build` : 72 pages ; `node scripts/verify-site.mjs` : 0 erreur (les
+7 avertissements habituels). Lighthouse mobile, bridage simulé, deux passes alternées :
+`/simulateur` 100 et 98 sur `main`, 98 et 100 ici (LCP 1,5 à 2,3 s des deux côtés : bruit),
+`/` 99, `/blog/frais-pros-medecin-liberal-2026` 99 ; accessibilité, bonnes pratiques et SEO à
+100. WebKitGTK 2.52 à 1 300 px et à 390 px (cadre de même origine), PAMC et RSPM : un seul état
+des hauteurs après l'affichage (2 à 17 sur `main`), « € », « /an » et les tuiles exactement à la
+même place que sur `main`, carte d'attente d'un écran, compteur dessiné par `::after` (texte de
+remplacement vide lu). Chemins d'échec : API en panne puis « Réessayer », fichier du bloc des
+régimes refusé (voir plus haut).
+
+**Limites.** Mesuré en local (HTTP/1.1, réseau bridé par Chromium, API servie depuis un cache
+après 800 ms) ; ni Vercel ni un vrai téléphone. Le CLS réel est à revérifier dans PostHog une à
+deux semaines après la mise en ligne : 75e centile par appareil sur `/simulateur`, part des
+mesures au-dessus de 0,1, et nombre d'entrées des fenêtres sur ordinateur (il doit tomber).
+
+**Fichiers** : `src/components/simulateur/SimulateurApp.tsx`, `SimulateurResults.tsx`,
+`RegimeComparisonCards.tsx`, `ConclusionCard.tsx`, `RspmOuPamc.tsx`, `PlaceGardee.tsx`
+(nouveau), `src/lib/simulateur/usePublicodesSimulation.ts`, `src/styles/simulateur.css`,
+`CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gn Simulateur : le total des cotisations, et quand on paie (15 novembre 2026)
+
+Le propriétaire a posé quatre questions : une ligne de cotisations totales ? l'exonération CARMF des
+deux premières années ? la cotisation invalidité-décès (RID) au maximum ? comment l'Urssaf, la CARMF
+et l'impôt sont prélevés ? Avis donné, puis « go je te fais confiance ».
+
+**Ce qui change.**
+- **Total des cotisations** (`RegimeComparisonCards.tsx`) : en PAMC, dans le détail de chaque régime,
+  sous « Cotisations Urssaf » et « Cotisations CARMF », une ligne « Total des cotisations » en gras
+  (sans filet au-dessus) : la somme des deux montants affichés, arrondis un à un (70 000 € de
+  recettes, 5 000 € de charges, Micro-BNC : 4 787 € + 12 515 € = 17 302 €). Au RSPM et CARMF
+  dispensée, une seule ligne : pas de total.
+- **« Quand et comment tu paies »** (`PaymentExplanation.tsx` réécrit ; le pli s'appelait « Comment
+  l'impôt sera prélevé » et ne parlait que de l'impôt). Sous-titre « Urssaf, CARMF et impôt :
+  calendrier et régularisation » (« Urssaf et impôt » au RSPM ou CARMF dispensée). Dedans : le
+  principe sur ciel doux, puis une ligne par destinataire, ce qui part et quand (en encre), puis sur
+  quel revenu et comment ça se régularise ; le tableau du couple est gardé ; une astuce finit le pli.
+  Textes (revenus 2026, régime de croisière) :
+  - Principe : « Tu paies d'abord sur tes revenus d'il y a deux ans, puis tout se régularise. Quand
+    tes revenus montent, le rattrapage suit : mets de côté chaque mois le montant indiqué en tête des
+    résultats. » (premières années : « Tes premières années, tu paies d'abord sur une base
+    forfaitaire, puis tout se régularise sur tes revenus réels. … » ; RSPM : « Au RSPM, tes
+    cotisations suivent tes recettes : rien à rattraper. Seul l'impôt se calcule d'abord sur tes
+    revenus passés, puis se régularise. »)
+  - Urssaf : « Le 5 ou le 20 de chaque mois, en douze prélèvements égaux (chaque trimestre, sur
+    demande). » ; « Elles se calculent d'abord sur ton revenu de 2024, puis sur celui de 2025 dès
+    que tu l'as déclaré, et se régularisent sur celui de 2026 après ta déclaration de 2027 : un
+    complément s'étale sur les prélèvements suivants, un trop-versé vient en déduction. » Premières
+    années : « Tes deux premières années, elles se calculent sur une base forfaitaire, puis se
+    régularisent sur ton revenu réel une fois déclaré : plus tu gagnes, plus le rattrapage est
+    fort. » RSPM : « Chaque mois ou chaque trimestre, quand tu déclares tes recettes : tu paies au
+    même rythme, sur ces recettes. » ; « Rien à régulariser. L'invalidité-décès de la CARMF
+    s'ajoute à ta première déclaration de l'année. »
+  - CARMF : « Un acompte appelé en janvier, à payer avant fin février, et le solde appelé en mai,
+    juin ou juillet, après ta déclaration de revenus, à payer avant fin août. Ou douze prélèvements
+    le 5 du mois, sur demande. » ; « Elles se calculent sur ton revenu de 2024. La retraite de base
+    se régularise : recalculée sur ton revenu de 2025 au moment du solde, puis ajustée sur celui de
+    2026 l'année suivante. La complémentaire et l'ASV, non. » Premières années : « Tes deux
+    premières années, elles se calculent sur une base forfaitaire, sans complémentaire ; la
+    retraite de base se régularise ensuite sur ton revenu réel. »
+  - Impôt : « Environ 580 € le 15 de chaque mois (6 964 € par an), ou chaque trimestre sur
+    option. » ; « De janvier à août 2026, tes acomptes suivent ton revenu de 2024 ; de septembre à
+    décembre, celui de 2025. Ton impôt de 2026 se régularise à l'été 2027, après ta déclaration :
+    un trop-payé te revient fin juillet ou début août, un reste à payer est prélevé à partir de
+    septembre (en quatre fois, jusqu'en décembre, au-delà de 300 €). » Première année : « Aucun
+    acompte en 2026, sauf si tu en demandes un sur impots.gouv.fr. » ; « L'impôt de 2026, environ
+    714 €, est prélevé de septembre à décembre 2027 (en septembre à 300 € ou moins), en même temps
+    que tes premiers acomptes (environ 60 € par mois, le 15). » Impôt nul : « Aucun acompte : à ces
+    revenus, ton impôt estimé est nul. »
+  - Astuce : « Revenus qui changent beaucoup ? L'Urssaf et la CARMF (retraite de base) calculent tes
+    cotisations sur ton revenu estimé de l'année, si tu le demandes (une estimation trop basse peut
+    être majorée), et tu peux moduler tes acomptes d'impôt. » (lien impots.gouv.fr ; RSPM : « Tu peux
+    moduler tes acomptes d'impôt. »)
+- **Mode d'emploi**, point 5 : « Les deux régimes » cite « cotisations Urssaf et CARMF et leur
+  total » ; « Pour aller plus loin — Ce que chaque régime déduit de tes recettes, et quand et comment
+  tu paies l'Urssaf, la CARMF et l'impôt : calendrier, revenu de référence, régularisation. »
+
+**Sources** (vérifiées le 15 novembre 2026). Urssaf : CSS L131-6-2 (« calculées, à titre
+provisionnel, sur la base du revenu d'activité de l'avant-dernière année », recalculées quand le
+revenu de la dernière année est connu, sauf la première année ; sur demande, sur le revenu estimé) et
+R133-26 (« versements mensuels d'un montant égal », « le 5 ou le 20 de chaque mois ») ; échéances
+trimestrielles (5 février, 5 mai, 5 août, 5 novembre) sur demande, complément de régularisation
+étalé sur les échéances à venir, trop-versé en déduction (urssaf.fr). CARMF : « Cotisations 2026 »
+et « Aide à la lecture de l'appel de cotisations 2026 » (carmf.fr) : retraite de base provisionnelle
+sur les revenus 2024, recalculée sur 2025 et régularisation 2025 au solde ; complémentaire et ASV
+sur 2024 « sans régularisation ultérieure » ; acompte en janvier (avant le 28 février 2026), solde en
+mai, juin ou juillet (avant le 31 août 2026) ; prélèvement mensuel le 5, sur douze mois. RSPM :
+déclaration et paiement mensuels ou trimestriels (CSS L642-4-2, § 9.fw) ; invalidité-décès ajoutée à
+la première déclaration de l'année (urssaf.fr, offre simplifiée).
+
+**Les deux autres questions, sans changement.**
+- Exonération CARMF des deux premières années : déjà là (champ « Début d'activité », § 9.fx,
+  repris dans le résumé « Ta situation » et dans le profil « Jeune remplaçant »). L'âge n'est pas
+  demandé : avant 40 ans la complémentaire n'est pas due, après 40 ans elle se calcule sur les
+  revenus d'activité indépendante d'il y a deux ans, presque toujours nuls à ce stade.
+- RID au RSPM : le défaut reste 25 % (157 €). Le médecin choisit 25 % ou 100 % à son premier
+  paiement de l'année ; aucune source ne donne de taux appliqué sans choix, et le simulateur de
+  l'Urssaf retient le forfait de 25 % (158 € dans ses pages, 157 € dans « La CARMF en 2026 » : écart
+  laissé au propriétaire en § 9.fw). En PAMC, la CARMF fixe l'invalidité-décès selon le revenu : pas
+  d'option.
+
+Archivés (textes d'avant) : pli « Comment l'impôt sera prélevé », sous-titre « Prélèvement à la
+source et régularisation » ; « Tes acomptes libéraux », « Prélevés le 15 de chaque mois sur ton
+compte bancaire », « Pour ces revenus : ~X €/mois (Y €/an) », « Pour ces revenus : aucun acompte,
+ton impôt estimé est nul. », « L'impôt de tes salaires est retenu par ton employeur, à part. » ;
+« Régularisation annuelle — L'impôt ci-dessus est une estimation. Après ta déclaration, la DGFiP
+régularise : Trop payé → Remboursement en juillet/août ; Pas assez → Solde en 4 fois (sept → déc)
+si > 300€ » ; « Mise à jour de tes acomptes — Janv → Août 2026 : basés sur tes revenus 2024 ; Sept →
+Déc 2026 : mis à jour avec 2025 ; Tes revenus 2026 ne changent tes acomptes qu'à partir de
+septembre 2027, après ta déclaration. » ; « Première année d'activité ? » (RSPM : « Au RSPM, tes
+cotisations suivent tes recettes, déclarées chaque mois ou chaque trimestre : pas de rattrapage. » ;
+PAMC : « Pendant tes deux premières années, l'Urssaf et la CARMF appellent des cotisations
+provisionnelles sur une base forfaitaire, puis les régularisent quand ton revenu réel est connu :
+plus tu gagnes, plus le rattrapage est fort. Une estimation de ton revenu, déclarée à l'Urssaf, le
+réduit. » ; « Côté impôt, aucun acompte tant que tu n'as pas déclaré de revenu libéral, sauf si tu
+en demandes un dans ton espace impots.gouv.fr. Sinon, de septembre à décembre de l'année suivante,
+tu paies le solde de cette première année et tes premiers acomptes en même temps. Mets de côté
+chaque mois le montant indiqué en tête des résultats. ») ; « Revenus très différents ? Tu peux
+demander une modulation » ; mode d'emploi « … et comment ton impôt sera prélevé (acomptes, première
+année). » et « (charges, cotisations Urssaf et CARMF, revenu imposable, impôt) ».
+
+**Contrôles.** Chromium à 390 et 1 280 px, quatre situations (PAMC 70 000/5 000 ; interne au RSPM,
+1re année ; jeune remplaçant en PAMC, 1re année ; PAMC CARMF dispensée à 18 000 €) : total égal à la
+somme des deux lignes affichées dans les deux régimes, absent au RSPM et dispensé ; lignes du pli
+(Urssaf, CARMF, Impôt ; sans CARMF au RSPM et dispensé), sous-titre, années, textes des premières
+années et de l'impôt nul, aucun débordement. Essais des § 9.gd à 9.gi repassés. WebKitGTK à 1 300 et
+390 px : pli et totaux, aucun débordement. `verify-site.mjs` sans erreur ; feuille commune inchangée.
+Comparées à la production : `/simulateur` change ; `/guide-declarations` et la calculette ne changent
+que du nom de leur fichier d'îlot (`BoussoleWizard`, `CalculetteApp`), parce que deux morceaux de
+JavaScript partagés entre les outils (`circle-help`, `tooltip`) sont regroupés autrement depuis que le
+pli n'importe plus les mêmes icônes ; leur HTML est identique à ces noms près ; les 69 autres pages,
+identiques.
+
+### 9.go Simulateur : la règle entière du RSPM, une frise et un exemple chiffré (15 novembre 2026)
+
+Retour du propriétaire sur § 9.gn : le filet « devrait être au-dessus du total des cotisations » ;
+« Quand et comment tu paies » pourrait être « encore plus stylé », ou avec des exemples « en
+fonction des résultats de la personne » ; et le repère « Seuil du RSPM : 19 000 € » ne dit rien des
+38 000 € : « red flag, les gens vont se dire qu'on ne connaît pas toute la règle […] ce genre de
+réflexion, il faut l'appliquer un petit peu partout ». Il a aussi fourni la page d'un simulateur
+concurrent, pour avis (réponse donnée dans la conversation, rien n'en est repris ici).
+
+**La règle du RSPM, vérifiée de nouveau.** Entrée : rémunérations « inférieures ou égales à
+19 000 euros » (CSS D642-4-1, en vigueur depuis le 25 juin 2023). Taux : 13,5 %, puis 21,2 % sur la
+fraction au-dessus du seuil (D642-4-2, D642-4-3). La sortie n'est dans aucun de ces articles, ni
+dans L642-4-2 ni D642-4-4 : elle est donnée par l'Urssaf (urssaf.fr, « Le service simplifié pour
+les médecins ») : des honoraires qui dépassent « le seuil de 38 000 € au cours de l'année civile ou
+le seuil de 19 000 € pour la seconde année consécutive » ne permettent plus d'en bénéficier
+« l'année suivante », et l'on peut « rester dans ce service jusqu'au 31 décembre de l'année en
+cours ». Conséquence que le simulateur ne disait nulle part : un remplaçant déjà au RSPM y reste
+toute l'année où il dépasse 19 000 €, et même 38 000 €.
+
+**Ce qui change.**
+- **Filet du total** : « Total des cotisations » est sous une barre d'addition (filet au-dessus,
+  plus foncé), à la hauteur des autres lignes.
+- **Le RSPM, partout où il n'était dit qu'à moitié** :
+  - repère : « Seuil du RSPM » devient « Seuil d'entrée au RSPM », texte « L'offre simplifiée des
+    remplaçants : 13,5 % de cotisations, 21,2 % au-delà. On en sort après une année au-dessus de
+    38 000 €, ou deux de suite au-dessus de 19 000 €. » ;
+  - résumé « Ta situation », en mode Auto au-dessus de 19 000 € : « Régime social : PAMC (déjà au
+    RSPM ? Choisis-le avec « Modifier ») » (avant : « PAMC (le RSPM s'arrête à 19 000 € de
+    recettes) », qui était faux pour qui y est déjà) ;
+  - bulle « Exercice » : « Tu peux opter pour le RSPM si tes recettes ne dépassent pas 19 000 € par
+    an » ; bulle « Régime social » : « On y entre jusqu'à 19 000 €/an d'honoraires ; on en sort au
+    1er janvier qui suit une année au-dessus de 38 000 €, ou la deuxième de suite au-dessus de
+    19 000 €. » et « Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y restes jusqu'au
+    31 décembre : choisis RSPM. » ;
+  - FAQ « Que se passe-t-il au-delà de 38 000 € de recettes ? » (écran et schéma `FAQPage`, même
+    source) : la dernière phrase devient « Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y
+    restes jusqu'au 31 décembre : choisis RSPM à la main. » ;
+  - mode d'emploi, « Régime social » : ajout « Déjà au RSPM et au-dessus de 19 000 € ? Choisis
+    RSPM : on y reste jusqu'au 31 décembre de l'année du dépassement. » ;
+  - fiche « RSPM ou PAMC ? » (RSPM retenu) : ajout « On en sort au 1er janvier qui suit une année
+    au-dessus de 38 000 €, ou la deuxième de suite au-dessus de 19 000 €. »
+- **Fiche miroir « PAMC ou RSPM ? »** (`RspmOuPamc.tsx`, `calculerAlternativeRspm`) : pour un
+  remplaçant en mode Auto au-dessus de 19 000 € (PAMC retenu), sous la conclusion : « Au-dessus de
+  19 000 € de recettes, le simulateur retient le PAMC. Si tu es déjà au RSPM, tu y restes pourtant
+  cette année, jusqu'au 31 décembre. On en sort au 1er janvier qui suit […]. Au RSPM (13,5 % jusqu'à
+  19 000 €, 21,2 % au-delà), tu garderais X € par an, contre Y € en PAMC. » puis le verdict (« Le
+  RSPM te laisserait Z € de plus par an. », « Le PAMC te laisse Z € de plus par an. », « Les deux se
+  valent, à Z € près. ») et « Pour voir ce calcul en détail, choisis RSPM avec « Modifier ». ». Le
+  calcul au RSPM est local : il arrive avec le résultat, rien ne bouge après coup. Exemples :
+  70 000 € de recettes et 5 000 € de charges, 44 502 € au RSPM contre 40 734 € en PAMC ; 25 000 € et
+  2 000 €, 19 006 € contre 15 100 € ; « Jeune remplaçant » (1re année, sans complémentaire en
+  PAMC), 29 358 € contre 28 849 € : les deux se valent. Pas de fiche pour un médecin installé, ni
+  quand le régime social est choisi à la main.
+- **« Quand et comment tu paies »** (`PaymentExplanation.tsx`) :
+  - une **frise** sous le principe, « Ce que tu gagnes en 2026 finit de se payer en 2027 » (« Tes
+    paiements, de 2026 à 2027 » quand rien ne se rattrape) : l'année simulée et la suivante, une
+    rangée par destinataire, douze cases par an. Bleu clair : prélèvement habituel ; bleu foncé :
+    avec le rattrapage de l'année (Urssaf de juin à décembre de l'année suivante, après la
+    déclaration ; CARMF au solde d'août ; impôt de septembre à décembre) ; case vide : rien (CARMF
+    hors février et août ; impôt la première année, et de janvier à août la deuxième). Jamais de
+    jaune dans un graphique (DA). Initiales des mois à partir de 640 px. La frise redit en image ce
+    que disent les lignes : elle est masquée aux lecteurs d'écran ;
+  - **ce qui est dû** à chacun, à côté de son nom : « Urssaf — 4 787 € pour 2026 », les montants du
+    détail des régimes ;
+  - **« Un exemple, avec tes chiffres »** (PAMC, hors premières années ; `calculerExempleRattrapage`,
+    un appel au modèle de l'Urssaf à l'ouverture du pli, gardé en mémoire) : « Si tu gagnais 20 % de
+    moins en 2024 et en 2025 (56 000 € de recettes), tes prélèvements de 2026 partent de ces
+    revenus-là. En 2027, il te reste à payer la différence : » puis un calcul ligne à ligne, Urssaf
+    934 €, CARMF, retraite de base 781 €, Impôt 2 772 €, et la ligne qui ressort, « Rattrapage en
+    2027 : 4 487 € ». C'est l'écart entre ce qui est dû à ces revenus et le même calcul à 80 % des
+    recettes et des charges ; seule la retraite de base de la CARMF y entre (la complémentaire et
+    l'ASV ne se régularisent pas). Les lignes gardent leur place pendant le calcul (« … € ») ; pas
+    de ligne d'impôt quand il est nul ;
+  - **deuxième année d'activité**, impôt : le texte disait à tort que les acomptes de janvier à août
+    suivent le revenu d'il y a deux ans (il n'y en avait pas). Désormais : « Aucun acompte de janvier
+    à août 2026 : tu n'avais pas de revenu libéral en 2024. Ils démarrent en septembre, le 15 de
+    chaque mois. » et « De septembre à décembre 2026, tes acomptes suivent ton revenu de 2025, et le
+    solde de ton impôt de 2025 est prélevé en même temps. Ton impôt de 2026 se régularise à l'été
+    2027, après ta déclaration : un reste à payer est prélevé à partir de septembre (en quatre fois,
+    jusqu'en décembre, au-delà de 300 €). »
+
+Archivés (textes d'avant) : repère « Seuil du RSPM — L'offre simplifiée des remplaçants, sur leurs
+rétrocessions : 13,5 % de cotisations, 21,2 % au-delà. » ; résumé « Régime social : PAMC (le RSPM
+s'arrête à 19 000 € de recettes) » ; bulles « Tu peux opter pour le RSPM jusqu'à 19 000 € de
+recettes », « Ouvert jusqu'à 19 000 €/an d'honoraires ; perdu après deux années de suite au-dessus
+de 19 000 € ou une seule au-dessus de 38 000 €. », « Déjà au RSPM entre 19 000 et 38 000 € ?
+Choisis RSPM. » ; FAQ « Déjà au RSPM et entre 19 000 et 38 000 € ? Choisis-le à la main. ».
+
+**Relevé au passage, non modifié.** Le dépliant de la CARMF « Remplaçants régulateurs RSPM », édition
+de février 2026, et la page de l'Urssaf donnent l'invalidité-décès du RSPM à 158 € (25 %) et 631 €
+(100 %) ; le simulateur garde 157 € et 626 € (décision du propriétaire, § 9.fr). Le même dépliant
+donne ce que chaque niveau couvre (indemnités journalières à partir du 91e jour : 16,46 € ou
+65,84 € ; rente d'invalidité : 5 915,50 € ou 23 662 € par an ; indemnité décès : 17 875 € ou
+71 500 €) : proposé au propriétaire pour la bulle du choix.
+
+**Contrôles.** Chromium à 390 et 1 280 px, cinq situations (70 000/5 000 ; 25 000/2 000 ; RSPM
+15 000/1 000 ; « Jeune remplaçant », 1re année ; « Installé généraliste ») : fiche miroir présente
+pour les remplaçants en PAMC, absente pour l'installé, son PAMC égal à la meilleure tuile et son
+écart égal à la différence des deux montants ; règle de sortie dans les deux fiches ; résumé ;
+frise de 24 cases par rangée, sans débordement (cases de 6,8 px à 390 px, 35,8 px à 1 280 px) ;
+total de l'exemple égal à la somme de ses lignes ; le pli ne change pas de hauteur à l'arrivée de
+l'exemple. Essais des § 9.gd à 9.gn repassés (scripts mis à jour pour la fiche miroir et le résumé).
+WebKitGTK à 1 300 et 390 px : frise, fiche miroir, exemple, aucun débordement (le filet du total y
+fait 1 px). `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparées à la production,
+les 71 autres pages du build sont identiques.
+
+### 9.gp Simulateur : l'invalidité-décès du RSPM à 158 € et 631 €, ce qu'elle couvre, et une ligne de confiance (15 novembre 2026)
+
+Après § 9.go et l'avis rendu sur le simulateur d'un concurrent, trois propositions faites au
+propriétaire, qui a répondu « Go pour les trois, je te fais confiance » : passer l'invalidité-décès
+du RSPM à 158 € et 631 € ; dire dans la bulle du choix ce que chaque niveau couvre ; creuser le
+montant à déclarer à l'Urssaf pour faire recalculer ses cotisations, et poser une ligne de confiance
+(date de vérification des barèmes et sources).
+
+**1. Invalidité-décès du RSPM : 158 € (25 %) et 631 € (100 %).** Le simulateur et quatre articles
+disaient 157 € et 626 € (§ 9.fr : le quart et le plein de la cotisation minimale du régime classique
+en 2026, 626 €). Deux documents officiels de 2026 donnent autre chose pour l'offre simplifiée, et
+aucun ne donne 157 € :
+- urssaf.fr, « Le service simplifié pour les médecins », mise à jour le 13 novembre 2026 : « Lors de
+  votre première déclaration, une cotisation annuelle forfaitaire RID de 158 € ou 631 € sera
+  ajoutée. » ;
+- CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM », édition de février 2026 : mêmes
+  montants, et les prestations de chaque niveau.
+
+Le régime classique, lui, reste à 626 € au minimum en 2026 (carmf.fr, « Vos cotisations en cours
+d'activité », relue ce jour) : l'écart de 5 € entre les deux est celui des documents, il n'est pas
+corrigé ici. Effet sur un résultat au RSPM : 1 € de cotisations de plus par an à 25 %, 5 € à 100 %
+(15 000 € de recettes : 2 183 € au lieu de 2 182 €).
+Modifié : `useRspmCalculation.ts` (631 et 158) ; `SimulateurForm.tsx` (libellés « 25% (158€/an) »,
+« 100% (631€/an) », phrase de la dispense « elle reste obligatoire (158 € ou 631 € par an selon le
+taux ci-dessous) ») ; mode d'emploi de la page (plus bas) ; quatre articles (« Contenu modifié »).
+
+**2. La bulle du choix dit ce que chaque niveau couvre.** Bulle « Cotisation RID »
+(`SimulateurForm.tsx`, classe `sim-rid` dans `simulateur.css`) : un tableau de trois colonnes,
+chiffres du dépliant de la CARMF cité, prestations 2026 pour un médecin de moins de 62 ans :
+
+| | À 25 % | À 100 % |
+|---|---|---|
+| Cotisation par an | 158 € | 631 € |
+| Arrêt de travail, par jour à partir du 91e | 16,46 € | 65,84 € |
+| Invalidité totale, rente par an | 5 915,50 € | 23 662 € |
+| Décès, indemnité | 17 875 € | 71 500 € |
+
+puis « Prestations 2026 de la CARMF pour un médecin de moins de 62 ans. Tu choisis ton niveau à ta
+première déclaration de l'année. » Le conseil « 100% recommandé si tu as des enfants ou un emprunt
+immobilier. » est gardé. Textes remplacés, archivés : « Assurance obligatoire dès que tu es affilié
+à la CARMF. Te couvre en cas d'invalidité ou de décès (capital versé aux ayants droit). » (devient
+« Assurance obligatoire dès que tu es affilié à la CARMF. Elle te couvre en cas d'arrêt de travail
+long, d'invalidité ou de décès. ») ; « 25% = couverture minimale → 157€/an », « 100% = couverture
+complète → 626€/an ». Mode d'emploi, « Taux RID », avant : « Au RSPM, l'invalidité-décès peut être
+cotisée à 25 % (couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le
+simulateur retient 25 %. » ; après : « Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an)
+ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par
+jour à partir du 91e jour. Par défaut, le simulateur retient 25 %. » Ces prestations se relisent
+dans le dépliant de chaque année.
+
+**3. Une erreur corrigée dans le pli « Quand et comment tu paies ».** Depuis § 9.gn (en ligne du
+15 novembre 2026, § 9.gn puis § 9.go), l'astuce disait : « Revenus qui changent beaucoup ? L'Urssaf
+et la CARMF (retraite de base) calculent tes cotisations sur ton revenu estimé de l'année, si tu le
+demandes (une estimation trop basse peut être majorée), et tu peux moduler tes acomptes d'impôt. »
+La parenthèse était fausse : l'article L131-6-2 du code de la sécurité sociale, dans sa version en
+vigueur (depuis le 28 décembre 2023), prévoit le calcul « sur la base de l'assiette de cotisations
+estimée pour l'année en cours », sur demande, et ne prévoit plus de majoration quand l'estimation
+se révèle trop basse. Nouvelle astuce : « Revenus qui changent beaucoup ? L'Urssaf recalcule tes
+cotisations de l'année sur une estimation de tes revenus, si tu le demandes dans ton espace en
+ligne (« Documents et démarches », puis « Réévaluer vos cotisations ») ; la CARMF fait de même pour
+ta retraite de base, sur demande. Et tu peux moduler tes acomptes d'impôt. » Le chemin est celui
+de l'Urssaf (« Comment adapter le montant de vos cotisations ? », mise à jour le 9 avril 2026). La
+« modulation des cotisations » que l'Urssaf propose aux artisans et commerçants n'est pas ouverte
+aux praticiens : le mot n'est pas employé pour les cotisations.
+
+**Le montant à saisir n'est pas affiché.** L'idée était de donner au médecin le chiffre à recopier
+dans le formulaire de l'Urssaf. Le champ s'appelle « Revenus estimés » ; aucun texte officiel
+lisible sans compte ne dit s'il s'entend avant ou après l'abattement de 26 % de la nouvelle
+assiette (la loi dit « assiette de cotisations estimée »). Un chiffre faux d'un quart serait pire
+que pas de chiffre : rien n'est affiché tant que l'aide dépliée du formulaire n'a pas été lue (une
+capture d'écran de l'espace du propriétaire suffirait).
+
+**4. Ligne de confiance.** Sous les six repères de `/simulateur` : « Barèmes 2026 vérifiés le
+15 novembre 2026 sur les sources officielles : Urssaf, CARMF, Service-Public, Légifrance. »
+(quatre liens : taux des cotisations des praticiens, cotisations de la CARMF, barème de l'impôt,
+article D642-4-1 du code de la sécurité sociale). La date vient de `SIMULATEUR_LAST_UPDATED_ISO`
+(`src/lib/pages-lastmod.ts`), qui donne aussi à `/simulateur` son `lastmod` dans le sitemap (la page
+n'en avait pas) et le `dateModified` de son JSON-LD `WebApplication`. Elle se relève quand un
+barème ou une règle du simulateur est revérifié, jamais pour un habillage. Relu ce jour pour la
+porter : urssaf.fr, taux des praticiens (page du 20 mars 2026 : CSG-CRDS 9,70 %, CURPS 0,50 % dans
+la limite de 240 €, CFP 0,25 % du plafond, barème maladie) ; carmf.fr (base 8,73 % jusqu'à
+48 060 € puis 1,87 %, complémentaire 11,80 %, invalidité-décès de 626 € à 1 010 €) ;
+service-public.fr, fiche F1419, vérifiée le 12 novembre 2026 (tranches à 11 600, 29 579, 84 577 et
+181 917 €) ; Légifrance, D642-4-1 en vigueur ; `node scripts/controle-modele-urssaf.mjs` sans
+écart. Tout concorde avec le code.
+
+**Contenu modifié** (quatre articles, `updatedDate` et `blog-meta.json` au 15 novembre 2026 ;
+adresses inchangées) :
+- `rspm-exemples-concrets` : « **+ RID** (invalidité-décès) forfaitaire : **157 €** (25 %) ou
+  **626 €** (100 %) — barème CARMF 2026 » devient « … **158 €** (25 %) ou **631 €** (100 %) —
+  montants 2026 de l'offre simplifiée » ; hypothèses « RID = 25 % (158 €) » ; exemple à 19 000 € :
+  total des cotisations 2 723 € (2 722 €), net et Super-Net 16 277 € (16 278 €) ; exemple à
+  38 000 € : total 6 751 € (6 750 €), net 31 249 € (31 250 €), Super-Net ≈ 29 992 € (≈ 29 993 €) ;
+  tableau comparatif 2 723 € et 6 751 € (gains arrondis inchangés, ≈ 4 220 € et ≈ 4 190 €) ; réponse
+  de FAQ « cotisations 2 723 € (14,3 %) […] Super-Net 16 277 € » ; sources : la sortie du
+  dispositif cite l'Urssaf (« Sortie du service ») au lieu de la « section des art. D. 642-4-x »,
+  où elle n'est pas (§ 9.go) ; « Invalidité-décès : barème CARMF 2026, classe A à 626 € ; l'option
+  à 25 % en est le quart. » devient « Invalidité-décès de l'offre simplifiée : 158 € ou 631 €
+  (URSSAF, page citée, mise à jour le 13 novembre 2026 ; CARMF, dépliant « Remplaçants, régulateurs
+  adhérents au RSPM », édition 2026). »
+- `guide-impots-internes-remplacants` : « **157 €** pour une couverture à 25 % », « **626 €** pour
+  une couverture à 100 % » deviennent 158 € et 631 € ; source « Invalidité-décès de l'offre
+  simplifiée (157 € ou 626 €) : barème CARMF 2026, carmf.fr. » remplacée par l'Urssaf (page citée)
+  et le dépliant de la CARMF.
+- `tout-comprendre-carmf` : « Au RSPM : un forfait que tu choisis, **157 €** (couverture à 25 %) ou
+  **626 €** (couverture complète). » devient 158 € et 631 € ; même correction dans la réponse de FAQ
+  (« un forfait au choix : 158 € ou 631 € »). Le régime classique (626 € à 1 010 €) n'est pas touché.
+- `tout-comprendre-urssaf` : « **157 €/an** pour une couverture à 25% ou **626 €/an** pour une
+  couverture à 100% (barème CARMF 2026) » devient « **158 €/an** […] **631 €/an** […] (montants 2026
+  de l'offre simplifiée ; voir la CARMF) » ; source « Invalidité-décès au RSPM : carmf.fr, « Vos
+  cotisations en cours d'activité » (classe à 626 € en 2026). » remplacée par l'Urssaf (page
+  citée) et le dépliant de la CARMF.
+
+**Contrôles.** Chromium à 390 et 1 280 px : au RSPM, 15 000 € de recettes donnent 2 183 € de
+cotisations à 25 % et 2 656 € à 100 % (2 025 € + 158 € ou 631 €) ; libellés ; tableau de la bulle
+lu cellule par cellule ; bulle et tiroir sans débordement à 320, 360, 820 et 1 280 px ; ligne de
+confiance sur deux lignes à partir de 600 px, trois en dessous, aucun lien coupé, de 320 à
+1 440 px ; astuce sans « majorée ». Essais des § 9.gh et 9.go repassés sans erreur. WebKitGTK à
+1 300 px et en cadre de 360 px : mêmes mesures, colonnes alignées. `verify-site.mjs` sans erreur,
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). Comparés à la production : 72 fichiers
+identiques, 7 différents, tous attendus (`/simulateur`, les quatre articles, les deux fichiers du
+sitemap : quatre dates d'articles, et `/simulateur` qui reçoit la sienne).
+
+**Reste ouvert, pour le propriétaire.** Le montant à saisir dans « Réévaluer vos cotisations »
+(avant ou après l'abattement de 26 %) ; l'écart entre l'invalidité-décès du régime classique
+(626 € au minimum) et celle de l'offre simplifiée (631 €), tel que les documents de 2026 le donnent.
+
+### 9.gq Nouvel article : les aides à l'installation en 2026, et article zones FRR corrigé sur les remplaçants (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article` (§ 9.gl), précédent § 9.as.
+
+**Fichier et affiche.** `src/content/blog/aides-installation-medecin-2026.md` ; affiche
+`src/assets/blog/aides-installation-medecin-2026-cover.jpg`, 1 611 × 2 000 (0,8055, portrait),
+réenregistrée sans métadonnées (`sharp`, qualité 90, 445 Ko), empreinte unique dans
+`src/assets/blog/`. Texte lisible, sans faute.
+
+**Thème** : `statut-contrats-revenus`. L'installation est un choix de statut et de cadre
+d'exercice ; l'article prolonge `choix-mode-exercice` et `salariat-vs-liberal`, du même
+thème. (`impots-declarations` se défendait pour la partie fiscale ; l'article FRR y reste.)
+
+**Frontmatter.** `title` « Aides à l'installation médecin : le vrai bilan 2026 » (51 signes,
+`<title>` « … | Hippodoc ») et `description` écrits ici ; `seriesId: "divers"`,
+`episodeNumber: 16` ; `readTime` 29 min (4 576 mots ÷ 160) ; `cta` « Prêt à comparer deux
+communes sur ce qui te reste vraiment ? » + `ctaHref: "/simulateur"` ; FAQ de 6 questions
+écrite ici d'après le texte (`PLANCHER_FAQ` relevé à 59 pages, 398 questions) ;
+`relatedArticles` : zones-frr, micro-BNC ou réel, choix du mode d'exercice, Urssaf, CARMF,
+effet ciseaux.
+
+**Écarts au texte fourni** (le propriétaire a donné « carte blanche » le 15/11 pour le rendre
+cohérent avec le blog et le vérifier) :
+- **tutoiement** partout (le texte vouvoyait) ; titre `#` sorti du corps ; date « Mis à jour
+  le 15 novembre 2026 » (au lieu du 25 octobre) ;
+- ajouts : « L'essentiel » (5 puces), FAQ, deux `:::tip` (l'astuce régime réel, l'encart
+  Hippodoc, lien relatif `/`), sigles définis (ZIP, ZAC, ASV, CFE, URPS, rescrit, 2035,
+  déclaration contrôlée) ; « Sources » devenu `## 📚 Sources (vérifiées au 15 novembre 2026)`,
+  dernier titre, en liste ;
+- **corrections factuelles** après les relectures du standard `hippodoc-exigence` (interne
+  novice, fiscaliste, correcteur, deux passes ; chaque « faux » revérifié) :
+  - recettes hors zone détaillées par cas : ZFRR cabinet fixe (25 %, part hors zone imposée),
+    ZFRR non sédentaire (totale jusqu'à 25 %, proportionnelle au-delà), ZFRR+ (au prorata),
+    quartier prioritaire (BOFiP BOI-BIC-CHAMP-80-10-75-20, § 150 à 230) ;
+  - aide aux créateurs réservée à certains publics depuis 2020, pas « depuis 2026 » (LFSS
+    2020, art. 274) ; demande dans les 60 jours suivant le début d'activité (décret
+    n° 2026-69) ;
+  - revenus forfaitaires des débuts : 9 131 € (19 % du PASS) et 19 224 € pour la maladie
+    (40 %) (entreprendre.service-public.gouv.fr F39739) ;
+  - contrat de début d'exercice (art. L1435-4-2 CSP) : réservé aux remplaçants et étudiants
+    (le texte l'ouvrait aux installés) et en abrogation différée par la LFSS 2026 (Légifrance,
+    statut « ABROGE_DIFF ») ;
+  - PLFSS 2027 : Sénat depuis le 9/11, vote prévu le 18/11, « mission de solidarité
+    territoriale » (PJL Sénat n° 138, art. 21) ; Assemblée : rejet le 23 octobre ;
+  - OBO : flat tax sur la plus-value, bénéfices remontés après IS ;
+  - un remplaçant qui s'installe dans la commune classée où il remplaçait poursuit son
+    activité (BOFiP -30, § 70, ex. 3) ; jamais exonéré et installé ailleurs : la doctrine ne
+    tranche pas nettement, rescrit conseillé.
+
+**Maillage.** Liens posés sur des mots du texte : « zones France ruralités revitalisation » →
+`/blog/zones-frr-exoneration-impot-medecin`, « micro-BNC » → `/blog/regime-fiscal-micro-bnc-vs-reel`,
+« ton Super-Net » → `/simulateur`. Entrant dans le texte : l'article FRR (plus bas). Entrant par `relatedArticles`
+(en tête) : `choix-mode-exercice`, `salariat-vs-liberal`,
+`remplacement-regulier-requalification`, `zones-frr-exoneration-impot-medecin`.
+
+**La une.** `featured: true` retiré de `conge-maternite-paternite` (il y était « à retirer à
+la prochaine publication », § 9.dy) : la une revient au plus récent, cet article. À remettre
+si le propriétaire préfère.
+
+**Correction factuelle de `zones-frr-exoneration-impot-medecin`** (`updatedDate`
+2026-11-15, reportée dans `blog-meta.json`). L'article disait qu'un remplaçant ne peut pas
+bénéficier de l'exonération FRR « en tant que remplaçant » et qu'un collaborateur doit avoir
+une patientèle propre (rescrit ZRR BOI-RES-BIC-000030). C'est dépassé : le BOFiP
+BOI-BIC-CHAMP-80-10-75-30 du 29 juillet 2026 (§ 220 et 230) admet remplaçants et
+collaborateurs aux conditions de droit commun, « quels que soient les liens de dépendance »,
+et le § 70 (ex. 3) dit qu'un remplaçant qui s'installe dans la commune classée où il
+remplaçait poursuit son activité, sans nouvelle période. Description, FAQ, puce de
+« L'essentiel », section « Le piège » réécrite (avec un lien dans le texte vers le nouvel
+article) et puce de sources remplacées, accord du propriétaire (« je te fais confiance »).
+
+**Vérifications.** Construction : 73 pages, 71 dans le sitemap, `lastmod` 2026-11-15 ;
+`verify-site.mjs` passe. Feuille commune inchangée (`_astro_assets.BqFlQkaI.css`, comme
+`main`). Pages changées contre `main` : le nouvel article, `/blog`, les pages de thème
+`statut-contrats-revenus` et `impots-declarations` (description de l'article FRR),
+`/qui-sommes-nous`, et les quatre articles du maillage. Lighthouse mobile de l'article : 97
+/ 100 / 100 / 100, CLS 0. Comparaison mot à mot au texte fourni : sans objet (texte remanié
+avec accord, écarts listés ci-dessus).
+⚠️ **Construction locale sur Mac** : la garde de police de l'image de partage
+(`src/lib/image-partage.mjs`, « Hippodoc » à 471 px) arrête la construction, sur `main`
+aussi : le Pango livré avec `sharp` 0.35.3 pour darwin-arm64 ne trouve pas de configuration
+fontconfig, puis ne lit pas la graisse numérique 720. Pour vérifier, la garde a été
+neutralisée le temps de la construction, sans commit ; l'image de partage est à contrôler sur
+l'aperçu Vercel (Linux).
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

@@ -19,6 +19,8 @@
  * `landing_faq_1`…`landing_faq_10` gardent leur ancienne signification.
  */
 
+import { PRODUCT_DEFINITION } from '@/lib/site';
+
 export interface FaqAccueilItem {
   /** Slug stable — sert à `data-ph="landing_faq_<id>"`. Ne jamais le renommer. */
   id: string;
@@ -32,6 +34,20 @@ export interface FaqAccueilItem {
  * l'accordéon sur 150 jours), la position pesant beaucoup sur le taux d'ouverture.
  * La question « internes » était en 9ᵉ position alors qu'elle est la 4ᵉ la plus
  * ouverte — les gens descendaient la chercher.
+ *
+ * Épure de novembre 2026 (MIGRATION.md § 9.eu) : huit questions au lieu de dix.
+ * Les deux moins ouvertes (13 et 15 personnes en 87 jours), qui redisaient des
+ * fonctions montrées plus haut sur la page, sont retirées : `super-net`
+ * (« Comment estimer mon revenu net après impôts en tant que médecin ? ») et
+ * `retrocessions` (« Comment suivre mes paiements en attente de rétrocession ? »).
+ * Leur texte est archivé mot pour mot dans MIGRATION.md § 9.eu ; les séries
+ * `landing_faq_super-net` et `landing_faq_retrocessions` s'arrêtent. Ne pas
+ * réutiliser ces deux `id` pour une autre question.
+ *
+ * Neuvième question, ajoutée le 13 novembre 2026 (§ 9.fh) : `definition`, la
+ * définition du produit (`PRODUCT_DEFINITION`, mot pour mot), qui était le
+ * sous-titre du film. Placée en dernier : les cinq premières suivent la demande
+ * mesurée.
  */
 export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
@@ -52,7 +68,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'internes',
     question: 'Je suis interne : à quoi Hippodoc me sert avant mes premiers remplacements ?',
-    answerHtml: `Dès ton <strong>premier semestre</strong>. Tu suis tes <strong>gardes hospitalières</strong>, ton <strong>salaire d'interne</strong> et tes <strong>frais réels</strong> (logement de stage, déplacements CHU, congrès, livres médicaux) — ceux-là mêmes que tu déduiras de ta déclaration. Et tu prépares ton passage en <strong>remplacement libéral</strong> sans découvrir l'administratif le jour J. Un <strong>tarif réduit</strong> s'applique pendant toute ta formation (<a href="/#pricing">voir les tarifs</a>). Pour la partie impôts : <a href="/blog/guide-impots-internes-remplacants">le guide des impôts pour internes et remplaçants</a>.`,
+    answerHtml: `Dès ton <strong>premier semestre</strong>. Tu suis tes <strong>gardes hospitalières</strong>, ton <strong>salaire d'interne</strong> et tes <strong>frais réels</strong> (logement de stage, déplacements CHU, congrès, livres médicaux) — ceux-là mêmes que tu déduiras de ta déclaration. Et tu prépares ton passage en <strong>remplacement libéral</strong> sans découvrir l'administratif le jour J. Internes et docteurs juniors paient <strong>10 € par mois</strong> jusqu'à la fin de l'internat (<a href="/#pricing">voir les tarifs</a>). Pour la partie impôts : <a href="/blog/guide-impots-internes-remplacants">le guide des impôts pour internes et remplaçants</a>.`,
   },
   {
     id: 'debutants',
@@ -62,7 +78,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'tarifs',
     question: 'Combien coûte Hippodoc ?',
-    answerHtml: `<strong>29 € par mois</strong>, ou <strong>19 € par mois</strong> en facturation annuelle. Tout est inclus : aucune option payante, aucune limite au nombre de journées ou de lieux d'exercice. L'<strong>essai est gratuit pendant 30 jours</strong>, sans carte bancaire. Des <strong>tarifs réduits</strong> existent pour les internes et les médecins en fin d'internat : le détail est dans la <a href="/#pricing">section tarifs</a> juste au-dessus. Le comparatif complet est sur la page <a href="/tarifs">tarifs</a>.`,
+    answerHtml: `<strong>29 € par mois</strong>, ou <strong>19 € par mois</strong> en facturation annuelle. Tout est inclus : aucune option payante, aucune limite au nombre de journées ou de lieux d'exercice. L'<strong>essai est gratuit pendant 30 jours</strong> : ta carte bancaire est demandée à l'inscription, mais rien n'est débité pendant l'essai. Les <strong>internes et les docteurs juniors</strong> paient <strong>10 € par mois</strong> jusqu'à la fin de l'internat : le détail est dans la <a href="/#pricing">section tarifs</a> juste au-dessus. Le comparatif complet est sur la page <a href="/tarifs">tarifs</a>.`,
   },
   {
     id: 'revenus-remplacant',
@@ -70,24 +86,14 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
     answerHtml: `Hippodoc <strong>centralise</strong> toute ton activité en un seul endroit. Tu enregistres chaque journée avec le lieu d'exercice, le montant encaissé et la rétrocession. Le tableau de bord affiche <strong>en temps réel</strong> tes revenus <strong>encaissés</strong>, <strong>en attente</strong>, et ton <strong>Super-Net</strong> estimé après cotisations et impôts. Pour situer tes tarifs : <a href="/blog/salaires-medecins-remplacants">combien gagne un médecin remplaçant</a>.`,
   },
   {
-    id: 'super-net',
-    question: 'Comment estimer mon revenu net après impôts en tant que médecin ?',
-    answerHtml: `Avec le <strong>Super-Net</strong> d'Hippodoc, tu vois ton <strong>vrai revenu</strong> après <strong>URSSAF</strong>, <strong>CARMF</strong> et <strong>impôts</strong>. Tout est calculé selon ta situation réelle (<strong>régime fiscal</strong>, <strong>famille</strong>, <strong>revenus salariés</strong>), sans mauvaise surprise en fin d'année. Tu peux l'essayer tout de suite, sans compte, avec le <a href="/simulateur">simulateur de revenus</a>.`,
-  },
-  {
-    id: 'retrocessions',
-    question: 'Comment suivre mes paiements en attente de rétrocession ?',
-    answerHtml: `Hippodoc distingue automatiquement les journées <strong>payées</strong> de celles <strong>en attente</strong>. Tu visualises d'un coup d'œil les montants à percevoir, avec des <strong>alertes</strong> pour les <strong>paiements tardifs</strong>. Tu peux même envoyer des <strong>relances</strong> directement depuis l'application.`,
-  },
-  {
-    id: 'collaboration',
-    question: 'Comment fonctionne la collaboration libérale sur Hippodoc ?',
-    answerHtml: `Hippodoc gère nativement la <strong>collaboration libérale</strong>. Tu enregistres ton lieu d'exercice avec ton <strong>taux de redevance</strong>, et chaque mois la redevance due est <strong>calculée automatiquement</strong> à partir de tes recettes encaissées. Le suivi <strong>payé/à verser</strong> est intégré, et la redevance est ventilée en <strong>ligne L16/BG</strong> de ta déclaration 2035, <strong>déductible</strong> de ton bénéfice imposable. Voir <a href="/blog/remplir-declaration-2035">comment remplir sa 2035</a>.`,
-  },
-  {
     id: 'contrats',
     question: 'Peut-on générer des contrats de remplacement médical ?',
     answerHtml: `Oui, Hippodoc permet de générer des <strong>contrats de remplacement</strong> conformes aux exigences de l'<strong>Ordre des médecins</strong>. Tu renseignes les informations (dates, lieu d'exercice, conditions) et le <strong>contrat PDF</strong> est généré avec <strong>signature électronique</strong> intégrée. Ce qu'il faut vérifier avant de signer : <a href="/blog/signer-contrat-remplacement">signer un contrat de remplacement</a>.`,
+  },
+  {
+    id: 'definition',
+    question: "Qu'est-ce qu'Hippodoc ?",
+    answerHtml: PRODUCT_DEFINITION,
   },
 ];
 

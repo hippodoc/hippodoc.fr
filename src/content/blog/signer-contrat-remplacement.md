@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#5"
 seriesId: "fiche-pratique"
+theme: "statut-contrats-revenus"
 episodeNumber: 5
 readTime: "5 min"
 cta: "Génère ton contrat de remplacement en quelques clics"

@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#8"
 seriesId: "fiche-fiscalite"
+theme: "impots-declarations"
 episodeNumber: 8
 readTime: "6 min"
 cover: "/blog/fiche-pdsa-exoneration-cover.jpg"

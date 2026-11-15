@@ -2,7 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Portage de src/index.css de la SPA source — parties utilisées par le site public. */
+/* Portage de src/index.css de la SPA source — parties utilisées par le site public.
+   Depuis la phase 5d (MIGRATION.md § 9.em), toutes les pages sont dans la DA
+   (src/styles/da.css et la feuille de chaque page) : ne restent ici que le socle
+   de Tailwind, les jetons des composants partagés `src/components/ui/` (îlots du
+   simulateur, de la calculette et du guide des déclarations), et les réglages
+   de <html> et <body>. */
 
 @layer base {
   :root {
@@ -38,23 +43,7 @@
     --input: 214 32% 91%;
     --ring: 222 84% 48%;
 
-    /* Landing navigation glass */
-    --landing-glass: 213 100% 99%;
-    --landing-glass-soft: 211 100% 96%;
-    --landing-glass-border: 208 100% 86%;
-    --landing-glass-glow: 210 100% 55%;
-    --shadow-landing-glass: 0 14px 38px -22px hsl(var(--foreground) / 0.3), inset 0 1px 0 hsl(var(--landing-glass) / 0.9);
-    --shadow-landing-glass-scrolled: 0 18px 44px -24px hsl(var(--foreground) / 0.34), inset 0 1px 0 hsl(var(--landing-glass) / 0.94);
-
     --radius: 0.5rem;
-
-    /* Blog Series Colors */
-    --series-pratique-from: 217 91% 60%;
-    --series-pratique-to: 191 91% 55%;
-    --series-fiscalite-from: 271 91% 65%;
-    --series-fiscalite-to: 338 90% 66%;
-    --series-divers-from: 25 95% 53%;
-    --series-divers-to: 0 84% 60%;
   }
 }
 
@@ -83,143 +72,25 @@
 }
 
 @layer components {
-  @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
+  /* Cartes et pastilles de série des pages de liste du blog : dans
+     `src/styles/blog-liste.css` depuis la phase 5c (MIGRATION.md § 9.ej). */
 
-  /* Blog Components */
-  .blog-card-hover {
-    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl;
-  }
-
-  .series-badge {
-    @apply px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide text-white border-0 shadow-lg backdrop-blur-sm;
-  }
-
-  /* Encadrés d'articles (sections type warning/tip de la SPA + « L'essentiel ») */
-  .callout {
-    @apply my-6 rounded-xl border p-4 md:p-5;
-  }
-  .callout > :first-child { margin-top: 0; }
-  .callout > :last-child { margin-bottom: 0; }
-  .callout-warning {
-    @apply border-amber-200 bg-amber-50 text-amber-900;
-  }
-  .callout-tip {
-    @apply border-emerald-200 bg-emerald-50 text-emerald-900;
-  }
-  .callout-essentiel {
-    @apply border-hippo-200 bg-hippo-50 text-hippo-900;
-  }
-
-  /* Blog Typography */
-  .blog-title {
-    @apply text-2xl font-bold leading-tight;
-    letter-spacing: -0.02em;
-  }
-
-  .blog-content {
-    @apply leading-relaxed;
-    line-height: 1.75;
-  }
-
-  .prose p {
-    margin-bottom: 1em;
-  }
-
-  .prose p:last-child {
-    margin-bottom: 0;
-  }
-
-  .prose p + p {
-    margin-top: 1em;
-  }
-
-  .prose strong {
-    @apply font-bold text-foreground;
-  }
-
-  .prose em {
-    @apply italic;
-  }
-
-  .prose a {
-    /* `--primary` vaut hippo-500 (#1A8CFF) : 3,37:1 sur blanc, sous le seuil AA de
-       4,5:1 — précisément le cas interdit par CLAUDE.md (« text-hippo-500 interdit
-       sur fond blanc en petit texte »). Cette règle l'emportait sur le
-       `prose-a:text-hippo-600` du gabarit d'article. hippo-600 donne 5,15:1, et
-       hippo-800 au survol assombrit au lieu d'éclaircir. */
-    @apply text-hippo-600 underline hover:text-hippo-800 transition-colors;
-  }
-
-  .prose ul, .prose ol {
-    @apply my-2 ml-4;
-  }
-
-  /* Tableaux d'articles. Comprimés dans 358 px en mobile, les cellules cassaient
-     les montants en deux (« 1 065 » sur deux lignes, « Au-delà » césuré) : sur des
-     chiffres fiscaux c'est inacceptable. Le tableau défile donc horizontalement
-     dans son propre conteneur — le corps de page ne défile jamais latéralement. */
-  .prose table {
-    display: block;
-    max-width: 100%;
-    overflow-x: auto;
-    font-variant-numeric: tabular-nums;
-  }
-  .prose table th,
-  .prose table td {
-    white-space: nowrap;
-  }
-
-  .prose li {
-    @apply my-1;
-  }
+  /* Typographie des articles (titre, corps, liens, listes, tableaux) et encadrés
+     `:::warning` / `:::tip` / `:::essentiel` : dans la feuille du gabarit
+     d'article depuis la phase 5c (`src/pages/blog/[slug].astro`, MIGRATION.md
+     § 9.ej). Ces règles ne servaient qu'aux articles. */
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* Images clés `fadeIn`, `slideInLeft`, `pulseRing`, `bounceSubtle`, `shimmer` et
+   couleurs de série `--series-*` : retirées en phase 5d (MIGRATION.md § 9.em),
+   plus rien ne les employait. Le reflet du squelette de chargement du simulateur
+   (`ui/skeleton.tsx`) prend ses images clés `shimmer` dans tailwind.config.ts :
+   celles d'ici, de même nom, étaient déjà recouvertes par elles. */
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulseRing {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes bounceSubtle {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-/* Halos décoratifs flous (`blur-3xl`, `blur-[120px]`…) sur leur propre calque GPU
+/* Depuis la phase 5d, les halos des pages ont disparu, et depuis le § 9.fs le texte
+   flouté du simulateur (`blur-[6px]`, GuidePatrimonialTeaser.tsx, retiré) : plus
+   rien ne l'emploie. Gardée telle quelle (inoffensive). Son histoire :
+   Halos décoratifs flous (`blur-3xl`, `blur-[120px]`…) sur leur propre calque GPU
    (27/09/2026, MIGRATION.md § 9.dn). Sans calque, Safari recalcule le flou à chaque
    image où la zone qu'il couvre est redessinée — ici en continu, à cause des reflets
    animés des boutons voisins — et l'ouverture du menu mobile au-dessus du hero tombait

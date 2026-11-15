@@ -2,12 +2,13 @@
 title: "Impôts 2026 des internes qui remplacent"
 description: "Interne ayant fait des remplas en 2025 ? Salaire CHU + rétrocessions BNC : tout déclarer en 2026, étape par étape, sans confusion."
 pubDate: "2026-05-01"
-updatedDate: "2026-09-23"
+updatedDate: "2026-11-15"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
 categoryNumber: "#9"
 seriesId: "fiche-fiscalite"
+theme: "impots-declarations"
 episodeNumber: 9
 readTime: "15 min"
 cover: "/blog/guide-impots-internes-cover.jpg"
@@ -228,8 +229,8 @@ En RSPM, tes cotisations sociales sont calculées sur 15 000 €, pas sur le mon
 
 En RSPM, tu choisis aussi ton niveau de couverture **invalidité-décès CARMF** :
 
-• **157 €** pour une couverture à 25 % ;\
-• **626 €** pour une couverture à 100 %.
+• **158 €** pour une couverture à 25 % ;\
+• **631 €** pour une couverture à 100 %.
 
 La CARMF précise que ces montants correspondent à la cotisation invalidité-décès dans le cadre de l'offre simplifiée des médecins remplaçants au 1er janvier 2026.
 
@@ -435,6 +436,6 @@ Hippodoc t'aide à suivre tes rétrocessions au fil de l'eau, anticiper tes coti
 • Micro-BNC (seuil de 77 700 € applicable aux revenus 2025, abattement de 34 %, cases 5HQ / 5IQ) : [entreprendre.service-public.gouv.fr, fiche F32105](https://entreprendre.service-public.gouv.fr/vosdroits/F32105) ; CGI, art. 102 ter.\
 • Abattement de 10 % sur les salaires et frais réels : [service-public.gouv.fr, fiche F1989](https://www.service-public.gouv.fr/particuliers/vosdroits/F1989) ; règle des 40 km : [impots.gouv.fr](https://www.impots.gouv.fr/particulier/questions/existe-t-il-une-limite-liee-leloignement-de-mon-travail-et-de-mon-domicile).\
 • RSPM, conditions et portail : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html) ; taux : Code de la sécurité sociale, [art. D. 642-4-2](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656695) et [D. 642-4-3](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656684).\
-• Invalidité-décès de l'offre simplifiée (157 € ou 626 €) : barème CARMF 2026, [carmf.fr](https://www.carmf.fr/page.php?page=cdrom/coti/coti-cours.htm).\
+• Invalidité-décès de l'offre simplifiée (158 € ou 631 €) : urssaf.fr, page citée (mise à jour le 13 novembre 2026), et CARMF, dépliant « [Remplaçants, régulateurs adhérents au RSPM](https://www.carmf.fr/doc/documents/depliants/remplacants.pdf) », édition 2026.\
 • Exonération PDSA : CGI, art. 151 ter ; [BOFiP BOI-BNC-CHAMP-10-40-20](https://bofip.impots.gouv.fr/bofip/2818-PGP.html/identifiant=BOI-BNC-CHAMP-10-40-20-20151202).\
 • Exemples chiffrés : barème de l'impôt 2026 sur les revenus 2025, décote comprise.

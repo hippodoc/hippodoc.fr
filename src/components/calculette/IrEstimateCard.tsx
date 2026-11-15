@@ -82,7 +82,7 @@ export function IrEstimateCard({ beneficeImposable, annee }: IrEstimateCardProps
                 <SelectTrigger id="ir-parts" className="h-8 text-xs w-[280px] max-w-full">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="calc calc-pop">
                   {PARTS_OPTIONS.map(o => (
                     <SelectItem key={o.value} value={o.value} className="text-xs">{o.label}</SelectItem>
                   ))}
@@ -107,7 +107,8 @@ export function IrEstimateCard({ beneficeImposable, annee }: IrEstimateCardProps
               </div>
               <div className="flex justify-between text-[11px] text-muted-foreground pt-0.5">
                 <span>Tranche marginale (TMI)</span>
-                <span>{(result.tmi * 100).toFixed(0)} %</span>
+                {/* getTMI rend déjà un pourcentage (30) : le multiplier par 100 affichait « 3000 % ». */}
+                <span>{result.tmi.toFixed(0)} %</span>
               </div>
             </div>
 

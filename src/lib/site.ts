@@ -12,6 +12,13 @@ export const SITE_NAME = 'Hippodoc';
 export const PRODUCT_DEFINITION =
   "Hippodoc est un logiciel français créé par un médecin pour les médecins remplaçants : il centralise revenus, rétrocessions, planning, contrats, cotisations URSSAF et CARMF, et prépare les déclarations (2035, 2042, DSFU/PAMC) avec un calcul automatique du Super-Net.";
 
+/** Auteurs du blog connus du site, par le nom écrit dans le frontmatter (`author`) : leur fiche de
+    /qui-sommes-nous (lien du nom, `@id` de la Person dans le JSON-LD des articles, § 9.fj) et leur
+    portrait. Un auteur absent de cette table n'a ni lien ni identifiant. */
+export const AUTEURS: Record<string, { ancre: string; portrait?: 'ryan' }> = {
+  'Dr. Ryan Goburdhun': { ancre: '/qui-sommes-nous#ryan-goburdhun', portrait: 'ryan' },
+};
+
 export const CONTACT_EMAIL = 'contact@hippodoc.fr';
 
 /**

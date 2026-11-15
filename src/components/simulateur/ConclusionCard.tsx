@@ -1,21 +1,34 @@
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Scale, AlertTriangle, FileQuestion, Briefcase, Heart } from "lucide-react";
-import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
+import { Trophy, Scale, AlertTriangle, FileQuestion, PiggyBank, CalendarClock, ArrowRight, TrendingUp } from "lucide-react";
+import { APP_URL } from "@/lib/site";
+import { trackEvent } from "@/lib/analytics";
+import { insertPublicEvent } from "@/lib/supabase-public";
+import { SEUIL_EQUIVALENCE_ANNUEL, type RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
+import { impotDuMedecin, superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
+import { deductionsComparees } from "@/lib/simulateur/deductions";
+import { MARGE_RECETTES, debutActiviteDe, tauxDispenseComplementaire, revenusImposablesDuMedecin, economieAsvDe, complementaireCarmfPleine } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 import type { LucideIcon } from "lucide-react";
+import { formatNombre, nombreFr } from "@/lib/simulateur/nombres";
+import { PlaceGardee, montantLePlusLarge } from "./PlaceGardee";
 
-// ============ CONSTANTES SEUILS ============
-const PLAFOND_MICRO_BNC = 83600;
-const SEUIL_APPROCHE_PLAFOND = 71000;
-const SEUIL_ECART_FAIBLE = 1000;
-const SEUIL_ECART_NEGLIGEABLE = 500;
-const SEUIL_ECART_MODERE = 2000;
+// ============ SEUILS ============
+/** Au-delà de 85 % du plafond du Micro-BNC, on prévient qu'il approche. */
+const RATIO_APPROCHE_PLAFOND = 0.85;
 const SEUIL_CHARGES_FAIBLES_RATIO = 0.05;
 
 // ============ TYPES ============
 interface ConclusionCardProps {
   comparison: RegimeComparison;
   formData: SimulateurFormData;
+  /** Charges annuelles où les deux régimes se valent ; `null` : le réel l'emporte même sans
+   *  charge ; `'attente'` : en cours de calcul ; `undefined` : pas de phrase. */
+  bascule?: number | null | 'attente';
+  /** Ce qui resterait de 1 000 € de recettes en plus ; `'attente'` : en cours ; `undefined` : rien. */
+  marge?: number | 'attente';
+  /** § 9.gh : `conclusion` (le verdict, le mois, l'essai ; les avertissements du plafond) ou
+   *  `a-savoir` (les pistes et la phrase des 1 000 €, dans une fiche sous la comparaison). */
+  partie?: 'conclusion' | 'a-savoir';
 }
 
 interface ContextAlert {
@@ -25,178 +38,373 @@ interface ContextAlert {
 }
 
 // ============ HELPERS ============
-const formatMontant = (montant: number): string => {
-  return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    maximumFractionDigits: 0,
-  }).format(Math.abs(montant));
-};
+const euros = (montant: number): string =>
+  formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.abs(montant));
 
 // ============ COMPOSANT PRINCIPAL ============
-export function ConclusionCard({ comparison, formData }: ConclusionCardProps) {
+export function ConclusionCard({ comparison, formData, bascule, marge, partie = 'conclusion' }: ConclusionCardProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) return null;
 
   // ============ CALCULS ============
-  const recettesAnnuelles = formData.periode === 'mensuel' 
-    ? formData.recettesBrutes * 12 
-    : formData.recettesBrutes;
-  const chargesAnnuelles = formData.periode === 'mensuel'
-    ? formData.chargesHorsCotisations * 12
-    : formData.chargesHorsCotisations;
+  const annuel = (v: number | undefined) => (formData.periode === 'mensuel' ? (v || 0) * 12 : (v || 0));
+  const recettesAnnuelles = annuel(formData.recettesBrutes);
+  const chargesAnnuelles = annuel(formData.chargesHorsCotisations);
   const ratioCharges = recettesAnnuelles > 0 ? chargesAnnuelles / recettesAnnuelles : 0;
+  const revenusSalariesAnnuels = annuel(formData.revenusSalaries);
+  const revenusConjointAnnuels = annuel(formData.revenusConjoint);
+  const plafond = comparison.plafondMicro ?? 83600;
 
-  const revenusSalariesAnnuels = (formData.revenusSalaries || 0) * (formData.periode === 'mensuel' ? 12 : 1);
-  const revenusConjointAnnuels = (formData.revenusConjoint || 0) * (formData.periode === 'mensuel' ? 12 : 1);
+  const ecartMensuel = Math.round(economie / 12);
+  // L'écart annuel affiché se lit sur les tuiles (§ 9.gh) : la différence des deux Super-Net
+  // arrondis chacun à l'euro. L'écart arrondi d'un coup pouvait s'en écarter d'un euro.
+  const ecartAnnuel = microBnc
+    ? Math.abs(Math.round(microBnc.superNet ?? 0) - Math.round(reel?.superNet ?? 0))
+    : Math.round(economie);
+  const equivalents = !microBnc || economie < SEUIL_EQUIVALENCE_ANNUEL;
 
   // ============ CONDITIONS ============
-  const approchePlafond = recettesAnnuelles > SEUIL_APPROCHE_PLAFOND && recettesAnnuelles <= PLAFOND_MICRO_BNC;
-  const depassePlafond = recettesAnnuelles > PLAFOND_MICRO_BNC;
-  const ecartFaible = economie < SEUIL_ECART_FAIBLE;
-  const ecartNegligeable = economie < SEUIL_ECART_NEGLIGEABLE;
-  const ecartModere = economie >= SEUIL_ECART_FAIBLE && economie < SEUIL_ECART_MODERE;
-  const chargesFaibles = recommande === 'reel' && ratioCharges < SEUIL_CHARGES_FAIBLES_RATIO;
-  const aRevenusMixtes = revenusSalariesAnnuels > 0;
-  const revenusSalariesMajoritaires = revenusSalariesAnnuels > recettesAnnuelles;
-  const aRevenusConjoint = revenusConjointAnnuels > 0;
-  const hasSignificantEconomie = economie >= SEUIL_ECART_FAIBLE;
+  const depassePlafond = recettesAnnuelles > plafond;
+  const approchePlafond = !depassePlafond && recettesAnnuelles > plafond * RATIO_APPROCHE_PLAFOND;
+  const chargesFaibles = recommande === 'reel' && !equivalents && ratioCharges < SEUIL_CHARGES_FAIBLES_RATIO;
 
-  // ============ CALCUL POURCENTAGE ÉCONOMIE ============
-  const calculatePercentage = (): number | null => {
-    if (!microBnc || !reel) return null;
-    const loserSuperNet = recommande === 'micro-bnc' ? reel.superNet : microBnc.superNet;
-    if (loserSuperNet === 0) return null;
-    return (economie / loserSuperNet) * 100;
+  // Écart en % du Super-Net du régime le moins favorable, lu sur les tuiles (§ 9.gi) : le
+  // Super-Net du médecin, avec sa part de l'impôt quand le conjoint a des revenus. La base
+  // d'avant (`superNet` du moteur, impôt de tout le foyer retiré) n'était affichée nulle part.
+  const foyer = {
+    revenusSalariesAnnuels: comparison.revenusSalariesAnnuels ?? revenusSalariesAnnuels,
+    revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? revenusConjointAnnuels,
+    situationFamiliale: formData.situationFamiliale,
   };
-  const percentageEconomie = calculatePercentage();
+  const perdant = recommande === 'micro-bnc' ? reel : microBnc;
+  const gagnant = recommande === 'micro-bnc' ? microBnc : reel;
+  const tuilePerdant = perdant ? Math.round(superNetDuMedecin(perdant, foyer)) : 0;
+  const tuileGagnant = gagnant ? Math.round(superNetDuMedecin(gagnant, foyer)) : 0;
+  const pourcentage = perdant && tuilePerdant > 0 && tuileGagnant > tuilePerdant
+    ? ((tuileGagnant - tuilePerdant) / tuilePerdant) * 100
+    : null;
+  // Conjoint avec des revenus : l'écart (`economie`) est celui du foyer, impôt du conjoint
+  // compris ; il décide du régime et la phrase le dit (§ 9.gi). Les tuiles, elles, montrent la
+  // part du médecin : quand il gagne moins que son conjoint, leur écart en diffère.
+  const avecConjoint = (foyer.revenusConjointAnnuels ?? 0) > 0;
 
   // ============ MESSAGE PRINCIPAL ============
-  const getMessage = (): string => {
-    if (ecartNegligeable) {
-      return "Écart négligeable : choisis selon ta préférence de gestion.";
+  const regimeLabel = recommande === 'micro-bnc' ? 'Le Micro-BNC' : 'Le régime réel';
+  const message = !microBnc
+    ? "Le Micro-BNC n'a pas pu être calculé\u00a0: seul le régime réel est affiché."
+    : ecartAnnuel < 1
+      ? (avecConjoint ? "Les deux régimes laissent la même somme à ton foyer." : "Les deux régimes te laissent la même somme.")
+      : equivalents
+        ? `Les deux régimes se valent\u00a0: ${euros(ecartMensuel)}/mois d'écart${avecConjoint ? ' pour ton foyer' : ''} en faveur ${recommande === 'micro-bnc' ? 'du Micro-BNC' : 'du régime réel'} (${euros(ecartAnnuel)}/an).`
+        : avecConjoint
+          ? `${regimeLabel} fait garder ${euros(ecartMensuel)}/mois de plus à ton foyer (${euros(ecartAnnuel)}/an).`
+          : `${regimeLabel} te fait garder ${euros(ecartMensuel)}/mois de plus (${euros(ecartAnnuel)}/an).`;
+
+  // ============ POURQUOI ============
+  // Ce que chaque régime retire des recettes avant l'impôt (`deductionsComparees`, tiré du
+  // moteur), puis, en PAMC, l'écart de cotisations : elles se calculent sur le bénéfice au réel
+  // et sur les recettes après abattement en micro (au RSPM, elles sont les mêmes).
+  const recettesImposables = Math.max(0, recettesAnnuelles - (comparison.liberalExonereAnnuel ?? 0));
+  let pourquoi: string | null = null;
+  if (microBnc && ecartAnnuel >= 1 && recettesImposables > 0) {
+    const d = deductionsComparees(reel, microBnc, recettesImposables, formData.typeCotisationsVolontaires);
+    const pct = (v: number) => `${Math.round((v / recettesImposables) * 100)}\u00a0%`;
+    const zone = d.zoneReelSeul > 0 ? `, dont ${euros(d.zoneReelSeul)} d'exonération de zone, qui ne joue qu'au réel` : '';
+    const impotNet = (r: typeof reel) => r.impot - (r.impotDetails?.restitutionCredits ?? 0);
+    const memeImpot = Math.abs(impotNet(reel) - impotNet(microBnc)) < 1;
+    const ecartCotisations = Math.round(microBnc.cotisationsTotales - reel.cotisationsTotales);
+    const sens = ecartCotisations > 0 ? 'plus basses' : 'plus élevées';
+    const cotisationsDiffèrent = !comparison.isRSPMUsed && Math.abs(ecartCotisations) >= 100;
+    if (memeImpot) {
+      // Impôt identique (nul des deux côtés, par exemple) : les déductions ne départagent rien.
+      if (cotisationsDiffèrent) {
+        pourquoi = `Ton impôt est le même dans les deux régimes\u00a0: l'écart vient de tes cotisations, ${sens} de ${euros(ecartCotisations)} au réel, où elles se calculent sur ${(formData.annee || 2026) >= 2025 ? 'tes recettes moins tes charges, abattues de 26\u00a0%' : 'ton bénéfice'}.`;
+      }
+    } else {
+      pourquoi = `Au réel, tu déduis ${euros(d.reel)} de tes recettes avant l'impôt (${pct(d.reel)})${zone}\u00a0; le Micro-BNC en retire ${euros(d.micro)} d'office (${d.microMinimum ? 'le minimum de 305\u00a0€' : '34\u00a0%'}).`;
+      if (cotisationsDiffèrent) pourquoi += ` Au réel, tes cotisations sont aussi ${sens} de ${euros(ecartCotisations)}.`;
     }
-    if (ecartFaible) {
-      return "Les deux régimes sont quasi équivalents à ce niveau de charges.";
-    }
-    const regimeLabel = recommande === 'micro-bnc' ? 'Micro-BNC' : 'Régime Réel';
-    return `Le ${regimeLabel} te fait garder ${formatMontant(economie)} de plus par an.`;
-  };
+  }
+
+  // ============ CE QUI CHANGE ============
+  // Quand les deux régimes se valent, ce qui les départage est la gestion (CGI art. 102 ter, 4,
+  // et art. 99). Quand le réel l'emporte et que le Micro-BNC reste ouvert, comment y passer :
+  // l'option résulte du dépôt de la 2035 dans le délai, vaut un an et se reconduit tacitement
+  // (BOI-BNC-DECLA-10-10, § 130 à 140).
+  let gestion: { titre: string; texte: string } | null = null;
+  if (microBnc && equivalents) {
+    gestion = {
+      titre: 'Ce qui change',
+      texte: "Seulement la gestion. En micro, une case de ta déclaration de revenus (2042-C PRO) et le détail de tes recettes au jour le jour. Au réel, une déclaration 2035 et un livre-journal des recettes et des dépenses\u00a0; les honoraires d'un comptable sont une charge, ajoute-les pour comparer.",
+    };
+  } else if (microBnc && recommande === 'reel' && !depassePlafond) {
+    gestion = {
+      titre: 'Passer au réel',
+      texte: "Il suffit de déposer ta déclaration 2035 dans les délais\u00a0: l'option vaut un an et se renouvelle d'elle-même.",
+    };
+  }
+
+  // ============ À PRÉVOIR CHAQUE MOIS ============
+  // Cotisations et impôt de l'activité libérale du régime retenu, par destinataire : l'Urssaf
+  // (au RSPM, tout), la CARMF (en PAMC) et
+  // l'impôt de l'activité libérale (`impotDuMedecin` : sa part du foyer ; celle des salaires
+  // est retenue par l'employeur). Le total est la somme des parts arrondies : rien à recompter.
+  const retenu = recommande === 'micro-bnc' && microBnc ? microBnc : reel;
+  const { impotLiberal } = impotDuMedecin(retenu, {
+    revenusSalariesAnnuels: comparison.revenusSalariesAnnuels ?? revenusSalariesAnnuels,
+    revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? revenusConjointAnnuels,
+    situationFamiliale: formData.situationFamiliale,
+  });
+  // Au RSPM, tout se paie à l'Urssaf, invalidité-décès de la CARMF comprise (« Remplaçants
+  // régulateurs RSPM », CARMF, février 2026 : « Toutes les cotisations, y compris celles de la
+  // Carmf, seront payées auprès de l'URSSAF ») : une seule part, Urssaf (§ 9.fw).
+  const carmfMois = comparison.isRSPMUsed ? 0 : Math.round(Math.max(0, retenu.cotisationsDetail?.retraite ?? 0) / 12);
+  const urssafMois = Math.round(Math.max(0, retenu.cotisationsTotales) / 12) - carmfMois;
+  const impotMois = Math.round(impotLiberal / 12);
+  const totalMois = urssafMois + carmfMois + impotMois;
+  const partRecettes = recettesAnnuelles > 0 ? Math.round((totalMois * 12 / recettesAnnuelles) * 100) : 0;
+  // Les parts dans l'ordre de la barre ; une part nulle (CARMF dispensée, impôt nul) n'y est pas.
+  const partsMois = [
+    { nom: 'Urssaf', cle: 'u', mois: urssafMois },
+    { nom: 'CARMF', cle: 'c', mois: carmfMois },
+    { nom: 'Impôt', cle: 'i', mois: impotMois },
+  ].filter((p) => p.mois > 0);
+
+  // ============ POINT DE BASCULE ============
+  const enMensuel = formData.periode === 'mensuel';
+  const declare = enMensuel ? euros(chargesAnnuelles / 12) : euros(chargesAnnuelles);
+  // En attente, la phrase a déjà sa forme finale, le montant en « … » : les fiches, dessous, ne
+  // sautent pas à l'arrivée du calcul (22 à 44 px au téléphone avec une phrase d'attente).
+  // § 9.gm : « … € » est plus court que le montant qui arrive, et la phrase pouvait encore gagner
+  // une ligne. Elle garde la place de sa forme la plus longue (`PlaceGardee`) : le même texte avec le
+  // montant le plus large possible. Le point de bascule ne dépasse ni les recettes ni les charges
+  // déclarées (`calculerPointDeBascule`) ; 100 € de plus pour l'arrondi.
+  const charges = (m: string) => `${m} de charges par ${enMensuel ? 'mois' : 'an'}`;
+  const phraseDeBascule = (m: string) => (recommande === 'micro-bnc'
+    ? `Le régime réel passerait devant au-delà d'environ ${charges(m)} (tu en déclares ${declare}).`
+    : `Le Micro-BNC ne passerait devant que sous environ ${charges(m)} (tu en déclares ${declare}).`);
+  let phraseBascule: string | null = null;
+  const basculeEnAttente = bascule === 'attente';
+  if (basculeEnAttente || typeof bascule === 'number') {
+    phraseBascule = phraseDeBascule(typeof bascule === 'number' ? euros(enMensuel ? bascule / 12 : bascule) : '…\u00a0€');
+  } else if (bascule === null) {
+    phraseBascule = 'Même sans aucune charge, le régime réel resterait devant.';
+  }
+  const basculeMaximale = Math.max(recettesAnnuelles, chargesAnnuelles) + 100;
+  const gabaritBascule = phraseDeBascule(euros(montantLePlusLarge(enMensuel ? basculeMaximale / 12 : basculeMaximale)));
+
+  // ============ 1 000 € DE PLUS ============
+  // § 9.gm : même place gardée ; ce qui reste de 1 000 € de plus ne dépasse pas 1 000 €.
+  const phraseDeMarge = (reste: string) => `${euros(MARGE_RECETTES)} de recettes en plus dans l'année t'en laisseraient environ ${reste}, après cotisations et impôt.`;
+  let phraseMarge: string | null = null;
+  if (marge === 'attente' || typeof marge === 'number') {
+    phraseMarge = phraseDeMarge(typeof marge === 'number' ? euros(Math.round(marge / 10) * 10) : '…\u00a0€');
+  }
+  const gabaritMarge = phraseDeMarge(euros(montantLePlusLarge(MARGE_RECETTES)));
 
   // ============ ALERTES CONTEXTUELLES ============
-  const getAlerts = (): ContextAlert[] => {
-    const alerts: ContextAlert[] = [];
-    
-    if (depassePlafond) {
-      alerts.push({
-        type: 'danger',
-        icon: AlertTriangle,
-        message: "Plafond Micro-BNC dépassé (83 600€) : passage automatique au Réel si 2ème année consécutive."
-      });
-    } else if (approchePlafond && recommande === 'micro-bnc') {
-      alerts.push({
-        type: 'warning',
-        icon: AlertTriangle,
-        message: "CA proche du plafond Micro-BNC (83 600€). Anticipe le passage au Réel."
-      });
-    }
-    
-    if (ecartModere) {
-      alerts.push({
-        type: 'info',
-        icon: Scale,
-        message: "Écart modéré : un expert-comptable pourra affiner."
-      });
-    }
-    
-    if (chargesFaibles) {
-      alerts.push({
-        type: 'info',
-        icon: FileQuestion,
-        message: "Charges faibles déclarées. Vérifie que tu n'as rien oublié."
-      });
-    }
-    
-    if (aRevenusMixtes) {
-      const message = revenusSalariesMajoritaires
-        ? "Revenus salariés majoritaires → impact TMI significatif."
-        : "Revenus salariés pris en compte dans l'IR.";
-      alerts.push({ type: 'info', icon: Briefcase, message });
-    }
-    
-    if (aRevenusConjoint) {
-      const montantFormate = new Intl.NumberFormat('fr-FR', { 
-        style: 'currency', currency: 'EUR', maximumFractionDigits: 0 
-      }).format(revenusConjointAnnuels);
-      alerts.push({
-        type: 'info',
-        icon: Heart,
-        message: `Conjoint (${montantFormate}) inclus dans le calcul IR.`
-      });
-    }
-    
-    return alerts.slice(0, 3);
-  };
+  const alerts: ContextAlert[] = [];
+  const plafondTexte = euros(plafond);
 
-  const alerts = getAlerts();
-  const hasWarnings = alerts.some(a => a.type === 'warning' || a.type === 'danger');
+  if (depassePlafond) {
+    alerts.push({
+      // Le réel l'emporte : le plafond ne change pas le conseil, c'est une information.
+      type: recommande === 'reel' ? 'info' : !equivalents ? 'danger' : 'warning',
+      icon: AlertTriangle,
+      message: `Recettes au-dessus de ${plafondTexte} : le Micro-BNC ne reste ouvert que si tes recettes de l'une des deux années précédentes étaient sous ce seuil. Deux années de suite au-dessus, tu passes au réel.`,
+    });
+  } else if (approchePlafond && recommande === 'micro-bnc') {
+    alerts.push({
+      type: 'warning',
+      icon: AlertTriangle,
+      message: `Recettes proches du plafond du Micro-BNC (${plafondTexte}). Deux années de suite au-dessus, tu passes au réel.`,
+    });
+  }
+
+  if (chargesFaibles) {
+    alerts.push({
+      type: 'info',
+      icon: FileQuestion,
+      message: "Charges faibles déclarées. Vérifie que tu n'as rien oublié.",
+    });
+  }
+
+  // Les deux premières années, la complémentaire de la CARMF n'est pas due ; elle arrive la 3e,
+  // calculée sur les revenus de l'avant-dernière année (§ 9.fx). Le dire, avec son montant à ces
+  // revenus : les cotisations affichées en sont plus basses que celles des années suivantes.
+  if (!comparison.isRSPMUsed && formData.situationCarmf !== 'dispense' && debutActiviteDe(formData)
+      && (retenu.cotisationsDetail?.retraite ?? 0) > 0) {
+    const aVenir = complementaireCarmfPleine(formData, retenu === microBnc ? 'micro-bnc' : 'reel');
+    if (aVenir > 0) {
+      alerts.push({
+        type: 'info',
+        icon: CalendarClock,
+        message: `Tes deux premières années, la complémentaire de la CARMF n'est pas due. Elle arrive la 3e année, calculée sur tes revenus de l'avant-dernière année\u00a0: environ ${euros(aVenir)}/an à ces revenus.`,
+      });
+    }
+  }
+
+  // Réductions de la CARMF accordées sur demande, ouvertes et pas demandées (§ 9.fx) : en PAMC,
+  // affilié, après les deux premières années. Revenus estimés sur l'année simulée (la CARMF
+  // regarde l'année précédente pour la complémentaire, l'avant-dernière pour l'ASV).
+  const detailCotisations = retenu.cotisationsDetail;
+  if (!comparison.isRSPMUsed && formData.situationCarmf !== 'dispense' && !debutActiviteDe(formData)) {
+    const complementaire = detailCotisations?.retraiteComplementaire ?? 0;
+    if (!formData.dispenseComplementaire && complementaire > 0) {
+      // Même lecture que le moteur (`simulerRegime`) : le pourcentage suggéré est celui appliqué.
+      const taux = tauxDispenseComplementaire(revenusImposablesDuMedecin(retenu, comparison.liberalExonereAnnuel ?? 0));
+      if (taux > 0) {
+        alerts.push({
+          type: 'info',
+          icon: PiggyBank,
+          message: `Sur demande, la CARMF réduit ta complémentaire de ${Math.round(taux * 100)}\u00a0% à ces revenus\u00a0: ${euros(complementaire * taux)}/an de moins, sans points de retraite pour cette part.`,
+        });
+      }
+    }
+    const asv = detailCotisations?.asv ?? 0;
+    if (!formData.asvProportionnelle && asv > 0) {
+      const economieAsv = economieAsvDe(formData, retenu === microBnc ? 'micro-bnc' : 'reel');
+      if (recettesImposables > 0 && economieAsv >= 100) {
+        alerts.push({
+          type: 'info',
+          icon: PiggyBank,
+          message: `Sur demande avant fin février, la part forfaitaire de ton ASV peut devenir proportionnelle à ton revenu conventionné\u00a0: ${euros(economieAsv)}/an de moins, avec moins de points de retraite.`,
+        });
+      }
+    }
+  }
+
+  // Les pastilles « Revenus salariés pris en compte dans l'IR » et « Conjoint inclus dans le
+  // calcul IR » sont retirées (§ 9.ft) : elles redisaient la saisie, et les fiches portent ces
+  // lignes (« Revenus salariés », « Mon impôt (estimé) »).
+
+  // § 9.gh : les avertissements (plafond du Micro-BNC) qualifient le verdict et restent dans la
+  // conclusion ; les pistes (`info`) vont dans « À savoir pour ta situation ».
+  const shownAlerts = alerts.filter((a) => a.type !== 'info').slice(0, 2);
+  const alertesInfo = alerts.filter((a) => a.type === 'info');
+  const hasWarnings = shownAlerts.some(a => a.type === 'warning' || a.type === 'danger');
 
   // ============ STYLES ============
-  const getMainIcon = () => {
-    if (hasWarnings) return { Icon: AlertTriangle, color: "text-orange-500" };
-    if (hasSignificantEconomie) return { Icon: Trophy, color: "text-emerald-500" };
-    return { Icon: Scale, color: "text-amber-500" };
-  };
-
-  const getBgClass = () => {
-    if (hasWarnings) return "bg-orange-50/80 border-orange-200/50 dark:bg-orange-950/20 dark:border-orange-800/30";
-    if (hasSignificantEconomie) return "bg-emerald-50/80 border-emerald-200/50 dark:bg-emerald-950/20 dark:border-emerald-800/30";
-    return "bg-amber-50/80 border-amber-200/50 dark:bg-amber-950/20 dark:border-amber-800/30";
-  };
+  const { Icon: MainIcon, color: iconColor } = hasWarnings
+    ? { Icon: AlertTriangle, color: "sim-attn" }
+    : !equivalents
+      ? { Icon: Trophy, color: "sim-encre" }
+      : { Icon: Scale, color: "sim-marque" };
+  const bgClass = hasWarnings ? "attn" : !equivalents ? "gain" : "egal";
 
   const getAlertPillStyle = (type: 'warning' | 'info' | 'danger') => {
     switch (type) {
-      case 'danger': return "bg-red-100/80 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800";
-      case 'warning': return "bg-orange-100/80 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800";
-      default: return "bg-blue-100/80 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800";
+      case 'danger': return "attn fort";
+      case 'warning': return "attn";
+      default: return "info";
     }
   };
 
-  const { Icon: MainIcon, color: iconColor } = getMainIcon();
+  // ============ À SAVOIR (§ 9.gh) ============
+  if (partie === 'a-savoir') {
+    if (!phraseMarge && alertesInfo.length === 0) return null;
+    return (
+      <section className="sim-fiche sim-a-savoir" aria-labelledby="sim-a-savoir-titre">
+        <h3 id="sim-a-savoir-titre" className="sim-fiche-titre">À savoir pour ta situation</h3>
+        <ul className="sim-a-savoir-liste">
+          {phraseMarge && (
+            <li aria-live="polite" aria-busy={marge === 'attente'}>
+              <TrendingUp className="h-4 w-4" aria-hidden="true" />
+              <span><PlaceGardee gabarit={gabaritMarge}>{phraseMarge}</PlaceGardee></span>
+            </li>
+          )}
+          {alertesInfo.map((alerte, i) => {
+            const Icone = alerte.icon;
+            return (
+              <li key={i}>
+                <Icone className="h-4 w-4" aria-hidden="true" />
+                <span>{alerte.message}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    );
+  }
 
   // ============ RENDER ============
   return (
-    <div
-      className={`rounded-xl border p-4 ${getBgClass()}`}
-    >
+    <div className={`sim-conclusion ${bgClass}`}>
       {/* Ligne principale : icône + message + badge */}
       <div className="flex items-center gap-3 flex-wrap">
-        <MainIcon className={`h-5 w-5 shrink-0 ${iconColor}`} />
-        <p className="text-sm sm:text-base font-semibold text-foreground flex-1 min-w-0">
-          {getMessage()}
+        <span className="sim-conclusion-signe"><MainIcon className={`h-5 w-5 shrink-0 ${iconColor}`} /></span>
+        <p className="sim-conclusion-texte flex-1 min-w-0">
+          {message}
         </p>
-        {percentageEconomie !== null && hasSignificantEconomie && (
-          <Badge variant="outline" className="bg-emerald-100/80 text-emerald-700 border-emerald-200 font-semibold text-xs shrink-0">
-            +{percentageEconomie.toFixed(1)}% Super-Net
-          </Badge>
-        )}
-        {percentageEconomie !== null && !hasSignificantEconomie && !ecartNegligeable && (
-          <Badge variant="outline" className="bg-amber-100/80 text-amber-700 border-amber-200 font-medium text-xs shrink-0">
-            ~{percentageEconomie.toFixed(1)}%
+        {pourcentage !== null && !equivalents && (
+          <Badge variant="outline" className="sim-puce encre grande shrink-0">
+            +{nombreFr(pourcentage, { maximumFractionDigits: 1 })}{'\u00a0'}% de Super-Net
           </Badge>
         )}
       </div>
 
+      {/* Le raisonnement, ligne par ligne sous une étiquette (§ 9.fu) : pourquoi, point de
+          bascule des charges, ce qui change. */}
+      {(pourquoi || phraseBascule || gestion) && (
+        <dl className="sim-conclusion-detail sim-conclusion-raisons" aria-live="polite" aria-busy={basculeEnAttente}>
+          {pourquoi && <div><dt>Pourquoi</dt><dd>{pourquoi}</dd></div>}
+          {phraseBascule && <div><dt>Point de bascule</dt><dd><PlaceGardee gabarit={gabaritBascule}>{phraseBascule}</PlaceGardee></dd></div>}
+          {gestion && <div><dt>{gestion.titre}</dt><dd>{gestion.texte}</dd></div>}
+        </dl>
+      )}
+
+      {/* Les chiffres du mois : le total à mettre de côté, sa répartition en barre, puis
+          ce qu'il resterait de 1 000 € de plus. */}
+      <div className="sim-conclusion-detail sim-conclusion-mois">
+        <p className="sim-mois-tete">À mettre de côté chaque mois pour ton activité libérale</p>
+        <p className="sim-mois-total">
+          <strong>{euros(totalMois)}</strong> <span>{partRecettes}{'\u00a0'}% de tes recettes</span>
+        </p>
+        {partsMois.length > 0 && (
+          <>
+            <div className="sim-mois-barre" aria-hidden="true">
+              {partsMois.map((p) => <span key={p.cle} className={p.cle} style={{ flexGrow: p.mois }} />)}
+            </div>
+            <ul className="sim-mois-parts">
+              {partsMois.map((p) => (
+                <li key={p.cle}><span className={`sim-mois-point ${p.cle}`} aria-hidden="true" />{p.nom} <strong>{euros(p.mois)}</strong></li>
+              ))}
+            </ul>
+          </>
+        )}
+        {/* § 9.gg : le pont vers Hippodoc, là où naît la question « et le reste de l'année ? ».
+            Sous le résultat, il n'y avait qu'un appel, 2 700 px plus bas au téléphone (3 clics
+            en 3 mois). */}
+        <p className="sim-conclusion-suite">
+          <span>Ce montant change à chaque journée travaillée. Hippodoc le tient à jour au fil de l'année.</span>
+          <a
+            href={`${APP_URL}/auth?tab=signup`}
+            className="sim-conclusion-cta"
+            data-track="cta_signup_simulateur_conclusion"
+            onClick={() => {
+              trackEvent('public_simulator_cta_clicked', { cta_type: 'signup', emplacement: 'conclusion' });
+              insertPublicEvent('simulateur_public_events', {
+                event_type: 'cta_conclusion',
+                session_id: (typeof window !== 'undefined' && window.localStorage.getItem('hippodoc-anon-session-id')) || 'unknown',
+              });
+            }}
+          >
+            Essai gratuit 30 jours
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        </p>
+      </div>
+
       {/* Alertes en pills compacts */}
-      {alerts.length > 0 && (
+      {shownAlerts.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
-          {alerts.map((alert, index) => {
+          {shownAlerts.map((alert, index) => {
             const AlertIcon = alert.icon;
             return (
               <span
                 key={index}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${getAlertPillStyle(alert.type)}`}
+                className={`sim-puce grande multi ${getAlertPillStyle(alert.type)}`}
               >
                 <AlertIcon className="h-3 w-3 shrink-0" />
                 {alert.message}

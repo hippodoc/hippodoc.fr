@@ -30,6 +30,28 @@ export const GUIDE_REMPLACANT_LAST_UPDATED_ISO = '2026-09-26';
  *  de revue éditoriale, et non leur date de création. */
 export const GUIDE_SOUS_PAGES_LAST_UPDATED_ISO = '2026-08-23';
 
+/** Accueil : épure de novembre 2026 (MIGRATION.md § 9.eu), textes coupés,
+ *  huit questions au lieu de dix, sections déplacées. Mise en ligne le
+ *  13 novembre 2026 (PR 144) ; ligne fine du premier écran retouchée le
+ *  14 novembre 2026 (§ 9.fy). */
+export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-14';
+
+/** /faq : douze réponses du schéma FAQPage alignées sur le texte affiché
+ *  (MIGRATION.md § 9.fa, PR 146), mises en ligne le 13 novembre 2026 ; le
+ *  texte visible de la page n'a pas changé ce jour-là. Elle portait avant la
+ *  date de l'accueil de la DA 2026 (10 novembre, § 9.eb). § 9.fd. */
+export const FAQ_LAST_UPDATED_ISO = '2026-11-13';
+
+/** /tarifs : tarif des internes et essai de 6 mois des syndicats partenaires
+ *  ajoutés le 11 novembre 2026 (MIGRATION.md § 9.ed). */
+export const TARIFS_LAST_UPDATED_ISO = '2026-11-11';
+
+/** /simulateur : dernière vérification des barèmes et des règles sur les sources officielles
+ *  (Urssaf, CARMF, Légifrance, barème de l'impôt), affichée sous les repères de la page et
+ *  portée par son JSON-LD (MIGRATION.md § 9.gp). À relever quand une règle ou un barème du
+ *  simulateur est revérifié, jamais à la date d'un simple habillage. */
+export const SIMULATEUR_LAST_UPDATED_ISO = '2026-11-15';
+
 export const STATIC_LASTMOD: Record<string, string> = {
   '/guide-declarations': GUIDE_DECLARATIONS_LAST_UPDATED_ISO,
   '/guide-declarations/dsfu-pamc': GUIDE_SOUS_PAGES_LAST_UPDATED_ISO,
@@ -38,4 +60,10 @@ export const STATIC_LASTMOD: Record<string, string> = {
   '/comparatif': COMPARATIF_LAST_UPDATED_ISO,
   /** Page du PDF offert : suit la date « À jour au » de l'édition (§ 9.di). */
   '/guide': GUIDE_REMPLACANT_LAST_UPDATED_ISO,
+  /** Accueil : sa propre date depuis l'épure (MIGRATION.md § 9.eu).
+   *  /faq : sa propre date depuis l'alignement de son schéma (§ 9.fd). */
+  '/': ACCUEIL_LAST_UPDATED_ISO,
+  '/faq': FAQ_LAST_UPDATED_ISO,
+  '/tarifs': TARIFS_LAST_UPDATED_ISO,
+  '/simulateur': SIMULATEUR_LAST_UPDATED_ISO,
 };

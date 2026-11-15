@@ -26,6 +26,14 @@ import { useCalculettePersistence, resetCalculettePersistence } from './useCalcu
  *
  * Toujours en contexte analytics 'public' (pas de variante « connectée » ici —
  * celle-ci reste dans l'app authentifiée, hors périmètre du site public).
+ *
+ * DA 2026 (phase 5d, MIGRATION.md § 9.el) : seul l'habillage change, ici et dans
+ * les trois autres .tsx de la calculette. `.calc` est posée sur la racine de
+ * l'îlot et sur ce que Radix rend dans <body> (bulles, listes, menu, boîtes de
+ * confirmation) ; src/styles/calculette.css y donne les couleurs et les formes
+ * de la DA, par les jetons des composants partagés, par leur rôle, et en
+ * recouvrant les utilitaires de couleur. États, effets, gestionnaires, schéma,
+ * moteur, sauvegarde locale : pas une ligne.
  */
 const ANALYTICS_CONTEXT = 'public' as const;
 
@@ -107,10 +115,10 @@ export default function CalculetteApp() {
   return (
     <>
       <FormProvider {...methods}>
-        <section className="max-w-6xl mx-auto px-4 grid lg:grid-cols-[1fr_420px] gap-6 lg:items-start overflow-x-clip print:block print:gap-0 print:px-0 print:overflow-visible">
+        <section className="calc calc-ile grid lg:grid-cols-[1fr_420px] gap-6 lg:items-start overflow-x-clip print:block print:gap-0 print:px-0 print:overflow-visible">
           <div className="space-y-3 min-w-0 print:hidden">
-            <div className="sticky top-16 sm:top-20 z-10 -mx-2 px-2 py-2 bg-[#fafbfc]/90 dark:bg-background/85 backdrop-blur-sm border-b border-[#e8ecf1] dark:border-border/40 flex items-center justify-between gap-2 flex-wrap print:hidden">
-              <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-muted-foreground">
+            <div className="calc-barre sticky z-10 flex items-center justify-between gap-2 flex-wrap print:hidden">
+              <span className="calc-sur">
                 {values.regimeFiscal === 'micro_bnc' ? 'Recettes Micro-BNC' : 'Cases 2035'}
               </span>
               <div className="flex items-center gap-1">
@@ -119,7 +127,7 @@ export default function CalculetteApp() {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="lg:hidden text-hippo-600 hover:text-hippo-700 text-xs"
+                    className="calc-outil fort lg:hidden"
                     onClick={() => {
                       document.getElementById('calculette-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }}
@@ -129,12 +137,12 @@ export default function CalculetteApp() {
                 )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs">
+                    <Button type="button" variant="ghost" size="sm" className="calc-outil">
                       <BookOpen className="h-3.5 w-3.5 mr-1.5" />
                       Charger un exemple
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-72">
+                  <DropdownMenuContent align="end" className="calc calc-pop calc-menu w-72">
                     {CALCULETTE_EXAMPLES.map((ex) => (
                       <DropdownMenuItem
                         key={ex.id}
@@ -142,13 +150,13 @@ export default function CalculetteApp() {
                         className="flex flex-col items-start gap-0.5 py-2"
                       >
                         <span className="text-sm font-medium">{ex.label}</span>
-                        <span className="text-[11px] text-muted-foreground leading-snug">{ex.description}</span>
+                        <span className="calc-menu-desc">{ex.description}</span>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Separator orientation="vertical" className="h-5 mx-1" />
-                <Button type="button" variant="ghost" size="sm" onClick={handleReset} className="text-muted-foreground hover:text-destructive text-xs">
+                <Button type="button" variant="ghost" size="sm" onClick={handleReset} className="calc-outil">
                   <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
                   Réinitialiser
                 </Button>
@@ -162,23 +170,22 @@ export default function CalculetteApp() {
                   onClick={() => {
                     document.getElementById('calculette-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }}
-                  className="w-full bg-hippo-500 hover:bg-hippo-600 text-white shadow-sm"
+                  className="calc-btn calc-btn-soleil w-full"
                 >
                   Voir mes résultats
                   <ArrowRight className="h-4 w-4 ml-1.5" />
                 </Button>
               </div>
             )}
-            <div className="lg:hidden pt-8 pb-2">
-              <div className="border-t border-[#e8ecf1] dark:border-border/60" />
-              <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500 dark:text-muted-foreground text-center -mt-2">
-                <span className="bg-[#fafbfc] dark:bg-background px-3">Résultats</span>
+            <div className="calc-separe lg:hidden">
+              <div />
+              <p className="calc-sur">
+                <span>Résultats</span>
               </p>
             </div>
           </div>
-          <div id="calculette-results" className="lg:sticky lg:top-24 min-w-0 scroll-mt-20 print:static print:top-0 print:bg-transparent">
-            <div className="relative overflow-hidden bg-white dark:bg-card rounded-2xl border border-[#e8ecf1] dark:border-border/60 shadow-md shadow-slate-200/40 lg:shadow-xl lg:shadow-slate-200/50 dark:shadow-none ring-1 ring-inset ring-white/60 dark:ring-white/5 p-5 sm:p-7 print:shadow-none print:border-0 print:ring-0 print:p-0 print:rounded-none">
-              <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-hippo-500/20 via-hippo-500 to-hippo-500/20 print:hidden" />
+          <div id="calculette-results" className="calc-colonne lg:sticky min-w-0 print:static print:top-0 print:bg-transparent">
+            <div className="calc-resultats relative overflow-hidden p-5 sm:p-7 print:shadow-none print:border-0 print:ring-0 print:p-0 print:rounded-none">
               <CalculetteResultsView
                 results={results}
                 annee={values.annee}
@@ -199,7 +206,7 @@ export default function CalculetteApp() {
 
       {/* Confirmation avant écrasement par un exemple */}
       <AlertDialog open={pendingExample !== null} onOpenChange={(o) => !o && setPendingExample(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="calc calc-dialogue">
           <AlertDialogHeader>
             <AlertDialogTitle>Remplacer ta saisie en cours ?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -222,7 +229,7 @@ export default function CalculetteApp() {
 
       {/* Confirmation avant réinitialisation */}
       <AlertDialog open={confirmReset} onOpenChange={setConfirmReset}>
-        <AlertDialogContent>
+        <AlertDialogContent className="calc calc-dialogue">
           <AlertDialogHeader>
             <AlertDialogTitle>Réinitialiser la calculette ?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -233,7 +240,7 @@ export default function CalculetteApp() {
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => { doReset(); setConfirmReset(false); }}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="calc-danger"
             >
               Réinitialiser
             </AlertDialogAction>

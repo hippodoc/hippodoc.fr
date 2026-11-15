@@ -1,17 +1,16 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, Info, Wallet, Landmark, Shield, Briefcase, Trophy, ChevronDown, Calculator, FileText, AlertTriangle, MapPin, Heart, Users, Percent, Building, GraduationCap, Leaf, Home, Stethoscope } from "lucide-react";
+import { ChevronDown, TrendingUp, Info, Wallet, Landmark, Shield, Briefcase, Trophy, Calculator, FileText, AlertTriangle, MapPin, Heart, Percent, Building, GraduationCap, Leaf, Home, Stethoscope } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SimulationResult } from "@/lib/simulation-types";
 import { PremiumTooltip } from "@/components/simulateur/PremiumTooltip";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState, useEffect } from "react";
-import { calculateIndividualizedTax, type IndividualizedTaxResult } from "@/lib/individualizedTax";
+import { impotDuMedecin, superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import { getDeclarationParams } from "@/lib/declarationParams";
 import { abattement10Salaire, getBaremeIR } from "@/lib/baremes-ir";
+import { SEUIL_EQUIVALENCE_ANNUEL } from "@/lib/simulateur/usePublicodesSimulation";
 
 import type { LieuExercice } from "@/lib/dom-tom";
+import { formatNombre, nombreFr } from "@/lib/simulateur/nombres";
 
 interface DomTomResultInfo {
   territoire: string;
@@ -35,76 +34,76 @@ interface RegimeComparisonCardsProps {
   isRSPMUsed?: boolean;  // ✅ Indique si RSPM a été utilisé
   situationFamiliale?: string;  // ✅ Pour le calcul du taux individualisé
   annee?: number;  // ✅ Année fiscale sélectionnée (pour tooltip ANCV dynamique)
+  plafondMicro?: number;  // Plafond de recettes du Micro-BNC pour l'année simulée
 }
 
-// Palette harmonisée avec les charts
-const HIPPO_COLORS = {
-  charges: 'hsl(35, 95%, 50%)',
-  cotisations: 'hsl(10, 85%, 55%)',
-  impots: 'hsl(250, 60%, 55%)',
-  superNet: 'hsl(150, 75%, 45%)',
+// Anneau de répartition des revenus (§ 9.fu) : où partent les recettes, charges,
+// cotisations, impôt, et ce qu'il reste (le Super-Net, en jaune comme sur la fiche).
+// Dessiné en SVG : la bibliothèque recharts, qui le dessinait avant le § 9.ft, n'est plus
+// chargée pour lui. Même taille (100 px, anneau de 30 à 46 px de rayon), mêmes couleurs.
+const ANNEAU_COULEURS = {
+  charges: '#8DB9F2',
+  cotisations: '#4F88DE',
+  impot: '#1F4FA8',
+  superNet: '#FFD84A',
 };
+const ANNEAU_RAYON = 38;
+const ANNEAU_TOUR = 2 * Math.PI * ANNEAU_RAYON;
+const ANNEAU_JOUR = (2 / 360) * ANNEAU_TOUR;
 
-
-// Mini-donut intégré dans les cartes de comparaison
-function MiniDonut({ charges, cotisations, impot, superNet, total }: {
+function AnneauRepartition({ charges, cotisations, impot, superNet, total }: {
   charges: number; cotisations: number; impot: number; superNet: number; total: number;
 }) {
-  const data = [
-    { name: 'Charges', value: charges, color: HIPPO_COLORS.charges },
-    { name: 'Cotisations', value: cotisations, color: HIPPO_COLORS.cotisations },
-    { name: 'Impôt', value: impot, color: HIPPO_COLORS.impots },
-    { name: 'Reste à vivre', value: superNet, color: HIPPO_COLORS.superNet },
-  ].filter(d => d.value > 0);
-
   if (total <= 0) return null;
-
-  const formatTotal = (v: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(v);
+  const parts = [
+    { nom: 'Charges', valeur: charges, couleur: ANNEAU_COULEURS.charges },
+    { nom: 'Cotisations', valeur: cotisations, couleur: ANNEAU_COULEURS.cotisations },
+    { nom: 'Impôt', valeur: impot, couleur: ANNEAU_COULEURS.impot },
+    { nom: 'Super-Net', valeur: superNet, couleur: ANNEAU_COULEURS.superNet },
+  ].filter((p) => p.valeur > 0);
+  const somme = parts.reduce((a, p) => a + p.valeur, 0);
+  const jour = parts.length > 1 ? ANNEAU_JOUR : 0;
+  let depart = 0;
+  const arcs = parts.map((p) => {
+    const longueur = (p.valeur / somme) * ANNEAU_TOUR;
+    const arc = { ...p, trait: Math.max(0, longueur - jour), decalage: -depart };
+    depart += longueur;
+    return arc;
+  });
+  const enEuros = formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(total);
 
   return (
-    <div className="flex flex-col items-center gap-2 py-3">
-      <div className="relative w-[100px] h-[100px] flex-shrink-0">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={30}
-              outerRadius={46}
-              paddingAngle={2}
-              dataKey="value"
-              animationBegin={0}
-              animationDuration={800}
-              animationEasing="ease-out"
-              stroke="none"
-            >
-              {data.map((entry, i) => (
-                <Cell key={i} fill={entry.color} />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-        {/* Label central */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center">
-            <p className="text-[7px] text-muted-foreground leading-tight">Revenus</p>
-            <p className="text-[10px] font-bold text-foreground leading-tight">{formatTotal(total)}</p>
-          </div>
-        </div>
+    <div className="sim-anneau">
+      <div className="sim-anneau-dessin">
+        <svg viewBox="0 0 100 100" width="100" height="100" aria-hidden="true">
+          {arcs.map((a) => (
+            <circle
+              key={a.nom}
+              cx="50"
+              cy="50"
+              r={ANNEAU_RAYON}
+              fill="none"
+              stroke={a.couleur}
+              strokeWidth="16"
+              strokeDasharray={`${a.trait} ${ANNEAU_TOUR}`}
+              strokeDashoffset={a.decalage}
+              transform="rotate(-90 50 50)"
+            />
+          ))}
+        </svg>
+        <p className="sim-anneau-centre">
+          <span>Revenus</span>
+          <strong>{enEuros}</strong>
+        </p>
       </div>
-      <div className="flex flex-wrap justify-center gap-x-3 gap-y-1">
-        {data.map((item) => {
-          const pct = Math.round((item.value / total) * 100);
-          return (
-            <div key={item.name} className="flex items-center gap-1.5 text-xs">
-              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-              <span className="text-muted-foreground">{item.name}</span>
-              <span className="font-semibold">{pct}%</span>
-            </div>
-          );
-        })}
-      </div>
+      <ul className="sim-anneau-legende">
+        {parts.map((p) => (
+          <li key={p.nom}>
+            <span className="sim-anneau-point" style={{ backgroundColor: p.couleur }} aria-hidden="true" />
+            {p.nom} <strong>{Math.round((p.valeur / total) * 100)}{'\u00a0'}%</strong>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -123,7 +122,9 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
       
       // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      setCount(Math.floor(easeOutQuart * end));
+      // L'arrivée est le montant arrondi à l'euro, comme partout ailleurs (« soit … /mois »,
+      // RSPM ou PAMC, conclusion) : `Math.floor` laissait 34 216 € quand le reste disait 34 217 €.
+      setCount(progress < 1 ? Math.floor(easeOutQuart * end) : Math.round(end));
       
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
@@ -133,16 +134,35 @@ function CountUp({ end, duration = 1.2 }: { end: number; duration?: number }) {
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, [end, duration]);
-  
-  return <>{count.toLocaleString('fr-FR')}</>;
+
+  // § 9.gm : l'élément porte d'emblée le montant final, qui fait sa largeur ; tant que le compteur
+  // tourne, ce montant est transparent et le nombre qui défile est dessiné par-dessus, calé à droite
+  // contre « € », hors du flux (`.sim-compteur-en-cours::after`, simulateur.css, qui lit
+  // `data-valeur`). Sa largeur ne compte plus dans la mise en page. Avant, elle changeait à chaque
+  // image : « € » et « /an » bougeaient (60 à 100 petits décalages comptés par calcul, sur
+  // ordinateur) et au téléphone « /an » passait à la ligne puis en revenait (les tuiles grandissaient
+  // et rapetissaient de 22 px, jusqu'à huit fois). Le texte de l'élément, celui que lisent un lecteur
+  // d'écran et une copie, est le montant final. Un nombre en cours plus large que lui (10 999 contre
+  // 11 318 : les chiffres n'ont pas tous la même chasse) déborde à gauche, dans la marge de la tuile,
+  // le temps de quelques images.
+  const final = Math.round(end);
+  const enCours = count !== final;
+  return (
+    <span className={enCours ? "sim-compteur sim-compteur-en-cours" : "sim-compteur"} data-valeur={enCours ? nombreFr(count) : undefined}>
+      {nombreFr(final)}
+    </span>
+  );
 }
 
-export function RegimeComparisonCards({ reel, microBnc, recommande, economie, periode, recettesAnnuelles, revenusSalariesAnnuels = 0, revenusConjointAnnuels = 0, liberalExonereAnnuel = 0, domTomInfo, lieuExercice, isRSPMUsed, situationFamiliale = 'marie_pacse', annee = 2026 }: RegimeComparisonCardsProps) {
-  const [isInfoOpen, setIsInfoOpen] = useState(false);
+export function RegimeComparisonCards({ reel, microBnc, recommande, economie, periode, recettesAnnuelles, revenusSalariesAnnuels = 0, revenusConjointAnnuels = 0, liberalExonereAnnuel = 0, domTomInfo, lieuExercice, isRSPMUsed, situationFamiliale = 'marie_pacse', annee = 2026, plafondMicro = 83600 }: RegimeComparisonCardsProps) {
   
+  // Détail des fiches ouvert d'emblée à partir de 768 px (§ 9.gg). Les fiches ne se rendent
+  // qu'après un calcul, dans le navigateur : la fenêtre est connue.
+  const [detailOuvertParDefaut] = useState(() => typeof window === 'undefined' || window.matchMedia('(min-width: 768px)').matches);
+
   const formatMontant = (montant: number) => {
     const value = periode === 'mensuel' ? montant / 12 : montant;
-    return new Intl.NumberFormat('fr-FR', {
+    return formatNombre('fr-FR', {
       style: 'currency',
       currency: 'EUR',
       maximumFractionDigits: 0,
@@ -150,7 +170,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
   };
 
   const periodeSuffix = periode === 'mensuel' ? '/mois' : '/an';
-  const PLAFOND_MICRO_BNC = 83600;
+  const PLAFOND_MICRO_BNC = plafondMicro;
+  const plafondTexte = formatNombre('fr-FR', { maximumFractionDigits: 0 }).format(PLAFOND_MICRO_BNC);
   // `recettesAnnuelles && ...` vaut 0 (et non false) quand les recettes sont
   // nulles : JSX afficherait alors littéralement « 0 » à la place du bloc.
   const depassePlafond = Boolean(recettesAnnuelles && recettesAnnuelles > PLAFOND_MICRO_BNC);
@@ -161,7 +182,12 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
   const hasRevenusConjoint = revenusConjointAnnuels > 0;
   const revenusTotaux = (recettesAnnuelles || 0) + revenusSalariesAnnuels;
 
-  const renderCard = (type: 'reel' | 'micro-bnc', result: SimulationResult, isRecommended: boolean, showWarning: boolean = false) => {
+  // § 9.gh : une seule fiche « Les deux régimes » ; cette fonction en rend un morceau par régime :
+  // la tuile du Super-Net, l'anneau (régime recommandé seulement) ou le détail ligne par ligne.
+  const renderCard = (type: 'reel' | 'micro-bnc', result: SimulationResult, estDevant: boolean, showWarning: boolean = false, partie: 'tuile' | 'anneau' | 'detail' = 'tuile') => {
+    // Le badge « Recommandé » et le Super-Net sur jaune ne vont qu'au régime qui l'emporte
+    // vraiment : sous le seuil d'équivalence, les deux se valent (la conclusion le dit).
+    const isRecommended = estDevant && economie >= SEUIL_EQUIVALENCE_ANNUEL;
     const title = type === 'reel' ? 'Régime Réel' : 'Micro-BNC';
     const description = type === 'reel' 
       ? 'Charges réelles déductibles' 
@@ -169,54 +195,15 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
     const Icon = type === 'reel' ? FileText : Calculator;
     const superNetLabel = 'Super-Net';
 
-    // ✅ Calcul de l'impôt individuel du médecin avec le vrai taux individualisé DGFiP
-    const getImpotMedecin = (): IndividualizedTaxResult => {
-      if (!hasRevenusConjoint) {
-        return { 
-          impotMedecin: result.impot, 
-          impotConjoint: 0, 
-          tauxMedecin: 0, 
-          tauxConjoint: 0, 
-          tauxFoyer: 0,
-          medecinEstMoinsDisant: false 
-        };
-      }
-      
-      // Revenus imposables (après abattements fiscaux)
-      const revenuImposableMedecin = (result.impotDetails?.revenuImposableLiberal || 0) + 
-                                      (result.impotDetails?.revenuImposableSalarie || 0);
-      const revenuImposableConjoint = result.impotDetails?.revenuImposableConjoint || 0;
-      
-      // Assiettes PAS (revenus bruts pour le prélèvement à la source)
-      // Pour le médecin libéral : BNC net = CA - charges - cotisations (pas le revenu imposable après abattement)
-      // Pour le médecin salarié : salaire brut (AVANT abattement 10%)
-      // Pour le conjoint salarié : salaire brut (AVANT abattement 10%)
-      const bncNet = (recettesAnnuelles || 0) - (result.chargesReelles || 0) - (result.cotisationsTotales ?? 0);
-      const salaireBrutMedecin = revenusSalariesAnnuels || 0;
-      const brutMedecin = bncNet + salaireBrutMedecin;
-      const brutConjoint = revenusConjointAnnuels;
-      
-      const parts = result.impotDetails?.parts || 2;
-      
-      return calculateIndividualizedTax(
-        revenuImposableMedecin,
-        revenuImposableConjoint,
-        brutMedecin,
-        brutConjoint,
-        result.impot ?? 0,
-        parts,
-        situationFamiliale
-      );
-    };
-
-    const taxResult = getImpotMedecin();
+    // Impôt du médecin (sa part au taux individualisé quand le conjoint a des revenus) : le
+    // même calcul que la conclusion et le pli du prélèvement (`impotDuMedecin`).
+    const taxResult = impotDuMedecin(result, { revenusSalariesAnnuels, revenusConjointAnnuels, situationFamiliale });
     const { impotMedecin, impotConjoint, tauxMedecin, tauxConjoint, tauxFoyer, medecinEstMoinsDisant } = taxResult;
 
-    // ✅ Calcul du Super-Net réel du médecin (avec son impôt individuel)
-    // Inclut les revenus libéraux ET salariés du médecin (Bug 2 corrigé)
-    const superNetMedecinReel = hasRevenusConjoint 
-      ? (recettesAnnuelles || 0) + revenusSalariesAnnuels - (result.chargesReelles || 0) - (result.cotisationsTotales ?? 0) - impotMedecin
-      : (result.superNet ?? 0);
+    // Super-Net du médecin : celui du moteur (ses revenus, charges payées, cotisations,
+    // crédits remboursés), avec sa part de l'impôt du foyer au lieu de l'impôt entier. Le
+    // calcul d'avant reprenait les recettes à la main et oubliait PDSA et crédits remboursés.
+    const superNetMedecinReel = superNetDuMedecin(result, { revenusSalariesAnnuels, revenusConjointAnnuels, situationFamiliale });
 
     // Detail items with icons and JSX tooltip content
     const detailItems: Array<{
@@ -228,6 +215,8 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       tooltip?: string;
       tooltipContent?: React.ReactNode;
       isInfoLine?: boolean;
+      /** Sous-total (§ 9.gn) : la somme des montants affichés de `parts`, arrondis un à un. */
+      parts?: number[];
       badge?: string;  // ✅ Badge optionnel (ex: "Exonéré IR")
     }> = [];
 
@@ -236,7 +225,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Stethoscope,
       label: "Revenus libéraux",
       value: recettesAnnuelles || 0,
-      colorClass: "text-hippo-500",
+      colorClass: "sim-marque",
       negative: false,
       tooltip: "Vos recettes d'activité libérale avant toute déduction"
     });
@@ -251,7 +240,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Briefcase,
         label: "Revenus salariés",
         value: revenusSalariesAnnuels,
-        colorClass: "text-sky-500",
+        colorClass: "sim-marque",
         negative: false,
         tooltip: `${formatMontant(revenusSalariesAnnuels)} brut − ${formatMontant(abattementSalaries)} (abattement 10%) = ${formatMontant(imposableSalaries)} imposable`
       });
@@ -284,7 +273,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Heart,
         label: "Revenus du conjoint",
         value: revenusConjointAnnuels,
-        colorClass: "text-pink-500",
+        colorClass: "sim-marque",
         negative: false,
         tooltip: getConjointTooltip()
       });
@@ -296,7 +285,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Shield,
         label: "dont PDSA",
         value: liberalExonereAnnuel,
-        colorClass: "text-emerald-500",
+        colorClass: "sim-marque",
         negative: false,
         badge: "Exonéré IR",
         tooltip: "Inclus dans tes honoraires. Exonéré d'IR (Art. 151 ter CGI) mais soumis aux cotisations sociales."
@@ -305,11 +294,11 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
     // ✅ Helper TMI badge coloré
     const getTMIBadgeClass = (tmi: number): string => {
-      if (tmi <= 0) return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300';
-      if (tmi <= 11) return 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300';
-      if (tmi <= 30) return 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300';
-      if (tmi <= 41) return 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300';
-      return 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300';
+      if (tmi <= 0) return 'ok';
+      if (tmi <= 11) return 'info';
+      if (tmi <= 30) return 'attn';
+      if (tmi <= 41) return 'attn';
+      return 'attn fort';
     };
 
     // ✅ Tooltip JSX "Revenu imposable" - Composition détaillée avec optimisations
@@ -323,7 +312,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-blue-400" />
+            <Wallet className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Composition du revenu imposable</span>
           </div>
           
@@ -332,7 +321,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {/* Libéral */}
             <div className="flex justify-between gap-4 items-start">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                <div className="sim-point a" />
                 <span className="text-muted-foreground">Libéral :</span>
               </div>
               <div className="text-right">
@@ -348,35 +337,35 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
 
             {/* Optimisations appliquées (visibles dans le tooltip) */}
             {optim && type === 'reel' && (
-              <div className="space-y-1 pl-3 border-l-2 border-emerald-200 dark:border-emerald-800 ml-1">
+              <div className="sim-retrait space-y-1 pl-3 ml-1">
                 {optim.forfait2pct && optim.forfait2pct > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Forfait 2% :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.forfait2pct)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.forfait2pct)}</span>
                   </div>
                 )}
                 {optim.deductionsS1 && optim.deductionsS1 > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Déductions S1 :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.deductionsS1)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.deductionsS1)}</span>
                   </div>
                 )}
                 {optim.cotisationsVolontaires && optim.cotisationsVolontaires > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− PER/Madelin :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.cotisationsVolontaires)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.cotisationsVolontaires)}</span>
                   </div>
                 )}
                 {optim.chequesVacances && optim.chequesVacances > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Chèques-vacances :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.chequesVacances)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.chequesVacances)}</span>
                   </div>
                 )}
                 {optim.exonerationZone && optim.exonerationZone > 0 && (
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground text-[10px]">− Zone exonérée ({Math.round((optim.tauxExonerationZone || 0) * 100)}%) :</span>
-                    <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">−{formatMontant(optim.exonerationZone)}</span>
+                    <span className="sim-eau text-[10px] font-medium">−{formatMontant(optim.exonerationZone)}</span>
                   </div>
                 )}
               </div>
@@ -386,7 +375,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {hasRevenusSalaries && (
               <div className="flex justify-between gap-4 items-start">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-sky-500" />
+                  <div className="sim-point b" />
                   <span className="text-muted-foreground">Salarié :</span>
                 </div>
                 <div className="text-right">
@@ -402,7 +391,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {hasRevenusConjoint && (
               <div className="flex justify-between gap-4 items-start">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-pink-500" />
+                  <div className="sim-point c" />
                   <span className="text-muted-foreground">Conjoint :</span>
                 </div>
                 <div className="text-right">
@@ -415,7 +404,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {optim?.revenuFoncier && optim.revenuFoncier !== 0 && (
               <div className="flex justify-between gap-4 items-start">
                 <div className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full ${optim.revenuFoncier < 0 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                  <div className="sim-point d" />
                   <span className="text-muted-foreground">
                     {optim.revenuFoncier < 0 
                       ? 'Déficit foncier :' 
@@ -423,7 +412,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                   </span>
                 </div>
                 <div className="text-right">
-                  <div className={`font-medium ${optim.revenuFoncier < 0 ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
+                  <div className="font-medium">
                     {optim.revenuFoncier > 0 ? '+' : ''}{formatMontant(optim.revenuFoncier)}
                   </div>
                 </div>
@@ -434,16 +423,16 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Total */}
           <div className="flex justify-between gap-4 pt-1.5 border-t border-border/40">
             <span className="text-xs font-medium">Total imposable :</span>
-            <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+            <span className="text-xs font-bold">
               {formatMontant(result.revenuImposableTotal || (liberal + salarie + conjoint))}
             </span>
           </div>
 
           {/* Crédits d'impôt (post-impôt) */}
           {optim && ((optim.creditFormation && optim.creditFormation > 0) || (optim.creditImpotAutre && optim.creditImpotAutre > 0) || (optim.creditEmploiDomicile && optim.creditEmploiDomicile > 0) || (optim.creditGardeEnfants && optim.creditGardeEnfants > 0)) && (
-            <div className="bg-emerald-100 dark:bg-emerald-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-emerald-800 dark:text-emerald-200">💡 Crédits d'impôt appliqués</strong>
-              <p className="text-emerald-700 dark:text-emerald-300 mt-1">
+            <div className="sim-note ok">
+              <strong>Crédits d'impôt appliqués</strong>
+              <p className="mt-1">
                 {[
                   optim.creditFormation ? `Formation : −${formatMontant(optim.creditFormation)}` : '',
                   optim.creditEmploiDomicile ? `Emploi domicile : −${formatMontant(optim.creditEmploiDomicile)}` : '',
@@ -475,7 +464,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header avec icône contextuelle */}
           <div className="flex items-center gap-2">
-            <Landmark className="h-4 w-4 text-indigo-400" />
+            <Landmark className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">
               {hasRevenusConjoint 
                 ? "Impôt du foyer fiscal" 
@@ -501,20 +490,21 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           {/* Badge TMI + Taux effectif */}
           {tmi !== undefined && (
             <div className="flex items-center gap-2 pt-1.5 border-t border-border/40">
-              <div className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${getTMIBadgeClass(tmi)}`}>
+              <div className={`sim-puce ${getTMIBadgeClass(tmi)}`}>
                 TMI {tmi}%
               </div>
               <span className="text-[10px] text-muted-foreground">
-                Taux effectif : {tauxEffectif ?? (revenuTotal > 0 ? Math.round((result.impot / revenuTotal) * 100) : 0)}%
+                {/* Affichage seul : une décimale au plus, à la française. Le calcul rend le taux brut (3.7918173598553344). */}
+                Taux effectif : {nombreFr(tauxEffectif ?? (revenuTotal > 0 ? Math.round((result.impot / revenuTotal) * 100) : 0), { maximumFractionDigits: 1 })}{'\u00a0'}%
               </span>
             </div>
           )}
           
           {/* ✅ Encart plafonnement QF si appliqué */}
           {plafonnementApplique && (
-            <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-amber-800 dark:text-amber-200">⚠️ Plafonnement appliqué</strong>
-              <p className="text-amber-700 dark:text-amber-300 mt-1">
+            <div className="sim-note attn">
+              <strong>Plafonnement appliqué</strong>
+              <p className="mt-1">
                 L'avantage fiscal lié à tes enfants est limité à {formatMontant(plafondUtilise || 0)}.
                 <br />
                 Sans ce plafond, tu aurais économisé {formatMontant(avantageEnfantsInitial || 0)}.
@@ -523,7 +513,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           )}
           
           {/* Encart pédagogique */}
-          <div className="bg-slate-100 dark:bg-slate-800/50 rounded-lg p-2 text-[10px] text-muted-foreground leading-relaxed">
+          <div className="sim-note neutre">
             <strong className="text-foreground">Quotient familial</strong> : ton revenu est divisé par tes parts 
             avant d'appliquer le barème progressif, puis multiplié à nouveau.
           </div>
@@ -542,7 +532,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <Landmark className="h-4 w-4 text-indigo-400" />
+            <Landmark className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Ma part d'impôt (taux individualisé)</span>
           </div>
           
@@ -555,21 +545,21 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           <div className="space-y-1.5 text-xs">
             <div className="flex justify-between gap-4 items-center">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-hippo-500" />
+                <div className="sim-point a" />
                 <span className="text-muted-foreground">
-                  Toi (~{tauxMedecin}%) :
+                  Toi (~{nombreFr(tauxMedecin)}{'\u00a0'}%) :
                 </span>
               </div>
-              <span className="font-medium text-hippo-600 dark:text-hippo-400">{formatMontant(impotMedecin)}</span>
+              <span className="font-medium">{formatMontant(impotMedecin)}</span>
             </div>
             <div className="flex justify-between gap-4 items-center">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-pink-500" />
+                <div className="sim-point c" />
                 <span className="text-muted-foreground">
-                  Conjoint (~{tauxConjoint}%) :
+                  Conjoint (~{nombreFr(tauxConjoint)}{'\u00a0'}%) :
                 </span>
               </div>
-              <span className="font-medium text-pink-600 dark:text-pink-400">{formatMontant(impotConjoint)}</span>
+              <span className="font-medium">{formatMontant(impotConjoint)}</span>
             </div>
             <div className="flex justify-between gap-4 pt-1 border-t border-border/40">
               <span className="font-medium">Total foyer :</span>
@@ -578,15 +568,15 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
             {tauxFoyer > 0 && (
               <div className="flex justify-between gap-4 text-muted-foreground">
                 <span className="text-[10px]">Taux foyer unique :</span>
-                <span className="text-[10px]">~{tauxFoyer}%</span>
+                <span className="text-[10px]">~{nombreFr(tauxFoyer)}{'\u00a0'}%</span>
               </div>
             )}
         </div>
           
           {/* Avertissement */}
-          <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-            <strong className="text-amber-800 dark:text-amber-200">⚠️ Estimation indicative</strong>
-            <p className="text-amber-700 dark:text-amber-300 mt-1">
+          <div className="sim-note attn">
+            <strong>Estimation indicative</strong>
+            <p className="mt-1">
               Les vrais taux sont calculés par la DGFiP avec des règles supplémentaires (revenus communs, arrondis officiels, etc.).
             </p>
           </div>
@@ -594,157 +584,111 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       );
     };
     
-    // ✅ Tooltip JSX "Parts fiscales"
-    const getPartsTooltipContent = () => {
-      const parts = result.impotDetails?.parts || 1;
-      
+    // Cotisations, par organisme (§ 9.ge). En PAMC, une ligne Urssaf et une ligne CARMF, aux
+    // montants de la conclusion (CARMF = retraite du détail, Urssaf = le reste) ; une CARMF nulle
+    // (dispense) n'a pas de ligne. Au RSPM, une seule ligne : tout se paie à l'Urssaf, part de la
+    // CARMF comprise (§ 9.fw). Rien ne se recalcule ici : les montants viennent du moteur.
+    const detail = result.cotisationsDetail;
+    const isRSPM = Boolean(result.isRSPM);
+    const carmfLigne = isRSPM ? 0 : Math.round(Math.max(0, detail?.retraite ?? 0));
+    const urssafLigne = Math.round(Math.max(0, result.cotisationsTotales)) - carmfLigne;
+
+    const ligneCotisation = (libelle: string, montant: number) => (
+      <div key={libelle} className="flex justify-between gap-4">
+        <span className="text-muted-foreground">{libelle}{'\u00a0'}:</span>
+        <span className="font-medium">{formatMontant(montant)}</span>
+      </div>
+    );
+    // Les lignes d'un organisme ; un reste d'au moins 1 € (arrondis, exonération) a sa ligne, pour
+    // que le détail fasse toujours le sous-total.
+    const lignesCotisations = (lignes: Array<[string, number]>, sousTotal: number, libelleReste: string) => {
+      const visibles = lignes.filter(([, v]) => Math.round(v) !== 0);
+      const reste = Math.round(sousTotal - visibles.reduce((t, [, v]) => t + v, 0));
       return (
-        <div className="space-y-2">
-          {/* Header */}
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-violet-400" />
-            <span className="font-semibold text-sm">Parts fiscales</span>
-          </div>
-          
-          {/* Composition */}
-          <div className="space-y-1 text-xs">
-            <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground">
-                {isCoupleFiscal ? "Couple marié/pacsé :" : "Célibataire :"}
-              </span>
-              <span className="font-medium">{isCoupleFiscal ? "2 parts" : "1 part"}</span>
-            </div>
-            
-            {/* Enfants si applicable */}
-            {(parts > 2 || (parts > 1 && !isCoupleFiscal)) && (
-              <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground">Enfants à charge :</span>
-                <span className="font-medium">
-                  +{(parts - (isCoupleFiscal ? 2 : 1)).toFixed(1)} part(s)
-                </span>
-              </div>
-            )}
-          </div>
-          
-          {/* Total avec badge */}
-          <div className="flex items-center justify-between pt-1.5 border-t border-border/40">
-            <span className="text-xs font-medium">Total :</span>
-            <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:border-violet-700 text-[10px]">
-              {parts} part{parts > 1 ? 's' : ''}
-            </Badge>
-          </div>
-          
-          {/* Note pédagogique courte */}
-          <p className="text-[10px] text-muted-foreground italic">
-            Plus tu as de parts, plus ton impôt est réduit grâce au quotient familial.
-          </p>
+        <div className="space-y-1 text-xs">
+          {visibles.map(([l, v]) => ligneCotisation(l, v))}
+          {Math.abs(reste) >= 1 && ligneCotisation(libelleReste, reste)}
         </div>
       );
     };
+    const enTeteCotisations = (titre: string) => (
+      <div className="flex items-center gap-2 flex-wrap">
+        <Shield className="sim-marque h-4 w-4" />
+        <span className="font-semibold text-sm">{titre}</span>
+        <Badge variant="outline" className={cn("sim-puce petite", isRSPM ? "info" : "neutre")}>
+          {isRSPM ? 'RSPM' : 'PAMC'}
+        </Badge>
+      </div>
+    );
+    const totalCotisations = (montant: number) => (
+      <div className="flex justify-between gap-4 pt-1.5 border-t border-border/40">
+        <span className="text-xs font-medium">Total{'\u00a0'}:</span>
+        <span className="text-xs font-bold">{formatMontant(montant)}</span>
+      </div>
+    );
+    // Déductibilité : au réel seulement (en micro-BNC, l'abattement de 34 % en tient lieu).
+    const deductibiliteCotisations = (avecCsg: boolean) => type === 'reel' ? (
+      <div className="sim-note info">
+        <strong>Déductibles du revenu libéral</strong>
+        <p className="mt-1">
+          {avecCsg
+            ? "Ces cotisations réduisent ton revenu imposable, sauf la part non déductible de la CSG-CRDS (2,9 points sur 9,7)."
+            : "Ces cotisations réduisent ton revenu imposable."}
+        </p>
+      </div>
+    ) : (
+      <div className="sim-note neutre">
+        <strong>Non déduites en Micro-BNC</strong>
+        <p className="mt-1">
+          L'abattement forfaitaire de 34 % tient lieu de toutes tes déductions, cotisations comprises.
+        </p>
+      </div>
+    );
 
-    // ✅ Tooltip JSX "Cotisations sociales" - Détail URSSAF + CARMF + déductibilité
-    const getCotisationsTooltipContent = () => {
-      const detail = result.cotisationsDetail;
-      const isRSPM = result.isRSPM;
+    const getUrssafTooltipContent = () => (
+      <div className="space-y-2.5">
+        {enTeteCotisations(isRSPM ? 'Cotisations Urssaf (RSPM)' : 'Cotisations Urssaf')}
+        {isRSPM
+          ? lignesCotisations([
+              ['Cotisation RSPM (taux global)', urssafLigne - (detail?.retraiteRid ?? detail?.retraite ?? 0)],
+              ['Invalidité-décès (part de la CARMF)', detail?.retraiteRid ?? detail?.retraite ?? 0],
+            ], urssafLigne, 'Autres contributions')
+          : lignesCotisations([
+              ['Maladie, indemnités journalières', detail?.maladie ?? 0],
+              ['Allocations familiales', detail?.allocationsFamiliales ?? 0],
+              ['CSG-CRDS', detail?.csgCrds ?? 0],
+              ['Formation et CURPS', detail?.formation ?? 0],
+            ], urssafLigne, 'Autres contributions')}
+        {totalCotisations(urssafLigne)}
+        {deductibiliteCotisations(true)}
+        <p className="text-[10px] text-muted-foreground italic">
+          {isRSPM
+            ? "Au RSPM, tout se paie à l'Urssaf, part de la CARMF comprise : taux global selon tes recettes, plus l'invalidité-décès."
+            : carmfLigne === 0
+              ? "Calculées par le modèle de l'Urssaf. CARMF : dispense d'affiliation, aucune cotisation."
+              : "Calculées par le modèle de l'Urssaf. La retraite est appelée par la CARMF : ligne suivante."}
+        </p>
+      </div>
+    );
 
+    const getCarmfTooltipContent = () => {
+      const base = detail?.retraiteBase ?? 0;
+      const asv = detail?.asv ?? 0;
+      // Sans détail de la base et de l'ASV (ancien calcul de secours), le reste les regroupe.
+      const libelleReste = base === 0 && asv === 0 ? 'Retraite de base et ASV' : 'Exonération';
       return (
         <div className="space-y-2.5">
-          {/* Header avec badge régime */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Shield className="h-4 w-4 text-orange-400" />
-            <span className="font-semibold text-sm">Cotisations sociales</span>
-            <Badge variant="outline" className={cn(
-              "text-[9px]",
-              isRSPM 
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700" 
-                : "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-600"
-            )}>
-              {isRSPM ? 'RSPM' : 'PAMC'}
-            </Badge>
-          </div>
-          
-          {/* Détail des cotisations */}
-          {detail && (
-            <div className="space-y-1 text-xs">
-              {/* Affichage détaillé CARMF si on a le split RID/Complémentaire */}
-              {(detail.retraiteRid !== undefined || detail.retraiteComplementaire !== undefined) ? (
-                <>
-                  {(detail.retraiteRid ?? 0) > 0 && (
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF RID :</span>
-                      <span className="font-medium">{formatMontant(detail.retraiteRid || 0)}</span>
-                    </div>
-                  )}
-                  {(detail.retraiteComplementaire ?? 0) > 0 && (
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF complémentaire :</span>
-                      <span className="font-medium">{formatMontant(detail.retraiteComplementaire || 0)}</span>
-                    </div>
-                  )}
-                  {(detail.retraiteRid ?? 0) === 0 && (detail.retraiteComplementaire ?? 0) === 0 && detail.retraite === 0 && (
-                    <div className="flex justify-between gap-4">
-                      <span className="text-muted-foreground">CARMF :</span>
-                      <span className="font-medium">0 €</span>
-                    </div>
-                  )}
-                </>
-              ) : (
-                detail.retraite > 0 && (
-                  <div className="flex justify-between gap-4">
-                    <span className="text-muted-foreground">CARMF (retraite) :</span>
-                    <span className="font-medium">{formatMontant(detail.retraite)}</span>
-                  </div>
-                )
-              )}
-              {detail.csgCrds > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">CSG-CRDS :</span>
-                  <span className="font-medium">{formatMontant(detail.csgCrds)}</span>
-                </div>
-              )}
-              {detail.maladie > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">Maladie :</span>
-                  <span className="font-medium">{formatMontant(detail.maladie)}</span>
-                </div>
-              )}
-              {detail.allocationsFamiliales > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">Alloc. familiales :</span>
-                  <span className="font-medium">{formatMontant(detail.allocationsFamiliales)}</span>
-                </div>
-              )}
-              {detail.formation > 0 && (
-                <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground">Formation :</span>
-                  <span className="font-medium">{formatMontant(detail.formation)}</span>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Total avec séparateur */}
-          <div className="flex justify-between gap-4 pt-1.5 border-t border-border/40">
-            <span className="text-xs font-medium">Total :</span>
-            <span className="text-xs font-bold text-orange-600 dark:text-orange-400">
-              {formatMontant(result.cotisationsTotales)}
-            </span>
-          </div>
-          
-          {/* ✅ Encart pédagogique sur la déductibilité du CA libéral */}
-          <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-            <strong className="text-blue-800 dark:text-blue-200">💡 Déductibles du CA libéral</strong>
-            <p className="text-blue-700 dark:text-blue-300 mt-1">
-              Ces cotisations réduisent ton revenu imposable, diminuant ainsi ton impôt final.
-            </p>
-          </div>
-          
-          {/* Note régime */}
+          {enTeteCotisations('Cotisations CARMF')}
+          {lignesCotisations([
+            ['Retraite de base', base],
+            ['Retraite complémentaire', detail?.retraiteComplementaire ?? 0],
+            ['ASV (allocations supplémentaires de vieillesse)', asv],
+            ['Invalidité-décès', detail?.retraiteRid ?? 0],
+          ], carmfLigne, libelleReste)}
+          {totalCotisations(carmfLigne)}
+          {deductibiliteCotisations(false)}
           <p className="text-[10px] text-muted-foreground italic">
-            {isRSPM 
-              ? "Régime simplifié : taux forfaitaires appliqués selon ton CA"
-              : "Cotisations calculées selon le barème URSSAF en vigueur"
-            }
+            En secteur 1, l'Assurance maladie prend en charge une partie de la retraite de base et les deux tiers de l'ASV : les montants sont nets de cette prise en charge.
           </p>
         </div>
       );
@@ -760,7 +704,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         <div className="space-y-2.5">
           {/* Header */}
           <div className="flex items-center gap-2">
-            <Briefcase className="h-4 w-4 text-amber-400" />
+            <Briefcase className="sim-marque h-4 w-4" />
             <span className="font-semibold text-sm">Charges professionnelles</span>
           </div>
           
@@ -772,17 +716,17 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           
           {/* Explication contextuelle selon régime */}
           {type === 'micro-bnc' ? (
-            <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-amber-800 dark:text-amber-200">⚠️ Non déductibles en Micro-BNC</strong>
-              <p className="text-amber-700 dark:text-amber-300 mt-1">
-                L'abattement forfaitaire de 34 % (CGI Art. 102 ter) remplace tes charges réelles.
-                Elles sont saisies à titre d'information mais n'impactent ni l'impôt ni le Super-Net.
+            <div className="sim-note attn">
+              <strong>Non déductibles en Micro-BNC</strong>
+              <p className="mt-1">
+                L'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges réelles pour
+                l'impôt. Tu les paies quand même : elles sont retirées de ton Super-Net.
               </p>
             </div>
           ) : (
-            <div className="bg-emerald-100 dark:bg-emerald-900/30 rounded-lg p-2 text-[10px] leading-relaxed">
-              <strong className="text-emerald-800 dark:text-emerald-200">✅ Déductibles en Régime Réel</strong>
-              <p className="text-emerald-700 dark:text-emerald-300 mt-1">
+            <div className="sim-note ok">
+              <strong>Déductibles en Régime Réel</strong>
+              <p className="mt-1">
                 Ces charges réduisent directement ton revenu imposable, diminuant ainsi ton impôt.
               </p>
             </div>
@@ -799,23 +743,42 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         icon: Briefcase,
         label: "Charges professionnelles",
         value: result.chargesReelles,
-        colorClass: "text-amber-500",
+        colorClass: "sim-eau",
         negative: true,
         tooltipContent: getChargesTooltipContent()
       });
     }
 
     // ========================================
-    // 2. COTISATIONS SOCIALES (déduction #2 du CA) ← DÉPLACÉ ICI
+    // 2. COTISATIONS, PAR ORGANISME (déduction #2 du CA ; § 9.ge)
     // ========================================
-    detailItems.push({ 
-      icon: Shield, 
-      label: "Cotisations sociales", 
-      value: result.cotisationsTotales, 
-      colorClass: "text-orange-500",
+    detailItems.push({
+      icon: Shield,
+      label: isRSPM ? "Cotisations Urssaf (RSPM)" : "Cotisations Urssaf",
+      value: urssafLigne,
+      colorClass: "sim-eau",
       negative: true,
-      tooltipContent: getCotisationsTooltipContent()
+      tooltipContent: getUrssafTooltipContent()
     });
+    if (carmfLigne > 0) {
+      detailItems.push({
+        icon: Shield,
+        label: "Cotisations CARMF",
+        value: carmfLigne,
+        colorClass: "sim-eau",
+        negative: true,
+        tooltipContent: getCarmfTooltipContent()
+      });
+      // Le total des deux, pour ne pas l'additionner de tête (§ 9.gn). Au RSPM, une seule ligne.
+      detailItems.push({
+        icon: Shield,
+        label: "Total des cotisations",
+        value: urssafLigne + carmfLigne,
+        parts: [urssafLigne, carmfLigne],
+        colorClass: "sim-eau",
+        negative: true,
+      });
+    }
 
     // ========================================
     // 2.5. OPTIMISATIONS FISCALES (Phase 1/2/3) — lignes conditionnelles
@@ -830,7 +793,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Percent,
           label: "Forfait 2% (représentation)",
           value: optim.forfait2pct,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: "Frais de représentation forfaitaires (2% du CA) déductibles pour les médecins conventionnés Secteur 1 en BNC réel."
         });
@@ -841,7 +804,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Building,
           label: "Déductions S1 (3% + Grp III)",
           value: optim.deductionsS1,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: "Déduction conventionnelle de 3% sur les honoraires + barème Groupe III (770 € à 3 050 € selon le CA) pour les Secteur 1 en BNC réel."
         });
@@ -849,17 +812,14 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       // Chèques-vacances ANCV — tooltip dynamique selon l'année sélectionnée
       if (optim.chequesVacances && optim.chequesVacances > 0) {
         const plafondCV = getDeclarationParams(annee).plafondChequesVacances;
-        const plafondLabel = `${plafondCV.toLocaleString('fr-FR')} € pour ${annee}`;
-        const mentionProjete = annee >= 2026
-          ? ` (projeté, à confirmer après publication officielle du SMIC ${annee})`
-          : '';
+        const plafondLabel = `${nombreFr(plafondCV)} € pour ${annee}`;
         detailItems.push({
           icon: Leaf,
           label: "Chèques-vacances ANCV",
           value: optim.chequesVacances,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
-          tooltip: `Chèques-vacances ANCV déductibles du BNC réel (Art. L411-5 Code du tourisme). Plafond annuel = 1 SMIC mensuel : ${plafondLabel}${mentionProjete}.`
+          tooltip: `Chèques-vacances ANCV déductibles du BNC réel, dans la limite d'un SMIC mensuel brut au 1er janvier : ${plafondLabel}.`
         });
       }
     }
@@ -872,7 +832,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Leaf,
           label: "PER / Madelin",
           value: optim.cotisationsVolontaires,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: type === 'reel'
             ? "Cotisations volontaires (PER individuel, contrat Madelin) déductibles du revenu imposable libéral."
@@ -885,7 +845,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: MapPin,
           label: `Zone exonérée (${Math.round((optim.tauxExonerationZone || 0) * 100)}%)`,
           value: optim.exonerationZone,
-          colorClass: "text-teal-500",
+          colorClass: "sim-eau",
           negative: true,
           tooltip: `Exonération ZFU-TE ou ZFRR : ${Math.round((optim.tauxExonerationZone || 0) * 100)}% du bénéfice libéral est exonéré d'impôt.`
         });
@@ -911,23 +871,37 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
           icon: Home,
           label: foncierLabel,
           value: Math.abs(optim.revenuFoncier),
-          colorClass: isDeficit ? "text-emerald-600" : "text-amber-600",
+          colorClass: isDeficit ? "sim-eau" : "sim-marque",
           negative: isDeficit,
           tooltip: foncierTooltip
         });
       }
       // Crédits d'impôt (info line)
-      const totalCredits = (optim.creditFormation || 0) + (optim.creditImpotAutre || 0);
+      const totalCredits = (optim.creditFormation || 0) + (optim.creditImpotAutre || 0)
+        + (optim.creditEmploiDomicile || 0) + (optim.creditGardeEnfants || 0);
       if (totalCredits > 0) {
         detailItems.push({
           icon: GraduationCap,
           label: "Crédits d'impôt",
           value: totalCredits,
-          colorClass: "text-emerald-600",
+          colorClass: "sim-eau",
           negative: true,
-          tooltip: "Crédits d'impôt soustraits directement de l'impôt brut (formation dirigeant, autres). Ne réduisent pas le revenu imposable."
+          tooltip: "Crédits d'impôt (emploi à domicile, garde d'enfants, autres) soustraits directement de l'impôt. Ne réduisent pas le revenu imposable ; la part qui dépasse l'impôt est remboursée."
         });
       }
+    }
+
+    // Crédits d'impôt qui dépassent l'impôt : remboursés, ils s'ajoutent au Super-Net.
+    const restitution = result.impotDetails?.restitutionCredits || 0;
+    if (restitution > 0) {
+      detailItems.push({
+        icon: GraduationCap,
+        label: "Crédits d'impôt remboursés",
+        value: restitution,
+        colorClass: "sim-marque",
+        negative: false,
+        tooltip: "La part de tes crédits d'impôt (emploi à domicile, garde d'enfants…) qui dépasse ton impôt t'est remboursée par le fisc : elle s'ajoute à ton Super-Net.",
+      });
     }
 
     // ========================================
@@ -937,22 +911,9 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Wallet, 
       label: "Revenu imposable", 
       value: result.revenuImposableTotal || result.netAvantImpot, 
-      colorClass: "text-blue-500",
+      colorClass: "sim-marque",
       negative: false,
       tooltipContent: getRevenuImposableTooltipContent()
-    });
-
-    // ========================================
-    // 4. PARTS FISCALES (contexte quotient familial)
-    // ========================================
-    detailItems.push({ 
-      icon: Users, 
-      label: `${result.impotDetails?.parts || 1} part${(result.impotDetails?.parts || 1) > 1 ? 's' : ''} fiscale${(result.impotDetails?.parts || 1) > 1 ? 's' : ''}`, 
-      value: 0, 
-      colorClass: "text-violet-500",
-      negative: false,
-      tooltipContent: getPartsTooltipContent(),
-      isInfoLine: true
     });
 
     // ========================================
@@ -962,190 +923,41 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       icon: Landmark, 
       label: hasRevenusConjoint ? "Mon impôt (estimé)" : "Impôt sur le revenu", 
       value: hasRevenusConjoint ? impotMedecin : result.impot, 
-      colorClass: "text-indigo-500",
+      colorClass: "sim-eau",
       negative: true,
       tooltipContent: hasRevenusConjoint ? getImpotMedecinTooltipContent() : getImpotTooltipContent()
     });
 
-    const cardClassName = isRecommended
-      ? "relative bg-white/80 dark:bg-slate-900/70 backdrop-blur-xl border-2 border-emerald-200/50 dark:border-emerald-500/30 shadow-xl shadow-emerald-500/10 rounded-2xl overflow-visible"
-      : "relative bg-white/60 dark:bg-slate-900/50 backdrop-blur-lg border border-slate-200/50 dark:border-slate-700/50 rounded-2xl overflow-hidden";
+    if (partie === 'anneau') {
+      return (
+        <AnneauRepartition
+          charges={result.chargesReelles || 0}
+          cotisations={result.cotisationsTotales}
+          impot={hasRevenusConjoint ? impotMedecin : result.impot}
+          superNet={superNetMedecinReel}
+          total={revenusTotaux}
+        />
+      );
+    }
 
-    return (
-      <div
-        className="relative"
-      >
-        {/* Badge recommandé flottant */}
-        {isRecommended && (
-          <div 
-            className="absolute -top-3 -right-2 z-10"
-          >
-            <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/25 px-3 py-1.5 text-xs font-semibold">
-              <Trophy className="h-3.5 w-3.5 mr-1.5" />
-              Recommandé
-            </Badge>
-          </div>
-        )}
-
-        {/* Badge warning */}
-        {showWarning && !isRecommended && (
-          <div 
-            className="absolute -top-3 -right-2 z-10"
-          >
-            <PremiumTooltip
-              title="Plafond Micro-BNC"
-              content={
-                <p className="text-sm">
-                  Vos recettes dépassent 83 600€. Vérifiez si vous avez aussi dépassé ce seuil l'année dernière.
-                </p>
-              }
-            >
-              <Badge 
-                variant="outline" 
-                className="border-orange-400 bg-orange-50 text-orange-700 dark:bg-orange-950/50 dark:text-orange-300 cursor-help text-xs"
-              >
-                ⚠️ Vérifiez
-              </Badge>
-            </PremiumTooltip>
-          </div>
-        )}
-
-        <Card className={cardClassName}>
-          <CardHeader className="pb-3 pt-5">
-            <div className="flex items-center gap-3">
-              {/* Icon badge */}
-              <div className={`p-2.5 rounded-xl ${
-                isRecommended 
-                  ? 'bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50' 
-                  : 'bg-slate-100 dark:bg-slate-800'
-              }`}>
-                <Icon className={`h-5 w-5 ${
-                  isRecommended ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400'
-                }`} />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <CardTitle className="text-xl sm:text-2xl font-bold">{title}</CardTitle>
-                  {/* Badge RSPM/PAMC - ✅ Utilise result.isRSPM (état réel) et non isRSPMUsed (intention) */}
-                  {result.isRSPM !== undefined && (
-                    <Badge 
-                      variant="outline" 
-                      className={result.isRSPM 
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 text-[10px]" 
-                        : "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900/50 dark:text-slate-400 text-[10px]"
-                      }
-                    >
-                      {result.isRSPM ? '🎓 RSPM' : '🩺 PAMC'}
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{description}</p>
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            {/* Phase 5 Bug #17 — Avertissement marge conservatrice 20 % en Micro-BNC */}
-            {type === 'micro-bnc' && !showWarning && (
-              <div className="rounded-lg border border-amber-200/60 dark:border-amber-800/40 bg-amber-50/70 dark:bg-amber-950/20 px-3 py-2 flex items-start gap-2">
-                <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-                <p className="text-[11px] leading-snug text-amber-800 dark:text-amber-200">
-                  <strong>Estimation optimiste.</strong> En Micro-BNC, l'abattement forfaitaire 34 % suppose
-                  que tes charges réelles ne dépassent pas ce seuil. Si tu as beaucoup de frais
-                  (cabinet, matériel, déplacements), prévois <strong>~20 % de marge</strong> sur ce Super-Net.
-                </p>
-              </div>
-            )}
-
-            {/* Hero Section - Super-Net avec glow */}
-            <div className="relative">
-              {/* Glow effect */}
-              {isRecommended && (
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 blur-2xl rounded-full scale-150 -z-10" />
-              )}
-              
-              <div className={`relative rounded-xl p-4 sm:p-5 ${
-                isRecommended
-                  ? 'bg-gradient-to-br from-emerald-50/80 to-teal-50/80 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/50 dark:border-emerald-700/30'
-                  : 'bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/30'
-              }`}>
-                <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
-                    {superNetLabel}
-                    <PremiumTooltip
-                      title="Super-Net"
-                      content={
-                        <div className="space-y-2">
-                          <p className="font-medium">Calcul du Super-Net :</p>
-                          <p className="text-sm font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                            CA - Impôt{hasRevenusConjoint ? " (ta part)" : ""} - Cotisations - Charges
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {hasRevenusConjoint 
-                              ? `L'impôt utilisé est ta part estimée (taux ~${tauxMedecin}%), basée sur le taux individualisé DGFiP (défaut depuis sept. 2025).`
-                              : type === 'micro-bnc' 
-                                ? "En Micro-BNC, l'abattement forfaitaire 34 % (CGI Art. 102 ter) remplace tes charges réelles : elles ne sont ni déduites du Super-Net ni affichées ici. C'est une comparaison fiscale stricte — pense à les soustraire mentalement de ton reste à vivre."
-                                : "En Régime Réel, charges et cotisations sont déductibles du revenu imposable."
-                            }
-                          </p>
-                        </div>
-                      }
-                    >
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" />
-                    </PremiumTooltip>
-                  </span>
-                  {revenusTotaux > 0 && (
-                    <Badge variant="secondary" className="text-[10px] sm:text-xs bg-white/60 dark:bg-slate-800/60">
-                      {Math.round(((superNetMedecinReel || 0) / revenusTotaux) * 100)}% {hasRevenusSalaries ? 'des revenus' : 'du CA'}
-                    </Badge>
-                  )}
-                </div>
-                
-                <div
-                  className="flex flex-col"
-                >
-                  <div className="flex items-baseline gap-1">
-                    <span className={`text-3xl sm:text-4xl font-bold ${
-                      isRecommended 
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent' 
-                        : 'text-slate-700 dark:text-slate-200'
-                    }`}>
-                      <CountUp end={periode === 'mensuel' ? superNetMedecinReel / 12 : superNetMedecinReel} />
-                      <span className="text-lg sm:text-xl ml-1">€</span>
-                    </span>
-                    <span className="text-sm text-muted-foreground">{periodeSuffix}</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground mt-0.5">
-                    {periode === 'mensuel' 
-                      ? `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(superNetMedecinReel)} /an`
-                      : `soit ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(superNetMedecinReel / 12))} /mois`
-                    }
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Mini-donut de répartition */}
-            <MiniDonut
-              charges={result.chargesReelles || 0}
-              cotisations={result.cotisationsTotales}
-              impot={hasRevenusConjoint ? impotMedecin : result.impot}
-              superNet={superNetMedecinReel}
-              total={revenusTotaux}
-            />
-
-            {/* Détails avec icônes et animations staggered */}
+    if (partie === 'detail') {
+      return (
+        <details className="sim-fiche-detail" open={detailOuvertParDefaut}>
+          <summary className="sim-fiche-detail-titre">
+            <span>Détail{'\u00a0'}: {title}</span>
+            <ChevronDown className="sim-chevron h-5 w-5" aria-hidden="true" />
+          </summary>
             <div className="space-y-1.5 pt-2">
               {detailItems.map((item, i) => (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                  className={`sim-ligne-detail${item.parts ? ' sous-total' : ''} flex items-center justify-between`}
                 >
                   <div className="flex items-center gap-2">
                     <item.icon className={`h-4 w-4 ${item.colorClass}`} />
-                    <span className="text-sm text-muted-foreground">{item.label}</span>
+                    <span className="sim-ligne-nom">{item.label}</span>
                     {item.badge && (
-                      <Badge variant="outline" className="text-[9px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700">
+                      <Badge variant="outline" className="sim-puce ok petite">
                         {item.badge}
                       </Badge>
                     )}
@@ -1155,7 +967,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                         title={item.label}
                         content={item.tooltipContent}
                       >
-                        <Info className="h-3 w-3 text-muted-foreground/50 hover:text-muted-foreground transition-colors cursor-help" />
+                        <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
                       </PremiumTooltip>
                     )}
                     {/* Tooltip texte simple (revenus salariés, conjoint, charges) */}
@@ -1164,174 +976,194 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                         title={item.label}
                         content={<p className="text-sm">{item.tooltip}</p>}
                       >
-                        <Info className="h-3 w-3 text-muted-foreground/50 hover:text-muted-foreground transition-colors cursor-help" />
+                        <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
                       </PremiumTooltip>
                     )}
                   </div>
-                  <span className={`font-semibold text-sm ${item.negative ? item.colorClass : ''}`}>
+                  <span className={`sim-ligne-valeur ${item.negative ? item.colorClass : ''}`}>
+                    {/* Pas de signe devant un montant nul : « -0 € » s'affichait pour un impôt de quelques centimes (§ 9.gi). */}
                     {item.isInfoLine 
                       ? '' 
-                      : `${item.negative ? '-' : ''}${formatMontant(item.value)}`
+                      : item.parts
+                        ? `-${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(item.parts.reduce((t, v) => t + Math.round(periode === 'mensuel' ? v / 12 : v), 0))}`
+                        : `${item.negative && Math.round(periode === 'mensuel' ? item.value / 12 : item.value) !== 0 ? '-' : ''}${formatMontant(item.value)}`
                     }
                   </span>
                 </div>
               ))}
             </div>
+        </details>
+      );
+    }
 
-            {/* Footer Économie */}
-            {isRecommended && economie > 100 && (
-                <div
-                  className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/50 dark:border-emerald-700/30 rounded-xl p-3 sm:p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex-shrink-0">
-                      <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-100">
-                        Économie de {formatMontant(economie)}{periodeSuffix}
-                      </p>
-                      <p className="text-xs text-emerald-700 dark:text-emerald-300">
-                        par rapport au {type === 'reel' ? 'Micro-BNC' : 'Régime Réel'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {!isRecommended && economie > 100 && (
-                <div
-                  className="bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/30 rounded-xl p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <TrendingDown className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                    <p className="text-sm text-muted-foreground">
-                      Moins avantageux de <span className="font-semibold">{formatMontant(economie)}{periodeSuffix}</span>
+    // La tuile : le régime, son Super-Net (sur jaune pour le régime recommandé), par mois et en part.
+    return (
+      <div className={`sim-tuile${isRecommended ? ' recommande' : ''}`}>
+        {(isRecommended || showWarning) && (
+          <div className="sim-tuile-marque">
+            {isRecommended ? (
+              <Badge className="sim-puce encre">
+                <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+                Recommandé
+              </Badge>
+            ) : (
+                <PremiumTooltip
+                  title="Plafond Micro-BNC"
+                  texteVisible
+                  content={
+                    <p className="text-sm">
+                      Tes recettes dépassent {plafondTexte}{' '}€. Vérifie si tu as aussi dépassé ce seuil l'année dernière.
                     </p>
-                  </div>
+                  }
+                >
+                  <Badge 
+                    variant="outline" 
+                    className="sim-puce attn grande cursor-help"
+                  >
+                    <AlertTriangle className="h-3 w-3" aria-hidden="true" />
+                    Vérifie
+                  </Badge>
+                </PremiumTooltip>
+            )}
+          </div>
+        )}
+        <h4 className="sim-tuile-nom"><Icon className="h-4 w-4" aria-hidden="true" />{title}</h4>
+        <p className="sim-tuile-desc">{description}</p>
+        <p className="sim-tuile-label">
+          {superNetLabel}
+            <PremiumTooltip
+              title="Super-Net"
+              content={
+                <div className="space-y-2">
+                  <p className="font-medium">Calcul du Super-Net :</p>
+                  <p className="sim-formule">
+                    CA - Impôt{hasRevenusConjoint ? " (ta part)" : ""} - Cotisations - Charges
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {hasRevenusConjoint 
+                      ? `L'impôt utilisé est ta part estimée (taux ~${nombreFr(tauxMedecin)}\u00a0%), basée sur le taux individualisé DGFiP (défaut depuis sept. 2025).`
+                      : type === 'micro-bnc' 
+                        ? "En Micro-BNC, l'abattement forfaitaire de 34 % (CGI art. 102 ter) remplace tes charges pour l'impôt. Tu les paies quand même : elles sont retirées du Super-Net, comme au Régime Réel."
+                        : "En Régime Réel, charges et cotisations sont déductibles du revenu imposable."
+                    }
+                  </p>
                 </div>
-              )}
-            </CardContent>
-        </Card>
+              }
+            >
+              <Info className="sim-aide h-3.5 w-3.5 cursor-help" />
+            </PremiumTooltip>
+        </p>
+        <p className="sim-tuile-montant">
+          <span className="aff sim-supernet-montant">
+            <CountUp end={periode === 'mensuel' ? superNetMedecinReel / 12 : superNetMedecinReel} />
+            <span className="sim-supernet-euro">€</span>
+          </span>
+          <span className="sim-supernet-par">{periodeSuffix}</span>
+        </p>
+        <p className="sim-tuile-soit">
+          {periode === 'mensuel'
+            ? `soit ${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(superNetMedecinReel)} /an`
+            : `soit ${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(superNetMedecinReel / 12))} /mois`}
+          {revenusTotaux > 0 && <> · {Math.round(((superNetMedecinReel || 0) / revenusTotaux) * 100)}{'\u00a0'}% {hasRevenusSalaries ? 'des revenus' : 'du CA'}</>}
+        </p>
       </div>
     );
   };
+
+  // Couple dont le conjoint a des revenus (§ 9.gi) : les tuiles montrent le Super-Net du
+  // médecin (sa part de l'impôt), la conclusion l'écart du foyer, qui décide du régime. Quand
+  // l'impôt du conjoint change d'un régime à l'autre (médecin qui gagne moins que son conjoint),
+  // les deux écarts diffèrent : une phrase sous les tuiles le dit, avec l'écart du foyer.
+  const foyerMedecin = { revenusSalariesAnnuels, revenusConjointAnnuels, situationFamiliale };
+  const ecartTuiles = microBnc
+    ? Math.abs(Math.round(superNetDuMedecin(microBnc, foyerMedecin)) - Math.round(superNetDuMedecin(reel, foyerMedecin)))
+    : 0;
+  const ecartFoyer = microBnc ? Math.abs(Math.round(microBnc.superNet ?? 0) - Math.round(reel.superNet ?? 0)) : 0;
+  const noteFoyer = hasRevenusConjoint && microBnc && ecartTuiles !== ecartFoyer
+    ? `Chaque Super-Net compte ta part de l'impôt du foyer, au taux individualisé. L'écart de la conclusion, ${formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(ecartFoyer)} par an, est celui de ton foyer\u00a0: d'un régime à l'autre, l'impôt de ton conjoint change aussi.`
+    : null;
 
   return (
     <div className="space-y-6">
       {/* Encart pédagogique DOM-TOM si applicable */}
       {domTomInfo && (
         <div
-          className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/50 dark:border-emerald-700/30 rounded-xl p-4"
+          className="sim-fiche sim-dom"
         >
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex-shrink-0">
-              <MapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="sim-rond grand flex-shrink-0">
+              <MapPin className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-emerald-900 dark:text-emerald-100">
+                <h3 className="sim-fiche-titre">
                   Avantage fiscal DOM : {domTomInfo.territoire}
                 </h3>
-                <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/50 dark:text-emerald-300 text-[10px]">
-                  🏝️ DOM-TOM
+                <Badge className="sim-puce ok">
+                  DOM
                 </Badge>
               </div>
-              <p className="text-sm text-emerald-700 dark:text-emerald-300 mb-2">
-                Tu bénéficies d'une réduction d'impôt de <strong>{Math.round(domTomInfo.tauxAbattement * 100)}%</strong> (plafonnée à{' '}
-                <strong>{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(domTomInfo.plafond)}</strong>) sur tes revenus.
+              <p className="sim-texte mb-2">
+                Ton impôt est réduit de <strong>{Math.round(domTomInfo.tauxAbattement * 100)}{'\u00a0'}%</strong>, dans la limite de{' '}
+                <strong>{formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(domTomInfo.plafond)}</strong> (CGI, art. 197).
               </p>
               {domTomInfo.abattementApplique && domTomInfo.abattementApplique > 0 && (
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-slate-900/40 rounded-lg px-3 py-2 mt-2">
-                  <TrendingUp className="h-4 w-4 text-emerald-600" />
-                  <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
-                    Économie réalisée : {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(domTomInfo.abattementApplique))}
+                <div className="sim-note ok flex items-center gap-2 mt-2">
+                  <TrendingUp className="h-4 w-4" />
+                  <span className="sim-note-in sim-fort">
+                    Économie réalisée : {formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(domTomInfo.abattementApplique))}
                   </span>
                 </div>
               )}
               {/* Phase 4C Bug #14 (Option A) — Disclaimer pédagogique cotisations DOM */}
-              <p className="text-[11px] text-emerald-700/80 dark:text-emerald-300/70 mt-2 italic flex items-start gap-1">
+              <p className="sim-petit mt-2 flex items-start gap-1">
                 <Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                <span>Cotisations URSSAF estimées au taux métropole. Écart réel &lt; 3 % pour les médecins PAMC en DOM.</span>
+                <span>{isRSPMUsed
+                  ? "Au RSPM, le simulateur applique les taux de la métropole."
+                  : "Cotisations calculées par le modèle de l'Urssaf, qui tient compte de ton département."}</span>
               </p>
             </div>
           </div>
         </div>
       )}
-      {/* Encadré informatif si plafond dépassé - Version compacte */}
-      {depassePlafond && (
-        <Collapsible open={isInfoOpen} onOpenChange={setIsInfoOpen}>
-          <div className="bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-700/40 rounded-xl overflow-hidden">
-            <CollapsibleTrigger className="w-full px-4 py-3 flex items-center justify-between hover:bg-amber-100/40 dark:hover:bg-amber-900/20 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/50">
-                  <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                </div>
-                <span className="font-medium text-sm text-amber-900 dark:text-amber-100">
-                  Plafond Micro-BNC dépassé
-                </span>
-              </div>
-              <ChevronDown className={cn(
-                "h-4 w-4 text-amber-500 transition-transform duration-200",
-                isInfoOpen && "rotate-180"
-              )} />
-            </CollapsibleTrigger>
-            
-            <CollapsibleContent>
-              <div className="px-4 pb-3 pt-1 text-sm space-y-3">
-                <p className="text-slate-700 dark:text-slate-300">
-                  Le plafond Micro-BNC est de <strong>83 600 €/an</strong>. 
-                  Si vous le dépassez <strong>2 années consécutives</strong>, vous passerez 
-                  automatiquement en Régime Réel au <strong>1er janvier</strong> de l'année suivante.
-                </p>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/50 dark:border-emerald-800/40 rounded-lg px-3 py-2">
-                    <p className="font-semibold text-emerald-800 dark:text-emerald-200">1ère année au-dessus</p>
-                    <p className="text-emerald-700 dark:text-emerald-300">Micro-BNC maintenu</p>
-                  </div>
-                  <div className="bg-orange-50/80 dark:bg-orange-950/30 border border-orange-200/50 dark:border-orange-800/40 rounded-lg px-3 py-2">
-                    <p className="font-semibold text-orange-800 dark:text-orange-200">2ème année au-dessus</p>
-                    <p className="text-orange-700 dark:text-orange-300">Régime Réel au 1er janv.</p>
-                  </div>
-                </div>
-              </div>
-            </CollapsibleContent>
-          </div>
-        </Collapsible>
-      )}
-
-      {/* Cartes de comparaison */}
-      <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-        {microBnc ? (
-          renderCard('micro-bnc', microBnc, recommande === 'micro-bnc', depassePlafond)
-        ) : (
-          <div
-          >
-            <Card className="relative bg-white/60 dark:bg-slate-900/50 backdrop-blur-lg border border-dashed border-slate-300 dark:border-slate-600 rounded-2xl">
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800">
-                    <Calculator className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl">Micro-BNC</CardTitle>
-                    <p className="text-sm text-muted-foreground">Erreur de calcul</p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-slate-50/50 dark:bg-slate-800/30 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground">
-                    Une erreur est survenue lors du calcul du régime Micro-BNC.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+      {/* Plafond du Micro-BNC dépassé : dit une fois, dans la conclusion au-dessus des fiches
+          (règle des deux années précédentes), et rappelé par « Vérifie » sur la fiche Micro-BNC.
+          L'encadré repliable d'ici le disait une troisième fois (MIGRATION.md § 9.ft). */}
+      {/* Les deux régimes, en une fiche (§ 9.gh) : deux tuiles côte à côte, l'anneau du régime
+          recommandé (les deux anneaux d'avant étaient presque identiques), puis le détail de
+          chacun. Les deux fiches faisaient 1 030 px au téléphone. */}
+      <section className="sim-fiche sim-comparaison" aria-labelledby="sim-comparaison-titre">
+        <h3 id="sim-comparaison-titre" className="sim-fiche-titre">Les deux régimes</h3>
+        <div className="sim-tuiles">
+          {microBnc ? (
+            renderCard('micro-bnc', microBnc, recommande === 'micro-bnc', depassePlafond, 'tuile')
+          ) : (
+            <div className="sim-tuile">
+              <h4 className="sim-tuile-nom"><Calculator className="h-4 w-4" aria-hidden="true" />Micro-BNC</h4>
+              <p className="sim-tuile-desc">Calcul indisponible pour le moment.</p>
+            </div>
+          )}
+          {renderCard('reel', reel, recommande === 'reel', false, 'tuile')}
+        </div>
+        {noteFoyer && (
+          <p className="sim-comparaison-note">
+            <Info className="h-4 w-4" aria-hidden="true" />
+            <span>{noteFoyer}</span>
+          </p>
         )}
-        {renderCard('reel', reel, recommande === 'reel')}
-      </div>
+        <div className="sim-comparaison-anneau">
+          <p className="sim-comparaison-sous">
+            Où vont tes revenus, {recommande === 'micro-bnc' && microBnc ? 'au Micro-BNC' : 'au régime réel'}
+          </p>
+          {recommande === 'micro-bnc' && microBnc
+            ? renderCard('micro-bnc', microBnc, true, false, 'anneau')
+            : renderCard('reel', reel, true, false, 'anneau')}
+        </div>
+        <div className="sim-details-regimes">
+          {microBnc && renderCard('micro-bnc', microBnc, recommande === 'micro-bnc', depassePlafond, 'detail')}
+          {renderCard('reel', reel, recommande === 'reel', false, 'detail')}
+        </div>
+      </section>
     </div>
   );
 }

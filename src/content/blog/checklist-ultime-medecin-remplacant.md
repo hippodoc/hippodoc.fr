@@ -8,6 +8,7 @@ authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
 categoryNumber: "#8"
 seriesId: "fiche-pratique"
+theme: "debuter-organiser"
 episodeNumber: 8
 readTime: "6 min"
 cta: "Prêt(e) à garder toute ta gestion au même endroit ?"

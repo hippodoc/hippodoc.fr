@@ -1,0 +1,37 @@
+---
+/**
+ * Micro-script du tiroir mobile de Header.astro (MIGRATION.md § 9.eb, § 9.ed).
+ * Il referme le tiroir au clic d'une ancre ou à la touche Échap (qui rend alors
+ * le focus à la case du menu, § 9.gk), et pose l'écouteur `touchstart` vide
+ * dont Safari iOS a besoin pour `:active`. Jusqu'à § 9.gk, le script n'avait pas
+ * changé d'un caractère depuis l'ancien en-tête : seule sa place avait changé.
+ *
+ * Pourquoi hors de <header> : un <script> en ligne au milieu du flux laisse le
+ * navigateur peindre ce qui le précède. L'en-tête sortait seul, le premier
+ * écran 100 à 150 ms plus tard, et Lighthouse retenait deux candidats LCP
+ * (2,6 s simulés au lieu de 1,2 s). Rendu en fin de page, il ne coupe plus le
+ * premier rendu ; il ne fait qu'attacher deux écouteurs.
+ *
+ * Rendu par Footer.astro, après </footer> : une fois par page, sur toute page
+ * qui a l'en-tête (le tiroir doit exister quand il s'exécute).
+ * `node scripts/verify-site.mjs` vérifie sur chaque page du build qu'il est là
+ * une seule fois, après le pied, au caractère près, et jamais sans le tiroir.
+ */
+---
+
+{/* Cliquer une ancre de la page courante ne déclenche aucune navigation :
+     la case doit être décochée explicitement, sinon le tiroir reste ouvert. */}
+<script is:inline>
+    document.getElementById('mobile-menu-drawer').addEventListener('click', function (e) {
+      if (e.target.closest('a')) document.getElementById('mobile-menu-toggle').checked = false;
+    });
+    /* Échap referme le tiroir et rend le focus à la case du menu (§ 9.gk). */
+    document.addEventListener('keydown', function (e) {
+      var t = document.getElementById('mobile-menu-toggle');
+      if (e.key === 'Escape' && t.checked) { t.checked = false; t.focus(); }
+    });
+    /* Safari iOS n'applique `:active` (retour visuel à l'appui) que si un écouteur
+       `touchstart` existe dans la page. Celui de ThirdPartyScripts est `once` : il
+       disparaît au premier geste. Écouteur vide et passif, coût nul. */
+    document.addEventListener('touchstart', function () {}, { passive: true });
+</script>

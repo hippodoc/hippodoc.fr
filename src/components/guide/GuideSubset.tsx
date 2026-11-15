@@ -57,7 +57,7 @@ export const GuideCaseGrid: React.FC<{ subset: GuideSubset; codes: string[] }> =
 
   return (
     <AnchorResolverContext.Provider value={resolve}>
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <div className="gd-grille g3">
         {cases.map(c => <CaseCard key={c.id} c={c} />)}
       </div>
     </AnchorResolverContext.Provider>
@@ -75,13 +75,13 @@ export const GuideConseils: React.FC<{ subset: GuideSubset; conseils: string[] }
 
   return (
     <AnchorResolverContext.Provider value={resolve}>
-      <ul className="space-y-3">
+      <ul className="gd-conseils">
         {conseils.map((c, i) => (
-          <li key={i} className="flex gap-3 rounded-xl border border-slate-200/60 bg-white/80 p-4 dark:border-slate-700/60 dark:bg-slate-800/50">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-hippo-100 text-[11px] font-bold text-hippo-700 dark:bg-hippo-900/50 dark:text-hippo-300">
+          <li key={i} className="gd-conseil">
+            <span className="gd-conseil-num">
               {i + 1}
             </span>
-            <div className="min-w-0 flex-1 text-sm text-muted-foreground">
+            <div className="gd-conseil-txt">
               <FormattedText text={c} />
             </div>
           </li>
@@ -102,7 +102,7 @@ export const GuideQuestionList: React.FC<{ subset: GuideSubset; ids: string[] }>
 
   return (
     <AnchorResolverContext.Provider value={resolve}>
-      <div className="space-y-2">
+      <div className="gd-plis">
         {questions.map(q => <QuestionCard key={q.id} q={q} />)}
       </div>
     </AnchorResolverContext.Provider>
