@@ -14850,6 +14850,32 @@ passe. Feuille commune inchangée. Pages changées contre `main` : le nouvel art
 la page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile :
 97-98 / 100 / 100 / 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
 
+### 9.gx Contenu modifié : une source ajoutée à l'article PDSA (15 novembre 2026)
+
+Le propriétaire a transmis deux réponses d'un service des impôts à un confrère, qui indiquaient la
+case 5HP pour la part exonérée de la permanence des soins en micro-BNC, à l'inverse de l'article
+(`pdsa-exoneration-gardes-regulees`) et du guide des déclarations. Vérification sur les textes de
+la campagne 2026 : le site est confirmé, rien n'est corrigé.
+- impots.gouv.fr, notice 2041-DRI-PAMC, § 4.3.2 : « Pour les PAMC relevant du régime micro-BNC
+  uniquement, reportez dans la rubrique DSFA/DSFB les montants exonérés au titre du dispositif de
+  zone déficitaire en offre de soins, qui ont été déduits du résultat fiscal. » ; « Le montant
+  déclaré dans ces rubriques est ajouté dans la base de calcul des cotisations ».
+- URSSAF, « Guide à la déclaration sociale et fiscale de revenus 2025 », praticiens, micro-BNC :
+  régimes zonés de l'article 1417 du CGI en 5HP ou 5IP ; « zone déficitaire en offre de soins » en
+  DSFA ou DSFB ; « Les revenus exonérés doivent être déclarés en NET donc après l'application de
+  l'abattement correspondant à votre activité. »
+- Formulaire 2042-C-PRO de 2026 : 5HP, « Revenus nets exonérés régimes zonés, article 1417, IV, b ».
+
+**Contenu modifié** : une ligne ajoutée aux sources de l'article, avant « Déclaration : guide
+Hippodoc de la 2042-C-PRO » : « Case DSFA, montant net, et case 5HP réservée aux régimes zonés :
+URSSAF, « Guide à la déclaration sociale et fiscale de revenus 2025 », praticiens et auxiliaires
+médicaux conventionnés (consulté le 15 novembre 2026) ; impots.gouv.fr, notice 2041-DRI-PAMC,
+§ 4.3.2. » `updatedDate` et `blog-meta.json` au 15 novembre 2026 ; adresse inchangée. Les réponses
+du service des impôts, qui nomment des personnes, ne sont ni citées ni versées au dépôt.
+
+**Contrôles.** `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparé à la production,
+seuls l'article et le sitemap (sa date) diffèrent ; les deux liens répondent.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

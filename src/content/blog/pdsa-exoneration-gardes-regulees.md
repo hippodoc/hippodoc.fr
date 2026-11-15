@@ -2,7 +2,7 @@
 title: "PDSA : exonération d'impôt des gardes régulées"
 description: "Astreinte et majorations régulées exonérées d'impôt jusqu'à 60 jours, remplaçants compris, mais pas de cotisations : ce qui l'est et comment le déclarer."
 pubDate: "2026-01-28"
-updatedDate: "2026-09-25"
+updatedDate: "2026-11-15"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -137,4 +137,5 @@ Le tout centralisé au même endroit, que tu fasses du libéral, du [salariat](/
 • Code général des impôts, [art. 151 ter](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031930936) : exonération à hauteur de 60 jours de permanence par an, médecins ou leurs remplaçants installés en zone déficitaire.\
 • BOFiP, « [BNC — Exonérations spécifiques applicables aux médecins](https://bofip.impots.gouv.fr/bofip/2818-PGP.html/identifiant=BOI-BNC-CHAMP-10-40-20-20151202) » : astreinte et majorations spécifiques, perception à titre personnel, exclusion de la base du groupe III et des 3 %.\
 • Codes des majorations de permanence des soins régulée (CRN, CRM, CRD, VRN, VRM, VRD, VRS) : ameli.fr, « [Tarifs conventionnels des médecins généralistes et spécialistes](https://www.ameli.fr/medecin/exercice-liberal/facturation-remuneration/consultations-actes/tarifs/tarifs-conventionnels-medecins-generalistes-specialistes) » ; CRS (samedi après-midi, au cabinet) : MG France, « [Les majorations nuits et jours fériés en garde régulée](https://www.mgfrance.org/cotation/publication/je-fais-un-acte-regule/les-majorations-nuits-et-jours-feries) ».\
+• Case DSFA, montant net, et case 5HP réservée aux régimes zonés : URSSAF, « [Guide à la déclaration sociale et fiscale de revenus 2025](https://www.urssaf.fr/files/live/sites/urssaffr/files/modes-emploi/Declaration-revenus-TI/PAM-guide-declaration-revenus.pdf) », praticiens et auxiliaires médicaux conventionnés (consulté le 15 novembre 2026) ; impots.gouv.fr, [notice 2041-DRI-PAMC](https://www.impots.gouv.fr/sites/default/files/formulaires/2042/2026/2042_5533.pdf), § 4.3.2.\
 • Déclaration : [guide Hippodoc de la 2042-C-PRO](/guide-declarations/2042-c-pro).
