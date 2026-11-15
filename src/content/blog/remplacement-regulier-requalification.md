@@ -31,6 +31,7 @@ faq:
   - question: "Quand faut-il passer du remplacement à la collaboration libérale ?"
     answer: "Quand la réalité ne colle plus au remplacement : le titulaire consulte **en même temps** que toi, la régularité est installée sans absence réelle, ou tu veux développer une **clientèle propre**. La collaboration libérale (loi du 2 août 2005) est le cadre prévu pour ça, avec un contrat type disponible auprès du Conseil de l'Ordre. À calculer avant : en collaboration, la redevance ne se déduit qu'au **régime réel**."
 relatedArticles:
+  - "aides-installation-medecin-2026"
   - "signer-contrat-remplacement"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "choix-mode-exercice"

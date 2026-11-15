@@ -139,6 +139,13 @@
 /* Charges vides, recettes saisies (§ 9.gg) : une invitation à les estimer. */
 .sim .sim-charges-vides { margin: 6px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--sky-soft); font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
 .sim .sim-charges-vides-lien { padding: 0; border: 0; background: none; font: inherit; font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+/* « Es-tu déjà au RSPM ? » (§ 9.gz) : sous les revenus, pour un remplaçant au-dessus de 19 000 €. */
+.sim .sim-deja-rspm { margin-top: 14px; padding: 14px 16px; border-radius: 18px; background: var(--sky-soft); }
+.sim .sim-deja-rspm fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.sim .sim-deja-rspm-titre { padding: 0; font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-deja-rspm-aide { margin: 4px 0 10px; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); text-wrap-style: pretty; }
+.sim .sim-deja-rspm-choix { display: flex; gap: 24px; }
+.sim .sim-deja-rspm-choix label { min-height: 44px; display: inline-flex; align-items: center; }
 .sim .sim-charges-vides-lien:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; border-radius: 4px; }
 .sim .sim-rangee { border: 0; border-radius: 18px; background: var(--sky-soft); }
 .sim .sim-rangee > h3 > button { min-height: 52px; gap: 10px; color: var(--ink); text-align: left; }
@@ -266,6 +273,10 @@
 /* Le nom d'un poste peut se couper (texte grossi) : c'est lui qui cède, pas la fiche. */
 .sim .sim-ligne-detail > div { min-width: 0; }
 .sim .sim-ligne-nom { min-width: 0; font-size: 0.9375rem; line-height: 1.3; color: var(--ink-2); overflow-wrap: anywhere; }
+/* Total des cotisations (§ 9.gn, § 9.go) : sous Urssaf et CARMF, en gras, sous une barre
+   d'addition (le filet est au-dessus du total, plus foncé que les autres). */
+.sim .sim-ligne-detail.sous-total { border-top: 1.5px solid var(--ink-3); }
+.sim .sim-ligne-detail.sous-total .sim-ligne-nom { color: var(--ink); font-weight: var(--tb); }
 /* Anneau de répartition des revenus d'une fiche (§ 9.fu) : 100 px, légende dessous. Le trait
    se dessine en 0,8 s à l'arrivée (rien sous prefers-reduced-motion). */
 .sim .sim-anneau { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px 0 4px; }
@@ -409,6 +420,63 @@
 .sim .sim-premiere-texte { display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); }
 .sim .sim-premiere-texte p { margin: 0; text-wrap-style: pretty; }
 .sim .sim-premiere-texte .sim-fort { color: var(--ink); }
+/* « Quand et comment tu paies » (§ 9.gn, § 9.go) : le principe sur ciel doux ; la frise des deux
+   années (une rangée par destinataire, douze cases par an : rien, prélèvement habituel en bleu
+   clair, prélèvement avec le rattrapage en bleu foncé ; jamais de jaune dans un graphique) ; puis
+   Urssaf, CARMF et impôt, une ligne chacun avec ce qui est dû (étiquette au-dessus au téléphone, à
+   gauche à partir de 640 px) ; enfin l'exemple, un calcul ligne à ligne dont le total ressort. */
+.sim .sim-paie { display: grid; gap: 18px; }
+.sim .sim-paie p { margin: 0; }
+.sim .sim-paie-principe { padding: 14px 16px; border-radius: 18px; background: var(--sky-soft); font-size: 0.9375rem; line-height: 1.5; color: var(--ink); text-wrap-style: pretty; }
+.sim .sim-paie-frise { display: grid; gap: 8px; padding: 16px; border-radius: 20px; box-shadow: inset 0 0 0 1.5px var(--line); }
+.sim .sim-paie-frise .sim-paie-frise-titre { margin-bottom: 4px; font-size: 0.9375rem; font-weight: var(--tb); line-height: 1.35; color: var(--ink); text-wrap-style: balance; }
+.sim .sim-paie-rang { display: grid; grid-template-columns: 3.25rem minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; align-items: center; }
+.sim .sim-paie-rang-nom { font-size: 0.8125rem; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-paie-annee { display: block; font-size: 0.75rem; font-weight: var(--tb); letter-spacing: 0.02em; color: var(--ink-3); }
+.sim .sim-paie-mois { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 2px; }
+.sim .sim-paie-mois i { height: 16px; border-radius: 4px; background: var(--sky-soft); forced-color-adjust: none; }
+.sim .sim-paie-mois i.c, .sim .sim-paie-legende i.c { background: var(--w1); }
+.sim .sim-paie-mois i.f, .sim .sim-paie-legende i.f { background: var(--w4); }
+.sim .sim-paie-initiales { display: none; margin-top: 2px; font-size: 0.6875rem; line-height: 1.2; color: var(--ink-3); text-align: center; }
+.sim .sim-paie-legende { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 4px; font-size: 0.8125rem; line-height: 1.4; color: var(--ink-2); }
+.sim .sim-paie-legende span { display: inline-flex; align-items: center; gap: 7px; }
+.sim .sim-paie-legende i { width: 12px; height: 12px; border-radius: 4px; flex: none; forced-color-adjust: none; }
+.sim .sim-paie-liste { display: grid; gap: 14px; margin: 0; }
+.sim .sim-paie-liste > div + div { padding-top: 14px; border-top: 1px solid var(--line); }
+.sim .sim-paie-liste dt { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; font-size: 0.75rem; font-weight: var(--tb); line-height: 1.4; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-3); }
+.sim .sim-paie-du { font-size: 0.9375rem; letter-spacing: 0; text-transform: none; color: var(--ink); white-space: nowrap; }
+.sim .sim-paie-liste dd { display: grid; gap: 4px; margin: 4px 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); text-wrap-style: pretty; }
+.sim .sim-paie-liste .sim-paie-quand { color: var(--ink); font-weight: 560; }
+.sim .sim-paie-exemple { display: grid; gap: 10px; padding: 16px; border-radius: 20px; box-shadow: inset 0 0 0 1.5px var(--line); font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); text-wrap-style: pretty; }
+.sim .sim-paie-exemple .sim-paie-exemple-titre { font-weight: var(--tb); color: var(--ink); }
+.sim .sim-paie-calcul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.sim .sim-paie-calcul li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.sim .sim-paie-calcul b { font-weight: var(--tb); color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sim .sim-paie-calcul li.total { align-items: center; margin-top: 4px; padding: 10px 14px; border-radius: 14px; background: var(--sky-soft); color: var(--ink); font-weight: var(--tb); }
+.sim .sim-paie-calcul li.total b { font-size: 1.25rem; line-height: 1.2; color: var(--w4); }
+.sim .sim-paie-notes { display: grid; gap: 6px; margin: 0; padding: 0 0 0 18px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-paie-astuce { display: flex; align-items: flex-start; gap: 8px; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); }
+.sim .sim-paie-astuce > svg { flex: none; margin-top: 3px; color: var(--brand); }
+@media (min-width: 640px) {
+  .sim .sim-paie-frise { padding: 20px; }
+  .sim .sim-paie-rang { grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1fr); column-gap: 14px; }
+  .sim .sim-paie-mois { gap: 3px; }
+  .sim .sim-paie-initiales { display: grid; }
+  .sim .sim-paie-liste > div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 16px; }
+  .sim .sim-paie-liste dt { flex-direction: column; justify-content: flex-start; gap: 2px; padding-top: 0.2em; }
+  .sim .sim-paie-liste dd { margin: 0; }
+}
+/* Bulle du choix de l'invalidité-décès au RSPM (§ 9.gp) : ce que coûte et couvre chaque niveau.
+   Dans une bulle ou un tiroir : trois colonnes serrées, les montants calés à droite. */
+.sim .sim-rid { width: 100%; border-collapse: collapse; font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); }
+.sim .sim-rid :is(th, td) { padding: 5px 0 5px 10px; border-top: 1px solid var(--line); text-align: right; vertical-align: top; white-space: nowrap; }
+.sim .sim-rid thead :is(th, td) { border-top: 0; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-rid :is(th, td):first-child { padding-left: 0; text-align: left; white-space: normal; font-weight: var(--tw); text-wrap-style: balance; }
+.sim .sim-rid td { color: var(--ink); font-weight: var(--tb); }
+/* Le choix du niveau (§ 9.gt) : un libellé ne se coupe pas (« 25 % (158 €/an) ») ; quand les deux
+   ne tiennent pas côte à côte (téléphone), le second passe dessous. */
+.sim .sim-rid-choix { flex-wrap: wrap; row-gap: 10px; }
+.sim .sim-rid-choix label { white-space: nowrap; }
 /* « RSPM ou PAMC ? » (§ 9.gh) : sous la conclusion d'une simulation au RSPM, la même saisie en
    PAMC ; « À savoir pour ta situation » : la phrase des 1 000 € et les pistes, une par ligne. */
 .sim .sim-rspm, .sim .sim-a-savoir { display: grid; gap: 10px; }

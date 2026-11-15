@@ -29,6 +29,8 @@ faq:
   - question: "Puis-je rester en Micro-BNC les deux premières années même au-dessus du seuil ?"
     answer: "**Oui.** En cas de création d'activité, le micro-BNC s'applique **de plein droit** l'année de création (N) et l'année suivante (N+1), même si tes recettes dépassent le seuil dès la première année (art. 102 ter du CGI ; BOFiP BOI-BNC-DECLA-20-10, § 134). Le régime réel ne devient obligatoire qu'à partir de N+2, après deux années consécutives de dépassement. Attention : pour apprécier le seuil des années suivantes, les recettes de l'année de création sont **annualisées au prorata** de tes jours d'activité."
 relatedArticles:
+  - "micro-bnc-seuil-premiere-annee-prorata"
+  - "comptable-logiciel-tableur-medecin-remplacant"
   - "cotisations-sociales-vs-impots"
   - "tout-comprendre-urssaf"
   - "frais-professionnels-deductibles"

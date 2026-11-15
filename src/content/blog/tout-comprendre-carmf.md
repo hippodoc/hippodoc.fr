@@ -2,7 +2,7 @@
 title: "CARMF : cotisations 2026 du médecin remplaçant"
 description: "Affiliation dès le premier rempla, calcul sur ton revenu et non sur ton CA, premières années allégées, dispense sous 15 000 € : la CARMF en chiffres 2026."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-24"
+updatedDate: "2026-11-15"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -25,12 +25,13 @@ faq:
   - question: "Combien coûte la CARMF la première année ?"
     answer: "En 2026, pour une première ou deuxième année d'affiliation avant 40 ans : **3 437 € en secteur 1** et **7 710 € en secteur 2**. La complémentaire n'est pas due ces deux années, et la retraite de base est calculée sur un revenu forfaitaire, puis régularisée."
   - question: "Combien coûtent les cotisations CARMF en 2026 ?"
-    answer: "Les cotisations varient selon tes revenus : **retraite de base** (8,73 % jusqu'à 48 060 €, puis 1,87 % jusqu'à 240 300 €), **retraite complémentaire** (11,80 % en 2026, sur tes revenus de l'avant-dernière année, sans régularisation — 10,20 % en 2025), **ASV** (selon ton secteur), et **invalidité-décès** (626 € sous 48 060 € de revenus, jusqu'à 1 010 € au-delà de 144 180 €). Au RSPM, l'invalidité-décès est un forfait au choix : 157 € ou 626 €."
+    answer: "Les cotisations varient selon tes revenus : **retraite de base** (8,73 % jusqu'à 48 060 €, puis 1,87 % jusqu'à 240 300 €), **retraite complémentaire** (11,80 % en 2026, sur tes revenus de l'avant-dernière année, sans régularisation — 10,20 % en 2025), **ASV** (selon ton secteur), et **invalidité-décès** (626 € sous 48 060 € de revenus, jusqu'à 1 010 € au-delà de 144 180 €). Au RSPM, l'invalidité-décès est un forfait au choix : 158 € ou 631 €."
   - question: "Quelle différence entre secteur 1 et secteur 2 pour la CARMF ?"
     answer: "En **secteur 1**, l'ASV coûte 1 917 € + 1,33% des revenus en 2026 (l'Assurance Maladie prend en charge les deux tiers). En **secteur 2**, c'est 5 751 € + 4%. Les médecins conventionnés secteur 1 paient donc moins de cotisations ASV."
   - question: "Puis-je être dispensé de cotisations CARMF ?"
     answer: "Une **dispense totale d'affiliation** est possible si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. Attention : elle n'est **pas automatique**, s'obtient sur **demande explicite** auprès de la CARMF et n'est pas rétroactive. La période dispensée ne compte pas pour tes droits à la retraite."
 relatedArticles:
+  - "pause-remplacements-cotisations-medecin"
   - "prevoyance-madelin-medecin"
   - "tout-comprendre-urssaf"
   - "cotisations-sociales-vs-impots"
@@ -115,7 +116,7 @@ _Les barèmes ASV évoluent annuellement — vérifier sur carmf.fr pour les mon
 ## 4. Invalidité / Décès 🛡
 
 **Au régime classique** : 434 € + 0,4 % de tes revenus, soit **626 €** sous 48 060 € de revenus et jusqu'à **1 010 €** au-delà de 144 180 € (barème CARMF 2026).\
-**Au [RSPM](/blog/rspm-exemples-concrets)** : un forfait que tu choisis, **157 €** (couverture à 25 %) ou **626 €** (couverture complète).
+**Au [RSPM](/blog/rspm-exemples-concrets)** : un forfait que tu choisis, **158 €** (couverture à 25 %) ou **631 €** (couverture complète).
 
 ## 🔍 Exemples pratiques
 

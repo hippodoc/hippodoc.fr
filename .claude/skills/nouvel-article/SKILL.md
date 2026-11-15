@@ -178,6 +178,40 @@ guillemets doubles, comme dans les autres articles.
   - les liens vers `https://hippodoc.fr/…` ou `https://www.hippodoc.fr/…` deviennent relatifs ;
   - « En résumé » reste à sa place (voir « L'essentiel », plus haut).
 
+### La passe « agréable à lire » (à chaque article)
+
+Demande du propriétaire du 15 novembre 2026 (§ 9.gr) : « n'hésite pas à faire ça à chaque fois
+[…] il faut vraiment que l'article soit agréable à lire ». C'est la seule exception à « on ne fait
+que mettre en forme » : on met en forme davantage, **sans changer le fond ni le sens**, et **dans
+la DA du blog** (« reste dans notre DA »).
+
+- **Aucun émoji ajouté**, ni dans les titres ni dans le texte (refus explicite du propriétaire). Un
+  émoji du texte fourni qui ouvre un encadré ou une citation (« > 💡 ») sort avec la conversion en
+  encadré ; ailleurs, il reste.
+- **Gras** sur ce qui décide : montants, seuils, délais, dates limites, conditions, mises en garde.
+  Cible : **15 à 30 passages pour 1 000 mots**, la fourchette des articles récents (mesurée le
+  15/11 : 16 à 35). Jamais une phrase entière sauf une mise en garde courte ; jamais deux gras de
+  suite.
+- **Encadrés**, sur des passages qui existent déjà (aucun mot ajouté) :
+  - `:::warning` (« Attention ») pour un piège qui coûte (délai, perte d'un droit, somme à
+    rembourser) ; deux à quatre par article, ouverts si possible par un court lead en gras ;
+  - `:::tip` (« Conseil ») pour une astuce (« L'astuce. », une citation `> 💡` du texte) ;
+  - éviter deux encadrés collés l'un à l'autre quand on peut l'éviter.
+- **Paragraphes courts** : au-delà d'environ 110 mots, couper à une frontière de phrase, sans
+  toucher aux mots.
+- **Listes** : une énumération de trois éléments ou plus dans une phrase peut devenir une liste ;
+  des étapes deviennent une liste numérotée (rendue en pastilles numérotées par la DA).
+- **Une partie « quoi faire »** quand l'article n'en a pas : une liste numérotée de gestes
+  (« Avant de signer le bail », « Ce que tu fais cette semaine »…), placée avant « En résumé »,
+  composée uniquement de règles déjà dites dans l'article. La consigner.
+- Le propriétaire a aussi accepté, le 15/11, qu'on **harmonise le texte avec le blog**
+  (tutoiement, sigles définis à la première occurrence, date du jour) et qu'on le **corrige après
+  vérification** (standard `hippodoc-exigence` : interne novice, expert du domaine, correcteur ;
+  chaque « faux » revérifié sur une source officielle). Chaque correction se consigne avec sa
+  source (§ 9.gq).
+- Mesurer avant et après (passages en gras pour 1 000 mots, encadrés, paragraphes de plus de 110
+  mots) et le dire dans la PR. Regarder le rendu au téléphone (encadrés, liste numérotée).
+
 ## 6. Les fichiers à tenir à jour
 
 - `src/generated/blog-meta.json` : ajouter `"<slug>": { "pubDate": "AAAA-MM-JJ", "updatedDate":

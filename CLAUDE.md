@@ -146,9 +146,9 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   - Feuilles à lignes (questions, guides, partenaires et soutiens) : une feuille blanche
     qui rogne (`overflow: hidden`), un filet entre deux lignes, la ligne teintée au
     survol, l'anneau de focus tracé à l'intérieur (`outline-offset` négatif, sinon la
-    feuille le rogne). `.qa` (da.css) reste une fiche, partagée avec `/faq`, `/tarifs` et
-    les plis des tarifs : les règles de la feuille des questions sont dans
-    `Questions.astro`.
+    feuille le rogne). `.qa` (da.css) reste une fiche, partagée avec `/faq` et les plis
+    des tarifs : les règles de la feuille des questions sont dans `Questions.astro`
+    (recopiées dans `tarifs.astro` pour les questions de `/tarifs`, § 9.gs).
   - Les règles communes aux feuilles de l'accueil (remplissage 44 et 72 px sous 560 px,
     60 et 92 px de 560 à 899 px, 76 et 112 px à partir de 900 px, chapô en 17 px sur
     téléphone, marge sous l'en-tête 22, 30 et 36 px) sont répétées dans le `<style>` de
@@ -206,6 +206,17 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `<style>` (`Mascotte.astro`) : partagé, ce style sort de la feuille de l'accueil et
   change son HTML. Période d'observation SEO : texte, titres, liens et JSON-LD d'une page
   rhabillée se prouvent identiques au build de `main`, par script.
+- **`/tarifs`** (§ 9.gs) est la version dépliée du bloc tarifs de l'accueil
+  (`accueil/Tarifs.astro`) : mêmes offres, même ordre (annuel, mensuel, internes), mêmes
+  libellés, un seul signal sur l'annuel (le surlignage jaune). Un prix, une offre ou un
+  libellé de bouton changent aux deux endroits, et dans `title`, `description`, la FAQ de la
+  page et `SOFTWARE_APPLICATION_SCHEMA`. Sous les offres, quatre garanties (carte bancaire,
+  engagement, déduction, syndicats) ; les inclus sont rangés par famille, mot pour mot. À
+  390 × 844 les trois prix tiennent dans le premier écran : ne pas allonger le haut de la
+  page sans le remesurer. Ne pas y remettre de pastille « Populaire » ni de coches dans
+  les fiches. Mascotte à partir de 1 024 px seulement. Offre des internes (§ 9.gu) :
+  le bouton « Envoyer mon justificatif » ouvre le chat, l'e-mail reste un lien dans la
+  ligne au-dessus.
 - ⚠️ **Pièges Tailwind dans les `<style>`** : Tailwind lit tout le fichier `.astro`,
   `<style>` et commentaires compris. Un mot qui est aussi un nom de classe
   (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille commune :
@@ -374,13 +385,19 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
 Chaque page passe par `src/layouts/BaseLayout.astro` : props `title` (<60 car., mot-clé
 d'abord), `description` (~150 car.), `path` (canonique, sans slash ; `""` pour l'accueil),
 `ogImage`, `jsonLd` (tableau — Organization est injecté partout automatiquement),
-`noindex`. Constantes partagées (URLs, tarifs, schémas Organization/SoftwareApplication,
+`noindex`. **Image de partage** (§ 9.ha) : ne pas passer `ogImage` (seuls les articles le font) ;
+chaque page a son entrée dans `PARTAGE_PAGES` (`src/lib/partage-pages.ts` : pastille, titre repris
+de la page, fond selon le propos, pose qui le dit, jamais retournée), image fabriquée à la
+construction par le générateur des articles ; l'accueil a un fichier rendu avec le gabarit
+« bannière » du skill de la DA (`public/partage/accueil-<empreinte>.jpg`). Une nouvelle page s'y
+ajoute : `verify-site.mjs` (« 4 octodecies ») échoue sinon. Planche à regarder avant de pousser :
+`node scripts/apercu-partage.mjs`. Constantes partagées (URLs, tarifs, schémas Organization/SoftwareApplication,
 PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 `/essai` est noindex et exclu du sitemap (filtre dans `astro.config.mjs`).
 
 ## Blog
 
-- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (48 articles au 10 novembre 2026), schéma dans
+- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (53 articles au 15 novembre 2026), schéma dans
   `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL), avec
   son `theme` (obligatoire : sans lui, ou avec un thème inconnu, la construction s'arrête ;
   voir « Thèmes », plus bas). Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
@@ -669,6 +686,12 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     sortir de la fenêtre) ; une nouvelle classe de bulle reprend cette règle. Une bulle
     ouverte sur le côté (`side="right"`) borne aussi sa largeur (`…-available-width`).
   - Le HTML du build n'y gagne aucun attribut : tout arrive après le montage.
+  - Au clavier (§ 9.gt) : Radix ferme une bulle à tout défilement d'un ancêtre du déclencheur ; le
+    composant ignore cette fermeture tant que le déclencheur a le focus du clavier
+    (`:focus-visible`), sinon une aide que Tab fait défiler jusqu'à elle s'ouvrait et se refermait
+    aussitôt. Son écouteur de défilement doit rester posé avant celui de Radix (au montage, à la
+    fenêtre) ; Échap et tout appui ferment toujours. Essai : la page en haut, le focus sur le
+    contrôle d'avant (`focus({ preventScroll: true })`), puis Tab ; la bulle doit être là 1 s après.
   - Essai : Chromium avec `hasTouch` et `page.touchscreen.tap()` (un clic de souris ne
     reproduit pas le défaut), à 390, 820 et 1 024 px ; puis survol, focus, Échap à la
     souris, et dans WebKit.
@@ -764,6 +787,57 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   montant y passe aussi (ne plus écrire `new Intl.NumberFormat` ni `toLocaleString('fr-FR')` dans
   `src/components/simulateur/`). Une face de police qui élargit U+202F a été essayée : WebKit
   agrandit alors de 2 à 4 px les lignes serrées qui contiennent un nombre.
+  Paiements (§ 9.gn) : le pli « Quand et comment tu paies » (`PaymentExplanation.tsx`) dit, pour
+  l'Urssaf, la CARMF et l'impôt, quand ça part, sur quel revenu et comment ça se régularise ;
+  chaque phrase a sa source dans l'en-tête du composant (CSS L131-6-2 et R133-26, appel CARMF de
+  l'année, impots.gouv.fr). Variantes : RSPM (pas de régularisation), CARMF dispensée, 1re et
+  2e années (`debutActiviteDe`), impôt nul. Les dates de la CARMF (acompte avant fin février,
+  solde avant fin août) se relisent dans son appel de chaque année. Détail des régimes : en
+  PAMC, « Total des cotisations » sous Urssaf et CARMF (somme des montants affichés, `parts`).
+  RID au RSPM : 25 % par défaut, comme le simulateur de l'Urssaf (le médecin choisit à son premier
+  paiement de l'année). Montants (§ 9.gp) : 158 € à 25 %, 631 € à 100 % (urssaf.fr, « Le service
+  simplifié pour les médecins » ; CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM »),
+  pas le quart et le plein du minimum du régime classique (626 € en 2026). La bulle du choix
+  (`sim-rid`) donne ce que chaque niveau couvre (indemnités par jour d'arrêt, rente, indemnité
+  décès), dans les mots du dépliant (§ 9.gt : invalidité « totale et définitive » ; l'âge, moins de
+  62 ans, ne vaut que pour les indemnités par jour) : chiffres à relire chaque année avec les montants, ici et dans les quatre
+  articles qui les citent (`rspm-exemples-concrets`, `guide-impots-internes-remplacants`,
+  `tout-comprendre-carmf`, `tout-comprendre-urssaf`).
+  Estimation des revenus (§ 9.gp) : l'Urssaf recalcule les cotisations de l'année sur une
+  estimation, sur demande ; la loi en vigueur (CSS L131-6-2) ne prévoit plus de majoration pour
+  une estimation trop basse, ne pas le récrire. Chemin, pour un médecin (§ 9.gv, vu dans l'espace
+  du propriétaire ; corrigé en § 9.gz) : « Nouvelle demande », directement dans l'espace (pas la
+  messagerie), objet « Gérer mon moyen de paiement ou les informations relatives au paiement »,
+  puis « Réévaluer vos cotisations » ; pas
+  « Documents et démarches », qui est le menu d'autres professions. Un chemin dans un espace en
+  ligne ne s'écrit que vu dans l'espace d'un médecin, pas d'après une page d'aide générale. Le
+  montant à saisir ne s'affiche pas : le formulaire (« Revenus estimés conventionnés », « Autres
+  revenus estimés ») ne dit pas s'il s'entend avant ou après l'abattement de 26 %.
+  Ligne de confiance (§ 9.gp) : sous les repères, « Barèmes 2026 vérifiés le … sur les sources
+  officielles » et quatre liens. La date est `SIMULATEUR_LAST_UPDATED_ISO`
+  (`src/lib/pages-lastmod.ts` ; aussi le `lastmod` de `/simulateur` et le `dateModified` de son
+  JSON-LD) : elle ne se relève qu'après avoir relu les barèmes sur ces sources et lancé
+  `controle-modele-urssaf.mjs`, jamais pour un habillage.
+  Règle entière (§ 9.go) : un chiffre ou un seuil ne s'affiche jamais sans le reste de sa règle
+  (le propriétaire : « red flag », le lecteur croit qu'on ne la connaît pas). RSPM : entrée jusqu'à
+  19 000 € (CSS D642-4-1) ; sortie au 1er janvier qui suit une année au-dessus de 38 000 €, ou la
+  deuxième de suite au-dessus de 19 000 €, et l'on y reste jusqu'au 31 décembre de l'année du
+  dépassement (urssaf.fr ; la sortie n'est dans aucun article du code). Ne pas écrire « le RSPM
+  s'arrête à 19 000 € ». Un remplaçant en mode Auto au-dessus de 19 000 € voit la fiche miroir
+  « PAMC ou RSPM ? » (`comparison.alternativeRspm`, calcul local, rendu avec le résultat).
+  « Es-tu déjà au RSPM ? » (§ 9.gz) : sous les revenus, pour un remplaçant en mode Auto au-dessus
+  de 19 000 € (`dejaRspm`, `oui` ou `non`, sans réponse par défaut). « Oui » : calcul au RSPM, à
+  tout montant (on y reste au moins jusqu'au 31 décembre). « Non » : PAMC, sans fiche miroir. Sans
+  réponse : PAMC et fiche miroir, comme avant. La plupart des remplaçants sont au RSPM avant de
+  dépasser 19 000 € : la question remplace la parenthèse « déjà au RSPM ? Choisis-le avec
+  « Modifier » » du résumé. Moteur (`shouldUseRspm`), formulaire (`isRspmEffectif`, choix du RID),
+  résumé et fiche miroir lisent tous ce champ.
+  Pli « Quand et comment tu paies » (§ 9.go) : frise de deux années (`cases` de chaque ligne :
+  0 rien, 1 prélèvement habituel, 2 avec le rattrapage ; pas de jaune), montant dû par
+  destinataire, et « Un exemple, avec tes chiffres » (`calculerExempleRattrapage` : revenus plus
+  bas de 20 % les deux années d'avant ; Urssaf, retraite de base de la CARMF et impôt, jamais la
+  complémentaire ni l'ASV, qui ne se régularisent pas). Les lignes de l'exemple sont connues à
+  l'ouverture, seuls les montants arrivent : le pli ne change pas de hauteur.
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la
@@ -820,11 +894,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   uniquement ; gtag/pixel = première interaction OU load+6 s ; pixel gaté par le
   consentement (`localStorage['cookie-consent']`, valeurs `accepted`/`essential-only`,
   même clé que l'app). Bannière cookies incluse ; « Préférences cookies » au footer.
+  Crisp ne se charge qu'à un clic explicite : sur la bulle, ou sur un lien qui porte
+  `data-ouvre-chat` (§ 9.gu, § 9.gw : l'offre des internes de `/tarifs`, de l'accueil et de
+  `/faq`). Deux liens `.lien` dans une même phrase : leurs zones de toucher de 44 px se
+  recouvrent sur deux lignes qui se suivent (règle dans `accueil/Tarifs.astro`). Un tel
+  lien garde un vrai `href` (une adresse e-mail) : c'est ce qu'il fait sans script. Ne
+  jamais brancher l'ouverture du chat sur un geste passif (défilement, survol, arrivée) :
+  `verify-site.mjs` le refuse. Le script en ligne est sur toutes les pages : le retoucher
+  change le HTML de toutes, à prouver « identiques à ce bloc près ».
 - **Calendly** : liens directs (`calendly.com/hippodoc/decouverte-d-hippodoc`), jamais le widget.
 
 ## Vérification avant push
 
-1. `npm run build` (72 pages au 14 novembre 2026, dont 70 dans le sitemap : une de plus par
+1. `npm run build` (77 pages au 15 novembre 2026, dont 75 dans le sitemap : une de plus par
    nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).

@@ -5756,9 +5756,10 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
 
 #### Reste ouvert
 
-- **Témoignages** : statut, ville et accord de Sofiane B., Anaïs V., Sarah M. et
+- ~~**Témoignages** : statut, ville et accord de Sofiane B., Anaïs V., Sarah M. et
   Émilien C. ; « Dr » devant les trois autres à confirmer ; « SOS Médecins » nomme une
-  structure tierce.
+  structure tierce.~~ Réglé en § 9.hc : remplacés le 15 novembre 2026 par quatre témoignages
+  dont les auteurs ont validé texte et signature (« SOS Médecins » compris).
 - **À confirmer par le propriétaire** : « Abonnement 100 % déductible au régime réel. »
   (les trois derniers mots sont ajoutés : en micro-BNC rien ne se déduit) ; les deux
   étapes nouvelles du vacataire ; la liste des six guides (`/comparatif` n'a qu'un lien
@@ -13897,6 +13898,1321 @@ mesures au-dessus de 0,1, et nombre d'entrées des fenêtres sur ordinateur (il 
 `RegimeComparisonCards.tsx`, `ConclusionCard.tsx`, `RspmOuPamc.tsx`, `PlaceGardee.tsx`
 (nouveau), `src/lib/simulateur/usePublicodesSimulation.ts`, `src/styles/simulateur.css`,
 `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gn Simulateur : le total des cotisations, et quand on paie (15 novembre 2026)
+
+Le propriétaire a posé quatre questions : une ligne de cotisations totales ? l'exonération CARMF des
+deux premières années ? la cotisation invalidité-décès (RID) au maximum ? comment l'Urssaf, la CARMF
+et l'impôt sont prélevés ? Avis donné, puis « go je te fais confiance ».
+
+**Ce qui change.**
+- **Total des cotisations** (`RegimeComparisonCards.tsx`) : en PAMC, dans le détail de chaque régime,
+  sous « Cotisations Urssaf » et « Cotisations CARMF », une ligne « Total des cotisations » en gras
+  (sans filet au-dessus) : la somme des deux montants affichés, arrondis un à un (70 000 € de
+  recettes, 5 000 € de charges, Micro-BNC : 4 787 € + 12 515 € = 17 302 €). Au RSPM et CARMF
+  dispensée, une seule ligne : pas de total.
+- **« Quand et comment tu paies »** (`PaymentExplanation.tsx` réécrit ; le pli s'appelait « Comment
+  l'impôt sera prélevé » et ne parlait que de l'impôt). Sous-titre « Urssaf, CARMF et impôt :
+  calendrier et régularisation » (« Urssaf et impôt » au RSPM ou CARMF dispensée). Dedans : le
+  principe sur ciel doux, puis une ligne par destinataire, ce qui part et quand (en encre), puis sur
+  quel revenu et comment ça se régularise ; le tableau du couple est gardé ; une astuce finit le pli.
+  Textes (revenus 2026, régime de croisière) :
+  - Principe : « Tu paies d'abord sur tes revenus d'il y a deux ans, puis tout se régularise. Quand
+    tes revenus montent, le rattrapage suit : mets de côté chaque mois le montant indiqué en tête des
+    résultats. » (premières années : « Tes premières années, tu paies d'abord sur une base
+    forfaitaire, puis tout se régularise sur tes revenus réels. … » ; RSPM : « Au RSPM, tes
+    cotisations suivent tes recettes : rien à rattraper. Seul l'impôt se calcule d'abord sur tes
+    revenus passés, puis se régularise. »)
+  - Urssaf : « Le 5 ou le 20 de chaque mois, en douze prélèvements égaux (chaque trimestre, sur
+    demande). » ; « Elles se calculent d'abord sur ton revenu de 2024, puis sur celui de 2025 dès
+    que tu l'as déclaré, et se régularisent sur celui de 2026 après ta déclaration de 2027 : un
+    complément s'étale sur les prélèvements suivants, un trop-versé vient en déduction. » Premières
+    années : « Tes deux premières années, elles se calculent sur une base forfaitaire, puis se
+    régularisent sur ton revenu réel une fois déclaré : plus tu gagnes, plus le rattrapage est
+    fort. » RSPM : « Chaque mois ou chaque trimestre, quand tu déclares tes recettes : tu paies au
+    même rythme, sur ces recettes. » ; « Rien à régulariser. L'invalidité-décès de la CARMF
+    s'ajoute à ta première déclaration de l'année. »
+  - CARMF : « Un acompte appelé en janvier, à payer avant fin février, et le solde appelé en mai,
+    juin ou juillet, après ta déclaration de revenus, à payer avant fin août. Ou douze prélèvements
+    le 5 du mois, sur demande. » ; « Elles se calculent sur ton revenu de 2024. La retraite de base
+    se régularise : recalculée sur ton revenu de 2025 au moment du solde, puis ajustée sur celui de
+    2026 l'année suivante. La complémentaire et l'ASV, non. » Premières années : « Tes deux
+    premières années, elles se calculent sur une base forfaitaire, sans complémentaire ; la
+    retraite de base se régularise ensuite sur ton revenu réel. »
+  - Impôt : « Environ 580 € le 15 de chaque mois (6 964 € par an), ou chaque trimestre sur
+    option. » ; « De janvier à août 2026, tes acomptes suivent ton revenu de 2024 ; de septembre à
+    décembre, celui de 2025. Ton impôt de 2026 se régularise à l'été 2027, après ta déclaration :
+    un trop-payé te revient fin juillet ou début août, un reste à payer est prélevé à partir de
+    septembre (en quatre fois, jusqu'en décembre, au-delà de 300 €). » Première année : « Aucun
+    acompte en 2026, sauf si tu en demandes un sur impots.gouv.fr. » ; « L'impôt de 2026, environ
+    714 €, est prélevé de septembre à décembre 2027 (en septembre à 300 € ou moins), en même temps
+    que tes premiers acomptes (environ 60 € par mois, le 15). » Impôt nul : « Aucun acompte : à ces
+    revenus, ton impôt estimé est nul. »
+  - Astuce : « Revenus qui changent beaucoup ? L'Urssaf et la CARMF (retraite de base) calculent tes
+    cotisations sur ton revenu estimé de l'année, si tu le demandes (une estimation trop basse peut
+    être majorée), et tu peux moduler tes acomptes d'impôt. » (lien impots.gouv.fr ; RSPM : « Tu peux
+    moduler tes acomptes d'impôt. »)
+- **Mode d'emploi**, point 5 : « Les deux régimes » cite « cotisations Urssaf et CARMF et leur
+  total » ; « Pour aller plus loin — Ce que chaque régime déduit de tes recettes, et quand et comment
+  tu paies l'Urssaf, la CARMF et l'impôt : calendrier, revenu de référence, régularisation. »
+
+**Sources** (vérifiées le 15 novembre 2026). Urssaf : CSS L131-6-2 (« calculées, à titre
+provisionnel, sur la base du revenu d'activité de l'avant-dernière année », recalculées quand le
+revenu de la dernière année est connu, sauf la première année ; sur demande, sur le revenu estimé) et
+R133-26 (« versements mensuels d'un montant égal », « le 5 ou le 20 de chaque mois ») ; échéances
+trimestrielles (5 février, 5 mai, 5 août, 5 novembre) sur demande, complément de régularisation
+étalé sur les échéances à venir, trop-versé en déduction (urssaf.fr). CARMF : « Cotisations 2026 »
+et « Aide à la lecture de l'appel de cotisations 2026 » (carmf.fr) : retraite de base provisionnelle
+sur les revenus 2024, recalculée sur 2025 et régularisation 2025 au solde ; complémentaire et ASV
+sur 2024 « sans régularisation ultérieure » ; acompte en janvier (avant le 28 février 2026), solde en
+mai, juin ou juillet (avant le 31 août 2026) ; prélèvement mensuel le 5, sur douze mois. RSPM :
+déclaration et paiement mensuels ou trimestriels (CSS L642-4-2, § 9.fw) ; invalidité-décès ajoutée à
+la première déclaration de l'année (urssaf.fr, offre simplifiée).
+
+**Les deux autres questions, sans changement.**
+- Exonération CARMF des deux premières années : déjà là (champ « Début d'activité », § 9.fx,
+  repris dans le résumé « Ta situation » et dans le profil « Jeune remplaçant »). L'âge n'est pas
+  demandé : avant 40 ans la complémentaire n'est pas due, après 40 ans elle se calcule sur les
+  revenus d'activité indépendante d'il y a deux ans, presque toujours nuls à ce stade.
+- RID au RSPM : le défaut reste 25 % (157 €). Le médecin choisit 25 % ou 100 % à son premier
+  paiement de l'année ; aucune source ne donne de taux appliqué sans choix, et le simulateur de
+  l'Urssaf retient le forfait de 25 % (158 € dans ses pages, 157 € dans « La CARMF en 2026 » : écart
+  laissé au propriétaire en § 9.fw). En PAMC, la CARMF fixe l'invalidité-décès selon le revenu : pas
+  d'option.
+
+Archivés (textes d'avant) : pli « Comment l'impôt sera prélevé », sous-titre « Prélèvement à la
+source et régularisation » ; « Tes acomptes libéraux », « Prélevés le 15 de chaque mois sur ton
+compte bancaire », « Pour ces revenus : ~X €/mois (Y €/an) », « Pour ces revenus : aucun acompte,
+ton impôt estimé est nul. », « L'impôt de tes salaires est retenu par ton employeur, à part. » ;
+« Régularisation annuelle — L'impôt ci-dessus est une estimation. Après ta déclaration, la DGFiP
+régularise : Trop payé → Remboursement en juillet/août ; Pas assez → Solde en 4 fois (sept → déc)
+si > 300€ » ; « Mise à jour de tes acomptes — Janv → Août 2026 : basés sur tes revenus 2024 ; Sept →
+Déc 2026 : mis à jour avec 2025 ; Tes revenus 2026 ne changent tes acomptes qu'à partir de
+septembre 2027, après ta déclaration. » ; « Première année d'activité ? » (RSPM : « Au RSPM, tes
+cotisations suivent tes recettes, déclarées chaque mois ou chaque trimestre : pas de rattrapage. » ;
+PAMC : « Pendant tes deux premières années, l'Urssaf et la CARMF appellent des cotisations
+provisionnelles sur une base forfaitaire, puis les régularisent quand ton revenu réel est connu :
+plus tu gagnes, plus le rattrapage est fort. Une estimation de ton revenu, déclarée à l'Urssaf, le
+réduit. » ; « Côté impôt, aucun acompte tant que tu n'as pas déclaré de revenu libéral, sauf si tu
+en demandes un dans ton espace impots.gouv.fr. Sinon, de septembre à décembre de l'année suivante,
+tu paies le solde de cette première année et tes premiers acomptes en même temps. Mets de côté
+chaque mois le montant indiqué en tête des résultats. ») ; « Revenus très différents ? Tu peux
+demander une modulation » ; mode d'emploi « … et comment ton impôt sera prélevé (acomptes, première
+année). » et « (charges, cotisations Urssaf et CARMF, revenu imposable, impôt) ».
+
+**Contrôles.** Chromium à 390 et 1 280 px, quatre situations (PAMC 70 000/5 000 ; interne au RSPM,
+1re année ; jeune remplaçant en PAMC, 1re année ; PAMC CARMF dispensée à 18 000 €) : total égal à la
+somme des deux lignes affichées dans les deux régimes, absent au RSPM et dispensé ; lignes du pli
+(Urssaf, CARMF, Impôt ; sans CARMF au RSPM et dispensé), sous-titre, années, textes des premières
+années et de l'impôt nul, aucun débordement. Essais des § 9.gd à 9.gi repassés. WebKitGTK à 1 300 et
+390 px : pli et totaux, aucun débordement. `verify-site.mjs` sans erreur ; feuille commune inchangée.
+Comparées à la production : `/simulateur` change ; `/guide-declarations` et la calculette ne changent
+que du nom de leur fichier d'îlot (`BoussoleWizard`, `CalculetteApp`), parce que deux morceaux de
+JavaScript partagés entre les outils (`circle-help`, `tooltip`) sont regroupés autrement depuis que le
+pli n'importe plus les mêmes icônes ; leur HTML est identique à ces noms près ; les 69 autres pages,
+identiques.
+
+### 9.go Simulateur : la règle entière du RSPM, une frise et un exemple chiffré (15 novembre 2026)
+
+Retour du propriétaire sur § 9.gn : le filet « devrait être au-dessus du total des cotisations » ;
+« Quand et comment tu paies » pourrait être « encore plus stylé », ou avec des exemples « en
+fonction des résultats de la personne » ; et le repère « Seuil du RSPM : 19 000 € » ne dit rien des
+38 000 € : « red flag, les gens vont se dire qu'on ne connaît pas toute la règle […] ce genre de
+réflexion, il faut l'appliquer un petit peu partout ». Il a aussi fourni la page d'un simulateur
+concurrent, pour avis (réponse donnée dans la conversation, rien n'en est repris ici).
+
+**La règle du RSPM, vérifiée de nouveau.** Entrée : rémunérations « inférieures ou égales à
+19 000 euros » (CSS D642-4-1, en vigueur depuis le 25 juin 2023). Taux : 13,5 %, puis 21,2 % sur la
+fraction au-dessus du seuil (D642-4-2, D642-4-3). La sortie n'est dans aucun de ces articles, ni
+dans L642-4-2 ni D642-4-4 : elle est donnée par l'Urssaf (urssaf.fr, « Le service simplifié pour
+les médecins ») : des honoraires qui dépassent « le seuil de 38 000 € au cours de l'année civile ou
+le seuil de 19 000 € pour la seconde année consécutive » ne permettent plus d'en bénéficier
+« l'année suivante », et l'on peut « rester dans ce service jusqu'au 31 décembre de l'année en
+cours ». Conséquence que le simulateur ne disait nulle part : un remplaçant déjà au RSPM y reste
+toute l'année où il dépasse 19 000 €, et même 38 000 €.
+
+**Ce qui change.**
+- **Filet du total** : « Total des cotisations » est sous une barre d'addition (filet au-dessus,
+  plus foncé), à la hauteur des autres lignes.
+- **Le RSPM, partout où il n'était dit qu'à moitié** :
+  - repère : « Seuil du RSPM » devient « Seuil d'entrée au RSPM », texte « L'offre simplifiée des
+    remplaçants : 13,5 % de cotisations, 21,2 % au-delà. On en sort après une année au-dessus de
+    38 000 €, ou deux de suite au-dessus de 19 000 €. » ;
+  - résumé « Ta situation », en mode Auto au-dessus de 19 000 € : « Régime social : PAMC (déjà au
+    RSPM ? Choisis-le avec « Modifier ») » (avant : « PAMC (le RSPM s'arrête à 19 000 € de
+    recettes) », qui était faux pour qui y est déjà) ;
+  - bulle « Exercice » : « Tu peux opter pour le RSPM si tes recettes ne dépassent pas 19 000 € par
+    an » ; bulle « Régime social » : « On y entre jusqu'à 19 000 €/an d'honoraires ; on en sort au
+    1er janvier qui suit une année au-dessus de 38 000 €, ou la deuxième de suite au-dessus de
+    19 000 €. » et « Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y restes jusqu'au
+    31 décembre : choisis RSPM. » ;
+  - FAQ « Que se passe-t-il au-delà de 38 000 € de recettes ? » (écran et schéma `FAQPage`, même
+    source) : la dernière phrase devient « Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y
+    restes jusqu'au 31 décembre : choisis RSPM à la main. » ;
+  - mode d'emploi, « Régime social » : ajout « Déjà au RSPM et au-dessus de 19 000 € ? Choisis
+    RSPM : on y reste jusqu'au 31 décembre de l'année du dépassement. » ;
+  - fiche « RSPM ou PAMC ? » (RSPM retenu) : ajout « On en sort au 1er janvier qui suit une année
+    au-dessus de 38 000 €, ou la deuxième de suite au-dessus de 19 000 €. »
+- **Fiche miroir « PAMC ou RSPM ? »** (`RspmOuPamc.tsx`, `calculerAlternativeRspm`) : pour un
+  remplaçant en mode Auto au-dessus de 19 000 € (PAMC retenu), sous la conclusion : « Au-dessus de
+  19 000 € de recettes, le simulateur retient le PAMC. Si tu es déjà au RSPM, tu y restes pourtant
+  cette année, jusqu'au 31 décembre. On en sort au 1er janvier qui suit […]. Au RSPM (13,5 % jusqu'à
+  19 000 €, 21,2 % au-delà), tu garderais X € par an, contre Y € en PAMC. » puis le verdict (« Le
+  RSPM te laisserait Z € de plus par an. », « Le PAMC te laisse Z € de plus par an. », « Les deux se
+  valent, à Z € près. ») et « Pour voir ce calcul en détail, choisis RSPM avec « Modifier ». ». Le
+  calcul au RSPM est local : il arrive avec le résultat, rien ne bouge après coup. Exemples :
+  70 000 € de recettes et 5 000 € de charges, 44 502 € au RSPM contre 40 734 € en PAMC ; 25 000 € et
+  2 000 €, 19 006 € contre 15 100 € ; « Jeune remplaçant » (1re année, sans complémentaire en
+  PAMC), 29 358 € contre 28 849 € : les deux se valent. Pas de fiche pour un médecin installé, ni
+  quand le régime social est choisi à la main.
+- **« Quand et comment tu paies »** (`PaymentExplanation.tsx`) :
+  - une **frise** sous le principe, « Ce que tu gagnes en 2026 finit de se payer en 2027 » (« Tes
+    paiements, de 2026 à 2027 » quand rien ne se rattrape) : l'année simulée et la suivante, une
+    rangée par destinataire, douze cases par an. Bleu clair : prélèvement habituel ; bleu foncé :
+    avec le rattrapage de l'année (Urssaf de juin à décembre de l'année suivante, après la
+    déclaration ; CARMF au solde d'août ; impôt de septembre à décembre) ; case vide : rien (CARMF
+    hors février et août ; impôt la première année, et de janvier à août la deuxième). Jamais de
+    jaune dans un graphique (DA). Initiales des mois à partir de 640 px. La frise redit en image ce
+    que disent les lignes : elle est masquée aux lecteurs d'écran ;
+  - **ce qui est dû** à chacun, à côté de son nom : « Urssaf — 4 787 € pour 2026 », les montants du
+    détail des régimes ;
+  - **« Un exemple, avec tes chiffres »** (PAMC, hors premières années ; `calculerExempleRattrapage`,
+    un appel au modèle de l'Urssaf à l'ouverture du pli, gardé en mémoire) : « Si tu gagnais 20 % de
+    moins en 2024 et en 2025 (56 000 € de recettes), tes prélèvements de 2026 partent de ces
+    revenus-là. En 2027, il te reste à payer la différence : » puis un calcul ligne à ligne, Urssaf
+    934 €, CARMF, retraite de base 781 €, Impôt 2 772 €, et la ligne qui ressort, « Rattrapage en
+    2027 : 4 487 € ». C'est l'écart entre ce qui est dû à ces revenus et le même calcul à 80 % des
+    recettes et des charges ; seule la retraite de base de la CARMF y entre (la complémentaire et
+    l'ASV ne se régularisent pas). Les lignes gardent leur place pendant le calcul (« … € ») ; pas
+    de ligne d'impôt quand il est nul ;
+  - **deuxième année d'activité**, impôt : le texte disait à tort que les acomptes de janvier à août
+    suivent le revenu d'il y a deux ans (il n'y en avait pas). Désormais : « Aucun acompte de janvier
+    à août 2026 : tu n'avais pas de revenu libéral en 2024. Ils démarrent en septembre, le 15 de
+    chaque mois. » et « De septembre à décembre 2026, tes acomptes suivent ton revenu de 2025, et le
+    solde de ton impôt de 2025 est prélevé en même temps. Ton impôt de 2026 se régularise à l'été
+    2027, après ta déclaration : un reste à payer est prélevé à partir de septembre (en quatre fois,
+    jusqu'en décembre, au-delà de 300 €). »
+
+Archivés (textes d'avant) : repère « Seuil du RSPM — L'offre simplifiée des remplaçants, sur leurs
+rétrocessions : 13,5 % de cotisations, 21,2 % au-delà. » ; résumé « Régime social : PAMC (le RSPM
+s'arrête à 19 000 € de recettes) » ; bulles « Tu peux opter pour le RSPM jusqu'à 19 000 € de
+recettes », « Ouvert jusqu'à 19 000 €/an d'honoraires ; perdu après deux années de suite au-dessus
+de 19 000 € ou une seule au-dessus de 38 000 €. », « Déjà au RSPM entre 19 000 et 38 000 € ?
+Choisis RSPM. » ; FAQ « Déjà au RSPM et entre 19 000 et 38 000 € ? Choisis-le à la main. ».
+
+**Relevé au passage, non modifié.** Le dépliant de la CARMF « Remplaçants régulateurs RSPM », édition
+de février 2026, et la page de l'Urssaf donnent l'invalidité-décès du RSPM à 158 € (25 %) et 631 €
+(100 %) ; le simulateur garde 157 € et 626 € (décision du propriétaire, § 9.fr). Le même dépliant
+donne ce que chaque niveau couvre (indemnités journalières à partir du 91e jour : 16,46 € ou
+65,84 € ; rente d'invalidité : 5 915,50 € ou 23 662 € par an ; indemnité décès : 17 875 € ou
+71 500 €) : proposé au propriétaire pour la bulle du choix.
+
+**Contrôles.** Chromium à 390 et 1 280 px, cinq situations (70 000/5 000 ; 25 000/2 000 ; RSPM
+15 000/1 000 ; « Jeune remplaçant », 1re année ; « Installé généraliste ») : fiche miroir présente
+pour les remplaçants en PAMC, absente pour l'installé, son PAMC égal à la meilleure tuile et son
+écart égal à la différence des deux montants ; règle de sortie dans les deux fiches ; résumé ;
+frise de 24 cases par rangée, sans débordement (cases de 6,8 px à 390 px, 35,8 px à 1 280 px) ;
+total de l'exemple égal à la somme de ses lignes ; le pli ne change pas de hauteur à l'arrivée de
+l'exemple. Essais des § 9.gd à 9.gn repassés (scripts mis à jour pour la fiche miroir et le résumé).
+WebKitGTK à 1 300 et 390 px : frise, fiche miroir, exemple, aucun débordement (le filet du total y
+fait 1 px). `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparées à la production,
+les 71 autres pages du build sont identiques.
+
+### 9.gp Simulateur : l'invalidité-décès du RSPM à 158 € et 631 €, ce qu'elle couvre, et une ligne de confiance (15 novembre 2026)
+
+Après § 9.go et l'avis rendu sur le simulateur d'un concurrent, trois propositions faites au
+propriétaire, qui a répondu « Go pour les trois, je te fais confiance » : passer l'invalidité-décès
+du RSPM à 158 € et 631 € ; dire dans la bulle du choix ce que chaque niveau couvre ; creuser le
+montant à déclarer à l'Urssaf pour faire recalculer ses cotisations, et poser une ligne de confiance
+(date de vérification des barèmes et sources).
+
+**1. Invalidité-décès du RSPM : 158 € (25 %) et 631 € (100 %).** Le simulateur et quatre articles
+disaient 157 € et 626 € (§ 9.fr : le quart et le plein de la cotisation minimale du régime classique
+en 2026, 626 €). Deux documents officiels de 2026 donnent autre chose pour l'offre simplifiée, et
+aucun ne donne 157 € :
+- urssaf.fr, « Le service simplifié pour les médecins », mise à jour le 13 novembre 2026 : « Lors de
+  votre première déclaration, une cotisation annuelle forfaitaire RID de 158 € ou 631 € sera
+  ajoutée. » ;
+- CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM », édition de février 2026 : mêmes
+  montants, et les prestations de chaque niveau.
+
+Le régime classique, lui, reste à 626 € au minimum en 2026 (carmf.fr, « Vos cotisations en cours
+d'activité », relue ce jour) : l'écart de 5 € entre les deux est celui des documents, il n'est pas
+corrigé ici. Effet sur un résultat au RSPM : 1 € de cotisations de plus par an à 25 %, 5 € à 100 %
+(15 000 € de recettes : 2 183 € au lieu de 2 182 €).
+Modifié : `useRspmCalculation.ts` (631 et 158) ; `SimulateurForm.tsx` (libellés « 25% (158€/an) »,
+« 100% (631€/an) », phrase de la dispense « elle reste obligatoire (158 € ou 631 € par an selon le
+taux ci-dessous) ») ; mode d'emploi de la page (plus bas) ; quatre articles (« Contenu modifié »).
+
+**2. La bulle du choix dit ce que chaque niveau couvre.** Bulle « Cotisation RID »
+(`SimulateurForm.tsx`, classe `sim-rid` dans `simulateur.css`) : un tableau de trois colonnes,
+chiffres du dépliant de la CARMF cité, prestations 2026 pour un médecin de moins de 62 ans :
+
+| | À 25 % | À 100 % |
+|---|---|---|
+| Cotisation par an | 158 € | 631 € |
+| Arrêt de travail, par jour à partir du 91e | 16,46 € | 65,84 € |
+| Invalidité totale, rente par an | 5 915,50 € | 23 662 € |
+| Décès, indemnité | 17 875 € | 71 500 € |
+
+puis « Prestations 2026 de la CARMF pour un médecin de moins de 62 ans. Tu choisis ton niveau à ta
+première déclaration de l'année. » Le conseil « 100% recommandé si tu as des enfants ou un emprunt
+immobilier. » est gardé. Textes remplacés, archivés : « Assurance obligatoire dès que tu es affilié
+à la CARMF. Te couvre en cas d'invalidité ou de décès (capital versé aux ayants droit). » (devient
+« Assurance obligatoire dès que tu es affilié à la CARMF. Elle te couvre en cas d'arrêt de travail
+long, d'invalidité ou de décès. ») ; « 25% = couverture minimale → 157€/an », « 100% = couverture
+complète → 626€/an ». Mode d'emploi, « Taux RID », avant : « Au RSPM, l'invalidité-décès peut être
+cotisée à 25 % (couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le
+simulateur retient 25 %. » ; après : « Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an)
+ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par
+jour à partir du 91e jour. Par défaut, le simulateur retient 25 %. » Ces prestations se relisent
+dans le dépliant de chaque année.
+
+**3. Une erreur corrigée dans le pli « Quand et comment tu paies ».** Depuis § 9.gn (en ligne du
+15 novembre 2026, § 9.gn puis § 9.go), l'astuce disait : « Revenus qui changent beaucoup ? L'Urssaf
+et la CARMF (retraite de base) calculent tes cotisations sur ton revenu estimé de l'année, si tu le
+demandes (une estimation trop basse peut être majorée), et tu peux moduler tes acomptes d'impôt. »
+La parenthèse était fausse : l'article L131-6-2 du code de la sécurité sociale, dans sa version en
+vigueur (depuis le 28 décembre 2023), prévoit le calcul « sur la base de l'assiette de cotisations
+estimée pour l'année en cours », sur demande, et ne prévoit plus de majoration quand l'estimation
+se révèle trop basse. Nouvelle astuce : « Revenus qui changent beaucoup ? L'Urssaf recalcule tes
+cotisations de l'année sur une estimation de tes revenus, si tu le demandes dans ton espace en
+ligne (« Documents et démarches », puis « Réévaluer vos cotisations ») ; la CARMF fait de même pour
+ta retraite de base, sur demande. Et tu peux moduler tes acomptes d'impôt. » Le chemin est celui
+de l'Urssaf (« Comment adapter le montant de vos cotisations ? », mise à jour le 9 avril 2026). La
+« modulation des cotisations » que l'Urssaf propose aux artisans et commerçants n'est pas ouverte
+aux praticiens : le mot n'est pas employé pour les cotisations.
+
+**Le montant à saisir n'est pas affiché.** L'idée était de donner au médecin le chiffre à recopier
+dans le formulaire de l'Urssaf. Le champ s'appelle « Revenus estimés » ; aucun texte officiel
+lisible sans compte ne dit s'il s'entend avant ou après l'abattement de 26 % de la nouvelle
+assiette (la loi dit « assiette de cotisations estimée »). Un chiffre faux d'un quart serait pire
+que pas de chiffre : rien n'est affiché tant que l'aide dépliée du formulaire n'a pas été lue (une
+capture d'écran de l'espace du propriétaire suffirait).
+
+**4. Ligne de confiance.** Sous les six repères de `/simulateur` : « Barèmes 2026 vérifiés le
+15 novembre 2026 sur les sources officielles : Urssaf, CARMF, Service-Public, Légifrance. »
+(quatre liens : taux des cotisations des praticiens, cotisations de la CARMF, barème de l'impôt,
+article D642-4-1 du code de la sécurité sociale). La date vient de `SIMULATEUR_LAST_UPDATED_ISO`
+(`src/lib/pages-lastmod.ts`), qui donne aussi à `/simulateur` son `lastmod` dans le sitemap (la page
+n'en avait pas) et le `dateModified` de son JSON-LD `WebApplication`. Elle se relève quand un
+barème ou une règle du simulateur est revérifié, jamais pour un habillage. Relu ce jour pour la
+porter : urssaf.fr, taux des praticiens (page du 20 mars 2026 : CSG-CRDS 9,70 %, CURPS 0,50 % dans
+la limite de 240 €, CFP 0,25 % du plafond, barème maladie) ; carmf.fr (base 8,73 % jusqu'à
+48 060 € puis 1,87 %, complémentaire 11,80 %, invalidité-décès de 626 € à 1 010 €) ;
+service-public.fr, fiche F1419, vérifiée le 12 novembre 2026 (tranches à 11 600, 29 579, 84 577 et
+181 917 €) ; Légifrance, D642-4-1 en vigueur ; `node scripts/controle-modele-urssaf.mjs` sans
+écart. Tout concorde avec le code.
+
+**Contenu modifié** (quatre articles, `updatedDate` et `blog-meta.json` au 15 novembre 2026 ;
+adresses inchangées) :
+- `rspm-exemples-concrets` : « **+ RID** (invalidité-décès) forfaitaire : **157 €** (25 %) ou
+  **626 €** (100 %) — barème CARMF 2026 » devient « … **158 €** (25 %) ou **631 €** (100 %) —
+  montants 2026 de l'offre simplifiée » ; hypothèses « RID = 25 % (158 €) » ; exemple à 19 000 € :
+  total des cotisations 2 723 € (2 722 €), net et Super-Net 16 277 € (16 278 €) ; exemple à
+  38 000 € : total 6 751 € (6 750 €), net 31 249 € (31 250 €), Super-Net ≈ 29 992 € (≈ 29 993 €) ;
+  tableau comparatif 2 723 € et 6 751 € (gains arrondis inchangés, ≈ 4 220 € et ≈ 4 190 €) ; réponse
+  de FAQ « cotisations 2 723 € (14,3 %) […] Super-Net 16 277 € » ; sources : la sortie du
+  dispositif cite l'Urssaf (« Sortie du service ») au lieu de la « section des art. D. 642-4-x »,
+  où elle n'est pas (§ 9.go) ; « Invalidité-décès : barème CARMF 2026, classe A à 626 € ; l'option
+  à 25 % en est le quart. » devient « Invalidité-décès de l'offre simplifiée : 158 € ou 631 €
+  (URSSAF, page citée, mise à jour le 13 novembre 2026 ; CARMF, dépliant « Remplaçants, régulateurs
+  adhérents au RSPM », édition 2026). »
+- `guide-impots-internes-remplacants` : « **157 €** pour une couverture à 25 % », « **626 €** pour
+  une couverture à 100 % » deviennent 158 € et 631 € ; source « Invalidité-décès de l'offre
+  simplifiée (157 € ou 626 €) : barème CARMF 2026, carmf.fr. » remplacée par l'Urssaf (page citée)
+  et le dépliant de la CARMF.
+- `tout-comprendre-carmf` : « Au RSPM : un forfait que tu choisis, **157 €** (couverture à 25 %) ou
+  **626 €** (couverture complète). » devient 158 € et 631 € ; même correction dans la réponse de FAQ
+  (« un forfait au choix : 158 € ou 631 € »). Le régime classique (626 € à 1 010 €) n'est pas touché.
+- `tout-comprendre-urssaf` : « **157 €/an** pour une couverture à 25% ou **626 €/an** pour une
+  couverture à 100% (barème CARMF 2026) » devient « **158 €/an** […] **631 €/an** […] (montants 2026
+  de l'offre simplifiée ; voir la CARMF) » ; source « Invalidité-décès au RSPM : carmf.fr, « Vos
+  cotisations en cours d'activité » (classe à 626 € en 2026). » remplacée par l'Urssaf (page
+  citée) et le dépliant de la CARMF.
+
+**Contrôles.** Chromium à 390 et 1 280 px : au RSPM, 15 000 € de recettes donnent 2 183 € de
+cotisations à 25 % et 2 656 € à 100 % (2 025 € + 158 € ou 631 €) ; libellés ; tableau de la bulle
+lu cellule par cellule ; bulle et tiroir sans débordement à 320, 360, 820 et 1 280 px ; ligne de
+confiance sur deux lignes à partir de 600 px, trois en dessous, aucun lien coupé, de 320 à
+1 440 px ; astuce sans « majorée ». Essais des § 9.gh et 9.go repassés sans erreur. WebKitGTK à
+1 300 px et en cadre de 360 px : mêmes mesures, colonnes alignées. `verify-site.mjs` sans erreur,
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). Comparés à la production : 72 fichiers
+identiques, 7 différents, tous attendus (`/simulateur`, les quatre articles, les deux fichiers du
+sitemap : quatre dates d'articles, et `/simulateur` qui reçoit la sienne).
+
+**Reste ouvert, pour le propriétaire.** Le montant à saisir dans « Réévaluer vos cotisations »
+(avant ou après l'abattement de 26 %) ; l'écart entre l'invalidité-décès du régime classique
+(626 € au minimum) et celle de l'offre simplifiée (631 €), tel que les documents de 2026 le donnent.
+
+### 9.gq Nouvel article : les aides à l'installation en 2026, et article zones FRR corrigé sur les remplaçants (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article` (§ 9.gl), précédent § 9.as.
+
+**Fichier et affiche.** `src/content/blog/aides-installation-medecin-2026.md` ; affiche
+`src/assets/blog/aides-installation-medecin-2026-cover.jpg`, 1 611 × 2 000 (0,8055, portrait),
+réenregistrée sans métadonnées (`sharp`, qualité 90, 445 Ko), empreinte unique dans
+`src/assets/blog/`. Texte lisible, sans faute.
+
+**Thème** : `statut-contrats-revenus`. L'installation est un choix de statut et de cadre
+d'exercice ; l'article prolonge `choix-mode-exercice` et `salariat-vs-liberal`, du même
+thème. (`impots-declarations` se défendait pour la partie fiscale ; l'article FRR y reste.)
+
+**Frontmatter.** `title` « Aides à l'installation médecin : le vrai bilan 2026 » (51 signes,
+`<title>` « … | Hippodoc ») et `description` écrits ici ; `seriesId: "divers"`,
+`episodeNumber: 16` ; `readTime` 29 min (4 576 mots ÷ 160) ; `cta` « Prêt à comparer deux
+communes sur ce qui te reste vraiment ? » + `ctaHref: "/simulateur"` ; FAQ de 6 questions
+écrite ici d'après le texte (`PLANCHER_FAQ` relevé à 59 pages, 398 questions) ;
+`relatedArticles` : zones-frr, micro-BNC ou réel, choix du mode d'exercice, Urssaf, CARMF,
+effet ciseaux.
+
+**Écarts au texte fourni** (le propriétaire a donné « carte blanche » le 15/11 pour le rendre
+cohérent avec le blog et le vérifier) :
+- **tutoiement** partout (le texte vouvoyait) ; titre `#` sorti du corps ; date « Mis à jour
+  le 15 novembre 2026 » (au lieu du 25 octobre) ;
+- ajouts : « L'essentiel » (5 puces), FAQ, deux `:::tip` (l'astuce régime réel, l'encart
+  Hippodoc, lien relatif `/`), sigles définis (ZIP, ZAC, ASV, CFE, URPS, rescrit, 2035,
+  déclaration contrôlée) ; « Sources » devenu `## 📚 Sources (vérifiées au 15 novembre 2026)`,
+  dernier titre, en liste ;
+- **corrections factuelles** après les relectures du standard `hippodoc-exigence` (interne
+  novice, fiscaliste, correcteur, deux passes ; chaque « faux » revérifié) :
+  - recettes hors zone détaillées par cas : ZFRR cabinet fixe (25 %, part hors zone imposée),
+    ZFRR non sédentaire (totale jusqu'à 25 %, proportionnelle au-delà), ZFRR+ (au prorata),
+    quartier prioritaire (BOFiP BOI-BIC-CHAMP-80-10-75-20, § 150 à 230) ;
+  - aide aux créateurs réservée à certains publics depuis 2020, pas « depuis 2026 » (LFSS
+    2020, art. 274) ; demande dans les 60 jours suivant le début d'activité (décret
+    n° 2026-69) ;
+  - revenus forfaitaires des débuts : 9 131 € (19 % du PASS) et 19 224 € pour la maladie
+    (40 %) (entreprendre.service-public.gouv.fr F39739) ;
+  - contrat de début d'exercice (art. L1435-4-2 CSP) : réservé aux remplaçants et étudiants
+    (le texte l'ouvrait aux installés) et en abrogation différée par la LFSS 2026 (Légifrance,
+    statut « ABROGE_DIFF ») ;
+  - PLFSS 2027 : Sénat depuis le 9/11, vote prévu le 18/11, « mission de solidarité
+    territoriale » (PJL Sénat n° 138, art. 21) ; Assemblée : rejet le 23 octobre ;
+  - OBO : flat tax sur la plus-value, bénéfices remontés après IS ;
+  - un remplaçant qui s'installe dans la commune classée où il remplaçait poursuit son
+    activité (BOFiP -30, § 70, ex. 3) ; jamais exonéré et installé ailleurs : la doctrine ne
+    tranche pas nettement, rescrit conseillé.
+
+**Maillage.** Liens posés sur des mots du texte : « zones France ruralités revitalisation » →
+`/blog/zones-frr-exoneration-impot-medecin`, « micro-BNC » → `/blog/regime-fiscal-micro-bnc-vs-reel`,
+« ton Super-Net » → `/simulateur`. Entrant dans le texte : l'article FRR (plus bas). Entrant par `relatedArticles`
+(en tête) : `choix-mode-exercice`, `salariat-vs-liberal`,
+`remplacement-regulier-requalification`, `zones-frr-exoneration-impot-medecin`.
+
+**La une.** `featured: true` retiré de `conge-maternite-paternite` (il y était « à retirer à
+la prochaine publication », § 9.dy) : la une revient au plus récent, cet article. À remettre
+si le propriétaire préfère.
+
+**Correction factuelle de `zones-frr-exoneration-impot-medecin`** (`updatedDate`
+2026-11-15, reportée dans `blog-meta.json`). L'article disait qu'un remplaçant ne peut pas
+bénéficier de l'exonération FRR « en tant que remplaçant » et qu'un collaborateur doit avoir
+une patientèle propre (rescrit ZRR BOI-RES-BIC-000030). C'est dépassé : le BOFiP
+BOI-BIC-CHAMP-80-10-75-30 du 29 juillet 2026 (§ 220 et 230) admet remplaçants et
+collaborateurs aux conditions de droit commun, « quels que soient les liens de dépendance »,
+et le § 70 (ex. 3) dit qu'un remplaçant qui s'installe dans la commune classée où il
+remplaçait poursuit son activité, sans nouvelle période. Description, FAQ, puce de
+« L'essentiel », section « Le piège » réécrite (avec un lien dans le texte vers le nouvel
+article) et puce de sources remplacées, accord du propriétaire (« je te fais confiance »).
+
+**Vérifications.** Construction : 73 pages, 71 dans le sitemap, `lastmod` 2026-11-15 ;
+`verify-site.mjs` passe. Feuille commune inchangée (`_astro_assets.BqFlQkaI.css`, comme
+`main`). Pages changées contre `main` : le nouvel article, `/blog`, les pages de thème
+`statut-contrats-revenus` et `impots-declarations` (description de l'article FRR),
+`/qui-sommes-nous`, et les quatre articles du maillage. Lighthouse mobile de l'article : 97
+/ 100 / 100 / 100, CLS 0. Comparaison mot à mot au texte fourni : sans objet (texte remanié
+avec accord, écarts listés ci-dessus).
+⚠️ **Construction locale sur Mac** : la garde de police de l'image de partage
+(`src/lib/image-partage.mjs`, « Hippodoc » à 471 px) arrête la construction, sur `main`
+aussi : le Pango livré avec `sharp` 0.35.3 pour darwin-arm64 ne trouve pas de configuration
+fontconfig, puis ne lit pas la graisse numérique 720. Pour vérifier, la garde a été
+neutralisée le temps de la construction, sans commit ; l'image de partage est à contrôler sur
+l'aperçu Vercel (Linux).
+
+### 9.gr Contenu modifié : mise en forme de `aides-installation-medecin-2026` (15 novembre 2026)
+
+Demande du propriétaire : l'article (§ 9.gq) manquait de repères (9 passages en gras pour
+1 000 mots, contre 16 à 35 dans les autres articles). Pas d'émojis (refus explicite :
+« reste dans notre DA »), seulement ce que la DA du blog rend déjà :
+- **gras** sur les montants, délais et conditions qui décident (43 → 83 passages, 18 pour
+  1 000 mots) ;
+- **trois encadrés `:::warning`** (« Attention ») sur des passages existants, sans mot
+  ajouté : le transfert hors zone qui rend l'impôt exigible, le 1447-C-SD avant le
+  31 décembre, la règle des dix ans des aides des collectivités ;
+- **paragraphes longs coupés** à une frontière de phrase (19 coupes, aucun mot changé) ;
+- **ajout** d'une partie « Avant de signer le bail » (liste numérotée de 7 gestes), avant
+  « En résumé », composée uniquement de règles déjà dites dans l'article.
+Pas d'`updatedDate` : publié le jour même. Construction et `verify-site.mjs` : passent ;
+feuille commune inchangée.
+### 9.gs `/tarifs` refaite : la grammaire de l'accueil, chaque chose dite une fois (15 novembre 2026)
+
+Demande du propriétaire : la page « est un peu en dessous », on peut faire « plus épuré, stylé,
+moderne, attractif, tout en restant dans notre DA […] c'est une page importante ». Avis donné dans
+la conversation, puis « go, monte la page ».
+
+**Constat.** La page avait été rhabillée dans la DA « au caractère près » (§ 9.ee) et n'avait pas
+reçu l'épure de l'accueil (§ 9.eu). Le prix y était dit cinq fois avant le premier bouton (titre,
+chapô, fiche, ligne sous le prix, coches). À 390 × 844, le premier écran montrait le titre, sept
+lignes de chapô et l'offre mensuelle ; le prix annuel était hors écran, son bouton à 1 107 px.
+Trois fiches, trois formats (la fiche des internes sans bouton, prix dans une phrase). Quatre
+signaux sur l'offre annuelle (« Populaire », « −34 % », fond, bouton jaune). Dix-sept coches de
+même poids. PostHog, 90 jours (17 août au 15 novembre 2026, 63 pages vues, une trentaine de
+visiteurs : une direction, pas une preuve) : 39 vues sur 63 arrivent de Google, 41 sur téléphone ;
+18 ouvertures de questions (résiliation, coût, options payantes) pour 1 clic sur un bouton d'essai.
+
+**Ce qui change.**
+- **Premier bloc** : le titre, une ligne, puis les trois offres dans l'ordre et au format de
+  l'accueil (annuel, mensuel, internes : nom, prix, une ou deux lignes, bouton). Un seul signal sur
+  l'annuel, le surlignage jaune de l'accueil. Sous 700 px, les offres Mensuel et Internes sont en
+  grille (nom à gauche, prix à droite) ; à 390 × 844 les trois prix sont dans le premier écran (bas
+  du troisième à 793 px), le bouton de l'annuel finit à 517 px.
+- **Quatre garanties** sous les offres, hors des plis : l'essai et la carte bancaire, l'engagement
+  (mensuel et annuel), la déduction, l'essai de 6 mois des syndicats partenaires. Un dessin au trait
+  dans une pastille blanche, un titre, une phrase.
+- **Inclus** : une feuille blanche, une rangée par famille (quatre), un filet entre deux ; le titre
+  de la famille à gauche à partir de 900 px, les lignes en deux colonnes de texte à partir de
+  640 px.
+- **Questions** : une feuille à lignes (règles de `accueil/Questions.astro`, recopiées dans la
+  feuille de la page). Textes, ordre et schéma `FAQPage` inchangés.
+- **Liens d'inscription** : les deux boutons d'offre menaient à la même adresse ; ils portent
+  `plan=yearly` et `plan=monthly`, comme ceux de l'accueil. `data-track` inchangés
+  (`cta_signup_tarifs_annuel`, `cta_signup_tarifs_mensuel`, `cta_signup_tarifs_bottom`).
+  Nouveau : `data-ph="tarifs_interne_contact"` sur le bouton des internes.
+- **Mascotte** : à partir de 1 024 px seulement, derrière la fiche des internes, comme sur
+  l'accueil. Sous 1 024 px elle n'est plus à côté du titre des inclus (un seul `<picture>`).
+- Sitemap : `TARIFS_LAST_UPDATED_ISO` passe au 15 novembre 2026.
+
+**Contenu modifié (à relire par le propriétaire).** Inchangés : `<title>`, description, canonique,
+les quatre blocs JSON-LD, les cinq questions et leurs réponses, le titre et le bouton de la scène
+de fin, tout ce qui est hors de `<main>`.
+- `<h1>` : « Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel » devient « Tarifs Hippodoc : un
+  outil pro, à un prix humain » (le titre des tarifs de l'accueil). Le prix reste dans `<title>`,
+  la description et la première réponse de la FAQ.
+- Chapô : « Hippodoc coûte 29 € par mois sans engagement, ou 19 € par mois en facturation annuelle
+  (228 € par an, soit 34 % d'économie). Chaque offre commence par un essai gratuit de 30 jours,
+  avec toutes les fonctionnalités incluses. » devient « Tout est inclus dans chaque offre. Seule
+  la période de facturation change. » (d'après la cinquième réponse de la FAQ).
+- Offres : retirés « Flexible », « Populaire », « −34 % », « 29 € facturés chaque mois », les six
+  coches des fiches (« Essai gratuit 30 jours », « Toutes les fonctionnalités incluses »,
+  « Résiliable à tout moment », « 10 € d'économie par mois vs mensuel »). « / mois » devient « par
+  mois ». Ajouté sur l'annuel : « 120 € de moins par an que le mensuel » (accueil). Boutons :
+  « Commencer l'essai gratuit » devient « Commencer 30 jours gratuits » (accueil).
+- Internes : « Internes et docteurs juniors » devient « Interne et docteur junior » (accueil ; au
+  pluriel le nom passait sur deux lignes à 1 024 px et décalait le prix). « Tu paies 10 € par mois
+  jusqu'à la fin de l'internat, sur justificatif : écris-nous à contact@hippodoc.fr. » devient
+  « 10 € par mois », « Jusqu'à la fin de l'internat », « Sur justificatif », bouton « Écrire à
+  contact@hippodoc.fr ».
+- Garanties, phrases déjà publiées ailleurs : « Ta carte bancaire est demandée à l'inscription,
+  mais rien n'est débité pendant l'essai. » (accueil) ; « Tu peux résilier à tout moment depuis ton
+  espace « Abonnement ». L'offre annuelle est facturée en une fois pour 12 mois. » (FAQ de la
+  page) ; « Ton essai gratuit dure 6 mois au lieu de 30 jours, grâce à un code fourni par ton
+  syndicat. » (fiche des internes d'avant, sans sa question « Tu adhères à un syndicat d'internes
+  partenaire ? », devenue le titre « Syndicat d'internes partenaire »). Nouveaux : les titres
+  « 30 jours gratuits », « Sans engagement en mensuel », « Prix TTC, sans frais cachés » (accueil :
+  « Tous nos prix sont TTC, sans frais cachés. ») et la phrase « Au régime réel, ton abonnement est
+  un frais professionnel déductible à 100 %. » (d'après la troisième réponse de la FAQ).
+- Inclus : seize lignes au lieu de dix-sept, mot pour mot, rangées autrement. « Abonnement 100 %
+  déductible » en sort : sans « au régime réel » la règle n'était dite qu'à moitié (§ 9.go), elle
+  est entière dans les garanties. Nouveaux : les quatre titres de famille, « Revenus et cotisations »,
+  « Déclarations et compta », « Quotidien du remplaçant », « Entraide, support et données ».
+- Scène de fin : « qui calcule tout pour vous » devient « pour toi » (le site tutoie).
+
+**Téléphone** (demande du propriétaire : « pense aux affichages mobiles »). Huit écrans, au
+doigt (320 × 568, 360 × 640, 375 × 667, 393 × 852, 412 × 915, 430 × 932, 844 × 390 couché,
+768 × 1 024) : aucun débordement, aucune cible sous 44 px, aucun texte sous 13,5 px.
+- À l'arrivée d'un nouveau visiteur, la bannière cookies couvrait le bouton de l'offre annuelle à
+  360 × 640 et 375 × 667. Le haut est resserré sous 560 px (22 px sous la pastille de l'en-tête,
+  comme les feuilles de l'accueil ; chapô sur deux lignes ; le surlignage de l'économie un cran
+  plus petit sous 390 px, sur une ligne jusqu'à 360 px) : le bouton finit à 517 px, la bannière
+  commence à 519 px (360 × 640) et 546 px (375 × 667). À 320 × 568 la bannière le couvre encore
+  (elle commence à 447 px). Ne pas allonger le haut de la page sans le remesurer.
+- Réponses et questions : un nombre et son unité, un mot et sa ponctuation, un guillemet et son
+  mot, un mot à traits d'union tiennent ensemble (`lier`, d'après `nouer` de `src/lib/typo.ts`),
+  sans changer un caractère : « espace « » ne finit plus une ligne, « est-il » ne se coupe plus
+  après « est- » à 320 px. Dans la feuille des questions, qui rogne, ces mots liés sont des blocs
+  en ligne, et un mot plus large qu'elle se coupe (police à 200 %).
+
+**Écart avec l'avis donné.** Le tableau Mensuel / Annuel de l'accueil, annoncé « ouvert ici »,
+n'est pas repris : les fiches et les garanties disent déjà chacune de ses lignes (prix,
+facturation, économie, engagement, essai, fonctionnalités) ; il les aurait redites.
+
+**Non fait, à décider.** « Créer mon compte » (scène de fin), « Essai gratuit 30j » (en-tête) et
+« Commencer 30 jours gratuits » restent trois libellés pour la même action : les deux premiers sont
+hors de cette page ou mesurés tels quels. L'application lit-elle `plan=` à l'inscription ?
+L'accueil le passe déjà ; à confirmer côté application.
+
+**Contrôles.** Chromium à 320, 360, 390, 600, 820, 1 024, 1 180 et 1 440 px, police chargée
+puis bloquée : aucun débordement, les trois boutons d'offre sur une ligne, les trois prix sur une
+même ligne de base à partir de 1 024 px. Espacement du texte agrandi (WCAG 1.4.12) et police à
+200 %, dix largeurs de 320 à 1 440 px : aucun débordement de la page ; dans la colonne des
+questions (280 à 320 px, inchangée), « fréquentes » dépasse sa colonne avec l'espacement agrandi à
+partir de 960 px. WebKitGTK à 1 300, 1 024 et 820 px, et à 390 et 320 px dans un cadre : mêmes
+mesures qu'avec Chromium (prix alignés, boutons de 54 px sur une ligne, cadre de la mascotte de
+250 × 242 px, titres des garanties sur une ligne, aucun débordement). Lighthouse en local sur `/tarifs`, deux passages : performance 99 et 100, accessibilité,
+bonnes pratiques et SEO à 100 (CLS 0).
+`verify-site.mjs` sans erreur (égalité FAQ visible / `FAQPage` comprise).
+Comparé au build de `main` après fusion (§ 9.gp à 9.gr, 73 pages) : `<head>` identique au nom
+de la feuille de la page près, JSON-LD identique, tout ce qui est hors de `<main>` identique ;
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`) ; les 72 autres pages, le flux RSS et
+les fichiers JSON et texte identiques ; seuls changent `tarifs/index.html`, sa feuille et, dans le
+sitemap, la date de `/tarifs`.
+
+### 9.gt Simulateur : la bulle de l'invalidité-décès précisée, et des bulles d'aide qui tiennent au clavier (15 novembre 2026)
+
+(Section fusionnée sous le numéro § 9.gs, pris le même jour par la refonte de `/tarifs` ; renumérotée
+§ 9.gt. La PR et son commit disent encore « § 9.gs ».)
+
+À la question du propriétaire après § 9.gp, « Ok tout est parfait ? », une relecture à froid de ce
+qui était en ligne a donné cinq points ; réponse : « Go pour tout ».
+
+**1. « Invalidité totale et définitive ».** La bulle « Cotisation RID » disait « Invalidité totale,
+rente par an ». Le dépliant de la CARMF (« Remplaçants, régulateurs adhérents au RSPM », prestations
+au 1er janvier 2026) dit « Rente annuelle en cas d'invalidité totale et définitive » : la ligne
+devient « Invalidité totale et définitive, rente par an » (règle entière, § 9.go).
+
+**2. L'âge ne porte que sur les indemnités journalières.** Le dépliant ne donne « Médecin de moins
+de 62 ans » que pour les indemnités par jour d'arrêt. La note sous le tableau, « Prestations 2026 de
+la CARMF pour un médecin de moins de 62 ans. Tu choisis ton niveau à ta première déclaration de
+l'année. », l'étendait à la rente et à l'indemnité décès ; elle devient « Prestations 2026 de la
+CARMF ; l'indemnité par jour est celle d'un médecin de moins de 62 ans. Tu choisis ton niveau à ta
+première déclaration de l'année. » Mode d'emploi de la page, « Taux RID » : « … 16,46 € ou 65,84 €
+par jour à partir du 91e jour (avant 62 ans). »
+
+**3. Lien « Service-Public » de la ligne de confiance** : `service-public.gouv.fr` (l'adresse en
+`service-public.fr` y arrivait par une redirection).
+
+**4. Typographie.** Libellés du choix : « 25 % (158 €/an) » et « 100 % (631 €/an) », avec espaces
+insécables (avant : « 25% (158€/an) », « 100% (631€/an) ») ; conseil de la bulle : « 100 %
+recommandé si tu as des enfants ou un emprunt immobilier. » (avant : « 100% recommandé… »).
+Avec ces espaces, les deux libellés ne tenaient plus côte à côte au téléphone et se coupaient en deux
+lignes chacun : un libellé ne se coupe plus, et sous 430 px le second choix passe sous le premier
+(`sim-rid-choix`, `simulateur.css` ; mesuré de 320 à 1 280 px : une rangée à partir de 430 px, deux
+en dessous, libellés de 20 px de haut).
+
+**5. Bulles d'aide au clavier** (`src/components/ui/tooltip.tsx`, partagé par le simulateur, la
+calculette et le guide des déclarations). Défaut ancien : Radix ferme une bulle à tout défilement
+d'un ancêtre de son déclencheur. Quand Tab amenait le focus sur une aide que le navigateur devait
+faire défiler pour la montrer, la bulle s'ouvrait au focus et se refermait dans la même fraction de
+seconde. Mesuré avant correction, Chromium à 1 280 px : dans un parcours naturel du formulaire du
+simulateur, 2 aides sur 10 (« Enfants à charge », « Situation CARMF ») ; dans le cas le plus dur
+(l'aide hors de la fenêtre), 6 à 8 aides sur 8 dans la calculette et l'aide « Comment savoir ? » de
+la boussole. Correction : tant que le déclencheur garde le focus du clavier (`:focus-visible`), une
+fermeture demandée par un défilement est ignorée. Un seul écouteur de défilement pour toutes les
+bulles, posé à la fenêtre au premier montage (il passe ainsi avant celui de Radix) ; Échap et tout
+appui remettent son heure à zéro, et ferment donc toujours. Rien ne change à la souris (survol puis
+molette : la bulle se ferme), ni au doigt (bulle épinglée, § 9.es), ni dans le HTML du build.
+
+**Lu dans l'application, sans y toucher** (dépôt de l'app, lecture seule, pour le propriétaire).
+L'application calcule encore l'invalidité-décès du RSPM à 157 € et 626 €
+(`src/hooks/useRspmCalculation.ts`, deux fois) et l'écrit dans son simulateur interne, ses écrans de
+prélèvements (« montant attendu : 157 € […] ou 626 € ») et ses essais. Elle et le simulateur public
+diffèrent donc de 1 € (25 %) ou 5 € (100 %) par an au RSPM depuis § 9.gp. Ses textes disent aussi
+que cette cotisation est « appelée séparément par la CARMF », au 15 mars ; l'Urssaf écrit qu'elle
+est ajoutée à la première déclaration (page du 13 novembre 2026). Rien n'est modifié dans l'app.
+
+**Contrôles.** Chromium : parcours au clavier du simulateur à 1 280 × 720 et 1 280 × 900, 10 aides,
+aucune refermée, chaque bulle à moins de 24 px de son bouton et dans la fenêtre ; aucune bulle ne
+reste après le départ du focus ; Échap ferme, pendant le défilement aussi ; sous focus du clavier,
+la molette laisse la bulle ouverte et elle suit son bouton ; survol à la souris puis molette : la
+bulle se ferme, comme avant ; au doigt (820 px) : appui, défilement, second appui, appui ailleurs,
+Échap, inchangés. Calculette et guide, cas le plus dur, à 640 et 900 px de haut : 0 bulle refermée
+(production : 8 et 6 sur 8, 1 sur 1). WebKitGTK : Tab avec 805 et 918 px de défilement, la bulle
+reste, Échap la ferme. Bulle RID remesurée à 320, 360, 820 et 1 280 px (lignes de 29, 46, 46 et
+28 px, aucun débordement). Essais des § 9.gh, 9.go et 9.gp repassés. `verify-site.mjs` sans
+erreur ; feuille commune inchangée ; comparé à la production, seul `/simulateur` diffère.
+
+### 9.gs Nouvel article : comptable, logiciel ou tableur (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, avec pour la première fois la **passe « agréable à
+lire »** que le propriétaire a demandée à chaque article (règle ajoutée à la procédure dans
+cette PR, § « La passe agréable à lire » de son étape 5).
+
+**Fichier et affiche.** `src/content/blog/comptable-logiciel-tableur-medecin-remplacant.md` ;
+affiche `src/assets/blog/comptable-logiciel-tableur-medecin-remplacant-cover.jpg`,
+1 611 × 2 000 (0,8055, portrait), réenregistrée sans métadonnées (`sharp`, qualité 90,
+532 Ko), empreinte unique. Texte lisible ; sur l'ardoise, « MA COMPTA - CASTING » (tiret
+court), sans conséquence.
+
+**Thème** : `impots-declarations`, celui de `regime-fiscal-micro-bnc-vs-reel` et
+`remplir-declaration-2035`, que l'article prolonge (registre, régime, 2035, volet social).
+Aucun article ne traitait déjà « faut-il un comptable » (recherche dans titres et
+descriptions).
+
+**Frontmatter.** `title` « Comptable, logiciel ou tableur pour un remplaçant » (49 signes,
+« | Hippodoc » ajouté) : le titre fourni, « … : de quoi un médecin remplaçant a vraiment
+besoin », faisait 79 signes. `description`, `cta` (« Prêt à garder tes rétros et tes
+dépenses au même endroit ? », bouton vers l'essai) et FAQ de 5 questions écrits ici d'après
+le texte (`PLANCHER_FAQ` relevé à 60 pages, 403 questions). `episodeNumber: 17` (série
+`divers`) : à date égale, il passe devant l'article des aides, donc **à la une** de `/blog`.
+`readTime` 15 min.
+
+**Écarts au texte fourni** (carte blanche du 15/11 : harmoniser et corriger après
+vérification) :
+- ligne « À jour au 1er novembre 2026 » sortie du corps ; date de fin et des sources au
+  15 novembre 2026 (vérifiées ce jour) ; « Sources » en titre, dernier `##`, en liste ;
+- **mise en forme** : « L'essentiel » (repris d'« En résumé »), astuce en `:::tip` (le 💡
+  sort), trois `:::warning` sur des passages existants (prorata de l'année de création,
+  valider sa déclaration avant la date limite, reconduction tacite de la lettre de
+  mission), liste « Avant de signer » numérotée et remontée sous « Combien coûte », gras
+  dosé (26 pour 1 000 mots), titre « Trois idées reçues » devenu « Des idées reçues »
+  (« trois » revenait cinq fois) ;
+- **« En résumé »** réécrit en trois phrases (il recopiait « L'essentiel ») ;
+- **clarté** (relecture interne novice) : définitions ajoutées (comptable = expert-comptable,
+  logiciel ou appli, abattement, 2035, amortissement, quote-part, RSPM « change ta façon de
+  payer l'URSSAF, pas ton impôt », association agréée, société d'exercice, lettre de mission,
+  TTC) ; seuil du micro reformulé en une règle ; « tableau » → « tableur » ;
+- **ton** : une phrase positive sur le comptable (« te fait aussi gagner du temps et te
+  conseille au moment des grands choix ») ; « adhésion obligatoire » sur un devis devenu
+  « si un devis inclut une adhésion, elle est facultative » ;
+- **corrections factuelles** (relecture expert-comptable, deux passes) :
+  - **case « DSAQ » retirée** : absente de la notice 2042-C-PRO des PAMC (revenus 2025) ;
+    le volet social ne garde que DSAV, DSAW, DSCS et DSAU et renvoie à
+    `/guide-declarations` pour le déclarant 2 et les années mixtes (RSPM, DSCI/DSCJ) ;
+  - la 2035 relève de l'art. 97 du CGI (articles 97 et 99) ;
+  - économie de cotisations : « des cotisations en moins, calculées elles aussi sur ce
+    bénéfice » (et non « un peu ») ;
+  - erreur du comptable : conciliation au conseil régional de l'Ordre (décret 2012-432,
+    art. 159), pas une « saisine » qui indemniserait ;
+  - préavis : lettre reçue « au plus tard » le 30 septembre ; prorata : « comme 100 000 € »
+    (et non « près de ») ;
+  - OGA : « vérifiait la cohérence de tes déclarations », majoration de 25 % réduite à 10 %
+    en dernier lieu ; conservation dix ans « pour toutes les pièces encore à conserver au
+    1er janvier 2027 » (loi n° 2026-534, art. 36, II), simplifié à l'écran en « depuis la loi du
+    25 juin 2026 » (relecture interne novice) ; phrase sur la fin de l'agrément des OGA retirée
+    (bruit pour un débutant ; elle reste dans les sources).
+  Vérifiés justes : seuil 83 600 € (2026-2028), abattement 34 % (305 € minimum), prorata
+  (BOFiP § 134-135), art. 102 ter, option réel, fin de la majoration et de l'art. 199 quater
+  B (LF 2025, art. 11), cases DSDE/DSDF, correction en ligne du 29 juillet au 30 novembre
+  2026, L102 B et L169.
+
+**Liens.** Dans le texte : « micro-BNC » → `/blog/regime-fiscal-micro-bnc-vs-reel`, « la
+déposer toi-même » → `/blog/remplir-declaration-2035`, « notre guide des déclarations » →
+`/guide-declarations`, « Super-Net » → `/simulateur`, « hippodoc.fr » → `/`. Entrant (en tête
+des `relatedArticles`) : `regime-fiscal-micro-bnc-vs-reel`, `remplir-declaration-2035`,
+`calendrier-fiscal-remplacant`.
+
+**Vérifications.** 74 pages, 72 dans le sitemap (`lastmod` 2026-11-15) ; `verify-site.mjs`
+passe (avertissement attendu : aucun lien entrant dans le texte). Feuille commune inchangée
+(`_astro_assets.BqFlQkaI.css`). Pages changées contre `main` : le nouvel article, `/blog`, la
+page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile : 97 /
+100 / 100 / 100, CLS 0. Même contournement local de la garde de police de l'image de partage
+qu'en § 9.gq (sans commit) : image à contrôler sur l'aperçu Vercel.
+### 9.gu `/tarifs` : l'offre des internes ouvre le chat (15 novembre 2026)
+
+Retour du propriétaire sur § 9.gs (la page refaite, en ligne depuis la PR 186) : « le truc de 10 €
+internes, ça pourrait aussi ouvrir le chat en bas à droite, car ils peuvent m'envoyer d'ici aussi
+via Crisp ».
+
+(Le numéro 9.gs est porté deux fois, par `/tarifs` et par l'article « comptable, logiciel ou
+tableur », fusionnés par deux sessions le même jour. Laissé tel quel ; celle-ci suit 9.gt.)
+
+**Ce qui change.**
+- **Fiche des internes** : le bouton « Écrire à contact@hippodoc.fr » devient « Envoyer mon
+  justificatif » et ouvre le chat (le justificatif s'y envoie en pièce jointe). La ligne « Sur
+  justificatif » devient « Sur justificatif, par chat ou e-mail », « e-mail » étant le lien vers
+  contact@hippodoc.fr ; « par chat ou e-mail » passe entier à la ligne (« e-mail » restait seul sur
+  la sienne au téléphone et à 1 024 px). Mesure : `data-ph="tarifs_interne_chat"` sur le bouton,
+  `tarifs_interne_mail` sur le lien ; `tarifs_interne_contact`, en ligne quelques minutes, n'existe
+  plus.
+- **`ThirdPartyScripts.astro`** : un clic sur un lien qui porte `data-ouvre-chat` fait ce que fait
+  un clic sur la bulle (la bulle s'efface, Crisp se charge et s'ouvre). Dix lignes dans le script
+  en ligne, 560 octets par page. C'est un geste explicite sur un bouton qui dit ce qu'il fait : le
+  régime de la bulle ne change pas (rien ne se charge avant le clic, pas de cookie de Crisp sans
+  demande). Le lien garde son `href` (l'adresse e-mail) : sans script, ou avec Ctrl, Cmd, Maj ou un
+  autre bouton de la souris, il reste un lien. Chat déjà chargé puis refermé : l'ouverture est
+  redemandée.
+
+**Limite.** Si un bloqueur de publicité empêche Crisp de se charger, le bouton ne fait rien de
+visible (comme la bulle) ; le lien « e-mail » de la ligne au-dessus reste là pour cela.
+
+**Non fait.** L'offre des internes de l'accueil (son pli dit « Écris-nous à contact@hippodoc.fr »)
+et la réponse de `/faq` ne proposent pas le chat : textes de l'accueil et de la FAQ, à décider.
+
+**Contrôles.** Chromium, requêtes vers Crisp interceptées : au clic, au clavier (Entrée) et au
+doigt, une requête vers `client.crisp.chat/l.js`, `chat:open` en file, la bulle effacée ; aucune
+avec Ctrl ; second clic : l'ouverture est redemandée. Fiche mesurée à 320, 360, 393, 820, 1 024,
+1 180 et 1 440 px : boutons sur une ligne et alignés, prix alignés, lien « e-mail » de
+48 × 47 px. Huit écrans de téléphone, espacement du texte agrandi et police à 200 % : aucun
+débordement. WebKitGTK à cinq largeurs : mêmes mesures. `verify-site.mjs` sans erreur (Crisp
+n'est chargé sur aucun événement passif). Comparé au build de `main` après fusion (74 pages) : les
+73 autres pages ne diffèrent que par ce même bloc du script en ligne ; `/tarifs` en plus par sa
+fiche ; feuilles de style, sitemap, flux et fichiers JSON identiques.
+
+### 9.gt Nouvel article : faire une pause dans ses remplacements (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, passe « agréable à lire » comprise (§ 9.gs).
+
+**Fichier et affiche.** `src/content/blog/pause-remplacements-cotisations-medecin.md` ; affiche
+`src/assets/blog/pause-remplacements-cotisations-medecin-cover.jpg`, 1 611 × 2 000 (0,8055),
+réenregistrée sans métadonnées (`sharp`, qualité 90, 511 Ko), empreinte unique. Texte
+lisible, sans faute.
+
+**Thème** : `cotisations-protection` (CARMF, URSSAF, prévoyance, PreParE), celui de
+`tout-comprendre-carmf` et `rspm-exemples-concrets`. Sujet proche mais distinct :
+`medecin-remplacant-travailler-6-mois-par-an` (combien gagner en travaillant moins), lié
+dans les deux sens.
+
+**Frontmatter.** `title` « Pause dans tes remplas : ce qui ne s'arrête pas » (47 signes,
+« | Hippodoc » ajouté), repris de l'affiche : le titre fourni (« Faire une pause dans tes
+remplas : les bonnes démarches (et ce que tu paies quand même) ») faisait 85 signes.
+`description`, `cta` (« Tu veux savoir ce que tu dois garder de côté avant de partir ? »)
+et FAQ de 6 questions écrits ici d'après le texte (`PLANCHER_FAQ` : 61 pages, 409
+questions). `episodeNumber: 18` : il passe à la une. `readTime` 19 min.
+
+**Écarts au texte fourni** (texte brut sans balisage : titres, listes et encadrés posés ici) :
+- ligne « À jour au 8 novembre 2026 » sortie ; date de fin et des sources au 15 novembre
+  2026 (vérifiées ce jour) ; « Sources » en titre, dernier `##`, en liste ;
+- **mise en forme** : « L'essentiel » (d'après « En résumé »), trois `:::warning` sur des
+  passages existants (« la vérité qui dérange », la CFE due pour l'année, la fin de la
+  couverture invalidité-décès), encadré final Hippodoc en `:::tip`, « Au retour » numéroté,
+  « Deux réflexes » en liste, gras (26 pour 1 000 mots) ; le 💡 sort ;
+- **ajouts** (relecture interne novice) : un test « RSPM ou régime classique ? » en tête
+  de « Même à 0 € » ; un paragraphe « Tu remplaces depuis moins de deux ans ? » (déplace
+  et complète l'exception des deux premières années) ; une partie « Avant de partir »
+  datée (décembre, janvier, printemps, avant le départ) ; « Pour une pause de quelques
+  mois, tu peux sauter cette partie » avant la cessation ; titre « Tes assurances et
+  l'Ordre » ;
+- **renvois** : « (on en parle dans la fiche CFE, sur le profil) » et « (voir la fiche
+  maternité, sur le profil) », écrits pour Instagram, deviennent des liens vers
+  `/blog/cfe-medecin-remplacant` et `/blog/conge-maternite-paternite` ;
+- **clarté** : « continue de t'appeler » → « continue de te réclamer des cotisations » ;
+  « rétro » → « remplacement » ; « année off » → « année sabbatique » ; sigles définis
+  (ASV, CFE, CRDS, PreParE dans la FAQ) ; phrase « 6 860 € pour 20 000 € » remplacée par
+  « (calcul fait avec le barème officiel du guide CARMF 2026) » ; « réforme de l'assiette
+  sociale de 2026 » retirée de la phrase sur l'estimation URSSAF ; six mois à l'étranger :
+  « Six mois pile de voyage, c'est la limite : demande à ta CPAM, par écrit » ;
+- **corrections factuelles** (relecture conseiller CARMF, deux passes) :
+  - ASV proportionnelle : seuil de 63 900 € sur le **revenu conventionné** (et non les
+    honoraires), comme le calcul d'Inès (carmf.fr, « réductions » ; guide du cotisant 2026) ;
+  - couverture invalidité-décès : s'arrête **à la date de la radiation** (premier jour du
+    trimestre civil suivant), pas « aussitôt » ;
+  - deux premières années : à la CARMF, seule la retraite de base est régularisée ;
+  - modulation du prélèvement : « le seuil de 10 % est passé à 5 % en 2023 » (la condition
+    des 200 € était tombée en 2020) ;
+  - Nathan : « environ 5 500 € » (PreParE revalorisée chaque 1er avril) ; Inès : « environ
+    2 400 € » (720 + 1 690 = 2 410).
+  Vérifiés justes : tous les montants CARMF 2026 (626, 573, 11,8 %, 1 917 / 5 751, 3 % / 9 %,
+  dispenses, 8 566 €), l'exemple d'Inès (retraite de base à 8,45 % en secteur 1), CFP, IJ,
+  radiation d'office, calendrier des acomptes, CFE, cessation temporaire, PreParE. Non
+  tranchés faute de texte : la déclaration RSPM à 0 €, le non-cumul PreParE et congé de
+  naissance pour un libéral (laissés tels que fournis).
+
+**Liens.** Dans le texte : CARMF → `/blog/tout-comprendre-carmf`, RSPM →
+`/blog/rspm-exemples-concrets`, Prévoyance → `/blog/prevoyance-madelin-medecin`, CFE →
+`/blog/cfe-medecin-remplacant`, maternité → `/blog/conge-maternite-paternite`, Hippodoc →
+`/`, Super-Net → `/simulateur`. Entrant (en tête des `relatedArticles`) :
+`tout-comprendre-carmf`, `medecin-remplacant-travailler-6-mois-par-an`,
+`rspm-exemples-concrets`.
+
+**Vérifications.** 75 pages, 73 dans le sitemap (`lastmod` 2026-11-15) ; `verify-site.mjs`
+passe. Feuille commune inchangée. Pages changées contre `main` : le nouvel article, `/blog`,
+la page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile :
+97 / 100 / 100 / 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
+### 9.gv Simulateur : le vrai chemin pour faire réévaluer ses cotisations à l'Urssaf (15 novembre 2026)
+
+**Une erreur de § 9.gp, corrigée.** L'astuce du pli « Quand et comment tu paies » envoyait vers
+« Documents et démarches », puis « Réévaluer vos cotisations ». Ce chemin vient de pages de l'Urssaf
+écrites pour d'autres professions (professions libérales réglementées) ; une autre de ses pages
+donne « Cotisations et paiements », « Revenus ». Aucun des deux n'existe dans l'espace en ligne
+d'un médecin, dont les onglets sont Accueil, Compte, Paiement, Mon Profil, Documents, Actualités,
+Messagerie (captures du propriétaire, 15 novembre 2026). Le formulaire s'y ouvre par une nouvelle
+demande de la messagerie, objet « Gérer mon moyen de paiement ou les informations relatives au
+paiement (RIB BIC/Iban, périodicité, réévaluer vos cotisations) », puis « Réévaluer vos
+cotisations ».
+
+Astuce, avant : « … si tu le demandes dans ton espace en ligne (« Documents et démarches », puis
+« Réévaluer vos cotisations ») … » ; après : « … si tu le demandes depuis la messagerie de ton
+espace en ligne (nouvelle demande, « Réévaluer vos cotisations ») … ». Le reste de la phrase est
+inchangé.
+
+**Le montant à saisir : point clos, rien n'est affiché.** Le formulaire demande « Revenus estimés
+conventionnés de l'année 2026 » (obligatoire) et « Autres revenus estimés de l'année 2026 », avec
+pour seule aide « Montant en euro sans décimale ». Rien ne dit s'il s'agit du revenu avant ou après
+l'abattement de 26 % : le simulateur ne donne donc pas de montant à recopier (condition posée en
+§ 9.gp).
+
+**Autre phrase fausse de § 9.gp.** « La « modulation des cotisations » […] n'est pas ouverte aux
+praticiens : le mot n'est pas employé pour les cotisations. » Le formulaire dit lui-même « procéder
+à une modulation de mes versements provisionnels ». La phrase est retirée de CLAUDE.md et du
+commentaire du composant ; le texte affiché n'employait pas le mot et ne change pas sur ce point.
+
+**Règle retenue** (CLAUDE.md) : un chemin dans un espace en ligne ne s'écrit que vu dans l'espace
+d'un médecin, pas d'après une page d'aide générale.
+
+**Contrôles.** Chromium : astuce lue dans le pli à 390 et 1 280 px, le pli ne change pas de
+hauteur à l'arrivée de l'exemple ; essais des § 9.go et 9.gp repassés. `verify-site.mjs` sans
+erreur ; feuille commune inchangée ; comparé à la production, aucune page ne diffère (le texte est
+dans l'îlot, rendu après le calcul).
+
+### 9.gw Accueil et `/faq` : l'offre des internes propose aussi le chat (15 novembre 2026)
+
+Demande du propriétaire, après § 9.gu (`/tarifs`) : « fais pareil pour l'offre interne de
+l'accueil et la FAQ ».
+
+**Contenu modifié (à relire par le propriétaire).** Deux mots ajoutés, « par chat », au même
+endroit dans les deux textes ; rien d'autre ne change.
+- **Accueil**, pli « Voir l'offre interne » des tarifs : « Comment en bénéficier ? Écris-nous à
+  contact@hippodoc.fr — on te répond très vite avec ton code promo personnalisé ! » devient
+  « Comment en bénéficier ? Écris-nous par chat ou à contact@hippodoc.fr — on te répond très vite
+  avec ton code promo personnalisé ! ».
+- **`/faq`**, réponse à « Il y a des tarifs pour les internes ? », à l'écran et dans le schéma
+  `FAQPage` (`aHtml` et `aPlain`, ensemble) : « Écris-nous à contact@hippodoc.fr, on t'envoie ton
+  code promo très vite. » devient « Écris-nous par chat ou à contact@hippodoc.fr, on t'envoie ton
+  code promo très vite. ».
+- La réponse « Je suis interne : à quoi Hippodoc me sert… » de la FAQ de l'accueil ne parle pas de
+  contact : pas touchée. Ni la question « Une question, un bug, une suggestion ? » de `/faq`, qui
+  n'est pas l'offre des internes.
+
+**Mécanique.** « par chat » est un lien `data-ouvre-chat` (§ 9.gu) : il ouvre le chat, et sans
+script il reste le lien de l'adresse e-mail. Mesure : `landing_intern_chat` (accueil),
+`faq_intern_chat` (`/faq`). Sur `/faq`, « par chat » ne se coupe pas (`.num`) : à 393 px, « par »
+finissait une ligne et « chat » commençait la suivante.
+
+**Défaut trouvé et corrigé.** Sur l'accueil, les liens du pli sont des `.lien` (da.css), dont la
+zone de toucher dépasse de 11 px au-dessus et au-dessous de la ligne. À 320 px, « par chat » finit
+une ligne et l'adresse e-mail commence la suivante : la zone de l'adresse recouvrait le bas de
+« par chat », et un appui à cet endroit ouvrait le mail. Le premier lien ne s'étend plus vers le
+bas, le second plus vers le haut (règles dans `accueil/Tarifs.astro`) : chacun garde sa ligne entière
+et 11 px de l'autre côté (34 px de haut). Sur `/faq`, les liens des réponses n'ont pas cette
+zone : rien à faire.
+
+**Contrôles.** Chromium à 320, 393 et 1 440 px, et WebKitGTK à 320, 390 et 1 300 px, sur les deux
+pages : un point tous les 2 px de chaque lien tombe sur ce lien, jamais sur l'autre ; au clic et au
+doigt, une requête vers `client.crisp.chat/l.js` (interceptée) et `chat:open` en file ; aucun
+débordement. Lighthouse en local : accueil 99, 100, 100, 100 ; `/faq` 100, 100, 100, 100 (CLS 0).
+`verify-site.mjs` sans erreur (égalité FAQ visible / `FAQPage` comprise). Comparé au build de
+`main` : changent `index.html` (le pli, et le nom de sa feuille), `faq/index.html` (la réponse et
+son schéma), la feuille de l'accueil et, dans le sitemap, les dates de `/` et `/faq`
+(`ACCUEIL_LAST_UPDATED_ISO`, `FAQ_LAST_UPDATED_ISO` : 15 novembre 2026) ; la feuille commune et
+les 72 autres pages sont identiques.
+### 9.gx Nouvel article : le seuil du micro-BNC l'année du démarrage (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, passe « agréable à lire » comprise (§ 9.gs).
+
+**Fichier et affiche.** `src/content/blog/micro-bnc-seuil-premiere-annee-prorata.md` ;
+affiche `src/assets/blog/micro-bnc-seuil-premiere-annee-prorata-cover.webp`, 1 121 × 1 403
+(0,799, portrait), fournie en WebP et réenregistrée en WebP sans métadonnées (`sharp`,
+qualité 90, 203 Ko) : première affiche WebP du blog (`blog-covers.ts` les lit déjà). Sous les
+1 080 px du format idéal, au-dessus des 900 px qui rendraient flou. Empreinte unique.
+
+**Thème** : `impots-declarations`, avec `regime-fiscal-micro-bnc-vs-reel` et
+`micro-bnc-exemples-concrets`. Sujet distinct (le prorata de la première année), lié dans les
+deux sens.
+
+**Frontmatter.** `title` du propriétaire (58 signes, sans suffixe). `description`, `cta`
+(« Prêt à suivre tes encaissements mois par mois ? ») et FAQ de 5 questions écrits ici
+d'après le texte (`PLANCHER_FAQ` : 62 pages, 414 questions). `episodeNumber: 19` : à la une.
+`readTime` 10 min.
+
+**Écarts au texte fourni** (carte blanche du 15/11) :
+- ligne « À jour au 13 novembre 2026 » sortie ; date de fin et des sources au 15 novembre
+  2026 ; « Sources » en titre, en liste, détaillée par paragraphe du BOFiP ;
+- **mise en forme** : « L'essentiel » (5 puces, distinct d'« En résumé »), deux
+  `:::warning` (exception des activités intermittentes, « passer au réel sans le savoir »),
+  encadré Hippodoc en `:::tip`, formule du seuil en gras sur sa ligne, note d'arrondi
+  sortie de l'en-tête du tableau, gras (21 pour 1 000 mots) ;
+- **clarté** (relecture interne novice, deux passes) : « pas de panique » remonté dans
+  l'introduction ; « le fisc retire d'office 34 % » (lu comme un prélèvement) → « compte
+  d'office 34 % de tes recettes comme des frais : tu n'es imposé que sur le reste » ; une
+  seule méthode de calcul en avant (l'autre en une phrase) ; références (§) renvoyées aux
+  sources ; Camille : « première année au-dessus du seuil » (au lieu de « de
+  dépassement », qui semblait contredire « pas de dépassement possible ») ; parenthèses
+  86 762 € et 119 280 € retirées ; « Ce que tu fais ce soir » rendu faisable le soir même
+  (noter ce qui est déjà reçu, refaire le compte au 31 décembre) et repère mensuel
+  expliqué ; « En résumé » réécrit en trois phrases ; réel, 2035, BNC et immobilisations
+  définis ;
+- **corrections factuelles** (relecture fiscaliste, deux passes) :
+  - citation exacte de l'art. 102 ter (« ajusté s'il y a lieu au prorata du temps
+    d'activité ») ;
+  - recettes du remplaçant : rétrocessions **plus gardes, astreintes et autres recettes
+    libérales** (§ 40, § 170) ; un chèque reçu en décembre compte en décembre (« libre
+    disposition », § 40) ;
+  - « restent au micro, quoi qu'il arrive » → « sauf si tu choisis toi-même le réel » (§ 134 :
+    « à défaut d'option ») ;
+  - le seuil de la troisième année n'est 83 600 € que jusqu'en 2028 (§ 110) ;
+  - le réel peut coûter **plus d'impôt et de cotisations** (assiette commune, CSS art.
+    L131-6), pas seulement « un peu plus d'impôt » ;
+  - exception du § 138 : activités « intermittentes ou saisonnières » (une première
+    réécriture l'avait restreinte aux saisonnières, corrigé) ;
+  - repère « au-delà d'environ 6 967 € par mois » (6 966 × 12 reste sous le seuil) ;
+  - « Démarré le 1er novembre » (et non « en novembre ») dans la description.
+  Vérifiés justes : seuils 83 600 € et 77 700 €, 34 % et 305 €, les 12 lignes du tableau
+  (2026 non bissextile), Camille (61 jours, 13 971 €, 86 762 €), l'exemple officiel du
+  1er août (153 jours, 50 000 €, 85 000 €), § 100, 110, 132 à 138, rétrocessions au § 80.
+
+**Liens.** Dans le texte : micro-BNC → `/blog/regime-fiscal-micro-bnc-vs-reel`, 2035 →
+`/blog/remplir-declaration-2035`, comptable → `/blog/comptable-logiciel-tableur-medecin-remplacant`,
+Hippodoc → `/`, Super-Net → `/simulateur`. Entrant (en tête des `relatedArticles`) :
+`regime-fiscal-micro-bnc-vs-reel`, `micro-bnc-exemples-concrets`,
+`comptable-logiciel-tableur-medecin-remplacant`.
+
+**Vérifications.** 76 pages, 74 dans le sitemap (`lastmod` 2026-11-15) ; `verify-site.mjs`
+passe. Feuille commune inchangée. Pages changées contre `main` : le nouvel article, `/blog`,
+la page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile :
+97-98 / 100 / 100 / 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
+
+### 9.gx Contenu modifié : une source ajoutée à l'article PDSA (15 novembre 2026)
+
+Le propriétaire a transmis deux réponses d'un service des impôts à un confrère, qui indiquaient la
+case 5HP pour la part exonérée de la permanence des soins en micro-BNC, à l'inverse de l'article
+(`pdsa-exoneration-gardes-regulees`) et du guide des déclarations. Vérification sur les textes de
+la campagne 2026 : le site est confirmé, rien n'est corrigé.
+- impots.gouv.fr, notice 2041-DRI-PAMC, § 4.3.2 : « Pour les PAMC relevant du régime micro-BNC
+  uniquement, reportez dans la rubrique DSFA/DSFB les montants exonérés au titre du dispositif de
+  zone déficitaire en offre de soins, qui ont été déduits du résultat fiscal. » ; « Le montant
+  déclaré dans ces rubriques est ajouté dans la base de calcul des cotisations ».
+- URSSAF, « Guide à la déclaration sociale et fiscale de revenus 2025 », praticiens, micro-BNC :
+  régimes zonés de l'article 1417 du CGI en 5HP ou 5IP ; « zone déficitaire en offre de soins » en
+  DSFA ou DSFB ; « Les revenus exonérés doivent être déclarés en NET donc après l'application de
+  l'abattement correspondant à votre activité. »
+- Formulaire 2042-C-PRO de 2026 : 5HP, « Revenus nets exonérés régimes zonés, article 1417, IV, b ».
+
+**Contenu modifié** : une ligne ajoutée aux sources de l'article, avant « Déclaration : guide
+Hippodoc de la 2042-C-PRO » : « Case DSFA, montant net, et case 5HP réservée aux régimes zonés :
+URSSAF, « Guide à la déclaration sociale et fiscale de revenus 2025 », praticiens et auxiliaires
+médicaux conventionnés (consulté le 15 novembre 2026) ; impots.gouv.fr, notice 2041-DRI-PAMC,
+§ 4.3.2. » `updatedDate` et `blog-meta.json` au 15 novembre 2026 ; adresse inchangée. Les réponses
+du service des impôts, qui nomment des personnes, ne sont ni citées ni versées au dépôt.
+
+**Contrôles.** `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparé à la production,
+seuls l'article et le sitemap (sa date) diffèrent ; les deux liens répondent.
+
+### 9.gy Nouvel article : prévoyance, les 5 pièges avant de signer (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, passe « agréable à lire » comprise (§ 9.gs).
+
+**Fichier et affiche.** `src/content/blog/prevoyance-pieges-avant-de-signer.md` ; affiche
+`src/assets/blog/prevoyance-pieges-avant-de-signer-cover.webp`, 1 121 × 1 403 (0,799), la
+seconde des deux envoyées (même visuel), réenregistrée en WebP sans métadonnées (163 Ko).
+
+**Thème** : `cotisations-protection`. Sujet distinct de `prevoyance-madelin-medecin` (la
+fiscalité de la cotisation), lié dans les deux sens.
+
+**Frontmatter.** `title` du propriétaire (52 signes). `description`, `cta` (« Prêt à savoir
+quelle protection ton budget peut porter ? » + `ctaHref: /simulateur`) et FAQ de 5 questions
+écrits ici (`PLANCHER_FAQ` : 63 pages, 419 questions). `episodeNumber: 20` : à la une.
+`readTime` 12 min.
+
+**Écarts au texte fourni** :
+- ligne « À jour au » sortie ; « Sources » en titre, en liste ; capitales des codes harmonisées ;
+- **mise en forme** : « L'essentiel » (5 puces, distinct de la liste finale), deux
+  `:::warning` (fausse déclaration volontaire, couverture entre deux remplacements), deux
+  `:::tip` (« un non n'est pas une fatalité », encadré Hippodoc ; le 💡 sort), gras (22 pour
+  1 000 mots), titre « Piège 4 : le barème d'invalidité » (au lieu de « la définition ») ;
+- **clarté** (relecture interne novice) : franchise et délai d'attente définis côte à côte ;
+  « rachat » expliqué ; exemple de l'indemnitaire en une phrase ; seuil d'invalidité avec
+  un avis (« plus le seuil est bas, mieux tu es protégé ») ; « En résumé » devenu « Avant de
+  signer, vérifie », check-list de 7 points (ajouts : franchise et délais d'attente, options
+  de rachat, les deux questions à poser par écrit) ; lien vers l'article Madelin ajouté à
+  « Soyons honnêtes » ;
+- **corrections factuelles** (relecture courtier prévoyance, deux passes) :
+  - encadré « entre deux remplacements » : le cas du Médiateur (7 octobre 2025) est cité tel
+    qu'il est (« un assuré refusé faute d'activité au moment de son arrêt »), sans
+    extrapolation ;
+  - IJ CARMF : si la maladie précède l'affiliation, rien les deux premières années
+    d'affiliation, puis un montant réduit jusqu'à six ans (guide incapacité CARMF, juin 2026) ;
+  - mise à jour de la déclaration : « beaucoup de formulaires t'y engagent » (la position
+    prêtée au Médiateur n'a pas été retrouvée) ;
+  - nullité (L113-8) : « qui change l'appréciation du risque » ;
+  - prêt immobilier sans questionnaire : 200 000 € « tous prêts immobiliers confondus »
+    (L113-2-1) ;
+  - dos et psy : « après une hospitalisation (2 à 8 jours) ou une opération » ;
+  - seuil d'invalidité : « souvent 33 %, parfois dès 15 ou 16 % » ;
+  - grossesse pathologique : « si tu as signé 3 à 9 mois avant le début de la grossesse » ;
+  - loi Évin : « jusqu'à l'âge minimum de la retraite ».
+  Vérifiés justes : IJ CPAM et CARMF 2026 (65,84 € et 197,51 €), CARMF 2025 (47,47 % des
+  invalidités, 29,83 % des IJ), L113-2, L113-8, L113-9, l'exemple 800 / 1 000 €, la loi Évin
+  (deux ans, contrats individuels compris).
+
+**Liens.** Dans le texte : CARMF → `/blog/tout-comprendre-carmf`, congé maternité →
+`/blog/conge-maternite-paternite`, Madelin → `/blog/prevoyance-madelin-medecin`, Hippodoc →
+`/`, Super-Net → `/simulateur`. Entrant (en tête des `relatedArticles`) :
+`prevoyance-madelin-medecin`, `pause-remplacements-cotisations-medecin`,
+`conge-maternite-paternite`.
+
+**Vérifications.** 77 pages, 75 dans le sitemap ; `verify-site.mjs` passe ; feuille commune
+inchangée ; seules les pages attendues changent ; Lighthouse mobile 97 / 100 / 100 / 100, CLS 0.
+
+### 9.gz Simulateur : « Es-tu déjà au RSPM ? », et le chemin de l'Urssaf corrigé (15 novembre 2026)
+
+**La question du RSPM.** Le propriétaire : pourquoi « (déjà au RSPM ? Choisis-le avec
+« Modifier ») », alors que les remplaçants sont généralement au RSPM avant le PAMC ? En mode Auto,
+au-dessus de 19 000 € de recettes, le simulateur retenait le PAMC (on n'entre plus au RSPM au-dessus
+du seuil) et renvoyait ceux qui y sont déjà vers « Modifier ». Or c'est le cas le plus courant, et
+on y reste : sortie au 1er janvier qui suit une année au-dessus de 38 000 €, ou la deuxième de suite
+au-dessus de 19 000 € (urssaf.fr, § 9.go). Un remplaçant au RSPM qui passe à 25 000 € y est encore
+cette année et la suivante.
+
+Ce qui change :
+- Sous les revenus, pour un remplaçant en mode Auto au-dessus de 19 000 € : « Es-tu déjà au
+  RSPM ? », avec « L'offre simplifiée de l'Urssaf. On n'y entre plus au-dessus de 19 000 € de
+  recettes, mais qui y est déjà y reste au moins jusqu'au 31 décembre. », Oui ou Non (aucune
+  réponse cochée d'avance). Champ `dejaRspm` du schéma.
+- « Oui » : calcul au RSPM, choix du niveau d'invalidité-décès affiché, fiche « RSPM ou PAMC ? »
+  qui commence par « Tu es déjà au RSPM ». « Non » : PAMC, sans fiche miroir. Sans réponse : PAMC
+  et fiche miroir, comme avant.
+- Résumé de « Ta situation », au-dessus de 19 000 € : « Régime social : RSPM (tu y es déjà) »,
+  « Régime social : PAMC (recettes au-dessus de 19 000 €) », ou, sans réponse, « Régime social :
+  PAMC, sauf si tu es déjà au RSPM ». Avant : « Régime social : PAMC (déjà au RSPM ? Choisis-le avec
+  « Modifier ») ».
+- Fiche miroir, dernière phrase. Avant : « Pour voir ce calcul en détail, choisis RSPM avec
+  « Modifier ». » Après : « Tu y es déjà ? Réponds « Oui » à « Es-tu déjà au RSPM ? », sous tes
+  revenus, pour voir ce calcul en détail. »
+- Bulle « Régime social », conseil. Avant : « Auto = recommandé. Le simulateur retient le RSPM pour
+  un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM et au-dessus de
+  19 000 € cette année ? Tu y restes jusqu'au 31 décembre : choisis RSPM. » Après : « Auto =
+  recommandé. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes.
+  Au-delà, il te demande si tu y es déjà : on n'y entre plus, mais qui y est y reste jusqu'au
+  31 décembre. »
+
+**Le chemin de l'Urssaf, corrigé une seconde fois.** § 9.gv disait « depuis la messagerie de ton
+espace en ligne (nouvelle demande, « Réévaluer vos cotisations ») », déduit du titre « Objet du
+message » du formulaire. Le propriétaire : « c'est sur l'espace directement ». Astuce, après :
+« … si tu le demandes dans ton espace en ligne (« Nouvelle demande », puis « Réévaluer vos
+cotisations ») … ».
+
+**Contrôles.** Chromium à 390 et 1 280 px, cinq cas (15 000 € ; 25 000 € sans réponse, Oui, Non ;
+50 000 € Oui) : question présente au-dessus du seuil seulement, résumé, fiche, lignes de
+cotisations (Urssaf seule au RSPM, Urssaf et CARMF en PAMC), cibles de 44 px, aucun débordement.
+Essais des § 9.gh, 9.go et 9.gp repassés (deux attentes mises à jour : résumé et fiche miroir).
+WebKitGTK : réponse « Oui », résumé et fiche. `verify-site.mjs` sans erreur ; feuille commune
+inchangée ; comparé à la production, seul `/simulateur` diffère (la bulle du régime social).
+
+### 9.ha Images de partage : une par page, dans la DA 2026 (15 novembre 2026)
+
+**Le constat.** Le propriétaire : les aperçus des liens vers le site (Facebook, WhatsApp…) sont
+« outdated ». Avant : 17 pages (accueil, tarifs, FAQ, blog et thèmes, comparatif, guide des
+déclarations et ses pages, calculette, qui-sommes-nous, pages légales) partageaient
+`/lovable-uploads/og-image.png`, une capture du tableau de bord de l'ancienne app (chiffres
+illisibles en vignette, barre de gauche coupée, aucun message, texte alternatif « Le cockpit
+financier des médecins ») ; `/simulateur`, une capture de l'ancien site (ancien menu, « Micro-BNC vs
+Régime Réel », vouvoiement) au format 1 964 × 1 287, recadré par Facebook et LinkedIn ; `/guide`, un
+visuel de l'ancienne charte (bleu marine, Inter). Seuls les articles avaient la leur (§ 9.fl).
+
+**Ce qui change.**
+- **Accueil** : le gabarit « bannière » du skill de la DA (`hippodoc-da`, `gabarits/banniere.html`,
+  1 200 × 630) : ciel, soleil, eau, le buste ; la plaque Hippodoc, « Logiciel de gestion pour médecin
+  remplaçant » (la ligne au-dessus du `<h1>`) en surtitre de 28 px, « Sors la tête de l'eau ». Rendu
+  une fois (Playwright, densité 1), en JPEG : `public/partage/accueil-f5111c3b.jpg` (63 Ko ;
+  l'empreinte est celle du fichier). Maquette validée par le propriétaire, option « a » : la vignette
+  carrée de WhatsApp, découpée au milieu, montre « la tête … eau » et la moitié de la mascotte ; les
+  grands aperçus (Facebook, LinkedIn, iMessage, grand aperçu WhatsApp) montrent l'image entière. Pas
+  de chiffre sur l'image : la DA l'interdit dans une bannière (elle s'affiche souvent en tout petit).
+  C'est aussi l'image des pages sans entrée (404).
+- **Les 21 autres pages** : une image chacune, fabriquée à la construction par le générateur des
+  articles (`src/lib/image-partage.mjs`), d'après le registre `src/lib/partage-pages.ts`
+  (`PARTAGE_PAGES` : pastille, titre, fond, pose), au point de terminaison
+  `src/pages/partage/[nom].jpg.ts` : `/partage/<chemin à plat>-<empreinte>.jpg`. Fond selon le
+  propos, comme sur le site : ciel pour une annonce (tarifs, qui sommes-nous, essai, blog), sable
+  pour une explication (FAQ, guides, comparatif, pages légales), eau profonde pour ce qu'Hippodoc
+  calcule (simulateur, calculette) ; une page de thème prend le fond de ses articles. La pose dit la
+  page (réflexion pour la FAQ et le comparatif, calcul pour la calculette et les impôts, pouce pour le
+  Super-Net, checklist pour les guides, « par ici » pour les fiches de cases, bras croisés pour qui
+  sommes-nous et les pages légales, salut pour l'essai, lecture pour le blog) ; lui et elle
+  alternent ; aucune pose n'est retournée (une pose qui regarde vers la droite n'y est pas).
+- **Le générateur** reçoit deux options, pour les pages seulement : `pose` (le nom d'une pose,
+  cherchée dans `src/assets/accueil` puis `src/assets/partage`) et `garde` (la part du haut gardée
+  d'une pose en pied ou assise). Le bas de la mascotte d'une page passe sous la première vague de
+  devant (`pied` 0,95) : rien ne flotte, une pose en pied est coupée aux genoux par l'eau ou le sable,
+  comme par le bord du cadre dans la DA (`en-pied`). Une hauteur plus petite (0,66) pour les poses
+  larges (« par ici », lecture), qui ramenaient le titre à trois ou quatre lignes. Les douze poses de
+  la bibliothèque de la DA employées sont copiées dans `src/assets/partage/` (lues par chemin,
+  jamais importées : rien n'est servi). Le dessin des articles ne change pas : les 53 images, rendues
+  avec l'ancien et le nouveau code, sont identiques au pixel près (écart maximal 0, quatre poses
+  essayées) ; leur adresse change (l'empreinte comprend le code du générateur), comme prévu en
+  § 9.fl : Facebook ou WhatsApp reprennent la même image à une nouvelle adresse.
+- **BaseLayout** : par défaut, l'image de la page (`imagePartagePage(path)`), ses dimensions et son
+  texte alternatif (« titre (pastille, Hippodoc) », ou `alt` de l'entrée) ; `og:image:type` et
+  `twitter:image:alt` ajoutés. Les props `ogImage` de l'accueil, du simulateur et du guide, et
+  `ogImageAlt` du comparatif, sont retirées (le registre les remplace) ; seuls les articles passent
+  encore la leur.
+- **Inchangés** : `og-image.png` reste l'image de l'`Organization` et la `screenshot` de
+  `SoftwareApplication` (c'est bien une capture de l'app) ; `public/guide/partage.jpg` reste l'image
+  du schéma `Book` de `/guide`. `public/lovable-uploads/Hero-simulateur.png`, que plus rien ne citait,
+  est supprimé.
+
+**Textes des images (à relire par le propriétaire).** Repris de la page, sauf mention :
+
+| Page | Pastille | Titre |
+| --- | --- | --- |
+| `/` | « Logiciel de gestion pour médecin remplaçant » (`<h1>`) | « Sors la tête de l'eau » (`<h1>`) |
+| `/simulateur` | « Simulateur gratuit » (**écrit** ; « gratuit » vient du `<title>`) | « Super-Net : ton revenu net de médecin » (`<h1>` sans « Simulateur ») |
+| `/tarifs` | « Tarifs » (menu) | « Un outil pro, à un prix humain » (fin du `<h1>`, capitale ajoutée) |
+| `/faq` | « FAQ » (menu) | « Toutes tes questions sur Hippodoc » (`<h1>`) |
+| `/qui-sommes-nous` | « Qui sommes-nous » (pied, sans « ? ») | `<h1>` entier |
+| `/essai` | « Remplacer, c'est bien. » | « Savoir ce que ça te rapporte vraiment, c'est mieux. » (le `<h1>` en deux : en titre, il se coupait après « c'est ») |
+| `/comparatif` | « Comparatif des logiciels » (pied) | « Indy, Pennylane, Hiway Care ou Hippodoc ? » (`<h1>`) |
+| `/guide` | « PDF gratuit · Édition 2026-2027 » (`<title>` et édition) | « Le guide du médecin remplaçant » (`<h1>` sans l'édition) |
+| `/guide-declarations` | « Guide des déclarations » (menu) | `<h1>` |
+| trois fiches du guide | « Guide des déclarations » | leur `<h1>` |
+| `/guide-declarations/calculette` | « Calculette fiscale » (menu) | « Ta 2042-C PRO et ta DSFU pré-remplies en 2 minutes » (chapô ; le `<h1>`, « HippoCalc », ne dit rien seul) |
+| `/blog` | « Blog » (menu) | `<h1>` |
+| pages de thème | « Blog » | le nom du thème |
+| pages légales | « Informations légales » (**écrit**) | leur `<h1>`, en casse de phrase, sans « – Hippodoc » |
+
+Textes alternatifs : « titre (pastille, Hippodoc) » ; pour `/essai`, le `<h1>` entier suivi de « 30
+jours gratuits sur Hippodoc ».
+
+**Garde-fou.** `verify-site.mjs`, « 4 octodecies » : chaque page du sitemap a une `og:image` à
+empreinte sous `/partage/` ou `/blog/partage/`, la même en `twitter:image`, avec `og:image:alt`,
+`twitter:image:alt` et `og:image:type` `image/jpeg` ; le fichier fait 1 200 × 630 px en JPEG, moins
+de 300 Ko (au-delà, WhatsApp peut ne pas afficher l'aperçu) ; deux pages n'ont pas la même image
+(une page sans entrée dans `PARTAGE_PAGES` prend celle de l'accueil : le contrôle échoue) ; `/` a
+l'image de l'accueil ; aucun fichier de `dist/partage/` n'est orphelin. Essayé : `/faq` remise sur
+l'image de l'accueil, puis sur `og-image.png` : trois et deux échecs, nommés. Une nouvelle page
+s'ajoute donc au registre. Planche de toutes les images sans construire :
+`node scripts/apercu-partage.mjs [sortie.png]`.
+
+**Contrôles.** Les 22 images regardées une à une (trois passes : pose assise qui flottait, pieds
+posés sur la vague, titres en quatre lignes, corrigés). Comparé au build de `main` : 78 pages, aucune
+différence hors des balises `og:image*` et `twitter:image*` et de l'adresse des images des articles ;
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). Poids : 40 à 63 Ko par image.
+`verify-site.mjs` sans erreur.
+
+**Après la mise en ligne.** Facebook garde l'aperçu d'une adresse de page des jours durant : pour les
+liens déjà partagés, « Scrape Again » dans l'outil de débogage du partage de Meta
+(developers.facebook.com/tools/debug), et le Post Inspector de LinkedIn ; l'accueil d'abord, puis
+`/simulateur`, `/guide` et `/essai` (où mènent `/instagram` et `/i`).
+
+**Ouvert (décision du propriétaire).** Le texte sous l'image vient du `<title>` et de la description :
+l'accueil dit encore « Hippodoc — Cockpit financier des médecins | Super-Net », et `/essai`, « Le
+cockpit financier des médecins remplaçants ». Ils ne collent plus à l'accroche du site ; les changer
+touche au référencement : non fait (fait en § 9.hb).
+
+**Ouvert (décision du propriétaire).** `/transmissions` (page autonome de la newsletter « Les
+Transmissions du lundi », `public/transmissions/index.html`, noindex, hors du sitemap : le contrôle
+ne la voit pas) partage encore `og-image.png`, la capture de l'app Hippodoc. Elle n'est pas
+d'Hippodoc mais de la newsletter des marchés, qui a sa propre direction artistique : son image se
+fait dans celle-ci, pas dans la DA d'Hippodoc. Non fait.
+
+### 9.hb Accueil : nouveau titre ; « cockpit financier » retiré des descriptions (15 novembre 2026)
+
+Suite de § 9.ha : le texte sous l'image d'un lien partagé vient du `<title>`, qui disait encore
+l'ancienne formule. Décision du propriétaire.
+
+**Contenu modifié.**
+- `<title>` de l'accueil (donc `og:title` et `twitter:title`). Avant : « Hippodoc — Cockpit financier
+  des médecins | Super-Net ». Après : « Logiciel de gestion pour médecin remplaçant | Hippodoc »
+  (54 caractères ; la ligne au-dessus du `<h1>`, mot pour mot ; mot-clé d'abord). Aucune autre page
+  n'a ce titre ; `/tarifs` vise « Tarif logiciel médecin remplaçant ». Description inchangée. Avant de
+  valider, le propriétaire devait regarder, dans la Search Console, si des clics venaient de
+  « super-net » ou de « cockpit » sur `/`.
+- JSON-LD `WebSite` de l'accueil, `description`. Avant : « Le cockpit financier des médecins qui
+  calcule tout pour vous : revenus, cotisations, impôts et Super-Net. » Après : la phrase sous le
+  `<h1>`, mot pour mot (« URSSAF, CARMF, impôts : Hippodoc calcule tout après chaque journée de
+  remplacement, et te montre ce qu'il te reste vraiment. »).
+- JSON-LD `Organization` (toutes les pages, `src/lib/site.ts`). `alternateName` : « Hippodoc - Le
+  cockpit financier des médecins remplaçants » devient « Hippodoc - Logiciel de gestion pour médecin
+  remplaçant ». `description` : « Hippodoc - Le cockpit financier des médecins remplaçants qui
+  calcule tout pour vous. Revenus, contrats, planning et Super-Net. » devient `PRODUCT_DEFINITION`
+  (mot pour mot). `slogan` : « Le cockpit financier des médecins remplaçants qui calcule tout pour
+  vous » devient « Sors la tête de l'eau » (le `<h1>`).
+- JSON-LD `SoftwareApplication`, `description` : « Le cockpit financier des médecins remplaçants : »
+  devient « Logiciel de gestion pour médecin remplaçant : » (la suite inchangée).
+- `llms.txt` : « Cockpit financier pour médecins en France » devient « Logiciel de gestion pour
+  médecins en France » ; ligne de l'accueil : « Présentation du cockpit financier des médecins
+  remplaçants » devient « Présentation du logiciel de gestion des médecins remplaçants ».
+- `/essai`, la ligne sous le `<h1>` : « Le cockpit financier des médecins remplaçants » devient « Le
+  logiciel des médecins remplaçants » (la formule de la DA). « Le logiciel de gestion des médecins
+  remplaçants », essayé d'abord, passait sur deux lignes à 390 px (l'ancienne en tenait une) ; la
+  forme retenue tient sur une ligne de 320 à 1 280 px, jamais plus haute que l'ancienne (une ligne de
+  moins de 320 à 375 px : le haut de la page remonte de 25 px).
+
+**À l'écran aussi (validé par le propriétaire dans un second temps).** Plus aucun « cockpit » dans le
+site construit (articles compris).
+- Pied, sous la marque (toutes les pages) : « Le cockpit financier des médecins. » devient « Le
+  logiciel des médecins remplaçants. »
+- `/tarifs`, chapô de la scène de fin : « Le cockpit financier des médecins remplaçants qui calcule
+  tout pour toi. » devient « Le logiciel des médecins remplaçants qui calcule tout pour toi. »
+- 404, carte « Retour à l'accueil » : « Le cockpit financier des médecins remplaçants. » devient « Le
+  logiciel des médecins remplaçants. »
+- `/comparatif`, fiche d'Hippodoc (`tagline`, aussi dans le JSON-LD de la page) : « Le cockpit
+  financier des médecins » devient « Logiciel des médecins remplaçants » (sans article, comme les
+  accroches des trois autres outils ; avec l'article, elle passait sur deux lignes à 390 px). Profil
+  de l'interne : « Hippodoc en cockpit principal. » devient « Hippodoc comme outil principal. »
+- `/essai`, sous la marque, plus bas : « Le cockpit du médecin remplaçant » devient « Le logiciel du
+  médecin remplaçant » (le singulier d'avant, pour ne pas répéter la ligne du haut).
+
+**Contrôles.** Hauteur de chaque phrase et de la page, nouveau texte contre l'ancien, à 320, 360, 390,
+600, 960, 1 024, 1 180 et 1 440 px, police chargée : pied, `/essai` et `/comparatif` identiques
+partout ; `/tarifs` une ligne de moins à partir de 600 px (−29 px), la 404 une ligne de moins dans
+la carte à partir de 960 px (page inchangée). `verify-site.mjs` sans erreur.
+
+### 9.hc Accueil : quatre témoignages d'utilisateurs, validés par leurs auteurs (15 novembre 2026)
+
+Demande du propriétaire : tirer des conversations du chat (Crisp) et des mails des témoignages
+« qui font vrai ». **Aucune personne n'est inventée** : un faux avis est une pratique commerciale
+trompeuse (Code de la consommation, L121-4), aussi quand elle vise des professionnels (L121-5).
+
+**Méthode.**
+- Chaque texte part des mots qu'un utilisateur a écrits, resserrés pour une carte.
+- La personne a validé son texte, son prénom, son initiale et sa qualité avant publication.
+- Le propriétaire a recueilli les accords dans un groupe WhatsApp, le 15 novembre 2026. Il en
+  garde la trace.
+- Les quatre textes ne se retouchent plus sans un nouvel accord.
+- Le fichier de propositions a servi de base. Il comptait 13 textes, et notait pour chacun ce
+  qu'il ne faut pas faire dire à un témoignage (justesse du Super-Net et de l'impôt, prix
+  après l'essai). Ce fichier est resté hors du dépôt.
+
+**Contenu modifié (décision du propriétaire).** Les quatre cartes de `accueil/Temoignages.astro`
+changent, une par situation, dans le même ordre. Les sources sont les fils Crisp copiés dans la
+boîte de contact, et un mail.
+
+1. **« Yoann G. », « Médecin, gardes à SOS Médecins ».**
+   - **Texte publié :** « Mes gardes à SOS Médecins, je les suivais sur un tableau Excel : 75 % de
+     rétro d'un côté, les actes défiscalisés à 100 % de l'autre. Sur Hippodoc, je rentre les deux et
+     ça calcule tout seul ce qui est imposable. Franchement, nickel. »
+   - **Source :** Crisp, conversation #fab, 2 mai 2026. Il y décrivait son tableau Excel, puis :
+     « ça calcule automatiquement les sommes imposables » et « Donc tout est niquel ! ».
+2. **« Léopold L. », « Interne ».**
+   - **Texte publié :** « Interne, je remplace à côté. J'ai fait le tour rapidement : c'est fluide,
+     l'interface est intuitive et agréable. Bravo pour l'outil. »
+   - **Source :** Crisp, conversation #237, 8 juillet 2025. Il avait écrit : « J'ai pu explorer
+     rapidement le site, c'est fluide, l'interface est intuitive et agréable. […] En tout cas, bravo
+     pour l'outil! »
+3. **« Rayan A. », « Activité mixte (libéral, salarié, gardes) ».**
+   - **Texte publié :** « Libéral, salarié, gardes de PDSA : je rentre tout dans l'appli, et je la
+     trouve vraiment très pratique au quotidien. »
+   - **Source :** Crisp, conversation #6ca, 5 avril 2026. Il avait écrit : « l'application, que je
+     trouve vraiment très pratique au quotidien ».
+   - Le début du texte reprend les revenus qu'il détaillait dans le même message.
+4. **« Emma C. », « Médecin remplaçante ».**
+   - **Texte publié :** « Je trouve ça sincèrement super : ça m'a beaucoup aidé, et surtout soulagé.
+     J'en parle à tous les remplaçants que je croise. »
+   - **Source :** mail du 14 novembre 2026. Elle avait écrit : « Je trouve ça sincèrement super, ça
+     m'a beaucoup aidé et soulagé. […] je continuerais à en parler pareil aux remplaçants que je
+     croise ! »
+
+Pas de « Dr » : les signatures validées n'en portent pas.
+
+**Retirés** (§ 9.eu, décision du 10 novembre 2026 ; leur accord n'avait pas été noté) :
+- « Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je
+  comprenais rien à mon net. Maintenant c'est séparé et je vois clair. »
+  - Signé « Dr Sofiane B. », « Médecin (SOS Médecins + cabinet) ».
+- « Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau
+  administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire. »
+  - Signé « Anaïs V. », « Interne ».
+- « Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision.
+  Là tout est au même endroit et je comprends mon 'vrai super-net'. »
+  - Signé « Dr Sarah M. », « Urgentiste (activité mixte) ».
+- « Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais.
+  Là j'ai enfin un suivi clair entre activité, encaissements et provisions. »
+  - Signé « Dr Émilien C. », « Médecin généraliste ».
+
+**Mécanique.** Un nombre ne se sépare plus de son signe (« 75 % », « 100 % ») : il tient dans un
+`<span class="nb">`, comme les mots composés. Le texte ne change pas d'un caractère.
+
+**Contrôles.**
+- `npm run build` et `verify-site.mjs` : aucune erreur. Le plancher de mots de l'accueil tient.
+- **Comparé au build de `main` (b5edf4e, après la fusion de la PR 198) :** seul `index.html` diffère, et seulement dans les quatre
+  cartes.
+  - La feuille commune (`_astro_assets.BqFlQkaI.css`) et celle de l'accueil
+    (`index.D134I3Nh.css`) sont inchangées.
+  - Le sitemap est inchangé : `ACCUEIL_LAST_UPDATED_ISO` était déjà au 15 novembre 2026.
+- **Chromium à 320, 390 et 1 280 px :** aucun débordement.
+  - Les cartes du défilement ont toutes la même hauteur (384 px à 320, 333 px à 390).
+  - À 1 280 px, deux rangées égales.
+- WebKit non repassé : aucune feuille n'a changé.
 
 ### 9.ha Fenêtre produit : un cinquième onglet, « Et aussi » (15 novembre 2026)
 

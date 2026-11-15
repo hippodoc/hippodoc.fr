@@ -160,11 +160,14 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const asvProportionnelle = form.watch('asvProportionnelle');
     // Le toggle RID s'affiche dès qu'on est en RSPM (effectif ou auto < 38k€).
     // La dispense CARMF n'a aucun effet en RSPM : la RID reste obligatoire et
-    // doit pouvoir être paramétrée (157€ ou 626€ en 2026).
+    // doit pouvoir être paramétrée (158 € ou 631 € en 2026).
     const annualRecettes = periode === 'mensuel' ? (recettesBrutes || 0) * 12 : (recettesBrutes || 0);
     // Même règle que le moteur (usePublicodesSimulation) : en Auto, le RSPM est retenu pour
     // un remplaçant jusqu'à 19 000 € de recettes (seuil d'entrée du régime).
     const typeExercice = form.watch('typeExercice');
+    const dejaRspm = form.watch('dejaRspm');
+    // § 9.gz : la question « déjà au RSPM ? », pour un remplaçant en mode Auto au-dessus du seuil.
+    const questionRspm = regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes > 19000;
     const enfants = form.watch('enfants') || 0;
     const anneeSaisie = form.watch('annee') || 2026;
     const chargesSaisies = form.watch('chargesHorsCotisations') || 0;
@@ -191,7 +194,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         : typeExercice === 'installe' ? 'Régime social\u00a0: PAMC'
         : annualRecettes <= 0 ? 'Régime social\u00a0: RSPM ou PAMC selon tes recettes'
         : annualRecettes <= 19000 ? 'Régime social\u00a0: RSPM (recettes jusqu\'à 19\u00a0000\u00a0€)'
-        : 'Régime social\u00a0: PAMC (le RSPM s\'arrête à 19\u00a0000\u00a0€ de recettes)',
+        : dejaRspm === 'oui' ? 'Régime social\u00a0: RSPM (tu y es déjà)'
+        : dejaRspm === 'non' ? 'Régime social\u00a0: PAMC (recettes au-dessus de 19\u00a0000\u00a0€)'
+        : 'Régime social\u00a0: PAMC, sauf si tu es déjà au RSPM',
     ];
     // Un champ en erreur dans la situation repliée : la situation s'ouvre, sinon l'erreur reste
     // invisible (le formulaire ne pourrait pas y porter le focus).
@@ -202,7 +207,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     };
     // Forfait 2 %, 3 % et groupe III : médecins installés en secteur 1 seulement.
     const deductionsS1Ouvertes = secteurConventionnel === 'secteur_1' && typeExercice === 'installe';
-    const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes <= 19000);
+    const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && (annualRecettes <= 19000 || dejaRspm === 'oui'));
     const showRidToggle = isRspmEffectif;
     // Les réductions sur demande : en PAMC, affilié à la CARMF, après les deux premières années
     // (la complémentaire n'y est pas due et l'ASV y est forfaitaire).
@@ -408,6 +413,28 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               )}
             />
           </div>
+
+          {/* § 9.gz : au-dessus de 19 000 €, on n'entre plus au RSPM, mais la plupart des remplaçants
+              y sont déjà, et y restent jusqu'au 31 décembre (au moins). La question remplace la
+              parenthèse « déjà au RSPM ? Choisis-le avec « Modifier » » du résumé. */}
+          {questionRspm && (
+            <FormField control={form.control} name="dejaRspm" render={({ field }) => (
+              <FormItem className="sim-deja-rspm">
+                <fieldset>
+                  <legend className="sim-deja-rspm-titre">Es-tu déjà au RSPM{'\u00a0'}?</legend>
+                  <p className="sim-deja-rspm-aide">
+                    L'offre simplifiée de l'Urssaf. On n'y entre plus au-dessus de 19{'\u00a0'}000{'\u00a0'}€ de recettes, mais qui y est déjà y reste au moins jusqu'au 31{'\u00a0'}décembre.
+                  </p>
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange} value={field.value ?? ''} className="sim-deja-rspm-choix">
+                      <div className="flex items-center gap-2"><RadioGroupItem value="oui" id="deja-rspm-oui" /><label htmlFor="deja-rspm-oui" className="text-sm cursor-pointer">Oui</label></div>
+                      <div className="flex items-center gap-2"><RadioGroupItem value="non" id="deja-rspm-non" /><label htmlFor="deja-rspm-non" className="text-sm cursor-pointer">Non</label></div>
+                    </RadioGroup>
+                  </FormControl>
+                </fieldset>
+              </FormItem>
+            )} />
+          )}
 
           {/* Aide « Estimer mes charges » (§ 9.gd) : le total se reporte dans le champ ci-dessus */}
           <EstimateurCharges
@@ -840,7 +867,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       content={
                         <div className="space-y-2">
                           <p className="text-xs">
-                            <strong>Remplaçant</strong> : tu exerces seulement en remplacement (rétrocessions). Tu peux opter pour le RSPM jusqu'à 19 000 € de recettes, tu ne paies pas la CURPS, et la CARMF peut te dispenser d'affiliation sous 15 000 € de revenu net.
+                            <strong>Remplaçant</strong> : tu exerces seulement en remplacement (rétrocessions). Tu peux opter pour le RSPM si tes recettes ne dépassent pas 19 000 € par an, tu ne paies pas la CURPS, et la CARMF peut te dispenser d'affiliation sous 15 000 € de revenu net.
                           </p>
                           <p className="text-xs">
                             <strong>Installé</strong> : tu exerces en ton nom (cabinet, collaboration). Le RSPM ne t'est pas ouvert.
@@ -1094,7 +1121,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <div className="space-y-2">
                           <p className="font-semibold">RSPM vs PAMC</p>
                           <p className="text-xs">
-                            <strong>RSPM</strong> (Simplifié) : cotisations forfaitaires à taux fixe. Ouvert jusqu'à 19 000 €/an d'honoraires ; perdu après deux années de suite au-dessus de 19 000 € ou une seule au-dessus de 38 000 €.<br/>
+                            <strong>RSPM</strong> (Simplifié) : cotisations forfaitaires à taux fixe. On y entre jusqu'à 19 000 €/an d'honoraires ; on en sort au 1er janvier qui suit une année au-dessus de 38 000 €, ou la deuxième de suite au-dessus de 19 000 €.<br/>
                             <strong>PAMC</strong> (Classique) : cotisations proportionnelles réelles, régime standard des médecins libéraux.
                           </p>
                           <TipBox variant="info">
@@ -1104,7 +1131,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </div>
                           </TipBox>
                           <TipBox variant="tip">
-                            <p><strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM entre 19 000 et 38 000 € ? Choisis RSPM.</p>
+                            <p><strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes. Au-delà, il te demande si tu y es déjà : on n'y entre plus, mais qui y est y reste jusqu'au 31 décembre.</p>
                           </TipBox>
                         </div>
                       }
@@ -1201,7 +1228,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <div className="text-xs mt-1.5 px-1">
                           {field.value !== 'dispense' && <p className="text-muted-foreground">Retraite de base, complémentaire, ASV et invalidité-décès{debutActivite !== 'non' ? " (sans complémentaire les deux premières années)" : ''}</p>}
                           {field.value === 'dispense' && !isRspmEffectif && <p className="text-muted-foreground">Aucune cotisation CARMF (retraite de base, complémentaire, ASV, invalidité-décès). Possible seulement pour un remplaçant dont le revenu net reste sous 15 000 € : au-delà, le simulateur ne l'applique pas.</p>}
-                          {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (157€ ou 626€/an selon le taux ci-dessous).</p>}
+                          {field.value === 'dispense' && isRspmEffectif && <p className="text-muted-foreground">En RSPM, la dispense ne s'applique pas à la RID : elle reste obligatoire (158 € ou 631 € par an selon le taux ci-dessous).</p>}
                         </div>
                         <FormMessage role="alert" />
                       </FormItem>
@@ -1216,15 +1243,26 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <PremiumTooltip title="Cotisation RID" content={
                               <div className="space-y-2">
                                 <p className="font-semibold">Régime Invalidité-Décès CARMF</p>
-                                <p className="text-xs">Assurance obligatoire dès que tu es affilié à la CARMF. Te couvre en cas d'invalidité ou de décès (capital versé aux ayants droit).</p>
-                                <TipBox variant="info">
-                                  <div className="space-y-0.5">
-                                    <p><strong>25%</strong> = couverture minimale → 157€/an</p>
-                                    <p><strong>100%</strong> = couverture complète → 626€/an</p>
-                                  </div>
-                                </TipBox>
+                                <p className="text-xs">Assurance obligatoire dès que tu es affilié à la CARMF. Elle te couvre en cas d'arrêt de travail long, d'invalidité ou de décès.</p>
+                                {/* Ce que chaque niveau coûte et couvre (§ 9.gp) : CARMF, dépliant « Remplaçants,
+                                    régulateurs adhérents au RSPM », édition 2026 ; cotisations confirmées par
+                                    l'Urssaf (« Le service simplifié pour les médecins », 13 novembre 2026). Le dépliant dit
+                                    « invalidité totale et définitive », et ne donne l'âge (moins de 62 ans) que pour les
+                                    indemnités journalières : la bulle aussi (§ 9.gt). */}
+                                <table className="sim-rid">
+                                  <thead>
+                                    <tr><th scope="col"><span className="sr-only">Ce qui est couvert</span></th><th scope="col">À 25{'\u00a0'}%</th><th scope="col">À 100{'\u00a0'}%</th></tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr><th scope="row">Cotisation par an</th><td>158{'\u00a0'}€</td><td>631{'\u00a0'}€</td></tr>
+                                    <tr><th scope="row">Arrêt de travail, par jour à partir du 91e</th><td>16,46{'\u00a0'}€</td><td>65,84{'\u00a0'}€</td></tr>
+                                    <tr><th scope="row">Invalidité totale et définitive, rente par an</th><td>5{'\u00a0'}915,50{'\u00a0'}€</td><td>23{'\u00a0'}662{'\u00a0'}€</td></tr>
+                                    <tr><th scope="row">Décès, indemnité</th><td>17{'\u00a0'}875{'\u00a0'}€</td><td>71{'\u00a0'}500{'\u00a0'}€</td></tr>
+                                  </tbody>
+                                </table>
+                                <p className="text-xs text-muted-foreground">Prestations 2026 de la CARMF{'\u00a0'}; l'indemnité par jour est celle d'un médecin de moins de 62{'\u00a0'}ans. Tu choisis ton niveau à ta première déclaration de l'année.</p>
                                 <TipBox variant="tip">
-                                  <p>100% recommandé si tu as des enfants ou un emprunt immobilier.</p>
+                                  <p>100{'\u00a0'}% recommandé si tu as des enfants ou un emprunt immobilier.</p>
                                 </TipBox>
                               </div>
                             }>
@@ -1232,9 +1270,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </PremiumTooltip>
                           </div>
                           <FormControl>
-                            <RadioGroup onValueChange={field.onChange} value={field.value || '25%'} className="flex gap-4">
-                              <div className="flex items-center gap-2"><RadioGroupItem value="25%" id="rid-25" /><label htmlFor="rid-25" className="text-sm cursor-pointer">25% (157€/an)</label></div>
-                              <div className="flex items-center gap-2"><RadioGroupItem value="100%" id="rid-100" /><label htmlFor="rid-100" className="text-sm cursor-pointer">100% (626€/an)</label></div>
+                            <RadioGroup onValueChange={field.onChange} value={field.value || '25%'} className="sim-rid-choix flex gap-4">
+                              <div className="flex items-center gap-2"><RadioGroupItem value="25%" id="rid-25" /><label htmlFor="rid-25" className="text-sm cursor-pointer">25{'\u00a0'}% (158{'\u00a0'}€/an)</label></div>
+                              <div className="flex items-center gap-2"><RadioGroupItem value="100%" id="rid-100" /><label htmlFor="rid-100" className="text-sm cursor-pointer">100{'\u00a0'}% (631{'\u00a0'}€/an)</label></div>
                             </RadioGroup>
                           </FormControl>
                           <FormMessage role="alert" />

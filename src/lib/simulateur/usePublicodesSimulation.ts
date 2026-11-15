@@ -5,7 +5,7 @@ import type { SimulationResult, DomTomResultInfo, LieuExercice } from '@/lib/sim
 import { calculateRspmBreakdown } from '@/lib/simulateur/useRspmCalculation';
 import { reformeAssiette, assietteMicro, assietteReformee, revenuConventionne, economieAsvProportionnelle, complementaireCarmf, calculerCotisationsUrssaf, type CotisationsUrssaf, type ParametresUrssaf } from '@/lib/simulateur/urssaf';
 import { calculateFiscalParts } from '@/lib/fiscalParts';
-import { superNetDuMedecin } from '@/lib/simulateur/impotMedecin';
+import { impotDuMedecin, superNetDuMedecin } from '@/lib/simulateur/impotMedecin';
 import { getDomTomInfo } from '@/lib/dom-tom';
 import { getMicroBncCeiling } from '@/lib/baremes-ir';
 import { normalizeCarmfStatus } from '@/lib/carmfStatus';
@@ -81,6 +81,9 @@ export interface RegimeComparison {
   /** 1re année d'activité en PAMC : cotisations provisionnelles appelées sur la base forfaitaire
    *  (`calculerProvisionnelPremiereAnnee`) ; `null` si le calcul n'a pas abouti. */
   provisionnelPremiereAnnee?: { urssaf: number; carmf: number } | null;
+  /** Remplaçant en mode Auto au-dessus de 19 000 € (PAMC retenu) : le meilleur Super-Net de la
+   *  même saisie au RSPM (`calculerAlternativeRspm`, § 9.go), pour celui qui y est déjà. */
+  alternativeRspm?: { superNet: number; recommande: 'micro-bnc' | 'reel' } | null;
 }
 
 const annualiser = (formData: SimulateurFormData, v: number | undefined): number =>
@@ -90,7 +93,9 @@ const annualiser = (formData: SimulateurFormData, v: number | undefined): number
 const shouldUseRspm = (formData: SimulateurFormData, recettesAnnuelles: number): boolean => {
   if (formData.regimeSocial === 'rspm') return true;
   if (formData.regimeSocial === 'pamc') return false;
-  return formData.typeExercice !== 'installe' && recettesAnnuelles <= SEUIL_RSPM_ENTREE;
+  if (formData.typeExercice === 'installe') return false;
+  // § 9.gz : au-dessus du seuil d'entrée, le RSPM si le remplaçant dit y être déjà.
+  return recettesAnnuelles <= SEUIL_RSPM_ENTREE || formData.dejaRspm === 'oui';
 };
 
 const DEPARTEMENTS_OUTRE_MER: Record<string, ParametresUrssaf['departementOutreMer']> = {
@@ -525,6 +530,91 @@ export async function calculerAlternativePamc(
   }
 }
 
+/**
+ * Alternative RSPM d'une simulation en PAMC (§ 9.go). Un remplaçant déjà au RSPM y reste jusqu'au
+ * 31 décembre de l'année où il dépasse les seuils (urssaf.fr, « Le service simplifié pour les
+ * médecins » : sortie l'année qui suit un dépassement de 38 000 €, ou de 19 000 € une seconde
+ * année de suite). Le mode Auto retient le PAMC au-dessus de 19 000 € : cette fonction donne le
+ * meilleur Super-Net de la même saisie au RSPM. Calcul local, sans appel réseau.
+ */
+export async function calculerAlternativeRspm(
+  formData: SimulateurFormData,
+): Promise<{ superNet: number; recommande: 'micro-bnc' | 'reel' } | null> {
+  try {
+    const fd = { ...formData, regimeSocial: 'rspm' as const };
+    const [reel, micro] = await Promise.all([simulerRegime(fd, 'reel', true, false), simulerRegime(fd, 'micro-bnc', true, false)]);
+    if (!reel) return null;
+    const foyer = {
+      revenusSalariesAnnuels: annualiser(formData, formData.revenusSalaries),
+      revenusConjointAnnuels: annualiser(formData, formData.revenusConjoint),
+      situationFamiliale: formData.situationFamiliale,
+    };
+    const sReel = superNetDuMedecin(reel, foyer);
+    const sMicro = micro ? superNetDuMedecin(micro, foyer) : -Infinity;
+    return sMicro > sReel ? { superNet: sMicro, recommande: 'micro-bnc' } : { superNet: sReel, recommande: 'reel' };
+  } catch (err) {
+    console.warn('[Simulateur] alternative RSPM non calculée', err);
+    return null;
+  }
+}
+
+/** Exemple de rattrapage : des revenus plus bas de 20 % les deux années d'avant. */
+export const RATIO_EXEMPLE_RATTRAPAGE = 0.8;
+
+export interface ExempleRattrapage {
+  /** Recettes annuelles des deux années d'avant, dans l'exemple. */
+  recettesAvant: number;
+  urssaf: number;
+  /** Retraite de base de la CARMF : la seule de ses cotisations qui se régularise. */
+  carmfBase: number;
+  impot: number;
+}
+
+/**
+ * Exemple de rattrapage du pli « Quand et comment tu paies » (§ 9.go), en PAMC et en régime de
+ * croisière. Si les revenus des deux années d'avant étaient plus bas de 20 %, les prélèvements de
+ * l'année partent de ces revenus-là : Urssaf et retraite de base de la CARMF sont calculées à
+ * titre provisionnel sur l'avant-dernière année, recalculées sur la dernière, puis régularisées
+ * sur l'année (CSS L131-6-2 ; CARMF, « Cotisations 2026 ») ; les acomptes d'impôt suivent les
+ * mêmes années. Ce qui manque est appelé l'année suivante : la différence entre ce qui est dû à
+ * ces revenus (`actuel`) et le même calcul à 80 % des recettes et des charges. La complémentaire
+ * et l'ASV de la CARMF, fixées sur l'avant-dernière année sans régularisation, n'y entrent pas.
+ * Un appel au modèle de l'Urssaf ; `null` s'il n'aboutit pas.
+ */
+export async function calculerExempleRattrapage(
+  formData: SimulateurFormData,
+  regime: 'reel' | 'micro-bnc',
+  actuel: SimulationResult,
+): Promise<ExempleRattrapage | null> {
+  try {
+    const fd = {
+      ...formData,
+      regimeSocial: 'pamc' as const,
+      recettesBrutes: Math.round((formData.recettesBrutes || 0) * RATIO_EXEMPLE_RATTRAPAGE),
+      chargesHorsCotisations: Math.round((formData.chargesHorsCotisations || 0) * RATIO_EXEMPLE_RATTRAPAGE),
+    };
+    const avant = await simulerRegime(fd, regime, false, false);
+    if (!avant) return null;
+    const foyer = {
+      revenusSalariesAnnuels: annualiser(formData, formData.revenusSalaries),
+      revenusConjointAnnuels: annualiser(formData, formData.revenusConjoint),
+      situationFamiliale: formData.situationFamiliale,
+    };
+    const urssafDe = (r: SimulationResult) => Math.max(0, r.cotisationsTotales) - Math.max(0, r.cotisationsDetail?.retraite ?? 0);
+    const baseDe = (r: SimulationResult) => Math.max(0, r.cotisationsDetail?.retraiteBase ?? 0);
+    const ecart = (a: number, b: number) => Math.max(0, Math.round(a) - Math.round(b));
+    return {
+      recettesAvant: annualiser(fd, fd.recettesBrutes),
+      urssaf: ecart(urssafDe(actuel), urssafDe(avant)),
+      carmfBase: ecart(baseDe(actuel), baseDe(avant)),
+      impot: ecart(impotDuMedecin(actuel, foyer).impotLiberal, impotDuMedecin(avant, foyer).impotLiberal),
+    };
+  } catch (err) {
+    console.warn('[Simulateur] exemple de rattrapage non calculé', err);
+    return null;
+  }
+}
+
 /** Recettes ajoutées pour la marge (« 1 000 € de plus dans l'année »). */
 export const MARGE_RECETTES = 1000;
 
@@ -586,10 +676,14 @@ export function usePublicodesSimulation() {
 
       // 1re année en PAMC : les cotisations provisionnelles, en même temps (un appel de plus).
       const premiereAnneePamc = debutActiviteDe(formData) === 'premiere' && !useRspm;
-      const [resultReel, resultMicroBnc, provisionnel] = await Promise.all([
+      // Remplaçant en mode Auto au-dessus du seuil d'entrée : le PAMC est retenu, mais celui qui
+      // est déjà au RSPM y reste jusqu'au 31 décembre (§ 9.go). Le même calcul au RSPM, local.
+      const rspmEncorePossible = !useRspm && formData.regimeSocial === 'auto' && formData.typeExercice !== 'installe' && formData.dejaRspm !== 'non';
+      const [resultReel, resultMicroBnc, provisionnel, alternativeRspm] = await Promise.all([
         simulerRegime(formData, 'reel', useRspm),
         simulerRegime(formData, 'micro-bnc', useRspm),
         premiereAnneePamc ? calculerProvisionnelPremiereAnnee(formData) : Promise.resolve(undefined),
+        rspmEncorePossible ? calculerAlternativeRspm(formData) : Promise.resolve(undefined),
       ]);
 
       if (!resultReel) {
@@ -624,6 +718,7 @@ export function usePublicodesSimulation() {
         lieuExercice: formData.lieuExercice,
         isRSPMUsed: useRspm,
         provisionnelPremiereAnnee: provisionnel,
+        alternativeRspm,
       });
 
       // Après l'affichage, l'un après l'autre (le modèle Urssaf limite le débit) : la marge sur

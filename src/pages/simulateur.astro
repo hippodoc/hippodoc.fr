@@ -44,6 +44,7 @@ import SimulateurApp from '@/components/simulateur/SimulateurApp.tsx';
 import { APP_URL, CALENDLY_URL, SITE_URL } from '@/lib/site';
 import { getDeclarationParams } from '@/lib/declarationParams';
 import { getMicroBncCeiling, getPlafondEpargneRetraite } from '@/lib/baremes-ir';
+import { SIMULATEUR_LAST_UPDATED_ISO } from '@/lib/pages-lastmod';
 
 const title = 'Simulateur revenus médecin gratuit | Hippodoc';
 const description =
@@ -62,6 +63,16 @@ const trustBadges = ['RSPM et PAMC', 'URSSAF 2026', 'Barème fiscal 2026', 'Sans
 /* Six repères (MIGRATION.md § 9.fs) : chaque montant vient du code du simulateur. Les règles
    sont celles vérifiées à l'audit de novembre 2026 (Légifrance, BOFiP, CARMF, Urssaf). */
 const ANNEE_REPERES = 2026;
+/* Ligne de confiance sous les repères (§ 9.gp) : date de la dernière vérification des barèmes
+   (`pages-lastmod.ts`, aussi dans le sitemap et le JSON-LD) et sources officielles. */
+const DATE_VERIFICATION = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  .format(new Date(`${SIMULATEUR_LAST_UPDATED_ISO}T00:00:00Z`));
+const SOURCES_BAREMES: { nom: string; href: string }[] = [
+  { nom: 'Urssaf', href: 'https://www.urssaf.fr/accueil/outils-documentation/taux-baremes/taux-cotisations-pam.html' },
+  { nom: 'CARMF', href: 'https://www.carmf.fr/page.php?page=cdrom/coti/coti-cours.htm' },
+  { nom: 'Service-Public', href: 'https://www.service-public.gouv.fr/particuliers/vosdroits/F1419' },
+  { nom: 'Légifrance', href: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000047733374' },
+];
 const euros = (n: number) => `${new Intl.NumberFormat('fr-FR').format(n)}\u00a0€`;
 const REPERES: { chiffre: string; titre: string; texte: string; soleil?: boolean }[] = [
   {
@@ -76,8 +87,8 @@ const REPERES: { chiffre: string; titre: string; texte: string; soleil?: boolean
   },
   {
     chiffre: euros(19000),
-    titre: 'Seuil du RSPM',
-    texte: "L'offre simplifiée des remplaçants, sur leurs rétrocessions : 13,5\u00a0% de cotisations, 21,2\u00a0% au-delà.",
+    titre: "Seuil d'entrée au RSPM",
+    texte: "L'offre simplifiée des remplaçants : 13,5\u00a0% de cotisations, 21,2\u00a0% au-delà. On en sort après une année au-dessus de 38\u00a0000\u00a0€, ou deux de suite au-dessus de 19\u00a0000\u00a0€.",
   },
   {
     chiffre: euros(0),
@@ -113,7 +124,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Que se passe-t-il au-delà de 38 000 € de recettes ?',
-    a: "Le régime social change. Le RSPM (taux simplifiés) est ouvert jusqu'à 19 000 € d'honoraires ; on le perd au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. Le RSPM est une option réservée aux remplaçants (et aux régulateurs) sans autre activité libérale. Pour une année type, aux recettes stables, il ne tient que jusqu'à 19 000 € : en mode Auto, recommandé, le simulateur le retient pour un remplaçant jusqu'à ce seuil, et le PAMC (barème classique) au-delà. Déjà au RSPM et entre 19 000 et 38 000 € ? Choisis-le à la main.",
+    a: "Le régime social change. Le RSPM (taux simplifiés) est ouvert jusqu'à 19 000 € d'honoraires ; on le perd au 1er janvier suivant après deux années de suite au-dessus de 19 000 €, ou une seule au-dessus de 38 000 €. Le RSPM est une option réservée aux remplaçants (et aux régulateurs) sans autre activité libérale. Pour une année type, aux recettes stables, il ne tient que jusqu'à 19 000 € : en mode Auto, recommandé, le simulateur le retient pour un remplaçant jusqu'à ce seuil, et le PAMC (barème classique) au-delà. Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y restes jusqu'au 31 décembre : choisis RSPM à la main.",
   },
   {
     q: 'Compare-t-il le Micro-BNC et le Régime Réel ?',
@@ -135,6 +146,7 @@ const webAppSchema = {
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   inLanguage: 'fr',
+  dateModified: SIMULATEUR_LAST_UPDATED_ISO,
 };
 
 const faqSchema = {
@@ -182,7 +194,7 @@ const fleche =
   '<span class="fl"><span class="sr">→</span><svg viewBox="0 0 16 12" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg></span>';
 ---
 
-<BaseLayout title={title} description={description} path={path} ogImage="/lovable-uploads/Hero-simulateur.png" ogImageWidth={1964} ogImageHeight={1287} jsonLd={jsonLd} bodyClass="da-fond">
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd} bodyClass="da-fond">
   <Fragment slot="head">
     {/* Barre du navigateur mobile : le ciel de la DA (jeton sky-1), comme l'accueil. */}
     <meta name="theme-color" content="#C9DEFF" />
@@ -275,6 +287,12 @@ const fleche =
               </div>
             ))}
           </div>
+          <p class="reperes-sources">
+            Barèmes {ANNEE_REPERES} vérifiés le {DATE_VERIFICATION} sur les sources officielles{'\u00a0'}:{' '}
+            {SOURCES_BAREMES.map((s, i) => (
+              <Fragment><a href={s.href} target="_blank" rel="noopener noreferrer">{s.nom}</a>{i < SOURCES_BAREMES.length - 1 ? ', ' : '.'}</Fragment>
+            ))}
+          </p>
         </section>
 
       </div>
@@ -347,7 +365,7 @@ const fleche =
               <li><strong>Année</strong> — Détermine les barèmes IR appliqués (2025 ou 2026).</li>
               <li><strong>Lieu d'exercice</strong> — Métropole ou DOM-TOM. Les territoires ultramarins bénéficient d'un abattement automatique sur l'IR (30% Guadeloupe/Martinique/Réunion, 40% Guyane/Mayotte).</li>
               <li><strong>Secteur conventionnel</strong> — Secteur 1 (tarifs Sécu ; déductions supplémentaires 2% + 3% + Groupe III pour les installés) ou Secteur 2 (honoraires libres, pas de déductions S1).</li>
-              <li><strong>Régime social</strong> — Auto (recommandé : le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà), RSPM (simplifié) ou PAMC (classique).</li>
+              <li><strong>Régime social</strong> — Auto (recommandé : le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà), RSPM (simplifié) ou PAMC (classique). Déjà au RSPM et au-dessus de 19 000 € ? Choisis RSPM : on y reste jusqu'au 31 décembre de l'année du dépassement.</li>
             </ul>
           </div>
         </details>
@@ -365,7 +383,7 @@ const fleche =
                 <li><strong>Dispense partielle de la complémentaire</strong> — Sur demande, selon tes revenus imposables de toute nature de l'année précédente : 100 % jusqu'à 6 100 €, 75 % jusqu'à 14 300 €, 50 % jusqu'à 23 100 €, 25 % jusqu'à 32 500 € (barème 2026). La part dispensée ne donne pas de points de retraite.</li>
                 <li><strong>ASV proportionnelle</strong> — Sous 63 900 € de revenu conventionné, la part forfaitaire de l'ASV peut être remplacée par 3 % de ce revenu en secteur 1 (9 % en secteur 2), sur demande avant la fin février ; la part d'ajustement reste due. Moins de cotisation, moins de points de retraite.</li>
                 <li><strong>Dispensé</strong> — Sur demande à la CARMF, pour un remplaçant dont le revenu net reste sous 15 000 € : ni cotisations CARMF, ni trimestres de retraite, ni couverture invalidité-décès.</li>
-                <li><strong>Taux RID</strong> — Au RSPM, l'invalidité-décès peut être cotisée à 25 % (couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le simulateur retient 25 %.</li>
+                <li><strong>Taux RID</strong> — Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an) ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par jour à partir du 91e jour (avant 62 ans). Par défaut, le simulateur retient 25 %.</li>
               </ul>
             </div>
             <div>
@@ -416,9 +434,9 @@ const fleche =
               <li><strong>À mettre de côté chaque mois</strong> — Tes cotisations (Urssaf, CARMF) et l'impôt de ton activité libérale.</li>
               <li><strong>RSPM ou PAMC ?</strong> — Quand le simulateur retient le RSPM, une option à demander à l'Urssaf : ce que la même saisie te laisserait en PAMC, et lequel des deux te laisse le plus.</li>
               <li><strong>Ta première année</strong> — Si tu l'as indiquée : ce qui est prélevé cette année, ce qui est dû pour l'année et ce qui sera appelé l'année suivante.</li>
-              <li><strong>Les deux régimes</strong> — Micro-BNC et Régime Réel côte à côte, avec ton Super-Net par an et par mois, et où vont tes revenus au régime recommandé. Dessous, le détail ligne par ligne de chacun (charges, cotisations Urssaf et CARMF, revenu imposable, impôt), replié au téléphone.</li>
+              <li><strong>Les deux régimes</strong> — Micro-BNC et Régime Réel côte à côte, avec ton Super-Net par an et par mois, et où vont tes revenus au régime recommandé. Dessous, le détail ligne par ligne de chacun (charges, cotisations Urssaf et CARMF et leur total, revenu imposable, impôt), replié au téléphone.</li>
               <li><strong>À savoir pour ta situation</strong> — Ce qu'il te resterait de 1 000 € de recettes en plus, et les pistes qui te concernent : charges à vérifier, réductions de la CARMF.</li>
-              <li><strong>Pour aller plus loin</strong> — Ce que chaque régime déduit de tes recettes, et comment ton impôt sera prélevé (acomptes, première année).</li>
+              <li><strong>Pour aller plus loin</strong> — Ce que chaque régime déduit de tes recettes, et quand et comment tu paies l'Urssaf, la CARMF et l'impôt : calendrier, revenu de référence, régularisation.</li>
             </ul>
           </div>
         </details>
@@ -636,6 +654,10 @@ const fleche =
   .reperes-tete { margin: 0 auto 28px; max-width: 40rem; text-align: center; }
   .reperes-tete h2 { margin: 0 0 10px; }
   .reperes-tete .lead { margin: 0 auto; }
+  /* Ligne de confiance (§ 9.gp) : date de vérification et sources, sous les six repères. */
+  .reperes-sources { margin: 22px auto 0; max-width: 44rem; font-size: 0.875rem; line-height: 1.5; color: var(--ink-2); text-align: center; text-wrap-style: pretty; }
+  .reperes-sources a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  .reperes-sources a:hover { color: var(--brand); }
   .reperes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .repere { display: flex; flex-direction: column; gap: 6px; padding: 20px 18px 22px; border-radius: 26px; background: var(--paper); box-shadow: var(--clay); }
   .repere > * { margin: 0; }

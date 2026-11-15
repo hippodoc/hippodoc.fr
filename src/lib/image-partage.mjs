@@ -49,7 +49,11 @@ export const HAUTEUR = 630;
 
 const RACINE = process.cwd();
 const police = (poids) => path.join(RACINE, 'src/assets/fonts/partage', `gsf-${poids}.ttf`);
-const mascotteFichier = (nom) => path.join(RACINE, 'src/assets/accueil', `mascotte-${nom}.webp`);
+/* Les poses du site sont dans src/assets/accueil ; celles de la bibliothèque de la DA qui ne servent qu'aux images
+   de partage des pages (§ 9.ha), dans src/assets/partage (lues par chemin, jamais importées : rien n'est servi). */
+const mascotteFichier = (nom) =>
+  ['accueil', 'partage'].map((d) => path.join(RACINE, 'src/assets', d, `mascotte-${nom}.webp`)).find((f) => fs.existsSync(f)) ??
+  (() => { throw new Error(`image de partage : pose introuvable (${nom})`); })();
 for (const f of [police(560), police(720)]) {
   if (!fs.existsSync(f)) throw new Error(`image de partage : police introuvable (${f})`);
 }
@@ -239,7 +243,13 @@ function vague(y, amp, couleur, W, phase = 0) {
 
 /** La mascotte entière, à la hauteur voulue (bornée en largeur), retournée au besoin. */
 async function mascotte(pose, hauteur, largeurMax) {
-  let img = sharp(mascotteFichier(pose.nom)).resize({ height: hauteur, width: largeurMax, fit: 'inside' });
+  let source = mascotteFichier(pose.nom);
+  if (pose.garde) {
+    // Une page (§ 9.ha) garde le haut de la pose : son bas passe sous les vagues de devant.
+    const { width, height } = await sharp(source).metadata();
+    source = await sharp(source).extract({ left: 0, top: 0, width, height: Math.round(height * pose.garde) }).toBuffer();
+  }
+  let img = sharp(source).resize({ height: hauteur, width: largeurMax, fit: 'inside' });
   if (pose.retourner) img = img.flop();
   const buf = await img.toBuffer();
   const m = await sharp(buf).metadata();
@@ -247,7 +257,8 @@ async function mascotte(pose, hauteur, largeurMax) {
 }
 
 /**
- * @param {{ titre: string, theme: string, libelle: string, fond: string, rang: number }} a  (voir `donneesPartage`)
+ * @param {{ titre: string, libelle: string, fond: string, rang?: number, pose?: string, hauteur?: number, garde?: number }} a
+ *   un article (voir `donneesPartage`), ou une page (`src/lib/partage-pages.mjs` : `pose` nomme la mascotte).
  * @returns {Promise<Buffer>} le JPEG.
  */
 /* Garde : la police est bien celle du site. Si Pango ne la lisait pas (fontconfig absent, fichier illisible), il
@@ -266,12 +277,17 @@ export async function imagePartage(a) {
   await verifierPolice();
   const W = LARGEUR, H = HAUTEUR;
   const th = FONDS[a.fond] ?? FONDS.eau;
-  const pose = POSES[a.rang % POSES.length];
+  // Une page (§ 9.ha) nomme sa pose : jamais retournée, elle se tourne déjà vers le titre ou se tient de face.
+  // Son bas descend sous la première vague de devant (`pied` 0,95 : rien ne dépasse de l'eau ni du sable), et une
+  // pose en pied ou assise n'en garde que le haut (`garde`) : comme le bord du cadre dans la DA (`en-pied`).
+  const pose = a.pose
+    ? { nom: a.pose, retourner: false, hauteur: a.hauteur ?? 0.8, garde: a.garde, pied: 0.95 }
+    : POSES[a.rang % POSES.length];
   const marge = Math.round(W * 0.06);
   // La mascotte entière : 76 % de la hauteur (82 % en pied), les pieds posés sur la
   // première vague (au-dessus des deux vagues de devant), à 3,5 % du bord droit.
   const mas = await mascotte(pose, Math.round(H * pose.hauteur), Math.round(W * 0.4));
-  const pied = Math.round(H * 0.875);
+  const pied = Math.round(H * (pose.pied ?? 0.875));
   const my = pied - mas.h;
   const mx = W - mas.w - Math.round(W * 0.035);
   const col = Math.min(mx - marge - Math.round(W * 0.025), Math.round(W * 0.6));
