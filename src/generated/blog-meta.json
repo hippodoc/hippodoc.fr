@@ -198,5 +198,9 @@
   "comptable-logiciel-tableur-medecin-remplacant": {
     "pubDate": "2026-11-15",
     "updatedDate": "2026-11-15"
+  },
+  "pause-remplacements-cotisations-medecin": {
+    "pubDate": "2026-11-15",
+    "updatedDate": "2026-11-15"
   }
 }

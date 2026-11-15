@@ -28,6 +28,7 @@ faq:
   - question: "Reste-t-on au micro-BNC en travaillant 6 mois par an ?"
     answer: "Dans notre exemple, oui : 72 000 € de recettes restent sous le plafond du micro-BNC, fixé à **83 600 €** depuis le 1er janvier 2026. L'administration applique alors un abattement forfaitaire de **34 %** : tu es imposé sur 66 % de tes recettes. Autour de 140 jours par an avec ces hypothèses, tu dépasses le plafond. Un dépassement isolé est toléré ; deux années de suite au-dessus, et tu passes au régime réel au 1er janvier suivant."
 relatedArticles:
+  - "pause-remplacements-cotisations-medecin"
   - "simulateur-super-net-combien-reste"
   - "salaires-medecins-remplacants"
   - "retrocession-honoraires-medecin-remplacant"

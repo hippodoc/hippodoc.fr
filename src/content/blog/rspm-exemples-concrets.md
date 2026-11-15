@@ -26,6 +26,7 @@ faq:
   - question: "Le RSPM est-il plus avantageux que le régime classique ?"
     answer: "Le plus souvent oui, tant que tu y restes éligible. Au RSPM, tes cotisations pèsent **14 à 18 % de ce que tu encaisses** ; au régime classique en micro-BNC, compte plutôt **autour d'un quart de tes honoraires**. Idéal pour les internes et remplaçants occasionnels."
 relatedArticles:
+  - "pause-remplacements-cotisations-medecin"
   - "tout-comprendre-urssaf"
   - "micro-bnc-exemples-concrets"
   - "cotisations-sociales-vs-impots"
