@@ -13661,6 +13661,39 @@ connexion (`MESURE_ENTETE_PIED` mis à jour).
 **Fichiers** : `src/components/Header.astro`, `src/components/ScriptTiroir.astro`,
 `src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.gl Blog : la procédure « nouvel article » (15 novembre 2026)
+
+Le propriétaire demande « la meilleure procédure pour ajouter des articles », pour que chaque
+nouvel article soit « nickel, bien intégré pour le SEO ». Décision : une procédure écrite dans le
+dépôt, `.claude/skills/nouvel-article/SKILL.md`, que toute session suit à l'identique, et une
+session neuve par article (ou par lot). Écartés : continuer dans une conversation unique (trop
+longue, et le conteneur s'efface) ; un formulaire en artefact (il ne dépose pas l'image dans le
+dépôt et ne vérifie rien).
+
+Ce que fait la procédure, en résumé :
+- **Entrées** : le propriétaire joint l'affiche et colle le texte (ou le blog du kit de fiche
+  Hippodoc).
+- **Choix de l'article** : l'adresse (figée dès la mise en ligne), le `<title>` (60 signes au plus,
+  suffixe de marque compris), la description et le thème.
+- **Frontmatter** : série par défaut `divers` (les séries ne s'affichent plus depuis § 9.fq ; une
+  fiche Instagram numérotée garde sa série et son numéro), temps de lecture calculé à 160 mots par
+  minute (médiane du blog), FAQ et liens.
+- **Affiche** : contrôle de la taille (1 080 × 1 350 idéal, signalée sous 900 px de large) et des
+  doublons.
+- **Texte** : verbatim. Une erreur factuelle se signale, sources à l'appui, et ne se corrige
+  qu'avec l'accord du propriétaire, comme en § 9.as.
+- **Fichiers tenus à jour** : `blog-meta.json`, `PLANCHER_FAQ`, les comptes de `CLAUDE.md` et une
+  section de MIGRATION.md par article.
+- **Vérifications** : construction, `verify-site.mjs`, aucun mot perdu, pages changées attendues,
+  captures, Lighthouse.
+- **Mise en ligne** : PR, « go », contrôle en ligne. Les deux gestes du propriétaire lui sont
+  rappelés : demander l'indexation dans Search Console, tester l'aperçu du lien.
+
+Aucun changement du site : la procédure n'est pas lue par la construction (hors de `src/`).
+`CLAUDE.md`, section « Blog », y renvoie.
+
+**Fichiers** : `.claude/skills/nouvel-article/SKILL.md` (nouveau), `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
