@@ -31,6 +31,7 @@ faq:
   - question: "Comment savoir si une commune est classée en zone FRR ?"
     answer: "Le classement se vérifie gratuitement sur le **simulateur officiel de service-public.fr**, commune par commune. Il s'apprécie **au jour de la création d'activité**. Vérifie séparément le zonage ARS (ZIP / ZAC), qui relève d'une autre carte."
 relatedArticles:
+  - "aides-installation-medecin-2026"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "frais-pros-medecin-liberal-2026"
   - "remplacement-regulier-requalification"

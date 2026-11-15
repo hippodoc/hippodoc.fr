@@ -5096,6 +5096,26 @@ ne regardait que la requête (`?…`), jamais le fragment.
   concernés (fondateur). Changer le Site URL Supabase vers l'app : seulement après avoir
   relevé les modèles d'e-mail.
 
+### 9.eb Nouvel article : `aides-installation-medecin-2026` (15 novembre 2026)
+
+Texte fourni par le fondateur, intégré **verbatim** (vouvoiement, « Mis à jour le 25 octobre
+2026 » et mention de fin conservés). Seuls ajouts : le frontmatter (titre SEO « Aides à
+l'installation médecin : le vrai bilan 2026 », description, `cta`, `relatedArticles`,
+`episodeNumber: 16` en série `divers`, `readTime` 19 min pour ~4 100 mots) et la cover
+`src/assets/blog/aides-installation-cover.jpg` (illustration fournie, 1611 × 2000 comme les
+autres). Le titre H1 du texte source est porté par le `title` (un seul `<h1>`). Pas de FAQ ni
+de bloc « L'essentiel » : non fournis, rien d'inventé. Entrée ajoutée à
+`src/generated/blog-meta.json`.
+
+- **Maillage** : ajouté en tête des `relatedArticles` de `zones-frr-exoneration-impot-medecin` (sinon aucun lien entrant).
+- **Une** : `featured: true` retiré de `conge-maternite-paternite` (cf. § 9.dy) ; la une
+  revient au mécanisme par défaut, l'article le plus récent, donc celui-ci.
+- ⚠️ **Contradiction à trancher** : la FAQ de `zones-frr-exoneration-impot-medecin` dit qu'un
+  remplaçant ne peut pas bénéficier de l'exonération FRR « en tant que remplaçant » ; le
+  nouvel article, s'appuyant sur le BOFiP du 29 juillet 2026, dit l'inverse (remplacement et
+  collaboration éligibles aux conditions de droit commun). L'article FRR n'est pas modifié
+  ici.
+
 ## 10. TODO(owner) — faits manquants / décisions
 
 - [x] ~~Réactiver GA4, Meta Pixel, Crisp et Calendly~~ — fait (voir §6) : chargement
