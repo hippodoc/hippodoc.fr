@@ -1,8 +1,8 @@
 ---
 title: "Zones FRR médecin : 8 ans d'impôts allégés"
-description: "Zones FRR : 100 % du bénéfice exonéré d'impôt pendant 5 ans, puis 75, 50 et 25 %. Conditions, montants 2026, et pourquoi remplacer en zone ne suffit pas."
+description: "Zones FRR : 100 % du bénéfice exonéré d'impôt pendant 5 ans, puis 75, 50 et 25 %. Conditions, montants 2026, et pourquoi tes remplas en zone comptent déjà."
 pubDate: "2026-09-20"
-updatedDate: "2026-09-26"
+updatedDate: "2026-11-15"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -19,7 +19,7 @@ faq:
   - question: "Qu'est-ce qu'une zone FRR pour un médecin ?"
     answer: "**France Ruralités Revitalisation (FRR)** est le zonage fiscal qui a remplacé les ZRR le **1er juillet 2024**. Dans près de **18 000 communes**, un médecin qui **crée ou reprend** une activité libérale est exonéré d'impôt sur son bénéfice pendant cinq ans, puis partiellement pendant trois ans. Le dispositif est ouvert à toutes les professions libérales, donc à toutes les spécialités médicales."
   - question: "Un médecin remplaçant peut-il bénéficier de l'exonération FRR ?"
-    answer: "**Pas en tant que remplaçant.** L'exonération récompense la création ou la reprise d'une activité dans la zone ; le remplacement, exercé sur la patientèle d'un confrère, n'en est pas une. En revanche, un remplaçant qui **s'installe** ou devient **collaborateur libéral** en zone peut en bénéficier, à condition d'exercer en toute indépendance et de disposer d'une **patientèle propre**."
+    answer: "**Oui.** Depuis le 29 juillet 2026, l'administration fiscale l'écrit noir sur blanc : en zone FRR classique, un remplaçant au **régime réel** est exonéré en entier s'il fait au plus **25 % de ses recettes hors zone**, et au prorata au-delà ; en FRR+, l'exonération suit la part des recettes faites en zone. Deux conséquences : le compteur des cinq ans part de ton **début d'activité en zone**, et t'installer ensuite dans la commune classée où tu remplaçais **ne t'ouvre pas cinq nouvelles années**."
   - question: "Combien d'impôt économise-t-on en zone FRR ?"
     answer: "Au barème 2026, pour un célibataire avec une part : environ **11 000 € par an** à 60 000 € de bénéfice, **25 000 €** à 100 000 €, **45 000 €** à 150 000 €, et près de **89 000 €** à 250 000 €. L'exonération est de **100 %** les années 1 à 5, puis **75 %**, **50 %** et **25 %** les années 6, 7 et 8."
   - question: "L'exonération FRR supprime-t-elle aussi les cotisations URSSAF et CARMF ?"
@@ -48,19 +48,20 @@ Et pourtant, la plupart des remplaçants qui en entendent parler passent à côt
 **L'essentiel**
 
 - En zone FRR, **100 % du bénéfice est exonéré d'impôt** les années 1 à 5, puis **75 %**, **50 %** et **25 %** les années 6, 7 et 8.
-- **Remplacer en zone ne suffit pas** : le levier se déclenche quand tu changes de statut — installation, ou collaboration libérale avec une patientèle propre.
+- **Tes remplas en zone comptent déjà** : au régime réel, ils peuvent ouvrir l'exonération, et t'installer ensuite dans la zone ne relance pas le compteur.
 - L'exonération porte sur **l'impôt**, pas sur les cotisations URSSAF et CARMF. Et elle exige le **régime réel** : le micro-BNC est exclu du dispositif de base.
 :::
 
-## 🎯 Le piège : remplacer ne suffit pas
+## 🎯 Le piège : croire que tout commence à l'installation
 
-L'idée reçue, c'est : « je vais faire mes remplas dans une commune rurale classée, et je serai défiscalisé ». Ça ne marche pas comme ça.
+L'idée reçue, c'est : « les remplaçants n'y ont pas droit, je verrai le jour où je m'installe ». La doctrine fiscale publiée le **29 juillet 2026** dit l'inverse. Les médecins en contrat de **remplacement**, comme ceux en contrat de [collaboration](/blog/remplacement-regulier-requalification), peuvent bénéficier de l'exonération dans les conditions de droit commun : **régime réel** en zone FRR classique, activité implantée en zone, et au plus **25 % des recettes réalisées hors zone** pour être exonéré en entier (au-delà, l'exonération devient proportionnelle ; en FRR+, elle suit la part des recettes faites en zone).
 
-L'exonération FRR récompense la **création ou la reprise d'une activité** dans la zone. Une activité de remplacement, par nature itinérante et exercée sur la patientèle d'un confrère, n'est pas une création d'activité en zone.
+Deux conséquences, à connaître avant de choisir ta commune :
 
-L'administration fiscale s'est prononcée sur le cas précis du remplaçant qui s'installe comme [collaborateur libéral](/blog/remplacement-regulier-requalification) : c'est possible, à condition d'exercer **en toute indépendance** et de disposer d'une **patientèle propre**. Si le contrat de collaboration te place en situation de dépendance — patients adressés par le titulaire, moyens et secrétariat mis à disposition sans autonomie réelle —, l'administration y voit la simple extension d'une activité préexistante, et l'exonération tombe. (Cette position a été prise sous l'ancien régime ZRR ; le FRR reprend la même exclusion des extensions d'activité préexistante.)
+- **Le compteur part de ton début d'activité en zone**, pas de ton installation. Remplaçant au réel dans une commune FRR depuis l'an dernier ? Tes cinq ans ont peut-être déjà commencé.
+- **T'installer ensuite ne relance pas le compteur.** Pour le fisc, le remplaçant qui devient titulaire dans la commune classée où il remplaçait poursuit son activité : pas de nouvelle période. Exonéré pendant tes remplas, tu gardes le solde ; remplaçant au micro-BNC en zone FRR classique, tu n'as rien.
 
-Traduction concrète : le levier fiscal ne se déclenche pas au moment où tu poses ta plaque dans un village. Il se déclenche au moment où **tu changes de statut** — installation ou collaboration libérale bien rédigée. Si tu es remplaçant aujourd'hui et que tu envisages de te poser dans 6 ou 12 mois, c'est maintenant que ça se prépare. Pour situer ces statuts les uns par rapport aux autres : [les 8 modes d'exercice du médecin remplaçant](/blog/choix-mode-exercice).
+Traduction concrète : si tu vises une installation en zone FRR classique, la décision se prend **dès ton premier remplacement en zone**, régime réel compris, pas le jour où tu poses ta plaque. Le détail, avec les autres aides et le rescrit qui te sécurise, est dans [notre bilan des aides à l'installation 2026](/blog/aides-installation-medecin-2026). Pour situer les statuts les uns par rapport aux autres : [les 8 modes d'exercice du médecin remplaçant](/blog/choix-mode-exercice).
 
 ## 📊 Ce que ça vaut, chiffres à l'appui
 
@@ -143,12 +144,12 @@ Si l'enjeu est important, un **rescrit fiscal** — une question écrite à l'ad
 Sur Hippodoc, [tu simules ton Super-Net](/simulateur) avant de signer, tu compares deux communes en deux minutes et tu suis tes revenus et rétrocessions automatiquement. Essai gratuit 30 jours.
 :::
 
-## 📚 Sources (vérifiées au 20 septembre 2026)
+## 📚 Sources (vérifiées au 20 septembre 2026 ; cas des remplaçants au 15 novembre 2026)
 
 • CGI, art. 44 quindecies A (exonération en zone France ruralités revitalisation) — Légifrance ; commentaires BOFiP, série BOI-BIC-CHAMP-80-10-75.\
 • Fiche « Zones France ruralités revitalisation : exonérations d'impôts » (entreprendre.service-public.gouv.fr, vérifiée le 21 février 2026) : dates, durée et taux, régime réel, moins de 11 salariés, règle des 25 %, plafond de minimis de 300 000 € sur trois exercices, option dans les six mois.\
 • Départ avant la fin, droits acquis et perte d'une condition : BOFiP BOI-BIC-CHAMP-80-10-75-40 (29 juillet 2026), § 150, 170 et 200 à 220 (dont l'exemple du médecin généraliste devenu médecin du travail salarié).\
-• Remplaçant devenant collaborateur libéral : rescrit BOI-RES-BIC-000030 (BOFiP), rendu pour les ZRR (CGI, art. 44 quindecies).\
+• Remplaçants et collaborateurs : BOFiP BOI-BIC-CHAMP-80-10-75-30 (29 juillet 2026), § 220 et 230, et § 70 (exemple du remplaçant qui s'installe en zone : poursuite d'activité, pas de nouvelle période) ; recettes hors zone : BOI-BIC-CHAMP-80-10-75-20, § 150 à 230.\
 • Zonage : environ 17 800 communes classées et 13 départements entièrement zonés pour leurs communes de moins de 30 000 habitants (collectivites-locales.gouv.fr, juillet 2025).\
 • Aides à l'installation en zone sous-dense au 1er janvier 2026 : 10 000 € (ZIP), 5 000 € (ZAC), 3 000 € (cabinet secondaire en ZIP) et spécialités exclues (ameli.fr, page mise à jour le 17 mars 2026).\
 • Fin des ZFU-TE au 31 décembre 2025 et régime QPV pour les créations 2026-2030 : loi de finances pour 2026 (entreprendre.service-public.gouv.fr).\

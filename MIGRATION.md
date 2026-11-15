@@ -5096,25 +5096,41 @@ ne regardait que la requête (`?…`), jamais le fragment.
   concernés (fondateur). Changer le Site URL Supabase vers l'app : seulement après avoir
   relevé les modèles d'e-mail.
 
-### 9.eb Nouvel article : `aides-installation-medecin-2026` (15 novembre 2026)
+### 9.eb Nouvel article `aides-installation-medecin-2026` et correction de `zones-frr-exoneration-impot-medecin` (15 novembre 2026)
 
-Texte fourni par le fondateur, intégré **verbatim** (vouvoiement, « Mis à jour le 25 octobre
-2026 » et mention de fin conservés). Seuls ajouts : le frontmatter (titre SEO « Aides à
-l'installation médecin : le vrai bilan 2026 », description, `cta`, `relatedArticles`,
-`episodeNumber: 16` en série `divers`, `readTime` 19 min pour ~4 100 mots) et la cover
-`src/assets/blog/aides-installation-cover.jpg` (illustration fournie, 1611 × 2000 comme les
-autres). Le titre H1 du texte source est porté par le `title` (un seul `<h1>`). Pas de FAQ ni
-de bloc « L'essentiel » : non fournis, rien d'inventé. Entrée ajoutée à
-`src/generated/blog-meta.json`.
+**Nouvel article.** Texte fourni par le fondateur, qui a ensuite donné « carte blanche » pour
+le rendre cohérent avec le blog. Écarts au texte source, tous voulus :
+- **tutoiement** (le texte vouvoyait ; le blog et le standard Hippodoc tutoient) ;
+- date « Mis à jour le 15 novembre 2026 » (publication du jour, au lieu du 25 octobre) ;
+- ajout d'un bloc « L'essentiel », d'une FAQ de six questions (FAQPage JSON-LD), de deux
+  `:::tip` (l'astuce régime réel, l'encart Hippodoc) ;
+- corrections après les relectures du standard `hippodoc-exigence` (interne novice,
+  fiscaliste, correcteur ; deux passes) : règle des 25 % de recettes hors zone détaillée
+  par cas (ZFRR cabinet fixe / ZFRR non sédentaire / ZFRR+ au prorata / quartier prioritaire,
+  BOFiP BOI-BIC-CHAMP-80-10-75-20 § 150 à 230) ; aide aux créateurs réservée à certains
+  publics depuis 2020 (pas « depuis 2026 »), demande sous 60 jours après le début
+  d'activité ; revenus forfaitaires des débuts 9 131 € et 19 224 € (maladie, F39739) ;
+  contrat de début d'exercice (art. L1435-4-2 CSP) en abrogation différée par la LFSS 2026
+  et réservé aux remplaçants et étudiants (le texte source l'ouvrait aussi aux installés) ;
+  PLFSS 2027 mis à jour (Sénat depuis le 9/11, vote prévu le 18/11, « mission de
+  solidarité territoriale », PJL Sénat n° 138, art. 21) ; OBO : flat tax sur la plus-value ;
+  sigles définis (ZIP, ZAC, ASV, CFE, URPS, rescrit, 2035).
+Frontmatter : titre SEO « Aides à l'installation médecin : le vrai bilan 2026 »,
+`episodeNumber: 16` (série `divers`), `readTime` 20 min, `ctaHref: /simulateur`. Cover
+`src/assets/blog/aides-installation-cover.jpg` (illustration fournie, 1611 × 2000).
 
-- **Maillage** : ajouté en tête des `relatedArticles` de `zones-frr-exoneration-impot-medecin` (sinon aucun lien entrant).
 - **Une** : `featured: true` retiré de `conge-maternite-paternite` (cf. § 9.dy) ; la une
-  revient au mécanisme par défaut, l'article le plus récent, donc celui-ci.
-- ⚠️ **Contradiction à trancher** : la FAQ de `zones-frr-exoneration-impot-medecin` dit qu'un
-  remplaçant ne peut pas bénéficier de l'exonération FRR « en tant que remplaçant » ; le
-  nouvel article, s'appuyant sur le BOFiP du 29 juillet 2026, dit l'inverse (remplacement et
-  collaboration éligibles aux conditions de droit commun). L'article FRR n'est pas modifié
-  ici.
+  revient au mécanisme par défaut, l'article le plus récent.
+
+**Correction de `zones-frr-exoneration-impot-medecin`** (`updatedDate` 2026-11-15). L'article
+disait qu'un remplaçant ne peut pas bénéficier de l'exonération FRR « en tant que
+remplaçant » et qu'un collaborateur doit avoir une patientèle propre (rescrit ZRR
+BOI-RES-BIC-000030). C'est dépassé : le BOFiP BOI-BIC-CHAMP-80-10-75-30 du 29 juillet 2026
+(§ 220 et 230) admet remplaçants et collaborateurs aux conditions de droit commun, « quels que
+soient les liens de dépendance », et le § 70 (ex. 3) dit qu'un remplaçant qui s'installe
+dans la commune classée où il remplaçait poursuit son activité, sans nouvelle période.
+Description, FAQ, puce de « L'essentiel », section « Le piège » réécrite et puce de sources
+remplacées ; lien dans le texte et en tête des `relatedArticles` vers le nouvel article.
 
 ## 10. TODO(owner) — faits manquants / décisions
 
