@@ -226,6 +226,8 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
                 isRSPM={comparison.isRSPMUsed}
                 carmfDispense={formData.situationCarmf === 'dispense'}
                 debutActivite={debutActiviteDe(formData) ?? 'non'}
+                formData={formData}
+                regime={recommande === 'micro-bnc' && microBnc ? 'micro-bnc' : 'reel'}
               />
             </AccordionContent>
           </AccordionItem>
