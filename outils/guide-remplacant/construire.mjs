@@ -31,7 +31,9 @@ import { typoHtml } from './typo.mjs';
 const ICI = path.dirname(fileURLToPath(import.meta.url));
 // Playwright : celui du poste (require global), comme scripts/verify-site.mjs n'en a pas besoin.
 const { chromium } = createRequire(import.meta.url)('playwright');
-const SORTIE = path.join(ICI, 'sortie');
+// GUIDE_SORTIE : un autre dossier de sortie (pour construire sans toucher aux aperçus en cours de relecture).
+const SORTIE = path.resolve(ICI, process.env.GUIDE_SORTIE || 'sortie');
+const DECOR = path.relative(ICI, path.join(SORTIE, 'decor'));
 const args = process.argv.slice(2);
 const refaireDecor = args.includes('--decor');
 const seulement = args.includes('--pages') ? args[args.indexOf('--pages') + 1].split(',').map(Number) : null;
@@ -62,7 +64,7 @@ try {
         détourée embarquée telle quelle pèse près de 900 Ko dans le PDF (image sans perte et son
         masque). Composée sur son ciel et compressée, elle en pèse une soixantaine. */
   fs.mkdirSync(path.join(SORTIE, 'decor'), { recursive: true });
-  for (const pg of PAGES.filter((x) => x.ouvre)) {
+  for (const pg of PAGES.filter((x) => x.ouvre?.masc)) {
     const o = pg.ouvre;
     const cote = o.cote === 'gauche' ? `left:${o.mx}px` : `right:${o.mx}px`;
     const ctx = await browser.newContext({ viewport: { width: 1080, height: 400 }, deviceScaleFactor: 2 });
@@ -89,7 +91,7 @@ try {
   const corps = PAGES.map((pg, i) => {
     const n = i + 1;
     const pied = pg.sansPied ? '' : `<footer class="pied"><span>${META.titreCourt}</span><span class="pg"><a href="#sommaire">Sommaire</a>&nbsp;&nbsp;·&nbsp;&nbsp;${n}&nbsp;/&nbsp;${N}</span></footer>`;
-    return renvois(pg.rendu({ n, N, pied }));
+    return renvois(pg.rendu({ n, N, pied, decor: DECOR }));
   }).join('\n');
   if (manquants.length) {
     const msg = `renvoi vers une page absente : ${[...new Set(manquants)].join(', ')}`;
@@ -121,6 +123,26 @@ ${typoHtml(corps)}
   await page.goto(pathToFileURL(fichierHtml).href, { waitUntil: 'load' });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(200);
+
+  /* Pas de mot seul sur la dernière ligne : dans chaque bloc de texte, les deux derniers mots
+     sont liés par une espace insécable (si le dernier est court). */
+  await page.evaluate(() => {
+    const blocs = document.querySelectorAll('.page p, .page li, .page td, .page .v, .page .et, .page .fd, .page .ft, .page .t, .page .ct, .page .k');
+    for (const el of blocs) {
+      if (el.closest('.decor, .bulles, .pied, .pile, .gantt, .tranches')) continue;
+      const marcheur = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const noeuds = [];
+      for (let t = marcheur.nextNode(); t; t = marcheur.nextNode()) if (t.textContent.trim()) noeuds.push(t);
+      if (!noeuds.length || el.textContent.trim().split(/\s+/).length < 4) continue;
+      for (let i = noeuds.length - 1; i >= 0; i--) {
+        const t = noeuds[i];
+        const m = t.textContent.match(/^([\s\S]*?)[ ](\S{1,14}\s*)$/);
+        if (m) { t.textContent = m[1] + '\u00a0' + m[2]; break; }
+        if (/\s/.test(t.textContent.replace(/\s+$/, ''))) break;
+      }
+    }
+  });
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => r())));
 
   const rapport = await page.evaluate(() => {
     const erreurs = [], notes = [];
@@ -168,7 +190,7 @@ ${typoHtml(corps)}
     for (let t = marcheur.nextNode(); t; t = marcheur.nextNode()) {
       if (!t.textContent.trim()) continue;
       const el = t.parentElement;
-      if (el.closest('.sr, [aria-hidden="true"]')) continue;
+      if (el.closest('.sr, [aria-hidden="true"], sup')) continue;
       const fs = parseFloat(getComputedStyle(el).fontSize);
       if (fs < 22) petits.add(`p. ${numDe(el)} : « ${t.textContent.trim().slice(0, 30)} » en ${fs} px`);
     }
@@ -189,6 +211,8 @@ ${typoHtml(corps)}
       const der = lignes[lignes.length - 1];
       const larg = el.getBoundingClientRect().width;
       const mots = el.textContent.trim().split(/\s+/);
+      // Les deux derniers mots déjà liés par une insécable : la dernière ligne n'a pas de mot seul.
+      if (/\u00a0\S+\s*$/.test(el.textContent)) continue;
       if (larg > 0 && der.d - der.g < 0.16 * larg && mots.length > 2) notes.push(`p. ${numDe(el)} : mot seul en fin de ligne : « ${mots.slice(-1)[0]} » (${el.textContent.trim().slice(0, 40)}…)`);
     }
     // Mentions interdites, caractères hors police.

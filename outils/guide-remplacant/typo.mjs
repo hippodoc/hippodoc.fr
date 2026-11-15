@@ -22,11 +22,22 @@ export function typo(t) {
     // « art. L113-9 », « n° 12 », « p. 7 » ne se coupent pas
     .replace(/(?<!\p{L})(art\.|n°|§|p\.) (?=\S)/gu, `$1${NB}`)
     // un montant négatif prend le vrai signe moins
-    .replace(/(^|[\s(>])-(?=\d)/g, '$1−');
+    .replace(/(^|[\s(>])-(?=\d)/g, '$1−')
+    // le jour et le mois ne se séparent pas : « 31 décembre », « 1er janvier »
+    .replace(/(\d{1,2}(?:er)?) (janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\b/g, `$1${NB}$2`);
+}
+
+/** Balisage typographique, après typo() : ordinaux en exposant, numéros d'article insécables. */
+export function balises(t) {
+  return t
+    // « 1re », « 2e », « 91e », « 1er » en exposant (pas « 2035 », pas « 5HQ »)
+    .replace(/(^|[^\p{L}\d])(\d{1,3})(er|re|e)(?=[\s\u00a0.,;:)»]|$)/gu, '$1$2<sup>$3</sup>')
+    // numéros d'article, de formulaire, de décret : jamais coupés au trait d'union
+    .replace(/(?<![\p{L}\d-])((?:[LRD]\d{3,4}|\d{3,4})(?:-\d+)+(?:°|-[A-Z]+(?:-[A-Z]+)*)?|\d{4}-C-(?:PRO|SD)|1447-C-SD)(?![\p{L}\d])/gu, '<span class="art">$1</span>')
 }
 
 export function typoHtml(h) {
-  return h.split(/(<[^>]*>)/).map((p) => (p.startsWith('<') ? p : typo(p))).join('');
+  return h.split(/(<[^>]*>)/).map((p) => (p.startsWith('<') ? p : balises(typo(p)))).join('');
 }
 
 export { NB, FINE };

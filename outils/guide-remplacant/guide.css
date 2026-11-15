@@ -62,7 +62,7 @@ h1, .t { font-weight: 720; font-size: 60px; line-height: 1.06; letter-spacing: -
 .ct { font-size: 33px; font-weight: 720; line-height: 1.18; letter-spacing: -0.015em; }
 .ct + * { margin-top: 12px; }
 .c p + p { margin-top: 12px; }
-.c .note, .note { font-size: 24.5px; line-height: 1.38; color: var(--ink-2); }
+.c .note, .note { font-size: 26px; line-height: 1.34; color: var(--ink-2); }
 .c .note b, .note b { color: var(--ink); }
 .c.sky { background: var(--sky-soft); box-shadow: none; }
 .c.ink { background: var(--ink); color: var(--paper); box-shadow: 0 6px 0 #0b1734; }
@@ -72,7 +72,7 @@ h1, .t { font-weight: 720; font-size: 60px; line-height: 1.06; letter-spacing: -
 .rang.r3 { grid-template-columns: 1fr 1fr 1fr; }
 .rang > .c + .c { margin-top: 0; }
 .cle { color: var(--w4); font-weight: 720; }
-.etiq { display: inline-flex; align-items: center; align-self: flex-start; height: 42px; padding: 0 18px; border-radius: 999px; background: var(--sky); font-size: 23px; font-weight: 660; line-height: 1; white-space: nowrap; color: var(--ink); }
+.etiq { display: inline-block; align-self: flex-start; height: 42px; line-height: 42px; padding: 0 18px; border-radius: 999px; background: var(--sky); font-size: 23px; font-weight: 660; white-space: nowrap; color: var(--ink); }
 .etiq.ink { background: var(--ink); color: var(--paper); }
 .etiq.soleil { background: var(--sun); color: var(--ink); }
 
@@ -98,7 +98,7 @@ h1, .t { font-weight: 720; font-size: 60px; line-height: 1.06; letter-spacing: -
 .ln:last-child { padding-bottom: 0; }
 .kv { display: grid; grid-template-columns: var(--kc, 250px) 1fr; column-gap: 28px; align-items: baseline; }
 .kv .k { font-weight: 720; font-size: 29px; line-height: 1.22; letter-spacing: -0.01em; }
-.kv .v { line-height: 1.38; }
+.kv .v { line-height: 1.35; }
 
 /* Étapes numérotées (démarches) : numéro, titre, quand, texte. */
 ol.etapes { list-style: none; counter-reset: e; }
@@ -109,7 +109,7 @@ ol.etapes > li::before { content: counter(e); grid-row: 1 / 3; display: flex; al
 ol.etapes .eh { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; }
 ol.etapes .eh b { font-size: 30px; font-weight: 720; letter-spacing: -0.01em; line-height: 1.2; }
 ol.etapes .eh .etiq { flex: none; }
-ol.etapes .et { margin-top: 4px; font-size: 26.5px; line-height: 1.38; color: var(--ink-2); }
+ol.etapes .et { margin-top: 4px; font-size: 26.5px; line-height: 1.35; color: var(--ink-2); }
 ol.etapes .et b { color: var(--ink); }
 
 /* Liste à puces sobre. */
@@ -236,7 +236,7 @@ table.cmp td + td { padding-left: 18px; border-left: 2px solid var(--filet); }
 .plaque { display: inline-flex; align-items: center; height: 84px; padding: 0 33px; border-radius: 999px; background: var(--paper); box-shadow: 0 5px 0 var(--tranche-ciel); }
 .logo-word { font-weight: 760; font-size: 40.5px; line-height: 1; letter-spacing: -0.025em; color: var(--brand); }
 .logo-word span { color: var(--brand-2); }
-.couv .ed { display: inline-flex; align-items: center; height: 58px; padding: 0 24px; border-radius: 999px; background: var(--ink); color: var(--paper); font-size: 25px; font-weight: 660; }
+.couv .ed { display: inline-block; height: 58px; line-height: 58px; padding: 0 24px; border-radius: 999px; background: var(--ink); color: var(--paper); font-size: 25px; font-weight: 660; }
 .couv .titre { position: absolute; z-index: 2; left: 64px; right: 64px; top: 168px; text-align: center; }
 .couv .sur { font-size: 31px; font-weight: 600; color: var(--ink-2); }
 .couv h1 { margin-top: 14px; font-size: 128px; line-height: 0.95; letter-spacing: -0.045em; }
@@ -298,18 +298,18 @@ table.cmp td + td { padding-left: 18px; border-left: 2px solid var(--filet); }
 .fa-notes p { display: grid; grid-template-columns: 44px 1fr; margin: 0 !important; }
 
 /* ───────── Barres de comparaison ───────── */
-.barres { display: flex; flex-direction: column; gap: 10px; }
+.barres { display: flex; flex-direction: column; gap: 6px; }
 .br { display: grid; grid-template-columns: 270px 1fr 140px; align-items: center; gap: 20px; }
 .bl { font-weight: 720; font-size: 30px; line-height: 1.1; }
 .bl small { display: block; margin-top: 4px; font-weight: 430; font-size: 23px; color: var(--ink-2); }
-.bb { display: block; height: 48px; border-radius: 999px; background: var(--sky-soft); overflow: hidden; }
+.bb { display: block; height: 40px; border-radius: 999px; background: var(--sky-soft); overflow: hidden; }
 .bb i { display: block; height: 100%; border-radius: 999px; background: var(--w2); }
 .bb i.f { background: var(--w4); }
 .br > b { text-align: right; font-weight: 720; font-size: 34px; letter-spacing: -0.01em; white-space: nowrap; }
 
 /* ───────── Cases de la déclaration ───────── */
 .case { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start; margin-top: 16px; }
-.case-n { display: inline-flex; align-items: center; justify-content: center; min-width: 120px; height: 64px; padding: 0 18px; border-radius: 16px; border: 3px solid var(--w4); font-weight: 720; font-size: 30px; color: var(--ink); white-space: nowrap; }
+.case-n { display: inline-flex; align-items: center; justify-content: center; width: 150px; height: 64px; padding: 0 18px; border-radius: 16px; border: 3px solid var(--w4); font-weight: 720; font-size: 30px; color: var(--ink); white-space: nowrap; }
 
 /* ───────── La formule de l'impôt ───────── */
 .formule { margin: 8px 0 18px; font-weight: 720; font-size: 40px; line-height: 1.2; letter-spacing: -0.02em; color: var(--paper); }
@@ -318,8 +318,8 @@ table.cmp td + td { padding-left: 18px; border-left: 2px solid var(--filet); }
 .tranches span.on { border-color: var(--sky); background: var(--sky); color: var(--ink); }
 
 /* ───────── Glossaire, sources ───────── */
-.glo { display: block; columns: 2; column-gap: 40px; font-size: 25px; line-height: 1.36; }
-.glo p { break-inside: avoid; margin: 0 0 16px !important; }
+.glo { display: block; columns: 2; column-gap: 40px; font-size: 25px; line-height: 1.32; }
+.glo p { break-inside: avoid; margin: 0 0 10px !important; }
 .glo b { display: block; font-weight: 720; color: var(--brand); }
 .src { --kc: 210px; }
 .src .kv .k { font-size: 26px; }
@@ -358,13 +358,13 @@ ol.etapes.regles > li { padding: 15px 0; }
 /* Une liste qui remplit sa carte : les lignes se répartissent la hauteur. */
 .c.plein > ol.etapes:only-child, .c.plein > ul.ck:only-child { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
 
-.tuile { padding: 24px 30px 26px; }
+.tuile { padding: 26px 32px 28px; }
 .tuile .ct { font-size: 28px; }
 .tuile .mid { margin-top: 8px; }
 .tuile .note { margin-top: 10px; }
 
 .rang.r3 { gap: 16px; }
-.r3 .tuile { padding: 22px 22px 24px; }
+.r3 .tuile { padding: 26px 26px 28px; }
 .r3 .tuile .ct { font-size: 25px; line-height: 1.22; }
 .r3 .tuile .mid { font-size: 50px; }
 
@@ -378,3 +378,23 @@ ol.etapes.regles > li { padding: 15px 0; }
 .c.plein > .frise.etire:first-child { flex: 1; display: flex; flex-direction: column; }
 .frise.etire > .fi { flex: 1 1 auto; }
 .frise.etire > .fi:last-child { flex: 0 0 auto; }
+
+/* Ordinaux en exposant (1re, 2e, 91e) et numéros d'article insécables. */
+sup { font-size: 0.62em; line-height: 0; vertical-align: 0.42em; font-weight: inherit; }
+.art { white-space: nowrap; }
+/* Tableau : l'en-tête des colonnes se cale sur leur texte. */
+table.cmp thead th + th + th { padding-left: 18px; }
+/* Frise « qui paie, quand » : le premier segment se voit, ses libellés respirent. */
+.gantt .gb i { padding: 0 14px; }
+/* Ouverture de partie sur l'eau profonde (partie 3, sans mascotte). */
+.page.profond.ouvre { background: linear-gradient(var(--deep) 0, var(--deep-2) 900px); }
+.profond.ouvre .ciel { right: 64px; }
+.profond.ouvre .ciel .partie { box-shadow: 0 5px 0 var(--tranche-deep); }
+.profond.ouvre .ciel .pt-titre { color: var(--paper); }
+.profond.ouvre .ciel .pt-sous { color: var(--on-deep-2); }
+/* Bande des 12 mois du calendrier. */
+.mois { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; margin-bottom: 18px; }
+.mois span { display: flex; align-items: center; justify-content: center; height: 54px; border-radius: 14px; background: var(--sky-soft); font-size: 24px; font-weight: 660; color: var(--ink-2); }
+.mois span.on { background: var(--w4); color: var(--paper); }
+
+.calc .sw { display: inline-block; width: 22px; height: 22px; margin-right: 14px; border-radius: 6px; vertical-align: -2px; }
