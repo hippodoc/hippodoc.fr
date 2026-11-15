@@ -14517,6 +14517,47 @@ reste, Échap la ferme. Bulle RID remesurée à 320, 360, 820 et 1 280 px (ligne
 28 px, aucun débordement). Essais des § 9.gh, 9.go et 9.gp repassés. `verify-site.mjs` sans
 erreur ; feuille commune inchangée ; comparé à la production, seul `/simulateur` diffère.
 
+### 9.gt `/tarifs` : l'offre des internes ouvre le chat (15 novembre 2026)
+
+Retour du propriétaire sur § 9.gs (la page refaite, en ligne depuis la PR 186) : « le truc de 10 €
+internes, ça pourrait aussi ouvrir le chat en bas à droite, car ils peuvent m'envoyer d'ici aussi
+via Crisp ».
+
+(Deux sections portent le numéro 9.gs : `/tarifs` et, fusionnée juste après, celle du simulateur.
+Laissé tel quel ; celle-ci est la suivante.)
+
+**Ce qui change.**
+- **Fiche des internes** : le bouton « Écrire à contact@hippodoc.fr » devient « Envoyer mon
+  justificatif » et ouvre le chat (le justificatif s'y envoie en pièce jointe). La ligne « Sur
+  justificatif » devient « Sur justificatif, par chat ou e-mail », « e-mail » étant le lien vers
+  contact@hippodoc.fr ; « par chat ou e-mail » passe entier à la ligne (« e-mail » restait seul sur
+  la sienne au téléphone et à 1 024 px). Mesure : `data-ph="tarifs_interne_chat"` sur le bouton,
+  `tarifs_interne_mail` sur le lien ; `tarifs_interne_contact`, en ligne quelques minutes, n'existe
+  plus.
+- **`ThirdPartyScripts.astro`** : un clic sur un lien qui porte `data-ouvre-chat` fait ce que fait
+  un clic sur la bulle (la bulle s'efface, Crisp se charge et s'ouvre). Dix lignes dans le script
+  en ligne, 560 octets par page. C'est un geste explicite sur un bouton qui dit ce qu'il fait : le
+  régime de la bulle ne change pas (rien ne se charge avant le clic, pas de cookie de Crisp sans
+  demande). Le lien garde son `href` (l'adresse e-mail) : sans script, ou avec Ctrl, Cmd, Maj ou un
+  autre bouton de la souris, il reste un lien. Chat déjà chargé puis refermé : l'ouverture est
+  redemandée.
+
+**Limite.** Si un bloqueur de publicité empêche Crisp de se charger, le bouton ne fait rien de
+visible (comme la bulle) ; le lien « e-mail » de la ligne au-dessus reste là pour cela.
+
+**Non fait.** L'offre des internes de l'accueil (son pli dit « Écris-nous à contact@hippodoc.fr »)
+et la réponse de `/faq` ne proposent pas le chat : textes de l'accueil et de la FAQ, à décider.
+
+**Contrôles.** Chromium, requêtes vers Crisp interceptées : au clic, au clavier (Entrée) et au
+doigt, une requête vers `client.crisp.chat/l.js`, `chat:open` en file, la bulle effacée ; aucune
+avec Ctrl ; second clic : l'ouverture est redemandée. Fiche mesurée à 320, 360, 393, 820, 1 024,
+1 180 et 1 440 px : boutons sur une ligne et alignés, prix alignés, lien « e-mail » de
+48 × 47 px. Huit écrans de téléphone, espacement du texte agrandi et police à 200 % : aucun
+débordement. WebKitGTK à cinq largeurs : mêmes mesures. `verify-site.mjs` sans erreur (Crisp
+n'est chargé sur aucun événement passif). Comparé au build de `main` : les 72 autres pages ne
+diffèrent que par ce même bloc du script en ligne ; `/tarifs` en plus par sa fiche ; feuilles de
+style, sitemap, flux et fichiers JSON identiques.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
