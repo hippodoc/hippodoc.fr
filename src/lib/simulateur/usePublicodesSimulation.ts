@@ -93,7 +93,9 @@ const annualiser = (formData: SimulateurFormData, v: number | undefined): number
 const shouldUseRspm = (formData: SimulateurFormData, recettesAnnuelles: number): boolean => {
   if (formData.regimeSocial === 'rspm') return true;
   if (formData.regimeSocial === 'pamc') return false;
-  return formData.typeExercice !== 'installe' && recettesAnnuelles <= SEUIL_RSPM_ENTREE;
+  if (formData.typeExercice === 'installe') return false;
+  // § 9.gz : au-dessus du seuil d'entrée, le RSPM si le remplaçant dit y être déjà.
+  return recettesAnnuelles <= SEUIL_RSPM_ENTREE || formData.dejaRspm === 'oui';
 };
 
 const DEPARTEMENTS_OUTRE_MER: Record<string, ParametresUrssaf['departementOutreMer']> = {
@@ -676,7 +678,7 @@ export function usePublicodesSimulation() {
       const premiereAnneePamc = debutActiviteDe(formData) === 'premiere' && !useRspm;
       // Remplaçant en mode Auto au-dessus du seuil d'entrée : le PAMC est retenu, mais celui qui
       // est déjà au RSPM y reste jusqu'au 31 décembre (§ 9.go). Le même calcul au RSPM, local.
-      const rspmEncorePossible = !useRspm && formData.regimeSocial === 'auto' && formData.typeExercice !== 'installe';
+      const rspmEncorePossible = !useRspm && formData.regimeSocial === 'auto' && formData.typeExercice !== 'installe' && formData.dejaRspm !== 'non';
       const [resultReel, resultMicroBnc, provisionnel, alternativeRspm] = await Promise.all([
         simulerRegime(formData, 'reel', useRspm),
         simulerRegime(formData, 'micro-bnc', useRspm),

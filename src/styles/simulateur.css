@@ -139,6 +139,13 @@
 /* Charges vides, recettes saisies (§ 9.gg) : une invitation à les estimer. */
 .sim .sim-charges-vides { margin: 6px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--sky-soft); font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); }
 .sim .sim-charges-vides-lien { padding: 0; border: 0; background: none; font: inherit; font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+/* « Es-tu déjà au RSPM ? » (§ 9.gz) : sous les revenus, pour un remplaçant au-dessus de 19 000 €. */
+.sim .sim-deja-rspm { margin-top: 14px; padding: 14px 16px; border-radius: 18px; background: var(--sky-soft); }
+.sim .sim-deja-rspm fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.sim .sim-deja-rspm-titre { padding: 0; font-size: 0.9375rem; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-deja-rspm-aide { margin: 4px 0 10px; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); text-wrap-style: pretty; }
+.sim .sim-deja-rspm-choix { display: flex; gap: 24px; }
+.sim .sim-deja-rspm-choix label { min-height: 44px; display: inline-flex; align-items: center; }
 .sim .sim-charges-vides-lien:focus-visible { outline: 3px solid var(--focus, #14254F); outline-offset: 2px; border-radius: 4px; }
 .sim .sim-rangee { border: 0; border-radius: 18px; background: var(--sky-soft); }
 .sim .sim-rangee > h3 > button { min-height: 52px; gap: 10px; color: var(--ink); text-align: left; }

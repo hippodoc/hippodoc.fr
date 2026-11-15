@@ -165,6 +165,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Même règle que le moteur (usePublicodesSimulation) : en Auto, le RSPM est retenu pour
     // un remplaçant jusqu'à 19 000 € de recettes (seuil d'entrée du régime).
     const typeExercice = form.watch('typeExercice');
+    const dejaRspm = form.watch('dejaRspm');
+    // § 9.gz : la question « déjà au RSPM ? », pour un remplaçant en mode Auto au-dessus du seuil.
+    const questionRspm = regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes > 19000;
     const enfants = form.watch('enfants') || 0;
     const anneeSaisie = form.watch('annee') || 2026;
     const chargesSaisies = form.watch('chargesHorsCotisations') || 0;
@@ -191,7 +194,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         : typeExercice === 'installe' ? 'Régime social\u00a0: PAMC'
         : annualRecettes <= 0 ? 'Régime social\u00a0: RSPM ou PAMC selon tes recettes'
         : annualRecettes <= 19000 ? 'Régime social\u00a0: RSPM (recettes jusqu\'à 19\u00a0000\u00a0€)'
-        : 'Régime social\u00a0: PAMC (déjà au RSPM\u00a0? Choisis-le avec «\u00a0Modifier\u00a0»)',
+        : dejaRspm === 'oui' ? 'Régime social\u00a0: RSPM (tu y es déjà)'
+        : dejaRspm === 'non' ? 'Régime social\u00a0: PAMC (recettes au-dessus de 19\u00a0000\u00a0€)'
+        : 'Régime social\u00a0: PAMC, sauf si tu es déjà au RSPM',
     ];
     // Un champ en erreur dans la situation repliée : la situation s'ouvre, sinon l'erreur reste
     // invisible (le formulaire ne pourrait pas y porter le focus).
@@ -202,7 +207,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     };
     // Forfait 2 %, 3 % et groupe III : médecins installés en secteur 1 seulement.
     const deductionsS1Ouvertes = secteurConventionnel === 'secteur_1' && typeExercice === 'installe';
-    const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes <= 19000);
+    const isRspmEffectif = regimeSocial === 'rspm' || (regimeSocial === 'auto' && typeExercice !== 'installe' && (annualRecettes <= 19000 || dejaRspm === 'oui'));
     const showRidToggle = isRspmEffectif;
     // Les réductions sur demande : en PAMC, affilié à la CARMF, après les deux premières années
     // (la complémentaire n'y est pas due et l'ASV y est forfaitaire).
@@ -408,6 +413,28 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               )}
             />
           </div>
+
+          {/* § 9.gz : au-dessus de 19 000 €, on n'entre plus au RSPM, mais la plupart des remplaçants
+              y sont déjà, et y restent jusqu'au 31 décembre (au moins). La question remplace la
+              parenthèse « déjà au RSPM ? Choisis-le avec « Modifier » » du résumé. */}
+          {questionRspm && (
+            <FormField control={form.control} name="dejaRspm" render={({ field }) => (
+              <FormItem className="sim-deja-rspm">
+                <fieldset>
+                  <legend className="sim-deja-rspm-titre">Es-tu déjà au RSPM{'\u00a0'}?</legend>
+                  <p className="sim-deja-rspm-aide">
+                    L'offre simplifiée de l'Urssaf. On n'y entre plus au-dessus de 19{'\u00a0'}000{'\u00a0'}€ de recettes, mais qui y est déjà y reste au moins jusqu'au 31{'\u00a0'}décembre.
+                  </p>
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange} value={field.value ?? ''} className="sim-deja-rspm-choix">
+                      <div className="flex items-center gap-2"><RadioGroupItem value="oui" id="deja-rspm-oui" /><label htmlFor="deja-rspm-oui" className="text-sm cursor-pointer">Oui</label></div>
+                      <div className="flex items-center gap-2"><RadioGroupItem value="non" id="deja-rspm-non" /><label htmlFor="deja-rspm-non" className="text-sm cursor-pointer">Non</label></div>
+                    </RadioGroup>
+                  </FormControl>
+                </fieldset>
+              </FormItem>
+            )} />
+          )}
 
           {/* Aide « Estimer mes charges » (§ 9.gd) : le total se reporte dans le champ ci-dessus */}
           <EstimateurCharges
@@ -1104,7 +1131,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </div>
                           </TipBox>
                           <TipBox variant="tip">
-                            <p><strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y restes jusqu'au 31 décembre : choisis RSPM.</p>
+                            <p><strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes. Au-delà, il te demande si tu y es déjà : on n'y entre plus, mais qui y est y reste jusqu'au 31 décembre.</p>
                           </TipBox>
                         </div>
                       }
