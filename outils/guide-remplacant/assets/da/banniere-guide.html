@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="hippodoc-taille" content="1200x630">
+<title>Hippodoc · bannière</title>
+<!--
+  GABARIT HIPPODOC · BANNIÈRE 1,91:1 · 1200 × 630 px
+  Fond ciel. L'aperçu d'un lien partagé ou l'en-tête d'un article : un titre et le mot-symbole, rien d'autre.
+  Elle s'affiche souvent en très petit : aucun texte courant, aucun prix, aucun bouton, aucune mention,
+  pas de papiers dans la scène. Le titre tient dans la moitié gauche, au-dessus de la première vague.
+
+  Rendre :  node scripts/rendre.cjs gabarits/banniere.html sortie.png
+  Pour le remplir, copie ce fichier où tu veux et garde les deux liens ../assets/ tels quels : le
+  script de rendu les retrouve dans le skill. Ne change que les zones marquées « À REMPLIR ».
+  Un texte trop long se raccourcit ou se coupe en deux images : on ne réduit jamais le corps.
+-->
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="hippodoc.css">
+<style>html, body { margin: 0; }</style>
+</head>
+<body class="da">
+<section class="soc soc-banniere soc--ciel">
+  <!-- FIXE · le mot-symbole dans sa plaque -->
+  <span class="soc-marque"><span class="logo-word">Hippo<span>doc</span></span></span>
+  <div class="soc-tete">
+    <!-- À REMPLIR · titre : 2 lignes de 12 caractères au plus, coupées par <br> ; le dernier mot dans <span class="eau">.
+         Titre plus long : ajoute style="--corps: 96px" au h2, 2 lignes de 15 caractères au plus. Jamais 3 lignes, jamais sous 96 px. -->
+    <h2 class="soc-titre couv" style="--corps: 100px">Le guide du<br><span class="eau">remplaçant</span></h2>
+  </div>
+  <!-- FIXE · la scène, décalée à droite : soleil, vagues, et le buste, seule pose de la bannière -->
+  <div class="pond a-droite" aria-hidden="true">
+    <span class="sun"></span>
+    <span class="wave w1"></span>
+    <span class="wave w2"></span>
+    <img class="hippo" src="mascotte/hippo-buste.webp" alt="" width="1171" height="1229">
+    <span class="wave w3"></span>
+    <span class="wave w4"></span>
+  </div>
+</section>
+</body>
+</html>

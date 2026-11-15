@@ -1,0 +1,983 @@
+/* ==========================================================================
+   Hippodoc, direction artistique 2026 : feuille des composants.
+
+   Chargée APRÈS tokens.css, que la page compile depuis tokens.json : couleurs,
+   rayons, ombres et espacements s'écrivent ici var(--nom) et ne sont pas
+   redéclarés. Une seule exception, celle de la source : `--focus`, l'anneau de
+   focus, repassé en blanc (`var(--paper)`) sur `.deep` et `.offer.main`, puis
+   en encre sur les cartes claires posées dessus. Sans tokens.css, rien ne se peint.
+
+   Les règles sont extraites du site (hippodoc.fr, branche main), pas réécrites :
+   src/styles/da.css pour les primitives, les <style> des composants de
+   src/components/accueil/ et de src/pages/tarifs.astro pour le reste, et le
+   reset du site (`@tailwind base`) pour le socle. Chaque section nomme sa source.
+
+   PORTÉE : celle du site, pour que son balisage se copie tel quel.
+   - `.da` sur la racine (le <body> sur le site ; n'importe quel conteneur
+     ailleurs) : elle porte les variables de cette feuille. Toute règle vit sous
+     `:where(.da)`, qui ne pèse rien : une classe l'emporte toujours. Une seule
+     règle sort de `.da`, comme sur le site : `html:has(.da-fond)`, qui règle
+     `scroll-padding-top` pour qu'une ancre ne passe pas sous l'en-tête.
+   - `.da-bloc` sur chaque bloc (section, en-tête, carte isolée) : elle porte la
+     typographie (police, corps de 17 px, graisse 430, interligne 1,55, encre),
+     les règles des <h2>, <h3>, <b> et l'anneau de focus.
+   - Les deux classes peuvent être sur le même élément : `<div class="da da-bloc">`
+     suffit pour un fragment isolé (ajout de cette feuille, absent du site).
+   Pas de classe racine `.hd` : sur le site, `.hd` est l'en-tête.
+
+   Les noms de classes sont ceux du site. Les styles des composants y sont
+   scopés par fichier ; ici, ceux dont le nom est général vivent sous la classe
+   de leur bloc : `.hero` (premier écran), `.end` (scène de fin), `.horizon`
+   (horizon immobile), `.pond` (toute scène d'eau), `.offer` et `.cell` (cartes).
+
+   Graisses : 430 texte (`--tw`), 660 texte fort et boutons (`--tb`), 720 titres et
+   chiffres (`--dw`). L'arrondi de la police est figé dans le fichier : la source
+   ne pose aucun font-variation-settings, cette feuille non plus.
+
+   La police n'a ni flèche ni coche : → et ✓ se dessinent en SVG, le caractère
+   reste dans le texte, dans un élément `.sr`.
+
+   Zéro JS. Tout mouvement de décor est sous prefers-reduced-motion:
+   no-preference ; sans animation, chaque élément est déjà à sa place.
+
+   Non repris ici : le pied de page (`.ft`, sauf la plaque du mot-symbole
+   `.ft-logo`), la bannière cookies et la bulle de chat, les onglets de la
+   fenêtre produit et ses vues « journées » et « à recevoir », le sélecteur de
+   profils, les blocs fondateur, partenaires, témoignages et guides.
+
+   Écarts à la source, valeurs inchangées :
+   1. le socle, repris de `@tailwind base` (avec sa bordure par défaut `#e5e7eb`,
+      de largeur 0), que la DA suppose ;
+   2. `--text: var(--font-sans)`, et les quatre tuiles `--vague-1` à `--vague-4`,
+      posées une fois sur `.da` (leurs couleurs y sont en dur : une variable
+      ne passe pas dans un data-URI) ;
+   3. `.ft-logo`, qui réunit `.ft a` et `.ft .ft-logo` pour servir hors du pied ;
+   4. `.stage .panel`, repris sans son `display: none` : sur le site, un
+      panneau ne s'affiche que si son onglet est coché, et les onglets ne sont
+      pas repris ;
+   5. `#FFFFFF` et `#fff` écrits `var(--paper)` là où la source repasse
+      `--focus` en blanc et peint la barre `.hd--flux .hd-bar`.
+
+   La dernière section, après la marque « Gabarits réseaux sociaux », n'est pas
+   extraite du site : ce sont les gabarits `.soc` (PostPortrait, Story,
+   PostCarre, Banniere), écrits pour ce système avec les mesures du site.
+   ========================================================================== */
+
+/* ───────── Police de repli ─────────
+   Source : src/styles/da.css. La police elle-même (Google Sans Flex, un seul woff2 : latin, graisses
+   400 à 800, arrondi figé à 100) est déclarée par tokens.css. Ces deux faces règlent Arial sur ses
+   métriques, le temps qu'elle arrive. */
+@font-face { font-family: "Google Sans Flex Fallback"; font-weight: 400 599; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Arimo"); size-adjust: 101.19%; ascent-override: 95.47%; descent-override: 28.26%; line-gap-override: 0%; }
+@font-face { font-family: "Google Sans Flex Fallback"; font-weight: 600 800; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold"), local("Arimo Bold"), local("Arimo-Bold"); size-adjust: 102.22%; ascent-override: 94.5%; descent-override: 27.98%; line-gap-override: 0%; }
+
+/* ───────── Socle : le reset du site, restreint à `.da` ─────────
+   Source : src/styles/global.css (`@tailwind base`), relevé dans la feuille commune du build de main.
+   Les règles de la DA sont écrites pour ce reset : boîtes en border-box (un bouton de 54 px fait
+   54 px, marges intérieures comprises), marges des titres et paragraphes à zéro, listes nues, liens
+   et boutons qui héritent, images et SVG en bloc. Ici il ne touche que ce qui est sous `.da`, et ne
+   pèse rien (`:where`) : toute classe l'emporte. */
+:where(.da, .da *), :where(.da, .da *)::before, :where(.da, .da *)::after { box-sizing: border-box; border: 0 solid #e5e7eb; }
+:where(body.da) { line-height: inherit; margin: 0; }
+:where(.da) :where(h1, h2, h3, h4, h5, h6) { font-size: inherit; font-weight: inherit; }
+:where(.da) :where(a) { color: inherit; text-decoration: inherit; }
+:where(.da) :where(b, strong) { font-weight: bolder; }
+:where(.da) :where(small) { font-size: 80%; }
+:where(.da) :where(table) { text-indent: 0; border-color: inherit; border-collapse: collapse; }
+:where(.da) :where(button, input, optgroup, select, textarea) { font-feature-settings: inherit; font-variation-settings: inherit; font-family: inherit; font-size: 100%; font-weight: inherit; line-height: inherit; letter-spacing: inherit; color: inherit; margin: 0; padding: 0; }
+:where(.da) :where(button, select) { text-transform: none; }
+:where(.da) :where(button, input:where([type=button]), input:where([type=reset]), input:where([type=submit])) { -webkit-appearance: button; background-color: #0000; background-image: none; }
+:where(.da) :where(summary) { display: list-item; }
+:where(.da) :where(blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre) { margin: 0; }
+:where(.da) :where(fieldset) { margin: 0; padding: 0; }
+:where(.da) :where(legend) { padding: 0; }
+:where(.da) :where(ol, ul, menu) { margin: 0; padding: 0; list-style: none; }
+:where(.da) :where(button, [role=button]) { cursor: pointer; }
+:where(.da) :where(img, svg, video, canvas, audio, iframe, embed, object) { vertical-align: middle; display: block; }
+:where(.da) :where(img, video) { max-width: 100%; height: auto; }
+:where(.da) :where([hidden]:where(:not([hidden=until-found]))) { display: none; }
+
+/* ───────── Racine `.da` : ce que tokens.json ne peut pas porter ─────────
+   Source : src/styles/da.css (bloc des jetons). Couleurs, rayons, ombres et espacements viennent de
+   tokens.css. Restent ici la pile de polices, les graisses, la courbe, les corps fluides, la gouttière
+   et le dégradé de la bande de ciel, tels que la source les écrit ; plus les quatre tuiles des vagues
+   (Hero.astro), posées une fois pour toutes les scènes. */
+.da { --ciel-bande: linear-gradient(var(--sky-1), var(--sky-2) 55%, rgba(228, 238, 255, 0)); --ease: cubic-bezier(0.22, 1, 0.36, 1); --text: var(--font-sans); --display: var(--text); --dw: 720; --dtr: -0.035em; --tw: 430; --tb: 660; --h1-page: clamp(min(2rem, 10vw), 4.6vw, 3.625rem); --h2-fin: clamp(min(2rem, 10vw), 4.4vw, 3.25rem); --gut: clamp(var(--gut-min), calc(7.7px + 3.155vw), var(--gut-max)); --vague-1: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.1'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%23A9CBF8'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23D6E7FE' stroke-width='3'/%3E%3C/svg%3E"); --vague-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.12'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%237FAEF0'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23B5D2FA' stroke-width='3'/%3E%3C/svg%3E"); --vague-3: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E"); --vague-4: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E"); }
+
+/* ───────── Page et bloc ─────────
+   Source : src/styles/da.css. `.da-fond` (sur <body>, avec `.da`) peint le fond d'une page entièrement
+   dans la DA : ciel en haut, eau profonde en bas. `.da-bloc` porte la typographie : à poser sur chaque
+   bloc (section, en-tête, carte isolée). */
+.da-fond { margin: 0; background: var(--deep-2) linear-gradient(var(--sky-1), var(--sky-1)) no-repeat 0 0 / 100% 520px; }
+:where(.da .da-bloc, .da.da-bloc) { color-scheme: light; color: var(--ink); font-family: var(--text); font-weight: var(--tw); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0px)); }
+
+/* ───────── Éléments d'un bloc ─────────
+   Source : src/styles/da.css. Titres, texte fort et anneau de focus d'un bloc `.da-bloc`. Un grand
+   chiffre ou un titre pose son corps dans `--corps` et prend la classe `.aff` (les <h2> l'ont d'office) :
+   l'interlettrage se resserre avec le corps. */
+:where(.da .da-bloc, .da.da-bloc) h2, :where(.da) .aff { font-family: var(--display); font-weight: var(--dw); font-size: var(--corps); line-height: 1.05; letter-spacing: min(calc(0.66px - 0.059 * var(--corps)), calc(2.43px - 0.0851 * var(--corps))); }
+:where(.da .da-bloc, .da.da-bloc) h2 { --corps: clamp(32px, 4.5vw, 58px); text-wrap: balance; }
+:where(.da .da-bloc, .da.da-bloc) h3 { font-family: var(--display); font-weight: var(--dw); letter-spacing: calc(var(--dtr) * 0.7); font-size: clamp(24px, 2.5vw, 32px); line-height: 1.12; }
+:where(.da .da-bloc, .da.da-bloc) b, :where(.da .da-bloc, .da.da-bloc) strong { font-weight: var(--tb); }
+:where(.da .da-bloc, .da.da-bloc) :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ───────── Utilitaires ─────────
+   Source : Hero.astro (`.sr`, `.num`), TroisCases.astro (`.fl`), Mascotte.astro (`.mascotte`).
+   `.sr` : dans le texte, masqué à l'œil (le caractère qu'un dessin SVG remplace : → ✓).
+   `.num` : un montant ne se coupe pas. `.fl` : la flèche dessinée, sur la ligne du texte.
+   `.mascotte` : le <picture> d'une pose, que le parent dimensionne ; l'image le remplit. */
+:where(.da) .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:where(.da) .num { white-space: nowrap; }
+:where(.da) .fl { position: relative; white-space: nowrap; }
+:where(.da) .fl svg { display: inline-block; width: 0.95em; height: auto; vertical-align: -0.02em; }
+:where(.da .mascotte) { display: block; }
+:where(.da .mascotte) img { display: block; width: 100%; max-width: none; height: auto; }
+
+/* ───────── Conteneur `.wrap` ─────────
+   Source : src/styles/da.css. 1120 px de contenu au plus, gouttière fluide de 20 à 40 px. */
+:where(.da) .wrap { position: relative; max-width: calc(var(--wrap-max) + 2 * var(--gut)); margin-inline: auto; padding-left: max(var(--gut), env(safe-area-inset-left, 0px)); padding-right: max(var(--gut), env(safe-area-inset-right, 0px)); }
+
+/* ───────── Bouton `.btn` ─────────
+   Source : src/styles/da.css. Une pilule épaisse qu'on enfonce : la tranche est une ombre nette, l'appui
+   descend le bouton de sa hauteur. `.btn-brand` (jaune : l'action principale, une par écran),
+   `.btn-white` (sur le ciel ou l'eau), `.btn-line` (sur le blanc d'une carte). */
+:where(.da) .btn { display: inline-flex; align-items: center; justify-content: center; min-height: var(--btn-h); padding: 0 var(--btn-pad); border: 0; border-radius: var(--r-pill); font-family: var(--text); font-size: 17px; font-weight: var(--tb); line-height: 1.2; text-decoration: none; cursor: pointer; transition: translate 120ms var(--ease), box-shadow 120ms var(--ease), background-color 160ms var(--ease); }
+:where(.da) .btn:active { translate: 0 var(--btn-tranche); box-shadow: 0 0 0 transparent; }
+:where(.da) .btn-brand { background: var(--sun); color: var(--ink); box-shadow: 0 var(--btn-tranche) 0 var(--sun-edge); }
+:where(.da) .btn-brand:hover { background: var(--sun-hover); }
+:where(.da) .btn-white, :where(.da) .btn-line { background: var(--paper); color: var(--ink); box-shadow: 0 var(--btn-tranche) 0 var(--edge); }
+:where(.da) .btn-white:hover, :where(.da) .btn-line:hover { background: var(--sky-soft); }
+:where(.da) .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 var(--btn-tranche) 0 var(--edge); }
+@media (forced-colors: active) {
+  :where(.da) .btn { border: 2px solid ButtonText; }
+}
+
+/* ───────── Chiffre Super-Net ─────────
+   Sources : src/styles/da.css (`.hl`), Hero.astro (`.tag`), TroisCases.astro (`.sun-num`),
+   FenetreProduit.astro et TroisCases.astro (`.sw`, `.l1` à `.l3`).
+   Le Super-Net est toujours sur du jaune : `<b class="aff num hl">` avec son corps dans `--corps`.
+   `.tag` : l'étiquette blanche « Super-Net » + montant (son placement dans la scène est sous `.hero`).
+   `.sun-num` : le très grand chiffre de la case jaune, libellé dessus, légende dessous.
+   `.sw` + `.l1` / `.l2` / `.l3` : la pastille carrée URSSAF / CARMF / impôts devant une ligne. */
+:where(.da) .hl { display: inline-block; padding: 0 0.2em; margin-left: -0.2em; border-radius: 0.28em; background: var(--sun); }
+:where(.da) .tag { padding: 9px 14px 11px; border-radius: 18px; background: var(--paper); text-align: left; box-shadow: var(--clay); }
+:where(.da) .tag small { display: block; font-size: 13px; font-weight: var(--tb); color: var(--ink-2); }
+:where(.da) .tag b { font-family: var(--display); font-size: 24px; line-height: 1.15; font-weight: var(--dw); letter-spacing: -0.02em; }
+:where(.da) .sun-num { display: flex; flex-direction: column; gap: 2px; margin: 0; padding-bottom: 20px; }
+:where(.da) .sun-num small { font-size: 15px; font-weight: var(--tb); }
+:where(.da) .sun-num b { --corps: clamp(46px, 15.5vw, 132px); line-height: 1; }
+:where(.da) .sun-num span { max-width: 26rem; font-size: 15.5px; }
+:where(.da) .sw { display: inline-block; width: 11px; height: 11px; margin-right: 8px; border-radius: 4px; }
+:where(.da) .l1 { background: var(--charge-urssaf); }
+:where(.da) .l2 { background: var(--charge-carmf); }
+:where(.da) .l3 { background: var(--charge-impots); }
+
+/* ───────── Pastilles d'état `.chip` ─────────
+   Source : src/styles/da.css. `.ok` (payé), `.wait` (en attente), `.plan` (planifié), `.off` (hors
+   activité). Avec `.sig`, l'état porte aussi un signe : une coche, une horloge ; « planifié » a son tilde. */
+:where(.da) .chip { display: inline-block; padding: 3px 9px; border-radius: var(--r-pill); font-size: 13.5px; font-weight: var(--tb); line-height: 1.35; white-space: nowrap; }
+:where(.da) .chip.ok { background: var(--ok-bg); color: var(--ok); }
+:where(.da) .chip.wait { background: var(--wait-bg); color: var(--wait); }
+:where(.da) .chip.plan { background: var(--plan-bg); color: var(--plan); }
+:where(.da) .chip.off { background: var(--sky-soft); color: var(--ink-2); }
+:where(.da) .sig.ok::before, :where(.da) .sig.wait::before { content: ""; display: inline-block; width: 0.82em; height: 0.82em; margin-right: 0.32em; vertical-align: -0.06em; background: currentColor; -webkit-mask: var(--signe) center / contain no-repeat; mask: var(--signe) center / contain no-repeat; }
+:where(.da) .sig.ok { --signe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6.4l2.7 2.7L10 3.4' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+:where(.da) .sig.wait { --signe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='4.6' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3Cpath d='M6 3.5V6l1.7 1.2' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+@media (forced-colors: active) {
+  :where(.da) .sig.ok::before, :where(.da) .sig.wait::before { background: CanvasText; }
+}
+
+/* ───────── Feuille `.band` ─────────
+   Source : src/styles/da.css. Les blocs clairs s'empilent comme des feuilles à coins hauts arrondis :
+   chacune remonte de 40 px sur la précédente. Sable par défaut, ciel avec `.air`, en alternance.
+   `.band-head` : titre + chapô (`.lead`), centré avec `.mid`. `.lien` : un lien dans une phrase. */
+:where(.da) .band { position: relative; z-index: 1; margin-top: calc(-1 * var(--band-recouvre)); padding: var(--band-haut) 0 var(--band-bas); border-radius: var(--r-xl) var(--r-xl) 0 0; background: var(--sand); }
+:where(.da) .band.air { background: var(--sky); }
+@media (max-width: 559px) {
+  :where(.da) .band { padding: var(--band-haut-tel) 0 var(--band-bas-tel); }
+}
+:where(.da) .band-head { display: flex; flex-direction: column; gap: var(--band-head-gap); max-width: 800px; margin-bottom: var(--band-head-bas); }
+@media (max-width: 559px) {
+  :where(.da) .band-head { margin-bottom: var(--band-head-bas-tel); }
+}
+:where(.da) .band-head > * { margin: 0; }
+:where(.da) .band-head.mid { align-items: center; margin-inline: auto; text-align: center; }
+:where(.da) .lead { max-width: 36rem; margin: 0; font-size: 19px; line-height: 1.55; color: var(--ink-2); }
+:where(.da) .lien { display: inline-block; margin: -11px 0; padding: 11px 0; border-radius: 6px; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+:where(.da) .lien:hover { color: var(--brand); }
+
+/* ───────── Carte argile `.offer` ─────────
+   Source : src/components/accueil/Tarifs.astro. La carte de base : blanche, coins de 30 px, ombre
+   `clay`, 28 px de marge. `.offer.main` : la même en bleu profond (texte blanc, bouton jaune).
+   Dedans : un <h3> (petit titre), des <p>, un prix `.price` (`<b class="aff num">` + « par mois »),
+   un surlignage jaune `.save > span`, puis le bouton, poussé en bas. */
+:where(.da) .offer { position: relative; display: flex; flex-direction: column; gap: 6px; padding: var(--fiche-pad); border-radius: var(--r-fiche); background: var(--paper); box-shadow: var(--clay); }
+:where(.da) .offer h3 { margin: 0; font-family: var(--text); font-size: 18px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
+:where(.da) .offer p { margin: 0; font-size: 16px; color: var(--ink-2); }
+:where(.da) .offer .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; }
+:where(.da) .offer .price b { --corps: 64px; color: var(--ink); }
+:where(.da) .offer.main { --focus: var(--paper); background: linear-gradient(var(--deep), var(--deep-fiche)); color: var(--paper); box-shadow: var(--clay-deep); }
+:where(.da) .offer.main p { color: var(--on-deep-2); }
+:where(.da) .offer.main .price b { color: var(--paper); }
+:where(.da) .offer.main .save { line-height: 1.75; }
+:where(.da) .offer .save span { padding: 3px 9px; border-radius: 9px; background: var(--sun); color: var(--ink); font-size: 14.5px; font-weight: var(--tb); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+:where(.da) .offer > .btn, :where(.da) .offer > details { margin-top: auto; }
+:where(.da) .offer > .btn, :where(.da) .offer summary { padding: 8px 14px; text-align: center; }
+:where(.da) .offer > p:last-of-type { margin-bottom: 18px; }
+@media (max-width: 559px) {
+  :where(.da) .offer { gap: 4px; padding: 22px 24px 24px; }
+  :where(.da) .offer .price b { --corps: 54px; }
+  :where(.da) .offer > p:last-of-type { margin-bottom: 14px; }
+}
+@media (max-width: 374px) {
+  :where(.da) .offer { padding: 24px 22px; }
+  :where(.da) .offer > .btn, :where(.da) .offer summary { padding-inline: 8px; font-size: 15.5px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :where(.da) .offer { animation: tarifs-arrive linear both; }
+    :where(.da) article.offer { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+  }
+}
+@keyframes tarifs-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@media (forced-colors: active) {
+  :where(.da) .offer { border: 1px solid CanvasText; }
+}
+
+/* ───────── Cases `.cell` et grille `.bento` ─────────
+   Source : src/components/accueil/TroisCases.astro. Les trois grandes cases numérotées : `.c-sky` (ciel),
+   `.c-white` (blanc), `.c-sun` (jaune : ce qu'il te reste, et rien d'autre). Une case n'a pas de marge
+   basse : elle attend au bord bas un extrait d'écran ou la mascotte, qu'elle rogne.
+   Dedans : `.n` (numéro), un <h3>, une liste `.feat-list` ; dans la jaune, `.sun-copy` + `.sun-num`
+   et la mascotte `.pouce`. */
+:where(.da) .bento { position: relative; z-index: 1; display: grid; gap: var(--grille-gap); }
+:where(.da) .cell { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 26px 22px 0; overflow: hidden; border-radius: var(--r-fiche); color: var(--ink); box-shadow: var(--clay); }
+:where(.da) .c-sky { background: var(--sky); }
+:where(.da) .c-white { background: var(--paper); }
+:where(.da) .c-sun { background: var(--sun); box-shadow: var(--clay-sun); }
+:where(.da) .cell h3 { margin: 0; }
+:where(.da) .cell .n { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 17px; font-weight: var(--tb); }
+:where(.da) .feat-list { margin: 0; padding: 0; list-style: none; }
+:where(.da) .feat-list li { display: flex; flex-direction: column; gap: 2px; padding: 13px 0; border-top: 1px solid var(--line); }
+:where(.da) .c-sun .feat-list li { border-top-color: rgba(20, 37, 79, 0.2); }
+:where(.da) .feat-list b { font-size: 17.5px; }
+:where(.da) .feat-list span { font-size: 16px; color: var(--ink-2); }
+:where(.da) .c-sun .feat-list span { color: var(--ink); }
+:where(.da) .sun-copy { display: flex; flex-direction: column; gap: 16px; }
+:where(.da) .c-sun .pouce { align-self: flex-end; width: min(42%, 190px); margin: -16px 4px -10% 0; }
+@media (max-width: 359px) {
+  :where(.da) .cell { padding-inline: 18px; }
+}
+@media (min-width: 900px) {
+  :where(.da) .bento { grid-template-columns: 1.12fr 1fr; gap: var(--grille-gap-lg); }
+  :where(.da) .cell { padding: 36px 36px 0; border-radius: var(--r-fiche-lg); }
+  :where(.da) .c-sun { grid-column: 1 / -1; flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 40px; }
+  :where(.da) .sun-copy { flex: 1; max-width: 700px; padding-bottom: 8px; }
+  :where(.da) .c-sun .pouce { width: 230px; margin: 0 40px -7% 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :where(.da) .cell { animation: cases-arrive linear both; }
+    :where(.da) article.cell { animation-timeline: view(); animation-range: entry 0% entry 42%; }
+  }
+}
+@keyframes cases-arrive { from { opacity: 0; translate: 0 34px; scale: 0.97; } to { opacity: 1; translate: 0 0; scale: 1; } }
+
+/* ───────── Pli `.qa` ─────────
+   Source : src/styles/da.css. Un <details> natif en fiche blanche ; la croix tourne et jaunit à
+   l'ouverture. Le libellé du <summary> est un <h3> (une question) ou un `.qa-t` (un simple libellé),
+   suivi du SVG de la croix ; le texte replié est dans `.qa-in`. Aucun JS. */
+:where(.da) .qa { margin: 0 0 10px; padding: 0 22px; border-radius: var(--r-pli); background: var(--paper); box-shadow: var(--clay-sm); }
+:where(.da) .qa > summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 68px; padding: 14px 0; border-radius: var(--r-sm); cursor: pointer; list-style: none; }
+:where(.da) .qa > summary::-webkit-details-marker { display: none; }
+:where(.da) .qa > summary h3, :where(.da) .qa-t { margin: 0; font-family: var(--text); font-size: 18px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; text-wrap-style: pretty; }
+@media (max-width: 559px) {
+  :where(.da) .qa > summary h3, :where(.da) .qa-t { text-wrap-style: balance; }
+}
+:where(.da) .qa > summary > svg { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 50%; background: var(--sky); }
+:where(.da) .qa[open] > summary > svg { rotate: 45deg; background: var(--sun); }
+:where(.da) .qa-in { padding: 0 0 22px; }
+:where(.da) .qa-in p { max-width: 42rem; margin: 0; font-size: 16.5px; line-height: 1.6; color: var(--ink-2); }
+:where(.da) .qa-in :is(b, strong) { color: var(--ink); }
+:where(.da) .qa-in a { font-weight: var(--tb); color: var(--brand); text-decoration: underline; text-underline-offset: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  :where(.da) .qa > summary > svg { transition: rotate 200ms var(--ease), background-color 200ms var(--ease); }
+  :where(.da) .qa[open] > .qa-in { animation: da-pli 300ms var(--ease) both; }
+}
+@media (max-width: 359px) {
+  :where(.da) .qa { padding: 0 18px; }
+  :where(.da) .qa > summary { gap: 14px; }
+  :where(.da) .qa > summary h3, :where(.da) .qa-t { font-size: 17px; }
+}
+@keyframes da-pli { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@media (forced-colors: active) {
+  :where(.da) .qa { border: 1px solid CanvasText; }
+  :where(.da) .qa > summary > svg { background: none; }
+}
+
+/* ───────── Mot-symbole `.logo-word` ─────────
+   Source : src/styles/da.css. Le logo est le mot seul : `<span class="logo-word">Hippo<span>doc</span></span>`,
+   « Hippo » en `brand`, « doc » en `brand-2`, sur du blanc. Pas d'icône. (Le mot géant de la scène de
+   fin est `.end .wordmark`, plus bas.) */
+:where(.da) .logo-word { font-family: var(--display); font-size: 22px; font-weight: 760; letter-spacing: -0.025em; line-height: 1; color: var(--brand); }
+:where(.da) .logo-word span { color: var(--brand-2); }
+
+/* ───────── Pastille de navigation `.hd` ─────────
+   Source : src/styles/da.css (balisage : src/components/Header.astro). Une pastille blanche qui flotte,
+   collée à 10 px du haut. Variante `.hd--flux` : elle garde sa place (80 px) au lieu de survoler le
+   premier bloc, précédée de la bande de ciel `.hd-ciel` ; un premier bloc qui a son propre fond prend
+   `.da-sous-entete`. Menu « Ressources » au survol et au focus, tiroir mobile piloté par la case
+   `.hd-toggle` : zéro JS. Sous 960 px, les liens passent dans le tiroir. */
+:where(.da) .hd { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 50; height: 60px; margin: 10px 0 -70px; pointer-events: none; -webkit-tap-highlight-color: transparent; }
+:where(.da) .hd-bar, :where(.da) .hd-overlay, :where(.da) .hd-drawer { pointer-events: auto; }
+:where(.da) .hd--flux { box-sizing: border-box; top: env(safe-area-inset-top, 0px); height: 80px; margin: 0; padding: 10px 0; }
+:where(.da) .hd-ciel { height: 80px; margin-bottom: -80px; background: var(--ciel-bande); pointer-events: none; }
+:where(.da) .hd--flux + .da-sous-entete, :where(.da) .hd--flux + * > .da-sous-entete:first-child { position: relative; margin-top: -80px; }
+:where(.da) .hd--flux + .da-sous-entete::before, :where(.da) .hd--flux + * > .da-sous-entete:first-child::before { content: ""; display: block; height: 80px; }
+:where(.da) .hd--flux + .da-sous-entete::after, :where(.da) .hd--flux + * > .da-sous-entete:first-child::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 80px; background: var(--ciel-bande); pointer-events: none; }
+@media (forced-colors: active) {
+  :where(.da) .hd-ciel, :where(.da) .hd--flux + .da-sous-entete::after, :where(.da) .hd--flux + * > .da-sous-entete:first-child::after { display: none; }
+}
+:where(.da) .hd-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; max-width: var(--wrap-max); margin-inline: max(12px, calc((100% - var(--wrap-max)) / 2)); padding: 0 8px 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+@media (min-width: 900px) {
+  :where(.da) .hd-bar { background: rgba(255, 255, 255, 0.86); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); }
+}
+@media (max-width: 899px) {
+  :where(.da) .hd--flux .hd-bar { background: var(--paper); }
+}
+:where(.da) .hd-brand { display: flex; align-items: center; min-width: var(--cible); min-height: var(--cible); padding: 0 4px; border-radius: var(--r-sm); text-decoration: none; }
+@media (max-width: 339px) {
+  :where(.da) .hd-bar { gap: 6px; padding-left: 10px; }
+  :where(.da) .hd-brand .logo-word { font-size: 20px; }
+  :where(.da) .hd .btn.hd-cta-pill { padding: 0 13px; }
+}
+:where(.da) .hd-links { display: none; align-items: center; gap: 30px; font-size: 15.5px; font-weight: 560; color: var(--ink-2); }
+:where(.da) .hd-links a, :where(.da) .hd-res-btn { display: inline-flex; align-items: center; min-height: var(--cible); border-radius: var(--r-sm); color: inherit; text-decoration: none; transition: color 160ms var(--ease); }
+:where(.da) .hd-links > a { min-width: var(--cible); justify-content: center; }
+:where(.da) .hd-links a:hover { color: var(--ink); }
+:where(.da) .hd-res { position: relative; }
+:where(.da) .hd-res-btn { gap: 4px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+:where(.da) .hd-res-btn.is-current { color: var(--brand); }
+:where(.da) .hd-res:hover .hd-res-btn, :where(.da) .hd-res:focus-within .hd-res-btn { color: var(--ink); }
+:where(.da) .hd-res-btn svg { transition: rotate 200ms var(--ease); }
+:where(.da) .hd-res:hover .hd-res-btn svg, :where(.da) .hd-res:focus-within .hd-res-btn svg { rotate: 180deg; }
+:where(.da) .hd-res-pop { position: absolute; right: -16px; top: 100%; z-index: 1; padding-top: 14px; visibility: hidden; opacity: 0; transition: opacity 150ms ease, visibility 150ms; }
+:where(.da) .hd-res:hover .hd-res-pop, :where(.da) .hd-res:focus-within .hd-res-pop { visibility: visible; opacity: 1; }
+:where(.da) .hd-res-menu { width: 272px; padding: 8px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); }
+:where(.da) .hd-res-menu a { display: flex; padding: 0 14px; border-radius: var(--r-sm); transition: background-color 160ms var(--ease), color 160ms var(--ease); }
+:where(.da) .hd-res-menu a:hover { background: var(--sky-soft); color: var(--ink); }
+:where(.da) .hd-res-menu a[aria-current="page"] { color: var(--brand); }
+:where(.da) .hd-end { display: flex; align-items: center; gap: 4px; }
+:where(.da) .hd-login { display: none; align-items: center; min-height: var(--cible); padding: 0 14px; border-radius: var(--r-pill); font-size: 15.5px; font-weight: 560; color: var(--ink-2); text-decoration: none; transition: color 160ms var(--ease); }
+:where(.da) .hd-login:hover { color: var(--ink); }
+:where(.da) .hd .btn { min-height: var(--cible); padding: 0 18px; font-size: 15.5px; white-space: nowrap; }
+:where(.da) .hd .btn-brand { box-shadow: 0 3px 0 var(--sun-edge); }
+:where(.da) .hd .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 3px 0 var(--edge); }
+:where(.da) .hd .btn:active { translate: 0 3px; box-shadow: 0 0 0 transparent; }
+:where(.da) .hd-cta-desk { display: none; }
+:where(.da) .hd-burger, :where(.da) .hd-close { display: flex; align-items: center; justify-content: center; width: var(--cible); height: var(--cible); border-radius: 50%; color: var(--ink); cursor: pointer; touch-action: manipulation; transition: scale 150ms ease-out, background-color 150ms ease-out; }
+:where(.da) .hd-burger:active, :where(.da) .hd-close:active { scale: 0.9; background: var(--sky); }
+@media (hover: hover) {
+  :where(.da) .hd-burger:hover, :where(.da) .hd-close:hover { background: var(--sky-soft); }
+}
+:where(.da) .hd-toggle { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:where(.da) .hd-toggle:focus-visible ~ .hd-bar .hd-burger, :where(.da) .hd-toggle:focus-visible ~ .hd-drawer .hd-close { outline: 3px solid var(--focus); outline-offset: 2px; }
+:where(.da) .hd-overlay { position: fixed; inset: 0; z-index: 40; visibility: hidden; opacity: 0; background: var(--voile); cursor: pointer; transition: opacity 200ms ease-out, visibility 200ms ease-out; }
+:where(.da) .hd-toggle:checked ~ .hd-overlay { visibility: visible; opacity: 1; transition-duration: 300ms; }
+:where(.da) .hd-drawer { position: fixed; top: 12px; right: 12px; bottom: 12px; z-index: 50; width: calc(100% - 72px); max-width: 340px; visibility: hidden; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); transform: translateX(calc(100% + 16px)); transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
+:where(.da) .hd-toggle:checked ~ .hd-drawer { visibility: visible; transform: none; transition-duration: 420ms; }
+:where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; padding: 20px 20px 16px; }
+:where(.da) .hd-drawer-top { display: flex; align-items: center; justify-content: space-between; min-height: var(--cible); }
+:where(.da) .hd-drawer-brand { display: flex; align-items: center; padding-left: 12px; }
+:where(.da) .hd-drawer-nav { display: flex; flex: 1; flex-direction: column; min-height: 0; margin-top: 20px; overflow-y: auto; overscroll-behavior: contain; }
+:where(.da) .hd-drawer-nav a { display: flex; align-items: center; min-height: 48px; padding: 8px 12px; border-radius: var(--r-sm); font-size: 17px; font-weight: 600; line-height: 1.25; color: var(--ink); text-decoration: none; }
+:where(.da) .hd-drawer-nav a:active { background: var(--sky-soft); }
+@media (hover: hover) {
+  :where(.da) .hd-drawer-nav a:hover { background: var(--sky-soft); }
+}
+:where(.da) .hd-drawer-label { margin: 20px 0 4px; padding: 0 12px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+:where(.da) .hd-drawer-end { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 12px 8px; margin-top: 16px; padding: 16px 0 4px; border-top: 1px solid var(--line); }
+:where(.da) .hd-drawer-end .btn { padding: 0 10px; font-size: 15px; }
+:where(.da) .hd-item { opacity: 0; transform: translateX(12px); transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease; }
+:where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: opacity 320ms cubic-bezier(0.32, 0.72, 0, 1), transform 420ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease; transition-delay: calc(30ms + var(--i) * 15ms), calc(30ms + var(--i) * 15ms), 0ms; }
+@media (prefers-reduced-motion: reduce) {
+  :where(.da) .hd-item, :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: none; }
+  :where(.da) .hd-drawer, :where(.da) .hd-overlay { transition: none; }
+}
+@media (min-width: 960px) {
+  :where(.da) .hd-links, :where(.da) .hd-login { display: flex; }
+  :where(.da) .hd-cta-desk { display: inline-flex; }
+  :where(.da) .hd-cta-pill, :where(.da) .hd-burger, :where(.da) .hd-toggle, :where(.da) .hd-overlay, :where(.da) .hd-drawer { display: none; }
+}
+
+/* ───────── Décor : le ciel, le soleil, les vagues ─────────
+   Sources : src/components/accueil/Hero.astro et SceneFinale.astro (mêmes vagues, même soleil),
+   src/pages/tarifs.astro (l'horizon immobile).
+   Une scène est un `.pond` : dans l'ordre des plans, `.sun`, des `.wave.w1` à `.wave.w4` (de la plus
+   lointaine à la plus proche), la mascotte entre deux vagues. Chaque vague est une tuile SVG répétée
+   (`--vague-N`, large de `--p`, haute de `--th`) au-dessus d'un aplat. Les couleurs des tuiles sont
+   celles des jetons `w1` à `w4`, `w1-crete` à `w4-crete` et `vague-ombre`, écrites en dur dans le SVG.
+   Ici : la géométrie commune. Tailles, placement et mouvement viennent du bloc (`.hero`, `.end`, `.horizon`). */
+:where(.da) .pond, :where(.da) .horizon { position: relative; --p: 300px; --th: 40px; }
+:where(.da) .sun { position: absolute; left: 50%; border-radius: 50%; background: radial-gradient(circle at 50% 36%, var(--sun-haut), var(--sun-bas) 72%); box-shadow: 0 0 0 26px var(--sun-halo-1), 0 0 0 62px var(--sun-halo-2); }
+:where(.da) .pond .wave { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; }
+:where(.da) .pond .wave::before { content: ""; position: absolute; inset: 0 calc(var(--p) * -1) 0 0; }
+:where(.da) .pond .w1 { height: 176px; --t: 64s; }
+:where(.da) .pond .w2 { height: 142px; --t: 52s; }
+:where(.da) .pond .w3 { height: 98px; --t: 40s; }
+:where(.da) .pond .w4 { height: 52px; --t: 30s; }
+:where(.da) .pond .w1::before { background: var(--vague-1) repeat-x 0 0 / var(--p) var(--th), linear-gradient(var(--w1), var(--w1-fond)) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+:where(.da) .pond .w2::before { background: var(--vague-2) repeat-x calc(var(--p) * 0.4) 0 / var(--p) var(--th), linear-gradient(var(--w2), var(--w2-fond)) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+:where(.da) .pond .w3::before { background: var(--vague-3) repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(var(--w3), var(--w3-fond)) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+:where(.da) .pond .w4::before { background: var(--vague-4) repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(var(--w4), var(--w4)) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+:where(.da) .pond .pause { display: none; }
+@media (min-width: 900px) {
+  :where(.da) .pond, :where(.da) .horizon { --p: 440px; --th: 54px; }
+  :where(.da) .sun { box-shadow: 0 0 0 40px var(--sun-halo-1), 0 0 0 92px var(--sun-halo-2); }
+  :where(.da) .pond .w1 { height: 250px; }
+  :where(.da) .pond .w2 { height: 204px; }
+  :where(.da) .pond .w3 { height: 140px; }
+  :where(.da) .pond .w4 { height: 70px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :where(.da) .pond .pause { display: block; position: absolute; left: 12px; bottom: 10px; z-index: 3; width: var(--cible); height: var(--cible); margin: 0; padding: 0; border: 2px solid rgba(255, 255, 255, 0.55); border-radius: 50%; -webkit-appearance: none; appearance: none; forced-color-adjust: none; cursor: pointer; background: var(--deep-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 2.5h3v11H4zM9 2.5h3v11H9z' fill='%23fff'/%3E%3C/svg%3E") center / 16px 16px no-repeat; }
+  :where(.da) .pond .pause:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 2.2v11.6L13.5 8z' fill='%23fff'/%3E%3C/svg%3E"); }
+  :where(.da) .pond .pause:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
+}
+
+/* ───────── Premier écran `.hero` ─────────
+   Source : src/components/accueil/Hero.astro. Le ciel du matin (dégradé `sky-1`, `sky-2`, `glow`), le
+   titre, l'accroche, deux boutons, puis la scène : soleil, quatre vagues, la mascotte `.hippo` qui
+   sort la tête de l'eau, les papiers `.slip` qui coulent, l'étiquette Super-Net `.tag` et, à partir
+   de 1180 px, deux fiches `.float`. Les 88 px du haut (132 px sur ordinateur) sont réservés à la
+   pastille de navigation. Tout le mouvement est en CSS et s'arrête avec la case `.pause`. */
+:where(.da) .hero { position: relative; overflow: hidden; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 46%, var(--glow) 100%); }
+:where(.da) .hero-copy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: var(--band-haut); text-align: center; }
+:where(.da) .hero h1 { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 0; }
+:where(.da) .hero .kicker { max-width: 14em; font-size: clamp(14.5px, 4vw, 15.5px); line-height: 1.3; font-weight: 600; color: var(--ink-2); text-wrap-style: balance; }
+@media (min-width: 375px) {
+  :where(.da) .hero .kicker { max-width: none; }
+}
+:where(.da) .hero .title { --corps: clamp(50px, 13.6vw, 116px); font-family: var(--display); font-weight: var(--dw); font-size: var(--corps); line-height: 0.96; letter-spacing: min(calc(1.175px - 0.0695 * var(--corps)), calc(2.778px - 0.0924 * var(--corps))); text-wrap-style: balance; }
+:where(.da) .hero .title .e1 { display: block; }
+:where(.da) .hero .title .eau { color: var(--w4); }
+@media (min-width: 600px) {
+  :where(.da) .hero .title .e1 { display: inline; }
+  :where(.da) .hero .title .e2 { display: block; }
+}
+:where(.da) .hero .pitch { max-width: 330px; margin: 0; font-size: 17.5px; line-height: 1.5; color: var(--ink-2); }
+@media (min-width: 406px) {
+  :where(.da) .hero .pitch { max-width: 366px; }
+}
+@media (min-width: 440px) {
+  :where(.da) .hero .pitch { max-width: 401px; }
+}
+@media (min-width: 568px) {
+  :where(.da) .hero .pitch { max-width: 528px; }
+}
+@media (min-width: 1180px) {
+  :where(.da) .hero .pitch { max-width: 530px; font-size: 21px; }
+}
+:where(.da) .hero .cta { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+:where(.da) .hero .cta .btn { padding-block: 8px; text-align: center; }
+:where(.da) .hero .fine { max-width: 30em; margin: 0; font-size: 14.5px; color: var(--ink-2); text-wrap-style: balance; }
+:where(.da) .hero .fine .f1 { display: block; }
+@media (min-width: 480px) {
+  :where(.da) .hero .fine .f1 { display: inline; }
+}
+@media (min-width: 620px) {
+  :where(.da) .hero .cta { flex-flow: row wrap; justify-content: center; }
+  :where(.da) .hero .fine { max-width: none; }
+}
+@media (max-width: 359px) {
+  :where(.da) .hero-copy { gap: 12px; padding-top: 80px; }
+  :where(.da) .hero h1 { gap: 8px; }
+  :where(.da) .hero .title { --corps: 44px; }
+  :where(.da) .hero .pitch { max-width: 296px; font-size: 16px; line-height: 1.45; }
+  :where(.da) .hero .cta { gap: 10px; }
+  :where(.da) .hero .cta .btn { min-height: 50px; padding-inline: 16px; font-size: 16.5px; }
+}
+@media (min-width: 900px) {
+  :where(.da) .hero-copy { padding-top: 132px; gap: 22px; }
+  :where(.da) .hero h1 { gap: 16px; }
+  :where(.da) .hero .kicker { font-size: 17.5px; }
+  :where(.da) .hero .title { --corps: min(116px, 11.9vw - 5px); }
+  :where(.da) .hero .title .e2 { display: inline; }
+}
+:where(.da) .hero .pond { height: 400px; margin-top: -26px; }
+:where(.da) .hero .sun { bottom: 46px; width: 300px; height: 300px; margin-left: -150px; }
+:where(.da) .hero .hippo { position: absolute; left: 50%; bottom: 24px; display: block; width: 262px; max-width: none; height: auto; margin-left: -131px; }
+:where(.da) .hero .slip { position: absolute; bottom: 50px; padding: 8px 12px 38px; border-radius: 10px; background: var(--paper); color: var(--ink); font-size: 13.5px; font-weight: var(--tb); white-space: nowrap; box-shadow: 0 8px 14px -8px rgba(13, 40, 105, 0.45); }
+:where(.da) .hero .slip.a { left: 14px; rotate: -7deg; }
+:where(.da) .hero .slip.b { right: 12px; bottom: 46px; rotate: 6deg; }
+:where(.da) .hero .slip.c, :where(.da) .hero .slip.d { display: none; }
+:where(.da) .hero .float { display: none; }
+:where(.da) .hero .tag { position: absolute; left: 50%; bottom: 122px; margin-left: min(56px, 50vw - 134px); rotate: 4deg; }
+@media (min-width: 900px) {
+  :where(.da) .hero .pond { height: 600px; margin-top: -30px; }
+  :where(.da) .hero .sun { width: 510px; height: 510px; margin-left: -255px; bottom: 30px; }
+  :where(.da) .hero .hippo { width: 440px; margin-left: -220px; bottom: 30px; }
+  :where(.da) .hero .slip { bottom: 76px; font-size: 15px; padding: 10px 14px 58px; border-radius: 12px; }
+  :where(.da) .hero .slip.a { left: 8%; }
+  :where(.da) .hero .slip.b { right: 3%; bottom: 70px; }
+  :where(.da) .hero .slip.c { display: block; left: 25%; bottom: 72px; rotate: 5deg; }
+  :where(.da) .hero .slip.d { display: block; right: 25%; bottom: 74px; rotate: -6deg; }
+  :where(.da) .hero .tag { display: none; }
+  :where(.da) .hero .float { display: block; position: absolute; top: 150px; width: 296px; padding: 20px 22px; border-radius: 26px; background: var(--paper); text-align: left; box-shadow: var(--clay); }
+  :where(.da) .hero .float.l { right: calc(50% + 262px); rotate: -4deg; }
+  :where(.da) .hero .float.r { left: calc(50% + 262px); rotate: 3deg; top: 120px; }
+  :where(.da) .hero .float-t { margin-bottom: 6px; font-size: 15px; font-weight: var(--tb); line-height: 1.12; color: var(--ink-2); }
+}
+@media (min-width: 900px) and (max-width: 1179px) {
+  :where(.da) .hero .float { display: none; }
+  :where(.da) .hero .tag { display: block; bottom: 214px; margin-left: 132px; padding: 12px 18px 14px; }
+  :where(.da) .hero .tag b { font-size: 32px; }
+}
+:where(.da) .hero .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 15.5px; color: var(--ink-2); }
+:where(.da) .hero .row b { color: var(--ink); }
+:where(.da) .hero .row.sum { border-top: 2px solid var(--ink); padding-top: 12px; align-items: center; color: var(--ink); font-weight: var(--tb); }
+:where(.da) .hero .row.sum .v { font-family: var(--display); font-size: 30px; line-height: 1.15; font-weight: var(--dw); letter-spacing: -0.02em; }
+@media (prefers-reduced-motion: no-preference) {
+  :where(.da) .hero .pause:checked ~ .sun, :where(.da) .hero .pause:checked ~ .wave::before, :where(.da) .hero .pause:checked ~ picture .hippo, :where(.da) .hero .pause:checked ~ .tag, :where(.da) .hero .pause:checked ~ .float { animation-play-state: paused; }
+  :where(.da) .hero .sun { animation: hero-sunrise 1600ms var(--ease) both; }
+  :where(.da) .hero .wave::before { animation: hero-drift var(--t, 46s) linear infinite; }
+  :where(.da) .hero .w2::before, :where(.da) .hero .w4::before { animation-direction: reverse; }
+  :where(.da) .hero .hippo { animation: hero-emerge 1300ms var(--ease) 150ms both, hero-bob 5s cubic-bezier(0.42, 0, 0.58, 1) 1500ms infinite alternate; }
+  :where(.da) .hero .tag { animation: hero-floaty 6s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate; }
+  :where(.da) .hero .float { animation: hero-floaty 7s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate; }
+  :where(.da) .hero .float.r { animation-delay: -3s; }
+}
+@keyframes hero-emerge { from { translate: 0 58%; } to { translate: 0 0; } }
+@keyframes hero-sunrise { from { transform: translateY(34%); } to { transform: none; } }
+@keyframes hero-bob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+@keyframes hero-floaty { from { translate: 0 0; } to { translate: 0 -9px; } }
+@keyframes hero-drift { to { transform: translateX(calc(var(--p) * -1)); } }
+
+/* ───────── Scène de fin `.end` ─────────
+   Source : src/components/accueil/SceneFinale.astro. Dernier bloc avant le pied : il remonte de 40 px sur
+   la dernière feuille. Un titre, le bouton jaune, puis la scène : soleil, une vague, la mascotte de dos
+   `.hippo`, le mot géant `.wordmark` dont les jambages trempent, trois vagues devant. La dernière
+   vague a la couleur du haut de l'eau profonde (`deep`). */
+:where(.da) .end { position: relative; z-index: 1; margin-top: calc(-1 * var(--band-recouvre)); margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; content-visibility: auto; contain-intrinsic-size: auto 670px; }
+:where(.da) .end-copy { display: flex; flex-direction: column; align-items: center; gap: 26px; padding-top: var(--band-haut); }
+:where(.da) .end-copy h2 { --corps: clamp(36px, 6vw, 76px); max-width: 17ch; margin: 0; line-height: 1.02; }
+:where(.da) .end-copy .btn { padding-block: 8px; text-align: center; }
+@media (max-width: 359px) {
+  :where(.da) .end-copy .btn { padding-inline: 16px; font-size: 16px; }
+}
+:where(.da) .end .pond { height: 360px; margin-top: 20px; }
+:where(.da) .end .sun { bottom: 50px; width: 290px; height: 290px; margin-left: -145px; }
+:where(.da) .end .hippo { position: absolute; left: 50%; bottom: 34px; width: 172px; margin-left: -86px; }
+:where(.da) .end .wordmark { position: absolute; left: 50%; bottom: calc(128px - 0.06em); translate: -50% 0; font-family: var(--display); font-size: min(20.4vw, 310px); line-height: 0.8; font-weight: 800; letter-spacing: calc(-0.045em - min(0.0747em - 4.05px, 0.0488em)); color: var(--brand); white-space: nowrap; }
+:where(.da) .end .wordmark span { color: var(--brand-2); }
+@media (min-width: 900px) {
+  :where(.da) .end { contain-intrinsic-size: auto 940px; }
+  :where(.da) .end .pond { height: 540px; }
+  :where(.da) .end .sun { width: 480px; height: 480px; margin-left: -240px; bottom: 48px; }
+  :where(.da) .end .wordmark { bottom: calc(172px - 0.06em); }
+  :where(.da) .end .hippo { width: 268px; margin-left: -134px; bottom: 56px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :where(.da) .end .pause:checked ~ .wave::before, :where(.da) .end .pause:checked ~ .hippo { animation-play-state: paused; }
+  :where(.da) .end .wave::before { animation: fin-drift var(--t, 46s) linear infinite; }
+  :where(.da) .end .w2::before, :where(.da) .end .w4::before { animation-direction: reverse; }
+  :where(.da) .end .hippo { animation: fin-bob 5s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate; }
+}
+@keyframes fin-bob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+@keyframes fin-drift { to { transform: translateX(calc(var(--p) * -1)); } }
+
+/* ───────── Ciel et horizon d'une page intérieure : `.tete`, `.fin`, `.horizon` ─────────
+   Source : src/pages/tarifs.astro. `.tete` : le premier bloc, un ciel qui passe sous la pastille de
+   navigation et lui réserve le haut. `.fin` : la scène de fin d'une page intérieure, avec un
+   `.horizon` immobile (le soleil qui se lève derrière les deux dernières vagues). Le titre prend
+   `--h2-fin`, il ne dépasse jamais le <h1>, qui prend `--h1-page`. */
+:where(.da) .tete { position: relative; padding: 108px 0 128px; background: linear-gradient(var(--sky-1) 0, var(--sky) 460px); }
+:where(.da) .fin { position: relative; z-index: 1; margin-top: calc(-1 * var(--band-recouvre)); margin-bottom: -1px; overflow: hidden; border-radius: var(--r-xl) var(--r-xl) 0 0; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 50%, var(--glow) 100%); text-align: center; }
+:where(.da) .fin-copy { z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: var(--band-haut); }
+:where(.da) .fin-copy > * { margin: 0; }
+:where(.da) .fin h2 { --corps: var(--h2-fin); max-width: 17ch; }
+:where(.da) .fin .btn { margin-top: 8px; padding-block: 8px; text-align: center; }
+:where(.da) .fin .lead { text-wrap-style: balance; }
+:where(.da) .fin .aide { font-size: 1rem; color: var(--ink-2); }
+:where(.da) .horizon { height: 190px; margin-top: 60px; }
+:where(.da) .horizon .sun { bottom: -122px; width: 290px; height: 290px; margin-left: -145px; }
+:where(.da) .horizon .wave { position: absolute; left: 0; right: 0; bottom: 0; }
+:where(.da) .horizon .w3 { height: 78px; background: var(--vague-3) repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(var(--w3), var(--w3-fond)) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+:where(.da) .horizon .w4 { height: 44px; background: var(--vague-4) repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(var(--w4), var(--w4)) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+@media (max-width: 559px) {
+  :where(.da) .tete { padding: 100px 0 88px; }
+  :where(.da) .fin-copy { padding-top: var(--band-haut-tel); }
+}
+@media (min-width: 900px) {
+  :where(.da) .tete { padding-top: 148px; }
+  :where(.da) .horizon { height: 270px; margin-top: 108px; }
+  :where(.da) .horizon .sun { bottom: -214px; width: 480px; height: 480px; margin-left: -240px; }
+  :where(.da) .horizon .w3 { height: 112px; }
+  :where(.da) .horizon .w4 { height: 60px; }
+}
+@media (forced-colors: active) {
+  :where(.da) .horizon { display: none; }
+}
+
+/* ───────── Eau profonde `.deep` ─────────
+   Source : src/components/accueil/SousLaSurface.astro. Le bloc sous la surface : dégradé `deep` vers
+   `deep-2`, texte blanc, anneau de focus blanc, et six bulles `.bubbles > i` qui remontent. Il suit
+   le premier écran sans couture : la dernière vague a sa couleur. */
+:where(.da) .deep { --focus: var(--paper); position: relative; overflow: hidden; padding: 8px 0 148px; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--paper); }
+:where(.da) .deep .stage, :where(.da) .deep .cell { --focus: var(--ink); }
+:where(.da) .bubbles { position: absolute; inset: 0; pointer-events: none; }
+:where(.da) .bubbles i { position: absolute; bottom: -30px; width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.34); }
+:where(.da) .bubbles i:nth-child(1) { left: 6%; --t: 19s; --d: 0s; }
+:where(.da) .bubbles i:nth-child(2) { left: 17%; width: 7px; height: 7px; --t: 14s; --d: -6s; }
+:where(.da) .bubbles i:nth-child(3) { left: 38%; width: 16px; height: 16px; --t: 23s; --d: -11s; }
+:where(.da) .bubbles i:nth-child(4) { left: 61%; width: 8px; height: 8px; --t: 15s; --d: -3s; }
+:where(.da) .bubbles i:nth-child(5) { left: 79%; --t: 20s; --d: -14s; }
+:where(.da) .bubbles i:nth-child(6) { left: 93%; width: 18px; height: 18px; --t: 26s; --d: -8s; }
+@media (max-width: 559px) {
+  :where(.da) .deep { padding-bottom: 116px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  :where(.da) .bubbles i { animation: surface-rise var(--t, 16s) linear var(--d, 0s) infinite; }
+  :where(.da):has(.hero .pause:checked) .bubbles i { animation-play-state: paused; }
+}
+@keyframes surface-rise { from { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { transform: translateY(-1500px); opacity: 0; } }
+
+/* ───────── Plaque du mot-symbole `.ft-logo` ─────────
+   Source : src/styles/da.css (pied de page : `.ft a` pour la boîte du lien, `.ft .ft-logo` pour la plaque).
+   Le mot-symbole garde ses deux bleus : sur l'eau profonde, il lui faut du blanc sous lui. La plaque
+   est une pilule blanche de 52 px de haut, 22 px de marge à gauche et à droite. La source n'a pas de
+   version claire du mot-symbole. */
+:where(.da) .ft-logo { display: inline-flex; align-items: center; text-decoration: none; min-height: 52px; padding: 0 22px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
+:where(.da) .ft-logo:hover { translate: 0 -2px; }
+
+/* ───────── Extraits d'écran au bas d'une case : `.frag`, `.card`, `.day`, `.tiles` ─────────
+   Source : src/components/accueil/TroisCases.astro. Ce qu'une case `.cell` attend à son bord bas : une
+   fiche `.card` à coins hauts arrondis, que la case rogne. Dedans, un titre `.card-t`, puis des journées
+   `.day` (jour `.w`, lieu `.p`, pastille `.chip`) ou des lignes `.tile` (libellé, montant ; `.sum` pour le
+   total). `.frag` porte la fiche ; sans `.solo`, il réserve à gauche la place de la mascotte `.pointe`
+   (à partir de 900 px). Ici ces classes ne valent que dans une `.cell`. */
+:where(.da) .cell .frag { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: end; gap: 0; margin: auto 0 0; padding-top: 8px; }
+:where(.da) .cell .frag .pointe { display: none; position: relative; z-index: 1; width: 100%; margin: 0 0 -7% 5%; }
+:where(.da) .cell .card { position: relative; padding: 18px 18px 14px; border-radius: 22px 22px 0 0; background: var(--paper); box-shadow: 0 -10px 30px -16px rgba(13, 40, 105, 0.4); }
+:where(.da) .c-white .card { background: var(--sky-soft); box-shadow: none; }
+:where(.da) .cell .card-t { margin: 0 0 6px; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
+:where(.da) .cell .day { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 50px; border-top: 1px solid var(--line); font-size: 15.5px; }
+:where(.da) .cell .day .w { font-size: 14px; color: var(--ink-3); }
+:where(.da) .cell .day .p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:where(.da) .cell .tiles { margin: 0; padding: 0; list-style: none; }
+:where(.da) .cell .tile { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-2); }
+:where(.da) .cell .tile b { font-family: var(--display); font-size: 21px; font-weight: var(--dw); letter-spacing: -0.015em; color: var(--ink); }
+:where(.da) .cell .tile.sum { border-top: 2px solid var(--ink); color: var(--ink); font-weight: var(--tb); }
+@media (max-width: 359px) {
+  :where(.da) .cell .card { padding-inline: 12px; }
+  :where(.da) .cell .day { grid-template-columns: 50px minmax(0, 1fr) auto; gap: 6px; }
+}
+@media (min-width: 900px) {
+  :where(.da) .cell .frag:not(.solo) { grid-template-columns: 34% minmax(0, 1fr); margin: auto -10px 0 -36px; }
+  :where(.da) .cell .frag .pointe { display: block; }
+  :where(.da) .cell .card { padding: 22px 24px 18px; border-radius: 26px 26px 0 0; }
+}
+
+/* ───────── Titre et mascotte au-dessus des cases : `.below-head` ─────────
+   Source : src/components/accueil/SousLaSurface.astro. Sur l'eau profonde, un titre et son chapô à
+   gauche (`.bh-copy`), la mascotte à droite (`.bh-mascot`) : elle dépasse derrière le bord haut des
+   cartes qui suivent (la grille `.bento` passe devant elle), ses mains et sa tablette restent visibles. */
+:where(.da) .below-head { position: relative; display: grid; align-items: end; gap: 8px 40px; padding-top: 84px; }
+:where(.da) .bh-copy { display: flex; flex-direction: column; gap: 16px; max-width: 760px; padding-bottom: 8px; }
+:where(.da) .bh-copy h2 { margin: 0; }
+:where(.da) .bh-copy p { max-width: 36rem; margin: 0; font-size: 19px; line-height: 1.55; color: var(--on-deep-2); }
+:where(.da) .bh-mascot { justify-self: end; width: 150px; margin: -34px 6px -56px 0; }
+@media (max-width: 559px) {
+  :where(.da) .below-head { padding-top: 60px; }
+}
+@media (min-width: 900px) {
+  :where(.da) .below-head { grid-template-columns: minmax(0, 1fr) 250px; padding-top: 104px; }
+  :where(.da) .bh-copy { padding-bottom: 56px; }
+  :where(.da) .bh-mascot { width: 250px; margin: 0 0 -94px; }
+}
+
+/* ───────── Relevé de l'année : `.stage`, `.releve`, `.lines`, `.net` ─────────
+   Source : src/components/accueil/FenetreProduit.astro (vue « Ce qu'il te reste »). La fenêtre blanche
+   `.stage`, un panneau `.panel`, et le relevé `.releve` : à gauche la jauge `.gauge` (le ciel `.g-air`
+   pour ce qu'il reste, l'eau `.g-water` pour ce qui part, à l'échelle des montants : `flex-grow` en
+   ligne), à droite les lignes `.lines` (`.cap` l'année, une `.row` par ligne, puis `.net` : libellé `.k`,
+   Super-Net `.v` surligné, légende `.s`). `.stage-foot` : le pied, qui dit « Compte de démonstration ».
+   Non repris : les onglets (`.stage-bar`, `.tab`), les deux autres vues et l'arrivée au défilement.
+   Sur le site un panneau est masqué tant que son onglet n'est pas coché ; ici il est toujours affiché. */
+:where(.da) .stage { position: relative; z-index: 2; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); color: var(--ink); box-shadow: var(--clay); }
+:where(.da) .stage .panel { box-sizing: border-box; min-height: 396px; padding: 22px 18px 26px; }
+:where(.da) .stage .stage-foot { margin: 0; padding: 12px 18px; background: var(--sky-soft); font-size: 14px; color: var(--ink-2); }
+:where(.da) .stage .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-2); }
+:where(.da) .stage .row dd, :where(.da) .stage .row dt { margin: 0; }
+:where(.da) .stage .row .fort { font-weight: var(--tb); color: var(--ink); }
+:where(.da) .stage .releve { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 18px; }
+:where(.da) .stage .gauge { display: flex; flex-direction: column; min-height: 280px; overflow: hidden; border-radius: var(--r-md); }
+:where(.da) .stage .g-air { position: relative; flex: 0 1 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px 12px 12px; overflow: hidden; background: linear-gradient(var(--sky-1), var(--glow)); }
+:where(.da) .stage .g-air::before { content: ""; position: absolute; right: -22%; bottom: -30%; width: 86%; aspect-ratio: 1; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 12px rgba(255, 214, 74, 0.28); }
+:where(.da) .stage .g-air b { --corps: 26px; position: relative; line-height: 1.1; }
+:where(.da) .stage .g-water { position: relative; flex: 0 1 0; display: flex; flex-direction: column; }
+:where(.da) .stage .g-water::before { content: ""; position: absolute; left: 0; right: 0; top: -7px; height: 8px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 10' preserveAspectRatio='none'%3E%3Cpath d='M0 5Q12.5 0 25 5T50 5V10H0Z' fill='%238DB9F2'/%3E%3C/svg%3E") repeat-x 0 0 / 50px 8px; }
+:where(.da) .stage .g-water i { flex: 0 1 0; }
+:where(.da) .stage .lines { display: flex; flex-direction: column; min-width: 0; }
+:where(.da) .stage .lines dl { display: flex; flex: 1; flex-direction: column; margin: 0; }
+:where(.da) .stage .cap { margin: 0; padding-bottom: 10px; font-size: 14px; color: var(--ink-3); }
+:where(.da) .stage .net { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: auto; padding-top: 14px; border-top: 2px solid var(--ink); }
+:where(.da) .stage .net dt, :where(.da) .stage .net dd { margin: 0; }
+:where(.da) .stage .net .k { font-size: 16px; font-weight: var(--tb); }
+:where(.da) .stage .net .v { --corps: clamp(36px, 9.4vw, 66px); margin-left: 0; }
+:where(.da) .stage .net .s { font-size: 14.5px; color: var(--ink-2); }
+@media (max-width: 359px) {
+  :where(.da) .stage .panel { padding-inline: 14px; }
+  :where(.da) .stage .stage-foot { padding-inline: 14px; }
+  :where(.da) .stage .releve { grid-template-columns: 72px minmax(0, 1fr); gap: 12px; }
+  :where(.da) .stage .g-air { padding: 8px 8px 10px; }
+  :where(.da) .stage .g-air::before { bottom: -30px; }
+  :where(.da) .stage .g-air b { --corps: 22px; }
+  :where(.da) .stage .row { font-size: 15.5px; }
+  :where(.da) .stage .net .v { --corps: 32px; }
+}
+@media (min-width: 720px) {
+  :where(.da) .stage .panel { min-height: 454px; padding: 36px 40px 40px; }
+  :where(.da) .stage .stage-foot { padding: 14px 40px; }
+  :where(.da) .stage .releve { grid-template-columns: 220px minmax(0, 1fr); gap: 44px; }
+  :where(.da) .stage .gauge { min-height: 360px; border-radius: 26px; }
+  :where(.da) .stage .g-air { padding: 18px 20px; }
+  :where(.da) .stage .g-air b { --corps: 46px; }
+  :where(.da) .stage .row { font-size: 17px; padding: 12px 0; }
+}
+
+/* === Gabarits réseaux sociaux === */
+/* Les gabarits `.soc` : des images fixes pour les réseaux sociaux, aux mêmes ingrédients que le site.
+   Composants : PostPortrait (1080 × 1350), Story (1080 × 1920), PostCarre (1080 × 1080),
+   Banniere (1200 × 630). Leur fiche donne le balisage à copier.
+
+   ÉCHELLE. Une image de 1080 px de large se lit sur un téléphone d'environ 360 px : chaque mesure
+   est celle du site au téléphone, multipliée par `--k` (3 ; 2 pour la bannière). Les corps, rayons,
+   marges et ombres s'écrivent donc `calc(valeur du site * var(--k))`, avec les jetons quand ils
+   existent. La scène (soleil, vagues, mascotte) a sa propre échelle `--s`, relative au premier
+   écran du site au téléphone : elle règle la place que prend l'eau dans le cadre.
+
+   IMAGE FIXE. Aucun mouvement, aucune requête de largeur : un gabarit a la même mise en page
+   quelle que soit la fenêtre. Il ne reprend donc pas `.hero`, `.end`, `.offer` ni `.cell`, dont
+   les règles changent avec l'écran, mais leurs mesures.
+
+   PORTÉE. Une `<section class="soc soc-… soc--…">` dans un conteneur `.da`. Elle porte sa propre
+   typographie : pas besoin de `.da-bloc`. */
+
+/* ───────── Cadre et formats ───────── */
+:where(.da) .soc { --k: 3; --s: 2; --bord: calc(24px * var(--k)); --plaque: calc(28px * var(--k)); --haut-plaque: calc(var(--bord) - 28px); --sous-plaque: calc(var(--haut-plaque) + var(--plaque) + 16px * var(--k)); --soc-clay: inset 0 calc(2px * var(--k)) 0 rgba(255, 255, 255, 0.8), inset 0 calc(-4px * var(--k)) 0 rgba(20, 37, 79, 0.05), 0 calc(22px * var(--k)) calc(44px * var(--k)) calc(-22px * var(--k)) rgba(13, 40, 105, 0.42); --soc-clay-sm: inset 0 calc(-3px * var(--k)) 0 rgba(20, 37, 79, 0.05), 0 calc(10px * var(--k)) calc(22px * var(--k)) calc(-14px * var(--k)) rgba(13, 40, 105, 0.32); --soc-clay-sun: inset 0 calc(2px * var(--k)) 0 rgba(255, 255, 255, 0.5), inset 0 calc(-5px * var(--k)) 0 rgba(120, 80, 0, 0.1), 0 calc(22px * var(--k)) calc(44px * var(--k)) calc(-22px * var(--k)) rgba(13, 40, 105, 0.42); position: relative; isolation: isolate; display: flex; flex: none; flex-direction: column; box-sizing: border-box; width: 1080px; height: 1350px; margin: 0; overflow: hidden; color-scheme: light; font-family: var(--text); font-size: calc(17px * var(--k)); font-weight: var(--tw); line-height: 1.45; text-align: left; color: var(--ink); -webkit-font-smoothing: antialiased; }
+:where(.da) .soc-portrait { height: 1350px; }
+:where(.da) .soc-story { --s: 2.15; --haut-libre: 250px; --bas-libre: 340px; --sous-plaque: calc(var(--haut-libre) + var(--plaque) + 22px * var(--k)); height: 1920px; }
+:where(.da) .soc-carre { --s: 1.7; height: 1080px; }
+:where(.da) .soc-banniere { --k: 2; --s: 1.2; --bord: 56px; --plaque: calc(var(--cible) * var(--k)); --haut-plaque: var(--bord); --sous-plaque: calc(var(--bord) + var(--plaque) + 14px * var(--k)); width: 1200px; height: 630px; }
+:where(.da) .soc-banniere .soc-titre.couv { --corps: 116px; }
+:where(.da) .soc b, :where(.da) .soc strong { font-weight: var(--tb); }
+:where(.da .soc) :where(p, h2, h3, ol, ul, figure, blockquote) { margin: 0; padding: 0; list-style: none; }
+:where(.da) .soc img { display: block; max-width: none; height: auto; }
+
+/* ───────── Fonds ─────────
+   `soc--ciel` : le ciel du matin (premier écran), pour une accroche, une annonce, une fin.
+   `soc--sable` : une feuille sable à coins hauts arrondis, posée sur une bande de ciel où tient la
+   plaque du mot-symbole, comme la pastille de navigation au-dessus d'une feuille du site.
+   `soc--profond` : sous la surface, dégradé `deep` vers `deep-2`, texte blanc. */
+:where(.da) .soc--ciel { background: linear-gradient(var(--sky-1) 0, var(--sky-2) 46%, var(--glow) 100%); }
+:where(.da) .soc--sable { --feuille: calc(var(--haut-plaque) + var(--plaque) + 12px * var(--k)); --sous-plaque: calc(var(--feuille) + 20px * var(--k)); background: linear-gradient(var(--sky-1), var(--sky-2) calc(var(--feuille) + var(--r-xl) * var(--k))); }
+:where(.da) .soc--sable::before { content: ""; position: absolute; z-index: -1; inset: var(--feuille) 0 0; border-radius: calc(var(--r-xl) * var(--k)) calc(var(--r-xl) * var(--k)) 0 0; background: var(--sand); }
+:where(.da) .soc--profond { background: linear-gradient(var(--deep), var(--deep-2)); color: var(--paper); }
+
+/* ───────── Mot-symbole ─────────
+   La plaque blanche du pied du site (`.ft-logo`), en petit (décision de Ryan, 15/11/2026 : « le badge
+   est beaucoup trop gros », « mets-le beaucoup plus haut ») : 84 px de haut, mot de 40,5 px, à 44 px
+   du haut. Une fois par image autonome du fil (couverture, post seul, bannière). Les images du
+   milieu d'un carrousel n'en ont pas : classe `sans-marque` sur la section. Une story n'en a pas
+   par défaut (Ryan, 26/10/2026) ; si on la remet, elle passe sous la zone haute. */
+:where(.da) .soc-marque { position: absolute; z-index: 4; left: var(--bord); top: var(--haut-plaque); display: inline-flex; align-items: center; height: var(--plaque); padding: 0 calc(11px * var(--k)); border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--soc-clay-sm); }
+:where(.da) .soc-story .soc-marque { top: calc(var(--haut-libre) + 6px * var(--k)); }
+:where(.da) .soc-story.soc--sable { --feuille: calc(var(--haut-libre) + var(--plaque) + 18px * var(--k)); }
+:where(.da) .soc .logo-word { font-size: calc(13.5px * var(--k)); }
+:where(.da) .soc-banniere .soc-marque { padding: 0 calc(18px * var(--k)); }
+:where(.da) .soc-banniere .logo-word { font-size: calc(20px * var(--k)); }
+/* Image du milieu d'un carrousel : pas de plaque, la feuille et le titre remontent. */
+:where(.da) .soc.sans-marque { --plaque: 0px; --haut-plaque: 0px; }
+:where(.da) .soc.sans-marque .soc-marque { display: none; }
+
+/* ───────── Texte ─────────
+   `.soc-tete` : la colonne de texte, sous la plaque ; `.soc-centre` la centre (couverture, fin).
+   `.soc-titre` : un titre de feuille (32 px × 3) ; `.couv` : le titre d'une couverture (50 px × 3),
+   deux ou trois lignes courtes ; `.eau` colore le dernier mot comme sur le premier écran.
+   `.soc-surtitre` : la ligne au-dessus du titre. `.soc-chapo` : une phrase ou deux sous le titre.
+   `.soc-mention` : le plus petit texte (13,5 px × 3), jamais en dessous. */
+:where(.da) .soc-tete { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; gap: calc(8px * var(--k)); padding: var(--sous-plaque) var(--bord) 0; }
+:where(.da) .soc-centre { align-items: center; text-align: center; }
+:where(.da) .soc .aff, :where(.da) .soc-titre { font-family: var(--display); font-weight: var(--dw); font-size: var(--corps); line-height: 1.05; letter-spacing: min(calc(0.66px * var(--k) - 0.059 * var(--corps)), calc(2.43px * var(--k) - 0.0851 * var(--corps))); }
+:where(.da) .soc-titre { --corps: calc(32px * var(--k)); text-wrap: balance; }
+:where(.da) .soc-titre.couv { --corps: calc(50px * var(--k)); line-height: 0.96; letter-spacing: min(calc(1.175px * var(--k) - 0.0695 * var(--corps)), calc(2.778px * var(--k) - 0.0924 * var(--corps))); }
+:where(.da) .soc-titre .eau { color: var(--w4); }
+:where(.da) .soc-titre .grand { display: block; font-size: calc(40px * var(--k)); line-height: 1.02; letter-spacing: min(calc(0.66px * var(--k) - 0.059 * 40px * var(--k)), calc(2.43px * var(--k) - 0.0851 * 40px * var(--k))); }
+:where(.da) .soc-titre .suite { display: block; margin-top: calc(5px * var(--k)); font-size: calc(24px * var(--k)); line-height: 1.12; letter-spacing: calc(var(--dtr) * 0.7); }
+:where(.da) .soc-surtitre { font-size: calc(14px * var(--k)); font-weight: 600; line-height: 1.3; color: var(--ink-2); }
+:where(.da) .soc-chapo { max-width: 17em; font-size: calc(17.5px * var(--k)); line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+:where(.da) .soc-mention { font-size: calc(13.5px * var(--k)); line-height: 1.35; color: var(--ink-2); }
+:where(.da) .soc--profond .soc-titre .suite, :where(.da) .soc--profond .soc-surtitre, :where(.da) .soc--profond .soc-chapo, :where(.da) .soc--profond .soc-mention { color: var(--on-deep-2); }
+:where(.da) .soc .hl { padding: 0 0.16em; margin-left: 0; }
+
+/* ───────── Bouton ─────────
+   Le bouton de la pastille de navigation du site (`.hd .btn` : 44 px de haut, tranche de 3 px), à
+   l'échelle : un seul, jaune, sur la dernière image. Un <span>, pas un lien : une image ne se
+   clique pas. */
+:where(.da) .soc .btn { min-height: calc(var(--cible) * var(--k)); padding: 0 calc(18px * var(--k)); font-size: calc(15.5px * var(--k)); white-space: nowrap; cursor: default; }
+:where(.da) .soc .btn-brand { box-shadow: 0 calc(3px * var(--k)) 0 var(--sun-edge); }
+:where(.da) .soc .btn-white { box-shadow: 0 calc(3px * var(--k)) 0 var(--edge); }
+
+/* ───────── La scène : soleil, vagues, mascotte ─────────
+   Un `.pond` au bas du cadre, aux mesures du premier écran du site au téléphone multipliées par
+   `--s`. Ordre des plans, comme sur le site : `.sun`, `.wave.w1`, `.wave.w2`, la mascotte `.hippo`
+   (le buste), les papiers `.slip`, `.wave.w3`, `.wave.w4`. Le soleil est centré ; la mascotte sort
+   de l'eau entre la deuxième et la troisième vague.
+   `--fond` remonte toute la scène en ajoutant de l'eau sous elle (story : la zone basse reste sans
+   texte). `--rentre` éloigne les papiers des bords (un post 4:5 est recadré en 3:4 dans la grille
+   d'un profil). */
+:where(.da) .soc .pond { --fond: 0px; --rentre: 0px; position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; height: calc(400px * var(--s) + var(--fond)); margin: 0; --p: calc(300px * var(--s)); --th: calc(40px * var(--s)); }
+:where(.da) .soc .pond .sun { left: var(--x, 50%); bottom: calc(46px * var(--s) + var(--fond)); width: calc(300px * var(--s)); height: calc(300px * var(--s)); margin-left: calc(-150px * var(--s)); box-shadow: 0 0 0 calc(26px * var(--s)) var(--sun-halo-1), 0 0 0 calc(62px * var(--s)) var(--sun-halo-2); }
+:where(.da) .soc .pond .w1 { height: calc(176px * var(--s) + var(--fond)); }
+:where(.da) .soc .pond .w2 { height: calc(142px * var(--s) + var(--fond)); }
+:where(.da) .soc .pond .w3 { height: calc(98px * var(--s) + var(--fond)); }
+:where(.da) .soc .pond .w4 { height: calc(52px * var(--s) + var(--fond)); }
+:where(.da) .soc .pond .hippo { position: absolute; left: var(--x, 50%); bottom: calc(24px * var(--s) + var(--fond)); width: calc(262px * var(--s)); margin-left: calc(-131px * var(--s)); }
+:where(.da) .soc .pond .slip { position: absolute; bottom: calc(50px * var(--s) + var(--fond)); padding: calc(8px * var(--s)) calc(12px * var(--s)) calc(38px * var(--s)); border-radius: calc(10px * var(--s)); background: var(--paper); color: var(--ink); font-size: calc(13px * var(--k)); font-weight: var(--tb); line-height: 1.45; white-space: nowrap; box-shadow: 0 calc(8px * var(--s)) calc(14px * var(--s)) calc(-8px * var(--s)) rgba(13, 40, 105, 0.45); }
+:where(.da) .soc .pond .slip.a { left: calc(14px * var(--s) + var(--rentre)); rotate: -7deg; }
+:where(.da) .soc .pond .slip.b { right: calc(12px * var(--s) + var(--rentre)); bottom: calc(46px * var(--s) + var(--fond)); rotate: 6deg; }
+
+:where(.da) .soc-portrait .pond { --rentre: 34px; }
+/* Story : la scène remonte de 180 px, pour que les papiers restent au-dessus de la zone basse, et le
+   buste passe à 640 px de large (son fichier en fait 1171) : c'est lui qui porte l'image. */
+:where(.da) .soc-story .pond { --fond: 180px; --rentre: 24px; }
+:where(.da) .soc-story .pond .hippo { width: calc(298px * var(--s)); margin-left: calc(-149px * var(--s)); }
+
+:where(.da) .soc .pond.a-droite { --x: 74%; }
+/* Annonce carrée : le soleil se lève plus à droite et plus bas que la mascotte, pour qu'aucune ligne
+   de texte ne croise le bord d'un anneau. */
+:where(.da) .soc-carre .pond.a-droite .sun { left: 87%; bottom: calc(46px * var(--s) - 54px * var(--k)); }
+:where(.da) .soc .pond .hippo.presente { bottom: calc(-62px * var(--k)); width: calc(124px * var(--k)); margin-left: calc(-56px * var(--k)); }
+:where(.da) .soc .pond .hippo.presente.lui { bottom: calc(-8px * var(--k)); }
+/* Elle peut ouvrir : `hippo-f-salut.webp` (ou `hippo-salut.webp` avec `lui`) remplace le buste dans
+   l'eau d'une couverture ou d'une story d'accroche. Ses proportions sont plus hautes que le buste :
+   la largeur baisse pour que la tête sorte à la même hauteur, et la vague cache le bas coupé. */
+:where(.da) .soc .pond .hippo.salut { width: calc(196px * var(--s)); margin-left: calc(-98px * var(--s)); }
+:where(.da) .soc .pond .hippo.salut.lui { width: calc(236px * var(--s)); margin-left: calc(-118px * var(--s)); }
+:where(.da) .soc-story .pond .hippo.salut { width: calc(222px * var(--s)); margin-left: calc(-111px * var(--s)); }
+:where(.da) .soc-story .pond .hippo.salut.lui { width: calc(268px * var(--s)); margin-left: calc(-134px * var(--s)); }
+
+/* La scène de fin (`soc--fin`, avec `soc--ciel`) : le soleil, une vague, la mascotte de dos, le mot
+   géant dont les jambages trempent, trois vagues devant. Mesures de la scène de fin du site au
+   téléphone, multipliées par `--s`, sauf deux décalages : le soleil descend de 20 px × k, pour que
+   son disque et son premier anneau commencent sous le bouton, et la mascotte de 12 px × k, pour que
+   ses mains restent dans l'eau. `hippo-dos.webp` fait 431 px de large : `--s` ne dépasse pas 2,5. */
+:where(.da) .soc--fin { --s: 1.85; --sous-plaque: calc(20px * var(--k)); }
+:where(.da) .soc--fin .pond { height: calc(360px * var(--s)); }
+:where(.da) .soc--fin .pond .sun { bottom: calc(50px * var(--s) - 20px * var(--k)); width: calc(290px * var(--s)); height: calc(290px * var(--s)); margin-left: calc(-145px * var(--s)); }
+:where(.da) .soc--fin .pond .hippo { bottom: calc(34px * var(--s) - 12px * var(--k)); width: calc(172px * var(--s)); margin-left: calc(-86px * var(--s)); }
+:where(.da) .soc--fin .pond .wordmark { position: absolute; left: 50%; bottom: calc(128px * var(--s) - 0.06em); translate: -50% 0; font-family: var(--display); font-size: 200px; line-height: 0.8; font-weight: 800; letter-spacing: calc(-0.045em - min(0.0747em - 4.05px * var(--k), 0.0488em)); color: var(--brand); white-space: nowrap; }
+:where(.da) .soc--fin .pond .wordmark span { color: var(--brand-2); }
+:where(.da) .soc--fin .btn { margin-top: calc(4px * var(--k)); }
+
+/* ───────── Cartes ─────────
+   `.soc-carte` : la carte argile, blanche, coins de 30 px × 3, ombre `clay` à l'échelle.
+   `.soleil` : la carte jaune, pour le Super-Net et lui seul ; elle rogne la mascotte à son bord bas.
+   `.soc-carte-t` : le libellé en tête de carte. */
+:where(.da) .soc-carte { position: relative; z-index: 2; box-sizing: border-box; margin: 0 var(--bord); padding: calc(20px * var(--k)) calc(22px * var(--k)); border-radius: calc(var(--r-fiche) * var(--k)); background: var(--paper); color: var(--ink); box-shadow: var(--soc-clay); }
+:where(.da) .soc-carte.bas { margin-top: auto; margin-bottom: var(--bord); }
+:where(.da) .soc-carte.droite { align-self: flex-end; width: calc(216px * var(--k)); padding-inline: calc(18px * var(--k)); white-space: nowrap; }
+:where(.da) .soc-carte.gauche { align-self: flex-start; width: calc(216px * var(--k)); padding-inline: calc(18px * var(--k)); white-space: nowrap; }
+:where(.da) .soc-carte.soleil { overflow: hidden; background: var(--sun); box-shadow: var(--soc-clay-sun); }
+:where(.da) .soc-carte-t { font-size: calc(15px * var(--k)); font-weight: var(--tb); line-height: 1.3; color: var(--ink-2); }
+:where(.da) .soc-carte.soleil .soc-carte-t, :where(.da) .soc-carte.soleil .soc-legende, :where(.da) .soc-carte.soleil .soc-mention { color: var(--ink); }
+
+/* Trois points numérotés. La pastille est celle des étapes du site : ciel, et jaune pour le
+   dernier point quand il mène à ce qu'il reste (`.reste`). */
+:where(.da) .soc-points li { display: flex; align-items: center; gap: calc(12px * var(--k)); padding: calc(10px * var(--k)) 0; border-top: calc(1px * var(--k)) solid var(--line); font-size: calc(18px * var(--k)); font-weight: var(--tb); line-height: 1.2; }
+:where(.da) .soc-points li:first-child { border-top: 0; padding-top: 0; }
+:where(.da) .soc-points li:last-child { padding-bottom: 0; }
+:where(.da) .soc-points .n { display: flex; flex: none; align-items: center; justify-content: center; width: calc(34px * var(--k)); height: calc(34px * var(--k)); border-radius: 50%; background: var(--sky); font-size: calc(15.5px * var(--k)); font-weight: var(--tb); line-height: 1; }
+:where(.da) .soc-points .reste .n { background: var(--sun); }
+
+/* Un chiffre et sa décomposition. `.soc-chiffre` : le grand montant (56 px × 3), en `.aff num`,
+   surligné `.hl` quand c'est le Super-Net. `.soc-barre` : les parts à l'échelle des montants
+   (`flex-grow` en ligne), aux couleurs `.l1` `.l2` `.l3`. `.soc-parts` : une colonne par part. */
+:where(.da) .soc-chiffre { --corps: calc(56px * var(--k)); line-height: 1; white-space: nowrap; }
+:where(.da) .soc-legende { font-size: calc(15.5px * var(--k)); line-height: 1.4; color: var(--ink-2); text-wrap: balance; }
+:where(.da) .soc-barre { display: flex; gap: calc(1px * var(--k)); height: calc(12px * var(--k)); margin: calc(10px * var(--k)) 0 calc(8px * var(--k)); overflow: hidden; border-radius: var(--r-pill); }
+:where(.da) .soc-barre i { flex: 0 1 0; }
+:where(.da) .soc-parts { display: flex; gap: calc(6px * var(--k)); }
+:where(.da) .soc-parts li { display: flex; flex: 1; flex-direction: column; min-width: 0; font-size: calc(13.5px * var(--k)); line-height: 1.35; color: var(--ink-2); }
+:where(.da) .soc-parts b { font-family: var(--display); font-size: calc(18px * var(--k)); font-weight: var(--dw); letter-spacing: -0.015em; line-height: 1.25; color: var(--ink); }
+:where(.da) .soc .sw { width: calc(11px * var(--k)); height: calc(11px * var(--k)); margin-right: calc(5px * var(--k)); border-radius: calc(4px * var(--k)); }
+:where(.da) .soc-pied { margin: calc(16px * var(--k)) calc(-22px * var(--k)) calc(-20px * var(--k)); padding: calc(11px * var(--k)) calc(22px * var(--k)); border-radius: 0 0 calc(var(--r-fiche) * var(--k)) calc(var(--r-fiche) * var(--k)); background: var(--sky-soft); font-size: calc(13.5px * var(--k)); line-height: 1.35; color: var(--ink-2); }
+
+/* Une citation : la carte des témoignages du site. Le texte entre guillemets français, puis
+   l'auteur : pastille d'initiales `.av`, nom, qualité. */
+:where(.da) .soc-citation { display: flex; flex-direction: column; gap: calc(12px * var(--k)); }
+:where(.da) .soc-guillemets { position: absolute; top: calc(-20px * var(--k)); right: calc(22px * var(--k)); display: flex; align-items: center; justify-content: center; width: calc(44px * var(--k)); height: calc(44px * var(--k)); border-radius: 50%; background: var(--sky); color: var(--ink); rotate: -4deg; box-shadow: var(--soc-clay-sm); }
+:where(.da) .soc-guillemets svg { width: calc(20px * var(--k)); height: auto; }
+:where(.da) .soc-citation blockquote p { font-size: calc(16px * var(--k)); line-height: 1.45; text-wrap: pretty; }
+:where(.da) .soc-citation figcaption { display: flex; align-items: center; gap: calc(12px * var(--k)); padding-top: calc(12px * var(--k)); border-top: calc(1px * var(--k)) solid var(--line); }
+:where(.da) .soc-citation .av { display: flex; flex: none; align-items: center; justify-content: center; width: calc(40px * var(--k)); height: calc(40px * var(--k)); border-radius: 50%; background: var(--sky); font-size: calc(15px * var(--k)); font-weight: var(--tb); letter-spacing: 0.02em; }
+:where(.da) .soc-citation .qui { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+:where(.da) .soc-citation .qui b { font-size: calc(16px * var(--k)); }
+:where(.da) .soc-citation .qui span { font-size: calc(14.5px * var(--k)); color: var(--ink-2); }
+
+/* Un conseil : la même carte sans guillemets ni pastille d'initiales, le texte en titre de bloc
+   (24 px × 3), signé « Hippodoc ». */
+:where(.da) .soc-conseil { font-family: var(--display); font-size: calc(24px * var(--k)); font-weight: var(--dw); line-height: 1.12; letter-spacing: calc(var(--dtr) * 0.7); text-wrap: balance; }
+
+/* La rive : deux vagues au bas d'une feuille sable (`<div class="pond rive">` avec `.wave.w3` et
+   `.wave.w4`), devant la carte `.bas`, dont le bord bas trempe de 8 px × k. Une carte seule sur du
+   sable pourrait être de n'importe quelle marque : l'eau la signe. */
+:where(.da) .soc .pond.rive { z-index: 3; height: calc(92px * var(--s)); }
+:where(.da) .soc .pond.rive .w3 { height: calc(92px * var(--s)); }
+:where(.da) .soc .pond.rive .w4 { height: calc(50px * var(--s)); }
+:where(.da) .soc:has(> .pond.rive) .soc-carte.bas { margin-bottom: calc(92px * var(--s) - 8px * var(--k)); }
+
+/* Un prix : `<p class="soc-prix"><b class="aff num">10 €</b> <span>par mois</span></p>`. */
+:where(.da) .soc-prix { display: flex; align-items: baseline; gap: calc(8px * var(--k)); font-size: calc(16px * var(--k)); color: var(--ink-2); }
+:where(.da) .soc-prix b { --corps: calc(54px * var(--k)); color: var(--ink); }
+
+/* ───────── Bulles ─────────
+   Les six bulles de l'eau profonde, immobiles : `<span class="soc-bulles"><i></i>…</span>`.
+   Celles des côtés tiennent dans la marge de bord : aucune ne passe derrière une carte. */
+:where(.da) .soc-bulles { position: absolute; z-index: 0; inset: 0; }
+:where(.da) .soc-bulles i { position: absolute; width: calc(12px * var(--k)); height: calc(12px * var(--k)); border-radius: 50%; box-shadow: inset 0 0 0 calc(1.5px * var(--k)) rgba(255, 255, 255, 0.34); }
+:where(.da) .soc-bulles i:nth-child(1) { left: 1.2%; top: 36%; }
+:where(.da) .soc-bulles i:nth-child(2) { left: 15%; top: 95%; width: calc(7px * var(--k)); height: calc(7px * var(--k)); }
+:where(.da) .soc-bulles i:nth-child(3) { left: 82%; top: 8%; width: calc(16px * var(--k)); height: calc(16px * var(--k)); }
+:where(.da) .soc-bulles i:nth-child(4) { left: 60%; top: 96%; width: calc(8px * var(--k)); height: calc(8px * var(--k)); }
+:where(.da) .soc-bulles i:nth-child(5) { left: 94.5%; top: 30%; }
+:where(.da) .soc-bulles i:nth-child(6) { left: 94.2%; top: 21%; width: calc(18px * var(--k)); height: calc(18px * var(--k)); }
+
+/* ───────── Mascotte hors de l'eau ─────────
+   Toujours ancrée : `.pointe`, au bord bas du cadre, qui la rogne, le doigt sur la carte ;
+   `.pouce`, au bord bas d'une carte `.soleil`, qui la rogne. (Dans l'eau, elle est le `.hippo`
+   d'un `.pond`.)
+   Les décalages sont réglés sur les poses féminines ; `.lui` les règle pour `hippo-pouce.webp` et,
+   dans l'eau, pour `hippo-presente.webp`, qui n'ont pas les mêmes proportions. */
+:where(.da) .soc-mascotte { position: absolute; z-index: 1; }
+:where(.da) .soc-mascotte.pointe { z-index: 3; left: calc(8px * var(--k)); bottom: calc(-11px * var(--k)); width: calc(133px * var(--k)); }
+:where(.da) .soc-mascotte.pouce { right: calc(4px * var(--k)); bottom: calc(-92px * var(--k)); width: calc(128px * var(--k)); }
+:where(.da) .soc-mascotte.pouce.lui { bottom: calc(-26px * var(--k)); }
+/* Pose libre : toute pose de la bibliothèque (reference/mascotte.md), rognée par le bord bas du
+   cadre, dans un coin. `.a-gauche` ou `.a-droite` choisit le coin : place-la du côté d'où elle
+   regarde vers le texte. `--l` règle la largeur en px × k (112 par défaut, 104 au moins, jamais
+   plus large que son fichier). Une pose à bas coupé net descend juste assez pour cacher son bord ;
+   `.en-pied` fait passer le bord du cadre aux genoux, pour qu'une pose en pied ne flotte pas.
+   Elle passe derrière les cartes. Avec une carte `.soc-points`, mets la carte du côté opposé
+   (`droite` ou `gauche`). */
+:where(.da) .soc-mascotte.libre { --l: 112px; z-index: 1; bottom: 0; width: calc(var(--l) * var(--k)); translate: 0 4%; }
+:where(.da) .soc-mascotte.libre.en-pied { translate: 0 24%; }
+:where(.da) .soc-mascotte.libre.a-gauche { left: calc(8px * var(--k)); }
+:where(.da) .soc-mascotte.libre.a-droite { right: calc(8px * var(--k)); }
+/* `.coucou` : `hippo-coucou-bord.webp` sort du bord gauche du cadre, qui le rogne. */
+:where(.da) .soc-mascotte.libre.coucou { left: calc(-6px * var(--k)); right: auto; }
+:where(.da) .soc-carte.soleil { min-height: calc(250px * var(--k)); margin-top: calc(18px * var(--k)); padding-bottom: calc(24px * var(--k)); }
+:where(.da) .soc-carte.soleil .soc-chiffre { margin: calc(2px * var(--k)) 0 calc(10px * var(--k)); }
+:where(.da) .soc-carte.soleil .soc-legende, :where(.da) .soc-carte.soleil .soc-mention { max-width: calc(160px * var(--k)); text-wrap: balance; }
+:where(.da) .soc-carte.soleil .soc-mention { margin-top: calc(8px * var(--k)); white-space: nowrap; }

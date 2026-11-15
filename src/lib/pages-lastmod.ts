@@ -22,7 +22,7 @@ export const COMPARATIF_LAST_UPDATED_ISO = '2026-06-24';
 /** /guide (PDF offert, § 9.di) : date « À jour au » imprimée dans l'édition en ligne.
  *  Littéral ici, pas dans `guide-remplacant.ts` : verify-site.mjs lit cette table par
  *  expression régulière et ne résout que les constantes déclarées dans ce fichier. */
-export const GUIDE_REMPLACANT_LAST_UPDATED_ISO = '2026-09-26';
+export const GUIDE_REMPLACANT_LAST_UPDATED_ISO = '2026-11-15';
 
 /** Chemin de page (sans slash final) → date ISO de dernière revue. */
 /** Pages filles du guide, créées le 23 août 2026 (MIGRATION.md § 9.ap). Leur

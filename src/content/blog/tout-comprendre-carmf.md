@@ -29,7 +29,7 @@ faq:
   - question: "Quelle différence entre secteur 1 et secteur 2 pour la CARMF ?"
     answer: "En **secteur 1**, l'ASV coûte 1 917 € + 1,33% des revenus en 2026 (l'Assurance Maladie prend en charge les deux tiers). En **secteur 2**, c'est 5 751 € + 4%. Les médecins conventionnés secteur 1 paient donc moins de cotisations ASV."
   - question: "Puis-je être dispensé de cotisations CARMF ?"
-    answer: "Une **dispense totale d'affiliation** est possible si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. Attention : elle n'est **pas automatique**, s'obtient sur **demande explicite** auprès de la CARMF et n'est pas rétroactive. La période dispensée ne compte pas pour tes droits à la retraite."
+    answer: "Une **dispense totale d'affiliation** est possible si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. Attention : elle n'est **pas automatique**, s'obtient sur **demande explicite** auprès de la CARMF. La période dispensée ne compte pas pour tes droits à la retraite."
 relatedArticles:
   - "pause-remplacements-cotisations-medecin"
   - "prevoyance-madelin-medecin"
@@ -146,7 +146,7 @@ C'est la cotisation la plus mal comprise des trois, parce qu'elle dépend de ton
 
 ## 🎁 Tips & astuces indispensables
 
-✅ **Dispense d'affiliation possible** si ton revenu net d'activité indépendante reste inférieur à **15 000 €** et que tu n'es pas assujetti à la CET — ⚠ [sur demande](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm), non automatique et non rétroactive. En contrepartie, tu perds la couverture invalidité-décès et ces périodes ne compteront pas pour ta retraite.\
+✅ **Dispense d'affiliation possible** si ton revenu net d'activité indépendante reste inférieur à **15 000 €** et que tu n'es pas assujetti à la CET — ⚠ [sur demande](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm), non automatique. En contrepartie, tu perds la couverture invalidité-décès et ces périodes ne compteront pas pour ta retraite.\
 ✅ **Dispense de complémentaire** : si tu es affilié mais que tes revenus imposables de l'année précédente sont modestes, la CARMF peut réduire ta complémentaire sur demande, de 25 % à 100 % jusqu'à 32 500 € de revenus. Les points correspondants ne sont pas acquis.\
 ✅ **[RSPM](/blog/rspm-exemples-concrets)** : cotisations sociales réduites (~13,5% tout compris) – Voir [fiche fiscalité #3](/blog/tout-comprendre-urssaf).\
 ✅ **ACRE** : depuis le 1er janvier 2026, elle est réservée à certains profils et plafonnée à 25 % — le détail est dans [le guide des frais pros 2026](/blog/frais-pros-medecin-liberal-2026).\

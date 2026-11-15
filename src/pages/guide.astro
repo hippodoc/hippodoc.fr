@@ -7,7 +7,7 @@
  * navigateur intégré d'Instagram, sur téléphone. D'où, sur mobile, le bouton de
  * téléchargement dans le premier écran, AVANT la couverture.
  *
- * Page indexable : le sommaire et les 6 règles (repris du guide, p. 2 et 3)
+ * Page indexable : le sommaire et les 7 règles (repris du guide, p. 3 et 4)
  * sont le texte que Google lit. Le PDF lui-même porte `X-Robots-Tag: noindex`
  * (vercel.json) : c'est cette page, mesurée et reliée au reste du site, qui doit
  * se positionner, pas le fichier nu. Voir MIGRATION.md § 9.di.
@@ -31,7 +31,7 @@ import BlogCtaBand from '@/components/BlogCtaBand.astro';
 import { SITE_URL } from '@/lib/site';
 import { GUIDE_REMPLACANT } from '@/lib/guide-remplacant';
 import couverture from '@/assets/guide/couverture.png';
-import apercuRegles from '@/assets/guide/apercu-6-regles.png';
+import apercuRegles from '@/assets/guide/apercu-7-regles.png';
 import apercuJournee from '@/assets/guide/apercu-journee-600.png';
 import apercuCalendrier from '@/assets/guide/apercu-calendrier.png';
 import ryanPhoto from '@/assets/founders/ryan-goburdhun.jpeg';
@@ -46,58 +46,53 @@ const partageWhatsApp = `https://wa.me/?text=${encodeURIComponent(
 
 const title = 'Guide du médecin remplaçant 2026-2027 (PDF gratuit)';
 const description =
-  "Licence, contrat, URSSAF, CARMF, impôts : le guide offert aux internes et jeunes remplaçants. 26 pages, chiffres 2026, et ce qu'il te reste vraiment.";
+  `Licence, contrat, URSSAF, CARMF, impôts : le guide offert aux internes et jeunes remplaçants. ${pages} pages, chiffres 2026, et ce qu'il te reste vraiment.`;
 const path = '/guide';
 
 const sommaire = [
-  { n: 1, titre: 'Libéral, salarié ou les deux', detail: 'Ton cadre, et l’intérim en établissement' },
-  { n: 2, titre: 'Démarrer', detail: 'Les démarches dans l’ordre, licence et autorisation' },
-  { n: 3, titre: 'Ton premier rempla', detail: 'Le contrat en 4 points, le jour J' },
-  { n: 4, titre: 'Ton argent', detail: 'La rétrocession, ta journée à 600 €, le Super-Net' },
-  { n: 5, titre: 'Tes cotisations', detail: 'RSPM ou PAMC, pourquoi l’année 2 pique, la CARMF en clair' },
-  { n: 6, titre: 'Tes impôts', detail: 'Micro-BNC ou réel, acomptes, le piège de septembre, CFE' },
-  { n: 7, titre: 'Combien il te reste vraiment', detail: '3 profils chiffrés, la règle des 35 %' },
-  { n: 8, titre: 'Te protéger', detail: 'Si tu t’arrêtes, qui paie ?' },
-  { n: 9, titre: 'Ton calendrier et ta routine', detail: 'Ton année en un coup d’œil, rempla après rempla' },
+  { n: 1, titre: 'Avant ton premier rempla', detail: 'Libéral ou salarié, les démarches dans l’ordre, licence et autorisation, les 10 questions avant de dire oui, le contrat' },
+  { n: 2, titre: 'Pendant tes remplas', detail: 'Le jour J, la rétrocession, ta facture annotée, la règle des 35 %' },
+  { n: 3, titre: 'Sous la surface', detail: 'Ta journée à 600 €, RSPM ou PAMC, l’année 2, la CARMF, micro-BNC ou réel, le piège de septembre, ta déclaration case par case, 3 profils chiffrés' },
+  { n: 4, titre: 'Garder la tête hors de l’eau', detail: 'Si tu t’arrêtes, ta prévoyance, ton année en un coup d’œil, ta routine' },
 ];
 
-/* Guide p. 3, « L'essentiel en 6 règles » : titres et textes repris du PDF.
+/* Guide p. 4, « L'essentiel en 7 règles » : titres et textes repris du PDF.
    Rendus en set:html pour les exposants (1<sup>re</sup>…) : chaînes littérales, jamais de saisie. */
 const regles = [
   {
     titre: 'Une licence ne suffit pas pour remplacer.',
-    texte:
-      'Interne, chaque rempla demande aussi une autorisation de l’Ordre, demandée par le remplacé, et un contrat écrit, même pour une journée.',
+    texte: 'Interne, il faut aussi une autorisation de l’Ordre et un contrat écrit, même pour un jour.',
   },
   {
-    titre: 'Ton chiffre d’affaires n’est pas ton revenu.',
-    texte:
-      'Sur 100 € de rétrocession, il te reste de 60 à 69 € dans nos profils types, une fois cotisations, impôt et frais payés : ton Super-Net.',
+    titre: 'Ce que tu encaisses n’est pas ce que tu gagnes.',
+    texte: 'Sur 100 € de rétrocession, il t’en reste de 58 à 72 € dans nos trois profils : ton Super-Net.',
   },
   {
     titre: '35 % de chaque virement, de côté.',
-    texte:
-      'Sur un compte à part, dès que l’argent arrive : ta réserve pour les cotisations et l’impôt. À ajuster selon ton cas.',
+    texte: 'Sur un compte à part : ta réserve pour les cotisations et l’impôt.',
   },
   {
-    titre: 'Les premiers prélèvements sont trompeurs.',
-    texte: 'En PAMC (le régime classique), tu paies d’abord des forfaits. La vraie facture arrive pendant ta 2<sup>e</sup> année.',
+    titre: 'RSPM ou PAMC : choisis avant le 1<sup>er</sup> rempla.',
+    texte: 'Le RSPM, régime simplifié, est souvent moins cher, mais il a des seuils. Sinon, c’est le PAMC, le régime classique.',
   },
   {
-    titre: 'Aucun impôt prélevé la 1<sup>re</sup> année, sauf si tu agis.',
-    texte:
-      'Crée ton acompte sur impots.gouv.fr dès ta première rétro. Sinon, tout tombe à partir de septembre de l’année suivante.',
+    titre: 'En PAMC, l’année 2 pique.',
+    texte: 'D’abord des forfaits, des montants fixes ; le rattrapage arrive en 2<sup>e</sup> année.',
   },
   {
-    titre: 'Pas d’indemnités de l’Assurance maladie avant 12 mois.',
-    texte: 'La CARMF ne prend le relais qu’à partir du 91<sup>e</sup> jour d’arrêt. Une prévoyance se prend tôt.',
+    titre: 'Pas d’impôt prélevé au début, sauf si tu agis.',
+    texte: 'Sans acompte, rien n’est prélevé avant septembre de l’année suivante : crée-le dès ta 1<sup>re</sup> rétro.',
+  },
+  {
+    titre: 'Une prévoyance se prend tôt.',
+    texte: 'La CPAM ne paie tes arrêts qu’après un an de libéral.',
   },
 ];
 
 const apercus = [
-  { src: apercuRegles, legende: 'L’essentiel en 6 règles', alt: 'Page 3 du guide : l’essentiel en 6 règles' },
-  { src: apercuJournee, legende: 'Ta journée à 600 €, vraiment', alt: 'Page 10 du guide : de 600 € de rétrocession à 373 € de Super-Net' },
-  { src: apercuCalendrier, legende: 'Ton année en un coup d’œil', alt: 'Page 22 du guide : le calendrier de l’année du remplaçant' },
+  { src: apercuRegles, legende: 'L’essentiel en 7 règles', alt: 'Page 4 du guide : l’essentiel en 7 règles' },
+  { src: apercuJournee, legende: 'Ta journée à 600 €, vraiment', alt: 'Page 15 du guide : de 600 € de rétrocession à 368 € de Super-Net' },
+  { src: apercuCalendrier, legende: 'Ton année en un coup d’œil', alt: 'Page 29 du guide : le calendrier de l’année du remplaçant' },
 ];
 
 const guideSchema = {
@@ -147,7 +142,7 @@ const troisPoints =
 
   <!-- Pas de bulle de chat sur mobile ici : elle masquait la droite des cartes
        (56 px sur 320) pendant toute la lecture, et ces visiteurs arrivent d'un DM
-       Instagram, où la conversation a déjà lieu (le guide le dit p. 25). Sur
+       Instagram, où la conversation a déjà lieu. Sur
        ordinateur, la bulle reste (§ 9.dk). -->
   <style is:global>
     @media (max-width: 767px) {
@@ -210,12 +205,12 @@ const troisPoints =
       </div>
     </section>
 
-    <!-- L'essentiel en 6 règles (guide p. 3) : une feuille sable, six fiches -->
+    <!-- L'essentiel en 7 règles (guide p. 4) : une feuille sable, sept fiches -->
     <section class="band da-bloc" aria-labelledby="regles">
       <div class="wrap">
         <div class="band-head">
           <p class="sur">Si tu ne lis qu'une page</p>
-          <h2 id="regles">L'essentiel en 6 règles</h2>
+          <h2 id="regles">L'essentiel en 7 règles</h2>
         </div>
         <ol class="regles" role="list">
           {regles.map((r, i) => (
@@ -248,7 +243,7 @@ const troisPoints =
       </div>
     </section>
 
-    <!-- Sommaire : une feuille ciel, le titre à gauche, les neuf chapitres sur une fiche -->
+    <!-- Sommaire : une feuille ciel, le titre à gauche, les quatre parties sur une fiche -->
     <section class="band air da-bloc" aria-labelledby="sommaire">
       <div class="wrap cote">
         <div class="band-head">
@@ -256,7 +251,7 @@ const troisPoints =
           <p class="lead">
             Le guide qu'on aurait aimé lire avant notre premier rempla. Licence en poche, tout arrive en même temps :
             l'Ordre, l'URSSAF, la CARMF, les impôts, et la question que personne ne pose clairement : combien il te reste
-            vraiment ? Neuf chapitres, dans l'ordre où tu en auras besoin.
+            vraiment ? Quatre parties, dans l'ordre où tu en auras besoin.
           </p>
         </div>
         <div class="chapitres">
@@ -274,7 +269,7 @@ const troisPoints =
             ))}
           </ol>
           <p class="plus">
-            Plus un glossaire des sigles (ASV, BNC, PAMC, RSPM…) et la liste des sources officielles.
+            Plus un glossaire des sigles (ASV, BNC, PAMC, RSPM…), les outils gratuits pour aller plus loin et la liste des sources officielles.
           </p>
         </div>
       </div>
@@ -393,7 +388,7 @@ const troisPoints =
   /* Le premier écran. Une colonne bornée : le titre, le bouton, la couverture. */
   .haut { display: grid; grid-template-columns: minmax(0, 1fr); gap: 34px; }
   .intro > * { margin: 0; }
-  /* « PDF gratuit · 26 pages · Édition » : une pastille blanche, comme « FAQ ». */
+  /* « PDF gratuit · N pages · Édition » : une pastille blanche, comme « FAQ ». */
   /* Deux classes : la remise à zéro des marges (`.intro > *`) pèse plus qu'une
      classe seule, une fois le style scopé. */
   .intro .marque { display: inline-block; margin-bottom: 16px; padding: 5px 14px; border-radius: 18px; background: var(--paper); box-shadow: var(--clay-sm); font-size: 0.84375rem; font-weight: var(--tb); line-height: 1.5; color: var(--ink); }

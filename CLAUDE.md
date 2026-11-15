@@ -375,7 +375,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   cinq onglets (le quatrième, « Tes déclarations » : cases 5HQ, DSCS, DSAV, DSDE
   pré-remplies ; le cinquième, « Et aussi », § 9.hd : les autres outils, relevés dans le
   menu de l'application, à tenir à jour avec lui dans `AUSSI` ; Google Agenda y reçoit un
-  export .ics, jamais « synchronisé », ici comme dans les tarifs, § 9.he). Libellés courts jusqu'à
+  export .ics, jamais « synchronisé », ici comme dans les tarifs, § 9.hg). Libellés courts jusqu'à
   899 px : sur une ligne à partir de 520 px, sur deux rangées en dessous (trois, puis
   deux) ; libellés longs à partir de 900 px. Les cinq vues gardent la même hauteur
   (mesurée de 320 à 1 920 px) : un outil ajouté à « Et aussi » se remesure à 320 et
@@ -881,6 +881,17 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   premier `<h3>` de sa fiche.
 - Les îlots sont SSR-és au build (leur HTML est indexable) ; pas d'accès
   window/localStorage au rendu (uniquement useEffect/handlers). Pas de framer-motion.
+
+## Le guide du remplaçant (PDF de `/guide`)
+
+- Source et générateur : `outils/guide-remplacant/` (README). Le PDF ne se retouche jamais à la
+  main : on modifie `pages.mjs` (contenu) ou `guide.css`, puis
+  `node outils/guide-remplacant/construire.mjs --site`, qui refuse de déposer un PDF qui déborde.
+- `/guide` reprend mot pour mot son sommaire et « L'essentiel en 7 règles » : une retouche de ces
+  textes se fait aux deux endroits, et `GUIDE_REMPLACANT` (`src/lib/guide-remplacant.ts`) suit le
+  nombre de pages et la date. Chaque chiffre a sa source dans `verification/` ; un nouveau
+  millésime refait les montants avec le moteur du simulateur et repasse les relectures
+  (MIGRATION.md § 9.he).
 
 ## Analytics & scripts tiers
 

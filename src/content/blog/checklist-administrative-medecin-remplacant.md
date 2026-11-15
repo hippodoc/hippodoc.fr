@@ -2,7 +2,7 @@
 title: "Checklist administrative du remplaçant"
 description: "RCP, Ordre, CPAM, URSSAF sous 8 jours, CARMF dès le premier remplacement, prévoyance : quand faire chaque démarche et dans quel ordre, sans rien oublier."
 pubDate: "2025-10-06"
-updatedDate: "2026-09-25"
+updatedDate: "2026-11-15"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -57,7 +57,7 @@ Tu as enfin trouvé ton remplacement idéal ! 🎉 Avant d'enfiler ta blouse bla
 
 ## ✅ Inscription à la CPAM
 
-📅 **Quand ?** Dès ton tout premier remplacement.\
+📅 **Quand ?** **Avant** ton tout premier remplacement, auprès de la CPAM de ton lieu de résidence.\
 🧐 **Pourquoi ?** Cela permet à l'Assurance Maladie d'être informée officiellement de ta situation professionnelle.\
 📌 **Astuce :** Aucune carte à réclamer à la CPAM : ta carte CPS (ou CPF si tu es interne sous licence) t'est envoyée automatiquement par l'Agence du numérique en santé après ton enregistrement à l'Ordre. C'est elle qui te sert à télétransmettre les feuilles de soins électroniques.
 
@@ -95,5 +95,6 @@ Centralise et importe tous tes documents administratifs importants directement d
 • Déclaration de début d'activité dans les 8 jours : [entreprendre.service-public.gouv.fr, fiche F36740](https://entreprendre.service-public.gouv.fr/vosdroits/F36740).\
 • Offre simplifiée (RSPM) : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html).\
 • Affiliation à la CARMF dans le mois, dispense sous 15 000 € : [carmf.fr, « Qui cotise à la CARMF ? »](https://www.carmf.fr/page.php?page=cdrom/coti/coti-affiliation.htm).\
+• Inscription à la CPAM de ton lieu de résidence, avant le premier remplacement : [PAPS, « Effectuer des remplacements »](https://www.paps.sante.fr/effectuer-des-remplacements-15) (vérifié le 15 novembre 2026).\
 • Carte CPS du remplaçant : [ameli.fr, « Les avantages de la télétransmission »](https://www.ameli.fr/medecin/exercice-liberal/facturation-remuneration/teletransmission-retour-noemie/teletransmission).\
 • Indemnités journalières après 12 mois d'affiliation : [ameli.fr, « Les indemnités journalières du professionnel libéral »](https://www.ameli.fr/assure/remboursements/indemnites-journalieres-maladie-maternite-paternite/indemnites-journalieres-pour-maladie/arret-maladie-profession-liberale).
