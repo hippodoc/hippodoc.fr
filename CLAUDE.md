@@ -874,7 +874,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   consentement (`localStorage['cookie-consent']`, valeurs `accepted`/`essential-only`,
   même clé que l'app). Bannière cookies incluse ; « Préférences cookies » au footer.
   Crisp ne se charge qu'à un clic explicite : sur la bulle, ou sur un lien qui porte
-  `data-ouvre-chat` (§ 9.gu ; le bouton de l'offre des internes de `/tarifs`). Un tel
+  `data-ouvre-chat` (§ 9.gu, § 9.gv : l'offre des internes de `/tarifs`, de l'accueil et de
+  `/faq`). Deux liens `.lien` dans une même phrase : leurs zones de toucher de 44 px se
+  recouvrent sur deux lignes qui se suivent (règle dans `accueil/Tarifs.astro`). Un tel
   lien garde un vrai `href` (une adresse e-mail) : c'est ce qu'il fait sans script. Ne
   jamais brancher l'ouverture du chat sur un geste passif (défilement, survol, arrivée) :
   `verify-site.mjs` le refuse. Le script en ligne est sur toutes les pages : le retoucher

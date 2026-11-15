@@ -14708,6 +14708,48 @@ passe. Feuille commune inchangée. Pages changées contre `main` : le nouvel art
 la page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile :
 97 / 100 / 100 / 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
 
+### 9.gv Accueil et `/faq` : l'offre des internes propose aussi le chat (15 novembre 2026)
+
+Demande du propriétaire, après § 9.gu (`/tarifs`) : « fais pareil pour l'offre interne de
+l'accueil et la FAQ ».
+
+**Contenu modifié (à relire par le propriétaire).** Deux mots ajoutés, « par chat », au même
+endroit dans les deux textes ; rien d'autre ne change.
+- **Accueil**, pli « Voir l'offre interne » des tarifs : « Comment en bénéficier ? Écris-nous à
+  contact@hippodoc.fr — on te répond très vite avec ton code promo personnalisé ! » devient
+  « Comment en bénéficier ? Écris-nous par chat ou à contact@hippodoc.fr — on te répond très vite
+  avec ton code promo personnalisé ! ».
+- **`/faq`**, réponse à « Il y a des tarifs pour les internes ? », à l'écran et dans le schéma
+  `FAQPage` (`aHtml` et `aPlain`, ensemble) : « Écris-nous à contact@hippodoc.fr, on t'envoie ton
+  code promo très vite. » devient « Écris-nous par chat ou à contact@hippodoc.fr, on t'envoie ton
+  code promo très vite. ».
+- La réponse « Je suis interne : à quoi Hippodoc me sert… » de la FAQ de l'accueil ne parle pas de
+  contact : pas touchée. Ni la question « Une question, un bug, une suggestion ? » de `/faq`, qui
+  n'est pas l'offre des internes.
+
+**Mécanique.** « par chat » est un lien `data-ouvre-chat` (§ 9.gu) : il ouvre le chat, et sans
+script il reste le lien de l'adresse e-mail. Mesure : `landing_intern_chat` (accueil),
+`faq_intern_chat` (`/faq`). Sur `/faq`, « par chat » ne se coupe pas (`.num`) : à 393 px, « par »
+finissait une ligne et « chat » commençait la suivante.
+
+**Défaut trouvé et corrigé.** Sur l'accueil, les liens du pli sont des `.lien` (da.css), dont la
+zone de toucher dépasse de 11 px au-dessus et au-dessous de la ligne. À 320 px, « par chat » finit
+une ligne et l'adresse e-mail commence la suivante : la zone de l'adresse recouvrait le bas de
+« par chat », et un appui à cet endroit ouvrait le mail. Le premier lien ne s'étend plus vers le
+bas, le second plus vers le haut (règles dans `accueil/Tarifs.astro`) : chacun garde sa ligne entière
+et 11 px de l'autre côté (34 px de haut). Sur `/faq`, les liens des réponses n'ont pas cette
+zone : rien à faire.
+
+**Contrôles.** Chromium à 320, 393 et 1 440 px, et WebKitGTK à 320, 390 et 1 300 px, sur les deux
+pages : un point tous les 2 px de chaque lien tombe sur ce lien, jamais sur l'autre ; au clic et au
+doigt, une requête vers `client.crisp.chat/l.js` (interceptée) et `chat:open` en file ; aucun
+débordement. Lighthouse en local : accueil 99, 100, 100, 100 ; `/faq` 100, 100, 100, 100 (CLS 0).
+`verify-site.mjs` sans erreur (égalité FAQ visible / `FAQPage` comprise). Comparé au build de
+`main` : changent `index.html` (le pli, et le nom de sa feuille), `faq/index.html` (la réponse et
+son schéma), la feuille de l'accueil et, dans le sitemap, les dates de `/` et `/faq`
+(`ACCUEIL_LAST_UPDATED_ISO`, `FAQ_LAST_UPDATED_ISO` : 15 novembre 2026) ; la feuille commune et
+les 72 autres pages sont identiques.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

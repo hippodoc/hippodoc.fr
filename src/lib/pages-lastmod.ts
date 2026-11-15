@@ -33,14 +33,16 @@ export const GUIDE_SOUS_PAGES_LAST_UPDATED_ISO = '2026-08-23';
 /** Accueil : épure de novembre 2026 (MIGRATION.md § 9.eu), textes coupés,
  *  huit questions au lieu de dix, sections déplacées. Mise en ligne le
  *  13 novembre 2026 (PR 144) ; ligne fine du premier écran retouchée le
- *  14 novembre 2026 (§ 9.fy). */
-export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-14';
+ *  14 novembre 2026 (§ 9.fy) ; offre interne : « par chat » le 15 novembre
+ *  2026 (§ 9.gv). */
+export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-15';
 
 /** /faq : douze réponses du schéma FAQPage alignées sur le texte affiché
  *  (MIGRATION.md § 9.fa, PR 146), mises en ligne le 13 novembre 2026 ; le
  *  texte visible de la page n'a pas changé ce jour-là. Elle portait avant la
- *  date de l'accueil de la DA 2026 (10 novembre, § 9.eb). § 9.fd. */
-export const FAQ_LAST_UPDATED_ISO = '2026-11-13';
+ *  date de l'accueil de la DA 2026 (10 novembre, § 9.eb). § 9.fd. Réponse
+ *  « tarifs pour les internes » : « par chat » le 15 novembre 2026 (§ 9.gv). */
+export const FAQ_LAST_UPDATED_ISO = '2026-11-15';
 
 /** /tarifs : page refaite le 15 novembre 2026 (titre, chapô, offres,
  *  garanties : MIGRATION.md § 9.gs). Avant : tarif des internes et essai de
