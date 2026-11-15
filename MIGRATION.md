@@ -5756,9 +5756,10 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
 
 #### Reste ouvert
 
-- **Témoignages** : statut, ville et accord de Sofiane B., Anaïs V., Sarah M. et
+- ~~**Témoignages** : statut, ville et accord de Sofiane B., Anaïs V., Sarah M. et
   Émilien C. ; « Dr » devant les trois autres à confirmer ; « SOS Médecins » nomme une
-  structure tierce.
+  structure tierce.~~ Réglé en § 9.hc : remplacés le 15 novembre 2026 par quatre témoignages
+  dont les auteurs ont validé texte et signature (« SOS Médecins » compris).
 - **À confirmer par le propriétaire** : « Abonnement 100 % déductible au régime réel. »
   (les trois derniers mots sont ajoutés : en micro-BNC rien ne se déduit) ; les deux
   étapes nouvelles du vacataire ; la liste des six guides (`/comparatif` n'a qu'un lien
@@ -15136,6 +15137,83 @@ site construit (articles compris).
 600, 960, 1 024, 1 180 et 1 440 px, police chargée : pied, `/essai` et `/comparatif` identiques
 partout ; `/tarifs` une ligne de moins à partir de 600 px (−29 px), la 404 une ligne de moins dans
 la carte à partir de 960 px (page inchangée). `verify-site.mjs` sans erreur.
+
+### 9.hc Accueil : quatre témoignages d'utilisateurs, validés par leurs auteurs (15 novembre 2026)
+
+Demande du propriétaire : tirer des conversations du chat (Crisp) et des mails des témoignages
+« qui font vrai ». **Aucune personne n'est inventée** : un faux avis est une pratique commerciale
+trompeuse (Code de la consommation, L121-4), aussi quand elle vise des professionnels (L121-5).
+
+**Méthode.**
+- Chaque texte part des mots qu'un utilisateur a écrits, resserrés pour une carte.
+- La personne a validé son texte, son prénom, son initiale et sa qualité avant publication.
+- Le propriétaire a recueilli les accords dans un groupe WhatsApp, le 15 novembre 2026. Il en
+  garde la trace.
+- Les quatre textes ne se retouchent plus sans un nouvel accord.
+- Le fichier de propositions a servi de base. Il comptait 13 textes, et notait pour chacun ce
+  qu'il ne faut pas faire dire à un témoignage (justesse du Super-Net et de l'impôt, prix
+  après l'essai). Ce fichier est resté hors du dépôt.
+
+**Contenu modifié (décision du propriétaire).** Les quatre cartes de `accueil/Temoignages.astro`
+changent, une par situation, dans le même ordre. Les sources sont les fils Crisp copiés dans la
+boîte de contact, et un mail.
+
+1. **« Yoann G. », « Médecin, gardes à SOS Médecins ».**
+   - **Texte publié :** « Mes gardes à SOS Médecins, je les suivais sur un tableau Excel : 75 % de
+     rétro d'un côté, les actes défiscalisés à 100 % de l'autre. Sur Hippodoc, je rentre les deux et
+     ça calcule tout seul ce qui est imposable. Franchement, nickel. »
+   - **Source :** Crisp, conversation #fab, 2 mai 2026. Il y décrivait son tableau Excel, puis :
+     « ça calcule automatiquement les sommes imposables » et « Donc tout est niquel ! ».
+2. **« Léopold L. », « Interne ».**
+   - **Texte publié :** « Interne, je remplace à côté. J'ai fait le tour rapidement : c'est fluide,
+     l'interface est intuitive et agréable. Bravo pour l'outil. »
+   - **Source :** Crisp, conversation #237, 8 juillet 2025. Il avait écrit : « J'ai pu explorer
+     rapidement le site, c'est fluide, l'interface est intuitive et agréable. […] En tout cas, bravo
+     pour l'outil! »
+3. **« Rayan A. », « Activité mixte (libéral, salarié, gardes) ».**
+   - **Texte publié :** « Libéral, salarié, gardes de PDSA : je rentre tout dans l'appli, et je la
+     trouve vraiment très pratique au quotidien. »
+   - **Source :** Crisp, conversation #6ca, 5 avril 2026. Il avait écrit : « l'application, que je
+     trouve vraiment très pratique au quotidien ».
+   - Le début du texte reprend les revenus qu'il détaillait dans le même message.
+4. **« Emma C. », « Médecin remplaçante ».**
+   - **Texte publié :** « Je trouve ça sincèrement super : ça m'a beaucoup aidé, et surtout soulagé.
+     J'en parle à tous les remplaçants que je croise. »
+   - **Source :** mail du 14 novembre 2026. Elle avait écrit : « Je trouve ça sincèrement super, ça
+     m'a beaucoup aidé et soulagé. […] je continuerais à en parler pareil aux remplaçants que je
+     croise ! »
+
+Pas de « Dr » : les signatures validées n'en portent pas.
+
+**Retirés** (§ 9.eu, décision du 10 novembre 2026 ; leur accord n'avait pas été noté) :
+- « Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je
+  comprenais rien à mon net. Maintenant c'est séparé et je vois clair. »
+  - Signé « Dr Sofiane B. », « Médecin (SOS Médecins + cabinet) ».
+- « Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau
+  administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire. »
+  - Signé « Anaïs V. », « Interne ».
+- « Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision.
+  Là tout est au même endroit et je comprends mon 'vrai super-net'. »
+  - Signé « Dr Sarah M. », « Urgentiste (activité mixte) ».
+- « Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais.
+  Là j'ai enfin un suivi clair entre activité, encaissements et provisions. »
+  - Signé « Dr Émilien C. », « Médecin généraliste ».
+
+**Mécanique.** Un nombre ne se sépare plus de son signe (« 75 % », « 100 % ») : il tient dans un
+`<span class="nb">`, comme les mots composés. Le texte ne change pas d'un caractère.
+
+**Contrôles.**
+- `npm run build` et `verify-site.mjs` : aucune erreur. Le plancher de mots de l'accueil tient.
+- **Comparé au build de `main` (b5edf4e, après la fusion de la PR 198) :** seul `index.html` diffère, et seulement dans les quatre
+  cartes.
+  - La feuille commune (`_astro_assets.BqFlQkaI.css`) et celle de l'accueil
+    (`index.D134I3Nh.css`) sont inchangées.
+  - Le sitemap est inchangé : `ACCUEIL_LAST_UPDATED_ISO` était déjà au 15 novembre 2026.
+- **Chromium à 320, 390 et 1 280 px :** aucun débordement.
+  - Les cartes du défilement ont toutes la même hauteur (384 px à 320, 333 px à 390).
+  - À 1 280 px, deux rangées égales.
+- WebKit non repassé : aucune feuille n'a changé.
+
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

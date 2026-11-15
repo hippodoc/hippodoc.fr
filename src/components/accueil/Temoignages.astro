@@ -7,14 +7,14 @@
  * tarifs. L'alternance sable / ciel est gardée : Partenaires.astro a pris le
  * sable).
  *
- * - Décision du propriétaire (10 novembre 2026) : les témoignages sont réels et
- *   reviennent sur l'accueil, MOT POUR MOT. Aucun n'est inventé ni réécrit.
- *   Quatre sur les quinze de l'ancien home/TestimonialsSection.astro (supprimé
- *   en phase 4a, à lire dans l'historique git), un par situation :
- *   gardes et remplacements, interne, activité mixte, paiements en retard.
- *   Texte, nom et qualité tels qu'ils étaient dans ce fichier, sans coupe. Seuls
- *   les guillemets droits qui entouraient chaque citation deviennent des
- *   guillemets français ; les apostrophes droites à l'intérieur restent.
+ * - Décision du propriétaire (15 novembre 2026, MIGRATION.md § 9.hc) : quatre
+ *   témoignages d'utilisateurs, un par situation (gardes, interne, activité
+ *   mixte, remplaçante). Chacun part des mots que la personne a écrits dans le
+ *   chat ou par mail (sources datées en § 9.hc) ; texte, prénom, initiale et
+ *   qualité ont été validés par chacune avant publication (accord donné au
+ *   propriétaire). Ne pas les retoucher sans un nouvel accord. Aucune personne
+ *   n'est inventée. Les quatre précédents (Sofiane B., Anaïs V., Sarah M.,
+ *   Émilien C., décision du 10 novembre 2026) sont archivés en § 9.hc.
  * - Pas d'étoiles : aucune note n'a été recueillie (voir § 9.dq).
  * - Mesure : `data-landing-section="testimonials"` et `id="testimonials"`, la
  *   série continue.
@@ -30,20 +30,19 @@
  *   (`scroll-timeline` sur la rangée, `timeline-scope` sur le bloc). Décor,
  *   masqué aux lecteurs d'écran ; absent là où le navigateur ne sait pas lier
  *   une animation au défilement (le bord de la carte suivante reste l'indice).
- * - « Dr » retiré devant Anaïs V., interne (décision 13e du propriétaire) ;
- *   les trois autres attributions sont celles du site, sans ajout.
+ * - Pas de « Dr » : les signatures validées n'en portent pas.
  * - Un mot composé (« super-net », « week-end ») ne se coupe pas au trait
- *   d'union (mise en page seule, le texte ne change pas ; la police n'a pas de
- *   trait d'union insécable).
+ *   d'union, ni un nombre de son signe (« 75 % ») : mise en page seule, le texte
+ *   ne change pas (la police n'a pas de trait d'union insécable).
  */
 import '@/styles/da.css';
 import { insecables } from '@/lib/typo';
 
 const temoignages = [
-  { texte: "Je fais des gardes en SOS Médecins + des rempla en cabinet : avant je mélangeais tout et je comprenais rien à mon net. Maintenant c'est séparé et je vois clair.", auteur: 'Dr Sofiane B.', qualite: 'Médecin (SOS Médecins + cabinet)', initiales: 'SB' },
-  { texte: "Je suis interne en RSPM et je remplace le week-end. J'avais surtout peur de 'mal faire' niveau administratif. Là c'est clair, je mets mes infos et ça me donne une trajectoire.", auteur: 'Anaïs V.', qualite: 'Interne', initiales: 'AV' },
-  { texte: "Je fais rempla + vacations à l'hôpital : avant j'avais 2 systèmes, 3 tableaux, et zéro vision. Là tout est au même endroit et je comprends mon 'vrai super-net'.", auteur: 'Dr Sarah M.', qualite: 'Urgentiste (activité mixte)', initiales: 'SM' },
-  { texte: "Les encaissements qui tombent à J+30/J+60, ça me rendait fou : je savais jamais où j'en étais. Là j'ai enfin un suivi clair entre activité, encaissements et provisions.", auteur: 'Dr Émilien C.', qualite: 'Médecin généraliste', initiales: 'EC' },
+  { texte: "Mes gardes à SOS Médecins, je les suivais sur un tableau Excel : 75 % de rétro d'un côté, les actes défiscalisés à 100 % de l'autre. Sur Hippodoc, je rentre les deux et ça calcule tout seul ce qui est imposable. Franchement, nickel.", auteur: 'Yoann G.', qualite: 'Médecin, gardes à SOS Médecins', initiales: 'YG' },
+  { texte: "Interne, je remplace à côté. J'ai fait le tour rapidement : c'est fluide, l'interface est intuitive et agréable. Bravo pour l'outil.", auteur: 'Léopold L.', qualite: 'Interne', initiales: 'LL' },
+  { texte: "Libéral, salarié, gardes de PDSA : je rentre tout dans l'appli, et je la trouve vraiment très pratique au quotidien.", auteur: 'Rayan A.', qualite: 'Activité mixte (libéral, salarié, gardes)', initiales: 'RA' },
+  { texte: "Je trouve ça sincèrement super : ça m'a beaucoup aidé, et surtout soulagé. J'en parle à tous les remplaçants que je croise.", auteur: 'Emma C.', qualite: 'Médecin remplaçante', initiales: 'EC' },
 ];
 ---
 
@@ -65,7 +64,7 @@ const temoignages = [
       {temoignages.map((t) => (
         <li>
           <figure class="card">
-            <blockquote><p>«&nbsp;{insecables(t.texte).split(/([\wÀ-ÿ]+-[\wÀ-ÿ]+)/).map((m, i) => (i % 2 ? <span class="nb">{m}</span> : m))}&nbsp;»</p></blockquote>
+            <blockquote><p>«&nbsp;{insecables(t.texte).split(/([\wÀ-ÿ]+-[\wÀ-ÿ]+|\d+ %)/).map((m, i) => (i % 2 ? <span class="nb">{m}</span> : m))}&nbsp;»</p></blockquote>
             <figcaption>
               <span class="av" aria-hidden="true">{t.initiales}</span>{' '}
               <span class="qui"><b>{t.auteur}</b>{' '}<span>{t.qualite}</span></span>
