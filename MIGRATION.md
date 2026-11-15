@@ -15076,7 +15076,13 @@ liens déjà partagés, « Scrape Again » dans l'outil de débogage du partage 
 **Ouvert (décision du propriétaire).** Le texte sous l'image vient du `<title>` et de la description :
 l'accueil dit encore « Hippodoc — Cockpit financier des médecins | Super-Net », et `/essai`, « Le
 cockpit financier des médecins remplaçants ». Ils ne collent plus à l'accroche du site ; les changer
-touche au référencement : non fait.
+touche au référencement : non fait (fait en § 9.hb).
+
+**Ouvert (décision du propriétaire).** `/transmissions` (page autonome de la newsletter « Les
+Transmissions du lundi », `public/transmissions/index.html`, noindex, hors du sitemap : le contrôle
+ne la voit pas) partage encore `og-image.png`, la capture de l'app Hippodoc. Elle n'est pas
+d'Hippodoc mais de la newsletter des marchés, qui a sa propre direction artistique : son image se
+fait dans celle-ci, pas dans la DA d'Hippodoc. Non fait.
 
 ### 9.hb Accueil : nouveau titre ; « cockpit financier » retiré des descriptions (15 novembre 2026)
 
