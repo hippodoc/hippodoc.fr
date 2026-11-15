@@ -5758,7 +5758,7 @@ Onze blocs mesurés en remplacent dix. Disparaissent : « En chiffres » (`socia
 
 - ~~**Témoignages** : statut, ville et accord de Sofiane B., Anaïs V., Sarah M. et
   Émilien C. ; « Dr » devant les trois autres à confirmer ; « SOS Médecins » nomme une
-  structure tierce.~~ Réglé en § 9.ha : remplacés le 15 novembre 2026 par quatre témoignages
+  structure tierce.~~ Réglé en § 9.hc : remplacés le 15 novembre 2026 par quatre témoignages
   dont les auteurs ont validé texte et signature (« SOS Médecins » compris).
 - **À confirmer par le propriétaire** : « Abonnement 100 % déductible au régime réel. »
   (les trois derniers mots sont ajoutés : en micro-BNC rien ne se déduit) ; les deux
@@ -14978,7 +14978,7 @@ Essais des § 9.gh, 9.go et 9.gp repassés (deux attentes mises à jour : résum
 WebKitGTK : réponse « Oui », résumé et fiche. `verify-site.mjs` sans erreur ; feuille commune
 inchangée ; comparé à la production, seul `/simulateur` diffère (la bulle du régime social).
 
-### 9.ha Accueil : quatre témoignages d'utilisateurs, validés par leurs auteurs (15 novembre 2026)
+### 9.hc Accueil : quatre témoignages d'utilisateurs, validés par leurs auteurs (15 novembre 2026)
 
 Demande du propriétaire : tirer des conversations du chat (Crisp) et des mails des témoignages
 « qui font vrai ». **Aucune personne n'est inventée** : un faux avis est une pratique commerciale
