@@ -72,6 +72,22 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
   l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
   en-tête se déclare dans `PAGES_SANS_ENTETE`.
+  Contenu (§ 9.gj, d'après les clics de 90 jours) : menu « Comment ça marche »,
+  « Pour qui » (ancres de l'accueil), « Simulateur », « Tarifs » (page /tarifs), puis
+  « Ressources » (guide du remplaçant, guide des déclarations, calculette, blog, FAQ :
+  un titre et une ligne d'explication sur ordinateur, le titre seul dans le tiroir).
+  Connexion : en toutes lettres à partir de 600 px ; de 360 à 599 px, une pastille ronde
+  à l'icône de compte (`landing_login_header_mobile`), la place prise sur les marges de
+  360 à 389 px ; sous 360 px, dans le tiroir seulement. De 960 à 1 179 px, écarts de
+  20 px et corps de 15 px (cinq entrées ; 18 px d'air de chaque côté du menu à 960 px).
+  Un libellé d'un seul mot porte `hd-mot` (il ne rétrécit pas : la largeur minimale de
+  44 px remplace celle du contenu). Page en cours : `aria-current="page"` et couleur de
+  marque, soulignée en contrastes forcés. Pied : la marque, trois colonnes (« Produit »,
+  « Ressources », « À propos »), une bande légale ; la marque passe à gauche des
+  colonnes à partir de 1 180 px seulement (en dessous, elle n'avait pas la place de la
+  plaque des soutiens). Tout lien du pied porte un `data-ph="landing_footer_*"`.
+  Un lien ajouté à l'en-tête ou au pied : le mesurer à 320, 360, 390, 600, 960, 1 024 et
+  1 180 px, police chargée et bloquée, et avec l'espacement de texte agrandi (WCAG 1.4.12).
   ⚠️ À l'écran, l'en-tête est tenu à la fenêtre (`position: fixed` sous `@media screen`,
   § 9.ev), pas collé dans le flux : ne pas le remettre en `sticky`. Un élément collé dont
   un contrôle se trouve dans la bande de `scroll-padding-top` fait remonter la page à
@@ -265,8 +281,9 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
   commit quand une section apparaît ou disparaît ; `SECTIONS_LANDING` suit l'ordre de la
   page (vérifié), `SECTIONS` garde son rang historique. verify-site garde aussi les
-  `data-track`, les ancres `#sous-la-surface`, `#parcours`, `#pricing` (les trois cibles
-  du menu, sur toutes les pages) et `#film-presentation`, l'égalité FAQ visible /
+  `data-track`, les ancres `#sous-la-surface`, `#parcours` (cibles du menu, sur toutes
+  les pages), `#pricing` (cible de la FAQ ; le menu mène à /tarifs depuis § 9.gj) et
+  `#film-presentation`, l'égalité FAQ visible /
   `FAQPage`, un plancher de mots (2 680 depuis l'épure, à abaisser sciemment seulement) et
   la présence des termes porteurs dans le texte rendu (« médecin remplaçant », URSSAF,
   CARMF, 2035, 2042-C PRO, DSFU, RSPM, PAMC, Micro-BNC, rétrocession, contrat et licence
