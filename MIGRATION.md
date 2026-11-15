@@ -13498,6 +13498,104 @@ insécables) ; WebKitGTK : hauteurs des tuiles inchangées (188 px à 1 300 px).
 9.gh repassés, dont l'écart de la conclusion égal à celui des tuiles sur six saisies. Aucune ligne
 écrite dans Supabase par les essais locaux après le changement. `verify-site.mjs` sans erreur.
 
+### 9.gj En-tête et pied rangés d'après l'usage (15 novembre 2026)
+
+Demande du propriétaire : un avis d'expert sur l'en-tête, le pied et les pages proposées,
+puis « go, pense à tout ». Décisions prises sur les clics PostHog des 90 derniers jours
+(site public, `$autocapture` par `data-ph` et par lien) et sur le relevé des en-têtes et
+pieds d'Indy, Pennylane, Notion et Linear.
+
+**Ce que disaient les clics** (ordinateur + téléphone) : Connexion 1 273 sur ordinateur
+(392 personnes) et environ 8 par jour au téléphone ; Tarifs 134 + 102 ; Simulateur, rangé
+dans « Ressources », 102 + 87 ; Pour qui 73 + 22 ; Blog 58 + 27 ; Guide du remplaçant
+43 + 33 (depuis fin septembre) ; Guide des déclarations 46 + 21 ; Qui sommes-nous 15 + 8 ;
+FAQ 8 + 4 ; tout le pied, environ 80 clics. /simulateur est la troisième page visitée
+(385 visiteurs, après l'accueil et les articles) ; /tarifs n'avait que 33 visiteurs (le
+menu menait à /#pricing). Le menu du téléphone s'ouvre 21 fois par jour : avant le
+10 novembre, un bouton « Connexion » était visible sur téléphone (685 clics).
+
+**En-tête** (`src/components/Header.astro`, `src/styles/da.css`) :
+- Menu : « Comment ça marche », « Pour qui », **« Simulateur »** (sorti de « Ressources »),
+  **« Tarifs » vers /tarifs** (au lieu de /#pricing ; l'ancre reste, cible de la FAQ).
+- « Ressources » : guide du remplaçant, guide des déclarations, **calculette fiscale**
+  (aucun menu ne la citait), blog, FAQ ; « Qui sommes-nous » passe dans le pied. Sur
+  ordinateur, un titre et une ligne d'explication par lien (menu de 320 px).
+  **Contenu ajouté** (lignes d'explication, d'après les descriptions des pages) :
+  « PDF offert : licence, contrat, cotisations », « 2035, 2042-C PRO et DSFU expliquées »,
+  « Ta 2035 reportée en 2042-C PRO et DSFU », « Conseils pour médecins remplaçants »,
+  « Toutes les réponses sur Hippodoc ». Libellés : « Guide déclarations » devient « Guide
+  des déclarations » ; « Guide du remplaçant (PDF) » reste tel quel dans le tiroir.
+- **Connexion sur téléphone en un geste** : de 360 à 599 px, une pastille ronde à
+  l'icône de compte, nommée « Connexion », à côté du bouton d'essai ; à partir de 600 px,
+  « Connexion » en toutes lettres (il n'apparaissait qu'à 960 px). De 360 à 389 px, la
+  place est prise sur les marges (pastille d'essai à 13 px de remplissage, mot sans
+  marge) ; sous 360 px (93 visiteurs sur 90 jours), dans le tiroir seulement.
+- De 960 à 1 179 px : écarts de 20 px et corps de 15 px (cinq entrées). Page en cours :
+  `aria-current="page"`, couleur de marque (soulignée en contrastes forcés) ; le bouton
+  « Ressources » prend la couleur sur ses pages et sous-pages (articles, guide).
+
+**Pied** (`src/components/Footer.astro`, `src/styles/da.css`) : la marque (logo, phrase,
+réseaux, soutiens), trois colonnes, une bande légale.
+- « Produit » : Comment ça marche, Pour qui, Simulateur Super-Net, Tarifs, Comparatif des
+  logiciels (« Comparatif outils » avant). « Ressources » : Guide des déclarations, Guide
+  du remplaçant (PDF), Calculette fiscale, Blog, FAQ. « À propos » : Qui sommes-nous ?,
+  contact@hippodoc.fr, 07 56 89 89 61 (« +33 (0)7 56 89 89 61 » avant).
+- Bande légale : Mentions légales, Conditions d'utilisation, Politique de
+  confidentialité, RGPD, Préférences cookies, puis le ©.
+- **Retirés** : les pastilles téléphone et e-mail (doublons de la colonne de contact),
+  l'adresse du siège (dans les mentions légales), la colonne « Contactez-nous », et les
+  trois articles mis en avant (`regime-fiscal-micro-bnc-vs-reel`,
+  `salaires-medecins-remplacants`, `checklist-administrative-medecin-remplacant`), qui
+  semblaient des sous-parties du comparatif. Ils perdent un lien présent sur toutes les
+  pages ; ils restent liés par le blog, leurs thèmes et les articles connexes.
+- Téléphone : marque, puis « Produit » et « Ressources » côte à côte, « À propos » sur
+  toute la largeur. De 640 à 1 179 px : les trois colonnes sous la marque. À partir de
+  1 180 px : la marque à gauche, le © à droite des liens légaux (de 960 à 1 179 px, la
+  marque n'avait que 263 px : la plaque des soutiens se repliait et le © se coupait).
+
+**Mesure** (`MESURE_ENTETE_PIED` de `verify-site.mjs` mis à jour) :
+- Inchangés : `landing_nav_comment_ca_marche`, `landing_nav_pour_qui`,
+  `landing_nav_pricing` (le lien mène maintenant à /tarifs), `landing_login_header`,
+  `landing_resource_guide-remplacant`, `…guide-declarations`, `…blog`, `…faq` (et leurs
+  `landing_mobile_*`), `cta_signup_header*`, `landing_mobile_menu_open`,
+  `landing_footer_home`, `…linkedin`, `…facebook`, `…instagram` ; `landing_footer_phone`
+  et `landing_footer_email` passent des pastilles aux lignes d'« À propos » (même lien).
+- Arrêtés : `landing_resource_simulateur` et `landing_mobile_resource_simulateur`
+  (remplacés par `landing_nav_simulateur` et `landing_mobile_nav_simulateur`),
+  `landing_resource_qui-sommes-nous` et sa version mobile (remplacés par
+  `landing_footer_qui-sommes-nous`).
+- Nouveaux : `landing_resource_calculette` (+ mobile), `landing_login_header_mobile`,
+  `landing_mobile_login` (le bouton Connexion du tiroir n'était pas mesuré), et un
+  `landing_footer_*` sur chaque lien des colonnes et de la bande légale (aucun n'était
+  mesuré).
+
+**Vérifié** :
+- Construction et `verify-site.mjs` : 0 erreur. Feuille commune : seules les règles
+  `hd-*` et `ft-*` changent (comparaison bloc par bloc avec le build de `main` : aucune
+  règle de Tailwind ajoutée ou retirée).
+- En-tête, Chromium, 25 largeurs de 320 à 1 920 px, police chargée et police de secours
+  (woff2 bloquée) : aucun chevauchement, aucun libellé sur deux lignes, aucun
+  débordement. Air de part et d'autre du menu : 18 px à 960, 50 à 1 024, 77 à 1 180 et
+  au-delà.
+- Espacement de texte agrandi (WCAG 1.4.12) de 960 à 1 280 px : aucun chevauchement.
+  Avant `hd-mot`, « Simulateur » débordait sur « Tarifs » à 960 et 1 024 px. À 960 px,
+  « Comment ça marche » passe alors sur trois lignes et sort de la pastille, lisible.
+- Menu « Ressources » : une ligne par explication (58 px), dans la fenêtre à 960 et
+  1 440 px ; page en cours marquée (calculette). Clavier : Tab parcourt le menu, puis
+  « Ressources » et ses cinq liens (à 0 ms entre deux appuis simulés, le menu est sauté,
+  sur `main` comme ici ; dès 30 ms, non).
+- Tiroir : 390 × 844 sans défilement ; 320 × 568, 844 × 390 et 667 × 375, la liste
+  défile et Connexion / Essai restent visibles en bas.
+- Pied, 16 largeurs de 320 à 1 920 px, accueil et /tarifs : aucun débordement ; hauteur
+  au téléphone (390 px) 979 px sur l'accueil (1 011 avant).
+- WebKit (moteur de Safari) à 1 024, 1 180 et 1 440 px (en-tête, menu, pied) et de 320 à
+  600 px en iframe (en-tête) : mêmes résultats que Chromium.
+- Lighthouse, mobile et ordinateur, sur /, /simulateur et un article : 100 dans les
+  quatre catégories.
+
+**Fichiers** : `src/components/Header.astro`, `src/components/Footer.astro`,
+`src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
