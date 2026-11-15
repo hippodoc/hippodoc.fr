@@ -14,7 +14,7 @@
  *
  * Usage : node scripts/verify-site.mjs   (après astro build)
  */
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -346,9 +346,9 @@ if (!srcsetPrecharge || !srcsetAvif) {
 }
 // « Sous la surface » (DA 2026, phase 3) : la fenêtre produit à onglets.
 // - `id="sous-la-surface"` est la cible du lien « Comment ça marche » du menu ;
-// - les quatre vues doivent toutes être dans le HTML (quatre radios, dont une
-//   seule cochée, et quatre panneaux) : une vue générée à la demande ne serait lue
-//   par aucun moteur (vue « déclaration » ajoutée en § 9.fn) ;
+// - les cinq vues doivent toutes être dans le HTML (cinq radios, dont une
+//   seule cochée, et cinq panneaux) : une vue générée à la demande ne serait lue
+//   par aucun moteur (vue « déclaration » ajoutée en § 9.fn, « Et aussi » en § 9.hd) ;
 // - la mention « Compte de démonstration », exigée jusqu'au 13 novembre 2026, a
 //   été retirée à la demande du propriétaire (§ 9.fn) : plus de contrôle.
 const sousLaSurface = accueil.match(/<section\b[^>]*data-landing-section="features"[\s\S]*?<\/section>/)?.[0] ?? '';
@@ -357,8 +357,8 @@ if (!/^<section\b[^>]*\sid="sous-la-surface"/.test(sousLaSurface)) {
 }
 const radiosApercu = [...sousLaSurface.matchAll(/<input\b[^>]*type="radio"[^>]*name="apercu"[^>]*>/g)].map((m) => m[0]);
 const panneauxApercu = sousLaSurface.match(/class="panel p\d"/g) ?? [];
-if (radiosApercu.length !== 4 || panneauxApercu.length !== 4 || radiosApercu.filter((r) => /\schecked\b/.test(r)).length !== 1) {
-  fail(`accueil : la fenêtre produit doit avoir 4 onglets (un seul coché) et 4 panneaux dans le HTML — trouvé ${radiosApercu.length} onglet(s), ${panneauxApercu.length} panneau(x)`);
+if (radiosApercu.length !== 5 || panneauxApercu.length !== 5 || radiosApercu.filter((r) => /\schecked\b/.test(r)).length !== 1) {
+  fail(`accueil : la fenêtre produit doit avoir 5 onglets (un seul coché) et 5 panneaux dans le HTML — trouvé ${radiosApercu.length} onglet(s), ${panneauxApercu.length} panneau(x)`);
 }
 // « Pour qui » (DA 2026, phase 3) : le sélecteur de profil, sans JS.
 // - `id="parcours"` est la cible du lien « Pour qui » du menu, sur TOUT le site ;
@@ -1913,6 +1913,48 @@ for (const url of urls) {
     }
   }
 }
+/* 4 octodecies. Images de partage (MIGRATION.md § 9.ha) : chaque page du sitemap a la sienne
+   (l'accueil, l'image de l'accueil ; un article, la sienne, § 9.fl ; toute autre page, celle de
+   `PARTAGE_PAGES`, src/lib/partage-pages.ts), à une adresse à empreinte sous /partage/ ou
+   /blog/partage/, en JPEG de 1 200 × 630 px et de moins de 300 Ko (au-delà, WhatsApp peut ne pas
+   l'afficher), avec son texte alternatif, la même pour X que pour Facebook. Deux pages ne partagent
+   pas une image. La capture de l'ancienne app (/lovable-uploads/) n'en est plus une. */
+{
+  const parImage = new Map();
+  let vues = 0;
+  for (const url of urls) {
+    const html = lireHtml(url);
+    if (!html) continue;
+    const meta = (attr, nom) => html.match(new RegExp(`<meta ${attr}="${nom}" content="([^"]*)"`))?.[1];
+    const og = meta('property', 'og:image');
+    const page = url.replace(SITE, '') || '/';
+    if (!og || !/^https:\/\/www\.hippodoc\.fr\/(blog\/)?partage\/[a-z0-9-]+-[0-9a-f]{8}\.jpg$/.test(og)) {
+      fail(`partage : ${page} : og:image « ${og ?? 'absente'} » n'est pas une image de partage à empreinte (/partage/ ou /blog/partage/, § 9.ha)`);
+      continue;
+    }
+    if (meta('name', 'twitter:image') !== og) fail(`partage : ${page} : twitter:image différente de og:image`);
+    if (!meta('property', 'og:image:alt')?.trim() || !meta('name', 'twitter:image:alt')?.trim()) fail(`partage : ${page} : texte alternatif de l'image absent (og:image:alt, twitter:image:alt)`);
+    if (meta('property', 'og:image:type') !== 'image/jpeg') fail(`partage : ${page} : og:image:type « ${meta('property', 'og:image:type')} », attendu image/jpeg`);
+    const fichier = resolve(dist, new URL(og).pathname.slice(1));
+    if (!existsSync(fichier)) continue; // signalé en 7 (d)
+    const { width, height, format } = await sharp(fichier).metadata();
+    if (width !== 1200 || height !== 630 || format !== 'jpeg') fail(`partage : ${page} : ${og} fait ${width}×${height} (${format}), attendu 1200×630 en JPEG`);
+    const poids = statSync(fichier).size;
+    if (poids > 300 * 1024) fail(`partage : ${page} : ${og} pèse ${Math.round(poids / 1024)} Ko (300 au plus, sinon WhatsApp peut ne pas l'afficher)`);
+    if (parImage.has(og)) fail(`partage : ${page} et ${parImage.get(og)} ont la même image (${og}) : une page sans entrée dans PARTAGE_PAGES prend celle de l'accueil (§ 9.ha)`);
+    parImage.set(og, page);
+    vues++;
+  }
+  const ogAccueil = lireHtml(SITE).match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? '';
+  if (!/\/partage\/accueil-[0-9a-f]{8}\.jpg$/.test(ogAccueil)) fail(`partage : / : og:image « ${ogAccueil} », attendu l'image de l'accueil (/partage/accueil-…, § 9.ha)`);
+  // /essai (noindex, hors du sitemap : la page des campagnes) a aussi la sienne.
+  const ogEssai = lireHtml(`${SITE}/essai`).match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? '';
+  for (const f of readdirSync(resolve(dist, 'partage'))) {
+    if (!/^accueil-/.test(f) && !ogEssai.endsWith(`/partage/${f}`) && ![...parImage.keys()].some((u) => u.endsWith(`/partage/${f}`))) fail(`partage : dist/partage/${f} n'est l'image d'aucune page du sitemap (entrée de PARTAGE_PAGES sans page ?)`);
+  }
+  console.log(`Partage : ${vues} pages, chacune son image de partage (1200×630, JPEG, < 300 Ko)`);
+}
+
 // (e) pubDate / updatedDate avec heure mais sans fuseau : interprétées dans le
 // fuseau de la machine de build, elles diffèrent entre Vercel (UTC) et un poste local.
 for (const f of blogFiles) {

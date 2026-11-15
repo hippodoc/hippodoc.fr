@@ -2,7 +2,7 @@
 
 Le PDF offert sur [/guide](https://hippodoc.fr/guide), envoyé en message privé par ManyChat après
 les publications Instagram. C'est la vitrine d'Hippodoc : celui qui l'a lu doit avoir envie des
-kits du dimanche, du simulateur et de l'essai. Historique et décisions : MIGRATION.md, § 9.ha.
+kits du dimanche, du simulateur et de l'essai. Historique et décisions : MIGRATION.md, § 9.he.
 
 ## Fabriquer
 

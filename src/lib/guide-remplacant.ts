@@ -6,7 +6,8 @@
  * PostHog).
  *
  * Nouvelle édition : déposer le PDF dans `public/guide/` sous un NOUVEAU nom, mettre
- * à jour ces valeurs, les visuels de `src/assets/guide/` + `public/guide/partage.jpg`, et
+ * à jour ces valeurs, les visuels de `src/assets/guide/` + `public/guide/partage.jpg` (l'image
+ * du schéma `Book` ; l'aperçu d'un lien vers /guide vient de `src/lib/partage-pages.ts`, § 9.ha), et
  * le nom de fichier du header `Content-Disposition` (vercel.json).
  * L'URL de la page, /guide, ne change jamais : c'est elle que ManyChat envoie.
  */

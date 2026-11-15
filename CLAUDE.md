@@ -372,16 +372,26 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   § 9.ec (la date n'est plus affichée sur la page), jamais écrits à la main. Le compte de la
   fenêtre produit est fictif (`src/data/demoAccueil.ts`, année 2026), sans mention
   « Compte de démonstration » depuis le § 9.fn (décision du propriétaire). La fenêtre a
-  quatre onglets (le quatrième, « Tes déclarations » : cases 5HQ, DSCS, DSAV, DSDE
-  pré-remplies) ; sous 720 px chacun prend la largeur de son libellé, sur une ligne dès
-  320 px, et les quatre vues gardent la même hauteur (mesurée de 320 à 1 440 px).
+  cinq onglets (le quatrième, « Tes déclarations » : cases 5HQ, DSCS, DSAV, DSDE
+  pré-remplies ; le cinquième, « Et aussi », § 9.hd : les autres outils, relevés dans le
+  menu de l'application, à tenir à jour avec lui dans `AUSSI`). Libellés courts jusqu'à
+  899 px : sur une ligne à partir de 520 px, sur deux rangées en dessous (trois, puis
+  deux) ; libellés longs à partir de 900 px. Les cinq vues gardent la même hauteur
+  (mesurée de 320 à 1 920 px) : un outil ajouté à « Et aussi » se remesure à 320 et
+  360 px (6 px de marge).
 
 ## SEO — contrat par page
 
 Chaque page passe par `src/layouts/BaseLayout.astro` : props `title` (<60 car., mot-clé
 d'abord), `description` (~150 car.), `path` (canonique, sans slash ; `""` pour l'accueil),
 `ogImage`, `jsonLd` (tableau — Organization est injecté partout automatiquement),
-`noindex`. Constantes partagées (URLs, tarifs, schémas Organization/SoftwareApplication,
+`noindex`. **Image de partage** (§ 9.ha) : ne pas passer `ogImage` (seuls les articles le font) ;
+chaque page a son entrée dans `PARTAGE_PAGES` (`src/lib/partage-pages.ts` : pastille, titre repris
+de la page, fond selon le propos, pose qui le dit, jamais retournée), image fabriquée à la
+construction par le générateur des articles ; l'accueil a un fichier rendu avec le gabarit
+« bannière » du skill de la DA (`public/partage/accueil-<empreinte>.jpg`). Une nouvelle page s'y
+ajoute : `verify-site.mjs` (« 4 octodecies ») échoue sinon. Planche à regarder avant de pousser :
+`node scripts/apercu-partage.mjs`. Constantes partagées (URLs, tarifs, schémas Organization/SoftwareApplication,
 PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 `/essai` est noindex et exclu du sitemap (filtre dans `astro.config.mjs`).
 
@@ -880,7 +890,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   textes se fait aux deux endroits, et `GUIDE_REMPLACANT` (`src/lib/guide-remplacant.ts`) suit le
   nombre de pages et la date. Chaque chiffre a sa source dans `verification/` ; un nouveau
   millésime refait les montants avec le moteur du simulateur et repasse les relectures
-  (MIGRATION.md § 9.ha).
+  (MIGRATION.md § 9.he).
 
 ## Analytics & scripts tiers
 
