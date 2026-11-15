@@ -15421,7 +15421,7 @@ dépassait les autres de 29 px à 320 px) : là, les formes courtes d'avant rest
 noms courts.
 
 **Vérifications** : `verify-site.mjs` sans erreur, mêmes onze avertissements que `main` ;
-comparé au build de `main` (`f02e4ee`), seuls `index.html`, sa feuille et
+comparé au build de `main` (`a2b8aa8`), seuls `index.html`, sa feuille et
 `tarifs/index.html` changent, et leur texte ne change que des phrases ci-dessus ; feuille
 commune inchangée. Hauteurs de l'accueil, de « Pour qui » et de `/tarifs` identiques à
 `main` à 320, 360, 390, 768, 1 024 et 1 440 px. Fenêtre : cinq vues de même hauteur de 320
