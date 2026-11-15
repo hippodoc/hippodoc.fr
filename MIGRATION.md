@@ -13438,6 +13438,66 @@ résumé attendu « Régime social automatique », est voulu. WebKitGTK à 1 300
 alignées (sous-grille), mêmes hauteurs, aucun débordement, plis selon la largeur. `verify-site.mjs`
 sans erreur.
 
+### 9.gi Simulateur : RSPM sur option, écart du foyer, espace des milliers, mesure propre (15 novembre 2026)
+
+Le propriétaire, à « tout est parfait ? » : quatre points relevés, puis « go pour tout ».
+
+**Ce qui change.**
+- **Le RSPM est une option** (CSS L642-4-2 et D642-4-1 : les remplaçants « peuvent opter » pour le
+  dispositif simplifié ; sans l'option, ils sont en PAMC). « RSPM ou PAMC ? » (`RspmOuPamc.tsx`)
+  disait « Tu es au RSPM » ; il dit « Le simulateur retient le RSPM » (« Tu as choisi le RSPM »
+  quand le régime social est choisi à la main), puis, après le taux, « C'est une option à
+  demander à l'Urssaf : sans elle, tu es en PAMC. ». Mode d'emploi : « RSPM ou PAMC ? — Quand le
+  simulateur retient le RSPM, une option à demander à l'Urssaf : ce que la même saisie te
+  laisserait en PAMC, et lequel des deux te laisse le plus. »
+- **En couple, l'écart du foyer** (`ConclusionCard.tsx`, `RegimeComparisonCards.tsx`). Quand le
+  conjoint a des revenus, l'écart de la conclusion est celui du foyer (l'impôt du conjoint
+  compris) : c'est lui qui décide du régime, et la phrase le dit : « Le Micro-BNC fait garder
+  113 €/mois de plus à ton foyer (1 357 €/an). », « Les deux régimes se valent : 27 €/mois d'écart
+  pour ton foyer en faveur du Micro-BNC (326 €/an). », « Les deux régimes laissent la même somme à
+  ton foyer. ». Les tuiles montrent le Super-Net du médecin (sa part de l'impôt, taux
+  individualisé). Quand l'impôt du conjoint change d'un régime à l'autre (médecin qui gagne moins
+  que son conjoint), les deux écarts diffèrent : sous les tuiles, « Chaque Super-Net compte ta part
+  de l'impôt du foyer, au taux individualisé. L'écart de la conclusion, 4 052 € par an, est celui
+  de ton foyer : d'un régime à l'autre, l'impôt de ton conjoint change aussi. ». La pastille
+  « +X % de Super-Net » se calcule sur les tuiles (elle divisait par un Super-Net du foyer qui
+  n'était affiché nulle part).
+- **L'espace des milliers** (`src/lib/simulateur/nombres.ts`, nouveau). `Intl.NumberFormat`
+  sépare les milliers d'une espace fine insécable (U+202F), qui ne fait que 0,11 em dans Google
+  Sans Flex (1,8 px en 16 px) : « 21 504 € » se lisait « 21504 € ». Les nombres affichés du
+  simulateur passent par `formatNombre` et `nombreFr`, qui posent une espace insécable (U+00A0,
+  0,225 em). Essayé d'abord : une face de police tirée du même fichier, limitée à U+202F et
+  agrandie (`size-adjust`) ; Chromium n'en bougeait pas, mais WebKit agrandissait de 2 à 4 px les
+  lignes serrées qui contiennent un nombre (montant des tuiles, total du mois), quels que soient
+  les réglages de métriques (`ascent-override` à 0 % compris). Les plafonds DOM de
+  `src/lib/dom-tom.ts` (partagé) passent par `espaceMilliers` dans le formulaire.
+- **« -0 € »** : une ligne de détail n'a plus de signe devant un montant nul (un impôt de quelques
+  centimes s'affichait « -0 € »).
+- **Mesure** : `insertPublicEvent` (`src/lib/supabase-public.ts`) n'écrit plus que sur
+  hippodoc.fr (ni serveur local, ni aperçu Vercel). Les essais en navigateur des § 9.gd à 9.gh,
+  lancés sur le serveur local, avaient écrit 584 lignes dans `simulateur_public_events` le
+  14 novembre 2026 (293 calculs, 291 résultats, 238 sessions, `referrer_source` `direct` ou
+  `other`, saisies des scripts d'essai). Elles sont supprimées, avec l'accord du propriétaire,
+  après une sauvegarde hors du dépôt ; aucune de ces sessions ne contenait d'événement venu de
+  hippodoc.fr ou de Google. Restent pour ce jour 60 lignes réelles. PostHog n'a rien reçu de ces
+  essais (aucun événement de localhost:4321 ; les événements `screen_opened` et `screen_closed` de
+  localhost:3000, sous Safari, viennent d'un autre environnement). Les chiffres d'usage des § 9.gg
+  et 9.gh (jusqu'au 13 novembre) n'en étaient pas touchés.
+
+Archivés (textes d'avant) : « Tu es au RSPM, l'offre simplifiée des remplaçants : … » ; mode
+d'emploi « RSPM ou PAMC ? — Si tu es au RSPM : ce que la même saisie te laisserait en PAMC, et
+lequel des deux te laisse le plus. » ; en couple, « Le Micro-BNC te fait garder … », « Les deux
+régimes se valent : … d'écart en faveur … » et « Les deux régimes te laissent la même somme. ».
+
+**Contrôles.** Six saisies en couple et seul (médecin 90 000 € et conjoint 30 000 € : aucune
+phrase sous les tuiles, écarts égaux ; médecin 40 000, 60 000/15 000 et 75 000 € avec un conjoint
+qui gagne plus, et 15 000 € au RSPM avec un conjoint à 50 000 € : la phrase, avec l'écart de la
+conclusion ; seul, 70 000/5 000 : rien ne change) ; la pastille égale l'écart des tuiles divisé par
+la tuile la plus basse. Aucune espace fine dans le texte des résultats après un calcul (74 espaces
+insécables) ; WebKitGTK : hauteurs des tuiles inchangées (188 px à 1 300 px). Essais des § 9.gd à
+9.gh repassés, dont l'écart de la conclusion égal à celui des tuiles sur six saisies. Aucune ligne
+écrite dans Supabase par les essais locaux après le changement. `verify-site.mjs` sans erreur.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

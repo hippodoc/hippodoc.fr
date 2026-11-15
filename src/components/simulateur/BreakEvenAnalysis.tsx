@@ -2,6 +2,7 @@ import { FileText, Calculator, Info, ArrowRight } from "lucide-react";
 import type { SimulateurFormData } from "./simulateurSchema";
 import type { SimulationResult } from "@/lib/simulation-types";
 import { deductionsComparees } from "@/lib/simulateur/deductions";
+import { formatNombre } from "@/lib/simulateur/nombres";
 
 /**
  * Le pli « Comprendre la différence » (rendu seul dans un pli de SimulateurResults ; la
@@ -43,7 +44,7 @@ export function BreakEvenAnalysis({ formData, reelResult, microBncResult, recett
   const ecartCotisations = Math.round(microBncResult.cotisationsTotales - reelResult.cotisationsTotales);
 
   const formatMontant = (montant: number) => {
-    return new Intl.NumberFormat('fr-FR', {
+    return formatNombre('fr-FR', {
       style: 'currency',
       currency: 'EUR',
       maximumFractionDigits: 0,

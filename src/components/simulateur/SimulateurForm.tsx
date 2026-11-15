@@ -18,6 +18,7 @@ import { getDeclarationParams } from "@/lib/declarationParams";
 import { getPlafondEpargneRetraite } from "@/lib/baremes-ir";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics";
+import { espaceMilliers, formatNombre, nombreFr } from "@/lib/simulateur/nombres";
 
 interface SimulateurFormProps {
   onSubmit: (data: SimulateurFormData) => void;
@@ -172,7 +173,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         ({ celibataire: 'Célibataire', marie_pacse: 'Marié(e) ou pacsé(e)', veuf: 'Veuf(ve)', parent_isole: 'Parent isolé' } as Record<string, string>)[situationFamiliale] ?? 'Célibataire',
         enfants > 0 ? `${enfants}\u00a0enfant${enfants > 1 ? 's' : ''}` : 'sans enfant',
         ...(situationFamiliale === 'marie_pacse' && (revenusConjoint || 0) > 0
-          ? [`conjoint\u00a0: ${new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(revenusConjoint)}\u00a0€`] : []),
+          ? [`conjoint\u00a0: ${formatNombre('fr-FR', { maximumFractionDigits: 0 }).format(revenusConjoint)}\u00a0€`] : []),
       ].join(', '),
       [
         typeExercice === 'installe' ? 'Installé' : 'Remplaçant',
@@ -974,8 +975,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           </p>
                           <TipBox variant="tip">
                             <div className="space-y-1">
-                              <p><strong>Guadeloupe, Martinique, Réunion</strong> → 30% (max {formatPlafond(DOM_TOM_CONFIG.guadeloupe)})</p>
-                              <p><strong>Guyane, Mayotte</strong> → 40% (max {formatPlafond(DOM_TOM_CONFIG.guyane)})</p>
+                              <p><strong>Guadeloupe, Martinique, Réunion</strong> → 30% (max {espaceMilliers(formatPlafond(DOM_TOM_CONFIG.guadeloupe))})</p>
+                              <p><strong>Guyane, Mayotte</strong> → 40% (max {espaceMilliers(formatPlafond(DOM_TOM_CONFIG.guyane))})</p>
                             </div>
                           </TipBox>
                           <TipBox variant="info">
@@ -1018,7 +1019,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                   {domTomInfo && (
                     <div className="sim-note ok flex items-center gap-2 mt-2">
                       <p className="text-xs">
-                        Abattement {formatTauxAbattement(domTomInfo)} (max {formatPlafond(domTomInfo)})
+                        Abattement {formatTauxAbattement(domTomInfo)} (max {espaceMilliers(formatPlafond(domTomInfo))})
                       </p>
                     </div>
                   )}
@@ -1454,7 +1455,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           En plus de tes charges. Déduit du revenu imposable (PER) ou du BNC réel (Madelin).
                           {depasseCap && saisie > 0 && (
                             <span className="block mt-1 sim-attn">
-                              Au-dessus du plafond estimé (environ {perPlafond.toLocaleString('fr-FR')}€, CGI art. {typeCotisation === 'madelin' ? '154 bis' : '163 quatervicies'}) : seul le plafond est déduit.
+                              Au-dessus du plafond estimé (environ {nombreFr(perPlafond)}€, CGI art. {typeCotisation === 'madelin' ? '154 bis' : '163 quatervicies'}) : seul le plafond est déduit.
                             </span>
                           )}
                           {madelinEnMicro && (
@@ -1474,8 +1475,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       // Plafond annuel ANCV (1 SMIC mensuel) — source unique : declarationParams.ts
                       const annee = form.watch('annee') || 2026;
                       const plafondCV = getDeclarationParams(annee).plafondChequesVacances;
-                      const plafondLabel = `${plafondCV.toLocaleString('fr-FR')}€/an`;
-                      const plafondSocialLabel = `${getDeclarationParams(annee).plafondSocialChequesVacances.toLocaleString('fr-FR')}€`;
+                      const plafondLabel = `${nombreFr(plafondCV)}€/an`;
+                      const plafondSocialLabel = `${nombreFr(getDeclarationParams(annee).plafondSocialChequesVacances)}€`;
                       return (
                       <FormItem>
                         <div className="flex items-center gap-2">
@@ -1669,7 +1670,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           const credED = fraisED > 0 ? Math.round(Math.min(fraisED, Math.min(12000 + (form.getValues('enfants') || 0) * 1500, 15000)) * 0.5) : 0;
                           const credGE = fraisGE > 0 && nbGarde > 0 ? Math.round(Math.min(fraisGE, 3500 * nbGarde) * 0.5) : 0;
                           const total = credAutre + credED + credGE;
-                          return total > 0 ? `${total.toLocaleString('fr-FR')}€` : '';
+                          return total > 0 ? `${nombreFr(total)}€` : '';
                         })()}
                       </span>
                     </span>
@@ -1709,7 +1710,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             const enfants = form.getValues('enfants') || 0;
                             const plafond = Math.min(12000 + enfants * 1500, 15000);
                             const creditMax = Math.round(plafond * 0.5);
-                            return `Dépenses annuelles. Plafond : ${plafond.toLocaleString('fr-FR')}€ → crédit max : ${creditMax.toLocaleString('fr-FR')}€`;
+                            return `Dépenses annuelles. Plafond : ${nombreFr(plafond)}€ → crédit max : ${nombreFr(creditMax)}€`;
                           })()}
                           {(field.value || 0) > Math.min(12000 + (form.getValues('enfants') || 0) * 1500, 15000) && (
                             <span className="block mt-1 sim-attn">Montant supérieur au plafond — sera plafonné dans le calcul.</span>
@@ -1755,7 +1756,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               const nbEnfants = form.getValues('nombreEnfantsGarde') || 0;
                               const plafond = 3500 * nbEnfants;
                               const creditMax = Math.round(plafond * 0.5);
-                              return `Plafond : ${plafond.toLocaleString('fr-FR')}€ (${nbEnfants} enfant${nbEnfants > 1 ? 's' : ''} × 3 500€) → crédit max : ${creditMax.toLocaleString('fr-FR')}€`;
+                              return `Plafond : ${nombreFr(plafond)}€ (${nbEnfants} enfant${nbEnfants > 1 ? 's' : ''} × 3 500€) → crédit max : ${nombreFr(creditMax)}€`;
                             })()}
                             {(field.value || 0) > 3500 * (form.getValues('nombreEnfantsGarde') || 0) && (
                               <span className="block mt-1 sim-attn">Montant supérieur au plafond — sera plafonné dans le calcul.</span>

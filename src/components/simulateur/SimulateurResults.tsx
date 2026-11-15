@@ -14,6 +14,7 @@ import { trackEvent } from "@/lib/analytics";
 import { superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
+import { formatNombre } from "@/lib/simulateur/nombres";
 
 /**
  * Chargement différé — `RegimeComparisonCards` n'apparaît qu'APRÈS soumission du
@@ -58,7 +59,7 @@ export function essaiDe(comparison: RegimeComparison, formData: SimulateurFormDa
 }
 
 const eurosEntiers = (v: number) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
+  formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.round(v));
 const nomRegime = (r: 'micro-bnc' | 'reel') => (r === 'micro-bnc' ? 'Micro-BNC' : 'régime réel');
 
 /** Phrase de l'écart avec l'essai précédent, ou null (pas d'essai précédent, ou le même). */

@@ -4,11 +4,12 @@ import { APP_URL } from "@/lib/site";
 import { trackEvent } from "@/lib/analytics";
 import { insertPublicEvent } from "@/lib/supabase-public";
 import { SEUIL_EQUIVALENCE_ANNUEL, type RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
-import { impotDuMedecin } from "@/lib/simulateur/impotMedecin";
+import { impotDuMedecin, superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import { deductionsComparees } from "@/lib/simulateur/deductions";
 import { MARGE_RECETTES, debutActiviteDe, tauxDispenseComplementaire, revenusImposablesDuMedecin, economieAsvDe, complementaireCarmfPleine } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 import type { LucideIcon } from "lucide-react";
+import { formatNombre, nombreFr } from "@/lib/simulateur/nombres";
 
 // ============ SEUILS ============
 /** Au-delà de 85 % du plafond du Micro-BNC, on prévient qu'il approche. */
@@ -37,7 +38,7 @@ interface ContextAlert {
 
 // ============ HELPERS ============
 const euros = (montant: number): string =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.abs(montant));
+  formatNombre('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Math.abs(montant));
 
 // ============ COMPOSANT PRINCIPAL ============
 export function ConclusionCard({ comparison, formData, bascule, marge, partie = 'conclusion' }: ConclusionCardProps) {
@@ -67,19 +68,37 @@ export function ConclusionCard({ comparison, formData, bascule, marge, partie = 
   const approchePlafond = !depassePlafond && recettesAnnuelles > plafond * RATIO_APPROCHE_PLAFOND;
   const chargesFaibles = recommande === 'reel' && !equivalents && ratioCharges < SEUIL_CHARGES_FAIBLES_RATIO;
 
-  // Écart en % du Super-Net du régime le moins favorable (même base que les fiches).
+  // Écart en % du Super-Net du régime le moins favorable, lu sur les tuiles (§ 9.gi) : le
+  // Super-Net du médecin, avec sa part de l'impôt quand le conjoint a des revenus. La base
+  // d'avant (`superNet` du moteur, impôt de tout le foyer retiré) n'était affichée nulle part.
+  const foyer = {
+    revenusSalariesAnnuels: comparison.revenusSalariesAnnuels ?? revenusSalariesAnnuels,
+    revenusConjointAnnuels: comparison.revenusConjointAnnuels ?? revenusConjointAnnuels,
+    situationFamiliale: formData.situationFamiliale,
+  };
   const perdant = recommande === 'micro-bnc' ? reel : microBnc;
-  const pourcentage = perdant && perdant.superNet > 0 ? (economie / perdant.superNet) * 100 : null;
+  const gagnant = recommande === 'micro-bnc' ? microBnc : reel;
+  const tuilePerdant = perdant ? Math.round(superNetDuMedecin(perdant, foyer)) : 0;
+  const tuileGagnant = gagnant ? Math.round(superNetDuMedecin(gagnant, foyer)) : 0;
+  const pourcentage = perdant && tuilePerdant > 0 && tuileGagnant > tuilePerdant
+    ? ((tuileGagnant - tuilePerdant) / tuilePerdant) * 100
+    : null;
+  // Conjoint avec des revenus : l'écart (`economie`) est celui du foyer, impôt du conjoint
+  // compris ; il décide du régime et la phrase le dit (§ 9.gi). Les tuiles, elles, montrent la
+  // part du médecin : quand il gagne moins que son conjoint, leur écart en diffère.
+  const avecConjoint = (foyer.revenusConjointAnnuels ?? 0) > 0;
 
   // ============ MESSAGE PRINCIPAL ============
   const regimeLabel = recommande === 'micro-bnc' ? 'Le Micro-BNC' : 'Le régime réel';
   const message = !microBnc
     ? "Le Micro-BNC n'a pas pu être calculé\u00a0: seul le régime réel est affiché."
     : ecartAnnuel < 1
-      ? "Les deux régimes te laissent la même somme."
+      ? (avecConjoint ? "Les deux régimes laissent la même somme à ton foyer." : "Les deux régimes te laissent la même somme.")
       : equivalents
-        ? `Les deux régimes se valent\u00a0: ${euros(ecartMensuel)}/mois d'écart en faveur ${recommande === 'micro-bnc' ? 'du Micro-BNC' : 'du régime réel'} (${euros(ecartAnnuel)}/an).`
-        : `${regimeLabel} te fait garder ${euros(ecartMensuel)}/mois de plus (${euros(ecartAnnuel)}/an).`;
+        ? `Les deux régimes se valent\u00a0: ${euros(ecartMensuel)}/mois d'écart${avecConjoint ? ' pour ton foyer' : ''} en faveur ${recommande === 'micro-bnc' ? 'du Micro-BNC' : 'du régime réel'} (${euros(ecartAnnuel)}/an).`
+        : avecConjoint
+          ? `${regimeLabel} fait garder ${euros(ecartMensuel)}/mois de plus à ton foyer (${euros(ecartAnnuel)}/an).`
+          : `${regimeLabel} te fait garder ${euros(ecartMensuel)}/mois de plus (${euros(ecartAnnuel)}/an).`;
 
   // ============ POURQUOI ============
   // Ce que chaque régime retire des recettes avant l'impôt (`deductionsComparees`, tiré du
@@ -314,7 +333,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge, partie = 
         </p>
         {pourcentage !== null && !equivalents && (
           <Badge variant="outline" className="sim-puce encre grande shrink-0">
-            +{pourcentage.toLocaleString('fr-FR', { maximumFractionDigits: 1 })}{'\u00a0'}% de Super-Net
+            +{nombreFr(pourcentage, { maximumFractionDigits: 1 })}{'\u00a0'}% de Super-Net
           </Badge>
         )}
       </div>
