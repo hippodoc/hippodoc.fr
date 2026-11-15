@@ -14,7 +14,7 @@
  *   reste sur le <details> de l'offre interne, `landing_pricing_comparison_toggle`
  *   sur le <summary> du détail des offres. `landing_pricing_rspm_toggle` est nouveau.
  *   Dans le pli de l'offre interne, « par chat » ouvre le chat
- *   (`landing_intern_chat`, § 9.gv).
+ *   (`landing_intern_chat`, § 9.gw).
  * - Trois plis natifs, zéro JS : l'offre interne (dans sa carte, qui s'allonge
  *   seule à l'ouverture), « Détail des offres » (« Inclus dans toutes les
  *   offres » et ses quatorze lignes, le tableau avec « Engagement : 12 mois »,
@@ -164,7 +164,7 @@ const rspm = [
               <li>Certificat de scolarité</li>
             </ul>
             {/* « par chat » ouvre le chat (`data-ouvre-chat`, ThirdPartyScripts.astro,
-                 § 9.gv) ; sans script, c'est le lien de l'adresse e-mail. */}
+                 § 9.gw) ; sans script, c'est le lien de l'adresse e-mail. */}
             <p>Comment en bénéficier&nbsp;? Écris-nous <a class="lien" href="mailto:contact@hippodoc.fr" data-ouvre-chat data-ph="landing_intern_chat">par chat</a> ou à <a class="lien" href="mailto:contact@hippodoc.fr">contact@hippodoc.fr</a> — on te répond très vite avec ton code promo personnalisé&nbsp;!</p>
           </div>
         </details>
@@ -288,7 +288,7 @@ const rspm = [
   .more { display: flex; flex-direction: column; gap: 10px; padding-top: 22px; }
   .more p, .more li { font-size: 15.5px; line-height: 1.5; }
   .more b { color: var(--ink); }
-  /* « par chat » et l'adresse e-mail dans la même phrase (§ 9.gv). Un lien
+  /* « par chat » et l'adresse e-mail dans la même phrase (§ 9.gw). Un lien
      `.lien` (da.css) étend sa zone de toucher de 11 px au-dessus et au-dessous
      de sa ligne. Sur deux lignes qui se suivent (320 px), la zone de l'adresse
      recouvrait le bas de « par chat » : un appui y ouvrait le mail. Le premier

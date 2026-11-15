@@ -877,7 +877,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   consentement (`localStorage['cookie-consent']`, valeurs `accepted`/`essential-only`,
   même clé que l'app). Bannière cookies incluse ; « Préférences cookies » au footer.
   Crisp ne se charge qu'à un clic explicite : sur la bulle, ou sur un lien qui porte
-  `data-ouvre-chat` (§ 9.gu, § 9.gv : l'offre des internes de `/tarifs`, de l'accueil et de
+  `data-ouvre-chat` (§ 9.gu, § 9.gw : l'offre des internes de `/tarifs`, de l'accueil et de
   `/faq`). Deux liens `.lien` dans une même phrase : leurs zones de toucher de 44 px se
   recouvrent sur deux lignes qui se suivent (règle dans `accueil/Tarifs.astro`). Un tel
   lien garde un vrai `href` (une adresse e-mail) : c'est ce qu'il fait sans script. Ne

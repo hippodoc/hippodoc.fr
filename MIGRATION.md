@@ -14743,7 +14743,7 @@ hauteur à l'arrivée de l'exemple ; essais des § 9.go et 9.gp repassés. `veri
 erreur ; feuille commune inchangée ; comparé à la production, aucune page ne diffère (le texte est
 dans l'îlot, rendu après le calcul).
 
-### 9.gv Accueil et `/faq` : l'offre des internes propose aussi le chat (15 novembre 2026)
+### 9.gw Accueil et `/faq` : l'offre des internes propose aussi le chat (15 novembre 2026)
 
 Demande du propriétaire, après § 9.gu (`/tarifs`) : « fais pareil pour l'offre interne de
 l'accueil et la FAQ ».
