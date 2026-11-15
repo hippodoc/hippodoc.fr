@@ -500,6 +500,34 @@
 .sim .sim-limites-ligne a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .sim .sim-limites-ligne a:hover { color: var(--brand); }
 .sim .sim-attente { padding: 0; }
+/* L'attente du calcul (MIGRATION.md § 9.gm) : au moins un écran de haut. Le résultat la remplace à
+   la même place ; tant qu'elle est là, rien de ce qui suit l'îlot (prise de rendez-vous, repères)
+   n'est à l'écran, et rien ne saute quand le calcul arrive, une à trois secondes après le clic. Même
+   place gardée sous une alerte d'erreur qui n'a pas de résultat dessous. */
+.sim .sim-attente-fiche, .sim .sim-place-erreur { min-height: 100vh; }
+/* Place gardée (§ 9.gm, PlaceGardee.tsx) : un texte qui change après l'affichage (montant en
+   attente) et le gabarit de sa forme la plus longue occupent la même case, qui a la taille du plus
+   grand des deux, avant comme après l'arrivée de la valeur. Le gabarit ne se voit ni ne se lit
+   (`aria-hidden` en plus). */
+.sim .sim-place { display: grid; }
+.sim .sim-place > * { grid-area: 1 / 1; min-width: 0; }
+.sim .sim-place-gabarit { visibility: hidden; }
+/* Le compteur du Super-Net (§ 9.gm, RegimeComparisonCards.tsx) : l'élément porte le montant final,
+   qui fait sa largeur ; tant que le compteur tourne, ce montant est transparent et le nombre qui
+   défile (`data-valeur`) est dessiné par-dessus, calé à droite contre « € », hors du flux : « € » et
+   « /an » ne bougent plus, « /an » ne change plus de ligne. Le nombre dessiné n'est ni lu ni copié
+   (texte de remplacement vide, après la même déclaration sans lui pour les navigateurs qui ne le
+   lisent pas). Un nombre en cours plus large que le montant final (10 999 contre 11 318 : les
+   chiffres n'ont pas tous la même chasse) déborde à gauche, dans la marge de la tuile, le temps de
+   quelques images. Moins de mouvement demandé, ou contrastes forcés (où la transparence ne tient
+   pas) : le montant final d'emblée. */
+.sim .sim-compteur { position: relative; display: inline-block; }
+.sim .sim-compteur-en-cours { color: transparent; }
+.sim .sim-compteur-en-cours::after { content: attr(data-valeur); content: attr(data-valeur) / ""; position: absolute; top: 0; right: 0; color: var(--ink); }
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+  .sim .sim-compteur-en-cours { color: inherit; }
+  .sim .sim-compteur-en-cours::after { content: none; }
+}
 .sim .sim-alerte { border: 0; border-radius: 22px; background: var(--wait-bg); color: var(--wait); }
 .sim .sim-alerte > svg { color: var(--wait); }
 

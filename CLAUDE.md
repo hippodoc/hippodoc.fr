@@ -31,7 +31,8 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
   Tout ajout/modification de contenu doit être flaggé dans MIGRATION.md §9.
 - **Zéro JS client hors** : îlots des outils (simulateur, calculette, boussole, carrousel
   blog), PostHog, `ThirdPartyScripts.astro`, le micro-script inline du tiroir mobile
-  (fermeture au clic d'une ancre — voir MIGRATION.md §9 ; rendu une seule fois par page,
+  (fermeture au clic d'une ancre, et à la touche Échap qui rend le focus à la case du
+  menu depuis § 9.gk — voir MIGRATION.md §9 ; rendu une seule fois par page,
   après le pied, par `src/components/ScriptTiroir.astro`, que rend `Footer.astro` ; il ne
   se modifie pas : `verify-site.mjs` en fige l'empreinte), le script inline du lecteur du film de
   l'accueil (`src/components/accueil/Fondateur.astro`, bouton de lecture — MIGRATION.md
@@ -72,6 +73,33 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   (`MESURE_ENTETE_PIED`), vérifie sur chaque page du build les mêmes liens que sur
   l'accueil et le micro-script du tiroir une seule fois après le pied ; une page sans
   en-tête se déclare dans `PAGES_SANS_ENTETE`.
+  Contenu (§ 9.gj, d'après les clics de 90 jours) : menu « Comment ça marche »,
+  « Pour qui » (ancres de l'accueil), « Simulateur », « Tarifs » (page /tarifs), puis
+  « Ressources » (guide du remplaçant, guide des déclarations, calculette, blog, FAQ :
+  un titre et une ligne d'explication, sur ordinateur comme dans le tiroir).
+  Tiroir (§ 9.gk), sous 960 px : en haut, la copie de la pastille (le mot au même
+  endroit, la croix exactement à la place du bouton du menu, mêmes marges
+  intérieures aux paliers de 340 et 360 px) ; la carte du simulateur (ciel et soleil) ;
+  « Comment ça marche », « Pour qui », « Tarifs » dans une feuille à lignes ; les
+  ressources dans une seconde ; en bas, « Essai gratuit 30 jours » sur toute la largeur
+  et « Déjà un compte ? Se connecter » (sur une ligne quand la fenêtre fait moins de
+  520 px de haut). Sous 600 px, la pastille s'ouvre vers le bas (`clip-path` de la forme
+  de la pastille à la feuille entière, 10 et 12 px de voile autour) ; de 600 à 959 px,
+  un panneau à droite de 400 px au plus. Le milieu défile seul, un fondu au-dessus de la
+  bande du bas le signale ; à 390 × 844, tout tient sans défiler (ne pas l'allonger sans
+  le remesurer).
+  Connexion : en toutes lettres à partir de 600 px ; de 360 à 599 px, une pastille ronde
+  à l'icône de compte (`landing_login_header_mobile`), la place prise sur les marges de
+  360 à 389 px ; sous 360 px, dans le tiroir seulement. De 960 à 1 179 px, écarts de
+  20 px et corps de 15 px (cinq entrées ; 18 px d'air de chaque côté du menu à 960 px).
+  Un libellé d'un seul mot porte `hd-mot` (il ne rétrécit pas : la largeur minimale de
+  44 px remplace celle du contenu). Page en cours : `aria-current="page"` et couleur de
+  marque, soulignée en contrastes forcés. Pied : la marque, trois colonnes (« Produit »,
+  « Ressources », « À propos »), une bande légale ; la marque passe à gauche des
+  colonnes à partir de 1 180 px seulement (en dessous, elle n'avait pas la place de la
+  plaque des soutiens). Tout lien du pied porte un `data-ph="landing_footer_*"`.
+  Un lien ajouté à l'en-tête ou au pied : le mesurer à 320, 360, 390, 600, 960, 1 024 et
+  1 180 px, police chargée et bloquée, et avec l'espacement de texte agrandi (WCAG 1.4.12).
   ⚠️ À l'écran, l'en-tête est tenu à la fenêtre (`position: fixed` sous `@media screen`,
   § 9.ev), pas collé dans le flux : ne pas le remettre en `sticky`. Un élément collé dont
   un contrôle se trouve dans la bande de `scroll-padding-top` fait remonter la page à
@@ -265,8 +293,9 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   (verify-site) et `SECTIONS` (`src/lib/landing-analytics.ts`) changent dans le même
   commit quand une section apparaît ou disparaît ; `SECTIONS_LANDING` suit l'ordre de la
   page (vérifié), `SECTIONS` garde son rang historique. verify-site garde aussi les
-  `data-track`, les ancres `#sous-la-surface`, `#parcours`, `#pricing` (les trois cibles
-  du menu, sur toutes les pages) et `#film-presentation`, l'égalité FAQ visible /
+  `data-track`, les ancres `#sous-la-surface`, `#parcours` (cibles du menu, sur toutes
+  les pages), `#pricing` (cible de la FAQ ; le menu mène à /tarifs depuis § 9.gj) et
+  `#film-presentation`, l'égalité FAQ visible /
   `FAQPage`, un plancher de mots (2 680 depuis l'épure, à abaisser sciemment seulement) et
   la présence des termes porteurs dans le texte rendu (« médecin remplaçant », URSSAF,
   CARMF, 2035, 2042-C PRO, DSFU, RSPM, PAMC, Micro-BNC, rétrocession, contrat et licence
@@ -352,6 +381,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   son `theme` (obligatoire : sans lui, ou avec un thème inconnu, la construction s'arrête ;
   voir « Thèmes », plus bas). Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
   demande alors, en avertissement, de relever `PLANCHER_FAQ` (§ 9.fc).
+- **Publier un article : la procédure `.claude/skills/nouvel-article/SKILL.md`** (§ 9.gl). Le
+  propriétaire joint l'affiche et colle le texte ; la procédure fait le reste (adresse, champs,
+  thème, liens, fichiers à tenir à jour, vérifications, PR, contrôle en ligne) et s'arrête au
+  « go ». La suivre à chaque nouvel article, et la tenir à jour quand une règle du blog change.
 - ⚠️ `scripts/generate-blog-content.mjs` a servi à la migration initiale depuis
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
   (ex. les blocs « L'essentiel »). Ne le relancer que pour ré-importer sciemment.
@@ -676,6 +709,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   bascule se calculent après l'affichage, l'un après l'autre ; en attente, leur phrase a sa forme
   finale (« … € ») pour que rien ne saute. Dans les fiches, les cotisations sont en deux lignes,
   Urssaf et CARMF (une seule, Urssaf, au RSPM), aux montants de la conclusion (§ 9.ge).
+  ⚠️ **Rien ne bouge après le clic sur « Simuler »** (§ 9.gm : le CLS de la page dépassait 0,1 au
+  téléphone, jusqu'à 0,76 ; un décalage qui suit le clic de plus de 500 ms compte, et le calcul en
+  PAMC attend l'API). La carte d'attente fait au moins un écran (`.sim-attente-fiche`) et le
+  résultat la remplace en une fois : le bloc des deux régimes se charge au clic
+  (`chargerCartesDesRegimes`), pas de `lazy` ni de `Suspense` dans les résultats. Le bloc des
+  profils types, retiré à l'arrivée des résultats, est compensé par un défilement dans la même
+  image (`useLayoutEffect` de `SimulateurApp` ; Chromium n'ancre pas le défilement ici). Ce qui
+  dépend de l'essai d'avant est un état dérivé, calculé dans le rendu des résultats, jamais posé
+  par un effet. Une phrase dont un montant arrive après l'affichage passe par `PlaceGardee`, avec
+  le gabarit de sa forme la plus longue (`montantLePlusLarge`) ; le compteur des tuiles dessine le
+  nombre qui défile par `::after`, hors du flux. Un nouveau bloc ou une nouvelle phrase calculés
+  après l'affichage suivent la même règle ; mesurer avant de pousser (`layout-shift`, réseau
+  bridé, API lente, bouton haut et bas dans la fenêtre, grille des profils ouverte : § 9.gm).
   Profils types (§ 9.gf) : sept, en mode Auto, calés sur les simulations réelles (table Supabase
   `simulateur_public_events`) ; un profil garde son identifiant (`profil_type_id`), un identifiant
   retiré ne se réutilise pas.
@@ -714,6 +760,15 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   montant y passe aussi (ne plus écrire `new Intl.NumberFormat` ni `toLocaleString('fr-FR')` dans
   `src/components/simulateur/`). Une face de police qui élargit U+202F a été essayée : WebKit
   agrandit alors de 2 à 4 px les lignes serrées qui contiennent un nombre.
+  Paiements (§ 9.gn) : le pli « Quand et comment tu paies » (`PaymentExplanation.tsx`) dit, pour
+  l'Urssaf, la CARMF et l'impôt, quand ça part, sur quel revenu et comment ça se régularise ;
+  chaque phrase a sa source dans l'en-tête du composant (CSS L131-6-2 et R133-26, appel CARMF de
+  l'année, impots.gouv.fr). Variantes : RSPM (pas de régularisation), CARMF dispensée, 1re et
+  2e années (`debutActiviteDe`), impôt nul. Les dates de la CARMF (acompte avant fin février,
+  solde avant fin août) se relisent dans son appel de chaque année. Détail des régimes : en
+  PAMC, « Total des cotisations » sous Urssaf et CARMF (somme des montants affichés, `parts`).
+  RID au RSPM : 25 % par défaut, comme le simulateur de l'Urssaf (le médecin choisit à son premier
+  paiement de l'année).
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la

@@ -5,10 +5,10 @@ import { APP_URL } from '@/lib/site';
 /**
  * En-tête du site : la pastille de la DA 2026, sur toutes les pages depuis la
  * phase 5a (MIGRATION.md § 9.ed). Il n'y a plus de copie à tenir en double.
- * 3 ancres vers l'accueil + menu « Ressources » 100 % CSS (survol et
- * focus-within, liens toujours dans le HTML), tiroir mobile 100 % CSS piloté par
- * la case `#mobile-menu-toggle` (dont dépend aussi la bannière cookies),
- * `data-ph` et `data-track` de la SPA source.
+ * Quatre entrées + menu « Ressources » 100 % CSS (survol et focus-within, liens
+ * toujours dans le HTML), tiroir mobile 100 % CSS piloté par la case
+ * `#mobile-menu-toggle` (dont dépend aussi la bannière cookies), `data-ph` et
+ * `data-track` de la SPA source.
  * Habillage dans src/styles/da.css (classes `hd-*`), sans classe Tailwind. La
  * classe `da` de <body> (posée par BaseLayout sur toutes les pages) porte les
  * jetons ; `da-bloc` marque un bloc de la DA et reçoit la typographie.
@@ -17,10 +17,27 @@ import { APP_URL } from '@/lib/site';
  * ScriptTiroir.astro, que Footer.astro rend après le pied : une page qui rend
  * cet en-tête rend donc aussi Footer.astro (`node scripts/verify-site.mjs`
  * échoue sinon).
- * Menu : « Comment ça marche » (/#sous-la-surface), « Pour qui » (/#parcours),
- * « Tarifs » (/#pricing). Ce sont des liens vers l'accueil : ils fonctionnent
- * depuis toutes les pages. L'entrée « Découvrir » (/#film-presentation) de
- * l'ancien en-tête a disparu avec lui ; l'ancre reste sur l'accueil.
+ * Menu (MIGRATION.md § 9.gj, d'après les clics de 90 jours) : « Comment ça
+ * marche » (/#sous-la-surface) et « Pour qui » (/#parcours), deux ancres de
+ * l'accueil qui marchent depuis toutes les pages ; « Simulateur », sorti du
+ * menu Ressources (autant cliqué que les tarifs) ; « Tarifs », vers la page
+ * /tarifs (l'ancre /#pricing de l'accueil reste, pour la FAQ).
+ * Ressources : un titre et une ligne d'explication par lien ; « Qui sommes-nous »
+ * est passé dans le pied.
+ * Tiroir (§ 9.gk), sous 960 px : en haut, la copie de la pastille (le mot à la
+ * même place, la croix à la place du bouton du menu) ; le simulateur en carte
+ * (ciel et soleil, le motif du Super-Net) ; « Comment ça marche », « Pour qui »
+ * et « Tarifs » dans une feuille à lignes ; les ressources, avec leur ligne
+ * d'explication, dans une seconde ; en bas, l'essai sur toute la largeur et
+ * « Déjà un compte ? Se connecter ». Sous 600 px, la pastille s'ouvre vers le
+ * bas jusqu'à couvrir l'écran ; de 600 à 959 px, un panneau à droite.
+ * Connexion (une bonne part des visites vient d'abonnés qui se connectent) :
+ * en toutes lettres à partir de 600 px ; de 360 à 599 px, une pastille ronde à
+ * l'icône de compte, nommée « Connexion », à côté du bouton d'essai ; sous
+ * 360 px, faute de place, dans le tiroir seulement.
+ * Page en cours : `aria-current="page"` sur le lien de la page exacte ; le bouton
+ * « Ressources » prend la couleur de marque sur ses pages et leurs sous-pages
+ * (articles du blog, pages du guide des déclarations).
  * Logo : le mot seul, « Hippo » puis « doc » dans la police du site, sans l'icône
  * au trait (décision du propriétaire, 10 novembre 2026). Le lien, son nom
  * accessible et le texte « Hippodoc » ne changent pas.
@@ -30,22 +47,32 @@ import { APP_URL } from '@/lib/site';
  * page depuis la phase 5d : retirée en phase 6 (MIGRATION.md § 9.eo).
  */
 
-const anchorItems = [
+const navItems = [
   { href: '/#sous-la-surface', label: 'Comment ça marche', ph: 'landing_nav_comment_ca_marche' },
   { href: '/#parcours', label: 'Pour qui', ph: 'landing_nav_pour_qui' },
-  { href: '/#pricing', label: 'Tarifs', ph: 'landing_nav_pricing' },
+  { href: '/simulateur', label: 'Simulateur', ph: 'landing_nav_simulateur' },
+  { href: '/tarifs', label: 'Tarifs', ph: 'landing_nav_pricing' },
 ];
 
+/* `desc` : la ligne sous le titre, dans le menu de l'ordinateur et dans le tiroir. */
 const resourceItems = [
-  { href: '/simulateur', label: 'Simulateur', ph: 'landing_resource_simulateur' },
-  { href: '/guide', label: 'Guide du remplaçant (PDF)', ph: 'landing_resource_guide-remplacant' },
-  { href: '/guide-declarations', label: 'Guide déclarations', ph: 'landing_resource_guide-declarations' },
-  { href: '/blog', label: 'Blog', ph: 'landing_resource_blog' },
-  { href: '/faq', label: 'FAQ', ph: 'landing_resource_faq' },
-  { href: '/qui-sommes-nous', label: 'Qui sommes-nous ?', ph: 'landing_resource_qui-sommes-nous' },
+  { href: '/guide', label: 'Guide du remplaçant', desc: 'PDF offert\u00a0: licence, contrat, cotisations', ph: 'landing_resource_guide-remplacant' },
+  { href: '/guide-declarations', label: 'Guide des déclarations', desc: '2035, 2042-C PRO et DSFU expliquées', ph: 'landing_resource_guide-declarations' },
+  { href: '/guide-declarations/calculette', label: 'Calculette fiscale', desc: 'Ta 2035 reportée en 2042-C PRO et DSFU', ph: 'landing_resource_calculette' },
+  { href: '/blog', label: 'Blog', desc: 'Conseils pour médecins remplaçants', ph: 'landing_resource_blog' },
+  { href: '/faq', label: 'FAQ', desc: 'Toutes les réponses sur Hippodoc', ph: 'landing_resource_faq' },
 ];
+
+/* Tiroir (§ 9.gk) : le simulateur en carte, en tête ; les trois autres entrées
+   du menu dans une feuille à lignes ; les ressources dans une seconde feuille. */
+const SIMULATEUR = navItems.find((item) => item.href === '/simulateur')!;
+const SIMULATEUR_DESC = 'Gratuit, en 2\u00a0minutes\u00a0: ce qu’il te reste vraiment';
+const principaux = navItems.filter((item) => item !== SIMULATEUR);
+const phMobile = (ph: string) => `landing_mobile_${ph.replace('landing_', '')}`;
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const pageEnCours = (href: string) => (currentPath === href ? 'page' : undefined);
+const dansRessources = resourceItems.some((item) => currentPath === item.href || currentPath.startsWith(`${item.href}/`));
 ---
 
 <header class="hd da-bloc">
@@ -65,14 +92,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
     </a>
 
     <nav class="hd-links" aria-label="Navigation principale">
-      {anchorItems.map((item) => (
-        <a href={item.href} data-ph={item.ph}>{item.label}</a>
+      {navItems.map((item) => (
+        <a href={item.href} data-ph={item.ph} aria-current={pageEnCours(item.href)} class:list={[!item.label.includes(' ') && 'hd-mot']}>{item.label}</a>
       ))}
 
       <div class="hd-res">
         <button
           type="button"
-          class:list={['hd-res-btn', resourceItems.some((item) => item.href === currentPath) && 'is-current']}
+          class:list={['hd-res-btn', dansRessources && 'is-current']}
         >
           Ressources
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
@@ -80,8 +107,8 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
         <div class="hd-res-pop">
           <div class="hd-res-menu">
             {resourceItems.map((item) => (
-              <a href={item.href} data-ph={item.ph} aria-current={currentPath === item.href ? 'page' : undefined}>
-                {item.label}
+              <a href={item.href} data-ph={item.ph} aria-current={pageEnCours(item.href)}>
+                <span class="hd-res-t">{item.label}</span> <span class="hd-res-d">{item.desc}</span>
               </a>
             ))}
           </div>
@@ -91,6 +118,10 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
     <div class="hd-end">
       <a href={`${APP_URL}/auth`} data-ph="landing_login_header" class="hd-login">Connexion</a>
+      {/* De 360 à 599 px : la connexion en un geste, sans ouvrir le tiroir. */}
+      <a href={`${APP_URL}/auth`} data-ph="landing_login_header_mobile" class="hd-login-ico" aria-label="Connexion">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3.5"/><path d="M17.5 19.2a6.5 6.5 0 0 0-11 0"/></svg>
+      </a>
       <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header" class="btn btn-brand hd-cta-desk">
         Essai gratuit 30j
       </a>
@@ -120,21 +151,25 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
         </label>
       </div>
       <nav class="hd-drawer-nav" aria-label="Navigation mobile">
-        {anchorItems.map((item, i) => (
-          <a href={item.href} data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`} style={`--i:${i}`} class="hd-item">
-            {item.label}
-          </a>
-        ))}
-        <p style={`--i:${anchorItems.length}`} class="hd-item hd-drawer-label">Ressources</p>
-        {resourceItems.map((item, i) => (
-          <a href={item.href} data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`} style={`--i:${anchorItems.length + 1 + i}`} class="hd-item">
-            {item.label}
-          </a>
-        ))}
+        <a href={SIMULATEUR.href} data-ph={phMobile(SIMULATEUR.ph)} aria-current={pageEnCours(SIMULATEUR.href)} style="--i:0" class="hd-item hd-vedette">
+          <span class="hd-vedette-t">Simulateur Super-Net</span> <span class="hd-vedette-d">{SIMULATEUR_DESC}</span>
+          <span class="hd-vedette-fl" aria-hidden="true"><svg class="hd-chev hd-chev-fl" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>
+        </a>
+        <ul role="list" style="--i:1" class="hd-item hd-feuille">
+          {principaux.map((item) => (
+            <li><a href={item.href} data-ph={phMobile(item.ph)} aria-current={pageEnCours(item.href)} class="hd-ligne"><span class="hd-ligne-t">{item.label}</span> <svg class="hd-chev" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          ))}
+        </ul>
+        <p style="--i:2" class="hd-item hd-drawer-label">Ressources</p>
+        <ul role="list" style="--i:3" class="hd-item hd-feuille">
+          {resourceItems.map((item) => (
+            <li><a href={item.href} data-ph={phMobile(item.ph)} aria-current={pageEnCours(item.href)} class="hd-ligne hd-ligne-2"><span class="hd-ligne-txt"><span class="hd-ligne-t">{item.label}</span> <span class="hd-ligne-d">{item.desc}</span></span> <svg class="hd-chev" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          ))}
+        </ul>
       </nav>
-      <div style={`--i:${anchorItems.length + 1 + resourceItems.length}`} class="hd-item hd-drawer-end">
-        <a href={`${APP_URL}/auth`} class="btn btn-line">Connexion</a>
-        <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header_mobile" class="btn btn-brand">Essai gratuit 30j</a>
+      <div style="--i:4" class="hd-item hd-drawer-end">
+        <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header_mobile" class="btn btn-brand">Essai gratuit 30 jours</a>
+        <p class="hd-drawer-login"><span class="hd-drawer-deja">Déjà un compte&nbsp;?</span> <a href={`${APP_URL}/auth`} data-ph="landing_mobile_login">Se connecter</a></p>
       </div>
     </div>
   </div>

@@ -435,8 +435,9 @@ if (!blocFilm || !/\sid="film-presentation"/.test(blocFilm[0])) {
 } else if (!/<video\b/.test(accueil.slice(blocFilm.index, finFondateur))) {
   fail('accueil : le <video> n\'est plus dans le bloc data-landing-section="presentation-video" — landing_video_* ne partirait plus');
 }
-// Tarifs (DA 2026, phase 3). `id="pricing"` est la cible du lien « Tarifs » du
-// menu sur TOUT le site et de deux réponses de la FAQ. Les deux liens
+// Tarifs (DA 2026, phase 3). `id="pricing"` est la cible de deux réponses de la
+// FAQ de l'accueil et d'un bouton de /faq (le lien « Tarifs » du menu mène à
+// /tarifs depuis § 9.gj). Les deux liens
 // d'inscription gardent `cta_signup_pricing` et leurs trois attributs (le plan
 // choisi part avec le clic), l'offre interne et le détail des offres restent des
 // <details> natifs, avec leur identifiant d'autocapture.
@@ -602,36 +603,58 @@ if (motsAccueil < MOTS_ACCUEIL_MIN) {
       en deux temps, § 9.eb), jamais sur une page sans tiroir (il y lèverait une
       erreur), et au caractère près celui de l'ancien en-tête : son empreinte est
       figée ici. Le modifier demande de changer l'empreinte, donc de le décider. */
+// Menu, Ressources, connexion sur téléphone et pied rangés par intention :
+// § 9.gj (« Simulateur » et « Tarifs » vers des pages, tous les liens du pied
+// mesurés, téléphone et e-mail passés des pastilles aux lignes d'« À propos »).
+// Tiroir refait en § 9.gk : le simulateur en carte, en tête (même data-ph),
+// les ressources avec leur ligne d'explication, l'essai puis « Se connecter ».
 const MESURE_ENTETE_PIED = [
   'header : a | /#sous-la-surface | landing_nav_comment_ca_marche |  |  | Comment ça marche',
   'header : a | /#parcours | landing_nav_pour_qui |  |  | Pour qui',
-  'header : a | /#pricing | landing_nav_pricing |  |  | Tarifs',
-  'header : a | /simulateur | landing_resource_simulateur |  |  | Simulateur',
-  'header : a | /guide | landing_resource_guide-remplacant |  |  | Guide du remplaçant (PDF)',
-  'header : a | /guide-declarations | landing_resource_guide-declarations |  |  | Guide déclarations',
-  'header : a | /blog | landing_resource_blog |  |  | Blog',
-  'header : a | /faq | landing_resource_faq |  |  | FAQ',
-  'header : a | /qui-sommes-nous | landing_resource_qui-sommes-nous |  |  | Qui sommes-nous ?',
+  'header : a | /simulateur | landing_nav_simulateur |  |  | Simulateur',
+  'header : a | /tarifs | landing_nav_pricing |  |  | Tarifs',
+  'header : a | /guide | landing_resource_guide-remplacant |  |  | Guide du remplaçant PDF offert : licence, contrat, cotisations',
+  'header : a | /guide-declarations | landing_resource_guide-declarations |  |  | Guide des déclarations 2035, 2042-C PRO et DSFU expliquées',
+  'header : a | /guide-declarations/calculette | landing_resource_calculette |  |  | Calculette fiscale Ta 2035 reportée en 2042-C PRO et DSFU',
+  'header : a | /blog | landing_resource_blog |  |  | Blog Conseils pour médecins remplaçants',
+  'header : a | /faq | landing_resource_faq |  |  | FAQ Toutes les réponses sur Hippodoc',
   'header : a | https://app.hippodoc.fr/auth | landing_login_header |  |  | Connexion',
+  'header : a | https://app.hippodoc.fr/auth | landing_login_header_mobile |  |  | Connexion',
   'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header |  | Essai gratuit 30j',
   'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_pill |  | Essai gratuit',
   'header : label |  | landing_mobile_menu_open |  |  |',
+  'header : a | /simulateur | landing_mobile_nav_simulateur |  |  | Simulateur Super-Net Gratuit, en 2 minutes : ce qu’il te reste vraiment',
   'header : a | /#sous-la-surface | landing_mobile_nav_comment_ca_marche |  |  | Comment ça marche',
   'header : a | /#parcours | landing_mobile_nav_pour_qui |  |  | Pour qui',
-  'header : a | /#pricing | landing_mobile_nav_pricing |  |  | Tarifs',
-  'header : a | /simulateur | landing_mobile_resource_simulateur |  |  | Simulateur',
-  'header : a | /guide | landing_mobile_resource_guide-remplacant |  |  | Guide du remplaçant (PDF)',
-  'header : a | /guide-declarations | landing_mobile_resource_guide-declarations |  |  | Guide déclarations',
-  'header : a | /blog | landing_mobile_resource_blog |  |  | Blog',
-  'header : a | /faq | landing_mobile_resource_faq |  |  | FAQ',
-  'header : a | /qui-sommes-nous | landing_mobile_resource_qui-sommes-nous |  |  | Qui sommes-nous ?',
-  'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_mobile |  | Essai gratuit 30j',
+  'header : a | /tarifs | landing_mobile_nav_pricing |  |  | Tarifs',
+  'header : a | /guide | landing_mobile_resource_guide-remplacant |  |  | Guide du remplaçant PDF offert : licence, contrat, cotisations',
+  'header : a | /guide-declarations | landing_mobile_resource_guide-declarations |  |  | Guide des déclarations 2035, 2042-C PRO et DSFU expliquées',
+  'header : a | /guide-declarations/calculette | landing_mobile_resource_calculette |  |  | Calculette fiscale Ta 2035 reportée en 2042-C PRO et DSFU',
+  'header : a | /blog | landing_mobile_resource_blog |  |  | Blog Conseils pour médecins remplaçants',
+  'header : a | /faq | landing_mobile_resource_faq |  |  | FAQ Toutes les réponses sur Hippodoc',
+  'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_mobile |  | Essai gratuit 30 jours',
+  'header : a | https://app.hippodoc.fr/auth | landing_mobile_login |  |  | Se connecter',
   'footer : a | / | landing_footer_home |  |  | Hippodoc',
-  'footer : a | tel:+33756898961 | landing_footer_phone |  |  | Téléphone',
-  'footer : a | mailto:contact@hippodoc.fr | landing_footer_email |  |  | Email',
   'footer : a | https://www.linkedin.com/company/hippodoc/ | landing_footer_linkedin |  |  | LinkedIn',
   'footer : a | https://www.facebook.com/profile.php?id=61574895730373 | landing_footer_facebook |  |  | Facebook',
   'footer : a | https://www.instagram.com/hippodoc.fr/ | landing_footer_instagram |  |  | Instagram',
+  'footer : a | /#sous-la-surface | landing_footer_comment-ca-marche |  |  | Comment ça marche',
+  'footer : a | /#parcours | landing_footer_pour-qui |  |  | Pour qui',
+  'footer : a | /simulateur | landing_footer_simulateur |  |  | Simulateur Super-Net',
+  'footer : a | /tarifs | landing_footer_tarifs |  |  | Tarifs',
+  'footer : a | /comparatif | landing_footer_comparatif |  |  | Comparatif des logiciels',
+  'footer : a | /guide-declarations | landing_footer_guide-declarations |  |  | Guide des déclarations',
+  'footer : a | /guide | landing_footer_guide-remplacant |  |  | Guide du remplaçant (PDF)',
+  'footer : a | /guide-declarations/calculette | landing_footer_calculette |  |  | Calculette fiscale',
+  'footer : a | /blog | landing_footer_blog |  |  | Blog',
+  'footer : a | /faq | landing_footer_faq |  |  | FAQ',
+  'footer : a | /qui-sommes-nous | landing_footer_qui-sommes-nous |  |  | Qui sommes-nous ?',
+  'footer : a | mailto:contact@hippodoc.fr | landing_footer_email |  |  | contact@hippodoc.fr',
+  'footer : a | tel:+33756898961 | landing_footer_phone |  |  | 07 56 89 89 61',
+  'footer : a | /mentions-legales | landing_footer_mentions-legales |  |  | Mentions légales',
+  'footer : a | /conditions-utilisations | landing_footer_conditions-utilisations |  |  | Conditions d&#39;utilisation',
+  'footer : a | /politique-confidentialite | landing_footer_politique-confidentialite |  |  | Politique de confidentialité',
+  'footer : a | /rgpd | landing_footer_rgpd |  |  | RGPD',
   'footer : button |  |  |  | data-cookie-prefs | Préférences cookies',
 ];
 // Pages sans l'en-tête ni le pied du site, et pourquoi.
@@ -639,9 +662,10 @@ const PAGES_SANS_ENTETE = new Set([
   '/essai/index.html',         // page de campagne, noindex : son propre en-tête, sans menu
   '/transmissions/index.html', // page HTML déposée dans public/, hors Astro
 ]);
-// SHA-256 du micro-script du tiroir, espaces réduits : le même que dans l'ancien
-// Header.astro (relevé sur le build de main avant la phase 5a).
-const EMPREINTE_SCRIPT_TIROIR = '10a3011d80ece8d8fd07d7623db4b6642c3f1aea2eb69c85ef2ab6f04277a547';
+// SHA-256 du micro-script du tiroir, espaces réduits. Celui de l'ancien
+// Header.astro jusqu'à § 9.gk ; depuis, avec la touche Échap qui referme le
+// tiroir et rend le focus à la case du menu (empreinte d'avant : 10a3011d80ec…).
+const EMPREINTE_SCRIPT_TIROIR = '58afaf081d19d2402e4714670e3e359eecf71cd37b05322a6f3e595b9fcea8b1';
 
 function reperesNavigation(html, balise, classe) {
   const bloc = html.match(new RegExp(`<${balise}\\b[^>]*\\sclass="${classe}\\b[^"]*"[\\s\\S]*?</${balise}>`))?.[0];

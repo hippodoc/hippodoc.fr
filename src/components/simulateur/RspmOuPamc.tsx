@@ -3,6 +3,7 @@ import { SEUIL_EQUIVALENCE_ANNUEL, type RegimeComparison } from "@/lib/simulateu
 import { superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import type { SimulateurFormData } from "./simulateurSchema";
 import { formatNombre } from "@/lib/simulateur/nombres";
+import { PlaceGardee, montantLePlusLarge } from "./PlaceGardee";
 
 /**
  * « RSPM ou PAMC ? » (MIGRATION.md § 9.gh) : sous la conclusion d'une simulation au RSPM, le
@@ -34,9 +35,21 @@ export function RspmOuPamc({
   });
   const enAttente = alternativePamc === 'attente';
 
-  let comparaison: JSX.Element;
+  // § 9.gm : la phrase arrive en deux temps (« … € » pendant le calcul, puis le montant et le
+  // verdict, qui ajoutait une ligne et poussait de 22 px tout ce qui suit, le bloc des deux régimes
+  // compris). Elle garde la place de sa forme la plus longue : le verdict du PAMC, avec le montant le
+  // plus large possible (un Super-Net ne dépasse pas les recettes et les salaires).
+  const plusLarge = euros(montantLePlusLarge(Math.max(rspm, (comparison.recettesAnnuelles ?? 0) + (comparison.revenusSalariesAnnuels ?? 0))));
+  const gabarit = (
+    <>
+      En PAMC, avec des cotisations Urssaf et CARMF calculées sur ton bénéfice, tu garderais{' '}
+      <strong>{plusLarge}</strong> par an, contre {euros(rspm)} au RSPM.
+      {' '}<strong>Le PAMC te laisserait {plusLarge} de plus par an.</strong>
+    </>
+  );
+  let texte: JSX.Element;
   if (alternativePamc === null) {
-    comparaison = <p>La comparaison avec le PAMC n'a pas pu être calculée{' '}: relance la simulation dans un instant.</p>;
+    texte = <>La comparaison avec le PAMC n'a pas pu être calculée{' '}: relance la simulation dans un instant.</>;
   } else {
     const pamc = enAttente ? null : alternativePamc.superNet;
     // Écart entre les deux montants affichés, arrondis à l'euro : la phrase se vérifie de tête.
@@ -45,14 +58,15 @@ export function RspmOuPamc({
       : Math.abs(ecart) < SEUIL_EQUIVALENCE_ANNUEL ? <>Les deux se valent, à {euros(Math.abs(ecart))} près.</>
       : ecart < 0 ? <>Le RSPM te laisse {euros(-ecart)} de plus par an.</>
       : <>Le PAMC te laisserait {euros(ecart)} de plus par an.</>;
-    comparaison = (
-      <p>
+    texte = (
+      <>
         En PAMC, avec des cotisations Urssaf et CARMF calculées sur ton bénéfice, tu garderais{' '}
         <strong>{pamc === null ? '… €' : euros(pamc)}</strong> par an, contre {euros(rspm)} au RSPM.
         {verdict && <> <strong>{verdict}</strong></>}
-      </p>
+      </>
     );
   }
+  const comparaison = <p><PlaceGardee gabarit={gabarit}>{texte}</PlaceGardee></p>;
 
   return (
     <section className="sim-fiche sim-rspm" aria-labelledby="sim-rspm-titre">

@@ -1,4 +1,3 @@
-import { lazy, Suspense } from "react";
 import { BreakEvenAnalysis } from "./BreakEvenAnalysis";
 import { ConclusionCard } from "./ConclusionCard";
 import { PremiereAnneeCard } from "./PremiereAnneeCard";
@@ -15,18 +14,24 @@ import { superNetDuMedecin } from "@/lib/simulateur/impotMedecin";
 import type { RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
 import { formatNombre } from "@/lib/simulateur/nombres";
+import type { RegimeComparisonCards } from "./RegimeComparisonCards";
 
 /**
  * Chargement différé — `RegimeComparisonCards` n'apparaît qu'APRÈS soumission du
  * formulaire. Il portait recharts (un camembert de 100x100 px par fiche, retiré en
  * § 9.ft) : importé statiquement, il pesait sur le chunk initial de /simulateur.
  *
- * Sans risque au rendu serveur : à ce moment `results.recommande` est faux, donc
- * SimulateurResults n'est pas rendu et le `lazy` n'est jamais évalué.
+ * § 9.gm : le chargement part au clic sur « Simuler » (`SimulateurApp`), en même temps que le
+ * calcul, et les résultats ne s'affichent qu'avec ce bloc. Chargé par `lazy` une fois les
+ * résultats affichés, il arrivait après eux : sa place d'attente (220 px) devenait 650 à 820 px,
+ * et tout ce qui suit (« À savoir », les plis) descendait d'autant sous les yeux.
  */
-const RegimeComparisonCards = lazy(() =>
-  import("./RegimeComparisonCards").then((m) => ({ default: m.RegimeComparisonCards }))
-);
+export type CartesDesRegimes = typeof RegimeComparisonCards;
+let chargementDesCartes: Promise<CartesDesRegimes> | null = null;
+export function chargerCartesDesRegimes(): Promise<CartesDesRegimes> {
+  chargementDesCartes ??= import("./RegimeComparisonCards").then((m) => m.RegimeComparisonCards);
+  return chargementDesCartes;
+}
 
 
 /** Ce qu'on garde d'un essai pour le comparer au suivant (§ 9.gg). */
@@ -95,9 +100,12 @@ export interface SimulateurResultsProps {
   essaiPrecedent?: Essai | null;
   /** Au RSPM, le meilleur Super-Net en PAMC (§ 9.gh) : en attente tant qu'il vaut `'attente'`. */
   alternativePamc?: { superNet: number; recommande: 'micro-bnc' | 'reel' } | null | 'attente';
+  /** Le bloc des deux régimes, déjà chargé (`chargerCartesDesRegimes`) ; `null` si son fichier n'a
+   *  pas pu être chargé : le reste du résultat s'affiche sans lui. */
+  Cartes: CartesDesRegimes | null;
 }
 
-export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation, essaiPrecedent, alternativePamc }: SimulateurResultsProps) {
+export function SimulateurResults({ comparison, bascule, marge, formData, periode, onNewSimulation, essaiPrecedent, alternativePamc, Cartes }: SimulateurResultsProps) {
   const { reel, microBnc, recommande, economie } = comparison;
 
   if (!reel || !recommande) {
@@ -140,9 +148,9 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
       {/* Première année d'activité (§ 9.fx) : ce qui part cette année, et ce qui viendra ensuite */}
       {debutActiviteDe(formData) === 'premiere' && <PremiereAnneeCard comparison={comparison} formData={formData} />}
 
-      {/* Cartes de comparaison */}
-      <Suspense fallback={<div className="min-h-[220px]" aria-hidden="true" />}>
-      <RegimeComparisonCards
+      {/* Cartes de comparaison (chargées avant l'affichage des résultats, § 9.gm) */}
+      {Cartes && (
+      <Cartes
         reel={reel}
         microBnc={microBnc}
         recommande={recommande}
@@ -159,7 +167,7 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
         annee={formData.annee}
         plafondMicro={comparison.plafondMicro}
       />
-      </Suspense>
+      )}
 
       {/* À savoir pour ta situation (§ 9.gh) : la phrase des 1 000 € et les pistes (charges
           faibles, réductions de la CARMF, complémentaire de la 3e année), sorties de la conclusion */}

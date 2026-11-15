@@ -13498,6 +13498,406 @@ insécables) ; WebKitGTK : hauteurs des tuiles inchangées (188 px à 1 300 px).
 9.gh repassés, dont l'écart de la conclusion égal à celui des tuiles sur six saisies. Aucune ligne
 écrite dans Supabase par les essais locaux après le changement. `verify-site.mjs` sans erreur.
 
+### 9.gj En-tête et pied rangés d'après l'usage (15 novembre 2026)
+
+Demande du propriétaire : un avis d'expert sur l'en-tête, le pied et les pages proposées,
+puis « go, pense à tout ». Décisions prises sur les clics PostHog des 90 derniers jours
+(site public, `$autocapture` par `data-ph` et par lien) et sur le relevé des en-têtes et
+pieds d'Indy, Pennylane, Notion et Linear.
+
+**Ce que disaient les clics** (ordinateur + téléphone) : Connexion 1 273 sur ordinateur
+(392 personnes) et environ 8 par jour au téléphone ; Tarifs 134 + 102 ; Simulateur, rangé
+dans « Ressources », 102 + 87 ; Pour qui 73 + 22 ; Blog 58 + 27 ; Guide du remplaçant
+43 + 33 (depuis fin septembre) ; Guide des déclarations 46 + 21 ; Qui sommes-nous 15 + 8 ;
+FAQ 8 + 4 ; tout le pied, environ 80 clics. /simulateur est la troisième page visitée
+(385 visiteurs, après l'accueil et les articles) ; /tarifs n'avait que 33 visiteurs (le
+menu menait à /#pricing). Le menu du téléphone s'ouvre 21 fois par jour : avant le
+10 novembre, un bouton « Connexion » était visible sur téléphone (685 clics).
+
+**En-tête** (`src/components/Header.astro`, `src/styles/da.css`) :
+- Menu : « Comment ça marche », « Pour qui », **« Simulateur »** (sorti de « Ressources »),
+  **« Tarifs » vers /tarifs** (au lieu de /#pricing ; l'ancre reste, cible de la FAQ).
+- « Ressources » : guide du remplaçant, guide des déclarations, **calculette fiscale**
+  (aucun menu ne la citait), blog, FAQ ; « Qui sommes-nous » passe dans le pied. Sur
+  ordinateur, un titre et une ligne d'explication par lien (menu de 320 px).
+  **Contenu ajouté** (lignes d'explication, d'après les descriptions des pages) :
+  « PDF offert : licence, contrat, cotisations », « 2035, 2042-C PRO et DSFU expliquées »,
+  « Ta 2035 reportée en 2042-C PRO et DSFU », « Conseils pour médecins remplaçants »,
+  « Toutes les réponses sur Hippodoc ». Libellés : « Guide déclarations » devient « Guide
+  des déclarations » ; « Guide du remplaçant (PDF) » reste tel quel dans le tiroir.
+- **Connexion sur téléphone en un geste** : de 360 à 599 px, une pastille ronde à
+  l'icône de compte, nommée « Connexion », à côté du bouton d'essai ; à partir de 600 px,
+  « Connexion » en toutes lettres (il n'apparaissait qu'à 960 px). De 360 à 389 px, la
+  place est prise sur les marges (pastille d'essai à 13 px de remplissage, mot sans
+  marge) ; sous 360 px (93 visiteurs sur 90 jours), dans le tiroir seulement.
+- De 960 à 1 179 px : écarts de 20 px et corps de 15 px (cinq entrées). Page en cours :
+  `aria-current="page"`, couleur de marque (soulignée en contrastes forcés) ; le bouton
+  « Ressources » prend la couleur sur ses pages et sous-pages (articles, guide).
+
+**Pied** (`src/components/Footer.astro`, `src/styles/da.css`) : la marque (logo, phrase,
+réseaux, soutiens), trois colonnes, une bande légale.
+- « Produit » : Comment ça marche, Pour qui, Simulateur Super-Net, Tarifs, Comparatif des
+  logiciels (« Comparatif outils » avant). « Ressources » : Guide des déclarations, Guide
+  du remplaçant (PDF), Calculette fiscale, Blog, FAQ. « À propos » : Qui sommes-nous ?,
+  contact@hippodoc.fr, 07 56 89 89 61 (« +33 (0)7 56 89 89 61 » avant).
+- Bande légale : Mentions légales, Conditions d'utilisation, Politique de
+  confidentialité, RGPD, Préférences cookies, puis le ©.
+- **Retirés** : les pastilles téléphone et e-mail (doublons de la colonne de contact),
+  l'adresse du siège (dans les mentions légales), la colonne « Contactez-nous », et les
+  trois articles mis en avant (`regime-fiscal-micro-bnc-vs-reel`,
+  `salaires-medecins-remplacants`, `checklist-administrative-medecin-remplacant`), qui
+  semblaient des sous-parties du comparatif. Ils perdent un lien présent sur toutes les
+  pages ; ils restent liés par le blog, leurs thèmes et les articles connexes.
+- Téléphone : marque, puis « Produit » et « Ressources » côte à côte, « À propos » sur
+  toute la largeur. De 640 à 1 179 px : les trois colonnes sous la marque. À partir de
+  1 180 px : la marque à gauche, le © à droite des liens légaux (de 960 à 1 179 px, la
+  marque n'avait que 263 px : la plaque des soutiens se repliait et le © se coupait).
+
+**Mesure** (`MESURE_ENTETE_PIED` de `verify-site.mjs` mis à jour) :
+- Inchangés : `landing_nav_comment_ca_marche`, `landing_nav_pour_qui`,
+  `landing_nav_pricing` (le lien mène maintenant à /tarifs), `landing_login_header`,
+  `landing_resource_guide-remplacant`, `…guide-declarations`, `…blog`, `…faq` (et leurs
+  `landing_mobile_*`), `cta_signup_header*`, `landing_mobile_menu_open`,
+  `landing_footer_home`, `…linkedin`, `…facebook`, `…instagram` ; `landing_footer_phone`
+  et `landing_footer_email` passent des pastilles aux lignes d'« À propos » (même lien).
+- Arrêtés : `landing_resource_simulateur` et `landing_mobile_resource_simulateur`
+  (remplacés par `landing_nav_simulateur` et `landing_mobile_nav_simulateur`),
+  `landing_resource_qui-sommes-nous` et sa version mobile (remplacés par
+  `landing_footer_qui-sommes-nous`).
+- Nouveaux : `landing_resource_calculette` (+ mobile), `landing_login_header_mobile`,
+  `landing_mobile_login` (le bouton Connexion du tiroir n'était pas mesuré), et un
+  `landing_footer_*` sur chaque lien des colonnes et de la bande légale (aucun n'était
+  mesuré).
+
+**Vérifié** :
+- Construction et `verify-site.mjs` : 0 erreur. Feuille commune : seules les règles
+  `hd-*` et `ft-*` changent (comparaison bloc par bloc avec le build de `main` : aucune
+  règle de Tailwind ajoutée ou retirée).
+- En-tête, Chromium, 25 largeurs de 320 à 1 920 px, police chargée et police de secours
+  (woff2 bloquée) : aucun chevauchement, aucun libellé sur deux lignes, aucun
+  débordement. Air de part et d'autre du menu : 18 px à 960, 50 à 1 024, 77 à 1 180 et
+  au-delà.
+- Espacement de texte agrandi (WCAG 1.4.12) de 960 à 1 280 px : aucun chevauchement.
+  Avant `hd-mot`, « Simulateur » débordait sur « Tarifs » à 960 et 1 024 px. À 960 px,
+  « Comment ça marche » passe alors sur trois lignes et sort de la pastille, lisible.
+- Menu « Ressources » : une ligne par explication (58 px), dans la fenêtre à 960 et
+  1 440 px ; page en cours marquée (calculette). Clavier : Tab parcourt le menu, puis
+  « Ressources » et ses cinq liens (à 0 ms entre deux appuis simulés, le menu est sauté,
+  sur `main` comme ici ; dès 30 ms, non).
+- Tiroir : 390 × 844 sans défilement ; 320 × 568, 844 × 390 et 667 × 375, la liste
+  défile et Connexion / Essai restent visibles en bas.
+- Pied, 16 largeurs de 320 à 1 920 px, accueil et /tarifs : aucun débordement ; hauteur
+  au téléphone (390 px) 979 px sur l'accueil (1 011 avant).
+- WebKit (moteur de Safari) à 1 024, 1 180 et 1 440 px (en-tête, menu, pied) et de 320 à
+  600 px en iframe (en-tête) : mêmes résultats que Chromium.
+- Lighthouse, mobile et ordinateur, sur /, /simulateur et un article : 100 dans les
+  quatre catégories.
+
+**Fichiers** : `src/components/Header.astro`, `src/components/Footer.astro`,
+`src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gk Le tiroir mobile refait : la pastille qui s'ouvre, le simulateur en carte (15 novembre 2026)
+
+Avis demandé par le propriétaire sur le menu du téléphone (« fais-le, pense à tout »).
+Constat (comparaison avec Indy et Notion, menus ouverts à 390 × 844) : neuf liens de même
+taille et de même graisse, le simulateur (l'outil le plus cliqué) noyé dans la liste, les
+ressources sans les explications de l'ordinateur, 180 px vides au milieu, l'essai et la
+connexion à égalité, un panneau latéral qui laissait voir un morceau de page et de logo.
+
+**Forme** (`Header.astro`, `da.css`) :
+- En haut, la copie exacte de la pastille : mot au même endroit (0 px d'écart mesuré de
+  320 à 599 px), croix exactement à la place du bouton du menu (0 px d'écart de 320 à
+  959 px). Sous 600 px, la feuille part de la forme de la pastille et s'ouvre vers le bas
+  jusqu'à couvrir l'écran (`clip-path`, 420 ms à l'ouverture, 300 à la fermeture,
+  courbe de § 9.do), 10 et 12 px de voile autour ; de 600 à 959 px, un panneau à droite
+  (400 px au plus), qui glisse comme avant.
+- Le milieu : fond de ciel clair (`--sky-soft`) ; la **carte du simulateur** (ciel et
+  soleil, le motif du Super-Net, flèche dans une pastille blanche) ; une feuille à lignes
+  (« Comment ça marche », « Pour qui », « Tarifs ») ; « Ressources » ; une seconde feuille
+  avec les cinq ressources et leur ligne d'explication (le motif des feuilles à lignes de
+  l'accueil : filet entre deux lignes, ligne teintée au toucher, anneau de focus à
+  l'intérieur, chevron dessiné). Il défile seul ; un fondu de 18 px au-dessus de la bande
+  du bas signale qu'il continue (il ne couvre que la marge une fois au bout).
+- En bas : « Essai gratuit 30 jours » sur toute la largeur (« Essai gratuit 30j » avant),
+  puis « Déjà un compte ? Se connecter ». Fenêtre de moins de 520 px de haut (téléphone
+  couché) : l'essai et « Se connecter » sur une ligne, « Déjà un compte ? » lu mais pas
+  affiché.
+- Animation en cascade conservée (cinq groupes ; sous 600 px, ils descendent de 8 px au
+  rythme de l'ouverture). Mouvements réduits : ouvert d'un coup. Contrastes forcés :
+  contours des feuilles et du tiroir, page en cours soulignée.
+
+**Contenu modifié** : la ligne de la carte, « Gratuit, en 2 minutes : ce qu'il te reste
+vraiment » (d'après la page du simulateur : « Renseigne ta situation en 2 min… ce qu'il te
+reste vraiment », titre « gratuit ») ; « Essai gratuit 30 jours » ; « Déjà un compte ? Se
+connecter » ; les explications des ressources (§ 9.gj) entrent dans le tiroir ; « Guide
+du remplaçant (PDF) » y devient « Guide du remplaçant » (l'explication dit « PDF offert »).
+
+**Micro-script du tiroir** (`ScriptTiroir.astro`) : la touche Échap referme le tiroir et
+rend le focus à la case du menu (anneau sur le bouton). Seul ajout ; `EMPREINTE_SCRIPT_TIROIR`
+mis à jour dans `verify-site.mjs` (empreinte d'avant notée en commentaire).
+
+**Mesure** : mêmes `data-ph` et `data-track` (`landing_mobile_nav_*`,
+`landing_mobile_resource_*`, `cta_signup_header_mobile`, `landing_mobile_login`) ; la carte
+garde `landing_mobile_nav_simulateur`. Ordre : carte, trois lignes, cinq ressources, essai,
+connexion (`MESURE_ENTETE_PIED` mis à jour).
+
+**Vérifié** :
+- Construction et `verify-site.mjs` : 0 erreur ; feuille commune : seules des règles de
+  l'en-tête changent (comparaison bloc par bloc avec `main`, y compris l'intérieur des
+  blocs `@media`).
+- Dix tailles (320 × 568, 360 × 740, 375 × 667, 390 × 844, 430 × 932, 568 × 320, 667 × 375,
+  768 × 1024, 820 × 1180, 959 × 700) : rien ne déborde, le bas reste visible, la liste
+  défile quand il le faut ; à 390 × 844 et au-delà, tout tient sans défiler.
+- Clavier : Espace ouvre, Tab entre dans le tiroir, Échap ferme et rend le focus. Une ancre
+  de l'accueil (« Pour qui ») referme le tiroir et mène à la section ; à 768 px, un appui
+  sur le voile le referme. Espacement de texte agrandi (WCAG 1.4.12) à 320 et 390 px :
+  aucun texte hors du tiroir ni sur un chevron.
+- Animation ralentie dix fois (image par image), mouvements réduits, contrastes forcés.
+- WebKit (moteur de Safari) : 320 et 390 px en iframe, 768 px en fenêtre, mêmes mesures.
+- En-tête aux 25 largeurs de § 9.gj, police chargée et bloquée : inchangé, aucun défaut.
+- Lighthouse mobile sur /, /tarifs, un article et /simulateur : 100 dans les quatre
+  catégories.
+
+**Fichiers** : `src/components/Header.astro`, `src/components/ScriptTiroir.astro`,
+`src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gl Blog : la procédure « nouvel article » (15 novembre 2026)
+
+Le propriétaire demande « la meilleure procédure pour ajouter des articles », pour que chaque
+nouvel article soit « nickel, bien intégré pour le SEO ». Décision : une procédure écrite dans le
+dépôt, `.claude/skills/nouvel-article/SKILL.md`, que toute session suit à l'identique, et une
+session neuve par article (ou par lot). Écartés : continuer dans une conversation unique (trop
+longue, et le conteneur s'efface) ; un formulaire en artefact (il ne dépose pas l'image dans le
+dépôt et ne vérifie rien).
+
+Ce que fait la procédure, en résumé :
+- **Entrées** : le propriétaire joint l'affiche et colle le texte (ou le blog du kit de fiche
+  Hippodoc).
+- **Choix de l'article** : l'adresse (figée dès la mise en ligne), le `<title>` (60 signes au plus,
+  suffixe de marque compris), la description et le thème.
+- **Frontmatter** : série par défaut `divers` (les séries ne s'affichent plus depuis § 9.fq ; une
+  fiche Instagram numérotée garde sa série et son numéro), temps de lecture calculé à 160 mots par
+  minute (médiane du blog), FAQ et liens.
+- **Affiche** : contrôle de la taille (1 080 × 1 350 idéal, signalée sous 900 px de large) et des
+  doublons.
+- **Texte** : verbatim. Une erreur factuelle se signale, sources à l'appui, et ne se corrige
+  qu'avec l'accord du propriétaire, comme en § 9.as.
+- **Fichiers tenus à jour** : `blog-meta.json`, `PLANCHER_FAQ`, les comptes de `CLAUDE.md` et une
+  section de MIGRATION.md par article.
+- **Vérifications** : construction, `verify-site.mjs`, aucun mot perdu, pages changées attendues,
+  captures, Lighthouse.
+- **Mise en ligne** : PR, « go », contrôle en ligne. Les deux gestes du propriétaire lui sont
+  rappelés : demander l'indexation dans Search Console, tester l'aperçu du lien.
+
+Aucun changement du site : la procédure n'est pas lue par la construction (hors de `src/`).
+`CLAUDE.md`, section « Blog », y renvoie.
+
+**Relu avant la fusion, à la demande du propriétaire (« si tu as pensé à tout »).** Une première
+relecture, confrontée au code, a trouvé une erreur : la procédure disait qu'un nouvel article
+passe « à la une ». C'est faux, car `conge-maternite-paternite` porte `featured: true`.
+
+Une relecture indépendante a ensuite suivi la procédure à la lettre, avec un faux article dans
+une copie à part : 5 constructions, chacune suivie de `verify-site.mjs`. Elle a trouvé deux
+défauts qu'aucun contrôle ne signale :
+
+- **Sitemap** : une entrée de `blog-meta.json` sans `updatedDate` sort dans le sitemap sans
+  `lastmod`. `astro.config.mjs` lit `updatedDate`, et le contrôle des dates ne lit que les
+  adresses datées.
+- **Maillage entrant** : un slug ajouté en 7ᵉ position des `relatedArticles` d'un ancien article
+  ne s'affiche jamais (`[slug].astro`, `.slice(0, 6)`). 18 articles sur 48 en ont déjà 6 ou plus.
+
+Elle a aussi relevé :
+
+- **Affiche carrée ou paysage** : elle déborde des cases des listes et recouvre le texte (mesuré
+  à 393 px avec une affiche de 1 350 × 1 080 : image de 163 px dans une case de 104 px). La
+  procédure exige donc un portrait, largeur ÷ hauteur de 0,81 au plus.
+- **`cover` mal écrite** : avec une mauvaise extension, l'article perd son affiche partout, et la
+  construction comme le contrôle passent.
+- **Date de publication passée** : elle change l'adresse de l'image de partage des articles plus
+  récents du même thème.
+- **Texte venu du kit de fiche** :
+  - son titre `#` donne un second `<h1>`, et `verify-site.mjs` échoue ;
+  - ses « Sources » en gras ne déclenchent pas le pli des sources ;
+  - ses liens vers le site sont en adresse absolue.
+- **Mineurs** :
+  - les valeurs exactes de `categoryNumber` (« #16 »), `authorRole`, `cta` et `ctaHref` ;
+  - les liens, sans effet dans les réponses de FAQ ;
+  - `/qui-sommes-nous`, qui change avec le nombre d'articles ;
+  - la normalisation avant de comparer les mots ;
+  - l'avertissement « aucun lien entrant » attendu ;
+  - `.rotate()` et la qualité explicite à l'enregistrement de l'affiche ;
+  - deux règles contradictoires sur `updatedDate` après l'ajout d'un lien. La procédure suit
+    désormais le précédent du § 9.as : `updatedDate` du jour.
+
+Tout est intégré à la procédure. On a vérifié aussi où arrivent les pièces jointes d'une
+conversation : dans `~/.claude/uploads/<session>/`, à leur taille d'origine.
+
+**Fichiers** : `.claude/skills/nouvel-article/SKILL.md` (nouveau), `CLAUDE.md`, `MIGRATION.md`.
+
+### 9.gm Simulateur : le CLS, des résultats qui arrivent sans rien pousser (15 novembre 2026)
+
+Demande du propriétaire : réduire le décalage cumulé de mise en page (CLS) de `/simulateur`,
+la seule page du site au-dessus du seuil de Google (0,1) dans les données réelles. Aucun mot
+de la page ni de l'îlot ne change ; aucun calcul ne change.
+
+**Ce que disaient les données réelles** (PostHog, `$web_vitals`, hôte www.hippodoc.fr,
+28 jours jusqu'au 15 novembre 2026). Téléphone : 75e centile 0,112, 9 mesures sur 22 au-dessus
+de 0,1, la pire à 0,76 (Opera, 411 × 753, un seul décalage). Ordinateur : 75e centile 0,059,
+9 mesures sur 66 au-dessus de 0,1 (pire 0,275). Les autres pages : 0 ou presque. Sur les
+31 mesures au-dessus de 0,05, 30 suivent une simulation (`public_simulator_used` plus tôt dans
+la session) ; une seule est au chargement (1 920 × 929, 0,115). Sur ordinateur, la fenêtre de
+session la plus lourde compte souvent 43 à 125 décalages : une suite de petits décalages
+image par image. PostHog ne dit ni l'élément ni l'instant : les entrées sont enregistrées
+vides (`{}`), et posthog-js ne rend le CLS qu'à la fermeture de la page (`onCLS` sans
+`reportAllChanges`). D'où la reproduction.
+
+**Méthode.** Build de `main` et build corrigé servis en local (HTTP/1.1, gzip), Chromium par
+Playwright, réseau ralenti par le protocole des outils de développement (latence 150 ms,
+1,6 Mbit/s), processeur ralenti quatre fois au téléphone. L'API du modèle de l'Urssaf est
+interceptée : réponses réelles (gardées en cache) rendues après 800 ms, l'ordre de grandeur
+d'un téléphone. `PerformanceObserver` sur `layout-shift` : élément, rectangles avant et
+après, instant, geste récent ; CLS = la plus lourde fenêtre de session (moins de 1 s entre deux
+décalages, 5 s au plus), décalages qui suivent un geste de moins de 500 ms exclus, comme
+web-vitals. Parcours : arrivée et lecture ; saisie (70 000 € de recettes, 5 000 € de charges)
+puis « Simuler », le bouton à 35 % ou à 12 % de la hauteur de la fenêtre ; profil type
+« Remplaçant régulier » (grille des profils ouverte) ; trois essais enchaînés (70 000 €, puis
+15 000 € au RSPM, puis 45 000 € en PAMC) ; aides et plis après le résultat. Scripts de travail
+hors dépôt. Les mêmes parcours, rejoués sur le build corrigé, servent de preuve.
+
+**Les causes, une à une, et ce qui les règle.**
+1. **Le bloc des profils types disparaît au-dessus du formulaire à l'arrivée des résultats**
+   (`!results.recommande`), une à trois secondes après le clic : le formulaire, sous les
+   yeux, remonte de 84 px (bloc replié) ou d'environ 700 px au téléphone (grille ouverte après
+   le choix d'un profil, elle le reste). Mesuré : 0,042 (390 × 844), 0,026 (1 280 × 800),
+   0,43 en un seul décalage (411 × 753, grille ouverte) ; au RSPM, calcul local, 0,88 à
+   1 280 px, exclu seulement parce que le résultat arrivait 73 ms après le clic (un
+   téléphone lent dépasse les 500 ms). Réglé sans changer ce qui s'affiche : au clic, la page
+   note où est le formulaire ; après le rendu où le bloc disparaît, elle remonte d'autant dans la
+   même image (`useLayoutEffect` de `SimulateurApp`, `scrollBy` immédiat), et le formulaire
+   reste où il était à l'écran. Bloc au-dessus de l'écran : rien ne bouge. Très grand écran où
+   il se voyait encore : c'est le haut de page qui descend à sa place, moins grand que le
+   formulaire (2 400 × 1 161, la fenêtre d'une mesure réelle : 0,016 → 0,0005). Formulaire qui
+   commence dans la moitié basse de la fenêtre : pas de compensation (le visiteur regarde le
+   haut de page, qui ne bouge pas). Chromium n'ancre pas le défilement ici : essayé, le bloc
+   retiré à la main, la page ne bouge pas et un décalage de 0,0995 est compté ; retiré puis
+   compensé dans la même tâche, aucun.
+2. **La carte d'attente est plus courte que l'écran** : la prise de rendez-vous et la feuille
+   suivante restent visibles sous elle, et le résultat (2 000 à 3 500 px) les pousse vers le
+   bas d'un coup. Mesuré, le bouton à 12 % de la fenêtre : 0,41 (390 × 844), 0,34 (411 × 753),
+   0,28 (1 280 × 800). Réglé : la carte fait au moins un écran (`.sim-attente-fiche`,
+   `min-height: 100vh`) et le résultat la remplace à la même place ; rien de ce qui suit l'îlot
+   n'est à l'écran tant qu'elle est là. Même place gardée sous une alerte d'erreur sans
+   résultat dessous (`.sim-place-erreur`) : API de l'Urssaf en panne, `main` comptait 0,149 à
+   l'erreur puis 0,41 à « Réessayer », le build corrigé rien.
+3. **Le bloc des deux régimes arrivait après les résultats** (`lazy`, chargé au premier
+   affichage) : sa place d'attente de 220 px devenait 650 à 820 px, et « À savoir », les plis
+   et la suite descendaient d'autant sous les yeux (visible sur ordinateur). Réglé : le
+   chargement part au clic sur « Simuler » (`chargerCartesDesRegimes`, toujours un `import()`,
+   un seul fichier, une seule fois ; il ne sert pas au premier geste, CLAUDE.md), en même
+   temps que le calcul, et les résultats ne s'affichent qu'avec lui (la carte d'attente reste
+   jusque-là). `Suspense` et sa place `min-h-[220px]` sont retirés. Effet de bord, voulu : si
+   ce fichier ne charge pas, le résultat s'affiche sans ce bloc ; sur `main`, l'erreur de
+   chargement faisait tomber tout l'îlot (« Failed to fetch dynamically imported module »,
+   formulaire et résultats disparus, CLS mesuré de 1,0).
+4. **La phrase de l'écart avec l'essai précédent** (§ 9.gg) arrivait un rendu après les
+   résultats (posée par un effet) : la conclusion descendait de 22 à 44 px. Mesuré au
+   troisième essai : 0,015 (390 × 844), 0,005 (1 280 × 800). Réglé : un état dérivé, calculé
+   pendant le rendu où arrivent les résultats ; même règle qu'avant (l'essai précédent est
+   celui des derniers résultats affichés, « Nouvelle simulation » ne l'efface pas).
+5. **Le compteur du Super-Net des tuiles** changeait de largeur à chaque image : « € » et
+   « /an » bougeaient (les 43 à 125 petits décalages des fenêtres relevées sur ordinateur :
+   41 à 61 par calcul, en 0,8 à 1,4 s, mesurés à 1 440 × 900 et 1 920 × 1 080) et, de 360 à
+   390 px, « /an » passait à la ligne puis en revenait : les tuiles grandissaient et
+   rapetissaient de 22 px, jusqu'à 17 fois en 0,7 s (relevé dans Chromium et dans WebKit). Réglé : l'élément porte
+   d'emblée le montant final, qui fait sa largeur ; tant que le compteur tourne, ce montant
+   est transparent et le nombre qui défile est dessiné par `::after` (`data-valeur`), calé à
+   droite contre « € », hors du flux. Le texte de l'élément, celui que lisent un lecteur
+   d'écran et une copie, est le montant final (avant, l'un ou l'autre pouvait tomber sur un
+   nombre en cours). Moins de mouvement demandé, ou contrastes forcés : le montant final
+   d'emblée. Un nombre en cours plus large que le montant final (10 439 contre 11 318 : les
+   chiffres de Google Sans Flex n'ont pas tous la même chasse, le 0 fait 0,65 em, le 1
+   0,37 em) déborde à gauche dans la marge de la tuile, le temps de quelques images (images
+   à 390 et 1 280 px : il reste dans la tuile). Essayé d'abord : un gabarit du montant final
+   dans la même case que le nombre en cours ; un nombre en cours plus large élargissait encore
+   la case, et « /an » changeait encore de ligne.
+6. **« RSPM ou PAMC ? »** (§ 9.gh) : le verdict s'ajoute quand la comparaison arrive, une
+   ligne de plus (22 px) qui pousse le bloc des deux régimes. Réglé par une **place gardée**
+   (`PlaceGardee.tsx`) : le gabarit de la forme la plus longue de la phrase (le verdict du
+   PAMC, avec le montant le plus large possible), rendu sans être vu ni lu
+   (`visibility: hidden`, `aria-hidden`), occupe la même case de grille que le texte ; la case
+   a la taille du plus grand des deux, avant comme après.
+7. **Point de bascule et 1 000 € de plus** : « … € » est plus court que le montant qui arrive ;
+   aucun changement de ligne n'a été relevé sur les cas essayés, mais rien ne l'empêchait.
+   Même place gardée (le point de bascule ne dépasse ni les recettes ni les charges déclarées ;
+   ce qui reste de 1 000 € ne dépasse pas 1 000 €). Le montant le plus large d'un nombre de
+   chiffres donné : un 4 en tête, puis des 0 (`montantLePlusLarge`). Et quand les deux régimes
+   laissent le même Super-Net, plus de phrase d'attente du point de bascule
+   (`usePublicodesSimulation.ts`) : `calculerPointDeBascule` n'en rend aucune, elle
+   disparaissait une à trois secondes plus tard ; le résultat final est le même.
+
+**Résultat** (CLS par parcours, `main` puis build corrigé ; même machine, même cache de l'API) :
+
+| Parcours | 390 × 844, processeur ×4 | 411 × 753, processeur ×4 | 1 280 × 800 |
+|---|---|---|---|
+| Arrivée et lecture, sans geste | 0 → 0 | — | 0,0014 → 0,0014 |
+| Saisie, bouton à 35 % | 0,042 → 0,0017 | 0,048 → 0,0020 | 0,026 → 0,0014 |
+| Saisie, bouton à 12 % | 0,41 → 0,0017 | 0,34 → 0,0020 | 0,28 → 0,0014 |
+| Profil type (grille ouverte) | 0,42 → 0,0059 | 0,43 → 0,0062 | 0,10 → 0,0014 |
+| Trois essais enchaînés (70 000, 15 000, 45 000 €) | 0,042 → 0,0017 | 0,048 → 0,0020 | 0,026 → 0,0014 |
+
+Trois essais enchaînés dans une fenêtre plus haute : 0,028 → 0,0010 (1 440 × 900),
+0,019 → 0,0009 (1 920 × 1 080). Aides en tiroir et plis après le résultat : aucun décalage
+compté (tous dans les 500 ms du geste), sur les deux builds. Ce qui reste : le libellé du
+bouton, « Calcul en cours... » puis « Simuler », recentré à l'arrivée du résultat (0,002 à
+0,006, plus haut quand la compensation du point 1 a lieu dans la même image) ; l'arrivée de la
+police au chargement (0,0014 à 1 280 px, en-tête et haut de page, la même sur `main` et sur
+tout le site) ; le bord gauche du nombre dessiné par le compteur (environ 0,001 par calcul sur
+ordinateur) ; dans « RSPM ou PAMC ? », la fin de la phrase qui glisse sur sa propre ligne quand
+« … € » devient un montant (0,0001). Non traités : le libellé du bouton (changer son balisage
+changerait la chaîne d'éléments des clics mesurés par PostHog, pour 0,006 au plus) ; un point
+de bascule ou une marge qui finissent sans valeur (panne de l'API, seuil franchi) retirent
+encore leur ligne (rare, non reproduit).
+
+**Ce qui ne change pas.**
+- HTML : les 72 pages du build identiques à celles de `main` aux noms de fichiers près. La
+  feuille commune perd une règle, `.min-h-\[220px\]` (la place d'attente retirée), n'en gagne
+  aucune (comparée règle par règle), et change donc de nom sur toutes les pages
+  (`_astro_assets.ZOq3y5lQ.css` → `….BqFlQkaI.css`) ; sur `/simulateur`, le script de l'îlot
+  et la feuille de la page. Le HTML rendu de l'îlot est le même. Scripts : `SimulateurApp`,
+  `RegimeComparisonCards` et `usePublicodesSimulation` changent (+0,5 Ko gzip au total).
+- Texte affiché des résultats (`innerText`, une fois tous les calculs arrivés) : identique au
+  caractère près, et hauteur finale de chaque bloc identique, dans 60 cas (12 saisies de
+  800 € à 230 000 €, RSPM et PAMC, à 360, 390, 411, 768 et 1 280 px). Les gabarits ne laissent
+  donc pas de ligne vide dans ces cas.
+- Calculs : aucun (la seule ligne de logique est la condition de la phrase d'attente du point
+  de bascule, point 7). Mesure : même suite d'événements PostHog sur un même parcours (profil
+  type, simulation, lien d'essai de la conclusion, nouvelle simulation, simulation au RSPM),
+  124 propriétés comparées ; deux écarts sur `public_simulator_started`
+  (`$active_feature_flags`, `$feature_flag_payloads`), qui varient aussi entre deux relevés
+  de `main` (la réponse des drapeaux arrive avant ou après l'événement, § 9.er). Un seul ajout
+  dans une chaîne d'éléments : le bouton « Réessayer », quand il n'y a pas de résultat dessous,
+  est dans `div.sim-place-erreur`. `insertPublicEvent` n'est pas touché.
+
+**Vérifié.** `npm run build` : 72 pages ; `node scripts/verify-site.mjs` : 0 erreur (les
+7 avertissements habituels). Lighthouse mobile, bridage simulé, deux passes alternées :
+`/simulateur` 100 et 98 sur `main`, 98 et 100 ici (LCP 1,5 à 2,3 s des deux côtés : bruit),
+`/` 99, `/blog/frais-pros-medecin-liberal-2026` 99 ; accessibilité, bonnes pratiques et SEO à
+100. WebKitGTK 2.52 à 1 300 px et à 390 px (cadre de même origine), PAMC et RSPM : un seul état
+des hauteurs après l'affichage (2 à 17 sur `main`), « € », « /an » et les tuiles exactement à la
+même place que sur `main`, carte d'attente d'un écran, compteur dessiné par `::after` (texte de
+remplacement vide lu). Chemins d'échec : API en panne puis « Réessayer », fichier du bloc des
+régimes refusé (voir plus haut).
+
+**Limites.** Mesuré en local (HTTP/1.1, réseau bridé par Chromium, API servie depuis un cache
+après 800 ms) ; ni Vercel ni un vrai téléphone. Le CLS réel est à revérifier dans PostHog une à
+deux semaines après la mise en ligne : 75e centile par appareil sur `/simulateur`, part des
+mesures au-dessus de 0,1, et nombre d'entrées des fenêtres sur ordinateur (il doit tomber).
+
+**Fichiers** : `src/components/simulateur/SimulateurApp.tsx`, `SimulateurResults.tsx`,
+`RegimeComparisonCards.tsx`, `ConclusionCard.tsx`, `RspmOuPamc.tsx`, `PlaceGardee.tsx`
+(nouveau), `src/lib/simulateur/usePublicodesSimulation.ts`, `src/styles/simulateur.css`,
+`CLAUDE.md`, `MIGRATION.md`.
+
 ### 9.gn Simulateur : le total des cotisations, et quand on paie (15 novembre 2026)
 
 Le propriétaire a posé quatre questions : une ligne de cotisations totales ? l'exonération CARMF des
@@ -13605,6 +14005,11 @@ somme des deux lignes affichées dans les deux régimes, absent au RSPM et dispe
 (Urssaf, CARMF, Impôt ; sans CARMF au RSPM et dispensé), sous-titre, années, textes des premières
 années et de l'impôt nul, aucun débordement. Essais des § 9.gd à 9.gi repassés. WebKitGTK à 1 300 et
 390 px : pli et totaux, aucun débordement. `verify-site.mjs` sans erreur ; feuille commune inchangée.
+Comparées à la production : `/simulateur` change ; `/guide-declarations` et la calculette ne changent
+que du nom de leur fichier d'îlot (`BoussoleWizard`, `CalculetteApp`), parce que deux morceaux de
+JavaScript partagés entre les outils (`circle-help`, `tooltip`) sont regroupés autrement depuis que le
+pli n'importe plus les mêmes icônes ; leur HTML est identique à ces noms près ; les 69 autres pages,
+identiques.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

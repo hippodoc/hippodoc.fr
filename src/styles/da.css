@@ -337,9 +337,16 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 
 :where(.da) .hd-links { display: none; align-items: center; gap: 30px; font-size: 15.5px; font-weight: 560; color: var(--ink-2); }
 :where(.da) .hd-links a, :where(.da) .hd-res-btn { display: inline-flex; align-items: center; min-height: 44px; border-radius: var(--r-sm); color: inherit; text-decoration: none; transition: color 160ms var(--ease); }
-/* « Tarifs » ne fait que 40 px de large : cible de 44 px, mot centré. */
+/* « Tarifs » ne fait que 40 px de large : cible de 44 px, mot centré. Cette
+   largeur minimale remplace celle du contenu : un libellé d'un seul mot
+   (`hd-mot`) ne rétrécit donc pas, sinon, l'espacement du texte agrandi
+   (WCAG 1.4.12), « Simulateur » débordait sur « Tarifs » (§ 9.gj). */
 :where(.da) .hd-links > a { min-width: 44px; justify-content: center; }
+:where(.da) .hd-links > a.hd-mot { flex-shrink: 0; }
 :where(.da) .hd-links a:hover { color: var(--ink); }
+/* Page en cours (« Simulateur », « Tarifs ») : la couleur de marque, comme le
+   bouton « Ressources » sur ses pages. § 9.gj */
+:where(.da) .hd-links > a[aria-current="page"] { color: var(--brand); }
 :where(.da) .hd-res { position: relative; }
 :where(.da) .hd-res-btn { gap: 4px; padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
 :where(.da) .hd-res-btn.is-current { color: var(--brand); }
@@ -348,14 +355,37 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 :where(.da) .hd-res:hover .hd-res-btn svg, :where(.da) .hd-res:focus-within .hd-res-btn svg { rotate: 180deg; }
 :where(.da) .hd-res-pop { position: absolute; right: -16px; top: 100%; z-index: 1; padding-top: 14px; visibility: hidden; opacity: 0; transition: opacity 150ms ease, visibility 150ms; }
 :where(.da) .hd-res:hover .hd-res-pop, :where(.da) .hd-res:focus-within .hd-res-pop { visibility: visible; opacity: 1; }
-:where(.da) .hd-res-menu { width: 272px; padding: 8px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); }
-:where(.da) .hd-res-menu a { display: flex; padding: 0 14px; border-radius: var(--r-sm); transition: background-color 160ms var(--ease), color 160ms var(--ease); }
-:where(.da) .hd-res-menu a:hover { background: var(--sky-soft); color: var(--ink); }
-:where(.da) .hd-res-menu a[aria-current="page"] { color: var(--brand); }
+:where(.da) .hd-res-menu { width: 320px; padding: 8px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay); }
+/* Un titre et une ligne d'explication par lien (§ 9.gj). La ligne est en
+   --ink-2 : --ink-3 ne descend jamais sous 14 px (§ 9.fm). */
+:where(.da) .hd-res-menu a { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 9px 14px; border-radius: var(--r-sm); transition: background-color 160ms var(--ease), color 160ms var(--ease); }
+:where(.da) .hd-res-t { color: var(--ink); font-size: 15.5px; font-weight: var(--tb); line-height: 1.3; }
+:where(.da) .hd-res-d { color: var(--ink-2); font-size: 14px; font-weight: 400; line-height: 1.35; }
+:where(.da) .hd-res-menu a:hover { background: var(--sky-soft); }
+:where(.da) .hd-res-menu a[aria-current="page"] .hd-res-t { color: var(--brand); }
 
 :where(.da) .hd-end { display: flex; align-items: center; gap: 4px; }
 :where(.da) .hd-login { display: none; align-items: center; min-height: 44px; padding: 0 14px; border-radius: var(--r-pill); font-size: 15.5px; font-weight: 560; color: var(--ink-2); text-decoration: none; transition: color 160ms var(--ease); }
 :where(.da) .hd-login:hover { color: var(--ink); }
+/* De 360 à 599 px, la connexion en un geste : une pastille ronde, l'icône de
+   compte, nommée « Connexion » (§ 9.gj). Même cible que le bouton du menu. */
+:where(.da) .hd-login-ico { display: none; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; border-radius: 50%; color: var(--ink); text-decoration: none; touch-action: manipulation; transition: scale 150ms ease-out, background-color 150ms ease-out; }
+:where(.da) .hd-login-ico:active { scale: 0.9; background: var(--sky); }
+@media (hover: hover) { :where(.da) .hd-login-ico:hover { background: var(--sky-soft); } }
+@media (min-width: 360px) and (max-width: 599.98px) {
+  :where(.da) .hd-login-ico { display: flex; }
+}
+/* De 360 à 389 px, la place de l'icône se prend sur les marges : le mot, la
+   pastille d'essai et le bouton du menu ne bougent pas de taille de texte. */
+@media (min-width: 360px) and (max-width: 389.98px) {
+  :where(.da) .hd-bar { gap: 6px; padding-left: 12px; }
+  :where(.da) .hd-brand { padding: 0; }
+  :where(.da) .hd-end { gap: 0; }
+  :where(.da) .hd .btn.hd-cta-pill { padding: 0 13px; }
+}
+@media (min-width: 600px) {
+  :where(.da) .hd-login { display: flex; }
+}
 :where(.da) .hd .btn { min-height: 44px; padding: 0 18px; font-size: 15.5px; white-space: nowrap; }
 :where(.da) .hd .btn-brand { box-shadow: 0 3px 0 var(--sun-edge); }
 :where(.da) .hd .btn-line { box-shadow: 0 0 0 1.5px rgba(20, 37, 79, 0.12), 0 3px 0 var(--edge); }
@@ -370,37 +400,112 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 :where(.da) .hd-toggle:focus-visible ~ .hd-bar .hd-burger,
 :where(.da) .hd-toggle:focus-visible ~ .hd-drawer .hd-close { outline: 3px solid var(--focus); outline-offset: 2px; }
 
-/* Voile et tiroir. Aucun flou (§ 9.dn). Courbes et durées de § 9.do : départ au
-   ras du bord, courbe des panneaux iOS, 420 ms à l'ouverture, 300 à la fermeture. */
+/* Voile et tiroir. Aucun flou (§ 9.dn). Courbes et durées de § 9.do : courbe des
+   panneaux iOS, 420 ms à l'ouverture, 300 à la fermeture. Refait en § 9.gk : une
+   feuille de ciel clair entre deux bandes blanches, le haut (la copie de la
+   pastille) et le bas (l'essai et la connexion). */
 :where(.da) .hd-overlay { position: fixed; inset: 0; z-index: 40; visibility: hidden; opacity: 0; background: rgba(9, 20, 52, 0.6); cursor: pointer; transition: opacity 200ms ease-out, visibility 200ms ease-out; }
 :where(.da) .hd-toggle:checked ~ .hd-overlay { visibility: visible; opacity: 1; transition-duration: 300ms; }
-/* Largeur : au moins 60 px de voile restent visibles pour fermer en touchant à côté. */
-:where(.da) .hd-drawer { position: fixed; top: 12px; right: 12px; bottom: 12px; z-index: 50; width: calc(100% - 72px); max-width: 340px; visibility: hidden; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); transform: translateX(calc(100% + 16px)); transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
+/* De 600 à 959 px, un panneau à droite, 400 px au plus : au moins 60 px de voile
+   restent visibles pour fermer en touchant à côté. Mêmes bords que la pastille
+   (10 px en haut, 12 px à droite) : la croix tombe à la place du bouton du menu. */
+:where(.da) .hd-drawer { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(12px + var(--removed-body-scroll-bar-size, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 50; width: min(400px, calc(100% - 72px)); visibility: hidden; overflow: hidden; border-radius: var(--r-lg); background: var(--sky-soft); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); transform: translateX(calc(100% + 16px)); transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
 :where(.da) .hd-toggle:checked ~ .hd-drawer { visibility: visible; transform: none; transition-duration: 420ms; }
-:where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; padding: 20px 20px 16px; }
-:where(.da) .hd-drawer-top { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
-:where(.da) .hd-drawer-brand { display: flex; align-items: center; padding-left: 12px; }
-:where(.da) .hd-drawer-nav { display: flex; flex: 1; flex-direction: column; min-height: 0; margin-top: 20px; overflow-y: auto; overscroll-behavior: contain; }
-/* « Guide du remplaçant (PDF) » passe sur deux lignes à 320 px : d'où l'interligne serré. */
-:where(.da) .hd-drawer-nav a { display: flex; align-items: center; min-height: 48px; padding: 8px 12px; border-radius: var(--r-sm); font-size: 17px; font-weight: 600; line-height: 1.25; color: var(--ink); text-decoration: none; }
-:where(.da) .hd-drawer-nav a:active { background: var(--sky-soft); }
-@media (hover: hover) { :where(.da) .hd-drawer-nav a:hover { background: var(--sky-soft); } }
-:where(.da) .hd-drawer-label { margin: 20px 0 4px; padding: 0 12px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
-/* Une colonne quand « Essai gratuit 30j » ne tient pas à côté de « Connexion » (320 px). */
-:where(.da) .hd-drawer-end { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 12px 8px; margin-top: 16px; padding: 16px 0 4px; border-top: 1px solid var(--line); }
-:where(.da) .hd-drawer-end .btn { padding: 0 10px; font-size: 15px; }
+:where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; }
+/* Le haut : la pastille, au pixel près (mêmes marges intérieures, mot au même
+   endroit, croix à la place du bouton du menu). */
+:where(.da) .hd-drawer-top { display: flex; flex: none; align-items: center; justify-content: space-between; height: 60px; padding: 0 8px 0 16px; background: var(--paper); box-shadow: 0 1px 0 var(--line); }
+:where(.da) .hd-drawer-brand { display: flex; align-items: center; min-height: 44px; padding: 0 4px; }
+@media (min-width: 360px) and (max-width: 389.98px) {
+  :where(.da) .hd-drawer-top { padding-left: 12px; }
+  :where(.da) .hd-drawer-brand { padding: 0; }
+}
+@media (max-width: 339px) {
+  :where(.da) .hd-drawer-top { padding-left: 10px; }
+  :where(.da) .hd-drawer-brand .logo-word { font-size: 20px; }
+}
+/* Le milieu défile seul : le haut et le bas restent en place. */
+:where(.da) .hd-drawer-nav { flex: 1; min-height: 0; padding: 12px 12px 18px; overflow-y: auto; overscroll-behavior: contain; }
+/* Anneau de focus tracé à l'intérieur : les feuilles rognent (règle des
+   feuilles à lignes de l'accueil). */
+:where(.da) .hd-drawer-nav a:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+/* La carte du simulateur : le ciel et le soleil du Super-Net. */
+:where(.da) .hd-vedette { position: relative; z-index: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; padding: 14px 14px 14px 18px; overflow: hidden; border-radius: var(--r-md); background: linear-gradient(120deg, var(--sky-1) 10%, var(--glow) 95%); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; }
+:where(.da) .hd-vedette::before { content: ""; position: absolute; z-index: -1; top: -38px; right: -30px; width: 108px; aspect-ratio: 1; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 12px rgba(255, 214, 74, 0.3); }
+:where(.da) .hd-vedette-t { grid-column: 1; font-size: 17.5px; font-weight: var(--tb); line-height: 1.25; }
+:where(.da) .hd-vedette-d { grid-column: 1; margin-top: 3px; font-size: 14px; line-height: 1.35; color: var(--ink-2); text-wrap-style: balance; }
+:where(.da) .hd-vedette-fl { grid-column: 2; grid-row: 1 / span 2; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); }
+:where(.da) .hd-vedette[aria-current="page"] .hd-vedette-t { color: var(--brand); }
+:where(.da) .hd-vedette:active { translate: 0 1px; }
+
+/* Les feuilles à lignes : une feuille blanche qui rogne, un filet entre deux
+   lignes, la ligne teintée au toucher et au survol. */
+:where(.da) .hd-feuille { margin: 12px 0 0; padding: 0; overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); list-style: none; }
+:where(.da) .hd-feuille li + li { border-top: 1px solid var(--line); }
+:where(.da) .hd-ligne { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 14px 10px 18px; color: var(--ink); font-size: 17px; font-weight: var(--tb); line-height: 1.25; text-decoration: none; transition: background-color 150ms ease; }
+:where(.da) .hd-ligne-2 { min-height: 60px; padding-block: 9px; }
+:where(.da) .hd-ligne-txt { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+:where(.da) .hd-ligne-2 .hd-ligne-t { font-size: 16px; }
+:where(.da) .hd-ligne-d { font-size: 14px; font-weight: var(--tw); line-height: 1.35; color: var(--ink-2); }
+:where(.da) .hd-chev { flex: none; margin-left: auto; color: var(--ink-3); }
+:where(.da) .hd-chev-fl { margin: 0; color: var(--ink); }
+:where(.da) .hd-ligne:active { background: var(--sky-soft); }
+@media (hover: hover) { :where(.da) .hd-ligne:hover { background: var(--sky-soft); } }
+:where(.da) .hd-ligne[aria-current="page"] .hd-ligne-t { color: var(--brand); }
+:where(.da) .hd-drawer-label { margin: 22px 0 0; padding: 0 6px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+:where(.da) .hd-drawer-label + .hd-feuille { margin-top: 8px; }
+
+/* Le bas : l'essai sur toute la largeur, la connexion dessous. */
+:where(.da) .hd-drawer-end { position: relative; display: grid; flex: none; gap: 2px; padding: 12px 16px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--paper); box-shadow: 0 -1px 0 var(--line); }
+/* Quand la liste dépasse, son bas se fond sous la bande du bas : on voit qu'elle
+   continue. Le fondu (18 px) ne couvre que la marge du bas de la liste (18 px)
+   une fois celle-ci au bout : aucune ligne n'y reste voilée. */
+:where(.da) .hd-drawer-end::before { content: ""; position: absolute; right: 0; bottom: 100%; left: 0; height: 18px; background: linear-gradient(rgba(237, 243, 254, 0), var(--sky-soft)); pointer-events: none; }
+:where(.da) .hd .hd-drawer-end .btn { width: 100%; min-height: 52px; font-size: 16px; }
+:where(.da) .hd-drawer-login { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; column-gap: 6px; margin: 0; font-size: 15px; color: var(--ink-2); }
+:where(.da) .hd-drawer-login a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); font-weight: var(--tb); color: var(--brand); text-decoration-line: underline; text-underline-offset: 3px; }
+:where(.da) .hd-drawer-login a:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; }
+/* Fenêtre basse (téléphone couché, petit écran) : l'essai et la connexion sur une
+   ligne, « Déjà un compte ? » lu mais pas affiché. */
+@media (max-height: 520px) {
+  :where(.da) .hd-drawer-end { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 14px; padding-top: 8px; padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)); }
+  :where(.da) .hd .hd-drawer-end .btn { min-height: 46px; }
+  :where(.da) .hd-drawer-deja { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
+/* Sous 600 px : la pastille s'ouvre vers le bas jusqu'à couvrir l'écran (mêmes
+   bords, mêmes coins de 30 px : la feuille part de la forme exacte de la
+   pastille). Le découpage rogne aussi l'ombre : le voile suffit autour. */
+@media (max-width: 599.98px) {
+  :where(.da) .hd-drawer { left: 12px; width: auto; border-radius: 30px; transform: none; clip-path: inset(0 0 calc(100% - 60px) 0 round 30px); transition: clip-path 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
+  :where(.da) .hd-toggle:checked ~ .hd-drawer { clip-path: inset(0 round 30px); transition-duration: 420ms; }
+}
+
+/* Contrastes forcés : la couleur de marque disparaît, la page en cours se
+   souligne ; les feuilles et le tiroir gardent un contour. */
+@media (forced-colors: active) {
+  :where(.da) .hd-links > a[aria-current="page"], :where(.da) .hd-res-btn.is-current, :where(.da) .hd-res-menu a[aria-current="page"] .hd-res-t, :where(.da) .hd-drawer-nav a[aria-current="page"] :is(.hd-ligne-t, .hd-vedette-t) { text-decoration-line: underline; text-underline-offset: 4px; }
+  :where(.da) .hd-drawer, :where(.da) .hd-feuille, :where(.da) .hd-vedette { border: 1px solid CanvasText; }
+}
 
 /* Contenu du tiroir en cascade (§ 9.do) : chaque ligne glisse de 12 px avec un
    décalage de 15 ms (--i = rang). À la fermeture, tout s'efface ensemble. */
 :where(.da) .hd-item { opacity: 0; transform: translateX(12px); transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease; }
 :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: opacity 320ms cubic-bezier(0.32, 0.72, 0, 1), transform 420ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease; transition-delay: calc(30ms + var(--i) * 15ms), calc(30ms + var(--i) * 15ms), 0ms; }
+/* Sous 600 px, la feuille s'ouvre vers le bas : les cinq groupes (carte, feuille,
+   titre, feuille, bas) y glissent de 8 px vers le bas, au rythme du découpage. */
+@media (max-width: 599.98px) {
+  :where(.da) .hd-item { transform: translateY(-8px); }
+  :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { transition-delay: calc(60ms + var(--i) * 35ms), calc(60ms + var(--i) * 35ms), 0ms; }
+}
 @media (prefers-reduced-motion: reduce) {
   :where(.da) .hd-item, :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: none; }
   :where(.da) .hd-drawer, :where(.da) .hd-overlay { transition: none; }
 }
 
 @media (min-width: 960px) {
-  :where(.da) .hd-links, :where(.da) .hd-login { display: flex; }
+  :where(.da) .hd-links { display: flex; }
   :where(.da) .hd-cta-desk { display: inline-flex; }
   :where(.da) .hd-cta-pill, :where(.da) .hd-burger, :where(.da) .hd-toggle, :where(.da) .hd-overlay, :where(.da) .hd-drawer { display: none; }
   /* Le mot commence à 26 px du bord gauche, comme le texte du bouton d'essai
@@ -408,18 +513,45 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
      960 px, il répond déjà à l'icône du menu, à 20 px de chaque bord. § 9.ff */
   :where(.da) .hd-bar { padding-left: 22px; }
 }
+/* Cinq entrées (§ 9.gj) : de 960 à 1 179 px, la pastille n'a pas la place des
+   écarts de 30 px. Écarts de 20 px, corps de 15 px, boutons resserrés. */
+@media (min-width: 960px) and (max-width: 1179.98px) {
+  :where(.da) .hd-links { gap: 20px; font-size: 15px; }
+  :where(.da) .hd-login { padding: 0 12px; font-size: 15px; }
+  :where(.da) .hd .btn.hd-cta-desk { padding: 0 16px; font-size: 15px; }
+}
 
 /* ───────── Pied : l'eau profonde ───────── */
 :where(.da) .ft { --focus: #FFFFFF; position: relative; z-index: 1; background: linear-gradient(var(--deep), var(--deep-2)); color: var(--on-deep-2); font-size: 16px; }
-:where(.da) .ft-in { display: grid; gap: 36px 56px; padding-top: 36px; padding-bottom: 28px; }
+/* Rangé par intention (§ 9.gj) : la marque, puis trois colonnes (« Produit »,
+   « Ressources », « À propos »), puis la bande légale. Téléphone : la marque,
+   « Produit » et « Ressources » côte à côte, « À propos » dessous sur toute la
+   largeur (l'adresse e-mail n'y est jamais coupée). À partir de 640 px, les
+   trois colonnes sur une rangée, sous la marque ; à partir de 1 180 px, la
+   marque à leur gauche. De 960 à 1 179 px, à sa gauche, la marque n'avait que
+   263 px : la plaque des soutiens se repliait et des libellés se coupaient. */
+:where(.da) .ft-in { display: grid; gap: 32px; padding-top: 36px; padding-bottom: 30px; }
 :where(.da) .ft a, :where(.da) .ft-prefs { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; transition: color 160ms var(--ease); }
 :where(.da) .ft a:hover, :where(.da) .ft-prefs:hover { color: var(--paper); }
 :where(.da) .ft-prefs { padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
-:where(.da) .ft-text { display: inline-flex; align-items: center; min-height: 44px; }
-:where(.da) .ft-title { margin-bottom: 6px; font-family: var(--text); font-size: 15px; font-weight: var(--tb); letter-spacing: 0; line-height: 1.4; color: var(--paper); }
+:where(.da) .ft-title { margin: 0 0 4px; font-family: var(--text); font-size: 15px; font-weight: var(--tb); letter-spacing: 0; line-height: 1.4; color: var(--paper); }
 :where(.da) .ft-list { margin: 0; padding: 0; list-style: none; }
-/* « FAQ », « Blog », « RGPD » : une cible de 44 px de large aussi. */
-:where(.da) .ft-list a { min-width: 44px; }
+/* « FAQ », « Blog » : une cible de 44 px de large aussi. Un libellé long passe
+   sur deux lignes, serrées. */
+:where(.da) .ft-list a { min-width: 44px; padding-block: 5px; line-height: 1.3; }
+:where(.da) .ft-nb { white-space: nowrap; }
+:where(.da) .ft-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 20px; }
+:where(.da) .ft-col:last-child { grid-column: 1 / -1; }
+@media (min-width: 640px) {
+  :where(.da) .ft-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; }
+  :where(.da) .ft-col:last-child { grid-column: auto; }
+}
+@media (min-width: 960px) {
+  :where(.da) .ft-in { padding-top: 48px; padding-bottom: 36px; }
+}
+@media (min-width: 1180px) {
+  :where(.da) .ft-in { grid-template-columns: minmax(0, 1fr) minmax(0, 2.5fr); gap: 56px; }
+}
 
 /* Le logo garde ses couleurs d'origine : il lui faut du blanc sous lui. */
 :where(.da) .ft .ft-logo { min-height: 52px; padding: 0 22px; border-radius: var(--r-pill); background: var(--paper); box-shadow: var(--clay-sm); transition: translate 200ms var(--ease); }
@@ -436,42 +568,19 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 :where(.da) .ft-backers-logos source { display: none; }
 :where(.da) .ft-backers-logos img { display: block; width: auto; height: var(--h, 26px); }
 
-:where(.da) .ft-sub { padding-left: 12px; border-left: 2px solid var(--line-deep); font-size: 15px; }
-/* La flèche des trois liens d'articles : un dessin (la police n'a pas ce caractère). */
-:where(.da) .ft-sub a { gap: 7px; }
-:where(.da) .ft-sub svg { flex: none; }
-/* Deux colonnes remplies de haut en bas : les 9 premières des 16 lignes (outils,
-   blog, comparatif et les trois articles) à gauche, les 7 suivantes (maison et
-   mentions) à droite. Le 9 suit le contenu de Footer.astro. Dès 340 px : sur
-   une seule colonne, le pied faisait presque deux écrans de téléphone. Sous
-   480 px les colonnes sont égales et un libellé long passe sur deux lignes. */
-@media (min-width: 340px) {
-  :where(.da) .ft-list.cols { display: grid; grid-auto-flow: column; grid-template-rows: repeat(9, auto); grid-auto-columns: minmax(0, 1fr); column-gap: 18px; }
-  :where(.da) .ft-list.cols a, :where(.da) .ft-list.cols .ft-prefs { padding-block: 5px; line-height: 1.3; }
-}
-@media (min-width: 480px) {
-  :where(.da) .ft-list.cols { grid-auto-columns: auto; column-gap: 32px; }
-}
-/* Téléphone : moins d'air entre les trois groupes, la page est déjà longue. */
-@media (max-width: 639px) {
-  :where(.da) .ft-in { gap: 26px; padding-top: 30px; padding-bottom: 20px; }
-}
-/* De 640 à 899 px : marque et contact côte à côte, les informations dessous,
-   sur les deux mêmes colonnes. */
-@media (min-width: 640px) {
-  :where(.da) .ft-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  :where(.da) .ft-in > :last-child { grid-column: 1 / -1; }
-  :where(.da) .ft-list.cols { grid-auto-columns: minmax(0, 1fr); column-gap: 56px; }
-}
-@media (min-width: 900px) {
-  :where(.da) .ft-in { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.8fr) minmax(0, 1.55fr); padding-top: 44px; }
-  :where(.da) .ft-in > :last-child { grid-column: auto; }
-  :where(.da) .ft-list.cols { grid-auto-columns: auto; column-gap: 32px; }
-}
-/* 104 px en bas, comme la maquette : la bulle de chat ne recouvre aucun lien.
-   Le filet est sur le paragraphe : il s'arrête aux marges du contenu. */
+/* La bande légale, en petit : les pages légales et les cookies, puis le ©
+   (à droite des liens à partir de 1 180 px : en dessous, liens et © ne tenaient
+   pas sur une ligne et le © se coupait). 104 px en bas, comme la maquette :
+   la bulle de chat ne recouvre aucun lien. Le filet est sur le bloc intérieur :
+   il s'arrête aux marges du contenu. */
 :where(.da) .ft-legal { padding-bottom: 104px; font-size: 14.5px; }
-:where(.da) .ft-legal p { margin: 0; padding-top: 18px; border-top: 1px solid var(--line-deep); }
+:where(.da) .ft-legal-in { padding-top: 10px; border-top: 1px solid var(--line-deep); }
+:where(.da) .ft-legaux { display: flex; flex-wrap: wrap; gap: 0 24px; margin: 0; padding: 0; list-style: none; }
+:where(.da) .ft-legal p { display: flex; align-items: center; min-height: 44px; margin: 0; }
+@media (min-width: 1180px) {
+  :where(.da) .ft-legal-in { display: flex; align-items: center; justify-content: space-between; gap: 8px 32px; }
+  :where(.da) .ft-legal p { white-space: nowrap; }
+}
 
 /* ───────── Bannière cookies et bulle de chat ─────────
    Rendues par ThirdPartyScripts.astro avec des classes Tailwind : il faut ici
