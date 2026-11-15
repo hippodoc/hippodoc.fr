@@ -1092,7 +1092,7 @@ const estRepereFaq = (signes, chiffresAdmis) =>
    Compte du 13 novembre 2026. Au-dessus (nouvel article, nouvelle question) : un
    avertissement, relever le plancher. En dessous : une erreur, ne l'abaisser que si la
    disparition est voulue. */
-const PLANCHER_FAQ = { pages: 59, questions: 398 };
+const PLANCHER_FAQ = { pages: 60, questions: 403 };
 /* Écarts connus entre l'écran et le schéma, déclarés un par un. Chaque passage sort un
    avertissement par exception ; une exception qui ne correspond plus à rien (page ou
    question disparue, texte qui n'est plus à l'écran) fait échouer le contrôle : on la
