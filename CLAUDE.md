@@ -372,9 +372,13 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   § 9.ec (la date n'est plus affichée sur la page), jamais écrits à la main. Le compte de la
   fenêtre produit est fictif (`src/data/demoAccueil.ts`, année 2026), sans mention
   « Compte de démonstration » depuis le § 9.fn (décision du propriétaire). La fenêtre a
-  quatre onglets (le quatrième, « Tes déclarations » : cases 5HQ, DSCS, DSAV, DSDE
-  pré-remplies) ; sous 720 px chacun prend la largeur de son libellé, sur une ligne dès
-  320 px, et les quatre vues gardent la même hauteur (mesurée de 320 à 1 440 px).
+  cinq onglets (le quatrième, « Tes déclarations » : cases 5HQ, DSCS, DSAV, DSDE
+  pré-remplies ; le cinquième, « Et aussi », § 9.hd : les autres outils, relevés dans le
+  menu de l'application, à tenir à jour avec lui dans `AUSSI`). Libellés courts jusqu'à
+  899 px : sur une ligne à partir de 520 px, sur deux rangées en dessous (trois, puis
+  deux) ; libellés longs à partir de 900 px. Les cinq vues gardent la même hauteur
+  (mesurée de 320 à 1 920 px) : un outil ajouté à « Et aussi » se remesure à 320 et
+  360 px (6 px de marge).
 
 ## SEO — contrat par page
 
