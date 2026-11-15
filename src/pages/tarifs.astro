@@ -31,7 +31,7 @@ import { echapper, nouer } from '@/lib/typo';
  * - Les deux liens d'inscription des offres portent `plan=yearly` et
  *   `plan=monthly`, comme ceux de l'accueil ; leurs `data-track` ne changent
  *   pas (`cta_signup_tarifs_annuel`, `cta_signup_tarifs_mensuel`,
- *   `cta_signup_tarifs_bottom`). Offre des internes (§ 9.gt) : le bouton ouvre
+ *   `cta_signup_tarifs_bottom`). Offre des internes (§ 9.gu) : le bouton ouvre
  *   le chat (`tarifs_interne_chat`), l'e-mail reste dans la ligne au-dessus
  *   (`tarifs_interne_mail`).
  * - Carte bancaire : elle EST demandée à l'inscription, rien n'est débité
@@ -270,7 +270,7 @@ const coche =
             {/* « par chat ou e-mail » passe entier à la ligne : « e-mail » restait seul
                  sur la sienne (téléphone, 1 024 px). */}
             <p>Sur justificatif, <span class="fin-titre">par chat ou <a href="mailto:contact@hippodoc.fr" data-ph="tarifs_interne_mail" class="lien">e-mail</a></span></p>
-            {/* Ouvre le chat (`data-ouvre-chat`, ThirdPartyScripts.astro, § 9.gt) : le
+            {/* Ouvre le chat (`data-ouvre-chat`, ThirdPartyScripts.astro, § 9.gu) : le
                  justificatif s'y envoie en pièce jointe. Sans script, le lien reste
                  celui de l'adresse e-mail. */}
             <a href="mailto:contact@hippodoc.fr" data-ouvre-chat data-ph="tarifs_interne_chat" class="btn btn-line">Envoyer mon justificatif</a>

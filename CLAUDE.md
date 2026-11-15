@@ -214,7 +214,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   engagement, déduction, syndicats) ; les inclus sont rangés par famille, mot pour mot. À
   390 × 844 les trois prix tiennent dans le premier écran : ne pas allonger le haut de la
   page sans le remesurer. Ne pas y remettre de pastille « Populaire » ni de coches dans
-  les fiches. Mascotte à partir de 1 024 px seulement. Offre des internes (§ 9.gt) :
+  les fiches. Mascotte à partir de 1 024 px seulement. Offre des internes (§ 9.gu) :
   le bouton « Envoyer mon justificatif » ouvre le chat, l'e-mail reste un lien dans la
   ligne au-dessus.
 - ⚠️ **Pièges Tailwind dans les `<style>`** : Tailwind lit tout le fichier `.astro`,
@@ -387,7 +387,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Blog
 
-- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (49 articles au 15 novembre 2026), schéma dans
+- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (50 articles au 15 novembre 2026), schéma dans
   `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL), avec
   son `theme` (obligatoire : sans lui, ou avec un thème inconnu, la construction s'arrête ;
   voir « Thèmes », plus bas). Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
@@ -676,7 +676,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     sortir de la fenêtre) ; une nouvelle classe de bulle reprend cette règle. Une bulle
     ouverte sur le côté (`side="right"`) borne aussi sa largeur (`…-available-width`).
   - Le HTML du build n'y gagne aucun attribut : tout arrive après le montage.
-  - Au clavier (§ 9.gs) : Radix ferme une bulle à tout défilement d'un ancêtre du déclencheur ; le
+  - Au clavier (§ 9.gt) : Radix ferme une bulle à tout défilement d'un ancêtre du déclencheur ; le
     composant ignore cette fermeture tant que le déclencheur a le focus du clavier
     (`:focus-visible`), sinon une aide que Tab fait défiler jusqu'à elle s'ouvrait et se refermait
     aussitôt. Son écouteur de défilement doit rester posé avant celui de Radix (au montage, à la
@@ -789,7 +789,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   simplifié pour les médecins » ; CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM »),
   pas le quart et le plein du minimum du régime classique (626 € en 2026). La bulle du choix
   (`sim-rid`) donne ce que chaque niveau couvre (indemnités par jour d'arrêt, rente, indemnité
-  décès), dans les mots du dépliant (§ 9.gs : invalidité « totale et définitive » ; l'âge, moins de
+  décès), dans les mots du dépliant (§ 9.gt : invalidité « totale et définitive » ; l'âge, moins de
   62 ans, ne vaut que pour les indemnités par jour) : chiffres à relire chaque année avec les montants, ici et dans les quatre
   articles qui les citent (`rspm-exemples-concrets`, `guide-impots-internes-remplacants`,
   `tout-comprendre-carmf`, `tout-comprendre-urssaf`).
@@ -874,7 +874,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   consentement (`localStorage['cookie-consent']`, valeurs `accepted`/`essential-only`,
   même clé que l'app). Bannière cookies incluse ; « Préférences cookies » au footer.
   Crisp ne se charge qu'à un clic explicite : sur la bulle, ou sur un lien qui porte
-  `data-ouvre-chat` (§ 9.gt ; le bouton de l'offre des internes de `/tarifs`). Un tel
+  `data-ouvre-chat` (§ 9.gu ; le bouton de l'offre des internes de `/tarifs`). Un tel
   lien garde un vrai `href` (une adresse e-mail) : c'est ce qu'il fait sans script. Ne
   jamais brancher l'ouverture du chat sur un geste passif (défilement, survol, arrivée) :
   `verify-site.mjs` le refuse. Le script en ligne est sur toutes les pages : le retoucher
@@ -883,7 +883,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (73 pages au 15 novembre 2026, dont 71 dans le sitemap : une de plus par
+1. `npm run build` (74 pages au 15 novembre 2026, dont 72 dans le sitemap : une de plus par
    nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).

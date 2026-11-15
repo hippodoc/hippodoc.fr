@@ -27,6 +27,7 @@ faq:
   - question: "Quand tombe la première régularisation URSSAF d'un médecin remplaçant ?"
     answer: "Au régime classique (PAMC), tes cotisations de début d'activité sont d'abord calculées sur une base forfaitaire, puis **régularisées dès que ton revenu réel est déclaré** : la 1re année est régularisée après ta déclaration de la 2e année, et l'échéancier de l'année en cours est recalculé au même moment. Au **RSPM**, pas de régularisation : tu cotises directement sur les honoraires déclarés. Pour ne pas être pris de court, mets de côté **30 à 40 %** de chaque rétrocession."
 relatedArticles:
+  - "comptable-logiciel-tableur-medecin-remplacant"
   - "remplir-declaration-2035"
   - "tout-comprendre-urssaf"
   - "tout-comprendre-carmf"

@@ -25,6 +25,7 @@ faq:
   - question: "Faut-il obligatoirement un expert-comptable pour la 2035 ?"
     answer: "Non, ce n'est pas obligatoire mais **fortement recommandé** : la 2035 est complexe et un comptable sécurise ta déclaration. En revanche, adhérer à une association de gestion agréée ne donne **plus d'avantage fiscal** : la majoration des non-adhérents a disparu à partir des revenus 2023, et la loi de finances pour 2025 a supprimé la réduction d'impôt pour frais de comptabilité ainsi que l'agrément de ces organismes."
 relatedArticles:
+  - "comptable-logiciel-tableur-medecin-remplacant"
   - "calendrier-fiscal-remplacant"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "frais-professionnels-deductibles"
