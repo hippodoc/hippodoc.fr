@@ -760,6 +760,15 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   montant y passe aussi (ne plus écrire `new Intl.NumberFormat` ni `toLocaleString('fr-FR')` dans
   `src/components/simulateur/`). Une face de police qui élargit U+202F a été essayée : WebKit
   agrandit alors de 2 à 4 px les lignes serrées qui contiennent un nombre.
+  Paiements (§ 9.gn) : le pli « Quand et comment tu paies » (`PaymentExplanation.tsx`) dit, pour
+  l'Urssaf, la CARMF et l'impôt, quand ça part, sur quel revenu et comment ça se régularise ;
+  chaque phrase a sa source dans l'en-tête du composant (CSS L131-6-2 et R133-26, appel CARMF de
+  l'année, impots.gouv.fr). Variantes : RSPM (pas de régularisation), CARMF dispensée, 1re et
+  2e années (`debutActiviteDe`), impôt nul. Les dates de la CARMF (acompte avant fin février,
+  solde avant fin août) se relisent dans son appel de chaque année. Détail des régimes : en
+  PAMC, « Total des cotisations » sous Urssaf et CARMF (somme des montants affichés, `parts`).
+  RID au RSPM : 25 % par défaut, comme le simulateur de l'Urssaf (le médecin choisit à son premier
+  paiement de l'année).
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la

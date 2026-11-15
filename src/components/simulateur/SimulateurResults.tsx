@@ -209,8 +209,10 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
                   <Lightbulb className="h-4 w-4" />
                 </div>
                 <div className="text-left">
-                  <span className="sim-pli-nom">Comment l'impôt sera prélevé</span>
-                  <p className="sim-pli-sous">Prélèvement à la source et régularisation</p>
+                  <span className="sim-pli-nom">Quand et comment tu paies</span>
+                  <p className="sim-pli-sous">
+                    {comparison.isRSPMUsed || formData.situationCarmf === 'dispense' ? 'Urssaf et impôt' : 'Urssaf, CARMF et impôt'}{'\u00a0'}: calendrier et régularisation
+                  </p>
                 </div>
               </span>
             </AccordionTrigger>
@@ -222,6 +224,8 @@ export function SimulateurResults({ comparison, bascule, marge, formData, period
                 revenusConjointAnnuels={comparison.revenusConjointAnnuels ?? 0}
                 situationFamiliale={formData.situationFamiliale}
                 isRSPM={comparison.isRSPMUsed}
+                carmfDispense={formData.situationCarmf === 'dispense'}
+                debutActivite={debutActiviteDe(formData) ?? 'non'}
               />
             </AccordionContent>
           </AccordionItem>

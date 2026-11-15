@@ -13898,6 +13898,119 @@ mesures au-dessus de 0,1, et nombre d'entrées des fenêtres sur ordinateur (il 
 (nouveau), `src/lib/simulateur/usePublicodesSimulation.ts`, `src/styles/simulateur.css`,
 `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.gn Simulateur : le total des cotisations, et quand on paie (15 novembre 2026)
+
+Le propriétaire a posé quatre questions : une ligne de cotisations totales ? l'exonération CARMF des
+deux premières années ? la cotisation invalidité-décès (RID) au maximum ? comment l'Urssaf, la CARMF
+et l'impôt sont prélevés ? Avis donné, puis « go je te fais confiance ».
+
+**Ce qui change.**
+- **Total des cotisations** (`RegimeComparisonCards.tsx`) : en PAMC, dans le détail de chaque régime,
+  sous « Cotisations Urssaf » et « Cotisations CARMF », une ligne « Total des cotisations » en gras
+  (sans filet au-dessus) : la somme des deux montants affichés, arrondis un à un (70 000 € de
+  recettes, 5 000 € de charges, Micro-BNC : 4 787 € + 12 515 € = 17 302 €). Au RSPM et CARMF
+  dispensée, une seule ligne : pas de total.
+- **« Quand et comment tu paies »** (`PaymentExplanation.tsx` réécrit ; le pli s'appelait « Comment
+  l'impôt sera prélevé » et ne parlait que de l'impôt). Sous-titre « Urssaf, CARMF et impôt :
+  calendrier et régularisation » (« Urssaf et impôt » au RSPM ou CARMF dispensée). Dedans : le
+  principe sur ciel doux, puis une ligne par destinataire, ce qui part et quand (en encre), puis sur
+  quel revenu et comment ça se régularise ; le tableau du couple est gardé ; une astuce finit le pli.
+  Textes (revenus 2026, régime de croisière) :
+  - Principe : « Tu paies d'abord sur tes revenus d'il y a deux ans, puis tout se régularise. Quand
+    tes revenus montent, le rattrapage suit : mets de côté chaque mois le montant indiqué en tête des
+    résultats. » (premières années : « Tes premières années, tu paies d'abord sur une base
+    forfaitaire, puis tout se régularise sur tes revenus réels. … » ; RSPM : « Au RSPM, tes
+    cotisations suivent tes recettes : rien à rattraper. Seul l'impôt se calcule d'abord sur tes
+    revenus passés, puis se régularise. »)
+  - Urssaf : « Le 5 ou le 20 de chaque mois, en douze prélèvements égaux (chaque trimestre, sur
+    demande). » ; « Elles se calculent d'abord sur ton revenu de 2024, puis sur celui de 2025 dès
+    que tu l'as déclaré, et se régularisent sur celui de 2026 après ta déclaration de 2027 : un
+    complément s'étale sur les prélèvements suivants, un trop-versé vient en déduction. » Premières
+    années : « Tes deux premières années, elles se calculent sur une base forfaitaire, puis se
+    régularisent sur ton revenu réel une fois déclaré : plus tu gagnes, plus le rattrapage est
+    fort. » RSPM : « Chaque mois ou chaque trimestre, quand tu déclares tes recettes : tu paies au
+    même rythme, sur ces recettes. » ; « Rien à régulariser. L'invalidité-décès de la CARMF
+    s'ajoute à ta première déclaration de l'année. »
+  - CARMF : « Un acompte appelé en janvier, à payer avant fin février, et le solde appelé en mai,
+    juin ou juillet, après ta déclaration de revenus, à payer avant fin août. Ou douze prélèvements
+    le 5 du mois, sur demande. » ; « Elles se calculent sur ton revenu de 2024. La retraite de base
+    se régularise : recalculée sur ton revenu de 2025 au moment du solde, puis ajustée sur celui de
+    2026 l'année suivante. La complémentaire et l'ASV, non. » Premières années : « Tes deux
+    premières années, elles se calculent sur une base forfaitaire, sans complémentaire ; la
+    retraite de base se régularise ensuite sur ton revenu réel. »
+  - Impôt : « Environ 580 € le 15 de chaque mois (6 964 € par an), ou chaque trimestre sur
+    option. » ; « De janvier à août 2026, tes acomptes suivent ton revenu de 2024 ; de septembre à
+    décembre, celui de 2025. Ton impôt de 2026 se régularise à l'été 2027, après ta déclaration :
+    un trop-payé te revient fin juillet ou début août, un reste à payer est prélevé à partir de
+    septembre (en quatre fois, jusqu'en décembre, au-delà de 300 €). » Première année : « Aucun
+    acompte en 2026, sauf si tu en demandes un sur impots.gouv.fr. » ; « L'impôt de 2026, environ
+    714 €, est prélevé de septembre à décembre 2027 (en septembre à 300 € ou moins), en même temps
+    que tes premiers acomptes (environ 60 € par mois, le 15). » Impôt nul : « Aucun acompte : à ces
+    revenus, ton impôt estimé est nul. »
+  - Astuce : « Revenus qui changent beaucoup ? L'Urssaf et la CARMF (retraite de base) calculent tes
+    cotisations sur ton revenu estimé de l'année, si tu le demandes (une estimation trop basse peut
+    être majorée), et tu peux moduler tes acomptes d'impôt. » (lien impots.gouv.fr ; RSPM : « Tu peux
+    moduler tes acomptes d'impôt. »)
+- **Mode d'emploi**, point 5 : « Les deux régimes » cite « cotisations Urssaf et CARMF et leur
+  total » ; « Pour aller plus loin — Ce que chaque régime déduit de tes recettes, et quand et comment
+  tu paies l'Urssaf, la CARMF et l'impôt : calendrier, revenu de référence, régularisation. »
+
+**Sources** (vérifiées le 15 novembre 2026). Urssaf : CSS L131-6-2 (« calculées, à titre
+provisionnel, sur la base du revenu d'activité de l'avant-dernière année », recalculées quand le
+revenu de la dernière année est connu, sauf la première année ; sur demande, sur le revenu estimé) et
+R133-26 (« versements mensuels d'un montant égal », « le 5 ou le 20 de chaque mois ») ; échéances
+trimestrielles (5 février, 5 mai, 5 août, 5 novembre) sur demande, complément de régularisation
+étalé sur les échéances à venir, trop-versé en déduction (urssaf.fr). CARMF : « Cotisations 2026 »
+et « Aide à la lecture de l'appel de cotisations 2026 » (carmf.fr) : retraite de base provisionnelle
+sur les revenus 2024, recalculée sur 2025 et régularisation 2025 au solde ; complémentaire et ASV
+sur 2024 « sans régularisation ultérieure » ; acompte en janvier (avant le 28 février 2026), solde en
+mai, juin ou juillet (avant le 31 août 2026) ; prélèvement mensuel le 5, sur douze mois. RSPM :
+déclaration et paiement mensuels ou trimestriels (CSS L642-4-2, § 9.fw) ; invalidité-décès ajoutée à
+la première déclaration de l'année (urssaf.fr, offre simplifiée).
+
+**Les deux autres questions, sans changement.**
+- Exonération CARMF des deux premières années : déjà là (champ « Début d'activité », § 9.fx,
+  repris dans le résumé « Ta situation » et dans le profil « Jeune remplaçant »). L'âge n'est pas
+  demandé : avant 40 ans la complémentaire n'est pas due, après 40 ans elle se calcule sur les
+  revenus d'activité indépendante d'il y a deux ans, presque toujours nuls à ce stade.
+- RID au RSPM : le défaut reste 25 % (157 €). Le médecin choisit 25 % ou 100 % à son premier
+  paiement de l'année ; aucune source ne donne de taux appliqué sans choix, et le simulateur de
+  l'Urssaf retient le forfait de 25 % (158 € dans ses pages, 157 € dans « La CARMF en 2026 » : écart
+  laissé au propriétaire en § 9.fw). En PAMC, la CARMF fixe l'invalidité-décès selon le revenu : pas
+  d'option.
+
+Archivés (textes d'avant) : pli « Comment l'impôt sera prélevé », sous-titre « Prélèvement à la
+source et régularisation » ; « Tes acomptes libéraux », « Prélevés le 15 de chaque mois sur ton
+compte bancaire », « Pour ces revenus : ~X €/mois (Y €/an) », « Pour ces revenus : aucun acompte,
+ton impôt estimé est nul. », « L'impôt de tes salaires est retenu par ton employeur, à part. » ;
+« Régularisation annuelle — L'impôt ci-dessus est une estimation. Après ta déclaration, la DGFiP
+régularise : Trop payé → Remboursement en juillet/août ; Pas assez → Solde en 4 fois (sept → déc)
+si > 300€ » ; « Mise à jour de tes acomptes — Janv → Août 2026 : basés sur tes revenus 2024 ; Sept →
+Déc 2026 : mis à jour avec 2025 ; Tes revenus 2026 ne changent tes acomptes qu'à partir de
+septembre 2027, après ta déclaration. » ; « Première année d'activité ? » (RSPM : « Au RSPM, tes
+cotisations suivent tes recettes, déclarées chaque mois ou chaque trimestre : pas de rattrapage. » ;
+PAMC : « Pendant tes deux premières années, l'Urssaf et la CARMF appellent des cotisations
+provisionnelles sur une base forfaitaire, puis les régularisent quand ton revenu réel est connu :
+plus tu gagnes, plus le rattrapage est fort. Une estimation de ton revenu, déclarée à l'Urssaf, le
+réduit. » ; « Côté impôt, aucun acompte tant que tu n'as pas déclaré de revenu libéral, sauf si tu
+en demandes un dans ton espace impots.gouv.fr. Sinon, de septembre à décembre de l'année suivante,
+tu paies le solde de cette première année et tes premiers acomptes en même temps. Mets de côté
+chaque mois le montant indiqué en tête des résultats. ») ; « Revenus très différents ? Tu peux
+demander une modulation » ; mode d'emploi « … et comment ton impôt sera prélevé (acomptes, première
+année). » et « (charges, cotisations Urssaf et CARMF, revenu imposable, impôt) ».
+
+**Contrôles.** Chromium à 390 et 1 280 px, quatre situations (PAMC 70 000/5 000 ; interne au RSPM,
+1re année ; jeune remplaçant en PAMC, 1re année ; PAMC CARMF dispensée à 18 000 €) : total égal à la
+somme des deux lignes affichées dans les deux régimes, absent au RSPM et dispensé ; lignes du pli
+(Urssaf, CARMF, Impôt ; sans CARMF au RSPM et dispensé), sous-titre, années, textes des premières
+années et de l'impôt nul, aucun débordement. Essais des § 9.gd à 9.gi repassés. WebKitGTK à 1 300 et
+390 px : pli et totaux, aucun débordement. `verify-site.mjs` sans erreur ; feuille commune inchangée.
+Comparées à la production : `/simulateur` change ; `/guide-declarations` et la calculette ne changent
+que du nom de leur fichier d'îlot (`BoussoleWizard`, `CalculetteApp`), parce que deux morceaux de
+JavaScript partagés entre les outils (`circle-help`, `tooltip`) sont regroupés autrement depuis que le
+pli n'importe plus les mêmes icônes ; leur HTML est identique à ces noms près ; les 69 autres pages,
+identiques.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
