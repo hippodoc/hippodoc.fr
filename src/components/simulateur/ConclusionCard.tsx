@@ -10,6 +10,7 @@ import { MARGE_RECETTES, debutActiviteDe, tauxDispenseComplementaire, revenusImp
 import type { SimulateurFormData } from "./simulateurSchema";
 import type { LucideIcon } from "lucide-react";
 import { formatNombre, nombreFr } from "@/lib/simulateur/nombres";
+import { PlaceGardee, montantLePlusLarge } from "./PlaceGardee";
 
 // ============ SEUILS ============
 /** Au-delà de 85 % du plafond du Micro-BNC, on prévient qu'il approche. */
@@ -175,27 +176,32 @@ export function ConclusionCard({ comparison, formData, bascule, marge, partie = 
   const declare = enMensuel ? euros(chargesAnnuelles / 12) : euros(chargesAnnuelles);
   // En attente, la phrase a déjà sa forme finale, le montant en « … » : les fiches, dessous, ne
   // sautent pas à l'arrivée du calcul (22 à 44 px au téléphone avec une phrase d'attente).
-  const charges = (montant: number | null) => {
-    const m = montant === null ? '…\u00a0€' : euros(enMensuel ? montant / 12 : montant);
-    return `${m} de charges par ${enMensuel ? 'mois' : 'an'}`;
-  };
+  // § 9.gl : « … € » est plus court que le montant qui arrive, et la phrase pouvait encore gagner
+  // une ligne. Elle garde la place de sa forme la plus longue (`PlaceGardee`) : le même texte avec le
+  // montant le plus large possible. Le point de bascule ne dépasse ni les recettes ni les charges
+  // déclarées (`calculerPointDeBascule`) ; 100 € de plus pour l'arrondi.
+  const charges = (m: string) => `${m} de charges par ${enMensuel ? 'mois' : 'an'}`;
+  const phraseDeBascule = (m: string) => (recommande === 'micro-bnc'
+    ? `Le régime réel passerait devant au-delà d'environ ${charges(m)} (tu en déclares ${declare}).`
+    : `Le Micro-BNC ne passerait devant que sous environ ${charges(m)} (tu en déclares ${declare}).`);
   let phraseBascule: string | null = null;
   const basculeEnAttente = bascule === 'attente';
   if (basculeEnAttente || typeof bascule === 'number') {
-    const c = charges(typeof bascule === 'number' ? bascule : null);
-    phraseBascule = recommande === 'micro-bnc'
-      ? `Le régime réel passerait devant au-delà d'environ ${c} (tu en déclares ${declare}).`
-      : `Le Micro-BNC ne passerait devant que sous environ ${c} (tu en déclares ${declare}).`;
+    phraseBascule = phraseDeBascule(typeof bascule === 'number' ? euros(enMensuel ? bascule / 12 : bascule) : '…\u00a0€');
   } else if (bascule === null) {
     phraseBascule = 'Même sans aucune charge, le régime réel resterait devant.';
   }
+  const basculeMaximale = Math.max(recettesAnnuelles, chargesAnnuelles) + 100;
+  const gabaritBascule = phraseDeBascule(euros(montantLePlusLarge(enMensuel ? basculeMaximale / 12 : basculeMaximale)));
 
   // ============ 1 000 € DE PLUS ============
+  // § 9.gl : même place gardée ; ce qui reste de 1 000 € de plus ne dépasse pas 1 000 €.
+  const phraseDeMarge = (reste: string) => `${euros(MARGE_RECETTES)} de recettes en plus dans l'année t'en laisseraient environ ${reste}, après cotisations et impôt.`;
   let phraseMarge: string | null = null;
   if (marge === 'attente' || typeof marge === 'number') {
-    const reste = typeof marge === 'number' ? euros(Math.round(marge / 10) * 10) : '…\u00a0€';
-    phraseMarge = `${euros(MARGE_RECETTES)} de recettes en plus dans l'année t'en laisseraient environ ${reste}, après cotisations et impôt.`;
+    phraseMarge = phraseDeMarge(typeof marge === 'number' ? euros(Math.round(marge / 10) * 10) : '…\u00a0€');
   }
+  const gabaritMarge = phraseDeMarge(euros(montantLePlusLarge(MARGE_RECETTES)));
 
   // ============ ALERTES CONTEXTUELLES ============
   const alerts: ContextAlert[] = [];
@@ -305,7 +311,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge, partie = 
           {phraseMarge && (
             <li aria-live="polite" aria-busy={marge === 'attente'}>
               <TrendingUp className="h-4 w-4" aria-hidden="true" />
-              <span>{phraseMarge}</span>
+              <span><PlaceGardee gabarit={gabaritMarge}>{phraseMarge}</PlaceGardee></span>
             </li>
           )}
           {alertesInfo.map((alerte, i) => {
@@ -343,7 +349,7 @@ export function ConclusionCard({ comparison, formData, bascule, marge, partie = 
       {(pourquoi || phraseBascule || gestion) && (
         <dl className="sim-conclusion-detail sim-conclusion-raisons" aria-live="polite" aria-busy={basculeEnAttente}>
           {pourquoi && <div><dt>Pourquoi</dt><dd>{pourquoi}</dd></div>}
-          {phraseBascule && <div><dt>Point de bascule</dt><dd>{phraseBascule}</dd></div>}
+          {phraseBascule && <div><dt>Point de bascule</dt><dd><PlaceGardee gabarit={gabaritBascule}>{phraseBascule}</PlaceGardee></dd></div>}
           {gestion && <div><dt>{gestion.titre}</dt><dd>{gestion.texte}</dd></div>}
         </dl>
       )}

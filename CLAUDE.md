@@ -705,6 +705,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   bascule se calculent après l'affichage, l'un après l'autre ; en attente, leur phrase a sa forme
   finale (« … € ») pour que rien ne saute. Dans les fiches, les cotisations sont en deux lignes,
   Urssaf et CARMF (une seule, Urssaf, au RSPM), aux montants de la conclusion (§ 9.ge).
+  ⚠️ **Rien ne bouge après le clic sur « Simuler »** (§ 9.gl : le CLS de la page dépassait 0,1 au
+  téléphone, jusqu'à 0,76 ; un décalage qui suit le clic de plus de 500 ms compte, et le calcul en
+  PAMC attend l'API). La carte d'attente fait au moins un écran (`.sim-attente-fiche`) et le
+  résultat la remplace en une fois : le bloc des deux régimes se charge au clic
+  (`chargerCartesDesRegimes`), pas de `lazy` ni de `Suspense` dans les résultats. Le bloc des
+  profils types, retiré à l'arrivée des résultats, est compensé par un défilement dans la même
+  image (`useLayoutEffect` de `SimulateurApp` ; Chromium n'ancre pas le défilement ici). Ce qui
+  dépend de l'essai d'avant est un état dérivé, calculé dans le rendu des résultats, jamais posé
+  par un effet. Une phrase dont un montant arrive après l'affichage passe par `PlaceGardee`, avec
+  le gabarit de sa forme la plus longue (`montantLePlusLarge`) ; le compteur des tuiles dessine le
+  nombre qui défile par `::after`, hors du flux. Un nouveau bloc ou une nouvelle phrase calculés
+  après l'affichage suivent la même règle ; mesurer avant de pousser (`layout-shift`, réseau
+  bridé, API lente, bouton haut et bas dans la fenêtre, grille des profils ouverte : § 9.gl).
   Profils types (§ 9.gf) : sept, en mode Auto, calés sur les simulations réelles (table Supabase
   `simulateur_public_events`) ; un profil garde son identifiant (`profil_type_id`), un identifiant
   retiré ne se réutilise pas.
