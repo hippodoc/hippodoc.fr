@@ -42,9 +42,10 @@ export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-14';
  *  date de l'accueil de la DA 2026 (10 novembre, § 9.eb). § 9.fd. */
 export const FAQ_LAST_UPDATED_ISO = '2026-11-13';
 
-/** /tarifs : tarif des internes et essai de 6 mois des syndicats partenaires
- *  ajoutés le 11 novembre 2026 (MIGRATION.md § 9.ed). */
-export const TARIFS_LAST_UPDATED_ISO = '2026-11-11';
+/** /tarifs : page refaite le 15 novembre 2026 (titre, chapô, offres,
+ *  garanties : MIGRATION.md § 9.gs). Avant : tarif des internes et essai de
+ *  6 mois des syndicats partenaires, le 11 novembre 2026 (§ 9.ed). */
+export const TARIFS_LAST_UPDATED_ISO = '2026-11-15';
 
 /** /simulateur : dernière vérification des barèmes et des règles sur les sources officielles
  *  (Urssaf, CARMF, Légifrance, barème de l'impôt), affichée sous les repères de la page et
