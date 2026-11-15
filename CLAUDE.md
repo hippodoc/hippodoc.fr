@@ -381,6 +381,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   son `theme` (obligatoire : sans lui, ou avec un thème inconnu, la construction s'arrête ;
   voir « Thèmes », plus bas). Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
   demande alors, en avertissement, de relever `PLANCHER_FAQ` (§ 9.fc).
+- **Publier un article : la procédure `.claude/skills/nouvel-article/SKILL.md`** (§ 9.gl). Le
+  propriétaire joint l'affiche et colle le texte ; la procédure fait le reste (adresse, champs,
+  thème, liens, fichiers à tenir à jour, vérifications, PR, contrôle en ligne) et s'arrête au
+  « go ». La suivre à chaque nouvel article, et la tenir à jour quand une règle du blog change.
 - ⚠️ `scripts/generate-blog-content.mjs` a servi à la migration initiale depuis
   `blogArticles.ts` de la SPA — le relancer ÉCRASERAIT les éditions faites ici
   (ex. les blocs « L'essentiel »). Ne le relancer que pour ré-importer sciemment.
