@@ -13898,6 +13898,84 @@ mesures au-dessus de 0,1, et nombre d'entrées des fenêtres sur ordinateur (il 
 (nouveau), `src/lib/simulateur/usePublicodesSimulation.ts`, `src/styles/simulateur.css`,
 `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.ha Fenêtre produit : un cinquième onglet, « Et aussi » (15 novembre 2026)
+
+Demande du propriétaire : montrer, dans la fenêtre produit sous le premier écran, ce que le
+compte fait d'autre (« suivi des charges pro, des PDSA, statistiques, génération de contrats,
+factures, exports, etc. »), sous la forme d'un onglet à côté des quatre autres. Avis donné
+avant : oui à l'idée (six fonctions n'étaient visibles nulle part sur l'accueil, seulement
+dans le pli fermé « Détail des offres »), non à une grande grille sous le premier écran (elle
+aurait repoussé la fenêtre et rallongé la page). Un onglet ne rallonge rien.
+
+**Ce que disaient les données** (PostHog, 30 jours, www.hippodoc.fr) : sur ordinateur,
+468 personnes voient le premier écran, 134 la section suivante, 87 les tarifs ; parmi ces
+dernières, une sur quatre ouvre « Détail des offres » (21 personnes), où était la liste
+complète. Les onglets de la fenêtre sont utilisés (de 3 à 9 personnes par onglet, 390 clics).
+
+**La vue** (`FenetreProduit.astro`, panneau `p5`) : « {n} outils » (compte calculé, 18
+aujourd'hui), les outils du menu de l'application (`AppSidebar.tsx` de app.hippodoc.fr, relevé
+le 15 novembre 2026 par le connecteur Lovable, en lecture seule), rangés par ses groupes :
+Activité, Revenus, Charges, Analyses, Ressources. Ce que les quatre autres vues montrent
+(calendrier, paiements en attente, déclarations, Super-Net) n'y est pas. Vérifié dans le code
+de l'application avant d'écrire : contrats « conformes aux modèles CNOM » et pré-remplis
+depuis le profil et le carnet des lieux d'exercice ; documents professionnels (« licence,
+assurance ») ; export du calendrier en fichier .ics vers Google Agenda (pas de
+synchronisation : ne pas écrire « synchronisé ») ; exports Excel et PDF (xlsx et html2pdf ;
+aucun CSV) ; revenus PDSA ; amortissements dans les charges ; forum (avec sa modération).
+- Sous 900 px : le chiffre, « inclus dans l'abonnement », puis les outils en pastilles à la
+  suite, nom court, sans icône. Le nom des groupes et la ligne « Dans ton compte, en plus »
+  ne sont lus qu'aux lecteurs d'écran sous 720 px (sur une ligne à eux seuls, ils
+  allongeaient la vue au-delà des quatre autres).
+- À partir de 900 px : l'en-tête en haut (le chiffre en 66 px, ses deux lignes calées sur
+  son bas), puis les groupes en trois colonnes, chaque outil avec son icône (tracés Lucide,
+  la bibliothèque de l'application, licence ISC) et son nom long. À gauche comme les vues 3
+  et 4, deux colonnes étroites dépassaient les autres vues de 100 à 130 px.
+- Hauteur : la vue tient dans la hauteur commune des panneaux, de 320 à 1 920 px (mesuré
+  à plus de 40 largeurs, et à 10 largeurs police bloquée) ; marge la plus faible : 6 px à
+  320 px.
+
+**Les onglets** : cinq libellés courts ne tiennent sur une ligne qu'à partir de 520 px
+(mesuré : à 430 px, il manquait 50 px). En dessous, la barre passe sur deux rangées (trois
+onglets, puis deux plus larges ; grille de six colonnes), cibles de 44 px de haut : la
+fenêtre grandit de 46 px sur téléphone. Les libellés longs ne tiennent sur une ligne qu'à
+partir de 900 px (ils partaient à 720 px) ; de 720 à 899 px, libellés courts. Libellés
+existants inchangés.
+
+**Corrigé au passage** : de 700 à 719 px, la vue « Tes déclarations » dépassait les trois
+autres de 4 à 6 px (son chiffre suit la largeur, 7vw ; présent depuis § 9.fn, relevé sur le
+build de `main`). Il est borné à 42 px sous 720 px (sa taille à 600 px).
+
+**Contenu ajouté** (à relire par le propriétaire) : l'onglet « Et aussi » ; « Dans ton
+compte, en plus », « 18 outils », « inclus dans l'abonnement » ; les groupes « Activité »,
+« Revenus », « Charges », « Analyses », « Ressources » ; noms longs : « Contrats, modèles du
+CNOM », « Lieux d'exercice », « Documents professionnels », « Export vers Google Agenda »,
+« Factures en PDF », « PDSA et revenus exonérés », « Revenus salariés », « Charges et
+amortissements », « Cotisations et échéances », « Rétrocessions versées », « Aide à la
+2035 », « Statistiques », « Revenus par structure », « Prévisionnel », « Budget », « Exports
+Excel et PDF », « Forum entre médecins », « Guide des cotations » ; noms courts (téléphone) :
+« Contrats », « Lieux d'exercice », « Documents », « Google Agenda », « Factures », « PDSA »,
+« Salariat », « Charges », « Échéances », « Rétrocessions », « Aide 2035 », « Statistiques »,
+« Par structure », « Prévisionnel », « Budget », « Exports », « Forum », « Cotations ».
+Point à signaler : la ligne « Planning centralisé avec synchro Google » des tarifs (accueil et
+`/tarifs`) dit plus que l'application, qui exporte un fichier .ics ; non modifiée ici
+(décision du propriétaire).
+
+**Mesure** : `data-ph="landing_apercu_et_aussi"` sur le nouvel onglet (même forme que les
+quatre autres) ; aucune section ajoutée.
+
+**Vérifications** : `verify-site.mjs` (contrôle de la fenêtre passé à cinq onglets et cinq
+panneaux) sans erreur ; seule `index.html` change dans le build (plus sa feuille et la date
+de `/` dans le sitemap : `ACCUEIL_LAST_UPDATED_ISO` au 15 novembre 2026) ; feuille commune
+inchangée (`_astro_assets.BqFlQkaI.css`). Flèches du clavier sur les cinq onglets, appui
+tactile (cible de 165 × 44 px à 390 px), axe-core sans violation à 390 et 1 440 px,
+espacement de texte agrandi (WCAG 1.4.12) sans libellé rogné ni chevauchement. WebKitGTK :
+grille de la barre sur `<fieldset>`, trois colonnes, hauteurs égales à 320, 390, 600, 768,
+900, 1 024 et 1 440 px. Lighthouse (accueil, local) : 97, 100, 100, 100 (`main` : 96, 100,
+100, 100). Poids de la page : +1,4 Ko compressé.
+
+**Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/lib/pages-lastmod.ts`,
+`scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

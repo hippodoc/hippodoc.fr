@@ -34,7 +34,7 @@ export const GUIDE_SOUS_PAGES_LAST_UPDATED_ISO = '2026-08-23';
  *  huit questions au lieu de dix, sections déplacées. Mise en ligne le
  *  13 novembre 2026 (PR 144) ; ligne fine du premier écran retouchée le
  *  14 novembre 2026 (§ 9.fy). */
-export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-14';
+export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-15';
 
 /** /faq : douze réponses du schéma FAQPage alignées sur le texte affiché
  *  (MIGRATION.md § 9.fa, PR 146), mises en ligne le 13 novembre 2026 ; le

@@ -1,15 +1,23 @@
 ---
 /**
- * La fenêtre produit de l'accueil : quatre vues de l'application, à onglets
- * (DA 2026, phase 3, MIGRATION.md § 9 ; vue « déclaration » ajoutée en § 9.fn).
- * Zéro JS.
+ * La fenêtre produit de l'accueil : cinq vues de l'application, à onglets
+ * (DA 2026, phase 3, MIGRATION.md § 9 ; vue « déclaration » ajoutée en § 9.fn,
+ * vue « Et aussi » en § 9.ha). Zéro JS.
  *
- * - Onglets : quatre boutons radio dans un <fieldset> (légende masquée à l'œil).
+ * - Onglets : cinq boutons radio dans un <fieldset> (légende masquée à l'œil).
  *   Tab entre dans le groupe, les flèches changent de vue, comme tout groupe de
  *   radios. La feuille affiche le panneau de la radio cochée avec `:has()`.
  *   Sans `:has()` (navigateurs d'avant fin 2023), la barre d'onglets est retirée
- *   et les quatre vues s'affichent l'une sous l'autre.
- * - Les quatre panneaux sont toujours dans le HTML.
+ *   et les cinq vues s'affichent l'une sous l'autre.
+ * - Les cinq panneaux sont toujours dans le HTML.
+ * - Vue « Et aussi » (§ 9.ha) : les autres outils du compte, rangés comme le
+ *   menu de l'application (AppSidebar de app.hippodoc.fr, relevé le 15 novembre
+ *   2026) ; ce que les quatre autres vues montrent déjà n'y est pas. Un outil
+ *   ajouté ou retiré de l'application se reporte dans AUSSI. Google Agenda
+ *   reçoit un export .ics : ne pas écrire « synchronisé ». Exports : Excel et
+ *   PDF (pas de CSV dans le code de l'application). Le compte est calculé.
+ *   Sous 900 px, des pastilles sans les groupes (leur nom reste aux lecteurs
+ *   d'écran) ; à partir de 900 px, les groupes en deux colonnes, avec icônes.
  * - Aucune balise de titre ici : la fenêtre précède le <h2> du bloc.
  * - Chiffres : src/data/demoAccueil.ts, un seul jeu pour toute l'accueil. La
  *   page ne porte plus de mention « Compte de démonstration » (retirée à la
@@ -57,7 +65,78 @@ const VUES = [
   { id: 'journees', court: 'Journées', long: 'Tes journées' },
   { id: 'a-recevoir', court: 'À recevoir', long: 'Ce qu’on te doit' },
   { id: 'declaration', court: 'Déclas', long: 'Tes déclarations' },
+  { id: 'et-aussi', court: 'Et aussi', long: 'Et aussi' },
 ];
+
+/* Vue « Et aussi » : les groupes et leurs outils, dans l'ordre du menu de
+   l'application. `court` sous 900 px (pastilles), `long` au-delà. Icônes : tracés
+   de la bibliothèque d'icônes de l'application (Lucide, licence ISC), 24 × 24. */
+const ICONES: Record<string, string> = {
+  contrat: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  lieu: '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  dossier: '<path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/>',
+  agenda: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  facture: '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 12h5"/><path d="M16 9.5a4 4 0 1 0 0 5.2"/>',
+  garde: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  salarie: '<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>',
+  charges: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+  echeances: '<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2l8 5H4Z"/>',
+  retro: '<path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>',
+  tableur: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/>',
+  courbe: '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/>',
+  structure: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  calcul: '<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8"/><path d="M16 14v4"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+  camembert: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
+  export: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+  forum: '<path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>',
+  cotations: '<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>',
+};
+const AUSSI = [
+  {
+    nom: 'Activité',
+    outils: [
+      { court: 'Contrats', long: 'Contrats, modèles du CNOM', icone: 'contrat' },
+      { court: 'Lieux d’exercice', long: 'Lieux d’exercice', icone: 'lieu' },
+      { court: 'Documents', long: 'Documents professionnels', icone: 'dossier' },
+      { court: 'Google Agenda', long: 'Export vers Google Agenda', icone: 'agenda' },
+    ],
+  },
+  {
+    nom: 'Revenus',
+    outils: [
+      { court: 'Factures', long: 'Factures en PDF', icone: 'facture' },
+      { court: 'PDSA', long: 'PDSA et revenus exonérés', icone: 'garde' },
+      { court: 'Salariat', long: 'Revenus salariés', icone: 'salarie' },
+    ],
+  },
+  {
+    nom: 'Charges',
+    outils: [
+      { court: 'Charges', long: 'Charges et amortissements', icone: 'charges' },
+      { court: 'Échéances', long: 'Cotisations et échéances', icone: 'echeances' },
+      { court: 'Rétrocessions', long: 'Rétrocessions versées', icone: 'retro' },
+      { court: 'Aide 2035', long: 'Aide à la 2035', icone: 'tableur' },
+    ],
+  },
+  {
+    nom: 'Analyses',
+    outils: [
+      { court: 'Statistiques', long: 'Statistiques', icone: 'courbe' },
+      { court: 'Par structure', long: 'Revenus par structure', icone: 'structure' },
+      { court: 'Prévisionnel', long: 'Prévisionnel', icone: 'calcul' },
+      { court: 'Budget', long: 'Budget', icone: 'camembert' },
+      { court: 'Exports', long: 'Exports Excel et PDF', icone: 'export' },
+    ],
+  },
+  {
+    nom: 'Ressources',
+    outils: [
+      { court: 'Forum', long: 'Forum entre médecins', icone: 'forum' },
+      { court: 'Cotations', long: 'Guide des cotations', icone: 'cotations' },
+    ],
+  },
+];
+const nbOutils = AUSSI.reduce((n, g) => n + g.outils.length, 0);
 
 const annee = `Année ${DEMO_ANNEE.an}`;
 const mois = `${DEMO_MOIS.nom} ${DEMO_MOIS.an}`;
@@ -221,6 +300,26 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
     </div>
   </div>
 
+  {/* Vue 5 : les autres outils, rangés comme le menu de l'application */}
+  <div class="panel p5">
+    <div class="aussi">
+      <p class="aussi-sum">
+        <span class="aussi-cap">Dans ton compte, en plus</span>
+        <b class="v aff">{nbOutils} outils</b>
+        <span>inclus dans l’abonnement</span>
+      </p>
+      <div class="groupes">
+        {/* Sur une ligne : sous 900 px, les pastilles sont en ligne, et une espace
+            entre deux balises s'ajouterait à l'écart entre deux groupes. */}
+        {AUSSI.map((g) => (
+          <div class="groupe"><p class="groupe-t">{g.nom}</p><ul class="outils" role="list">{g.outils.map((o) => (
+            <li class="outil"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES[o.icone]} /><span class="short">{o.court}</span><span class="long">{o.long}</span></li>
+          ))}</ul></div>
+        ))}
+      </div>
+    </div>
+  </div>
+
   <p class="stage-foot">Recalculé après chaque journée enregistrée</p>
 </div>
 
@@ -239,10 +338,18 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
   .tab input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
   .tab:hover { color: var(--ink); }
   .tab .long { display: none; }
-  /* Quatre onglets sur téléphone (§ 9.fn) : chacun prend la place de son
-     libellé, sur une ligne de 320 à 719 px (mesuré à 320, 360, 390 et 430 px). */
-  @media (max-width: 719px) { .tab { flex: 1 1 auto; padding: 4px 8px; } }
-  @media (max-width: 409px) { .stage-bar { gap: 2px; padding: 8px 6px; } .tab { padding: 4px 6px; font-size: 14px; } }
+  /* Libellés courts jusqu'à 899 px : chaque onglet prend la place de son libellé
+     (§ 9.fn). Cinq libellés longs ne tiennent sur une ligne qu'à partir de 900 px. */
+  @media (max-width: 899px) { .tab { flex: 1 1 auto; padding: 4px 8px; } }
+  @media (max-width: 409px) { .tab { padding: 4px 6px; font-size: 14px; } }
+  /* Cinq onglets (§ 9.ha) : sur une ligne, ils ne tiennent qu'à partir de 520 px.
+     En dessous, deux rangées : trois onglets, puis deux plus larges. Les cibles
+     gardent 44 px de haut. */
+  @media (max-width: 519px) {
+    .stage-bar { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; padding: 8px; }
+    .tab { grid-column: span 2; min-height: 44px; padding: 4px 6px; }
+    .tab:nth-of-type(n + 4) { grid-column: span 3; }
+  }
   .tab:has(input:checked) { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink), var(--clay-sm); }
   .tab:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
   /* Contrastes forcés : le fond et l'ombre disparaissent, un contour dit quel onglet est ouvert. */
@@ -255,35 +362,35 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
   .stage:has(#apercu-super-net:checked) .p1,
   .stage:has(#apercu-journees:checked) .p2,
   .stage:has(#apercu-a-recevoir:checked) .p3,
-  .stage:has(#apercu-declaration:checked) .p4 { display: block; }
+  .stage:has(#apercu-declaration:checked) .p4,
+  .stage:has(#apercu-et-aussi:checked) .p5 { display: block; }
   /* Sans `:has()`, rien ne relie l'onglet à son panneau : pas d'onglets, les
-     trois vues l'une sous l'autre. */
+     cinq vues l'une sous l'autre. */
   @supports not selector(:has(*)) {
     .stage-bar { display: none; }
     .panel { display: block; }
   }
   .stage-foot { margin: 0; padding: 12px 18px; background: var(--sky-soft); font-size: 14px; color: var(--ink-2); }
   @media (min-width: 720px) {
-    .tab { flex: none; padding: 4px 22px; font-size: 16px; }
-    .tab .long { display: inline; }
-    .tab .short { display: none; }
+    .tab { font-size: 16px; }
     .panel { min-height: 454px; padding: 36px 40px 40px; }
     .stage-foot { padding: 14px 40px; }
   }
-  /* Quatre libellés longs : à 720 px, ils dépassaient la barre d'un pixel. */
-  @media (min-width: 720px) and (max-width: 799px) { .tab { padding-inline: 16px; } }
+  @media (min-width: 900px) {
+    .tab { flex: none; padding: 4px 22px; }
+    .tab .long { display: inline; }
+    .tab .short { display: none; }
+  }
   @media (min-width: 860px) { .panel { min-height: 550px; } }
   /* De 400 à 719 px le Super-Net grossit avec la fenêtre : son panneau dépassait
      les deux autres de 1 à 7 px. */
   @media (min-width: 400px) and (max-width: 719px) { .panel { min-height: 403px; } }
 
   /* Petits téléphones (320 px) : sur la maquette, le troisième onglet, le
-     montant encaissé et le Super-Net sortaient de la fenêtre. Les onglets se
-     partagent la place selon leur libellé, la jauge s'affine, les corps baissent
-     d'un cran. */
+     montant encaissé et le Super-Net sortaient de la fenêtre. La jauge s'affine,
+     les corps baissent d'un cran (les onglets sont sur deux rangées sous 520 px,
+     § 9.ha : ils n'ont plus de règle propre ici). */
   @media (max-width: 359px) {
-    .stage-bar { gap: 0; padding: 8px 4px; }
-    .tab { padding: 4px 5px; font-size: 13px; }
     .panel { padding-inline: 14px; }
     .stage-foot { padding-inline: 14px; }
   }
@@ -396,6 +503,10 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
   .decla-sum { display: flex; flex-direction: column; gap: 2px; }
   .decla-sum .v { --corps: clamp(28px, 7vw, 66px); }
   .decla-sum span { font-size: 15px; color: var(--ink-2); }
+  /* Le chiffre suit la largeur (7vw) : de 700 à 719 px, il grandissait au point
+     que la vue dépassait les autres de 4 à 6 px (relevé en § 9.ha, présent depuis
+     § 9.fn). Borné à 42 px sous 720 px (sa taille à 600 px). */
+  @media (max-width: 719px) { .decla-sum .v { --corps: clamp(28px, 7vw, 42px); } }
   @media (min-width: 720px) { .decla-sum span { font-size: 16px; } }
   .decla .decla-note { display: none; margin-top: 18px; font-size: 15px; line-height: 1.45; color: var(--ink-2); }
   .formulaires { display: grid; gap: 14px; }
@@ -431,12 +542,56 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
     .case { min-height: 60px; }
   }
 
+  /* Vue 5 : et aussi (§ 9.ha). Sous 900 px, les outils en pastilles à la suite,
+     sans icône ; le nom des groupes n'est donné qu'aux lecteurs d'écran (sur une
+     ligne à lui seul, il allongeait la vue au-delà des quatre autres), comme la
+     première ligne de l'en-tête, que l'onglet dit déjà. */
+  .aussi { display: grid; gap: 14px; }
+  .aussi-sum { display: flex; flex-direction: column; gap: 2px; margin: 0; }
+  .aussi-sum .v { --corps: clamp(28px, 7vw, 66px); }
+  .aussi-sum span { font-size: 15px; color: var(--ink-2); }
+  .aussi .groupe-t, .aussi .aussi-cap { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .groupe, .outils { display: inline; }
+  .outils { margin: 0; padding: 0; list-style: none; }
+  .outil { display: inline-flex; align-items: center; min-height: 30px; margin: 0 5px 5px 0; padding: 3px 11px; border-radius: var(--r-pill); background: var(--sky-soft); font-size: 14px; line-height: 1.2; color: var(--ink); vertical-align: top; }
+  .outil .ico, .outil .long { display: none; }
+  @media (max-width: 359px) {
+    .aussi { gap: 12px; }
+    .outil { padding-inline: 9px; font-size: 13.5px; }
+  }
+  @media (min-width: 720px) {
+    .aussi { gap: 22px; }
+    .aussi-sum span { font-size: 16px; }
+    .aussi .aussi-cap { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; }
+    .outil { min-height: 38px; margin: 0 8px 8px 0; padding: 6px 16px; font-size: 16px; }
+  }
+  /* À partir de 900 px : l'en-tête en haut (le chiffre, et ses deux lignes à
+     côté), puis les groupes en trois colonnes, chaque outil avec son icône et son
+     nom long. À gauche comme les vues 3 et 4, les groupes n'avaient que deux
+     colonnes étroites : la vue dépassait les autres de 100 à 130 px. */
+  @media (min-width: 900px) {
+    .aussi { gap: 28px; align-content: center; min-height: 474px; }
+    /* Les deux lignes l'une sur l'autre, calées sur le bas du chiffre. */
+    .aussi-sum { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr auto; column-gap: 22px; row-gap: 2px; }
+    .aussi-sum .aussi-cap { align-self: end; }
+    .aussi-sum .v { grid-row: 1 / span 2; --corps: 66px; }
+    .groupes { column-count: 3; column-gap: 32px; }
+    .groupe { display: block; break-inside: avoid; padding-bottom: 16px; }
+    .aussi .groupe-t { position: static; width: auto; height: auto; margin: 0 0 4px; overflow: visible; clip-path: none; white-space: normal; font-size: 14px; font-weight: var(--tb); color: var(--ink-3); }
+    .outils { display: block; }
+    .outil { display: flex; gap: 10px; min-height: 36px; margin: 0; padding: 3px 0; border-radius: 0; background: none; font-size: 15.5px; }
+    .outil .ico { display: block; flex: none; box-sizing: content-box; width: 16px; height: 16px; padding: 5px; border-radius: 8px; background: var(--sky-soft); color: var(--ink-2); }
+    .outil .short { display: none; }
+    .outil .long { display: inline; }
+  }
+
   /* Mouvement : seulement si le visiteur n'a pas demandé à le réduire. */
   @media (prefers-reduced-motion: no-preference) {
     .stage:has(#apercu-super-net:checked) .p1,
     .stage:has(#apercu-journees:checked) .p2,
     .stage:has(#apercu-a-recevoir:checked) .p3,
-    .stage:has(#apercu-declaration:checked) .p4 { animation: apercu-fade 300ms var(--ease) both; }
+    .stage:has(#apercu-declaration:checked) .p4,
+    .stage:has(#apercu-et-aussi:checked) .p5 { animation: apercu-fade 300ms var(--ease) both; }
     /* La fenêtre monte en place quand elle entre à l'écran (navigateurs qui
        savent lier une animation au défilement ; les autres l'affichent telle quelle).
        ⚠️ Deux règles, deux sélecteurs : écrites ensemble, la minification du build
