@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
  * Bulle d'aide des trois outils (simulateur par `PremiumTooltip`, calculette, boussole).
  *
  * À la souris et au clavier, Radix : la bulle s'ouvre au survol et au focus, se ferme quand
- * on s'en va, au clic ou à Échap. Une exception, au clavier (MIGRATION.md § 9.gs) : Radix
+ * on s'en va, au clic ou à Échap. Une exception, au clavier (MIGRATION.md § 9.gt) : Radix
  * ferme la bulle à tout défilement d'un ancêtre du déclencheur, donc aussi quand Tab amène
  * le focus sur une aide hors de la fenêtre et que le navigateur fait défiler pour la montrer
  * (la bulle s'ouvrait puis se refermait aussitôt : 2 aides sur 10 dans le simulateur). Tant

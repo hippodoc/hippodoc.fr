@@ -14456,7 +14456,10 @@ feuille commune inchangée (`_astro_assets.BqFlQkaI.css`) ; les 72 autres pages,
 les fichiers JSON et texte identiques ; seuls changent `tarifs/index.html`, sa feuille et, dans le
 sitemap, la date de `/tarifs`.
 
-### 9.gs Simulateur : la bulle de l'invalidité-décès précisée, et des bulles d'aide qui tiennent au clavier (15 novembre 2026)
+### 9.gt Simulateur : la bulle de l'invalidité-décès précisée, et des bulles d'aide qui tiennent au clavier (15 novembre 2026)
+
+(Section fusionnée sous le numéro § 9.gs, pris le même jour par la refonte de `/tarifs` ; renumérotée
+§ 9.gt. La PR et son commit disent encore « § 9.gs ».)
 
 À la question du propriétaire après § 9.gp, « Ok tout est parfait ? », une relecture à froid de ce
 qui était en ligne a donné cinq points ; réponse : « Go pour tout ».

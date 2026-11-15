@@ -674,7 +674,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     sortir de la fenêtre) ; une nouvelle classe de bulle reprend cette règle. Une bulle
     ouverte sur le côté (`side="right"`) borne aussi sa largeur (`…-available-width`).
   - Le HTML du build n'y gagne aucun attribut : tout arrive après le montage.
-  - Au clavier (§ 9.gs) : Radix ferme une bulle à tout défilement d'un ancêtre du déclencheur ; le
+  - Au clavier (§ 9.gt) : Radix ferme une bulle à tout défilement d'un ancêtre du déclencheur ; le
     composant ignore cette fermeture tant que le déclencheur a le focus du clavier
     (`:focus-visible`), sinon une aide que Tab fait défiler jusqu'à elle s'ouvrait et se refermait
     aussitôt. Son écouteur de défilement doit rester posé avant celui de Radix (au montage, à la
@@ -787,7 +787,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   simplifié pour les médecins » ; CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM »),
   pas le quart et le plein du minimum du régime classique (626 € en 2026). La bulle du choix
   (`sim-rid`) donne ce que chaque niveau couvre (indemnités par jour d'arrêt, rente, indemnité
-  décès), dans les mots du dépliant (§ 9.gs : invalidité « totale et définitive » ; l'âge, moins de
+  décès), dans les mots du dépliant (§ 9.gt : invalidité « totale et définitive » ; l'âge, moins de
   62 ans, ne vaut que pour les indemnités par jour) : chiffres à relire chaque année avec les montants, ici et dans les quatre
   articles qui les citent (`rspm-exemples-concrets`, `guide-impots-internes-remplacants`,
   `tout-comprendre-carmf`, `tout-comprendre-urssaf`).
