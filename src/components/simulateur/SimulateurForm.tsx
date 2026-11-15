@@ -191,7 +191,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
         : typeExercice === 'installe' ? 'Régime social\u00a0: PAMC'
         : annualRecettes <= 0 ? 'Régime social\u00a0: RSPM ou PAMC selon tes recettes'
         : annualRecettes <= 19000 ? 'Régime social\u00a0: RSPM (recettes jusqu\'à 19\u00a0000\u00a0€)'
-        : 'Régime social\u00a0: PAMC (le RSPM s\'arrête à 19\u00a0000\u00a0€ de recettes)',
+        : 'Régime social\u00a0: PAMC (déjà au RSPM\u00a0? Choisis-le avec «\u00a0Modifier\u00a0»)',
     ];
     // Un champ en erreur dans la situation repliée : la situation s'ouvre, sinon l'erreur reste
     // invisible (le formulaire ne pourrait pas y porter le focus).
@@ -840,7 +840,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       content={
                         <div className="space-y-2">
                           <p className="text-xs">
-                            <strong>Remplaçant</strong> : tu exerces seulement en remplacement (rétrocessions). Tu peux opter pour le RSPM jusqu'à 19 000 € de recettes, tu ne paies pas la CURPS, et la CARMF peut te dispenser d'affiliation sous 15 000 € de revenu net.
+                            <strong>Remplaçant</strong> : tu exerces seulement en remplacement (rétrocessions). Tu peux opter pour le RSPM si tes recettes ne dépassent pas 19 000 € par an, tu ne paies pas la CURPS, et la CARMF peut te dispenser d'affiliation sous 15 000 € de revenu net.
                           </p>
                           <p className="text-xs">
                             <strong>Installé</strong> : tu exerces en ton nom (cabinet, collaboration). Le RSPM ne t'est pas ouvert.
@@ -1094,7 +1094,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         <div className="space-y-2">
                           <p className="font-semibold">RSPM vs PAMC</p>
                           <p className="text-xs">
-                            <strong>RSPM</strong> (Simplifié) : cotisations forfaitaires à taux fixe. Ouvert jusqu'à 19 000 €/an d'honoraires ; perdu après deux années de suite au-dessus de 19 000 € ou une seule au-dessus de 38 000 €.<br/>
+                            <strong>RSPM</strong> (Simplifié) : cotisations forfaitaires à taux fixe. On y entre jusqu'à 19 000 €/an d'honoraires ; on en sort au 1er janvier qui suit une année au-dessus de 38 000 €, ou la deuxième de suite au-dessus de 19 000 €.<br/>
                             <strong>PAMC</strong> (Classique) : cotisations proportionnelles réelles, régime standard des médecins libéraux.
                           </p>
                           <TipBox variant="info">
@@ -1104,7 +1104,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                             </div>
                           </TipBox>
                           <TipBox variant="tip">
-                            <p><strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM entre 19 000 et 38 000 € ? Choisis RSPM.</p>
+                            <p><strong>Auto = recommandé</strong>. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y restes jusqu'au 31 décembre : choisis RSPM.</p>
                           </TipBox>
                         </div>
                       }

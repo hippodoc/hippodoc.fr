@@ -14011,6 +14011,112 @@ JavaScript partagés entre les outils (`circle-help`, `tooltip`) sont regroupés
 pli n'importe plus les mêmes icônes ; leur HTML est identique à ces noms près ; les 69 autres pages,
 identiques.
 
+### 9.go Simulateur : la règle entière du RSPM, une frise et un exemple chiffré (15 novembre 2026)
+
+Retour du propriétaire sur § 9.gn : le filet « devrait être au-dessus du total des cotisations » ;
+« Quand et comment tu paies » pourrait être « encore plus stylé », ou avec des exemples « en
+fonction des résultats de la personne » ; et le repère « Seuil du RSPM : 19 000 € » ne dit rien des
+38 000 € : « red flag, les gens vont se dire qu'on ne connaît pas toute la règle […] ce genre de
+réflexion, il faut l'appliquer un petit peu partout ». Il a aussi fourni la page d'un simulateur
+concurrent, pour avis (réponse donnée dans la conversation, rien n'en est repris ici).
+
+**La règle du RSPM, vérifiée de nouveau.** Entrée : rémunérations « inférieures ou égales à
+19 000 euros » (CSS D642-4-1, en vigueur depuis le 25 juin 2023). Taux : 13,5 %, puis 21,2 % sur la
+fraction au-dessus du seuil (D642-4-2, D642-4-3). La sortie n'est dans aucun de ces articles, ni
+dans L642-4-2 ni D642-4-4 : elle est donnée par l'Urssaf (urssaf.fr, « Le service simplifié pour
+les médecins ») : des honoraires qui dépassent « le seuil de 38 000 € au cours de l'année civile ou
+le seuil de 19 000 € pour la seconde année consécutive » ne permettent plus d'en bénéficier
+« l'année suivante », et l'on peut « rester dans ce service jusqu'au 31 décembre de l'année en
+cours ». Conséquence que le simulateur ne disait nulle part : un remplaçant déjà au RSPM y reste
+toute l'année où il dépasse 19 000 €, et même 38 000 €.
+
+**Ce qui change.**
+- **Filet du total** : « Total des cotisations » est sous une barre d'addition (filet au-dessus,
+  plus foncé), à la hauteur des autres lignes.
+- **Le RSPM, partout où il n'était dit qu'à moitié** :
+  - repère : « Seuil du RSPM » devient « Seuil d'entrée au RSPM », texte « L'offre simplifiée des
+    remplaçants : 13,5 % de cotisations, 21,2 % au-delà. On en sort après une année au-dessus de
+    38 000 €, ou deux de suite au-dessus de 19 000 €. » ;
+  - résumé « Ta situation », en mode Auto au-dessus de 19 000 € : « Régime social : PAMC (déjà au
+    RSPM ? Choisis-le avec « Modifier ») » (avant : « PAMC (le RSPM s'arrête à 19 000 € de
+    recettes) », qui était faux pour qui y est déjà) ;
+  - bulle « Exercice » : « Tu peux opter pour le RSPM si tes recettes ne dépassent pas 19 000 € par
+    an » ; bulle « Régime social » : « On y entre jusqu'à 19 000 €/an d'honoraires ; on en sort au
+    1er janvier qui suit une année au-dessus de 38 000 €, ou la deuxième de suite au-dessus de
+    19 000 €. » et « Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y restes jusqu'au
+    31 décembre : choisis RSPM. » ;
+  - FAQ « Que se passe-t-il au-delà de 38 000 € de recettes ? » (écran et schéma `FAQPage`, même
+    source) : la dernière phrase devient « Déjà au RSPM et au-dessus de 19 000 € cette année ? Tu y
+    restes jusqu'au 31 décembre : choisis RSPM à la main. » ;
+  - mode d'emploi, « Régime social » : ajout « Déjà au RSPM et au-dessus de 19 000 € ? Choisis
+    RSPM : on y reste jusqu'au 31 décembre de l'année du dépassement. » ;
+  - fiche « RSPM ou PAMC ? » (RSPM retenu) : ajout « On en sort au 1er janvier qui suit une année
+    au-dessus de 38 000 €, ou la deuxième de suite au-dessus de 19 000 €. »
+- **Fiche miroir « PAMC ou RSPM ? »** (`RspmOuPamc.tsx`, `calculerAlternativeRspm`) : pour un
+  remplaçant en mode Auto au-dessus de 19 000 € (PAMC retenu), sous la conclusion : « Au-dessus de
+  19 000 € de recettes, le simulateur retient le PAMC. Si tu es déjà au RSPM, tu y restes pourtant
+  cette année, jusqu'au 31 décembre. On en sort au 1er janvier qui suit […]. Au RSPM (13,5 % jusqu'à
+  19 000 €, 21,2 % au-delà), tu garderais X € par an, contre Y € en PAMC. » puis le verdict (« Le
+  RSPM te laisserait Z € de plus par an. », « Le PAMC te laisse Z € de plus par an. », « Les deux se
+  valent, à Z € près. ») et « Pour voir ce calcul en détail, choisis RSPM avec « Modifier ». ». Le
+  calcul au RSPM est local : il arrive avec le résultat, rien ne bouge après coup. Exemples :
+  70 000 € de recettes et 5 000 € de charges, 44 502 € au RSPM contre 40 734 € en PAMC ; 25 000 € et
+  2 000 €, 19 006 € contre 15 100 € ; « Jeune remplaçant » (1re année, sans complémentaire en
+  PAMC), 29 358 € contre 28 849 € : les deux se valent. Pas de fiche pour un médecin installé, ni
+  quand le régime social est choisi à la main.
+- **« Quand et comment tu paies »** (`PaymentExplanation.tsx`) :
+  - une **frise** sous le principe, « Ce que tu gagnes en 2026 finit de se payer en 2027 » (« Tes
+    paiements, de 2026 à 2027 » quand rien ne se rattrape) : l'année simulée et la suivante, une
+    rangée par destinataire, douze cases par an. Bleu clair : prélèvement habituel ; bleu foncé :
+    avec le rattrapage de l'année (Urssaf de juin à décembre de l'année suivante, après la
+    déclaration ; CARMF au solde d'août ; impôt de septembre à décembre) ; case vide : rien (CARMF
+    hors février et août ; impôt la première année, et de janvier à août la deuxième). Jamais de
+    jaune dans un graphique (DA). Initiales des mois à partir de 640 px. La frise redit en image ce
+    que disent les lignes : elle est masquée aux lecteurs d'écran ;
+  - **ce qui est dû** à chacun, à côté de son nom : « Urssaf — 4 787 € pour 2026 », les montants du
+    détail des régimes ;
+  - **« Un exemple, avec tes chiffres »** (PAMC, hors premières années ; `calculerExempleRattrapage`,
+    un appel au modèle de l'Urssaf à l'ouverture du pli, gardé en mémoire) : « Si tu gagnais 20 % de
+    moins en 2024 et en 2025 (56 000 € de recettes), tes prélèvements de 2026 partent de ces
+    revenus-là. En 2027, il te reste à payer la différence : » puis un calcul ligne à ligne, Urssaf
+    934 €, CARMF, retraite de base 781 €, Impôt 2 772 €, et la ligne qui ressort, « Rattrapage en
+    2027 : 4 487 € ». C'est l'écart entre ce qui est dû à ces revenus et le même calcul à 80 % des
+    recettes et des charges ; seule la retraite de base de la CARMF y entre (la complémentaire et
+    l'ASV ne se régularisent pas). Les lignes gardent leur place pendant le calcul (« … € ») ; pas
+    de ligne d'impôt quand il est nul ;
+  - **deuxième année d'activité**, impôt : le texte disait à tort que les acomptes de janvier à août
+    suivent le revenu d'il y a deux ans (il n'y en avait pas). Désormais : « Aucun acompte de janvier
+    à août 2026 : tu n'avais pas de revenu libéral en 2024. Ils démarrent en septembre, le 15 de
+    chaque mois. » et « De septembre à décembre 2026, tes acomptes suivent ton revenu de 2025, et le
+    solde de ton impôt de 2025 est prélevé en même temps. Ton impôt de 2026 se régularise à l'été
+    2027, après ta déclaration : un reste à payer est prélevé à partir de septembre (en quatre fois,
+    jusqu'en décembre, au-delà de 300 €). »
+
+Archivés (textes d'avant) : repère « Seuil du RSPM — L'offre simplifiée des remplaçants, sur leurs
+rétrocessions : 13,5 % de cotisations, 21,2 % au-delà. » ; résumé « Régime social : PAMC (le RSPM
+s'arrête à 19 000 € de recettes) » ; bulles « Tu peux opter pour le RSPM jusqu'à 19 000 € de
+recettes », « Ouvert jusqu'à 19 000 €/an d'honoraires ; perdu après deux années de suite au-dessus
+de 19 000 € ou une seule au-dessus de 38 000 €. », « Déjà au RSPM entre 19 000 et 38 000 € ?
+Choisis RSPM. » ; FAQ « Déjà au RSPM et entre 19 000 et 38 000 € ? Choisis-le à la main. ».
+
+**Relevé au passage, non modifié.** Le dépliant de la CARMF « Remplaçants régulateurs RSPM », édition
+de février 2026, et la page de l'Urssaf donnent l'invalidité-décès du RSPM à 158 € (25 %) et 631 €
+(100 %) ; le simulateur garde 157 € et 626 € (décision du propriétaire, § 9.fr). Le même dépliant
+donne ce que chaque niveau couvre (indemnités journalières à partir du 91e jour : 16,46 € ou
+65,84 € ; rente d'invalidité : 5 915,50 € ou 23 662 € par an ; indemnité décès : 17 875 € ou
+71 500 €) : proposé au propriétaire pour la bulle du choix.
+
+**Contrôles.** Chromium à 390 et 1 280 px, cinq situations (70 000/5 000 ; 25 000/2 000 ; RSPM
+15 000/1 000 ; « Jeune remplaçant », 1re année ; « Installé généraliste ») : fiche miroir présente
+pour les remplaçants en PAMC, absente pour l'installé, son PAMC égal à la meilleure tuile et son
+écart égal à la différence des deux montants ; règle de sortie dans les deux fiches ; résumé ;
+frise de 24 cases par rangée, sans débordement (cases de 6,8 px à 390 px, 35,8 px à 1 280 px) ;
+total de l'exemple égal à la somme de ses lignes ; le pli ne change pas de hauteur à l'arrivée de
+l'exemple. Essais des § 9.gd à 9.gn repassés (scripts mis à jour pour la fiche miroir et le résumé).
+WebKitGTK à 1 300 et 390 px : frise, fiche miroir, exemple, aucun débordement (le filet du total y
+fait 1 px). `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparées à la production,
+les 71 autres pages du build sont identiques.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

@@ -769,6 +769,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   PAMC, « Total des cotisations » sous Urssaf et CARMF (somme des montants affichés, `parts`).
   RID au RSPM : 25 % par défaut, comme le simulateur de l'Urssaf (le médecin choisit à son premier
   paiement de l'année).
+  Règle entière (§ 9.go) : un chiffre ou un seuil ne s'affiche jamais sans le reste de sa règle
+  (le propriétaire : « red flag », le lecteur croit qu'on ne la connaît pas). RSPM : entrée jusqu'à
+  19 000 € (CSS D642-4-1) ; sortie au 1er janvier qui suit une année au-dessus de 38 000 €, ou la
+  deuxième de suite au-dessus de 19 000 €, et l'on y reste jusqu'au 31 décembre de l'année du
+  dépassement (urssaf.fr ; la sortie n'est dans aucun article du code). Ne pas écrire « le RSPM
+  s'arrête à 19 000 € ». Un remplaçant en mode Auto au-dessus de 19 000 € voit la fiche miroir
+  « PAMC ou RSPM ? » (`comparison.alternativeRspm`, calcul local, rendu avec le résultat).
+  Pli « Quand et comment tu paies » (§ 9.go) : frise de deux années (`cases` de chaque ligne :
+  0 rien, 1 prélèvement habituel, 2 avec le rattrapage ; pas de jaune), montant dû par
+  destinataire, et « Un exemple, avec tes chiffres » (`calculerExempleRattrapage` : revenus plus
+  bas de 20 % les deux années d'avant ; Urssaf, retraite de base de la CARMF et impôt, jamais la
+  complémentaire ni l'ASV, qui ne se régularisent pas). Les lignes de l'exemple sont connues à
+  l'ouverture, seuls les montants arrivent : le pli ne change pas de hauteur.
   Début d'activité et réductions de la CARMF (§ 9.fx). Champ `debutActivite` (`non`, `premiere`,
   `deuxieme` ; l'ancienne situation CARMF `affilie_jeune` vaut `deuxieme`, lue par
   `debutActiviteDe`) : les deux premières années, complémentaire à 0 € et ASV d'ajustement sur la
