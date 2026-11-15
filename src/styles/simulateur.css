@@ -466,6 +466,10 @@
 .sim .sim-rid thead :is(th, td) { border-top: 0; font-weight: var(--tb); color: var(--ink); }
 .sim .sim-rid :is(th, td):first-child { padding-left: 0; text-align: left; white-space: normal; font-weight: var(--tw); text-wrap-style: balance; }
 .sim .sim-rid td { color: var(--ink); font-weight: var(--tb); }
+/* Le choix du niveau (§ 9.gs) : un libellé ne se coupe pas (« 25 % (158 €/an) ») ; quand les deux
+   ne tiennent pas côte à côte (téléphone), le second passe dessous. */
+.sim .sim-rid-choix { flex-wrap: wrap; row-gap: 10px; }
+.sim .sim-rid-choix label { white-space: nowrap; }
 /* « RSPM ou PAMC ? » (§ 9.gh) : sous la conclusion d'une simulation au RSPM, la même saisie en
    PAMC ; « À savoir pour ta situation » : la phrase des 1 000 € et les pistes, une par ligne. */
 .sim .sim-rspm, .sim .sim-a-savoir { display: grid; gap: 10px; }
