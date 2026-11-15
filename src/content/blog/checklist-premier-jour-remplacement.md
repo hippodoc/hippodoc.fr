@@ -2,7 +2,7 @@
 title: "Premier remplacement médical : la checklist du jour J"
 description: "Ton premier remplacement approche ? L'administratif à régler avant, ta carte CPS, l'accès au cabinet, le logiciel, le matériel : la checklist du jour J."
 pubDate: "2025-10-06"
-updatedDate: "2026-09-25"
+updatedDate: "2026-11-15"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Pratique"
@@ -21,7 +21,7 @@ faq:
   - question: "Quels documents emporter pour un remplacement ?"
     answer: "Emporte : **carte CPS/CPF**, **tampon personnel**, **attestation RCP**, **copie du contrat signé**. Vérifie que tu as accès à AmeliPro et à la messagerie sécurisée."
   - question: "Puis-je facturer avec la carte CPS du médecin que je remplace ?"
-    answer: "**Non.** Selon l'Assurance Maladie, le remplaçant ne doit pas se servir de la carte CPS du remplacé. Demande **ta propre carte CPS** à l'Ordre des médecins (elle existe pour les remplaçants et les non-thésés autorisés), et fais configurer le poste du cabinet pour qu'il la reconnaisse."
+    answer: "**Non.** Selon l'Assurance Maladie, le remplaçant ne doit pas se servir de la carte CPS du remplacé. **Ta propre carte CPS** (CPF pour un interne) t'est envoyée après ton enregistrement à l'Ordre des médecins (elle existe pour les remplaçants et les non-thésés autorisés). Fais configurer le poste du cabinet pour qu'il la reconnaisse."
   - question: "Que faire si je ne connais pas le logiciel médical ?"
     answer: "Pas de panique ! Demande au titulaire de te faire une **démo de 30 min** avant le premier jour. Concentre-toi sur : recherche patient, prescription, facturation et télétransmission."
   - question: "Comment gérer les urgences lors d'un remplacement ?"
@@ -37,7 +37,7 @@ relatedArticles:
 **L'essentiel**
 
 - Avant le jour J : **licence à jour**, **contrat signé**, **Ordre prévenu** par le remplacé, **RCP** active.
-- Facture avec **ta propre carte CPS**, jamais celle du remplacé : demande-la à l'Ordre et fais configurer le poste.
+- Facture avec **ta propre carte CPS**, jamais celle du remplacé : elle arrive après ton enregistrement à l'Ordre ; fais configurer le poste.
 - Récupère **clés, codes, identifiants** et une **démo du logiciel** avant ton premier patient.
 - Note les **numéros utiles** : remplacé, correspondants, urgences, pharmacie de garde.
 :::
@@ -83,7 +83,7 @@ relatedArticles:
 ## 💰 Facturation fluide
 
 ✅ **Lecteur de carte Vitale testé** avec ta CPS/CPF (code précieusement noté !).\
-⚠️ **Jamais la carte CPS du remplacé :** l'Assurance Maladie l'interdit. Ta propre carte se demande à l'Ordre des médecins, et le poste du cabinet doit être configuré pour la reconnaître — à faire **avant** le jour J.\
+⚠️ **Jamais la carte CPS du remplacé :** l'Assurance Maladie l'interdit. Ta propre carte t'est envoyée après ton enregistrement à l'Ordre des médecins, et le poste du cabinet doit être configuré pour la reconnaître — à faire **avant** le jour J.\
 ✅ **Feuilles de soins papier :** Prévues en cas de problème technique.\
 ✅ **Modes de paiement :** Clarifie ce point essentiel (TPE, chèques, espèces).
 

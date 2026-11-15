@@ -15025,12 +15025,53 @@ mot pour mot (au lieu de 6), 35 pages, date « À jour au 15 novembre 2026 » (`
 couverture, trois aperçus (p. 4, 15, 29) et image de partage (gabarit « bannière » de la DA)
 refaits. `apercu-6-regles.png` devient `apercu-7-regles.png`.
 
-**À trancher par le propriétaire** : le mot-clé des kits (« commente le mot indiqué » : le guide
-ne cite aucun mot) ; l'ordre de citation du CGI sur la facture en 2027 (la TVA passe au CIBS, le
-CGI reste citable jusqu'au 30 juin 2028). La phrase « signale-lui chaque rempla » (CPAM) est
-gardée : la convention ne prévoit qu'un enregistrement, mais ameli, l'ARS et des caisses
-demandent chaque période (le juriste a retiré son point à la repasse). Les pages qui citent
-ameli.fr sont à relire à la main : le site refuse les lectures automatiques.
+**Tranché** (le propriétaire, le 15 novembre 2026 : « est-ce que je peux te laisser trancher ce
+qui te paraît le plus cohérent ? ») :
+- Mot-clé des kits : « commente le mot indiqué », gardé. Chaque fiche a son propre mot : un mot
+  fixe dans le guide serait faux pour toutes les autres.
+- Phrases tirées d'ameli.fr (inscription à la CPAM, carte CPS, indemnités) : gardées. ameli.fr et
+  esante.gouv.fr refusent les lectures automatiques ; chaque phrase est recoupée par au moins deux
+  autres sources (ARS, Ordre, MACSF, CARMF), et le juriste les a validées à la repasse. « Signale-lui
+  chaque rempla » (CPAM) : la convention ne prévoit qu'un enregistrement, mais ameli, l'ARS et des
+  caisses demandent chaque période.
+- CGI cité sur la facture : gardé (la TVA passe au CIBS en 2027 ; les références au CGI restent
+  admises sur les factures jusqu'au 30 juin 2028).
+- Les quatre articles du blog qui contredisaient le guide sont corrigés (§ 9.hb).
+
+### 9.hb Contenu modifié : quatre articles alignés sur le guide du remplaçant (15 novembre 2026)
+
+**Correction factuelle**, décidée par le propriétaire (« laisse-moi trancher », § 9.ha). La
+vérification du guide (`outils/guide-remplacant/verification/`) a trouvé quatre articles qui le
+contredisaient. Texte modifié au plus court, `updatedDate` au 15 novembre 2026 (reportée dans
+`blog-meta.json`, sauf `tout-comprendre-carmf`, déjà à cette date).
+
+- **`generer-facture-remplacement`** : la facture de rétrocession était présentée comme portant
+  des « mentions obligatoires ». Or le code des impôts dispense de facturer les opérations
+  exonérées au titre de l'article 261 (CGI, art. 289, I-1-a ; BOI-TVA-DECLA-30-20-10-10, § 10).
+  Les mentions restent celles d'une facture complète. Changements :
+  - la question de la FAQ devient « Que doit contenir une facture de remplacement ? » ; sa
+    réponse s'ouvre sur la nuance ;
+  - la nuance est ajoutée au point de « L'essentiel » et à la phrase qui introduit la liste ;
+  - les sources gagnent l'article 289 et la fiche du BOFiP ; la ligne sur l'article 242
+    nonies A ne dit plus « référence obligatoire ».
+  Même nuance que la page 13 du guide, relue par le fiscaliste.
+- **`tout-comprendre-carmf`** : « n'est pas rétroactive » et « non rétroactive » sont retirés
+  (FAQ et astuces). La page de la CARMF (« Qui cotise à la CARMF ? », lue le 15 novembre 2026)
+  dit seulement que la dispense « n'est pas automatique et doit être demandée ». Aucune source ne
+  parle de rétroactivité.
+- **`checklist-administrative-medecin-remplacant`** : la CPAM, « dès ton tout premier
+  remplacement », devient « **avant** ton tout premier remplacement, auprès de la CPAM de ton lieu
+  de résidence » (PAPS des ARS, « Effectuer des remplacements » : « L'inscription à la Caisse
+  Primaire d'Assurance Maladie de votre lieu de résidence est obligatoire »). Source ajoutée.
+- **`checklist-premier-jour-remplacement`** : « demande ta carte CPS à l'Ordre » devient « ta
+  propre carte CPS (CPF pour un interne) t'est envoyée après ton enregistrement à l'Ordre »
+  (trois passages : FAQ, « L'essentiel », liste du jour J). L'article contredisait
+  `checklist-administrative`. Les deux disent désormais ce que disent ensemble ameli (« adressez-vous
+  à l'Ordre des médecins ») et l'Agence du numérique en santé (l'enregistrement à l'Ordre donne le
+  numéro RPPS, et la carte est attribuée automatiquement). Ces deux citations viennent d'extraits
+  de moteur de recherche : leurs pages refusent les lectures automatiques.
+
+Les titres, adresses et affiches ne changent pas. La FAQ garde son nombre de questions.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
