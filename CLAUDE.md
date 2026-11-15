@@ -148,7 +148,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
     survol, l'anneau de focus tracé à l'intérieur (`outline-offset` négatif, sinon la
     feuille le rogne). `.qa` (da.css) reste une fiche, partagée avec `/faq` et les plis
     des tarifs : les règles de la feuille des questions sont dans `Questions.astro`
-    (recopiées dans `tarifs.astro` pour les questions de `/tarifs`, § 9.gp).
+    (recopiées dans `tarifs.astro` pour les questions de `/tarifs`, § 9.gs).
   - Les règles communes aux feuilles de l'accueil (remplissage 44 et 72 px sous 560 px,
     60 et 92 px de 560 à 899 px, 76 et 112 px à partir de 900 px, chapô en 17 px sur
     téléphone, marge sous l'en-tête 22, 30 et 36 px) sont répétées dans le `<style>` de
@@ -206,7 +206,7 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `<style>` (`Mascotte.astro`) : partagé, ce style sort de la feuille de l'accueil et
   change son HTML. Période d'observation SEO : texte, titres, liens et JSON-LD d'une page
   rhabillée se prouvent identiques au build de `main`, par script.
-- **`/tarifs`** (§ 9.gp) est la version dépliée du bloc tarifs de l'accueil
+- **`/tarifs`** (§ 9.gs) est la version dépliée du bloc tarifs de l'accueil
   (`accueil/Tarifs.astro`) : mêmes offres, même ordre (annuel, mensuel, internes), mêmes
   libellés, un seul signal sur l'annuel (le surlignage jaune). Un prix, une offre ou un
   libellé de bouton changent aux deux endroits, et dans `title`, `description`, la FAQ de la
@@ -385,7 +385,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Blog
 
-- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (48 articles au 10 novembre 2026), schéma dans
+- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (49 articles au 15 novembre 2026), schéma dans
   `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL), avec
   son `theme` (obligatoire : sans lui, ou avec un thème inconnu, la construction s'arrête ;
   voir « Thèmes », plus bas). Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
@@ -777,7 +777,24 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   solde avant fin août) se relisent dans son appel de chaque année. Détail des régimes : en
   PAMC, « Total des cotisations » sous Urssaf et CARMF (somme des montants affichés, `parts`).
   RID au RSPM : 25 % par défaut, comme le simulateur de l'Urssaf (le médecin choisit à son premier
-  paiement de l'année).
+  paiement de l'année). Montants (§ 9.gp) : 158 € à 25 %, 631 € à 100 % (urssaf.fr, « Le service
+  simplifié pour les médecins » ; CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM »),
+  pas le quart et le plein du minimum du régime classique (626 € en 2026). La bulle du choix
+  (`sim-rid`) donne ce que chaque niveau couvre (indemnités par jour d'arrêt, rente, indemnité
+  décès) : chiffres de ce dépliant, à relire chaque année avec les montants, ici et dans les quatre
+  articles qui les citent (`rspm-exemples-concrets`, `guide-impots-internes-remplacants`,
+  `tout-comprendre-carmf`, `tout-comprendre-urssaf`).
+  Estimation des revenus (§ 9.gp) : l'Urssaf recalcule les cotisations de l'année sur une
+  estimation, sur demande (« Documents et démarches », « Réévaluer vos cotisations ») ; la loi en
+  vigueur (CSS L131-6-2) ne prévoit plus de majoration pour une estimation trop basse, ne pas le
+  récrire ; la « modulation des cotisations » n'est pas ouverte aux praticiens. Le montant à saisir
+  dans ce formulaire ne s'affiche pas tant qu'une source ne dit pas s'il s'entend avant ou après
+  l'abattement de 26 %.
+  Ligne de confiance (§ 9.gp) : sous les repères, « Barèmes 2026 vérifiés le … sur les sources
+  officielles » et quatre liens. La date est `SIMULATEUR_LAST_UPDATED_ISO`
+  (`src/lib/pages-lastmod.ts` ; aussi le `lastmod` de `/simulateur` et le `dateModified` de son
+  JSON-LD) : elle ne se relève qu'après avoir relu les barèmes sur ces sources et lancé
+  `controle-modele-urssaf.mjs`, jamais pour un habillage.
   Règle entière (§ 9.go) : un chiffre ou un seuil ne s'affiche jamais sans le reste de sa règle
   (le propriétaire : « red flag », le lecteur croit qu'on ne la connaît pas). RSPM : entrée jusqu'à
   19 000 € (CSS D642-4-1) ; sortie au 1er janvier qui suit une année au-dessus de 38 000 €, ou la
@@ -851,7 +868,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (72 pages au 14 novembre 2026, dont 70 dans le sitemap : une de plus par
+1. `npm run build` (73 pages au 15 novembre 2026, dont 71 dans le sitemap : une de plus par
    nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).

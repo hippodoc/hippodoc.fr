@@ -26,6 +26,7 @@ faq:
   - question: "Quels sont les avantages du remplacement libéral ?"
     answer: "Le remplacement libéral offre : **flexibilité totale** du planning, **rémunération attractive** (70-90% des honoraires en médecine générale, 60-70% avec plateau technique), formation variée, pas de gestion de cabinet, et liberté géographique."
 relatedArticles:
+  - "aides-installation-medecin-2026"
   - "salariat-vs-liberal"
   - "remplacement-salarie-guide-complet"
   - "regime-fiscal-micro-bnc-vs-reel"

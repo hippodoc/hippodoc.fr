@@ -2,7 +2,7 @@
 title: "Tout comprendre sur l'URSSAF"
 description: "L'URSSAF reste un mystère ? Fiche claire et pratique pour comprendre et gérer tes cotisations dès tes premiers remplacements."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-25"
+updatedDate: "2026-11-15"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Fiche Fiscalité"
@@ -67,7 +67,7 @@ Il existe deux régimes sociaux pour les médecins remplaçants : le **Régime S
 
 👉 **Pour qui ?** Médecins remplaçants et étudiants qui ne font que des remplacements, avec un chiffre d'affaires (CA) annuel **jusqu'à 19 000 €** pour y entrer.\
 📈 **Cotisations** : **13,5%** pour un CA jusqu'à 19 000 € par an, et **21,2%** pour la tranche de CA entre 19 000 € et 38 000 €.\
-🛡 **Invalidité-Décès** : **157 €/an** pour une couverture à 25% ou **626 €/an** pour une couverture à 100% (barème [CARMF](/blog/tout-comprendre-carmf) 2026).\
+🛡 **Invalidité-Décès** : **158 €/an** pour une couverture à 25% ou **631 €/an** pour une couverture à 100% (montants 2026 de l'offre simplifiée ; voir la [CARMF](/blog/tout-comprendre-carmf)).\
 🌐 **Déclaration simplifiée** sur le [portail RSPM](https://entreprendre.service-public.gouv.fr/vosdroits/R63763) — réservé aux remplacements exclusifs.\
 📌 **Exemples pratiques** :\
 • CA annuel de **18 000 €** ➡ Cotisations ≈ **2 430 €/an** (18 000 € x 13,5%).\
@@ -146,5 +146,5 @@ Avec **Hippodoc**, tu peux suivre en temps réel ton revenu réel (**« super-ne
 • Déclaration de début d'activité dans les 8 jours : [entreprendre.service-public.gouv.fr, fiche F36740](https://entreprendre.service-public.gouv.fr/vosdroits/F36740).\
 • RSPM, conditions et portail : [urssaf.fr, « L'offre simplifiée médecins remplaçants »](https://www.urssaf.fr/accueil/services/services-independants/offre-medecin-remplacant.html) ; taux de 13,5 % et 21,2 % : Code de la sécurité sociale, [art. D. 642-4-2](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656695) et [art. D. 642-4-3](https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043656684).\
 • Réforme de l'assiette et abattement de 26 % : [urssaf.fr, « Réforme de l'assiette sociale et du barème des cotisations »](https://www.urssaf.fr/accueil/independant/comprendre-payer-cotisations/reforme-cotisations-independants.html).\
-• Invalidité-décès au RSPM : [carmf.fr, « Vos cotisations en cours d'activité »](https://www.carmf.fr/page.php?page=cdrom/coti/coti-cours.htm) (classe à 626 € en 2026).\
+• Invalidité-décès au RSPM (158 € ou 631 €) : urssaf.fr, page citée (mise à jour le 13 novembre 2026), et CARMF, dépliant « [Remplaçants, régulateurs adhérents au RSPM](https://www.carmf.fr/doc/documents/depliants/remplacants.pdf) », édition 2026.\
 • Contacts : [urssaf.fr, « Vos contacts pour l'offre simplifiée médecin remplaçant »](https://www.urssaf.fr/accueil/contacter-urssaf/pam-medecin-remplacant.html).

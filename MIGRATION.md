@@ -14117,7 +14117,233 @@ WebKitGTK à 1 300 et 390 px : frise, fiche miroir, exemple, aucun débordement 
 fait 1 px). `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparées à la production,
 les 71 autres pages du build sont identiques.
 
-### 9.gp `/tarifs` refaite : la grammaire de l'accueil, chaque chose dite une fois (15 novembre 2026)
+### 9.gp Simulateur : l'invalidité-décès du RSPM à 158 € et 631 €, ce qu'elle couvre, et une ligne de confiance (15 novembre 2026)
+
+Après § 9.go et l'avis rendu sur le simulateur d'un concurrent, trois propositions faites au
+propriétaire, qui a répondu « Go pour les trois, je te fais confiance » : passer l'invalidité-décès
+du RSPM à 158 € et 631 € ; dire dans la bulle du choix ce que chaque niveau couvre ; creuser le
+montant à déclarer à l'Urssaf pour faire recalculer ses cotisations, et poser une ligne de confiance
+(date de vérification des barèmes et sources).
+
+**1. Invalidité-décès du RSPM : 158 € (25 %) et 631 € (100 %).** Le simulateur et quatre articles
+disaient 157 € et 626 € (§ 9.fr : le quart et le plein de la cotisation minimale du régime classique
+en 2026, 626 €). Deux documents officiels de 2026 donnent autre chose pour l'offre simplifiée, et
+aucun ne donne 157 € :
+- urssaf.fr, « Le service simplifié pour les médecins », mise à jour le 13 novembre 2026 : « Lors de
+  votre première déclaration, une cotisation annuelle forfaitaire RID de 158 € ou 631 € sera
+  ajoutée. » ;
+- CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM », édition de février 2026 : mêmes
+  montants, et les prestations de chaque niveau.
+
+Le régime classique, lui, reste à 626 € au minimum en 2026 (carmf.fr, « Vos cotisations en cours
+d'activité », relue ce jour) : l'écart de 5 € entre les deux est celui des documents, il n'est pas
+corrigé ici. Effet sur un résultat au RSPM : 1 € de cotisations de plus par an à 25 %, 5 € à 100 %
+(15 000 € de recettes : 2 183 € au lieu de 2 182 €).
+Modifié : `useRspmCalculation.ts` (631 et 158) ; `SimulateurForm.tsx` (libellés « 25% (158€/an) »,
+« 100% (631€/an) », phrase de la dispense « elle reste obligatoire (158 € ou 631 € par an selon le
+taux ci-dessous) ») ; mode d'emploi de la page (plus bas) ; quatre articles (« Contenu modifié »).
+
+**2. La bulle du choix dit ce que chaque niveau couvre.** Bulle « Cotisation RID »
+(`SimulateurForm.tsx`, classe `sim-rid` dans `simulateur.css`) : un tableau de trois colonnes,
+chiffres du dépliant de la CARMF cité, prestations 2026 pour un médecin de moins de 62 ans :
+
+| | À 25 % | À 100 % |
+|---|---|---|
+| Cotisation par an | 158 € | 631 € |
+| Arrêt de travail, par jour à partir du 91e | 16,46 € | 65,84 € |
+| Invalidité totale, rente par an | 5 915,50 € | 23 662 € |
+| Décès, indemnité | 17 875 € | 71 500 € |
+
+puis « Prestations 2026 de la CARMF pour un médecin de moins de 62 ans. Tu choisis ton niveau à ta
+première déclaration de l'année. » Le conseil « 100% recommandé si tu as des enfants ou un emprunt
+immobilier. » est gardé. Textes remplacés, archivés : « Assurance obligatoire dès que tu es affilié
+à la CARMF. Te couvre en cas d'invalidité ou de décès (capital versé aux ayants droit). » (devient
+« Assurance obligatoire dès que tu es affilié à la CARMF. Elle te couvre en cas d'arrêt de travail
+long, d'invalidité ou de décès. ») ; « 25% = couverture minimale → 157€/an », « 100% = couverture
+complète → 626€/an ». Mode d'emploi, « Taux RID », avant : « Au RSPM, l'invalidité-décès peut être
+cotisée à 25 % (couverture minimale, 157 €) ou à 100 % (couverture complète, 626 €). Par défaut, le
+simulateur retient 25 %. » ; après : « Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an)
+ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par
+jour à partir du 91e jour. Par défaut, le simulateur retient 25 %. » Ces prestations se relisent
+dans le dépliant de chaque année.
+
+**3. Une erreur corrigée dans le pli « Quand et comment tu paies ».** Depuis § 9.gn (en ligne du
+15 novembre 2026, § 9.gn puis § 9.go), l'astuce disait : « Revenus qui changent beaucoup ? L'Urssaf
+et la CARMF (retraite de base) calculent tes cotisations sur ton revenu estimé de l'année, si tu le
+demandes (une estimation trop basse peut être majorée), et tu peux moduler tes acomptes d'impôt. »
+La parenthèse était fausse : l'article L131-6-2 du code de la sécurité sociale, dans sa version en
+vigueur (depuis le 28 décembre 2023), prévoit le calcul « sur la base de l'assiette de cotisations
+estimée pour l'année en cours », sur demande, et ne prévoit plus de majoration quand l'estimation
+se révèle trop basse. Nouvelle astuce : « Revenus qui changent beaucoup ? L'Urssaf recalcule tes
+cotisations de l'année sur une estimation de tes revenus, si tu le demandes dans ton espace en
+ligne (« Documents et démarches », puis « Réévaluer vos cotisations ») ; la CARMF fait de même pour
+ta retraite de base, sur demande. Et tu peux moduler tes acomptes d'impôt. » Le chemin est celui
+de l'Urssaf (« Comment adapter le montant de vos cotisations ? », mise à jour le 9 avril 2026). La
+« modulation des cotisations » que l'Urssaf propose aux artisans et commerçants n'est pas ouverte
+aux praticiens : le mot n'est pas employé pour les cotisations.
+
+**Le montant à saisir n'est pas affiché.** L'idée était de donner au médecin le chiffre à recopier
+dans le formulaire de l'Urssaf. Le champ s'appelle « Revenus estimés » ; aucun texte officiel
+lisible sans compte ne dit s'il s'entend avant ou après l'abattement de 26 % de la nouvelle
+assiette (la loi dit « assiette de cotisations estimée »). Un chiffre faux d'un quart serait pire
+que pas de chiffre : rien n'est affiché tant que l'aide dépliée du formulaire n'a pas été lue (une
+capture d'écran de l'espace du propriétaire suffirait).
+
+**4. Ligne de confiance.** Sous les six repères de `/simulateur` : « Barèmes 2026 vérifiés le
+15 novembre 2026 sur les sources officielles : Urssaf, CARMF, Service-Public, Légifrance. »
+(quatre liens : taux des cotisations des praticiens, cotisations de la CARMF, barème de l'impôt,
+article D642-4-1 du code de la sécurité sociale). La date vient de `SIMULATEUR_LAST_UPDATED_ISO`
+(`src/lib/pages-lastmod.ts`), qui donne aussi à `/simulateur` son `lastmod` dans le sitemap (la page
+n'en avait pas) et le `dateModified` de son JSON-LD `WebApplication`. Elle se relève quand un
+barème ou une règle du simulateur est revérifié, jamais pour un habillage. Relu ce jour pour la
+porter : urssaf.fr, taux des praticiens (page du 20 mars 2026 : CSG-CRDS 9,70 %, CURPS 0,50 % dans
+la limite de 240 €, CFP 0,25 % du plafond, barème maladie) ; carmf.fr (base 8,73 % jusqu'à
+48 060 € puis 1,87 %, complémentaire 11,80 %, invalidité-décès de 626 € à 1 010 €) ;
+service-public.fr, fiche F1419, vérifiée le 12 novembre 2026 (tranches à 11 600, 29 579, 84 577 et
+181 917 €) ; Légifrance, D642-4-1 en vigueur ; `node scripts/controle-modele-urssaf.mjs` sans
+écart. Tout concorde avec le code.
+
+**Contenu modifié** (quatre articles, `updatedDate` et `blog-meta.json` au 15 novembre 2026 ;
+adresses inchangées) :
+- `rspm-exemples-concrets` : « **+ RID** (invalidité-décès) forfaitaire : **157 €** (25 %) ou
+  **626 €** (100 %) — barème CARMF 2026 » devient « … **158 €** (25 %) ou **631 €** (100 %) —
+  montants 2026 de l'offre simplifiée » ; hypothèses « RID = 25 % (158 €) » ; exemple à 19 000 € :
+  total des cotisations 2 723 € (2 722 €), net et Super-Net 16 277 € (16 278 €) ; exemple à
+  38 000 € : total 6 751 € (6 750 €), net 31 249 € (31 250 €), Super-Net ≈ 29 992 € (≈ 29 993 €) ;
+  tableau comparatif 2 723 € et 6 751 € (gains arrondis inchangés, ≈ 4 220 € et ≈ 4 190 €) ; réponse
+  de FAQ « cotisations 2 723 € (14,3 %) […] Super-Net 16 277 € » ; sources : la sortie du
+  dispositif cite l'Urssaf (« Sortie du service ») au lieu de la « section des art. D. 642-4-x »,
+  où elle n'est pas (§ 9.go) ; « Invalidité-décès : barème CARMF 2026, classe A à 626 € ; l'option
+  à 25 % en est le quart. » devient « Invalidité-décès de l'offre simplifiée : 158 € ou 631 €
+  (URSSAF, page citée, mise à jour le 13 novembre 2026 ; CARMF, dépliant « Remplaçants, régulateurs
+  adhérents au RSPM », édition 2026). »
+- `guide-impots-internes-remplacants` : « **157 €** pour une couverture à 25 % », « **626 €** pour
+  une couverture à 100 % » deviennent 158 € et 631 € ; source « Invalidité-décès de l'offre
+  simplifiée (157 € ou 626 €) : barème CARMF 2026, carmf.fr. » remplacée par l'Urssaf (page citée)
+  et le dépliant de la CARMF.
+- `tout-comprendre-carmf` : « Au RSPM : un forfait que tu choisis, **157 €** (couverture à 25 %) ou
+  **626 €** (couverture complète). » devient 158 € et 631 € ; même correction dans la réponse de FAQ
+  (« un forfait au choix : 158 € ou 631 € »). Le régime classique (626 € à 1 010 €) n'est pas touché.
+- `tout-comprendre-urssaf` : « **157 €/an** pour une couverture à 25% ou **626 €/an** pour une
+  couverture à 100% (barème CARMF 2026) » devient « **158 €/an** […] **631 €/an** […] (montants 2026
+  de l'offre simplifiée ; voir la CARMF) » ; source « Invalidité-décès au RSPM : carmf.fr, « Vos
+  cotisations en cours d'activité » (classe à 626 € en 2026). » remplacée par l'Urssaf (page
+  citée) et le dépliant de la CARMF.
+
+**Contrôles.** Chromium à 390 et 1 280 px : au RSPM, 15 000 € de recettes donnent 2 183 € de
+cotisations à 25 % et 2 656 € à 100 % (2 025 € + 158 € ou 631 €) ; libellés ; tableau de la bulle
+lu cellule par cellule ; bulle et tiroir sans débordement à 320, 360, 820 et 1 280 px ; ligne de
+confiance sur deux lignes à partir de 600 px, trois en dessous, aucun lien coupé, de 320 à
+1 440 px ; astuce sans « majorée ». Essais des § 9.gh et 9.go repassés sans erreur. WebKitGTK à
+1 300 px et en cadre de 360 px : mêmes mesures, colonnes alignées. `verify-site.mjs` sans erreur,
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). Comparés à la production : 72 fichiers
+identiques, 7 différents, tous attendus (`/simulateur`, les quatre articles, les deux fichiers du
+sitemap : quatre dates d'articles, et `/simulateur` qui reçoit la sienne).
+
+**Reste ouvert, pour le propriétaire.** Le montant à saisir dans « Réévaluer vos cotisations »
+(avant ou après l'abattement de 26 %) ; l'écart entre l'invalidité-décès du régime classique
+(626 € au minimum) et celle de l'offre simplifiée (631 €), tel que les documents de 2026 le donnent.
+
+### 9.gq Nouvel article : les aides à l'installation en 2026, et article zones FRR corrigé sur les remplaçants (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article` (§ 9.gl), précédent § 9.as.
+
+**Fichier et affiche.** `src/content/blog/aides-installation-medecin-2026.md` ; affiche
+`src/assets/blog/aides-installation-medecin-2026-cover.jpg`, 1 611 × 2 000 (0,8055, portrait),
+réenregistrée sans métadonnées (`sharp`, qualité 90, 445 Ko), empreinte unique dans
+`src/assets/blog/`. Texte lisible, sans faute.
+
+**Thème** : `statut-contrats-revenus`. L'installation est un choix de statut et de cadre
+d'exercice ; l'article prolonge `choix-mode-exercice` et `salariat-vs-liberal`, du même
+thème. (`impots-declarations` se défendait pour la partie fiscale ; l'article FRR y reste.)
+
+**Frontmatter.** `title` « Aides à l'installation médecin : le vrai bilan 2026 » (51 signes,
+`<title>` « … | Hippodoc ») et `description` écrits ici ; `seriesId: "divers"`,
+`episodeNumber: 16` ; `readTime` 29 min (4 576 mots ÷ 160) ; `cta` « Prêt à comparer deux
+communes sur ce qui te reste vraiment ? » + `ctaHref: "/simulateur"` ; FAQ de 6 questions
+écrite ici d'après le texte (`PLANCHER_FAQ` relevé à 59 pages, 398 questions) ;
+`relatedArticles` : zones-frr, micro-BNC ou réel, choix du mode d'exercice, Urssaf, CARMF,
+effet ciseaux.
+
+**Écarts au texte fourni** (le propriétaire a donné « carte blanche » le 15/11 pour le rendre
+cohérent avec le blog et le vérifier) :
+- **tutoiement** partout (le texte vouvoyait) ; titre `#` sorti du corps ; date « Mis à jour
+  le 15 novembre 2026 » (au lieu du 25 octobre) ;
+- ajouts : « L'essentiel » (5 puces), FAQ, deux `:::tip` (l'astuce régime réel, l'encart
+  Hippodoc, lien relatif `/`), sigles définis (ZIP, ZAC, ASV, CFE, URPS, rescrit, 2035,
+  déclaration contrôlée) ; « Sources » devenu `## 📚 Sources (vérifiées au 15 novembre 2026)`,
+  dernier titre, en liste ;
+- **corrections factuelles** après les relectures du standard `hippodoc-exigence` (interne
+  novice, fiscaliste, correcteur, deux passes ; chaque « faux » revérifié) :
+  - recettes hors zone détaillées par cas : ZFRR cabinet fixe (25 %, part hors zone imposée),
+    ZFRR non sédentaire (totale jusqu'à 25 %, proportionnelle au-delà), ZFRR+ (au prorata),
+    quartier prioritaire (BOFiP BOI-BIC-CHAMP-80-10-75-20, § 150 à 230) ;
+  - aide aux créateurs réservée à certains publics depuis 2020, pas « depuis 2026 » (LFSS
+    2020, art. 274) ; demande dans les 60 jours suivant le début d'activité (décret
+    n° 2026-69) ;
+  - revenus forfaitaires des débuts : 9 131 € (19 % du PASS) et 19 224 € pour la maladie
+    (40 %) (entreprendre.service-public.gouv.fr F39739) ;
+  - contrat de début d'exercice (art. L1435-4-2 CSP) : réservé aux remplaçants et étudiants
+    (le texte l'ouvrait aux installés) et en abrogation différée par la LFSS 2026 (Légifrance,
+    statut « ABROGE_DIFF ») ;
+  - PLFSS 2027 : Sénat depuis le 9/11, vote prévu le 18/11, « mission de solidarité
+    territoriale » (PJL Sénat n° 138, art. 21) ; Assemblée : rejet le 23 octobre ;
+  - OBO : flat tax sur la plus-value, bénéfices remontés après IS ;
+  - un remplaçant qui s'installe dans la commune classée où il remplaçait poursuit son
+    activité (BOFiP -30, § 70, ex. 3) ; jamais exonéré et installé ailleurs : la doctrine ne
+    tranche pas nettement, rescrit conseillé.
+
+**Maillage.** Liens posés sur des mots du texte : « zones France ruralités revitalisation » →
+`/blog/zones-frr-exoneration-impot-medecin`, « micro-BNC » → `/blog/regime-fiscal-micro-bnc-vs-reel`,
+« ton Super-Net » → `/simulateur`. Entrant dans le texte : l'article FRR (plus bas). Entrant par `relatedArticles`
+(en tête) : `choix-mode-exercice`, `salariat-vs-liberal`,
+`remplacement-regulier-requalification`, `zones-frr-exoneration-impot-medecin`.
+
+**La une.** `featured: true` retiré de `conge-maternite-paternite` (il y était « à retirer à
+la prochaine publication », § 9.dy) : la une revient au plus récent, cet article. À remettre
+si le propriétaire préfère.
+
+**Correction factuelle de `zones-frr-exoneration-impot-medecin`** (`updatedDate`
+2026-11-15, reportée dans `blog-meta.json`). L'article disait qu'un remplaçant ne peut pas
+bénéficier de l'exonération FRR « en tant que remplaçant » et qu'un collaborateur doit avoir
+une patientèle propre (rescrit ZRR BOI-RES-BIC-000030). C'est dépassé : le BOFiP
+BOI-BIC-CHAMP-80-10-75-30 du 29 juillet 2026 (§ 220 et 230) admet remplaçants et
+collaborateurs aux conditions de droit commun, « quels que soient les liens de dépendance »,
+et le § 70 (ex. 3) dit qu'un remplaçant qui s'installe dans la commune classée où il
+remplaçait poursuit son activité, sans nouvelle période. Description, FAQ, puce de
+« L'essentiel », section « Le piège » réécrite (avec un lien dans le texte vers le nouvel
+article) et puce de sources remplacées, accord du propriétaire (« je te fais confiance »).
+
+**Vérifications.** Construction : 73 pages, 71 dans le sitemap, `lastmod` 2026-11-15 ;
+`verify-site.mjs` passe. Feuille commune inchangée (`_astro_assets.BqFlQkaI.css`, comme
+`main`). Pages changées contre `main` : le nouvel article, `/blog`, les pages de thème
+`statut-contrats-revenus` et `impots-declarations` (description de l'article FRR),
+`/qui-sommes-nous`, et les quatre articles du maillage. Lighthouse mobile de l'article : 97
+/ 100 / 100 / 100, CLS 0. Comparaison mot à mot au texte fourni : sans objet (texte remanié
+avec accord, écarts listés ci-dessus).
+⚠️ **Construction locale sur Mac** : la garde de police de l'image de partage
+(`src/lib/image-partage.mjs`, « Hippodoc » à 471 px) arrête la construction, sur `main`
+aussi : le Pango livré avec `sharp` 0.35.3 pour darwin-arm64 ne trouve pas de configuration
+fontconfig, puis ne lit pas la graisse numérique 720. Pour vérifier, la garde a été
+neutralisée le temps de la construction, sans commit ; l'image de partage est à contrôler sur
+l'aperçu Vercel (Linux).
+
+### 9.gr Contenu modifié : mise en forme de `aides-installation-medecin-2026` (15 novembre 2026)
+
+Demande du propriétaire : l'article (§ 9.gq) manquait de repères (9 passages en gras pour
+1 000 mots, contre 16 à 35 dans les autres articles). Pas d'émojis (refus explicite :
+« reste dans notre DA »), seulement ce que la DA du blog rend déjà :
+- **gras** sur les montants, délais et conditions qui décident (43 → 83 passages, 18 pour
+  1 000 mots) ;
+- **trois encadrés `:::warning`** (« Attention ») sur des passages existants, sans mot
+  ajouté : le transfert hors zone qui rend l'impôt exigible, le 1447-C-SD avant le
+  31 décembre, la règle des dix ans des aides des collectivités ;
+- **paragraphes longs coupés** à une frontière de phrase (19 coupes, aucun mot changé) ;
+- **ajout** d'une partie « Avant de signer le bail » (liste numérotée de 7 gestes), avant
+  « En résumé », composée uniquement de règles déjà dites dans l'article.
+Pas d'`updatedDate` : publié le jour même. Construction et `verify-site.mjs` : passent ;
+feuille commune inchangée.
+### 9.gs `/tarifs` refaite : la grammaire de l'accueil, chaque chose dite une fois (15 novembre 2026)
 
 Demande du propriétaire : la page « est un peu en dessous », on peut faire « plus épuré, stylé,
 moderne, attractif, tout en restant dans notre DA […] c'est une page importante ». Avis donné dans

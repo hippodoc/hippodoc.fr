@@ -459,6 +459,13 @@
   .sim .sim-paie-liste dt { flex-direction: column; justify-content: flex-start; gap: 2px; padding-top: 0.2em; }
   .sim .sim-paie-liste dd { margin: 0; }
 }
+/* Bulle du choix de l'invalidité-décès au RSPM (§ 9.gp) : ce que coûte et couvre chaque niveau.
+   Dans une bulle ou un tiroir : trois colonnes serrées, les montants calés à droite. */
+.sim .sim-rid { width: 100%; border-collapse: collapse; font-size: 0.8125rem; line-height: 1.35; color: var(--ink-2); }
+.sim .sim-rid :is(th, td) { padding: 5px 0 5px 10px; border-top: 1px solid var(--line); text-align: right; vertical-align: top; white-space: nowrap; }
+.sim .sim-rid thead :is(th, td) { border-top: 0; font-weight: var(--tb); color: var(--ink); }
+.sim .sim-rid :is(th, td):first-child { padding-left: 0; text-align: left; white-space: normal; font-weight: var(--tw); text-wrap-style: balance; }
+.sim .sim-rid td { color: var(--ink); font-weight: var(--tb); }
 /* « RSPM ou PAMC ? » (§ 9.gh) : sous la conclusion d'une simulation au RSPM, la même saisie en
    PAMC ; « À savoir pour ta situation » : la phrase des 1 000 € et les pistes, une par ligne. */
 .sim .sim-rspm, .sim .sim-a-savoir { display: grid; gap: 10px; }
