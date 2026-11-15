@@ -31,7 +31,8 @@ brut, JSON-LD parsable. Le lancer avant tout commit qui touche aux pages.
   Tout ajout/modification de contenu doit être flaggé dans MIGRATION.md §9.
 - **Zéro JS client hors** : îlots des outils (simulateur, calculette, boussole, carrousel
   blog), PostHog, `ThirdPartyScripts.astro`, le micro-script inline du tiroir mobile
-  (fermeture au clic d'une ancre — voir MIGRATION.md §9 ; rendu une seule fois par page,
+  (fermeture au clic d'une ancre, et à la touche Échap qui rend le focus à la case du
+  menu depuis § 9.gk — voir MIGRATION.md §9 ; rendu une seule fois par page,
   après le pied, par `src/components/ScriptTiroir.astro`, que rend `Footer.astro` ; il ne
   se modifie pas : `verify-site.mjs` en fige l'empreinte), le script inline du lecteur du film de
   l'accueil (`src/components/accueil/Fondateur.astro`, bouton de lecture — MIGRATION.md
@@ -75,7 +76,18 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   Contenu (§ 9.gj, d'après les clics de 90 jours) : menu « Comment ça marche »,
   « Pour qui » (ancres de l'accueil), « Simulateur », « Tarifs » (page /tarifs), puis
   « Ressources » (guide du remplaçant, guide des déclarations, calculette, blog, FAQ :
-  un titre et une ligne d'explication sur ordinateur, le titre seul dans le tiroir).
+  un titre et une ligne d'explication, sur ordinateur comme dans le tiroir).
+  Tiroir (§ 9.gk), sous 960 px : en haut, la copie de la pastille (le mot au même
+  endroit, la croix exactement à la place du bouton du menu, mêmes marges
+  intérieures aux paliers de 340 et 360 px) ; la carte du simulateur (ciel et soleil) ;
+  « Comment ça marche », « Pour qui », « Tarifs » dans une feuille à lignes ; les
+  ressources dans une seconde ; en bas, « Essai gratuit 30 jours » sur toute la largeur
+  et « Déjà un compte ? Se connecter » (sur une ligne quand la fenêtre fait moins de
+  520 px de haut). Sous 600 px, la pastille s'ouvre vers le bas (`clip-path` de la forme
+  de la pastille à la feuille entière, 10 et 12 px de voile autour) ; de 600 à 959 px,
+  un panneau à droite de 400 px au plus. Le milieu défile seul, un fondu au-dessus de la
+  bande du bas le signale ; à 390 × 844, tout tient sans défiler (ne pas l'allonger sans
+  le remesurer).
   Connexion : en toutes lettres à partir de 600 px ; de 360 à 599 px, une pastille ronde
   à l'icône de compte (`landing_login_header_mobile`), la place prise sur les marges de
   360 à 389 px ; sous 360 px, dans le tiroir seulement. De 960 à 1 179 px, écarts de

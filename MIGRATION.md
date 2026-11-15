@@ -13596,6 +13596,71 @@ réseaux, soutiens), trois colonnes, une bande légale.
 **Fichiers** : `src/components/Header.astro`, `src/components/Footer.astro`,
 `src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.gk Le tiroir mobile refait : la pastille qui s'ouvre, le simulateur en carte (15 novembre 2026)
+
+Avis demandé par le propriétaire sur le menu du téléphone (« fais-le, pense à tout »).
+Constat (comparaison avec Indy et Notion, menus ouverts à 390 × 844) : neuf liens de même
+taille et de même graisse, le simulateur (l'outil le plus cliqué) noyé dans la liste, les
+ressources sans les explications de l'ordinateur, 180 px vides au milieu, l'essai et la
+connexion à égalité, un panneau latéral qui laissait voir un morceau de page et de logo.
+
+**Forme** (`Header.astro`, `da.css`) :
+- En haut, la copie exacte de la pastille : mot au même endroit (0 px d'écart mesuré de
+  320 à 599 px), croix exactement à la place du bouton du menu (0 px d'écart de 320 à
+  959 px). Sous 600 px, la feuille part de la forme de la pastille et s'ouvre vers le bas
+  jusqu'à couvrir l'écran (`clip-path`, 420 ms à l'ouverture, 300 à la fermeture,
+  courbe de § 9.do), 10 et 12 px de voile autour ; de 600 à 959 px, un panneau à droite
+  (400 px au plus), qui glisse comme avant.
+- Le milieu : fond de ciel clair (`--sky-soft`) ; la **carte du simulateur** (ciel et
+  soleil, le motif du Super-Net, flèche dans une pastille blanche) ; une feuille à lignes
+  (« Comment ça marche », « Pour qui », « Tarifs ») ; « Ressources » ; une seconde feuille
+  avec les cinq ressources et leur ligne d'explication (le motif des feuilles à lignes de
+  l'accueil : filet entre deux lignes, ligne teintée au toucher, anneau de focus à
+  l'intérieur, chevron dessiné). Il défile seul ; un fondu de 18 px au-dessus de la bande
+  du bas signale qu'il continue (il ne couvre que la marge une fois au bout).
+- En bas : « Essai gratuit 30 jours » sur toute la largeur (« Essai gratuit 30j » avant),
+  puis « Déjà un compte ? Se connecter ». Fenêtre de moins de 520 px de haut (téléphone
+  couché) : l'essai et « Se connecter » sur une ligne, « Déjà un compte ? » lu mais pas
+  affiché.
+- Animation en cascade conservée (cinq groupes ; sous 600 px, ils descendent de 8 px au
+  rythme de l'ouverture). Mouvements réduits : ouvert d'un coup. Contrastes forcés :
+  contours des feuilles et du tiroir, page en cours soulignée.
+
+**Contenu modifié** : la ligne de la carte, « Gratuit, en 2 minutes : ce qu'il te reste
+vraiment » (d'après la page du simulateur : « Renseigne ta situation en 2 min… ce qu'il te
+reste vraiment », titre « gratuit ») ; « Essai gratuit 30 jours » ; « Déjà un compte ? Se
+connecter » ; les explications des ressources (§ 9.gj) entrent dans le tiroir ; « Guide
+du remplaçant (PDF) » y devient « Guide du remplaçant » (l'explication dit « PDF offert »).
+
+**Micro-script du tiroir** (`ScriptTiroir.astro`) : la touche Échap referme le tiroir et
+rend le focus à la case du menu (anneau sur le bouton). Seul ajout ; `EMPREINTE_SCRIPT_TIROIR`
+mis à jour dans `verify-site.mjs` (empreinte d'avant notée en commentaire).
+
+**Mesure** : mêmes `data-ph` et `data-track` (`landing_mobile_nav_*`,
+`landing_mobile_resource_*`, `cta_signup_header_mobile`, `landing_mobile_login`) ; la carte
+garde `landing_mobile_nav_simulateur`. Ordre : carte, trois lignes, cinq ressources, essai,
+connexion (`MESURE_ENTETE_PIED` mis à jour).
+
+**Vérifié** :
+- Construction et `verify-site.mjs` : 0 erreur ; feuille commune : seules des règles de
+  l'en-tête changent (comparaison bloc par bloc avec `main`, y compris l'intérieur des
+  blocs `@media`).
+- Dix tailles (320 × 568, 360 × 740, 375 × 667, 390 × 844, 430 × 932, 568 × 320, 667 × 375,
+  768 × 1024, 820 × 1180, 959 × 700) : rien ne déborde, le bas reste visible, la liste
+  défile quand il le faut ; à 390 × 844 et au-delà, tout tient sans défiler.
+- Clavier : Espace ouvre, Tab entre dans le tiroir, Échap ferme et rend le focus. Une ancre
+  de l'accueil (« Pour qui ») referme le tiroir et mène à la section ; à 768 px, un appui
+  sur le voile le referme. Espacement de texte agrandi (WCAG 1.4.12) à 320 et 390 px :
+  aucun texte hors du tiroir ni sur un chevron.
+- Animation ralentie dix fois (image par image), mouvements réduits, contrastes forcés.
+- WebKit (moteur de Safari) : 320 et 390 px en iframe, 768 px en fenêtre, mêmes mesures.
+- En-tête aux 25 largeurs de § 9.gj, police chargée et bloquée : inchangé, aucun défaut.
+- Lighthouse mobile sur /, /tarifs, un article et /simulateur : 100 dans les quatre
+  catégories.
+
+**Fichiers** : `src/components/Header.astro`, `src/components/ScriptTiroir.astro`,
+`src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
