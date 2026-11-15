@@ -348,7 +348,7 @@ if (!srcsetPrecharge || !srcsetAvif) {
 // - `id="sous-la-surface"` est la cible du lien « Comment ça marche » du menu ;
 // - les cinq vues doivent toutes être dans le HTML (cinq radios, dont une
 //   seule cochée, et cinq panneaux) : une vue générée à la demande ne serait lue
-//   par aucun moteur (vue « déclaration » ajoutée en § 9.fn, « Et aussi » en § 9.ha) ;
+//   par aucun moteur (vue « déclaration » ajoutée en § 9.fn, « Et aussi » en § 9.hd) ;
 // - la mention « Compte de démonstration », exigée jusqu'au 13 novembre 2026, a
 //   été retirée à la demande du propriétaire (§ 9.fn) : plus de contrôle.
 const sousLaSurface = accueil.match(/<section\b[^>]*data-landing-section="features"[\s\S]*?<\/section>/)?.[0] ?? '';

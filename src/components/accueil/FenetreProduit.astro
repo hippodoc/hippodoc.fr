@@ -2,7 +2,7 @@
 /**
  * La fenêtre produit de l'accueil : cinq vues de l'application, à onglets
  * (DA 2026, phase 3, MIGRATION.md § 9 ; vue « déclaration » ajoutée en § 9.fn,
- * vue « Et aussi » en § 9.ha). Zéro JS.
+ * vue « Et aussi » en § 9.hd). Zéro JS.
  *
  * - Onglets : cinq boutons radio dans un <fieldset> (légende masquée à l'œil).
  *   Tab entre dans le groupe, les flèches changent de vue, comme tout groupe de
@@ -10,7 +10,7 @@
  *   Sans `:has()` (navigateurs d'avant fin 2023), la barre d'onglets est retirée
  *   et les cinq vues s'affichent l'une sous l'autre.
  * - Les cinq panneaux sont toujours dans le HTML.
- * - Vue « Et aussi » (§ 9.ha) : les autres outils du compte, rangés comme le
+ * - Vue « Et aussi » (§ 9.hd) : les autres outils du compte, rangés comme le
  *   menu de l'application (AppSidebar de app.hippodoc.fr, relevé le 15 novembre
  *   2026) ; ce que les quatre autres vues montrent déjà n'y est pas. Un outil
  *   ajouté ou retiré de l'application se reporte dans AUSSI. Google Agenda
@@ -342,7 +342,7 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
      (§ 9.fn). Cinq libellés longs ne tiennent sur une ligne qu'à partir de 900 px. */
   @media (max-width: 899px) { .tab { flex: 1 1 auto; padding: 4px 8px; } }
   @media (max-width: 409px) { .tab { padding: 4px 6px; font-size: 14px; } }
-  /* Cinq onglets (§ 9.ha) : sur une ligne, ils ne tiennent qu'à partir de 520 px.
+  /* Cinq onglets (§ 9.hd) : sur une ligne, ils ne tiennent qu'à partir de 520 px.
      En dessous, deux rangées : trois onglets, puis deux plus larges. Les cibles
      gardent 44 px de haut. */
   @media (max-width: 519px) {
@@ -389,7 +389,7 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
   /* Petits téléphones (320 px) : sur la maquette, le troisième onglet, le
      montant encaissé et le Super-Net sortaient de la fenêtre. La jauge s'affine,
      les corps baissent d'un cran (les onglets sont sur deux rangées sous 520 px,
-     § 9.ha : ils n'ont plus de règle propre ici). */
+     § 9.hd : ils n'ont plus de règle propre ici). */
   @media (max-width: 359px) {
     .panel { padding-inline: 14px; }
     .stage-foot { padding-inline: 14px; }
@@ -504,7 +504,7 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
   .decla-sum .v { --corps: clamp(28px, 7vw, 66px); }
   .decla-sum span { font-size: 15px; color: var(--ink-2); }
   /* Le chiffre suit la largeur (7vw) : de 700 à 719 px, il grandissait au point
-     que la vue dépassait les autres de 4 à 6 px (relevé en § 9.ha, présent depuis
+     que la vue dépassait les autres de 4 à 6 px (relevé en § 9.hd, présent depuis
      § 9.fn). Borné à 42 px sous 720 px (sa taille à 600 px). */
   @media (max-width: 719px) { .decla-sum .v { --corps: clamp(28px, 7vw, 42px); } }
   @media (min-width: 720px) { .decla-sum span { font-size: 16px; } }
@@ -542,7 +542,7 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
     .case { min-height: 60px; }
   }
 
-  /* Vue 5 : et aussi (§ 9.ha). Sous 900 px, les outils en pastilles à la suite,
+  /* Vue 5 : et aussi (§ 9.hd). Sous 900 px, les outils en pastilles à la suite,
      sans icône ; le nom des groupes n'est donné qu'aux lecteurs d'écran (sur une
      ligne à lui seul, il allongeait la vue au-delà des quatre autres), comme la
      première ligne de l'en-tête, que l'onglet dit déjà. */

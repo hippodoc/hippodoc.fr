@@ -15214,7 +15214,7 @@ Pas de « Dr » : les signatures validées n'en portent pas.
   - À 1 280 px, deux rangées égales.
 - WebKit non repassé : aucune feuille n'a changé.
 
-### 9.ha Fenêtre produit : un cinquième onglet, « Et aussi » (15 novembre 2026)
+### 9.hd Fenêtre produit : un cinquième onglet, « Et aussi » (15 novembre 2026)
 
 Demande du propriétaire : montrer, dans la fenêtre produit sous le premier écran, ce que le
 compte fait d'autre (« suivi des charges pro, des PDSA, statistiques, génération de contrats,
@@ -15280,9 +15280,9 @@ Point à signaler : la ligne « Planning centralisé avec synchro Google » des 
 quatre autres) ; aucune section ajoutée.
 
 **Vérifications** : `verify-site.mjs` (contrôle de la fenêtre passé à cinq onglets et cinq
-panneaux) sans erreur ; seule `index.html` change dans le build (plus sa feuille et la date
-de `/` dans le sitemap : `ACCUEIL_LAST_UPDATED_ISO` au 15 novembre 2026) ; feuille commune
-inchangée (`_astro_assets.BqFlQkaI.css`). Flèches du clavier sur les cinq onglets, appui
+panneaux) sans erreur, mêmes onze avertissements que `main` ; comparé au build de `main`
+(`2383cf4`), seuls `index.html` et sa feuille changent (`ACCUEIL_LAST_UPDATED_ISO` était déjà
+au 15 novembre 2026) ; feuille commune inchangée (`_astro_assets.BqFlQkaI.css`). Flèches du clavier sur les cinq onglets, appui
 tactile (cible de 165 × 44 px à 390 px), axe-core sans violation à 390 et 1 440 px,
 espacement de texte agrandi (WCAG 1.4.12) sans libellé rogné ni chevauchement. WebKitGTK :
 grille de la barre sur `<fieldset>`, trois colonnes, hauteurs égales à 320, 390, 600, 768,
