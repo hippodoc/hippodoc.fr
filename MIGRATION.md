@@ -14138,7 +14138,7 @@ visiteurs : une direction, pas une preuve) : 39 vues sur 63 arrivent de Google, 
   l'accueil (annuel, mensuel, internes : nom, prix, une ou deux lignes, bouton). Un seul signal sur
   l'annuel, le surlignage jaune de l'accueil. Sous 700 px, les offres Mensuel et Internes sont en
   grille (nom à gauche, prix à droite) ; à 390 × 844 les trois prix sont dans le premier écran (bas
-  du troisième à 803 px), le bouton de l'annuel à 527 px.
+  du troisième à 793 px), le bouton de l'annuel finit à 517 px.
 - **Quatre garanties** sous les offres, hors des plis : l'essai et la carte bancaire, l'engagement
   (mensuel et annuel), la déduction, l'essai de 6 mois des syndicats partenaires. Un dessin au trait
   dans une pastille blanche, un titre, une phrase.
@@ -14163,8 +14163,8 @@ de fin, tout ce qui est hors de `<main>`.
   la description et la première réponse de la FAQ.
 - Chapô : « Hippodoc coûte 29 € par mois sans engagement, ou 19 € par mois en facturation annuelle
   (228 € par an, soit 34 % d'économie). Chaque offre commence par un essai gratuit de 30 jours,
-  avec toutes les fonctionnalités incluses. » devient « Toutes les fonctionnalités dans chaque
-  offre. Seule la période de facturation change. » (d'après la cinquième réponse de la FAQ).
+  avec toutes les fonctionnalités incluses. » devient « Tout est inclus dans chaque offre. Seule
+  la période de facturation change. » (d'après la cinquième réponse de la FAQ).
 - Offres : retirés « Flexible », « Populaire », « −34 % », « 29 € facturés chaque mois », les six
   coches des fiches (« Essai gratuit 30 jours », « Toutes les fonctionnalités incluses »,
   « Résiliable à tout moment », « 10 € d'économie par mois vs mensuel »). « / mois » devient « par
@@ -14190,6 +14190,21 @@ de fin, tout ce qui est hors de `<main>`.
   « Déclarations et compta », « Quotidien du remplaçant », « Entraide, support et données ».
 - Scène de fin : « qui calcule tout pour vous » devient « pour toi » (le site tutoie).
 
+**Téléphone** (demande du propriétaire : « pense aux affichages mobiles »). Huit écrans, au
+doigt (320 × 568, 360 × 640, 375 × 667, 393 × 852, 412 × 915, 430 × 932, 844 × 390 couché,
+768 × 1 024) : aucun débordement, aucune cible sous 44 px, aucun texte sous 13,5 px.
+- À l'arrivée d'un nouveau visiteur, la bannière cookies couvrait le bouton de l'offre annuelle à
+  360 × 640 et 375 × 667. Le haut est resserré sous 560 px (22 px sous la pastille de l'en-tête,
+  comme les feuilles de l'accueil ; chapô sur deux lignes ; le surlignage de l'économie un cran
+  plus petit sous 390 px, sur une ligne jusqu'à 360 px) : le bouton finit à 517 px, la bannière
+  commence à 519 px (360 × 640) et 546 px (375 × 667). À 320 × 568 la bannière le couvre encore
+  (elle commence à 447 px). Ne pas allonger le haut de la page sans le remesurer.
+- Réponses et questions : un nombre et son unité, un mot et sa ponctuation, un guillemet et son
+  mot, un mot à traits d'union tiennent ensemble (`lier`, d'après `nouer` de `src/lib/typo.ts`),
+  sans changer un caractère : « espace « » ne finit plus une ligne, « est-il » ne se coupe plus
+  après « est- » à 320 px. Dans la feuille des questions, qui rogne, ces mots liés sont des blocs
+  en ligne, et un mot plus large qu'elle se coupe (police à 200 %).
+
 **Écart avec l'avis donné.** Le tableau Mensuel / Annuel de l'accueil, annoncé « ouvert ici »,
 n'est pas repris : les fiches et les garanties disent déjà chacune de ses lignes (prix,
 facturation, économie, engagement, essai, fonctionnalités) ; il les aurait redites.
@@ -14206,7 +14221,8 @@ même ligne de base à partir de 1 024 px. Espacement du texte agrandi (WCAG 1.4
 questions (280 à 320 px, inchangée), « fréquentes » dépasse sa colonne avec l'espacement agrandi à
 partir de 960 px. WebKitGTK à 1 300, 1 024 et 820 px, et à 390 et 320 px dans un cadre : mêmes
 mesures qu'avec Chromium (prix alignés, boutons de 54 px sur une ligne, cadre de la mascotte de
-250 × 242 px, titres des garanties sur une ligne, aucun débordement). Lighthouse en local sur `/tarifs` : 100, 100, 100, 100 (CLS 0).
+250 × 242 px, titres des garanties sur une ligne, aucun débordement). Lighthouse en local sur `/tarifs`, deux passages : performance 99 et 100, accessibilité,
+bonnes pratiques et SEO à 100 (CLS 0).
 `verify-site.mjs` sans erreur (égalité FAQ visible / `FAQPage` comprise).
 Comparé au build d'avant : `<head>` identique au nom de la feuille de la page près, JSON-LD
 identique, tout ce qui est hors de `<main>` identique ; feuille commune inchangée

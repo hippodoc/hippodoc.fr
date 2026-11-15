@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.astro';
 import { getImage } from 'astro:assets';
 import presente from '@/assets/accueil/mascotte-f-presente.webp';
 import { SITE_URL, APP_URL, SOFTWARE_APPLICATION_SCHEMA } from '@/lib/site';
+import { echapper, nouer } from '@/lib/typo';
 
 /**
  * NOUVELLE page (n'existe pas dans la SPA source) — cible « hippodoc prix »,
@@ -175,6 +176,20 @@ const breadcrumbSchema = {
 
 const jsonLd = [SOFTWARE_APPLICATION_SCHEMA, faqSchema, breadcrumbSchema];
 
+/* Questions et réponses à l'écran : pas un caractère ne change (le schéma et
+   l'écran restent égaux), mais un nombre et son unité, un mot et la ponctuation
+   qui le suit, un guillemet et son mot, un mot à traits d'union tiennent
+   ensemble (`.num`). Sur téléphone, « espace « » finissait une ligne et
+   « Abonnement » » commençait la suivante ; à 320 px, « est-il » se coupait
+   après « est- ». Dans la feuille des questions, `.num` est un bloc en ligne (il
+   se coupe s'il est plus large que la feuille, qui rogne ce qui dépasse) : la
+   parenthèse qui le précède et le point ou la virgule qui le suivent entrent
+   dedans, sinon ils pourraient rester seuls sur une ligne. */
+const lier = (texte: string) =>
+  nouer(echapper(texte).replace(/[\wÀ-ÿ]+(?:-[\wÀ-ÿ]+)+|\d+ (?:€|%|mois|jours)/g, '<span class="num">$&</span>'))
+    .replace(/\(<span class="num">/g, '<span class="num">(')
+    .replace(/<\/span>([.,;)]+)/g, '$1</span>');
+
 /* La mascotte : mêmes largeurs et mêmes formats que dans accueil/Tarifs.astro,
    donc les mêmes fichiers (aucune image de plus dans le build). */
 const [mascotteAvif, mascotteWebp] = await Promise.all(
@@ -205,7 +220,7 @@ const coche =
                la page (insécable, il la poussait de côté à 320 px avec
                l'espacement du texte agrandi). */}
           <h1 class="aff">Tarifs <span class="num">Hippodoc :</span> <span class="suite">un outil pro, <span class="fin-titre">à un prix humain</span></span></h1>
-          <p class="lead">Toutes les fonctionnalités dans chaque offre. Seule la période de facturation change.</p>
+          <p class="lead">Tout est inclus dans chaque offre. Seule la période de facturation change.</p>
         </header>
 
         {/* Les trois offres, dans l'ordre et au format de l'accueil. */}
@@ -301,10 +316,10 @@ const coche =
           {faqTarifs.map((item) => (
             <details class="qa">
               <summary>
-                <span class="qa-t">{item.question}</span>
+                <span class="qa-t" set:html={lier(item.question)} />
                 <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
               </summary>
-              <div class="qa-in"><p>{item.answer}</p></div>
+              <div class="qa-in"><p set:html={lier(item.answer)} /></div>
             </details>
           ))}
         </div>
@@ -339,6 +354,9 @@ const coche =
 
 <style>
   .num { white-space: nowrap; }
+  /* Dans la feuille des questions, qui rogne : un bloc en ligne passe entier à
+     la ligne suivante, et se coupe s'il est plus large qu'elle (texte grossi). */
+  .liste :global(.num) { display: inline-block; }
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
   /* Le ciel : le bloc passe sous la pastille de l'en-tête, il lui réserve le
@@ -440,7 +458,9 @@ const coche =
   .liste .qa > summary > svg { width: 30px; height: 30px; padding: 6px; }
   .liste .qa > summary:hover > svg { background: var(--sky-1); }
   .liste .qa[open] > summary:hover > svg { background: var(--sun-hover); }
-  .liste .qa-in { padding: 2px 0 20px; }
+  /* Texte grossi : un mot plus large que la feuille (« individuellement »,
+     « app.hippodoc.fr ») se coupe au lieu d'être rogné. */
+  .liste .qa-in { padding: 2px 0 20px; overflow-wrap: anywhere; }
 
   /* La fin : le ciel de l'accueil, puis le soleil qui se lève sur l'eau du pied
      de page (les deux dernières vagues de accueil/SceneFinale.astro, immobiles).
@@ -465,9 +485,13 @@ const coche =
 
   /* Téléphone : fiches moins hautes, intervalles resserrés. */
   @media (max-width: 559px) {
-    .tete { padding: 100px 0 72px; }
+    /* 22 px sous la pastille de l'en-tête, comme les feuilles de l'accueil. Le
+       haut est compté : à l'arrivée d'un nouveau visiteur, le bouton de l'offre
+       annuelle doit rester au-dessus de la bannière cookies (360 × 640,
+       375 × 667). */
+    .tete { padding: 92px 0 72px; }
     .lead { font-size: 1.0625rem; }
-    .intro { margin-bottom: 22px; }
+    .intro { gap: 12px; margin-bottom: 20px; }
     .band { padding: 44px 0 72px; }
     .band-head { margin-bottom: 22px; }
     .plans { gap: 12px; }
@@ -497,6 +521,11 @@ const coche =
     .offer:not(.main) .price span { font-size: 0.90625rem; }
     .offer:not(.main) > .btn { grid-column: 1 / -1; }
     .offer:not(.main) > p:last-of-type { margin-bottom: 14px; }
+  }
+  /* Sous 390 px, le surlignage de l'économie tient sur une ligne (jusqu'à
+     360 px) : un cran plus petit, la taille des pastilles de la DA. */
+  @media (max-width: 389px) {
+    .save span { font-size: 0.84375rem; }
   }
   /* Petits téléphones : les libellés des boutons tiennent sur une ligne. */
   @media (max-width: 374px) {
