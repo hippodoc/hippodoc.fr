@@ -881,6 +881,17 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 - Les îlots sont SSR-és au build (leur HTML est indexable) ; pas d'accès
   window/localStorage au rendu (uniquement useEffect/handlers). Pas de framer-motion.
 
+## Le guide du remplaçant (PDF de `/guide`)
+
+- Source et générateur : `outils/guide-remplacant/` (README). Le PDF ne se retouche jamais à la
+  main : on modifie `pages.mjs` (contenu) ou `guide.css`, puis
+  `node outils/guide-remplacant/construire.mjs --site`, qui refuse de déposer un PDF qui déborde.
+- `/guide` reprend mot pour mot son sommaire et « L'essentiel en 7 règles » : une retouche de ces
+  textes se fait aux deux endroits, et `GUIDE_REMPLACANT` (`src/lib/guide-remplacant.ts`) suit le
+  nombre de pages et la date. Chaque chiffre a sa source dans `verification/` ; un nouveau
+  millésime refait les montants avec le moteur du simulateur et repasse les relectures
+  (MIGRATION.md § 9.he).
+
 ## Analytics & scripts tiers
 
 - **PostHog** (`src/components/PostHog.astro`) : clé projet

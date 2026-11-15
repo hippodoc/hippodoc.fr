@@ -15292,6 +15292,103 @@ grille de la barre sur `<fieldset>`, trois colonnes, hauteurs égales à 320, 39
 **Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/lib/pages-lastmod.ts`,
 `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.he Le guide du remplaçant, refait de zéro dans la DA 2026 (15 novembre 2026)
+
+**Contenu modifié** (à relire par le propriétaire) : le PDF offert sur `/guide` (§ 9.di), refait
+entièrement à sa demande (« pas dans notre nouvelle DA », « notre PDF vitrine », « hyper utile,
+stylé, moderne, intuitif, complet, à jour, cohérent »). 35 pages au lieu de 26, même adresse et
+même nom de fichier (`public/guide/guide-du-remplacant-2026-2027.pdf`) : les liens déjà envoyés
+par ManyChat restent bons.
+
+**Le générateur** : `outils/guide-remplacant/` (README). Le contenu est dans `pages.mjs`, la
+feuille dans `guide.css` (jetons de la DA seulement), et `construire.mjs` fabrique le PDF
+(Playwright) avec ses contrôles : débordement, mot seul, taille de texte, police, liens. `--site`
+dépose le PDF, la couverture, les trois aperçus et l'image de partage dans le site. Le dossier est
+hors de `src/` : Tailwind ne le lit pas, la feuille commune ne change pas.
+
+**Les choix.**
+- Format 4:5 (1080 × 1350 px par page), celui des carrousels : 64 % des téléchargements viennent
+  d'un téléphone (PostHog, 26 septembre au 15 novembre 2026, France). Texte courant de 28,5 px,
+  notes de 26 px au moins.
+- Le parcours de la DA : ciel en couverture et aux ouvertures, sable pour expliquer, eau profonde
+  pour « Ta journée à 600 € » (ouverture de la partie 3) et les deux pièges (l'année 2, septembre),
+  scène de fin. Jaune réservé au Super-Net et au bouton. Mascotte sur la couverture, les ouvertures
+  des parties 1, 2 et 4 (lui, elle, lui) et la fin.
+- Quatre parties dans l'ordre d'une carrière : avant le premier rempla, pendant les remplas, sous
+  la surface (cotisations, impôts, Super-Net), garder la tête hors de l'eau (protection,
+  calendrier, routine). Nouveautés : la frise des trois premières années, les 10 questions avant
+  de dire oui, la facture annotée, la déclaration case par case (5HQ, DSCS, DSAV, DSAW, DSDE),
+  les réductions de la CARMF à demander, la prévoyance (renvoi au kit du dimanche), « Pour aller
+  plus loin » (simulateur, guide des déclarations, calculette, blog, kits).
+- Navigation : sommaire et renvois « p. N » cliquables, signets du PDF, liens vers le site avec
+  `utm_source=guide-pdf`.
+- Technique : ni ombre floue ni transparence (Aperçu et l'iPhone les rendent mal) ; décors
+  rendus en JPEG opaques ; police figée en six graisses statiques (`assets/police/`), sans quoi
+  Chromium l'embarque en Type 3 (2,4 Mo au lieu de 1,3 Mo).
+
+**Les chiffres.** Tous calculés par le moteur du simulateur (`simulerRegime`, modèle de
+l'URSSAF, barème 2026), sur les profils types de `/simulateur` quand ils existent : détail dans
+`outils/guide-remplacant/verification/README.md`. Les règles : cinq tableaux de vérification
+(Ordre, URSSAF, CARMF, impôts, protection), chaque affirmation avec ses citations exactes.
+
+**Les relectures** (standard `hippodoc-exigence`) : interne novice, juriste santé, fiscaliste
+santé, directeur artistique, correcteur ; puis une repasse ciblée. Ce qu'elles ont changé :
+`verification/README.md`.
+
+**La page `/guide`** suit le PDF : sommaire en quatre parties, « L'essentiel en 7 règles » repris
+mot pour mot (au lieu de 6), 35 pages, date « À jour au 15 novembre 2026 » (`pages-lastmod.ts`),
+couverture et trois aperçus (p. 4, 15, 29) refaits, ainsi que `public/guide/partage.jpg`,
+l'image du schéma `Book` (gabarit « bannière » de la DA ; l'aperçu d'un lien vers `/guide` vient
+du registre des images de partage, § 9.ha). `apercu-6-regles.png` devient `apercu-7-regles.png`.
+
+**Tranché** (le propriétaire, le 15 novembre 2026 : « est-ce que je peux te laisser trancher ce
+qui te paraît le plus cohérent ? ») :
+- Mot-clé des kits : « commente le mot indiqué », gardé. Chaque fiche a son propre mot : un mot
+  fixe dans le guide serait faux pour toutes les autres.
+- Phrases tirées d'ameli.fr (inscription à la CPAM, carte CPS, indemnités) : gardées. ameli.fr et
+  esante.gouv.fr refusent les lectures automatiques ; chaque phrase est recoupée par au moins deux
+  autres sources (ARS, Ordre, MACSF, CARMF), et le juriste les a validées à la repasse. « Signale-lui
+  chaque rempla » (CPAM) : la convention ne prévoit qu'un enregistrement, mais ameli, l'ARS et des
+  caisses demandent chaque période.
+- CGI cité sur la facture : gardé (la TVA passe au CIBS en 2027 ; les références au CGI restent
+  admises sur les factures jusqu'au 30 juin 2028).
+- Les quatre articles du blog qui contredisaient le guide sont corrigés (§ 9.hf).
+
+### 9.hf Contenu modifié : quatre articles alignés sur le guide du remplaçant (15 novembre 2026)
+
+**Correction factuelle**, décidée par le propriétaire (« laisse-moi trancher », § 9.he). La
+vérification du guide (`outils/guide-remplacant/verification/`) a trouvé quatre articles qui le
+contredisaient. Texte modifié au plus court, `updatedDate` au 15 novembre 2026 (reportée dans
+`blog-meta.json`, sauf `tout-comprendre-carmf`, déjà à cette date).
+
+- **`generer-facture-remplacement`** : la facture de rétrocession était présentée comme portant
+  des « mentions obligatoires ». Or le code des impôts dispense de facturer les opérations
+  exonérées au titre de l'article 261 (CGI, art. 289, I-1-a ; BOI-TVA-DECLA-30-20-10-10, § 10).
+  Les mentions restent celles d'une facture complète. Changements :
+  - la question de la FAQ devient « Que doit contenir une facture de remplacement ? » ; sa
+    réponse s'ouvre sur la nuance ;
+  - la nuance est ajoutée au point de « L'essentiel » et à la phrase qui introduit la liste ;
+  - les sources gagnent l'article 289 et la fiche du BOFiP ; la ligne sur l'article 242
+    nonies A ne dit plus « référence obligatoire ».
+  Même nuance que la page 13 du guide, relue par le fiscaliste.
+- **`tout-comprendre-carmf`** : « n'est pas rétroactive » et « non rétroactive » sont retirés
+  (FAQ et astuces). La page de la CARMF (« Qui cotise à la CARMF ? », lue le 15 novembre 2026)
+  dit seulement que la dispense « n'est pas automatique et doit être demandée ». Aucune source ne
+  parle de rétroactivité.
+- **`checklist-administrative-medecin-remplacant`** : la CPAM, « dès ton tout premier
+  remplacement », devient « **avant** ton tout premier remplacement, auprès de la CPAM de ton lieu
+  de résidence » (PAPS des ARS, « Effectuer des remplacements » : « L'inscription à la Caisse
+  Primaire d'Assurance Maladie de votre lieu de résidence est obligatoire »). Source ajoutée.
+- **`checklist-premier-jour-remplacement`** : « demande ta carte CPS à l'Ordre » devient « ta
+  propre carte CPS (CPF pour un interne) t'est envoyée après ton enregistrement à l'Ordre »
+  (trois passages : FAQ, « L'essentiel », liste du jour J). L'article contredisait
+  `checklist-administrative`. Les deux disent désormais ce que disent ensemble ameli (« adressez-vous
+  à l'Ordre des médecins ») et l'Agence du numérique en santé (l'enregistrement à l'Ordre donne le
+  numéro RPPS, et la carte est attribuée automatiquement). Ces deux citations viennent d'extraits
+  de moteur de recherche : leurs pages refusent les lectures automatiques.
+
+Les titres, adresses et affiches ne changent pas. La FAQ garde son nombre de questions.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
