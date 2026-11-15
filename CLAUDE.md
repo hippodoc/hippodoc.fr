@@ -214,7 +214,9 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   engagement, déduction, syndicats) ; les inclus sont rangés par famille, mot pour mot. À
   390 × 844 les trois prix tiennent dans le premier écran : ne pas allonger le haut de la
   page sans le remesurer. Ne pas y remettre de pastille « Populaire » ni de coches dans
-  les fiches. Mascotte à partir de 1 024 px seulement.
+  les fiches. Mascotte à partir de 1 024 px seulement. Offre des internes (§ 9.gu) :
+  le bouton « Envoyer mon justificatif » ouvre le chat, l'e-mail reste un lien dans la
+  ligne au-dessus.
 - ⚠️ **Pièges Tailwind dans les `<style>`** : Tailwind lit tout le fichier `.astro`,
   `<style>` et commentaires compris. Un mot qui est aussi un nom de classe
   (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille commune :
@@ -871,6 +873,12 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   uniquement ; gtag/pixel = première interaction OU load+6 s ; pixel gaté par le
   consentement (`localStorage['cookie-consent']`, valeurs `accepted`/`essential-only`,
   même clé que l'app). Bannière cookies incluse ; « Préférences cookies » au footer.
+  Crisp ne se charge qu'à un clic explicite : sur la bulle, ou sur un lien qui porte
+  `data-ouvre-chat` (§ 9.gu ; le bouton de l'offre des internes de `/tarifs`). Un tel
+  lien garde un vrai `href` (une adresse e-mail) : c'est ce qu'il fait sans script. Ne
+  jamais brancher l'ouverture du chat sur un geste passif (défilement, survol, arrivée) :
+  `verify-site.mjs` le refuse. Le script en ligne est sur toutes les pages : le retoucher
+  change le HTML de toutes, à prouver « identiques à ce bloc près ».
 - **Calendly** : liens directs (`calendly.com/hippodoc/decouverte-d-hippodoc`), jamais le widget.
 
 ## Vérification avant push

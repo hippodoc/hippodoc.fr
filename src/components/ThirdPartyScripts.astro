@@ -259,6 +259,17 @@
       });
     }
 
+    /* Un lien `data-ouvre-chat` ouvre le chat (§ 9.gu) : un clic explicite,
+       comme sur la bulle. Sans script, il reste un lien (son `href`). */
+    document.addEventListener('click', function (ev) {
+      var cible = ev.target && ev.target.closest ? ev.target.closest('[data-ouvre-chat]') : null;
+      if (!cible || ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+      ev.preventDefault();
+      if (lanceur) lanceur.style.display = 'none';
+      if (crispDone) window.$crisp.push(['do', 'chat:open']);
+      else loadCrisp();
+    });
+
     /* GA4 + Pixel : première interaction OU 6 s après `load` (hors trace Lighthouse).
        ⚠️ Jamais PENDANT un geste (§ 9.dp). Le premier geste est souvent l'appui sur
        le menu mobile : charger gtag.js à ce moment précis l'exécutait en plein

@@ -31,7 +31,9 @@ import { echapper, nouer } from '@/lib/typo';
  * - Les deux liens d'inscription des offres portent `plan=yearly` et
  *   `plan=monthly`, comme ceux de l'accueil ; leurs `data-track` ne changent
  *   pas (`cta_signup_tarifs_annuel`, `cta_signup_tarifs_mensuel`,
- *   `cta_signup_tarifs_bottom`). `tarifs_interne_contact` est nouveau.
+ *   `cta_signup_tarifs_bottom`). Offre des internes (§ 9.gu) : le bouton ouvre
+ *   le chat (`tarifs_interne_chat`), l'e-mail reste dans la ligne au-dessus
+ *   (`tarifs_interne_mail`).
  * - Carte bancaire : elle EST demandée à l'inscription, rien n'est débité
  *   pendant l'essai (décision 14a du propriétaire). Ne jamais écrire « sans
  *   carte bancaire ».
@@ -265,8 +267,13 @@ const coche =
             <h2 id="internes-title">Interne et docteur junior</h2>
             <p class="price"><b class="aff num">10 €</b>{' '}<span>par mois</span></p>
             <p>Jusqu'à la fin de l'internat</p>
-            <p>Sur justificatif</p>
-            <a href="mailto:contact@hippodoc.fr" data-ph="tarifs_interne_contact" class="btn btn-line">Écrire à contact@hippodoc.fr</a>
+            {/* « par chat ou e-mail » passe entier à la ligne : « e-mail » restait seul
+                 sur la sienne (téléphone, 1 024 px). */}
+            <p>Sur justificatif, <span class="fin-titre">par chat ou <a href="mailto:contact@hippodoc.fr" data-ph="tarifs_interne_mail" class="lien">e-mail</a></span></p>
+            {/* Ouvre le chat (`data-ouvre-chat`, ThirdPartyScripts.astro, § 9.gu) : le
+                 justificatif s'y envoie en pièce jointe. Sans script, le lien reste
+                 celui de l'adresse e-mail. */}
+            <a href="mailto:contact@hippodoc.fr" data-ouvre-chat data-ph="tarifs_interne_chat" class="btn btn-line">Envoyer mon justificatif</a>
           </section>
         </div>
 
@@ -375,6 +382,8 @@ const coche =
   .intro { margin-bottom: 36px; }
   .intro h1 { --corps: var(--h1-page); }
   .suite { display: block; }
+  /* Un bloc en ligne : il passe entier à la ligne suivante, et ne se coupe que
+     s'il est plus large que sa boîte (fin du titre, fin de la ligne des internes). */
   .fin-titre { display: inline-block; }
   .intro .lead { text-wrap-style: balance; }
   /* Les feuilles : le remplissage de l'épure de l'accueil (§ 9.eu), écrit ici
