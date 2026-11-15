@@ -14450,10 +14450,11 @@ mesures qu'avec Chromium (prix alignés, boutons de 54 px sur une ligne, cadre d
 250 × 242 px, titres des garanties sur une ligne, aucun débordement). Lighthouse en local sur `/tarifs`, deux passages : performance 99 et 100, accessibilité,
 bonnes pratiques et SEO à 100 (CLS 0).
 `verify-site.mjs` sans erreur (égalité FAQ visible / `FAQPage` comprise).
-Comparé au build d'avant : `<head>` identique au nom de la feuille de la page près, JSON-LD
-identique, tout ce qui est hors de `<main>` identique ; feuille commune inchangée
-(`_astro_assets.BqFlQkaI.css`) ; les 71 autres pages identiques ; seuls changent
-`tarifs/index.html`, sa feuille et le sitemap (date de la page).
+Comparé au build de `main` après fusion (§ 9.gp à 9.gr, 73 pages) : `<head>` identique au nom
+de la feuille de la page près, JSON-LD identique, tout ce qui est hors de `<main>` identique ;
+feuille commune inchangée (`_astro_assets.BqFlQkaI.css`) ; les 72 autres pages, le flux RSS et
+les fichiers JSON et texte identiques ; seuls changent `tarifs/index.html`, sa feuille et, dans le
+sitemap, la date de `/tarifs`.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
