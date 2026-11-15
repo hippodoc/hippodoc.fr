@@ -14932,6 +14932,51 @@ quelle protection ton budget peut porter ? » + `ctaHref: /simulateur`) et FAQ d
 **Vérifications.** 77 pages, 75 dans le sitemap ; `verify-site.mjs` passe ; feuille commune
 inchangée ; seules les pages attendues changent ; Lighthouse mobile 97 / 100 / 100 / 100, CLS 0.
 
+### 9.gz Simulateur : « Es-tu déjà au RSPM ? », et le chemin de l'Urssaf corrigé (15 novembre 2026)
+
+**La question du RSPM.** Le propriétaire : pourquoi « (déjà au RSPM ? Choisis-le avec
+« Modifier ») », alors que les remplaçants sont généralement au RSPM avant le PAMC ? En mode Auto,
+au-dessus de 19 000 € de recettes, le simulateur retenait le PAMC (on n'entre plus au RSPM au-dessus
+du seuil) et renvoyait ceux qui y sont déjà vers « Modifier ». Or c'est le cas le plus courant, et
+on y reste : sortie au 1er janvier qui suit une année au-dessus de 38 000 €, ou la deuxième de suite
+au-dessus de 19 000 € (urssaf.fr, § 9.go). Un remplaçant au RSPM qui passe à 25 000 € y est encore
+cette année et la suivante.
+
+Ce qui change :
+- Sous les revenus, pour un remplaçant en mode Auto au-dessus de 19 000 € : « Es-tu déjà au
+  RSPM ? », avec « L'offre simplifiée de l'Urssaf. On n'y entre plus au-dessus de 19 000 € de
+  recettes, mais qui y est déjà y reste au moins jusqu'au 31 décembre. », Oui ou Non (aucune
+  réponse cochée d'avance). Champ `dejaRspm` du schéma.
+- « Oui » : calcul au RSPM, choix du niveau d'invalidité-décès affiché, fiche « RSPM ou PAMC ? »
+  qui commence par « Tu es déjà au RSPM ». « Non » : PAMC, sans fiche miroir. Sans réponse : PAMC
+  et fiche miroir, comme avant.
+- Résumé de « Ta situation », au-dessus de 19 000 € : « Régime social : RSPM (tu y es déjà) »,
+  « Régime social : PAMC (recettes au-dessus de 19 000 €) », ou, sans réponse, « Régime social :
+  PAMC, sauf si tu es déjà au RSPM ». Avant : « Régime social : PAMC (déjà au RSPM ? Choisis-le avec
+  « Modifier ») ».
+- Fiche miroir, dernière phrase. Avant : « Pour voir ce calcul en détail, choisis RSPM avec
+  « Modifier ». » Après : « Tu y es déjà ? Réponds « Oui » à « Es-tu déjà au RSPM ? », sous tes
+  revenus, pour voir ce calcul en détail. »
+- Bulle « Régime social », conseil. Avant : « Auto = recommandé. Le simulateur retient le RSPM pour
+  un remplaçant jusqu'à 19 000 € de recettes, le PAMC au-delà. Déjà au RSPM et au-dessus de
+  19 000 € cette année ? Tu y restes jusqu'au 31 décembre : choisis RSPM. » Après : « Auto =
+  recommandé. Le simulateur retient le RSPM pour un remplaçant jusqu'à 19 000 € de recettes.
+  Au-delà, il te demande si tu y es déjà : on n'y entre plus, mais qui y est y reste jusqu'au
+  31 décembre. »
+
+**Le chemin de l'Urssaf, corrigé une seconde fois.** § 9.gv disait « depuis la messagerie de ton
+espace en ligne (nouvelle demande, « Réévaluer vos cotisations ») », déduit du titre « Objet du
+message » du formulaire. Le propriétaire : « c'est sur l'espace directement ». Astuce, après :
+« … si tu le demandes dans ton espace en ligne (« Nouvelle demande », puis « Réévaluer vos
+cotisations ») … ».
+
+**Contrôles.** Chromium à 390 et 1 280 px, cinq cas (15 000 € ; 25 000 € sans réponse, Oui, Non ;
+50 000 € Oui) : question présente au-dessus du seuil seulement, résumé, fiche, lignes de
+cotisations (Urssaf seule au RSPM, Urssaf et CARMF en PAMC), cibles de 44 px, aucun débordement.
+Essais des § 9.gh, 9.go et 9.gp repassés (deux attentes mises à jour : résumé et fiche miroir).
+WebKitGTK : réponse « Oui », résumé et fiche. `verify-site.mjs` sans erreur ; feuille commune
+inchangée ; comparé à la production, seul `/simulateur` diffère (la bulle du régime social).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

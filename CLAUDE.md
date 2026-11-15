@@ -796,8 +796,9 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Estimation des revenus (§ 9.gp) : l'Urssaf recalcule les cotisations de l'année sur une
   estimation, sur demande ; la loi en vigueur (CSS L131-6-2) ne prévoit plus de majoration pour
   une estimation trop basse, ne pas le récrire. Chemin, pour un médecin (§ 9.gv, vu dans l'espace
-  du propriétaire) : la messagerie de l'espace en ligne, nouvelle demande, objet « Gérer mon moyen
-  de paiement ou les informations relatives au paiement », puis « Réévaluer vos cotisations » ; pas
+  du propriétaire ; corrigé en § 9.gz) : « Nouvelle demande », directement dans l'espace (pas la
+  messagerie), objet « Gérer mon moyen de paiement ou les informations relatives au paiement »,
+  puis « Réévaluer vos cotisations » ; pas
   « Documents et démarches », qui est le menu d'autres professions. Un chemin dans un espace en
   ligne ne s'écrit que vu dans l'espace d'un médecin, pas d'après une page d'aide générale. Le
   montant à saisir ne s'affiche pas : le formulaire (« Revenus estimés conventionnés », « Autres
@@ -814,6 +815,13 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   dépassement (urssaf.fr ; la sortie n'est dans aucun article du code). Ne pas écrire « le RSPM
   s'arrête à 19 000 € ». Un remplaçant en mode Auto au-dessus de 19 000 € voit la fiche miroir
   « PAMC ou RSPM ? » (`comparison.alternativeRspm`, calcul local, rendu avec le résultat).
+  « Es-tu déjà au RSPM ? » (§ 9.gz) : sous les revenus, pour un remplaçant en mode Auto au-dessus
+  de 19 000 € (`dejaRspm`, `oui` ou `non`, sans réponse par défaut). « Oui » : calcul au RSPM, à
+  tout montant (on y reste au moins jusqu'au 31 décembre). « Non » : PAMC, sans fiche miroir. Sans
+  réponse : PAMC et fiche miroir, comme avant. La plupart des remplaçants sont au RSPM avant de
+  dépasser 19 000 € : la question remplace la parenthèse « déjà au RSPM ? Choisis-le avec
+  « Modifier » » du résumé. Moteur (`shouldUseRspm`), formulaire (`isRspmEffectif`, choix du RID),
+  résumé et fiche miroir lisent tous ce champ.
   Pli « Quand et comment tu paies » (§ 9.go) : frise de deux années (`cases` de chaque ligne :
   0 rien, 1 prélèvement habituel, 2 avec le rattrapage ; pas de jaune), montant dû par
   destinataire, et « Un exemple, avec tes chiffres » (`calculerExempleRattrapage` : revenus plus

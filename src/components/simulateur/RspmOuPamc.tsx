@@ -59,7 +59,7 @@ export function RspmOuPamc({
           <p>
             Au RSPM (13,5{'\u00a0'}% jusqu'à 19{'\u00a0'}000{'\u00a0'}€, 21,2{'\u00a0'}% au-delà), tu garderais{' '}
             <strong>{euros(rspm)}</strong> par an, contre {euros(pamc)} en PAMC. <strong>{verdict}</strong>{' '}
-            Pour voir ce calcul en détail, choisis RSPM avec «{'\u00a0'}Modifier{'\u00a0'}».
+            Tu y es déjà{'\u00a0'}? Réponds «{'\u00a0'}Oui{'\u00a0'}» à «{'\u00a0'}Es-tu déjà au RSPM{'\u00a0'}?{'\u00a0'}», sous tes revenus, pour voir ce calcul en détail.
           </p>
         </div>
       </section>
@@ -113,7 +113,7 @@ export function RspmOuPamc({
       <h3 id="sim-rspm-titre" className="sim-fiche-titre">RSPM ou PAMC{' '}?</h3>
       <div className="sim-rspm-texte" aria-live="polite" aria-busy={enAttente}>
         <p>
-          {formData.regimeSocial === 'rspm' ? 'Tu as choisi le RSPM' : 'Le simulateur retient le RSPM'}, l'offre simplifiée des remplaçants{' '}: un taux global sur tes recettes (13,5{' '}% jusqu'à 19{' '}000{' '}€, 21,2{' '}% au-delà), et tout se déclare et se paie à l'Urssaf. C'est une option à demander à l'Urssaf{' '}: sans elle, tu es en PAMC. {sortie}
+          {formData.regimeSocial === 'rspm' ? 'Tu as choisi le RSPM' : formData.dejaRspm === 'oui' && (comparison.recettesAnnuelles ?? 0) > 19000 ? 'Tu es déjà au RSPM' : 'Le simulateur retient le RSPM'}, l'offre simplifiée des remplaçants{' '}: un taux global sur tes recettes (13,5{' '}% jusqu'à 19{' '}000{' '}€, 21,2{' '}% au-delà), et tout se déclare et se paie à l'Urssaf. C'est une option à demander à l'Urssaf{' '}: sans elle, tu es en PAMC. {sortie}
         </p>
         {comparaison}
       </div>

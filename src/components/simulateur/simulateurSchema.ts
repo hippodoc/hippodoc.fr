@@ -66,6 +66,10 @@ export const simulateurSchema = z.object({
     'rspm',    // Force le calcul RSPM local (cotisations simplifiées)
     'pamc'     // Force l'appel API URSSAF (régime classique)
   ]).default('auto'),
+  // § 9.gz : en mode Auto, un remplaçant au-dessus de 19 000 € de recettes dit s'il est déjà au
+  // RSPM (on n'y entre plus au-dessus du seuil, mais qui y est y reste jusqu'au 31 décembre).
+  // Sans réponse, le mode Auto retient le PAMC, comme avant.
+  dejaRspm: z.enum(['oui', 'non']).optional(),
 
   // SECTION PHASE 3 — RID, Situation CARMF, Ratio non-conventionné
   tauxRid: z.enum(['25%', '100%']).default('25%'),
