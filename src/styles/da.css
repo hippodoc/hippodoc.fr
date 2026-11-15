@@ -400,35 +400,105 @@ html:has(.da-fond) { scroll-padding-top: calc(84px + env(safe-area-inset-top, 0p
 :where(.da) .hd-toggle:focus-visible ~ .hd-bar .hd-burger,
 :where(.da) .hd-toggle:focus-visible ~ .hd-drawer .hd-close { outline: 3px solid var(--focus); outline-offset: 2px; }
 
-/* Voile et tiroir. Aucun flou (§ 9.dn). Courbes et durées de § 9.do : départ au
-   ras du bord, courbe des panneaux iOS, 420 ms à l'ouverture, 300 à la fermeture. */
+/* Voile et tiroir. Aucun flou (§ 9.dn). Courbes et durées de § 9.do : courbe des
+   panneaux iOS, 420 ms à l'ouverture, 300 à la fermeture. Refait en § 9.gk : une
+   feuille de ciel clair entre deux bandes blanches, le haut (la copie de la
+   pastille) et le bas (l'essai et la connexion). */
 :where(.da) .hd-overlay { position: fixed; inset: 0; z-index: 40; visibility: hidden; opacity: 0; background: rgba(9, 20, 52, 0.6); cursor: pointer; transition: opacity 200ms ease-out, visibility 200ms ease-out; }
 :where(.da) .hd-toggle:checked ~ .hd-overlay { visibility: visible; opacity: 1; transition-duration: 300ms; }
-/* Largeur : au moins 60 px de voile restent visibles pour fermer en touchant à côté. */
-:where(.da) .hd-drawer { position: fixed; top: 12px; right: 12px; bottom: 12px; z-index: 50; width: calc(100% - 72px); max-width: 340px; visibility: hidden; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); transform: translateX(calc(100% + 16px)); transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
+/* De 600 à 959 px, un panneau à droite, 400 px au plus : au moins 60 px de voile
+   restent visibles pour fermer en touchant à côté. Mêmes bords que la pastille
+   (10 px en haut, 12 px à droite) : la croix tombe à la place du bouton du menu. */
+:where(.da) .hd-drawer { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(12px + var(--removed-body-scroll-bar-size, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 50; width: min(400px, calc(100% - 72px)); visibility: hidden; overflow: hidden; border-radius: var(--r-lg); background: var(--sky-soft); box-shadow: 0 30px 60px -20px rgba(9, 20, 52, 0.55); transform: translateX(calc(100% + 16px)); transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
 :where(.da) .hd-toggle:checked ~ .hd-drawer { visibility: visible; transform: none; transition-duration: 420ms; }
-:where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; padding: 20px 20px 16px; }
-:where(.da) .hd-drawer-top { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
-:where(.da) .hd-drawer-brand { display: flex; align-items: center; padding-left: 12px; }
-:where(.da) .hd-drawer-nav { display: flex; flex: 1; flex-direction: column; min-height: 0; margin-top: 20px; overflow-y: auto; overscroll-behavior: contain; }
-/* « Guide du remplaçant (PDF) » passe sur deux lignes à 320 px : d'où l'interligne serré. */
-:where(.da) .hd-drawer-nav a { display: flex; align-items: center; min-height: 48px; padding: 8px 12px; border-radius: var(--r-sm); font-size: 17px; font-weight: 600; line-height: 1.25; color: var(--ink); text-decoration: none; }
-:where(.da) .hd-drawer-nav a:active { background: var(--sky-soft); }
-:where(.da) .hd-drawer-nav a[aria-current="page"] { color: var(--brand); }
-/* Contrastes forcés : la couleur de marque disparaît, la page en cours se souligne. */
-@media (forced-colors: active) {
-  :where(.da) .hd-links > a[aria-current="page"], :where(.da) .hd-res-btn.is-current, :where(.da) .hd-res-menu a[aria-current="page"] .hd-res-t, :where(.da) .hd-drawer-nav a[aria-current="page"] { text-decoration-line: underline; text-underline-offset: 4px; }
+:where(.da) .hd-drawer-in { display: flex; flex-direction: column; height: 100%; }
+/* Le haut : la pastille, au pixel près (mêmes marges intérieures, mot au même
+   endroit, croix à la place du bouton du menu). */
+:where(.da) .hd-drawer-top { display: flex; flex: none; align-items: center; justify-content: space-between; height: 60px; padding: 0 8px 0 16px; background: var(--paper); box-shadow: 0 1px 0 var(--line); }
+:where(.da) .hd-drawer-brand { display: flex; align-items: center; min-height: 44px; padding: 0 4px; }
+@media (min-width: 360px) and (max-width: 389.98px) {
+  :where(.da) .hd-drawer-top { padding-left: 12px; }
+  :where(.da) .hd-drawer-brand { padding: 0; }
 }
-@media (hover: hover) { :where(.da) .hd-drawer-nav a:hover { background: var(--sky-soft); } }
-:where(.da) .hd-drawer-label { margin: 20px 0 4px; padding: 0 12px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
-/* Une colonne quand « Essai gratuit 30j » ne tient pas à côté de « Connexion » (320 px). */
-:where(.da) .hd-drawer-end { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 12px 8px; margin-top: 16px; padding: 16px 0 4px; border-top: 1px solid var(--line); }
-:where(.da) .hd-drawer-end .btn { padding: 0 10px; font-size: 15px; }
+@media (max-width: 339px) {
+  :where(.da) .hd-drawer-top { padding-left: 10px; }
+  :where(.da) .hd-drawer-brand .logo-word { font-size: 20px; }
+}
+/* Le milieu défile seul : le haut et le bas restent en place. */
+:where(.da) .hd-drawer-nav { flex: 1; min-height: 0; padding: 12px 12px 18px; overflow-y: auto; overscroll-behavior: contain; }
+/* Anneau de focus tracé à l'intérieur : les feuilles rognent (règle des
+   feuilles à lignes de l'accueil). */
+:where(.da) .hd-drawer-nav a:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+/* La carte du simulateur : le ciel et le soleil du Super-Net. */
+:where(.da) .hd-vedette { position: relative; z-index: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; padding: 14px 14px 14px 18px; overflow: hidden; border-radius: var(--r-md); background: linear-gradient(120deg, var(--sky-1) 10%, var(--glow) 95%); box-shadow: var(--clay-sm); color: var(--ink); text-decoration: none; }
+:where(.da) .hd-vedette::before { content: ""; position: absolute; z-index: -1; top: -38px; right: -30px; width: 108px; aspect-ratio: 1; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 12px rgba(255, 214, 74, 0.3); }
+:where(.da) .hd-vedette-t { grid-column: 1; font-size: 17.5px; font-weight: var(--tb); line-height: 1.25; }
+:where(.da) .hd-vedette-d { grid-column: 1; margin-top: 3px; font-size: 14px; line-height: 1.35; color: var(--ink-2); text-wrap-style: balance; }
+:where(.da) .hd-vedette-fl { grid-column: 2; grid-row: 1 / span 2; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--paper); box-shadow: var(--clay-sm); color: var(--ink); }
+:where(.da) .hd-vedette[aria-current="page"] .hd-vedette-t { color: var(--brand); }
+:where(.da) .hd-vedette:active { translate: 0 1px; }
+
+/* Les feuilles à lignes : une feuille blanche qui rogne, un filet entre deux
+   lignes, la ligne teintée au toucher et au survol. */
+:where(.da) .hd-feuille { margin: 12px 0 0; padding: 0; overflow: hidden; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--clay-sm); list-style: none; }
+:where(.da) .hd-feuille li + li { border-top: 1px solid var(--line); }
+:where(.da) .hd-ligne { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 14px 10px 18px; color: var(--ink); font-size: 17px; font-weight: var(--tb); line-height: 1.25; text-decoration: none; transition: background-color 150ms ease; }
+:where(.da) .hd-ligne-2 { min-height: 60px; padding-block: 9px; }
+:where(.da) .hd-ligne-txt { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+:where(.da) .hd-ligne-2 .hd-ligne-t { font-size: 16px; }
+:where(.da) .hd-ligne-d { font-size: 14px; font-weight: var(--tw); line-height: 1.35; color: var(--ink-2); }
+:where(.da) .hd-chev { flex: none; margin-left: auto; color: var(--ink-3); }
+:where(.da) .hd-chev-fl { margin: 0; color: var(--ink); }
+:where(.da) .hd-ligne:active { background: var(--sky-soft); }
+@media (hover: hover) { :where(.da) .hd-ligne:hover { background: var(--sky-soft); } }
+:where(.da) .hd-ligne[aria-current="page"] .hd-ligne-t { color: var(--brand); }
+:where(.da) .hd-drawer-label { margin: 22px 0 0; padding: 0 6px; font-size: 13px; font-weight: var(--tb); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+:where(.da) .hd-drawer-label + .hd-feuille { margin-top: 8px; }
+
+/* Le bas : l'essai sur toute la largeur, la connexion dessous. */
+:where(.da) .hd-drawer-end { position: relative; display: grid; flex: none; gap: 2px; padding: 12px 16px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--paper); box-shadow: 0 -1px 0 var(--line); }
+/* Quand la liste dépasse, son bas se fond sous la bande du bas : on voit qu'elle
+   continue. Le fondu (18 px) ne couvre que la marge du bas de la liste (18 px)
+   une fois celle-ci au bout : aucune ligne n'y reste voilée. */
+:where(.da) .hd-drawer-end::before { content: ""; position: absolute; right: 0; bottom: 100%; left: 0; height: 18px; background: linear-gradient(rgba(237, 243, 254, 0), var(--sky-soft)); pointer-events: none; }
+:where(.da) .hd .hd-drawer-end .btn { width: 100%; min-height: 52px; font-size: 16px; }
+:where(.da) .hd-drawer-login { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; column-gap: 6px; margin: 0; font-size: 15px; color: var(--ink-2); }
+:where(.da) .hd-drawer-login a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; border-radius: var(--r-sm); font-weight: var(--tb); color: var(--brand); text-decoration-line: underline; text-underline-offset: 3px; }
+:where(.da) .hd-drawer-login a:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; }
+/* Fenêtre basse (téléphone couché, petit écran) : l'essai et la connexion sur une
+   ligne, « Déjà un compte ? » lu mais pas affiché. */
+@media (max-height: 520px) {
+  :where(.da) .hd-drawer-end { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 14px; padding-top: 8px; padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)); }
+  :where(.da) .hd .hd-drawer-end .btn { min-height: 46px; }
+  :where(.da) .hd-drawer-deja { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
+/* Sous 600 px : la pastille s'ouvre vers le bas jusqu'à couvrir l'écran (mêmes
+   bords, mêmes coins de 30 px : la feuille part de la forme exacte de la
+   pastille). Le découpage rogne aussi l'ombre : le voile suffit autour. */
+@media (max-width: 599.98px) {
+  :where(.da) .hd-drawer { left: 12px; width: auto; border-radius: 30px; transform: none; clip-path: inset(0 0 calc(100% - 60px) 0 round 30px); transition: clip-path 300ms cubic-bezier(0.32, 0.72, 0, 1), visibility 300ms cubic-bezier(0.32, 0.72, 0, 1); }
+  :where(.da) .hd-toggle:checked ~ .hd-drawer { clip-path: inset(0 round 30px); transition-duration: 420ms; }
+}
+
+/* Contrastes forcés : la couleur de marque disparaît, la page en cours se
+   souligne ; les feuilles et le tiroir gardent un contour. */
+@media (forced-colors: active) {
+  :where(.da) .hd-links > a[aria-current="page"], :where(.da) .hd-res-btn.is-current, :where(.da) .hd-res-menu a[aria-current="page"] .hd-res-t, :where(.da) .hd-drawer-nav a[aria-current="page"] :is(.hd-ligne-t, .hd-vedette-t) { text-decoration-line: underline; text-underline-offset: 4px; }
+  :where(.da) .hd-drawer, :where(.da) .hd-feuille, :where(.da) .hd-vedette { border: 1px solid CanvasText; }
+}
 
 /* Contenu du tiroir en cascade (§ 9.do) : chaque ligne glisse de 12 px avec un
    décalage de 15 ms (--i = rang). À la fermeture, tout s'efface ensemble. */
 :where(.da) .hd-item { opacity: 0; transform: translateX(12px); transition: opacity 150ms ease, transform 150ms ease, background-color 150ms ease; }
 :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: opacity 320ms cubic-bezier(0.32, 0.72, 0, 1), transform 420ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease; transition-delay: calc(30ms + var(--i) * 15ms), calc(30ms + var(--i) * 15ms), 0ms; }
+/* Sous 600 px, la feuille s'ouvre vers le bas : les cinq groupes (carte, feuille,
+   titre, feuille, bas) y glissent de 8 px vers le bas, au rythme du découpage. */
+@media (max-width: 599.98px) {
+  :where(.da) .hd-item { transform: translateY(-8px); }
+  :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { transition-delay: calc(60ms + var(--i) * 35ms), calc(60ms + var(--i) * 35ms), 0ms; }
+}
 @media (prefers-reduced-motion: reduce) {
   :where(.da) .hd-item, :where(.da) .hd-toggle:checked ~ .hd-drawer .hd-item { opacity: 1; transform: none; transition: none; }
   :where(.da) .hd-drawer, :where(.da) .hd-overlay { transition: none; }

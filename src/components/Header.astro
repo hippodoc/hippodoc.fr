@@ -23,7 +23,14 @@ import { APP_URL } from '@/lib/site';
  * menu Ressources (autant cliqué que les tarifs) ; « Tarifs », vers la page
  * /tarifs (l'ancre /#pricing de l'accueil reste, pour la FAQ).
  * Ressources : un titre et une ligne d'explication par lien ; « Qui sommes-nous »
- * est passé dans le pied. Dans le tiroir, les titres seuls.
+ * est passé dans le pied.
+ * Tiroir (§ 9.gk), sous 960 px : en haut, la copie de la pastille (le mot à la
+ * même place, la croix à la place du bouton du menu) ; le simulateur en carte
+ * (ciel et soleil, le motif du Super-Net) ; « Comment ça marche », « Pour qui »
+ * et « Tarifs » dans une feuille à lignes ; les ressources, avec leur ligne
+ * d'explication, dans une seconde ; en bas, l'essai sur toute la largeur et
+ * « Déjà un compte ? Se connecter ». Sous 600 px, la pastille s'ouvre vers le
+ * bas jusqu'à couvrir l'écran ; de 600 à 959 px, un panneau à droite.
  * Connexion (une bonne part des visites vient d'abonnés qui se connectent) :
  * en toutes lettres à partir de 600 px ; de 360 à 599 px, une pastille ronde à
  * l'icône de compte, nommée « Connexion », à côté du bouton d'essai ; sous
@@ -47,15 +54,21 @@ const navItems = [
   { href: '/tarifs', label: 'Tarifs', ph: 'landing_nav_pricing' },
 ];
 
-/* `desc` : la ligne sous le titre, dans le menu de l'ordinateur seulement.
-   `court` : le libellé du tiroir quand il diffère du titre. */
+/* `desc` : la ligne sous le titre, dans le menu de l'ordinateur et dans le tiroir. */
 const resourceItems = [
-  { href: '/guide', label: 'Guide du remplaçant', court: 'Guide du remplaçant (PDF)', desc: 'PDF offert\u00a0: licence, contrat, cotisations', ph: 'landing_resource_guide-remplacant' },
+  { href: '/guide', label: 'Guide du remplaçant', desc: 'PDF offert\u00a0: licence, contrat, cotisations', ph: 'landing_resource_guide-remplacant' },
   { href: '/guide-declarations', label: 'Guide des déclarations', desc: '2035, 2042-C PRO et DSFU expliquées', ph: 'landing_resource_guide-declarations' },
   { href: '/guide-declarations/calculette', label: 'Calculette fiscale', desc: 'Ta 2035 reportée en 2042-C PRO et DSFU', ph: 'landing_resource_calculette' },
   { href: '/blog', label: 'Blog', desc: 'Conseils pour médecins remplaçants', ph: 'landing_resource_blog' },
   { href: '/faq', label: 'FAQ', desc: 'Toutes les réponses sur Hippodoc', ph: 'landing_resource_faq' },
 ];
+
+/* Tiroir (§ 9.gk) : le simulateur en carte, en tête ; les trois autres entrées
+   du menu dans une feuille à lignes ; les ressources dans une seconde feuille. */
+const SIMULATEUR = navItems.find((item) => item.href === '/simulateur')!;
+const SIMULATEUR_DESC = 'Gratuit, en 2\u00a0minutes\u00a0: ce qu’il te reste vraiment';
+const principaux = navItems.filter((item) => item !== SIMULATEUR);
+const phMobile = (ph: string) => `landing_mobile_${ph.replace('landing_', '')}`;
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const pageEnCours = (href: string) => (currentPath === href ? 'page' : undefined);
@@ -138,21 +151,25 @@ const dansRessources = resourceItems.some((item) => currentPath === item.href ||
         </label>
       </div>
       <nav class="hd-drawer-nav" aria-label="Navigation mobile">
-        {navItems.map((item, i) => (
-          <a href={item.href} data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`} aria-current={pageEnCours(item.href)} style={`--i:${i}`} class="hd-item">
-            {item.label}
-          </a>
-        ))}
-        <p style={`--i:${navItems.length}`} class="hd-item hd-drawer-label">Ressources</p>
-        {resourceItems.map((item, i) => (
-          <a href={item.href} data-ph={`landing_mobile_${item.ph.replace('landing_', '')}`} aria-current={pageEnCours(item.href)} style={`--i:${navItems.length + 1 + i}`} class="hd-item">
-            {item.court ?? item.label}
-          </a>
-        ))}
+        <a href={SIMULATEUR.href} data-ph={phMobile(SIMULATEUR.ph)} aria-current={pageEnCours(SIMULATEUR.href)} style="--i:0" class="hd-item hd-vedette">
+          <span class="hd-vedette-t">Simulateur Super-Net</span> <span class="hd-vedette-d">{SIMULATEUR_DESC}</span>
+          <span class="hd-vedette-fl" aria-hidden="true"><svg class="hd-chev hd-chev-fl" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>
+        </a>
+        <ul role="list" style="--i:1" class="hd-item hd-feuille">
+          {principaux.map((item) => (
+            <li><a href={item.href} data-ph={phMobile(item.ph)} aria-current={pageEnCours(item.href)} class="hd-ligne"><span class="hd-ligne-t">{item.label}</span> <svg class="hd-chev" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          ))}
+        </ul>
+        <p style="--i:2" class="hd-item hd-drawer-label">Ressources</p>
+        <ul role="list" style="--i:3" class="hd-item hd-feuille">
+          {resourceItems.map((item) => (
+            <li><a href={item.href} data-ph={phMobile(item.ph)} aria-current={pageEnCours(item.href)} class="hd-ligne hd-ligne-2"><span class="hd-ligne-txt"><span class="hd-ligne-t">{item.label}</span> <span class="hd-ligne-d">{item.desc}</span></span> <svg class="hd-chev" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+          ))}
+        </ul>
       </nav>
-      <div style={`--i:${navItems.length + 1 + resourceItems.length}`} class="hd-item hd-drawer-end">
-        <a href={`${APP_URL}/auth`} data-ph="landing_mobile_login" class="btn btn-line">Connexion</a>
-        <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header_mobile" class="btn btn-brand">Essai gratuit 30j</a>
+      <div style="--i:4" class="hd-item hd-drawer-end">
+        <a href={`${APP_URL}/auth?tab=signup`} data-track="cta_signup_header_mobile" class="btn btn-brand">Essai gratuit 30 jours</a>
+        <p class="hd-drawer-login"><span class="hd-drawer-deja">Déjà un compte&nbsp;?</span> <a href={`${APP_URL}/auth`} data-ph="landing_mobile_login">Se connecter</a></p>
       </div>
     </div>
   </div>

@@ -606,6 +606,8 @@ if (motsAccueil < MOTS_ACCUEIL_MIN) {
 // Menu, Ressources, connexion sur téléphone et pied rangés par intention :
 // § 9.gj (« Simulateur » et « Tarifs » vers des pages, tous les liens du pied
 // mesurés, téléphone et e-mail passés des pastilles aux lignes d'« À propos »).
+// Tiroir refait en § 9.gk : le simulateur en carte, en tête (même data-ph),
+// les ressources avec leur ligne d'explication, l'essai puis « Se connecter ».
 const MESURE_ENTETE_PIED = [
   'header : a | /#sous-la-surface | landing_nav_comment_ca_marche |  |  | Comment ça marche',
   'header : a | /#parcours | landing_nav_pour_qui |  |  | Pour qui',
@@ -621,17 +623,17 @@ const MESURE_ENTETE_PIED = [
   'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header |  | Essai gratuit 30j',
   'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_pill |  | Essai gratuit',
   'header : label |  | landing_mobile_menu_open |  |  |',
+  'header : a | /simulateur | landing_mobile_nav_simulateur |  |  | Simulateur Super-Net Gratuit, en 2 minutes : ce qu’il te reste vraiment',
   'header : a | /#sous-la-surface | landing_mobile_nav_comment_ca_marche |  |  | Comment ça marche',
   'header : a | /#parcours | landing_mobile_nav_pour_qui |  |  | Pour qui',
-  'header : a | /simulateur | landing_mobile_nav_simulateur |  |  | Simulateur',
   'header : a | /tarifs | landing_mobile_nav_pricing |  |  | Tarifs',
-  'header : a | /guide | landing_mobile_resource_guide-remplacant |  |  | Guide du remplaçant (PDF)',
-  'header : a | /guide-declarations | landing_mobile_resource_guide-declarations |  |  | Guide des déclarations',
-  'header : a | /guide-declarations/calculette | landing_mobile_resource_calculette |  |  | Calculette fiscale',
-  'header : a | /blog | landing_mobile_resource_blog |  |  | Blog',
-  'header : a | /faq | landing_mobile_resource_faq |  |  | FAQ',
-  'header : a | https://app.hippodoc.fr/auth | landing_mobile_login |  |  | Connexion',
-  'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_mobile |  | Essai gratuit 30j',
+  'header : a | /guide | landing_mobile_resource_guide-remplacant |  |  | Guide du remplaçant PDF offert : licence, contrat, cotisations',
+  'header : a | /guide-declarations | landing_mobile_resource_guide-declarations |  |  | Guide des déclarations 2035, 2042-C PRO et DSFU expliquées',
+  'header : a | /guide-declarations/calculette | landing_mobile_resource_calculette |  |  | Calculette fiscale Ta 2035 reportée en 2042-C PRO et DSFU',
+  'header : a | /blog | landing_mobile_resource_blog |  |  | Blog Conseils pour médecins remplaçants',
+  'header : a | /faq | landing_mobile_resource_faq |  |  | FAQ Toutes les réponses sur Hippodoc',
+  'header : a | https://app.hippodoc.fr/auth?tab=signup |  | cta_signup_header_mobile |  | Essai gratuit 30 jours',
+  'header : a | https://app.hippodoc.fr/auth | landing_mobile_login |  |  | Se connecter',
   'footer : a | / | landing_footer_home |  |  | Hippodoc',
   'footer : a | https://www.linkedin.com/company/hippodoc/ | landing_footer_linkedin |  |  | LinkedIn',
   'footer : a | https://www.facebook.com/profile.php?id=61574895730373 | landing_footer_facebook |  |  | Facebook',
@@ -660,9 +662,10 @@ const PAGES_SANS_ENTETE = new Set([
   '/essai/index.html',         // page de campagne, noindex : son propre en-tête, sans menu
   '/transmissions/index.html', // page HTML déposée dans public/, hors Astro
 ]);
-// SHA-256 du micro-script du tiroir, espaces réduits : le même que dans l'ancien
-// Header.astro (relevé sur le build de main avant la phase 5a).
-const EMPREINTE_SCRIPT_TIROIR = '10a3011d80ece8d8fd07d7623db4b6642c3f1aea2eb69c85ef2ab6f04277a547';
+// SHA-256 du micro-script du tiroir, espaces réduits. Celui de l'ancien
+// Header.astro jusqu'à § 9.gk ; depuis, avec la touche Échap qui referme le
+// tiroir et rend le focus à la case du menu (empreinte d'avant : 10a3011d80ec…).
+const EMPREINTE_SCRIPT_TIROIR = '58afaf081d19d2402e4714670e3e359eecf71cd37b05322a6f3e595b9fcea8b1';
 
 function reperesNavigation(html, balise, classe) {
   const bloc = html.match(new RegExp(`<${balise}\\b[^>]*\\sclass="${classe}\\b[^"]*"[\\s\\S]*?</${balise}>`))?.[0];
