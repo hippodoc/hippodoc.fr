@@ -204,7 +204,7 @@ ${kv('Tu passes 19 000 € de rétros', 'Le RSPM, le régime simplifié, a des r
 <div class="c"><p class="ct">Salarié</p><p>Hôpital, centre de santé : un contrat, une fiche de paie, des cotisations prélevées pour toi.</p></div>
 <div class="c"><p class="ct">Les deux</p><p>Salaire d’interne et remplas : c’est permis et fréquent. Pour l’impôt, tout s’additionne&nbsp;[[p:impot]].</p></div>
 </div>
-${alerte('piege', '<span class="lab">L’intérim en établissement, pas tout de suite.</span> Depuis le 1er décembre 2025, une agence d’intérim ne peut te placer à l’hôpital qu’après 2 ans d’exercice depuis ton inscription à l’Ordre. Le rempla en cabinet n’est pas concerné.')}`,
+${alerte('piege', '<span class="lab">L’intérim en établissement, pas tout de suite.</span> Depuis le 1er décembre 2025, une agence ne peut te placer en hôpital ou en clinique qu’après 2 ans à temps plein depuis ton inscription à l’Ordre. Le rempla en cabinet n’est pas concerné.')}`,
   }),
 
   sable({
@@ -230,7 +230,7 @@ ${alerte('piege', '<span class="lab">L’intérim en établissement, pas tout de
 <p class="note">Docteur junior en médecine générale (4e année, dès le 2 novembre 2026) : licence et autorisation, comme un interne.</p>
 </div>
 <div class="c plein"><span class="etiq ink">Tu es thésé</span>
-<p style="margin-top:16px"><b>L’inscription à l’Ordre</b> se demande jusqu’à 4 mois avant ton diplôme. Une fois inscrit, plus d’autorisation au cas par cas.</p>
+<p style="margin-top:16px"><b>L’inscription à l’Ordre</b> se demande dès 4 mois avant ton diplôme. Une fois inscrit, plus d’autorisation au cas par cas.</p>
 <p><b>En attendant la décision</b> (3 mois au plus), tu remplaces sous licence, avec autorisation, si ta demande date d’un mois au plus après ton diplôme.</p>
 </div>
 ${alerte('piege', '<span class="lab">Ta licence expire chaque année</span>, à la date écrite dessus. Renouvelle-la avant, avec ton nouveau certificat de scolarité.')}`,
@@ -265,7 +265,7 @@ ${kv('Le paiement', 'Le délai et le mode de versement, noir sur blanc : c’est
 ${kv('S’installer à côté', 'La clause de non-réinstallation te l’interdit. Depuis le 30 juillet 2026, elle n’existe que si le contrat la prévoit : négocie sa durée et sa zone.')}
 ${kv('Le remplacé', 'Il arrête toute activité médicale pendant ton rempla, sauf dérogation de l’Ordre (règle de juillet 2026).')}
 </div>
-${alerte('piege', '<span class="lab">Le piège du vieux modèle.</span> Des modèles reprennent encore l’ancienne règle : 3 mois de rempla, et 2 ans sans t’installer à proximité. Signée telle quelle, la clause s’applique.')}`,
+${alerte('piege', '<span class="lab">Le piège du vieux modèle.</span> Des contrats reprennent encore l’ancienne règle : 3 mois de rempla, 2 ans sans t’installer à proximité. Signée, elle te lie, sauf accord du remplacé ou de l’Ordre.')}`,
   }),
 
   /* ─────────────── Partie 2 ─────────────── */
@@ -425,7 +425,7 @@ ${kv('Tu en sors', 'Au 1er janvier qui suit une année au-dessus de 38 000 €, 
     corps: `<div class="rang">
 <div class="c tuile"><p class="ct">Retraite de base</p><p class="mid">8,73 %</p><p class="note">jusqu’au PASS (48 060 €), plus 1,87 % sur tout ton revenu.</p></div>
 <div class="c tuile"><p class="ct">Complémentaire</p><p class="mid">11,8 %</p><p class="note">de ton revenu. Rien les 2 premières années, si tu démarres avant 40 ans.</p></div>
-<div class="c tuile"><p class="ct">ASV</p><p class="mid">1 917 €</p><p class="note">+ 1,33 % : une retraite en plus. L’Assurance maladie en paie les deux tiers.</p></div>
+<div class="c tuile"><p class="ct">ASV</p><p class="mid">1 917 €</p><p class="note">+ 1,33 % : une retraite en plus. L’Assurance maladie paie les deux tiers de la cotisation.</p></div>
 <div class="c tuile"><p class="ct">Invalidité-décès</p><p class="mid">626 €</p><p class="note">sous 48 060 € de revenu. Elle ouvre tes indemnités&nbsp;[[p:arret]].</p></div>
 </div>
 <div class="c plein"><p class="ct">Comment elle te prélève, en PAMC</p>
@@ -546,7 +546,7 @@ ${pile([['co', 17300], ['im', 6960], ['fr', 5000], ['s', 40740, '58 %']])}
     id: 'arret', rep: '',
     ouvre: { partie: 'Partie 4', titre: 'Garder la tête hors de l’eau', sous: 'Ta protection, ton calendrier, ta routine.', masc: 'hippo-bras-croises.webp', mw: 196, mx: 120, my: 26 },
     titre: 'Si tu t’arrêtes, <span class="eau">qui paie ?</span>',
-    chapo: 'En libéral, un arrêt de travail coûte cher au début. Les montants de&nbsp;2026.',
+    chapo: 'En libéral, un arrêt coûte cher au début. Les montants de 2026.',
     corps: `<div class="c plein"><div class="gantt">
 <div class="gb"><i style="flex:9;background:var(--sky-soft);color:var(--ink-2)">J1 à J3</i><i style="flex:48;background:var(--w2);color:var(--ink)">J4 à J90 · CPAM</i><i style="flex:43;background:var(--w4);color:var(--paper)">Dès J91 · CARMF</i></div>
 </div>
@@ -555,9 +555,9 @@ ${kv('Jours 1 à 3', 'Personne : c’est le délai de carence.')}
 ${kv('Jours 4 à 90', 'La CPAM, après 12 mois d’affiliation en libéral : jusqu’à 197,51 € par jour.')}
 ${kv('Dès le 91e jour', 'La CARMF : 65,84 € à 197,51 € par jour selon tes revenus, si tu es à jour. Au RSPM : 65,84 €, ou 16,46 € à 25 %&nbsp;[[p:combien]].')}
 </div>
-<p class="ret"><span class="lab">Et le chômage ? </span>Arrêter tes remplas ne t’ouvre aucune allocation.</p>
+<p class="ret"><span class="lab">Le chômage ? </span>Arrêter tes remplas n’ouvre en pratique aucune allocation.</p>
 </div>
-${alerte('piege', '<span class="lab">Ta 1re année de libéral,</span> la CPAM ne paie rien sur tes remplas. Tu as quitté l’internat il y a moins de 12 mois ? Demande-lui si tes droits de salarié jouent encore.')}`,
+${alerte('piege', '<span class="lab">Ta 1re année de libéral,</span> la CPAM ne paie rien sur tes remplas. Internat quitté il y a moins de 12 mois ? Demande-lui si tes droits de salarié jouent encore.')}`,
   }),
 
   sable({
@@ -565,7 +565,7 @@ ${alerte('piege', '<span class="lab">Ta 1re année de libéral,</span> la CPAM n
     titre: 'Ta prévoyance, <span class="eau">avant de signer</span>',
     chapo: 'Une assurance privée qui te verse un revenu si tu ne peux plus travailler. Elle comble le trou des premiers mois.',
     corps: `<div class="c plein"><ol class="etapes">
-<li><div class="eh"><b>Le questionnaire de santé</b></div><p class="et">Réponds exactement aux questions posées. Un oubli de bonne foi réduit tes indemnités ; un mensonge annule le contrat.</p></li>
+<li><div class="eh"><b>Le questionnaire de santé</b></div><p class="et">Réponds exactement aux questions posées. Un oubli de bonne foi peut réduire tes indemnités ; un mensonge annule le contrat.</p></li>
 <li><div class="eh"><b>Forfaitaire ou indemnitaire</b></div><p class="et">L’indemnitaire paie ta perte prouvée, moins CPAM et CARMF : peu si tu gagnes peu. Le forfaitaire paie souvent ce qui est prévu.</p></li>
 <li><div class="eh"><b>La franchise</b></div><p class="et">Les premiers jours d’arrêt non payés, souvent 15, 30 ou 90 : à choisir selon ton épargne.</p></li>
 <li><div class="eh"><b>Dos, psy, grossesse</b></div><p class="et">Souvent couverts seulement après une hospitalisation : demande-les sans condition.</p></li>
