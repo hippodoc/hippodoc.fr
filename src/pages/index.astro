@@ -39,7 +39,7 @@ import SceneFinale from '@/components/accueil/SceneFinale.astro';
 // Mêmes fichiers que le <picture> de Hero.astro (même fabrique, mêmes URL).
 const buste = await imagesBuste();
 
-const title = 'Hippodoc — Cockpit financier des médecins | Super-Net';
+const title = 'Logiciel de gestion pour médecin remplaçant | Hippodoc';
 const description =
   "Hippodoc calcule revenus, cotisations URSSAF, CARMF, impôts et Super-Net des médecins remplaçants, installés, collaborateurs ou salariés. Essai 30 jours.";
 
@@ -49,7 +49,7 @@ const websiteSchema = {
   '@id': `${SITE_URL}/#website`,
   name: 'Hippodoc',
   url: SITE_URL,
-  description: 'Le cockpit financier des médecins qui calcule tout pour vous : revenus, cotisations, impôts et Super-Net.',
+  description: 'URSSAF, CARMF, impôts : Hippodoc calcule tout après chaque journée de remplacement, et te montre ce qu’il te reste vraiment.',
   publisher: { '@id': `${SITE_URL}/#organization` },
 };
 
@@ -96,8 +96,6 @@ const videoSchema = {
   title={title}
   description={description}
   path=""
-  ogImage="https://www.hippodoc.fr/lovable-uploads/og-image.png"
-  ogImageAlt="Hippodoc — Le cockpit financier des médecins"
   jsonLd={[SOFTWARE_APPLICATION_SCHEMA, websiteSchema, faqPageSchema, videoSchema]}
   bodyClass="da-fond"
 >

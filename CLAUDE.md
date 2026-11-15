@@ -381,7 +381,13 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
 Chaque page passe par `src/layouts/BaseLayout.astro` : props `title` (<60 car., mot-clé
 d'abord), `description` (~150 car.), `path` (canonique, sans slash ; `""` pour l'accueil),
 `ogImage`, `jsonLd` (tableau — Organization est injecté partout automatiquement),
-`noindex`. Constantes partagées (URLs, tarifs, schémas Organization/SoftwareApplication,
+`noindex`. **Image de partage** (§ 9.ha) : ne pas passer `ogImage` (seuls les articles le font) ;
+chaque page a son entrée dans `PARTAGE_PAGES` (`src/lib/partage-pages.ts` : pastille, titre repris
+de la page, fond selon le propos, pose qui le dit, jamais retournée), image fabriquée à la
+construction par le générateur des articles ; l'accueil a un fichier rendu avec le gabarit
+« bannière » du skill de la DA (`public/partage/accueil-<empreinte>.jpg`). Une nouvelle page s'y
+ajoute : `verify-site.mjs` (« 4 octodecies ») échoue sinon. Planche à regarder avant de pousser :
+`node scripts/apercu-partage.mjs`. Constantes partagées (URLs, tarifs, schémas Organization/SoftwareApplication,
 PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 `/essai` est noindex et exclu du sitemap (filtre dans `astro.config.mjs`).
 

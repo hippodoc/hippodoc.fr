@@ -20,7 +20,7 @@ import { byNewest } from '@/lib/blog-sort';
 
 const EN_TETE = `# Hippodoc
 
-> Cockpit financier pour médecins en France : calcule revenus, cotisations URSSAF, CARMF, impôts et Super-Net pour remplaçants, installés, collaborateurs et salariés.
+> Logiciel de gestion pour médecins en France : calcule revenus, cotisations URSSAF, CARMF, impôts et Super-Net pour remplaçants, installés, collaborateurs et salariés.
 
 Hippodoc est un logiciel français créé par un médecin pour les médecins remplaçants : il centralise revenus, rétrocessions, planning, contrats, cotisations URSSAF et CARMF, et prépare les déclarations (2035, 2042, DSFU/PAMC) avec un calcul automatique du Super-Net (ce qu'il reste vraiment après cotisations et impôts). Estimations conservatrices, conformes au CGI 2026.
 
@@ -30,7 +30,7 @@ Contact : contact@hippodoc.fr
 
 ## Pages
 
-- [Accueil](https://www.hippodoc.fr/): Présentation du cockpit financier des médecins remplaçants et essai gratuit 30 jours.
+- [Accueil](https://www.hippodoc.fr/): Présentation du logiciel de gestion des médecins remplaçants et essai gratuit 30 jours.
 - [Simulateur Super-Net](https://www.hippodoc.fr/simulateur): Estime le revenu net après impôts et cotisations selon ton profil (remplaçant, installé, mixte).
 - [Guide des déclarations](https://www.hippodoc.fr/guide-declarations): Boussole interactive pour la déclaration 2035, 2042 et DSFU (volet PAMC), 12 profils médecins.
 - [Calculette PAMC](https://www.hippodoc.fr/guide-declarations/calculette): Calculette publique des cases sociales DSFU (DSCS, DSAV, DSFA, DSDE, DSCN…).
