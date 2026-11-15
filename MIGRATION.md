@@ -15292,6 +15292,48 @@ grille de la barre sur `<fieldset>`, trois colonnes, hauteurs égales à 320, 39
 **Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/lib/pages-lastmod.ts`,
 `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.he « Synchro Google » corrigé, noms courts de « Et aussi » (15 novembre 2026)
+
+Suite de § 9.hd, sur le « go » du propriétaire (« je te fais confiance pour tout ») aux deux
+points laissés à décider.
+
+**Google Agenda : pas de synchronisation.** L'application exporte le calendrier en fichier
+.ics ; sa propre aide le dit (`ExportCalendarHelpDialog.tsx` : « L'export est
+unidirectionnel : les événements sont copiés, mais les modifications dans Google Agenda ne
+seront pas synchronisées avec Hippodoc ») ; aucun appel à l'API de Google Agenda dans son
+code (recherché : `googleapis.com/calendar`, `auth/calendar`, `google_calendar`, `webcal`).
+Trois phrases du site disaient plus :
+- inclus des tarifs, accueil (`accueil/Tarifs.astro`) et `/tarifs` (mot pour mot aux deux
+  endroits, § 9.gs) : « Planning centralisé avec synchro Google » devient « Planning
+  centralisé, export Google Agenda » (« export vers Google Agenda » passait sur deux lignes
+  à 1 440 px sur `/tarifs` : la ligne d'avant tenait sur une) ;
+- première étape du remplaçant dans « Pour qui » (`src/data/etapesRemplacant.ts`) : « Tous
+  tes cabinets dans un calendrier, synchronisé avec Google Agenda. » devient « Tous tes
+  cabinets dans un calendrier, exportable vers Google Agenda. ». Sa précision (« Codes
+  d'accès, consignes et taux notés par lieu, fiche de passation prête. ») est juste : la
+  fiche de passation existe (digicode, consignes), elle ne change pas.
+Restent justes : « synchronisées automatiquement » de `/faq` (les données entre l'ordinateur
+et le téléphone) et la « synchronisation bancaire » du comparatif (celle des concurrents ;
+Hippodoc n'en a pas, et le tableau le dit).
+
+**Noms courts de « Et aussi »** (téléphone) : « Salariat » devient « Revenus salariés » et
+« Par structure » devient « Revenus par structure », plus clairs sans le nom de leur
+groupe. Sous 360 px seulement, ils demandaient une neuvième rangée de pastilles (la vue
+dépassait les autres de 29 px à 320 px) : là, les formes courtes d'avant restent (`mini`).
+
+**Contenu modifié** (à relire par le propriétaire) : les trois phrases ci-dessus et les deux
+noms courts.
+
+**Vérifications** : `verify-site.mjs` sans erreur, mêmes onze avertissements que `main` ;
+comparé au build de `main` (`f02e4ee`), seuls `index.html`, sa feuille et
+`tarifs/index.html` changent, et leur texte ne change que des phrases ci-dessus ; feuille
+commune inchangée. Hauteurs de l'accueil, de « Pour qui » et de `/tarifs` identiques à
+`main` à 320, 360, 390, 768, 1 024 et 1 440 px. Fenêtre : cinq vues de même hauteur de 320
+à 1 440 px (19 largeurs), aussi police bloquée (9 largeurs) et dans WebKitGTK.
+
+**Fichiers** : `src/components/accueil/FenetreProduit.astro`, `src/components/accueil/Tarifs.astro`,
+`src/pages/tarifs.astro`, `src/data/etapesRemplacant.ts`, `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

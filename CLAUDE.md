@@ -374,11 +374,12 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   « Compte de démonstration » depuis le § 9.fn (décision du propriétaire). La fenêtre a
   cinq onglets (le quatrième, « Tes déclarations » : cases 5HQ, DSCS, DSAV, DSDE
   pré-remplies ; le cinquième, « Et aussi », § 9.hd : les autres outils, relevés dans le
-  menu de l'application, à tenir à jour avec lui dans `AUSSI`). Libellés courts jusqu'à
+  menu de l'application, à tenir à jour avec lui dans `AUSSI` ; Google Agenda y reçoit un
+  export .ics, jamais « synchronisé », ici comme dans les tarifs, § 9.he). Libellés courts jusqu'à
   899 px : sur une ligne à partir de 520 px, sur deux rangées en dessous (trois, puis
   deux) ; libellés longs à partir de 900 px. Les cinq vues gardent la même hauteur
   (mesurée de 320 à 1 920 px) : un outil ajouté à « Et aussi » se remesure à 320 et
-  360 px (6 px de marge).
+  360 px (6 px de marge ; sous 360 px, deux noms passent à leur forme `mini`).
 
 ## SEO — contrat par page
 
