@@ -373,17 +373,19 @@ export function PaymentExplanation({
       {/* Revenus qui changent : cotisations provisionnelles recalculées sur une estimation, sur
           demande (CSS L131-6-2, version en vigueur : « sur la base de l'assiette de cotisations
           estimée pour l'année en cours » ; plus de majoration en cas d'estimation trop basse,
-          contrairement à ce que ce pli disait en § 9.gn) ; chemin du formulaire : urssaf.fr,
-          « Comment adapter le montant de vos cotisations ? », mis à jour le 9 avril 2026. La
-          « modulation des cotisations » de l'Urssaf, elle, n'est pas ouverte aux praticiens. Le
-          montant à saisir n'est pas donné ici : aucune source officielle lisible ne dit s'il
-          s'entend avant ou après l'abattement de 26 % (§ 9.gp). */}
+          contrairement à ce que ce pli disait en § 9.gn). Chemin du formulaire (§ 9.gv) : dans
+          l'espace en ligne d'un médecin, une nouvelle demande de la messagerie, objet « Gérer mon
+          moyen de paiement ou les informations relatives au paiement », puis « Réévaluer vos
+          cotisations » (vu dans l'espace du propriétaire le 15 novembre 2026 ; le chemin
+          « Documents et démarches » des pages de l'Urssaf est celui d'autres professions). Le
+          montant à saisir n'est pas donné ici : le formulaire demande des « revenus estimés »
+          sans dire s'ils s'entendent avant ou après l'abattement de 26 %. */}
       <p className="sim-paie-astuce">
         <Lightbulb className="h-4 w-4" aria-hidden="true" />
         <span>
           {isRSPM
             ? <>Revenus qui changent beaucoup{'\u00a0'}? Tu peux </>
-            : <>Revenus qui changent beaucoup{'\u00a0'}? L'Urssaf recalcule tes cotisations de l'année sur une estimation de tes revenus, si tu le demandes dans ton espace en ligne («{'\u00a0'}Documents et démarches{'\u00a0'}», puis «{'\u00a0'}Réévaluer vos cotisations{'\u00a0'}»){avecCarmf ? <>{'\u00a0'}; la CARMF fait de même pour ta retraite de base, sur demande</> : null}. Et tu peux </>}
+            : <>Revenus qui changent beaucoup{'\u00a0'}? L'Urssaf recalcule tes cotisations de l'année sur une estimation de tes revenus, si tu le demandes depuis la messagerie de ton espace en ligne (nouvelle demande, «{'\u00a0'}Réévaluer vos cotisations{'\u00a0'}»){avecCarmf ? <>{'\u00a0'}; la CARMF fait de même pour ta retraite de base, sur demande</> : null}. Et tu peux </>}
           <a
             href="https://www.impots.gouv.fr/particulier/le-prelevement-la-source"
             target="_blank" rel="noopener noreferrer"

@@ -794,11 +794,14 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   articles qui les citent (`rspm-exemples-concrets`, `guide-impots-internes-remplacants`,
   `tout-comprendre-carmf`, `tout-comprendre-urssaf`).
   Estimation des revenus (§ 9.gp) : l'Urssaf recalcule les cotisations de l'année sur une
-  estimation, sur demande (« Documents et démarches », « Réévaluer vos cotisations ») ; la loi en
-  vigueur (CSS L131-6-2) ne prévoit plus de majoration pour une estimation trop basse, ne pas le
-  récrire ; la « modulation des cotisations » n'est pas ouverte aux praticiens. Le montant à saisir
-  dans ce formulaire ne s'affiche pas tant qu'une source ne dit pas s'il s'entend avant ou après
-  l'abattement de 26 %.
+  estimation, sur demande ; la loi en vigueur (CSS L131-6-2) ne prévoit plus de majoration pour
+  une estimation trop basse, ne pas le récrire. Chemin, pour un médecin (§ 9.gv, vu dans l'espace
+  du propriétaire) : la messagerie de l'espace en ligne, nouvelle demande, objet « Gérer mon moyen
+  de paiement ou les informations relatives au paiement », puis « Réévaluer vos cotisations » ; pas
+  « Documents et démarches », qui est le menu d'autres professions. Un chemin dans un espace en
+  ligne ne s'écrit que vu dans l'espace d'un médecin, pas d'après une page d'aide générale. Le
+  montant à saisir ne s'affiche pas : le formulaire (« Revenus estimés conventionnés », « Autres
+  revenus estimés ») ne dit pas s'il s'entend avant ou après l'abattement de 26 %.
   Ligne de confiance (§ 9.gp) : sous les repères, « Barèmes 2026 vérifiés le … sur les sources
   officielles » et quatre liens. La date est `SIMULATEUR_LAST_UPDATED_ISO`
   (`src/lib/pages-lastmod.ts` ; aussi le `lastmod` de `/simulateur` et le `dateModified` de son

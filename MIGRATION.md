@@ -14707,6 +14707,41 @@ questions). `episodeNumber: 18` : il passe à la une. `readTime` 19 min.
 passe. Feuille commune inchangée. Pages changées contre `main` : le nouvel article, `/blog`,
 la page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile :
 97 / 100 / 100 / 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
+### 9.gv Simulateur : le vrai chemin pour faire réévaluer ses cotisations à l'Urssaf (15 novembre 2026)
+
+**Une erreur de § 9.gp, corrigée.** L'astuce du pli « Quand et comment tu paies » envoyait vers
+« Documents et démarches », puis « Réévaluer vos cotisations ». Ce chemin vient de pages de l'Urssaf
+écrites pour d'autres professions (professions libérales réglementées) ; une autre de ses pages
+donne « Cotisations et paiements », « Revenus ». Aucun des deux n'existe dans l'espace en ligne
+d'un médecin, dont les onglets sont Accueil, Compte, Paiement, Mon Profil, Documents, Actualités,
+Messagerie (captures du propriétaire, 15 novembre 2026). Le formulaire s'y ouvre par une nouvelle
+demande de la messagerie, objet « Gérer mon moyen de paiement ou les informations relatives au
+paiement (RIB BIC/Iban, périodicité, réévaluer vos cotisations) », puis « Réévaluer vos
+cotisations ».
+
+Astuce, avant : « … si tu le demandes dans ton espace en ligne (« Documents et démarches », puis
+« Réévaluer vos cotisations ») … » ; après : « … si tu le demandes depuis la messagerie de ton
+espace en ligne (nouvelle demande, « Réévaluer vos cotisations ») … ». Le reste de la phrase est
+inchangé.
+
+**Le montant à saisir : point clos, rien n'est affiché.** Le formulaire demande « Revenus estimés
+conventionnés de l'année 2026 » (obligatoire) et « Autres revenus estimés de l'année 2026 », avec
+pour seule aide « Montant en euro sans décimale ». Rien ne dit s'il s'agit du revenu avant ou après
+l'abattement de 26 % : le simulateur ne donne donc pas de montant à recopier (condition posée en
+§ 9.gp).
+
+**Autre phrase fausse de § 9.gp.** « La « modulation des cotisations » […] n'est pas ouverte aux
+praticiens : le mot n'est pas employé pour les cotisations. » Le formulaire dit lui-même « procéder
+à une modulation de mes versements provisionnels ». La phrase est retirée de CLAUDE.md et du
+commentaire du composant ; le texte affiché n'employait pas le mot et ne change pas sur ce point.
+
+**Règle retenue** (CLAUDE.md) : un chemin dans un espace en ligne ne s'écrit que vu dans l'espace
+d'un médecin, pas d'après une page d'aide générale.
+
+**Contrôles.** Chromium : astuce lue dans le pli à 390 et 1 280 px, le pli ne change pas de
+hauteur à l'arrivée de l'exemple ; essais des § 9.go et 9.gp repassés. `verify-site.mjs` sans
+erreur ; feuille commune inchangée ; comparé à la production, aucune page ne diffère (le texte est
+dans l'îlot, rendu après le calcul).
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
