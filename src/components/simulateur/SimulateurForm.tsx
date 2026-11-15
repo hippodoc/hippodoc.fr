@@ -1221,7 +1221,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                     régulateurs adhérents au RSPM », édition 2026 ; cotisations confirmées par
                                     l'Urssaf (« Le service simplifié pour les médecins », 13 novembre 2026). Le dépliant dit
                                     « invalidité totale et définitive », et ne donne l'âge (moins de 62 ans) que pour les
-                                    indemnités journalières : la bulle aussi (§ 9.gs). */}
+                                    indemnités journalières : la bulle aussi (§ 9.gt). */}
                                 <table className="sim-rid">
                                   <thead>
                                     <tr><th scope="col"><span className="sr-only">Ce qui est couvert</span></th><th scope="col">À 25{'\u00a0'}%</th><th scope="col">À 100{'\u00a0'}%</th></tr>
