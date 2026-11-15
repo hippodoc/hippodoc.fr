@@ -15204,7 +15204,7 @@ Pas de « Dr » : les signatures validées n'en portent pas.
 
 **Contrôles.**
 - `npm run build` et `verify-site.mjs` : aucune erreur. Le plancher de mots de l'accueil tient.
-- **Comparé au build de `main` (78c50ef) :** seul `index.html` diffère, et seulement dans les quatre
+- **Comparé au build de `main` (b5edf4e, après la fusion de la PR 198) :** seul `index.html` diffère, et seulement dans les quatre
   cartes.
   - La feuille commune (`_astro_assets.BqFlQkaI.css`) et celle de l'accueil
     (`index.D134I3Nh.css`) sont inchangées.
