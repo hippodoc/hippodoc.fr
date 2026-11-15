@@ -21,7 +21,7 @@ export interface EtapeRemplacant {
 export const ETAPES_REMPLACANT: EtapeRemplacant[] = [
   {
     titre: 'Tu centralises tes journées',
-    accroche: 'Tous tes cabinets dans un calendrier, synchronisé avec Google Agenda.',
+    accroche: 'Tous tes cabinets dans un calendrier, exportable vers Google Agenda.',
     detail: "Codes d'accès, consignes et taux notés par lieu, fiche de passation prête.",
   },
   {

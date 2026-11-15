@@ -91,7 +91,8 @@ const ICONES: Record<string, string> = {
   forum: '<path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/>',
   cotations: '<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>',
 };
-const AUSSI = [
+/* `mini` : nom plus court encore, sous 360 px seulement (deux outils). */
+const AUSSI: { nom: string; outils: { court: string; mini?: string; long: string; icone: string }[] }[] = [
   {
     nom: 'Activité',
     outils: [
@@ -106,7 +107,7 @@ const AUSSI = [
     outils: [
       { court: 'Factures', long: 'Factures en PDF', icone: 'facture' },
       { court: 'PDSA', long: 'PDSA et revenus exonérés', icone: 'garde' },
-      { court: 'Salariat', long: 'Revenus salariés', icone: 'salarie' },
+      { court: 'Revenus salariés', mini: 'Salariat', long: 'Revenus salariés', icone: 'salarie' },
     ],
   },
   {
@@ -122,7 +123,7 @@ const AUSSI = [
     nom: 'Analyses',
     outils: [
       { court: 'Statistiques', long: 'Statistiques', icone: 'courbe' },
-      { court: 'Par structure', long: 'Revenus par structure', icone: 'structure' },
+      { court: 'Revenus par structure', mini: 'Par structure', long: 'Revenus par structure', icone: 'structure' },
       { court: 'Prévisionnel', long: 'Prévisionnel', icone: 'calcul' },
       { court: 'Budget', long: 'Budget', icone: 'camembert' },
       { court: 'Exports', long: 'Exports Excel et PDF', icone: 'export' },
@@ -313,7 +314,7 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
             entre deux balises s'ajouterait à l'écart entre deux groupes. */}
         {AUSSI.map((g) => (
           <div class="groupe"><p class="groupe-t">{g.nom}</p><ul class="outils" role="list">{g.outils.map((o) => (
-            <li class="outil"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES[o.icone]} /><span class="short">{o.court}</span><span class="long">{o.long}</span></li>
+            <li class="outil"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONES[o.icone]} />{o.mini ? <Fragment><span class="short a-mini">{o.court}</span><span class="mini">{o.mini}</span></Fragment> : <span class="short">{o.court}</span>}<span class="long">{o.long}</span></li>
           ))}</ul></div>
         ))}
       </div>
@@ -554,10 +555,15 @@ const nbCases = formulaires.reduce((n, f) => n + f.cases.length, 0);
   .groupe, .outils { display: inline; }
   .outils { margin: 0; padding: 0; list-style: none; }
   .outil { display: inline-flex; align-items: center; min-height: 30px; margin: 0 5px 5px 0; padding: 3px 11px; border-radius: var(--r-pill); background: var(--sky-soft); font-size: 14px; line-height: 1.2; color: var(--ink); vertical-align: top; }
-  .outil .ico, .outil .long { display: none; }
+  .outil .ico, .outil .long, .outil .mini { display: none; }
+  /* Sous 360 px, deux noms courts en plus court (`mini`) : « Revenus salariés » et
+     « Revenus par structure » y demandaient une neuvième rangée de pastilles, et la
+     vue dépassait les autres de 29 px à 320 px. */
   @media (max-width: 359px) {
     .aussi { gap: 12px; }
     .outil { padding-inline: 9px; font-size: 13.5px; }
+    .outil .a-mini { display: none; }
+    .outil .mini { display: inline; }
   }
   @media (min-width: 720px) {
     .aussi { gap: 22px; }
