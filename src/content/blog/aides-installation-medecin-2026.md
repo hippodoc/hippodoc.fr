@@ -56,23 +56,27 @@ Son comptable avait raison. L’aide dont tout le monde parle a effectivement fo
 
 ## Quatre dates qui ont tout changé
 
-**1er janvier.** Les quatre contrats démographiques de l’Assurance Maladie (CAIM, COSCOM, COTRAM et CSTM, ses contrats d’aide aux médecins en zone sous-dotée) sont fermés aux nouvelles adhésions. Le CAIM pouvait aller jusqu’à 50 000 € pour quatre jours d’exercice par semaine, versés moitié à la signature et moitié un an après, contre un engagement de cinq ans dans la zone. À la place, l’Assurance Maladie verse une somme unique, une seule fois. Les contrats en cours vont à leur terme : un CAIM court jusqu’au bout, et la majoration de zone du forfait médecin traitant (détaillée plus bas) n’est pas versée pendant ce temps ; un COSCOM ou un COTRAM continue, sauf si tu le résilies : tu touches alors la majoration.
+**1er janvier.** Les quatre contrats démographiques de l’Assurance Maladie (CAIM, COSCOM, COTRAM et CSTM, ses contrats d’aide aux médecins en zone sous-dotée) sont **fermés aux nouvelles adhésions**. Le CAIM pouvait aller jusqu’à 50 000 € pour quatre jours d’exercice par semaine, versés moitié à la signature et moitié un an après, contre un engagement de cinq ans dans la zone. À la place, l’Assurance Maladie verse **une somme unique, une seule fois**.
 
-**6 février.** Le décret n° 2026-69, pris pour l’article 23 de la loi de financement de la sécurité sociale pour 2026, plafonne à **25 %** l’exonération de cotisations de début d’activité, l’aide aux créateurs, alors qu’elle pouvait être totale pour les revenus modestes. Elle reste réservée à certains publics, et elle n’est plus automatique depuis le 1er janvier 2026 : il faut la demander à l’Urssaf dans les 60 jours.
+Les contrats en cours vont à leur terme : un CAIM court jusqu’au bout, et la majoration de zone du forfait médecin traitant (détaillée plus bas) n’est pas versée pendant ce temps ; un COSCOM ou un COTRAM continue, sauf si tu le résilies : tu touches alors la majoration.
 
-**19 février.** La loi de finances pour 2026 (loi n° 2026-103) crée l’article **44 octies B** du code général des impôts : une exonération d’impôt sur les bénéfices en quartier prioritaire de la politique de la ville, ouverte au commerce, à l’artisanat et aux professions de santé. Elle succède aux zones franches urbaines, fermées aux créations après le 31 décembre 2025, mais sur une autre carte.
+**6 février.** Le décret n° 2026-69, pris pour l’article 23 de la loi de financement de la sécurité sociale pour 2026, plafonne à **25 %** l’exonération de cotisations de début d’activité, l’aide aux créateurs, alors qu’elle pouvait être totale pour les revenus modestes. Elle reste réservée à certains publics, et elle n’est plus automatique depuis le 1er janvier 2026 : **il faut la demander à l’Urssaf dans les 60 jours**.
 
-**11 juin.** Le Sénat vote l’article 1er de la proposition de loi contre les déserts médicaux, dans une version allégée, puis l’examen s’arrête. Rien n’est promulgué. Mais les deux chambres ont désormais voté une forme de régulation de l’installation.
+**19 février.** La loi de finances pour 2026 (loi n° 2026-103) crée l’article **44 octies B** du code général des impôts : **une exonération d’impôt sur les bénéfices en quartier prioritaire** de la politique de la ville, ouverte au commerce, à l’artisanat et aux professions de santé. Elle succède aux zones franches urbaines, fermées aux créations après le 31 décembre 2025, mais sur une autre carte.
+
+**11 juin.** Le Sénat vote l’article 1er de la proposition de loi contre les déserts médicaux, dans une version allégée, puis l’examen s’arrête. **Rien n’est promulgué.** Mais les deux chambres ont désormais voté une forme de régulation de l’installation.
 
 ## Deux zonages, deux cartes
 
 Avant les montants, une question décide de tout : dans quel zonage est ta commune ? Il y en a deux, et ce ne sont pas les mêmes cartes.
 
-Le **zonage santé** classe les communes en zone d’intervention prioritaire (ZIP, la plus en tension) ou en zone d’action complémentaire (ZAC). Il est arrêté par ton agence régionale de santé (ARS) et ouvre les aides de l’Assurance Maladie. Il bouge : une nouvelle méthode nationale a été fixée par l’arrêté du 9 mai 2025, et les régions ont publié leurs nouveaux arrêtés entre fin 2025 et l’été 2026. Vérifie sur la carte de ton ARS ou sur rezonemed.ameli.fr, puis sur l’arrêté, qui seul fait foi, et fais confirmer le classement par écrit par ta caisse. Ces zonages sont construits sur l’accès à la médecine générale : un spécialiste peut toucher l’aide en ZIP, mais la carte ne mesure pas la densité de sa propre spécialité.
+Le **zonage santé** classe les communes en zone d’intervention prioritaire (ZIP, la plus en tension) ou en zone d’action complémentaire (ZAC). Il est arrêté par ton agence régionale de santé (ARS) et ouvre les aides de l’Assurance Maladie. Il bouge : une nouvelle méthode nationale a été fixée par l’arrêté du 9 mai 2025, et les régions ont publié leurs nouveaux arrêtés entre fin 2025 et l’été 2026. Vérifie sur la carte de ton ARS ou sur rezonemed.ameli.fr, puis sur l’arrêté, qui seul fait foi, et **fais confirmer le classement par écrit par ta caisse**.
 
-Le **zonage fiscal** est fixé par l’État : arrêtés pour les [zones France ruralités revitalisation](/blog/zones-frr-exoneration-impot-medecin) (ZFRR, et ZFRR+ pour les communes rurales les plus fragiles), décret pour les quartiers prioritaires. Les anciennes zones de revitalisation rurale qui ont perdu leur classement figurent aussi en annexe de l’arrêté ZFRR (communes « bénéficiant des effets du classement ») et ouvrent le même droit jusqu’en 2029 : ne les écarte pas trop vite. Ce zonage fiscal ouvre l’exonération d’impôt sur le bénéfice, et l’ARS n’en est pas l’interlocutrice : vérifie la liste officielle toi-même. Il te protège aussi : si ta commune sort de la liste après ton installation, tu gardes l’exonération jusqu’à son terme.
+Ces zonages sont construits sur l’accès à la médecine générale : un spécialiste peut toucher l’aide en ZIP, mais la carte ne mesure pas la densité de sa propre spécialité.
 
-Une commune peut être dans un zonage sans être dans l’autre.
+Le **zonage fiscal** est fixé par l’État : arrêtés pour les [zones France ruralités revitalisation](/blog/zones-frr-exoneration-impot-medecin) (ZFRR, et ZFRR+ pour les communes rurales les plus fragiles), décret pour les quartiers prioritaires. Les anciennes zones de revitalisation rurale qui ont perdu leur classement figurent aussi en annexe de l’arrêté ZFRR (communes « bénéficiant des effets du classement ») et ouvrent le même droit jusqu’en 2029 : ne les écarte pas trop vite. Ce zonage fiscal ouvre l’exonération d’impôt sur le bénéfice, et l’ARS n’en est pas l’interlocutrice : **vérifie la liste officielle toi-même**. Il te protège aussi : si ta commune sort de la liste après ton installation, **tu gardes l’exonération jusqu’à son terme**.
+
+**Une commune peut être dans un zonage sans être dans l’autre.**
 
 ## Ce que verse l’Assurance Maladie
 
@@ -82,15 +86,19 @@ Une commune peut être dans un zonage sans être dans l’autre.
 | Première installation en ZAC | 5 000 € | une fois, dans les 3 mois |
 | Création d’un cabinet secondaire en ZIP | 3 000 € | une fois, dans les 3 mois |
 
-Trois conditions cumulatives : première installation en exercice libéral conventionné ; secteur 1, ou secteur 2 avec l’Optam ou l’Optam-ACO (deux options de maîtrise des dépassements ; on adhère à l’une ou à l’autre) ; commune classée. Aucune restriction de spécialité pour les 10 000 € et les 5 000 €. Le cabinet secondaire, lui, suppose une **création**, pas la reprise du cabinet d’un confrère, et six spécialités en sont exclues : radiologie, radiothérapie, stomatologie, anesthésie, anatomo-cytopathologie, médecine nucléaire. En secteur 2 sans Optam, aucune de ces aides. L’Optam les ouvre, mais il t’engage sur un taux de dépassement et une part d’activité au tarif opposable, fixés pour un primo-installé à partir de la moyenne régionale de ta spécialité : fais le calcul avant d’adhérer pour 10 000 €.
+**Trois conditions cumulatives** : première installation en exercice libéral conventionné ; secteur 1, ou secteur 2 avec l’Optam ou l’Optam-ACO (deux options de maîtrise des dépassements ; on adhère à l’une ou à l’autre) ; commune classée. Aucune restriction de spécialité pour les 10 000 € et les 5 000 €.
 
-Et pas de seconde fois : depuis le décret n° 2025-231 du 12 mars 2025, une nouvelle aide à l’installation de l’Assurance Maladie n’est pas possible avant dix ans à compter de la précédente.
+Le cabinet secondaire, lui, suppose une **création**, pas la reprise du cabinet d’un confrère, et six spécialités en sont exclues : radiologie, radiothérapie, stomatologie, anesthésie, anatomo-cytopathologie, médecine nucléaire. **En secteur 2 sans Optam, aucune de ces aides.** L’Optam les ouvre, mais il t’engage sur un taux de dépassement et une part d’activité au tarif opposable, fixés pour un primo-installé à partir de la moyenne régionale de ta spécialité : **fais le calcul avant d’adhérer pour 10 000 €**.
 
-Spécialiste ? Ton secteur se décide à ta première installation, une seule fois. Le secteur 2 suppose un titre (ancien chef de clinique, assistant des hôpitaux après deux ans de fonctions, praticien hospitalier nommé à titre permanent), et une installation en secteur 1 ne se rattrape pas. Ton assistanat n’est pas terminé ? Ne t’installe pas pour 10 000 € avant d’avoir ton titre.
+Et pas de seconde fois : depuis le décret n° 2025-231 du 12 mars 2025, une nouvelle aide à l’installation de l’Assurance Maladie n’est **pas possible avant dix ans** à compter de la précédente.
+
+Spécialiste ? Ton secteur se décide à ta première installation, une seule fois. Le secteur 2 suppose un titre (ancien chef de clinique, assistant des hôpitaux après deux ans de fonctions, praticien hospitalier nommé à titre permanent), et **une installation en secteur 1 ne se rattrape pas**. Ton assistanat n’est pas terminé ? Ne t’installe pas pour 10 000 € avant d’avoir ton titre.
 
 ## Et chaque année, ce que la caisse finance
 
-**La majoration de zone du forfait médecin traitant** revient chaque année : +50 % sur la part socle du forfait la première année si tu es primo-installé en ZIP ou en quartier prioritaire, +30 % la deuxième, +10 % ensuite. Fais confirmer par ta caisse l’année retenue comme première année. Elle est automatique, réservée au secteur 1 et à l’Optam, et calculée sur la patientèle dont tu es médecin traitant au 31 décembre de l’année précédente. C’est là que les spécialités divergent : la majoration suit le forfait médecin traitant, pas la spécialité. Un pédiatre ou un psychiatre déclaré médecin traitant y a droit ; un spécialiste sans patientèle médecin traitant, non. Les 10 000 € et l’exonération d’impôt, eux, ne dépendent pas de la spécialité.
+**La majoration de zone du forfait médecin traitant** revient chaque année : **+50 %** sur la part socle du forfait la première année si tu es primo-installé en ZIP ou en quartier prioritaire, +30 % la deuxième, +10 % ensuite. Fais confirmer par ta caisse l’année retenue comme première année. Elle est automatique, **réservée au secteur 1 et à l’Optam**, et calculée sur la patientèle dont tu es médecin traitant au 31 décembre de l’année précédente.
+
+C’est là que les spécialités divergent : la majoration suit le forfait médecin traitant, pas la spécialité. Un pédiatre ou un psychiatre déclaré médecin traitant y a droit ; un spécialiste sans patientèle médecin traitant, non. Les 10 000 € et l’exonération d’impôt, eux, ne dépendent pas de la spécialité.
 
 **La participation aux cotisations du secteur 1** est la décision la plus structurante de l’installation, et la moins bien expliquée. En secteur 1, l’Assurance Maladie paie :
 
@@ -99,7 +107,7 @@ Spécialiste ? Ton secteur se décide à ta première installation, une seule fo
 - tes allocations familiales en totalité sous 67 284 € de revenu conventionné, puis 75 % et 60 % au-delà ;
 - une part de la retraite de base : 2,15 % des revenus sous 67 284 €, puis 1,51 % et 1,12 %.
 
-Le calcul porte sur les revenus conventionnés hors dépassements. En secteur 2, même en Optam, la caisse ne paie pas tes cotisations : l’Optam verse à la place une prime annuelle, si tu tiens tes engagements ; l’Optam-ACO, des majorations sur certains actes.
+Le calcul porte sur les revenus conventionnés hors dépassements. En secteur 2, même en Optam, **la caisse ne paie pas tes cotisations** : l’Optam verse à la place une prime annuelle, si tu tiens tes engagements ; l’Optam-ACO, des majorations sur certains actes.
 
 ## Le plus gros chèque ne vient pas de l’Assurance Maladie
 
@@ -115,10 +123,10 @@ Ce que ça pèse, pour un célibataire sans autre revenu, au barème 2026, le de
 |---|---|---|
 | 40 000 € | ≈ 5 100 € | ≈ 25 500 € |
 | 55 000 € | ≈ 9 600 € | ≈ 48 000 € |
-| 70 000 € | ≈ 14 100 € | ≈ 70 500 € |
+| 70 000 € | ≈ 14 100 € | **≈ 70 500 €** |
 | 90 000 € | ≈ 20 700 € | ≈ 103 500 € |
 
-Les trois années dégressives qui suivent ne sont pas comptées : en ZFRR, à 70 000 € de bénéfice, elles ajoutent encore environ 29 000 €, soit près de 100 000 € sur huit ans ; en quartier prioritaire, les années dégressives ajoutent environ 25 000 €. Aucun plafond en euros, ni en ZFRR ni en quartier prioritaire, en dehors du plafond européen de 300 000 € d’aides sur trois exercices glissants. Toutes les spécialités sont concernées.
+Les trois années dégressives qui suivent ne sont pas comptées : en ZFRR, à 70 000 € de bénéfice, elles ajoutent encore environ 29 000 €, soit près de 100 000 € sur huit ans ; en quartier prioritaire, les années dégressives ajoutent environ 25 000 €. **Aucun plafond en euros**, ni en ZFRR ni en quartier prioritaire, en dehors du plafond européen de 300 000 € d’aides sur trois exercices glissants. Toutes les spécialités sont concernées.
 
 Les conditions : moins de 11 salariés en ZFRR, moins de 50 en quartier prioritaire, et une activité implantée en zone. Reste la question des recettes faites hors zone (tes remplacements ailleurs, par exemple) :
 
@@ -127,9 +135,11 @@ Les conditions : moins de 11 salariés en ZFRR, moins de 50 en quartier priorita
 - **En ZFRR+** : l’exonération suit la part des recettes faites en zone.
 - **En quartier prioritaire** : proportionnelle à la part faite dans le quartier pour un cabinet fixe ; totale pour une activité non sédentaire dès que 25 % au moins des recettes y sont faites.
 
-Avoir bénéficié d’un autre régime de zone dans les **cinq années précédentes** ferme la porte. Si plusieurs régimes s’appliquent, il faut en choisir un dans les **six mois** du début d’activité, définitivement.
+Avoir bénéficié d’un autre régime de zone dans les **cinq années précédentes** **ferme la porte**. Si plusieurs régimes s’appliquent, il faut en choisir un dans les **six mois** du début d’activité, définitivement.
 
-Et une condition qu’on oublie : si tu cesses ton activité en zone pour la transférer dans un lieu non classé moins de cinq ans après ta dernière année exonérée, l’impôt économisé redevient exigible, avec l’intérêt de retard en ZFRR. Rester en ZFRR ou en ZFRR+, ou passer d’un quartier prioritaire à un autre, ne déclenche rien ; passer d’une ZFRR à un quartier prioritaire, ou l’inverse, si. Arrêter le libéral pour devenir salarié ne déclenche rien non plus, faute de transfert : l’administration prend elle-même l’exemple d’un généraliste devenu médecin du travail.
+:::warning
+**Et une condition qu’on oublie :** si tu cesses ton activité en zone pour la transférer dans un lieu non classé moins de cinq ans après ta dernière année exonérée, l’impôt économisé redevient exigible, avec l’intérêt de retard en ZFRR. Rester en ZFRR ou en ZFRR+, ou passer d’un quartier prioritaire à un autre, ne déclenche rien ; passer d’une ZFRR à un quartier prioritaire, ou l’inverse, si. Arrêter le libéral pour devenir salarié ne déclenche rien non plus, faute de transfert : l’administration prend elle-même l’exemple d’un généraliste devenu médecin du travail.
+:::
 
 :::tip
 **L’astuce.** Commune en ZFRR classique et tu démarres au micro-BNC ? Opte pour le régime réel (la déclaration contrôlée) **dès ta première année d’activité en zone** : coche-le dès ta déclaration d’activité sur le guichet unique de l’Inpi, et dépose à temps ta première 2035 (la déclaration de résultats des libéraux au réel) : c’est elle qui vaut option. Opter plus tard ne rattrape rien : une activité qui ne remplit pas les conditions dès sa création n’y a jamais droit, même si elle les remplit ensuite. Cinq ans de bénéfice non imposé pèsent souvent plus lourd que l’abattement forfaitaire de 34 % du [micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel). L’option vaut un an, se reconduit tacitement, et il faut la garder tant que dure l’exonération.
@@ -143,49 +153,85 @@ C’est l’information la plus neuve du dossier, et elle vient de la doctrine f
 
 Première conséquence, plutôt une bonne nouvelle : le compteur part de ton **début d’activité en zone**, pas de ton installation, si tu remplissais déjà les conditions et que ce début est postérieur au 1er juillet 2024. Un cas fréquent : une remplaçante s’installe dans la zone où elle remplaçait depuis six mois, et son comptable fait partir l’exonération de son premier remplacement. C’est juste, si elle remplissait déjà les conditions.
 
-Seconde conséquence, l’envers du décor : un remplaçant qui s’installe ensuite dans la commune classée où il remplaçait poursuit son activité aux yeux du fisc. Pas de nouvelle période. S’il était exonéré, il garde les années qui restent ; s’il ne l’était pas, par exemple parce qu’il remplaçait au micro-BNC en ZFRR classique, il n’a rien. S’installer dans une autre commune classée ne relance pas non plus le compteur pour qui était déjà exonéré ; pour qui ne l’était pas, la doctrine ne tranche pas nettement : demande un rescrit. Ces règles visent explicitement les médecins remplaçants qui voudraient enchaîner les périodes en changeant de zone. Et un remplaçant exonéré qui s’installe ensuite hors zone moins de cinq ans après sa dernière année exonérée rembourse l’impôt économisé pendant ses remplacements.
+Seconde conséquence, l’envers du décor : un remplaçant qui s’installe ensuite dans la commune classée où il remplaçait poursuit son activité aux yeux du fisc. **Pas de nouvelle période.** S’il était exonéré, il garde les années qui restent ; s’il ne l’était pas, par exemple parce qu’il remplaçait au micro-BNC en ZFRR classique, il n’a rien.
 
-À l’inverse, un médecin qui vient de l’extérieur de la zone et s’y installe est traité comme une création, même s’il transfère des moyens ou garde une partie de sa patientèle, à condition de ne garder aucun cabinet hors zone et de n’avoir eu aucun régime de zone ces cinq dernières années.
+S’installer dans une autre commune classée ne relance pas non plus le compteur pour qui était déjà exonéré ; pour qui ne l’était pas, la doctrine ne tranche pas nettement : demande un rescrit. Ces règles visent explicitement les médecins remplaçants qui voudraient enchaîner les périodes en changeant de zone. Et un remplaçant exonéré qui s’installe ensuite hors zone moins de cinq ans après sa dernière année exonérée **rembourse l’impôt économisé pendant ses remplacements**.
 
-La seule vraie sécurité : un **rescrit** (une réponse écrite de l’administration fiscale, qui l’engage) demandé au service des impôts avant de t’installer, avec une description complète de ta situation (dates, communes, régime, recettes hors zone, et toute autre activité exercée sous le même numéro SIREN, une location meublée par exemple). Pour un projet de création, le silence de l’administration pendant trois mois vaut accord ; si tu remplaces déjà en zone, le fisc peut considérer que la création a déjà eu lieu : attends alors sa réponse écrite. Et si tu exerces déjà au réel en zone sans avoir déclaré l’exonération, tu peux la réclamer jusqu’au 31 décembre de la deuxième année qui suit ton avis d’imposition, à condition que tes 2035 aient été déposées dans les délais.
+À l’inverse, un médecin qui vient de l’extérieur de la zone et s’y installe **est traité comme une création**, même s’il transfère des moyens ou garde une partie de sa patientèle, à condition de ne garder aucun cabinet hors zone et de n’avoir eu aucun régime de zone ces cinq dernières années.
+
+La seule vraie sécurité : un **rescrit** (une réponse écrite de l’administration fiscale, qui l’engage) demandé au service des impôts avant de t’installer, avec une description complète de ta situation (dates, communes, régime, recettes hors zone, et toute autre activité exercée sous le même numéro SIREN, une location meublée par exemple).
+
+Pour un projet de création, **le silence de l’administration pendant trois mois vaut accord** ; si tu remplaces déjà en zone, le fisc peut considérer que la création a déjà eu lieu : **attends alors sa réponse écrite**. Et si tu exerces déjà au réel en zone sans avoir déclaré l’exonération, tu peux la réclamer jusqu’au 31 décembre de la deuxième année qui suit ton avis d’imposition, à condition que tes 2035 aient été déposées dans les délais.
 
 ## Ce que la zone n’efface pas
 
-L’exonération porte sur l’impôt sur le revenu, pas sur les cotisations. Une exception : **l’aide aux créateurs**, 25 % des cotisations maladie, allocations familiales, invalidité-décès et retraite de base pendant 12 mois. Elle est réservée à certains publics, et une création en ZFRR, en ZFRR+ ou en quartier prioritaire en fait partie. Une installation en ZIP seule n’y suffit pas. Elle ne couvre ni la CSG-CRDS ni la retraite complémentaire CARMF, décroît dès 36 045 € de revenu et tombe à zéro à 48 060 € (seuils 2026, qui suivent le plafond de la sécurité sociale). Elle se demande à l’Urssaf dans les 60 jours suivant ton début d’activité, et ne peut pas être obtenue de nouveau dans les trois ans : si tu l’as touchée en démarrant tes remplacements, elle ne reviendra pas à l’installation. Pour un remplaçant déjà déclaré, l’installation n’est d’ailleurs pas toujours une création au sens de l’Urssaf : pose-lui la question.
+**L’exonération porte sur l’impôt sur le revenu, pas sur les cotisations.** Une exception : **l’aide aux créateurs**, 25 % des cotisations maladie, allocations familiales, invalidité-décès et retraite de base pendant 12 mois. Elle est réservée à certains publics, et une création en ZFRR, en ZFRR+ ou en quartier prioritaire en fait partie. Une installation en ZIP seule n’y suffit pas.
 
-Deux autres réalités de trésorerie, peu expliquées. Tes deux premières années civiles d’activité libérale, l’Urssaf et la CARMF appellent tes cotisations sur des revenus forfaitaires (9 131 €, et 19 224 € pour la maladie, en 2026), puis régularisent sur ton vrai bénéfice, en plus des nouvelles provisions : provisionne dès le premier mois, ou demande que tes provisions soient calculées sur ton revenu estimé. Et la retraite complémentaire CARMF n’est pas due les deux premières années civiles d’affiliation si tu avais moins de 40 ans à ton début d’activité libérale : ces deux ans partent de ta première affiliation, remplacements compris, pas de ton installation. Remplaçant depuis plus de deux ans, tu les as déjà consommés.
+Elle ne couvre ni la CSG-CRDS ni la retraite complémentaire CARMF, décroît dès 36 045 € de revenu et tombe à zéro à 48 060 € (seuils 2026, qui suivent le plafond de la sécurité sociale). Elle se demande à l’Urssaf dans les 60 jours suivant ton début d’activité, et **ne peut pas être obtenue de nouveau dans les trois ans** : si tu l’as touchée en démarrant tes remplacements, elle ne reviendra pas à l’installation. Pour un remplaçant déjà déclaré, l’installation n’est d’ailleurs pas toujours une création au sens de l’Urssaf : pose-lui la question.
 
-L’aide de 10 000 € est une recette professionnelle, imposable l’année où tu la touches, et aucun texte ne permet de l’étaler, puisqu’elle ne finance pas un équipement. En zone exonérée, elle tombe dans le bénéfice exonéré et l’impôt peut être nul ; les cotisations, elles, restent dues.
+Deux autres réalités de trésorerie, peu expliquées. Tes deux premières années civiles d’activité libérale, l’Urssaf et la CARMF appellent tes cotisations sur des revenus forfaitaires (9 131 €, et 19 224 € pour la maladie, en 2026), puis régularisent sur ton vrai bénéfice, en plus des nouvelles provisions : **provisionne dès le premier mois**, ou demande que tes provisions soient calculées sur ton revenu estimé.
 
-Quant à la **cotisation foncière des entreprises** (CFE), tu n’en paies pas l’année de la création, et la base est réduite de moitié l’année suivante. Au-delà, tout dépend d’une délibération : en zone rurale, l’exonération des articles 1464 D et 1466 G n’existe que si la commune ou l’intercommunalité a voté ; en quartier prioritaire, c’est l’inverse pour les professions de santé installées depuis 2026 : elle est de droit sauf délibération contraire. Le formulaire **1447-C-SD** porte tes demandes d’exonération : il se dépose avant le 31 décembre de l’année d’installation, il est obligatoire même si tu ne dois rien, et hors délai, l’exonération est perdue pour l’année. Détail qui compte : l’année gratuite s’arrête au 31 décembre. S’installer le 20 décembre la consomme presque entière ; le 2 janvier, tu l’as pleine.
+Et la retraite complémentaire CARMF n’est pas due les deux premières années civiles d’affiliation si tu avais moins de 40 ans à ton début d’activité libérale : ces deux ans partent de ta première affiliation, remplacements compris, pas de ton installation. **Remplaçant depuis plus de deux ans, tu les as déjà consommés.**
+
+L’aide de 10 000 € est **une recette professionnelle, imposable l’année où tu la touches**, et aucun texte ne permet de l’étaler, puisqu’elle ne finance pas un équipement. En zone exonérée, elle tombe dans le bénéfice exonéré et l’impôt peut être nul ; les cotisations, elles, restent dues.
+
+Quant à la **cotisation foncière des entreprises** (CFE), tu n’en paies pas l’année de la création, et la base est réduite de moitié l’année suivante. Au-delà, tout dépend d’une délibération : en zone rurale, l’exonération des articles 1464 D et 1466 G n’existe que si la commune ou l’intercommunalité a voté ; en quartier prioritaire, c’est l’inverse pour les professions de santé installées depuis 2026 : elle est de droit sauf délibération contraire.
+
+:::warning
+Le formulaire **1447-C-SD** porte tes demandes d’exonération : il se dépose avant le 31 décembre de l’année d’installation, il est obligatoire même si tu ne dois rien, et hors délai, l’exonération est perdue pour l’année.
+:::
+
+Détail qui compte : l’année gratuite s’arrête au 31 décembre. **S’installer le 20 décembre la consomme presque entière ; le 2 janvier, tu l’as pleine.**
 
 ## Les guichets que presque personne n’ouvre
 
-L’**assistant médical** est la plus grosse aide conventionnelle : jusqu’à 38 000 € la première année pour un équivalent temps plein, puis 28 000 € et 22 000 €, sur un contrat de cinq ans. Les deux premières années sont versées en entier ; ensuite, le montant dépend d’un objectif de patientèle, que le primo-installé dispose de trois ans pour atteindre. Il faut être en secteur 1 ou en Optam, les six spécialités exclues du cabinet secondaire le sont aussi, et la zone n’entre pas en compte. Si ton cabinet est en ZFRR, l’embauche d’un salarié en CDI ou en CDD d’au moins 12 mois ouvre en plus une exonération de cotisations patronales pendant un an, à demander dans les 30 jours suivant l’embauche.
+L’**assistant médical** est la plus grosse aide conventionnelle : **jusqu’à 38 000 € la première année** pour un équivalent temps plein, puis 28 000 € et 22 000 €, sur un contrat de cinq ans. Les deux premières années sont versées en entier ; ensuite, le montant dépend d’un objectif de patientèle, que le primo-installé dispose de trois ans pour atteindre. Il faut être en secteur 1 ou en Optam, les six spécialités exclues du cabinet secondaire le sont aussi, et la zone n’entre pas en compte.
 
-Depuis le 1er janvier 2026, la fonction de **maître de stage universitaire** rapporte 800 € par an en ZIP et 500 € ailleurs. La participation au **service d’accès aux soins** vaut 1 000 € par an, dans les départements où il est déployé et à condition de rendre une partie de ton agenda visible. La **dotation numérique Donum**, qui remplace le forfait structure, plafonne à 2 940 € par an. Et si tu es installé hors ZIP, les **consultations avancées** paient 200 € par demi-journée de consultation assurée en ZIP, dans la limite de six par mois, quel que soit ton secteur (au tarif opposable en secteur 2 sans Optam) ; les modalités se mettent en place département par département.
+Si ton cabinet est en ZFRR, l’embauche d’un salarié en CDI ou en CDD d’au moins 12 mois ouvre en plus une exonération de cotisations patronales pendant un an, à demander dans les 30 jours suivant l’embauche.
+
+Depuis le 1er janvier 2026, la fonction de **maître de stage universitaire** rapporte **800 € par an en ZIP** et 500 € ailleurs. La participation au **service d’accès aux soins** vaut **1 000 € par an**, dans les départements où il est déployé et à condition de rendre une partie de ton agenda visible. La **dotation numérique Donum**, qui remplace le forfait structure, plafonne à **2 940 € par an**. Et si tu es installé hors ZIP, les **consultations avancées** paient **200 € par demi-journée** de consultation assurée en ZIP, dans la limite de six par mois, quel que soit ton secteur (au tarif opposable en secteur 2 sans Optam) ; les modalités se mettent en place département par département.
 
 Le **contrat de début d’exercice**, qui aide les remplaçants et les étudiants débutant en zone sous-dotée, est en sursis : la loi de financement de la sécurité sociale pour 2026 a programmé sa suppression. Tu débutes tes remplacements dans une telle zone ? Demande vite à ton ARS si elle en signe encore ; sinon, n’en tiens pas compte. S’y ajoutent des aides propres à chaque région : le plus simple est le portail paps.sante.fr de ta région, le référent installation de ton ARS ou l’URPS médecins libéraux (l’union régionale des médecins libéraux).
 
-Enfin, commune, intercommunalité et département peuvent aider par convention : prime, local, logement. Rien n’est normé, c’est le seul guichet où les montants se discutent, et ça se fait avant le bail. Mais depuis le décret du 12 mars 2025, un professionnel qui a touché une aide de collectivité ne peut pas en obtenir une autre pendant **dix ans** à compter de sa dernière convention, même ailleurs, et il signe une attestation sur l’honneur. Cette règle ne vise que les aides des collectivités ; celle de l’Assurance Maladie ne vise que les siennes. Lis aussi le règlement de l’aide : elle engage souvent à exercer plusieurs années sur le territoire, avec un remboursement au prorata en cas de départ, et certaines exigent que le projet démarre après leur vote. Ta Région peut être un guichet de plus, notamment pour l’équipement.
+Enfin, commune, intercommunalité et département peuvent aider par convention : prime, local, logement. Rien n’est normé, **c’est le seul guichet où les montants se discutent, et ça se fait avant le bail**.
+
+:::warning
+Mais depuis le décret du 12 mars 2025, un professionnel qui a touché une aide de collectivité ne peut pas en obtenir une autre pendant **dix ans** à compter de sa dernière convention, même ailleurs, et il signe une attestation sur l’honneur. Cette règle ne vise que les aides des collectivités ; celle de l’Assurance Maladie ne vise que les siennes.
+:::
+
+Lis aussi le règlement de l’aide : elle engage souvent à exercer plusieurs années sur le territoire, avec un remboursement au prorata en cas de départ, et certaines exigent que le projet démarre après leur vote. Ta Région peut être un guichet de plus, notamment pour l’équipement.
 
 ## Et demain ?
 
-L’Assemblée a voté le 7 mai 2025, sur une proposition de loi de Guillaume Garot, une autorisation d’installation dans les zones bien dotées. Le Sénat a voté le 11 juin 2026 une version allégée : en zone bien dotée, un généraliste devrait aussi exercer à temps partiel en zone sous-dotée ; un autre spécialiste, en principe attendre le départ d’un confrère, sauf temps partiel en zone sous-dotée ou dérogation de l’ARS. L’examen a ensuite été suspendu, sans date de reprise annoncée ; une autre proposition du même député, déposée le 6 octobre 2026, vise l’accès à un médecin traitant (part minimale de patientèle médecin traitant pour les généralistes, interdiction des coupe-files payants), sans date d’examen.
+L’Assemblée a voté le 7 mai 2025, sur une proposition de loi de Guillaume Garot, une autorisation d’installation dans les zones bien dotées. Le Sénat a voté le 11 juin 2026 une version allégée : en zone bien dotée, un généraliste devrait aussi exercer à temps partiel en zone sous-dotée ; un autre spécialiste, en principe attendre le départ d’un confrère, sauf temps partiel en zone sous-dotée ou dérogation de l’ARS.
 
-Le projet de loi de financement de la sécurité sociale pour 2027 propose une mission de solidarité territoriale : des journées de consultation en zone prioritaire, volontaires, rémunérées par un forfait en plus des actes, ouvertes aux remplaçants. L’Assemblée a rejeté le texte le 23 octobre 2026 ; le Sénat l’examine depuis le 9 novembre, à partir de la version du gouvernement, avec un vote prévu le 18 novembre. Rien n’est donc encore définitif.
+L’examen a ensuite été suspendu, sans date de reprise annoncée ; une autre proposition du même député, déposée le 6 octobre 2026, vise l’accès à un médecin traitant (part minimale de patientèle médecin traitant pour les généralistes, interdiction des coupe-files payants), sans date d’examen.
+
+Le projet de loi de financement de la sécurité sociale pour 2027 propose une mission de solidarité territoriale : des journées de consultation en zone prioritaire, volontaires, rémunérées par un forfait en plus des actes, ouvertes aux remplaçants. L’Assemblée a rejeté le texte le 23 octobre 2026 ; le Sénat l’examine depuis le 9 novembre, à partir de la version du gouvernement, avec un vote prévu le 18 novembre. **Rien n’est donc encore définitif.**
 
 Pour les internes, novembre 2026 marque l’arrivée des premiers docteurs juniors de médecine générale : une quatrième année, en priorité en zone sous-dotée, avec jusqu’à 1 000 € brut de plus par mois en ZIP. Et le contrat d’engagement de service public verse 1 200 € brut par mois pendant les études, contre un exercice en zone sous-dotée aussi long que l’allocation perçue, deux ans au moins, aux tarifs du secteur 1 si tu es libéral : le rompre coûte l’allocation et une pénalité.
 
-Aujourd’hui, aucune loi n’impose où t’installer. Mais si tu vises une commune bien dotée, garde un œil sur le calendrier.
+Aujourd’hui, **aucune loi n’impose où t’installer**. Mais si tu vises une commune bien dotée, garde un œil sur le calendrier.
 
 ## Et plus tard : ce que vaut ton cabinet
 
-S’installer, c’est aussi construire un capital. Le plus connu, c’est la cession de patientèle à un confrère : elle vaut souvent 25 à 50 % du chiffre d’affaires moyen des trois dernières années en médecine générale, davantage avec un plateau technique, et parfois presque rien là où personne ne reprend. Mais céder, c’est partir.
+S’installer, c’est aussi construire un capital. Le plus connu, c’est la cession de patientèle à un confrère : elle vaut souvent **25 à 50 % du chiffre d’affaires moyen des trois dernières années** en médecine générale, davantage avec un plateau technique, et parfois presque rien là où personne ne reprend. Mais céder, c’est partir.
 
-Il existe un montage beaucoup moins connu, l’**OBO** (owner buy-out) : si tu exerces en société d’exercice libéral, ta propre holding, une société de participations financières de professions libérales (SPFPL), emprunte et te rachète tout ou partie de tes parts. Tu encaisses le prix, tu continues d’exercer, et les bénéfices du cabinet, une fois l’impôt sur les sociétés payé, remontent à la holding presque sans impôt et remboursent le prêt. Le prix, c’est la valeur des parts fixée par un expert : la patientèle, plus la trésorerie et le matériel que détient la société, moins ses dettes. La flat tax (le prélèvement forfaitaire de 31,4 %) porte sur ta plus-value : sur des parts valorisées 150 000 € et créées pour presque rien, il te reste environ 103 000 €. Provisionne l’impôt avant de dépenser.
+Il existe un montage beaucoup moins connu, l’**OBO** (owner buy-out) : si tu exerces en société d’exercice libéral, ta propre holding, une société de participations financières de professions libérales (SPFPL), emprunte et te rachète tout ou partie de tes parts. Tu encaisses le prix, tu continues d’exercer, et les bénéfices du cabinet, une fois l’impôt sur les sociétés payé, remontent à la holding presque sans impôt et remboursent le prêt.
+
+Le prix, c’est la valeur des parts fixée par un expert : la patientèle, plus la trésorerie et le matériel que détient la société, moins ses dettes. La flat tax (le prélèvement forfaitaire de 31,4 %) porte sur ta plus-value : sur des parts valorisées 150 000 € et créées pour presque rien, il te reste environ 103 000 €. Provisionne l’impôt avant de dépenser.
 
 Ce n’est pas pour tout le monde : il faut exercer en société, les banques demandent en général trois bilans, et un montage sans vraie logique économique peut être requalifié par l’administration fiscale. On y consacrera une fiche complète.
+
+## Avant de signer le bail
+
+1. Vérifie ta commune sur les deux cartes : le zonage santé de ton ARS, puis la liste officielle du zonage fiscal.
+2. Fais confirmer le classement par écrit par ta caisse.
+3. En ZFRR classique, opte pour le régime réel dès ta première année d’activité en zone.
+4. Remplaçant déjà en zone, ou un doute sur ta situation : demande un rescrit avant de t’installer.
+5. Secteur 2 : fais le calcul de l’Optam avant d’adhérer pour 10 000 €.
+6. Discute les aides de la commune avant le bail, et lis leur règlement.
+7. Une fois installé : l’aide aux créateurs dans les 60 jours suivant ton début d’activité, le 1447-C-SD avant le 31 décembre.
 
 ## En résumé
 
