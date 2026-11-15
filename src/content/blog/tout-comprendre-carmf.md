@@ -31,6 +31,7 @@ faq:
   - question: "Puis-je être dispensé de cotisations CARMF ?"
     answer: "Une **dispense totale d'affiliation** est possible si ton **revenu net d'activité indépendante reste inférieur à 15 000 €** et que tu n'es pas assujetti à la CET. Attention : elle n'est **pas automatique**, s'obtient sur **demande explicite** auprès de la CARMF et n'est pas rétroactive. La période dispensée ne compte pas pour tes droits à la retraite."
 relatedArticles:
+  - "pause-remplacements-cotisations-medecin"
   - "prevoyance-madelin-medecin"
   - "tout-comprendre-urssaf"
   - "cotisations-sociales-vs-impots"

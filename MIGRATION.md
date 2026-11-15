@@ -14597,6 +14597,77 @@ page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse
 100 / 100 / 100, CLS 0. Même contournement local de la garde de police de l'image de partage
 qu'en § 9.gq (sans commit) : image à contrôler sur l'aperçu Vercel.
 
+### 9.gt Nouvel article : faire une pause dans ses remplacements (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, passe « agréable à lire » comprise (§ 9.gs).
+
+**Fichier et affiche.** `src/content/blog/pause-remplacements-cotisations-medecin.md` ; affiche
+`src/assets/blog/pause-remplacements-cotisations-medecin-cover.jpg`, 1 611 × 2 000 (0,8055),
+réenregistrée sans métadonnées (`sharp`, qualité 90, 511 Ko), empreinte unique. Texte
+lisible, sans faute.
+
+**Thème** : `cotisations-protection` (CARMF, URSSAF, prévoyance, PreParE), celui de
+`tout-comprendre-carmf` et `rspm-exemples-concrets`. Sujet proche mais distinct :
+`medecin-remplacant-travailler-6-mois-par-an` (combien gagner en travaillant moins), lié
+dans les deux sens.
+
+**Frontmatter.** `title` « Pause dans tes remplas : ce qui ne s'arrête pas » (47 signes,
+« | Hippodoc » ajouté), repris de l'affiche : le titre fourni (« Faire une pause dans tes
+remplas : les bonnes démarches (et ce que tu paies quand même) ») faisait 85 signes.
+`description`, `cta` (« Tu veux savoir ce que tu dois garder de côté avant de partir ? »)
+et FAQ de 6 questions écrits ici d'après le texte (`PLANCHER_FAQ` : 61 pages, 409
+questions). `episodeNumber: 18` : il passe à la une. `readTime` 19 min.
+
+**Écarts au texte fourni** (texte brut sans balisage : titres, listes et encadrés posés ici) :
+- ligne « À jour au 8 novembre 2026 » sortie ; date de fin et des sources au 15 novembre
+  2026 (vérifiées ce jour) ; « Sources » en titre, dernier `##`, en liste ;
+- **mise en forme** : « L'essentiel » (d'après « En résumé »), trois `:::warning` sur des
+  passages existants (« la vérité qui dérange », la CFE due pour l'année, la fin de la
+  couverture invalidité-décès), encadré final Hippodoc en `:::tip`, « Au retour » numéroté,
+  « Deux réflexes » en liste, gras (26 pour 1 000 mots) ; le 💡 sort ;
+- **ajouts** (relecture interne novice) : un test « RSPM ou régime classique ? » en tête
+  de « Même à 0 € » ; un paragraphe « Tu remplaces depuis moins de deux ans ? » (déplace
+  et complète l'exception des deux premières années) ; une partie « Avant de partir »
+  datée (décembre, janvier, printemps, avant le départ) ; « Pour une pause de quelques
+  mois, tu peux sauter cette partie » avant la cessation ; titre « Tes assurances et
+  l'Ordre » ;
+- **renvois** : « (on en parle dans la fiche CFE, sur le profil) » et « (voir la fiche
+  maternité, sur le profil) », écrits pour Instagram, deviennent des liens vers
+  `/blog/cfe-medecin-remplacant` et `/blog/conge-maternite-paternite` ;
+- **clarté** : « continue de t'appeler » → « continue de te réclamer des cotisations » ;
+  « rétro » → « remplacement » ; « année off » → « année sabbatique » ; sigles définis
+  (ASV, CFE, CRDS, PreParE dans la FAQ) ; phrase « 6 860 € pour 20 000 € » remplacée par
+  « (calcul fait avec le barème officiel du guide CARMF 2026) » ; « réforme de l'assiette
+  sociale de 2026 » retirée de la phrase sur l'estimation URSSAF ; six mois à l'étranger :
+  « Six mois pile de voyage, c'est la limite : demande à ta CPAM, par écrit » ;
+- **corrections factuelles** (relecture conseiller CARMF, deux passes) :
+  - ASV proportionnelle : seuil de 63 900 € sur le **revenu conventionné** (et non les
+    honoraires), comme le calcul d'Inès (carmf.fr, « réductions » ; guide du cotisant 2026) ;
+  - couverture invalidité-décès : s'arrête **à la date de la radiation** (premier jour du
+    trimestre civil suivant), pas « aussitôt » ;
+  - deux premières années : à la CARMF, seule la retraite de base est régularisée ;
+  - modulation du prélèvement : « le seuil de 10 % est passé à 5 % en 2023 » (la condition
+    des 200 € était tombée en 2020) ;
+  - Nathan : « environ 5 500 € » (PreParE revalorisée chaque 1er avril) ; Inès : « environ
+    2 400 € » (720 + 1 690 = 2 410).
+  Vérifiés justes : tous les montants CARMF 2026 (626, 573, 11,8 %, 1 917 / 5 751, 3 % / 9 %,
+  dispenses, 8 566 €), l'exemple d'Inès (retraite de base à 8,45 % en secteur 1), CFP, IJ,
+  radiation d'office, calendrier des acomptes, CFE, cessation temporaire, PreParE. Non
+  tranchés faute de texte : la déclaration RSPM à 0 €, le non-cumul PreParE et congé de
+  naissance pour un libéral (laissés tels que fournis).
+
+**Liens.** Dans le texte : CARMF → `/blog/tout-comprendre-carmf`, RSPM →
+`/blog/rspm-exemples-concrets`, Prévoyance → `/blog/prevoyance-madelin-medecin`, CFE →
+`/blog/cfe-medecin-remplacant`, maternité → `/blog/conge-maternite-paternite`, Hippodoc →
+`/`, Super-Net → `/simulateur`. Entrant (en tête des `relatedArticles`) :
+`tout-comprendre-carmf`, `medecin-remplacant-travailler-6-mois-par-an`,
+`rspm-exemples-concrets`.
+
+**Vérifications.** 75 pages, 73 dans le sitemap (`lastmod` 2026-11-15) ; `verify-site.mjs`
+passe. Feuille commune inchangée. Pages changées contre `main` : le nouvel article, `/blog`,
+la page du thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile :
+97 / 100 / 100 / 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
