@@ -14117,6 +14117,102 @@ WebKitGTK à 1 300 et 390 px : frise, fiche miroir, exemple, aucun débordement 
 fait 1 px). `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparées à la production,
 les 71 autres pages du build sont identiques.
 
+### 9.gp `/tarifs` refaite : la grammaire de l'accueil, chaque chose dite une fois (15 novembre 2026)
+
+Demande du propriétaire : la page « est un peu en dessous », on peut faire « plus épuré, stylé,
+moderne, attractif, tout en restant dans notre DA […] c'est une page importante ». Avis donné dans
+la conversation, puis « go, monte la page ».
+
+**Constat.** La page avait été rhabillée dans la DA « au caractère près » (§ 9.ee) et n'avait pas
+reçu l'épure de l'accueil (§ 9.eu). Le prix y était dit cinq fois avant le premier bouton (titre,
+chapô, fiche, ligne sous le prix, coches). À 390 × 844, le premier écran montrait le titre, sept
+lignes de chapô et l'offre mensuelle ; le prix annuel était hors écran, son bouton à 1 107 px.
+Trois fiches, trois formats (la fiche des internes sans bouton, prix dans une phrase). Quatre
+signaux sur l'offre annuelle (« Populaire », « −34 % », fond, bouton jaune). Dix-sept coches de
+même poids. PostHog, 90 jours (17 août au 15 novembre 2026, 63 pages vues, une trentaine de
+visiteurs : une direction, pas une preuve) : 39 vues sur 63 arrivent de Google, 41 sur téléphone ;
+18 ouvertures de questions (résiliation, coût, options payantes) pour 1 clic sur un bouton d'essai.
+
+**Ce qui change.**
+- **Premier bloc** : le titre, une ligne, puis les trois offres dans l'ordre et au format de
+  l'accueil (annuel, mensuel, internes : nom, prix, une ou deux lignes, bouton). Un seul signal sur
+  l'annuel, le surlignage jaune de l'accueil. Sous 700 px, les offres Mensuel et Internes sont en
+  grille (nom à gauche, prix à droite) ; à 390 × 844 les trois prix sont dans le premier écran (bas
+  du troisième à 803 px), le bouton de l'annuel à 527 px.
+- **Quatre garanties** sous les offres, hors des plis : l'essai et la carte bancaire, l'engagement
+  (mensuel et annuel), la déduction, l'essai de 6 mois des syndicats partenaires. Un dessin au trait
+  dans une pastille blanche, un titre, une phrase.
+- **Inclus** : une feuille blanche, une rangée par famille (quatre), un filet entre deux ; le titre
+  de la famille à gauche à partir de 900 px, les lignes en deux colonnes de texte à partir de
+  640 px.
+- **Questions** : une feuille à lignes (règles de `accueil/Questions.astro`, recopiées dans la
+  feuille de la page). Textes, ordre et schéma `FAQPage` inchangés.
+- **Liens d'inscription** : les deux boutons d'offre menaient à la même adresse ; ils portent
+  `plan=yearly` et `plan=monthly`, comme ceux de l'accueil. `data-track` inchangés
+  (`cta_signup_tarifs_annuel`, `cta_signup_tarifs_mensuel`, `cta_signup_tarifs_bottom`).
+  Nouveau : `data-ph="tarifs_interne_contact"` sur le bouton des internes.
+- **Mascotte** : à partir de 1 024 px seulement, derrière la fiche des internes, comme sur
+  l'accueil. Sous 1 024 px elle n'est plus à côté du titre des inclus (un seul `<picture>`).
+- Sitemap : `TARIFS_LAST_UPDATED_ISO` passe au 15 novembre 2026.
+
+**Contenu modifié (à relire par le propriétaire).** Inchangés : `<title>`, description, canonique,
+les quatre blocs JSON-LD, les cinq questions et leurs réponses, le titre et le bouton de la scène
+de fin, tout ce qui est hors de `<main>`.
+- `<h1>` : « Tarifs Hippodoc : 29 €/mois ou 19 €/mois en annuel » devient « Tarifs Hippodoc : un
+  outil pro, à un prix humain » (le titre des tarifs de l'accueil). Le prix reste dans `<title>`,
+  la description et la première réponse de la FAQ.
+- Chapô : « Hippodoc coûte 29 € par mois sans engagement, ou 19 € par mois en facturation annuelle
+  (228 € par an, soit 34 % d'économie). Chaque offre commence par un essai gratuit de 30 jours,
+  avec toutes les fonctionnalités incluses. » devient « Toutes les fonctionnalités dans chaque
+  offre. Seule la période de facturation change. » (d'après la cinquième réponse de la FAQ).
+- Offres : retirés « Flexible », « Populaire », « −34 % », « 29 € facturés chaque mois », les six
+  coches des fiches (« Essai gratuit 30 jours », « Toutes les fonctionnalités incluses »,
+  « Résiliable à tout moment », « 10 € d'économie par mois vs mensuel »). « / mois » devient « par
+  mois ». Ajouté sur l'annuel : « 120 € de moins par an que le mensuel » (accueil). Boutons :
+  « Commencer l'essai gratuit » devient « Commencer 30 jours gratuits » (accueil).
+- Internes : « Internes et docteurs juniors » devient « Interne et docteur junior » (accueil ; au
+  pluriel le nom passait sur deux lignes à 1 024 px et décalait le prix). « Tu paies 10 € par mois
+  jusqu'à la fin de l'internat, sur justificatif : écris-nous à contact@hippodoc.fr. » devient
+  « 10 € par mois », « Jusqu'à la fin de l'internat », « Sur justificatif », bouton « Écrire à
+  contact@hippodoc.fr ».
+- Garanties, phrases déjà publiées ailleurs : « Ta carte bancaire est demandée à l'inscription,
+  mais rien n'est débité pendant l'essai. » (accueil) ; « Tu peux résilier à tout moment depuis ton
+  espace « Abonnement ». L'offre annuelle est facturée en une fois pour 12 mois. » (FAQ de la
+  page) ; « Ton essai gratuit dure 6 mois au lieu de 30 jours, grâce à un code fourni par ton
+  syndicat. » (fiche des internes d'avant, sans sa question « Tu adhères à un syndicat d'internes
+  partenaire ? », devenue le titre « Syndicat d'internes partenaire »). Nouveaux : les titres
+  « 30 jours gratuits », « Sans engagement en mensuel », « Prix TTC, sans frais cachés » (accueil :
+  « Tous nos prix sont TTC, sans frais cachés. ») et la phrase « Au régime réel, ton abonnement est
+  un frais professionnel déductible à 100 %. » (d'après la troisième réponse de la FAQ).
+- Inclus : seize lignes au lieu de dix-sept, mot pour mot, rangées autrement. « Abonnement 100 %
+  déductible » en sort : sans « au régime réel » la règle n'était dite qu'à moitié (§ 9.go), elle
+  est entière dans les garanties. Nouveaux : les quatre titres de famille, « Revenus et cotisations »,
+  « Déclarations et compta », « Quotidien du remplaçant », « Entraide, support et données ».
+- Scène de fin : « qui calcule tout pour vous » devient « pour toi » (le site tutoie).
+
+**Écart avec l'avis donné.** Le tableau Mensuel / Annuel de l'accueil, annoncé « ouvert ici »,
+n'est pas repris : les fiches et les garanties disent déjà chacune de ses lignes (prix,
+facturation, économie, engagement, essai, fonctionnalités) ; il les aurait redites.
+
+**Non fait, à décider.** « Créer mon compte » (scène de fin), « Essai gratuit 30j » (en-tête) et
+« Commencer 30 jours gratuits » restent trois libellés pour la même action : les deux premiers sont
+hors de cette page ou mesurés tels quels. L'application lit-elle `plan=` à l'inscription ?
+L'accueil le passe déjà ; à confirmer côté application.
+
+**Contrôles.** Chromium à 320, 360, 390, 600, 820, 1 024, 1 180 et 1 440 px, police chargée
+puis bloquée : aucun débordement, les trois boutons d'offre sur une ligne, les trois prix sur une
+même ligne de base à partir de 1 024 px. Espacement du texte agrandi (WCAG 1.4.12) et police à
+200 %, dix largeurs de 320 à 1 440 px : aucun débordement de la page ; dans la colonne des
+questions (280 à 320 px, inchangée), « fréquentes » dépasse sa colonne avec l'espacement agrandi à
+partir de 960 px. WebKitGTK à 1 300, 1 024 et 820 px, et à 390 et 320 px dans un cadre : mêmes
+mesures qu'avec Chromium (prix alignés, boutons de 54 px sur une ligne, cadre de la mascotte de
+250 × 242 px, titres des garanties sur une ligne, aucun débordement). Lighthouse en local sur `/tarifs` : 100, 100, 100, 100 (CLS 0).
+`verify-site.mjs` sans erreur (égalité FAQ visible / `FAQPage` comprise).
+Comparé au build d'avant : `<head>` identique au nom de la feuille de la page près, JSON-LD
+identique, tout ce qui est hors de `<main>` identique ; feuille commune inchangée
+(`_astro_assets.BqFlQkaI.css`) ; les 71 autres pages identiques ; seuls changent
+`tarifs/index.html`, sa feuille et le sitemap (date de la page).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

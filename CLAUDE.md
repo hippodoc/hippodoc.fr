@@ -146,9 +146,9 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   - Feuilles à lignes (questions, guides, partenaires et soutiens) : une feuille blanche
     qui rogne (`overflow: hidden`), un filet entre deux lignes, la ligne teintée au
     survol, l'anneau de focus tracé à l'intérieur (`outline-offset` négatif, sinon la
-    feuille le rogne). `.qa` (da.css) reste une fiche, partagée avec `/faq`, `/tarifs` et
-    les plis des tarifs : les règles de la feuille des questions sont dans
-    `Questions.astro`.
+    feuille le rogne). `.qa` (da.css) reste une fiche, partagée avec `/faq` et les plis
+    des tarifs : les règles de la feuille des questions sont dans `Questions.astro`
+    (recopiées dans `tarifs.astro` pour les questions de `/tarifs`, § 9.gp).
   - Les règles communes aux feuilles de l'accueil (remplissage 44 et 72 px sous 560 px,
     60 et 92 px de 560 à 899 px, 76 et 112 px à partir de 900 px, chapô en 17 px sur
     téléphone, marge sous l'en-tête 22, 30 et 36 px) sont répétées dans le `<style>` de
@@ -206,6 +206,15 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   `<style>` (`Mascotte.astro`) : partagé, ce style sort de la feuille de l'accueil et
   change son HTML. Période d'observation SEO : texte, titres, liens et JSON-LD d'une page
   rhabillée se prouvent identiques au build de `main`, par script.
+- **`/tarifs`** (§ 9.gp) est la version dépliée du bloc tarifs de l'accueil
+  (`accueil/Tarifs.astro`) : mêmes offres, même ordre (annuel, mensuel, internes), mêmes
+  libellés, un seul signal sur l'annuel (le surlignage jaune). Un prix, une offre ou un
+  libellé de bouton changent aux deux endroits, et dans `title`, `description`, la FAQ de la
+  page et `SOFTWARE_APPLICATION_SCHEMA`. Sous les offres, quatre garanties (carte bancaire,
+  engagement, déduction, syndicats) ; les inclus sont rangés par famille, mot pour mot. À
+  390 × 844 les trois prix tiennent dans le premier écran : ne pas allonger le haut de la
+  page sans le remesurer. Ne pas y remettre de pastille « Populaire » ni de coches dans
+  les fiches. Mascotte à partir de 1 024 px seulement.
 - ⚠️ **Pièges Tailwind dans les `<style>`** : Tailwind lit tout le fichier `.astro`,
   `<style>` et commentaires compris. Un mot qui est aussi un nom de classe
   (`backdrop-filter`, `text-wrap`, `ease-in-out`…) ajoute une règle à la feuille commune :

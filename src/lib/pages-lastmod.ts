@@ -44,7 +44,7 @@ export const FAQ_LAST_UPDATED_ISO = '2026-11-13';
 
 /** /tarifs : tarif des internes et essai de 6 mois des syndicats partenaires
  *  ajoutés le 11 novembre 2026 (MIGRATION.md § 9.ed). */
-export const TARIFS_LAST_UPDATED_ISO = '2026-11-11';
+export const TARIFS_LAST_UPDATED_ISO = '2026-11-15';
 
 export const STATIC_LASTMOD: Record<string, string> = {
   '/guide-declarations': GUIDE_DECLARATIONS_LAST_UPDATED_ISO,
