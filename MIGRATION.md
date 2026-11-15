@@ -14328,6 +14328,22 @@ fontconfig, puis ne lit pas la graisse numérique 720. Pour vérifier, la garde 
 neutralisée le temps de la construction, sans commit ; l'image de partage est à contrôler sur
 l'aperçu Vercel (Linux).
 
+### 9.gr Contenu modifié : mise en forme de `aides-installation-medecin-2026` (15 novembre 2026)
+
+Demande du propriétaire : l'article (§ 9.gq) manquait de repères (9 passages en gras pour
+1 000 mots, contre 16 à 35 dans les autres articles). Pas d'émojis (refus explicite :
+« reste dans notre DA »), seulement ce que la DA du blog rend déjà :
+- **gras** sur les montants, délais et conditions qui décident (43 → 83 passages, 18 pour
+  1 000 mots) ;
+- **trois encadrés `:::warning`** (« Attention ») sur des passages existants, sans mot
+  ajouté : le transfert hors zone qui rend l'impôt exigible, le 1447-C-SD avant le
+  31 décembre, la règle des dix ans des aides des collectivités ;
+- **paragraphes longs coupés** à une frontière de phrase (19 coupes, aucun mot changé) ;
+- **ajout** d'une partie « Avant de signer le bail » (liste numérotée de 7 gestes), avant
+  « En résumé », composée uniquement de règles déjà dites dans l'article.
+Pas d'`updatedDate` : publié le jour même. Construction et `verify-site.mjs` : passent ;
+feuille commune inchangée.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
