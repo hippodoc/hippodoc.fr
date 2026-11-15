@@ -16,9 +16,17 @@
  *   Dans le pli de l'offre interne, « par chat » ouvre le chat
  *   (`landing_intern_chat`, § 9.gw).
  * - Trois plis natifs, zéro JS : l'offre interne (dans sa carte, qui s'allonge
- *   seule à l'ouverture), « Détail des offres » (« Inclus dans toutes les
- *   offres » et ses quatorze lignes, le tableau avec « Engagement : 12 mois »,
- *   le lien vers /tarifs) et le RSPM. Tout leur texte est dans le HTML.
+ *   seule à l'ouverture), « Détail des offres » et le RSPM. Tout leur texte est
+ *   dans le HTML.
+ * - « Détail des offres » (refait en § 9.hh) : la forme des inclus de /tarifs,
+ *   une rangée par famille (le titre à gauche à partir de 900 px, les lignes sur
+ *   deux colonnes à partir de 640 px), un filet entre deux rangées, les mêmes
+ *   quinze lignes (src/data/inclusOffres.ts, une source pour les deux pages).
+ *   Dernière rangée, « Facturation et engagement » : un tableau Annuel, Mensuel
+ *   (l'ordre des cartes), de deux lignes. Ce que les cartes disent déjà en est
+ *   retiré (prix par mois, économie, essai gratuit, toutes les fonctionnalités) ;
+ *   reste ce qu'elles ne disent pas, dont « Engagement : 12 mois » de l'annuel,
+ *   que verify-site exige. Puis le lien vers /tarifs.
  * - Épure de novembre 2026 (MIGRATION.md § 9.eu) : le titre « Inclus dans
  *   toutes les offres » et ses cinq premières lignes, jusque-là affichés sous
  *   les cartes, ouvrent maintenant le pli « Détail des offres » (ils redisaient
@@ -57,41 +65,20 @@
 import '@/styles/da.css';
 import { APP_URL } from '@/lib/site';
 import Mascotte from './Mascotte.astro';
+import { FAMILLES_INCLUS } from '@/data/inclusOffres';
 
-/* « Inclus dans toutes les offres » (ancien home/PricingSection.astro) ;
-   « contrats » et « factures avec notes » n'en font plus qu'une, « hébergées
-   en France » devient « dans l'Union européenne », « Abonnement 100 %
-   déductible » passe dans la mention du bas. La ligne de l'hébergement reste
-   visible sous les cartes ; les quatorze autres sont dans « Détail des
-   offres » (les cinq premières y sont entrées à l'épure de novembre 2026). */
+/* L'hébergement : la ligne « inclus » restée visible sous les cartes (épure de
+   § 9.eu ; « hébergées en France » devenu « dans l'Union européenne »). Les
+   inclus du pli « Détail des offres » sont ceux de /tarifs, rangés en familles
+   (src/data/inclusOffres.ts, § 9.hh). */
 const hebergement = 'Données sécurisées et hébergées dans l’Union européenne';
-const inclus = [
-  'Super-Net calculé en temps réel',
-  'Calcul URSSAF, CARMF et impôts en temps réel',
-  'Déclarations fiscales guidées',
-  'Planning centralisé, export Google Agenda',
-  'Génération rapide de contrats et de factures',
-  'Dashboard clair et intuitif',
-  'Micro-BNC et régime réel intégrés',
-  'RSPM et PAMC pris en charge',
-  'Gestion activité mixte libéral et salariat',
-  'PDSA et revenus exonérés intégrés',
-  'Suivi des charges et amortissements',
-  'Statistiques et exports comptables instantanés',
-  "Forum privé d'entraide entre médecins",
-  'Support réactif et humain',
-];
 
-/* Tableau « Détail des offres ». `true` : une coche (lue « Oui ») ; le tiret
-   de « Économie » est lu « Aucune ». Espace insécable entre un
-   nombre et son unité : le reste de la cellule peut passer à la ligne. */
-const comparatif: { ligne: string; mensuel: string | true; annuel: string | true }[] = [
-  { ligne: 'Prix par mois', mensuel: '29\u00a0€', annuel: '19\u00a0€' },
-  { ligne: 'Facturation', mensuel: 'Mensuelle', annuel: '228\u00a0€ une fois par an' },
-  { ligne: 'Économie', mensuel: '—', annuel: '−34\u00a0% (120\u00a0€/an)' },
-  { ligne: 'Engagement', mensuel: 'Aucun', annuel: '12 mois' },
-  { ligne: 'Essai gratuit', mensuel: true, annuel: true },
-  { ligne: 'Toutes les fonctionnalités', mensuel: true, annuel: true },
+/* Tableau « Facturation et engagement » du détail des offres, dans l'ordre des
+   cartes : annuel, puis mensuel. Valeurs du tableau d'avant § 9.hh, mot pour
+   mot. Espace insécable entre un nombre et son unité. */
+const comparatif: { ligne: string; annuel: string; mensuel: string }[] = [
+  { ligne: 'Facturation', annuel: '228\u00a0€ une fois par\u00a0an', mensuel: 'Mensuelle' },
+  { ligne: 'Engagement', annuel: '12 mois', mensuel: 'Aucun' },
 ];
 
 /* RSPM (ancien home/CtaBanner.astro) : seuil, puis ce qui s'applique. */
@@ -179,34 +166,33 @@ const rspm = [
           <span class="qa-t">Détail des offres</span>
           <svg width="20" height="20" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>
         </summary>
-        <div class="qa-in">
+        <div class="qa-in detail">
           <h3 class="incl-t">Inclus dans toutes les offres</h3>
-          <ul class="checks" role="list">
-            {inclus.map((texte) => (
-              <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>{texte}</li>
+          <div class="familles">
+            {FAMILLES_INCLUS.map((f) => (
+              <div class="famille">
+                <h4 class="fam-t">{f.titre}</h4>
+                <ul class="checks" role="list">
+                  {f.lignes.map((ligne) => (
+                    <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg>{ligne}</li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
-          {/* Les rôles sont écrits : sous 560 px la feuille range chaque ligne
-              en grille (l'intitulé, puis les deux valeurs dessous), et un
-              navigateur peut alors oublier que c'est un tableau. */}
+          </div>
+          {/* « Facturation et engagement » : la colonne de gauche est celle des
+              titres de famille, les deux autres tombent sur les deux colonnes de
+              lignes au-dessus (à partir de 900 px). Les rôles sont écrits : sous
+              560 px la feuille range chaque ligne en grille (l'intitulé, puis les
+              deux valeurs dessous), et un navigateur peut alors oublier que c'est
+              un tableau. */}
           <table role="table">
             <thead role="rowgroup">
-              <tr role="row"><th role="columnheader" scope="col" class="carac">Caractéristiques</th><th role="columnheader" scope="col">Mensuel</th><th role="columnheader" scope="col">Annuel</th></tr>
+              <tr role="row"><th role="columnheader" scope="col" class="carac">Facturation et engagement</th><th role="columnheader" scope="col">Annuel</th><th role="columnheader" scope="col">Mensuel</th></tr>
             </thead>
             <tbody role="rowgroup">
               {comparatif.map((l) => (
-                <tr role="row">
-                  <th role="rowheader" scope="row">{l.ligne}</th>
-                  {[l.mensuel, l.annuel].map((v) => (
-                    <td role="cell">
-                      {v === true
-                        ? <Fragment><span class="sr">Oui</span><svg class="oui" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 9.5l3.5 3.5 7.5-8"/></svg></Fragment>
-                        : v === '—'
-                          ? <Fragment><span aria-hidden="true">—</span><span class="sr">Aucune</span></Fragment>
-                          : v}
-                    </td>
-                  ))}
-                </tr>
+                <tr role="row"><th role="rowheader" scope="row">{l.ligne}</th><td role="cell">{l.annuel}</td><td role="cell">{l.mensuel}</td></tr>
               ))}
             </tbody>
           </table>
@@ -301,37 +287,44 @@ const rspm = [
   /* L'hébergement : la seule ligne « inclus » restée visible, avec sa coche. */
   .ue { display: flex; align-items: flex-start; gap: 10px; margin: 26px 0 0; font-size: 16px; color: var(--ink-2); text-wrap-style: balance; }
   .ue svg, .checks svg { flex: none; margin-top: 4px; color: var(--brand); }
-  /* Inclus dans toutes les offres : en tête du pli « Détail des offres ». */
-  .incl-t { margin: 0; font-family: var(--text); font-size: 16px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
-  .checks { display: grid; gap: 10px 40px; margin: -8px 0 0; padding: 0; list-style: none; font-size: 16px; color: var(--ink-2); }
-  .checks li { display: flex; align-items: flex-start; gap: 10px; text-wrap-style: pretty; }
+  /* Détail des offres (§ 9.hh) : la forme des inclus de /tarifs. Le titre, puis
+     une rangée par famille, un filet au-dessus de chacune ; sur téléphone, le
+     titre de la famille au-dessus de ses lignes ; à partir de 640 px, les lignes
+     sur deux colonnes de texte (lues de haut en bas) ; à partir de 900 px, le
+     titre de la famille à gauche (250 px), les lignes à droite. */
+  .incl-t { margin: 0 0 14px; font-family: var(--text); font-size: 17px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; color: var(--ink); }
+  .famille { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px 40px; padding: 18px 0 20px; border-top: 1px solid var(--line); }
+  .detail .fam-t, .detail .carac { margin: 0; font-family: var(--text); font-size: 15.5px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; color: var(--ink); }
+  .checks { margin: 0 0 -9px; padding: 0; list-style: none; font-size: 16px; color: var(--ink-2); column-gap: 32px; }
+  .checks li { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 9px; break-inside: avoid; text-wrap-style: pretty; }
 
   /* Les deux plis : détail des offres, RSPM */
   .plis { margin-top: 20px; }
   .plis .qa:last-child { margin-bottom: 0; }
   .qa-in { display: flex; flex-direction: column; gap: 22px; }
-  /* Le tableau. Sous 560 px, chaque ligne devient une grille de deux colonnes :
-     l'intitulé sur toute la largeur, les deux valeurs dessous, sous « Mensuel »
-     et « Annuel » (trois colonnes ne tiennent pas dans 236 px). L'intitulé de la
-     première colonne reste lu, il n'est plus affiché. */
-  table { width: 100%; max-width: 46rem; border-spacing: 0; font-size: 16px; }
-  th, td { padding: 12px 16px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
-  th:first-child { padding-left: 0; }
+  .detail { gap: 0; }
+  /* « Facturation et engagement » : une rangée de plus, sans filet entre ses
+     lignes, comme une famille. Sous 560 px, chaque ligne du tableau devient une
+     grille de deux colonnes : le titre et les intitulés sur toute la largeur,
+     les deux valeurs dessous, sous « Annuel » et « Mensuel ». */
+  table { width: 100%; border-spacing: 0; font-size: 16px; }
+  th, td { padding: 5px 16px 5px 0; text-align: left; vertical-align: top; }
   th:last-child, td:last-child { padding-right: 0; }
-  thead th { padding-top: 0; border-top: 0; font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
+  thead th { padding-top: 18px; padding-bottom: 9px; border-top: 1px solid var(--line); font-size: 15px; font-weight: var(--tb); color: var(--ink-2); }
+  tbody tr:last-child > * { padding-bottom: 20px; }
   tbody th { font-weight: var(--tw); color: var(--ink-2); }
   td { font-weight: var(--tb); color: var(--ink); }
   @media (max-width: 559px) {
     table, thead, tbody { display: block; }
     tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
-    th, td { padding: 0; border-top: 0; }
-    thead th { padding-bottom: 10px; }
-    .carac { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-    tbody th { grid-column: 1 / -1; padding-top: 10px; border-top: 1px solid var(--line); font-size: 15px; }
-    td { padding-bottom: 10px; }
+    th, td { padding: 0; }
+    thead .carac { grid-column: 1 / -1; padding-bottom: 12px; }
+    thead th:not(.carac) { padding-top: 0; border-top: 0; padding-bottom: 4px; }
+    tbody th { grid-column: 1 / -1; padding-top: 10px; font-size: 15px; }
+    tbody tr:last-child > * { padding-bottom: 0; }
+    tbody tr:last-child > td { padding-bottom: 20px; }
   }
-  .oui { display: block; margin-top: 3px; color: var(--ok); }
-  .vers { align-self: flex-start; }
+  .vers { margin-top: 2px; }
   .rspm { gap: 14px; }
   .rspm h3 { margin: 0; font-family: var(--text); font-size: 17px; font-weight: var(--tb); line-height: 1.35; letter-spacing: 0; }
   .rspm ul { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
@@ -379,7 +372,7 @@ const rspm = [
     .offer > .btn, .offer summary { padding-inline: 4px; font-size: 15px; }
   }
   @media (min-width: 640px) {
-    .checks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .checks { column-count: 2; }
   }
   /* Tablette : l'offre annuelle sur toute la largeur, le texte à gauche et le
      bouton à droite ; les deux autres côte à côte. Ouverte, la carte interne
@@ -398,7 +391,15 @@ const rspm = [
     .offer:not(.main):not(.interne) > p:last-of-type { margin-bottom: calc(18px + 1.55em + 6px); }
   }
   @media (min-width: 900px) {
-    .checks { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .famille { grid-template-columns: minmax(0, 250px) minmax(0, 1fr); }
+    /* Le tableau sur la grille des familles : la première colonne fait celle des
+       titres et son écart (250 + 40 px), les deux autres se partagent le reste ;
+       « Mensuel » commence là où commence la seconde colonne de lignes (moitié
+       du reste, plus la moitié de l'écart de 32 px entre les deux). */
+    table { table-layout: fixed; }
+    .carac { width: 290px; }
+    th:nth-child(2), td:nth-child(2) { padding-right: 16px; }
+    th:nth-child(3), td:nth-child(3) { padding-left: 16px; }
   }
   @media (min-width: 1024px) {
     /* Deux rangées : la première a la hauteur des cartes, la seconde (souple)

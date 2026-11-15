@@ -211,7 +211,10 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   libellés, un seul signal sur l'annuel (le surlignage jaune). Un prix, une offre ou un
   libellé de bouton changent aux deux endroits, et dans `title`, `description`, la FAQ de la
   page et `SOFTWARE_APPLICATION_SCHEMA`. Sous les offres, quatre garanties (carte bancaire,
-  engagement, déduction, syndicats) ; les inclus sont rangés par famille, mot pour mot. À
+  engagement, déduction, syndicats) ; les inclus sont rangés par famille, mot pour mot,
+  dans `src/data/inclusOffres.ts`, la source aussi du pli « Détail des offres » de
+  l'accueil (§ 9.hh : mêmes familles, même forme, puis le tableau « Facturation et
+  engagement », Annuel puis Mensuel, dont verify-site exige « Engagement : 12 mois »). À
   390 × 844 les trois prix tiennent dans le premier écran : ne pas allonger le haut de la
   page sans le remesurer. Ne pas y remettre de pastille « Populaire » ni de coches dans
   les fiches. Mascotte à partir de 1 024 px seulement. Offre des internes (§ 9.gu) :
