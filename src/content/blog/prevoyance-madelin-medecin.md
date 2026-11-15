@@ -30,6 +30,7 @@ faq:
   - question: "Comment savoir si mon contrat de prévoyance est Madelin ?"
     answer: "Cherche « loi Madelin » ou « article 154 bis » dans tes conditions, et regarde si ton assureur t'envoie chaque année une **attestation fiscale Madelin**. Au moindre doute, demande-lui une confirmation écrite. C'est le contrat qui décide, pas ta déclaration."
 relatedArticles:
+  - "prevoyance-pieges-avant-de-signer"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "tout-comprendre-carmf"
   - "conge-maternite-paternite"

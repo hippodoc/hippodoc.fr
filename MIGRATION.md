@@ -14876,6 +14876,62 @@ du service des impôts, qui nomment des personnes, ne sont ni citées ni versée
 **Contrôles.** `verify-site.mjs` sans erreur ; feuille commune inchangée ; comparé à la production,
 seuls l'article et le sitemap (sa date) diffèrent ; les deux liens répondent.
 
+### 9.gy Nouvel article : prévoyance, les 5 pièges avant de signer (15 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, passe « agréable à lire » comprise (§ 9.gs).
+
+**Fichier et affiche.** `src/content/blog/prevoyance-pieges-avant-de-signer.md` ; affiche
+`src/assets/blog/prevoyance-pieges-avant-de-signer-cover.webp`, 1 121 × 1 403 (0,799), la
+seconde des deux envoyées (même visuel), réenregistrée en WebP sans métadonnées (163 Ko).
+
+**Thème** : `cotisations-protection`. Sujet distinct de `prevoyance-madelin-medecin` (la
+fiscalité de la cotisation), lié dans les deux sens.
+
+**Frontmatter.** `title` du propriétaire (52 signes). `description`, `cta` (« Prêt à savoir
+quelle protection ton budget peut porter ? » + `ctaHref: /simulateur`) et FAQ de 5 questions
+écrits ici (`PLANCHER_FAQ` : 63 pages, 419 questions). `episodeNumber: 20` : à la une.
+`readTime` 12 min.
+
+**Écarts au texte fourni** :
+- ligne « À jour au » sortie ; « Sources » en titre, en liste ; capitales des codes harmonisées ;
+- **mise en forme** : « L'essentiel » (5 puces, distinct de la liste finale), deux
+  `:::warning` (fausse déclaration volontaire, couverture entre deux remplacements), deux
+  `:::tip` (« un non n'est pas une fatalité », encadré Hippodoc ; le 💡 sort), gras (22 pour
+  1 000 mots), titre « Piège 4 : le barème d'invalidité » (au lieu de « la définition ») ;
+- **clarté** (relecture interne novice) : franchise et délai d'attente définis côte à côte ;
+  « rachat » expliqué ; exemple de l'indemnitaire en une phrase ; seuil d'invalidité avec
+  un avis (« plus le seuil est bas, mieux tu es protégé ») ; « En résumé » devenu « Avant de
+  signer, vérifie », check-list de 7 points (ajouts : franchise et délais d'attente, options
+  de rachat, les deux questions à poser par écrit) ; lien vers l'article Madelin ajouté à
+  « Soyons honnêtes » ;
+- **corrections factuelles** (relecture courtier prévoyance, deux passes) :
+  - encadré « entre deux remplacements » : le cas du Médiateur (7 octobre 2025) est cité tel
+    qu'il est (« un assuré refusé faute d'activité au moment de son arrêt »), sans
+    extrapolation ;
+  - IJ CARMF : si la maladie précède l'affiliation, rien les deux premières années
+    d'affiliation, puis un montant réduit jusqu'à six ans (guide incapacité CARMF, juin 2026) ;
+  - mise à jour de la déclaration : « beaucoup de formulaires t'y engagent » (la position
+    prêtée au Médiateur n'a pas été retrouvée) ;
+  - nullité (L113-8) : « qui change l'appréciation du risque » ;
+  - prêt immobilier sans questionnaire : 200 000 € « tous prêts immobiliers confondus »
+    (L113-2-1) ;
+  - dos et psy : « après une hospitalisation (2 à 8 jours) ou une opération » ;
+  - seuil d'invalidité : « souvent 33 %, parfois dès 15 ou 16 % » ;
+  - grossesse pathologique : « si tu as signé 3 à 9 mois avant le début de la grossesse » ;
+  - loi Évin : « jusqu'à l'âge minimum de la retraite ».
+  Vérifiés justes : IJ CPAM et CARMF 2026 (65,84 € et 197,51 €), CARMF 2025 (47,47 % des
+  invalidités, 29,83 % des IJ), L113-2, L113-8, L113-9, l'exemple 800 / 1 000 €, la loi Évin
+  (deux ans, contrats individuels compris).
+
+**Liens.** Dans le texte : CARMF → `/blog/tout-comprendre-carmf`, congé maternité →
+`/blog/conge-maternite-paternite`, Madelin → `/blog/prevoyance-madelin-medecin`, Hippodoc →
+`/`, Super-Net → `/simulateur`. Entrant (en tête des `relatedArticles`) :
+`prevoyance-madelin-medecin`, `pause-remplacements-cotisations-medecin`,
+`conge-maternite-paternite`.
+
+**Vérifications.** 77 pages, 75 dans le sitemap ; `verify-site.mjs` passe ; feuille commune
+inchangée ; seules les pages attendues changent ; Lighthouse mobile 97 / 100 / 100 / 100, CLS 0.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
