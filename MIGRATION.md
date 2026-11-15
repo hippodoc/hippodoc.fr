@@ -13661,6 +13661,79 @@ connexion (`MESURE_ENTETE_PIED` mis à jour).
 **Fichiers** : `src/components/Header.astro`, `src/components/ScriptTiroir.astro`,
 `src/styles/da.css`, `scripts/verify-site.mjs`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.gl Blog : la procédure « nouvel article » (15 novembre 2026)
+
+Le propriétaire demande « la meilleure procédure pour ajouter des articles », pour que chaque
+nouvel article soit « nickel, bien intégré pour le SEO ». Décision : une procédure écrite dans le
+dépôt, `.claude/skills/nouvel-article/SKILL.md`, que toute session suit à l'identique, et une
+session neuve par article (ou par lot). Écartés : continuer dans une conversation unique (trop
+longue, et le conteneur s'efface) ; un formulaire en artefact (il ne dépose pas l'image dans le
+dépôt et ne vérifie rien).
+
+Ce que fait la procédure, en résumé :
+- **Entrées** : le propriétaire joint l'affiche et colle le texte (ou le blog du kit de fiche
+  Hippodoc).
+- **Choix de l'article** : l'adresse (figée dès la mise en ligne), le `<title>` (60 signes au plus,
+  suffixe de marque compris), la description et le thème.
+- **Frontmatter** : série par défaut `divers` (les séries ne s'affichent plus depuis § 9.fq ; une
+  fiche Instagram numérotée garde sa série et son numéro), temps de lecture calculé à 160 mots par
+  minute (médiane du blog), FAQ et liens.
+- **Affiche** : contrôle de la taille (1 080 × 1 350 idéal, signalée sous 900 px de large) et des
+  doublons.
+- **Texte** : verbatim. Une erreur factuelle se signale, sources à l'appui, et ne se corrige
+  qu'avec l'accord du propriétaire, comme en § 9.as.
+- **Fichiers tenus à jour** : `blog-meta.json`, `PLANCHER_FAQ`, les comptes de `CLAUDE.md` et une
+  section de MIGRATION.md par article.
+- **Vérifications** : construction, `verify-site.mjs`, aucun mot perdu, pages changées attendues,
+  captures, Lighthouse.
+- **Mise en ligne** : PR, « go », contrôle en ligne. Les deux gestes du propriétaire lui sont
+  rappelés : demander l'indexation dans Search Console, tester l'aperçu du lien.
+
+Aucun changement du site : la procédure n'est pas lue par la construction (hors de `src/`).
+`CLAUDE.md`, section « Blog », y renvoie.
+
+**Relu avant la fusion, à la demande du propriétaire (« si tu as pensé à tout »).** Une première
+relecture, confrontée au code, a trouvé une erreur : la procédure disait qu'un nouvel article
+passe « à la une ». C'est faux, car `conge-maternite-paternite` porte `featured: true`.
+
+Une relecture indépendante a ensuite suivi la procédure à la lettre, avec un faux article dans
+une copie à part : 5 constructions, chacune suivie de `verify-site.mjs`. Elle a trouvé deux
+défauts qu'aucun contrôle ne signale :
+
+- **Sitemap** : une entrée de `blog-meta.json` sans `updatedDate` sort dans le sitemap sans
+  `lastmod`. `astro.config.mjs` lit `updatedDate`, et le contrôle des dates ne lit que les
+  adresses datées.
+- **Maillage entrant** : un slug ajouté en 7ᵉ position des `relatedArticles` d'un ancien article
+  ne s'affiche jamais (`[slug].astro`, `.slice(0, 6)`). 18 articles sur 48 en ont déjà 6 ou plus.
+
+Elle a aussi relevé :
+
+- **Affiche carrée ou paysage** : elle déborde des cases des listes et recouvre le texte (mesuré
+  à 393 px avec une affiche de 1 350 × 1 080 : image de 163 px dans une case de 104 px). La
+  procédure exige donc un portrait, largeur ÷ hauteur de 0,81 au plus.
+- **`cover` mal écrite** : avec une mauvaise extension, l'article perd son affiche partout, et la
+  construction comme le contrôle passent.
+- **Date de publication passée** : elle change l'adresse de l'image de partage des articles plus
+  récents du même thème.
+- **Texte venu du kit de fiche** :
+  - son titre `#` donne un second `<h1>`, et `verify-site.mjs` échoue ;
+  - ses « Sources » en gras ne déclenchent pas le pli des sources ;
+  - ses liens vers le site sont en adresse absolue.
+- **Mineurs** :
+  - les valeurs exactes de `categoryNumber` (« #16 »), `authorRole`, `cta` et `ctaHref` ;
+  - les liens, sans effet dans les réponses de FAQ ;
+  - `/qui-sommes-nous`, qui change avec le nombre d'articles ;
+  - la normalisation avant de comparer les mots ;
+  - l'avertissement « aucun lien entrant » attendu ;
+  - `.rotate()` et la qualité explicite à l'enregistrement de l'affiche ;
+  - deux règles contradictoires sur `updatedDate` après l'ajout d'un lien. La procédure suit
+    désormais le précédent du § 9.as : `updatedDate` du jour.
+
+Tout est intégré à la procédure. On a vérifié aussi où arrivent les pièces jointes d'une
+conversation : dans `~/.claude/uploads/<session>/`, à leur taille d'origine.
+
+**Fichiers** : `.claude/skills/nouvel-article/SKILL.md` (nouveau), `CLAUDE.md`, `MIGRATION.md`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
