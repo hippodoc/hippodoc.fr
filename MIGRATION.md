@@ -14633,9 +14633,9 @@ avec Ctrl ; second clic : l'ouverture est redemandée. Fiche mesurée à 320, 36
 1 180 et 1 440 px : boutons sur une ligne et alignés, prix alignés, lien « e-mail » de
 48 × 47 px. Huit écrans de téléphone, espacement du texte agrandi et police à 200 % : aucun
 débordement. WebKitGTK à cinq largeurs : mêmes mesures. `verify-site.mjs` sans erreur (Crisp
-n'est chargé sur aucun événement passif). Comparé au build de `main` : les 72 autres pages ne
-diffèrent que par ce même bloc du script en ligne ; `/tarifs` en plus par sa fiche ; feuilles de
-style, sitemap, flux et fichiers JSON identiques.
+n'est chargé sur aucun événement passif). Comparé au build de `main` après fusion (74 pages) : les
+73 autres pages ne diffèrent que par ce même bloc du script en ligne ; `/tarifs` en plus par sa
+fiche ; feuilles de style, sitemap, flux et fichiers JSON identiques.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
