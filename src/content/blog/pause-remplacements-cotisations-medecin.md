@@ -27,6 +27,7 @@ faq:
   - question: "Un remplaçant libéral a-t-il droit à la PreParE ?"
     answer: "**Oui**, la PreParE (l’allocation CAF du congé parental) s’ouvre aux indépendants : 459,69 € par mois à taux plein depuis le 1er avril 2026, avec 8 trimestres de cotisations retraite dans les 2 ans pour un premier enfant. Tu dois prouver ton arrêt ou ta réduction d’activité : demande à ta CAF, par écrit et avant ton départ, le justificatif qu’elle attend."
 relatedArticles:
+  - "prevoyance-pieges-avant-de-signer"
   - "tout-comprendre-carmf"
   - "tout-comprendre-urssaf"
   - "rspm-exemples-concrets"

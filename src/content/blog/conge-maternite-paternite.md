@@ -32,6 +32,7 @@ faq:
   - question: "Que faire si la grossesse se complique avant d'avoir 12 mois d'affiliation ?"
     answer: "Demander d'abord la **prolongation de 30 jours pour état pathologique**, payée comme le congé maternité, sans carence, avec la condition des six mois d'affiliation. Ce n'est qu'ensuite que l'arrêt maladie prend le relais, et lui exige douze mois d'affiliation continue."
 relatedArticles:
+  - "prevoyance-pieges-avant-de-signer"
   - "prevoyance-madelin-medecin"
   - "tout-comprendre-carmf"
   - "tout-comprendre-urssaf"
