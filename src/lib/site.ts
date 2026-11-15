@@ -54,7 +54,7 @@ export const ORGANIZATION_SCHEMA = {
   '@type': 'Organization',
   '@id': `${SITE_URL}/#organization`,
   name: 'Hippodoc',
-  alternateName: 'Hippodoc - Le cockpit financier des médecins remplaçants',
+  alternateName: 'Hippodoc - Logiciel de gestion pour médecin remplaçant',
   url: SITE_URL,
   logo: {
     '@type': 'ImageObject',
@@ -63,9 +63,8 @@ export const ORGANIZATION_SCHEMA = {
     height: 60,
   },
   image: DEFAULT_OG_IMAGE,
-  description:
-    'Hippodoc - Le cockpit financier des médecins remplaçants qui calcule tout pour vous. Revenus, contrats, planning et Super-Net.',
-  slogan: 'Le cockpit financier des médecins remplaçants qui calcule tout pour vous',
+  description: PRODUCT_DEFINITION,
+  slogan: 'Sors la tête de l’eau',
   foundingDate: '2024',
   founder: [
     {
@@ -147,7 +146,7 @@ export const SOFTWARE_APPLICATION_SCHEMA = {
     },
   ],
   description:
-    "Le cockpit financier des médecins remplaçants : revenus, rétrocessions, planning, URSSAF, CARMF, déclaration 2035 et Super-Net calculés automatiquement.",
+    "Logiciel de gestion pour médecin remplaçant : revenus, rétrocessions, planning, URSSAF, CARMF, déclaration 2035 et Super-Net calculés automatiquement.",
   screenshot: DEFAULT_OG_IMAGE,
   datePublished: '2024-01-01',
   author: { '@id': `${SITE_URL}/#organization` },

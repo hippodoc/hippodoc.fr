@@ -15078,6 +15078,46 @@ l'accueil dit encore « Hippodoc — Cockpit financier des médecins | Super-Net
 cockpit financier des médecins remplaçants ». Ils ne collent plus à l'accroche du site ; les changer
 touche au référencement : non fait.
 
+### 9.hb Accueil : nouveau titre ; « cockpit financier » retiré des descriptions (15 novembre 2026)
+
+Suite de § 9.ha : le texte sous l'image d'un lien partagé vient du `<title>`, qui disait encore
+l'ancienne formule. Décision du propriétaire.
+
+**Contenu modifié.**
+- `<title>` de l'accueil (donc `og:title` et `twitter:title`). Avant : « Hippodoc — Cockpit financier
+  des médecins | Super-Net ». Après : « Logiciel de gestion pour médecin remplaçant | Hippodoc »
+  (54 caractères ; la ligne au-dessus du `<h1>`, mot pour mot ; mot-clé d'abord). Aucune autre page
+  n'a ce titre ; `/tarifs` vise « Tarif logiciel médecin remplaçant ». Description inchangée. Avant de
+  valider, le propriétaire devait regarder, dans la Search Console, si des clics venaient de
+  « super-net » ou de « cockpit » sur `/`.
+- JSON-LD `WebSite` de l'accueil, `description`. Avant : « Le cockpit financier des médecins qui
+  calcule tout pour vous : revenus, cotisations, impôts et Super-Net. » Après : la phrase sous le
+  `<h1>`, mot pour mot (« URSSAF, CARMF, impôts : Hippodoc calcule tout après chaque journée de
+  remplacement, et te montre ce qu'il te reste vraiment. »).
+- JSON-LD `Organization` (toutes les pages, `src/lib/site.ts`). `alternateName` : « Hippodoc - Le
+  cockpit financier des médecins remplaçants » devient « Hippodoc - Logiciel de gestion pour médecin
+  remplaçant ». `description` : « Hippodoc - Le cockpit financier des médecins remplaçants qui
+  calcule tout pour vous. Revenus, contrats, planning et Super-Net. » devient `PRODUCT_DEFINITION`
+  (mot pour mot). `slogan` : « Le cockpit financier des médecins remplaçants qui calcule tout pour
+  vous » devient « Sors la tête de l'eau » (le `<h1>`).
+- JSON-LD `SoftwareApplication`, `description` : « Le cockpit financier des médecins remplaçants : »
+  devient « Logiciel de gestion pour médecin remplaçant : » (la suite inchangée).
+- `llms.txt` : « Cockpit financier pour médecins en France » devient « Logiciel de gestion pour
+  médecins en France » ; ligne de l'accueil : « Présentation du cockpit financier des médecins
+  remplaçants » devient « Présentation du logiciel de gestion des médecins remplaçants ».
+- `/essai`, la ligne sous le `<h1>` : « Le cockpit financier des médecins remplaçants » devient « Le
+  logiciel des médecins remplaçants » (la formule de la DA). « Le logiciel de gestion des médecins
+  remplaçants », essayé d'abord, passait sur deux lignes à 390 px (l'ancienne en tenait une) ; la
+  forme retenue tient sur une ligne de 320 à 1 280 px, jamais plus haute que l'ancienne (une ligne de
+  moins de 320 à 375 px : le haut de la page remonte de 25 px).
+
+**Restent, à l'écran (décision à prendre).** « Le cockpit financier des médecins. » sous la marque du
+pied (toutes les pages) ; le chapô de la scène de fin de `/tarifs` ; la phrase de la 404 ; la fiche
+d'Hippodoc dans `/comparatif` (`tagline`, et « Hippodoc en cockpit principal ») ; « Le cockpit du
+médecin remplaçant » plus bas dans `/essai`.
+
+**Contrôles.** `verify-site.mjs` sans erreur.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
