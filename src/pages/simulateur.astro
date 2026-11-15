@@ -70,7 +70,7 @@ const DATE_VERIFICATION = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', mon
 const SOURCES_BAREMES: { nom: string; href: string }[] = [
   { nom: 'Urssaf', href: 'https://www.urssaf.fr/accueil/outils-documentation/taux-baremes/taux-cotisations-pam.html' },
   { nom: 'CARMF', href: 'https://www.carmf.fr/page.php?page=cdrom/coti/coti-cours.htm' },
-  { nom: 'Service-Public', href: 'https://www.service-public.fr/particuliers/vosdroits/F1419' },
+  { nom: 'Service-Public', href: 'https://www.service-public.gouv.fr/particuliers/vosdroits/F1419' },
   { nom: 'Légifrance', href: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000047733374' },
 ];
 const euros = (n: number) => `${new Intl.NumberFormat('fr-FR').format(n)}\u00a0€`;
@@ -383,7 +383,7 @@ const fleche =
                 <li><strong>Dispense partielle de la complémentaire</strong> — Sur demande, selon tes revenus imposables de toute nature de l'année précédente : 100 % jusqu'à 6 100 €, 75 % jusqu'à 14 300 €, 50 % jusqu'à 23 100 €, 25 % jusqu'à 32 500 € (barème 2026). La part dispensée ne donne pas de points de retraite.</li>
                 <li><strong>ASV proportionnelle</strong> — Sous 63 900 € de revenu conventionné, la part forfaitaire de l'ASV peut être remplacée par 3 % de ce revenu en secteur 1 (9 % en secteur 2), sur demande avant la fin février ; la part d'ajustement reste due. Moins de cotisation, moins de points de retraite.</li>
                 <li><strong>Dispensé</strong> — Sur demande à la CARMF, pour un remplaçant dont le revenu net reste sous 15 000 € : ni cotisations CARMF, ni trimestres de retraite, ni couverture invalidité-décès.</li>
-                <li><strong>Taux RID</strong> — Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an) ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par jour à partir du 91e jour. Par défaut, le simulateur retient 25 %.</li>
+                <li><strong>Taux RID</strong> — Au RSPM, l'invalidité-décès se cotise à 25 % (158 € par an) ou à 100 % (631 €), au choix, et la couverture suit : en arrêt de travail, 16,46 € ou 65,84 € par jour à partir du 91e jour (avant 62 ans). Par défaut, le simulateur retient 25 %.</li>
               </ul>
             </div>
             <div>

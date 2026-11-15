@@ -674,6 +674,12 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
     sortir de la fenêtre) ; une nouvelle classe de bulle reprend cette règle. Une bulle
     ouverte sur le côté (`side="right"`) borne aussi sa largeur (`…-available-width`).
   - Le HTML du build n'y gagne aucun attribut : tout arrive après le montage.
+  - Au clavier (§ 9.gs) : Radix ferme une bulle à tout défilement d'un ancêtre du déclencheur ; le
+    composant ignore cette fermeture tant que le déclencheur a le focus du clavier
+    (`:focus-visible`), sinon une aide que Tab fait défiler jusqu'à elle s'ouvrait et se refermait
+    aussitôt. Son écouteur de défilement doit rester posé avant celui de Radix (au montage, à la
+    fenêtre) ; Échap et tout appui ferment toujours. Essai : la page en haut, le focus sur le
+    contrôle d'avant (`focus({ preventScroll: true })`), puis Tab ; la bulle doit être là 1 s après.
   - Essai : Chromium avec `hasTouch` et `page.touchscreen.tap()` (un clic de souris ne
     reproduit pas le défaut), à 390, 820 et 1 024 px ; puis survol, focus, Échap à la
     souris, et dans WebKit.
@@ -781,7 +787,8 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   simplifié pour les médecins » ; CARMF, dépliant « Remplaçants, régulateurs adhérents au RSPM »),
   pas le quart et le plein du minimum du régime classique (626 € en 2026). La bulle du choix
   (`sim-rid`) donne ce que chaque niveau couvre (indemnités par jour d'arrêt, rente, indemnité
-  décès) : chiffres de ce dépliant, à relire chaque année avec les montants, ici et dans les quatre
+  décès), dans les mots du dépliant (§ 9.gs : invalidité « totale et définitive » ; l'âge, moins de
+  62 ans, ne vaut que pour les indemnités par jour) : chiffres à relire chaque année avec les montants, ici et dans les quatre
   articles qui les citent (`rspm-exemples-concrets`, `guide-impots-internes-remplacants`,
   `tout-comprendre-carmf`, `tout-comprendre-urssaf`).
   Estimation des revenus (§ 9.gp) : l'Urssaf recalcule les cotisations de l'année sur une

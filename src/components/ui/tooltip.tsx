@@ -8,8 +8,14 @@ import { cn } from "@/lib/utils"
 /**
  * Bulle d'aide des trois outils (simulateur par `PremiumTooltip`, calculette, boussole).
  *
- * À la souris et au clavier, rien d'autre que Radix : la bulle s'ouvre au survol et au
- * focus, se ferme quand on s'en va, au clic ou à Échap.
+ * À la souris et au clavier, Radix : la bulle s'ouvre au survol et au focus, se ferme quand
+ * on s'en va, au clic ou à Échap. Une exception, au clavier (MIGRATION.md § 9.gs) : Radix
+ * ferme la bulle à tout défilement d'un ancêtre du déclencheur, donc aussi quand Tab amène
+ * le focus sur une aide hors de la fenêtre et que le navigateur fait défiler pour la montrer
+ * (la bulle s'ouvrait puis se refermait aussitôt : 2 aides sur 10 dans le simulateur). Tant
+ * que le déclencheur garde le focus du clavier (`:focus-visible`), une fermeture demandée par
+ * un défilement est ignorée ; Échap, un appui, la perte du focus ferment comme avant, et à la
+ * souris rien ne change.
  *
  * Au doigt, Radix seul ne la montre pas : il écarte les pointeurs tactiles, l'ouvre au
  * focus que l'appui donne au bouton, puis la referme au clic du même appui (et Safari ne
@@ -38,6 +44,27 @@ const abonner = (prevenir: () => void) => {
 }
 const lireSansSurvol = () => window.matchMedia(SANS_SURVOL).matches
 const jamais = () => false
+
+/**
+ * Heure du dernier défilement, pour reconnaître une fermeture que Radix demande à cause de lui.
+ * Un seul écouteur pour toutes les bulles, posé à la fenêtre au premier montage : il passe donc
+ * avant celui que Radix pose à chaque ouverture, et avant son écoute d'Échap sur le document.
+ * Échap ou un appui remettent l'heure à zéro : eux ferment toujours.
+ */
+let dernierDefilement = 0
+let defilementEcoute = false
+function ecouterDefilement() {
+  if (defilementEcoute) return
+  defilementEcoute = true
+  window.addEventListener("scroll", () => { dernierDefilement = performance.now() }, { capture: true, passive: true })
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") dernierDefilement = 0 }, true)
+  window.addEventListener("pointerdown", () => { dernierDefilement = 0 }, true)
+}
+/** Le déclencheur a le focus, et c'est le clavier qui le lui a donné. */
+function aLeFocusDuClavier(el: HTMLElement | null) {
+  if (!el || document.activeElement !== el) return false
+  try { return el.matches(":focus-visible") } catch { return true }
+}
 
 type Aide = {
   ouverte: boolean
@@ -114,6 +141,7 @@ const Tooltip = ({ open, defaultOpen = false, onOpenChange, children, ...props }
   // Elle est remplie ici si la bulle est déjà dans la page (au doigt, Radix l'ouvre au focus, juste avant le clic),
   // sinon par TooltipContent quand Radix la monte, un rendu plus tard.
   React.useEffect(() => { if (sansSurvol) zoneAnnonce() }, [sansSurvol])
+  React.useEffect(ecouterDefilement, [])
   React.useEffect(() => {
     if (!epingle) return
     if (contenu.current) annoncerBulle(contenu.current)
@@ -123,7 +151,16 @@ const Tooltip = ({ open, defaultOpen = false, onOpenChange, children, ...props }
   const aide = React.useMemo(() => ({ ouverte, sansSurvol, epinglee, declencheur, contenu, basculer }), [ouverte, sansSurvol, basculer])
 
   return (
-    <TooltipPrimitive.Root {...props} open={ouverte} onOpenChange={(o) => { if (!epinglee.current) changer(o) }}>
+    <TooltipPrimitive.Root
+      {...props}
+      open={ouverte}
+      onOpenChange={(o) => {
+        if (epinglee.current) return
+        // Fermeture due au défilement que le focus du clavier vient de provoquer : la bulle reste.
+        if (!o && performance.now() - dernierDefilement < 100 && aLeFocusDuClavier(declencheur.current)) return
+        changer(o)
+      }}
+    >
       <AideContexte.Provider value={aide}>{children}</AideContexte.Provider>
     </TooltipPrimitive.Root>
   )

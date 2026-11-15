@@ -14456,6 +14456,67 @@ feuille commune inchangée (`_astro_assets.BqFlQkaI.css`) ; les 72 autres pages,
 les fichiers JSON et texte identiques ; seuls changent `tarifs/index.html`, sa feuille et, dans le
 sitemap, la date de `/tarifs`.
 
+### 9.gs Simulateur : la bulle de l'invalidité-décès précisée, et des bulles d'aide qui tiennent au clavier (15 novembre 2026)
+
+À la question du propriétaire après § 9.gp, « Ok tout est parfait ? », une relecture à froid de ce
+qui était en ligne a donné cinq points ; réponse : « Go pour tout ».
+
+**1. « Invalidité totale et définitive ».** La bulle « Cotisation RID » disait « Invalidité totale,
+rente par an ». Le dépliant de la CARMF (« Remplaçants, régulateurs adhérents au RSPM », prestations
+au 1er janvier 2026) dit « Rente annuelle en cas d'invalidité totale et définitive » : la ligne
+devient « Invalidité totale et définitive, rente par an » (règle entière, § 9.go).
+
+**2. L'âge ne porte que sur les indemnités journalières.** Le dépliant ne donne « Médecin de moins
+de 62 ans » que pour les indemnités par jour d'arrêt. La note sous le tableau, « Prestations 2026 de
+la CARMF pour un médecin de moins de 62 ans. Tu choisis ton niveau à ta première déclaration de
+l'année. », l'étendait à la rente et à l'indemnité décès ; elle devient « Prestations 2026 de la
+CARMF ; l'indemnité par jour est celle d'un médecin de moins de 62 ans. Tu choisis ton niveau à ta
+première déclaration de l'année. » Mode d'emploi de la page, « Taux RID » : « … 16,46 € ou 65,84 €
+par jour à partir du 91e jour (avant 62 ans). »
+
+**3. Lien « Service-Public » de la ligne de confiance** : `service-public.gouv.fr` (l'adresse en
+`service-public.fr` y arrivait par une redirection).
+
+**4. Typographie.** Libellés du choix : « 25 % (158 €/an) » et « 100 % (631 €/an) », avec espaces
+insécables (avant : « 25% (158€/an) », « 100% (631€/an) ») ; conseil de la bulle : « 100 %
+recommandé si tu as des enfants ou un emprunt immobilier. » (avant : « 100% recommandé… »).
+Avec ces espaces, les deux libellés ne tenaient plus côte à côte au téléphone et se coupaient en deux
+lignes chacun : un libellé ne se coupe plus, et sous 430 px le second choix passe sous le premier
+(`sim-rid-choix`, `simulateur.css` ; mesuré de 320 à 1 280 px : une rangée à partir de 430 px, deux
+en dessous, libellés de 20 px de haut).
+
+**5. Bulles d'aide au clavier** (`src/components/ui/tooltip.tsx`, partagé par le simulateur, la
+calculette et le guide des déclarations). Défaut ancien : Radix ferme une bulle à tout défilement
+d'un ancêtre de son déclencheur. Quand Tab amenait le focus sur une aide que le navigateur devait
+faire défiler pour la montrer, la bulle s'ouvrait au focus et se refermait dans la même fraction de
+seconde. Mesuré avant correction, Chromium à 1 280 px : dans un parcours naturel du formulaire du
+simulateur, 2 aides sur 10 (« Enfants à charge », « Situation CARMF ») ; dans le cas le plus dur
+(l'aide hors de la fenêtre), 6 à 8 aides sur 8 dans la calculette et l'aide « Comment savoir ? » de
+la boussole. Correction : tant que le déclencheur garde le focus du clavier (`:focus-visible`), une
+fermeture demandée par un défilement est ignorée. Un seul écouteur de défilement pour toutes les
+bulles, posé à la fenêtre au premier montage (il passe ainsi avant celui de Radix) ; Échap et tout
+appui remettent son heure à zéro, et ferment donc toujours. Rien ne change à la souris (survol puis
+molette : la bulle se ferme), ni au doigt (bulle épinglée, § 9.es), ni dans le HTML du build.
+
+**Lu dans l'application, sans y toucher** (dépôt de l'app, lecture seule, pour le propriétaire).
+L'application calcule encore l'invalidité-décès du RSPM à 157 € et 626 €
+(`src/hooks/useRspmCalculation.ts`, deux fois) et l'écrit dans son simulateur interne, ses écrans de
+prélèvements (« montant attendu : 157 € […] ou 626 € ») et ses essais. Elle et le simulateur public
+diffèrent donc de 1 € (25 %) ou 5 € (100 %) par an au RSPM depuis § 9.gp. Ses textes disent aussi
+que cette cotisation est « appelée séparément par la CARMF », au 15 mars ; l'Urssaf écrit qu'elle
+est ajoutée à la première déclaration (page du 13 novembre 2026). Rien n'est modifié dans l'app.
+
+**Contrôles.** Chromium : parcours au clavier du simulateur à 1 280 × 720 et 1 280 × 900, 10 aides,
+aucune refermée, chaque bulle à moins de 24 px de son bouton et dans la fenêtre ; aucune bulle ne
+reste après le départ du focus ; Échap ferme, pendant le défilement aussi ; sous focus du clavier,
+la molette laisse la bulle ouverte et elle suit son bouton ; survol à la souris puis molette : la
+bulle se ferme, comme avant ; au doigt (820 px) : appui, défilement, second appui, appui ailleurs,
+Échap, inchangés. Calculette et guide, cas le plus dur, à 640 et 900 px de haut : 0 bulle refermée
+(production : 8 et 6 sur 8, 1 sur 1). WebKitGTK : Tab avec 805 et 918 px de défilement, la bulle
+reste, Échap la ferme. Bulle RID remesurée à 320, 360, 820 et 1 280 px (lignes de 29, 46, 46 et
+28 px, aucun débordement). Essais des § 9.gh, 9.go et 9.gp repassés. `verify-site.mjs` sans
+erreur ; feuille commune inchangée ; comparé à la production, seul `/simulateur` diffère.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
