@@ -406,10 +406,10 @@
 .fiche .corps .callout > p.callout-titre::before { content: ""; flex: none; width: 18px; height: 18px; background: var(--l-ampoule) center / contain no-repeat; }
 .fiche .corps .callout-essentiel > p.callout-titre::before { background-image: var(--l-liste); }
 .fiche .corps .callout-warning > p.callout-titre::before { background-image: var(--l-triangle); }
-.fiche .corps .callout-hippo > p.callout-titre::before { width: 26px; height: 26px; margin: -4px 0; border-radius: 50%; background: var(--l-tete) center / cover no-repeat; }
+.fiche .corps .callout-hippo > p.callout-titre::before { width: 32px; height: 32px; margin: -6px 0; border-radius: 50%; background: var(--l-tete) center / cover no-repeat; }
 .fiche .corps .callout-sans-titre::before { content: "Conseil"; display: block; margin-bottom: 8px; padding-left: 26px; background: var(--l-ampoule) 0 50% / 18px no-repeat; color: var(--brand); }
 .fiche .corps .callout-warning.callout-sans-titre::before { content: "Attention"; background-image: var(--l-triangle); color: var(--wait); }
-.fiche .corps .callout-hippo.callout-sans-titre::before { content: "Le conseil Hippodoc"; padding-left: 32px; background: var(--l-tete) 0 50% / 24px no-repeat; }
+.fiche .corps .callout-hippo.callout-sans-titre::before { content: "Le conseil Hippodoc"; min-height: 32px; padding-left: 42px; line-height: 32px; background: var(--l-tete) 0 50% / 32px no-repeat; }
 .fiche .corps .callout-essentiel.callout-sans-titre::before { content: "L’essentiel"; background-image: var(--l-liste); }
 /* Points de « L'essentiel » : la puce ronde du corps, pas une coche. Un point sur cinq est une mise en
    garde (« Un contrat validé par l'Ordre ne te protège pas du fisc ») : une coche y disait « validé », alors
@@ -423,7 +423,7 @@
 .fiche .corps :is(h2, h3).t-encadre:has(+ .callout-essentiel) { background: var(--paper); box-shadow: 0 -1px 0 0 var(--line), 1px 0 0 0 var(--line), -1px 0 0 0 var(--line); }
 .fiche .corps :is(h2, h3).t-encadre::before { content: ""; flex: none; width: 20px; height: 20px; background: var(--l-ampoule) center / contain no-repeat; }
 .fiche .corps :is(h2, h3).t-encadre:has(+ .callout-warning)::before { background-image: var(--l-triangle); }
-.fiche .corps :is(h2, h3).t-encadre:is(.t-hippo, :has(+ .callout-hippo))::before { width: 28px; height: 28px; margin: -4px 0; border-radius: 50%; background: var(--l-tete) center / cover no-repeat; }
+.fiche .corps :is(h2, h3).t-encadre:is(.t-hippo, :has(+ .callout-hippo))::before { width: 32px; height: 32px; margin: -6px 0; border-radius: 50%; background: var(--l-tete) center / cover no-repeat; }
 
 /* ───────── Tableaux ─────────
    Un cadre à coins de 16 px, en-tête sur ciel doux, nombres à droite en chiffres tabulaires. */

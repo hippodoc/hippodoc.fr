@@ -15499,6 +15499,17 @@ manières ». Deux fichiers de `src/assets/blog-article/`, lus seulement par
 Aucun mot ni balise ne change : seules les feuilles et deux images. Vu à 390, 1 280 et
 1 440 px (carte collée à droite).
 
+### 9.hj Blog : le rond du « Conseil Hippodoc » refait, visage seul et plus grand (16 novembre 2026)
+
+Le propriétaire, capture à l'appui, sur le § 9.hi en ligne : « un peu moche quand c'est en
+petit comme ça », « et c'est cropé ». À 24 px, la main coupée au bord et le stéthoscope
+faisaient une tache. Trois essais comparés dans la page, en résolution double (écran Retina) :
+vignette carrée de la scène (40 et 44 px : l'hippo y reste minuscule), buste en rond de 36 px
+(chargé), visage seul en rond de 28 et 32 px. Retenu : le visage centré sur le disque du soleil
+(carré de 440 px de la source), sans la main, en rond de **32 px** dans les trois emplacements
+(encadré sans titre, encadré à titre, titre d'encadré), au lieu de 24 à 28 px. La main reste dans
+la vignette de la carte d'essai (`salue.webp`, inchangée), où elle se voit.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
