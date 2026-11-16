@@ -4,11 +4,11 @@
  * + bannière cookies portée de src/components/cookies/CookieConsent.tsx (SPA source).
  *
  * Stratégie perf : rien ne se charge pendant la fenêtre Lighthouse.
- * gtag.js n'est injecté que 6 s après `load` OU après la première interaction
- * (pointerdown/keydown/touchstart), au premier des deux — et dans les deux cas
- * seulement après 1 s sans aucun geste, pour ne jamais s'exécuter pendant une
- * animation ou un défilement (§ 9.dp). Crisp : au clic sur la bulle uniquement.
- * Le Meta Pixel n'est chargé qu'avec le consentement « accepted » (comme la source).
+ * gtag.js et le pixel ne sont injectés qu'avec le consentement « accepted »
+ * (Consent Mode « basique », § 9.hi), 6 s après `load` OU après la première
+ * interaction (pointerdown/keydown/touchstart), au premier des deux — et dans les
+ * deux cas seulement après 1 s sans aucun geste, pour ne jamais s'exécuter pendant
+ * une animation ou un défilement (§ 9.dp). Crisp : au clic sur la bulle uniquement.
  * Clé de consentement identique à la source : localStorage['cookie-consent'].
  * Calendly : simples liens HTML (zéro script) — pas de widget flottant.
  */
@@ -164,7 +164,14 @@
        du document, tandis que celui de PostHog.astro est un module, donc différé. */
     window.hippodocConsent = consent;
 
-    /* Consent Mode v2 — défaut DENIED (RGPD), AVANT tout chargement gtag.js */
+    /* Consent Mode v2, mode BASIQUE (§ 9.hi) : défaut DENIED, et gtag.js n'est
+       chargé qu'avec le consentement « accepted » (voir loadDeferred).
+       ⚠️ Il était chargé pour tout le monde (mode « avancé ») : avant tout choix,
+       après un refus et après un retrait, Google recevait un `page_view` sans cookie
+       (`gcs=G100`) à chaque page — mesuré, audit du 16 novembre 2026. La politique
+       de confidentialité promet l'inverse : « s'ils refusent, ils ne sont pas
+       chargés ». D'où aussi le retrait de `url_passthrough`, qui ne servait qu'aux
+       visiteurs sans consentement. */
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     window.gtag = gtag;
@@ -178,11 +185,12 @@
       wait_for_update: 500,
     });
     gtag('set', 'ads_data_redaction', true);
-    gtag('set', 'url_passthrough', true);
     gtag('js', new Date());
     gtag('config', GA_ID, {
       send_page_view: false,
       anonymize_ip: true,
+      /* 13 mois (395 j), plafond CNIL des traceurs : gtag posait `_ga` pour 400 j. */
+      cookie_expires: 34128000,
       page_location: scrub(window.location.href),
       page_referrer: scrub(document.referrer || ''),
     });
@@ -211,11 +219,14 @@
     }
 
     var deferredDone = false;
+    var gaCharge = false;
     function loadDeferred() {
       if (deferredDone) return;
+      /* Mode basique : sans « accepted », rien ne part chez Google ni chez Meta. */
+      if (consent() !== 'accepted') return;
       deferredDone = true;
-      /* GA4 : page_view manuel (cookieless ping si consentement refusé/absent) */
       inject('https://www.googletagmanager.com/gtag/js?id=' + GA_ID, function () {
+        gaCharge = true;
         gtag('event', 'page_view', {
           page_path: window.location.pathname,
           page_location: scrub(window.location.href),
@@ -294,7 +305,7 @@
     }
     ['pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {
       addEventListener(evt, function () {
-        if (deferredDone) return;
+        if (deferredDone || consent() !== 'accepted') return;
         dernierGeste = Date.now();
         planifier(1000);
       }, { passive: true });
@@ -313,6 +324,12 @@
        ⚠️ Un cookie ne s'efface qu'en rejouant EXACTEMENT son couple domaine/chemin :
        GA4 pose `_ga` sur le domaine parent, d'où la boucle sur les variantes. */
     function effacerTraceurs() {
+      /* Le pixel range aussi le dernier référent externe dans le localStorage :
+         il y restait après le retrait (audit du 16 novembre 2026). */
+      try {
+        localStorage.removeItem('lastExternalReferrer');
+        localStorage.removeItem('lastExternalReferrerTime');
+      } catch (e) {}
       try {
         var noms = ['_ga', '_gid', '_gat', '_fbp', '_fbc'];
         var cookies = document.cookie.split(';');
@@ -363,17 +380,28 @@
            Meta expose `fbq('consent','revoke')` : le pixel déjà chargé cesse
            alors d'émettre, faute de pouvoir le décharger. */
         gtag('consent', 'update', DENIED);
+        /* gtag.js ne se décharge pas : `ga-disable-<ID>` coupe tout envoi dans la
+           page en cours (sans lui, des pings sans cookie partaient encore). */
+        window['ga-disable-' + GA_ID] = true;
         try { if (window.fbq) window.fbq('consent', 'revoke'); } catch (e) {}
         effacerTraceurs();
       }
       if (value === 'accepted') {
+        window['ga-disable-' + GA_ID] = false;
         gtag('consent', 'update', GRANTED);
-        gtag('event', 'page_view', {
-          page_path: window.location.pathname,
-          page_location: scrub(window.location.href),
-          page_title: document.title,
-        });
-        if (deferredDone) loadPixel();
+        if (gaCharge) {
+          gtag('event', 'page_view', {
+            page_path: window.location.pathname,
+            page_location: scrub(window.location.href),
+            page_title: document.title,
+          });
+          try { if (window.fbq) window.fbq('consent', 'grant'); } catch (e) {}
+        } else {
+          /* Premier accord dans la page : chargement après 1 s de calme, comme
+             pour un premier geste (§ 9.dp) ; le page_view part à son onload. */
+          dernierGeste = Date.now();
+          planifier(1000);
+        }
       }
       /* PostHog (module séparé) écoute cet événement pour ajuster sa persistance */
       dispatchEvent(new CustomEvent('hippodoc:consent-changed', { detail: value }));

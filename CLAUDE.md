@@ -900,15 +900,19 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 - **PostHog** (`src/components/PostHog.astro`) : clé projet
   `phc_x3JYWa7EjhuuwVVBLyks74ud58ZmUppaC666QkmTUXox`, proxy first-party
-  `https://t.hippodoc.fr`, persistance `memory` → `localStorage+cookie` après consentement.
+  `https://t.hippodoc.fr`, **sans cookie** (`cookieless_mode: 'always'`, § 9.hi) : aucun
+  traceur, identifiant anonyme du jour calculé par PostHog (option « Cookieless tracking » du
+  projet obligatoire). Opposition par `before_send`. Aucun montant saisi : `tranche()` de
+  `src/lib/analytics.ts`. L'attribution vers l'app passe par les `utm_*` ajoutés aux liens.
 - **Instrumentation** : attributs `data-ph="landing_*"` (autocapture) et `data-track-*`
   sur les CTA — suivre la convention de nommage de la SPA source pour ne pas casser les
   insights PostHog existants.
 - **GA4/Meta Pixel/Crisp** (`src/components/ThirdPartyScripts.astro`) : règle absolue —
   **rien ne se charge dans la fenêtre Lighthouse**. Crisp = première interaction
-  uniquement ; gtag/pixel = première interaction OU load+6 s ; pixel gaté par le
-  consentement (`localStorage['cookie-consent']`, valeurs `accepted`/`essential-only`,
-  même clé que l'app). Bannière cookies incluse ; « Préférences cookies » au footer.
+  uniquement ; gtag/pixel = **seulement avec « accepted »** (Consent Mode basique, § 9.hi), puis
+  première interaction OU load+6 s ; consentement lu dans le cookie `hippodoc-consent`
+  (domaine parent, partagé avec l'app), `localStorage['cookie-consent']` en repli (valeurs
+  `accepted`/`essential-only`). Bannière cookies incluse ; « Préférences cookies » au footer.
   Crisp ne se charge qu'à un clic explicite : sur la bulle, ou sur un lien qui porte
   `data-ouvre-chat` (§ 9.gu, § 9.gw : l'offre des internes de `/tarifs`, de l'accueil et de
   `/faq`). Deux liens `.lien` dans une même phrase : leurs zones de toucher de 44 px se

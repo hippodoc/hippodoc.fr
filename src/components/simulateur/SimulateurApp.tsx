@@ -9,7 +9,7 @@ import { SimulateurForm } from "./SimulateurForm";
 import { SimulateurResults, essaiDe, chargerCartesDesRegimes, type Essai, type CartesDesRegimes } from "./SimulateurResults";
 import { usePublicodesSimulation, type RegimeComparison } from "@/lib/simulateur/usePublicodesSimulation";
 import type { SimulateurFormData } from "./simulateurSchema";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, tranche, TRANCHES_RECETTES } from "@/lib/analytics";
 import { insertPublicEvent } from "@/lib/supabase-public";
 
 /**
@@ -167,7 +167,9 @@ export default function SimulateurApp() {
   const handleSubmit = useCallback(
     (data: SimulateurFormData) => {
       formDataRef.current = data;
-      trackEvent("public_simulator_used", { input_amount: data.recettesBrutes });
+      // § 9.hi : une tranche de recettes annuelles, jamais le montant saisi.
+      const recettesAnnuelles = data.periode === "mensuel" ? data.recettesBrutes * 12 : data.recettesBrutes;
+      trackEvent("public_simulator_used", { tranche_recettes: tranche(recettesAnnuelles, TRANCHES_RECETTES), periode: data.periode });
       lancer(data);
 
       const sid = getOrCreateSessionId();

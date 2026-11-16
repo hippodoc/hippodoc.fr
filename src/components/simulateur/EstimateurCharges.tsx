@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, tranche, TRANCHES_CHARGES } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { PUISSANCES, fraisKilometriques, fraisRepas, limitesRepas, type PuissanceFiscale } from "@/lib/simulateur/fraisPros";
 import { formatNombre } from "@/lib/simulateur/nombres";
@@ -106,7 +106,7 @@ export function EstimateurCharges({
   const reporter = () => {
     onReporter(aReporter);
     const lignesRemplies = [km, repas, peages, ...Object.values(montants)].filter((v) => nombre(v) > 0).length;
-    trackEvent('public_simulator_charges_helper_applied', { total_arrondi: Math.round(total / 100) * 100, lignes_remplies: lignesRemplies });
+    trackEvent('public_simulator_charges_helper_applied', { tranche_charges: tranche(total, TRANCHES_CHARGES), lignes_remplies: lignesRemplies });
     setReporte(`${euros(aReporter)}${mensuel ? ' par mois' : ''} reportés dans « Tes charges réelles ».`);
   };
   // Un champ modifié après le report : le message ne vaut plus.

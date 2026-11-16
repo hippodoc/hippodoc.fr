@@ -9,7 +9,7 @@ const path = "/politique-confidentialite";
 <PageLegale {title} {description} {path}>
   <Fragment slot="tete">
     <h1 class="aff">Politique de <span class="num">Confidentialité –</span> Hippodoc</h1>
-    <div class="lg-date">Dernière mise à jour : 14 novembre 2026</div>
+    <div class="lg-date">Dernière mise à jour : 16 novembre 2026</div>
   </Fragment>
 
   <section>
@@ -100,7 +100,7 @@ const path = "/politique-confidentialite";
       <li><strong>Compte Utilisateur</strong> : Tant que le compte est actif. En cas d'inactivité totale pendant 24 mois, nous pouvons supprimer le compte et ses données, sauf obligation légale nous imposant un délai plus long (ex. conservation comptable).</li>
       <li><strong>Données de facturation</strong> : 10 ans à compter de la clôture de l'exercice concerné, en conformité avec les obligations légales et fiscales.</li>
       <li><strong>Logs de connexion</strong> : 12 mois maximum, à des fins de sécurité et d'audit.</li>
-      <li><strong>Cookies et traceurs</strong> : Voir article 8 : durée variable selon le type de cookie. Le cookie de mesure d'audience est plafonné à 13 mois, et les statistiques qui en découlent sont conservées 25 mois au maximum, conformément aux lignes directrices de la CNIL.</li>
+      <li><strong>Cookies et traceurs</strong> : Voir article 8 : durée variable selon le type de cookie. La mesure d'audience ne dépose aucun cookie ; les statistiques qui en découlent sont conservées 25 mois au maximum, conformément aux lignes directrices de la CNIL.</li>
       <li><strong>Historique d'échanges (messages, support)</strong> : Conserver le temps nécessaire pour le suivi de la relation client (3 ans après la dernière interaction), sauf obligation légale ou litige en cours.</li>
     </ul>
     <p>Lorsque les données ne sont plus nécessaires, elles sont soit supprimées, soit anonymisées (rendant impossible toute réidentification).</p>
@@ -135,8 +135,8 @@ const path = "/politique-confidentialite";
       <li>Paiement : Stripe.</li>
       <li>Envoi des emails : Resend.</li>
       <li>Messagerie d'assistance (chat) : Crisp.</li>
-      <li>Analyse d'audience et mesure de performance produit : PostHog (serveurs dans l'Union européenne). Pour des raisons techniques (contournement des bloqueurs de publicité), le trafic PostHog est acheminé via notre sous-domaine <code>t.hippodoc.fr</code> (proxy first-party). Les données restent hébergées sur les serveurs PostHog EU et aucun cookie tiers cross-domain n'est déposé. PostHog nous aide à comprendre l'utilisation de la Plateforme pour l'améliorer. Aucune donnée médicale, fiscale ou de paiement n'est transmise à PostHog.</li>
-      <li>Mesure des campagnes, uniquement avec votre consentement : Google Analytics 4 (Google Ireland Limited) et pixel Meta (Meta Platforms Ireland Limited).</li>
+      <li>Analyse d'audience et mesure de performance produit : PostHog (serveurs dans l'Union européenne). Pour des raisons techniques (contournement des bloqueurs de publicité), le trafic PostHog est acheminé via notre sous-domaine <code>t.hippodoc.fr</code> (proxy first-party). Les données restent hébergées sur les serveurs PostHog EU et aucun cookie tiers cross-domain n'est déposé. PostHog nous aide à comprendre l'utilisation de la Plateforme pour l'améliorer. Aucune donnée médicale n'est transmise à PostHog, et le simulateur public ne lui transmet qu'une tranche de revenus, jamais le montant saisi.</li>
+      <li>Mesure des campagnes, uniquement avec votre consentement : Google Analytics 4 (Google Ireland Limited) et pixel Meta (Meta Platforms Ireland Limited), dont les événements sont aussi transmis à Meta par une passerelle serveur (API Conversions), hébergée sur Amazon Web Services (Irlande).</li>
       <li>Connexion avec un compte Google, si vous la choisissez : Google.</li>
       <li>Recherche d'adresses lors de la saisie d'un lieu : Mapbox.</li>
       <li>Suivi des erreurs applicatives : Sentry (serveurs dans l'Union européenne).</li>
@@ -199,8 +199,8 @@ const path = "/politique-confidentialite";
     <h3>8.2. Types de cookies utilisés</h3>
     <ul>
       <li><strong>Cookies strictement nécessaires</strong> : indispensables au fonctionnement de la Plateforme, ainsi que le cookie qui mémorise votre choix en matière de cookies. Aucun consentement n'est requis pour ces derniers, puisqu'ils servent précisément à respecter le vôtre.</li>
-      <li><strong>Mesure d'audience exemptée de consentement</strong> : nous utilisons <strong>PostHog</strong> (hébergement Union européenne), servi depuis notre propre domaine, pour produire des statistiques de fréquentation. Conformément aux lignes directrices de la CNIL, cette mesure est <strong>dispensée de consentement</strong> car elle est strictement limitée à la statistique interne : pas de suivi d'un site à l'autre, pas de recoupement avec d'autres traitements, aucune transmission à des tiers publicitaires, pas d'enregistrement de votre écran (session replay), pas de carte de chaleur, et votre adresse IP n'est pas conservée. Durée de vie : 13 mois au maximum. Vous pouvez vous y opposer à tout moment, en un clic, au paragraphe 8.3.</li>
-      <li><strong>Cookies publicitaires</strong> : <strong>Google Analytics 4</strong> et le <strong>pixel Meta (Facebook, Instagram)</strong>, destinés à mesurer l'efficacité de nos campagnes. Ceux-là ne sont <strong>jamais déposés sans votre consentement explicite</strong> : c'est l'objet du bandeau affiché à votre première visite. Si vous refusez, ils ne sont pas chargés, et ceux qui auraient déjà été déposés sont supprimés.</li>
+      <li><strong>Mesure d'audience exemptée de consentement</strong> : nous utilisons <strong>PostHog</strong> (hébergement Union européenne), servi depuis notre propre domaine, pour produire des statistiques de fréquentation. Elle <strong>ne dépose aucun cookie</strong> et n'enregistre rien sur votre terminal : un identifiant anonyme, valable une journée, est calculé à partir de votre navigateur et de votre adresse IP, puis l'adresse IP est supprimée. Conformément aux lignes directrices de la CNIL, cette mesure est <strong>dispensée de consentement</strong> car elle est strictement limitée à la statistique interne : pas de suivi d'un site à l'autre, aucun lien avec votre compte Hippodoc, aucune transmission à des tiers publicitaires, pas d'enregistrement de votre écran (session replay), pas de carte de chaleur. Vous pouvez vous y opposer à tout moment, en un clic, au paragraphe 8.3.</li>
+      <li><strong>Cookies publicitaires</strong> : <strong>Google Analytics 4</strong> et le <strong>pixel Meta (Facebook, Instagram)</strong>, destinés à mesurer l'efficacité de nos campagnes. Ceux-là ne sont <strong>jamais déposés sans votre consentement explicite</strong> : c'est l'objet du bandeau affiché à votre première visite. Si vous refusez, ils ne sont pas chargés, et ceux qui auraient déjà été déposés sont supprimés. Si vous les acceptez, les événements du pixel Meta passent aussi par la passerelle serveur de Meta décrite à l'article 6.</li>
     </ul>
 
     <h3>8.3. Vous opposer à la mesure d'audience</h3>

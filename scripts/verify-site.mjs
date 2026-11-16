@@ -1472,25 +1472,51 @@ if (!/creerEmetteur/.test(srcPostHog)) {
   fail('PostHog.astro : les événements de consentement n\'utilisent plus l\'émetteur commun — ils repartiraient sans contexte');
 }
 
-/* 4 quaterdecies. La mesure d'audience ne dépend PAS du bandeau publicitaire.
-   Elle en dépendait : 42 % des visiteurs acceptaient, donc 58 % tournaient en
-   `memory`, où chaque page rechargée crée une nouvelle personne anonyme — ni
-   tunnel multi-pages, ni visiteur récurrent, ni conversion rattachable à sa
-   campagne. L'article 82 dispense de consentement la mesure d'audience : PostHog
-   persiste donc pour tout le monde, GA4 et le Pixel restent seuls sous le bandeau.
-   Recâbler la persistance sur le consentement reperdrait 58 % de la mesure sans
-   qu'aucun test de page ne s'en aperçoive. L'exemption exige en contrepartie un
-   droit d'opposition : sans lui, elle tombe et tout le dispositif avec. */
-if (/persistence:\s*accepted\s*\?/.test(srcPostHog) || /persistence:\s*\w*[Cc]onsent/.test(srcPostHog)) {
-  fail('PostHog.astro : la persistance est de nouveau conditionnée au consentement publicitaire — 58 % des visiteurs reperdraient toute identité');
-}
+/* 4 quaterdecies. La mesure d'audience ne dépend PAS du bandeau publicitaire, et
+   elle ne pose AUCUN traceur (§ 9.hi).
+   Historique : en `memory` pour 58 % des visiteurs (ceux qui refusaient la
+   publicité), puis persistée pour tous dans un cookie `.hippodoc.fr` de 395 jours
+   au nom de l'exemption CNIL. L'audit du 16 novembre 2026 a montré que cette
+   exemption ne tenait pas : échéance du cookie repoussée à chaque page, navigation
+   www rattachée au compte de l'app par ce cookie commun, IP conservée.
+   Désormais `cookieless_mode: 'always'` : aucun cookie ni stockage, identifiant
+   anonyme du jour calculé par le serveur. Ce qui casserait l'exemption sans
+   qu'aucun test de page ne s'en aperçoive : un retour à une persistance, au cookie
+   partagé, aux propriétés de premier contact écrites sur l'appareil, aux
+   heatmaps, ou la disparition du droit d'opposition (en mode `always`, PostHog
+   ignore `opt_out_capturing` : l'opposition passe par `before_send`). */
 for (const [motif, message] of [
-  [/opt_out_capturing_by_default/, "l'opposition à la mesure n'est plus prise en compte au démarrage"],
-  [/cookie_expiration/, 'la durée de vie du cookie n\'est plus plafonnée (13 mois exigés)'],
+  [/cookieless_mode:\s*'always'/, "PostHog n'est plus en mode sans cookie — il reposerait un identifiant sur l'appareil"],
+  [/persistence:\s*'memory'/, "la persistance de PostHog n'est plus en mémoire"],
+  [/before_send:[^\n]*mesureRefusee\(\)\s*\?\s*null/, "l'opposition à la mesure n'arrête plus les envois (before_send)"],
   [/capture_heatmaps:\s*false/, 'les heatmaps ne sont plus coupées — hors mesure d\'audience, elles fragilisent l\'exemption'],
   [/data-mesure/, "le droit d'opposition a disparu — sans lui l'exemption tombe"],
 ]) {
   if (!motif.test(srcPostHog)) fail(`PostHog.astro : ${message}`);
+}
+for (const [motif, message] of [
+  [/cross_subdomain_cookie:\s*true/, 'cookie PostHog partagé avec app.hippodoc.fr : la navigation www serait de nouveau rattachée au compte'],
+  [/cookie_persisted_properties/, 'propriétés écrites dans un cookie : un traceur reviendrait sur l\'appareil'],
+  [/register_once\(/, 'propriétés de premier contact persistées : elles n\'ont plus de sens sans cookie et en réintroduiraient un'],
+  [/persistence:\s*'localStorage/, 'persistance PostHog sur l\'appareil : l\'exemption tombe'],
+  [/gclid|fbclid/, 'identifiant publicitaire transmis par la mesure d\'audience'],
+]) {
+  if (motif.test(srcPostHog)) fail(`PostHog.astro : ${message}`);
+}
+/* Aucun montant saisi ne part à PostHog (§ 9.hi) : la politique le promet. Le
+   simulateur envoyait les recettes au centime près (`input_amount`). */
+for (const f of ['src/components/simulateur/SimulateurApp.tsx', 'src/components/simulateur/EstimateurCharges.tsx']) {
+  const src = readFileSync(resolve(root, f), 'utf8');
+  if (/input_amount|total_arrondi/.test(src)) fail(`${f} : un montant saisi part de nouveau à PostHog — n'envoyer qu'une tranche (tranche())`);
+}
+/* GA4 en Consent Mode basique (§ 9.hi) : gtag.js n'est injecté qu'avec « accepted ». */
+{
+  const tiers = readFileSync(resolve(root, 'src/components/ThirdPartyScripts.astro'), 'utf8');
+  const corps = tiers.slice(tiers.indexOf('function loadDeferred'), tiers.indexOf('function loadDeferred') + 400);
+  if (!/consent\(\)\s*!==\s*'accepted'\)\s*return/.test(corps)) {
+    fail("ThirdPartyScripts : gtag.js se charge de nouveau sans consentement (mode « avancé ») — Google recevrait des pages vues après un refus");
+  }
+  if (/'url_passthrough',\s*true/.test(tiers)) fail("ThirdPartyScripts : url_passthrough réactivé — inutile en mode basique");
 }
 const politique = readFileSync(resolve(dist, 'politique-confidentialite/index.html'), 'utf8');
 if (!politique.includes('data-mesure="refuser"') || !politique.includes('mesure-etat')) {

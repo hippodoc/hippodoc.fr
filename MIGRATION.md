@@ -15481,6 +15481,74 @@ familles, colonnes de texte, tableau en grille sous 560 px, à 320, 390, 768, 1 
 **Fichiers** : `src/data/inclusOffres.ts` (nouveau), `src/components/accueil/Tarifs.astro`,
 `src/pages/tarifs.astro`, `src/lib/pages-lastmod.ts`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.hi Consentement : GA4 en mode basique, PostHog sans cookie, aucun montant saisi (16 novembre 2026)
+
+Suite de l'audit consentement et traceurs du 16 novembre 2026 (mesures en production, données
+PostHog lues en lecture seule). Décisions du propriétaire : PostHog du site en mode sans cookie,
+enregistrements existants laissés à expiration.
+
+**Réglages du projet PostHog (faits le 16 novembre, hors dépôt).** Suppression des IP activée
+(`anonymize_ips`), enregistrement de session, cartes de chaleur et capture de la console coupés.
+L'IP complète était conservée sur 100 % des événements, alors que la politique et ce dépôt
+affirmaient l'inverse.
+
+**GA4 et pixel Meta : Consent Mode basique** (`ThirdPartyScripts.astro`). gtag.js était chargé
+pour tout le monde (mode « avancé ») : avant tout choix, après un refus et après un retrait, un
+`page_view` sans cookie (`gcs=G100`) partait chez Google à chaque page. Désormais `loadDeferred()`
+ne charge rien sans « accepted » ; un accord donné dans la page déclenche le chargement après 1 s
+de calme (§ 9.dp). Au retrait, `ga-disable-<ID>` coupe les envois de la page en cours, et
+`effacerTraceurs()` retire aussi `lastExternalReferrer` et `lastExternalReferrerTime` (posés par le
+pixel, ils restaient). `url_passthrough` retiré (il ne servait qu'aux visiteurs sans accord) ;
+`cookie_expires` à 13 mois (`_ga` était posé pour 400 jours).
+
+**PostHog : `cookieless_mode: 'always'`** (`PostHog.astro`). L'exemption de consentement ne tenait
+pas avec le cookie `.hippodoc.fr` de 395 jours : échéance repoussée à chaque page vue (mesuré),
+navigation www rattachée au compte nominatif par ce cookie partagé avec l'app (1 618 événements
+www de 37 comptes en 30 jours), IP conservée. Désormais aucun cookie ni stockage : le serveur de
+PostHog calcule un identifiant anonyme du jour puis jette l'IP. Conséquences voulues :
+- plus de visiteur récurrent d'un jour à l'autre, plus de localisation par ville (PostHog ne
+  calcule pas la géolocalisation des événements sans cookie) ;
+- plus de propriétés `hd_*` de premier contact (`register_once`, `cookie_persisted_properties`) :
+  l'attribution vers l'app passe par les liens. `transmettreCampagne()` ajoute aux liens vers
+  app.hippodoc.fr les `utm_*` de la première page de la visite (ou, sans campagne, la source du
+  référent externe en `utm_source` et `utm_medium=referral`), que l'app lit à l'arrivée. Jamais les
+  identifiants de clic de Google ou Meta ;
+- l'opposition (§ 8.3 de la politique) passe par `before_send`, qui rend `null` : en mode
+  `always`, PostHog ignore `opt_out_capturing()` ;
+- nettoyage des anciens traceurs : clé `ph_<clé>_posthog` du localStorage de www, et cookie
+  `.hippodoc.fr` seulement sans accord publicitaire (l'app s'en sert pour un visiteur qui a accepté).
+
+⚠️ Prérequis : « Cookieless tracking » activé dans les réglages du projet PostHog (Web analytics)
+AVANT la mise en ligne, sinon PostHog jette les événements sans cookie.
+
+**Simulateur : tranches au lieu des montants.** `public_simulator_used` envoyait `input_amount`
+(recettes saisies, 882 fois en 90 jours, dont 12 rattachées à 3 comptes nommés) ; il envoie
+`tranche_recettes` (recettes annuelles : 0-20k, 20-40k, 40-60k, 60-80k, 80-120k, 120k+) et
+`periode`. `public_simulator_charges_helper_applied` envoie `tranche_charges` au lieu de
+`total_arrondi`. Helper `tranche()` dans `src/lib/analytics.ts`. Les insights PostHog qui lisaient
+`input_amount` ou `total_arrondi` sont à repointer.
+
+**Contrôle « 4 quaterdecies » de `verify-site.mjs` réécrit** : il exigeait un cookie de 13 mois ;
+il exige maintenant le mode sans cookie, la mémoire, l'opposition dans `before_send`, les
+heatmaps coupées, le bouton d'opposition, et refuse le cookie partagé, les propriétés persistées,
+`register_once`, les identifiants de clic, un montant saisi envoyé par le simulateur, et gtag.js
+chargé sans « accepted ».
+
+**Contenu modifié — politique de confidentialité** (à faire relire) :
+- § 5 (durées) : « Le cookie de mesure d'audience est plafonné à 13 mois, et les statistiques… »
+  → « La mesure d'audience ne dépose aucun cookie ; les statistiques… » ;
+- § 6 (PostHog) : « Aucune donnée médicale, fiscale ou de paiement n'est transmise à PostHog. »
+  → « Aucune donnée médicale n'est transmise à PostHog, et le simulateur public ne lui transmet
+  qu'une tranche de revenus, jamais le montant saisi. » (l'app envoie encore le régime fiscal et le
+  webhook Stripe le montant de l'abonnement : la phrase d'origine était fausse) ;
+- § 6 (campagnes) : ajout de la passerelle serveur de Meta (API Conversions, hébergée sur Amazon
+  Web Services en Irlande), configurée chez Meta et observée en production ;
+- § 8.2 : la mesure d'audience « ne dépose aucun cookie » (identifiant anonyme d'une journée,
+  IP supprimée), « aucun lien avec votre compte Hippodoc » ; « Durée de vie : 13 mois » retiré ;
+  cookies publicitaires : renvoi vers la passerelle de Meta ;
+- date de mise à jour : 16 novembre 2026.
+Le § 8.4 (espace connecté) attend le lot de l'app.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
