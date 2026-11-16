@@ -15481,6 +15481,24 @@ familles, colonnes de texte, tableau en grille sous 560 px, à 320, 390, 768, 1 
 **Fichiers** : `src/data/inclusOffres.ts` (nouveau), `src/components/accueil/Tarifs.astro`,
 `src/pages/tarifs.astro`, `src/lib/pages-lastmod.ts`, `CLAUDE.md`, `MIGRATION.md`.
 
+### 9.hi Blog : l'hippo qui salue remplace la tête recadrée (16 novembre 2026)
+
+Demande du propriétaire, image fournie (l'hippo en blouse qui salue, soleil et vagues,
+1 080 × 1 080) : les petits hippos du blog étaient « un hippo de face coupé de différentes
+manières ». Deux fichiers de `src/assets/blog-article/`, lus seulement par
+`blog-article.css` :
+- `tete.webp` (96 px) : le visage et la main levée sur le soleil, rond (coins transparents).
+  Recadrage choisi parmi quatre, comparés à 24 et 48 px : la scène entière noyait le visage
+  à 24 px, le visage seul perdait le geste ; retenu, un carré de 480 px de la source autour
+  du visage, la main presque entière. Pastille de « Le conseil Hippodoc » (titre d'encadré, encadré sans
+  titre) : l'image remplit le rond (`cover`), plus de fond blanc ni de décalage de 3 px.
+- `buste.webp` retiré, remplacé par `salue.webp` (168 px ; carré de 760 px de la source :
+  l'hippo de la tête au buste, la main, le soleil, un peu d'eau ; la scène entière le
+  rapetissait trop à 56 px) : carte d'essai,
+  vignette de 56 × 56 px à coins de 14 px (au lieu du buste détouré de 50 × 58 px).
+Aucun mot ni balise ne change : seules les feuilles et deux images. Vu à 390, 1 280 et
+1 440 px (carte collée à droite).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
