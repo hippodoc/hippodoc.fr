@@ -15538,9 +15538,11 @@ chargé sans « accepted ».
 - § 5 (durées) : « Le cookie de mesure d'audience est plafonné à 13 mois, et les statistiques… »
   → « La mesure d'audience ne dépose aucun cookie ; les statistiques… » ;
 - § 6 (PostHog) : « Aucune donnée médicale, fiscale ou de paiement n'est transmise à PostHog. »
-  → « Aucune donnée médicale n'est transmise à PostHog, et le simulateur public ne lui transmet
-  qu'une tranche de revenus, jamais le montant saisi. » (l'app envoie encore le régime fiscal et le
-  webhook Stripe le montant de l'abonnement : la phrase d'origine était fausse) ;
+  → « Aucune donnée médicale n'est transmise à PostHog, ni aucun montant saisi : le simulateur
+  public ne lui transmet qu'une tranche de revenus, et PostHog ne reçoit que le montant de votre
+  abonnement Hippodoc. » (le webhook Stripe lui envoie le montant de l'abonnement, et l'app le
+  régime fiscal jusqu'à son lot consentement : la phrase d'origine était fausse ; même phrase
+  dans `textesLegaux.tsx` de l'app) ;
 - § 6 (campagnes) : ajout de la passerelle serveur de Meta (API Conversions, hébergée sur Amazon
   Web Services en Irlande), configurée chez Meta et observée en production ;
 - § 8.2 : la mesure d'audience « ne dépose aucun cookie » (identifiant anonyme d'une journée,
