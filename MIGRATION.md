@@ -15510,6 +15510,55 @@ vignette carrée de la scène (40 et 44 px : l'hippo y reste minuscule), buste e
 (encadré sans titre, encadré à titre, titre d'encadré), au lieu de 24 à 28 px. La main reste dans
 la vignette de la carte d'essai (`salue.webp`, inchangée), où elle se voit.
 
+### 9.hk Simulateur : audit du 22 novembre 2026, parent isolé et deux montants des revenus 2024
+
+Le propriétaire a demandé un audit « minutieux et profond » du simulateur, pour savoir si son
+calcul pouvait servir de référence à l'application (app.hippodoc.fr).
+
+**Ce qui a été contrôlé, et tient.**
+- Cotisations PAMC : huit profils (remplaçant et installé, secteurs 1 et 2, réel et Micro-BNC, de
+  45 000 à 250 000 € de recettes) comparés ligne à ligne au modèle « réforme » de l'Urssaf
+  (`modele-ti` 0.1.0, évalué en local) : mêmes montants, sauf la complémentaire CARMF, voulue à
+  11,8 % en 2026 (le paquet publié porte encore 10,2 %).
+- La nouvelle route de l'API, `/api/v1/modeles/ti/evaluate`, qui applique la réforme seule, rend
+  les montants du simulateur sur trois profils (15 324 €, 26 888 €, 27 067 €). Elle a un défaut
+  sur le début d'activité : sa règle « complémentaire non due les deux premières années » compare
+  des jours à des années et ne se déclenche pas (avertissement dans la réponse) ; avec une
+  création en 2026, elle compte quand même la complémentaire. Le simulateur applique cette règle
+  lui-même : ne pas passer à cette route sans la garder.
+- Impôt et Super-Net : huit cas recalculés à la main (barème, décote, plafond du quotient
+  familial, 3 % et groupe III, RSPM), exacts à l'euro.
+- Barèmes : 17 points sur 19 relus le 22 novembre sur carmf.fr, urssaf.fr, service-public.fr et
+  le BOFiP (Légifrance non lu : accès refusé). `controle-modele-urssaf.mjs` passe.
+- L'application a reçu ce moteur le même jour (dépôt de l'application, branche
+  `claude/adoring-cray-5dq2ax`) : 36 profils comparés, aucun écart ; 14 figés dans ses tests.
+
+**Ce qui était faux, corrigé ici.**
+1. **Parent isolé.** Le plafond de 4 262 € (revenus 2025) vaut pour la part entière du premier
+   enfant, soit deux demi-parts : « L'avantage maximal en impôt procuré par cette part de quotient
+   familial attachée au premier enfant à charge […] est fixé à 4 262 € » (BOI-IR-LIQ-20-20-20 du
+   7 avril 2026, § 70 ; § 80 : 2 131 € par demi-part). Le moteur le comptait pour une seule
+   demi-part et ajoutait le plafond général à la seconde : 6 069 € au lieu de 4 262 € pour un
+   enfant. Un parent isolé à 60 000 € imposables : 6 842 € d'impôt, et non 5 035 €. Une seule
+   règle, `plafondAvantageQf` (`src/lib/baremes-ir.ts`), reprise par le moteur
+   (`useRspmCalculation.ts`).
+2. **Revenus 2024, part du premier enfant d'un parent isolé** : 4 224 € (même BOI, version du
+   14 avril 2025), et non 4 149 € (montant des revenus 2023).
+3. **Revenus 2024, décote d'un couple** : 1 470 € (BOI-IR-LIQ-20-20-30 du 14 avril 2025 :
+   « 1/45,25 % de 889 € et 1/45,25 % de 1 470 € »), et non 1 471 €.
+
+**Laissé tel quel, à savoir.**
+- Le glossaire du guide écrit « parent isolé (case T, +0,5 part, plafond 4 262 €) » : le montant
+  est juste, la phrase ne dit pas qu'il vaut pour la part entière. Contenu non retouché.
+- Complémentaire, ASV et invalidité-décès : la CARMF les appelle sur le revenu d'il y a deux ans ;
+  le simulateur les calcule sur le revenu de l'année simulée, comme l'outil de l'Urssaf. Exact à
+  revenu stable.
+- Revenus 2026 : la loi de finances 2027 n'est pas votée (projet à +2,1 %) ; le barème des
+  revenus 2025 reste appliqué, et la bulle du champ « Année » le dit. PASS 2027 annoncé à
+  48 900 € ; taux CARMF 2027 non publiés.
+
+`SIMULATEUR_LAST_UPDATED_ISO` passe au 22 novembre 2026 : les barèmes ont été relus ce jour-là.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

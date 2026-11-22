@@ -732,6 +732,13 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Le Super-Net retire les charges payées dans les deux régimes, Micro-BNC compris. Les règles
   se vérifient sur Légifrance, le BOFiP et la CARMF ; le revenu imposable d'un remplaçant doit
   rester égal au « net imposable » du modèle Urssaf (contrôle croisé, § 9.fr).
+  Quotient familial (§ 9.hk) : le plafond d'un parent isolé (`plafondQfCaseT`, 4 262 € pour les
+  revenus 2025) vaut pour la part entière du premier enfant, soit deux demi-parts ; règle unique
+  `plafondAvantageQf` (`src/lib/baremes-ir.ts`), à ne pas recopier. La nouvelle route de l'Urssaf
+  (`/api/v1/modeles/ti/evaluate`) rend les mêmes cotisations, mais n'applique pas la règle des deux
+  premières années de la complémentaire CARMF : ne pas y passer sans la garder (§ 9.hk).
+  L'application (app.hippodoc.fr) reprend ce moteur : ses tests figent 14 demandes du simulateur
+  (`calcul-moteur-simulateur.test.ts`) ; un changement de règle ici se reporte là-bas.
   Résultats (§ 9.ft) : la conclusion en tête, puis les fiches. L'impôt du médecin (sa part en
   couple, celle de son activité libérale, ses acomptes) vient de `src/lib/simulateur/impotMedecin.ts`,
   ce que chaque régime déduit de `src/lib/simulateur/deductions.ts` : conclusion, fiches et plis les

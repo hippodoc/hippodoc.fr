@@ -1,5 +1,5 @@
 import { getDomTomInfo } from '@/lib/dom-tom';
-import { abattement10Salaire, getBaremeIR } from '@/lib/baremes-ir';
+import { abattement10Salaire, plafondAvantageQf } from '@/lib/baremes-ir';
 import { inferEnfantsFromParts } from '@/lib/fiscalParts';
 import { capChequesVacances } from '@/lib/declarationParams';
 import { canApplyForfait2pct, canApplyDeductionsS1 } from '@/lib/fiscalEligibility';
@@ -349,14 +349,8 @@ const calculateImpotWithDetails = (
   
   // 8. Calcul du plafond (centralisé depuis baremes-ir.ts)
   const nbDemiPartsEnfants = partsEnfants * 2;
-  const bareme = getBaremeIR(annee);
-  
-  let plafond: number;
-  if (situationFamiliale === 'parent_isole' && nbDemiPartsEnfants >= 1) {
-    plafond = bareme.plafondQfCaseT + Math.max(0, nbDemiPartsEnfants - 1) * bareme.plafondQfParDemiPart;
-  } else {
-    plafond = nbDemiPartsEnfants * bareme.plafondQfParDemiPart;
-  }
+  // Parent isolé : la part entière du premier enfant est plafonnée à `plafondQfCaseT` (voir `plafondAvantageQf`)
+  const plafond = plafondAvantageQf(nbDemiPartsEnfants, situationFamiliale === 'parent_isole', annee);
   
   // 9. Application du plafonnement si nécessaire (CGI Art. 197)
   let impotFinal: number;
