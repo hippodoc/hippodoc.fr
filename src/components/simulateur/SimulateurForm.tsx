@@ -89,6 +89,7 @@ export const SIMULATEUR_DEFAULTS = {
     debutActivite: 'non' as const,
     dispenseComplementaire: false,
     asvProportionnelle: false,
+    debutOutreMer: false,
 } satisfies Partial<SimulateurFormData>;
 
 // Composant réutilisable pour les en-têtes de section
@@ -156,6 +157,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const situationCarmf = form.watch('situationCarmf');
     // § 9.fx : début d'activité et réductions de la CARMF sur demande.
     const debutActivite = form.watch('debutActivite') ?? 'non';
+    // Outre-mer (§ 9.hl) : la case « activité commencée sur place » n'a de sens que dans les quatre
+    // départements où vaut l'exonération des indépendants d'outre-mer, les deux premières années.
+    const debutOutreMer = form.watch('debutOutreMer') ?? false;
+    const debutOutreMerOuvert = ['guadeloupe', 'martinique', 'guyane', 'reunion'].includes(lieuExercice ?? '') && debutActivite !== 'non';
     const dispenseComplementaire = form.watch('dispenseComplementaire');
     const asvProportionnelle = form.watch('asvProportionnelle');
     // Le toggle RID s'affiche dès qu'on est en RSPM (effectif ou auto < 38k€).
@@ -184,7 +189,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
       ].join(', '),
       [
         secteurConventionnel === 'secteur_2' ? 'Secteur\u00a02' : 'Secteur\u00a01',
-        getDomTomInfo(lieuExercice)?.nom ?? 'France métropolitaine',
+        (getDomTomInfo(lieuExercice)?.nom ?? 'France métropolitaine')
+          + (debutOutreMerOuvert && debutOutreMer ? ' (activité commencée sur place)' : ''),
       ].join(', '),
       `Revenus ${anneeSaisie}`,
       // § 9.gh : le régime social qui s'appliquera, dit en clair (le mot RSPM n'apparaissait nulle
@@ -201,7 +207,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Un champ en erreur dans la situation repliée : la situation s'ouvre, sinon l'erreur reste
     // invisible (le formulaire ne pourrait pas y porter le focus).
     const CHAMPS_SITUATION = ['situationFamiliale', 'enfants', 'revenusConjoint', 'typeRevenuConjoint', 'typeExercice',
-      'debutActivite', 'annee', 'lieuExercice', 'secteurConventionnel', 'regimeSocial'] as const;
+      'debutActivite', 'annee', 'lieuExercice', 'debutOutreMer', 'secteurConventionnel', 'regimeSocial'] as const;
     const surSaisieInvalide = (erreurs: Record<string, unknown>) => {
       if (CHAMPS_SITUATION.some((c) => c in erreurs)) setSituationOuverte(true);
     };
@@ -1054,6 +1060,23 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                 </FormItem>
               )}
             />
+
+            {/* Outre-mer : activité commencée sur place (exonération des 24 premiers mois, § 9.hl) */}
+            {debutOutreMerOuvert && (
+              <FormField control={form.control} name="debutOutreMer" render={({ field }) => (
+                <FormItem className="sim-coche flex items-start gap-3">
+                  <FormControl><input type="checkbox" checked={Boolean(field.value)} onChange={field.onChange} className="sim-case" /></FormControl>
+                  <div className="flex-1">
+                    <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                      J'ai commencé mon activité libérale outre-mer
+                    </FormLabel>
+                    <FormDescription className="text-xs mt-0.5">
+                      Les 24 premiers mois, la maladie, les allocations familiales et la CSG-CRDS ne sont pas dues (en entier jusqu'à 52{'\u00a0'}866{'\u00a0'}€ de revenu en 2026). Ne coche pas si tu as d'abord exercé en métropole : l'abattement est alors de 50{'\u00a0'}%.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )} />
+            )}
 
             {/* Secteur conventionnel */}
             <FormField

@@ -15559,6 +15559,72 @@ calcul pouvait servir de référence à l'application (app.hippodoc.fr).
 
 `SIMULATEUR_LAST_UPDATED_ISO` passe au 22 novembre 2026 : les barèmes ont été relus ce jour-là.
 
+### 9.hl Simulateur : exonération des indépendants d'outre-mer (22 novembre 2026)
+
+Décision du propriétaire (« ok pour les 3, go », après la question « on ne peut pas gérer les
+DROM ? ») : compter l'exonération de cotisations des indépendants d'outre-mer, dans le simulateur
+et dans l'application en même temps, pour qu'ils continuent de donner le même chiffre.
+
+**Le défaut.** En Guadeloupe, en Martinique, en Guyane et à La Réunion, le simulateur donnait les
+cotisations du modèle de l'Urssaf, qui écrit lui-même « Ce simulateur ne prend pas en compte les
+exonérations DROM ». Un remplaçant en secteur 1 à 60 000 € de recettes en Micro-BNC y voyait
+15 211 € de cotisations ; il en doit 13 230 €. Le texte de l'encart disait pourtant « Cotisations
+calculées par le modèle de l'Urssaf, qui tient compte de ton département ».
+
+**La règle** (Légifrance, lu le 22/11/2026 ; détail et citations en tête du bloc « Exonération des
+indépendants d'outre-mer » de `src/lib/simulateur/urssaf.ts`).
+- CSS L756-4 et D756-4 : la maladie, les indemnités journalières, les allocations familiales et la
+  CSG-CRDS sont calculées, pour la part du revenu sous le PASS, sur une assiette abattue de 50 %
+  (75 % la troisième année civile d'activité), sans limite de durée ; l'abattement décroît de
+  150 % à 250 % du PASS.
+- CSS L756-2 : ces quatre cotisations ne sont pas dues les 24 premiers mois d'une activité
+  commencée outre-mer, dans la limite de ce qui est dû pour un revenu de 110 % du PASS. Le
+  changement de lieu d'exercice n'est pas un début d'activité (R131-3 ; Cass. 2e civ., 9 janvier
+  2025, n° 22-22.832) : un médecin qui a d'abord exercé en métropole n'y a pas droit.
+- Les cotisations de la CARMF restent dues en entier.
+- Taux pleins d'outre-mer (urssaf.fr, 27/02/2026 ; `modele-ti`) : allocations familiales à 3,10 %
+  sans le taux réduit de la métropole. Le modèle de l'API appliquait le taux progressif (0 % sous
+  110 % du PASS) : corrigé dans le même geste.
+
+**Ce que fait le simulateur.** À partir des revenus 2025, en PAMC, dans ces quatre départements :
+50 % par défaut ; l'exonération entière quand « Début d'activité » vaut 1re ou 2e année ET que la
+nouvelle case « J'ai commencé mon activité libérale outre-mer » est cochée. Il ne connaît pas la
+date de début : il compte l'année entière, et garde 50 % la troisième année (la loi donne 75 %).
+La prise en charge de l'Assurance maladie passe après l'exonération, comme dans le modèle de
+l'Urssaf : en secteur 1, la maladie du médecin reste 0,1 % de son revenu conventionné tant que
+l'exonération est partielle.
+
+**Choix prudents, à faire confirmer par la caisse d'outre-mer (CGSS).** Les seuils de 110 %, 150 %
+et 250 % du PASS sont comparés au revenu d'avant l'abattement de 26 % (D756-4 renvoie à L131-6,
+donc à l'assiette abattue : lecture plus favorable, non retenue tant qu'elle n'est pas confirmée ;
+pour 100 000 € de recettes et 12 000 € de charges, l'écart est d'environ 1 700 € de cotisations) ;
+la contribution additionnelle de 3,25 % reste due ; l'exonération de maladie sous 13 % du PASS
+(L756-5) n'est pas comptée ; rien au RSPM ; rien avant les revenus 2025 (assiette calculée par le
+modèle) ; Mayotte inchangée (régime propre).
+
+**Contrôles.** Montants recalculés à la main (secteur 2, 60 000 € en Micro-BNC, 50 % : maladie
+1 683 €, allocations familiales 614 €, indemnités journalières 59 €, CSG-CRDS 1 920 €) et rendus
+tels quels par le modèle. Douze demandes comparées au calcul de l'application, qui porte la même
+règle : même résultat à l'euro près (figées dans ses tests, `calcul-outre-mer.test.ts`).
+
+**Contenu ajouté ou modifié** (à relire par le propriétaire).
+- Formulaire, sous « Lieu d'exercice », pour un de ces quatre départements en 1re ou 2e année :
+  case « J'ai commencé mon activité libérale outre-mer », et son aide : « Les 24 premiers mois, la
+  maladie, les allocations familiales et la CSG-CRDS ne sont pas dues (en entier jusqu'à 52 866 €
+  de revenu en 2026). Ne coche pas si tu as d'abord exercé en métropole : l'abattement est alors de
+  50 %. » Le résumé « Ta situation » ajoute « (activité commencée sur place) ».
+- Encart « Avantage fiscal DOM » des résultats, dernière ligne. Avant : « Cotisations calculées par
+  le modèle de l'Urssaf, qui tient compte de ton département. » Après : « Cotisations aux taux
+  d'outre-mer. À partir des revenus 2025, l'exonération des indépendants d'outre-mer est comptée :
+  50 % de moins sur la maladie, les allocations familiales et la CSG-CRDS, ou leur exonération
+  entière les deux premières années d'une activité commencée sur place (la 3e année, la loi donne
+  75 % : le simulateur garde 50 %). » À Mayotte : « Mayotte a son propre régime de cotisations : le
+  résultat est une approximation. » Au RSPM : inchangé.
+
+**Fichiers.** `src/lib/simulateur/urssaf.ts` (règle, `situationMedecin`), `usePublicodesSimulation.ts`
+(le champ part vers le modèle), `simulateurSchema.ts` (`debutOutreMer`), `SimulateurForm.tsx`
+(case, résumé, `CHAMPS_SITUATION`), `RegimeComparisonCards.tsx` (encart).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
