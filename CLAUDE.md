@@ -401,7 +401,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Blog
 
-- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (53 articles au 15 novembre 2026), schéma dans
+- **La source de vérité est CE dépôt** : `src/content/blog/*.md` (54 articles au 22 novembre 2026), schéma dans
   `src/content.config.ts`. Nouvel article = nouveau `.md` (nom de fichier = slug d'URL), avec
   son `theme` (obligatoire : sans lui, ou avec un thème inconnu, la construction s'arrête ;
   voir « Thèmes », plus bas). Un article qui porte une `faq` fait monter le compte des questions : `verify-site.mjs`
@@ -921,7 +921,7 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
 
 ## Vérification avant push
 
-1. `npm run build` (77 pages au 15 novembre 2026, dont 75 dans le sitemap : une de plus par
+1. `npm run build` (78 pages au 22 novembre 2026, dont 76 dans le sitemap : une de plus par
    nouvel article) puis `node scripts/verify-site.mjs`.
 2. Si les îlots ont changé : test navigateur (le pattern Playwright est dans l'historique
    de session ; Chromium : `/opt/pw-browsers/chromium`).
