@@ -15510,7 +15510,66 @@ vignette carrée de la scène (40 et 44 px : l'hippo y reste minuscule), buste e
 (encadré sans titre, encadré à titre, titre d'encadré), au lieu de 24 à 28 px. La main reste dans
 la vignette de la carte d'essai (`salue.webp`, inchangée), où elle se voit.
 
-### 9.hk Simulateur : audit du 22 novembre 2026, parent isolé et deux montants des revenus 2024
+### 9.hk Nouvel article : combien coûte un cabinet médical (22 novembre 2026)
+
+Procédure `.claude/skills/nouvel-article`, passe « agréable à lire » comprise (§ 9.gs).
+
+**Fichier et affiche.** `src/content/blog/cout-cabinet-medical.md` ; affiche
+`src/assets/blog/cout-cabinet-medical-cover.webp`, 1 122 × 1 402 (0,80), réenregistrée en WebP
+sans métadonnées (171 Ko), empreinte unique.
+
+**Thème** : `statut-contrats-revenus`, avec `aides-installation-medecin-2026` et
+`choix-mode-exercice`. Aucun article ne traitait déjà le coût d'un cabinet ni le bail.
+
+**Frontmatter.** `title` « Cabinet médical : combien ça coûte vraiment ? » (45 signes ; le titre
+fourni en faisait 63). `description`, `cta` (« Simule ton Super-Net avant de t'installer »,
+`ctaHref: /simulateur`) et FAQ de 5 questions écrits ici (`PLANCHER_FAQ` : 64 pages, 424
+questions). `episodeNumber: 21` : à la une. `readTime` 21 min.
+
+**Écarts au texte fourni** :
+- ligne « À jour au 21 novembre » sortie ; date de fin et des sources au 22 novembre ; espaces
+  insécables du fichier remplacées par des espaces, comme dans les autres articles ;
+- **références au kit Instagram retirées** (phrase « commente KIT », « grille de la page 6 du
+  guide ») : le lecteur du blog ne les a pas. « Fiche … sur le profil » devient un lien vers
+  l'article du blog (comptable, CFE, prévoyance) ;
+- **mise en forme** : « L'essentiel », trois `:::warning` (confusion sur les 27 €, charges fixes,
+  copropriété), deux `:::tip` (bail, astuce du rattrapage ; le 💡 sort), postes de charges en
+  liste, secrétariat coupé en trois paragraphes, gras (24 pour 1 000 mots) ;
+- **ajouts** (relecture interne novice) : un ordre de grandeur des charges fixes, tiré des
+  chiffres de l'article (650 + 800 + 150 + 170 = environ 1 770 € par mois, 5 300 € pour trois
+  mois ; le 170 € est le milieu de la fourchette du comptable) et « au moins 20 000 à 30 000 € »
+  avant d'ouvrir (matériel + trois mois), hors travaux, dépôt et agence. « Trois mois » est un
+  exemple, sans source : à changer si le propriétaire préfère un autre repère ;
+- **corrections factuelles** (relecture expert-comptable et juriste, deux passes ; les « faux »
+  revérifiés sur Légifrance, BOFiP, impots.gouv.fr et le guide Donum) :
+  - dépôt de garantie : le plafond d'un trimestre (loi du 26 mai 2026, C. com. L145-40) vise les
+    locaux de L145-32-1 (commerce, artisanat), pas un cabinet ;
+  - « associations de gestion agréées » → « organismes de gestion » (agrément abrogé par la LF
+    2025, art. 11) ; l'UNASA est « leur fédération » ;
+  - dotation numérique : hors des « 3 € » (données 2024, dotation née en 2026), art. 28-2 ;
+  - mobilier à 500 € : renouvellement à l'unité ; initial et renouvellement complet exclus, sauf
+    achats de l'année sous 500 € (BOI-BNC-BASE-40-60-30, § 150 à 190) ;
+  - accessibilité : à la charge du locataire si le bail le dit, sauf grosses réparations en bail
+    commercial (R145-35, 2°) ;
+  - CFE : commune **ou intercommunalité**, si elle l'a voté ; « au plus tard le 31 décembre » ;
+  - impôt : baisse « avec un conjoint qui gagne moins », déductions forfaitaires du secteur 1 ;
+  - bail professionnel : reconduit « pour la même durée » ;
+  - comptable : « de l'ordre de 1 000 à 3 000 € » (le texte disait HT, l'article comptable dit
+    TTC, les relevés n'ont pas pu être contrôlés) ;
+  - « depuis 2022 » retiré de l'absence de pénalité (règle en vigueur : CSS L131-6-2).
+  Vérifiés justes : l'exemple à 150 000 € (85 500 €, impôt environ 18 900 €, 64 200 €, 5 350 €).
+  **Non vérifiables** : les ratios UNASA (réservés aux membres) et l'étude sur 450 cabinets, repris
+  tels que fournis ; « deux sources indépendantes » devient « deux études ».
+
+**Liens.** Dans le texte : comptable, CFE, prévoyance, Hippodoc (`/`), Super-Net (`/simulateur`).
+Entrant (en tête des `relatedArticles`) : `aides-installation-medecin-2026`, `choix-mode-exercice`,
+`comptable-logiciel-tableur-medecin-remplacant`.
+
+**Vérifications.** 78 pages, 76 dans le sitemap (`lastmod` 2026-11-22) ; `verify-site.mjs` passe ;
+feuille commune inchangée ; pages changées contre `main` : le nouvel article, `/blog`, la page du
+thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile 97 / 100 / 100 /
+100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
+### 9.hl Simulateur : audit du 22 novembre 2026, parent isolé et deux montants des revenus 2024
 
 Le propriétaire a demandé un audit « minutieux et profond » du simulateur, pour savoir si son
 calcul pouvait servir de référence à l'application (app.hippodoc.fr).
@@ -15559,7 +15618,7 @@ calcul pouvait servir de référence à l'application (app.hippodoc.fr).
 
 `SIMULATEUR_LAST_UPDATED_ISO` passe au 22 novembre 2026 : les barèmes ont été relus ce jour-là.
 
-### 9.hl Simulateur : exonération des indépendants d'outre-mer (22 novembre 2026)
+### 9.hm Simulateur : exonération des indépendants d'outre-mer (22 novembre 2026)
 
 Décision du propriétaire (« ok pour les 3, go », après la question « on ne peut pas gérer les
 DROM ? ») : compter l'exonération de cotisations des indépendants d'outre-mer, dans le simulateur
@@ -15625,9 +15684,9 @@ règle : même résultat à l'euro près (figées dans ses tests, `calcul-outre-
 (le champ part vers le modèle), `simulateurSchema.ts` (`debutOutreMer`), `SimulateurForm.tsx`
 (case, résumé, `CHAMPS_SITUATION`), `RegimeComparisonCards.tsx` (encart).
 
-### 9.hm Simulateur : dispense d'ASV (23 novembre 2026)
+### 9.hn Simulateur : dispense d'ASV (23 novembre 2026)
 
-Suite du § 9.hl, même décision du propriétaire (« go continue avec ce qui reste ») : l'application
+Suite du § 9.hm, même décision du propriétaire (« go continue avec ce qui reste ») : l'application
 calcule depuis ce lot les trois réductions que la CARMF accorde sur demande ; le simulateur en
 connaissait deux (dispense partielle de la complémentaire, ASV proportionnelle). Il reçoit la
 troisième, pour continuer de donner le même chiffre que l'application.

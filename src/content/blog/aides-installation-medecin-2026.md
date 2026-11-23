@@ -28,6 +28,7 @@ faq:
   - question: "Une aide de ma commune m’empêche-t-elle d’en toucher une autre ailleurs ?"
     answer: "**Oui, pendant dix ans.** Depuis le décret du 12 mars 2025, un professionnel qui a touché une aide d’une collectivité (commune, intercommunalité, département) ne peut pas en obtenir une autre pendant dix ans à compter de sa dernière convention, même ailleurs. Cette règle ne vise pas l’aide de l’Assurance Maladie, qui a sa propre règle des dix ans."
 relatedArticles:
+  - "cout-cabinet-medical"
   - "zones-frr-exoneration-impot-medecin"
   - "regime-fiscal-micro-bnc-vs-reel"
   - "choix-mode-exercice"

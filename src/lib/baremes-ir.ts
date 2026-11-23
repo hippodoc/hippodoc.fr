@@ -140,7 +140,7 @@ export function getTMI(quotientFamilial: number, annee: number = 2026): number {
  * plafonnée à `plafondQfCaseT` (« L'avantage maximal en impôt procuré par cette part de quotient familial
  * attachée au premier enfant à charge […] est fixé à 4 262 € à compter de l'imposition des revenus de
  * l'année 2025 », § 70 ; 2 131 € par demi-part, § 80) ; les demi-parts suivantes suivent le cas général.
- * Avant le § 9.hk (novembre 2026), ce plafond était compté pour UNE demi-part, et la seconde recevait en
+ * Avant le § 9.hl (novembre 2026), ce plafond était compté pour UNE demi-part, et la seconde recevait en
  * plus le plafond général : l'avantage d'un parent isolé était plafonné 1 807 € trop haut.
  */
 export function plafondAvantageQf(nbDemiParts: number, parentIsole: boolean, annee: number = 2026): number {

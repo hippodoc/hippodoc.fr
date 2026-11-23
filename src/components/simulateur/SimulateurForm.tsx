@@ -158,7 +158,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const situationCarmf = form.watch('situationCarmf');
     // § 9.fx : début d'activité et réductions de la CARMF sur demande.
     const debutActivite = form.watch('debutActivite') ?? 'non';
-    // Outre-mer (§ 9.hl) : la case « activité commencée sur place » n'a de sens que dans les quatre
+    // Outre-mer (§ 9.hm) : la case « activité commencée sur place » n'a de sens que dans les quatre
     // départements où vaut l'exonération des indépendants d'outre-mer, les deux premières années.
     const debutOutreMer = form.watch('debutOutreMer') ?? false;
     const debutOutreMerOuvert = ['guadeloupe', 'martinique', 'guyane', 'reunion'].includes(lieuExercice ?? '') && debutActivite !== 'non';
@@ -220,7 +220,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Les réductions sur demande : en PAMC, affilié à la CARMF, après les deux premières années
     // (la complémentaire n'y est pas due et l'ASV y est forfaitaire).
     const reductionsCarmfOuvertes = !isRspmEffectif && situationCarmf !== 'dispense' && debutActivite === 'non';
-    // La dispense d'ASV se demande aussi les deux premières années (§ 9.hm) : c'est même là qu'elle
+    // La dispense d'ASV se demande aussi les deux premières années (§ 9.hn) : c'est même là qu'elle
     // est la plus fréquente, le revenu d'il y a deux ans étant souvent nul ou faible.
     const dispenseAsvOuverte = !isRspmEffectif && situationCarmf !== 'dispense';
 
@@ -1066,7 +1066,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               )}
             />
 
-            {/* Outre-mer : activité commencée sur place (exonération des 24 premiers mois, § 9.hl) */}
+            {/* Outre-mer : activité commencée sur place (exonération des 24 premiers mois, § 9.hm) */}
             {debutOutreMerOuvert && (
               <FormField control={form.control} name="debutOutreMer" render={({ field }) => (
                 <FormItem className="sim-coche flex items-start gap-3">

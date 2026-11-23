@@ -35,7 +35,7 @@
  *
  * Début d'activité et ASV proportionnelle (MIGRATION.md § 9.fx) : voir `situationMedecin`.
  *
- * Outre-mer (MIGRATION.md § 9.hl) : exonération des indépendants d'outre-mer, que le modèle ne
+ * Outre-mer (MIGRATION.md § 9.hm) : exonération des indépendants d'outre-mer, que le modèle ne
  * compte pas ; voir « Exonération des indépendants d'outre-mer », plus bas.
  */
 
@@ -213,7 +213,7 @@ export const complementaireCarmf = (assiette: number, annee: number) =>
 const pourcent = (taux: number) => `${(taux * 100).toFixed(4)} %`;
 
 // ─────────────────────────────────────────────────────────────────────────────────────────────────
-// Exonération des indépendants d'outre-mer (MIGRATION.md § 9.hl, novembre 2026). Même règle que
+// Exonération des indépendants d'outre-mer (MIGRATION.md § 9.hm, novembre 2026). Même règle que
 // l'application (`supabase/functions/_shared/urssaf-mapping.ts` du dépôt de l'application) ; le
 // modèle de l'Urssaf ne la compte pas (« Ce simulateur ne prend pas en compte les exonérations DROM »).
 //
@@ -371,7 +371,7 @@ export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
   }
   // ASV : les deux premières années, l'ajustement porte sur la base forfaitaire (365 € en 2026) ;
   // sinon, sur demande et si elle coûte moins, la cotisation proportionnelle de 9 % remplace la
-  // part forfaitaire (l'ajustement reste calculé par le modèle). Dispense d'ASV (§ 9.hm) : aucune
+  // part forfaitaire (l'ajustement reste calculé par le modèle). Dispense d'ASV (§ 9.hn) : aucune
   // ASV de l'année, quelle que soit l'ancienneté ; elle l'emporte sur la proportionnelle.
   if (p.dispenseAsv) {
     s[`${I} . PL . CARMF . ASV . forfaitaire`] = '0 €/an';

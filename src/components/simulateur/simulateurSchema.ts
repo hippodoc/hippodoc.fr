@@ -80,9 +80,9 @@ export const simulateurSchema = z.object({
   // Réductions de la CARMF accordées sur demande (§ 9.fx).
   dispenseComplementaire: z.boolean().default(false),
   asvProportionnelle: z.boolean().default(false),
-  /** Dispense d'ASV accordée par la CARMF pour l'année (§ 9.hm). */
+  /** Dispense d'ASV accordée par la CARMF pour l'année (§ 9.hn). */
   dispenseAsv: z.boolean().default(false),
-  /** Outre-mer : activité libérale commencée sur place, jamais exercée ailleurs avant (§ 9.hl). */
+  /** Outre-mer : activité libérale commencée sur place, jamais exercée ailleurs avant (§ 9.hm). */
   debutOutreMer: z.boolean().default(false),
   ratioNonConventionne: z.number().min(0).max(100).default(0),
 
