@@ -15625,6 +15625,34 @@ règle : même résultat à l'euro près (figées dans ses tests, `calcul-outre-
 (le champ part vers le modèle), `simulateurSchema.ts` (`debutOutreMer`), `SimulateurForm.tsx`
 (case, résumé, `CHAMPS_SITUATION`), `RegimeComparisonCards.tsx` (encart).
 
+### 9.hm Simulateur : dispense d'ASV (23 novembre 2026)
+
+Suite du § 9.hl, même décision du propriétaire (« go continue avec ce qui reste ») : l'application
+calcule depuis ce lot les trois réductions que la CARMF accorde sur demande ; le simulateur en
+connaissait deux (dispense partielle de la complémentaire, ASV proportionnelle). Il reçoit la
+troisième, pour continuer de donner le même chiffre que l'application.
+
+**La règle.** CARMF, « Dispenses pour insuffisance de revenus » : « Vous pouvez demander une dispense
+d'affiliation au régime ASV pour 2026 (sans attribution de points) si votre revenu médical libéral
+net de 2024 est inférieur ou égal à 15 000 €. » La dispense retire toute l'ASV de l'année, part
+forfaitaire et part d'ajustement : 2 039 € en début d'activité en secteur 1 (1 917 € + 122 €),
+6 116 € en secteur 2 (5 751 € + 365 €). Elle se demande aussi les deux premières années, où le revenu
+d'il y a deux ans est souvent nul : la case est donc proposée dès la 1re année, à la différence des
+deux autres. Elle l'emporte sur l'ASV proportionnelle.
+
+**Contrôle.** Quatre demandes comparées au calcul de l'application : même résultat à l'euro près
+(remplaçant secteur 1, 60 000 € en Micro-BNC, 2e année : 8 093 € de cotisations au lieu de 10 132 €).
+
+**Contenu ajouté** (à relire par le propriétaire). Dans la fiche de la situation CARMF, case
+« Dispense d'ASV (sur demande) », et son aide : « Si ton revenu médical libéral net d'il y a deux ans
+ne dépassait pas 15 000 € : aucune ASV cette année (2 039 € de moins en début d'activité en secteur 1,
+6 116 € en secteur 2), et aucun point de retraite ASV. » Le résumé de la fiche dit « Réductions
+demandées » quand elle est cochée. Aucune suggestion dans la conclusion : le simulateur ne connaît
+pas le revenu d'il y a deux ans.
+
+**Fichiers.** `src/lib/simulateur/urssaf.ts` (`dispenseAsv`), `usePublicodesSimulation.ts`,
+`simulateurSchema.ts`, `SimulateurForm.tsx`.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

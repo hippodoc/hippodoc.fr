@@ -89,6 +89,7 @@ export const SIMULATEUR_DEFAULTS = {
     debutActivite: 'non' as const,
     dispenseComplementaire: false,
     asvProportionnelle: false,
+    dispenseAsv: false,
     debutOutreMer: false,
 } satisfies Partial<SimulateurFormData>;
 
@@ -163,6 +164,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const debutOutreMerOuvert = ['guadeloupe', 'martinique', 'guyane', 'reunion'].includes(lieuExercice ?? '') && debutActivite !== 'non';
     const dispenseComplementaire = form.watch('dispenseComplementaire');
     const asvProportionnelle = form.watch('asvProportionnelle');
+    const dispenseAsv = form.watch('dispenseAsv');
     // Le toggle RID s'affiche dès qu'on est en RSPM (effectif ou auto < 38k€).
     // La dispense CARMF n'a aucun effet en RSPM : la RID reste obligatoire et
     // doit pouvoir être paramétrée (158 € ou 631 € en 2026).
@@ -218,6 +220,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Les réductions sur demande : en PAMC, affilié à la CARMF, après les deux premières années
     // (la complémentaire n'y est pas due et l'ASV y est forfaitaire).
     const reductionsCarmfOuvertes = !isRspmEffectif && situationCarmf !== 'dispense' && debutActivite === 'non';
+    // La dispense d'ASV se demande aussi les deux premières années (§ 9.hm) : c'est même là qu'elle
+    // est la plus fréquente, le revenu d'il y a deux ans étant souvent nul ou faible.
+    const dispenseAsvOuverte = !isRspmEffectif && situationCarmf !== 'dispense';
 
     // Ancienne valeur « jeune affilié » (les deux premières années) : elle passe dans « Début
     // d'activité », que le moteur lit à sa place.
@@ -1210,8 +1215,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <span className="font-semibold text-foreground">Retraite & CARMF</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {situationCarmf === 'dispense' && 'Dispensé'}
-                        {situationCarmf !== 'dispense' && (dispenseComplementaire || asvProportionnelle) && 'Réductions demandées'}
-                        {situationCarmf !== 'dispense' && !dispenseComplementaire && !asvProportionnelle && 'Affilié (cas général)'}
+                        {situationCarmf !== 'dispense' && (dispenseComplementaire || asvProportionnelle || dispenseAsv) && 'Réductions demandées'}
+                        {situationCarmf !== 'dispense' && !dispenseComplementaire && !asvProportionnelle && !dispenseAsv && 'Affilié (cas général)'}
                       </span>
                     </span>
                   </AccordionTrigger>
@@ -1303,6 +1308,19 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       )} />
                     )}
                     {!showRidToggle && <p className="text-xs text-muted-foreground px-1">Les cotisations CARMF (dont la RID) sont intégrées automatiquement dans le calcul PAMC.</p>}
+                    {dispenseAsvOuverte && (
+                      <FormField control={form.control} name="dispenseAsv" render={({ field }) => (
+                        <FormItem className="sim-coche flex items-start gap-3">
+                          <FormControl><input type="checkbox" checked={Boolean(field.value)} onChange={field.onChange} className="sim-case" /></FormControl>
+                          <div className="flex-1">
+                            <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                              Dispense d'ASV (sur demande)
+                            </FormLabel>
+                            <FormDescription className="text-xs mt-0.5">Si ton revenu médical libéral net d'il y a deux ans ne dépassait pas 15{'\u00a0'}000{'\u00a0'}€ : aucune ASV cette année (2{'\u00a0'}039{'\u00a0'}€ de moins en début d'activité en secteur 1, 6{'\u00a0'}116{'\u00a0'}€ en secteur 2), et aucun point de retraite ASV.</FormDescription>
+                          </div>
+                        </FormItem>
+                      )} />
+                    )}
                     {reductionsCarmfOuvertes && (
                       <>
                         <FormField control={form.control} name="dispenseComplementaire" render={({ field }) => (

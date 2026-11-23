@@ -101,6 +101,10 @@ export interface ParametresUrssaf {
   /** ASV proportionnelle demandée (appliquée si elle coûte moins que le forfait : revenu
    *  conventionné sous 63 900 € en 2026). */
   asvProportionnelle?: boolean;
+  /** Dispense d'ASV accordée pour l'année (CARMF, « Dispenses pour insuffisance de revenus » : revenu
+   *  médical libéral net de l'avant-dernière année inférieur ou égal à 15 000 €) : plus d'ASV, part
+   *  forfaitaire et part d'ajustement, sans points. */
+  dispenseAsv?: boolean;
   /** Cotisations provisionnelles d'une 1re année : tout sur la base forfaitaire (19 % du PASS). */
   provisionnel?: boolean;
   /** Outre-mer : activité commencée sur place, jamais exercée ailleurs avant (avec `debutActivite`,
@@ -367,8 +371,12 @@ export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
   }
   // ASV : les deux premières années, l'ajustement porte sur la base forfaitaire (365 € en 2026) ;
   // sinon, sur demande et si elle coûte moins, la cotisation proportionnelle de 9 % remplace la
-  // part forfaitaire (l'ajustement reste calculé par le modèle).
-  if (debut) {
+  // part forfaitaire (l'ajustement reste calculé par le modèle). Dispense d'ASV (§ 9.hm) : aucune
+  // ASV de l'année, quelle que soit l'ancienneté ; elle l'emporte sur la proportionnelle.
+  if (p.dispenseAsv) {
+    s[`${I} . PL . CARMF . ASV . forfaitaire`] = '0 €/an';
+    s[`${I} . PL . CARMF . ASV . ajustement`] = '0 €/an';
+  } else if (debut) {
     s[`${I} . PL . CARMF . ASV . ajustement`] = `${Math.round(baseForfaitaireDebut(p.annee) * tauxAsvAjustement(p.annee))} €/an`;
   } else if (p.asvProportionnelle && assiette !== null && p.secteur) {
     const conventionne = revenuConventionne(assiette, p.ratioNonConventionne);

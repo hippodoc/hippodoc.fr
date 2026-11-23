@@ -737,6 +737,10 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   `plafondAvantageQf` (`src/lib/baremes-ir.ts`), à ne pas recopier. La nouvelle route de l'Urssaf
   (`/api/v1/modeles/ti/evaluate`) rend les mêmes cotisations, mais n'applique pas la règle des deux
   premières années de la complémentaire CARMF : ne pas y passer sans la garder (§ 9.hk).
+  Dispense d'ASV (§ 9.hm) : troisième réduction sur demande (`dispenseAsv`), proposée dès la 1re année :
+  plus d'ASV de l'année, part forfaitaire et part d'ajustement (2 039 € en début d'activité en secteur 1,
+  6 116 € en secteur 2) ; elle l'emporte sur l'ASV proportionnelle. Montants à relire chaque année avec
+  ceux de la CARMF.
   Outre-mer (§ 9.hl) : en Guadeloupe, en Martinique, en Guyane et à La Réunion, à partir des revenus
   2025, `situationMedecin` compte l'exonération des indépendants d'outre-mer, que le modèle de
   l'Urssaf ignore (CSS L756-2, L756-4, D756-4) : 50 % de moins sur la maladie, les indemnités
