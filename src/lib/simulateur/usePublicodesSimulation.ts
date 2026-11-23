@@ -130,6 +130,8 @@ async function cotisationsPamc(
       ratioNonConventionne: formData.ratioNonConventionne || 0,
       departementOutreMer: DEPARTEMENTS_OUTRE_MER[formData.lieuExercice || 'metropole'],
       debutActivite: debutActiviteDe(formData),
+      debutOutreMer: Boolean(formData.debutOutreMer),
+      dispenseAsv: Boolean(formData.dispenseAsv),
       asvProportionnelle: Boolean(formData.asvProportionnelle) && economieAsvDe(formData, regimeFiscal) > 0,
     });
     return { cotisations: ajusterCarmf(cotisations, formData, regimeFiscal, recettesAnnuelles, chargesAnnuelles), source: 'urssaf' };
@@ -494,6 +496,8 @@ export async function calculerProvisionnelPremiereAnnee(
       ratioNonConventionne: formData.ratioNonConventionne || 0,
       departementOutreMer: DEPARTEMENTS_OUTRE_MER[formData.lieuExercice || 'metropole'],
       debutActivite: 'premiere',
+      debutOutreMer: Boolean(formData.debutOutreMer),
+      dispenseAsv: Boolean(formData.dispenseAsv),
       provisionnel: true,
     });
     return { urssaf: Math.round(c.total - c.detail.retraite), carmf: Math.round(c.detail.retraite) };

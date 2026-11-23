@@ -732,6 +732,27 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   Le Super-Net retire les charges payées dans les deux régimes, Micro-BNC compris. Les règles
   se vérifient sur Légifrance, le BOFiP et la CARMF ; le revenu imposable d'un remplaçant doit
   rester égal au « net imposable » du modèle Urssaf (contrôle croisé, § 9.fr).
+  Quotient familial (§ 9.hl) : le plafond d'un parent isolé (`plafondQfCaseT`, 4 262 € pour les
+  revenus 2025) vaut pour la part entière du premier enfant, soit deux demi-parts ; règle unique
+  `plafondAvantageQf` (`src/lib/baremes-ir.ts`), à ne pas recopier. La nouvelle route de l'Urssaf
+  (`/api/v1/modeles/ti/evaluate`) rend les mêmes cotisations, mais n'applique pas la règle des deux
+  premières années de la complémentaire CARMF : ne pas y passer sans la garder (§ 9.hl).
+  Dispense d'ASV (§ 9.hn) : troisième réduction sur demande (`dispenseAsv`), proposée dès la 1re année :
+  plus d'ASV de l'année, part forfaitaire et part d'ajustement (2 039 € en début d'activité en secteur 1,
+  6 116 € en secteur 2) ; elle l'emporte sur l'ASV proportionnelle. Montants à relire chaque année avec
+  ceux de la CARMF.
+  Outre-mer (§ 9.hm) : en Guadeloupe, en Martinique, en Guyane et à La Réunion, à partir des revenus
+  2025, `situationMedecin` compte l'exonération des indépendants d'outre-mer, que le modèle de
+  l'Urssaf ignore (CSS L756-2, L756-4, D756-4) : 50 % de moins sur la maladie, les indemnités
+  journalières, les allocations familiales (3,10 %, sans taux réduit) et la CSG-CRDS, pour la part
+  du revenu sous le PASS, dégressif de 150 % à 250 % du PASS ; exonération entière en 1re et 2e
+  années quand la case « J'ai commencé mon activité libérale outre-mer » est cochée
+  (`debutOutreMer`). Choix prudents à faire confirmer par la caisse d'outre-mer, listés en tête du
+  bloc dans `urssaf.ts` (seuils sur le revenu d'avant l'abattement de 26 %, rien au RSPM ni avant
+  2025, Mayotte inchangée). La même règle est dans l'application : toute retouche se fait aux deux
+  endroits, et ses 12 demandes de référence (`calcul-outre-mer.test.ts`) se régénèrent.
+  L'application (app.hippodoc.fr) reprend ce moteur : ses tests figent 14 demandes du simulateur
+  (`calcul-moteur-simulateur.test.ts`) ; un changement de règle ici se reporte là-bas.
   Résultats (§ 9.ft) : la conclusion en tête, puis les fiches. L'impôt du médecin (sa part en
   couple, celle de son activité libérale, ses acomptes) vient de `src/lib/simulateur/impotMedecin.ts`,
   ce que chaque régime déduit de `src/lib/simulateur/deductions.ts` : conclusion, fiches et plis les

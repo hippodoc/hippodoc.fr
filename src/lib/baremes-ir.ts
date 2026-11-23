@@ -34,7 +34,9 @@ const BAREME_2025: BaremeIR = {
     { limite: Infinity, taux: 0.45, label: '45%' },
   ],
   plafondQfParDemiPart: 1791,
-  plafondQfCaseT: 4149,              // Plafond majoré case T parent isolé
+  // Part entière du premier enfant d'un parent isolé (case T) : 4 224 € pour les revenus 2024
+  // (BOI-IR-LIQ-20-20-20, version du 14/04/2025, § 70). 4 149 € était le montant des revenus 2023.
+  plafondQfCaseT: 4224,
   plafondAbattement10Salaire: 14426,
   plancherAbattement10Salaire: 504,
 };
@@ -55,7 +57,7 @@ const BAREME_2026: BaremeIR = {
      « inchangé », ce qui était faux : le BOFiP les revalorise comme les tranches.
      Sources : BOI-IR-LIQ-20-20-20 (quotient familial) et brochure IR 2026. */
   plafondQfParDemiPart: 1807,        // BOI-IR-LIQ-20-20-20 : « 1 807 € par demi-part supplémentaire »
-  plafondQfCaseT: 4262,              // BOI-IR-LIQ-20-20-20 : « 4 262 € » — part supplémentaire du parent isolé
+  plafondQfCaseT: 4262,              // BOI-IR-LIQ-20-20-20, § 70 : « 4 262 € », pour la part entière du premier enfant d'un parent isolé
   plafondAbattement10Salaire: 14555, // Déduction forfaitaire de 10 % plafonnée à 14 555 € pour les revenus 2025
   plancherAbattement10Salaire: 509,  // Minimum de 509 € par salarié
 };
@@ -131,6 +133,23 @@ export function getTMI(quotientFamilial: number, annee: number = 2026): number {
 }
 
 /**
+ * Plafond de l'avantage de quotient familial (CGI art. 197, I-2 ; BOI-IR-LIQ-20-20-20, § 40 à 80).
+ *
+ * Cas général : `plafondQfParDemiPart` par demi-part supplémentaire.
+ * Parent isolé (case T) : la PART ENTIÈRE accordée au titre du premier enfant, soit deux demi-parts, est
+ * plafonnée à `plafondQfCaseT` (« L'avantage maximal en impôt procuré par cette part de quotient familial
+ * attachée au premier enfant à charge […] est fixé à 4 262 € à compter de l'imposition des revenus de
+ * l'année 2025 », § 70 ; 2 131 € par demi-part, § 80) ; les demi-parts suivantes suivent le cas général.
+ * Avant le § 9.hl (novembre 2026), ce plafond était compté pour UNE demi-part, et la seconde recevait en
+ * plus le plafond général : l'avantage d'un parent isolé était plafonné 1 807 € trop haut.
+ */
+export function plafondAvantageQf(nbDemiParts: number, parentIsole: boolean, annee: number = 2026): number {
+  const bareme = getBaremeIR(annee);
+  if (!parentIsole) return nbDemiParts * bareme.plafondQfParDemiPart;
+  return (bareme.plafondQfCaseT / 2) * Math.min(nbDemiParts, 2) + Math.max(0, nbDemiParts - 2) * bareme.plafondQfParDemiPart;
+}
+
+/**
  * Calcule l'impôt avec barème progressif + plafonnement QF (Article 197 CGI).
  * Fonction complète utilisable partout.
  */
@@ -145,7 +164,6 @@ export function calculateTaxWithPlafonnement(
     return { impot: 0, plafonnementApplique: false };
   }
 
-  const bareme = getBaremeIR(annee);
   const partsEnfants = Math.max(0, partsTotales - partsBase);
 
   // Impôt brut avec toutes les parts
@@ -165,18 +183,10 @@ export function calculateTaxWithPlafonnement(
   const qfBase = revenuImposable / partsBase;
   const impotSansEnfants = calculateRawTaxPerPart(qfBase, annee) * partsBase;
 
-  // Plafonnement — CGI Art. 197
-  // Parent isolé (case T) : la 1ère demi-part bénéficie d'un plafond majoré (4 149€)
+  // Plafonnement — CGI Art. 197 (voir `plafondAvantageQf`)
   const avantage = impotSansEnfants - impotBrut;
   const nbDemiParts = partsEnfants * 2;
-  
-  let plafond: number;
-  if (situationFamiliale === 'parent_isole' && nbDemiParts >= 1) {
-    // 1ère demi-part case T → plafond majoré, les suivantes → plafond standard
-    plafond = bareme.plafondQfCaseT + Math.max(0, nbDemiParts - 1) * bareme.plafondQfParDemiPart;
-  } else {
-    plafond = nbDemiParts * bareme.plafondQfParDemiPart;
-  }
+  const plafond = plafondAvantageQf(nbDemiParts, situationFamiliale === 'parent_isole', annee);
 
   if (avantage > plafond) {
     const impotPlafonne = impotSansEnfants - plafond;
@@ -213,7 +223,8 @@ export interface DecoteParams {
 }
 
 const DECOTE_BY_YEAR: Record<number, DecoteParams> = {
-  2024: { plafondSeul: 889, plafondCouple: 1471, taux: 0.4525 },
+  // Revenus 2024 : 889 € et 1 470 € (BOI-IR-LIQ-20-20-30 du 14/04/2025 : « 1/45,25 % de 889 € et 1/45,25 % de 1 470 € »).
+  2024: { plafondSeul: 889, plafondCouple: 1470, taux: 0.4525 },
   2025: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 }, // BOFiP, revenus 2025
   2026: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 },
   2027: { plafondSeul: 897, plafondCouple: 1483, taux: 0.4525 },

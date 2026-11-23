@@ -89,6 +89,8 @@ export const SIMULATEUR_DEFAULTS = {
     debutActivite: 'non' as const,
     dispenseComplementaire: false,
     asvProportionnelle: false,
+    dispenseAsv: false,
+    debutOutreMer: false,
 } satisfies Partial<SimulateurFormData>;
 
 // Composant réutilisable pour les en-têtes de section
@@ -156,8 +158,13 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const situationCarmf = form.watch('situationCarmf');
     // § 9.fx : début d'activité et réductions de la CARMF sur demande.
     const debutActivite = form.watch('debutActivite') ?? 'non';
+    // Outre-mer (§ 9.hm) : la case « activité commencée sur place » n'a de sens que dans les quatre
+    // départements où vaut l'exonération des indépendants d'outre-mer, les deux premières années.
+    const debutOutreMer = form.watch('debutOutreMer') ?? false;
+    const debutOutreMerOuvert = ['guadeloupe', 'martinique', 'guyane', 'reunion'].includes(lieuExercice ?? '') && debutActivite !== 'non';
     const dispenseComplementaire = form.watch('dispenseComplementaire');
     const asvProportionnelle = form.watch('asvProportionnelle');
+    const dispenseAsv = form.watch('dispenseAsv');
     // Le toggle RID s'affiche dès qu'on est en RSPM (effectif ou auto < 38k€).
     // La dispense CARMF n'a aucun effet en RSPM : la RID reste obligatoire et
     // doit pouvoir être paramétrée (158 € ou 631 € en 2026).
@@ -184,7 +191,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
       ].join(', '),
       [
         secteurConventionnel === 'secteur_2' ? 'Secteur\u00a02' : 'Secteur\u00a01',
-        getDomTomInfo(lieuExercice)?.nom ?? 'France métropolitaine',
+        (getDomTomInfo(lieuExercice)?.nom ?? 'France métropolitaine')
+          + (debutOutreMerOuvert && debutOutreMer ? ' (activité commencée sur place)' : ''),
       ].join(', '),
       `Revenus ${anneeSaisie}`,
       // § 9.gh : le régime social qui s'appliquera, dit en clair (le mot RSPM n'apparaissait nulle
@@ -201,7 +209,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Un champ en erreur dans la situation repliée : la situation s'ouvre, sinon l'erreur reste
     // invisible (le formulaire ne pourrait pas y porter le focus).
     const CHAMPS_SITUATION = ['situationFamiliale', 'enfants', 'revenusConjoint', 'typeRevenuConjoint', 'typeExercice',
-      'debutActivite', 'annee', 'lieuExercice', 'secteurConventionnel', 'regimeSocial'] as const;
+      'debutActivite', 'annee', 'lieuExercice', 'debutOutreMer', 'secteurConventionnel', 'regimeSocial'] as const;
     const surSaisieInvalide = (erreurs: Record<string, unknown>) => {
       if (CHAMPS_SITUATION.some((c) => c in erreurs)) setSituationOuverte(true);
     };
@@ -212,6 +220,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     // Les réductions sur demande : en PAMC, affilié à la CARMF, après les deux premières années
     // (la complémentaire n'y est pas due et l'ASV y est forfaitaire).
     const reductionsCarmfOuvertes = !isRspmEffectif && situationCarmf !== 'dispense' && debutActivite === 'non';
+    // La dispense d'ASV se demande aussi les deux premières années (§ 9.hn) : c'est même là qu'elle
+    // est la plus fréquente, le revenu d'il y a deux ans étant souvent nul ou faible.
+    const dispenseAsvOuverte = !isRspmEffectif && situationCarmf !== 'dispense';
 
     // Ancienne valeur « jeune affilié » (les deux premières années) : elle passe dans « Début
     // d'activité », que le moteur lit à sa place.
@@ -1055,6 +1066,23 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
               )}
             />
 
+            {/* Outre-mer : activité commencée sur place (exonération des 24 premiers mois, § 9.hm) */}
+            {debutOutreMerOuvert && (
+              <FormField control={form.control} name="debutOutreMer" render={({ field }) => (
+                <FormItem className="sim-coche flex items-start gap-3">
+                  <FormControl><input type="checkbox" checked={Boolean(field.value)} onChange={field.onChange} className="sim-case" /></FormControl>
+                  <div className="flex-1">
+                    <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                      J'ai commencé mon activité libérale outre-mer
+                    </FormLabel>
+                    <FormDescription className="text-xs mt-0.5">
+                      Les 24 premiers mois, la maladie, les allocations familiales et la CSG-CRDS ne sont pas dues (en entier jusqu'à 52{'\u00a0'}866{'\u00a0'}€ de revenu en 2026). Ne coche pas si tu as d'abord exercé en métropole : l'abattement est alors de 50{'\u00a0'}%.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )} />
+            )}
+
             {/* Secteur conventionnel */}
             <FormField
               control={form.control}
@@ -1187,8 +1215,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       <span className="font-semibold text-foreground">Retraite & CARMF</span>
                       <span className="ml-auto mr-2 text-xs text-muted-foreground font-normal truncate">
                         {situationCarmf === 'dispense' && 'Dispensé'}
-                        {situationCarmf !== 'dispense' && (dispenseComplementaire || asvProportionnelle) && 'Réductions demandées'}
-                        {situationCarmf !== 'dispense' && !dispenseComplementaire && !asvProportionnelle && 'Affilié (cas général)'}
+                        {situationCarmf !== 'dispense' && (dispenseComplementaire || asvProportionnelle || dispenseAsv) && 'Réductions demandées'}
+                        {situationCarmf !== 'dispense' && !dispenseComplementaire && !asvProportionnelle && !dispenseAsv && 'Affilié (cas général)'}
                       </span>
                     </span>
                   </AccordionTrigger>
@@ -1280,6 +1308,19 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                       )} />
                     )}
                     {!showRidToggle && <p className="text-xs text-muted-foreground px-1">Les cotisations CARMF (dont la RID) sont intégrées automatiquement dans le calcul PAMC.</p>}
+                    {dispenseAsvOuverte && (
+                      <FormField control={form.control} name="dispenseAsv" render={({ field }) => (
+                        <FormItem className="sim-coche flex items-start gap-3">
+                          <FormControl><input type="checkbox" checked={Boolean(field.value)} onChange={field.onChange} className="sim-case" /></FormControl>
+                          <div className="flex-1">
+                            <FormLabel className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+                              Dispense d'ASV (sur demande)
+                            </FormLabel>
+                            <FormDescription className="text-xs mt-0.5">Si ton revenu médical libéral net d'il y a deux ans ne dépassait pas 15{'\u00a0'}000{'\u00a0'}€ : aucune ASV cette année (2{'\u00a0'}039{'\u00a0'}€ de moins en début d'activité en secteur 1, 6{'\u00a0'}116{'\u00a0'}€ en secteur 2), et aucun point de retraite ASV.</FormDescription>
+                          </div>
+                        </FormItem>
+                      )} />
+                    )}
                     {reductionsCarmfOuvertes && (
                       <>
                         <FormField control={form.control} name="dispenseComplementaire" render={({ field }) => (

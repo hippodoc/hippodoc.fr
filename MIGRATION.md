@@ -15569,6 +15569,148 @@ Entrant (en tête des `relatedArticles`) : `aides-installation-medecin-2026`, `c
 feuille commune inchangée ; pages changées contre `main` : le nouvel article, `/blog`, la page du
 thème, `/qui-sommes-nous` et les trois articles du maillage. Lighthouse mobile 97 / 100 / 100 /
 100, CLS 0. Image de partage à contrôler sur l'aperçu Vercel (§ 9.gq).
+### 9.hl Simulateur : audit du 22 novembre 2026, parent isolé et deux montants des revenus 2024
+
+Le propriétaire a demandé un audit « minutieux et profond » du simulateur, pour savoir si son
+calcul pouvait servir de référence à l'application (app.hippodoc.fr).
+
+**Ce qui a été contrôlé, et tient.**
+- Cotisations PAMC : huit profils (remplaçant et installé, secteurs 1 et 2, réel et Micro-BNC, de
+  45 000 à 250 000 € de recettes) comparés ligne à ligne au modèle « réforme » de l'Urssaf
+  (`modele-ti` 0.1.0, évalué en local) : mêmes montants, sauf la complémentaire CARMF, voulue à
+  11,8 % en 2026 (le paquet publié porte encore 10,2 %).
+- La nouvelle route de l'API, `/api/v1/modeles/ti/evaluate`, qui applique la réforme seule, rend
+  les montants du simulateur sur trois profils (15 324 €, 26 888 €, 27 067 €). Elle a un défaut
+  sur le début d'activité : sa règle « complémentaire non due les deux premières années » compare
+  des jours à des années et ne se déclenche pas (avertissement dans la réponse) ; avec une
+  création en 2026, elle compte quand même la complémentaire. Le simulateur applique cette règle
+  lui-même : ne pas passer à cette route sans la garder.
+- Impôt et Super-Net : huit cas recalculés à la main (barème, décote, plafond du quotient
+  familial, 3 % et groupe III, RSPM), exacts à l'euro.
+- Barèmes : 17 points sur 19 relus le 22 novembre sur carmf.fr, urssaf.fr, service-public.fr et
+  le BOFiP (Légifrance non lu : accès refusé). `controle-modele-urssaf.mjs` passe.
+- L'application a reçu ce moteur le même jour (dépôt de l'application, branche
+  `claude/adoring-cray-5dq2ax`) : 36 profils comparés, aucun écart ; 14 figés dans ses tests.
+
+**Ce qui était faux, corrigé ici.**
+1. **Parent isolé.** Le plafond de 4 262 € (revenus 2025) vaut pour la part entière du premier
+   enfant, soit deux demi-parts : « L'avantage maximal en impôt procuré par cette part de quotient
+   familial attachée au premier enfant à charge […] est fixé à 4 262 € » (BOI-IR-LIQ-20-20-20 du
+   7 avril 2026, § 70 ; § 80 : 2 131 € par demi-part). Le moteur le comptait pour une seule
+   demi-part et ajoutait le plafond général à la seconde : 6 069 € au lieu de 4 262 € pour un
+   enfant. Un parent isolé à 60 000 € imposables : 6 842 € d'impôt, et non 5 035 €. Une seule
+   règle, `plafondAvantageQf` (`src/lib/baremes-ir.ts`), reprise par le moteur
+   (`useRspmCalculation.ts`).
+2. **Revenus 2024, part du premier enfant d'un parent isolé** : 4 224 € (même BOI, version du
+   14 avril 2025), et non 4 149 € (montant des revenus 2023).
+3. **Revenus 2024, décote d'un couple** : 1 470 € (BOI-IR-LIQ-20-20-30 du 14 avril 2025 :
+   « 1/45,25 % de 889 € et 1/45,25 % de 1 470 € »), et non 1 471 €.
+
+**Laissé tel quel, à savoir.**
+- Le glossaire du guide écrit « parent isolé (case T, +0,5 part, plafond 4 262 €) » : le montant
+  est juste, la phrase ne dit pas qu'il vaut pour la part entière. Contenu non retouché.
+- Complémentaire, ASV et invalidité-décès : la CARMF les appelle sur le revenu d'il y a deux ans ;
+  le simulateur les calcule sur le revenu de l'année simulée, comme l'outil de l'Urssaf. Exact à
+  revenu stable.
+- Revenus 2026 : la loi de finances 2027 n'est pas votée (projet à +2,1 %) ; le barème des
+  revenus 2025 reste appliqué, et la bulle du champ « Année » le dit. PASS 2027 annoncé à
+  48 900 € ; taux CARMF 2027 non publiés.
+
+`SIMULATEUR_LAST_UPDATED_ISO` passe au 22 novembre 2026 : les barèmes ont été relus ce jour-là.
+
+### 9.hm Simulateur : exonération des indépendants d'outre-mer (22 novembre 2026)
+
+Décision du propriétaire (« ok pour les 3, go », après la question « on ne peut pas gérer les
+DROM ? ») : compter l'exonération de cotisations des indépendants d'outre-mer, dans le simulateur
+et dans l'application en même temps, pour qu'ils continuent de donner le même chiffre.
+
+**Le défaut.** En Guadeloupe, en Martinique, en Guyane et à La Réunion, le simulateur donnait les
+cotisations du modèle de l'Urssaf, qui écrit lui-même « Ce simulateur ne prend pas en compte les
+exonérations DROM ». Un remplaçant en secteur 1 à 60 000 € de recettes en Micro-BNC y voyait
+15 211 € de cotisations ; il en doit 13 230 €. Le texte de l'encart disait pourtant « Cotisations
+calculées par le modèle de l'Urssaf, qui tient compte de ton département ».
+
+**La règle** (Légifrance, lu le 22/11/2026 ; détail et citations en tête du bloc « Exonération des
+indépendants d'outre-mer » de `src/lib/simulateur/urssaf.ts`).
+- CSS L756-4 et D756-4 : la maladie, les indemnités journalières, les allocations familiales et la
+  CSG-CRDS sont calculées, pour la part du revenu sous le PASS, sur une assiette abattue de 50 %
+  (75 % la troisième année civile d'activité), sans limite de durée ; l'abattement décroît de
+  150 % à 250 % du PASS.
+- CSS L756-2 : ces quatre cotisations ne sont pas dues les 24 premiers mois d'une activité
+  commencée outre-mer, dans la limite de ce qui est dû pour un revenu de 110 % du PASS. Le
+  changement de lieu d'exercice n'est pas un début d'activité (R131-3 ; Cass. 2e civ., 9 janvier
+  2025, n° 22-22.832) : un médecin qui a d'abord exercé en métropole n'y a pas droit.
+- Les cotisations de la CARMF restent dues en entier.
+- Taux pleins d'outre-mer (urssaf.fr, 27/02/2026 ; `modele-ti`) : allocations familiales à 3,10 %
+  sans le taux réduit de la métropole. Le modèle de l'API appliquait le taux progressif (0 % sous
+  110 % du PASS) : corrigé dans le même geste.
+
+**Ce que fait le simulateur.** À partir des revenus 2025, en PAMC, dans ces quatre départements :
+50 % par défaut ; l'exonération entière quand « Début d'activité » vaut 1re ou 2e année ET que la
+nouvelle case « J'ai commencé mon activité libérale outre-mer » est cochée. Il ne connaît pas la
+date de début : il compte l'année entière, et garde 50 % la troisième année (la loi donne 75 %).
+La prise en charge de l'Assurance maladie passe après l'exonération, comme dans le modèle de
+l'Urssaf : en secteur 1, la maladie du médecin reste 0,1 % de son revenu conventionné tant que
+l'exonération est partielle.
+
+**Choix prudents, à faire confirmer par la caisse d'outre-mer (CGSS).** Les seuils de 110 %, 150 %
+et 250 % du PASS sont comparés au revenu d'avant l'abattement de 26 % (D756-4 renvoie à L131-6,
+donc à l'assiette abattue : lecture plus favorable, non retenue tant qu'elle n'est pas confirmée ;
+pour 100 000 € de recettes et 12 000 € de charges, l'écart est d'environ 1 700 € de cotisations) ;
+la contribution additionnelle de 3,25 % reste due ; l'exonération de maladie sous 13 % du PASS
+(L756-5) n'est pas comptée ; rien au RSPM ; rien avant les revenus 2025 (assiette calculée par le
+modèle) ; Mayotte inchangée (régime propre).
+
+**Contrôles.** Montants recalculés à la main (secteur 2, 60 000 € en Micro-BNC, 50 % : maladie
+1 683 €, allocations familiales 614 €, indemnités journalières 59 €, CSG-CRDS 1 920 €) et rendus
+tels quels par le modèle. Douze demandes comparées au calcul de l'application, qui porte la même
+règle : même résultat à l'euro près (figées dans ses tests, `calcul-outre-mer.test.ts`).
+
+**Contenu ajouté ou modifié** (à relire par le propriétaire).
+- Formulaire, sous « Lieu d'exercice », pour un de ces quatre départements en 1re ou 2e année :
+  case « J'ai commencé mon activité libérale outre-mer », et son aide : « Les 24 premiers mois, la
+  maladie, les allocations familiales et la CSG-CRDS ne sont pas dues (en entier jusqu'à 52 866 €
+  de revenu en 2026). Ne coche pas si tu as d'abord exercé en métropole : l'abattement est alors de
+  50 %. » Le résumé « Ta situation » ajoute « (activité commencée sur place) ».
+- Encart « Avantage fiscal DOM » des résultats, dernière ligne. Avant : « Cotisations calculées par
+  le modèle de l'Urssaf, qui tient compte de ton département. » Après : « Cotisations aux taux
+  d'outre-mer. À partir des revenus 2025, l'exonération des indépendants d'outre-mer est comptée :
+  50 % de moins sur la maladie, les allocations familiales et la CSG-CRDS, ou leur exonération
+  entière les deux premières années d'une activité commencée sur place (la 3e année, la loi donne
+  75 % : le simulateur garde 50 %). » À Mayotte : « Mayotte a son propre régime de cotisations : le
+  résultat est une approximation. » Au RSPM : inchangé.
+
+**Fichiers.** `src/lib/simulateur/urssaf.ts` (règle, `situationMedecin`), `usePublicodesSimulation.ts`
+(le champ part vers le modèle), `simulateurSchema.ts` (`debutOutreMer`), `SimulateurForm.tsx`
+(case, résumé, `CHAMPS_SITUATION`), `RegimeComparisonCards.tsx` (encart).
+
+### 9.hn Simulateur : dispense d'ASV (23 novembre 2026)
+
+Suite du § 9.hm, même décision du propriétaire (« go continue avec ce qui reste ») : l'application
+calcule depuis ce lot les trois réductions que la CARMF accorde sur demande ; le simulateur en
+connaissait deux (dispense partielle de la complémentaire, ASV proportionnelle). Il reçoit la
+troisième, pour continuer de donner le même chiffre que l'application.
+
+**La règle.** CARMF, « Dispenses pour insuffisance de revenus » : « Vous pouvez demander une dispense
+d'affiliation au régime ASV pour 2026 (sans attribution de points) si votre revenu médical libéral
+net de 2024 est inférieur ou égal à 15 000 €. » La dispense retire toute l'ASV de l'année, part
+forfaitaire et part d'ajustement : 2 039 € en début d'activité en secteur 1 (1 917 € + 122 €),
+6 116 € en secteur 2 (5 751 € + 365 €). Elle se demande aussi les deux premières années, où le revenu
+d'il y a deux ans est souvent nul : la case est donc proposée dès la 1re année, à la différence des
+deux autres. Elle l'emporte sur l'ASV proportionnelle.
+
+**Contrôle.** Quatre demandes comparées au calcul de l'application : même résultat à l'euro près
+(remplaçant secteur 1, 60 000 € en Micro-BNC, 2e année : 8 093 € de cotisations au lieu de 10 132 €).
+
+**Contenu ajouté** (à relire par le propriétaire). Dans la fiche de la situation CARMF, case
+« Dispense d'ASV (sur demande) », et son aide : « Si ton revenu médical libéral net d'il y a deux ans
+ne dépassait pas 15 000 € : aucune ASV cette année (2 039 € de moins en début d'activité en secteur 1,
+6 116 € en secteur 2), et aucun point de retraite ASV. » Le résumé de la fiche dit « Réductions
+demandées » quand elle est cochée. Aucune suggestion dans la conclusion : le simulateur ne connaît
+pas le revenu d'il y a deux ans.
+
+**Fichiers.** `src/lib/simulateur/urssaf.ts` (`dispenseAsv`), `usePublicodesSimulation.ts`,
+`simulateurSchema.ts`, `SimulateurForm.tsx`.
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

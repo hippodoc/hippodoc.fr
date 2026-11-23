@@ -55,7 +55,7 @@ export const TARIFS_LAST_UPDATED_ISO = '2026-11-15';
  *  (Urssaf, CARMF, Légifrance, barème de l'impôt), affichée sous les repères de la page et
  *  portée par son JSON-LD (MIGRATION.md § 9.gp). À relever quand une règle ou un barème du
  *  simulateur est revérifié, jamais à la date d'un simple habillage. */
-export const SIMULATEUR_LAST_UPDATED_ISO = '2026-11-15';
+export const SIMULATEUR_LAST_UPDATED_ISO = '2026-11-22';
 
 export const STATIC_LASTMOD: Record<string, string> = {
   '/guide-declarations': GUIDE_DECLARATIONS_LAST_UPDATED_ISO,

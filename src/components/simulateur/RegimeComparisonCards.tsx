@@ -1120,7 +1120,9 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
                 <Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
                 <span>{isRSPMUsed
                   ? "Au RSPM, le simulateur applique les taux de la métropole."
-                  : "Cotisations calculées par le modèle de l'Urssaf, qui tient compte de ton département."}</span>
+                  : lieuExercice === 'mayotte'
+                    ? "Mayotte a son propre régime de cotisations : le résultat est une approximation."
+                    : "Cotisations aux taux d'outre-mer. À partir des revenus 2025, l'exonération des indépendants d'outre-mer est comptée : 50\u00a0% de moins sur la maladie, les allocations familiales et la CSG-CRDS, ou leur exonération entière les deux premières années d'une activité commencée sur place (la 3e année, la loi donne 75\u00a0% : le simulateur garde 50\u00a0%)."}</span>
               </p>
             </div>
           </div>

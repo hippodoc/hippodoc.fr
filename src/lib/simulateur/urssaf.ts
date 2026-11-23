@@ -34,6 +34,9 @@
  * assiette.
  *
  * Début d'activité et ASV proportionnelle (MIGRATION.md § 9.fx) : voir `situationMedecin`.
+ *
+ * Outre-mer (MIGRATION.md § 9.hm) : exonération des indépendants d'outre-mer, que le modèle ne
+ * compte pas ; voir « Exonération des indépendants d'outre-mer », plus bas.
  */
 
 const API_URL = 'https://mon-entreprise.urssaf.fr/api/v1/evaluate';
@@ -98,8 +101,15 @@ export interface ParametresUrssaf {
   /** ASV proportionnelle demandée (appliquée si elle coûte moins que le forfait : revenu
    *  conventionné sous 63 900 € en 2026). */
   asvProportionnelle?: boolean;
+  /** Dispense d'ASV accordée pour l'année (CARMF, « Dispenses pour insuffisance de revenus » : revenu
+   *  médical libéral net de l'avant-dernière année inférieur ou égal à 15 000 €) : plus d'ASV, part
+   *  forfaitaire et part d'ajustement, sans points. */
+  dispenseAsv?: boolean;
   /** Cotisations provisionnelles d'une 1re année : tout sur la base forfaitaire (19 % du PASS). */
   provisionnel?: boolean;
+  /** Outre-mer : activité commencée sur place, jamais exercée ailleurs avant (avec `debutActivite`,
+   *  ouvre l'exonération entière des 24 premiers mois ; sinon, abattement de 50 %). */
+  debutOutreMer?: boolean;
 }
 
 const texte = (s: string) => `'${s}'`;
@@ -202,6 +212,83 @@ export const complementaireCarmf = (assiette: number, annee: number) =>
   Math.round(Math.min(assiette, 3.5 * passDe(annee)) * tauxComplementaireCarmf(annee));
 const pourcent = (taux: number) => `${(taux * 100).toFixed(4)} %`;
 
+// ─────────────────────────────────────────────────────────────────────────────────────────────────
+// Exonération des indépendants d'outre-mer (MIGRATION.md § 9.hm, novembre 2026). Même règle que
+// l'application (`supabase/functions/_shared/urssaf-mapping.ts` du dépôt de l'application) ; le
+// modèle de l'Urssaf ne la compte pas (« Ce simulateur ne prend pas en compte les exonérations DROM »).
+//
+// Textes (Légifrance, lus le 22/11/2026) :
+//  - CSS L756-2 : maladie, indemnités journalières, allocations familiales et CSG-CRDS « ne sont pas
+//    dues pour une période de vingt-quatre mois à compter de la date de création de l'activité »
+//    quand le revenu, rapporté à l'année, est inférieur à 110 % du PASS ; entre 110 % et 150 %,
+//    l'exonération est celle d'un revenu de 110 % du PASS ; elle décroît ensuite et s'annule à 250 %.
+//    Les cotisations de la CARMF restent dues.
+//  - CSS L756-4 : sous 250 % du PASS, ces cotisations sont calculées, « pour la partie des revenus
+//    inférieure au montant annuel du plafond », sur une assiette abattue de 50 % (75 % « au titre de
+//    la troisième année civile d'activité ») ; l'abattement décroît de 150 % à 250 % du PASS.
+//  - CSS D756-4 : entre 150 % et 250 % du PASS, exonération = E / PASS × (2,5 PASS − R), E étant
+//    l'exonération due pour un revenu de 150 % du PASS.
+//  - CSS R131-3 et Cass. 2e civ., 9 janvier 2025, n° 22-22.832 : le changement de lieu d'exercice n'est
+//    pas un début d'activité. Les 24 mois ne valent que pour une activité commencée outre-mer.
+//
+// Taux pleins outre-mer (urssaf.fr, « Taux de cotisations - Profession libérale réglementée »,
+// 27/02/2026 ; modèle `modele-ti` de l'Urssaf) : maladie 8,50 %, allocations familiales 3,10 % sans
+// taux réduit, indemnités journalières 0,30 %, CSG-CRDS 9,70 %.
+//
+// Choix prudents, à faire confirmer par la caisse d'outre-mer (CGSS) :
+//  - les seuils (110 %, 150 %, 250 % du PASS) sont comparés au revenu AVANT l'abattement de 26 % de
+//    la réforme (D756-4 renvoie à L131-6, donc à l'assiette abattue : lecture plus favorable, non
+//    retenue tant qu'elle n'est pas confirmée) ;
+//  - la contribution additionnelle de 3,25 % sur les revenus non conventionnés reste due ;
+//  - l'exonération de maladie sous 13 % du PASS (L756-5, D756-6) n'est pas comptée ;
+//  - au RSPM, aucune réduction (aucun texte ne l'adapte à l'outre-mer).
+// Ordre avec la prise en charge de l'Assurance maladie : celui du modèle de l'Urssaf (« La
+// participation de la CPAM […] s'applique après déduction des exonérations »). En secteur 1, la
+// maladie du médecin reste donc 0,1 % de son revenu conventionné tant que l'exonération est partielle.
+// Le simulateur ne connaît pas la date de début : il compte l'année entière, l'exonération entière
+// en 1re et 2e années d'une activité commencée outre-mer, 50 % sinon (la 3e année, la loi donne
+// 75 % : le simulateur garde 50 %). Avant les revenus 2025 (assiette calculée par le modèle), rien
+// n'est compté.
+// ─────────────────────────────────────────────────────────────────────────────────────────────────
+
+/** Taux pleins outre-mer des quatre cotisations visées, en part de l'assiette. */
+export const TAUX_OUTRE_MER = { maladie: 0.085, allocationsFamiliales: 0.031, indemnitesJournalieres: 0.003, csgCrds: 0.097 } as const;
+
+/** Une partie de l'année : sa part (0 à 1), la part exonérée, et le plafond de revenu concerné (en PASS). */
+export interface SegmentOutreMer { poids: number; taux: number; plafond: number }
+export interface PeriodeOutreMer {
+  segments: SegmentOutreMer[];
+  /** Part de l'année couverte par l'affiliation (CSS D756-7) ; 1 dans le simulateur. */
+  prorataPass: number;
+}
+
+/** Période du simulateur : exonération entière en début d'activité commencée outre-mer, 50 % sinon. */
+export function periodeOutreMer(debutActivite?: 'premiere' | 'deuxieme', debutOutreMer?: boolean): PeriodeOutreMer {
+  return debutActivite && debutOutreMer
+    ? { segments: [{ poids: 1, taux: 1, plafond: 1.1 }], prorataPass: 1 }
+    : { segments: [{ poids: 1, taux: 0.5, plafond: 1 }], prorataPass: 1 };
+}
+
+/**
+ * Part des quatre cotisations que l'exonération retire (0 à 1), pour une assiette et une période.
+ * Par partie de l'année : taux × dégressivité × part de l'assiette sous le plafond.
+ * `revenuSeuils` : le revenu comparé à 150 % et 250 % du PASS (voir « choix prudents » ci-dessus).
+ */
+export function reductionOutreMer(annee: number, assiette: number, revenuSeuils: number, periode: PeriodeOutreMer): number {
+  const pass = passDe(annee) * periode.prorataPass;
+  if (!(pass > 0)) return 0;
+  const degressif = revenuSeuils < 1.5 * pass ? 1 : revenuSeuils < 2.5 * pass ? (2.5 * pass - revenuSeuils) / pass : 0;
+  const reduction = periode.segments.reduce(
+    (somme, s) => somme + s.poids * s.taux * (assiette > 0 ? Math.min(1, (s.plafond * pass) / assiette) : 1),
+    0,
+  );
+  return Math.min(1, Math.max(0, reduction * degressif));
+}
+
+/** Guadeloupe, Martinique, Guyane, La Réunion : l'exonération ne vaut pas à Mayotte (régime propre). */
+export const estDromHorsMayotte = (departement?: ParametresUrssaf['departementOutreMer']): boolean =>
+  Boolean(departement) && departement !== 'Mayotte';
+
 /** Situation publicodes d'un médecin en entreprise individuelle à l'IR. Exportée pour les tests. */
 export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
   const s: Record<string, string> = {
@@ -246,9 +333,27 @@ export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
     s[`${I} . assiette des cotisations`] = `${assiette} €/an`;
     // Mayotte : pas de CSG-CRDS, et sa maladie a ses propres règles (laissées au modèle).
     if (!mayotte) {
-      s[`${C} . CSG-CRDS . assiette`] = `${assiette} €/an`;
-      s[`${I} . PL . maladie . taux`] = pourcent(tauxMaladieReforme(assiette, p.annee, Boolean(p.departementOutreMer)));
+      // Outre-mer : l'exonération retire une même part de la maladie (au taux plein), des allocations
+      // familiales, des indemnités journalières et de la CSG-CRDS. Le modèle applique ensuite la
+      // prise en charge de l'Assurance maladie sur ce qui reste.
+      const outreMer = estDromHorsMayotte(p.departementOutreMer);
+      // Revenu avant l'abattement de 26 % (au micro-BNC et sur la base forfaitaire : l'assiette).
+      const revenuSeuils = p.provisionnel || p.regime === 'micro-bnc' ? assiette : Math.max(0, p.recettes - p.charges);
+      const reduction = outreMer ? reductionOutreMer(p.annee, assiette, revenuSeuils, periodeOutreMer(p.debutActivite, p.debutOutreMer)) : 0;
+      const tauxMaladie = Math.max(0, tauxMaladieReforme(assiette, p.annee, Boolean(p.departementOutreMer)) - reduction * TAUX_OUTRE_MER.maladie);
+      s[`${C} . CSG-CRDS . assiette`] = `${Math.round(assiette * (1 - reduction))} €/an`;
+      s[`${I} . PL . maladie . taux`] = pourcent(tauxMaladie);
       s[`${I} . assiette minimale . maladie`] = '0 €/an';
+      if (outreMer) {
+        // Allocations familiales : 3,10 % outre-mer, sans le taux réduit de la métropole.
+        s[`${C} . allocations familiales . taux`] = pourcent(TAUX_OUTRE_MER.allocationsFamiliales * (1 - reduction));
+        s[`${I} . PL . CNAVPL . indemnités journalières maladie . taux`] = pourcent(TAUX_OUTRE_MER.indemnitesJournalieres * (1 - reduction));
+        // Secteur 1 : la prise en charge laisse 0,1 % au médecin ; sous 0,1 %, il n'y a plus rien à
+        // prendre en charge (le modèle rendrait une prise en charge négative).
+        if (tauxMaladie < 0.001 && p.secteur === 'secteur_1') {
+          s[`${I} . PL . PAMC . maladie . participation CPAM`] = '0 €/an';
+        }
+      }
     }
     s[`${I} . PL . CNAVPL . retraite . tranche T1 . taux`] = '8.73 %';
     s[`${I} . PL . PAMC . maladie . contribution additionnelle . taux`] = '3.25 %';
@@ -266,8 +371,12 @@ export function situationMedecin(p: ParametresUrssaf): Record<string, string> {
   }
   // ASV : les deux premières années, l'ajustement porte sur la base forfaitaire (365 € en 2026) ;
   // sinon, sur demande et si elle coûte moins, la cotisation proportionnelle de 9 % remplace la
-  // part forfaitaire (l'ajustement reste calculé par le modèle).
-  if (debut) {
+  // part forfaitaire (l'ajustement reste calculé par le modèle). Dispense d'ASV (§ 9.hn) : aucune
+  // ASV de l'année, quelle que soit l'ancienneté ; elle l'emporte sur la proportionnelle.
+  if (p.dispenseAsv) {
+    s[`${I} . PL . CARMF . ASV . forfaitaire`] = '0 €/an';
+    s[`${I} . PL . CARMF . ASV . ajustement`] = '0 €/an';
+  } else if (debut) {
     s[`${I} . PL . CARMF . ASV . ajustement`] = `${Math.round(baseForfaitaireDebut(p.annee) * tauxAsvAjustement(p.annee))} €/an`;
   } else if (p.asvProportionnelle && assiette !== null && p.secteur) {
     const conventionne = revenuConventionne(assiette, p.ratioNonConventionne);
