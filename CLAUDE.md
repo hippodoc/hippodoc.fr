@@ -131,6 +131,11 @@ classe utilitaire (voir « Ce qui reste de Tailwind », plus bas).
   (100 à 148 px selon la largeur, voir `.tete` de `/tarifs`). L'ancienne forme de
   l'en-tête pour les pages sans ciel (prop `variante`, bande `.hd-ciel`, classe
   `da-sous-entete`) a été retirée en phase 6 (MIGRATION.md § 9.eo).
+- **Mascotte, la bibliothèque** (23/11/2026) : toutes les poses (72 pour lui et pour elle, mêmes
+  identifiants) vivent dans le dépôt de l'application, `public/mascotte/` de `roshangbd/hippodocfinary`
+  (galerie : `https://app.hippodoc.fr/mascotte/galerie.html` ; règles : `docs/mascotte.md` de ce
+  dépôt). Une page du site qui en veut une la copie dans `src/assets/` (optimisée au build), jamais
+  liée depuis app.hippodoc.fr ; les fichiers `mascotte-*.webp` déjà en place ne changent pas.
 - **Composants de l'accueil** : `src/components/accueil/` (un par section, styles dans son
   `<style>` scopé ; données dans `src/data/`). Aucune classe Tailwind dans ce dossier, ni
   dans `Header.astro` et `Footer.astro`.
