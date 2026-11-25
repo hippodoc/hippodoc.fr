@@ -16268,6 +16268,9 @@ de la bio Instagram. Contenu nouveau (textes écrits pour la page, à relire par
   `ig_guide`, `ig_declarations`, `ig_tarifs`, `ig_rdv`, `ig_connexion`, `ig_site`,
   `ig_instagram`, `ig_contact`), autocapture.
 - Image de partage : entrée `/ig` de `PARTAGE_PAGES` ; verify-site admet son image comme celle de `/essai`.
+- Retouche du même jour : « l’eau » du titre prend le bleu de la vague du premier plan (`--w4`),
+  comme sur l’accueil ; la plaque du haut devient un lien vers l’accueil (`ig_logo`), et le module
+  d’essai gagne « Voir comment ça marche » vers l’accueil (`ig_accueil`, bouton blanc).
 - `/instagram` et `/i` redirigent toujours vers `/essai` : inchangés.
 - Preuve : les 78 autres pages du build sont identiques à l'octet à celles de `main`, la feuille
   commune garde son nom.
