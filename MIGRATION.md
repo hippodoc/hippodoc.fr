@@ -16248,11 +16248,14 @@ de la bio Instagram. Contenu nouveau (textes écrits pour la page, à relire par
   (pose R03 de la bibliothèque de `hippodocfinary/public/mascotte/`, « story de bienvenue » : on
   arrive d'Instagram ; copiée dans `src/assets/partage/mascotte-f-selfie.webp`), coupée aux genoux
   par la troisième vague ; deux pastilles flottent autour d'elle (« 900+ médecins inscrits »,
-  « 30 jours pour essayer »). Sous la surface, l'eau profonde où remontent les bulles de « Sous la
-  surface » : le bouton jaune « Essai gratuit 30 jours », puis une feuille à lignes qui monte ligne
-  par ligne : le dernier article du blog (pris seul, le plus récent selon `byNewest`, son affiche
-  entière), le simulateur (pastille jaune : le Super-Net), le guide du remplaçant, le guide des
-  déclarations, les tarifs, Calendly. Le mouvement ne joue que sans `prefers-reduced-motion`, avec
+  « Créé par un médecin »). Sous la surface, l'eau profonde où remontent les bulles de « Sous la
+  surface », et une grille de modules de tailles différentes (deux colonnes au téléphone, quatre à
+  partir de 700 px) : l'article d'abord et en grand (« Tu viens du carrousel ? », la version
+  longue : le lecteur arrive d'un carrousel ; le plus récent selon `byNewest`, son affiche entière
+  et penchée), le simulateur (un soleil dans le coin, « vraiment » sur du jaune : le Super-Net), le
+  guide du remplaçant, le blog (trois affiches en éventail), les déclarations, Ryan (portrait), et
+  l'essai en dernier : seul bouton jaune, seule mention des 30 jours (décision du propriétaire : pas
+  d'effet « publicité » en tête de page). Le mouvement ne joue que sans `prefers-reduced-motion`, avec
   une case de pause (WCAG 2.2.2) comme l'accueil. Titre « Sors la tête de l'eau » (la phrase de la
   marque) ; les autres textes sont écrits pour la page.
 - Provenance : la bio affiche `hippodoc.fr/ig`. `vercel.json` renvoie `/ig` sans `utm_source`
