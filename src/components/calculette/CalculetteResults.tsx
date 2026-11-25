@@ -804,7 +804,7 @@ export function CalculetteResultsView({
               code={c('5HQ')}
               label={declarant === 2 ? 'Recettes Micro-BNC imposables (déclarant 2 — conjoint·e)' : 'Recettes Micro-BNC imposables (déclarant 1)'}
               value={cases2042.case_5QC_5RC}
-              hint="Recettes brutes encaissées − rétrocessions versées (titulaire) ou redevance de collaboration (collaborateur — L16/BG) − PDSA exonérée − recettes brutes réalisées en zone ZFU/ZFRR. Recopie en case 5HQ/5IQ de ta 2042-C PRO — le fisc applique l'abattement 34 %."
+              hint="Recettes brutes encaissées − rétrocessions versées (titulaire ; une redevance de collaboration, elle, ne se retire pas : l'abattement de 34 % la couvre) − PDSA exonérée − recettes brutes réalisées en zone ZFU/ZFRR. Recopie en case 5HQ/5IQ de ta 2042-C PRO — le fisc applique l'abattement 34 %."
               badge={zfuMeta?.isSature ? 'Inclut le surplus ZFU au-dessus du plafond' : undefined}
               highlight
             />
@@ -854,7 +854,7 @@ export function CalculetteResultsView({
               label={isMicroBnc ? 'Recettes brutes encaissées (PDSA + rétrocessions/redevance versées incluses)' : 'CA total avant rétrocessions versées / redevance de collaboration'}
               value={dsPamc.DSCS}
               hint={isMicroBnc
-                ? 'Doctrine SNIR (notice URSSAF DRI-PAMC) : DSCS = totalité des recettes encaissées (PDSA exonérée incluse), AVANT déduction des rétrocessions versées (titulaire) ou de la redevance de collaboration (collaborateur — L16/BG). Cette part reversée n\'est PAS soustraite ici, sinon le ratio DSAU (DSAV/DSCS) se casse. Elle est en revanche pré-déduite côté fiscal (5HQ) et côté assiette sociale nette (DSDE). Ne pas confondre avec 5HQ — voir RO-012.'
+                ? 'Doctrine SNIR (notice URSSAF DRI-PAMC) : DSCS = totalité des recettes encaissées (PDSA exonérée incluse), AVANT déduction des rétrocessions versées (titulaire) ou de la redevance de collaboration (collaborateur — L16/BG). Cette part reversée n\'est PAS soustraite ici, sinon le ratio DSAU (DSAV/DSCS) se casse. Les rétrocessions versées sont en revanche retirées côté fiscal (5HQ) et côté assiette sociale nette (DSDE) ; la redevance de collaboration, elle, reste dans la 5HQ : l\'abattement de 34 % la couvre. Ne pas confondre avec 5HQ — voir RO-012.'
                 : 'Chiffre d\'affaires total tous secteurs confondus, AVANT déduction des rétrocessions versées (L21/BG) ou de la redevance de collaboration (L16/BG). Voir RO-012.'}
             />
           )}

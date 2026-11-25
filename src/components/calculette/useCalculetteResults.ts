@@ -254,7 +254,7 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
         values.retrocessionsVerseesMicroBnc > values.recettesMicroBnc;
       if (retrosOverflow) {
         microErrors.push(
-          `Tes rétrocessions versées ou redevance de collaboration (${values.retrocessionsVerseesMicroBnc} €) dépassent tes recettes brutes (${values.recettesMicroBnc} €). Saisie incohérente — la déclaration ne peut pas être générée tant que tu n'as pas corrigé tes montants.`
+          `Tes rétrocessions versées (${values.retrocessionsVerseesMicroBnc} €) dépassent tes recettes brutes (${values.recettesMicroBnc} €). Saisie incohérente — la déclaration ne peut pas être générée tant que tu n'as pas corrigé tes montants.`
         );
       }
 

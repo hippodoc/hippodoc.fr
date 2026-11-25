@@ -15712,6 +15712,74 @@ pas le revenu d'il y a deux ans.
 **Fichiers.** `src/lib/simulateur/urssaf.ts` (`dispenseAsv`), `usePublicodesSimulation.ts`,
 `simulateurSchema.ts`, `SimulateurForm.tsx`.
 
+### 9.ho Contenu modifié : la redevance de collaboration reste dans la 5HQ en micro-BNC (25 novembre 2026)
+
+**Correction factuelle**, décidée par le fondateur le 25 novembre 2026, sources lues ; la même
+décision a été appliquée à l'application (lot « frais » 3). Le guide des déclarations et la
+calculette disaient qu'au micro-BNC le collaborateur libéral retire sa redevance de ses recettes
+avant la case 5HQ, « comme les rétrocessions versées ». C'est faux :
+
+- **BOI-BNC-DECLA-20-20 § 10** (version du 19 août 2026) : « le montant des recettes à déclarer
+  n'inclut pas » les débours, « les rétrocessions d'honoraires à des confrères » (sous réserve de
+  la déclaration prévue à l'article 240 du CGI) et les plus-values. Rien d'autre ne sort des
+  recettes du micro-BNC.
+- **BOI-BNC-BASE-20-20 § 70** : sont des rétrocessions les sommes reversées à un confrère « dans
+  le cadre de la mission qui lui est confiée par son client ». La redevance de collaboration paie
+  l'usage du cabinet du titulaire : ce n'est pas une rétrocession d'honoraires.
+
+Donc, au micro-BNC, la redevance reste dans la 5HQ et l'abattement de 34 % la couvre. Au réel,
+elle reste déduite en ligne 16 (BG) de la 2035. La DSCS reste brute dans les deux cas. Les
+rétrocessions versées par un titulaire à ses remplaçants restent retirées des recettes avant
+l'abattement (inchangé).
+
+**Passages modifiés.** Les passages identiques à ceux de l'application d'avant le lot reçoivent
+son nouveau texte mot pour mot ; les trois derniers, propres au site, sont corrigés au plus près.
+
+| Fichier | Passage | Avant | Après |
+|---|---|---|---|
+| `src/data/boussoleData.ts` | RO-003, description | rétrocessions versées « ou la redevance de collaboration » « pré-déduites du CA brut avant report en 5HQ » ; « Aide 2042 applique automatiquement cette pré-déduction » | seules les rétrocessions versées sont retirées (art. 240 du CGI ; BOI-BNC-DECLA-20-20 § 10) ; la redevance « reste dans tes recettes, et l'abattement de 34 % la couvre » ; « Si elle pèse lourd, compare avec le réel » ; « Aide 2042 retire automatiquement tes rétrocessions versées de la 5HQ » |
+| `src/data/boussoleData.ts` | RO-003, exemple | collaborateur : 73 920 € − 22 470 € → 5HQ = 51 450 € | 5HQ = 73 920 € (« la redevance n'est pas retirée ; l'abattement de 34 % s'applique ensuite ») |
+| `src/data/boussoleData.ts` | RO-012, description | redevance « pré-déduite des recettes avant report en 5HQ en micro-BNC » ; « DSCS > 5HQ » chez un collaborateur | au micro-BNC, « seules les rétrocessions versées sont retirées », la redevance reste dans la 5HQ ; DSCS > 5QC au réel, DSCS > 5HQ en micro pour un titulaire avec remplaçants ; Aide DSFU : « après rétrocessions versées, ou redevance au réel » |
+| `src/data/boussoleData.ts` | RO-012, exemple | collaborateur micro : DSCS 80 000 €, 5HQ = 72 000 € | DSCS = 80 000 € dans tous les cas ; au réel, L16/BG ; en micro, 5HQ = 80 000 € |
+| `src/data/boussoleData.ts` | RO-014, « Variante titulaire… OU collaborateur » | 5HQ/5QC « nette (après pré-déduction de la rétrocession ou de la redevance) » | 5QC nette des rétrocessions ou de la redevance ; 5HQ nette des seules rétrocessions, la redevance y reste |
+| `src/data/boussoleData.ts` | CASE-005 (fiche de la case DSCS), description | « DSCS sera supérieur à ta 5HQ / 5QC » ; cas collaborateur micro : 5HQ = 72 000 € | supérieur à la 5QC au réel, à la 5HQ en micro si tu verses des rétrocessions ; cas collaborateur : 5QC plus basse au réel, 5HQ = 80 000 € en micro |
+| `src/data/boussoleData.ts` | CASE-005, conseil | « pré-déduite avant 5HQ en micro-BNC » | « en micro-BNC, seules les rétrocessions versées sont retirées avant la 5HQ » |
+| `src/data/boussoleData.ts` | PM-011 (collaborateur), conseils 1 et 3 | « 5HQ = ton CA − redevance versée » ; redevance « pré-déduite du CA avant report en 5HQ » | DSCS et 5QC différents au réel, 5HQ du même CA brut en micro ; « la redevance ne se retire pas de ta 5HQ : elle paie l'usage du cabinet, ce n'est pas une rétrocession d'honoraires (BOI-BNC-BASE-20-20 § 70) » |
+| `src/data/boussoleData.ts` | boussole, `piege5HQ` du collaborateur | « reporte ton CA encaissé − redevance de collaboration versée au titulaire » | « reporte ton CA encaissé, redevance de collaboration comprise : en micro-BNC, elle ne se retire pas, l'abattement de 34 % la couvre » |
+| `src/data/boussoleData.ts` | boussole, `redevanceDeduction` (micro) | « La redevance de collaboration est pré-déduite avant de reporter en 5HQ (CGI Art. 102 ter) — mais elle n'est PAS déduite de DSCS » | « En micro-BNC, la redevance de collaboration ne se retire ni de ta 5HQ ni de DSCS : l'abattement de 34 % la couvre » (réel et société inchangés) |
+| `src/data/glossaireDeclarationsData.ts` | `redevance-collaboration` | « pré-déduite des recettes avant report en 5HQ en micro-BNC » ; « DSCS > 5HQ (ou 5QC) » | ne se retire pas en micro-BNC (les deux BOFiP cités) ; DSCS > 5QC au réel, DSCS et 5HQ du même CA brut en micro |
+| `src/data/glossaireDeclarationsData.ts` | `retrocession`, dernière ligne | la redevance « suit la même logique de pré-déduction » | « déduite en L16/BG au réel, mais pas retirée des recettes en micro-BNC » |
+| `src/components/calculette/CalculetteForm.tsx` | aide du profil (collaborateur) | en micro, « saisis-la dans le champ Rétrocessions versées / redevance » | « elle ne se retire pas de tes recettes : l'abattement de 34 % la couvre » |
+| `src/components/calculette/CalculetteForm.tsx` | champ `retrocessionsVerseesMicroBnc` | libellé « Rétrocessions versées ou redevance de collaboration » ; aide « même mécanique » | libellé « Rétrocessions versées (titulaire) » ; aide : « Collaborateur libéral : ne mets pas ta redevance ici » |
+| `src/components/calculette/CalculetteForm.tsx` | champ `recettesZoneExo`, aide | « collaborateur : déjà NETTES de redevance versée » | « collaborateur : recettes avant redevance ; en micro-BNC, la redevance ne se retire pas » |
+| `src/components/calculette/CalculetteResults.tsx` | 5HQ, aide | « − rétrocessions versées (titulaire) ou redevance de collaboration » | « − rétrocessions versées (titulaire ; une redevance de collaboration, elle, ne se retire pas : l'abattement de 34 % la couvre) » |
+| `src/components/calculette/CalculetteResults.tsx` | DSCS en micro, aide (propre au site) | « Elle est en revanche pré-déduite côté fiscal (5HQ) et côté assiette sociale nette (DSDE) » | « Les rétrocessions versées sont en revanche retirées côté fiscal (5HQ) et côté assiette sociale nette (DSDE) ; la redevance de collaboration, elle, reste dans la 5HQ : l'abattement de 34 % la couvre » |
+| `src/components/calculette/useCalculetteResults.ts` | erreur « montant reversé > recettes » (propre au site) | « Tes rétrocessions versées ou redevance de collaboration (…) » | « Tes rétrocessions versées (…) », comme le nouveau libellé du champ |
+| `src/components/guide/FlowChartSection.astro` | « Le parcours de ta déclaration », colonne Recettes (propre au site) | « − Redevance collaboration (réel L16/BG · micro pré-déduit) » | « − Redevance collaboration (réel L16/BG seulement) » |
+
+Le calcul de la calculette ne change pas : le champ des rétrocessions versées est toujours retiré
+de la 5HQ ; seul son libellé dit désormais qu'il n'est pas fait pour la redevance. Commentaires de
+code alignés (`boussoleData.ts`, `CalculetteForm.tsx`).
+
+**À l'écran.** Le texte change sur `/guide-declarations` (RO-003, RO-012, RO-014, fiche DSCS,
+glossaire, parcours de la déclaration) et sur `/guide-declarations/dsfu-pamc` et
+`/guide-declarations/medecin-remplacant` (fiche DSCS). Les conseils du profil PM-011 et les pièges de la boussole ne
+sont dans aucun HTML du build (ils s'affichent après un choix). Le JSON-LD ne change sur aucune
+page (aucune de ces fiches n'est une question du `FAQPage`). Aucune feuille de style ne change de
+nom ; changent les scripts des îlots `BoussoleSearchIsland`, `BoussoleWizard`, `CalculetteApp` et
+le module `glossaireDeclarationsData`.
+
+**Non tranché, pour le propriétaire.**
+- `src/content/blog/frais-pros-medecin-liberal-2026.md`, § 6 « Recettes » : « Si tu encaisses les
+  honoraires et reverses une rétrocession versée au titulaire (ou une redevance en collaboration),
+  tu déclares le brut encaissé et tu déduis le montant reversé selon contrat. » La phrase ne dit
+  pas le régime ; au micro-BNC, elle est fausse pour la redevance. Article non modifié (procédure
+  des articles).
+- L'aide de la DSCS en micro (calculette) dit que les rétrocessions versées sont retirées
+  « côté assiette sociale nette (DSDE) » ; or la calculette laisse la DSDE vide au micro-BNC
+  (`src/lib/calc/dsPamc.ts`) et RO-014 aussi. Passage antérieur, laissé tel quel.
+- La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) n'est pas relevée.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
