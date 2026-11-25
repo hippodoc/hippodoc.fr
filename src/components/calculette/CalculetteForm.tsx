@@ -403,7 +403,7 @@ export function CalculetteForm() {
                     <p>• <strong>Remplaçant, interne ou vacataire</strong> — libéral non-installé, sans patientèle propre. Inclut PH/assistant/attaché qui fait du libéral à côté (le salaire CHU va en 1AJ de la 2042).</p>
                     <p>• <strong>Cabinet installé — secteur 1 conventionné</strong> — tarifs opposables. Donne accès aux forfaits S1 (2 %, 3 %, Groupe III). Coche « dépassements autorisés » si tu factures aussi des DP / actes hors nomenclature.</p>
                     <p>• <strong>Installé secteur 2</strong> (avec ou sans OPTAM) — dépassements autorisés, DSAU recalculée dynamiquement.</p>
-                    <p className="text-muted-foreground pt-1.5 border-t border-border/40">Collaborateur libéral : choisis le secteur du titulaire. En BNC réel, déduis la redevance L16/BG manuellement dans ta 2035 ; en micro-BNC, saisis-la dans le champ « Rétrocessions versées / redevance » ci-dessous (même mécanique de pré-déduction CGI Art. 102 ter). SELARL/SELAS ou EI à l'IS non couvertes (régime IS).</p>
+                    <p className="text-muted-foreground pt-1.5 border-t border-border/40">Collaborateur libéral : choisis le secteur du titulaire. En BNC réel, déduis la redevance L16/BG manuellement dans ta 2035 ; en micro-BNC, elle ne se retire pas de tes recettes : l'abattement de 34 % la couvre (seules les rétrocessions versées se retirent, BOI-BNC-DECLA-20-20 § 10). SELARL/SELAS ou EI à l'IS non couvertes (régime IS).</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -707,7 +707,7 @@ export function CalculetteForm() {
             {/* Sous-section 1 — Recettes */}
             <div className="grid sm:grid-cols-2 gap-4">
               <FieldRow field={{ name: 'recettesMicroBnc', label: 'Recettes brutes encaissées', case: 'Brut total', hint: 'Total des honoraires encaissés sur l\'année (cash-basis), TOUS secteurs confondus. ⚠️ Saisis le BRUT TOTAL même si tu es en zone ZFU/ZFRR : la part exonérée sera dérivée plus bas. Pour S2/OPTAM : inclure les dépassements ici. Plafond Micro-BNC : 77 700 € (2024 et 2025) / 83 600 € (2026+). Les cases 5HQ/5IQ finales (recettes imposables) sont calculées dans la colonne résultats à droite.' }} />
-              <FieldRow field={{ name: 'retrocessionsVerseesMicroBnc', label: 'Rétrocessions versées ou redevance de collaboration', case: 'Pré-déduit', hint: 'Titulaire avec remplaçants : rétrocessions versées (L21/BG en réel). Collaborateur libéral : redevance versée au titulaire (L16/BG en réel). Même mécanique en micro-BNC (CGI Art. 102 ter) : pré-déduites AVANT l\'abattement de 34 %, jamais en case séparée. ⚠️ Côté social, la DSCS reste le CA brut total (avant déduction) — voir RO-012.' }} />
+              <FieldRow field={{ name: 'retrocessionsVerseesMicroBnc', label: 'Rétrocessions versées (titulaire)', case: 'Pré-déduit', hint: 'Titulaire avec remplaçants : rétrocessions versées (L21/BG en réel), retirées de tes recettes AVANT l\'abattement de 34 % en micro-BNC (BOI-BNC-DECLA-20-20 § 10), jamais en case séparée. Collaborateur libéral : ne mets pas ta redevance ici, ce n\'est pas une rétrocession d\'honoraires (BOI-BNC-BASE-20-20 § 70) : en micro-BNC, l\'abattement de 34 % la couvre ; au réel, elle se déduit en L16/BG de ta 2035. ⚠️ Côté social, la DSCS reste le CA brut total (avant déduction) — voir RO-012.' }} />
             </div>
 
             {/* Phase 14.1 — Sous-section 2 — PDSA (indépendante de ZFU/ZFRR) */}
@@ -858,8 +858,8 @@ function ZoneExoMicroBlock() {
   const anneeInstall = useWatch({ control, name: 'anneeInstallationZone' });
   const moisInstall = useWatch({ control, name: 'moisInstallation' });
   const recettesZone = useWatch({ control, name: 'recettesZoneExo' }) ?? 0;
-  // NB collaborateur ZFU/ZFRR : la **redevance** versée au titulaire reste déductible
-  // en charge fiscale (5HQ). Saisir ici uniquement la part NETTE de redevance.
+  // NB collaborateur ZFU/ZFRR (MIGRATION.md § 9.ho) : en micro-BNC, la redevance n'est pas une rétrocession d'honoraires
+  // (BOI-BNC-BASE-20-20 § 70) : elle ne se retire pas des recettes, l'abattement de 34 % la couvre.
   const profil = useWatch({ control, name: 'profil' });
 
   // Prévisualisation pédagogique du taux appliqué.
@@ -1040,7 +1040,7 @@ function ZoneExoMicroBlock() {
       </div>
 
       <div className="grid gap-3">
-        <FieldRow field={{ name: 'recettesZoneExo', label: 'Recettes brutes réalisées en zone', case: 'Zone exo', hint: 'Part de tes recettes brutes encaissées en zone (collaborateur : déjà NETTES de redevance versée — la redevance reste déductible en 5HQ). La calculette applique : 5HP = recettes × 0,66 × taux dégressif (plafonné à 50 000 €/an ZFU ou 300 000 €/3 ans ZFRR). Si le plafond est saturé, le surplus brut équivalent retourne automatiquement en 5HQ (le fisc applique alors le 34 %).' }} />
+        <FieldRow field={{ name: 'recettesZoneExo', label: 'Recettes brutes réalisées en zone', case: 'Zone exo', hint: 'Part de tes recettes brutes encaissées en zone (collaborateur : recettes avant redevance ; en micro-BNC, la redevance ne se retire pas). La calculette applique : 5HP = recettes × 0,66 × taux dégressif (plafonné à 50 000 €/an ZFU ou 300 000 €/3 ans ZFRR). Si le plafond est saturé, le surplus brut équivalent retourne automatiquement en 5HQ (le fisc applique alors le 34 %).' }} />
       </div>
     </div>
   );
