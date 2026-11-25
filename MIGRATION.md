@@ -16243,11 +16243,18 @@ conjoint (« max 14 555 € pour les revenus 2025 »).
 de la bio Instagram. Contenu nouveau (textes écrits pour la page, à relire par le propriétaire).
 
 - `src/pages/ig.astro` : noindex, hors sitemap (`astro.config.mjs`), sans en-tête ni pied
-  (`PAGES_SANS_ENTETE`), aucun script. Mascotte « salut », mot-symbole, une phrase, le bouton
-  jaune « Essai gratuit 30 jours », puis une feuille à lignes : le dernier article du blog (pris
-  seul, le plus récent selon `byNewest`, son affiche entière), le simulateur (pastille jaune :
-  le Super-Net), le guide du remplaçant, le guide des déclarations, les tarifs, Calendly.
-  À 390 × 844, tout tient dans le premier écran.
+  (`PAGES_SANS_ENTETE`), aucun script. Mise en scène « Sors la tête de l'eau », reprise du premier
+  écran de l'accueil : le ciel, le soleil à anneaux, quatre vagues qui dérivent, et elle en selfie
+  (pose R03 de la bibliothèque de `hippodocfinary/public/mascotte/`, « story de bienvenue » : on
+  arrive d'Instagram ; copiée dans `src/assets/partage/mascotte-f-selfie.webp`), coupée aux genoux
+  par la troisième vague ; deux pastilles flottent autour d'elle (« 900+ médecins inscrits »,
+  « 30 jours pour essayer »). Sous la surface, l'eau profonde où remontent les bulles de « Sous la
+  surface » : le bouton jaune « Essai gratuit 30 jours », puis une feuille à lignes qui monte ligne
+  par ligne : le dernier article du blog (pris seul, le plus récent selon `byNewest`, son affiche
+  entière), le simulateur (pastille jaune : le Super-Net), le guide du remplaçant, le guide des
+  déclarations, les tarifs, Calendly. Le mouvement ne joue que sans `prefers-reduced-motion`, avec
+  une case de pause (WCAG 2.2.2) comme l'accueil. Titre « Sors la tête de l'eau » (la phrase de la
+  marque) ; les autres textes sont écrits pour la page.
 - Provenance : la bio affiche `hippodoc.fr/ig`. `vercel.json` renvoie `/ig` sans `utm_source`
   vers `/ig?utm_source=instagram&utm_medium=bio` (307, condition `missing` : pas de boucle ;
   verify-site l'avertit comme non permanente, c'est voulu : les UTM peuvent changer). PostHog

@@ -2,31 +2,33 @@
 /**
  * /ig — la page du lien de la bio Instagram (à la place d'un Linktree).
  *
- * - noindex, hors sitemap (filtre dans astro.config.mjs), sans l'en-tête ni le
- *   pied du site (PAGES_SANS_ENTETE de verify-site.mjs), comme /essai.
- * - Provenance : la bio affiche `hippodoc.fr/ig`, court. Vercel ajoute
- *   `utm_source=instagram&utm_medium=bio` à l'arrivée (vercel.json, règle
- *   `missing` sur `utm_source` : pas de boucle), et PostHog l'enregistre comme
- *   premier contact (`hd_premiere_source`). Le navigateur d'Instagram n'envoie
- *   pas toujours de référent : sans l'UTM, la visite serait « direct ».
- * - Mesure : un `data-ph="ig_*"` par lien (autocapture). Le lien d'essai porte
- *   aussi les UTM, pour que l'app rattache l'inscription à Instagram même sans
- *   consentement aux cookies ; le lien Calendly reçoit les UTM de la session
- *   (`data-calendly`, analytics-init.ts).
- * - Le dernier article du blog se met à jour seul (plus récent selon byNewest) :
- *   c'est le lien que cherche qui lit « lien en bio » sous la fiche de la semaine.
- * - Téléphone d'abord : à 390 × 844, l'essai et les liens tiennent dans le
- *   premier écran. Aucune classe utilitaire, aucun script.
- * - Le jaune : le bouton principal seul (règle de la DA).
+ * Mise en scène (MIGRATION.md § 9.hs) : « Sors la tête de l'eau », comme le
+ * premier écran de l'accueil. Le ciel du matin, le soleil à anneaux, quatre
+ * vagues qui dérivent, et elle en selfie (pose R03 de la bibliothèque, « story
+ * de bienvenue » : on arrive d'Instagram) qui sort de l'eau entre la deuxième
+ * et la troisième vague, coupée aux genoux. Sous la surface, l'eau profonde, où
+ * remontent des bulles : le bouton jaune (le seul jaune de la page avec la
+ * pastille du Super-Net) et la feuille des liens.
+ *
+ * - noindex, hors sitemap (astro.config.mjs), sans l'en-tête ni le pied du site
+ *   (PAGES_SANS_ENTETE de verify-site.mjs), comme /essai. Aucun script.
+ * - Mouvement : seulement sans `prefers-reduced-motion`, avec une case de pause
+ *   (WCAG 2.2.2), comme l'accueil. Sans animation, tout est à sa place finale.
+ * - Provenance : la bio affiche `hippodoc.fr/ig` ; vercel.json ajoute
+ *   `utm_source=instagram&utm_medium=bio` (règle `missing` : pas de boucle), et
+ *   PostHog l'écrit en premier contact. Le lien d'essai et la connexion portent
+ *   les UTM jusqu'à l'app ; Calendly les reçoit par `data-calendly`.
+ * - Mesure : un `data-ph="ig_*"` par lien (autocapture).
+ * - Le dernier article du blog se met à jour seul (le plus récent, byNewest).
  */
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { APP_URL, CALENDLY_URL, SOCIALS } from '@/lib/site';
 import { byNewest } from '@/lib/blog-sort';
 import { resolveCover, srcsetAffiche } from '@/lib/blog-covers';
 import { GUIDE_REMPLACANT } from '@/lib/guide-remplacant';
-import mascotte from '@/assets/partage/mascotte-salut.webp';
+import selfie from '@/assets/partage/mascotte-f-selfie.webp';
 
 const title = 'Hippodoc sur Instagram — tous nos liens';
 const description =
@@ -37,11 +39,19 @@ const noindex = true;
 const UTM = 'utm_source=instagram&utm_medium=bio';
 const lienEssai = `${APP_URL}/auth?tab=signup&${UTM}&utm_content=ig_essai`;
 
+/* La mascotte : 200 px de large au téléphone, 272 px à partir de 700 px ; le
+   fichier fait 1 024 px (jamais affichée plus large). */
+const TAILLES_MASCOTTE = '(min-width: 700px) 272px, 200px';
+const mascotte = await Promise.all(
+  [256, 384, 512, 704].map((w) => getImage({ src: selfie, width: w, format: 'webp' })),
+);
+const mascotteSrcset = mascotte.map((m) => `${m.src} ${m.attributes.width}w`).join(', ');
+
 const dernier = (await getCollection('blog')).sort(byNewest)[0];
 const affiche = await resolveCover(dernier.data.cover, 160);
 const afficheSrcset = await srcsetAffiche(dernier.data.cover, [96, 160, 240]);
 
-const fleche = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
+const fleche = '<svg class="fl" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
 
 interface Lien {
   href: string;
@@ -50,8 +60,8 @@ interface Lien {
   detail: string;
   icone: string;
   externe?: boolean;
-  net?: boolean;
   calendly?: string;
+  net?: boolean;
 }
 
 const LIENS: Lien[] = [
@@ -60,8 +70,8 @@ const LIENS: Lien[] = [
     ph: 'ig_simulateur',
     titre: 'Simulateur Super-Net',
     detail: 'Ton revenu après tout, en 2 minutes',
-    net: true,
     icone: '<path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>',
+    net: true,
   },
   {
     href: '/guide',
@@ -101,138 +111,261 @@ const LIENS: Lien[] = [
     <meta name="theme-color" content="#C9DEFF" />
   </Fragment>
   <div class="page da-bloc">
-    <main class="col">
-      <header class="tete">
-        <Image src={mascotte} alt="" width={180} densities={[1, 2]} class="hippo" loading="eager" />
+    <main>
+      <!-- Le ciel : la marque, la promesse, la scène -->
+      <section class="ciel">
         <p class="marque"><span class="logo-word mot" role="img" aria-label="Hippodoc"></span></p>
-        <h1>Le logiciel des médecins remplaçants</h1>
-        <p class="lead">Créé par un médecin, pour savoir ce que tu gagnes <span class="vrai">vraiment</span>.</p>
-      </header>
+        <h1 class="aff">Sors la tête <span class="nb">de l’eau</span></h1>
+        <p class="lead">Le logiciel des médecins remplaçants : URSSAF, CARMF, impôts, et ce qu’il te reste.</p>
 
-      <a href={lienEssai} class="btn btn-brand essai" data-ph="ig_essai" data-track="cta_signup_ig">
-        Essai gratuit 30 jours <span class="sr">→</span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>
-      </a>
+        <div class="scene">
+          {/* Pause du décor (WCAG 2.2.2), sans script : elle précède tout ce qui bouge. */}
+          <input type="checkbox" class="pause" aria-label="Mettre le décor animé en pause" />
+          <span class="sun" aria-hidden="true"></span>
+          <span class="wave w1" aria-hidden="true"></span>
+          <span class="wave w2" aria-hidden="true"></span>
+          <img
+            class="hippo"
+            src={mascotte[1].src}
+            srcset={mascotteSrcset}
+            sizes={TAILLES_MASCOTTE}
+            width={selfie.width}
+            height={selfie.height}
+            alt="La mascotte Hippodoc, une hippopotame bleue en blouse blanche, sort de l’eau et salue en prenant un selfie"
+            fetchpriority="high"
+          />
+          <span class="wave w3" aria-hidden="true"></span>
+          <span class="wave w4" aria-hidden="true"></span>
+          <p class="tag g"><b class="num">900+</b><small>médecins<br />inscrits</small></p>
+          <p class="tag d"><b class="num">30 jours</b><small>pour essayer</small></p>
+        </div>
+      </section>
 
-      <ul class="feuille" role="list">
-        <li>
-          <a href={`/blog/${dernier.id}`} class="ligne" data-ph="ig_article">
-            {affiche ? (
-              <img
-                class="affiche"
-                src={affiche.src}
-                srcset={afficheSrcset}
-                sizes="48px"
-                width={affiche.width}
-                height={affiche.height}
-                alt=""
-                decoding="async"
-              />
-            ) : null}
-            <span class="txt">
-              <span class="sur">Nouveau sur le blog</span>
-              <span class="t">{dernier.data.title}</span>
-            </span>
-            <Fragment set:html={fleche} />
+      <!-- Sous la surface : l'essai, puis les liens -->
+      <section class="eau" aria-label="Les liens">
+        <div class="bulles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="col">
+          <a href={lienEssai} class="btn btn-brand essai" data-ph="ig_essai" data-track="cta_signup_ig">
+            Essai gratuit 30 jours <span class="sr">→</span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>
           </a>
-        </li>
-        {LIENS.map((l) => (
-          <li>
-            <a
-              href={l.href}
-              class="ligne"
-              data-ph={l.ph}
-              data-calendly={l.calendly}
-              target={l.externe ? '_blank' : undefined}
-              rel={l.externe ? 'noopener' : undefined}
-            >
-              <span class={l.net ? 'rond net' : 'rond'}><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={l.icone} /></span>
-              <span class="txt">
-                <span class="t">{l.titre}</span>
-                <span class="d">{l.detail}</span>
-              </span>
-              <Fragment set:html={fleche} />
-            </a>
-          </li>
-        ))}
-      </ul>
 
-      <p class="deja">Déjà un compte ? <a href={`${APP_URL}/auth?${UTM}&utm_content=ig_connexion`} data-ph="ig_connexion">Se connecter</a></p>
+          <ul class="feuille" role="list">
+            <li style="--i: 0">
+              <a href={`/blog/${dernier.id}`} class="ligne une" data-ph="ig_article">
+                {affiche ? (
+                  <img
+                    class="affiche"
+                    src={affiche.src}
+                    srcset={afficheSrcset}
+                    sizes="58px"
+                    width={affiche.width}
+                    height={affiche.height}
+                    alt=""
+                    decoding="async"
+                  />
+                ) : null}
+                <span class="txt">
+                  <span class="sur"><span class="point" aria-hidden="true"></span>Nouveau sur le blog</span>
+                  <span class="t">{dernier.data.title}</span>
+                </span>
+                <Fragment set:html={fleche} />
+              </a>
+            </li>
+            {LIENS.map((l, i) => (
+              <li style={`--i: ${i + 1}`}>
+                <a
+                  href={l.href}
+                  class="ligne"
+                  data-ph={l.ph}
+                  data-calendly={l.calendly}
+                  target={l.externe ? '_blank' : undefined}
+                  rel={l.externe ? 'noopener' : undefined}
+                >
+                  <span class={l.net ? 'rond net' : 'rond'}><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={l.icone} /></span>
+                  <span class="txt">
+                    <span class="t">{l.titre}</span>
+                    <span class="d">{l.detail}</span>
+                  </span>
+                  <Fragment set:html={fleche} />
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p class="deja">Déjà un compte ? <a href={`${APP_URL}/auth?${UTM}&utm_content=ig_connexion`} data-ph="ig_connexion">Se connecter</a></p>
+        </div>
+
+        <footer class="pied">
+          <a href="/" class="site" data-ph="ig_site"><span class="logo-word">Hippo<span>doc</span></span></a>
+          <p class="liens">
+            <a href={SOCIALS.instagram} data-ph="ig_instagram" target="_blank" rel="noopener noreferrer">@hippodoc.fr</a>
+            <a href="mailto:contact@hippodoc.fr" data-ph="ig_contact">Contact</a>
+            <a href="/mentions-legales">Mentions légales</a>
+            <a href="/politique-confidentialite">Confidentialité</a>
+          </p>
+        </footer>
+      </section>
     </main>
-
-    <footer class="pied">
-      <a href="/" data-ph="ig_site">hippodoc.fr</a>
-      <a href={SOCIALS.instagram} data-ph="ig_instagram" target="_blank" rel="noopener noreferrer">@hippodoc.fr</a>
-      <a href="mailto:contact@hippodoc.fr" data-ph="ig_contact">Contact</a>
-      <a href="/mentions-legales">Mentions légales</a>
-      <a href="/politique-confidentialite">Confidentialité</a>
-    </footer>
   </div>
 </BaseLayout>
 
 <style>
   .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .nb { white-space: nowrap; }
+  .page { font-size: 1rem; background: var(--deep-2); }
 
-  .page { min-height: 100dvh; display: flex; flex-direction: column; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 55%, var(--glow) 100%); font-size: 1rem; }
-  .col { display: grid; gap: 14px; width: 100%; max-width: calc(480px + 2 * var(--gut)); margin-inline: auto; padding: 18px var(--gut) 8px; box-sizing: border-box; }
-
-  .tete { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
-  .tete > * { margin: 0; }
-  .hippo { display: block; width: 92px; height: auto; margin-bottom: -4px; }
-  .marque { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
-  .logo-word { font-size: 1.375rem; }
+  /* ───────── Le ciel ───────── */
+  .ciel { position: relative; display: flex; flex-direction: column; align-items: center; padding: 16px var(--gut) 0; text-align: center; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 62%, var(--glow) 100%); overflow: hidden; }
+  .ciel > p, .ciel > h1 { position: relative; z-index: 2; margin: 0; }
+  .marque { display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+  .logo-word { font-size: 1.25rem; }
   .mot::before { content: "Hippo"; }
   .mot::after { content: "doc"; color: var(--brand-2); }
-  .tete h1 { --corps: 1.375rem; margin-top: 6px; font-weight: var(--dw); line-height: 1.15; text-wrap-style: balance; }
-  .lead { font-size: 1rem; line-height: 1.4; color: var(--ink-2); text-wrap-style: balance; }
-  .vrai { margin: 0 -0.1em; padding: 0 0.1em; border-radius: 0.28em; background: var(--sun); color: var(--ink); }
+  .ciel h1 { --corps: clamp(2.125rem, 10.4vw, 3.75rem); margin-top: 14px; line-height: 1; letter-spacing: -0.04em; text-wrap-style: balance; }
+  .lead { max-width: 30em; margin-top: 10px; font-size: 0.96875rem; line-height: 1.4; color: var(--ink-2); text-wrap-style: balance; }
 
+  /* La scène de l'accueil (accueil/Hero.astro), en plus bas : soleil, deux
+     vagues, la mascotte, deux vagues devant. La dernière vague a la couleur du
+     haut de l'eau profonde. */
+  .scene { position: relative; align-self: stretch; height: 268px; margin: 14px calc(var(--gut) * -1) 0; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: 40px; width: 220px; height: 220px; margin-left: -110px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 20px rgba(255, 214, 74, 0.26), 0 0 0 46px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; }
+  .wave::before { content: ""; position: absolute; inset: 0 calc(var(--p) * -1) 0 0; }
+  .w1 { height: 132px; --t: 64s; }
+  .w2 { height: 104px; --t: 52s; }
+  .w3 { height: 70px; --t: 40s; }
+  .w4 { height: 38px; --t: 30s; }
+  .w1::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.1'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%23A9CBF8'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23D6E7FE' stroke-width='3'/%3E%3C/svg%3E") repeat-x 0 0 / var(--p) var(--th), linear-gradient(#A9CBF8, #93BCF4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w2::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.12'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%237FAEF0'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23B5D2FA' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.4) 0 / var(--p) var(--th), linear-gradient(#7FAEF0, #699CE8) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w3::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w4::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* En pied : les genoux sous la troisième vague (pas de pieds dans le vide). */
+  .hippo { position: absolute; left: 50%; bottom: -46px; display: block; width: 200px; max-width: none; height: auto; margin-left: -100px; }
+
+  /* Deux pastilles qui flottent de part et d'autre, comme la pastille Super-Net
+     de l'accueil. Le chiffre de gauche est celui du site (« 900+ »). */
+  .tag { position: absolute; z-index: 1; display: flex; flex-direction: column; margin: 0; padding: 7px 11px 9px; border-radius: 16px; background: var(--paper); text-align: left; box-shadow: var(--clay); }
+  .tag b { font-family: var(--display); font-size: 1.25rem; font-weight: var(--dw); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
+  .tag small { font-size: 0.75rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink-2); }
+  .tag.g { left: max(10px, 50% - 180px); bottom: 128px; rotate: -6deg; }
+  .tag.d { right: max(10px, 50% - 180px); bottom: 104px; rotate: 5deg; }
+
+  /* ───────── Sous la surface ───────── */
+  .eau { --focus: #FFFFFF; position: relative; margin-top: -1px; padding-top: 6px; background: linear-gradient(var(--deep) 0, var(--deep-2) 520px); overflow: hidden; }
+  .col { position: relative; z-index: 1; display: grid; gap: 14px; max-width: calc(480px + 2 * var(--gut)); margin-inline: auto; padding: 0 var(--gut); box-sizing: border-box; }
   .essai { gap: 9px; width: 100%; box-sizing: border-box; font-size: 1.125rem; }
   .essai svg { flex: none; }
 
   /* La feuille à lignes de l'accueil : blanche, un filet entre deux lignes, la
      ligne teintée au survol, l'anneau de focus à l'intérieur. */
-  .feuille { margin: 0; padding: 0; list-style: none; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: var(--clay); }
+  .feuille { --focus: var(--ink); margin: 0; padding: 0; list-style: none; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: 0 30px 60px -30px rgba(5, 18, 60, 0.75); }
   .feuille li + li { border-top: 1px solid var(--line); }
   .ligne { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px 10px 12px; color: var(--ink); text-decoration: none; transition: background-color 160ms var(--ease); }
   .ligne:hover { background: var(--sky-soft); }
-  .page .ligne:focus-visible { outline-offset: -4px; }
-  .ligne > svg { flex: none; color: var(--ink-3); }
-  .rond { display: flex; flex: none; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--sky); color: var(--brand); }
+  .ligne:focus-visible { outline-offset: -4px; }
+  .ligne :global(.fl) { flex: none; color: var(--ink-3); transition: translate 200ms var(--ease), color 160ms var(--ease); }
+  .ligne:hover :global(.fl) { translate: 3px 0; color: var(--brand); }
+  .rond { display: flex; flex: none; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: var(--sky); color: var(--brand); }
   /* Le Super-Net : sur du jaune, comme partout. */
   .rond.net { background: var(--sun); color: var(--ink); box-shadow: 0 3px 0 var(--sun-edge); }
-  /* L'affiche entière, à son format, jamais rognée (règle des affiches du blog). */
-  .affiche { flex: none; width: auto; max-width: none; height: 60px; border-radius: 6px; box-shadow: 0 4px 10px -6px rgba(13, 40, 105, 0.5); }
+  /* La « une » : sur le ciel clair, son affiche entière, à son format. */
+  .une { background: var(--sky-soft); }
+  .affiche { flex: none; width: auto; max-width: none; height: 72px; border-radius: 6px; rotate: -3deg; box-shadow: 0 8px 14px -8px rgba(13, 40, 105, 0.55); }
   .txt { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
   .t { font-weight: var(--tb); line-height: 1.3; }
-  .d, .sur { font-size: 0.875rem; line-height: 1.35; color: var(--ink-2); }
-  .sur { font-weight: var(--tb); color: var(--brand); }
-  .ligne:has(.affiche) .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .d { font-size: 0.875rem; line-height: 1.35; color: var(--ink-2); }
+  .sur { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.35; color: var(--brand); }
+  .point { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-2); box-shadow: 0 0 0 3px rgba(26, 140, 255, 0.2); }
+  .une .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-  .deja { margin: 2px 0 0; text-align: center; color: var(--ink-2); }
-  .deja a { display: inline-flex; align-items: center; min-height: 44px; margin-left: 4px; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+  .deja { margin: 0; text-align: center; color: var(--on-deep-2); }
+  .deja a { display: inline-flex; align-items: center; min-height: 44px; margin-left: 4px; font-weight: var(--tb); color: var(--paper); text-decoration: underline; text-underline-offset: 4px; }
 
-  .pied { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; margin-top: auto; padding: 10px var(--gut) max(16px, env(safe-area-inset-bottom, 0px)); font-size: 0.875rem; }
-  .pied a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); text-decoration: none; }
-  .pied a:hover { color: var(--brand); text-decoration: underline; }
+  /* Le pied : le mot dans sa plaque blanche, puis quatre liens. */
+  .pied { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 26px var(--gut) max(20px, env(safe-area-inset-bottom, 0px)); }
+  .site { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); background: var(--paper); text-decoration: none; box-shadow: var(--clay-sm); }
+  .liens { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; margin: 0; font-size: 0.875rem; }
+  .liens a { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; }
+  .liens a:hover { color: var(--paper); text-decoration: underline; }
 
+  /* Les bulles de « Sous la surface » (accueil/SousLaSurface.astro). */
+  .bulles { position: absolute; inset: 0; pointer-events: none; }
+  .bulles i { position: absolute; bottom: -30px; width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.34); opacity: 0; }
+  .bulles i:nth-child(1) { left: 4%; --t: 17s; --d: 0s; }
+  .bulles i:nth-child(2) { left: 14%; width: 7px; height: 7px; --t: 12s; --d: -5s; }
+  .bulles i:nth-child(3) { left: 30%; width: 16px; height: 16px; --t: 21s; --d: -11s; }
+  .bulles i:nth-child(4) { left: 58%; width: 8px; height: 8px; --t: 14s; --d: -3s; }
+  .bulles i:nth-child(5) { left: 76%; --t: 18s; --d: -13s; }
+  .bulles i:nth-child(6) { left: 90%; width: 18px; height: 18px; --t: 24s; --d: -8s; }
+  .bulles i:nth-child(7) { left: 96%; width: 6px; height: 6px; --t: 11s; --d: -2s; }
+
+  /* ───────── Plus grand ───────── */
   @media (min-width: 560px) {
-    .col { gap: 18px; padding-top: 40px; }
-    .hippo { width: 112px; }
-    .tete h1 { --corps: 1.75rem; }
+    .ciel { padding-top: 28px; }
     .lead { font-size: 1.0625rem; }
-    .ligne { padding-inline: 18px 20px; gap: 14px; }
+    .ligne { padding-inline: 16px 20px; gap: 14px; }
   }
+  @media (min-width: 700px) {
+    .scene { height: 360px; margin-top: 24px; --p: 440px; --th: 54px; }
+    .sun { width: 290px; height: 290px; margin-left: -145px; bottom: 56px; box-shadow: 0 0 0 30px rgba(255, 214, 74, 0.26), 0 0 0 70px rgba(255, 214, 74, 0.13); }
+    .w1 { height: 170px; }
+    .w2 { height: 136px; }
+    .w3 { height: 92px; }
+    .w4 { height: 50px; }
+    .hippo { width: 272px; margin-left: -136px; bottom: -66px; }
+    .tag { padding: 10px 16px 12px; border-radius: 20px; }
+    .tag b { font-size: 1.625rem; }
+    .tag small { font-size: 0.875rem; }
+    .tag.g { left: auto; right: calc(50% + 170px); bottom: 186px; }
+    .tag.d { right: auto; left: calc(50% + 170px); bottom: 146px; }
+    .col { gap: 18px; }
+  }
+
+  /* ───────── Mouvement ───────── */
+  .pause { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pause {
+      display: block; position: absolute; left: 10px; bottom: 6px; z-index: 3; width: 44px; height: 44px; margin: 0; padding: 0;
+      border: 2px solid rgba(255, 255, 255, 0.55); border-radius: 50%; -webkit-appearance: none; appearance: none; forced-color-adjust: none; cursor: pointer;
+      background: var(--deep-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 2.5h3v11H4zM9 2.5h3v11H9z' fill='%23fff'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+    }
+    .pause:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 2.2v11.6L13.5 8z' fill='%23fff'/%3E%3C/svg%3E"); }
+    .pause:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
+    .sun { animation: ig-soleil 1600ms var(--ease) both; }
+    .wave::before { animation: ig-derive var(--t, 46s) linear infinite; }
+    .w2::before, .w4::before { animation-direction: reverse; }
+    .hippo { animation: ig-sort 1300ms var(--ease) 150ms both, ig-berce 5s cubic-bezier(0.42, 0, 0.58, 1) 1500ms infinite alternate; }
+    .tag { animation: ig-apparait 700ms var(--ease) both, ig-flotte 6s cubic-bezier(0.42, 0, 0.58, 1) 900ms infinite alternate; }
+    .tag.g { animation-delay: 700ms, 1400ms; }
+    .tag.d { animation-delay: 900ms, 1600ms; }
+    .bulles i { animation: ig-monte-bulle var(--t, 16s) linear var(--d, 0s) infinite; }
+    .feuille li { animation: ig-monte 600ms var(--ease) both; animation-delay: calc(250ms + var(--i, 0) * 70ms); }
+    .pause:checked ~ * , .pause:checked ~ .wave::before { animation-play-state: paused; }
+    @supports selector(:has(a)) {
+      :global(body:has(.pause:checked)) .bulles i { animation-play-state: paused; }
+    }
+  }
+  /* La sortie de l'eau anime `translate`, le balancement `transform` (accueil). */
+  @keyframes ig-sort { from { translate: 0 62%; } to { translate: 0 0; } }
+  @keyframes ig-soleil { from { transform: translateY(34%); } to { transform: none; } }
+  @keyframes ig-berce { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+  @keyframes ig-flotte { from { translate: 0 0; } to { translate: 0 -8px; } }
+  @keyframes ig-apparait { from { opacity: 0; scale: 0.6; } to { opacity: 1; scale: 1; } }
+  @keyframes ig-derive { to { transform: translateX(calc(var(--p) * -1)); } }
+  @keyframes ig-monte { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes ig-monte-bulle { from { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { transform: translateY(-1100px); opacity: 0; } }
 
   /* Téléphone : la bulle de chat arrive après les liens, pas sur eux. */
   @media (max-width: 559px) {
     @supports (animation-timeline: scroll()) {
-      :global(#crisp-launcher) { animation: ig-bulle linear both; }
-      :global(body #crisp-launcher) { animation-timeline: scroll(root block); animation-range: 300px 340px; }
+      :global(#crisp-launcher) { animation: ig-chat linear both; }
+      :global(body #crisp-launcher) { animation-timeline: scroll(root block); animation-range: 420px 460px; }
     }
   }
-  @keyframes ig-bulle { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+  @keyframes ig-chat { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
 
   @media (forced-colors: active) {
-    .marque, .feuille, .rond { border: 1px solid CanvasText; }
+    .marque, .feuille, .rond, .tag, .site { border: 1px solid CanvasText; }
+    .sun, .wave, .bulles { display: none; }
   }
 </style>
