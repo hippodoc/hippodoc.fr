@@ -76,8 +76,8 @@ const portrait = await getImage({ src: portraitRyan, format: 'webp', width: 112 
     <main>
       <!-- Le ciel : la marque, la promesse, la scène -->
       <section class="ciel">
-        <p class="marque"><span class="logo-word mot" role="img" aria-label="Hippodoc"></span></p>
-        <h1 class="aff">Sors la tête <span class="nb">de l’eau</span></h1>
+        <p class="marque-l"><a href="/" class="marque" data-ph="ig_logo" aria-label="Hippodoc, découvrir le site"><span class="logo-word mot"></span></a></p>
+        <h1 class="aff">Sors la tête <span class="nb">de <span class="mot-eau">l’eau</span></span></h1>
         <p class="lead">Le logiciel des médecins remplaçants : URSSAF, CARMF, impôts, et ce qu’il te reste.</p>
 
         <div class="scene">
@@ -171,6 +171,7 @@ const portrait = await getImage({ src: portraitRyan, format: 'webp', width: 112 
               <p class="m-texte">Après chaque journée, Hippodoc calcule URSSAF, CARMF et impôts, et te montre ce qu’il te reste.</p>
               <a href={lienEssai} class="btn btn-brand" data-ph="ig_essai" data-track="cta_signup_ig">Essayer Hippodoc</a>
               <p class="fine">30 jours offerts, sans engagement · <a href="/tarifs" data-ph="ig_tarifs">Voir les tarifs</a></p>
+              <a href="/" class="btn btn-line accueil" data-ph="ig_accueil">Voir comment ça marche</a>
             </div>
           </li>
         </ul>
@@ -199,8 +200,12 @@ const portrait = await getImage({ src: portraitRyan, format: 'webp', width: 112 
   /* ───────── Le ciel ───────── */
   .ciel { position: relative; display: flex; flex-direction: column; align-items: center; padding: 16px var(--gut) 0; text-align: center; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 62%, var(--glow) 100%); overflow: hidden; }
   .ciel > p, .ciel > h1 { position: relative; z-index: 2; margin: 0; }
-  .marque { display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+  .marque { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; text-decoration: none; transition: translate 200ms var(--ease); border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
   .logo-word { font-size: 1.25rem; }
+  .marque:hover { translate: 0 -2px; }
+  .marque:focus-visible { outline-color: var(--ink); }
+  /* « l’eau » prend le bleu de la vague du premier plan, comme sur l’accueil (Hero.astro). */
+  .mot-eau { color: var(--w4); }
   .mot::before { content: "Hippo"; }
   .mot::after { content: "doc"; color: var(--brand-2); }
   .ciel h1 { --corps: clamp(2.125rem, 10.4vw, 3.75rem); margin-top: 14px; line-height: 1; letter-spacing: -0.04em; text-wrap-style: balance; }
@@ -306,6 +311,7 @@ const portrait = await getImage({ src: portraitRyan, format: 'webp', width: 112 
   .m-essai .m-titre { font-size: 1.375rem; }
   .m-essai .m-texte { max-width: 26em; text-wrap-style: balance; }
   .m-essai .btn { width: 100%; max-width: 360px; margin-top: 6px; box-sizing: border-box; }
+  .m-essai .accueil { width: 100%; max-width: 360px; min-height: 48px; margin-top: 10px; box-sizing: border-box; font-size: 1rem; }
   .fine { margin: 4px 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--ink-2); }
   .fine a { --focus: var(--ink); display: inline-flex; align-items: center; min-height: 44px; margin-block: -12px; color: var(--ink); font-weight: var(--tb); text-decoration: underline; text-underline-offset: 3px; }
 
