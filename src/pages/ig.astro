@@ -1,0 +1,238 @@
+---
+/**
+ * /ig — la page du lien de la bio Instagram (à la place d'un Linktree).
+ *
+ * - noindex, hors sitemap (filtre dans astro.config.mjs), sans l'en-tête ni le
+ *   pied du site (PAGES_SANS_ENTETE de verify-site.mjs), comme /essai.
+ * - Provenance : la bio affiche `hippodoc.fr/ig`, court. Vercel ajoute
+ *   `utm_source=instagram&utm_medium=bio` à l'arrivée (vercel.json, règle
+ *   `missing` sur `utm_source` : pas de boucle), et PostHog l'enregistre comme
+ *   premier contact (`hd_premiere_source`). Le navigateur d'Instagram n'envoie
+ *   pas toujours de référent : sans l'UTM, la visite serait « direct ».
+ * - Mesure : un `data-ph="ig_*"` par lien (autocapture). Le lien d'essai porte
+ *   aussi les UTM, pour que l'app rattache l'inscription à Instagram même sans
+ *   consentement aux cookies ; le lien Calendly reçoit les UTM de la session
+ *   (`data-calendly`, analytics-init.ts).
+ * - Le dernier article du blog se met à jour seul (plus récent selon byNewest) :
+ *   c'est le lien que cherche qui lit « lien en bio » sous la fiche de la semaine.
+ * - Téléphone d'abord : à 390 × 844, l'essai et les liens tiennent dans le
+ *   premier écran. Aucune classe utilitaire, aucun script.
+ * - Le jaune : le bouton principal seul (règle de la DA).
+ */
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { APP_URL, CALENDLY_URL, SOCIALS } from '@/lib/site';
+import { byNewest } from '@/lib/blog-sort';
+import { resolveCover, srcsetAffiche } from '@/lib/blog-covers';
+import { GUIDE_REMPLACANT } from '@/lib/guide-remplacant';
+import mascotte from '@/assets/partage/mascotte-salut.webp';
+
+const title = 'Hippodoc sur Instagram — tous nos liens';
+const description =
+  "Essai gratuit 30 jours, simulateur Super-Net, dernier article, guide du remplaçant : tous les liens d'Hippodoc, le logiciel des médecins remplaçants.";
+const path = '/ig';
+const noindex = true;
+
+const UTM = 'utm_source=instagram&utm_medium=bio';
+const lienEssai = `${APP_URL}/auth?tab=signup&${UTM}&utm_content=ig_essai`;
+
+const dernier = (await getCollection('blog')).sort(byNewest)[0];
+const affiche = await resolveCover(dernier.data.cover, 160);
+const afficheSrcset = await srcsetAffiche(dernier.data.cover, [96, 160, 240]);
+
+const fleche = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
+
+interface Lien {
+  href: string;
+  ph: string;
+  titre: string;
+  detail: string;
+  icone: string;
+  externe?: boolean;
+  net?: boolean;
+  calendly?: string;
+}
+
+const LIENS: Lien[] = [
+  {
+    href: '/simulateur',
+    ph: 'ig_simulateur',
+    titre: 'Simulateur Super-Net',
+    detail: 'Ton revenu après tout, en 2 minutes',
+    net: true,
+    icone: '<path d="M4 10h12"/><path d="M4 14h9"/><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>',
+  },
+  {
+    href: '/guide',
+    ph: 'ig_guide',
+    titre: 'Le guide du remplaçant',
+    detail: `PDF gratuit de ${GUIDE_REMPLACANT.pages} pages`,
+    icone: '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  },
+  {
+    href: '/guide-declarations',
+    ph: 'ig_declarations',
+    titre: 'Tes déclarations, case par case',
+    detail: '2035, 2042-C PRO, DSFU : le guide',
+    icone: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h5"/>',
+  },
+  {
+    href: '/tarifs',
+    ph: 'ig_tarifs',
+    titre: 'Tarifs et offre internes',
+    detail: 'Sans engagement, 30 jours offerts',
+    icone: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+  },
+  {
+    href: CALENDLY_URL,
+    ph: 'ig_rdv',
+    titre: 'Parler 15 min avec Ryan',
+    detail: 'Le médecin qui a créé Hippodoc',
+    icone: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+    externe: true,
+    calendly: 'ig',
+  },
+];
+---
+
+<BaseLayout {title} {description} {path} {noindex} bodyClass="da-fond">
+  <Fragment slot="head">
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  <div class="page da-bloc">
+    <main class="col">
+      <header class="tete">
+        <Image src={mascotte} alt="" width={180} densities={[1, 2]} class="hippo" loading="eager" />
+        <p class="marque"><span class="logo-word mot" role="img" aria-label="Hippodoc"></span></p>
+        <h1>Le logiciel des médecins remplaçants</h1>
+        <p class="lead">Créé par un médecin, pour savoir ce que tu gagnes <span class="vrai">vraiment</span>.</p>
+      </header>
+
+      <a href={lienEssai} class="btn btn-brand essai" data-ph="ig_essai" data-track="cta_signup_ig">
+        Essai gratuit 30 jours <span class="sr">→</span><svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>
+      </a>
+
+      <ul class="feuille" role="list">
+        <li>
+          <a href={`/blog/${dernier.id}`} class="ligne" data-ph="ig_article">
+            {affiche ? (
+              <img
+                class="affiche"
+                src={affiche.src}
+                srcset={afficheSrcset}
+                sizes="48px"
+                width={affiche.width}
+                height={affiche.height}
+                alt=""
+                decoding="async"
+              />
+            ) : null}
+            <span class="txt">
+              <span class="sur">Nouveau sur le blog</span>
+              <span class="t">{dernier.data.title}</span>
+            </span>
+            <Fragment set:html={fleche} />
+          </a>
+        </li>
+        {LIENS.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class="ligne"
+              data-ph={l.ph}
+              data-calendly={l.calendly}
+              target={l.externe ? '_blank' : undefined}
+              rel={l.externe ? 'noopener' : undefined}
+            >
+              <span class={l.net ? 'rond net' : 'rond'}><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={l.icone} /></span>
+              <span class="txt">
+                <span class="t">{l.titre}</span>
+                <span class="d">{l.detail}</span>
+              </span>
+              <Fragment set:html={fleche} />
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="deja">Déjà un compte ? <a href={`${APP_URL}/auth?${UTM}&utm_content=ig_connexion`} data-ph="ig_connexion">Se connecter</a></p>
+    </main>
+
+    <footer class="pied">
+      <a href="/" data-ph="ig_site">hippodoc.fr</a>
+      <a href={SOCIALS.instagram} data-ph="ig_instagram" target="_blank" rel="noopener noreferrer">@hippodoc.fr</a>
+      <a href="mailto:contact@hippodoc.fr" data-ph="ig_contact">Contact</a>
+      <a href="/mentions-legales">Mentions légales</a>
+      <a href="/politique-confidentialite">Confidentialité</a>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .page { min-height: 100dvh; display: flex; flex-direction: column; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 55%, var(--glow) 100%); font-size: 1rem; }
+  .col { display: grid; gap: 14px; width: 100%; max-width: calc(480px + 2 * var(--gut)); margin-inline: auto; padding: 18px var(--gut) 8px; box-sizing: border-box; }
+
+  .tete { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+  .tete > * { margin: 0; }
+  .hippo { display: block; width: 92px; height: auto; margin-bottom: -4px; }
+  .marque { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+  .logo-word { font-size: 1.375rem; }
+  .mot::before { content: "Hippo"; }
+  .mot::after { content: "doc"; color: var(--brand-2); }
+  .tete h1 { --corps: 1.375rem; margin-top: 6px; font-weight: var(--dw); line-height: 1.15; text-wrap-style: balance; }
+  .lead { font-size: 1rem; line-height: 1.4; color: var(--ink-2); text-wrap-style: balance; }
+  .vrai { margin: 0 -0.1em; padding: 0 0.1em; border-radius: 0.28em; background: var(--sun); color: var(--ink); }
+
+  .essai { gap: 9px; width: 100%; box-sizing: border-box; font-size: 1.125rem; }
+  .essai svg { flex: none; }
+
+  /* La feuille à lignes de l'accueil : blanche, un filet entre deux lignes, la
+     ligne teintée au survol, l'anneau de focus à l'intérieur. */
+  .feuille { margin: 0; padding: 0; list-style: none; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); box-shadow: var(--clay); }
+  .feuille li + li { border-top: 1px solid var(--line); }
+  .ligne { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px 10px 12px; color: var(--ink); text-decoration: none; transition: background-color 160ms var(--ease); }
+  .ligne:hover { background: var(--sky-soft); }
+  .page .ligne:focus-visible { outline-offset: -4px; }
+  .ligne > svg { flex: none; color: var(--ink-3); }
+  .rond { display: flex; flex: none; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--sky); color: var(--brand); }
+  /* Le Super-Net : sur du jaune, comme partout. */
+  .rond.net { background: var(--sun); color: var(--ink); box-shadow: 0 3px 0 var(--sun-edge); }
+  /* L'affiche entière, à son format, jamais rognée (règle des affiches du blog). */
+  .affiche { flex: none; width: auto; max-width: none; height: 60px; border-radius: 6px; box-shadow: 0 4px 10px -6px rgba(13, 40, 105, 0.5); }
+  .txt { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+  .t { font-weight: var(--tb); line-height: 1.3; }
+  .d, .sur { font-size: 0.875rem; line-height: 1.35; color: var(--ink-2); }
+  .sur { font-weight: var(--tb); color: var(--brand); }
+  .ligne:has(.affiche) .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .deja { margin: 2px 0 0; text-align: center; color: var(--ink-2); }
+  .deja a { display: inline-flex; align-items: center; min-height: 44px; margin-left: 4px; font-weight: var(--tb); color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+
+  .pied { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; margin-top: auto; padding: 10px var(--gut) max(16px, env(safe-area-inset-bottom, 0px)); font-size: 0.875rem; }
+  .pied a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); text-decoration: none; }
+  .pied a:hover { color: var(--brand); text-decoration: underline; }
+
+  @media (min-width: 560px) {
+    .col { gap: 18px; padding-top: 40px; }
+    .hippo { width: 112px; }
+    .tete h1 { --corps: 1.75rem; }
+    .lead { font-size: 1.0625rem; }
+    .ligne { padding-inline: 18px 20px; gap: 14px; }
+  }
+
+  /* Téléphone : la bulle de chat arrive après les liens, pas sur eux. */
+  @media (max-width: 559px) {
+    @supports (animation-timeline: scroll()) {
+      :global(#crisp-launcher) { animation: ig-bulle linear both; }
+      :global(body #crisp-launcher) { animation-timeline: scroll(root block); animation-range: 300px 340px; }
+    }
+  }
+  @keyframes ig-bulle { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+
+  @media (forced-colors: active) {
+    .marque, .feuille, .rond { border: 1px solid CanvasText; }
+  }
+</style>

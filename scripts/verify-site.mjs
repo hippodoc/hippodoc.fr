@@ -660,6 +660,7 @@ const MESURE_ENTETE_PIED = [
 // Pages sans l'en-tête ni le pied du site, et pourquoi.
 const PAGES_SANS_ENTETE = new Set([
   '/essai/index.html',         // page de campagne, noindex : son propre en-tête, sans menu
+  '/ig/index.html',            // lien de la bio Instagram, noindex : une page de liens, sans menu
   '/transmissions/index.html', // page HTML déposée dans public/, hors Astro
 ]);
 // SHA-256 du micro-script du tiroir, espaces réduits. Celui de l'ancien
@@ -1948,9 +1949,10 @@ for (const url of urls) {
   const ogAccueil = lireHtml(SITE).match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? '';
   if (!/\/partage\/accueil-[0-9a-f]{8}\.jpg$/.test(ogAccueil)) fail(`partage : / : og:image « ${ogAccueil} », attendu l'image de l'accueil (/partage/accueil-…, § 9.ha)`);
   // /essai (noindex, hors du sitemap : la page des campagnes) a aussi la sienne.
-  const ogEssai = lireHtml(`${SITE}/essai`).match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? '';
+  // /ig (noindex, hors du sitemap : le lien de la bio Instagram) aussi.
+  const ogHorsSitemap = ['/essai', '/ig'].map((p) => lireHtml(`${SITE}${p}`).match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? '');
   for (const f of readdirSync(resolve(dist, 'partage'))) {
-    if (!/^accueil-/.test(f) && !ogEssai.endsWith(`/partage/${f}`) && ![...parImage.keys()].some((u) => u.endsWith(`/partage/${f}`))) fail(`partage : dist/partage/${f} n'est l'image d'aucune page du sitemap (entrée de PARTAGE_PAGES sans page ?)`);
+    if (!/^accueil-/.test(f) && !ogHorsSitemap.some((og) => og.endsWith(`/partage/${f}`)) && ![...parImage.keys()].some((u) => u.endsWith(`/partage/${f}`))) fail(`partage : dist/partage/${f} n'est l'image d'aucune page du sitemap (entrée de PARTAGE_PAGES sans page ?)`);
   }
   console.log(`Partage : ${vues} pages, chacune son image de partage (1200×630, JPEG, < 300 Ko)`);
 }

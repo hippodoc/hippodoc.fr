@@ -20,6 +20,12 @@
     { "source": "/hippo-wall-street", "destination": "/transmissions", "permanent": true },
     { "source": "/instagram", "destination": "/essai", "permanent": true },
     { "source": "/i", "destination": "/essai", "permanent": true },
+    {
+      "source": "/ig",
+      "missing": [{ "type": "query", "key": "utm_source" }],
+      "destination": "/ig?utm_source=instagram&utm_medium=bio",
+      "permanent": false
+    },
     { "source": "/remplacements", "destination": "/", "permanent": true },
 
     { "source": "/dashboard", "destination": "https://app.hippodoc.fr/dashboard", "permanent": true },

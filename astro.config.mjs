@@ -73,9 +73,10 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      // /essai est noindex (page campagne Instagram) : hors sitemap. Égalité
-      // stricte : une sous-chaîne excluait aussi tout futur /blog/essai-… (§ 9.bi).
-      filter: (page) => new URL(page).pathname.replace(/\/$/, '') !== '/essai',
+      // /essai (page campagne Instagram) et /ig (lien de la bio Instagram) sont
+      // noindex : hors sitemap. Égalité stricte : une sous-chaîne excluait aussi
+      // tout futur /blog/essai-… (§ 9.bi).
+      filter: (page) => !['/essai', '/ig'].includes(new URL(page).pathname.replace(/\/$/, '')),
       serialize(item) {
         const path = new URL(item.url).pathname.replace(/\/$/, '') || '/';
         const lastmod = LASTMOD.get(path);

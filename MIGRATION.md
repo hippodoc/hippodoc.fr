@@ -16237,6 +16237,31 @@ conjoint (« max 14 555 € pour les revenus 2025 »).
   mai 2026 », et le simulateur « 2 % × CA conventionné × (1 - ratio non conv.) » : à y reporter (son
   lot 5 est en cours).
 
+### 9.hs Nouvelle page : /ig, le lien de la bio Instagram (25 novembre 2026)
+
+À la place d'un Linktree : une page du site, dans la DA, qui rassemble les liens utiles à qui vient
+de la bio Instagram. Contenu nouveau (textes écrits pour la page, à relire par le propriétaire).
+
+- `src/pages/ig.astro` : noindex, hors sitemap (`astro.config.mjs`), sans en-tête ni pied
+  (`PAGES_SANS_ENTETE`), aucun script. Mascotte « salut », mot-symbole, une phrase, le bouton
+  jaune « Essai gratuit 30 jours », puis une feuille à lignes : le dernier article du blog (pris
+  seul, le plus récent selon `byNewest`, son affiche entière), le simulateur (pastille jaune :
+  le Super-Net), le guide du remplaçant, le guide des déclarations, les tarifs, Calendly.
+  À 390 × 844, tout tient dans le premier écran.
+- Provenance : la bio affiche `hippodoc.fr/ig`. `vercel.json` renvoie `/ig` sans `utm_source`
+  vers `/ig?utm_source=instagram&utm_medium=bio` (307, condition `missing` : pas de boucle ;
+  verify-site l'avertit comme non permanente, c'est voulu : les UTM peuvent changer). PostHog
+  l'écrit en premier contact (`hd_premiere_source = instagram`, `hd_premiere_page = /ig`).
+  Le lien d'essai et « Se connecter » portent les UTM jusqu'à l'app (`utm_content` = l'emplacement) ;
+  le lien Calendly les reçoit par `data-calendly="ig"`.
+- Mesure : `data-ph="ig_*"` sur chaque lien (`ig_essai`, `ig_article`, `ig_simulateur`,
+  `ig_guide`, `ig_declarations`, `ig_tarifs`, `ig_rdv`, `ig_connexion`, `ig_site`,
+  `ig_instagram`, `ig_contact`), autocapture.
+- Image de partage : entrée `/ig` de `PARTAGE_PAGES` ; verify-site admet son image comme celle de `/essai`.
+- `/instagram` et `/i` redirigent toujours vers `/essai` : inchangés.
+- Preuve : les 78 autres pages du build sont identiques à l'octet à celles de `main`, la feuille
+  commune garde son nom.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
