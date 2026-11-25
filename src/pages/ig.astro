@@ -1,0 +1,409 @@
+---
+/**
+ * /ig — la page du lien de la bio Instagram (à la place d'un Linktree).
+ *
+ * Mise en scène (MIGRATION.md § 9.hs) : « Sors la tête de l'eau », comme le
+ * premier écran de l'accueil. Le ciel du matin, le soleil à anneaux, quatre
+ * vagues qui dérivent, et elle en selfie (pose R03 de la bibliothèque, « story
+ * de bienvenue » : on arrive d'Instagram) qui sort de l'eau entre la deuxième
+ * et la troisième vague, coupée aux genoux. Sous la surface, l'eau profonde, où
+ * remontent des bulles, et une grille de modules de tailles différentes :
+ * l'article en grand (« Tu viens du carrousel ? » : la version longue), puis
+ * simulateur, guide, blog, déclarations, Ryan, et l'essai en dernier, seule
+ * mention des 30 jours et seul bouton jaune (pas de « pub forcée » en tête).
+ *
+ * - noindex, hors sitemap (astro.config.mjs), sans l'en-tête ni le pied du site
+ *   (PAGES_SANS_ENTETE de verify-site.mjs), comme /essai. Aucun script.
+ * - Mouvement : seulement sans `prefers-reduced-motion`, avec une case de pause
+ *   (WCAG 2.2.2), comme l'accueil. Sans animation, tout est à sa place finale.
+ * - Provenance : la bio affiche `hippodoc.fr/ig` ; vercel.json ajoute
+ *   `utm_source=instagram&utm_medium=bio` (règle `missing` : pas de boucle), et
+ *   PostHog l'écrit en premier contact. Le lien d'essai et la connexion portent
+ *   les UTM jusqu'à l'app ; Calendly les reçoit par `data-calendly`.
+ * - Mesure : un `data-ph="ig_*"` par lien (autocapture).
+ * - Le dernier article du blog se met à jour seul (le plus récent, byNewest).
+ */
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { APP_URL, CALENDLY_URL, SOCIALS } from '@/lib/site';
+import { byNewest } from '@/lib/blog-sort';
+import { resolveCover, srcsetAffiche } from '@/lib/blog-covers';
+import { GUIDE_REMPLACANT } from '@/lib/guide-remplacant';
+import { nouer, echapper } from '@/lib/typo';
+import selfie from '@/assets/partage/mascotte-f-selfie.webp';
+import portraitRyan from '@/assets/founders/ryan-goburdhun.jpeg';
+
+const title = 'Hippodoc sur Instagram — tous nos liens';
+const description =
+  "Essai gratuit 30 jours, simulateur Super-Net, dernier article, guide du remplaçant : tous les liens d'Hippodoc, le logiciel des médecins remplaçants.";
+const path = '/ig';
+const noindex = true;
+
+const UTM = 'utm_source=instagram&utm_medium=bio';
+const lienEssai = `${APP_URL}/auth?tab=signup&${UTM}&utm_content=ig_essai`;
+
+/* La mascotte : 200 px de large au téléphone, 272 px à partir de 700 px ; le
+   fichier fait 1 024 px (jamais affichée plus large). */
+const TAILLES_MASCOTTE = '(min-width: 700px) 272px, 200px';
+const mascotte = await Promise.all(
+  [256, 384, 512, 704].map((w) => getImage({ src: selfie, width: w, format: 'webp' })),
+);
+const mascotteSrcset = mascotte.map((m) => `${m.src} ${m.attributes.width}w`).join(', ');
+
+const articles = (await getCollection('blog')).sort(byNewest);
+const dernier = articles[0];
+const affiche = await resolveCover(dernier.data.cover, 320);
+const afficheSrcset = await srcsetAffiche(dernier.data.cover, [160, 240, 320, 400]);
+/* Le module du blog : les trois articles suivants, en éventail. */
+const eventail = (
+  await Promise.all(articles.slice(1, 4).map((p) => resolveCover(p.data.cover, 160)))
+).filter((c): c is NonNullable<typeof c> => c !== null);
+const nbArticles = articles.length;
+const minutes = dernier.data.readTime.replace(/\s*min.*$/, '');
+
+const fleche = '<svg class="fl" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
+
+const portrait = await getImage({ src: portraitRyan, format: 'webp', width: 112 });
+
+---
+
+<BaseLayout {title} {description} {path} {noindex} bodyClass="da-fond">
+  <Fragment slot="head">
+    <meta name="theme-color" content="#C9DEFF" />
+  </Fragment>
+  <div class="page da-bloc">
+    <main>
+      <!-- Le ciel : la marque, la promesse, la scène -->
+      <section class="ciel">
+        <p class="marque"><span class="logo-word mot" role="img" aria-label="Hippodoc"></span></p>
+        <h1 class="aff">Sors la tête <span class="nb">de l’eau</span></h1>
+        <p class="lead">Le logiciel des médecins remplaçants : URSSAF, CARMF, impôts, et ce qu’il te reste.</p>
+
+        <div class="scene">
+          {/* Pause du décor (WCAG 2.2.2), sans script : elle précède tout ce qui bouge. */}
+          <input type="checkbox" class="pause" aria-label="Mettre le décor animé en pause" />
+          <span class="sun" aria-hidden="true"></span>
+          <span class="wave w1" aria-hidden="true"></span>
+          <span class="wave w2" aria-hidden="true"></span>
+          <img
+            class="hippo"
+            src={mascotte[1].src}
+            srcset={mascotteSrcset}
+            sizes={TAILLES_MASCOTTE}
+            width={selfie.width}
+            height={selfie.height}
+            alt="La mascotte Hippodoc, une hippopotame bleue en blouse blanche, sort de l’eau et salue en prenant un selfie"
+            fetchpriority="high"
+          />
+          <span class="wave w3" aria-hidden="true"></span>
+          <span class="wave w4" aria-hidden="true"></span>
+          <p class="tag g"><b class="num">900+</b><small>médecins<br />inscrits</small></p>
+          <p class="tag d"><b>Créé par</b><small>un médecin</small></p>
+        </div>
+      </section>
+
+      <!-- Sous la surface : des modules de tailles différentes. L'article d'abord
+           (on arrive d'un carrousel), l'essai à la fin, une seule fois. -->
+      <section class="eau" aria-label="Les liens">
+        <div class="bulles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <ul class="bento" role="list">
+          <li class="m m-article" style="--i: 0">
+            <a href={`/blog/${dernier.id}`} data-ph="ig_article">
+              <span class="pastille"><span class="point" aria-hidden="true"></span>Tu viens du carrousel ?</span>
+              <span class="m-titre" set:html={nouer(echapper(dernier.data.title)).replace(/ ([:;?!])/g, '\u00a0$1')} />
+              <span class="m-texte">La version longue : les chiffres, les sources et des exemples, pas à pas.</span>
+              <span class="m-pied"><span class="lire">Lire l’article</span><span class="duree">{minutes} min</span></span>
+              {affiche ? (
+                <img class="affiche" src={affiche.src} srcset={afficheSrcset} sizes="(min-width: 700px) 150px, 112px" width={affiche.width} height={affiche.height} alt="" decoding="async" />
+              ) : null}
+            </a>
+          </li>
+
+          <li class="m m-simu" style="--i: 1">
+            <a href="/simulateur" data-ph="ig_simulateur">
+              <span class="soleil" aria-hidden="true"></span>
+              <span class="m-sur">Simulateur</span>
+              <span class="m-titre">Combien il te reste <span class="hl">vraiment</span> ?</span>
+              <span class="m-pied">En 2 minutes<Fragment set:html={fleche} /></span>
+            </a>
+          </li>
+
+          <li class="m m-guide" style="--i: 2">
+            <a href="/guide" data-ph="ig_guide">
+              <span class="pdf" aria-hidden="true"><i></i><i></i><i></i><b>PDF</b></span>
+              <span class="m-sur">Gratuit</span>
+              <span class="m-titre">Le guide du remplaçant</span>
+              <span class="m-pied">{GUIDE_REMPLACANT.pages} pages<Fragment set:html={fleche} /></span>
+            </a>
+          </li>
+
+          <li class="m m-blog" style="--i: 3">
+            <a href="/blog" data-ph="ig_blog">
+              <span class="eventail" aria-hidden="true">
+                {eventail.map((c) => <img src={c.src} width={c.width} height={c.height} alt="" loading="lazy" decoding="async" />)}
+              </span>
+              <span class="m-sur">Le blog</span>
+              <span class="m-titre">{nbArticles} articles, sans jargon</span>
+              <span class="m-pied">Rangés par thème<Fragment set:html={fleche} /></span>
+            </a>
+          </li>
+
+          <li class="m m-decl" style="--i: 4">
+            <a href="/guide-declarations" data-ph="ig_declarations">
+              <span class="cases" aria-hidden="true"><span>2035</span><span>2042-C PRO</span><span>DSFU</span></span>
+              <span class="m-titre">Tes déclarations, case par case</span>
+              <span class="m-pied">Le guide<Fragment set:html={fleche} /></span>
+            </a>
+          </li>
+
+          <li class="m m-ryan" style="--i: 5">
+            <a href={CALENDLY_URL} data-ph="ig_rdv" data-calendly="ig" target="_blank" rel="noopener">
+              <img class="portrait" src={portrait.src} width="56" height="56" alt="" loading="lazy" decoding="async" />
+              <span class="m-titre">Parler 15 min avec Ryan</span>
+              <span class="m-pied">Le fondateur<Fragment set:html={fleche} /></span>
+            </a>
+          </li>
+
+          <li class="m m-essai" style="--i: 6">
+            <div>
+              <p class="m-titre">Tout suivre au même endroit</p>
+              <p class="m-texte">Après chaque journée, Hippodoc calcule URSSAF, CARMF et impôts, et te montre ce qu’il te reste.</p>
+              <a href={lienEssai} class="btn btn-brand" data-ph="ig_essai" data-track="cta_signup_ig">Essayer Hippodoc</a>
+              <p class="fine">30 jours offerts, sans engagement · <a href="/tarifs" data-ph="ig_tarifs">Voir les tarifs</a></p>
+            </div>
+          </li>
+        </ul>
+
+        <p class="deja">Déjà un compte ? <a href={`${APP_URL}/auth?${UTM}&utm_content=ig_connexion`} data-ph="ig_connexion">Se connecter</a></p>
+
+        <footer class="pied">
+          <a href="/" class="site" data-ph="ig_site"><span class="logo-word">Hippo<span>doc</span></span></a>
+          <p class="liens">
+            <a href={SOCIALS.instagram} data-ph="ig_instagram" target="_blank" rel="noopener noreferrer">@hippodoc.fr</a>
+            <a href="mailto:contact@hippodoc.fr" data-ph="ig_contact">Contact</a>
+            <a href="/mentions-legales">Mentions légales</a>
+            <a href="/politique-confidentialite">Confidentialité</a>
+          </p>
+        </footer>
+      </section>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .nb { white-space: nowrap; }
+  .page { font-size: 1rem; background: var(--deep-2); }
+
+  /* ───────── Le ciel ───────── */
+  .ciel { position: relative; display: flex; flex-direction: column; align-items: center; padding: 16px var(--gut) 0; text-align: center; background: linear-gradient(var(--sky-1) 0, var(--sky-2) 62%, var(--glow) 100%); overflow: hidden; }
+  .ciel > p, .ciel > h1 { position: relative; z-index: 2; margin: 0; }
+  .marque { display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: var(--r-pill); background: rgba(255, 255, 255, 0.94); box-shadow: var(--float); }
+  .logo-word { font-size: 1.25rem; }
+  .mot::before { content: "Hippo"; }
+  .mot::after { content: "doc"; color: var(--brand-2); }
+  .ciel h1 { --corps: clamp(2.125rem, 10.4vw, 3.75rem); margin-top: 14px; line-height: 1; letter-spacing: -0.04em; text-wrap-style: balance; }
+  .lead { max-width: 30em; margin-top: 10px; font-size: 0.96875rem; line-height: 1.4; color: var(--ink-2); text-wrap-style: balance; }
+
+  /* La scène de l'accueil (accueil/Hero.astro), en plus bas : soleil, deux
+     vagues, la mascotte, deux vagues devant. La dernière vague a la couleur du
+     haut de l'eau profonde. */
+  .scene { position: relative; align-self: stretch; height: 268px; margin: 14px calc(var(--gut) * -1) 0; --p: 300px; --th: 40px; }
+  .sun { position: absolute; left: 50%; bottom: 40px; width: 220px; height: 220px; margin-left: -110px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 20px rgba(255, 214, 74, 0.26), 0 0 0 46px rgba(255, 214, 74, 0.13); }
+  .wave { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; }
+  .wave::before { content: ""; position: absolute; inset: 0 calc(var(--p) * -1) 0 0; }
+  .w1 { height: 132px; --t: 64s; }
+  .w2 { height: 104px; --t: 52s; }
+  .w3 { height: 70px; --t: 40s; }
+  .w4 { height: 38px; --t: 30s; }
+  .w1::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.1'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%23A9CBF8'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23D6E7FE' stroke-width='3'/%3E%3C/svg%3E") repeat-x 0 0 / var(--p) var(--th), linear-gradient(#A9CBF8, #93BCF4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w2::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.12'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%237FAEF0'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%23B5D2FA' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.4) 0 / var(--p) var(--th), linear-gradient(#7FAEF0, #699CE8) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w3::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.14'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%234F88DE'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%238AB6F3' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.7) 0 / var(--p) var(--th), linear-gradient(#4F88DE, #3D75D2) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  .w4::before { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 48' preserveAspectRatio='none'%3E%3Cpath d='M0 21C45 1 135 1 180 21S315 41 360 21V48H0Z' fill='%23143782' fill-opacity='.16'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28V48H0Z' fill='%232A60C4'/%3E%3Cpath d='M0 28C45 8 135 8 180 28S315 48 360 28' fill='none' stroke='%235C92E6' stroke-width='3'/%3E%3C/svg%3E") repeat-x calc(var(--p) * 0.2) 0 / var(--p) var(--th), linear-gradient(#2A60C4, #2A60C4) no-repeat 0 calc(var(--th) - 1px) / 100% 100%; }
+  /* En pied : les genoux sous la troisième vague (pas de pieds dans le vide). */
+  .hippo { position: absolute; left: 50%; bottom: -46px; display: block; width: 200px; max-width: none; height: auto; margin-left: -100px; }
+
+  /* Deux pastilles qui flottent de part et d'autre, comme la pastille Super-Net
+     de l'accueil. Le chiffre de gauche est celui du site (« 900+ »). */
+  .tag { position: absolute; z-index: 1; display: flex; flex-direction: column; margin: 0; padding: 7px 11px 9px; border-radius: 16px; background: var(--paper); text-align: left; box-shadow: var(--clay); }
+  .tag b { font-family: var(--display); font-size: 1.25rem; font-weight: var(--dw); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
+  .tag small { font-size: 0.75rem; font-weight: var(--tb); line-height: 1.3; color: var(--ink-2); }
+  .tag.g { left: max(10px, 50% - 180px); bottom: 128px; rotate: -6deg; }
+  .tag.d { right: max(10px, 50% - 180px); bottom: 104px; rotate: 5deg; }
+
+  /* ───────── Sous la surface : la grille de modules ───────── */
+  .eau { --focus: #FFFFFF; position: relative; margin-top: -1px; padding-top: 8px; background: linear-gradient(var(--deep) 0, var(--deep-2) 620px); overflow: hidden; }
+  .bento { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: calc(880px + 2 * var(--gut)); margin: 0 auto; padding: 0 var(--gut); box-sizing: border-box; list-style: none; }
+  .m { min-width: 0; }
+  .m > a, .m > div { position: relative; display: flex; flex-direction: column; gap: 4px; height: 100%; box-sizing: border-box; padding: 16px; overflow: hidden; border-radius: var(--r-lg); background: var(--paper); color: var(--ink); text-decoration: none; box-shadow: 0 24px 44px -26px rgba(5, 18, 60, 0.8); transition: translate 220ms var(--ease), box-shadow 220ms var(--ease); }
+  .m > a:hover { translate: 0 -3px; box-shadow: 0 30px 50px -24px rgba(5, 18, 60, 0.9); }
+  .m > a:focus-visible { outline-offset: 3px; }
+  .m-sur { font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.3; color: var(--brand); }
+  .m-titre { margin: 0; font-family: var(--display); font-size: 1.125rem; font-weight: var(--dw); line-height: 1.15; letter-spacing: -0.02em; text-wrap-style: balance; }
+  .m-texte { margin: 0; font-size: 0.875rem; line-height: 1.4; color: var(--ink-2); }
+  .m-pied { display: flex; align-items: center; gap: 4px; margin-top: auto; padding-top: 8px; font-size: 0.8125rem; font-weight: var(--tb); color: var(--ink-2); }
+  .m-pied :global(.fl) { flex: none; width: 16px; height: 16px; margin-left: auto; transition: translate 220ms var(--ease); }
+  .m > a:hover :global(.fl) { translate: 3px 0; }
+
+  /* L'article : le grand module, sur le sable (l'explication). L'affiche
+     entière, à son format, penchée, qui dépasse en bas à droite. */
+  .m-article { grid-column: 1 / -1; }
+  .m-article > a { min-height: 228px; padding: 18px 136px 18px 18px; background: var(--sand); }
+  .pastille { display: inline-flex; align-self: flex-start; align-items: center; gap: 7px; margin-bottom: 6px; padding: 5px 11px; border-radius: var(--r-pill); background: var(--paper); font-size: 0.8125rem; font-weight: var(--tb); line-height: 1.3; color: var(--brand); box-shadow: var(--clay-sm); }
+  .point { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-2); box-shadow: 0 0 0 3px rgba(26, 140, 255, 0.2); }
+  .m-article .m-titre { font-size: 1.5rem; line-height: 1.1; }
+  .m-article .m-texte { margin-top: 4px; }
+  .m-article .m-pied { gap: 10px; padding-top: 14px; }
+  .lire, .duree, .pastille { white-space: nowrap; }
+  .lire { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: var(--r-pill); background: var(--ink); color: var(--paper); font-size: 0.9375rem; }
+  .duree { color: var(--ink-2); }
+  .affiche { position: absolute; right: 14px; bottom: -14px; width: 112px; height: auto; max-width: none; border-radius: 8px; rotate: 6deg; box-shadow: 0 18px 28px -14px rgba(13, 40, 105, 0.6); transition: rotate 300ms var(--ease), translate 300ms var(--ease); }
+  .m-article > a:hover .affiche { rotate: 2deg; translate: 0 -6px; }
+
+  @media (max-width: 379px) {
+    .m-article > a { padding-right: 104px; }
+    .affiche { width: 92px; right: 10px; }
+    .m-article .m-titre { font-size: 1.375rem; }
+  }
+
+  /* Le simulateur : sur le ciel, un soleil qui se lève dans le coin. */
+  .m-simu > a { min-height: 176px; background: linear-gradient(var(--sky-1), var(--sky-2)); }
+  .soleil { position: absolute; right: -34px; top: -34px; width: 96px; height: 96px; border-radius: 50%; background: radial-gradient(circle at 50% 36%, #FFE98A, #FFD03C 72%); box-shadow: 0 0 0 12px rgba(255, 214, 74, 0.26), 0 0 0 26px rgba(255, 214, 74, 0.13); }
+  .m-simu .m-titre, .m-simu .m-sur, .m-simu .m-pied { position: relative; }
+  .hl { margin: 0 -0.08em; padding: 0 0.08em; border-radius: 0.24em; background: var(--sun); }
+
+  /* Le guide : une feuille de papier dessinée, sur le blanc. */
+  .pdf { position: relative; display: flex; flex-direction: column; gap: 5px; width: 44px; height: 56px; margin-bottom: 8px; padding: 10px 8px; box-sizing: border-box; border-radius: 6px 14px 6px 6px; background: var(--sky-soft); box-shadow: inset 0 0 0 1.5px var(--sky); rotate: -6deg; }
+  .pdf i { display: block; height: 3px; border-radius: 2px; background: var(--sky); }
+  .pdf i:nth-child(2) { width: 70%; }
+  .pdf b { position: absolute; right: -10px; bottom: 6px; padding: 2px 6px; border-radius: 6px; background: var(--brand); color: var(--paper); font-size: 0.6875rem; line-height: 1.3; }
+  .m-guide > a { min-height: 176px; }
+
+  /* Le blog : trois affiches en éventail, sur l'eau claire. */
+  .m-blog { grid-column: 1 / -1; }
+  .m-blog > a { min-height: 132px; padding-left: 178px; justify-content: center; background: var(--sky-soft); }
+  .eventail { position: absolute; left: 16px; top: 50%; width: 150px; height: 96px; translate: 0 -50%; }
+  .eventail img { position: absolute; left: 40px; top: 0; width: auto; max-width: none; height: 96px; border-radius: 5px; box-shadow: 0 10px 18px -10px rgba(13, 40, 105, 0.6); transition: rotate 300ms var(--ease), translate 300ms var(--ease); }
+  .eventail img:nth-child(1) { rotate: -12deg; translate: -30px 4px; }
+  .eventail img:nth-child(3) { rotate: 12deg; translate: 30px 4px; }
+  .m-blog > a:hover .eventail img:nth-child(1) { rotate: -16deg; translate: -36px 2px; }
+  .m-blog > a:hover .eventail img:nth-child(3) { rotate: 16deg; translate: 36px 2px; }
+  .m-blog .m-pied { margin-top: 0; }
+
+  /* Les déclarations : les trois formulaires en étiquettes. */
+  .cases { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+  .cases span { padding: 3px 8px; border-radius: 8px; background: var(--sky); color: var(--brand); font-size: 0.75rem; font-weight: var(--tb); line-height: 1.35; white-space: nowrap; }
+  .m-decl > a { min-height: 168px; }
+
+  /* Ryan : son portrait. */
+  .portrait { width: 56px; height: 56px; margin-bottom: 8px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--sky); }
+  .m-ryan > a { min-height: 168px; background: var(--sand); }
+
+  /* L'essai : le seul bouton jaune, une seule mention des 30 jours. */
+  .m-essai { grid-column: 1 / -1; }
+  .m-essai > div { gap: 8px; align-items: center; padding: 22px 20px 18px; text-align: center; background: linear-gradient(var(--sky-1), var(--glow)); }
+  .m-essai .m-titre { font-size: 1.375rem; }
+  .m-essai .m-texte { max-width: 26em; text-wrap-style: balance; }
+  .m-essai .btn { width: 100%; max-width: 360px; margin-top: 6px; box-sizing: border-box; }
+  .fine { margin: 4px 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--ink-2); }
+  .fine a { --focus: var(--ink); display: inline-flex; align-items: center; min-height: 44px; margin-block: -12px; color: var(--ink); font-weight: var(--tb); text-decoration: underline; text-underline-offset: 3px; }
+
+  .deja { position: relative; z-index: 1; margin: 14px 0 0; text-align: center; color: var(--on-deep-2); }
+  .deja a { display: inline-flex; align-items: center; min-height: 44px; margin-left: 4px; font-weight: var(--tb); color: var(--paper); text-decoration: underline; text-underline-offset: 4px; }
+
+  .pied { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px var(--gut) max(20px, env(safe-area-inset-bottom, 0px)); }
+  .site { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); background: var(--paper); text-decoration: none; box-shadow: var(--clay-sm); }
+  .liens { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; margin: 0; font-size: 0.875rem; }
+  .liens a { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep-2); text-decoration: none; }
+  .liens a:hover { color: var(--paper); text-decoration: underline; }
+
+  /* Les bulles de « Sous la surface » (accueil/SousLaSurface.astro). */
+  .bulles { position: absolute; inset: 0; pointer-events: none; }
+  .bulles i { position: absolute; bottom: -30px; width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.34); opacity: 0; }
+  .bulles i:nth-child(1) { left: 4%; --t: 17s; --d: 0s; }
+  .bulles i:nth-child(2) { left: 14%; width: 7px; height: 7px; --t: 12s; --d: -5s; }
+  .bulles i:nth-child(3) { left: 30%; width: 16px; height: 16px; --t: 21s; --d: -11s; }
+  .bulles i:nth-child(4) { left: 58%; width: 8px; height: 8px; --t: 14s; --d: -3s; }
+  .bulles i:nth-child(5) { left: 76%; --t: 18s; --d: -13s; }
+  .bulles i:nth-child(6) { left: 90%; width: 18px; height: 18px; --t: 24s; --d: -8s; }
+  .bulles i:nth-child(7) { left: 96%; width: 6px; height: 6px; --t: 11s; --d: -2s; }
+
+  /* ───────── Plus grand ───────── */
+  @media (min-width: 560px) {
+    .ciel { padding-top: 28px; }
+    .lead { font-size: 1.0625rem; }
+  }
+  @media (min-width: 700px) {
+    .scene { height: 360px; margin-top: 24px; --p: 440px; --th: 54px; }
+    .sun { width: 290px; height: 290px; margin-left: -145px; bottom: 56px; box-shadow: 0 0 0 30px rgba(255, 214, 74, 0.26), 0 0 0 70px rgba(255, 214, 74, 0.13); }
+    .w1 { height: 170px; }
+    .w2 { height: 136px; }
+    .w3 { height: 92px; }
+    .w4 { height: 50px; }
+    .hippo { width: 272px; margin-left: -136px; bottom: -66px; }
+    .tag { padding: 10px 16px 12px; border-radius: 20px; }
+    .tag b { font-size: 1.625rem; }
+    .tag small { font-size: 0.875rem; }
+    .tag.g { left: auto; right: calc(50% + 170px); bottom: 186px; }
+    .tag.d { right: auto; left: calc(50% + 170px); bottom: 146px; }
+    .bento { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: row dense; gap: 16px; }
+    .m-article { grid-column: 1 / 3; grid-row: 1 / 3; }
+    .m-article > a { min-height: 380px; padding: 26px 26px 26px; }
+    .m-article .m-titre { font-size: 2rem; max-width: 11em; }
+    .m-article .m-texte { max-width: calc(100% - 170px); font-size: 0.96875rem; }
+    .affiche { width: 150px; right: 22px; bottom: -18px; }
+    .m-blog { grid-column: 1 / 3; }
+    .m-essai { grid-column: 3 / 5; }
+    .m-titre { font-size: 1.25rem; }
+  }
+
+  /* ───────── Mouvement ───────── */
+  .pause { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pause {
+      display: block; position: absolute; left: 10px; bottom: 6px; z-index: 3; width: 44px; height: 44px; margin: 0; padding: 0;
+      border: 2px solid rgba(255, 255, 255, 0.55); border-radius: 50%; -webkit-appearance: none; appearance: none; forced-color-adjust: none; cursor: pointer;
+      background: var(--deep-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 2.5h3v11H4zM9 2.5h3v11H9z' fill='%23fff'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+    }
+    .pause:checked { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 2.2v11.6L13.5 8z' fill='%23fff'/%3E%3C/svg%3E"); }
+    .pause:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
+    .sun { animation: ig-soleil 1600ms var(--ease) both; }
+    .wave::before { animation: ig-derive var(--t, 46s) linear infinite; }
+    .w2::before, .w4::before { animation-direction: reverse; }
+    .hippo { animation: ig-sort 1300ms var(--ease) 150ms both, ig-berce 5s cubic-bezier(0.42, 0, 0.58, 1) 1500ms infinite alternate; }
+    .tag { animation: ig-apparait 700ms var(--ease) both, ig-flotte 6s cubic-bezier(0.42, 0, 0.58, 1) 900ms infinite alternate; }
+    .tag.g { animation-delay: 700ms, 1400ms; }
+    .tag.d { animation-delay: 900ms, 1600ms; }
+    .bulles i { animation: ig-monte-bulle var(--t, 16s) linear var(--d, 0s) infinite; }
+    .m { animation: ig-monte 650ms var(--ease) both; animation-delay: calc(250ms + var(--i, 0) * 70ms); }
+    .pause:checked ~ * , .pause:checked ~ .wave::before { animation-play-state: paused; }
+    @supports selector(:has(a)) {
+      :global(body:has(.pause:checked)) .bulles i { animation-play-state: paused; }
+    }
+  }
+  /* La sortie de l'eau anime `translate`, le balancement `transform` (accueil). */
+  @keyframes ig-sort { from { translate: 0 62%; } to { translate: 0 0; } }
+  @keyframes ig-soleil { from { transform: translateY(34%); } to { transform: none; } }
+  @keyframes ig-berce { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+  @keyframes ig-flotte { from { translate: 0 0; } to { translate: 0 -8px; } }
+  @keyframes ig-apparait { from { opacity: 0; scale: 0.6; } to { opacity: 1; scale: 1; } }
+  @keyframes ig-derive { to { transform: translateX(calc(var(--p) * -1)); } }
+  @keyframes ig-monte { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes ig-monte-bulle { from { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { transform: translateY(-1100px); opacity: 0; } }
+
+  /* Téléphone : la bulle de chat arrive après les liens, pas sur eux. */
+  @media (max-width: 559px) {
+    @supports (animation-timeline: scroll()) {
+      :global(#crisp-launcher) { animation: ig-chat linear both; }
+      :global(body #crisp-launcher) { animation-timeline: scroll(root block); animation-range: 420px 460px; }
+    }
+  }
+  @keyframes ig-chat { from { opacity: 0; visibility: hidden; } to { opacity: 1; visibility: visible; } }
+
+  @media (forced-colors: active) {
+    .marque, .m > a, .m > div, .tag, .site { border: 1px solid CanvasText; }
+    .soleil { display: none; }
+    .sun, .wave, .bulles { display: none; }
+  }
+</style>

@@ -73,6 +73,8 @@ export const PARTAGE_PAGES: Record<string, PartagePage> = {
   '/qui-sommes-nous': { libelle: 'Qui sommes-nous', titre: "Hippodoc est né d'une question : « combien je gagne vraiment ? »", fond: 'ciel', pose: 'bras-croises' },
   // Le <h1> en deux : sa première phrase en pastille (en titre, il coupait « c'est / bien »).
   '/essai': { libelle: "Remplacer, c'est bien.", titre: "Savoir ce que ça te rapporte vraiment, c'est mieux.", fond: 'ciel', pose: 'salut', alt: "Remplacer, c'est bien. Savoir ce que ça te rapporte vraiment, c'est mieux. 30 jours gratuits sur Hippodoc" },
+  // Le lien de la bio Instagram : on le partage en message aussi (« tout est là »).
+  '/ig': { libelle: 'Hippodoc', titre: 'Sors la tête de l’eau : tous nos liens', fond: 'ciel', pose: 'f-selfie', ...EN_PIED },
   '/comparatif': { libelle: 'Comparatif des logiciels', titre: 'Indy, Pennylane, Hiway Care ou Hippodoc ?', fond: 'sable', pose: 'reflexion' },
   '/guide': { libelle: `PDF gratuit · Édition ${GUIDE_REMPLACANT.edition}`, titre: 'Le guide du médecin remplaçant', fond: 'sable', pose: 'f-checklist' },
   '/guide-declarations': { libelle: DECLARATIONS, titre: 'Tes déclarations fiscales et sociales, enfin claires', fond: 'sable', pose: 'checklist' },
