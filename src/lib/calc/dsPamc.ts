@@ -17,9 +17,18 @@ export interface Declaration2035Inputs {
   AA: number;
   /** AF — Gains divers (recettes non conventionnelles) */
   AF: number;
-  /** CE — Total Excédent (recettes − dépenses, si positif) */
+  /**
+   * CE — ligne 38 de la 2035-B : total des lignes 34 à 37 (excédent + plus-values à court
+   * terme + divers à réintégrer + bénéfice SCM). Notice 2035 : « produits − dépenses + les
+   * réintégrations fiscales ».
+   */
   CE: number;
-  /** CN — Total Insuffisance (dépenses − recettes, si positif) */
+  /**
+   * CN — ligne 45 de la 2035-B : total des lignes 39 à 44 (insuffisance + frais
+   * d'établissement + amortissements L41 + moins-values + divers à déduire L43, dont CI, DF,
+   * DG, DH + déficit SCM). Notice 2035 : « dépenses − produits + les déductions fiscales ».
+   * CE − CN = CP (bénéfice ligne 46) ; −CR si déficit.
+   */
   CN: number;
   /** BK — Charges sociales personnelles (URSSAF + CARMF) */
   BK: number;
@@ -83,7 +92,9 @@ export interface ResultatRBS {
   rbs: number;
   /** Décomposition pour le visuel waterfall */
   decomposition: {
+    /** CE — ligne 38 de la 2035-B (excédent + réintégrations fiscales). */
     excedent: number;
+    /** CN — ligne 45 de la 2035-B (insuffisance + déductions fiscales, dont L41 et L43). */
     insuffisance: number;
     chargesSociales: number;
     csgDeductible: number;
@@ -104,7 +115,7 @@ export interface ResultatDSPAMC {
   DSDE: number; // Revenu Brut Social — montant POSITIF (0 si RBS < 0)
   DSDG: number; // Revenu Brut Social — montant NÉGATIF (valeur absolue ; 0 si RBS ≥ 0)
   DSDX: number; // IJ CPAM (réintégration sociale)
-  DSCZ: number; // IJ Madelin + AJPA + IJ CARMF temporaire (réintégration sociale — sec. 6.5 notice 52348#06, Phase 9H)
+  DSCZ: number; // IJ Madelin + AJPA (réintégration sociale — notice 52348#06 § 6.5). IJ CARMF temporaires exclues (§ 9.df).
   DSCN: number; // Chèques-vacances (capés au plafond annuel)
   /**
    * DSFA — PDSA exonérée Art. 151 ter CGI (déclarant 1).
@@ -178,8 +189,11 @@ export interface Cadre8Options {
 }
 
 /**
- * RBS = Excédent − Insuffisance + Charges sociales + CSG + Σ Exonérations + DE − DB.
- * Reproduction littérale de la formule Excel `=C6-C7+SUM(C8:C17)`, étendue au cadre 8 2026.
+ * RBS = CE − CN + BK + BV + CS + AW + CU + CI + CO + DG + CJ + DH + DE − DB
+ * (notice 2035, renvoi 26), avec CE = ligne 38 et CN = ligne 45 de la 2035-B : CE − CN est
+ * le bénéfice CP. Les exonérations et déductions CI, DG, DH (ligne 43, donc dans CN) sont
+ * ainsi réintégrées une fois ; DF et les amortissements restent déduits.
+ * Signe : RBS ≥ 0 → DD (2035) / DSDE (2042 PAMC) ; RBS < 0 → DC / DSDG (valeur absolue).
  */
 export function calculerRBS(d: Declaration2035Inputs, c8: Cadre8Options = {}): ResultatRBS {
   const exonerations =
@@ -223,9 +237,11 @@ export function calculerRBS(d: Declaration2035Inputs, c8: Cadre8Options = {}): R
 // =============================================================================
 
 export interface DSPAMCContext {
-  /** Dotations aux amortissements (L41 de la 2035) — passées pour le contrôle de cohérence CP */
-  amortissements?: number;
-  /** Revenus exonérés art. 151 ter (L43 — PDSA) — passés pour le contrôle de cohérence CP ET pour le calcul DSFA/DSFB */
+  /**
+   * Revenus exonérés art. 151 ter (L43 — PDSA) — pour le calcul DSFA/DSFB (micro-BNC).
+   * PDSA phase 3a (A9, D08) : plus utilisés par le contrôle de cohérence CP (CN les contient),
+   * pas plus que les amortissements (champ `amortissements` retiré du contexte).
+   */
   pdsaExonere?: number;
   /** Cadre 8 — DE (réintégrations sociales) saisi côté Aide 2035, propagé pour cohérence cross-page */
   cadre8DE?: number;
@@ -337,21 +353,15 @@ export function calculerDSPAMC(
     );
   }
 
-  // C4 — Cohérence CP vs formule réelle de la 2035 :
-  //   CP = CE − CN − amortissements − pdsaExonéré − Σ exonérations
-  // (les réintégrations L36 sont déjà incluses en amont par useAide2035Data dans CP).
+  // C4 — Cohérence CP : sur la 2035-B, CP (ligne 46) = CE (ligne 38) − CN (ligne 45).
+  // PDSA phase 3a (A9, D08) : CN contient déjà les amortissements (L41) et toute la ligne 43
+  // (CI, DF, DG, DH) ; les retirer une seconde fois donnait une fausse alerte sur tout compte
+  // au réel avec PDSA, amortissements ou forfaits S1.
   // Warning silencieux si CP=0 (utilisateur n'a rien saisi).
-  const exos =
-    safe(d.CS) + safe(d.AW) + safe(d.CU) + safe(d.CI) + safe(d.CO) + safe(d.DG) + safe(d.CJ) + safe(d.DH);
-  const expectedCP =
-    safe(d.CE) -
-    safe(d.CN) -
-    safe(ctx.amortissements ?? 0) -
-    safe(ctx.pdsaExonere ?? 0) -
-    exos;
+  const expectedCP = safe(d.CE) - safe(d.CN);
   if (safe(d.CP) !== 0 && Math.abs(safe(d.CP) - expectedCP) > 1) {
     warnings.push(
-      `Le résultat BNC (CP = ${round2(safe(d.CP))} €) semble incohérent avec Excédent − Insuffisance − amortissements − PDSA exonéré − exonérations (${round2(expectedCP)} €). Vérifie ta 2035.`
+      `Le résultat BNC (CP = ${round2(safe(d.CP))} €) semble incohérent avec CE − CN (ligne 38 − ligne 45 de la 2035-B : ${round2(expectedCP)} €). Vérifie ta 2035.`
     );
   }
 

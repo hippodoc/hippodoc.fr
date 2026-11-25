@@ -40,12 +40,6 @@ const LIGNES: Ligne[] = [
     aide: "Un équipement de plus de 500 € HT s'amortit sur plusieurs années : n'en compte que la part de l'année.",
   },
   { id: 'formation', libelle: 'Formation, congrès, livres et revues' },
-  {
-    id: 'reverse',
-    libelle: 'Part reversée au médecin remplacé',
-    aide: "Seulement si tes recettes saisies sont les honoraires que tu encaisses toi-même. Si le médecin remplacé encaisse et te reverse ta part, laisse vide.",
-    pour: 'remplacant',
-  },
   { id: 'autres', libelle: 'Autres (frais bancaires, fournitures, syndicat…)' },
 ];
 
@@ -208,6 +202,9 @@ export function EstimateurCharges({
 
           <p className="sim-estim-hors">
             Ne compte pas ici tes cotisations Urssaf et CARMF ni la CSG (le simulateur les calcule), ton impôt, ni tes versements PER ou Madelin (dans les options avancées).
+            {typeExercice === 'remplacant' && <>
+              {' '}Si tu encaisses toi-même les honoraires et en reverses une part au médecin remplacé, ne la compte pas non plus{'\u00a0'}: saisis en recettes ce que tu gardes (les honoraires encaissés, moins la part reversée). Elle sort ainsi de tes recettes dans les deux régimes, Micro-BNC compris.
+            </>}
           </p>
 
           <div className="sim-estim-total">

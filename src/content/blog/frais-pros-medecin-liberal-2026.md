@@ -16,7 +16,7 @@ tags:
 cta: "Prêt à déduire juste sans y passer tes soirées ?"
 faq:
   - question: "Quel régime fiscal choisir entre micro-BNC et déclaration contrôlée en 2026 ?"
-    answer: "Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un **abattement forfaitaire de 34 %**. Si tes charges réelles dépassent 34 % des recettes, la déclaration contrôlée (réel, formulaire 2035) devient généralement plus avantageuse. Le micro-BNC reste pertinent pour les remplaçants avec peu de charges ; le réel s'impose dès qu'il y a beaucoup de kilomètres, du matériel, du PER, ou un local pro."
+    answer: "Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un **abattement forfaitaire de 34 %**. Si tes charges réelles, cotisations URSSAF et CARMF comprises, dépassent 34 % des recettes, la déclaration contrôlée (réel, formulaire 2035) devient généralement plus avantageuse. Le micro-BNC reste pertinent pour les remplaçants avec peu de charges ; le réel s'impose dès qu'il y a beaucoup de kilomètres, du matériel, du PER, ou un local pro."
   - question: "Comment se calcule la déduction d'un repas pro en libéral ?"
     answer: "Pour les **revenus 2026 (déclaration 2027)** : déduction = (prix payé, plafonné à 21,40 €) − 5,50 €, soit une déduction maximale de **15,90 €** par repas. Pour la déclaration des revenus 2025 (en cours en 2026), les montants applicables sont 21,10 € / 5,45 € / 15,65 €. Il faut un ticket, un motif professionnel et une contrainte qui empêchait de rentrer."
   - question: "Le barème kilométrique couvre-t-il vraiment tous les frais de voiture ?"
@@ -44,7 +44,7 @@ relatedArticles:
 :::essentiel
 **L'essentiel**
 
-- Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un abattement forfaitaire de **34 %** ; si tes charges réelles dépassent ce seuil de **34 %** des recettes, le réel (2035) devient généralement plus avantageux.
+- Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un abattement forfaitaire de **34 %** ; si tes charges réelles, cotisations URSSAF et CARMF comprises, dépassent ce seuil de **34 %** des recettes, le réel (2035) devient généralement plus avantageux.
 - Le barème kilométrique 2026 pour une 5 CV donne **5 679 € déductibles** pour 12 000 km pros, sans conserver le moindre ticket essence.
 - Un repas se déduit à hauteur de **(prix payé, plafonné à 21,40 €) − 5,50 €**, soit une déduction maximale de **15,90 €** pour les revenus 2026 (21,10 € / 5,45 € / 15,65 € pour la déclaration en cours).
 - Le médecin secteur 1 peut cumuler trois déductions au réel : le **forfait 2 %**, la **déduction Groupe III**, et la **déduction complémentaire de 3 %**.
@@ -90,7 +90,7 @@ Avant de te demander quoi déduire, demande-toi **dans quel régime tu te trouve
 
 Le seuil micro-BNC pour les prestations de services et les professions libérales est fixé à **83 600 € HT de recettes** pour les exercices 2026, 2027 et 2028. En dessous, tu peux opter pour le régime micro. L'administration applique alors un **abattement forfaitaire de 34 %** sur tes recettes, censé représenter l'ensemble de tes charges. Tu n'ajoutes ni indemnités kilométriques, ni repas, ni RCP, ni [CARMF](/blog/tout-comprendre-carmf), ni matériel. Tout est dedans.
 
-Le micro-BNC est souvent intéressant pour le remplaçant avec peu de charges : pas de cabinet, peu de matériel, frais limités. Il devient pénalisant dès que tes charges réelles dépassent 34 % de tes recettes — typiquement avec beaucoup de kilomètres, du logement temporaire, des formations onéreuses, ou un PER/Madelin substantiel.
+Le micro-BNC est souvent intéressant pour le remplaçant avec peu de charges : pas de cabinet, peu de matériel, frais limités. Il devient pénalisant dès que tes charges réelles, cotisations URSSAF et CARMF comprises, dépassent 34 % de tes recettes — typiquement avec beaucoup de kilomètres, du logement temporaire, des formations onéreuses, ou des cotisations Madelin substantielles (déductibles au réel seulement). Le PER, lui, ne départage pas les deux régimes : il se déduit de ton revenu global au micro-BNC comme au réel.
 
 ### Déclaration contrôlée (réel) : la 2035
 
@@ -103,7 +103,7 @@ Et tu archives tes pièces justificatives.
 
 ### La règle simple : 34 %
 
-**Si tes frais réels dépassent 34 % de tes recettes, le réel devient souvent gagnant.** Exemples : 72 000 € de recettes avec 18 000 € de charges (25 %) → micro-BNC gagnant. 72 000 € de recettes avec 30 000 € de charges (42 %) → réel gagnant. Évidemment, il faut affiner avec ton expert-comptable, mais ce seuil est un excellent indicateur.
+**Si tes frais réels, cotisations URSSAF et CARMF comprises, dépassent 34 % de tes recettes, le réel devient souvent gagnant.** Exemples pour un remplaçant (sans les forfaits du secteur 1), revenus 2026 : 72 000 € de recettes, 2 000 € de frais et environ 18 800 € de cotisations (29 % en tout) → micro-BNC gagnant, d'environ 2 600 €. 72 000 € de recettes, 12 000 € de frais et environ 16 700 € de cotisations (40 % en tout) → réel gagnant, d'environ 1 900 €. Installé en secteur 1, ses forfaits (section 5.1) font gagner le réel plus tôt. Évidemment, il faut affiner avec ton expert-comptable, mais ce seuil est un excellent indicateur.
 
 ### Cas particuliers à connaître
 
@@ -268,7 +268,7 @@ La **réduction d'impôt pour frais de comptabilité OGA** est **supprimée** à
 
 Si tu es médecin conventionné secteur 1 (tarifs Sécu, sans dépassement), tu accèdes à trois déductions spécifiques, **en déclaration contrôlée uniquement**.
 
-**Forfait 2 %** des recettes brutes conventionnelles. Couvre certains frais de représentation, réception, prospection, cadeaux professionnels, recherche, blanchissage et petits déplacements.\
+**Forfait 2 %** des recettes brutes, dépassements d'honoraires (DE ou DP) compris (BOI-BNC-SECT-40, § 120). Couvre certains frais de représentation, réception, prospection, cadeaux professionnels, recherche, blanchissage et petits déplacements.\
 **Déduction Groupe III.** Déduction forfaitaire complémentaire calculée selon un barème conventionnel.\
 **Déduction complémentaire 3 %** sur l'assiette prévue par les textes. Cumulable avec le Groupe III.
 
@@ -392,7 +392,7 @@ Pour les remplaçants spécifiquement : contrats ou attestations de remplacement
 Si tu retiens cinq choses de ce guide :
 
 **Pose-toi la bonne question.** Pas « est-ce que je peux le passer ? », mais « quelle preuve je montre si on me demande ? ».\
-**Choisis bien ton régime.** Si tes frais réels dépassent 34 % de tes recettes, bascule au réel — chiffres à l'appui.\
+**Choisis bien ton régime.** Si tes frais réels, cotisations URSSAF et CARMF comprises, dépassent 34 % de tes recettes, bascule au réel — chiffres à l'appui.\
 **Documente tes quote-parts.** Téléphone, internet, voiture, pièce du domicile : jamais 100 % sans preuve, toujours une note de ventilation annuelle.\
 **Active les leviers spécifiques.** Secteur 1, ACRE, zones aidées, PDSA, ANCV, blanchissage : ils s'additionnent et ils sont défendables.\
 **Garde ton dossier vivant toute l'année.** Pas en mai en panique : en continu.

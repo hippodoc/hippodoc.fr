@@ -1,5 +1,5 @@
 import { getDomTomInfo } from '@/lib/dom-tom';
-import { abattement10Salaire, plafondAvantageQf } from '@/lib/baremes-ir';
+import { abattement10Pension, abattement10Salaire, plafondAvantageQf } from '@/lib/baremes-ir';
 import { inferEnfantsFromParts } from '@/lib/fiscalParts';
 import { capChequesVacances } from '@/lib/declarationParams';
 import { canApplyForfait2pct, canApplyDeductionsS1 } from '@/lib/fiscalEligibility';
@@ -45,7 +45,7 @@ interface RspmCalculationInput {
    */
   yearlySalariedExonere?: number;
   yearlyConjointTotal?: number;
-  typeRevenuConjoint?: 'salarie' | 'liberal_micro' | 'liberal_reel' | 'autre';
+  typeRevenuConjoint?: 'salarie' | 'retraite' | 'liberal_micro' | 'liberal_reel' | 'autre';
   profile: UserProfile | null;
   modeFraisSalaries?: 'abattement_10' | 'frais_reels' | null;
   fraisReelsAnnuel?: number;
@@ -192,7 +192,7 @@ interface RspmBreakdown {
     revenuImposableLiberal: number;
     revenuImposableSalarie: number;
     revenuImposableConjoint: number;
-    typeRevenuConjoint?: 'salarie' | 'liberal_micro' | 'liberal_reel' | 'autre';
+    typeRevenuConjoint?: 'salarie' | 'retraite' | 'liberal_micro' | 'liberal_reel' | 'autre';
     revenuBrutConjoint?: number;
     revenuBrutSalarie: number;
     deductionSalarie: number;
@@ -572,7 +572,8 @@ export const calculateRspmBreakdown = ({
   if (modeFraisSalaries === 'frais_reels' && fraisReelsAnnuel > 0) {
     deductionSalarie = fraisReelsAnnuel;
   } else {
-    // Abattement 10% avec plancher 504€ et plafond 14 426€
+    // Abattement 10 % avec le plancher et le plafond de l'année du barème (509 € et 14 555 € pour
+    // les revenus 2025, CGI art. 83, 3°)
     deductionSalarie = revenuSalarieImposable > 0 ? abattement10Salaire(revenuSalarieImposable, anneeFiscale) : 0;
   }
   const revenuImposableSalarie = Math.max(0, revenuSalarieImposable - deductionSalarie);
@@ -584,9 +585,15 @@ export const calculateRspmBreakdown = ({
   switch (typeRevenuConjoint) {
     case 'salarie':
     default:
-      // Abattement 10% avec plancher 504€ et plafond 14 426€
+      // Abattement 10 % des salaires, plancher et plafond de l'année du barème (CGI art. 83, 3°)
       const abattementConjoint = revenusConjointImposable > 0 ? abattement10Salaire(revenusConjointImposable, anneeFiscale) : 0;
       revenuImposableConjoint = Math.max(0, revenusConjointImposable - abattementConjoint);
+      break;
+
+    case 'retraite':
+      // Pensions : abattement 10 % propre, plafonné par foyer (4 439 € pour les revenus 2025,
+      // CGI art. 158-5-a). Avant le 25/11/2026, elles passaient par l'abattement des salaires.
+      revenuImposableConjoint = Math.max(0, revenusConjointImposable - abattement10Pension(revenusConjointImposable, anneeFiscale));
       break;
       
     case 'liberal_micro':

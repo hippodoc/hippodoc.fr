@@ -63,7 +63,7 @@ export const FAQ_ACCUEIL: FaqAccueilItem[] = [
   {
     id: 'regime-fiscal',
     question: 'Quel est le meilleur régime fiscal pour un médecin libéral ?',
-    answerHtml: `Le choix entre <strong>Micro-BNC</strong> et <strong>régime réel</strong> dépend de tes charges réelles. Hippodoc intègre un <strong>simulateur fiscal</strong> qui compare les deux régimes avec tes données. En général, le Micro-BNC est avantageux si tes charges sont <strong>inférieures à 34 %</strong> de ton chiffre d'affaires. Le détail avec des cas chiffrés : <a href="/blog/regime-fiscal-micro-bnc-vs-reel">Micro-BNC ou réel, comment choisir</a>.`,
+    answerHtml: `Le choix entre <strong>Micro-BNC</strong> et <strong>régime réel</strong> dépend de tes charges réelles. Hippodoc intègre un <strong>simulateur fiscal</strong> qui compare les deux régimes avec tes données. En général, le Micro-BNC est avantageux si tes charges, <strong>cotisations URSSAF et CARMF comprises</strong>, sont <strong>inférieures à 34 %</strong> de ton chiffre d'affaires. Le détail avec des cas chiffrés : <a href="/blog/regime-fiscal-micro-bnc-vs-reel">Micro-BNC ou réel, comment choisir</a>.`,
   },
   {
     id: 'internes',

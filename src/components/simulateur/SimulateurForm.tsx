@@ -15,7 +15,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { simulateurSchema, isZoneExoneneeAvailable, type SimulateurFormData } from "./simulateurSchema";
 import { DOM_TOM_CONFIG, getDomTomInfo, formatTauxAbattement, formatPlafond, type LieuExercice } from "@/lib/dom-tom";
 import { getDeclarationParams } from "@/lib/declarationParams";
-import { getPlafondEpargneRetraite } from "@/lib/baremes-ir";
+import { getBaremeIR, getPlafondEpargneRetraite } from "@/lib/baremes-ir";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics";
 import { espaceMilliers, formatNombre, nombreFr } from "@/lib/simulateur/nombres";
@@ -177,6 +177,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
     const questionRspm = regimeSocial === 'auto' && typeExercice !== 'installe' && annualRecettes > 19000;
     const enfants = form.watch('enfants') || 0;
     const anneeSaisie = form.watch('annee') || 2026;
+    // Plafonds de l'abattement de 10 % dits dans l'aide du conjoint : ceux de l'année saisie, et
+    // pour 2026 ceux des revenus 2025, les derniers connus, que le moteur applique aussi.
+    const anneeDesPlafonds = Math.min(anneeSaisie, 2025);
     const chargesSaisies = form.watch('chargesHorsCotisations') || 0;
     const resumeSituation = [
       [
@@ -808,7 +811,8 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                               </p>
                               <TipBox variant="info">
                                 <div className="space-y-1">
-                                  <p><strong>Salarié/Retraite</strong> → abattement 10 % (max 14 426 € en 2025-2026)</p>
+                                  <p><strong>Salarié</strong> → abattement 10 % (max {nombreFr(getBaremeIR(anneeDesPlafonds).plafondAbattement10Salaire)}{'\u00a0'}€ pour les revenus {anneeDesPlafonds})</p>
+                                  <p><strong>Retraite</strong> (pensions) → abattement 10 % (max {nombreFr(getBaremeIR(anneeDesPlafonds).plafondAbattement10Pension)}{'\u00a0'}€ par foyer pour les revenus {anneeDesPlafonds})</p>
                                   <p><strong>Libéral Micro-BNC</strong> → abattement 34%</p>
                                   <p><strong>Libéral Réel</strong> → pas d'abattement (saisis le <strong>bénéfice fiscal</strong>, pas le CA — sinon impôt fortement surévalué)</p>
                                   <p><strong>Autre</strong> → pas d'abattement (montant déjà imposable, ex. revenus fonciers nets)</p>
@@ -828,7 +832,10 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                         </FormControl>
                         <SelectContent className="sim sim-pop">
                           <SelectItem value="salarie">
-                            Salarié / Retraite (abattement 10%)
+                            Salarié (abattement 10%)
+                          </SelectItem>
+                          <SelectItem value="retraite">
+                            Retraite (abattement 10% des pensions)
                           </SelectItem>
                           <SelectItem value="liberal_micro">
                             Libéral Micro-BNC (abattement 34%)

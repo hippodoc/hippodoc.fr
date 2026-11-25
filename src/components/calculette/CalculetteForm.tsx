@@ -47,10 +47,10 @@ interface FieldConfig {
 }
 
 const BLOC_2035: FieldConfig[] = [
-  { name: 'AA', label: 'Recettes conventionnelles encaissées', case: 'AA', hint: 'Ligne 1 de la 2035-A : honoraires conventionnels nets encaissés. Inclut tes rétrocessions perçues si tu es remplaçant ou en mode mixte. Pour S2/OPTAM : recettes hors dépassements (les dépassements vont en DSAW).' },
+  { name: 'AA', label: 'Recettes conventionnelles encaissées', case: 'AA', hint: 'Ligne 1 de la 2035-A : honoraires conventionnels nets encaissés. Inclut tes rétrocessions perçues si tu es remplaçant ou en mode mixte. En mode mixte, reporte aussi ces rétrocessions perçues dans « Recettes de remplacement » de l\'assistance secteur 1 : elles n\'ouvrent pas droit aux forfaits. Pour S2/OPTAM : recettes hors dépassements (les dépassements vont en DSAW).' },
   { name: 'AF', label: 'Gains divers', case: 'AF', hint: 'Recettes hors conventionnel uniquement : IJ Madelin, EHPAD non opposable, expertises, MSU, études cliniques, etc. Ne JAMAIS y mettre des rétrocessions conventionnelles perçues.' },
-  { name: 'CE', label: 'Total Excédent (col. 4)', case: 'CE', hint: 'Total de la colonne « Excédent » du cadre 4 de la 2035-B.' },
-  { name: 'CN', label: 'Total Insuffisance (col. 5)', case: 'CN', hint: 'Total de la colonne « Insuffisance » du cadre 4 de la 2035-B.' },
+  { name: 'CE', label: 'Ligne 38 (total des lignes 34 à 37)', case: 'CE', hint: 'Ligne 38 du cadre 4 de la 2035-B : excédent (ligne 34) + divers à réintégrer. CE − CN = résultat CP (ligne 46).' },
+  { name: 'CN', label: 'Ligne 45 (total des lignes 39 à 44)', case: 'CN', hint: 'Ligne 45 du cadre 4 de la 2035-B : insuffisance (ligne 39) + amortissements (ligne 41) + divers à déduire (ligne 43, dont la PDSA exonérée en case CI et, en secteur 1, les forfaits DF, DG, DH). CE − CN = résultat CP (ligne 46) : la PDSA exonérée n\'est réintégrée qu\'une fois, par CI.' },
   { name: 'BK', label: 'Charges sociales personnelles', case: 'BK', hint: 'URSSAF + CARMF déduites au BNC. À réintégrer dans le RBS.' },
   { name: 'BV', label: 'CSG déductible', case: 'BV', hint: 'CSG/CRDS déductible. À réintégrer dans le RBS.' },
   { name: 'CP', label: 'Résultat BNC (ligne 46)', case: 'CP', hint: 'Bénéfice ou déficit BNC final. Peut être négatif.', allowNegative: true },
@@ -60,7 +60,7 @@ const BLOC_EXOS: FieldConfig[] = [
   { name: 'CS', label: 'Exo ZFU', case: 'CS', hint: 'Zone Franche Urbaine — Territoires Entrepreneurs (régime réel uniquement). Reporte ici le montant exonéré tel qu\'il figure cadre 5 de ta 2035-B. En Micro-BNC, utilise le mini-bloc « Exonération zonée » dédié plus haut — la calculette dérive 5HP/5HQ à partir des recettes brutes réalisées en zone. Plafond ZFU : 50 000 €/an de bénéfice exonéré, dégressif sur 8 ans (5 ans à 100 %, puis 60 %/40 %/20 %). ⚠️ Plafond proratisé l\'année d\'installation et de basculement de palier (cf. QT-049).' },
   { name: 'AW', label: 'Exo entreprise nouvelle', case: 'AW', hint: 'Art. 44 sexies CGI.' },
   { name: 'CU', label: 'Exo entreprise innovante', case: 'CU', hint: 'JEI / JEU.' },
-  { name: 'CI', label: 'Exo zones déficitaires', case: 'CI', hint: 'Zones de revitalisation rurale médicale.' },
+  { name: 'CI', label: 'Exo PDSA (art. 151 ter)', case: 'CI', hint: 'Forfait d\'astreinte + majorations régulées exonérés (60 jours au plus), déduits ligne 43 de la 2035-B et réintégrés au RBS. Rien à voir avec la ZFRR (case CJ).' },
   { name: 'CO', label: 'Exo jeunes artistes', case: 'CO', hint: 'Rare chez les médecins (héritage de la nomenclature).' },
   { name: 'DG', label: 'Exo Forfait 3 %', case: 'DG', hint: 'Forfait 3 % des honoraires conventionnels — secteur 1. Cumulable avec DH (Groupe III) depuis l\'imposition des revenus 2023 (BOI-BNC-SECT-40 ; UNASA §391).' },
   { name: 'CJ', label: 'Exo ZFRR', case: 'CJ', hint: 'Zone France Ruralités Revitalisation (ex-ZRR — CGI Art. 44 quindecies / 44 quindecies A). Réservée aux médecins installés et collaborateurs (les remplaçants ne sont pas éligibles). Plafond : 300 000 € de bénéfice exonéré sur 3 années glissantes (année courante + 2 précédentes). Dégressivité : 100 % (5 ans) puis 75 % / 50 % / 25 %. Reporte le montant exonéré tel qu\'il figure cadre 5 de ta 2035-B. ⚠️ Plafond proratisé l\'année d\'installation et de basculement de palier (cf. QT-049).' },
@@ -357,13 +357,13 @@ export function CalculetteForm() {
     const assist = getValues('assistanceActive');
     const choix = getValues('choixAssistance');
     const sp = getValues('sousPostes');
-    const spSum = sp ? (sp.DE + sp.HN + sp.MSU + sp.expertises + sp.etudes + sp.ijMadelinDansAF + sp.pdsaExonere) : 0;
+    const spSum = sp ? (sp.DE + sp.HN + sp.MSU + sp.expertises + sp.etudes + sp.ijMadelinDansAF + sp.pdsaExonere + (sp.recettesRemplacement ?? 0)) : 0;
     if (dg !== 0) { setValue('DG', 0, { shouldDirty: true }); lostFields.push('DG'); }
     if (dh !== 0) { setValue('DH', 0, { shouldDirty: true }); lostFields.push('DH'); }
     if (assist) setValue('assistanceActive', false, { shouldDirty: true });
     if (choix !== 'cumul') setValue('choixAssistance', 'cumul', { shouldDirty: true });
     if (spSum > 0) {
-      setValue('sousPostes', { DE: 0, HN: 0, MSU: 0, expertises: 0, etudes: 0, ijMadelinDansAF: 0, pdsaExonere: 0 }, { shouldDirty: true });
+      setValue('sousPostes', { DE: 0, HN: 0, MSU: 0, expertises: 0, etudes: 0, ijMadelinDansAF: 0, pdsaExonere: 0, recettesRemplacement: 0 }, { shouldDirty: true });
     }
     if (lostFields.length > 0) {
       toast.info(`Champ${lostFields.length > 1 ? 's' : ''} réinitialisé${lostFields.length > 1 ? 's' : ''} : ${lostFields.join(', ')}`, {
@@ -706,7 +706,7 @@ export function CalculetteForm() {
           <CardContent className="space-y-5">
             {/* Sous-section 1 — Recettes */}
             <div className="grid sm:grid-cols-2 gap-4">
-              <FieldRow field={{ name: 'recettesMicroBnc', label: 'Recettes brutes encaissées', case: 'Brut total', hint: 'Total des honoraires encaissés sur l\'année (cash-basis), TOUS secteurs confondus. ⚠️ Saisis le BRUT TOTAL même si tu es en zone ZFU/ZFRR : la part exonérée sera dérivée plus bas. Pour S2/OPTAM : inclure les dépassements ici. Plafond Micro-BNC : 77 700 € (2024 et 2025) / 83 600 € (2026+). Les cases 5HQ/5IQ finales (recettes imposables) sont calculées dans la colonne résultats à droite.' }} />
+              <FieldRow field={{ name: 'recettesMicroBnc', label: 'Recettes brutes encaissées', case: 'Brut total', hint: 'Total des honoraires encaissés sur l\'année (à la date où tu les as reçus, pas à celle de l\'acte), TOUS secteurs confondus. ⚠️ Saisis le BRUT TOTAL même si tu es en zone ZFU/ZFRR : la part exonérée sera dérivée plus bas. Pour S2/OPTAM : inclure les dépassements ici. Plafond Micro-BNC : 77 700 € (2024 et 2025) / 83 600 € (2026+). Les cases 5HQ/5IQ finales (recettes imposables) sont calculées dans la colonne résultats à droite.' }} />
               <FieldRow field={{ name: 'retrocessionsVerseesMicroBnc', label: 'Rétrocessions versées (titulaire)', case: 'Pré-déduit', hint: 'Titulaire avec remplaçants : rétrocessions versées (L21/BG en réel), retirées de tes recettes AVANT l\'abattement de 34 % en micro-BNC (BOI-BNC-DECLA-20-20 § 10), jamais en case séparée. Collaborateur libéral : ne mets pas ta redevance ici, ce n\'est pas une rétrocession d\'honoraires (BOI-BNC-BASE-20-20 § 70) : en micro-BNC, l\'abattement de 34 % la couvre ; au réel, elle se déduit en L16/BG de ta 2035. ⚠️ Côté social, la DSCS reste le CA brut total (avant déduction) — voir RO-012.' }} />
             </div>
 
@@ -786,7 +786,7 @@ export function CalculetteForm() {
           {/* V18 — PDSA exonérée (Art. 151 ter) en régime réel */}
           {!isMicro && (
             <div className="sm:col-span-2">
-              <FieldRow field={{ name: 'pdsaExonereBrut', label: 'PDSA exonérée (Art. 151 ter) — montant BRUT', case: 'PDSA', hint: 'Majorations CRN/CRM/CRD/CRS/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP d\'astreinte. Exonérée d\'IR — à déduire via la ligne CI (cadre 7 « Divers à déduire ») de ta 2035. Côté social : la ligne CI figure dans la formule du RBS → réintégration AUTOMATIQUE en DSDE/DSDG. ⚠️ Ne JAMAIS reporter en DSFA (réservée au micro-BNC) ni en 5QB (réservée ZFU/ZRR/JEI).' }} />
+              <FieldRow field={{ name: 'pdsaExonereBrut', label: 'PDSA exonérée (Art. 151 ter) — montant BRUT', case: 'PDSA', hint: 'Majorations CRN/CRM/CRD/CRS/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP d\'astreinte. Exonérée d\'IR — à déduire via la ligne CI (cadre 4, ligne 43 « Divers à déduire ») de ta 2035-B. Côté social : la ligne CI figure dans la formule du RBS → réintégration AUTOMATIQUE en DSDE/DSDG. ⚠️ Ne JAMAIS reporter en DSFA (réservée au micro-BNC) ni en 5QB (réservée ZFU/ZRR/JEI).' }} />
             </div>
           )}
           {/* B3 — Checkbox anti-double-déduction CV (réel uniquement, si CV saisis) */}
@@ -1178,7 +1178,7 @@ function AssistanceSecteur1Card() {
   // Audit pré-prod 31/05/2026 R1 — détecte divergence PDSA top-level vs sous-poste nesté.
   const pdsaTopLevel = useWatch({ control, name: 'pdsaExonereBrut' }) || 0;
   const sousPostes = useWatch({ control, name: 'sousPostes' }) || {
-    DE: 0, HN: 0, MSU: 0, expertises: 0, etudes: 0, ijMadelinDansAF: 0, pdsaExonere: 0,
+    DE: 0, HN: 0, MSU: 0, expertises: 0, etudes: 0, ijMadelinDansAF: 0, pdsaExonere: 0, recettesRemplacement: 0,
   };
 
   const forfaits = useMemo(
@@ -1194,8 +1194,14 @@ function AssistanceSecteur1Card() {
   // R1 — Divergence : PDSA saisie top-level mais sous-poste à 0 → la base 3 % n'est
   // PAS réduite des majorations PDSA, ce qui sur-évalue le Forfait 3 % (case DG).
   // Seuil 1 € pour tolérer les arrondis.
+  // Avis du 18/10 de l'application (B1-f bis, relecture du 23/10 ; § 9.hq) : la PDSA des gardes
+  // faites en remplacement est déjà retirée avec les « Recettes de remplacement » (aucun forfait) ;
+  // la recopier dans « PDSA exonéré » la retirerait deux fois de la base du 3 %. L'alerte ne
+  // s'affiche donc que si la PDSA du haut dépasse ces deux sous-postes réunis (sans recettes de
+  // remplacement : comme avant).
+  const pdsaCouverte = (sousPostes.pdsaExonere ?? 0) + (sousPostes.recettesRemplacement ?? 0);
   const pdsaDivergence =
-    pdsaTopLevel > 0 && (sousPostes.pdsaExonere ?? 0) < pdsaTopLevel - 1;
+    pdsaTopLevel > 0 && pdsaCouverte < pdsaTopLevel - 1;
   const handleSyncPdsa = () => {
     setValue('sousPostes.pdsaExonere', pdsaTopLevel, { shouldDirty: true, shouldValidate: true });
     toast.success(`Sous-poste PDSA synchronisé : ${fmt(pdsaTopLevel)}.`);
@@ -1295,17 +1301,25 @@ function AssistanceSecteur1Card() {
                   <p className="text-xs font-semibold text-foreground mb-2">
                     Hors Gains divers
                   </p>
-                  <NestedFieldRow
-                    name="pdsaExonere"
-                    label="PDSA exonéré (Art. 151 ter)"
-                    hint="Majorations / forfaits PDSA exonérés d'IR — sortis du BNC, à exclure aussi de la base 3 %."
-                  />
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <NestedFieldRow
+                      name="pdsaExonere"
+                      label="PDSA exonéré (Art. 151 ter)"
+                      hint="Majorations / forfaits PDSA exonérés d'IR — sortis du BNC, à exclure aussi de la base 3 %."
+                    />
+                    {/* Lot « avis du 18/10 » de l'application (§ 9.hq) : part de AA perçue comme remplaçant, hors des trois forfaits. */}
+                    <NestedFieldRow
+                      name="recettesRemplacement"
+                      label="Recettes de remplacement (rétrocessions perçues)"
+                      hint="Part de tes recettes (AA) perçue comme remplaçant : elle n'ouvre droit ni au 2 %, ni au 3 %, ni au groupe III. Mets-y aussi la PDSA des gardes faites en remplacement ; dans « PDSA exonéré », ne mets que la PDSA de tes propres gardes."
+                    />
+                  </div>
                 </div>
 
                 {/* Résultats live */}
                 <div className="rounded-lg border border-border/60 bg-muted/40 p-4 space-y-1.5 text-sm font-mono tabular-nums">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Forfait 2 % (case DF) — 2 % × (AA + AF) <span className="text-[10px] uppercase tracking-wider text-violet-600 dark:text-violet-400 ml-1">informatif</span></span>
+                    <span className="text-muted-foreground">Forfait 2 % (case DF) — 2 % × (AA + AF − recettes de remplacement) <span className="text-[10px] uppercase tracking-wider text-violet-600 dark:text-violet-400 ml-1">informatif</span></span>
                     <span className="font-semibold text-violet-700 dark:text-violet-300">{fmt(forfaits.forfait2pct)}</span>
                   </div>
                   <div className="flex justify-between text-xs pt-1">
@@ -1317,7 +1331,7 @@ function AssistanceSecteur1Card() {
                     <span className="font-semibold text-violet-700 dark:text-violet-300">{fmt(forfaits.forfait3pct)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Groupe III (case DH) — fixe</span>
+                    <span className="text-muted-foreground">Groupe III (case DH) — au barème</span>
                     <span className="font-semibold text-violet-700 dark:text-violet-300">{fmt(forfaits.groupeIII)}</span>
                   </div>
                 </div>

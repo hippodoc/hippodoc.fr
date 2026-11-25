@@ -20,6 +20,8 @@ export interface BaremeIR {
   plafondQfCaseT: number;           // Plafond majoré case T parent isolé (Article 197 CGI)
   plafondAbattement10Salaire: number; // Plafond abattement 10% salariés
   plancherAbattement10Salaire: number; // Plancher abattement 10% salariés
+  plafondAbattement10Pension: number;  // Plafond abattement 10% pensions, par foyer (CGI art. 158-5-a)
+  plancherAbattement10Pension: number; // Plancher abattement 10% pensions, par pensionné (CGI art. 158-5-a)
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -39,6 +41,9 @@ const BAREME_2025: BaremeIR = {
   plafondQfCaseT: 4224,
   plafondAbattement10Salaire: 14426,
   plancherAbattement10Salaire: 504,
+  // Pensions des revenus 2024 : 10 %, au moins 450 € par pensionné, au plus 4 399 € par foyer.
+  plafondAbattement10Pension: 4399,
+  plancherAbattement10Pension: 450,
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -60,6 +65,10 @@ const BAREME_2026: BaremeIR = {
   plafondQfCaseT: 4262,              // BOI-IR-LIQ-20-20-20, § 70 : « 4 262 € », pour la part entière du premier enfant d'un parent isolé
   plafondAbattement10Salaire: 14555, // Déduction forfaitaire de 10 % plafonnée à 14 555 € pour les revenus 2025
   plancherAbattement10Salaire: 509,  // Minimum de 509 € par salarié
+  // Pensions (CGI art. 158-5-a, même indexation) : 10 %, au moins 454 € par pensionné, au plus
+  // 4 439 € pour l'ensemble du foyer, revenus 2025 (montant repris par le guide, cases 1AS et 1AZ).
+  plafondAbattement10Pension: 4439,
+  plancherAbattement10Pension: 454,
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -293,6 +302,19 @@ export function abattement10Salaire(salaireBrut: number, annee: number = 2026): 
   const bareme = getBaremeIR(annee);
   const abattement = salaireBrut * 0.10;
   return Math.min(Math.max(abattement, bareme.plancherAbattement10Salaire), bareme.plafondAbattement10Salaire);
+}
+
+/**
+ * Abattement de 10 % sur les pensions et retraites (CGI art. 158-5-a) : son propre plancher (par
+ * pensionné) et son propre plafond (pour tout le foyer), bien plus bas que ceux des salaires ;
+ * jamais plus que la pension elle-même. Le simulateur ne connaît que la pension du conjoint : elle
+ * porte seule le plafond du foyer.
+ */
+export function abattement10Pension(pension: number, annee: number = 2026): number {
+  if (!(pension > 0)) return 0;
+  const bareme = getBaremeIR(annee);
+  const abattement = Math.min(Math.max(pension * 0.10, bareme.plancherAbattement10Pension), bareme.plafondAbattement10Pension);
+  return Math.min(abattement, pension);
 }
 
 // ═══════════════════════════════════════════════════════════

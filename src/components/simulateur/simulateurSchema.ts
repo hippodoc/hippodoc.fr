@@ -26,7 +26,8 @@ export const simulateurSchema = z.object({
 
   // SECTION TYPE DE REVENU DU CONJOINT
   typeRevenuConjoint: z.enum([
-    'salarie',       // Abattement 10% plafonné 14 426 €
+    'salarie',       // Abattement 10 % des salaires (plafond de l'année : 14 555 € pour les revenus 2025)
+    'retraite',      // Abattement 10 % des pensions (plafond par foyer : 4 439 € pour les revenus 2025)
     'liberal_micro', // Abattement 34%
     'liberal_reel',  // Pas d'abattement (bénéfice fiscal saisi directement)
     'autre',         // Pas d'abattement (montant imposable direct)

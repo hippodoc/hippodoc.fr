@@ -15803,6 +15803,206 @@ te fais confiance »).
 - **Dates** : `updatedDate` du 25/11/2026 dans le frontmatter et dans `src/generated/blog-meta.json` (§ 9.ai).
 - Aucune autre phrase touchée ; ni FAQ, ni « L'essentiel », ni liens.
 
+### 9.hq Contenu modifié et outils : lot frais 4 (25 novembre 2026)
+
+Partie « site public » de l'audit des frais du 25 novembre 2026 (section D), sur l'accord du
+fondateur (« Go je te fais confiance sur tout »). L'application (app.hippodoc.fr) sert de
+référence : quand un passage du site est le même que dans l'application, il reçoit le texte et
+la logique de l'application mot pour mot (lot « avis du 18/10 » et ses relectures, règle 6 de son
+`AGENTS.md`) ; les autres passages sont corrigés au plus près. Calculs vérifiés avec le moteur du
+simulateur (build de `main` et de la branche, mêmes saisies) et dans Chromium sur les deux builds.
+
+**D1. Bulle « Type de revenu du conjoint » du simulateur** (`src/components/simulateur/SimulateurForm.tsx`).
+- avant : « Salarié/Retraite → abattement 10 % (max 14 426 € en 2025-2026) » (plafond des revenus
+  2024 ; le moteur applique 14 555 €) ;
+- après : « Salarié → abattement 10 % (max 14 555 € pour les revenus 2025) » et « Retraite
+  (pensions) → abattement 10 % (max 4 439 € par foyer pour les revenus 2025) », plafonds lus dans
+  `getBaremeIR` pour l'année saisie (le formulaire propose 2025 et 2026 ; pour 2026, ceux des
+  revenus 2025, les derniers connus, que le moteur applique aussi).
+- Commentaires périmés corrigés : `simulateurSchema.ts` (« plafonné 14 426 € »),
+  `RegimeComparisonCards.tsx` (« plancher 504 € / plafond 14 426 € en 2025-2026 »),
+  `useRspmCalculation.ts` (deux « plancher 504 € et plafond 14 426 € »).
+
+**D2. Forfaits du secteur 1 (DF, DG, DH)** : réservés aux médecins personnellement conventionnés
+en secteur 1 (installés ou collaborateurs, jamais un remplaçant) ; aucun en secteur 2, OPTAM
+compris ; base du 3 % et du groupe III avant déduction des rétrocessions versées ; groupe III au
+barème des omnipraticiens dès la 1re année (770 € à 3 050 €), jamais 3 050 € fixe ; une 2035
+déposée en retard fait perdre les trois (BOI-BNC-SECT-40 § 180 : « le simple retard dans la
+souscription de ladite déclaration entraîne la remise en cause du régime particulier »).
+
+| Fichier | Passage | Avant | Après (texte de l'application) |
+|---|---|---|---|
+| `src/data/boussoleData.ts` | RO-008, description | « Réservés aux installés secteur 1 » ; 2 % sur « AA + AF + dépassements + redevances + IJ » ; « Groupe III (case DH) : forfait fixe de 3 050 € » ; « DH disponible à partir de la 2ème année » ; « Groupe III bloqué la 1ère année » | « personnellement conventionnés en secteur 1 (installés ou collaborateurs) … un remplaçant n'y a pas droit » ; 2 % sur « AA + AF ; les dépassements, les redevances de collaboration perçues et les IJ y sont déjà » ; 3 % « avant déduction des rétrocessions versées » ; groupe III « au barème des omnipraticiens, sur la même base que le 3 % (de 770 € à 3 050 € ; 3 050 € au-delà de 30 450 €) » ; « les trois forfaits s'appliquent dès le 1er exercice » ; condition du dépôt dans les délais |
+| `src/data/boussoleData.ts` | CASE-026 (DF), CASE-027 (DG) | « Médecin Secteur 1 en BNC réel » ; assiette du 2 % avec « + dépassements + redevances + IJ » | « Médecin installé ou collaborateur, conventionné en secteur 1, au BNC réel (un remplaçant n'y a pas droit) » ; « les dépassements… y sont déjà » ; DG « avant déduction des rétrocessions versées à tes remplaçants » ; dépôt dans les délais |
+| `src/data/boussoleData.ts` | CASE-028 (DH) : nom, description, qui remplit, erreur fréquente, conseil | « Déduction conventionnelle 3 050 € » ; « forfait fixe de 3 050 €/an » ; « Non disponible la 1ère année d'installation » ; « à partir de la 2ème année » | « au barème (jusqu'à 3 050 €) » ; « de 770 € à 3 050 €/an (3 050 € au-delà de 30 450 €) » ; « Accessible dès la 1ère année d'installation » ; erreur fréquente : « Croire DH bloqué la 1ère année… Prendre 3 050 € quand la base du 3 % ne dépasse pas 30 450 € » |
+| `src/data/boussoleData.ts` | PM-003 (secteur 2 OPTAM), conseil | « En OPTAM, seul le forfait 2 % (DF) reste accessible » | « Aucun des trois forfaits (2 % DF, 3 % DG, Groupe III DH)… En secteur 2, OPTAM compris, tu déduis tes frais réels. » |
+| `src/data/boussoleData.ts` | QT-024, QT-042 (questions du `FAQPage` du guide) | « réservées au BNC réel Secteur 1 » ; « déduction conventionnelle fixe de 3 050 €/an, non disponible la 1ère année » ; « DH (3 050 €) forfait fixe — accessible à partir de la 2ème année » ; « Seule restriction » | conventionnés en propre, pas les remplaçants ; groupe III au barème dès la 1re année ; « Condition commune : une 2035 déposée dans les délais… » ; « Autre restriction » |
+| `src/data/boussoleData.ts` | boussole : piège du collaborateur ; cases et pièges du bloc « Forfaits S1 » | DF proposé aussi en secteur 2 ; DH retiré pour PM-004 (1re installation) avec le piège « indisponible la 1ère année » ; « Secteur 2 / OPTAM : seul le forfait 2 % (DF) est accessible » | aucun forfait en secteur 2 ; « Groupe III (au barème) » pour tous ; piège du dépôt dans les délais ; « Secteur 2 / OPTAM : aucun des trois forfaits » ; piège du collaborateur « (secteur 1 seulement), à condition de déposer ta 2035 dans les délais », absent en secteur 2 ou quand la case des forfaits est cochée |
+| `src/data/glossaireDeclarationsData.ts` | `groupe-iii` | « forfait fixe jusqu'à 3 050 € pour les généralistes » ; « Médecins Secteur 1 en BNC réel » | « au barème des omnipraticiens, sur la même base que le 3 %, de 770 € à 3 050 € (médecine générale), dès la 1ère année d'installation » ; conventionnés en propre ; dépôt dans les délais |
+| `src/components/calculette/forfaitsSecteur1.ts` | calcul | groupe III = 3 050 € fixe, même sans base ; aucune exclusion des recettes de remplacement | groupe III = `getDeductionGroupeIII(base du 3 %)`, 0 sans base ; nouveau sous-poste `recettesRemplacement` (part de AA perçue comme remplaçant) retiré des bases du 2 %, du 3 % et du groupe III |
+| `src/components/calculette/CalculetteForm.tsx` | assistance secteur 1 | « Groupe III (case DH) — fixe » ; « 2 % × (AA + AF) » ; alerte PDSA dès que « PDSA exonéré » est sous la PDSA du haut | « — au barème » ; « 2 % × (AA + AF − recettes de remplacement) » ; champ « Recettes de remplacement (rétrocessions perçues) » ; alerte PDSA sur la somme des deux sous-postes ; aide de AA : « En mode mixte, reporte aussi ces rétrocessions perçues dans « Recettes de remplacement »… » |
+| `src/components/calculette/calculetteSchema.ts` | `sousPostes` | sept sous-postes | `recettesRemplacement` en plus (0 par défaut : une sauvegarde d'avant se relit) |
+
+Secteur 2 / OPTAM dans la calculette : l'assistance secteur 1 n'y était déjà proposée qu'au profil
+« installé secteur 1 » au réel (comme dans l'application) ; rien à changer.
+
+Chiffré (calculette, profil installé secteur 1 au réel, assistance active) :
+- AA = 20 000 € : DH 3 050 € → **1 830 €** (barème : base ≤ 21 300 €) ; DF 400 €, DG 600 € inchangés ;
+- AA = 60 000 €, dont 20 000 € perçus comme remplaçant : avant, DF 1 200 €, DG 1 800 € (le champ
+  n'existait pas) ; après, **DF 800 €, base du 3 % 40 000 €, DG 1 200 €**, DH 3 050 €.
+
+**D2 bis. Calculette, cases CE et CN** (`CalculetteForm.tsx`, `src/lib/calc/dsPamc.ts`,
+`calculetteExamples.ts`, `CalculetteResults.tsx`).
+- libellés : « Total Excédent (col. 4) » → « Ligne 38 (total des lignes 34 à 37) » ; « Total
+  Insuffisance (col. 5) » → « Ligne 45 (total des lignes 39 à 44) » ; aides de l'application (CN
+  contient les amortissements ligne 41 et la ligne 43 : PDSA exonérée en CI, DF, DG, DH ;
+  CE − CN = CP) ; case CI : « Exo zones déficitaires » (« Zones de revitalisation rurale
+  médicale ») → « Exo PDSA (art. 151 ter) » ; dans le détail du RBS : « Excédent (CE) » →
+  « Excédent + réintégrations (CE, ligne 38) », « − Insuffisance (CN) » → « − Insuffisance +
+  déductions (CN, ligne 45) ».
+- contrôle de cohérence : `CP = CE − CN − amortissements − PDSA exonérée − exonérations` →
+  `CP = CE − CN` (la ligne 45 contient déjà ce qui était retiré une seconde fois). Le calcul du RBS
+  (DSDE) ne change pas.
+- exemple « Installé S1 réel — 95 k€ dont PDSA exonérée 8 k€ » : AA 87 000 / AF 8 000 / CE 62 000 /
+  CN vide → AA 95 000 / AF 0 / CE 70 000 / CN 8 000 / CP 62 000 ; description de l'application
+  (« zone d'intervention prioritaire (ZIP) », « comprises dans les recettes (AA) », « ligne CI
+  (cadre 4, ligne 43) de la 2035-B, comptée dans CN (ligne 45) »).
+- Chiffré : l'exemple affichait « Le résultat BNC (CP = 62000 €) semble incohérent avec … (46000 €) »,
+  et la même fausse alerte sortait pour une 2035-B recopiée juste (CE 70 000, CN 8 000) ; après,
+  aucune alerte ; DSDE = 92 300 € avant comme après.
+- « cadre 7 « Divers à déduire » » → « cadre 4, ligne 43 « Divers à déduire » » partout où le site
+  le disait (calculette : aide de la PDSA au réel, détail du RBS ; guide : CASE-012 DSFA, CASE-029 CI
+  formulaire, description et conseil, PM-008, cases et piège PDSA de la boussole ; commentaires).
+  Seul ce fragment est repris dans ces passages (ils portent aussi d'autres retouches de
+  l'application, plus bas, non reprises).
+- Guide, mêmes définitions de CE et CN que l'application : CASE-009 (DSDE), conseil (« CE (total
+  produits), CN (total charges) » ; « Plus simplement : Ligne 1 (recettes) + ligne 6 (gains
+  divers) − charges + réintégrations » → lignes 38 et 45, « CE − CN est ton résultat fiscal CP »,
+  « Ne pars jamais des recettes (ligne 1 + ligne 6 − charges) en ajoutant CI : la PDSA… serait
+  comptée deux fois ») ; CASE-013 (2035), description (« CE (total excédent), CN (total excédent
+  et insuffisances) » → lignes 38 et 45, « CE − CN = CP »).
+
+**D3. Simulateur, « Estimer mes charges »** (`src/components/simulateur/EstimateurCharges.tsx`).
+- avant : une ligne « Part reversée au médecin remplacé » (remplaçant), additionnée aux charges ;
+  or les charges sont ignorées au micro-BNC, alors qu'une rétrocession versée sort des recettes
+  avant l'abattement (BOI-BNC-DECLA-20-20 § 10) ;
+- après : la ligne est retirée ; à la place, pour un remplaçant, sous la liste : « Si tu encaisses
+  toi-même les honoraires et en reverses une part au médecin remplacé, ne la compte pas non plus :
+  saisis en recettes ce que tu gardes (les honoraires encaissés, moins la part reversée). Elle sort
+  ainsi de tes recettes dans les deux régimes, Micro-BNC compris. » Moteur inchangé.
+- Chiffré (remplaçant au PAMC, 40 000 € encaissés dont 8 000 € reversés, 1 000 € d'autres frais) :
+  saisie d'avant (recettes 40 000 €, charges 9 000 €) : Micro-BNC 18 504 € de Super-Net (revenu
+  imposable 26 400 €), réel 20 345 € → réel conseillé ; saisie d'après (recettes 32 000 €,
+  charges 1 000 €) : Micro-BNC **21 022 €** (revenu imposable 21 120 €), réel 20 345 € → Micro-BNC
+  conseillé.
+
+**D4. Seuil de 34 %, cotisations comprises.**
+- `src/content/blog/frais-pros-medecin-liberal-2026.md` (adresse inchangée ; `updatedDate` déjà
+  au 25/11/2026, frontmatter et `blog-meta.json`) :
+  - FAQ « Quel régime fiscal choisir… », « L'essentiel », § 2 « Micro-BNC », « La règle simple :
+    34 % » et « Choisis bien ton régime » : « si tes charges réelles (frais réels) dépassent 34 % »
+    → « …, cotisations URSSAF et CARMF comprises, dépassent 34 % » (comme
+    `regime-fiscal-micro-bnc-vs-reel`, `frais-professionnels-deductibles` et `/faq`) ;
+  - § 2 : « ou un PER/Madelin substantiel » → « ou des cotisations Madelin substantielles
+    (déductibles au réel seulement). Le PER, lui, ne départage pas les deux régimes : il se déduit
+    de ton revenu global au micro-BNC comme au réel. » (CGI art. 154 bis et 163 quatervicies) ;
+  - exemple de « La règle simple » : « 72 000 € de recettes avec 18 000 € de charges (25 %) →
+    micro-BNC gagnant. 72 000 € de recettes avec 30 000 € de charges (42 %) → réel gagnant. »
+    Démenti par le moteur (revenus 2026) : avec 18 000 € de frais hors cotisations, le réel gagne
+    de 4 700 € (remplaçant) à 7 045 € (installé secteur 1) ; et 18 000 € cotisations comprises
+    est impossible (les cotisations seules font environ 19 000 € au réel). Après : « Exemples pour un
+    remplaçant (sans les forfaits du secteur 1), revenus 2026 : 72 000 € de recettes, 2 000 € de
+    frais et environ 18 800 € de cotisations (29 % en tout) → micro-BNC gagnant, d'environ
+    2 600 €. 72 000 € de recettes, 12 000 € de frais et environ 16 700 € de cotisations (40 % en
+    tout) → réel gagnant, d'environ 1 900 €. Installé en secteur 1, ses forfaits (section 5.1) font
+    gagner le réel plus tôt. » Moteur : 2 000 € de frais → cotisations au réel 18 764 €, Super-Net
+    44 921 € (micro) contre 42 311 € (réel) ; 12 000 € → 16 729 €, 34 921 € contre 36 799 € ; bascule
+    vers 8 000 € de frais (35,6 % cotisations comprises) ; installé secteur 1 : vers 3 000 € (30 %).
+  - § 5.1 : « Forfait 2 % des recettes brutes conventionnelles » → « Forfait 2 % des recettes
+    brutes, dépassements d'honoraires (DE ou DP) compris (BOI-BNC-SECT-40, § 120) » (§ 120 :
+    « y compris les honoraires de dépassement auxquels ces médecins ont droit (DE ou DP) »).
+- Accueil, question « Quel est le meilleur régime fiscal pour un médecin libéral ? »
+  (`src/data/faqAccueil.ts`, écran et `FAQPage`) : « si tes charges sont inférieures à 34 % » →
+  « si tes charges, cotisations URSSAF et CARMF comprises, sont inférieures à 34 % » (mot pour mot
+  la règle de `/faq`). `ACCUEIL_LAST_UPDATED_ISO` : 2026-11-25.
+
+**D5. Pensions du conjoint** (simulateur ; `src/lib/baremes-ir.ts`, `useRspmCalculation.ts`,
+`simulateurSchema.ts`, `simulation-types.ts`, `SimulateurForm.tsx`, `RegimeComparisonCards.tsx`,
+`PaymentExplanation.tsx`).
+- avant : un seul type « Salarié / Retraite (abattement 10%) », calculé avec le plancher et le
+  plafond des salaires (509 € et 14 555 € pour les revenus 2025) ;
+- après : « Salarié (abattement 10%) » et « Retraite (abattement 10% des pensions) » ; la pension
+  reçoit son propre abattement (CGI art. 158-5-a) : 10 %, au moins 454 € par pensionné, au plus
+  4 439 € par foyer pour les revenus 2025 (450 € et 4 399 € pour les revenus 2024), jamais plus que
+  la pension (`abattement10Pension`). Bulle de la ligne « Revenus du conjoint » : « Pensions … −
+  Abattement 10% (max 4 439 € par foyer en 2026) = … retenus pour l'impôt » ; mode de paiement du
+  conjoint dans « Quand et comment tu paies » : « sur pension ». Le type « Salarié » calcule comme
+  avant.
+- Chiffré (installé, 60 000 € de recettes, 6 000 € de charges, marié, conjoint 80 000 €, revenus
+  2026) : en « Salarié / Retraite », revenu imposable du conjoint 72 000 €, impôt du foyer 17 962 €
+  (part du conjoint 14 713 €) ; en « Retraite », **75 561 €**, **19 030 €** (part du conjoint
+  **15 781 €**) ; le Super-Net et l'impôt du médecin (taux individualisé) ne changent pas. De
+  5 090 € à 44 390 € de pension, les deux types donnent le même abattement (10 %).
+- Sources : CGI art. 158-5-a ; montants des revenus 2025 donnés par la DGFiP et déjà repris par le
+  guide (cases 1AS et 1AZ, 4 439 €/foyer) ; revenus 2024 : indexation de 1,8 % des montants des
+  revenus 2023 (442 € et 4 321 €, brochure IR 2024).
+
+**Limites des repas** (`src/data/boussoleData.ts`, QT-025, question du `FAQPage` du guide, et PC-012).
+- avant : « seuil minimum (5,35 €/repas en 2025) et le plafond (20,70 €/repas en 2025)… 18 − 5,35 =
+  12,65 € » ; « entre 5,35€ et 20,70€… au maximum 15,35€… 12 - 5,35 = 6,65€ » (valeurs des revenus
+  2024) ;
+- après : 5,45 € et 21,10 € pour les revenus 2025, 5,50 € et 21,40 € pour 2026 ; « 18 − 5,45 =
+  12,55 € (12,50 € pour les revenus 2026) » ; titre de PC-012 « … entre 5,45€ et 21,10€ est
+  déductible (revenus 2025) », « au maximum 15,65€ par repas (15,90€ pour 2026) », « 12 - 5,45 =
+  6,55€ (6,50€ pour 2026) ». Sources : celles de `src/lib/simulateur/fraisPros.ts`
+  (BOI-BNC-BASE-40-60-60 ; ACTU-2025-00025, ACTU-2026-00008).
+
+**Super-Net, `/faq`** (« C'est quoi le Super-Net ? », `aHtml` et `aPlain` ensemble) : « Charges
+professionnelles (si régime réel) » → « Charges professionnelles payées, au régime réel comme en
+Micro-BNC » (le simulateur retire les charges payées dans les deux régimes, § 9.fr).
+`FAQ_LAST_UPDATED_ISO` : 2026-11-25.
+
+**Petits textes.**
+- `RegimeComparisonCards.tsx`, bulle « Revenus libéraux » : « Vos recettes » → « Tes recettes » ;
+  bulle « Revenus salariés » : « X brut − Y (abattement 10%) = Z imposable » → « X net imposable −
+  Y (abattement 10%) = Z retenus pour l'impôt » (le champ demande le net imposable) ; bulle du
+  conjoint salarié : « Revenus bruts » → « Salaires nets imposables ».
+- `CalculetteForm.tsx`, recettes du micro-BNC : « (cash-basis) » → « (à la date où tu les as
+  reçus, pas à celle de l'acte) ».
+- `glossaireDeclarationsData.ts`, `frais-reels` : « (plancher 509 €, plafond 14 555 €) » → « …
+  pour les revenus 2025) ».
+- `CalculetteResults.tsx`, aide de la DSCS au micro-BNC (point ouvert du § 9.ho) : « retirées côté
+  fiscal (5HQ) et côté assiette sociale nette (DSDE) » → « retirées côté fiscal (5HQ), et l'Urssaf
+  part de la 5HQ pour tes cotisations : DSDE reste vide en micro-BNC ».
+- `src/content/blog/choix-mode-exercice.md`, FAQ « Quelle différence entre remplaçant et
+  collaborateur libéral ? » (écran et `FAQPage`) : « Le remplaçant exerce à la place d'un médecin
+  absent, temporairement, et lui reverse une part des honoraires. » (sens inverse de la
+  rétrocession, que le site dit partout versée par le médecin remplacé) → « …, et le médecin
+  remplacé lui reverse une part des honoraires (la rétrocession). » `updatedDate` 2026-11-25
+  (frontmatter et `blog-meta.json`).
+
+**À l'écran et dans le build.** Changent : `/` (question du régime fiscal, `FAQPage`, `lastmod`),
+`/faq` (Super-Net, `FAQPage`, `lastmod`), `/guide-declarations` (forfaits, CE/CN, cadre 4, repas,
+glossaire ; `FAQPage` : QT-024, QT-025, QT-042), `/guide-declarations/dsfu-pamc` (CASE-009,
+CASE-012) et `/guide-declarations/medecin-remplacant` (CASE-013), `/guide-declarations/calculette`
+(libellés CE, CN, CI), les deux articles (`Article` : `dateModified` de `choix-mode-exercice`),
+`/blog/recherche.json`, le sitemap. `/simulateur` : HTML identique au nom des scripts près (bulles,
+liste et estimateur ne sont rendus qu'à l'usage). Aucune feuille de style ne change de nom (feuille
+commune comprise). `verify-site.mjs` passe (76 pages).
+
+**Non repris, pour le propriétaire.**
+- La branche « Retraite » du conjoint est propre au site : l'application (qui reprend ce moteur et
+  fige 14 demandes dans `calcul-moteur-simulateur.test.ts`) garde « Salarié / Retraite ». À y
+  reporter.
+- Retouches de l'application d'autres lots, dans les mêmes fichiers du guide et de la calculette,
+  non reprises : « ZIP seulement » (zones d'action complémentaire exclues ; repris seulement dans
+  la description de l'exemple PDSA de la calculette) et « forfait d'astreinte » au lieu de
+  « PRN/PRD/RSP » (PDSA), « RSPM toute l'année » (départ en cours
+  d'année), paiement du RSPM chaque trimestre ou chaque mois, PAS de janvier à août sur N-2.
+- La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) n'est pas relevée.
+- Code mort laissé : `src/lib/calc/declaration2035Inputs.ts` (aucun import ; « cadre 7 », « DH
+  3 050 €, hors 1ère année ») et `forfaitGroupeIII: 3050` de `declarationParams` (lu nulle part).
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le
