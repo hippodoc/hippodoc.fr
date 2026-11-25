@@ -284,7 +284,7 @@ export const reglesOr: RegleOr[] = [
     id: "RO-008",
     numero: 8,
     titre: "Les forfaits S1 (2%, 3%, groupe III) ne s'appliquent qu'à la part installation/collaboration",
-    description: "Réservés aux installés secteur 1 en BNC réel. Forfait 2 % (case DF, ligne 43 de la 2035-B) : 2 % des recettes brutes totales (AA + AF + dépassements + redevances de collaboration perçues + IJ) — couvre représentation, prospection, blanchissage, cadeaux, petits déplacements ; applicable dès la 1ère année d'installation. Forfait 3 % (case DG) : 3 % des seuls honoraires conventionnels AA, hors PDSA exonéré, hors dépassements (DE/DP), HN, MSU, expertises, études cliniques et IJ Madelin. Les forfaits CPAM (ROSP, Médecin Traitant, forfait structure) sont des revenus conventionnés et restent INCLUS dans l'assiette des 3 %. Groupe III (case DH) : forfait fixe de 3 050 €. **Cumul DF + DG + DH autorisé** depuis l'imposition des revenus 2023 (suppression de la majoration art. 158, 7 CGI ; BOI-BNC-SECT-40, repris dans le Guide UNASA 2035-2026 §391 p. 92-93). Le 2 % (DF) reste seulement incompatible avec la déduction des frais réels de même nature (poste 30). ⚠️ Première année d'installation : DF et DG applicables dès le 1er exercice, DH disponible à partir de la 2ème année. En activité mixte (remplacement + installation), ces forfaits ne s'appliquent que sur la part installation/collaboration. Les appliquer sur le CA de remplacement expose à un redressement. ⚠️ ATTENTION : ces déductions vont en cases dédiées DF/DG/DH ligne 43 de la 2035-B. Ne RIEN mettre en parallèle dans « frais de représentation, réception, prospection » (poste 30) sinon cela vaut renonciation au forfait 2 %. ⚠️ Installation en cours d'année : les 2 %/3 %/Groupe III s'appliquent sur le CA à compter de la date d'installation effective. Les frais de repas hors domicile sont cumulables avec le forfait 2 % (postes différents). Réforme 2026 : la case DSCO est supprimée — DG et DH sont désormais réintégrés socialement via le RBS du Cadre 8 de la 2035-B, reporté en DSDE. 💡 Le module `Aide 2035` d'**Hippodoc** calcule les 3 forfaits et le RBS correctement (rétrocessions exclues, Groupe III bloqué la 1ère année).",
+    description: "Réservés aux médecins personnellement conventionnés en secteur 1 (installés ou collaborateurs), au BNC réel : un remplaçant n'y a pas droit. Forfait 2 % (case DF, ligne 43 de la 2035-B) : 2 % des recettes brutes totales (AA + AF ; les dépassements, les redevances de collaboration perçues et les IJ y sont déjà) — couvre représentation, prospection, blanchissage, cadeaux, petits déplacements ; applicable dès la 1ère année d'installation. Forfait 3 % (case DG) : 3 % des seuls honoraires conventionnels AA, hors PDSA exonéré, hors dépassements (DE/DP), HN, MSU, expertises, études cliniques et IJ Madelin, avant déduction des rétrocessions versées à tes remplaçants. Les forfaits CPAM (ROSP, Médecin Traitant, forfait structure) sont des revenus conventionnés et restent INCLUS dans l'assiette des 3 %. Groupe III (case DH) : au barème des omnipraticiens, sur la même base que le 3 % (de 770 € à 3 050 € ; 3 050 € au-delà de 30 450 €). **Cumul DF + DG + DH autorisé** depuis l'imposition des revenus 2023 (suppression de la majoration art. 158, 7 CGI ; BOI-BNC-SECT-40, repris dans le Guide UNASA 2035-2026 §391 p. 92-93). Le 2 % (DF) reste seulement incompatible avec la déduction des frais réels de même nature (poste 30). Première année d'installation : les trois forfaits s'appliquent dès le 1er exercice (aucun texte ne bloque le groupe III). ⚠️ Condition commune : une 2035 déposée dans les délais ; un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III. En activité mixte (remplacement + installation), ces forfaits ne s'appliquent que sur la part installation/collaboration. Les appliquer sur le CA de remplacement expose à un redressement. ⚠️ ATTENTION : ces déductions vont en cases dédiées DF/DG/DH ligne 43 de la 2035-B. Ne RIEN mettre en parallèle dans « frais de représentation, réception, prospection » (poste 30) sinon cela vaut renonciation au forfait 2 %. ⚠️ Installation en cours d'année : les 2 %/3 %/Groupe III s'appliquent sur le CA à compter de la date d'installation effective. Les frais de repas hors domicile sont cumulables avec le forfait 2 % (postes différents). Réforme 2026 : la case DSCO est supprimée — DG et DH sont désormais réintégrés socialement via le RBS du Cadre 8 de la 2035-B, reporté en DSDE. 💡 Le module `Aide 2035` d'**Hippodoc** calcule les 3 forfaits et le RBS pour un médecin installé ou collaborateur (base du 3 % et du groupe III avant déduction des rétrocessions versées, groupe III au barème des omnipraticiens).",
     exemple: "CA total 142 360 € dont 18 470 € de DE/HN/PDSA exonéré et 9 240 € de rétrocessions versées à un remplaçant. Forfait 2 % (DF) = 2 % × 142 360 ≈ 2 847 € sur la base recettes totales. Forfait 3 % (DG) = 3 % × (AA conventionné − exclusions) ≈ 3 717 €. Groupe III (DH) = 3 050 €. Total déduit fiscalement ≈ 9 614 €. Côté social : DG + DH (6 767 €) sont réintégrés dans le RBS via le Cadre 8 → DSDE ; DF (2 %) reste déduit socialement.",
     certitude: "confirmed",
     icon: "⚠️",
@@ -523,7 +523,7 @@ export const caseopedia: CaseInfo[] = [
     erreurFrequente: "Confondre avec le bénéfice imposable, ne pas le renseigner en régime réel, ou le remplir à tort en micro-BNC.",
     certitude: "confirmed",
     categorie: "social",
-    conseil: "En micro-BNC, ne PAS remplir DSDE : laisser la case vide. Le guide Urssaf des PAMC est explicite : « Le chiffre d'affaires micro-BNC doit être déclaré uniquement en 5HQ/5IQ et ne doit pas figurer en revenu brut social ». L'Urssaf part de tes recettes déclarées en 5HQ et applique elle-même l'abattement de 34 % ; remplir DSDE ferait compter tes recettes deux fois. En BNC réel, ce montant est calculé via la formule officielle de la 2035 : DD = CE − CN + BK + BV + CS + AW + CU + CI + CO + DG + CJ + DH + DE − DB. Détail des cases 2026 : CE (total produits), CN (total charges), BK (cotisations sociales personnelles + Madelin/PER), BV (CSG déductible), CS (exo ZFU), AW (exo entreprise nouvelle), CU (exo innovante), CI (exo PDSA/zones déficitaires), CO (majoration 25% non adhérents - supprimée depuis 2023), DG (exo forfait 3% conventionnel), CJ (exo ZFRR/FRR), DH (exo groupe III 3 050€), DE (réintégrations diverses), DB (IJ Madelin à déduire). Plus simplement : Ligne 1 (recettes) + ligne 6 (gains divers) − charges + réintégrations. Si ton comptable n'a pas rempli DD, utilise le module Aide 2035 d'Hippodoc.\n\n💡 **Remboursement URSSAF reçu pendant l'année** : il réduit BK (si remboursement N pour N) ou s'ajoute en gains divers AB (si remboursement N pour N-1+). Voir QT-045 pour le détail comptable (comptes 646/772, ventilation CSG).",
+    conseil: "En micro-BNC, ne PAS remplir DSDE : laisser la case vide. Le guide Urssaf des PAMC est explicite : « Le chiffre d'affaires micro-BNC doit être déclaré uniquement en 5HQ/5IQ et ne doit pas figurer en revenu brut social ». L'Urssaf part de tes recettes déclarées en 5HQ et applique elle-même l'abattement de 34 % ; remplir DSDE ferait compter tes recettes deux fois. En BNC réel, ce montant est calculé via la formule officielle de la 2035 : DD = CE − CN + BK + BV + CS + AW + CU + CI + CO + DG + CJ + DH + DE − DB. Détail des cases 2026 : CE (ligne 38 de la 2035-B : total des lignes 34 à 37, soit l'excédent et les divers à réintégrer), CN (ligne 45 : total des lignes 39 à 44, soit l'insuffisance, les amortissements ligne 41 et les divers à déduire ligne 43, dont la PDSA exonérée en case CI), BK (cotisations sociales personnelles + Madelin/PER), BV (CSG déductible), CS (exo ZFU), AW (exo entreprise nouvelle), CU (exo innovante), CI (exo PDSA/zones déficitaires), CO (majoration 25% non adhérents - supprimée depuis 2023), DG (exo forfait 3% conventionnel), CJ (exo ZFRR/FRR), DH (exo groupe III 3 050€), DE (réintégrations diverses), DB (IJ Madelin à déduire). CE − CN est ton résultat fiscal CP (ligne 46), déjà net de la PDSA exonérée et des forfaits déduits ligne 43. Autrement dit : RBS = CP + BK + BV + exonérations réintégrées (CI, DG, DH…) + DE − DB ; la PDSA exonérée n'y revient qu'une fois, par CI. Ne pars jamais des recettes (ligne 1 + ligne 6 − charges) en ajoutant CI : la PDSA, déjà comprise dans les recettes, serait comptée deux fois. Si ton comptable n'a pas rempli DD, utilise le module Aide 2035 d'Hippodoc.\n\n💡 **Remboursement URSSAF reçu pendant l'année** : il réduit BK (si remboursement N pour N) ou s'ajoute en gains divers AB (si remboursement N pour N-1+). Voir QT-045 pour le détail comptable (comptes 646/772, ventilation CSG).",
     relatedCases: ["DD", "2035"],
     relatedTerms: ["bnc-reel", "pamc", "cfe", "cet", "cfp", "cotisation-maladie", "allocations-familiales", "asv", "crds", "rcp", "dpc", "cam-3-25", "das-2", "net-imposable", "resultat-fiscal", "declarant-1-vs-2", "remboursement-urssaf"],
     relatedQuestions: ["QT-004", "QT-045"],
@@ -564,7 +564,7 @@ export const caseopedia: CaseInfo[] = [
     code: "DSFA",
     nom: "PDSA exonérée (volet social PAMC)",
     formulaire: "DSFU (ex DS-PAMC)",
-    description: "Case de la DSFU (volet PAMC) pour reporter la **PDSA Art. 151 ter exonérée d'IR mais soumise à cotisations sociales** en **MICRO-BNC PAMC uniquement** (majorations CRN/CRM/CRD/CRS/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP, plafond 60 jours). Montant **NET** = brut × 0,66. DSFA = déclarant 1, DSFB = déclarant 2.\n\n⚠️ **La ZFU micro-BNC ne passe PAS par DSFA** : le volet social s'appuie sur DSCS (recettes brutes totales, ZFU comprise). DSFA est strictement réservée à la PDSA.\n\n⚠️ **En BNC réel, on ne touche JAMAIS à DSFA pour la PDSA** : la déduction se fait en **ligne CI** (cadre 7 « Divers à déduire ») de la 2035-B, et la formule du **RBS** (Cadre 8) la réintègre automatiquement en **DSDE** (positif) ou **DSDG** (négatif).",
+    description: "Case de la DSFU (volet PAMC) pour reporter la **PDSA Art. 151 ter exonérée d'IR mais soumise à cotisations sociales** en **MICRO-BNC PAMC uniquement** (majorations CRN/CRM/CRD/CRS/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP, plafond 60 jours). Montant **NET** = brut × 0,66. DSFA = déclarant 1, DSFB = déclarant 2.\n\n⚠️ **La ZFU micro-BNC ne passe PAS par DSFA** : le volet social s'appuie sur DSCS (recettes brutes totales, ZFU comprise). DSFA est strictement réservée à la PDSA.\n\n⚠️ **En BNC réel, on ne touche JAMAIS à DSFA pour la PDSA** : la déduction se fait en **ligne CI** (cadre 4, ligne 43 « Divers à déduire ») de la 2035-B, et la formule du **RBS** (Cadre 8) la réintègre automatiquement en **DSDE** (positif) ou **DSDG** (négatif).",
     quiRemplit: "Médecin au PAMC en MICRO-BNC ayant de la PDSA exonérée Art. 151 ter (gardes en zone déficitaire, plafond 60 jours)",
     erreurFrequente: "**Erreur n°1** : Confondre DSFA avec la case 5HP de la 2042-C-PRO. La PDSA exonérée se déclare en DSFA (micro), **JAMAIS** en 5HP (réservée ZFU/ZRR/JEI) — sinon double-comptage URSSAF.\n**Erreur n°2** : Remplir DSFA en **BNC réel** pour la PDSA. Au réel, la PDSA passe par CI → RBS → DSDE/DSDG ; remplir DSFA en plus = **double cotisation**.\n**Erreur n°3** : Y reporter la ZFU exonérée — la ZFU micro-BNC est déjà comprise dans DSCS (recettes brutes), aucune ligne DSFA à saisir pour elle.\n**Erreur n°4** : Reporter le montant brut au lieu du net (oubli du ×0,66 en micro-BNC).",
     certitude: "confirmed",
@@ -579,7 +579,7 @@ export const caseopedia: CaseInfo[] = [
     code: "2035",
     nom: "Déclaration de Revenu des Professions Non Commerciales",
     formulaire: "2035",
-    description: "Liasse fiscale détaillée pour les Libéraux au régime réel. La 2035-A récapitule les postes clés : AA (CA total conventionné avant rétro), AF (gains divers), CE (total excédent), CN (total excédent et insuffisances), BK (charges sociales personnelles / Madelin/PER), BV (CSG déductible), BS (cotisations sociales obligatoires), BQ (frais de repas), AW (exo entreprise nouvelle), CS (exo ZFU), CU (exo entreprise innovante), CI (exo zones déficitaires), DG (exo forfait 3%), CJ (exo ZFRR), DH (exo groupe III), et le résultat final en CP (bénéfice) ou CR (déficit). La partie travailleurs indépendants contient la case DD (Revenu Brut Social) servant de base aux cotisations URSSAF/CARMF.",
+    description: "Liasse fiscale détaillée pour les Libéraux au régime réel. La 2035-A récapitule les postes clés : AA (CA total conventionné avant rétro), AF (gains divers), CE (ligne 38 : total des lignes 34 à 37, excédent + réintégrations), CN (ligne 45 : total des lignes 39 à 44, insuffisance + amortissements ligne 41 + divers à déduire ligne 43, dont la PDSA exonérée en case CI ; CE − CN = CP), BK (charges sociales personnelles / Madelin/PER), BV (CSG déductible), BS (cotisations sociales obligatoires), BQ (frais de repas), AW (exo entreprise nouvelle), CS (exo ZFU), CU (exo entreprise innovante), CI (exo zones déficitaires), DG (exo forfait 3%), CJ (exo ZFRR), DH (exo groupe III), et le résultat final en CP (bénéfice) ou CR (déficit). La partie travailleurs indépendants contient la case DD (Revenu Brut Social) servant de base aux cotisations URSSAF/CARMF.",
     quiRemplit: "Médecin en régime réel (BNC)",
     erreurFrequente: "Erreurs de catégorisation des charges, omission de certains éléments (amortissements, réintégrations), difficultés avec le calcul du Revenu Social Brut (DD). Oubli fréquent de la réintégration des cotisations Madelin non déductibles.",
     certitude: "confirmed",
@@ -761,8 +761,8 @@ export const caseopedia: CaseInfo[] = [
     code: "DF",
     nom: "Forfait 2 % — Représentation/prospection (Secteur 1, BNC réel)",
     formulaire: "2035-B (ligne 43)",
-    description: "Déduction forfaitaire de **2 % des recettes brutes totales** (AA conventionné + AF gains divers + dépassements + redevances de collaboration perçues + IJ). Couvre représentation, prospection, blanchissage, cadeaux, petits déplacements. Accessible dès la 1ère année d'installation, sans justificatif. **Réforme 2026** : seul forfait à rester exonéré socialement (non réintégré dans le RBS du Cadre 8).",
-    quiRemplit: "Médecin Secteur 1 en BNC réel.",
+    description: "Déduction forfaitaire de **2 % des recettes brutes totales** (AA conventionné + AF gains divers ; les dépassements, les redevances de collaboration perçues et les IJ y sont déjà). Couvre représentation, prospection, blanchissage, cadeaux, petits déplacements. Accessible dès la 1ère année d'installation, sans justificatif. À condition de déposer ta 2035 dans les délais : un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III. **Réforme 2026** : seul forfait à rester exonéré socialement (non réintégré dans le RBS du Cadre 8).",
+    quiRemplit: "Médecin installé ou collaborateur, conventionné en secteur 1, au BNC réel (un remplaçant n'y a pas droit).",
     erreurFrequente: "Cumuler le forfait 2 % avec des frais de représentation déclarés en poste 30 → vaut renonciation au forfait.",
     certitude: "confirmed",
     categorie: "fiscal",
@@ -777,8 +777,8 @@ export const caseopedia: CaseInfo[] = [
     code: "DG",
     nom: "Forfait 3 % conventionnel (Secteur 1, BNC réel)",
     formulaire: "2035-B (ligne 43)",
-    description: "Déduction forfaitaire de **3 % des seuls honoraires conventionnels AA**, hors PDSA exonéré, hors dépassements (DE/DP), HN, MSU, expertises, études cliniques et IJ Madelin. **Cumulable avec le Groupe III (DH)** depuis l'imposition des revenus 2023 (BOI-BNC-SECT-40 ; UNASA Guide 2035-2026 §391). **Réforme 2026** : DG est désormais réintégré socialement via le RBS du Cadre 8 → DSDE (compensé par l'abattement URSSAF de 26 %).",
-    quiRemplit: "Médecin Secteur 1 conventionné en BNC réel.",
+    description: "Déduction forfaitaire de **3 % des seuls honoraires conventionnels AA**, hors PDSA exonéré, hors dépassements (DE/DP), HN, MSU, expertises, études cliniques et IJ Madelin, avant déduction des rétrocessions versées à tes remplaçants. **Cumulable avec le Groupe III (DH)** depuis l'imposition des revenus 2023 (BOI-BNC-SECT-40 ; UNASA Guide 2035-2026 §391). À condition de déposer ta 2035 dans les délais : un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III. **Réforme 2026** : DG est désormais réintégré socialement via le RBS du Cadre 8 → DSDE (compensé par l'abattement URSSAF de 26 %).",
+    quiRemplit: "Médecin installé ou collaborateur, conventionné en secteur 1, au BNC réel (un remplaçant n'y a pas droit).",
     erreurFrequente: "Appliquer le 3 % à des recettes hors champ (PDSA exonéré, dépassements, HN, MSU…) ou continuer à saisir manuellement la réintégration en DSCO (supprimée).",
     certitude: "confirmed",
     categorie: "fiscal",
@@ -791,14 +791,14 @@ export const caseopedia: CaseInfo[] = [
   {
     id: "CASE-028",
     code: "DH",
-    nom: "Groupe III — Déduction conventionnelle 3 050 €",
+    nom: "Groupe III — Déduction conventionnelle au barème (jusqu'à 3 050 €)",
     formulaire: "2035-B (ligne 43)",
-    description: "Déduction forfaitaire fixe de **3 050 €/an**, **cumulable avec le Forfait 3 % (DG)** depuis l'imposition des revenus 2023 (BOI-BNC-SECT-40 ; UNASA Guide 2035-2026 §391). ⚠️ **Non disponible la 1ère année d'installation**. **Réforme 2026** : DH est désormais réintégré socialement via le RBS du Cadre 8 → DSDE (compensé par l'abattement URSSAF de 26 %).",
-    quiRemplit: "Médecin Secteur 1 en BNC réel, à partir de la 2ème année d'installation.",
-    erreurFrequente: "Activer DH la 1ère année d'installation (réservé aux exercices ultérieurs). Confondre l'assiette DH (forfait fixe 3 050 €) avec celle du 3 % (calculée sur AA conventionné hors exclusions). Saisir DH en parallèle des frais réels de représentation déjà inscrits au poste 30.",
+    description: "Déduction forfaitaire **au barème des omnipraticiens**, sur la même base que le 3 % : de 770 € à **3 050 €/an** (3 050 € au-delà de 30 450 € d'honoraires conventionnels), **cumulable avec le Forfait 3 % (DG)** depuis l'imposition des revenus 2023 (BOI-BNC-SECT-40 ; UNASA Guide 2035-2026 §391). Accessible **dès la 1ère année d'installation**. À condition de déposer ta 2035 dans les délais : un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III. **Réforme 2026** : DH est désormais réintégré socialement via le RBS du Cadre 8 → DSDE (compensé par l'abattement URSSAF de 26 %).",
+    quiRemplit: "Médecin installé ou collaborateur, conventionné en secteur 1, au BNC réel, dès la 1ère année d'installation (un remplaçant n'y a pas droit).",
+    erreurFrequente: "Croire DH bloqué la 1ère année d'installation (aucun texte ne le prévoit). Prendre 3 050 € quand la base du 3 % ne dépasse pas 30 450 € : le barème donne moins (770 € à 2 750 €). Saisir DH en parallèle des frais réels de représentation déjà inscrits au poste 30.",
     certitude: "confirmed",
     categorie: "fiscal",
-    conseil: "À reporter en case **DH** ligne 43 de la 2035-B. **Cumul DG + DH** recommandé en S1 BNC réel : 3 % conventionnel + 3 050 € de Groupe III s'additionnent (pas de choix à faire).",
+    conseil: "À reporter en case **DH** ligne 43 de la 2035-B. **Cumul DG + DH** recommandé en S1 BNC réel : 3 % conventionnel + Groupe III au barème s'additionnent (pas de choix à faire).",
     relatedCases: ["DF", "DG", "DD", "DSDE", "DSCO", "2035"],
     relatedTerms: ["secteur-1-2", "bnc-reel", "groupe-iii"],
     relatedQuestions: ["QT-024", "QT-032"],
@@ -808,13 +808,13 @@ export const caseopedia: CaseInfo[] = [
     id: "CASE-029",
     code: "CI",
     nom: "Exonération PDSA / zones déficitaires (Art. 151 ter)",
-    formulaire: "2035-B (cadre 7 « Divers à déduire »)",
-    description: "Ligne **CI** du cadre 7 « Divers à déduire » de la 2035-B. C'est ici qu'en **BNC réel** on déduit fiscalement les majorations PDSA exonérées (Art. 151 ter — CRN/CRM/CRD/CRS/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP, plafond 60 jours). La PDSA reste comptabilisée dans les recettes 2035-A puis sortie via CI. Côté social, **CI figure dans la formule du RBS** (Cadre 8) → réintégration **AUTOMATIQUE** en **DSDE** (positif) ou **DSDG** (négatif).",
+    formulaire: "2035-B (cadre 4, ligne 43 « Divers à déduire »)",
+    description: "Ligne **CI** du cadre 4 de la 2035-B (détail de la ligne 43 « Divers à déduire »). C'est ici qu'en **BNC réel** on déduit fiscalement les majorations PDSA exonérées (Art. 151 ter — CRN/CRM/CRD/CRS/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP, plafond 60 jours). La PDSA reste comptabilisée dans les recettes 2035-A puis sortie via CI. Côté social, **CI figure dans la formule du RBS** (Cadre 8) → réintégration **AUTOMATIQUE** en **DSDE** (positif) ou **DSDG** (négatif).",
     quiRemplit: "Médecin en BNC réel ayant réalisé de la PDSA exonérée d'IR.",
     erreurFrequente: "Remplir **DSFA en parallèle de CI** — DSFA est réservée au micro-BNC. En réel, la double saisie déclenche une **double cotisation** sur la PDSA. Autre erreur : ne pas inclure la PDSA dans les recettes 2035-A « pour gagner du temps ».",
     certitude: "confirmed",
     categorie: "fiscal",
-    conseil: "Comptabilise la PDSA brute en recettes 2035-A, puis déduis-la en **CI** (cadre 7). Le bénéfice fiscal qui part en 5QC est donc net de PDSA. Ne touche pas à DSFA — la réintégration sociale se fait toute seule via le RBS → DSDE/DSDG. 💡 Le module `Aide 2035` d'Hippodoc remplit CI à partir de tes encaissements PDSA.",
+    conseil: "Comptabilise la PDSA brute en recettes 2035-A, puis déduis-la en **CI** (cadre 4, ligne 43). Le bénéfice fiscal qui part en 5QC est donc net de PDSA. Ne touche pas à DSFA — la réintégration sociale se fait toute seule via le RBS → DSDE/DSDG. 💡 Le module `Aide 2035` d'Hippodoc remplit CI à partir de tes encaissements PDSA.",
     relatedCases: ["DD", "DSDE", "DSDG", "DSFA", "5QC", "2035"],
     relatedTerms: ["pdsa", "bnc-reel"],
     relatedQuestions: ["QT-020", "QT-028", "QT-032"],
@@ -964,7 +964,7 @@ export const profils: ProfilMedecin[] = [
       "Utiliser un simulateur URSSAF pour évaluer l'impact des dépassements sur les cotisations.",
       "Comparer la rentabilité avec le secteur 1 après charges.",
       "⚠️ **Pas de Prise en Charge des Cotisations (PCC) en S2** : la PCC est **réservée au secteur 1 conventionné**. En OPTAM, tu bénéficies uniquement de la **prime de performance** et de l'**aide à l'embauche d'un assistant médical** — pas de prise en charge de tes cotisations URSSAF maladie par la CPAM.",
-      "⚠️ **Pas de forfait 3 % (DG) ni de Groupe III (DH)** : ces déductions forfaitaires sont **réservées au secteur 1**. En OPTAM, seul le **forfait 2 % (DF)** reste accessible si tu y as droit (frais de représentation).",
+      "⚠️ **Aucun des trois forfaits (2 % DF, 3 % DG, Groupe III DH)** : ils sont **réservés aux médecins conventionnés en secteur 1**. En secteur 2, OPTAM compris, tu déduis tes frais réels.",
       "Reporter la cotisation IJ CPAM obligatoire (0,30 % RBS, plancher **56,52 €** / plafond **423,90 €** pour les revenus 2025 — bornes basées sur PASS 2025 = 47 100 €) en ligne BT de la 2035-A — déductible du BNC."
     ],
     faqPertinentes: ["QT-004","QT-024","QT-031","QT-038","QT-042","QT-043"]
@@ -1014,7 +1014,7 @@ export const profils: ProfilMedecin[] = [
     conseilsCles: [
       "**ZFU-TE** : 5HP (micro) ou 5QB (réel) ; dégressif sur 8 ans (5 ans à 100 %, puis 60 %/40 %/20 %), plafond 50 000 €/an de bénéfice exonéré, **accessible aux remplaçants**.",
       "**FRR (ex-ZRR)** : plafond 300 000 € sur 3 ans glissants, **PAS accessible aux remplaçants** (uniquement titulaires/collaborateurs installés).",
-      "**PDSA** (Art. 151 ter, plafond 60 jours/an) : en micro-BNC → retire le brut de 5HQ ; en BNC réel → déduis le brut en **ligne CI** (cadre 7 « Divers à déduire ») de la 2035-B. Au PAMC micro-BNC : reporte le NET (×0,66) en **DSFA** (déclarant 1) ou **DSFB** (déclarant 2). Au PAMC réel : la formule du RBS réintègre CI automatiquement en DSDE/DSDG, **ne jamais remplir DSFA**. Au RSPM, pas de DSFU.",
+      "**PDSA** (Art. 151 ter, plafond 60 jours/an) : en micro-BNC → retire le brut de 5HQ ; en BNC réel → déduis le brut en **ligne CI** (cadre 4, ligne 43 « Divers à déduire ») de la 2035-B. Au PAMC micro-BNC : reporte le NET (×0,66) en **DSFA** (déclarant 1) ou **DSFB** (déclarant 2). Au PAMC réel : la formule du RBS réintègre CI automatiquement en DSDE/DSDG, **ne jamais remplir DSFA**. Au RSPM, pas de DSFU.",
       "⚠️ **Ne JAMAIS reporter la PDSA en 5HP/5QB** : double-comptage URSSAF garanti (revenu net social = 0,66 × 5HQ + DSFA + 5HP).",
       "Exonération PDSA = uniquement fiscale, pas sociale (les majorations restent soumises à cotisations URSSAF/CARMF). Conserver l'attestation du médecin coordinateur."
     ],
@@ -1332,7 +1332,7 @@ export const questionsFAQ: QuestionReformule[] = [
   {
     id: "QT-024",
     question: "Comment fonctionnent les forfaits 2 %, 3 % et Groupe III en BNC réel ?",
-    reponse: "Ce sont trois déductions supplémentaires qui s'empilent sur les charges réelles, réservées au BNC réel Secteur 1. Elles vont en cases dédiées **DF / DG / DH** ligne 43 de la 2035-B (et non en case CQ comme avant). **Forfait 2 % (case DF)** : 2 % des recettes brutes totales (AA conventionné + AF gains divers + dépassements + redevances de collaboration perçues + IJ) — couvre représentation, prospection, blanchissage, cadeaux, petits déplacements ; accessible dès la 1ère année d'installation, sans justificatif. **Forfait 3 % (case DG)** : 3 % des seuls honoraires conventionnels AA, hors PDSA exonéré, hors dépassements (DE/DP), HN, MSU, expertises, études cliniques et IJ Madelin. **Groupe III (case DH)** : déduction conventionnelle fixe de 3 050 €/an, non disponible la 1ère année d'installation. **Les trois sont cumulables** (DF + DG + DH) depuis l'imposition des revenus 2023 — la suppression de la majoration de l'art. 158, 7 CGI a rendu sans objet l'ancienne condition de non-cumul DG/DH (BOI-BNC-SECT-40 ; UNASA Guide 2035-2026 §391 p. 92-93). Pour 100 000 € de CA conventionné en S1 : 2 000 € + 3 000 € + 3 050 € ≈ 8 050 € de déduction fiscale supplémentaire, soit 2 400 à 3 700 € d'impôt économisé selon la TMI. C'est l'argument central pour basculer du micro-BNC vers le réel. **Réforme 2026** : la case **DSCO est supprimée**. DG et DH sont désormais réintégrés socialement via le RBS du Cadre 8 de la 2035-B, reporté en **DSDE** sur la 2042. Seul le 2 % (DF) reste exonéré socialement. ⚠️ L'adhésion AGA n'est plus un critère d'éligibilité depuis la suppression de la majoration (revenus 2023). ⚠️ Le 2 % reste incompatible uniquement avec la déduction des frais réels de même nature (poste 30 « représentation »).",
+    reponse: "Ce sont trois déductions supplémentaires qui s'empilent sur les charges réelles, réservées aux médecins personnellement conventionnés en secteur 1 (installés ou collaborateurs), au BNC réel : un remplaçant n'y a pas droit. Elles vont en cases dédiées **DF / DG / DH** ligne 43 de la 2035-B (et non en case CQ comme avant). **Forfait 2 % (case DF)** : 2 % des recettes brutes totales (AA conventionné + AF gains divers ; les dépassements, les redevances de collaboration perçues et les IJ y sont déjà) — couvre représentation, prospection, blanchissage, cadeaux, petits déplacements ; accessible dès la 1ère année d'installation, sans justificatif. **Forfait 3 % (case DG)** : 3 % des seuls honoraires conventionnels AA, hors PDSA exonéré, hors dépassements (DE/DP), HN, MSU, expertises, études cliniques et IJ Madelin, avant déduction des rétrocessions versées à tes remplaçants. **Groupe III (case DH)** : au barème des omnipraticiens, sur la même base que le 3 % (de 770 € à 3 050 €/an), dès la 1ère année d'installation. **Les trois sont cumulables** (DF + DG + DH) depuis l'imposition des revenus 2023 — la suppression de la majoration de l'art. 158, 7 CGI a rendu sans objet l'ancienne condition de non-cumul DG/DH (BOI-BNC-SECT-40 ; UNASA Guide 2035-2026 §391 p. 92-93). Pour 100 000 € de CA conventionné en S1 : 2 000 € + 3 000 € + 3 050 € ≈ 8 050 € de déduction fiscale supplémentaire, soit 2 400 à 3 700 € d'impôt économisé selon la TMI. C'est l'argument central pour basculer du micro-BNC vers le réel. **Réforme 2026** : la case **DSCO est supprimée**. DG et DH sont désormais réintégrés socialement via le RBS du Cadre 8 de la 2035-B, reporté en **DSDE** sur la 2042. Seul le 2 % (DF) reste exonéré socialement. ⚠️ Condition commune : une 2035 déposée dans les délais ; un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III. ⚠️ L'adhésion AGA n'est plus un critère d'éligibilité depuis la suppression de la majoration (revenus 2023). ⚠️ Le 2 % reste incompatible uniquement avec la déduction des frais réels de même nature (poste 30 « représentation »).",
     certitude: "confirmed",
     tags: ["Forfait 2%", "Forfait 3%", "Groupe III", "BNC réel", "AGA", "Secteur 1", "Optimisation", "Réforme 2026"],
     theme: "optimisation",
@@ -1343,7 +1343,7 @@ export const questionsFAQ: QuestionReformule[] = [
   {
     id: "QT-025",
     question: "Puis-je déduire mes frais de repas pris seul au cabinet ?",
-    reponse: "Oui, en BNC réel. La fraction déductible se situe entre le seuil minimum (5,35 €/repas en 2025) et le plafond (20,70 €/repas en 2025). Exemple : pour un repas à 18 €, tu déduis 18 − 5,35 = 12,65 €. Les repas avec un confrère pour discuter d'un dossier sont déductibles à 100 % en frais de représentation (pas de plafond). Conserver les tickets et noter le motif professionnel.",
+    reponse: "Oui, en BNC réel. La fraction déductible se situe entre le seuil minimum (5,45 €/repas pour les revenus 2025, 5,50 € pour 2026) et le plafond (21,10 €/repas pour les revenus 2025, 21,40 € pour 2026). Exemple : pour un repas à 18 €, tu déduis 18 − 5,45 = 12,55 € (12,50 € pour les revenus 2026). Les repas avec un confrère pour discuter d'un dossier sont déductibles à 100 % en frais de représentation (pas de plafond). Conserver les tickets et noter le motif professionnel.",
     certitude: "confirmed",
     tags: ["Frais de repas", "BNC réel", "Charges", "Déductions", "2035"],
     theme: "optimisation",
@@ -1529,7 +1529,7 @@ export const questionsFAQ: QuestionReformule[] = [
   {
     id: "QT-042",
     question: "Puis-je cumuler les 3 forfaits Secteur 1 (2 % + 3 % + Groupe III) ?",
-    reponse: "**Oui — les trois sont cumulables** depuis l'imposition des revenus 2023.\n\n**Source** : la suppression de la majoration prévue au 1° du 7 de l'art. 158 CGI (réforme du non-adhérent OGA) a rendu sans objet l'ancienne condition de non-cumul entre la déduction Groupe III (DH) et la déduction complémentaire 3 % (DG). Position confirmée par BOI-BNC-SECT-40 et reprise dans le Guide fiscal UNASA 2035-2026 §391, p. 92-93 : « *Les médecins conventionnés du secteur 1 ont donc intérêt à opter pour ces deux déductions forfaitaires.* »\n\n**En pratique pour un S1 en BNC réel** :\n• **DF (2 %)** sur recettes brutes totales — accessible dès la 1ère année.\n• **DG (3 %)** sur honoraires conventionnels (AA hors exclusions) — accessible dès la 1ère année.\n• **DH (3 050 €)** forfait fixe — accessible à partir de la **2ème année** d'installation.\n\n**Seule restriction** : le 2 % (DF) reste incompatible avec la déduction des **frais réels de même nature** (poste 30 : représentation, réception, prospection, cadeaux, blanchissage, petits déplacements). Le choix s'opère en début d'exercice.\n\n**Côté social (réforme 2026)** : DG et DH sont réintégrés via le RBS du Cadre 8 → DSDE. Le 2 % (DF) reste exonéré socialement.\n\n💡 La calculette `/guide-declarations/calculette` propose désormais l'option **Cumul 3 % + Groupe III** (recommandée) en plus des choix « 3 % seul » ou « Groupe III seul ».",
+    reponse: "**Oui — les trois sont cumulables** depuis l'imposition des revenus 2023.\n\n**Source** : la suppression de la majoration prévue au 1° du 7 de l'art. 158 CGI (réforme du non-adhérent OGA) a rendu sans objet l'ancienne condition de non-cumul entre la déduction Groupe III (DH) et la déduction complémentaire 3 % (DG). Position confirmée par BOI-BNC-SECT-40 et reprise dans le Guide fiscal UNASA 2035-2026 §391, p. 92-93 : « *Les médecins conventionnés du secteur 1 ont donc intérêt à opter pour ces deux déductions forfaitaires.* »\n\n**En pratique pour un installé ou collaborateur S1 en BNC réel** (un remplaçant n'y a pas droit) :\n• **DF (2 %)** sur recettes brutes totales — accessible dès la 1ère année.\n• **DG (3 %)** sur honoraires conventionnels (AA hors exclusions) — accessible dès la 1ère année.\n• **DH (Groupe III)** au barème des omnipraticiens, sur la même base que le 3 % (de 770 € à 3 050 €) — accessible dès la 1ère année.\n\n**Condition commune** : une 2035 déposée dans les délais ; un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III.\n\n**Autre restriction** : le 2 % (DF) reste incompatible avec la déduction des **frais réels de même nature** (poste 30 : représentation, réception, prospection, cadeaux, blanchissage, petits déplacements). Le choix s'opère en début d'exercice.\n\n**Côté social (réforme 2026)** : DG et DH sont réintégrés via le RBS du Cadre 8 → DSDE. Le 2 % (DF) reste exonéré socialement.\n\n💡 La calculette `/guide-declarations/calculette` propose désormais l'option **Cumul 3 % + Groupe III** (recommandée) en plus des choix « 3 % seul » ou « Groupe III seul ».",
     certitude: "confirmed",
     tags: ["Forfait 2%", "Forfait 3%", "Groupe III", "Cumul", "BNC réel", "Secteur 1", "BOI-BNC-SECT-40"],
     theme: "optimisation",
@@ -1729,8 +1729,8 @@ export const pepitesCachees: PepiteCachee[] = [
   },
   {
     id: "PC-012",
-    titre: "Frais de repas : seule la part entre 5,35€ et 20,70€ est déductible",
-    description: "En BNC réel, les repas pris seul à proximité du cabinet sont partiellement déductibles. Seule la part entre le seuil forfaitaire (5,35€ en 2025) et le plafond (20,70€) est une charge professionnelle, soit au maximum 15,35€ par repas. Si tu déjeunes à 12€, tu peux déduire 12 - 5,35 = 6,65€. Conserver tous les justificatifs (tickets de caisse). Non applicable en micro-BNC (l'abattement 34% couvre tout). ✅ Cumulable avec le forfait 2% : les frais de repas sont un poste distinct (pas inclus dans le 2% qui couvre représentation, réception, prospection, blanchissage, petits déplacements).",
+    titre: "Frais de repas : seule la part entre 5,45€ et 21,10€ est déductible (revenus 2025)",
+    description: "En BNC réel, les repas pris seul à proximité du cabinet sont partiellement déductibles. Seule la part entre le seuil forfaitaire (5,45€ pour les revenus 2025, 5,50€ pour 2026) et le plafond (21,10€, puis 21,40€) est une charge professionnelle, soit au maximum 15,65€ par repas (15,90€ pour 2026). Si tu déjeunes à 12€, tu peux déduire 12 - 5,45 = 6,55€ (6,50€ pour 2026). Conserver tous les justificatifs (tickets de caisse). Non applicable en micro-BNC (l'abattement 34% couvre tout). ✅ Cumulable avec le forfait 2% : les frais de repas sont un poste distinct (pas inclus dans le 2% qui couvre représentation, réception, prospection, blanchissage, petits déplacements).",
     impact: "moyen",
     risque: "faible",
     certitude: "confirmed",
@@ -2522,9 +2522,12 @@ export function getWizardResult(
       ? `Tu encaisses directement tes honoraires. La redevance de collaboration est ${redevanceDeduction} — mais elle n'est PAS déduite de DSCS.`
       : "Tu encaisses directement tes honoraires. En micro-BNC, la redevance de collaboration ne se retire ni de ta 5HQ ni de DSCS : l'abattement de 34 % la couvre.");
     pieges.push("DSCS = ton CA total encaissé (avant déduction de la redevance).");
-    if (regime === 'reel') {
+    // Avis du 18/10 (B1-e bis, relecture du 23/10) : les forfaits en secteur 1 seulement (aucun en
+    // secteur 2, OPTAM compris), à condition d'une 2035 déposée dans les délais. Case « Forfaits
+    // 2 % / 3 % (S1) » cochée : le bloc des forfaits plus bas le dit déjà (cases, part propre, dépôt).
+    if (regime === 'reel' && !situations.includes('secteur2') && !situations.includes('forfaits_s1')) {
       regles.push('RO-008');
-      pieges.push("Tu peux bénéficier des forfaits 2%/3%/groupe III sur ta part d'activité installée");
+      pieges.push("Tu peux bénéficier des forfaits 2 % / 3 % / groupe III sur tes journées de collaboration (secteur 1 seulement), à condition de déposer ta 2035 dans les délais. Un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III.");
     }
   }
 
@@ -2650,7 +2653,7 @@ export function getWizardResult(
 
   // V24 — En BNC réel + PAMC + PDSA : passage par CI (DSDE déjà poussé L2146, DSDG ajouté pour cas RBS<0)
   if (hasPdsa && regimeSocial === 'pamc' && regime === 'reel') {
-    cases.push({ code: 'CI', nom: 'PDSA exonérée — Divers à déduire (cadre 7)', formulaire: '2035', ordre: 11 });
+    cases.push({ code: 'CI', nom: 'PDSA exonérée — Divers à déduire (cadre 4, ligne 43)', formulaire: '2035', ordre: 11 });
     cases.push({ code: 'DSDG', nom: 'Revenu brut social négatif (si RBS < 0)', formulaire: 'DSFU', ordre: 23 });
   }
 
@@ -2662,7 +2665,7 @@ export function getWizardResult(
     if (regime === 'micro-bnc' && regimeSocial === 'pamc') {
       pieges.push("PDSA : exonération fiscale (Art. 151 ter CGI) MAIS pas sociale. En micro-BNC + PAMC, reporte le NET (×0,66) en DSFA/DSFB sur la DSFU (volet PAMC) — les majorations restent soumises à cotisations URSSAF/CARMF.");
     } else if (regime === 'reel' && regimeSocial === 'pamc') {
-      pieges.push("PDSA : exonération fiscale (Art. 151 ter CGI) MAIS pas sociale. En BNC réel, déduis-la en **ligne CI** (cadre 7) de la 2035-B — la formule du RBS la réintègre automatiquement en DSDE (RBS positif) ou DSDG (RBS négatif). Ne remplis JAMAIS DSFA en réel (sinon double cotisation).");
+      pieges.push("PDSA : exonération fiscale (Art. 151 ter CGI) MAIS pas sociale. En BNC réel, déduis-la en **ligne CI** (cadre 4, ligne 43) de la 2035-B — la formule du RBS la réintègre automatiquement en DSDE (RBS positif) ou DSDG (RBS négatif). Ne remplis JAMAIS DSFA en réel (sinon double cotisation).");
     } else if (regimeSocial === 'rspm' && regime !== 'micro-bnc') {
       // R3 (cleanup mai 2026) : en RSPM micro-BNC, le piège silencieux ci-dessous couvre déjà
       // « rien à faire socialement / pas de DSFU » — on évite le doublon.
@@ -2722,32 +2725,27 @@ export function getWizardResult(
     pieges.push("CESU pré-financés via compte PRO (pas personnel) — formulaires 2069-FA-SD et 2069-RCI-SD à remplir");
   }
   // Fix #9 / Phase 12O — Forfaits S1 : installés, collaborateurs ET mixtes (réel)
+  // Avis fiscal du 18/10/2026 (B1-e, D57 avancé) : les trois forfaits sont réservés au secteur 1
+  // (aucun en secteur 2, OPTAM compris) ; le groupe III se calcule au barème dès la 1re année
+  // (l'ancien blocage « DH la 2e année », RO-008, n'a aucune source) ; une 2035 déposée en
+  // retard les fait perdre tous les trois.
   if (
     situations.includes('forfaits_s1') &&
     regime === 'reel' &&
     (typeActivite === 'installe' || typeActivite === 'collaborateur' || typeActivite === 'mixte')
   ) {
-    // F3 — Secteur 2 / OPTAM : seul DF (2 % frais de représentation) reste accessible.
-    // DG (3 % conventionnel) et DH (Groupe III 3 050 €) sont réservés au Secteur 1.
     const isSecteur2 = situations.includes('secteur2');
-    cases.push({ code: 'DF', nom: 'Forfait 2 % (frais de représentation)', formulaire: '2035-B', ordre: 23 });
     if (!isSecteur2) {
+      cases.push({ code: 'DF', nom: 'Forfait 2 % (frais de représentation)', formulaire: '2035-B', ordre: 23 });
       cases.push({ code: 'DG', nom: 'Forfait 3 % conventionnel', formulaire: '2035-B', ordre: 24 });
-      // Phase 9K — F3 : Groupe III (DH) indisponible la 1ère année d'installation (RO-008).
-      // PM-004 = Médecin en première installation → on bloque DH et on remonte un piège pédagogique.
-      const isFirstYearInstall = profileId === 'PM-004';
-      if (!isFirstYearInstall) {
-        cases.push({ code: 'DH', nom: 'Groupe III (3 050 €)', formulaire: '2035-B', ordre: 25 });
-      }
+      cases.push({ code: 'DH', nom: 'Groupe III (au barème)', formulaire: '2035-B', ordre: 25 });
       regles.push('RO-008');
       pieges.push("Forfaits 2 % / 3 % / Groupe III : uniquement sur la part installation/collaboration, pas sur les remplacements ! Vont en cases dédiées DF / DG / DH ligne 43 de la 2035-B.");
-      if (isFirstYearInstall) {
-        pieges.push("⚠️ Groupe III (DH 3 050 €) : indisponible la **1ère année d'installation**. Tu peux activer DF (2 %) et DG (3 %) dès le 1er exercice — DH attend la 2ème année (voir RO-008).");
-      }
+      pieges.push("Forfaits 2 % / 3 % / Groupe III : à condition de déposer ta 2035 dans les délais. Un seul jour de retard fait perdre le 2 %, le 3 % et le groupe III.");
       pieges.push("Réforme 2026 : la case DSCO est supprimée. Le 3 % (DG) et le Groupe III (DH) sont désormais réintégrés socialement via le RBS du Cadre 8 de la 2035-B → DSDE. Le 2 % (DF) reste exonéré socialement.");
     } else {
-      // Secteur 2 OPTAM : uniquement DF accessible.
-      pieges.push("⚠️ **Secteur 2 / OPTAM** : seul le **forfait 2 % (DF)** est accessible. Le **3 % (DG)** et le **Groupe III (DH)** sont **réservés au Secteur 1 conventionné** — ne PAS les remplir.");
+      // Secteur 2, OPTAM compris : aucun des trois forfaits.
+      pieges.push("⚠️ **Secteur 2 / OPTAM** : aucun des trois forfaits (2 % DF, 3 % DG, Groupe III DH). Ils sont **réservés aux médecins conventionnés en secteur 1** — ne remplis ni DF, ni DG, ni DH.");
     }
   }
 

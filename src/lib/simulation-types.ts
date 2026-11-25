@@ -28,7 +28,7 @@ export interface ImpotDetails {
   revenuImposableConjoint?: number;  // ✅ Revenu imposable du conjoint (après abattement adapté)
   revenusSalariesBrut: number;
   revenusConjointBrut?: number;      // ✅ Revenu brut du conjoint (avant abattement)
-  typeRevenuConjoint?: 'salarie' | 'liberal_micro' | 'liberal_reel' | 'autre';  // ✅ Type de revenu du conjoint
+  typeRevenuConjoint?: 'salarie' | 'retraite' | 'liberal_micro' | 'liberal_reel' | 'autre';  // ✅ Type de revenu du conjoint
   modeFraisSalaries: 'abattement_10' | 'frais_reels';
   deductionAppliquee: number;
   parts: number;

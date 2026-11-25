@@ -36,15 +36,18 @@ export const GUIDE_SOUS_PAGES_LAST_UPDATED_ISO = '2026-08-23';
  *  14 novembre 2026 (§ 9.fy) ; offre interne : « par chat » le 15 novembre
  *  2026 (§ 9.gw) ; fenêtre produit :
  *  onglet « Et aussi » le 15 novembre 2026 (§ 9.hd) ; détail des offres
- *  rangé par famille le 15 novembre 2026 (§ 9.hh). */
-export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-15';
+ *  rangé par famille le 15 novembre 2026 (§ 9.hh) ; question du régime fiscal : la
+ *  règle des 34 % avec les cotisations, le 25 novembre 2026 (§ 9.hq). */
+export const ACCUEIL_LAST_UPDATED_ISO = '2026-11-25';
 
 /** /faq : douze réponses du schéma FAQPage alignées sur le texte affiché
  *  (MIGRATION.md § 9.fa, PR 146), mises en ligne le 13 novembre 2026 ; le
  *  texte visible de la page n'a pas changé ce jour-là. Elle portait avant la
  *  date de l'accueil de la DA 2026 (10 novembre, § 9.eb). § 9.fd. Réponse
- *  « tarifs pour les internes » : « par chat » le 15 novembre 2026 (§ 9.gw). */
-export const FAQ_LAST_UPDATED_ISO = '2026-11-15';
+ *  « tarifs pour les internes » : « par chat » le 15 novembre 2026 (§ 9.gw). Réponse
+ *  « C'est quoi le Super-Net ? » : les charges payées dans les deux régimes, le
+ *  25 novembre 2026 (§ 9.hq). */
+export const FAQ_LAST_UPDATED_ISO = '2026-11-25';
 
 /** /tarifs : page refaite le 15 novembre 2026 (titre, chapô, offres,
  *  garanties : MIGRATION.md § 9.gs). Avant : tarif des internes et essai de

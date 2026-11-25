@@ -386,7 +386,7 @@ function computeBase(values: CalculetteFormValues): ComputedBase {
       return { dsPamc, cases2042, hasInputs, isMicroBnc: true, microBncRecettes: recettesImposables, pdsaSocial };
     }
 
-    // V20 — Régime réel : la PDSA exonérée est déduite fiscalement via la ligne CI (cadre 7 « Divers à déduire ») de la 2035-B
+    // V20 — Régime réel : la PDSA exonérée est déduite fiscalement via la ligne CI (cadre 4, ligne 43 « Divers à déduire ») de la 2035-B
     // (à la charge de l'utilisateur). Côté SOCIAL, la ligne CI figure dans la formule du
     // RBS (`calculerRBS`) → réintégrée AUTOMATIQUEMENT en DSDE (RBS positif) ou DSDG
     // (RBS négatif). DSFA / DSFB sont RÉSERVÉES au régime micro-BNC : les renseigner en

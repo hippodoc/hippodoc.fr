@@ -334,7 +334,7 @@ export function PaymentExplanation({
                     ~{nombreFr(mensuelConjoint)} €
                   </td>
                   <td className="mode text-right hidden sm:table-cell">
-                    {typeConjoint === 'salarie' ? 'sur salaire' : typeConjoint === 'autre' ? '' : 'acomptes'}
+                    {typeConjoint === 'salarie' ? 'sur salaire' : typeConjoint === 'retraite' ? 'sur pension' : typeConjoint === 'autre' ? '' : 'acomptes'}
                   </td>
                 </tr>
                 <tr className="total">

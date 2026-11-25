@@ -227,12 +227,12 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       value: recettesAnnuelles || 0,
       colorClass: "sim-marque",
       negative: false,
-      tooltip: "Vos recettes d'activité libérale avant toute déduction"
+      tooltip: "Tes recettes d'activité libérale avant toute déduction"
     });
 
     // ✅ Afficher les revenus salariés si présents
     if (hasRevenusSalaries) {
-      // Calculer le détail pour la tooltip — abattement 10 % year-aware (plancher 504 € / plafond 14 426 € en 2025-2026, Art. 83 CGI)
+      // Calculer le détail pour la tooltip — abattement 10 % de l'année du barème (plancher 509 € et plafond 14 555 € pour les revenus 2025, CGI art. 83, 3°)
       const abattementSalaries = abattement10Salaire(revenusSalariesAnnuels, annee || 2026);
       const imposableSalaries = Math.max(0, revenusSalariesAnnuels - abattementSalaries);
       
@@ -242,7 +242,7 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
         value: revenusSalariesAnnuels,
         colorClass: "sim-marque",
         negative: false,
-        tooltip: `${formatMontant(revenusSalariesAnnuels)} brut − ${formatMontant(abattementSalaries)} (abattement 10%) = ${formatMontant(imposableSalaries)} imposable`
+        tooltip: `${formatMontant(revenusSalariesAnnuels)} net imposable − ${formatMontant(abattementSalaries)} (abattement 10%) = ${formatMontant(imposableSalaries)} retenus pour l'impôt`
       });
     }
 
@@ -254,10 +254,13 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       
       const anneeFiscale = annee || 2026;
       const plafondConjoint = getBaremeIR(anneeFiscale).plafondAbattement10Salaire;
+      const plafondPensionConjoint = getBaremeIR(anneeFiscale).plafondAbattement10Pension;
       const getConjointTooltip = (): string => {
         switch (typeConjoint) {
           case 'salarie':
-            return `Revenus bruts ${formatMontant(revenusConjointAnnuels)} - Abattement 10% (max ${formatMontant(plafondConjoint)} en ${anneeFiscale}) = ${formatMontant(revenuImposableConjoint)} imposables`;
+            return `Salaires nets imposables ${formatMontant(revenusConjointAnnuels)} - Abattement 10% (max ${formatMontant(plafondConjoint)} en ${anneeFiscale}) = ${formatMontant(revenuImposableConjoint)} retenus pour l'impôt`;
+          case 'retraite':
+            return `Pensions ${formatMontant(revenusConjointAnnuels)} - Abattement 10% (max ${formatMontant(plafondPensionConjoint)} par foyer en ${anneeFiscale}) = ${formatMontant(revenuImposableConjoint)} retenus pour l'impôt`;
           case 'liberal_micro':
             return `CA brut ${formatMontant(revenusConjointAnnuels)} × 66% (abattement 34%) = ${formatMontant(revenuImposableConjoint)} imposables`;
           case 'liberal_reel':

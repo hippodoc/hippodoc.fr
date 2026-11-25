@@ -27,6 +27,9 @@ const sousPostesSchema = z
     etudes: money,
     ijMadelinDansAF: money,
     pdsaExonere: money,
+    // Lot « avis du 18/10 » de l'application (§ 9.hq) : part de AA perçue comme remplaçant, hors
+    // des trois forfaits. Une sauvegarde d'avant (sans la clé) se relit avec 0 (`money` a un défaut).
+    recettesRemplacement: money,
   })
   .default({
     DE: 0,
@@ -36,6 +39,7 @@ const sousPostesSchema = z
     etudes: 0,
     ijMadelinDansAF: 0,
     pdsaExonere: 0,
+    recettesRemplacement: 0,
   });
 
 export const REGIMES = ['reel', 'micro_bnc'] as const;
@@ -83,7 +87,7 @@ export const calculetteSchema = z
 
     // V18 — PDSA exonérée Art. 151 ter (majorations CRN/CRM/CRD/CRS/VRN/VRM/VRD/VRS + forfaits PRN/PRD/RSP).
     // Exonérée d'IR mais SOUMISE aux cotisations sociales → sort de 5HQ/5QC.
-    // Micro-BNC : reportée en NET (×0,66) sur DSFA. Réel : déduite via ligne CI (cadre 7) de la 2035-B → réintégrée automatiquement en DSDE/DSDG par le RBS (DSFA = 0 en réel).
+    // Micro-BNC : reportée en NET (×0,66) sur DSFA. Réel : déduite via ligne CI (cadre 4, ligne 43) de la 2035-B → réintégrée automatiquement en DSDE/DSDG par le RBS (DSFA = 0 en réel).
     pdsaExonereBrut: money,
 
     // Bloc 1 — 2035-B principal (régime réel uniquement)
@@ -279,7 +283,7 @@ export const CALCULETTE_DEFAULTS: CalculetteFormValues = {
   cadre8DE: 0, cadre8DB: 0,
   assistanceActive: false,
   choixAssistance: 'cumul',
-  sousPostes: { DE: 0, HN: 0, MSU: 0, expertises: 0, etudes: 0, ijMadelinDansAF: 0, pdsaExonere: 0 },
+  sousPostes: { DE: 0, HN: 0, MSU: 0, expertises: 0, etudes: 0, ijMadelinDansAF: 0, pdsaExonere: 0, recettesRemplacement: 0 },
   depassementsAutorises: false,
   showZeros: false,
   declarant: 1,

@@ -2,7 +2,7 @@
 title: "Modes d'exercice du médecin : les 8 statuts"
 description: "Libéral, salariat, collaboration, mixte… découvre les 8 modes d'exercice pour bien débuter et choisir celui qui te correspond."
 pubDate: "2025-10-21"
-updatedDate: "2026-09-25"
+updatedDate: "2026-11-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -22,7 +22,7 @@ faq:
   - question: "Quel statut choisir quand on débute ?"
     answer: "Pour débuter sereinement, le **salariat** offre stabilité et protection sociale complète. Le **remplacement libéral** est idéal si tu veux plus de flexibilité et un meilleur potentiel de revenus."
   - question: "Quelle différence entre remplaçant et collaborateur libéral ?"
-    answer: "Le **remplaçant** exerce à la place d'un médecin absent, temporairement, et lui reverse une part des honoraires. Le **collaborateur libéral** exerce **en même temps** que le titulaire, dans son cabinet, développe **sa propre patientèle** et lui verse une redevance. Le collaborateur est conventionné : il a accès, par exemple, à l'aide maternité de l'Assurance Maladie, dont les remplaçants sont exclus."
+    answer: "Le **remplaçant** exerce à la place d'un médecin absent, temporairement, et le médecin remplacé lui reverse une part des honoraires (la rétrocession). Le **collaborateur libéral** exerce **en même temps** que le titulaire, dans son cabinet, développe **sa propre patientèle** et lui verse une redevance. Le collaborateur est conventionné : il a accès, par exemple, à l'aide maternité de l'Assurance Maladie, dont les remplaçants sont exclus."
   - question: "Quels sont les avantages du remplacement libéral ?"
     answer: "Le remplacement libéral offre : **flexibilité totale** du planning, **rémunération attractive** (70-90% des honoraires en médecine générale, 60-70% avec plateau technique), formation variée, pas de gestion de cabinet, et liberté géographique."
 relatedArticles:

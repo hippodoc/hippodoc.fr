@@ -728,7 +728,7 @@ export function CalculetteResultsView({
                   <>
                     Déduit en
                     <CaseBadge code="CI" tone="exo" />
-                    <span className="text-emerald-800/90 dark:text-emerald-200/90">(cadre 7 « Divers à déduire » 2035) → réintégration sociale auto via RBS →</span>
+                    <span className="text-emerald-800/90 dark:text-emerald-200/90">(cadre 4, ligne 43 « Divers à déduire » 2035-B) → réintégration sociale auto via RBS →</span>
                     <CaseBadge code="DSDE" tone="imposable" />
                     <span className="text-emerald-700/80 dark:text-emerald-300/70 text-[11px]">(ou <strong>DSDG</strong> si RBS négatif)</span>
                   </>
@@ -854,7 +854,7 @@ export function CalculetteResultsView({
               label={isMicroBnc ? 'Recettes brutes encaissées (PDSA + rétrocessions/redevance versées incluses)' : 'CA total avant rétrocessions versées / redevance de collaboration'}
               value={dsPamc.DSCS}
               hint={isMicroBnc
-                ? 'Doctrine SNIR (notice URSSAF DRI-PAMC) : DSCS = totalité des recettes encaissées (PDSA exonérée incluse), AVANT déduction des rétrocessions versées (titulaire) ou de la redevance de collaboration (collaborateur — L16/BG). Cette part reversée n\'est PAS soustraite ici, sinon le ratio DSAU (DSAV/DSCS) se casse. Les rétrocessions versées sont en revanche retirées côté fiscal (5HQ) et côté assiette sociale nette (DSDE) ; la redevance de collaboration, elle, reste dans la 5HQ : l\'abattement de 34 % la couvre. Ne pas confondre avec 5HQ — voir RO-012.'
+                ? 'Doctrine SNIR (notice URSSAF DRI-PAMC) : DSCS = totalité des recettes encaissées (PDSA exonérée incluse), AVANT déduction des rétrocessions versées (titulaire) ou de la redevance de collaboration (collaborateur — L16/BG). Cette part reversée n\'est PAS soustraite ici, sinon le ratio DSAU (DSAV/DSCS) se casse. Les rétrocessions versées sont en revanche retirées côté fiscal (5HQ), et l\'Urssaf part de la 5HQ pour tes cotisations : DSDE reste vide en micro-BNC ; la redevance de collaboration, elle, reste dans la 5HQ : l\'abattement de 34 % la couvre. Ne pas confondre avec 5HQ — voir RO-012.'
                 : 'Chiffre d\'affaires total tous secteurs confondus, AVANT déduction des rétrocessions versées (L21/BG) ou de la redevance de collaboration (L16/BG). Voir RO-012.'}
             />
           )}
@@ -967,11 +967,11 @@ export function CalculetteResultsView({
 
               <div className="space-y-2.5 text-xs tabular-nums">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Excédent (CE)</span>
+                  <span className="text-muted-foreground">Excédent + réintégrations (CE, ligne 38)</span>
                   <span className="font-medium text-foreground">{fmt(decomposition.excedent)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">− Insuffisance (CN)</span>
+                  <span className="text-muted-foreground">− Insuffisance + déductions (CN, ligne 45)</span>
                   <span className="font-medium text-muted-foreground">−{fmt(decomposition.insuffisance)}</span>
                 </div>
                 <div className="flex justify-between items-center">
