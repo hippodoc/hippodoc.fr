@@ -757,7 +757,11 @@ PRODUCT_DEFINITION réutilisée mot pour mot) : `src/lib/site.ts`.
   2025, Mayotte inchangée). La même règle est dans l'application : toute retouche se fait aux deux
   endroits, et ses 12 demandes de référence (`calcul-outre-mer.test.ts`) se régénèrent.
   L'application (app.hippodoc.fr) reprend ce moteur : ses tests figent 14 demandes du simulateur
-  (`calcul-moteur-simulateur.test.ts`) ; un changement de règle ici se reporte là-bas.
+  (`calcul-moteur-simulateur.test.ts`) ; un changement de règle ici se reporte là-bas. Décisions
+  du fondateur du 25 novembre 2026 (§ 9.hr) : l'app s'aligne sur ce moteur à son lot « frais » 5
+  (un seul Super-Net, charges payées retirées en Micro-BNC aussi ; pension du conjoint avec son
+  propre abattement ; groupe III par spécialité, quand le site, sans champ de spécialité, garde la
+  table des omnipraticiens et le dit).
   Résultats (§ 9.ft) : la conclusion en tête, puis les fiches. L'impôt du médecin (sa part en
   couple, celle de son activité libérale, ses acomptes) vient de `src/lib/simulateur/impotMedecin.ts`,
   ce que chaque régime déduit de `src/lib/simulateur/deductions.ts` : conclusion, fiches et plis les

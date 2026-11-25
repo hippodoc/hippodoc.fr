@@ -52,7 +52,7 @@ interface RspmCalculationInput {
   chargesLiberalesReelles?: number;
   /**
    * 🎯 CONVENTION A — Audit pré-prod 2026 (CGI Art. 102 ter)
-   * Rétrocessions versées au remplaçant (charge déductible BNC L21/BG du Cerfa 2035-A).
+   * Rétrocessions versées au remplaçant (déduites des recettes, ligne 3 / AC du Cerfa 2035-A).
    * Si fourni : déduit AVANT abattement 34 % en micro-BNC ET avant base sociale URSSAF.
    * Si non fourni : fallback rétrocompatible (en micro-BNC, on suppose que
    * `chargesLiberalesReelles` ne contient QUE le versé — convention historique).
@@ -440,7 +440,7 @@ export const calculateRspmBreakdown = ({
   //    → On lit `retrocessionsVerseesMicroBnc` en priorité.
   //    → Fallback rétrocompat : si l'appelant passe encore via `chargesLiberalesReelles`
   //      en micro-BNC (legacy), on l'utilise comme proxy + warn DEV pour détecter régression.
-  //  • réel : toutes les charges (incl. retros via L21/BG) déduites en aval via
+  //  • réel : toutes les charges (incl. retros, ligne 3 / AC de la 2035-A) déduites en aval via
   //    `chargesLiberalesReelles`. `retrocessionsVerseesMicroBnc` est IGNORÉ.
   let retroDeduiteMicroBnc = 0;
   if (profile.regime_fiscal === 'micro-bnc') {

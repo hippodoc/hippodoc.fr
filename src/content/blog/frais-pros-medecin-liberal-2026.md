@@ -16,7 +16,7 @@ tags:
 cta: "Prêt à déduire juste sans y passer tes soirées ?"
 faq:
   - question: "Quel régime fiscal choisir entre micro-BNC et déclaration contrôlée en 2026 ?"
-    answer: "Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un **abattement forfaitaire de 34 %**. Si tes charges réelles, cotisations URSSAF et CARMF comprises, dépassent 34 % des recettes, la déclaration contrôlée (réel, formulaire 2035) devient généralement plus avantageuse. Le micro-BNC reste pertinent pour les remplaçants avec peu de charges ; le réel s'impose dès qu'il y a beaucoup de kilomètres, du matériel, du PER, ou un local pro."
+    answer: "Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un **abattement forfaitaire de 34 %**. Si tes charges réelles, cotisations URSSAF et CARMF comprises, dépassent 34 % des recettes, la déclaration contrôlée (réel, formulaire 2035) devient généralement plus avantageuse. Le micro-BNC reste pertinent pour les remplaçants avec peu de charges ; le réel s'impose dès qu'il y a beaucoup de kilomètres, du matériel, des cotisations Madelin, ou un local pro."
   - question: "Comment se calcule la déduction d'un repas pro en libéral ?"
     answer: "Pour les **revenus 2026 (déclaration 2027)** : déduction = (prix payé, plafonné à 21,40 €) − 5,50 €, soit une déduction maximale de **15,90 €** par repas. Pour la déclaration des revenus 2025 (en cours en 2026), les montants applicables sont 21,10 € / 5,45 € / 15,65 €. Il faut un ticket, un motif professionnel et une contrainte qui empêchait de rentrer."
   - question: "Le barème kilométrique couvre-t-il vraiment tous les frais de voiture ?"
@@ -28,7 +28,7 @@ faq:
   - question: "Quel est le plafond ANCV pour un médecin libéral en 2026 ?"
     answer: "Le **plafond fiscal** correspond à 1 SMIC mensuel brut et le **plafond d'exonération sociale** à 30 % de ce SMIC. La notice officielle de la déclaration des indépendants retient le SMIC du 1er janvier (1 802 € pour 2025) : pour 2026, compte **1 823 €** et **≈ 547 €**. Le dispositif n'est pas une « ligne vacances » libre : il se déclare en DSCN ou DSDN, dans la limite d'un SMIC mensuel brut, et la part exonérée socialement reste soumise à CSG-CRDS."
   - question: "Qu'est-ce que la déduction Groupe III ?"
-    answer: "C'est une **déduction forfaitaire complémentaire** réservée aux médecins conventionnés secteur 1 et calculée selon un barème conventionnel. Elle se cumule avec la déduction complémentaire de 3 %, et elle est compatible avec les frais réels (à la différence du forfait 2 % qui exclut les frais réels qu'il couvre)."
+    answer: "C'est une **déduction forfaitaire complémentaire** réservée aux médecins conventionnés en propre en secteur 1 (installés ou collaborateurs, pas les remplaçants), au réel, avec une 2035 déposée dans les délais. Elle suit un barème : de 770 € à 3 050 € selon tes honoraires conventionnels ; les seuils dépendent de ta spécialité (ceux des omnipraticiens sont les plus bas), le maximum est le même. Elle se cumule avec la déduction complémentaire de 3 %, et elle est compatible avec les frais réels (à la différence du forfait 2 % qui exclut les frais réels qu'il couvre)."
   - question: "Qu'est-ce qui change en 2026 par rapport aux années précédentes ?"
     answer: "Plusieurs points : le seuil micro-BNC reste fixé à **83 600 €** pour 2026-2028 ; la ZFU-TE est **fermée aux nouvelles installations** ; un nouveau régime QPV santé entre en vigueur pour certaines professions de santé en quartier prioritaire ; la déclaration sociale unifiée des indépendants se fait via le revenu brut social ; le **crédit d'impôt formation dirigeant est supprimé** pour toute formation suivie depuis le 1er janvier 2025 ; la **réduction d'impôt OGA est supprimée** à partir des exercices 2025."
 relatedArticles:
@@ -47,7 +47,7 @@ relatedArticles:
 - Le seuil micro-BNC est fixé à **83 600 € HT** de recettes pour 2026-2028, avec un abattement forfaitaire de **34 %** ; si tes charges réelles, cotisations URSSAF et CARMF comprises, dépassent ce seuil de **34 %** des recettes, le réel (2035) devient généralement plus avantageux.
 - Le barème kilométrique 2026 pour une 5 CV donne **5 679 € déductibles** pour 12 000 km pros, sans conserver le moindre ticket essence.
 - Un repas se déduit à hauteur de **(prix payé, plafonné à 21,40 €) − 5,50 €**, soit une déduction maximale de **15,90 €** pour les revenus 2026 (21,10 € / 5,45 € / 15,65 € pour la déclaration en cours).
-- Le médecin secteur 1 peut cumuler trois déductions au réel : le **forfait 2 %**, la **déduction Groupe III**, et la **déduction complémentaire de 3 %**.
+- Le médecin conventionné en propre en secteur 1 (installé ou collaborateur, pas le remplaçant) peut cumuler trois déductions au réel, 2035 déposée dans les délais : le **forfait 2 %**, la **déduction Groupe III**, et la **déduction complémentaire de 3 %**.
 - Le PER se déduit au choix de ton **bénéfice BNC** (2035) ou de ton **revenu global** (2042), jamais des deux, dans la limite d'un disponible calculé sur le **PASS 2026 fixé à 48 060 €** ; le chèque-vacances ANCV est plafonné fiscalement à 1 SMIC mensuel brut (**1 823 €** pour 2026, SMIC du 1er janvier) et socialement à 30 % de ce SMIC (**≈ 547 €**).
 :::
 
@@ -107,7 +107,7 @@ Et tu archives tes pièces justificatives.
 
 ### Cas particuliers à connaître
 
-**Médecin conventionné secteur 1.** Tu peux cumuler des déductions spécifiques (forfait 2 %, Groupe III, déduction complémentaire 3 %) qui n'existent qu'au réel — voir section 5.\
+**Médecin conventionné secteur 1** (en propre : installé ou collaborateur, pas le remplaçant). Tu peux cumuler des déductions spécifiques (forfait 2 %, Groupe III, déduction complémentaire 3 %) qui n'existent qu'au réel, 2035 déposée dans les délais — voir section 5.\
 **[RSPM](/blog/rspm-exemples-concrets) (régime simplifié des médecins remplaçants).** Une offre sociale simplifiée pour les remplaçants exerçant **exclusivement** des remplacements, avec des honoraires perçus ≤ 19 000 €/an et sans autre activité indépendante. Le RSPM gère le **social** ; le choix [micro vs réel](/blog/regime-fiscal-micro-bnc-vs-reel) reste un arbitrage **fiscal** indépendant.\
 **SEL et SCM.** En SEL, les rémunérations techniques relèvent souvent des BNC selon la doctrine actuelle, et il faut séparer les charges de la société de celles de l'associé. En SCM, tu déduis ta quote-part de charges ou les appels facturés par la structure.
 
@@ -165,7 +165,7 @@ Le seuil pratique à connaître : **500 € HT par élément autonome**.
 
 **≤ 500 € HT** : charge directe l'année du paiement. Stéthoscope, otoscope, tensiomètre, petit mobilier, chaise de bureau.
 
-**> 500 € HT** : immobilisation et amortissement sur la durée d'usage normale. Table d'examen, ECG, échographe, ordinateur > 1 500 € HT, mobilier complet de cabinet.
+**> 500 € HT** : immobilisation et amortissement sur la durée d'usage normale. Table d'examen, ECG, échographe, ordinateur, mobilier complet de cabinet : tout bien de plus de 500 € HT s'amortit.
 
 **Piège classique :** un « ensemble indissociable » ne se découpe pas. Si tu équipes ton cabinet à neuf et que tu achètes un lot de mobilier où chaque élément est < 500 € HT mais que l'ensemble fait 5 000 € HT, l'administration peut requalifier en immobilisation globale. Pour les médecins exonérés de TVA, la TVA payée n'est généralement pas récupérable. Tu comptabilises en TTC, mais **le seuil fiscal reste exprimé en HT**.
 
@@ -266,10 +266,10 @@ La **réduction d'impôt pour frais de comptabilité OGA** est **supprimée** à
 
 ## 5.1 Secteur 1 : trois déductions cumulables
 
-Si tu es médecin conventionné secteur 1 (tarifs Sécu, sans dépassement), tu accèdes à trois déductions spécifiques, **en déclaration contrôlée uniquement**.
+Si tu es médecin conventionné en propre en secteur 1 (installé ou collaborateur, pas le remplaçant ; tarifs Sécu, sans dépassement), tu accèdes à trois déductions spécifiques, **en déclaration contrôlée uniquement**, à condition de déposer ta 2035 **dans les délais** : un simple retard les fait perdre toutes les trois (BOI-BNC-SECT-40, § 180).
 
 **Forfait 2 %** des recettes brutes, dépassements d'honoraires (DE ou DP) compris (BOI-BNC-SECT-40, § 120). Couvre certains frais de représentation, réception, prospection, cadeaux professionnels, recherche, blanchissage et petits déplacements.\
-**Déduction Groupe III.** Déduction forfaitaire complémentaire calculée selon un barème conventionnel.\
+**Déduction Groupe III.** Déduction forfaitaire complémentaire calculée selon un barème : de 770 € à 3 050 € selon tes honoraires conventionnels. Les seuils dépendent de ta spécialité (ceux des omnipraticiens sont les plus bas), le maximum est le même.\
 **Déduction complémentaire 3 %** sur l'assiette prévue par les textes. Cumulable avec le Groupe III.
 
 ### ⛔ Non-cumul forfait 2 % et frais réels qu'il couvre
@@ -312,7 +312,7 @@ Le remplaçant a une fiscalité souvent plus simple que celle d'un installé, ma
 **OK** : km pro (barème ou réels), hébergement temporaire, repas hors domicile justifiés, RCP/Ordre/syndicat, petit matériel transporté, bureau à domicile modeste, téléphone/internet au prorata, formation et congrès.\
 **Zones rouges** : vacances collées au remplacement, repas quotidiens proche du domicile, double résidence de confort, frais du cabinet supportés par le titulaire, pas de suivi des [rétrocessions perçues](/blog/salaires-medecins-remplacants), « charge cachée » dans la rétrocession nette.
 
-**Recettes :** si le titulaire encaisse les honoraires et te reverse 70 %, tu déclares les 70 % perçus, pas les 30 % que tu n'as jamais touchés. Si tu encaisses les honoraires et reverses une rétrocession au titulaire, tu déduis le montant reversé selon contrat : en ligne 21 de la 2035 au réel ; au micro-BNC, tu le retires de tes recettes avant l'abattement de 34 %. Une **redevance de collaboration**, elle, se déduit au réel (ligne 16 de la 2035), mais **ne se retire pas au micro-BNC** : l'abattement de 34 % la couvre.
+**Recettes :** si le titulaire encaisse les honoraires et te reverse 70 %, tu déclares les 70 % perçus, pas les 30 % que tu n'as jamais touchés. Si tu encaisses les honoraires et en reverses une part au titulaire, cette part est une rétrocession d'honoraires : au réel, tu la déduis en diminution des recettes, ligne 3 (AC) de la 2035-A ; au micro-BNC, tu la retires de tes recettes avant l'abattement de 34 %. Une **redevance de collaboration**, elle, n'est pas une rétrocession : elle paie l'usage du cabinet, et la notice de la 2035 la range dans les loyers (ligne 16, renvoi 9). Elle se déduit donc au réel, mais **ne se retire pas au micro-BNC** : l'abattement de 34 % la couvre.
 
 **RSPM ≠ fiscalité.** Le RSPM est un dispositif **social** simplifié, réservé aux médecins exerçant exclusivement des remplacements, avec des rétrocessions perçues ≤ 19 000 €/an et sans autre activité indépendante. Le choix **micro vs réel** reste un arbitrage **fiscal** indépendant.
 
@@ -420,7 +420,7 @@ Tout ce qui précède — la méthode, les justificatifs, les quote-parts, les a
 C'est l'outil qui te permet de déduire juste — sans y passer tes soirées.
 :::
 
-## 📚 Sources (vérifiées au 25 septembre 2026)
+## 📚 Sources (vérifiées au 25 novembre 2026)
 
 • Seuil du micro-BNC (83 600 € pour 2026 à 2028) : [entreprendre.service-public.gouv.fr, fiche F32105](https://entreprendre.service-public.gouv.fr/vosdroits/F32105).\
 • Frais de repas 2026 (5,50 € / 21,40 €) : [BOFiP, actualisation 2026](https://bofip.impots.gouv.fr/bofip/14932-PGP.html/ACTU-2026-00008).\
@@ -429,6 +429,8 @@ C'est l'outil qui te permet de déduire juste — sans y passer tes soirées.
 • ZFU-TE fermées aux nouvelles implantations depuis 2026, nouveau dispositif en quartiers prioritaires : [BOFiP](https://bofip.impots.gouv.fr/bofip/14633-PGP.html/ACTU-2025-00053) ; [entreprendre.service-public.gouv.fr](https://entreprendre.service-public.gouv.fr/actualites/A18806).\
 • Exonération PDSA : CGI, art. 151 ter ; [BOFiP BOI-BNC-CHAMP-10-40-20](https://bofip.impots.gouv.fr/bofip/2818-PGP.html/identifiant=BOI-BNC-CHAMP-10-40-20-20151202).\
 • Déclaration DAS2 au-delà de 2 400 € par bénéficiaire : [BOFiP, relèvement du seuil](https://bofip.impots.gouv.fr/bofip/14327-PGP.html/ACTU-2024-00154).\
+• Au micro-BNC, seuls les débours, les rétrocessions d'honoraires et les plus-values sortent des recettes : [BOFiP, BOI-BNC-DECLA-20-20, § 10](https://bofip.impots.gouv.fr/bofip/4802-PGP.html/identifiant=BOI-BNC-DECLA-20-20-20260819) ; ce qu'est une rétrocession : [BOFiP, BOI-BNC-BASE-20-20, § 70](https://bofip.impots.gouv.fr/bofip/4650-PGP.html/identifiant=BOI-BNC-BASE-20-20-20260819) ; ligne 3 (AC) et redevance de collaboration rangée dans les loyers (ligne 16, renvoi 9) : notice de la déclaration n° 2035.\
+• Forfaits du secteur 1 (médecins visés, 2 % sur toutes les recettes, dépôt dans les délais) : [BOFiP, BOI-BNC-SECT-40](https://bofip.impots.gouv.fr/bofip/5962-PGP.html/identifiant=BOI-BNC-SECT-40-20240828), § 20, 120 et 180 ; barème du groupe III par spécialité : BOI-BAREME-000025.\
 • SMIC 2026 (1 823,03 € puis 1 867,02 € au 1er juin) : [service-public.gouv.fr](https://www.service-public.gouv.fr/particuliers/actualites/A18916).\
 • Chèques-vacances du travailleur indépendant (DSCN/DSDN, plafonds) : [notice officielle de la déclaration des revenus 2025 des indépendants](https://www.impots.gouv.fr/sites/default/files/media/1_metier/1_particulier/EV/1_declarer/190_travailleur_independant/2041dri-ti-revenus-2025-vf.pdf) (§ 6.10) ; éligibilité des professions libérales : [ANCV](https://www.ancv.com/mettre-en-place-le-cheque-vacances).\
 • CESU préfinancé, plafond de 2 591 € : [cesu.urssaf.fr](https://www.cesu.urssaf.fr/info/accueil/s-informer-sur-le-cesu/tout-savoir/le-cesu-prefinance-quest-ce-que.html).\

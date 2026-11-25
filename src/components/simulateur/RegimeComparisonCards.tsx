@@ -253,14 +253,17 @@ export function RegimeComparisonCards({ reel, microBnc, recommande, economie, pe
       const revenuImposableConjoint = result.impotDetails?.revenuImposableConjoint || 0;
       
       const anneeFiscale = annee || 2026;
-      const plafondConjoint = getBaremeIR(anneeFiscale).plafondAbattement10Salaire;
-      const plafondPensionConjoint = getBaremeIR(anneeFiscale).plafondAbattement10Pension;
+      // Comme l'aide du formulaire : les plafonds de l'année saisie, et pour 2026 ceux des
+      // revenus 2025, les derniers connus, que le moteur applique aussi.
+      const anneeDesPlafonds = Math.min(anneeFiscale, 2025);
+      const plafondConjoint = getBaremeIR(anneeDesPlafonds).plafondAbattement10Salaire;
+      const plafondPensionConjoint = getBaremeIR(anneeDesPlafonds).plafondAbattement10Pension;
       const getConjointTooltip = (): string => {
         switch (typeConjoint) {
           case 'salarie':
-            return `Salaires nets imposables ${formatMontant(revenusConjointAnnuels)} - Abattement 10% (max ${formatMontant(plafondConjoint)} en ${anneeFiscale}) = ${formatMontant(revenuImposableConjoint)} retenus pour l'impôt`;
+            return `Salaires nets imposables ${formatMontant(revenusConjointAnnuels)} - Abattement 10% (max ${formatMontant(plafondConjoint)} pour les revenus ${anneeDesPlafonds}) = ${formatMontant(revenuImposableConjoint)} retenus pour l'impôt`;
           case 'retraite':
-            return `Pensions ${formatMontant(revenusConjointAnnuels)} - Abattement 10% (max ${formatMontant(plafondPensionConjoint)} par foyer en ${anneeFiscale}) = ${formatMontant(revenuImposableConjoint)} retenus pour l'impôt`;
+            return `Pensions ${formatMontant(revenusConjointAnnuels)} - Abattement 10% (max ${formatMontant(plafondPensionConjoint)} par foyer pour les revenus ${anneeDesPlafonds}) = ${formatMontant(revenuImposableConjoint)} retenus pour l'impôt`;
           case 'liberal_micro':
             return `CA brut ${formatMontant(revenusConjointAnnuels)} × 66% (abattement 34%) = ${formatMontant(revenuImposableConjoint)} imposables`;
           case 'liberal_reel':

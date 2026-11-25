@@ -2,7 +2,7 @@
 title: "Médecin remplaçant : bosser 6 mois, vivre 12"
 description: "120 jours de remplacement, c'est environ 3 900 € nets par mois sur 12 mois. Le vrai calcul 2026 : cotisations, micro-BNC, impôt, et combien de jours te suffisent."
 pubDate: "2026-09-20"
-updatedDate: "2026-09-23"
+updatedDate: "2026-11-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -16,13 +16,13 @@ cta: "Combien de jours ont du sens pour toi cette année ?"
 ctaHref: "/simulateur"
 faq:
   - question: "Combien gagne un médecin remplaçant qui travaille 6 mois par an ?"
-    answer: "Dans notre cas-type (médecine générale, secteur 1, **120 jours** à 25 actes par jour, rétrocession de 80 %) : **72 000 €** encaissés, environ **18 100 €** de cotisations URSSAF et CARMF, autour de **7 400 €** d'impôt pour un célibataire. Il reste environ **46 500 € nets**, soit **≈ 3 900 € par mois** étalés sur 12 mois."
+    answer: "Dans notre cas-type (médecine générale, secteur 1, **120 jours** à 25 actes par jour, rétrocession de 80 %) : **72 000 €** encaissés, environ **17 700 €** de cotisations URSSAF et CARMF, autour de **7 400 €** d'impôt pour un célibataire. Il reste environ **46 900 € nets**, soit **≈ 3 900 € par mois** étalés sur 12 mois."
   - question: "Pourquoi travailler deux fois moins ne divise pas le revenu net par deux ?"
     answer: "À cause de la **progressivité de l'impôt**. Le barème fonctionne comme un escalier : 0 %, puis 11 %, puis 30 %, puis 41 %. Les premiers euros de l'année remplissent les tranches à 0 % et 11 %, les derniers sont taxés à 30 % ou 41 %. Moins tu gagnes dans l'année, plus la part de tes revenus taxée doucement est grande."
   - question: "Combien de jours de remplacement faut-il pour 3 000 € nets par mois ?"
-    answer: "Avec nos hypothèses (600 € rétrocédés par jour, régime classique, micro-BNC, barème 2026, célibataire) : environ **90 jours par an**, soit quatre mois et demi de travail. Pour 2 000 € par mois, compte environ 60 jours ; pour 3 900 €, environ 120 jours ; pour 5 000 €, environ 165 jours — et tu dépasses alors le plafond du micro-BNC."
+    answer: "Avec nos hypothèses (600 € rétrocédés par jour, régime classique, micro-BNC, barème 2026, célibataire) : environ **90 jours par an**, soit quatre mois et demi de travail. Pour 2 000 € par mois, compte environ 60 jours ; pour 3 900 €, environ 120 jours ; pour 5 000 €, environ 170 jours — et tu dépasses alors le plafond du micro-BNC."
   - question: "Le second semestre de travail rapporte-t-il autant que le premier ?"
-    answer: "Non. Dans notre simulation, le premier semestre laisse environ **46 500 € nets**, le second seulement **≈ 38 000 € de plus** : près d'un cinquième de moins, pour exactement le même travail. Les derniers euros de l'année tombent dans les tranches à 30 % puis 41 %, avec des cotisations toujours proportionnelles."
+    answer: "Non. Dans notre simulation, le premier semestre laisse environ **46 900 € nets**, le second seulement **≈ 33 500 € de plus** : près de 30 % de moins, pour exactement le même travail. Les derniers euros de l'année tombent dans les tranches à 30 % puis 41 %, avec des cotisations toujours proportionnelles."
   - question: "Quels sont les risques de ne travailler que 6 mois par an ?"
     answer: "Trois prérequis. Une **prévoyance** solide : pas d'employeur, donc pas de maintien de salaire en cas d'arrêt. Une **trésorerie lissée** : l'URSSAF et la CARMF calculent d'abord tes cotisations sur tes revenus passés, puis régularisent avec décalage. Et un **choix retraite assumé** : moins de jours cotisés, c'est moins de points CARMF, à compenser par ton épargne."
   - question: "Reste-t-on au micro-BNC en travaillant 6 mois par an ?"
@@ -43,8 +43,8 @@ Tu as choisi le remplacement pour la liberté. Mais t'es-tu déjà demandé jusq
 **L'essentiel**
 
 - **120 jours** de remplacement en médecine générale (25 actes par jour, rétrocession de 80 %) : **72 000 €** encaissés dans l'année.
-- Après cotisations (≈ 18 100 €) et impôt (≈ 7 400 €) : **≈ 46 500 € nets**, soit **≈ 3 900 € par mois** étalés sur 12 mois.
-- Doubler tes jours ne double pas ton net : le second semestre ne rapporte que **≈ 38 000 €** de plus, près d'un cinquième de moins pour le même travail.
+- Après cotisations (≈ 17 700 €) et impôt (≈ 7 400 €) : **≈ 46 900 € nets**, soit **≈ 3 900 € par mois** étalés sur 12 mois.
+- Doubler tes jours ne double pas ton net : le second semestre ne rapporte que **≈ 33 500 €** de plus, près de 30 % de moins pour le même travail.
 :::
 
 ## 🎚️ Un levier que peu de professions offrent
@@ -67,11 +67,11 @@ Chaque journée te rapporte environ 600 € d'honoraires rétrocédés. Sur 120 
 
 C'est là que la plupart des calculs de coin de table s'effondrent — pas le nôtre. Déroulons :
 
-**Les cotisations sociales d'abord.** [URSSAF](/blog/tout-comprendre-urssaf) (maladie, allocations familiales, CSG-CRDS) et [CARMF](/blog/tout-comprendre-carmf) (ta retraite) prélèvent, pour un remplaçant thésé en régime classique, de l'ordre d'un quart de tes recettes. Sur 72 000 €, compte environ **18 100 €**.
+**Les cotisations sociales d'abord.** [URSSAF](/blog/tout-comprendre-urssaf) (maladie, allocations familiales, CSG-CRDS) et [CARMF](/blog/tout-comprendre-carmf) (ta retraite) prélèvent, pour un remplaçant thésé en régime classique, de l'ordre d'un quart de tes recettes. Sur 72 000 €, compte environ **17 700 €**.
 
 **L'impôt ensuite.** À 72 000 € de recettes, tu es sous le plafond du [régime micro-BNC](/blog/regime-fiscal-micro-bnc-vs-reel) (83 600 € depuis le 1er janvier 2026). L'administration applique un abattement forfaitaire de 34 % : tu es imposé sur 66 % de tes recettes, soit environ 47 500 €. Avec le barème progressif, l'impôt ressort autour de **7 400 €** pour un célibataire — un taux moyen d'environ 10 % de tes recettes.
 
-**Le résultat.** 72 000 € − 18 100 € − 7 400 € ≈ **46 500 € nets dans ta poche**, soit **≈ 3 900 € par mois, étalés sur 12 mois**.
+**Le résultat.** 72 000 € − 17 700 € − 7 400 € ≈ **46 900 € nets dans ta poche**, soit **≈ 3 900 € par mois, étalés sur 12 mois**.
 
 Pour situer : le salaire net médian du secteur privé en France est de **2 190 € par mois** (INSEE, 2024), pour un temps plein de 12 mois. Un mi-temps annuel bien construit dépasse ce niveau — de quoi financer sereinement l'année où ta vie a besoin d'espace.
 
@@ -79,14 +79,14 @@ Pour situer : le salaire net médian du secteur privé en France est de **2 190 
 
 Voici le chiffre qui devrait te marquer : si ce même remplaçant doublait ses jours, année après année (240 jours, ~144 000 € de recettes), il sortirait du micro-BNC, passerait au régime réel, et son impôt grimperait dans les tranches à 30 % puis 41 %.
 
-Résultat de la simulation, en ordre de grandeur (au régime réel, avec les déductions forfaitaires du secteur 1 que le simulateur applique — 2 %, groupe III, 3 % — et sans autres frais réels) :
+Résultat de la simulation, en ordre de grandeur (au régime réel, sans frais réels ; un remplaçant n'a pas droit aux déductions forfaitaires du secteur 1) :
 
 | | Net dans ta poche |
 |---|---|
-| **1er semestre travaillé** | ~46 500 € |
-| **2e semestre travaillé** | + ~38 000 € seulement |
+| **1er semestre travaillé** | ~46 900 € |
+| **2e semestre travaillé** | + ~33 500 € seulement |
 
-Le deuxième semestre rapporte **près d'un cinquième de moins** que le premier, pour exactement le même travail. C'est mécanique : les premiers euros de l'année remplissent les tranches à 0 % et 11 %, les derniers se font raboter à 30 % ou 41 %, avec des cotisations toujours proportionnelles. En travaillant 6 mois, tu ne gardes que la partie la plus rentable de ton année. C'est ça, **acheter du temps libre à prix réduit**.
+Le deuxième semestre rapporte **près de 30 % de moins** que le premier, pour exactement le même travail. C'est mécanique : les premiers euros de l'année remplissent les tranches à 0 % et 11 %, les derniers se font raboter à 30 % ou 41 %, avec des cotisations toujours proportionnelles. En travaillant 6 mois, tu ne gardes que la partie la plus rentable de ton année. C'est ça, **acheter du temps libre à prix réduit**.
 
 ## 🗓️ Combien de jours pour TON train de vie ?
 
@@ -97,7 +97,7 @@ Le raisonnement s'inverse facilement. En gardant les mêmes hypothèses (600 €
 | **2 000 €/mois** | ~60 jours | 3 mois |
 | **3 000 €/mois** | ~90 jours | 4 mois et demi |
 | **3 900 €/mois** | ~120 jours | 6 mois |
-| **5 000 €/mois** | ~165 jours | un peu plus de 8 mois |
+| **5 000 €/mois** | ~170 jours | 8 mois et demi |
 
 À 5 000 € par mois, tu dépasses le plafond du micro-BNC : un dépassement isolé est toléré, mais deux années de suite te font passer au régime réel — c'est l'hypothèse retenue pour cette ligne. Et remarque la courbe : les derniers paliers « coûtent » plus de jours que les premiers. C'est la progressivité qui joue, dans l'autre sens cette fois.
 
@@ -131,6 +131,6 @@ Pour répondre avec tes propres chiffres — ta rétrocession, ton volume d'acte
 • Plafond micro-BNC 2026-2028 : 83 600 €, abattement forfaitaire de 34 % (CGI, art. 102 ter ; entreprendre.service-public.gouv.fr).\
 • Salaire net médian du secteur privé en 2024, en équivalent temps plein : 2 190 € par mois (INSEE Première n° 2079, octobre 2025).\
 • Tarif de la consultation du généraliste, 30 € : tarifs conventionnels en vigueur au 1er janvier 2026 (ameli.fr).\
-• Cotisations, impôt et net des cas-types : calculés avec le moteur du [simulateur Hippodoc](/simulateur) (barèmes URSSAF et CARMF 2026), le 20 septembre 2026.
+• Cotisations, impôt et net des cas-types : calculés avec le moteur du [simulateur Hippodoc](/simulateur) (barèmes URSSAF et CARMF 2026, nouvelle assiette des cotisations), le 25 novembre 2026.
 
-*Simulation indicative pour un célibataire, 1 part fiscale, secteur 1, affilié à la CARMF depuis plus de 3 ans, sans autres revenus ; au régime réel, seules les déductions forfaitaires du secteur 1 sont prises en compte, sans frais réels ; chiffres arrondis. Cet article ne remplace pas un conseil fiscal ou comptable personnalisé.*
+*Simulation indicative pour un célibataire, 1 part fiscale, secteur 1, affilié à la CARMF depuis plus de 3 ans, sans autres revenus ; au régime réel, sans frais réels ni déductions forfaitaires du secteur 1, auxquelles un remplaçant n'a pas droit ; chiffres arrondis. Cet article ne remplace pas un conseil fiscal ou comptable personnalisé.*

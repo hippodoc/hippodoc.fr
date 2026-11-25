@@ -855,7 +855,7 @@ export function CalculetteResultsView({
               value={dsPamc.DSCS}
               hint={isMicroBnc
                 ? 'Doctrine SNIR (notice URSSAF DRI-PAMC) : DSCS = totalité des recettes encaissées (PDSA exonérée incluse), AVANT déduction des rétrocessions versées (titulaire) ou de la redevance de collaboration (collaborateur — L16/BG). Cette part reversée n\'est PAS soustraite ici, sinon le ratio DSAU (DSAV/DSCS) se casse. Les rétrocessions versées sont en revanche retirées côté fiscal (5HQ), et l\'Urssaf part de la 5HQ pour tes cotisations : DSDE reste vide en micro-BNC ; la redevance de collaboration, elle, reste dans la 5HQ : l\'abattement de 34 % la couvre. Ne pas confondre avec 5HQ — voir RO-012.'
-                : 'Chiffre d\'affaires total tous secteurs confondus, AVANT déduction des rétrocessions versées (L21/BG) ou de la redevance de collaboration (L16/BG). Voir RO-012.'}
+                : 'Chiffre d\'affaires total tous secteurs confondus, AVANT déduction des rétrocessions versées (ligne 3, AC, de la 2035-A) ou de la redevance de collaboration (L16/BG). Voir RO-012.'}
             />
           )}
           {visible(dsPamc.DSAV) && (

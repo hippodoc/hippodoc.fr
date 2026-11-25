@@ -64,7 +64,7 @@ const BLOC_EXOS: FieldConfig[] = [
   { name: 'CO', label: 'Exo jeunes artistes', case: 'CO', hint: 'Rare chez les médecins (héritage de la nomenclature).' },
   { name: 'DG', label: 'Exo Forfait 3 %', case: 'DG', hint: 'Forfait 3 % des honoraires conventionnels — secteur 1. Cumulable avec DH (Groupe III) depuis l\'imposition des revenus 2023 (BOI-BNC-SECT-40 ; UNASA §391).' },
   { name: 'CJ', label: 'Exo ZFRR', case: 'CJ', hint: 'Zone France Ruralités Revitalisation (ex-ZRR — CGI Art. 44 quindecies / 44 quindecies A). Réservée aux médecins installés et collaborateurs (les remplaçants ne sont pas éligibles). Plafond : 300 000 € de bénéfice exonéré sur 3 années glissantes (année courante + 2 précédentes). Dégressivité : 100 % (5 ans) puis 75 % / 50 % / 25 %. Reporte le montant exonéré tel qu\'il figure cadre 5 de ta 2035-B. ⚠️ Plafond proratisé l\'année d\'installation et de basculement de palier (cf. QT-049).' },
-  { name: 'DH', label: 'Exo Groupe III', case: 'DH', hint: 'Forfait Groupe III — secteur 1. Cumulable avec DG depuis l\'imposition des revenus 2023 (BOI-BNC-SECT-40).' },
+  { name: 'DH', label: 'Exo Groupe III', case: 'DH', hint: 'Forfait Groupe III — secteur 1, de 770 € à 3 050 € selon tes honoraires conventionnels. L\'assistance secteur 1 applique le barème des omnipraticiens ; les seuils des autres spécialités sont égaux ou plus hauts, pour le même maximum de 3 050 €. Cumulable avec DG depuis l\'imposition des revenus 2023 (BOI-BNC-SECT-40).' },
 ];
 
 const BLOC_EXTRAS: FieldConfig[] = [
@@ -707,7 +707,7 @@ export function CalculetteForm() {
             {/* Sous-section 1 — Recettes */}
             <div className="grid sm:grid-cols-2 gap-4">
               <FieldRow field={{ name: 'recettesMicroBnc', label: 'Recettes brutes encaissées', case: 'Brut total', hint: 'Total des honoraires encaissés sur l\'année (à la date où tu les as reçus, pas à celle de l\'acte), TOUS secteurs confondus. ⚠️ Saisis le BRUT TOTAL même si tu es en zone ZFU/ZFRR : la part exonérée sera dérivée plus bas. Pour S2/OPTAM : inclure les dépassements ici. Plafond Micro-BNC : 77 700 € (2024 et 2025) / 83 600 € (2026+). Les cases 5HQ/5IQ finales (recettes imposables) sont calculées dans la colonne résultats à droite.' }} />
-              <FieldRow field={{ name: 'retrocessionsVerseesMicroBnc', label: 'Rétrocessions versées (titulaire)', case: 'Pré-déduit', hint: 'Titulaire avec remplaçants : rétrocessions versées (L21/BG en réel), retirées de tes recettes AVANT l\'abattement de 34 % en micro-BNC (BOI-BNC-DECLA-20-20 § 10), jamais en case séparée. Collaborateur libéral : ne mets pas ta redevance ici, ce n\'est pas une rétrocession d\'honoraires (BOI-BNC-BASE-20-20 § 70) : en micro-BNC, l\'abattement de 34 % la couvre ; au réel, elle se déduit en L16/BG de ta 2035. ⚠️ Côté social, la DSCS reste le CA brut total (avant déduction) — voir RO-012.' }} />
+              <FieldRow field={{ name: 'retrocessionsVerseesMicroBnc', label: 'Rétrocessions versées (titulaire)', case: 'Pré-déduit', hint: 'Titulaire avec remplaçants : rétrocessions versées (au réel, en diminution des recettes, ligne 3 (AC) de la 2035-A), retirées de tes recettes AVANT l\'abattement de 34 % en micro-BNC (BOI-BNC-DECLA-20-20 § 10), jamais en case séparée. Collaborateur libéral : ne mets pas ta redevance ici, ce n\'est pas une rétrocession d\'honoraires (BOI-BNC-BASE-20-20 § 70) : en micro-BNC, l\'abattement de 34 % la couvre ; au réel, elle se déduit en L16/BG de ta 2035. ⚠️ Côté social, la DSCS reste le CA brut total (avant déduction) — voir RO-012.' }} />
             </div>
 
             {/* Phase 14.1 — Sous-section 2 — PDSA (indépendante de ZFU/ZFRR) */}
@@ -1331,7 +1331,7 @@ function AssistanceSecteur1Card() {
                     <span className="font-semibold text-violet-700 dark:text-violet-300">{fmt(forfaits.forfait3pct)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Groupe III (case DH) — au barème</span>
+                    <span className="text-muted-foreground">Groupe III (case DH) — au barème des omnipraticiens</span>
                     <span className="font-semibold text-violet-700 dark:text-violet-300">{fmt(forfaits.groupeIII)}</span>
                   </div>
                 </div>

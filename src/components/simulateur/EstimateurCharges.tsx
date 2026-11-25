@@ -40,7 +40,7 @@ const LIGNES: Ligne[] = [
     aide: "Un équipement de plus de 500 € HT s'amortit sur plusieurs années : n'en compte que la part de l'année.",
   },
   { id: 'formation', libelle: 'Formation, congrès, livres et revues' },
-  { id: 'autres', libelle: 'Autres (frais bancaires, fournitures, syndicat…)' },
+  { id: 'autres', libelle: 'Autres (CFE, frais bancaires, fournitures, syndicat…)' },
 ];
 
 const euros = (v: number, decimales = 0) =>
@@ -205,6 +205,9 @@ export function EstimateurCharges({
             {typeExercice === 'remplacant' && <>
               {' '}Si tu encaisses toi-même les honoraires et en reverses une part au médecin remplacé, ne la compte pas non plus{'\u00a0'}: saisis en recettes ce que tu gardes (les honoraires encaissés, moins la part reversée). Elle sort ainsi de tes recettes dans les deux régimes, Micro-BNC compris.
             </>}
+            {typeExercice === 'installe' && <>
+              {' '}Si tu verses des rétrocessions à tes remplaçants, ne les compte pas non plus{'\u00a0'}: retire-les de tes recettes. Elles en sortent ainsi dans les deux régimes, Micro-BNC compris (au réel, ligne 3 de la 2035-A). En secteur 1, au réel, le 3{'\u00a0'}% et le groupe III se calculent avant elles{'\u00a0'}: le simulateur les sous-estime alors un peu.
+            </>}
           </p>
 
           <div className="sim-estim-total">
@@ -212,7 +215,7 @@ export function EstimateurCharges({
               Total estimé{'\u00a0'}: <strong>{euros(total)}</strong> par an
               {mensuel && <> ({euros(Math.round(total / 12))} par mois)</>}
               {recettesAnnuelles > 0 && total > 0 && <>, soit {Math.round((total / recettesAnnuelles) * 100)}{'\u00a0'}% de tes recettes</>}.
-              {recettesAnnuelles > 0 && <> Le Micro-BNC en compte 34{'\u00a0'}%, soit {euros(Math.round(recettesAnnuelles * 0.34))}, à leur place.</>}
+              {recettesAnnuelles > 0 && <> Le Micro-BNC compte 34{'\u00a0'}%, soit {euros(Math.round(recettesAnnuelles * 0.34))}, à la place de ces charges et de tes cotisations{'\u00a0'}: le simulateur fait la comparaison complète.</>}
             </p>
             <Button type="button" className="sim-estim-bouton" onClick={reporter} disabled={total <= 0} data-ph="simulateur_estimer_charges_reporter">
               Reporter {euros(aReporter)}{mensuel ? ' par mois' : ''} dans mes charges

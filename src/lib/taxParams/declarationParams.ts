@@ -10,9 +10,11 @@
  * - Plafond social ANCV = 30 % du SMIC mensuel brut au 1er janvier (limite d'exo
  *   cotisations URSSAF + CARMF, la CSG-CRDS reste due).
  *   2024 : 530 € · 2025 : 541 € · 2026 : 547 € (arrondis à l'euro).
- * - Forfait Groupe III (frais blanchissage/entretien cabinet) : 3 050 € (stable)
- * - Forfait 2 % (frais représentation) : 2 % du CA conventionné avant rétro
- * - Forfait 3 % (frais groupe III alternatif) : 3 % de l'assiette conventionnée
+ * - Forfait 2 % (frais de représentation) : 2 % de toutes les recettes, dépassements compris
+ *   (BOI-BNC-SECT-40 § 120).
+ * - Forfait 3 % : 3 % des honoraires conventionnels.
+ * - Groupe III : au barème (770 € à 3 050 €), `getDeductionGroupeIII` de src/lib/baremes-ir.ts ;
+ *   l'ancien `forfaitGroupeIII: 3050`, lu nulle part, est retiré (MIGRATION.md § 9.hr).
  */
 
 export interface DeclarationParams {
@@ -22,8 +24,6 @@ export interface DeclarationParams {
   /** Plafond annuel SOCIAL des chèques-vacances ANCV (= 30 % SMIC mensuel brut, €).
    *  Limite d'exo cotisations URSSAF + CARMF. CSG-CRDS reste due sur cette part. */
   plafondSocialChequesVacances: number;
-  /** Forfait alternatif au 3 % pour les frais du groupe III (€) */
-  forfaitGroupeIII: number;
   /** Taux du forfait 2 % (frais de représentation, secteur 1) */
   tauxForfait2: number;
   /** Taux du forfait 3 % (frais groupe III, secteur 1) */
@@ -34,21 +34,18 @@ const PARAMS_BY_YEAR: Record<number, DeclarationParams> = {
   2024: {
     plafondChequesVacances: 1766,
     plafondSocialChequesVacances: 530,
-    forfaitGroupeIII: 3050,
     tauxForfait2: 0.02,
     tauxForfait3: 0.03,
   },
   2025: {
     plafondChequesVacances: 1802,
     plafondSocialChequesVacances: 541,
-    forfaitGroupeIII: 3050,
     tauxForfait2: 0.02,
     tauxForfait3: 0.03,
   },
   2026: {
     plafondChequesVacances: 1823,
     plafondSocialChequesVacances: 547,
-    forfaitGroupeIII: 3050,
     tauxForfait2: 0.02,
     tauxForfait3: 0.03,
   },

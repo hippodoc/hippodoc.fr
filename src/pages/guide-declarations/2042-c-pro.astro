@@ -17,7 +17,8 @@ import GuideSousPage from '@/layouts/GuideSousPage.astro';
 import { GuideCaseGrid, GuideQuestionList } from '@/components/guide/GuideSubset';
 import { questionsFAQ } from '@/data/boussoleData';
 
-/* Deux cases décident de l'impôt (le régime), trois portent les exonérations. */
+/* Deux cases décident de l'impôt (le régime), deux portent les exonérations zonées ;
+   la 5HY, souvent prise pour l'une d'elles, n'en est pas une (MIGRATION.md § 9.hr). */
 const REGIME = ['5HQ', '5QC'];
 const EXONERATIONS = ['5HP', '5QB', '5HY'];
 
@@ -53,8 +54,8 @@ const faq = QUESTION_IDS
     <p>
       En micro-BNC, tu portes tes recettes brutes en <strong>5HQ</strong> et
       l'administration applique elle-même l'abattement de 34 % : ne le déduis jamais
-      toi-même. Au réel, c'est le <strong>bénéfice net</strong> issu de ta 2035 qui part en <strong>5QC</strong>. Trois autres cases servent aux exonérations zonées — et se
-      trompent de ligne coûte cher, parce que l'exonération ne se rattrape pas.
+      toi-même. Au réel, c'est le <strong>bénéfice net</strong> issu de ta 2035 qui part en <strong>5QC</strong>. Deux autres cases servent aux exonérations zonées, et la 5HY se confond souvent avec
+      elles : se tromper de ligne coûte cher, parce que l'exonération ne se rattrape pas.
     </p>
     <p class="petit">
       Cette page traite la 2042-C-PRO. Pour remplir la 2035 elle-même, va voir <a href="/blog/remplir-declaration-2035" class="lien">la
@@ -126,7 +127,8 @@ const faq = QUESTION_IDS
       <h2 class="gd-h2">Les cases d'exonération</h2>
       <p class="gd-sous">
         Zone franche urbaine, France Rurale Revitalisée, jeune entreprise innovante : là
-        encore, la case dépend du régime. Et l'exonération PDSA ne passe par aucune d'elles.
+        encore, la case dépend du régime. Et l'exonération PDSA ne passe par aucune d'elles. La
+        5HY, elle, n'est pas une case d'exonération : un médecin qui cotise à l'Urssaf la laisse vide.
       </p>
       <GuideCaseGrid subset={SUBSET} codes={EXONERATIONS} />
     </section>
