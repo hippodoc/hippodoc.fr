@@ -12,7 +12,10 @@
  *   AA − (PDSA exonéré + DE Médecin Traitant/ROSP/AN-DPC + HN + MSU + expertises
  *   + études + IJ Madelin + recettes de remplacement). N'inclut PAS AF.
  * - Groupe III (case DH) : barème des omnipraticiens (`getDeductionGroupeIII`) sur la
- *   base du 3 %, 0 si la base est nulle ; `GROUPE_III_MONTANT` = son plafond.
+ *   base du 3 %, 0 si la base est nulle ; `GROUPE_III_MONTANT` = son plafond. La calculette
+ *   n'a pas de champ de spécialité : les autres tables de BOI-BAREME-000025 (spécialistes
+ *   médicaux, chirurgiens, électroradiologistes) ont des seuils égaux ou plus hauts et le même
+ *   maximum de 3 050 €, ce que l'aide de la case DH dit (MIGRATION.md § 9.hr).
  * - Recettes de remplacement (lot « avis du 18/10 » de l'application, porté sur le site en
  *   MIGRATION.md § 9.hq) : part de AA perçue comme
  *   remplaçant par un médecin installé qui remplace aussi (rétrocessions perçues).

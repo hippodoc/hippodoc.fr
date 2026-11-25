@@ -2,7 +2,7 @@
 title: "Frais pros du médecin salarié 2026"
 description: "Frais réels ou forfait 10 % : ≈ 765 € d'impôt en moins pour un interne à 30 000 €. Guide 2026 des frais pros du médecin salarié."
 pubDate: "2026-05-09"
-updatedDate: "2026-09-26"
+updatedDate: "2026-11-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -20,7 +20,7 @@ faq:
   - question: "Quel est le barème kilométrique 2026 et comment l'appliquer ?"
     answer: "Pour une voiture **5 CV thermique** au-delà de 5 000 km : **(km × 0,357) + 1 395 €**. Exemple : 12 000 km = 5 679 €. Le barème couvre carburant, assurance, entretien, dépréciation. Majoration **+20 % pour véhicule électrique**. Moto 1-2 CV thermique : 0,395 €/km. Parking hôpital nominatif et péages s'ajoutent au barème."
   - question: "Quels repas peut-on déduire en frais réels et à quelle hauteur ?"
-    answer: "Règle : **prix payé − 5,45 €** (valeur du repas à domicile 2025, 5,50 € pour 2026). Sont déductibles les repas pris pendant gardes/astreintes/week-ends, en stage éloigné sans cantine, ou à la cantine à un tarif supérieur à 5,45 €. **Pas de double déduction** si l'employeur t'a déjà indemnisé (titre-restaurant, indemnité repas)."
+    answer: "Règle : **prix payé − 5,45 €** (valeur du repas à domicile 2025, 5,50 € pour 2026). Sont déductibles les repas pris pendant gardes/astreintes/week-ends, en stage éloigné sans cantine, ou à la cantine à un tarif supérieur à 5,45 €. Pour un salarié, le prix du repas n'a pas de plafond (la limite de 21,10 €, 21,40 € pour 2026, est celle des libéraux) ; l'app Hippodoc l'applique quand même par prudence : un ticket de 25 € y compte pour 15,65 €. **Pas de double déduction** si l'employeur t'a déjà indemnisé (titre-restaurant, indemnité repas)."
   - question: "C'est quoi la règle des 40 km pour le trajet domicile-travail ?"
     answer: "Au-delà de **40 km aller**, tu dois justifier d'un motif (activité du conjoint, mutation, scolarité des enfants, santé documentée, rareté du logement proche). Sans motif valable, l'administration ne retient que les **40 premiers km**. C'est l'une des zones les plus contrôlées : conserve tes preuves."
   - question: "Peut-on rattraper les années passées si on a coché 10 % par défaut ?"
@@ -167,6 +167,8 @@ Métro, bus, train, abonnement Navigo, etc. : ton employeur prend obligatoiremen
 ## 🍽️ Poste 2 — Les repas : un poste sous-estimé
 
 **Règle d'or : prix payé − 5,45 €** (valeur fiscale du repas à domicile pour 2025, **5,50 € pour 2026**).
+
+Pour un salarié, la doctrine ne plafonne pas le prix du repas (BOI-RSA-BASE-30-50-30-20, § 550) : la limite de **21,10 €** (21,40 € pour 2026) est celle des libéraux. Deux précisions du même texte : si une cantine t'est accessible et que tu manges ailleurs par choix, la déduction s'arrête au prix de la cantine moins 5,45 € ; sans cantine et sans ticket, elle est de 5,45 € par repas, moins la part de l'employeur sur tes titres-restaurant. L'app Hippodoc retient quand même la limite des libéraux, par prudence : un ticket de 25 € y compte pour **15,65 €** (21,10 − 5,45).
 
 **Exemple Léa** : garde de nuit aux urgences, sandwich + boisson à 14 €. Soit 14 − 5,45 = **8,55 € déductibles**. Sur **100 jours** dans l'année (gardes + stages éloignés sans cantine), elle récupère **855 €**.
 

@@ -15993,7 +15993,8 @@ commune comprise). `verify-site.mjs` passe (76 pages).
 **Non repris, pour le propriétaire.**
 - La branche « Retraite » du conjoint est propre au site : l'application (qui reprend ce moteur et
   fige 14 demandes dans `calcul-moteur-simulateur.test.ts`) garde « Salarié / Retraite ». À y
-  reporter.
+  reporter. → Décidé le 25 novembre 2026 : l'application s'aligne à son lot « frais » 5 (pension du
+  conjoint avec son propre abattement ; voir § 9.hr).
 - Retouches de l'application d'autres lots, dans les mêmes fichiers du guide et de la calculette,
   non reprises : « ZIP seulement » (zones d'action complémentaire exclues ; repris seulement dans
   la description de l'exemple PDSA de la calculette) et « forfait d'astreinte » au lieu de
@@ -16002,6 +16003,239 @@ commune comprise). `verify-site.mjs` passe (76 pages).
 - La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) n'est pas relevée.
 - Code mort laissé : `src/lib/calc/declaration2035Inputs.ts` (aucun import ; « cadre 7 », « DH
   3 050 €, hors 1ère année ») et `forfaitGroupeIII: 3050` de `declarationParams` (lu nulle part).
+
+### 9.hr Contenu modifié et outils : lot frais 5 (25 novembre 2026)
+
+Partie « site public » de l'audit final des frais du 25 novembre 2026 (après le lot 4, partie C),
+sur l'accord du fondateur (« Go je te fais confiance sur tout ») et ses décisions du même jour. Le
+site sert ici de référence sur trois points où l'application s'aligne à son propre lot « frais » 5
+(voir la fin de cette section). Calculs refaits avec le moteur du simulateur (le code de `src/` à
+`dc8fedc`, assemblé par esbuild hors du dépôt) et l'API publique de l'Urssaf, appelée pour de vrai,
+le 25 novembre 2026. Sources relues le même jour.
+
+**C1. Rétrocessions versées : ligne 3 (AC) de la 2035-A, jamais « L21/BG ».** Sur la 2035-A, les
+honoraires rétrocédés se retirent des recettes en ligne 3, case AC ; la ligne 21 porte les
+« honoraires ne constituant pas des rétrocessions » (renvoi 11 de la notice : sommes versées à des
+non-salariés, comptable, avocat…) ; BG est la case de la ligne 16. Notice n° 2035 (renvoi 3 :
+définition de la rétrocession ; renvoi 9 : redevance de collaboration) ; même lecture que l'Aide 2035
+de l'application (`glossaire2035.ts`, lignes L3 et L21). Formulation retenue : « en diminution des
+recettes, ligne 3 (AC) de la 2035-A ».
+
+| Fichier | Passage | Avant | Après |
+|---|---|---|---|
+| `src/content/blog/frais-pros-medecin-liberal-2026.md` | § 6, « Recettes » (écrit au § 9.hp) | « tu déduis le montant reversé selon contrat : en ligne 21 de la 2035 au réel » | « cette part est une rétrocession d'honoraires : au réel, tu la déduis en diminution des recettes, ligne 3 (AC) de la 2035-A » (et décision 5, plus bas) |
+| `src/data/boussoleData.ts` | RO-012, description | « en BNC réel, en L21/BG (rétrocession versée) ou en L16/BG (redevance) » | « en BNC réel, en diminution des recettes, ligne 3 (AC) de la 2035-A (rétrocession versée), ou en charge, ligne 16 (BG) (redevance) » |
+| `src/data/boussoleData.ts` | CASE-005 (DSCS), conseil | « (L21/BG ou L16/BG au réel ; …) » | « (au réel : rétrocessions versées en diminution des recettes, ligne 3 (AC) de la 2035-A, redevance en ligne 16 (BG) ; …) » |
+| `src/data/boussoleData.ts` | PM-001 et PM-003, conseils clés | « 5QC = bénéfice net après déduction L21/BG » ; « 5QC est net (après déduction L21/BG) » | « …, rétrocessions versées déduites en diminution des recettes (ligne 3, AC, de la 2035-A) » |
+| `src/data/boussoleData.ts` | boussole, piège de l'installé au réel | « Les rétrocessions versées sont déductibles en L21/BG de la 2035. » | « Les rétrocessions versées se déduisent en diminution des recettes, ligne 3 (AC) de la 2035-A (pas en charges). » |
+| `src/data/boussoleData.ts` | boussole, piège « rétrocessions » au réel | « charge déductible en L21/BG de la 2035. Pense à la DAS-2 si > 1 200 €/an » | « à déduire en diminution des recettes, ligne 3 (AC) de la 2035-A, pas en charges. Pense à la DAS-2 si > 2 400 €/an » |
+| `src/data/glossaireDeclarationsData.ts` | `retrocession` | « sont une **charge**. En BNC réel, elles sont déduites en **L21 / BG** de la 2035 » | « se **déduisent**. En BNC réel, en diminution des recettes, ligne **3 (AC)** de la 2035-A, pas en charges » |
+| `src/components/calculette/CalculetteForm.tsx` | aide du champ `retrocessionsVerseesMicroBnc` | « (L21/BG en réel) » | « (au réel, en diminution des recettes, ligne 3 (AC) de la 2035-A) » |
+| `src/components/calculette/CalculetteResults.tsx` | aide de la DSCS au réel | « (L21/BG) » | « (ligne 3, AC, de la 2035-A) » |
+| `src/components/guide/FlowChartSection.astro` | « Le parcours de ta déclaration », Recettes | « (réel L21/BG · micro pré-déduit) » | « (réel L3/AC · micro pré-déduit) » |
+
+Commentaires de code alignés : `src/lib/rspmHelpers.ts` (trois), `src/lib/simulateur/useRspmCalculation.ts`
+(deux). Plus aucun « L21 » ni « ligne 21 » dans `src/`.
+
+**Décision 5 (article des frais pros, § 6 « Recettes »).** « selon contrat » remplacé par la raison
+de l'écart : la part qu'un remplaçant qui encaisse lui-même reverse au titulaire est une rétrocession
+d'honoraires, qui sort des recettes au micro-BNC (BOI-BNC-DECLA-20-20 § 10 ; BOI-BNC-BASE-20-20 § 70) ;
+la redevance de collaboration « n'est pas une rétrocession : elle paie l'usage du cabinet, et la notice
+de la 2035 la range dans les loyers (ligne 16, renvoi 9) », d'où « Elle se déduit donc au réel, mais
+ne se retire pas au micro-BNC ». Renvoi 9 de la notice : « les redevances versées par le collaborateur
+au titulaire constituent des loyers payés en contrepartie de la mise à disposition de ces biens »,
+montant individualisé en BW et total en BG, ligne 16.
+
+**C2. FAQ de l'article des frais pros** (écran et `FAQPage`, « Quel régime fiscal choisir… ») :
+« du matériel, du PER, ou un local pro » → « du matériel, des cotisations Madelin, ou un local pro »
+(le PER se déduit dans les deux régimes ; le corps le dit depuis le § 9.hq).
+
+**C3. Forfait 2 % : sans prorata.** Le moteur prend déjà 2 % de toutes les recettes (BOI-BNC-SECT-40
+§ 120 : « calculé sur le montant des recettes brutes, y compris les honoraires de dépassement… (DE ou
+DP) »).
+- `SimulateurForm.tsx`, bulle « Forfait 2% » : « Formule : 2% × CA conventionné × (1 - ratio non
+  conv.) » → « Formule : 2 % de toutes tes recettes, dépassements compris (BOI-BNC-SECT-40 § 120),
+  sans prorata de la part non conventionnée. »
+- `src/pages/simulateur.astro`, lexique, « Ratio honoraires non conventionnés » : « les déductions S1
+  sont réduites proportionnellement » → « le 3 % et le groupe III ne portent que sur la part
+  conventionnée. Le forfait 2 %, lui, porte sur toutes tes recettes, dépassements compris, sans
+  prorata (BOI-BNC-SECT-40 § 120). »
+- Commentaire d'en-tête de `src/lib/declarationParams.ts` et `src/lib/taxParams/declarationParams.ts`
+  (« 2 % du CA conventionné avant rétro ») corrigé.
+
+**C4 et C10. Montants recalculés.** Moteur du simulateur (`simulerRegime`), API de l'Urssaf, revenus
+2026, remplaçant, célibataire, secteur 1, métropole, affilié à la CARMF depuis 3 ans et plus, régime
+social automatique (PAMC), aucun frais. Les écarts viennent de la nouvelle assiette des cotisations
+(§ 9.fv) et, au réel, du retrait des forfaits du secteur 1, que le simulateur n'applique plus à un
+remplaçant (§ 9.hq, D2).
+
+| Article | Passage | Avant | Après (moteur, 25/11/2026) |
+|---|---|---|---|
+| `micro-bnc-exemples-concrets` | exemple 1 (50 000 €), « L'essentiel », FAQ | URSSAF 4 502 €, CARMF 8 972 €, total 13 474 € (26,9 %) ; net avant impôt 36 526 € ; Super-Net 33 522 € (67,0 %) ; répartition 67,0 / 9,0 / 17,9 / 6,0 % ; « ≈ 33 500 € (67 %) » | URSSAF **3 453 €**, CARMF **9 666 €**, total **13 119 €** (26,2 %) ; **36 881 €** ; Super-Net **33 877 €** (67,8 %) ; 67,8 / 6,9 / 19,3 / 6,0 % ; « ≈ 33 900 € (67,8 %) » |
+| `micro-bnc-exemples-concrets` | exemple 2 (75 000 €), « L'essentiel » | URSSAF 6 548 €, CARMF 12 075 €, total 18 623 € (24,8 %) ; 56 377 € ; Super-Net 48 423 € (64,6 %) ; 64,6 / 8,7 / 16,1 / 10,6 % ; « ≈ 48 400 € (64,6 %) » | **5 120 €**, **13 108 €**, **18 228 €** (24,3 %) ; **56 772 €** ; **48 818 €** (65,1 %) ; 65,1 / 6,8 / 17,5 / 10,6 % ; « ≈ 48 800 € (65,1 %) » |
+| `medecin-remplacant-travailler-6-mois-par-an` | 72 000 € au micro-BNC (« L'essentiel », étape 2, FAQ, tableau) | cotisations ≈ 18 100 €, impôt ≈ 7 400 €, net ≈ 46 500 € | **≈ 17 700 €** (17 719 €), **≈ 7 400 €** (7 360 €), **≈ 46 900 €** (46 921 €) ; toujours ≈ 3 900 €/mois |
+| `medecin-remplacant-travailler-6-mois-par-an` | 144 000 € au réel, second semestre | « avec les déductions forfaitaires du secteur 1 que le simulateur applique — 2 %, groupe III, 3 % » ; « + ~38 000 € seulement » ; « près d'un cinquième de moins » | « sans frais réels ; un remplaçant n'a pas droit aux déductions forfaitaires du secteur 1 » ; Super-Net au réel **80 387 €** (84 786 € avec les forfaits) ; second semestre **+ ~33 500 €** (80 387 − 46 921 = 33 466 €) ; **« près de 30 % de moins »** (28,7 %) |
+| `medecin-remplacant-travailler-6-mois-par-an` | tableau des jours (« 5 000 €/mois ») et FAQ | « ~165 jours », « un peu plus de 8 mois » | **« ~170 jours »** (170 jours au réel, 102 000 € : 4 990 €/mois), « 8 mois et demi » ; 60, 90 et 120 jours inchangés (2 064, 3 021 et 3 910 €/mois) |
+
+Au micro-BNC, l'impôt ne change pas (3 004 € et 7 954 €) : il porte sur 66 % des recettes. À
+50 000 €, le moteur donne 13 118,50 € de cotisations et 33 877,50 € de Super-Net (le simulateur
+affiche 13 119 € et 33 878 €) ; l'article écrit 33 877 €, la différence des montants qu'il affiche
+(50 000 − 13 119 − 3 004), comme la règle des écarts du simulateur. Mentions de date : « recalcul du
+25 novembre 2026 » et « nouvelle assiette des cotisations » dans les sources des deux articles ; note
+de fin du second : « au régime réel, sans frais réels ni déductions forfaitaires du secteur 1,
+auxquelles un remplaçant n'a pas droit ». `updatedDate` 2026-11-25 (frontmatter et `blog-meta.json`).
+
+**C5. DAS 2 : 2 400 € par bénéficiaire** (BOFiP ACTU-2024-00154 : « Ce seuil est ainsi porté de
+1 200 € à 2 400 € par an pour un même bénéficiaire », à compter des sommes versées en 2024) :
+`boussoleData.ts` (calendrier annuel, janvier, « Déclaration DAS-2 » ; deux pièges des rétrocessions de la boussole) et
+`glossaireDeclarationsData.ts` (`das-2`, avec le seuil d'avant et la source).
+
+**C6. Estimateur du simulateur** (`EstimateurCharges.tsx`).
+- « Le Micro-BNC en compte 34 %, soit X €, à leur place. » → « Le Micro-BNC compte 34 %, soit X €, à
+  la place de ces charges et de tes cotisations : le simulateur fait la comparaison complète. »
+- CFE (ligne 12 de la 2035) : la ligne « Autres (frais bancaires, fournitures, syndicat…) » devient
+  « Autres (CFE, frais bancaires, fournitures, syndicat…) ». Aucune ligne ajoutée.
+
+**C7. Forfaits du secteur 1 dans l'article des frais pros** (« L'essentiel », « Cas particuliers »,
+§ 5.1, FAQ « Qu'est-ce que la déduction Groupe III ? », écran et `FAQPage`) : « conventionné en propre
+(installé ou collaborateur, pas le remplaçant) » et « 2035 déposée dans les délais » ajoutés ; § 5.1 :
+« un simple retard les fait perdre toutes les trois (BOI-BNC-SECT-40, § 180) » (« le simple retard
+dans la souscription de ladite déclaration entraîne la remise en cause du régime particulier »).
+
+**C8. Bulles du résultat** (`RegimeComparisonCards.tsx`, revenus du conjoint) : « (max 14 555 € en
+2026) » et « (max 4 439 € par foyer en 2026) » → « … pour les revenus 2025 », même formule que le
+formulaire (`Math.min(annee, 2025)`). Montants inchangés.
+
+**C9. L'installé qui verse des rétrocessions** (simulateur). Bulle des recettes (`SimulateurForm.tsx`)
+et estimateur, pour l'installé : « Tu verses des rétrocessions à tes remplaçants ? Retire-les de ce
+montant : elles sortent ainsi de tes recettes dans les deux régimes (Micro-BNC : avant l'abattement de
+34 % ; réel : ligne 3 de la 2035-A). En secteur 1, au réel, le 3 % et le groupe III se calculent avant
+elles : le simulateur les sous-estime alors un peu. » Le simulateur calcule les deux régimes sur la même
+saisie : des rétrocessions mises en charges resteraient dans les recettes du Micro-BNC, qui ignore les
+charges ; retirées des recettes, les deux régimes sont justes, à la base du 3 % et du groupe III près
+(prudente). D'où cette consigne plutôt que « au réel, mets-les dans tes charges ». Moteur inchangé.
+
+**Groupe III par spécialité (décision 4).** BOI-BNC-SECT-40 § 20 vise les omnipraticiens ou
+généralistes, les spécialistes médicaux, les chirurgiens, les spécialistes chirurgicaux et les
+électroradiologistes qualifiés ; BOI-BAREME-000025 donne quatre tables (base : honoraires
+conventionnels ; mêmes montants de 770 € à 3 050 €), aux seuils égaux ou plus hauts que ceux des
+omnipraticiens (spécialistes médicaux : 9 100 à 32 000 € ; chirurgiens : 9 100 à 36 550 € ;
+électroradiologistes : 15 200 à 64 000 €). Ni le simulateur ni la calculette n'ont de champ de
+spécialité : ils gardent la table des omnipraticiens (`getDeductionGroupeIII`) et le disent ; aucun
+champ ajouté.
+- Outils : `SimulateurForm.tsx` (note « Déductions Secteur 1 automatiques »), `simulateur.astro`
+  (lexique : « Une déduction fixe » → « Une déduction forfaitaire …, au barème des omnipraticiens (… ;
+  les seuils des autres spécialités sont égaux ou plus hauts, pour le même maximum) »),
+  `CalculetteForm.tsx` (« Groupe III (case DH) — au barème » → « — au barème des omnipraticiens » ;
+  aide de la case DH).
+- Guide (la règle) : RO-008, CASE-028 (description, erreur fréquente), QT-024 et QT-042 (questions du
+  `FAQPage`), glossaire `groupe-iii` : « au barème des omnipraticiens » → « au barème de ta spécialité »,
+  avec « les seuils des omnipraticiens sont les plus bas, le maximum est le même » (ou la forme longue
+  ci-dessus) et la référence BOI-BAREME-000025.
+- Article des frais pros (§ 5.1 et FAQ) : « calculée selon un barème conventionnel » → « de 770 € à
+  3 050 € selon tes honoraires conventionnels ; les seuils dépendent de ta spécialité (ceux des
+  omnipraticiens sont les plus bas), le maximum est le même ».
+- Commentaires : `src/lib/baremes-ir.ts` (source : BOI-BAREME-000025, table des omnipraticiens),
+  `src/components/calculette/forfaitsSecteur1.ts`.
+
+**Repas d'un salarié aux frais réels** (`frais-pros-medecins-salaries-internes-2026.md`, FAQ « Quels
+repas peut-on déduire… » et « Poste 2 »). BOI-RSA-BASE-30-50-30-20 § 550 : la déduction est « la
+différence entre le prix du repas payé et la valeur du repas pris à domicile » (montant de l'avantage
+en nature : 5,45 € en 2025, 5,50 € en 2026) ; sans justificatif précis (pas de restauration collective),
+la valeur forfaitaire, moins la part de l'employeur aux titres-restaurant ; RES n° 2010/43 reprise au
+même endroit : cantine accessible mais délaissée par choix, déduction « plafonnée au coût d'un repas
+pris à la cantine diminué de la valeur du repas pris au foyer ». Aucun plafond du prix du repas pour
+les salariés : 21,10 € (21,40 € en 2026) est la limite des libéraux (BOI-BNC-BASE-40-60-60).
+L'application la retient « par prudence » (`limitesRepasSalaries`, `fraisReelsSalariesConfig.ts`).
+Ajouté : la règle exacte, et « L'app Hippodoc retient quand même la limite des libéraux, par prudence :
+un ticket de 25 € y compte pour 15,65 € (21,10 − 5,45) ». `updatedDate` 2026-11-25.
+
+**Détails.**
+- PC-011 (vélo électrique) : titre « …déductible à 100% en charges professionnelles » → « …déductible
+  en charges professionnelles (amorti au-delà de 500 € HT) » ; « déductible à 100% en charges sur la
+  2035 » → « déductible sur la 2035 pour la part de son usage professionnel (100 % s'il ne sert qu'à ton
+  activité) … Au-delà de 500 € HT, il s'amortit : tu en déduis une part chaque année sur sa durée
+  d'usage, pas tout l'année de l'achat » ; l'économie d'impôt « étalée sur la durée de l'amortissement ».
+  (« sans prorata d'usage » n'est pas repris tel quel : la part privée d'un bien mixte ne se déduit pas.)
+- Article des frais pros, § 4.3 : « ordinateur > 1 500 € HT » → « ordinateur, mobilier complet de
+  cabinet : tout bien de plus de 500 € HT s'amortit ».
+- Article des frais pros, sources : « (vérifiées au 25 septembre 2026) » → « 25 novembre 2026 »
+  (liens relus : tous répondent, sauf la page du CESU de cesu.urssaf.fr, sans réponse depuis ce poste) ;
+  ajoutés : BOI-BNC-DECLA-20-20 § 10, BOI-BNC-BASE-20-20 § 70, notice de la 2035 (ligne 3, renvoi 9),
+  BOI-BNC-SECT-40 § 20, 120 et 180, BOI-BAREME-000025.
+- Code mort retiré : `src/lib/calc/declaration2035Inputs.ts` (aucun import dans `src/`, `scripts/` ni
+  `astro.config.mjs` ; il disait « DH 3 050 €, hors 1ère année ») et le champ `forfaitGroupeIII: 3050`
+  des deux `declarationParams.ts` (lu nulle part : seuls `plafondChequesVacances` et
+  `plafondSocialChequesVacances` sont lus).
+
+**Guide des déclarations : passages repris de l'application** (hors frais). Texte de l'application à
+`1a80ed9` (`src/data/boussoleData.ts`, mêmes objets, mêmes lignes), repris mot pour mot, champ entier :
+- CASE-004 (5HY) : nom, description, qui remplit, erreur fréquente, conseil. Avant : « Revenu exonéré
+  (dispositifs résiduels — déclaration contrôlée) », case d'exonération résiduelle du réel, « En FRR
+  (ex-ZRR), le plafond est de 300 000 € sur 3 ans glissants » ; après : « BNC à imposer aux prélèvements
+  sociaux — revenus nets », « Ce n'est pas une case d'exonération … Médecin libéral qui cotise à
+  l'Urssaf (PAMC ou RSPM) : laisse-la vide ».
+- QT-020 (ZFU d'un remplaçant, question du `FAQPage`) : « Si tu es en PAMC, reporte aussi le montant
+  net (×0,66) en DSFA » → « Côté social, rien de plus : la ZFU reste comprise dans DSCS (recettes
+  brutes), jamais en DSFA » ; la PDSA « va en DSFA/DSFB en micro-BNC au PAMC seulement (au réel, ligne
+  CI de la 2035) ».
+- PDSA au réel, jamais de DSFA : RO-015 (description et exemple : au réel, rien à retirer de la 5QC,
+  « jamais de DSFA », ZIP seulement, forfait d'astreinte, RSPM toute l'année, renvoi aux modules sans
+  « Hippodoc calcule automatiquement ») ; CASE-012 (DSFA), conseil (« En micro-BNC au PAMC ») ; QT-048
+  (question du `FAQPage` : « Revenus 2024 et avant : la DSFA s'appliquait aussi au réel… Tout ce qui
+  précède vaut depuis les revenus 2025 ») ; PC-003 ; ZG-006 (position A, ZIP ; conclusion) ; ZG-007
+  (position B et conclusion).
+- Propre au site, aligné sur la nouvelle 5HY : `src/pages/guide-declarations/2042-c-pro.astro`,
+  chapô (« Trois autres cases servent aux exonérations zonées » → « Deux autres cases servent aux
+  exonérations zonées, et la 5HY se confond souvent avec elles ») et sous-titre des cases
+  d'exonération (« La 5HY, elle, n'est pas une case d'exonération : un médecin qui cotise à l'Urssaf la
+  laisse vide. »).
+- « doctrine 2026 scellée (expert mai 2026) » (règle « jamais d'expert ») : l'application a le même
+  texte, rien à reprendre ; réécrit ici : PM-006 et PC-014 « — règles 2026 » ; PC-014, source « +
+  doctrine expert mai 2026 » retiré ; ZG-016 « Position confirmée (doctrine 2026, expert mai 2026 +
+  Brochure DGFiP 2026 p. 180) » → « Position retenue (Brochure DGFiP 2026 p. 180) » ; piège de la
+  boussole « (doctrine 2026, expert mai 2026) » → « (règles 2026) ». À reporter dans l'application.
+
+**`/faq`, « Qu'est-ce que les rétrocessions versées ? »** (`aHtml` et `aPlain` ensemble, même erreur
+que C1) : « La rétrocession versée est une charge déductible de ton BNC » → « …se déduit de tes
+recettes : au réel, ligne 3 de la 2035-A ; en micro-BNC, avant l'abattement de 34 % » ; « La part
+gardée … est ton revenu imposable » → « …est ta recette : ton revenu imposable en découle, après tes
+charges (au réel) ou l'abattement de 34 % (en micro-BNC) ». `FAQ_LAST_UPDATED_ISO` déjà au 2026-11-25.
+
+**Décisions du fondateur (25 novembre 2026) et l'application.** Le simulateur du site reste la
+référence sur trois écarts relevés par l'audit (section D) ; l'application s'aligne à son lot « frais »
+5 : un seul Super-Net dans les deux régimes (charges payées retirées en Micro-BNC aussi, § 9.fr) ;
+pension du conjoint avec son propre abattement (§ 9.hq, D5) ; groupe III par spécialité (le site, sans
+champ de spécialité, garde la table des omnipraticiens et le dit). Rien ne change sur le site pour ces
+trois points.
+
+**À l'écran et dans le build.** Changent : `/guide-declarations` (C1, C5, groupe III, 5HY, PDSA,
+ZFU ; `FAQPage` : QT-020, QT-024, QT-042, QT-048), `/guide-declarations/2042-c-pro` (5HY, QT-020),
+`/guide-declarations/dsfu-pamc` (CASE-005, CASE-012, QT-048), `/guide-declarations/medecin-remplacant`
+(CASE-005, PC-011), `/faq` (rétrocessions versées, `FAQPage`), `/simulateur` (lexique), les quatre
+articles (`Article` : `dateModified` ; `FAQPage` des articles des frais pros, des frais du salarié, de
+« 6 mois » et des exemples du micro-BNC), `/blog/recherche.json`, le sitemap (trois `lastmod` au
+2026-11-25). `/guide-declarations/calculette` : HTML identique au nom des scripts près. Aucune feuille
+de style ne change de nom (feuille commune `_astro_assets.BqFlQkaI.css`, avant comme après) ;
+changent les scripts `BoussoleSearchIsland`, `BoussoleWizard`, `CalculetteApp`, `SimulateurApp`,
+`RegimeComparisonCards`, `usePublicodesSimulation` et `glossaireDeclarationsData`. `verify-site.mjs`
+passe (76 pages ; questions FAQ inchangées). Vérifié dans Chromium : bulle des recettes, estimateur
+d'un installé (ligne « Autres (CFE, … ) », phrase des rétrocessions, phrase des 34 %), bulle du
+conjoint (« max 14 555 € pour les revenus 2025 »).
+
+**Non repris, pour le propriétaire.**
+- Autres retouches de l'application dans `boussoleData.ts`, d'autres lots : RO-006, CASE-012
+  (description), CASE-029, ZG-009 (« forfait d'astreinte » au lieu de « PRN/PRD/RSP », ZIP) ; PM-008,
+  PM-013 et deux pièges de la boussole (« RSPM toute l'année », départ en cours d'année) ; RO-013 et
+  trois pièges (RSPM payé « à chaque déclaration (trimestre ou mois) ») ; QT-025 et PC-012 (repas) : le
+  site garde son texte du § 9.hq.
+- RO-008 dit encore que l'Aide 2035 de l'application prend le groupe III « au barème des
+  omnipraticiens » : l'application change de règle à son lot 5 ; à relire après.
+- La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) et celle des pages filles (23 août 2026)
+  ne sont pas relevées ; `SIMULATEUR_LAST_UPDATED_ISO` non plus (aucun barème relu).
+- Dans l'application, à `1a80ed9`, le guide dit encore « L21/BG », « 1 200 € » (DAS 2) et « expert
+  mai 2026 », et le simulateur « 2 % × CA conventionné × (1 - ratio non conv.) » : à y reporter (son
+  lot 5 est en cours).
 
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 

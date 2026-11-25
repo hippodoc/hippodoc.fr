@@ -324,7 +324,11 @@ export function abattement10Pension(pension: number, annee: number = 2026): numb
 /**
  * Barème Groupe III (déduction forfaitaire Secteur 1)
  * Applicable uniquement aux médecins conventionnés Secteur 1 en BNC réel
- * Source : Documentation DGFIP — Professions libérales BNC
+ * Source : BOI-BAREME-000025, table des omnipraticiens (base : honoraires conventionnels).
+ * Les tables des spécialistes médicaux, des chirurgiens et des électroradiologistes
+ * (BOI-BNC-SECT-40 § 20) ont des seuils égaux ou plus hauts et les mêmes montants (770 € à
+ * 3 050 €). Ni le simulateur ni la calculette n'ont de champ de spécialité : ils appliquent
+ * cette table et le disent là où le groupe III est expliqué (MIGRATION.md § 9.hr).
  */
 const BAREME_GROUPE_III: { plafond: number; montant: number }[] = [
   { plafond: 9100, montant: 770 },

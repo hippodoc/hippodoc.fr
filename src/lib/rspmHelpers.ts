@@ -5,7 +5,7 @@
  * `calculateRspmBreakdown` selon le régime fiscal du médecin.
  *
  * RÈGLE FISCALE (CGI Art. 102 ter / Art. 93, CSS Art. R613-7) :
- *  - Réel BNC : toutes charges (loyer + amortissements + RÉTROCESSIONS VERSÉES via L21/BG)
+ *  - Réel BNC : toutes charges (loyer + amortissements + RÉTROCESSIONS VERSÉES, en diminution des recettes ligne 3 / AC de la 2035-A)
  *               sont déduites en aval pour calculer le bénéfice fiscal.
  *  - Micro-BNC : SEULES les rétrocessions versées sont déductibles AVANT l'abattement 34 %
  *                (et avant l'assiette URSSAF). Les autres charges (loyer, amortissements)
@@ -34,7 +34,7 @@ export interface RspmChargesArgs {
  * @param chargesClassiques Charges hors rétrocessions (loyer + fournitures + amortissements).
  *                          Note : NE PAS inclure les rétrocessions versées ici.
  * @param retrocessionsVersees Total annuel des rétrocessions versées au remplaçant
- *                              (`montant_verse` agrégé — charge L21/BG du Cerfa 2035-A).
+ *                              (`montant_verse` agrégé — ligne 3 / AC du Cerfa 2035-A, en diminution des recettes).
  */
 export const buildRspmChargesArgs = (
   regime: RegimeFiscal,
@@ -45,7 +45,7 @@ export const buildRspmChargesArgs = (
   const safeRetro = Math.max(0, retrocessionsVersees || 0);
 
   if (regime === 'reel') {
-    // En réel : tout passe en chargesLiberalesReelles (incl. retros via L21/BG).
+    // En réel : tout passe en chargesLiberalesReelles (incl. retros, ligne 3 / AC de la 2035-A).
     const total = safeCharges + safeRetro;
     return {
       chargesLiberalesReelles: total > 0 ? total : undefined,

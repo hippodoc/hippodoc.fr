@@ -327,6 +327,9 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                           <TipBox variant="tip">
                             <p>Saisis ici le total de tes honoraires, y compris la part PDSA. Ensuite, indique le montant PDSA dans le champ ci-dessous → il sera automatiquement exonéré d'IR.</p>
                           </TipBox>
+                          <TipBox variant="info">
+                            <p>Tu verses des rétrocessions à tes remplaçants{'\u00a0'}? Retire-les de ce montant{'\u00a0'}: elles sortent ainsi de tes recettes dans les deux régimes (Micro-BNC{'\u00a0'}: avant l'abattement de 34{'\u00a0'}%{'\u00a0'}; réel{'\u00a0'}: ligne 3 de la 2035-A). En secteur 1, au réel, le 3{'\u00a0'}% et le groupe III se calculent avant elles{'\u00a0'}: le simulateur les sous-estime alors un peu.</p>
+                          </TipBox>
                         </div>
                       }
                     >
@@ -1432,7 +1435,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                                   <p className="font-semibold">Déduction forfaitaire de 2%</p>
                                   <p className="text-xs">Frais de représentation, réception et prospection. Réservée aux médecins <strong>Secteur 1</strong> en <strong>BNC réel</strong>.</p>
                                   <TipBox variant="info">
-                                    <p>Formule : 2% × CA conventionné × (1 - ratio non conv.)</p>
+                                    <p>Formule : 2 % de toutes tes recettes, dépassements compris (BOI-BNC-SECT-40 § 120), sans prorata de la part non conventionnée.</p>
                                   </TipBox>
                                   <TipBox variant="tip">
                                     <p>Alternative : tu peux déduire ces frais au réel s'ils dépassent 2% de ton CA.</p>
@@ -1593,7 +1596,7 @@ export const SimulateurForm = forwardRef<any, SimulateurFormProps>(
                     }} />
                     {deductionsS1Ouvertes && (
                       <div className="sim-note ok">
-                        <p className="text-xs"><strong>Déductions Secteur 1 automatiques</strong> (BNC réel, installé) : 3 % des honoraires conventionnels + groupe III (barème des omnipraticiens, 3 050 € au-delà de 30 450 €).</p>
+                        <p className="text-xs"><strong>Déductions Secteur 1 automatiques</strong> (BNC réel, installé) : 3 % des honoraires conventionnels + groupe III (barème des omnipraticiens, 3 050 € au-delà de 30 450 € ; les seuils des autres spécialités sont égaux ou plus hauts, pour le même maximum).</p>
                       </div>
                     )}
                   </AccordionContent>

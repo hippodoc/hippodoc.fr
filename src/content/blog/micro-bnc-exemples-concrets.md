@@ -2,7 +2,7 @@
 title: "Micro-BNC : 2 exemples chiffrés du CA au Super-Net"
 description: "Du CA au Super-Net : découvre ce qu'il te reste vraiment après cotisations et impôts avec des exemples à 50 000 € et 75 000 € de chiffre d'affaires."
 pubDate: "2025-11-28T10:00:00Z"
-updatedDate: "2026-09-25"
+updatedDate: "2026-11-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -16,7 +16,7 @@ tags:
 cta: "Prêt(e) à piloter ton activité comme un pro ?"
 faq:
   - question: "Combien me reste-t-il avec 50 000 € de CA en micro-BNC ?"
-    answer: "Avec 50 000 € en micro-BNC : cotisations ~13 474 € (26,9 %), impôt 3 004 € (6,0 %), **Super-Net 33 522 €** soit 67,0 % de ton CA. C'est ce qui arrive vraiment dans ta poche !"
+    answer: "Avec 50 000 € en micro-BNC : cotisations ~13 119 € (26,2 %), impôt 3 004 € (6,0 %), **Super-Net 33 877 €** soit 67,8 % de ton CA. C'est ce qui arrive vraiment dans ta poche !"
   - question: "Quelle est la différence entre RSPM et micro-BNC classique ?"
     answer: "Le **RSPM** concerne les cotisations sociales : ouvert jusqu'à 19 000 € d'honoraires, perdu après deux années de suite au-dessus de 19 000 € ou une seule au-dessus de 38 000 €. Le **micro-BNC** concerne la fiscalité (< 83,6k€). Tu peux être en micro-BNC fiscal tout en étant au régime PAMC pour les cotisations sociales (si tu n'es pas entré au RSPM, ou si tu l'as perdu)."
   - question: "Que se passe-t-il si je dépasse 83 600 € de CA ?"
@@ -36,7 +36,7 @@ relatedArticles:
 **L'essentiel**
 
 - En micro-BNC, tu es imposé sur **66 %** de tes recettes, et tes cotisations sont calculées sur ce même montant, pas sur ton chiffre d'affaires.
-- À **50 000 €** de recettes, il te reste ≈ **33 500 €** (67 %) ; à **75 000 €**, ≈ **48 400 €** (64,6 %).
+- À **50 000 €** de recettes, il te reste ≈ **33 900 €** (67,8 %) ; à **75 000 €**, ≈ **48 800 €** (65,1 %).
 - Tu restes en micro-BNC tant que tu ne dépasses pas **83 600 €** deux années de suite — et de plein droit tes deux premières années.
 - Calculs du simulateur Hippodoc, 2026, célibataire, secteur 1, hors deux premières années.
 :::
@@ -63,12 +63,12 @@ Le [plafond de 83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits
 ## 🧪 EXEMPLE 1 : CA 50 000 €
 
 **1. Cotisations sociales**\
-• URSSAF : **4 502 €**\
-• CARMF : **8 972 €**\
-• → **Total cotisations : 13 474 €** (26,9 % du CA)
+• URSSAF : **3 453 €**\
+• CARMF : **9 666 €**\
+• → **Total cotisations : 13 119 €** (26,2 % du CA)
 
 **2. Net avant impôt**\
-50 000 − 13 474 = **36 526 €**
+50 000 − 13 119 = **36 881 €**
 
 **3. Impôt**\
 • Base imposable = 50 000 × 66 % = **33 000 €**\
@@ -80,26 +80,26 @@ Le [plafond de 83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits
 
 • → **Total IR ≈ 3 004 €**
 
-✅ **Super net : 36 526 − 3 004 = 33 522 €** (67,0 % du CA)
+✅ **Super net : 36 881 − 3 004 = 33 877 €** (67,8 % du CA)
 
 ## 📊 Répartition du CA (Exemple 1)
 
 :::tip
-**Super net : 67,0 %** 🎯\
-**URSSAF : 9,0 %**\
-**CARMF : 17,9 %**\
+**Super net : 67,8 %** 🎯\
+**URSSAF : 6,9 %**\
+**CARMF : 19,3 %**\
 **Impôt : 6,0 %**
 :::
 
 ## 🧪 EXEMPLE 2 : CA 75 000 €
 
 **1. Cotisations sociales**\
-• URSSAF : **6 548 €**\
-• CARMF : **12 075 €**\
-• → **Total cotisations : 18 623 €** (24,8 % du CA)
+• URSSAF : **5 120 €**\
+• CARMF : **13 108 €**\
+• → **Total cotisations : 18 228 €** (24,3 % du CA)
 
 **2. Net avant impôt**\
-75 000 − 18 623 = **56 377 €**
+75 000 − 18 228 = **56 772 €**
 
 **3. Impôt**\
 • Base imposable = 75 000 × 66 % = **49 500 €**\
@@ -111,14 +111,14 @@ Le [plafond de 83 600 €](https://entreprendre.service-public.gouv.fr/vosdroits
 
 • → **Total IR ≈ 7 954 €**
 
-✅ **Super net : 56 377 − 7 954 = 48 423 €** (64,6 % du CA)
+✅ **Super net : 56 772 − 7 954 = 48 818 €** (65,1 % du CA)
 
 ## 📊 Répartition du CA (Exemple 2)
 
 :::tip
-**Super net : 64,6 %** 💰\
-**URSSAF : 8,7 %**\
-**CARMF : 16,1 %**\
+**Super net : 65,1 %** 💰\
+**URSSAF : 6,8 %**\
+**CARMF : 17,5 %**\
 **Impôt : 10,6 %**
 :::
 
@@ -145,6 +145,6 @@ Et surtout tu **pilotes ton activité à 360°** comme un pro, peu importe ton r
 
 ## 📚 Sources (vérifiées au 25 septembre 2026)
 
-• Cotisations et impôt des deux exemples : moteur du [simulateur Hippodoc](/simulateur) (valeurs par défaut : célibataire, secteur 1, métropole, affilié à la CARMF depuis 3 ans et plus), recalcul du 23 septembre 2026.\
+• Cotisations et impôt des deux exemples : moteur du [simulateur Hippodoc](/simulateur) (valeurs par défaut : célibataire, secteur 1, métropole, affilié à la CARMF depuis 3 ans et plus ; nouvelle assiette des cotisations), recalcul du 25 novembre 2026.\
 • Seuil et règles du micro-BNC : [entreprendre.service-public.gouv.fr](https://entreprendre.service-public.gouv.fr/vosdroits/F32105) ; art. 102 ter du CGI.\
 • Cotisations des deux premières années : [carmf.fr](https://www.carmf.fr/page.php?page=cdrom/coti/coti-debut.htm).
