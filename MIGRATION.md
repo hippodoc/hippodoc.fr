@@ -15780,6 +15780,29 @@ le module `glossaireDeclarationsData`.
   (`src/lib/calc/dsPamc.ts`) et RO-014 aussi. Passage antérieur, laissé tel quel.
 - La date de revue du guide (`lastUpdated.ts`, 31 mai 2026) n'est pas relevée.
 
+### 9.hp Contenu modifié : la redevance de collaboration dans l'article des frais pros (25 novembre 2026)
+
+Suite du § 9.ho (point ouvert n° 1), sur l'accord du propriétaire du 25/11/2026 (« Corrige les données et l'article, je
+te fais confiance »).
+
+- **Fichier** : `src/content/blog/frais-pros-medecin-liberal-2026.md`, partie « 6. Spécial remplaçants libéraux »,
+  paragraphe « Recettes ». Adresse inchangée.
+- **Correction factuelle** :
+  - avant : « Si tu encaisses les honoraires et reverses une rétrocession versée au titulaire (ou une redevance en
+    collaboration), tu déclares le brut encaissé et tu déduis le montant reversé selon contrat. » (aucun régime dit :
+    faux au micro-BNC pour la redevance, et le micro-BNC ne « déduit » rien, il retire les rétrocessions des recettes) ;
+  - après : « Si tu encaisses les honoraires et reverses une rétrocession au titulaire, tu déduis le montant reversé
+    selon contrat : en ligne 21 de la 2035 au réel ; au micro-BNC, tu le retires de tes recettes avant l'abattement de
+    34 %. Une **redevance de collaboration**, elle, se déduit au réel (ligne 16 de la 2035), mais **ne se retire pas au
+    micro-BNC** : l'abattement de 34 % la couvre. »
+  - sources : BOI-BNC-DECLA-20-20 § 10 (version du 19/08/2026 : au micro-BNC, ne sont exclus des recettes que les
+    débours, les rétrocessions d'honoraires à des confrères déclarées selon l'art. 240 du CGI et les plus-values) ;
+    BOI-BNC-BASE-20-20 § 70 (définition de la rétrocession) ; règle déjà écrite dans
+    `remplacement-regulier-requalification` (« En micro-BNC : la redevance n'est pas déductible ») et dans le guide des
+    déclarations depuis le § 9.ho.
+- **Dates** : `updatedDate` du 25/11/2026 dans le frontmatter et dans `src/generated/blog-meta.json` (§ 9.ai).
+- Aucune autre phrase touchée ; ni FAQ, ni « L'essentiel », ni liens.
+
 ## 10. Checklist go-live manuelle (à faire par un humain, pas par cette migration)
 
 1. **DNS** : pointer `hippodoc.fr` (+ `www`) vers Vercel ; créer `app.hippodoc.fr` vers le

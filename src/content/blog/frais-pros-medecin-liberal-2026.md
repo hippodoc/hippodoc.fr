@@ -2,7 +2,7 @@
 title: "Frais pros du médecin libéral 2026"
 description: "Plusieurs milliers d'euros par an entre déduire juste et passer au pifomètre. Guide complet 2026 : micro-BNC vs 2035, leviers secteur 1, ACRE, zones aidées, dossier anti-contrôle."
 pubDate: "2026-05-24"
-updatedDate: "2026-09-25"
+updatedDate: "2026-11-25"
 author: "Dr. Ryan Goburdhun"
 authorRole: "Médecin remplaçant & fondateur d'Hippodoc"
 category: "Guide et Conseil"
@@ -312,7 +312,7 @@ Le remplaçant a une fiscalité souvent plus simple que celle d'un installé, ma
 **OK** : km pro (barème ou réels), hébergement temporaire, repas hors domicile justifiés, RCP/Ordre/syndicat, petit matériel transporté, bureau à domicile modeste, téléphone/internet au prorata, formation et congrès.\
 **Zones rouges** : vacances collées au remplacement, repas quotidiens proche du domicile, double résidence de confort, frais du cabinet supportés par le titulaire, pas de suivi des [rétrocessions perçues](/blog/salaires-medecins-remplacants), « charge cachée » dans la rétrocession nette.
 
-**Recettes :** si le titulaire encaisse les honoraires et te reverse 70 %, tu déclares les 70 % perçus, pas les 30 % que tu n'as jamais touchés. Si tu encaisses les honoraires et reverses une rétrocession versée au titulaire (ou une redevance en collaboration), tu déclares le brut encaissé et tu déduis le montant reversé selon contrat.
+**Recettes :** si le titulaire encaisse les honoraires et te reverse 70 %, tu déclares les 70 % perçus, pas les 30 % que tu n'as jamais touchés. Si tu encaisses les honoraires et reverses une rétrocession au titulaire, tu déduis le montant reversé selon contrat : en ligne 21 de la 2035 au réel ; au micro-BNC, tu le retires de tes recettes avant l'abattement de 34 %. Une **redevance de collaboration**, elle, se déduit au réel (ligne 16 de la 2035), mais **ne se retire pas au micro-BNC** : l'abattement de 34 % la couvre.
 
 **RSPM ≠ fiscalité.** Le RSPM est un dispositif **social** simplifié, réservé aux médecins exerçant exclusivement des remplacements, avec des rétrocessions perçues ≤ 19 000 €/an et sans autre activité indépendante. Le choix **micro vs réel** reste un arbitrage **fiscal** indépendant.
 
